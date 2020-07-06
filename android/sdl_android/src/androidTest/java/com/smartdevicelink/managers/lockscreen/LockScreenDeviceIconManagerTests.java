@@ -3,20 +3,12 @@ package com.smartdevicelink.managers.lockscreen;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.support.test.runner.AndroidJUnit4;
 
-import com.smartdevicelink.AndroidTestCase2;
-import com.smartdevicelink.util.AndroidTools;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-
-import java.io.File;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -25,7 +17,8 @@ import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class LockScreenDeviceIconManagerTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class LockScreenDeviceIconManagerTests {
 
     TemporaryFolder tempFolder = new TemporaryFolder();
     private LockScreenDeviceIconManager lockScreenDeviceIconManager;
@@ -33,14 +26,7 @@ public class LockScreenDeviceIconManagerTests extends AndroidTestCase2 {
     private static final String LAST_UPDATED_TIME = "lastUpdatedTime";
     private static final String STORED_PATH = "storedPath";
 
-    public void setup() throws Exception {
-        super.setUp();
-    }
-
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-
+    @Test
     public void testRetrieveIconShouldCallOnErrorTwiceWhenGivenURLThatCannotDownloadAndIconIsNotCached() {
         final SharedPreferences sharedPrefs = Mockito.mock(SharedPreferences.class);
         final Context context = Mockito.mock(Context.class);
@@ -54,6 +40,7 @@ public class LockScreenDeviceIconManagerTests extends AndroidTestCase2 {
         verify(listener, times(2)).onError(anyString());
     }
 
+    @Test
     public void testRetrieveIconShouldCallOnImageOnImageRetrievedWithIconWhenIconUpdateTimeIsNullFromSharedPref() {
         final SharedPreferences sharedPrefs = Mockito.mock(SharedPreferences.class);
         final Context context = Mockito.mock(Context.class);
@@ -67,7 +54,7 @@ public class LockScreenDeviceIconManagerTests extends AndroidTestCase2 {
         verify(listener, times(1)).onImageRetrieved((Bitmap) any());
     }
 
-
+    @Test
     public void testRetrieveIconShouldCallOnImageOnImageRetrievedWithIconWhenCachedIconExpired() {
         final SharedPreferences sharedPrefs = Mockito.mock(SharedPreferences.class);
         final Context context = Mockito.mock(Context.class);
@@ -81,6 +68,7 @@ public class LockScreenDeviceIconManagerTests extends AndroidTestCase2 {
         verify(listener, times(1)).onImageRetrieved((Bitmap) any());
     }
 
+    @Test
     public void testRetrieveIconShouldCallOnImageRetrievedWithIconWhenCachedIconIsUpToDate() {
         final SharedPreferences sharedPrefs = Mockito.mock(SharedPreferences.class);
         final Context context = Mockito.mock(Context.class);

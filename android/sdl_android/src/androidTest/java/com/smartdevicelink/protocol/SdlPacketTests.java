@@ -1,12 +1,20 @@
 package com.smartdevicelink.protocol;
 
+import android.support.test.runner.AndroidJUnit4;
+
 import com.livio.BSON.BsonEncoder;
-import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.protocol.enums.ControlFrameTags;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.HashMap;
 
-public class SdlPacketTests extends AndroidTestCase2 {
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNull;
+
+@RunWith(AndroidJUnit4.class)
+public class SdlPacketTests {
 	//TODO: Add tests to cover other parts of SdlPacket class
 
 	// Test variables
@@ -24,6 +32,7 @@ public class SdlPacketTests extends AndroidTestCase2 {
 			"70726f746f636f6c56657273" +
 			"696f6e0006000000352e302e300000");
 
+	@Test
 	public void testNull(){
 		byte[] testPayload = hexStringToByteArray(
 				"16000000" +
@@ -39,6 +48,7 @@ public class SdlPacketTests extends AndroidTestCase2 {
 		assertEquals(sdlPacket.getTag("hello"),"world");
 	}
 
+	@Test
 	public void testBsonDecoding(){
 		SdlPacket sdlPacket = new SdlPacket();
 		sdlPacket.setPayload(corePayload);
@@ -47,6 +57,7 @@ public class SdlPacketTests extends AndroidTestCase2 {
 		assertEquals(sdlPacket.getTag(ControlFrameTags.RPC.StartServiceACK.MTU), TEST_MTU);
 	}
 
+	@Test
 	public void testBsonEncoding(){
 		HashMap<String, Object> testMap = new HashMap<>();
 		testMap.put(ControlFrameTags.RPC.StartServiceACK.HASH_ID, TEST_HASH_ID);

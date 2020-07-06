@@ -1,7 +1,7 @@
 package com.smartdevicelink.test.proxy;
 
 import com.smartdevicelink.proxy.callbacks.InternalProxyMessage;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -19,17 +19,17 @@ public class InternalProxyMessageTests extends TestCase {
 		// Valid Tests
 		String test = "functionName";
 		InternalProxyMessage testIPM = new InternalProxyMessage(test);
-		assertEquals(Test.MATCH, test, testIPM.getFunctionName());
+		assertEquals(TestValues.MATCH, test, testIPM.getFunctionName());
 		
 		test = "OnProxyError";
-		assertEquals(Test.MATCH, test, InternalProxyMessage.OnProxyError);		
+		assertEquals(TestValues.MATCH, test, InternalProxyMessage.OnProxyError);
 		test = "OnProxyOpened";
-		assertEquals(Test.MATCH, test, InternalProxyMessage.OnProxyOpened);		
+		assertEquals(TestValues.MATCH, test, InternalProxyMessage.OnProxyOpened);
 		test = "OnProxyClosed";
-		assertEquals(Test.MATCH, test, InternalProxyMessage.OnProxyClosed);
+		assertEquals(TestValues.MATCH, test, InternalProxyMessage.OnProxyClosed);
 		
 		// Invalid/Null Tests
 		testIPM = new InternalProxyMessage(null);
-		assertNull(Test.NULL, testIPM.getFunctionName());
+		assertNull(TestValues.NULL, testIPM.getFunctionName());
 	}
 }

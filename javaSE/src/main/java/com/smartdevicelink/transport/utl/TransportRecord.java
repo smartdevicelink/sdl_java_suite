@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Livio, Inc.
+ * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@
  * disclaimer in the documentation and/or other materials provided with the
  * distribution.
  *
- * Neither the name of the Livio Inc. nor the names of its contributors
- * may be used to endorse or promote products derived from this software
- * without specific prior written permission.
+ * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from this
+ * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -29,77 +29,27 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.smartdevicelink.transport.utl;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import com.smartdevicelink.transport.enums.TransportType;
 
-public class TransportRecord implements Parcelable{
+public class TransportRecord extends BaseTransportRecord {
 
-    private TransportType type;
-    private String address;
-
-    public TransportRecord(TransportType transportType, String address){
-        this.type = transportType;
-        this.address = address;
+    public TransportRecord(TransportType transportType, String address) {
+        super(transportType, address);
     }
 
-    public TransportType getType() {
-        return type;
-    }
+    @Deprecated
+    public TransportRecord(Parcel p) {}
 
-    public String getAddress() {
-        return address;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if(obj == null) {
-            return false;
-        }
-
-        if (obj instanceof TransportRecord) {
-            TransportRecord record = (TransportRecord) obj;
-            return record.type != null && record.type.equals(type)  //Transport type is the same
-                    && ((record.address == null && address == null) //Both addresses are null
-                    || (record.address != null && record.address.equals(address))); //Or they match
-        }
-
-        return super.equals(obj);
-    }
-
-    @Override
-    public String toString(){
-        StringBuilder builder = new StringBuilder();
-        builder.append("Transport Type: ");
-        builder.append(type.name());
-        builder.append(" Address: ");
-        builder.append(address);
-        return builder.toString();
-    }
-
-    public TransportRecord(Parcel p){
-        if (p.readInt() == 1) { //We should have a transport type attached
-            String transportName = p.readString();
-            if(transportName != null){
-                this.type = TransportType.valueOf(transportName);
-            }
-        }
-
-        if (p.readInt() == 1) { //We should have a transport address attached
-            address = p.readString();
-        }
-    }
-
-    @Override
+    @Deprecated
     public int describeContents() {
         return 0;
-    }
+    };
 
-    @Override
+    @Deprecated
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(type!=null? 1 : 0);
         if(type != null){
@@ -112,6 +62,7 @@ public class TransportRecord implements Parcelable{
         }
     }
 
+    @Deprecated
     public static final Parcelable.Creator<TransportRecord> CREATOR = new Parcelable.Creator<TransportRecord>() {
         public TransportRecord createFromParcel(Parcel in) {
             return new TransportRecord(in);

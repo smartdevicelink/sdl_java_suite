@@ -43,6 +43,7 @@ public class TransportConstants {
 	public static final String START_ROUTER_SERVICE_ACTION					="sdl.router.startservice";
 	public static final String ROUTER_SERVICE_ACTION						= "com.smartdevicelink.router.service";
 	public static final String FOREGROUND_EXTRA 							= "foreground";
+	public static final String CONFIRMED_SDL_DEVICE 						= "confirmed_sdl_device";
 
 	public static final String BIND_LOCATION_PACKAGE_NAME_EXTRA 			= "BIND_LOCATION_PACKAGE_NAME_EXTRA";
 	public static final String BIND_LOCATION_CLASS_NAME_EXTRA				= "BIND_LOCATION_CLASS_NAME_EXTRA";

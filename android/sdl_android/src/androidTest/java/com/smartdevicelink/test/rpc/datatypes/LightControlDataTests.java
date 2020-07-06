@@ -4,7 +4,7 @@ import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.LightControlData;
 import com.smartdevicelink.proxy.rpc.LightState;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
@@ -28,7 +28,7 @@ public class LightControlDataTests extends TestCase {
 	public void setUp() {
 		msg = new LightControlData();
 
-		msg.setLightState(Test.GENERAL_LIGHTSTATE_LIST);
+		msg.setLightState(TestValues.GENERAL_LIGHTSTATE_LIST);
 	}
 
 	/**
@@ -39,25 +39,25 @@ public class LightControlDataTests extends TestCase {
 		List<LightState> lightState = msg.getLightState();
 
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_LIGHTSTATE_LIST.size(), lightState.size());
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_LIGHTSTATE_LIST.size(), lightState.size());
 
-		assertTrue(Test.TRUE, Validator.validateLightStateList(Test.GENERAL_LIGHTSTATE_LIST, lightState));
+		assertTrue(TestValues.TRUE, Validator.validateLightStateList(TestValues.GENERAL_LIGHTSTATE_LIST, lightState));
 
 		// Invalid/Null Tests
 		LightControlData msg = new LightControlData();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getLightState());
+		assertNull(TestValues.NULL, msg.getLightState());
 	}
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
 		try {
-			reference.put(LightControlData.KEY_LIGHT_STATE, Test.GENERAL_LIGHTSTATE_LIST);
+			reference.put(LightControlData.KEY_LIGHT_STATE, TestValues.GENERAL_LIGHTSTATE_LIST);
 
 			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
@@ -73,7 +73,7 @@ public class LightControlDataTests extends TestCase {
 				}
 			}
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 }

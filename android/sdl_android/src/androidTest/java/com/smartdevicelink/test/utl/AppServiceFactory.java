@@ -10,7 +10,7 @@ import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.WeatherServiceManifest;
 import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
 import com.smartdevicelink.proxy.rpc.enums.ServiceUpdateReason;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ public class AppServiceFactory {
         AppServiceManifest manifest = new AppServiceManifest();
 
         manifest.setServiceName(serviceName);
-        manifest.setRpcSpecVersion(new SdlMsgVersion(Test.MAX_RPC_VERSION_SUPPORTED));
+        manifest.setRpcSpecVersion(new SdlMsgVersion(TestValues.MAX_RPC_VERSION_SUPPORTED));
         manifest.setAllowAppConsumers(true);
         List<FunctionID> handledRPCs = new ArrayList<>();
 

@@ -34,7 +34,6 @@ package com.smartdevicelink.managers.file;
 
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
@@ -161,7 +160,7 @@ abstract class BaseFileManager extends BaseSubManager {
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
 				// file list could not be received. assume that setting can work and allow SDLManager to start
-				DebugTool.logError("File Manager could not list files");
+				DebugTool.logError(TAG, "File Manager could not list files");
 				bytesAvailable = SPACE_AVAILABLE_MAX_VALUE;
 				transitionToState(BaseSubManager.READY);
 			}
@@ -325,12 +324,12 @@ abstract class BaseFileManager extends BaseSubManager {
 	 */
 	public void uploadFile(@NonNull final SdlFile file, final CompletionListener listener) {
 		if (file.isStaticIcon()) {
-			Log.w(TAG, String.format("%s is a static icon and doesn't need to be uploaded", file.getName()));
+			DebugTool.logWarning(TAG, String.format("%s is a static icon and doesn't need to be uploaded", file.getName()));
 			listener.onComplete(true);
 			return;
 		}
 		if (!file.getOverwrite() && hasUploadedFile(file)) {
-			Log.w(TAG, String.format("%s has already been uploaded and the overwrite property is set to false. It will not be uploaded again", file.getName()));
+			DebugTool.logWarning(TAG, String.format("%s has already been uploaded and the overwrite property is set to false. It will not be uploaded again", file.getName()));
 			listener.onComplete(true);
 			return;
 		}
@@ -398,11 +397,11 @@ abstract class BaseFileManager extends BaseSubManager {
 		final List<PutFile> putFileRequests = new ArrayList<>();
 		for (SdlFile file : files) {
 			if (file.isStaticIcon()) {
-				Log.w(TAG, String.format("%s is a static icon and doesn't need to be uploaded", file.getName()));
+				DebugTool.logWarning(TAG, String.format("%s is a static icon and doesn't need to be uploaded", file.getName()));
 				continue;
 			}
 			if (!file.getOverwrite() && hasUploadedFile(file)) {
-				Log.w(TAG, String.format("%s has already been uploaded and the overwrite property is set to false. It will not be uploaded again", file.getName()));
+				DebugTool.logWarning(TAG, String.format("%s has already been uploaded and the overwrite property is set to false. It will not be uploaded again", file.getName()));
 				continue;
 			}
 			putFileRequests.add(createPutFile(file));
@@ -480,7 +479,7 @@ abstract class BaseFileManager extends BaseSubManager {
 			}
 			return os.toByteArray();
 		} catch (IOException e){
-			Log.e(TAG, "Can't read from InputStream", e);
+			DebugTool.logError(TAG, "Can't read from InputStream", e);
 			return null;
 		}
 	}

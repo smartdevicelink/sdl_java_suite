@@ -4,7 +4,7 @@ import com.smartdevicelink.proxy.rpc.ECallInfo;
 import com.smartdevicelink.proxy.rpc.enums.ECallConfirmationStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataNotificationStatus;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -25,9 +25,9 @@ public class ECallInfoTests extends TestCase{
     public void setUp(){
         msg = new ECallInfo();
 
-        msg.setAuxECallNotificationStatus(Test.GENERAL_VEHICLEDATANOTIFICATIONSTATUS);
-        msg.setECallConfirmationStatus(Test.GENERAL_ECALLCONFIRMATIONSTATUS);
-        msg.setECallNotificationStatus(Test.GENERAL_VEHICLEDATANOTIFICATIONSTATUS);
+        msg.setAuxECallNotificationStatus(TestValues.GENERAL_VEHICLEDATANOTIFICATIONSTATUS);
+        msg.setECallConfirmationStatus(TestValues.GENERAL_ECALLCONFIRMATIONSTATUS);
+        msg.setECallNotificationStatus(TestValues.GENERAL_VEHICLEDATANOTIFICATIONSTATUS);
     }
 
     /**
@@ -40,37 +40,37 @@ public class ECallInfoTests extends TestCase{
         ECallConfirmationStatus ecallConfirm = msg.getECallConfirmationStatus();
         
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_VEHICLEDATANOTIFICATIONSTATUS, auxEcall);
-        assertEquals(Test.MATCH, Test.GENERAL_VEHICLEDATANOTIFICATIONSTATUS, ecallNotify);
-        assertEquals(Test.MATCH, Test.GENERAL_ECALLCONFIRMATIONSTATUS, ecallConfirm);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_VEHICLEDATANOTIFICATIONSTATUS, auxEcall);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_VEHICLEDATANOTIFICATIONSTATUS, ecallNotify);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_ECALLCONFIRMATIONSTATUS, ecallConfirm);
         
         // Invalid/Null Tests
         ECallInfo msg = new ECallInfo();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
 
-        assertNull(Test.NULL, msg.getECallConfirmationStatus());
-        assertNull(Test.NULL, msg.getECallNotificationStatus());
-        assertNull(Test.NULL, msg.getAuxECallNotificationStatus());
+        assertNull(TestValues.NULL, msg.getECallConfirmationStatus());
+        assertNull(TestValues.NULL, msg.getECallNotificationStatus());
+        assertNull(TestValues.NULL, msg.getAuxECallNotificationStatus());
     }
 
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(ECallInfo.KEY_AUX_E_CALL_NOTIFICATION_STATUS, Test.GENERAL_VEHICLEDATANOTIFICATIONSTATUS);
-            reference.put(ECallInfo.KEY_E_CALL_NOTIFICATION_STATUS, Test.GENERAL_VEHICLEDATANOTIFICATIONSTATUS);
-            reference.put(ECallInfo.KEY_E_CALL_CONFIRMATION_STATUS, Test.GENERAL_ECALLCONFIRMATIONSTATUS);
+            reference.put(ECallInfo.KEY_AUX_E_CALL_NOTIFICATION_STATUS, TestValues.GENERAL_VEHICLEDATANOTIFICATIONSTATUS);
+            reference.put(ECallInfo.KEY_E_CALL_NOTIFICATION_STATUS, TestValues.GENERAL_VEHICLEDATANOTIFICATIONSTATUS);
+            reference.put(ECallInfo.KEY_E_CALL_CONFIRMATION_STATUS, TestValues.GENERAL_ECALLCONFIRMATIONSTATUS);
 
             JSONObject underTest = msg.serializeJSON();
-            assertEquals(Test.MATCH, reference.length(), underTest.length());
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
                 String key = (String) iterator.next();
-                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
         }catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
     }
 }

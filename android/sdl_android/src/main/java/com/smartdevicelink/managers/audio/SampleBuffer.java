@@ -31,9 +31,8 @@
  */
 package com.smartdevicelink.managers.audio;
 
-import android.util.Log;
-
 import com.smartdevicelink.managers.audio.AudioStreamManager.SampleType;
+import com.smartdevicelink.util.DebugTool;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -210,7 +209,7 @@ public class SampleBuffer {
                 return avg;
             }
             default: {
-                Log.e(TAG, "SampleBuffer.get(int): The sample type is not known: " + sampleType);
+                DebugTool.logError(TAG, "SampleBuffer.get(int): The sample type is not known: " + sampleType);
                 return 0.0;
             }
         }
@@ -274,7 +273,7 @@ public class SampleBuffer {
                 break;
             }
             default: {
-                Log.e(TAG, "SampleBuffer.set(int): The sample type is not known: " + sampleType);
+                DebugTool.logError(TAG, "SampleBuffer.set(int): The sample type is not known: " + sampleType);
             }
         }
     }

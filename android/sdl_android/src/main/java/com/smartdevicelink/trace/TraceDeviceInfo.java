@@ -50,6 +50,7 @@ import java.util.Set;
 public class TraceDeviceInfo {
 	// http://developer.android.com/guide/topics/data/data-storage.html
 
+	private static final String TAG = "TraceDeviceInfo";
 	private static TelephonyManager m_telephonyManager;
 	
 	// Constructor
@@ -74,7 +75,7 @@ public class TraceDeviceInfo {
 			try { // getDeviceId() requires android.permission.READ_PHONE_STATE
 				info = "<deviceid>" + m_telephonyManager.getDeviceId() + "</deviceid>";
 			} catch (Exception e1) {
-				DebugTool.logError("Failure getting telephony device ID: " + e1.toString(), e1);
+				DebugTool.logError(TAG, "Failure getting telephony device ID: " + e1.toString(), e1);
 			}
 	
 			info = "<pt>";

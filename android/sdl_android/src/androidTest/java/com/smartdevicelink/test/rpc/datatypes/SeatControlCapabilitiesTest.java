@@ -2,7 +2,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 
 import com.smartdevicelink.proxy.rpc.SeatControlCapabilities;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -22,22 +22,22 @@ public class SeatControlCapabilitiesTest extends TestCase {
 	@Override
 	public void setUp() {
 		msg = new SeatControlCapabilities();
-		msg.setModuleName(Test.GENERAL_STRING);
-		msg.setHeatingEnabledAvailable(Test.GENERAL_BOOLEAN);
-		msg.setCoolingEnabledAvailable(Test.GENERAL_BOOLEAN);
-		msg.setHeatingLevelAvailable(Test.GENERAL_BOOLEAN);
-		msg.setCoolingLevelAvailable(Test.GENERAL_BOOLEAN);
-		msg.setHorizontalPositionAvailable(Test.GENERAL_BOOLEAN);
-		msg.setVerticalPositionAvailable(Test.GENERAL_BOOLEAN);
-		msg.setFrontVerticalPositionAvailable(Test.GENERAL_BOOLEAN);
-		msg.setBackVerticalPositionAvailable(Test.GENERAL_BOOLEAN);
-		msg.setBackTiltAngleAvailable(Test.GENERAL_BOOLEAN);
-		msg.setHeadSupportVerticalPositionAvailable(Test.GENERAL_BOOLEAN);
-		msg.setHeadSupportHorizontalPositionAvailable(Test.GENERAL_BOOLEAN);
-		msg.setMassageEnabledAvailable(Test.GENERAL_BOOLEAN);
-		msg.setMassageModeAvailable(Test.GENERAL_BOOLEAN);
-		msg.setMassageCushionFirmnessAvailable(Test.GENERAL_BOOLEAN);
-		msg.setMemoryAvailable(Test.GENERAL_BOOLEAN);
+		msg.setModuleName(TestValues.GENERAL_STRING);
+		msg.setHeatingEnabledAvailable(TestValues.GENERAL_BOOLEAN);
+		msg.setCoolingEnabledAvailable(TestValues.GENERAL_BOOLEAN);
+		msg.setHeatingLevelAvailable(TestValues.GENERAL_BOOLEAN);
+		msg.setCoolingLevelAvailable(TestValues.GENERAL_BOOLEAN);
+		msg.setHorizontalPositionAvailable(TestValues.GENERAL_BOOLEAN);
+		msg.setVerticalPositionAvailable(TestValues.GENERAL_BOOLEAN);
+		msg.setFrontVerticalPositionAvailable(TestValues.GENERAL_BOOLEAN);
+		msg.setBackVerticalPositionAvailable(TestValues.GENERAL_BOOLEAN);
+		msg.setBackTiltAngleAvailable(TestValues.GENERAL_BOOLEAN);
+		msg.setHeadSupportVerticalPositionAvailable(TestValues.GENERAL_BOOLEAN);
+		msg.setHeadSupportHorizontalPositionAvailable(TestValues.GENERAL_BOOLEAN);
+		msg.setMassageEnabledAvailable(TestValues.GENERAL_BOOLEAN);
+		msg.setMassageModeAvailable(TestValues.GENERAL_BOOLEAN);
+		msg.setMassageCushionFirmnessAvailable(TestValues.GENERAL_BOOLEAN);
+		msg.setMemoryAvailable(TestValues.GENERAL_BOOLEAN);
 	}
 
 	/**
@@ -64,78 +64,78 @@ public class SeatControlCapabilitiesTest extends TestCase {
 		Boolean memoryAvailable = msg.getMemoryAvailable();
 
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, moduleName);
-		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, heatingEnabledAvailable);
-		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, coolingEnabledAvailable);
-		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, heatingLevelAvailable);
-		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, coolingLevelAvailable);
-		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, horizontalPositionAvailable);
-		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, verticalPositionAvailable);
-		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, frontVerticalPositionAvailable);
-		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, backVerticalPositionAvailable);
-		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, backTiltAngleAvailable);
-		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, headSupportHorizontalPositionAvailable);
-		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, headSupportVerticalPositionAvailable);
-		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, massageEnabledAvailable);
-		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, massageModeAvailable);
-		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, massageCushionFirmnessAvailable);
-		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, memoryAvailable);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, moduleName);
+		assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, heatingEnabledAvailable);
+		assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, coolingEnabledAvailable);
+		assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, heatingLevelAvailable);
+		assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, coolingLevelAvailable);
+		assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, horizontalPositionAvailable);
+		assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, verticalPositionAvailable);
+		assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, frontVerticalPositionAvailable);
+		assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, backVerticalPositionAvailable);
+		assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, backTiltAngleAvailable);
+		assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, headSupportHorizontalPositionAvailable);
+		assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, headSupportVerticalPositionAvailable);
+		assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, massageEnabledAvailable);
+		assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, massageModeAvailable);
+		assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, massageCushionFirmnessAvailable);
+		assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, memoryAvailable);
 
 		// Invalid/Null Tests
 		SeatControlCapabilities msg = new SeatControlCapabilities();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getModuleName());
-		assertNull(Test.NULL, msg.getHeatingEnabledAvailable());
-		assertNull(Test.NULL, msg.getCoolingEnabledAvailable());
-		assertNull(Test.NULL, msg.getHeatingLevelAvailable());
-		assertNull(Test.NULL, msg.getCoolingLevelAvailable());
-		assertNull(Test.NULL, msg.getHorizontalPositionAvailable());
-		assertNull(Test.NULL, msg.getVerticalPositionAvailable());
-		assertNull(Test.NULL, msg.getFrontVerticalPositionAvailable());
-		assertNull(Test.NULL, msg.getBackVerticalPositionAvailable());
-		assertNull(Test.NULL, msg.getBackTiltAngleAvailable());
-		assertNull(Test.NULL, msg.getHeadSupportHorizontalPositionAvailable());
-		assertNull(Test.NULL, msg.getHeadSupportVerticalPositionAvailable());
-		assertNull(Test.NULL, msg.getMassageEnabledAvailable());
-		assertNull(Test.NULL, msg.getMassageModeAvailable());
-		assertNull(Test.NULL, msg.getMassageCushionFirmnessAvailable());
-		assertNull(Test.NULL, msg.getMemoryAvailable());
+		assertNull(TestValues.NULL, msg.getModuleName());
+		assertNull(TestValues.NULL, msg.getHeatingEnabledAvailable());
+		assertNull(TestValues.NULL, msg.getCoolingEnabledAvailable());
+		assertNull(TestValues.NULL, msg.getHeatingLevelAvailable());
+		assertNull(TestValues.NULL, msg.getCoolingLevelAvailable());
+		assertNull(TestValues.NULL, msg.getHorizontalPositionAvailable());
+		assertNull(TestValues.NULL, msg.getVerticalPositionAvailable());
+		assertNull(TestValues.NULL, msg.getFrontVerticalPositionAvailable());
+		assertNull(TestValues.NULL, msg.getBackVerticalPositionAvailable());
+		assertNull(TestValues.NULL, msg.getBackTiltAngleAvailable());
+		assertNull(TestValues.NULL, msg.getHeadSupportHorizontalPositionAvailable());
+		assertNull(TestValues.NULL, msg.getHeadSupportVerticalPositionAvailable());
+		assertNull(TestValues.NULL, msg.getMassageEnabledAvailable());
+		assertNull(TestValues.NULL, msg.getMassageModeAvailable());
+		assertNull(TestValues.NULL, msg.getMassageCushionFirmnessAvailable());
+		assertNull(TestValues.NULL, msg.getMemoryAvailable());
 	}
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
 		try {
-			reference.put(SeatControlCapabilities.KEY_MODULE_NAME, Test.GENERAL_STRING);
-			reference.put(SeatControlCapabilities.KEY_HEATING_ENABLED_AVAILABLE, Test.GENERAL_BOOLEAN);
-			reference.put(SeatControlCapabilities.KEY_COOLING_ENABLED_AVAILABLE, Test.GENERAL_BOOLEAN);
-			reference.put(SeatControlCapabilities.KEY_HEATING_LEVEL_AVAILABLE, Test.GENERAL_BOOLEAN);
-			reference.put(SeatControlCapabilities.KEY_COOLING_LEVEL_AVAILABLE, Test.GENERAL_BOOLEAN);
-			reference.put(SeatControlCapabilities.KEY_HORIZONTAL_POSITION_AVAILABLE, Test.GENERAL_BOOLEAN);
-			reference.put(SeatControlCapabilities.KEY_VERTICAL_POSITION_AVAILABLE, Test.GENERAL_BOOLEAN);
-			reference.put(SeatControlCapabilities.KEY_FRONT_VERTICAL_POSITION_AVAILABLE, Test.GENERAL_BOOLEAN);
-			reference.put(SeatControlCapabilities.KEY_BACK_VERTICAL_POSITION_AVAILABLE, Test.GENERAL_BOOLEAN);
-			reference.put(SeatControlCapabilities.KEY_BACK_TILT_ANGLE_AVAILABLE, Test.GENERAL_BOOLEAN);
-			reference.put(SeatControlCapabilities.KEY_HEAD_SUPPORT_HORIZONTAL_POSITION_AVAILABLE, Test.GENERAL_BOOLEAN);
-			reference.put(SeatControlCapabilities.KEY_HEAD_SUPPORT_VERTICAL_POSITION_AVAILABLE, Test.GENERAL_BOOLEAN);
-			reference.put(SeatControlCapabilities.KEY_MASSAGE_ENABLED_AVAILABLE, Test.GENERAL_BOOLEAN);
+			reference.put(SeatControlCapabilities.KEY_MODULE_NAME, TestValues.GENERAL_STRING);
+			reference.put(SeatControlCapabilities.KEY_HEATING_ENABLED_AVAILABLE, TestValues.GENERAL_BOOLEAN);
+			reference.put(SeatControlCapabilities.KEY_COOLING_ENABLED_AVAILABLE, TestValues.GENERAL_BOOLEAN);
+			reference.put(SeatControlCapabilities.KEY_HEATING_LEVEL_AVAILABLE, TestValues.GENERAL_BOOLEAN);
+			reference.put(SeatControlCapabilities.KEY_COOLING_LEVEL_AVAILABLE, TestValues.GENERAL_BOOLEAN);
+			reference.put(SeatControlCapabilities.KEY_HORIZONTAL_POSITION_AVAILABLE, TestValues.GENERAL_BOOLEAN);
+			reference.put(SeatControlCapabilities.KEY_VERTICAL_POSITION_AVAILABLE, TestValues.GENERAL_BOOLEAN);
+			reference.put(SeatControlCapabilities.KEY_FRONT_VERTICAL_POSITION_AVAILABLE, TestValues.GENERAL_BOOLEAN);
+			reference.put(SeatControlCapabilities.KEY_BACK_VERTICAL_POSITION_AVAILABLE, TestValues.GENERAL_BOOLEAN);
+			reference.put(SeatControlCapabilities.KEY_BACK_TILT_ANGLE_AVAILABLE, TestValues.GENERAL_BOOLEAN);
+			reference.put(SeatControlCapabilities.KEY_HEAD_SUPPORT_HORIZONTAL_POSITION_AVAILABLE, TestValues.GENERAL_BOOLEAN);
+			reference.put(SeatControlCapabilities.KEY_HEAD_SUPPORT_VERTICAL_POSITION_AVAILABLE, TestValues.GENERAL_BOOLEAN);
+			reference.put(SeatControlCapabilities.KEY_MASSAGE_ENABLED_AVAILABLE, TestValues.GENERAL_BOOLEAN);
 
-			reference.put(SeatControlCapabilities.KEY_MASSAGE_MODE_AVAILABLE, Test.GENERAL_BOOLEAN);
-			reference.put(SeatControlCapabilities.KEY_MASSAGE_CUSHION_FIRMNESS_AVAILABLE, Test.GENERAL_BOOLEAN);
+			reference.put(SeatControlCapabilities.KEY_MASSAGE_MODE_AVAILABLE, TestValues.GENERAL_BOOLEAN);
+			reference.put(SeatControlCapabilities.KEY_MASSAGE_CUSHION_FIRMNESS_AVAILABLE, TestValues.GENERAL_BOOLEAN);
 
-			reference.put(SeatControlCapabilities.KEY_MEMORY_AVAILABLE, Test.GENERAL_BOOLEAN);
+			reference.put(SeatControlCapabilities.KEY_MEMORY_AVAILABLE, TestValues.GENERAL_BOOLEAN);
 
 			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
-				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+				assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 			}
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 }

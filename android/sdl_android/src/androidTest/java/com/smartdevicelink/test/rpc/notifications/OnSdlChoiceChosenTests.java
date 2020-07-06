@@ -6,11 +6,18 @@ import com.smartdevicelink.proxy.rpc.OnSdlChoiceChosen;
 import com.smartdevicelink.proxy.rpc.OnSdlChoiceChosen.SdlChoice;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
@@ -23,9 +30,9 @@ public class OnSdlChoiceChosenTests extends BaseRpcTests{
     @Override
     protected RPCMessage createMessage(){
         OnSdlChoiceChosen msg = new OnSdlChoiceChosen();                
-        sdlChoice = msg.new SdlChoice(Test.GENERAL_CHOICE);
+        sdlChoice = msg.new SdlChoice(TestValues.GENERAL_CHOICE);
         
-        msg.setTriggerSource(Test.GENERAL_TRIGGERSOURCE);
+        msg.setTriggerSource(TestValues.GENERAL_TRIGGERSOURCE);
 		msg.setSdlChoice(sdlChoice);
 		
         return msg;
@@ -46,10 +53,10 @@ public class OnSdlChoiceChosenTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{
-            result.put(OnSdlChoiceChosen.KEY_TRIGGER_SOURCE, Test.GENERAL_TRIGGERSOURCE);
+            result.put(OnSdlChoiceChosen.KEY_TRIGGER_SOURCE, TestValues.GENERAL_TRIGGERSOURCE);
             result.put(OnSdlChoiceChosen.KEY_SDL_CHOICE, sdlChoice);
         }catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -58,21 +65,22 @@ public class OnSdlChoiceChosenTests extends BaseRpcTests{
     /**
 	 * Tests the expected values of the RPC message.
 	 */
+    @Test
     public void testRpcValues () {       	
     	// Test Values
         SdlChoice data = ( (OnSdlChoiceChosen) msg ).getSdlChoice();
         TriggerSource source = ( (OnSdlChoiceChosen) msg ).getTriggerSource();
         
         // Valid Tests
-        assertTrue(Test.MATCH, Validator.validateChoice(Test.GENERAL_CHOICE, data.getChoice()));
-        assertEquals(Test.MATCH, Test.GENERAL_TRIGGERSOURCE, source);
+        assertTrue(TestValues.MATCH, Validator.validateChoice(TestValues.GENERAL_CHOICE, data.getChoice()));
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_TRIGGERSOURCE, source);
     
         // Invalid/Null Tests
     	OnSdlChoiceChosen msg = new OnSdlChoiceChosen();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getTriggerSource());
-        assertNull(Test.NULL, msg.getSdlChoice());
+        assertNull(TestValues.NULL, msg.getTriggerSource());
+        assertNull(TestValues.NULL, msg.getSdlChoice());
     }
 }

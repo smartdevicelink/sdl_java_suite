@@ -2,7 +2,6 @@ package com.smartdevicelink.transport;
 
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.transport.enums.TransportType;
@@ -21,7 +20,7 @@ public class TCPTransportManager extends TransportManagerBase{
 
     public TCPTransportManager(TCPTransportConfig config, TransportEventListener transportEventListener){
         super(config,transportEventListener);
-        Log.d(TAG, "USING THE TCP TRANSPORT MANAGER");
+        DebugTool.logInfo(TAG, "USING THE TCP TRANSPORT MANAGER");
         this.config = config;
         tcpHandler = new TCPHandler(this);
         transport = new MultiplexTcpTransport(config.getPort(), config.getIPAddress(),config.getAutoReconnect(),tcpHandler, null);
@@ -98,7 +97,7 @@ public class TCPTransportManager extends TransportManagerBase{
                                 service.transportStatus.clear();
                                 service.transportStatus.add(service.transport.getTransportRecord());
                             }
-                            DebugTool.logInfo("TCP transport has connected");
+                            DebugTool.logInfo(TAG, "TCP transport has connected");
                             service.transportListener.onTransportConnected(service.transportStatus);
                             break;
                         case MultiplexBaseTransport.STATE_CONNECTING:
@@ -120,7 +119,7 @@ public class TCPTransportManager extends TransportManagerBase{
                             }
                             break;
                         case MultiplexBaseTransport.STATE_ERROR:
-                            Log.d(TAG, "TCP transport encountered an error");
+                            DebugTool.logInfo(TAG, "TCP transport encountered an error");
                             service.transportListener.onError("TCP transport encountered an error" );
                             break;
                     }

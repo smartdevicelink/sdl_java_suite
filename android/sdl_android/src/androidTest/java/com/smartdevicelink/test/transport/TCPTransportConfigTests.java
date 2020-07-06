@@ -1,6 +1,6 @@
 package com.smartdevicelink.test.transport;
 
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 
@@ -41,14 +41,14 @@ public class TCPTransportConfigTests extends TestCase {
 		TransportType actualTransportType   = testConfig1.getTransportType();
 		
 		// Valid Tests
-		assertEquals(Test.MATCH, testInt, actualPort);
-		assertEquals(Test.MATCH, testString, actualIpAddress);
-		assertEquals(Test.MATCH, testBoolean, actualAutoReconnect);
-		assertEquals(Test.MATCH, expectedTransportType, actualTransportType);
-		assertEquals(Test.MATCH, expectedToString1, actualToString1);
-		assertEquals(Test.MATCH, expectedToString2, actualToString2);
+		assertEquals(TestValues.MATCH, testInt, actualPort);
+		assertEquals(TestValues.MATCH, testString, actualIpAddress);
+		assertEquals(TestValues.MATCH, testBoolean, actualAutoReconnect);
+		assertEquals(TestValues.MATCH, expectedTransportType, actualTransportType);
+		assertEquals(TestValues.MATCH, expectedToString1, actualToString1);
+		assertEquals(TestValues.MATCH, expectedToString2, actualToString2);
 		
 		// Invalid/Null Tests
-		assertNull(Test.NULL, actualNullString);
+		assertNull(TestValues.NULL, actualNullString);
 	}
 }
