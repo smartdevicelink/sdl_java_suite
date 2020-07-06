@@ -614,7 +614,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 
 			JSONObject stabilityControlStatusObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_STABILITY_CONTROLS_STATUS);
 			StabilityControlsStatus stabilityControlsStatus = new StabilityControlsStatus(JsonRPCMarshaller.deserializeJSONObject(stabilityControlStatusObj));
-			assertTrue(Test.TRUE, Validator.validateStabilityControlStatus(stabilityControlsStatus, cmd.getStabilityControlsStatus()));
+			assertTrue(TestValues.TRUE, Validator.validateStabilityControlStatus(stabilityControlsStatus, cmd.getStabilityControlsStatus()));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}    	
