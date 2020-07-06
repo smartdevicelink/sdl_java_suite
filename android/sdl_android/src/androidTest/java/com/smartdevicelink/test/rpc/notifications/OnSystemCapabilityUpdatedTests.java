@@ -5,10 +5,16 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.OnSystemCapabilityUpdated;
 import com.smartdevicelink.proxy.rpc.SystemCapability;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.fail;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
@@ -20,7 +26,7 @@ public class OnSystemCapabilityUpdatedTests extends BaseRpcTests {
 	protected RPCMessage createMessage(){
 		OnSystemCapabilityUpdated msg = new OnSystemCapabilityUpdated();
 
-		msg.setSystemCapability(Test.GENERAL_SYSTEMCAPABILITY);
+		msg.setSystemCapability(TestValues.GENERAL_SYSTEMCAPABILITY);
 
 		return msg;
 	}
@@ -40,9 +46,9 @@ public class OnSystemCapabilityUpdatedTests extends BaseRpcTests {
 		JSONObject result = new JSONObject();
 
 		try{
-			result.put(OnSystemCapabilityUpdated.KEY_SYSTEM_CAPABILITY, Test.GENERAL_SYSTEMCAPABILITY.serializeJSON());
+			result.put(OnSystemCapabilityUpdated.KEY_SYSTEM_CAPABILITY, TestValues.GENERAL_SYSTEMCAPABILITY.serializeJSON());
 		}catch(JSONException e){
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 
 		return result;
@@ -51,23 +57,24 @@ public class OnSystemCapabilityUpdatedTests extends BaseRpcTests {
 	/**
 	 * Tests the expected values of the RPC message.
 	 */
+	@Test
 	public void testRpcValues () {
 		// Test Values
 		SystemCapability cmdId = ( (OnSystemCapabilityUpdated) msg ).getSystemCapability();
 
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_SYSTEMCAPABILITY, cmdId);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_SYSTEMCAPABILITY, cmdId);
 
 		// Invalid/Null Tests
 		OnSystemCapabilityUpdated msg = new OnSystemCapabilityUpdated();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 		testNullBase(msg);
 
-		assertNull(Test.NULL, msg.getSystemCapability());
+		assertNull(TestValues.NULL, msg.getSystemCapability());
 
 		// test constructor with param
-		msg = new OnSystemCapabilityUpdated(Test.GENERAL_SYSTEMCAPABILITY);
+		msg = new OnSystemCapabilityUpdated(TestValues.GENERAL_SYSTEMCAPABILITY);
 		SystemCapability systemCapability = msg.getSystemCapability();
-		assertEquals(systemCapability, Test.GENERAL_SYSTEMCAPABILITY);
+		assertEquals(systemCapability, TestValues.GENERAL_SYSTEMCAPABILITY);
 	}
 }

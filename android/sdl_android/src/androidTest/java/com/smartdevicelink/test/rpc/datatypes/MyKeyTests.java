@@ -3,7 +3,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 import com.smartdevicelink.proxy.rpc.MyKey;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataStatus;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -23,7 +23,7 @@ public class MyKeyTests extends TestCase{
     @Override
     public void setUp(){
         msg = new MyKey();
-        msg.setE911Override(Test.GENERAL_VEHICLEDATASTATUS);
+        msg.setE911Override(TestValues.GENERAL_VEHICLEDATASTATUS);
     }
 
     /**
@@ -34,31 +34,31 @@ public class MyKeyTests extends TestCase{
         VehicleDataStatus override = msg.getE911Override();
         
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_VEHICLEDATASTATUS, override);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_VEHICLEDATASTATUS, override);
         
         // Invalid/Null Tests
         MyKey msg = new MyKey();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
 
-        assertNull(Test.NULL, msg.getE911Override());
+        assertNull(TestValues.NULL, msg.getE911Override());
     }
 
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(MyKey.KEY_E_911_OVERRIDE, Test.GENERAL_VEHICLEDATASTATUS);
+            reference.put(MyKey.KEY_E_911_OVERRIDE, TestValues.GENERAL_VEHICLEDATASTATUS);
 
             JSONObject underTest = msg.serializeJSON();
-            assertEquals(Test.MATCH, reference.length(), underTest.length());
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
                 String key = (String) iterator.next();
-                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
         }catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
     }
 }

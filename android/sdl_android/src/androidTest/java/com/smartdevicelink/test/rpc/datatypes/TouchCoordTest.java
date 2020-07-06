@@ -2,7 +2,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 
 import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -23,8 +23,8 @@ public class TouchCoordTest extends TestCase {
 	public void setUp() {
 		msg = new TouchCoord();
 		
-		msg.setX(Test.GENERAL_INT);
-		msg.setY(Test.GENERAL_INT);
+		msg.setX(TestValues.GENERAL_INT);
+		msg.setY(TestValues.GENERAL_INT);
 	}
 
     /**
@@ -36,34 +36,34 @@ public class TouchCoordTest extends TestCase {
 		Integer y = msg.getY();
 		
 		// Valid Tests
-		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, x);
-		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, y);
+		assertEquals(TestValues.MATCH, (Integer) TestValues.GENERAL_INT, x);
+		assertEquals(TestValues.MATCH, (Integer) TestValues.GENERAL_INT, y);
 		
 		// Invalid/Null Tests
 		TouchCoord msg = new TouchCoord();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getX());
-		assertNull(Test.NULL, msg.getY());
+		assertNull(TestValues.NULL, msg.getX());
+		assertNull(TestValues.NULL, msg.getY());
 	}
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
 		try {
-			reference.put(TouchCoord.KEY_X, Test.GENERAL_INT);
-			reference.put(TouchCoord.KEY_Y, Test.GENERAL_INT);
+			reference.put(TouchCoord.KEY_X, TestValues.GENERAL_INT);
+			reference.put(TouchCoord.KEY_Y, TestValues.GENERAL_INT);
 
 			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
-				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+				assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 			}
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 }

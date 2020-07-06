@@ -31,8 +31,6 @@
  */
 package com.smartdevicelink.util;
 
-import android.util.Log;
-
 public class NativeLogTool {
 	private static String TAG = "NativeLogTool";
 	static private boolean logToSystemEnabled = true;
@@ -126,15 +124,15 @@ public class NativeLogTool {
 						bytesWritten = Log.w(source, chunk);
 						break;
 					case Error:
-						bytesWritten = Log.e(source, chunk);
+						bytesWritten = Log.e(source, chunk, null);
 						break;
 				}
 				if (bytesWritten < chunk.length()) {
-					Log.e(TAG, "Calling Log.e: msg length=" + chunk.length() + ", bytesWritten=" + bytesWritten);
+					Log.w(TAG, "Calling Log.e: msg length=" + chunk.length() + ", bytesWritten=" + bytesWritten);
 				}
 			}			
 		} catch (Exception ex) {
-			Log.e(TAG, "Failure writing " + ltarg.name() + " fragments to android log:" + ex.toString());
+			Log.e(TAG, "Failure writing " + ltarg.name() + " fragments to android log:" + ex.toString(), null);
 			return false;
 		}		
 		return true;

@@ -32,7 +32,8 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -43,6 +44,10 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -50,6 +55,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -57,7 +67,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class VoiceCommandManagerTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class VoiceCommandManagerTests {
 
 	private VoiceCommand command, command3;
 	private List<VoiceCommand> commands;
@@ -67,9 +78,8 @@ public class VoiceCommandManagerTests extends AndroidTestCase2 {
 
 	// SETUP / HELPERS
 
-	@Override
+	@Before
 	public void setUp() throws Exception{
-		super.setUp();
 
 		VoiceCommandSelectionListener mockListener = mock(VoiceCommandSelectionListener.class);
 		command = new VoiceCommand(Arrays.asList("Command one", "Command two"), null);
@@ -117,7 +127,7 @@ public class VoiceCommandManagerTests extends AndroidTestCase2 {
 		assertNull(voiceCommandManager.inProgressUpdate);
 	}
 
-	@Override
+	@After
 	public void tearDown() throws Exception {
 
 		voiceCommandManager.dispose();
@@ -131,10 +141,9 @@ public class VoiceCommandManagerTests extends AndroidTestCase2 {
 		assertFalse(voiceCommandManager.waitingOnHMIUpdate);
 		// after everything, make sure we are in the correct state
 		assertEquals(voiceCommandManager.getState(), BaseSubManager.SHUTDOWN);
-
-		super.tearDown();
 	}
 
+	@Test
 	public void testStartVoiceCommandManager(){
 
 		voiceCommandManager.start(new CompletionListener() {
@@ -147,6 +156,7 @@ public class VoiceCommandManagerTests extends AndroidTestCase2 {
 		});
 	}
 
+	@Test
 	public void testHMINotReady(){
 
 		voiceCommandManager.currentHMILevel = HMILevel.HMI_NONE;
@@ -167,6 +177,7 @@ public class VoiceCommandManagerTests extends AndroidTestCase2 {
 		assertFalse(voiceCommandManager.waitingOnHMIUpdate);
 	}
 
+	@Test
 	public void testUpdatingCommands(){
 
 		// we have previously sent 2 VoiceCommand objects. we will now update it and have just one

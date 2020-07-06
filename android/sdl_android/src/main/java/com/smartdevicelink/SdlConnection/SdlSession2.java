@@ -33,7 +33,6 @@
 package com.smartdevicelink.SdlConnection;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.ISdlProtocol;
@@ -47,6 +46,7 @@ import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.MediaStreamingStatus;
 import com.smartdevicelink.util.Version;
 
@@ -210,7 +210,7 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
 
 
     public void shutdown(String info){
-        Log.d(TAG, "Shutdown - " + info);
+        DebugTool.logInfo(TAG, "Shutdown - " + info);
         if(mediaStreamingStatus != null) {
             mediaStreamingStatus.clear();
         }

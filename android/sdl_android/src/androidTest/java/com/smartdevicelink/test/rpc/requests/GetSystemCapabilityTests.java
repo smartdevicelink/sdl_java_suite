@@ -7,13 +7,20 @@ import com.smartdevicelink.proxy.rpc.GetSystemCapability;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.Hashtable;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.fail;
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 
 public class GetSystemCapabilityTests extends BaseRpcTests {
 
@@ -21,8 +28,8 @@ public class GetSystemCapabilityTests extends BaseRpcTests {
     protected RPCMessage createMessage(){
         GetSystemCapability msg = new GetSystemCapability();
 
-        msg.setSystemCapabilityType(Test.GENERAL_SYSTEMCAPABILITYTYPE);
-        msg.setSubscribe(Test.GENERAL_BOOLEAN);
+        msg.setSystemCapabilityType(TestValues.GENERAL_SYSTEMCAPABILITYTYPE);
+        msg.setSubscribe(TestValues.GENERAL_BOOLEAN);
 
         return msg;
     }
@@ -42,10 +49,10 @@ public class GetSystemCapabilityTests extends BaseRpcTests {
         JSONObject result = new JSONObject();
 
         try{
-            result.put(GetSystemCapability.KEY_SYSTEM_CAPABILITY_TYPE, Test.GENERAL_SYSTEMCAPABILITYTYPE);
-            result.put(GetSystemCapability.KEY_SUBSCRIBE, Test.GENERAL_BOOLEAN);
+            result.put(GetSystemCapability.KEY_SYSTEM_CAPABILITY_TYPE, TestValues.GENERAL_SYSTEMCAPABILITYTYPE);
+            result.put(GetSystemCapability.KEY_SUBSCRIBE, TestValues.GENERAL_BOOLEAN);
         }catch(JSONException e){
-            fail(Test.JSON_FAIL);
+            fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -54,48 +61,50 @@ public class GetSystemCapabilityTests extends BaseRpcTests {
     /**
      * Tests the expected values of the RPC message.
      */
+    @Test
     public void testRpcValues () {
         // Test Values
         SystemCapabilityType testType = ( (GetSystemCapability) msg ).getSystemCapabilityType();
         boolean testSubscribe = ( (GetSystemCapability) msg ).getSubscribe();
 
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_SYSTEMCAPABILITYTYPE, testType);
-        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, testSubscribe);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_SYSTEMCAPABILITYTYPE, testType);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, testSubscribe);
 
         // Invalid/Null Tests
         GetSystemCapability msg = new GetSystemCapability();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getSystemCapabilityType());
-        assertNull(Test.NULL, msg.getSubscribe());
+        assertNull(TestValues.NULL, msg.getSystemCapabilityType());
+        assertNull(TestValues.NULL, msg.getSubscribe());
     }
 
     /**
      * Tests a valid JSON construction of this RPC message.
      */
+    @Test
     public void testJsonConstructor () {
-        JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-        assertNotNull(Test.NOT_NULL, commandJson);
+        JSONObject commandJson = JsonFileReader.readId(getTargetContext(), getCommandType(), getMessageType());
+        assertNotNull(TestValues.NOT_NULL, commandJson);
 
         try {
             Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
             GetSystemCapability cmd = new GetSystemCapability(hash);
 
             JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-            assertNotNull(Test.NOT_NULL, body);
+            assertNotNull(TestValues.NOT_NULL, body);
 
             // Test everything in the json body.
-            assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-            assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
             JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
 
-            assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(parameters, GetSystemCapability.KEY_SYSTEM_CAPABILITY_TYPE).toString(), cmd.getSystemCapabilityType().toString());
-            assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(parameters, GetSystemCapability.KEY_SUBSCRIBE), cmd.getSubscribe());
+            assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(parameters, GetSystemCapability.KEY_SYSTEM_CAPABILITY_TYPE).toString(), cmd.getSystemCapabilityType().toString());
+            assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(parameters, GetSystemCapability.KEY_SUBSCRIBE), cmd.getSubscribe());
         }catch (JSONException e) {
-            fail(Test.JSON_FAIL);
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

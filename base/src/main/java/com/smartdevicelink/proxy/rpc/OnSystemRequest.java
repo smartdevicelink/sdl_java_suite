@@ -32,7 +32,6 @@
 package com.smartdevicelink.proxy.rpc;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -40,6 +39,7 @@ import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
+import com.smartdevicelink.util.DebugTool;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -121,6 +121,7 @@ import java.util.List;
  * @since SmartDeviceLink 2.3.2
  */
 public class OnSystemRequest extends RPCNotification {
+    private static final String TAG = "OnSystemRequest";
 	public static final String KEY_URL_V1 = "URL";
     public static final String KEY_URL = "url";
 	public static final String KEY_TIMEOUT_V1 = "Timeout";
@@ -177,10 +178,10 @@ public class OnSystemRequest extends RPCNotification {
             	tempBody = getBody(httpJson);
             	tempHeaders = getHeaders(httpJson);
         	}catch(JSONException e){
-            	Log.e("OnSystemRequest", "HTTPRequest in bulk data was malformed.");
+                DebugTool.logError(TAG, "HTTPRequest in bulk data was malformed.");
             	e.printStackTrace();
         	}catch(NullPointerException e){
-            	Log.e("OnSystemRequest", "Invalid HTTPRequest object in bulk data.");
+                DebugTool.logError(TAG, "Invalid HTTPRequest object in bulk data.");
             	e.printStackTrace();
         	}
         }else if(RequestType.HTTP.equals(this.getRequestType())){
@@ -207,7 +208,7 @@ public class OnSystemRequest extends RPCNotification {
         try{
             result = httpJson.getString("body");
         }catch(JSONException e){
-            Log.e("OnSystemRequest", "\"body\" key doesn't exist in bulk data.");
+            DebugTool.logError(TAG, "\"body\" key doesn't exist in bulk data.");
             e.printStackTrace();
         }
         
@@ -222,7 +223,7 @@ public class OnSystemRequest extends RPCNotification {
             Hashtable<String, Object> httpHeadersHash = JsonRPCMarshaller.deserializeJSONObject(httpHeadersJson);
             result = new Headers(httpHeadersHash);
         }catch(JSONException e){
-            Log.e("OnSystemRequest", "\"headers\" key doesn't exist in bulk data.");
+            DebugTool.logError(TAG, "\"headers\" key doesn't exist in bulk data.");
             e.printStackTrace();
         }
         

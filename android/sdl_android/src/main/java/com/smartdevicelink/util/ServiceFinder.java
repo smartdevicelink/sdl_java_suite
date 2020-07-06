@@ -40,7 +40,6 @@ import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import com.smartdevicelink.transport.SdlRouterService;
 
@@ -98,11 +97,11 @@ public class ServiceFinder {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "Received intent " + intent);
+            DebugTool.logInfo(TAG, "Received intent " + intent);
             if (intent != null) {
                 String packageName = intent.getStringExtra(BIND_LOCATION_PACKAGE_NAME_EXTRA);
                 String className = intent.getStringExtra(BIND_LOCATION_CLASS_NAME_EXTRA);
-                Log.d(TAG, "Received intent from package: " + packageName + ". Classname: " + className);
+                DebugTool.logInfo(TAG, "Received intent from package: " + packageName + ". Classname: " + className);
                 synchronized (LIST_LOCK) {
                     //Add to running services
                     services.add(new ComponentName(packageName, className));

@@ -34,7 +34,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 
 import com.smartdevicelink.proxy.rpc.AppInfo;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -55,10 +55,10 @@ public class AppInfoTests extends TestCase {
 	public void setUp() {
 
 		msg = new AppInfo();
-		msg.setAppDisplayName(Test.GENERAL_STRING);
-		msg.setAppBundleID(Test.GENERAL_STRING);
-		msg.setAppVersion(Test.GENERAL_STRING);
-		msg.setAppIcon(Test.GENERAL_STRING);
+		msg.setAppDisplayName(TestValues.GENERAL_STRING);
+		msg.setAppBundleID(TestValues.GENERAL_STRING);
+		msg.setAppVersion(TestValues.GENERAL_STRING);
+		msg.setAppIcon(TestValues.GENERAL_STRING);
 	}
 
 	/**
@@ -72,40 +72,40 @@ public class AppInfoTests extends TestCase {
 		String appIcon = msg.getAppIcon();
 
 		// Valid Tests
-		assertEquals(Test.GENERAL_STRING, appDisplayName);
-		assertEquals(Test.GENERAL_STRING, appBundleID);
-		assertEquals(Test.GENERAL_STRING, appVersion);
-		assertEquals(Test.GENERAL_STRING, appIcon);
+		assertEquals(TestValues.GENERAL_STRING, appDisplayName);
+		assertEquals(TestValues.GENERAL_STRING, appBundleID);
+		assertEquals(TestValues.GENERAL_STRING, appVersion);
+		assertEquals(TestValues.GENERAL_STRING, appIcon);
 
 		// Invalid/Null Tests
 		AppInfo msg = new AppInfo();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getAppDisplayName());
-		assertNull(Test.NULL, msg.getAppBundleID());
-		assertNull(Test.NULL, msg.getAppVersion());
-		assertNull(Test.NULL, msg.getAppIcon());
+		assertNull(TestValues.NULL, msg.getAppDisplayName());
+		assertNull(TestValues.NULL, msg.getAppBundleID());
+		assertNull(TestValues.NULL, msg.getAppVersion());
+		assertNull(TestValues.NULL, msg.getAppIcon());
 	}
 
 	public void testJson(){
 		JSONObject reference = new JSONObject();
 
 		try{
-			reference.put(AppInfo.KEY_APP_DISPLAY_NAME, Test.GENERAL_STRING);
-			reference.put(AppInfo.KEY_APP_BUNDLE_ID, Test.GENERAL_STRING);
-			reference.put(AppInfo.KEY_APP_VERSION, Test.GENERAL_STRING);
-			reference.put(AppInfo.KEY_APP_ICON, Test.GENERAL_STRING);
+			reference.put(AppInfo.KEY_APP_DISPLAY_NAME, TestValues.GENERAL_STRING);
+			reference.put(AppInfo.KEY_APP_BUNDLE_ID, TestValues.GENERAL_STRING);
+			reference.put(AppInfo.KEY_APP_VERSION, TestValues.GENERAL_STRING);
+			reference.put(AppInfo.KEY_APP_ICON, TestValues.GENERAL_STRING);
 
 			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while(iterator.hasNext()){
 				String key = (String) iterator.next();
-				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+				assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 			}
 		} catch(JSONException e){
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 

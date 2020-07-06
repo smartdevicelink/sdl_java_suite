@@ -2,20 +2,26 @@ package com.smartdevicelink.transport;
 
 import android.os.Looper;
 import android.os.Messenger;
+import android.support.test.runner.AndroidJUnit4;
 
-import com.smartdevicelink.AndroidTestCase2;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
 
 
 /**
  * Created by brettywhite on 4/4/17.
  */
-
-public class RegisteredAppTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class RegisteredAppTests {
 
     private static final String APP_ID = "123451123";
     private static final Messenger messenger = null;
     private static byte[] bytes = new byte[1];
 
+    @Test
     public void testHandleMessage() {
 
         if (Looper.myLooper() == null) {
@@ -35,6 +41,7 @@ public class RegisteredAppTests extends AndroidTestCase2 {
 
     }
 
+    @Test
     public void testNullBuffer() {
 
         if (Looper.myLooper() == null) {

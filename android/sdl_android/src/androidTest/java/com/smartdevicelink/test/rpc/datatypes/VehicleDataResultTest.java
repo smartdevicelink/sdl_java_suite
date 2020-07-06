@@ -4,7 +4,7 @@ import com.smartdevicelink.proxy.rpc.VehicleDataResult;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataType;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -21,9 +21,9 @@ public class VehicleDataResultTest extends TestCase {
 	public void setUp() {
 		msg = new VehicleDataResult();
 		
-		msg.setDataType(Test.GENERAL_VEHICLEDATATYPE);
-		msg.setResultCode(Test.GENERAL_VEHICLEDATARESULTCODE);
-		msg.setOEMCustomVehicleDataType(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME);
+		msg.setDataType(TestValues.GENERAL_VEHICLEDATATYPE);
+		msg.setResultCode(TestValues.GENERAL_VEHICLEDATARESULTCODE);
+		msg.setOEMCustomVehicleDataType(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME);
 	}
 
     /**
@@ -36,39 +36,39 @@ public class VehicleDataResultTest extends TestCase {
 		String oemCustomDataType = msg.getOEMCustomVehicleDataType();
 		
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_VEHICLEDATARESULTCODE, result);
-		assertEquals(Test.MATCH, Test.GENERAL_VEHICLEDATATYPE, type);
-		assertEquals(Test.MATCH, Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, oemCustomDataType);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_VEHICLEDATARESULTCODE, result);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_VEHICLEDATATYPE, type);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, oemCustomDataType);
 		
 		// Invalid/Null Tests
 		VehicleDataResult msg = new VehicleDataResult();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getDataType());
-		assertNull(Test.NULL, msg.getResultCode());
-		assertNull(Test.NULL, msg.getOEMCustomVehicleDataType());
+		assertNull(TestValues.NULL, msg.getDataType());
+		assertNull(TestValues.NULL, msg.getResultCode());
+		assertNull(TestValues.NULL, msg.getOEMCustomVehicleDataType());
 	}
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
 		try {
-			reference.put(VehicleDataResult.KEY_RESULT_CODE, Test.GENERAL_VEHICLEDATARESULTCODE);
-			reference.put(VehicleDataResult.KEY_DATA_TYPE, Test.GENERAL_VEHICLEDATATYPE);
-			reference.put(VehicleDataResult.KEY_OEM_CUSTOM_DATA_TYPE, Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME);
+			reference.put(VehicleDataResult.KEY_RESULT_CODE, TestValues.GENERAL_VEHICLEDATARESULTCODE);
+			reference.put(VehicleDataResult.KEY_DATA_TYPE, TestValues.GENERAL_VEHICLEDATATYPE);
+			reference.put(VehicleDataResult.KEY_OEM_CUSTOM_DATA_TYPE, TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME);
 
 			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
-				assertEquals(Test.MATCH,
+				assertEquals(TestValues.MATCH,
 						JsonUtils.readObjectFromJsonObject(reference, key),
 						JsonUtils.readObjectFromJsonObject(underTest, key));
 			}
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 }

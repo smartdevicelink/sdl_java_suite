@@ -1,7 +1,7 @@
 package com.smartdevicelink.test.rpc.enums;
 
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -71,21 +71,21 @@ public class RequestTypeTests extends TestCase {
 		assertNotNull("PROPRIETARY returned null", enumProprietary);
 		assertNotNull("ICON_URL returned null", enumIconURL);
 		
-		assertNotNull(Test.NOT_NULL, enumQueryApps);
-		assertNotNull(Test.NOT_NULL, enumLaunchApp);
-		assertNotNull(Test.NOT_NULL, enumLockScreen);
-		assertNotNull(Test.NOT_NULL, enumTrafficMessage);
-		assertNotNull(Test.NOT_NULL, enumDriverProfile);
-		assertNotNull(Test.NOT_NULL, enumVoiceSearch);
-		assertNotNull(Test.NOT_NULL, enumNavigation);
-		assertNotNull(Test.NOT_NULL, enumPhone);
-		assertNotNull(Test.NOT_NULL, enumClimate);
-		assertNotNull(Test.NOT_NULL, enumSettings);
-		assertNotNull(Test.NOT_NULL, enumDiagnostics);
-		assertNotNull(Test.NOT_NULL, enumEmergency);
-		assertNotNull(Test.NOT_NULL, enumMedia);
-		assertNotNull(Test.NOT_NULL, enumFota);
-		assertNotNull(Test.NOT_NULL, enumIconURL);
+		assertNotNull(TestValues.NOT_NULL, enumQueryApps);
+		assertNotNull(TestValues.NOT_NULL, enumLaunchApp);
+		assertNotNull(TestValues.NOT_NULL, enumLockScreen);
+		assertNotNull(TestValues.NOT_NULL, enumTrafficMessage);
+		assertNotNull(TestValues.NOT_NULL, enumDriverProfile);
+		assertNotNull(TestValues.NOT_NULL, enumVoiceSearch);
+		assertNotNull(TestValues.NOT_NULL, enumNavigation);
+		assertNotNull(TestValues.NOT_NULL, enumPhone);
+		assertNotNull(TestValues.NOT_NULL, enumClimate);
+		assertNotNull(TestValues.NOT_NULL, enumSettings);
+		assertNotNull(TestValues.NOT_NULL, enumDiagnostics);
+		assertNotNull(TestValues.NOT_NULL, enumEmergency);
+		assertNotNull(TestValues.NOT_NULL, enumMedia);
+		assertNotNull(TestValues.NOT_NULL, enumFota);
+		assertNotNull(TestValues.NOT_NULL, enumIconURL);
 	}
 
 	/**

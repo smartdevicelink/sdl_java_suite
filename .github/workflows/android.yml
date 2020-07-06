@@ -25,7 +25,7 @@ jobs:
         script: ./android/gradlew -p ./android :sdl_android:connectedCheck
         
     - name: Hello Sdl Android Tests
-      run: ./android/gradlew -p ./android :hello_sdl_android:build
+      run: ./android/gradlew -p ./android/hello_sdl_android test
       
     - name: Sdl JavaSE Tests
       run: ./javaSE/gradlew -p ./javaSE test
