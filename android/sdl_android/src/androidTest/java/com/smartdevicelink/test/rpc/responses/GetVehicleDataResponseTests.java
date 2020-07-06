@@ -409,7 +409,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 					JSONObject myKeyObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
 					JSONObject myKeyObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 
-					assertTrue(Test.TRUE, Validator.validateGearStatuses(
+					assertTrue(TestValues.TRUE, Validator.validateGearStatuses(
 							new GearStatus(JsonRPCMarshaller.deserializeJSONObject(myKeyObjReference)),
 							new GearStatus(JsonRPCMarshaller.deserializeJSONObject(myKeyObjTest))));
 				}
@@ -602,7 +602,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 			JSONObject gearStatusObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_GEAR_STATUS);
 			GearStatus gearStatus = new GearStatus(JsonRPCMarshaller.deserializeJSONObject(gearStatusObj));
 			GearStatus cmdStatus = cmd.getGearStatus();
-			assertTrue(Test.TRUE, Validator.validateGearStatuses(gearStatus, cmdStatus));
+			assertTrue(TestValues.TRUE, Validator.validateGearStatuses(gearStatus, cmdStatus));
 			
 			JSONObject myKeyObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_MY_KEY);
 			MyKey myKey = new MyKey(JsonRPCMarshaller.deserializeJSONObject(myKeyObj));

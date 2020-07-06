@@ -4,7 +4,7 @@ import com.smartdevicelink.proxy.rpc.GearStatus;
 import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 import com.smartdevicelink.proxy.rpc.enums.TransmissionType;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -20,9 +20,9 @@ public class GearStatusTests extends TestCase {
     public void setUp() {
         msg = new GearStatus();
 
-        msg.setUserSelectedGear(Test.GENERAL_USER_SELECTED_GEAR);
-        msg.setActualGear(Test.GENERAL_ACTUAL_GEAR);
-        msg.setTransmissionType(Test.GENERAL_TRANSMISSION_TYPE);
+        msg.setUserSelectedGear(TestValues.GENERAL_USER_SELECTED_GEAR);
+        msg.setActualGear(TestValues.GENERAL_ACTUAL_GEAR);
+        msg.setTransmissionType(TestValues.GENERAL_TRANSMISSION_TYPE);
     }
 
     /**
@@ -35,37 +35,37 @@ public class GearStatusTests extends TestCase {
         TransmissionType transmissionType = msg.getTransmissionType();
 
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_USER_SELECTED_GEAR, userSelectedGear);
-        assertEquals(Test.MATCH, Test.GENERAL_ACTUAL_GEAR, actualGear);
-        assertEquals(Test.MATCH, Test.GENERAL_TRANSMISSION_TYPE, transmissionType);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_USER_SELECTED_GEAR, userSelectedGear);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_ACTUAL_GEAR, actualGear);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_TRANSMISSION_TYPE, transmissionType);
 
         // Invalid/Null Tests
         GearStatus msg = new GearStatus();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
 
-        assertNull(Test.NULL, msg.getActualGear());
-        assertNull(Test.NULL, msg.getUserSelectedGear());
-        assertNull(Test.NULL, msg.getTransmissionType());
+        assertNull(TestValues.NULL, msg.getActualGear());
+        assertNull(TestValues.NULL, msg.getUserSelectedGear());
+        assertNull(TestValues.NULL, msg.getTransmissionType());
     }
 
     public void testJson() {
         JSONObject reference = new JSONObject();
 
         try {
-            reference.put(GearStatus.KEY_ACTUAL_GEAR, Test.GENERAL_ACTUAL_GEAR);
-            reference.put(GearStatus.KEY_USER_SELECTED_GEAR, Test.GENERAL_USER_SELECTED_GEAR);
-            reference.put(GearStatus.KEY_TRANSMISSION_TYPE, Test.GENERAL_TRANSMISSION_TYPE);
+            reference.put(GearStatus.KEY_ACTUAL_GEAR, TestValues.GENERAL_ACTUAL_GEAR);
+            reference.put(GearStatus.KEY_USER_SELECTED_GEAR, TestValues.GENERAL_USER_SELECTED_GEAR);
+            reference.put(GearStatus.KEY_TRANSMISSION_TYPE, TestValues.GENERAL_TRANSMISSION_TYPE);
 
             JSONObject underTest = msg.serializeJSON();
-            assertEquals(Test.MATCH, reference.length(), underTest.length());
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while (iterator.hasNext()) {
                 String key = (String) iterator.next();
-                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
         } catch (JSONException e) {
-            fail(Test.JSON_FAIL);
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

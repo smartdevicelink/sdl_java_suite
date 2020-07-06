@@ -118,7 +118,7 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
 	        result.put(SubscribeVehicleDataResponse.KEY_MY_KEY, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_MYKEY.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_FUEL_RANGE, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_FUELRANGE.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_TURN_SIGNAL, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_TURNSIGNAL.ordinal()).serializeJSON());
-	        result.put(SubscribeVehicleDataResponse.KEY_GEAR_STATUS, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_GEARSTATUS.ordinal()).serializeJSON());
+	        result.put(SubscribeVehicleDataResponse.KEY_GEAR_STATUS, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_GEARSTATUS.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_ELECTRONIC_PARK_BRAKE_STATUS, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_ELECTRONICPARKBRAKESTATUS.ordinal()).serializeJSON());
 	        result.put(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA.serializeJSON());
 		} catch (JSONException e) {

@@ -113,7 +113,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
             result.put(UnsubscribeVehicleData.KEY_TURN_SIGNAL, TestValues.GENERAL_BOOLEAN);
 			result.put(UnsubscribeVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS, TestValues.GENERAL_BOOLEAN);
 			result.put(UnsubscribeVehicleData.KEY_CLOUD_APP_VEHICLE_ID, TestValues.GENERAL_BOOLEAN);
-			result.put(UnsubscribeVehicleData.KEY_GEAR_STATUS, Test.GENERAL_BOOLEAN);
+			result.put(UnsubscribeVehicleData.KEY_GEAR_STATUS, TestValues.GENERAL_BOOLEAN);
 			result.put(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_BOOLEAN);
 		} catch (JSONException e) {
 			fail(TestValues.JSON_FAIL);

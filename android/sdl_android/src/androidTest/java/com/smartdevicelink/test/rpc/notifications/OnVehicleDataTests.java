@@ -497,7 +497,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
 					JSONObject myKeyObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
 					JSONObject myKeyObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 
-					assertTrue(Test.TRUE, Validator.validateGearStatuses(
+					assertTrue(TestValues.TRUE, Validator.validateGearStatuses(
 							new GearStatus(JsonRPCMarshaller.deserializeJSONObject(myKeyObjReference)),
 							new GearStatus(JsonRPCMarshaller.deserializeJSONObject(myKeyObjTest))));
 				}
