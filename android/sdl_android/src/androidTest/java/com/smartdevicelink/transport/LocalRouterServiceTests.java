@@ -3,22 +3,30 @@ package com.smartdevicelink.transport;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Parcel;
+import android.support.test.runner.AndroidJUnit4;
 
-import com.smartdevicelink.AndroidTestCase2;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-public class LocalRouterServiceTests extends AndroidTestCase2 {
+import static android.support.test.InstrumentationRegistry.getContext;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+
+@RunWith(AndroidJUnit4.class)
+public class LocalRouterServiceTests {
 
 	private static final int TEST_WITH_CONSTRUCTOR 	= 0;
 	private static final int TEST_WITH_CREATOR 		= 1;
 	
 	
-	
+	@Test
 	public void testLocalRouterServiceParcel(){
 		Parcel p =  Parcel.obtain();
 		p.writeInt(4);
 		p.writeLong(System.currentTimeMillis());
 		p.writeParcelable(new Intent(), 0);
-		p.writeParcelable(new ComponentName(mContext, "test"), 0);
+		p.writeParcelable(new ComponentName(getContext(), "test"), 0);
 		p.setDataPosition(0);
 		
 		SdlRouterService.LocalRouterService local = new SdlRouterService.LocalRouterService(p);
@@ -28,13 +36,14 @@ public class LocalRouterServiceTests extends AndroidTestCase2 {
 		p.recycle();
 		
 	}
-	
+
+	@Test
 	public void testLocalRouterServiceParcelCreator(){
 		Parcel p =  Parcel.obtain();
 		p.writeInt(4);
 		p.writeLong(System.currentTimeMillis());
 		p.writeParcelable(new Intent(), 0);
-		p.writeParcelable(new ComponentName(mContext, "test"), 0);
+		p.writeParcelable(new ComponentName(getContext(), "test"), 0);
 		p.setDataPosition(0);
 		
 		SdlRouterService.LocalRouterService local = SdlRouterService.LocalRouterService.CREATOR.createFromParcel(p);
@@ -57,7 +66,7 @@ public class LocalRouterServiceTests extends AndroidTestCase2 {
 		Parcel p =  Parcel.obtain();
 		p.writeInt(4);
 		p.writeLong(System.currentTimeMillis());
-		p.writeParcelable(new ComponentName(mContext, "test"), 0);
+		p.writeParcelable(new ComponentName(getContext(), "test"), 0);
 		p.writeParcelable(new Intent(), 0);
 		p.setDataPosition(0);
 		
@@ -108,7 +117,7 @@ public class LocalRouterServiceTests extends AndroidTestCase2 {
 		p.writeLong(System.currentTimeMillis());
 		int space = p.dataSize();
 		p.writeParcelable(new Intent(), 0);
-		p.writeParcelable(new ComponentName(mContext, "test"), 0);
+		p.writeParcelable(new ComponentName(getContext(), "test"), 0);
 		p.setDataPosition(0);
 		
 		byte[] raw = p.marshall();
@@ -130,11 +139,13 @@ public class LocalRouterServiceTests extends AndroidTestCase2 {
 		p.recycle();
 		
 	}
-	
+
+	@Test
 	public void testLocalRouterServiceCorruptParcel(){
 		corruptParcel(TEST_WITH_CONSTRUCTOR);
 	}
-	
+
+	@Test
 	public void testLocalRouterServiceCorruptParcelCreator(){
 		corruptParcel(TEST_WITH_CREATOR);
 	}

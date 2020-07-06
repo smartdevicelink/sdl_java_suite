@@ -4,7 +4,7 @@ import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.streaming.IStreamListener;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
 
@@ -56,26 +56,26 @@ public class AbstractPacketizerTests extends TestCase {
 
 			
 			// Valid Tests
-			assertNotNull(Test.NOT_NULL, testPacketizer1);
-			assertNotNull(Test.NOT_NULL, testPacketizer2);
-			assertNotNull(Test.NOT_NULL, testPacketizer3);
+			assertNotNull(TestValues.NOT_NULL, testPacketizer1);
+			assertNotNull(TestValues.NOT_NULL, testPacketizer2);
+			assertNotNull(TestValues.NOT_NULL, testPacketizer3);
 			
-			assertEquals(Test.MATCH, testListener, testPacketizer1.getListener());
-			assertEquals(Test.MATCH, testInputStream, testPacketizer1.getInputStream());
-			assertEquals(Test.MATCH, testSessionType, testPacketizer1.getSessionType());
-			assertEquals(Test.MATCH, testSessionId, testPacketizer1.getSessionId());
-			assertEquals(Test.MATCH, testListener, testPacketizer3.getListener());
-			assertEquals(Test.MATCH, testInputStream, testPacketizer3.getInputStream());
-			assertEquals(Test.MATCH, testSessionType, testPacketizer3.getSessionType());
-			assertEquals(Test.MATCH, testSessionId, testPacketizer3.getSessionId());
-			assertEquals(Test.MATCH, testWiproVersion, testPacketizer3.getWiproVersion());
-			assertEquals(Test.MATCH, testRpcRequest.getFunctionName(), testPacketizer3.getRPCRequest().getFunctionName());
-			assertEquals(Test.MATCH, testSdlSession, testPacketizer3.getSdlSession());
+			assertEquals(TestValues.MATCH, testListener, testPacketizer1.getListener());
+			assertEquals(TestValues.MATCH, testInputStream, testPacketizer1.getInputStream());
+			assertEquals(TestValues.MATCH, testSessionType, testPacketizer1.getSessionType());
+			assertEquals(TestValues.MATCH, testSessionId, testPacketizer1.getSessionId());
+			assertEquals(TestValues.MATCH, testListener, testPacketizer3.getListener());
+			assertEquals(TestValues.MATCH, testInputStream, testPacketizer3.getInputStream());
+			assertEquals(TestValues.MATCH, testSessionType, testPacketizer3.getSessionType());
+			assertEquals(TestValues.MATCH, testSessionId, testPacketizer3.getSessionId());
+			assertEquals(TestValues.MATCH, testWiproVersion, testPacketizer3.getWiproVersion());
+			assertEquals(TestValues.MATCH, testRpcRequest.getFunctionName(), testPacketizer3.getRPCRequest().getFunctionName());
+			assertEquals(TestValues.MATCH, testSdlSession, testPacketizer3.getSdlSession());
 						
 			// Invalid/Null Tests
-			assertNull(Test.NULL, testPacketizer2.getListener());
-			assertNull(Test.NULL, testPacketizer2.getInputStream());
-			assertNull(Test.NULL, testPacketizer2.getSessionType());
+			assertNull(TestValues.NULL, testPacketizer2.getListener());
+			assertNull(TestValues.NULL, testPacketizer2.getInputStream());
+			assertNull(TestValues.NULL, testPacketizer2.getSessionType());
 			
 		} catch (IOException e) {
 			e.printStackTrace();

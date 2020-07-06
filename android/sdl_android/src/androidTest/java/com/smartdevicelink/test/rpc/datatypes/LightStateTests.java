@@ -6,7 +6,7 @@ import com.smartdevicelink.proxy.rpc.RGBColor;
 import com.smartdevicelink.proxy.rpc.enums.LightName;
 import com.smartdevicelink.proxy.rpc.enums.LightStatus;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
@@ -29,10 +29,10 @@ public class LightStateTests extends TestCase {
 	public void setUp() {
 		msg = new LightState();
 
-		msg.setId(Test.GENERAL_LIGHTNAME);
-		msg.setStatus(Test.GENERAL_LIGHTSTATUS);
-		msg.setDensity(Test.GENERAL_FLOAT);
-		msg.setColor(Test.GENERAL_RGBCOLOR);
+		msg.setId(TestValues.GENERAL_LIGHTNAME);
+		msg.setStatus(TestValues.GENERAL_LIGHTSTATUS);
+		msg.setDensity(TestValues.GENERAL_FLOAT);
+		msg.setColor(TestValues.GENERAL_RGBCOLOR);
 	}
 
 	/**
@@ -46,32 +46,32 @@ public class LightStateTests extends TestCase {
 		RGBColor color = msg.getColor();
 
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_LIGHTNAME, id);
-		assertEquals(Test.MATCH, Test.GENERAL_LIGHTSTATUS, status);
-		assertEquals(Test.MATCH, Test.GENERAL_FLOAT, (float) density);
-		assertEquals(Test.MATCH, Test.GENERAL_RGBCOLOR, color);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_LIGHTNAME, id);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_LIGHTSTATUS, status);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_FLOAT, (float) density);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_RGBCOLOR, color);
 
 		// Invalid/Null Tests
 		LightState msg = new LightState();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getId());
-		assertNull(Test.NULL, msg.getStatus());
-		assertNull(Test.NULL, msg.getDensity());
-		assertNull(Test.NULL, msg.getColor());
+		assertNull(TestValues.NULL, msg.getId());
+		assertNull(TestValues.NULL, msg.getStatus());
+		assertNull(TestValues.NULL, msg.getDensity());
+		assertNull(TestValues.NULL, msg.getColor());
 	}
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
 		try {
-			reference.put(LightState.KEY_ID, Test.GENERAL_LIGHTNAME);
-			reference.put(LightState.KEY_STATUS, Test.GENERAL_LIGHTSTATUS);
-			reference.put(LightState.KEY_DENSITY, Test.GENERAL_FLOAT);
-			reference.put(LightState.KEY_COLOR, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_RGBCOLOR.getStore()));
+			reference.put(LightState.KEY_ID, TestValues.GENERAL_LIGHTNAME);
+			reference.put(LightState.KEY_STATUS, TestValues.GENERAL_LIGHTSTATUS);
+			reference.put(LightState.KEY_DENSITY, TestValues.GENERAL_FLOAT);
+			reference.put(LightState.KEY_COLOR, JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_RGBCOLOR.getStore()));
 
 			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
@@ -82,13 +82,13 @@ public class LightStateTests extends TestCase {
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-					assertTrue(Test.TRUE, Validator.validateRGBColor(new RGBColor(hashReference), new RGBColor(hashTest)));
+					assertTrue(TestValues.TRUE, Validator.validateRGBColor(new RGBColor(hashReference), new RGBColor(hashTest)));
 				} else {
-					assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+					assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 				}
 			}
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 }

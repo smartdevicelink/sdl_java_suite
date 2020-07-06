@@ -2,7 +2,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -23,11 +23,11 @@ public class SoftButtonCapabilitiesTest extends TestCase {
 	public void setUp() {
 		msg = new SoftButtonCapabilities();
 		
-		msg.setImageSupported(Test.GENERAL_BOOLEAN);
-		msg.setShortPressAvailable(Test.GENERAL_BOOLEAN);
-		msg.setLongPressAvailable(Test.GENERAL_BOOLEAN);
-		msg.setUpDownAvailable(Test.GENERAL_BOOLEAN);
-		msg.setTextSupported(Test.GENERAL_BOOLEAN);
+		msg.setImageSupported(TestValues.GENERAL_BOOLEAN);
+		msg.setShortPressAvailable(TestValues.GENERAL_BOOLEAN);
+		msg.setLongPressAvailable(TestValues.GENERAL_BOOLEAN);
+		msg.setUpDownAvailable(TestValues.GENERAL_BOOLEAN);
+		msg.setTextSupported(TestValues.GENERAL_BOOLEAN);
 	}
 
     /**
@@ -42,43 +42,43 @@ public class SoftButtonCapabilitiesTest extends TestCase {
 		Boolean textSupported = msg.getTextSupported();
 		
 		// Valid Tests
-		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, imageSupp);
-		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, updown);
-		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, longPress);
-		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, shortPress);
-		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, textSupported);
+		assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, imageSupp);
+		assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, updown);
+		assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, longPress);
+		assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, shortPress);
+		assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, textSupported);
 		
 		// Invalid/Null Tests
 		SoftButtonCapabilities msg = new SoftButtonCapabilities();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getImageSupported());
-		assertNull(Test.NULL, msg.getLongPressAvailable());
-		assertNull(Test.NULL, msg.getShortPressAvailable());
-		assertNull(Test.NULL, msg.getUpDownAvailable());
-		assertNull(Test.NULL, msg.getTextSupported());
+		assertNull(TestValues.NULL, msg.getImageSupported());
+		assertNull(TestValues.NULL, msg.getLongPressAvailable());
+		assertNull(TestValues.NULL, msg.getShortPressAvailable());
+		assertNull(TestValues.NULL, msg.getUpDownAvailable());
+		assertNull(TestValues.NULL, msg.getTextSupported());
 	}
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
 		try {
-			reference.put(SoftButtonCapabilities.KEY_IMAGE_SUPPORTED, Test.GENERAL_BOOLEAN);
-			reference.put(SoftButtonCapabilities.KEY_UP_DOWN_AVAILABLE, Test.GENERAL_BOOLEAN);
-			reference.put(SoftButtonCapabilities.KEY_LONG_PRESS_AVAILABLE, Test.GENERAL_BOOLEAN);
-			reference.put(SoftButtonCapabilities.KEY_SHORT_PRESS_AVAILABLE, Test.GENERAL_BOOLEAN);
-			reference.put(SoftButtonCapabilities.KEY_TEXT_SUPPORTED, Test.GENERAL_BOOLEAN);
+			reference.put(SoftButtonCapabilities.KEY_IMAGE_SUPPORTED, TestValues.GENERAL_BOOLEAN);
+			reference.put(SoftButtonCapabilities.KEY_UP_DOWN_AVAILABLE, TestValues.GENERAL_BOOLEAN);
+			reference.put(SoftButtonCapabilities.KEY_LONG_PRESS_AVAILABLE, TestValues.GENERAL_BOOLEAN);
+			reference.put(SoftButtonCapabilities.KEY_SHORT_PRESS_AVAILABLE, TestValues.GENERAL_BOOLEAN);
+			reference.put(SoftButtonCapabilities.KEY_TEXT_SUPPORTED, TestValues.GENERAL_BOOLEAN);
 
 			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
-				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+				assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 			}
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 }

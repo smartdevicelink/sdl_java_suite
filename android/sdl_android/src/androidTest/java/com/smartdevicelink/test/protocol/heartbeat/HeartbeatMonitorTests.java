@@ -2,7 +2,7 @@ package com.smartdevicelink.test.protocol.heartbeat;
 
 import com.smartdevicelink.protocol.heartbeat.HeartbeatMonitor;
 import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitorListener;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -22,10 +22,10 @@ public class HeartbeatMonitorTests extends TestCase {
 	private Timer timer;
 	
 	public void testValues () {
-		assertNotNull(Test.NOT_NULL, monitor);
+		assertNotNull(TestValues.NOT_NULL, monitor);
 		
 		testRunnable = monitor.getHeartbeatRunnable();
-		assertNotNull(Test.NOT_NULL, testRunnable);
+		assertNotNull(TestValues.NOT_NULL, testRunnable);
 		
 		int testInterval = 100;
 		monitor.setInterval(testInterval);
@@ -35,7 +35,7 @@ public class HeartbeatMonitorTests extends TestCase {
 	public void testThread () {
 		try {
 			Thread testThread = new Thread(testRunnable);
-			assertNotNull(Test.NOT_NULL, testThread);
+			assertNotNull(TestValues.NOT_NULL, testThread);
 			setTimeout(5000, testThread); // Cannot leave thread hanging
 			
 			testThread.start();

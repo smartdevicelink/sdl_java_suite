@@ -8,7 +8,7 @@ import com.smartdevicelink.proxy.rpc.AppServiceRecord;
 import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
 import com.smartdevicelink.proxy.rpc.enums.ServiceUpdateReason;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.utl.AppServiceFactory;
 
@@ -34,8 +34,8 @@ public class AppServiceCapabilityTest extends TestCase {
 	public void setUp(){
 
 		msg = new AppServiceCapability();
-		msg.setUpdatedAppServiceRecord(Test.GENERAL_APPSERVICERECORD);
-		msg.setUpdateReason(Test.GENERAL_SERVICE_UPDATE_REASON);
+		msg.setUpdatedAppServiceRecord(TestValues.GENERAL_APPSERVICERECORD);
+		msg.setUpdateReason(TestValues.GENERAL_SERVICE_UPDATE_REASON);
 	}
 
 	/**
@@ -47,32 +47,32 @@ public class AppServiceCapabilityTest extends TestCase {
 		ServiceUpdateReason updateReason = msg.getUpdateReason();
 
 		// Valid Tests
-		assertEquals(Test.MATCH, serviceRecord, Test.GENERAL_APPSERVICERECORD);
-		assertEquals(Test.MATCH, updateReason, Test.GENERAL_SERVICE_UPDATE_REASON);
+		assertEquals(TestValues.MATCH, serviceRecord, TestValues.GENERAL_APPSERVICERECORD);
+		assertEquals(TestValues.MATCH, updateReason, TestValues.GENERAL_SERVICE_UPDATE_REASON);
 
 		// Invalid/Null Tests
 		AppServiceCapability msg = new AppServiceCapability();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getUpdatedAppServiceRecord());
-		assertNull(Test.NULL, msg.getUpdateReason());
+		assertNull(TestValues.NULL, msg.getUpdatedAppServiceRecord());
+		assertNull(TestValues.NULL, msg.getUpdateReason());
 	}
 
 	public void testRequiredParamsConstructor(){
-		msg = new AppServiceCapability(Test.GENERAL_APPSERVICERECORD);
+		msg = new AppServiceCapability(TestValues.GENERAL_APPSERVICERECORD);
 		AppServiceRecord serviceRecord = msg.getUpdatedAppServiceRecord();
-		assertEquals(Test.MATCH, serviceRecord, Test.GENERAL_APPSERVICERECORD);
+		assertEquals(TestValues.MATCH, serviceRecord, TestValues.GENERAL_APPSERVICERECORD);
 	}
 
 	public void testJson(){
 		JSONObject reference = new JSONObject();
 
 		try{
-			reference.put(AppServiceCapability.KEY_UPDATE_REASON, Test.GENERAL_SERVICE_UPDATE_REASON);
-			reference.put(AppServiceCapability.KEY_UPDATED_APP_SERVICE_RECORD, Test.GENERAL_APPSERVICERECORD);
+			reference.put(AppServiceCapability.KEY_UPDATE_REASON, TestValues.GENERAL_SERVICE_UPDATE_REASON);
+			reference.put(AppServiceCapability.KEY_UPDATED_APP_SERVICE_RECORD, TestValues.GENERAL_APPSERVICERECORD);
 
 			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while(iterator.hasNext()) {
@@ -80,13 +80,13 @@ public class AppServiceCapabilityTest extends TestCase {
 				if (key.equals(AppServiceCapability.KEY_UPDATED_APP_SERVICE_RECORD)){
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-					assertTrue(Test.TRUE, Validator.validateAppServiceRecord(Test.GENERAL_APPSERVICERECORD, new AppServiceRecord(hashTest)));
+					assertTrue(TestValues.TRUE, Validator.validateAppServiceRecord(TestValues.GENERAL_APPSERVICERECORD, new AppServiceRecord(hashTest)));
 				} else{
-					assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+					assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 				}
 			}
 		} catch(JSONException e){
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 

@@ -3,7 +3,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 import com.smartdevicelink.proxy.rpc.DIDResult;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -24,8 +24,8 @@ public class DIDResultTests extends TestCase {
     public void setUp(){
         msg = new DIDResult();
 
-        msg.setData(Test.GENERAL_STRING);
-        msg.setResultCode(Test.GENERAL_VEHICLEDATARESULTCODE);
+        msg.setData(TestValues.GENERAL_STRING);
+        msg.setResultCode(TestValues.GENERAL_VEHICLEDATARESULTCODE);
     }
 
     /**
@@ -37,34 +37,34 @@ public class DIDResultTests extends TestCase {
         VehicleDataResultCode resultCode = msg.getResultCode();
         
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, data);
-        assertEquals(Test.MATCH, Test.GENERAL_VEHICLEDATARESULTCODE, resultCode);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, data);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_VEHICLEDATARESULTCODE, resultCode);
         
         // Invalid/Null Tests
         DIDResult msg = new DIDResult();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
 
-        assertNull(Test.NULL, msg.getData());
-        assertNull(Test.NULL, msg.getResultCode());
+        assertNull(TestValues.NULL, msg.getData());
+        assertNull(TestValues.NULL, msg.getResultCode());
     }
 
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(DIDResult.KEY_DATA, Test.GENERAL_STRING);
-            reference.put(DIDResult.KEY_RESULT_CODE, Test.GENERAL_VEHICLEDATARESULTCODE);
+            reference.put(DIDResult.KEY_DATA, TestValues.GENERAL_STRING);
+            reference.put(DIDResult.KEY_RESULT_CODE, TestValues.GENERAL_VEHICLEDATARESULTCODE);
 
             JSONObject underTest = msg.serializeJSON();
-            assertEquals(Test.MATCH, reference.length(), underTest.length());
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
                 String key = (String) iterator.next();
-                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
         } catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
     }
 }

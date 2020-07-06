@@ -44,11 +44,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Parcelable;
-import android.util.Log;
 
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.enums.ControlFrameTags;
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.SdlDeviceListener;
 import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.DebugTool;
 
@@ -96,11 +96,11 @@ public class TransportManager extends TransportManagerBase{
         validator.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
             @Override
             public void onFinishedValidation(boolean valid, ComponentName name) {
-                DebugTool.logInfo("onFinishedValidation valid=" + valid + "; name=" + ((name == null)? "null" : name.getPackageName()));
+                DebugTool.logInfo(TAG, "onFinishedValidation valid=" + valid + "; name=" + ((name == null)? "null" : name.getPackageName()));
                 if (valid) {
                     mConfig.service = name;
                     transport = new TransportBrokerImpl(contextWeakReference.get(), mConfig.appId, mConfig.service);
-                    DebugTool.logInfo("TransportManager start got called; transport=" + transport);
+                    DebugTool.logInfo(TAG, "TransportManager start was called; transport=" + transport);
                     if(transport != null){
                         transport.start();
                     }
@@ -245,7 +245,7 @@ public class TransportManager extends TransportManagerBase{
         if(transport != null){
             transport.requestNewSession(transportRecord);
         }else if(legacyBluetoothTransport != null){
-            Log.w(TAG, "Session requested for non-bluetooth transport while in legacy mode");
+            DebugTool.logWarning(TAG, "Session requested for non-bluetooth transport while in legacy mode");
         }
     }
 
@@ -294,7 +294,7 @@ public class TransportManager extends TransportManagerBase{
         @Override
         public synchronized boolean onHardwareConnected(List<TransportRecord> transports) {
             super.onHardwareConnected(transports);
-            DebugTool.logInfo("OnHardwareConnected");
+            DebugTool.logInfo(TAG, "OnHardwareConnected");
             if(shuttingDown){
                 return false;
             }
@@ -302,6 +302,16 @@ public class TransportManager extends TransportManagerBase{
                 transportStatus.clear();
                 transportStatus.addAll(transports);
             }
+            //If a bluetooth device has connected, make sure to save the mac address in the case
+            //this app is asked to host the router service, the app knows to do so immediately on connection.
+            if(transports != null && transports.size() > 0) {
+                for (TransportRecord record : transports) {
+                    if(record != null && TransportType.BLUETOOTH.equals(record.getType())) {
+                        SdlDeviceListener.setSDLConnectedStatus(contextWeakReference.get(), record.getAddress(),true);
+                    }
+                }
+            }
+
             transportListener.onTransportConnected(transports);
             return true;
         }
@@ -310,9 +320,9 @@ public class TransportManager extends TransportManagerBase{
         @Override
         public synchronized void onHardwareDisconnected(TransportRecord record, List<TransportRecord> connectedTransports) {
             if(record != null){
-                Log.d(TAG, "Transport disconnected - " + record);
+                DebugTool.logInfo(TAG, "Transport disconnected - " + record);
             }else{
-                Log.d(TAG, "Transport disconnected");
+                DebugTool.logInfo(TAG, "Transport disconnected");
 
             }
             if(shuttingDown){
@@ -344,7 +354,7 @@ public class TransportManager extends TransportManagerBase{
 
                         if (foundMatch) { //Remove item after the loop to avoid concurrent modifications
                             TransportManager.this.transportStatus.remove(record);
-                            Log.d(TAG, "Handling corner case of transport disconnect mismatch");
+                            DebugTool.logInfo(TAG, "Handling corner case of transport disconnect mismatch");
                         }
                     }
                 }
@@ -471,7 +481,7 @@ public class TransportManager extends TransportManagerBase{
                 }else if(action.equalsIgnoreCase(BluetoothAdapter.ACTION_STATE_CHANGED)){
                     int bluetoothState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
                     if(bluetoothState == BluetoothAdapter.STATE_TURNING_OFF || bluetoothState == BluetoothAdapter.STATE_OFF){
-                        Log.d(TAG, "Bluetooth is shutting off, exiting legacy mode.");
+                        DebugTool.logInfo(TAG, "Bluetooth is shutting off, exiting legacy mode.");
                         exitLegacyMode("Bluetooth adapter shutting off");
                     }
                 }
@@ -519,7 +529,7 @@ public class TransportManager extends TransportManagerBase{
                             service.exitLegacyMode("Lost connection");
                             break;
                         case MultiplexBaseTransport.STATE_ERROR:
-                            Log.d(TAG, "Bluetooth serial server error received, setting state to none, and clearing local copy");
+                            DebugTool.logInfo(TAG, "Bluetooth serial server error received, setting state to none, and clearing local copy");
                             service.exitLegacyMode("Transport error");
                             break;
                     }

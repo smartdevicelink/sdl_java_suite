@@ -3,7 +3,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 import com.smartdevicelink.proxy.rpc.AirbagStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -23,16 +23,16 @@ public class AirbagStatusTests extends TestCase{
     @Override
     public void setUp(){
         msg = new AirbagStatus();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         
-        msg.setDriverAirbagDeployed(Test.GENERAL_VEHCILEDATAEVENTSTATUS);
-        msg.setDriverCurtainAirbagDeployed(Test.GENERAL_VEHCILEDATAEVENTSTATUS);
-        msg.setDriverKneeAirbagDeployed(Test.GENERAL_VEHCILEDATAEVENTSTATUS);
-        msg.setDriverSideAirbagDeployed(Test.GENERAL_VEHCILEDATAEVENTSTATUS);
-        msg.setPassengerAirbagDeployed(Test.GENERAL_VEHCILEDATAEVENTSTATUS);
-        msg.setPassengerCurtainAirbagDeployed(Test.GENERAL_VEHCILEDATAEVENTSTATUS);
-        msg.setPassengerKneeAirbagDeployed(Test.GENERAL_VEHCILEDATAEVENTSTATUS);
-        msg.setPassengerSideAirbagDeployed(Test.GENERAL_VEHCILEDATAEVENTSTATUS);
+        msg.setDriverAirbagDeployed(TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
+        msg.setDriverCurtainAirbagDeployed(TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
+        msg.setDriverKneeAirbagDeployed(TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
+        msg.setDriverSideAirbagDeployed(TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
+        msg.setPassengerAirbagDeployed(TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
+        msg.setPassengerCurtainAirbagDeployed(TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
+        msg.setPassengerKneeAirbagDeployed(TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
+        msg.setPassengerSideAirbagDeployed(TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
         
     }
     
@@ -51,52 +51,52 @@ public class AirbagStatusTests extends TestCase{
         VehicleDataEventStatus passengerSideStatus = msg.getPassengerSideAirbagDeployed();
         
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_VEHCILEDATAEVENTSTATUS, airbagStatus);
-        assertEquals(Test.MATCH, Test.GENERAL_VEHCILEDATAEVENTSTATUS, curtainStatus);
-        assertEquals(Test.MATCH, Test.GENERAL_VEHCILEDATAEVENTSTATUS, kneeStatus);
-        assertEquals(Test.MATCH, Test.GENERAL_VEHCILEDATAEVENTSTATUS, sideStatus);
-        assertEquals(Test.MATCH, Test.GENERAL_VEHCILEDATAEVENTSTATUS, passengerStatus);
-        assertEquals(Test.MATCH, Test.GENERAL_VEHCILEDATAEVENTSTATUS, passengerCurtainStatus);
-        assertEquals(Test.MATCH, Test.GENERAL_VEHCILEDATAEVENTSTATUS, passengerKneeStatus);
-        assertEquals(Test.MATCH, Test.GENERAL_VEHCILEDATAEVENTSTATUS, passengerSideStatus);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS, airbagStatus);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS, curtainStatus);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS, kneeStatus);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS, sideStatus);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS, passengerStatus);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS, passengerCurtainStatus);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS, passengerKneeStatus);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS, passengerSideStatus);
     
         // Invalid/Null Tests
         AirbagStatus msg = new AirbagStatus();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         
-        assertNull(Test.NULL, msg.getDriverAirbagDeployed());
-        assertNull(Test.NULL, msg.getDriverSideAirbagDeployed());
-        assertNull(Test.NULL, msg.getDriverCurtainAirbagDeployed());
-        assertNull(Test.NULL, msg.getPassengerAirbagDeployed());
-        assertNull(Test.NULL, msg.getPassengerCurtainAirbagDeployed());
-        assertNull(Test.NULL, msg.getDriverKneeAirbagDeployed());
-        assertNull(Test.NULL, msg.getPassengerSideAirbagDeployed());
-        assertNull(Test.NULL, msg.getPassengerKneeAirbagDeployed());
+        assertNull(TestValues.NULL, msg.getDriverAirbagDeployed());
+        assertNull(TestValues.NULL, msg.getDriverSideAirbagDeployed());
+        assertNull(TestValues.NULL, msg.getDriverCurtainAirbagDeployed());
+        assertNull(TestValues.NULL, msg.getPassengerAirbagDeployed());
+        assertNull(TestValues.NULL, msg.getPassengerCurtainAirbagDeployed());
+        assertNull(TestValues.NULL, msg.getDriverKneeAirbagDeployed());
+        assertNull(TestValues.NULL, msg.getPassengerSideAirbagDeployed());
+        assertNull(TestValues.NULL, msg.getPassengerKneeAirbagDeployed());
     }
 
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(AirbagStatus.KEY_DRIVER_AIRBAG_DEPLOYED, Test.GENERAL_VEHCILEDATAEVENTSTATUS);
-            reference.put(AirbagStatus.KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED, Test.GENERAL_VEHCILEDATAEVENTSTATUS);
-            reference.put(AirbagStatus.KEY_DRIVER_KNEE_AIRBAG_DEPLOYED, Test.GENERAL_VEHCILEDATAEVENTSTATUS);
-            reference.put(AirbagStatus.KEY_DRIVER_SIDE_AIRBAG_DEPLOYED, Test.GENERAL_VEHCILEDATAEVENTSTATUS);
-            reference.put(AirbagStatus.KEY_PASSENGER_AIRBAG_DEPLOYED, Test.GENERAL_VEHCILEDATAEVENTSTATUS);
-            reference.put(AirbagStatus.KEY_PASSENGER_CURTAIN_AIRBAG_DEPLOYED, Test.GENERAL_VEHCILEDATAEVENTSTATUS);
-            reference.put(AirbagStatus.KEY_PASSENGER_KNEE_AIRBAG_DEPLOYED, Test.GENERAL_VEHCILEDATAEVENTSTATUS);
-            reference.put(AirbagStatus.KEY_PASSENGER_SIDE_AIRBAG_DEPLOYED, Test.GENERAL_VEHCILEDATAEVENTSTATUS);
+            reference.put(AirbagStatus.KEY_DRIVER_AIRBAG_DEPLOYED, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
+            reference.put(AirbagStatus.KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
+            reference.put(AirbagStatus.KEY_DRIVER_KNEE_AIRBAG_DEPLOYED, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
+            reference.put(AirbagStatus.KEY_DRIVER_SIDE_AIRBAG_DEPLOYED, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
+            reference.put(AirbagStatus.KEY_PASSENGER_AIRBAG_DEPLOYED, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
+            reference.put(AirbagStatus.KEY_PASSENGER_CURTAIN_AIRBAG_DEPLOYED, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
+            reference.put(AirbagStatus.KEY_PASSENGER_KNEE_AIRBAG_DEPLOYED, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
+            reference.put(AirbagStatus.KEY_PASSENGER_SIDE_AIRBAG_DEPLOYED, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
 
             JSONObject underTest = msg.serializeJSON();
-            assertEquals(Test.MATCH, reference.length(), underTest.length());
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
                 String key = (String) iterator.next();
-                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
         } catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
     }
 }

@@ -9,7 +9,7 @@ import com.smartdevicelink.proxy.rpc.enums.Direction;
 import com.smartdevicelink.proxy.rpc.enums.NavigationAction;
 import com.smartdevicelink.proxy.rpc.enums.NavigationJunction;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
@@ -32,14 +32,14 @@ public class NavigationInstructionTests extends TestCase {
 	public void setUp(){
 		msg = new NavigationInstruction();
 
-		msg.setLocationDetails(Test.GENERAL_LOCATIONDETAILS);
-		msg.setAction(Test.GENERAL_NAVIGATIONACTION);
-		msg.setEta(Test.GENERAL_DATETIME);
-		msg.setBearing(Test.GENERAL_INTEGER);
-		msg.setJunctionType(Test.GENERAL_NAVIGATION_JUNCTION);
-		msg.setDrivingSide(Test.GENERAL_DIRECTION);
-		msg.setDetails(Test.GENERAL_STRING);
-		msg.setImage(Test.GENERAL_IMAGE);
+		msg.setLocationDetails(TestValues.GENERAL_LOCATIONDETAILS);
+		msg.setAction(TestValues.GENERAL_NAVIGATIONACTION);
+		msg.setEta(TestValues.GENERAL_DATETIME);
+		msg.setBearing(TestValues.GENERAL_INTEGER);
+		msg.setJunctionType(TestValues.GENERAL_NAVIGATION_JUNCTION);
+		msg.setDrivingSide(TestValues.GENERAL_DIRECTION);
+		msg.setDetails(TestValues.GENERAL_STRING);
+		msg.setImage(TestValues.GENERAL_IMAGE);
 	}
 
 	/**
@@ -57,55 +57,55 @@ public class NavigationInstructionTests extends TestCase {
 		Image image = msg.getImage();
 
 		// Valid Tests
-		assertEquals(Test.GENERAL_LOCATIONDETAILS, locationDetails);
-		assertEquals(Test.GENERAL_NAVIGATIONACTION, action);
-		assertEquals(Test.GENERAL_DATETIME, eta);
-		assertEquals(Test.GENERAL_INTEGER, bearing);
-		assertEquals(Test.GENERAL_NAVIGATION_JUNCTION, junctionType);
-		assertEquals(Test.GENERAL_DIRECTION, drivingSide);
-		assertEquals(Test.GENERAL_STRING, details);
-		assertEquals(Test.GENERAL_IMAGE, image);
+		assertEquals(TestValues.GENERAL_LOCATIONDETAILS, locationDetails);
+		assertEquals(TestValues.GENERAL_NAVIGATIONACTION, action);
+		assertEquals(TestValues.GENERAL_DATETIME, eta);
+		assertEquals(TestValues.GENERAL_INTEGER, bearing);
+		assertEquals(TestValues.GENERAL_NAVIGATION_JUNCTION, junctionType);
+		assertEquals(TestValues.GENERAL_DIRECTION, drivingSide);
+		assertEquals(TestValues.GENERAL_STRING, details);
+		assertEquals(TestValues.GENERAL_IMAGE, image);
 
 		// Invalid/Null Tests
 		NavigationInstruction msg = new NavigationInstruction();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getLocationDetails());
-		assertNull(Test.NULL, msg.getAction());
-		assertNull(Test.NULL, msg.getEta());
-		assertNull(Test.NULL, msg.getBearing());
-		assertNull(Test.NULL, msg.getJunctionType());
-		assertNull(Test.NULL, msg.getDrivingSide());
-		assertNull(Test.NULL, msg.getDetails());
-		assertNull(Test.NULL, msg.getImage());
+		assertNull(TestValues.NULL, msg.getLocationDetails());
+		assertNull(TestValues.NULL, msg.getAction());
+		assertNull(TestValues.NULL, msg.getEta());
+		assertNull(TestValues.NULL, msg.getBearing());
+		assertNull(TestValues.NULL, msg.getJunctionType());
+		assertNull(TestValues.NULL, msg.getDrivingSide());
+		assertNull(TestValues.NULL, msg.getDetails());
+		assertNull(TestValues.NULL, msg.getImage());
 	}
 
 	public void testRequiredConstructor(){
-		NavigationInstruction msg = new NavigationInstruction(Test.GENERAL_LOCATIONDETAILS, Test.GENERAL_NAVIGATIONACTION);
-		assertNotNull(Test.NOT_NULL, msg);
+		NavigationInstruction msg = new NavigationInstruction(TestValues.GENERAL_LOCATIONDETAILS, TestValues.GENERAL_NAVIGATIONACTION);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
 		LocationDetails locationDetails = msg.getLocationDetails();
 		NavigationAction action = msg.getAction();
 
-		assertEquals(Test.GENERAL_LOCATIONDETAILS, locationDetails);
-		assertEquals(Test.GENERAL_NAVIGATIONACTION, action);
+		assertEquals(TestValues.GENERAL_LOCATIONDETAILS, locationDetails);
+		assertEquals(TestValues.GENERAL_NAVIGATIONACTION, action);
 	}
 
 	public void testJson(){
 		JSONObject reference = new JSONObject();
 
 		try{
-			reference.put(NavigationInstruction.KEY_LOCATION_DETAILS, Test.GENERAL_LOCATIONDETAILS);
-			reference.put(NavigationInstruction.KEY_ACTION, Test.GENERAL_NAVIGATIONACTION);
-			reference.put(NavigationInstruction.KEY_ETA, Test.GENERAL_DATETIME);
-			reference.put(NavigationInstruction.KEY_BEARING, Test.GENERAL_INTEGER);
-			reference.put(NavigationInstruction.KEY_JUNCTION_TYPE, Test.GENERAL_NAVIGATION_JUNCTION);
-			reference.put(NavigationInstruction.KEY_DRIVING_SIDE, Test.GENERAL_DIRECTION);
-			reference.put(NavigationInstruction.KEY_DETAILS, Test.GENERAL_STRING);
-			reference.put(NavigationInstruction.KEY_IMAGE, Test.GENERAL_IMAGE);
+			reference.put(NavigationInstruction.KEY_LOCATION_DETAILS, TestValues.GENERAL_LOCATIONDETAILS);
+			reference.put(NavigationInstruction.KEY_ACTION, TestValues.GENERAL_NAVIGATIONACTION);
+			reference.put(NavigationInstruction.KEY_ETA, TestValues.GENERAL_DATETIME);
+			reference.put(NavigationInstruction.KEY_BEARING, TestValues.GENERAL_INTEGER);
+			reference.put(NavigationInstruction.KEY_JUNCTION_TYPE, TestValues.GENERAL_NAVIGATION_JUNCTION);
+			reference.put(NavigationInstruction.KEY_DRIVING_SIDE, TestValues.GENERAL_DIRECTION);
+			reference.put(NavigationInstruction.KEY_DETAILS, TestValues.GENERAL_STRING);
+			reference.put(NavigationInstruction.KEY_IMAGE, TestValues.GENERAL_IMAGE);
 
 			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while(iterator.hasNext()){
@@ -114,21 +114,21 @@ public class NavigationInstructionTests extends TestCase {
 				if(key.equals(NavigationInstruction.KEY_IMAGE)){
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Image refIcon1 = new Image(JsonRPCMarshaller.deserializeJSONObject(testEquals));
-					assertTrue(Test.TRUE, Validator.validateImage(refIcon1, msg.getImage()));
+					assertTrue(TestValues.TRUE, Validator.validateImage(refIcon1, msg.getImage()));
 				}else if(key.equals(NavigationInstruction.KEY_LOCATION_DETAILS)){
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-					assertTrue(Test.TRUE, Validator.validateLocationDetails( Test.GENERAL_LOCATIONDETAILS, new LocationDetails(hashTest)));
+					assertTrue(TestValues.TRUE, Validator.validateLocationDetails( TestValues.GENERAL_LOCATIONDETAILS, new LocationDetails(hashTest)));
 				}else if (key.equals(NavigationInstruction.KEY_ETA)){
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-					assertTrue(Test.TRUE, Validator.validateDateTime(Test.GENERAL_DATETIME, new DateTime(hashTest)));
+					assertTrue(TestValues.TRUE, Validator.validateDateTime(TestValues.GENERAL_DATETIME, new DateTime(hashTest)));
 				}else {
-					assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+					assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 				}
 			}
 		} catch(JSONException e){
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 }

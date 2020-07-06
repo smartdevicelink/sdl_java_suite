@@ -33,10 +33,10 @@ package com.smartdevicelink.transport.utl;
 
 import android.os.Bundle;
 import android.os.Message;
-import android.util.Log;
 
 import com.smartdevicelink.transport.TransportBroker;
 import com.smartdevicelink.transport.TransportConstants;
+import com.smartdevicelink.util.DebugTool;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -151,7 +151,7 @@ public class ByteArrayMessageSpliter {
 		}
 		bundle.putString(TransportConstants.APP_ID_EXTRA_STRING, appId);
 		message.setData(bundle);
-		Log.i(TAG, ((100 - ((stream.available()*100)/orginalSize) ))+ " percent complete.");
+		DebugTool.logInfo(TAG, ((100 - ((stream.available()*100)/orginalSize) ))+ " percent complete.");
 		return message;
 	}
 }
