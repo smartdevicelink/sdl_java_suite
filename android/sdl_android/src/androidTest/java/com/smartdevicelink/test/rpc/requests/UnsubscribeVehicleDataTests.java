@@ -113,7 +113,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
             result.put(UnsubscribeVehicleData.KEY_TURN_SIGNAL, TestValues.GENERAL_BOOLEAN);
 			result.put(UnsubscribeVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS, TestValues.GENERAL_BOOLEAN);
 			result.put(UnsubscribeVehicleData.KEY_CLOUD_APP_VEHICLE_ID, TestValues.GENERAL_BOOLEAN);
-			result.put(UnsubscribeVehicleData.KEY_HANDS_OFF_STEERING, Test.GENERAL_BOOLEAN);
+			result.put(UnsubscribeVehicleData.KEY_HANDS_OFF_STEERING, TestValues.GENERAL_BOOLEAN);
 			result.put(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_BOOLEAN);
 		} catch (JSONException e) {
 			fail(TestValues.JSON_FAIL);
@@ -247,7 +247,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
 			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_TURN_SIGNAL), cmd.getTurnSignal());
 			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS), cmd.getElectronicParkBrakeStatus());
 			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_CLOUD_APP_VEHICLE_ID), cmd.getCloudAppVehicleID());
-			assertEquals(com.smartdevicelink.test.Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_HANDS_OFF_STEERING), cmd.getHandsOffSteering());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_HANDS_OFF_STEERING), cmd.getHandsOffSteering());
 			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME), cmd.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
 
 		} 

@@ -60,7 +60,7 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
 		msg.setFuelRange(TestValues.GENERAL_BOOLEAN);
 		msg.setTurnSignal(TestValues.GENERAL_BOOLEAN);
 		msg.setElectronicParkBrakeStatus(TestValues.GENERAL_BOOLEAN);
-		msg.setHandsOffSteering(Test.GENERAL_BOOLEAN);
+		msg.setHandsOffSteering(TestValues.GENERAL_BOOLEAN);
 		msg.setOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_BOOLEAN);
 		
 		return msg;
@@ -109,7 +109,7 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
             result.put(SubscribeVehicleData.KEY_FUEL_RANGE, TestValues.GENERAL_BOOLEAN);
             result.put(SubscribeVehicleData.KEY_TURN_SIGNAL, TestValues.GENERAL_BOOLEAN);
             result.put(SubscribeVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS, TestValues.GENERAL_BOOLEAN);
-            result.put(SubscribeVehicleData.KEY_HANDS_OFF_STEERING, Test.GENERAL_BOOLEAN);
+            result.put(SubscribeVehicleData.KEY_HANDS_OFF_STEERING, TestValues.GENERAL_BOOLEAN);
             result.put(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_BOOLEAN);
 		} catch (JSONException e) {
 			fail(TestValues.JSON_FAIL);
@@ -154,7 +154,7 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
 		assertTrue(TestValues.MATCH,( (SubscribeVehicleData) msg ).getTurnSignal());
 		assertTrue(TestValues.MATCH,( (SubscribeVehicleData) msg ).getElectronicParkBrakeStatus());
 		assertTrue(TestValues.MATCH,( (SubscribeVehicleData) msg ).getHandsOffSteering());
-		assertTrue(Test.MATCH,( (SubscribeVehicleData) msg ).getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
+		assertTrue(TestValues.MATCH,( (SubscribeVehicleData) msg ).getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
     
 		// Invalid/Null Tests
 		SubscribeVehicleData msg = new SubscribeVehicleData();
@@ -190,7 +190,7 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
         assertNull(TestValues.NULL, msg.getTurnSignal());
         assertNull(TestValues.NULL, msg.getElectronicParkBrakeStatus());
         assertNull(TestValues.NULL, msg.getHandsOffSteering());
-        assertNull(Test.NULL, msg.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
+        assertNull(TestValues.NULL, msg.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
 	}
 	
     /**
@@ -241,7 +241,7 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
 			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_FUEL_RANGE), cmd.getFuelRange());
 			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_TURN_SIGNAL), cmd.getTurnSignal());
 			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS), cmd.getElectronicParkBrakeStatus());
-			assertEquals(com.smartdevicelink.test.Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_HANDS_OFF_STEERING), cmd.getHandsOffSteering());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_HANDS_OFF_STEERING), cmd.getHandsOffSteering());
 			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME), cmd.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
 		} catch (JSONException e) {
 			fail(TestValues.JSON_FAIL);

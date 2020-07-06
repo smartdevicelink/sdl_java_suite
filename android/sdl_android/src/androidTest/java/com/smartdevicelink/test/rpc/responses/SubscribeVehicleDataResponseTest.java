@@ -119,7 +119,7 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
 	        result.put(SubscribeVehicleDataResponse.KEY_FUEL_RANGE, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_FUELRANGE.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_TURN_SIGNAL, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_TURNSIGNAL.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_ELECTRONIC_PARK_BRAKE_STATUS, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_ELECTRONICPARKBRAKESTATUS.ordinal()).serializeJSON());
-	        result.put(SubscribeVehicleDataResponse.KEY_HANDS_OFF_STEERING, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_HANDSOFFSTEERING.ordinal()).serializeJSON());
+	        result.put(SubscribeVehicleDataResponse.KEY_HANDS_OFF_STEERING, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_HANDSOFFSTEERING.ordinal()).serializeJSON());
 	        result.put(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA.serializeJSON());
 		} catch (JSONException e) {
 			fail(TestValues.JSON_FAIL);
@@ -369,7 +369,7 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
 
 			JSONObject handsOffSteering = JsonUtils.readJsonObjectFromJsonObject(parameters, SubscribeVehicleDataResponse.KEY_HANDS_OFF_STEERING);
 			VehicleDataResult referenceHandsOffSteering = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(handsOffSteering));
-			assertTrue(Test.TRUE, Validator.validateVehicleDataResult(referenceHandsOffSteering, cmd.getHandsOffSteering()));
+			assertTrue(TestValues.TRUE, Validator.validateVehicleDataResult(referenceHandsOffSteering, cmd.getHandsOffSteering()));
 
 			JSONObject oemCustomVehicleDataName = JsonUtils.readJsonObjectFromJsonObject(parameters, TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME);
 			VehicleDataResult referenceOemCustomData = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(oemCustomVehicleDataName));
