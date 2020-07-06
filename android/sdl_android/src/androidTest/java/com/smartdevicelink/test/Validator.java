@@ -3821,7 +3821,7 @@ public class Validator{
             WindowStatus windowStatus1 = iterator1.next();
             WindowStatus windowStatus2 = iterator2.next();
 
-            if(!validateWindowStatuses(windowStatus1, windowStatus2)){
+            if(!validateWindowStatus(windowStatus1, windowStatus2)){
                 return false;
             }
         }
@@ -3829,7 +3829,7 @@ public class Validator{
         return true;
     }
 
-    public static boolean validateWindowStatuses(WindowStatus item1, WindowStatus item2) {
+    public static boolean validateWindowStatus(WindowStatus item1, WindowStatus item2) {
         if (item1 == null) {
             return ( item2 == null );
         }
