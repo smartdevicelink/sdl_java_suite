@@ -4,10 +4,16 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.OnStreamRPC;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.fail;
 
 /**
  * Created by austinkirk on 6/7/17.
@@ -18,9 +24,9 @@ public class OnStreamRPCTests extends BaseRpcTests {
     protected RPCMessage createMessage(){
         OnStreamRPC msg = new OnStreamRPC();
 
-        msg.setBytesComplete(Test.GENERAL_LONG);
-        msg.setFileName(Test.GENERAL_STRING);
-        msg.setFileSize(Test.GENERAL_LONG);
+        msg.setBytesComplete(TestValues.GENERAL_LONG);
+        msg.setFileName(TestValues.GENERAL_STRING);
+        msg.setFileSize(TestValues.GENERAL_LONG);
 
         return msg;
     }
@@ -40,11 +46,11 @@ public class OnStreamRPCTests extends BaseRpcTests {
         JSONObject result = new JSONObject();
 
         try{
-            result.put(OnStreamRPC.KEY_BYTESCOMPLETE, Test.GENERAL_LONG);
-            result.put(OnStreamRPC.KEY_FILENAME, Test.GENERAL_STRING);
-            result.put(OnStreamRPC.KEY_FILESIZE, Test.GENERAL_LONG);
+            result.put(OnStreamRPC.KEY_BYTESCOMPLETE, TestValues.GENERAL_LONG);
+            result.put(OnStreamRPC.KEY_FILENAME, TestValues.GENERAL_STRING);
+            result.put(OnStreamRPC.KEY_FILESIZE, TestValues.GENERAL_LONG);
         }catch(JSONException e){
-            fail(Test.JSON_FAIL);
+            fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -53,6 +59,7 @@ public class OnStreamRPCTests extends BaseRpcTests {
     /**
      * Tests the expected values of the RPC message.
      */
+    @Test
     public void testRpcValues () {
         // Test Values
         Long bytes = ((OnStreamRPC) msg).getBytesComplete();
@@ -60,17 +67,17 @@ public class OnStreamRPCTests extends BaseRpcTests {
         Long fileSize = ((OnStreamRPC) msg).getFileSize();
 
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_LONG, bytes);
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, fileName);
-        assertEquals(Test.MATCH, Test.GENERAL_LONG, fileSize);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_LONG, bytes);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, fileName);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_LONG, fileSize);
 
         // Invalid/Null Tests
         OnStreamRPC msg = new OnStreamRPC();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getBytesComplete());
-        assertNull(Test.NULL, msg.getFileName());
-        assertNull(Test.NULL, msg.getFileSize());
+        assertNull(TestValues.NULL, msg.getBytesComplete());
+        assertNull(TestValues.NULL, msg.getFileName());
+        assertNull(TestValues.NULL, msg.getFileSize());
     }
 }

@@ -5,7 +5,7 @@ import com.smartdevicelink.proxy.rpc.LightCapabilities;
 import com.smartdevicelink.proxy.rpc.LightControlCapabilities;
 import com.smartdevicelink.proxy.rpc.ModuleInfo;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
@@ -30,9 +30,9 @@ public class LightControlCapabilitiesTests extends TestCase {
 	public void setUp() {
 		msg = new LightControlCapabilities();
 
-		msg.setModuleName(Test.GENERAL_STRING);
-		msg.setSupportedLights(Test.GENERAL_LIGHTCAPABILITIES_LIST);
-		msg.setModuleInfo(Test.GENERAL_MODULE_INFO);
+		msg.setModuleName(TestValues.GENERAL_STRING);
+		msg.setSupportedLights(TestValues.GENERAL_LIGHTCAPABILITIES_LIST);
+		msg.setModuleInfo(TestValues.GENERAL_MODULE_INFO);
 	}
 
 	/**
@@ -45,31 +45,31 @@ public class LightControlCapabilitiesTests extends TestCase {
 		ModuleInfo info = msg.getModuleInfo();
 
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, moduleName);
-		assertEquals(Test.MATCH, Test.GENERAL_LIGHTCAPABILITIES_LIST.size(), supportedLights.size());
-		assertEquals(Test.MATCH, Test.GENERAL_MODULE_INFO, info);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, moduleName);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_LIGHTCAPABILITIES_LIST.size(), supportedLights.size());
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_MODULE_INFO, info);
 
-		assertTrue(Test.TRUE, Validator.validateLightCapabilitiesList(Test.GENERAL_LIGHTCAPABILITIES_LIST, supportedLights));
+		assertTrue(TestValues.TRUE, Validator.validateLightCapabilitiesList(TestValues.GENERAL_LIGHTCAPABILITIES_LIST, supportedLights));
 
 		// Invalid/Null Tests
 		LightControlCapabilities msg = new LightControlCapabilities();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getModuleName());
-		assertNull(Test.NULL, msg.getSupportedLights());
-		assertNull(Test.NULL, msg.getModuleInfo());
+		assertNull(TestValues.NULL, msg.getModuleName());
+		assertNull(TestValues.NULL, msg.getSupportedLights());
+		assertNull(TestValues.NULL, msg.getModuleInfo());
 	}
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
 		try {
-			reference.put(LightControlCapabilities.KEY_MODULE_NAME, Test.GENERAL_STRING);
-			reference.put(LightControlCapabilities.KEY_SUPPORTED_LIGHTS, Test.GENERAL_LIGHTCAPABILITIES_LIST);
-			reference.put(LightControlCapabilities.KEY_MODULE_INFO, Test.JSON_MODULE_INFO);
+			reference.put(LightControlCapabilities.KEY_MODULE_NAME, TestValues.GENERAL_STRING);
+			reference.put(LightControlCapabilities.KEY_SUPPORTED_LIGHTS, TestValues.GENERAL_LIGHTCAPABILITIES_LIST);
+			reference.put(LightControlCapabilities.KEY_MODULE_INFO, TestValues.JSON_MODULE_INFO);
 
 			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
@@ -87,14 +87,14 @@ public class LightControlCapabilitiesTests extends TestCase {
 					JSONObject o2 = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> h1 = JsonRPCMarshaller.deserializeJSONObject(o1);
 					Hashtable<String, Object> h2 = JsonRPCMarshaller.deserializeJSONObject(o2);
-					assertTrue(Test.TRUE, Validator.validateModuleInfo(new ModuleInfo(h1), new ModuleInfo(h2)));
+					assertTrue(TestValues.TRUE, Validator.validateModuleInfo(new ModuleInfo(h1), new ModuleInfo(h2)));
 				}
 				else {
-					assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+					assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 				}
 			}
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 }

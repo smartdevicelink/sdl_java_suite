@@ -2,7 +2,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 
 import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -23,12 +23,12 @@ public class DeviceInfoTests extends TestCase{
     public void setUp(){
         msg = new DeviceInfo();
 
-        msg.setCarrier(Test.GENERAL_STRING);
-        msg.setFirmwareRev(Test.GENERAL_STRING);
-        msg.setHardware(Test.GENERAL_STRING);
-        msg.setMaxNumberRFCOMMPorts(Test.GENERAL_INT);
-        msg.setOs(Test.GENERAL_STRING);
-        msg.setOsVersion(Test.GENERAL_STRING);
+        msg.setCarrier(TestValues.GENERAL_STRING);
+        msg.setFirmwareRev(TestValues.GENERAL_STRING);
+        msg.setHardware(TestValues.GENERAL_STRING);
+        msg.setMaxNumberRFCOMMPorts(TestValues.GENERAL_INT);
+        msg.setOs(TestValues.GENERAL_STRING);
+        msg.setOsVersion(TestValues.GENERAL_STRING);
     }
 
     /**
@@ -44,46 +44,46 @@ public class DeviceInfoTests extends TestCase{
         int maxNum = msg.getMaxNumberRFCOMMPorts();
         
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_INT, maxNum);
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, osVer);
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, os);
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, firmwareRev);
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, hardware);
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, carrier);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, maxNum);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, osVer);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, os);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, firmwareRev);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, hardware);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, carrier);
         
         // Invalid/Null Tests
         DeviceInfo msg = new DeviceInfo();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
 
-        assertNull(Test.NULL, msg.getCarrier());
-        assertNull(Test.NULL, msg.getHardware());
-        assertNull(Test.NULL, msg.getFirmwareRev());
-        assertNull(Test.NULL, msg.getOs());
-        assertNull(Test.NULL, msg.getOsVersion());
-        assertNull(Test.NULL, msg.getMaxNumberRFCOMMPorts());
+        assertNull(TestValues.NULL, msg.getCarrier());
+        assertNull(TestValues.NULL, msg.getHardware());
+        assertNull(TestValues.NULL, msg.getFirmwareRev());
+        assertNull(TestValues.NULL, msg.getOs());
+        assertNull(TestValues.NULL, msg.getOsVersion());
+        assertNull(TestValues.NULL, msg.getMaxNumberRFCOMMPorts());
     }
 
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(DeviceInfo.KEY_CARRIER, Test.GENERAL_STRING);
-            reference.put(DeviceInfo.KEY_HARDWARE, Test.GENERAL_STRING);
-            reference.put(DeviceInfo.KEY_FIRMWARE_REV, Test.GENERAL_STRING);
-            reference.put(DeviceInfo.KEY_OS, Test.GENERAL_STRING);
-            reference.put(DeviceInfo.KEY_OS_VERSION, Test.GENERAL_STRING);
-            reference.put(DeviceInfo.KEY_MAX_NUMBER_RFCOMM_PORTS, Test.GENERAL_INT);
+            reference.put(DeviceInfo.KEY_CARRIER, TestValues.GENERAL_STRING);
+            reference.put(DeviceInfo.KEY_HARDWARE, TestValues.GENERAL_STRING);
+            reference.put(DeviceInfo.KEY_FIRMWARE_REV, TestValues.GENERAL_STRING);
+            reference.put(DeviceInfo.KEY_OS, TestValues.GENERAL_STRING);
+            reference.put(DeviceInfo.KEY_OS_VERSION, TestValues.GENERAL_STRING);
+            reference.put(DeviceInfo.KEY_MAX_NUMBER_RFCOMM_PORTS, TestValues.GENERAL_INT);
 
             JSONObject underTest = msg.serializeJSON();
-            assertEquals(Test.MATCH, reference.length(), underTest.length());
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
                 String key = (String) iterator.next();
-                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
         } catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
     }
 }

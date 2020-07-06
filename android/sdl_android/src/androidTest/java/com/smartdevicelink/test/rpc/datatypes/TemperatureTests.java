@@ -3,7 +3,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 import com.smartdevicelink.proxy.rpc.Temperature;
 import com.smartdevicelink.proxy.rpc.enums.TemperatureUnit;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -24,8 +24,8 @@ public class TemperatureTests extends TestCase{
     public void setUp(){
         msg = new Temperature();
 
-        msg.setUnit(Test.GENERAL_TEMPERATUREUNIT);
-        msg.setValue(Test.GENERAL_FLOAT);
+        msg.setUnit(TestValues.GENERAL_TEMPERATUREUNIT);
+        msg.setValue(TestValues.GENERAL_FLOAT);
     }
 
     /**
@@ -37,36 +37,36 @@ public class TemperatureTests extends TestCase{
         float value = msg.getValue();
 
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_FLOAT, value);
-        assertEquals(Test.MATCH, Test.GENERAL_TEMPERATUREUNIT, unit);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_FLOAT, value);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_TEMPERATUREUNIT, unit);
 
         // Invalid/Null Tests
         Temperature msg = new Temperature();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
 
-        assertNull(Test.NULL, msg.getUnit());
-        assertNull(Test.NULL, msg.getValue());
+        assertNull(TestValues.NULL, msg.getUnit());
+        assertNull(TestValues.NULL, msg.getValue());
     }
 
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(Temperature.KEY_VALUE, (Float) Test.GENERAL_FLOAT);
-            reference.put(Temperature.KEY_UNIT, Test.GENERAL_TEMPERATUREUNIT);
+            reference.put(Temperature.KEY_VALUE, (Float) TestValues.GENERAL_FLOAT);
+            reference.put(Temperature.KEY_UNIT, TestValues.GENERAL_TEMPERATUREUNIT);
 
             JSONObject underTest = msg.serializeJSON();
-            assertEquals(Test.MATCH, reference.length(), underTest.length());
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
                 String key = (String) iterator.next();
 
-                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 
             }
         } catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
     }
 }

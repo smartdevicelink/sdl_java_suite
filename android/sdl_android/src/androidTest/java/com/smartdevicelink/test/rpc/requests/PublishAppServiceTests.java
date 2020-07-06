@@ -7,21 +7,29 @@ import com.smartdevicelink.proxy.rpc.AppServiceManifest;
 import com.smartdevicelink.proxy.rpc.PublishAppService;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.Hashtable;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 
 public class PublishAppServiceTests extends BaseRpcTests {
 
 	@Override
 	protected RPCMessage createMessage() {
 		PublishAppService msg = new PublishAppService();
-		msg.setAppServiceManifest(Test.GENERAL_APPSERVICEMANIFEST);
+		msg.setAppServiceManifest(TestValues.GENERAL_APPSERVICEMANIFEST);
 		return msg;
 	}
 
@@ -40,9 +48,9 @@ public class PublishAppServiceTests extends BaseRpcTests {
 		JSONObject result = new JSONObject();
 
 		try {
-			result.put(PublishAppService.KEY_APP_SERVICE_MANIFEST, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_APPSERVICEMANIFEST.getStore()));
+			result.put(PublishAppService.KEY_APP_SERVICE_MANIFEST, JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_APPSERVICEMANIFEST.getStore()));
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 
 		return result;
@@ -51,55 +59,58 @@ public class PublishAppServiceTests extends BaseRpcTests {
 	/**
 	 * Tests the expected values of the RPC message.
 	 */
+	@Test
 	public void testRpcValues () {
 		// Test Values
 		AppServiceManifest copy = ( (PublishAppService) msg ).getAppServiceManifest();
 
 		// Valid Tests
-		assertTrue(Validator.validateAppServiceManifest(Test.GENERAL_APPSERVICEMANIFEST, copy));
+		assertTrue(Validator.validateAppServiceManifest(TestValues.GENERAL_APPSERVICEMANIFEST, copy));
 
 		// Invalid/Null Tests
 		PublishAppService msg = new PublishAppService();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 		testNullBase(msg);
 
-		assertNull(Test.MATCH, msg.getAppServiceManifest());
+		assertNull(TestValues.MATCH, msg.getAppServiceManifest());
 	}
 
 	/**
 	 * Tests constructor with required params
 	 */
+	@Test
 	public void testRequiredParamsConstructor () {
 
-		PublishAppService msg = new PublishAppService(Test.GENERAL_APPSERVICEMANIFEST);
-		assertNotNull(Test.NOT_NULL, msg);
+		PublishAppService msg = new PublishAppService(TestValues.GENERAL_APPSERVICEMANIFEST);
+		assertNotNull(TestValues.NOT_NULL, msg);
 		// Valid Tests
-		assertTrue(Validator.validateAppServiceManifest(Test.GENERAL_APPSERVICEMANIFEST, msg.getAppServiceManifest()));
+		assertTrue(Validator.validateAppServiceManifest(TestValues.GENERAL_APPSERVICEMANIFEST, msg.getAppServiceManifest()));
 	}
 
 	/**
 	 * Tests a valid JSON construction of this RPC message.
 	 */
+	@Test
 	public void testJsonConstructor () {
-		JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-		assertNotNull(Test.NOT_NULL, commandJson);
+		JSONObject commandJson = JsonFileReader.readId(getTargetContext(), getCommandType(), getMessageType());
+		assertNotNull(TestValues.NOT_NULL, commandJson);
 
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			PublishAppService cmd = new PublishAppService(hash);
 
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(Test.NOT_NULL, body);
+			assertNotNull(TestValues.NOT_NULL, body);
 
 			// Test everything in the json body.
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
 
 			JSONObject appServiceManifestObject = JsonUtils.readJsonObjectFromJsonObject(parameters, PublishAppService.KEY_APP_SERVICE_MANIFEST);
 			AppServiceManifest manifestTest = new AppServiceManifest(JsonRPCMarshaller.deserializeJSONObject(appServiceManifestObject));
-			assertTrue(Test.TRUE,  Validator.validateAppServiceManifest(manifestTest, cmd.getAppServiceManifest()));
+			assertTrue(TestValues.TRUE,  Validator.validateAppServiceManifest(manifestTest, cmd.getAppServiceManifest()));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

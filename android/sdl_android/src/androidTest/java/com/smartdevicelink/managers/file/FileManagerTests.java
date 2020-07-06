@@ -2,8 +2,8 @@ package com.smartdevicelink.managers.file;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.test.runner.AndroidJUnit4;
 
-import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
@@ -21,8 +21,11 @@ import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -30,6 +33,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -40,26 +48,21 @@ import static org.mockito.Mockito.verify;
  * This is a unit test class for the SmartDeviceLink library manager class :
  * {@link FileManager}
  */
-public class FileManagerTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class FileManagerTests {
 	public static final String TAG = "FileManagerTests";
 	private Context mTestContext;
 	private SdlFile validFile;
 
 	// SETUP / HELPERS
 
-	@Override
+	@Before
 	public void setUp() throws Exception{
-		super.setUp();
-		mTestContext = this.getContext();
+		mTestContext = getTargetContext();
 		validFile = new SdlFile();
-		validFile.setName(Test.GENERAL_STRING);
-		validFile.setFileData(Test.GENERAL_BYTE_ARRAY);
+		validFile.setName(TestValues.GENERAL_STRING);
+		validFile.setFileData(TestValues.GENERAL_BYTE_ARRAY);
 		validFile.setPersistent(false);
-	}
-
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
 	}
 
 	private Answer<Void> onPutFileFailureOnError = new Answer<Void>() {
@@ -127,8 +130,8 @@ public class FileManagerTests extends AndroidTestCase2 {
 			if(message instanceof ListFiles){
 				int correlationId = message.getCorrelationID();
 				ListFilesResponse listFilesResponse = new ListFilesResponse();
-				listFilesResponse.setFilenames(Test.GENERAL_STRING_LIST);
-				listFilesResponse.setSpaceAvailable(Test.GENERAL_INT);
+				listFilesResponse.setFilenames(TestValues.GENERAL_STRING_LIST);
+				listFilesResponse.setSpaceAvailable(TestValues.GENERAL_INT);
 				listFilesResponse.setSuccess(true);
 				message.getOnRPCResponseListener().onResponse(correlationId, listFilesResponse);
 			}
@@ -145,7 +148,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 				int correlationId = message.getCorrelationID();
 				PutFileResponse putFileResponse = new PutFileResponse();
 				putFileResponse.setSuccess(true);
-				putFileResponse.setSpaceAvailable(Test.GENERAL_INT);
+				putFileResponse.setSpaceAvailable(TestValues.GENERAL_INT);
 				message.getOnRPCResponseListener().onResponse(correlationId, putFileResponse);
 			}
 			return null;
@@ -242,6 +245,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 	/**
 	 * Test deleting list of files, success
 	 */
+	@Test
 	public void testDeleteRemoteFilesWithNamesSuccess(){
 		final ISdl internalInterface = mock(ISdl.class);
 
@@ -273,6 +277,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 	/**
 	 * Test deleting list of files, fail
 	 */
+	@Test
 	public void testDeleteRemoteFilesWithNamesFail(){
 		final ISdl internalInterface = mock(ISdl.class);
 
@@ -304,6 +309,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 	/**
 	 * Test reUploading failed file
 	 */
+	@Test
 	public void testFileUploadRetry(){
 		final ISdl internalInterface = mock(ISdl.class);
 
@@ -335,6 +341,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 	/**
 	 * Test reUploading failed Artwork
 	 */
+	@Test
 	public void testArtworkUploadRetry(){
 		final ISdl internalInterface = mock(ISdl.class);
 
@@ -342,14 +349,14 @@ public class FileManagerTests extends AndroidTestCase2 {
 		doAnswer(onPutFileFailureOnError).when(internalInterface).sendRPC(any(PutFile.class));
 
 		final SdlFile validFile2 = new SdlFile();
-		validFile2.setName(Test.GENERAL_STRING + "2");
-		validFile2.setFileData(Test.GENERAL_BYTE_ARRAY);
+		validFile2.setName(TestValues.GENERAL_STRING + "2");
+		validFile2.setFileData(TestValues.GENERAL_BYTE_ARRAY);
 		validFile2.setPersistent(false);
 		validFile2.setType(FileType.GRAPHIC_PNG);
 
 		final SdlFile validFile3 = new SdlFile();
-		validFile3.setName(Test.GENERAL_STRING + "3");
-		validFile3.setFileData(Test.GENERAL_BYTE_ARRAY);
+		validFile3.setName(TestValues.GENERAL_STRING + "3");
+		validFile3.setFileData(TestValues.GENERAL_BYTE_ARRAY);
 		validFile3.setPersistent(false);
 		validFile3.setType(FileType.GRAPHIC_BMP);
 
@@ -393,6 +400,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 	/**
 	 * Test retry uploading failed list of files
 	 */
+	@Test
 	public void testListFilesUploadRetry(){
 		final ISdl internalInterface = mock(ISdl.class);
 
@@ -400,8 +408,8 @@ public class FileManagerTests extends AndroidTestCase2 {
 		doAnswer(onSendRequestsFailOnError).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
 
 		SdlFile validFile2 = new SdlFile();
-		validFile2.setName(Test.GENERAL_STRING + "2");
-		validFile2.setFileData(Test.GENERAL_BYTE_ARRAY);
+		validFile2.setName(TestValues.GENERAL_STRING + "2");
+		validFile2.setFileData(TestValues.GENERAL_BYTE_ARRAY);
 		validFile2.setPersistent(false);
 		validFile2.setType(FileType.GRAPHIC_JPEG);
 
@@ -434,6 +442,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 	/**
 	 * Testing the initialization of FileManager
 	 */
+	@Test
 	public void testInitializationSuccess() {
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -446,8 +455,8 @@ public class FileManagerTests extends AndroidTestCase2 {
 			public void onComplete(boolean success) {
 				assertTrue(success);
 				assertEquals(fileManager.getState(), BaseSubManager.READY);
-				assertEquals(fileManager.getRemoteFileNames(), Test.GENERAL_STRING_LIST);
-				assertEquals(Test.GENERAL_INT, fileManager.getBytesAvailable());
+				assertEquals(fileManager.getRemoteFileNames(), TestValues.GENERAL_STRING_LIST);
+				assertEquals(TestValues.GENERAL_INT, fileManager.getBytesAvailable());
 			}
 		});
 	}
@@ -455,6 +464,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 	/**
 	 * Test file upload, success
 	 */
+	@Test
 	public void testFileUploadSuccess() {
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -478,12 +488,13 @@ public class FileManagerTests extends AndroidTestCase2 {
 		});
 		assertTrue(fileManager.getRemoteFileNames().contains(validFile.getName()));
 		assertTrue(fileManager.hasUploadedFile(validFile));
-		assertEquals(Test.GENERAL_INT, fileManager.getBytesAvailable());
+		assertEquals(TestValues.GENERAL_INT, fileManager.getBytesAvailable());
 	}
 
 	/**
 	 * Testing failed file upload.
 	 */
+	@Test
 	public void testFileUploadFailure() {
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -511,6 +522,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 	/**
 	 * Testing uploadFile for a staticIcon, verifying that it doesn't actually upload.
 	 */
+	@Test
 	public void testFileUploadForStaticIcon() {
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -537,6 +549,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 	/**
 	 * Testing uploadFiles for staticIcons, verifying that it doesn't actually upload.
 	 */
+	@Test
 	public void testMultipleFileUploadsForStaticIcon() {
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -568,6 +581,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 	/**
 	 * Testing uploadFiles for static icons and nonStatic icons in the same list.
 	 */
+	@Test
 	public void testMultipleFileUploadsForPartialStaticIcon() {
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -600,6 +614,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 	/**
 	 * Test to make sure you cannot upload an SdlFile with invalid data
 	 */
+	@Test
 	public void testInvalidSdlFileInput() {
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -613,22 +628,22 @@ public class FileManagerTests extends AndroidTestCase2 {
 				assertTrue(success);
 				SdlFile sdlFile = new SdlFile();
 				// Don't set name
-				sdlFile.setFileData(Test.GENERAL_BYTE_ARRAY);
+				sdlFile.setFileData(TestValues.GENERAL_BYTE_ARRAY);
 				checkForUploadFailure(fileManager, sdlFile);
 
 				sdlFile = new SdlFile();
-				sdlFile.setName(Test.GENERAL_STRING);
+				sdlFile.setName(TestValues.GENERAL_STRING);
 				// Don't set data
 				checkForUploadFailure(fileManager, sdlFile);
 
 				sdlFile = new SdlFile();
-				sdlFile.setName(Test.GENERAL_STRING);
+				sdlFile.setName(TestValues.GENERAL_STRING);
 				// Give an invalid resource ID
-				sdlFile.setResourceId(Test.GENERAL_INT);
+				sdlFile.setResourceId(TestValues.GENERAL_INT);
 				checkForUploadFailure(fileManager, sdlFile);
 
 				sdlFile = new SdlFile();
-				sdlFile.setName(Test.GENERAL_STRING);
+				sdlFile.setName(TestValues.GENERAL_STRING);
 				// Set invalid Uri
 				Uri testUri = Uri.parse("http://www.google.com");
 				sdlFile.setUri(testUri);
@@ -662,6 +677,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 	 * Test Invalid SdlArtWork FileTypes
 	 * SdlArtwork FileTypes can only be: GRAPHIC_BMP, GRAPHIC_PNG or GRAPHIC_JPEG
 	 */
+	@Test
 	public void testInvalidSdlArtworkInput(){
 		SdlArtwork sdlArtwork = new SdlArtwork();
 		// Set invalid type
@@ -683,6 +699,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 	/**
 	 * Test Multiple File Uploads, success
 	 */
+	@Test
 	public void testMultipleFileUpload() {
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -700,8 +717,8 @@ public class FileManagerTests extends AndroidTestCase2 {
 				filesToUpload.add(validFile);
 
 				SdlFile validFile2 = new SdlFile();
-				validFile2.setName(Test.GENERAL_STRING + "2");
-				validFile2.setFileData(Test.GENERAL_BYTE_ARRAY);
+				validFile2.setName(TestValues.GENERAL_STRING + "2");
+				validFile2.setFileData(TestValues.GENERAL_BYTE_ARRAY);
 				validFile2.setPersistent(false);
 				validFile2.setType(FileType.GRAPHIC_JPEG);
 				filesToUpload.add(validFile2);
@@ -719,6 +736,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 	/**
 	 * Testing uploading multiple files with some failing.
 	 */
+	@Test
 	public void testMultipleFileUploadPartialFailure() {
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -726,14 +744,14 @@ public class FileManagerTests extends AndroidTestCase2 {
 		doAnswer(onSendRequestsFailPartialOnError).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
 
 		SdlFile validFile2 = new SdlFile();
-		validFile2.setName(Test.GENERAL_STRING + "2");
-		validFile2.setFileData(Test.GENERAL_BYTE_ARRAY);
+		validFile2.setName(TestValues.GENERAL_STRING + "2");
+		validFile2.setFileData(TestValues.GENERAL_BYTE_ARRAY);
 		validFile2.setPersistent(false);
 		validFile2.setType(FileType.GRAPHIC_JPEG);
 
 		SdlFile validFile3 = new SdlFile();
-		validFile3.setName(Test.GENERAL_STRING + "3");
-		validFile3.setFileData(Test.GENERAL_BYTE_ARRAY);
+		validFile3.setName(TestValues.GENERAL_STRING + "3");
+		validFile3.setFileData(TestValues.GENERAL_BYTE_ARRAY);
 		validFile3.setPersistent(false);
 		validFile3.setType(FileType.GRAPHIC_JPEG);
 
@@ -767,6 +785,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 	/**
 	 * Testing uploading multiple SdlArtwork files.
 	 */
+	@Test
 	public void testMultipleArtworkUploadSuccess(){
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -813,13 +832,14 @@ public class FileManagerTests extends AndroidTestCase2 {
 	/**
 	 * Testing uploading persistent SdlFile
 	 */
+	@Test
 	public void testPersistentFileUploaded(){
 		ISdl internalInterface = mock(ISdl.class);
 
 		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
 
 		final SdlFile file = new SdlFile();
-		file.setName(Test.GENERAL_STRING_LIST.get(0));
+		file.setName(TestValues.GENERAL_STRING_LIST.get(0));
 		file.setPersistent(true);
 
 		FileManagerConfig fileManagerConfig = new FileManagerConfig();
@@ -835,6 +855,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 	/**
 	 * Test FileManagerConfig
 	 */
+	@Test
 	public void testFileManagerConfig() {
 		FileManagerConfig fileManagerConfig = new FileManagerConfig();
 		fileManagerConfig.setFileRetryCount(2);
@@ -847,6 +868,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 	 * Tests overwrite property for uploading a file.
 	 * Checks to make sure file does not overwrite itself if overwrite property is set to false
 	 */
+	@Test
 	public void testOverwriteFileProperty() {
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -883,6 +905,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 	 * Tests overwrite property for uploading a list of files.
 	 * Checks to make sure files do not overwrite themselves if overwrite property is set to false.
 	 */
+	@Test
 	public void testOverWriteFilePropertyListFiles() {
 		final ISdl internalInterface = mock(ISdl.class);
 
@@ -890,8 +913,8 @@ public class FileManagerTests extends AndroidTestCase2 {
 		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
 
 		final SdlFile validFile2 = new SdlFile();
-		validFile2.setName(Test.GENERAL_STRING + "2");
-		validFile2.setFileData(Test.GENERAL_BYTE_ARRAY);
+		validFile2.setName(TestValues.GENERAL_STRING + "2");
+		validFile2.setFileData(TestValues.GENERAL_BYTE_ARRAY);
 		validFile2.setPersistent(false);
 		validFile2.setType(FileType.GRAPHIC_JPEG);
 
@@ -929,6 +952,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 	/**
 	 * 	Test custom overridden SdlFile equals method
 	 */
+	@Test
 	public void testSdlFileEquals() {
 		// Case 1: object is null, assertFalse
 		SdlFile artwork1 = new SdlFile("image1", FileType.GRAPHIC_PNG, 1, true);
@@ -967,7 +991,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 		artwork1 = new SdlFile("image1", FileType.GRAPHIC_PNG, 1, false);
 		artwork2 = new SdlFile("image1", FileType.GRAPHIC_PNG, 1, false);
 		byte[] GENERAL_BYTE_ARRAY2 = new byte[2];
-		artwork1.setFileData(Test.GENERAL_BYTE_ARRAY);
+		artwork1.setFileData(TestValues.GENERAL_BYTE_ARRAY);
 		artwork2.setFileData(GENERAL_BYTE_ARRAY2);
 		assertFalse(artwork1.equals(artwork2));
 

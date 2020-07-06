@@ -35,32 +35,36 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.Choice;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
 import static org.mockito.Mockito.mock;
 
-public class CheckChoiceVROptionalOperationTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class CheckChoiceVROptionalOperationTests {
 
 	private CheckChoiceVROptionalOperation checkChoiceVROptionalOperation;
 
-	@Override
+	@Before
 	public void setUp() throws Exception{
-		super.setUp();
 
 		ISdl internalInterface = mock(ISdl.class);
 		CheckChoiceVROptionalInterface checkChoiceVROptionalInterface = mock(CheckChoiceVROptionalInterface.class);
 		checkChoiceVROptionalOperation = new CheckChoiceVROptionalOperation(internalInterface, checkChoiceVROptionalInterface);
 	}
 
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-	}
-
+	@Test
 	public void testCreateChoiceNoVR(){
 		CreateInteractionChoiceSet setNoVR = checkChoiceVROptionalOperation.testCellWithVR(false);
 		assertNotNull(setNoVR);
@@ -69,6 +73,7 @@ public class CheckChoiceVROptionalOperationTests extends AndroidTestCase2 {
 		assertNull(choice.getVrCommands());
 	}
 
+	@Test
 	public void testCreateChoiceWithVR(){
 		CreateInteractionChoiceSet setNoVR = checkChoiceVROptionalOperation.testCellWithVR(true);
 		assertNotNull(setNoVR);
@@ -77,6 +82,7 @@ public class CheckChoiceVROptionalOperationTests extends AndroidTestCase2 {
 		assertEquals(choice.getVrCommands().get(0), "Test VR");
 	}
 
+	@Test
 	public void testDeleteInteractionChoiceSet(){
 		DeleteInteractionChoiceSet deleteSet = checkChoiceVROptionalOperation.createDeleteInteractionChoiceSet();
 		assertNotNull(deleteSet);

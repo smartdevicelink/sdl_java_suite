@@ -17,6 +17,7 @@
  */
 package android.os;
 
+@Deprecated
 public interface Parcelable {
 
     int describeContents();

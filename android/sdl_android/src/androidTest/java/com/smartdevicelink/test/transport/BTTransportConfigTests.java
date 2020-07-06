@@ -1,6 +1,6 @@
 package com.smartdevicelink.test.transport;
 
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 
@@ -31,13 +31,13 @@ public class BTTransportConfigTests extends TestCase {
 		TransportType actualTransportType   = testConfig1.getTransportType();
 		
 		// Valid Tests
-		assertEquals(Test.MATCH, expectedTransportType, actualTransportType);
-		assertTrue(Test.TRUE, actualShareConnection);
+		assertEquals(TestValues.MATCH, expectedTransportType, actualTransportType);
+		assertTrue(TestValues.TRUE, actualShareConnection);
 		
 		
 		testConfig1.setKeepSocketActive(true);
-		assertTrue(Test.TRUE, testConfig1.getKeepSocketActive());
+		assertTrue(TestValues.TRUE, testConfig1.getKeepSocketActive());
 		testConfig1.setKeepSocketActive(false);
-		assertFalse(Test.FALSE, testConfig1.getKeepSocketActive());
+		assertFalse(TestValues.FALSE, testConfig1.getKeepSocketActive());
 	}	
 }

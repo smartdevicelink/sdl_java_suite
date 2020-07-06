@@ -16,8 +16,9 @@
   * Note: This file has been modified from its original form.
   */
 
- package android.util;
+package android.util;
 
+@Deprecated
 public class Log {
 
 

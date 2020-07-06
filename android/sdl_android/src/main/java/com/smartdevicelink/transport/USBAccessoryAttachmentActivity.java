@@ -42,7 +42,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
-import android.util.Log;
 
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.DebugTool;
@@ -118,7 +117,7 @@ public class USBAccessoryAttachmentActivity extends Activity {
         }
         final Intent intent = getIntent();
         String action = intent.getAction();
-        Log.d(TAG, "Received intent with action: " + action);
+        DebugTool.logInfo(TAG, "Received intent with action: " + action);
 
         if (UsbManager.ACTION_USB_ACCESSORY_ATTACHED.equals(action)) {
             usbAccessory = intent.getParcelableExtra(UsbManager.EXTRA_ACCESSORY);
@@ -164,8 +163,8 @@ public class USBAccessoryAttachmentActivity extends Activity {
                         serviceIntent = new Intent();
                         serviceIntent.setComponent(optimalRouterService.getRouterServiceComponentName());
                     } else{
-                        Log.d(TAG, "No SDL Router Services found");
-                        Log.d(TAG, "WARNING: This application has not specified its SdlRouterService correctly in the manifest. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
+                        DebugTool.logInfo(TAG, "No SDL Router Services found");
+                        DebugTool.logInfo(TAG, "WARNING: This application has not specified its SdlRouterService correctly in the manifest. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
                         // At this point to ensure that USB connection is still possible it might be
                         // worth trying to use the legacy USB transport scheme
                         attemptLegacyUsbConnection(usbAccessory);
@@ -184,7 +183,7 @@ public class USBAccessoryAttachmentActivity extends Activity {
 
                         if(startedService == null){
                             // A router service was not started or is not running.
-                            DebugTool.logError(TAG + " - Error starting router service. Attempting legacy connection ");
+                            DebugTool.logError(TAG, " - Error starting router service. Attempting legacy connection ");
                             attemptLegacyUsbConnection(usbAccessory);
                             return;
                         }
@@ -207,7 +206,7 @@ public class USBAccessoryAttachmentActivity extends Activity {
                         }
 
                     } catch (SecurityException e) {
-                        Log.e(TAG, "Security exception, process is bad");
+                        DebugTool.logError(TAG, "Security exception, process is bad");
                     }
                 } else {
                     if (usbAccessory!=null) {
@@ -226,13 +225,13 @@ public class USBAccessoryAttachmentActivity extends Activity {
     
     private void attemptLegacyUsbConnection(UsbAccessory usbAccessory){
         if(usbAccessory != null) {
-            DebugTool.logInfo("Attempting to send USB connection intent using legacy method");
+            DebugTool.logInfo(TAG, "Attempting to send USB connection intent using legacy method");
             Intent usbAccessoryAttachedIntent = new Intent(USBTransport.ACTION_USB_ACCESSORY_ATTACHED);
             usbAccessoryAttachedIntent.putExtra(UsbManager.EXTRA_ACCESSORY, usbAccessory);
             usbAccessoryAttachedIntent.putExtra(UsbManager.EXTRA_PERMISSION_GRANTED, permissionGranted);
             AndroidTools.sendExplicitBroadcast(getApplicationContext(), usbAccessoryAttachedIntent, null);
         }else{
-            DebugTool.logError("Unable to start legacy USB mode as the accessory was null");
+            DebugTool.logError(TAG, "Unable to start legacy USB mode as the accessory was null");
         }
         finish();
     }

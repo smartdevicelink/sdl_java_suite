@@ -35,29 +35,27 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import com.smartdevicelink.AndroidTestCase2;
-import com.smartdevicelink.test.Test;
+import android.support.test.runner.AndroidJUnit4;
 
-public class MenuConfigurationTests extends AndroidTestCase2 {
+import com.smartdevicelink.test.TestValues;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static junit.framework.TestCase.assertEquals;
+
+@RunWith(AndroidJUnit4.class)
+public class MenuConfigurationTests {
 
 
-	@Override
-	public void setUp() throws Exception{
-		super.setUp();
-	}
-
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-	}
-
+	@Test
 	public void testSettersAndGetters(){
 
 		// set everything - we only use the constructor to set variables in the Menu Manager
-		MenuConfiguration menuConfiguration = new MenuConfiguration(Test.GENERAL_MENU_LAYOUT, Test.GENERAL_MENU_LAYOUT);
+		MenuConfiguration menuConfiguration = new MenuConfiguration(TestValues.GENERAL_MENU_LAYOUT, TestValues.GENERAL_MENU_LAYOUT);
 
 		// use getters and assert equality
-		assertEquals(menuConfiguration.getMenuLayout(), Test.GENERAL_MENU_LAYOUT);
-		assertEquals(menuConfiguration.getSubMenuLayout(), Test.GENERAL_MENU_LAYOUT);
+		assertEquals(menuConfiguration.getMenuLayout(), TestValues.GENERAL_MENU_LAYOUT);
+		assertEquals(menuConfiguration.getSubMenuLayout(), TestValues.GENERAL_MENU_LAYOUT);
 	}
 }

@@ -2,7 +2,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 
 import com.smartdevicelink.proxy.rpc.Coordinate;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -23,8 +23,8 @@ public class CoordinateTests extends TestCase {
     public void setUp(){
         msg = new Coordinate();
 
-        msg.setLatitudeDegrees(Test.GENERAL_FLOAT);
-        msg.setLongitudeDegrees(Test.GENERAL_FLOAT);
+        msg.setLatitudeDegrees(TestValues.GENERAL_FLOAT);
+        msg.setLongitudeDegrees(TestValues.GENERAL_FLOAT);
     }
 
     /**
@@ -36,26 +36,26 @@ public class CoordinateTests extends TestCase {
         float floatLong = msg.getLongitudeDegrees();
 
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_FLOAT, floatLat);
-        assertEquals(Test.MATCH, Test.GENERAL_FLOAT, floatLong);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_FLOAT, floatLat);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_FLOAT, floatLong);
         // Invalid/Null Tests
         Coordinate msg = new Coordinate();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
 
-        assertNull(Test.NULL, msg.getLatitudeDegrees());
-        assertNull(Test.NULL, msg.getLongitudeDegrees());
+        assertNull(TestValues.NULL, msg.getLatitudeDegrees());
+        assertNull(TestValues.NULL, msg.getLongitudeDegrees());
     }
 
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(Coordinate.KEY_LATITUDE_DEGREES, (Float) Test.GENERAL_FLOAT);
-            reference.put(Coordinate.KEY_LONGITUDE_DEGREES, (Float) Test.GENERAL_FLOAT);
+            reference.put(Coordinate.KEY_LATITUDE_DEGREES, (Float) TestValues.GENERAL_FLOAT);
+            reference.put(Coordinate.KEY_LONGITUDE_DEGREES, (Float) TestValues.GENERAL_FLOAT);
 
             JSONObject underTest = msg.serializeJSON();
 
-            assertEquals(Test.MATCH, reference.length(), underTest.length());
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
@@ -64,10 +64,10 @@ public class CoordinateTests extends TestCase {
                 Object a = JsonUtils.readObjectFromJsonObject(reference, key);
                 Object b = JsonUtils.readObjectFromJsonObject(underTest, key);
 
-                assertEquals(Test.MATCH, a, b);
+                assertEquals(TestValues.MATCH, a, b);
             }
         } catch(JSONException e){
-            fail(Test.JSON_FAIL);
+            fail(TestValues.JSON_FAIL);
         }
     }
 }
