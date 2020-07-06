@@ -1,7 +1,7 @@
 package com.smartdevicelink.test.rpc.datatypes;
 
 import com.smartdevicelink.proxy.rpc.MediaServiceManifest;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -24,7 +24,7 @@ public class MediaServiceManifestTests extends TestCase {
 
 		// Invalid/Null Tests
 		MediaServiceManifest msg = new MediaServiceManifest();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 	}
 
 }

@@ -1,6 +1,6 @@
 package com.smartdevicelink.test.trace;
 
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.trace.Mime;
 
 import junit.framework.TestCase;
@@ -37,15 +37,15 @@ public class MimeTests extends TestCase {
 			String actualEncodedString3 = Mime.base64Encode(testBytes, 0, testBytes.length);
 			
 			// Valid Tests
-			assertEquals(Test.MATCH, expectedEncodedString, actualEncodedString1);
-			assertEquals(Test.MATCH, expectedEncodedString, actualEncodedString2);
-			assertEquals(Test.MATCH, expectedEncodedString, actualEncodedString3);
+			assertEquals(TestValues.MATCH, expectedEncodedString, actualEncodedString1);
+			assertEquals(TestValues.MATCH, expectedEncodedString, actualEncodedString2);
+			assertEquals(TestValues.MATCH, expectedEncodedString, actualEncodedString3);
 			
 			// Invalid/Null Tests
-			assertNull(Test.NULL, actualNullResult1);
-			assertNull(Test.NULL, actualNullResult2);
-			assertNull(Test.NULL, actualNullResult3);
-			assertNull(Test.NULL, actualInvalidResult);
+			assertNull(TestValues.NULL, actualNullResult1);
+			assertNull(TestValues.NULL, actualNullResult2);
+			assertNull(TestValues.NULL, actualNullResult3);
+			assertNull(TestValues.NULL, actualInvalidResult);
 						
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();

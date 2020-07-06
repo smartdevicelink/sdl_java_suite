@@ -4,9 +4,12 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.SetCloudAppPropertiesResponse;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import org.json.JSONObject;
+import org.junit.Test;
+
+import static junit.framework.TestCase.assertNotNull;
 
 public class SetCloudAppPropertiesResponseTests extends BaseRpcTests {
     @Override
@@ -32,10 +35,11 @@ public class SetCloudAppPropertiesResponseTests extends BaseRpcTests {
     /**
      * Tests the expected values of the RPC message.
      */
+    @Test
     public void testRpcValues () {
         // Invalid/Null Tests
         SetCloudAppPropertiesResponse msg = new SetCloudAppPropertiesResponse();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
     }
 

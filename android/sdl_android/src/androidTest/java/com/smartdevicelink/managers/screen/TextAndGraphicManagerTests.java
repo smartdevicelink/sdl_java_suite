@@ -2,8 +2,8 @@ package com.smartdevicelink.managers.screen;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.test.runner.AndroidJUnit4;
 
-import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
@@ -20,27 +20,35 @@ import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 
 import org.json.JSONException;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static android.support.test.InstrumentationRegistry.getContext;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
 import static org.mockito.Mockito.mock;
 
 /**
  * This is a unit test class for the SmartDeviceLink library manager class :
  * {@link com.smartdevicelink.managers.screen.TextAndGraphicManager}
  */
-public class TextAndGraphicManagerTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class TextAndGraphicManagerTests {
 
 	// SETUP / HELPERS
 	private TextAndGraphicManager textAndGraphicManager;
 	private SdlArtwork testArtwork;
 
-	@Override
+	@Before
 	public void setUp() throws Exception{
-		super.setUp();
-		Context mTestContext = this.getContext();
+		Context mTestContext = getContext();
 		// mock things
 		ISdl internalInterface = mock(ISdl.class);
 		FileManager fileManager = mock(FileManager.class);
@@ -55,10 +63,6 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager, softButtonManager);
 	}
 
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-	}
 
 	private WindowCapability getWindowCapability(int numberOfMainFields){
 
@@ -102,6 +106,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		return windowCapability;
 	}
 
+	@Test
 	public void testInstantiation(){
 
 		assertNull(textAndGraphicManager.getTextField1());
@@ -132,6 +137,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 	/**
 	 * Test getting number of lines available to be set based off of windowCapability
 	 */
+	@Test
 	public void testGetMainLines(){
 
 		// We want to test that the looping works. By default, it will return 4 if display cap is null
@@ -146,6 +152,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		assertEquals(ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(textAndGraphicManager.defaultMainWindowCapability), 3);
 	}
 
+	@Test
 	public void testAssemble1Line(){
 
 		Show inputShow = new Show();
@@ -196,6 +203,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		assertEquals(assembledShow.getMainField1(), "Wednesday - Dudes");
 	}
 
+	@Test
 	public void testAssemble2Lines() {
 
 		Show inputShow = new Show();
@@ -293,6 +301,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		assertEquals(tags.getMainField2(), tagsList2);
 	}
 
+	@Test
 	public void testAssemble3Lines() {
 
 		Show inputShow = new Show();
@@ -386,6 +395,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		assertEquals(assembledShow.getMainField3(), "My - Dudes");
 	}
 
+	@Test
 	public void testAssemble4Lines() {
 
 		Show inputShow = new Show();
@@ -519,6 +529,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 	/**
 	 * Testing if WindowCapability is null, TextFields should still update.
 	 */
+	@Test
 	public void testAssemble4LinesNullWindowCapability() {
 
 		Show inputShow = new Show();
@@ -629,6 +640,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		assertEquals(tags.getMainField4(), tagsList4);
 	}
 
+	@Test
 	public void testMediaTrackTextField() {
 
 		String songTitle = "Wild For The Night";
@@ -636,6 +648,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		assertEquals(textAndGraphicManager.getMediaTrackTextField(), songTitle);
 	}
 
+	@Test
 	public void testTemplateTitle() {
 
 		String title = "template title";
@@ -643,12 +656,14 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		assertEquals(textAndGraphicManager.getTitle(), title);
 	}
 
+	@Test
 	public void testAlignment() {
 
 		textAndGraphicManager.setTextAlignment(TextAlignment.LEFT_ALIGNED);
 		assertEquals(textAndGraphicManager.getTextAlignment(), TextAlignment.LEFT_ALIGNED);
 	}
 
+	@Test
 	public void testExtractTextFromShow(){
 
 		Show mainShow = new Show();
@@ -666,11 +681,13 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 
 	// TEST IMAGES
 
+	@Test
 	public void testSetPrimaryGraphic() {
 		textAndGraphicManager.setPrimaryGraphic(testArtwork);
 		assertEquals(textAndGraphicManager.getPrimaryGraphic(), testArtwork);
 	}
 
+	@Test
 	public void testSetSecondaryGraphic() {
 		textAndGraphicManager.setSecondaryGraphic(testArtwork);
 		assertEquals(textAndGraphicManager.getSecondaryGraphic(), testArtwork);
@@ -678,6 +695,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 
 	// TEST DISPOSE
 
+	@Test
 	public void testDispose() {
 		textAndGraphicManager.dispose();
 

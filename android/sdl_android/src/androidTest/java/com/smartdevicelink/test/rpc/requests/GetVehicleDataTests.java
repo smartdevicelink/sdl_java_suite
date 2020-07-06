@@ -6,13 +6,21 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.GetVehicleData;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.Hashtable;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
@@ -24,37 +32,37 @@ public class GetVehicleDataTests extends BaseRpcTests {
     protected RPCMessage createMessage(){
         GetVehicleData msg = new GetVehicleData();
 
-		msg.setSpeed(Test.GENERAL_BOOLEAN);
-		msg.setRpm(Test.GENERAL_BOOLEAN);
-		msg.setExternalTemperature(Test.GENERAL_BOOLEAN);
-		msg.setFuelLevel(Test.GENERAL_BOOLEAN);
-		msg.setPrndl(Test.GENERAL_BOOLEAN);
-		msg.setTirePressure(Test.GENERAL_BOOLEAN);
-		msg.setEngineTorque(Test.GENERAL_BOOLEAN);
-		msg.setEngineOilLife(Test.GENERAL_BOOLEAN);
-		msg.setOdometer(Test.GENERAL_BOOLEAN);
-		msg.setGps(Test.GENERAL_BOOLEAN);
-		msg.setFuelLevelState(Test.GENERAL_BOOLEAN);
-		msg.setInstantFuelConsumption(Test.GENERAL_BOOLEAN);
-		msg.setVin(Test.GENERAL_BOOLEAN);
-		msg.setBeltStatus(Test.GENERAL_BOOLEAN);
-		msg.setBodyInformation(Test.GENERAL_BOOLEAN);
-		msg.setDeviceStatus(Test.GENERAL_BOOLEAN);
-		msg.setDriverBraking(Test.GENERAL_BOOLEAN);
-		msg.setWiperStatus(Test.GENERAL_BOOLEAN);
-		msg.setHeadLampStatus(Test.GENERAL_BOOLEAN);
-		msg.setAccPedalPosition(Test.GENERAL_BOOLEAN);
-		msg.setSteeringWheelAngle(Test.GENERAL_BOOLEAN);
-		msg.setECallInfo(Test.GENERAL_BOOLEAN);
-		msg.setAirbagStatus(Test.GENERAL_BOOLEAN);
-		msg.setEmergencyEvent(Test.GENERAL_BOOLEAN);
-		msg.setClusterModeStatus(Test.GENERAL_BOOLEAN);
-		msg.setMyKey(Test.GENERAL_BOOLEAN);
-		msg.setFuelRange(Test.GENERAL_BOOLEAN);
-		msg.setTurnSignal(Test.GENERAL_BOOLEAN);
-		msg.setElectronicParkBrakeStatus(Test.GENERAL_BOOLEAN);
-		msg.setStabilityControlsStatus(Test.GENERAL_BOOLEAN);
-		msg.setOEMCustomVehicleData(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, Test.GENERAL_BOOLEAN);
+		msg.setSpeed(TestValues.GENERAL_BOOLEAN);
+		msg.setRpm(TestValues.GENERAL_BOOLEAN);
+		msg.setExternalTemperature(TestValues.GENERAL_BOOLEAN);
+		msg.setFuelLevel(TestValues.GENERAL_BOOLEAN);
+		msg.setPrndl(TestValues.GENERAL_BOOLEAN);
+		msg.setTirePressure(TestValues.GENERAL_BOOLEAN);
+		msg.setEngineTorque(TestValues.GENERAL_BOOLEAN);
+		msg.setEngineOilLife(TestValues.GENERAL_BOOLEAN);
+		msg.setOdometer(TestValues.GENERAL_BOOLEAN);
+		msg.setGps(TestValues.GENERAL_BOOLEAN);
+		msg.setFuelLevelState(TestValues.GENERAL_BOOLEAN);
+		msg.setInstantFuelConsumption(TestValues.GENERAL_BOOLEAN);
+		msg.setVin(TestValues.GENERAL_BOOLEAN);
+		msg.setBeltStatus(TestValues.GENERAL_BOOLEAN);
+		msg.setBodyInformation(TestValues.GENERAL_BOOLEAN);
+		msg.setDeviceStatus(TestValues.GENERAL_BOOLEAN);
+		msg.setDriverBraking(TestValues.GENERAL_BOOLEAN);
+		msg.setWiperStatus(TestValues.GENERAL_BOOLEAN);
+		msg.setHeadLampStatus(TestValues.GENERAL_BOOLEAN);
+		msg.setAccPedalPosition(TestValues.GENERAL_BOOLEAN);
+		msg.setSteeringWheelAngle(TestValues.GENERAL_BOOLEAN);
+		msg.setECallInfo(TestValues.GENERAL_BOOLEAN);
+		msg.setAirbagStatus(TestValues.GENERAL_BOOLEAN);
+		msg.setEmergencyEvent(TestValues.GENERAL_BOOLEAN);
+		msg.setClusterModeStatus(TestValues.GENERAL_BOOLEAN);
+		msg.setMyKey(TestValues.GENERAL_BOOLEAN);
+		msg.setFuelRange(TestValues.GENERAL_BOOLEAN);
+		msg.setTurnSignal(TestValues.GENERAL_BOOLEAN);
+		msg.setElectronicParkBrakeStatus(TestValues.GENERAL_BOOLEAN);
+		msg.setStabilityControlsStatus(TestValues.GENERAL_BOOLEAN);
+		msg.setOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_BOOLEAN);
 
         return msg;
     }
@@ -74,39 +82,39 @@ public class GetVehicleDataTests extends BaseRpcTests {
         JSONObject result = new JSONObject();
 
         try{
-            result.put(GetVehicleData.KEY_SPEED, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_RPM, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_EXTERNAL_TEMPERATURE, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_FUEL_LEVEL, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_PRNDL, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_TIRE_PRESSURE, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_ENGINE_TORQUE, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_ENGINE_OIL_LIFE, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_ODOMETER, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_GPS, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_FUEL_LEVEL_STATE, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_INSTANT_FUEL_CONSUMPTION, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_VIN, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_BELT_STATUS, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_BODY_INFORMATION, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_DEVICE_STATUS, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_DRIVER_BRAKING, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_WIPER_STATUS, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_HEAD_LAMP_STATUS, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_ACC_PEDAL_POSITION, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_STEERING_WHEEL_ANGLE, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_E_CALL_INFO, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_AIRBAG_STATUS, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_EMERGENCY_EVENT, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_CLUSTER_MODE_STATUS, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_MY_KEY, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_FUEL_RANGE, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_TURN_SIGNAL, Test.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS, Test.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_SPEED, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_RPM, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_EXTERNAL_TEMPERATURE, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_FUEL_LEVEL, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_PRNDL, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_TIRE_PRESSURE, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_ENGINE_TORQUE, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_ENGINE_OIL_LIFE, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_ODOMETER, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_GPS, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_FUEL_LEVEL_STATE, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_INSTANT_FUEL_CONSUMPTION, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_VIN, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_BELT_STATUS, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_BODY_INFORMATION, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_DEVICE_STATUS, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_DRIVER_BRAKING, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_WIPER_STATUS, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_HEAD_LAMP_STATUS, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_ACC_PEDAL_POSITION, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_STEERING_WHEEL_ANGLE, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_E_CALL_INFO, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_AIRBAG_STATUS, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_EMERGENCY_EVENT, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_CLUSTER_MODE_STATUS, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_MY_KEY, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_FUEL_RANGE, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_TURN_SIGNAL, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS, TestValues.GENERAL_BOOLEAN);
             result.put(GetVehicleData.KEY_STABILITY_CONTROLS_STATUS, Test.GENERAL_BOOLEAN);
-            result.put(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, Test.GENERAL_BOOLEAN);
+            result.put(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_BOOLEAN);
         }catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -115,131 +123,133 @@ public class GetVehicleDataTests extends BaseRpcTests {
     /**
 	 * Tests the expected values of the RPC message.
 	 */
-    public void testRpcValues () {    	
+    @Test
+    public void testRpcValues () {
     	// Valid Tests	
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getSpeed());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getRpm());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getExternalTemperature());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getFuelLevel());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getPrndl());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getTirePressure());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getEngineTorque());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getEngineOilLife());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getOdometer());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getGps());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getFuelLevelState());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getInstantFuelConsumption());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getVin());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getBeltStatus());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getBodyInformation());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getVin());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getDeviceStatus());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getDriverBraking());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getWiperStatus());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getHeadLampStatus());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getAccPedalPosition());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getSteeringWheelAngle());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getECallInfo());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getAirbagStatus());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getEmergencyEvent());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getClusterModeStatus());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getMyKey());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getFuelRange());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getTurnSignal());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getElectronicParkBrakeStatus());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getStabilityControlsStatus());
-		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getOEMCustomVehicleData(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getSpeed());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getRpm());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getExternalTemperature());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getFuelLevel());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getPrndl());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getTirePressure());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getEngineTorque());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getEngineOilLife());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getOdometer());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getGps());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getFuelLevelState());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getInstantFuelConsumption());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getVin());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getBeltStatus());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getBodyInformation());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getVin());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getDeviceStatus());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getDriverBraking());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getWiperStatus());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getHeadLampStatus());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getAccPedalPosition());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getSteeringWheelAngle());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getECallInfo());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getAirbagStatus());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getEmergencyEvent());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getClusterModeStatus());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getMyKey());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getFuelRange());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getTurnSignal());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getElectronicParkBrakeStatus());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getStabilityControlsStatus());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
     
 		// Invalid/Null Tests
         GetVehicleData msg = new GetVehicleData();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getAccPedalPosition());
-        assertNull(Test.NULL, msg.getAirbagStatus());
-        assertNull(Test.NULL, msg.getBeltStatus());
-        assertNull(Test.NULL, msg.getDriverBraking());
-        assertNull(Test.NULL, msg.getFuelLevel());
-        assertNull(Test.NULL, msg.getTirePressure());
-        assertNull(Test.NULL, msg.getWiperStatus());
-        assertNull(Test.NULL, msg.getGps());
-        assertNull(Test.NULL, msg.getSpeed());
-        assertNull(Test.NULL, msg.getRpm());
-        assertNull(Test.NULL, msg.getFuelLevelState());
-        assertNull(Test.NULL, msg.getInstantFuelConsumption());
-        assertNull(Test.NULL, msg.getExternalTemperature());
-        assertNull(Test.NULL, msg.getVin());
-        assertNull(Test.NULL, msg.getPrndl());
-        assertNull(Test.NULL, msg.getOdometer());
-        assertNull(Test.NULL, msg.getBodyInformation());
-        assertNull(Test.NULL, msg.getDeviceStatus());
-        assertNull(Test.NULL, msg.getHeadLampStatus());
-        assertNull(Test.NULL, msg.getEngineTorque());
-        assertNull(Test.NULL, msg.getEngineOilLife());
-        assertNull(Test.NULL, msg.getSteeringWheelAngle());
-        assertNull(Test.NULL, msg.getECallInfo());
-        assertNull(Test.NULL, msg.getEmergencyEvent());
-        assertNull(Test.NULL, msg.getClusterModeStatus());
-        assertNull(Test.NULL, msg.getMyKey());
-        assertNull(Test.NULL, msg.getFuelRange());
-        assertNull(Test.NULL, msg.getTurnSignal());
-        assertNull(Test.NULL, msg.getElectronicParkBrakeStatus());
-        assertNull(Test.NULL, msg.getStabilityControlsStatus());
-        assertNull(Test.NULL, msg.getOEMCustomVehicleData(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
+        assertNull(TestValues.NULL, msg.getAccPedalPosition());
+        assertNull(TestValues.NULL, msg.getAirbagStatus());
+        assertNull(TestValues.NULL, msg.getBeltStatus());
+        assertNull(TestValues.NULL, msg.getDriverBraking());
+        assertNull(TestValues.NULL, msg.getFuelLevel());
+        assertNull(TestValues.NULL, msg.getTirePressure());
+        assertNull(TestValues.NULL, msg.getWiperStatus());
+        assertNull(TestValues.NULL, msg.getGps());
+        assertNull(TestValues.NULL, msg.getSpeed());
+        assertNull(TestValues.NULL, msg.getRpm());
+        assertNull(TestValues.NULL, msg.getFuelLevelState());
+        assertNull(TestValues.NULL, msg.getInstantFuelConsumption());
+        assertNull(TestValues.NULL, msg.getExternalTemperature());
+        assertNull(TestValues.NULL, msg.getVin());
+        assertNull(TestValues.NULL, msg.getPrndl());
+        assertNull(TestValues.NULL, msg.getOdometer());
+        assertNull(TestValues.NULL, msg.getBodyInformation());
+        assertNull(TestValues.NULL, msg.getDeviceStatus());
+        assertNull(TestValues.NULL, msg.getHeadLampStatus());
+        assertNull(TestValues.NULL, msg.getEngineTorque());
+        assertNull(TestValues.NULL, msg.getEngineOilLife());
+        assertNull(TestValues.NULL, msg.getSteeringWheelAngle());
+        assertNull(TestValues.NULL, msg.getECallInfo());
+        assertNull(TestValues.NULL, msg.getEmergencyEvent());
+        assertNull(TestValues.NULL, msg.getClusterModeStatus());
+        assertNull(TestValues.NULL, msg.getMyKey());
+        assertNull(TestValues.NULL, msg.getFuelRange());
+        assertNull(TestValues.NULL, msg.getTurnSignal());
+        assertNull(TestValues.NULL, msg.getElectronicParkBrakeStatus());
+        assertNull(TestValues.NULL, msg.getStabilityControlsStatus());
+        assertNull(TestValues.NULL, msg.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
     }
     
     /**
      * Tests a valid JSON construction of this RPC message.
      */
+    @Test
     public void testJsonConstructor () {
-    	JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-    	assertNotNull(Test.NOT_NULL, commandJson);
+    	JSONObject commandJson = JsonFileReader.readId(getTargetContext(), getCommandType(), getMessageType());
+    	assertNotNull(TestValues.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			GetVehicleData cmd = new GetVehicleData(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(Test.NOT_NULL, body);
+			assertNotNull(TestValues.NOT_NULL, body);
 			
 			// Test everything in the json body.
 			assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
 			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_SPEED), cmd.getSpeed());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_RPM), cmd.getRpm());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_EXTERNAL_TEMPERATURE), cmd.getExternalTemperature());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_FUEL_LEVEL), cmd.getFuelLevel());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_VIN), cmd.getVin());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_PRNDL), cmd.getPrndl());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_TIRE_PRESSURE), cmd.getTirePressure());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_ENGINE_TORQUE), cmd.getEngineTorque());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_ENGINE_OIL_LIFE), cmd.getEngineOilLife());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_ODOMETER), cmd.getOdometer());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_GPS), cmd.getGps());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_FUEL_LEVEL_STATE), cmd.getFuelLevelState());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_INSTANT_FUEL_CONSUMPTION), cmd.getInstantFuelConsumption());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_BELT_STATUS), cmd.getBeltStatus());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_BODY_INFORMATION), cmd.getBodyInformation());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_DEVICE_STATUS), cmd.getDeviceStatus());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_DRIVER_BRAKING), cmd.getDriverBraking());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_WIPER_STATUS), cmd.getWiperStatus());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_HEAD_LAMP_STATUS), cmd.getHeadLampStatus());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_ACC_PEDAL_POSITION), cmd.getAccPedalPosition());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_STEERING_WHEEL_ANGLE), cmd.getSteeringWheelAngle());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_E_CALL_INFO), cmd.getECallInfo());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_AIRBAG_STATUS), cmd.getAirbagStatus());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_EMERGENCY_EVENT), cmd.getEmergencyEvent());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_CLUSTER_MODE_STATUS), cmd.getClusterModeStatus());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_MY_KEY), cmd.getMyKey());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_FUEL_RANGE), cmd.getFuelRange());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_TURN_SIGNAL), cmd.getTurnSignal());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS), cmd.getElectronicParkBrakeStatus());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_STABILITY_CONTROLS_STATUS), cmd.getStabilityControlsStatus());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME), cmd.getOEMCustomVehicleData(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_SPEED), cmd.getSpeed());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_RPM), cmd.getRpm());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_EXTERNAL_TEMPERATURE), cmd.getExternalTemperature());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_FUEL_LEVEL), cmd.getFuelLevel());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_VIN), cmd.getVin());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_PRNDL), cmd.getPrndl());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_TIRE_PRESSURE), cmd.getTirePressure());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_ENGINE_TORQUE), cmd.getEngineTorque());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_ENGINE_OIL_LIFE), cmd.getEngineOilLife());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_ODOMETER), cmd.getOdometer());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_GPS), cmd.getGps());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_FUEL_LEVEL_STATE), cmd.getFuelLevelState());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_INSTANT_FUEL_CONSUMPTION), cmd.getInstantFuelConsumption());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_BELT_STATUS), cmd.getBeltStatus());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_BODY_INFORMATION), cmd.getBodyInformation());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_DEVICE_STATUS), cmd.getDeviceStatus());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_DRIVER_BRAKING), cmd.getDriverBraking());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_WIPER_STATUS), cmd.getWiperStatus());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_HEAD_LAMP_STATUS), cmd.getHeadLampStatus());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_ACC_PEDAL_POSITION), cmd.getAccPedalPosition());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_STEERING_WHEEL_ANGLE), cmd.getSteeringWheelAngle());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_E_CALL_INFO), cmd.getECallInfo());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_AIRBAG_STATUS), cmd.getAirbagStatus());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_EMERGENCY_EVENT), cmd.getEmergencyEvent());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_CLUSTER_MODE_STATUS), cmd.getClusterModeStatus());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_MY_KEY), cmd.getMyKey());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_FUEL_RANGE), cmd.getFuelRange());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_TURN_SIGNAL), cmd.getTurnSignal());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS), cmd.getElectronicParkBrakeStatus());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_STABILITY_CONTROLS_STATUS), cmd.getStabilityControlsStatus());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME), cmd.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}    	
     }
 }

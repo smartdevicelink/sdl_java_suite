@@ -1,6 +1,6 @@
 package com.smartdevicelink.test.trace;
 
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.trace.DiagLevel;
 import com.smartdevicelink.trace.enums.DetailLevel;
 import com.smartdevicelink.trace.enums.Mod;
@@ -42,86 +42,86 @@ public class DiagLevelTests extends TestCase {
 				
 		// Valid Tests
 		DiagLevel.setAllLevels(testVerbose);
-		assertEquals(Test.MATCH, testVerbose, DiagLevel.getLevel(testProto));
-		assertEquals(Test.MATCH, testVerbose, DiagLevel.getLevel(testProxy));
-		assertEquals(Test.MATCH, testVerbose, DiagLevel.getLevel(testTran));
-		assertEquals(Test.MATCH, testVerbose, DiagLevel.getLevel(testApp));
-		assertEquals(Test.MATCH, testVerbose, DiagLevel.getLevel(testRpc));
-		assertEquals(Test.MATCH, testVerbose, DiagLevel.getLevel(testMar));
+		assertEquals(TestValues.MATCH, testVerbose, DiagLevel.getLevel(testProto));
+		assertEquals(TestValues.MATCH, testVerbose, DiagLevel.getLevel(testProxy));
+		assertEquals(TestValues.MATCH, testVerbose, DiagLevel.getLevel(testTran));
+		assertEquals(TestValues.MATCH, testVerbose, DiagLevel.getLevel(testApp));
+		assertEquals(TestValues.MATCH, testVerbose, DiagLevel.getLevel(testRpc));
+		assertEquals(TestValues.MATCH, testVerbose, DiagLevel.getLevel(testMar));
 		
 		DiagLevel.setAllLevels(testTerse);
-		assertEquals(Test.MATCH, testTerse, DiagLevel.getLevel(testProto));
-		assertEquals(Test.MATCH, testTerse, DiagLevel.getLevel(testProxy));
-		assertEquals(Test.MATCH, testTerse, DiagLevel.getLevel(testTran));
-		assertEquals(Test.MATCH, testTerse, DiagLevel.getLevel(testApp));
-		assertEquals(Test.MATCH, testTerse, DiagLevel.getLevel(testRpc));
-		assertEquals(Test.MATCH, testTerse, DiagLevel.getLevel(testMar));
+		assertEquals(TestValues.MATCH, testTerse, DiagLevel.getLevel(testProto));
+		assertEquals(TestValues.MATCH, testTerse, DiagLevel.getLevel(testProxy));
+		assertEquals(TestValues.MATCH, testTerse, DiagLevel.getLevel(testTran));
+		assertEquals(TestValues.MATCH, testTerse, DiagLevel.getLevel(testApp));
+		assertEquals(TestValues.MATCH, testTerse, DiagLevel.getLevel(testRpc));
+		assertEquals(TestValues.MATCH, testTerse, DiagLevel.getLevel(testMar));
 		
 		DiagLevel.setAllLevels(testOff);
-		assertEquals(Test.MATCH, testOff, DiagLevel.getLevel(testProto));
-		assertEquals(Test.MATCH, testOff, DiagLevel.getLevel(testProxy));
-		assertEquals(Test.MATCH, testOff, DiagLevel.getLevel(testTran));
-		assertEquals(Test.MATCH, testOff, DiagLevel.getLevel(testApp));
-		assertEquals(Test.MATCH, testOff, DiagLevel.getLevel(testRpc));
-		assertEquals(Test.MATCH, testOff, DiagLevel.getLevel(testMar));
+		assertEquals(TestValues.MATCH, testOff, DiagLevel.getLevel(testProto));
+		assertEquals(TestValues.MATCH, testOff, DiagLevel.getLevel(testProxy));
+		assertEquals(TestValues.MATCH, testOff, DiagLevel.getLevel(testTran));
+		assertEquals(TestValues.MATCH, testOff, DiagLevel.getLevel(testApp));
+		assertEquals(TestValues.MATCH, testOff, DiagLevel.getLevel(testRpc));
+		assertEquals(TestValues.MATCH, testOff, DiagLevel.getLevel(testMar));
 		
 		
 		DiagLevel.setLevel(testMar, testVerbose);
-		assertEquals(Test.MATCH, testVerbose, DiagLevel.getLevel(testMar));		
+		assertEquals(TestValues.MATCH, testVerbose, DiagLevel.getLevel(testMar));
 		DiagLevel.setLevel(testMar, testTerse);
-		assertEquals(Test.MATCH, testTerse, DiagLevel.getLevel(testMar));		
+		assertEquals(TestValues.MATCH, testTerse, DiagLevel.getLevel(testMar));
 		DiagLevel.setLevel(testMar, testOff);
-		assertEquals(Test.MATCH, testOff, DiagLevel.getLevel(testMar));
+		assertEquals(TestValues.MATCH, testOff, DiagLevel.getLevel(testMar));
 		
 		DiagLevel.setLevel(testRpc, testVerbose);
-		assertEquals(Test.MATCH, testVerbose, DiagLevel.getLevel(testRpc));	
+		assertEquals(TestValues.MATCH, testVerbose, DiagLevel.getLevel(testRpc));
 		DiagLevel.setLevel(testRpc, testTerse);
-		assertEquals(Test.MATCH, testTerse, DiagLevel.getLevel(testRpc));			
+		assertEquals(TestValues.MATCH, testTerse, DiagLevel.getLevel(testRpc));
 		DiagLevel.setLevel(testRpc, testOff);
-		assertEquals(Test.MATCH, testOff, DiagLevel.getLevel(testRpc));	
+		assertEquals(TestValues.MATCH, testOff, DiagLevel.getLevel(testRpc));
 		
 		DiagLevel.setLevel(testApp, testVerbose);
-		assertEquals(Test.MATCH, testVerbose, DiagLevel.getLevel(testApp));
+		assertEquals(TestValues.MATCH, testVerbose, DiagLevel.getLevel(testApp));
 		DiagLevel.setLevel(testApp, testTerse);
-		assertEquals(Test.MATCH, testTerse, DiagLevel.getLevel(testApp));
+		assertEquals(TestValues.MATCH, testTerse, DiagLevel.getLevel(testApp));
 		DiagLevel.setLevel(testApp, testOff);
-		assertEquals(Test.MATCH, testOff, DiagLevel.getLevel(testApp));
+		assertEquals(TestValues.MATCH, testOff, DiagLevel.getLevel(testApp));
 		
 		DiagLevel.setLevel(testTran, testVerbose);
-		assertEquals(Test.MATCH, testVerbose, DiagLevel.getLevel(testTran));	
+		assertEquals(TestValues.MATCH, testVerbose, DiagLevel.getLevel(testTran));
 		DiagLevel.setLevel(testTran, testTerse);
-		assertEquals(Test.MATCH, testTerse, DiagLevel.getLevel(testTran));		
+		assertEquals(TestValues.MATCH, testTerse, DiagLevel.getLevel(testTran));
 		DiagLevel.setLevel(testTran, testOff);
-		assertEquals(Test.MATCH, testOff, DiagLevel.getLevel(testTran));	
+		assertEquals(TestValues.MATCH, testOff, DiagLevel.getLevel(testTran));
 		
 		DiagLevel.setLevel(testProxy, testVerbose);
-		assertEquals(Test.MATCH, testVerbose, DiagLevel.getLevel(testProxy));			
+		assertEquals(TestValues.MATCH, testVerbose, DiagLevel.getLevel(testProxy));
 		DiagLevel.setLevel(testProxy, testTerse);
-		assertEquals(Test.MATCH, testTerse, DiagLevel.getLevel(testProxy));		
+		assertEquals(TestValues.MATCH, testTerse, DiagLevel.getLevel(testProxy));
 		DiagLevel.setLevel(testProxy, testOff);
-		assertEquals(Test.MATCH, testOff, DiagLevel.getLevel(testProxy));
+		assertEquals(TestValues.MATCH, testOff, DiagLevel.getLevel(testProxy));
 		
 		DiagLevel.setLevel(testProto, testVerbose);
-		assertEquals(Test.MATCH, testVerbose, DiagLevel.getLevel(testProto));
+		assertEquals(TestValues.MATCH, testVerbose, DiagLevel.getLevel(testProto));
 		DiagLevel.setLevel(testProto, testTerse);
-		assertEquals(Test.MATCH, testTerse, DiagLevel.getLevel(testProto));
+		assertEquals(TestValues.MATCH, testTerse, DiagLevel.getLevel(testProto));
 		DiagLevel.setLevel(testProto, testOff);
-		assertEquals(Test.MATCH, testOff, DiagLevel.getLevel(testProto));
+		assertEquals(TestValues.MATCH, testOff, DiagLevel.getLevel(testProto));
 		
-		assertTrue(Test.TRUE, DiagLevel.isValidDetailLevel(testVerboseS));		
-		assertTrue(Test.TRUE, DiagLevel.isValidDetailLevel(testTerseS));		
-		assertTrue(Test.TRUE, DiagLevel.isValidDetailLevel(testOffS));	
+		assertTrue(TestValues.TRUE, DiagLevel.isValidDetailLevel(testVerboseS));
+		assertTrue(TestValues.TRUE, DiagLevel.isValidDetailLevel(testTerseS));
+		assertTrue(TestValues.TRUE, DiagLevel.isValidDetailLevel(testOffS));
 		
-		assertEquals(Test.MATCH, testVerbose, DiagLevel.toDetailLevel(testVerboseS));
-		assertEquals(Test.MATCH, testTerse, DiagLevel.toDetailLevel(testTerseS));
-		assertEquals(Test.MATCH, testOff, DiagLevel.toDetailLevel(testOffS));
-		assertEquals(Test.MATCH, testOff, DiagLevel.toDetailLevel(testInvalidS));
+		assertEquals(TestValues.MATCH, testVerbose, DiagLevel.toDetailLevel(testVerboseS));
+		assertEquals(TestValues.MATCH, testTerse, DiagLevel.toDetailLevel(testTerseS));
+		assertEquals(TestValues.MATCH, testOff, DiagLevel.toDetailLevel(testOffS));
+		assertEquals(TestValues.MATCH, testOff, DiagLevel.toDetailLevel(testInvalidS));
 		
 		try {
 			// Invalid/Null Tests
-			assertFalse(Test.FALSE, DiagLevel.isValidDetailLevel(testInvalidS));
-			assertFalse(Test.FALSE, DiagLevel.isValidDetailLevel(null));
-			assertNull(Test.NULL, DiagLevel.getLevel(null));
+			assertFalse(TestValues.FALSE, DiagLevel.isValidDetailLevel(testInvalidS));
+			assertFalse(TestValues.FALSE, DiagLevel.isValidDetailLevel(null));
+			assertNull(TestValues.NULL, DiagLevel.getLevel(null));
 			DiagLevel.setLevel(null, null);
 			DiagLevel.setAllLevels(null);
 		} catch (NullPointerException e) {

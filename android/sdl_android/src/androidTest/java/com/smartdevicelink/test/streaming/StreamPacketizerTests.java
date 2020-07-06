@@ -6,7 +6,7 @@ import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
 
@@ -133,7 +133,7 @@ public class StreamPacketizerTests extends TestCase {
 		try {
 			testInputStream = new BufferedInputStream(new ByteArrayInputStream("sdl streaming test".getBytes()));
 			StreamPacketizer testStreamPacketizer = new StreamPacketizer(testListener, testInputStream, testSessionType, testSessionId, testSdlSession);
-			assertNotNull(Test.NOT_NULL, testStreamPacketizer);
+			assertNotNull(TestValues.NOT_NULL, testStreamPacketizer);
 						
 			// NOTE: Cannot test thread handling methods currently.
 			

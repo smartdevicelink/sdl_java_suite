@@ -215,7 +215,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
-public class Test {
+public class TestValues {
 
 	//Versions
 	public static final Version MAX_RPC_VERSION_SUPPORTED		= SdlProxyBase.MAX_SUPPORTED_RPC_VERSION;
@@ -354,7 +354,7 @@ public class Test {
 	public static final WayPointType                   GENERAL_WAYPOINTTYPE                   = WayPointType.DESTINATION;
 	public static final SingleTireStatus               GENERAL_SINGLETIRESTATUS               = new SingleTireStatus();
 	public static final DriverDistractionState         GENERAL_DRIVERDISTRACTIONSTATE         = DriverDistractionState.DD_ON;
-	public static final List<LocationDetails>          GENERAL_LOCATIONDETAILS_LIST           = Arrays.asList(new LocationDetails[] { Test.GENERAL_LOCATIONDETAILS, Test.GENERAL_LOCATIONDETAILS});
+	public static final List<LocationDetails>          GENERAL_LOCATIONDETAILS_LIST           = Arrays.asList(new LocationDetails[] { TestValues.GENERAL_LOCATIONDETAILS, TestValues.GENERAL_LOCATIONDETAILS});
 	public static final AudioStreamingIndicator        GENERAL_AUDIO_STREAMING_INDICATOR      = AudioStreamingIndicator.PLAY;
 	public static final String                         GENERAL_APP_ID                         = "123e4567e8";
 	public static final String                         GENERAL_FULL_APP_ID                    = "123e4567-e89b-12d3-a456-426655440000";
@@ -746,8 +746,8 @@ public class Test {
 		GENERAL_IMAGE.setIsTemplate(GENERAL_BOOLEAN);
 
 		GENERAL_TEMPLATE_CONFIGURATION.setTemplate(GENERAL_STRING);
-		GENERAL_TEMPLATE_CONFIGURATION.setDayColorScheme(Test.GENERAL_DAYCOLORSCHEME);
-		GENERAL_TEMPLATE_CONFIGURATION.setNightColorScheme(Test.GENERAL_NIGHTCOLORSCHEME);
+		GENERAL_TEMPLATE_CONFIGURATION.setDayColorScheme(TestValues.GENERAL_DAYCOLORSCHEME);
+		GENERAL_TEMPLATE_CONFIGURATION.setNightColorScheme(TestValues.GENERAL_NIGHTCOLORSCHEME);
 
 		GENERAL_SOFTBUTTON.setIsHighlighted(GENERAL_BOOLEAN);
 		GENERAL_SOFTBUTTON.setSoftButtonID(GENERAL_INT);
@@ -777,7 +777,7 @@ public class Test {
     	GENERAL_KEYBOARDPROPERTIES.setKeypressMode(KeypressMode.SINGLE_KEYPRESS);
     	GENERAL_KEYBOARDPROPERTIES.setKeyboardLayout(KeyboardLayout.QWERTY);
     	GENERAL_KEYBOARDPROPERTIES.setLanguage(Language.EN_US);
-    	GENERAL_KEYBOARDPROPERTIES.setLimitedCharacterList(Test.GENERAL_STRING_LIST);
+    	GENERAL_KEYBOARDPROPERTIES.setLimitedCharacterList(TestValues.GENERAL_STRING_LIST);
 
     	GENERAL_STARTTIME.setHours(GENERAL_INT);
 		GENERAL_STARTTIME.setMinutes(GENERAL_INT);
@@ -1043,15 +1043,15 @@ public class Test {
 
 		GENERAL_APP_SERVICE_CAPABILITIES.setAppServices(GENERAL_APPSERVICECAPABILITY_LIST);
 
-		GENERAL_DATETIME.setDay(Test.GENERAL_INT);
-		GENERAL_DATETIME.setHour(Test.GENERAL_INT);
-		GENERAL_DATETIME.setMilliSecond(Test.GENERAL_INT);
-		GENERAL_DATETIME.setMinute(Test.GENERAL_INT);
-		GENERAL_DATETIME.setMonth(Test.GENERAL_INT);
-		GENERAL_DATETIME.setSecond(Test.GENERAL_INT);
-		GENERAL_DATETIME.setTzHour(Test.GENERAL_INT);
-		GENERAL_DATETIME.setTzMinute(Test.GENERAL_INT);
-		GENERAL_DATETIME.setYear(Test.GENERAL_INT);
+		GENERAL_DATETIME.setDay(TestValues.GENERAL_INT);
+		GENERAL_DATETIME.setHour(TestValues.GENERAL_INT);
+		GENERAL_DATETIME.setMilliSecond(TestValues.GENERAL_INT);
+		GENERAL_DATETIME.setMinute(TestValues.GENERAL_INT);
+		GENERAL_DATETIME.setMonth(TestValues.GENERAL_INT);
+		GENERAL_DATETIME.setSecond(TestValues.GENERAL_INT);
+		GENERAL_DATETIME.setTzHour(TestValues.GENERAL_INT);
+		GENERAL_DATETIME.setTzMinute(TestValues.GENERAL_INT);
+		GENERAL_DATETIME.setYear(TestValues.GENERAL_INT);
 
 		GENERAL_WEATHERDATA.setCurrentTemperature(GENERAL_TEMPERATURE);
 		GENERAL_WEATHERDATA.setTemperatureHigh(GENERAL_TEMPERATURE);
@@ -1114,10 +1114,10 @@ public class Test {
 		GENERAL_NAVIGATION_INSTRUCTION.setDrivingSide(GENERAL_DIRECTION);
 		GENERAL_NAVIGATION_INSTRUCTION.setDetails(GENERAL_STRING);
 		GENERAL_NAVIGATION_INSTRUCTION.setImage(GENERAL_IMAGE);
-		GENERAL_MODULE_INFO.setModuleId(Test.GENERAL_STRING);
-		GENERAL_MODULE_INFO.setModuleLocation(Test.GENERAL_GRID);
-		GENERAL_MODULE_INFO.setModuleServiceArea(Test.GENERAL_GRID);
-		GENERAL_MODULE_INFO.setMultipleAccessAllowance(Test.GENERAL_BOOLEAN);
+		GENERAL_MODULE_INFO.setModuleId(TestValues.GENERAL_STRING);
+		GENERAL_MODULE_INFO.setModuleLocation(TestValues.GENERAL_GRID);
+		GENERAL_MODULE_INFO.setModuleServiceArea(TestValues.GENERAL_GRID);
+		GENERAL_MODULE_INFO.setMultipleAccessAllowance(TestValues.GENERAL_BOOLEAN);
 
 		GENERAL_STABILITY_CONTROL_STATUS.setEscSystem(GENERAL_ESC_SYSTEM);
 		GENERAL_STABILITY_CONTROL_STATUS.setTrailerSwayControl(GENERAL_S_WAY_CONTROL);
@@ -1293,7 +1293,7 @@ public class Test {
 			JSON_TEXTFIELDS.put(JSON_TEXTFIELD);
 
 			JSON_IMAGEFIELD.put(ImageField.KEY_IMAGE_RESOLUTION, JSON_IMAGERESOLUTION);
-			JSON_IMAGEFIELD.put(ImageField.KEY_IMAGE_TYPE_SUPPORTED, JsonUtils.createJsonArray(Test.GENERAL_FILETYPE_LIST));
+			JSON_IMAGEFIELD.put(ImageField.KEY_IMAGE_TYPE_SUPPORTED, JsonUtils.createJsonArray(TestValues.GENERAL_FILETYPE_LIST));
 			JSON_IMAGEFIELD.put(ImageField.KEY_NAME, ImageFieldName.graphic);
 			JSON_IMAGEFIELDS.put(JSON_IMAGEFIELD);
 
@@ -1351,10 +1351,10 @@ public class Test {
 			JSON_TEXTFIELDTYPES.put(MetadataType.MEDIA_ARTIST);
 
 			JSON_SEAT_LOCATIONS.put(JSON_GRID);
-			JSON_MODULE_INFO.put(ModuleInfo.KEY_MODULE_ID, Test.GENERAL_STRING);
-			JSON_MODULE_INFO.put(ModuleInfo.KEY_MODULE_LOCATION, Test.JSON_GRID);
-			JSON_MODULE_INFO.put(ModuleInfo.KEY_MODULE_SERVICE_AREA, Test.JSON_GRID);
-			JSON_MODULE_INFO.put(ModuleInfo.KEY_MULTIPLE_ACCESS_ALLOWED, Test.GENERAL_BOOLEAN);
+			JSON_MODULE_INFO.put(ModuleInfo.KEY_MODULE_ID, TestValues.GENERAL_STRING);
+			JSON_MODULE_INFO.put(ModuleInfo.KEY_MODULE_LOCATION, TestValues.JSON_GRID);
+			JSON_MODULE_INFO.put(ModuleInfo.KEY_MODULE_SERVICE_AREA, TestValues.JSON_GRID);
+			JSON_MODULE_INFO.put(ModuleInfo.KEY_MULTIPLE_ACCESS_ALLOWED, TestValues.GENERAL_BOOLEAN);
 
 
 		} catch (JSONException e) {

@@ -40,10 +40,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.util.Log;
 
 import com.smartdevicelink.managers.audio.AudioStreamManager.SampleType;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
+import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
@@ -252,7 +252,7 @@ public abstract class BaseAudioDecoder {
     }
 
     protected void onMediaCodecError(@NonNull MediaCodec.CodecException e) {
-        Log.e(TAG, "MediaCodec.onError: " + e.getLocalizedMessage());
+        DebugTool.logError(TAG, "MediaCodec.onError: " + e.getLocalizedMessage());
         if (listener != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 listener.onDecoderError(e);

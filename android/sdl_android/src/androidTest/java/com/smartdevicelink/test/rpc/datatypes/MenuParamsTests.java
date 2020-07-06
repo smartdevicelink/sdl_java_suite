@@ -2,7 +2,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -23,9 +23,9 @@ public class MenuParamsTests extends TestCase{
     public void setUp(){
         msg = new MenuParams();
 
-        msg.setMenuName(Test.GENERAL_STRING);
-        msg.setParentID(Test.GENERAL_INT);
-        msg.setPosition(Test.GENERAL_INT);
+        msg.setMenuName(TestValues.GENERAL_STRING);
+        msg.setParentID(TestValues.GENERAL_INT);
+        msg.setPosition(TestValues.GENERAL_INT);
     }
 
     /**
@@ -38,37 +38,37 @@ public class MenuParamsTests extends TestCase{
         int position = msg.getPosition();
         
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, menuName);
-        assertEquals(Test.MATCH, Test.GENERAL_INT, parentId);
-        assertEquals(Test.MATCH, Test.GENERAL_INT, position);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, menuName);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, parentId);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, position);
         
         // Invalid/Null Tests
         MenuParams msg = new MenuParams();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
 
-        assertNull(Test.NULL, msg.getMenuName());
-        assertNull(Test.NULL, msg.getParentID());
-        assertNull(Test.NULL, msg.getPosition());
+        assertNull(TestValues.NULL, msg.getMenuName());
+        assertNull(TestValues.NULL, msg.getParentID());
+        assertNull(TestValues.NULL, msg.getPosition());
     }
 
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(MenuParams.KEY_MENU_NAME, Test.GENERAL_STRING);
-            reference.put(MenuParams.KEY_PARENT_ID, Test.GENERAL_INT);
-            reference.put(MenuParams.KEY_POSITION, Test.GENERAL_INT);
+            reference.put(MenuParams.KEY_MENU_NAME, TestValues.GENERAL_STRING);
+            reference.put(MenuParams.KEY_PARENT_ID, TestValues.GENERAL_INT);
+            reference.put(MenuParams.KEY_POSITION, TestValues.GENERAL_INT);
 
             JSONObject underTest = msg.serializeJSON();
-            assertEquals(Test.MATCH, reference.length(), underTest.length());
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
                 String key = (String) iterator.next();
-                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
         }catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
     }
 }

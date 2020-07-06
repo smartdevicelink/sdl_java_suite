@@ -1,6 +1,6 @@
 package com.smartdevicelink.test.trace.enums;
 
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.trace.enums.Mod;
 
 import junit.framework.TestCase;
@@ -57,17 +57,17 @@ public class ModTests extends TestCase {
 			List<Mod> actualEnumList = Arrays.asList(Mod.values());
 			
 			// Valid Tests
-			assertEquals(Test.MATCH, expectedAppEnum, actualAppEnum);
-			assertEquals(Test.MATCH, expectedRpcEnum, actualRpcEnum);
-			assertEquals(Test.MATCH, expectedMarEnum, actualMarEnum);
-			assertEquals(Test.MATCH, expectedTranEnum, actualTranEnum);
-			assertEquals(Test.MATCH, expectedProtoEnum, actualProtoEnum);
-			assertEquals(Test.MATCH, expectedProxyEnum, actualProxyEnum);
-			assertTrue(Test.ARRAY, expectedEnumList.containsAll(actualEnumList) && actualEnumList.containsAll(expectedEnumList));
+			assertEquals(TestValues.MATCH, expectedAppEnum, actualAppEnum);
+			assertEquals(TestValues.MATCH, expectedRpcEnum, actualRpcEnum);
+			assertEquals(TestValues.MATCH, expectedMarEnum, actualMarEnum);
+			assertEquals(TestValues.MATCH, expectedTranEnum, actualTranEnum);
+			assertEquals(TestValues.MATCH, expectedProtoEnum, actualProtoEnum);
+			assertEquals(TestValues.MATCH, expectedProxyEnum, actualProxyEnum);
+			assertTrue(TestValues.ARRAY, expectedEnumList.containsAll(actualEnumList) && actualEnumList.containsAll(expectedEnumList));
 			
 			// Invalid/Null Tests
-			assertNull(Test.NULL, actualInvalidEnum);
-			assertNull(Test.NULL, actualNullEnum);
+			assertNull(TestValues.NULL, actualInvalidEnum);
+			assertNull(TestValues.NULL, actualNullEnum);
 			
 		} catch (NullPointerException e) {
 			fail("Could not retrieve value for null string, should return null.");

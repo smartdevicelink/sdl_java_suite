@@ -2,7 +2,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -23,7 +23,7 @@ public class PresetBankCapabilitiesTest extends TestCase {
 	public void setUp() {
 		msg = new PresetBankCapabilities();
 		
-		msg.setOnScreenPresetsAvailable(Test.GENERAL_BOOLEAN);
+		msg.setOnScreenPresetsAvailable(TestValues.GENERAL_BOOLEAN);
 	}
 
     /**
@@ -34,31 +34,31 @@ public class PresetBankCapabilitiesTest extends TestCase {
 		boolean presets = msg.onScreenPresetsAvailable();
 		
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, presets);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, presets);
 		
 		// Invalid/Null Tests
 		PresetBankCapabilities msg = new PresetBankCapabilities();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.onScreenPresetsAvailable());
+		assertNull(TestValues.NULL, msg.onScreenPresetsAvailable());
 	}
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
 		try {
-			reference.put(PresetBankCapabilities.KEY_ON_SCREEN_PRESETS_AVAILABLE, Test.GENERAL_BOOLEAN);
+			reference.put(PresetBankCapabilities.KEY_ON_SCREEN_PRESETS_AVAILABLE, TestValues.GENERAL_BOOLEAN);
 
 			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
-				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+				assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 			}
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 }
