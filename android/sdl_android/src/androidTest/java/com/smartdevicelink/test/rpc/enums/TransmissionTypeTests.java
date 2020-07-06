@@ -24,7 +24,7 @@ public class TransmissionTypeTests extends TestCase {
         example = "CONTINUOUSLY_VARIABLE";
         TransmissionType continuouslyVariable = TransmissionType.valueForString(example);
         example = "INFINITELY_VARIABLE";
-        TransmissionType infinitely_variable = TransmissionType.valueForString(example);
+        TransmissionType infinitelyVariable = TransmissionType.valueForString(example);
         example = "ELECTRIC_VARIABLE";
         TransmissionType electricVariable = TransmissionType.valueForString(example);
         example = "DIRECT_DRIVE";
@@ -35,8 +35,9 @@ public class TransmissionTypeTests extends TestCase {
         assertNotNull("SEMI_AUTOMATIC returned null", semiAutomatic);
         assertNotNull("DUAL_CLUTCH returned null", dualClutch);
         assertNotNull("CONTINUOUSLY_VARIABLE returned null", continuouslyVariable);
-        assertNotNull("INFINITELY_VARIABLE returned null", continuouslyVariable);
+        assertNotNull("INFINITELY_VARIABLE returned null", infinitelyVariable);
         assertNotNull("ELECTRIC_VARIABLE returned null", electricVariable);
+        assertNotNull("DIRECT_DRIVE returned null", directDrive);
         assertNotNull("DIRECT_DRIVE returned null", directDrive);
 
     }
