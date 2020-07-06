@@ -4,7 +4,7 @@ import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.Grid;
 import com.smartdevicelink.proxy.rpc.WindowState;
 import com.smartdevicelink.proxy.rpc.WindowStatus;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
@@ -18,8 +18,8 @@ public class WindowStatusTests extends TestCase {
     @Override
     protected void setUp() throws Exception {
         msg = new WindowStatus();
-        msg.setWindowState(Test.GENERAL_WINDOW_STATE);
-        msg.setLocation(Test.GENERAL_LOCATION_GRID);
+        msg.setWindowState(TestValues.GENERAL_WINDOW_STATE);
+        msg.setLocation(TestValues.GENERAL_LOCATION_GRID);
     }
 
     public void testRpcValues() {
@@ -27,19 +27,19 @@ public class WindowStatusTests extends TestCase {
         Grid locationGrid = msg.getLocation();
 
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_WINDOW_STATE, state);
-        assertEquals(Test.MATCH, Test.GENERAL_LOCATION_GRID, locationGrid);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_WINDOW_STATE, state);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_LOCATION_GRID, locationGrid);
     }
 
     public void testJson() {
         JSONObject reference = new JSONObject();
 
         try {
-            reference.put(WindowStatus.KEY_WINDOW_STATE, Test.GENERAL_WINDOW_STATE);
-            reference.put(WindowStatus.KEY_LOCATION, Test.GENERAL_LOCATION_GRID);
+            reference.put(WindowStatus.KEY_WINDOW_STATE, TestValues.GENERAL_WINDOW_STATE);
+            reference.put(WindowStatus.KEY_LOCATION, TestValues.GENERAL_LOCATION_GRID);
 
             JSONObject underTest = msg.serializeJSON();
-            assertEquals(Test.MATCH, reference.length(), underTest.length());
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             assertTrue(Validator.validateWindowStatus(
                     new WindowStatus(JsonRPCMarshaller.deserializeJSONObject(reference)),
@@ -47,7 +47,7 @@ public class WindowStatusTests extends TestCase {
             );
 
         } catch (JSONException e) {
-            fail(Test.JSON_FAIL);
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

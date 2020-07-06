@@ -111,7 +111,7 @@ public class GetVehicleDataTests extends BaseRpcTests {
             result.put(GetVehicleData.KEY_FUEL_RANGE, TestValues.GENERAL_BOOLEAN);
             result.put(GetVehicleData.KEY_TURN_SIGNAL, TestValues.GENERAL_BOOLEAN);
             result.put(GetVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS, TestValues.GENERAL_BOOLEAN);
-            result.put(GetVehicleData.KEY_WINDOW_STATUS, Test.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_WINDOW_STATUS, TestValues.GENERAL_BOOLEAN);
             result.put(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_BOOLEAN);
         }catch(JSONException e){
         	fail(TestValues.JSON_FAIL);

@@ -65,7 +65,7 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
 		msg.setFuelRange(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_FUELRANGE.ordinal()));
 		msg.setTurnSignal(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_TURNSIGNAL.ordinal()));
 		msg.setElectronicParkBrakeStatus(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_ELECTRONICPARKBRAKESTATUS.ordinal()));
-		msg.setWindowStatus(Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_WINDOWSTATUS.ordinal()));
+		msg.setWindowStatus(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_WINDOWSTATUS.ordinal()));
 		msg.setOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA);
 
 		return msg;
@@ -118,7 +118,7 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
 	        result.put(SubscribeVehicleDataResponse.KEY_MY_KEY, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_MYKEY.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_FUEL_RANGE, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_FUELRANGE.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_TURN_SIGNAL, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_TURNSIGNAL.ordinal()).serializeJSON());
-	        result.put(SubscribeVehicleDataResponse.KEY_WINDOW_STATUS, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_WINDOWSTATUS.ordinal()).serializeJSON());
+	        result.put(SubscribeVehicleDataResponse.KEY_WINDOW_STATUS, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_WINDOWSTATUS.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_ELECTRONIC_PARK_BRAKE_STATUS, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_ELECTRONICPARKBRAKESTATUS.ordinal()).serializeJSON());
 	        result.put(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA.serializeJSON());
 		} catch (JSONException e) {
@@ -369,7 +369,7 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
 
 			JSONObject windowStatus = JsonUtils.readJsonObjectFromJsonObject(parameters, SubscribeVehicleDataResponse.KEY_WINDOW_STATUS);
 			VehicleDataResult referenceWindowStatus = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(windowStatus));
-			assertTrue(Test.TRUE, Validator.validateVehicleDataResult(referenceWindowStatus, cmd.getWindowStatus()));
+			assertTrue(TestValues.TRUE, Validator.validateVehicleDataResult(referenceWindowStatus, cmd.getWindowStatus()));
 
 			JSONObject oemCustomVehicleDataName = JsonUtils.readJsonObjectFromJsonObject(parameters, TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME);
 			VehicleDataResult referenceOemCustomData = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(oemCustomVehicleDataName));

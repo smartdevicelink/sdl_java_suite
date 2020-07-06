@@ -371,7 +371,7 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
 
 			JSONObject windowStatus = JsonUtils.readJsonObjectFromJsonObject(parameters, UnsubscribeVehicleDataResponse.KEY_WINDOW_STATUS);
 			VehicleDataResult referenceWindowStatus = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(windowStatus));
-			assertTrue(Test.TRUE, Validator.validateVehicleDataResult(referenceWindowStatus, cmd.getWindowStatus()));
+			assertTrue(TestValues.TRUE, Validator.validateVehicleDataResult(referenceWindowStatus, cmd.getWindowStatus()));
 
 			JSONObject oemCustomData = JsonUtils.readJsonObjectFromJsonObject(parameters, TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME);
 			VehicleDataResult referenceOemCustomData = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(oemCustomData));
