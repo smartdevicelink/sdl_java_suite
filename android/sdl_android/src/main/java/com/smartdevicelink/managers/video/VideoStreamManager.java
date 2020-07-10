@@ -57,13 +57,16 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
+import com.smartdevicelink.proxy.rpc.AppCapability;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
+import com.smartdevicelink.proxy.rpc.OnAppCapabilityUpdated;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnTouchEvent;
 import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
+import com.smartdevicelink.proxy.rpc.enums.AppCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
@@ -217,7 +220,9 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			@Override
 			public void onCapabilityRetrieved(Object capability) {
 				VideoStreamingParameters params = new VideoStreamingParameters();
-				params.update((VideoStreamingCapability)capability, vehicleMake);	//Streaming parameters are ready time to stream
+				VideoStreamingCapability castedCapability = ((VideoStreamingCapability)capability);
+				castedCapability.setAdditionalVideoStreamingCapabilities(getMockedAdditionalCapabilities());
+				params.update(castedCapability, vehicleMake);	//Streaming parameters are ready time to stream
 				VideoStreamManager.this.parameters = params;
 				VideoStreamManager.this.withPendingRestart = true;
 				if (streamingRange != null) {
@@ -271,11 +276,11 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				@Override
 				public void onCapabilityRetrieved(Object capability) {
 					VideoStreamingParameters params = new VideoStreamingParameters();
-					params.update((VideoStreamingCapability)capability, vehicleMake);	//Streaming parameters are ready time to stream
+					VideoStreamingCapability castedCapability = ((VideoStreamingCapability)capability);
+					params.update(castedCapability, vehicleMake);	//Streaming parameters are ready time to stream
 					VideoStreamManager.this.parameters = params;
-
+					castedCapability.setAdditionalVideoStreamingCapabilities(getMockedAdditionalCapabilities());
 					checkState();
-
 				}
 
 				@Override
@@ -361,7 +366,10 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 					@Override
 					public void onCapabilityRetrieved(Object capability) {
 						VideoStreamingParameters params = new VideoStreamingParameters();
-						params.update((VideoStreamingCapability)capability, vehicleMake);	//Streaming parameters are ready time to stream
+						VideoStreamingCapability castedCapability = ((VideoStreamingCapability)capability);
+						castedCapability.setAdditionalVideoStreamingCapabilities(getMockedAdditionalCapabilities());
+						params.update(castedCapability, vehicleMake);	//Streaming parameters are ready time to stream
+						internalInterface.sendRPC(new OnAppCapabilityUpdated(new AppCapability(castedCapability, AppCapabilityType.VIDEO_STREAMING)));
 						startStreaming(params, isEncrypted);
 					}
 
@@ -727,7 +735,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		Double aspectRationMax = ratioRange.getMaxAspectRatio();
 
 		List<VideoStreamingCapability> validCapabilities = new ArrayList<>();
-		List<VideoStreamingCapability> allCapabilities = getMockedAllCapabilities();
+		List<VideoStreamingCapability> allCapabilities = parameters.getAdditionalCapabilities();
 
 		// get the first one - the Desired resolution to guarantee streaming will start
 		validCapabilities.add(allCapabilities.get(0));
@@ -764,7 +772,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		return validCapabilities;
 	}
 
-	private List<VideoStreamingCapability> getMockedAllCapabilities(){
+	private List<VideoStreamingCapability> getMockedAdditionalCapabilities(){
 		// TODO create separate AdditionalCapability class to avoid class mixing
 		List<VideoStreamingCapability> capabilityList = new ArrayList<>();
 		VideoStreamingCapability preferredCapability = new VideoStreamingCapability();
@@ -794,8 +802,14 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			tempResolution.setResolutionHeight(preferredHeight + generatedResDeviation);
 			tempResolution.setResolutionWidth(preferredWidth + generatedResDeviation);
 			tempCapability.setPreferredResolution(tempResolution);
-			tempCapability.setDiagonalScreenSize(preferredDiagonal + generatedDiagDeviation);
+			double updatedDiagonal = preferredDiagonal + generatedDiagDeviation;
+			if (updatedDiagonal < 0 || updatedDiagonal == 0) {
+				tempCapability.setDiagonalScreenSize(preferredDiagonal);
+			} else {
+				tempCapability.setDiagonalScreenSize(updatedDiagonal);
+			}
 			capabilityList.add(tempCapability);
+
 		}
 		return capabilityList;
 	}

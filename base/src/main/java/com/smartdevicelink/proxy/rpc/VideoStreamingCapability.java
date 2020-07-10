@@ -34,6 +34,7 @@ package com.smartdevicelink.proxy.rpc;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.util.SdlDataTypeConverter;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -49,6 +50,7 @@ public class VideoStreamingCapability extends RPCStruct {
 	public static final String KEY_DIAGONAL_SCREEN_SIZE = "diagonalScreenSize";
 	public static final String KEY_PIXEL_PER_INCH = "pixelPerInch";
 	public static final String KEY_SCALE = "scale";
+	public static final String KEY_ADDITIONAL_VIDEO_STREAMING_CAPABILITIES = "additionalVideoStreamingCapabilities";
 
 	public VideoStreamingCapability(){}
 	public VideoStreamingCapability(Hashtable<String, Object> hash){super(hash);}
@@ -140,5 +142,15 @@ public class VideoStreamingCapability extends RPCStruct {
 	 */
 	public void setScale(Double scale) {
 		setValue(KEY_SCALE, scale);
+	}
+
+	// TODO replace with real data
+	@SuppressWarnings("unchecked")
+	public List<VideoStreamingCapability> getAdditionalVideoStreamingCapabilities(){
+		return (List<VideoStreamingCapability>) getObject(VideoStreamingCapability.class, KEY_ADDITIONAL_VIDEO_STREAMING_CAPABILITIES);
+	}
+
+	public void setAdditionalVideoStreamingCapabilities(List<VideoStreamingCapability> capabilities) {
+		setValue(KEY_ADDITIONAL_VIDEO_STREAMING_CAPABILITIES, capabilities);
 	}
 }

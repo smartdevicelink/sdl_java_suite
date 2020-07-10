@@ -67,6 +67,7 @@ public class VideoStreamingParameters {
 	private double scale = DEFAULT_SCALE;
 	private ImageResolution resolution;
 	private VideoStreamingFormat format;
+	private List<VideoStreamingCapability> additionalCapabilities = new ArrayList<>(1);
 
     public VideoStreamingParameters(){
 	    displayDensity = DEFAULT_DENSITY;
@@ -130,6 +131,10 @@ public class VideoStreamingParameters {
             if (params.format != null) {
                 this.format = params.format;
             }
+
+            if (!params.additionalCapabilities.isEmpty()) {
+                this.additionalCapabilities = params.additionalCapabilities;
+            }
         }
     }
 
@@ -146,6 +151,10 @@ public class VideoStreamingParameters {
         if(capability.getMaxBitrate()!=null){ this.bitrate = capability.getMaxBitrate() * 1000; } // NOTE: the unit of maxBitrate in getSystemCapability is kbps.
         if(capability.getScale() != null) { scale = capability.getScale(); }
         ImageResolution resolution = capability.getPreferredResolution();
+        if (capability.getAdditionalVideoStreamingCapabilities() != null &&
+                !capability.getAdditionalVideoStreamingCapabilities().isEmpty()) {
+            this.additionalCapabilities = capability.getAdditionalVideoStreamingCapabilities();
+        }
         if(resolution!=null){
 
 //            if (vehicleMake != null) {
@@ -272,6 +281,9 @@ public class VideoStreamingParameters {
 
     public double getPreferredDiagonal() { return preferredDiagonal; }
 
+    public List<VideoStreamingCapability> getAdditionalCapabilities() { return additionalCapabilities; };
+
+    // TODO extend with @additionalCapabilities if confirmed
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

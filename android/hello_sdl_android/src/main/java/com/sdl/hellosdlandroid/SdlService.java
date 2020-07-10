@@ -538,41 +538,6 @@ public class SdlService extends Service {
 					Toast.LENGTH_SHORT
 			).show();
 		}
-
-		@Override
-		public Integer getMinSupportedWidth() {
-			return 800;
-		}
-
-		@Override
-		public Integer getMinSupportedHeight() {
-			return 600;
-		}
-
-		@Override
-		public Integer getMaxSupportedWidth() {
-			return 1600;
-		}
-
-		@Override
-		public Integer getMaxSupportedHeight() {
-			return 1200;
-		}
-
-		@Override
-		public double getMinScreenDiagonal() {
-			return 6;
-		}
-
-        @Override
-        public Double getMinAspectRatio() {
-            return 1.;
-        }
-
-        @Override
-        public Double getMaxAspectRatio() {
-            return 4.;
-        }
 	}
 
 	public static class MyDisplay extends SdlRemoteDisplay {
@@ -611,40 +576,5 @@ public class SdlService extends Service {
 					Toast.LENGTH_SHORT
 			).show();
 		}
-
-		@Override
-		public Integer getMinSupportedWidth() {
-			return 800;
-		}
-
-		@Override
-		public Integer getMinSupportedHeight() {
-			return 600;
-		}
-
-		@Override
-		public Integer getMaxSupportedWidth() {
-			return 1600;
-		}
-
-		@Override
-		public Integer getMaxSupportedHeight() {
-			return 1200;
-		}
-
-		@Override
-		public double getMinScreenDiagonal() {
-			return 6;
-		}
-
-        @Override
-        public Double getMinAspectRatio() {
-            return 1.;
-        }
-
-        @Override
-        public Double getMaxAspectRatio() {
-            return 4.;
-        }
     }
 }
