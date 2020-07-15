@@ -33,6 +33,9 @@ import com.smartdevicelink.managers.screen.menu.MenuCell;
 import com.smartdevicelink.managers.screen.menu.MenuSelectionListener;
 import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
+import com.smartdevicelink.managers.video.resolution.AspectRatio;
+import com.smartdevicelink.managers.video.resolution.Resolution;
+import com.smartdevicelink.managers.video.resolution.SupportedStreamingRange;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.TTSChunkFactory;
@@ -179,7 +182,14 @@ public class SdlService extends Service {
 										}else {
 											myClass = UIStreamingDisplay.class;
 										}
-										sdlManager.getVideoStreamManager().startRemoteDisplayStream(getApplicationContext(), myClass, null, false);
+										SupportedStreamingRange.Builder builder = new SupportedStreamingRange.Builder();
+										builder
+												.setMaxSupportedResolution(new Resolution(1600, 800))
+												.setMinSupportedResolution(new Resolution(400, 200))
+												.setAspectRatio(new AspectRatio(1., 6.))
+												.setMaxScreenDiagonal(20.);
+										SupportedStreamingRange range = builder.build();
+										sdlManager.getVideoStreamManager().startRemoteDisplayStream(getApplicationContext(), myClass, null, false, range);
 									}
 
 									@Override

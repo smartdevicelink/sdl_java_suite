@@ -31,11 +31,19 @@
         android:layout_centerInParent="true"
         android:text="Start streaming ui" />
 
+    <Button
+        android:id="@+id/exit_application"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/start_streaming_ui"
+        android:layout_centerInParent="true"
+        android:text="Exit application" />
+
     <EditText
         android:id="@+id/machine_ip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/start_streaming_ui"
+        android:layout_below="@+id/exit_application"
         android:layout_centerInParent="true"
         android:layout_margin="8dp"
         android:hint="Ip"

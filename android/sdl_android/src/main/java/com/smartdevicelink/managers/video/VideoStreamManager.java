@@ -220,21 +220,13 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			@Override
 			public void onCapabilityRetrieved(Object capability) {
 				VideoStreamingParameters params = new VideoStreamingParameters();
+				VideoStreamManager.this.parameters = params;
+
 				VideoStreamingCapability castedCapability = ((VideoStreamingCapability)capability);
 				castedCapability.setAdditionalVideoStreamingCapabilities(getMockedAdditionalCapabilities());
 				params.update(castedCapability, vehicleMake);	//Streaming parameters are ready time to stream
-				VideoStreamManager.this.parameters = params;
+
 				VideoStreamManager.this.withPendingRestart = true;
-				if (streamingRange != null) {
-					getSupportedCapabilities(
-							streamingRange.getMinSupportedResolution(),
-							streamingRange.getMaxSupportedResolution(),
-							streamingRange.getMaxScreenDiagonal(),
-							streamingRange.getAspectRatio()
-					);
-				} else {
-					// TODO handle??
-				}
 
 				virtualDisplayEncoder.setStreamingParams(params);
 				stopStreaming(true);
@@ -367,8 +359,22 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 					public void onCapabilityRetrieved(Object capability) {
 						VideoStreamingParameters params = new VideoStreamingParameters();
 						VideoStreamingCapability castedCapability = ((VideoStreamingCapability)capability);
+						// Mocks data here
 						castedCapability.setAdditionalVideoStreamingCapabilities(getMockedAdditionalCapabilities());
 						params.update(castedCapability, vehicleMake);	//Streaming parameters are ready time to stream
+
+						if (streamingRange != null) {
+							castedCapability.setAdditionalVideoStreamingCapabilities(
+									getSupportedCapabilities(
+											streamingRange.getMinSupportedResolution(),
+											streamingRange.getMaxSupportedResolution(),
+											streamingRange.getMaxScreenDiagonal(),
+											streamingRange.getAspectRatio()
+									)
+							);
+						} else {
+							// TODO handle??
+						}
 						internalInterface.sendRPC(new OnAppCapabilityUpdated(new AppCapability(castedCapability, AppCapabilityType.VIDEO_STREAMING)));
 						startStreaming(params, isEncrypted);
 					}

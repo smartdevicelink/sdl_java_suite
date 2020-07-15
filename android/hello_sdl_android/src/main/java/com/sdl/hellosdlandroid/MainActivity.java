@@ -1,18 +1,21 @@
 package com.sdl.hellosdlandroid;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 	private static final String TAG = "MainActivity";
@@ -25,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
 	public static final String PREDEFINED_WIDTH = "pre_def_w";
 	public static final String PREDEFINED_HEIGHT = "pre_def_h";
+	public static final String IP_ADDRESS = "ip_address";
 	SharedPreferences preferences;
 
 	@Override
@@ -38,12 +42,30 @@ public class MainActivity extends AppCompatActivity {
 		Button startStreaming = findViewById(R.id.start_streaming);
 		Button startStreamingUI = findViewById(R.id.start_streaming_ui);
 		Button startProxy = findViewById(R.id.start_proxy);
+		Button stopApp = findViewById(R.id.exit_application);
 
 		final EditText ip = findViewById(R.id.machine_ip);
 		final EditText port = findViewById(R.id.machine_port);
 
 		final EditText preConfWidth = findViewById(R.id.pre_conf_width);
 		final EditText preConfHeight = findViewById(R.id.pre_conf_height);
+
+		ip.setText(preferences.getString(IP_ADDRESS, "192.168.0.101"));
+
+		ip.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				if (s!=null) {
+					preferences.edit().putString(IP_ADDRESS, s.toString()).commit();
+				}
+			}
+		});
 
 		startProxy.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -97,6 +119,22 @@ public class MainActivity extends AppCompatActivity {
 				} else {
 					Toast.makeText(MainActivity.this, "Configure display width and height", Toast.LENGTH_SHORT).show();
 				}
+			}
+		});
+
+		stopApp.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				stopService(new Intent(MainActivity.this, SdlService.class));
+
+				new Timer().schedule(new TimerTask() {
+					@Override
+					public void run() {
+						android.os.Process.killProcess(android.os.Process.myPid());
+					}
+				}, 50);
+
+				finish();
 			}
 		});
 	}
