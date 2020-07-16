@@ -138,4 +138,27 @@ public class OnSystemRequestTests extends BaseRpcTests{
         assertNull(TestValues.NULL, msg.getRequestType());
         assertNull(TestValues.NULL, msg.getRequestSubType());
     }
+
+    @Test
+    public void testUrlParam(){
+
+        OnSystemRequest msg = new OnSystemRequest();
+
+        StringBuilder longUrl = new StringBuilder("https://test.url");
+        while (longUrl.length() < 10000) {
+            longUrl.append("/test");
+        }
+
+        msg.setUrl(longUrl.toString());
+
+        // test url length has not changed
+        assertEquals(TestValues.MATCH, msg.getUrl().length(), longUrl.length());
+
+        // test empty url
+        msg.setUrl("");
+        assertEquals(TestValues.MATCH, msg.getUrl(), "");
+
+        msg.setUrl(longUrl.substring(0, 1000));
+        assertEquals(TestValues.MATCH, msg.getUrl().length(), 1000);
+    }
 }
