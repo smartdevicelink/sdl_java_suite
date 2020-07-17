@@ -44,6 +44,7 @@ import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
 /**
  * The audio decoder to decode a single audio file to PCM.
@@ -88,6 +89,14 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
         }
     }
 
+    @Override
+    public void stop() {
+        if (mThread != null) {
+            mThread.interrupt();
+            mThread = null;
+        }
+        super.stop();
+    }
 
     /**
      * Runnable to decode audio data
@@ -106,39 +115,65 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
         @Override
         public void run() {
             final AudioDecoderCompat reference = weakReference.get();
-            if (reference == null) {
-                DebugTool.logWarning(TAG, "AudioDecoderCompat reference was null");
-                return;
+            try {
+                if (reference == null) {
+                    DebugTool.logWarning(TAG, "AudioDecoderCompat reference was null");
+                    return;
+                }
+                if(reference.decoder == null){
+                    DebugTool.logWarning(TAG, "AudioDecoderCompat decoder was null");
+                    return;
+                }
+                while (reference!= null && !reference.mThread.isInterrupted()) {
+                    if( AudioDecoder(reference,reference.decoder.getInputBuffers(),reference.decoder.getOutputBuffers())){
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                DebugTool.logWarning(TAG, "DecoderRunnable Exception:" + e);
+            } finally {
+                if (reference != null && reference.mThread != null) {
+                    try {
+                        reference.mThread.interrupt();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        reference.mThread = null;
+                    }
+                }
             }
-            final ByteBuffer[] inputBuffersArray = reference.decoder.getInputBuffers();
-            final ByteBuffer[] outputBuffersArray = reference.decoder.getOutputBuffers();
+        }
+
+        boolean AudioDecoder(final AudioDecoderCompat reference,final ByteBuffer[] inputBuffersArray,final ByteBuffer[] outputBuffersArray){
             MediaCodec.BufferInfo outputBufferInfo = new MediaCodec.BufferInfo();
             MediaCodec.BufferInfo inputBufferInfo;
             ByteBuffer inputBuffer, outputBuffer;
             SampleBuffer sampleBuffer;
-
-            while (reference!= null && !reference.mThread.isInterrupted()) {
-                int inputBuffersArrayIndex = 0;
-                while (inputBuffersArrayIndex != MediaCodec.INFO_TRY_AGAIN_LATER) {
+            int inputBuffersArrayIndex = 0;
+            while (inputBuffersArrayIndex != MediaCodec.INFO_TRY_AGAIN_LATER) {
+                try {
                     inputBuffersArrayIndex = reference.decoder.dequeueInputBuffer(DEQUEUE_TIMEOUT);
                     if (inputBuffersArrayIndex >= 0) {
                         inputBuffer = inputBuffersArray[inputBuffersArrayIndex];
                         inputBufferInfo = reference.onInputBufferAvailable(reference.extractor, inputBuffer);
                         reference.decoder.queueInputBuffer(inputBuffersArrayIndex, inputBufferInfo.offset, inputBufferInfo.size, inputBufferInfo.presentationTimeUs, inputBufferInfo.flags);
                     }
+                } catch (Exception e) {
+                    return true;
                 }
-
-                int outputBuffersArrayIndex = 0;
-                while (outputBuffersArrayIndex != MediaCodec.INFO_TRY_AGAIN_LATER) {
+            }
+            int outputBuffersArrayIndex = 0;
+            while (outputBuffersArrayIndex != MediaCodec.INFO_TRY_AGAIN_LATER) {
+                try {
                     outputBuffersArrayIndex = reference.decoder.dequeueOutputBuffer(outputBufferInfo, DEQUEUE_TIMEOUT);
                     if (outputBuffersArrayIndex >= 0) {
                         outputBuffer = outputBuffersArray[outputBuffersArrayIndex];
                         if ((outputBufferInfo.flags & MediaCodec.BUFFER_FLAG_CODEC_CONFIG) != 0 && outputBufferInfo.size != 0) {
                             reference.decoder.releaseOutputBuffer(outputBuffersArrayIndex, false);
                         } else if (outputBuffer.limit() > 0) {
-                            sampleBuffer = reference.onOutputBufferAvailable(outputBuffer);
-                            if(reference.listener!=null){
-                                reference.listener.onAudioDataAvailable(sampleBuffer);
+                            ArrayList<SampleBuffer> sampleBufferList = reference.onOutputBufferAvailable(outputBuffer);
+                            if (reference.listener != null) {
+                                reference.listener.onAudioDataAvailable(sampleBufferList, outputBufferInfo.flags);
                             }
                             reference.decoder.releaseOutputBuffer(outputBuffersArrayIndex, false);
                         }
@@ -146,23 +181,19 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
                         MediaFormat newFormat = reference.decoder.getOutputFormat();
                         reference.onOutputFormatChanged(newFormat);
                     }
-                }
-
-                if (outputBufferInfo.flags == MediaCodec.BUFFER_FLAG_END_OF_STREAM) {
-                    if (reference.listener != null) {
-                        reference.listener.onDecoderFinish(true);
-                    }
-                    reference.stop();
-                    try {
-                        reference.mThread.interrupt();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    } finally {
-                        reference.mThread = null;
-                        break;
-                    }
+                } catch (Exception e) {
+                    return true;
                 }
             }
+            if (outputBufferInfo.flags == MediaCodec.BUFFER_FLAG_END_OF_STREAM) {
+                reference.listener.onAudioDataAvailable(null,outputBufferInfo.flags);
+                if (reference.listener != null) {
+                    reference.listener.onDecoderFinish(true);
+                }
+                reference.stop();
+                return true;
+            }
+            return false;
         }
     }
 }

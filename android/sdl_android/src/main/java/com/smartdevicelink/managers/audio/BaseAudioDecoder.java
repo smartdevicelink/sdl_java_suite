@@ -40,6 +40,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 
 import com.smartdevicelink.managers.audio.AudioStreamManager.SampleType;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
@@ -48,6 +49,7 @@ import com.smartdevicelink.util.DebugTool;
 import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
 
 @SuppressWarnings("WeakerAccess")
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -186,7 +188,7 @@ public abstract class BaseAudioDecoder {
         return bufferInfo;
     }
 
-    protected SampleBuffer onOutputBufferAvailable(@NonNull ByteBuffer outputBuffer) {
+    protected ArrayList<SampleBuffer> onOutputBufferAvailable(@NonNull 			ByteBuffer outputBuffer) {
         double outputPresentationTimeUs = lastOutputPresentationTimeUs;
         double outputDurationPerSampleUs = 1000000.0 / (double)outputSampleRate;
 
@@ -196,30 +198,31 @@ public abstract class BaseAudioDecoder {
         // wrap the output buffer to make it provide audio samples
         SampleBuffer outputSampleBuffer = SampleBuffer.wrap(outputBuffer, outputSampleType, outputChannelCount, (long)outputPresentationTimeUs);
         outputSampleBuffer.position(0);
-
-        // the buffer size is related to the output and target sample rate
-        // add 2 samples to round up and add an extra sample
-        int sampleSize = outputSampleBuffer.limit() * targetSampleRate / outputSampleRate + 2;
-
-        SampleBuffer targetSampleBuffer = SampleBuffer.allocate(sampleSize, targetSampleType, ByteOrder.LITTLE_ENDIAN, (long)targetPresentationTimeUs);
+        SampleBuffer targetSampleBuffer = null;
         Double sample;
-
+        ArrayList<SampleBuffer> targetSampleBufferList = new ArrayList<>();
         do {
             sample = sampleAtTargetTime(lastOutputSample, outputSampleBuffer, outputPresentationTimeUs, outputDurationPerSampleUs, targetPresentationTimeUs);
+            if(targetSampleBuffer == null){
+                //1 second worth of data
+                targetSampleBuffer = SampleBuffer.allocate((targetSampleRate/1000) * 1024, targetSampleType, ByteOrder.LITTLE_ENDIAN, (long)targetPresentationTimeUs);
+            }
             if (sample != null) {
                 targetSampleBuffer.put(sample);
                 targetPresentationTimeUs += targetDurationPerSampleUs;
+            }
+            if(sample == null || targetSampleBuffer.getByteBuffer().remaining() < 2){
+                targetSampleBuffer.limit(targetSampleBuffer.position());
+                targetSampleBuffer.position(0);
+                targetSampleBufferList.add(targetSampleBuffer);
+                targetSampleBuffer = null;
             }
         } while (sample != null);
 
         lastTargetPresentationTimeUs = targetPresentationTimeUs;
         lastOutputPresentationTimeUs += outputSampleBuffer.limit() * outputDurationPerSampleUs;
         lastOutputSample = outputSampleBuffer.get(outputSampleBuffer.limit() - 1);
-
-        targetSampleBuffer.limit(targetSampleBuffer.position());
-        targetSampleBuffer.position(0);
-
-        return targetSampleBuffer;
+        return targetSampleBufferList;
     }
 
     protected void onOutputFormatChanged(@NonNull MediaFormat mediaFormat) {
