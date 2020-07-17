@@ -472,7 +472,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
     }
 
     private void startAudioStreamThread(final Decoder _decoder){
-        Log.d(TAG, "startAudioStreamThread() queue.size():" + queue.size());
+        DebugTool.logInfo(TAG, "startAudioStreamThread() queue.size():" + queue.size());
         if (streamingStateMachine.getState() != StreamingStateMachine.STARTED || sdlAudioStream == null) {
             cleanAudioStreamThread();
             return;
@@ -480,7 +480,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
         if(_decoder != null){
             if(_decoder.isInterrupt()){
                 //Stop AS data
-                Log.d(TAG, "Audio playback interrupted");
+                DebugTool.logInfo(TAG, "Audio playback interrupted");
                 finish(null,true);
                 synchronized (queue) {
                     while (queue.size() > 0){
@@ -630,7 +630,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
                                 if(mAudioBufferList != null && mAudioBufferList.size() > 0){
                                     while (true){
                                         if (streamingStateMachine.getState() != StreamingStateMachine.STARTED || sdlAudioStream == null) {
-                                            Log.e(TAG, "Streaming Status error:" + streamingStateMachine.getState() );
+                                            DebugTool.logError(TAG, "Streaming Status error:" + streamingStateMachine.getState() );
                                             Handler handler = new Handler(Looper.getMainLooper());
                                             handler.post(new Runnable() {
                                                 @Override
@@ -652,7 +652,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
                                                     sdlAudioStream.sendAudio(sBuffer.getByteBuffer(), sBuffer.getPresentationTimeUs(), null);
                                                 } else {
                                                     //Delay data transmission
-                                                    Log.d(TAG, "Delay the call to sendAudio");
+                                                    DebugTool.logInfo(TAG, "Delay the call to sendAudio");
                                                     delay = 500;
                                                     break;
                                                 }
@@ -664,7 +664,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
 
                                                 Handler handler = new Handler(Looper.getMainLooper());
                                                 long lDelay = getDelayStartAudioTime();
-                                                Log.d(TAG, "Playback end notification. lDelay:" + lDelay);
+                                                DebugTool.logInfo(TAG, "Playback end notification. lDelay:" + lDelay);
                                                 handler.postDelayed(new Runnable() {
                                                     @Override
                                                     public void run() {
@@ -672,7 +672,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
                                                             if (queue.size() > 0) {
                                                                 finish(queue.poll().getCompletionListener(),isSuccess);
                                                             } else {
-                                                                Log.e(TAG, "There is no element of the queue");
+                                                                DebugTool.logError(TAG, "There is no element of the queue");
                                                             }
                                                             if (queue.size() > 0) {
                                                                 startAudioStreamThread(null);
@@ -696,7 +696,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
                                     mAudioBufferList =  new ArrayList<>();
                                     startTime = System.currentTimeMillis();
                                     if(startTime < mEndTimeOfSendData){
-                                        Log.d(TAG, "The playback end time exceeds the current time. EndTime:" + mEndTimeOfSendData);
+                                        DebugTool.logInfo(TAG, "The playback end time exceeds the current time. EndTime:" + mEndTimeOfSendData);
                                         startTime = mEndTimeOfSendData;
                                     }
                                 }
@@ -727,15 +727,15 @@ public class AudioStreamManager extends BaseAudioStreamManager {
                 };
             }
             if(mIsStopRequest){
-                Log.d(TAG, "StopRequest is valid");
+                DebugTool.logInfo(TAG, "StopRequest is valid");
                 return;
             }
             if (mStartedCallback != null) {
                 mStartedCallback.run();
             }
-            Log.d(TAG, "Starting SendAudioStreamThread");
+            DebugTool.logInfo(TAG, "Starting SendAudioStreamThread");
             Looper.loop();
-            Log.d(TAG, "Stopping SendAudioStreamThread");
+            DebugTool.logInfo(TAG, "Stopping SendAudioStreamThread");
         }
 
         public void addAudioData(final  ArrayList<SendAudioBuffer> sendBufferList){
@@ -749,7 +749,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
                     isFirst = false;
                 }
             } else {
-                Log.d(TAG, "addAudioData mHandler is null");
+                DebugTool.logInfo(TAG, "addAudioData mHandler is null");
             }
         }
 
@@ -758,7 +758,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
                 mHandler.sendMessage(mHandler.obtainMessage(MSG_TERMINATE));
             } else {
                 mIsStopRequest = true;
-                Log.d(TAG, "The thread has not started yet");
+                DebugTool.logInfo(TAG, "The thread has not started yet");
             }
         }
     }
