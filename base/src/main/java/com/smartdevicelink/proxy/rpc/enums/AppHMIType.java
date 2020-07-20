@@ -81,6 +81,10 @@ public enum AppHMIType {
      * Remote Control
      */
     REMOTE_CONTROL,
+    /**
+     * Web View
+     */
+    WEB_VIEW
     ;
 
     /**
