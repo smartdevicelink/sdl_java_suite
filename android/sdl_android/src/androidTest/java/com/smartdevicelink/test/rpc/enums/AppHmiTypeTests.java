@@ -43,7 +43,7 @@ public class AppHmiTypeTests extends TestCase {
 		example = "REMOTE_CONTROL";
 		AppHMIType enumRemoteControl = AppHMIType.valueForString(example);
 		example = "WEB_VIEW";
-		AppHMIType webView = AppHMIType.valueForString(example);
+		AppHMIType enumWebView = AppHMIType.valueForString(example);
 		
 		assertNotNull("DEFAULT returned null", enumDefault);
 		assertNotNull("COMMUNICATION returned null", enumCommunication);
@@ -57,7 +57,7 @@ public class AppHmiTypeTests extends TestCase {
 		assertNotNull("TESTING returned null", enumTesting);
 		assertNotNull("SYSTEM returned null", enumSystem);
 		assertNotNull("REMOTE_CONTROL returned null", enumRemoteControl);
-		assertNotNull("WEB_VIEW returned null", webView);
+		assertNotNull("WEB_VIEW returned null", enumWebView);
 	}
 	
 	/**
