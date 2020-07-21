@@ -3,9 +3,14 @@ package com.smartdevicelink.test.SdlConnection;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
+import com.smartdevicelink.test.streaming.MockInterfaceBroker;
+import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
 
 import junit.framework.TestCase;
+
+import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static org.mockito.Mockito.mock;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
@@ -14,7 +19,7 @@ import junit.framework.TestCase;
 public class SdlSessionTests extends TestCase {
 
 	public void testServiceListeners(){
-		SdlSession session =  SdlSession.createSession((byte)5,null, new TCPTransportConfig(8080,"",false));
+		SdlSession session = new SdlSession(new MockInterfaceBroker(),  new MultiplexTransportConfig(getTargetContext(),"19216801"));
 		ISdlServiceListener test = new ISdlServiceListener() {
 			@Override
 			public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
@@ -32,6 +37,7 @@ public class SdlSessionTests extends TestCase {
 			}
 		};
 
+		//assertNotNull(session.getServiceListeners());
 		session.addServiceListener(SessionType.RPC, test);
 
 		assertTrue(session.removeServiceListener(SessionType.RPC, test));

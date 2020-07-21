@@ -3,7 +3,6 @@ package com.smartdevicelink.protocol;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
-import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
@@ -357,37 +356,4 @@ public class SdlProtocolTests {
 
     }
 
-    protected class SdlConnectionTestClass extends SdlConnection {
-        protected boolean connected = false;
-        public SdlConnectionTestClass(BaseTransportConfig transportConfig) {
-            super(transportConfig);
-        }
-
-        protected SdlConnectionTestClass(BaseTransportConfig transportConfig,RouterServiceValidator rsvp){
-            super(transportConfig,rsvp);
-        }
-
-        @Override
-        public void onTransportConnected() {
-            super.onTransportConnected();
-            connected = true;
-        }
-
-        @Override
-        public void onTransportDisconnected(String info) {
-            connected = false;
-            //Grab a currently running router service
-            RouterServiceValidator rsvp2 = new RouterServiceValidator(getContext());
-            rsvp2.setFlags(RouterServiceValidator.FLAG_DEBUG_NONE);
-            assertTrue(rsvp2.validate());
-            assertNotNull(rsvp2.getService());
-            super.onTransportDisconnected(info);
-        }
-
-        @Override
-        public void onTransportError(String info, Exception e) {
-            connected = false;
-            super.onTransportError(info, e);
-        }
-    }
 }
