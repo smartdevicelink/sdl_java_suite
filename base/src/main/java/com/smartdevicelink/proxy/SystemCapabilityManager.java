@@ -45,6 +45,7 @@ import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.GetSystemCapability;
 import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
+import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnSystemCapabilityUpdated;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
@@ -298,6 +299,13 @@ public class SystemCapabilityManager {
                         }
                     } else if (RPCMessage.KEY_NOTIFICATION.equals(message.getMessageType())) {
                         switch (message.getFunctionID()) {
+							case ON_HMI_STATUS:
+								OnHMIStatus onHMIStatus = (OnHMIStatus) message;
+								if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+									return;
+								}
+								currentHMILevel = onHMIStatus.getHmiLevel();
+								break;
                             case ON_SYSTEM_CAPABILITY_UPDATED:
                                 OnSystemCapabilityUpdated onSystemCapabilityUpdated = (OnSystemCapabilityUpdated) message;
                                 if (onSystemCapabilityUpdated.getSystemCapability() != null) {
@@ -331,8 +339,8 @@ public class SystemCapabilityManager {
 											case VIDEO_STREAMING:
 												// Successfully got DISPLAYS data. No conversion needed anymore
 												// this notification can return only affected windows (hence not all windows)
-												VideoStreamingCapability newVideoStreamingCapability = (VideoStreamingCapability) capability;
-												updateCachedVideoStreamingCapabilities(newVideoStreamingCapability);
+												// VideoStreamingCapability newVideoStreamingCapability = (VideoStreamingCapability) capability;
+												//updateCachedVideoStreamingCapabilities(newVideoStreamingCapability);
 												systemCapabilitiesSubscriptionStatus.put(SystemCapabilityType.VIDEO_STREAMING, true);
 												break;
                                         }
@@ -573,7 +581,7 @@ public class SystemCapabilityManager {
 	 * @param subscribe flag to subscribe to updates of the supplied capability type. True means subscribe; false means cancel subscription; null means don't change current subscription status.
 	 */
 	private void retrieveCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener, final Boolean subscribe) {
-		if (currentHMILevel != null && currentHMILevel.equals(HMILevel.HMI_NONE)) {
+		if (currentHMILevel != null && currentHMILevel.equals(HMILevel.HMI_NONE) && systemCapabilityType != SystemCapabilityType.VIDEO_STREAMING) {
 			String message = String.format("Attempted to update type: %s in HMI level NONE, which is not allowed. " +
 					"Please wait until you are in HMI BACKGROUND, LIMITED, or FULL before attempting to update any SystemCapabilityType", systemCapabilityType);
 			DebugTool.logError(TAG, message);

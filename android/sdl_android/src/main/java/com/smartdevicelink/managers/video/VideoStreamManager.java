@@ -36,6 +36,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.SystemClock;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.InputDevice;
 import android.view.MotionEvent;
@@ -233,7 +234,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
 			@Override
 			public void onError(String info) {
-
+				Log.d("MyTagLogInfo", info);
 			}
 		});
 	}
@@ -308,7 +309,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted, SupportedStreamingRange streamingRange) {
 		configureGlobalParameters(context, remoteDisplayClass, isEncrypted, streamingRange);
 		if(majorProtocolVersion >= 5 && !internalInterface.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
-			Log.e(TAG, "Video streaming not supported on this module");
 			stateMachine.transitionToState(StreamingStateMachine.ERROR);
 			return;
 		}
@@ -514,7 +514,9 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 * @return boolean (true = yes, false = no)
 	 */
 	public boolean isStreaming(){
-		return (stateMachine.getState() == StreamingStateMachine.STARTED) && (isHMIStateVideoStreamCapable(currentOnHMIStatus));
+		boolean state = (stateMachine.getState() == StreamingStateMachine.STARTED);
+		boolean capable = isHMIStateVideoStreamCapable(currentOnHMIStatus);
+		return state && capable;
 	}
 
 	/**

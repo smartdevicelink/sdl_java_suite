@@ -93,6 +93,11 @@ public class VideoStreamManagerTests {
 		}
 
 		@Override
+		public void onViewResized(int width, int height) {
+
+		}
+
+		@Override
 		public boolean onTouchEvent(@NonNull MotionEvent event) {
 			touchEventOccured = true;
 			return super.onTouchEvent(event);
@@ -538,8 +543,8 @@ public class VideoStreamManagerTests {
 
         motionEvent = motionEventList.get(0);
         assertEquals(1, motionEvent.getPointerCount());
-        assertEquals(Math.round(e1x / scale), Math.round(motionEvent.getX(0)));
-        assertEquals(Math.round(e1y / scale), Math.round(motionEvent.getY(0)));
+        assertEquals(Math.round(e1x * scale), Math.round(motionEvent.getX(0)));
+        assertEquals(Math.round(e1y * scale), Math.round(motionEvent.getY(0)));
     }
 
     @Test

@@ -67,6 +67,7 @@ public class LifecycleManager extends BaseLifecycleManager {
     private ISdlServiceListener videoServiceListener;
     private boolean videoServiceStartResponseReceived = false;
     private boolean videoServiceStartResponse = false;
+    private boolean videoStreamEnded = false;
     private WeakReference<Context> contextWeakReference;
 
     public LifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener) {
@@ -219,12 +220,13 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
 
 
-        if (!videoServiceStartResponseReceived || !videoServiceStartResponse //If we haven't started the service before
+        if (videoStreamEnded || !videoServiceStartResponseReceived || !videoServiceStartResponse //If we haven't started the service before
                 || (videoServiceStartResponse && isEncrypted && !session.isServiceProtected(SessionType.NAV))) { //Or the service has been started but we'd like to start an encrypted one
             session.setDesiredVideoParams(parameters);
 
             videoServiceStartResponseReceived = false;
             videoServiceStartResponse = false;
+            videoStreamEnded = false;
 
             addVideoServiceListener();
             session.startService(SessionType.NAV, session.getSessionId(), isEncrypted);
@@ -278,6 +280,7 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
 
         session.stopVideoStream();
+        videoStreamEnded = true;
     }
 
     @Override

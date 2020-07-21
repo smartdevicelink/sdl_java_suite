@@ -366,9 +366,9 @@ public class SystemCapabilityManagerTests {
 		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, null);
 		VideoStreamingCapability retrievedCapability = (VideoStreamingCapability) scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener, false);
 		assertNull(retrievedCapability);
-		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
-		verify(onSystemCapabilityListener, times(0)).onCapabilityRetrieved(any(Object.class));
-		verify(onSystemCapabilityListener, times(1)).onError(any(String.class));
+		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener, times(1)).onCapabilityRetrieved(any(Object.class));
+		verify(onSystemCapabilityListener, times(0)).onError(any(String.class));
 	}
 
 	@Test
