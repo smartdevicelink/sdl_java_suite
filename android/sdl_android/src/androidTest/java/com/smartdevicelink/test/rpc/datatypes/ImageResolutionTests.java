@@ -2,7 +2,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -24,8 +24,8 @@ public class ImageResolutionTests extends TestCase{
     public void setUp(){
         msg = new ImageResolution();
 
-        msg.setResolutionHeight(Test.GENERAL_INT);
-        msg.setResolutionWidth(Test.GENERAL_INT);
+        msg.setResolutionHeight(TestValues.GENERAL_INT);
+        msg.setResolutionWidth(TestValues.GENERAL_INT);
     }
 
     /**
@@ -37,34 +37,34 @@ public class ImageResolutionTests extends TestCase{
         int width = msg.getResolutionWidth();
         
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_INT, height);
-        assertEquals(Test.MATCH, Test.GENERAL_INT, width);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, height);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, width);
         
         // Invalid/Null Tests
         ImageResolution msg = new ImageResolution();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
 
-        assertNull(Test.NULL, msg.getResolutionHeight());
-        assertNull(Test.NULL, msg.getResolutionWidth());
+        assertNull(TestValues.NULL, msg.getResolutionHeight());
+        assertNull(TestValues.NULL, msg.getResolutionWidth());
     }
 
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(ImageResolution.KEY_RESOLUTION_HEIGHT, Test.GENERAL_INT);
-            reference.put(ImageResolution.KEY_RESOLUTION_WIDTH, Test.GENERAL_INT);
+            reference.put(ImageResolution.KEY_RESOLUTION_HEIGHT, TestValues.GENERAL_INT);
+            reference.put(ImageResolution.KEY_RESOLUTION_WIDTH, TestValues.GENERAL_INT);
 
             JSONObject underTest = msg.serializeJSON();
-            assertEquals(Test.MATCH, reference.length(), underTest.length());
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
                 String key = (String) iterator.next();
-                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
         } catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
     }
 

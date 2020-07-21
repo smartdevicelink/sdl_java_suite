@@ -36,6 +36,7 @@ import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 
 import java.util.Vector;
 
+@Deprecated
 public class TTSChunkFactory {
 
 	public static TTSChunk createChunk(SpeechCapabilities type, String text) {

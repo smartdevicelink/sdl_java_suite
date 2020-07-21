@@ -32,12 +32,12 @@
 package com.smartdevicelink.managers.screen;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.SystemAction;
+import com.smartdevicelink.util.DebugTool;
 
 /**
  * <strong>SoftButtonState</strong> <br>
@@ -47,7 +47,6 @@ import com.smartdevicelink.proxy.rpc.enums.SystemAction;
  * @see SoftButtonObject
  */
 public class SoftButtonState {
-
     private static final String TAG = "SoftButtonState";
     private String name;
     private SdlArtwork artwork;
@@ -62,7 +61,7 @@ public class SoftButtonState {
      */
     public SoftButtonState(@NonNull String name, String text, SdlArtwork artwork) {
         if (text == null && artwork == null) {
-            Log.e(TAG, "Attempted to create an invalid soft button state: text and artwork are both null");
+            DebugTool.logError(TAG, "Attempted to create an invalid soft button state: text and artwork are both null");
             softButton = null;
             return;
         }
@@ -84,13 +83,15 @@ public class SoftButtonState {
 
         // Set the SoftButton's image
         if (artwork != null) {
-            softButton.setImage(artwork.getImageRPC());
+            this.softButton.setImage(artwork.getImageRPC());
         }
 
         // Set the SoftButton's text
         if (text != null) {
-            softButton.setText(text);
+            this.softButton.setText(text);
         }
+
+        this.softButton.setSystemAction(SystemAction.DEFAULT_ACTION);
     }
 
     /**

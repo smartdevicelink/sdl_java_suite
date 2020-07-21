@@ -22,6 +22,7 @@ import android.widget.VideoView;
 
 import com.jakewharton.rxrelay2.PublishRelay;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.screen.OnButtonListener;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
@@ -41,10 +42,13 @@ import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.Alert;
+import com.smartdevicelink.proxy.rpc.OnButtonEvent;
+import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.Speak;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
+import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
@@ -287,20 +291,44 @@ public class SdlService extends Service {
 				}
 
 				@Override
-				public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language){
-					String appName;
+				public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language) {
+					return null;
+				}
+
+				@Override
+				public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language, Language hmiLanguage) {
+					boolean isNeedUpdate = false;
+					String appName = APP_NAME;
+					String ttsName = APP_NAME;
 					switch (language) {
 						case ES_MX:
+							isNeedUpdate = true;
+							ttsName = APP_NAME_ES;
+							break;
+						case FR_CA:
+							isNeedUpdate = true;
+							ttsName = APP_NAME_FR;
+							break;
+						default:
+							break;
+					}
+					switch (hmiLanguage) {
+						case ES_MX:
+							isNeedUpdate = true;
 							appName = APP_NAME_ES;
 							break;
 						case FR_CA:
+							isNeedUpdate = true;
 							appName = APP_NAME_FR;
 							break;
 						default:
-							return null;
+							break;
 					}
-
-					return new LifecycleConfigurationUpdate(appName,null,TTSChunkFactory.createSimpleTTSChunks(appName), null);
+					if (isNeedUpdate) {
+						return new LifecycleConfigurationUpdate(appName, null, TTSChunkFactory.createSimpleTTSChunks(ttsName), null);
+					} else {
+						return null;
+					}
 				}
 			};
 
@@ -447,6 +475,36 @@ public class SdlService extends Service {
 				}
 			}
 		});
+	}
+
+	/**
+	 * Attempts to Subscribe to all preset buttons
+	 */
+	private void subscribeToButtons() {
+		ButtonName[] buttonNames = {ButtonName.PLAY_PAUSE, ButtonName.SEEKLEFT, ButtonName.SEEKRIGHT, ButtonName.AC_MAX, ButtonName.AC, ButtonName.RECIRCULATE,
+				ButtonName.FAN_UP, ButtonName.FAN_DOWN, ButtonName.TEMP_UP, ButtonName.TEMP_DOWN, ButtonName.FAN_DOWN, ButtonName.DEFROST_MAX, ButtonName.DEFROST_REAR, ButtonName.DEFROST,
+				ButtonName.UPPER_VENT, ButtonName.LOWER_VENT, ButtonName.VOLUME_UP, ButtonName.VOLUME_DOWN, ButtonName.EJECT, ButtonName.SOURCE, ButtonName.SHUFFLE, ButtonName.REPEAT};
+
+		OnButtonListener onButtonListener = new OnButtonListener() {
+			@Override
+			public void onPress(ButtonName buttonName, OnButtonPress buttonPress) {
+				sdlManager.getScreenManager().setTextField1(buttonName + " pressed");
+			}
+
+			@Override
+			public void onEvent(ButtonName buttonName, OnButtonEvent buttonEvent) {
+				sdlManager.getScreenManager().setTextField2(buttonName + " " + buttonEvent.getButtonEventMode());
+			}
+
+			@Override
+			public void onError(String info) {
+				Log.i(TAG, "onError: " + info);
+			}
+		};
+
+		for (ButtonName buttonName : buttonNames) {
+			sdlManager.getScreenManager().addButtonListener(buttonName, onButtonListener);
+		}
 	}
 
 	/**

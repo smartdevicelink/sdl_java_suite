@@ -4,7 +4,7 @@ import com.smartdevicelink.proxy.LockScreenManager;
 import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -21,10 +21,10 @@ public class LockScreenManagerTest extends TestCase {
     public void testDriverDistStatus(){
         LockScreenManager lockMan = new LockScreenManager();
         lockMan.setDriverDistStatus(true);
-        assertEquals(Test.MATCH, true, (boolean) lockMan.getLockObj().getDriverDistractionStatus());
+        assertEquals(TestValues.MATCH, true, (boolean) lockMan.getLockObj().getDriverDistractionStatus());
 
         lockMan.setDriverDistStatus(false);
-        assertEquals(Test.MATCH, false, (boolean) lockMan.getLockObj().getDriverDistractionStatus());
+        assertEquals(TestValues.MATCH, false, (boolean) lockMan.getLockObj().getDriverDistractionStatus());
     }
 
     /**
@@ -34,19 +34,19 @@ public class LockScreenManagerTest extends TestCase {
     public void testHmiLevelStatus(){
         LockScreenManager lockMan = new LockScreenManager();
         lockMan.setHMILevel(HMILevel.HMI_BACKGROUND);
-        assertEquals(Test.MATCH, HMILevel.HMI_BACKGROUND, lockMan.getLockObj().getHMILevel());
+        assertEquals(TestValues.MATCH, HMILevel.HMI_BACKGROUND, lockMan.getLockObj().getHMILevel());
 
         lockMan.setHMILevel(HMILevel.HMI_FULL);
-        assertEquals(Test.MATCH, HMILevel.HMI_FULL, lockMan.getLockObj().getHMILevel());
+        assertEquals(TestValues.MATCH, HMILevel.HMI_FULL, lockMan.getLockObj().getHMILevel());
 
         lockMan.setHMILevel(HMILevel.HMI_LIMITED);
-        assertEquals(Test.MATCH, HMILevel.HMI_LIMITED, lockMan.getLockObj().getHMILevel());
+        assertEquals(TestValues.MATCH, HMILevel.HMI_LIMITED, lockMan.getLockObj().getHMILevel());
 
         lockMan.setHMILevel(HMILevel.HMI_NONE);
-        assertEquals(Test.MATCH, HMILevel.HMI_NONE, lockMan.getLockObj().getHMILevel());
+        assertEquals(TestValues.MATCH, HMILevel.HMI_NONE, lockMan.getLockObj().getHMILevel());
 
         lockMan.setHMILevel(null);
-        assertNull(Test.NULL, lockMan.getLockObj().getHMILevel());
+        assertNull(TestValues.NULL, lockMan.getLockObj().getHMILevel());
     }
 
     /**
@@ -55,8 +55,8 @@ public class LockScreenManagerTest extends TestCase {
     public void testLockScreenStatusNull(){
         LockScreenManager lockMan = new LockScreenManager();
         OnLockScreenStatus result = lockMan.getLockObj();
-        assertNotNull(Test.NOT_NULL, result);
-        assertEquals(Test.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
+        assertNotNull(TestValues.NOT_NULL, result);
+        assertEquals(TestValues.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
     }
 
     /**
@@ -66,23 +66,23 @@ public class LockScreenManagerTest extends TestCase {
         LockScreenManager lockMan = new LockScreenManager();
       
         OnLockScreenStatus result = lockMan.getLockObj();
-        assertEquals(Test.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
+        assertEquals(TestValues.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
 
         lockMan.setHMILevel(HMILevel.HMI_NONE);
         result = lockMan.getLockObj();
-        assertEquals(Test.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
+        assertEquals(TestValues.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
 
         lockMan.setHMILevel(HMILevel.HMI_BACKGROUND);
         result = lockMan.getLockObj();
-        assertEquals(Test.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
+        assertEquals(TestValues.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
 
         lockMan.setHMILevel(HMILevel.HMI_FULL);
         result = lockMan.getLockObj();
-        assertEquals(Test.MATCH, LockScreenStatus.REQUIRED, result.getShowLockScreen());
+        assertEquals(TestValues.MATCH, LockScreenStatus.REQUIRED, result.getShowLockScreen());
 
         lockMan.setHMILevel(HMILevel.HMI_LIMITED);
         result = lockMan.getLockObj();
-        assertEquals(Test.MATCH, LockScreenStatus.REQUIRED, result.getShowLockScreen());
+        assertEquals(TestValues.MATCH, LockScreenStatus.REQUIRED, result.getShowLockScreen());
     }
 
     /**
@@ -94,23 +94,23 @@ public class LockScreenManagerTest extends TestCase {
 
         // HMI level is null
         OnLockScreenStatus result = lockMan.getLockObj();
-        assertEquals(Test.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
+        assertEquals(TestValues.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
 
         lockMan.setHMILevel(HMILevel.HMI_NONE);
         result = lockMan.getLockObj();
-        assertEquals(Test.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
+        assertEquals(TestValues.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
 
         lockMan.setHMILevel(HMILevel.HMI_BACKGROUND);
         result = lockMan.getLockObj();
-        assertEquals(Test.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
+        assertEquals(TestValues.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
 
         lockMan.setHMILevel(HMILevel.HMI_FULL);
         result = lockMan.getLockObj();
-        assertEquals(Test.MATCH, LockScreenStatus.REQUIRED, result.getShowLockScreen());
+        assertEquals(TestValues.MATCH, LockScreenStatus.REQUIRED, result.getShowLockScreen());
 
         lockMan.setHMILevel(HMILevel.HMI_LIMITED);
         result = lockMan.getLockObj();
-        assertEquals(Test.MATCH, LockScreenStatus.REQUIRED, result.getShowLockScreen());
+        assertEquals(TestValues.MATCH, LockScreenStatus.REQUIRED, result.getShowLockScreen());
     }
 
     /**
@@ -121,22 +121,22 @@ public class LockScreenManagerTest extends TestCase {
         lockMan.setDriverDistStatus(false);
 
         OnLockScreenStatus result = lockMan.getLockObj();
-        assertEquals(Test.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
+        assertEquals(TestValues.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
 
         lockMan.setHMILevel(HMILevel.HMI_NONE);
         result = lockMan.getLockObj();
-        assertEquals(Test.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
+        assertEquals(TestValues.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
 
         lockMan.setHMILevel(HMILevel.HMI_BACKGROUND);
         result = lockMan.getLockObj();
-        assertEquals(Test.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
+        assertEquals(TestValues.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
 
         lockMan.setHMILevel(HMILevel.HMI_FULL);
         result = lockMan.getLockObj();
-        assertEquals(Test.MATCH, LockScreenStatus.OPTIONAL, result.getShowLockScreen());
+        assertEquals(TestValues.MATCH, LockScreenStatus.OPTIONAL, result.getShowLockScreen());
 
         lockMan.setHMILevel(HMILevel.HMI_LIMITED);
         result = lockMan.getLockObj();
-        assertEquals(Test.MATCH, LockScreenStatus.OPTIONAL, result.getShowLockScreen());
+        assertEquals(TestValues.MATCH, LockScreenStatus.OPTIONAL, result.getShowLockScreen());
     }
 }

@@ -41,7 +41,6 @@ import android.os.Looper;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.util.Log;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.managers.CompletionListener;
@@ -60,6 +59,7 @@ import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.transport.utl.TransportRecord;
+import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
 
 import java.lang.annotation.Retention;
@@ -145,7 +145,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
                 serviceCompletionHandler.removeCallbacks(serviceCompletionTimeoutCallback);
 
                 streamingStateMachine.transitionToState(StreamingStateMachine.ERROR);
-                Log.e(TAG, "OnServiceError: " + reason);
+                DebugTool.logError(TAG, "OnServiceError: " + reason);
                 streamingStateMachine.transitionToState(StreamingStateMachine.NONE);
 
                 if (serviceCompletionListener != null) {
@@ -229,7 +229,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
 
             @Override
             public void onError(String info) {
-                Log.e(TAG, "Error retrieving audio streaming capability: " + info);
+                DebugTool.logError(TAG, "Error retrieving audio streaming capability: " + info);
                 streamingStateMachine.transitionToState(StreamingStateMachine.ERROR);
                 transitionToState(ERROR);
             }
@@ -256,14 +256,14 @@ public class AudioStreamManager extends BaseAudioStreamManager {
     public void startAudioStream(boolean encrypted, final CompletionListener completionListener) {
         // audio stream cannot be started without a connected internal interface
         if (!internalInterface.isConnected()) {
-            Log.w(TAG, "startAudioStream called without being connected.");
+            DebugTool.logWarning(TAG, "startAudioStream called without being connected.");
             finish(completionListener, false);
             return;
         }
 
         // streaming state must be NONE (starting the service is ready. starting stream is started)
         if (streamingStateMachine.getState() != StreamingStateMachine.NONE) {
-            Log.w(TAG, "startAudioStream called but streamingStateMachine is not in state NONE (current: " + streamingStateMachine.getState() + ")");
+            DebugTool.logWarning(TAG, "startAudioStream called but streamingStateMachine is not in state NONE (current: " + streamingStateMachine.getState() + ")");
             finish(completionListener, false);
             return;
         }
@@ -333,14 +333,14 @@ public class AudioStreamManager extends BaseAudioStreamManager {
      */
     public void stopAudioStream(final CompletionListener completionListener) {
         if (!internalInterface.isConnected()) {
-            Log.w(TAG, "stopAudioStream called without being connected");
+            DebugTool.logWarning(TAG, "stopAudioStream called without being connected");
             finish(completionListener, false);
             return;
         }
 
         // streaming state must be STARTED (starting the service is ready. starting stream is started)
         if (streamingStateMachine.getState() != StreamingStateMachine.STARTED) {
-            Log.w(TAG, "stopAudioStream called but streamingStateMachine is not STARTED (current: " + streamingStateMachine.getState() + ")");
+            DebugTool.logWarning(TAG, "stopAudioStream called but streamingStateMachine is not STARTED (current: " + streamingStateMachine.getState() + ")");
             finish(completionListener, false);
             return;
         }
@@ -414,7 +414,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
 
             @Override
             public void onDecoderError(Exception e) {
-                Log.e(TAG, "decoder error", e);
+                DebugTool.logError(TAG, "decoder error", e);
             }
         };
 
@@ -444,7 +444,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
     public void pushBuffer(ByteBuffer data, CompletionListener completionListener) {
         // streaming state must be STARTED (starting the service is ready. starting stream is started)
         if (streamingStateMachine.getState() != StreamingStateMachine.STARTED) {
-            Log.w(TAG, "AudioStreamManager is not ready!");
+            DebugTool.logWarning(TAG, "AudioStreamManager is not ready!");
             return;
         }
 

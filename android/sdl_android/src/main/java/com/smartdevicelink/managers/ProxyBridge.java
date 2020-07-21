@@ -129,6 +129,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
+@Deprecated
 public class ProxyBridge implements IProxyListener{
 	private final Object RPC_LISTENER_LOCK = new Object();
 	private SparseArray<CopyOnWriteArrayList<OnRPCListener>> rpcListeners = null;

@@ -35,7 +35,9 @@ import com.smartdevicelink.util.DebugTool;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
+@Deprecated
 public class ProxyMessageDispatcher<T> {
+	private static final String TAG = "ProxyMessageDispatcher";
 	LinkedBlockingQueue<T> _queue = null;
 	private Thread _messageDispatchingThread = null;
 	IDispatchingStrategy<T> _strategy = null;
@@ -77,7 +79,7 @@ public class ProxyMessageDispatcher<T> {
 			// Thread was interrupted by dispose() method, no action required
 			return;
 		} catch (Exception e) {
-			DebugTool.logError("Error occurred dispating message.", e);
+			DebugTool.logError(TAG, "Error occurred dispating message.", e);
 			_strategy.handleDispatchingError("Error occurred dispating message.", e);
 		}
 	}

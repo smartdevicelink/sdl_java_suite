@@ -7,17 +7,25 @@ import com.smartdevicelink.proxy.rpc.Speak;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 
 public class SpeakTests extends BaseRpcTests {
 	
@@ -25,7 +33,7 @@ public class SpeakTests extends BaseRpcTests {
 	protected RPCMessage createMessage() {
 		Speak msg = new Speak();
 
-		msg.setTtsChunks(Test.GENERAL_TTSCHUNK_LIST);
+		msg.setTtsChunks(TestValues.GENERAL_TTSCHUNK_LIST);
 
 		return msg;
 	}
@@ -45,9 +53,9 @@ public class SpeakTests extends BaseRpcTests {
 		JSONObject result = new JSONObject();
 		
 		try {	        
-			result.put(Speak.KEY_TTS_CHUNKS, Test.JSON_TTSCHUNKS);			
+			result.put(Speak.KEY_TTS_CHUNKS, TestValues.JSON_TTSCHUNKS);
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 
 		return result;
@@ -56,38 +64,40 @@ public class SpeakTests extends BaseRpcTests {
 	/**
 	 * Tests the expected values of the RPC message.
 	 */
+	@Test
     public void testRpcValues () {       	
     	// Test Values
 		List<TTSChunk> copy = ( (Speak) msg ).getTtsChunks();
 		
 		// Valid Tests
-	    assertTrue(Test.TRUE, Validator.validateTtsChunks(Test.GENERAL_TTSCHUNK_LIST, copy));
+	    assertTrue(TestValues.TRUE, Validator.validateTtsChunks(TestValues.GENERAL_TTSCHUNK_LIST, copy));
 	
 	    // Invalid/Null Tests
 		Speak msg = new Speak();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 		testNullBase(msg);
 
-		assertNull(Test.MATCH, msg.getTtsChunks());
+		assertNull(TestValues.MATCH, msg.getTtsChunks());
 	}
 
     /**
      * Tests a valid JSON construction of this RPC message.
      */
+    @Test
     public void testJsonConstructor () {
-    	JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-    	assertNotNull(Test.NOT_NULL, commandJson);
+    	JSONObject commandJson = JsonFileReader.readId(getTargetContext(), getCommandType(), getMessageType());
+    	assertNotNull(TestValues.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			Speak cmd = new Speak(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(Test.NOT_NULL, body);
+			assertNotNull(TestValues.NOT_NULL, body);
 			
 			// Test everything in the json body.
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
 			
@@ -97,7 +107,7 @@ public class SpeakTests extends BaseRpcTests {
 	        	TTSChunk chunk = new TTSChunk(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)ttsChunkArray.get(index)) );
 	        	ttsChunkList.add(chunk);
 			}
-			assertTrue(Test.TRUE,  Validator.validateTtsChunks(ttsChunkList, cmd.getTtsChunks()));
+			assertTrue(TestValues.TRUE,  Validator.validateTtsChunks(ttsChunkList, cmd.getTtsChunks()));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}    	

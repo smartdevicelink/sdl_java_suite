@@ -118,7 +118,7 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 							mPauseLock.wait();
                         }
                         catch (InterruptedException e) {
-							DebugTool.logError("Streaming thread has been interrupted", e);
+							DebugTool.logError(TAG, "Streaming thread has been interrupted", e);
 						}
                     }
                 }

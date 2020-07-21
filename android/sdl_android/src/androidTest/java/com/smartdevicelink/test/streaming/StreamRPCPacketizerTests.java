@@ -6,7 +6,7 @@ import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.SdlProxyBase;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
 
@@ -44,7 +44,7 @@ public class StreamRPCPacketizerTests extends TestCase {
 		try {
 			testInputStream = new BufferedInputStream(new ByteArrayInputStream("sdl streaming test".getBytes()));
 			StreamRPCPacketizer testStreamRpcPacketizer = new StreamRPCPacketizer(null, testListener, testInputStream, testRequest, testSessionType, testSessionId, testWV, testWV, testSdlSession);
-			assertNotNull(Test.NOT_NULL, testStreamRpcPacketizer);
+			assertNotNull(TestValues.NOT_NULL, testStreamRpcPacketizer);
 			
 			// NOTE: Cannot test thread handling methods currently.
 			

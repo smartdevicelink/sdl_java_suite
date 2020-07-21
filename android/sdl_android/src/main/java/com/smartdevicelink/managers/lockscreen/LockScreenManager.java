@@ -38,7 +38,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Build;
-import android.util.Log;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
@@ -192,7 +191,7 @@ public class LockScreenManager extends BaseSubManager {
 				if (notification != null) {
 					OnDriverDistraction ddState = (OnDriverDistraction) notification;
 					Boolean isDismissible = ddState.getLockscreenDismissibility();
-					Log.i(TAG, "Lock screen dismissible: "+ isDismissible);
+					DebugTool.logInfo(TAG, "Lock screen dismissible: "+ isDismissible);
 					if (isDismissible != null) {
 						// both of these conditions must be met to be able to dismiss lockscreen
 						if (isDismissible && enableDismissGesture){
@@ -393,7 +392,7 @@ public class LockScreenManager extends BaseSubManager {
 
 					@Override
 					public void onError(String info) {
-						DebugTool.logError(info);
+						DebugTool.logError(TAG, info);
 					}
 				});
 			}

@@ -46,6 +46,7 @@ import java.util.List;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class VideoStreamingParameters {
+    private static final String TAG = "VideoStreamingParameters";
 	private final VideoStreamingProtocol DEFAULT_PROTOCOL = VideoStreamingProtocol.RAW;
 	private final VideoStreamingCodec DEFAULT_CODEC = VideoStreamingCodec.H264;
 	private final VideoStreamingFormat[] CURRENTLY_SUPPORTED_FORMATS = { new VideoStreamingFormat(VideoStreamingProtocol.RTP, VideoStreamingCodec.H264),
@@ -181,7 +182,7 @@ public class VideoStreamingParameters {
                     }
                 }
             }
-            DebugTool.logWarning("The VideoStreamingFormat has not been updated because none of the provided formats are supported.");
+            DebugTool.logWarning(TAG, "The VideoStreamingFormat has not been updated because none of the provided formats are supported.");
 
             //TODO In the future we should set format to null, but might be a breaking change
             // For now, format will remain whatever was set prior to this update
@@ -220,7 +221,7 @@ public class VideoStreamingParameters {
                     }
                 }
             }
-            DebugTool.logWarning("The VideoStreamingFormat has not been updated because none of the provided formats are supported.");
+            DebugTool.logWarning(TAG, "The VideoStreamingFormat has not been updated because none of the provided formats are supported.");
 
             //TODO In the future we should set format to null, but might be a breaking change
             // For now, format will remain whatever was set prior to this update

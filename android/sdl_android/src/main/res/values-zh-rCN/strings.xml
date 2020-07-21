@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spp_out_of_resource">太多的应用程序正在使用蓝牙</string>
+    <string name="sdl_error_notification_channel_name">SDL错误</string>
+</resources>

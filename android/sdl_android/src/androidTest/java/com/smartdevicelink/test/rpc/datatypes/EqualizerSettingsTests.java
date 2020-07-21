@@ -2,7 +2,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 
 import com.smartdevicelink.proxy.rpc.EqualizerSettings;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -23,9 +23,9 @@ public class EqualizerSettingsTests extends TestCase {
 	public void setUp() {
 		msg = new EqualizerSettings();
 
-		msg.setChannelId(Test.GENERAL_INT);
-		msg.setChannelName(Test.GENERAL_STRING);
-		msg.setChannelSetting(Test.GENERAL_INT);
+		msg.setChannelId(TestValues.GENERAL_INT);
+		msg.setChannelName(TestValues.GENERAL_STRING);
+		msg.setChannelSetting(TestValues.GENERAL_INT);
 	}
 
 	/**
@@ -39,17 +39,17 @@ public class EqualizerSettingsTests extends TestCase {
 		int channelSetting = msg.getChannelSetting();
 
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_INT, channelId);
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, channelName);
-		assertEquals(Test.MATCH, Test.GENERAL_INT, channelSetting);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, channelId);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, channelName);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, channelSetting);
 
 		// Invalid/Null Tests
 		EqualizerSettings msg = new EqualizerSettings();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getChannelId());
-		assertNull(Test.NULL, msg.getChannelName());
-		assertNull(Test.NULL, msg.getChannelSetting());
+		assertNull(TestValues.NULL, msg.getChannelId());
+		assertNull(TestValues.NULL, msg.getChannelName());
+		assertNull(TestValues.NULL, msg.getChannelSetting());
 	}
 
 	public void testJson() {
@@ -57,22 +57,22 @@ public class EqualizerSettingsTests extends TestCase {
 
 		try {
 
-			reference.put(EqualizerSettings.KEY_CHANNEL_ID, Test.GENERAL_INT);
-			reference.put(EqualizerSettings.KEY_CHANNEL_NAME, Test.GENERAL_STRING);
-			reference.put(EqualizerSettings.KEY_CHANNEL_SETTING, Test.GENERAL_INT);
+			reference.put(EqualizerSettings.KEY_CHANNEL_ID, TestValues.GENERAL_INT);
+			reference.put(EqualizerSettings.KEY_CHANNEL_NAME, TestValues.GENERAL_STRING);
+			reference.put(EqualizerSettings.KEY_CHANNEL_SETTING, TestValues.GENERAL_INT);
 
 			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
 
-				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+				assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 
 			}
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 }

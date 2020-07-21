@@ -18,6 +18,7 @@
 
 package android.os;
 
+@Deprecated
 public class Parcel {
 
     public void writeInt(int data){

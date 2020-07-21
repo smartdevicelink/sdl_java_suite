@@ -33,6 +33,7 @@ package com.smartdevicelink.proxy;
 
 import android.util.Log;
 
+import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
@@ -54,6 +55,7 @@ import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
+import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
@@ -74,6 +76,7 @@ import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SystemCapabilityManager {
+	private static final String TAG = "SystemCapabilityManager";
 	private final HashMap<SystemCapabilityType, Object> cachedSystemCapabilities;
 	private final HashMap<SystemCapabilityType, Boolean> systemCapabilitiesSubscriptionStatus;
 	private final HashMap<SystemCapabilityType, CopyOnWriteArrayList<OnSystemCapabilityListener>> onSystemCapabilityListeners;
@@ -81,6 +84,7 @@ public class SystemCapabilityManager {
 	private final ISdl callback;
 	private OnRPCListener rpcListener;
 	private boolean shouldConvertDeprecatedDisplayCapabilities;
+	private HMILevel currentHMILevel;
 
 	public SystemCapabilityManager(ISdl callback) {
 		this.callback = callback;
@@ -88,7 +92,9 @@ public class SystemCapabilityManager {
 		this.onSystemCapabilityListeners = new HashMap<>();
 		this.cachedSystemCapabilities = new HashMap<>();
 		this.systemCapabilitiesSubscriptionStatus = new HashMap<>();
+		this.systemCapabilitiesSubscriptionStatus.put(SystemCapabilityType.DISPLAYS, true);
 		this.shouldConvertDeprecatedDisplayCapabilities = true;
+		this.currentHMILevel = HMILevel.HMI_NONE;
 
 		setupRpcListeners();
 	}
@@ -124,6 +130,8 @@ public class SystemCapabilityManager {
 
 		// return if display capabilities don't exist.
 		if (display == null) {
+			defaultWindowCapability.setTextFields(ManagerUtility.WindowCapabilityUtility.getAllTextFields());
+			defaultWindowCapability.setImageFields(ManagerUtility.WindowCapabilityUtility.getAllImageFields());
 			displayCapability.setWindowCapabilities(Collections.singletonList(defaultWindowCapability));
 			return Collections.singletonList(displayCapability);
 		}
@@ -175,7 +183,7 @@ public class SystemCapabilityManager {
 
 	private void updateCachedDisplayCapabilityList(List<DisplayCapability> newCapabilities) {
 		if (newCapabilities == null || newCapabilities.size() == 0) {
-			DebugTool.logWarning("Received invalid display capability list");
+			DebugTool.logWarning(TAG, "Received invalid display capability list");
 			return;
 		}
 
@@ -339,12 +347,13 @@ public class SystemCapabilityManager {
             }
         };
 
-        if (callback != null) {
-        	callback.addOnRPCListener(FunctionID.GET_SYSTEM_CAPABILITY, rpcListener);
-            callback.addOnRPCListener(FunctionID.SET_DISPLAY_LAYOUT, rpcListener);
-            callback.addOnRPCListener(FunctionID.ON_SYSTEM_CAPABILITY_UPDATED, rpcListener);
-        }
-    }
+		if (callback != null) {
+			callback.addOnRPCListener(FunctionID.GET_SYSTEM_CAPABILITY, rpcListener);
+			callback.addOnRPCListener(FunctionID.SET_DISPLAY_LAYOUT, rpcListener);
+			callback.addOnRPCListener(FunctionID.ON_SYSTEM_CAPABILITY_UPDATED, rpcListener);
+			callback.addOnRPCListener(FunctionID.ON_HMI_STATUS, rpcListener);
+		}
+	}
 
 	/**
 	 * Sets a capability in the cached map. This should only be done when an RPC is received and contains updates to the capability
@@ -466,8 +475,10 @@ public class SystemCapabilityManager {
 	private Object getCapabilityPrivate(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener, final Boolean subscribe, final boolean forceUpdate) {
 		Object cachedCapability = cachedSystemCapabilities.get(systemCapabilityType);
 
+		// No need to force update if the app is subscribed to that type because updated values will be received via notifications anyway
+		boolean shouldForceUpdate = forceUpdate && !isSubscribedToSystemCapability(systemCapabilityType);
 		boolean shouldUpdateSystemCapabilitySubscription = (subscribe != null) && (subscribe != isSubscribedToSystemCapability(systemCapabilityType)) && supportsSubscriptions();
-		boolean shouldSendGetCapabilityRequest = forceUpdate || (cachedCapability == null) || shouldUpdateSystemCapabilitySubscription;
+		boolean shouldSendGetCapabilityRequest = shouldForceUpdate || (cachedCapability == null) || shouldUpdateSystemCapabilitySubscription;
 		boolean shouldCallListenerWithCachedValue = (cachedCapability != null) && (scListener != null) && !shouldSendGetCapabilityRequest;
 
 		if (shouldCallListenerWithCachedValue) {
@@ -495,6 +506,7 @@ public class SystemCapabilityManager {
 	/** Gets the capability object that corresponds to the supplied capability type by calling the listener immediately with the cached value, if available. If not available, the listener will retrieve a new value and return that when the head unit responds.
 	 * @param systemCapabilityType Type of capability desired
 	 * @param scListener callback to execute upon retrieving capability
+	 * @deprecated use {@link #getCapability(SystemCapabilityType, OnSystemCapabilityListener, boolean)} instead.
 	 */
 	@Deprecated
 	public void getCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener) {
@@ -504,6 +516,7 @@ public class SystemCapabilityManager {
 	/** Gets the capability object that corresponds to the supplied capability type by returning the currently cached value immediately if available. Otherwise returns a null object and works in the background to retrieve the capability for the next call
 	 * @param systemCapabilityType Type of capability desired
 	 * @return Desired capability if it is cached in the manager, otherwise returns null
+	 * @deprecated use {@link #getCapability(SystemCapabilityType, OnSystemCapabilityListener, boolean)} instead.
 	 */
 	@Deprecated
 	public Object getCapability(final SystemCapabilityType systemCapabilityType) {
@@ -560,9 +573,18 @@ public class SystemCapabilityManager {
 	 * @param subscribe flag to subscribe to updates of the supplied capability type. True means subscribe; false means cancel subscription; null means don't change current subscription status.
 	 */
 	private void retrieveCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener, final Boolean subscribe) {
+		if (currentHMILevel != null && currentHMILevel.equals(HMILevel.HMI_NONE)) {
+			String message = String.format("Attempted to update type: %s in HMI level NONE, which is not allowed. " +
+					"Please wait until you are in HMI BACKGROUND, LIMITED, or FULL before attempting to update any SystemCapabilityType", systemCapabilityType);
+			DebugTool.logError(TAG, message);
+			if (scListener != null) {
+				scListener.onError(message);
+			}
+			return;
+		}
 		if (!systemCapabilityType.isQueryable() || systemCapabilityType == SystemCapabilityType.DISPLAYS) {
 			String message = "This systemCapabilityType cannot be queried for";
-			DebugTool.logError(message);
+			DebugTool.logError(TAG, message);
 			if (scListener != null) {
 				scListener.onError(message);
 			}

@@ -1,13 +1,24 @@
 package com.smartdevicelink.test.protocol;
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.smartdevicelink.protocol.BinaryFrameHeader;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.test.SampleRpc;
 
 import junit.framework.Assert;
 
-public class BinaryFrameHeaderTests extends AndroidTestCase2 {
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+
+@RunWith(AndroidJUnit4.class)
+public class BinaryFrameHeaderTests {
 	
 	public static final byte RPC_TYPE_REQUEST 		= 0x00;
 	public static final byte RPC_TYPE_RESPONSE 		= 0x01;
@@ -32,7 +43,8 @@ public class BinaryFrameHeaderTests extends AndroidTestCase2 {
 			return null;
 		}
 	}
-	
+
+	@Test
 	public void testAssemblyAndParse(){
 		BinaryFrameHeader bfh = createDummyBfh();
 		
@@ -55,7 +67,8 @@ public class BinaryFrameHeaderTests extends AndroidTestCase2 {
 		assertTrue(bfh.getJsonSize() == parsedBfh.getJsonSize());
 		
 	}
-	
+
+	@Test
 	public void testCorruptHeader(){
 		BinaryFrameHeader bfh = createDummyBfh();
 		bfh.setJsonSize(5);
@@ -78,7 +91,8 @@ public class BinaryFrameHeaderTests extends AndroidTestCase2 {
 		BinaryFrameHeader head = BinaryFrameHeader.parseBinaryHeader(bfhBytes);
 		assertNull(head);
 	}
-	
+
+	@Test
 	public void testJsonSetException(){
 		try{
 			BinaryFrameHeader bfh = createDummyBfh();
@@ -88,7 +102,8 @@ public class BinaryFrameHeaderTests extends AndroidTestCase2 {
 			//Pass
 		}
 	}
-	
+
+	@Test
 	public void testAlteredDataInSampleRpc(){
 		SampleRpc sampleRpc = new SampleRpc(4);
 		//Create a corrupted header

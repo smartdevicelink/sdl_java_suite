@@ -35,6 +35,7 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
+import com.livio.taskmaster.Task;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.Choice;
@@ -47,24 +48,22 @@ import com.smartdevicelink.util.DebugTool;
 import java.lang.ref.WeakReference;
 import java.util.Collections;
 
-class CheckChoiceVROptionalOperation extends AsynchronousOperation {
-
+class CheckChoiceVROptionalOperation extends Task {
+	private static final String TAG = "CheckChoiceVROptionalOperation";
 	private CheckChoiceVROptionalInterface checkChoiceVROptionalInterface;
 	private WeakReference<ISdl> internalInterface;
 	private boolean isVROptional;
 
 	CheckChoiceVROptionalOperation(ISdl internalInterface, CheckChoiceVROptionalInterface checkChoiceVROptionalInterface){
-		super();
+		super("CheckChoiceVROptionalOperation");
 		this.internalInterface = new WeakReference<>(internalInterface);
 		this.checkChoiceVROptionalInterface = checkChoiceVROptionalInterface;
 	}
 
 	@Override
-	public void run() {
-		CheckChoiceVROptionalOperation.super.run();
-		DebugTool.logInfo("Choice Operation: Executing check vr optional operation");
+	public void onExecute() {
+		DebugTool.logInfo(TAG, "Choice Operation: Executing check vr optional operation");
 		sendTestChoiceNoVR();
-		block();
 	}
 
 	/**
@@ -78,19 +77,19 @@ class CheckChoiceVROptionalOperation extends AsynchronousOperation {
 			public void onResponse(int correlationId, RPCResponse response) {
 				if (response.getSuccess()) {
 					// The request was successful, now send the SDLPerformInteraction RPC
-					DebugTool.logInfo("Connected head unit supports choice cells without voice commands. " +
+					DebugTool.logInfo(TAG, "Connected head unit supports choice cells without voice commands. " +
 							"Cells without voice will be sent without voice from now on (no placeholder voice).");
 					isVROptional = true;
 					deleteTestChoiceSet();
 				}else{
-					DebugTool.logWarning("Head unit doesn't support choices with no VR.");
+					DebugTool.logWarning(TAG, "Head unit doesn't support choices with no VR.");
 					sendTestChoiceWithVR();
 				}
 			}
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info){
-				DebugTool.logWarning("Head unit doesn't support choices with no VR. Error: " + info + " resultCode: " + resultCode);
+				DebugTool.logWarning(TAG, "Head unit doesn't support choices with no VR. Error: " + info + " resultCode: " + resultCode);
 				sendTestChoiceWithVR();
 			}
 		});
@@ -110,30 +109,30 @@ class CheckChoiceVROptionalOperation extends AsynchronousOperation {
 			public void onResponse(int correlationId, RPCResponse response) {
 				if (response.getSuccess()) {
 					// The request was successful, now send the SDLPerformInteraction RPC
-					DebugTool.logWarning("Connected head unit does not support choice cells without voice commands. " +
+					DebugTool.logWarning(TAG, "Connected head unit does not support choice cells without voice commands. " +
 							"Cells without voice will be sent with placeholder voices from now on.");
 					isVROptional = false;
 					deleteTestChoiceSet();
 				}else{
-					DebugTool.logError("Connected head unit has rejected all choice cells, choice manager disabled. Error: " + response.getInfo());
+					DebugTool.logError(TAG, "Connected head unit has rejected all choice cells, choice manager disabled. Error: " + response.getInfo());
 					isVROptional = false;
 					if (checkChoiceVROptionalInterface != null){
 						checkChoiceVROptionalInterface.onError(response.getInfo());
 					}
 
-					CheckChoiceVROptionalOperation.super.finishOperation();
+					CheckChoiceVROptionalOperation.super.onFinished();
 				}
 			}
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info){
-				DebugTool.logError("There was an error in the check choice vr optional operation. Send test choice with VR failed. Error: " + info + " resultCode: " + resultCode);
+				DebugTool.logError(TAG, "There was an error in the check choice vr optional operation. Send test choice with VR failed. Error: " + info + " resultCode: " + resultCode);
 				isVROptional = false;
 				if (checkChoiceVROptionalInterface != null){
 					checkChoiceVROptionalInterface.onError(info);
 				}
 
-				CheckChoiceVROptionalOperation.super.finishOperation();
+				CheckChoiceVROptionalOperation.super.onFinished();
 			}
 		});
 
@@ -148,24 +147,24 @@ class CheckChoiceVROptionalOperation extends AsynchronousOperation {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
 				if (response.getSuccess() != null){
-					DebugTool.logInfo("Delete choice test set: "+ response.getSuccess());
+					DebugTool.logInfo(TAG, "Delete choice test set: "+ response.getSuccess());
 				}
 
 				if (checkChoiceVROptionalInterface != null){
 					checkChoiceVROptionalInterface.onCheckChoiceVROperationComplete(isVROptional);
 				}
 
-				CheckChoiceVROptionalOperation.super.finishOperation();
+				CheckChoiceVROptionalOperation.super.onFinished();
 			}
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info){
-				DebugTool.logError("There was an error presenting the keyboard. Finishing operation - choice set manager - . Error: " + info + " resultCode: " + resultCode);
+				DebugTool.logError(TAG, "There was an error presenting the keyboard. Finishing operation - choice set manager - . Error: " + info + " resultCode: " + resultCode);
 				if (checkChoiceVROptionalInterface != null){
 					checkChoiceVROptionalInterface.onError(info);
 				}
 
-				CheckChoiceVROptionalOperation.super.finishOperation();
+				CheckChoiceVROptionalOperation.super.onFinished();
 			}
 		});
 		if (internalInterface.get() != null){

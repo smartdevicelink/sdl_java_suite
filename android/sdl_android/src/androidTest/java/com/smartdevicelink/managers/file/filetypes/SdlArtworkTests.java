@@ -1,14 +1,25 @@
 package com.smartdevicelink.managers.file;
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
-public class SdlArtworkTests extends AndroidTestCase2 {
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNotSame;
+import static junit.framework.TestCase.assertTrue;
+
+@RunWith(AndroidJUnit4.class)
+public class SdlArtworkTests {
+
+    @Test
     public void testClone(){
-        SdlArtwork original = Test.GENERAL_ARTWORK;
+        SdlArtwork original = TestValues.GENERAL_ARTWORK;
         SdlArtwork clone = original.clone();
 
         equalTest(original, clone);

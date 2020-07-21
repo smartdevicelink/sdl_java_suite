@@ -3,7 +3,7 @@ package com.smartdevicelink.test.proxy;
 import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -24,40 +24,40 @@ public class TTSChunkFactoryTests extends TestCase {
 	public void testCreateChunk () {
 		// Valid Tests
 		SpeechCapabilities testType = SpeechCapabilities.TEXT;
-		testChunk = TTSChunkFactory.createChunk(testType, Test.GENERAL_STRING);
-		assertNotNull(Test.NOT_NULL, testChunk);
-		assertEquals(Test.MATCH, testType, testChunk.getType());
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, testChunk.getText());
+		testChunk = TTSChunkFactory.createChunk(testType, TestValues.GENERAL_STRING);
+		assertNotNull(TestValues.NOT_NULL, testChunk);
+		assertEquals(TestValues.MATCH, testType, testChunk.getType());
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, testChunk.getText());
 		
 		testType = SpeechCapabilities.SILENCE;
-		testChunk = TTSChunkFactory.createChunk(testType, Test.GENERAL_STRING);
-		assertNotNull(Test.NOT_NULL, testChunk);
-		assertEquals(Test.MATCH, testType, testChunk.getType());
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, testChunk.getText());
+		testChunk = TTSChunkFactory.createChunk(testType, TestValues.GENERAL_STRING);
+		assertNotNull(TestValues.NOT_NULL, testChunk);
+		assertEquals(TestValues.MATCH, testType, testChunk.getType());
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, testChunk.getText());
 				
 		testType = SpeechCapabilities.SAPI_PHONEMES;
-		testChunk = TTSChunkFactory.createChunk(testType, Test.GENERAL_STRING);
-		assertNotNull(Test.NOT_NULL, testChunk);
-		assertEquals(Test.MATCH, testType, testChunk.getType());
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, testChunk.getText());
+		testChunk = TTSChunkFactory.createChunk(testType, TestValues.GENERAL_STRING);
+		assertNotNull(TestValues.NOT_NULL, testChunk);
+		assertEquals(TestValues.MATCH, testType, testChunk.getType());
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, testChunk.getText());
 		
 		testType = SpeechCapabilities.PRE_RECORDED;
-		testChunk = TTSChunkFactory.createChunk(testType, Test.GENERAL_STRING);
-		assertNotNull(Test.NOT_NULL, testChunk);
-		assertEquals(Test.MATCH, testType, testChunk.getType());
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, testChunk.getText());
+		testChunk = TTSChunkFactory.createChunk(testType, TestValues.GENERAL_STRING);
+		assertNotNull(TestValues.NOT_NULL, testChunk);
+		assertEquals(TestValues.MATCH, testType, testChunk.getType());
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, testChunk.getText());
 		
 		testType = SpeechCapabilities.LHPLUS_PHONEMES;
-		testChunk = TTSChunkFactory.createChunk(testType, Test.GENERAL_STRING);
-		assertNotNull(Test.NOT_NULL, testChunk);
-		assertEquals(Test.MATCH, testType, testChunk.getType());
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, testChunk.getText());
+		testChunk = TTSChunkFactory.createChunk(testType, TestValues.GENERAL_STRING);
+		assertNotNull(TestValues.NOT_NULL, testChunk);
+		assertEquals(TestValues.MATCH, testType, testChunk.getType());
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, testChunk.getText());
 		
 		// Invalid/Null Tests
 		testChunk = TTSChunkFactory.createChunk(null, null);
-		assertNotNull(Test.NOT_NULL, testChunk);
-		assertNull(Test.NULL, testChunk.getType());
-		assertNull(Test.NULL, testChunk.getText());		
+		assertNotNull(TestValues.NOT_NULL, testChunk);
+		assertNull(TestValues.NULL, testChunk.getType());
+		assertNull(TestValues.NULL, testChunk.getText());
 	}
 	
 	/**
@@ -67,16 +67,16 @@ public class TTSChunkFactoryTests extends TestCase {
 	public void testCreateSimpleTTSChunks () {
 		// Test Values
 		Vector<TTSChunk> testChunks;
-		testChunks = TTSChunkFactory.createSimpleTTSChunks(Test.GENERAL_STRING);
+		testChunks = TTSChunkFactory.createSimpleTTSChunks(TestValues.GENERAL_STRING);
 		
 		// Valid Tests
-		assertNotNull(Test.NOT_NULL, testChunks);
-		assertEquals(Test.MATCH, SpeechCapabilities.TEXT, testChunks.get(0).getType());
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, testChunks.get(0).getText());
+		assertNotNull(TestValues.NOT_NULL, testChunks);
+		assertEquals(TestValues.MATCH, SpeechCapabilities.TEXT, testChunks.get(0).getType());
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, testChunks.get(0).getText());
 		
 		// Invalid/Null Tests
 		testChunks = TTSChunkFactory.createSimpleTTSChunks(null);
-		assertNull(Test.NULL, testChunks);
+		assertNull(TestValues.NULL, testChunks);
 	}
 
 	/**
@@ -86,15 +86,15 @@ public class TTSChunkFactoryTests extends TestCase {
 	public void testCreatePrerecordedTTSChunks () {
 		// Test Values
 		Vector<TTSChunk> testChunks;
-		testChunks = TTSChunkFactory.createPrerecordedTTSChunks(Test.GENERAL_STRING);
+		testChunks = TTSChunkFactory.createPrerecordedTTSChunks(TestValues.GENERAL_STRING);
 		
 		// Valid Tests
-		assertNotNull(Test.NOT_NULL, testChunks);
-		assertEquals(Test.MATCH, SpeechCapabilities.PRE_RECORDED, testChunks.get(0).getType());
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, testChunks.get(0).getText());
+		assertNotNull(TestValues.NOT_NULL, testChunks);
+		assertEquals(TestValues.MATCH, SpeechCapabilities.PRE_RECORDED, testChunks.get(0).getType());
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, testChunks.get(0).getText());
 		
 		// Invalid/Null Tests
 		testChunks = TTSChunkFactory.createPrerecordedTTSChunks(null);
-		assertNull(Test.NULL, testChunks);
+		assertNull(TestValues.NULL, testChunks);
 	}
 }

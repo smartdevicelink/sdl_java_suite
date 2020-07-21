@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spp_out_of_resource">For mange apps bruger Bluetooth</string>
+    <string name="sdl_error_notification_channel_name">SDL-fejl</string>
+</resources>

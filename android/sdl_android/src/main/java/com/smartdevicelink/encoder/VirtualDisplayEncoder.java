@@ -52,6 +52,7 @@ import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
+import com.smartdevicelink.util.DebugTool;
 
 import java.nio.ByteBuffer;
 
@@ -89,12 +90,12 @@ public class VirtualDisplayEncoder {
      */
     public void init(Context context, IVideoStreamListener outputListener, VideoStreamingParameters streamingParams) throws Exception {
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            Log.e(TAG, "API level of 19 required for VirtualDisplayEncoder");
+            DebugTool.logError(TAG, "API level of 19 required for VirtualDisplayEncoder");
             throw new Exception("API level of 19 required");
         }
 
         if (context == null || outputListener == null || streamingParams == null || streamingParams.getResolution() == null || streamingParams.getFormat() == null) {
-            Log.e(TAG, "init parameters cannot be null for VirtualDisplayEncoder");
+            DebugTool.logError(TAG, "init parameters cannot be null for VirtualDisplayEncoder");
             throw new Exception("init parameters cannot be null");
         }
 
@@ -133,7 +134,7 @@ public class VirtualDisplayEncoder {
      */
     public void start() throws Exception {
         if (!initPassed) {
-            Log.e(TAG, "VirtualDisplayEncoder was not properly initialized with the init() method.");
+            DebugTool.logError(TAG, "VirtualDisplayEncoder was not properly initialized with the init() method.");
             return;
         }
         if (streamingParams == null || streamingParams.getResolution() == null || streamingParams.getFormat() == null) {
@@ -161,7 +162,7 @@ public class VirtualDisplayEncoder {
                 startEncoder();
 
             } catch (Exception ex) {
-                Log.e(TAG, "Unable to create Virtual Display.");
+                DebugTool.logError(TAG, "Unable to create Virtual Display.");
                 throw new RuntimeException(ex);
             }
         }
@@ -169,7 +170,7 @@ public class VirtualDisplayEncoder {
 
     public void shutDown(boolean withPendingRestart) {
         if (!initPassed) {
-            Log.e(TAG, "VirtualDisplayEncoder was not properly initialized with the init() method.");
+            DebugTool.logError(TAG, "VirtualDisplayEncoder was not properly initialized with the init() method.");
             return;
         }
         try {
@@ -194,7 +195,7 @@ public class VirtualDisplayEncoder {
                 inputSurface = null;
             }
         } catch (Exception ex) {
-            Log.e(TAG, "shutDown() failed");
+            DebugTool.logError(TAG, "shutDown() failed");
         }
     }
 
@@ -285,7 +286,7 @@ public class VirtualDisplayEncoder {
                 encoderThread = new Thread(new EncoderCompat());
 
             } else {
-                Log.e(TAG, "Unable to start encoder. Android OS version " + Build.VERSION.SDK_INT + "is not supported");
+                DebugTool.logError(TAG, "Unable to start encoder. Android OS version " + Build.VERSION.SDK_INT + "is not supported");
             }
 
             return surface;
@@ -334,7 +335,7 @@ public class VirtualDisplayEncoder {
             try {
                 drainEncoder(false);
             } catch (Exception e) {
-                Log.w(TAG, "Error attempting to drain encoder");
+                DebugTool.logWarning(TAG, "Error attempting to drain encoder");
             } finally {
                 mVideoEncoder.release();
             }
@@ -368,7 +369,7 @@ public class VirtualDisplayEncoder {
                             MediaFormat format = mVideoEncoder.getOutputFormat();
                             mH264CodecSpecificData = EncoderUtils.getCodecSpecificData(format);
                         } else {
-                            Log.w(TAG, "Output format change notified more than once, ignoring.");
+                            DebugTool.logWarning(TAG, "Output format change notified more than once, ignoring.");
                         }
                     }
                 } else {
@@ -378,7 +379,7 @@ public class VirtualDisplayEncoder {
                         if (mH264CodecSpecificData != null) {
                             mVideoBufferInfo.size = 0;
                         } else {
-                            Log.i(TAG, "H264 codec specific data not retrieved yet.");
+                            DebugTool.logInfo(TAG, "H264 codec specific data not retrieved yet.");
                         }
                     }
 
