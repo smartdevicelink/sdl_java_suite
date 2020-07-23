@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -41,7 +41,7 @@ import java.util.Hashtable;
 
 /**
  * Subscribe Vehicle Data Response is sent, when SubscribeVehicleData has been called
- * 
+ *
  * @since SmartDeviceLink 2.0
  */
 public class SubscribeVehicleDataResponse extends RPCResponse {
@@ -86,8 +86,8 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
 	/**
 	 * <p>Constructs a new SubscribeVehicleDataResponse object indicated by the Hashtable
 	 * parameter</p>
-	 * 
-	 * 
+	 *
+	 *
 	 * @param hash The Hashtable to use
 	 */
     public SubscribeVehicleDataResponse(Hashtable<String, Object> hash) {
@@ -534,18 +534,22 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
     }
 
     /**
-     * Sets a value for HandsOffSteering VehicleData.
-     * @param vehicleDataResult a VehicleDataResult value
+     * Sets the handsOffSteering.
+     *
+     * @param handsOffSteering To indicate whether driver hands are off the steering wheel
+     * @since SmartDeviceLink 7.0.0
      */
-    public void setHandsOffSteering(VehicleDataResult vehicleDataResult){
-        setParameters(KEY_HANDS_OFF_STEERING, vehicleDataResult);
+    public void setHandsOffSteering(VehicleDataResult handsOffSteering) {
+        setParameters(KEY_HANDS_OFF_STEERING, handsOffSteering);
     }
 
     /**
-     * Gets a VehicleDataResult for the HandsOffSteering.
-     * @return a VehicleDataResult related to the HandsOffSteering
+     * Gets the handsOffSteering.
+     *
+     * @return VehicleDataResult To indicate whether driver hands are off the steering wheel
+     * @since SmartDeviceLink 7.0.0
      */
-    public VehicleDataResult getHandsOffSteering(){
+    public VehicleDataResult getHandsOffSteering() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_HANDS_OFF_STEERING);
     }
 }

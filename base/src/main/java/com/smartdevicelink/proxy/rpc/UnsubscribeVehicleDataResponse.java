@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -41,7 +41,7 @@ import java.util.Hashtable;
 
 /**
  * Unsubscribe Vehicle Data Response is sent, when UnsubscribeVehicleData has been called.
- * 
+ *
  * @since SmartDeviceLink 2.0
  */
 public class UnsubscribeVehicleDataResponse extends RPCResponse {
@@ -76,32 +76,32 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
     public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
 
-	/**
-	 * Constructs a new UnsubscribeVehicleDataResponse object
-	 */
-	public UnsubscribeVehicleDataResponse() {
-		super(FunctionID.UNSUBSCRIBE_VEHICLE_DATA.toString());
-	}
+    /**
+     * Constructs a new UnsubscribeVehicleDataResponse object
+     */
+    public UnsubscribeVehicleDataResponse() {
+        super(FunctionID.UNSUBSCRIBE_VEHICLE_DATA.toString());
+    }
 
-	/**
-	 * Constructs a new UnsubscribeVehicleDataResponse object
-	 * @param success whether the request is successfully processed
-	 * @param resultCode whether the request is successfully processed
-	 */
-	public UnsubscribeVehicleDataResponse(@NonNull Boolean success, @NonNull Result resultCode) {
-		this();
-		setSuccess(success);
-		setResultCode(resultCode);
-	}
+    /**
+     * Constructs a new UnsubscribeVehicleDataResponse object
+     * @param success whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     */
+    public UnsubscribeVehicleDataResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
+    }
 
-	/**
-	 * Constructs a new UnsubscribeVehicleDataResponse object indicated by the Hashtable
-	 * parameter
-	 * <p></p>
-	 * 
-	 * @param hash The Hashtable to use to build this RPC
-	 *
-	 */
+    /**
+     * Constructs a new UnsubscribeVehicleDataResponse object indicated by the Hashtable
+     * parameter
+     * <p></p>
+     *
+     * @param hash The Hashtable to use to build this RPC
+     *
+     */
     public UnsubscribeVehicleDataResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
@@ -405,8 +405,8 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     @SuppressWarnings("unchecked")
     public VehicleDataResult getAccPedalPosition() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_ACC_PEDAL_POSITION);
-    }  
-    
+    }
+
     public void setSteeringWheelAngle(VehicleDataResult steeringWheelAngle) {
         setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
     }
@@ -414,8 +414,8 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     @SuppressWarnings("unchecked")
     public VehicleDataResult getSteeringWheelAngle() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_STEERING_WHEEL_ANGLE);
-    }    
-    
+    }
+
     public void setECallInfo(VehicleDataResult eCallInfo) {
         setParameters(KEY_E_CALL_INFO, eCallInfo);
     }
@@ -536,18 +536,22 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
 
     /**
-     * Sets a value for HandsOffSteering VehicleData.
-     * @param vehicleDataResult a VehicleDataResult value
+     * Sets the handsOffSteering.
+     *
+     * @param handsOffSteering To indicate whether driver hands are off the steering wheel
+     * @since SmartDeviceLink 7.0.0
      */
-    public void setHandsOffSteering(VehicleDataResult vehicleDataResult){
-        setParameters(KEY_HANDS_OFF_STEERING, vehicleDataResult);
+    public void setHandsOffSteering(VehicleDataResult handsOffSteering) {
+        setParameters(KEY_HANDS_OFF_STEERING, handsOffSteering);
     }
 
     /**
-     * Gets a VehicleDataResult for the HandsOffSteering.
-     * @return a VehicleDataResult related to the HandsOffSteering
+     * Gets the handsOffSteering.
+     *
+     * @return VehicleDataResult To indicate whether driver hands are off the steering wheel
+     * @since SmartDeviceLink 7.0.0
      */
-    public VehicleDataResult getHandsOffSteering(){
+    public VehicleDataResult getHandsOffSteering() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_HANDS_OFF_STEERING);
     }
 }
