@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@
  * disclaimer in the documentation and/or other materials provided with the
  * distribution.
  *
- * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
- * software without specific prior written permission.
+ * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -38,224 +38,231 @@ import java.util.Hashtable;
 
 /**
  * Non periodic vehicle data read request.
- * 
+ *
  * <p><b>Parameter List</b></p>
+ *
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
- *                 <th>Reg.</th>
- *               <th>Notes</th>
- * 			<th>Version</th>
- * 		</tr>
- * 		<tr>
- * 			<td>gps</td>
- * 			<td>Boolean</td>
- * 			<td>GPS data. See {@linkplain com.smartdevicelink.proxy.rpc.GPSData }for details</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>speed</td>
- * 			<td>Boolean</td>
- * 			<td>The vehicle speed in kilometers per hour</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>rpm</td>
- * 			<td>Boolean</td>
- * 			<td>The number of revolutions per minute of the engine</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>fuelLevel</td>
- * 			<td>Boolean</td>
- * 			<td>The fuel level in the tank (percentage)</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>fuelLevel_State</td>
- * 			<td>Boolean</td>
- * 			<td>The fuel level state</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>instantFuelConsumption</td>
- * 			<td>Boolean</td>
- * 			<td>The instantaneous fuel consumption in microlitres</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>externalTemperature</td>
- * 			<td>Boolean</td>
- * 			<td>The external temperature in degrees celsius</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>vin</td>
- * 			<td>Boolean</td>
- * 			<td>Vehicle identification number</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>prndl</td>
- * 			<td>Boolean</td>
- * 			<td>Currently selected gear.</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>tirePressure</td>
- * 			<td>Boolean</td>
- * 			<td>Tire pressure status</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>odometer</td>
- * 			<td>Boolean</td>
- * 			<td>Odometer in km</td>
- *                 <td>N</td>
- *                 <td>Max Length: 500</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>beltStatus</td>
- * 			<td>Boolean</td>
- * 			<td>The status of the seat belts</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>bodyInformation</td>
- * 			<td>Boolean</td>
- * 			<td>The body information including ignition status and internal temp</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>deviceStatus</td>
- * 			<td>Boolean</td>
- * 			<td>The device status including signal and battery strength</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>driverBraking</td>
- * 			<td>Boolean</td>
- * 			<td>The status of the brake pedal</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>wiperStatus</td>
- * 			<td>Boolean</td>
- * 			<td>The status of the wipers</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>headLampStatus</td>
- * 			<td>Boolean</td>
- * 			<td>Status of the head lamps</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>engineTorque</td>
- * 			<td>Boolean</td>
- * 			<td>Torque value for engine (in Nm) on non-diesel variants</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>engineOilLife</td>
- * 			<td>Boolean</td>
- * 			<td>The estimated percentage of remaining oil life of the engine</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 5.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>accPedalPosition</td>
- * 			<td>Boolean</td>
- * 			<td>Accelerator pedal position (percentage depressed)</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>steeringWheelAngle</td>
- * 			<td>Boolean</td>
- * 			<td>Current angle of the steering wheel (in deg)</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>turnSignal</td>
- * 			<td>Boolean</td>
- * 			<td>@see TurnSignal</td>
- * 			<td>N</td>
- * 			<td>Subscribable</td>
- * 			<td>SmartDeviceLink 5.0</td>
- * 		</tr>
- * 	     <tr>
- * 			<td>cloudAppVehicleID</td>
- * 			<td>Boolean</td>
- * 			<td>ID for the vehicle when connecting to cloud applications</td>
- *				<td>N</td>
- *				<td>Subscribable</td>
- * 			<td>SmartDeviceLink 5.1 </td>
- * 		</tr>
- * 		</table>
- *  
- *  
- *  <p><b>Response</b></p>
- *  
- * <p> <b>Non-default Result Codes:</b></p>
- * <p> SUCCESS</p>
- * <p> INVALID_DATA</p>
- *  <p>OUT_OF_MEMORY</p>
- *  <p>TOO_MANY_PENDING_REQUESTS</p>
- *  <p>APPLICATION_NOT_REGISTERED</p>
- * <p> GENERIC_ERROR</p>
- * <p> REJECTED</p>
- * <p> VEHICLE_DATA_NOT_ALLOWED</p>
- *  <p>VEHICLE_DATA_NOT_AVAILABLE</p>
- * <p> USER_DISALLOWED</p>
- * 
- * @see SubscribeVehicleData
- * @see UnsubscribeVehicleData
- * @since SmartDeviceLink 2.0
- * 
+ *  <tr>
+ *      <th>Param Name</th>
+ *      <th>Type</th>
+ *      <th>Description</th>
+ *      <th>Required</th>
+ *      <th>Version Available</th>
+ *  </tr>
+ *  <tr>
+ *      <td>gps</td>
+ *      <td>Boolean</td>
+ *      <td>See GPSData</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>speed</td>
+ *      <td>Boolean</td>
+ *      <td>The vehicle speed in kilometers per hour</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>rpm</td>
+ *      <td>Boolean</td>
+ *      <td>The number of revolutions per minute of the engine</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>fuelLevel</td>
+ *      <td>Boolean</td>
+ *      <td>The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec7.0, please see fuelRange.</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 7.0.0</td>
+ *  </tr>
+ *  <tr>
+ *      <td>fuelLevel_State</td>
+ *      <td>Boolean</td>
+ *      <td>The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please seefuelRange.</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 7.0.0</td>
+ *  </tr>
+ *  <tr>
+ *      <td>instantFuelConsumption</td>
+ *      <td>Boolean</td>
+ *      <td>The instantaneous fuel consumption in microlitres</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>fuelRange</td>
+ *      <td>Boolean</td>
+ *      <td>The fuel type, estimated range in KM, fuel level/capacity and fuel level state for thevehicle. See struct FuelRange for details.</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 5.0.0</td>
+ *  </tr>
+ *  <tr>
+ *      <td>externalTemperature</td>
+ *      <td>Boolean</td>
+ *      <td>The external temperature in degrees celsius</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>turnSignal</td>
+ *      <td>Boolean</td>
+ *      <td>See TurnSignal</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 5.0.0</td>
+ *  </tr>
+ *  <tr>
+ *      <td>vin</td>
+ *      <td>Boolean</td>
+ *      <td>Vehicle identification number</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>prndl</td>
+ *      <td>Boolean</td>
+ *      <td>See PRNDL</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>tirePressure</td>
+ *      <td>Boolean</td>
+ *      <td>See TireStatus</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>odometer</td>
+ *      <td>Boolean</td>
+ *      <td>Odometer in km</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>beltStatus</td>
+ *      <td>Boolean</td>
+ *      <td>The status of the seat belts</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>bodyInformation</td>
+ *      <td>Boolean</td>
+ *      <td>The body information including ignition status and internal temp</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>deviceStatus</td>
+ *      <td>Boolean</td>
+ *      <td>The device status including signal and battery strength</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>driverBraking</td>
+ *      <td>Boolean</td>
+ *      <td>The status of the brake pedal</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>wiperStatus</td>
+ *      <td>Boolean</td>
+ *      <td>The status of the wipers</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>headLampStatus</td>
+ *      <td>Boolean</td>
+ *      <td>Status of the head lamps</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>engineTorque</td>
+ *      <td>Boolean</td>
+ *      <td>Torque value for engine (in Nm) on non-diesel variants</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>accPedalPosition</td>
+ *      <td>Boolean</td>
+ *      <td>Accelerator pedal position (percentage depressed)</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>steeringWheelAngle</td>
+ *      <td>Boolean</td>
+ *      <td>Current angle of the steering wheel (in deg)</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>engineOilLife</td>
+ *      <td>Boolean</td>
+ *      <td>The estimated percentage of remaining oil life of the engine.</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 5.0.0</td>
+ *  </tr>
+ *  <tr>
+ *      <td>electronicParkBrakeStatus</td>
+ *      <td>Boolean</td>
+ *      <td>The status of the park brake as provided by Electric Park Brake (EPB) system.</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 5.0.0</td>
+ *  </tr>
+ *  <tr>
+ *      <td>cloudAppVehicleID</td>
+ *      <td>Boolean</td>
+ *      <td>Parameter used by cloud apps to identify a head unit</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 5.1.0</td>
+ *  </tr>
+ *  <tr>
+ *      <td>eCallInfo</td>
+ *      <td>Boolean</td>
+ *      <td>Emergency Call notification and confirmation data</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>airbagStatus</td>
+ *      <td>Boolean</td>
+ *      <td>The status of the air bags</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>emergencyEvent</td>
+ *      <td>Boolean</td>
+ *      <td>Information related to an emergency event (and if it occurred)</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>clusterModeStatus</td>
+ *      <td>Boolean</td>
+ *      <td>The status modes of the cluster</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>myKey</td>
+ *      <td>Boolean</td>
+ *      <td>Information related to the MyKey feature</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ * </table>
  *
  */
+
 public class GetVehicleData extends RPCRequest {
 	public static final String KEY_SPEED = "speed";
 	public static final String KEY_RPM = "rpm";
@@ -288,22 +295,22 @@ public class GetVehicleData extends RPCRequest {
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
 
-	/**
-	 * Constructs a new GetVehicleData object
-	 */
+    /**
+     * Constructs a new GetVehicleData object
+     */
 
     public GetVehicleData() {
         super(FunctionID.GET_VEHICLE_DATA.toString());
     }
     /**
-	* <p>
-	* Constructs a new GetVehicleDta object indicated by the Hashtable
-	* parameter
-	* </p>
-	* 
-	* @param hash
-	*            The Hashtable to use
-	*/
+     * <p>
+     * Constructs a new GetVehicleDta object indicated by the Hashtable
+     * parameter
+     * </p>
+     *
+     * @param hash
+     *            The Hashtable to use
+     */
 
     public GetVehicleData(Hashtable<String, Object> hash) {
         super(hash);
@@ -326,21 +333,49 @@ public class GetVehicleData extends RPCRequest {
     public Boolean getRpm() {
         return getBoolean(KEY_RPM);
     }
+
+    /**
+     * Sets the fuelLevel.
+     *
+     * @param fuelLevel The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
+     * 7.0, please see fuelRange.
+     */
     @Deprecated
     public void setFuelLevel(Boolean fuelLevel) {
         setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
+
+    /**
+     * Gets the fuelLevel.
+     *
+     * @return Boolean The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
+     * 7.0, please see fuelRange.
+     */
     @Deprecated
     public Boolean getFuelLevel() {
         return getBoolean(KEY_FUEL_LEVEL);
     }
+
+    /**
+     * Sets the fuelLevel_State.
+     *
+     * @param fuelLevel_State The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please see
+     * fuelRange.
+     */
     @Deprecated
     public void setFuelLevel_State(Boolean fuelLevel_State) {
-        setFuelLevelState(fuelLevel_State);
+        setParameters(KEY_FUEL_LEVEL_STATE, fuelLevel_State);
     }
+
+    /**
+     * Gets the fuelLevel_State.
+     *
+     * @return Boolean The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please see
+     * fuelRange.
+     */
     @Deprecated
     public Boolean getFuelLevel_State() {
-        return getFuelLevelState();
+        return getBoolean(KEY_FUEL_LEVEL_STATE);
     }
     public void setFuelLevelState(Boolean fuelLevelState) {
         setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
@@ -354,20 +389,45 @@ public class GetVehicleData extends RPCRequest {
     public Boolean getInstantFuelConsumption() {
         return getBoolean(KEY_INSTANT_FUEL_CONSUMPTION);
     }
+
+    /**
+     * Sets the fuelRange.
+     *
+     * @param fuelRange The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
+     * vehicle. See struct FuelRange for details.
+     * @since SmartDeviceLink 5.0.0
+     */
+    @Deprecated
+    public void setFuelRange(Boolean fuelRange) {
+        setParameters(KEY_FUEL_RANGE, fuelRange);
+    }
+
+    /**
+     * Gets the fuelRange.
+     *
+     * @return Boolean The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
+     * vehicle. See struct FuelRange for details.
+     * @since SmartDeviceLink 5.0.0
+     */
+    @Deprecated
+    public Boolean getFuelRange() {
+        return getBoolean(KEY_FUEL_RANGE);
+    }
+
     public void setExternalTemperature(Boolean externalTemperature) {
         setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
     }
     public Boolean getExternalTemperature() {
         return getBoolean(KEY_EXTERNAL_TEMPERATURE);
     }
-    
+
     public void setVin(Boolean vin) {
         setParameters(KEY_VIN, vin);
     }
     public Boolean getVin() {
         return getBoolean(KEY_VIN);
     }
-    
+
     public void setPrndl(Boolean prndl) {
         setParameters(KEY_PRNDL, prndl);
     }
@@ -440,21 +500,20 @@ public class GetVehicleData extends RPCRequest {
     public Boolean getAccPedalPosition() {
         return getBoolean(KEY_ACC_PEDAL_POSITION);
     }
-        
+
     public void setSteeringWheelAngle(Boolean steeringWheelAngle) {
         setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
     }
     public Boolean getSteeringWheelAngle() {
         return getBoolean(KEY_STEERING_WHEEL_ANGLE);
-    }                
+    }
     public void setECallInfo(Boolean eCallInfo) {
         setParameters(KEY_E_CALL_INFO, eCallInfo);
     }
     public Boolean getECallInfo() {
         return getBoolean(KEY_E_CALL_INFO);
-    }    
-    
-    
+    }
+
     public void setAirbagStatus(Boolean airbagStatus) {
         setParameters(KEY_AIRBAG_STATUS, airbagStatus);
     }
@@ -478,28 +537,6 @@ public class GetVehicleData extends RPCRequest {
     }
     public Boolean getMyKey() {
         return getBoolean(KEY_MY_KEY);
-    }
-
-    /**
-     * Sets a boolean value. If true, gets fuelRange data
-     * @see FuelRange struct for more details
-     * @param fuelRange
-      *            a boolean value
-     */
-    @Deprecated
-    public void setFuelRange(Boolean fuelRange) {
-        setParameters(KEY_FUEL_RANGE, fuelRange);
-    }
-
-    /**
-     * Gets a boolean value.
-     * @see FuelRange struct for more details
-     * @return Boolean -a Boolean value.
-     *
-     */
-    @Deprecated
-    public Boolean getFuelRange() {
-        return getBoolean(KEY_FUEL_RANGE);
     }
 
     /**

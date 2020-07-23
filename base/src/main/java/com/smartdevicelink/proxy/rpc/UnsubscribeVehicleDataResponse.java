@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@
  * disclaimer in the documentation and/or other materials provided with the
  * distribution.
  *
- * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
- * software without specific prior written permission.
+ * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -40,9 +40,7 @@ import com.smartdevicelink.proxy.rpc.enums.Result;
 import java.util.Hashtable;
 
 /**
- * Unsubscribe Vehicle Data Response is sent, when UnsubscribeVehicleData has been called.
- * 
- * @since SmartDeviceLink 2.0
+ * @since SmartDeviceLink 2.0.0
  */
 public class UnsubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_SPEED = "speed";
@@ -97,7 +95,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
 	 * Constructs a new UnsubscribeVehicleDataResponse object indicated by the Hashtable
 	 * parameter
 	 * <p></p>
-	 * 
+	 *
 	 * @param hash The Hashtable to use to build this RPC
 	 *
 	 */
@@ -150,18 +148,20 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_RPM);
     }
     /**
-     * Sets Fuel Level
-     * @see FuelRange struct for more details
-     * @param fuelLevel a VehicleDataResult related to Fuel Level
+     * Sets the fuelLevel.
+     *
+     * @param fuelLevel The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
+     * 7.0, please see fuelRange.
      */
     @Deprecated
     public void setFuelLevel(VehicleDataResult fuelLevel) {
         setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
     /**
-     * Gets Fuel Level
-     * @see FuelRange struct for more details
-     * @return a VehicleDataResult related to FuelLevel
+     * Gets the fuelLevel.
+     *
+     * @return VehicleDataResult The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
+     * 7.0, please see fuelRange.
      */
     @SuppressWarnings("unchecked")
     @Deprecated
@@ -169,16 +169,20 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_FUEL_LEVEL);
     }
     /**
-     * Sets Fuel Level State
-     * @param fuelLevel_State a VehicleDataResult related to FuelLevel State
+     * Sets the fuelLevel_State.
+     *
+     * @param fuelLevel_State The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please see
+     * fuelRange.
      */
     @Deprecated
     public void setFuelLevel_State(VehicleDataResult fuelLevel_State) {
         setFuelLevel(fuelLevel_State);
     }
     /**
-     * Gets Fuel Level State
-     * @return a VehicleDataResult related to FuelLevel State
+     * Gets the fuelLevel_State.
+     *
+     * @return VehicleDataResult The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please see
+     * fuelRange.
      */
     @Deprecated
     public VehicleDataResult getFuelLevel_State() {
@@ -214,9 +218,32 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     public VehicleDataResult getInstantFuelConsumption() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_INSTANT_FUEL_CONSUMPTION);
     }
+
     /**
-     * Sets External Temperature
-     * @param externalTemperature a VehicleDataResult related to external temperature
+     * Sets the fuelRange.
+     *
+     * @param fuelRange The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
+     * vehicle. See struct FuelRange for details.
+     * @since SmartDeviceLink 5.0.0
+     */
+    public void setFuelRange(VehicleDataResult fuelRange) {
+        setParameters(KEY_FUEL_RANGE, fuelRange);
+    }
+
+    /**
+     * Gets the fuelRange.
+     *
+     * @return VehicleDataResult The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
+     * vehicle. See struct FuelRange for details.
+     * @since SmartDeviceLink 5.0.0
+     */
+    public VehicleDataResult getFuelRange() {
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_FUEL_RANGE);
+    }
+
+    /**
+     * Sets the External Temperature
+     * @param externalTemperature The external temperature in degrees celsius
      */
     public void setExternalTemperature(VehicleDataResult externalTemperature) {
         setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
@@ -408,8 +435,8 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     @SuppressWarnings("unchecked")
     public VehicleDataResult getAccPedalPosition() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_ACC_PEDAL_POSITION);
-    }  
-    
+    }
+
     public void setSteeringWheelAngle(VehicleDataResult steeringWheelAngle) {
         setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
     }
@@ -417,8 +444,8 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     @SuppressWarnings("unchecked")
     public VehicleDataResult getSteeringWheelAngle() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_STEERING_WHEEL_ANGLE);
-    }    
-    
+    }
+
     public void setECallInfo(VehicleDataResult eCallInfo) {
         setParameters(KEY_E_CALL_INFO, eCallInfo);
     }
@@ -454,24 +481,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     public VehicleDataResult getMyKey() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_MY_KEY);
     }
-
-    /**
-     * Sets Fuel Range
-     * @param fuelRange a VehicleDataResult related to the fuel range
-     */
-    public void setFuelRange(VehicleDataResult fuelRange) {
-        setParameters(KEY_FUEL_RANGE, fuelRange);
-    }
-
-    /**
-     * Gets Fuel Range
-     * @return a VehicleDataResult related to the fuel range
-     */
-    @SuppressWarnings("unchecked")
-    public VehicleDataResult getFuelRange() {
-        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_FUEL_RANGE);
-    }
-
     /**
      * Sets turnSignal
      * @param turnSignal a VehicleDataResult related to the turn signal status

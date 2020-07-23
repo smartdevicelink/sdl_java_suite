@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@
  * disclaimer in the documentation and/or other materials provided with the
  * distribution.
  *
- * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
- * software without specific prior written permission.
+ * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -39,7 +39,64 @@ import com.smartdevicelink.util.SdlDataTypeConverter;
 
 import java.util.Hashtable;
 
-public class FuelRange extends RPCStruct{
+/**
+ *
+ * <p><b>Parameter List</b></p>
+ *
+ * <table border="1" rules="all">
+ *  <tr>
+ *      <th>Param Name</th>
+ *      <th>Type</th>
+ *      <th>Description</th>
+ *      <th>Required</th>
+ *      <th>Version Available</th>
+ *  </tr>
+ *  <tr>
+ *      <td>type</td>
+ *      <td>FuelType</td>
+ *      <td></td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>range</td>
+ *      <td>Float</td>
+ *      <td>The estimate range in KM the vehicle can travel based on fuel level and consumption.</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>level</td>
+ *      <td>Float</td>
+ *      <td>The relative remaining capacity of this fuel type (percentage).</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 7.0.0</td>
+ *  </tr>
+ *  <tr>
+ *      <td>levelState</td>
+ *      <td>ComponentVolumeStatus</td>
+ *      <td>The fuel level state</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 7.0.0</td>
+ *  </tr>
+ *  <tr>
+ *      <td>capacity</td>
+ *      <td>Float</td>
+ *      <td>The absolute capacity of this fuel type.</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 7.0.0</td>
+ *  </tr>
+ *  <tr>
+ *      <td>capacityUnit</td>
+ *      <td>CapacityUnit</td>
+ *      <td>The unit of the capacity of this fuel type such as liters for gasoline or kWh forbatteries.</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 7.0.0</td>
+ *  </tr>
+ * </table>
+ * @since SmartDeviceLink 5.0.0
+ */
+public class FuelRange extends RPCStruct {
     public static final String KEY_TYPE = "type";
     public static final String KEY_RANGE = "range";
     public static final String KEY_LEVEL = "level";
@@ -53,40 +110,45 @@ public class FuelRange extends RPCStruct{
     public FuelRange() { }
 
     /**
-     * <p>Constructs a new FuelRange object indicated by the Hashtable parameter
-     * </p>
+     * Constructs a new FuelRange object indicated by the Hashtable parameter
      *
-     * @param hash
-     *            The Hashtable to use
+     * @param hash The Hashtable to use
      */
     public FuelRange(Hashtable<String, Object> hash) {
         super(hash);
     }
 
     /**
-     * Sets the type portion of the FuelRange class
+     * Sets the type.
      *
-     * @param fuelType the type of fuel related to this FuelRange object.
-     *
-     * @see com.smartdevicelink.proxy.rpc.enums.FuelType
+     * @param type
      */
-    public void setType(FuelType fuelType) {
-        setValue(KEY_TYPE, fuelType);
+    public void setType(FuelType type) {
+        setValue(KEY_TYPE, type);
     }
 
     /**
-     * Gets the type portion of the FuelRange class
+     * Gets the type.
      *
-     * @return FuelType.
+     * @return FuelType
      */
     public FuelType getType() {
         return (FuelType) getObject(FuelType.class, KEY_TYPE);
     }
 
     /**
-     * Gets the range portion of the FuelRange class
+     * Sets the range.
      *
-     * @return Float - The estimate range in KM the vehicle can travel based on fuel level and consumption.
+     * @param range The estimate range in KM the vehicle can travel based on fuel level and consumption.
+     */
+    public void setRange(Float range) {
+        setValue(KEY_RANGE, range);
+    }
+
+    /**
+     * Gets the range.
+     *
+     * @return Float The estimate range in KM the vehicle can travel based on fuel level and consumption.
      */
     public Float getRange() {
         Object object = getValue(KEY_RANGE);
@@ -94,81 +156,86 @@ public class FuelRange extends RPCStruct{
     }
 
     /**
-     * Sets the range portion of the FuelRange class
+     * Sets the level.
      *
-     * @param range
-     * The estimate range in KM the vehicle can travel based on fuel level and consumption.
+     * @param level The relative remaining capacity of this fuel type (percentage).
+     * @since SmartDeviceLink 7.0.0
      */
-    public void setRange(Float range) {
-        setValue(KEY_RANGE, range);
-    }
-
-    /**
-     * Gets the level of remaining capacity of this fuel type
-     * @return Float - The relative remaining capacity of this fuel type (percentage)
-     */
-    public Float getLevel(){
-        return SdlDataTypeConverter.objectToFloat(getValue(KEY_LEVEL));
-    }
-
-    /**
-     * Sets the level of remaining capacity of this fuel type
-     * @param level
-     * The relative remaining capacity of this fuel type (percentage)
-     */
-    public void setLevel(Float level){
+    public void setLevel(Float level) {
         setValue(KEY_LEVEL, level);
     }
 
     /**
-     * Gets the the fuel level state
-     * @return Float
+     * Gets the level.
+     *
+     * @return Float The relative remaining capacity of this fuel type (percentage).
+     * @since SmartDeviceLink 7.0.0
      */
-    public ComponentVolumeStatus getLevelState(){
+    public Float getLevel() {
+        Object object = getValue(KEY_LEVEL);
+        return SdlDataTypeConverter.objectToFloat(object);
+    }
+
+    /**
+     * Sets the levelState.
+     *
+     * @param levelState The fuel level state
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setLevelState(ComponentVolumeStatus levelState) {
+        setValue(KEY_LEVEL_STATE, levelState);
+    }
+
+    /**
+     * Gets the levelState.
+     *
+     * @return ComponentVolumeStatus The fuel level state
+     * @since SmartDeviceLink 7.0.0
+     */
+    public ComponentVolumeStatus getLevelState() {
         return (ComponentVolumeStatus) getObject(ComponentVolumeStatus.class, KEY_LEVEL_STATE);
     }
 
     /**
-     * Sets the fuel level state
-     * @param level - the fuel level state
+     * Sets the capacity.
+     *
+     * @param capacity The absolute capacity of this fuel type.
+     * @since SmartDeviceLink 7.0.0
      */
-    public void setLevelState(ComponentVolumeStatus level){
-        setValue(KEY_LEVEL_STATE, level);
-    }
-
-    /**
-     * Gets the absolute capacity of this fuel type.
-     * @return Float
-     * The absolute capacity of this fuel type.
-     */
-    public Float getCapacity(){
-        Float type = SdlDataTypeConverter.objectToFloat(getValue(KEY_CAPACITY));
-        return type;
-    }
-
-    /**
-     * Sets the absolute capacity of this fuel type.
-     * @param capacity - the absolute capacity of this fuel type.
-     */
-    public void setCapacity(Float capacity){
+    public void setCapacity(Float capacity) {
         setValue(KEY_CAPACITY, capacity);
     }
 
     /**
-     * Gets the capacity unit
-     * @return Float
-     * The unit of the capacity of this fuel type such as liters for gasoline or kWh for batteries.
+     * Gets the capacity.
+     *
+     * @return Float The absolute capacity of this fuel type.
+     * @since SmartDeviceLink 7.0.0
      */
-    public CapacityUnit getCapacityUnit(){
-        return (CapacityUnit) getObject(CapacityUnit.class, KEY_CAPACITY_UNIT);
+    public Float getCapacity() {
+        Object object = getValue(KEY_CAPACITY);
+        return SdlDataTypeConverter.objectToFloat(object);
     }
 
     /**
-     * Sets the capacity unit
-     * @param capacity - the absolute capacity of this fuel type.
-     * The unit of the capacity of this fuel type such as liters for gasoline or kWh for batteries.
+     * Sets the capacityUnit.
+     *
+     * @param capacityUnit The unit of the capacity of this fuel type such as liters for gasoline or kWh for
+     * batteries.
+     * @since SmartDeviceLink 7.0.0
      */
-    public void setCapacityUnit(CapacityUnit capacity){
-        setValue(KEY_CAPACITY_UNIT, capacity);
+    public void setCapacityUnit(CapacityUnit capacityUnit) {
+        setValue(KEY_CAPACITY_UNIT, capacityUnit);
+    }
+
+    /**
+     * Gets the capacityUnit.
+     *
+     * @return CapacityUnit The unit of the capacity of this fuel type such as liters for gasoline or kWh for
+     * batteries.
+     * @since SmartDeviceLink 7.0.0
+     */
+    public CapacityUnit getCapacityUnit() {
+        return (CapacityUnit) getObject(CapacityUnit.class, KEY_CAPACITY_UNIT);
     }
 }
