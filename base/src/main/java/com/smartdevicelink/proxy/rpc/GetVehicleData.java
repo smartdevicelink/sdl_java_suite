@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -38,222 +38,235 @@ import java.util.Hashtable;
 
 /**
  * Non periodic vehicle data read request.
- * 
+ *
  * <p><b>Parameter List</b></p>
+ *
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
- *                 <th>Reg.</th>
- *               <th>Notes</th>
- * 			<th>Version</th>
- * 		</tr>
- * 		<tr>
- * 			<td>gps</td>
- * 			<td>Boolean</td>
- * 			<td>GPS data. See {@linkplain com.smartdevicelink.proxy.rpc.GPSData }for details</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>speed</td>
- * 			<td>Boolean</td>
- * 			<td>The vehicle speed in kilometers per hour</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>rpm</td>
- * 			<td>Boolean</td>
- * 			<td>The number of revolutions per minute of the engine</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>fuelLevel</td>
- * 			<td>Boolean</td>
- * 			<td>The fuel level in the tank (percentage)</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>fuelLevel_State</td>
- * 			<td>Boolean</td>
- * 			<td>The fuel level state</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>instantFuelConsumption</td>
- * 			<td>Boolean</td>
- * 			<td>The instantaneous fuel consumption in microlitres</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>externalTemperature</td>
- * 			<td>Boolean</td>
- * 			<td>The external temperature in degrees celsius</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>vin</td>
- * 			<td>Boolean</td>
- * 			<td>Vehicle identification number</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>prndl</td>
- * 			<td>Boolean</td>
- * 			<td>Currently selected gear.</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>tirePressure</td>
- * 			<td>Boolean</td>
- * 			<td>Tire pressure status</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>odometer</td>
- * 			<td>Boolean</td>
- * 			<td>Odometer in km</td>
- *                 <td>N</td>
- *                 <td>Max Length: 500</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>beltStatus</td>
- * 			<td>Boolean</td>
- * 			<td>The status of the seat belts</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>bodyInformation</td>
- * 			<td>Boolean</td>
- * 			<td>The body information including ignition status and internal temp</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>deviceStatus</td>
- * 			<td>Boolean</td>
- * 			<td>The device status including signal and battery strength</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>driverBraking</td>
- * 			<td>Boolean</td>
- * 			<td>The status of the brake pedal</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>wiperStatus</td>
- * 			<td>Boolean</td>
- * 			<td>The status of the wipers</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>headLampStatus</td>
- * 			<td>Boolean</td>
- * 			<td>Status of the head lamps</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>engineTorque</td>
- * 			<td>Boolean</td>
- * 			<td>Torque value for engine (in Nm) on non-diesel variants</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>engineOilLife</td>
- * 			<td>Boolean</td>
- * 			<td>The estimated percentage of remaining oil life of the engine</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 5.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>accPedalPosition</td>
- * 			<td>Boolean</td>
- * 			<td>Accelerator pedal position (percentage depressed)</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>steeringWheelAngle</td>
- * 			<td>Boolean</td>
- * 			<td>Current angle of the steering wheel (in deg)</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>turnSignal</td>
- * 			<td>Boolean</td>
- * 			<td>@see TurnSignal</td>
- * 			<td>N</td>
- * 			<td>Subscribable</td>
- * 			<td>SmartDeviceLink 5.0</td>
- * 		</tr>
- * 	     <tr>
- * 			<td>cloudAppVehicleID</td>
- * 			<td>Boolean</td>
- * 			<td>ID for the vehicle when connecting to cloud applications</td>
- *				<td>N</td>
- *				<td>Subscribable</td>
- * 			<td>SmartDeviceLink 5.1 </td>
- * 		</tr>
- * 		</table>
- *  
- *  
- *  <p><b>Response</b></p>
- *  
- * <p> <b>Non-default Result Codes:</b></p>
- * <p> SUCCESS</p>
- * <p> INVALID_DATA</p>
- *  <p>OUT_OF_MEMORY</p>
- *  <p>TOO_MANY_PENDING_REQUESTS</p>
- *  <p>APPLICATION_NOT_REGISTERED</p>
- * <p> GENERIC_ERROR</p>
- * <p> REJECTED</p>
- * <p> VEHICLE_DATA_NOT_ALLOWED</p>
- *  <p>VEHICLE_DATA_NOT_AVAILABLE</p>
- * <p> USER_DISALLOWED</p>
- * 
- * @see SubscribeVehicleData
- * @see UnsubscribeVehicleData
- * @since SmartDeviceLink 2.0
- * 
+ *  <tr>
+ *      <th>Param Name</th>
+ *      <th>Type</th>
+ *      <th>Description</th>
+ *      <th>Required</th>
+ *      <th>Version Available</th>
+ *  </tr>
+ *  <tr>
+ *      <td>gps</td>
+ *      <td>Boolean</td>
+ *      <td>See GPSData</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>speed</td>
+ *      <td>Boolean</td>
+ *      <td>The vehicle speed in kilometers per hour</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>rpm</td>
+ *      <td>Boolean</td>
+ *      <td>The number of revolutions per minute of the engine</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>fuelLevel</td>
+ *      <td>Boolean</td>
+ *      <td>The fuel level in the tank (percentage)</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>fuelLevel_State</td>
+ *      <td>Boolean</td>
+ *      <td>The fuel level state</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>instantFuelConsumption</td>
+ *      <td>Boolean</td>
+ *      <td>The instantaneous fuel consumption in microlitres</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>fuelRange</td>
+ *      <td>Boolean</td>
+ *      <td>The estimate range in KM the vehicle can travel based on fuel level and consumption</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 5.0.0</td>
+ *  </tr>
+ *  <tr>
+ *      <td>externalTemperature</td>
+ *      <td>Boolean</td>
+ *      <td>The external temperature in degrees celsius</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>turnSignal</td>
+ *      <td>Boolean</td>
+ *      <td>See TurnSignal</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 5.0.0</td>
+ *  </tr>
+ *  <tr>
+ *      <td>vin</td>
+ *      <td>Boolean</td>
+ *      <td>Vehicle identification number</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>prndl</td>
+ *      <td>Boolean</td>
+ *      <td>See PRNDL</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>tirePressure</td>
+ *      <td>Boolean</td>
+ *      <td>See TireStatus</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>odometer</td>
+ *      <td>Boolean</td>
+ *      <td>Odometer in km</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>beltStatus</td>
+ *      <td>Boolean</td>
+ *      <td>The status of the seat belts</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>bodyInformation</td>
+ *      <td>Boolean</td>
+ *      <td>The body information including ignition status and internal temp</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>deviceStatus</td>
+ *      <td>Boolean</td>
+ *      <td>The device status including signal and battery strength</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>driverBraking</td>
+ *      <td>Boolean</td>
+ *      <td>The status of the brake pedal</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>wiperStatus</td>
+ *      <td>Boolean</td>
+ *      <td>The status of the wipers</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>headLampStatus</td>
+ *      <td>Boolean</td>
+ *      <td>Status of the head lamps</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>engineTorque</td>
+ *      <td>Boolean</td>
+ *      <td>Torque value for engine (in Nm) on non-diesel variants</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>accPedalPosition</td>
+ *      <td>Boolean</td>
+ *      <td>Accelerator pedal position (percentage depressed)</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>steeringWheelAngle</td>
+ *      <td>Boolean</td>
+ *      <td>Current angle of the steering wheel (in deg)</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>engineOilLife</td>
+ *      <td>Boolean</td>
+ *      <td>The estimated percentage of remaining oil life of the engine.</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 5.0.0</td>
+ *  </tr>
+ *  <tr>
+ *      <td>electronicParkBrakeStatus</td>
+ *      <td>Boolean</td>
+ *      <td>The status of the park brake as provided by Electric Park Brake (EPB) system.</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 5.0.0</td>
+ *  </tr>
+ *  <tr>
+ *      <td>cloudAppVehicleID</td>
+ *      <td>Boolean</td>
+ *      <td>Parameter used by cloud apps to identify a head unit</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 5.1.0</td>
+ *  </tr>
+ *  <tr>
+ *      <td>stabilityControlsStatus</td>
+ *      <td>Boolean</td>
+ *      <td>See StabilityControlsStatus</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 7.0.0</td>
+ *  </tr>
+ *  <tr>
+ *      <td>eCallInfo</td>
+ *      <td>Boolean</td>
+ *      <td>Emergency Call notification and confirmation data</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>airbagStatus</td>
+ *      <td>Boolean</td>
+ *      <td>The status of the air bags</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>emergencyEvent</td>
+ *      <td>Boolean</td>
+ *      <td>Information related to an emergency event (and if it occurred)</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>clusterModeStatus</td>
+ *      <td>Boolean</td>
+ *      <td>The status modes of the cluster</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>myKey</td>
+ *      <td>Boolean</td>
+ *      <td>Information related to the MyKey feature</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ * </table>
  *
  */
 public class GetVehicleData extends RPCRequest {
@@ -301,7 +314,7 @@ public class GetVehicleData extends RPCRequest {
 	* Constructs a new GetVehicleDta object indicated by the Hashtable
 	* parameter
 	* </p>
-	* 
+	*
 	* @param hash
 	*            The Hashtable to use
 	*/
@@ -309,172 +322,221 @@ public class GetVehicleData extends RPCRequest {
     public GetVehicleData(Hashtable<String, Object> hash) {
         super(hash);
     }
+
     public void setGps(Boolean gps) {
         setParameters(KEY_GPS, gps);
     }
+
     public Boolean getGps() {
         return getBoolean(KEY_GPS);
     }
+
     public void setSpeed(Boolean speed) {
         setParameters(KEY_SPEED, speed);
     }
+
     public Boolean getSpeed() {
         return getBoolean(KEY_SPEED);
     }
+
     public void setRpm(Boolean rpm) {
         setParameters(KEY_RPM, rpm);
     }
+
     public Boolean getRpm() {
         return getBoolean(KEY_RPM);
     }
+
     public void setFuelLevel(Boolean fuelLevel) {
         setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
+
     public Boolean getFuelLevel() {
         return getBoolean(KEY_FUEL_LEVEL);
     }
+
     @Deprecated
     public void setFuelLevel_State(Boolean fuelLevel_State) {
         setFuelLevelState(fuelLevel_State);
     }
+
     @Deprecated
     public Boolean getFuelLevel_State() {
         return getFuelLevelState();
     }
+
     public void setFuelLevelState(Boolean fuelLevelState) {
         setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
     }
+
     public Boolean getFuelLevelState() {
         return getBoolean(KEY_FUEL_LEVEL_STATE);
     }
+
     public void setInstantFuelConsumption(Boolean instantFuelConsumption) {
         setParameters(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
     }
+
     public Boolean getInstantFuelConsumption() {
         return getBoolean(KEY_INSTANT_FUEL_CONSUMPTION);
     }
+
     public void setExternalTemperature(Boolean externalTemperature) {
         setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
     }
+
     public Boolean getExternalTemperature() {
         return getBoolean(KEY_EXTERNAL_TEMPERATURE);
     }
-    
+
     public void setVin(Boolean vin) {
         setParameters(KEY_VIN, vin);
     }
+
     public Boolean getVin() {
         return getBoolean(KEY_VIN);
     }
-    
+
     public void setPrndl(Boolean prndl) {
         setParameters(KEY_PRNDL, prndl);
     }
+
     public Boolean getPrndl() {
         return getBoolean(KEY_PRNDL);
     }
+
     public void setTirePressure(Boolean tirePressure) {
         setParameters(KEY_TIRE_PRESSURE, tirePressure);
     }
+
     public Boolean getTirePressure() {
         return getBoolean(KEY_TIRE_PRESSURE);
     }
+
     public void setOdometer(Boolean odometer) {
         setParameters(KEY_ODOMETER, odometer);
     }
+
     public Boolean getOdometer() {
         return getBoolean(KEY_ODOMETER);
     }
+
     public void setBeltStatus(Boolean beltStatus) {
         setParameters(KEY_BELT_STATUS, beltStatus);
     }
+
     public Boolean getBeltStatus() {
         return getBoolean(KEY_BELT_STATUS);
     }
+
     public void setBodyInformation(Boolean bodyInformation) {
         setParameters(KEY_BODY_INFORMATION, bodyInformation);
     }
+
     public Boolean getBodyInformation() {
         return getBoolean(KEY_BODY_INFORMATION);
     }
+
     public void setDeviceStatus(Boolean deviceStatus) {
         setParameters(KEY_DEVICE_STATUS, deviceStatus);
     }
+
     public Boolean getDeviceStatus() {
         return getBoolean(KEY_DEVICE_STATUS);
     }
+
     public void setDriverBraking(Boolean driverBraking) {
         setParameters(KEY_DRIVER_BRAKING, driverBraking);
     }
+
     public Boolean getDriverBraking() {
         return getBoolean(KEY_DRIVER_BRAKING);
     }
+
     public void setWiperStatus(Boolean wiperStatus) {
         setParameters(KEY_WIPER_STATUS, wiperStatus);
     }
+
     public Boolean getWiperStatus() {
         return getBoolean(KEY_WIPER_STATUS);
     }
+
     public void setHeadLampStatus(Boolean headLampStatus) {
         setParameters(KEY_HEAD_LAMP_STATUS, headLampStatus);
     }
+
     public Boolean getHeadLampStatus() {
         return getBoolean(KEY_HEAD_LAMP_STATUS);
     }
+
     public void setEngineTorque(Boolean engineTorque) {
         setParameters(KEY_ENGINE_TORQUE, engineTorque);
     }
+
     public Boolean getEngineTorque() {
         return getBoolean(KEY_ENGINE_TORQUE);
     }
+
     public void setEngineOilLife(Boolean engineOilLife) {
         setParameters(KEY_ENGINE_OIL_LIFE, engineOilLife);
     }
+
     public Boolean getEngineOilLife() {
         return getBoolean(KEY_ENGINE_OIL_LIFE);
     }
+
     public void setAccPedalPosition(Boolean accPedalPosition) {
         setParameters(KEY_ACC_PEDAL_POSITION, accPedalPosition);
     }
+
     public Boolean getAccPedalPosition() {
         return getBoolean(KEY_ACC_PEDAL_POSITION);
     }
-        
+
     public void setSteeringWheelAngle(Boolean steeringWheelAngle) {
         setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
     }
+
     public Boolean getSteeringWheelAngle() {
         return getBoolean(KEY_STEERING_WHEEL_ANGLE);
-    }                
+    }
+
     public void setECallInfo(Boolean eCallInfo) {
         setParameters(KEY_E_CALL_INFO, eCallInfo);
     }
+
     public Boolean getECallInfo() {
         return getBoolean(KEY_E_CALL_INFO);
-    }    
-    
-    
+    }
+
     public void setAirbagStatus(Boolean airbagStatus) {
         setParameters(KEY_AIRBAG_STATUS, airbagStatus);
     }
+
     public Boolean getAirbagStatus() {
         return getBoolean(KEY_AIRBAG_STATUS);
     }
+
     public void setEmergencyEvent(Boolean emergencyEvent) {
         setParameters(KEY_EMERGENCY_EVENT, emergencyEvent);
     }
+
     public Boolean getEmergencyEvent() {
         return getBoolean(KEY_EMERGENCY_EVENT);
     }
+
     public void setClusterModeStatus(Boolean clusterModeStatus) {
         setParameters(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
     }
+
     public Boolean getClusterModeStatus() {
         return getBoolean(KEY_CLUSTER_MODE_STATUS);
     }
+
     public void setMyKey(Boolean myKey) {
         setParameters(KEY_MY_KEY, myKey);
     }
+
     public Boolean getMyKey() {
         return getBoolean(KEY_MY_KEY);
     }
@@ -482,7 +544,7 @@ public class GetVehicleData extends RPCRequest {
     /**
      * Sets a boolean value. If true, gets fuelRange data
      * @param fuelRange
-      *            a boolean value
+     *            a boolean value
      */
     public void setFuelRange(Boolean fuelRange) {
         setParameters(KEY_FUEL_RANGE, fuelRange);
@@ -502,19 +564,23 @@ public class GetVehicleData extends RPCRequest {
      * Sets a boolean value. If true, subscribes turnSignal data
      * @param turnSignal a boolean value
      */
-    public void setTurnSignal(Boolean turnSignal) { setParameters(KEY_TURN_SIGNAL, turnSignal); }
+    public void setTurnSignal(Boolean turnSignal) {
+        setParameters(KEY_TURN_SIGNAL, turnSignal);
+    }
 
     /**
      * Gets a boolean value. If true, means the turnSignal data has been subscribed.
      * @return a Boolean value.
      */
-    public Boolean getTurnSignal() { return getBoolean(KEY_TURN_SIGNAL); }
+    public Boolean getTurnSignal() {
+        return getBoolean(KEY_TURN_SIGNAL);
+    }
 
     /**
      * Sets a boolean value. If true, subscribes electronicParkBrakeStatus data
      * @param electronicParkBrakeStatus a boolean value
      */
-    public void setElectronicParkBrakeStatus(Boolean electronicParkBrakeStatus){
+    public void setElectronicParkBrakeStatus(Boolean electronicParkBrakeStatus) {
         setParameters(KEY_ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
     }
 
@@ -522,7 +588,7 @@ public class GetVehicleData extends RPCRequest {
      * Gets a boolean value. If true, means the electronicParkBrakeStatus data has been subscribed.
      * @return a Boolean value.
      */
-    public Boolean getElectronicParkBrakeStatus(){
+    public Boolean getElectronicParkBrakeStatus() {
         return getBoolean(KEY_ELECTRONIC_PARK_BRAKE_STATUS);
     }
 
@@ -530,7 +596,7 @@ public class GetVehicleData extends RPCRequest {
      * Sets a boolean value. If true, gets the cloudAppVehicleID data
      * @param cloudAppVehicleID a boolean value
      */
-    public void setCloudAppVehicleID(boolean cloudAppVehicleID){
+    public void setCloudAppVehicleID(boolean cloudAppVehicleID) {
         setParameters(KEY_CLOUD_APP_VEHICLE_ID, cloudAppVehicleID);
     }
 
@@ -538,7 +604,7 @@ public class GetVehicleData extends RPCRequest {
      * Gets a boolean value. If true, means the cloudAppVehicleDataID data has been set to retrieve.
      * @return a Boolean value.
      */
-    public Boolean getCloudAppVehicleID(){
+    public Boolean getCloudAppVehicleID() {
         return getBoolean(KEY_CLOUD_APP_VEHICLE_ID);
     }
 
@@ -547,7 +613,7 @@ public class GetVehicleData extends RPCRequest {
      * @param vehicleDataName a String value
      * @param vehicleDataState a boolean value
      */
-    public void setOEMCustomVehicleData(String vehicleDataName, Boolean vehicleDataState){
+    public void setOEMCustomVehicleData(String vehicleDataName, Boolean vehicleDataState) {
         setParameters(vehicleDataName, vehicleDataState);
     }
 
@@ -555,23 +621,27 @@ public class GetVehicleData extends RPCRequest {
      * Gets a boolean value for OEM Custom VehicleData.
      * @return a Boolean value.
      */
-    public Boolean getOEMCustomVehicleData(String vehicleDataName){
+    public Boolean getOEMCustomVehicleData(String vehicleDataName) {
         return getBoolean(vehicleDataName);
     }
 
     /**
-     * Sets a boolean value for StabilityControlsStatus.
-     * @param stabilityControlsStatus a boolean value
+     * Sets the stabilityControlsStatus.
+     *
+     * @param stabilityControlsStatus See StabilityControlsStatus
+     * @since SmartDeviceLink 7.0.0
      */
-    public void setStabilityControlsStatus(Boolean stabilityControlsStatus){
+    public void setStabilityControlsStatus(Boolean stabilityControlsStatus) {
         setParameters(KEY_STABILITY_CONTROLS_STATUS, stabilityControlsStatus);
     }
 
     /**
-     * Gets a boolean value for StabilityControlsStatus.
-     * @return a Boolean value.
+     * Gets the stabilityControlsStatus.
+     *
+     * @return Boolean See StabilityControlsStatus
+     * @since SmartDeviceLink 7.0.0
      */
-    public Boolean getStabilityControlsStatus(){
+    public Boolean getStabilityControlsStatus() {
         return getBoolean(KEY_STABILITY_CONTROLS_STATUS);
     }
 }
