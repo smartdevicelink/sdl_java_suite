@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -37,241 +37,230 @@ import com.smartdevicelink.proxy.RPCRequest;
 import java.util.Hashtable;
 
 /**
- * This function is used to unsubscribe the notifications from the
- * subscribeVehicleData function
- * <p>Function Group: Location, VehicleInfo and DrivingChara</p>
- * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
- * 
+ * This function is used to unsubscribe the notifications from the subscribeVehicleData
+ * function.
+ *
  * <p><b>Parameter List</b></p>
+ *
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
- *                 <th>Reg.</th>
- *               <th>Notes</th>
- * 			<th>Version</th>
- * 		</tr>
- * 		<tr>
- * 			<td>gps</td>
- * 			<td>Boolean</td>
- * 			<td>GPS data. See {@linkplain com.smartdevicelink.proxy.rpc.GPSData} for details</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>speed</td>
- * 			<td>Boolean</td>
- * 			<td>The vehicle speed in kilometers per hour</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>rpm</td>
- * 			<td>Boolean</td>
- * 			<td>The number of revolutions per minute of the engine</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>fuelLevel</td>
- * 			<td>Boolean</td>
- * 			<td>The fuel level in the tank (percentage)</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>fuelLevel_State</td>
- * 			<td>Boolean</td>
- * 			<td>The fuel level state</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>instantFuelConsumption</td>
- * 			<td>Boolean</td>
- * 			<td>The instantaneous fuel consumption in microlitres</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>externalTemperature</td>
- * 			<td>Boolean</td>
- * 			<td>The external temperature in degrees celsius</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>prndl</td>
- * 			<td>Boolean</td>
- * 			<td>Currently selected gear.</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>tirePressure</td>
- * 			<td>Boolean</td>
- * 			<td>Tire pressure status</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>odometer</td>
- * 			<td>Boolean</td>
- * 			<td>Odometer in km</td>
- *                 <td>N</td>
- *                 <td>Max Length: 500</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>beltStatus</td>
- * 			<td>Boolean</td>
- * 			<td>The status of the seat belts</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>bodyInformation</td>
- * 			<td>Boolean</td>
- * 			<td>The body information including ignition status and internal temp</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>deviceStatus</td>
- * 			<td>Boolean</td>
- * 			<td>The device status including signal and battery strength</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>driverBraking</td>
- * 			<td>Boolean</td>
- * 			<td>The status of the brake pedal</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>wiperStatus</td>
- * 			<td>Boolean</td>
- * 			<td>The status of the wipers</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>headLampStatus</td>
- * 			<td>Boolean</td>
- * 			<td>Status of the head lamps</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>engineTorque</td>
- * 			<td>Boolean</td>
- * 			<td>Torque value for engine (in Nm) on non-diesel variants</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>engineOilLife</td>
- * 			<td>Boolean</td>
- * 			<td>The estimated percentage of remaining oil life of the engine</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 5.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>accPedalPosition</td>
- * 			<td>Boolean</td>
- * 			<td>Accelerator pedal position (percentage depressed)</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>steeringWheelAngle</td>
- * 			<td>Boolean</td>
- * 			<td>Current angle of the steering wheel (in deg)</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>eCallInfo</td>
- * 			<td>Boolean</td>
- * 			<td>Emergency Call notification and confirmation data.</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>airbagStatus</td>
- * 			<td>Boolean</td>
- * 			<td>The status of the air bags.</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>emergencyEvent</td>
- * 			<td>Boolean</td>
- * 			<td>Information related to an emergency event (and if it occurred).</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>clusterModeStatus</td>
- * 			<td>Boolean</td>
- * 			<td>The status modes of the instrument panel cluster.</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>myKey</td>
- * 			<td>Boolean</td>
- * 			<td>Information related to the MyKey feature.</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>turnSignal</td>
- * 			<td>Boolean</td>
- * 			<td>@see TurnSignal</td>
- *				<td>N</td>
- *				<td>Subscribable</td>
- * 			<td>SmartDeviceLink 5.0 </td>
- * 		</tr>
- *  </table>
- * <p><b> Response</b></p>
- * <p><b>Non-default Result Codes:</b></p>
- *	<p>SUCCESS</p>
- *	<p>WARNINGS</p>
- *	<p>INVALID_DATA</p>
- *	<p>OUT_OF_MEMORY</p>
- *	<p>TOO_MANY_PENDING_REQUESTS</p>
- *	<p>APPLICATION_NOT_REGISTERED</p>
- *	<p>GENERIC_ERROR</p>
- *	<p>IGNORED</p>
- *	<p>DISALLOWED</p>
+ *  <tr>
+ *      <th>Param Name</th>
+ *      <th>Type</th>
+ *      <th>Description</th>
+ *      <th>Required</th>
+ *      <th>Version Available</th>
+ *  </tr>
+ *  <tr>
+ *      <td>gps</td>
+ *      <td>Boolean</td>
+ *      <td>See GPSData</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>speed</td>
+ *      <td>Boolean</td>
+ *      <td>The vehicle speed in kilometers per hour</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>rpm</td>
+ *      <td>Boolean</td>
+ *      <td>The number of revolutions per minute of the engine</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>fuelLevel</td>
+ *      <td>Boolean</td>
+ *      <td>The fuel level in the tank (percentage)</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>fuelLevel_State</td>
+ *      <td>Boolean</td>
+ *      <td>The fuel level state</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>instantFuelConsumption</td>
+ *      <td>Boolean</td>
+ *      <td>The instantaneous fuel consumption in microlitres</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>fuelRange</td>
+ *      <td>Boolean</td>
+ *      <td>The estimate range in KM the vehicle can travel based on fuel level and consumption</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 5.0.0</td>
+ *  </tr>
+ *  <tr>
+ *      <td>externalTemperature</td>
+ *      <td>Boolean</td>
+ *      <td>The external temperature in degrees celsius.</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>turnSignal</td>
+ *      <td>Boolean</td>
+ *      <td>See TurnSignal</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 5.0.0</td>
+ *  </tr>
+ *  <tr>
+ *      <td>gearStatus</td>
+ *      <td>Boolean</td>
+ *      <td>See GearStatus</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 7.0.0</td>
+ *  </tr>
+ *  <tr>
+ *      <td>prndl</td>
+ *      <td>Boolean</td>
+ *      <td>See PRNDL. This parameter is deprecated and it is now covered in `gearStatus`</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 7.0.0</td>
+ *  </tr>
+ *  <tr>
+ *      <td>tirePressure</td>
+ *      <td>Boolean</td>
+ *      <td>See TireStatus</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>odometer</td>
+ *      <td>Boolean</td>
+ *      <td>Odometer in km</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>beltStatus</td>
+ *      <td>Boolean</td>
+ *      <td>The status of the seat belts</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>bodyInformation</td>
+ *      <td>Boolean</td>
+ *      <td>The body information including power modes</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>deviceStatus</td>
+ *      <td>Boolean</td>
+ *      <td>The device status including signal and battery strength</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>driverBraking</td>
+ *      <td>Boolean</td>
+ *      <td>The status of the brake pedal</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>wiperStatus</td>
+ *      <td>Boolean</td>
+ *      <td>The status of the wipers</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>headLampStatus</td>
+ *      <td>Boolean</td>
+ *      <td>Status of the head lamps</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>engineTorque</td>
+ *      <td>Boolean</td>
+ *      <td>Torque value for engine (in Nm) on non-diesel variants</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>accPedalPosition</td>
+ *      <td>Boolean</td>
+ *      <td>Accelerator pedal position (percentage depressed)</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>steeringWheelAngle</td>
+ *      <td>Boolean</td>
+ *      <td>Current angle of the steering wheel (in deg)</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>engineOilLife</td>
+ *      <td>Boolean</td>
+ *      <td>The estimated percentage of remaining oil life of the engine.</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 5.0.0</td>
+ *  </tr>
+ *  <tr>
+ *      <td>electronicParkBrakeStatus</td>
+ *      <td>Boolean</td>
+ *      <td>The status of the park brake as provided by Electric Park Brake (EPB) system.</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 5.0.0</td>
+ *  </tr>
+ *  <tr>
+ *      <td>cloudAppVehicleID</td>
+ *      <td>Boolean</td>
+ *      <td>Parameter used by cloud apps to identify a head unit</td>
+ *      <td>N</td>
+ *      <td>SmartDeviceLink 5.1.0</td>
+ *  </tr>
+ *  <tr>
+ *      <td>eCallInfo</td>
+ *      <td>Boolean</td>
+ *      <td>Emergency Call notification and confirmation data</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>airbagStatus</td>
+ *      <td>Boolean</td>
+ *      <td>The status of the air bags</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>emergencyEvent</td>
+ *      <td>Boolean</td>
+ *      <td>Information related to an emergency event (and if it occurred)</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>clusterModeStatus</td>
+ *      <td>Boolean</td>
+ *      <td>The status modes of the cluster</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>myKey</td>
+ *      <td>Boolean</td>
+ *      <td>Information related to the MyKey feature</td>
+ *      <td>N</td>
+ *      <td></td>
+ *  </tr>
+ * </table>
  *
  * @since SmartDeviceLink 2.0
  * @see SubscribeVehicleData
@@ -320,7 +309,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	 * Constructs a new UnsubscribeVehicleData object indicated by the Hashtable
 	 * parameter
 	 * <p></p>
-	 * 
+	 *
 	 * @param hash
 	 *            The Hashtable to use
 	 */
@@ -330,7 +319,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from Gps data
-	 * 
+	 *
 	 * @param gps
 	 *            a boolean value
 	 */
@@ -340,7 +329,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Gets a boolean value. If true, means the Gps data has been unsubscribed.
-	 * 
+	 *
 	 * @return Boolean -a Boolean value. If true, means the Gps data has been
 	 *         unsubscribed.
 	 */
@@ -350,7 +339,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from speed data
-	 * 
+	 *
 	 * @param speed
 	 *            a boolean value
 	 */
@@ -360,7 +349,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Gets a boolean value. If true, means the Speed data has been unsubscribed.
-	 * 
+	 *
 	 * @return Boolean -a Boolean value. If true, means the Speed data has been
 	 *         unsubscribed.
 	 */
@@ -370,7 +359,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribe data
-	 * 
+	 *
 	 * @param rpm
 	 *            a boolean value
 	 */
@@ -380,7 +369,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Gets a boolean value. If true, means the rpm data has been unsubscribed.
-	 * 
+	 *
 	 * @return Boolean -a Boolean value. If true, means the rpm data has been
 	 *         unsubscribed.
 	 */
@@ -390,7 +379,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from FuelLevel data
-	 * 
+	 *
 	 * @param fuelLevel
 	 *            a boolean value
 	 */
@@ -401,7 +390,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the FuelLevel data has been
 	 * unsubscribed.
-	 * 
+	 *
 	 * @return Boolean -a Boolean value. If true, means the FuelLevel data has
 	 *         been unsubscribed.
 	 */
@@ -411,7 +400,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
     /**
      * Sets a boolean value. If true, unsubscribes from fuelLevel_State data
-     * 
+     *
      * @param fuelLevel_State
      *            a boolean value
      */
@@ -423,7 +412,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
     /**
      * Gets a boolean value. If true, means the fuelLevel_State data has been
      * unsubscribed.
-     * 
+     *
      * @return Boolean -a Boolean value. If true, means the fuelLevel_State data
      *         has been unsubscribed.
      */
@@ -434,7 +423,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
     /**
      * Sets a boolean value. If true, unsubscribes from fuelLevelState data
-     * 
+     *
      * @param fuelLevelState
      *            a boolean value
      */
@@ -445,7 +434,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
     /**
      * Gets a boolean value. If true, means the fuelLevel_State data has been
      * unsubscribed.
-     * 
+     *
      * @return Boolean -a Boolean value. If true, means the fuelLevelState data
      *         has been unsubscribed.
      */
@@ -455,7 +444,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from instantFuelConsumption data
-	 * 
+	 *
 	 * @param instantFuelConsumption
 	 *            a boolean value
 	 */
@@ -466,7 +455,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the getInstantFuelConsumption data has been
 	 * unsubscribed.
-	 * 
+	 *
 	 * @return Boolean -a Boolean value. If true, means the getInstantFuelConsumption data
 	 *         has been unsubscribed.
 	 */
@@ -474,12 +463,11 @@ public class UnsubscribeVehicleData extends RPCRequest {
         return getBoolean(KEY_INSTANT_FUEL_CONSUMPTION);
     }
 
-	/**
-	 * Sets a boolean value. If true, unsubscribes from externalTemperature data
-	 * 
-	 * @param externalTemperature
-	 *            a boolean value
-	 */
+    /**
+     * Sets the externalTemperature.
+     *
+     * @param externalTemperature The external temperature in degrees celsius.
+     */
     public void setExternalTemperature(Boolean externalTemperature) {
 		setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
     }
@@ -487,7 +475,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the externalTemperature data has been
 	 * unsubscribed.
-	 * 
+	 *
 	 * @return Boolean -a Boolean value. If true, means the externalTemperature data
 	 *         has been unsubscribed.
 	 */
@@ -495,34 +483,31 @@ public class UnsubscribeVehicleData extends RPCRequest {
         return getBoolean(KEY_EXTERNAL_TEMPERATURE);
     }
 
-	/**
-	 * This parameter is deprecated starting RPC Spec X.x.x, please see GearStatus
-	 * Sets a boolean value. If true, unsubscribes Currently selected gear data
-	 * 
-	 * @param prndl
-	 *            a boolean value
-	 */
-	@Deprecated
+    /**
+     * Sets the prndl.
+     *
+     * @param prndl See PRNDL. This parameter since SmartDeviceLink 7.0.0 is deprecated and it is now covered in `gearStatus`
+     * @since SmartDeviceLink 7.0.0
+     */
+    @Deprecated
     public void setPrndl(Boolean prndl) {
-		setParameters(KEY_PRNDL, prndl);
+        setParameters(KEY_PRNDL, prndl);
     }
 
-	/**
-	 * This parameter is deprecated starting RPC Spec X.x.x, please see GearStatus
-	 * Gets a boolean value. If true, means the Currently selected gear data has been
-	 * unsubscribed.
-	 * 
-	 * @return Boolean -a Boolean value. If true, means the Currently selected gear data
-	 *         has been unsubscribed.
-	 */
-	@Deprecated
+    /**
+     * Gets the prndl.
+     *
+     * @return Boolean See PRNDL. This parameter is deprecated since SmartDeviceLink 7.0.0 and it is now covered in `gearStatus`
+     * @since SmartDeviceLink 7.0.0
+     */
+    @Deprecated
     public Boolean getPrndl() {
         return getBoolean(KEY_PRNDL);
     }
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from tire pressure status data
-	 * 
+	 *
 	 * @param tirePressure
 	 *            a boolean value
 	 */
@@ -533,7 +518,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the tire pressure status data has been
 	 * unsubscribed.
-	 * 
+	 *
 	 * @return Boolean -a Boolean value. If true, means the tire pressure status data
 	 *         has been unsubscribed.
 	 */
@@ -543,7 +528,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from odometer data
-	 * 
+	 *
 	 * @param odometer
 	 *            a boolean value
 	 */
@@ -554,7 +539,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the odometer data has been
 	 * unsubscribed.
-	 * 
+	 *
 	 * @return Boolean -a Boolean value. If true, means the odometer data
 	 *         has been unsubscribed.
 	 */
@@ -564,7 +549,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from belt Status data
-	 * 
+	 *
 	 * @param beltStatus
 	 *            a boolean value
 	 */
@@ -575,7 +560,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the belt Status data has been
 	 * unsubscribed.
-	 * 
+	 *
 	 * @return Boolean -a Boolean value. If true, means the belt Status data
 	 *         has been unsubscribed.
 	 */
@@ -585,7 +570,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from body Information data
-	 * 
+	 *
 	 * @param bodyInformation
 	 *            a boolean value
 	 */
@@ -596,7 +581,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the body Information data has been
 	 * unsubscribed.
-	 * 
+	 *
 	 * @return Boolean -a Boolean value. If true, means the body Information data
 	 *         has been unsubscribed.
 	 */
@@ -606,7 +591,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from device Status data
-	 * 
+	 *
 	 * @param deviceStatus
 	 *            a boolean value
 	 */
@@ -617,7 +602,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the device Status data has been
 	 * unsubscribed.
-	 * 
+	 *
 	 * @return Boolean -a Boolean value. If true, means the device Status data
 	 *         has been unsubscribed.
 	 */
@@ -627,7 +612,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from driver Braking data
-	 * 
+	 *
 	 * @param driverBraking
 	 *            a boolean value
 	 */
@@ -638,7 +623,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the driver Braking data has been
 	 * unsubscribed.
-	 * 
+	 *
 	 * @return Boolean -a Boolean value. If true, means the driver Braking data
 	 *         has been unsubscribed.
 	 */
@@ -648,7 +633,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from wiper Status data
-	 * 
+	 *
 	 * @param wiperStatus
 	 *            a boolean value
 	 */
@@ -659,7 +644,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the wiper Status data has been
 	 * unsubscribed.
-	 * 
+	 *
 	 * @return Boolean -a Boolean value. If true, means the wiper Status data
 	 *         has been unsubscribed.
 	 */
@@ -669,7 +654,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from Head Lamp Status data
-	 * 
+	 *
 	 * @param headLampStatus
 	 *            a boolean value
 	 */
@@ -680,7 +665,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the Head Lamp Status data has been
 	 * unsubscribed.
-	 * 
+	 *
 	 * @return Boolean -a Boolean value. If true, means the Head Lamp Status data
 	 *         has been unsubscribed.
 	 */
@@ -733,7 +718,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from accPedalPosition data
-	 * 
+	 *
 	 * @param accPedalPosition
 	 *            a boolean value
 	 */
@@ -744,7 +729,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the accPedalPosition data has been
 	 * unsubscribed.
-	 * 
+	 *
 	 * @return Boolean -a Boolean value. If true, means the accPedalPosition data
 	 *         has been unsubscribed.
 	 */
@@ -758,8 +743,8 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
     public Boolean getSteeringWheelAngle() {
         return getBoolean(KEY_STEERING_WHEEL_ANGLE);
-    }    
-        
+    }
+
     public void setECallInfo(Boolean eCallInfo) {
 		setParameters(KEY_E_CALL_INFO, eCallInfo);
     }
@@ -842,7 +827,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from cloudAppVehicleID data
-	 * @param cloudAppVehicleID a boolean value. 
+	 * @param cloudAppVehicleID a boolean value.
 	 */
 	public void setCloudAppVehicleID(boolean cloudAppVehicleID){
 		setParameters(KEY_CLOUD_APP_VEHICLE_ID, cloudAppVehicleID);
@@ -873,19 +858,23 @@ public class UnsubscribeVehicleData extends RPCRequest {
 		return getBoolean(vehicleDataName);
 	}
 
-	/**
-	 * Sets a boolean value for GearStatus.
-	 * @param gearStatus a boolean value
-	 */
-	public void setGearStatus(Boolean gearStatus){
-		setParameters(KEY_GEAR_STATUS, gearStatus);
-	}
+    /**
+     * Sets the gearStatus.
+     *
+     * @param gearStatus See GearStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setGearStatus(Boolean gearStatus) {
+        setParameters(KEY_GEAR_STATUS, gearStatus);
+    }
 
-	/**
-	 * Gets a boolean value for GearStatus.
-	 * @return a Boolean value.
-	 */
-	public Boolean getGearStatus(){
-		return getBoolean(KEY_GEAR_STATUS);
-	}
+    /**
+     * Gets the gearStatus.
+     *
+     * @return Boolean See GearStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public Boolean getGearStatus() {
+        return getBoolean(KEY_GEAR_STATUS);
+    }
 }

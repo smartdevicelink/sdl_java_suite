@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -50,7 +50,7 @@ import java.util.List;
 
 /**
  * Get Vehicle Data Response is sent, when GetVehicleData has been called.
- * 
+ *
  * @since SmartDeviceLink 2.0
  */
 public class GetVehicleDataResponse extends RPCResponse {
@@ -86,7 +86,7 @@ public class GetVehicleDataResponse extends RPCResponse {
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
     public static final String KEY_GEAR_STATUS = "gearStatus";
 
-	/** 
+	/**
 	 * Constructs a new GetVehicleDataResponse object
 	 */
 
@@ -168,11 +168,23 @@ public class GetVehicleDataResponse extends RPCResponse {
     	return getString(KEY_VIN);
     }
 
+    /**
+     * Sets the prndl.
+     *
+     * @param prndl See PRNDL. This parameter is deprecated and it is now covered in `gearStatus`
+     * @since SmartDeviceLink 7.0.0
+     */
     @Deprecated
     public void setPrndl(PRNDL prndl) {
         setParameters(KEY_PRNDL, prndl);
     }
 
+    /**
+     * Gets the prndl.
+     *
+     * @return PRNDL See PRNDL. This parameter is deprecated and it is now covered in `gearStatus`
+     * @since SmartDeviceLink 7.0.0
+     */
     @Deprecated
     public PRNDL getPrndl() {
         return (PRNDL) getObject(PRNDL.class, KEY_PRNDL);
@@ -223,7 +235,7 @@ public class GetVehicleDataResponse extends RPCResponse {
     public WiperStatus getWiperStatus() {
         return (WiperStatus) getObject(WiperStatus.class, KEY_WIPER_STATUS);
     }
-  
+
     public void setHeadLampStatus(HeadLampStatus headLampStatus) {
         setParameters(KEY_HEAD_LAMP_STATUS, headLampStatus);
     }
@@ -253,14 +265,14 @@ public class GetVehicleDataResponse extends RPCResponse {
     	Object object = getParameters(KEY_ACC_PEDAL_POSITION);
     	return SdlDataTypeConverter.objectToDouble(object);
     }
-        
+
     public void setSteeringWheelAngle(Double steeringWheelAngle) {
         setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
     }
     public Double getSteeringWheelAngle() {
     	Object object = getParameters(KEY_STEERING_WHEEL_ANGLE);
     	return SdlDataTypeConverter.objectToDouble(object);
-    }    
+    }
 
     public void setECallInfo(ECallInfo eCallInfo) {
         setParameters(KEY_E_CALL_INFO, eCallInfo);
@@ -268,15 +280,15 @@ public class GetVehicleDataResponse extends RPCResponse {
     @SuppressWarnings("unchecked")
     public ECallInfo getECallInfo() {
         return (ECallInfo) getObject(ECallInfo.class, KEY_E_CALL_INFO);
-    }	
-	
+    }
+
     public void setAirbagStatus(AirbagStatus airbagStatus) {
         setParameters(KEY_AIRBAG_STATUS, airbagStatus);
     }
     @SuppressWarnings("unchecked")
     public AirbagStatus getAirbagStatus() {
         return (AirbagStatus) getObject(AirbagStatus.class, KEY_AIRBAG_STATUS);
-    }	
+    }
 
     public void setEmergencyEvent(EmergencyEvent emergencyEvent) {
         setParameters(KEY_EMERGENCY_EVENT, emergencyEvent);
@@ -397,18 +409,22 @@ public class GetVehicleDataResponse extends RPCResponse {
     }
 
     /**
-     * Sets a value for GearStatus.
-     * @param gearStatus a GearStatus value
+     * Sets the gearStatus.
+     *
+     * @param gearStatus See GearStatus
+     * @since SmartDeviceLink 7.0.0
      */
-    public void setGearStatus(GearStatus gearStatus){
+    public void setGearStatus(GearStatus gearStatus) {
         setParameters(KEY_GEAR_STATUS, gearStatus);
     }
 
     /**
-     * Gets a GearStatus value for the GearStatus data item.
-     * @return a GearStatus related to the GearStatus
+     * Gets the gearStatus.
+     *
+     * @return GearStatus See GearStatus
+     * @since SmartDeviceLink 7.0.0
      */
-    public GearStatus getGearStatus(){
+    public GearStatus getGearStatus() {
         return (GearStatus) getObject(GearStatus.class, KEY_GEAR_STATUS);
     }
 }

@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -41,7 +41,7 @@ import java.util.Hashtable;
 
 /**
  * Unsubscribe Vehicle Data Response is sent, when UnsubscribeVehicleData has been called.
- * 
+ *
  * @since SmartDeviceLink 2.0
  */
 public class UnsubscribeVehicleDataResponse extends RPCResponse {
@@ -98,7 +98,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
 	 * Constructs a new UnsubscribeVehicleDataResponse object indicated by the Hashtable
 	 * parameter
 	 * <p></p>
-	 * 
+	 *
 	 * @param hash The Hashtable to use to build this RPC
 	 *
 	 */
@@ -227,18 +227,18 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_EXTERNAL_TEMPERATURE);
     }
     /**
-     * This parameter is deprecated starting RPC Spec X.x.x, please see gearStatus
-     * Gets currently selected gear data
-     * @param prndl a VehicleDataResult related to the PRNDL status (automatic transmission gear)
+     * Sets the prndl.
+     *
+     * @param prndl See PRNDL. This parameter is deprecated since SmartDeviceLink 7.0.0 and it is now covered in `gearStatus`
      */
     @Deprecated
     public void setPrndl(VehicleDataResult prndl) {
         setParameters(KEY_PRNDL, prndl);
     }
     /**
-     * This parameter is deprecated starting RPC Spec X.x.x, please see gearStatus
-     * Gets currently selected gear data
-     * @return a VehicleDataResult related to the PRNDL status (automatic transmission gear)
+     * Gets the prndl.
+     *
+     * @return VehicleDataResult See PRNDL since SmartDeviceLink 7.0.0. This parameter is deprecated and it is now covered in `gearStatus`
      */
     @Deprecated
     @SuppressWarnings("unchecked")
@@ -409,8 +409,8 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     @SuppressWarnings("unchecked")
     public VehicleDataResult getAccPedalPosition() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_ACC_PEDAL_POSITION);
-    }  
-    
+    }
+
     public void setSteeringWheelAngle(VehicleDataResult steeringWheelAngle) {
         setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
     }
@@ -418,8 +418,8 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     @SuppressWarnings("unchecked")
     public VehicleDataResult getSteeringWheelAngle() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_STEERING_WHEEL_ANGLE);
-    }    
-    
+    }
+
     public void setECallInfo(VehicleDataResult eCallInfo) {
         setParameters(KEY_E_CALL_INFO, eCallInfo);
     }
@@ -540,16 +540,20 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
 
     /**
-     * Sets a VehicleDataResult value for GearStatus.
-     * @param gearStatus a boolean value
+     * Sets the gearStatus.
+     *
+     * @param gearStatus See GearStatus
+     * @since SmartDeviceLink 7.0.0
      */
     public void setGearStatus(VehicleDataResult gearStatus){
         setParameters(KEY_GEAR_STATUS, gearStatus);
     }
 
     /**
-     * See GearStatus.
-     * @return a VehicleDataResult value.
+     * Gets the gearStatus.
+     *
+     * @return VehicleDataResult See GearStatus
+     * @since SmartDeviceLink 7.0.0
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getGearStatus(){

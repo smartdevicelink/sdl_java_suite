@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -41,7 +41,7 @@ import java.util.Hashtable;
 
 /**
  * Subscribe Vehicle Data Response is sent, when SubscribeVehicleData has been called
- * 
+ *
  * @since SmartDeviceLink 2.0
  */
 public class SubscribeVehicleDataResponse extends RPCResponse {
@@ -86,8 +86,8 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
 	/**
 	 * <p>Constructs a new SubscribeVehicleDataResponse object indicated by the Hashtable
 	 * parameter</p>
-	 * 
-	 * 
+	 *
+	 *
 	 * @param hash The Hashtable to use
 	 */
     public SubscribeVehicleDataResponse(Hashtable<String, Object> hash) {
@@ -225,16 +225,20 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_EXTERNAL_TEMPERATURE);
     }
     /**
-     * Gets currently selected gear data
-     * @param prndl a VehicleDataResult related to the PRNDL status (automatic transmission gear)
+     * Sets the prndl.
+     *
+     * @param prndl See PRNDL. This parameter is deprecated and it is now covered in `gearStatus`
+     * @since SmartDeviceLink 7.0.0
      */
     @Deprecated
     public void setPrndl(VehicleDataResult prndl) {
         setParameters(KEY_PRNDL, prndl);
     }
     /**
-     * Gets currently selected gear data
-     * @return a VehicleDataResult related to the PRNDL status (automatic transmission gear)
+     * Gets the prndl.
+     *
+     * @return VehicleDataResult See PRNDL. This parameter is deprecated and it is now covered in `gearStatus`
+     * @since SmartDeviceLink 7.0.0
      */
     @Deprecated
     @SuppressWarnings("unchecked")
@@ -451,7 +455,6 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
     public VehicleDataResult getMyKey() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_MY_KEY);
     }
-
     /**
      * Sets Fuel Range
      * @param fuelRange a VehicleDataResult related to the fuel range
@@ -534,18 +537,21 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
     public VehicleDataResult getOEMCustomVehicleData(String vehicleDataName){
         return (VehicleDataResult) getObject(VehicleDataResult.class, vehicleDataName);
     }
-
     /**
-     * Sets a VehicleDataResult value for GearStatus.
-     * @param gearStatus a boolean value
+     * Sets the gearStatus.
+     *
+     * @param gearStatus See GearStatus
+     * @since SmartDeviceLink 7.0.0
      */
     public void setGearStatus(VehicleDataResult gearStatus){
         setParameters(KEY_GEAR_STATUS, gearStatus);
     }
 
     /**
-     * See GearStatus.
-     * @return a VehicleDataResult value.
+     * Gets the gearStatus.
+     *
+     * @return VehicleDataResult See GearStatus
+     * @since SmartDeviceLink 7.0.0
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getGearStatus(){
