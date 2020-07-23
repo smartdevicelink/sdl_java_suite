@@ -3837,7 +3837,7 @@ public class Validator{
             return ( item1 == null );
         }
 
-        if (!validateWindowStates(item1.getWindowState(), item2.getWindowState())) {
+        if (!validateWindowStates(item1.getState(), item2.getState())) {
             return false;
         }
         if (!validateGrid(item1.getLocation(), item2.getLocation())) {

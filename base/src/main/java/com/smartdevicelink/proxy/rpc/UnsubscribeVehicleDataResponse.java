@@ -536,19 +536,22 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
 
     /**
-     * Sets a status value for WindowStatus.
-     * @param status a WindowStatus value
+     * Sets the windowStatus.
+     *
+     * @param windowStatus See WindowStatus
+     * @since SmartDeviceLink 7.0.0
      */
-    public void setWindowStatus(VehicleDataResult status){
-        setParameters(KEY_WINDOW_STATUS, status);
+    public void setWindowStatus(VehicleDataResult windowStatus) {
+        setParameters(KEY_WINDOW_STATUS, windowStatus);
     }
 
     /**
-     * Gets a VehicleDataResult value for WindowStatus.
-     * @return a WindowStatus object value or null.
-     * If true, means the WindowStatus data has been subscribed.
+     * Gets the windowStatus.
+     *
+     * @return VehicleDataResult See WindowStatus
+     * @since SmartDeviceLink 7.0.0
      */
-    public VehicleDataResult getWindowStatus(){
+    public VehicleDataResult getWindowStatus() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_WINDOW_STATUS);
     }
 }

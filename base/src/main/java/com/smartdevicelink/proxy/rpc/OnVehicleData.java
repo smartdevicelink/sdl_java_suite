@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -49,16 +49,16 @@ import java.util.List;
 /**
  *Individual requested DID result and data.
  *
- *  
- * <p>Callback for the periodic and non periodic vehicle data read function.</p>
- * 
- * <p> <b>Note:</b></p>
- * 
- * Initially SDL sends SubscribeVehicleData for getting the periodic updates from HMI whenever each of subscribed data types changes. OnVehicleData is expected to bring such updated values to SDL
- * 
  *
- * 
- * 
+ * <p>Callback for the periodic and non periodic vehicle data read function.</p>
+ *
+ * <p> <b>Note:</b></p>
+ *
+ * Initially SDL sends SubscribeVehicleData for getting the periodic updates from HMI whenever each of subscribed data types changes. OnVehicleData is expected to bring such updated values to SDL
+ *
+ *
+ *
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -289,7 +289,7 @@ import java.util.List;
  *  </table>
  *
  * @since SmartDeviceLink 1.0
- * 
+ *
  * @see SubscribeVehicleData
  * @see UnsubscribeVehicleData
  *
@@ -604,20 +604,23 @@ public class OnVehicleData extends RPCNotification {
     }
 
     /**
-     * Sets an array of statuses for WindowStatus.
-     * @param status a WindowStatus value
+     * Sets the windowStatus.
+     *
+     * @param windowStatus See WindowStatus
+     * @since SmartDeviceLink 7.0.0
      */
-    public void setWindowStatus(List<WindowStatus> status){
-        setParameters(KEY_WINDOW_STATUS, status);
+    public void setWindowStatus(List<WindowStatus> windowStatus) {
+        setParameters(KEY_WINDOW_STATUS, windowStatus);
     }
 
     /**
-     * Gets a List<WindowStatus> value for WindowStatus.
-     * @return a list of WindowStatus object or null.
-     * If true, means the WindowStatus data has been subscribed.
+     * Gets the windowStatus.
+     *
+     * @return List<WindowStatus> See WindowStatus
+     * @since SmartDeviceLink 7.0.0
      */
     @SuppressWarnings("unchecked")
-    public List<WindowStatus> getWindowStatus(){
+    public List<WindowStatus> getWindowStatus() {
         return (List<WindowStatus>) getObject(WindowStatus.class, KEY_WINDOW_STATUS);
     }
 }

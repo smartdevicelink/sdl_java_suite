@@ -366,7 +366,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
 
 			// WINDOW_STATUS
 			windowStatusObj.put(WindowStatus.KEY_LOCATION, VehicleDataHelper.LOCATION_GRID);
-			windowStatusObj.put(WindowStatus.KEY_WINDOW_STATE, VehicleDataHelper.WINDOW_STATE);
+			windowStatusObj.put(WindowStatus.KEY_STATE, VehicleDataHelper.WINDOW_STATE);
 			windowStatusArrayObj.put(windowStatusObj);
 
 			reference.put(OnVehicleData.KEY_SPEED, VehicleDataHelper.SPEED);

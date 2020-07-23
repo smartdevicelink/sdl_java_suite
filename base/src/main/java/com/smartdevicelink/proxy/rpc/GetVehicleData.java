@@ -560,19 +560,22 @@ public class GetVehicleData extends RPCRequest {
     }
 
     /**
-     * Sets a status value for WindowStatus.
-     * @param status a Boolean value
+     * Sets the windowStatus.
+     *
+     * @param windowStatus See WindowStatus
+     * @since SmartDeviceLink 7.0.0
      */
-    public void setWindowStatus(Boolean status){
-        setParameters(KEY_WINDOW_STATUS, status);
+    public void setWindowStatus(Boolean windowStatus) {
+        setParameters(KEY_WINDOW_STATUS, windowStatus);
     }
 
     /**
-     * Gets a Boolean value for WindowStatus.
-     * @return a Boolean object value or null.
-     * If true, means the WindowStatus data has been subscribed.
+     * Gets the windowStatus.
+     *
+     * @return Boolean See WindowStatus
+     * @since SmartDeviceLink 7.0.0
      */
-    public Boolean getWindowStatus(){
+    public Boolean getWindowStatus() {
         return getBoolean(KEY_WINDOW_STATUS);
     }
 }

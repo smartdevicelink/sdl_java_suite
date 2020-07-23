@@ -18,12 +18,12 @@ public class WindowStatusTests extends TestCase {
     @Override
     protected void setUp() throws Exception {
         msg = new WindowStatus();
-        msg.setWindowState(TestValues.GENERAL_WINDOW_STATE);
+        msg.setState(TestValues.GENERAL_WINDOW_STATE);
         msg.setLocation(TestValues.GENERAL_LOCATION_GRID);
     }
 
     public void testRpcValues() {
-        WindowState state = msg.getWindowState();
+        WindowState state = msg.getState();
         Grid locationGrid = msg.getLocation();
 
         // Valid Tests
@@ -35,7 +35,7 @@ public class WindowStatusTests extends TestCase {
         JSONObject reference = new JSONObject();
 
         try {
-            reference.put(WindowStatus.KEY_WINDOW_STATE, TestValues.GENERAL_WINDOW_STATE);
+            reference.put(WindowStatus.KEY_STATE, TestValues.GENERAL_WINDOW_STATE);
             reference.put(WindowStatus.KEY_LOCATION, TestValues.GENERAL_LOCATION_GRID);
 
             JSONObject underTest = msg.serializeJSON();

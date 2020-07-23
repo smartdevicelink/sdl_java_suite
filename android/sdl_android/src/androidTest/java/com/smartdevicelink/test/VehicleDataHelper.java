@@ -331,7 +331,7 @@ public class VehicleDataHelper{
 
 		//WINDOW_STATUS and WINDOW_STATUS_LIST set up
 		WINDOW_STATUS.setLocation(LOCATION_GRID);
-		WINDOW_STATUS.setWindowState(WINDOW_STATE);
+		WINDOW_STATUS.setState(WINDOW_STATE);
 		WINDOW_STATUS_LIST.add(WINDOW_STATUS);
 		// FUEL_RANGE json array set up
 		try {
