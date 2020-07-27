@@ -1,19 +1,19 @@
 package com.smartdevicelink.managers.video.resolution;
 
-public class SupportedStreamingRange {
+public class VideoStreamingRange {
     private Resolution minSupportedResolution;
     private Resolution maxSupportedResolution;
     private Double maxScreenDiagonal;
     private AspectRatio aspectRatio;
 
-    public SupportedStreamingRange(Resolution minSupportedResolution, Resolution maxSupportedResolution, Double maxScreenDiagonal, AspectRatio aspectRatio) {
+    public VideoStreamingRange(Resolution minSupportedResolution, Resolution maxSupportedResolution, Double maxScreenDiagonal, AspectRatio aspectRatio) {
         this.minSupportedResolution = minSupportedResolution;
         this.maxSupportedResolution = maxSupportedResolution;
         this.maxScreenDiagonal = maxScreenDiagonal;
         this.aspectRatio = aspectRatio;
     }
 
-    private SupportedStreamingRange(){}
+    private VideoStreamingRange(){}
 
     public Resolution getMinSupportedResolution() {
         return minSupportedResolution;
@@ -32,7 +32,7 @@ public class SupportedStreamingRange {
     }
 
     public static class Builder {
-        private SupportedStreamingRange range = new SupportedStreamingRange();
+        private VideoStreamingRange range = new VideoStreamingRange();
 
         public Builder setMinSupportedResolution(Resolution minSupportedResolution) {
             range.minSupportedResolution = minSupportedResolution;
@@ -54,7 +54,7 @@ public class SupportedStreamingRange {
             return this;
         }
 
-        public SupportedStreamingRange build(){
+        public VideoStreamingRange build(){
             return range;
         }
     }

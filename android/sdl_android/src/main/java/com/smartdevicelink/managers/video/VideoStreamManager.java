@@ -49,7 +49,7 @@ import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.StreamingStateMachine;
 import com.smartdevicelink.managers.video.resolution.AspectRatio;
 import com.smartdevicelink.managers.video.resolution.Resolution;
-import com.smartdevicelink.managers.video.resolution.SupportedStreamingRange;
+import com.smartdevicelink.managers.video.resolution.VideoStreamingRange;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCNotification;
@@ -102,7 +102,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	private IVideoStreamListener streamListener;
 	private boolean isTransportAvailable = false;
 	private Integer majorProtocolVersion;
-	private SupportedStreamingRange streamingRange;
+	private VideoStreamingRange streamingRange;
 	private boolean hasStarted;
 	private String vehicleMake = null;
 	private boolean isEncrypted = false;
@@ -220,11 +220,11 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			@Override
 			public void onCapabilityRetrieved(Object capability) {
 				VideoStreamingParameters params = new VideoStreamingParameters();
-				VideoStreamManager.this.parameters = params;
 
 				VideoStreamingCapability castedCapability = ((VideoStreamingCapability)capability);
-				castedCapability.setAdditionalVideoStreamingCapabilities(getMockedAdditionalCapabilities());
+				// castedCapability.setAdditionalVideoStreamingCapabilities(getMockedAdditionalCapabilities());
 				params.update(castedCapability, vehicleMake);	//Streaming parameters are ready time to stream
+				VideoStreamManager.this.parameters = params;
 
 				VideoStreamManager.this.withPendingRestart = true;
 
@@ -271,7 +271,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 					VideoStreamingCapability castedCapability = ((VideoStreamingCapability)capability);
 					params.update(castedCapability, vehicleMake);	//Streaming parameters are ready time to stream
 					VideoStreamManager.this.parameters = params;
-					castedCapability.setAdditionalVideoStreamingCapabilities(getMockedAdditionalCapabilities());
+					// castedCapability.setAdditionalVideoStreamingCapabilities(getMockedAdditionalCapabilities());
 					checkState();
 				}
 
@@ -306,7 +306,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 * @param encrypted a flag of if the stream should be encrypted. Only set if you have a supplied encryption library that the module can understand.
 	 * @param streamingRange constraints for vehicle display : aspect ratio, min/max resolutions, max diagonal size.
 	 */
-	public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted, SupportedStreamingRange streamingRange) {
+	public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted, VideoStreamingRange streamingRange) {
 		configureGlobalParameters(context, remoteDisplayClass, isEncrypted, streamingRange);
 		if(majorProtocolVersion >= 5 && !internalInterface.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
 			stateMachine.transitionToState(StreamingStateMachine.ERROR);
@@ -342,7 +342,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		this.majorProtocolVersion = internalInterface.getProtocolVersion().getMajor();
 	}
 
-	private void configureGlobalParameters(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, boolean encrypted, SupportedStreamingRange streamingRange) {
+	private void configureGlobalParameters(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, boolean encrypted, VideoStreamingRange streamingRange) {
 		this.context = new WeakReference<>(context);
 		this.remoteDisplayClass = remoteDisplayClass;
 		this.isEncrypted = encrypted;
@@ -359,10 +359,11 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 						VideoStreamingParameters params = new VideoStreamingParameters();
 						VideoStreamingCapability castedCapability = ((VideoStreamingCapability)capability);
 						// Mocks data here
-						castedCapability.setAdditionalVideoStreamingCapabilities(getMockedAdditionalCapabilities());
+						// castedCapability.setAdditionalVideoStreamingCapabilities(getMockedAdditionalCapabilities());
 						params.update(castedCapability, vehicleMake);	//Streaming parameters are ready time to stream
 
 						if (streamingRange != null) {
+							// filtering
 							castedCapability.setAdditionalVideoStreamingCapabilities(
 									getSupportedCapabilities(
 											streamingRange.getMinSupportedResolution(),
@@ -744,8 +745,15 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		List<VideoStreamingCapability> validCapabilities = new ArrayList<>();
 		List<VideoStreamingCapability> allCapabilities = parameters.getAdditionalCapabilities();
 
+		VideoStreamingCapability preferredCapability = new VideoStreamingCapability();
+		preferredCapability.setDiagonalScreenSize(parameters.getPreferredDiagonal());
+		preferredCapability.setPreferredResolution(new ImageResolution(
+				parameters.getResolution().getResolutionWidth(),
+				parameters.getResolution().getResolutionHeight())
+		);
+
 		// get the first one - the Desired resolution to guarantee streaming will start
-		validCapabilities.add(allCapabilities.get(0));
+		validCapabilities.add(preferredCapability);
 
 		for (VideoStreamingCapability capability : allCapabilities) {
 			int resolutionHeight = capability.getPreferredResolution().getResolutionHeight();
