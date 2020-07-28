@@ -56,9 +56,9 @@ public enum VehicleDataType {
      * Notifies FUELLEVEL_STATEData may be subscribed
      */
     VEHICLEDATA_FUELLEVEL_STATE,
-    /**
-     * Notifies FUELCONSUMPTIONData may be subscribed
-     */
+/**
+ * Notifies FUELCONSUMPTIONData may be subscribed
+ */
     VEHICLEDATA_FUELCONSUMPTION,
     /**
      * Notifies EXTERNTEMPData may be subscribed
@@ -173,16 +173,16 @@ public enum VehicleDataType {
      */
     VEHICLEDATA_HANDSOFFSTEERING;
 
-    /**
+     /**
      * Convert String to VehicleDataType
-     *
      * @param value String
      * @return VehicleDataType
      */
+
     public static VehicleDataType valueForString(String value) {
-        try {
+        try{
             return valueOf(value);
-        } catch (Exception e) {
+        }catch(Exception e){
             return null;
         }
     }

@@ -76,32 +76,32 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
     public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
 
-    /**
-     * Constructs a new UnsubscribeVehicleDataResponse object
-     */
-    public UnsubscribeVehicleDataResponse() {
-        super(FunctionID.UNSUBSCRIBE_VEHICLE_DATA.toString());
-    }
+	/**
+	 * Constructs a new UnsubscribeVehicleDataResponse object
+	 */
+	public UnsubscribeVehicleDataResponse() {
+		super(FunctionID.UNSUBSCRIBE_VEHICLE_DATA.toString());
+	}
 
-    /**
-     * Constructs a new UnsubscribeVehicleDataResponse object
-     * @param success whether the request is successfully processed
-     * @param resultCode whether the request is successfully processed
-     */
-    public UnsubscribeVehicleDataResponse(@NonNull Boolean success, @NonNull Result resultCode) {
-        this();
-        setSuccess(success);
-        setResultCode(resultCode);
-    }
+	/**
+	 * Constructs a new UnsubscribeVehicleDataResponse object
+	 * @param success whether the request is successfully processed
+	 * @param resultCode whether the request is successfully processed
+	 */
+	public UnsubscribeVehicleDataResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+		this();
+		setSuccess(success);
+		setResultCode(resultCode);
+	}
 
-    /**
-     * Constructs a new UnsubscribeVehicleDataResponse object indicated by the Hashtable
-     * parameter
-     * <p></p>
-     *
-     * @param hash The Hashtable to use to build this RPC
-     *
-     */
+	/**
+	 * Constructs a new UnsubscribeVehicleDataResponse object indicated by the Hashtable
+	 * parameter
+	 * <p></p>
+	 *
+	 * @param hash The Hashtable to use to build this RPC
+	 *
+	 */
     public UnsubscribeVehicleDataResponse(Hashtable<String, Object> hash) {
         super(hash);
     }

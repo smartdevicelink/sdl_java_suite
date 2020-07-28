@@ -302,7 +302,7 @@ public class GetVehicleData extends RPCRequest {
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
     public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
 
-    /**
+	/**
 	 * Constructs a new GetVehicleData object
 	 */
 
@@ -466,6 +466,7 @@ public class GetVehicleData extends RPCRequest {
         return getBoolean(KEY_E_CALL_INFO);
     }
 
+
     public void setAirbagStatus(Boolean airbagStatus) {
         setParameters(KEY_AIRBAG_STATUS, airbagStatus);
     }
@@ -494,7 +495,7 @@ public class GetVehicleData extends RPCRequest {
     /**
      * Sets a boolean value. If true, gets fuelRange data
      * @param fuelRange
-     *            a boolean value
+      *            a boolean value
      */
     public void setFuelRange(Boolean fuelRange) {
         setParameters(KEY_FUEL_RANGE, fuelRange);
