@@ -302,7 +302,7 @@ public class GetVehicleData extends RPCRequest {
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
     public static final String KEY_STABILITY_CONTROLS_STATUS = "stabilityControlsStatus";
 
-    /**
+	/**
 	 * Constructs a new GetVehicleData object
 	 */
 
@@ -322,69 +322,53 @@ public class GetVehicleData extends RPCRequest {
     public GetVehicleData(Hashtable<String, Object> hash) {
         super(hash);
     }
-
     public void setGps(Boolean gps) {
         setParameters(KEY_GPS, gps);
     }
-
     public Boolean getGps() {
         return getBoolean(KEY_GPS);
     }
-
     public void setSpeed(Boolean speed) {
         setParameters(KEY_SPEED, speed);
     }
-
     public Boolean getSpeed() {
         return getBoolean(KEY_SPEED);
     }
-
     public void setRpm(Boolean rpm) {
         setParameters(KEY_RPM, rpm);
     }
-
     public Boolean getRpm() {
         return getBoolean(KEY_RPM);
     }
-
     public void setFuelLevel(Boolean fuelLevel) {
         setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
-
     public Boolean getFuelLevel() {
         return getBoolean(KEY_FUEL_LEVEL);
     }
-
     @Deprecated
     public void setFuelLevel_State(Boolean fuelLevel_State) {
         setFuelLevelState(fuelLevel_State);
     }
-
     @Deprecated
     public Boolean getFuelLevel_State() {
         return getFuelLevelState();
     }
-
     public void setFuelLevelState(Boolean fuelLevelState) {
         setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
     }
-
     public Boolean getFuelLevelState() {
         return getBoolean(KEY_FUEL_LEVEL_STATE);
     }
-
     public void setInstantFuelConsumption(Boolean instantFuelConsumption) {
         setParameters(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
     }
-
     public Boolean getInstantFuelConsumption() {
         return getBoolean(KEY_INSTANT_FUEL_CONSUMPTION);
     }
-
     public void setExternalTemperature(Boolean externalTemperature) {
         setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
     }
-
     public Boolean getExternalTemperature() {
         return getBoolean(KEY_EXTERNAL_TEMPERATURE);
     }
@@ -392,7 +376,6 @@ public class GetVehicleData extends RPCRequest {
     public void setVin(Boolean vin) {
         setParameters(KEY_VIN, vin);
     }
-
     public Boolean getVin() {
         return getBoolean(KEY_VIN);
     }
@@ -400,95 +383,72 @@ public class GetVehicleData extends RPCRequest {
     public void setPrndl(Boolean prndl) {
         setParameters(KEY_PRNDL, prndl);
     }
-
     public Boolean getPrndl() {
         return getBoolean(KEY_PRNDL);
     }
-
     public void setTirePressure(Boolean tirePressure) {
         setParameters(KEY_TIRE_PRESSURE, tirePressure);
     }
-
     public Boolean getTirePressure() {
         return getBoolean(KEY_TIRE_PRESSURE);
     }
-
     public void setOdometer(Boolean odometer) {
         setParameters(KEY_ODOMETER, odometer);
     }
-
     public Boolean getOdometer() {
         return getBoolean(KEY_ODOMETER);
     }
-
     public void setBeltStatus(Boolean beltStatus) {
         setParameters(KEY_BELT_STATUS, beltStatus);
     }
-
     public Boolean getBeltStatus() {
         return getBoolean(KEY_BELT_STATUS);
     }
-
     public void setBodyInformation(Boolean bodyInformation) {
         setParameters(KEY_BODY_INFORMATION, bodyInformation);
     }
-
     public Boolean getBodyInformation() {
         return getBoolean(KEY_BODY_INFORMATION);
     }
-
     public void setDeviceStatus(Boolean deviceStatus) {
         setParameters(KEY_DEVICE_STATUS, deviceStatus);
     }
-
     public Boolean getDeviceStatus() {
         return getBoolean(KEY_DEVICE_STATUS);
     }
-
     public void setDriverBraking(Boolean driverBraking) {
         setParameters(KEY_DRIVER_BRAKING, driverBraking);
     }
-
     public Boolean getDriverBraking() {
         return getBoolean(KEY_DRIVER_BRAKING);
     }
-
     public void setWiperStatus(Boolean wiperStatus) {
         setParameters(KEY_WIPER_STATUS, wiperStatus);
     }
-
     public Boolean getWiperStatus() {
         return getBoolean(KEY_WIPER_STATUS);
     }
-
     public void setHeadLampStatus(Boolean headLampStatus) {
         setParameters(KEY_HEAD_LAMP_STATUS, headLampStatus);
     }
-
     public Boolean getHeadLampStatus() {
         return getBoolean(KEY_HEAD_LAMP_STATUS);
     }
-
     public void setEngineTorque(Boolean engineTorque) {
         setParameters(KEY_ENGINE_TORQUE, engineTorque);
     }
-
     public Boolean getEngineTorque() {
         return getBoolean(KEY_ENGINE_TORQUE);
     }
-
     public void setEngineOilLife(Boolean engineOilLife) {
         setParameters(KEY_ENGINE_OIL_LIFE, engineOilLife);
     }
-
     public Boolean getEngineOilLife() {
         return getBoolean(KEY_ENGINE_OIL_LIFE);
     }
-
     public void setAccPedalPosition(Boolean accPedalPosition) {
         setParameters(KEY_ACC_PEDAL_POSITION, accPedalPosition);
     }
-
     public Boolean getAccPedalPosition() {
         return getBoolean(KEY_ACC_PEDAL_POSITION);
     }
@@ -496,47 +456,38 @@ public class GetVehicleData extends RPCRequest {
     public void setSteeringWheelAngle(Boolean steeringWheelAngle) {
         setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
     }
-
     public Boolean getSteeringWheelAngle() {
         return getBoolean(KEY_STEERING_WHEEL_ANGLE);
     }
-
     public void setECallInfo(Boolean eCallInfo) {
         setParameters(KEY_E_CALL_INFO, eCallInfo);
     }
-
     public Boolean getECallInfo() {
         return getBoolean(KEY_E_CALL_INFO);
     }
 
+
     public void setAirbagStatus(Boolean airbagStatus) {
         setParameters(KEY_AIRBAG_STATUS, airbagStatus);
     }
-
     public Boolean getAirbagStatus() {
         return getBoolean(KEY_AIRBAG_STATUS);
     }
-
     public void setEmergencyEvent(Boolean emergencyEvent) {
         setParameters(KEY_EMERGENCY_EVENT, emergencyEvent);
     }
-
     public Boolean getEmergencyEvent() {
         return getBoolean(KEY_EMERGENCY_EVENT);
     }
-
     public void setClusterModeStatus(Boolean clusterModeStatus) {
         setParameters(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
     }
-
     public Boolean getClusterModeStatus() {
         return getBoolean(KEY_CLUSTER_MODE_STATUS);
     }
-
     public void setMyKey(Boolean myKey) {
         setParameters(KEY_MY_KEY, myKey);
     }
-
     public Boolean getMyKey() {
         return getBoolean(KEY_MY_KEY);
     }
@@ -544,7 +495,7 @@ public class GetVehicleData extends RPCRequest {
     /**
      * Sets a boolean value. If true, gets fuelRange data
      * @param fuelRange
-     *            a boolean value
+      *            a boolean value
      */
     public void setFuelRange(Boolean fuelRange) {
         setParameters(KEY_FUEL_RANGE, fuelRange);
@@ -564,23 +515,19 @@ public class GetVehicleData extends RPCRequest {
      * Sets a boolean value. If true, subscribes turnSignal data
      * @param turnSignal a boolean value
      */
-    public void setTurnSignal(Boolean turnSignal) {
-        setParameters(KEY_TURN_SIGNAL, turnSignal);
-    }
+    public void setTurnSignal(Boolean turnSignal) { setParameters(KEY_TURN_SIGNAL, turnSignal); }
 
     /**
      * Gets a boolean value. If true, means the turnSignal data has been subscribed.
      * @return a Boolean value.
      */
-    public Boolean getTurnSignal() {
-        return getBoolean(KEY_TURN_SIGNAL);
-    }
+    public Boolean getTurnSignal() { return getBoolean(KEY_TURN_SIGNAL); }
 
     /**
      * Sets a boolean value. If true, subscribes electronicParkBrakeStatus data
      * @param electronicParkBrakeStatus a boolean value
      */
-    public void setElectronicParkBrakeStatus(Boolean electronicParkBrakeStatus) {
+    public void setElectronicParkBrakeStatus(Boolean electronicParkBrakeStatus){
         setParameters(KEY_ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
     }
 
@@ -588,7 +535,7 @@ public class GetVehicleData extends RPCRequest {
      * Gets a boolean value. If true, means the electronicParkBrakeStatus data has been subscribed.
      * @return a Boolean value.
      */
-    public Boolean getElectronicParkBrakeStatus() {
+    public Boolean getElectronicParkBrakeStatus(){
         return getBoolean(KEY_ELECTRONIC_PARK_BRAKE_STATUS);
     }
 
@@ -596,7 +543,7 @@ public class GetVehicleData extends RPCRequest {
      * Sets a boolean value. If true, gets the cloudAppVehicleID data
      * @param cloudAppVehicleID a boolean value
      */
-    public void setCloudAppVehicleID(boolean cloudAppVehicleID) {
+    public void setCloudAppVehicleID(boolean cloudAppVehicleID){
         setParameters(KEY_CLOUD_APP_VEHICLE_ID, cloudAppVehicleID);
     }
 
@@ -604,7 +551,7 @@ public class GetVehicleData extends RPCRequest {
      * Gets a boolean value. If true, means the cloudAppVehicleDataID data has been set to retrieve.
      * @return a Boolean value.
      */
-    public Boolean getCloudAppVehicleID() {
+    public Boolean getCloudAppVehicleID(){
         return getBoolean(KEY_CLOUD_APP_VEHICLE_ID);
     }
 
@@ -613,7 +560,7 @@ public class GetVehicleData extends RPCRequest {
      * @param vehicleDataName a String value
      * @param vehicleDataState a boolean value
      */
-    public void setOEMCustomVehicleData(String vehicleDataName, Boolean vehicleDataState) {
+    public void setOEMCustomVehicleData(String vehicleDataName, Boolean vehicleDataState){
         setParameters(vehicleDataName, vehicleDataState);
     }
 
@@ -621,7 +568,7 @@ public class GetVehicleData extends RPCRequest {
      * Gets a boolean value for OEM Custom VehicleData.
      * @return a Boolean value.
      */
-    public Boolean getOEMCustomVehicleData(String vehicleDataName) {
+    public Boolean getOEMCustomVehicleData(String vehicleDataName){
         return getBoolean(vehicleDataName);
     }
 

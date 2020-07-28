@@ -56,9 +56,9 @@ public enum VehicleDataType {
      * Notifies FUELLEVEL_STATEData may be subscribed
      */
     VEHICLEDATA_FUELLEVEL_STATE,
-    /**
-     * Notifies FUELCONSUMPTIONData may be subscribed
-     */
+/**
+ * Notifies FUELCONSUMPTIONData may be subscribed
+ */
     VEHICLEDATA_FUELCONSUMPTION,
     /**
      * Notifies EXTERNTEMPData may be subscribed

@@ -262,151 +262,147 @@ import java.util.Hashtable;
  *  </tr>
  * </table>
  *
- * @since SmartDeviceLink 2.0.0
+ * @since SmartDeviceLink 2.0
+ * @see SubscribeVehicleData
+ * @see GetVehicleData
  */
 public class UnsubscribeVehicleData extends RPCRequest {
-    public static final String KEY_SPEED = "speed";
-    public static final String KEY_RPM = "rpm";
-    public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
-    public static final String KEY_FUEL_LEVEL = "fuelLevel";
-    public static final String KEY_PRNDL = "prndl";
-    public static final String KEY_TIRE_PRESSURE = "tirePressure";
-    public static final String KEY_ENGINE_TORQUE = "engineTorque";
-    public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
-    public static final String KEY_ODOMETER = "odometer";
-    public static final String KEY_GPS = "gps";
-    public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
-    public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
-    public static final String KEY_BELT_STATUS = "beltStatus";
-    public static final String KEY_BODY_INFORMATION = "bodyInformation";
-    public static final String KEY_DEVICE_STATUS = "deviceStatus";
-    public static final String KEY_DRIVER_BRAKING = "driverBraking";
-    public static final String KEY_WIPER_STATUS = "wiperStatus";
-    public static final String KEY_HEAD_LAMP_STATUS = "headLampStatus";
-    public static final String KEY_ACC_PEDAL_POSITION = "accPedalPosition";
-    public static final String KEY_STEERING_WHEEL_ANGLE = "steeringWheelAngle";
-    public static final String KEY_E_CALL_INFO = "eCallInfo";
-    public static final String KEY_AIRBAG_STATUS = "airbagStatus";
-    public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
-    public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
-    public static final String KEY_MY_KEY = "myKey";
-    public static final String KEY_FUEL_RANGE = "fuelRange";
-    public static final String KEY_TURN_SIGNAL = "turnSignal";
-    public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
-    public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
+	public static final String KEY_SPEED = "speed";
+	public static final String KEY_RPM = "rpm";
+	public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
+	public static final String KEY_FUEL_LEVEL = "fuelLevel";
+	public static final String KEY_PRNDL = "prndl";
+	public static final String KEY_TIRE_PRESSURE = "tirePressure";
+	public static final String KEY_ENGINE_TORQUE = "engineTorque";
+	public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
+	public static final String KEY_ODOMETER = "odometer";
+	public static final String KEY_GPS = "gps";
+	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
+	public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
+	public static final String KEY_BELT_STATUS = "beltStatus";
+	public static final String KEY_BODY_INFORMATION = "bodyInformation";
+	public static final String KEY_DEVICE_STATUS = "deviceStatus";
+	public static final String KEY_DRIVER_BRAKING = "driverBraking";
+	public static final String KEY_WIPER_STATUS = "wiperStatus";
+	public static final String KEY_HEAD_LAMP_STATUS = "headLampStatus";
+	public static final String KEY_ACC_PEDAL_POSITION = "accPedalPosition";
+	public static final String KEY_STEERING_WHEEL_ANGLE = "steeringWheelAngle";
+	public static final String KEY_E_CALL_INFO = "eCallInfo";
+	public static final String KEY_AIRBAG_STATUS = "airbagStatus";
+	public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
+	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
+	public static final String KEY_MY_KEY = "myKey";
+	public static final String KEY_FUEL_RANGE = "fuelRange";
+	public static final String KEY_TURN_SIGNAL = "turnSignal";
+	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
+	public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
     public static final String KEY_STABILITY_CONTROLS_STATUS = "stabilityControlsStatus";
 
-    /**
-     * Constructs a new UnsubscribeVehicleData object
-     */
+	/**
+	 * Constructs a new UnsubscribeVehicleData object
+	 */
     public UnsubscribeVehicleData() {
         super(FunctionID.UNSUBSCRIBE_VEHICLE_DATA.toString());
     }
 
-    /**
-     * Constructs a new UnsubscribeVehicleData object indicated by the Hashtable
-     * parameter
-     * <p></p>
-     *
-     * @param hash The Hashtable to use
-     */
+	/**
+	 * Constructs a new UnsubscribeVehicleData object indicated by the Hashtable
+	 * parameter
+	 * <p></p>
+	 *
+	 * @param hash
+	 *            The Hashtable to use
+	 */
     public UnsubscribeVehicleData(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-    /**
-     * Gets a boolean value. If true, means the Gps data has been unsubscribed.
-     *
-     * @return Boolean -a Boolean value. If true, means the Gps data has been
-     * unsubscribed.
-     */
+	/**
+	 * Sets a boolean value. If true, unsubscribes from Gps data
+	 *
+	 * @param gps
+	 *            a boolean value
+	 */
+    public void setGps(Boolean gps) {
+		setParameters(KEY_GPS, gps);
+    }
+
+	/**
+	 * Gets a boolean value. If true, means the Gps data has been unsubscribed.
+	 *
+	 * @return Boolean -a Boolean value. If true, means the Gps data has been
+	 *         unsubscribed.
+	 */
     public Boolean getGps() {
         return getBoolean(KEY_GPS);
     }
 
-    /**
-     * Sets a boolean value. If true, unsubscribes from Gps data
-     *
-     * @param gps a boolean value
-     */
-    public void setGps(Boolean gps) {
-        setParameters(KEY_GPS, gps);
+	/**
+	 * Sets a boolean value. If true, unsubscribes from speed data
+	 *
+	 * @param speed
+	 *            a boolean value
+	 */
+    public void setSpeed(Boolean speed) {
+		setParameters(KEY_SPEED, speed);
     }
 
-    /**
-     * Gets a boolean value. If true, means the Speed data has been unsubscribed.
-     *
-     * @return Boolean -a Boolean value. If true, means the Speed data has been
-     * unsubscribed.
-     */
+	/**
+	 * Gets a boolean value. If true, means the Speed data has been unsubscribed.
+	 *
+	 * @return Boolean -a Boolean value. If true, means the Speed data has been
+	 *         unsubscribed.
+	 */
     public Boolean getSpeed() {
         return getBoolean(KEY_SPEED);
     }
 
-    /**
-     * Sets a boolean value. If true, unsubscribes from speed data
-     *
-     * @param speed a boolean value
-     */
-    public void setSpeed(Boolean speed) {
-        setParameters(KEY_SPEED, speed);
+	/**
+	 * Sets a boolean value. If true, unsubscribe data
+	 *
+	 * @param rpm
+	 *            a boolean value
+	 */
+    public void setRpm(Boolean rpm) {
+		setParameters(KEY_RPM, rpm);
     }
 
-    /**
-     * Gets a boolean value. If true, means the rpm data has been unsubscribed.
-     *
-     * @return Boolean -a Boolean value. If true, means the rpm data has been
-     * unsubscribed.
-     */
+	/**
+	 * Gets a boolean value. If true, means the rpm data has been unsubscribed.
+	 *
+	 * @return Boolean -a Boolean value. If true, means the rpm data has been
+	 *         unsubscribed.
+	 */
     public Boolean getRpm() {
         return getBoolean(KEY_RPM);
     }
 
-    /**
-     * Sets a boolean value. If true, unsubscribe data
-     *
-     * @param rpm a boolean value
-     */
-    public void setRpm(Boolean rpm) {
-        setParameters(KEY_RPM, rpm);
+	/**
+	 * Sets a boolean value. If true, unsubscribes from FuelLevel data
+	 *
+	 * @param fuelLevel
+	 *            a boolean value
+	 */
+    public void setFuelLevel(Boolean fuelLevel) {
+		setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
 
-    /**
-     * Gets a boolean value. If true, means the FuelLevel data has been
-     * unsubscribed.
-     *
-     * @return Boolean -a Boolean value. If true, means the FuelLevel data has
-     * been unsubscribed.
-     */
+	/**
+	 * Gets a boolean value. If true, means the FuelLevel data has been
+	 * unsubscribed.
+	 *
+	 * @return Boolean -a Boolean value. If true, means the FuelLevel data has
+	 *         been unsubscribed.
+	 */
     public Boolean getFuelLevel() {
         return getBoolean(KEY_FUEL_LEVEL);
     }
 
     /**
-     * Sets a boolean value. If true, unsubscribes from FuelLevel data
-     *
-     * @param fuelLevel a boolean value
-     */
-    public void setFuelLevel(Boolean fuelLevel) {
-        setParameters(KEY_FUEL_LEVEL, fuelLevel);
-    }
-
-    /**
-     * Gets a boolean value. If true, means the fuelLevel_State data has been
-     * unsubscribed.
-     *
-     * @return Boolean -a Boolean value. If true, means the fuelLevel_State data
-     * has been unsubscribed.
-     */
-    @Deprecated
-    public Boolean getFuelLevel_State() {
-        return getFuelLevelState();
-    }
-
-    /**
      * Sets a boolean value. If true, unsubscribes from fuelLevel_State data
      *
-     * @param fuelLevel_State a boolean value
+     * @param fuelLevel_State
+     *            a boolean value
      */
     @Deprecated
     public void setFuelLevel_State(Boolean fuelLevel_State) {
@@ -417,441 +413,459 @@ public class UnsubscribeVehicleData extends RPCRequest {
      * Gets a boolean value. If true, means the fuelLevel_State data has been
      * unsubscribed.
      *
-     * @return Boolean -a Boolean value. If true, means the fuelLevelState data
-     * has been unsubscribed.
+     * @return Boolean -a Boolean value. If true, means the fuelLevel_State data
+     *         has been unsubscribed.
      */
-    public Boolean getFuelLevelState() {
-        return getBoolean(KEY_FUEL_LEVEL_STATE);
+    @Deprecated
+    public Boolean getFuelLevel_State() {
+        return getFuelLevelState();
     }
 
     /**
      * Sets a boolean value. If true, unsubscribes from fuelLevelState data
      *
-     * @param fuelLevelState a boolean value
+     * @param fuelLevelState
+     *            a boolean value
      */
     public void setFuelLevelState(Boolean fuelLevelState) {
-        setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
+		setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
     }
 
     /**
-     * Gets a boolean value. If true, means the getInstantFuelConsumption data has been
+     * Gets a boolean value. If true, means the fuelLevel_State data has been
      * unsubscribed.
      *
-     * @return Boolean -a Boolean value. If true, means the getInstantFuelConsumption data
-     * has been unsubscribed.
+     * @return Boolean -a Boolean value. If true, means the fuelLevelState data
+     *         has been unsubscribed.
      */
+    public Boolean getFuelLevelState() {
+        return getBoolean(KEY_FUEL_LEVEL_STATE);
+    }
+
+	/**
+	 * Sets a boolean value. If true, unsubscribes from instantFuelConsumption data
+	 *
+	 * @param instantFuelConsumption
+	 *            a boolean value
+	 */
+    public void setInstantFuelConsumption(Boolean instantFuelConsumption) {
+		setParameters(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
+    }
+
+	/**
+	 * Gets a boolean value. If true, means the getInstantFuelConsumption data has been
+	 * unsubscribed.
+	 *
+	 * @return Boolean -a Boolean value. If true, means the getInstantFuelConsumption data
+	 *         has been unsubscribed.
+	 */
     public Boolean getInstantFuelConsumption() {
         return getBoolean(KEY_INSTANT_FUEL_CONSUMPTION);
     }
 
-    /**
-     * Sets a boolean value. If true, unsubscribes from instantFuelConsumption data
-     *
-     * @param instantFuelConsumption a boolean value
-     */
-    public void setInstantFuelConsumption(Boolean instantFuelConsumption) {
-        setParameters(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
+	/**
+	 * Sets a boolean value. If true, unsubscribes from externalTemperature data
+	 *
+	 * @param externalTemperature
+	 *            a boolean value
+	 */
+    public void setExternalTemperature(Boolean externalTemperature) {
+		setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
     }
 
-    /**
-     * Gets a boolean value. If true, means the externalTemperature data has been
-     * unsubscribed.
-     *
-     * @return Boolean -a Boolean value. If true, means the externalTemperature data
-     * has been unsubscribed.
-     */
+	/**
+	 * Gets a boolean value. If true, means the externalTemperature data has been
+	 * unsubscribed.
+	 *
+	 * @return Boolean -a Boolean value. If true, means the externalTemperature data
+	 *         has been unsubscribed.
+	 */
     public Boolean getExternalTemperature() {
         return getBoolean(KEY_EXTERNAL_TEMPERATURE);
     }
 
-    /**
-     * Sets a boolean value. If true, unsubscribes from externalTemperature data
-     *
-     * @param externalTemperature a boolean value
-     */
-    public void setExternalTemperature(Boolean externalTemperature) {
-        setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
+	/**
+	 * Sets a boolean value. If true, unsubscribes Currently selected gear data
+	 *
+	 * @param prndl
+	 *            a boolean value
+	 */
+    public void setPrndl(Boolean prndl) {
+		setParameters(KEY_PRNDL, prndl);
     }
 
-    /**
-     * Gets a boolean value. If true, means the Currently selected gear data has been
-     * unsubscribed.
-     *
-     * @return Boolean -a Boolean value. If true, means the Currently selected gear data
-     * has been unsubscribed.
-     */
+	/**
+	 * Gets a boolean value. If true, means the Currently selected gear data has been
+	 * unsubscribed.
+	 *
+	 * @return Boolean -a Boolean value. If true, means the Currently selected gear data
+	 *         has been unsubscribed.
+	 */
     public Boolean getPrndl() {
         return getBoolean(KEY_PRNDL);
     }
 
-    /**
-     * Sets a boolean value. If true, unsubscribes Currently selected gear data
-     *
-     * @param prndl a boolean value
-     */
-    public void setPrndl(Boolean prndl) {
-        setParameters(KEY_PRNDL, prndl);
+	/**
+	 * Sets a boolean value. If true, unsubscribes from tire pressure status data
+	 *
+	 * @param tirePressure
+	 *            a boolean value
+	 */
+    public void setTirePressure(Boolean tirePressure) {
+		setParameters(KEY_TIRE_PRESSURE, tirePressure);
     }
 
-    /**
-     * Gets a boolean value. If true, means the tire pressure status data has been
-     * unsubscribed.
-     *
-     * @return Boolean -a Boolean value. If true, means the tire pressure status data
-     * has been unsubscribed.
-     */
+	/**
+	 * Gets a boolean value. If true, means the tire pressure status data has been
+	 * unsubscribed.
+	 *
+	 * @return Boolean -a Boolean value. If true, means the tire pressure status data
+	 *         has been unsubscribed.
+	 */
     public Boolean getTirePressure() {
         return getBoolean(KEY_TIRE_PRESSURE);
     }
 
-    /**
-     * Sets a boolean value. If true, unsubscribes from tire pressure status data
-     *
-     * @param tirePressure a boolean value
-     */
-    public void setTirePressure(Boolean tirePressure) {
-        setParameters(KEY_TIRE_PRESSURE, tirePressure);
+	/**
+	 * Sets a boolean value. If true, unsubscribes from odometer data
+	 *
+	 * @param odometer
+	 *            a boolean value
+	 */
+    public void setOdometer(Boolean odometer) {
+		setParameters(KEY_ODOMETER, odometer);
     }
 
-    /**
-     * Gets a boolean value. If true, means the odometer data has been
-     * unsubscribed.
-     *
-     * @return Boolean -a Boolean value. If true, means the odometer data
-     * has been unsubscribed.
-     */
+	/**
+	 * Gets a boolean value. If true, means the odometer data has been
+	 * unsubscribed.
+	 *
+	 * @return Boolean -a Boolean value. If true, means the odometer data
+	 *         has been unsubscribed.
+	 */
     public Boolean getOdometer() {
         return getBoolean(KEY_ODOMETER);
     }
 
-    /**
-     * Sets a boolean value. If true, unsubscribes from odometer data
-     *
-     * @param odometer a boolean value
-     */
-    public void setOdometer(Boolean odometer) {
-        setParameters(KEY_ODOMETER, odometer);
+	/**
+	 * Sets a boolean value. If true, unsubscribes from belt Status data
+	 *
+	 * @param beltStatus
+	 *            a boolean value
+	 */
+    public void setBeltStatus(Boolean beltStatus) {
+		setParameters(KEY_BELT_STATUS, beltStatus);
     }
 
-    /**
-     * Gets a boolean value. If true, means the belt Status data has been
-     * unsubscribed.
-     *
-     * @return Boolean -a Boolean value. If true, means the belt Status data
-     * has been unsubscribed.
-     */
+	/**
+	 * Gets a boolean value. If true, means the belt Status data has been
+	 * unsubscribed.
+	 *
+	 * @return Boolean -a Boolean value. If true, means the belt Status data
+	 *         has been unsubscribed.
+	 */
     public Boolean getBeltStatus() {
         return getBoolean(KEY_BELT_STATUS);
     }
 
-    /**
-     * Sets a boolean value. If true, unsubscribes from belt Status data
-     *
-     * @param beltStatus a boolean value
-     */
-    public void setBeltStatus(Boolean beltStatus) {
-        setParameters(KEY_BELT_STATUS, beltStatus);
+	/**
+	 * Sets a boolean value. If true, unsubscribes from body Information data
+	 *
+	 * @param bodyInformation
+	 *            a boolean value
+	 */
+    public void setBodyInformation(Boolean bodyInformation) {
+		setParameters(KEY_BODY_INFORMATION, bodyInformation);
     }
 
-    /**
-     * Gets a boolean value. If true, means the body Information data has been
-     * unsubscribed.
-     *
-     * @return Boolean -a Boolean value. If true, means the body Information data
-     * has been unsubscribed.
-     */
+	/**
+	 * Gets a boolean value. If true, means the body Information data has been
+	 * unsubscribed.
+	 *
+	 * @return Boolean -a Boolean value. If true, means the body Information data
+	 *         has been unsubscribed.
+	 */
     public Boolean getBodyInformation() {
         return getBoolean(KEY_BODY_INFORMATION);
     }
 
-    /**
-     * Sets a boolean value. If true, unsubscribes from body Information data
-     *
-     * @param bodyInformation a boolean value
-     */
-    public void setBodyInformation(Boolean bodyInformation) {
-        setParameters(KEY_BODY_INFORMATION, bodyInformation);
+	/**
+	 * Sets a boolean value. If true, unsubscribes from device Status data
+	 *
+	 * @param deviceStatus
+	 *            a boolean value
+	 */
+    public void setDeviceStatus(Boolean deviceStatus) {
+		setParameters(KEY_DEVICE_STATUS, deviceStatus);
     }
 
-    /**
-     * Gets a boolean value. If true, means the device Status data has been
-     * unsubscribed.
-     *
-     * @return Boolean -a Boolean value. If true, means the device Status data
-     * has been unsubscribed.
-     */
+	/**
+	 * Gets a boolean value. If true, means the device Status data has been
+	 * unsubscribed.
+	 *
+	 * @return Boolean -a Boolean value. If true, means the device Status data
+	 *         has been unsubscribed.
+	 */
     public Boolean getDeviceStatus() {
         return getBoolean(KEY_DEVICE_STATUS);
     }
 
-    /**
-     * Sets a boolean value. If true, unsubscribes from device Status data
-     *
-     * @param deviceStatus a boolean value
-     */
-    public void setDeviceStatus(Boolean deviceStatus) {
-        setParameters(KEY_DEVICE_STATUS, deviceStatus);
+	/**
+	 * Sets a boolean value. If true, unsubscribes from driver Braking data
+	 *
+	 * @param driverBraking
+	 *            a boolean value
+	 */
+    public void setDriverBraking(Boolean driverBraking) {
+		setParameters(KEY_DRIVER_BRAKING, driverBraking);
     }
 
-    /**
-     * Gets a boolean value. If true, means the driver Braking data has been
-     * unsubscribed.
-     *
-     * @return Boolean -a Boolean value. If true, means the driver Braking data
-     * has been unsubscribed.
-     */
+	/**
+	 * Gets a boolean value. If true, means the driver Braking data has been
+	 * unsubscribed.
+	 *
+	 * @return Boolean -a Boolean value. If true, means the driver Braking data
+	 *         has been unsubscribed.
+	 */
     public Boolean getDriverBraking() {
         return getBoolean(KEY_DRIVER_BRAKING);
     }
 
-    /**
-     * Sets a boolean value. If true, unsubscribes from driver Braking data
-     *
-     * @param driverBraking a boolean value
-     */
-    public void setDriverBraking(Boolean driverBraking) {
-        setParameters(KEY_DRIVER_BRAKING, driverBraking);
+	/**
+	 * Sets a boolean value. If true, unsubscribes from wiper Status data
+	 *
+	 * @param wiperStatus
+	 *            a boolean value
+	 */
+    public void setWiperStatus(Boolean wiperStatus) {
+		setParameters(KEY_WIPER_STATUS, wiperStatus);
     }
 
-    /**
-     * Gets a boolean value. If true, means the wiper Status data has been
-     * unsubscribed.
-     *
-     * @return Boolean -a Boolean value. If true, means the wiper Status data
-     * has been unsubscribed.
-     */
+	/**
+	 * Gets a boolean value. If true, means the wiper Status data has been
+	 * unsubscribed.
+	 *
+	 * @return Boolean -a Boolean value. If true, means the wiper Status data
+	 *         has been unsubscribed.
+	 */
     public Boolean getWiperStatus() {
         return getBoolean(KEY_WIPER_STATUS);
     }
 
-    /**
-     * Sets a boolean value. If true, unsubscribes from wiper Status data
-     *
-     * @param wiperStatus a boolean value
-     */
-    public void setWiperStatus(Boolean wiperStatus) {
-        setParameters(KEY_WIPER_STATUS, wiperStatus);
+	/**
+	 * Sets a boolean value. If true, unsubscribes from Head Lamp Status data
+	 *
+	 * @param headLampStatus
+	 *            a boolean value
+	 */
+    public void setHeadLampStatus(Boolean headLampStatus) {
+		setParameters(KEY_HEAD_LAMP_STATUS, headLampStatus);
     }
 
-    /**
-     * Gets a boolean value. If true, means the Head Lamp Status data has been
-     * unsubscribed.
-     *
-     * @return Boolean -a Boolean value. If true, means the Head Lamp Status data
-     * has been unsubscribed.
-     */
+	/**
+	 * Gets a boolean value. If true, means the Head Lamp Status data has been
+	 * unsubscribed.
+	 *
+	 * @return Boolean -a Boolean value. If true, means the Head Lamp Status data
+	 *         has been unsubscribed.
+	 */
     public Boolean getHeadLampStatus() {
         return getBoolean(KEY_HEAD_LAMP_STATUS);
     }
 
-    /**
-     * Sets a boolean value. If true, unsubscribes from Head Lamp Status data
-     *
-     * @param headLampStatus a boolean value
-     */
-    public void setHeadLampStatus(Boolean headLampStatus) {
-        setParameters(KEY_HEAD_LAMP_STATUS, headLampStatus);
+	/**
+	 * Sets a boolean value. If true, unsubscribes from Engine Torque data
+	 *
+	 * @param engineTorque
+	 *            a boolean value
+	 */
+	public void setEngineTorque(Boolean engineTorque) {
+		setParameters(KEY_ENGINE_TORQUE, engineTorque);
+	}
+
+	/**
+	 * Gets a boolean value. If true, means the Engine Torque data has been
+	 * unsubscribed.
+	 *
+	 * @return Boolean -a Boolean value. If true, means the Engine Torque data
+	 *         has been unsubscribed.
+	 */
+	public Boolean getEngineTorque() {
+		return getBoolean(KEY_ENGINE_TORQUE);
+	}
+
+	/**
+	 * Sets a boolean value. If true, unsubscribes from Engine Oil Life data
+	 *
+	 * @param engineOilLife
+	 *            a boolean value
+	 */
+	public void setEngineOilLife(Boolean engineOilLife) {
+		setParameters(KEY_ENGINE_OIL_LIFE, engineOilLife);
+	}
+
+	/**
+	 * Gets a boolean value. If true, means the Engine Oil Life data has been
+	 * unsubscribed.
+	 *
+	 * @return Boolean -a Boolean value. If true, means the Engine Oil Life data
+	 *         has been unsubscribed.
+	 */
+	public Boolean getEngineOilLife() {
+		return getBoolean(KEY_ENGINE_OIL_LIFE);
+	}
+
+
+	/**
+	 * Sets a boolean value. If true, unsubscribes from accPedalPosition data
+	 *
+	 * @param accPedalPosition
+	 *            a boolean value
+	 */
+    public void setAccPedalPosition(Boolean accPedalPosition) {
+		setParameters(KEY_ACC_PEDAL_POSITION, accPedalPosition);
     }
 
-    /**
-     * Gets a boolean value. If true, means the Engine Torque data has been
-     * unsubscribed.
-     *
-     * @return Boolean -a Boolean value. If true, means the Engine Torque data
-     * has been unsubscribed.
-     */
-    public Boolean getEngineTorque() {
-        return getBoolean(KEY_ENGINE_TORQUE);
-    }
-
-    /**
-     * Sets a boolean value. If true, unsubscribes from Engine Torque data
-     *
-     * @param engineTorque a boolean value
-     */
-    public void setEngineTorque(Boolean engineTorque) {
-        setParameters(KEY_ENGINE_TORQUE, engineTorque);
-    }
-
-    /**
-     * Gets a boolean value. If true, means the Engine Oil Life data has been
-     * unsubscribed.
-     *
-     * @return Boolean -a Boolean value. If true, means the Engine Oil Life data
-     * has been unsubscribed.
-     */
-    public Boolean getEngineOilLife() {
-        return getBoolean(KEY_ENGINE_OIL_LIFE);
-    }
-
-    /**
-     * Sets a boolean value. If true, unsubscribes from Engine Oil Life data
-     *
-     * @param engineOilLife a boolean value
-     */
-    public void setEngineOilLife(Boolean engineOilLife) {
-        setParameters(KEY_ENGINE_OIL_LIFE, engineOilLife);
-    }
-
-    /**
-     * Gets a boolean value. If true, means the accPedalPosition data has been
-     * unsubscribed.
-     *
-     * @return Boolean -a Boolean value. If true, means the accPedalPosition data
-     * has been unsubscribed.
-     */
+	/**
+	 * Gets a boolean value. If true, means the accPedalPosition data has been
+	 * unsubscribed.
+	 *
+	 * @return Boolean -a Boolean value. If true, means the accPedalPosition data
+	 *         has been unsubscribed.
+	 */
     public Boolean getAccPedalPosition() {
         return getBoolean(KEY_ACC_PEDAL_POSITION);
     }
 
-    /**
-     * Sets a boolean value. If true, unsubscribes from accPedalPosition data
-     *
-     * @param accPedalPosition a boolean value
-     */
-    public void setAccPedalPosition(Boolean accPedalPosition) {
-        setParameters(KEY_ACC_PEDAL_POSITION, accPedalPosition);
+    public void setSteeringWheelAngle(Boolean steeringWheelAngle) {
+		setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
     }
 
     public Boolean getSteeringWheelAngle() {
         return getBoolean(KEY_STEERING_WHEEL_ANGLE);
     }
 
-    public void setSteeringWheelAngle(Boolean steeringWheelAngle) {
-        setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
+    public void setECallInfo(Boolean eCallInfo) {
+		setParameters(KEY_E_CALL_INFO, eCallInfo);
     }
-
     public Boolean getECallInfo() {
         return getBoolean(KEY_E_CALL_INFO);
     }
-
-    public void setECallInfo(Boolean eCallInfo) {
-        setParameters(KEY_E_CALL_INFO, eCallInfo);
+    public void setAirbagStatus(Boolean airbagStatus) {
+		setParameters(KEY_AIRBAG_STATUS, airbagStatus);
     }
-
     public Boolean getAirbagStatus() {
         return getBoolean(KEY_AIRBAG_STATUS);
     }
-
-    public void setAirbagStatus(Boolean airbagStatus) {
-        setParameters(KEY_AIRBAG_STATUS, airbagStatus);
+    public void setEmergencyEvent(Boolean emergencyEvent) {
+		setParameters(KEY_EMERGENCY_EVENT, emergencyEvent);
     }
-
     public Boolean getEmergencyEvent() {
         return getBoolean(KEY_EMERGENCY_EVENT);
     }
-
-    public void setEmergencyEvent(Boolean emergencyEvent) {
-        setParameters(KEY_EMERGENCY_EVENT, emergencyEvent);
+    public void setClusterModeStatus(Boolean clusterModeStatus) {
+		setParameters(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
     }
-
     public Boolean getClusterModeStatus() {
         return getBoolean(KEY_CLUSTER_MODE_STATUS);
     }
-
-    public void setClusterModeStatus(Boolean clusterModeStatus) {
-        setParameters(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
+    public void setMyKey(Boolean myKey) {
+		setParameters(KEY_MY_KEY, myKey);
     }
-
     public Boolean getMyKey() {
         return getBoolean(KEY_MY_KEY);
     }
 
-    public void setMyKey(Boolean myKey) {
-        setParameters(KEY_MY_KEY, myKey);
-    }
+	/**
+	 * Sets a boolean value. If true, unsubscribes from fuelRange data
+	 *
+	 * @param fuelRange
+	 *            a boolean value
+	 */
+	public void setFuelRange(Boolean fuelRange) {
+		setParameters(KEY_FUEL_RANGE, fuelRange);
+	}
+
+	/**
+	 * Gets a boolean value. If true, means the fuelRange data has been
+	 * unsubscribed.
+	 *
+	 * @return Boolean -a Boolean value. If true, means the fuelRange data
+	 *         has been unsubscribed.
+	 */
+	public Boolean getFuelRange() {
+		return getBoolean(KEY_FUEL_RANGE);
+	}
+
+	/**
+	 * Sets a boolean value. If true, unsubscribes from turnSignal data
+	 * @param turnSignal a boolean value
+	 */
+	public void setTurnSignal(Boolean turnSignal) { setParameters(KEY_TURN_SIGNAL, turnSignal); }
+
+	/**
+	 * Gets a boolean value. If true, means the turnSignal data has been unsubscribed.
+	 * @return a Boolean value.
+	 */
+	public Boolean getTurnSignal() { return getBoolean(KEY_TURN_SIGNAL); }
+
+	/**
+	 * Sets a boolean value. If true, unsubscribes from electronicParkBrakeStatus data
+	 * @param electronicParkBrakeStatus a boolean value
+	 */
+	public void setElectronicParkBrakeStatus(Boolean electronicParkBrakeStatus) {
+		setParameters(KEY_ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
+	}
+
+	/**
+	 * Gets a boolean value. If true, means the electronicParkBrakeStatus data has been subscribed.
+	 * @return a Boolean value.
+	 */
+	public Boolean getElectronicParkBrakeStatus() {
+		return getBoolean(KEY_ELECTRONIC_PARK_BRAKE_STATUS);
+	}
+
+	/**
+	 * Sets a boolean value. If true, unsubscribes from cloudAppVehicleID data
+	 * @param cloudAppVehicleID a boolean value.
+	 */
+	public void setCloudAppVehicleID(boolean cloudAppVehicleID){
+		setParameters(KEY_CLOUD_APP_VEHICLE_ID, cloudAppVehicleID);
+	}
+
+	/**
+	 * Gets a boolean value. If true, means the cloudAppVehicleID data has been unsubscribed.
+	 * @return a Boolean value.
+	 */
+	public Boolean getCloudAppVehicleID(){
+		return getBoolean( KEY_CLOUD_APP_VEHICLE_ID);
+	}
+
+	/**
+	 * Sets a boolean value for OEM Custom VehicleData.
+	 * @param vehicleDataName a String value
+	 * @param vehicleDataState a boolean value
+	 */
+	public void setOEMCustomVehicleData(String vehicleDataName, Boolean vehicleDataState){
+		setParameters(vehicleDataName, vehicleDataState);
+	}
+
+	/**
+	 * Gets a boolean value for OEM Custom VehicleData.
+	 * @return a Boolean value.
+	 */
+	public Boolean getOEMCustomVehicleData(String vehicleDataName){
+		return getBoolean(vehicleDataName);
+	}
 
     /**
-     * Gets a boolean value. If true, means the fuelRange data has been
-     * unsubscribed.
+     * Sets the stabilityControlsStatus.
      *
-     * @return Boolean -a Boolean value. If true, means the fuelRange data
-     * has been unsubscribed.
+     * @param stabilityControlsStatus See StabilityControlsStatus
+     * @since SmartDeviceLink 7.0.0
      */
-    public Boolean getFuelRange() {
-        return getBoolean(KEY_FUEL_RANGE);
-    }
-
-    /**
-     * Sets a boolean value. If true, unsubscribes from fuelRange data
-     *
-     * @param fuelRange a boolean value
-     */
-    public void setFuelRange(Boolean fuelRange) {
-        setParameters(KEY_FUEL_RANGE, fuelRange);
-    }
-
-    /**
-     * Gets a boolean value. If true, means the turnSignal data has been unsubscribed.
-     *
-     * @return a Boolean value.
-     */
-    public Boolean getTurnSignal() {
-        return getBoolean(KEY_TURN_SIGNAL);
-    }
-
-    /**
-     * Sets a boolean value. If true, unsubscribes from turnSignal data
-     *
-     * @param turnSignal a boolean value
-     */
-    public void setTurnSignal(Boolean turnSignal) {
-        setParameters(KEY_TURN_SIGNAL, turnSignal);
-    }
-
-    /**
-     * Gets a boolean value. If true, means the electronicParkBrakeStatus data has been subscribed.
-     *
-     * @return a Boolean value.
-     */
-    public Boolean getElectronicParkBrakeStatus() {
-        return getBoolean(KEY_ELECTRONIC_PARK_BRAKE_STATUS);
-    }
-
-    /**
-     * Sets a boolean value. If true, unsubscribes from electronicParkBrakeStatus data
-     *
-     * @param electronicParkBrakeStatus a boolean value
-     */
-    public void setElectronicParkBrakeStatus(Boolean electronicParkBrakeStatus) {
-        setParameters(KEY_ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
-    }
-
-    /**
-     * Gets a boolean value. If true, means the cloudAppVehicleID data has been unsubscribed.
-     *
-     * @return a Boolean value.
-     */
-    public Boolean getCloudAppVehicleID() {
-        return getBoolean(KEY_CLOUD_APP_VEHICLE_ID);
-    }
-
-    /**
-     * Sets a boolean value. If true, unsubscribes from cloudAppVehicleID data
-     *
-     * @param cloudAppVehicleID a boolean value.
-     */
-    public void setCloudAppVehicleID(boolean cloudAppVehicleID) {
-        setParameters(KEY_CLOUD_APP_VEHICLE_ID, cloudAppVehicleID);
-    }
-
-    /**
-     * Sets a boolean value for OEM Custom VehicleData.
-     *
-     * @param vehicleDataName  a String value
-     * @param vehicleDataState a boolean value
-     */
-    public void setOEMCustomVehicleData(String vehicleDataName, Boolean vehicleDataState) {
-        setParameters(vehicleDataName, vehicleDataState);
-    }
-
-    /**
-     * Gets a boolean value for OEM Custom VehicleData.
-     *
-     * @return a Boolean value.
-     */
-    public Boolean getOEMCustomVehicleData(String vehicleDataName) {
-        return getBoolean(vehicleDataName);
+    public void setStabilityControlsStatus(Boolean stabilityControlsStatus) {
+        setParameters(KEY_STABILITY_CONTROLS_STATUS, stabilityControlsStatus);
     }
 
     /**
@@ -862,15 +876,5 @@ public class UnsubscribeVehicleData extends RPCRequest {
      */
     public Boolean getStabilityControlsStatus() {
         return getBoolean(KEY_STABILITY_CONTROLS_STATUS);
-    }
-
-    /**
-     * Sets the stabilityControlsStatus.
-     *
-     * @param stabilityControlsStatus See StabilityControlsStatus
-     * @since SmartDeviceLink 7.0.0
-     */
-    public void setStabilityControlsStatus(Boolean stabilityControlsStatus) {
-        setParameters(KEY_STABILITY_CONTROLS_STATUS, stabilityControlsStatus);
     }
 }
