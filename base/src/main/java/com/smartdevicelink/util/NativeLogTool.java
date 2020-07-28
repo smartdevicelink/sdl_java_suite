@@ -128,7 +128,7 @@ public class NativeLogTool {
 						break;
 				}
 				if (bytesWritten < chunk.length()) {
-					Log.w(TAG, "Calling Log.e: msg length=" + chunk.length() + ", bytesWritten=" + bytesWritten);
+					Log.w(TAG, "Calling Log.w: msg length=" + chunk.length() + ", bytesWritten=" + bytesWritten);
 				}
 			}			
 		} catch (Exception ex) {
