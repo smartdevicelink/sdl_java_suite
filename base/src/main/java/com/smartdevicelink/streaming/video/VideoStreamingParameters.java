@@ -151,6 +151,7 @@ public class VideoStreamingParameters {
     public void update(VideoStreamingCapability capability, String vehicleMake){
         if(capability.getMaxBitrate()!=null){ this.bitrate = capability.getMaxBitrate() * 1000; } // NOTE: the unit of maxBitrate in getSystemCapability is kbps.
         if(capability.getScale() != null) { scale = capability.getScale(); }
+        if (capability.getDiagonalScreenSize() != null) { preferredDiagonal = capability.getDiagonalScreenSize(); }
         ImageResolution resolution = capability.getPreferredResolution();
         if (capability.getAdditionalVideoStreamingCapabilities() != null &&
                 !capability.getAdditionalVideoStreamingCapabilities().isEmpty()) {

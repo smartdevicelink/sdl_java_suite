@@ -361,6 +361,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 						// Mocks data here
 						// castedCapability.setAdditionalVideoStreamingCapabilities(getMockedAdditionalCapabilities());
 						params.update(castedCapability, vehicleMake);	//Streaming parameters are ready time to stream
+						VideoStreamManager.this.parameters = params;
 
 						if (streamingRange != null) {
 							// filtering
@@ -786,49 +787,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
 		return validCapabilities;
 	}
-
-	private List<VideoStreamingCapability> getMockedAdditionalCapabilities(){
-		// TODO create separate AdditionalCapability class to avoid class mixing
-		List<VideoStreamingCapability> capabilityList = new ArrayList<>();
-		VideoStreamingCapability preferredCapability = new VideoStreamingCapability();
-		preferredCapability.setDiagonalScreenSize(parameters.getPreferredDiagonal());
-		preferredCapability.setPreferredResolution(new ImageResolution(
-				parameters.getResolution().getResolutionWidth(),
-				parameters.getResolution().getResolutionHeight())
-		);
-		capabilityList.add(preferredCapability);
-
-		ImageResolution preferredResolution = parameters.getResolution();
-		int preferredWidth = preferredResolution.getResolutionWidth();
-		int preferredHeight = preferredResolution.getResolutionHeight();
-		double preferredDiagonal = parameters.getPreferredDiagonal();
-
-		for (int i = 0; i < 10; i++) {
-			VideoStreamingCapability tempCapability = new VideoStreamingCapability();
-			ImageResolution tempResolution = new ImageResolution();
-			int generatedResDeviation = (int) ((Math.random() * 100 - 10) + 10);
-			int generatedDiagDeviation = (int) ((Math.random() * 2.5));
-			if (i % 2 == 0)
-			{
-				generatedDiagDeviation = -generatedDiagDeviation;
-				generatedResDeviation = -generatedResDeviation;
-			}
-
-			tempResolution.setResolutionHeight(preferredHeight + generatedResDeviation);
-			tempResolution.setResolutionWidth(preferredWidth + generatedResDeviation);
-			tempCapability.setPreferredResolution(tempResolution);
-			double updatedDiagonal = preferredDiagonal + generatedDiagDeviation;
-			if (updatedDiagonal < 0 || updatedDiagonal == 0) {
-				tempCapability.setDiagonalScreenSize(preferredDiagonal);
-			} else {
-				tempCapability.setDiagonalScreenSize(updatedDiagonal);
-			}
-			capabilityList.add(tempCapability);
-
-		}
-		return capabilityList;
-	}
-
 
 	/**
 	 * Keeps track of the current motion event for VPM
