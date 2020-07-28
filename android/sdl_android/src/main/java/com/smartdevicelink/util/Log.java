@@ -1,19 +1,19 @@
 package com.smartdevicelink.util;
 
 public class Log {
-    public static int i(String tag, String message) {
-        return android.util.Log.i(tag, message);
+    public static void i(String tag, String message) {
+        android.util.Log.i(tag, message);
     }
 
-    public static int w(String tag, String message) {
-        return android.util.Log.w(tag, message);
+    public static void w(String tag, String message) {
+        android.util.Log.w(tag, message);
     }
 
-    public static int e(String tag, String message, Throwable t) {
+    public static void e(String tag, String message, Throwable t) {
         if (t != null) {
-            return android.util.Log.e(tag, message, t);
+            android.util.Log.e(tag, message, t);
         } else {
-            return android.util.Log.e(tag, message);
+            android.util.Log.e(tag, message);
         }
     }
 }
