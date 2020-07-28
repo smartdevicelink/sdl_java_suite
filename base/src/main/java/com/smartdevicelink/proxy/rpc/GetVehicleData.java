@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
+ * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@
  * disclaimer in the documentation and/or other materials provided with the
  * distribution.
  *
- * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
- * its contributors may be used to endorse or promote products derived
- * from this software without specific prior written permission.
+ * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from this
+ * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -40,7 +40,6 @@ import java.util.Hashtable;
  * Non periodic vehicle data read request.
  *
  * <p><b>Parameter List</b></p>
- *
  * <table border="1" rules="all">
  *  <tr>
  *      <th>Param Name</th>
@@ -262,7 +261,6 @@ import java.util.Hashtable;
  * </table>
  *
  */
-
 public class GetVehicleData extends RPCRequest {
 	public static final String KEY_SPEED = "speed";
 	public static final String KEY_RPM = "rpm";
@@ -295,22 +293,22 @@ public class GetVehicleData extends RPCRequest {
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
 
-    /**
-     * Constructs a new GetVehicleData object
-     */
+	/**
+	 * Constructs a new GetVehicleData object
+	 */
 
     public GetVehicleData() {
         super(FunctionID.GET_VEHICLE_DATA.toString());
     }
     /**
-     * <p>
-     * Constructs a new GetVehicleDta object indicated by the Hashtable
-     * parameter
-     * </p>
-     *
-     * @param hash
-     *            The Hashtable to use
-     */
+	* <p>
+	* Constructs a new GetVehicleDta object indicated by the Hashtable
+	* parameter
+	* </p>
+	*
+	* @param hash
+	*            The Hashtable to use
+	*/
 
     public GetVehicleData(Hashtable<String, Object> hash) {
         super(hash);
@@ -364,7 +362,7 @@ public class GetVehicleData extends RPCRequest {
      */
     @Deprecated
     public void setFuelLevel_State(Boolean fuelLevel_State) {
-        setParameters(KEY_FUEL_LEVEL_STATE, fuelLevel_State);
+        setFuelLevelState(fuelLevel_State);
     }
 
     /**
@@ -375,7 +373,7 @@ public class GetVehicleData extends RPCRequest {
      */
     @Deprecated
     public Boolean getFuelLevel_State() {
-        return getBoolean(KEY_FUEL_LEVEL_STATE);
+        return getFuelLevelState();
     }
     public void setFuelLevelState(Boolean fuelLevelState) {
         setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
@@ -389,31 +387,6 @@ public class GetVehicleData extends RPCRequest {
     public Boolean getInstantFuelConsumption() {
         return getBoolean(KEY_INSTANT_FUEL_CONSUMPTION);
     }
-
-    /**
-     * Sets the fuelRange.
-     *
-     * @param fuelRange The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
-     * vehicle. See struct FuelRange for details.
-     * @since SmartDeviceLink 5.0.0
-     */
-    @Deprecated
-    public void setFuelRange(Boolean fuelRange) {
-        setParameters(KEY_FUEL_RANGE, fuelRange);
-    }
-
-    /**
-     * Gets the fuelRange.
-     *
-     * @return Boolean The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
-     * vehicle. See struct FuelRange for details.
-     * @since SmartDeviceLink 5.0.0
-     */
-    @Deprecated
-    public Boolean getFuelRange() {
-        return getBoolean(KEY_FUEL_RANGE);
-    }
-
     public void setExternalTemperature(Boolean externalTemperature) {
         setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
     }
@@ -514,6 +487,7 @@ public class GetVehicleData extends RPCRequest {
         return getBoolean(KEY_E_CALL_INFO);
     }
 
+
     public void setAirbagStatus(Boolean airbagStatus) {
         setParameters(KEY_AIRBAG_STATUS, airbagStatus);
     }
@@ -537,6 +511,28 @@ public class GetVehicleData extends RPCRequest {
     }
     public Boolean getMyKey() {
         return getBoolean(KEY_MY_KEY);
+    }
+
+    /**
+     * Sets the fuelRange.
+     *
+     * @param fuelRange The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
+     * vehicle. See struct FuelRange for details.
+     * @since SmartDeviceLink 5.0.0
+     */
+    public void setFuelRange(Boolean fuelRange) {
+        setParameters(KEY_FUEL_RANGE, fuelRange);
+    }
+
+    /**
+     * Gets the fuelRange.
+     *
+     * @return Boolean The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
+     * vehicle. See struct FuelRange for details.
+     * @since SmartDeviceLink 5.0.0
+     */
+    public Boolean getFuelRange() {
+        return getBoolean(KEY_FUEL_RANGE);
     }
 
     /**

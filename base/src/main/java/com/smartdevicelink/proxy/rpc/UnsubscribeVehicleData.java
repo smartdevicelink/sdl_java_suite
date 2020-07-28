@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
+ * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@
  * disclaimer in the documentation and/or other materials provided with the
  * distribution.
  *
- * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
- * its contributors may be used to endorse or promote products derived
- * from this software without specific prior written permission.
+ * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from this
+ * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -377,7 +377,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
      */
     @Deprecated
     public void setFuelLevel(Boolean fuelLevel) {
-        setParameters(KEY_FUEL_LEVEL, fuelLevel);
+		setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
 
     /**
@@ -455,35 +455,12 @@ public class UnsubscribeVehicleData extends RPCRequest {
         return getBoolean(KEY_INSTANT_FUEL_CONSUMPTION);
     }
 
-    /**
-     * Sets the fuelRange.
-     *
-     * @param fuelRange The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
-     * vehicle. See struct FuelRange for details.
-     */
-    @Deprecated
-    public void setFuelRange(Boolean fuelRange) {
-        setParameters(KEY_FUEL_RANGE, fuelRange);
-    }
-
-    /**
-     * Gets the fuelRange.
-     *
-     * @return Boolean The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
-     * vehicle. See struct FuelRange for details.
-     * @since SmartDeviceLink 5.0.0
-     */
-    @Deprecated
-    public Boolean getFuelRange() {
-        return getBoolean(KEY_FUEL_RANGE);
-    }
-
-    /**
-     * Sets a boolean value. If true, unsubscribes from externalTemperature data
-     *
-     * @param externalTemperature
-     *            a boolean value
-     */
+	/**
+	 * Sets a boolean value. If true, unsubscribes from externalTemperature data
+	 *
+	 * @param externalTemperature
+	 *            a boolean value
+	 */
     public void setExternalTemperature(Boolean externalTemperature) {
 		setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
     }
@@ -499,12 +476,12 @@ public class UnsubscribeVehicleData extends RPCRequest {
         return getBoolean(KEY_EXTERNAL_TEMPERATURE);
     }
 
-    /**
-     * Sets a boolean value. If true, unsubscribes Currently selected gear data
-     *
-     * @param prndl
-     *            a boolean value
-     */
+	/**
+	 * Sets a boolean value. If true, unsubscribes Currently selected gear data
+	 *
+	 * @param prndl
+	 *            a boolean value
+	 */
     public void setPrndl(Boolean prndl) {
 		setParameters(KEY_PRNDL, prndl);
     }
@@ -790,11 +767,35 @@ public class UnsubscribeVehicleData extends RPCRequest {
     public Boolean getMyKey() {
         return getBoolean(KEY_MY_KEY);
     }
-    /**
-     * Sets a boolean value. If true, unsubscribes from turnSignal data
-     * @param turnSignal a boolean value
-     */
-    public void setTurnSignal(Boolean turnSignal) { setParameters(KEY_TURN_SIGNAL, turnSignal); }
+
+	/**
+	 * Sets the fuelRange.
+	 *
+	 * @param fuelRange The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
+	 * vehicle. See struct FuelRange for details.
+	 */
+	@Deprecated
+	public void setFuelRange(Boolean fuelRange) {
+		setParameters(KEY_FUEL_RANGE, fuelRange);
+	}
+
+	/**
+	 * Gets the fuelRange.
+	 *
+	 * @return Boolean The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
+	 * vehicle. See struct FuelRange for details.
+	 * @since SmartDeviceLink 5.0.0
+	 */
+	@Deprecated
+	public Boolean getFuelRange() {
+		return getBoolean(KEY_FUEL_RANGE);
+	}
+
+	/**
+	 * Sets a boolean value. If true, unsubscribes from turnSignal data
+	 * @param turnSignal a boolean value
+	 */
+	public void setTurnSignal(Boolean turnSignal) { setParameters(KEY_TURN_SIGNAL, turnSignal); }
 
 	/**
 	 * Gets a boolean value. If true, means the turnSignal data has been unsubscribed.

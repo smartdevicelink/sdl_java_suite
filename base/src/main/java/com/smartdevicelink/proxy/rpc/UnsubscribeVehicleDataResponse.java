@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
+ * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@
  * disclaimer in the documentation and/or other materials provided with the
  * distribution.
  *
- * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
- * its contributors may be used to endorse or promote products derived
- * from this software without specific prior written permission.
+ * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from this
+ * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -218,32 +218,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     public VehicleDataResult getInstantFuelConsumption() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_INSTANT_FUEL_CONSUMPTION);
     }
-
     /**
-     * Sets the fuelRange.
-     *
-     * @param fuelRange The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
-     * vehicle. See struct FuelRange for details.
-     * @since SmartDeviceLink 5.0.0
-     */
-    public void setFuelRange(VehicleDataResult fuelRange) {
-        setParameters(KEY_FUEL_RANGE, fuelRange);
-    }
-
-    /**
-     * Gets the fuelRange.
-     *
-     * @return VehicleDataResult The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
-     * vehicle. See struct FuelRange for details.
-     * @since SmartDeviceLink 5.0.0
-     */
-    public VehicleDataResult getFuelRange() {
-        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_FUEL_RANGE);
-    }
-
-    /**
-     * Sets the External Temperature
-     * @param externalTemperature The external temperature in degrees celsius
+     * Sets External Temperature
+     * @param externalTemperature a VehicleDataResult related to external temperature
      */
     public void setExternalTemperature(VehicleDataResult externalTemperature) {
         setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
@@ -481,6 +458,30 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     public VehicleDataResult getMyKey() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_MY_KEY);
     }
+
+    /**
+     * Sets the fuelRange.
+     *
+     * @param fuelRange The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
+     * vehicle. See struct FuelRange for details.
+     * @since SmartDeviceLink 5.0.0
+     */
+    public void setFuelRange(VehicleDataResult fuelRange) {
+        setParameters(KEY_FUEL_RANGE, fuelRange);
+    }
+
+    /**
+     * Gets the fuelRange.
+     *
+     * @return VehicleDataResult The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
+     * vehicle. See struct FuelRange for details.
+     * @since SmartDeviceLink 5.0.0
+     */
+    @SuppressWarnings("unchecked")
+    public VehicleDataResult getFuelRange() {
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_FUEL_RANGE);
+    }
+
     /**
      * Sets turnSignal
      * @param turnSignal a VehicleDataResult related to the turn signal status

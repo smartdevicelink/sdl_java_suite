@@ -54,40 +54,40 @@ import java.util.List;
  * @since SmartDeviceLink 2.0
  */
 public class GetVehicleDataResponse extends RPCResponse {
-    public static final String KEY_SPEED = "speed";
-    public static final String KEY_RPM = "rpm";
-    public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
-    public static final String KEY_FUEL_LEVEL = "fuelLevel";
-    public static final String KEY_VIN = "vin";
-    public static final String KEY_PRNDL = "prndl";
-    public static final String KEY_TIRE_PRESSURE = "tirePressure";
-    public static final String KEY_ENGINE_TORQUE = "engineTorque";
-    public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
-    public static final String KEY_ODOMETER = "odometer";
-    public static final String KEY_GPS = "gps";
-    public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
-    public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
-    public static final String KEY_BELT_STATUS = "beltStatus";
-    public static final String KEY_BODY_INFORMATION = "bodyInformation";
-    public static final String KEY_DEVICE_STATUS = "deviceStatus";
-    public static final String KEY_DRIVER_BRAKING = "driverBraking";
-    public static final String KEY_WIPER_STATUS = "wiperStatus";
-    public static final String KEY_HEAD_LAMP_STATUS = "headLampStatus";
-    public static final String KEY_ACC_PEDAL_POSITION = "accPedalPosition";
-    public static final String KEY_STEERING_WHEEL_ANGLE = "steeringWheelAngle";
-    public static final String KEY_E_CALL_INFO = "eCallInfo";
-    public static final String KEY_AIRBAG_STATUS = "airbagStatus";
-    public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
-    public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
-    public static final String KEY_MY_KEY = "myKey";
-    public static final String KEY_FUEL_RANGE = "fuelRange";
-    public static final String KEY_TURN_SIGNAL = "turnSignal";
-    public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
+	public static final String KEY_SPEED = "speed";
+	public static final String KEY_RPM = "rpm";
+	public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
+	public static final String KEY_FUEL_LEVEL = "fuelLevel";
+	public static final String KEY_VIN = "vin";
+	public static final String KEY_PRNDL = "prndl";
+	public static final String KEY_TIRE_PRESSURE = "tirePressure";
+	public static final String KEY_ENGINE_TORQUE = "engineTorque";
+	public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
+	public static final String KEY_ODOMETER = "odometer";
+	public static final String KEY_GPS = "gps";
+	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
+	public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
+	public static final String KEY_BELT_STATUS = "beltStatus";
+	public static final String KEY_BODY_INFORMATION = "bodyInformation";
+	public static final String KEY_DEVICE_STATUS = "deviceStatus";
+	public static final String KEY_DRIVER_BRAKING = "driverBraking";
+	public static final String KEY_WIPER_STATUS = "wiperStatus";
+	public static final String KEY_HEAD_LAMP_STATUS = "headLampStatus";
+	public static final String KEY_ACC_PEDAL_POSITION = "accPedalPosition";
+	public static final String KEY_STEERING_WHEEL_ANGLE = "steeringWheelAngle";
+	public static final String KEY_E_CALL_INFO = "eCallInfo";
+	public static final String KEY_AIRBAG_STATUS = "airbagStatus";
+	public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
+	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
+	public static final String KEY_MY_KEY = "myKey";
+	public static final String KEY_FUEL_RANGE = "fuelRange";
+	public static final String KEY_TURN_SIGNAL = "turnSignal";
+	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
 
-    /**
-     * Constructs a new GetVehicleDataResponse object
-     */
+	/**
+	 * Constructs a new GetVehicleDataResponse object
+	 */
 
     public GetVehicleDataResponse() {
         super(FunctionID.GET_VEHICLE_DATA.toString());
@@ -116,14 +116,14 @@ public class GetVehicleDataResponse extends RPCResponse {
         setParameters(KEY_SPEED, speed);
     }
     public Double getSpeed() {
-        Object object = getParameters(KEY_SPEED);
-        return SdlDataTypeConverter.objectToDouble(object);
+    	Object object = getParameters(KEY_SPEED);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     public void setRpm(Integer rpm) {
         setParameters(KEY_RPM, rpm);
     }
     public Integer getRpm() {
-        return getInteger(KEY_RPM);
+    	return getInteger(KEY_RPM);
     }
 
     /**
@@ -147,8 +147,8 @@ public class GetVehicleDataResponse extends RPCResponse {
      */
     @Deprecated
     public Double getFuelLevel() {
-        Object object = getParameters(KEY_FUEL_LEVEL);
-        return SdlDataTypeConverter.objectToDouble(object);
+    	Object object = getParameters(KEY_FUEL_LEVEL);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     /**
      * Sets the fuelLevel_State.
@@ -182,21 +182,21 @@ public class GetVehicleDataResponse extends RPCResponse {
         setParameters(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
     }
     public Double getInstantFuelConsumption() {
-        Object object = getParameters(KEY_INSTANT_FUEL_CONSUMPTION);
-        return SdlDataTypeConverter.objectToDouble(object);
+    	Object object = getParameters(KEY_INSTANT_FUEL_CONSUMPTION);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     public void setExternalTemperature(Double externalTemperature) {
         setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
     }
     public Double getExternalTemperature() {
-        Object object = getParameters(KEY_EXTERNAL_TEMPERATURE);
-        return SdlDataTypeConverter.objectToDouble(object);
+    	Object object = getParameters(KEY_EXTERNAL_TEMPERATURE);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     public void setVin(String vin) {
         setParameters(KEY_VIN, vin);
     }
     public String getVin() {
-        return getString(KEY_VIN);
+    	return getString(KEY_VIN);
     }
     public void setPrndl(PRNDL prndl) {
         setParameters(KEY_PRNDL, prndl);
@@ -215,7 +215,7 @@ public class GetVehicleDataResponse extends RPCResponse {
         setParameters(KEY_ODOMETER, odometer);
     }
     public Integer getOdometer() {
-        return getInteger(KEY_ODOMETER);
+    	return getInteger(KEY_ODOMETER);
     }
     public void setBeltStatus(BeltStatus beltStatus) {
         setParameters(KEY_BELT_STATUS, beltStatus);
@@ -277,16 +277,16 @@ public class GetVehicleDataResponse extends RPCResponse {
         setParameters(KEY_ACC_PEDAL_POSITION, accPedalPosition);
     }
     public Double getAccPedalPosition() {
-        Object object = getParameters(KEY_ACC_PEDAL_POSITION);
-        return SdlDataTypeConverter.objectToDouble(object);
+    	Object object = getParameters(KEY_ACC_PEDAL_POSITION);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
 
     public void setSteeringWheelAngle(Double steeringWheelAngle) {
         setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
     }
     public Double getSteeringWheelAngle() {
-        Object object = getParameters(KEY_STEERING_WHEEL_ANGLE);
-        return SdlDataTypeConverter.objectToDouble(object);
+    	Object object = getParameters(KEY_STEERING_WHEEL_ANGLE);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
 
     public void setECallInfo(ECallInfo eCallInfo) {
@@ -328,20 +328,22 @@ public class GetVehicleDataResponse extends RPCResponse {
     }
 
     /**
-     * Sets Fuel Range List. Fuel Range - The estimate range in KM the vehicle can travel based on fuel level and consumption.
-     * @param fuelRange the range in KM left as well as fuel type
+     * Sets the fuelRange.
      *
-     * @see com.smartdevicelink.proxy.rpc.FuelRange
-     * @see com.smartdevicelink.proxy.rpc.enums.FuelType
+     * @param fuelRange The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
+     * vehicle. See struct FuelRange for details.
+     * @since SmartDeviceLink 5.0.0
      */
     public void setFuelRange(List<FuelRange> fuelRange) {
         setParameters(KEY_FUEL_RANGE, fuelRange);
     }
 
     /**
-     * Gets Fuel Range List
-     * @return List<FuelRange>
-     *     Fuel Range - The estimate range in KM the vehicle can travel based on fuel level and consumption.
+     * Gets the fuelRange.
+     *
+     * @return List<FuelRange> The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
+     * vehicle. See struct FuelRange for details.
+     * @since SmartDeviceLink 5.0.0
      */
     @SuppressWarnings("unchecked")
     public List<FuelRange> getFuelRange() {
