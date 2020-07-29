@@ -38,13 +38,13 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Looper;
 import android.os.Parcelable;
-import android.util.Log;
 
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.TransportRecord;
+import com.smartdevicelink.util.DebugTool;
 
 import java.util.List;
 
@@ -122,7 +122,7 @@ public class MultiplexTransport extends SdlTransport{
 
 	@Override
 	public void openConnection() throws SdlException {
-		Log.d(TAG, "Open connection");
+		DebugTool.logInfo(TAG, "Open connection");
 		if(brokerThread!=null){
 			brokerThread.startConnection();
 		}//else should log out
@@ -134,7 +134,7 @@ public class MultiplexTransport extends SdlTransport{
 		if(isDisconnecting){
 			return;
 		}
-			Log.d(TAG, "Close connection");
+		DebugTool.logInfo(TAG, "Close connection");
 			this.isDisconnecting= true;
 			if(brokerThread!= null){
 				brokerThread.cancel();
@@ -275,7 +275,7 @@ public class MultiplexTransport extends SdlTransport{
 				@Override
 				public boolean onHardwareConnected(TransportType type) {
 					if(super.onHardwareConnected(type)){
-						Log.d(TAG, "On transport connected...");
+						DebugTool.logInfo(TAG, "On transport connected...");
 						if(!connected){
 							connected = true;
 							handleTransportConnected();
@@ -299,17 +299,17 @@ public class MultiplexTransport extends SdlTransport{
 				public void onHardwareDisconnected(TransportType type) {
 					super.onHardwareDisconnected(type);
 					if(connected){
-						Log.d(TAG, "Handling disconnect");
+						DebugTool.logInfo(TAG, "Handling disconnect");
 						connected = false;
 						SdlConnection.enableLegacyMode(isLegacyModeEnabled(), TransportType.BLUETOOTH);
 						if(isLegacyModeEnabled()){
-							Log.d(TAG, "Handle transport disconnect, legacy mode enabled");
+							DebugTool.logInfo(TAG, "Handle transport disconnect, legacy mode enabled");
 							this.stop();
 							isDisconnecting = true;
 							//handleTransportDisconnected("");
 							handleTransportError("",null); //This seems wrong, but it works
 						}else{
-							Log.d(TAG, "Handle transport Error");
+							DebugTool.logInfo(TAG, "Handle transport Error");
 							isDisconnecting = true;
 							handleTransportError("",null); //This seems wrong, but it works
 						}
@@ -321,7 +321,7 @@ public class MultiplexTransport extends SdlTransport{
 					super.onLegacyModeEnabled();
 					SdlConnection.enableLegacyMode(isLegacyModeEnabled(), TransportType.BLUETOOTH);
 					if(isLegacyModeEnabled()){
-						Log.d(TAG, "Handle on legacy mode enabled");
+						DebugTool.logInfo(TAG, "Handle on legacy mode enabled");
 						this.stop();
 						isDisconnecting = true;
 						//handleTransportDisconnected("");

@@ -32,7 +32,6 @@
 package com.smartdevicelink.protocol;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
@@ -237,7 +236,7 @@ public class SdlProtocolBase {
                 activeTransportString.append("\n");
             }
         }
-        Log.d(TAG, activeTransportString.toString());
+        DebugTool.logInfo(TAG, activeTransportString.toString());
     }
 
     protected void printSecondaryTransportDetails(List<String> secondary, List<Integer> audio, List<Integer> video){
@@ -251,7 +250,7 @@ public class SdlProtocolBase {
             }
             secondaryDetailsBldr.append("\n");
         }else{
-            Log.d(TAG, "Supported secondary transports list is empty!");
+            DebugTool.logInfo(TAG, "Supported secondary transports list is empty!");
         }
         if(audio != null){
             secondaryDetailsBldr.append("Supported audio transports: ");
@@ -268,7 +267,7 @@ public class SdlProtocolBase {
             secondaryDetailsBldr.append("\n");
         }
 
-        Log.d(TAG, secondaryDetailsBldr.toString());
+        DebugTool.logInfo(TAG, secondaryDetailsBldr.toString());
     }
 
 
@@ -299,7 +298,7 @@ public class SdlProtocolBase {
     private void handleSecondaryTransportRegistration(TransportRecord transportRecord, boolean registered){
         if(registered) {
             //Session has been registered on secondary transport
-            Log.d(TAG, transportRecord.getType().toString() + " transport was registered!");
+            DebugTool.logInfo(TAG, transportRecord.getType().toString() + " transport was registered!");
             if (supportedSecondaryTransports.contains(transportRecord.getType())) {
                 // If the transport type that is now available to be used it should be checked
                 // against the list of services that might be able to be started on it
@@ -325,7 +324,7 @@ public class SdlProtocolBase {
                 }
             }
         }else{
-            Log.d(TAG, transportRecord.toString() + " transport was NOT registered!");
+            DebugTool.logInfo(TAG, transportRecord.toString() + " transport was NOT registered!");
         }
         //Notify any listeners for this secondary transport
         List<ISecondaryTransportListener> listenerList = secondaryTransportListeners.remove(transportRecord.getType());
@@ -345,7 +344,7 @@ public class SdlProtocolBase {
     }
 
     private void onTransportsConnectedUpdate(List<TransportRecord> transports){
-        //Log.d(TAG, "Connected transport update");
+        //DebugTool.logInfo(TAG, "Connected transport update");
 
         //Temporary: this logic should all be changed to handle multiple transports of the same type
         ArrayList<TransportType> connectedTransports = new ArrayList<>();
@@ -783,7 +782,7 @@ public class SdlProtocolBase {
                             header.setTransportRecord(connectedPrimaryTransport);
                             handlePacketToSend(header);
                         }else{
-                            Log.d(TAG, "Failed to connect secondary transport, threw away StartService");
+                            DebugTool.logInfo(TAG, "Failed to connect secondary transport, threw away StartService");
                         }
                     }
                 };
@@ -799,13 +798,13 @@ public class SdlProtocolBase {
                         listenerList.add(secondaryListener);
                         transportManager.requestSecondaryTransportConnection(sessionID, secondaryTransportParams.get(secondaryTransportType));
                     } else {
-                        Log.w(TAG, "No params to connect to secondary transport");
+                        DebugTool.logWarning(TAG, "No params to connect to secondary transport");
                         //Unable to register or start a secondary connection. Use the callback in case
                         //there is a chance to use the primary transport for this service.
                         secondaryListener.onConnectionFailure();
                     }
                 } else {
-                    Log.e(TAG, "transportManager is null");
+                    DebugTool.logError(TAG, "transportManager is null");
                 }
 
             }
@@ -877,7 +876,7 @@ public class SdlProtocolBase {
                         builder.append(rejectedParam);
                         builder.append(" ");
                     }
-                    DebugTool.logWarning(builder.toString());
+                    DebugTool.logWarning(TAG, builder.toString());
                 }
 
             }
@@ -999,7 +998,7 @@ public class SdlProtocolBase {
                         notifyDevTransportListener();
 
                     } else {
-                        DebugTool.logInfo("Received a start service ack for RPC service while already active on a different transport.");
+                        DebugTool.logInfo(TAG, "Received a start service ack for RPC service while already active on a different transport.");
                         iSdlProtocol.onProtocolSessionStarted(serviceType, (byte) packet.getSessionId(), (byte)protocolVersion.getMajor(), "", hashID, packet.isEncrypted());
                         return;
                     }
@@ -1098,7 +1097,7 @@ public class SdlProtocolBase {
                         builder.append(rejectedParam);
                         builder.append(" ");
                     }
-                    DebugTool.logWarning(builder.toString());
+                    DebugTool.logWarning(TAG, builder.toString());
                 }
 
             }
@@ -1145,7 +1144,7 @@ public class SdlProtocolBase {
 
         @Override
         public void onTransportConnected(List<TransportRecord> connectedTransports) {
-            Log.d(TAG, "onTransportConnected");
+            DebugTool.logInfo(TAG, "onTransportConnected");
             //In the future we should move this logic into the Protocol Layer
             TransportRecord transportRecord = getTransportForSession(SessionType.RPC);
             if(transportRecord == null && !requestedSession){ //There is currently no transport registered
@@ -1163,14 +1162,14 @@ public class SdlProtocolBase {
         @Override
         public void onTransportDisconnected(String info, TransportRecord disconnectedTransport, List<TransportRecord> connectedTransports) {
             if (disconnectedTransport == null) {
-                Log.d(TAG, "onTransportDisconnected");
+                DebugTool.logInfo(TAG, "onTransportDisconnected");
                 if (transportManager != null) {
                     transportManager.close(iSdlProtocol.getSessionId());
                 }
                 iSdlProtocol.shutdown("No transports left connected");
                 return;
             } else {
-                Log.d(TAG, "onTransportDisconnected - " + disconnectedTransport.getType().name());
+                DebugTool.logInfo(TAG, "onTransportDisconnected - " + disconnectedTransport.getType().name());
             }
 
             //In the future we will actually compare the record but at this point we can assume only
@@ -1193,7 +1192,7 @@ public class SdlProtocolBase {
                 boolean primaryTransportAvailable = false;
                 if(requestedPrimaryTransports != null && requestedPrimaryTransports.size() > 1){
                     for (TransportType transportType: requestedPrimaryTransports){
-                        DebugTool.logInfo( "Checking " + transportType.name());
+                        DebugTool.logInfo(TAG,  "Checking " + transportType.name());
 
                         if(!disconnectedTransport.getType().equals(transportType)
                                 && transportManager != null
@@ -1210,7 +1209,7 @@ public class SdlProtocolBase {
                                             && requestedSecondaryTransports != null
                                             && supportedSecondaryTransports != null) {
                                         for (TransportType secondaryTransport : requestedSecondaryTransports) {
-                                            DebugTool.logInfo("Checking secondary " + secondaryTransport.name());
+                                            DebugTool.logInfo(TAG, "Checking secondary " + secondaryTransport.name());
                                             if (supportedSecondaryTransports.contains(secondaryTransport)) {
                                                 //Should only be USB or TCP
                                                 highBandwidthAvailable = true;
@@ -1258,11 +1257,11 @@ public class SdlProtocolBase {
             //Await a connection from the legacy transport
             if(requestedPrimaryTransports!= null && requestedPrimaryTransports.contains(TransportType.BLUETOOTH)
                     && !SdlProtocolBase.this.requiresHighBandwidth){
-                Log.d(TAG, "Entering legacy mode; creating new protocol instance");
+                DebugTool.logInfo(TAG, "Entering legacy mode; creating new protocol instance");
                 reset();
                 return true;
             }else{
-                Log.d(TAG, "Bluetooth is not an acceptable transport; not moving to legacy mode");
+                DebugTool.logInfo(TAG, "Bluetooth is not an acceptable transport; not moving to legacy mode");
                 return false;
             }
         }
@@ -1283,7 +1282,7 @@ public class SdlProtocolBase {
             try {
                 accumulator = new ByteArrayOutputStream(totalSize);
             }catch(OutOfMemoryError e){
-                DebugTool.logError("OutOfMemory error", e); //Garbled bits were received
+                DebugTool.logError(TAG, "OutOfMemory error", e); //Garbled bits were received
                 accumulator = null;
             }
         }
@@ -1321,7 +1320,7 @@ public class SdlProtocolBase {
                 try {
                     iSdlProtocol.onProtocolMessageReceived(message);
                 } catch (Exception excp) {
-                    DebugTool.logError(FailurePropagating_Msg + "onProtocolMessageReceived: " + excp.toString(), excp);
+                    DebugTool.logError(TAG, FailurePropagating_Msg + "onProtocolMessageReceived: " + excp.toString(), excp);
                 } // end-catch
 
                 accumulator = null;
@@ -1374,7 +1373,7 @@ public class SdlProtocolBase {
         private void handleProtocolHeartbeatACK(SdlPacket packet) {
             //Heartbeat is not supported in the SdlProtocol class beyond responding with ACKs to
             //heartbeat messages. Receiving this ACK is suspicious and should be logged
-            DebugTool.logInfo("Received HeartbeatACK - " + packet.toString());
+            DebugTool.logInfo(TAG, "Received HeartbeatACK - " + packet.toString());
         }
 
         private void handleProtocolHeartbeat(SdlPacket packet) {
@@ -1427,7 +1426,7 @@ public class SdlProtocolBase {
             } else if (frameInfo == FrameDataControlFrameType.RegisterSecondaryTransportNACK.getValue()) {
 
                 String reason = (String) packet.getTag(ControlFrameTags.RPC.RegisterSecondaryTransportNAK.REASON);
-                DebugTool.logWarning(reason);
+                DebugTool.logWarning(TAG, reason);
                 handleSecondaryTransportRegistration(packet.getTransportRecord(),false);
 
             } else if (frameInfo == FrameDataControlFrameType.TransportEventUpdate.getValue()) {
@@ -1492,7 +1491,7 @@ public class SdlProtocolBase {
             try {
                 iSdlProtocol.onProtocolMessageReceived(message);
             } catch (Exception ex) {
-                DebugTool.logError(FailurePropagating_Msg + "onProtocolMessageReceived: " + ex.toString(), ex);
+                DebugTool.logError(TAG, FailurePropagating_Msg + "onProtocolMessageReceived: " + ex.toString(), ex);
                 handleProtocolError(FailurePropagating_Msg + "onProtocolMessageReceived: ", ex);
             } // end-catch
         } // end-method

@@ -10,7 +10,7 @@ import com.smartdevicelink.proxy.rpc.RadioControlData;
 import com.smartdevicelink.proxy.rpc.SeatControlData;
 import com.smartdevicelink.proxy.rpc.enums.ModuleType;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
@@ -32,14 +32,14 @@ public class ModuleDataTests extends TestCase {
 	@Override
 	public void setUp() {
 		msg = new ModuleData();
-		msg.setModuleType(Test.GENERAL_MODULETYPE);
-		msg.setRadioControlData(Test.GENERAL_RADIOCONTROLDATA);
-		msg.setClimateControlData(Test.GENERAL_CLIMATECONTROLDATA);
-		msg.setSeatControlData(Test.GENERAL_SEATCONTROLDATA);
-		msg.setAudioControlData(Test.GENERAL_AUDIOCONTROLDATA);
-		msg.setHmiSettingsControlData(Test.GENERAL_HMISETTINGSCONTROLDATA);
-		msg.setLightControlData(Test.GENERAL_LIGHTCONTROLDATA);
-		msg.setModuleId(Test.GENERAL_STRING);
+		msg.setModuleType(TestValues.GENERAL_MODULETYPE);
+		msg.setRadioControlData(TestValues.GENERAL_RADIOCONTROLDATA);
+		msg.setClimateControlData(TestValues.GENERAL_CLIMATECONTROLDATA);
+		msg.setSeatControlData(TestValues.GENERAL_SEATCONTROLDATA);
+		msg.setAudioControlData(TestValues.GENERAL_AUDIOCONTROLDATA);
+		msg.setHmiSettingsControlData(TestValues.GENERAL_HMISETTINGSCONTROLDATA);
+		msg.setLightControlData(TestValues.GENERAL_LIGHTCONTROLDATA);
+		msg.setModuleId(TestValues.GENERAL_STRING);
 	}
 
 	/**
@@ -57,44 +57,44 @@ public class ModuleDataTests extends TestCase {
 		String moduleId = msg.getModuleId();
 
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_MODULETYPE, moduleType);
-		assertTrue(Test.TRUE, Validator.validateRadioControlData(Test.GENERAL_RADIOCONTROLDATA, radioControlData));
-		assertTrue(Test.TRUE, Validator.validateClimateControlData(Test.GENERAL_CLIMATECONTROLDATA, climateControlData));
-		assertTrue(Test.TRUE, Validator.validateSeatControlData(Test.GENERAL_SEATCONTROLDATA, seatControlData));
-		assertTrue(Test.TRUE, Validator.validateAudioControlData(Test.GENERAL_AUDIOCONTROLDATA, audioControlData));
-		assertTrue(Test.TRUE, Validator.validateHMISettingsControlData(Test.GENERAL_HMISETTINGSCONTROLDATA, hmiSettingsControlData));
-		assertTrue(Test.TRUE, Validator.validateLightControlData(Test.GENERAL_LIGHTCONTROLDATA, lightControlData));
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, moduleId);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_MODULETYPE, moduleType);
+		assertTrue(TestValues.TRUE, Validator.validateRadioControlData(TestValues.GENERAL_RADIOCONTROLDATA, radioControlData));
+		assertTrue(TestValues.TRUE, Validator.validateClimateControlData(TestValues.GENERAL_CLIMATECONTROLDATA, climateControlData));
+		assertTrue(TestValues.TRUE, Validator.validateSeatControlData(TestValues.GENERAL_SEATCONTROLDATA, seatControlData));
+		assertTrue(TestValues.TRUE, Validator.validateAudioControlData(TestValues.GENERAL_AUDIOCONTROLDATA, audioControlData));
+		assertTrue(TestValues.TRUE, Validator.validateHMISettingsControlData(TestValues.GENERAL_HMISETTINGSCONTROLDATA, hmiSettingsControlData));
+		assertTrue(TestValues.TRUE, Validator.validateLightControlData(TestValues.GENERAL_LIGHTCONTROLDATA, lightControlData));
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, moduleId);
 
 		// Invalid/Null Tests
 		ModuleData msg = new ModuleData();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getModuleType());
-		assertNull(Test.NULL, msg.getRadioControlData());
-		assertNull(Test.NULL, msg.getClimateControlData());
-		assertNull(Test.NULL, msg.getSeatControlData());
-		assertNull(Test.NULL, msg.getAudioControlData());
-		assertNull(Test.NULL, msg.getHmiSettingsControlData());
-		assertNull(Test.NULL, msg.getLightControlData());
-		assertNull(Test.NULL, msg.getModuleId());
+		assertNull(TestValues.NULL, msg.getModuleType());
+		assertNull(TestValues.NULL, msg.getRadioControlData());
+		assertNull(TestValues.NULL, msg.getClimateControlData());
+		assertNull(TestValues.NULL, msg.getSeatControlData());
+		assertNull(TestValues.NULL, msg.getAudioControlData());
+		assertNull(TestValues.NULL, msg.getHmiSettingsControlData());
+		assertNull(TestValues.NULL, msg.getLightControlData());
+		assertNull(TestValues.NULL, msg.getModuleId());
 	}
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
 		try {
-			reference.put(ModuleData.KEY_MODULE_TYPE, Test.GENERAL_MODULETYPE);
-			reference.put(ModuleData.KEY_RADIO_CONTROL_DATA, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_RADIOCONTROLDATA.getStore()));
-			reference.put(ModuleData.KEY_CLIMATE_CONTROL_DATA, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_CLIMATECONTROLDATA.getStore()));
-			reference.put(ModuleData.KEY_SEAT_CONTROL_DATA, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_SEATCONTROLDATA.getStore()));
-			reference.put(ModuleData.KEY_AUDIO_CONTROL_DATA, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_AUDIOCONTROLDATA.getStore()));
-			reference.put(ModuleData.KEY_HMI_SETTINGS_CONTROL_DATA, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_HMISETTINGSCONTROLDATA.getStore()));
-			reference.put(ModuleData.KEY_LIGHT_CONTROL_DATA, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_LIGHTCONTROLDATA.getStore()));
-			reference.put(ModuleData.KEY_MODULE_ID, Test.GENERAL_STRING);
+			reference.put(ModuleData.KEY_MODULE_TYPE, TestValues.GENERAL_MODULETYPE);
+			reference.put(ModuleData.KEY_RADIO_CONTROL_DATA, JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_RADIOCONTROLDATA.getStore()));
+			reference.put(ModuleData.KEY_CLIMATE_CONTROL_DATA, JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_CLIMATECONTROLDATA.getStore()));
+			reference.put(ModuleData.KEY_SEAT_CONTROL_DATA, JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_SEATCONTROLDATA.getStore()));
+			reference.put(ModuleData.KEY_AUDIO_CONTROL_DATA, JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_AUDIOCONTROLDATA.getStore()));
+			reference.put(ModuleData.KEY_HMI_SETTINGS_CONTROL_DATA, JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_HMISETTINGSCONTROLDATA.getStore()));
+			reference.put(ModuleData.KEY_LIGHT_CONTROL_DATA, JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_LIGHTCONTROLDATA.getStore()));
+			reference.put(ModuleData.KEY_MODULE_ID, TestValues.GENERAL_STRING);
 
 			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
@@ -105,43 +105,43 @@ public class ModuleDataTests extends TestCase {
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-					assertTrue(Test.TRUE, Validator.validateRadioControlData(new RadioControlData(hashReference), new RadioControlData(hashTest)));
+					assertTrue(TestValues.TRUE, Validator.validateRadioControlData(new RadioControlData(hashReference), new RadioControlData(hashTest)));
 				} else if (key.equals(ModuleData.KEY_CLIMATE_CONTROL_DATA)) {
 					JSONObject objectEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(reference, key);
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-					assertTrue(Test.TRUE, Validator.validateClimateControlData(new ClimateControlData(hashReference), new ClimateControlData(hashTest)));
+					assertTrue(TestValues.TRUE, Validator.validateClimateControlData(new ClimateControlData(hashReference), new ClimateControlData(hashTest)));
 				} else if (key.equals(ModuleData.KEY_SEAT_CONTROL_DATA)) {
 					JSONObject objectEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(reference, key);
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-					assertTrue(Test.TRUE, Validator.validateSeatControlData(new SeatControlData(hashReference), new SeatControlData(hashTest)));
+					assertTrue(TestValues.TRUE, Validator.validateSeatControlData(new SeatControlData(hashReference), new SeatControlData(hashTest)));
 				} else if (key.equals(ModuleData.KEY_AUDIO_CONTROL_DATA)) {
 					JSONObject objectEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(reference, key);
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-					assertTrue(Test.TRUE, Validator.validateAudioControlData(new AudioControlData(hashReference), new AudioControlData(hashTest)));
+					assertTrue(TestValues.TRUE, Validator.validateAudioControlData(new AudioControlData(hashReference), new AudioControlData(hashTest)));
 				} else if (key.equals(ModuleData.KEY_HMI_SETTINGS_CONTROL_DATA)) {
 					JSONObject objectEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(reference, key);
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-					assertTrue(Test.TRUE, Validator.validateHMISettingsControlData(new HMISettingsControlData(hashReference), new HMISettingsControlData(hashTest)));
+					assertTrue(TestValues.TRUE, Validator.validateHMISettingsControlData(new HMISettingsControlData(hashReference), new HMISettingsControlData(hashTest)));
 				} else if (key.equals(ModuleData.KEY_LIGHT_CONTROL_DATA)) {
 					JSONObject objectEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(reference, key);
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-					assertTrue(Test.TRUE, Validator.validateLightControlData(new LightControlData(hashReference), new LightControlData(hashTest)));
+					assertTrue(TestValues.TRUE, Validator.validateLightControlData(new LightControlData(hashReference), new LightControlData(hashTest)));
 				} else {
-					assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+					assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 				}
 			}
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 }

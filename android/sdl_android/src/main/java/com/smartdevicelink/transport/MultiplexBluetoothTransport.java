@@ -30,11 +30,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.RequiresPermission;
-import android.util.Log;
 
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.TransportRecord;
+import com.smartdevicelink.util.DebugTool;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -263,29 +263,41 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
      * Stop all threads
      */
     public synchronized void stop() {
-    	stop(STATE_NONE);
+	    stop(STATE_NONE, REASON_NONE);
     }
-    protected synchronized void stop(int stateToTransitionTo) {
-    	//Log.d(TAG, "Attempting to close the bluetooth serial server");
-        if (mConnectThread != null) {
-        	mConnectThread.cancel();
-        	mConnectThread = null;
-        }
 
-        if (mConnectedThread != null) {
-        	mConnectedThread.cancel(); 
-        	mConnectedThread = null;
-        }
-        if (mConnectedWriteThread != null) {mConnectedWriteThread.cancel(); mConnectedWriteThread = null;}
+	protected synchronized void stop(int stateToTransitionTo) {
+		this.stop(stateToTransitionTo, REASON_NONE);
+	}
+	@Override
+	protected synchronized void stop(int stateToTransitionTo, byte error) {
+		super.stop(stateToTransitionTo, error);
+        DebugTool.logInfo(TAG, "Attempting to close the bluetooth serial server");
+		if (mConnectThread != null) {
+			mConnectThread.cancel();
+			mConnectThread = null;
+		}
 
-        if (mSecureAcceptThread != null) {
-            mSecureAcceptThread.cancel();
-            mSecureAcceptThread = null;
-        }
+		if (mConnectedThread != null) {
+			mConnectedThread.cancel();
+			mConnectedThread = null;
+		}
+		if (mConnectedWriteThread != null) {mConnectedWriteThread.cancel(); mConnectedWriteThread = null;}
 
-        setState(stateToTransitionTo);
-    }
-    
+		if (mSecureAcceptThread != null) {
+			mSecureAcceptThread.cancel();
+			mSecureAcceptThread = null;
+		}
+
+		if (stateToTransitionTo == MultiplexBaseTransport.STATE_ERROR) {
+			Bundle bundle = new Bundle();
+			bundle.putByte(ERROR_REASON_KEY, error);
+			setState(stateToTransitionTo, bundle);
+		} else {
+			setState(stateToTransitionTo, null);
+		}
+	}
+
 
     /**
      * Write to the ConnectedThread in an unsynchronized manner
@@ -375,6 +387,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                 	}
             	} catch (IOException e) {
                 	//Log.e(TAG, "Socket Type: " + mSocketType + "listen() failed", e);
+		            MultiplexBluetoothTransport.this.stop(STATE_ERROR, REASON_SPP_ERROR);
                 	 //Let's try to shut down this thead
             	}catch(SecurityException e2){
             		//Log.e(TAG, "<LIVIO> Security Exception in Accept Thread - "+e2.toString());
@@ -390,7 +403,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
         @RequiresPermission(Manifest.permission.BLUETOOTH)
         public void run() {
             synchronized(THREAD_LOCK){
-            	Log.d(TAG, "Socket Type: " + mSocketType +
+                DebugTool.logInfo(TAG, "Socket Type: " + mSocketType +
                     " BEGIN mAcceptThread" + this);
             setName("AcceptThread" + mSocketType);
 
@@ -401,12 +414,12 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
             while (mState != STATE_CONNECTED) {
                 try {
                 	if(listenAttempts>=5){
-                		Log.e(TAG, "Complete failure in attempting to listen for Bluetooth connection, erroring out.");
-                		MultiplexBluetoothTransport.this.stop(STATE_ERROR);
+                        DebugTool.logError(TAG, "Complete failure in attempting to listen for Bluetooth connection, erroring out.");
+		                MultiplexBluetoothTransport.this.stop(STATE_ERROR, REASON_NONE);
                 		return;
                 	}
                 	listenAttempts++;
-                	Log.d(TAG, "SDL Bluetooth Accept thread is running.");
+                    DebugTool.logInfo(TAG, "SDL Bluetooth Accept thread is running.");
 
                     // This is a blocking call and will only return on a
                     // successful connection or an exception
@@ -416,13 +429,13 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                     
                 	}
                 	else{
-                		Log.e(TAG, "Listening Socket was null, stopping the bluetooth serial server.");
-                		MultiplexBluetoothTransport.this.stop(STATE_ERROR);
+                        DebugTool.logError(TAG, "Listening Socket was null, stopping the bluetooth serial server.");
+		                MultiplexBluetoothTransport.this.stop(STATE_ERROR, REASON_NONE);
                 		return;
                 	}
                 } catch (IOException e) {
-                    Log.e(TAG, "Socket Type: " + mSocketType + "accept() failed");
-                    MultiplexBluetoothTransport.this.stop(STATE_ERROR);
+                    DebugTool.logError(TAG, "Socket Type: " + mSocketType + "accept() failed");
+	                MultiplexBluetoothTransport.this.stop(STATE_ERROR, REASON_SPP_ERROR);
                     return;
                 }
 
@@ -440,29 +453,29 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                         case STATE_CONNECTED:
                             // Either not ready or already connected. Terminate new socket.
                             try {
-                            	Log.d(TAG, "Close unwanted socket");
+                                DebugTool.logInfo(TAG, "Close unwanted socket");
                                	socket.close();
                             } catch (IOException e) {
-                                Log.e(TAG, "Could not close unwanted socket", e);
+                                DebugTool.logError(TAG, "Could not close unwanted socket", e);
                             }
                             break;
                         }
                     }
                 }
             }
-            Log.d(TAG, mState + " END mAcceptThread, socket Type: " + mSocketType);
+                DebugTool.logInfo(TAG, mState + " END mAcceptThread, socket Type: " + mSocketType);
         }
         }
 
         public synchronized void cancel() {
-        	Log.d(TAG, mState + " Socket Type " + mSocketType + " cancel ");
+            DebugTool.logInfo(TAG, mState + " Socket Type " + mSocketType + " cancel ");
             try {
             	if(mmServerSocket != null){
             		mmServerSocket.close();
             	}
             	
             } catch (IOException e) {
-                Log.e(TAG, mState + " Socket Type " + mSocketType + " close() of server failed "+ Arrays.toString(e.getStackTrace()));
+                DebugTool.logError(TAG, mState + " Socket Type " + mSocketType + " close() of server failed "+ Arrays.toString(e.getStackTrace()));
             }
         }
     }
@@ -488,7 +501,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
         	try{
         		mAdapter.cancelDiscovery();
         	}catch(SecurityException e2){
-        		Log.e(TAG, "Don't have required permision to cancel discovery. Moving on");
+                DebugTool.logError(TAG, "Don't have required permision to cancel discovery. Moving on");
         	}
         }
 
@@ -575,11 +588,11 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
 	    					}else{tryInsecure = true;}
 	                    } catch (IOException io) {
 	                        tryInsecure = true;
-	                         Log.e(TAG,"createRfcommSocketToServiceRecord exception - " + io.toString());
+                            DebugTool.logError(TAG, "createRfcommSocketToServiceRecord exception - " + io.toString());
 	                         SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
 
 	                    } catch (Exception e){
-	                         Log.e(TAG,"createRfcommSocketToServiceRecord exception - " + e.toString());
+                            DebugTool.logError(TAG, "createRfcommSocketToServiceRecord exception - " + e.toString());
 	                         SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
 
 	                    }
@@ -640,13 +653,13 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
 	                }
 	            }  catch (IOException e) {
               connectionFailed();
-              Log.e(TAG,e.getClass().getSimpleName()
+                    DebugTool.logError(TAG,e.getClass().getSimpleName()
                       + " caught connecting to the bluetooth socket: "
                       + e.toString());
               try {
                   mmSocket.close();
               } catch (IOException e2) {
-              	Log.e(TAG,"unable to close() socket during connection failure" + e2);
+                  DebugTool.logError(TAG, "unable to close() socket during connection failure" + e2);
               }
               return;
           }
@@ -665,13 +678,13 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
             }
             else
             {
-            	Log.e(TAG, "There was a problem opening up RFCOMM");
+                DebugTool.logError(TAG, "There was a problem opening up RFCOMM");
             }
         }
 
         public void cancel() {
             try {
-            	Log.d(TAG, "Calling Cancel in the connect thread");
+                DebugTool.logInfo(TAG, "Calling Cancel in the connect thread");
                 mmSocket.close();
             } catch (IOException e) {
                 // close() of connect socket failed
@@ -701,7 +714,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                 tmpOut = socket.getOutputStream();
             } catch (IOException e) {
                 // temp sockets not created
-            	Log.e(TAG, "Connected Write Thread: " + e.getMessage());
+                DebugTool.logError(TAG, "Connected Write Thread: " + e.getMessage());
             }
             mmOutStream = tmpOut;
 
@@ -714,7 +727,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
         public void write(byte[] buffer, int offset, int count) {
             try {
             	if(buffer==null){
-            		Log.w(TAG, "Can't write to device, nothing to send");
+                    DebugTool.logWarning(TAG, "Can't write to device, nothing to send");
             		return;
             	}
             	//This would be a good spot to log out all bytes received
@@ -723,7 +736,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
             } catch (IOException|NullPointerException e) { // STRICTLY to catch mmOutStream NPE
                 // Exception during write
             	//OMG! WE MUST NOT BE CONNECTED ANYMORE! LET THE USER KNOW
-            	Log.e(TAG, "Error sending bytes to connected device!");
+                DebugTool.logError(TAG, "Error sending bytes to connected device!");
             	connectionLost();
             }
         }
@@ -740,7 +753,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
             	}
             } catch (IOException e) {
                 // close() of connect socket failed
-            	Log.d(TAG,  "Write Thread: " + e.getMessage());
+                DebugTool.logInfo(TAG, "Write Thread: " + e.getMessage());
             }
         }
     }
@@ -760,7 +773,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                 tmpIn = socket.getInputStream();
             } catch (IOException e) {
                 // temp sockets not created
-            	Log.e(TAG, "Connected Read Thread: "+e.getMessage());
+                DebugTool.logError(TAG, "Connected Read Thread: "+e.getMessage());
             }
             mmInStream = tmpIn;
             
@@ -768,7 +781,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
         
 		@SuppressLint("NewApi")
 		public void run() {
-            Log.d(TAG, "Running the Connected Thread");
+            DebugTool.logInfo(TAG, "Running the Connected Thread");
             byte input = 0;
             int bytesRead = 0;
             byte[] buffer = new byte[READ_BUFFER_SIZE];
@@ -801,9 +814,11 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                         }
                     }
                 } catch (IOException|NullPointerException e) { // NPE is ONLY to catch error on mmInStream
-                	Log.e(TAG, "Lost connection in the Connected Thread");
-                	e.printStackTrace();
-                	connectionLost();                    
+                    DebugTool.logError(TAG, "Lost connection in the Connected Thread");
+                	if(DebugTool.isDebugEnabled()){
+                	    e.printStackTrace();
+                    }
+                	connectionLost();
                     break;
                 }
             }

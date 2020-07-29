@@ -32,31 +32,28 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import com.smartdevicelink.AndroidTestCase2;
-import com.smartdevicelink.test.Test;
+import android.support.test.runner.AndroidJUnit4;
 
-public class RunScoreTests extends AndroidTestCase2 {
+import com.smartdevicelink.test.TestValues;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-	@Override
-	public void setUp() throws Exception{
-		super.setUp();
-	}
+import static junit.framework.TestCase.assertEquals;
 
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-	}
+@RunWith(AndroidJUnit4.class)
+public class RunScoreTests {
 
+	@Test
 	public void testSettersAndGetters(){
 
 		// set everything - we only use the constructor to set variables in the Menu Manager
-		RunScore runScore = new RunScore(Test.GENERAL_INT, Test.GENERAL_INTEGER_LIST, Test.GENERAL_INTEGER_LIST);
+		RunScore runScore = new RunScore(TestValues.GENERAL_INT, TestValues.GENERAL_INTEGER_LIST, TestValues.GENERAL_INTEGER_LIST);
 
 		// use getters and assert equality
-		assertEquals(runScore.getScore(), Test.GENERAL_INT);
-		assertEquals(runScore.getCurrentMenu(), Test.GENERAL_INTEGER_LIST);
-		assertEquals(runScore.getOldMenu(), Test.GENERAL_INTEGER_LIST);
+		assertEquals(runScore.getScore(), TestValues.GENERAL_INT);
+		assertEquals(runScore.getCurrentMenu(), TestValues.GENERAL_INTEGER_LIST);
+		assertEquals(runScore.getOldMenu(), TestValues.GENERAL_INTEGER_LIST);
 	}
 
 }

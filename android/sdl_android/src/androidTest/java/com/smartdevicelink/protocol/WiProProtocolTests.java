@@ -1,8 +1,8 @@
 package com.smartdevicelink.protocol;
 
+import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
-import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.protocol.WiProProtocol.MessageFrameAssembler;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -14,15 +14,27 @@ import com.smartdevicelink.transport.RouterServiceValidator;
 
 import junit.framework.Assert;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Method;
 import java.util.List;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static android.support.test.InstrumentationRegistry.getContext;
+import static junit.framework.TestCase.assertTrue;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.protocol.BinaryFrameHeader}
  */
-public class WiProProtocolTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class WiProProtocolTests {
 	
 	int max_int = 2147483647;
 	byte[] payload;
@@ -97,12 +109,14 @@ public class WiProProtocolTests extends AndroidTestCase2 {
 		public void onProtocolError(String info, Exception e) {}
 	};
 	DidReceiveListener onProtocolMessageReceivedListener = new DidReceiveListener();
-	
+
+	@Test
 	public void testBase(){
 		WiProProtocol wiProProtocol = new WiProProtocol(defaultListener);
 		
 	}
-	
+
+	@Test
 	public void testVersion(){
 		WiProProtocol wiProProtocol = new WiProProtocol(defaultListener);
 		
@@ -135,7 +149,8 @@ public class WiProProtocolTests extends AndroidTestCase2 {
 		wiProProtocol.setVersion((byte)0x00);
 		assertEquals((byte)0x01,wiProProtocol.getVersion());
 	}
-	
+
+	@Test
 	public void testMtu(){
 		WiProProtocol wiProProtocol = new WiProProtocol(defaultListener);
 		
@@ -169,7 +184,8 @@ public class WiProProtocolTests extends AndroidTestCase2 {
 		}
 
 	}
-	
+
+	@Test
 	public void testHandleFrame(){
 		SampleRpc sampleRpc = new SampleRpc(4);
 		WiProProtocol wiProProtocol = new WiProProtocol(defaultListener);
@@ -180,6 +196,8 @@ public class WiProProtocolTests extends AndroidTestCase2 {
 			Assert.fail("Exceptin during handleFrame - " + e.toString());
 		}
 	}
+
+	@Test
 	public void testHandleFrameCorrupt(){
 		SampleRpc sampleRpc = new SampleRpc(4);
 		BinaryFrameHeader header = sampleRpc.getBinaryFrameHeader(true);
@@ -193,7 +211,8 @@ public class WiProProtocolTests extends AndroidTestCase2 {
 			Assert.fail("Exceptin during handleFrame - " + e.toString());
 		}
 	}
-	
+
+	@Test
 	public void testHandleSingleFrameMessageFrame(){
 		SampleRpc sampleRpc = new SampleRpc(4);
 		WiProProtocol wiProProtocol = new WiProProtocol(defaultListener);
@@ -208,7 +227,8 @@ public class WiProProtocolTests extends AndroidTestCase2 {
 			Assert.fail("Exceptin during handleSingleFrameMessageFrame - " + e.toString());
 		}	
 	}
-	
+
+	@Test
 	public void testHandleSingleFrameMessageFrameCorruptBfh(){
 		SampleRpc sampleRpc = new SampleRpc(4);
 		
@@ -246,13 +266,14 @@ public class WiProProtocolTests extends AndroidTestCase2 {
 	}
 	
 
-	
+	@Before
 	public void setUp(){
-		config = new MultiplexTransportConfig(this.mContext,SdlUnitTestContants.TEST_APP_ID);
+		config = new MultiplexTransportConfig(getContext(),SdlUnitTestContants.TEST_APP_ID);
 		connection = new SdlConnectionTestClass(config, null);
 		protocol = new WiProProtocol(connection);
 	}
-	
+
+	@Test
 	public void testNormalCase(){
 		setUp();
 		payload = new byte[]{0x00,0x02,0x05,0x01,0x01,0x01,0x05,0x00};
@@ -296,7 +317,8 @@ public class WiProProtocolTests extends AndroidTestCase2 {
 		assertNull(np_exception);
 		assertNull(oom_error);
 	}
-	
+
+	@Test
 	public void testOverallocatingAccumulator(){
 		setUp();
 		ByteArrayOutputStream builder = new ByteArrayOutputStream();
@@ -364,7 +386,7 @@ public class WiProProtocolTests extends AndroidTestCase2 {
 		public void onTransportDisconnected(String info) {
 			connected = false;
 			//Grab a currently running router service
-			RouterServiceValidator rsvp2 = new RouterServiceValidator(mContext);
+			RouterServiceValidator rsvp2 = new RouterServiceValidator(getContext());
 			rsvp2.setFlags(RouterServiceValidator.FLAG_DEBUG_NONE);
 			assertTrue(rsvp2.validate());
 			assertNotNull(rsvp2.getService());

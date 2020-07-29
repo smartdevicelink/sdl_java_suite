@@ -2,7 +2,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 
 import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -19,10 +19,10 @@ public class VehicleTypeTest extends TestCase {
 	public void setUp() {
 		msg = new VehicleType();
 		
-		msg.setModel(Test.GENERAL_STRING);
-		msg.setMake(Test.GENERAL_STRING);
-		msg.setTrim(Test.GENERAL_STRING);
-		msg.setModelYear(Test.GENERAL_STRING);
+		msg.setModel(TestValues.GENERAL_STRING);
+		msg.setMake(TestValues.GENERAL_STRING);
+		msg.setTrim(TestValues.GENERAL_STRING);
+		msg.setModelYear(TestValues.GENERAL_STRING);
 	}
 
     /**
@@ -36,40 +36,40 @@ public class VehicleTypeTest extends TestCase {
 		String model = msg.getModel();
 		
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, year);
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, model);
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, make);
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, trim);		
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, year);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, model);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, make);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, trim);
 		
 		// Invalid/Null Tests
 		VehicleType msg = new VehicleType();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getModel());
-		assertNull(Test.NULL, msg.getMake());
-		assertNull(Test.NULL, msg.getModelYear());
-		assertNull(Test.NULL, msg.getTrim());
+		assertNull(TestValues.NULL, msg.getModel());
+		assertNull(TestValues.NULL, msg.getMake());
+		assertNull(TestValues.NULL, msg.getModelYear());
+		assertNull(TestValues.NULL, msg.getTrim());
 	}
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
 		try {
-			reference.put(VehicleType.KEY_MODEL, Test.GENERAL_STRING);
-			reference.put(VehicleType.KEY_MAKE, Test.GENERAL_STRING);
-			reference.put(VehicleType.KEY_MODEL_YEAR, Test.GENERAL_STRING);
-			reference.put(VehicleType.KEY_TRIM, Test.GENERAL_STRING);
+			reference.put(VehicleType.KEY_MODEL, TestValues.GENERAL_STRING);
+			reference.put(VehicleType.KEY_MAKE, TestValues.GENERAL_STRING);
+			reference.put(VehicleType.KEY_MODEL_YEAR, TestValues.GENERAL_STRING);
+			reference.put(VehicleType.KEY_TRIM, TestValues.GENERAL_STRING);
 
 			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
-				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+				assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 			}
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 }

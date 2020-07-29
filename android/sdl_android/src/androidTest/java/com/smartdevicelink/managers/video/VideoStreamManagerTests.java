@@ -3,12 +3,12 @@ package com.smartdevicelink.managers.video;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.test.runner.AndroidJUnit4;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -19,7 +19,6 @@ import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnTouchEvent;
-import com.smartdevicelink.proxy.rpc.RegisterAppInterface;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
@@ -31,9 +30,12 @@ import com.smartdevicelink.proxy.rpc.enums.VideoStreamingState;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.streaming.video.SdlRemoteDisplay;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.util.Version;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -44,6 +46,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
@@ -52,27 +58,23 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static android.support.test.InstrumentationRegistry.getContext;
 
 /**
  * This is a unit test class for the SmartDeviceLink video streaming manager class :
  * {@link VideoStreamManager}
  */
-public class VideoStreamManagerTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class VideoStreamManagerTests {
 	public static final String TAG = "VideoStreamManagerTests";
 	private Context mTestContext;
 	private static boolean touchEventOccured = false;
 
 	// SETUP / HELPERS
 
-	@Override
+	@Before
 	public void setUp() throws Exception{
-		super.setUp();
-		mTestContext = this.getContext();
-	}
-
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
+		mTestContext = getContext();
 	}
 
 	// TEST CLASSES
@@ -99,6 +101,7 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
 
 	// TESTS
 
+	@Test
 	public void testInitialization(){
 		ISdl internalInterface = mock(ISdl.class);
 		when(internalInterface.getProtocolVersion()).thenReturn(new Version(5,1,0));
@@ -132,6 +135,7 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
 		});
 	}
 
+	@Test
 	public void testHMILevelNotFull(){
 		final ISdl internalInterface = mock(ISdl.class);
 
@@ -157,6 +161,7 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
 		});
 	}
 
+	@Test
 	public void testRemoteDisplayStream(){
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -176,7 +181,7 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
 			public Void answer(InvocationOnMock invocation) {
 				Object[] args = invocation.getArguments();
 				OnSystemCapabilityListener systemCapabilityListener = (OnSystemCapabilityListener) args[1];
-				systemCapabilityListener.onCapabilityRetrieved(Test.GENERAL_VIDEOSTREAMINGCAPABILITY);
+				systemCapabilityListener.onCapabilityRetrieved(TestValues.GENERAL_VIDEOSTREAMINGCAPABILITY);
 				return null;
 			}
 		};
@@ -249,7 +254,7 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
 			public void sendFrame(ByteBuffer data, long presentationTimeUs) {}
 		});
 
-		when(internalInterface.getCapability(SystemCapabilityType.VIDEO_STREAMING)).thenReturn(Test.GENERAL_VIDEOSTREAMINGCAPABILITY);
+		when(internalInterface.getCapability(SystemCapabilityType.VIDEO_STREAMING)).thenReturn(TestValues.GENERAL_VIDEOSTREAMINGCAPABILITY);
 
 		final VideoStreamManager videoStreamManager = new VideoStreamManager(internalInterface);
 		videoStreamManager.start(new CompletionListener() {
@@ -273,6 +278,7 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
 
 	}
 
+	@Test
 	public void testConvertTouchEvent() {
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -482,14 +488,17 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	}
 
+	@Test
     public void testConvertTouchEvent_Scale_1() {
         assertMotionEventWithScale(800, 480, 1.0f);
     }
 
+    @Test
     public void testConvertTouchEvent_Scale_1_25() {
         assertMotionEventWithScale(1280, 768, 1.25f);
     }
 
+    @Test
     public void testConvertTouchEvent_Scale_1_5() {
         assertMotionEventWithScale(1280, 768, 1.5f);
     }
@@ -533,6 +542,7 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
         assertEquals(Math.round(e1y / scale), Math.round(motionEvent.getY(0)));
     }
 
+    @Test
 	public void testIsHMIStateVideoStreamCapable() {
 		VideoStreamManager videoStreamManager = new VideoStreamManager(mock(ISdl.class));
 

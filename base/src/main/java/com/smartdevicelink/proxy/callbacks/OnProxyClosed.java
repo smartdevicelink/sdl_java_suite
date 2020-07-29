@@ -33,6 +33,7 @@ package com.smartdevicelink.proxy.callbacks;
 
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 
+@Deprecated
 public class OnProxyClosed extends InternalProxyMessage {
 	
 	private String _info;

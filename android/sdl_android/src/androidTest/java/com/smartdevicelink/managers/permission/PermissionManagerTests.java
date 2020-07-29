@@ -1,8 +1,8 @@
 package com.smartdevicelink.managers.permission;
 
 import android.support.annotation.NonNull;
+import android.support.test.runner.AndroidJUnit4;
 
-import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
@@ -13,6 +13,9 @@ import com.smartdevicelink.proxy.rpc.PermissionItem;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -21,23 +24,28 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static com.smartdevicelink.managers.permission.BasePermissionManager.PERMISSION_GROUP_STATUS_DISALLOWED;
 import static com.smartdevicelink.managers.permission.PermissionManager.PERMISSION_GROUP_STATUS_ALLOWED;
 import static com.smartdevicelink.managers.permission.PermissionManager.PERMISSION_GROUP_STATUS_MIXED;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
-public class PermissionManagerTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class PermissionManagerTests {
 
     private OnRPCNotificationListener onHMIStatusListener, onPermissionsChangeListener;
     private PermissionManager permissionManager;
     private int listenerCalledCounter;
 
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
+
 
         // Mock Isdl and its behaviour to use it for PermissionManager testing
         ISdl internalInterface = mock(ISdl.class);
@@ -94,6 +102,7 @@ public class PermissionManagerTests extends AndroidTestCase2 {
     }
 
     // Test adding a listener to be called when ALL of the specified permissions become allowed
+    @Test
     public void testListenersAllAllowed() {
         listenerCalledCounter = 0;
 
@@ -106,7 +115,7 @@ public class PermissionManagerTests extends AndroidTestCase2 {
             @Override
             public void onPermissionsChange(@NonNull Map<FunctionID, PermissionStatus> allowedPermissions, @NonNull int permissionGroupStatus) {
             // Make sure is the actual result matches the expected one
-            assertEquals(permissionGroupStatus, PERMISSION_GROUP_STATUS_ALLOWED);
+            assertEquals(PERMISSION_GROUP_STATUS_ALLOWED, permissionGroupStatus);
             assertTrue(allowedPermissions.get(FunctionID.SHOW).getIsRPCAllowed());
             assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getIsRPCAllowed());
             assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("rpm"));
@@ -140,13 +149,19 @@ public class PermissionManagerTests extends AndroidTestCase2 {
 
 
         // Make sure the listener is called exactly once
-        assertEquals("Listener was not called or called more/less frequently than expected", listenerCalledCounter, 1);
+        assertEquals("Listener was not called or called more/less frequently than expected", 1, listenerCalledCounter);
     }
 
 
     // Test adding a listener to be called when ANY of the specified permissions become allowed
+    @Test
     public void testListenersAnyAllowed() {
         listenerCalledCounter = 0;
+
+
+        // Emulate Core's behaviour by sending OnHMIStatus notification
+        sendFakeCoreOnHMIStatusNotifications(HMILevel.HMI_NONE);
+
 
         // Test how developers can add listeners through PermissionManager
         List<PermissionElement> permissionElements = new ArrayList<>();
@@ -157,13 +172,19 @@ public class PermissionManagerTests extends AndroidTestCase2 {
             public void onPermissionsChange(@NonNull Map<FunctionID, PermissionStatus> allowedPermissions, @NonNull int permissionGroupStatus) {
                 // Make sure is the actual result matches the expected one
                 if (listenerCalledCounter == 0) { // Listener called for the first time
-                    assertEquals(permissionGroupStatus, PERMISSION_GROUP_STATUS_MIXED);
+                    assertEquals(PERMISSION_GROUP_STATUS_DISALLOWED, permissionGroupStatus);
+                    assertFalse(allowedPermissions.get(FunctionID.SHOW).getIsRPCAllowed());
+                    assertFalse(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getIsRPCAllowed());
+                    assertFalse(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("rpm"));
+                    assertFalse(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("airbagStatus"));
+                } else if (listenerCalledCounter == 1) { // Listener called for the first time
+                    assertEquals(PERMISSION_GROUP_STATUS_MIXED, permissionGroupStatus);
                     assertTrue(allowedPermissions.get(FunctionID.SHOW).getIsRPCAllowed());
-                    assertTrue(!allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getIsRPCAllowed());
-                    assertTrue(!allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("rpm"));
-                    assertTrue(!allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("airbagStatus"));
-                } else if (listenerCalledCounter == 1) {  // Listener called for the second time
-                    assertEquals(permissionGroupStatus, PERMISSION_GROUP_STATUS_ALLOWED);
+                    assertFalse(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getIsRPCAllowed());
+                    assertFalse(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("rpm"));
+                    assertFalse(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("airbagStatus"));
+                } else if (listenerCalledCounter == 2) {  // Listener called for the third time
+                    assertEquals(PERMISSION_GROUP_STATUS_ALLOWED, permissionGroupStatus);
                     assertTrue(allowedPermissions.get(FunctionID.SHOW).getIsRPCAllowed());
                     assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getIsRPCAllowed());
                     assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("rpm"));
@@ -198,6 +219,6 @@ public class PermissionManagerTests extends AndroidTestCase2 {
 
 
         // Make sure the the listener is called exactly twice
-        assertEquals("Listener was not called or called more/less frequently than expected", listenerCalledCounter, 2);
+        assertEquals("Listener was not called or called more/less frequently than expected", 3, listenerCalledCounter);
     }
 }

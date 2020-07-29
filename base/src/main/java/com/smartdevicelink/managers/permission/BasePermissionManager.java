@@ -392,7 +392,8 @@ abstract class BasePermissionManager extends BaseSubManager{
     }
 
     /**
-     * Add a listener to be called when there is permissions change
+     * Add a listener to be called when there is permissions change.
+     * When the listener is added it will be called immediately with the current permission values if the values comply with with the passed groupType
      * @param permissionElements list of PermissionElement that represents the RPC names and their parameters
      * @param groupType PermissionGroupType int value represents whether we need the listener to be called when there is any permissions change or only when all permission become allowed
      * @param listener OnPermissionChangeListener interface
@@ -402,6 +403,9 @@ abstract class BasePermissionManager extends BaseSubManager{
     public UUID addListener(@NonNull List<PermissionElement> permissionElements, @PermissionGroupType int groupType, @NonNull OnPermissionChangeListener listener){
         PermissionFilter filter = new PermissionFilter(null, permissionElements, groupType, listener);
         filters.add(filter);
+        if (groupType == PERMISSION_GROUP_TYPE_ANY || (groupType == PERMISSION_GROUP_TYPE_ALL_ALLOWED && getGroupStatusOfPermissions(permissionElements) == PERMISSION_GROUP_STATUS_ALLOWED)) {
+            notifyListener(filter);
+        }
         return filter.getIdentifier();
     }
 

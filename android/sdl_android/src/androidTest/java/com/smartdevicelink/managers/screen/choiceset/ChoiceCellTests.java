@@ -32,87 +32,89 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
-public class ChoiceCellTests extends AndroidTestCase2 {
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
+
+@RunWith(AndroidJUnit4.class)
+public class ChoiceCellTests {
 
     private static final int MAX_ID = 2000000000;
     private SdlArtwork artwork = new SdlArtwork("image", FileType.GRAPHIC_PNG, 1, true);
 
-    @Override
-    public void setUp() throws Exception{
-        super.setUp();
-    }
-
-    @Override
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-
+    @Test
     public void testSettersAndGetters(){
 
         // set everything
-        ChoiceCell choiceCell = new ChoiceCell(Test.GENERAL_STRING);
-        choiceCell.setSecondaryText(Test.GENERAL_STRING);
-        choiceCell.setTertiaryText(Test.GENERAL_STRING);
-        choiceCell.setVoiceCommands(Test.GENERAL_STRING_LIST);
+        ChoiceCell choiceCell = new ChoiceCell(TestValues.GENERAL_STRING);
+        choiceCell.setSecondaryText(TestValues.GENERAL_STRING);
+        choiceCell.setTertiaryText(TestValues.GENERAL_STRING);
+        choiceCell.setVoiceCommands(TestValues.GENERAL_STRING_LIST);
         choiceCell.setArtwork(artwork);
         choiceCell.setSecondaryArtwork(artwork);
 
         // use getters and assert equality
-        assertEquals(choiceCell.getText(), Test.GENERAL_STRING);
-        assertEquals(choiceCell.getSecondaryText(), Test.GENERAL_STRING);
-        assertEquals(choiceCell.getTertiaryText(), Test.GENERAL_STRING);
-        assertEquals(choiceCell.getVoiceCommands(), Test.GENERAL_STRING_LIST);
+        assertEquals(choiceCell.getText(), TestValues.GENERAL_STRING);
+        assertEquals(choiceCell.getSecondaryText(), TestValues.GENERAL_STRING);
+        assertEquals(choiceCell.getTertiaryText(), TestValues.GENERAL_STRING);
+        assertEquals(choiceCell.getVoiceCommands(), TestValues.GENERAL_STRING_LIST);
         assertEquals(choiceCell.getArtwork(), artwork);
         assertEquals(choiceCell.getSecondaryArtwork(), artwork);
         assertEquals(choiceCell.getChoiceId(), MAX_ID);
     }
 
+    @Test
     public void testConstructors() {
         // first constructor was tested in previous method, use the rest here
 
-        ChoiceCell choiceCell = new ChoiceCell(Test.GENERAL_STRING, Test.GENERAL_STRING_LIST, artwork);
-        choiceCell.setSecondaryText(Test.GENERAL_STRING);
-        choiceCell.setTertiaryText(Test.GENERAL_STRING);
+        ChoiceCell choiceCell = new ChoiceCell(TestValues.GENERAL_STRING, TestValues.GENERAL_STRING_LIST, artwork);
+        choiceCell.setSecondaryText(TestValues.GENERAL_STRING);
+        choiceCell.setTertiaryText(TestValues.GENERAL_STRING);
         choiceCell.setSecondaryArtwork(artwork);
-        assertEquals(choiceCell.getText(), Test.GENERAL_STRING);
-        assertEquals(choiceCell.getSecondaryText(), Test.GENERAL_STRING);
-        assertEquals(choiceCell.getTertiaryText(), Test.GENERAL_STRING);
-        assertEquals(choiceCell.getVoiceCommands(), Test.GENERAL_STRING_LIST);
+        assertEquals(choiceCell.getText(), TestValues.GENERAL_STRING);
+        assertEquals(choiceCell.getSecondaryText(), TestValues.GENERAL_STRING);
+        assertEquals(choiceCell.getTertiaryText(), TestValues.GENERAL_STRING);
+        assertEquals(choiceCell.getVoiceCommands(), TestValues.GENERAL_STRING_LIST);
         assertEquals(choiceCell.getArtwork(), artwork);
         assertEquals(choiceCell.getSecondaryArtwork(), artwork);
         assertEquals(choiceCell.getChoiceId(), MAX_ID);
 
 
-        choiceCell = new ChoiceCell(Test.GENERAL_STRING, Test.GENERAL_STRING, Test.GENERAL_STRING, Test.GENERAL_STRING_LIST, artwork, artwork);
-        assertEquals(choiceCell.getText(), Test.GENERAL_STRING);
-        assertEquals(choiceCell.getSecondaryText(), Test.GENERAL_STRING);
-        assertEquals(choiceCell.getTertiaryText(), Test.GENERAL_STRING);
-        assertEquals(choiceCell.getVoiceCommands(), Test.GENERAL_STRING_LIST);
+        choiceCell = new ChoiceCell(TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, TestValues.GENERAL_STRING_LIST, artwork, artwork);
+        assertEquals(choiceCell.getText(), TestValues.GENERAL_STRING);
+        assertEquals(choiceCell.getSecondaryText(), TestValues.GENERAL_STRING);
+        assertEquals(choiceCell.getTertiaryText(), TestValues.GENERAL_STRING);
+        assertEquals(choiceCell.getVoiceCommands(), TestValues.GENERAL_STRING_LIST);
         assertEquals(choiceCell.getArtwork(), artwork);
         assertEquals(choiceCell.getSecondaryArtwork(), artwork);
         assertEquals(choiceCell.getChoiceId(), MAX_ID);
     }
 
+    @Test
     public void testCellEquality(){
 
-        ChoiceCell choiceCell = new ChoiceCell(Test.GENERAL_STRING, Test.GENERAL_STRING_LIST, artwork);
-        choiceCell.setSecondaryText(Test.GENERAL_STRING);
-        choiceCell.setTertiaryText(Test.GENERAL_STRING);
+        ChoiceCell choiceCell = new ChoiceCell(TestValues.GENERAL_STRING, TestValues.GENERAL_STRING_LIST, artwork);
+        choiceCell.setSecondaryText(TestValues.GENERAL_STRING);
+        choiceCell.setTertiaryText(TestValues.GENERAL_STRING);
         choiceCell.setSecondaryArtwork(artwork);
 
-        ChoiceCell choiceCell2 = new ChoiceCell(Test.GENERAL_STRING, Test.GENERAL_STRING_LIST, artwork);
-        choiceCell2.setSecondaryText(Test.GENERAL_STRING);
-        choiceCell2.setTertiaryText(Test.GENERAL_STRING);
+        ChoiceCell choiceCell2 = new ChoiceCell(TestValues.GENERAL_STRING, TestValues.GENERAL_STRING_LIST, artwork);
+        choiceCell2.setSecondaryText(TestValues.GENERAL_STRING);
+        choiceCell2.setTertiaryText(TestValues.GENERAL_STRING);
         choiceCell2.setSecondaryArtwork(artwork);
 
-        ChoiceCell choiceCell3 = new ChoiceCell(Test.GENERAL_STRING, Test.GENERAL_STRING_LIST, artwork);
-        choiceCell3.setSecondaryText(Test.GENERAL_STRING);
-        choiceCell3.setTertiaryText(Test.GENERAL_STRING);
+        ChoiceCell choiceCell3 = new ChoiceCell(TestValues.GENERAL_STRING, TestValues.GENERAL_STRING_LIST, artwork);
+        choiceCell3.setSecondaryText(TestValues.GENERAL_STRING);
+        choiceCell3.setTertiaryText(TestValues.GENERAL_STRING);
 
         // Make sure our overridden method works, even though these are different objects in memory
         assertTrue(choiceCell.equals(choiceCell2));

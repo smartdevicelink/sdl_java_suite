@@ -33,7 +33,6 @@ package com.smartdevicelink.SdlConnection;
 
 import android.annotation.SuppressLint;
 import android.os.Build;
-import android.util.Log;
 import android.view.Surface;
 
 import com.smartdevicelink.encoder.SdlEncoder;
@@ -61,6 +60,7 @@ import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransport;
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
 
 import java.io.IOException;
@@ -264,7 +264,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
                     return packetizer;
                 }
                 default:
-                    Log.e(TAG, "Protocol " + protocol + " is not supported.");
+                    DebugTool.logError(TAG, "Protocol " + protocol + " is not supported.");
                     return null;
             }
         } catch (IOException e) {
@@ -285,15 +285,17 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
         }
     }
 
+    @Deprecated
     public void startRPCStream(InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) {
         try {
             mRPCPacketizer = new StreamRPCPacketizer(null, this, is, request, sType, rpcSessionID, wiproVersion, 0, this);
             mRPCPacketizer.start();
         } catch (Exception e) {
-            Log.e(TAG, "Unable to start streaming:" + e.toString());
+            DebugTool.logError(TAG, "Unable to start streaming:" + e.toString());
         }
     }
 
+    @Deprecated
     public OutputStream startRPCStream(RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) {
         try {
             OutputStream os = new PipedOutputStream();
@@ -302,11 +304,12 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
             mRPCPacketizer.start();
             return os;
         } catch (Exception e) {
-            Log.e(TAG, "Unable to start streaming:" + e.toString());
+            DebugTool.logError(TAG, "Unable to start streaming:" + e.toString());
         }
         return null;
     }
 
+    @Deprecated
     public void pauseRPCStream()
     {
         if (mRPCPacketizer != null)
@@ -315,6 +318,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
         }
     }
 
+    @Deprecated
     public void resumeRPCStream()
     {
         if (mRPCPacketizer != null)
@@ -323,6 +327,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
         }
     }
 
+    @Deprecated
     public void stopRPCStream()
     {
         if (mRPCPacketizer != null)
@@ -633,7 +638,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 
     @Override
     public void sendHeartbeat(IHeartbeatMonitor monitor) {
-        Log.d(TAG, "Asked to send heartbeat");
+        DebugTool.logInfo(TAG, "Asked to send heartbeat");
         if (_sdlConnection != null)
             _sdlConnection.sendHeartbeat(this);
     }

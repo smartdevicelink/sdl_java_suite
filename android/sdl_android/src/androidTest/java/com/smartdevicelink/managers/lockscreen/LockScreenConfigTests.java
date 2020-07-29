@@ -1,7 +1,15 @@
 package com.smartdevicelink.managers.lockscreen;
 
-import com.smartdevicelink.AndroidTestCase2;
-import com.smartdevicelink.test.Test;
+import android.support.test.runner.AndroidJUnit4;
+
+import com.smartdevicelink.test.TestValues;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
 
 /**
  * This is a unit test class for the SmartDeviceLink library manager class :
@@ -9,35 +17,30 @@ import com.smartdevicelink.test.Test;
  *
  * We currently do not need to test null values, as each currently is a primitive
  */
-public class LockScreenConfigTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class LockScreenConfigTests {
 
 	private LockScreenConfig lockScreenConfig;
 
-	@Override
+	@Before
 	public void setUp() throws Exception {
-		super.setUp();
-
 		// set info for all the setters
 		lockScreenConfig = new LockScreenConfig();
-		lockScreenConfig.setCustomView(Test.GENERAL_INT);
-		lockScreenConfig.setAppIcon(Test.GENERAL_INT);
-		lockScreenConfig.setBackgroundColor(Test.GENERAL_INT);
+		lockScreenConfig.setCustomView(TestValues.GENERAL_INT);
+		lockScreenConfig.setAppIcon(TestValues.GENERAL_INT);
+		lockScreenConfig.setBackgroundColor(TestValues.GENERAL_INT);
 		lockScreenConfig.showDeviceLogo(true);
 		lockScreenConfig.setEnabled(true);
 		lockScreenConfig.setDisplayMode(LockScreenConfig.DISPLAY_MODE_OPTIONAL_OR_REQUIRED);
 	}
 
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-	}
-
+	@Test
 	public void testLockScreenConfig() {
 
 		// get the info and make sure its correct
-		assertEquals(Test.GENERAL_INT, lockScreenConfig.getCustomView());
-		assertEquals(Test.GENERAL_INT, lockScreenConfig.getAppIcon());
-		assertEquals(Test.GENERAL_INT, lockScreenConfig.getBackgroundColor());
+		assertEquals(TestValues.GENERAL_INT, lockScreenConfig.getCustomView());
+		assertEquals(TestValues.GENERAL_INT, lockScreenConfig.getAppIcon());
+		assertEquals(TestValues.GENERAL_INT, lockScreenConfig.getBackgroundColor());
 		assertTrue(lockScreenConfig.isEnabled());
 		assertTrue(lockScreenConfig.isDeviceLogoEnabled());
 		assertEquals(LockScreenConfig.DISPLAY_MODE_OPTIONAL_OR_REQUIRED, lockScreenConfig.getDisplayMode());

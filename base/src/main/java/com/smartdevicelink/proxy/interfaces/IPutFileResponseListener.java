@@ -33,6 +33,7 @@ package com.smartdevicelink.proxy.interfaces;
 
 import com.smartdevicelink.proxy.rpc.PutFileResponse;
 
+@Deprecated
 public interface IPutFileResponseListener {
 	public void onPutFileResponse(PutFileResponse response);
 	

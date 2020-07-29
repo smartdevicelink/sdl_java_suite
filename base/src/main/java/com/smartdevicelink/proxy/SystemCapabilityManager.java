@@ -31,6 +31,7 @@
  */
 package com.smartdevicelink.proxy;
 
+import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
@@ -73,6 +74,7 @@ import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SystemCapabilityManager {
+	private static final String TAG = "SystemCapabilityManager";
 	private final HashMap<SystemCapabilityType, Object> cachedSystemCapabilities;
 	private final HashMap<SystemCapabilityType, Boolean> systemCapabilitiesSubscriptionStatus;
 	private final HashMap<SystemCapabilityType, CopyOnWriteArrayList<OnSystemCapabilityListener>> onSystemCapabilityListeners;
@@ -126,6 +128,8 @@ public class SystemCapabilityManager {
 
 		// return if display capabilities don't exist.
 		if (display == null) {
+			defaultWindowCapability.setTextFields(ManagerUtility.WindowCapabilityUtility.getAllTextFields());
+			defaultWindowCapability.setImageFields(ManagerUtility.WindowCapabilityUtility.getAllImageFields());
 			displayCapability.setWindowCapabilities(Collections.singletonList(defaultWindowCapability));
 			return Collections.singletonList(displayCapability);
 		}
@@ -177,7 +181,7 @@ public class SystemCapabilityManager {
 
 	private void updateCachedDisplayCapabilityList(List<DisplayCapability> newCapabilities) {
 		if (newCapabilities == null || newCapabilities.size() == 0) {
-			DebugTool.logWarning("Received invalid display capability list");
+			DebugTool.logWarning(TAG, "Received invalid display capability list");
 			return;
 		}
 
@@ -560,7 +564,7 @@ public class SystemCapabilityManager {
 		if (currentHMILevel != null && currentHMILevel.equals(HMILevel.HMI_NONE)) {
 			String message = String.format("Attempted to update type: %s in HMI level NONE, which is not allowed. " +
 					"Please wait until you are in HMI BACKGROUND, LIMITED, or FULL before attempting to update any SystemCapabilityType", systemCapabilityType);
-			DebugTool.logError(message);
+			DebugTool.logError(TAG, message);
 			if (scListener != null) {
 				scListener.onError(message);
 			}
@@ -568,7 +572,7 @@ public class SystemCapabilityManager {
 		}
 		if (!systemCapabilityType.isQueryable() || systemCapabilityType == SystemCapabilityType.DISPLAYS) {
 			String message = "This systemCapabilityType cannot be queried for";
-			DebugTool.logError(message);
+			DebugTool.logError(TAG, message);
 			if (scListener != null) {
 				scListener.onError(message);
 			}

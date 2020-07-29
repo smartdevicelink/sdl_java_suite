@@ -35,6 +35,7 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
+import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
@@ -60,8 +61,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-class PresentChoiceSetOperation extends AsynchronousOperation {
-
+class PresentChoiceSetOperation extends Task {
+	private static final String TAG = "PresentChoiceSetOperation";
 	private WeakReference<ISdl> internalInterface;
 	private ChoiceSet choiceSet;
 	private Integer cancelID;
@@ -78,7 +79,7 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 
 	PresentChoiceSetOperation(ISdl internalInterface, ChoiceSet choiceSet, InteractionMode mode,
 									 KeyboardProperties originalKeyboardProperties, KeyboardListener keyboardListener, ChoiceSetSelectionListener choiceSetSelectionListener, Integer cancelID){
-		super();
+		super("PresentChoiceSetOperation");
 		this.internalInterface = new WeakReference<>(internalInterface);
 		this.keyboardListener = keyboardListener;
 		this.choiceSet = choiceSet;
@@ -98,16 +99,14 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 	}
 
 	@Override
-	public void run() {
-		PresentChoiceSetOperation.super.run();
-		DebugTool.logInfo("Choice Operation: Executing present choice set operation");
+	public void onExecute() {
+		DebugTool.logInfo(TAG, "Choice Operation: Executing present choice set operation");
 		addListeners();
 		start();
-		block();
 	}
 
 	private void start(){
-		if (isCancelled()) {
+		if (getState() == Task.CANCELED) {
 			finishOperation();
 			return;
 		}
@@ -121,7 +120,7 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 		updateKeyboardProperties(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
-				if (isCancelled()) {
+				if (getState() == Task.CANCELED) {
 					finishOperation();
 					return;
 				}
@@ -149,7 +148,7 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 					if (listener != null){
 						listener.onComplete(false);
 					}
-					DebugTool.logError("Error Setting keyboard properties in present choice set operation");
+					DebugTool.logError(TAG, "Error Setting keyboard properties in present choice set operation");
 					return;
 				}
 
@@ -158,7 +157,7 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 				if (listener != null){
 					listener.onComplete(true);
 				}
-				DebugTool.logInfo("Success Setting keyboard properties in present choice set operation");
+				DebugTool.logInfo(TAG, "Success Setting keyboard properties in present choice set operation");
 			}
 
 			@Override
@@ -166,13 +165,13 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 				if (listener != null){
 					listener.onComplete(false);
 				}
-				DebugTool.logError("Error Setting keyboard properties in present keyboard operation - choice manager - " + info);
+				DebugTool.logError(TAG, "Error Setting keyboard properties in present keyboard operation - choice manager - " + info);
 			}
 		});
 		if (internalInterface.get() != null){
 			internalInterface.get().sendRPC(setGlobalProperties);
 		} else {
-			DebugTool.logError("Internal interface null - present choice set op - choice");
+			DebugTool.logError(TAG, "Internal interface null - present choice set op - choice");
 		}
 	}
 
@@ -182,7 +181,7 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
 				if (!response.getSuccess()){
-					DebugTool.logError("Presenting Choice set failed: "+ response.getInfo());
+					DebugTool.logError(TAG, "Presenting Choice set failed: "+ response.getInfo());
 
 					if (choiceSetSelectionListener != null){
 						choiceSetSelectionListener.onError(response.getInfo());
@@ -203,7 +202,7 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
-				DebugTool.logError("Presenting Choice set failed: " + resultCode + ", " + info);
+				DebugTool.logError(TAG, "Presenting Choice set failed: " + resultCode + ", " + info);
 
 				if (choiceSetSelectionListener != null){
 					choiceSetSelectionListener.onError(resultCode + ", " + info);
@@ -214,7 +213,7 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 		if (internalInterface.get() != null){
 			internalInterface.get().sendRPC(pi);
 		}else {
-			DebugTool.logError("Internal Interface null when presenting choice set in operation");
+			DebugTool.logError(TAG, "Internal Interface null when presenting choice set in operation");
 		}
 	}
 
@@ -227,14 +226,14 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 				@Override
 				public void onResponse(int correlationId, RPCResponse response) {
 					updatedKeyboardProperties = false;
-					DebugTool.logInfo("Successfully reset choice keyboard properties to original config");
-					PresentChoiceSetOperation.super.finishOperation();
+					DebugTool.logInfo(TAG, "Successfully reset choice keyboard properties to original config");
+					PresentChoiceSetOperation.super.onFinished();
 				}
 
 				@Override
 				public void onError(int correlationId, Result resultCode, String info) {
-					DebugTool.logError("Failed to reset choice keyboard properties to original config " + resultCode + ", " + info);
-					PresentChoiceSetOperation.super.finishOperation();
+					DebugTool.logError(TAG, "Failed to reset choice keyboard properties to original config " + resultCode + ", " + info);
+					PresentChoiceSetOperation.super.onFinished();
 				}
 			});
 
@@ -242,10 +241,10 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 				internalInterface.get().sendRPC(setGlobalProperties);
 				internalInterface.get().removeOnRPCNotificationListener(FunctionID.ON_KEYBOARD_INPUT, keyboardRPCListener);
 			} else {
-				DebugTool.logError("Internal Interface null when finishing choice keyboard reset");
+				DebugTool.logError(TAG, "Internal Interface null when finishing choice keyboard reset");
 			}
 		} else {
-			PresentChoiceSetOperation.super.finishOperation();
+			PresentChoiceSetOperation.super.onFinished();
 		}
 	}
 
@@ -253,41 +252,41 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 	* Cancels the choice set. If the choice set has not yet been sent to Core, it will not be sent. If the choice set is already presented on Core, the choice set will be dismissed using the `CancelInteraction` RPC.
 	*/
 	private void cancelInteraction() {
-		if (isFinished()) {
-			DebugTool.logInfo("This operation has already finished so it can not be canceled.");
+		if ((getState() == Task.FINISHED)) {
+			DebugTool.logInfo(TAG, "This operation has already finished so it can not be canceled.");
 			return;
-		} else if (isCancelled()) {
-			DebugTool.logInfo("This operation has already been canceled. It will be finished at some point during the operation.");
+		} else if (getState() == Task.CANCELED) {
+			DebugTool.logInfo(TAG, "This operation has already been canceled. It will be finished at some point during the operation.");
 			return;
-		} else if (isExecuting()) {
+		} else if ((getState() == Task.IN_PROGRESS)) {
 			if (sdlMsgVersion.getMajorVersion() < 6){
-				DebugTool.logWarning("Canceling a presented choice set is not supported on this head unit");
+				DebugTool.logWarning(TAG, "Canceling a presented choice set is not supported on this head unit");
 				return;
 			}
 
-			DebugTool.logInfo("Canceling the presented choice set interaction.");
+			DebugTool.logInfo(TAG, "Canceling the presented choice set interaction.");
 
 			CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.PERFORM_INTERACTION.getId(), cancelID);
 			cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
 				@Override
 				public void onResponse(int correlationId, RPCResponse response) {
-					DebugTool.logInfo("Canceled the presented choice set " + ((response.getResultCode() == Result.SUCCESS) ? "successfully" : "unsuccessfully"));
+					DebugTool.logInfo(TAG, "Canceled the presented choice set " + ((response.getResultCode() == Result.SUCCESS) ? "successfully" : "unsuccessfully"));
 				}
 
 				@Override
 				public void onError(int correlationId, Result resultCode, String info){
-					DebugTool.logError("Error canceling the presented choice set " + resultCode + " " + info);
+					DebugTool.logError(TAG, "Error canceling the presented choice set " + resultCode + " " + info);
 				}
 			});
 
 			if (internalInterface.get() != null){
 				internalInterface.get().sendRPC(cancelInteraction);
 			} else {
-				DebugTool.logError("Internal interface null - could not send cancel interaction for choice set");
+				DebugTool.logError(TAG, "Internal interface null - could not send cancel interaction for choice set");
 			}
 		} else {
-			DebugTool.logInfo("Canceling a choice set that has not yet been sent to Core");
-			this.cancel();
+			DebugTool.logInfo(TAG, "Canceling a choice set that has not yet been sent to Core");
+			this.cancelTask();
 		}
 	}
 
@@ -346,13 +345,13 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 		keyboardRPCListener = new OnRPCNotificationListener() {
 			@Override
 			public void onNotified(RPCNotification notification) {
-				if (isCancelled()) {
+				if (getState() == Task.CANCELED) {
 					finishOperation();
 					return;
 				}
 
 				if (keyboardListener == null){
-					DebugTool.logError("Received Keyboard Input But Listener is null");
+					DebugTool.logError(TAG, "Received Keyboard Input But Listener is null");
 					return;
 				}
 
@@ -396,7 +395,7 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 		if (internalInterface.get() != null) {
 			internalInterface.get().addOnRPCNotificationListener(FunctionID.ON_KEYBOARD_INPUT, keyboardRPCListener);
 		} else {
-			DebugTool.logError("Present Choice Set Keyboard Listener Not Added");
+			DebugTool.logError(TAG, "Present Choice Set Keyboard Listener Not Added");
 		}
 	}
 }

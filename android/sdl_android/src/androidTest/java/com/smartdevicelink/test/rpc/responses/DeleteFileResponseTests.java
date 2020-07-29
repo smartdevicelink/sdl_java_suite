@@ -6,13 +6,19 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.DeleteFileResponse;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.Hashtable;
+import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.fail;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
@@ -24,7 +30,7 @@ public class DeleteFileResponseTests extends BaseRpcTests{
     protected RPCMessage createMessage(){
         DeleteFileResponse msg = new DeleteFileResponse();
 
-        msg.setSpaceAvailable(Test.GENERAL_INT);
+        msg.setSpaceAvailable(TestValues.GENERAL_INT);
 
         return msg;
     }
@@ -44,9 +50,9 @@ public class DeleteFileResponseTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{
-            result.put(DeleteFileResponse.KEY_SPACE_AVAILABLE, Test.GENERAL_INT);
+            result.put(DeleteFileResponse.KEY_SPACE_AVAILABLE, TestValues.GENERAL_INT);
         }catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -55,41 +61,43 @@ public class DeleteFileResponseTests extends BaseRpcTests{
     /**
 	 * Tests the expected values of the RPC message.
 	 */
+    @Test
     public void testRpcValues () { 
     	// Test Values
         int spaceAvailable = ( (DeleteFileResponse) msg ).getSpaceAvailable();
         
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_INT, spaceAvailable);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, spaceAvailable);
     
         // Invalid/Null Tests
         DeleteFileResponse msg = new DeleteFileResponse();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getSpaceAvailable());
+        assertNull(TestValues.NULL, msg.getSpaceAvailable());
     }
 
     /**
      * Tests a valid JSON construction of this RPC message.
      */
+    @Test
     public void testJsonConstructor () {
-    	JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-    	assertNotNull(Test.NOT_NULL, commandJson);
+    	JSONObject commandJson = JsonFileReader.readId(getTargetContext(), getCommandType(), getMessageType());
+    	assertNotNull(TestValues.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			DeleteFileResponse cmd = new DeleteFileResponse(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(Test.NOT_NULL, body);
+			assertNotNull(TestValues.NOT_NULL, body);
 			
 			// Test everything in the json body.
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, DeleteFileResponse.KEY_SPACE_AVAILABLE), cmd.getSpaceAvailable());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, DeleteFileResponse.KEY_SPACE_AVAILABLE), cmd.getSpaceAvailable());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}    	

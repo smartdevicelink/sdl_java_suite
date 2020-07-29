@@ -7,7 +7,7 @@ android {
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 29
-        versionCode 13
+        versionCode 14
         versionName new File(projectDir.path, ('/../../VERSION')).text.trim()
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         resValue "string", "SDL_LIB_VERSION", '\"' + versionName + '\"'
@@ -56,6 +56,7 @@ task buildWindowSymLinks(type:Exec){
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     api 'com.smartdevicelink:bson_java_port:1.2.0'
+    api 'com.livio.taskmaster:taskmaster:0.3.0'
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })

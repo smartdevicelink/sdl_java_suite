@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spp_out_of_resource">มีแอปมากเกินไปที่ใช้บลูทู ธ</string>
+    <string name="sdl_error_notification_channel_name">ข้อผิดพลาด SDL</string>
+</resources>

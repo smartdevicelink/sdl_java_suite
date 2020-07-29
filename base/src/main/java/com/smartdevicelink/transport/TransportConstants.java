@@ -43,6 +43,7 @@ public class TransportConstants {
 	public static final String START_ROUTER_SERVICE_ACTION					="sdl.router.startservice";
 	public static final String ROUTER_SERVICE_ACTION						= "com.smartdevicelink.router.service";
 	public static final String FOREGROUND_EXTRA 							= "foreground";
+	public static final String CONFIRMED_SDL_DEVICE 						= "confirmed_sdl_device";
 
 	public static final String BIND_LOCATION_PACKAGE_NAME_EXTRA 			= "BIND_LOCATION_PACKAGE_NAME_EXTRA";
 	public static final String BIND_LOCATION_CLASS_NAME_EXTRA				= "BIND_LOCATION_CLASS_NAME_EXTRA";
@@ -96,6 +97,8 @@ public class TransportConstants {
 
 	public static final String SDL_NOTIFICATION_CHANNEL_ID 						= "sdl_notification_channel";
 	public static final String SDL_NOTIFICATION_CHANNEL_NAME 					= "SmartDeviceLink";
+	public static final String SDL_ERROR_NOTIFICATION_CHANNEL_ID                = "sdl_error_notification_channel";
+	public static final int SDL_ERROR_NOTIFICATION_CHANNEL_ID_INT               = 99;
 
 
 

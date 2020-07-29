@@ -6,7 +6,7 @@ import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
@@ -32,9 +32,9 @@ public class ImageFieldTests extends TestCase{
     public void setUp(){
         msg = new ImageField();
 
-        msg.setImageResolution(Test.GENERAL_IMAGERESOLUTION);
-        msg.setImageTypeSupported(Test.GENERAL_FILETYPE_LIST);
-        msg.setName(Test.GENERAL_IMAGEFIELDNAME);
+        msg.setImageResolution(TestValues.GENERAL_IMAGERESOLUTION);
+        msg.setImageTypeSupported(TestValues.GENERAL_FILETYPE_LIST);
+        msg.setName(TestValues.GENERAL_IMAGEFIELDNAME);
     }
 
     /**
@@ -47,29 +47,29 @@ public class ImageFieldTests extends TestCase{
         ImageFieldName name = msg.getName();
         
         // Valid Tests
-        assertTrue(Test.TRUE, Validator.validateImageResolution(Test.GENERAL_IMAGERESOLUTION, imageRes));        
-        assertEquals(Test.MATCH, Test.GENERAL_IMAGEFIELDNAME, name);        
-        assertTrue(Test.TRUE, Validator.validateFileTypes(Test.GENERAL_FILETYPE_LIST, imageTypes));
+        assertTrue(TestValues.TRUE, Validator.validateImageResolution(TestValues.GENERAL_IMAGERESOLUTION, imageRes));
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_IMAGEFIELDNAME, name);
+        assertTrue(TestValues.TRUE, Validator.validateFileTypes(TestValues.GENERAL_FILETYPE_LIST, imageTypes));
                 
         // Invalid/Null Tests
         ImageField msg = new ImageField();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
 
-        assertNull(Test.NULL, msg.getImageResolution());
-        assertNull(Test.NULL, msg.getImageTypeSupported());
-        assertNull(Test.NULL, msg.getName());
+        assertNull(TestValues.NULL, msg.getImageResolution());
+        assertNull(TestValues.NULL, msg.getImageTypeSupported());
+        assertNull(TestValues.NULL, msg.getName());
     }
 
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(ImageField.KEY_IMAGE_RESOLUTION, Test.JSON_IMAGERESOLUTION);
-            reference.put(ImageField.KEY_IMAGE_TYPE_SUPPORTED, JsonUtils.createJsonArray(Test.GENERAL_FILETYPE_LIST));
-            reference.put(ImageField.KEY_NAME, Test.GENERAL_IMAGEFIELDNAME);
+            reference.put(ImageField.KEY_IMAGE_RESOLUTION, TestValues.JSON_IMAGERESOLUTION);
+            reference.put(ImageField.KEY_IMAGE_TYPE_SUPPORTED, JsonUtils.createJsonArray(TestValues.GENERAL_FILETYPE_LIST));
+            reference.put(ImageField.KEY_NAME, TestValues.GENERAL_IMAGEFIELDNAME);
             
             JSONObject underTest = msg.serializeJSON();
-            assertEquals(Test.MATCH, reference.length(), underTest.length());
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
@@ -80,26 +80,26 @@ public class ImageFieldTests extends TestCase{
                 	JSONObject testEquals = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
                 	Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
                 	Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);                	
-                    assertTrue(Test.TRUE, Validator.validateImageResolution( new ImageResolution(hashReference), new ImageResolution(hashTest)));
+                    assertTrue(TestValues.TRUE, Validator.validateImageResolution( new ImageResolution(hashReference), new ImageResolution(hashTest)));
                 } else if(key.equals(ImageField.KEY_IMAGE_TYPE_SUPPORTED)) {
 					JSONArray imageTypeArrayReference = JsonUtils.readJsonArrayFromJsonObject(reference, key);
 					JSONArray imageTypeArrayTest = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
 					List<FileType> imageTypeListReference = new ArrayList<FileType>();
 					List<FileType> imageTypeListTest = new ArrayList<FileType>();					
 					
-					assertEquals(Test.MATCH, imageTypeArrayReference.length(), imageTypeArrayTest.length());
+					assertEquals(TestValues.MATCH, imageTypeArrayReference.length(), imageTypeArrayTest.length());
 					
 				    for (int index = 0 ; index < imageTypeArrayReference.length(); index++) {
 				    	imageTypeListReference.add( (FileType)imageTypeArrayReference.get(index) );
 				    	imageTypeListTest.add( (FileType)imageTypeArrayTest.get(index) );
 				    }				    
-					assertTrue(Test.TRUE, imageTypeListReference.containsAll(imageTypeListTest) && imageTypeListTest.containsAll(imageTypeListReference));
+					assertTrue(TestValues.TRUE, imageTypeListReference.containsAll(imageTypeListTest) && imageTypeListTest.containsAll(imageTypeListReference));
 				} else{
-                    assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+                    assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
                 }
             }
         }catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
     }
 }

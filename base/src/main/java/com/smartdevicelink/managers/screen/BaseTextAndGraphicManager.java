@@ -32,7 +32,6 @@
 package com.smartdevicelink.managers.screen;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
@@ -168,7 +167,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				currentHMILevel = onHMIStatus.getHmiLevel();
 				if (currentHMILevel == HMILevel.HMI_FULL){
 					if (pendingHMIFull){
-						DebugTool.logInfo( "Acquired HMI_FULL with pending update. Sending now");
+						DebugTool.logInfo(TAG, "Acquired HMI_FULL with pending update. Sending now");
 						pendingHMIFull = false;
 						sdlUpdate(pendingHMIListener);
 						pendingHMIListener = null;
@@ -185,7 +184,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				// instead of using the parameter it's more safe to use the convenience method
 				List<DisplayCapability> capabilities = SystemCapabilityManager.convertToList(capability, DisplayCapability.class);
 				if (capabilities == null || capabilities.size() == 0) {
-					DebugTool.logError("TextAndGraphic Manager - Capabilities sent here are null or empty");
+					DebugTool.logError(TAG, "TextAndGraphic Manager - Capabilities sent here are null or empty");
 				}else {
 					DisplayCapability display = capabilities.get(0);
 					for (WindowCapability windowCapability : display.getWindowCapabilities()) {
@@ -199,7 +198,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 			@Override
 			public void onError(String info) {
-				DebugTool.logError("Display Capability cannot be retrieved");
+				DebugTool.logError(TAG, "Display Capability cannot be retrieved");
 				defaultMainWindowCapability = null;
 			}
 		};
@@ -284,7 +283,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				@Override
 				public void onComplete(boolean success) {
 					if (!success){
-						Log.e(TAG, "Error uploading image");
+						DebugTool.logError(TAG, "Error uploading image");
 						inProgressUpdate = extractTextFromShow(inProgressUpdate);
 						sendShow();
 					}
@@ -358,7 +357,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		}
 
 		if (artworksToUpload.size() == 0 && (primaryGraphic.isStaticIcon() || secondaryGraphic.isStaticIcon())){
-			DebugTool.logInfo("Upload attempted on static icons, sending them without upload instead");
+			DebugTool.logInfo(TAG, "Upload attempted on static icons, sending them without upload instead");
 			listener.onComplete(true);
 		}
 
@@ -368,7 +367,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				@Override
 				public void onComplete(Map<String, String> errors) {
 					if (errors != null) {
-						Log.e(TAG, "Error Uploading Artworks. Error: " + errors.toString());
+						DebugTool.logError(TAG, "Error Uploading Artworks. Error: " + errors.toString());
 						listener.onComplete(false);
 					} else {
 						listener.onComplete(true);
@@ -410,7 +409,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			return show;
 		}
 
-		int numberOfLines = (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ? ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(defaultMainWindowCapability) : 4;
+		int numberOfLines = defaultMainWindowCapability != null ? ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(defaultMainWindowCapability) : 4;
 
 		switch (numberOfLines) {
 			case 1: show = assembleOneLineShowText(show, nonNullFields);
@@ -648,7 +647,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	private void updateCurrentScreenDataState(Show show){
 
 		if (show == null){
-			Log.e(TAG, "can not updateCurrentScreenDataFromShow from null show");
+			DebugTool.logError(TAG, "can not updateCurrentScreenDataFromShow from null show");
 			return;
 		}
 
@@ -775,7 +774,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	 * @return true if image field is supported, false if not
 	 */
 	private boolean templateSupportsImageField(ImageFieldName name) {
-		return (defaultMainWindowCapability == null || defaultMainWindowCapability.getImageFields() == null) || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, name);
+		return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, name);
 	}
 
 	/**
@@ -799,7 +798,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	 * @return true if field should be updated, false if not
 	 */
 	private boolean templateSupportsTextField(TextFieldName name) {
-		return (defaultMainWindowCapability == null || defaultMainWindowCapability.getTextFields() == null) || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, name);
+		return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, name);
 	}
 
 	// SCREEN ITEM SETTERS AND GETTERS

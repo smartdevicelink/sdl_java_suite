@@ -1,6 +1,6 @@
 package com.smartdevicelink.test.trace.enums;
 
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 
 import junit.framework.TestCase;
@@ -45,14 +45,14 @@ public class InterfaceActivityDirectionTests extends TestCase {
 			List<InterfaceActivityDirection> actualEnumList = Arrays.asList(InterfaceActivityDirection.values());
 			
 			// Valid Tests
-			assertEquals(Test.MATCH, expectedNoneEnum, actualNoneEnum);
-			assertEquals(Test.MATCH, expectedReceiveEnum, actualReceiveEnum);
-			assertEquals(Test.MATCH, expectedTransmitEnum, actualTransmitEnum);
-			assertTrue(Test.ARRAY, expectedEnumList.containsAll(actualEnumList) && actualEnumList.containsAll(expectedEnumList));
+			assertEquals(TestValues.MATCH, expectedNoneEnum, actualNoneEnum);
+			assertEquals(TestValues.MATCH, expectedReceiveEnum, actualReceiveEnum);
+			assertEquals(TestValues.MATCH, expectedTransmitEnum, actualTransmitEnum);
+			assertTrue(TestValues.ARRAY, expectedEnumList.containsAll(actualEnumList) && actualEnumList.containsAll(expectedEnumList));
 						
 			// Invalid/Null 
-			assertNull(Test.NULL, actualInvalidEnum);
-			assertNull(Test.NULL, actualNullEnum);
+			assertNull(TestValues.NULL, actualInvalidEnum);
+			assertNull(TestValues.NULL, actualNullEnum);
 			
 		} catch (NullPointerException e) {
 			fail("Could not retrieve value for null string, should return null.");

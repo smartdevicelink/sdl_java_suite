@@ -36,10 +36,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.ParcelFileDescriptor;
-import android.util.Log;
 
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.util.DebugTool;
 
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
@@ -68,7 +68,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
     MultiplexUsbTransport(ParcelFileDescriptor parcelFileDescriptor, Handler handler, Bundle bundle){
         super(handler, TransportType.USB);
         if(parcelFileDescriptor == null){
-            Log.e(TAG, "Error with object");
+            DebugTool.logError(TAG, "Error with object");
             this.parcelFileDescriptor = null;
             throw new ExceptionInInitializerError("ParcelFileDescriptor can't be null");
         }else{
@@ -101,7 +101,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
         setState(STATE_CONNECTING);
         FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
         if(fileDescriptor == null || !fileDescriptor.valid()){
-            Log.e(TAG, "USB FD was null or not valid,");
+            DebugTool.logError(TAG, "USB FD was null or not valid,");
             setState(STATE_NONE);
             return;
         }
@@ -228,15 +228,15 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
                     bytesRead = inputStream.read(buffer);
                     if (bytesRead == -1) {
                         if (isInterrupted()) {
-                            Log.e(TAG,"EOF reached, and thread is interrupted");
+                            DebugTool.logError(TAG,"EOF reached, and thread is interrupted");
                         } else {
-                            Log.i(TAG,"EOF reached, disconnecting!");
+                            DebugTool.logInfo(TAG,"EOF reached, disconnecting!");
                             connectionLost();
                         }
                         return;
                     }
                     if (isInterrupted()) {
-                        Log.w(TAG,"Read some data, but thread is interrupted");
+                        DebugTool.logWarning(TAG,"Read some data, but thread is interrupted");
                         return;
                     }
                     if(connectionSuccessful != null && connectionSuccessful == false){
@@ -268,9 +268,9 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
                     }
                 } catch (IOException e) {
                     if (isInterrupted()) {
-                        Log.w(TAG,"Can't read data, and thread is interrupted");
+                        DebugTool.logWarning(TAG,"Can't read data, and thread is interrupted");
                     } else {
-                        Log.w(TAG,"Can't read data, disconnecting!");
+                        DebugTool.logWarning(TAG,"Can't read data, disconnecting!");
                         connectionLost();
                     }
                     return;
@@ -319,7 +319,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
         public void write(byte[] buffer, int offset, int count) {
             try {
                 if(buffer==null){
-                    Log.w(TAG, "Can't write to device, nothing to send");
+                    DebugTool.logWarning(TAG, "Can't write to device, nothing to send");
                     return;
                 }
                 //This would be a good spot to log out all bytes received
@@ -331,7 +331,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
             } catch (IOException|NullPointerException e) { // STRICTLY to catch mmOutStream NPE
                 // Exception during write
                 //OMG! WE MUST NOT BE CONNECTED ANYMORE! LET THE USER KNOW
-                Log.e(TAG, "Error sending bytes to connected device!");
+                DebugTool.logError(TAG, "Error sending bytes to connected device!");
                 connectionLost();
             }
         }
@@ -345,7 +345,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
                 }
             } catch (IOException e) {
                 // close() of connect socket failed
-                Log.d(TAG,  "Write Thread: " + e.getMessage());
+                DebugTool.logInfo(TAG,  "Write Thread: " + e.getMessage());
             }
         }
     }

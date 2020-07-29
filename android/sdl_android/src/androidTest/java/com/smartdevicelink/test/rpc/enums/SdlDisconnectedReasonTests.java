@@ -2,7 +2,7 @@ package com.smartdevicelink.test.rpc.enums;
 
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -159,18 +159,18 @@ public class SdlDisconnectedReasonTests extends TestCase {
 	 * {@link com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason#convertAppInterfaceunregisteredReason(AppInterfaceUnregisteredReason)}
 	 */
 	public void testConvertMethod () {		
-		assertEquals(Test.MATCH, SdlDisconnectedReason.DEFAULT, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.APP_UNAUTHORIZED));
-		assertEquals(Test.MATCH, SdlDisconnectedReason.BLUETOOTH_OFF, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.BLUETOOTH_OFF));
-		assertEquals(Test.MATCH, SdlDisconnectedReason.DRIVER_DISTRACTION_VIOLATION, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.DRIVER_DISTRACTION_VIOLATION));
-		assertEquals(Test.MATCH, SdlDisconnectedReason.FACTORY_DEFAULTS, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.FACTORY_DEFAULTS));
-		assertEquals(Test.MATCH, SdlDisconnectedReason.IGNITION_OFF, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.IGNITION_OFF));
-		assertEquals(Test.MATCH, SdlDisconnectedReason.LANGUAGE_CHANGE, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.LANGUAGE_CHANGE));
-		assertEquals(Test.MATCH, SdlDisconnectedReason.MASTER_RESET, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.MASTER_RESET));
-		assertEquals(Test.MATCH, SdlDisconnectedReason.REQUEST_WHILE_IN_NONE_HMI_LEVEL, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.REQUEST_WHILE_IN_NONE_HMI_LEVEL));
-		assertEquals(Test.MATCH, SdlDisconnectedReason.TOO_MANY_REQUESTS, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.TOO_MANY_REQUESTS));
-		assertEquals(Test.MATCH, SdlDisconnectedReason.USB_DISCONNECTED, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.USB_DISCONNECTED));
-		assertEquals(Test.MATCH, SdlDisconnectedReason.USER_EXIT, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.USER_EXIT));
-		assertNull(Test.MATCH, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(null));
+		assertEquals(TestValues.MATCH, SdlDisconnectedReason.DEFAULT, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.APP_UNAUTHORIZED));
+		assertEquals(TestValues.MATCH, SdlDisconnectedReason.BLUETOOTH_OFF, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.BLUETOOTH_OFF));
+		assertEquals(TestValues.MATCH, SdlDisconnectedReason.DRIVER_DISTRACTION_VIOLATION, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.DRIVER_DISTRACTION_VIOLATION));
+		assertEquals(TestValues.MATCH, SdlDisconnectedReason.FACTORY_DEFAULTS, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.FACTORY_DEFAULTS));
+		assertEquals(TestValues.MATCH, SdlDisconnectedReason.IGNITION_OFF, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.IGNITION_OFF));
+		assertEquals(TestValues.MATCH, SdlDisconnectedReason.LANGUAGE_CHANGE, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.LANGUAGE_CHANGE));
+		assertEquals(TestValues.MATCH, SdlDisconnectedReason.MASTER_RESET, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.MASTER_RESET));
+		assertEquals(TestValues.MATCH, SdlDisconnectedReason.REQUEST_WHILE_IN_NONE_HMI_LEVEL, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.REQUEST_WHILE_IN_NONE_HMI_LEVEL));
+		assertEquals(TestValues.MATCH, SdlDisconnectedReason.TOO_MANY_REQUESTS, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.TOO_MANY_REQUESTS));
+		assertEquals(TestValues.MATCH, SdlDisconnectedReason.USB_DISCONNECTED, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.USB_DISCONNECTED));
+		assertEquals(TestValues.MATCH, SdlDisconnectedReason.USER_EXIT, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.USER_EXIT));
+		assertNull(TestValues.MATCH, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(null));
 	}
 	
 }

@@ -1,13 +1,29 @@
 package com.smartdevicelink.transport;
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.test.SdlUnitTestContants;
 import com.smartdevicelink.transport.enums.TransportType;
 
 import junit.framework.Assert;
 
-public class MultiplexTransportTest extends AndroidTestCase2 {
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+
+@RunWith(AndroidJUnit4.class)
+public class MultiplexTransportTest {
 
 	private static final int TIMEOUT = 2000;
 	
@@ -15,10 +31,9 @@ public class MultiplexTransportTest extends AndroidTestCase2 {
 	ITransportListener transportListener;
 
 	
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		rsvp = new RouterServiceValidator(this.mContext);
+	@Before
+	public void setUp() throws Exception {
+		rsvp = new RouterServiceValidator(getTargetContext());
 		rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_NONE);
 		rsvp.validate();
 		
@@ -44,9 +59,9 @@ public class MultiplexTransportTest extends AndroidTestCase2 {
 		
 	}
 	
-	
+	@Test
 	public void testThreadRecoverability(){
-		MultiplexTransportConfig config = new MultiplexTransportConfig(this.mContext,SdlUnitTestContants.TEST_APP_ID);
+		MultiplexTransportConfig config = new MultiplexTransportConfig(getTargetContext(),SdlUnitTestContants.TEST_APP_ID);
 		//	public MultiplexTransport(MultiplexTransportConfig transportConfig, final ITransportListener transportListener){
 		MultiplexTransport trans = new MultiplexTransport(config,transportListener);
 		
@@ -79,5 +94,20 @@ public class MultiplexTransportTest extends AndroidTestCase2 {
 		} catch (NullPointerException e) {
 			Assert.fail("NPE in MultiplexTransport constructor");
 		}
+	}
+
+	// test for setting error state.
+	@Test
+	public void testSetState() {
+		final Bundle bundle = new Bundle();
+		MultiplexBluetoothTransport btTransport = new MultiplexBluetoothTransport(new Handler(Looper.getMainLooper()) {
+			@Override
+			public void handleMessage(Message message) {
+				assertTrue(message.getData().equals(bundle));
+			}
+		});
+		btTransport.start();
+		bundle.putByte(MultiplexBaseTransport.ERROR_REASON_KEY, MultiplexBaseTransport.REASON_SPP_ERROR);
+		btTransport.setState(MultiplexBaseTransport.STATE_ERROR, bundle);
 	}
 }

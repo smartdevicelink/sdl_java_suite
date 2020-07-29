@@ -7,16 +7,24 @@ import com.smartdevicelink.proxy.rpc.Choice;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.Hashtable;
 import java.util.List;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
@@ -28,8 +36,8 @@ public class CreateInteractionChoiceSetTests extends BaseRpcTests{
     protected RPCMessage createMessage(){
         CreateInteractionChoiceSet msg = new CreateInteractionChoiceSet();
 
-        msg.setInteractionChoiceSetID(Test.GENERAL_INT);
-        msg.setChoiceSet(Test.GENERAL_CHOICE_LIST);
+        msg.setInteractionChoiceSetID(TestValues.GENERAL_INT);
+        msg.setChoiceSet(TestValues.GENERAL_CHOICE_LIST);
 
         return msg;
     }
@@ -49,10 +57,10 @@ public class CreateInteractionChoiceSetTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{
-            result.put(CreateInteractionChoiceSet.KEY_INTERACTION_CHOICE_SET_ID, Test.GENERAL_INT);
-            result.put(CreateInteractionChoiceSet.KEY_CHOICE_SET, Test.JSON_CHOICES);
+            result.put(CreateInteractionChoiceSet.KEY_INTERACTION_CHOICE_SET_ID, TestValues.GENERAL_INT);
+            result.put(CreateInteractionChoiceSet.KEY_CHOICE_SET, TestValues.JSON_CHOICES);
         }catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -61,55 +69,57 @@ public class CreateInteractionChoiceSetTests extends BaseRpcTests{
     /**
 	 * Tests the expected values of the RPC message.
 	 */
+    @Test
     public void testRpcValues () {    	
     	// Test Values
         int testCmdId = ( (CreateInteractionChoiceSet) msg ).getInteractionChoiceSetID(); 
         List<Choice> testChoices = ( (CreateInteractionChoiceSet) msg ).getChoiceSet();
        
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_INT, testCmdId);
-        assertEquals(Test.MATCH, Test.GENERAL_CHOICE_LIST.size(), testChoices.size());
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, testCmdId);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_CHOICE_LIST.size(), testChoices.size());
         for(int i = 0; i < testChoices.size(); i++){
-            assertTrue(Test.TRUE, Validator.validateChoice(Test.GENERAL_CHOICE_LIST.get(i), testChoices.get(i)));
+            assertTrue(TestValues.TRUE, Validator.validateChoice(TestValues.GENERAL_CHOICE_LIST.get(i), testChoices.get(i)));
         }
    
         // Invalid/Null Tests
         CreateInteractionChoiceSet msg = new CreateInteractionChoiceSet();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getChoiceSet());
-        assertNull(Test.NULL, msg.getInteractionChoiceSetID());
+        assertNull(TestValues.NULL, msg.getChoiceSet());
+        assertNull(TestValues.NULL, msg.getInteractionChoiceSetID());
     }
 
     /**
      * Tests a valid JSON construction of this RPC message.
      */
+    @Test
     public void testJsonConstructor () {
-    	JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-    	assertNotNull(Test.NOT_NULL, commandJson);
+    	JSONObject commandJson = JsonFileReader.readId(getTargetContext(), getCommandType(), getMessageType());
+    	assertNotNull(TestValues.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			CreateInteractionChoiceSet cmd = new CreateInteractionChoiceSet(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(Test.NOT_NULL, body);
+			assertNotNull(TestValues.NOT_NULL, body);
 			
 			// Test everything in the json body.
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, CreateInteractionChoiceSet.KEY_INTERACTION_CHOICE_SET_ID), cmd.getInteractionChoiceSetID());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, CreateInteractionChoiceSet.KEY_INTERACTION_CHOICE_SET_ID), cmd.getInteractionChoiceSetID());
 			
 			JSONArray choiceSetArray = JsonUtils.readJsonArrayFromJsonObject(parameters, CreateInteractionChoiceSet.KEY_CHOICE_SET);
 			for (int index = 0; index < choiceSetArray.length(); index++) {
 				Choice chunk = new Choice(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)choiceSetArray.get(index)) );
-				assertTrue(Test.TRUE,  Validator.validateChoice(chunk, cmd.getChoiceSet().get(index)) );
+				assertTrue(TestValues.TRUE,  Validator.validateChoice(chunk, cmd.getChoiceSet().get(index)) );
 			}			
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}    	
     }
 }

@@ -7,16 +7,21 @@ import com.smartdevicelink.proxy.rpc.GetWayPointsResponse;
 import com.smartdevicelink.proxy.rpc.LocationDetails;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
 
 /**
  * Created by austinkirk on 6/6/17.
@@ -28,8 +33,8 @@ public class GetWayPointsResponseTests extends BaseRpcTests {
     @Override
     protected RPCMessage createMessage() {
 
-        waypoints.add(Test.GENERAL_LOCATIONDETAILS);
-        waypoints.add(Test.GENERAL_LOCATIONDETAILS);
+        waypoints.add(TestValues.GENERAL_LOCATIONDETAILS);
+        waypoints.add(TestValues.GENERAL_LOCATIONDETAILS);
 
         GetWayPointsResponse getWayPointsResponse = new GetWayPointsResponse();
         getWayPointsResponse.setWayPoints(waypoints);
@@ -53,8 +58,8 @@ public class GetWayPointsResponseTests extends BaseRpcTests {
 
         JSONArray jsonArray = new JSONArray();
         try {
-            jsonArray.put(JsonRPCMarshaller.serializeHashtable(Test.GENERAL_LOCATIONDETAILS.getStore()));
-            jsonArray.put(JsonRPCMarshaller.serializeHashtable(Test.GENERAL_LOCATIONDETAILS.getStore()));
+            jsonArray.put(JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_LOCATIONDETAILS.getStore()));
+            jsonArray.put(JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_LOCATIONDETAILS.getStore()));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -71,39 +76,41 @@ public class GetWayPointsResponseTests extends BaseRpcTests {
     /**
      * Tests the expected values of the RPC message.
      */
+    @Test
     public void testRpcValues () {
 
         // Test Values
         List<LocationDetails> testWPs = ( (GetWayPointsResponse) msg ).getWayPoints();
 
         // Valid Tests
-        assertEquals(Test.MATCH, waypoints, testWPs);
+        assertEquals(TestValues.MATCH, waypoints, testWPs);
 
         // Invalid/Null Tests
         GetWayPointsResponse msg = new GetWayPointsResponse();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getWayPoints());
+        assertNull(TestValues.NULL, msg.getWayPoints());
     }
 
     /**
      * Tests a valid JSON construction of this RPC message.
      */
+    @Test
     public void testJsonConstructor () {
-        JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-        assertNotNull(Test.NOT_NULL, commandJson);
+        JSONObject commandJson = JsonFileReader.readId(getTargetContext(), getCommandType(), getMessageType());
+        assertNotNull(TestValues.NOT_NULL, commandJson);
 
         try {
             Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
             GetWayPointsResponse cmd = new GetWayPointsResponse(hash);
 
             JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-            assertNotNull(Test.NOT_NULL, body);
+            assertNotNull(TestValues.NOT_NULL, body);
 
             // Test everything in the json body.
-            assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-            assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
             JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
 
@@ -114,7 +121,7 @@ public class GetWayPointsResponseTests extends BaseRpcTests {
                 locationList.add(det);
             }
             List<LocationDetails> dets = cmd.getWayPoints();
-            assertEquals(Test.MATCH,  locationList.size(), dets.size());
+            assertEquals(TestValues.MATCH,  locationList.size(), dets.size());
 
         } catch (JSONException e) {
             e.printStackTrace();

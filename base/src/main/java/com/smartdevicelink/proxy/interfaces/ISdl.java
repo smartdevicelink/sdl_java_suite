@@ -2,6 +2,7 @@ package com.smartdevicelink.proxy.interfaces;
 
 import android.support.annotation.NonNull;
 
+import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
@@ -101,12 +102,14 @@ public interface ISdl {
      * @param isEncrypted flag to start this service with encryption or not
      * @param parameters desired video streaming params for this sevice to be started with
      */
+    @Deprecated
     IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters);
 
     /**
      * Starts the Audio streaming service
      * @param encrypted flag to start this service with encryption or not
      */
+    @Deprecated
     void startAudioService(boolean encrypted, AudioStreamingCodec codec, AudioStreamingParams params);
 
     /**
@@ -127,6 +130,7 @@ public interface ISdl {
      * @param params specific options and settings associated with the audio stream
      * @return IAudioStreamListener, an interface that allows the writing of audio data
      */
+    @Deprecated
     IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec, AudioStreamingParams params);
 
     /**
@@ -147,7 +151,15 @@ public interface ISdl {
      * @param rpcs List of RPC requests
      * @param listener OnMultipleRequestListener that is called between requests and after all are processed
      */
+    @Deprecated
     void sendRequests(List<? extends RPCRequest> rpcs, final OnMultipleRequestListener listener);
+
+    /**
+     * Pass a list of RPC messages through the proxy to be sent to core
+     * @param rpcs List of RPC messages
+     * @param listener OnMultipleRequestListener that is called between requests and after all are processed
+     */
+    void sendRPCs(List<? extends RPCMessage> rpcs, final OnMultipleRequestListener listener);
 
     /**
      * Takes a list of RPCMessages and sends it to SDL in a synchronous fashion. Responses are captured through callback on OnMultipleRequestListener.
@@ -230,6 +242,7 @@ public interface ISdl {
      * @param forceUpdate flag to force getting a new fresh copy of the capability from the head unit even if it is cached
      * @return desired capability if it is cached in the manager, otherwise returns a null object
      */
+    @Deprecated
     Object getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener, boolean forceUpdate);
 
     /**
@@ -243,6 +256,7 @@ public interface ISdl {
      * @param systemCapabilityType a system capability type that should be checked for support
      * @return Boolean whether or not the supplied capability type is supported on the connected module
      */
+    @Deprecated
     boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType);
 
     /**
@@ -250,6 +264,7 @@ public interface ISdl {
      * @param systemCapabilityType Type of capability desired
      * @param listener callback to execute upon retrieving capability
      */
+    @Deprecated
     void addOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener);
 
     /**
@@ -257,6 +272,7 @@ public interface ISdl {
      * @param systemCapabilityType Type of capability
      * @param listener the listener that should be removed
      */
+    @Deprecated
     boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener);
 
     /**
@@ -287,4 +303,6 @@ public interface ISdl {
      * Start encrypted RPC service
      */
     void startRPCEncryption();
+
+    Taskmaster getTaskmaster();
 }

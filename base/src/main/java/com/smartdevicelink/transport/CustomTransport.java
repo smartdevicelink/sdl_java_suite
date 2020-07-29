@@ -138,7 +138,7 @@ public abstract class CustomTransport implements TransportInterface{
             try {
                 onWrite(bytes, 0, bytes.length);
             } catch (Exception exc) {
-                DebugTool.logError("Error attempting to write packet", exc);
+                DebugTool.logError(TAG, "Error attempting to write packet", exc);
             }
         }
     }

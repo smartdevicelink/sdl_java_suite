@@ -1,6 +1,6 @@
 package com.smartdevicelink.test.util;
 
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.util.DebugTool;
 
 import junit.framework.TestCase;
@@ -19,9 +19,9 @@ public class DebugToolTests extends TestCase {
 	 */
 	public void testDebugEnableMethods () {		
 		DebugTool.enableDebugTool();
-		assertTrue(Test.TRUE, DebugTool.isDebugEnabled());
+		assertTrue(TestValues.TRUE, DebugTool.isDebugEnabled());
 		DebugTool.disableDebugTool();
-		assertFalse(Test.FALSE, DebugTool.isDebugEnabled());		
+		assertFalse(TestValues.FALSE, DebugTool.isDebugEnabled());
 	}
 	
 	// NOTE : No testing can currently be done for the logging methods.

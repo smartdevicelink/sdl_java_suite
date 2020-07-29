@@ -36,6 +36,7 @@ import com.smartdevicelink.proxy.rpc.OnAppInterfaceUnregistered;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.UnregisterAppInterfaceResponse;
 
+@Deprecated
 public interface IProxyListener extends IProxyListenerBase{
 	// Adds Legacy Life-cycle Management call-backs to the IProxyListenerAbstract interface
 	

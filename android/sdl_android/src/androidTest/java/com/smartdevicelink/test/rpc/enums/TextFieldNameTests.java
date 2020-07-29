@@ -1,7 +1,7 @@
 package com.smartdevicelink.test.rpc.enums;
 
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -105,10 +105,10 @@ public class TextFieldNameTests extends TestCase {
 		assertNotNull("templateTitle returned null", templateTitle);
 
 
-		assertNotNull(Test.NOT_NULL, enumLocName);
-		assertNotNull(Test.NOT_NULL, enumLocDesc);
-		assertNotNull(Test.NOT_NULL, enumAddLines);
-		assertNotNull(Test.NOT_NULL, enumPhone);
+		assertNotNull(TestValues.NOT_NULL, enumLocName);
+		assertNotNull(TestValues.NOT_NULL, enumLocDesc);
+		assertNotNull(TestValues.NOT_NULL, enumAddLines);
+		assertNotNull(TestValues.NOT_NULL, enumPhone);
 	}
 
 	/**
