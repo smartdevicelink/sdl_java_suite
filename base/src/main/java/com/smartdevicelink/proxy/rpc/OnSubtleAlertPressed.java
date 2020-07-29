@@ -31,46 +31,32 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.rpc.enums.Result;
+import com.smartdevicelink.proxy.RPCNotification;
 
 import java.util.Hashtable;
 
 /**
- * If no applicable request can be dismissed, the result will be IGNORED.
+ * Sent when the alert itself is touched (outside of a soft button). Touching (or otherwise
+ * selecting) the alert should open the app before sending this notification.
  *
- * @since SmartDeviceLink 6.0.0
+ * @since SmartDeviceLink 7.0.0
  */
-public class CancelInteractionResponse extends RPCResponse {
+public class OnSubtleAlertPressed extends RPCNotification {
 
     /**
-     * Constructs a new CancelInteractionResponse object
+     * Constructs a new OnSubtleAlertPressed object
      */
-    public CancelInteractionResponse() {
-        super(FunctionID.CANCEL_INTERACTION.toString());
+    public OnSubtleAlertPressed() {
+        super(FunctionID.ON_SUBTLE_ALERT_PRESSED.toString());
     }
 
     /**
-     * Constructs a new CancelInteractionResponse object indicated by the Hashtable parameter
+     * Constructs a new OnSubtleAlertPressed object indicated by the Hashtable parameter
      *
      * @param hash The Hashtable to use
      */
-    public CancelInteractionResponse(Hashtable<String, Object> hash) {
+    public OnSubtleAlertPressed(Hashtable<String, Object> hash) {
         super(hash);
-    }
-
-    /**
-     * Constructs a new CancelInteractionResponse object
-     *
-     * @param success whether the request is successfully processed
-     * @param resultCode additional information about a response returning a failed outcome
-     */
-    public CancelInteractionResponse(@NonNull Boolean success, @NonNull Result resultCode) {
-        this();
-        setSuccess(success);
-        setResultCode(resultCode);
     }
 }

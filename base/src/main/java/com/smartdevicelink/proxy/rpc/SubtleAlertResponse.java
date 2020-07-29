@@ -40,37 +40,58 @@ import com.smartdevicelink.proxy.rpc.enums.Result;
 import java.util.Hashtable;
 
 /**
- * If no applicable request can be dismissed, the result will be IGNORED.
- *
- * @since SmartDeviceLink 6.0.0
+ * @since SmartDeviceLink 7.0.0
  */
-public class CancelInteractionResponse extends RPCResponse {
+public class SubtleAlertResponse extends RPCResponse {
+    public static final String KEY_TRY_AGAIN_TIME = "tryAgainTime";
 
     /**
-     * Constructs a new CancelInteractionResponse object
+     * Constructs a new SubtleAlertResponse object
      */
-    public CancelInteractionResponse() {
-        super(FunctionID.CANCEL_INTERACTION.toString());
+    public SubtleAlertResponse() {
+        super(FunctionID.SUBTLE_ALERT.toString());
     }
 
     /**
-     * Constructs a new CancelInteractionResponse object indicated by the Hashtable parameter
+     * Constructs a new SubtleAlertResponse object indicated by the Hashtable parameter
      *
      * @param hash The Hashtable to use
      */
-    public CancelInteractionResponse(Hashtable<String, Object> hash) {
+    public SubtleAlertResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 
     /**
-     * Constructs a new CancelInteractionResponse object
+     * Constructs a new SubtleAlertResponse object
      *
      * @param success whether the request is successfully processed
      * @param resultCode additional information about a response returning a failed outcome
      */
-    public CancelInteractionResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+    public SubtleAlertResponse(@NonNull Boolean success, @NonNull Result resultCode) {
         this();
         setSuccess(success);
         setResultCode(resultCode);
+    }
+
+    /**
+     * Sets the tryAgainTime.
+     *
+     * @param tryAgainTime Amount of time (in milliseconds) that an app must wait before resending an alert. If
+     * provided, another system event or overlay currently has a higher priority than this alert.
+     * An app must not send an alert without waiting at least the amount of time dictated.
+     */
+    public void setTryAgainTime(Integer tryAgainTime) {
+        setParameters(KEY_TRY_AGAIN_TIME, tryAgainTime);
+    }
+
+    /**
+     * Gets the tryAgainTime.
+     *
+     * @return Integer Amount of time (in milliseconds) that an app must wait before resending an alert. If
+     * provided, another system event or overlay currently has a higher priority than this alert.
+     * An app must not send an alert without waiting at least the amount of time dictated.
+     */
+    public Integer getTryAgainTime() {
+        return getInteger(KEY_TRY_AGAIN_TIME);
     }
 }

@@ -91,8 +91,8 @@ public class CancelInteraction extends RPCRequest {
     // Custom Getters / Setters
 
     /**
-     * The ID of the type of interaction to dismiss.
-     * Only values 10 (PerformInteractionID), 12 (AlertID), 25 (ScrollableMessageID), and 26 (SliderID) are permitted.
+     * Gets the ID of the type of interaction the developer wants to dismiss.
+     * Only values 10 (PerformInteractionID), 12 (AlertID), 25 (ScrollableMessageID), 26 (SliderID), and 64 (SubtleAlertID) are permitted.
      * @return - the functionID
      */
     public Integer getInteractionFunctionID() {
@@ -100,8 +100,8 @@ public class CancelInteraction extends RPCRequest {
     }
 
     /**
-     * The ID of the type of interaction to dismiss.
-     * Only values 10 (PerformInteractionID), 12 (AlertID), 25 (ScrollableMessageID), and 26 (SliderID) are permitted.
+     * Sets hhe ID of the type of interaction the developer wants to dismiss.
+     * Only values 10 (PerformInteractionID), 12 (AlertID), 25 (ScrollableMessageID), 26 (SliderID), and 64 (SubtleAlertID) are permitted.
      * @param functionID - the functionID
      */
     public void setInteractionFunctionID(@NonNull Integer functionID) {
