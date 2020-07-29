@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@
  * disclaimer in the documentation and/or other materials provided with the
  * distribution.
  *
- * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
- * software without specific prior written permission.
+ * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -43,6 +43,7 @@ public class HMICapabilities extends RPCStruct{
     public static final String KEY_APP_SERVICES = "appServices";
     public static final String KEY_DISPLAYS = "displays";
     public static final String KEY_SEAT_LOCATION = "seatLocation";
+    public static final String KEY_DRIVER_DISTRACTION = "driverDistraction";
 
 	public HMICapabilities() { }
 	  
@@ -133,5 +134,23 @@ public class HMICapabilities extends RPCStruct{
 	public void setSeatLocationAvailable(Boolean available){
 		setValue(KEY_SEAT_LOCATION, available);
 	}
+    /**
+     * Sets the driverDistraction.
+     *
+     * @param driverDistraction Availability of driver distraction capability. True: Available, False: Not Available
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setDriverDistraction(Boolean driverDistraction) {
+        setValue(KEY_DRIVER_DISTRACTION, driverDistraction);
+    }
 
+    /**
+     * Gets the driverDistraction.
+     *
+     * @return Boolean Availability of driver distraction capability. True: Available, False: Not Available
+     * @since SmartDeviceLink 7.0.0
+     */
+    public Boolean getDriverDistraction() {
+        return getBoolean(KEY_DRIVER_DISTRACTION);
+    }
 }
