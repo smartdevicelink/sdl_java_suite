@@ -99,12 +99,12 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 6.0</td>
  * 		</tr>
  * 		<tr>
- *  	      <td>parentID</td>
- *  	      <td>Integer</td>
- *  	      <td>unique ID of the sub menu, the command will be added to. If not provided, it will beprovided to the top level of the in application menu.</td>
- *  	      <td>N</td>
- *  	      <td>SmartDeviceLink 7.0.0</td>
- *  	 </tr>
+ *  		<td>parentID</td>
+ *  	    <td>Integer</td>
+ *  	    <td>unique ID of the sub menu, the command will be added to. If not provided, it will beprovided to the top level of the in application menu.</td>
+ *  	    <td>N</td>
+ *  	    <td>SmartDeviceLink 7.0.0</td>
+ *		</tr>
  *  </table>
  *  <b>Response</b>
  *  <p>Indicates that the corresponding request either failed or succeeded. If the response returns with a SUCCESS result code, this means the SubMenu was added to the Command Menu successfully</p>
