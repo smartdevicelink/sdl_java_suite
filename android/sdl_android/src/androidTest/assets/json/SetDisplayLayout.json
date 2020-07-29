@@ -73,7 +73,7 @@
           },
           {
             "width":1980,
-            "characterSet":"CID2SET",
+            "characterSet":"UTF_8",
             "rows":960,
             "name":"scrollableMessageBody"
           },

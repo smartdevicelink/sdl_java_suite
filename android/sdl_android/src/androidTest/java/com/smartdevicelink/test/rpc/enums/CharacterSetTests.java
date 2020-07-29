@@ -26,11 +26,20 @@ public class CharacterSetTests extends TestCase {
 		CharacterSet enumCid1Set = CharacterSet.valueForString(example);
 		example = "CID2SET";
 		CharacterSet enumCid2Set = CharacterSet.valueForString(example);
-		
+		example = "ASCII";
+		CharacterSet enumAsciiSet = CharacterSet.valueForString(example);
+		example = "ISO_8859_1";
+		CharacterSet enumIsoSet = CharacterSet.valueForString(example);
+		example = "UTF_8";
+		CharacterSet enumUtfSet = CharacterSet.valueForString(example);
+
 		assertNotNull("TYPE2SET returned null", enumType2Set);
 		assertNotNull("TYPE5SET returned null", enumType5Set);
 		assertNotNull("CID1SET returned null", enumCid1Set);
 		assertNotNull("CID2SET returned null", enumCid2Set);
+		assertNotNull("ASCII returned null", enumAsciiSet);
+		assertNotNull("ISO_8859_1 returned null", enumIsoSet);
+		assertNotNull("UTF_8 returned null", enumUtfSet);
 	}
 
 	/**
