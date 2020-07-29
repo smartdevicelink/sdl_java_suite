@@ -100,7 +100,7 @@ public class CancelInteraction extends RPCRequest {
     }
 
     /**
-     * Sets hhe ID of the type of interaction the developer wants to dismiss.
+     * Sets the ID of the type of interaction the developer wants to dismiss.
      * Only values 10 (PerformInteractionID), 12 (AlertID), 25 (ScrollableMessageID), 26 (SliderID), and 64 (SubtleAlertID) are permitted.
      * @param functionID - the functionID
      */

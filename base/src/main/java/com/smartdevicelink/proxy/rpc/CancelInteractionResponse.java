@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
+ * Copyright (c)  2019 Livio, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@
  * disclaimer in the documentation and/or other materials provided with the
  * distribution.
  *
- * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
- * its contributors may be used to endorse or promote products derived
- * from this software without specific prior written permission.
+ * Neither the name of the Livio Inc. nor the names of its contributors
+ * may be used to endorse or promote products derived from this software
+ * without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -28,7 +28,10 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Created by Nicole Yarroch on 7/24/19 9:29 AM
  */
+
 package com.smartdevicelink.proxy.rpc;
 
 import android.support.annotation.NonNull;
@@ -40,18 +43,13 @@ import com.smartdevicelink.proxy.rpc.enums.Result;
 import java.util.Hashtable;
 
 /**
- * If no applicable request can be dismissed, the result will be IGNORED.
- *
- * @since SmartDeviceLink 6.0.0
+ * Response to the request to dismiss a modal view. If no applicable request can be dismissed, the `resultCode` will be `IGNORED`.
  */
 public class CancelInteractionResponse extends RPCResponse {
-
     /**
      * Constructs a new CancelInteractionResponse object
      */
-    public CancelInteractionResponse() {
-        super(FunctionID.CANCEL_INTERACTION.toString());
-    }
+    public CancelInteractionResponse() { super(FunctionID.CANCEL_INTERACTION.toString()); }
 
     /**
      * Constructs a new CancelInteractionResponse object indicated by the Hashtable parameter
@@ -64,9 +62,8 @@ public class CancelInteractionResponse extends RPCResponse {
 
     /**
      * Constructs a new CancelInteractionResponse object
-     *
      * @param success whether the request is successfully processed
-     * @param resultCode additional information about a response returning a failed outcome
+     * @param resultCode whether the request is successfully processed
      */
     public CancelInteractionResponse(@NonNull Boolean success, @NonNull Result resultCode) {
         this();
