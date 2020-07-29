@@ -49,6 +49,7 @@ import java.util.List;
  *      <th>Type</th>
  *      <th>Description</th>
  *      <th>Required</th>
+ *      <th>Notes</th>
  *      <th>Version Available</th>
  *  </tr>
  *  <tr>
@@ -56,6 +57,7 @@ import java.util.List;
  *      <td>String</td>
  *      <td>The first line of the alert text field</td>
  *      <td>N</td>
+ *      <td>Max Value: 500</td>
  *      <td></td>
  *  </tr>
  *  <tr>
@@ -63,6 +65,7 @@ import java.util.List;
  *      <td>String</td>
  *      <td>The second line of the alert text field</td>
  *      <td>N</td>
+ *      <td>Max Value: 500</td>
  *      <td></td>
  *  </tr>
  *  <tr>
@@ -71,12 +74,14 @@ import java.util.List;
  *      <td>Image to be displayed for the corresponding alert. See Image. If omitted on supporteddisplays, no (or the default if applicable) icon should be displayed.</td>
  *      <td>N</td>
  *      <td></td>
+ *      <td></td>
  *  </tr>
  *  <tr>
  *      <td>ttsChunks</td>
  *      <td>List<TTSChunk></td>
  *      <td>An array of text chunks of type TTSChunk. See TTSChunk. The array must have at least oneitem.</td>
  *      <td>N</td>
+ *      <td>Min Value: 1; Max Value: 100</td>
  *      <td></td>
  *  </tr>
  *  <tr>
@@ -84,6 +89,7 @@ import java.util.List;
  *      <td>Integer</td>
  *      <td>Timeout in milliseconds. Typical timeouts are 3-5 seconds. If omitted, timeout is set to5s.</td>
  *      <td>N</td>
+ *      <td>Min Value: 3000; Max Value: 10000; Default Value: 5000</td>
  *      <td></td>
  *  </tr>
  *  <tr>
@@ -91,6 +97,7 @@ import java.util.List;
  *      <td>List<SoftButton></td>
  *      <td>App defined SoftButtons. If omitted on supported displays, the displayed alert shall nothave any SoftButtons.</td>
  *      <td>N</td>
+ *      <td>Min Value: 0; Max Value: 2</td>
  *      <td></td>
  *  </tr>
  *  <tr>
@@ -98,6 +105,7 @@ import java.util.List;
  *      <td>Integer</td>
  *      <td>An ID for this specific alert to allow cancellation through the `CancelInteraction` RPC.</td>
  *      <td>N</td>
+ *      <td></td>
  *      <td></td>
  *  </tr>
  * </table>
