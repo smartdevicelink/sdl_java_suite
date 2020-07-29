@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
+ * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@
  * disclaimer in the documentation and/or other materials provided with the
  * distribution.
  *
- * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
- * its contributors may be used to endorse or promote products derived
- * from this software without specific prior written permission.
+ * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from this 
+ * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -51,8 +51,6 @@ public class SystemCapability extends RPCStruct {
     public static final String KEY_APP_SERVICES_CAPABILITIES = "appServicesCapabilities";
     public static final String KEY_SEAT_LOCATION_CAPABILITY = "seatLocationCapability";
     public static final String KEY_DISPLAY_CAPABILITIES = "displayCapabilities";
-    public static final String KEY_DRIVER_DISTRACTION_CAPABILITY = "driverDistractionCapability";
-
     public SystemCapability(){}
 
     public SystemCapability(Hashtable<String, Object> hash) {
@@ -100,8 +98,6 @@ public class SystemCapability extends RPCStruct {
             return getObject(SeatLocationCapability.class, KEY_SEAT_LOCATION_CAPABILITY);
         } else if (type.equals(SystemCapabilityType.DISPLAYS)) {
             return getObject(DisplayCapability.class, KEY_DISPLAY_CAPABILITIES);
-        } else if (type.equals(SystemCapabilityType.DRIVER_DISTRACTION)) {
-            return getObject(DisplayCapabilities.class, KEY_DRIVER_DISTRACTION_CAPABILITY);
         } else {
             return null;
         }
@@ -124,8 +120,6 @@ public class SystemCapability extends RPCStruct {
             setValue(KEY_SEAT_LOCATION_CAPABILITY, capability);
         } else if (type.equals(SystemCapabilityType.DISPLAYS)) {
             setValue(KEY_DISPLAY_CAPABILITIES, capability);
-        } else if (type.equals(SystemCapabilityType.DRIVER_DISTRACTION)) {
-            setValue(KEY_DRIVER_DISTRACTION_CAPABILITY, capability);
         } else {
             return;
         }
