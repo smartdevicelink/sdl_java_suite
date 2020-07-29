@@ -43,9 +43,6 @@ public class Main {
     static SdlService sdlService;
 
     public static void main(String[] args) {
-        //Enable DebugTool
-        DebugTool.enableDebugTool();
-
         mainThread = Thread.currentThread();
         LOCK = new Object();
         startSdlService();

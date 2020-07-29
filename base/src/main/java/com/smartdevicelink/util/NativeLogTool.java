@@ -109,6 +109,7 @@ public class NativeLogTool {
 			return false;
 		}
 
+		int bytesWritten = 0;
 		int substrSize = 0;
 		String chunk = null;
 		try {
@@ -117,14 +118,17 @@ public class NativeLogTool {
 				chunk = logMsg.substring(idx, idx + substrSize);
 				switch (ltarg) {
 					case Info:
-						Log.i(source, chunk);
+						bytesWritten = Log.i(source, chunk);
 						break;
 					case Warning:
-						Log.w(source, chunk);
+						bytesWritten = Log.w(source, chunk);
 						break;
 					case Error:
-						Log.e(source, chunk, null);
+						bytesWritten = Log.e(source, chunk, null);
 						break;
+				}
+				if (bytesWritten < chunk.length()) {
+					Log.w(TAG, "Calling Log.e: msg length=" + chunk.length() + ", bytesWritten=" + bytesWritten);
 				}
 			}			
 		} catch (Exception ex) {
