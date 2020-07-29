@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Livio, Inc.
+ * Copyright (c) 2019 - 2020 Livio, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -981,6 +981,10 @@ abstract class BaseMenuManager extends BaseSubManager {
 			subMenu.setMenuLayout(menuConfiguration.getSubMenuLayout());
 		}
 		subMenu.setMenuIcon((shouldHaveArtwork && (cell.getIcon()!= null && cell.getIcon().getImageRPC() != null)) ? cell.getIcon().getImageRPC() : null);
+
+		if (cell.getParentCellId() != MAX_ID && cell.getParentCellId() != 0) {
+			subMenu.setParentID(cell.getParentCellId());
+		}
 		return subMenu;
 	}
 
