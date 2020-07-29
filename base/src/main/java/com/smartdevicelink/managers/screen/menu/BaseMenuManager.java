@@ -981,10 +981,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 			subMenu.setMenuLayout(menuConfiguration.getSubMenuLayout());
 		}
 		subMenu.setMenuIcon((shouldHaveArtwork && (cell.getIcon()!= null && cell.getIcon().getImageRPC() != null)) ? cell.getIcon().getImageRPC() : null);
-
-		if (cell.getParentCellId() != MAX_ID && cell.getParentCellId() != 0) {
-			subMenu.setParentID(cell.getParentCellId());
-		}
 		return subMenu;
 	}
 
