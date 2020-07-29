@@ -72,6 +72,9 @@ public class CharacterSetTests extends TestCase {
 		enumTestList.add(CharacterSet.TYPE5SET);
 		enumTestList.add(CharacterSet.CID1SET);
 		enumTestList.add(CharacterSet.CID2SET);
+		enumTestList.add(CharacterSet.ASCII);
+		enumTestList.add(CharacterSet.ISO_8859_1);
+		enumTestList.add(CharacterSet.UTF_8);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

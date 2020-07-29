@@ -35,10 +35,47 @@ package com.smartdevicelink.proxy.rpc.enums;
  * @since SmartDeviceLink 1.0
  */
 public enum CharacterSet {
+    /**
+     * @since SmartDeviceLink 7.0.0
+     */
+    @Deprecated
     TYPE2SET,
+    /**
+     * @since SmartDeviceLink 7.0.0
+     */
+    @Deprecated
     TYPE5SET,
+    /**
+     * @since SmartDeviceLink 7.0.0
+     */
+    @Deprecated
     CID1SET,
-    CID2SET;
+    /**
+     * @since SmartDeviceLink 7.0.0
+     */
+    @Deprecated
+    CID2SET,
+    /**
+     * ASCII as defined in https://en.wikipedia.org/wiki/ASCII as defined in codes 0-127.
+     * Non-printable characters such as tabs and back spaces are ignored.
+     *
+     * @since SmartDeviceLink 7.0.0
+     */
+    ASCII,
+    /**
+     * Latin-1, as defined in https://en.wikipedia.org/wiki/ISO/IEC_8859-1
+     *
+     * @since SmartDeviceLink 7.0.0
+     */
+    ISO_8859_1,
+    /**
+     * The UTF-8 character set that uses variable bytes per code point.
+     * See https://en.wikipedia.org/wiki/UTF-8 for more details.
+     * This is the preferred character set.
+     *
+     * @since SmartDeviceLink 7.0.0
+     */
+    UTF_8;
 
     /**
      * Convert String to CharacterSet
