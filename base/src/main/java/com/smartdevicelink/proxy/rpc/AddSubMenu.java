@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@
  * disclaimer in the documentation and/or other materials provided with the
  * distribution.
  *
- * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
- * software without specific prior written permission.
+ * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -98,6 +98,13 @@ import java.util.Hashtable;
  * 			<td></td>
  * 			<td>SmartDeviceLink 6.0</td>
  * 		</tr>
+ * 		<tr>
+ * 			<td>parentID</td>
+ * 			<td>Integer</td>
+ * 			<td>unique ID of the sub menu, the command will be added to. If not provided or 0, it will beprovided to the top level of the in application menu.</td>
+ * 			<td>N</td>
+ * 			<td>SmartDeviceLink 7.0.0</td>
+ * 		</tr>
  *  </table>
  *  <b>Response</b>
  *  <p>Indicates that the corresponding request either failed or succeeded. If the response returns with a SUCCESS result code, this means the SubMenu was added to the Command Menu successfully</p>
@@ -116,6 +123,7 @@ public class AddSubMenu extends RPCRequest {
 	public static final String KEY_MENU_ID = "menuID";
 	public static final String KEY_MENU_ICON = "menuIcon";
 	public static final String KEY_MENU_LAYOUT = "menuLayout";
+	public static final String KEY_PARENT_ID = "parentID";
 
 	/**
 	 * Constructs a new AddSubMenu object
@@ -249,5 +257,27 @@ public class AddSubMenu extends RPCRequest {
 	@SuppressWarnings("unchecked")
 	public MenuLayout getMenuLayout() {
 		return (MenuLayout) getObject(MenuLayout.class, KEY_MENU_LAYOUT);
+	}
+
+	/**
+	 * Sets the parentID.
+	 *
+	 * @param parentID unique ID of the sub menu, the command will be added to. If not provided or 0, it will be
+	 * provided to the top level of the in application menu.
+	 * @since SmartDeviceLink 7.0.0
+	 */
+	public void setParentID(Integer parentID) {
+		setParameters(KEY_PARENT_ID, parentID);
+	}
+
+	/**
+	 * Gets the parentID.
+	 *
+	 * @return Integer unique ID of the sub menu, the command will be added to. If not provided or 0, it will be
+	 * provided to the top level of the in application menu.
+	 * @since SmartDeviceLink 7.0.0
+	 */
+	public Integer getParentID() {
+		return getInteger(KEY_PARENT_ID);
 	}
 }
