@@ -32,5 +32,5 @@ package com.smartdevicelink;
 
 // THIS FILE IS AUTO GENERATED, DO NOT MODIFY!!
 public final class BuildConfig {
-    public static final String VERSION_NAME = "4.12.0-RC";
+    public static final String VERSION_NAME = "4.12.0";
 }
