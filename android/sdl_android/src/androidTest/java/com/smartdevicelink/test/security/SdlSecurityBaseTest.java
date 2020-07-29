@@ -2,16 +2,14 @@ package com.smartdevicelink.test.security;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
+import com.smartdevicelink.SdlConnection.ISdlSessionListener;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.test.TestValues;
-import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
-import com.smartdevicelink.transport.TCPTransportConfig;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,7 +60,7 @@ public class SdlSecurityBaseTest {
 	    }
 	}
 	
-	class MockInterfaceBroker implements ISdlConnectionListener {
+	class MockInterfaceBroker implements ISdlSessionListener {
 		public MockInterfaceBroker () { }
 		@Override
 		public void onTransportDisconnected(String info) {
@@ -79,12 +77,12 @@ public class SdlSecurityBaseTest {
 			
 		}
 		@Override
-		public void onProtocolMessageReceived(ProtocolMessage msg) {
+		public void onRPCReceived(ProtocolMessage msg) {
 			
 		}
 		@Override
-		public void onProtocolSessionStartedNACKed(SessionType sessionType,
-				byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
+		public void onStartSessionNAK(SessionType sessionType,
+									  byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
 			
 		}
 		@Override

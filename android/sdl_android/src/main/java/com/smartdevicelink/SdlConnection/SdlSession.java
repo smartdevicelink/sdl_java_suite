@@ -35,13 +35,11 @@ package com.smartdevicelink.SdlConnection;
 import android.content.Context;
 
 import com.smartdevicelink.exception.SdlException;
-import com.smartdevicelink.protocol.ISdlProtocol;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.protocol.SdlProtocolBase;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitor;
 import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
@@ -52,7 +50,6 @@ import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
 import com.smartdevicelink.streaming.video.RTPH264Packetizer;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
-import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
@@ -62,8 +59,6 @@ import com.smartdevicelink.util.Version;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @SuppressWarnings({"WeakerAccess", "deprecation"})
@@ -74,7 +69,7 @@ public class SdlSession extends BaseSdlSession {
     MediaStreamingStatus mediaStreamingStatus;
     boolean requiresAudioSupport = false;
 
-    public SdlSession(ISdlConnectionListener listener, MultiplexTransportConfig config){
+    public SdlSession(ISdlSessionListener listener, MultiplexTransportConfig config){
         super(listener,config);
         this.transportConfig = config;
         if(config != null){
@@ -86,7 +81,7 @@ public class SdlSession extends BaseSdlSession {
 
     }
 
-    public SdlSession(ISdlConnectionListener listener, TCPTransportConfig config){ //TODO is it better to have two constructors or make it take BaseTransportConfig?
+    public SdlSession(ISdlSessionListener listener, TCPTransportConfig config){ //TODO is it better to have two constructors or make it take BaseTransportConfig?
         super(listener, config);
         this.transportConfig = config;
         this.sessionListener = listener;
@@ -159,83 +154,68 @@ public class SdlSession extends BaseSdlSession {
 
 
      /* ***********************************************************************************************************************************************************************
-     * *****************************************************************  IProtocol Listener  ********************************************************************************
+     * *****************************************************************  ISdlProtocol Listener  ********************************************************************************
      *************************************************************************************************************************************************************************/
 
     @Override
-    public void onProtocolMessageBytesToSend(SdlPacket packet) {
-        //Log.d(TAG, "onProtocolMessageBytesToSend - " + packet.getTransportType());
-        sdlProtocol.sendPacket(packet);
-    }
+    public void onServiceStarted(SdlPacket packet, SessionType serviceType, int sessionID, Version version, boolean isEncrypted) {
+        DebugTool.logInfo(TAG, serviceType.getName() + " service started");
 
-    @Override
-    public void onProtocolSessionStarted(SessionType sessionType,
-                                         byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted) {
-
-        DebugTool.logInfo(TAG, "Protocol session started");
-
-        this.sessionId = sessionID;
-        if (sessionType.eq(SessionType.RPC)){
-            sessionHashId = hashID;
+        if(serviceType!= null && serviceType.eq(SessionType.RPC) && this.sessionId == -1){
+            this.sessionId = sessionID;
+            this.sessionListener.onSessionStarted(sessionID, version);
         }
-        if (isEncrypted)
-            encryptedServices.addIfAbsent(sessionType);
-        this.sessionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID, hashID, isEncrypted);
-        if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
-            CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
+
+        if (isEncrypted){
+            encryptedServices.addIfAbsent(serviceType);
+        }
+
+        if(serviceListeners != null && serviceListeners.containsKey(serviceType)){
+            CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(serviceType);
             for(ISdlServiceListener listener:listeners){
-                listener.onServiceStarted(this, sessionType, isEncrypted);
-            }
-        }
-
-    }
-
-    public void onProtocolSessionStartedNACKed(SessionType sessionType, byte sessionID, byte version, String correlationID, List<String> rejectedParams){
-        onProtocolSessionNACKed(sessionType,sessionID,version,correlationID,rejectedParams);
-    }
-
-    @Override
-    public void onProtocolSessionNACKed(SessionType sessionType, byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
-        this.sessionListener.onProtocolSessionStartedNACKed(sessionType,
-                sessionID, version, correlationID, rejectedParams);
-        if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
-            CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
-            if(listeners != null) {
-                for (ISdlServiceListener listener : listeners) {
-                    listener.onServiceError(this, sessionType, "Start " + sessionType.toString() + " Service NAKed");
-                }
+                listener.onServiceStarted(this, serviceType, isEncrypted);
             }
         }
     }
+
     @Override
-    public void onProtocolSessionEnded(SessionType sessionType, byte sessionID,
-                                       String correlationID) {
-        this.sessionListener.onProtocolSessionEnded(sessionType, sessionID, correlationID);
-        if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
-            CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
+    public void onServiceEnded(SdlPacket packet, SessionType serviceType, int sessionID) {
+
+        if(SessionType.RPC.equals(serviceType)){
+            this.sessionListener.onSessionEnded(sessionID);
+        } else if(SessionType.NAV.equals(serviceType)) {
+            stopVideoStream();
+        } else if(SessionType.PCM.equals(serviceType)) {
+            stopAudioStream();
+        }
+
+        if(serviceListeners != null && serviceListeners.containsKey(serviceType)){
+            CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(serviceType);
             for(ISdlServiceListener listener:listeners){
-                listener.onServiceEnded(this, sessionType);
+                listener.onServiceEnded(this, serviceType);
             }
         }
-        encryptedServices.remove(sessionType);
+        encryptedServices.remove(serviceType);
     }
+
     @Override
-    public void onProtocolSessionEndedNACKed(SessionType sessionType,
-                                             byte sessionID, String correlationID) {
-        this.sessionListener.onProtocolSessionEndedNACKed(sessionType, sessionID, correlationID);
-        if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
-            CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
+    public void onServiceError(SdlPacket packet, SessionType serviceType, int sessionID, String error) {
+        if(SessionType.NAV.equals(serviceType)) {
+            stopVideoStream();
+        } else if (SessionType.PCM.equals(serviceType)) {
+            stopAudioStream();
+        }
+
+        if(serviceListeners != null && serviceListeners.containsKey(serviceType)){
+            CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(serviceType);
             for(ISdlServiceListener listener:listeners){
-                listener.onServiceError(this, sessionType, "End "+ sessionType.toString() +" Service NACK'ed");
+                listener.onServiceError(this, serviceType, "End "+ serviceType.toString() +" Service NACK'ed");
             }
         }
     }
 
-    /* Not supported methods from IProtocolListener */
     @Override
-    public void onHeartbeatTimedOut(byte sessionId){ /* Not supported */}
-    @Override
-    public void onAuthTokenReceived(String authToken, byte sessionID){/* Do nothing */ }
+    public void onAuthTokenReceived(String authToken){/* Do nothing */ }
 
     /* ***********************************************************************************************************************************************************************
      * *****************************************************************  Fix after initial refactor *********************************************************************************
@@ -272,13 +252,13 @@ public class SdlSession extends BaseSdlSession {
         try {
             switch (protocol) {
                 case RAW: {
-                    videoPacketizer = new StreamPacketizer(streamListener, null, SessionType.NAV, this.sessionId, this);
+                    videoPacketizer = new StreamPacketizer(streamListener, null, SessionType.NAV, (byte)this.sessionId, this);
                     videoPacketizer.start();
                     return (IVideoStreamListener)videoPacketizer;
                 }
                 case RTP: {
                     //FIXME why is this not an extension of StreamPacketizer?
-                    videoPacketizer = new RTPH264Packetizer(streamListener, SessionType.NAV, this.sessionId, this);
+                    videoPacketizer = new RTPH264Packetizer(streamListener, SessionType.NAV, (byte)this.sessionId, this);
                     videoPacketizer.start();
                     return (IVideoStreamListener)videoPacketizer;
                 }
@@ -293,7 +273,7 @@ public class SdlSession extends BaseSdlSession {
 
     public IAudioStreamListener startAudioStream() {
         try {
-            audioPacketizer = new StreamPacketizer(streamListener, null, SessionType.PCM, this.sessionId, this);
+            audioPacketizer = new StreamPacketizer(streamListener, null, SessionType.PCM, (byte)this.sessionId, this);
             audioPacketizer.start();
             return audioPacketizer;
         } catch (IOException e) {
@@ -301,23 +281,7 @@ public class SdlSession extends BaseSdlSession {
         }
 
     }
-    @Override
-    public void stopStream(SessionType serviceType) {
-        if(SessionType.NAV.equals(serviceType)){
-            stopVideoStream();
-        }else if(SessionType.PCM.equals(serviceType)){
-            stopAudioStream();
-        }
-        // Notify any listeners of the service being ended
-        if(serviceListeners != null && serviceListeners.containsKey(serviceType)){
-            CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(serviceType);
-            if (listeners != null && listeners.size() > 0) {
-                for (ISdlServiceListener listener : listeners) {
-                    listener.onServiceEnded(this, serviceType);
-                }
-            }
-        }
-    }
+
 
 
     public boolean stopVideoStream() {

@@ -50,7 +50,7 @@ public class SdlProtocolTests {
             return didReceive;
         }
         @Override
-        public void onProtocolMessageBytesToSend(SdlPacket packet) {}
+        public void onSdlPacketToSend(SdlPacket packet) {}
         @Override
         public void onProtocolMessageReceived(ProtocolMessage msg) {
             didReceive = true;
@@ -59,11 +59,11 @@ public class SdlProtocolTests {
             Log.d("DidReceiveListener", "JSON Size: " + msg.getJsonSize());
         }
         @Override
-        public void onProtocolSessionStarted(SessionType sessionType,byte sessionID, byte version, String correlationID, int hashID,boolean isEncrypted){}
+        public void onServiceStarted(SessionType sessionType, byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted){}
         @Override
-        public void onProtocolSessionNACKed(SessionType sessionType,byte sessionID, byte version, String correlationID, List<String> rejectedParams) {}
+        public void onStartServiceNAKReceived(SessionType sessionType, byte sessionID, byte version, String correlationID, List<String> rejectedParams) {}
         @Override
-        public void onProtocolSessionEnded(SessionType sessionType,byte sessionID, String correlationID) {}
+        public void onServiceEnded(SessionType sessionType, byte sessionID, String correlationID) {}
         @Override
         public void onProtocolSessionEndedNACKed(SessionType sessionType,byte sessionID, String correlationID) {}
         @Override

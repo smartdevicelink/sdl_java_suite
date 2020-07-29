@@ -1,6 +1,6 @@
 package com.smartdevicelink.test.streaming;
 
-import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
+import com.smartdevicelink.SdlConnection.ISdlSessionListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.transport.BaseTransportConfig;
@@ -11,7 +11,7 @@ import java.util.List;
  * This is a mock class for testing the following :
  * {@link com.smartdevicelink.streaming.AbstractPacketizer}
  */
-public class MockInterfaceBroker implements ISdlConnectionListener {
+public class MockInterfaceBroker implements ISdlSessionListener {
 	public MockInterfaceBroker () { }
 	@Override
 	public void onTransportDisconnected(String info) {
@@ -28,12 +28,12 @@ public class MockInterfaceBroker implements ISdlConnectionListener {
 
 	}
 	@Override
-	public void onProtocolMessageReceived(ProtocolMessage msg) {
+	public void onRPCReceived(ProtocolMessage msg) {
 
 	}
 	@Override
-	public void onProtocolSessionStartedNACKed(SessionType sessionType,
-			byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
+	public void onStartSessionNAK(SessionType sessionType,
+								  byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
 
 	}
 	@Override
