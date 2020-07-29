@@ -133,7 +133,7 @@ public class AddSubmenuTests extends BaseRpcTests{
 			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, AddSubMenu.KEY_POSITION), cmd.getPosition());
 			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, AddSubMenu.KEY_MENU_NAME), cmd.getMenuName());
 			assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(parameters, AddSubMenu.KEY_MENU_LAYOUT), cmd.getMenuLayout());
-            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, AddSubMenu.KEY_PARENT_ID), cmd.getParentID());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, AddSubMenu.KEY_PARENT_ID), cmd.getParentID());
 
 			JSONObject menuIcon = JsonUtils.readJsonObjectFromJsonObject(parameters, AddSubMenu.KEY_MENU_ICON);
 			Image referenceMenuIcon = new Image(JsonRPCMarshaller.deserializeJSONObject(menuIcon));
