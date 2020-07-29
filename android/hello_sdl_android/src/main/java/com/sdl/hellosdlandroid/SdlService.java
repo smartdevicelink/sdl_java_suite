@@ -189,7 +189,7 @@ public class SdlService extends Service {
 										VideoStreamingRange.Builder builder = new VideoStreamingRange.Builder();
 										builder
 												.setMaxSupportedResolution(new Resolution(480, 800))
-												.setMinSupportedResolution(new Resolution(240, 400))
+												.setMinSupportedResolution(new Resolution(200, 400))
 												.setAspectRatio(new AspectRatio(1., 6.))
 												.setMaxScreenDiagonal(20.);
 										VideoStreamingRange range = builder.build();

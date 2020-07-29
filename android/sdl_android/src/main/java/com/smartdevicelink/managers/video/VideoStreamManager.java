@@ -370,13 +370,16 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 											streamingRange.getMinSupportedResolution(),
 											streamingRange.getMaxSupportedResolution(),
 											streamingRange.getMaxScreenDiagonal(),
-											streamingRange.getAspectRatio()
+											streamingRange.getAspectRatio(),
+											castedCapability.getAdditionalVideoStreamingCapabilities()
 									)
 							);
 						} else {
 							// TODO handle??
 						}
-						internalInterface.sendRPC(new OnAppCapabilityUpdated(new AppCapability(castedCapability, AppCapabilityType.VIDEO_STREAMING)));
+
+						OnAppCapabilityUpdated onAppCapabilityUpdated = new OnAppCapabilityUpdated(new AppCapability(castedCapability, AppCapabilityType.VIDEO_STREAMING));
+						internalInterface.sendRPC(onAppCapabilityUpdated);
 						startStreaming(params, isEncrypted);
 					}
 
@@ -734,7 +737,8 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			Resolution minResolution,
 			Resolution maxResolution,
 			Double constraintDiagonalMax,
-			AspectRatio ratioRange
+			AspectRatio ratioRange,
+			List<VideoStreamingCapability> originalAdditionalCapabilities
 	){
 		Integer constraintHeightMax = maxResolution.getResolutionHeight();
 		Integer constraintHeightMin = minResolution.getResolutionHeight();
@@ -744,7 +748,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		Double aspectRationMax = ratioRange.getMaxAspectRatio();
 
 		List<VideoStreamingCapability> validCapabilities = new ArrayList<>();
-		List<VideoStreamingCapability> allCapabilities = parameters.getAdditionalCapabilities();
 
 		VideoStreamingCapability preferredCapability = new VideoStreamingCapability();
 		preferredCapability.setDiagonalScreenSize(parameters.getPreferredDiagonal());
@@ -756,10 +759,26 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		// get the first one - the Desired resolution to guarantee streaming will start
 		validCapabilities.add(preferredCapability);
 
-		for (VideoStreamingCapability capability : allCapabilities) {
-			int resolutionHeight = capability.getPreferredResolution().getResolutionHeight();
-			int resolutionWidth = capability.getPreferredResolution().getResolutionWidth();
-			double diagonal = capability.getDiagonalScreenSize();
+		for (VideoStreamingCapability capability : originalAdditionalCapabilities) {
+			double diagonal;
+			int resolutionHeight;
+			int resolutionWidth;
+			// TODO refactor
+			if (capability.getPreferredResolution() == null || capability.getPreferredResolution().getResolutionHeight() == null) {
+				continue;
+			} else {
+				resolutionHeight = capability.getPreferredResolution().getResolutionHeight();
+			}
+			if (capability.getPreferredResolution() == null || capability.getPreferredResolution().getResolutionWidth() == null) {
+				continue;
+			} else {
+				resolutionWidth = capability.getPreferredResolution().getResolutionWidth();
+			}
+			if (capability.getDiagonalScreenSize() == null ) {
+				diagonal = parameters.getPreferredDiagonal();
+			} else {
+				diagonal = capability.getDiagonalScreenSize();
+			}
 
 			if (constraintDiagonalMax < diagonal) {
 				continue;
@@ -773,11 +792,11 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
 			if (resolutionHeight > 0 && resolutionWidth > 0 && constraintHeightMax != null && constraintHeightMin != null)
 			{
-				if (!(resolutionHeight > constraintHeightMin && resolutionHeight < constraintHeightMax)) {
+				if (!(resolutionHeight >= constraintHeightMin && resolutionHeight <= constraintHeightMax)) {
 					continue;
 				}
 
-				if (!(resolutionWidth > constraintWidthMin && resolutionHeight < constraintWidthMax)) {
+				if (!(resolutionWidth >= constraintWidthMin && resolutionWidth <= constraintWidthMax)) {
 					continue;
 				}
 			}
