@@ -553,7 +553,22 @@ public enum SystemCapabilityType {
 	SEAT_LOCATION (true),
 
 	/**
-	 * @since SmartDeviceLink 7.0.0
+	 * <table border="1" rules="all">
+	 * 		<tr>
+	 * 			<th>Enum Name</th>
+	 * 			<th>Return Type</th>
+	 * 			<th>Description</th>
+	 * 			<th>Requires Async?</th>
+	 * 			<th>Notes</th>
+	 * 		</tr>
+	 * 		<tr>
+	 * 			<td>DRIVER_DISTRACTION</td>
+	 * 			<td>DriverDistractionCapability</td>
+	 * 			<td>Describes capabilities when the driver is distracted</td>
+	 * 			<td align=center>N</td>
+	 * 			<td>@since SmartDeviceLink 7.0.0</td>
+	 * 		</tr>
+	 * 	</table>
 	 */
 	DRIVER_DISTRACTION(true);
 
