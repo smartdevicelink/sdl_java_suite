@@ -32,6 +32,7 @@
 package com.smartdevicelink.proxy;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
+import com.smartdevicelink.util.SdlDataTypeConverter;
 import com.smartdevicelink.util.Version;
 
 import org.json.JSONException;
@@ -345,11 +346,11 @@ public class RPCStruct {
 	}
 
 	public Double getDouble(String key) {
-		return (Double) store.get(key);
+		return SdlDataTypeConverter.objectToDouble(store.get(key));
 	}
 
 	public Float getFloat(String key) {
-		return (Float) store.get(key);
+		return SdlDataTypeConverter.objectToFloat(store.get(key));
 	}
 
 	public Boolean getBoolean(String key) { return (Boolean) store.get(key); }
