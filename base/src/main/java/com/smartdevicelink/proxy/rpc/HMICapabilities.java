@@ -150,7 +150,7 @@ public class HMICapabilities extends RPCStruct{
      * @return Boolean Availability of driver distraction capability. True: Available, False: Not Available
      * @since SmartDeviceLink 7.0.0
      */
-    public Boolean getDriverDistraction() {
+    public Boolean isDriverDistractionAvailable() {
         return getBoolean(KEY_DRIVER_DISTRACTION);
     }
 }

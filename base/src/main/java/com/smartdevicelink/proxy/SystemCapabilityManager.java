@@ -428,7 +428,7 @@ public class SystemCapabilityManager {
 					case SEAT_LOCATION:
 						return hmiCapabilities.isSeatLocationAvailable();
 					case DRIVER_DISTRACTION:
-						return hmiCapabilities.getDriverDistraction();
+						return hmiCapabilities.isDriverDistractionAvailable();
 					default:
 						return false;
 				}
