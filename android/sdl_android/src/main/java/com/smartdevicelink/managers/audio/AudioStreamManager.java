@@ -179,14 +179,6 @@ public class AudioStreamManager extends BaseAudioStreamManager {
      */
     public AudioStreamManager(@NonNull ISdl internalInterface, @NonNull Context context) {
         super(internalInterface);
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN){
-            this.queue = null;
-            this.context = null;
-            this.serviceCompletionHandler = null;
-            this.streamingStateMachine = null;
-            transitionToState(ERROR);
-            return;
-        }
         this.queue = new LinkedList<>();
         this.context = new WeakReference<>(context);
         this.serviceCompletionHandler = new Handler(Looper.getMainLooper());
