@@ -564,9 +564,9 @@ public enum SystemCapabilityType {
 	 * 		<tr>
 	 * 			<td>DRIVER_DISTRACTION</td>
 	 * 			<td>DriverDistractionCapability</td>
-	 * 			<td>Describes capabilities when the driver is distracted</td>
+	 * 			<td>Returns DRIVER_DISTRACTION</td>
 	 * 			<td align=center>N</td>
-	 * 			<td>@since SmartDeviceLink 7.0.0</td>
+	 * 			<td><strong>Since 7.0</strong> Describes capabilities when the driver is distracted</td>
 	 * 		</tr>
 	 * 	</table>
 	 */
