@@ -33,6 +33,8 @@
 package com.smartdevicelink.SdlConnection;
 
 
+import com.smartdevicelink.protocol.SdlProtocol;
+import com.smartdevicelink.protocol.SdlProtocolBase;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.transport.BaseTransportConfig;
@@ -49,6 +51,11 @@ public class SdlSession extends BaseSdlSession {
     public SdlSession(ISdlConnectionListener listener, BaseTransportConfig config){
        super(listener,config);
        //FIXME this class needs to move to JavaSE only
+    }
+
+    @Override
+    protected SdlProtocolBase getSdlProtocolImplementation() {
+        return new SdlProtocol(this, transportConfig);
     }
 
 
