@@ -6,6 +6,7 @@ import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.AppServicesCapabilities;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.DriverDistractionCapability;
+import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.NavigationCapability;
 import com.smartdevicelink.proxy.rpc.PhoneCapability;
 import com.smartdevicelink.proxy.rpc.RemoteControlCapabilities;
@@ -84,6 +85,11 @@ public class SystemCapabilityTests extends TestCase {
         assertNull(TestValues.NULL, msg.getCapabilityForType(SystemCapabilityType.APP_SERVICES));
         assertNull(TestValues.NULL, msg.getCapabilityForType(SystemCapabilityType.DISPLAYS));
         assertNull(TestValues.NULL, msg.getCapabilityForType(SystemCapabilityType.DRIVER_DISTRACTION));
+
+        // Testing Setting an HMICapability as a SystemCapability
+        HMICapabilities hmiCapabilities = new HMICapabilities();
+        msg.setCapabilityForType(SystemCapabilityType.HMI, hmiCapabilities);
+        assertNull(TestValues.NULL, msg.getCapabilityForType(SystemCapabilityType.HMI));
 
     }
 
