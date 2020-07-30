@@ -5,6 +5,7 @@ import android.util.Log;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.AppServicesCapabilities;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
+import com.smartdevicelink.proxy.rpc.DriverDistractionCapability;
 import com.smartdevicelink.proxy.rpc.NavigationCapability;
 import com.smartdevicelink.proxy.rpc.PhoneCapability;
 import com.smartdevicelink.proxy.rpc.RemoteControlCapabilities;
@@ -42,6 +43,8 @@ public class SystemCapabilityTests extends TestCase {
         msg.setCapabilityForType(SystemCapabilityType.REMOTE_CONTROL, TestValues.GENERAL_REMOTECONTROLCAPABILITIES);
         msg.setCapabilityForType(SystemCapabilityType.APP_SERVICES, TestValues.GENERAL_APP_SERVICE_CAPABILITIES);
         msg.setCapabilityForType(SystemCapabilityType.DISPLAYS, TestValues.GENERAL_DISPLAYCAPABILITY_LIST);
+        msg.setCapabilityForType(SystemCapabilityType.DRIVER_DISTRACTION, TestValues.GENERAL_DRIVERDISTRACTIONCAPABILITY);
+
     }
 
     /**
@@ -55,6 +58,7 @@ public class SystemCapabilityTests extends TestCase {
         RemoteControlCapabilities testRemoteControlCapabilities = (RemoteControlCapabilities) msg.getCapabilityForType(SystemCapabilityType.REMOTE_CONTROL);
         AppServicesCapabilities testAppServicesCapabilities = (AppServicesCapabilities) msg.getCapabilityForType(SystemCapabilityType.APP_SERVICES);
         List<DisplayCapability> displayCapabilities = (List<DisplayCapability>) msg.getCapabilityForType(SystemCapabilityType.DISPLAYS);
+        DriverDistractionCapability testDriverDistractionCapability = (DriverDistractionCapability) msg.getCapabilityForType(SystemCapabilityType.DRIVER_DISTRACTION);
 
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_SYSTEMCAPABILITYTYPE, testType);
@@ -62,6 +66,8 @@ public class SystemCapabilityTests extends TestCase {
         assertTrue(TestValues.TRUE, Validator.validatePhoneCapability(TestValues.GENERAL_PHONECAPABILITY, testPhoneCapability));
         assertTrue(TestValues.TRUE, Validator.validateRemoteControlCapabilities(TestValues.GENERAL_REMOTECONTROLCAPABILITIES, testRemoteControlCapabilities));
         assertTrue(TestValues.TRUE, Validator.validateAppServiceCapabilities(TestValues.GENERAL_APP_SERVICE_CAPABILITIES, testAppServicesCapabilities));
+        assertTrue(TestValues.TRUE, Validator.validateDriverDistractionCapability(TestValues.GENERAL_DRIVERDISTRACTIONCAPABILITY, testDriverDistractionCapability));
+
 
         for(int i = 0; i < TestValues.GENERAL_DISPLAYCAPABILITY_LIST.size(); i++){
             assertTrue(TestValues.TRUE, Validator.validateDisplayCapability(TestValues.GENERAL_DISPLAYCAPABILITY_LIST.get(i), displayCapabilities.get(i)));
@@ -77,6 +83,8 @@ public class SystemCapabilityTests extends TestCase {
         assertNull(TestValues.NULL, msg.getCapabilityForType(SystemCapabilityType.REMOTE_CONTROL));
         assertNull(TestValues.NULL, msg.getCapabilityForType(SystemCapabilityType.APP_SERVICES));
         assertNull(TestValues.NULL, msg.getCapabilityForType(SystemCapabilityType.DISPLAYS));
+        assertNull(TestValues.NULL, msg.getCapabilityForType(SystemCapabilityType.DRIVER_DISTRACTION));
+
     }
 
     public void testJson() {
@@ -89,6 +97,7 @@ public class SystemCapabilityTests extends TestCase {
             reference.put(SystemCapability.KEY_REMOTE_CONTROL_CAPABILITY, JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_REMOTECONTROLCAPABILITIES.getStore()));
             reference.put(SystemCapability.KEY_APP_SERVICES_CAPABILITIES, JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_APP_SERVICE_CAPABILITIES.getStore()));
             reference.put(SystemCapability.KEY_DISPLAY_CAPABILITIES, TestValues.JSON_DISPLAYCAPABILITY_LIST);
+            reference.put(SystemCapability.KEY_DRIVER_DISTRACTION_CAPABILITY, JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_DRIVERDISTRACTIONCAPABILITY.getStore()));
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
@@ -133,7 +142,13 @@ public class SystemCapabilityTests extends TestCase {
                         Hashtable<String, Object> hashTest= JsonRPCMarshaller.deserializeJSONObject(underTestArray.getJSONObject(i));
                         assertTrue(TestValues.TRUE, Validator.validateDisplayCapability(new DisplayCapability(hashReference), new DisplayCapability(hashTest)));
                     }
-                } else{
+                } else if (key.equals(SystemCapability.KEY_DRIVER_DISTRACTION_CAPABILITY)) {
+                    JSONObject objectEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(reference, key);
+                    JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
+                    Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
+                    Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
+                    assertTrue(TestValues.TRUE, Validator.validateDriverDistractionCapability(new DriverDistractionCapability(hashReference), new DriverDistractionCapability(hashTest)));
+                } else {
                     assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
                 }
             }
