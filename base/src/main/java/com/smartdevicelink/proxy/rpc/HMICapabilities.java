@@ -134,6 +134,7 @@ public class HMICapabilities extends RPCStruct{
 	public void setSeatLocationAvailable(Boolean available){
 		setValue(KEY_SEAT_LOCATION, available);
 	}
+
     /**
      * Sets the driverDistraction.
      *

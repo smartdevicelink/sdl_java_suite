@@ -23,8 +23,8 @@ public class HMICapabilitiesTests extends TestCase {
 
         msg.setNavigationAvilable(TestValues.GENERAL_BOOLEAN);
         msg.setPhoneCallAvilable(TestValues.GENERAL_BOOLEAN);
-	    msg.setVideoStreamingAvailable(TestValues.GENERAL_BOOLEAN);
-	    msg.setDriverDistraction(TestValues.GENERAL_BOOLEAN);
+        msg.setVideoStreamingAvailable(TestValues.GENERAL_BOOLEAN);
+        msg.setDriverDistraction(TestValues.GENERAL_BOOLEAN);
     }
 
     /**
@@ -34,8 +34,8 @@ public class HMICapabilitiesTests extends TestCase {
         // Test Values
         Boolean navAvail = msg.isNavigationAvailable();
         Boolean phoneAvail = msg.isPhoneCallAvailable();
-	    Boolean vidStreamAvail = msg.isVideoStreamingAvailable();
-	    Boolean driverDistractionAvail = msg.isDriverDistractionAvailable();
+        Boolean vidStreamAvail = msg.isVideoStreamingAvailable();
+        Boolean driverDistractionAvail = msg.isDriverDistractionAvailable();
 
         // Valid Tests
         assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, navAvail);
@@ -60,8 +60,8 @@ public class HMICapabilitiesTests extends TestCase {
         try{
             reference.put(KEY_NAVIGATION, TestValues.GENERAL_BOOLEAN);
             reference.put(HMICapabilities.KEY_PHONE_CALL, TestValues.GENERAL_BOOLEAN);
-	        reference.put(HMICapabilities.KEY_VIDEO_STREAMING, TestValues.GENERAL_BOOLEAN);
-	        reference.put(KEY_DRIVER_DISTRACTION, TestValues.GENERAL_BOOLEAN);
+            reference.put(HMICapabilities.KEY_VIDEO_STREAMING, TestValues.GENERAL_BOOLEAN);
+            reference.put(KEY_DRIVER_DISTRACTION, TestValues.GENERAL_BOOLEAN);
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
@@ -72,9 +72,9 @@ public class HMICapabilitiesTests extends TestCase {
             assertEquals(TestValues.MATCH, JsonUtils.readStringListFromJsonObject(reference, KEY_PHONE_CALL),
                     JsonUtils.readStringListFromJsonObject(underTest, KEY_PHONE_CALL));
 
-	        assertEquals(TestValues.MATCH, JsonUtils.readStringListFromJsonObject(reference, KEY_VIDEO_STREAMING),
+            assertEquals(TestValues.MATCH, JsonUtils.readStringListFromJsonObject(reference, KEY_VIDEO_STREAMING),
 			        JsonUtils.readStringListFromJsonObject(underTest, KEY_VIDEO_STREAMING));
-	        assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(reference, KEY_DRIVER_DISTRACTION),
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(reference, KEY_DRIVER_DISTRACTION),
                     JsonUtils.readStringFromJsonObject(underTest, KEY_DRIVER_DISTRACTION));
 
         } catch(JSONException e){
