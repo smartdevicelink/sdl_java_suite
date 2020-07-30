@@ -71,7 +71,6 @@ public class SdlSession extends BaseSdlSession {
 
     public SdlSession(ISdlSessionListener listener, MultiplexTransportConfig config){
         super(listener,config);
-        this.transportConfig = config;
         if(config != null){
             contextWeakReference = new WeakReference<>(config.getContext());
             this.requiresAudioSupport = Boolean.TRUE.equals(config.requiresAudioSupport()); //handle null case
@@ -81,9 +80,8 @@ public class SdlSession extends BaseSdlSession {
 
     }
 
-    public SdlSession(ISdlSessionListener listener, TCPTransportConfig config){ //TODO is it better to have two constructors or make it take BaseTransportConfig?
+    public SdlSession(ISdlSessionListener listener, TCPTransportConfig config){
         super(listener, config);
-        this.transportConfig = config;
         this.sessionListener = listener;
     }
 
