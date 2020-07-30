@@ -223,6 +223,16 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
 				VideoStreamingCapability castedCapability = ((VideoStreamingCapability)capability);
 				// castedCapability.setAdditionalVideoStreamingCapabilities(getMockedAdditionalCapabilities());
+
+				// means only scale received
+				if (castedCapability.getPreferredResolution() == null &&
+						castedCapability.getScale() != null &&
+						castedCapability.getScale() != 0 &&
+						VideoStreamManager.this.parameters != null
+						&& VideoStreamManager.this.parameters.getResolution() != null) {
+					// set cached resolution
+					castedCapability.setPreferredResolution(VideoStreamManager.this.parameters.getResolution());
+				}
 				params.update(castedCapability, vehicleMake);	//Streaming parameters are ready time to stream
 				VideoStreamManager.this.parameters = params;
 
