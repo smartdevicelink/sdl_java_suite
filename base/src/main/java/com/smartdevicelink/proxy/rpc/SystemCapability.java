@@ -101,7 +101,7 @@ public class SystemCapability extends RPCStruct {
         } else if (type.equals(SystemCapabilityType.DISPLAYS)) {
             return getObject(DisplayCapability.class, KEY_DISPLAY_CAPABILITIES);
         } else if (type.equals(SystemCapabilityType.DRIVER_DISTRACTION)) {
-            return getObject(DisplayCapabilities.class, KEY_DRIVER_DISTRACTION_CAPABILITY);
+            return getObject(DriverDistractionCapability.class, KEY_DRIVER_DISTRACTION_CAPABILITY);
         } else {
             return null;
         }
