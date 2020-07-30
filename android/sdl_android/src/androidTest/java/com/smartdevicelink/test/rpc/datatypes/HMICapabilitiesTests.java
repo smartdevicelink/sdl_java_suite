@@ -49,7 +49,7 @@ public class HMICapabilitiesTests extends TestCase {
 
         assertFalse(msg.isNavigationAvailable());
         assertFalse(msg.isPhoneCallAvailable());
-	    assertFalse(msg.isVideoStreamingAvailable());
+        assertFalse(msg.isVideoStreamingAvailable());
         assertFalse(msg.isDriverDistractionAvailable());
 
     }
