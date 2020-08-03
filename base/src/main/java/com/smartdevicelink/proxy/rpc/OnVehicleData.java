@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this
+ * contributors may be used to endorse or promote products derived from this 
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -49,16 +49,16 @@ import java.util.List;
 /**
  *Individual requested DID result and data.
  *
- *
+ *  
  * <p>Callback for the periodic and non periodic vehicle data read function.</p>
- *
+ * 
  * <p> <b>Note:</b></p>
- *
+ * 
  * Initially SDL sends SubscribeVehicleData for getting the periodic updates from HMI whenever each of subscribed data types changes. OnVehicleData is expected to bring such updated values to SDL
+ * 
  *
- *
- *
- *
+ * 
+ * 
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -289,7 +289,7 @@ import java.util.List;
  *  </table>
  *
  * @since SmartDeviceLink 1.0
- *
+ * 
  * @see SubscribeVehicleData
  * @see UnsubscribeVehicleData
  *
