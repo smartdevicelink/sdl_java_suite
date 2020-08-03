@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this
+ * contributors may be used to endorse or promote products derived from this 
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -40,7 +40,6 @@ import java.util.Hashtable;
  * Non periodic vehicle data read request.
  *
  * <p><b>Parameter List</b></p>
- *
  * <table border="1" rules="all">
  *  <tr>
  *      <th>Param Name</th>
@@ -314,7 +313,7 @@ public class GetVehicleData extends RPCRequest {
 	* Constructs a new GetVehicleDta object indicated by the Hashtable
 	* parameter
 	* </p>
-	*
+	* 
 	* @param hash
 	*            The Hashtable to use
 	*/
@@ -372,14 +371,14 @@ public class GetVehicleData extends RPCRequest {
     public Boolean getExternalTemperature() {
         return getBoolean(KEY_EXTERNAL_TEMPERATURE);
     }
-
+    
     public void setVin(Boolean vin) {
         setParameters(KEY_VIN, vin);
     }
     public Boolean getVin() {
         return getBoolean(KEY_VIN);
     }
-
+    
     public void setPrndl(Boolean prndl) {
         setParameters(KEY_PRNDL, prndl);
     }
@@ -452,21 +451,21 @@ public class GetVehicleData extends RPCRequest {
     public Boolean getAccPedalPosition() {
         return getBoolean(KEY_ACC_PEDAL_POSITION);
     }
-
+        
     public void setSteeringWheelAngle(Boolean steeringWheelAngle) {
         setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
     }
     public Boolean getSteeringWheelAngle() {
         return getBoolean(KEY_STEERING_WHEEL_ANGLE);
-    }
+    }                
     public void setECallInfo(Boolean eCallInfo) {
         setParameters(KEY_E_CALL_INFO, eCallInfo);
     }
     public Boolean getECallInfo() {
         return getBoolean(KEY_E_CALL_INFO);
-    }
-
-
+    }    
+    
+    
     public void setAirbagStatus(Boolean airbagStatus) {
         setParameters(KEY_AIRBAG_STATUS, airbagStatus);
     }
