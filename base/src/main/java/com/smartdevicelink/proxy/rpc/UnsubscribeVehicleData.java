@@ -41,7 +41,7 @@ import java.util.Hashtable;
  * subscribeVehicleData function
  * <p>Function Group: Location, VehicleInfo and DrivingChara</p>
  * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
- *
+ * 
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
