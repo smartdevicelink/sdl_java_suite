@@ -22,11 +22,11 @@ import android.widget.VideoView;
 
 import com.jakewharton.rxrelay2.PublishRelay;
 import com.smartdevicelink.managers.CompletionListener;
-import com.smartdevicelink.managers.screen.OnButtonListener;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
+import com.smartdevicelink.managers.screen.OnButtonListener;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceSet;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceSetSelectionListener;
@@ -40,20 +40,17 @@ import com.smartdevicelink.managers.video.resolution.VideoStreamingRange;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.TTSChunkFactory;
-import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.Alert;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.Speak;
-import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
-import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.streaming.video.SdlRemoteDisplay;
@@ -163,44 +160,26 @@ public class SdlService extends Service {
 		super.onDestroy();
 	}
 
-	private void startStreaming(final MainActivity.STREAM_ENUM value){
+	private void startStreaming(final MainActivity.STREAM_ENUM value) {
 		if (sdlManager.getVideoStreamManager() != null) {
-
 			sdlManager.getVideoStreamManager().start(new CompletionListener() {
 				@Override
 				public void onComplete(boolean success) {
 					if (success) {
-						sdlManager.getSystemCapabilityManager().getCapability(SystemCapabilityType.VIDEO_STREAMING,
-								new OnSystemCapabilityListener() {
-									@Override
-									public void onCapabilityRetrieved(Object capability) {
-										VideoStreamingCapability capability1 = (VideoStreamingCapability)capability;
-
-										Log.e(TAG, "Diagonal: " +  capability1.getDiagonalScreenSize());
-										Log.e(TAG, "PPI: " +  capability1.getPixelPerInch());
-										Log.e(TAG, "Scale: " +  capability1.getScale());
-										Class myClass;
-										if (value.equals(MainActivity.STREAM_ENUM.START_STREAMING))
-										{
-											myClass = MyDisplay.class;
-										}else {
-											myClass = UIStreamingDisplay.class;
-										}
-										VideoStreamingRange.Builder builder = new VideoStreamingRange.Builder();
-										builder
-												.setMaxSupportedResolution(new Resolution(800, 480))
-												.setMinSupportedResolution(new Resolution(400, 200))
-												.setAspectRatio(new AspectRatio(1., 6.))
-												.setMaxScreenDiagonal(20.);
-										VideoStreamingRange range = builder.build();
-										sdlManager.getVideoStreamManager().startRemoteDisplayStream(getApplicationContext(), myClass, null, false, range);
-									}
-
-									@Override
-									public void onError(String info) {
-
-									}
-								});
+						Class myClass;
+						if (value.equals(MainActivity.STREAM_ENUM.START_STREAMING)) {
+							myClass = MyDisplay.class;
+						} else {
+							myClass = UIStreamingDisplay.class;
+						}
+						VideoStreamingRange.Builder builder = new VideoStreamingRange.Builder();
+						builder
+								.setMaxSupportedResolution(new Resolution(800, 480))
+								.setMinSupportedResolution(new Resolution(400, 200))
+								.setAspectRatio(new AspectRatio(1., 6.))
+								.setMaxScreenDiagonal(20.);
+						VideoStreamingRange range = builder.build();
+						sdlManager.getVideoStreamManager().startRemoteDisplayStream(getApplicationContext(), myClass, null, false, range);
 					} else {
 						Log.e(TAG, "Failed to start video streaming manager");
 					}

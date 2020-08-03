@@ -99,6 +99,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	private OnHMIStatus currentOnHMIStatus;
 	private StreamingStateMachine stateMachine;
 	private VideoStreamingParameters parameters;
+	private VideoStreamingCapability originalCapability;
 	private IVideoStreamListener streamListener;
 	private boolean isTransportAvailable = false;
 	private Integer majorProtocolVersion;
@@ -173,10 +174,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				}
 				OnHMIStatus prevOnHMIStatus = currentOnHMIStatus;
 				currentOnHMIStatus = onHMIStatus;
-				if (!HMILevel.HMI_NONE.equals(currentOnHMIStatus.getHmiLevel()) && VideoStreamManager.this.parameters == null) {
-					getVideoStreamingParams();
-				}
-				checkState();
+
 				if (hasStarted && (isHMIStateVideoStreamCapable(prevOnHMIStatus)) && (!isHMIStateVideoStreamCapable(currentOnHMIStatus))) {
 					internalInterface.stopVideoService();
 				}
@@ -198,6 +196,37 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		}
 	};
 
+	private final OnSystemCapabilityListener systemCapabilityListener = new OnSystemCapabilityListener() {
+		@Override
+		public void onCapabilityRetrieved(Object capability) {
+			VideoStreamingParameters params = new VideoStreamingParameters();
+
+			VideoStreamingCapability castedCapability = ((VideoStreamingCapability)capability);
+
+			// means only scale received
+			if (castedCapability.getPreferredResolution() == null &&
+					castedCapability.getScale() != null &&
+					castedCapability.getScale() != 0 &&
+					VideoStreamManager.this.parameters != null
+					&& VideoStreamManager.this.parameters.getResolution() != null) {
+				// set cached resolution
+				castedCapability.setPreferredResolution(originalCapability.getPreferredResolution());
+			}
+			params.update(castedCapability, vehicleMake);	//Streaming parameters are ready time to stream
+			VideoStreamManager.this.parameters = params;
+
+			VideoStreamManager.this.withPendingRestart = true;
+
+			virtualDisplayEncoder.setStreamingParams(params);
+			stopStreaming(true);
+		}
+
+		@Override
+		public void onError(String info) {
+			Log.d("MyTagLogInfo", info);
+		}
+	};
+
 	// MANAGER APIs
 	public VideoStreamManager(ISdl internalInterface){
 		super(internalInterface);
@@ -214,39 +243,9 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		internalInterface.addOnRPCNotificationListener(FunctionID.ON_TOUCH_EVENT, touchListener);
 		// Listen for HMILevel changes
 		internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
-
+		// Listen for SystemCapabilityType VIDEO_STREAMING
+		internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, systemCapabilityListener);
 		stateMachine = new StreamingStateMachine();
-		this.internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, new OnSystemCapabilityListener() {
-			@Override
-			public void onCapabilityRetrieved(Object capability) {
-				VideoStreamingParameters params = new VideoStreamingParameters();
-
-				VideoStreamingCapability castedCapability = ((VideoStreamingCapability)capability);
-				// castedCapability.setAdditionalVideoStreamingCapabilities(getMockedAdditionalCapabilities());
-
-				// means only scale received
-				if (castedCapability.getPreferredResolution() == null &&
-						castedCapability.getScale() != null &&
-						castedCapability.getScale() != 0 &&
-						VideoStreamManager.this.parameters != null
-						&& VideoStreamManager.this.parameters.getResolution() != null) {
-					// set cached resolution
-					castedCapability.setPreferredResolution(VideoStreamManager.this.parameters.getResolution());
-				}
-				params.update(castedCapability, vehicleMake);	//Streaming parameters are ready time to stream
-				VideoStreamManager.this.parameters = params;
-
-				VideoStreamManager.this.withPendingRestart = true;
-
-				virtualDisplayEncoder.setStreamingParams(params);
-				stopStreaming(true);
-			}
-
-			@Override
-			public void onError(String info) {
-				Log.d("MyTagLogInfo", info);
-			}
-		});
 	}
 
 	@Override
@@ -279,6 +278,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				public void onCapabilityRetrieved(Object capability) {
 					VideoStreamingParameters params = new VideoStreamingParameters();
 					VideoStreamingCapability castedCapability = ((VideoStreamingCapability)capability);
+					VideoStreamManager.this.originalCapability = castedCapability;
 					params.update(castedCapability, vehicleMake);	//Streaming parameters are ready time to stream
 					VideoStreamManager.this.parameters = params;
 					// castedCapability.setAdditionalVideoStreamingCapabilities(getMockedAdditionalCapabilities());
@@ -322,6 +322,10 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			stateMachine.transitionToState(StreamingStateMachine.ERROR);
 			return;
 		}
+		if (!HMILevel.HMI_NONE.equals(currentOnHMIStatus.getHmiLevel()) && VideoStreamManager.this.parameters == null) {
+			getVideoStreamingParams();
+		}
+		checkState();
 		processCapabilitiesWithPendingStart(encrypted, parameters);
 	}
 	/**
@@ -342,6 +346,10 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			stateMachine.transitionToState(StreamingStateMachine.ERROR);
 			return;
 		}
+		if (!HMILevel.HMI_NONE.equals(currentOnHMIStatus.getHmiLevel()) && VideoStreamManager.this.parameters == null) {
+			getVideoStreamingParams();
+		}
+		checkState();
 		processCapabilitiesWithPendingStart(encrypted, parameters);
 	}
 
@@ -368,6 +376,8 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 					public void onCapabilityRetrieved(Object capability) {
 						VideoStreamingParameters params = new VideoStreamingParameters();
 						VideoStreamingCapability castedCapability = ((VideoStreamingCapability)capability);
+						VideoStreamManager.this.originalCapability = castedCapability;
+
 						// Mocks data here
 						// castedCapability.setAdditionalVideoStreamingCapabilities(getMockedAdditionalCapabilities());
 						params.update(castedCapability, vehicleMake);	//Streaming parameters are ready time to stream
