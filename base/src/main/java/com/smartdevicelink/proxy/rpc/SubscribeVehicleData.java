@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this
+ * contributors may be used to endorse or promote products derived from this 
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -308,8 +308,8 @@ public class SubscribeVehicleData extends RPCRequest {
 	/**
 	 * <p>Constructs a new SubscribeVehicleData object indicated by the Hashtable
 	 * parameter</p>
-	 *
-	 *
+	 * 
+	 * 
 	 * @param hash
 	 *            The Hashtable to use
 	 */
@@ -319,7 +319,7 @@ public class SubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, subscribes Gps data
-	 *
+	 * 
 	 * @param gps
 	 *            a boolean value
 	 */
@@ -329,7 +329,7 @@ public class SubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Gets a boolean value. If true, means the Gps data has been subscribed.
-	 *
+	 * 
 	 * @return Boolean -a Boolean value. If true, means the Gps data has been
 	 *         subscribed.
 	 */
@@ -339,7 +339,7 @@ public class SubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, subscribes speed data
-	 *
+	 * 
 	 * @param speed
 	 *            a boolean value
 	 */
@@ -349,7 +349,7 @@ public class SubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Gets a boolean value. If true, means the Speed data has been subscribed.
-	 *
+	 * 
 	 * @return Boolean -a Boolean value. If true, means the Speed data has been
 	 *         subscribed.
 	 */
@@ -359,7 +359,7 @@ public class SubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, subscribes rpm data
-	 *
+	 * 
 	 * @param rpm
 	 *            a boolean value
 	 */
@@ -369,7 +369,7 @@ public class SubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Gets a boolean value. If true, means the rpm data has been subscribed.
-	 *
+	 * 
 	 * @return Boolean -a Boolean value. If true, means the rpm data has been
 	 *         subscribed.
 	 */
@@ -379,7 +379,7 @@ public class SubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, subscribes FuelLevel data
-	 *
+	 * 
 	 * @param fuelLevel
 	 *            a boolean value
 	 */
@@ -390,7 +390,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the FuelLevel data has been
 	 * subscribed.
-	 *
+	 * 
 	 * @return Boolean -a Boolean value. If true, means the FuelLevel data has
 	 *         been subscribed.
 	 */
@@ -400,7 +400,7 @@ public class SubscribeVehicleData extends RPCRequest {
 
     /**
      * Sets a boolean value. If true, subscribes fuelLevel_State data
-     *
+     * 
      * @param fuelLevel_State
      *            a boolean value
      */
@@ -412,7 +412,7 @@ public class SubscribeVehicleData extends RPCRequest {
     /**
      * Gets a boolean value. If true, means the fuelLevel_State data has been
      * subscribed.
-     *
+     * 
      * @return Boolean -a Boolean value. If true, means the fuelLevel_State data
      *         has been subscribed.
      */
@@ -423,7 +423,7 @@ public class SubscribeVehicleData extends RPCRequest {
 
     /**
      * Sets a boolean value. If true, subscribes fuelLevelState data
-     *
+     * 
      * @param fuelLevelState
      *            a boolean value
      */
@@ -434,7 +434,7 @@ public class SubscribeVehicleData extends RPCRequest {
     /**
      * Gets a boolean value. If true, means the fuelLevelState data has been
      * subscribed.
-     *
+     * 
      * @return Boolean -a Boolean value. If true, means the fuelLevelState data
      *         has been subscribed.
      */
@@ -444,7 +444,7 @@ public class SubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, subscribes instantFuelConsumption data
-	 *
+	 * 
 	 * @param instantFuelConsumption
 	 *            a boolean value
 	 */
@@ -455,7 +455,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the getInstantFuelConsumption data has been
 	 * subscribed.
-	 *
+	 * 
 	 * @return Boolean -a Boolean value. If true, means the getInstantFuelConsumption data
 	 *         has been subscribed.
 	 */
@@ -465,7 +465,7 @@ public class SubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, subscribes externalTemperature data
-	 *
+	 * 
 	 * @param externalTemperature
 	 *            a boolean value
 	 */
@@ -476,7 +476,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the externalTemperature data has been
 	 * subscribed.
-	 *
+	 * 
 	 * @return Boolean -a Boolean value. If true, means the externalTemperature data
 	 *         has been subscribed.
 	 */
@@ -486,7 +486,7 @@ public class SubscribeVehicleData extends RPCRequest {
 
     /**
      * Sets the gearStatus.
-     *
+     * 
      * @param gearStatus See GearStatus
      * @since SmartDeviceLink 7.0.0
      */
@@ -496,7 +496,7 @@ public class SubscribeVehicleData extends RPCRequest {
 
     /**
      * Gets the gearStatus.
-     *
+     * 
      * @return Boolean See GearStatus
      * @since SmartDeviceLink 7.0.0
      */
@@ -506,7 +506,7 @@ public class SubscribeVehicleData extends RPCRequest {
 
     /**
      * Sets the prndl.
-     *
+     * 
      * @param prndl See PRNDL. This parameter is deprecated since 7.0.0 and it is now covered in `gearStatus`
      * @since SmartDeviceLink 7.0.0
      */
@@ -517,7 +517,7 @@ public class SubscribeVehicleData extends RPCRequest {
 
     /**
      * Gets the prndl.
-     *
+     * 
      * @return Boolean See PRNDL. This parameter is deprecated since 7.0.0 and it is now covered in `gearStatus`
      * @since SmartDeviceLink 7.0.0
      */
@@ -528,7 +528,7 @@ public class SubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, subscribes tire pressure status data
-	 *
+	 * 
 	 * @param tirePressure
 	 *            a boolean value
 	 */
@@ -539,7 +539,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the tire pressure status data has been
 	 * subscribed.
-	 *
+	 * 
 	 * @return Boolean -a Boolean value. If true, means the tire pressure status data
 	 *         has been subscribed.
 	 */
@@ -549,7 +549,7 @@ public class SubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, subscribes odometer data
-	 *
+	 * 
 	 * @param odometer
 	 *            a boolean value
 	 */
@@ -560,7 +560,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the odometer data has been
 	 * subscribed.
-	 *
+	 * 
 	 * @return Boolean -a Boolean value. If true, means the odometer data
 	 *         has been subscribed.
 	 */
@@ -570,7 +570,7 @@ public class SubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, subscribes belt Status data
-	 *
+	 * 
 	 * @param beltStatus
 	 *            a boolean value
 	 */
@@ -581,7 +581,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the belt Status data has been
 	 * subscribed.
-	 *
+	 * 
 	 * @return Boolean -a Boolean value. If true, means the belt Status data
 	 *         has been subscribed.
 	 */
@@ -591,7 +591,7 @@ public class SubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, subscribes body Information data
-	 *
+	 * 
 	 * @param bodyInformation
 	 *            a boolean value
 	 */
@@ -602,7 +602,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the body Information data has been
 	 * subscribed.
-	 *
+	 * 
 	 * @return Boolean -a Boolean value. If true, means the body Information data
 	 *         has been subscribed.
 	 */
@@ -612,7 +612,7 @@ public class SubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, subscribes device Status data
-	 *
+	 * 
 	 * @param deviceStatus
 	 *            a boolean value
 	 */
@@ -623,7 +623,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the device Status data has been
 	 * subscribed.
-	 *
+	 * 
 	 * @return Boolean -a Boolean value. If true, means the device Status data
 	 *         has been subscribed.
 	 */
@@ -633,7 +633,7 @@ public class SubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, subscribes driver Braking data
-	 *
+	 * 
 	 * @param driverBraking
 	 *            a boolean value
 	 */
@@ -644,7 +644,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the driver Braking data has been
 	 * subscribed.
-	 *
+	 * 
 	 * @return Boolean -a Boolean value. If true, means the driver Braking data
 	 *         has been subscribed.
 	 */
@@ -654,7 +654,7 @@ public class SubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, subscribes wiper Status data
-	 *
+	 * 
 	 * @param wiperStatus
 	 *            a boolean value
 	 */
@@ -665,7 +665,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the wiper Status data has been
 	 * subscribed.
-	 *
+	 * 
 	 * @return Boolean -a Boolean value. If true, means the wiper Status data
 	 *         has been subscribed.
 	 */
@@ -675,7 +675,7 @@ public class SubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, subscribes Head Lamp Status data
-	 *
+	 * 
 	 * @param headLampStatus
 	 *            a boolean value
 	 */
@@ -686,7 +686,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the Head Lamp Status data has been
 	 * subscribed.
-	 *
+	 * 
 	 * @return Boolean -a Boolean value. If true, means the Head Lamp Status data
 	 *         has been subscribed.
 	 */
@@ -749,21 +749,21 @@ public class SubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the accPedalPosition data has been
 	 * subscribed.
-	 *
+	 * 
 	 * @return Boolean -a Boolean value. If true, means the accPedalPosition data
 	 *         has been subscribed.
 	 */
     public Boolean getAccPedalPosition() {
         return getBoolean(KEY_ACC_PEDAL_POSITION);
     }
-
+  
     public void setSteeringWheelAngle(Boolean steeringWheelAngle) {
 		setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
     }
 
     public Boolean getSteeringWheelAngle() {
         return getBoolean(KEY_STEERING_WHEEL_ANGLE);
-    }
+    }    
     public void setECallInfo(Boolean eCallInfo) {
 		setParameters(KEY_E_CALL_INFO, eCallInfo);
     }
@@ -870,11 +870,11 @@ public class SubscribeVehicleData extends RPCRequest {
 		setParameters(vehicleDataName, vehicleDataState);
 	}
 
-    /**
-     * Gets a boolean value for OEM Custom VehicleData.
-     * @return a Boolean value.
-     */
-    public Boolean getOEMCustomVehicleData(String vehicleDataName){
-        return getBoolean(vehicleDataName);
-    }
+	/**
+	 * Gets a boolean value for OEM Custom VehicleData.
+	 * @return a Boolean value.
+	 */
+	public Boolean getOEMCustomVehicleData(String vehicleDataName){
+		return getBoolean(vehicleDataName);
+	}
 }

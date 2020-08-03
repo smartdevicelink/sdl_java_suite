@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this
+ * contributors may be used to endorse or promote products derived from this 
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -41,7 +41,7 @@ import java.util.Hashtable;
 
 /**
  * Subscribe Vehicle Data Response is sent, when SubscribeVehicleData has been called
- *
+ * 
  * @since SmartDeviceLink 2.0
  */
 public class SubscribeVehicleDataResponse extends RPCResponse {
@@ -76,7 +76,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
     public static final String KEY_GEAR_STATUS = "gearStatus";
 
-    /**
+	/**
 	 * Constructs a new SubscribeVehicleDataResponse object
 	 */
     public SubscribeVehicleDataResponse() {
@@ -86,8 +86,8 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
 	/**
 	 * <p>Constructs a new SubscribeVehicleDataResponse object indicated by the Hashtable
 	 * parameter</p>
-	 *
-	 *
+	 * 
+	 * 
 	 * @param hash The Hashtable to use
 	 */
     public SubscribeVehicleDataResponse(Hashtable<String, Object> hash) {
@@ -455,6 +455,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
     public VehicleDataResult getMyKey() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_MY_KEY);
     }
+
     /**
      * Sets Fuel Range
      * @param fuelRange a VehicleDataResult related to the fuel range
