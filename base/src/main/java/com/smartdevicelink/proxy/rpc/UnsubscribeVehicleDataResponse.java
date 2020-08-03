@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this
+ * contributors may be used to endorse or promote products derived from this 
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -40,7 +40,9 @@ import com.smartdevicelink.proxy.rpc.enums.Result;
 import java.util.Hashtable;
 
 /**
- * @since SmartDeviceLink 2.0.0
+ * Unsubscribe Vehicle Data Response is sent, when UnsubscribeVehicleData has been called.
+ * 
+ * @since SmartDeviceLink 2.0
  */
 public class UnsubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_SPEED = "speed";
@@ -95,7 +97,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
 	 * Constructs a new UnsubscribeVehicleDataResponse object indicated by the Hashtable
 	 * parameter
 	 * <p></p>
-	 *
+	 * 
 	 * @param hash The Hashtable to use to build this RPC
 	 *
 	 */
@@ -412,8 +414,8 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     @SuppressWarnings("unchecked")
     public VehicleDataResult getAccPedalPosition() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_ACC_PEDAL_POSITION);
-    }
-
+    }  
+    
     public void setSteeringWheelAngle(VehicleDataResult steeringWheelAngle) {
         setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
     }
@@ -421,8 +423,8 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     @SuppressWarnings("unchecked")
     public VehicleDataResult getSteeringWheelAngle() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_STEERING_WHEEL_ANGLE);
-    }
-
+    }    
+    
     public void setECallInfo(VehicleDataResult eCallInfo) {
         setParameters(KEY_E_CALL_INFO, eCallInfo);
     }
