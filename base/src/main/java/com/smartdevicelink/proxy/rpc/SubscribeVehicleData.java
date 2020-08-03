@@ -42,11 +42,11 @@ import java.util.Hashtable;
  * onVehicleData notification whenever new data is available. The update rate is
  * very much dependent on sensors, vehicle architecture and vehicle type. Be
  * also prepared for the situation that a signal is not available on a vehicle
- *
+ * 
  * <p>Function Group: Location, VehicleInfo and DrivingChara</p>
- *
+ * 
  * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
- *
+ * 
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  *  <tr>
