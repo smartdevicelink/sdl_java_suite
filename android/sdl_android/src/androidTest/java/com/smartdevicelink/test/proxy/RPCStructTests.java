@@ -155,4 +155,32 @@ public class RPCStructTests extends TestCase {
         testStruct.setValue(invalidKey, TestValues.GENERAL_STRING);
         assertNull(testStruct.getObject(Integer.class, invalidKey));
     }
+
+    public void testGetFloat() {
+        Hashtable <String, Object> map = new Hashtable<>();
+        String key = "test";
+        Double value = 42.00;
+        map.put(key, value);
+        RPCStruct rpcStruct = new RPCStruct(map);
+        try {
+            Float value2 = rpcStruct.getFloat(key);
+            assertTrue(value2 - value < 0.1);
+        } catch (ClassCastException e) {
+            fail(e.getMessage());
+        }
+    }
+
+    public void testGetDouble() {
+        Hashtable <String, Object> map = new Hashtable<>();
+        String key = "test";
+        Integer value = 42;
+        map.put(key, value);
+        RPCStruct rpcStruct = new RPCStruct(map);
+        try {
+            Double value2 = rpcStruct.getDouble(key);
+            assertTrue(value2 - value < 0.1);
+        } catch (ClassCastException e) {
+            fail(e.getMessage());
+        }
+    }
 }
