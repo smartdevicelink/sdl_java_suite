@@ -37,7 +37,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.os.Build;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
@@ -138,17 +137,15 @@ public class LockScreenManager extends BaseSubManager {
 		deviceLogo = null;
 		deviceIconUrl = null;
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-			try {
-				if (android.arch.lifecycle.ProcessLifecycleOwner.get() != null && lifecycleObserver != null) {
-					android.arch.lifecycle.ProcessLifecycleOwner.get().getLifecycle().removeObserver(lifecycleObserver);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
+		try {
+			if (android.arch.lifecycle.ProcessLifecycleOwner.get() != null && lifecycleObserver != null) {
+				android.arch.lifecycle.ProcessLifecycleOwner.get().getLifecycle().removeObserver(lifecycleObserver);
 			}
-
-			lifecycleObserver = null;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+
+		lifecycleObserver = null;
 
 		isApplicationForegrounded = false;
 
@@ -241,29 +238,25 @@ public class LockScreenManager extends BaseSubManager {
 		}
 
 		// Set up listener for Application Foreground / Background events
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-			try {
-				lifecycleObserver = new android.arch.lifecycle.LifecycleObserver() {
-					@android.arch.lifecycle.OnLifecycleEvent(android.arch.lifecycle.Lifecycle.Event.ON_START)
-					public void onMoveToForeground() {
-						isApplicationForegrounded = true;
-						launchLockScreenActivity();
-					}
-
-					@android.arch.lifecycle.OnLifecycleEvent(android.arch.lifecycle.Lifecycle.Event.ON_STOP)
-					public void onMoveToBackground() {
-						isApplicationForegrounded = false;
-					}
-				};
-
-				if (android.arch.lifecycle.ProcessLifecycleOwner.get() != null) {
-					android.arch.lifecycle.ProcessLifecycleOwner.get().getLifecycle().addObserver(lifecycleObserver);
+		try {
+			lifecycleObserver = new android.arch.lifecycle.LifecycleObserver() {
+				@android.arch.lifecycle.OnLifecycleEvent(android.arch.lifecycle.Lifecycle.Event.ON_START)
+				public void onMoveToForeground() {
+					isApplicationForegrounded = true;
+					launchLockScreenActivity();
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
+
+				@android.arch.lifecycle.OnLifecycleEvent(android.arch.lifecycle.Lifecycle.Event.ON_STOP)
+				public void onMoveToBackground() {
+					isApplicationForegrounded = false;
+				}
+			};
+
+			if (android.arch.lifecycle.ProcessLifecycleOwner.get() != null) {
+				android.arch.lifecycle.ProcessLifecycleOwner.get().getLifecycle().addObserver(lifecycleObserver);
 			}
-		} else{
-			isApplicationForegrounded = true;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		mLockscreenDismissedReceiver = new BroadcastReceiver() {

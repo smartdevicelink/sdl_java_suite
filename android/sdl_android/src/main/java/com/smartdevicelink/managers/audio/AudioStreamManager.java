@@ -40,7 +40,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.managers.CompletionListener;
@@ -75,7 +74,6 @@ import java.util.Queue;
  * to the connected device. Audio files can be pushed to the manager in order to
  * play them on the connected device. The manager uses the Android built-in MediaCodec.
  */
-@RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
 public class AudioStreamManager extends BaseAudioStreamManager {
     private static final String TAG = AudioStreamManager.class.getSimpleName();
     private static final int COMPLETION_TIMEOUT = 2000;
@@ -179,14 +177,6 @@ public class AudioStreamManager extends BaseAudioStreamManager {
      */
     public AudioStreamManager(@NonNull ISdl internalInterface, @NonNull Context context) {
         super(internalInterface);
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN){
-            this.queue = null;
-            this.context = null;
-            this.serviceCompletionHandler = null;
-            this.streamingStateMachine = null;
-            transitionToState(ERROR);
-            return;
-        }
         this.queue = new LinkedList<>();
         this.context = new WeakReference<>(context);
         this.serviceCompletionHandler = new Handler(Looper.getMainLooper());

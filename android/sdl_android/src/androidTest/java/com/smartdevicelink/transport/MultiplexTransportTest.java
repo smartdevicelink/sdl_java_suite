@@ -65,7 +65,6 @@ public class MultiplexTransportTest {
 					//It will first listen before the error state
 					assertEquals(MultiplexBaseTransport.STATE_LISTEN, message.arg1);
 				}
-				//
 			}
 		});
 		btTransport.start();
