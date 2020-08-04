@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Livio, Inc.
+ * Copyright (c) 2017-2020 Livio, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -50,7 +50,6 @@ import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
 import com.smartdevicelink.streaming.video.RTPH264Packetizer;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
-import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
@@ -63,7 +62,6 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-@SuppressWarnings({"WeakerAccess", "deprecation"})
 public class SdlSession extends BaseSdlSession {
     private static final String TAG = "SdlSession";
 
@@ -162,7 +160,6 @@ public class SdlSession extends BaseSdlSession {
 
     @Override
     public void onProtocolMessageBytesToSend(SdlPacket packet) {
-        //Log.d(TAG, "onProtocolMessageBytesToSend - " + packet.getTransportType());
         sdlProtocol.sendPacket(packet);
     }
 
