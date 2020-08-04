@@ -101,8 +101,9 @@ import java.util.Hashtable;
  * 		<tr>
  * 			<td>parentID</td>
  * 			<td>Integer</td>
- * 			<td>unique ID of the sub menu, the command will be added to. If not provided or 0, it will beprovided to the top level of the in application menu.</td>
+ * 			<td>unique ID of the sub menu, the command will be added to. If not provided or 0, it will be provided to the top level of the in application menu.</td>
  * 			<td>N</td>
+ * 		    <td>Min Value: 0 <p>Max Value: 2000000000</p> </td>
  * 			<td>SmartDeviceLink 7.0.0</td>
  * 		</tr>
  *  </table>
