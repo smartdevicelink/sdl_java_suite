@@ -63,7 +63,6 @@ import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.haptic.HapticInterfaceManager;
 import com.smartdevicelink.managers.ServiceEncryptionListener;
 import com.smartdevicelink.managers.lifecycle.RpcConverter;
-import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
