@@ -11,6 +11,7 @@ import com.smartdevicelink.test.SdlUnitTestContants;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.RouterServiceValidator;
+import com.smartdevicelink.util.Version;
 
 import junit.framework.Assert;
 
@@ -49,8 +50,7 @@ public class SdlProtocolTests {
         public boolean didReceive(){
             return didReceive;
         }
-        @Override
-        public void onSdlPacketToSend(SdlPacket packet) {}
+
         @Override
         public void onProtocolMessageReceived(ProtocolMessage msg) {
             didReceive = true;
@@ -58,42 +58,62 @@ public class SdlProtocolTests {
             Log.d("DidReceiveListener", "Function Id: " + msg.getFunctionID());
             Log.d("DidReceiveListener", "JSON Size: " + msg.getJsonSize());
         }
+
         @Override
-        public void onServiceStarted(SessionType sessionType, byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted){}
+        public void onServiceStarted(SdlPacket packet, SessionType serviceType, int sessionID, Version version, boolean isEncrypted) {
+
+        }
+
         @Override
-        public void onStartServiceNAKReceived(SessionType sessionType, byte sessionID, byte version, String correlationID, List<String> rejectedParams) {}
+        public void onServiceEnded(SdlPacket packet, SessionType serviceType, int sessionID) {
+
+        }
+
         @Override
-        public void onServiceEnded(SessionType sessionType, byte sessionID, String correlationID) {}
+        public void onServiceError(SdlPacket packet, SessionType serviceType, int sessionID, String error) {
+
+        }
+
         @Override
-        public void onProtocolSessionEndedNACKed(SessionType sessionType,byte sessionID, String correlationID) {}
+        public void onProtocolError(String info, Exception e) {
+
+        }
+
         @Override
-        public void onProtocolHeartbeat(SessionType sessionType, byte sessionID) {}
+        public int getSessionId() {
+            return 0;
+        }
+
         @Override
-        public void onProtocolHeartbeatACK(SessionType sessionType,byte sessionID) {}
+        public void shutdown(String info) {
+
+        }
+
         @Override
-        public void onProtocolServiceDataACK(SessionType sessionType,int dataSize, byte sessionID) {}
+        public void onTransportDisconnected(String info, boolean altTransportAvailable, BaseTransportConfig transportConfig) {
+
+        }
+
         @Override
-        public void onResetOutgoingHeartbeat(SessionType sessionType,byte sessionID) {}
+        public SdlSecurityBase getSdlSecurity() {
+            return null;
+        }
+
         @Override
-        public void onResetIncomingHeartbeat(SessionType sessionType,byte sessionID) {}
+        public VideoStreamingParameters getDesiredVideoParams() {
+            return null;
+        }
+
         @Override
-        public void onProtocolError(String info, Exception e) {}
+        public void setAcceptedVideoParams(VideoStreamingParameters acceptedVideoParams) {
+
+        }
+
         @Override
-        public byte getSessionId() {return 0;}
-        @Override
-        public void shutdown(String info) {}
-        @Override
-        public void onTransportDisconnected(String info, boolean altTransportAvailable, BaseTransportConfig transportConfig) {}
-        @Override
-        public SdlSecurityBase getSdlSecurity() {return null;}
-        @Override
-        public VideoStreamingParameters getDesiredVideoParams() {return null; }
-        @Override
-        public void setAcceptedVideoParams(VideoStreamingParameters acceptedVideoParams) {}
-        @Override
-        public void stopStream(SessionType serviceType) {}
-        @Override
-        public void onAuthTokenReceived(String token){}
+        public void onAuthTokenReceived(String authToken) {
+
+        }
+
     };
 
     DidReceiveListener onProtocolMessageReceivedListener = new DidReceiveListener();

@@ -1,9 +1,9 @@
 package com.smartdevicelink.test.streaming;
 
 import com.smartdevicelink.SdlConnection.ISdlSessionListener;
-import com.smartdevicelink.protocol.ProtocolMessage;
-import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.util.Version;
 
 import java.util.List;
 
@@ -13,10 +13,6 @@ import java.util.List;
  */
 public class MockInterfaceBroker implements ISdlSessionListener {
 	public MockInterfaceBroker () { }
-	@Override
-	public void onTransportDisconnected(String info) {
-
-	}
 
 	@Override
 	public void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
@@ -24,47 +20,22 @@ public class MockInterfaceBroker implements ISdlSessionListener {
 	}
 
 	@Override
-	public void onTransportError(String info, Exception e) {
+	public void onRPCMessageReceived(RPCMessage rpcMessage) {
 
 	}
+
 	@Override
-	public void onRPCReceived(ProtocolMessage msg) {
+	public void onSessionStarted(int sessionID, Version version) {
 
 	}
+
 	@Override
-	public void onStartSessionNAK(SessionType sessionType,
-								  byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
+	public void onSessionEnded(int sessionID) {
 
 	}
+
 	@Override
-	public void onProtocolSessionStarted(SessionType sessionType,
-			byte sessionID, byte version, String correlationID, int hashID,
-			boolean isEncrypted) {
+	public void onAuthTokenReceived(String authToken, int sessionID) {
 
 	}
-	@Override
-	public void onProtocolSessionEnded(SessionType sessionType, byte sessionID,
-			String correlationID) {
-
-	}
-	@Override
-	public void onProtocolSessionEndedNACKed(SessionType sessionType,
-			byte sessionID, String correlationID) {
-
-	}
-	@Override
-	public void onProtocolError(String info, Exception e) {
-
-	}
-	@Override
-	public void onHeartbeatTimedOut(byte sessionID) {
-
-	}
-	@Override
-	public void onProtocolServiceDataACK(SessionType sessionType, int dataSize,
-			byte sessionID) {
-
-	}
-	@Override
-	public void onAuthTokenReceived(String token, byte bytes){}
 }
