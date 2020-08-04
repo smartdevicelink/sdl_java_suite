@@ -173,8 +173,11 @@ public class SdlSession extends BaseSdlSession {
         if (sessionType.eq(SessionType.RPC)) {
             sessionHashId = hashID;
         }
-        if (isEncrypted)
+
+        if (isEncrypted) {
             encryptedServices.addIfAbsent(sessionType);
+        }
+
         this.sessionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID, hashID, isEncrypted);
         if (serviceListeners != null && serviceListeners.containsKey(sessionType)) {
             CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
