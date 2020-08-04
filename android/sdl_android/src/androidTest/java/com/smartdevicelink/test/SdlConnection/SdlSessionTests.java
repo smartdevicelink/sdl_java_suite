@@ -37,8 +37,8 @@ public class SdlSessionTests extends TestCase {
 			}
 		};
 
-		//assertNotNull(session.getServiceListeners());
 		session.addServiceListener(SessionType.RPC, test);
+		assertNotNull(session.getServiceListeners());
 
 		assertTrue(session.removeServiceListener(SessionType.RPC, test));
 

@@ -48,9 +48,8 @@ public class SdlSession extends BaseSdlSession {
     private static final String TAG = "SdlSession";
 
 
-    public SdlSession(ISdlConnectionListener listener, BaseTransportConfig config){
-       super(listener,config);
-       //FIXME this class needs to move to JavaSE only
+    public SdlSession(ISdlConnectionListener listener, BaseTransportConfig config) {
+        super(listener, config);
     }
 
     @Override
@@ -66,15 +65,18 @@ public class SdlSession extends BaseSdlSession {
         DebugTool.logInfo(TAG, "Protocol session started");
 
         this.sessionId = sessionID;
-        if (sessionType.eq(SessionType.RPC)){
+        if (sessionType.eq(SessionType.RPC)) {
             sessionHashId = hashID;
         }
-        if (isEncrypted)
+
+        if (isEncrypted) {
             encryptedServices.addIfAbsent(sessionType);
+        }
+
         this.sessionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID, hashID, isEncrypted);
-        if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
+        if (serviceListeners != null && serviceListeners.containsKey(sessionType)) {
             CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
-            for(ISdlServiceListener listener:listeners){
+            for (ISdlServiceListener listener : listeners) {
                 listener.onServiceStarted(this, sessionType, isEncrypted);
             }
         }
@@ -85,9 +87,9 @@ public class SdlSession extends BaseSdlSession {
     public void onProtocolSessionEnded(SessionType sessionType, byte sessionID,
                                        String correlationID) {
         this.sessionListener.onProtocolSessionEnded(sessionType, sessionID, correlationID);
-        if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
+        if (serviceListeners != null && serviceListeners.containsKey(sessionType)) {
             CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
-            for(ISdlServiceListener listener:listeners){
+            for (ISdlServiceListener listener : listeners) {
                 listener.onServiceEnded(this, sessionType);
             }
         }
@@ -99,10 +101,10 @@ public class SdlSession extends BaseSdlSession {
     public void onProtocolSessionEndedNACKed(SessionType sessionType,
                                              byte sessionID, String correlationID) {
         this.sessionListener.onProtocolSessionEndedNACKed(sessionType, sessionID, correlationID);
-        if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
+        if (serviceListeners != null && serviceListeners.containsKey(sessionType)) {
             CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
-            for(ISdlServiceListener listener:listeners){
-                listener.onServiceError(this, sessionType, "End "+ sessionType.toString() +" Service NACK'ed");
+            for (ISdlServiceListener listener : listeners) {
+                listener.onServiceError(this, sessionType, "End " + sessionType.toString() + " Service NACK'ed");
             }
         }
     }
@@ -115,17 +117,14 @@ public class SdlSession extends BaseSdlSession {
      * *****************************************************************  IProtocol Listener  ********************************************************************************
      *************************************************************************************************************************************************************************/
 
-     public void onProtocolSessionNACKed(SessionType sessionType, byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
+    public void onProtocolSessionNACKed(SessionType sessionType, byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
         this.sessionListener.onProtocolSessionStartedNACKed(sessionType,
                 sessionID, version, correlationID, rejectedParams);
-        if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
+        if (serviceListeners != null && serviceListeners.containsKey(sessionType)) {
             CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
-            for(ISdlServiceListener listener:listeners){
-                listener.onServiceError(this, sessionType, "Start "+ sessionType.toString() +" Service NAKed");
+            for (ISdlServiceListener listener : listeners) {
+                listener.onServiceError(this, sessionType, "Start " + sessionType.toString() + " Service NAKed");
             }
         }
-    }    /* ***********************************************************************************************************************************************************************
-     * *****************************************************************  Security Listener  *********************************************************************************
-     *************************************************************************************************************************************************************************/
-
+    }
 }
