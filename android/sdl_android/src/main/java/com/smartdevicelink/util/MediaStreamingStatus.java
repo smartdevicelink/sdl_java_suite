@@ -173,12 +173,11 @@ public class MediaStreamingStatus {
             //False positive
             return false;
         }
-        if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH ){
-            int state = adapter.getProfileConnectionState(BluetoothProfile.A2DP);
-            if(state != BluetoothAdapter.STATE_CONNECTING && state != BluetoothAdapter.STATE_CONNECTED){
-                //False positive
-                return false;
-            }
+
+        int state = adapter.getProfileConnectionState(BluetoothProfile.A2DP);
+        if(state != BluetoothAdapter.STATE_CONNECTING && state != BluetoothAdapter.STATE_CONNECTED){
+            //False positive
+            return false;
         }
 
         return true;
@@ -196,11 +195,7 @@ public class MediaStreamingStatus {
 
     private void setupBluetoothBroadcastReceiver(){
         String[] actions = new String[4];
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            actions[0] = BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED;
-        }else{
-            actions[0] = "android.bluetooth.adapter.action.CONNECTION_STATE_CHANGED";
-        }
+        actions[0] = BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED;
         actions[1] = BluetoothAdapter.ACTION_STATE_CHANGED;
         actions[2] = BluetoothDevice.ACTION_ACL_DISCONNECTED;
         actions[3] = BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED;

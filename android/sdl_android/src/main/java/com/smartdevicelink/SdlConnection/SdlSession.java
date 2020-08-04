@@ -32,7 +32,6 @@
 package com.smartdevicelink.SdlConnection;
 
 import android.annotation.SuppressLint;
-import android.os.Build;
 import android.view.Surface;
 
 import com.smartdevicelink.encoder.SdlEncoder;
@@ -216,12 +215,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
     @SuppressLint("NewApi")
     public OutputStream startStream(SessionType sType, byte rpcSessionID) throws IOException {
         OutputStream os = new PipedOutputStream();
-        InputStream is = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-            is = new PipedInputStream((PipedOutputStream) os, BUFF_READ_SIZE);
-        } else {
-            is = new PipedInputStream((PipedOutputStream) os);
-        }
+        InputStream is = new PipedInputStream((PipedOutputStream) os, BUFF_READ_SIZE);
         if (sType.equals(SessionType.NAV))
         {
             // protocol is fixed to RAW
