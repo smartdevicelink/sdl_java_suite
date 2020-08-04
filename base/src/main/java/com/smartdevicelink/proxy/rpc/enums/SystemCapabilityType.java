@@ -155,6 +155,13 @@ package com.smartdevicelink.proxy.rpc.enums;
  * 	       <td align=center>N</td>
  * 	       <td>Available Asynchronously, Call is synchronous <strong>after</strong> initial call</strong></td>
  * 	   </tr>
+ * 	   <tr>
+ * 	       <td>DRIVER_DISTRACTION</td>
+ * 	       <d>DriverDistractionCapability</td>
+ * 	       <td>Returns DRIVER_DISTRACTION</td>
+ * 	       <td align=center>N</td>
+ * 	       <td><strong>Since 7.0</strong> Describes capabilities when the driver is distracted</td>
+ * 	   </tr>
  * 	</table>
  *
  */
