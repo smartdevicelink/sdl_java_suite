@@ -69,9 +69,9 @@ public class SdlSession extends BaseSdlSession {
     MediaStreamingStatus mediaStreamingStatus;
     boolean requiresAudioSupport = false;
 
-    public SdlSession(ISdlSessionListener listener, MultiplexTransportConfig config){
-        super(listener,config);
-        if(config != null){
+    public SdlSession(ISdlSessionListener listener, MultiplexTransportConfig config) {
+        super(listener, config);
+        if (config != null) {
             contextWeakReference = new WeakReference<>(config.getContext());
             this.requiresAudioSupport = Boolean.TRUE.equals(config.requiresAudioSupport()); //handle null case
 
@@ -80,23 +80,23 @@ public class SdlSession extends BaseSdlSession {
 
     }
 
-    public SdlSession(ISdlSessionListener listener, TCPTransportConfig config){
+    public SdlSession(ISdlSessionListener listener, TCPTransportConfig config) {
         super(listener, config);
         this.sessionListener = listener;
     }
 
-    protected SdlProtocolBase getSdlProtocolImplementation(){
-        if(transportConfig instanceof  MultiplexTransportConfig) {
-            return new SdlProtocol(this, (MultiplexTransportConfig)transportConfig);
-        } else if(transportConfig instanceof  TCPTransportConfig) {
-            return new SdlProtocol(this, (TCPTransportConfig)transportConfig);
+    protected SdlProtocolBase getSdlProtocolImplementation() {
+        if (transportConfig instanceof MultiplexTransportConfig) {
+            return new SdlProtocol(this, (MultiplexTransportConfig) transportConfig);
+        } else if (transportConfig instanceof TCPTransportConfig) {
+            return new SdlProtocol(this, (TCPTransportConfig) transportConfig);
         }
 
         return null;
     }
 
-    boolean isAudioRequirementMet(){
-        if(mediaStreamingStatus == null && contextWeakReference!= null && contextWeakReference.get() != null){
+    boolean isAudioRequirementMet() {
+        if (mediaStreamingStatus == null && contextWeakReference != null && contextWeakReference.get() != null) {
             mediaStreamingStatus = new MediaStreamingStatus(contextWeakReference.get(), new MediaStreamingStatus.Callback() {
                 @Override
                 public void onAudioNoLongerAvailable() {
@@ -115,7 +115,7 @@ public class SdlSession extends BaseSdlSession {
     @SuppressWarnings("RedundantThrows")
     @Override
     public void startSession() throws SdlException {
-        if(!isAudioRequirementMet()){
+        if (!isAudioRequirementMet()) {
             shutdown("Audio output not available");
             return;
         }
@@ -129,9 +129,9 @@ public class SdlSession extends BaseSdlSession {
     }
 
     @Override
-    public void shutdown(String info){
+    public void shutdown(String info) {
         DebugTool.logInfo(TAG, "Shutdown - " + info);
-        if(mediaStreamingStatus != null) {
+        if (mediaStreamingStatus != null) {
             mediaStreamingStatus.clear();
         }
         super.shutdown(info);
@@ -140,18 +140,19 @@ public class SdlSession extends BaseSdlSession {
 
     /**
      * Get the current protocol version used by this session
+     *
      * @return Version that represents the Protocol version being used
      */
     @Override
-    public Version getProtocolVersion(){
-        if(sdlProtocol!=null){
+    public Version getProtocolVersion() {
+        if (sdlProtocol != null) {
             return sdlProtocol.getProtocolVersion();
         }
-        return new Version(1,0,0);
+        return new Version(1, 0, 0);
     }
 
 
-     /* ***********************************************************************************************************************************************************************
+    /* ***********************************************************************************************************************************************************************
      * *****************************************************************  ISdlProtocol Listener  ********************************************************************************
      *************************************************************************************************************************************************************************/
 
@@ -159,18 +160,18 @@ public class SdlSession extends BaseSdlSession {
     public void onServiceStarted(SdlPacket packet, SessionType serviceType, int sessionID, Version version, boolean isEncrypted) {
         DebugTool.logInfo(TAG, serviceType.getName() + " service started");
 
-        if(serviceType!= null && serviceType.eq(SessionType.RPC) && this.sessionId == -1){
+        if (serviceType != null && serviceType.eq(SessionType.RPC) && this.sessionId == -1) {
             this.sessionId = sessionID;
             this.sessionListener.onSessionStarted(sessionID, version);
         }
 
-        if (isEncrypted){
+        if (isEncrypted) {
             encryptedServices.addIfAbsent(serviceType);
         }
 
-        if(serviceListeners != null && serviceListeners.containsKey(serviceType)){
+        if (serviceListeners != null && serviceListeners.containsKey(serviceType)) {
             CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(serviceType);
-            for(ISdlServiceListener listener:listeners){
+            for (ISdlServiceListener listener : listeners) {
                 listener.onServiceStarted(this, serviceType, isEncrypted);
             }
         }
@@ -179,17 +180,17 @@ public class SdlSession extends BaseSdlSession {
     @Override
     public void onServiceEnded(SdlPacket packet, SessionType serviceType, int sessionID) {
 
-        if(SessionType.RPC.equals(serviceType)){
+        if (SessionType.RPC.equals(serviceType)) {
             this.sessionListener.onSessionEnded(sessionID);
-        } else if(SessionType.NAV.equals(serviceType)) {
+        } else if (SessionType.NAV.equals(serviceType)) {
             stopVideoStream();
-        } else if(SessionType.PCM.equals(serviceType)) {
+        } else if (SessionType.PCM.equals(serviceType)) {
             stopAudioStream();
         }
 
-        if(serviceListeners != null && serviceListeners.containsKey(serviceType)){
+        if (serviceListeners != null && serviceListeners.containsKey(serviceType)) {
             CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(serviceType);
-            for(ISdlServiceListener listener:listeners){
+            for (ISdlServiceListener listener : listeners) {
                 listener.onServiceEnded(this, serviceType);
             }
         }
@@ -198,22 +199,22 @@ public class SdlSession extends BaseSdlSession {
 
     @Override
     public void onServiceError(SdlPacket packet, SessionType serviceType, int sessionID, String error) {
-        if(SessionType.NAV.equals(serviceType)) {
+        if (SessionType.NAV.equals(serviceType)) {
             stopVideoStream();
         } else if (SessionType.PCM.equals(serviceType)) {
             stopAudioStream();
         }
 
-        if(serviceListeners != null && serviceListeners.containsKey(serviceType)){
+        if (serviceListeners != null && serviceListeners.containsKey(serviceType)) {
             CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(serviceType);
-            for(ISdlServiceListener listener:listeners){
-                listener.onServiceError(this, serviceType, "End "+ serviceType.toString() +" Service NACK'ed");
+            for (ISdlServiceListener listener : listeners) {
+                listener.onServiceError(this, serviceType, "End " + serviceType.toString() + " Service NACK'ed");
             }
         }
     }
 
     @Override
-    public void onAuthTokenReceived(String authToken){/* Do nothing */ }
+    public void onAuthTokenReceived(String authToken) {/* Do nothing */ }
 
     /* ***********************************************************************************************************************************************************************
      * *****************************************************************  Fix after initial refactor *********************************************************************************
@@ -241,7 +242,7 @@ public class SdlSession extends BaseSdlSession {
             }
         }
         //Returns default protocol if none are found
-        return  new VideoStreamingParameters().getFormat().getProtocol();
+        return new VideoStreamingParameters().getFormat().getProtocol();
 
     }
 
@@ -250,15 +251,15 @@ public class SdlSession extends BaseSdlSession {
         try {
             switch (protocol) {
                 case RAW: {
-                    videoPacketizer = new StreamPacketizer(streamListener, null, SessionType.NAV, (byte)this.sessionId, this);
+                    videoPacketizer = new StreamPacketizer(streamListener, null, SessionType.NAV, (byte) this.sessionId, this);
                     videoPacketizer.start();
-                    return (IVideoStreamListener)videoPacketizer;
+                    return (IVideoStreamListener) videoPacketizer;
                 }
                 case RTP: {
                     //FIXME why is this not an extension of StreamPacketizer?
-                    videoPacketizer = new RTPH264Packetizer(streamListener, SessionType.NAV, (byte)this.sessionId, this);
+                    videoPacketizer = new RTPH264Packetizer(streamListener, SessionType.NAV, (byte) this.sessionId, this);
                     videoPacketizer.start();
-                    return (IVideoStreamListener)videoPacketizer;
+                    return (IVideoStreamListener) videoPacketizer;
                 }
                 default:
                     DebugTool.logError(TAG, "Protocol " + protocol + " is not supported.");
@@ -271,7 +272,7 @@ public class SdlSession extends BaseSdlSession {
 
     public IAudioStreamListener startAudioStream() {
         try {
-            audioPacketizer = new StreamPacketizer(streamListener, null, SessionType.PCM, (byte)this.sessionId, this);
+            audioPacketizer = new StreamPacketizer(streamListener, null, SessionType.PCM, (byte) this.sessionId, this);
             audioPacketizer.start();
             return audioPacketizer;
         } catch (IOException e) {
@@ -279,7 +280,6 @@ public class SdlSession extends BaseSdlSession {
         }
 
     }
-
 
 
     public boolean stopVideoStream() {

@@ -49,8 +49,8 @@ public class SdlSession extends BaseSdlSession {
     private static final String TAG = "SdlSession";
 
 
-    public SdlSession(ISdlSessionListener listener, BaseTransportConfig config){
-       super(listener,config);
+    public SdlSession(ISdlSessionListener listener, BaseTransportConfig config) {
+        super(listener, config);
     }
 
     @Override
@@ -62,33 +62,33 @@ public class SdlSession extends BaseSdlSession {
     public void onServiceStarted(SdlPacket packet, SessionType serviceType, int sessionID, Version version, boolean isEncrypted) {
         DebugTool.logInfo(TAG, serviceType.getName() + " service started");
 
-        if(serviceType!= null && serviceType.eq(SessionType.RPC) && this.sessionId == -1){
+        if (serviceType != null && serviceType.eq(SessionType.RPC) && this.sessionId == -1) {
             this.sessionId = sessionID;
             this.sessionListener.onSessionStarted(sessionID, version);
         }
 
-            if (isEncrypted){
-                encryptedServices.addIfAbsent(serviceType);
-            }
+        if (isEncrypted) {
+            encryptedServices.addIfAbsent(serviceType);
+        }
 
-            if (serviceListeners != null && serviceListeners.containsKey(serviceType)) {
-                CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(serviceType);
-                for (ISdlServiceListener listener : listeners) {
-                    listener.onServiceStarted(this, serviceType, isEncrypted);
-                }
+        if (serviceListeners != null && serviceListeners.containsKey(serviceType)) {
+            CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(serviceType);
+            for (ISdlServiceListener listener : listeners) {
+                listener.onServiceStarted(this, serviceType, isEncrypted);
             }
+        }
     }
 
     @Override
     public void onServiceEnded(SdlPacket packet, SessionType serviceType, int sessionID) {
 
-        if(SessionType.RPC.equals(serviceType)){
+        if (SessionType.RPC.equals(serviceType)) {
             this.sessionListener.onSessionEnded(sessionID);
         }
 
-        if(serviceListeners != null && serviceListeners.containsKey(serviceType)){
+        if (serviceListeners != null && serviceListeners.containsKey(serviceType)) {
             CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(serviceType);
-            for(ISdlServiceListener listener:listeners){
+            for (ISdlServiceListener listener : listeners) {
                 listener.onServiceEnded(this, serviceType);
             }
         }
@@ -98,10 +98,10 @@ public class SdlSession extends BaseSdlSession {
 
     @Override
     public void onServiceError(SdlPacket packet, SessionType sessionType, int sessionID, String error) {
-        if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
+        if (serviceListeners != null && serviceListeners.containsKey(sessionType)) {
             CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
-            for(ISdlServiceListener listener:listeners){
-                listener.onServiceError(this, sessionType, "End "+ sessionType.toString() +" Service NACK'ed");
+            for (ISdlServiceListener listener : listeners) {
+                listener.onServiceError(this, sessionType, "End " + sessionType.toString() + " Service NACK'ed");
             }
         }
     }
