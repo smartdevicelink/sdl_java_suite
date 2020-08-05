@@ -109,6 +109,7 @@ public class ImageFieldNameTests extends TestCase {
 		enumTestList.add(ImageFieldName.locationImage);
 		enumTestList.add(ImageFieldName.secondaryGraphic);
 		enumTestList.add(ImageFieldName.alertIcon);
+		enumTestList.add(ImageFieldName.subMenuIcon);
 
 
 		assertTrue("Enum value list does not match enum class list", 

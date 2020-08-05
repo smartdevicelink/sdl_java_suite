@@ -210,7 +210,7 @@ public class SystemCapabilityManagerTests {
 	public void testNullDisplayCapabilitiesEnablesAllTextAndImageFields() {
 		List<DisplayCapability> displayCapabilityList = createDisplayCapabilityList(null, TestValues.GENERAL_BUTTONCAPABILITIES_LIST, TestValues.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
 		assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getTextFields().size(), 29);
-		assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getImageFields().size(), 14);
+		assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getImageFields().size(), 15);
 	}
 
 	@Test

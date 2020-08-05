@@ -109,6 +109,12 @@ public enum ImageFieldName {
 	 * @since SmartDeviceLink 6.0.0
 	 */
 	alertIcon,
+	/**
+	 * The image field for AddSubMenu.menuIcon
+	 *
+	 * @since SmartDeviceLink 7.0.0
+	 */
+	subMenuIcon
 	;
     
 	/**

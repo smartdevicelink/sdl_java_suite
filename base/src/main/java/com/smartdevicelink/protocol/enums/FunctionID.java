@@ -131,6 +131,8 @@ public enum FunctionID{
     ON_RC_STATUS(32785, "OnRCStatus"),
     ON_APP_SERVICE_DATA(32786, "OnAppServiceData"),
     ON_SYSTEM_CAPABILITY_UPDATED(32787, "OnSystemCapabilityUpdated"),
+    ON_UPDATE_FILE(32789, "OnUpdateFile"),
+    ON_UPDATE_SUB_MENU(32790, "OnUpdateSubMenu"),
 
     // MOCKED FUNCTIONS (NOT SENT FROM HEAD-UNIT)
     @Deprecated
