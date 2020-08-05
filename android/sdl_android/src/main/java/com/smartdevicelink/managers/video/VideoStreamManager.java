@@ -804,21 +804,14 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				continue;
 			}
 
-			if (!(aspectRationMax > aspectRationMin && aspectRationMin > 0)) {
+			if (!isAspectRatioInRange(streamingRange, capability.getPreferredResolution())) {
 				if (constraintHeightMax == null && constraintHeightMin == null) {
 					continue;
 				}
 			}
 
-			if (resolutionHeight > 0 && resolutionWidth > 0 && constraintHeightMax != null && constraintHeightMin != null)
-			{
-				if (!(resolutionHeight >= constraintHeightMin && resolutionHeight <= constraintHeightMax)) {
-					continue;
-				}
-
-				if (!(resolutionWidth >= constraintWidthMin && resolutionWidth <= constraintWidthMax)) {
-					continue;
-				}
+			if (!isImageResolutionInRange(streamingRange, capability.getPreferredResolution())) {
+				continue;
 			}
 
 			validCapabilities.add(capability);
