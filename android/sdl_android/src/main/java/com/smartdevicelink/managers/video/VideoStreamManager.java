@@ -827,6 +827,45 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		return validCapabilities;
 	}
 
+	public Boolean isImageResolutionInRange(VideoStreamingRange range, ImageResolution currentResolution) {
+
+		Integer constraintHeightMax = range.getMaxSupportedResolution().getResolutionHeight();
+		Integer constraintHeightMin = range.getMinSupportedResolution().getResolutionHeight();
+		Integer constraintWidthMax = range.getMaxSupportedResolution().getResolutionWidth();
+		Integer constraintWidthMin = range.getMinSupportedResolution().getResolutionWidth();
+		Integer resolutionHeight = currentResolution.getResolutionHeight();
+		Integer resolutionWidth = currentResolution.getResolutionWidth();
+		if (currentResolution.getResolutionHeight() > 0 && currentResolution.getResolutionWidth() > 0 && constraintHeightMax != null && constraintHeightMin != null)
+		{
+			if (!(resolutionHeight >= constraintHeightMin && resolutionHeight <= constraintHeightMax)) {
+				return false;
+			}
+
+			if (!(resolutionWidth >= constraintWidthMin && resolutionWidth <= constraintWidthMax)) {
+				return false;
+			}
+		}
+
+		// TODO check what if dev provided invalid constraints
+		return true;
+	}
+
+	public Boolean isAspectRatioInRange(VideoStreamingRange range, ImageResolution currentResolution) {
+		Double aspectRatioMin = range.getAspectRatio().getMinAspectRatio();
+		Double aspectRatioMax = range.getAspectRatio().getMaxAspectRatio();
+
+		Double currentAspectRatio = Double.valueOf(currentResolution.getResolutionWidth()) / Double.valueOf(currentResolution.getResolutionHeight());
+
+		if (!(aspectRatioMax > aspectRatioMin && aspectRatioMin > 0)) {
+			if ((currentAspectRatio >= aspectRatioMin && currentAspectRatio <= aspectRatioMax)) {
+				return false;
+			}
+		}
+		// TODO check what if dev provided invalid constraints
+
+		return true;
+	}
+
 	/**
 	 * Keeps track of the current motion event for VPM
 	 */
