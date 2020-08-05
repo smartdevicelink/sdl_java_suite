@@ -356,7 +356,7 @@ abstract class BaseSystemCapabilityManager {
 	 * @param systemCapabilityType the system capability type that will be set
 	 * @param capability the value of the capability that will be set
 	 */
-	private synchronized void setCapability(SystemCapabilityType systemCapabilityType, Object capability) {
+	synchronized void setCapability(SystemCapabilityType systemCapabilityType, Object capability) {
 		cachedSystemCapabilities.put(systemCapabilityType, capability);
 		notifyListeners(systemCapabilityType, capability);
 	}
