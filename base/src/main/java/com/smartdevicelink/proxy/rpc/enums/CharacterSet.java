@@ -36,22 +36,22 @@ package com.smartdevicelink.proxy.rpc.enums;
  */
 public enum CharacterSet {
     /**
-     * @since SmartDeviceLink 7.0.0
+     * @deprecated in SmartDeviceLink 7.0.0
      */
     @Deprecated
     TYPE2SET,
     /**
-     * @since SmartDeviceLink 7.0.0
+     * @deprecated in SmartDeviceLink 7.0.0
      */
     @Deprecated
     TYPE5SET,
     /**
-     * @since SmartDeviceLink 7.0.0
+     * @deprecated in SmartDeviceLink 7.0.0
      */
     @Deprecated
     CID1SET,
     /**
-     * @since SmartDeviceLink 7.0.0
+     * @deprecated in SmartDeviceLink 7.0.0
      */
     @Deprecated
     CID2SET,

@@ -143,7 +143,9 @@ public class TextField extends RPCStruct {
     }
     /**
      * Get the character set that is supported in this field.
-     * @return the character set
+     * @return The set of characters that are supported by this text field.
+     * All text is sent in UTF-8 format, but not all systems may support all of the characters expressed by UTF-8.
+     * All systems will support at least ASCII, but they may support more, either the LATIN-1 character set, or the full UTF-8 character set.
      */    
     public CharacterSet getCharacterSet() {
         return (CharacterSet) getObject(CharacterSet.class, KEY_CHARACTER_SET);
