@@ -59,9 +59,10 @@ import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
-import com.smartdevicelink.haptic.HapticInterfaceManager;
+//import com.smartdevicelink.managers.video.HapticInterfaceManager;
 import com.smartdevicelink.managers.ServiceEncryptionListener;
 import com.smartdevicelink.managers.lifecycle.RpcConverter;
+import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -1623,7 +1624,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		_sdlIntefaceAvailablity = SdlInterfaceAvailability.SDL_INTERFACE_UNAVAILABLE;
 
 	//Initialize _systemCapabilityManager here.
-		_systemCapabilityManager = new SystemCapabilityManager(_internalInterface);
+		//_systemCapabilityManager = new SystemCapabilityManager(_internalInterface);
 		// Setup SdlConnection
 		synchronized(CONNECTION_REFERENCE_LOCK) {
 
@@ -2702,7 +2703,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					processRaiResponse(msg);
 
 					//Populate the system capability manager with the RAI response
-					_systemCapabilityManager.parseRAIResponse(msg);
+					//_systemCapabilityManager.parseRAIResponse(msg);
 					
 					Intent sendIntent = createBroadcastIntent();
 					updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.REGISTER_APP_INTERFACE.toString());
@@ -2881,7 +2882,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 				processRaiResponse(msg);
 				//Populate the system capability manager with the RAI response
-				_systemCapabilityManager.parseRAIResponse(msg);
+				//_systemCapabilityManager.parseRAIResponse(msg);
 
 				//_autoActivateIdReturned = msg.getAutoActivateID();
 				/*Place holder for legacy support*/ _autoActivateIdReturned = "8675309";
@@ -8361,7 +8362,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		SdlRemoteDisplay remoteDisplay;
 		IVideoStreamListener streamListener;
 		float[] touchScalar = {1.0f,1.0f}; //x, y
-		private HapticInterfaceManager hapticManager;
+		//private HapticInterfaceManager hapticManager;
 		SdlMotionEvent sdlMotionEvent = null;
 		VideoStreamingParameters videoStreamingParameters;
 
@@ -8416,7 +8417,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 			VideoStreamingCapability capability = (VideoStreamingCapability)_systemCapabilityManager.getCapability(SystemCapabilityType.VIDEO_STREAMING);
 			if(capability != null && Boolean.TRUE.equals(capability.getIsHapticSpatialDataSupported())){
-				hapticManager = new HapticInterfaceManager(internalInterface);
+				//hapticManager = new HapticInterfaceManager(internalInterface);
 			}
 
 			try {
@@ -8466,14 +8467,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						//Remote display has been created.
 						//Now is a good time to do parsing for spatial data
 						SdlProxyBase.VideoStreamingManager.this.remoteDisplay = remoteDisplay;
-						if(hapticManager != null) {
-							remoteDisplay.getMainView().post(new Runnable() {
-								@Override
-								public void run() {
-									hapticManager.refreshHapticData(remoteDisplay.getMainView());
-								}
-							});
-						}
+//						if(hapticManager != null) {
+//							remoteDisplay.getMainView().post(new Runnable() {
+//								@Override
+//								public void run() {
+//									hapticManager.refreshHapticData(remoteDisplay.getMainView());
+//								}
+//							});
+//						}
 						//Get touch scalars
 						ImageResolution resolution = null;
 						if(protocolVersion!= null && protocolVersion.getMajor()>=5){ //At this point we should already have the capability
@@ -8503,14 +8504,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					public void onInvalidated(final SdlRemoteDisplay remoteDisplay) {
 						//Our view has been invalidated
 						//A good time to refresh spatial data
-						if(hapticManager != null) {
-							remoteDisplay.getMainView().post(new Runnable() {
-								@Override
-								public void run() {
-									hapticManager.refreshHapticData(remoteDisplay.getMainView());
-								}
-							});
-						}
+//						if(hapticManager != null) {
+//							remoteDisplay.getMainView().post(new Runnable() {
+//								@Override
+//								public void run() {
+//									hapticManager.refreshHapticData(remoteDisplay.getMainView());
+//								}
+//							});
+//						}
 					}
 				} ));
 				Thread showPresentation = new Thread(fTask);

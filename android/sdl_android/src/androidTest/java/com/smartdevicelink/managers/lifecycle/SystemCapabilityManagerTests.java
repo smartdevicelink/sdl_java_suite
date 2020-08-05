@@ -1,4 +1,4 @@
-package com.smartdevicelink.test.proxy;
+package com.smartdevicelink.managers.lifecycle;
 
 import android.support.test.runner.AndroidJUnit4;
 import android.util.SparseArray;
@@ -9,7 +9,6 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.SystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;

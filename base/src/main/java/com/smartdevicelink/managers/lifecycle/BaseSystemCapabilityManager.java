@@ -29,10 +29,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.smartdevicelink.proxy;
+package com.smartdevicelink.managers.lifecycle;
 
 import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCMessage;
+import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.AppServiceCapability;
@@ -73,7 +75,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class SystemCapabilityManager {
+abstract class BaseSystemCapabilityManager {
 	private static final String TAG = "SystemCapabilityManager";
 	private final HashMap<SystemCapabilityType, Object> cachedSystemCapabilities;
 	private final HashMap<SystemCapabilityType, Boolean> systemCapabilitiesSubscriptionStatus;
@@ -84,7 +86,7 @@ public class SystemCapabilityManager {
 	private boolean shouldConvertDeprecatedDisplayCapabilities;
 	private HMILevel currentHMILevel;
 
-	public SystemCapabilityManager(ISdl callback) {
+	BaseSystemCapabilityManager(ISdl callback) {
 		this.callback = callback;
 		this.LISTENER_LOCK = new Object();
 		this.onSystemCapabilityListeners = new HashMap<>();
@@ -246,7 +248,7 @@ public class SystemCapabilityManager {
 		return getWindowCapability(PredefinedWindows.DEFAULT_WINDOW.getValue());
 	}
 
-	public void parseRAIResponse(RegisterAppInterfaceResponse response) {
+	void parseRAIResponse(RegisterAppInterfaceResponse response) {
 		if (response != null && response.getSuccess()) {
 			this.shouldConvertDeprecatedDisplayCapabilities = true; // reset the flag
 			setCapability(SystemCapabilityType.DISPLAYS, createDisplayCapabilityList(response));
@@ -354,7 +356,7 @@ public class SystemCapabilityManager {
 	 * @param systemCapabilityType the system capability type that will be set
 	 * @param capability the value of the capability that will be set
 	 */
-	public synchronized void setCapability(SystemCapabilityType systemCapabilityType, Object capability) {
+	synchronized void setCapability(SystemCapabilityType systemCapabilityType, Object capability) {
 		cachedSystemCapabilities.put(systemCapabilityType, capability);
 		notifyListeners(systemCapabilityType, capability);
 	}
