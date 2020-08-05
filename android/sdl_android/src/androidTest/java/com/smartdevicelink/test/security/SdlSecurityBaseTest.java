@@ -10,6 +10,8 @@ import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.transport.MultiplexTransportConfig;
+import com.smartdevicelink.transport.TCPTransportConfig;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +19,7 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 
@@ -139,11 +142,11 @@ public class SdlSecurityBaseTest {
 		byte testWiproVersion = (byte) 0x0B;
 		boolean testInitResult = true;
 		MockInterfaceBroker interfaceBroker = new MockInterfaceBroker();
-		BaseTransportConfig transportConfig = new BTTransportConfig(true);
+		MultiplexTransportConfig transportConfig = new MultiplexTransportConfig(getTargetContext(),"19216801");
 		MockSdlSecurityBase mockSdlSecurityBase = new MockSdlSecurityBase();
 		
-		SdlSession testSdlSession = SdlSession.createSession(testWiproVersion,interfaceBroker, transportConfig);
-		
+		SdlSession testSdlSession = new SdlSession(interfaceBroker, transportConfig);
+
 		assertNotNull(TestValues.NOT_NULL, mockSdlSecurityBase);
 		assertNotNull(TestValues.NOT_NULL, testSdlSession);
 		

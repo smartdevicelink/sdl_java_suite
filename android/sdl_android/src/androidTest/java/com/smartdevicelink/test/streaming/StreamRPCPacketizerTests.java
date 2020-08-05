@@ -9,6 +9,7 @@ import com.smartdevicelink.streaming.StreamRPCPacketizer;
 import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.transport.MultiplexTransportConfig;
 
 import junit.framework.TestCase;
 
@@ -16,6 +17,8 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
@@ -37,10 +40,9 @@ public class StreamRPCPacketizerTests extends TestCase {
 		InputStream testInputStream  = null;
 		IStreamListener testListener = new MockStreamListener();
 		
-		byte            testWiproVersion = (byte) 0x0B;
-		MockInterfaceBroker _interfaceBroker = new MockInterfaceBroker();
-		BaseTransportConfig _transportConfig = new BTTransportConfig(true);
-		SdlSession testSdlSession = SdlSession.createSession(testWiproVersion,_interfaceBroker, _transportConfig);
+		MockInterfaceBroker interfaceBroker = new MockInterfaceBroker();
+		MultiplexTransportConfig transportConfig = new MultiplexTransportConfig(getTargetContext(),"19216801");
+		SdlSession testSdlSession = new SdlSession(interfaceBroker, transportConfig);
 		try {
 			testInputStream = new BufferedInputStream(new ByteArrayInputStream("sdl streaming test".getBytes()));
 			StreamRPCPacketizer testStreamRpcPacketizer = new StreamRPCPacketizer(null, testListener, testInputStream, testRequest, testSessionType, testSessionId, testWV, testWV, testSdlSession);
