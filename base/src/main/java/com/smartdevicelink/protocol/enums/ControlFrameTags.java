@@ -44,6 +44,7 @@ public class ControlFrameTags {
 	private static class NAKBase{
 		/** An array of rejected parameters related to the corresponding request*/
 		public static final String REJECTED_PARAMS = "rejectedParams";
+		public static final String REASON = "reason";
 	}
 
 	/**
