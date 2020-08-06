@@ -31,6 +31,7 @@
       "fuelRange":true,
       "turnSignal":true,
       "electronicParkBrakeStatus":true,
+      "handsOffSteering": true,
       "oemCustomVehicleDataName":true
     }
   },
@@ -148,6 +149,10 @@
       },
       "electronicParkBrakeStatus":{
         "dataType":"VEHICLEDATA_ELECTRONICPARKBRAKESTATUS",
+        "resultCode":"SUCCESS"
+      },
+      "handsOffSteering":{
+        "dataType":"VEHICLEDATA_HANDSOFFSTEERING",
         "resultCode":"SUCCESS"
       },
       "oemCustomVehicleDataName":{

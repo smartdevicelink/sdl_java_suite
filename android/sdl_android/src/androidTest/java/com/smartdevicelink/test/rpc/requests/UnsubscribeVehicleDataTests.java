@@ -63,6 +63,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
 		msg.setTurnSignal(TestValues.GENERAL_BOOLEAN);
 		msg.setElectronicParkBrakeStatus(TestValues.GENERAL_BOOLEAN);
 		msg.setCloudAppVehicleID(TestValues.GENERAL_BOOLEAN);
+		msg.setHandsOffSteering(TestValues.GENERAL_BOOLEAN);
 		msg.setOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_BOOLEAN);
 
 		return msg;
@@ -112,6 +113,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
             result.put(UnsubscribeVehicleData.KEY_TURN_SIGNAL, TestValues.GENERAL_BOOLEAN);
 			result.put(UnsubscribeVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS, TestValues.GENERAL_BOOLEAN);
 			result.put(UnsubscribeVehicleData.KEY_CLOUD_APP_VEHICLE_ID, TestValues.GENERAL_BOOLEAN);
+			result.put(UnsubscribeVehicleData.KEY_HANDS_OFF_STEERING, TestValues.GENERAL_BOOLEAN);
 			result.put(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_BOOLEAN);
 		} catch (JSONException e) {
 			fail(TestValues.JSON_FAIL);
@@ -124,7 +126,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
 	 * Tests the expected values of the RPC message.
 	 */
 	@Test
-	public void testRpcValues(){		
+	public void testRpcValues(){
 		// Valid Tests
 		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getSpeed());
 		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getRpm());
@@ -155,6 +157,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
 		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getTurnSignal());
 		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getElectronicParkBrakeStatus());
 		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getCloudAppVehicleID());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getHandsOffSteering());
 		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
 		
 		// Invalid/Null Tests
@@ -191,6 +194,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
         assertNull(TestValues.NULL, msg.getTurnSignal());
 		assertNull(TestValues.NULL, msg.getElectronicParkBrakeStatus());
 		assertNull(TestValues.NULL, msg.getCloudAppVehicleID());
+		assertNull(TestValues.NULL, msg.getHandsOffSteering());
 		assertNull(TestValues.NULL, msg.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
 	}
 
@@ -243,6 +247,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
 			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_TURN_SIGNAL), cmd.getTurnSignal());
 			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS), cmd.getElectronicParkBrakeStatus());
 			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_CLOUD_APP_VEHICLE_ID), cmd.getCloudAppVehicleID());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_HANDS_OFF_STEERING), cmd.getHandsOffSteering());
 			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME), cmd.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
 
 		} 

@@ -78,6 +78,7 @@ public class VehicleDataHelper{
 	public static final TurnSignal TURN_SIGNAL = TurnSignal.OFF;
 	public static final ElectronicParkBrakeStatus ELECTRONIC_PARK_BRAKE_STATUS = ElectronicParkBrakeStatus.CLOSED;
 	public static final String OEM_CUSTOM_VEHICLE_DATA_STATE = "oemCustomVehicleDataState";
+	public static final Boolean HANDS_OFF_STEERING = Boolean.TRUE;
 
 	//other variables inside some of the above objects
     // tire status
@@ -168,7 +169,7 @@ public class VehicleDataHelper{
 	public static final VehicleDataEventStatus AIRBAG_STATUS_DRIVER_KNEE_DEPLOYED = VehicleDataEventStatus.NO;
 	public static final VehicleDataEventStatus AIRBAG_STATUS_PASSENGER_SIDE_DEPLOYED = VehicleDataEventStatus.YES;
 	public static final VehicleDataEventStatus AIRBAG_STATUS_PASSENGER_KNEE_DEPLOYED = VehicleDataEventStatus.NO;
-	
+
 	// emergency event
 	public static final EmergencyEventType EMERGENCY_EVENT_TYPE = EmergencyEventType.FRONTAL;
 	public static final FuelCutoffStatus EMERGENCY_EVENT_FUEL_CUTOFF_STATUS = FuelCutoffStatus.TERMINATE_FUEL;
@@ -358,7 +359,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA.setTurnSignal(TURN_SIGNAL);
 		VEHICLE_DATA.setElectronicParkBrakeStatus(ELECTRONIC_PARK_BRAKE_STATUS);
 		VEHICLE_DATA.setOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, OEM_CUSTOM_VEHICLE_DATA_STATE);
-		
+		VEHICLE_DATA.setHandsOffSteering(HANDS_OFF_STEERING);
 		//set up the GetVehicleDataResponse object
 		VEHICLE_DATA_RESPONSE.setSpeed(SPEED);
 		VEHICLE_DATA_RESPONSE.setRpm(RPM);
@@ -390,6 +391,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA_RESPONSE.setTurnSignal(TURN_SIGNAL);
 		VEHICLE_DATA_RESPONSE.setElectronicParkBrakeStatus(ELECTRONIC_PARK_BRAKE_STATUS);
 		VEHICLE_DATA_RESPONSE.setOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, OEM_CUSTOM_VEHICLE_DATA_STATE);
+		VEHICLE_DATA_RESPONSE.setHandsOffSteering(HANDS_OFF_STEERING);
 	}
 	
     private VehicleDataHelper(){}	

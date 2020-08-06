@@ -74,6 +74,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
+    public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
 
 	/**
 	 * Constructs a new SubscribeVehicleDataResponse object
@@ -530,5 +531,25 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      */
     public VehicleDataResult getOEMCustomVehicleData(String vehicleDataName){
         return (VehicleDataResult) getObject(VehicleDataResult.class, vehicleDataName);
+    }
+
+    /**
+     * Sets the handsOffSteering.
+     *
+     * @param handsOffSteering To indicate whether driver hands are off the steering wheel
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setHandsOffSteering(VehicleDataResult handsOffSteering) {
+        setParameters(KEY_HANDS_OFF_STEERING, handsOffSteering);
+    }
+
+    /**
+     * Gets the handsOffSteering.
+     *
+     * @return VehicleDataResult To indicate whether driver hands are off the steering wheel
+     * @since SmartDeviceLink 7.0.0
+     */
+    public VehicleDataResult getHandsOffSteering() {
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_HANDS_OFF_STEERING);
     }
 }
