@@ -50,7 +50,7 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.SystemCapabilityManager;
+import com.smartdevicelink.managers.lifecycle.BaseSystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
@@ -104,7 +104,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 abstract class BaseLifecycleManager {
 
     static final String TAG = "Lifecycle Manager";
-    public static final Version MAX_SUPPORTED_RPC_VERSION = new Version(6, 0, 0);
+    public static final Version MAX_SUPPORTED_RPC_VERSION = new Version(7, 0, 0);
 
     // Protected Correlation IDs
     private final int REGISTER_APP_INTERFACE_CORRELATION_ID = 65529,
