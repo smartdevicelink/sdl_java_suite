@@ -135,7 +135,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 		if (localRouterClass == null){
 			localRouterClass = defineLocalSdlRouterClass();
 			// we need to check this again because for USB apps, the returned class can still be null
-			if (false && AndroidTools.isDebugMode(context)) {
+			if (AndroidTools.isDebugMode(context)) {
 				IntegrationValidator.ValidationResult result =	IntegrationValidator.validate(context, localRouterClass);
 				if(!result.isSuccessful()){
 					throw new RuntimeException(result.getResultText());
