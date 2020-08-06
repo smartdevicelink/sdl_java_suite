@@ -95,6 +95,7 @@ import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.IntegrationValidator;
 import com.smartdevicelink.util.SdlAppInfo;
 
 import org.json.JSONException;
@@ -1104,6 +1105,12 @@ public class SdlRouterService extends Service{
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		if (AndroidTools.isDebugMode(getApplicationContext())) {
+			IntegrationValidator.ValidationResult result =	IntegrationValidator.validate(getApplicationContext(), this.getClass());
+			if(!result.isSuccessful()) {
+				throw new RuntimeException(result.getResultText());
+			}
+		}
 		//Add this first to avoid the runtime exceptions for the entire lifecycle of the service
 		setRouterServiceExceptionHandler();
 		//This must be done regardless of if this service shuts down or not
