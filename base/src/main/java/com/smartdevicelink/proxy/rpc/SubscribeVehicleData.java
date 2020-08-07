@@ -280,6 +280,13 @@ import java.util.Hashtable;
  *          <td>N</td>
  *          <td>SmartDeviceLink 7.0.0</td>
  *      </tr>
+ *      <tr>
+ *          <td>windowStatus</td>
+ *          <td>Boolean</td>
+ *          <td>See WindowStatus</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
  *   </table>
  *  
  * <p> <b>Response</b></p>
