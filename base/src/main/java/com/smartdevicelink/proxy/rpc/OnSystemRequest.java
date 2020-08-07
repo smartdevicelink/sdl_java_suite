@@ -82,7 +82,7 @@ import java.util.List;
  * 			<td>Array of Strings</td>
  * 			<td>Optional URL for HTTP requests.If blank, the binary data shall be forwarded to the app.If not blank, the binary data shall be forwarded to the url with a provided timeout in seconds.</td>
  *                 <td>N</td>
- *                 <td>maxlength: 1000; minsize:1;  maxsize: 100</td>
+ *                 <td>minsize:1;</td>
  * 			<td>SmartDeviceLink 2.3.2 </td>
  * 		</tr>
  * 		<tr>

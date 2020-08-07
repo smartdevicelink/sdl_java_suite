@@ -537,15 +537,11 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	private static boolean isBluetoothConnected() {
 		BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		if(bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
-			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-				int  a2dpState  = bluetoothAdapter.getProfileConnectionState(BluetoothProfile.A2DP);
-				int headSetState  = bluetoothAdapter.getProfileConnectionState(BluetoothProfile.HEADSET);
+			int  a2dpState  = bluetoothAdapter.getProfileConnectionState(BluetoothProfile.A2DP);
+			int headSetState  = bluetoothAdapter.getProfileConnectionState(BluetoothProfile.HEADSET);
 
-				return ((a2dpState == BluetoothAdapter.STATE_CONNECTED || a2dpState == BluetoothAdapter.STATE_CONNECTING)
-						&& (headSetState == BluetoothAdapter.STATE_CONNECTED || headSetState == BluetoothAdapter.STATE_CONNECTING));
-			}else{
-				return true;
-			}
+			return ((a2dpState == BluetoothAdapter.STATE_CONNECTED || a2dpState == BluetoothAdapter.STATE_CONNECTING)
+					&& (headSetState == BluetoothAdapter.STATE_CONNECTED || headSetState == BluetoothAdapter.STATE_CONNECTING));
 		}
 		return false;
 	}

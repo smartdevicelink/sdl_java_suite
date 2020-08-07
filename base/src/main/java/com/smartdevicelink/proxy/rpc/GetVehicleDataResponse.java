@@ -85,6 +85,7 @@ public class GetVehicleDataResponse extends RPCResponse {
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
     public static final String KEY_WINDOW_STATUS = "windowStatus";
+    public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
 
 	/** 
 	 * Constructs a new GetVehicleDataResponse object
@@ -411,5 +412,25 @@ public class GetVehicleDataResponse extends RPCResponse {
     @SuppressWarnings("unchecked")
     public List<WindowStatus> getWindowStatus() {
         return (List<WindowStatus>) getObject(WindowStatus.class, KEY_WINDOW_STATUS);
+    }
+
+    /**
+     * Sets the handsOffSteering.
+     *
+     * @param handsOffSteering To indicate whether driver hands are off the steering wheel
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setHandsOffSteering(Boolean handsOffSteering) {
+        setParameters(KEY_HANDS_OFF_STEERING, handsOffSteering);
+    }
+
+    /**
+     * Gets the handsOffSteering.
+     *
+     * @return Boolean To indicate whether driver hands are off the steering wheel
+     * @since SmartDeviceLink 7.0.0
+     */
+    public Boolean getHandsOffSteering() {
+        return getBoolean(KEY_HANDS_OFF_STEERING);
     }
 }

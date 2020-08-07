@@ -41,7 +41,6 @@ import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.RequiresApi;
 
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.DebugTool;
@@ -82,10 +81,7 @@ import static com.smartdevicelink.transport.TransportConstants.FOREGROUND_EXTRA;
  *         android:resource="@xml/accessory_filter"/>
  * </activity>
  * }</pre>
- * <b>3.</b> Set minimum SDK version to 12:
- * <pre>{@code <uses-sdk android:minSdkVersion="12"/>}</pre>
  */
-@RequiresApi(12)
 public class USBAccessoryAttachmentActivity extends Activity {
     
     private static final String TAG = USBAccessoryAttachmentActivity.class.getSimpleName();

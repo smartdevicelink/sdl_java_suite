@@ -260,9 +260,7 @@ public class SdlRouterService extends Service{
 		registrationIntent.setAction(action);
 		registrationIntent.putExtra(TransportConstants.BIND_LOCATION_PACKAGE_NAME_EXTRA, this.getPackageName());
 		registrationIntent.putExtra(TransportConstants.BIND_LOCATION_CLASS_NAME_EXTRA, this.getClass().getName());
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
-			registrationIntent.setFlags((Intent.FLAG_RECEIVER_FOREGROUND));
-		}
+		registrationIntent.setFlags((Intent.FLAG_RECEIVER_FOREGROUND));
 		return registrationIntent;
 	}
 
@@ -1401,9 +1399,6 @@ public class SdlRouterService extends Service{
 	}
 
 	public void resetForegroundTimeOut(long delay){
-		if(android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2){
-			return;
-		}
 		synchronized (FOREGROUND_NOTIFICATION_LOCK) {
 			if (foregroundTimeoutHandler == null) {
 				foregroundTimeoutHandler = new Handler();
@@ -1443,11 +1438,6 @@ public class SdlRouterService extends Service{
 	@SuppressWarnings("deprecation")
 	private void enterForeground(String content, long chronometerLength, boolean ongoing) {
 		DebugTool.logInfo(TAG, "Attempting to enter the foreground - " + System.currentTimeMillis());
-		if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB){
-			DebugTool.logWarning(TAG, "Unable to start service as foreground due to OS SDK version being lower than 11");
-			isForeground = false;
-			return;
-		}
 
 		Bitmap icon;
 		int resourcesIncluded = getResources().getIdentifier("ic_sdl", "drawable", getPackageName());
@@ -1502,36 +1492,24 @@ public class SdlRouterService extends Service{
         }
         synchronized (FOREGROUND_NOTIFICATION_LOCK) {
 			Notification notification;
-			if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-				notification = builder.getNotification();
-
-			} else {
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-					//Now we need to add a notification channel
-					NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-					if (notificationManager != null) {
-						NotificationChannel notificationChannel = new NotificationChannel(SDL_NOTIFICATION_CHANNEL_ID, SDL_NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW);
-						notificationChannel.enableLights(false);
-						notificationChannel.enableVibration(false);
-						notificationManager.createNotificationChannel(notificationChannel);
-					} else {
-						DebugTool.logError(TAG, "Unable to retrieve notification Manager service");
-						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-							safeStartForeground(FOREGROUND_SERVICE_ID, builder.build());
-							stopSelf();	//A valid notification channel must be supplied for SDK 27+
-						}
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+				//Now we need to add a notification channel
+				NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+				if (notificationManager != null) {
+					NotificationChannel notificationChannel = new NotificationChannel(SDL_NOTIFICATION_CHANNEL_ID, SDL_NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW);
+					notificationChannel.enableLights(false);
+					notificationChannel.enableVibration(false);
+					notificationManager.createNotificationChannel(notificationChannel);
+				} else {
+					DebugTool.logError(TAG, "Unable to retrieve notification Manager service");
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+						safeStartForeground(FOREGROUND_SERVICE_ID, builder.build());
+						stopSelf();	//A valid notification channel must be supplied for SDK 27+
 					}
+				}
 
-				}
-				notification = builder.build();
 			}
-			if (notification == null) {
-				safeStartForeground(FOREGROUND_SERVICE_ID, builder.build());
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-					stopSelf(); //A valid notification must be supplied for SDK 27+
-				}
-				return;
-			}
+			notification = builder.build();
 			safeStartForeground(FOREGROUND_SERVICE_ID, notification);
 			isForeground = true;
 
@@ -1785,9 +1763,7 @@ public class SdlRouterService extends Service{
 			startService.putExtra(TransportConstants.START_ROUTER_SERVICE_TRANSPORT_CONNECTED, record.getType().toString());
 		}
 
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-			startService.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-		}
+		startService.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
 
 		AndroidTools.sendExplicitBroadcast(getApplicationContext(),startService, null);
 
@@ -2596,8 +2572,6 @@ public class SdlRouterService extends Service{
 	}
 
 
-	
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private boolean removeAllSessionsWithAppId(String appId){
 		synchronized(SESSION_LOCK){
 			if(bluetoothSessionMap !=null){
