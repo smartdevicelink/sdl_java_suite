@@ -171,7 +171,7 @@ public enum VehicleDataType {
     /**
      * @since SmartDeviceLink 7.0.0
      */
-    VEHICLEDATA_HANDSOFFSTEERING
+    VEHICLEDATA_HANDSOFFSTEERING,
     /**
      * @since SmartDeviceLink 7.0.0
      */
