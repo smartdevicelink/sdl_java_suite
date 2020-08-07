@@ -19,7 +19,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************************************/
-package com.smartdevicelink.haptic;
+package com.smartdevicelink.managers.video;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,13 +42,13 @@ import java.util.List;
  * over-ride the default logic used to find focusable Views by passing their own data to
  * {@link #setHapticData(List)}
  */
-public class HapticInterfaceManager {
+class HapticInterfaceManager extends BaseHapticInterfaceManager {
     private static final String TAG = "Haptic";
 
     private WeakReference<ISdl> proxyHolder;
     private List<HapticRect> userHapticData;
 
-    public HapticInterfaceManager(ISdl proxy) {
+    HapticInterfaceManager(ISdl proxy) {
         this.proxyHolder = new WeakReference<>(proxy);
     }
 
@@ -59,7 +59,7 @@ public class HapticInterfaceManager {
      * @param hapticData
      *          Rect data indicating "focusable" screen elements or areas
      */
-    public void setHapticData(List<HapticRect> hapticData) {
+    void setHapticData(List<HapticRect> hapticData) {
         userHapticData = hapticData;
         if(proxyHolder.get() != null) {
             ISdl proxy = proxyHolder.get();
@@ -76,7 +76,7 @@ public class HapticInterfaceManager {
      * @param root
      *          the root or parent View
      */
-    public void refreshHapticData(View root) {
+    void refreshHapticData(View root) {
         if(proxyHolder.get() != null) {
             ISdl proxy = proxyHolder.get();
             if (userHapticData == null) {

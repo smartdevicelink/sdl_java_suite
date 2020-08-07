@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@
  * disclaimer in the documentation and/or other materials provided with the
  * distribution.
  *
- * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
- * software without specific prior written permission.
+ * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -154,6 +154,13 @@ package com.smartdevicelink.proxy.rpc.enums;
  * 	       <td>Returns SEAT_LOCATION</td>
  * 	       <td align=center>N</td>
  * 	       <td>Available Asynchronously, Call is synchronous <strong>after</strong> initial call</strong></td>
+ * 	   </tr>
+ * 	   <tr>
+ * 	       <td>DRIVER_DISTRACTION</td>
+ * 	       <d>DriverDistractionCapability</td>
+ * 	       <td>Returns DRIVER_DISTRACTION</td>
+ * 	       <td align=center>N</td>
+ * 	       <td><strong>Since 7.0</strong> Describes capabilities when the driver is distracted</td>
  * 	   </tr>
  * 	</table>
  *
@@ -551,6 +558,26 @@ public enum SystemCapabilityType {
 	 * 	</table>
 	 */
 	SEAT_LOCATION (true),
+
+	/**
+	 * <table border="1" rules="all">
+	 * 		<tr>
+	 * 			<th>Enum Name</th>
+	 * 			<th>Return Type</th>
+	 * 			<th>Description</th>
+	 * 			<th>Requires Async?</th>
+	 * 			<th>Notes</th>
+	 * 		</tr>
+	 * 		<tr>
+	 * 			<td>DRIVER_DISTRACTION</td>
+	 * 			<td>DriverDistractionCapability</td>
+	 * 			<td>Returns DRIVER_DISTRACTION</td>
+	 * 			<td align=center>N</td>
+	 * 			<td><strong>Since 7.0</strong> Describes capabilities when the driver is distracted</td>
+	 * 		</tr>
+	 * 	</table>
+	 */
+	DRIVER_DISTRACTION(true);
 
 	;
 

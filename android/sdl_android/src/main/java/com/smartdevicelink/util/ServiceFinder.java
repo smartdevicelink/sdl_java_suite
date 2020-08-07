@@ -37,7 +37,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ResolveInfo;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -163,9 +162,7 @@ public class ServiceFinder {
         Intent intent = new Intent();
         intent.setAction(SdlRouterService.REGISTER_WITH_ROUTER_ACTION);
         intent.putExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME, receiverLocation);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            intent.setFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-        }
+        intent.setFlags(Intent.FLAG_RECEIVER_FOREGROUND);
         return intent;
     }
 

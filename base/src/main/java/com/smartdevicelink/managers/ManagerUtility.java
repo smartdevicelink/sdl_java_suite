@@ -107,7 +107,7 @@ public class ManagerUtility {
         public static List<TextField> getAllTextFields() {
             List<TextField> allTextFields = new ArrayList<>();
             for (TextFieldName name : TextFieldName.values()) {
-                allTextFields.add(new TextField(name, CharacterSet.CID1SET, 500, 8));
+                allTextFields.add(new TextField(name, CharacterSet.UTF_8, 500, 8));
             }
             return allTextFields;
         }

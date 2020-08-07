@@ -1321,6 +1321,31 @@ public class Validator{
         return true;
     }
 
+    public static boolean validateDriverDistractionCapability(DriverDistractionCapability driverDistractionCapability1, DriverDistractionCapability driverDistractionCapability2) {
+        if (driverDistractionCapability1 == null) {
+            return (driverDistractionCapability1 == null);
+        }
+        if (driverDistractionCapability2 == null) {
+            return (driverDistractionCapability2 == null);
+        }
+
+        if (driverDistractionCapability1.getMenuLength() != driverDistractionCapability2.getMenuLength()) {
+            log("validateDriverDistractionCapability",
+                    "menuLength " + driverDistractionCapability1.getMenuLength() + " didn't match menuLength " + driverDistractionCapability2.getMenuLength()
+                            + ".");
+            return false;
+        }
+
+        if (driverDistractionCapability1.getSubMenuDepth() != driverDistractionCapability2.getSubMenuDepth()) {
+            log("validateDriverDistractionCapability",
+                    "subMenuDepth " + driverDistractionCapability1.getSubMenuDepth() + " didn't match subMenuDepth " + driverDistractionCapability2.getSubMenuDepth()
+                            + ".");
+            return false;
+        }
+
+        return true;
+    }
+
     public static boolean validatePhoneCapability(PhoneCapability phoneCapability1, PhoneCapability phoneCapability2){
         if(phoneCapability1 == null){
             return ( phoneCapability2 == null );

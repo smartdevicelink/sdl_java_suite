@@ -37,7 +37,6 @@ import android.content.Context;
 import android.support.annotation.RestrictTo;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
-import com.smartdevicelink.SdlConnection.SdlSession2;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -94,11 +93,11 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
 
         if (_transportConfig != null && _transportConfig.getTransportType().equals(TransportType.MULTIPLEX)) {
-            this.session = new SdlSession2(sdlConnectionListener, (MultiplexTransportConfig) _transportConfig);
+            this.session = new SdlSession(sdlConnectionListener, (MultiplexTransportConfig) _transportConfig);
         } else if (_transportConfig != null && _transportConfig.getTransportType().equals(TransportType.TCP)) {
-            this.session = new SdlSession2(sdlConnectionListener, (TCPTransportConfig) _transportConfig);
+            this.session = new SdlSession(sdlConnectionListener, (TCPTransportConfig) _transportConfig);
         } else {
-            this.session = SdlSession.createSession((byte) getProtocolVersion().getMajor(), sdlConnectionListener, _transportConfig);
+            DebugTool.logError(TAG,"Unable to create session for transport type");
         }
     }
 
