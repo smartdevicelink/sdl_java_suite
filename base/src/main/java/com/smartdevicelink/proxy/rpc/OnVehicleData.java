@@ -45,10 +45,19 @@ import java.util.Hashtable;
 import java.util.List;
 
 /**
- * Callback for the periodic and non periodic vehicle data read function.
+ *Individual requested DID result and data.
  *
+ *  
+ * <p>Callback for the periodic and non periodic vehicle data read function.</p>
+ * 
+ * <p> <b>Note:</b></p>
+ * 
+ * Initially SDL sends SubscribeVehicleData for getting the periodic updates from HMI whenever each of subscribed data types changes. OnVehicleData is expected to bring such updated values to SDL
+ * 
+ *
+ * 
+ * 
  * <p><b>Parameter List</b></p>
- *
  * <table border="1" rules="all">
  *  <tr>
  *      <th>Param Name</th>
@@ -267,10 +276,17 @@ import java.util.List;
  *      <td>N</td>
  *      <td></td>
  *  </tr>
- * </table>
+ * <tr>
+ *          <td>handsOffSteering</td>
+ *          <td>Boolean</td>
+ *          <td>To indicate whether driver hands are off the steering wheel</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
+ *  </table>
  *
  * @since SmartDeviceLink 1.0
- *
+ * 
  * @see SubscribeVehicleData
  * @see UnsubscribeVehicleData
  *
@@ -307,6 +323,7 @@ public class OnVehicleData extends RPCNotification {
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
+    public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
 
 
     public OnVehicleData() {
@@ -616,5 +633,25 @@ public class OnVehicleData extends RPCNotification {
      */
     public Object getOEMCustomVehicleData(String vehicleDataName){
         return getParameters(vehicleDataName);
+    }
+
+    /**
+     * Sets the handsOffSteering.
+     *
+     * @param handsOffSteering To indicate whether driver hands are off the steering wheel
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setHandsOffSteering(Boolean handsOffSteering) {
+        setParameters(KEY_HANDS_OFF_STEERING, handsOffSteering);
+    }
+
+    /**
+     * Gets the handsOffSteering.
+     *
+     * @return Boolean To indicate whether driver hands are off the steering wheel
+     * @since SmartDeviceLink 7.0.0
+     */
+    public Boolean getHandsOffSteering() {
+        return getBoolean(KEY_HANDS_OFF_STEERING);
     }
 }

@@ -37,6 +37,7 @@ import com.smartdevicelink.proxy.rpc.DateTime;
 import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
+import com.smartdevicelink.proxy.rpc.DriverDistractionCapability;
 import com.smartdevicelink.proxy.rpc.EqualizerSettings;
 import com.smartdevicelink.proxy.rpc.Grid;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
@@ -341,6 +342,7 @@ public class TestValues {
 	public static final AppInterfaceUnregisteredReason GENERAL_APPINTERFACEUNREGISTEREDREASON = AppInterfaceUnregisteredReason.BLUETOOTH_OFF;
 	public static final SystemCapabilityType           GENERAL_SYSTEMCAPABILITYTYPE           = SystemCapabilityType.NAVIGATION;
 	public static final NavigationCapability           GENERAL_NAVIGATIONCAPABILITY           = new NavigationCapability();
+	public static final DriverDistractionCapability	   GENERAL_DRIVERDISTRACTIONCAPABILITY    = new DriverDistractionCapability();
 	public static final PhoneCapability                GENERAL_PHONECAPABILITY                = new PhoneCapability();
 	public static final RemoteControlCapabilities      GENERAL_REMOTECONTROLCAPABILITIES      = new RemoteControlCapabilities();
 	public static final SystemCapability               GENERAL_SYSTEMCAPABILITY               = new SystemCapability();

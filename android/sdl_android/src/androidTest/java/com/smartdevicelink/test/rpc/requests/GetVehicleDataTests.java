@@ -61,6 +61,7 @@ public class GetVehicleDataTests extends BaseRpcTests {
 		msg.setFuelRange(TestValues.GENERAL_BOOLEAN);
 		msg.setTurnSignal(TestValues.GENERAL_BOOLEAN);
 		msg.setElectronicParkBrakeStatus(TestValues.GENERAL_BOOLEAN);
+		msg.setHandsOffSteering(TestValues.GENERAL_BOOLEAN);
 		msg.setOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_BOOLEAN);
 
         return msg;
@@ -110,6 +111,7 @@ public class GetVehicleDataTests extends BaseRpcTests {
             result.put(GetVehicleData.KEY_FUEL_RANGE, TestValues.GENERAL_BOOLEAN);
             result.put(GetVehicleData.KEY_TURN_SIGNAL, TestValues.GENERAL_BOOLEAN);
             result.put(GetVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_HANDS_OFF_STEERING, TestValues.GENERAL_BOOLEAN);
             result.put(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_BOOLEAN);
         }catch(JSONException e){
         	fail(TestValues.JSON_FAIL);
@@ -122,7 +124,7 @@ public class GetVehicleDataTests extends BaseRpcTests {
 	 * Tests the expected values of the RPC message.
 	 */
     @Test
-    public void testRpcValues () {    	
+    public void testRpcValues () {
     	// Valid Tests	
 		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getSpeed());
 		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getRpm());
@@ -154,6 +156,7 @@ public class GetVehicleDataTests extends BaseRpcTests {
 		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getFuelRange());
 		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getTurnSignal());
 		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getElectronicParkBrakeStatus());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getHandsOffSteering());
 		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
     
 		// Invalid/Null Tests
@@ -190,6 +193,7 @@ public class GetVehicleDataTests extends BaseRpcTests {
         assertNull(TestValues.NULL, msg.getFuelRange());
         assertNull(TestValues.NULL, msg.getTurnSignal());
         assertNull(TestValues.NULL, msg.getElectronicParkBrakeStatus());
+        assertNull(TestValues.NULL, msg.getHandsOffSteering());
         assertNull(TestValues.NULL, msg.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
     }
     
@@ -242,6 +246,7 @@ public class GetVehicleDataTests extends BaseRpcTests {
 			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_FUEL_RANGE), cmd.getFuelRange());
 			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_TURN_SIGNAL), cmd.getTurnSignal());
 			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS), cmd.getElectronicParkBrakeStatus());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_HANDS_OFF_STEERING), cmd.getHandsOffSteering());
 			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME), cmd.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
 		} catch (JSONException e) {
 			fail(TestValues.JSON_FAIL);
