@@ -58,7 +58,7 @@ import java.util.Hashtable;
  * 		<tr>
  * 			<td>characterSet</td>
  * 			<td>CharacterSet</td>
- * 			<td>The character set that is supported in this field.	</td>
+ * 			<td>The set of characters that are supported by this text field. All text is sent in UTF-8 format, but not all systems may support all of the characters expressed by UTF-8. All systems will support at least ASCII, but they may support more, either the LATIN-1 character set, or the full UTF-8 character set.	</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * 		<tr>
@@ -114,7 +114,9 @@ public class TextField extends RPCStruct {
 	/**
 	 * Constructs a newly allocated TextField object
 	 * @param name Enumeration identifying the field.
-	 * @param characterSet The character set that is supported in this field.
+	 * @param characterSet The set of characters that are supported by this text field.
+     * All text is sent in UTF-8 format, but not all systems may support all of the characters expressed by UTF-8.
+     * All systems will support at least ASCII, but they may support more, either the LATIN-1 character set, or the full UTF-8 character set.
 	 * @param width The number of characters in one row of this field.
 	 * @param rows The number of rows for this text field.
 	 */
@@ -141,14 +143,18 @@ public class TextField extends RPCStruct {
     }
     /**
      * Get the character set that is supported in this field.
-     * @return the character set
+     * @return The set of characters that are supported by this text field.
+     * All text is sent in UTF-8 format, but not all systems may support all of the characters expressed by UTF-8.
+     * All systems will support at least ASCII, but they may support more, either the LATIN-1 character set, or the full UTF-8 character set.
      */    
     public CharacterSet getCharacterSet() {
         return (CharacterSet) getObject(CharacterSet.class, KEY_CHARACTER_SET);
     }
     /**
      * Set the character set that is supported in this field.
-     * @param characterSet - the character set
+     * @param characterSet - The set of characters that are supported by this text field.
+     * All text is sent in UTF-8 format, but not all systems may support all of the characters expressed by UTF-8.
+     * All systems will support at least ASCII, but they may support more, either the LATIN-1 character set, or the full UTF-8 character set.
      */    
     public void setCharacterSet(@NonNull CharacterSet characterSet ) {
         setValue(KEY_CHARACTER_SET, characterSet);

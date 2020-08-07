@@ -101,6 +101,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
             result.put(OnVehicleData.KEY_FUEL_RANGE, VehicleDataHelper.JSON_FUEL_RANGE);
 			result.put(OnVehicleData.KEY_TURN_SIGNAL, VehicleDataHelper.TURN_SIGNAL);
 			result.put(OnVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS, VehicleDataHelper.ELECTRONIC_PARK_BRAKE_STATUS);
+			result.put(OnVehicleData.KEY_HANDS_OFF_STEERING, VehicleDataHelper.HANDS_OFF_STEERING);
 			result.put(OnVehicleData.KEY_STABILITY_CONTROLS_STATUS, VehicleDataHelper.STABILITY_CONTROLS_STATUS);
 			result.put(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, VehicleDataHelper.OEM_CUSTOM_VEHICLE_DATA_STATE);
         } catch(JSONException e) {
@@ -147,7 +148,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
     	ElectronicParkBrakeStatus electronicParkBrakeStatus = ( (OnVehicleData) msg).getElectronicParkBrakeStatus();
     	StabilityControlsStatus stabilityControlsStatus = ( (OnVehicleData) msg).getStabilityControlsStatus();
     	Object oemCustomVehicleData = ( (OnVehicleData) msg).getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME);
-    	
+    	Boolean handsOffSteering = ( (OnVehicleData) msg).getHandsOffSteering();
     	// Valid Tests
     	assertEquals(TestValues.MATCH, VehicleDataHelper.SPEED, speed);
     	assertEquals(TestValues.MATCH, VehicleDataHelper.RPM, rpm);
@@ -180,7 +181,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
 	    assertEquals(TestValues.MATCH, VehicleDataHelper.ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
 	    assertEquals(TestValues.MATCH, VehicleDataHelper.STABILITY_CONTROLS_STATUS, stabilityControlsStatus);
 	    assertEquals(TestValues.MATCH, VehicleDataHelper.OEM_CUSTOM_VEHICLE_DATA_STATE, oemCustomVehicleData);
-    
+	    assertEquals(TestValues.MATCH, VehicleDataHelper.HANDS_OFF_STEERING, handsOffSteering);
 	    // Invalid/Null Tests
         OnVehicleData msg = new OnVehicleData();
         assertNotNull(TestValues.NOT_NULL, msg);
@@ -215,6 +216,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
         assertNull(TestValues.NULL, msg.getFuelRange());
         assertNull(TestValues.NULL, msg.getTurnSignal());
         assertNull(TestValues.NULL, msg.getElectronicParkBrakeStatus());
+        assertNull(TestValues.NULL, msg.getHandsOffSteering());
         assertNull(TestValues.NULL, msg.getStabilityControlsStatus());
         assertNull(TestValues.NULL, msg.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
 	}
@@ -238,7 +240,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
 		JSONObject fuelRangeObj = new JSONObject();
 		JSONObject stabilityControlStatusObj = new JSONObject();
 		JSONArray fuelRangeArrayObj = new JSONArray();
-
+		
 		try {
 			//Set up the JSONObject to represent OnVehicleData:
 			
@@ -397,6 +399,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
 			reference.put(OnVehicleData.KEY_FUEL_RANGE, fuelRangeArrayObj);
 			reference.put(OnVehicleData.KEY_TURN_SIGNAL, VehicleDataHelper.TURN_SIGNAL);
 			reference.put(OnVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS, VehicleDataHelper.ELECTRONIC_PARK_BRAKE_STATUS);
+			reference.put(OnVehicleData.KEY_HANDS_OFF_STEERING, VehicleDataHelper.HANDS_OFF_STEERING);
 			reference.put(OnVehicleData.KEY_STABILITY_CONTROLS_STATUS, stabilityControlStatusObj);
 			reference.put(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, VehicleDataHelper.OEM_CUSTOM_VEHICLE_DATA_STATE);
 			
@@ -495,6 +498,9 @@ public class OnVehicleDataTests extends BaseRpcTests{
 				}
 				else if (key.equals(OnVehicleData.KEY_ENGINE_OIL_LIFE)) {
 					assertEquals(JsonUtils.readDoubleFromJsonObject(reference, key), JsonUtils.readDoubleFromJsonObject(underTest, key));
+				}
+				else if (key.equals(OnVehicleData.KEY_HANDS_OFF_STEERING)) {
+					assertEquals(JsonUtils.readBooleanFromJsonObject(reference, key), JsonUtils.readBooleanFromJsonObject(underTest, key));
 				}
 				else if (key.equals(OnVehicleData.KEY_FUEL_RANGE)) {
 					JSONArray fuelRangeArrayObjReference = JsonUtils.readJsonArrayFromJsonObject(reference, key);

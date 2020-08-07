@@ -32,6 +32,7 @@
       "turnSignal":true,
       "electronicParkBrakeStatus":true,
       "stabilityControlsStatus": true,
+      "handsOffSteering": true,
       "oemCustomVehicleDataName":true
     }
   },
@@ -149,6 +150,10 @@
       },
       "electronicParkBrakeStatus":{
         "dataType":"VEHICLEDATA_ELECTRONICPARKBRAKESTATUS",
+        "resultCode":"SUCCESS"
+      },
+      "handsOffSteering":{
+        "dataType":"VEHICLEDATA_HANDSOFFSTEERING",
         "resultCode":"SUCCESS"
       },
       "stabilityControlsStatus":{

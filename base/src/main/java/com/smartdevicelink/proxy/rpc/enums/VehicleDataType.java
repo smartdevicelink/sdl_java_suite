@@ -167,6 +167,12 @@ public enum VehicleDataType {
      * @since SmartDeviceLink 6.0
      */
     VEHICLEDATA_OEM_CUSTOM_DATA,
+
+    /**
+     * @since SmartDeviceLink 7.0.0
+     */
+    VEHICLEDATA_HANDSOFFSTEERING,
+    
     /**
      * @since SmartDeviceLink 6.2.0
      */

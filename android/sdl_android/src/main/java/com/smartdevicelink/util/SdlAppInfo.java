@@ -35,7 +35,6 @@ package com.smartdevicelink.util;
 import android.content.ComponentName;
 import android.content.pm.PackageInfo;
 import android.content.pm.ResolveInfo;
-import android.os.Build;
 import android.os.Bundle;
 
 import java.util.Comparator;
@@ -80,7 +79,7 @@ public class SdlAppInfo {
             }
         }
 
-        if(packageInfo != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD){
+        if(packageInfo != null){
             this.lastUpdateTime = packageInfo.lastUpdateTime;
             if(this.lastUpdateTime <= 0){
                 this.lastUpdateTime = packageInfo.firstInstallTime;
