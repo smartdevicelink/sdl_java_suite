@@ -268,8 +268,8 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
     public void onProtocolMessageReceived(ProtocolMessage msg) {
         if (msg.getSessionType().equals(SessionType.CONTROL)) {
             processControlService(msg);
-        }else if(SessionType.RPC.equals(msg.getSessionType())
-                || SessionType.BULK_DATA.equals(msg.getSessionType())){
+        } else if (SessionType.RPC.equals(msg.getSessionType())
+                || SessionType.BULK_DATA.equals(msg.getSessionType())) {
             RPCMessage rpc = RpcConverter.extractRpc(msg, this.sdlProtocol.getProtocolVersion());
             this.sessionListener.onRPCMessageReceived(rpc);
         }
@@ -296,7 +296,7 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
     }
 
     @Override
-    public void shutdown(String info){
+    public void shutdown(String info) {
         DebugTool.logInfo(TAG, "Shutdown - " + info);
         this.sessionListener.onTransportDisconnected(info, false, this.transportConfig);
     }
@@ -317,15 +317,15 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
      * @return the desired video streaming parameters
      */
     @Override
-    public VideoStreamingParameters getDesiredVideoParams(){
-        if(desiredVideoParams == null){
+    public VideoStreamingParameters getDesiredVideoParams() {
+        if (desiredVideoParams == null) {
             desiredVideoParams = new VideoStreamingParameters();
         }
         return desiredVideoParams;
     }
 
     @Override
-    public void setAcceptedVideoParams(VideoStreamingParameters params){
+    public void setAcceptedVideoParams(VideoStreamingParameters params) {
         this.acceptedVideoParams = params;
     }
 

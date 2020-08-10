@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Livio, Inc.
+ * Copyright (c) 2017-2020 Livio, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,7 +61,6 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-@SuppressWarnings({"WeakerAccess", "deprecation"})
 public class SdlSession extends BaseSdlSession {
     private static final String TAG = "SdlSession";
 

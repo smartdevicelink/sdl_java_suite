@@ -5,8 +5,6 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.util.Version;
 
-import java.util.List;
-
 /**
  * This is a mock class for testing the following :
  * {@link com.smartdevicelink.streaming.AbstractPacketizer}

@@ -848,7 +848,7 @@ public class SdlProtocolBase {
      * sent to the protocol listener.
      **/
     protected void handleServiceEndedNAK(SdlPacket packet, SessionType serviceType) {
-        String error = "Service ended NAK received for service type " + serviceType.getName();;
+        String error = "Service ended NAK received for service type " + serviceType.getName();
         if(packet.version >= 5){
             if(DebugTool.isDebugEnabled()) {
                 //Currently this is only during a debugging session. Might pass back in the future
@@ -1071,7 +1071,7 @@ public class SdlProtocolBase {
     }
 
     protected void handleProtocolSessionNAKed(SdlPacket packet, SessionType serviceType) {
-        String error = "Service start NAK received for service type " + serviceType.getName();;
+        String error = "Service start NAK received for service type " + serviceType.getName();
         List<String> rejectedParams = null;
         if(packet.version >= 5){
             if(DebugTool.isDebugEnabled()) {

@@ -10,7 +10,6 @@ import com.smartdevicelink.test.SampleRpc;
 import com.smartdevicelink.test.SdlUnitTestContants;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
-import com.smartdevicelink.transport.RouterServiceValidator;
 import com.smartdevicelink.util.Version;
 
 import junit.framework.Assert;
@@ -21,13 +20,11 @@ import org.junit.runner.RunWith;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Method;
-import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.mock;
 import static android.support.test.InstrumentationRegistry.getContext;
 

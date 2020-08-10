@@ -41,8 +41,6 @@ import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.util.Version;
 
-import java.util.List;
-
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public interface ISdlProtocol {
 

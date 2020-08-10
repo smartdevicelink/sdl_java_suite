@@ -158,7 +158,7 @@ abstract class BaseLifecycleManager {
      */
     public void startRPCEncryption() {
         if (session != null) {
-            session.startService(SessionType.RPC,true);
+            session.startService(SessionType.RPC, true);
         }
     }
 
@@ -855,7 +855,7 @@ abstract class BaseLifecycleManager {
     }
 
     /* *******************************************************************************************************
-     *************************************** ISdlConnectionListener START ************************************
+     **************************************** ISdlSessionListener START **************************************
      *********************************************************************************************************/
 
     final ISdlSessionListener sdlSessionListener = new ISdlSessionListener() {
