@@ -32,8 +32,8 @@
 
 package com.smartdevicelink.managers.lifecycle;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.RestrictTo;
+import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 
 import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
@@ -50,7 +50,6 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.managers.lifecycle.BaseSystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;

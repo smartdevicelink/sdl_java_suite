@@ -35,7 +35,7 @@ package com.smartdevicelink.managers.file;
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.proxy.interfaces.ISdl;

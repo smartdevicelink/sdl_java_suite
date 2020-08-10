@@ -33,7 +33,7 @@
 package com.smartdevicelink.managers.file;
 
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
