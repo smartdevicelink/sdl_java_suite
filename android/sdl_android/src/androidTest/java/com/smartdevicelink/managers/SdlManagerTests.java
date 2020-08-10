@@ -1,7 +1,7 @@
 package com.smartdevicelink.managers;
 
 import android.content.Context;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;

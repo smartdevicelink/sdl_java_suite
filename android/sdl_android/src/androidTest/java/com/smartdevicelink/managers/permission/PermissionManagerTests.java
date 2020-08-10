@@ -1,7 +1,7 @@
 package com.smartdevicelink.managers.permission;
 
 import androidx.annotation.NonNull;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.interfaces.ISdl;

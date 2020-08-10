@@ -3,7 +3,7 @@ package com.smartdevicelink.managers.video;
 import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -58,7 +58,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static android.support.test.InstrumentationRegistry.getContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getContext;
 
 /**
  * This is a unit test class for the SmartDeviceLink video streaming manager class :
