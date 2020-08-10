@@ -58,6 +58,8 @@ public class PredefinedLayoutTests extends TestCase {
 		PredefinedLayout double_graphic_with_softbuttons = PredefinedLayout.valueForString(example);
 		example = "LARGE_GRAPHIC_ONLY";
 		PredefinedLayout large_graphic_only = PredefinedLayout.valueForString(example);
+		example = "WEB_VIEW";
+		PredefinedLayout web_view = PredefinedLayout.valueForString(example);
 
 		assertNotNull("DEFAULT returned null", defaultenum);
 		assertNotNull("MEDIA returned null", media);
@@ -79,6 +81,7 @@ public class PredefinedLayoutTests extends TestCase {
 		assertNotNull("LARGE_GRAPHIC_WITH_SOFTBUTTONS returned null", large_graphic_with_softbuttons);
 		assertNotNull("DOUBLE_GRAPHIC_WITH_SOFTBUTTONS returned null", double_graphic_with_softbuttons);
 		assertNotNull("LARGE_GRAPHIC_ONLY returned null", large_graphic_only);
+		assertNotNull("WEB_VIEW returned null", web_view);
 	}
 
 	/**
@@ -137,6 +140,7 @@ public class PredefinedLayoutTests extends TestCase {
 		enumTestList.add(PredefinedLayout.LARGE_GRAPHIC_WITH_SOFTBUTTONS);
 		enumTestList.add(PredefinedLayout.DOUBLE_GRAPHIC_WITH_SOFTBUTTONS);
 		enumTestList.add(PredefinedLayout.LARGE_GRAPHIC_ONLY);
+		enumTestList.add(PredefinedLayout.WEB_VIEW);
 
 		assertTrue("Enum value list does not match enum class list",
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
