@@ -1,7 +1,7 @@
 package com.smartdevicelink.test.utl;
 
 import android.content.ComponentName;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.smartdevicelink.util.AndroidTools;
 
@@ -10,7 +10,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static androidx.test.platform.app.InstrumentationRegistry.getTargetContext;
+import static androidx.test.InstrumentationRegistry.getTargetContext;
 
 @RunWith(AndroidJUnit4.class)
 public class AndroidToolsTests {

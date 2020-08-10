@@ -1,7 +1,7 @@
 package com.smartdevicelink.managers.screen;
 
 import com.livio.taskmaster.Taskmaster;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.file.FileManager;

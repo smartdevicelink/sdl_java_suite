@@ -15,7 +15,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 import java.util.Hashtable;
-import static androidx.test.platform.app.InstrumentationRegistry.getTargetContext;
+import static androidx.test.InstrumentationRegistry.getTargetContext;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 

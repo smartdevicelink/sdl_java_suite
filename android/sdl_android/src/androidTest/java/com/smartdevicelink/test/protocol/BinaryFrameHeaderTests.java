@@ -1,6 +1,6 @@
 package com.smartdevicelink.test.protocol;
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.smartdevicelink.protocol.BinaryFrameHeader;
 import com.smartdevicelink.protocol.enums.FunctionID;

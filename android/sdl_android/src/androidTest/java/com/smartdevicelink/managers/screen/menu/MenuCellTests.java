@@ -32,7 +32,7 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.smartdevicelink.managers.file.SdlArtworkTests;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;

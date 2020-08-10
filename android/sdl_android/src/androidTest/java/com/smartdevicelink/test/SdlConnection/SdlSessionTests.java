@@ -9,7 +9,7 @@ import com.smartdevicelink.transport.TCPTransportConfig;
 
 import junit.framework.TestCase;
 
-import static androidx.test.platform.app.InstrumentationRegistry.getTargetContext;
+import static androidx.test.InstrumentationRegistry.getTargetContext;
 import static org.mockito.Mockito.mock;
 
 /**

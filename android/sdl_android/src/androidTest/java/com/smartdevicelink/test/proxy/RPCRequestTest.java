@@ -1,7 +1,7 @@
 package com.smartdevicelink.test.proxy;
 
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.GetSystemCapability;

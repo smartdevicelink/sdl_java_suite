@@ -17,7 +17,7 @@ import java.util.Hashtable;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
-import static androidx.test.platform.app.InstrumentationRegistry.getContext;
+import static androidx.test.InstrumentationRegistry.getContext;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

@@ -5,7 +5,7 @@ import android.media.AudioFormat;
 import android.media.MediaFormat;
 import android.media.MediaPlayer;
 import android.os.Build;
-import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.InstrumentationRegistry;
 import android.util.Log;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
