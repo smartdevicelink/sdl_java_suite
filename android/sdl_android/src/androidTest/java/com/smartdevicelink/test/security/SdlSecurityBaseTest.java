@@ -1,6 +1,6 @@
 package com.smartdevicelink.test.security;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
 import com.smartdevicelink.SdlConnection.SdlSession;
@@ -19,7 +19,7 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 
@@ -142,7 +142,7 @@ public class SdlSecurityBaseTest {
 		byte testWiproVersion = (byte) 0x0B;
 		boolean testInitResult = true;
 		MockInterfaceBroker interfaceBroker = new MockInterfaceBroker();
-		MultiplexTransportConfig transportConfig = new MultiplexTransportConfig(getTargetContext(),"19216801");
+		MultiplexTransportConfig transportConfig = new MultiplexTransportConfig(getInstrumentation().getTargetContext(),"19216801");
 		MockSdlSecurityBase mockSdlSecurityBase = new MockSdlSecurityBase();
 		
 		SdlSession testSdlSession = new SdlSession(interfaceBroker, transportConfig);

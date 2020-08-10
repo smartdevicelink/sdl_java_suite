@@ -1,6 +1,6 @@
 package com.smartdevicelink.protocol;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import android.util.Log;
 
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -28,7 +28,7 @@ import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.mock;
-import static android.support.test.InstrumentationRegistry.getContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 @RunWith(AndroidJUnit4.class)
 public class SdlProtocolTests {
@@ -101,7 +101,7 @@ public class SdlProtocolTests {
 
     @Before
     public void setUp(){
-        config = new MultiplexTransportConfig(getContext(), SdlUnitTestContants.TEST_APP_ID);
+        config = new MultiplexTransportConfig(getInstrumentation().getContext(), SdlUnitTestContants.TEST_APP_ID);
         protocol = new SdlProtocol(defaultListener,config);
     }
 

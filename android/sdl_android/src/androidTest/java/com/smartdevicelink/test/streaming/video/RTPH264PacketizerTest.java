@@ -31,7 +31,7 @@
 package com.smartdevicelink.test.streaming.video;
 
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -52,7 +52,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This class includes a unit test for {@link RTPH264Packetizer}.
@@ -551,7 +551,7 @@ public class RTPH264PacketizerTest extends TestCase {
 	}
 
 	private SdlSession createTestSession() {
-		return new SdlSession(new MockInterfaceBroker(), new MultiplexTransportConfig(getTargetContext(), "41146"));
+		return new SdlSession(new MockInterfaceBroker(), new MultiplexTransportConfig(getInstrumentation().getTargetContext(), "41146"));
 	}
 
 	private class StreamVerifier implements IStreamListener {
