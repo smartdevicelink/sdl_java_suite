@@ -1106,7 +1106,7 @@ public class SdlRouterService extends Service{
 	public void onCreate() {
 		super.onCreate();
 		if (AndroidTools.isDebugMode(getApplicationContext())) {
-			IntegrationValidator.ValidationResult result =	IntegrationValidator.validate(getApplicationContext(), this.getClass());
+			IntegrationValidator.ValidationResult result =	IntegrationValidator.validate(getApplicationContext(), this.getClass(), 0);
 			if(!result.isSuccessful()) {
 				throw new RuntimeException(result.getResultText());
 			}

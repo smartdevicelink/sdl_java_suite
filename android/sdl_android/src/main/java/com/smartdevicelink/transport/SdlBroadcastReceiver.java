@@ -136,7 +136,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			localRouterClass = defineLocalSdlRouterClass();
 			// we need to check this again because for USB apps, the returned class can still be null
 			if (AndroidTools.isDebugMode(context)) {
-				IntegrationValidator.ValidationResult result =	IntegrationValidator.validate(context, localRouterClass);
+				IntegrationValidator.ValidationResult result =	IntegrationValidator.validate(context, localRouterClass, 0);
 				if(!result.isSuccessful()){
 					throw new RuntimeException(result.getResultText());
 				}
@@ -431,6 +431,17 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	 * @param context
 	 */
 	public static void queryForConnectedService(final Context context){
+		if (AndroidTools.isDebugMode(context)) {
+			int flag = 0;
+			if(localRouterClass == null) {
+				flag = IntegrationValidator.FLAG_SKIP_ROUTER_SERVICE_CHECK;
+			}
+
+			IntegrationValidator.ValidationResult result =	IntegrationValidator.validate(context, localRouterClass, flag);
+			if(!result.isSuccessful()){
+				throw new RuntimeException(result.getResultText());
+			}
+		}
 		//Leverage existing call. Include ping bit
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
 			ServiceFinder finder = new ServiceFinder(context, context.getPackageName(), new ServiceFinder.ServiceFinderCallback() {

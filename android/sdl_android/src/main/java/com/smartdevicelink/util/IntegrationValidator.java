@@ -49,11 +49,13 @@ import java.util.List;
 
 public class IntegrationValidator {
 
-    private static final String TAG = "IntegrationValidator";
     private static final char CHECK_MARK = 0x2713;
     private static final char FAIL_MARK = 0x2715;
 
-    public static ValidationResult validate(Context context, Class localRouterClass) {
+    public static final int FLAG_SKIP_ROUTER_SERVICE_CHECK = 0x01;
+
+
+    public static ValidationResult validate(Context context, Class localRouterClass, int flags) {
         StringBuilder builder = new StringBuilder();
         builder.append("\n-----------------------------------");
         builder.append("\n  Integration Validator Results: \n");
@@ -62,18 +64,22 @@ public class IntegrationValidator {
 
         results.add(checkPermissions(context));
 
-        if (localRouterClass != null) {
-            results.add(checkRoutServiceMetadata(context, localRouterClass));
-            results.add(checkRouterServiceIntent(context, localRouterClass));
-        }else{
-            results.add(new ValidationResult(false, "SdlRouterService is not defined in SdlBroadcastReceiver and therefore some checks were not completed"));
+        if ((flags & FLAG_SKIP_ROUTER_SERVICE_CHECK) == FLAG_SKIP_ROUTER_SERVICE_CHECK) {
+            results.add(new ValidationResult(true, "SdlRouterService checks were not performed yet due to supplied flags"));
+        } else {
+            if (localRouterClass != null) {
+                results.add(checkRoutServiceMetadata(context, localRouterClass));
+                results.add(checkRouterServiceIntent(context, localRouterClass));
+            } else {
+                results.add(new ValidationResult(false, "SdlRouterService is not defined in SdlBroadcastReceiver and therefore some checks were not completed"));
+            }
         }
 
-        results.add( checkBroadcastReceiver(context) );
+        results.add(checkBroadcastReceiver(context));
 
         boolean success = true;
-        for(ValidationResult result : results) {
-            if(result.successful) {
+        for (ValidationResult result : results) {
+            if (result.successful) {
                 builder.append(CHECK_MARK + " ");
             } else {
                 success = false;
@@ -85,7 +91,7 @@ public class IntegrationValidator {
 
         }
 
-        if(!success) {
+        if (!success) {
             builder.append("Please see the guides for how to fix these issues at www.smartdevicelink.com");
         }
 
@@ -93,7 +99,7 @@ public class IntegrationValidator {
     }
 
     private static ValidationResult checkPermissions(Context context) {
-        ValidationResult retVal = new ValidationResult(true,"Permission check passed");
+        ValidationResult retVal = new ValidationResult(true, "Permission check passed");
         List<String> permissionList = new ArrayList<>();
         permissionList.add(Manifest.permission.BLUETOOTH);
         permissionList.add(Manifest.permission.INTERNET);
@@ -112,7 +118,8 @@ public class IntegrationValidator {
                     permissionList.remove(permissionInfo);
                 }
             }
-        } catch (Exception e) { }
+        } catch (Exception e) {
+        }
 
         if (!permissionList.isEmpty()) {
             StringBuilder builder = new StringBuilder();
@@ -130,7 +137,7 @@ public class IntegrationValidator {
     }
 
     public static ValidationResult checkBroadcastReceiver(Context context) {
-        ValidationResult retVal = new ValidationResult(true,"SdlBroadcastReceiver check passed");
+        ValidationResult retVal = new ValidationResult(true, "SdlBroadcastReceiver check passed");
         try {
             Intent intent = new Intent();
             intent.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
@@ -157,13 +164,13 @@ public class IntegrationValidator {
             e.printStackTrace();
         }
         retVal.successful = false;
-        retVal.resultText =  "This application has not specified its SDL Receiver properly.";
+        retVal.resultText = "This application has not specified its SDL Receiver properly.";
         return retVal;
     }
 
     // Check if the service declaration in AndroidManifest has the router service version metadata specified correctly
     private static ValidationResult checkRoutServiceMetadata(Context context, Class localRouterClass) {
-        ValidationResult retVal = new ValidationResult(true,"SdlRouterService entry and metadata checks passed");
+        ValidationResult retVal = new ValidationResult(true, "SdlRouterService entry and metadata checks passed");
 
         ResolveInfo info = context.getPackageManager().resolveService(new Intent(context, localRouterClass), PackageManager.GET_META_DATA);
         if (info != null) {
@@ -180,7 +187,7 @@ public class IntegrationValidator {
 
     // Check if the service declaration in AndroidManifest has the intent-filter action specified correctly
     private static ValidationResult checkRouterServiceIntent(Context context, Class localRouterClass) {
-        ValidationResult retVal = new ValidationResult(true,"SdlRouterService intent filter check passed");
+        ValidationResult retVal = new ValidationResult(true, "SdlRouterService intent filter check passed");
 
         boolean serviceFilterHasAction = false;
         String className = localRouterClass.getName();
