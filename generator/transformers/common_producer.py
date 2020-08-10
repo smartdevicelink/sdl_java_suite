@@ -5,7 +5,7 @@ Common transformation
 import logging
 import re
 from abc import ABC
-from collections import namedtuple
+from collections import namedtuple, OrderedDict
 
 from model.array import Array
 from model.enum import Enum
@@ -77,6 +77,38 @@ class InterfaceProducerCommon(ABC):
         :return: evaluated string
         """
         return re.sub(r'(\s{2,}|\n|\[@TODO.+)', ' ', ''.join(d)).strip() if d else ''
+
+    @staticmethod
+    def extract_values(param):
+        p = OrderedDict()    
+        if hasattr(param.param_type, 'min_value'):
+            p['min_value'] = param.param_type.min_value
+        elif hasattr(param.param_type, 'element_type') and hasattr(param.param_type.element_type, 'min_value'):
+            p['min_value'] = param.param_type.element_type.min_value
+        if hasattr(param.param_type, 'max_value'):
+            p['max_value'] = param.param_type.max_value
+        elif hasattr(param.param_type, 'element_type') and hasattr(param.param_type.element_type, 'max_value'):
+            p['max_value'] = param.param_type.element_type.max_value
+        if hasattr(param, 'default_value'):
+            p['default_value'] = param.default_value
+        elif hasattr(param.param_type, 'default_value'):
+            p['default_value'] = param.param_type.default_value
+        if hasattr(param.param_type, 'min_length'):
+            p['min_length'] = param.param_type.min_length
+        elif hasattr(param.param_type, 'element_type') and hasattr(param.param_type.element_type, 'min_length'):
+            p['min_length'] = param.param_type.element_type.min_length
+        if hasattr(param.param_type, 'max_length'):
+            p['max_length'] = param.param_type.max_length
+        elif hasattr(param.param_type, 'element_type') and hasattr(param.param_type.element_type, 'max_length'):
+            p['max_length'] = param.param_type.element_type.max_length
+        if hasattr(param.param_type, 'min_size'):
+            p['min_size'] = param.param_type.min_size
+        if hasattr(param.param_type, 'max_size'):
+            p['max_size'] = param.param_type.max_size
+
+        # Filter None values
+        filtered_values = {k: v for k, v in p.items() if v is not None}
+        return filtered_values
 
     @staticmethod
     def replace_sync(name):
