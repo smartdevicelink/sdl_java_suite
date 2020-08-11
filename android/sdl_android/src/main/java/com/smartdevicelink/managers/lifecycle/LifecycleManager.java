@@ -34,7 +34,7 @@ package com.smartdevicelink.managers.lifecycle;
 
 import android.app.Service;
 import android.content.Context;
-import android.support.annotation.RestrictTo;
+import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.exception.SdlException;
