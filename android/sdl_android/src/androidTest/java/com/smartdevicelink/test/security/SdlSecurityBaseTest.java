@@ -2,16 +2,12 @@ package com.smartdevicelink.test.security;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
 import com.smartdevicelink.SdlConnection.SdlSession;
-import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.test.TestValues;
-import com.smartdevicelink.transport.BTTransportConfig;
-import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.test.streaming.MockInterfaceBroker;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
-import com.smartdevicelink.transport.TCPTransportConfig;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,65 +56,6 @@ public class SdlSecurityBaseTest {
 	    public void setStartServiceList(List<SessionType> list) {
 	    	startServiceList = list;
 	    }
-	}
-	
-	class MockInterfaceBroker implements ISdlConnectionListener {
-		public MockInterfaceBroker () { }
-		@Override
-		public void onTransportDisconnected(String info) {
-			
-		}
-
-		@Override
-		public void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
-
-		}
-
-		@Override
-		public void onTransportError(String info, Exception e) {
-			
-		}
-		@Override
-		public void onProtocolMessageReceived(ProtocolMessage msg) {
-			
-		}
-		@Override
-		public void onProtocolSessionStartedNACKed(SessionType sessionType,
-				byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
-			
-		}
-		@Override
-		public void onProtocolSessionStarted(SessionType sessionType,
-				byte sessionID, byte version, String correlationID, int hashID,
-				boolean isEncrypted) {
-			
-		}
-		@Override
-		public void onProtocolSessionEnded(SessionType sessionType, byte sessionID,
-				String correlationID) {
-			
-		}
-		@Override
-		public void onProtocolSessionEndedNACKed(SessionType sessionType,
-				byte sessionID, String correlationID) {
-			
-		}
-		@Override
-		public void onProtocolError(String info, Exception e) {
-			
-		}
-		@Override
-		public void onHeartbeatTimedOut(byte sessionID) {
-			
-		}
-		@Override
-		public void onProtocolServiceDataACK(SessionType sessionType, int dataSize,
-				byte sessionID) {
-
-		}
-		@Override
-		public void onAuthTokenReceived(String token, byte bytes){}
-
 	}
 
 	@Test

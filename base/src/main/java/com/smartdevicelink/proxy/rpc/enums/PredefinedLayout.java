@@ -137,6 +137,12 @@ public enum PredefinedLayout {
 	 A layout with only a single large graphic
 	 */
 	LARGE_GRAPHIC_ONLY("LARGE_GRAPHIC_ONLY"),
+
+	/**
+	 * Custom root template allowing in-vehicle WebEngine applications with
+	 * appropriate permissions to show the application's own web view.
+	 */
+	WEB_VIEW("WEB_VIEW")
 	;
 
 	private final String VALUE;
