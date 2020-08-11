@@ -32,7 +32,7 @@
 
 package com.smartdevicelink.managers.lifecycle;
 
-import android.support.annotation.RestrictTo;
+import androidx.annotation.RestrictTo;
 import com.smartdevicelink.util.Log;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
