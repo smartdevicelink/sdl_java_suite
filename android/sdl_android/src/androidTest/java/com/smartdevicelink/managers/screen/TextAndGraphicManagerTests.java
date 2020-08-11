@@ -2,7 +2,7 @@ package com.smartdevicelink.managers.screen;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.ManagerUtility;
@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static android.support.test.InstrumentationRegistry.getContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
@@ -48,7 +48,7 @@ public class TextAndGraphicManagerTests {
 
 	@Before
 	public void setUp() throws Exception{
-		Context mTestContext = getContext();
+		Context mTestContext = getInstrumentation().getContext();
 		// mock things
 		ISdl internalInterface = mock(ISdl.class);
 		FileManager fileManager = mock(FileManager.class);

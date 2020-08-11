@@ -47,7 +47,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.DebugTool;

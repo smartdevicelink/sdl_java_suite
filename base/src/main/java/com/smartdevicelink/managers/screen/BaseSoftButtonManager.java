@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.managers.screen;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.livio.taskmaster.Queue;
 import com.livio.taskmaster.Task;

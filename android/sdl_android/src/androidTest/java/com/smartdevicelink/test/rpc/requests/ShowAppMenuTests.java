@@ -54,7 +54,7 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.fail;
-import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
@@ -116,7 +116,7 @@ public class ShowAppMenuTests extends BaseRpcTests {
 	 */
 	@Test
 	public void testJsonConstructor () {
-		JSONObject commandJson = JsonFileReader.readId(getTargetContext(), getCommandType(), getMessageType());
+		JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
 		assertNotNull(TestValues.NOT_NULL, commandJson);
 
 		try {

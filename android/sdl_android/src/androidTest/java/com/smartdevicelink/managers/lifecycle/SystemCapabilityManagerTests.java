@@ -1,6 +1,6 @@
 package com.smartdevicelink.managers.lifecycle;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import android.util.SparseArray;
 
 import com.livio.taskmaster.Taskmaster;

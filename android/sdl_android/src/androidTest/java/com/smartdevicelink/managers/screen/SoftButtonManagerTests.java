@@ -1,7 +1,7 @@
 package com.smartdevicelink.managers.screen;
 
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.managers.CompletionListener;
 import com.livio.taskmaster.Taskmaster;

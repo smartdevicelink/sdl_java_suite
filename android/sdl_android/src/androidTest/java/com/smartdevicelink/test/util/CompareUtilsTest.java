@@ -1,6 +1,6 @@
 package com.smartdevicelink.test.util;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.util.CompareUtils;
