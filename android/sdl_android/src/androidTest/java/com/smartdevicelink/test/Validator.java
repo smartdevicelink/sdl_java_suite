@@ -3850,4 +3850,67 @@ public class Validator{
                 && transmissionType1.equals(transmissionType2)
                 && userSelectedGear1.equals(userSelectedGear2);
     }
+
+    public static boolean validateWindowStatuses(List<WindowStatus> item1, List<WindowStatus> item2) {
+        if (item1 == null) {
+            return ( item2 == null );
+        }
+        if (item2 == null) {
+            return ( item1 == null );
+        }
+
+        if (item1.size() != item2.size()) {
+            return false;
+        }
+
+        Iterator<WindowStatus> iterator1 = item1.iterator();
+        Iterator<WindowStatus> iterator2 = item2.iterator();
+
+        while(iterator1.hasNext() && iterator2.hasNext()){
+            WindowStatus windowStatus1 = iterator1.next();
+            WindowStatus windowStatus2 = iterator2.next();
+
+            if(!validateWindowStatus(windowStatus1, windowStatus2)){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean validateWindowStatus(WindowStatus item1, WindowStatus item2) {
+        if (item1 == null) {
+            return ( item2 == null );
+        }
+        if (item2 == null) {
+            return ( item1 == null );
+        }
+
+        if (!validateWindowStates(item1.getState(), item2.getState())) {
+            return false;
+        }
+        if (!validateGrid(item1.getLocation(), item2.getLocation())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean validateWindowStates (WindowState item1, WindowState item2) {
+        if (item1 == null) {
+            return ( item2 == null );
+        }
+        if (item2 == null) {
+            return ( item1 == null );
+        }
+
+        Integer approxPosition1 = item1.getApproximatePosition();
+        Integer approxPosition2 = item2.getApproximatePosition();
+
+        Integer deviation1 = item1.getDeviation();
+        Integer deviation2 = item2.getDeviation();
+
+
+        return approxPosition1.equals(approxPosition2) && deviation1.equals(deviation2);
+    }
 }

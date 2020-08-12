@@ -273,6 +273,13 @@ import java.util.Hashtable;
  *          <td>N</td>
  *          <td>SmartDeviceLink 7.0.0</td>
  *      </tr>
+ *      <tr>
+ *          <td>windowStatus</td>
+ *          <td>Boolean</td>
+ *          <td>See WindowStatus</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
  *  </table>
  * <p><b> Response</b></p>
  * <p><b>Non-default Result Codes:</b></p>
@@ -322,6 +329,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
 	public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
 	public static final String KEY_GEAR_STATUS = "gearStatus";
+	public static final String KEY_WINDOW_STATUS = "windowStatus";
 
 	/**
 	 * Constructs a new UnsubscribeVehicleData object
@@ -922,5 +930,25 @@ public class UnsubscribeVehicleData extends RPCRequest {
      */
     public Boolean getHandsOffSteering() {
         return getBoolean(KEY_HANDS_OFF_STEERING);
+    }
+
+    /**
+     * Sets the windowStatus.
+     *
+     * @param windowStatus See WindowStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setWindowStatus(Boolean windowStatus) {
+        setParameters(KEY_WINDOW_STATUS, windowStatus);
+    }
+
+    /**
+     * Gets the windowStatus.
+     *
+     * @return Boolean See WindowStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public Boolean getWindowStatus() {
+        return getBoolean(KEY_WINDOW_STATUS);
     }
 }

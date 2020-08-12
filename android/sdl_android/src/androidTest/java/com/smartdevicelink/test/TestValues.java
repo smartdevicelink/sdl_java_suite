@@ -110,6 +110,8 @@ import com.smartdevicelink.proxy.rpc.WeatherData;
 import com.smartdevicelink.proxy.rpc.WeatherServiceData;
 import com.smartdevicelink.proxy.rpc.WeatherServiceManifest;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
+import com.smartdevicelink.proxy.rpc.WindowState;
+import com.smartdevicelink.proxy.rpc.WindowStatus;
 import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
@@ -298,6 +300,7 @@ public class TestValues {
 	public static final SoftButtonType                 GENERAL_SOFTBUTTONTYPE                 = SoftButtonType.SBT_BOTH;
 	public static final MassageZone                    GENERAL_MASSAGEZONE                    = MassageZone.LUMBAR;
 	public static final MassageMode                    GENERAL_MASSAGEMODE                    = MassageMode.HIGH;
+	public static final WindowStatus				   GENERAL_WINDOW_STATUS                  = new WindowStatus();
 	public static final MassageCushion                 GENERAL_MASSAGECUSHION                 = MassageCushion.BACK_BOLSTERS;
 	public static final SeatMemoryActionType           GENERAL_SEATMEMORYACTIONTYPE           = SeatMemoryActionType.SAVE;
 	public static final SupportedSeat           	   GENERAL_SUPPORTEDSEAT                  = SupportedSeat.DRIVER;
@@ -444,6 +447,10 @@ public class TestValues {
 	public static final PRNDL                    	 	GENERAL_USER_SELECTED_GEAR             = PRNDL.NEUTRAL;
 	public static final PRNDL                    	 	GENERAL_ACTUAL_GEAR             	   = PRNDL.DRIVE;
 	public static final TransmissionType                GENERAL_TRANSMISSION_TYPE              = TransmissionType.AUTOMATIC;
+	public static final Grid 						   GENERAL_LOCATION_GRID 				  = new Grid(2, 3);
+	public static final WindowState 				   GENERAL_WINDOW_STATE 				  = new WindowState(2, 3);
+	public static final Integer 				   	   GENERAL_APPROX_POSITION 				  = new Integer(3);
+	public static final Integer 				   	   GENERAL_DEVIATION 				  	  = new Integer(2);
 	public static final List<Long>                      GENERAL_LONG_LIST                      = Arrays.asList(new Long[]{ 1L, 2L });
 	public static final List<Turn>                      GENERAL_TURN_LIST                      = new ArrayList<Turn>();
 	public static final List<Choice>                    GENERAL_CHOICE_LIST                    = new ArrayList<Choice>();
@@ -1128,6 +1135,8 @@ public class TestValues {
 		GENERAL_GEAR_STATUS.setTransmissionType(GENERAL_TRANSMISSION_TYPE);
 		GENERAL_GEAR_STATUS.setUserSelectedGear(GENERAL_USER_SELECTED_GEAR);
 
+		GENERAL_WINDOW_STATUS.setLocation(TestValues.GENERAL_GRID);
+		GENERAL_WINDOW_STATUS.setState(TestValues.GENERAL_WINDOW_STATE);
 
 		try {
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);

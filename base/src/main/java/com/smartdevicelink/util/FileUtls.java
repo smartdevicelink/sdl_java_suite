@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.util;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

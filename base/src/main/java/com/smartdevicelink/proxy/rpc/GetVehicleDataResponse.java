@@ -32,7 +32,7 @@
 package com.smartdevicelink.proxy.rpc;
 
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -84,6 +84,7 @@ public class GetVehicleDataResponse extends RPCResponse {
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
+    public static final String KEY_WINDOW_STATUS = "windowStatus";
     public static final String KEY_GEAR_STATUS = "gearStatus";
     public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
 
@@ -407,6 +408,27 @@ public class GetVehicleDataResponse extends RPCResponse {
      */
     public Object getOEMCustomVehicleData(String vehicleDataName){
         return getParameters(vehicleDataName);
+    }
+
+    /**
+     * Sets the windowStatus.
+     *
+     * @param windowStatus See WindowStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setWindowStatus(List<WindowStatus> windowStatus) {
+        setParameters(KEY_WINDOW_STATUS, windowStatus);
+    }
+
+    /**
+     * Gets the windowStatus.
+     *
+     * @return List<WindowStatus> See WindowStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    @SuppressWarnings("unchecked")
+    public List<WindowStatus> getWindowStatus() {
+        return (List<WindowStatus>) getObject(WindowStatus.class, KEY_WINDOW_STATUS);
     }
 
     /**

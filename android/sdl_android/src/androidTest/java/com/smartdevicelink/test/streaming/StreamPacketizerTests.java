@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
@@ -131,7 +131,7 @@ public class StreamPacketizerTests extends TestCase {
 		byte            testWiproVersion = (byte) 0x0B;
 		IStreamListener testListener    = new MockStreamListener();
 		MockInterfaceBroker interfaceBroker = new MockInterfaceBroker();
-		MultiplexTransportConfig transportConfig = new MultiplexTransportConfig(getTargetContext(),"19216801");
+		MultiplexTransportConfig transportConfig = new MultiplexTransportConfig(getInstrumentation().getTargetContext(),"19216801");
 		SdlSession testSdlSession = new SdlSession(interfaceBroker, transportConfig);
 		try {
 			testInputStream = new BufferedInputStream(new ByteArrayInputStream("sdl streaming test".getBytes()));
@@ -414,7 +414,7 @@ public class StreamPacketizerTests extends TestCase {
 
 
 	private SdlSession createTestSession() {
-		return new SdlSession(new MockInterfaceBroker(),  new MultiplexTransportConfig(getTargetContext(),"19216801"));
+		return new SdlSession(new MockInterfaceBroker(),  new MultiplexTransportConfig(getInstrumentation().getTargetContext(),"19216801"));
 	}
 
 	private class StreamReceiver implements IStreamListener {

@@ -18,7 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
@@ -41,7 +41,7 @@ public class StreamRPCPacketizerTests extends TestCase {
 		IStreamListener testListener = new MockStreamListener();
 		
 		MockInterfaceBroker interfaceBroker = new MockInterfaceBroker();
-		MultiplexTransportConfig transportConfig = new MultiplexTransportConfig(getTargetContext(),"19216801");
+		MultiplexTransportConfig transportConfig = new MultiplexTransportConfig(getInstrumentation().getTargetContext(),"19216801");
 		SdlSession testSdlSession = new SdlSession(interfaceBroker, transportConfig);
 		try {
 			testInputStream = new BufferedInputStream(new ByteArrayInputStream("sdl streaming test".getBytes()));
