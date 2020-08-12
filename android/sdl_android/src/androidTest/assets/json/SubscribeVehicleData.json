@@ -31,7 +31,9 @@
       "fuelRange":true,
       "turnSignal":true,
       "electronicParkBrakeStatus":true,
-      "oemCustomVehicleDataName":true
+      "oemCustomVehicleDataName":true,
+      "windowStatus": true,
+      "handsOffSteering": true
     }
   },
   "response":{
@@ -150,8 +152,16 @@
         "dataType":"VEHICLEDATA_ELECTRONICPARKBRAKESTATUS",
         "resultCode":"SUCCESS"
       },
+      "handsOffSteering":{
+        "dataType":"VEHICLEDATA_HANDSOFFSTEERING",
+        "resultCode":"SUCCESS"
+      },
       "oemCustomVehicleDataName":{
         "oemCustomDataType":"oemCustomVehicleDataName",
+        "resultCode":"SUCCESS"
+      },
+      "windowStatus":{
+        "dataType":"VEHICLEDATA_WINDOWSTATUS",
         "resultCode":"SUCCESS"
       }
     }

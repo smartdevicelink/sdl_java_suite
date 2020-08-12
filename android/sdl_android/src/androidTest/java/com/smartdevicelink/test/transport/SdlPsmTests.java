@@ -3,7 +3,7 @@ package com.smartdevicelink.test.transport;
 import android.util.Log;
 
 import com.smartdevicelink.protocol.SdlPacket;
-import com.smartdevicelink.protocol.WiProProtocol;
+import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.transport.SdlPsm;
 
@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
  */
 public class SdlPsmTests extends TestCase {
 	private static final String TAG = "SdlPsmTests";
-	private static final int MAX_DATA_LENGTH = WiProProtocol.V1_V2_MTU_SIZE - WiProProtocol.V1_HEADER_SIZE;
+	private static final int MAX_DATA_LENGTH = SdlProtocol.V1_V2_MTU_SIZE - SdlProtocol.V1_HEADER_SIZE;
 	SdlPsm sdlPsm;
 	Field frameType, dataLength, version, controlFrameInfo;
 	Method transitionOnInput;

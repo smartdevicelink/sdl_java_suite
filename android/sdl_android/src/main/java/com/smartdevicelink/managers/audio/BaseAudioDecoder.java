@@ -38,8 +38,7 @@ import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.managers.audio.AudioStreamManager.SampleType;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
@@ -50,7 +49,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 @SuppressWarnings("WeakerAccess")
-@RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
 public abstract class BaseAudioDecoder {
     private static final String TAG = AudioDecoder.class.getSimpleName();
 

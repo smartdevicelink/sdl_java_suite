@@ -119,6 +119,16 @@ public enum AppInterfaceUnregisteredReason {
 	 * @since SmartDeviceLink 4.1
 	 */
 	UNSUPPORTED_HMI_RESOURCE,
+
+
+	/**
+	 * The application is unregistered due to hardware resource constraints.
+	 * The system will shortly close the application to free up hardware resources
+	 *
+	 * @since SmartDeviceLink 7.0
+	 *
+	 */
+	RESOURCE_CONSTRAINT
 	;
 	/**
      * Convert String to AppInterfaceUnregisteredReason

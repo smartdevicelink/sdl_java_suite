@@ -3,12 +3,12 @@ package com.smartdevicelink.transport;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Parcel;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static android.support.test.InstrumentationRegistry.getContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
@@ -26,7 +26,7 @@ public class LocalRouterServiceTests {
 		p.writeInt(4);
 		p.writeLong(System.currentTimeMillis());
 		p.writeParcelable(new Intent(), 0);
-		p.writeParcelable(new ComponentName(getContext(), "test"), 0);
+		p.writeParcelable(new ComponentName(getInstrumentation().getContext(), "test"), 0);
 		p.setDataPosition(0);
 		
 		SdlRouterService.LocalRouterService local = new SdlRouterService.LocalRouterService(p);
@@ -43,7 +43,7 @@ public class LocalRouterServiceTests {
 		p.writeInt(4);
 		p.writeLong(System.currentTimeMillis());
 		p.writeParcelable(new Intent(), 0);
-		p.writeParcelable(new ComponentName(getContext(), "test"), 0);
+		p.writeParcelable(new ComponentName(getInstrumentation().getContext(), "test"), 0);
 		p.setDataPosition(0);
 		
 		SdlRouterService.LocalRouterService local = SdlRouterService.LocalRouterService.CREATOR.createFromParcel(p);
@@ -66,7 +66,7 @@ public class LocalRouterServiceTests {
 		Parcel p =  Parcel.obtain();
 		p.writeInt(4);
 		p.writeLong(System.currentTimeMillis());
-		p.writeParcelable(new ComponentName(getContext(), "test"), 0);
+		p.writeParcelable(new ComponentName(getInstrumentation().getContext(), "test"), 0);
 		p.writeParcelable(new Intent(), 0);
 		p.setDataPosition(0);
 		
@@ -117,7 +117,7 @@ public class LocalRouterServiceTests {
 		p.writeLong(System.currentTimeMillis());
 		int space = p.dataSize();
 		p.writeParcelable(new Intent(), 0);
-		p.writeParcelable(new ComponentName(getContext(), "test"), 0);
+		p.writeParcelable(new ComponentName(getInstrumentation().getContext(), "test"), 0);
 		p.setDataPosition(0);
 		
 		byte[] raw = p.marshall();

@@ -32,7 +32,7 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 

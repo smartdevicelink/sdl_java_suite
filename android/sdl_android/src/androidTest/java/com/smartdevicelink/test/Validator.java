@@ -1319,6 +1319,31 @@ public class Validator{
         return true;
     }
 
+    public static boolean validateDriverDistractionCapability(DriverDistractionCapability driverDistractionCapability1, DriverDistractionCapability driverDistractionCapability2) {
+        if (driverDistractionCapability1 == null) {
+            return (driverDistractionCapability1 == null);
+        }
+        if (driverDistractionCapability2 == null) {
+            return (driverDistractionCapability2 == null);
+        }
+
+        if (driverDistractionCapability1.getMenuLength() != driverDistractionCapability2.getMenuLength()) {
+            log("validateDriverDistractionCapability",
+                    "menuLength " + driverDistractionCapability1.getMenuLength() + " didn't match menuLength " + driverDistractionCapability2.getMenuLength()
+                            + ".");
+            return false;
+        }
+
+        if (driverDistractionCapability1.getSubMenuDepth() != driverDistractionCapability2.getSubMenuDepth()) {
+            log("validateDriverDistractionCapability",
+                    "subMenuDepth " + driverDistractionCapability1.getSubMenuDepth() + " didn't match subMenuDepth " + driverDistractionCapability2.getSubMenuDepth()
+                            + ".");
+            return false;
+        }
+
+        return true;
+    }
+
     public static boolean validatePhoneCapability(PhoneCapability phoneCapability1, PhoneCapability phoneCapability2){
         if(phoneCapability1 == null){
             return ( phoneCapability2 == null );
@@ -3801,4 +3826,67 @@ public class Validator{
 		}
 		return validateGrid(cap1.getGrid(), cap2.getGrid());
 	}
+
+    public static boolean validateWindowStatuses(List<WindowStatus> item1, List<WindowStatus> item2) {
+        if (item1 == null) {
+            return ( item2 == null );
+        }
+        if (item2 == null) {
+            return ( item1 == null );
+        }
+
+        if (item1.size() != item2.size()) {
+            return false;
+        }
+
+        Iterator<WindowStatus> iterator1 = item1.iterator();
+        Iterator<WindowStatus> iterator2 = item2.iterator();
+
+        while(iterator1.hasNext() && iterator2.hasNext()){
+            WindowStatus windowStatus1 = iterator1.next();
+            WindowStatus windowStatus2 = iterator2.next();
+
+            if(!validateWindowStatus(windowStatus1, windowStatus2)){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean validateWindowStatus(WindowStatus item1, WindowStatus item2) {
+        if (item1 == null) {
+            return ( item2 == null );
+        }
+        if (item2 == null) {
+            return ( item1 == null );
+        }
+
+        if (!validateWindowStates(item1.getState(), item2.getState())) {
+            return false;
+        }
+        if (!validateGrid(item1.getLocation(), item2.getLocation())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean validateWindowStates (WindowState item1, WindowState item2) {
+        if (item1 == null) {
+            return ( item2 == null );
+        }
+        if (item2 == null) {
+            return ( item1 == null );
+        }
+
+        Integer approxPosition1 = item1.getApproximatePosition();
+        Integer approxPosition2 = item2.getApproximatePosition();
+
+        Integer deviation1 = item1.getDeviation();
+        Integer deviation2 = item2.getDeviation();
+
+
+        return approxPosition1.equals(approxPosition2) && deviation1.equals(deviation2);
+    }
 }

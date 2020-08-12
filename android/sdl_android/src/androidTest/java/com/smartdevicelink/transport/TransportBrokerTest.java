@@ -5,7 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.test.SdlUnitTestContants;
 import com.smartdevicelink.test.util.DeviceUtil;
@@ -14,19 +14,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
-public class TransportBrokerTest {
+public class TransportBrokerTest { //FIXME this test class needs to be fixed. At this point these tests are not helpful
 	RouterServiceValidator rsvp;
 	//		public TransportBrokerThread(Context context, String appId, ComponentName service){
 
 	@Before
 	public void setUp() throws Exception {
-		rsvp = new RouterServiceValidator(getTargetContext());
+		rsvp = new RouterServiceValidator(getInstrumentation().getTargetContext());
 		rsvp.validate();
 		
 	}
@@ -42,7 +42,7 @@ public class TransportBrokerTest {
 		if (Looper.myLooper() == null) {
 			Looper.prepare();
 		}
-		TransportBroker broker = new TransportBroker(getTargetContext(), SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
+		TransportBroker broker = new TransportBroker(getInstrumentation().getTargetContext(), SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
 		if(!DeviceUtil.isEmulator()){ // Cannot perform MBT operations in emulator
 			assertTrue(broker.start());
 		}
@@ -56,7 +56,7 @@ public class TransportBrokerTest {
 			Looper.prepare();
 		}
 
-		TransportBroker broker = new TransportBroker(getTargetContext(), SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
+		TransportBroker broker = new TransportBroker(getInstrumentation().getTargetContext(), SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
 
 		if(!DeviceUtil.isEmulator()){ // Cannot perform MBT operations in emulator
 			assertTrue(broker.start());
@@ -90,7 +90,7 @@ public class TransportBrokerTest {
 		if (Looper.myLooper() == null) {
 			Looper.prepare();
 		}
-		TransportBroker broker = new TransportBroker(getTargetContext(), SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
+		TransportBroker broker = new TransportBroker(getInstrumentation().getTargetContext(), SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
 		if(!DeviceUtil.isEmulator()){ // Cannot perform MBT operations in emulator
 			assertTrue(broker.start());
 		}
@@ -103,7 +103,7 @@ public class TransportBrokerTest {
 			Looper.prepare();
 		}
 
-		TransportBroker broker = new TransportBroker(getTargetContext(), SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
+		TransportBroker broker = new TransportBroker(getInstrumentation().getTargetContext(), SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
 		Handler handler = new Handler();
 		Message message = new Message();
 		broker.routerServiceMessenger = null;
