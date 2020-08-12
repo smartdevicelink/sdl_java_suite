@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -76,8 +76,8 @@ public class SubtleAlertResponse extends RPCResponse {
     /**
      * Sets the tryAgainTime.
      *
-     * @param tryAgainTime Amount of time (in milliseconds) that an app must wait before resending an alert. If
-     * provided, another system event or overlay currently has a higher priority than this alert.
+     * @param tryAgainTime Amount of time (in milliseconds) that an app must wait before resending an alert.
+     * If provided, another system event or overlay currently has a higher priority than this alert.
      * An app must not send an alert without waiting at least the amount of time dictated.
      */
     public void setTryAgainTime(Integer tryAgainTime) {
@@ -87,8 +87,8 @@ public class SubtleAlertResponse extends RPCResponse {
     /**
      * Gets the tryAgainTime.
      *
-     * @return Integer Amount of time (in milliseconds) that an app must wait before resending an alert. If
-     * provided, another system event or overlay currently has a higher priority than this alert.
+     * @return Integer Amount of time (in milliseconds) that an app must wait before resending an alert.
+     * If provided, another system event or overlay currently has a higher priority than this alert.
      * An app must not send an alert without waiting at least the amount of time dictated.
      */
     public Integer getTryAgainTime() {
