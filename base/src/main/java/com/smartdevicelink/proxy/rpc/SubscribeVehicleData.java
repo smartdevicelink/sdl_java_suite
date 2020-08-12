@@ -294,11 +294,11 @@ import java.util.Hashtable;
  *          <td>SmartDeviceLink 7.0.0</td>
  *      </tr>
  *   </table>
- *  
+ *
  * <p> <b>Response</b></p>
  *<p><b>Non-default Result Codes:</b></p>
  *<p>SUCCESS</p>
- *<p>WARNINGS </p>     
+ *<p>WARNINGS </p>
  *<p>INVALID_DATA</p>
  *	<p>OUT_OF_MEMORY</p>
  *	<p>TOO_MANY_PENDING_REQUESTS</p>
@@ -307,7 +307,7 @@ import java.util.Hashtable;
  *	<p>IGNORED </p>
  *	<p>DISALLOWED</p>
  *	<p>USER_DISALLOWED </p>
- * 
+ *
  * @since SmartDeviceLink 2.0
  * @see UnsubscribeVehicleData
  * @see GetVehicleData
