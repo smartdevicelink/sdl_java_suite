@@ -37,8 +37,6 @@ package com.smartdevicelink.test.rpc.requests;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
-import com.smartdevicelink.proxy.rpc.AddCommand;
-import com.smartdevicelink.proxy.rpc.Alert;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.SubtleAlert;
