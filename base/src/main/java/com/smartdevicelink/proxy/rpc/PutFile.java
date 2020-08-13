@@ -36,8 +36,6 @@ import androidx.annotation.NonNull;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
-import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
-import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
 import java.util.Hashtable;
 import java.util.zip.CRC32;
