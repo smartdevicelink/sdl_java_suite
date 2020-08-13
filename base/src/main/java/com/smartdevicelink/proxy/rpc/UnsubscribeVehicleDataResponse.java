@@ -74,9 +74,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
-    public static final String KEY_GEAR_STATUS = "gearStatus";
     public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
     public static final String KEY_WINDOW_STATUS = "windowStatus";
+    public static final String KEY_GEAR_STATUS = "gearStatus";
 
 	/**
 	 * Constructs a new UnsubscribeVehicleDataResponse object
@@ -562,6 +562,26 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
 
     /**
+     * Sets the windowStatus.
+     *
+     * @param windowStatus See WindowStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setWindowStatus(VehicleDataResult windowStatus) {
+        setParameters(KEY_WINDOW_STATUS, windowStatus);
+    }
+
+    /**
+     * Gets the windowStatus.
+     *
+     * @return VehicleDataResult See WindowStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public VehicleDataResult getWindowStatus() {
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_WINDOW_STATUS);
+    }
+
+    /**
      * Sets the gearStatus.
      *
      * @param gearStatus See GearStatus
@@ -580,25 +600,5 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     @SuppressWarnings("unchecked")
     public VehicleDataResult getGearStatus(){
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_GEAR_STATUS);
-    }
-
-    /**
-     * Sets the windowStatus.
-     *
-     * @param windowStatus See WindowStatus
-     * @since SmartDeviceLink 7.0.0
-     */
-    public void setWindowStatus(VehicleDataResult windowStatus) {
-        setParameters(KEY_WINDOW_STATUS, windowStatus);
-    }
-
-    /**
-     * Gets the windowStatus.
-     *
-     * @return VehicleDataResult See WindowStatus
-     * @since SmartDeviceLink 7.0.0
-     */
-    public VehicleDataResult getWindowStatus() {
-        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_WINDOW_STATUS);
     }
 }
