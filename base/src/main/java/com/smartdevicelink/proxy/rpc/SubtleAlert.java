@@ -71,7 +71,7 @@ import java.util.List;
  *  <tr>
  *      <td>alertIcon</td>
  *      <td>Image</td>
- *      <td>Image to be displayed for the corresponding alert. See Image. If omitted on supporteddisplays, no (or the default if applicable) icon should be displayed.</td>
+ *      <td>Image to be displayed for the corresponding alert. See Image. If omitted on supported displays, no (or the default if applicable) icon should be displayed.</td>
  *      <td>N</td>
  *      <td></td>
  *      <td></td>
