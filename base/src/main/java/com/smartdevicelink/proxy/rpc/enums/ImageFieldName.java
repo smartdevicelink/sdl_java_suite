@@ -109,6 +109,12 @@ public enum ImageFieldName {
 	 * @since SmartDeviceLink 6.0.0
 	 */
 	alertIcon,
+	/**
+	 * The image of the subtle alert; applies to `SubtleAlert` `alertIcon`
+	 *
+	 * @since SmartDeviceLink 7.0.0
+	 */
+	subtleAlertIcon
 	;
     
 	/**

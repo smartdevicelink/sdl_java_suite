@@ -1,0 +1,57 @@
+{
+  "request": {
+    "name": "SubtleAlert",
+    "correlationID": 444,
+    "parameters": {
+      "alertText1": "alertText1",
+      "alertText2": "alertText2",
+      "alertIcon": {
+        "value": "alertIconImage1.png",
+        "imageType": "DYNAMIC"
+      },
+      "ttsChunks": [
+        {
+          "text": "Phrase 1",
+          "type": "TEXT"
+        },
+        {
+          "text": "Phrase 2",
+          "type": "TEXT"
+        }
+      ],
+      "duration": 3000,
+      "softButtons": [
+        {
+          "isHighlighted": true,
+          "softButtonID": 6,
+          "systemAction": "STEAL_FOCUS",
+          "text": "Button 1",
+          "type": "IMAGE",
+          "image": {
+            "value": "image.png",
+            "imageType": "STATIC"
+          }
+        },
+        {
+          "isHighlighted": false,
+          "softButtonID": 3,
+          "systemAction": "DEFAULT_ACTION",
+          "text": "Button 2",
+          "type": "BOTH",
+          "image": {
+            "value": "image.png",
+            "imageType": "DYNAMIC"
+          }
+        }
+      ],
+      "cancelID": 30
+    }
+  },
+  "response": {
+    "name": "SubtleAlertResponse",
+    "correlationID": 444,
+    "parameters": {
+      "tryAgainTime": 400
+    }
+  }
+}
