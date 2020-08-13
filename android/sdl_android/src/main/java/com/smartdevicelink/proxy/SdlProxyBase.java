@@ -98,7 +98,6 @@ import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
-import com.smartdevicelink.proxy.rpc.enums.SdlConnectionState;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.enums.SdlInterfaceAvailability;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
@@ -270,7 +269,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected Boolean _haveReceivedFirstFocusLevel = false;
 	protected Boolean _haveReceivedFirstFocusLevelFull = false;
 	protected Boolean _proxyDisposed = false;
-	protected SdlConnectionState _sdlConnectionState = null;
+	//protected SdlConnectionState _sdlConnectionState = null;
 	protected SdlInterfaceAvailability _sdlIntefaceAvailablity = null;
 	protected HMILevel _hmiLevel = null;
 	protected OnHMIStatus lastHmiStatus;
@@ -1601,7 +1600,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 			// ALM Specific Cleanup
 			if (_advancedLifecycleManagementEnabled) {
-				_sdlConnectionState = SdlConnectionState.SDL_DISCONNECTED;
+				//_sdlConnectionState = SdlConnectionState.SDL_DISCONNECTED;
 				
 				firstTimeFull = true;
 			
@@ -2575,7 +2574,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					sendBroadcastIntent(sendIntent);
 					
 					// Send onSdlConnected message in ALM
-					_sdlConnectionState = SdlConnectionState.SDL_CONNECTED;
+					//_sdlConnectionState = SdlConnectionState.SDL_CONNECTED;
 					
 					// If registerAppInterface failed, exit with OnProxyUnusable
 					if (!msg.getSuccess()) {
@@ -2736,7 +2735,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				if (_advancedLifecycleManagementEnabled) {
 					
 					// Send onSdlConnected message in ALM
-					_sdlConnectionState = SdlConnectionState.SDL_CONNECTED;
+					//_sdlConnectionState = SdlConnectionState.SDL_CONNECTED;
 					
 					// If registerAppInterface failed, exit with OnProxyUnusable
 					if (!msg.getSuccess()) {
@@ -7610,7 +7609,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		msg.setSystemFile(true);
 		msg.setOffset(offset);
 		msg.setLength(length);
-		msg.setOnPutFileUpdateListener(cb);
+		//msg.setOnPutFileUpdateListener(cb);
 		startRPCStream(inputStream, msg);
 	}
 	
@@ -7667,7 +7666,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		msg.setSystemFile(true);
 		msg.setOffset(offset);
 		msg.setLength(length);
-		msg.setOnPutFileUpdateListener(cb);
+		//msg.setOnPutFileUpdateListener(cb);
 
 		return startRPCStream(msg);
 	}
@@ -7733,7 +7732,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		msg.setOffset(offset);
 		msg.setLength(0L);
 		msg.setPayloadProtected(isPayloadProtected);
-		msg.setOnPutFileUpdateListener(cb);
+		//msg.setOnPutFileUpdateListener(cb);
 
 		return startPutFileStream(path,msg);
 	}
