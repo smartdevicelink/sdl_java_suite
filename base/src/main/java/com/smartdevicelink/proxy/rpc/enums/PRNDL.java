@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -36,9 +36,9 @@ package com.smartdevicelink.proxy.rpc.enums;
  * @since SmartDeviceLink 2.0
  */
 public enum PRNDL {
-	/**
-	 * Parking
-	 */
+    /**
+     * Parking
+     */
     PARK,
     /**
      * Reverse gear
@@ -101,7 +101,7 @@ public enum PRNDL {
      * Convert String to PRNDL
      * @param value String
      * @return PRNDL
-     */         
+     */
     public static PRNDL valueForString(String value) {
         try{
             return valueOf(value);
