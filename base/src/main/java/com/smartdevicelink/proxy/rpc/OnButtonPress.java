@@ -180,22 +180,6 @@ public class OnButtonPress extends RPCNotification {
         setParameters(KEY_BUTTON_PRESS_MODE, buttonPressMode);
     }
 
-    @Deprecated
-    /**
-    * @deprecated use {@link #setCustomButtonID(Integer)} ()} instead.
-    */
-    public void setCustomButtonName(Integer customButtonID) {
-        setParameters(KEY_CUSTOM_BUTTON_ID, customButtonID);
-    }
-
-    @Deprecated
-    /**
-     * @deprecated use {@link #getCustomButtonID()} ()} instead.
-    */
-    public Integer getCustomButtonName() {
-    	return getInteger(KEY_CUSTOM_BUTTON_ID);
-    }
-
     /**
      * Set CustomButtonID of the button
      * If ButtonName is "CUSTOM_BUTTON", this references the integer ID passed by a custom button. (e.g. softButton ID)
