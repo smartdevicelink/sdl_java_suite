@@ -61,7 +61,6 @@ public class VrCapabilitiesTests extends TestCase {
 
 		List<VrCapabilities> enumTestList = new ArrayList<VrCapabilities>();
 		enumTestList.add(VrCapabilities.TEXT);
-		enumTestList.add(VrCapabilities.Text);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

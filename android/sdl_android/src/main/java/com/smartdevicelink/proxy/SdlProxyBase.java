@@ -7127,7 +7127,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		msg.setSpeed(speed);
 		msg.setRpm(rpm);
 		msg.setFuelLevel(fuelLevel);
-		msg.setFuelLevel_State(fuelLevel_State);
+		msg.setFuelLevelState(fuelLevel_State);
 		msg.setInstantFuelConsumption(instantFuelConsumption);
 		msg.setExternalTemperature(externalTemperature);
 		msg.setPrndl(prndl);
@@ -7176,7 +7176,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		msg.setSpeed(speed);
 		msg.setRpm(rpm);
 		msg.setFuelLevel(fuelLevel);
-		msg.setFuelLevel_State(fuelLevel_State);
+		msg.setFuelLevelState(fuelLevel_State);
 		msg.setInstantFuelConsumption(instantFuelConsumption);
 		msg.setExternalTemperature(externalTemperature);
 		msg.setPrndl(prndl);
@@ -7227,7 +7227,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		msg.setSpeed(speed);
 		msg.setRpm(rpm);
 		msg.setFuelLevel(fuelLevel);
-		msg.setFuelLevel_State(fuelLevel_State);
+		msg.setFuelLevelState(fuelLevel_State);
 		msg.setInstantFuelConsumption(instantFuelConsumption);
 		msg.setExternalTemperature(externalTemperature);
 		msg.setPrndl(prndl);
@@ -7277,7 +7277,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		msg.setSpeed(speed);
 		msg.setRpm(rpm);
 		msg.setFuelLevel(fuelLevel);
-		msg.setFuelLevel_State(fuelLevel_State);
+		msg.setFuelLevelState(fuelLevel_State);
 		msg.setInstantFuelConsumption(instantFuelConsumption);
 		msg.setExternalTemperature(externalTemperature);
 		msg.setPrndl(prndl);
@@ -7328,7 +7328,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		msg.setSpeed(speed);
 		msg.setRpm(rpm);
 		msg.setFuelLevel(fuelLevel);
-		msg.setFuelLevel_State(fuelLevel_State);
+		msg.setFuelLevelState(fuelLevel_State);
 		msg.setInstantFuelConsumption(instantFuelConsumption);
 		msg.setExternalTemperature(externalTemperature);
 		msg.setVin(vin);
@@ -7379,7 +7379,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		msg.setSpeed(speed);
 		msg.setRpm(rpm);
 		msg.setFuelLevel(fuelLevel);
-		msg.setFuelLevel_State(fuelLevel_State);
+		msg.setFuelLevelState(fuelLevel_State);
 		msg.setInstantFuelConsumption(instantFuelConsumption);
 		msg.setExternalTemperature(externalTemperature);
 		msg.setVin(vin);
@@ -7761,8 +7761,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		msg.setCorrelationID(iCorrelationID);
 		msg.setPersistentFile(bPersistentFile);
 		msg.setSystemFile(bSystemFile);
-		msg.setOffset(iOffset);
-		msg.setLength(iLength);
+		msg.setOffset(Long.valueOf(iOffset));
+		msg.setLength(Long.valueOf(iLength));
 
 		return startPutFileStream(is, msg);
 	}
