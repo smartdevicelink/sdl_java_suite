@@ -81,10 +81,10 @@ class InterfaceProducerCommon(ABC):
     @staticmethod
     def extract_values(param):
         p = OrderedDict()    
-        if hasattr(param.param_type, 'max_size'):
-            p['array_max_size'] = param.param_type.max_size
         if hasattr(param.param_type, 'min_size'):
             p['array_min_size'] = param.param_type.min_size
+        if hasattr(param.param_type, 'max_size'):
+            p['array_max_size'] = param.param_type.max_size
         if hasattr(param, 'default_value'):
             if hasattr(param.default_value, 'name'):
                 p['default_value'] = param.default_value.name
@@ -95,22 +95,22 @@ class InterfaceProducerCommon(ABC):
                 p['default_value'] = param.param_type.default_value.name
             else:  
                 p['default_value'] = param.param_type.default_value
-        if hasattr(param.param_type, 'max_value'):
-            p['num_max_value'] = param.param_type.max_value
-        elif hasattr(param.param_type, 'element_type') and hasattr(param.param_type.element_type, 'max_value'):
-            p['num_max_value'] = param.param_type.element_type.max_value
         if hasattr(param.param_type, 'min_value'):
             p['num_min_value'] = param.param_type.min_value
         elif hasattr(param.param_type, 'element_type') and hasattr(param.param_type.element_type, 'min_value'):
             p['num_min_value'] = param.param_type.element_type.min_value
-        if hasattr(param.param_type, 'max_length'):
-            p['string_max_length'] = param.param_type.max_length
-        elif hasattr(param.param_type, 'element_type') and hasattr(param.param_type.element_type, 'max_length'):
-            p['string_max_length'] = param.param_type.element_type.max_length
+        if hasattr(param.param_type, 'max_value'):
+            p['num_max_value'] = param.param_type.max_value
+        elif hasattr(param.param_type, 'element_type') and hasattr(param.param_type.element_type, 'max_value'):
+            p['num_max_value'] = param.param_type.element_type.max_value
         if hasattr(param.param_type, 'min_length'):
             p['string_min_length'] = param.param_type.min_length
         elif hasattr(param.param_type, 'element_type') and hasattr(param.param_type.element_type, 'min_length'):
             p['string_min_length'] = param.param_type.element_type.min_length
+        if hasattr(param.param_type, 'max_length'):
+            p['string_max_length'] = param.param_type.max_length
+        elif hasattr(param.param_type, 'element_type') and hasattr(param.param_type.element_type, 'max_length'):
+            p['string_max_length'] = param.param_type.element_type.max_length
 
         # Filter None values
         filtered_values = {k: v for k, v in p.items() if v is not None}
