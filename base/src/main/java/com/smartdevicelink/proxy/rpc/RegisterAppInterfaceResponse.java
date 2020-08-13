@@ -407,10 +407,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	public void setPcmStreamingCapabilities(AudioPassThruCapabilities pcmStreamingCapabilities) {
 		setParameters(KEY_PCM_STREAM_CAPABILITIES, pcmStreamingCapabilities);
 	}
-	@Deprecated
-    public String getProxyVersionInfo() {
-		return null;
-    }
+
     public void setSupportedDiagModes(List<Integer> supportedDiagModes) {
 		setParameters(KEY_SUPPORTED_DIAG_MODES, supportedDiagModes);
     }
