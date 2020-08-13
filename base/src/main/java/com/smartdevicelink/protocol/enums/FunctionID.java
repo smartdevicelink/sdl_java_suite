@@ -132,6 +132,7 @@ public enum FunctionID{
     ON_RC_STATUS(32785, "OnRCStatus"),
     ON_APP_SERVICE_DATA(32786, "OnAppServiceData"),
     ON_SYSTEM_CAPABILITY_UPDATED(32787, "OnSystemCapabilityUpdated"),
+    ON_SUBTLE_ALERT_PRESSED(32788, "OnSubtleAlertPressed"),
     ;
 
     public static final int                 INVALID_ID = -1;
