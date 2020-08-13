@@ -1,7 +1,7 @@
 package com.smartdevicelink.test.rpc;
 
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertTrue;
 
 /**
@@ -61,7 +61,7 @@ public class RPCConstructorsTests {
     private Map<String, List<Parameter>> getRPCMandatoryParamsMap(String fileName) {
         Map<String, List<Parameter>> rpcMandatoryParamsMap = new HashMap<>();
         try {
-            InputStream stream = getTargetContext().getAssets().open(fileName);
+            InputStream stream = getInstrumentation().getTargetContext().getAssets().open(fileName);
             XmlPullParserFactory xmlFactoryObject = XmlPullParserFactory.newInstance();
             XmlPullParser myParser = xmlFactoryObject.newPullParser();
             myParser.setInput(stream, null);

@@ -273,6 +273,20 @@ import java.util.Hashtable;
  *				<td>Subscribable</td>
  * 			<td>SmartDeviceLink 5.1 </td>
  * 		</tr>
+ *      <tr>
+ *          <td>handsOffSteering</td>
+ *          <td>Boolean</td>
+ *          <td>To indicate whether driver hands are off the steering wheel</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
+ *      <tr>
+ *          <td>windowStatus</td>
+ *          <td>Boolean</td>
+ *          <td>See WindowStatus</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
  *   </table>
  *  
  * <p> <b>Response</b></p>
@@ -322,6 +336,8 @@ public class SubscribeVehicleData extends RPCRequest {
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
 	public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
+	public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
+	public static final String KEY_WINDOW_STATUS = "windowStatus";
 
 	/**
 	 * Constructs a new SubscribeVehicleData object
@@ -881,4 +897,44 @@ public class SubscribeVehicleData extends RPCRequest {
 	public Boolean getOEMCustomVehicleData(String vehicleDataName){
 		return getBoolean(vehicleDataName);
 	}
+
+    /**
+     * Sets the windowStatus.
+     *
+     * @param windowStatus See WindowStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setWindowStatus(Boolean windowStatus) {
+        setParameters(KEY_WINDOW_STATUS, windowStatus);
+    }
+
+    /**
+     * Gets the windowStatus.
+     *
+     * @return Boolean See WindowStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public Boolean getWindowStatus() {
+        return getBoolean(KEY_WINDOW_STATUS);
+    }
+
+    /**
+     * Sets the handsOffSteering.
+     *
+     * @param handsOffSteering To indicate whether driver hands are off the steering wheel
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setHandsOffSteering(Boolean handsOffSteering) {
+        setParameters(KEY_HANDS_OFF_STEERING, handsOffSteering);
+    }
+
+    /**
+     * Gets the handsOffSteering.
+     *
+     * @return Boolean To indicate whether driver hands are off the steering wheel
+     * @since SmartDeviceLink 7.0.0
+     */
+    public Boolean getHandsOffSteering() {
+        return getBoolean(KEY_HANDS_OFF_STEERING);
+    }
 }
