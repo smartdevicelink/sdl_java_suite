@@ -32,7 +32,7 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;

@@ -77,11 +77,11 @@ abstract class AbstractSdlSecurityBase {
         session.onSecurityInitialized();
     }
     
-    public void handleSdlSession(SdlSession val) {
-    	if (val == null) return;
+    public void handleSdlSession(SdlSession sdlSession) {
+    	if (sdlSession == null) return;
     	
-    	setSessionId(val.getSessionId());
-    	setSdlSession(val);
+    	setSessionId((byte)sdlSession.getSessionId());
+    	setSdlSession(sdlSession);
     }
 	
     private void setInitSuccess(boolean val) {

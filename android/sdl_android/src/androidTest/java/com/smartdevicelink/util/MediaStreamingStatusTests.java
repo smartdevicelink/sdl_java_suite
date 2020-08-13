@@ -4,7 +4,7 @@ import android.content.Context;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
 import android.os.Build;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
@@ -21,7 +21,7 @@ import org.mockito.stubbing.Answer;
 
 import java.util.Vector;
 
-import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
@@ -106,11 +106,11 @@ public class MediaStreamingStatusTests {
 
     @Test
     public void testSdlManagerMedia(){
-        SdlManager.Builder builder = new SdlManager.Builder(getTargetContext(), TestValues.GENERAL_FULL_APP_ID, TestValues.GENERAL_STRING, mock(SdlManagerListener.class));
+        SdlManager.Builder builder = new SdlManager.Builder(getInstrumentation().getTargetContext(), TestValues.GENERAL_FULL_APP_ID, TestValues.GENERAL_STRING, mock(SdlManagerListener.class));
         Vector<AppHMIType> appType = new Vector<>();
         appType.add(AppHMIType.MEDIA);
         builder.setAppTypes(appType);
-        MultiplexTransportConfig multiplexTransportConfig = new MultiplexTransportConfig(getTargetContext(), TestValues.GENERAL_FULL_APP_ID);
+        MultiplexTransportConfig multiplexTransportConfig = new MultiplexTransportConfig(getInstrumentation().getTargetContext(), TestValues.GENERAL_FULL_APP_ID);
 
         assertNull(multiplexTransportConfig.requiresAudioSupport());
         builder.setTransportType(multiplexTransportConfig);
@@ -124,11 +124,11 @@ public class MediaStreamingStatusTests {
 
     @Test
     public void testSdlManagerNonMedia(){
-        SdlManager.Builder builder = new SdlManager.Builder(getTargetContext(), TestValues.GENERAL_FULL_APP_ID, TestValues.GENERAL_STRING, mock(SdlManagerListener.class));
+        SdlManager.Builder builder = new SdlManager.Builder(getInstrumentation().getTargetContext(), TestValues.GENERAL_FULL_APP_ID, TestValues.GENERAL_STRING, mock(SdlManagerListener.class));
         Vector<AppHMIType> appType = new Vector<>();
         appType.add(AppHMIType.DEFAULT);
         builder.setAppTypes(appType);
-        MultiplexTransportConfig multiplexTransportConfig = new MultiplexTransportConfig(getTargetContext(), TestValues.GENERAL_FULL_APP_ID);
+        MultiplexTransportConfig multiplexTransportConfig = new MultiplexTransportConfig(getInstrumentation().getTargetContext(), TestValues.GENERAL_FULL_APP_ID);
 
         assertNull(multiplexTransportConfig.requiresAudioSupport());
         builder.setTransportType(multiplexTransportConfig);
@@ -142,7 +142,7 @@ public class MediaStreamingStatusTests {
 
     @Test
     public void testAcceptedBTDevices(){
-        MediaStreamingStatus mediaStreamingStatus = spy(new MediaStreamingStatus(getTargetContext(), mock(MediaStreamingStatus.Callback.class)));
+        MediaStreamingStatus mediaStreamingStatus = spy(new MediaStreamingStatus(getInstrumentation().getTargetContext(), mock(MediaStreamingStatus.Callback.class)));
 
         doAnswer(new Answer() {
             @Override
@@ -157,7 +157,7 @@ public class MediaStreamingStatusTests {
 
     @Test
     public void testAcceptedUSBDevices(){
-        MediaStreamingStatus mediaStreamingStatus = spy(new MediaStreamingStatus(getTargetContext(), mock(MediaStreamingStatus.Callback.class)));
+        MediaStreamingStatus mediaStreamingStatus = spy(new MediaStreamingStatus(getInstrumentation().getTargetContext(), mock(MediaStreamingStatus.Callback.class)));
 
         doAnswer(new Answer() {
             @Override

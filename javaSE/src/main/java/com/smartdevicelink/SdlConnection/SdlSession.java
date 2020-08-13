@@ -33,14 +33,15 @@
 package com.smartdevicelink.SdlConnection;
 
 
+import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.protocol.SdlProtocolBase;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.Version;
 
-import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SdlSession extends BaseSdlSession {
@@ -48,7 +49,7 @@ public class SdlSession extends BaseSdlSession {
     private static final String TAG = "SdlSession";
 
 
-    public SdlSession(ISdlConnectionListener listener, BaseTransportConfig config) {
+    public SdlSession(ISdlSessionListener listener, BaseTransportConfig config) {
         super(listener, config);
     }
 
@@ -57,50 +58,46 @@ public class SdlSession extends BaseSdlSession {
         return new SdlProtocol(this, transportConfig);
     }
 
-
     @Override
-    public void onProtocolSessionStarted(SessionType sessionType,
-                                         byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted) {
+    public void onServiceStarted(SdlPacket packet, SessionType serviceType, int sessionID, Version version, boolean isEncrypted) {
+        DebugTool.logInfo(TAG, serviceType.getName() + " service started");
 
-        DebugTool.logInfo(TAG, "Protocol session started");
-
-        this.sessionId = sessionID;
-        if (sessionType.eq(SessionType.RPC)) {
-            sessionHashId = hashID;
+        if (serviceType != null && serviceType.eq(SessionType.RPC) && this.sessionId == -1) {
+            this.sessionId = sessionID;
+            this.sessionListener.onSessionStarted(sessionID, version);
         }
 
         if (isEncrypted) {
-            encryptedServices.addIfAbsent(sessionType);
+            encryptedServices.addIfAbsent(serviceType);
         }
 
-        this.sessionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID, hashID, isEncrypted);
-        if (serviceListeners != null && serviceListeners.containsKey(sessionType)) {
-            CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
+        if (serviceListeners != null && serviceListeners.containsKey(serviceType)) {
+            CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(serviceType);
             for (ISdlServiceListener listener : listeners) {
-                listener.onServiceStarted(this, sessionType, isEncrypted);
+                listener.onServiceStarted(this, serviceType, isEncrypted);
             }
         }
-
     }
 
     @Override
-    public void onProtocolSessionEnded(SessionType sessionType, byte sessionID,
-                                       String correlationID) {
-        this.sessionListener.onProtocolSessionEnded(sessionType, sessionID, correlationID);
-        if (serviceListeners != null && serviceListeners.containsKey(sessionType)) {
-            CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
+    public void onServiceEnded(SdlPacket packet, SessionType serviceType, int sessionID) {
+
+        if (SessionType.RPC.equals(serviceType)) {
+            this.sessionListener.onSessionEnded(sessionID);
+        }
+
+        if (serviceListeners != null && serviceListeners.containsKey(serviceType)) {
+            CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(serviceType);
             for (ISdlServiceListener listener : listeners) {
-                listener.onServiceEnded(this, sessionType);
+                listener.onServiceEnded(this, serviceType);
             }
         }
-        encryptedServices.remove(sessionType);
+
+        encryptedServices.remove(serviceType);
     }
 
-
     @Override
-    public void onProtocolSessionEndedNACKed(SessionType sessionType,
-                                             byte sessionID, String correlationID) {
-        this.sessionListener.onProtocolSessionEndedNACKed(sessionType, sessionID, correlationID);
+    public void onServiceError(SdlPacket packet, SessionType sessionType, int sessionID, String error) {
         if (serviceListeners != null && serviceListeners.containsKey(sessionType)) {
             CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
             for (ISdlServiceListener listener : listeners) {
@@ -109,22 +106,4 @@ public class SdlSession extends BaseSdlSession {
         }
     }
 
-
-
-
-
-    /* ***********************************************************************************************************************************************************************
-     * *****************************************************************  IProtocol Listener  ********************************************************************************
-     *************************************************************************************************************************************************************************/
-
-    public void onProtocolSessionNACKed(SessionType sessionType, byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
-        this.sessionListener.onProtocolSessionStartedNACKed(sessionType,
-                sessionID, version, correlationID, rejectedParams);
-        if (serviceListeners != null && serviceListeners.containsKey(sessionType)) {
-            CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
-            for (ISdlServiceListener listener : listeners) {
-                listener.onServiceError(this, sessionType, "Start " + sessionType.toString() + " Service NAKed");
-            }
-        }
-    }
 }

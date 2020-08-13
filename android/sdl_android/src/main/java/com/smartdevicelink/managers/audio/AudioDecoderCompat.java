@@ -35,7 +35,7 @@ import android.content.Context;
 import android.media.MediaCodec;
 import android.media.MediaFormat;
 import android.net.Uri;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.managers.audio.AudioStreamManager.SampleType;
 import com.smartdevicelink.util.DebugTool;

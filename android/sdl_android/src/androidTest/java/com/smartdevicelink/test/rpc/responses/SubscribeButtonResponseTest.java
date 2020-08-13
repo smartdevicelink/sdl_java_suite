@@ -17,7 +17,7 @@ import java.util.Hashtable;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
-import static android.support.test.InstrumentationRegistry.getContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 
 /**
@@ -62,7 +62,7 @@ public class SubscribeButtonResponseTest extends BaseRpcTests {
      */
     @Test
     public void testJsonConstructor () {
-    	JSONObject commandJson = JsonFileReader.readId(getContext(), getCommandType(), getMessageType());
+    	JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getContext(), getCommandType(), getMessageType());
     	assertNotNull(TestValues.NOT_NULL, commandJson);
     	
 		try {

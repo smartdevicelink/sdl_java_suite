@@ -15,7 +15,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 import java.util.Hashtable;
-import static android.support.test.InstrumentationRegistry.getContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
@@ -93,7 +93,7 @@ public class PerformInteractionResponseTest extends BaseRpcTests {
      */
     @Test
     public void testJsonConstructor () {
-    	JSONObject commandJson = JsonFileReader.readId(getContext(), getCommandType(), getMessageType());
+    	JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getContext(), getCommandType(), getMessageType());
     	assertNotNull(TestValues.NOT_NULL, commandJson);
     	
 		try {

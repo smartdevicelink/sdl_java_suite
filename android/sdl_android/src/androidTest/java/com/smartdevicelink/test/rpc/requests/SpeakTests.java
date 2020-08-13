@@ -25,7 +25,7 @@ import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.fail;
-import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 public class SpeakTests extends BaseRpcTests {
 	
@@ -85,7 +85,7 @@ public class SpeakTests extends BaseRpcTests {
      */
     @Test
     public void testJsonConstructor () {
-    	JSONObject commandJson = JsonFileReader.readId(getTargetContext(), getCommandType(), getMessageType());
+    	JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
     	assertNotNull(TestValues.NOT_NULL, commandJson);
     	
 		try {

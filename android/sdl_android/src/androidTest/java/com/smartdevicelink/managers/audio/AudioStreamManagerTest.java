@@ -5,7 +5,7 @@ import android.media.AudioFormat;
 import android.media.MediaFormat;
 import android.media.MediaPlayer;
 import android.os.Build;
-import android.support.test.InstrumentationRegistry;
+import androidx.test.platform.app.InstrumentationRegistry;
 import android.util.Log;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
@@ -53,7 +53,7 @@ public class AudioStreamManagerTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        mContext = InstrumentationRegistry.getContext();
+        mContext = InstrumentationRegistry.getInstrumentation().getContext();
     }
 
     @Override

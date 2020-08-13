@@ -35,7 +35,7 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
