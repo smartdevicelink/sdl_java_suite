@@ -119,6 +119,7 @@ class FunctionsProducer(InterfaceProducerCommon):
             p['since'] = param.since
         p['deprecated'] = param.deprecated
         p['origin'] = param.origin
+        p['values'] = self.extract_values(param)
         d = self.extract_description(param.description)
         if param.name == 'success':
             d = 'whether the request is successfully processed'
