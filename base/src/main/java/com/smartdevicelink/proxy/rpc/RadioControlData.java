@@ -47,7 +47,7 @@ public class RadioControlData extends RPCStruct{
     public static final String KEY_FREQUENCY_FRACTION= "frequencyFraction";
     public static final String KEY_BAND= "band";
     public static final String KEY_RDS_DATA= "rdsData";
-    public static final String KEY_AVAILABLE_HDS= "availableHDs";
+    @Deprecated public static final String KEY_AVAILABLE_HDS= "availableHDs";
     public static final String KEY_HD_CHANNEL= "hdChannel";
     public static final String KEY_SIGNAL_STRENGTH= "signalStrength";
     public static final String KEY_SIGNAL_CHANGE_THRESHOLD= "signalChangeThreshold";
