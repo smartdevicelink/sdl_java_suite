@@ -230,16 +230,6 @@ public class OnSystemRequest extends RPCNotification {
         return result;
     }
     
-    @Deprecated
-    public void setBinData(byte[] aptData) {
-        setBulkData(aptData);
-    }
-    
-    @Deprecated
-    public byte[] getBinData() {
-        return getBulkData();
-    }
-    
     @Override
     public void setBulkData(byte[] bulkData){
         super.setBulkData(bulkData);
