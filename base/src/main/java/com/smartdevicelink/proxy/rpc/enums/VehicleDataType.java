@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this
+ * contributors may be used to endorse or promote products derived from this 
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -33,16 +33,16 @@ package com.smartdevicelink.proxy.rpc.enums;
 
 /**
  * Defines the vehicle data types that can be published and subscribed to.
- *
+ * 
  */
 public enum VehicleDataType {
-    /**
-     * Notifies GPSData may be subscribed
-     */
-    VEHICLEDATA_GPS,
-    /**
-     * Notifies SPEED Data may be subscribed
-     */
+	/**
+	 * Notifies GPSData may be subscribed
+	 */
+	VEHICLEDATA_GPS,
+	/**
+	 * Notifies SPEED Data may be subscribed
+	 */
     VEHICLEDATA_SPEED,
     /**
      * Notifies RPMData may be subscribed
@@ -56,9 +56,9 @@ public enum VehicleDataType {
      * Notifies FUELLEVEL_STATEData may be subscribed
      */
     VEHICLEDATA_FUELLEVEL_STATE,
-    /**
-     * Notifies FUELCONSUMPTIONData may be subscribed
-     */
+/**
+ * Notifies FUELCONSUMPTIONData may be subscribed
+ */
     VEHICLEDATA_FUELCONSUMPTION,
     /**
      * Notifies EXTERNTEMPData may be subscribed
@@ -79,7 +79,7 @@ public enum VehicleDataType {
     /**
      * Notifies ODOMETERData may be subscribed
      */
-    VEHICLEDATA_ODOMETER,
+    VEHICLEDATA_ODOMETER,   
     /**
      * Notifies BELTSTATUSData may be subscribed
      */
@@ -181,7 +181,7 @@ public enum VehicleDataType {
      */
     VEHICLEDATA_GEARSTATUS;
 
-    /**
+     /**
      * Convert String to VehicleDataType
      * @param value String
      * @return VehicleDataType
