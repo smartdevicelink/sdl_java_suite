@@ -110,6 +110,7 @@ public enum FunctionID{
     DELETE_WINDOW(61, "DeleteWindow"),
     GET_INTERIOR_VEHICLE_DATA_CONSENT(62, "GetInteriorVehicleDataConsent"),
     RELEASE_INTERIOR_VEHICLE_MODULE(63, "ReleaseInteriorVehicleDataModule"),
+    SUBTLE_ALERT(64, "SubtleAlert"),
     // NOTIFICATIONS
     ON_HMI_STATUS(32768, "OnHMIStatus"),
     ON_APP_INTERFACE_UNREGISTERED(32769, "OnAppInterfaceUnregistered"),
@@ -131,6 +132,7 @@ public enum FunctionID{
     ON_RC_STATUS(32785, "OnRCStatus"),
     ON_APP_SERVICE_DATA(32786, "OnAppServiceData"),
     ON_SYSTEM_CAPABILITY_UPDATED(32787, "OnSystemCapabilityUpdated"),
+    ON_SUBTLE_ALERT_PRESSED(32788, "OnSubtleAlertPressed"),
 
     // MOCKED FUNCTIONS (NOT SENT FROM HEAD-UNIT)
     @Deprecated

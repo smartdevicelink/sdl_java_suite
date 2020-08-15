@@ -36,21 +36,8 @@ android {
     }
 
     sourceSets {
-        if(Os.isFamily(Os.FAMILY_WINDOWS)){
-            //The buildWindowsSymLinks task must be run first if this is
-            //being compiled on a Windows machine
-            main.java.srcDirs += '../../baseAndroid/windows/src/main/java'
-        }else{
-            main.java.srcDirs += '../../baseAndroid/src/main/java'
-        }
+        main.java.srcDirs += '../../base/src/main/java'
     }
-}
-
-task buildWindowSymLinks(type:Exec){
-
-    workingDir '../../baseAndroid'
-
-    commandLine 'cmd', '/c', 'make_symlinks.lnk'
 }
 
 dependencies {

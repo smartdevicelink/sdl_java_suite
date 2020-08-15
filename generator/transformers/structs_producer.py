@@ -105,7 +105,7 @@ class StructsProducer(InterfaceProducerCommon):
             p['since'] = param.since
         p['deprecated'] = param.deprecated
         p['origin'] = param.origin
-
+        p['values'] = self.extract_values(param)
         d = self.extract_description(param.description)
         if d:
             p['description'] = textwrap.wrap(d, 90)
