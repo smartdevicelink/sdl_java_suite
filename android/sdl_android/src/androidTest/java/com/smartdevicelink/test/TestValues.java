@@ -38,6 +38,7 @@ import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.DriverDistractionCapability;
+import com.smartdevicelink.proxy.rpc.DynamicUpdateCapabilities;
 import com.smartdevicelink.proxy.rpc.EqualizerSettings;
 import com.smartdevicelink.proxy.rpc.Grid;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
@@ -418,6 +419,7 @@ public class TestValues {
 	public static final AudioControlData               GENERAL_AUDIOCONTROLDATA               = new AudioControlData();
 	public static final LightControlData               GENERAL_LIGHTCONTROLDATA               = new LightControlData();
 	public static final HMISettingsControlData         GENERAL_HMISETTINGSCONTROLDATA         = new HMISettingsControlData();
+	public static final DynamicUpdateCapabilities	   GENERAL_DYNAMICUPDATECAPABILITIES	  = new DynamicUpdateCapabilities();
 
 	public static final VehicleDataResult              GENERAL_OEM_CUSTOM_VEHICLE_DATA        = new VehicleDataResult();
 	public static final TemplateConfiguration          GENERAL_TEMPLATE_CONFIGURATION         = new TemplateConfiguration();
@@ -574,6 +576,7 @@ public class TestValues {
 	public static final JSONArray  JSON_IMAGE_TYPES               = new JSONArray();
 	public static final JSONObject JSON_DISPLAYCAPABILITY         = new JSONObject();
 	public static final JSONArray  JSON_DISPLAYCAPABILITY_LIST    = new JSONArray();
+	public static final JSONObject JSON_DYNAMICUPDATECAPABILITIES = new JSONObject();
 	static {
 		GENERAL_TOUCHEVENTCAPABILITIES.setDoublePressAvailable(GENERAL_BOOLEAN);
 		GENERAL_TOUCHEVENTCAPABILITIES.setMultiTouchAvailable(GENERAL_BOOLEAN);
@@ -625,6 +628,9 @@ public class TestValues {
 		GENERAL_HMISETTINGSCONTROLDATA.setDistanceUnit(GENERAL_DISTANCEUNIT);
 		GENERAL_HMISETTINGSCONTROLDATA.setTemperatureUnit(GENERAL_TEMPERATUREUNIT);
 		GENERAL_HMISETTINGSCONTROLDATA.setDisplayMode(GENERAL_DISPLAYMODE);
+
+		GENERAL_DYNAMICUPDATECAPABILITIES.setSupportsDynamicSubMenus(GENERAL_BOOLEAN);
+		GENERAL_DYNAMICUPDATECAPABILITIES.setSupportedDynamicImageFieldNames(Collections.singletonList(GENERAL_IMAGEFIELDNAME));
 
 		GENERAL_LIGHTCONTROLDATA.setLightState(GENERAL_LIGHTSTATE_LIST);
 
@@ -1341,6 +1347,9 @@ public class TestValues {
 			JSON_DISPLAYCAPABILITY.put(DisplayCapability.KEY_WINDOW_TYPE_SUPPORTED, JSON_WINDOW_TYPE_CAPABILITIES_LIST);
 			JSON_DISPLAYCAPABILITY.put(DisplayCapability.KEY_WINDOW_CAPABILITIES, JSON_WINDOW_CAPABILITIES);
 			JSON_DISPLAYCAPABILITY_LIST.put(JSON_DISPLAYCAPABILITY);
+
+			JSON_DYNAMICUPDATECAPABILITIES.put(DynamicUpdateCapabilities.KEY_SUPPORTS_DYNAMIC_SUB_MENUS, GENERAL_BOOLEAN);
+			JSON_DYNAMICUPDATECAPABILITIES.put(DynamicUpdateCapabilities.KEY_SUPPORTED_DYNAMIC_IMAGE_FIELD_NAMES, JsonUtils.createJsonArray(Collections.singletonList(GENERAL_IMAGEFIELDNAME)));
 
 			JSON_TOUCHCOORD.put(TouchCoord.KEY_X, GENERAL_INT);
 			JSON_TOUCHCOORD.put(TouchCoord.KEY_Y, GENERAL_INT);
