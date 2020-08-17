@@ -76,9 +76,9 @@ class StructsProducer(InterfaceProducerCommon):
 
     def sort_imports(self, imports: set):
         sorted_imports = []
-        if 'android.support.annotation.NonNull' in imports:
-            sorted_imports.append('android.support.annotation.NonNull')
-            imports.remove('android.support.annotation.NonNull')
+        if 'androidx.annotation.NonNull' in imports:
+            sorted_imports.append('androidx.annotation.NonNull')
+            imports.remove('androidx.annotation.NonNull')
             sorted_imports.append('')
         tmp = []
         for i in imports:
@@ -124,7 +124,7 @@ class StructsProducer(InterfaceProducerCommon):
         if tr in self.struct_names:
             imports.add('{}.{}'.format(self.structs_package, tr))
         if param.is_mandatory:
-            imports.add('android.support.annotation.NonNull')
+            imports.add('androidx.annotation.NonNull')
 
         Params = namedtuple('Params', sorted(p))
         return imports, Params(**p)
