@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - {{year}}, SmartDeviceLink Consortium, Inc.
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,21 +29,17 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package {{package_name}};
-{% for i in imports %}
-{%- if i != '' %}
-import {{i}};{{ '\n' if loop.last }}
-{%- else %}
-{{''}}
-{%- endif %}
-{%- endfor %}
-{%- if description is defined or since is defined or see is defined or deprecated is defined %}
+package com.smartdevicelink.proxy.rpc;
+
+import androidx.annotation.NonNull;
+
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCNotification;
+
+import java.util.Hashtable;
+
 /**
- {%- if description is defined %}
- {%- for d in description %}
- * {{d}}
- {%- endfor %}{%- endif %}
- {%- if params is defined and ((kind is defined and kind not in ["response", "simple", "custom"]) or kind is not defined) %}
+ * This notification tells an app to upload and update a file with a given name.
  *
  * <p><b>Parameter List</b></p>
  *
@@ -53,37 +49,63 @@ import {{i}};{{ '\n' if loop.last }}
  *      <th>Type</th>
  *      <th>Description</th>
  *      <th>Required</th>
- *      <th>Notes</th>
  *      <th>Version Available</th>
  *  </tr>
- {%- for param in params %}
  *  <tr>
- *      <td>{{param.origin}}</td>
- *      <td>{{param.return_type}}</td>
- *      <td>{%- for d in param.description %}{{d}}{%- endfor %}</td>
- *      <td>{%- if param.mandatory is eq true %}Y{%- else %}N{%- endif %}</td>
- *      <td>{%- for k in param.values %}{{ '{' if loop.first}}"{{k}}": {{param.values[k]}}{{ ', ' if not loop.last else  '}'}}{%- endfor %}</td>
- *      <td>{%- if param.since is defined %}SmartDeviceLink {{param.since}}{%- endif %}</td>
+ *      <td>fileName</td>
+ *      <td>String</td>
+ *      <td>File reference name.</td>
+ *      <td>Y</td>
+ *      <td></td>
  *  </tr>
- {%- endfor %}
  * </table>
- {%- endif %}
- {%- if description is defined and (see is defined or since is defined) %}
  *
- {%- endif %}
- {%- if deprecated is not none %}
- * @deprecated
- {%- endif %}
- {%- if see is defined %}
- * @see {{see}}
- {%- endif %}
- {%- if since is defined %}
- * @since SmartDeviceLink {{since}}
- {%- endif %}
+ * @since SmartDeviceLink 7.0.0
  */
-{%- endif %}
-{%- if deprecated is not none %}
-@Deprecated
-{%- endif %}
-{%- block body %}
-{% endblock -%}
+public class OnUpdateFile extends RPCNotification {
+    public static final String KEY_FILE_NAME = "fileName";
+
+    /**
+     * Constructs a new OnUpdateFile object
+     */
+    public OnUpdateFile() {
+        super(FunctionID.ON_UPDATE_FILE.toString());
+    }
+
+    /**
+     * Constructs a new OnUpdateFile object indicated by the Hashtable parameter
+     *
+     * @param hash The Hashtable to use
+     */
+    public OnUpdateFile(Hashtable<String, Object> hash) {
+        super(hash);
+    }
+
+    /**
+     * Constructs a new OnUpdateFile object
+     *
+     * @param fileName File reference name.
+     */
+    public OnUpdateFile(@NonNull String fileName) {
+        this();
+        setFileName(fileName);
+    }
+
+    /**
+     * Sets the fileName.
+     *
+     * @param fileName File reference name.
+     */
+    public void setFileName(@NonNull String fileName) {
+        setParameters(KEY_FILE_NAME, fileName);
+    }
+
+    /**
+     * Gets the fileName.
+     *
+     * @return String File reference name.
+     */
+    public String getFileName() {
+        return getString(KEY_FILE_NAME);
+    }
+}
