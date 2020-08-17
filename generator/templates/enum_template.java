@@ -11,7 +11,11 @@ public enum {{class_name}} {
      {%- if param.description is defined and (param.since is defined or param.see is defined) %}
      *
      {%- endif %}
-     {%- if param.since is defined %}
+     {%- if param.deprecated is defined and param.deprecated is not none and param.since is defined and param.since is not none %}
+     * @deprecated in SmartDeviceLink {{param.since}}
+     {%- elif param.deprecated is defined and param.deprecated is not none %}
+     * @deprecated
+     {%- elif param.since is defined and param.since is not none %}
      * @since SmartDeviceLink {{param.since}}
      {%- endif %}
      {%- if param.see is defined %}

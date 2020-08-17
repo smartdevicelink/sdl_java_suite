@@ -5,8 +5,12 @@
     {%- for p in params %}
     {%- if p.see is defined or p.deprecated is not none %}
     /**
-     {%- if p.deprecated is not none %}
+     {%- if p.deprecated is defined and p.deprecated is not none and p.since is defined and p.since is not none %}
+     * @deprecated in SmartDeviceLink {{p.since}}
+     {%- elif p.deprecated is defined and p.deprecated is not none %}
      * @deprecated
+     {%- elif p.since is defined and p.since is not none %}
+     * @since SmartDeviceLink {{p.since}}
      {%- endif %}
      {%- if p.see is defined %}
      * @see {{p.see}}
