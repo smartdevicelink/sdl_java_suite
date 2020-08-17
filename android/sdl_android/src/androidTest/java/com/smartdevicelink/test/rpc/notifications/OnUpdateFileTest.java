@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNull;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link com.smartdevicelink.rpc.OnUpdateFile}
+ * {@link com.smartdevicelink.proxy.rpc.OnUpdateFile}
  */
 public class OnUpdateFileTest extends BaseRpcTests {
     @Override
