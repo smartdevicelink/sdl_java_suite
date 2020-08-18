@@ -50,12 +50,12 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.managers.lifecycle.BaseSystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
+import com.smartdevicelink.proxy.rpc.GenericResponse;
 import com.smartdevicelink.proxy.rpc.OnAppInterfaceUnregistered;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
@@ -210,17 +210,6 @@ abstract class BaseLifecycleManager {
                                     listener.getSingleRpcResponseListener().onResponse(correlationId, response);
                                 }
                             }
-
-                            @Override
-                            public void onError(int correlationId, Result resultCode, String info) {
-                                super.onError(correlationId, resultCode, info);
-                                if (devOnRPCResponseListener != null) {
-                                    devOnRPCResponseListener.onError(correlationId, resultCode, info);
-                                }
-                                if (listener.getSingleRpcResponseListener() != null) {
-                                    listener.getSingleRpcResponseListener().onError(correlationId, resultCode, info);
-                                }
-                            }
                         });
                     }
                     sendRPCMessagePrivate(request, false);
@@ -268,20 +257,6 @@ abstract class BaseLifecycleManager {
                             listener.onUpdate(messages.size());
                         }
                         // recurse after onResponse
-                        sendSequentialRPCs(messages, listener);
-                    }
-
-                    @Override
-                    public void onError(int correlationId, Result resultCode, String info) {
-                        if (devOnRPCResponseListener != null) {
-                            devOnRPCResponseListener.onError(correlationId, resultCode, info);
-                        }
-                        if (listener != null) {
-                            listener.onError(correlationId, resultCode, info);
-                            listener.onUpdate(messages.size());
-
-                        }
-                        // recurse after onError
                         sendSequentialRPCs(messages, listener);
                     }
                 });
@@ -561,10 +536,8 @@ abstract class BaseLifecycleManager {
             if (rpcResponseListeners != null
                     && rpcResponseListeners.containsKey(correlationId)) {
                 OnRPCResponseListener listener = rpcResponseListeners.get(correlationId);
-                if (msg.getSuccess()) {
+                if (listener != null) {
                     listener.onResponse(correlationId, msg);
-                } else {
-                    listener.onError(correlationId, msg.getResultCode(), msg.getInfo());
                 }
                 rpcResponseListeners.remove(correlationId);
                 return true;
@@ -735,7 +708,9 @@ abstract class BaseLifecycleManager {
                 // Test for illegal correlation ID
                 if (request.getCorrelationID() == REGISTER_APP_INTERFACE_CORRELATION_ID || request.getCorrelationID() == UNREGISTER_APP_INTERFACE_CORRELATION_ID || request.getCorrelationID() == PoliciesFetcher.POLICIES_CORRELATION_ID) {
                     if (listener != null) {
-                        request.getOnRPCResponseListener().onError(request.getCorrelationID(), Result.REJECTED, "Invalid correlation ID. The correlation ID, " + request.getCorrelationID() + " , is a reserved correlation ID.");
+                        GenericResponse response = new GenericResponse(false, Result.REJECTED);
+                        response.setInfo("Invalid correlation ID. The correlation ID, " + request.getCorrelationID() + " , is a reserved correlation ID.");
+                        request.getOnRPCResponseListener().onResponse(request.getCorrelationID(), response);
                     }
                     return;
                 }
@@ -743,7 +718,9 @@ abstract class BaseLifecycleManager {
                 // Prevent developer from sending RAI or UAI manually
                 if (request.getFunctionName().equals(FunctionID.REGISTER_APP_INTERFACE.toString()) || request.getFunctionName().equals(FunctionID.UNREGISTER_APP_INTERFACE.toString())) {
                     if (listener != null) {
-                        request.getOnRPCResponseListener().onError(request.getCorrelationID(), Result.REJECTED, "The RPCRequest, " + message.getFunctionName() + ", is un-allowed to be sent manually by the developer.");
+                        GenericResponse response = new GenericResponse(false, Result.REJECTED);
+                        response.setInfo("The RPCRequest, " + message.getFunctionName() + ", is un-allowed to be sent manually by the developer.");
+                        request.getOnRPCResponseListener().onResponse(request.getCorrelationID(), response);
                     }
                     return;
                 }
@@ -803,7 +780,9 @@ abstract class BaseLifecycleManager {
                     RPCRequest request = (RPCRequest) message;
                     OnRPCResponseListener listener = ((RPCRequest) message).getOnRPCResponseListener();
                     if (listener != null) {
-                        listener.onError(request.getCorrelationID(), Result.ABORTED, errorInfo);
+                        GenericResponse response = new GenericResponse(false, Result.ABORTED);
+                        response.setInfo(errorInfo);
+                        request.getOnRPCResponseListener().onResponse(request.getCorrelationID(), response);
                     }
                 }
                 DebugTool.logWarning(TAG, errorInfo);
