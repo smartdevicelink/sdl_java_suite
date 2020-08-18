@@ -122,7 +122,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		getBlankArtwork();
 		//TODO added
 		this.transactionQueue = newTransactionQueue();
-	//	this.batchQueue = new ArrayList<>();
+		//	this.batchQueue = new ArrayList<>();
 		textsAndGraphicsState = new TextsAndGraphicsState();
 	}
 
@@ -133,7 +133,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	}
 
 	@Override
-	public void dispose(){
+	public void dispose() {
 
 		textField1 = null;
 		textField1Type = null;
@@ -165,9 +165,10 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	//TODO temp location Also what do I set the ID to?
 	private Queue newTransactionQueue() {
 		Queue queue = internalInterface.getTaskmaster().createQueue("TextAndGraphicManager", 9, false);
-		//queue.pause();
+		queue.pause();
 		return queue;
 	}
+
 	//TODO fix for T&G Manager
 	// Suspend the queue if the soft button capabilities are null (we assume that soft buttons are not supported)
 	// OR if the HMI level is NONE since we want to delay sending RPCs until we're in non-NONE
@@ -189,10 +190,10 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	protected void update(CompletionListener listener) {
 
 		// make sure hmi is not none
-		if (currentHMILevel == null || currentHMILevel == HMILevel.HMI_NONE){
+		if (currentHMILevel == null || currentHMILevel == HMILevel.HMI_NONE) {
 			//Trying to send show on HMI_NONE, waiting for full
 			pendingHMIFull = true;
-			if (listener != null){
+			if (listener != null) {
 				pendingHMIListener = listener;
 			}
 			return;
@@ -203,7 +204,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			return;
 		}
 
-		if (isDirty){
+		if (isDirty) {
 			isDirty = false;
 			sdlUpdate(listener);
 		} else if (listener != null) {
@@ -211,9 +212,9 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		}
 	}
 
-	private synchronized void sdlUpdate(final CompletionListener listener){
+	private synchronized void sdlUpdate(final CompletionListener listener) {
 
-		if(transactionQueue.getTasksAsList().size() > 0) {
+		if (transactionQueue.getTasksAsList().size() > 0) {
 			//Transactions already exist, cancelling them
 			transactionQueue.clear();
 		}
@@ -244,42 +245,42 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 	//IOS has sdl_createImageOnlyShowWithPrimaryArtwork
 
-	private void updateCurrentScreenDataState(Show show){
+	private void updateCurrentScreenDataState(Show show) {
 
-		if (show == null){
+		if (show == null) {
 			DebugTool.logError(TAG, "can not updateCurrentScreenDataFromShow from null show");
 			return;
 		}
 
 		// If the items are null, they were not updated, so we can't just set it directly
-		if (show.getMainField1() != null){
+		if (show.getMainField1() != null) {
 			currentScreenData.setMainField1(show.getMainField1());
 		}
-		if (show.getMainField2() != null){
+		if (show.getMainField2() != null) {
 			currentScreenData.setMainField2(show.getMainField2());
 		}
-		if (show.getMainField3() != null){
+		if (show.getMainField3() != null) {
 			currentScreenData.setMainField3(show.getMainField3());
 		}
-		if (show.getMainField4() != null){
+		if (show.getMainField4() != null) {
 			currentScreenData.setMainField4(show.getMainField4());
 		}
-		if (show.getTemplateTitle() != null){
+		if (show.getTemplateTitle() != null) {
 			currentScreenData.setTemplateTitle(show.getTemplateTitle());
 		}
-		if (show.getMediaTrack() != null){
+		if (show.getMediaTrack() != null) {
 			currentScreenData.setMediaTrack(show.getMediaTrack());
 		}
-		if (show.getMetadataTags() != null){
+		if (show.getMetadataTags() != null) {
 			currentScreenData.setMetadataTags(show.getMetadataTags());
 		}
-		if (show.getAlignment() != null){
+		if (show.getAlignment() != null) {
 			currentScreenData.setAlignment(show.getAlignment());
 		}
-		if (show.getGraphic() != null){
+		if (show.getGraphic() != null) {
 			currentScreenData.setGraphic(show.getGraphic());
 		}
-		if (show.getSecondaryGraphic() != null){
+		if (show.getSecondaryGraphic() != null) {
 			currentScreenData.setSecondaryGraphic(show.getSecondaryGraphic());
 		}
 	}
@@ -295,177 +296,177 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 	// Getters / Setters
 
-	void setTextAlignment(TextAlignment textAlignment){
+	void setTextAlignment(TextAlignment textAlignment) {
 		this.textAlignment = textAlignment;
 		// If we aren't batching, send the update immediately, if we are, set ourselves as dirty (so we know we should send an update after the batch ends)
-		if (!batchingUpdates){
+		if (!batchingUpdates) {
 			sdlUpdate(null);
-		}else{
+		} else {
 			isDirty = true;
 		}
 	}
 
-	TextAlignment getTextAlignment(){
+	TextAlignment getTextAlignment() {
 		return textAlignment;
 	}
 
-	void setMediaTrackTextField(String mediaTrackTextField){
+	void setMediaTrackTextField(String mediaTrackTextField) {
 		this.mediaTrackTextField = mediaTrackTextField;
-		if (!batchingUpdates){
+		if (!batchingUpdates) {
 			sdlUpdate(null);
-		}else{
+		} else {
 			isDirty = true;
 		}
 	}
 
-	String getMediaTrackTextField(){
+	String getMediaTrackTextField() {
 		return mediaTrackTextField;
 	}
 
-	void setTextField1(String textField1){
+	void setTextField1(String textField1) {
 		this.textField1 = textField1;
-		if (!batchingUpdates){
+		if (!batchingUpdates) {
 			sdlUpdate(null);
-		}else{
+		} else {
 			isDirty = true;
 		}
 	}
 
-	String getTextField1(){
+	String getTextField1() {
 		return textField1;
 	}
 
-	void setTextField2(String textField2){
+	void setTextField2(String textField2) {
 		this.textField2 = textField2;
-		if (!batchingUpdates){
+		if (!batchingUpdates) {
 			sdlUpdate(null);
-		}else{
+		} else {
 			isDirty = true;
 		}
 	}
 
-	String getTextField2(){
+	String getTextField2() {
 		return textField2;
 	}
 
-	void setTextField3(String textField3){
+	void setTextField3(String textField3) {
 		this.textField3 = textField3;
-		if (!batchingUpdates){
+		if (!batchingUpdates) {
 			sdlUpdate(null);
-		}else{
+		} else {
 			isDirty = true;
 		}
 	}
 
-	String getTextField3(){
+	String getTextField3() {
 		return textField3;
 	}
 
-	void setTextField4(String textField4){
+	void setTextField4(String textField4) {
 		this.textField4 = textField4;
-		if (!batchingUpdates){
+		if (!batchingUpdates) {
 			sdlUpdate(null);
-		}else{
+		} else {
 			isDirty = true;
 		}
 	}
 
-	String getTextField4(){
+	String getTextField4() {
 		return textField4;
 	}
 
-	void setTextField1Type(MetadataType textField1Type){
+	void setTextField1Type(MetadataType textField1Type) {
 		this.textField1Type = textField1Type;
-		if (!batchingUpdates){
+		if (!batchingUpdates) {
 			sdlUpdate(null);
-		}else{
+		} else {
 			isDirty = true;
 		}
 	}
 
-	MetadataType getTextField1Type(){
+	MetadataType getTextField1Type() {
 		return textField1Type;
 	}
 
-	void setTextField2Type(MetadataType textField2Type){
+	void setTextField2Type(MetadataType textField2Type) {
 		this.textField2Type = textField2Type;
-		if (!batchingUpdates){
+		if (!batchingUpdates) {
 			sdlUpdate(null);
-		}else{
+		} else {
 			isDirty = true;
 		}
 	}
 
-	MetadataType getTextField2Type(){
+	MetadataType getTextField2Type() {
 		return textField2Type;
 	}
 
-	void setTextField3Type(MetadataType textField3Type){
+	void setTextField3Type(MetadataType textField3Type) {
 		this.textField3Type = textField3Type;
-		if (!batchingUpdates){
+		if (!batchingUpdates) {
 			sdlUpdate(null);
-		}else{
+		} else {
 			isDirty = true;
 		}
 	}
 
-	MetadataType getTextField3Type(){
+	MetadataType getTextField3Type() {
 		return textField3Type;
 	}
 
-	void setTextField4Type(MetadataType textField4Type){
+	void setTextField4Type(MetadataType textField4Type) {
 		this.textField4Type = textField4Type;
-		if (!batchingUpdates){
+		if (!batchingUpdates) {
 			sdlUpdate(null);
-		}else{
+		} else {
 			isDirty = true;
 		}
 	}
 
-	MetadataType getTextField4Type(){
+	MetadataType getTextField4Type() {
 		return textField4Type;
 	}
 
-	void setTitle(String title){
+	void setTitle(String title) {
 		this.title = title;
-		if (!batchingUpdates){
+		if (!batchingUpdates) {
 			sdlUpdate(null);
-		}else{
+		} else {
 			isDirty = true;
 		}
 	}
 
-	String getTitle(){
+	String getTitle() {
 		return title;
 	}
 
-	void setPrimaryGraphic(SdlArtwork primaryGraphic){
+	void setPrimaryGraphic(SdlArtwork primaryGraphic) {
 		this.primaryGraphic = primaryGraphic;
-		if (!batchingUpdates){
+		if (!batchingUpdates) {
 			sdlUpdate(null);
-		}else{
+		} else {
 			isDirty = true;
 		}
 	}
 
-	SdlArtwork getPrimaryGraphic(){
+	SdlArtwork getPrimaryGraphic() {
 		return primaryGraphic;
 	}
 
-	void setSecondaryGraphic(SdlArtwork secondaryGraphic){
+	void setSecondaryGraphic(SdlArtwork secondaryGraphic) {
 		this.secondaryGraphic = secondaryGraphic;
-		if (!batchingUpdates){
+		if (!batchingUpdates) {
 			sdlUpdate(null);
-		}else{
+		} else {
 			isDirty = true;
 		}
 	}
 
-	SdlArtwork getSecondaryGraphic(){
+	SdlArtwork getSecondaryGraphic() {
 		return secondaryGraphic;
 	}
 
-	void setBatchUpdates(boolean batching){
+	void setBatchUpdates(boolean batching) {
 		this.batchingUpdates = batching;
 	}
 
@@ -474,14 +475,15 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		hmiListener = new OnRPCNotificationListener() {
 			@Override
 			public void onNotified(RPCNotification notification) {
-				OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
+				OnHMIStatus onHMIStatus = (OnHMIStatus) notification;
 				if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
 					return;
 				}
-			//	updateTransactionQueueSuspended();
+
 				currentHMILevel = onHMIStatus.getHmiLevel();
-				if (currentHMILevel == HMILevel.HMI_FULL){
-					if (pendingHMIFull){
+				updateTransactionQueueSuspended();
+				if (currentHMILevel == HMILevel.HMI_FULL) {
+					if (pendingHMIFull) {
 						DebugTool.logInfo(TAG, "Acquired HMI_FULL with pending update. Sending now");
 						pendingHMIFull = false;
 						sdlUpdate(pendingHMIListener);
@@ -500,7 +502,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				List<DisplayCapability> capabilities = SystemCapabilityManager.convertToList(capability, DisplayCapability.class);
 				if (capabilities == null || capabilities.size() == 0) {
 					DebugTool.logError(TAG, "TextAndGraphic Manager - Capabilities sent here are null or empty");
-				}else {
+				} else {
 					DisplayCapability display = capabilities.get(0);
 					for (WindowCapability windowCapability : display.getWindowCapabilities()) {
 						int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
