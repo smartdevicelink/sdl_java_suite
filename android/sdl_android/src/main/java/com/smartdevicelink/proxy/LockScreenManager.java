@@ -33,7 +33,6 @@ package com.smartdevicelink.proxy;
 
 import android.graphics.Bitmap;
 
-import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 import com.smartdevicelink.util.AndroidTools;
@@ -84,17 +83,17 @@ public class LockScreenManager {
 		}
 	}
 	
-	public synchronized OnLockScreenStatus getLockObj(/*int SessionID*/)
-	{
-		//int iSessionID = SessionID;
-		OnLockScreenStatus myLock = new OnLockScreenStatus();
-		myLock.setDriverDistractionStatus(bDriverDistStatus);
-		myLock.setHMILevel(hmiLevel);
-		myLock.setUserSelected(bUserSelected);
-		myLock.setShowLockScreen(getLockScreenStatus());
-		
-		return myLock;
-	}
+//	public synchronized OnLockScreenStatus getLockObj(/*int SessionID*/)
+//	{
+//		//int iSessionID = SessionID;
+//		OnLockScreenStatus myLock = new OnLockScreenStatus();
+//		myLock.setDriverDistractionStatus(bDriverDistStatus);
+//		myLock.setHMILevel(hmiLevel);
+//		myLock.setUserSelected(bUserSelected);
+//		myLock.setShowLockScreen(getLockScreenStatus());
+//
+//		return myLock;
+//	}
 	
 	private synchronized LockScreenStatus getLockScreenStatus() 
 	{

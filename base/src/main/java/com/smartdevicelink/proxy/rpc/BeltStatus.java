@@ -160,7 +160,6 @@ public class BeltStatus extends RPCStruct {
     public static final String KEY_LEFT_ROW_3_BUCKLE_BELTED = "leftRow3BuckleBelted";
 
     public static final String KEY_RIGHT_ROW_3_BUCKLE_BELTED = "rightRow3BuckleBelted";
-    @Deprecated public static final String KEY_REAR_INFLATABLE_BELTED = "rearInflatableBelted";
     public static final String KEY_LEFT_REAR_INFLATABLE_BELTED = "leftRearInflatableBelted";
     public static final String KEY_RIGHT_REAR_INFLATABLE_BELTED = "rightRearInflatableBelted";
     public static final String KEY_MIDDLE_ROW_1_BELT_DEPLOYED = "middleRow1BeltDeployed";
