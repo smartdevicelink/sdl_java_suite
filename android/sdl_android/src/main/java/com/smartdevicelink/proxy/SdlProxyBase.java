@@ -40,7 +40,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
-import androidx.annotation.NonNull;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.SparseArray;
@@ -48,6 +47,8 @@ import android.view.Display;
 import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.Surface;
+
+import androidx.annotation.NonNull;
 
 import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.BuildConfig;
@@ -58,7 +59,6 @@ import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
-//import com.smartdevicelink.managers.video.HapticInterfaceManager;
 import com.smartdevicelink.managers.ServiceEncryptionListener;
 import com.smartdevicelink.managers.lifecycle.RpcConverter;
 import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
@@ -67,7 +67,6 @@ import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.protocol.heartbeat.HeartbeatMonitor;
 import com.smartdevicelink.proxy.LockScreenManager.OnLockScreenIconDownloadedListener;
 import com.smartdevicelink.proxy.callbacks.InternalProxyMessage;
 import com.smartdevicelink.proxy.callbacks.OnError;
@@ -158,6 +157,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.ScheduledExecutorService;
+
+//import com.smartdevicelink.managers.video.HapticInterfaceManager;
 
 
 /**
@@ -2143,7 +2144,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					RPCRequest request = (RPCRequest) message;
 					OnRPCResponseListener listener = ((RPCRequest) message).getOnRPCResponseListener();
 					if (listener != null) {
-						listener.onError(request.getCorrelationID(), Result.ABORTED,  errorInfo);
+						GenericResponse response = new GenericResponse(false, Result.REJECTED);
+						response.setInfo(errorInfo);
+						listener.onResponse(request.getCorrelationID(), response);
 					}
 				}
 				DebugTool.logWarning(TAG, errorInfo);
@@ -2235,11 +2238,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			if(rpcResponseListeners !=null 
 					&& rpcResponseListeners.indexOfKey(correlationId)>=0){
 				OnRPCResponseListener listener = rpcResponseListeners.get(correlationId);
-				if(msg.getSuccess()){
-					listener.onResponse(correlationId, msg);
-				}else{
-					listener.onError(correlationId, msg.getResultCode(), msg.getInfo());
-				}
+				listener.onResponse(correlationId, msg);
 				rpcResponseListeners.remove(correlationId);
 				return true;
 			}
@@ -4516,27 +4515,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					} catch (SdlException e) {
 						e.printStackTrace();
 						if (listener != null) {
-							listener.onError(correlationId, Result.GENERIC_ERROR, e.toString());
-						}
-					}
-				}
-
-				@Override
-				public void onError(int correlationId, Result resultCode, String info) {
-					if (devOnRPCResponseListener != null){
-						devOnRPCResponseListener.onError(correlationId, resultCode, info);
-					}
-					if (listener != null) {
-						listener.onError(correlationId, resultCode, info);
-						listener.onUpdate(rpcs.size());
-					}
-					try {
-						// recurse after onError
-						sendSequentialRequests(rpcs, listener);
-					} catch (SdlException e) {
-						e.printStackTrace();
-						if (listener != null) {
-							listener.onError(correlationId, Result.GENERIC_ERROR, e.toString());
+							GenericResponse genericResponse = new GenericResponse(false, Result.GENERIC_ERROR);
+							genericResponse.setInfo(e.toString());
+							listener.onResponse(correlationId, genericResponse);
 						}
 					}
 				}
@@ -4554,7 +4535,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} catch (SdlException e) {
 				e.printStackTrace();
 				if (listener != null) {
-					listener.onError(0, Result.GENERIC_ERROR, e.toString());
+					GenericResponse response = new GenericResponse(false, Result.REJECTED);
+					response.setInfo(e.toString());
+					listener.onResponse(0, response);
 				}
 			}
 		}
@@ -4616,17 +4599,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 							}
 							if (listener.getSingleRpcResponseListener() != null) {
 								listener.getSingleRpcResponseListener().onResponse(correlationId, response);
-							}
-						}
-
-						@Override
-						public void onError(int correlationId, Result resultCode, String info) {
-							super.onError(correlationId, resultCode, info);
-							if (devOnRPCResponseListener != null){
-								devOnRPCResponseListener.onError(correlationId, resultCode, info);
-							}
-							if (listener.getSingleRpcResponseListener() != null) {
-								listener.getSingleRpcResponseListener().onError(correlationId, resultCode, info);
 							}
 						}
 					});
