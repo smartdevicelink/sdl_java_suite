@@ -206,11 +206,6 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 			}
 
 			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-
-			}
-
-			@Override
 			public void onResponse(int correlationId, RPCResponse response) {}
 		});
 
@@ -242,11 +237,6 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 					listener.onComplete(true);
 				}
 				oldVoiceCommands = voiceCommands;
-			}
-
-			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-
 			}
 
 			@Override
