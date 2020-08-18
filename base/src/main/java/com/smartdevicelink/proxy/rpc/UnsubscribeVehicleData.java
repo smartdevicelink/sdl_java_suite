@@ -532,7 +532,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
      * Gets the prndl.
      *
      * @return Boolean See PRNDL. This parameter is deprecated since SmartDeviceLink 7.0.0 and it is now covered in `gearStatus`
-     * @since SmartDeviceLink 7.0.0
+     * @deprecated in SmartDeviceLink 7.0.0
      */
     @Deprecated
     public Boolean getPrndl() {
