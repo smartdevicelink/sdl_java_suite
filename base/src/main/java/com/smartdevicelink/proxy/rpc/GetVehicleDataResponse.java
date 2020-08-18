@@ -185,7 +185,7 @@ public class GetVehicleDataResponse extends RPCResponse {
      * Gets the prndl.
      *
      * @return PRNDL See PRNDL. This parameter is deprecated and it is now covered in `gearStatus`
-     * @since SmartDeviceLink 7.0.0
+     * @deprecated in SmartDeviceLink 7.0.0
      */
     @Deprecated
     public PRNDL getPrndl() {
