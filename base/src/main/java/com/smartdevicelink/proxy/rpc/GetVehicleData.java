@@ -348,14 +348,6 @@ public class GetVehicleData extends RPCRequest {
     public Boolean getFuelLevel() {
         return getBoolean(KEY_FUEL_LEVEL);
     }
-    @Deprecated
-    public void setFuelLevel_State(Boolean fuelLevel_State) {
-        setFuelLevelState(fuelLevel_State);
-    }
-    @Deprecated
-    public Boolean getFuelLevel_State() {
-        return getFuelLevelState();
-    }
     public void setFuelLevelState(Boolean fuelLevelState) {
         setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
     }

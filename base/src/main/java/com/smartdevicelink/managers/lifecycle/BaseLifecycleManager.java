@@ -1204,7 +1204,7 @@ abstract class BaseLifecycleManager {
                     } else if (notification instanceof OnButtonPress) {
                         OnButtonPress onButtonPress = new OnButtonPress();
                         onButtonPress.setButtonPressMode(((OnButtonPress) notification).getButtonPressMode());
-                        onButtonPress.setCustomButtonName(((OnButtonPress) notification).getCustomButtonName());
+                        onButtonPress.setCustomButtonID(((OnButtonPress) notification).getCustomButtonID());
                         notification2 = onButtonPress;
                     } else {
                         return null;

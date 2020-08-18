@@ -62,21 +62,6 @@ public class ListFilesResponse extends RPCResponse {
     }
 
     /**
-     * @deprecated use {@link ListFilesResponse#ListFilesResponse(Boolean, Result)} instead <br>
-     *
-     * Constructs a new ListFilesResponse object
-     * @param success whether the request is successfully processed
-     * @param resultCode whether the request is successfully processed
-     */
-    @Deprecated
-    public ListFilesResponse(@NonNull Boolean success, @NonNull Result resultCode, @NonNull Integer spaceAvailable) {
-        this();
-        setSuccess(success);
-        setResultCode(resultCode);
-        setSpaceAvailable(spaceAvailable);
-    }
-
-    /**
      * Constructs a new ListFilesResponse object
      * @param success whether the request is successfully processed
      * @param resultCode whether the request is successfully processed

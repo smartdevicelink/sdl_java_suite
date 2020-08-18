@@ -108,8 +108,6 @@ public class DeviceInfo extends RPCStruct{
     public static final String KEY_OS_VERSION = "osVersion";
     public static final String KEY_CARRIER = "carrier";
     public static final String KEY_MAX_NUMBER_RFCOMM_PORTS = "maxNumberRFCOMMPorts";
-    @Deprecated
-    public static final String DEVICE_OS = "Android";
 
     public DeviceInfo() { }
 
