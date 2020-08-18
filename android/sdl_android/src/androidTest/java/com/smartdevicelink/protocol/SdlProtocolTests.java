@@ -1,9 +1,8 @@
 package com.smartdevicelink.protocol;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import android.util.Log;
 
-import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
@@ -11,7 +10,7 @@ import com.smartdevicelink.test.SampleRpc;
 import com.smartdevicelink.test.SdlUnitTestContants;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
-import com.smartdevicelink.transport.RouterServiceValidator;
+import com.smartdevicelink.util.Version;
 
 import junit.framework.Assert;
 
@@ -21,15 +20,13 @@ import org.junit.runner.RunWith;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Method;
-import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.mock;
-import static android.support.test.InstrumentationRegistry.getContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 @RunWith(AndroidJUnit4.class)
 public class SdlProtocolTests {
@@ -50,8 +47,7 @@ public class SdlProtocolTests {
         public boolean didReceive(){
             return didReceive;
         }
-        @Override
-        public void onProtocolMessageBytesToSend(SdlPacket packet) {}
+
         @Override
         public void onProtocolMessageReceived(ProtocolMessage msg) {
             didReceive = true;
@@ -59,42 +55,62 @@ public class SdlProtocolTests {
             Log.d("DidReceiveListener", "Function Id: " + msg.getFunctionID());
             Log.d("DidReceiveListener", "JSON Size: " + msg.getJsonSize());
         }
+
         @Override
-        public void onProtocolSessionStarted(SessionType sessionType,byte sessionID, byte version, String correlationID, int hashID,boolean isEncrypted){}
+        public void onServiceStarted(SdlPacket packet, SessionType serviceType, int sessionID, Version version, boolean isEncrypted) {
+
+        }
+
         @Override
-        public void onProtocolSessionNACKed(SessionType sessionType,byte sessionID, byte version, String correlationID, List<String> rejectedParams) {}
+        public void onServiceEnded(SdlPacket packet, SessionType serviceType, int sessionID) {
+
+        }
+
         @Override
-        public void onProtocolSessionEnded(SessionType sessionType,byte sessionID, String correlationID) {}
+        public void onServiceError(SdlPacket packet, SessionType serviceType, int sessionID, String error) {
+
+        }
+
         @Override
-        public void onProtocolSessionEndedNACKed(SessionType sessionType,byte sessionID, String correlationID) {}
+        public void onProtocolError(String info, Exception e) {
+
+        }
+
         @Override
-        public void onProtocolHeartbeat(SessionType sessionType, byte sessionID) {}
+        public int getSessionId() {
+            return 0;
+        }
+
         @Override
-        public void onProtocolHeartbeatACK(SessionType sessionType,byte sessionID) {}
+        public void shutdown(String info) {
+
+        }
+
         @Override
-        public void onProtocolServiceDataACK(SessionType sessionType,int dataSize, byte sessionID) {}
+        public void onTransportDisconnected(String info, boolean altTransportAvailable, BaseTransportConfig transportConfig) {
+
+        }
+
         @Override
-        public void onResetOutgoingHeartbeat(SessionType sessionType,byte sessionID) {}
+        public SdlSecurityBase getSdlSecurity() {
+            return null;
+        }
+
         @Override
-        public void onResetIncomingHeartbeat(SessionType sessionType,byte sessionID) {}
+        public VideoStreamingParameters getDesiredVideoParams() {
+            return null;
+        }
+
         @Override
-        public void onProtocolError(String info, Exception e) {}
+        public void setAcceptedVideoParams(VideoStreamingParameters acceptedVideoParams) {
+
+        }
+
         @Override
-        public byte getSessionId() {return 0;}
-        @Override
-        public void shutdown(String info) {}
-        @Override
-        public void onTransportDisconnected(String info, boolean altTransportAvailable, BaseTransportConfig transportConfig) {}
-        @Override
-        public SdlSecurityBase getSdlSecurity() {return null;}
-        @Override
-        public VideoStreamingParameters getDesiredVideoParams() {return null; }
-        @Override
-        public void setAcceptedVideoParams(VideoStreamingParameters acceptedVideoParams) {}
-        @Override
-        public void stopStream(SessionType serviceType) {}
-        @Override
-        public void onAuthTokenReceived(String token){}
+        public void onAuthTokenReceived(String authToken) {
+
+        }
+
     };
 
     DidReceiveListener onProtocolMessageReceivedListener = new DidReceiveListener();
@@ -102,7 +118,7 @@ public class SdlProtocolTests {
 
     @Before
     public void setUp(){
-        config = new MultiplexTransportConfig(getContext(), SdlUnitTestContants.TEST_APP_ID);
+        config = new MultiplexTransportConfig(getInstrumentation().getContext(), SdlUnitTestContants.TEST_APP_ID);
         protocol = new SdlProtocol(defaultListener,config);
     }
 
@@ -357,37 +373,4 @@ public class SdlProtocolTests {
 
     }
 
-    protected class SdlConnectionTestClass extends SdlConnection {
-        protected boolean connected = false;
-        public SdlConnectionTestClass(BaseTransportConfig transportConfig) {
-            super(transportConfig);
-        }
-
-        protected SdlConnectionTestClass(BaseTransportConfig transportConfig,RouterServiceValidator rsvp){
-            super(transportConfig,rsvp);
-        }
-
-        @Override
-        public void onTransportConnected() {
-            super.onTransportConnected();
-            connected = true;
-        }
-
-        @Override
-        public void onTransportDisconnected(String info) {
-            connected = false;
-            //Grab a currently running router service
-            RouterServiceValidator rsvp2 = new RouterServiceValidator(getContext());
-            rsvp2.setFlags(RouterServiceValidator.FLAG_DEBUG_NONE);
-            assertTrue(rsvp2.validate());
-            assertNotNull(rsvp2.getService());
-            super.onTransportDisconnected(info);
-        }
-
-        @Override
-        public void onTransportError(String info, Exception e) {
-            connected = false;
-            super.onTransportError(info, e);
-        }
-    }
 }

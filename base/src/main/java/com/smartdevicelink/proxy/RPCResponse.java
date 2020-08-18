@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.rpc.enums.Result;
 

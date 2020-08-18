@@ -1,8 +1,8 @@
 package com.sdl.hellosdlandroid;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;

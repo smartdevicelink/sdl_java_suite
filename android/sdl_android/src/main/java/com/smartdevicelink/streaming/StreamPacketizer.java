@@ -31,7 +31,6 @@
  */
 package com.smartdevicelink.streaming;
 
-import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -66,7 +65,6 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 	// a limit of the buffer size, we avoid buffer overflows when underlying transport is too slow.
 	private static final int MAX_QUEUE_SIZE = 256 * 1024;
 
-	public SdlConnection sdlConnection = null;	//TODO remove completely
     private Object mPauseLock;
     private boolean mPaused;
     private boolean isServiceProtected = false;
@@ -185,13 +183,7 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 		}
 		finally
 		{
-			if(_session == null) {
-				if (sdlConnection != null) {
-					sdlConnection.endService(_serviceType, _rpcSessionID);
-				}
-			}else{
-				_session.endService(_serviceType,_rpcSessionID);
-			}
+			_session.endService(_serviceType);
 		}
 	}
 

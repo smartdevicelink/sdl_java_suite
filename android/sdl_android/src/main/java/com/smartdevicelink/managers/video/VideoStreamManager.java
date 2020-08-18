@@ -43,7 +43,6 @@ import android.view.MotionEvent;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.encoder.VirtualDisplayEncoder;
-import com.smartdevicelink.haptic.HapticInterfaceManager;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.StreamingStateMachine;

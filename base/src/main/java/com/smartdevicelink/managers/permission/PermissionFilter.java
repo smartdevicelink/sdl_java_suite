@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.managers.permission;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.List;
 import java.util.UUID;

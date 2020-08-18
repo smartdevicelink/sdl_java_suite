@@ -4,7 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Looper;
-import android.support.test.InstrumentationRegistry;
+import androidx.test.platform.app.InstrumentationRegistry;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.widget.RelativeLayout;
@@ -37,7 +37,7 @@ public class SdlRemoteDisplayTest extends TestCase {
         assertNotNull(encoder);
 
 
-        SdlRemoteDisplay.Creator creator = new SdlRemoteDisplay.Creator(InstrumentationRegistry.getContext(), encoder.getDisplay(), null, MockRemoteDisplay.class, rdCallback);
+        SdlRemoteDisplay.Creator creator = new SdlRemoteDisplay.Creator(InstrumentationRegistry.getInstrumentation().getContext(), encoder.getDisplay(), null, MockRemoteDisplay.class, rdCallback);
         assertNotNull(creator);
         FutureTask<Boolean> fTask = new FutureTask<Boolean>(creator);
         Thread showPresentation = new Thread(fTask);
@@ -48,7 +48,7 @@ public class SdlRemoteDisplayTest extends TestCase {
     public void testConstructor(){
         VirtualDisplayEncoder encoder = createVDE();
         assertNotNull(encoder);
-        MockRemoteDisplay remoteDisplay = new MockRemoteDisplay(InstrumentationRegistry.getContext(), encoder.getDisplay());
+        MockRemoteDisplay remoteDisplay = new MockRemoteDisplay(InstrumentationRegistry.getInstrumentation().getContext(), encoder.getDisplay());
         assertNotNull(remoteDisplay);
 
         encoder.shutDown(false);
@@ -59,7 +59,7 @@ public class SdlRemoteDisplayTest extends TestCase {
     public void testTouchEvents(){
         VirtualDisplayEncoder encoder = createVDE();
         assertNotNull(encoder);
-        MockRemoteDisplay remoteDisplay = new MockRemoteDisplay(InstrumentationRegistry.getContext(), encoder.getDisplay());
+        MockRemoteDisplay remoteDisplay = new MockRemoteDisplay(InstrumentationRegistry.getInstrumentation().getContext(), encoder.getDisplay());
         assertNotNull(remoteDisplay);
         remoteDisplay.show();
 
@@ -79,7 +79,7 @@ public class SdlRemoteDisplayTest extends TestCase {
     public VirtualDisplayEncoder createVDE(){
         try{
             VirtualDisplayEncoder displayEncoder = new VirtualDisplayEncoder();
-            displayEncoder.init(InstrumentationRegistry.getContext(), new MockVideoStreamListener(), new VideoStreamingParameters());
+            displayEncoder.init(InstrumentationRegistry.getInstrumentation().getContext(), new MockVideoStreamListener(), new VideoStreamingParameters());
             displayEncoder.start();
             return displayEncoder;
         }catch (Exception e ){

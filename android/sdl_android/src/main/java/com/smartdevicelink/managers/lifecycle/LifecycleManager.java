@@ -34,10 +34,9 @@ package com.smartdevicelink.managers.lifecycle;
 
 import android.app.Service;
 import android.content.Context;
-import android.support.annotation.RestrictTo;
+import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
-import com.smartdevicelink.SdlConnection.SdlSession2;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -95,11 +94,11 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
 
         if (_transportConfig != null && _transportConfig.getTransportType().equals(TransportType.MULTIPLEX)) {
-            this.session = new SdlSession2(sdlConnectionListener, (MultiplexTransportConfig) _transportConfig);
+            this.session = new SdlSession(sdlSessionListener, (MultiplexTransportConfig) _transportConfig);
         } else if (_transportConfig != null && _transportConfig.getTransportType().equals(TransportType.TCP)) {
-            this.session = new SdlSession2(sdlConnectionListener, (TCPTransportConfig) _transportConfig);
+            this.session = new SdlSession(sdlSessionListener, (TCPTransportConfig) _transportConfig);
         } else {
-            this.session = SdlSession.createSession((byte) getProtocolVersion().getMajor(), sdlConnectionListener, _transportConfig);
+            DebugTool.logError(TAG,"Unable to create session for transport type");
         }
     }
 
@@ -143,15 +142,6 @@ public class LifecycleManager extends BaseLifecycleManager {
     }
 
     @Override
-    void onServiceStarted(SessionType sessionType) {
-        super.onServiceStarted(sessionType);
-        if (sessionType.eq(SessionType.NAV)) {
-            videoServiceStartResponseReceived = true;
-            videoServiceStartResponse = true;
-        }
-    }
-
-    @Override
     void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
         super.onTransportDisconnected(info, availablePrimary, transportConfig);
         if (availablePrimary) {
@@ -160,15 +150,6 @@ public class LifecycleManager extends BaseLifecycleManager {
             cycle(SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST);
         } else {
             onClose(info, null, null);
-        }
-    }
-
-    @Override
-    void onStartServiceNACKed(SessionType sessionType) {
-        super.onStartServiceNACKed(sessionType);
-        if (sessionType.eq(SessionType.NAV)) {
-            videoServiceStartResponseReceived = true;
-            videoServiceStartResponse = false;
         }
     }
 
@@ -229,7 +210,7 @@ public class LifecycleManager extends BaseLifecycleManager {
             videoStreamEnded = false;
 
             addVideoServiceListener();
-            session.startService(SessionType.NAV, session.getSessionId(), isEncrypted);
+            session.startService(SessionType.NAV, isEncrypted);
 
         }
     }
@@ -293,7 +274,7 @@ public class LifecycleManager extends BaseLifecycleManager {
             DebugTool.logWarning(TAG, "Connection is not available.");
             return;
         }
-        session.startService(SessionType.PCM, session.getSessionId(), isEncrypted);
+        session.startService(SessionType.PCM, isEncrypted);
     }
 
     /**

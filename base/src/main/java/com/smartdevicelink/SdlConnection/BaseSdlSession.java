@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Livio, Inc.
+ * Copyright (c) 2020 Livio, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,13 +32,14 @@
 
 package com.smartdevicelink.SdlConnection;
 
-
 import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.managers.lifecycle.RpcConverter;
 import com.smartdevicelink.protocol.ISdlProtocol;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.SdlPacket;
+import com.smartdevicelink.protocol.SdlProtocolBase;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.protocol.SdlProtocol;
+import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
@@ -55,31 +56,32 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecurityInitializedListener {
+public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializedListener {
 
     private static final String TAG = "SdlSession";
 
-    final protected SdlProtocol sdlProtocol;
+    final protected SdlProtocolBase sdlProtocol;
 
     protected BaseTransportConfig transportConfig;
-    protected ISdlConnectionListener sessionListener;
-	protected SdlSecurityBase sdlSecurity = null;
-	protected VideoStreamingParameters desiredVideoParams = null;
-	protected VideoStreamingParameters acceptedVideoParams = null;
+    protected ISdlSessionListener sessionListener;
+    protected SdlSecurityBase sdlSecurity = null;
+    protected VideoStreamingParameters desiredVideoParams = null;
+    protected VideoStreamingParameters acceptedVideoParams = null;
 
-	protected byte sessionId;
-	protected int sessionHashId = 0;
-	protected HashMap<SessionType, CopyOnWriteArrayList<ISdlServiceListener>> serviceListeners;
-	protected CopyOnWriteArrayList<SessionType> encryptedServices = new CopyOnWriteArrayList<SessionType>();
+    protected int sessionId = -1;
+    protected HashMap<SessionType, CopyOnWriteArrayList<ISdlServiceListener>> serviceListeners;
+    protected CopyOnWriteArrayList<SessionType> encryptedServices = new CopyOnWriteArrayList<SessionType>();
 
+    boolean sdlSecurityInitializing = false;
 
-    public SdlSession(ISdlConnectionListener listener, BaseTransportConfig config){
+    public BaseSdlSession(ISdlSessionListener listener, BaseTransportConfig config){
         this.transportConfig = config;
         this.sessionListener = listener;
-        this.sdlProtocol = new SdlProtocol(this,config);
+        this.sdlProtocol = getSdlProtocolImplementation();
 
     }
 
+    protected abstract SdlProtocolBase getSdlProtocolImplementation();
 
     public int getMtu(){
         if(this.sdlProtocol!=null){
@@ -104,30 +106,34 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecuri
             sdlSecurity.shutDown();
         }
         if(sdlProtocol != null){
-            sdlProtocol.endSession(sessionId, sessionHashId);
+            sdlProtocol.endSession((byte)sessionId);
         }
     }
 
 
-    public void startService (SessionType serviceType, byte sessionID, boolean isEncrypted) {
+    public void startService (SessionType serviceType, boolean isEncrypted) {
         if (isEncrypted){
             if (sdlSecurity != null){
                 List<SessionType> serviceList = sdlSecurity.getServiceList();
-                if (!serviceList.contains(serviceType))
+                if (!serviceList.contains(serviceType)) {
                     serviceList.add(serviceType);
+                }
 
-                sdlSecurity.initialize();
+                if (!sdlSecurityInitializing) {
+                    sdlSecurityInitializing = true;
+                    sdlSecurity.initialize();
+                    return;
+                }
             }
-            return;
         }
-        sdlProtocol.startService(serviceType, sessionID, isEncrypted);
+        sdlProtocol.startService(serviceType, (byte)this.sessionId, isEncrypted);
     }
 
-    public void endService (SessionType serviceType, byte sessionID) {
+    public void endService (SessionType serviceType) {
         if (sdlProtocol == null) {
             return;
         }
-        sdlProtocol.endService(serviceType,sessionID);
+        sdlProtocol.endService(serviceType, (byte)this.sessionId);
     }
 
 
@@ -151,18 +157,6 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecuri
         return sdlProtocol != null && sdlProtocol.isConnected();
     }
 
-
-    public void shutdown(String info){
-        DebugTool.logInfo(TAG, "Shutdown - " + info);
-        this.sessionListener.onTransportDisconnected(info);
-
-    }
-
-    @Override
-    public void onTransportDisconnected(String info, boolean altTransportAvailable, BaseTransportConfig transportConfig) {
-        this.sessionListener.onTransportDisconnected(info, altTransportAvailable, this.transportConfig);
-    }
-
     /**
      * Get the current protocol version used by this session
      * @return Version that represents the Protocol version being used
@@ -179,20 +173,8 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecuri
         return this.transportConfig;
     }
 
-    public int getSessionHashId() {
-        return this.sessionHashId;
-    }
-
-    public byte getSessionId() {
-        return this.sessionId;
-    }
-
     public void setSdlSecurity(SdlSecurityBase sec) {
         sdlSecurity = sec;
-    }
-
-    public SdlSecurityBase getSdlSecurity() {
-        return sdlSecurity;
     }
 
 
@@ -217,7 +199,7 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecuri
         protocolMessage.setData(returnBytes);
         protocolMessage.setFunctionID(0x01);
         protocolMessage.setVersion((byte)sdlProtocol.getProtocolVersion().getMajor());
-        protocolMessage.setSessionID(getSessionId());
+        protocolMessage.setSessionID((byte)this.sessionId);
 
         //sdlSecurity.hs();
 
@@ -227,104 +209,6 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecuri
 
     public boolean isServiceProtected(SessionType sType) {
         return encryptedServices.contains(sType);
-    }
-
-    @Override
-    public void onTransportDisconnected(String info) {
-        this.sessionListener.onTransportDisconnected(info);
-    }
-
-
-    @Override
-    public void onTransportError(String info, Exception e) {
-        this.sessionListener.onTransportError(info, e);
-    }
-
-    @Override
-    public void onProtocolMessageReceived(ProtocolMessage msg) {
-        if (msg.getSessionType().equals(SessionType.CONTROL)) {
-            processControlService(msg);
-            return;
-        }
-
-        this.sessionListener.onProtocolMessageReceived(msg);
-    }
-
-    @Override
-    public void onHeartbeatTimedOut(byte sessionID) {
-        this.sessionListener.onHeartbeatTimedOut(sessionID);
-
-    }
-
-
-    @Override
-    public void onProtocolSessionStarted(SessionType sessionType,
-                                         byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted) {
-
-        DebugTool.logInfo(TAG, "Protocol session started");
-
-        this.sessionId = sessionID;
-        if (sessionType.eq(SessionType.RPC)){
-            sessionHashId = hashID;
-        }
-        if (isEncrypted)
-            encryptedServices.addIfAbsent(sessionType);
-        this.sessionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID, hashID, isEncrypted);
-        if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
-            CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
-            for(ISdlServiceListener listener:listeners){
-                listener.onServiceStarted(this, sessionType, isEncrypted);
-            }
-        }
-
-    }
-
-    @Override
-    public void onProtocolSessionEnded(SessionType sessionType, byte sessionID,
-                                       String correlationID) {
-        this.sessionListener.onProtocolSessionEnded(sessionType, sessionID, correlationID);
-        if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
-            CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
-            for(ISdlServiceListener listener:listeners){
-                listener.onServiceEnded(this, sessionType);
-            }
-        }
-        encryptedServices.remove(sessionType);
-    }
-
-    @Override
-    public void onProtocolError(String info, Exception e) {
-        this.sessionListener.onProtocolError(info, e);
-        DebugTool.logError(TAG,"on protocol error", e);
-    }
-
-
-
-
-    @Override
-    public void onProtocolSessionEndedNACKed(SessionType sessionType,
-                                             byte sessionID, String correlationID) {
-        this.sessionListener.onProtocolSessionEndedNACKed(sessionType, sessionID, correlationID);
-        if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
-            CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
-            for(ISdlServiceListener listener:listeners){
-                listener.onServiceError(this, sessionType, "End "+ sessionType.toString() +" Service NACK'ed");
-            }
-        }
-    }
-
-    @Override
-    public void onProtocolServiceDataACK(SessionType sessionType, int dataSize, byte sessionID) {
-        this.sessionListener.onProtocolServiceDataACK(sessionType, dataSize, sessionID);
-    }
-
-
-
-    @Override
-    public void onAuthTokenReceived(String token, byte sessionID) {
-        //This is not used in the base library. Will only be used in the Android library while it has the SdlConnection class
-        //See onAuthTokenReceived(String token) in this class instead
-
     }
 
     public void addServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener){
@@ -355,22 +239,6 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecuri
         this.desiredVideoParams = params;
     }
 
-    /**
-     * Returns the currently set desired video streaming parameters. If there haven't been any set,
-     * the default options will be returned and set for this instance.
-     * @return the desired video streaming parameters
-     */
-    public VideoStreamingParameters getDesiredVideoParams(){
-        if(desiredVideoParams == null){
-            desiredVideoParams = new VideoStreamingParameters();
-        }
-        return desiredVideoParams;
-    }
-
-    public void setAcceptedVideoParams(VideoStreamingParameters params){
-        this.acceptedVideoParams = params;
-    }
-
     public VideoStreamingParameters getAcceptedVideoParams(){
         return acceptedVideoParams;
     }
@@ -393,39 +261,78 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecuri
 
 
     /* ***********************************************************************************************************************************************************************
-     * *****************************************************************  IProtocol Listener  ********************************************************************************
+     * *****************************************************************  ISdlProtocol Listener  ********************************************************************************
      *************************************************************************************************************************************************************************/
 
-    public void onProtocolMessageBytesToSend(SdlPacket packet) {
-        //DebugTool.logInfo(TAG, "onProtocolMessageBytesToSend - " + packet.getTransportType());
-        sdlProtocol.sendPacket(packet);
-    }
-
-
-    public void onProtocolSessionStartedNACKed(SessionType sessionType, byte sessionID, byte version, String correlationID, List<String> rejectedParams){
-        onProtocolSessionNACKed(sessionType,sessionID,version,correlationID,rejectedParams);
-    }
-
-    public void onProtocolSessionNACKed(SessionType sessionType, byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
-        this.sessionListener.onProtocolSessionStartedNACKed(sessionType,
-                sessionID, version, correlationID, rejectedParams);
-        if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
-            CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
-            for(ISdlServiceListener listener:listeners){
-                listener.onServiceError(this, sessionType, "Start "+ sessionType.toString() +" Service NAKed");
-            }
+    @Override
+    public void onProtocolMessageReceived(ProtocolMessage msg) {
+        if (msg.getSessionType().equals(SessionType.CONTROL)) {
+            processControlService(msg);
+        } else if (SessionType.RPC.equals(msg.getSessionType())
+                || SessionType.BULK_DATA.equals(msg.getSessionType())) {
+            RPCMessage rpc = RpcConverter.extractRpc(msg, this.sdlProtocol.getProtocolVersion());
+            this.sessionListener.onRPCMessageReceived(rpc);
         }
+
     }
+    //To be implemented by child class
+    @Override
+    public abstract void onServiceStarted(SdlPacket packet, SessionType sessionType, int sessionID, Version version, boolean isEncrypted);
+    @Override
+    public abstract void onServiceEnded(SdlPacket packet, SessionType sessionType, int sessionID);
+    @Override
+    public abstract void onServiceError(SdlPacket packet, SessionType sessionType, int sessionID, String error);
+
+
+    @Override
+    public void onProtocolError(String info, Exception e) {
+        //TODO is there anything to pass forward here?
+        DebugTool.logError(TAG,"on protocol error", e);
+    }
+
+    @Override
+    public int getSessionId() {
+        return this.sessionId;
+    }
+
+    @Override
+    public void shutdown(String info) {
+        DebugTool.logInfo(TAG, "Shutdown - " + info);
+        this.sessionListener.onTransportDisconnected(info, false, this.transportConfig);
+    }
+
+    @Override
+    public void onTransportDisconnected(String info, boolean altTransportAvailable, BaseTransportConfig transportConfig) {
+        this.sessionListener.onTransportDisconnected(info, altTransportAvailable, this.transportConfig);
+    }
+
+    @Override
+    public SdlSecurityBase getSdlSecurity() {
+        return sdlSecurity;
+    }
+
+    /**
+     * Returns the currently set desired video streaming parameters. If there haven't been any set,
+     * the default options will be returned and set for this instance.
+     * @return the desired video streaming parameters
+     */
+    @Override
+    public VideoStreamingParameters getDesiredVideoParams() {
+        if (desiredVideoParams == null) {
+            desiredVideoParams = new VideoStreamingParameters();
+        }
+        return desiredVideoParams;
+    }
+
+    @Override
+    public void setAcceptedVideoParams(VideoStreamingParameters params) {
+        this.acceptedVideoParams = params;
+    }
+
     @Override
     public void onAuthTokenReceived(String authToken) {
         this.sessionListener.onAuthTokenReceived(authToken, sessionId);
     }
-
-    /* Not supported methods from IProtocolListener */
-    public void onProtocolHeartbeat(SessionType sessionType, byte sessionID) { /* Not supported */}
-    public void onProtocolHeartbeatACK(SessionType sessionType, byte sessionID) {/* Not supported */}
-    public void onResetOutgoingHeartbeat(SessionType sessionType, byte sessionID) {/* Not supported */}
-    public void onResetIncomingHeartbeat(SessionType sessionType, byte sessionID) {/* Not supported */}
 
     /* ***********************************************************************************************************************************************************************
      * *****************************************************************  Security Listener  *********************************************************************************
@@ -446,17 +353,13 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecuri
                 service = iter.next();
 
                 if (service != null)
-                    sdlProtocol.startService(service, getSessionId(), true);
+                    sdlProtocol.startService(service, (byte)this.sessionId, true);
 
                 iter.remove();
             }
         }
     }
 
-    @Override
-    public void stopStream(SessionType serviceType) {
-        //Currently does nothing as streaming is not available. Also should only be managed through managers
-    }
 
 
     /**
@@ -476,6 +379,7 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecuri
 
     @Deprecated
     public void clearConnection(){/* Not supported */}
+
 
 
 

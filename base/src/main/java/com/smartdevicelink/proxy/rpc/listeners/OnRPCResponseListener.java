@@ -70,11 +70,16 @@ public abstract class OnRPCResponseListener extends OnRPCListener {
 	public abstract void onResponse(int correlationId, final RPCResponse response);
 	
 	/**
+	 * @deprecated This method has been deprecated in favor of just using the onResponse callback. In the next
+	 * version this method will be removed and all responses successful or not will be returned
+	 * through the onResponse method callback.
+	 *
 	 * Called when there was some sort of error during the original request.
 	 * @param correlationId
 	 * @param resultCode
 	 * @param info
 	 */
+	@Deprecated
 	public void onError(int correlationId, Result resultCode, String info){
 		
 	};

@@ -36,6 +36,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -190,5 +191,12 @@ public class AndroidTools {
 		Bitmap result = BitmapFactory.decodeStream(bis);
 		bis.close();
 		return result;
+	}
+
+	public static boolean isDebugMode(Context context){
+		if(context != null  && context.getApplicationInfo() != null){
+			return 0 != ( context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE );
+		}
+		return false;
 	}
 }
