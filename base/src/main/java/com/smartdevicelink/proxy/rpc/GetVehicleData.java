@@ -393,7 +393,8 @@ public class GetVehicleData extends RPCRequest {
     /**
      * Sets the prndl.
      *
-     * @param prndl See PRNDL. This parameter is deprecated since 7.0.0 and it is now covered in `gearStatus`
+     * @param prndl See PRNDL.
+     * @deprecated in SmartDeviceLink 7.0.0
      */
     @Deprecated
     public void setPrndl(Boolean prndl) {
