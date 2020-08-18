@@ -171,14 +171,11 @@ class PreloadChoicesOperation extends Task {
 				}
 
 				@Override
-				public void onError(int correlationId, Result resultCode, String info) {
-					DebugTool.logError(TAG, "There was an error uploading a choice cell: "+ info + " resultCode: " + resultCode);
-					choiceError = true;
-				}
-
-				@Override
 				public void onResponse(int correlationId, RPCResponse response) {
-
+					if (!response.getSuccess()) {
+						DebugTool.logError(TAG, "There was an error uploading a choice cell: "+ response.getInfo() + " resultCode: " + response.getResultCode());
+						choiceError = true;
+					}
 				}
 			});
 		}else{

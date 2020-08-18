@@ -91,17 +91,15 @@ class DeleteChoicesOperation extends Task {
 					}
 
 					@Override
-					public void onError(int correlationId, Result resultCode, String info) {
-						if (completionListener != null) {
-							completionListener.onComplete(false);
-						}
-						DebugTool.logError(TAG, "Failed to delete choice: " + info + " | Corr ID: " + correlationId);
-
-						DeleteChoicesOperation.super.onFinished();
-					}
-
-					@Override
 					public void onResponse(int correlationId, RPCResponse response) {
+						if (!response.getSuccess()) {
+							if (completionListener != null) {
+								completionListener.onComplete(false);
+							}
+							DebugTool.logError(TAG, "Failed to delete choice: " + response.getInfo() + " | Corr ID: " + correlationId);
+
+							DeleteChoicesOperation.super.onFinished();
+						}
 					}
 				});
 			}
