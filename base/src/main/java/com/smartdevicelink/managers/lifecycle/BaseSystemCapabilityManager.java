@@ -620,13 +620,6 @@ abstract class BaseSystemCapabilityManager {
 					}
 				}
 			}
-
-			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-				if (scListener != null) {
-					scListener.onError(info);
-				}
-			}
 		});
 		request.setCorrelationID(CorrelationIdGenerator.generateId());
 
