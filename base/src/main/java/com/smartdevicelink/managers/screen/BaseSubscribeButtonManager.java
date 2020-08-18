@@ -124,12 +124,11 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
         unsubscribeButtonRequest.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
-                onButtonListeners.remove(buttonName);
-            }
-
-            @Override
-            public void onError(int correlationId, Result resultCode, String info) {
-                listener.onError("Attempt to unsubscribe to button named " + buttonName + " Failed. ResultCode: " + resultCode + " info: " + info);
+                if (response.getSuccess()) {
+                    onButtonListeners.remove(buttonName);
+                } else {
+                    listener.onError("Attempt to unsubscribe to button named " + buttonName + " Failed. ResultCode: " + response.getResultCode() + " info: " + response.getInfo());
+                }
             }
         });
         internalInterface.sendRPC(unsubscribeButtonRequest);
@@ -146,13 +145,12 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
         subscribeButtonRequest.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
-                onButtonListeners.put(buttonName, new CopyOnWriteArrayList<OnButtonListener>());
-                onButtonListeners.get(buttonName).add(listener);
-            }
-
-            @Override
-            public void onError(int correlationId, Result resultCode, String info) {
-                listener.onError("Attempt to subscribe to button named " + buttonName + " Failed . ResultCode: " + resultCode + " info: " + info);
+                if (response.getSuccess()) {
+                    onButtonListeners.put(buttonName, new CopyOnWriteArrayList<OnButtonListener>());
+                    onButtonListeners.get(buttonName).add(listener);
+                } else {
+                    listener.onError("Attempt to subscribe to button named " + buttonName + " Failed . ResultCode: " + response.getResultCode() + " info: " + response.getInfo());
+                }
             }
         });
         internalInterface.sendRPC(subscribeButtonRequest);
