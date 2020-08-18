@@ -33,6 +33,8 @@ package com.smartdevicelink.managers.screen;
 
 import androidx.annotation.NonNull;
 
+import com.livio.taskmaster.Queue;
+import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ManagerUtility;
@@ -80,15 +82,15 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 	private static final String TAG = "TextAndGraphicManager";
 
-	boolean isDirty, hasQueuedUpdate;
-	volatile Show inProgressUpdate;
-	Show currentScreenData, queuedImageUpdate;
+	boolean isDirty;
+	//volatile Show inProgressUpdate;
+	Show currentScreenData;
 	HMILevel currentHMILevel;
 	WindowCapability defaultMainWindowCapability;
 	private boolean pendingHMIFull, batchingUpdates;
 	private final WeakReference<FileManager> fileManager;
 	private final WeakReference<SoftButtonManager> softButtonManager;
-	private CompletionListener queuedUpdateListener, inProgressListener, pendingHMIListener;
+	private CompletionListener pendingHMIListener;
 	SdlArtwork blankArtwork;
 	private OnRPCNotificationListener hmiListener;
 	private OnSystemCapabilityListener onDisplaysCapabilityListener;
@@ -96,6 +98,12 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	private TextAlignment textAlignment;
 	private String textField1, textField2, textField3, textField4, mediaTrackTextField, title;
 	private MetadataType textField1Type, textField2Type, textField3Type, textField4Type;
+	private TextAndGraphicUpdateOperation updateOperation;
+
+
+	private Queue transactionQueue;
+
+	private TextsAndGraphicsState textsAndGraphicsState;
 
 	//Constructors
 
@@ -112,6 +120,10 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		currentScreenData = new Show();
 		addListeners();
 		getBlankArtwork();
+		//TODO added
+		this.transactionQueue = newTransactionQueue();
+	//	this.batchQueue = new ArrayList<>();
+		textsAndGraphicsState = new TextsAndGraphicsState();
 	}
 
 	@Override
@@ -138,13 +150,8 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		secondaryGraphic = null;
 		blankArtwork = null;
 		defaultMainWindowCapability = null;
-		inProgressUpdate = null;
-		queuedImageUpdate = null;
 		currentScreenData = null;
-		queuedUpdateListener = null;
 		pendingHMIListener = null;
-		inProgressListener = null;
-		hasQueuedUpdate = false;
 		isDirty = false;
 		pendingHMIFull = false;
 
@@ -155,59 +162,41 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		super.dispose();
 	}
 
-	private void addListeners() {
-		// add listener
-		hmiListener = new OnRPCNotificationListener() {
-			@Override
-			public void onNotified(RPCNotification notification) {
-				OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
-				if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
-					return;
-				}
-				currentHMILevel = onHMIStatus.getHmiLevel();
-				if (currentHMILevel == HMILevel.HMI_FULL){
-					if (pendingHMIFull){
-						DebugTool.logInfo(TAG, "Acquired HMI_FULL with pending update. Sending now");
-						pendingHMIFull = false;
-						sdlUpdate(pendingHMIListener);
-						pendingHMIListener = null;
-					}
-				}
-			}
-		};
-		internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
-
-
-		onDisplaysCapabilityListener = new OnSystemCapabilityListener() {
-			@Override
-			public void onCapabilityRetrieved(Object capability) {
-				// instead of using the parameter it's more safe to use the convenience method
-				List<DisplayCapability> capabilities = SystemCapabilityManager.convertToList(capability, DisplayCapability.class);
-				if (capabilities == null || capabilities.size() == 0) {
-					DebugTool.logError(TAG, "TextAndGraphic Manager - Capabilities sent here are null or empty");
-				}else {
-					DisplayCapability display = capabilities.get(0);
-					for (WindowCapability windowCapability : display.getWindowCapabilities()) {
-						int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
-						if (currentWindowID == PredefinedWindows.DEFAULT_WINDOW.getValue()) {
-							defaultMainWindowCapability = windowCapability;
-						}
-					}
-				}
-			}
-
-			@Override
-			public void onError(String info) {
-				DebugTool.logError(TAG, "Display Capability cannot be retrieved");
-				defaultMainWindowCapability = null;
-			}
-		};
-		this.internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplaysCapabilityListener);
+	//TODO temp location Also what do I set the ID to?
+	private Queue newTransactionQueue() {
+		Queue queue = internalInterface.getTaskmaster().createQueue("TextAndGraphicManager", 9, false);
+		//queue.pause();
+		return queue;
 	}
+	//TODO fix for T&G Manager
+	// Suspend the queue if the soft button capabilities are null (we assume that soft buttons are not supported)
+	// OR if the HMI level is NONE since we want to delay sending RPCs until we're in non-NONE
+	private void updateTransactionQueueSuspended() {
+		if (defaultMainWindowCapability == null || HMILevel.HMI_NONE.equals(currentHMILevel)) {
+			DebugTool.logInfo(TAG, String.format("Suspending the transaction queue. Current HMI level is NONE: %b, window capabilities are null: %b", HMILevel.HMI_NONE.equals(currentHMILevel), defaultMainWindowCapability == null));
+			transactionQueue.pause();
+		} else {
+			DebugTool.logInfo(TAG, "Starting the transaction queue");
+			transactionQueue.resume();
+		}
+	}
+
+	//TODO not in IOS
+
 
 	// Upload / Send
 
 	protected void update(CompletionListener listener) {
+
+		// make sure hmi is not none
+		if (currentHMILevel == null || currentHMILevel == HMILevel.HMI_NONE){
+			//Trying to send show on HMI_NONE, waiting for full
+			pendingHMIFull = true;
+			if (listener != null){
+				pendingHMIListener = listener;
+			}
+			return;
+		}
 
 		// check if is batch update
 		if (batchingUpdates) {
@@ -222,427 +211,38 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		}
 	}
 
-	private synchronized void sdlUpdate(CompletionListener listener){
+	private synchronized void sdlUpdate(final CompletionListener listener){
 
-		// make sure hmi is not none
-		if (currentHMILevel == null || currentHMILevel == HMILevel.HMI_NONE){
-			//Trying to send show on HMI_NONE, waiting for full
-			pendingHMIFull = true;
-			if (listener != null){
-				pendingHMIListener = listener;
-			}
-			return;
+		if(transactionQueue.getTasksAsList().size() > 0) {
+			//Transactions already exist, cancelling them
+			transactionQueue.clear();
 		}
-
-		//Updating Text and Graphics
-		if (inProgressUpdate != null){
-
-			//In progress update exists, queueing update
-			if (queuedUpdateListener != null){
-
-				//Queued update already exists, superseding previous queued update
-				queuedUpdateListener.onComplete(false);
-				queuedUpdateListener = null;
-			}
-
-			if (listener != null){
-				queuedUpdateListener = listener;
-			}
-
-			hasQueuedUpdate = true;
-
-			return;
-		}
-
-		Show fullShow = new Show();
-		fullShow.setAlignment(textAlignment);
-		fullShow = assembleShowText(fullShow);
-		fullShow = assembleShowImages(fullShow);
-
-		inProgressListener = listener;
-
-		if (!shouldUpdatePrimaryImage() && !shouldUpdateSecondaryImage()){
-
-			//No Images to send, only sending text
-			inProgressUpdate = extractTextFromShow(fullShow);
-			sendShow();
-
-		}else if (!sdlArtworkNeedsUpload(primaryGraphic) && (secondaryGraphic == blankArtwork || !sdlArtworkNeedsUpload(secondaryGraphic))){
-
-			//Images already uploaded, sending full update
-			// The files to be updated are already uploaded, send the full show immediately
-			inProgressUpdate = fullShow;
-			sendShow();
-		} else{
-
-			// Images need to be uploaded, sending text and uploading images
-			inProgressUpdate = fullShow;
-			final Show thisUpdate = fullShow;
-
-			uploadImages(new CompletionListener() {
-				@Override
-				public void onComplete(boolean success) {
-					if (!success){
-						DebugTool.logError(TAG, "Error uploading image");
-						inProgressUpdate = extractTextFromShow(inProgressUpdate);
-						sendShow();
-					}
-					// Check if queued image update still matches our images (there could have been a new Show in the meantime)
-					// and send a new update if it does. Since the images will already be on the head unit, the whole show will be sent
-					if (thisUpdate.getGraphic() != null && thisUpdate.getGraphic().equals(queuedImageUpdate.getGraphic()) ||
-							(thisUpdate.getSecondaryGraphic() != null && queuedImageUpdate.getSecondaryGraphic() != null) && thisUpdate.getSecondaryGraphic().equals(queuedImageUpdate.getSecondaryGraphic())){
-						// Queued image update matches the images we need, sending update
-						sendShow();
-					}
-					// Else, Queued image update does not match the images we need, skipping update
-				}
-			});
-			queuedImageUpdate = fullShow;
-		}
-	}
-
-	private void sendShow(){
-		inProgressUpdate.setOnRPCResponseListener(new OnRPCResponseListener() {
+		updateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager.get(), defaultMainWindowCapability, currentScreenData, currentState(), new CompletionListener() {
 			@Override
-			public void onResponse(int correlationId, RPCResponse response) {
-				handleResponse(response.getSuccess());
-			}
+			public void onComplete(boolean success) {
 
-			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-				handleResponse(false);
-			}
-
-			private void handleResponse(boolean success){
-				if (success){
-					updateCurrentScreenDataState(inProgressUpdate);
+				if (updateOperation.getSentShow() != null) {
+					currentScreenData = updateOperation.getSentShow();
 				}
-
-				inProgressUpdate = null;
-				if (inProgressListener != null){
-					inProgressListener.onComplete(success);
-					inProgressListener = null;
-				}
-
-				if (hasQueuedUpdate){
-					//Queued update exists, sending another update
-					hasQueuedUpdate = false;
-					CompletionListener temp = queuedUpdateListener;
-					queuedUpdateListener = null;
-					sdlUpdate(temp);
+				if (listener != null) { //IOS diff here
+					listener.onComplete(success);
 				}
 			}
 		});
-
-		if (this.softButtonManager.get() != null) {
-			this.softButtonManager.get().setCurrentMainField1(inProgressUpdate.getMainField1());
-		}
-		internalInterface.sendRPC(inProgressUpdate);
+		transactionQueue.add(updateOperation, false);
 	}
 
-	// Images
-
-	private void uploadImages(final CompletionListener listener) {
-
-		List<SdlArtwork> artworksToUpload = new ArrayList<>();
-
-		// add primary image
-		if (shouldUpdatePrimaryImage() && !primaryGraphic.isStaticIcon()){
-			artworksToUpload.add(primaryGraphic);
-		}
-
-		// add secondary image
-		if (shouldUpdateSecondaryImage() && !secondaryGraphic.isStaticIcon()){
-			artworksToUpload.add(secondaryGraphic);
-		}
-
-		if (artworksToUpload.size() == 0 && (primaryGraphic.isStaticIcon() || secondaryGraphic.isStaticIcon())){
-			DebugTool.logInfo(TAG, "Upload attempted on static icons, sending them without upload instead");
-			listener.onComplete(true);
-		}
-
-		// use file manager to upload art
-		if (fileManager.get() != null) {
-			fileManager.get().uploadArtworks(artworksToUpload, new MultipleFileCompletionListener() {
-				@Override
-				public void onComplete(Map<String, String> errors) {
-					if (errors != null) {
-						DebugTool.logError(TAG, "Error Uploading Artworks. Error: " + errors.toString());
-						listener.onComplete(false);
-					} else {
-						listener.onComplete(true);
-					}
-				}
-			});
-		}
-	}
-
-	private Show assembleShowImages(Show show){
-
-		if (shouldUpdatePrimaryImage()){
-			show.setGraphic(primaryGraphic.getImageRPC());
-		}
-
-		if (shouldUpdateSecondaryImage()){
-			show.setSecondaryGraphic(secondaryGraphic.getImageRPC());
-		}
-
-		return show;
-	}
-
-	// Text
-
-	Show assembleShowText(Show show){
-
-		show = setBlankTextFields(show);
-
-		if (mediaTrackTextField != null && shouldUpdateMediaTrackField()) {
-			show.setMediaTrack(mediaTrackTextField);
-		}
-
-		if (title != null && shouldUpdateTitleField()) {
-			show.setTemplateTitle(title);
-		}
-
-		List<String> nonNullFields = findValidMainTextFields();
-		if (nonNullFields.isEmpty()){
-			return show;
-		}
-
-		int numberOfLines = defaultMainWindowCapability != null ? ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(defaultMainWindowCapability) : 4;
-
-		switch (numberOfLines) {
-			case 1: show = assembleOneLineShowText(show, nonNullFields);
-				break;
-			case 2: show = assembleTwoLineShowText(show);
-				break;
-			case 3: show = assembleThreeLineShowText(show);
-				break;
-			case 4: show = assembleFourLineShowText(show);
-				break;
-		}
-
-		return show;
-	}
-
-	private Show assembleOneLineShowText(Show show, List<String> showFields){
-
-		StringBuilder showString1 = new StringBuilder();
-		for (int i = 0; i < showFields.size(); i++) {
-			if (i > 0) {
-				showString1.append(" - ").append(showFields.get(i));
-			}else{
-				showString1.append(showFields.get(i));
-			}
-		}
-		show.setMainField1(showString1.toString());
-
-		MetadataTags tags = new MetadataTags();
-		tags.setMainField1(findNonNullMetadataFields());
-
-		show.setMetadataTags(tags);
-
-		return show;
-	}
-
-	private Show assembleTwoLineShowText(Show show){
-
-		StringBuilder tempString = new StringBuilder();
-		MetadataTags tags = new MetadataTags();
-
-		if (textField1 != null && textField1.length() > 0) {
-			tempString.append(textField1);
-			if (textField1Type != null){
-				tags.setMainField1(textField1Type);
-			}
-		}
-
-		if (textField2 != null && textField2.length() > 0) {
-			if (( textField3 == null || !(textField3.length() > 0)) && (textField4 == null || !(textField4.length() > 0))){
-				// text does not exist in slots 3 or 4, put text2 in slot 2
-				show.setMainField2(textField2);
-				if (textField2Type != null){
-					tags.setMainField2(textField2Type);
-				}
-			} else if (textField1 != null && textField1.length() > 0) {
-				// If text 1 exists, put it in slot 1 formatted
-				tempString.append(" - ").append(textField2);
-				if (textField2Type != null){
-					List<MetadataType> typeList = new ArrayList<>();
-					typeList.add(textField2Type);
-					if (textField1Type != null){
-						typeList.add(textField1Type);
-					}
-					tags.setMainField1(typeList);
-				}
-			}else {
-				// If text 1 does not exist, put it in slot 1 unformatted
-				tempString.append(textField2);
-				if (textField2Type != null){
-					tags.setMainField1(textField2Type);
-				}
-			}
-		}
-
-		// set mainfield 1
-		show.setMainField1(tempString.toString());
-
-		// new stringbuilder object
-		tempString = new StringBuilder();
-
-		if (textField3 != null && textField3.length() > 0){
-			// If text 3 exists, put it in slot 2
-			tempString.append(textField3);
-			if (textField3Type != null){
-				List<MetadataType> typeList = new ArrayList<>();
-				typeList.add(textField3Type);
-				tags.setMainField2(typeList);
-			}
-		}
-
-		if (textField4 != null && textField4.length() > 0){
-			if (textField3 != null && textField3.length() > 0){
-				// If text 3 exists, put it in slot 2 formatted
-				tempString.append(" - ").append(textField4);
-				if (textField4Type != null){
-					List<MetadataType> typeList = new ArrayList<>();
-					typeList.add(textField4Type);
-					if (textField3Type != null){
-						typeList.add(textField3Type);
-					}
-					tags.setMainField2(typeList);
-				}
-			} else {
-				// If text 3 does not exist, put it in slot 3 unformatted
-				tempString.append(textField4);
-				if (textField4Type != null){
-					tags.setMainField2(textField4Type);
-				}
-			}
-		}
-
-		if (tempString.toString().length() > 0){
-			show.setMainField2(tempString.toString());
-		}
-
-		show.setMetadataTags(tags);
-		return show;
-	}
-
-	private Show assembleThreeLineShowText(Show show){
-
-		MetadataTags tags = new MetadataTags();
-
-		if (textField1 != null && textField1.length() > 0) {
-			show.setMainField1(textField1);
-			if (textField1Type != null){
-				tags.setMainField1(textField1Type);
-			}
-		}
-
-		if (textField2 != null && textField2.length() > 0) {
-			show.setMainField2(textField2);
-			if (textField2Type != null){
-				tags.setMainField2(textField2Type);
-			}
-		}
-
-		StringBuilder tempString = new StringBuilder();
-
-		if (textField3 != null && textField3.length() > 0){
-			tempString.append(textField3);
-			if (textField3Type != null){
-				tags.setMainField3(textField3Type);
-			}
-		}
-
-		if (textField4 != null && textField4.length() > 0) {
-			if (textField3 != null && textField3.length() > 0) {
-				// If text 3 exists, put it in slot 3 formatted
-				tempString.append(" - ").append(textField4);
-				if (textField4Type != null){
-					List<MetadataType> tags4 = new ArrayList<>();
-					if (textField3Type != null){
-						tags4.add(textField3Type);
-					}
-					tags4.add(textField4Type);
-					tags.setMainField3(tags4);
-				}
-			} else {
-				// If text 3 does not exist, put it in slot 3 formatted
-				tempString.append(textField4);
-				if (textField4Type != null){
-					tags.setMainField3(textField4Type);
-				}
-			}
-		}
-
-		show.setMainField3(tempString.toString());
-		show.setMetadataTags(tags);
-		return show;
-	}
-
-	private Show assembleFourLineShowText(Show show){
-
-		MetadataTags tags = new MetadataTags();
-
-		if (textField1 != null && textField1.length() > 0) {
-			show.setMainField1(textField1);
-			if (textField1Type != null){
-				tags.setMainField1(textField1Type);
-			}
-		}
-
-		if (textField2 != null && textField2.length() > 0) {
-			show.setMainField2(textField2);
-			if (textField2Type != null){
-				tags.setMainField2(textField2Type);
-			}
-		}
-
-		if (textField3 != null && textField3.length() > 0) {
-			show.setMainField3(textField3);
-			if (textField3Type != null){
-				tags.setMainField3(textField3Type);
-			}
-		}
-
-		if (textField4 != null && textField4.length() > 0) {
-			show.setMainField4(textField4);
-			if (textField4Type != null){
-				tags.setMainField4(textField4Type);
-			}
-		}
-
-		show.setMetadataTags(tags);
-		return show;
+	// Convert to State
+	private TextsAndGraphicsState currentState() {
+		return new TextsAndGraphicsState(textField1, textField2, textField3, textField4, mediaTrackTextField,
+				title, primaryGraphic, secondaryGraphic, blankArtwork, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type);
 	}
 
 	// Extraction
 
-	Show extractTextFromShow(Show show){
+	//IOS has sdl_extractImageFromShow
 
-		Show newShow = new Show();
-		newShow.setMainField1(show.getMainField1());
-		newShow.setMainField2(show.getMainField2());
-		newShow.setMainField3(show.getMainField3());
-		newShow.setMainField4(show.getMainField4());
-		newShow.setTemplateTitle(show.getTemplateTitle());
-
-		return newShow;
-	}
-
-	private Show setBlankTextFields(Show newShow){
-
-		newShow.setMainField1("");
-		newShow.setMainField2("");
-		newShow.setMainField3("");
-		newShow.setMainField4("");
-		newShow.setMediaTrack("");
-		newShow.setTemplateTitle("");
-
-		return newShow;
-	}
+	//IOS has sdl_createImageOnlyShowWithPrimaryArtwork
 
 	private void updateCurrentScreenDataState(Show show){
 
@@ -686,122 +286,14 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 	// Helpers
 
-	private List<String> findValidMainTextFields(){
-		List<String> array = new ArrayList<>();
+	// IOS has sdl_hasData
 
-		if (textField1 != null && textField1.length() > 0) {
-			array.add(textField1);
-		}
-
-		if (textField2 != null && textField2.length() > 0) {
-			array.add(textField2);
-		}
-
-		if (textField3 != null && textField3.length() > 0) {
-			array.add(textField3);
-		}
-
-		if (textField4 != null && textField4.length() > 0) {
-			array.add(textField4);
-		}
-
-		return array;
-	}
-
-
-	private List<MetadataType> findNonNullMetadataFields(){
-		List<MetadataType> array = new ArrayList<>();
-
-		if (textField1Type != null) {
-			array.add(textField1Type);
-		}
-
-		if (textField2Type != null) {
-			array.add(textField2Type);
-		}
-
-		if (textField3Type != null) {
-			array.add(textField3Type);
-		}
-
-		if (textField4Type != null) {
-			array.add(textField4Type);
-		}
-
-		return array;
-	}
+	//Equality IOS has this section with:
+	// sdl_showImages
 
 	abstract SdlArtwork getBlankArtwork();
 
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
-	private boolean sdlArtworkNeedsUpload(SdlArtwork artwork){
-		if (fileManager.get() != null) {
-			return artwork != null && !fileManager.get().hasUploadedFile(artwork) && !artwork.isStaticIcon();
-		}
-		return false;
-	}
-
-	/**
-	 * Check to see if primaryGraphic should be updated
-	 * @return true if primaryGraphic should be updated, false if not
-	 */
-	private boolean shouldUpdatePrimaryImage() {
-		boolean templateSupportsPrimaryArtwork = templateSupportsImageField(ImageFieldName.graphic);
-
-		String currentScreenDataPrimaryGraphicName = (currentScreenData != null && currentScreenData.getGraphic() != null) ? currentScreenData.getGraphic().getValue() : null;
-		String primaryGraphicName = primaryGraphic != null ? primaryGraphic.getName() : null;
-		return templateSupportsPrimaryArtwork
-				&& !CompareUtils.areStringsEqual(currentScreenDataPrimaryGraphicName, primaryGraphicName, true, true)
-				&& primaryGraphic != null;
-	}
-
-	/**
-	 * Check to see if secondaryGraphic should be updated
-	 * @return true if secondaryGraphic should be updated, false if not
-	 */
-	private boolean shouldUpdateSecondaryImage() {
-		boolean templateSupportsSecondaryArtwork = (templateSupportsImageField(ImageFieldName.graphic) || templateSupportsImageField(ImageFieldName.secondaryGraphic));
-
-		String currentScreenDataSecondaryGraphicName = (currentScreenData != null && currentScreenData.getSecondaryGraphic() != null) ? currentScreenData.getSecondaryGraphic().getValue() : null;
-		String secondaryGraphicName = secondaryGraphic != null ? secondaryGraphic.getName() : null;
-		return templateSupportsSecondaryArtwork
-				&& !CompareUtils.areStringsEqual(currentScreenDataSecondaryGraphicName, secondaryGraphicName, true, true)
-				&& secondaryGraphic != null;
-	}
-
-	/**
-	 * Check to see if template supports the specified image field
-	 * @return true if image field is supported, false if not
-	 */
-	private boolean templateSupportsImageField(ImageFieldName name) {
-		return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, name);
-	}
-
-	/**
-	 * Check to see if mediaTrackTextField should be updated
-	 * @return true if mediaTrackTextField should be updated, false if not
-	 */
-	private boolean shouldUpdateMediaTrackField() {
-		return templateSupportsTextField(TextFieldName.mediaTrack);
-	}
-
-	/**
-	 * Check to see if title should be updated
-	 * @return true if title should be updated, false if not
-	 */
-	private boolean shouldUpdateTitleField() {
-		return templateSupportsTextField(TextFieldName.templateTitle);
-	}
-
-	/**
-	 * Check to see if field should be updated
-	 * @return true if field should be updated, false if not
-	 */
-	private boolean templateSupportsTextField(TextFieldName name) {
-		return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, name);
-	}
-
-	// SCREEN ITEM SETTERS AND GETTERS
+	// Getters / Setters
 
 	void setTextAlignment(TextAlignment textAlignment){
 		this.textAlignment = textAlignment;
@@ -977,4 +469,54 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		this.batchingUpdates = batching;
 	}
 
+	private void addListeners() {
+		// add listener
+		hmiListener = new OnRPCNotificationListener() {
+			@Override
+			public void onNotified(RPCNotification notification) {
+				OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
+				if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+					return;
+				}
+			//	updateTransactionQueueSuspended();
+				currentHMILevel = onHMIStatus.getHmiLevel();
+				if (currentHMILevel == HMILevel.HMI_FULL){
+					if (pendingHMIFull){
+						DebugTool.logInfo(TAG, "Acquired HMI_FULL with pending update. Sending now");
+						pendingHMIFull = false;
+						sdlUpdate(pendingHMIListener);
+						pendingHMIListener = null;
+					}
+				}
+			}
+		};
+		internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
+
+
+		onDisplaysCapabilityListener = new OnSystemCapabilityListener() {
+			@Override
+			public void onCapabilityRetrieved(Object capability) {
+				// instead of using the parameter it's more safe to use the convenience method
+				List<DisplayCapability> capabilities = SystemCapabilityManager.convertToList(capability, DisplayCapability.class);
+				if (capabilities == null || capabilities.size() == 0) {
+					DebugTool.logError(TAG, "TextAndGraphic Manager - Capabilities sent here are null or empty");
+				}else {
+					DisplayCapability display = capabilities.get(0);
+					for (WindowCapability windowCapability : display.getWindowCapabilities()) {
+						int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
+						if (currentWindowID == PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+							defaultMainWindowCapability = windowCapability;
+						}
+					}
+				}
+			}
+
+			@Override
+			public void onError(String info) {
+				DebugTool.logError(TAG, "Display Capability cannot be retrieved");
+				defaultMainWindowCapability = null;
+			}
+		};
+		this.internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplaysCapabilityListener);
+	}
 }
