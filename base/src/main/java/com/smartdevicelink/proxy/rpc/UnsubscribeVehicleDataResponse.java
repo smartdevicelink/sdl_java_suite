@@ -168,22 +168,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
     /**
      * Sets Fuel Level State
-     * @param fuelLevel_State a VehicleDataResult related to FuelLevel State
-     */
-    @Deprecated
-    public void setFuelLevel_State(VehicleDataResult fuelLevel_State) {
-        setFuelLevel(fuelLevel_State);
-    }
-    /**
-     * Gets Fuel Level State
-     * @return a VehicleDataResult related to FuelLevel State
-     */
-    @Deprecated
-    public VehicleDataResult getFuelLevel_State() {
-        return getFuelLevelState();
-    }
-    /**
-     * Sets Fuel Level State
      * @param fuelLevelState a VehicleDataResult related to FuelLevel State
      */
     public void setFuelLevelState(VehicleDataResult fuelLevelState) {

@@ -80,10 +80,8 @@ import com.smartdevicelink.proxy.rpc.OnHashChange;
 import com.smartdevicelink.proxy.rpc.OnInteriorVehicleData;
 import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
 import com.smartdevicelink.proxy.rpc.OnLanguageChange;
-import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
 import com.smartdevicelink.proxy.rpc.OnRCStatus;
-import com.smartdevicelink.proxy.rpc.OnStreamRPC;
 import com.smartdevicelink.proxy.rpc.OnSystemCapabilityUpdated;
 import com.smartdevicelink.proxy.rpc.OnSystemRequest;
 import com.smartdevicelink.proxy.rpc.OnTBTClientState;
@@ -113,7 +111,6 @@ import com.smartdevicelink.proxy.rpc.ShowConstantTbtResponse;
 import com.smartdevicelink.proxy.rpc.ShowResponse;
 import com.smartdevicelink.proxy.rpc.SliderResponse;
 import com.smartdevicelink.proxy.rpc.SpeakResponse;
-import com.smartdevicelink.proxy.rpc.StreamRPCResponse;
 import com.smartdevicelink.proxy.rpc.SubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.SubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.SubscribeWayPointsResponse;
@@ -227,16 +224,16 @@ public class ProxyBridge implements IProxyListener{
 		lifecycleListener.onError(info, e);
 	}
 
-	@Override
-	public void onOnStreamRPC(OnStreamRPC notification) {
-		onRPCReceived(notification);
-
-	}
-
-	@Override
-	public void onStreamRPCResponse(StreamRPCResponse response) {
-		onRPCReceived(response);
-	}
+//	@Override
+//	public void onOnStreamRPC(OnStreamRPC notification) {
+//		onRPCReceived(notification);
+//
+//	}
+//
+//	@Override
+//	public void onStreamRPCResponse(StreamRPCResponse response) {
+//		onRPCReceived(response);
+//	}
 
 	@Override
 	public void onOnHMIStatus(OnHMIStatus notification) {
@@ -505,10 +502,10 @@ public class ProxyBridge implements IProxyListener{
 
 	}
 
-	@Override
-	public void onOnLockScreenNotification(OnLockScreenStatus notification) {
-		onRPCReceived(notification);
-	}
+//	@Override
+//	public void onOnLockScreenNotification(OnLockScreenStatus notification) {
+//		onRPCReceived(notification);
+//	}
 
 	@Override
 	public void onDialNumberResponse(DialNumberResponse response) {

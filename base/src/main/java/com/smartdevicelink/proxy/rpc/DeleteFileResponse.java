@@ -61,22 +61,6 @@ public class DeleteFileResponse extends RPCResponse {
     }
 
     /**
-     * @deprecated use {@link DeleteFileResponse#DeleteFileResponse(Boolean, Result)} instead <br>
-     *
-     * Constructs a new DeleteFileResponse object
-     * @param success whether the request is successfully processed
-     * @param resultCode whether the request is successfully processed
-     * @param spaceAvailable  the total local space available on the module for the registered app.
-     */
-    @Deprecated
-    public DeleteFileResponse(@NonNull Boolean success, @NonNull Result resultCode, @NonNull Integer spaceAvailable) {
-        this();
-        setSuccess(success);
-        setResultCode(resultCode);
-        setSpaceAvailable(spaceAvailable);
-    }
-
-    /**
      * Constructs a new DeleteFileResponse object
      * @param success whether the request is successfully processed
      * @param resultCode whether the request is successfully processed

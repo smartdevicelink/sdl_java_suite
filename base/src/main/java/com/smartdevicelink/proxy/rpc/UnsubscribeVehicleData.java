@@ -425,29 +425,6 @@ public class UnsubscribeVehicleData extends RPCRequest {
     }
 
     /**
-     * Sets a boolean value. If true, unsubscribes from fuelLevel_State data
-     * 
-     * @param fuelLevel_State
-     *            a boolean value
-     */
-    @Deprecated
-    public void setFuelLevel_State(Boolean fuelLevel_State) {
-        setFuelLevelState(fuelLevel_State);
-    }
-
-    /**
-     * Gets a boolean value. If true, means the fuelLevel_State data has been
-     * unsubscribed.
-     * 
-     * @return Boolean -a Boolean value. If true, means the fuelLevel_State data
-     *         has been unsubscribed.
-     */
-    @Deprecated
-    public Boolean getFuelLevel_State() {
-        return getFuelLevelState();
-    }
-
-    /**
      * Sets a boolean value. If true, unsubscribes from fuelLevelState data
      * 
      * @param fuelLevelState
