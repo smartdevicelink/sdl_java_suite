@@ -404,10 +404,6 @@ public class SdlManagerTests {
 			}
 
 			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-			}
-
-			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
 			}
 		};

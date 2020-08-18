@@ -358,9 +358,9 @@ abstract class BaseFileManager extends BaseSubManager {
 	 */
 	private boolean shouldReUploadFile(String fileName, FileType fileType) {
 		if (!failedFileUploadsIndex.containsKey(fileName)) {
-			if (fileType.equals(FileType.GRAPHIC_JPEG) ||
-					fileType.equals(FileType.GRAPHIC_BMP) ||
-					fileType.equals(FileType.GRAPHIC_PNG)) {
+			if (FileType.GRAPHIC_JPEG.equals(fileType) ||
+					FileType.GRAPHIC_BMP.equals(fileType) ||
+					FileType.GRAPHIC_PNG.equals(fileType)) {
 				failedFileUploadsIndex.put(fileName, fileManagerConfig.getArtworkRetryCount());
 			} else {
 				failedFileUploadsIndex.put(fileName, fileManagerConfig.getFileRetryCount());
