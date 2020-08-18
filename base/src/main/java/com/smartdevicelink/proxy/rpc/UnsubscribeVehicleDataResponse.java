@@ -241,7 +241,8 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     /**
      * Gets the prndl.
      *
-     * @return VehicleDataResult See PRNDL since SmartDeviceLink 7.0.0. This parameter is deprecated and it is now covered in `gearStatus`
+     * @return VehicleDataResult.
+     * @deprecated in SmartDeviceLink 7.0.0
      */
     @Deprecated
     @SuppressWarnings("unchecked")
