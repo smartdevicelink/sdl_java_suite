@@ -229,14 +229,6 @@ class SoftButtonReplaceOperation extends Task {
                     completionListener.onComplete(response.getSuccess());
                 }
             }
-
-            @Override
-            public void onError(int correlationId, Result resultCode, String info) {
-                DebugTool.logWarning(TAG, "Failed to update soft buttons with text buttons");
-                if (completionListener != null) {
-                    completionListener.onComplete(false);
-                }
-            }
         });
         show.setMainField1(currentMainField1);
         show.setSoftButtons(softButtons);
@@ -283,14 +275,6 @@ class SoftButtonReplaceOperation extends Task {
                 }
                 if (completionListener != null) {
                     completionListener.onComplete(response.getSuccess());
-                }
-            }
-
-            @Override
-            public void onError(int correlationId, Result resultCode, String info) {
-                DebugTool.logWarning(TAG, "Failed to update soft buttons with text buttons");
-                if (completionListener != null) {
-                    completionListener.onComplete(false);
                 }
             }
         });

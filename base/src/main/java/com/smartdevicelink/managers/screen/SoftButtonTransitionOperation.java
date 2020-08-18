@@ -53,13 +53,6 @@ class SoftButtonTransitionOperation extends Task {
                 }
                 onFinished();
             }
-
-            @Override
-            public void onError(int correlationId, Result resultCode, String info) {
-                super.onError(correlationId, resultCode, info);
-                DebugTool.logWarning(TAG, "Failed to transition soft button to new state. " + info);
-                onFinished();
-            }
         });
         show.setMainField1(currentMainField1);
         show.setSoftButtons(currentStateSoftButtonsForObjects(softButtonObjects));
