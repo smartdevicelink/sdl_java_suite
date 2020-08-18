@@ -16,7 +16,7 @@ import org.junit.Test;
 
 import java.util.Hashtable;
 import java.util.List;
-import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
@@ -77,7 +77,7 @@ public class GetInteriorVehicleDataConsentTests extends BaseRpcTests {
 
 	@Test
 	public void testJsonConstructor() {
-		JSONObject commandJson = JsonFileReader.readId(getTargetContext(), getCommandType(), getMessageType());
+		JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
 		assertNotNull(TestValues.NOT_NULL, commandJson);
 
 		try {

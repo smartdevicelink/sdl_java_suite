@@ -32,7 +32,7 @@
 
 package com.smartdevicelink.managers.permission;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.interfaces.ISdl;
 

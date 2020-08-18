@@ -35,7 +35,7 @@
 
 package com.smartdevicelink.managers.lifecycle;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 

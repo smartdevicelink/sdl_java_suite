@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.ConditionVariable;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import android.util.Log;
 
 import com.smartdevicelink.transport.RouterServiceValidator.TrustedAppStore;
@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
@@ -52,7 +52,7 @@ public class RSVTestCase {
 	
 	@Before
 	public void setUp() throws Exception {
-		rsvp = new RouterServiceValidator(getTargetContext());
+		rsvp = new RouterServiceValidator(getInstrumentation().getTargetContext());
 		
 	}
 
@@ -125,7 +125,7 @@ public class RSVTestCase {
 	@Test
 	public void testSecuritySetting(){
 		
-		RouterServiceValidator rsvp = new RouterServiceValidator(getTargetContext()); //Use a locally scoped instance
+		RouterServiceValidator rsvp = new RouterServiceValidator(getInstrumentation().getTargetContext()); //Use a locally scoped instance
 		rsvp.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH);
 		
 		try{
@@ -137,14 +137,14 @@ public class RSVTestCase {
 		}catch( IllegalAccessException e2){
 			fail(e2.getMessage());
 		}
-		assertEquals(RouterServiceValidator.getSecurityLevel(getTargetContext()), MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH);
+		assertEquals(RouterServiceValidator.getSecurityLevel(getInstrumentation().getTargetContext()), MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH);
 	}
 
 	@Test
 	public void testHighSecurity(){
 		requestTListLock();
 
-		RouterServiceValidator rsvp = new RouterServiceValidator(getTargetContext()); //Use a locally scoped instance
+		RouterServiceValidator rsvp = new RouterServiceValidator(getInstrumentation().getTargetContext()); //Use a locally scoped instance
 		rsvp.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH);
 		rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_INSTALLED_FROM_CHECK);
 		
@@ -152,7 +152,7 @@ public class RSVTestCase {
 		
 		assertEquals(RouterServiceValidator.getRefreshRate(), REFRESH_TRUSTED_APP_LIST_TIME_WEEK);
 		
-		assertTrue(RouterServiceValidator.createTrustedListRequest(getTargetContext(), true, null, trustedListCallback));
+		assertTrue(RouterServiceValidator.createTrustedListRequest(getInstrumentation().getTargetContext(), true, null, trustedListCallback));
 		
 	}
 
@@ -160,7 +160,7 @@ public class RSVTestCase {
 	public void testMediumSecurity(){
 		requestTListLock();
 
-		RouterServiceValidator rsvp = new RouterServiceValidator(getTargetContext()); //Use a locally scoped instance
+		RouterServiceValidator rsvp = new RouterServiceValidator(getInstrumentation().getTargetContext()); //Use a locally scoped instance
 		rsvp.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_MED);
 		rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_INSTALLED_FROM_CHECK);
 		
@@ -168,7 +168,7 @@ public class RSVTestCase {
 		
 		assertEquals(RouterServiceValidator.getRefreshRate(), REFRESH_TRUSTED_APP_LIST_TIME_WEEK);
 		
-		assertTrue(RouterServiceValidator.createTrustedListRequest(getTargetContext(), true, null, trustedListCallback));
+		assertTrue(RouterServiceValidator.createTrustedListRequest(getInstrumentation().getTargetContext(), true, null, trustedListCallback));
 		
 	}
 
@@ -176,7 +176,7 @@ public class RSVTestCase {
 	public void testLowSecurity(){
 		requestTListLock();
 
-		RouterServiceValidator rsvp = new RouterServiceValidator(getTargetContext()); //Use a locally scoped instance
+		RouterServiceValidator rsvp = new RouterServiceValidator(getInstrumentation().getTargetContext()); //Use a locally scoped instance
 		rsvp.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_LOW);
 		rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_INSTALLED_FROM_CHECK);
 		
@@ -184,7 +184,7 @@ public class RSVTestCase {
 		
 		assertEquals(RouterServiceValidator.getRefreshRate(), REFRESH_TRUSTED_APP_LIST_TIME_MONTH);
 		
-		assertTrue(RouterServiceValidator.createTrustedListRequest(getTargetContext(), true, null, trustedListCallback));
+		assertTrue(RouterServiceValidator.createTrustedListRequest(getInstrumentation().getTargetContext(), true, null, trustedListCallback));
 		
 	}
 
@@ -192,7 +192,7 @@ public class RSVTestCase {
 	public void testNoSecurity(){
 		requestTListLock();
 
-		RouterServiceValidator rsvp = new RouterServiceValidator(getTargetContext()); //Use a locally scoped instance
+		RouterServiceValidator rsvp = new RouterServiceValidator(getInstrumentation().getTargetContext()); //Use a locally scoped instance
 		rsvp.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
 		rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_INSTALLED_FROM_CHECK);
 		
@@ -200,7 +200,7 @@ public class RSVTestCase {
 		
 		assertEquals(RouterServiceValidator.getRefreshRate(), REFRESH_TRUSTED_APP_LIST_TIME_WEEK);
 		
-		assertFalse(RouterServiceValidator.createTrustedListRequest(getTargetContext(), true, null, trustedListCallback));
+		assertFalse(RouterServiceValidator.createTrustedListRequest(getInstrumentation().getTargetContext(), true, null, trustedListCallback));
 		
 		//This should always return true
 		assertTrue(rsvp.validate());
@@ -237,7 +237,7 @@ public class RSVTestCase {
 		requestTListLock();
 
 		assertFalse(RouterServiceValidator.invalidateList(null));
-		assertTrue(RouterServiceValidator.invalidateList(getTargetContext()));
+		assertTrue(RouterServiceValidator.invalidateList(getInstrumentation().getTargetContext()));
 
 		releaseTListLock();
 	}
@@ -247,7 +247,7 @@ public class RSVTestCase {
 		requestTListLock();
 
 		assertNull(RouterServiceValidator.getTrustedList(null));
-		assertNotNull(RouterServiceValidator.getTrustedList(getTargetContext()));
+		assertNotNull(RouterServiceValidator.getTrustedList(getInstrumentation().getTargetContext()));
 
 		releaseTListLock();
 	}
@@ -257,16 +257,16 @@ public class RSVTestCase {
 		requestTListLock();
 
 		assertFalse(RouterServiceValidator.setTrustedList(null,null));
-		assertFalse(RouterServiceValidator.setTrustedList(getTargetContext(),null));
+		assertFalse(RouterServiceValidator.setTrustedList(getInstrumentation().getTargetContext(),null));
 		assertFalse(RouterServiceValidator.setTrustedList(null,"test"));
-		assertTrue(RouterServiceValidator.setTrustedList(getTargetContext(),"test"));
-		assertTrue(RouterServiceValidator.setTrustedList(getTargetContext(),TEST));
-		assertTrue(RouterServiceValidator.setTrustedList(getTargetContext(),TEST+TEST+TEST+TEST+TEST));
+		assertTrue(RouterServiceValidator.setTrustedList(getInstrumentation().getTargetContext(),"test"));
+		assertTrue(RouterServiceValidator.setTrustedList(getInstrumentation().getTargetContext(),TEST));
+		assertTrue(RouterServiceValidator.setTrustedList(getInstrumentation().getTargetContext(),TEST+TEST+TEST+TEST+TEST));
 		StringBuilder builder = new StringBuilder();
 		for(int i = 0; i<1000; i++){
 			builder.append(TEST);
 		}
-		assertTrue(RouterServiceValidator.setTrustedList(getTargetContext(),builder.toString()));
+		assertTrue(RouterServiceValidator.setTrustedList(getInstrumentation().getTargetContext(),builder.toString()));
 
 		releaseTListLock();
 	}
@@ -275,8 +275,8 @@ public class RSVTestCase {
 	public void testTrustedListSetAndGet(){
 		requestTListLock();
 
-		assertTrue(RouterServiceValidator.setTrustedList(getTargetContext(),TEST));
-		String retVal = RouterServiceValidator.getTrustedList(getTargetContext());
+		assertTrue(RouterServiceValidator.setTrustedList(getInstrumentation().getTargetContext(),TEST));
+		String retVal = RouterServiceValidator.getTrustedList(getInstrumentation().getTargetContext());
 		assertNotNull(retVal);
 		assertTrue(TEST.equals(retVal));
 
@@ -284,8 +284,8 @@ public class RSVTestCase {
 		for(int i = 0; i<1000; i++){
 			builder.append(TEST);
 		}
-		assertTrue(RouterServiceValidator.setTrustedList(getTargetContext(),builder.toString()));
-		retVal = RouterServiceValidator.getTrustedList(getTargetContext());
+		assertTrue(RouterServiceValidator.setTrustedList(getInstrumentation().getTargetContext(),builder.toString()));
+		retVal = RouterServiceValidator.getTrustedList(getInstrumentation().getTargetContext());
 		assertNotNull(retVal);
 		assertTrue(builder.toString().equals(retVal));
 
@@ -296,8 +296,8 @@ public class RSVTestCase {
 	public void testInvalidationSequence(){
 		requestTListLock();
 
-		assertTrue(RouterServiceValidator.invalidateList(getTargetContext()));
-		assertTrue(RouterServiceValidator.createTrustedListRequest(getTargetContext(), false, null, trustedListCallback));
+		assertTrue(RouterServiceValidator.invalidateList(getInstrumentation().getTargetContext()));
+		assertTrue(RouterServiceValidator.createTrustedListRequest(getInstrumentation().getTargetContext(), false, null, trustedListCallback));
 	}
 
 	@Test
@@ -307,11 +307,11 @@ public class RSVTestCase {
 		assertFalse(TrustedAppStore.isTrustedStore("test"));
 		assertFalse(TrustedAppStore.isTrustedStore(null));
 		
-		rsvp = new RouterServiceValidator(getTargetContext());
+		rsvp = new RouterServiceValidator(getInstrumentation().getTargetContext());
 		rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_INSTALLED_FROM_CHECK);
 		rsvp.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH);
 		
-		PackageManager packageManager = getTargetContext().getPackageManager();
+		PackageManager packageManager = getInstrumentation().getTargetContext().getPackageManager();
 		List<PackageInfo> packages = packageManager.getInstalledPackages(0);
 		String appStore;
 		for(PackageInfo info: packages){
@@ -326,7 +326,7 @@ public class RSVTestCase {
 
 	@Test
 	public void testVersionBlackList(){
-		rsvp = new RouterServiceValidator(getTargetContext());
+		rsvp = new RouterServiceValidator(getInstrumentation().getTargetContext());
 		JSONArray array = new JSONArray();
 		for(int i=0; i<25; i++){
 			if(i%3 == 0){
@@ -371,7 +371,7 @@ public class RSVTestCase {
 			}
 		};
 		
-		assertTrue(RouterServiceValidator.createTrustedListRequest(getTargetContext(),true, cb));
+		assertTrue(RouterServiceValidator.createTrustedListRequest(getInstrumentation().getTargetContext(),true, cb));
 		//Now wait for call to finish
 		synchronized(REQUEST_LOCK){
 			try {
@@ -392,8 +392,8 @@ public class RSVTestCase {
 	public void testRequestChange(){
 		requestTListLock();
 
-		RouterServiceValidator.setLastRequest(getTargetContext(), null);
-		assertNull(RouterServiceValidator.getLastRequest(getTargetContext()));
+		RouterServiceValidator.setLastRequest(getInstrumentation().getTargetContext(), null);
+		assertNull(RouterServiceValidator.getLastRequest(getInstrumentation().getTargetContext()));
 
 		JSONObject object = null;
 		try {
@@ -402,11 +402,11 @@ public class RSVTestCase {
 			e.printStackTrace();
 		}
 		assertNotNull(object);
-		assertFalse(object.equals(RouterServiceValidator.getLastRequest(getTargetContext())));
+		assertFalse(object.equals(RouterServiceValidator.getLastRequest(getInstrumentation().getTargetContext())));
 		
-		assertTrue(RouterServiceValidator.setLastRequest(getTargetContext(), object.toString()));
+		assertTrue(RouterServiceValidator.setLastRequest(getInstrumentation().getTargetContext(), object.toString()));
 		
-		String oldRequest = RouterServiceValidator.getLastRequest(getTargetContext());
+		String oldRequest = RouterServiceValidator.getLastRequest(getInstrumentation().getTargetContext());
 		assertNotNull(oldRequest);
 		assertTrue(object.toString().equals(oldRequest));
 		
@@ -419,9 +419,9 @@ public class RSVTestCase {
 			e.printStackTrace();
 		}
 		assertNotNull(object);
-		assertFalse(object.equals(RouterServiceValidator.getLastRequest(getTargetContext())));
+		assertFalse(object.equals(RouterServiceValidator.getLastRequest(getInstrumentation().getTargetContext())));
 		//Clear it for next test
-		RouterServiceValidator.setLastRequest(getTargetContext(), null);
+		RouterServiceValidator.setLastRequest(getInstrumentation().getTargetContext(), null);
 
 		releaseTListLock();
 	}
@@ -449,12 +449,12 @@ public class RSVTestCase {
 		}
 
 		// Fail, different package name for context and service and app security setting is not OFF and app is not on trusted list
-		RouterServiceValidatorTest rsvpFail = new RouterServiceValidatorTest(getTargetContext(), new ComponentName("anything", getTargetContext().getClass().getSimpleName()));
+		RouterServiceValidatorTest rsvpFail = new RouterServiceValidatorTest(getInstrumentation().getTargetContext(), new ComponentName("anything", getInstrumentation().getTargetContext().getClass().getSimpleName()));
 		rsvpFail.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH);
 		assertFalse(rsvpFail.validate());
 
 		// Success, same package name for context and service
-		RouterServiceValidatorTest rsvpPass = new RouterServiceValidatorTest(getTargetContext(), new ComponentName(getTargetContext().getPackageName(), getTargetContext().getClass().getSimpleName()));
+		RouterServiceValidatorTest rsvpPass = new RouterServiceValidatorTest(getInstrumentation().getTargetContext(), new ComponentName(getInstrumentation().getTargetContext().getPackageName(), getInstrumentation().getTargetContext().getClass().getSimpleName()));
 		rsvpPass.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH);
 		assertTrue(rsvpPass.validate());
 	}
@@ -464,7 +464,7 @@ public class RSVTestCase {
 	 */
 	@Test
 	public void testValidateAsync() {
-		final MultiplexTransportConfig config = new MultiplexTransportConfig(getTargetContext(), APP_ID, MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH);
+		final MultiplexTransportConfig config = new MultiplexTransportConfig(getInstrumentation().getTargetContext(), APP_ID, MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH);
 		final RouterServiceValidator validator = new RouterServiceValidator(config);
 		final ConditionVariable cond = new ConditionVariable();
 		validator.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
@@ -478,7 +478,7 @@ public class RSVTestCase {
 		cond.block();
 
 		// next, test for FLAG_MULTI_SECURITY_OFF
-		final MultiplexTransportConfig config2 = new MultiplexTransportConfig(getTargetContext(), APP_ID, MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
+		final MultiplexTransportConfig config2 = new MultiplexTransportConfig(getInstrumentation().getTargetContext(), APP_ID, MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
 		final RouterServiceValidator validator2 = new RouterServiceValidator(config2);
 		cond.close();
 		validator2.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {

@@ -81,6 +81,12 @@ public enum AppHMIType {
      * Remote Control
      */
     REMOTE_CONTROL,
+    /**
+     * Web View
+     *
+     * @since SmartDeviceLink 7.0.0
+     */
+    WEB_VIEW
     ;
 
     /**

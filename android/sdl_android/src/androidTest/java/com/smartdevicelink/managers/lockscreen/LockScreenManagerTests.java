@@ -1,7 +1,7 @@
 package com.smartdevicelink.managers.lockscreen;
 
 import android.content.Context;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.interfaces.ISdl;
@@ -18,7 +18,7 @@ import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import static android.support.test.InstrumentationRegistry.getContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNull;
@@ -53,7 +53,7 @@ public class LockScreenManagerTests {
 		};
 		doAnswer(onDDStatusAnswer).when(internalInterface).addOnRPCNotificationListener(eq(FunctionID.ON_DRIVER_DISTRACTION), any(OnRPCNotificationListener.class));
 
-		Context context =  getContext();
+		Context context =  getInstrumentation().getContext();
 		// create config
 		LockScreenConfig lockScreenConfig = new LockScreenConfig();
 		lockScreenConfig.setCustomView(TestValues.GENERAL_INT);
