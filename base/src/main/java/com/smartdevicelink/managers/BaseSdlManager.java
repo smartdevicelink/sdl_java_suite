@@ -219,18 +219,10 @@ abstract class BaseSdlManager {
                             if (lcu.getVoiceRecognitionCommandNames() != null) {
                                 vrSynonyms = lcu.getVoiceRecognitionCommandNames();
                             }
+                        } else {
+                            DebugTool.logError(TAG, "Change Registration onError: " + response.getSuccess() + " | Info: " + response.getInfo());
+                            retryChangeRegistration();
                         }
-                        try {
-                            DebugTool.logInfo(TAG, response.serializeJSON().toString());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(int correlationId, Result resultCode, String info) {
-                        DebugTool.logError(TAG, "Change Registration onError: " + resultCode + " | Info: " + info);
-                        retryChangeRegistration();
                     }
                 });
                 this.sendRPC(changeRegistration);
