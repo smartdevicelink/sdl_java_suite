@@ -308,11 +308,6 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				handleResponse(response.getSuccess());
 			}
 
-			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-				handleResponse(false);
-			}
-
 			private void handleResponse(boolean success){
 				if (success){
 					updateCurrentScreenDataState(inProgressUpdate);
