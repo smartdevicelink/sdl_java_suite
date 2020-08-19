@@ -229,10 +229,6 @@ abstract class BaseSystemCapabilityManager {
 		updateDeprecatedDisplayCapabilities();
 	}
 
-	private void updateCachedVideoStreamingCapabilities(VideoStreamingCapability capability) {
-		setCapability(SystemCapabilityType.VIDEO_STREAMING, capability);
-	}
-
 	public WindowCapability getWindowCapability(int windowID) {
 		List<DisplayCapability> capabilities = convertToList(getCapability(SystemCapabilityType.DISPLAYS), DisplayCapability.class);
 		if (capabilities == null || capabilities.size() == 0) {
@@ -337,10 +333,6 @@ abstract class BaseSystemCapabilityManager {
                                                 systemCapabilitiesSubscriptionStatus.put(SystemCapabilityType.DISPLAYS, true);
                                                 break;
 											case VIDEO_STREAMING:
-												// Successfully got DISPLAYS data. No conversion needed anymore
-												// this notification can return only affected windows (hence not all windows)
-												// VideoStreamingCapability newVideoStreamingCapability = (VideoStreamingCapability) capability;
-												//updateCachedVideoStreamingCapabilities(newVideoStreamingCapability);
 												systemCapabilitiesSubscriptionStatus.put(SystemCapabilityType.VIDEO_STREAMING, true);
 												break;
                                         }
