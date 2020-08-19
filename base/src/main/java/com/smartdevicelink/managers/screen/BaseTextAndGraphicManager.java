@@ -119,7 +119,6 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		currentHMILevel = HMILevel.HMI_NONE;
 		currentScreenData = new Show();
 		addListeners();
-		getBlankArtwork();
 		//TODO added
 		this.transactionQueue = newTransactionQueue();
 		//	this.batchQueue = new ArrayList<>();
@@ -234,9 +233,10 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	}
 
 	// Convert to State
+
 	private TextsAndGraphicsState currentState() {
 		return new TextsAndGraphicsState(textField1, textField2, textField3, textField4, mediaTrackTextField,
-				title, primaryGraphic, secondaryGraphic, blankArtwork, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type);
+				title, primaryGraphic, secondaryGraphic, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type);
 	}
 
 	// Extraction
@@ -292,7 +292,6 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	//Equality IOS has this section with:
 	// sdl_showImages
 
-	abstract SdlArtwork getBlankArtwork();
 
 	// Getters / Setters
 

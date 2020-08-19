@@ -10,13 +10,12 @@ public class TextsAndGraphicsState {
     private String textField1, textField2, textField3, textField4, mediaTrackTextField, title;
     private MetadataType textField1Type, textField2Type, textField3Type, textField4Type;
     private TextAlignment textAlignment;
-    //TODO need better solution for BlankArtwork
-    private SdlArtwork primaryGraphic, secondaryGraphic, blankArtwork;
+    private SdlArtwork primaryGraphic, secondaryGraphic;
 
     public TextsAndGraphicsState(){}
 
     public TextsAndGraphicsState(String textField1, String textField2, String textField3, String textField4, String mediaTrackTextField,
-                                 String title, SdlArtwork primaryGraphic, SdlArtwork secondaryGraphic, SdlArtwork blankArtwork, TextAlignment textAlignment,
+                                 String title, SdlArtwork primaryGraphic, SdlArtwork secondaryGraphic, TextAlignment textAlignment,
                                  MetadataType textField1Type, MetadataType textField2Type, MetadataType textField3Type, MetadataType textField4Type) {
         this.textField1 = textField1;
         this.textField2 = textField2;
@@ -26,9 +25,6 @@ public class TextsAndGraphicsState {
         this.title = title;
         this.primaryGraphic = primaryGraphic;
         this.secondaryGraphic = secondaryGraphic;
-
-        this.blankArtwork = blankArtwork;
-
         this.textAlignment = textAlignment;
         this.textField1Type = textField1Type;
         this.textField2Type = textField2Type;

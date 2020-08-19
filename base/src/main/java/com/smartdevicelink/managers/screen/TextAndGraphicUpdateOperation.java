@@ -81,7 +81,7 @@ public class TextAndGraphicUpdateOperation extends Task {
                  }
              });
 
-        } else if (!sdlArtworkNeedsUpload(updatedState.getPrimaryGraphic()) && (updatedState.getSecondaryGraphic() == updatedState.getBlankArtwork() || !sdlArtworkNeedsUpload(updatedState.getSecondaryGraphic()))){
+        } else if (!sdlArtworkNeedsUpload(updatedState.getPrimaryGraphic()) && !sdlArtworkNeedsUpload(updatedState.getSecondaryGraphic())){
             //Images already uploaded, sending full update
             // The files to be updated are already uploaded, send the full show immediately
             sendShow(fullShow, new CompletionListener() {
