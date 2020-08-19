@@ -135,12 +135,4 @@ public class TextsAndGraphicsState {
     public void setSecondaryGraphic(SdlArtwork secondaryGraphic) {
         this.secondaryGraphic = secondaryGraphic;
     }
-
-    public SdlArtwork getBlankArtwork() {
-        return blankArtwork;
-    }
-
-    public void setBlankArtwork(SdlArtwork blankArtwork) {
-        this.blankArtwork = blankArtwork;
-    }
 }
