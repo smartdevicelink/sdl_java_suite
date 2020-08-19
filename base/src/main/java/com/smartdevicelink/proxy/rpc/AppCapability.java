@@ -41,7 +41,7 @@ public class AppCapability extends RPCStruct {
     }
 
     public AppCapabilityType getAppCapabilityType() {
-        return (AppCapabilityType) getObject(VideoStreamingCapability.class, KEY_APP_CAPABILITY_TYPE);
+        return (AppCapabilityType) getObject(AppCapabilityType.class, KEY_APP_CAPABILITY_TYPE);
     }
 
     public void setAppCapabilityType(@NonNull AppCapabilityType capabilityType) {
