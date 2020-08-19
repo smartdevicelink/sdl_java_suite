@@ -221,9 +221,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		}
 
 		@Override
-		public void onError(String info) {
-			Log.d("MyTagLogInfo", info);
-		}
+		public void onError(String info) { }
 	};
 
 	// MANAGER APIs
