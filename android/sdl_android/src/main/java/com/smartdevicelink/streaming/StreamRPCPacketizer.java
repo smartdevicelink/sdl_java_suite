@@ -44,8 +44,6 @@ import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
 import com.smartdevicelink.proxy.interfaces.IPutFileResponseListener;
 import com.smartdevicelink.proxy.rpc.PutFile;
 import com.smartdevicelink.proxy.rpc.PutFileResponse;
-import com.smartdevicelink.proxy.rpc.enums.Result;
-import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
 import com.smartdevicelink.util.Version;
 
 import java.io.IOException;
@@ -65,7 +63,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
     private Object mPauseLock;
     private boolean mPaused;
     private boolean isRPCProtected = false;
-	private OnPutFileUpdateListener callBack;
+	//private OnPutFileUpdateListener callBack;
 
 	private Version rpcSpecVersion;
 
@@ -223,9 +221,9 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 			{
 				handleStreamException(null,null," Error, PutFile offset invalid for file: " + sFileName);
 			}
-			if(callBack!=null){
-				callBack.onStart(_request.getCorrelationID(), lFileSize);
-			}
+//			if(callBack!=null){
+//				callBack.onStart(_request.getCorrelationID(), lFileSize);
+//			}
 			while (!Thread.interrupted()) {				
 			
 				synchronized (mPauseLock)

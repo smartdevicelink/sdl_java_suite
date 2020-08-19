@@ -81,7 +81,6 @@ import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
-import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCRequestListener;
@@ -530,24 +529,6 @@ abstract class BaseLifecycleManager {
     }
 
     /**
-     * Only call this method for a PutFile response. It will cause a class cast exception if not.
-     *
-     * @param correlationId correlation id of the packet being updated
-     * @param bytesWritten  how many bytes were written
-     * @param totalSize     the total size in bytes
-     */
-    @SuppressWarnings("unused")
-    private void onPacketProgress(int correlationId, long bytesWritten, long totalSize) {
-        synchronized (ON_UPDATE_LISTENER_LOCK) {
-            if (rpcResponseListeners != null
-                    && rpcResponseListeners.containsKey(correlationId)) {
-                ((OnPutFileUpdateListener) rpcResponseListeners.get(correlationId)).onUpdate(correlationId, bytesWritten, totalSize);
-            }
-        }
-
-    }
-
-    /**
      * Will provide callback to the listener either onFinish or onError depending on the RPCResponses result code,
      * <p>Will automatically remove the listener for the list of listeners on completion.
      *
@@ -578,15 +559,11 @@ abstract class BaseLifecycleManager {
      *
      * @param listener      that will get called back when a response is received
      * @param correlationId of the RPCRequest that was sent
-     * @param totalSize     only include if this is an OnPutFileUpdateListener. Otherwise it will be ignored.
      */
-    private void addOnRPCResponseListener(OnRPCResponseListener listener, int correlationId, int totalSize) {
+    private void addOnRPCResponseListener(OnRPCResponseListener listener, int correlationId) {
         synchronized (ON_UPDATE_LISTENER_LOCK) {
             if (rpcResponseListeners != null
                     && listener != null) {
-                if (listener.getListenerType() == OnRPCResponseListener.UPDATE_LISTENER_TYPE_PUT_FILE) {
-                    ((OnPutFileUpdateListener) listener).setTotalSize(totalSize);
-                }
                 listener.onStart(correlationId);
                 rpcResponseListeners.put(correlationId, listener);
             }
@@ -821,7 +798,7 @@ abstract class BaseLifecycleManager {
 
                     OnRPCResponseListener listener = ((RPCRequest) message).getOnRPCResponseListener();
                     if (listener != null) {
-                        addOnRPCResponseListener(listener, corrId, msgBytes.length);
+                        addOnRPCResponseListener(listener, corrId);
                     }
                 }
             } else if (RPCMessage.KEY_RESPONSE.equals(message.getMessageType())) { // Response Specifics
