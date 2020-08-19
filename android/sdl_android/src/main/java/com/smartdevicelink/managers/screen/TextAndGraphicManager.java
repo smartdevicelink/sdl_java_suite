@@ -48,13 +48,12 @@ import com.smartdevicelink.proxy.rpc.enums.FileType;
  */
 class TextAndGraphicManager extends BaseTextAndGraphicManager {
 
-	TextAndGraphicManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager, @NonNull SoftButtonManager softButtonManager) {
-		super(internalInterface, fileManager, softButtonManager);
+	TextAndGraphicManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
+		super(internalInterface, fileManager);
 	}
 
-	@Override
-	SdlArtwork getBlankArtwork(){
-		if (blankArtwork == null){
+	SdlArtwork getBlankArtwork() {
+		if (blankArtwork == null) {
 			blankArtwork = new SdlArtwork();
 			blankArtwork.setType(FileType.GRAPHIC_PNG);
 			blankArtwork.setName("blankArtwork");

@@ -78,6 +78,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 
 	// Sub manager listener
 	private final CompletionListener subManagerListener = new CompletionListener() {
+
 		@Override
 		public synchronized void onComplete(boolean success) {
 			if (softButtonManager != null && textAndGraphicManager != null && voiceCommandManager != null && menuManager != null && choiceSetManager != null && subscribeButtonManager != null) {
@@ -125,7 +126,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	private void initialize(){
 		if (fileManager.get() != null) {
 			this.softButtonManager = new SoftButtonManager(internalInterface, fileManager.get());
-			this.textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager.get(), softButtonManager);
+			this.textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager.get());
 			this.menuManager = new MenuManager(internalInterface, fileManager.get());
 			this.choiceSetManager = new ChoiceSetManager(internalInterface, fileManager.get());
 		}

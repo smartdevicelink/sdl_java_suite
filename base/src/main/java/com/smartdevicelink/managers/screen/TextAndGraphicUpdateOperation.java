@@ -45,7 +45,6 @@ public class TextAndGraphicUpdateOperation extends Task {
      */
     public TextAndGraphicUpdateOperation(ISdl internalInterface, FileManager fileManager, WindowCapability currentCapabilities,
                                          Show currentScreenData, TextsAndGraphicsState newState, CompletionListener listener) {
-
         super("TextAndGraphicUpdateOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
@@ -53,7 +52,6 @@ public class TextAndGraphicUpdateOperation extends Task {
         this.currentScreenData = currentScreenData;
         this.updatedState = newState;
         this.listener = listener;
-
     }
 
     @Override
@@ -63,47 +61,52 @@ public class TextAndGraphicUpdateOperation extends Task {
 
     private void start() {
         if (getState() == Task.CANCELED) {
+            finishOperation(false);
             return;
         }
 
+        // Build a show with everything from `self.newState`, we'll pull things out later if we can.
         Show fullShow = new Show();
         fullShow.setAlignment(updatedState.getTextAlignment());
         fullShow = assembleShowText(fullShow);
         fullShow = assembleShowImages(fullShow);
 
+        if (!shouldUpdatePrimaryImage() && !shouldUpdateSecondaryImage()) {
+            DebugTool.logInfo(TAG, "No images to send, sending text");
+            // If there are no images to update, just send the text
+            sendShow(extractTextFromShow(fullShow), new CompletionListener() {
+                @Override
+                public void onComplete(boolean success) {
+                    finishOperation(success);
+                    return;
+                }
+            });
 
-        if (!shouldUpdatePrimaryImage() && !shouldUpdateSecondaryImage()){
-            //No Images to send, only sending text
-             sendShow(extractTextFromShow(fullShow), new CompletionListener() {
-                 @Override
-                 public void onComplete(boolean success) {
-                       listener.onComplete(success);
-                 }
-             });
-
-        } else if (!sdlArtworkNeedsUpload(updatedState.getPrimaryGraphic()) && !sdlArtworkNeedsUpload(updatedState.getSecondaryGraphic())){
-            //Images already uploaded, sending full update
+        } else if (!sdlArtworkNeedsUpload(updatedState.getPrimaryGraphic()) && !sdlArtworkNeedsUpload(updatedState.getSecondaryGraphic())) {
+            DebugTool.logInfo(TAG, "Images already uploaded, sending full update");
             // The files to be updated are already uploaded, send the full show immediately
             sendShow(fullShow, new CompletionListener() {
                 @Override
                 public void onComplete(boolean success) {
-                    listener.onComplete(success);
+                    finishOperation(success);
+                    return;
                 }
             });
         } else {
-            //Images need to be uploaded
+            DebugTool.logInfo(TAG, "Images need to be uploaded, sending text and uploading images");
 
             sendShow(extractTextFromShow(fullShow), new CompletionListener() {
                 @Override
                 public void onComplete(boolean success) {
-                    //TODO fix
-/*                   if(self.cancelled){
-                        listener.onComplete(success);
-                    }*/
+                    if (getState() == Task.CANCELED) {
+                        finishOperation(success);
+                        return;
+                    }
                     uploadImagesAndSendWhenDone(new CompletionListener() {
                         @Override
                         public void onComplete(boolean success) {
-                            listener.onComplete(success);
+                            finishOperation(success);
+                            return;
                         }
                     });
 
@@ -112,7 +115,7 @@ public class TextAndGraphicUpdateOperation extends Task {
         }
     }
 
-    void sendShow(final Show show, final CompletionListener listener){
+    void sendShow(final Show show, final CompletionListener listener) {
         show.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
@@ -125,8 +128,9 @@ public class TextAndGraphicUpdateOperation extends Task {
                 handleResponse(false);
             }
 
-            private void handleResponse(boolean success){
-                if (success){
+            private void handleResponse(boolean success) {
+                DebugTool.logInfo(TAG, "Text and Graphic update completed");
+                if (success) {
                     updateCurrentScreenDataState(show);
                 }
                 listener.onComplete(success);
@@ -137,12 +141,12 @@ public class TextAndGraphicUpdateOperation extends Task {
 
 
     void uploadImagesAndSendWhenDone(final CompletionListener listener) {
-
         uploadImages(new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
                 Show showWithGraphics = createImageOnlyShowWithPrimaryArtwork(updatedState.getPrimaryGraphic(), updatedState.getSecondaryGraphic());
                 if (showWithGraphics != null) {
+                    DebugTool.logInfo(TAG, "Sending update with the successfully uploaded images");
                     sendShow(showWithGraphics, new CompletionListener() {
                         @Override
                         public void onComplete(boolean success) {
@@ -150,6 +154,7 @@ public class TextAndGraphicUpdateOperation extends Task {
                         }
                     });
                 } else {
+                    DebugTool.logWarning(TAG, "All images failed to upload. No graphics to show, skipping update.");
                     listener.onComplete(success);
                 }
             }
@@ -161,17 +166,17 @@ public class TextAndGraphicUpdateOperation extends Task {
         List<SdlArtwork> artworksToUpload = new ArrayList<>();
 
         // add primary image
-        if (shouldUpdatePrimaryImage() && !updatedState.getPrimaryGraphic().isStaticIcon()){
+        if (shouldUpdatePrimaryImage() && !updatedState.getPrimaryGraphic().isStaticIcon()) {
             artworksToUpload.add(updatedState.getPrimaryGraphic());
         }
 
         // add secondary image
-        if (shouldUpdateSecondaryImage() && !updatedState.getSecondaryGraphic().isStaticIcon()){
+        if (shouldUpdateSecondaryImage() && !updatedState.getSecondaryGraphic().isStaticIcon()) {
             artworksToUpload.add(updatedState.getSecondaryGraphic());
         }
 
-        if (artworksToUpload.size() == 0 && (updatedState.getPrimaryGraphic().isStaticIcon() || updatedState.getSecondaryGraphic().isStaticIcon())){
-            DebugTool.logInfo(TAG, "Upload attempted on static icons, sending them without upload instead");
+        if (artworksToUpload.size() == 0) {
+            DebugTool.logInfo(TAG, "No artworks need an upload, sending them without upload instead");
             listener.onComplete(true);
         }
 
@@ -181,7 +186,7 @@ public class TextAndGraphicUpdateOperation extends Task {
                 @Override
                 public void onComplete(Map<String, String> errors) {
                     if (errors != null) {
-                        DebugTool.logError(TAG, "Error Uploading Artworks. Error: " + errors.toString());
+                        DebugTool.logError(TAG, "Text and graphic manager artwork failed to upload with error: " + errors.toString());
                         listener.onComplete(false);
                     } else {
                         listener.onComplete(true);
@@ -191,32 +196,31 @@ public class TextAndGraphicUpdateOperation extends Task {
         }
     }
 
-    private Show assembleShowImages(Show show){
+    private Show assembleShowImages(Show show) {
 
-        if (shouldUpdatePrimaryImage()){
+        if (shouldUpdatePrimaryImage()) {
             show.setGraphic(updatedState.getPrimaryGraphic().getImageRPC());
         }
 
-        if (shouldUpdateSecondaryImage()){
+        if (shouldUpdateSecondaryImage()) {
             show.setSecondaryGraphic(updatedState.getSecondaryGraphic().getImageRPC());
         }
 
         return show;
     }
 
-    private Show createImageOnlyShowWithPrimaryArtwork(SdlArtwork primaryArtwork, SdlArtwork secondaryArtwork){
+    private Show createImageOnlyShowWithPrimaryArtwork(SdlArtwork primaryArtwork, SdlArtwork secondaryArtwork) {
         Show newShow = new Show();
-        //TODO double check logic here
         newShow.setGraphic(!(sdlArtworkNeedsUpload(primaryArtwork)) ? primaryArtwork.getImageRPC() : null);
         newShow.setSecondaryGraphic(!(sdlArtworkNeedsUpload(secondaryArtwork)) ? secondaryArtwork.getImageRPC() : null);
-        if(newShow.getGraphic() == null && newShow.getSecondaryGraphic() == null){
-            //log no graphic to upload
+        if (newShow.getGraphic() == null && newShow.getSecondaryGraphic() == null) {
+            DebugTool.logInfo(TAG, "No graphics to upload");
             return null;
         }
         return newShow;
     }
 
-  Show assembleShowText(Show show) {
+    Show assembleShowText(Show show) {
 
         show = setBlankTextFields(show);
 
@@ -559,7 +563,7 @@ public class TextAndGraphicUpdateOperation extends Task {
         return array;
     }
 
-   // abstract SdlArtwork getBlankArtwork();
+    // abstract SdlArtwork getBlankArtwork();
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean sdlArtworkNeedsUpload(SdlArtwork artwork) {
@@ -643,12 +647,17 @@ public class TextAndGraphicUpdateOperation extends Task {
         this.sentShow = sentShow;
     }
 
-
     public Show getCurrentScreenData() {
         return currentScreenData;
     }
 
-    public void setCurrentScreenData(Show currentScreenData2) {
-        this.currentScreenData = currentScreenData2;
+    public void setCurrentScreenData(Show currentScreenData) {
+        this.currentScreenData = currentScreenData;
+    }
+
+    void finishOperation(boolean success) {
+        DebugTool.logInfo(TAG, "Finishing text and graphic update operation");
+        listener.onComplete(success);
+        onFinished();
     }
 }

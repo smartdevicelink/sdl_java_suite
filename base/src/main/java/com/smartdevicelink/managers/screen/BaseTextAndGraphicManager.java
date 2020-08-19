@@ -34,62 +34,47 @@ package com.smartdevicelink.managers.screen;
 import androidx.annotation.NonNull;
 
 import com.livio.taskmaster.Queue;
-import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
-import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
-import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
-import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
-import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
-import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
-import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
-import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
-import com.smartdevicelink.util.CompareUtils;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static com.smartdevicelink.proxy.rpc.enums.TextAlignment.CENTERED;
 
 /**
  * <strong>TextAndGraphicManager</strong> <br>
- *
+ * <p>
  * Note: This class must be accessed through the SdlManager. Do not instantiate it by itself. <br>
- *
  */
 abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 	private static final String TAG = "TextAndGraphicManager";
 
 	boolean isDirty;
-	//volatile Show inProgressUpdate;
 	Show currentScreenData;
 	HMILevel currentHMILevel;
 	WindowCapability defaultMainWindowCapability;
 	private boolean pendingHMIFull, batchingUpdates;
 	private final WeakReference<FileManager> fileManager;
-	private final WeakReference<SoftButtonManager> softButtonManager;
 	private CompletionListener pendingHMIListener;
 	SdlArtwork blankArtwork;
 	private OnRPCNotificationListener hmiListener;
@@ -107,11 +92,10 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 	//Constructors
 
-	BaseTextAndGraphicManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager, @NonNull SoftButtonManager softButtonManager) {
+	BaseTextAndGraphicManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
 		// set class vars
 		super(internalInterface);
 		this.fileManager = new WeakReference<>(fileManager);
-		this.softButtonManager = new WeakReference<>(softButtonManager);
 		batchingUpdates = false;
 		isDirty = false;
 		pendingHMIFull = false;
@@ -119,10 +103,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		currentHMILevel = HMILevel.HMI_NONE;
 		currentScreenData = new Show();
 		addListeners();
-		//TODO added
 		this.transactionQueue = newTransactionQueue();
-		//	this.batchQueue = new ArrayList<>();
-		textsAndGraphicsState = new TextsAndGraphicsState();
 	}
 
 	@Override
@@ -133,7 +114,6 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 	@Override
 	public void dispose() {
-
 		textField1 = null;
 		textField1Type = null;
 		textField2 = null;
@@ -153,6 +133,13 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		pendingHMIListener = null;
 		isDirty = false;
 		pendingHMIFull = false;
+		updateOperation = null;
+
+		// Cancel the operations
+		if (transactionQueue != null) {
+			transactionQueue.close();
+			transactionQueue = null;
+		}
 
 		// remove listeners
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
@@ -161,15 +148,13 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		super.dispose();
 	}
 
-	//TODO temp location Also what do I set the ID to?
 	private Queue newTransactionQueue() {
-		Queue queue = internalInterface.getTaskmaster().createQueue("TextAndGraphicManager", 9, false);
+		Queue queue = internalInterface.getTaskmaster().createQueue("TextAndGraphicManager", 3, false);
 		queue.pause();
 		return queue;
 	}
 
-	//TODO fix for T&G Manager
-	// Suspend the queue if the soft button capabilities are null (we assume that soft buttons are not supported)
+	// Suspend the queue if the WindowCapabilities are null
 	// OR if the HMI level is NONE since we want to delay sending RPCs until we're in non-NONE
 	private void updateTransactionQueueSuspended() {
 		if (defaultMainWindowCapability == null || HMILevel.HMI_NONE.equals(currentHMILevel)) {
@@ -181,12 +166,14 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		}
 	}
 
-	//TODO not in IOS
-
-
 	// Upload / Send
 
 	protected void update(CompletionListener listener) {
+
+		// check if is batch update
+		if (batchingUpdates) {
+			return;
+		}
 
 		// make sure hmi is not none
 		if (currentHMILevel == null || currentHMILevel == HMILevel.HMI_NONE) {
@@ -195,11 +182,6 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			if (listener != null) {
 				pendingHMIListener = listener;
 			}
-			return;
-		}
-
-		// check if is batch update
-		if (batchingUpdates) {
 			return;
 		}
 
@@ -216,6 +198,8 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		if (transactionQueue.getTasksAsList().size() > 0) {
 			//Transactions already exist, cancelling them
 			transactionQueue.clear();
+			listener.onComplete(false);
+			return;
 		}
 		updateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager.get(), defaultMainWindowCapability, currentScreenData, currentState(), new CompletionListener() {
 			@Override
@@ -224,7 +208,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				if (updateOperation.getSentShow() != null) {
 					currentScreenData = updateOperation.getSentShow();
 				}
-				if (listener != null) { //IOS diff here
+				if (listener != null) {
 					listener.onComplete(success);
 				}
 			}
@@ -238,60 +222,6 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		return new TextsAndGraphicsState(textField1, textField2, textField3, textField4, mediaTrackTextField,
 				title, primaryGraphic, secondaryGraphic, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type);
 	}
-
-	// Extraction
-
-	//IOS has sdl_extractImageFromShow
-
-	//IOS has sdl_createImageOnlyShowWithPrimaryArtwork
-
-	private void updateCurrentScreenDataState(Show show) {
-
-		if (show == null) {
-			DebugTool.logError(TAG, "can not updateCurrentScreenDataFromShow from null show");
-			return;
-		}
-
-		// If the items are null, they were not updated, so we can't just set it directly
-		if (show.getMainField1() != null) {
-			currentScreenData.setMainField1(show.getMainField1());
-		}
-		if (show.getMainField2() != null) {
-			currentScreenData.setMainField2(show.getMainField2());
-		}
-		if (show.getMainField3() != null) {
-			currentScreenData.setMainField3(show.getMainField3());
-		}
-		if (show.getMainField4() != null) {
-			currentScreenData.setMainField4(show.getMainField4());
-		}
-		if (show.getTemplateTitle() != null) {
-			currentScreenData.setTemplateTitle(show.getTemplateTitle());
-		}
-		if (show.getMediaTrack() != null) {
-			currentScreenData.setMediaTrack(show.getMediaTrack());
-		}
-		if (show.getMetadataTags() != null) {
-			currentScreenData.setMetadataTags(show.getMetadataTags());
-		}
-		if (show.getAlignment() != null) {
-			currentScreenData.setAlignment(show.getAlignment());
-		}
-		if (show.getGraphic() != null) {
-			currentScreenData.setGraphic(show.getGraphic());
-		}
-		if (show.getSecondaryGraphic() != null) {
-			currentScreenData.setSecondaryGraphic(show.getSecondaryGraphic());
-		}
-	}
-
-	// Helpers
-
-	// IOS has sdl_hasData
-
-	//Equality IOS has this section with:
-	// sdl_showImages
-
 
 	// Getters / Setters
 
