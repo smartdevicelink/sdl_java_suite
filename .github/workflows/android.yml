@@ -15,7 +15,7 @@ jobs:
     - name: Setup JDK
       uses: actions/setup-java@v1
       with:
-        java-version: 7
+        java-version: 7.0.181
         
     - name: Sdl Android Tests
       # For more info, please check out: https://github.com/marketplace/actions/android-emulator-runner
