@@ -85,6 +85,7 @@ public class GetVehicleDataResponse extends RPCResponse {
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
     public static final String KEY_WINDOW_STATUS = "windowStatus";
+    public static final String KEY_GEAR_STATUS = "gearStatus";
     public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
 
 	/** 
@@ -160,9 +161,25 @@ public class GetVehicleDataResponse extends RPCResponse {
     public String getVin() {
     	return getString(KEY_VIN);
     }
+
+    /**
+     * Sets the prndl.
+     *
+     * @param prndl See PRNDL. This parameter is deprecated and it is now covered in `gearStatus`
+     * @deprecated in SmartDeviceLink 7.0.0
+     */
+    @Deprecated
     public void setPrndl(PRNDL prndl) {
         setParameters(KEY_PRNDL, prndl);
     }
+
+    /**
+     * Gets the prndl.
+     *
+     * @return PRNDL See PRNDL. This parameter is deprecated and it is now covered in `gearStatus`
+     * @deprecated in SmartDeviceLink 7.0.0
+     */
+    @Deprecated
     public PRNDL getPrndl() {
         return (PRNDL) getObject(PRNDL.class, KEY_PRNDL);
     }
@@ -424,5 +441,25 @@ public class GetVehicleDataResponse extends RPCResponse {
      */
     public Boolean getHandsOffSteering() {
         return getBoolean(KEY_HANDS_OFF_STEERING);
+    }
+
+    /**
+     * Sets the gearStatus.
+     *
+     * @param gearStatus See GearStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setGearStatus(GearStatus gearStatus) {
+        setParameters(KEY_GEAR_STATUS, gearStatus);
+    }
+
+    /**
+     * Gets the gearStatus.
+     *
+     * @return GearStatus See GearStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public GearStatus getGearStatus() {
+        return (GearStatus) getObject(GearStatus.class, KEY_GEAR_STATUS);
     }
 }

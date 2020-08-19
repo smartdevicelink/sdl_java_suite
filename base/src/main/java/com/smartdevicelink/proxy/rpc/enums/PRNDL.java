@@ -48,6 +48,9 @@ public enum PRNDL {
      * No gear
      */
     NEUTRAL,
+    /**
+     * Regular Drive mode
+     */
     DRIVE,
     /**
      * Drive Sport mode
@@ -83,6 +86,14 @@ public enum PRNDL {
     SIXTH,
     SEVENTH,
     EIGHTH,
+    /**
+     * @since SmartDeviceLink 7.0.0
+     */
+    NINTH,
+    /**
+     * @since SmartDeviceLink 7.0.0
+     */
+    TENTH,
     UNKNOWN,
     FAULT;
 

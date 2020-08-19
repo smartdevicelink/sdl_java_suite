@@ -9,6 +9,7 @@ import com.smartdevicelink.proxy.rpc.ECallInfo;
 import com.smartdevicelink.proxy.rpc.EmergencyEvent;
 import com.smartdevicelink.proxy.rpc.FuelRange;
 import com.smartdevicelink.proxy.rpc.GPSData;
+import com.smartdevicelink.proxy.rpc.GearStatus;
 import com.smartdevicelink.proxy.rpc.GetVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.Grid;
 import com.smartdevicelink.proxy.rpc.HeadLampStatus;
@@ -35,6 +36,7 @@ import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeQualificationStatus;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PrimaryAudioSource;
+import com.smartdevicelink.proxy.rpc.enums.TransmissionType;
 import com.smartdevicelink.proxy.rpc.enums.TurnSignal;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataNotificationStatus;
@@ -196,6 +198,12 @@ public class VehicleDataHelper{
 	public static final FuelType FUEL_RANGE_TYPE = FuelType.GASOLINE;
 	public static final Float FUEL_RANGE_RANGE = TestValues.GENERAL_FLOAT;
 
+	// Gear status
+	public static final GearStatus GEAR_STATUS = new GearStatus();
+	public static final PRNDL USER_SELECTED_GEAR = PRNDL.FIRST;
+	public static final PRNDL ACTUAL_GEAR = PRNDL.SECOND;
+	public static final TransmissionType TRANSMISSION_TYPE = TransmissionType.ELECTRIC_VARIABLE;
+
 	// WindowStatus
 	public static final Grid LOCATION_GRID = TestValues.GENERAL_LOCATION_GRID;
 	public static final WindowState WINDOW_STATE = TestValues.GENERAL_WINDOW_STATE;
@@ -341,6 +349,11 @@ public class VehicleDataHelper{
 			e.printStackTrace();
 		}
 
+		// GEAR_STATUS
+		GEAR_STATUS.setTransmissionType(TRANSMISSION_TYPE);
+		GEAR_STATUS.setUserSelectedGear(USER_SELECTED_GEAR);
+		GEAR_STATUS.setActualGear(ACTUAL_GEAR);
+
 		//set up the OnVehicleData object
 		VEHICLE_DATA.setSpeed(SPEED);
 		VEHICLE_DATA.setRpm(RPM);
@@ -371,6 +384,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA.setFuelRange(FUEL_RANGE_LIST);
 		VEHICLE_DATA.setTurnSignal(TURN_SIGNAL);
 		VEHICLE_DATA.setElectronicParkBrakeStatus(ELECTRONIC_PARK_BRAKE_STATUS);
+		VEHICLE_DATA.setGearStatus(GEAR_STATUS);
 		VEHICLE_DATA.setWindowStatus(WINDOW_STATUS_LIST);
 		VEHICLE_DATA.setOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, OEM_CUSTOM_VEHICLE_DATA_STATE);
 		VEHICLE_DATA.setHandsOffSteering(HANDS_OFF_STEERING);
@@ -404,6 +418,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA_RESPONSE.setFuelRange(FUEL_RANGE_LIST);
 		VEHICLE_DATA_RESPONSE.setTurnSignal(TURN_SIGNAL);
 		VEHICLE_DATA_RESPONSE.setElectronicParkBrakeStatus(ELECTRONIC_PARK_BRAKE_STATUS);
+		VEHICLE_DATA_RESPONSE.setGearStatus(GEAR_STATUS);
 		VEHICLE_DATA_RESPONSE.setWindowStatus(WINDOW_STATUS_LIST);
 		VEHICLE_DATA_RESPONSE.setOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, OEM_CUSTOM_VEHICLE_DATA_STATE);
 		VEHICLE_DATA_RESPONSE.setHandsOffSteering(HANDS_OFF_STEERING);
