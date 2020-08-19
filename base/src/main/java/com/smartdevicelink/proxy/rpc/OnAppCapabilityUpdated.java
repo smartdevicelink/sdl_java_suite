@@ -6,7 +6,8 @@ import com.smartdevicelink.proxy.RPCNotification;
 import java.util.Hashtable;
 
 /**
- * since Smart Device Link 6.0
+ *
+ * @since Smart Device Link 7.0
  * A notification to inform SDL Core that a specific app capability has changed.
  */
 
