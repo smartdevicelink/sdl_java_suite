@@ -163,7 +163,6 @@ public class VideoStreamingParameters {
                 if ((vehicleMake.contains("Ford") || vehicleMake.contains("Lincoln")) &&
                         ((resolution.getResolutionHeight() != null && resolution.getResolutionHeight() > 800) ||
                                 (resolution.getResolutionWidth() != null && resolution.getResolutionWidth() > 800))) {
-                    Log.d("MyTagLog", "specific case");
                     scale = 1.0 / 0.75;
                 }
             }
@@ -283,9 +282,6 @@ public class VideoStreamingParameters {
 
     public double getPreferredDiagonal() { return preferredDiagonal; }
 
-    public List<VideoStreamingCapability> getAdditionalCapabilities() { return additionalCapabilities; };
-
-    // TODO extend with @additionalCapabilities if confirmed
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
