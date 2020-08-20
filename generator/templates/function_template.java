@@ -28,6 +28,9 @@
      *
      {%- include "javadoc_template.java" %}
      */
+    {%- if p.deprecated is defined and p.deprecated is not none %}
+    @Deprecated
+    {%- endif %}
     public void set{{p.title}}({% if p.mandatory %}@NonNull {% endif %}{{p.return_type}} {{p.last}}) {
         setParameters({{p.key}}, {{p.last}});
     }
@@ -39,6 +42,9 @@
      */
     {%- if p.SuppressWarnings is defined %}
     @SuppressWarnings("{{p.SuppressWarnings}}")
+    {%- endif %}
+    {%- if p.deprecated is defined and p.deprecated is not none %}
+    @Deprecated
     {%- endif %}
     public {{p.return_type}} get{{p.title}}() {
         {%- if p.return_type in ['String', 'Boolean', 'Integer'] %}
