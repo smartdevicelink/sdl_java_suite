@@ -71,16 +71,7 @@ import {{i}};{{ '\n' if loop.last }}
  {%- if description is defined and (see is defined or since is defined) %}
  *
  {%- endif %}
- {%- if deprecated is defined and deprecated is not none and since is defined and since is not none %}
- * @deprecated in SmartDeviceLink {{since}}
- {%- elif deprecated is defined and deprecated is not none %}
- * @deprecated
- {%- elif since is defined and since is not none %}
- * @since SmartDeviceLink {{since}}
- {%- endif %}
- {%- if see is defined %}
- * @see {{see}}
- {%- endif %}
+ {%- include "javadoc_added_deprecated.java" %}
  */
 {%- endif %}
 {%- if deprecated is not none %}

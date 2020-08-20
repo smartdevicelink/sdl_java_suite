@@ -3,21 +3,8 @@
     {%- block params %}
     {%- if params is defined %}
     {%- for p in params %}
-    {%- if p.origin not in ('success', 'resultCode', 'info') or kind != "response" %}
-    {%- if p.see is defined or p.deprecated is not none %}
-    /**
-     {%- if p.deprecated is defined and p.deprecated is not none and p.since is defined and p.since is not none %}
-     * @deprecated in SmartDeviceLink {{p.since}}
-     {%- elif p.deprecated is defined and p.deprecated is not none %}
-     * @deprecated
-     {%- elif p.since is defined and p.since is not none %}
-     * @since SmartDeviceLink {{p.since}}
-     {%- endif %}
-     {%- if p.see is defined %}
-     * @see {{p.see}}
-     {%- endif %}
-     */
-    {%- endif %}
+    {%- if p.origin not in ('success', 'resultCode', 'info') or kind != "response" %}{% set see, deprecated, since, spacing, begin, end = p.see, p.deprecated, p.since, '    ', '/**', '*/' %}
+    {%- include "javadoc_added_deprecated.java" %}
     {%- if p.deprecated is not none %}
     @Deprecated
     {%- endif %}
