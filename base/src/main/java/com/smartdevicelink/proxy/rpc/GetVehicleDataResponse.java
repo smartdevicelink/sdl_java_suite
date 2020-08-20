@@ -57,15 +57,7 @@ public class GetVehicleDataResponse extends RPCResponse {
     public static final String KEY_GPS = "gps";
     public static final String KEY_SPEED = "speed";
     public static final String KEY_RPM = "rpm";
-    /**
-     * @deprecated
-     */
-    @Deprecated
     public static final String KEY_FUEL_LEVEL = "fuelLevel";
-    /**
-     * @deprecated
-     */
-    @Deprecated
     public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
     public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
     public static final String KEY_FUEL_RANGE = "fuelRange";
@@ -103,12 +95,6 @@ public class GetVehicleDataResponse extends RPCResponse {
     public GetVehicleDataResponse() {
         super(FunctionID.GET_VEHICLE_DATA.toString());
     }
-
-    /**
-     * Constructs a new GetVehicleDataResponse object indicated by the Hashtable parameter
-     *
-     * @param hash The Hashtable to use
-     */
     public GetVehicleDataResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
@@ -129,42 +115,34 @@ public class GetVehicleDataResponse extends RPCResponse {
     public GPSData getGps() {
         return (GPSData) getObject(GPSData.class, KEY_GPS);
     }
-
-    /**
-     * Sets the speed.
-     *
-     * @param speed The vehicle speed in kilometers per hour
-     */
     public void setSpeed(Double speed) {
         setParameters(KEY_SPEED, speed);
     }
-
-    /**
-     * Gets the speed.
-     *
-     * @return Float The vehicle speed in kilometers per hour
-     */
     public Double getSpeed() {
     	Object object = getParameters(KEY_SPEED);
     	return SdlDataTypeConverter.objectToDouble(object);
     }
-
-    /**
-     * Sets the rpm.
-     *
-     * @param rpm The number of revolutions per minute of the engine
-     */
     public void setRpm(Integer rpm) {
         setParameters(KEY_RPM, rpm);
     }
-
-    /**
-     * Gets the rpm.
-     *
-     * @return Integer The number of revolutions per minute of the engine
-     */
     public Integer getRpm() {
     	return getInteger(KEY_RPM);
+    }
+
+    /**
+     * Sets Fuel Level State
+     * @param fuelLevelState a ComponentVolumeStatus related to FuelLevel State
+     */
+    public void setFuelLevelState(ComponentVolumeStatus fuelLevelState) {
+        setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
+    }
+    /**
+     * Gets Fuel Level State
+     * @return a ComponentVolumeStatus related to FuelLevel State
+     */
+    @SuppressWarnings("unchecked")
+    public ComponentVolumeStatus getFuelLevelState() {
+        return (ComponentVolumeStatus) getObject(ComponentVolumeStatus.class, KEY_FUEL_LEVEL_STATE);
     }
 
     /**
@@ -174,7 +152,8 @@ public class GetVehicleDataResponse extends RPCResponse {
      * 7.0, please see fuelRange.
      * @since SmartDeviceLink 7.0.0
      */
-    public void setFuelLevel(Dobule fuelLevel) {
+    @Deprecated
+    public void setFuelLevel(Double fuelLevel) {
         setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
 
@@ -185,7 +164,8 @@ public class GetVehicleDataResponse extends RPCResponse {
      * 7.0, please see fuelRange.
      * @since SmartDeviceLink 7.0.0
      */
-    public Dobule getFuelLevel() {
+    @Deprecated
+    public Double getFuelLevel() {
         Object object = getParameters(KEY_FUEL_LEVEL);
         return SdlDataTypeConverter.objectToDouble(object);
     }
@@ -196,6 +176,7 @@ public class GetVehicleDataResponse extends RPCResponse {
      * fuelRange.
      * @since SmartDeviceLink 7.0.0
      */
+    @Deprecated
     public void setFuelLevel_State(ComponentVolumeStatus fuelLevel_State) {
         setParameters(KEY_FUEL_LEVEL_STATE, fuelLevel_State);
     }
@@ -207,6 +188,7 @@ public class GetVehicleDataResponse extends RPCResponse {
      * fuelRange.
      * @since SmartDeviceLink 7.0.0
      */
+    @Deprecated
     public ComponentVolumeStatus getFuelLevel_State() {
         return (ComponentVolumeStatus) getObject(ComponentVolumeStatus.class, KEY_FUEL_LEVEL_STATE);
     }

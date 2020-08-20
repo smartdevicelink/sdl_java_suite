@@ -33,6 +33,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.util.SdlDataTypeConverter;
 
 import java.util.Hashtable;
 
@@ -431,22 +432,21 @@ public class SubscribeVehicleData extends RPCRequest {
     }
 
 	/**
-	 * Sets a boolean value. If true, subscribes FuelLevel data
-	 * 
-	 * @param fuelLevel
-	 *            a boolean value
+	 * Sets the fuelLevel.
+	 *
+	 * @param fuelLevel The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
+	 * 7.0, please see fuelRange.
 	 */
 	@Deprecated
     public void setFuelLevel(Boolean fuelLevel) {
 		setParameters(KEY_FUEL_LEVEL, fuelLevel);
-    }
+	}
 
 	/**
-	 * Gets a boolean value. If true, means the FuelLevel data has been
-	 * subscribed.
-	 * 
-	 * @return Boolean -a Boolean value. If true, means the FuelLevel data has
-	 *         been subscribed.
+	 * Gets the fuelLevel.
+	 *
+	 * @return Float The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
+	 * 7.0, please see fuelRange.
 	 */
 	@Deprecated
 	public Boolean getFuelLevel() {
