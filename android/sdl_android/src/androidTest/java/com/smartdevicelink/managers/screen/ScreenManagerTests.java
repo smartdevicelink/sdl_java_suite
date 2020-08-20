@@ -101,23 +101,9 @@ public class ScreenManagerTests {
 	}
 
 	@Test
-	public void testSetPrimaryGraphicWithBlankImage() {
-		screenManager.setPrimaryGraphic(null);
-		assertNotNull(screenManager.getPrimaryGraphic());
-		assertEquals(screenManager.getPrimaryGraphic().getName(), "blankArtwork");
-	}
-
-	@Test
 	public void testSetSecondaryGraphic() {
 		screenManager.setSecondaryGraphic(testArtwork);
 		assertEquals(screenManager.getSecondaryGraphic(), testArtwork);
-	}
-
-	@Test
-	public void testSetSecondaryGraphicWithBlankImage() {
-		screenManager.setSecondaryGraphic(null);
-		assertNotNull(screenManager.getSecondaryGraphic());
-		assertEquals(screenManager.getSecondaryGraphic().getName(), "blankArtwork");
 	}
 
 	@Test
