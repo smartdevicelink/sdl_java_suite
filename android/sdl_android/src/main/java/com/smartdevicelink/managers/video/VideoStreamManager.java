@@ -774,18 +774,10 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
 		for (VideoStreamingCapability capability : originalAdditionalCapabilities) {
 			double diagonal;
-			int resolutionHeight;
-			int resolutionWidth;
-			// TODO refactor
-			if (capability.getPreferredResolution() == null || capability.getPreferredResolution().getResolutionHeight() == null) {
+			if (capability.getPreferredResolution() == null
+					|| capability.getPreferredResolution().getResolutionHeight() == null
+					|| capability.getPreferredResolution().getResolutionWidth() == null) {
 				continue;
-			} else {
-				resolutionHeight = capability.getPreferredResolution().getResolutionHeight();
-			}
-			if (capability.getPreferredResolution() == null || capability.getPreferredResolution().getResolutionWidth() == null) {
-				continue;
-			} else {
-				resolutionWidth = capability.getPreferredResolution().getResolutionWidth();
 			}
 			if (capability.getDiagonalScreenSize() == null ) {
 				diagonal = parameters.getPreferredDiagonal();
