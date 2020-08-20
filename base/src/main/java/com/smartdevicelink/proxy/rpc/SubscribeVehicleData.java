@@ -81,27 +81,30 @@ import java.util.Hashtable;
  *                 <td>Subscribable</td>
  * 			<td>SmartDeviceLink 2.0 </td>
  * 		</tr>
- *      <tr>
- *          <td>fuelLevel</td>
- *          <td>Boolean</td>
- *          <td>The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec7.0, please see fuelRange.</td>
- *          <td>N</td>
- *          <td>SmartDeviceLink 7.0.0</td>
- *      </tr>
- *      <tr>
- *          <td>fuelLevel_State</td>
- *          <td>Boolean</td>
- *          <td>The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please seefuelRange.</td>
- *          <td>N</td>
- *          <td>SmartDeviceLink 7.0.0</td>
- *      </tr>
- *      <tr>
- *          <td>fuelRange</td>
- *          <td>Boolean</td>
- *          <td>The fuel type, estimated range in KM, fuel level/capacity and fuel level state for thevehicle. See struct FuelRange for details.</td>
- *          <td>N</td>
- *          <td>SmartDeviceLink 5.0.0</td>
- *      </tr>
+ * 		<tr>
+ * 			<td>fuelLevel</td>
+ * 			<td>Boolean</td>
+ * 			<td>The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec7.0, please see fuelRange.</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 7.0.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>fuelLevel_State</td>
+ * 			<td>Boolean</td>
+ * 			<td>The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please seefuelRange.</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 7.0.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>fuelRange</td>
+ * 			<td>Boolean</td>
+ * 			<td>The fuel type, estimated range in KM, fuel level/capacity and fuel level state for thevehicle. See struct FuelRange for details.</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 5.0.0</td>
+ * 		</tr>
  * 		<tr>
  * 			<td>instantFuelConsumption</td>
  * 			<td>Boolean</td>
@@ -432,23 +435,23 @@ public class SubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets the fuelLevel.
-	 *
+	 * 
 	 * @param fuelLevel The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
 	 * 7.0, please see fuelRange.
 	 */
 	@Deprecated
     public void setFuelLevel(Boolean fuelLevel) {
 		setParameters(KEY_FUEL_LEVEL, fuelLevel);
-	}
+    }
 
 	/**
 	 * Gets the fuelLevel.
-	 *
+	 * 
 	 * @return Float The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
 	 * 7.0, please see fuelRange.
 	 */
 	@Deprecated
-	public Boolean getFuelLevel() {
+    public Boolean getFuelLevel() {
         return getBoolean(KEY_FUEL_LEVEL);
     }
 
@@ -515,44 +518,44 @@ public class SubscribeVehicleData extends RPCRequest {
         return getBoolean(KEY_EXTERNAL_TEMPERATURE);
     }
 
-	/**
-	 * Sets the gearStatus.
-	 *
-	 * @param gearStatus See GearStatus
-	 * @since SmartDeviceLink 7.0.0
-	 */
-	public void setGearStatus(Boolean gearStatus) {
-		setParameters(KEY_GEAR_STATUS, gearStatus);
-	}
+    /**
+     * Sets the gearStatus.
+     *
+     * @param gearStatus See GearStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setGearStatus(Boolean gearStatus) {
+        setParameters(KEY_GEAR_STATUS, gearStatus);
+    }
 
-	/**
-	 * Gets the gearStatus.
-	 *
-	 * @return Boolean See GearStatus
-	 * @since SmartDeviceLink 7.0.0
-	 */
-	public Boolean getGearStatus() {
-		return getBoolean(KEY_GEAR_STATUS);
-	}
+    /**
+     * Gets the gearStatus.
+     *
+     * @return Boolean See GearStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public Boolean getGearStatus() {
+        return getBoolean(KEY_GEAR_STATUS);
+    }
 
-	/**
-	 * Sets the prndl.
-	 *
-	 * @param prndl See PRNDL. This parameter is deprecated since 7.0.0 and it is now covered in `gearStatus`
-	 * @deprecated in SmartDeviceLink 7.0.0
-	 */
-	@Deprecated
-	public void setPrndl(Boolean prndl) {
+    /**
+     * Sets the prndl.
+     *
+     * @param prndl See PRNDL. This parameter is deprecated since 7.0.0 and it is now covered in `gearStatus`
+     * @deprecated in SmartDeviceLink 7.0.0
+     */
+    @Deprecated
+    public void setPrndl(Boolean prndl) {
 		setParameters(KEY_PRNDL, prndl);
     }
 
-	/**
-	 * Gets the prndl.
-	 *
-	 * @return Boolean See PRNDL. This parameter is deprecated since 7.0.0 and it is now covered in `gearStatus`
-	 * @deprecated in SmartDeviceLink 7.0.0
-	 */
-	@Deprecated
+    /**
+     * Gets the prndl.
+     *
+     * @return Boolean See PRNDL. This parameter is deprecated since 7.0.0 and it is now covered in `gearStatus`
+     * @deprecated in SmartDeviceLink 7.0.0
+     */
+    @Deprecated
     public Boolean getPrndl() {
         return getBoolean(KEY_PRNDL);
     }

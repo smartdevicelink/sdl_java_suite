@@ -76,27 +76,30 @@ import java.util.Hashtable;
  *                 <td>Subscribable</td>
  * 			<td>SmartDeviceLink 2.0 </td>
  * 		</tr>
- *      <tr>
- *          <td>fuelLevel</td>
- *          <td>Boolean</td>
- *          <td>The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec7.0, please see fuelRange.</td>
- *          <td>N</td>
- *          <td>SmartDeviceLink 7.0.0</td>
- *      </tr>
- *      <tr>
- *          <td>fuelLevel_State</td>
- *          <td>Boolean</td>
- *          <td>The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please seefuelRange.</td>
- *          <td>N</td>
- *          <td>SmartDeviceLink 7.0.0</td>
- *      </tr>
- *      <tr>
- *          <td>fuelRange</td>
- *          <td>Boolean</td>
- *          <td>The fuel type, estimated range in KM, fuel level/capacity and fuel level state for thevehicle. See struct FuelRange for details.</td>
- *          <td>N</td>
- *          <td>SmartDeviceLink 5.0.0</td>
- *      </tr>
+ * 		<tr>
+ * 			<td>fuelLevel</td>
+ * 			<td>Boolean</td>
+ * 			<td>The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec7.0, please see fuelRange.</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 7.0.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>fuelLevel_State</td>
+ * 			<td>Boolean</td>
+ * 			<td>The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please seefuelRange.</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 7.0.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>fuelRange</td>
+ * 			<td>Boolean</td>
+ * 			<td>The fuel type, estimated range in KM, fuel level/capacity and fuel level state for thevehicle. See struct FuelRange for details.</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 5.0.0</td>
+ * 		</tr>
  * 		<tr>
  * 			<td>instantFuelConsumption</td>
  * 			<td>Boolean</td>
@@ -415,24 +418,24 @@ public class UnsubscribeVehicleData extends RPCRequest {
         return getBoolean(KEY_RPM);
     }
 
-    /**
-     * Sets the fuelLevel.
-     *
-     * @param fuelLevel The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
-     * 7.0, please see fuelRange.
-     */
-    @Deprecated
+	/**
+	 * Sets the fuelLevel.
+	 * 
+	 * @param fuelLevel The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
+	 * 7.0, please see fuelRange.
+	 */
+	@Deprecated
     public void setFuelLevel(Boolean fuelLevel) {
 		setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
 
-    /**
-     * Gets the fuelLevel.
-     *
-     * @return Boolean The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
-     * 7.0, please see fuelRange.
-     */
-    @Deprecated
+	/**
+	 * Gets the fuelLevel.
+	 * 
+	 * @return Boolean The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
+	 * 7.0, please see fuelRange.
+	 */
+	@Deprecated
     public Boolean getFuelLevel() {
         return getBoolean(KEY_FUEL_LEVEL);
     }
@@ -535,7 +538,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the tire pressure status data has been
 	 * unsubscribed.
-	 *
+	 * 
 	 * @return Boolean -a Boolean value. If true, means the tire pressure status data
 	 *         has been unsubscribed.
 	 */
@@ -545,7 +548,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from odometer data
-	 *
+	 * 
 	 * @param odometer
 	 *            a boolean value
 	 */
@@ -556,7 +559,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the odometer data has been
 	 * unsubscribed.
-	 *
+	 * 
 	 * @return Boolean -a Boolean value. If true, means the odometer data
 	 *         has been unsubscribed.
 	 */
@@ -566,7 +569,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from belt Status data
-	 *
+	 * 
 	 * @param beltStatus
 	 *            a boolean value
 	 */
@@ -577,7 +580,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the belt Status data has been
 	 * unsubscribed.
-	 *
+	 * 
 	 * @return Boolean -a Boolean value. If true, means the belt Status data
 	 *         has been unsubscribed.
 	 */
@@ -587,7 +590,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from body Information data
-	 *
+	 * 
 	 * @param bodyInformation
 	 *            a boolean value
 	 */
@@ -598,7 +601,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the body Information data has been
 	 * unsubscribed.
-	 *
+	 * 
 	 * @return Boolean -a Boolean value. If true, means the body Information data
 	 *         has been unsubscribed.
 	 */
@@ -608,7 +611,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from device Status data
-	 *
+	 * 
 	 * @param deviceStatus
 	 *            a boolean value
 	 */
@@ -619,7 +622,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the device Status data has been
 	 * unsubscribed.
-	 *
+	 * 
 	 * @return Boolean -a Boolean value. If true, means the device Status data
 	 *         has been unsubscribed.
 	 */
@@ -629,7 +632,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from driver Braking data
-	 *
+	 * 
 	 * @param driverBraking
 	 *            a boolean value
 	 */
@@ -640,7 +643,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the driver Braking data has been
 	 * unsubscribed.
-	 *
+	 * 
 	 * @return Boolean -a Boolean value. If true, means the driver Braking data
 	 *         has been unsubscribed.
 	 */
@@ -650,7 +653,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from wiper Status data
-	 *
+	 * 
 	 * @param wiperStatus
 	 *            a boolean value
 	 */
@@ -661,7 +664,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the wiper Status data has been
 	 * unsubscribed.
-	 *
+	 * 
 	 * @return Boolean -a Boolean value. If true, means the wiper Status data
 	 *         has been unsubscribed.
 	 */
@@ -671,7 +674,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from Head Lamp Status data
-	 *
+	 * 
 	 * @param headLampStatus
 	 *            a boolean value
 	 */
@@ -682,7 +685,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the Head Lamp Status data has been
 	 * unsubscribed.
-	 *
+	 * 
 	 * @return Boolean -a Boolean value. If true, means the Head Lamp Status data
 	 *         has been unsubscribed.
 	 */
@@ -735,7 +738,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from accPedalPosition data
-	 *
+	 * 
 	 * @param accPedalPosition
 	 *            a boolean value
 	 */
@@ -746,7 +749,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the accPedalPosition data has been
 	 * unsubscribed.
-	 *
+	 * 
 	 * @return Boolean -a Boolean value. If true, means the accPedalPosition data
 	 *         has been unsubscribed.
 	 */

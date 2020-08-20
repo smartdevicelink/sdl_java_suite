@@ -38,7 +38,7 @@ import java.util.Hashtable;
 
 /**
  * Non periodic vehicle data read request.
- *
+ * 
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -73,27 +73,30 @@ import java.util.Hashtable;
  *                 <td>Subscribable</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
- *      <tr>
- *          <td>fuelLevel</td>
- *          <td>Boolean</td>
- *          <td>The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec7.0, please see fuelRange.</td>
- *          <td>N</td>
- *          <td>SmartDeviceLink 7.0.0</td>
- *      </tr>
- *      <tr>
- *          <td>fuelLevel_State</td>
- *          <td>Boolean</td>
- *          <td>The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please seefuelRange.</td>
- *          <td>N</td>
- *          <td>SmartDeviceLink 7.0.0</td>
- *      </tr>
- *      <tr>
- *          <td>fuelRange</td>
- *          <td>Boolean</td>
- *          <td>The fuel type, estimated range in KM, fuel level/capacity and fuel level state for thevehicle. See struct FuelRange for details.</td>
- *          <td>N</td>
- *          <td>SmartDeviceLink 5.0.0</td>
- *      </tr>
+ * 		<tr>
+ * 			<td>fuelLevel</td>
+ * 			<td>Boolean</td>
+ * 			<td>The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec7.0, please see fuelRange.</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 7.0.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>fuelLevel_State</td>
+ * 			<td>Boolean</td>
+ * 			<td>The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please seefuelRange.</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 7.0.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>fuelRange</td>
+ * 			<td>Boolean</td>
+ * 			<td>The fuel type, estimated range in KM, fuel level/capacity and fuel level state for thevehicle. See struct FuelRange for details.</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 5.0.0</td>
+ * 		</tr>
  * 		<tr>
  * 			<td>instantFuelConsumption</td>
  * 			<td>Boolean</td>
@@ -427,7 +430,7 @@ public class GetVehicleData extends RPCRequest {
     public Boolean getVin() {
         return getBoolean(KEY_VIN);
     }
-
+    
     /**
      * Sets the prndl.
      *

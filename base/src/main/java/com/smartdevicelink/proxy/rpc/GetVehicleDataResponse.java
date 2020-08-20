@@ -54,36 +54,36 @@ import java.util.List;
  * @since SmartDeviceLink 2.0
  */
 public class GetVehicleDataResponse extends RPCResponse {
-    public static final String KEY_GPS = "gps";
-    public static final String KEY_SPEED = "speed";
-    public static final String KEY_RPM = "rpm";
-    public static final String KEY_FUEL_LEVEL = "fuelLevel";
-    public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
-    public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
-    public static final String KEY_FUEL_RANGE = "fuelRange";
-    public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
-    public static final String KEY_TURN_SIGNAL = "turnSignal";
-    public static final String KEY_VIN = "vin";
-    public static final String KEY_PRNDL = "prndl";
-    public static final String KEY_TIRE_PRESSURE = "tirePressure";
-    public static final String KEY_ODOMETER = "odometer";
-    public static final String KEY_BELT_STATUS = "beltStatus";
-    public static final String KEY_BODY_INFORMATION = "bodyInformation";
-    public static final String KEY_DEVICE_STATUS = "deviceStatus";
-    public static final String KEY_DRIVER_BRAKING = "driverBraking";
-    public static final String KEY_WIPER_STATUS = "wiperStatus";
-    public static final String KEY_HEAD_LAMP_STATUS = "headLampStatus";
-    public static final String KEY_ENGINE_TORQUE = "engineTorque";
-    public static final String KEY_ACC_PEDAL_POSITION = "accPedalPosition";
-    public static final String KEY_STEERING_WHEEL_ANGLE = "steeringWheelAngle";
-    public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
-    public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
-    public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
-    public static final String KEY_E_CALL_INFO = "eCallInfo";
-    public static final String KEY_AIRBAG_STATUS = "airbagStatus";
-    public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
-    public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
-    public static final String KEY_MY_KEY = "myKey";
+	public static final String KEY_GPS = "gps";
+	public static final String KEY_SPEED = "speed";
+	public static final String KEY_RPM = "rpm";
+	public static final String KEY_FUEL_LEVEL = "fuelLevel";
+	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
+	public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
+	public static final String KEY_FUEL_RANGE = "fuelRange";
+	public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
+	public static final String KEY_TURN_SIGNAL = "turnSignal";
+	public static final String KEY_VIN = "vin";
+	public static final String KEY_PRNDL = "prndl";
+	public static final String KEY_TIRE_PRESSURE = "tirePressure";
+	public static final String KEY_ODOMETER = "odometer";
+	public static final String KEY_BELT_STATUS = "beltStatus";
+	public static final String KEY_BODY_INFORMATION = "bodyInformation";
+	public static final String KEY_DEVICE_STATUS = "deviceStatus";
+	public static final String KEY_DRIVER_BRAKING = "driverBraking";
+	public static final String KEY_WIPER_STATUS = "wiperStatus";
+	public static final String KEY_HEAD_LAMP_STATUS = "headLampStatus";
+	public static final String KEY_ENGINE_TORQUE = "engineTorque";
+	public static final String KEY_ACC_PEDAL_POSITION = "accPedalPosition";
+	public static final String KEY_STEERING_WHEEL_ANGLE = "steeringWheelAngle";
+	public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
+	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
+	public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
+	public static final String KEY_E_CALL_INFO = "eCallInfo";
+	public static final String KEY_AIRBAG_STATUS = "airbagStatus";
+	public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
+	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
+	public static final String KEY_MY_KEY = "myKey";
     public static final String KEY_WINDOW_STATUS = "windowStatus";
     public static final String KEY_GEAR_STATUS = "gearStatus";
     public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
@@ -333,8 +333,6 @@ public class GetVehicleDataResponse extends RPCResponse {
     public MyKey getMyKey() {
         return (MyKey) getObject(MyKey.class, KEY_MY_KEY);
     }
-
-
 
     /**
      * Sets Fuel Range List. Fuel Range - The estimate range in KM the vehicle can travel based on fuel level and consumption.
