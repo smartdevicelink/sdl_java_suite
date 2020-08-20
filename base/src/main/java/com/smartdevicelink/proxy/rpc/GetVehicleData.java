@@ -377,28 +377,6 @@ public class GetVehicleData extends RPCRequest {
     public Boolean getFuelLevel() {
         return getBoolean(KEY_FUEL_LEVEL);
     }
-
-    /**
-     * Sets the fuelLevel_State.
-     *
-     * @param fuelLevel_State The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please see
-     * fuelRange.
-     */
-    @Deprecated
-    public void setFuelLevel_State(Boolean fuelLevel_State) {
-        setParameters(KEY_FUEL_LEVEL_STATE, fuelLevel_State);
-    }
-
-    /**
-     * Gets the fuelLevel_State.
-     *
-     * @return Boolean The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please see
-     * fuelRange.
-     */
-    @Deprecated
-    public Boolean getFuelLevel_State() {
-        return getBoolean(KEY_FUEL_LEVEL_STATE);
-    }
     public void setFuelLevelState(Boolean fuelLevelState) {
         setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
     }

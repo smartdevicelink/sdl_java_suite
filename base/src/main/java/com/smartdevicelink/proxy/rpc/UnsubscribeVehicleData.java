@@ -438,28 +438,6 @@ public class UnsubscribeVehicleData extends RPCRequest {
     }
 
     /**
-     * Sets the fuelLevel_State.
-     *
-     * @param fuelLevel_State The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please see
-     * fuelRange.
-     */
-    @Deprecated
-    public void setFuelLevel_State(Boolean fuelLevel_State) {
-        setFuelLevelState(fuelLevel_State);
-    }
-
-    /**
-     * Gets the fuelLevel_State.
-     *
-     * @return Boolean The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please see
-     * fuelRange.
-     */
-    @Deprecated
-    public Boolean getFuelLevel_State() {
-        return getFuelLevelState();
-    }
-
-    /**
      * Sets a boolean value. If true, unsubscribes from fuelLevelState data
      * 
      * @param fuelLevelState

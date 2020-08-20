@@ -411,29 +411,6 @@ public class OnVehicleData extends RPCNotification {
     	Object object = getParameters(KEY_FUEL_LEVEL);
     	return SdlDataTypeConverter.objectToDouble(object);
     }
-
-    /**
-     * Sets the fuelLevel_State.
-     *
-     * @param fuelLevel_State The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please see
-     * fuelRange.
-     */
-    @Deprecated
-    public void setFuelLevel_State(ComponentVolumeStatus fuelLevel_State) {
-        setFuelLevelState(fuelLevel_State);
-    }
-
-    /**
-     * Gets the fuelLevel_State.
-     *
-     * @return ComponentVolumeStatus The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please see
-     * fuelRange.
-     */
-    @Deprecated
-    public ComponentVolumeStatus getFuelLevel_State() {
-        return (ComponentVolumeStatus) getObject(ComponentVolumeStatus.class, KEY_FUEL_LEVEL_STATE);
-    }
-
     public void setFuelLevelState(ComponentVolumeStatus fuelLevelState) {
         setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
     }

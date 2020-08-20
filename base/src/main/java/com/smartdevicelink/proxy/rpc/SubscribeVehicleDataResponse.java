@@ -172,26 +172,6 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_FUEL_LEVEL);
     }
     /**
-     * Sets the fuelLevel_State.
-     *
-     * @param fuelLevel_State The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please see
-     * fuelRange.
-     */
-    @Deprecated
-    public void setFuelLevel_State(VehicleDataResult fuelLevel_State) {
-        setFuelLevel(fuelLevel_State);
-    }
-    /**
-     * Gets the fuelLevel_State.
-     *
-     * @return VehicleDataResult The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please see
-     * fuelRange.
-     */
-    @Deprecated
-    public VehicleDataResult getFuelLevel_State() {
-        return getFuelLevelState();
-    }
-    /**
      * Sets Fuel Level State
      * @param fuelLevelState a VehicleDataResult related to FuelLevel State
      */
