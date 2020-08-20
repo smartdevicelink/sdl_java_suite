@@ -1,4 +1,4 @@
-{%- if (see is defined and see is not none) or (deprecated is defined and deprecated is not none) or (since is defined and since is not none) %}
+{%- if since is defined and since is not none %}
 {%- if begin is defined %}
 {{spacing}}{{begin}}
 {%- endif %}
