@@ -32,7 +32,7 @@
 
 package com.smartdevicelink.managers.file.filetypes;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.test.TestValues;
 
@@ -40,6 +40,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
 
 @RunWith(AndroidJUnit4.class)
 public class SdlFileTests {
@@ -60,6 +61,7 @@ public class SdlFileTests {
         assertEquals(sdlFile.getType(), TestValues.GENERAL_FILETYPE);
         sdlFile.setPersistent(TestValues.GENERAL_BOOLEAN);
         assertEquals(sdlFile.isPersistent(), TestValues.GENERAL_BOOLEAN);
+        assertFalse(sdlFile.getOverwrite());
 
         // Case 2 (Setting resourceId)
         sdlFile = new SdlFile();
@@ -73,6 +75,7 @@ public class SdlFileTests {
         assertEquals(sdlFile.getType(), TestValues.GENERAL_FILETYPE);
         sdlFile.setPersistent(TestValues.GENERAL_BOOLEAN);
         assertEquals(sdlFile.isPersistent(), TestValues.GENERAL_BOOLEAN);
+        assertFalse(sdlFile.getOverwrite());
 
         // Case 3 (Setting URI)
         sdlFile = new SdlFile();
@@ -86,6 +89,7 @@ public class SdlFileTests {
         assertEquals(sdlFile.getType(), TestValues.GENERAL_FILETYPE);
         sdlFile.setPersistent(TestValues.GENERAL_BOOLEAN);
         assertEquals(sdlFile.isPersistent(), TestValues.GENERAL_BOOLEAN);
+        assertFalse(sdlFile.getOverwrite());
     }
 
     @Test
@@ -96,6 +100,7 @@ public class SdlFileTests {
         assertEquals(sdlFile1.getType(), TestValues.GENERAL_FILETYPE);
         assertEquals((Integer) sdlFile1.getResourceId(), TestValues.GENERAL_INTEGER);
         assertEquals(sdlFile1.isPersistent(), TestValues.GENERAL_BOOLEAN);
+        assertFalse(sdlFile1.getOverwrite());
 
         // Case2 (Let the library generate a name)
         SdlFile sdlFile2 = new SdlFile(null, TestValues.GENERAL_FILETYPE, TestValues.GENERAL_INTEGER, TestValues.GENERAL_BOOLEAN);
@@ -105,6 +110,7 @@ public class SdlFileTests {
         assertEquals(sdlFile2.getType(), TestValues.GENERAL_FILETYPE);
         assertEquals((Integer) sdlFile2.getResourceId(), TestValues.GENERAL_INTEGER);
         assertEquals(sdlFile2.isPersistent(), TestValues.GENERAL_BOOLEAN);
+        assertFalse(sdlFile2.getOverwrite());
     }
 
     @Test
@@ -115,6 +121,7 @@ public class SdlFileTests {
         assertEquals(sdlFile1.getType(), TestValues.GENERAL_FILETYPE);
         assertEquals(sdlFile1.getFileData(), TestValues.GENERAL_BYTE_ARRAY);
         assertEquals(sdlFile1.isPersistent(), TestValues.GENERAL_BOOLEAN);
+        assertFalse(sdlFile1.getOverwrite());
 
         // Case2 (Let the library generate a name)
         SdlFile sdlFile2 = new SdlFile(null, TestValues.GENERAL_FILETYPE, TestValues.GENERAL_BYTE_ARRAY, TestValues.GENERAL_BOOLEAN);
@@ -124,6 +131,7 @@ public class SdlFileTests {
         assertEquals(sdlFile2.getType(), TestValues.GENERAL_FILETYPE);
         assertEquals(sdlFile2.getFileData(), TestValues.GENERAL_BYTE_ARRAY);
         assertEquals(sdlFile2.isPersistent(), TestValues.GENERAL_BOOLEAN);
+        assertFalse(sdlFile2.getOverwrite());
     }
 
     @Test
@@ -134,6 +142,7 @@ public class SdlFileTests {
         assertEquals(sdlFile1.getType(), TestValues.GENERAL_FILETYPE);
         assertEquals(sdlFile1.getUri(), TestValues.GENERAL_URI);
         assertEquals(sdlFile1.isPersistent(), TestValues.GENERAL_BOOLEAN);
+        assertFalse(sdlFile1.getOverwrite());
 
         // Case2 (Let the library generate a name)
         SdlFile sdlFile2 = new SdlFile(null, TestValues.GENERAL_FILETYPE, TestValues.GENERAL_URI, TestValues.GENERAL_BOOLEAN);
@@ -143,5 +152,6 @@ public class SdlFileTests {
         assertEquals(sdlFile2.getType(), TestValues.GENERAL_FILETYPE);
         assertEquals(sdlFile2.getUri(), TestValues.GENERAL_URI);
         assertEquals(sdlFile2.isPersistent(), TestValues.GENERAL_BOOLEAN);
+        assertFalse(sdlFile2.getOverwrite());
     }
 }

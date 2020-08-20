@@ -9,6 +9,7 @@ import com.smartdevicelink.streaming.StreamPacketizer;
 import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.transport.MultiplexTransportConfig;
 
 import junit.framework.TestCase;
 
@@ -19,6 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
@@ -117,7 +120,7 @@ public class StreamPacketizerTests extends TestCase {
 
 	/**
 	 * This is a unit test for the following methods : 
-	 * {@link com.smartdevicelink.streaming.StreamPacketizer#StreamPacketizer(IStreamListener, InputStream, SessionType, byte)}
+	 * {@link com.smartdevicelink.streaming.StreamPacketizer#StreamPacketizer(IStreamListener, InputStream, SessionType, byte, SdlSession)}
 	 */
 	public void testConstructor () {
 		
@@ -127,9 +130,9 @@ public class StreamPacketizerTests extends TestCase {
 		InputStream     testInputStream = null;
 		byte            testWiproVersion = (byte) 0x0B;
 		IStreamListener testListener    = new MockStreamListener();
-		MockInterfaceBroker _interfaceBroker = new MockInterfaceBroker();
-		BaseTransportConfig _transportConfig = new BTTransportConfig(true);
-		SdlSession testSdlSession = SdlSession.createSession(testWiproVersion,_interfaceBroker, _transportConfig);
+		MockInterfaceBroker interfaceBroker = new MockInterfaceBroker();
+		MultiplexTransportConfig transportConfig = new MultiplexTransportConfig(getInstrumentation().getTargetContext(),"19216801");
+		SdlSession testSdlSession = new SdlSession(interfaceBroker, transportConfig);
 		try {
 			testInputStream = new BufferedInputStream(new ByteArrayInputStream("sdl streaming test".getBytes()));
 			StreamPacketizer testStreamPacketizer = new StreamPacketizer(testListener, testInputStream, testSessionType, testSessionId, testSdlSession);
@@ -411,7 +414,7 @@ public class StreamPacketizerTests extends TestCase {
 
 
 	private SdlSession createTestSession() {
-		return SdlSession.createSession(WIPRO_VERSION, new MockInterfaceBroker(), new BTTransportConfig(true));
+		return new SdlSession(new MockInterfaceBroker(),  new MultiplexTransportConfig(getInstrumentation().getTargetContext(),"19216801"));
 	}
 
 	private class StreamReceiver implements IStreamListener {

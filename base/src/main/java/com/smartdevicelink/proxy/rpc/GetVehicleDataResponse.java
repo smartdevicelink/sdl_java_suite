@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
+ * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@
  * disclaimer in the documentation and/or other materials provided with the
  * distribution.
  *
- * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
- * its contributors may be used to endorse or promote products derived
- * from this software without specific prior written permission.
+ * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from this 
+ * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -31,7 +31,8 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -48,7 +49,9 @@ import java.util.Hashtable;
 import java.util.List;
 
 /**
- * @since SmartDeviceLink 2.0.0
+ * Get Vehicle Data Response is sent, when GetVehicleData has been called.
+ * 
+ * @since SmartDeviceLink 2.0
  */
 public class GetVehicleDataResponse extends RPCResponse {
     public static final String KEY_GPS = "gps";
@@ -89,10 +92,14 @@ public class GetVehicleDataResponse extends RPCResponse {
     public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
     public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
     public static final String KEY_MY_KEY = "myKey";
+    public static final String KEY_WINDOW_STATUS = "windowStatus";
+    public static final String KEY_GEAR_STATUS = "gearStatus";
+    public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
 
-    /**
-     * Constructs a new GetVehicleDataResponse object
-     */
+	/** 
+	 * Constructs a new GetVehicleDataResponse object
+	 */
+
     public GetVehicleDataResponse() {
         super(FunctionID.GET_VEHICLE_DATA.toString());
     }
@@ -105,33 +112,20 @@ public class GetVehicleDataResponse extends RPCResponse {
     public GetVehicleDataResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
-
     /**
      * Constructs a new GetVehicleDataResponse object
-     *
      * @param success whether the request is successfully processed
-     * @param resultCode additional information about a response returning a failed outcome
+     * @param resultCode whether the request is successfully processed
      */
     public GetVehicleDataResponse(@NonNull Boolean success, @NonNull Result resultCode) {
         this();
         setSuccess(success);
         setResultCode(resultCode);
     }
-
-    /**
-     * Sets the gps.
-     *
-     * @param gps See GPSData
-     */
     public void setGps(GPSData gps) {
         setParameters(KEY_GPS, gps);
     }
-
-    /**
-     * Gets the gps.
-     *
-     * @return GPSData See GPSData
-     */
+    @SuppressWarnings("unchecked")
     public GPSData getGps() {
         return (GPSData) getObject(GPSData.class, KEY_GPS);
     }
@@ -141,7 +135,7 @@ public class GetVehicleDataResponse extends RPCResponse {
      *
      * @param speed The vehicle speed in kilometers per hour
      */
-    public void setSpeed(Float speed) {
+    public void setSpeed(Double speed) {
         setParameters(KEY_SPEED, speed);
     }
 
@@ -150,9 +144,9 @@ public class GetVehicleDataResponse extends RPCResponse {
      *
      * @return Float The vehicle speed in kilometers per hour
      */
-    public Float getSpeed() {
-        Object object = getParameters(KEY_SPEED);
-        return SdlDataTypeConverter.objectToFloat(object);
+    public Double getSpeed() {
+    	Object object = getParameters(KEY_SPEED);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
 
     /**
@@ -170,7 +164,7 @@ public class GetVehicleDataResponse extends RPCResponse {
      * @return Integer The number of revolutions per minute of the engine
      */
     public Integer getRpm() {
-        return getInteger(KEY_RPM);
+    	return getInteger(KEY_RPM);
     }
 
     /**
@@ -180,22 +174,21 @@ public class GetVehicleDataResponse extends RPCResponse {
      * 7.0, please see fuelRange.
      * @since SmartDeviceLink 7.0.0
      */
-    public void setFuelLevel(Float fuelLevel) {
+    public void setFuelLevel(Dobule fuelLevel) {
         setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
 
     /**
      * Gets the fuelLevel.
      *
-     * @return Float The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
+     * @return Double The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
      * 7.0, please see fuelRange.
      * @since SmartDeviceLink 7.0.0
      */
-    public Float getFuelLevel() {
+    public Dobule getFuelLevel() {
         Object object = getParameters(KEY_FUEL_LEVEL);
-        return SdlDataTypeConverter.objectToFloat(object);
+        return SdlDataTypeConverter.objectToDouble(object);
     }
-
     /**
      * Sets the fuelLevel_State.
      *
@@ -217,111 +210,34 @@ public class GetVehicleDataResponse extends RPCResponse {
     public ComponentVolumeStatus getFuelLevel_State() {
         return (ComponentVolumeStatus) getObject(ComponentVolumeStatus.class, KEY_FUEL_LEVEL_STATE);
     }
-
-    /**
-     * Sets the instantFuelConsumption.
-     *
-     * @param instantFuelConsumption The instantaneous fuel consumption in microlitres
-     */
-    public void setInstantFuelConsumption(Float instantFuelConsumption) {
+    public void setInstantFuelConsumption(Double instantFuelConsumption) {
         setParameters(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
     }
-
-    /**
-     * Gets the instantFuelConsumption.
-     *
-     * @return Float The instantaneous fuel consumption in microlitres
-     */
-    public Float getInstantFuelConsumption() {
-        Object object = getParameters(KEY_INSTANT_FUEL_CONSUMPTION);
-        return SdlDataTypeConverter.objectToFloat(object);
+    public Double getInstantFuelConsumption() {
+    	Object object = getParameters(KEY_INSTANT_FUEL_CONSUMPTION);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
-
-    /**
-     * Sets the fuelRange.
-     *
-     * @param fuelRange The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
-     * vehicle. See struct FuelRange for details.
-     * @since SmartDeviceLink 5.0.0
-     */
-    public void setFuelRange(List<FuelRange> fuelRange) {
-        setParameters(KEY_FUEL_RANGE, fuelRange);
-    }
-
-    /**
-     * Gets the fuelRange.
-     *
-     * @return List<FuelRange> The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
-     * vehicle. See struct FuelRange for details.
-     * @since SmartDeviceLink 5.0.0
-     */
-    @SuppressWarnings("unchecked")
-    public List<FuelRange> getFuelRange() {
-        return (List<FuelRange>) getObject(FuelRange.class, KEY_FUEL_RANGE);
-    }
-
-    /**
-     * Sets the externalTemperature.
-     *
-     * @param externalTemperature The external temperature in degrees celsius
-     */
-    public void setExternalTemperature(Float externalTemperature) {
+    public void setExternalTemperature(Double externalTemperature) {
         setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
     }
-
-    /**
-     * Gets the externalTemperature.
-     *
-     * @return Float The external temperature in degrees celsius
-     */
-    public Float getExternalTemperature() {
-        Object object = getParameters(KEY_EXTERNAL_TEMPERATURE);
-        return SdlDataTypeConverter.objectToFloat(object);
+    public Double getExternalTemperature() {
+    	Object object = getParameters(KEY_EXTERNAL_TEMPERATURE);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
-
-    /**
-     * Sets the turnSignal.
-     *
-     * @param turnSignal See TurnSignal
-     * @since SmartDeviceLink 5.0.0
-     */
-    public void setTurnSignal(TurnSignal turnSignal) {
-        setParameters(KEY_TURN_SIGNAL, turnSignal);
-    }
-
-    /**
-     * Gets the turnSignal.
-     *
-     * @return TurnSignal See TurnSignal
-     * @since SmartDeviceLink 5.0.0
-     */
-    public TurnSignal getTurnSignal() {
-        return (TurnSignal) getObject(TurnSignal.class, KEY_TURN_SIGNAL);
-    }
-
-    /**
-     * Sets the vin.
-     *
-     * @param vin Vehicle identification number
-     */
     public void setVin(String vin) {
         setParameters(KEY_VIN, vin);
     }
-
-    /**
-     * Gets the vin.
-     *
-     * @return String Vehicle identification number
-     */
     public String getVin() {
-        return getString(KEY_VIN);
+    	return getString(KEY_VIN);
     }
 
     /**
      * Sets the prndl.
      *
-     * @param prndl See PRNDL
+     * @param prndl See PRNDL. This parameter is deprecated and it is now covered in `gearStatus`
+     * @deprecated in SmartDeviceLink 7.0.0
      */
+    @Deprecated
     public void setPrndl(PRNDL prndl) {
         setParameters(KEY_PRNDL, prndl);
     }
@@ -329,361 +245,292 @@ public class GetVehicleDataResponse extends RPCResponse {
     /**
      * Gets the prndl.
      *
-     * @return PRNDL See PRNDL
+     * @return PRNDL See PRNDL. This parameter is deprecated and it is now covered in `gearStatus`
+     * @deprecated in SmartDeviceLink 7.0.0
      */
+    @Deprecated
     public PRNDL getPrndl() {
         return (PRNDL) getObject(PRNDL.class, KEY_PRNDL);
     }
-
-    /**
-     * Sets the tirePressure.
-     *
-     * @param tirePressure See TireStatus
-     */
     public void setTirePressure(TireStatus tirePressure) {
         setParameters(KEY_TIRE_PRESSURE, tirePressure);
     }
-
-    /**
-     * Gets the tirePressure.
-     *
-     * @return TireStatus See TireStatus
-     */
+    @SuppressWarnings("unchecked")
     public TireStatus getTirePressure() {
         return (TireStatus) getObject(TireStatus.class, KEY_TIRE_PRESSURE);
     }
-
-    /**
-     * Sets the odometer.
-     *
-     * @param odometer Odometer in km
-     */
     public void setOdometer(Integer odometer) {
         setParameters(KEY_ODOMETER, odometer);
     }
-
-    /**
-     * Gets the odometer.
-     *
-     * @return Integer Odometer in km
-     */
     public Integer getOdometer() {
-        return getInteger(KEY_ODOMETER);
+    	return getInteger(KEY_ODOMETER);
     }
-
-    /**
-     * Sets the beltStatus.
-     *
-     * @param beltStatus The status of the seat belts
-     */
     public void setBeltStatus(BeltStatus beltStatus) {
         setParameters(KEY_BELT_STATUS, beltStatus);
     }
-
-    /**
-     * Gets the beltStatus.
-     *
-     * @return BeltStatus The status of the seat belts
-     */
+    @SuppressWarnings("unchecked")
     public BeltStatus getBeltStatus() {
         return (BeltStatus) getObject(BeltStatus.class, KEY_BELT_STATUS);
     }
-
-    /**
-     * Sets the bodyInformation.
-     *
-     * @param bodyInformation The body information including power modes
-     */
     public void setBodyInformation(BodyInformation bodyInformation) {
         setParameters(KEY_BODY_INFORMATION, bodyInformation);
     }
-
-    /**
-     * Gets the bodyInformation.
-     *
-     * @return BodyInformation The body information including power modes
-     */
+    @SuppressWarnings("unchecked")
     public BodyInformation getBodyInformation() {
         return (BodyInformation) getObject(BodyInformation.class, KEY_BODY_INFORMATION);
     }
-
-    /**
-     * Sets the deviceStatus.
-     *
-     * @param deviceStatus The device status including signal and battery strength
-     */
     public void setDeviceStatus(DeviceStatus deviceStatus) {
         setParameters(KEY_DEVICE_STATUS, deviceStatus);
     }
-
-    /**
-     * Gets the deviceStatus.
-     *
-     * @return DeviceStatus The device status including signal and battery strength
-     */
+    @SuppressWarnings("unchecked")
     public DeviceStatus getDeviceStatus() {
         return (DeviceStatus) getObject(DeviceStatus.class, KEY_DEVICE_STATUS);
     }
-
-    /**
-     * Sets the driverBraking.
-     *
-     * @param driverBraking The status of the brake pedal
-     */
     public void setDriverBraking(VehicleDataEventStatus driverBraking) {
         setParameters(KEY_DRIVER_BRAKING, driverBraking);
     }
-
-    /**
-     * Gets the driverBraking.
-     *
-     * @return VehicleDataEventStatus The status of the brake pedal
-     */
     public VehicleDataEventStatus getDriverBraking() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_DRIVER_BRAKING);
     }
-
-    /**
-     * Sets the wiperStatus.
-     *
-     * @param wiperStatus The status of the wipers
-     */
     public void setWiperStatus(WiperStatus wiperStatus) {
         setParameters(KEY_WIPER_STATUS, wiperStatus);
     }
-
-    /**
-     * Gets the wiperStatus.
-     *
-     * @return WiperStatus The status of the wipers
-     */
     public WiperStatus getWiperStatus() {
         return (WiperStatus) getObject(WiperStatus.class, KEY_WIPER_STATUS);
     }
-
-    /**
-     * Sets the headLampStatus.
-     *
-     * @param headLampStatus Status of the head lamps
-     */
+  
     public void setHeadLampStatus(HeadLampStatus headLampStatus) {
         setParameters(KEY_HEAD_LAMP_STATUS, headLampStatus);
     }
-
-    /**
-     * Gets the headLampStatus.
-     *
-     * @return HeadLampStatus Status of the head lamps
-     */
+    @SuppressWarnings("unchecked")
     public HeadLampStatus getHeadLampStatus() {
         return (HeadLampStatus) getObject(HeadLampStatus.class, KEY_HEAD_LAMP_STATUS);
     }
-
-    /**
-     * Sets the engineTorque.
-     *
-     * @param engineTorque Torque value for engine (in Nm) on non-diesel variants
-     */
-    public void setEngineTorque(Float engineTorque) {
+    public void setEngineTorque(Double engineTorque) {
         setParameters(KEY_ENGINE_TORQUE, engineTorque);
     }
-
-    /**
-     * Gets the engineTorque.
-     *
-     * @return Float Torque value for engine (in Nm) on non-diesel variants
-     */
-    public Float getEngineTorque() {
+    public Double getEngineTorque() {
         Object object = getParameters(KEY_ENGINE_TORQUE);
-        return SdlDataTypeConverter.objectToFloat(object);
+        return SdlDataTypeConverter.objectToDouble(object);
     }
-
-    /**
-     * Sets the accPedalPosition.
-     *
-     * @param accPedalPosition Accelerator pedal position (percentage depressed)
-     */
-    public void setAccPedalPosition(Float accPedalPosition) {
-        setParameters(KEY_ACC_PEDAL_POSITION, accPedalPosition);
-    }
-
-    /**
-     * Gets the accPedalPosition.
-     *
-     * @return Float Accelerator pedal position (percentage depressed)
-     */
-    public Float getAccPedalPosition() {
-        Object object = getParameters(KEY_ACC_PEDAL_POSITION);
-        return SdlDataTypeConverter.objectToFloat(object);
-    }
-
-    /**
-     * Sets the steeringWheelAngle.
-     *
-     * @param steeringWheelAngle Current angle of the steering wheel (in deg)
-     */
-    public void setSteeringWheelAngle(Float steeringWheelAngle) {
-        setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
-    }
-
-    /**
-     * Gets the steeringWheelAngle.
-     *
-     * @return Float Current angle of the steering wheel (in deg)
-     */
-    public Float getSteeringWheelAngle() {
-        Object object = getParameters(KEY_STEERING_WHEEL_ANGLE);
-        return SdlDataTypeConverter.objectToFloat(object);
-    }
-
-    /**
-     * Sets the engineOilLife.
-     *
-     * @param engineOilLife The estimated percentage of remaining oil life of the engine.
-     * @since SmartDeviceLink 5.0.0
-     */
     public void setEngineOilLife(Float engineOilLife) {
         setParameters(KEY_ENGINE_OIL_LIFE, engineOilLife);
     }
-
-    /**
-     * Gets the engineOilLife.
-     *
-     * @return Float The estimated percentage of remaining oil life of the engine.
-     * @since SmartDeviceLink 5.0.0
-     */
     public Float getEngineOilLife() {
         Object object = getParameters(KEY_ENGINE_OIL_LIFE);
         return SdlDataTypeConverter.objectToFloat(object);
     }
 
+    public void setAccPedalPosition(Double accPedalPosition) {
+        setParameters(KEY_ACC_PEDAL_POSITION, accPedalPosition);
+    }
+    public Double getAccPedalPosition() {
+    	Object object = getParameters(KEY_ACC_PEDAL_POSITION);
+    	return SdlDataTypeConverter.objectToDouble(object);
+    }
+        
+    public void setSteeringWheelAngle(Double steeringWheelAngle) {
+        setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
+    }
+    public Double getSteeringWheelAngle() {
+    	Object object = getParameters(KEY_STEERING_WHEEL_ANGLE);
+    	return SdlDataTypeConverter.objectToDouble(object);
+    }    
+
+    public void setECallInfo(ECallInfo eCallInfo) {
+        setParameters(KEY_E_CALL_INFO, eCallInfo);
+    }
+    @SuppressWarnings("unchecked")
+    public ECallInfo getECallInfo() {
+        return (ECallInfo) getObject(ECallInfo.class, KEY_E_CALL_INFO);
+    }	
+	
+    public void setAirbagStatus(AirbagStatus airbagStatus) {
+        setParameters(KEY_AIRBAG_STATUS, airbagStatus);
+    }
+    @SuppressWarnings("unchecked")
+    public AirbagStatus getAirbagStatus() {
+        return (AirbagStatus) getObject(AirbagStatus.class, KEY_AIRBAG_STATUS);
+    }	
+
+    public void setEmergencyEvent(EmergencyEvent emergencyEvent) {
+        setParameters(KEY_EMERGENCY_EVENT, emergencyEvent);
+    }
+    @SuppressWarnings("unchecked")
+    public EmergencyEvent getEmergencyEvent() {
+        return (EmergencyEvent) getObject(EmergencyEvent.class, KEY_EMERGENCY_EVENT);
+    }
+    public void setClusterModeStatus(ClusterModeStatus clusterModeStatus) {
+        setParameters(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
+    }
+    @SuppressWarnings("unchecked")
+    public ClusterModeStatus getClusterModeStatus() {
+        return (ClusterModeStatus) getObject(ClusterModeStatus.class, KEY_CLUSTER_MODE_STATUS);
+    }
+    public void setMyKey(MyKey myKey) {
+        setParameters(KEY_MY_KEY, myKey);
+    }
+    @SuppressWarnings("unchecked")
+    public MyKey getMyKey() {
+        return (MyKey) getObject(MyKey.class, KEY_MY_KEY);
+    }
+
+
+
     /**
-     * Sets the electronicParkBrakeStatus.
+     * Sets Fuel Range List. Fuel Range - The estimate range in KM the vehicle can travel based on fuel level and consumption.
+     * @param fuelRange the range in KM left as well as fuel type
      *
-     * @param electronicParkBrakeStatus The status of the park brake as provided by Electric Park Brake (EPB) system.
-     * @since SmartDeviceLink 5.0.0
+     * @see com.smartdevicelink.proxy.rpc.FuelRange
+     * @see com.smartdevicelink.proxy.rpc.enums.FuelType
      */
-    public void setElectronicParkBrakeStatus(ElectronicParkBrakeStatus electronicParkBrakeStatus) {
+    public void setFuelRange(List<FuelRange> fuelRange) {
+        setParameters(KEY_FUEL_RANGE, fuelRange);
+    }
+
+    /**
+     * Gets Fuel Range List
+     * @return List<FuelRange>
+     *     Fuel Range - The estimate range in KM the vehicle can travel based on fuel level and consumption.
+     */
+    @SuppressWarnings("unchecked")
+    public List<FuelRange> getFuelRange() {
+        return (List<FuelRange>) getObject(FuelRange.class, KEY_FUEL_RANGE);
+    }
+
+    /**
+     * Sets turnSignal
+     * @param turnSignal status of the turn signals
+     *
+     * @see com.smartdevicelink.proxy.rpc.enums.TurnSignal
+     */
+    public void setTurnSignal(TurnSignal turnSignal) {
+        setParameters(KEY_TURN_SIGNAL, turnSignal);
+    }
+
+    /**
+     * Gets turnSignal
+     * @return TurnSignal status of the turn signals
+     *
+     * @see com.smartdevicelink.proxy.rpc.enums.TurnSignal
+     */
+    @SuppressWarnings("unchecked")
+    public TurnSignal getTurnSignal() {
+        return (TurnSignal) getObject(TurnSignal.class, KEY_TURN_SIGNAL);
+    }
+
+    /**
+     * Sets electronicParkBrakeStatus
+     * @param electronicParkBrakeStatus status of the electronic park brake of the connected vehicle
+     *
+     * @see com.smartdevicelink.proxy.rpc.enums.ElectronicParkBrakeStatus
+     */
+    public void setElectronicParkBrakeStatus(ElectronicParkBrakeStatus electronicParkBrakeStatus){
         setParameters(KEY_ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
     }
 
     /**
-     * Gets the electronicParkBrakeStatus.
+     * Gets electronicParkBrakeStatus
+     * @return ElectronicParkBrakeStatus status of the electronic park brake of the connected vehicle
      *
-     * @return ElectronicParkBrakeStatus The status of the park brake as provided by Electric Park Brake (EPB) system.
-     * @since SmartDeviceLink 5.0.0
+     * @see com.smartdevicelink.proxy.rpc.enums.ElectronicParkBrakeStatus
      */
-    public ElectronicParkBrakeStatus getElectronicParkBrakeStatus() {
+    public ElectronicParkBrakeStatus getElectronicParkBrakeStatus(){
         return (ElectronicParkBrakeStatus) getObject(ElectronicParkBrakeStatus.class, KEY_ELECTRONIC_PARK_BRAKE_STATUS);
     }
 
     /**
-     * Sets the cloudAppVehicleID.
-     *
-     * @param cloudAppVehicleID Parameter used by cloud apps to identify a head unit
-     * @since SmartDeviceLink 5.1.0
+     * Sets a string value for the cloud app vehicle ID
+     * @param cloudAppVehicleID a string value
      */
-    public void setCloudAppVehicleID(String cloudAppVehicleID) {
+    public void setCloudAppVehicleID(String cloudAppVehicleID){
         setParameters(KEY_CLOUD_APP_VEHICLE_ID, cloudAppVehicleID);
     }
 
     /**
-     * Gets the cloudAppVehicleID.
-     *
-     * @return String Parameter used by cloud apps to identify a head unit
-     * @since SmartDeviceLink 5.1.0
+     * Gets a String value of the returned cloud app vehicle ID
+     * @return a String value.
      */
-    public String getCloudAppVehicleID() {
+    public String getCloudAppVehicleID(){
         return getString(KEY_CLOUD_APP_VEHICLE_ID);
     }
 
+
     /**
-     * Sets the eCallInfo.
-     *
-     * @param eCallInfo Emergency Call notification and confirmation data
+     * Sets a value for OEM Custom VehicleData.
+     * @param vehicleDataName a String value
+     * @param vehicleDataState a VehicleDataResult value
      */
-    public void setECallInfo(ECallInfo eCallInfo) {
-        setParameters(KEY_E_CALL_INFO, eCallInfo);
+    public void setOEMCustomVehicleData(String vehicleDataName, Object vehicleDataState){
+        setParameters(vehicleDataName, vehicleDataState);
     }
 
     /**
-     * Gets the eCallInfo.
-     *
-     * @return ECallInfo Emergency Call notification and confirmation data
+     * Gets a VehicleData value for the vehicle data item.
+     * @return a Object related to the vehicle data
      */
-    public ECallInfo getECallInfo() {
-        return (ECallInfo) getObject(ECallInfo.class, KEY_E_CALL_INFO);
+    public Object getOEMCustomVehicleData(String vehicleDataName){
+        return getParameters(vehicleDataName);
     }
 
     /**
-     * Sets the airbagStatus.
+     * Sets the windowStatus.
      *
-     * @param airbagStatus The status of the air bags
+     * @param windowStatus See WindowStatus
+     * @since SmartDeviceLink 7.0.0
      */
-    public void setAirbagStatus(AirbagStatus airbagStatus) {
-        setParameters(KEY_AIRBAG_STATUS, airbagStatus);
+    public void setWindowStatus(List<WindowStatus> windowStatus) {
+        setParameters(KEY_WINDOW_STATUS, windowStatus);
     }
 
     /**
-     * Gets the airbagStatus.
+     * Gets the windowStatus.
      *
-     * @return AirbagStatus The status of the air bags
+     * @return List<WindowStatus> See WindowStatus
+     * @since SmartDeviceLink 7.0.0
      */
-    public AirbagStatus getAirbagStatus() {
-        return (AirbagStatus) getObject(AirbagStatus.class, KEY_AIRBAG_STATUS);
+    @SuppressWarnings("unchecked")
+    public List<WindowStatus> getWindowStatus() {
+        return (List<WindowStatus>) getObject(WindowStatus.class, KEY_WINDOW_STATUS);
     }
 
     /**
-     * Sets the emergencyEvent.
+     * Sets the handsOffSteering.
      *
-     * @param emergencyEvent Information related to an emergency event (and if it occurred)
+     * @param handsOffSteering To indicate whether driver hands are off the steering wheel
+     * @since SmartDeviceLink 7.0.0
      */
-    public void setEmergencyEvent(EmergencyEvent emergencyEvent) {
-        setParameters(KEY_EMERGENCY_EVENT, emergencyEvent);
+    public void setHandsOffSteering(Boolean handsOffSteering) {
+        setParameters(KEY_HANDS_OFF_STEERING, handsOffSteering);
     }
 
     /**
-     * Gets the emergencyEvent.
+     * Gets the handsOffSteering.
      *
-     * @return EmergencyEvent Information related to an emergency event (and if it occurred)
+     * @return Boolean To indicate whether driver hands are off the steering wheel
+     * @since SmartDeviceLink 7.0.0
      */
-    public EmergencyEvent getEmergencyEvent() {
-        return (EmergencyEvent) getObject(EmergencyEvent.class, KEY_EMERGENCY_EVENT);
+    public Boolean getHandsOffSteering() {
+        return getBoolean(KEY_HANDS_OFF_STEERING);
     }
 
     /**
-     * Sets the clusterModeStatus.
+     * Sets the gearStatus.
      *
-     * @param clusterModeStatus The status modes of the cluster
+     * @param gearStatus See GearStatus
+     * @since SmartDeviceLink 7.0.0
      */
-    public void setClusterModeStatus(ClusterModeStatus clusterModeStatus) {
-        setParameters(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
+    public void setGearStatus(GearStatus gearStatus) {
+        setParameters(KEY_GEAR_STATUS, gearStatus);
     }
 
     /**
-     * Gets the clusterModeStatus.
+     * Gets the gearStatus.
      *
-     * @return ClusterModeStatus The status modes of the cluster
+     * @return GearStatus See GearStatus
+     * @since SmartDeviceLink 7.0.0
      */
-    public ClusterModeStatus getClusterModeStatus() {
-        return (ClusterModeStatus) getObject(ClusterModeStatus.class, KEY_CLUSTER_MODE_STATUS);
-    }
-
-    /**
-     * Sets the myKey.
-     *
-     * @param myKey Information related to the MyKey feature
-     */
-    public void setMyKey(MyKey myKey) {
-        setParameters(KEY_MY_KEY, myKey);
-    }
-
-    /**
-     * Gets the myKey.
-     *
-     * @return MyKey Information related to the MyKey feature
-     */
-    public MyKey getMyKey() {
-        return (MyKey) getObject(MyKey.class, KEY_MY_KEY);
+    public GearStatus getGearStatus() {
+        return (GearStatus) getObject(GearStatus.class, KEY_GEAR_STATUS);
     }
 }

@@ -30,6 +30,9 @@
 
 package com.smartdevicelink.test.streaming.video;
 
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -37,20 +40,26 @@ import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.video.RTPH264Packetizer;
 import com.smartdevicelink.test.streaming.MockInterfaceBroker;
-import com.smartdevicelink.transport.BTTransportConfig;
+import com.smartdevicelink.transport.MultiplexTransportConfig;
 
 import junit.framework.TestCase;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+
 /**
  * This class includes a unit test for {@link RTPH264Packetizer}.
  *
  * @author Sho Amano
  */
+@RunWith(AndroidJUnit4.class)
 public class RTPH264PacketizerTest extends TestCase {
 
 	private static final int FRAME_LENGTH_LEN = 2;
@@ -145,6 +154,7 @@ public class RTPH264PacketizerTest extends TestCase {
 	/**
 	 * Test for creating Single Frame RTP packets from H.264 byte stream
 	 */
+	@Test
 	public void testSingleFrames() {
 		StreamVerifier verifier = new StreamVerifier(SAMPLE_STREAM);
 		SdlSession session = createTestSession();
@@ -174,6 +184,7 @@ public class RTPH264PacketizerTest extends TestCase {
 	/**
 	 * Test for creating Single Frame RTP packets then splitting into multiple SDL frames
 	 */
+	@Test
 	public void testSingleFramesIntoMultipleMessages() {
 		StreamVerifier verifier = new StreamVerifier(SAMPLE_STREAM);
 		SdlSession session = createTestSession();
@@ -228,6 +239,7 @@ public class RTPH264PacketizerTest extends TestCase {
 	/**
 	 * Test for creating Fragmentation Units from H.264 byte stream
 	 */
+	@Test
 	public void testFragmentationUnits() {
 		ByteStreamNALUnit[] stream = new ByteStreamNALUnit[] {
 			SAMPLE_STREAM[0], SAMPLE_STREAM[1], null, null, null, SAMPLE_STREAM[5]
@@ -278,6 +290,7 @@ public class RTPH264PacketizerTest extends TestCase {
 	/**
 	 * Test for RTP sequence number gets wrap-around correctly
 	 */
+	@Test
 	public void testSequenceNumWrapAround() {
 		ByteStreamNALUnit[] stream = new ByteStreamNALUnit[70000];
 		for (int i = 0; i < stream.length; i++) {
@@ -312,6 +325,7 @@ public class RTPH264PacketizerTest extends TestCase {
 	/**
 	 * Test for {@link RTPH264Packetizer#setPayloadType(byte)}
 	 */
+	@Test
 	public void testSetPayloadType() {
 		byte pt = (byte)123;
 		StreamVerifier verifier = new StreamVerifier(SAMPLE_STREAM, pt);
@@ -343,6 +357,7 @@ public class RTPH264PacketizerTest extends TestCase {
 	/**
 	 * Test for {@link RTPH264Packetizer#setSSRC(int)}
 	 */
+	@Test
 	public void testSetSSRC() {
 		int ssrc = 0xFEDCBA98;
 		StreamVerifier verifier = new StreamVerifier(SAMPLE_STREAM);
@@ -376,6 +391,7 @@ public class RTPH264PacketizerTest extends TestCase {
 	 * Test for {@link RTPH264Packetizer#pause()} and
 	 * {@link RTPH264Packetizer#resume()}
 	 */
+	@Test
 	public void testPauseResume() {
 		int index = 0;
 		// split SAMPLE_STREAM into three parts
@@ -446,6 +462,7 @@ public class RTPH264PacketizerTest extends TestCase {
 	/**
 	 * Test for {@link RTPH264Packetizer#sendFrame(byte[], int, int, long)}
 	 */
+	@Test
 	public void testSendFrameInterfaceWithArray() {
 		StreamVerifier verifier = new StreamVerifier(SAMPLE_STREAM);
 		SdlSession session = createTestSession();
@@ -475,6 +492,7 @@ public class RTPH264PacketizerTest extends TestCase {
 	/**
 	 * Test for {@link RTPH264Packetizer#sendFrame(ByteBuffer, long)}
 	 */
+	@Test
 	public void testSendFrameInterfaceWithByteBuffer() {
 		StreamVerifier verifier = new StreamVerifier(SAMPLE_STREAM);
 		SdlSession session = createTestSession();
@@ -505,6 +523,7 @@ public class RTPH264PacketizerTest extends TestCase {
 	 * Test for {@link RTPH264Packetizer#sendFrame(ByteBuffer, long)}
 	 * with direct ByteBuffer
 	 */
+	@Test
 	public void testSendFrameInterfaceWithDirectByteBuffer() {
 		StreamVerifier verifier = new StreamVerifier(SAMPLE_STREAM);
 		SdlSession session = createTestSession();
@@ -532,7 +551,7 @@ public class RTPH264PacketizerTest extends TestCase {
 	}
 
 	private SdlSession createTestSession() {
-		return SdlSession.createSession(WIPRO_VERSION, new MockInterfaceBroker(), new BTTransportConfig(true));
+		return new SdlSession(new MockInterfaceBroker(), new MultiplexTransportConfig(getInstrumentation().getTargetContext(), "41146"));
 	}
 
 	private class StreamVerifier implements IStreamListener {

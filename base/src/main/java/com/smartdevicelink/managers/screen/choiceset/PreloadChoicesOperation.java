@@ -35,7 +35,7 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
@@ -73,6 +73,7 @@ class PreloadChoicesOperation extends Task {
 	private CompletionListener completionListener;
 	private boolean isRunning;
 	private boolean isVROptional;
+	private boolean choiceError = false;
 
 	PreloadChoicesOperation(ISdl internalInterface, FileManager fileManager, String displayName, WindowCapability defaultMainWindowCapability,
 								   Boolean isVROptional, HashSet<ChoiceCell> cellsToPreload, CompletionListener listener){
@@ -164,16 +165,15 @@ class PreloadChoicesOperation extends Task {
 				public void onFinished() {
 					isRunning = false;
 					DebugTool.logInfo(TAG, "Finished pre loading choice cells");
-					completionListener.onComplete(true);
-
+					completionListener.onComplete(!choiceError);
+					choiceError = false;
 					PreloadChoicesOperation.super.onFinished();
 				}
 
 				@Override
 				public void onError(int correlationId, Result resultCode, String info) {
 					DebugTool.logError(TAG, "There was an error uploading a choice cell: "+ info + " resultCode: " + resultCode);
-
-					PreloadChoicesOperation.super.onFinished();
+					choiceError = true;
 				}
 
 				@Override

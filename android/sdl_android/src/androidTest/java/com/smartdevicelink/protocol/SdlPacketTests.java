@@ -1,6 +1,6 @@
 package com.smartdevicelink.protocol;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.livio.BSON.BsonEncoder;
 import com.smartdevicelink.protocol.enums.ControlFrameTags;

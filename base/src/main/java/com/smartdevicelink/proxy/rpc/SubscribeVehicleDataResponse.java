@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
+ * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@
  * disclaimer in the documentation and/or other materials provided with the
  * distribution.
  *
- * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
- * its contributors may be used to endorse or promote products derived
- * from this software without specific prior written permission.
+ * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from this 
+ * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -41,7 +41,7 @@ import java.util.Hashtable;
 
 /**
  * Subscribe Vehicle Data Response is sent, when SubscribeVehicleData has been called
- *
+ * 
  * @since SmartDeviceLink 2.0
  */
 public class SubscribeVehicleDataResponse extends RPCResponse {
@@ -74,6 +74,9 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
+    public static final String KEY_GEAR_STATUS = "gearStatus";
+    public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
+    public static final String KEY_WINDOW_STATUS = "windowStatus";
 
 	/**
 	 * Constructs a new SubscribeVehicleDataResponse object
@@ -85,8 +88,8 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
 	/**
 	 * <p>Constructs a new SubscribeVehicleDataResponse object indicated by the Hashtable
 	 * parameter</p>
-	 *
-	 *
+	 * 
+	 * 
 	 * @param hash The Hashtable to use
 	 */
     public SubscribeVehicleDataResponse(Hashtable<String, Object> hash) {
@@ -234,16 +237,22 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_EXTERNAL_TEMPERATURE);
     }
     /**
-     * Gets currently selected gear data
-     * @param prndl a VehicleDataResult related to the PRNDL status (automatic transmission gear)
+     * Sets the prndl.
+     *
+     * @param prndl See PRNDL. This parameter is deprecated and it is now covered in `gearStatus`
+     * @deprecated in SmartDeviceLink 7.0.0
      */
+    @Deprecated
     public void setPrndl(VehicleDataResult prndl) {
         setParameters(KEY_PRNDL, prndl);
     }
     /**
-     * Gets currently selected gear data
-     * @return a VehicleDataResult related to the PRNDL status (automatic transmission gear)
+     * Gets the prndl.
+     *
+     * @return VehicleDataResult See PRNDL. This parameter is deprecated and it is now covered in `gearStatus`
+     * @deprecated in SmartDeviceLink 7.0.0
      */
+    @Deprecated
     @SuppressWarnings("unchecked")
     public VehicleDataResult getPrndl() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_PRNDL);
@@ -546,5 +555,65 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      */
     public VehicleDataResult getOEMCustomVehicleData(String vehicleDataName){
         return (VehicleDataResult) getObject(VehicleDataResult.class, vehicleDataName);
+    }
+
+    /**
+     * Sets the handsOffSteering.
+     *
+     * @param handsOffSteering To indicate whether driver hands are off the steering wheel
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setHandsOffSteering(VehicleDataResult handsOffSteering) {
+        setParameters(KEY_HANDS_OFF_STEERING, handsOffSteering);
+    }
+
+    /**
+     * Gets the handsOffSteering.
+     *
+     * @return VehicleDataResult To indicate whether driver hands are off the steering wheel
+     * @since SmartDeviceLink 7.0.0
+     */
+    public VehicleDataResult getHandsOffSteering() {
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_HANDS_OFF_STEERING);
+    }
+    /**
+     * Sets the gearStatus.
+     *
+     * @param gearStatus See GearStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setGearStatus(VehicleDataResult gearStatus){
+        setParameters(KEY_GEAR_STATUS, gearStatus);
+    }
+
+    /**
+     * Gets the gearStatus.
+     *
+     * @return VehicleDataResult See GearStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    @SuppressWarnings("unchecked")
+    public VehicleDataResult getGearStatus(){
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_GEAR_STATUS);
+    }
+
+    /**
+     * Sets the windowStatus.
+     *
+     * @param windowStatus See WindowStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setWindowStatus(VehicleDataResult windowStatus) {
+        setParameters(KEY_WINDOW_STATUS, windowStatus);
+    }
+
+    /**
+     * Gets the windowStatus.
+     *
+     * @return VehicleDataResult See WindowStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public VehicleDataResult getWindowStatus() {
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_WINDOW_STATUS);
     }
 }

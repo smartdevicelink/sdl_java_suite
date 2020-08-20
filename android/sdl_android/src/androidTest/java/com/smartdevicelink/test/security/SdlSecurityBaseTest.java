@@ -1,15 +1,13 @@
 package com.smartdevicelink.test.security;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
 import com.smartdevicelink.SdlConnection.SdlSession;
-import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.test.TestValues;
-import com.smartdevicelink.transport.BTTransportConfig;
-import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.test.streaming.MockInterfaceBroker;
+import com.smartdevicelink.transport.MultiplexTransportConfig;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +15,7 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.List;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 
@@ -58,65 +57,6 @@ public class SdlSecurityBaseTest {
 	    	startServiceList = list;
 	    }
 	}
-	
-	class MockInterfaceBroker implements ISdlConnectionListener {
-		public MockInterfaceBroker () { }
-		@Override
-		public void onTransportDisconnected(String info) {
-			
-		}
-
-		@Override
-		public void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
-
-		}
-
-		@Override
-		public void onTransportError(String info, Exception e) {
-			
-		}
-		@Override
-		public void onProtocolMessageReceived(ProtocolMessage msg) {
-			
-		}
-		@Override
-		public void onProtocolSessionStartedNACKed(SessionType sessionType,
-				byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
-			
-		}
-		@Override
-		public void onProtocolSessionStarted(SessionType sessionType,
-				byte sessionID, byte version, String correlationID, int hashID,
-				boolean isEncrypted) {
-			
-		}
-		@Override
-		public void onProtocolSessionEnded(SessionType sessionType, byte sessionID,
-				String correlationID) {
-			
-		}
-		@Override
-		public void onProtocolSessionEndedNACKed(SessionType sessionType,
-				byte sessionID, String correlationID) {
-			
-		}
-		@Override
-		public void onProtocolError(String info, Exception e) {
-			
-		}
-		@Override
-		public void onHeartbeatTimedOut(byte sessionID) {
-			
-		}
-		@Override
-		public void onProtocolServiceDataACK(SessionType sessionType, int dataSize,
-				byte sessionID) {
-
-		}
-		@Override
-		public void onAuthTokenReceived(String token, byte bytes){}
-
-	}
 
 	@Test
 	public void testMakeListSetAndGet(){
@@ -139,11 +79,11 @@ public class SdlSecurityBaseTest {
 		byte testWiproVersion = (byte) 0x0B;
 		boolean testInitResult = true;
 		MockInterfaceBroker interfaceBroker = new MockInterfaceBroker();
-		BaseTransportConfig transportConfig = new BTTransportConfig(true);
+		MultiplexTransportConfig transportConfig = new MultiplexTransportConfig(getInstrumentation().getTargetContext(),"19216801");
 		MockSdlSecurityBase mockSdlSecurityBase = new MockSdlSecurityBase();
 		
-		SdlSession testSdlSession = SdlSession.createSession(testWiproVersion,interfaceBroker, transportConfig);
-		
+		SdlSession testSdlSession = new SdlSession(interfaceBroker, transportConfig);
+
 		assertNotNull(TestValues.NOT_NULL, mockSdlSecurityBase);
 		assertNotNull(TestValues.NOT_NULL, testSdlSession);
 		

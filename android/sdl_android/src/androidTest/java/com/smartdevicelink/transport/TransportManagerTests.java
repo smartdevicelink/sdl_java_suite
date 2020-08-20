@@ -2,7 +2,7 @@ package com.smartdevicelink.transport;
 
 import android.content.ComponentName;
 import android.os.Looper;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlPacketFactory;
@@ -18,7 +18,7 @@ import org.junit.runner.RunWith;
 import java.util.Collections;
 import java.util.List;
 
-import static android.support.test.InstrumentationRegistry.getContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
@@ -50,7 +50,7 @@ public class TransportManagerTests {
 
     @Before
     public void setUp() throws Exception {
-        config = new MultiplexTransportConfig(getContext(), SdlUnitTestContants.TEST_APP_ID);
+        config = new MultiplexTransportConfig(getInstrumentation().getContext(), SdlUnitTestContants.TEST_APP_ID);
         config.setService(routerServiceComponentName);
         if (Looper.myLooper() == null) {
             Looper.prepare();
@@ -66,7 +66,7 @@ public class TransportManagerTests {
         assertNull(manager.legacyBluetoothHandler);
 
         manager.exitLegacyMode("Test");
-        manager.transport = manager.new TransportBrokerImpl(getContext(), config.appId, routerServiceComponentName);
+        manager.transport = manager.new TransportBrokerImpl(getInstrumentation().getContext(), config.appId, routerServiceComponentName);
 
         manager.start();
         assert true;

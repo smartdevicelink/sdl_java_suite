@@ -2,7 +2,7 @@ package com.smartdevicelink.managers.file;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -58,7 +58,7 @@ public class FileManagerTests {
 
 	@Before
 	public void setUp() throws Exception{
-		mTestContext = getTargetContext();
+		mTestContext = getInstrumentation().getTargetContext();
 		validFile = new SdlFile();
 		validFile.setName(TestValues.GENERAL_STRING);
 		validFile.setFileData(TestValues.GENERAL_BYTE_ARRAY);

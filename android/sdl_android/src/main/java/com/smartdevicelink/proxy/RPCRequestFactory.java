@@ -868,7 +868,7 @@ public class RPCRequestFactory {
 		msg.setSpeed(speed);
 		msg.setRpm(rpm);
 		msg.setFuelLevel(fuelLevel);
-		msg.setFuelLevel_State(fuelLevel_State);
+		msg.setFuelLevelState(fuelLevel_State);
 		msg.setInstantFuelConsumption(instantFuelConsumption);
 		msg.setExternalTemperature(externalTemperature);
 		msg.setPrndl(prndl);
@@ -894,7 +894,7 @@ public class RPCRequestFactory {
 		msg.setSpeed(speed);
 		msg.setRpm(rpm);
 		msg.setFuelLevel(fuelLevel);
-		msg.setFuelLevel_State(fuelLevel_State);
+		msg.setFuelLevelState(fuelLevel_State);
 		msg.setInstantFuelConsumption(instantFuelConsumption);
 		msg.setExternalTemperature(externalTemperature);
 		msg.setPrndl(prndl);
@@ -920,7 +920,7 @@ public class RPCRequestFactory {
 		msg.setSpeed(speed);
 		msg.setRpm(rpm);
 		msg.setFuelLevel(fuelLevel);
-		msg.setFuelLevel_State(fuelLevel_State);
+		msg.setFuelLevelState(fuelLevel_State);
 		msg.setInstantFuelConsumption(instantFuelConsumption);
 		msg.setExternalTemperature(externalTemperature);
 		msg.setVin(vin);

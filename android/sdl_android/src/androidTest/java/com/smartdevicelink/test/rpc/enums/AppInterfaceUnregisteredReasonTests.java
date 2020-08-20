@@ -44,6 +44,8 @@ public class AppInterfaceUnregisteredReasonTests extends TestCase {
 		AppInterfaceUnregisteredReason enumProtocolViolation = AppInterfaceUnregisteredReason.valueForString(example);
 		example = "UNSUPPORTED_HMI_RESOURCE";
 		AppInterfaceUnregisteredReason enumUnsupportedHMIResource = AppInterfaceUnregisteredReason.valueForString(example);
+		example = "RESOURCE_CONSTRAINT";
+		AppInterfaceUnregisteredReason enumResourceConstraint = AppInterfaceUnregisteredReason.valueForString(example);
 				
 		assertNotNull("USER_EXIT returned null", enumUserExit);
 		assertNotNull("IGNITION_OFF returned null", enumIgnitionOff);
@@ -58,6 +60,7 @@ public class AppInterfaceUnregisteredReasonTests extends TestCase {
 		assertNotNull("APP_UNAUTHORIZED returned null", enumAppAuthorized);
 		assertNotNull("PROTOCOL_VIOLATION returned null", enumProtocolViolation);
 		assertNotNull("UNSUPPORTED_HMI_RESOURCE returned null", enumUnsupportedHMIResource);
+		assertNotNull("RESOURCE_CONSTRAINT returned null", enumResourceConstraint);
 	}
 	
 	/**
@@ -108,6 +111,7 @@ public class AppInterfaceUnregisteredReasonTests extends TestCase {
 		enumTestList.add(AppInterfaceUnregisteredReason.APP_UNAUTHORIZED);
 		enumTestList.add(AppInterfaceUnregisteredReason.PROTOCOL_VIOLATION);
 		enumTestList.add(AppInterfaceUnregisteredReason.UNSUPPORTED_HMI_RESOURCE);
+		enumTestList.add(AppInterfaceUnregisteredReason.RESOURCE_CONSTRAINT);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.managers.audio;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;

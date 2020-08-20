@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this
+ * contributors may be used to endorse or promote products derived from this 
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -45,268 +45,321 @@ import java.util.Hashtable;
 import java.util.List;
 
 /**
- * Callback for the periodic and non periodic vehicle data read function.
+ *Individual requested DID result and data.
  *
+ *  
+ * <p>Callback for the periodic and non periodic vehicle data read function.</p>
+ * 
+ * <p> <b>Note:</b></p>
+ * 
+ * Initially SDL sends SubscribeVehicleData for getting the periodic updates from HMI whenever each of subscribed data types changes. OnVehicleData is expected to bring such updated values to SDL
+ * 
+ *
+ * 
+ * 
  * <p><b>Parameter List</b></p>
- *
  * <table border="1" rules="all">
- *  <tr>
- *      <th>Param Name</th>
- *      <th>Type</th>
- *      <th>Description</th>
- *      <th>Required</th>
- *      <th>Version Available</th>
- *  </tr>
- *  <tr>
- *      <td>gps</td>
- *      <td>GPSData</td>
- *      <td>See GPSData</td>
- *      <td>N</td>
- *      <td></td>
- *  </tr>
- *  <tr>
- *      <td>speed</td>
- *      <td>Float</td>
- *      <td>The vehicle speed in kilometers per hour</td>
- *      <td>N</td>
- *      <td></td>
- *  </tr>
- *  <tr>
- *      <td>rpm</td>
- *      <td>Integer</td>
- *      <td>The number of revolutions per minute of the engine</td>
- *      <td>N</td>
- *      <td></td>
- *  </tr>
- *  <tr>
- *      <td>fuelLevel</td>
- *      <td>Float</td>
- *      <td>The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec7.0, please see fuelRange.</td>
- *      <td>N</td>
- *      <td>SmartDeviceLink 7.0.0</td>
- *  </tr>
- *  <tr>
- *      <td>fuelLevel_State</td>
- *      <td>ComponentVolumeStatus</td>
- *      <td>The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please seefuelRange.</td>
- *      <td>N</td>
- *      <td>SmartDeviceLink 7.0.0</td>
- *  </tr>
- *  <tr>
- *      <td>instantFuelConsumption</td>
- *      <td>Float</td>
- *      <td>The instantaneous fuel consumption in microlitres</td>
- *      <td>N</td>
- *      <td></td>
- *  </tr>
- *  <tr>
- *      <td>fuelRange</td>
- *      <td>List<FuelRange></td>
- *      <td>The fuel type, estimated range in KM, fuel level/capacity and fuel level state for thevehicle. See struct FuelRange for details.</td>
- *      <td>N</td>
- *      <td>SmartDeviceLink 5.0.0</td>
- *  </tr>
- *  <tr>
- *      <td>externalTemperature</td>
- *      <td>Float</td>
- *      <td>The external temperature in degrees celsius</td>
- *      <td>N</td>
- *      <td></td>
- *  </tr>
- *  <tr>
- *      <td>turnSignal</td>
- *      <td>TurnSignal</td>
- *      <td>See TurnSignal</td>
- *      <td>N</td>
- *      <td>SmartDeviceLink 5.0.0</td>
- *  </tr>
- *  <tr>
- *      <td>vin</td>
- *      <td>String</td>
- *      <td>Vehicle identification number.</td>
- *      <td>N</td>
- *      <td></td>
- *  </tr>
- *  <tr>
- *      <td>prndl</td>
- *      <td>PRNDL</td>
- *      <td>See PRNDL</td>
- *      <td>N</td>
- *      <td></td>
- *  </tr>
- *  <tr>
- *      <td>tirePressure</td>
- *      <td>TireStatus</td>
- *      <td>See TireStatus</td>
- *      <td>N</td>
- *      <td></td>
- *  </tr>
- *  <tr>
- *      <td>odometer</td>
- *      <td>Integer</td>
- *      <td>Odometer in km</td>
- *      <td>N</td>
- *      <td></td>
- *  </tr>
- *  <tr>
- *      <td>beltStatus</td>
- *      <td>BeltStatus</td>
- *      <td>The status of the seat belts</td>
- *      <td>N</td>
- *      <td></td>
- *  </tr>
- *  <tr>
- *      <td>bodyInformation</td>
- *      <td>BodyInformation</td>
- *      <td>The body information including power modes</td>
- *      <td>N</td>
- *      <td></td>
- *  </tr>
- *  <tr>
- *      <td>deviceStatus</td>
- *      <td>DeviceStatus</td>
- *      <td>The device status including signal and battery strength</td>
- *      <td>N</td>
- *      <td></td>
- *  </tr>
- *  <tr>
- *      <td>driverBraking</td>
- *      <td>VehicleDataEventStatus</td>
- *      <td>The status of the brake pedal</td>
- *      <td>N</td>
- *      <td></td>
- *  </tr>
- *  <tr>
- *      <td>wiperStatus</td>
- *      <td>WiperStatus</td>
- *      <td>The status of the wipers</td>
- *      <td>N</td>
- *      <td></td>
- *  </tr>
- *  <tr>
- *      <td>headLampStatus</td>
- *      <td>HeadLampStatus</td>
- *      <td>Status of the head lamps</td>
- *      <td>N</td>
- *      <td></td>
- *  </tr>
- *  <tr>
- *      <td>engineTorque</td>
- *      <td>Float</td>
- *      <td>Torque value for engine (in Nm) on non-diesel variants</td>
- *      <td>N</td>
- *      <td></td>
- *  </tr>
- *  <tr>
- *      <td>accPedalPosition</td>
- *      <td>Float</td>
- *      <td>Accelerator pedal position (percentage depressed)</td>
- *      <td>N</td>
- *      <td></td>
- *  </tr>
- *  <tr>
- *      <td>steeringWheelAngle</td>
- *      <td>Float</td>
- *      <td>Current angle of the steering wheel (in deg)</td>
- *      <td>N</td>
- *      <td></td>
- *  </tr>
- *  <tr>
- *      <td>engineOilLife</td>
- *      <td>Float</td>
- *      <td>The estimated percentage of remaining oil life of the engine.</td>
- *      <td>N</td>
- *      <td>SmartDeviceLink 5.0.0</td>
- *  </tr>
- *  <tr>
- *      <td>electronicParkBrakeStatus</td>
- *      <td>ElectronicParkBrakeStatus</td>
- *      <td>The status of the park brake as provided by Electric Park Brake (EPB) system.</td>
- *      <td>N</td>
- *      <td>SmartDeviceLink 5.0.0</td>
- *  </tr>
- *  <tr>
- *      <td>cloudAppVehicleID</td>
- *      <td>String</td>
- *      <td>Parameter used by cloud apps to identify a head unit</td>
- *      <td>N</td>
- *      <td>SmartDeviceLink 5.1.0</td>
- *  </tr>
- *  <tr>
- *      <td>eCallInfo</td>
- *      <td>ECallInfo</td>
- *      <td>Emergency Call notification and confirmation data</td>
- *      <td>N</td>
- *      <td></td>
- *  </tr>
- *  <tr>
- *      <td>airbagStatus</td>
- *      <td>AirbagStatus</td>
- *      <td>The status of the air bags</td>
- *      <td>N</td>
- *      <td></td>
- *  </tr>
- *  <tr>
- *      <td>emergencyEvent</td>
- *      <td>EmergencyEvent</td>
- *      <td>Information related to an emergency event (and if it occurred)</td>
- *      <td>N</td>
- *      <td></td>
- *  </tr>
- *  <tr>
- *      <td>clusterModeStatus</td>
- *      <td>ClusterModeStatus</td>
- *      <td>The status modes of the cluster</td>
- *      <td>N</td>
- *      <td></td>
- *  </tr>
- *  <tr>
- *      <td>myKey</td>
- *      <td>MyKey</td>
- *      <td>Information related to the MyKey feature</td>
- *      <td>N</td>
- *      <td></td>
- *  </tr>
- * </table>
+ * 		<tr>
+ * 			<th>Param Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th> Req.</th>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>Gps</td>
+ * 			<td>Boolean</td>
+ * 			<td>GPS data. See {@linkplain com.smartdevicelink.proxy.rpc.GPSData} for details</td>
+ *                 <td>N</td>
+ * 			<td>Subscribable </td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>Speed</td>
+ * 			<td>Float</td>
+ * 			<td>The vehicle speed in kilometers per hour</td>
+ *                 <td>N</td>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>rpm</td>
+ * 			<td>Integer</td>
+ * 			<td>The number of revolutions per minute of the engine</td>
+ *                 <td>N</td>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ *      <tr>
+ *          <td>fuelLevel</td>
+ *          <td>Boolean</td>
+ *          <td>The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec7.0, please see fuelRange.</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
+ *      <tr>
+ *          <td>fuelLevel_State</td>
+ *          <td>Boolean</td>
+ *          <td>The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please seefuelRange.</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
+ *      <tr>
+ *          <td>fuelRange</td>
+ *          <td>Boolean</td>
+ *          <td>The fuel type, estimated range in KM, fuel level/capacity and fuel level state for thevehicle. See struct FuelRange for details.</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 5.0.0</td>
+ *      </tr>
+ * 		<tr>
+ * 			<td>instantFuelConsumption</td>
+ * 			<td>Float</td>
+ * 			<td>The instantaneous fuel consumption in microlitres</td>
+ *                 <td>N</td>
+ * 			<td>Subscribable </td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>externalTemperature</td>
+ * 			<td>Float</td>
+ * 			<td>The external temperature in degrees celsius.</td>
+ *                 <td>N</td>
+ * 			<td>Subscribable </td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>vin</td>
+ * 			<td>String</td>
+ * 			<td>Vehicle identification number.</td>
+ *                 <td>N</td>
+ * 			<td>Subscribable </td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ *      <tr>
+ *          <td>gearStatus</td>
+ *          <td>GearStatus</td>
+ *          <td>See GearStatus</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
+ *      <tr>
+ *          <td>gearStatus</td>
+ *          <td>GearStatus</td>
+ *          <td>See GearStatus</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
+ *      <tr>
+ *          <td>prndl</td>
+ *          <td>PRNDL</td>
+ *          <td>See PRNDL. This parameter is deprecated and it is now covered in `gearStatus`</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
+ * 		<tr>
+ * 			<td>tirePressure</td>
+ * 			<td>TireStatus</td>
+ * 			<td>Tire pressure status</td>
+ *                 <td>N</td>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>odometer</td>
+ * 			<td>Integer</td>
+ * 			<td>Odometer in km</td>
+ *                 <td>N</td>
+ * 			<td>Subscribable </td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>beltStatus</td>
+ * 			<td>BeltStatus</td>
+ * 			<td>The status of the seat belts.</td>
+ *                 <td>N</td>
+ * 			<td>Subscribable </td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>bodyInformation</td>
+ * 			<td>BodyInformation</td>
+ * 			<td>The body information including power modes.</td>
+ *                 <td>N</td>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>deviceStatus</td>
+ * 			<td>DeviceStatus</td>
+ * 			<td>The connected mobile device status including signal and battery strength.</td>
+ *                 <td>N</td>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>eCallInfo</td>
+ * 			<td>ECallInfo</td>
+ * 			<td>Emergency Call notification and confirmation data.</td>
+ *                 <td>N</td>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>airbagStatus</td>
+ * 			<td>AirBagStatus</td>
+ * 			<td>The status of the air bags.</td>
+ *                 <td>N</td>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>emergencyEvent</td>
+ * 			<td>EmergencyEvernt</td>
+ * 			<td>Information related to an emergency event (and if it occurred).</td>
+ *                 <td>N</td>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>clusterModeStatus</td>
+ * 			<td>ClusterModeStatus</td>
+ * 			<td>The status modes of the instrument panel cluster.</td>
+ *                 <td>N</td>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>myKey</td>
+ * 			<td>MyKey</td>
+ * 			<td>Information related to the MyKey feature.</td>
+ *                 <td>N</td>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ *
+ * 		<tr>
+ * 			<td>driverBraking</td>
+ * 			<td>vehicleDataEventStatus</td>
+ * 			<td>The status of the brake pedal.</td>
+ *                 <td>N</td>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>wiperStatus</td>
+ * 			<td>WiperStatus</td>
+ * 			<td>The status of the wipers</td>
+ *                 <td>N</td>
+ * 			<td> </td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>headLampStatus</td>
+ * 			<td>headLampStatus</td>
+ * 			<td>Status of the head lamps</td>
+ *                 <td>N</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>engineTorque</td>
+ * 			<td>Float</td>
+ * 			<td>Torque value for engine (in Nm) on non-diesel variants</td>
+ *                 <td>N</td>
+ * 			<td>minvalue:-1000; maxvalue:2000</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>engineOilLife</td>
+ * 			<td>Float</td>
+ * 			<td>The estimated percentage of remaining oil life of the engine</td>
+ *                 <td>N</td>
+ * 			<td>minvalue:0; maxvalue:100</td>
+ * 			<td>SmartDeviceLink 5.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>accPedalPosition</td>
+ * 			<td>Float</td>
+ * 			<td>Accelerator pedal position (percentage depressed)</td>
+ *                 <td>N</td>
+ * 			<td>minvalue: 0; maxvalue:100</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>steeringWheelAngle</td>
+ * 			<td>Float</td>
+ * 			<td>Current angle of the steering wheel (in deg)</td>
+ *                 <td>N</td>
+ * 			<td> minvalue: -2000; maxvalue:2000</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 	     <tr>
+ * 			<td>cloudAppVehicleID</td>
+ * 			<td>String</td>
+ * 			<td>ID for the vehicle when connecting to cloud applications</td>
+ *				<td>N</td>
+ *				<td></td>
+ * 			<td>SmartDeviceLink 5.1 </td>
+ * 		</tr>
+ *      <tr>
+ *          <td>handsOffSteering</td>
+ *          <td>Boolean</td>
+ *          <td>To indicate whether driver hands are off the steering wheel</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
+ *      <tr>
+ *          <td>windowStatus</td>
+ *          <td>Boolean</td>
+ *          <td>See WindowStatus</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
+ *  </table>
  *
  * @since SmartDeviceLink 1.0
- *
+ * 
  * @see SubscribeVehicleData
  * @see UnsubscribeVehicleData
  *
  *
  */
 public class OnVehicleData extends RPCNotification {
-    public static final String KEY_SPEED = "speed";
-    public static final String KEY_RPM = "rpm";
-    public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
-    public static final String KEY_FUEL_LEVEL = "fuelLevel";
-    public static final String KEY_VIN = "vin";
-    public static final String KEY_PRNDL = "prndl";
-    public static final String KEY_TIRE_PRESSURE = "tirePressure";
-    public static final String KEY_ENGINE_TORQUE = "engineTorque";
-    public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
-    public static final String KEY_ODOMETER = "odometer";
-    public static final String KEY_GPS = "gps";
-    public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
-    public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
-    public static final String KEY_BELT_STATUS = "beltStatus";
-    public static final String KEY_BODY_INFORMATION = "bodyInformation";
-    public static final String KEY_DEVICE_STATUS = "deviceStatus";
-    public static final String KEY_DRIVER_BRAKING = "driverBraking";
-    public static final String KEY_WIPER_STATUS = "wiperStatus";
-    public static final String KEY_HEAD_LAMP_STATUS = "headLampStatus";
-    public static final String KEY_ACC_PEDAL_POSITION = "accPedalPosition";
-    public static final String KEY_STEERING_WHEEL_ANGLE = "steeringWheelAngle";
-    public static final String KEY_E_CALL_INFO = "eCallInfo";
-    public static final String KEY_AIRBAG_STATUS = "airbagStatus";
-    public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
-    public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
-    public static final String KEY_MY_KEY = "myKey";
-    public static final String KEY_FUEL_RANGE = "fuelRange";
-    public static final String KEY_TURN_SIGNAL = "turnSignal";
-    public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
+	public static final String KEY_SPEED = "speed";
+	public static final String KEY_RPM = "rpm";
+	public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
+	public static final String KEY_FUEL_LEVEL = "fuelLevel";
+	public static final String KEY_VIN = "vin";
+	public static final String KEY_PRNDL = "prndl";
+	public static final String KEY_TIRE_PRESSURE = "tirePressure";
+	public static final String KEY_ENGINE_TORQUE = "engineTorque";
+	public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
+	public static final String KEY_ODOMETER = "odometer";
+	public static final String KEY_GPS = "gps";
+	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
+	public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
+	public static final String KEY_BELT_STATUS = "beltStatus";
+	public static final String KEY_BODY_INFORMATION = "bodyInformation";
+	public static final String KEY_DEVICE_STATUS = "deviceStatus";
+	public static final String KEY_DRIVER_BRAKING = "driverBraking";
+	public static final String KEY_WIPER_STATUS = "wiperStatus";
+	public static final String KEY_HEAD_LAMP_STATUS = "headLampStatus";
+	public static final String KEY_ACC_PEDAL_POSITION = "accPedalPosition";
+	public static final String KEY_STEERING_WHEEL_ANGLE = "steeringWheelAngle";
+	public static final String KEY_E_CALL_INFO = "eCallInfo";
+	public static final String KEY_AIRBAG_STATUS = "airbagStatus";
+	public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
+	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
+	public static final String KEY_MY_KEY = "myKey";
+	public static final String KEY_FUEL_RANGE = "fuelRange";
+	public static final String KEY_TURN_SIGNAL = "turnSignal";
+	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
+    public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
+    public static final String KEY_WINDOW_STATUS = "windowStatus";
+    public static final String KEY_GEAR_STATUS = "gearStatus";
 
 
     public OnVehicleData() {
@@ -326,14 +379,14 @@ public class OnVehicleData extends RPCNotification {
         setParameters(KEY_SPEED, speed);
     }
     public Double getSpeed() {
-        Object object = getParameters(KEY_SPEED);
-        return SdlDataTypeConverter.objectToDouble(object);
+    	Object object = getParameters(KEY_SPEED);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     public void setRpm(Integer rpm) {
         setParameters(KEY_RPM, rpm);
     }
     public Integer getRpm() {
-        return getInteger(KEY_RPM);
+    	return getInteger(KEY_RPM);
     }
 
     /**
@@ -355,8 +408,8 @@ public class OnVehicleData extends RPCNotification {
      */
     @Deprecated
     public Double getFuelLevel() {
-        Object object = getParameters(KEY_FUEL_LEVEL);
-        return SdlDataTypeConverter.objectToDouble(object);
+    	Object object = getParameters(KEY_FUEL_LEVEL);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
 
     /**
@@ -387,73 +440,54 @@ public class OnVehicleData extends RPCNotification {
     public ComponentVolumeStatus getFuelLevelState() {
         return (ComponentVolumeStatus) getObject(ComponentVolumeStatus.class, KEY_FUEL_LEVEL_STATE);
     }
-
     public void setInstantFuelConsumption(Double instantFuelConsumption) {
         setParameters(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
     }
     public Double getInstantFuelConsumption() {
-        Object object = getParameters(KEY_INSTANT_FUEL_CONSUMPTION);
-        return SdlDataTypeConverter.objectToDouble(object);
+    	Object object = getParameters(KEY_INSTANT_FUEL_CONSUMPTION);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
-
-    /**
-     * Sets the fuelRange.
-     *
-     * @param fuelRange The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
-     * vehicle. See struct FuelRange for details.
-     * @since SmartDeviceLink 5.0.0
-     */
-    public void setFuelRange(List<FuelRange> fuelRange) {
-        setParameters(KEY_FUEL_RANGE, fuelRange);
-    }
-
-    /**
-     * Gets the fuelRange.
-     *
-     * @return List<FuelRange> The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
-     * vehicle. See struct FuelRange for details.
-     * @since SmartDeviceLink 5.0.0
-     */
-    @SuppressWarnings("unchecked")
-    public List<FuelRange> getFuelRange() {
-        return (List<FuelRange>) getObject(FuelRange.class, KEY_FUEL_RANGE);
-    }
-
-
-
     public void setExternalTemperature(Double externalTemperature) {
         setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
     }
-
     public Double getExternalTemperature() {
-        Object object = getParameters(KEY_EXTERNAL_TEMPERATURE);
-        return SdlDataTypeConverter.objectToDouble(object);
+    	Object object = getParameters(KEY_EXTERNAL_TEMPERATURE);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
-
-    public void setTurnSignal(TurnSignal turnSignal) {
-        setParameters(KEY_TURN_SIGNAL, turnSignal);
-    }
-
-    public TurnSignal getTurnSignal() {
-        return (TurnSignal) getObject(TurnSignal.class, KEY_TURN_SIGNAL);
-    }
-
     public void setVin(String vin) {
         setParameters(KEY_VIN, vin);
     }
-
     public String getVin() {
-        return getString(KEY_VIN);
+    	return getString(KEY_VIN);
     }
 
+    /**
+     * Sets the prndl.
+     *
+     * @param prndl See PRNDL. This parameter is deprecated since 7.0.0 and it is now covered in `gearStatus`
+     * @deprecated in SmartDeviceLink 7.0.0
+     */
+    @Deprecated
     public void setPrndl(PRNDL prndl) {
         setParameters(KEY_PRNDL, prndl);
     }
 
+    /**
+     * Gets the prndl.
+     *
+     * @return PRNDL See PRNDL. This parameter since 7.0.0 is deprecated and it is now covered in `gearStatus`
+     * @deprecated in SmartDeviceLink 7.0.0
+     */
+    @Deprecated
     public PRNDL getPrndl() {
         return (PRNDL) getObject(PRNDL.class, KEY_PRNDL);
     }
 
+    /**
+     * Sets the tirePressure.
+     *
+     * @param tirePressure See TireStatus
+     */
     public void setTirePressure(TireStatus tirePressure) {
         setParameters(KEY_TIRE_PRESSURE, tirePressure);
     }
@@ -465,7 +499,7 @@ public class OnVehicleData extends RPCNotification {
         setParameters(KEY_ODOMETER, odometer);
     }
     public Integer getOdometer() {
-        return getInteger(KEY_ODOMETER);
+    	return getInteger(KEY_ODOMETER);
     }
     public void setBeltStatus(BeltStatus beltStatus) {
         setParameters(KEY_BELT_STATUS, beltStatus);
@@ -525,15 +559,15 @@ public class OnVehicleData extends RPCNotification {
         setParameters(KEY_ACC_PEDAL_POSITION, accPedalPosition);
     }
     public Double getAccPedalPosition() {
-        Object object = getParameters(KEY_ACC_PEDAL_POSITION);
-        return SdlDataTypeConverter.objectToDouble(object);
+    	Object object = getParameters(KEY_ACC_PEDAL_POSITION);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     public void setSteeringWheelAngle(Double steeringWheelAngle) {
         setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
     }
     public Double getSteeringWheelAngle() {
-        Object object = getParameters(KEY_STEERING_WHEEL_ANGLE);
-        return SdlDataTypeConverter.objectToDouble(object);
+    	Object object = getParameters(KEY_STEERING_WHEEL_ANGLE);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     public void setECallInfo(ECallInfo eCallInfo) {
         setParameters(KEY_E_CALL_INFO, eCallInfo);
@@ -572,6 +606,46 @@ public class OnVehicleData extends RPCNotification {
     }
 
     /**
+     * Sets the fuelRange.
+     *
+     * @param fuelRange The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
+     * vehicle. See struct FuelRange for details.
+     * @since SmartDeviceLink 5.0.0
+     */
+    public void setFuelRange(List<FuelRange> fuelRange) {
+        setParameters(KEY_FUEL_RANGE, fuelRange);
+    }
+
+    /**
+     * Gets the fuelRange.
+     *
+     * @return List<FuelRange> The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
+     * vehicle. See struct FuelRange for details.
+     * @since SmartDeviceLink 5.0.0
+     */
+    @SuppressWarnings("unchecked")
+    public List<FuelRange> getFuelRange() {
+        return (List<FuelRange>) getObject(FuelRange.class, KEY_FUEL_RANGE);
+    }
+
+    /**
+     * Sets turnSignal
+     * @param turnSignal
+     */
+    public void setTurnSignal(TurnSignal turnSignal) {
+        setParameters(KEY_TURN_SIGNAL, turnSignal);
+    }
+
+    /**
+     * Gets turnSignal
+     * @return TurnSignal
+     */
+    @SuppressWarnings("unchecked")
+    public TurnSignal getTurnSignal() {
+        return (TurnSignal) getObject(TurnSignal.class, KEY_TURN_SIGNAL);
+    }
+
+    /**
      * Sets electronicParkBrakeStatus
      * @param electronicParkBrakeStatus
      */
@@ -602,6 +676,7 @@ public class OnVehicleData extends RPCNotification {
     public String getCloudAppVehicleID(){
         return getString(KEY_CLOUD_APP_VEHICLE_ID);
     }
+
     /**
      * Sets a value for OEM Custom VehicleData.
      * @param vehicleDataName a String value
@@ -617,5 +692,65 @@ public class OnVehicleData extends RPCNotification {
      */
     public Object getOEMCustomVehicleData(String vehicleDataName){
         return getParameters(vehicleDataName);
+    }
+
+    /**
+     * Sets the windowStatus.
+     *
+     * @param windowStatus See WindowStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setWindowStatus(List<WindowStatus> windowStatus) {
+        setParameters(KEY_WINDOW_STATUS, windowStatus);
+    }
+
+    /**
+     * Gets the windowStatus.
+     *
+     * @return List<WindowStatus> See WindowStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    @SuppressWarnings("unchecked")
+    public List<WindowStatus> getWindowStatus() {
+        return (List<WindowStatus>) getObject(WindowStatus.class, KEY_WINDOW_STATUS);
+    }
+
+    /**
+     * Sets the handsOffSteering.
+     *
+     * @param handsOffSteering To indicate whether driver hands are off the steering wheel
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setHandsOffSteering(Boolean handsOffSteering) {
+        setParameters(KEY_HANDS_OFF_STEERING, handsOffSteering);
+    }
+
+    /**
+     * Gets the handsOffSteering.
+     *
+     * @return Boolean To indicate whether driver hands are off the steering wheel
+     * @since SmartDeviceLink 7.0.0
+     */
+    public Boolean getHandsOffSteering() {
+        return getBoolean(KEY_HANDS_OFF_STEERING);
+    }
+    /**
+     * Sets the gearStatus.
+     *
+     * @param gearStatus See GearStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setGearStatus(GearStatus gearStatus) {
+        setParameters(KEY_GEAR_STATUS, gearStatus);
+    }
+
+    /**
+     * Gets the gearStatus.
+     *
+     * @return GearStatus See GearStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public GearStatus getGearStatus() {
+        return (GearStatus) getObject(GearStatus.class, KEY_GEAR_STATUS);
     }
 }

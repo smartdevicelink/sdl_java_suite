@@ -32,7 +32,7 @@
 
 package com.smartdevicelink.managers.screen;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.R;
 import com.smartdevicelink.managers.file.FileManager;

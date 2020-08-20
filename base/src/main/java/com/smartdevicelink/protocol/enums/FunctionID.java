@@ -110,6 +110,7 @@ public enum FunctionID{
     DELETE_WINDOW(61, "DeleteWindow"),
     GET_INTERIOR_VEHICLE_DATA_CONSENT(62, "GetInteriorVehicleDataConsent"),
     RELEASE_INTERIOR_VEHICLE_MODULE(63, "ReleaseInteriorVehicleDataModule"),
+    SUBTLE_ALERT(64, "SubtleAlert"),
     // NOTIFICATIONS
     ON_HMI_STATUS(32768, "OnHMIStatus"),
     ON_APP_INTERFACE_UNREGISTERED(32769, "OnAppInterfaceUnregistered"),
@@ -131,17 +132,9 @@ public enum FunctionID{
     ON_RC_STATUS(32785, "OnRCStatus"),
     ON_APP_SERVICE_DATA(32786, "OnAppServiceData"),
     ON_SYSTEM_CAPABILITY_UPDATED(32787, "OnSystemCapabilityUpdated"),
-
-    // MOCKED FUNCTIONS (NOT SENT FROM HEAD-UNIT)
-    @Deprecated
-    ON_LOCK_SCREEN_STATUS(-1, "OnLockScreenStatus"),
-    @Deprecated
-    ON_SDL_CHOICE_CHOSEN(-1, "OnSdlChoiceChosen"),
-    @Deprecated
-    ON_STREAM_RPC(-1, "OnStreamRPC"),
-    @Deprecated
-    STREAM_RPC(-1, "StreamRPC"),
-
+    ON_SUBTLE_ALERT_PRESSED(32788, "OnSubtleAlertPressed"),
+    ON_UPDATE_FILE(32789, "OnUpdateFile"),
+    ON_UPDATE_SUB_MENU(32790, "OnUpdateSubMenu"),
     ;
 
     public static final int                 INVALID_ID = -1;
