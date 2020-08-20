@@ -49,7 +49,7 @@ public class AppCapabilityTypeTests extends TestCase {
     }
 
     /**
-     * Verifies the possible enum values of AmbientLightStatus.
+     * Verifies the possible enum values of AppCapabilityType.
      */
     public void testListEnum() {
         List<AppCapabilityType> enumValueList = Arrays.asList(AppCapabilityType.values());

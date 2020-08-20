@@ -26,32 +26,18 @@ import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
-import com.smartdevicelink.managers.screen.OnButtonListener;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
-import com.smartdevicelink.managers.screen.choiceset.ChoiceSet;
-import com.smartdevicelink.managers.screen.choiceset.ChoiceSetSelectionListener;
-import com.smartdevicelink.managers.screen.menu.MenuCell;
-import com.smartdevicelink.managers.screen.menu.MenuSelectionListener;
-import com.smartdevicelink.managers.screen.menu.VoiceCommand;
-import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
 import com.smartdevicelink.managers.video.resolution.AspectRatio;
 import com.smartdevicelink.managers.video.resolution.Resolution;
 import com.smartdevicelink.managers.video.resolution.VideoStreamingRange;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.TTSChunkFactory;
-import com.smartdevicelink.proxy.rpc.Alert;
-import com.smartdevicelink.proxy.rpc.OnButtonEvent;
-import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
-import com.smartdevicelink.proxy.rpc.Speak;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
-import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
-import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
-import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.streaming.video.SdlRemoteDisplay;
 import com.smartdevicelink.transport.BaseTransportConfig;
@@ -59,9 +45,6 @@ import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.util.DebugTool;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -321,10 +304,10 @@ public class SdlService extends Service {
 			setContentView(R.layout.ui_streaming_layout);
 
 
-			final Button button1 = findViewById(R.id.button1);
-			final Button button2 = findViewById(R.id.button2);
-			final TextView counter1 = findViewById(R.id.button_one_counter);
-			final TextView counter2 = findViewById(R.id.button_two_counter);
+			final Button button1 = findViewById(R.id.button_top_left);
+			final Button button2 = findViewById(R.id.button_bottom_right);
+			final TextView counter1 = findViewById(R.id.button_top_left_counter);
+			final TextView counter2 = findViewById(R.id.button_bottom_right_counter);
             button1.setOnTouchListener(new View.OnTouchListener() {
 				@Override
 				public boolean onTouch(View view, MotionEvent motionEvent) {

@@ -103,10 +103,10 @@ public class VirtualDisplayEncoder {
 
         mOutputListener = outputListener;
 
-        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        predefined_width = p.getInt("pre_def_w", predefined_width);
-        predefined_height = p.getInt("pre_def_h", predefined_height);
+        predefined_width = preferences.getInt("pre_def_w", predefined_width);
+        predefined_height = preferences.getInt("pre_def_h", predefined_height);
 
         initPassed = true;
     }

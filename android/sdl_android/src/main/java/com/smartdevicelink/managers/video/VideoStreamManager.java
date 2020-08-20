@@ -450,8 +450,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			//We are all set so we can start streaming at at this point
 			virtualDisplayEncoder.start();
 			//Encoder should be up and running
-			Display display = virtualDisplayEncoder.getDisplay();
-			createRemoteDisplay(display);
+			createRemoteDisplay(virtualDisplayEncoder.getDisplay());
 
 			stateMachine.transitionToState(StreamingStateMachine.STARTED);
 			hasStarted = true;
@@ -536,9 +535,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 * @return boolean (true = yes, false = no)
 	 */
 	public boolean isStreaming(){
-		boolean state = (stateMachine.getState() == StreamingStateMachine.STARTED);
-		boolean capable = isHMIStateVideoStreamCapable(currentOnHMIStatus);
-		return state && capable;
+		return (stateMachine.getState() == StreamingStateMachine.STARTED) && (isHMIStateVideoStreamCapable(currentOnHMIStatus));
 	}
 
 	/**
