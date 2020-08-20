@@ -29,7 +29,7 @@ public class TextAndGraphicUpdateOperation extends Task {
     private static final String TAG = "TextAndGraphicUpdateOperation";
     private final WeakReference<ISdl> internalInterface;
     private final WeakReference<FileManager> fileManager;
-    private WindowCapability currentCapabilities;
+    WindowCapability defaultMainWindowCapability;
     private Show currentScreenData, sentShow;
     private TextsAndGraphicsState updatedState;
     private CompletionListener listener;
@@ -48,7 +48,7 @@ public class TextAndGraphicUpdateOperation extends Task {
         super("TextAndGraphicUpdateOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
-        this.currentCapabilities = currentCapabilities;
+        this.defaultMainWindowCapability = currentCapabilities;
         this.currentScreenData = currentScreenData;
         this.updatedState = newState;
         this.listener = listener;
@@ -59,7 +59,7 @@ public class TextAndGraphicUpdateOperation extends Task {
         start();
     }
 
-    private void start() {
+    void start() {
         if (getState() == Task.CANCELED) {
             finishOperation(false);
             return;
@@ -237,7 +237,7 @@ public class TextAndGraphicUpdateOperation extends Task {
             return show;
         }
 
-        int numberOfLines = currentCapabilities != null ? ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(currentCapabilities) : 4;
+        int numberOfLines = defaultMainWindowCapability != null ? ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(defaultMainWindowCapability) : 4;
 
         switch (numberOfLines) {
             case 1:
@@ -609,7 +609,7 @@ public class TextAndGraphicUpdateOperation extends Task {
      * @return true if image field is supported, false if not
      */
     private boolean templateSupportsImageField(ImageFieldName name) {
-        return currentCapabilities == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(currentCapabilities, name);
+        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, name);
     }
 
     /**
@@ -636,7 +636,7 @@ public class TextAndGraphicUpdateOperation extends Task {
      * @return true if field should be updated, false if not
      */
     private boolean templateSupportsTextField(TextFieldName name) {
-        return currentCapabilities == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(currentCapabilities, name);
+        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, name);
     }
 
     public Show getSentShow() {

@@ -42,7 +42,7 @@ import static org.mockito.Mockito.mock;
 @RunWith(AndroidJUnit4.class)
 public class TextAndGraphicManagerTests {
 
-	// SETUP / HELPERS
+/*	// SETUP / HELPERS
 	private TextAndGraphicManager textAndGraphicManager;
 	private SdlArtwork testArtwork;
 
@@ -60,7 +60,7 @@ public class TextAndGraphicManagerTests {
 		testArtwork.setUri(uri);
 		testArtwork.setType(FileType.GRAPHIC_PNG);
 
-		textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager, softButtonManager);
+		textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager);
 	}
 
 
@@ -96,10 +96,10 @@ public class TextAndGraphicManagerTests {
 		return windowCapability;
 	}
 
-	/**
+	*//**
 	 * Used to simulate WindowCapability having no capabilities set
 	 * @return windowCapability that has no capabilities set
-	 */
+	 *//*
 	private WindowCapability getNullVarWindowCapability() {
 
 		WindowCapability windowCapability = new WindowCapability();
@@ -122,11 +122,7 @@ public class TextAndGraphicManagerTests {
 		assertNull(textAndGraphicManager.getTextField2Type());
 		assertNull(textAndGraphicManager.getTextField3Type());
 		assertNull(textAndGraphicManager.getTextField4Type());
-
 		assertNotNull(textAndGraphicManager.currentScreenData);
-		assertNull(textAndGraphicManager.inProgressUpdate);
-		assertNull(textAndGraphicManager.queuedImageUpdate);
-		assertFalse(textAndGraphicManager.hasQueuedUpdate);
 		assertNull(textAndGraphicManager.defaultMainWindowCapability);
 		assertEquals(textAndGraphicManager.currentHMILevel, HMILevel.HMI_NONE);
 		assertFalse(textAndGraphicManager.isDirty);
@@ -134,9 +130,9 @@ public class TextAndGraphicManagerTests {
 		assertNotNull(textAndGraphicManager.getBlankArtwork());
 	}
 
-	/**
+	*//**
 	 * Test getting number of lines available to be set based off of windowCapability
-	 */
+	 *//*
 	@Test
 	public void testGetMainLines(){
 
@@ -526,9 +522,9 @@ public class TextAndGraphicManagerTests {
 		assertEquals(tags.getMainField4(), tagsList4);
 	}
 
-	/**
+	*//**
 	 * Testing if WindowCapability is null, TextFields should still update.
-	 */
+	 *//*
 	@Test
 	public void testAssemble4LinesNullWindowCapability() {
 
@@ -720,5 +716,5 @@ public class TextAndGraphicManagerTests {
 		assertNull(textAndGraphicManager.defaultMainWindowCapability);
 		assertFalse(textAndGraphicManager.isDirty);
 		assertEquals(textAndGraphicManager.getState(), BaseSubManager.SHUTDOWN);
-	}
+	}*/
 }
