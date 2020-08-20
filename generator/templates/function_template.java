@@ -3,7 +3,7 @@
     {%- block params %}
     {%- if params is defined %}
     {%- for p in params %}
-    {%- if p.origin not in ('success', 'resultCode', 'info') or kind != "response" %}{% set see, deprecated, since, spacing, begin, end = p.see, p.deprecated, p.since, '    ', '/**', '*/' %}
+    {%- if p.origin not in ('success', 'resultCode', 'info') or kind != "response" %}{% set see, deprecated, since, history, spacing, begin, end = p.see, p.deprecated, p.since, p.history, '    ', '/**', '*/' %}
     {%- include "javadoc_added_deprecated.java" %}
     {%- if p.deprecated is not none %}
     @Deprecated

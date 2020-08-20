@@ -10,5 +10,5 @@
      {%- endif %}
      {%- if p.values is defined and p.values %}
      * {%- for k in p.values %}{{ ' {' if loop.first}}"{{k}}": {{p.values[k]}}{{ ', ' if not loop.last else  '}'}}{%- endfor %}
-     {%- endif %}{% set see, deprecated, since, spacing = p.see, p.deprecated, p.since, '    ' %}
+     {%- endif %}{% set see, deprecated, since, history, spacing = p.see, p.deprecated, p.since, p.history, '    ' %}
      {%- include "javadoc_added_deprecated.java" %}

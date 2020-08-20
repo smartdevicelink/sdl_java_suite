@@ -2,7 +2,7 @@
 
     {%- block params %}
     {%- if params is defined %}
-    {%- for p in params %}{% set see, deprecated, since, spacing, begin, end = p.see, p.deprecated, p.since, '    ', '/**', '*/' %}
+    {%- for p in params %}{% set see, deprecated, since, history, spacing, begin, end = p.see, p.deprecated, p.since, p.history, '    ', '/**', '*/' %}
     {%- include "javadoc_added_deprecated.java" %}
     {%- if p.deprecated is not none %}
     @Deprecated
