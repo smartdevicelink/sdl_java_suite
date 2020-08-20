@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
+ * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@
  * disclaimer in the documentation and/or other materials provided with the
  * distribution.
  *
- * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
- * its contributors may be used to endorse or promote products derived
- * from this software without specific prior written permission.
+ * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from this 
+ * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -110,49 +110,54 @@ public class FuelRange extends RPCStruct {
     public FuelRange() { }
 
     /**
-     * Constructs a new FuelRange object indicated by the Hashtable parameter
+     * <p>Constructs a new FuelRange object indicated by the Hashtable parameter
+     * </p>
      *
-     * @param hash The Hashtable to use
+     * @param hash
+     *            The Hashtable to use
      */
     public FuelRange(Hashtable<String, Object> hash) {
         super(hash);
     }
 
     /**
-     * Sets the type.
+     * Sets the type portion of the FuelRange class
      *
-     * @param type
+     * @param fuelType the type of fuel related to this FuelRange object.
+     *
+     * @see com.smartdevicelink.proxy.rpc.enums.FuelType
      */
-    public void setType(FuelType type) {
-        setValue(KEY_TYPE, type);
+    public void setType(FuelType fuelType) {
+        setValue(KEY_TYPE, fuelType);
     }
 
     /**
-     * Gets the type.
+     * Gets the type portion of the FuelRange class
      *
-     * @return FuelType
+     * @return FuelType.
      */
     public FuelType getType() {
         return (FuelType) getObject(FuelType.class, KEY_TYPE);
     }
 
     /**
-     * Sets the range.
+     * Gets the range portion of the FuelRange class
      *
-     * @param range The estimate range in KM the vehicle can travel based on fuel level and consumption.
-     */
-    public void setRange(Float range) {
-        setValue(KEY_RANGE, range);
-    }
-
-    /**
-     * Gets the range.
-     *
-     * @return Float The estimate range in KM the vehicle can travel based on fuel level and consumption.
+     * @return Float - The estimate range in KM the vehicle can travel based on fuel level and consumption.
      */
     public Float getRange() {
         Object object = getValue(KEY_RANGE);
         return SdlDataTypeConverter.objectToFloat(object);
+    }
+
+    /**
+     * Sets the range portion of the FuelRange class
+     *
+     * @param range
+     * The estimate range in KM the vehicle can travel based on fuel level and consumption.
+     */
+    public void setRange(Float range) {
+        setValue(KEY_RANGE, range);
     }
 
     /**
