@@ -8,6 +8,9 @@ import com.smartdevicelink.proxy.rpc.enums.AppCapabilityType;
 
 import java.util.Hashtable;
 
+/**
+ * @since 7.0
+ */
 public class AppCapability extends RPCStruct {
     public static final String KEY_APP_CAPABILITY_TYPE = "appCapabilityType";
     public static final String KEY_VIDEO_STREAMING_CAPABILITY = "videoStreamingCapability";

@@ -50,6 +50,9 @@ public class VideoStreamingCapability extends RPCStruct {
 	public static final String KEY_DIAGONAL_SCREEN_SIZE = "diagonalScreenSize";
 	public static final String KEY_PIXEL_PER_INCH = "pixelPerInch";
 	public static final String KEY_SCALE = "scale";
+	/**
+	 * @since SmartDeviceLink 7.0
+	 */
 	public static final String KEY_ADDITIONAL_VIDEO_STREAMING_CAPABILITIES = "additionalVideoStreamingCapabilities";
 
 	public VideoStreamingCapability(){}
