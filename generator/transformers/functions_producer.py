@@ -73,6 +73,7 @@ class FunctionsProducer(InterfaceProducerCommon):
         render['extends_class'] = extends_class
         render['since'] = item.since
         render['deprecated'] = item.deprecated
+        render['history'] = item.history
 
         description = self.extract_description(item.description)
         if description:
@@ -118,6 +119,7 @@ class FunctionsProducer(InterfaceProducerCommon):
         if param.since:
             p['since'] = param.since
         p['deprecated'] = param.deprecated
+        p['history'] = param.history
         p['origin'] = param.origin
         p['values'] = self.extract_values(param)
         d = self.extract_description(param.description)
