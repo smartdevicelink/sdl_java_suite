@@ -249,7 +249,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * @return an SdlArtwork object represents the current primaryGraphic
 	 */
 	public SdlArtwork getPrimaryGraphic() {
-		if (this.textAndGraphicManager.getPrimaryGraphic().getName().equals(textAndGraphicManager.getBlankArtwork().getName())) {
+		if (this.textAndGraphicManager.getPrimaryGraphic() == null || this.textAndGraphicManager.getPrimaryGraphic().getName().equals(textAndGraphicManager.getBlankArtwork().getName())) {
 			return null;
 		}
 		return this.textAndGraphicManager.getPrimaryGraphic();
@@ -271,7 +271,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * @return an SdlArtwork object represents the current secondaryGraphic
 	 */
 	public SdlArtwork getSecondaryGraphic() {
-		if (this.textAndGraphicManager.getSecondaryGraphic().getName().equals(textAndGraphicManager.getBlankArtwork().getName())) {
+		if (this.textAndGraphicManager.getSecondaryGraphic() == null || this.textAndGraphicManager.getSecondaryGraphic().getName().equals(textAndGraphicManager.getBlankArtwork().getName())) {
 			return null;
 		}
 		return this.textAndGraphicManager.getSecondaryGraphic();
