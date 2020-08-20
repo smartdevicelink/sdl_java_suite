@@ -198,7 +198,9 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		if (transactionQueue.getTasksAsList().size() > 0) {
 			//Transactions already exist, cancelling them
 			transactionQueue.clear();
-			listener.onComplete(false);
+			if (listener != null) {
+				listener.onComplete(false);
+			}
 			return;
 		}
 		updateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager.get(), defaultMainWindowCapability, currentScreenData, currentState(), new CompletionListener() {
