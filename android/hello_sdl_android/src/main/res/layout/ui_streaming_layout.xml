@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_marginLeft="30dp"
-    android:layout_marginTop="30dp"
-    android:layout_marginRight="30dp"
-    android:layout_marginBottom="30dp"
+    android:layout_marginLeft="@dimen/margin_default"
+    android:layout_marginTop="@dimen/margin_default"
+    android:layout_marginRight="@dimen/margin_default"
+    android:layout_marginBottom="@dimen/margin_default"
     android:orientation="vertical"
     android:layout_height="match_parent">
 

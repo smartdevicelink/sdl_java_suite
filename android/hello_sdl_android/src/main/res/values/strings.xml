@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">SDL with_restart_service_and_on_app_capability_updated</string>
+    <string name="app_name">Hello Sdl Android</string>
     <string name="hello_world">Hello SDL!</string>
     <string name="action_settings">Settings</string>
     <string name="button_top_left">Button top left</string>

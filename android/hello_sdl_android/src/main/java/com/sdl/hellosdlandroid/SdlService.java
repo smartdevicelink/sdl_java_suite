@@ -211,6 +211,24 @@ public class SdlService extends Service {
 			SdlManagerListener listener = new SdlManagerListener() {
 				@Override
 				public void onStart() {
+					// HMI Status Listener
+//					sdlManager.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, new OnRPCNotificationListener() {
+//						@Override
+//						public void onNotified(RPCNotification notification) {
+//							OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
+//							if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+//								return;
+//							}
+//							if (onHMIStatus.getHmiLevel() == HMILevel.HMI_FULL && onHMIStatus.getFirstRun()) {
+//								setVoiceCommands();
+//								sendMenus();
+//								performWelcomeSpeak();
+//								performWelcomeShow();
+//								preloadChoices();
+//								subscribeToButtons();
+//							}
+//						}
+//					});
 				}
 
 				@Override
