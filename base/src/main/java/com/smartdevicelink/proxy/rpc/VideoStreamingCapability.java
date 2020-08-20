@@ -144,7 +144,6 @@ public class VideoStreamingCapability extends RPCStruct {
 		setValue(KEY_SCALE, scale);
 	}
 
-	// TODO replace with real data
 	@SuppressWarnings("unchecked")
 	public List<VideoStreamingCapability> getAdditionalVideoStreamingCapabilities(){
 		return (List<VideoStreamingCapability>) getObject(VideoStreamingCapability.class, KEY_ADDITIONAL_VIDEO_STREAMING_CAPABILITIES);

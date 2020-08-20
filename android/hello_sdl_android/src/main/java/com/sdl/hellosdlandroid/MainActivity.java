@@ -22,9 +22,6 @@ public class MainActivity extends Activity {
 
 	public static final String IP = "ip";
 	public static final String PORT = "port";
-	public static final String COMMAND = "command";
-	public static final String COMMAND_START_PROXY = "c_start_proxy";
-	public static final String COMMAND_START_STREAM = "c_start_stream";
 
 	public static final String PREDEFINED_WIDTH = "pre_def_w";
 	public static final String PREDEFINED_HEIGHT = "pre_def_h";
@@ -42,17 +39,17 @@ public class MainActivity extends Activity {
 		Button startStreaming = findViewById(R.id.start_streaming);
 		Button startStreamingUI = findViewById(R.id.start_streaming_ui);
 		Button startProxy = findViewById(R.id.start_proxy);
-		Button stopApp = findViewById(R.id.exit_application);
+		Button exitApplication = findViewById(R.id.exit_application);
 
-		final EditText ip = findViewById(R.id.machine_ip);
-		final EditText port = findViewById(R.id.machine_port);
+		final EditText machineIp = findViewById(R.id.machine_ip);
+		final EditText machinePort = findViewById(R.id.machine_port);
 
 		final EditText preConfWidth = findViewById(R.id.pre_conf_width);
 		final EditText preConfHeight = findViewById(R.id.pre_conf_height);
 
-		ip.setText(preferences.getString(IP_ADDRESS, "192.168.0.101"));
+		machineIp.setText(preferences.getString(IP_ADDRESS, "192.168.0.101"));
 
-		ip.addTextChangedListener(new TextWatcher() {
+		machineIp.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
@@ -76,12 +73,12 @@ public class MainActivity extends Activity {
 				}else if(BuildConfig.TRANSPORT.equals("TCP")) {
 					Intent proxyIntent = new Intent(MainActivity.this, SdlService.class);
 
-					String ipString = ip.getText().toString();
-					String portString = port.getText().toString();
+					String ipString = machineIp.getText().toString();
+					String portString = machinePort.getText().toString();
 					if (!ipString.isEmpty() && !portString.isEmpty()) {
-						proxyIntent.putExtra(IP, ip.getText().toString());
+						proxyIntent.putExtra(IP, machineIp.getText().toString());
 						try {
-							proxyIntent.putExtra(PORT, Integer.parseInt(port.getText().toString()));
+							proxyIntent.putExtra(PORT, Integer.parseInt(machinePort.getText().toString()));
 						} catch (NumberFormatException e){
 							Toast.makeText(MainActivity.this, "Port should be number", Toast.LENGTH_SHORT).show();
 							return;
@@ -89,7 +86,7 @@ public class MainActivity extends Activity {
 
 						startService(proxyIntent);
 					} else {
-						Toast.makeText(MainActivity.this, "Fill ip and port", Toast.LENGTH_SHORT).show();
+						Toast.makeText(MainActivity.this, "IP and Port are empty", Toast.LENGTH_SHORT).show();
 					}
 				}
 			}
@@ -122,7 +119,7 @@ public class MainActivity extends Activity {
 			}
 		});
 
-		stopApp.setOnClickListener(new View.OnClickListener() {
+		exitApplication.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				stopService(new Intent(MainActivity.this, SdlService.class));

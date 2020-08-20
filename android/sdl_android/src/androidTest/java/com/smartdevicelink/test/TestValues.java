@@ -17,6 +17,7 @@ import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.SdlProxyBase;
 import com.smartdevicelink.proxy.TTSChunkFactory;
+import com.smartdevicelink.proxy.rpc.AppCapability;
 import com.smartdevicelink.proxy.rpc.AppInfo;
 import com.smartdevicelink.proxy.rpc.AppServiceCapability;
 import com.smartdevicelink.proxy.rpc.AppServiceData;
@@ -114,6 +115,7 @@ import com.smartdevicelink.proxy.rpc.WindowState;
 import com.smartdevicelink.proxy.rpc.WindowStatus;
 import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
+import com.smartdevicelink.proxy.rpc.enums.AppCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
 import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
@@ -399,6 +401,8 @@ public class TestValues {
 	public static final DistanceUnit                   GENERAL_DISTANCEUNIT           		  = DistanceUnit.KILOMETERS;
 	public static final LightStatus                    GENERAL_LIGHTSTATUS           		  = LightStatus.OFF;
 	public static final RadioBand 				       GENERAL_RADIOBAND               	      = RadioBand.AM;
+	public static final AppCapabilityType 			   GENERAL_APP_CAPABILITY_TYPE            = AppCapabilityType.VIDEO_STREAMING;
+	public static final AppCapability 			   	   GENERAL_APP_CAPABILITY            	  = new AppCapability();
 	public static final ClimateControlData             GENERAL_CLIMATECONTROLDATA             = new ClimateControlData();
 	public static final SeatControlData                GENERAL_SEATCONTROLDATA                = new SeatControlData();
 	public static final RdsData                        GENERAL_RDSDATA                        = new RdsData();
@@ -1132,6 +1136,9 @@ public class TestValues {
 
 		GENERAL_WINDOW_STATUS.setLocation(TestValues.GENERAL_GRID);
 		GENERAL_WINDOW_STATUS.setState(TestValues.GENERAL_WINDOW_STATE);
+
+		GENERAL_APP_CAPABILITY.setVideoStreamingCapability(GENERAL_VIDEOSTREAMINGCAPABILITY);
+		GENERAL_APP_CAPABILITY.setAppCapabilityType(GENERAL_APP_CAPABILITY_TYPE);
 
 		try {
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);

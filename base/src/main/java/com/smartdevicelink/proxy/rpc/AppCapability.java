@@ -26,7 +26,7 @@ public class AppCapability extends RPCStruct {
         super(hash);
     }
 
-    public AppCapability(@NonNull VideoStreamingCapability capability, AppCapabilityType appCapabilityType) {
+    public AppCapability(VideoStreamingCapability capability, AppCapabilityType appCapabilityType) {
         this();
         setVideoStreamingCapability(capability);
         setAppCapabilityType(appCapabilityType);
@@ -36,12 +36,12 @@ public class AppCapability extends RPCStruct {
         return (VideoStreamingCapability) getObject(VideoStreamingCapability.class, KEY_VIDEO_STREAMING_CAPABILITY);
     }
 
-    public void setVideoStreamingCapability(@NonNull VideoStreamingCapability capabilityType) {
+    public void setVideoStreamingCapability(VideoStreamingCapability capabilityType) {
         setValue(KEY_VIDEO_STREAMING_CAPABILITY, capabilityType);
     }
 
     public AppCapabilityType getAppCapabilityType() {
-        return (AppCapabilityType) getObject(VideoStreamingCapability.class, KEY_APP_CAPABILITY_TYPE);
+        return (AppCapabilityType) getObject(AppCapabilityType.class, KEY_APP_CAPABILITY_TYPE);
     }
 
     public void setAppCapabilityType(@NonNull AppCapabilityType capabilityType) {

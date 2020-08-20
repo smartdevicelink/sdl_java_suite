@@ -146,7 +146,6 @@ public enum FunctionID{
     ON_STREAM_RPC(-1, "OnStreamRPC"),
     @Deprecated
     STREAM_RPC(-1, "StreamRPC"),
-
     ;
 
     public static final int                 INVALID_ID = -1;
