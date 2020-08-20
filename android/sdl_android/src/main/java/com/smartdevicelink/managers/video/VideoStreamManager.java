@@ -336,7 +336,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 */
 	@Deprecated
 	public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted){
-		configureGlobalParameters(context, remoteDisplayClass, isEncrypted);
+		configureGlobalParameters(context, remoteDisplayClass, isEncrypted, null);
 		if(majorProtocolVersion >= 5 && !internalInterface.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
 			DebugTool.logError(TAG, "Video streaming not supported on this module");
 			stateMachine.transitionToState(StreamingStateMachine.ERROR);
@@ -349,19 +349,14 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		processCapabilitiesWithPendingStart(encrypted, parameters);
 	}
 
-	private void configureGlobalParameters(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, boolean encrypted) {
-		this.context = new WeakReference<>(context);
-		this.remoteDisplayClass = remoteDisplayClass;
-		this.isEncrypted = encrypted;
-		this.majorProtocolVersion = internalInterface.getProtocolVersion().getMajor();
-	}
-
 	private void configureGlobalParameters(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, boolean encrypted, VideoStreamingRange streamingRange) {
 		this.context = new WeakReference<>(context);
 		this.remoteDisplayClass = remoteDisplayClass;
 		this.isEncrypted = encrypted;
 		this.majorProtocolVersion = internalInterface.getProtocolVersion().getMajor();
-		this.streamingRange = streamingRange;
+		if (streamingRange != null) {
+			this.streamingRange = streamingRange;
+		}
 	}
 
 	private void processCapabilitiesWithPendingStart(boolean encrypted, VideoStreamingParameters parameters){

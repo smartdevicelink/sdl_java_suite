@@ -353,6 +353,8 @@ public class TestValues {
 	public static final VideoStreamingProtocol         GENERAL_VIDEOSTREAMINGPROTOCOL         = VideoStreamingProtocol.RAW;
 	public static final VideoStreamingCodec            GENERAL_VIDEOSTREAMINGCODEC            = VideoStreamingCodec.H264;
 	public static final VideoStreamingCapability       GENERAL_VIDEOSTREAMINGCAPABILITY       = new VideoStreamingCapability();
+	public static final VideoStreamingCapability       GENERAL_ADDITIONAL_CAPABILITY          = new VideoStreamingCapability();
+	public static final List<VideoStreamingCapability> GENERAL_ADDITIONAL_CAPABILITY_LIST     = new ArrayList<>();
 	public static final VideoStreamingFormat           GENERAL_VIDEOSTREAMINGFORMAT           = new VideoStreamingFormat();
 	public static final RGBColor                       GENERAL_RGBCOLOR                       = new RGBColor();
 	public static final TemplateColorScheme            GENERAL_DAYCOLORSCHEME                 = new TemplateColorScheme();
@@ -901,10 +903,22 @@ public class TestValues {
 		GENERAL_VIDEOSTREAMINGFORMAT_LIST.add(GENERAL_VIDEOSTREAMINGFORMAT);
 		GENERAL_VIDEOSTREAMINGFORMAT_LIST.add(GENERAL_VIDEOSTREAMINGFORMAT);
 
+		GENERAL_ADDITIONAL_CAPABILITY.setPreferredResolution(GENERAL_IMAGERESOLUTION);
+		GENERAL_ADDITIONAL_CAPABILITY.setDiagonalScreenSize(4.);
+		GENERAL_ADDITIONAL_CAPABILITY.setScale(1.);
+
+		GENERAL_ADDITIONAL_CAPABILITY_LIST.add(GENERAL_ADDITIONAL_CAPABILITY);
+		GENERAL_ADDITIONAL_CAPABILITY_LIST.add(GENERAL_ADDITIONAL_CAPABILITY);
+
 		GENERAL_VIDEOSTREAMINGCAPABILITY.setMaxBitrate(GENERAL_INT);
 		GENERAL_VIDEOSTREAMINGCAPABILITY.setPreferredResolution(GENERAL_IMAGERESOLUTION);
 		GENERAL_VIDEOSTREAMINGCAPABILITY.setSupportedFormats(GENERAL_VIDEOSTREAMINGFORMAT_LIST);
 		GENERAL_VIDEOSTREAMINGCAPABILITY.setIsHapticSpatialDataSupported(GENERAL_BOOLEAN);
+
+		GENERAL_VIDEOSTREAMINGCAPABILITY.setDiagonalScreenSize(6.);
+		GENERAL_VIDEOSTREAMINGCAPABILITY.setPixelPerInch(29.);
+		GENERAL_VIDEOSTREAMINGCAPABILITY.setScale(1.);
+		GENERAL_ADDITIONAL_CAPABILITY.setAdditionalVideoStreamingCapabilities(GENERAL_ADDITIONAL_CAPABILITY_LIST);
 
 		GENERAL_CLIMATECONTROLCAPABILITIES.setModuleName(GENERAL_STRING);
 		GENERAL_CLIMATECONTROLCAPABILITIES.setFanSpeedAvailable(GENERAL_BOOLEAN);

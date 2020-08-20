@@ -103,6 +103,7 @@ public class SystemCapabilityManagerTests {
 		videoStreamingCapability.setMaxBitrate(TestValues.GENERAL_INT);
 		videoStreamingCapability.setPreferredResolution(TestValues.GENERAL_IMAGERESOLUTION);
 		videoStreamingCapability.setSupportedFormats(TestValues.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
+		videoStreamingCapability.setAdditionalVideoStreamingCapabilities(TestValues.GENERAL_ADDITIONAL_CAPABILITY_LIST);
 		systemCapability.setCapabilityForType(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
 	}
 
@@ -218,6 +219,7 @@ public class SystemCapabilityManagerTests {
 		VideoStreamingCapability vsCapability = new VideoStreamingCapability();
 		vsCapability.setMaxBitrate(TestValues.GENERAL_INT);
 		vsCapability.setPreferredResolution(TestValues.GENERAL_IMAGERESOLUTION);
+		vsCapability.setAdditionalVideoStreamingCapabilities(TestValues.GENERAL_ADDITIONAL_CAPABILITY_LIST);
 		vsCapability.setSupportedFormats(TestValues.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
 
 		SystemCapability cap = new SystemCapability();

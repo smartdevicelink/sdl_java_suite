@@ -39,6 +39,7 @@ import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collections;
@@ -69,6 +70,7 @@ public class VideoStreamManagerTests {
 	public static final String TAG = "VideoStreamManagerTests";
 	private Context mTestContext;
 	private static boolean touchEventOccured = false;
+	private static boolean viewResizedCalled = false;
 
 	// SETUP / HELPERS
 
@@ -94,7 +96,7 @@ public class VideoStreamManagerTests {
 
 		@Override
 		public void onViewResized(int width, int height) {
-
+			viewResizedCalled = true;
 		}
 
 		@Override
@@ -273,14 +275,58 @@ public class VideoStreamManagerTests {
 				hmiListener[0].onNotified(fullNotification);
 
 				videoStreamManager.startRemoteDisplayStream(mTestContext, TestPresentation.class, null, false);
-
 				//assertTrue(touchEventOccured);
 
-				videoStreamManager.dispose();
 				assertTrue(listenerSet.isEmpty());
 			}
 		});
 
+	}
+
+	@Test
+	public void testOnViewResized() {
+		ISdl internalInterface = mock(ISdl.class);
+
+		final OnRPCNotificationListener[] hmiListener = {null};
+
+		Answer<Void> onAddHMIListener = new Answer<Void>() {
+			@Override
+			public Void answer(InvocationOnMock invocation) {
+				Object[] args = invocation.getArguments();
+				hmiListener[0] = (OnRPCNotificationListener) args[1];
+				return null;
+			}
+		};
+
+		doAnswer(onAddHMIListener).when(internalInterface).addOnRPCNotificationListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCNotificationListener.class));
+
+		final VideoStreamManager videoStreamManager = new VideoStreamManager(internalInterface);
+		videoStreamManager.start(new CompletionListener() {
+			@Override
+			public void onComplete(boolean success) {
+				assertTrue(success);
+				OnHMIStatus fullNotification = new OnHMIStatus();
+				fullNotification.setHmiLevel(HMILevel.HMI_FULL);
+				hmiListener[0].onNotified(fullNotification);
+
+				videoStreamManager.startRemoteDisplayStream(mTestContext, TestPresentation.class, null, false);
+
+				Field privateStringField = null;
+				try {
+					privateStringField = VideoStreamManager.class.
+							getDeclaredField("sdlRemoteDisplay");
+				} catch (NoSuchFieldException e) { e.printStackTrace(); }
+				privateStringField.setAccessible(true);
+
+				SdlRemoteDisplay display = null;
+				try {
+					display = (SdlRemoteDisplay) privateStringField.get(videoStreamManager);
+				} catch (IllegalAccessException e) { e.printStackTrace(); }
+				display.onViewResized(100, 100);
+
+				assertTrue(viewResizedCalled);
+			}
+		});
 	}
 
 	@Test
