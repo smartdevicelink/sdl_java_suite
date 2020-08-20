@@ -99,7 +99,7 @@ public class TextAndGraphicUpdateOperation extends Task {
                 @Override
                 public void onComplete(boolean success) {
                     if (getState() == Task.CANCELED) {
-                        finishOperation(success);
+                        finishOperation(false);
                         return;
                     }
                     uploadImagesAndSendWhenDone(new CompletionListener() {
@@ -147,6 +147,7 @@ public class TextAndGraphicUpdateOperation extends Task {
                 Show showWithGraphics = createImageOnlyShowWithPrimaryArtwork(updatedState.getPrimaryGraphic(), updatedState.getSecondaryGraphic());
                 if (showWithGraphics != null) {
                     DebugTool.logInfo(TAG, "Sending update with the successfully uploaded images");
+                    //Check for cancel
                     sendShow(showWithGraphics, new CompletionListener() {
                         @Override
                         public void onComplete(boolean success) {
@@ -185,6 +186,10 @@ public class TextAndGraphicUpdateOperation extends Task {
             fileManager.get().uploadArtworks(artworksToUpload, new MultipleFileCompletionListener() {
                 @Override
                 public void onComplete(Map<String, String> errors) {
+                    if (getState() == Task.CANCELED) {
+                        finishOperation(false);
+                        return;
+                    }
                     if (errors != null) {
                         DebugTool.logError(TAG, "Text and graphic manager artwork failed to upload with error: " + errors.toString());
                         listener.onComplete(false);
@@ -460,6 +465,8 @@ public class TextAndGraphicUpdateOperation extends Task {
         newShow.setMainField3(show.getMainField3());
         newShow.setMainField4(show.getMainField4());
         newShow.setTemplateTitle(show.getTemplateTitle());
+        newShow.setMetadataTags(show.getMetadataTags());
+        newShow.setAlignment(show.getAlignment());
 
         return newShow;
     }
