@@ -32,8 +32,6 @@
 
 package com.smartdevicelink.streaming.video;
 
-import android.util.Log;
-
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
