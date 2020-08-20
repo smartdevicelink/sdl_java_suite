@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
@@ -34,6 +35,7 @@ import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * This is a unit test class for the SmartDeviceLink library manager class :
@@ -42,17 +44,21 @@ import static org.mockito.Mockito.mock;
 @RunWith(AndroidJUnit4.class)
 public class TextAndGraphicManagerTests {
 
-/*	// SETUP / HELPERS
+	// SETUP / HELPERS
 	private TextAndGraphicManager textAndGraphicManager;
 	private SdlArtwork testArtwork;
+	Taskmaster taskmaster;
 
 	@Before
 	public void setUp() throws Exception{
 		Context mTestContext = getInstrumentation().getContext();
+
 		// mock things
 		ISdl internalInterface = mock(ISdl.class);
 		FileManager fileManager = mock(FileManager.class);
 		SoftButtonManager softButtonManager = mock(SoftButtonManager.class);
+		taskmaster = new Taskmaster.Builder().build();
+		when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
 
 		testArtwork = new SdlArtwork();
 		testArtwork.setName("testFile");
@@ -96,10 +102,10 @@ public class TextAndGraphicManagerTests {
 		return windowCapability;
 	}
 
-	*//**
+	/**
 	 * Used to simulate WindowCapability having no capabilities set
 	 * @return windowCapability that has no capabilities set
-	 *//*
+	 */
 	private WindowCapability getNullVarWindowCapability() {
 
 		WindowCapability windowCapability = new WindowCapability();
@@ -130,9 +136,9 @@ public class TextAndGraphicManagerTests {
 		assertNotNull(textAndGraphicManager.getBlankArtwork());
 	}
 
-	*//**
+	/**
 	 * Test getting number of lines available to be set based off of windowCapability
-	 *//*
+	 */
 	@Test
 	public void testGetMainLines(){
 
@@ -148,7 +154,7 @@ public class TextAndGraphicManagerTests {
 		assertEquals(ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(textAndGraphicManager.defaultMainWindowCapability), 3);
 	}
 
-	@Test
+/*	@Test
 	public void testAssemble1Line(){
 
 		Show inputShow = new Show();
@@ -634,7 +640,7 @@ public class TextAndGraphicManagerTests {
 		tagsList4.add(MetadataType.MEDIA_STATION);
 		assertEquals(tags.getMainField1(), tagsList);
 		assertEquals(tags.getMainField4(), tagsList4);
-	}
+	}*/
 
 	@Test
 	public void testMediaTrackTextField() {
@@ -659,7 +665,7 @@ public class TextAndGraphicManagerTests {
 		assertEquals(textAndGraphicManager.getTextAlignment(), TextAlignment.LEFT_ALIGNED);
 	}
 
-	@Test
+/*	@Test
 	public void testExtractTextFromShow(){
 
 		Show mainShow = new Show();
@@ -673,7 +679,7 @@ public class TextAndGraphicManagerTests {
 		assertEquals(newShow.getMainField3(), "Sauce");
 		assertEquals(newShow.getMainField4(), "");
 		assertNull(newShow.getMainField2());
-	}
+	}*/
 
 	// TEST IMAGES
 
@@ -710,11 +716,8 @@ public class TextAndGraphicManagerTests {
 		assertNull(textAndGraphicManager.getTitle());
 		assertNotNull(textAndGraphicManager.getBlankArtwork());
 		assertNull(textAndGraphicManager.currentScreenData);
-		assertNull(textAndGraphicManager.inProgressUpdate);
-		assertNull(textAndGraphicManager.queuedImageUpdate);
-		assertFalse(textAndGraphicManager.hasQueuedUpdate);
 		assertNull(textAndGraphicManager.defaultMainWindowCapability);
 		assertFalse(textAndGraphicManager.isDirty);
 		assertEquals(textAndGraphicManager.getState(), BaseSubManager.SHUTDOWN);
-	}*/
+	}
 }
