@@ -169,29 +169,6 @@ public class GetVehicleDataResponse extends RPCResponse {
         Object object = getParameters(KEY_FUEL_LEVEL);
         return SdlDataTypeConverter.objectToDouble(object);
     }
-    /**
-     * Sets the fuelLevel_State.
-     *
-     * @param fuelLevel_State The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please see
-     * fuelRange.
-     * @since SmartDeviceLink 7.0.0
-     */
-    @Deprecated
-    public void setFuelLevel_State(ComponentVolumeStatus fuelLevel_State) {
-        setParameters(KEY_FUEL_LEVEL_STATE, fuelLevel_State);
-    }
-
-    /**
-     * Gets the fuelLevel_State.
-     *
-     * @return ComponentVolumeStatus The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please see
-     * fuelRange.
-     * @since SmartDeviceLink 7.0.0
-     */
-    @Deprecated
-    public ComponentVolumeStatus getFuelLevel_State() {
-        return (ComponentVolumeStatus) getObject(ComponentVolumeStatus.class, KEY_FUEL_LEVEL_STATE);
-    }
     public void setInstantFuelConsumption(Double instantFuelConsumption) {
         setParameters(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
     }
