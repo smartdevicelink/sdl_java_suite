@@ -262,7 +262,7 @@ public class TextAndGraphicUpdateOperationTest {
         assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getMainField1(), textField1);
 
         // Verifies that uploadArtworks gets called only with the fist textAndGraphicsUpdateOperation.onExecute call
-        verify(fileManager, times(1)).uploadArtworks(any(List.class),any(MultipleFileCompletionListener.class));
+        verify(fileManager, times(1)).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
 
     }
 
@@ -270,7 +270,7 @@ public class TextAndGraphicUpdateOperationTest {
     public void testCanceledRightAway() {
         textAndGraphicUpdateOperation.cancelTask();
         textAndGraphicUpdateOperation.onExecute();
-        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getMainField1(),"Old");
+        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getMainField1(), "Old");
     }
 
     @Test
@@ -281,14 +281,14 @@ public class TextAndGraphicUpdateOperationTest {
         // Test Canceled after Image upload
         textAndGraphicUpdateOperation.onExecute();
         verify(internalInterface, times(1)).sendRPC(any(Show.class));
-        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getMainField1(),textField1);
+        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getMainField1(), textField1);
 
     }
 
     public void testTaskCanceledAfterTextSent() {
         doAnswer(onShowSuccessCanceled).when(internalInterface).sendRPC(any(Show.class));
         textAndGraphicUpdateOperation.onExecute();
-        verify(fileManager, times(0)).uploadArtworks(any(List.class),any(MultipleFileCompletionListener.class));
+        verify(fileManager, times(0)).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
 
     }
 
@@ -312,7 +312,7 @@ public class TextAndGraphicUpdateOperationTest {
 
 
     @Test
-    public void testAssemble1Line(){
+    public void testAssemble1Line() {
 
         Show inputShow = new Show();
 
@@ -531,7 +531,7 @@ public class TextAndGraphicUpdateOperationTest {
 
         textsAndGraphicsState.setTextField4(textField4);
         textsAndGraphicsState.setTextField4Type(MetadataType.MEDIA_STATION);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager,defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
 
         assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
         assertEquals(assembledShow.getMainField1(), "It is");
@@ -586,7 +586,7 @@ public class TextAndGraphicUpdateOperationTest {
         tx5.setName(TextFieldName.mediaTrack);
         tx6.setName(TextFieldName.templateTitle);
 
-        List<TextField> textFieldNames = Arrays.asList(tx1,tx2,tx3,tx4,tx5,tx6);
+        List<TextField> textFieldNames = Arrays.asList(tx1, tx2, tx3, tx4, tx5, tx6);
         defaultMainWindowCapability.setTextFields(textFieldNames);
 
         TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField1, null, null, null,
@@ -701,7 +701,7 @@ public class TextAndGraphicUpdateOperationTest {
         assertEquals(tags.getMainField4(), tagsList4);
     }
 
-	/**
+    /**
      * Testing if WindowCapability is null, TextFields should still update.
      */
     @Test
@@ -829,18 +829,42 @@ public class TextAndGraphicUpdateOperationTest {
     }
 
     @Test
-	public void testExtractTextFromShow(){
-		Show mainShow = new Show();
-		mainShow.setMainField1("test");
-		mainShow.setMainField3("Sauce");
-		mainShow.setMainField4("");
+    public void testExtractTextFromShow() {
+        Show mainShow = new Show();
+        mainShow.setMainField1("test");
+        mainShow.setMainField3("Sauce");
+        mainShow.setMainField4("");
 
-		Show newShow = textAndGraphicUpdateOperation.extractTextFromShow(mainShow);
+        Show newShow = textAndGraphicUpdateOperation.extractTextFromShow(mainShow);
 
-		assertEquals(newShow.getMainField1(), "test");
-		assertEquals(newShow.getMainField3(), "Sauce");
-		assertEquals(newShow.getMainField4(), "");
-		assertNull(newShow.getMainField2());
-	}
+        assertEquals(newShow.getMainField1(), "test");
+        assertEquals(newShow.getMainField3(), "Sauce");
+        assertEquals(newShow.getMainField4(), "");
+        assertNull(newShow.getMainField2());
+    }
+
+    @Test
+    public void testCreateImageOnlyShowWithPrimaryArtwork() {
+        // Test null
+        Show testShow = textAndGraphicUpdateOperation.createImageOnlyShowWithPrimaryArtwork(null, null);
+        assertNull(testShow);
+
+        // Test when artwork hasn't been uploaded
+        when(fileManager.hasUploadedFile(any(SdlFile.class))).thenReturn(false);
+        TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField1, textField2, textField3, textField4,
+                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+        testShow = textAndGraphicUpdateOperation.createImageOnlyShowWithPrimaryArtwork(testArtwork1, testArtwork2);
+        assertNull(testShow);
+
+        // Test when artwork has been uploaded
+        when(fileManager.hasUploadedFile(any(SdlFile.class))).thenReturn(true);
+        textsAndGraphicsState = new TextsAndGraphicsState(textField1, textField2, textField3, textField4,
+                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+        testShow = textAndGraphicUpdateOperation.createImageOnlyShowWithPrimaryArtwork(testArtwork1, testArtwork2);
+        assertEquals(testShow.getGraphic(), testArtwork1.getImageRPC());
+        assertEquals(testShow.getSecondaryGraphic(), testArtwork2.getImageRPC());
+    }
 
 }
