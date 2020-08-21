@@ -38,7 +38,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
 import android.os.Bundle;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.R;
 import com.smartdevicelink.util.SdlAppInfo;
@@ -50,7 +50,7 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import static android.support.test.InstrumentationRegistry.getContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
@@ -70,7 +70,7 @@ public class SdlAppInfoTests {
 
     @Before
     public void setUp() throws Exception {
-        context = getContext();
+        context = getInstrumentation().getContext();
         defaultResolveInfo =  createResolveInfo(context.getResources().getInteger(R.integer.sdl_router_service_version_value), "com.smartdevicelink.test", "com.smartdevicelink.test.SdlRouterService",false);
         defaultServiceInfo = defaultResolveInfo.serviceInfo;
         defaultBundle = defaultServiceInfo.metaData;

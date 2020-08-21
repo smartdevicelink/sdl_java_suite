@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.util.Version;
@@ -126,22 +126,6 @@ public class Choice extends RPCStruct {
         this();
         setChoiceID(choiceID);
         setMenuName(menuName);
-    }
-    
-    /**
-     * Constructs a newly allocated Choice object
-     * @param choiceID Min: 0  Max: 65535
-     * @param menuName the menu name
-     * @param vrCommands the List of  vrCommands
-     *
-     * Deprecated - use {@link #Choice(Integer, String)}
-     */
-    @Deprecated
-    public Choice(@NonNull Integer choiceID, @NonNull String menuName, @NonNull List<String> vrCommands) {
-        this();
-        setChoiceID(choiceID);
-        setMenuName(menuName);
-        setVrCommands(vrCommands);
     }
 
     /**

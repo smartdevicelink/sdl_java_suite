@@ -32,8 +32,7 @@
 
 package com.smartdevicelink.managers.lifecycle;
 
-import android.support.annotation.RestrictTo;
-import com.smartdevicelink.util.Log;
+import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.exception.SdlException;
@@ -53,7 +52,7 @@ public class LifecycleManager extends BaseLifecycleManager {
     @Override
     void initialize() {
         super.initialize();
-        this.session = new SdlSession(sdlConnectionListener, _transportConfig);
+        this.session = new SdlSession(this.sdlSessionListener, _transportConfig);
     }
 
     @Override

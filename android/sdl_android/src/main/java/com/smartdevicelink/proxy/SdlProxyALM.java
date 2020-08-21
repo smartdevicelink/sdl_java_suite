@@ -65,7 +65,7 @@ import com.smartdevicelink.transport.enums.TransportType;
 import java.util.List;
 import java.util.Vector;
 
-import static com.smartdevicelink.proxy.SystemCapabilityManager.convertToList;
+import static com.smartdevicelink.managers.lifecycle.SystemCapabilityManager.convertToList;
 
 /**
  * @deprecated use {@link com.smartdevicelink.managers.SdlManager} instead.

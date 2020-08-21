@@ -20,6 +20,7 @@ public class WindowCapability extends RPCStruct {
     public static final String KEY_BUTTON_CAPABILITIES = "buttonCapabilities";
     public static final String KEY_SOFT_BUTTON_CAPABILITIES = "softButtonCapabilities";
     public static final String KEY_MENU_LAYOUTS_AVAILABLE = "menuLayoutsAvailable";
+    public static final String KEY_DYNAMIC_UPDATE_CAPABILITIES = "dynamicUpdateCapabilities";
 
     public WindowCapability() {
     }
@@ -204,5 +205,27 @@ public class WindowCapability extends RPCStruct {
     @SuppressWarnings("unchecked")
     public List<MenuLayout> getMenuLayoutsAvailable() {
         return (List<MenuLayout>) getObject(MenuLayout.class, KEY_MENU_LAYOUTS_AVAILABLE);
+    }
+
+    /**
+     * Sets the dynamicUpdateCapabilities.
+     *
+     * @param dynamicUpdateCapabilities Contains the head unit's capabilities for dynamic updating features declaring if the
+     * module will send dynamic update RPCs.
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setDynamicUpdateCapabilities(DynamicUpdateCapabilities dynamicUpdateCapabilities) {
+        setValue(KEY_DYNAMIC_UPDATE_CAPABILITIES, dynamicUpdateCapabilities);
+    }
+
+    /**
+     * Gets the dynamicUpdateCapabilities.
+     *
+     * @return DynamicUpdateCapabilities Contains the head unit's capabilities for dynamic updating features declaring if the
+     * module will send dynamic update RPCs.
+     * @since SmartDeviceLink 7.0.0
+     */
+    public DynamicUpdateCapabilities getDynamicUpdateCapabilities() {
+        return (DynamicUpdateCapabilities) getObject(DynamicUpdateCapabilities.class, KEY_DYNAMIC_UPDATE_CAPABILITIES);
     }
 }

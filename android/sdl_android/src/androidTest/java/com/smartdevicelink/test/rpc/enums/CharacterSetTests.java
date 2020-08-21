@@ -26,11 +26,20 @@ public class CharacterSetTests extends TestCase {
 		CharacterSet enumCid1Set = CharacterSet.valueForString(example);
 		example = "CID2SET";
 		CharacterSet enumCid2Set = CharacterSet.valueForString(example);
-		
+		example = "ASCII";
+		CharacterSet enumAsciiSet = CharacterSet.valueForString(example);
+		example = "ISO_8859_1";
+		CharacterSet enumIsoSet = CharacterSet.valueForString(example);
+		example = "UTF_8";
+		CharacterSet enumUtfSet = CharacterSet.valueForString(example);
+
 		assertNotNull("TYPE2SET returned null", enumType2Set);
 		assertNotNull("TYPE5SET returned null", enumType5Set);
 		assertNotNull("CID1SET returned null", enumCid1Set);
 		assertNotNull("CID2SET returned null", enumCid2Set);
+		assertNotNull("ASCII returned null", enumAsciiSet);
+		assertNotNull("ISO_8859_1 returned null", enumIsoSet);
+		assertNotNull("UTF_8 returned null", enumUtfSet);
 	}
 
 	/**
@@ -72,6 +81,9 @@ public class CharacterSetTests extends TestCase {
 		enumTestList.add(CharacterSet.TYPE5SET);
 		enumTestList.add(CharacterSet.CID1SET);
 		enumTestList.add(CharacterSet.CID2SET);
+		enumTestList.add(CharacterSet.ASCII);
+		enumTestList.add(CharacterSet.ISO_8859_1);
+		enumTestList.add(CharacterSet.UTF_8);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

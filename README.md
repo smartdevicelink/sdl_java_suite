@@ -66,7 +66,7 @@ Developers using Proguard to shrink and obfuscate their code should be sure to i
 
 ### JavaSE
 
-[ ![Download JavaSE](https://api.bintray.com/packages/smartdevicelink/sdl_java_se/sdl_java_se/images/download.svg) ](https://bintray.com/smartdevicelink/sdl_java_se/sdl_java_se/_latestVersion)
+[ ![Download JavaSE](https://api.bintray.com/packages/smartdevicelink/sdl_java_se/sdl_javase/images/download.svg) ](https://bintray.com/smartdevicelink/sdl_java_se/sdl_javase/_latestVersion)
 
 The JavaSE project is meant to allow SDL compatibility for embedded applications. 
 
@@ -85,7 +85,7 @@ dependencies {
 
 ### JavaEE
 
-[ ![Download JavaEE](https://api.bintray.com/packages/smartdevicelink/sdl_java_ee/sdl_java_ee/images/download.svg) ](https://bintray.com/smartdevicelink/sdl_java_ee/sdl_java_ee/_latestVersion)
+[ ![Download JavaEE](https://api.bintray.com/packages/smartdevicelink/sdl_java_ee/sdl_javaee/images/download.svg) ](https://bintray.com/smartdevicelink/sdl_java_ee/sdl_javaee/_latestVersion)
 
 The JavaEE project is meant to allow SDL compatibility for web applications. 
 

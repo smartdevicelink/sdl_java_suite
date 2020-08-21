@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.managers;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.transport.utl.TransportRecord;
