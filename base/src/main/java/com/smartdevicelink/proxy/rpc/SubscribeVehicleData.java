@@ -113,14 +113,20 @@ import java.util.Hashtable;
  *                 <td>Subscribable</td>
  * 			<td>SmartDeviceLink 2.0 </td>
  * 		</tr>
- * 		<tr>
- * 			<td>prndl</td>
- * 			<td>Boolean</td>
- * 			<td>Currently selected gear.</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
+ *  	<tr>
+ *      	<td>gearStatus</td>
+ *      	<td>Boolean</td>
+ *      	<td>See GearStatus</td>
+ *      	<td>N</td>
+ *      	<td>SmartDeviceLink 7.0.0</td>
+ *  	</tr>
+ *  	<tr>
+ *     		<td>prndl</td>
+ *      	<td>Boolean</td>
+ *      	<td>See PRNDL. This parameter is deprecated and it is now covered in `gearStatus`</td>
+ *      	<td>N</td>
+ *      	<td>SmartDeviceLink 7.0.0</td>
+ *  </tr>
  * 		<tr>
  * 			<td>tirePressure</td>
  * 			<td>Boolean</td>
@@ -338,6 +344,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
 	public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
 	public static final String KEY_WINDOW_STATUS = "windowStatus";
+	public static final String KEY_GEAR_STATUS = "gearStatus";
 
 	/**
 	 * Constructs a new SubscribeVehicleData object
@@ -440,29 +447,6 @@ public class SubscribeVehicleData extends RPCRequest {
     }
 
     /**
-     * Sets a boolean value. If true, subscribes fuelLevel_State data
-     * 
-     * @param fuelLevel_State
-     *            a boolean value
-     */
-    @Deprecated
-    public void setFuelLevel_State(Boolean fuelLevel_State) {
-        setFuelLevelState(fuelLevel_State);
-    }
-
-    /**
-     * Gets a boolean value. If true, means the fuelLevel_State data has been
-     * subscribed.
-     * 
-     * @return Boolean -a Boolean value. If true, means the fuelLevel_State data
-     *         has been subscribed.
-     */
-    @Deprecated
-    public Boolean getFuelLevel_State() {
-        return getFuelLevelState();
-    }
-
-    /**
      * Sets a boolean value. If true, subscribes fuelLevelState data
      * 
      * @param fuelLevelState
@@ -525,23 +509,44 @@ public class SubscribeVehicleData extends RPCRequest {
         return getBoolean(KEY_EXTERNAL_TEMPERATURE);
     }
 
-	/**
-	 * Sets a boolean value. If true, subscribes Currently selected gear data
-	 * 
-	 * @param prndl
-	 *            a boolean value
-	 */
+    /**
+     * Sets the gearStatus.
+     *
+     * @param gearStatus See GearStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setGearStatus(Boolean gearStatus) {
+        setParameters(KEY_GEAR_STATUS, gearStatus);
+    }
+
+    /**
+     * Gets the gearStatus.
+     *
+     * @return Boolean See GearStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public Boolean getGearStatus() {
+        return getBoolean(KEY_GEAR_STATUS);
+    }
+
+    /**
+     * Sets the prndl.
+     *
+     * @param prndl See PRNDL. This parameter is deprecated since 7.0.0 and it is now covered in `gearStatus`
+     * @deprecated in SmartDeviceLink 7.0.0
+     */
+    @Deprecated
     public void setPrndl(Boolean prndl) {
 		setParameters(KEY_PRNDL, prndl);
     }
 
-	/**
-	 * Gets a boolean value. If true, means the Currently selected gear data has been
-	 * subscribed.
-	 * 
-	 * @return Boolean -a Boolean value. If true, means the Currently selected gear data
-	 *         has been subscribed.
-	 */
+    /**
+     * Gets the prndl.
+     *
+     * @return Boolean See PRNDL. This parameter is deprecated since 7.0.0 and it is now covered in `gearStatus`
+     * @deprecated in SmartDeviceLink 7.0.0
+     */
+    @Deprecated
     public Boolean getPrndl() {
         return getBoolean(KEY_PRNDL);
     }

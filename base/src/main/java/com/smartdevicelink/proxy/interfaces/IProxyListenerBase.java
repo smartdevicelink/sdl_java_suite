@@ -73,10 +73,8 @@ import com.smartdevicelink.proxy.rpc.OnHashChange;
 import com.smartdevicelink.proxy.rpc.OnInteriorVehicleData;
 import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
 import com.smartdevicelink.proxy.rpc.OnLanguageChange;
-import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
 import com.smartdevicelink.proxy.rpc.OnRCStatus;
-import com.smartdevicelink.proxy.rpc.OnStreamRPC;
 import com.smartdevicelink.proxy.rpc.OnSystemCapabilityUpdated;
 import com.smartdevicelink.proxy.rpc.OnSystemRequest;
 import com.smartdevicelink.proxy.rpc.OnTBTClientState;
@@ -105,7 +103,6 @@ import com.smartdevicelink.proxy.rpc.ShowConstantTbtResponse;
 import com.smartdevicelink.proxy.rpc.ShowResponse;
 import com.smartdevicelink.proxy.rpc.SliderResponse;
 import com.smartdevicelink.proxy.rpc.SpeakResponse;
-import com.smartdevicelink.proxy.rpc.StreamRPCResponse;
 import com.smartdevicelink.proxy.rpc.SubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.SubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.SubscribeWayPointsResponse;
@@ -146,9 +143,9 @@ public interface IProxyListenerBase {
 
 	public void onServiceNACKed(OnServiceNACKed serviceNACKed);
 
-	public void onOnStreamRPC(OnStreamRPC notification);
+	//public void onOnStreamRPC(OnStreamRPC notification);
 
-	public void onStreamRPCResponse(StreamRPCResponse response);
+	//public void onStreamRPCResponse(StreamRPCResponse response);
 
 	/**
 	 * onProxyError() being called indicates that the SDL Proxy experenced an error.
@@ -370,7 +367,7 @@ public interface IProxyListenerBase {
 
 	public void onGetDTCsResponse(GetDTCsResponse response);
 
-	public void onOnLockScreenNotification(OnLockScreenStatus notification);
+	//public void onOnLockScreenNotification(OnLockScreenStatus notification);
 
 	public void onDialNumberResponse(DialNumberResponse response);
 

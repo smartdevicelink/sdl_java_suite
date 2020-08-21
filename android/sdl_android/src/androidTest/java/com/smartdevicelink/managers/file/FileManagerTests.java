@@ -72,10 +72,9 @@ public class FileManagerTests {
 			RPCRequest message = (RPCRequest) args[0];
 			if (message instanceof PutFile) {
 				int correlationId = message.getCorrelationID();
-				Result resultCode = Result.REJECTED;
-				PutFileResponse putFileResponse = new PutFileResponse();
-				putFileResponse.setSuccess(false);
-				message.getOnRPCResponseListener().onError(correlationId, resultCode, "Binary data empty");
+				PutFileResponse putFileResponse = new PutFileResponse(false, Result.REJECTED);
+				putFileResponse.setInfo("Binary data empty");
+				message.getOnRPCResponseListener().onResponse(correlationId, putFileResponse);
 			}
 			return null;
 		}
@@ -88,13 +87,12 @@ public class FileManagerTests {
 			List<RPCRequest> rpcs = (List<RPCRequest>) args[0];
 			OnMultipleRequestListener listener = (OnMultipleRequestListener) args[1];
 			if (rpcs.get(0) instanceof PutFile) {
-				Result resultCode = Result.REJECTED;
 				for (RPCRequest message : rpcs) {
 					int correlationId = message.getCorrelationID();
 					listener.addCorrelationId(correlationId);
-					PutFileResponse putFileResponse = new PutFileResponse();
-					putFileResponse.setSuccess(true);
-					listener.onError(correlationId, resultCode, "Binary data empty");
+					PutFileResponse putFileResponse = new PutFileResponse(false, Result.REJECTED);
+					putFileResponse.setInfo("Binary data empty");
+					listener.onResponse(correlationId, putFileResponse);
 				}
 				listener.onFinished();
 			}
@@ -197,13 +195,12 @@ public class FileManagerTests {
 			List<RPCRequest> rpcs = (List<RPCRequest>) args[0];
 			OnMultipleRequestListener listener = (OnMultipleRequestListener) args[1];
 			if (rpcs.get(0) instanceof DeleteFile) {
-				Result resultCode = Result.REJECTED;
 				for (RPCRequest message : rpcs) {
 					int correlationId = message.getCorrelationID();
 					listener.addCorrelationId(correlationId);
-					DeleteFileResponse deleteFileResponse = new DeleteFileResponse();
-					deleteFileResponse.setSuccess(true);
-					listener.onError(correlationId, resultCode, "Binary data empty");
+					DeleteFileResponse deleteFileResponse = new DeleteFileResponse(false, Result.REJECTED);
+					deleteFileResponse.setInfo("Binary data empty");
+					listener.onResponse(correlationId, deleteFileResponse);
 				}
 				listener.onFinished();
 			}
@@ -218,7 +215,6 @@ public class FileManagerTests {
 			List<RPCRequest> rpcs = (List<RPCRequest>) args[0];
 			OnMultipleRequestListener listener = (OnMultipleRequestListener) args[1];
 			if (rpcs.get(0) instanceof PutFile) {
-				Result resultCode = Result.REJECTED;
 				boolean flip = false;
 				for (RPCRequest message : rpcs) {
 					int correlationId = message.getCorrelationID();
@@ -231,7 +227,9 @@ public class FileManagerTests {
 					} else {
 						flip = true;
 						putFileResponse.setSuccess(false);
-						listener.onError(correlationId, resultCode, "Binary data empty");
+						putFileResponse.setResultCode(Result.REJECTED);
+						putFileResponse.setInfo("Binary data empty");
+						listener.onResponse(correlationId, putFileResponse);
 					}
 				}
 				listener.onFinished();

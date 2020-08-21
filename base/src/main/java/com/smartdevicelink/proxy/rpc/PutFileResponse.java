@@ -68,22 +68,6 @@ public class PutFileResponse extends RPCResponse {
     }
 
 	/**
-	 * @deprecated use {@link PutFileResponse#PutFileResponse(Boolean, Result)} <br>
-	 *
-	 * Constructs a new PutFileResponse object
-	 * @param success whether the request is successfully processed
-	 * @param resultCode whether the request is successfully processed
-	 * @param spaceAvailable the spaceAvailable on the head unit
-	 */
-	@Deprecated
-	public PutFileResponse(@NonNull Boolean success, @NonNull Result resultCode, @NonNull Integer spaceAvailable) {
-		this();
-		setSuccess(success);
-		setResultCode(resultCode);
-		setSpaceAvailable(spaceAvailable);
-	}
-
-	/**
 	 * Constructs a new PutFileResponse object
 	 * @param success whether the request is successfully processed
 	 * @param resultCode whether the request is successfully processed

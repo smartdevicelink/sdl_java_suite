@@ -36,15 +36,6 @@ package com.smartdevicelink.proxy.rpc.enums;
  * 
  */
 public enum VrCapabilities {
-	/**
-	 * The SDL platform is capable of recognizing spoken text in the current
-	 * language.
-	 * 
-	 * @since SmartDeviceLink 1.0
-	 */
-    @Deprecated
-	Text,
-
     /**
      * The SDL platform is capable of recognizing spoken text in the current
      * language.
