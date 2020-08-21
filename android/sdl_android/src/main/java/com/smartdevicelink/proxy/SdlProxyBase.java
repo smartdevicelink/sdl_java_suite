@@ -40,7 +40,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
-import androidx.annotation.NonNull;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.SparseArray;
@@ -48,6 +47,8 @@ import android.view.Display;
 import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.Surface;
+
+import androidx.annotation.NonNull;
 
 import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.BuildConfig;
@@ -58,7 +59,6 @@ import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
-//import com.smartdevicelink.managers.video.HapticInterfaceManager;
 import com.smartdevicelink.managers.ServiceEncryptionListener;
 import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
 import com.smartdevicelink.managers.lifecycle.RpcConverter;
@@ -68,7 +68,6 @@ import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.protocol.heartbeat.HeartbeatMonitor;
 import com.smartdevicelink.proxy.LockScreenManager.OnLockScreenIconDownloadedListener;
 import com.smartdevicelink.proxy.callbacks.InternalProxyMessage;
 import com.smartdevicelink.proxy.callbacks.OnError;
@@ -106,7 +105,6 @@ import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
-import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCRequestListener;
@@ -159,6 +157,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.ScheduledExecutorService;
+
+//import com.smartdevicelink.managers.video.HapticInterfaceManager;
 
 
 /**
@@ -2144,7 +2144,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					RPCRequest request = (RPCRequest) message;
 					OnRPCResponseListener listener = ((RPCRequest) message).getOnRPCResponseListener();
 					if (listener != null) {
-						listener.onError(request.getCorrelationID(), Result.ABORTED,  errorInfo);
+						GenericResponse response = new GenericResponse(false, Result.REJECTED);
+						response.setInfo(errorInfo);
+						listener.onResponse(request.getCorrelationID(), response);
 					}
 				}
 				DebugTool.logWarning(TAG, errorInfo);
@@ -2207,23 +2209,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 	
 	/**
-	 * Only call this method for a PutFile response. It will cause a class cast exception if not.
-	 * @param correlationId correlation id of the packet being updated
-	 * @param bytesWritten how many bytes were written
-	 * @param totalSize the total size in bytes
-	 */
-	@SuppressWarnings("unused")
-	public void onPacketProgress(int correlationId, long bytesWritten, long totalSize){
-		synchronized(ON_UPDATE_LISTENER_LOCK){
-		if(rpcResponseListeners !=null 
-				&& rpcResponseListeners.indexOfKey(correlationId)>=0){
-			((OnPutFileUpdateListener)rpcResponseListeners.get(correlationId)).onUpdate(correlationId, bytesWritten, totalSize);
-		}
-		}
-		
-	}
-	
-	/**
 	 * Will provide callback to the listener either onFinish or onError depending on the RPCResponses result code,
 	 * <p>Will automatically remove the listener for the list of listeners on completion. 
 	 * @param msg The RPCResponse message that was received
@@ -2236,11 +2221,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			if(rpcResponseListeners !=null 
 					&& rpcResponseListeners.indexOfKey(correlationId)>=0){
 				OnRPCResponseListener listener = rpcResponseListeners.get(correlationId);
-				if(msg.getSuccess()){
-					listener.onResponse(correlationId, msg);
-				}else{
-					listener.onError(correlationId, msg.getResultCode(), msg.getInfo());
-				}
+				listener.onResponse(correlationId, msg);
 				rpcResponseListeners.remove(correlationId);
 				return true;
 			}
@@ -2258,9 +2239,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		synchronized(ON_UPDATE_LISTENER_LOCK){
 			if(rpcResponseListeners!=null 
 					&& listener !=null){
-				if(listener.getListenerType() == OnRPCResponseListener.UPDATE_LISTENER_TYPE_PUT_FILE){
-					((OnPutFileUpdateListener)listener).setTotalSize(totalSize);
-				}
 				listener.onStart(correlationId);
 				rpcResponseListeners.put(correlationId, listener);
 			}
@@ -4517,27 +4495,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					} catch (SdlException e) {
 						e.printStackTrace();
 						if (listener != null) {
-							listener.onError(correlationId, Result.GENERIC_ERROR, e.toString());
-						}
-					}
-				}
-
-				@Override
-				public void onError(int correlationId, Result resultCode, String info) {
-					if (devOnRPCResponseListener != null){
-						devOnRPCResponseListener.onError(correlationId, resultCode, info);
-					}
-					if (listener != null) {
-						listener.onError(correlationId, resultCode, info);
-						listener.onUpdate(rpcs.size());
-					}
-					try {
-						// recurse after onError
-						sendSequentialRequests(rpcs, listener);
-					} catch (SdlException e) {
-						e.printStackTrace();
-						if (listener != null) {
-							listener.onError(correlationId, Result.GENERIC_ERROR, e.toString());
+							GenericResponse genericResponse = new GenericResponse(false, Result.GENERIC_ERROR);
+							genericResponse.setInfo(e.toString());
+							listener.onResponse(correlationId, genericResponse);
 						}
 					}
 				}
@@ -4555,7 +4515,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} catch (SdlException e) {
 				e.printStackTrace();
 				if (listener != null) {
-					listener.onError(0, Result.GENERIC_ERROR, e.toString());
+					GenericResponse response = new GenericResponse(false, Result.REJECTED);
+					response.setInfo(e.toString());
+					listener.onResponse(0, response);
 				}
 			}
 		}
@@ -4617,17 +4579,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 							}
 							if (listener.getSingleRpcResponseListener() != null) {
 								listener.getSingleRpcResponseListener().onResponse(correlationId, response);
-							}
-						}
-
-						@Override
-						public void onError(int correlationId, Result resultCode, String info) {
-							super.onError(correlationId, resultCode, info);
-							if (devOnRPCResponseListener != null){
-								devOnRPCResponseListener.onError(correlationId, resultCode, info);
-							}
-							if (listener.getSingleRpcResponseListener() != null) {
-								listener.getSingleRpcResponseListener().onError(correlationId, resultCode, info);
 							}
 						}
 					});
@@ -7603,17 +7554,17 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * core to elsewhere in the system.
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
-	@SuppressWarnings("unused")
-	public void putFileStream(InputStream inputStream, @NonNull String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, OnPutFileUpdateListener cb) throws SdlException {
-		PutFile msg = new PutFile(fileName, FileType.BINARY);
-		msg.setCorrelationID(10000);
-		msg.setSystemFile(true);
-		msg.setOffset(offset);
-		msg.setLength(length);
-		//msg.setOnPutFileUpdateListener(cb);
-		startRPCStream(inputStream, msg);
-	}
-	
+//	@SuppressWarnings("unused")
+//	public void putFileStream(InputStream inputStream, @NonNull String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, OnPutFileUpdateListener cb) throws SdlException {
+//		PutFile msg = new PutFile(fileName, FileType.BINARY);
+//		msg.setCorrelationID(10000);
+//		msg.setSystemFile(true);
+//		msg.setOffset(offset);
+//		msg.setLength(length);
+//		//msg.setOnPutFileUpdateListener(cb);
+//		startRPCStream(inputStream, msg);
+//	}
+//
 	/**
 	 * Used to push a binary stream of file data onto the module from a mobile device.
 	 * Responses are captured through callback on IProxyListener.
@@ -7660,17 +7611,17 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * core to elsewhere in the system.
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
-	@SuppressWarnings("unused")
-	public OutputStream putFileStream(@NonNull String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, OnPutFileUpdateListener cb) throws SdlException {
-		PutFile msg = new PutFile(fileName, FileType.BINARY);
-		msg.setCorrelationID(10000);
-		msg.setSystemFile(true);
-		msg.setOffset(offset);
-		msg.setLength(length);
-		//msg.setOnPutFileUpdateListener(cb);
-
-		return startRPCStream(msg);
-	}
+//	@SuppressWarnings("unused")
+//	public OutputStream putFileStream(@NonNull String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, OnPutFileUpdateListener cb) throws SdlException {
+//		PutFile msg = new PutFile(fileName, FileType.BINARY);
+//		msg.setCorrelationID(10000);
+//		msg.setSystemFile(true);
+//		msg.setOffset(offset);
+//		msg.setLength(length);
+//		//msg.setOnPutFileUpdateListener(cb);
+//
+//		return startRPCStream(msg);
+//	}
 	
 	/**
 	 * Used to push a stream of putfile RPC's containing binary data from a mobile device to the module.
@@ -7686,7 +7637,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param iCorrelationID - A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @return RPCStreamController - If the putFileStream was not started successfully null is returned, otherwise a valid object reference is returned 
 	 * @throws SdlException if an unrecoverable error is encountered
-	 * @see #putFileStream(String, String, Long, FileType, Boolean, Boolean, Boolean, Integer, OnPutFileUpdateListener)
+//	 * @see #putFileStream(String, String, Long, FileType, Boolean, Boolean, Boolean, Integer, OnPutFileUpdateListener)
 	 */	
 	@SuppressWarnings("unused")
 	@Deprecated
@@ -7724,19 +7675,19 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * returned .
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
-	@SuppressWarnings("unused")
-	public RPCStreamController putFileStream(String path, @NonNull String fileName, Long offset, @NonNull FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Boolean isPayloadProtected, Integer correlationId, OnPutFileUpdateListener cb ) throws SdlException {
-		PutFile msg = new PutFile(fileName, fileType);
-		msg.setCorrelationID(correlationId);
-		msg.setPersistentFile(isPersistentFile);
-		msg.setSystemFile(isSystemFile);
-		msg.setOffset(offset);
-		msg.setLength(0L);
-		msg.setPayloadProtected(isPayloadProtected);
-		//msg.setOnPutFileUpdateListener(cb);
-
-		return startPutFileStream(path,msg);
-	}
+//	@SuppressWarnings("unused")
+//	public RPCStreamController putFileStream(String path, @NonNull String fileName, Long offset, @NonNull FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Boolean isPayloadProtected, Integer correlationId, OnPutFileUpdateListener cb ) throws SdlException {
+//		PutFile msg = new PutFile(fileName, fileType);
+//		msg.setCorrelationID(correlationId);
+//		msg.setPersistentFile(isPersistentFile);
+//		msg.setSystemFile(isSystemFile);
+//		msg.setOffset(offset);
+//		msg.setLength(0L);
+//		msg.setPayloadProtected(isPayloadProtected);
+//		//msg.setOnPutFileUpdateListener(cb);
+//
+//		return startPutFileStream(path,msg);
+//	}
 
 	/**
 	 * Used to push a stream of putfile RPC's containing binary data from a mobile device to the module.

@@ -15,6 +15,7 @@ import com.smartdevicelink.proxy.SdlProxyBase;
 import com.smartdevicelink.proxy.SdlProxyBuilder;
 import com.smartdevicelink.proxy.SdlProxyConfigurationResources;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
+import com.smartdevicelink.proxy.rpc.GenericResponse;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.ShowResponse;
 import com.smartdevicelink.proxy.rpc.Speak;
@@ -229,15 +230,14 @@ public class SdlProxyBaseTests {
             }
 
             @Override
-            public void onError(int correlationId, Result resultCode, String info) {
-                onErrorListenerCounter++;
-                remainingRequestsExpected--;
-            }
-
-            @Override
             public void onResponse(int correlationId, RPCResponse response) {
-                onResponseListenerCounter++;
-                remainingRequestsExpected--;
+                if (response.getSuccess()) {
+                    onResponseListenerCounter++;
+                    remainingRequestsExpected--;
+                } else {
+                    onErrorListenerCounter++;
+                    remainingRequestsExpected--;
+                }
             }
         };
         try {
@@ -280,7 +280,7 @@ public class SdlProxyBaseTests {
                 while (rpcsTempList.size() != 0){
                     RPCRequest request = rpcsTempList.remove(0);
                     if (request instanceof Speak) {
-                        requestsMap.get(request).onError(request.getCorrelationID(), Result.DISALLOWED, "ERROR");
+                        requestsMap.get(request).onResponse(request.getCorrelationID(), new GenericResponse(false, Result.DISALLOWED));
                     } else if (request instanceof Show) {
                         requestsMap.get(request).onResponse(request.getCorrelationID(), new ShowResponse(true, Result.SUCCESS));
                     }
