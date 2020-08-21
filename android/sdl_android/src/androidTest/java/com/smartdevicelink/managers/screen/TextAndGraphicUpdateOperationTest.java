@@ -14,6 +14,7 @@ import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.ImageField;
+import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.ShowResponse;
 import com.smartdevicelink.proxy.rpc.TextField;
@@ -24,6 +25,7 @@ import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,10 +33,12 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -80,6 +84,7 @@ public class TextAndGraphicUpdateOperationTest {
             RPCRequest message = (RPCRequest) args[0];
             if (message instanceof Show) {
                 int correlationId = message.getCorrelationID();
+                textAndGraphicUpdateOperation.cancelTask();
                 ShowResponse showResponse = new ShowResponse();
                 showResponse.setSuccess(true);
                 message.getOnRPCResponseListener().onResponse(correlationId, showResponse);
@@ -109,9 +114,9 @@ public class TextAndGraphicUpdateOperationTest {
         fileManager = mock(FileManager.class);
         setUpCompletionListener();
         textField1 = "It is";
-        textField2 = "wednesday";
-        textField3 = "my";
-        textField4 = "dudes";
+        textField2 = "Wednesday";
+        textField3 = "My";
+        textField4 = "Dudes";
         mediaTrackField = "dudes";
         title = "dudes";
 
@@ -231,13 +236,6 @@ public class TextAndGraphicUpdateOperationTest {
     @Test
     public void testUpload() {
         doAnswer(onShowSuccess).when(internalInterface).sendRPC(any(Show.class));
-      //  doAnswer(onImageUploadSuccess).when(fileManager).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
-    //    doAnswer(onHasUploadedFile).when(fileManager).hasUploadedFile(any(SdlFile.class));
-
-       // when(fileManager.hasUploadedFile(any(SdlFile.class))).thenReturn(true);
-        // verify(fileManager.uploadArtwork(any(List.class), any(MultipleFileCompletionListener.class)),1)
-//        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getMetadataTags().getMainField1(), textField1Type);
-
 
         // Test Images need to be uploaded, sending text and uploading images
         textAndGraphicUpdateOperation.onExecute();
@@ -311,5 +309,538 @@ public class TextAndGraphicUpdateOperationTest {
         textAndGraphicUpdateOperation.defaultMainWindowCapability = getWindowCapability(3);
         assertEquals(ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(textAndGraphicUpdateOperation.defaultMainWindowCapability), 3);
     }
+
+
+    @Test
+    public void testAssemble1Line(){
+
+        Show inputShow = new Show();
+
+        TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField1, null, null, null,
+                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, MetadataType.HUMIDITY, null, null, null);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(1), currentScreenData, textsAndGraphicsState, listener);
+
+        Show assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+        assertEquals(assembledShow.getMainField1(), "It is");
+
+        // test tags (just 1)
+        MetadataTags tags = assembledShow.getMetadataTags();
+        List<MetadataType> tagsList = new ArrayList<>();
+        tagsList.add(MetadataType.HUMIDITY);
+        assertEquals(tags.getMainField1(), tagsList);
+
+        textsAndGraphicsState.setTextField2(textField2);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(1), currentScreenData, textsAndGraphicsState, listener);
+
+        assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+        assertEquals(assembledShow.getMainField1(), "It is - Wednesday");
+
+        textsAndGraphicsState.setTextField3(textField3);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(1), currentScreenData, textsAndGraphicsState, listener);
+
+        assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+        assertEquals(assembledShow.getMainField1(), "It is - Wednesday - My");
+
+        textsAndGraphicsState.setTextField4(textField4);
+        textsAndGraphicsState.setTextField4Type(MetadataType.CURRENT_TEMPERATURE);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(1), currentScreenData, textsAndGraphicsState, listener);
+
+        assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+        assertEquals(assembledShow.getMainField1(), "It is - Wednesday - My - Dudes");
+
+        // test tags
+        tags = assembledShow.getMetadataTags();
+        tagsList = new ArrayList<>();
+        tagsList.add(MetadataType.HUMIDITY);
+        tagsList.add(MetadataType.CURRENT_TEMPERATURE);
+        assertEquals(tags.getMainField1(), tagsList);
+
+        // For some obscurity, lets try setting just fields 2 and 4 for a 1 line display
+        textsAndGraphicsState.setTextField1(null);
+        textsAndGraphicsState.setTextField3(null);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(1), currentScreenData, textsAndGraphicsState, listener);
+
+
+        assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+        assertEquals(assembledShow.getMainField1(), "Wednesday - Dudes");
+    }
+
+    @Test
+    public void testAssemble2Lines() {
+
+        Show inputShow = new Show();
+        defaultMainWindowCapability = getWindowCapability(2);
+
+        // Force it to return display with support for only 2 lines of text
+        TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField1, null, null, null,
+                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, MetadataType.HUMIDITY, null, null, null);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+
+        Show assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+        assertEquals(assembledShow.getMainField1(), "It is");
+
+        // test tags
+        MetadataTags tags = assembledShow.getMetadataTags();
+        List<MetadataType> tagsList = new ArrayList<>();
+        tagsList.add(MetadataType.HUMIDITY);
+        assertEquals(tags.getMainField1(), tagsList);
+
+        textsAndGraphicsState.setTextField2(textField2);
+        textsAndGraphicsState.setTextField2Type(MetadataType.CURRENT_TEMPERATURE);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+
+        assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+        assertEquals(assembledShow.getMainField1(), "It is");
+        assertEquals(assembledShow.getMainField2(), "Wednesday");
+
+        // test tags
+        tags = assembledShow.getMetadataTags();
+        tagsList = new ArrayList<>();
+        List<MetadataType> tagsList2 = new ArrayList<>();
+        tagsList.add(MetadataType.HUMIDITY);
+        tagsList2.add(MetadataType.CURRENT_TEMPERATURE);
+        assertEquals(tags.getMainField1(), tagsList);
+        assertEquals(tags.getMainField2(), tagsList2);
+
+        textsAndGraphicsState.setTextField3(textField3);
+        textsAndGraphicsState.setTextField3Type(MetadataType.MEDIA_ALBUM);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(2), currentScreenData, textsAndGraphicsState, listener);
+
+        assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+        assertEquals(assembledShow.getMainField1(), "It is - Wednesday");
+        assertEquals(assembledShow.getMainField2(), "My");
+
+        // test tags
+        tags = assembledShow.getMetadataTags();
+        tagsList = new ArrayList<>();
+        tagsList2 = new ArrayList<>();
+        tagsList.add(MetadataType.CURRENT_TEMPERATURE);
+        tagsList.add(MetadataType.HUMIDITY);
+        tagsList2.add(MetadataType.MEDIA_ALBUM);
+        assertEquals(tags.getMainField1(), tagsList);
+        assertEquals(tags.getMainField2(), tagsList2);
+
+        textsAndGraphicsState.setTextField4(textField4);
+        textsAndGraphicsState.setTextField4Type(MetadataType.MEDIA_STATION);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(2), currentScreenData, textsAndGraphicsState, listener);
+
+        assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+        assertEquals(assembledShow.getMainField1(), "It is - Wednesday");
+        assertEquals(assembledShow.getMainField2(), "My - Dudes");
+
+        // test tags
+        tags = assembledShow.getMetadataTags();
+        tagsList = new ArrayList<>();
+        tagsList2 = new ArrayList<>();
+        tagsList.add(MetadataType.CURRENT_TEMPERATURE);
+        tagsList.add(MetadataType.HUMIDITY);
+        tagsList2.add(MetadataType.MEDIA_STATION);
+        tagsList2.add(MetadataType.MEDIA_ALBUM);
+        assertEquals(tags.getMainField1(), tagsList);
+        assertEquals(tags.getMainField2(), tagsList2);
+
+        // For some obscurity, lets try setting just fields 2 and 4 for a 2 line display
+        textsAndGraphicsState.setTextField1(null);
+        textsAndGraphicsState.setTextField3(null);
+        textsAndGraphicsState.setTextField1Type(null);
+        textsAndGraphicsState.setTextField3Type(null);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(2), currentScreenData, textsAndGraphicsState, listener);
+
+        assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+        assertEquals(assembledShow.getMainField1(), "Wednesday");
+        assertEquals(assembledShow.getMainField2(), "Dudes");
+
+        // And 3 fields without setting 1
+        textsAndGraphicsState.setTextField3(textField3);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(2), currentScreenData, textsAndGraphicsState, listener);
+
+        assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+        assertEquals(assembledShow.getMainField1(), "Wednesday");
+        assertEquals(assembledShow.getMainField2(), "My - Dudes");
+
+        // test tags
+        tags = assembledShow.getMetadataTags();
+        tagsList = new ArrayList<>();
+        tagsList2 = new ArrayList<>();
+        tagsList.add(MetadataType.CURRENT_TEMPERATURE);
+        tagsList2.add(MetadataType.MEDIA_STATION);
+        assertEquals(tags.getMainField1(), tagsList);
+        assertEquals(tags.getMainField2(), tagsList2);
+    }
+
+    @Test
+    public void testAssemble3Lines() {
+
+        Show inputShow = new Show();
+
+        // Force it to return display with support for only 3 lines of text
+        defaultMainWindowCapability = getWindowCapability(3);
+        TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField1, null, null, null,
+                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, MetadataType.HUMIDITY, null, null, null);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+
+        Show assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+        assertEquals(assembledShow.getMainField1(), "It is");
+        assertEquals(assembledShow.getMainField2(), "");
+        assertEquals(assembledShow.getMainField3(), "");
+
+        // test tags
+        MetadataTags tags = assembledShow.getMetadataTags();
+        List<MetadataType> tagsList = new ArrayList<>();
+        tagsList.add(MetadataType.HUMIDITY);
+        assertEquals(tags.getMainField1(), tagsList);
+
+        textsAndGraphicsState.setTextField2(textField2);
+        textsAndGraphicsState.setTextField2Type(MetadataType.CURRENT_TEMPERATURE);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+
+        assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+        assertEquals(assembledShow.getMainField1(), "It is");
+        assertEquals(assembledShow.getMainField2(), "Wednesday");
+        assertEquals(assembledShow.getMainField3(), "");
+
+        // test tags
+        tags = assembledShow.getMetadataTags();
+        tagsList = new ArrayList<>();
+        List<MetadataType> tagsList2 = new ArrayList<>();
+        tagsList.add(MetadataType.HUMIDITY);
+        tagsList2.add(MetadataType.CURRENT_TEMPERATURE);
+        assertEquals(tags.getMainField1(), tagsList);
+        assertEquals(tags.getMainField2(), tagsList2);
+
+        textsAndGraphicsState.setTextField3(textField3);
+        textsAndGraphicsState.setTextField3Type(MetadataType.MEDIA_ALBUM);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+
+        assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+        assertEquals(assembledShow.getMainField1(), "It is");
+        assertEquals(assembledShow.getMainField2(), "Wednesday");
+        assertEquals(assembledShow.getMainField3(), "My");
+
+        // test tags
+        tags = assembledShow.getMetadataTags();
+        tagsList = new ArrayList<>();
+        tagsList2 = new ArrayList<>();
+        List<MetadataType> tagsList3 = new ArrayList<>();
+        tagsList.add(MetadataType.HUMIDITY);
+        tagsList2.add(MetadataType.CURRENT_TEMPERATURE);
+        tagsList3.add(MetadataType.MEDIA_ALBUM);
+        assertEquals(tags.getMainField1(), tagsList);
+        assertEquals(tags.getMainField2(), tagsList2);
+        assertEquals(tags.getMainField3(), tagsList3);
+
+        textsAndGraphicsState.setTextField4(textField4);
+        textsAndGraphicsState.setTextField4Type(MetadataType.MEDIA_STATION);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager,defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+
+        assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+        assertEquals(assembledShow.getMainField1(), "It is");
+        assertEquals(assembledShow.getMainField2(), "Wednesday");
+        assertEquals(assembledShow.getMainField3(), "My - Dudes");
+
+        // test tags
+        tags = assembledShow.getMetadataTags();
+        tagsList = new ArrayList<>();
+        tagsList2 = new ArrayList<>();
+        tagsList3 = new ArrayList<>();
+        tagsList.add(MetadataType.HUMIDITY);
+        tagsList2.add(MetadataType.CURRENT_TEMPERATURE);
+        tagsList3.add(MetadataType.MEDIA_ALBUM);
+        tagsList3.add(MetadataType.MEDIA_STATION);
+        assertEquals(tags.getMainField1(), tagsList);
+        assertEquals(tags.getMainField2(), tagsList2);
+        assertEquals(tags.getMainField3(), tagsList3);
+
+        // Someone might not want to set the fields in order? We should handle that
+        textsAndGraphicsState.setTextField1(null);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+
+        assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+        try {
+            System.out.println(assembledShow.serializeJSON().toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        assertEquals(assembledShow.getMainField2(), "Wednesday");
+        assertEquals(assembledShow.getMainField3(), "My - Dudes");
+    }
+
+    @Test
+    public void testAssemble4Lines() {
+
+        Show inputShow = new Show();
+
+        defaultMainWindowCapability = getWindowCapability(4);
+        TextField tx1 = new TextField();
+        TextField tx2 = new TextField();
+        TextField tx3 = new TextField();
+        TextField tx4 = new TextField();
+        TextField tx5 = new TextField();
+        TextField tx6 = new TextField();
+
+        tx1.setName(TextFieldName.mainField1);
+        tx2.setName(TextFieldName.mainField2);
+        tx3.setName(TextFieldName.mainField3);
+        tx4.setName(TextFieldName.mainField4);
+        tx5.setName(TextFieldName.mediaTrack);
+        tx6.setName(TextFieldName.templateTitle);
+
+        List<TextField> textFieldNames = Arrays.asList(tx1,tx2,tx3,tx4,tx5,tx6);
+        defaultMainWindowCapability.setTextFields(textFieldNames);
+
+        TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField1, null, null, null,
+                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, MetadataType.HUMIDITY, null, null, null);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+        textsAndGraphicsState.setMediaTrackTextField("HI");
+        textsAndGraphicsState.setTitle("bye");
+
+        // Force it to return display with support for only 4 lines of text
+        Show assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+
+        assertEquals(assembledShow.getMainField1(), "It is");
+        assertEquals(assembledShow.getMainField2(), "");
+        assertEquals(assembledShow.getMainField3(), "");
+        assertEquals(assembledShow.getMainField4(), "");
+        assertEquals(assembledShow.getMediaTrack(), "HI");
+        assertEquals(assembledShow.getTemplateTitle(), "bye");
+
+        // test tags
+        MetadataTags tags = assembledShow.getMetadataTags();
+        List<MetadataType> tagsList = new ArrayList<>();
+        tagsList.add(MetadataType.HUMIDITY);
+        assertEquals(tags.getMainField1(), tagsList);
+
+        textsAndGraphicsState.setTextField2("Wednesday");
+        textsAndGraphicsState.setTextField2Type(MetadataType.CURRENT_TEMPERATURE);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+
+
+        assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+        assertEquals(assembledShow.getMainField1(), "It is");
+        assertEquals(assembledShow.getMainField2(), "Wednesday");
+        assertEquals(assembledShow.getMainField3(), "");
+        assertEquals(assembledShow.getMainField4(), "");
+
+        // test tags
+        tags = assembledShow.getMetadataTags();
+        tagsList = new ArrayList<>();
+        List<MetadataType> tagsList2 = new ArrayList<>();
+        tagsList.add(MetadataType.HUMIDITY);
+        tagsList2.add(MetadataType.CURRENT_TEMPERATURE);
+        assertEquals(tags.getMainField1(), tagsList);
+        assertEquals(tags.getMainField2(), tagsList2);
+
+        textsAndGraphicsState.setTextField3("My");
+        textsAndGraphicsState.setTextField3Type(MetadataType.MEDIA_ALBUM);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+
+        assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+        assertEquals(assembledShow.getMainField1(), "It is");
+        assertEquals(assembledShow.getMainField2(), "Wednesday");
+        assertEquals(assembledShow.getMainField3(), "My");
+        assertEquals(assembledShow.getMainField4(), "");
+
+        // test tags
+        tags = assembledShow.getMetadataTags();
+        tagsList = new ArrayList<>();
+        tagsList2 = new ArrayList<>();
+        List<MetadataType> tagsList3 = new ArrayList<>();
+        tagsList.add(MetadataType.HUMIDITY);
+        tagsList2.add(MetadataType.CURRENT_TEMPERATURE);
+        tagsList3.add(MetadataType.MEDIA_ALBUM);
+        assertEquals(tags.getMainField1(), tagsList);
+        assertEquals(tags.getMainField2(), tagsList2);
+        assertEquals(tags.getMainField3(), tagsList3);
+
+        textsAndGraphicsState.setTextField4("Dudes");
+        textsAndGraphicsState.setTextField4Type(MetadataType.MEDIA_STATION);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+
+        assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+        assertEquals(assembledShow.getMainField1(), "It is");
+        assertEquals(assembledShow.getMainField2(), "Wednesday");
+        assertEquals(assembledShow.getMainField3(), "My");
+        assertEquals(assembledShow.getMainField4(), "Dudes");
+
+        // test tags
+        tags = assembledShow.getMetadataTags();
+        tagsList = new ArrayList<>();
+        tagsList2 = new ArrayList<>();
+        tagsList3 = new ArrayList<>();
+        List<MetadataType> tagsList4 = new ArrayList<>();
+        tagsList.add(MetadataType.HUMIDITY);
+        tagsList2.add(MetadataType.CURRENT_TEMPERATURE);
+        tagsList3.add(MetadataType.MEDIA_ALBUM);
+        tagsList4.add(MetadataType.MEDIA_STATION);
+        assertEquals(tags.getMainField1(), tagsList);
+        assertEquals(tags.getMainField2(), tagsList2);
+        assertEquals(tags.getMainField3(), tagsList3);
+        assertEquals(tags.getMainField4(), tagsList4);
+
+        // try just setting line 1 and 4
+        textsAndGraphicsState.setTextField2(null);
+        textsAndGraphicsState.setTextField3(null);
+        textsAndGraphicsState.setTextField2Type(null);
+        textsAndGraphicsState.setTextField3Type(null);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+
+        assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+        assertEquals(assembledShow.getMainField1(), "It is");
+        assertEquals(assembledShow.getMainField2(), "");
+        assertEquals(assembledShow.getMainField3(), "");
+        assertEquals(assembledShow.getMainField4(), "Dudes");
+
+        // test tags
+        tags = assembledShow.getMetadataTags();
+        tagsList = new ArrayList<>();
+        tagsList4 = new ArrayList<>();
+        tagsList.add(MetadataType.HUMIDITY);
+        tagsList4.add(MetadataType.MEDIA_STATION);
+        assertEquals(tags.getMainField1(), tagsList);
+        assertEquals(tags.getMainField4(), tagsList4);
+    }
+
+	/**
+     * Testing if WindowCapability is null, TextFields should still update.
+     */
+    @Test
+    public void testAssemble4LinesNullWindowCapability() {
+
+        Show inputShow = new Show();
+
+        TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField1, null, null, null,
+                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, MetadataType.HUMIDITY, null, null, null);
+
+        textsAndGraphicsState.setMediaTrackTextField("HI");
+        textsAndGraphicsState.setTitle("bye");
+
+        textsAndGraphicsState.setTextField1("It is");
+        textsAndGraphicsState.setTextField1Type(MetadataType.HUMIDITY);
+
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, null, currentScreenData, textsAndGraphicsState, listener);
+
+        Show assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+
+        assertEquals(assembledShow.getMainField1(), "It is");
+        assertEquals(assembledShow.getMainField2(), "");
+        assertEquals(assembledShow.getMainField3(), "");
+        assertEquals(assembledShow.getMainField4(), "");
+        assertEquals(assembledShow.getMediaTrack(), "HI");
+        assertEquals(assembledShow.getTemplateTitle(), "bye");
+
+        // test tags
+        MetadataTags tags = assembledShow.getMetadataTags();
+        List<MetadataType> tagsList = new ArrayList<>();
+        tagsList.add(MetadataType.HUMIDITY);
+        assertEquals(tags.getMainField1(), tagsList);
+
+        textsAndGraphicsState.setTextField2("Wednesday");
+        textsAndGraphicsState.setTextField2Type(MetadataType.CURRENT_TEMPERATURE);
+
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, null, currentScreenData, textsAndGraphicsState, listener);
+
+        assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+        assertEquals(assembledShow.getMainField1(), "It is");
+        assertEquals(assembledShow.getMainField2(), "Wednesday");
+        assertEquals(assembledShow.getMainField3(), "");
+        assertEquals(assembledShow.getMainField4(), "");
+
+        // test tags
+        tags = assembledShow.getMetadataTags();
+        tagsList = new ArrayList<>();
+        List<MetadataType> tagsList2 = new ArrayList<>();
+        tagsList.add(MetadataType.HUMIDITY);
+        tagsList2.add(MetadataType.CURRENT_TEMPERATURE);
+        assertEquals(tags.getMainField1(), tagsList);
+        assertEquals(tags.getMainField2(), tagsList2);
+
+        textsAndGraphicsState.setTextField3("My");
+        textsAndGraphicsState.setTextField3Type(MetadataType.MEDIA_ALBUM);
+
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, null, currentScreenData, textsAndGraphicsState, listener);
+
+        assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+        assertEquals(assembledShow.getMainField1(), "It is");
+        assertEquals(assembledShow.getMainField2(), "Wednesday");
+        assertEquals(assembledShow.getMainField3(), "My");
+        assertEquals(assembledShow.getMainField4(), "");
+
+        // test tags
+        tags = assembledShow.getMetadataTags();
+        tagsList = new ArrayList<>();
+        tagsList2 = new ArrayList<>();
+        List<MetadataType> tagsList3 = new ArrayList<>();
+        tagsList.add(MetadataType.HUMIDITY);
+        tagsList2.add(MetadataType.CURRENT_TEMPERATURE);
+        tagsList3.add(MetadataType.MEDIA_ALBUM);
+        assertEquals(tags.getMainField1(), tagsList);
+        assertEquals(tags.getMainField2(), tagsList2);
+        assertEquals(tags.getMainField3(), tagsList3);
+
+        textsAndGraphicsState.setTextField4("Dudes");
+        textsAndGraphicsState.setTextField4Type(MetadataType.MEDIA_STATION);
+
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, null, currentScreenData, textsAndGraphicsState, listener);
+
+        assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+        assertEquals(assembledShow.getMainField1(), "It is");
+        assertEquals(assembledShow.getMainField2(), "Wednesday");
+        assertEquals(assembledShow.getMainField3(), "My");
+        assertEquals(assembledShow.getMainField4(), "Dudes");
+
+        // test tags
+        tags = assembledShow.getMetadataTags();
+        tagsList = new ArrayList<>();
+        tagsList2 = new ArrayList<>();
+        tagsList3 = new ArrayList<>();
+        List<MetadataType> tagsList4 = new ArrayList<>();
+        tagsList.add(MetadataType.HUMIDITY);
+        tagsList2.add(MetadataType.CURRENT_TEMPERATURE);
+        tagsList3.add(MetadataType.MEDIA_ALBUM);
+        tagsList4.add(MetadataType.MEDIA_STATION);
+        assertEquals(tags.getMainField1(), tagsList);
+        assertEquals(tags.getMainField2(), tagsList2);
+        assertEquals(tags.getMainField3(), tagsList3);
+        assertEquals(tags.getMainField4(), tagsList4);
+
+        // try just setting line 1 and 4
+        textsAndGraphicsState.setTextField2(null);
+        textsAndGraphicsState.setTextField3(null);
+        textsAndGraphicsState.setTextField2Type(null);
+        textsAndGraphicsState.setTextField3Type(null);
+
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, null, currentScreenData, textsAndGraphicsState, listener);
+
+        assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
+        assertEquals(assembledShow.getMainField1(), "It is");
+        assertEquals(assembledShow.getMainField2(), "");
+        assertEquals(assembledShow.getMainField3(), "");
+        assertEquals(assembledShow.getMainField4(), "Dudes");
+
+        // test tags
+        tags = assembledShow.getMetadataTags();
+        tagsList = new ArrayList<>();
+        tagsList4 = new ArrayList<>();
+        tagsList.add(MetadataType.HUMIDITY);
+        tagsList4.add(MetadataType.MEDIA_STATION);
+        assertEquals(tags.getMainField1(), tagsList);
+        assertEquals(tags.getMainField4(), tagsList4);
+    }
+
+    @Test
+	public void testExtractTextFromShow(){
+		Show mainShow = new Show();
+		mainShow.setMainField1("test");
+		mainShow.setMainField3("Sauce");
+		mainShow.setMainField4("");
+
+		Show newShow = textAndGraphicUpdateOperation.extractTextFromShow(mainShow);
+
+		assertEquals(newShow.getMainField1(), "test");
+		assertEquals(newShow.getMainField3(), "Sauce");
+		assertEquals(newShow.getMainField4(), "");
+		assertNull(newShow.getMainField2());
+	}
 
 }
