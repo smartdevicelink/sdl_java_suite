@@ -33,7 +33,6 @@ package com.smartdevicelink.proxy.rpc.listeners;
 
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.rpc.enums.Result;
 
 public abstract class OnRPCResponseListener extends OnRPCListener {
 

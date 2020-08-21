@@ -1,6 +1,7 @@
 package com.smartdevicelink.managers;
 
 import android.content.Context;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.livio.taskmaster.Taskmaster;
@@ -18,7 +19,6 @@ import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
-import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.test.TestValues;

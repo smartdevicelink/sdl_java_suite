@@ -32,7 +32,6 @@
 package com.smartdevicelink.proxy.rpc.listeners;
 
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.rpc.enums.Result;
 
 import java.util.Vector;
 
