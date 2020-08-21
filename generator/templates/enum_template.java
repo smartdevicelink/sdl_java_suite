@@ -10,8 +10,8 @@ public enum {{class_name}} {
      {%- endfor %}{% endif -%}
      {%- if param.description is defined and (param.since is defined or param.see is defined) %}
      *
-     {%- endif %}{% set see, deprecated, since, history, spacing = param.see, param.deprecated, param.since, param.history, '    ' %}
-     {%- include "javadoc_added_deprecated.java" %}
+     {%- endif %}{% set see, deprecated, since, history, spacing, prefix = param.see, param.deprecated, param.since, param.history, '    ', ' * ' %}
+     {%- include "javadoc_version_info.java" %}
      */
     {%- endif %}
     {%- if param.deprecated is defined %}

@@ -3,15 +3,15 @@
 {{spacing}}{{begin}}
 {%- endif %}
 {%- if deprecated is defined and deprecated is not none %}
-{{spacing}} * @since SmartDeviceLink {{history[0].since}}
-{{spacing}} * @deprecated in SmartDeviceLink {{since}}
+{{spacing}}{{prefix}}@since SmartDeviceLink {{history[0].since}}
+{{spacing}}{{prefix}}@deprecated in SmartDeviceLink {{since}}
 {%- elif history is defined and history is not none %}
-{{spacing}} * @since SmartDeviceLink {{history[0].since}}
+{{spacing}}{{prefix}}@since SmartDeviceLink {{history[0].since}}
 {%- else %}
-{{spacing}} * @since SmartDeviceLink {{since}}
+{{spacing}}{{prefix}}@since SmartDeviceLink {{since}}
 {%- endif %}
 {%- if see is defined %}
-{{spacing}} * @see {{see}}
+{{spacing}}{{prefix}}@see {{see}}
 {%- endif %}
 {%- if end is defined %}
 {{spacing}} {{end}}

@@ -70,8 +70,8 @@ import {{i}};{{ '\n' if loop.last }}
  {%- endif %}
  {%- if description is defined and (see is defined or since is defined) %}
  *
- {%- endif %}
- {%- include "javadoc_added_deprecated.java" %}
+ {%- endif %}{% set prefix = ' * ' %}
+ {%- include "javadoc_version_info.java" %}
  */
 {%- endif %}
 {%- if deprecated is not none %}
