@@ -3,12 +3,12 @@
 {{spacing}}{{begin}}
 {%- endif %}
 {%- if deprecated is defined and deprecated is not none %}
-{{spacing}} * @since in SmartDeviceLink {{history[0].since}}
+{{spacing}} * @since SmartDeviceLink {{history[0].since}}
 {{spacing}} * @deprecated in SmartDeviceLink {{since}}
 {%- elif history is defined and history is not none %}
-{{spacing}} * @since in SmartDeviceLink {{history[0].since}}
+{{spacing}} * @since SmartDeviceLink {{history[0].since}}
 {%- else %}
-{{spacing}} * @since in SmartDeviceLink {{since}}
+{{spacing}} * @since SmartDeviceLink {{since}}
 {%- endif %}
 {%- if see is defined %}
 {{spacing}} * @see {{see}}
