@@ -29,7 +29,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.smartdevicelink.proxy.interfaces;
+package com.smartdevicelink.managers.lifecycle;
 
 public interface OnSystemCapabilityListener {
 	void onCapabilityRetrieved(Object capability);

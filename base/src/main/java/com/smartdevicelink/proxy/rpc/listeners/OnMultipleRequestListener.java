@@ -32,7 +32,6 @@
 package com.smartdevicelink.proxy.rpc.listeners;
 
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.rpc.enums.Result;
 
 import java.util.Vector;
 
@@ -43,7 +42,6 @@ public abstract class OnMultipleRequestListener extends OnRPCResponseListener {
 
 	final Vector<Integer> correlationIds;
 	OnRPCResponseListener rpcResponseListener;
-	private static String TAG = "OnMultipleRequestListener";
 
 	public OnMultipleRequestListener(){
 		setListenerType(UPDATE_LISTENER_TYPE_MULTIPLE_REQUESTS);
@@ -53,17 +51,6 @@ public abstract class OnMultipleRequestListener extends OnRPCResponseListener {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
 				OnMultipleRequestListener.this.onResponse(correlationId, response);
-				update(correlationId);
-			}
-
-			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-				super.onError(correlationId, resultCode, info);
-				OnMultipleRequestListener.this.onError(correlationId, resultCode, info);
-				update(correlationId);
-			}
-
-			private synchronized void update(int correlationId){
 				correlationIds.remove(Integer.valueOf(correlationId));
 				onUpdate(correlationIds.size());
 				if(correlationIds.size() == 0){
@@ -82,7 +69,6 @@ public abstract class OnMultipleRequestListener extends OnRPCResponseListener {
 	 */
 	public abstract void onUpdate(int remainingRequests);
 	public abstract void onFinished();
-	public abstract void onError(int correlationId, Result resultCode, String info);
 
 	public OnRPCResponseListener getSingleRpcResponseListener(){
 		return rpcResponseListener;

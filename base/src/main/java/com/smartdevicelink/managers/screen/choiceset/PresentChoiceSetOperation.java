@@ -159,14 +159,6 @@ class PresentChoiceSetOperation extends Task {
 				}
 				DebugTool.logInfo(TAG, "Success Setting keyboard properties in present choice set operation");
 			}
-
-			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-				if (listener != null){
-					listener.onComplete(false);
-				}
-				DebugTool.logError(TAG, "Error Setting keyboard properties in present keyboard operation - choice manager - " + info);
-			}
 		});
 		if (internalInterface.get() != null){
 			internalInterface.get().sendRPC(setGlobalProperties);
@@ -187,6 +179,7 @@ class PresentChoiceSetOperation extends Task {
 						choiceSetSelectionListener.onError(response.getInfo());
 					}
 					finishOperation();
+					return;
 				}
 
 				PerformInteractionResponse performInteractionResponse = (PerformInteractionResponse) response;
@@ -197,16 +190,6 @@ class PresentChoiceSetOperation extends Task {
 					choiceSetSelectionListener.onChoiceSelected(selectedCell, selectedTriggerSource, selectedCellRow);
 				}
 
-				finishOperation();
-			}
-
-			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-				DebugTool.logError(TAG, "Presenting Choice set failed: " + resultCode + ", " + info);
-
-				if (choiceSetSelectionListener != null){
-					choiceSetSelectionListener.onError(resultCode + ", " + info);
-				}
 				finishOperation();
 			}
 		});
@@ -225,14 +208,12 @@ class PresentChoiceSetOperation extends Task {
 			setGlobalProperties.setOnRPCResponseListener(new OnRPCResponseListener() {
 				@Override
 				public void onResponse(int correlationId, RPCResponse response) {
-					updatedKeyboardProperties = false;
-					DebugTool.logInfo(TAG, "Successfully reset choice keyboard properties to original config");
-					PresentChoiceSetOperation.super.onFinished();
-				}
-
-				@Override
-				public void onError(int correlationId, Result resultCode, String info) {
-					DebugTool.logError(TAG, "Failed to reset choice keyboard properties to original config " + resultCode + ", " + info);
+					if (response.getSuccess()) {
+						updatedKeyboardProperties = false;
+						DebugTool.logInfo(TAG, "Successfully reset choice keyboard properties to original config");
+					} else {
+						DebugTool.logError(TAG, "Failed to reset choice keyboard properties to original config " + response.getResultCode() + ", " + response.getInfo());
+					}
 					PresentChoiceSetOperation.super.onFinished();
 				}
 			});
@@ -271,11 +252,6 @@ class PresentChoiceSetOperation extends Task {
 				@Override
 				public void onResponse(int correlationId, RPCResponse response) {
 					DebugTool.logInfo(TAG, "Canceled the presented choice set " + ((response.getResultCode() == Result.SUCCESS) ? "successfully" : "unsuccessfully"));
-				}
-
-				@Override
-				public void onError(int correlationId, Result resultCode, String info){
-					DebugTool.logError(TAG, "Error canceling the presented choice set " + resultCode + " " + info);
 				}
 			});
 

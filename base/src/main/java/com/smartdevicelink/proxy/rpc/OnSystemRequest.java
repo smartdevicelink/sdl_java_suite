@@ -206,9 +206,9 @@ public class OnSystemRequest extends RPCNotification {
         String result = null;
         
         try{
-            result = httpJson.getString("body");
+            result = httpJson.getString(KEY_BODY);
         }catch(JSONException e){
-            DebugTool.logError(TAG, "\"body\" key doesn't exist in bulk data.");
+            DebugTool.logError(TAG, KEY_BODY + " key doesn't exist in bulk data.");
             e.printStackTrace();
         }
         
@@ -219,25 +219,15 @@ public class OnSystemRequest extends RPCNotification {
         Headers result = null;
         
         try{
-            JSONObject httpHeadersJson = httpJson.getJSONObject("headers");
+            JSONObject httpHeadersJson = httpJson.getJSONObject(KEY_HEADERS);
             Hashtable<String, Object> httpHeadersHash = JsonRPCMarshaller.deserializeJSONObject(httpHeadersJson);
             result = new Headers(httpHeadersHash);
         }catch(JSONException e){
-            DebugTool.logError(TAG, "\"headers\" key doesn't exist in bulk data.");
+            DebugTool.logError(TAG, KEY_HEADERS + " key doesn't exist in bulk data.");
             e.printStackTrace();
         }
         
         return result;
-    }
-    
-    @Deprecated
-    public void setBinData(byte[] aptData) {
-        setBulkData(aptData);
-    }
-    
-    @Deprecated
-    public byte[] getBinData() {
-        return getBulkData();
     }
     
     @Override

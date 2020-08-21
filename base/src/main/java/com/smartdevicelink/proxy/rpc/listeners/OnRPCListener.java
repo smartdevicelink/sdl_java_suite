@@ -44,10 +44,7 @@ public abstract class OnRPCListener {
      * Generic listener type that will work for most RPCs
      */
     public final static int UPDATE_LISTENER_TYPE_BASE_RPC 		= 0;
-    /**
-     * Listener type specific to putfile
-     */
-    public final static int UPDATE_LISTENER_TYPE_PUT_FILE 		= 1;
+
     /**
      * Listener type specific to sendRequests and sendSequentialRequests
      */

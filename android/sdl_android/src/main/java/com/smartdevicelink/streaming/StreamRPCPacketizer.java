@@ -42,23 +42,18 @@ import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.SdlProxyBase;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
 import com.smartdevicelink.proxy.interfaces.IPutFileResponseListener;
-import com.smartdevicelink.proxy.rpc.OnStreamRPC;
 import com.smartdevicelink.proxy.rpc.PutFile;
 import com.smartdevicelink.proxy.rpc.PutFileResponse;
-import com.smartdevicelink.proxy.rpc.StreamRPCResponse;
-import com.smartdevicelink.proxy.rpc.enums.Result;
-import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
 import com.smartdevicelink.util.Version;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Hashtable;
 
 @Deprecated
 public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileResponseListener, Runnable{
 
 	private Integer iInitialCorrID = 0;
-	private Hashtable<Integer, OnStreamRPC> notificationList = new Hashtable<Integer, OnStreamRPC>();
+	//private Hashtable<Integer, OnStreamRPC> notificationList = new Hashtable<Integer, OnStreamRPC>();
 	private Thread thread = null;
 	private long lFileSize = 0;
 	private String sFileName;
@@ -68,7 +63,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
     private Object mPauseLock;
     private boolean mPaused;
     private boolean isRPCProtected = false;
-	private OnPutFileUpdateListener callBack;
+	//private OnPutFileUpdateListener callBack;
 
 	private Version rpcSpecVersion;
 
@@ -86,7 +81,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 			_proxy.addPutFileResponseListener(this);
 		}
 		if(_request.getFunctionName().equalsIgnoreCase(FunctionID.PUT_FILE.toString())){
-			callBack = ((PutFile)_request).getOnPutFileUpdateListener();
+			//callBack = ((PutFile)_request).getOnPutFileUpdateListener();
 		}
 	}
 
@@ -104,7 +99,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 			_proxy.addPutFileResponseListener(this);
 		}
 		if(_request.getFunctionName().equalsIgnoreCase(FunctionID.PUT_FILE.toString())){
-			callBack = ((PutFile)_request).getOnPutFileUpdateListener();
+			//callBack = ((PutFile)_request).getOnPutFileUpdateListener();
 		}
 	}
 
@@ -130,50 +125,50 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 
 	private void handleStreamSuccess(RPCResponse rpc, Long iSize)
 	{
-		StreamRPCResponse result = new StreamRPCResponse();
-		result.setSuccess(rpc.getSuccess());
-		result.setResultCode(rpc.getResultCode());
-		result.setInfo(rpc.getInfo());
-		result.setFileName(sFileName);
-		result.setFileSize(iSize);
-		result.setCorrelationID(iInitialCorrID);
-		if (_proxyListener != null)
-			_proxyListener.onStreamRPCResponse(result);
-		stop();
-		_proxy.remPutFileResponseListener(this);
-		return;	
+//		StreamRPCResponse result = new StreamRPCResponse();
+//		result.setSuccess(rpc.getSuccess());
+//		result.setResultCode(rpc.getResultCode());
+//		result.setInfo(rpc.getInfo());
+//		result.setFileName(sFileName);
+//		result.setFileSize(iSize);
+//		result.setCorrelationID(iInitialCorrID);
+//		if (_proxyListener != null)
+//			_proxyListener.onStreamRPCResponse(result);
+//		stop();
+//		_proxy.remPutFileResponseListener(this);
+//		return;
 	}
 	
 	private void handleStreamException(RPCResponse rpc, Exception e, String error)
 	{
-		StreamRPCResponse result = new StreamRPCResponse();
-		result.setFileName(sFileName);
-		result.setCorrelationID(iInitialCorrID);
-		if (rpc != null)
-		{
-			result.setSuccess(rpc.getSuccess());
-			result.setResultCode(rpc.getResultCode());
-			result.setInfo(rpc.getInfo());
-		}
-		else
-		{
-			result.setSuccess(false);
-			result.setResultCode(Result.GENERIC_ERROR);
-			String sException = "";
-			
-			if (e != null)
-				sException = sException + " " + e.toString();
-			
-			sException = sException + " " + error;
-			result.setInfo(sException);
-		}
-		if (_proxyListener != null)
-			_proxyListener.onStreamRPCResponse(result);		
-		if (e != null)
-			e.printStackTrace();
-		stop();
-		_proxy.remPutFileResponseListener(this);
-		return;
+//		StreamRPCResponse result = new StreamRPCResponse();
+//		result.setFileName(sFileName);
+//		result.setCorrelationID(iInitialCorrID);
+//		if (rpc != null)
+//		{
+//			result.setSuccess(rpc.getSuccess());
+//			result.setResultCode(rpc.getResultCode());
+//			result.setInfo(rpc.getInfo());
+//		}
+//		else
+//		{
+//			result.setSuccess(false);
+//			result.setResultCode(Result.GENERIC_ERROR);
+//			String sException = "";
+//
+//			if (e != null)
+//				sException = sException + " " + e.toString();
+//
+//			sException = sException + " " + error;
+//			result.setInfo(sException);
+//		}
+//		if (_proxyListener != null)
+//			_proxyListener.onStreamRPCResponse(result);
+//		if (e != null)
+//			e.printStackTrace();
+//		stop();
+//		_proxy.remPutFileResponseListener(this);
+//		return;
 	}
 
     @Override
@@ -195,7 +190,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 		int length;
 		byte[] msgBytes;
 		ProtocolMessage pm;
-		OnStreamRPC notification;
+		//OnStreamRPC notification;
 		
 		// Moves the current Thread into the background
 		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
@@ -217,7 +212,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 			}
 			Long iFileLength = msg.getLength();
 			
-			notificationList.clear();			
+			//notificationList.clear();
 			
 			//start reading from the stream at the given offset
 			long iSkipBytes = is.skip(iOffsetCounter);
@@ -226,9 +221,9 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 			{
 				handleStreamException(null,null," Error, PutFile offset invalid for file: " + sFileName);
 			}
-			if(callBack!=null){
-				callBack.onStart(_request.getCorrelationID(), lFileSize);
-			}
+//			if(callBack!=null){
+//				callBack.onStart(_request.getCorrelationID(), lFileSize);
+//			}
 			while (!Thread.interrupted()) {				
 			
 				synchronized (mPauseLock)
@@ -273,12 +268,12 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 					priorityCoefficient++;
 					pm.setPriorityCoefficient(priorityCoefficient);
 						
-					notification = new OnStreamRPC();
-					notification.setFileName(msg.getSdlFileName());
-					notification.setFileSize(iFileLength);										
-			        iOffsetCounter = iOffsetCounter + length;
-			        notification.setBytesComplete(iOffsetCounter);
-			        notificationList.put(msg.getCorrelationID(),notification);
+//					notification = new OnStreamRPC();
+//					notification.setFileName(msg.getSdlFileName());
+//					notification.setFileSize(iFileLength);
+//			        iOffsetCounter = iOffsetCounter + length;
+//			        notification.setBytesComplete(iOffsetCounter);
+//			        notificationList.put(msg.getCorrelationID(),notification);
 			        
 			        msg.setOffset(iOffsetCounter);
 					iCorrID = msg.getCorrelationID() + 1;
@@ -296,36 +291,36 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 	public void onPutFileResponse(PutFileResponse response) 
 	{	
 		
-		OnStreamRPC streamNote = notificationList.get(response.getCorrelationID());
-		if (streamNote == null) return;
-		
-		if (response.getSuccess())
-		{
-			if(callBack!=null){
-				callBack.onUpdate(response.getCorrelationID(), streamNote.getBytesComplete(), lFileSize);
-			}
-			if (_proxyListener != null){
-				_proxyListener.onOnStreamRPC(streamNote);
-			}
-			
-		}		
-		else
-		{
-			if(callBack!=null){
-				callBack.onError(response.getCorrelationID(), response.getResultCode(), response.getInfo());
-			}
-			handleStreamException(response, null, "");
-			
-		}		
-		
-		if (response.getSuccess() && streamNote.getBytesComplete().equals(streamNote.getFileSize()) )
-		{
-			if(callBack!=null){
-				callBack.onResponse(iInitialCorrID, response, streamNote.getBytesComplete());
-			}
-			handleStreamSuccess(response, streamNote.getBytesComplete());
-			
-		}
+//		OnStreamRPC streamNote = notificationList.get(response.getCorrelationID());
+//		if (streamNote == null) return;
+//
+//		if (response.getSuccess())
+//		{
+//			if(callBack!=null){
+//				callBack.onUpdate(response.getCorrelationID(), streamNote.getBytesComplete(), lFileSize);
+//			}
+//			if (_proxyListener != null){
+//				_proxyListener.onOnStreamRPC(streamNote);
+//			}
+//
+//		}
+//		else
+//		{
+//			if(callBack!=null){
+//				callBack.onError(response.getCorrelationID(), response.getResultCode(), response.getInfo());
+//			}
+//			handleStreamException(response, null, "");
+//
+//		}
+//
+//		if (response.getSuccess() && streamNote.getBytesComplete().equals(streamNote.getFileSize()) )
+//		{
+//			if(callBack!=null){
+//				callBack.onResponse(iInitialCorrID, response, streamNote.getBytesComplete());
+//			}
+//			handleStreamSuccess(response, streamNote.getBytesComplete());
+//
+//		}
 	}
 
 	@Override

@@ -36,8 +36,6 @@ import androidx.annotation.NonNull;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
-import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
-import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
 import java.util.Hashtable;
 import java.util.zip.CRC32;
@@ -389,20 +387,5 @@ public class PutFile extends RPCRequest {
 			return (Long) o;
 		}
 		return null;
-	}
-
-	@Override
-	public final void setOnRPCResponseListener(OnRPCResponseListener listener) {
-		super.setOnRPCResponseListener(listener);
-	}
-
-	@Deprecated
-	public void setOnPutFileUpdateListener(OnPutFileUpdateListener listener) {
-		super.setOnRPCResponseListener(listener); //We can use the same method because it get stored as a parent class
-	}
-
-	@Deprecated
-	public OnPutFileUpdateListener getOnPutFileUpdateListener() {
-		return (OnPutFileUpdateListener)getOnRPCResponseListener();
 	}
 }

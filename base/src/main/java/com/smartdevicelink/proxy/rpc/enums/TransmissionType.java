@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@
  * disclaimer in the documentation and/or other materials provided with the
  * distribution.
  *
- * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
- * software without specific prior written permission.
+ * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -29,37 +29,57 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.smartdevicelink.proxy.rpc;
+package com.smartdevicelink.proxy.rpc.enums;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCResponse;
+/**
+ * Type of transmission used in the vehicle.
+ *
+ * @since SmartDeviceLink 7.0.0
+ */
+public enum TransmissionType {
+    /**
+     * Manual transmission.
+     */
+    MANUAL,
+    /**
+     * Automatic transmission.
+     */
+    AUTOMATIC,
+    /**
+     * Semi automatic transmission.
+     */
+    SEMI_AUTOMATIC,
+    /**
+     * Dual clutch transmission.
+     */
+    DUAL_CLUTCH,
+    /**
+     * Continuously variable transmission(CVT).
+     */
+    CONTINUOUSLY_VARIABLE,
+    /**
+     * Infinitely variable transmission.
+     */
+    INFINITELY_VARIABLE,
+    /**
+     * Electric variable transmission.
+     */
+    ELECTRIC_VARIABLE,
+    /**
+     * Direct drive between engine and wheels.
+     */
+    DIRECT_DRIVE;
 
-import java.util.Hashtable;
-
-@Deprecated
-public class StreamRPCResponse extends RPCResponse {
-	public static final String KEY_FILENAME = "fileName";
-	public static final String KEY_FILESIZE = "fileSize";
-	
-    public StreamRPCResponse() {
-        super(FunctionID.STREAM_RPC.toString());
+    /**
+     * Convert String to TransmissionType
+     * @param value String
+     * @return TransmissionType
+     */
+    public static TransmissionType valueForString(String value) {
+        try {
+            return valueOf(value);
+        } catch (Exception e) {
+            return null;
+        }
     }
-    public StreamRPCResponse(Hashtable<String, Object> hash) {
-        super(hash);
-    }
-    
-	public void setFileName(String fileName) {
-		setParameters(KEY_FILENAME, fileName);
-	}
-	public String getFileName() {
-		return getString(KEY_FILENAME);
-	}
-	
-	public void setFileSize(Long fileSize) {
-		setParameters(KEY_FILESIZE, fileSize);
-	}
-	public Long getFileSize() {
-		return getLong(KEY_FILESIZE);
-	}		
-	
 }
