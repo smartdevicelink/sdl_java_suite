@@ -1,4 +1,4 @@
-package com.smartdevicelink.managers.file;
+package com.smartdevicelink.managers.file.filetypes;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
