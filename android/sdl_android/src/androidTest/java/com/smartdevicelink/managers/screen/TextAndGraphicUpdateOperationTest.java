@@ -59,6 +59,7 @@ public class TextAndGraphicUpdateOperationTest {
     private WindowCapability defaultMainWindowCapability;
     private Show currentScreenData;
     private CompletionListener listener;
+    private TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdatedListener;
     ISdl internalInterface;
     FileManager fileManager;
 
@@ -161,11 +162,18 @@ public class TextAndGraphicUpdateOperationTest {
         currentScreenData.setGraphic(testArtwork1.getImageRPC());
         currentScreenData.setSecondaryGraphic(testArtwork2.getImageRPC());
 
+        currentScreenDataUpdatedListener = new TextAndGraphicManager.CurrentScreenDataUpdatedListener() {
+            @Override
+            public void onUpdate(Show show) {
+
+            }
+        };
+
         defaultMainWindowCapability = getWindowCapability(4);
 
         TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField1, textField2, textField3, textField4,
                 mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
     }
 
 
@@ -250,14 +258,14 @@ public class TextAndGraphicUpdateOperationTest {
         when(fileManager.hasUploadedFile(any(SdlFile.class))).thenReturn(true);
         TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField11, textField2, textField3, textField4,
                 mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
         textAndGraphicUpdateOperation.onExecute();
         assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getMainField1(), textField11);
 
         //Test: If there are no images to update, just send the text
         TextsAndGraphicsState textsAndGraphicsStateNullImages = new TextsAndGraphicsState(textField1, textField2, textField3, textField4,
                 mediaTrackField, title, null, null, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsStateNullImages, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsStateNullImages, listener, currentScreenDataUpdatedListener);
         textAndGraphicUpdateOperation.onExecute();
         assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getMainField1(), textField1);
 
@@ -318,7 +326,7 @@ public class TextAndGraphicUpdateOperationTest {
 
         TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField1, null, null, null,
                 mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, MetadataType.HUMIDITY, null, null, null);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(1), currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(1), currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         Show assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
         assertEquals(assembledShow.getMainField1(), "It is");
@@ -330,20 +338,20 @@ public class TextAndGraphicUpdateOperationTest {
         assertEquals(tags.getMainField1(), tagsList);
 
         textsAndGraphicsState.setTextField2(textField2);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(1), currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(1), currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
         assertEquals(assembledShow.getMainField1(), "It is - Wednesday");
 
         textsAndGraphicsState.setTextField3(textField3);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(1), currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(1), currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
         assertEquals(assembledShow.getMainField1(), "It is - Wednesday - My");
 
         textsAndGraphicsState.setTextField4(textField4);
         textsAndGraphicsState.setTextField4Type(MetadataType.CURRENT_TEMPERATURE);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(1), currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(1), currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
         assertEquals(assembledShow.getMainField1(), "It is - Wednesday - My - Dudes");
@@ -358,7 +366,7 @@ public class TextAndGraphicUpdateOperationTest {
         // For some obscurity, lets try setting just fields 2 and 4 for a 1 line display
         textsAndGraphicsState.setTextField1(null);
         textsAndGraphicsState.setTextField3(null);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(1), currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(1), currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
 
         assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
@@ -374,7 +382,7 @@ public class TextAndGraphicUpdateOperationTest {
         // Force it to return display with support for only 2 lines of text
         TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField1, null, null, null,
                 mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, MetadataType.HUMIDITY, null, null, null);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         Show assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
         assertEquals(assembledShow.getMainField1(), "It is");
@@ -387,7 +395,7 @@ public class TextAndGraphicUpdateOperationTest {
 
         textsAndGraphicsState.setTextField2(textField2);
         textsAndGraphicsState.setTextField2Type(MetadataType.CURRENT_TEMPERATURE);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
         assertEquals(assembledShow.getMainField1(), "It is");
@@ -404,7 +412,7 @@ public class TextAndGraphicUpdateOperationTest {
 
         textsAndGraphicsState.setTextField3(textField3);
         textsAndGraphicsState.setTextField3Type(MetadataType.MEDIA_ALBUM);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(2), currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(2), currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
         assertEquals(assembledShow.getMainField1(), "It is - Wednesday");
@@ -422,7 +430,7 @@ public class TextAndGraphicUpdateOperationTest {
 
         textsAndGraphicsState.setTextField4(textField4);
         textsAndGraphicsState.setTextField4Type(MetadataType.MEDIA_STATION);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(2), currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(2), currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
         assertEquals(assembledShow.getMainField1(), "It is - Wednesday");
@@ -444,7 +452,7 @@ public class TextAndGraphicUpdateOperationTest {
         textsAndGraphicsState.setTextField3(null);
         textsAndGraphicsState.setTextField1Type(null);
         textsAndGraphicsState.setTextField3Type(null);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(2), currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(2), currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
         assertEquals(assembledShow.getMainField1(), "Wednesday");
@@ -452,7 +460,7 @@ public class TextAndGraphicUpdateOperationTest {
 
         // And 3 fields without setting 1
         textsAndGraphicsState.setTextField3(textField3);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(2), currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(2), currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
         assertEquals(assembledShow.getMainField1(), "Wednesday");
@@ -477,7 +485,7 @@ public class TextAndGraphicUpdateOperationTest {
         defaultMainWindowCapability = getWindowCapability(3);
         TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField1, null, null, null,
                 mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, MetadataType.HUMIDITY, null, null, null);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         Show assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
         assertEquals(assembledShow.getMainField1(), "It is");
@@ -492,7 +500,7 @@ public class TextAndGraphicUpdateOperationTest {
 
         textsAndGraphicsState.setTextField2(textField2);
         textsAndGraphicsState.setTextField2Type(MetadataType.CURRENT_TEMPERATURE);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
         assertEquals(assembledShow.getMainField1(), "It is");
@@ -510,7 +518,7 @@ public class TextAndGraphicUpdateOperationTest {
 
         textsAndGraphicsState.setTextField3(textField3);
         textsAndGraphicsState.setTextField3Type(MetadataType.MEDIA_ALBUM);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
         assertEquals(assembledShow.getMainField1(), "It is");
@@ -531,7 +539,7 @@ public class TextAndGraphicUpdateOperationTest {
 
         textsAndGraphicsState.setTextField4(textField4);
         textsAndGraphicsState.setTextField4Type(MetadataType.MEDIA_STATION);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
         assertEquals(assembledShow.getMainField1(), "It is");
@@ -553,7 +561,7 @@ public class TextAndGraphicUpdateOperationTest {
 
         // Someone might not want to set the fields in order? We should handle that
         textsAndGraphicsState.setTextField1(null);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
         try {
@@ -591,7 +599,7 @@ public class TextAndGraphicUpdateOperationTest {
 
         TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField1, null, null, null,
                 mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, MetadataType.HUMIDITY, null, null, null);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
         textsAndGraphicsState.setMediaTrackTextField("HI");
         textsAndGraphicsState.setTitle("bye");
 
@@ -613,7 +621,7 @@ public class TextAndGraphicUpdateOperationTest {
 
         textsAndGraphicsState.setTextField2("Wednesday");
         textsAndGraphicsState.setTextField2Type(MetadataType.CURRENT_TEMPERATURE);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
 
         assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
@@ -633,7 +641,7 @@ public class TextAndGraphicUpdateOperationTest {
 
         textsAndGraphicsState.setTextField3("My");
         textsAndGraphicsState.setTextField3Type(MetadataType.MEDIA_ALBUM);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
         assertEquals(assembledShow.getMainField1(), "It is");
@@ -655,7 +663,7 @@ public class TextAndGraphicUpdateOperationTest {
 
         textsAndGraphicsState.setTextField4("Dudes");
         textsAndGraphicsState.setTextField4Type(MetadataType.MEDIA_STATION);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
         assertEquals(assembledShow.getMainField1(), "It is");
@@ -683,7 +691,7 @@ public class TextAndGraphicUpdateOperationTest {
         textsAndGraphicsState.setTextField3(null);
         textsAndGraphicsState.setTextField2Type(null);
         textsAndGraphicsState.setTextField3Type(null);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
         assertEquals(assembledShow.getMainField1(), "It is");
@@ -718,7 +726,7 @@ public class TextAndGraphicUpdateOperationTest {
         textsAndGraphicsState.setTextField1("It is");
         textsAndGraphicsState.setTextField1Type(MetadataType.HUMIDITY);
 
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, null, currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, null, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         Show assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
 
@@ -738,7 +746,7 @@ public class TextAndGraphicUpdateOperationTest {
         textsAndGraphicsState.setTextField2("Wednesday");
         textsAndGraphicsState.setTextField2Type(MetadataType.CURRENT_TEMPERATURE);
 
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, null, currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, null, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
         assertEquals(assembledShow.getMainField1(), "It is");
@@ -758,7 +766,7 @@ public class TextAndGraphicUpdateOperationTest {
         textsAndGraphicsState.setTextField3("My");
         textsAndGraphicsState.setTextField3Type(MetadataType.MEDIA_ALBUM);
 
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, null, currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, null, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
         assertEquals(assembledShow.getMainField1(), "It is");
@@ -781,7 +789,7 @@ public class TextAndGraphicUpdateOperationTest {
         textsAndGraphicsState.setTextField4("Dudes");
         textsAndGraphicsState.setTextField4Type(MetadataType.MEDIA_STATION);
 
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, null, currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, null, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
         assertEquals(assembledShow.getMainField1(), "It is");
@@ -810,7 +818,7 @@ public class TextAndGraphicUpdateOperationTest {
         textsAndGraphicsState.setTextField2Type(null);
         textsAndGraphicsState.setTextField3Type(null);
 
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, null, currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, null, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
         assertEquals(assembledShow.getMainField1(), "It is");
@@ -853,7 +861,7 @@ public class TextAndGraphicUpdateOperationTest {
         when(fileManager.hasUploadedFile(any(SdlFile.class))).thenReturn(false);
         TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField1, textField2, textField3, textField4,
                 mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
         testShow = textAndGraphicUpdateOperation.createImageOnlyShowWithPrimaryArtwork(testArtwork1, testArtwork2);
         assertNull(testShow);
 
@@ -861,7 +869,7 @@ public class TextAndGraphicUpdateOperationTest {
         when(fileManager.hasUploadedFile(any(SdlFile.class))).thenReturn(true);
         textsAndGraphicsState = new TextsAndGraphicsState(textField1, textField2, textField3, textField4,
                 mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type);
-        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
         testShow = textAndGraphicUpdateOperation.createImageOnlyShowWithPrimaryArtwork(testArtwork1, testArtwork2);
         assertEquals(testShow.getGraphic(), testArtwork1.getImageRPC());
         assertEquals(testShow.getSecondaryGraphic(), testArtwork2.getImageRPC());
