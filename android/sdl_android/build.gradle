@@ -1,6 +1,4 @@
 apply plugin: 'com.android.library'
-import org.apache.tools.ant.taskdefs.condition.Os
-
 
 android {
     compileSdkVersion 29
@@ -48,13 +46,13 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:2.9.0'
+    testImplementation 'org.mockito:mockito-core:3.0.0'
+    androidTestImplementation 'org.mockito:mockito-core:3.0.0'
+    androidTestImplementation 'org.mockito:mockito-android:3.0.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'org.mockito:mockito-core:2.9.0'
-    androidTestImplementation 'org.mockito:mockito-android:2.9.0'
-    api 'androidx.annotation:annotation:1.0.0'
-    api 'androidx.lifecycle:lifecycle-extensions:2.0.0'
-    annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.0.0'
+    api 'androidx.annotation:annotation:1.1.0'
+    api 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.2.0'
 }
 
 buildscript {
@@ -63,7 +61,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
     }
 }
