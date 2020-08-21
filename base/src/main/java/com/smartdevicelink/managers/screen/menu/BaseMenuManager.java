@@ -36,14 +36,15 @@ import androidx.annotation.NonNull;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.AddCommand;
@@ -51,19 +52,17 @@ import com.smartdevicelink.proxy.rpc.AddSubMenu;
 import com.smartdevicelink.proxy.rpc.DeleteCommand;
 import com.smartdevicelink.proxy.rpc.DeleteSubMenu;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
-import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
-import com.smartdevicelink.proxy.rpc.ShowAppMenu;
 import com.smartdevicelink.proxy.rpc.SetGlobalProperties;
+import com.smartdevicelink.proxy.rpc.ShowAppMenu;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
-import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
@@ -285,11 +284,6 @@ abstract class BaseMenuManager extends BaseSubManager {
                     DebugTool.logError(TAG, "Open Main Menu Request Failed");
                 }
             }
-
-            @Override
-            public void onError(int correlationId, Result resultCode, String info){
-                DebugTool.logError(TAG, "Open Main Menu onError: "+ resultCode+ " | Info: "+ info);
-            }
         });
         internalInterface.sendRPC(showAppMenu);
         return true;
@@ -334,11 +328,6 @@ abstract class BaseMenuManager extends BaseSubManager {
                     DebugTool.logError(TAG, "Open Sub Menu Request Failed");
                 }
             }
-
-            @Override
-            public void onError(int correlationId, Result resultCode, String info){
-                DebugTool.logError(TAG, "Open Sub Menu onError: "+ resultCode+ " | Info: "+ info);
-            }
         });
 
         internalInterface.sendRPC(showAppMenu);
@@ -381,12 +370,9 @@ abstract class BaseMenuManager extends BaseSubManager {
 				public void onResponse(int correlationId, RPCResponse response) {
 					if (response.getSuccess()) {
 						DebugTool.logInfo(TAG, "Menu Configuration successfully set: " + menuConfiguration.toString());
+					} else {
+						DebugTool.logError(TAG, "onError: " + response.getResultCode() + " | Info: " + response.getInfo());
 					}
-				}
-
-				@Override
-				public void onError(int correlationId, Result resultCode, String info) {
-					DebugTool.logError(TAG, "onError: " + resultCode + " | Info: " + info);
 				}
 			});
 			internalInterface.sendRPC(setGlobalProperties);
@@ -1175,16 +1161,15 @@ abstract class BaseMenuManager extends BaseSubManager {
 			}
 
 			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-				DebugTool.logError(TAG, "Result: " + resultCode.toString() + " Info: " + info);
-			}
-
-			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
-				try {
-					DebugTool.logInfo(TAG, "Main Menu response: " + response.serializeJSON().toString());
-				} catch (JSONException e) {
-					e.printStackTrace();
+				if (response.getSuccess()) {
+					try {
+						DebugTool.logInfo(TAG, "Main Menu response: " + response.serializeJSON().toString());
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				} else {
+					DebugTool.logError(TAG, "Result: " + response.getResultCode() + " Info: " + response.getInfo());
 				}
 			}
 		});
@@ -1214,19 +1199,18 @@ abstract class BaseMenuManager extends BaseSubManager {
 			}
 
 			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-				DebugTool.logError(TAG, "Failed to send sub menu commands: "+ info);
-				if (listener != null){
-					listener.onComplete(false);
-				}
-			}
-
-			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
-				try {
-					DebugTool.logInfo(TAG, "Sub Menu response: "+ response.serializeJSON().toString());
-				} catch (JSONException e) {
-					e.printStackTrace();
+				if (response.getSuccess()) {
+					try {
+						DebugTool.logInfo(TAG, "Sub Menu response: " + response.serializeJSON().toString());
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				} else {
+					DebugTool.logError(TAG, "Failed to send sub menu commands: "+ response.getInfo());
+					if (listener != null){
+						listener.onComplete(false);
+					}
 				}
 			}
 		});
@@ -1267,16 +1251,15 @@ abstract class BaseMenuManager extends BaseSubManager {
 			}
 
 			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-				DebugTool.logError(TAG, "Result: " + resultCode.toString() + " Info: " + info);
-			}
-
-			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
-				try {
-					DebugTool.logInfo(TAG, "Dynamic Sub Menu response: " + response.serializeJSON().toString());
-				} catch (JSONException e) {
-					e.printStackTrace();
+				if (response.getSuccess()) {
+					try {
+						DebugTool.logInfo(TAG, "Dynamic Sub Menu response: " + response.serializeJSON().toString());
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				} else {
+					DebugTool.logError(TAG, "Result: " + response.getResultCode() + " Info: " + response.getInfo());
 				}
 			}
 		});
@@ -1328,10 +1311,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 				if (listener != null){
 					listener.onComplete(true);
 				}
-			}
-
-			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
 			}
 
 			@Override

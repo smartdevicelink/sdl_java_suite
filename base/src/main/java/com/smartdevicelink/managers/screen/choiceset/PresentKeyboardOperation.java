@@ -124,12 +124,9 @@ class PresentKeyboardOperation extends Task {
 			pi.setOnRPCResponseListener(new OnRPCResponseListener() {
 				@Override
 				public void onResponse(int correlationId, RPCResponse response) {
-					finishOperation();
-				}
-
-				@Override
-				public void onError(int correlationId, Result resultCode, String info){
-					DebugTool.logError(TAG, "There was an error presenting the keyboard. Finishing operation - choice set manager - . Error: " + info + " resultCode: " + resultCode);
+					if (!response.getSuccess()) {
+						DebugTool.logError(TAG, "There was an error presenting the keyboard. Finishing operation - choice set manager - . Error: " + response.getInfo() + " resultCode: " + response.getResultCode());
+					}
 					finishOperation();
 				}
 			});
@@ -166,11 +163,6 @@ class PresentKeyboardOperation extends Task {
 				@Override
 				public void onResponse(int correlationId, RPCResponse response) {
 					DebugTool.logInfo(TAG, "Canceled the presented keyboard " + ((response.getResultCode() == Result.SUCCESS) ? "successfully" : "unsuccessfully"));
-				}
-
-				@Override
-				public void onError(int correlationId, Result resultCode, String info){
-					DebugTool.logError(TAG, "Error canceling the presented keyboard " + resultCode + " " + info);
 				}
 			});
 			if (internalInterface.get() != null){
@@ -213,15 +205,6 @@ class PresentKeyboardOperation extends Task {
 				}
 				DebugTool.logInfo(TAG, "Success Setting keyboard properties in present keyboard operation - choice manager");
 			}
-
-			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-				if (listener != null){
-					listener.onComplete(false);
-				}
-				DebugTool.logError(TAG, "Error Setting keyboard properties in present keyboard operation - choice manager - " + info);
-				super.onError(correlationId, resultCode, info);
-			}
 		});
 
 		if (internalInterface.get() != null){
@@ -239,14 +222,12 @@ class PresentKeyboardOperation extends Task {
 			setGlobalProperties.setOnRPCResponseListener(new OnRPCResponseListener() {
 				@Override
 				public void onResponse(int correlationId, RPCResponse response) {
-					updatedKeyboardProperties = false;
-					DebugTool.logInfo(TAG, "Successfully reset choice keyboard properties to original config");
-					PresentKeyboardOperation.super.onFinished();
-				}
-
-				@Override
-				public void onError(int correlationId, Result resultCode, String info) {
-					DebugTool.logError(TAG, "Failed to reset choice keyboard properties to original config " + resultCode + ", " + info);
+					if (response.getSuccess()) {
+						updatedKeyboardProperties = false;
+						DebugTool.logInfo(TAG, "Successfully reset choice keyboard properties to original config");
+					} else {
+						DebugTool.logError(TAG, "Failed to reset choice keyboard properties to original config " + response.getResultCode() + ", " + response.getInfo());
+					}
 					PresentKeyboardOperation.super.onFinished();
 				}
 			});

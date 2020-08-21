@@ -46,7 +46,6 @@ import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
-import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
@@ -206,11 +205,6 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 			}
 
 			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-
-			}
-
-			@Override
 			public void onResponse(int correlationId, RPCResponse response) {}
 		});
 
@@ -242,11 +236,6 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 					listener.onComplete(true);
 				}
 				oldVoiceCommands = voiceCommands;
-			}
-
-			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-
 			}
 
 			@Override
