@@ -14,6 +14,6 @@
 {{spacing}}{{prefix}}@see {{see}}
 {%- endif %}
 {%- if end is defined %}
-{{spacing}} {{end}}
+{{spacing}}{{end}}
 {%- endif %}
 {%- endif %}
