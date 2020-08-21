@@ -34,6 +34,7 @@ package com.smartdevicelink.managers.screen;
 import androidx.annotation.NonNull;
 
 import com.livio.taskmaster.Queue;
+import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.FileManager;
@@ -56,6 +57,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.smartdevicelink.proxy.rpc.enums.TextAlignment.CENTERED;
@@ -73,9 +75,8 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	Show currentScreenData;
 	HMILevel currentHMILevel;
 	WindowCapability defaultMainWindowCapability;
-	private boolean pendingHMIFull, batchingUpdates;
+	private boolean batchingUpdates;
 	private final WeakReference<FileManager> fileManager;
-	private CompletionListener pendingHMIListener;
 	SdlArtwork blankArtwork;
 	private OnRPCNotificationListener hmiListener;
 	private OnSystemCapabilityListener onDisplaysCapabilityListener;
@@ -84,11 +85,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	private String textField1, textField2, textField3, textField4, mediaTrackTextField, title;
 	private MetadataType textField1Type, textField2Type, textField3Type, textField4Type;
 	private TextAndGraphicUpdateOperation updateOperation;
-
-
 	private Queue transactionQueue;
-
-	private TextsAndGraphicsState textsAndGraphicsState;
 
 	//Constructors
 
@@ -98,7 +95,6 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		this.fileManager = new WeakReference<>(fileManager);
 		batchingUpdates = false;
 		isDirty = false;
-		pendingHMIFull = false;
 		textAlignment = CENTERED;
 		currentHMILevel = HMILevel.HMI_NONE;
 		currentScreenData = new Show();
@@ -130,9 +126,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		blankArtwork = null;
 		defaultMainWindowCapability = null;
 		currentScreenData = null;
-		pendingHMIListener = null;
 		isDirty = false;
-		pendingHMIFull = false;
 		updateOperation = null;
 
 		// Cancel the operations
@@ -169,22 +163,10 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	// Upload / Send
 
 	protected void update(CompletionListener listener) {
-
 		// check if is batch update
 		if (batchingUpdates) {
 			return;
 		}
-
-		// make sure hmi is not none
-		if (currentHMILevel == null || currentHMILevel == HMILevel.HMI_NONE) {
-			//Trying to send show on HMI_NONE, waiting for full
-			pendingHMIFull = true;
-			if (listener != null) {
-				pendingHMIListener = listener;
-			}
-			return;
-		}
-
 		if (isDirty) {
 			isDirty = false;
 			sdlUpdate(listener);
@@ -194,7 +176,6 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	}
 
 	private synchronized void sdlUpdate(final CompletionListener listener) {
-
 		if (transactionQueue.getTasksAsList().size() > 0) {
 			//Transactions already exist, cancelling them
 			transactionQueue.clear();
@@ -203,20 +184,76 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			}
 			return;
 		}
-		updateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager.get(), defaultMainWindowCapability, currentScreenData, currentState(), new CompletionListener() {
+		CurrentScreenDataUpdatedListener currentScreenDataUpdateListener = new CurrentScreenDataUpdatedListener() {
+			@Override
+			public void onUpdate(Show show) {
+				updatePendingOperationsWithNewScreenData(show);
+			}
+		};
+		CompletionListener updateOperationListener = new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
-
-				if (updateOperation.getSentShow() != null) {
-					currentScreenData = updateOperation.getSentShow();
-				}
 				if (listener != null) {
 					listener.onComplete(success);
 				}
 			}
-		});
+		};
+
+		updateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager.get(), defaultMainWindowCapability, currentScreenData, currentState(), updateOperationListener, currentScreenDataUpdateListener);
 		transactionQueue.add(updateOperation, false);
 	}
+	//Updates pending task with current screen data
+	void updatePendingOperationsWithNewScreenData(Show newScreenData){
+		for(Task task: transactionQueue.getTasksAsList()){
+			if(!(task instanceof TextAndGraphicUpdateOperation) || task.getState() == Task.IN_PROGRESS){
+				continue;
+			}
+			((TextAndGraphicUpdateOperation) task).setCurrentScreenData(newScreenData);
+		}
+	}
+
+	interface CurrentScreenDataUpdatedListener{
+		void onUpdate(Show show);
+	}
+
+
+	private List<String> findNonNullTextFields() {
+		List<String> array = new ArrayList<>();
+
+		if (textField1 != null) {
+			array.add(textField1);
+		}
+
+		if (textField2 != null) {
+			array.add(textField2);
+		}
+
+		if (textField3 != null) {
+			array.add(textField3);
+		}
+
+		if (textField4 != null) {
+			array.add(textField4);
+		}
+
+		if(title != null){
+			array.add(title);
+		}
+
+		if(mediaTrackTextField != null){
+			array.add(mediaTrackTextField);
+		}
+
+		return array;
+	}
+
+	Boolean hasData() {
+		boolean hasTextFields = (findNonNullTextFields().size() > 0);
+		boolean hasImageFields = (primaryGraphic != null) || (secondaryGraphic != null);
+
+		return hasTextFields || hasImageFields;
+	}
+
 
 	// Convert to State
 
@@ -410,21 +447,11 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
 					return;
 				}
-
 				currentHMILevel = onHMIStatus.getHmiLevel();
 				updateTransactionQueueSuspended();
-				if (currentHMILevel == HMILevel.HMI_FULL) {
-					if (pendingHMIFull) {
-						DebugTool.logInfo(TAG, "Acquired HMI_FULL with pending update. Sending now");
-						pendingHMIFull = false;
-						sdlUpdate(pendingHMIListener);
-						pendingHMIListener = null;
-					}
-				}
 			}
 		};
 		internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
-
 
 		onDisplaysCapabilityListener = new OnSystemCapabilityListener() {
 			@Override
@@ -442,12 +469,18 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 						}
 					}
 				}
+				// Update the queue's suspend state
+				updateTransactionQueueSuspended();
+				if (hasData()) {
+					update(null);
+				}
 			}
 
 			@Override
 			public void onError(String info) {
 				DebugTool.logError(TAG, "Display Capability cannot be retrieved");
 				defaultMainWindowCapability = null;
+				updateTransactionQueueSuspended();
 			}
 		};
 		this.internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplaysCapabilityListener);

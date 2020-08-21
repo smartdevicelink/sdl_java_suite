@@ -33,6 +33,7 @@ public class TextAndGraphicUpdateOperation extends Task {
     private Show currentScreenData, sentShow;
     private TextsAndGraphicsState updatedState;
     private CompletionListener listener;
+    private TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener;
 
 
     /**
@@ -44,7 +45,7 @@ public class TextAndGraphicUpdateOperation extends Task {
      * @param listener
      */
     public TextAndGraphicUpdateOperation(ISdl internalInterface, FileManager fileManager, WindowCapability currentCapabilities,
-                                         Show currentScreenData, TextsAndGraphicsState newState, CompletionListener listener) {
+                                         Show currentScreenData, TextsAndGraphicsState newState, CompletionListener listener, TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener) {
         super("TextAndGraphicUpdateOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
@@ -52,6 +53,7 @@ public class TextAndGraphicUpdateOperation extends Task {
         this.currentScreenData = currentScreenData;
         this.updatedState = newState;
         this.listener = listener;
+        this.currentScreenDataUpdateListener = currentScreenDataUpdateListener;
     }
 
     @Override
@@ -68,6 +70,8 @@ public class TextAndGraphicUpdateOperation extends Task {
         // Build a show with everything from `self.newState`, we'll pull things out later if we can.
         Show fullShow = new Show();
         fullShow.setAlignment(updatedState.getTextAlignment());
+        //TODO IOS ask about tages, Dont they just get set when we assembleShowText
+        //  fullShow.setMetadataTags(updatedState.getM);
         fullShow = assembleShowText(fullShow);
         fullShow = assembleShowImages(fullShow);
 
@@ -78,7 +82,6 @@ public class TextAndGraphicUpdateOperation extends Task {
                 @Override
                 public void onComplete(boolean success) {
                     finishOperation(success);
-                    return;
                 }
             });
 
@@ -89,7 +92,6 @@ public class TextAndGraphicUpdateOperation extends Task {
                 @Override
                 public void onComplete(boolean success) {
                     finishOperation(success);
-                    return;
                 }
             });
         } else {
@@ -106,7 +108,6 @@ public class TextAndGraphicUpdateOperation extends Task {
                         @Override
                         public void onComplete(boolean success) {
                             finishOperation(success);
-                            return;
                         }
                     });
 
@@ -131,7 +132,7 @@ public class TextAndGraphicUpdateOperation extends Task {
             private void handleResponse(boolean success) {
                 DebugTool.logInfo(TAG, "Text and Graphic update completed");
                 if (success) {
-                    updateCurrentScreenDataState(show);
+                    updateCurrentScreenDataFromShow(show);
                 }
                 listener.onComplete(success);
             }
@@ -145,9 +146,9 @@ public class TextAndGraphicUpdateOperation extends Task {
             @Override
             public void onComplete(boolean success) {
                 Show showWithGraphics = createImageOnlyShowWithPrimaryArtwork(updatedState.getPrimaryGraphic(), updatedState.getSecondaryGraphic());
+                //TODO Ask about logic here, Should we do if(success) then create and sendShow with Graphic or return false
                 if (showWithGraphics != null) {
                     DebugTool.logInfo(TAG, "Sending update with the successfully uploaded images");
-                    //Check for cancel
                     sendShow(showWithGraphics, new CompletionListener() {
                         @Override
                         public void onComplete(boolean success) {
@@ -483,7 +484,8 @@ public class TextAndGraphicUpdateOperation extends Task {
         return newShow;
     }
 
-    private void updateCurrentScreenDataState(Show show) {
+    //TODO IOS different by maybe same
+    private void updateCurrentScreenDataFromShow(Show show) {
 
         if (show == null) {
             DebugTool.logError(TAG, "can not updateCurrentScreenDataFromShow from null show");
@@ -520,6 +522,9 @@ public class TextAndGraphicUpdateOperation extends Task {
         }
         if (show.getSecondaryGraphic() != null) {
             currentScreenData.setSecondaryGraphic(show.getSecondaryGraphic());
+        }
+        if (currentScreenDataUpdateListener != null) {
+            currentScreenDataUpdateListener.onUpdate(show);
         }
     }
 
