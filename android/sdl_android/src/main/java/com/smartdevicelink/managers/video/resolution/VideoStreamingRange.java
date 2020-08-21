@@ -1,60 +1,75 @@
 package com.smartdevicelink.managers.video.resolution;
 
 public class VideoStreamingRange {
-    private Resolution minSupportedResolution;
-    private Resolution maxSupportedResolution;
-    private Double maxScreenDiagonal;
-    private AspectRatio aspectRatio;
+    private Resolution minResolution;
+    private Resolution maxResolution;
+    private Double minScreenDiagonal;
+    private Double minAspectRatio;
+    private Double maxAspectRatio;
 
-    public VideoStreamingRange(Resolution minSupportedResolution, Resolution maxSupportedResolution, Double maxScreenDiagonal, AspectRatio aspectRatio) {
-        this.minSupportedResolution = minSupportedResolution;
-        this.maxSupportedResolution = maxSupportedResolution;
-        this.maxScreenDiagonal = maxScreenDiagonal;
-        this.aspectRatio = aspectRatio;
+    public VideoStreamingRange(
+            Resolution minResolution,
+            Resolution maxResolution,
+            Double minScreenDiagonal,
+            Double minAspectRatio,
+            Double maxAspectRatio
+    ) {
+        this.minResolution = minResolution;
+        this.maxResolution = maxResolution;
+        this.minScreenDiagonal = minScreenDiagonal;
+        this.minAspectRatio = minAspectRatio;
+        this.maxAspectRatio = maxAspectRatio;
     }
 
-    private VideoStreamingRange(){}
+    private VideoStreamingRange() { }
 
-    public Resolution getMinSupportedResolution() {
-        return minSupportedResolution;
+    public Resolution getMinResolution() {
+        return minResolution;
     }
 
-    public Resolution getMaxSupportedResolution() {
-        return maxSupportedResolution;
+    public Resolution getMaxResolution() {
+        return maxResolution;
     }
 
-    public Double getMaxScreenDiagonal() {
-        return maxScreenDiagonal;
+    public Double getMinScreenDiagonal() {
+        return minScreenDiagonal;
     }
 
-    public AspectRatio getAspectRatio() {
-        return aspectRatio;
+    public Double getMinAspectRatio() {
+        return minAspectRatio;
     }
+
+    public Double getMaxAspectRatio() { return maxAspectRatio; }
 
     public static class Builder {
         private VideoStreamingRange range = new VideoStreamingRange();
 
         public Builder setMinSupportedResolution(Resolution minSupportedResolution) {
-            range.minSupportedResolution = minSupportedResolution;
+            range.minResolution = minSupportedResolution;
             return this;
         }
 
         public Builder setMaxSupportedResolution(Resolution maxSupportedResolution) {
-            range.maxSupportedResolution = maxSupportedResolution;
+            range.maxResolution = maxSupportedResolution;
             return this;
         }
 
         public Builder setMaxScreenDiagonal(Double maxScreenDiagonal) {
-            range.maxScreenDiagonal = maxScreenDiagonal;
+            range.minScreenDiagonal = maxScreenDiagonal;
             return this;
         }
 
-        public Builder setAspectRatio(AspectRatio aspectRatio){
-            range.aspectRatio = aspectRatio;
+        public Builder setMinAspectRatio(Double minAspectRatio) {
+            range.minAspectRatio = minAspectRatio;
             return this;
         }
 
-        public VideoStreamingRange build(){
+        public Builder setMaxAspectRatio(Double maxAspectRatio) {
+            range.maxAspectRatio = maxAspectRatio;
+            return this;
+        }
+
+        public VideoStreamingRange build() {
             return range;
         }
     }
