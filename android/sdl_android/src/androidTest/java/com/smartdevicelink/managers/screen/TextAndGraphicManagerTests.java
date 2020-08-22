@@ -4,8 +4,10 @@ import android.content.Context;
 import android.net.Uri;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.livio.taskmaster.Task;
 import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.BaseSubManager;
+import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
@@ -34,6 +36,9 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -47,7 +52,6 @@ public class TextAndGraphicManagerTests {
 	// SETUP / HELPERS
 	private TextAndGraphicManager textAndGraphicManager;
 	private SdlArtwork testArtwork;
-	Taskmaster taskmaster;
 
 	@Before
 	public void setUp() throws Exception{
@@ -56,15 +60,16 @@ public class TextAndGraphicManagerTests {
 		// mock things
 		ISdl internalInterface = mock(ISdl.class);
 		FileManager fileManager = mock(FileManager.class);
-		SoftButtonManager softButtonManager = mock(SoftButtonManager.class);
-		taskmaster = new Taskmaster.Builder().build();
-		when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
 
 		testArtwork = new SdlArtwork();
 		testArtwork.setName("testFile");
 		Uri uri = Uri.parse("android.resource://" + mTestContext.getPackageName() + "/drawable/ic_sdl");
 		testArtwork.setUri(uri);
 		testArtwork.setType(FileType.GRAPHIC_PNG);
+
+		Taskmaster taskmaster = new Taskmaster.Builder().build();
+		taskmaster.start();
+		when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
 
 		textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager);
 	}
@@ -215,5 +220,35 @@ public class TextAndGraphicManagerTests {
 		assertNull(textAndGraphicManager.defaultMainWindowCapability);
 		assertFalse(textAndGraphicManager.isDirty);
 		assertEquals(textAndGraphicManager.getState(), BaseSubManager.SHUTDOWN);
+	}
+
+	@Test
+	public void testOperationManagement() {
+		textAndGraphicManager.isDirty = true;
+		textAndGraphicManager.update(new CompletionListener() {
+			@Override
+			public void onComplete(boolean success) {
+				assertTrue(success);
+			}
+		});
+		assertEquals(textAndGraphicManager.transactionQueue.getTasksAsList().size(), 1);
+
+		textAndGraphicManager.transactionQueue.clear();
+
+		assertEquals(textAndGraphicManager.transactionQueue.getTasksAsList().size(), 0);
+
+		textAndGraphicManager.isDirty = true;
+		textAndGraphicManager.update(new CompletionListener() {
+			@Override
+			public void onComplete(boolean success) {
+				assertTrue(success);
+			}
+		});
+
+		assertEquals(textAndGraphicManager.transactionQueue.getTasksAsList().size(), 1);
+
+		assertTrue(textAndGraphicManager.transactionQueue.getTasksAsList().get(0).getState() == Task.READY);
+
+
 	}
 }
