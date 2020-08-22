@@ -13,7 +13,6 @@ import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
-import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.CompareUtils;
@@ -120,21 +119,12 @@ public class TextAndGraphicUpdateOperation extends Task {
         show.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
-                handleResponse(response.getSuccess());
-
-            }
-
-            @Override
-            public void onError(int correlationId, Result resultCode, String info) {
-                handleResponse(false);
-            }
-
-            private void handleResponse(boolean success) {
                 DebugTool.logInfo(TAG, "Text and Graphic update completed");
-                if (success) {
+                if (response.getSuccess()) {
                     updateCurrentScreenDataFromShow(show);
                 }
-                listener.onComplete(success);
+                listener.onComplete(response.getSuccess());
+
             }
         });
         internalInterface.get().sendRPC(show);
