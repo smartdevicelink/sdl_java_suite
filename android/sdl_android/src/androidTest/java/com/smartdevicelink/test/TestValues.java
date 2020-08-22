@@ -38,7 +38,9 @@ import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.DriverDistractionCapability;
+import com.smartdevicelink.proxy.rpc.DynamicUpdateCapabilities;
 import com.smartdevicelink.proxy.rpc.EqualizerSettings;
+import com.smartdevicelink.proxy.rpc.GearStatus;
 import com.smartdevicelink.proxy.rpc.Grid;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
@@ -167,6 +169,7 @@ import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.ModuleType;
 import com.smartdevicelink.proxy.rpc.enums.NavigationAction;
 import com.smartdevicelink.proxy.rpc.enums.NavigationJunction;
+import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeQualificationStatus;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
@@ -190,6 +193,7 @@ import com.smartdevicelink.proxy.rpc.enums.TemperatureUnit;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
+import com.smartdevicelink.proxy.rpc.enums.TransmissionType;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
@@ -418,6 +422,7 @@ public class TestValues {
 	public static final AudioControlData               GENERAL_AUDIOCONTROLDATA               = new AudioControlData();
 	public static final LightControlData               GENERAL_LIGHTCONTROLDATA               = new LightControlData();
 	public static final HMISettingsControlData         GENERAL_HMISETTINGSCONTROLDATA         = new HMISettingsControlData();
+	public static final DynamicUpdateCapabilities	   GENERAL_DYNAMICUPDATECAPABILITIES	  = new DynamicUpdateCapabilities();
 
 	public static final VehicleDataResult              GENERAL_OEM_CUSTOM_VEHICLE_DATA        = new VehicleDataResult();
 	public static final TemplateConfiguration          GENERAL_TEMPLATE_CONFIGURATION         = new TemplateConfiguration();
@@ -440,6 +445,10 @@ public class TestValues {
 	public static final SeatLocation                   GENERAL_SEAT_LOCATION                  = new SeatLocation();
 	public static final ModuleInfo                     GENERAL_MODULE_INFO                    = new ModuleInfo();
 	public static final WindowType                     GENERAL_WINDOWTYPE                     = WindowType.MAIN;
+	public static final GearStatus                     GENERAL_GEAR_STATUS                    = new GearStatus();
+	public static final PRNDL                    	 	GENERAL_USER_SELECTED_GEAR             = PRNDL.NEUTRAL;
+	public static final PRNDL                    	 	GENERAL_ACTUAL_GEAR             	   = PRNDL.DRIVE;
+	public static final TransmissionType                GENERAL_TRANSMISSION_TYPE              = TransmissionType.AUTOMATIC;
 	public static final Grid 						   GENERAL_LOCATION_GRID 				  = new Grid(2, 3);
 	public static final WindowState 				   GENERAL_WINDOW_STATE 				  = new WindowState(2, 3);
 	public static final Integer 				   	   GENERAL_APPROX_POSITION 				  = new Integer(3);
@@ -574,6 +583,7 @@ public class TestValues {
 	public static final JSONArray  JSON_IMAGE_TYPES               = new JSONArray();
 	public static final JSONObject JSON_DISPLAYCAPABILITY         = new JSONObject();
 	public static final JSONArray  JSON_DISPLAYCAPABILITY_LIST    = new JSONArray();
+	public static final JSONObject JSON_DYNAMICUPDATECAPABILITIES = new JSONObject();
 	static {
 		GENERAL_TOUCHEVENTCAPABILITIES.setDoublePressAvailable(GENERAL_BOOLEAN);
 		GENERAL_TOUCHEVENTCAPABILITIES.setMultiTouchAvailable(GENERAL_BOOLEAN);
@@ -625,6 +635,9 @@ public class TestValues {
 		GENERAL_HMISETTINGSCONTROLDATA.setDistanceUnit(GENERAL_DISTANCEUNIT);
 		GENERAL_HMISETTINGSCONTROLDATA.setTemperatureUnit(GENERAL_TEMPERATUREUNIT);
 		GENERAL_HMISETTINGSCONTROLDATA.setDisplayMode(GENERAL_DISPLAYMODE);
+
+		GENERAL_DYNAMICUPDATECAPABILITIES.setSupportsDynamicSubMenus(GENERAL_BOOLEAN);
+		GENERAL_DYNAMICUPDATECAPABILITIES.setSupportedDynamicImageFieldNames(Collections.singletonList(GENERAL_IMAGEFIELDNAME));
 
 		GENERAL_LIGHTCONTROLDATA.setLightState(GENERAL_LIGHTSTATE_LIST);
 
@@ -1124,6 +1137,10 @@ public class TestValues {
 		GENERAL_MODULE_INFO.setModuleServiceArea(TestValues.GENERAL_GRID);
 		GENERAL_MODULE_INFO.setMultipleAccessAllowance(TestValues.GENERAL_BOOLEAN);
 
+		GENERAL_GEAR_STATUS.setActualGear(GENERAL_ACTUAL_GEAR);
+		GENERAL_GEAR_STATUS.setTransmissionType(GENERAL_TRANSMISSION_TYPE);
+		GENERAL_GEAR_STATUS.setUserSelectedGear(GENERAL_USER_SELECTED_GEAR);
+
 		GENERAL_WINDOW_STATUS.setLocation(TestValues.GENERAL_GRID);
 		GENERAL_WINDOW_STATUS.setState(TestValues.GENERAL_WINDOW_STATE);
 
@@ -1341,6 +1358,9 @@ public class TestValues {
 			JSON_DISPLAYCAPABILITY.put(DisplayCapability.KEY_WINDOW_TYPE_SUPPORTED, JSON_WINDOW_TYPE_CAPABILITIES_LIST);
 			JSON_DISPLAYCAPABILITY.put(DisplayCapability.KEY_WINDOW_CAPABILITIES, JSON_WINDOW_CAPABILITIES);
 			JSON_DISPLAYCAPABILITY_LIST.put(JSON_DISPLAYCAPABILITY);
+
+			JSON_DYNAMICUPDATECAPABILITIES.put(DynamicUpdateCapabilities.KEY_SUPPORTS_DYNAMIC_SUB_MENUS, GENERAL_BOOLEAN);
+			JSON_DYNAMICUPDATECAPABILITIES.put(DynamicUpdateCapabilities.KEY_SUPPORTED_DYNAMIC_IMAGE_FIELD_NAMES, JsonUtils.createJsonArray(Collections.singletonList(GENERAL_IMAGEFIELDNAME)));
 
 			JSON_TOUCHCOORD.put(TouchCoord.KEY_X, GENERAL_INT);
 			JSON_TOUCHCOORD.put(TouchCoord.KEY_Y, GENERAL_INT);

@@ -38,6 +38,7 @@ import com.smartdevicelink.managers.file.FileManagerConfig;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
 import com.smartdevicelink.managers.lifecycle.LifecycleManager;
+import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.managers.screen.ScreenManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -46,7 +47,6 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.ChangeRegistration;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
@@ -56,7 +56,6 @@ import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
-import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
@@ -200,6 +199,12 @@ abstract class BaseSdlManager {
                     @Override
                     public void onResponse(int correlationId, RPCResponse response) {
                         if (response.getSuccess()) {
+                            try {
+                                DebugTool.logInfo(TAG, response.serializeJSON().toString());
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
                             // go through and change sdlManager properties that were changed via the LCU update
                             hmiLanguage = actualHMILanguage;
                             language = actualLanguage;
@@ -219,18 +224,10 @@ abstract class BaseSdlManager {
                             if (lcu.getVoiceRecognitionCommandNames() != null) {
                                 vrSynonyms = lcu.getVoiceRecognitionCommandNames();
                             }
+                        } else {
+                            DebugTool.logError(TAG, "Change Registration onError: " + response.getResultCode() + " | Info: " + response.getInfo());
+                            retryChangeRegistration();
                         }
-                        try {
-                            DebugTool.logInfo(TAG, response.serializeJSON().toString());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(int correlationId, Result resultCode, String info) {
-                        DebugTool.logError(TAG, "Change Registration onError: " + resultCode + " | Info: " + info);
-                        retryChangeRegistration();
                     }
                 });
                 this.sendRPC(changeRegistration);

@@ -62,11 +62,11 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     public static final String KEY_SUPPORTED_DIAG_MODES 		= "supportedDiagModes";
     public static final String KEY_SDL_MSG_VERSION 				= "syncMsgVersion";
     public static final String KEY_LANGUAGE 					= "language";
-    public static final String KEY_BUTTON_CAPABILITIES 			= "buttonCapabilities";
-    public static final String KEY_DISPLAY_CAPABILITIES 		= "displayCapabilities";
+    @Deprecated public static final String KEY_BUTTON_CAPABILITIES 			= "buttonCapabilities";
+    @Deprecated public static final String KEY_DISPLAY_CAPABILITIES 		= "displayCapabilities";
     public static final String KEY_HMI_DISPLAY_LANGUAGE 		= "hmiDisplayLanguage";
-    public static final String KEY_SOFT_BUTTON_CAPABILITIES 	= "softButtonCapabilities";
-    public static final String KEY_PRESET_BANK_CAPABILITIES 	= "presetBankCapabilities";
+    @Deprecated public static final String KEY_SOFT_BUTTON_CAPABILITIES 	= "softButtonCapabilities";
+    @Deprecated public static final String KEY_PRESET_BANK_CAPABILITIES 	= "presetBankCapabilities";
     public static final String KEY_HMI_CAPABILITIES 			= "hmiCapabilities"; //As of v4.0
     public static final String KEY_SDL_VERSION 					= "sdlVersion"; //As of v4.0
     public static final String KEY_SYSTEM_SOFTWARE_VERSION		= "systemSoftwareVersion"; //As of v4.0
@@ -407,10 +407,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	public void setPcmStreamingCapabilities(AudioPassThruCapabilities pcmStreamingCapabilities) {
 		setParameters(KEY_PCM_STREAM_CAPABILITIES, pcmStreamingCapabilities);
 	}
-	@Deprecated
-    public String getProxyVersionInfo() {
-		return null;
-    }
+
     public void setSupportedDiagModes(List<Integer> supportedDiagModes) {
 		setParameters(KEY_SUPPORTED_DIAG_MODES, supportedDiagModes);
     }

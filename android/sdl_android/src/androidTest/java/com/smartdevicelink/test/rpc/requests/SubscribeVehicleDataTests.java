@@ -62,6 +62,7 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
 		msg.setElectronicParkBrakeStatus(TestValues.GENERAL_BOOLEAN);
 		msg.setHandsOffSteering(TestValues.GENERAL_BOOLEAN);
 		msg.setWindowStatus(TestValues.GENERAL_BOOLEAN);
+		msg.setGearStatus(TestValues.GENERAL_BOOLEAN);
 		msg.setOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_BOOLEAN);
 		
 		return msg;
@@ -112,6 +113,7 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
             result.put(SubscribeVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS, TestValues.GENERAL_BOOLEAN);
             result.put(SubscribeVehicleData.KEY_HANDS_OFF_STEERING, TestValues.GENERAL_BOOLEAN);
             result.put(SubscribeVehicleData.KEY_WINDOW_STATUS, TestValues.GENERAL_BOOLEAN);
+            result.put(SubscribeVehicleData.KEY_GEAR_STATUS, TestValues.GENERAL_BOOLEAN);
             result.put(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_BOOLEAN);
 		} catch (JSONException e) {
 			fail(TestValues.JSON_FAIL);
@@ -157,6 +159,7 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
 		assertTrue(TestValues.MATCH,( (SubscribeVehicleData) msg ).getElectronicParkBrakeStatus());
 		assertTrue(TestValues.MATCH,( (SubscribeVehicleData) msg ).getHandsOffSteering());
 		assertTrue(TestValues.MATCH,( (SubscribeVehicleData) msg ).getWindowStatus());
+		assertTrue(TestValues.MATCH,( (SubscribeVehicleData) msg ).getGearStatus());
 		assertTrue(TestValues.MATCH,( (SubscribeVehicleData) msg ).getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
     
 		// Invalid/Null Tests
@@ -194,6 +197,7 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
         assertNull(TestValues.NULL, msg.getElectronicParkBrakeStatus());
         assertNull(TestValues.NULL, msg.getHandsOffSteering());
         assertNull(TestValues.NULL, msg.getWindowStatus());
+        assertNull(TestValues.NULL, msg.getGearStatus());
         assertNull(TestValues.NULL, msg.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
 	}
 	

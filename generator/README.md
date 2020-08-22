@@ -430,7 +430,7 @@ Where `[name]` is the value from the `"name"` attribute of `<struct>`.
 ### Constructor with all required parameters, based on `"mandatory"` attribute of the `<param>`
 This constructor requires the import of `NonNull` annotation
 ```java
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 ```
 
 The constructor should include all set of `<param>` with the `"mandatory"` attribute is "true". JavaDoc should include all constructor parameters and the constructor should call all corresponding setters inside itself.
@@ -590,7 +590,7 @@ Output (javadoc comments skipped):
 ```java
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.TemperatureUnit;
@@ -768,7 +768,7 @@ Where `[name]` is the value from the `"name"` attribute of `<function>`.
 ### Constructor with all required parameters, based on `"mandatory"` attribute of the `<param>`
 This constructor requires the import of `NonNull` annotation
 ```java
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 ```
 
 The constructor should include all set of `<param>` with the `"mandatory"` attribute is "true". JavaDoc should include all constructor parameters and the constructor should call all corresponding setters inside itself.
@@ -997,7 +997,7 @@ Output (javadoc comments skipped):
 ```java
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -1039,7 +1039,7 @@ Output (javadoc comments skipped):
 ```java
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;

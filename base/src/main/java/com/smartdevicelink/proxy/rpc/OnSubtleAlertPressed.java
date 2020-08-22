@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
+ * Copyright (c) 2020 Livio, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@
  * disclaimer in the documentation and/or other materials provided with the
  * distribution.
  *
- * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
- * software without specific prior written permission.
+ * Neither the name of the Livio Inc. nor the names of its contributors
+ * may be used to endorse or promote products derived from this software
+ * without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -32,34 +32,31 @@
 package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.RPCNotification;
 
 import java.util.Hashtable;
 
-@Deprecated
-public class StreamRPCResponse extends RPCResponse {
-	public static final String KEY_FILENAME = "fileName";
-	public static final String KEY_FILESIZE = "fileSize";
-	
-    public StreamRPCResponse() {
-        super(FunctionID.STREAM_RPC.toString());
+/**
+ * Sent when the alert itself is touched (outside of a soft button). Touching (or otherwise
+ * selecting) the alert should open the app before sending this notification.
+ *
+ * @since SmartDeviceLink 7.0.0
+ */
+public class OnSubtleAlertPressed extends RPCNotification {
+
+    /**
+     * Constructs a new OnSubtleAlertPressed object
+     */
+    public OnSubtleAlertPressed() {
+        super(FunctionID.ON_SUBTLE_ALERT_PRESSED.toString());
     }
-    public StreamRPCResponse(Hashtable<String, Object> hash) {
+
+    /**
+     * Constructs a new OnSubtleAlertPressed object indicated by the Hashtable parameter
+     *
+     * @param hash The Hashtable to use
+     */
+    public OnSubtleAlertPressed(Hashtable<String, Object> hash) {
         super(hash);
     }
-    
-	public void setFileName(String fileName) {
-		setParameters(KEY_FILENAME, fileName);
-	}
-	public String getFileName() {
-		return getString(KEY_FILENAME);
-	}
-	
-	public void setFileSize(Long fileSize) {
-		setParameters(KEY_FILESIZE, fileSize);
-	}
-	public Long getFileSize() {
-		return getLong(KEY_FILESIZE);
-	}		
-	
 }

@@ -74,6 +74,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
+    public static final String KEY_GEAR_STATUS = "gearStatus";
     public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
     public static final String KEY_WINDOW_STATUS = "windowStatus";
 
@@ -166,22 +167,6 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
     }
     /**
      * Sets Fuel Level State
-     * @param fuelLevel_State a VehicleDataResult related to FuelLevel State
-     */
-    @Deprecated
-    public void setFuelLevel_State(VehicleDataResult fuelLevel_State) {
-        setFuelLevel(fuelLevel_State);
-    }
-    /**
-     * Gets Fuel Level State
-     * @return a VehicleDataResult related to FuelLevel State
-     */
-    @Deprecated
-    public VehicleDataResult getFuelLevel_State() {
-        return getFuelLevelState();
-    }
-    /**
-     * Sets Fuel Level State
      * @param fuelLevelState a VehicleDataResult related to FuelLevel State
      */
     public void setFuelLevelState(VehicleDataResult fuelLevelState) {
@@ -226,16 +211,22 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_EXTERNAL_TEMPERATURE);
     }
     /**
-     * Gets currently selected gear data
-     * @param prndl a VehicleDataResult related to the PRNDL status (automatic transmission gear)
+     * Sets the prndl.
+     *
+     * @param prndl See PRNDL. This parameter is deprecated and it is now covered in `gearStatus`
+     * @deprecated in SmartDeviceLink 7.0.0
      */
+    @Deprecated
     public void setPrndl(VehicleDataResult prndl) {
         setParameters(KEY_PRNDL, prndl);
     }
     /**
-     * Gets currently selected gear data
-     * @return a VehicleDataResult related to the PRNDL status (automatic transmission gear)
+     * Gets the prndl.
+     *
+     * @return VehicleDataResult See PRNDL. This parameter is deprecated and it is now covered in `gearStatus`
+     * @deprecated in SmartDeviceLink 7.0.0
      */
+    @Deprecated
     @SuppressWarnings("unchecked")
     public VehicleDataResult getPrndl() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_PRNDL);
@@ -552,6 +543,26 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      */
     public VehicleDataResult getHandsOffSteering() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_HANDS_OFF_STEERING);
+    }
+    /**
+     * Sets the gearStatus.
+     *
+     * @param gearStatus See GearStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setGearStatus(VehicleDataResult gearStatus){
+        setParameters(KEY_GEAR_STATUS, gearStatus);
+    }
+
+    /**
+     * Gets the gearStatus.
+     *
+     * @return VehicleDataResult See GearStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    @SuppressWarnings("unchecked")
+    public VehicleDataResult getGearStatus(){
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_GEAR_STATUS);
     }
 
     /**
