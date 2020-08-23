@@ -269,7 +269,7 @@ public class TextAndGraphicUpdateOperationTest {
         // Test The files to be updated are already uploaded, send the full show immediately
         String textField11 = "It's not";
         TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField11, textField2, textField3, textField4,
-                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type);
+                mediaTrackField, title, testArtwork1, testArtwork2, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type);
         textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
         textAndGraphicUpdateOperation.onExecute();
         assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getMainField1(), textField11);
@@ -304,6 +304,7 @@ public class TextAndGraphicUpdateOperationTest {
 
     }
 
+    @Test
     public void testTaskCanceledAfterTextSent() {
         doAnswer(onShowSuccessCanceled).when(internalInterface).sendRPC(any(Show.class));
         textAndGraphicUpdateOperation.onExecute();
