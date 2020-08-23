@@ -50,8 +50,6 @@ import static org.mockito.Mockito.when;
 public class TextAndGraphicUpdateOperationTest {
 
     private TextAndGraphicUpdateOperation textAndGraphicUpdateOperation;
-    private TextAndGraphicUpdateOperation textAndGraphicUpdateOperationNullCapability;
-    private TextAndGraphicUpdateOperation textAndGraphicUpdateOperationEmptyCapability;
     private String textField1, textField2, textField3, textField4, mediaTrackField, title;
     private MetadataType textField1Type, textField2Type, textField3Type, textField4Type;
     private SdlArtwork testArtwork1, testArtwork2, testArtwork3, testArtwork4;
@@ -101,6 +99,17 @@ public class TextAndGraphicUpdateOperationTest {
             Object[] args = invocation.getArguments();
             MultipleFileCompletionListener listener = (MultipleFileCompletionListener) args[1];
             textAndGraphicUpdateOperation.cancelTask();
+            listener.onComplete(null);
+            return null;
+        }
+    };
+
+    private Answer<Void> onArtworkUploadSuccess = new Answer<Void>() {
+        @Override
+        public Void answer(InvocationOnMock invocation) {
+            Object[] args = invocation.getArguments();
+            MultipleFileCompletionListener listener = (MultipleFileCompletionListener) args[1];
+            when(fileManager.hasUploadedFile(any(SdlFile.class))).thenReturn(true);
             listener.onComplete(null);
             return null;
         }
@@ -242,8 +251,9 @@ public class TextAndGraphicUpdateOperationTest {
     }
 
     @Test
-    public void testUpload() {
+    public void testUploads() {
         doAnswer(onShowSuccess).when(internalInterface).sendRPC(any(Show.class));
+        doAnswer(onArtworkUploadSuccess).when(fileManager).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
 
         // Test Images need to be uploaded, sending text and uploading images
         textAndGraphicUpdateOperation.onExecute();
@@ -252,10 +262,12 @@ public class TextAndGraphicUpdateOperationTest {
         assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getMainField3(), textField3);
         assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getMainField4(), textField4);
         assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getAlignment(), textAlignment);
+        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getGraphic(), testArtwork3.getImageRPC());
+        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getSecondaryGraphic(), testArtwork4.getImageRPC());
+
 
         // Test The files to be updated are already uploaded, send the full show immediately
         String textField11 = "It's not";
-        when(fileManager.hasUploadedFile(any(SdlFile.class))).thenReturn(true);
         TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField11, textField2, textField3, textField4,
                 mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type);
         textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
@@ -271,7 +283,6 @@ public class TextAndGraphicUpdateOperationTest {
 
         // Verifies that uploadArtworks gets called only with the fist textAndGraphicsUpdateOperation.onExecute call
         verify(fileManager, times(1)).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
-
     }
 
     @Test
