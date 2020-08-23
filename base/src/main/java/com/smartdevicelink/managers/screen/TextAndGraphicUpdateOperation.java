@@ -34,7 +34,6 @@ public class TextAndGraphicUpdateOperation extends Task {
     private CompletionListener listener;
     private TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener;
 
-
     /**
      * @param internalInterface
      * @param fileManager
@@ -69,8 +68,6 @@ public class TextAndGraphicUpdateOperation extends Task {
         // Build a show with everything from `self.newState`, we'll pull things out later if we can.
         Show fullShow = new Show();
         fullShow.setAlignment(updatedState.getTextAlignment());
-        //TODO IOS ask about tages, Dont they just get set when we assembleShowText
-        //  fullShow.setMetadataTags(updatedState.getM);
         fullShow = assembleShowText(fullShow);
         fullShow = assembleShowImages(fullShow);
 
@@ -136,7 +133,6 @@ public class TextAndGraphicUpdateOperation extends Task {
             @Override
             public void onComplete(boolean success) {
                 Show showWithGraphics = createImageOnlyShowWithPrimaryArtwork(updatedState.getPrimaryGraphic(), updatedState.getSecondaryGraphic());
-                //TODO Ask about logic here, Should we do if(success) then create and sendShow with Graphic or return false
                 if (showWithGraphics != null) {
                     DebugTool.logInfo(TAG, "Sending update with the successfully uploaded images");
                     sendShow(showWithGraphics, new CompletionListener() {
@@ -154,7 +150,6 @@ public class TextAndGraphicUpdateOperation extends Task {
     }
 
     private void uploadImages(final CompletionListener listener) {
-
         List<SdlArtwork> artworksToUpload = new ArrayList<>();
 
         // add primary image
@@ -193,7 +188,6 @@ public class TextAndGraphicUpdateOperation extends Task {
     }
 
     private Show assembleShowImages(Show show) {
-
         if (shouldUpdatePrimaryImage()) {
             show.setGraphic(updatedState.getPrimaryGraphic().getImageRPC());
         }
@@ -217,7 +211,6 @@ public class TextAndGraphicUpdateOperation extends Task {
     }
 
     Show assembleShowText(Show show) {
-
         show = setBlankTextFields(show);
 
         if (updatedState.getMediaTrackTextField() != null && shouldUpdateMediaTrackField()) {
@@ -249,12 +242,10 @@ public class TextAndGraphicUpdateOperation extends Task {
                 show = assembleFourLineShowText(show);
                 break;
         }
-
         return show;
     }
 
     private Show assembleOneLineShowText(Show show, List<String> showFields) {
-
         StringBuilder showString1 = new StringBuilder();
         for (int i = 0; i < showFields.size(); i++) {
             if (i > 0) {
@@ -264,17 +255,14 @@ public class TextAndGraphicUpdateOperation extends Task {
             }
         }
         show.setMainField1(showString1.toString());
-
         MetadataTags tags = new MetadataTags();
         tags.setMainField1(findNonNullMetadataFields());
-
         show.setMetadataTags(tags);
 
         return show;
     }
 
     private Show assembleTwoLineShowText(Show show) {
-
         StringBuilder tempString = new StringBuilder();
         MetadataTags tags = new MetadataTags();
 
@@ -312,10 +300,10 @@ public class TextAndGraphicUpdateOperation extends Task {
             }
         }
 
-        // set mainfield 1
+        // set mainField1
         show.setMainField1(tempString.toString());
 
-        // new stringbuilder object
+        // new stringBuilder object
         tempString = new StringBuilder();
 
         if (updatedState.getTextField3() != null && updatedState.getTextField3().length() > 0) {
@@ -358,7 +346,6 @@ public class TextAndGraphicUpdateOperation extends Task {
     }
 
     private Show assembleThreeLineShowText(Show show) {
-
         MetadataTags tags = new MetadataTags();
 
         if (updatedState.getTextField1() != null && updatedState.getTextField1().length() > 0) {
@@ -404,16 +391,13 @@ public class TextAndGraphicUpdateOperation extends Task {
                 }
             }
         }
-
         show.setMainField3(tempString.toString());
         show.setMetadataTags(tags);
         return show;
     }
 
     private Show assembleFourLineShowText(Show show) {
-
         MetadataTags tags = new MetadataTags();
-
         if (updatedState.getTextField1() != null && updatedState.getTextField1().length() > 0) {
             show.setMainField1(updatedState.getTextField1());
             if (updatedState.getTextField1Type() != null) {
@@ -443,13 +427,13 @@ public class TextAndGraphicUpdateOperation extends Task {
         }
 
         show.setMetadataTags(tags);
+
         return show;
     }
 
     // Extraction
 
     Show extractTextFromShow(Show show) {
-
         Show newShow = new Show();
         newShow.setMainField1(show.getMainField1());
         newShow.setMainField2(show.getMainField2());
@@ -463,7 +447,6 @@ public class TextAndGraphicUpdateOperation extends Task {
     }
 
     private Show setBlankTextFields(Show newShow) {
-
         newShow.setMainField1("");
         newShow.setMainField2("");
         newShow.setMainField3("");
@@ -474,9 +457,7 @@ public class TextAndGraphicUpdateOperation extends Task {
         return newShow;
     }
 
-    //TODO IOS different by maybe same
     private void updateCurrentScreenDataFromShow(Show show) {
-
         if (show == null) {
             DebugTool.logError(TAG, "can not updateCurrentScreenDataFromShow from null show");
             return;
@@ -565,8 +546,6 @@ public class TextAndGraphicUpdateOperation extends Task {
         return array;
     }
 
-    // abstract SdlArtwork getBlankArtwork();
-
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean sdlArtworkNeedsUpload(SdlArtwork artwork) {
         if (fileManager.get() != null) {
@@ -639,14 +618,6 @@ public class TextAndGraphicUpdateOperation extends Task {
      */
     private boolean templateSupportsTextField(TextFieldName name) {
         return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, name);
-    }
-
-    public Show getSentShow() {
-        return sentShow;
-    }
-
-    public void setSentShow(Show sentShow) {
-        this.sentShow = sentShow;
     }
 
     public Show getCurrentScreenData() {
