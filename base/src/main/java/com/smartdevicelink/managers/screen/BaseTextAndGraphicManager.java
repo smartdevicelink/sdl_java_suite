@@ -98,8 +98,8 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		textAlignment = CENTERED;
 		currentHMILevel = HMILevel.HMI_NONE;
 		currentScreenData = new Show();
-		addListeners();
 		this.transactionQueue = newTransactionQueue();
+		addListeners();
 	}
 
 	@Override

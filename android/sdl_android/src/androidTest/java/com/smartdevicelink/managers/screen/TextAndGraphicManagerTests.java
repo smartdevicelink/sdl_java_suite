@@ -11,24 +11,34 @@ import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
+import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.Show;
+import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
+import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
@@ -38,6 +48,7 @@ import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -70,6 +81,37 @@ public class TextAndGraphicManagerTests {
 		Taskmaster taskmaster = new Taskmaster.Builder().build();
 		taskmaster.start();
 		when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
+
+		Answer<Void> onHMIStatusAnswer = new Answer<Void>() {
+			@Override
+			public Void answer(InvocationOnMock invocation) {
+				Object[] args = invocation.getArguments();
+				OnRPCNotificationListener onHMIStatusListener = (OnRPCNotificationListener) args[1];
+				OnHMIStatus onHMIStatusFakeNotification = new OnHMIStatus();
+				onHMIStatusFakeNotification.setHmiLevel(HMILevel.HMI_FULL);
+				onHMIStatusListener.onNotified(onHMIStatusFakeNotification);
+				return null;
+			}
+		};
+		doAnswer(onHMIStatusAnswer).when(internalInterface).addOnRPCNotificationListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCNotificationListener.class));
+
+
+		// When internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onSystemCapabilityListener) is called
+		// inside SoftButtonManager, respond with a fake response to let the SoftButtonManager continue working.
+		Answer<Void> onSystemCapabilityAnswer = new Answer<Void>() {
+			@Override
+			public Void answer(InvocationOnMock invocation) {
+				Object[] args = invocation.getArguments();
+				OnSystemCapabilityListener onSystemCapabilityListener = (OnSystemCapabilityListener) args[1];
+				WindowCapability windowCapability = getWindowCapability(4);
+				DisplayCapability displayCapability = new DisplayCapability();
+				displayCapability.setWindowCapabilities(Collections.singletonList(windowCapability));
+				List<DisplayCapability> capabilities = Collections.singletonList(displayCapability);
+				onSystemCapabilityListener.onCapabilityRetrieved(capabilities);
+				return null;
+			}
+		};
+		doAnswer(onSystemCapabilityAnswer).when(internalInterface).addOnSystemCapabilityListener(eq(SystemCapabilityType.DISPLAYS), any(OnSystemCapabilityListener.class));
 
 		textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager);
 	}
@@ -134,8 +176,8 @@ public class TextAndGraphicManagerTests {
 		assertNull(textAndGraphicManager.getTextField3Type());
 		assertNull(textAndGraphicManager.getTextField4Type());
 		assertNotNull(textAndGraphicManager.currentScreenData);
-		assertNull(textAndGraphicManager.defaultMainWindowCapability);
-		assertEquals(textAndGraphicManager.currentHMILevel, HMILevel.HMI_NONE);
+		assertNotNull(textAndGraphicManager.defaultMainWindowCapability);
+		assertEquals(textAndGraphicManager.currentHMILevel, HMILevel.HMI_FULL);
 		assertFalse(textAndGraphicManager.isDirty);
 		assertEquals(textAndGraphicManager.getState(), BaseSubManager.SETTING_UP);
 		assertNotNull(textAndGraphicManager.getBlankArtwork());
@@ -248,7 +290,17 @@ public class TextAndGraphicManagerTests {
 		assertEquals(textAndGraphicManager.transactionQueue.getTasksAsList().size(), 1);
 
 		assertTrue(textAndGraphicManager.transactionQueue.getTasksAsList().get(0).getState() == Task.READY);
+	}
 
+	@Test
+	public void testHasData() {
+		assertFalse(textAndGraphicManager.hasData());
 
+		textAndGraphicManager.setTextField1("HI");
+		assertTrue(textAndGraphicManager.hasData());
+
+		textAndGraphicManager.setTextField1(null);
+		textAndGraphicManager.setPrimaryGraphic(testArtwork);
+		assertTrue(textAndGraphicManager.hasData());
 	}
 }
