@@ -178,6 +178,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	private synchronized void sdlUpdate(final CompletionListener listener) {
 		if (transactionQueue.getTasksAsList().size() > 0) {
 			//Transactions already exist, cancelling them
+			transactionQueue.getTasksAsList().get(0).cancelTask();
 			transactionQueue.clear();
 			if (listener != null) {
 				listener.onComplete(false);
@@ -202,17 +203,18 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		updateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager.get(), defaultMainWindowCapability, currentScreenData, currentState(), updateOperationListener, currentScreenDataUpdateListener);
 		transactionQueue.add(updateOperation, false);
 	}
+
 	//Updates pending task with current screen data
-	void updatePendingOperationsWithNewScreenData(Show newScreenData){
-		for(Task task: transactionQueue.getTasksAsList()){
-			if(!(task instanceof TextAndGraphicUpdateOperation) || task.getState() == Task.IN_PROGRESS){
+	void updatePendingOperationsWithNewScreenData(Show newScreenData) {
+		for (Task task : transactionQueue.getTasksAsList()) {
+			if (!(task instanceof TextAndGraphicUpdateOperation) || task.getState() == Task.IN_PROGRESS) {
 				continue;
 			}
 			((TextAndGraphicUpdateOperation) task).setCurrentScreenData(newScreenData);
 		}
 	}
 
-	interface CurrentScreenDataUpdatedListener{
+	interface CurrentScreenDataUpdatedListener {
 		void onUpdate(Show show);
 	}
 
@@ -236,11 +238,11 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			array.add(textField4);
 		}
 
-		if(title != null){
+		if (title != null) {
 			array.add(title);
 		}
 
-		if(mediaTrackTextField != null){
+		if (mediaTrackTextField != null) {
 			array.add(mediaTrackTextField);
 		}
 
