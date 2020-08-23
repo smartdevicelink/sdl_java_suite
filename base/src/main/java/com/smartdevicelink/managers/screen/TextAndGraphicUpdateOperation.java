@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Created by Julian Kast on 8/23/20.
+ */
 public class TextAndGraphicUpdateOperation extends Task {
 
     private static final String TAG = "TextAndGraphicUpdateOperation";

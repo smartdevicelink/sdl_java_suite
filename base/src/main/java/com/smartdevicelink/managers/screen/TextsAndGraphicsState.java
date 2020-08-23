@@ -1,7 +1,5 @@
 package com.smartdevicelink.managers.screen;
 
-
-
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
