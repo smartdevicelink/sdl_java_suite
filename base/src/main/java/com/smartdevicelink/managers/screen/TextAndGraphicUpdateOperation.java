@@ -35,6 +35,7 @@ public class TextAndGraphicUpdateOperation extends Task {
     private Show currentScreenData, sentShow;
     private TextsAndGraphicsState updatedState;
     private CompletionListener listener;
+    private boolean taskIsCanceled;
     private TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener;
 
     /**
@@ -55,6 +56,7 @@ public class TextAndGraphicUpdateOperation extends Task {
         this.updatedState = newState;
         this.listener = listener;
         this.currentScreenDataUpdateListener = currentScreenDataUpdateListener;
+        this.taskIsCanceled = false;
     }
 
     @Override
@@ -63,7 +65,7 @@ public class TextAndGraphicUpdateOperation extends Task {
     }
 
     void start() {
-        if (getState() == Task.CANCELED) {
+        if (taskIsCanceled) {
             finishOperation(false);
             return;
         }
@@ -99,7 +101,7 @@ public class TextAndGraphicUpdateOperation extends Task {
             sendShow(extractTextFromShow(fullShow), new CompletionListener() {
                 @Override
                 public void onComplete(boolean success) {
-                    if (getState() == Task.CANCELED) {
+                    if (taskIsCanceled) {
                         finishOperation(false);
                         return;
                     }
@@ -175,7 +177,7 @@ public class TextAndGraphicUpdateOperation extends Task {
             fileManager.get().uploadArtworks(artworksToUpload, new MultipleFileCompletionListener() {
                 @Override
                 public void onComplete(Map<String, String> errors) {
-                    if (getState() == Task.CANCELED) {
+                    if (taskIsCanceled) {
                         finishOperation(false);
                         return;
                     }
@@ -635,5 +637,8 @@ public class TextAndGraphicUpdateOperation extends Task {
         DebugTool.logInfo(TAG, "Finishing text and graphic update operation");
         listener.onComplete(success);
         onFinished();
+    }
+    public void setTaskIsCanceled(boolean taskIsCanceled) {
+        this.taskIsCanceled = taskIsCanceled;
     }
 }

@@ -178,12 +178,11 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	private synchronized void sdlUpdate(final CompletionListener listener) {
 		if (transactionQueue.getTasksAsList().size() > 0) {
 			//Transactions already exist, cancelling them
-			transactionQueue.getTasksAsList().get(0).cancelTask();
-			transactionQueue.clear();
-			if (listener != null) {
-				listener.onComplete(false);
+			for (Task task : transactionQueue.getTasksAsList()) {
+				if (task instanceof TextAndGraphicUpdateOperation) {
+					((TextAndGraphicUpdateOperation) task).setTaskIsCanceled(true);
+				}
 			}
-			return;
 		}
 		CurrentScreenDataUpdatedListener currentScreenDataUpdateListener = new CurrentScreenDataUpdatedListener() {
 			@Override
