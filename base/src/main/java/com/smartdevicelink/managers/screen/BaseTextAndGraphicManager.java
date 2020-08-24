@@ -185,7 +185,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			}
 		}
 		// transactionQueue.getTaskAsList() will not return a task in progress, so we need to check
-		if (updateOperation.getState() == Task.IN_PROGRESS) {
+		if (updateOperation != null && updateOperation.getState() == Task.IN_PROGRESS) {
 			updateOperation.setTaskIsCanceled(true);
 		}
 
