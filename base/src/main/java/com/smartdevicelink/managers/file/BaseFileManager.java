@@ -452,18 +452,19 @@ abstract class BaseFileManager extends BaseSubManager {
 	/**
 	 * Helper method to take InputStream and turn it into byte array
 	 * @param is valid InputStream
+	 * @param offset the start offset at which the data is read
+	 * @param length the maximum number of bytes to read
 	 * @return Resulting byte array
 	 */
-	byte[] contentsOfInputStream(InputStream is){
+	byte[] contentsOfInputStream(InputStream is, int offset, int length){
 		if(is == null){
 			return null;
 		}
 		try{
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
-			final int bufferSize = 4096;
-			final byte[] buffer = new byte[bufferSize];
+			final byte[] buffer = new byte[length];
 			int available;
-			while ((available = is.read(buffer)) >= 0) {
+			while ((available = is.read(buffer, offset, length)) >= 0) {
 				os.write(buffer, 0, available);
 			}
 			return os.toByteArray();
@@ -473,4 +474,13 @@ abstract class BaseFileManager extends BaseSubManager {
 		}
 	}
 
+	/**
+	 * Helper method to take InputStream and turn it into byte array
+	 * @param is valid InputStream
+	 * @return Resulting byte array
+	 */
+	byte[] contentsOfInputStream(InputStream is){
+		final int bufferSize = 4096;
+		return contentsOfInputStream(is, 0, bufferSize);
+	}
 }

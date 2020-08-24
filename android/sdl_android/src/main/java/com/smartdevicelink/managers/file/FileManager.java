@@ -118,6 +118,14 @@ public class FileManager extends BaseFileManager {
 		}else if(file.getFileData() != null){
 			// Use file data (raw bytes) to upload file
 			putFile.setFileData(file.getFileData());
+		} else if(file.getInputStream() != null) {
+			// Use input stream to upload file
+			byte[] contents = contentsOfInputStream(file.getInputStream(), file.getOffset(), file.getLength());
+			if (contents != null) {
+				putFile.setFileData(contents);
+			} else {
+				throw new IllegalArgumentException("Input stream was empty");
+			}
 		}else{
 			throw new IllegalArgumentException("The SdlFile to upload does " +
 					"not specify its resourceId, Uri, or file data");
