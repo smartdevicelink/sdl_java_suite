@@ -38,14 +38,6 @@ public class TextAndGraphicUpdateOperation extends Task {
     private boolean taskIsCanceled;
     private TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener;
 
-    /**
-     * @param internalInterface
-     * @param fileManager
-     * @param currentCapabilities
-     * @param currentScreenData
-     * @param newState
-     * @param listener
-     */
     public TextAndGraphicUpdateOperation(ISdl internalInterface, FileManager fileManager, WindowCapability currentCapabilities,
                                          Show currentScreenData, TextsAndGraphicsState newState, CompletionListener listener, TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener) {
         super("TextAndGraphicUpdateOperation");
