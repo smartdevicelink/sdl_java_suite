@@ -184,6 +184,11 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				}
 			}
 		}
+		// transactionQueue.getTaskAsList() will not return a task in progress, so we need to check
+		if (updateOperation.getState() == Task.IN_PROGRESS) {
+			updateOperation.setTaskIsCanceled(true);
+		}
+
 		CurrentScreenDataUpdatedListener currentScreenDataUpdateListener = new CurrentScreenDataUpdatedListener() {
 			@Override
 			public void onUpdate(Show show) {
@@ -206,7 +211,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	//Updates pending task with current screen data
 	void updatePendingOperationsWithNewScreenData(Show newScreenData) {
 		for (Task task : transactionQueue.getTasksAsList()) {
-			if (!(task instanceof TextAndGraphicUpdateOperation) || task.getState() == Task.IN_PROGRESS) {
+			if (!(task instanceof TextAndGraphicUpdateOperation)) {
 				continue;
 			}
 			((TextAndGraphicUpdateOperation) task).setCurrentScreenData(newScreenData);
