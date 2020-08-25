@@ -2,7 +2,7 @@ package com.android.grafika.gles;
 
 import android.opengl.GLES20;
 import android.os.Environment;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import android.util.Log;
 
 import org.junit.Test;
