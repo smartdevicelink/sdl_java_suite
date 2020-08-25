@@ -215,6 +215,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -252,6 +254,7 @@ public class TestValues {
 	public static final Double                         GENERAL_DOUBLE                         = 10.01;
 	public static final boolean                        GENERAL_BOOLEAN                        = true;
 	public static final byte[]                         GENERAL_BYTE_ARRAY                     = new byte[0];
+	public static final InputStream                    GENERAL_INPUT_STREAM                   = new ByteArrayInputStream(new byte[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
 	public static final TPMS                           GENERAL_TPMS                           = TPMS.UNKNOWN;
 	public static final TBTState                       GENERAL_TBTSTATE                       = TBTState.NEXT_TURN_REQUEST;
 	public static final FileType                       GENERAL_FILETYPE                       = FileType.BINARY;

@@ -90,6 +90,18 @@ public class SdlFileTests {
         sdlFile.setPersistent(TestValues.GENERAL_BOOLEAN);
         assertEquals(sdlFile.isPersistent(), TestValues.GENERAL_BOOLEAN);
         assertFalse(sdlFile.getOverwrite());
+
+        // Case 4 (Setting InputStream)
+        sdlFile = new SdlFile();
+        sdlFile.setInputStream(TestValues.GENERAL_INPUT_STREAM);
+        assertEquals(sdlFile.getInputStream(), TestValues.GENERAL_INPUT_STREAM);
+        sdlFile.setName(TestValues.GENERAL_STRING);
+        assertEquals(sdlFile.getName(), TestValues.GENERAL_STRING);
+        sdlFile.setType(TestValues.GENERAL_FILETYPE);
+        assertEquals(sdlFile.getType(), TestValues.GENERAL_FILETYPE);
+        sdlFile.setPersistent(TestValues.GENERAL_BOOLEAN);
+        assertEquals(sdlFile.isPersistent(), TestValues.GENERAL_BOOLEAN);
+        assertFalse(sdlFile.getOverwrite());
     }
 
     @Test
@@ -153,5 +165,16 @@ public class SdlFileTests {
         assertEquals(sdlFile2.getUri(), TestValues.GENERAL_URI);
         assertEquals(sdlFile2.isPersistent(), TestValues.GENERAL_BOOLEAN);
         assertFalse(sdlFile2.getOverwrite());
+    }
+
+    @Test
+    public void testConstructorWithInputStream() {
+        // Case1 (Set the name manually)
+        SdlFile sdlFile1 = new SdlFile(TestValues.GENERAL_STRING, TestValues.GENERAL_FILETYPE, TestValues.GENERAL_INPUT_STREAM,0, TestValues.GENERAL_BYTE_ARRAY.length, TestValues.GENERAL_BOOLEAN);
+        assertEquals(sdlFile1.getName(), TestValues.GENERAL_STRING);
+        assertEquals(sdlFile1.getType(), TestValues.GENERAL_FILETYPE);
+        assertEquals(sdlFile1.getInputStream(), TestValues.GENERAL_INPUT_STREAM);
+        assertEquals(sdlFile1.isPersistent(), TestValues.GENERAL_BOOLEAN);
+        assertFalse(sdlFile1.getOverwrite());
     }
 }

@@ -2,6 +2,7 @@ package com.smartdevicelink.managers.file;
 
 import android.content.Context;
 import android.net.Uri;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.managers.BaseSubManager;
@@ -23,12 +24,15 @@ import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.test.TestValues;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -1002,5 +1006,14 @@ public class FileManagerTests {
 		artwork1 = new SdlFile("image1", FileType.GRAPHIC_PNG, 1, false);
 		artwork2 = new SdlFile("image1", FileType.GRAPHIC_PNG, 1, false);
 		assertTrue(artwork1.equals(artwork2));
+	}
+
+	@Test
+	public void testContentsOfInputStream() {
+		FileManager fileManager = new FileManager(null, mTestContext, null);
+		byte[] data1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+		InputStream inputStream = new ByteArrayInputStream(data1);
+		byte[] data2 = fileManager.contentsOfInputStream(inputStream, 0, data1.length);
+		Assert.assertArrayEquals(data1, data2);
 	}
 }
