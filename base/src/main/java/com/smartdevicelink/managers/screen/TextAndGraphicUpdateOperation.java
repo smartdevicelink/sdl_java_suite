@@ -26,19 +26,18 @@ import java.util.Map;
 /**
  * Created by Julian Kast on 8/23/20.
  */
-public class TextAndGraphicUpdateOperation extends Task {
+class TextAndGraphicUpdateOperation extends Task {
 
     private static final String TAG = "TextAndGraphicUpdateOperation";
     private final WeakReference<ISdl> internalInterface;
     private final WeakReference<FileManager> fileManager;
     WindowCapability defaultMainWindowCapability;
-    private Show currentScreenData, sentShow;
+    private Show currentScreenData;
     private TextsAndGraphicsState updatedState;
     private CompletionListener listener;
-    private boolean taskIsCanceled;
     private TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener;
 
-    public TextAndGraphicUpdateOperation(ISdl internalInterface, FileManager fileManager, WindowCapability currentCapabilities,
+    TextAndGraphicUpdateOperation(ISdl internalInterface, FileManager fileManager, WindowCapability currentCapabilities,
                                          Show currentScreenData, TextsAndGraphicsState newState, CompletionListener listener, TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener) {
         super("TextAndGraphicUpdateOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
@@ -48,7 +47,6 @@ public class TextAndGraphicUpdateOperation extends Task {
         this.updatedState = newState;
         this.listener = listener;
         this.currentScreenDataUpdateListener = currentScreenDataUpdateListener;
-        this.taskIsCanceled = false;
     }
 
     @Override
@@ -56,8 +54,8 @@ public class TextAndGraphicUpdateOperation extends Task {
         start();
     }
 
-    void start() {
-        if (taskIsCanceled) {
+    private void start() {
+        if (getState() == Task.CANCELED) {
             finishOperation(false);
             return;
         }
@@ -93,7 +91,7 @@ public class TextAndGraphicUpdateOperation extends Task {
             sendShow(extractTextFromShow(fullShow), new CompletionListener() {
                 @Override
                 public void onComplete(boolean success) {
-                    if (taskIsCanceled) {
+                    if (getState() == Task.CANCELED) {
                         finishOperation(false);
                         return;
                     }
@@ -109,7 +107,7 @@ public class TextAndGraphicUpdateOperation extends Task {
         }
     }
 
-    void sendShow(final Show show, final CompletionListener listener) {
+    private void sendShow(final Show show, final CompletionListener listener) {
         show.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
@@ -125,7 +123,7 @@ public class TextAndGraphicUpdateOperation extends Task {
     }
 
 
-    void uploadImagesAndSendWhenDone(final CompletionListener listener) {
+    private void uploadImagesAndSendWhenDone(final CompletionListener listener) {
         uploadImages(new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
@@ -140,7 +138,7 @@ public class TextAndGraphicUpdateOperation extends Task {
                     });
                 } else {
                     DebugTool.logWarning(TAG, "All images failed to upload. No graphics to show, skipping update.");
-                    listener.onComplete(success);
+                    listener.onComplete(false);
                 }
             }
         });
@@ -169,7 +167,7 @@ public class TextAndGraphicUpdateOperation extends Task {
             fileManager.get().uploadArtworks(artworksToUpload, new MultipleFileCompletionListener() {
                 @Override
                 public void onComplete(Map<String, String> errors) {
-                    if (taskIsCanceled) {
+                    if (getState() == Task.CANCELED) {
                         finishOperation(false);
                         return;
                     }
@@ -625,12 +623,11 @@ public class TextAndGraphicUpdateOperation extends Task {
         this.currentScreenData = currentScreenData;
     }
 
-    void finishOperation(boolean success) {
+    private void finishOperation(boolean success) {
         DebugTool.logInfo(TAG, "Finishing text and graphic update operation");
-        listener.onComplete(success);
+        if(listener != null){
+            listener.onComplete(success);
+        }
         onFinished();
-    }
-    public void setTaskIsCanceled(boolean taskIsCanceled) {
-        this.taskIsCanceled = taskIsCanceled;
     }
 }
