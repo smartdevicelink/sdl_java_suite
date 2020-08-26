@@ -126,7 +126,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	private void initialize(){
 		if (fileManager.get() != null) {
 			this.softButtonManager = new SoftButtonManager(internalInterface, fileManager.get());
-			this.textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager.get());
+			this.textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager.get(), softButtonManager);
 			this.menuManager = new MenuManager(internalInterface, fileManager.get());
 			this.choiceSetManager = new ChoiceSetManager(internalInterface, fileManager.get());
 		}

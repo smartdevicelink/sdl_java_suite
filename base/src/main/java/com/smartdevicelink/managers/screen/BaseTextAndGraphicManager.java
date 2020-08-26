@@ -74,6 +74,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	boolean isDirty;
 	Show currentScreenData;
 	HMILevel currentHMILevel;
+	private final WeakReference<SoftButtonManager> softButtonManager;
 	WindowCapability defaultMainWindowCapability;
 	private boolean batchingUpdates;
 	private final WeakReference<FileManager> fileManager;
@@ -89,10 +90,11 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 	//Constructors
 
-	BaseTextAndGraphicManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
+	BaseTextAndGraphicManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager, @NonNull SoftButtonManager softButtonManager) {
 		// set class vars
 		super(internalInterface);
 		this.fileManager = new WeakReference<>(fileManager);
+		this.softButtonManager = new WeakReference<>(softButtonManager);
 		batchingUpdates = false;
 		isDirty = false;
 		textAlignment = CENTERED;
@@ -215,6 +217,9 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				continue;
 			}
 			((TextAndGraphicUpdateOperation) task).setCurrentScreenData(newScreenData);
+		}
+		if (this.softButtonManager.get() != null && newScreenData.getMainField1() != null) {
+			this.softButtonManager.get().setCurrentMainField1(currentScreenData.getMainField1());
 		}
 	}
 
