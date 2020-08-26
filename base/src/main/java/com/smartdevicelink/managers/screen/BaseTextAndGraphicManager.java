@@ -85,7 +85,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	private TextAlignment textAlignment;
 	private String textField1, textField2, textField3, textField4, mediaTrackTextField, title;
 	private MetadataType textField1Type, textField2Type, textField3Type, textField4Type;
-	private TextAndGraphicUpdateOperation updateOperation;
+	TextAndGraphicUpdateOperation updateOperation;
 	private CompletionListener currentOperationListener;
 	Queue transactionQueue;
 

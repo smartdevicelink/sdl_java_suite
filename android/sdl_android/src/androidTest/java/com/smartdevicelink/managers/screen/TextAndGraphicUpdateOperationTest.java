@@ -83,7 +83,7 @@ public class TextAndGraphicUpdateOperationTest {
             RPCRequest message = (RPCRequest) args[0];
             if (message instanceof Show) {
                 int correlationId = message.getCorrelationID();
-                textAndGraphicUpdateOperation.setTaskIsCanceled(true);
+                textAndGraphicUpdateOperation.cancelTask();
                 ShowResponse showResponse = new ShowResponse();
                 showResponse.setSuccess(true);
                 message.getOnRPCResponseListener().onResponse(correlationId, showResponse);
