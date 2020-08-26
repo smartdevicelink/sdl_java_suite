@@ -311,16 +311,16 @@ public class VideoStreamManagerTests {
 
 				videoStreamManager.startRemoteDisplayStream(mTestContext, TestPresentation.class, null, false);
 
-				Field privateStringField = null;
+				Field sdlRemoteDisplayField = null;
 				try {
-					privateStringField = VideoStreamManager.class.
+					sdlRemoteDisplayField = VideoStreamManager.class.
 							getDeclaredField("sdlRemoteDisplay");
 				} catch (NoSuchFieldException e) { e.printStackTrace(); }
-				privateStringField.setAccessible(true);
+				sdlRemoteDisplayField.setAccessible(true);
 
 				SdlRemoteDisplay display = null;
 				try {
-					display = (SdlRemoteDisplay) privateStringField.get(videoStreamManager);
+					display = (SdlRemoteDisplay) sdlRemoteDisplayField.get(videoStreamManager);
 				} catch (IllegalAccessException e) { e.printStackTrace(); }
 				display.onViewResized(100, 100);
 

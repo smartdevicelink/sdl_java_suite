@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="100dp"
-        android:text="Start Proxy" />
+        android:text="@string/start_proxy" />
 
     <Button
         android:id="@+id/start_streaming"
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/start_proxy"
         android:layout_centerInParent="true"
-        android:text="Start streaming" />
+        android:text="@string/start_streaming" />
 
     <Button
         android:id="@+id/start_streaming_ui"
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/start_streaming"
         android:layout_centerInParent="true"
-        android:text="Start streaming ui" />
+        android:text="@string/start_streaming_ui" />
 
     <Button
         android:id="@+id/exit_application"
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/start_streaming_ui"
         android:layout_centerInParent="true"
-        android:text="Exit application" />
+        android:text="@string/exit_application" />
 
     <EditText
         android:id="@+id/machine_ip"
@@ -46,8 +46,8 @@
         android:layout_below="@+id/exit_application"
         android:layout_centerInParent="true"
         android:layout_margin="8dp"
-        android:hint="Ip"
-        android:text="192.168.0.101" />
+        android:hint="@string/ip"
+        android:text="@string/default_ip" />
 
     <EditText
         android:id="@+id/machine_port"
@@ -56,8 +56,8 @@
         android:layout_below="@+id/machine_ip"
         android:layout_centerInParent="true"
         android:layout_margin="8dp"
-        android:hint="Port"
-        android:text="12345" />
+        android:hint="@string/port"
+        android:text="@string/default_port" />
 
     <EditText
         android:id="@+id/pre_conf_width"
@@ -66,8 +66,8 @@
         android:layout_below="@+id/machine_port"
         android:layout_centerInParent="true"
         android:layout_margin="8dp"
-        android:hint="Width of remote display in px"
-        android:text="1920" />
+        android:hint="@string/width_of_remote_display_in_px"
+        android:text="@string/default_width" />
 
     <EditText
         android:id="@+id/pre_conf_height"
@@ -76,6 +76,6 @@
         android:layout_below="@+id/pre_conf_width"
         android:layout_centerInParent="true"
         android:layout_margin="8dp"
-        android:hint="Height of remote display in px"
-        android:text="1080" />
+        android:hint="@string/height_of_remote_display_in_px"
+        android:text="@string/default_height" />
 </RelativeLayout>
