@@ -560,7 +560,8 @@ class TextAndGraphicUpdateOperation extends Task {
         String currentScreenDataPrimaryGraphicName = (currentScreenData != null && currentScreenData.getGraphic() != null) ? currentScreenData.getGraphic().getValue() : null;
         String primaryGraphicName = updatedState.getPrimaryGraphic() != null ? updatedState.getPrimaryGraphic().getName() : null;
         return templateSupportsPrimaryArtwork
-                && !CompareUtils.areStringsEqual(currentScreenDataPrimaryGraphicName, primaryGraphicName, true, true);
+                && !CompareUtils.areStringsEqual(currentScreenDataPrimaryGraphicName, primaryGraphicName, true, true)
+                && updatedState.getPrimaryGraphic() != null;
     }
 
     /**
@@ -574,7 +575,8 @@ class TextAndGraphicUpdateOperation extends Task {
         String currentScreenDataSecondaryGraphicName = (currentScreenData != null && currentScreenData.getSecondaryGraphic() != null) ? currentScreenData.getSecondaryGraphic().getValue() : null;
         String secondaryGraphicName = updatedState.getSecondaryGraphic() != null ? updatedState.getSecondaryGraphic().getName() : null;
         return templateSupportsSecondaryArtwork
-                && !CompareUtils.areStringsEqual(currentScreenDataSecondaryGraphicName, secondaryGraphicName, true, true);
+                && !CompareUtils.areStringsEqual(currentScreenDataSecondaryGraphicName, secondaryGraphicName, true, true)
+                && updatedState.getSecondaryGraphic() != null;
     }
 
     /**
