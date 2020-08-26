@@ -52,6 +52,7 @@ class TextAndGraphicManager extends BaseTextAndGraphicManager {
 		super(internalInterface, fileManager, softButtonManager);
 	}
 
+	@Override
 	SdlArtwork getBlankArtwork() {
 		if (blankArtwork == null) {
 			blankArtwork = new SdlArtwork();

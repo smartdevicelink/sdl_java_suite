@@ -265,6 +265,8 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		return hasTextFields || hasImageFields;
 	}
 
+	abstract SdlArtwork getBlankArtwork();
+
 
 	// Convert to State
 
