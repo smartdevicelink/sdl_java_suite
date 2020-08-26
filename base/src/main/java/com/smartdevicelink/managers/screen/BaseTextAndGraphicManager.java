@@ -86,6 +86,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	private String textField1, textField2, textField3, textField4, mediaTrackTextField, title;
 	private MetadataType textField1Type, textField2Type, textField3Type, textField4Type;
 	private TextAndGraphicUpdateOperation updateOperation;
+	private CompletionListener currentOperationListener;
 	Queue transactionQueue;
 
 	//Constructors
@@ -178,18 +179,29 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	}
 
 	private synchronized void sdlUpdate(final CompletionListener listener) {
-		if (transactionQueue.getTasksAsList().size() > 0) {
-			//Transactions already exist, cancelling them
-			for (Task task : transactionQueue.getTasksAsList()) {
-				if (task instanceof TextAndGraphicUpdateOperation) {
-					((TextAndGraphicUpdateOperation) task).setTaskIsCanceled(true);
-				}
+		if (this.transactionQueue.getTasksAsList().size() > 0) {
+			// Transactions already in queue, we need to clear it out
+			transactionQueue.clear();
+			updateOperation = null;
+			if (currentOperationListener != null) {
+				currentOperationListener.onComplete(false);
 			}
 		}
-		// transactionQueue.getTaskAsList() will not return a task in progress, so we need to check
-		if (updateOperation != null && updateOperation.getState() == Task.IN_PROGRESS) {
-			updateOperation.setTaskIsCanceled(true);
+
+		// Task can be READY, about to start and popped of the queue, so we have to cancel it, to prevent it from starting
+		if (updateOperation != null && updateOperation.getState() == Task.READY) {
+			updateOperation.cancelTask();
+			if (currentOperationListener != null) {
+				currentOperationListener.onComplete(false);
+			}
 		}
+
+		// If Task is IN_PROGRESS it's not on the queue, we need to cancel it, operation will take care of stopping it.
+		if (updateOperation != null && updateOperation.getState() == Task.IN_PROGRESS) {
+			updateOperation.cancelTask();
+		}
+
+		currentOperationListener = listener;
 
 		CurrentScreenDataUpdatedListener currentScreenDataUpdateListener = new CurrentScreenDataUpdatedListener() {
 			@Override
@@ -198,16 +210,8 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				currentScreenData = show;
 			}
 		};
-		CompletionListener updateOperationListener = new CompletionListener() {
-			@Override
-			public void onComplete(boolean success) {
-				if (listener != null) {
-					listener.onComplete(success);
-				}
-			}
-		};
 
-		updateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager.get(), defaultMainWindowCapability, currentScreenData, currentState(), updateOperationListener, currentScreenDataUpdateListener);
+		updateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager.get(), defaultMainWindowCapability, currentScreenData, currentState(), currentOperationListener, currentScreenDataUpdateListener);
 		transactionQueue.add(updateOperation, false);
 	}
 
