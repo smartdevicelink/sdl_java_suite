@@ -195,6 +195,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			@Override
 			public void onUpdate(Show show) {
 				updatePendingOperationsWithNewScreenData(show);
+				currentScreenData = show;
 			}
 		};
 		CompletionListener updateOperationListener = new CompletionListener() {
@@ -473,6 +474,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				List<DisplayCapability> capabilities = SystemCapabilityManager.convertToList(capability, DisplayCapability.class);
 				if (capabilities == null || capabilities.size() == 0) {
 					DebugTool.logError(TAG, "TextAndGraphic Manager - Capabilities sent here are null or empty");
+					defaultMainWindowCapability = null;
 				} else {
 					DisplayCapability display = capabilities.get(0);
 					for (WindowCapability windowCapability : display.getWindowCapabilities()) {
