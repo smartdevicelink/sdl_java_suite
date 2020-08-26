@@ -265,7 +265,7 @@ public class TextAndGraphicUpdateOperation extends Task {
 
         if (updatedState.getTextField1() != null && updatedState.getTextField1().length() > 0) {
             tempString.append(updatedState.getTextField1());
-            if (updatedState.getTextField1() != null) {
+            if (updatedState.getTextField1Type() != null) {
                 tags.setMainField1(updatedState.getTextField1Type());
             }
         }
