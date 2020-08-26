@@ -160,7 +160,7 @@ public class SdlService extends Service {
 								.setMaxSupportedResolution(new Resolution(800, 480))
 								.setMinSupportedResolution(new Resolution(400, 200))
 								.setAspectRatio(new AspectRatio(1., 6.))
-								.setMaxScreenDiagonal(20.);
+								.setMinScreenDiagonal(1.);
 						VideoStreamingRange range = builder.build();
 						sdlManager.getVideoStreamManager().startRemoteDisplayStream(getApplicationContext(), myClass, null, false, range);
 					} else {

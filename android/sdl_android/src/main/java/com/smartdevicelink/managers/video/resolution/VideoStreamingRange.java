@@ -4,21 +4,18 @@ public class VideoStreamingRange {
     private Resolution minResolution;
     private Resolution maxResolution;
     private Double minScreenDiagonal;
-    private Double minAspectRatio;
-    private Double maxAspectRatio;
+    private AspectRatio aspectRatio;
 
     public VideoStreamingRange(
             Resolution minResolution,
             Resolution maxResolution,
             Double minScreenDiagonal,
-            Double minAspectRatio,
-            Double maxAspectRatio
+            AspectRatio aspectRatio
     ) {
         this.minResolution = minResolution;
         this.maxResolution = maxResolution;
         this.minScreenDiagonal = minScreenDiagonal;
-        this.minAspectRatio = minAspectRatio;
-        this.maxAspectRatio = maxAspectRatio;
+        this.aspectRatio = aspectRatio;
     }
 
     private VideoStreamingRange() { }
@@ -35,11 +32,7 @@ public class VideoStreamingRange {
         return minScreenDiagonal;
     }
 
-    public Double getMinAspectRatio() {
-        return minAspectRatio;
-    }
-
-    public Double getMaxAspectRatio() { return maxAspectRatio; }
+    public AspectRatio getAspectRatio(){ return aspectRatio; }
 
     public static class Builder {
         private VideoStreamingRange range = new VideoStreamingRange();
@@ -54,18 +47,13 @@ public class VideoStreamingRange {
             return this;
         }
 
-        public Builder setMaxScreenDiagonal(Double maxScreenDiagonal) {
-            range.minScreenDiagonal = maxScreenDiagonal;
+        public Builder setMinScreenDiagonal(Double minScreenDiagonal) {
+            range.minScreenDiagonal = minScreenDiagonal;
             return this;
         }
 
-        public Builder setMinAspectRatio(Double minAspectRatio) {
-            range.minAspectRatio = minAspectRatio;
-            return this;
-        }
-
-        public Builder setMaxAspectRatio(Double maxAspectRatio) {
-            range.maxAspectRatio = maxAspectRatio;
+        public Builder setAspectRatio(AspectRatio aspectRatio) {
+            range.aspectRatio = aspectRatio;
             return this;
         }
 

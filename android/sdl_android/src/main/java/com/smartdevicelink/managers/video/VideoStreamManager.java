@@ -381,8 +381,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 											streamingRange.getMinResolution(),
 											streamingRange.getMaxResolution(),
 											streamingRange.getMinScreenDiagonal(),
-											streamingRange.getMinAspectRatio(),
-											streamingRange.getMaxAspectRatio(),
+											streamingRange.getAspectRatio(),
 											castedCapability.getAdditionalVideoStreamingCapabilities()
 									)
 							);
@@ -746,8 +745,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			Resolution minResolution,
 			Resolution maxResolution,
 			Double minScreenDiagonal,
-			Double minAspectRatio,
-			Double maxAspectRatio,
+			AspectRatio aspectRatio,
 			List<VideoStreamingCapability> originalAdditionalCapabilities
 	){
 		Integer constraintHeightMax = maxResolution.getResolutionHeight();
@@ -782,13 +780,13 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				continue;
 			}
 
-			if (!isAspectRatioInRange(streamingRange, capability.getPreferredResolution())) {
+			if (!isAspectRatioInRange(aspectRatio, capability.getPreferredResolution())) {
 				if (constraintHeightMax == null && constraintHeightMin == null) {
 					continue;
 				}
 			}
 
-			if (!isImageResolutionInRange(streamingRange, capability.getPreferredResolution())) {
+			if (!isImageResolutionInRange(minResolution, maxResolution, capability.getPreferredResolution())) {
 				continue;
 			}
 
@@ -798,12 +796,12 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		return validCapabilities;
 	}
 
-	public Boolean isImageResolutionInRange(VideoStreamingRange range, ImageResolution currentResolution) {
+	public Boolean isImageResolutionInRange(Resolution minResolution, Resolution maxResolution, ImageResolution currentResolution) {
 
-		Integer constraintHeightMax = range.getMaxResolution().getResolutionHeight();
-		Integer constraintHeightMin = range.getMinResolution().getResolutionHeight();
-		Integer constraintWidthMax = range.getMaxResolution().getResolutionWidth();
-		Integer constraintWidthMin = range.getMinResolution().getResolutionWidth();
+		Integer constraintHeightMax = maxResolution.getResolutionHeight();
+		Integer constraintHeightMin = minResolution.getResolutionHeight();
+		Integer constraintWidthMax = maxResolution.getResolutionWidth();
+		Integer constraintWidthMin = minResolution.getResolutionWidth();
 		Integer resolutionHeight = currentResolution.getResolutionHeight();
 		Integer resolutionWidth = currentResolution.getResolutionWidth();
 		if (currentResolution.getResolutionHeight() > 0 && currentResolution.getResolutionWidth() > 0 && constraintHeightMax != null && constraintHeightMin != null)
@@ -821,9 +819,9 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		return true;
 	}
 
-	public Boolean isAspectRatioInRange(VideoStreamingRange range, ImageResolution currentResolution) {
-		Double aspectRatioMin = range.getMinAspectRatio();
-		Double aspectRatioMax = range.getMaxAspectRatio();
+	public Boolean isAspectRatioInRange(AspectRatio aspectRatio, ImageResolution currentResolution) {
+		Double aspectRatioMin = aspectRatio.getMinAspectRatio();
+		Double aspectRatioMax = aspectRatio.getMaxAspectRatio();
 
 		Double currentAspectRatio = Double.valueOf(currentResolution.getResolutionWidth()) / Double.valueOf(currentResolution.getResolutionHeight());
 
