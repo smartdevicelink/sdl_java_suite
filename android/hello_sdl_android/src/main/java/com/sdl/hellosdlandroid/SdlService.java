@@ -399,4 +399,199 @@ public class SdlService extends Service {
 			).show();
 		}
     }
+//
+//	/**
+//	 * Send some voice commands
+//	 */
+//	private void setVoiceCommands(){
+//
+//		List<String> list1 = Collections.singletonList("Command One");
+//		List<String> list2 = Collections.singletonList("Command two");
+//
+//		VoiceCommand voiceCommand1 = new VoiceCommand(list1, new VoiceCommandSelectionListener() {
+//			@Override
+//			public void onVoiceCommandSelected() {
+//				Log.i(TAG, "Voice Command 1 triggered");
+//			}
+//		});
+//
+//		VoiceCommand voiceCommand2 = new VoiceCommand(list2, new VoiceCommandSelectionListener() {
+//			@Override
+//			public void onVoiceCommandSelected() {
+//				Log.i(TAG, "Voice Command 2 triggered");
+//			}
+//		});
+//
+//		sdlManager.getScreenManager().setVoiceCommands(Arrays.asList(voiceCommand1,voiceCommand2));
+//	}
+//
+//	/**
+//	 *  Add menus for the app on SDL.
+//	 */
+//	private void sendMenus(){
+//
+//		// some arts
+//		SdlArtwork livio = new SdlArtwork("livio", FileType.GRAPHIC_PNG, R.drawable.sdl, false);
+//
+//		// some voice commands
+//		List<String> voice2 = Collections.singletonList("Cell two");
+//
+//		MenuCell mainCell1 = new MenuCell("Test Cell 1 (speak)", livio, null, new MenuSelectionListener() {
+//			@Override
+//			public void onTriggered(TriggerSource trigger) {
+//				Log.i(TAG, "Test cell 1 triggered. Source: "+ trigger.toString());
+//				showTest();
+//			}
+//		});
+//
+//		MenuCell mainCell2 = new MenuCell("Test Cell 2", null, voice2, new MenuSelectionListener() {
+//			@Override
+//			public void onTriggered(TriggerSource trigger) {
+//				Log.i(TAG, "Test cell 2 triggered. Source: "+ trigger.toString());
+//			}
+//		});
+//
+//		// SUB MENU
+//
+//		MenuCell subCell1 = new MenuCell("SubCell 1",null, null, new MenuSelectionListener() {
+//			@Override
+//			public void onTriggered(TriggerSource trigger) {
+//				Log.i(TAG, "Sub cell 1 triggered. Source: "+ trigger.toString());
+//			}
+//		});
+//
+//		MenuCell subCell2 = new MenuCell("SubCell 2",null, null, new MenuSelectionListener() {
+//			@Override
+//			public void onTriggered(TriggerSource trigger) {
+//				Log.i(TAG, "Sub cell 2 triggered. Source: "+ trigger.toString());
+//			}
+//		});
+//
+//		// sub menu parent cell
+//		MenuCell mainCell3 = new MenuCell("Test Cell 3 (sub menu)", null, Arrays.asList(subCell1,subCell2));
+//
+//		MenuCell mainCell4 = new MenuCell("Show Perform Interaction", null, null, new MenuSelectionListener() {
+//			@Override
+//			public void onTriggered(TriggerSource trigger) {
+//				showPerformInteraction();
+//			}
+//		});
+//
+//		MenuCell mainCell5 = new MenuCell("Clear the menu",null, null, new MenuSelectionListener() {
+//			@Override
+//			public void onTriggered(TriggerSource trigger) {
+//				Log.i(TAG, "Clearing Menu. Source: "+ trigger.toString());
+//				// Clear this thing
+//				sdlManager.getScreenManager().setMenu(Collections.<MenuCell>emptyList());
+//				showAlert("Menu Cleared");
+//			}
+//		});
+//
+//		// Send the entire menu off to be created
+//		sdlManager.getScreenManager().setMenu(Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4, mainCell5));
+//	}
+//
+//	/**
+//	 * Will speak a sample welcome message
+//	 */
+//	private void performWelcomeSpeak(){
+//		sdlManager.sendRPC(new Speak(TTSChunkFactory.createSimpleTTSChunks(WELCOME_SPEAK)));
+//	}
+//
+//	/**
+//	 * Use the Screen Manager to set the initial screen text and set the image.
+//	 * Because we are setting multiple items, we will call beginTransaction() first,
+//	 * and finish with commit() when we are done.
+//	 */
+//	private void performWelcomeShow() {
+//		sdlManager.getScreenManager().beginTransaction();
+//		sdlManager.getScreenManager().setTextField1(APP_NAME);
+//		sdlManager.getScreenManager().setTextField2(WELCOME_SHOW);
+//		sdlManager.getScreenManager().setPrimaryGraphic(new SdlArtwork(SDL_IMAGE_FILENAME, FileType.GRAPHIC_PNG, R.drawable.sdl, true));
+//		sdlManager.getScreenManager().commit(new CompletionListener() {
+//			@Override
+//			public void onComplete(boolean success) {
+//				if (success){
+//					Log.i(TAG, "welcome show successful");
+//				}
+//			}
+//		});
+//	}
+//
+//	/**
+//	 * Attempts to Subscribe to all preset buttons
+//	 */
+//	private void subscribeToButtons() {
+//		ButtonName[] buttonNames = {ButtonName.PLAY_PAUSE, ButtonName.SEEKLEFT, ButtonName.SEEKRIGHT, ButtonName.AC_MAX, ButtonName.AC, ButtonName.RECIRCULATE,
+//				ButtonName.FAN_UP, ButtonName.FAN_DOWN, ButtonName.TEMP_UP, ButtonName.TEMP_DOWN, ButtonName.FAN_DOWN, ButtonName.DEFROST_MAX, ButtonName.DEFROST_REAR, ButtonName.DEFROST,
+//				ButtonName.UPPER_VENT, ButtonName.LOWER_VENT, ButtonName.VOLUME_UP, ButtonName.VOLUME_DOWN, ButtonName.EJECT, ButtonName.SOURCE, ButtonName.SHUFFLE, ButtonName.REPEAT};
+//
+//		OnButtonListener onButtonListener = new OnButtonListener() {
+//			@Override
+//			public void onPress(ButtonName buttonName, OnButtonPress buttonPress) {
+//				sdlManager.getScreenManager().setTextField1(buttonName + " pressed");
+//			}
+//
+//			@Override
+//			public void onEvent(ButtonName buttonName, OnButtonEvent buttonEvent) {
+//				sdlManager.getScreenManager().setTextField2(buttonName + " " + buttonEvent.getButtonEventMode());
+//			}
+//
+//			@Override
+//			public void onError(String info) {
+//				Log.i(TAG, "onError: " + info);
+//			}
+//		};
+//
+//		for (ButtonName buttonName : buttonNames) {
+//			sdlManager.getScreenManager().addButtonListener(buttonName, onButtonListener);
+//		}
+//	}
+//
+//	/**
+//	 * Will show a sample test message on screen as well as speak a sample test message
+//	 */
+//	private void showTest(){
+//		sdlManager.getScreenManager().beginTransaction();
+//		sdlManager.getScreenManager().setTextField1("Test Cell 1 has been selected");
+//		sdlManager.getScreenManager().setTextField2("");
+//		sdlManager.getScreenManager().commit(null);
+//
+//		sdlManager.sendRPC(new Speak(TTSChunkFactory.createSimpleTTSChunks(TEST_COMMAND_NAME)));
+//	}
+//
+//	private void showAlert(String text){
+//		Alert alert = new Alert();
+//		alert.setAlertText1(text);
+//		alert.setDuration(5000);
+//		sdlManager.sendRPC(alert);
+//	}
+//
+//	// Choice Set
+//
+//	private void preloadChoices(){
+//		ChoiceCell cell1 = new ChoiceCell("Item 1");
+//		ChoiceCell cell2 = new ChoiceCell("Item 2");
+//		ChoiceCell cell3 = new ChoiceCell("Item 3");
+//		choiceCellList = new ArrayList<>(Arrays.asList(cell1,cell2,cell3));
+//		sdlManager.getScreenManager().preloadChoices(choiceCellList, null);
+//	}
+//
+//	private void showPerformInteraction(){
+//		if (choiceCellList != null) {
+//			ChoiceSet choiceSet = new ChoiceSet("Choose an Item from the list", choiceCellList, new ChoiceSetSelectionListener() {
+//				@Override
+//				public void onChoiceSelected(ChoiceCell choiceCell, TriggerSource triggerSource, int rowIndex) {
+//					showAlert(choiceCell.getText() + " was selected");
+//				}
+//
+//				@Override
+//				public void onError(String error) {
+//					Log.e(TAG, "There was an error showing the perform interaction: "+ error);
+//				}
+//			});
+//			sdlManager.getScreenManager().presentChoiceSet(choiceSet, InteractionMode.MANUAL_ONLY);
+//		}
+//	}
+
 }
