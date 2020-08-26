@@ -242,25 +242,6 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
     }
 
-    /**
-     * Closes the opened video service (serviceType 11)
-     *
-     * @return true if the video service is closed successfully, return false otherwise
-     */
-    @Override
-    void endVideoStream() {
-        if (session == null) {
-            DebugTool.logWarning(TAG, "SdlSession is not created yet.");
-            return;
-        }
-        if (!session.getIsConnected()) {
-            DebugTool.logWarning(TAG, "Connection is not available.");
-            return;
-        }
-
-        session.stopVideoStream();
-    }
-
     @Override
     void startAudioService(boolean isEncrypted) {
         if (session == null) {
@@ -272,24 +253,5 @@ public class LifecycleManager extends BaseLifecycleManager {
             return;
         }
         session.startService(SessionType.PCM, isEncrypted);
-    }
-
-    /**
-     * Closes the opened audio service (serviceType 10)
-     *
-     * @return true if the audio service is closed successfully, return false otherwise
-     */
-    @Override
-    void endAudioStream() {
-        if (session == null) {
-            DebugTool.logWarning(TAG, "SdlSession is not created yet.");
-            return;
-        }
-        if (!session.getIsConnected()) {
-            DebugTool.logWarning(TAG, "Connection is not available.");
-            return;
-        }
-
-        session.stopAudioStream();
     }
 }

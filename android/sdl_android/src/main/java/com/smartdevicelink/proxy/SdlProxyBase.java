@@ -360,18 +360,18 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 		}
 
-		@Override
-		public void stopVideoService() {
-			if(isConnected()){
-				sdlSession.endService(SessionType.NAV);
-			}
-		}
-
-		@Override public void stopAudioService() {
-			if(isConnected()){
-				sdlSession.endService(SessionType.PCM);
-			}
-		}
+//		@Override
+//		public void stopVideoService() {
+//			if(isConnected()){
+//				sdlSession.endService(SessionType.NAV);
+//			}
+//		}
+//
+//		@Override public void stopAudioService() {
+//			if(isConnected()){
+//				sdlSession.endService(SessionType.PCM);
+//			}
+//		}
 
 		@Override
 		public void sendRPCRequest(RPCRequest message){
@@ -8201,7 +8201,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				encoder.shutDown();
 			}
 			if(internalInterface!=null){
-				internalInterface.stopVideoService();
+//				internalInterface.stopVideoService();
 			}
 		}
 

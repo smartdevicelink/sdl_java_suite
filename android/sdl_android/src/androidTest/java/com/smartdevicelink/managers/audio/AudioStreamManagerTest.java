@@ -5,8 +5,9 @@ import android.media.AudioFormat;
 import android.media.MediaFormat;
 import android.media.MediaPlayer;
 import android.os.Build;
-import androidx.test.platform.app.InstrumentationRegistry;
 import android.util.Log;
+
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.managers.CompletionListener;
@@ -93,10 +94,6 @@ public class AudioStreamManagerTest extends TestCase {
                         Boolean encrypted = (Boolean) args[0];
                         serviceListener.onServiceStarted(mockSession, SessionType.PCM, encrypted);
                         break;
-                    case "stopAudioService":
-                        // parameters ()
-                        serviceListener.onServiceEnded(mockSession, SessionType.PCM);
-                        break;
                 }
 
                 return null;
@@ -109,7 +106,6 @@ public class AudioStreamManagerTest extends TestCase {
         doReturn(audioCapabilities).when(internalInterface).getCapability(SystemCapabilityType.PCM_STREAMING);
         doAnswer(audioServiceAnswer).when(internalInterface).addServiceListener(any(SessionType.class), any(ISdlServiceListener.class));
         doAnswer(audioServiceAnswer).when(internalInterface).startAudioService(any(Boolean.class));
-        doAnswer(audioServiceAnswer).when(internalInterface).stopAudioService();
 
         CompletionListener completionListener = new CompletionListener() {
             @Override
@@ -270,7 +266,6 @@ public class AudioStreamManagerTest extends TestCase {
         };
 
         final SdlSession mockSession = mock(SdlSession.class);
-        doReturn(audioStreamListener).when(mockSession).startAudioStream();
 
         Answer<Void> audioServiceAnswer = new Answer<Void>() {
             ISdlServiceListener serviceListener = null;
@@ -307,7 +302,6 @@ public class AudioStreamManagerTest extends TestCase {
         doReturn(audioCapabilities).when(internalInterface).getCapability(any(SystemCapabilityType.class));
         doAnswer(audioServiceAnswer).when(internalInterface).addServiceListener(any(SessionType.class), any(ISdlServiceListener.class));
         doAnswer(audioServiceAnswer).when(internalInterface).startAudioService(any(Boolean.class));
-        doAnswer(audioServiceAnswer).when(internalInterface).stopAudioService();
 
         CompletionListener fileCompletionListener = new CompletionListener() {
             @Override
@@ -504,7 +498,6 @@ public class AudioStreamManagerTest extends TestCase {
         };
 
         final SdlSession mockSession = mock(SdlSession.class);
-        doReturn(audioStreamListener).when(mockSession).startAudioStream();
 
         Answer<Void> audioServiceAnswer = new Answer<Void>() {
             ISdlServiceListener serviceListener = null;
@@ -541,7 +534,6 @@ public class AudioStreamManagerTest extends TestCase {
         doReturn(audioCapabilities).when(internalInterface).getCapability(any(SystemCapabilityType.class));
         doAnswer(audioServiceAnswer).when(internalInterface).addServiceListener(any(SessionType.class), any(ISdlServiceListener.class));
         doAnswer(audioServiceAnswer).when(internalInterface).startAudioService(any(Boolean.class));
-        doAnswer(audioServiceAnswer).when(internalInterface).stopAudioService();
 
         final MediaPlayer.OnCompletionListener mockPlayerCompletionListener = mock(MediaPlayer.OnCompletionListener.class);
         final MediaPlayer player = new MediaPlayer();
@@ -585,12 +577,9 @@ public class AudioStreamManagerTest extends TestCase {
 
         IAudioStreamListener audioStreamListener = mock(IAudioStreamListener.class);
 
-
         final CompletionListener completionListener = mock(CompletionListener.class);
 
         final SdlSession mockSession = mock(SdlSession.class);
-        doReturn(audioStreamListener).when(mockSession).startAudioStream();
-
 
         Answer<Void> audioServiceAnswer = new Answer<Void>() {
             ISdlServiceListener serviceListener = null;
@@ -623,7 +612,8 @@ public class AudioStreamManagerTest extends TestCase {
         doAnswer(audioServiceAnswer).when(internalInterface).addServiceListener(any(SessionType.class), any(ISdlServiceListener.class));
         doAnswer(audioServiceAnswer).when(internalInterface).startAudioService(any(Boolean.class));
 
-        final AudioStreamManager manager = new AudioStreamManager(internalInterface, mContext);
+        final AudioStreamManager manager = Mockito.spy(new AudioStreamManager(internalInterface, mContext));
+        doReturn(audioStreamListener).when(manager).startAudioStream(mockSession);
         manager.startAudioStream(false, new CompletionListener() {
             @Override
             public void onComplete(boolean success) {

@@ -45,6 +45,7 @@ import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.StreamingStateMachine;
 import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
+import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCNotification;
@@ -57,10 +58,13 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.streaming.IStreamListener;
+import com.smartdevicelink.streaming.StreamPacketizer;
 import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
 
+import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
@@ -91,6 +95,9 @@ public class AudioStreamManager extends BaseAudioStreamManager {
     private CompletionListener serviceCompletionListener;
     // As the internal interface does not provide timeout we need to use a future task
     private final Handler serviceCompletionHandler;
+    private StreamPacketizer audioPacketizer;
+    private SdlSession sdlSession = null;
+    private SessionType sessionType = null;
 
     private final Runnable serviceCompletionTimeoutCallback = new Runnable() {
         @Override
@@ -106,10 +113,12 @@ public class AudioStreamManager extends BaseAudioStreamManager {
     private final ISdlServiceListener serviceListener = new ISdlServiceListener() {
         @Override
         public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
+            sdlSession = session;
+            sessionType = type;
             if (SessionType.PCM.equals(type)) {
                 serviceCompletionHandler.removeCallbacks(serviceCompletionTimeoutCallback);
 
-                sdlAudioStream = session.startAudioStream();
+                sdlAudioStream = startAudioStream(session);
                 streamingStateMachine.transitionToState(StreamingStateMachine.STARTED);
 
                 if (serviceCompletionListener != null) {
@@ -125,7 +134,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
             if (SessionType.PCM.equals(type)) {
                 serviceCompletionHandler.removeCallbacks(serviceCompletionTimeoutCallback);
 
-                session.stopAudioStream();
+                stopAudioStream();
                 sdlAudioStream = null;
                 streamingStateMachine.transitionToState(StreamingStateMachine.NONE);
 
@@ -142,6 +151,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
             if (SessionType.PCM.equals(type)) {
                 serviceCompletionHandler.removeCallbacks(serviceCompletionTimeoutCallback);
 
+                stopAudioStream();
                 streamingStateMachine.transitionToState(StreamingStateMachine.ERROR);
                 DebugTool.logError(TAG, "OnServiceError: " + reason);
                 streamingStateMachine.transitionToState(StreamingStateMachine.NONE);
@@ -338,7 +348,8 @@ public class AudioStreamManager extends BaseAudioStreamManager {
         streamingStateMachine.transitionToState(StreamingStateMachine.STOPPED);
         serviceCompletionListener = completionListener;
         serviceCompletionHandler.postDelayed(serviceCompletionTimeoutCallback, COMPLETION_TIMEOUT);
-        internalInterface.stopAudioService();
+        stopAudioStream();
+        serviceListener.onServiceEnded(sdlSession, sessionType);
     }
 
     /**
@@ -489,5 +500,31 @@ public class AudioStreamManager extends BaseAudioStreamManager {
         // float array, though within a ByteBuffer it is stored in native endian byte order. The nominal
         // range of ENCODING_PCM_FLOAT audio data is [-1.0, 1.0].
         int FLOAT = Float.SIZE >> 3;
+    }
+
+    public IAudioStreamListener startAudioStream(final SdlSession session) {
+
+        IStreamListener streamListener = new IStreamListener() {
+            @Override
+            public void sendStreamPacket(ProtocolMessage pm) {
+                session.sendMessage(pm);
+            }
+        };
+
+        try {
+            audioPacketizer = new StreamPacketizer(streamListener, null, SessionType.PCM, (byte) session.getSessionId(), session);
+            audioPacketizer.start();
+            return audioPacketizer;
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    public boolean stopAudioStream() {
+        if (audioPacketizer != null) {
+            audioPacketizer.stop();
+            return true;
+        }
+        return false;
     }
 }
