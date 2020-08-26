@@ -9,7 +9,7 @@ import com.smartdevicelink.proxy.rpc.enums.AppCapabilityType;
 import java.util.Hashtable;
 
 /**
- * @since 7.0
+ * @since SmartDeviceLink 7.0
  */
 public class AppCapability extends RPCStruct {
     public static final String KEY_APP_CAPABILITY_TYPE = "appCapabilityType";

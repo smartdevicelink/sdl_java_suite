@@ -68,8 +68,8 @@ public class VirtualDisplayEncoder {
     private Boolean initPassed = false;
     private final Object STREAMING_LOCK = new Object();
 
-    private int predefined_width = 1920;
-    private int predefined_height = 1080;
+    private int predefinedWidth = 1920;
+    private int predefinedHeight = 1080;
 
     // Codec-specific data (SPS and PPS)
     private byte[] mH264CodecSpecificData = null;
@@ -105,8 +105,8 @@ public class VirtualDisplayEncoder {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        predefined_width = preferences.getInt("pre_def_w", predefined_width);
-        predefined_height = preferences.getInt("pre_def_h", predefined_height);
+        predefinedWidth = preferences.getInt("pre_def_w", predefinedWidth);
+        predefinedHeight = preferences.getInt("pre_def_h", predefinedHeight);
 
         initPassed = true;
     }
@@ -152,7 +152,7 @@ public class VirtualDisplayEncoder {
                 else {
                     // recreate after stop in most of cases
                     virtualDisplay = mDisplayManager.createVirtualDisplay(TAG,
-                            predefined_width, predefined_height,
+                            predefinedWidth, predefinedHeight,
                             streamingParams.getDisplayDensity(), inputSurface, DisplayManager.VIRTUAL_DISPLAY_FLAG_PRESENTATION);
                 }
 

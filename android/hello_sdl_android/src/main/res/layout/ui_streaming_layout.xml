@@ -16,7 +16,7 @@
 
     <TextView
         android:layout_below="@id/button_top_left"
-        android:id="@+id/button_top_left_counter"
+        android:id="@+id/text_view_top_left_counter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:lines="5"
@@ -35,7 +35,7 @@
         android:text="@string/button_bottom_right" />
 
     <TextView
-        android:id="@+id/button_bottom_right_counter"
+        android:id="@+id/text_view_bottom_right_counter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/button_bottom_right"

@@ -322,30 +322,30 @@ public class SdlService extends Service {
 			setContentView(R.layout.ui_streaming_layout);
 
 
-			final Button button1 = findViewById(R.id.button_top_left);
-			final Button button2 = findViewById(R.id.button_bottom_right);
-			final TextView counter1 = findViewById(R.id.button_top_left_counter);
-			final TextView counter2 = findViewById(R.id.button_bottom_right_counter);
-            button1.setOnTouchListener(new View.OnTouchListener() {
+			final Button buttonTopLeft = findViewById(R.id.button_top_left);
+			final Button buttonBottomRight = findViewById(R.id.button_bottom_right);
+			final TextView textViewTopLeftCounter = findViewById(R.id.text_view_top_left_counter);
+			final TextView textViewBottomRightCounter = findViewById(R.id.text_view_bottom_right_counter);
+            buttonTopLeft.setOnTouchListener(new View.OnTouchListener() {
 				@Override
 				public boolean onTouch(View view, MotionEvent motionEvent) {
 
-                    counter1.setText("Click!!! " + ++clickCounter1);
+                    textViewTopLeftCounter.setText("Click!!! " + ++clickCounter1);
 					int location [] = new int[2];
-                    button1.getLocationInWindow(location);
+                    buttonTopLeft.getLocationInWindow(location);
                     //counter1.append("\nButton size: " + button1.getWidth() + "x" + button1.getHeight());
 					//textView.append("\nButton location: " + location[0] + "," + location[1]);
 					return false;
 				}
 			});
 
-            button2.setOnTouchListener(new View.OnTouchListener() {
+            buttonBottomRight.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
 
-                    counter2.setText("Click!!! " + ++clickCounter2);
+                    textViewBottomRightCounter.setText("Click!!! " + ++clickCounter2);
                     int location [] = new int[2];
-                    button2.getLocationInWindow(location);
+                    buttonBottomRight.getLocationInWindow(location);
                     //counter2.append("\nButton size: " + button.getWidth() + "x" + button.getHeight());
                     //textView.append("\nButton location: " + location[0] + "," + location[1]);
                     return false;

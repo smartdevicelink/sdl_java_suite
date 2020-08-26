@@ -34,7 +34,6 @@ package com.smartdevicelink.proxy.rpc;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.util.SdlDataTypeConverter;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 

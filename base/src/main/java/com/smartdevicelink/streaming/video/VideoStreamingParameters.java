@@ -198,7 +198,7 @@ public class VideoStreamingParameters {
     @Deprecated
     public void update(VideoStreamingCapability capability){
         if(capability.getMaxBitrate()!=null){ this.bitrate = capability.getMaxBitrate() * 1000; } // NOTE: the unit of maxBitrate in getSystemCapability is kbps.
-        double scale = DEFAULT_SCALE;
+        scale = DEFAULT_SCALE;
         if(capability.getScale() != null) { scale = capability.getScale(); }
         if (capability.getDiagonalScreenSize() != null) { preferredDiagonal = capability.getDiagonalScreenSize(); }
         ImageResolution resolution = capability.getPreferredResolution();

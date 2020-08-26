@@ -275,7 +275,7 @@ public class VideoStreamManagerTests {
 				hmiListener[0].onNotified(fullNotification);
 
 				videoStreamManager.startRemoteDisplayStream(mTestContext, TestPresentation.class, null, false);
-				//assertTrue(touchEventOccured);
+				assertTrue(touchEventOccured);
 
 				assertTrue(listenerSet.isEmpty());
 			}
