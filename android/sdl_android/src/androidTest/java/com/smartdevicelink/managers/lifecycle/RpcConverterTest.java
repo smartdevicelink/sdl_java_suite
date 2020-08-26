@@ -1,6 +1,6 @@
 package com.smartdevicelink.managers.lifecycle;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -40,10 +40,6 @@ public class RpcConverterTest {
                 case ENCODED_SYNC_P_DATA:
                 case ON_ENCODED_SYNC_P_DATA:
                 case GENERIC_RESPONSE:
-                case STREAM_RPC:
-                case ON_LOCK_SCREEN_STATUS:
-                case ON_SDL_CHOICE_CHOSEN:
-                case ON_STREAM_RPC:
                     continue;
                 default:
 
@@ -70,10 +66,6 @@ public class RpcConverterTest {
                 case ENCODED_SYNC_P_DATA:
                 case ON_ENCODED_SYNC_P_DATA:
                 case GENERIC_RESPONSE:
-                case STREAM_RPC:
-                case ON_LOCK_SCREEN_STATUS:
-                case ON_SDL_CHOICE_CHOSEN:
-                case ON_STREAM_RPC:
                     return null;
                 case SHOW_CONSTANT_TBT:
                     rpcClassName.append("ShowConstantTbt");
@@ -109,10 +101,6 @@ public class RpcConverterTest {
                 case ENCODED_SYNC_P_DATA:
                 case ON_ENCODED_SYNC_P_DATA:
                 case GENERIC_RESPONSE:
-                case STREAM_RPC:
-                case ON_LOCK_SCREEN_STATUS:
-                case ON_SDL_CHOICE_CHOSEN:
-                case ON_STREAM_RPC:
                     continue;
                 default:
 

@@ -1,7 +1,8 @@
 package com.smartdevicelink.managers.lifecycle;
 
-import android.support.test.runner.AndroidJUnit4;
 import android.util.SparseArray;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.ManagerUtility;
@@ -13,7 +14,6 @@ import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
-import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.AppServiceCapability;
 import com.smartdevicelink.proxy.rpc.AppServicesCapabilities;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
@@ -208,8 +208,8 @@ public class SystemCapabilityManagerTests {
 	@Test
 	public void testNullDisplayCapabilitiesEnablesAllTextAndImageFields() {
 		List<DisplayCapability> displayCapabilityList = createDisplayCapabilityList(null, TestValues.GENERAL_BUTTONCAPABILITIES_LIST, TestValues.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
-		assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getTextFields().size(), 29);
-		assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getImageFields().size(), 14);
+		assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getTextFields().size(), 32);
+		assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getImageFields().size(), 16);
 	}
 
 	@Test

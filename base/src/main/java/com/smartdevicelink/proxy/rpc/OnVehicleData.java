@@ -131,14 +131,27 @@ import java.util.List;
  * 			<td>Subscribable </td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
- * 		<tr>
- * 			<td>prndl</td>
- * 			<td>PRNDL</td>
- * 			<td>Currently selected gear.</td>
- *                 <td>N</td>
- * 			<td>Subscribable </td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
+ *      <tr>
+ *          <td>gearStatus</td>
+ *          <td>GearStatus</td>
+ *          <td>See GearStatus</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
+ *      <tr>
+ *          <td>gearStatus</td>
+ *          <td>GearStatus</td>
+ *          <td>See GearStatus</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
+ *      <tr>
+ *          <td>prndl</td>
+ *          <td>PRNDL</td>
+ *          <td>See PRNDL. This parameter is deprecated and it is now covered in `gearStatus`</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
  * 		<tr>
  * 			<td>tirePressure</td>
  * 			<td>TireStatus</td>
@@ -284,6 +297,20 @@ import java.util.List;
  *				<td></td>
  * 			<td>SmartDeviceLink 5.1 </td>
  * 		</tr>
+ *      <tr>
+ *          <td>handsOffSteering</td>
+ *          <td>Boolean</td>
+ *          <td>To indicate whether driver hands are off the steering wheel</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
+ *      <tr>
+ *          <td>windowStatus</td>
+ *          <td>Boolean</td>
+ *          <td>See WindowStatus</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
  *  </table>
  *
  * @since SmartDeviceLink 1.0
@@ -324,6 +351,9 @@ public class OnVehicleData extends RPCNotification {
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
+    public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
+    public static final String KEY_WINDOW_STATUS = "windowStatus";
+    public static final String KEY_GEAR_STATUS = "gearStatus";
 
 
     public OnVehicleData() {
@@ -359,14 +389,6 @@ public class OnVehicleData extends RPCNotification {
     	Object object = getParameters(KEY_FUEL_LEVEL);
     	return SdlDataTypeConverter.objectToDouble(object);
     }
-    @Deprecated
-    public void setFuelLevel_State(ComponentVolumeStatus fuelLevel_State) {
-        setFuelLevelState(fuelLevel_State);
-    }
-    @Deprecated
-    public ComponentVolumeStatus getFuelLevel_State() {
-        return getFuelLevelState();
-    }
     public void setFuelLevelState(ComponentVolumeStatus fuelLevelState) {
         setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
     }
@@ -393,12 +415,34 @@ public class OnVehicleData extends RPCNotification {
     public String getVin() {
     	return getString(KEY_VIN);
     }
+
+    /**
+     * Sets the prndl.
+     *
+     * @param prndl See PRNDL. This parameter is deprecated since 7.0.0 and it is now covered in `gearStatus`
+     * @deprecated in SmartDeviceLink 7.0.0
+     */
+    @Deprecated
     public void setPrndl(PRNDL prndl) {
         setParameters(KEY_PRNDL, prndl);
     }
+
+    /**
+     * Gets the prndl.
+     *
+     * @return PRNDL See PRNDL. This parameter since 7.0.0 is deprecated and it is now covered in `gearStatus`
+     * @deprecated in SmartDeviceLink 7.0.0
+     */
+    @Deprecated
     public PRNDL getPrndl() {
         return (PRNDL) getObject(PRNDL.class, KEY_PRNDL);
     }
+
+    /**
+     * Sets the tirePressure.
+     *
+     * @param tirePressure See TireStatus
+     */
     public void setTirePressure(TireStatus tirePressure) {
         setParameters(KEY_TIRE_PRESSURE, tirePressure);
     }
@@ -598,5 +642,65 @@ public class OnVehicleData extends RPCNotification {
      */
     public Object getOEMCustomVehicleData(String vehicleDataName){
         return getParameters(vehicleDataName);
+    }
+
+    /**
+     * Sets the windowStatus.
+     *
+     * @param windowStatus See WindowStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setWindowStatus(List<WindowStatus> windowStatus) {
+        setParameters(KEY_WINDOW_STATUS, windowStatus);
+    }
+
+    /**
+     * Gets the windowStatus.
+     *
+     * @return List<WindowStatus> See WindowStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    @SuppressWarnings("unchecked")
+    public List<WindowStatus> getWindowStatus() {
+        return (List<WindowStatus>) getObject(WindowStatus.class, KEY_WINDOW_STATUS);
+    }
+
+    /**
+     * Sets the handsOffSteering.
+     *
+     * @param handsOffSteering To indicate whether driver hands are off the steering wheel
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setHandsOffSteering(Boolean handsOffSteering) {
+        setParameters(KEY_HANDS_OFF_STEERING, handsOffSteering);
+    }
+
+    /**
+     * Gets the handsOffSteering.
+     *
+     * @return Boolean To indicate whether driver hands are off the steering wheel
+     * @since SmartDeviceLink 7.0.0
+     */
+    public Boolean getHandsOffSteering() {
+        return getBoolean(KEY_HANDS_OFF_STEERING);
+    }
+    /**
+     * Sets the gearStatus.
+     *
+     * @param gearStatus See GearStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setGearStatus(GearStatus gearStatus) {
+        setParameters(KEY_GEAR_STATUS, gearStatus);
+    }
+
+    /**
+     * Gets the gearStatus.
+     *
+     * @return GearStatus See GearStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public GearStatus getGearStatus() {
+        return (GearStatus) getObject(GearStatus.class, KEY_GEAR_STATUS);
     }
 }

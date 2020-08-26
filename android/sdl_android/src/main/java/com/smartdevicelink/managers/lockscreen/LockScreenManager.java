@@ -73,7 +73,7 @@ public class LockScreenManager extends BaseSubManager {
 	private String deviceIconUrl;
 	boolean driverDistStatus, mIsLockscreenDismissible, enableDismissGesture, lockScreenEnabled, deviceLogoEnabled;
 	private volatile boolean isApplicationForegrounded;
-	private android.arch.lifecycle.LifecycleObserver lifecycleObserver;
+	private androidx.lifecycle.LifecycleObserver lifecycleObserver;
 	int lockScreenIcon, lockScreenColor, customView, displayMode;
 	Bitmap deviceLogo;
 	private boolean mLockScreenHasBeenDismissed, lockscreenDismissReceiverRegistered, receivedFirstDDNotification;
@@ -138,8 +138,8 @@ public class LockScreenManager extends BaseSubManager {
 		deviceIconUrl = null;
 
 		try {
-			if (android.arch.lifecycle.ProcessLifecycleOwner.get() != null && lifecycleObserver != null) {
-				android.arch.lifecycle.ProcessLifecycleOwner.get().getLifecycle().removeObserver(lifecycleObserver);
+			if (androidx.lifecycle.ProcessLifecycleOwner.get() != null && lifecycleObserver != null) {
+				androidx.lifecycle.ProcessLifecycleOwner.get().getLifecycle().removeObserver(lifecycleObserver);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -239,21 +239,21 @@ public class LockScreenManager extends BaseSubManager {
 
 		// Set up listener for Application Foreground / Background events
 		try {
-			lifecycleObserver = new android.arch.lifecycle.LifecycleObserver() {
-				@android.arch.lifecycle.OnLifecycleEvent(android.arch.lifecycle.Lifecycle.Event.ON_START)
+			lifecycleObserver = new androidx.lifecycle.LifecycleObserver() {
+				@androidx.lifecycle.OnLifecycleEvent(androidx.lifecycle.Lifecycle.Event.ON_START)
 				public void onMoveToForeground() {
 					isApplicationForegrounded = true;
 					launchLockScreenActivity();
 				}
 
-				@android.arch.lifecycle.OnLifecycleEvent(android.arch.lifecycle.Lifecycle.Event.ON_STOP)
+				@androidx.lifecycle.OnLifecycleEvent(androidx.lifecycle.Lifecycle.Event.ON_STOP)
 				public void onMoveToBackground() {
 					isApplicationForegrounded = false;
 				}
 			};
 
-			if (android.arch.lifecycle.ProcessLifecycleOwner.get() != null) {
-				android.arch.lifecycle.ProcessLifecycleOwner.get().getLifecycle().addObserver(lifecycleObserver);
+			if (androidx.lifecycle.ProcessLifecycleOwner.get() != null) {
+				androidx.lifecycle.ProcessLifecycleOwner.get().getLifecycle().addObserver(lifecycleObserver);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

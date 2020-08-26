@@ -38,7 +38,7 @@ import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.managers.audio.AudioStreamManager.SampleType;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;

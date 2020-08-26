@@ -183,7 +183,7 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 		}
 		finally
 		{
-			_session.endService(_serviceType, _rpcSessionID);
+			_session.endService(_serviceType);
 		}
 	}
 

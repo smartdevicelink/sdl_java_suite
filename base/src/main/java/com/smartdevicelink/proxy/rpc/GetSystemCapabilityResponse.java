@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -62,21 +62,6 @@ public class GetSystemCapabilityResponse extends RPCResponse {
      */
     public GetSystemCapabilityResponse(Hashtable<String, Object> hash) {
         super(hash);
-    }
-
-    /**
-     * Constructs a new GetSystemCapabilityResponse object
-     * @param systemCapability SystemCapability object
-     * @param resultCode whether the request is successfully processed
-     * @param success whether the request is successfully processed
-     * @deprecated use {@link GetSystemCapabilityResponse#GetSystemCapabilityResponse(Result, Boolean)}
-     */
-    @Deprecated
-    public GetSystemCapabilityResponse(@NonNull SystemCapability systemCapability, @NonNull Result resultCode, @NonNull Boolean success) {
-        this();
-        setSystemCapability(systemCapability);
-        setResultCode(resultCode);
-        setSuccess(success);
     }
 
     /**

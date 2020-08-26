@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
@@ -38,7 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-import static android.support.test.InstrumentationRegistry.getContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -64,7 +64,7 @@ public class SdlRouterServiceTests {
 	 */
 	@Test
 	public void testVersionCorrectness(){
-    	int resourceVersion = getContext().getResources().getInteger(com.smartdevicelink.test.R.integer.sdl_router_service_version_value);
+    	int resourceVersion = getInstrumentation().getContext().getResources().getInteger(com.smartdevicelink.test.R.integer.sdl_router_service_version_value);
 		assertEquals(resourceVersion, SdlRouterService.ROUTER_SERVICE_VERSION_NUMBER);
 	}
 

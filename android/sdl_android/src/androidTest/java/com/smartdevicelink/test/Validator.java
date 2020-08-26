@@ -11,8 +11,10 @@ import com.smartdevicelink.proxy.rpc.enums.DefrostZone;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.TransmissionType;
 import com.smartdevicelink.proxy.rpc.enums.VentilationMode;
 
 import java.util.Iterator;
@@ -3826,4 +3828,89 @@ public class Validator{
 		}
 		return validateGrid(cap1.getGrid(), cap2.getGrid());
 	}
+
+    public static boolean validateGearStatuses(GearStatus status1, GearStatus status2) {
+        if (status1 == null) {
+            return (status2 == null);
+        }
+        if (status2 == null) {
+            return (status1 == null);
+        }
+
+        PRNDL actualGear1 = status1.getActualGear();
+        PRNDL actualGear2 = status2.getActualGear();
+
+        TransmissionType transmissionType1 = status1.getTransmissionType();
+        TransmissionType transmissionType2 = status2.getTransmissionType();
+
+        PRNDL userSelectedGear1 = status1.getUserSelectedGear();
+        PRNDL userSelectedGear2 = status2.getUserSelectedGear();
+
+        return actualGear1.equals(actualGear2)
+                && transmissionType1.equals(transmissionType2)
+                && userSelectedGear1.equals(userSelectedGear2);
+    }
+
+    public static boolean validateWindowStatuses(List<WindowStatus> item1, List<WindowStatus> item2) {
+        if (item1 == null) {
+            return ( item2 == null );
+        }
+        if (item2 == null) {
+            return ( item1 == null );
+        }
+
+        if (item1.size() != item2.size()) {
+            return false;
+        }
+
+        Iterator<WindowStatus> iterator1 = item1.iterator();
+        Iterator<WindowStatus> iterator2 = item2.iterator();
+
+        while(iterator1.hasNext() && iterator2.hasNext()){
+            WindowStatus windowStatus1 = iterator1.next();
+            WindowStatus windowStatus2 = iterator2.next();
+
+            if(!validateWindowStatus(windowStatus1, windowStatus2)){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean validateWindowStatus(WindowStatus item1, WindowStatus item2) {
+        if (item1 == null) {
+            return ( item2 == null );
+        }
+        if (item2 == null) {
+            return ( item1 == null );
+        }
+
+        if (!validateWindowStates(item1.getState(), item2.getState())) {
+            return false;
+        }
+        if (!validateGrid(item1.getLocation(), item2.getLocation())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean validateWindowStates (WindowState item1, WindowState item2) {
+        if (item1 == null) {
+            return ( item2 == null );
+        }
+        if (item2 == null) {
+            return ( item1 == null );
+        }
+
+        Integer approxPosition1 = item1.getApproximatePosition();
+        Integer approxPosition2 = item2.getApproximatePosition();
+
+        Integer deviation1 = item1.getDeviation();
+        Integer deviation2 = item2.getDeviation();
+
+
+        return approxPosition1.equals(approxPosition2) && deviation1.equals(deviation2);
+    }
 }

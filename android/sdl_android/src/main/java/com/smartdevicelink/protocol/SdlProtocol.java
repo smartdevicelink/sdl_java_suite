@@ -32,7 +32,7 @@
 
 package com.smartdevicelink.protocol;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.transport.MultiplexTransportConfig;

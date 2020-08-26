@@ -82,7 +82,13 @@ public class VehicleDataTypeTests extends TestCase {
 		VehicleDataType enumVehicleCloudAppVehicleId = VehicleDataType.valueForString(example);
 		example = "VEHICLEDATA_OEM_CUSTOM_DATA";
 		VehicleDataType enumVehicleDataOemVehicleDataType= VehicleDataType.valueForString(example);
-		
+		example = "VEHICLEDATA_HANDSOFFSTEERING";
+		VehicleDataType enumVehicleDataHandsOffSteeringType= VehicleDataType.valueForString(example);
+		example = "VEHICLEDATA_GEARSTATUS";
+		VehicleDataType enumVehicleDataGearStatus= VehicleDataType.valueForString(example);
+		example = "VEHICLEDATA_WINDOWSTATUS";
+		VehicleDataType enumVehicleDataTypeWindowStatus= VehicleDataType.valueForString(example);
+
 		assertNotNull("VEHICLEDATA_GPS returned null", enumVehicleDataGps);
 		assertNotNull("VEHICLEDATA_SPEED returned null", enumVehicleDataSpeed);
 		assertNotNull("VEHICLEDATA_RPM returned null", enumVehicleDataRpm);
@@ -115,6 +121,9 @@ public class VehicleDataTypeTests extends TestCase {
 		assertNotNull("VEHICLEDATA_ELECTRONICPARKBRAKESTATUS returned null", enumVehicleDataElectronicParkBrakeStatus);
 		assertNotNull("VEHICLEDATA_CLOUDAPPVEHICLEID returned null", enumVehicleCloudAppVehicleId);
 		assertNotNull("VEHICLEDATA_OEM_CUSTOM_DATA returned null", enumVehicleDataOemVehicleDataType);
+		assertNotNull("VEHICLEDATA_HANDSOFFSTEERING returned null", enumVehicleDataHandsOffSteeringType);
+		assertNotNull("VEHICLEDATA_WINDOWSTATUS returned null", enumVehicleDataTypeWindowStatus);
+		assertNotNull("VEHICLEDATA_GEARSTATUS returned null", enumVehicleDataGearStatus);
 	}
 	
 	/**
@@ -184,6 +193,9 @@ public class VehicleDataTypeTests extends TestCase {
 		enumTestList.add(VehicleDataType.VEHICLEDATA_ELECTRONICPARKBRAKESTATUS);
 		enumTestList.add(VehicleDataType.VEHICLEDATA_CLOUDAPPVEHICLEID);
 		enumTestList.add(VehicleDataType.VEHICLEDATA_OEM_CUSTOM_DATA);
+		enumTestList.add(VehicleDataType.VEHICLEDATA_HANDSOFFSTEERING);
+		enumTestList.add(VehicleDataType.VEHICLEDATA_WINDOWSTATUS);
+		enumTestList.add(VehicleDataType.VEHICLEDATA_GEARSTATUS);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

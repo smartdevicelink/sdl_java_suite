@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.protocol;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
@@ -94,6 +94,8 @@ public class SdlProtocolBase {
     // Lock to ensure all frames are sent uninterrupted
     private final Object FRAME_LOCK = new Object();
 
+    private final Object TRANSPORT_MANAGER_LOCK = new Object();
+
     private final ISdlProtocol iSdlProtocol;
     private final Hashtable<Integer, SdlProtocol.MessageFrameAssembler> _assemblerForMessageID = new Hashtable<>();
     private final Hashtable<Byte, Object> _messageLocks = new Hashtable<>();
@@ -155,16 +157,20 @@ public class SdlProtocolBase {
     } // end-ctor
 
     void setTransportManager(TransportManagerBase transportManager){
-        this.transportManager = transportManager;
-    }
-
-    public void start(){
-        if(transportManager == null){
-            throw new IllegalStateException("Attempting to start without setting a transport manager.");
+        synchronized (TRANSPORT_MANAGER_LOCK) {
+            this.transportManager = transportManager;
         }
-        transportManager.start();
-
     }
+
+    public void start() {
+        synchronized (TRANSPORT_MANAGER_LOCK) {
+            if (transportManager == null) {
+                throw new IllegalStateException("Attempting to start without setting a transport manager.");
+            }
+            transportManager.start();
+        }
+    }
+
     /**
      * Retrieves the max payload size for a packet to be sent to the module
      * @return the max transfer unit
@@ -185,14 +191,18 @@ public class SdlProtocolBase {
     }
 
     public void resetSession (){
-        if(transportManager == null){
-            throw new IllegalStateException("Attempting to reset session without setting a transport manager.");
+        synchronized (TRANSPORT_MANAGER_LOCK) {
+            if (transportManager == null) {
+                throw new IllegalStateException("Attempting to reset session without setting a transport manager.");
+            }
+            transportManager.resetSession();
         }
-        transportManager.resetSession();
     }
 
     public boolean isConnected(){
-        return transportManager != null && transportManager.isConnected(null,null);
+        synchronized (TRANSPORT_MANAGER_LOCK) {
+            return transportManager != null && transportManager.isConnected(null, null);
+        }
     }
 
     /**
@@ -383,7 +393,7 @@ public class SdlProtocolBase {
             for(TransportRecord record: transports){
                 if(secondaryTransportListeners.get(record.getType()) != null
                         && !secondaryTransportListeners.get(record.getType()).isEmpty()){
-                    registerSecondaryTransport(iSdlProtocol.getSessionId(), record);
+                    registerSecondaryTransport((byte)iSdlProtocol.getSessionId(), record);
                 }
             }
         }
@@ -449,12 +459,14 @@ public class SdlProtocolBase {
         if (supportedSecondaryTransports != null) {
             for (TransportType supportedSecondary : supportedSecondaryTransports) {
                 if(!onlyHighBandwidth || supportedSecondary == TransportType.USB || supportedSecondary == TransportType.TCP) {
-                    if (transportManager != null && transportManager.isConnected(supportedSecondary, null)) {
-                        //A supported secondary transport is already connected
-                        return true;
-                    } else if (secondaryTransportParams != null && secondaryTransportParams.containsKey(supportedSecondary)) {
-                        //A secondary transport is available to connect to
-                        return true;
+                    synchronized (TRANSPORT_MANAGER_LOCK) {
+                        if (transportManager != null && transportManager.isConnected(supportedSecondary, null)) {
+                            //A supported secondary transport is already connected
+                            return true;
+                        } else if (secondaryTransportParams != null && secondaryTransportParams.containsKey(supportedSecondary)) {
+                            //A secondary transport is available to connect to
+                            return true;
+                        }
                     }
                 }
             }
@@ -531,20 +543,15 @@ public class SdlProtocolBase {
         }
     }
 
-    public void endSession(byte sessionID, int hashId) {
-        SdlPacket header = SdlPacketFactory.createEndSession(SessionType.RPC, sessionID, hashId, (byte)protocolVersion.getMajor(), hashId);
+    public void endSession(byte sessionID) {
+        SdlPacket header = SdlPacketFactory.createEndSession(SessionType.RPC, sessionID, hashID, (byte)protocolVersion.getMajor(), hashID);
         handlePacketToSend(header);
-        if(transportManager != null) {
-            transportManager.close(sessionID);
+        synchronized (TRANSPORT_MANAGER_LOCK) {
+            if (transportManager != null) {
+                transportManager.close(sessionID);
+            }
         }
-
     } // end-method
-
-    public void sendPacket(SdlPacket packet){
-        if(transportManager != null){
-            transportManager.sendPacket(packet);
-        }
-    }
 
     public void sendMessage(ProtocolMessage protocolMsg) {
         SessionType sessionType = protocolMsg.getSessionType();
@@ -787,26 +794,27 @@ public class SdlProtocolBase {
                     }
                 };
 
-                if (transportManager != null) {
-                    if (transportManager.isConnected(secondaryTransportType, null)) {
-                        //The transport is actually connected, however no service has been registered
-                        listenerList.add(secondaryListener);
-                        registerSecondaryTransport(sessionID, transportManager.getTransportRecord(secondaryTransportType, null));
-                    } else if (secondaryTransportParams != null && secondaryTransportParams.containsKey(secondaryTransportType)) {
-                        //No acceptable secondary transport is connected, so first one must be connected
-                        header.setTransportRecord(new TransportRecord(secondaryTransportType, ""));
-                        listenerList.add(secondaryListener);
-                        transportManager.requestSecondaryTransportConnection(sessionID, secondaryTransportParams.get(secondaryTransportType));
+                synchronized (TRANSPORT_MANAGER_LOCK) {
+                    if (transportManager != null) {
+                        if (transportManager.isConnected(secondaryTransportType, null)) {
+                            //The transport is actually connected, however no service has been registered
+                            listenerList.add(secondaryListener);
+                            registerSecondaryTransport(sessionID, transportManager.getTransportRecord(secondaryTransportType, null));
+                        } else if (secondaryTransportParams != null && secondaryTransportParams.containsKey(secondaryTransportType)) {
+                            //No acceptable secondary transport is connected, so first one must be connected
+                            header.setTransportRecord(new TransportRecord(secondaryTransportType, ""));
+                            listenerList.add(secondaryListener);
+                            transportManager.requestSecondaryTransportConnection(sessionID, secondaryTransportParams.get(secondaryTransportType));
+                        } else {
+                            DebugTool.logWarning(TAG, "No params to connect to secondary transport");
+                            //Unable to register or start a secondary connection. Use the callback in case
+                            //there is a chance to use the primary transport for this service.
+                            secondaryListener.onConnectionFailure();
+                        }
                     } else {
-                        DebugTool.logWarning(TAG, "No params to connect to secondary transport");
-                        //Unable to register or start a secondary connection. Use the callback in case
-                        //there is a chance to use the primary transport for this service.
-                        secondaryListener.onConnectionFailure();
+                        DebugTool.logError(TAG, "transportManager is null");
                     }
-                } else {
-                    DebugTool.logError(TAG, "transportManager is null");
                 }
-
             }
         }
     }
@@ -819,7 +827,7 @@ public class SdlProtocolBase {
 
     public void endService(SessionType serviceType, byte sessionID) {
         if(serviceType.equals(SessionType.RPC)){ //RPC session will close all other sessions so we want to make sure we use the correct EndProtocolSession method
-            endSession(sessionID,hashID);
+            endSession(sessionID);
         }else {
             SdlPacket header = SdlPacketFactory.createEndSession(serviceType, sessionID, hashID, (byte)protocolVersion.getMajor(), new byte[0]);
             TransportRecord transportRecord = activeTransports.get(serviceType);
@@ -842,11 +850,11 @@ public class SdlProtocolBase {
      */
     protected void handlePacketToSend(SdlPacket packet) {
         synchronized(FRAME_LOCK) {
-
-            if(packet!=null){
-                iSdlProtocol.onProtocolMessageBytesToSend(packet);
+            synchronized (TRANSPORT_MANAGER_LOCK) {
+                if (packet != null && transportManager != null) {
+                    transportManager.sendPacket(packet);
+                }
             }
-
         }
     }
 
@@ -854,6 +862,7 @@ public class SdlProtocolBase {
      * sent to the protocol listener.
      **/
     protected void handleServiceEndedNAK(SdlPacket packet, SessionType serviceType) {
+        String error = "Service ended NAK received for service type " + serviceType.getName();
         if(packet.version >= 5){
             if(DebugTool.isDebugEnabled()) {
                 //Currently this is only during a debugging session. Might pass back in the future
@@ -876,22 +885,24 @@ public class SdlProtocolBase {
                         builder.append(rejectedParam);
                         builder.append(" ");
                     }
-                    DebugTool.logWarning(TAG, builder.toString());
+                    error = builder.toString();
+                    DebugTool.logWarning(TAG, error);
                 }
 
             }
         }
 
-        iSdlProtocol.onProtocolSessionEndedNACKed(serviceType, (byte)packet.getSessionId(), "");
+        iSdlProtocol.onServiceError(packet, serviceType, packet.getSessionId(), error);
     }
 
     // This method handles the end of a protocol session. A callback is
     // sent to the protocol listener.
+
+    //FIXME do we do anything in this class for this?
     protected void handleServiceEnded(SdlPacket packet, SessionType sessionType) {
-
-        iSdlProtocol.onProtocolSessionEnded(sessionType, (byte)packet.getSessionId(), "");
-
+        iSdlProtocol.onServiceEnded(packet, sessionType, packet.getSessionId());
     }
+
 
     /**
      * This method handles the startup of a protocol session. A callback is sent
@@ -899,7 +910,7 @@ public class SdlProtocolBase {
      * @param packet StarServiceACK packet
      * @param serviceType the service type that has just been started
      */
-    protected void handleProtocolSessionStarted(SdlPacket packet, SessionType serviceType) {
+    protected void handleStartServiceACK(SdlPacket packet, SessionType serviceType) {
         // Use this sessionID to create a message lock
         Object messageLock = _messageLocks.get((byte)packet.getSessionId());
         if (messageLock == null) {
@@ -999,7 +1010,7 @@ public class SdlProtocolBase {
 
                     } else {
                         DebugTool.logInfo(TAG, "Received a start service ack for RPC service while already active on a different transport.");
-                        iSdlProtocol.onProtocolSessionStarted(serviceType, (byte) packet.getSessionId(), (byte)protocolVersion.getMajor(), "", hashID, packet.isEncrypted());
+                        iSdlProtocol.onServiceStarted(packet, serviceType, (byte) packet.getSessionId(), protocolVersion, packet.isEncrypted());
                         return;
                     }
 
@@ -1070,10 +1081,11 @@ public class SdlProtocolBase {
                 iSdlProtocol.setAcceptedVideoParams(iSdlProtocol.getDesiredVideoParams());
             }
         }
-        iSdlProtocol.onProtocolSessionStarted(serviceType, (byte) packet.getSessionId(), (byte)protocolVersion.getMajor(), "", hashID, packet.isEncrypted());
+        iSdlProtocol.onServiceStarted(packet, serviceType, (byte) packet.getSessionId(), protocolVersion, packet.isEncrypted());
     }
 
     protected void handleProtocolSessionNAKed(SdlPacket packet, SessionType serviceType) {
+        String error = "Service start NAK received for service type " + serviceType.getName();
         List<String> rejectedParams = null;
         if(packet.version >= 5){
             if(DebugTool.isDebugEnabled()) {
@@ -1097,15 +1109,18 @@ public class SdlProtocolBase {
                         builder.append(rejectedParam);
                         builder.append(" ");
                     }
-                    DebugTool.logWarning(TAG, builder.toString());
+                    error = builder.toString();
+                    DebugTool.logWarning(TAG, error);
                 }
 
             }
         }
         if (serviceType.eq(SessionType.NAV) || serviceType.eq(SessionType.PCM)) {
-            iSdlProtocol.onProtocolSessionNACKed(serviceType, (byte)packet.sessionId, (byte)protocolVersion.getMajor(), "", rejectedParams);
+            iSdlProtocol.onServiceError(packet, serviceType, (byte)packet.sessionId, error);
 
         } else {
+            //TODO should there be any additional checks here? Or should this be more explicit in
+            // what types of services would cause this protocol error
             handleProtocolError("Got StartSessionNACK for protocol sessionID = " + packet.getSessionId(), null);
         }
     }
@@ -1120,14 +1135,6 @@ public class SdlProtocolBase {
         sendHeartBeatACK(sessionType,sessionID);
     }
 
-    protected void handleServiceDataACK(SdlPacket packet, SessionType sessionType) {
-
-        if (packet.getPayload() != null && packet.getDataSize() == 4){ //service data ack will be 4 bytes in length
-            int serviceDataAckSize = BitConverter.intFromByteArray(packet.getPayload(), 0);
-            iSdlProtocol.onProtocolServiceDataACK(sessionType, serviceDataAckSize, (byte)packet.getSessionId ());
-
-        }
-    }
 
     /* --------------------------------------------------------------------------------------------
        -----------------------------------   TRANSPORT_TYPE LISTENER   ---------------------------------
@@ -1149,8 +1156,10 @@ public class SdlProtocolBase {
             TransportRecord transportRecord = getTransportForSession(SessionType.RPC);
             if(transportRecord == null && !requestedSession){ //There is currently no transport registered
                 requestedSession = true;
-                if (transportManager != null) {
-                    transportManager.requestNewSession(getPreferredTransport(requestedPrimaryTransports, connectedTransports));
+                synchronized (TRANSPORT_MANAGER_LOCK) {
+                    if (transportManager != null) {
+                        transportManager.requestNewSession(getPreferredTransport(requestedPrimaryTransports, connectedTransports));
+                    }
                 }
             }
             onTransportsConnectedUpdate(connectedTransports);
@@ -1163,8 +1172,10 @@ public class SdlProtocolBase {
         public void onTransportDisconnected(String info, TransportRecord disconnectedTransport, List<TransportRecord> connectedTransports) {
             if (disconnectedTransport == null) {
                 DebugTool.logInfo(TAG, "onTransportDisconnected");
-                if (transportManager != null) {
-                    transportManager.close(iSdlProtocol.getSessionId());
+                synchronized (TRANSPORT_MANAGER_LOCK) {
+                    if (transportManager != null) {
+                        transportManager.close(iSdlProtocol.getSessionId());
+                    }
                 }
                 iSdlProtocol.shutdown("No transports left connected");
                 return;
@@ -1176,13 +1187,11 @@ public class SdlProtocolBase {
             //a single transport record per transport.
             //TransportType type = disconnectedTransport.getType();
             if(getTransportForSession(SessionType.NAV) != null && disconnectedTransport.equals(getTransportForSession(SessionType.NAV))){
-                //stopVideoStream();
-                iSdlProtocol.stopStream(SessionType.NAV);
+                iSdlProtocol.onServiceError(null, SessionType.NAV, iSdlProtocol.getSessionId(), "Transport disconnected");
                 activeTransports.remove(SessionType.NAV);
             }
             if(getTransportForSession(SessionType.PCM) != null && disconnectedTransport.equals(getTransportForSession(SessionType.PCM))){
-                //stopAudioStream();
-                iSdlProtocol.stopStream(SessionType.PCM);
+                iSdlProtocol.onServiceError(null, SessionType.PCM, iSdlProtocol.getSessionId(), "Transport disconnected");
                 activeTransports.remove(SessionType.PCM);
             }
 
@@ -1194,45 +1203,49 @@ public class SdlProtocolBase {
                     for (TransportType transportType: requestedPrimaryTransports){
                         DebugTool.logInfo(TAG,  "Checking " + transportType.name());
 
-                        if(!disconnectedTransport.getType().equals(transportType)
-                                && transportManager != null
-                                && transportManager.isConnected(transportType,null)){
+                        synchronized (TRANSPORT_MANAGER_LOCK) {
+                            if (!disconnectedTransport.getType().equals(transportType)
+                                    && transportManager != null
+                                    && transportManager.isConnected(transportType, null)) {
 
-                            //There is currently a supported primary transport
+                                //There is currently a supported primary transport
 
-                            //See if any high bandwidth transport is available currently
-                            boolean highBandwidthAvailable = transportManager.isHighBandwidthAvailable();
+                                //See if any high bandwidth transport is available currently
+                                boolean highBandwidthAvailable = transportManager.isHighBandwidthAvailable();
 
-                            if (requiresHighBandwidth) {
-                                if (!highBandwidthAvailable) {
-                                    if (TransportType.BLUETOOTH.equals(transportType)
-                                            && requestedSecondaryTransports != null
-                                            && supportedSecondaryTransports != null) {
-                                        for (TransportType secondaryTransport : requestedSecondaryTransports) {
-                                            DebugTool.logInfo(TAG, "Checking secondary " + secondaryTransport.name());
-                                            if (supportedSecondaryTransports.contains(secondaryTransport)) {
-                                                //Should only be USB or TCP
-                                                highBandwidthAvailable = true;
-                                                break;
+                                if (requiresHighBandwidth) {
+                                    if (!highBandwidthAvailable) {
+                                        if (TransportType.BLUETOOTH.equals(transportType)
+                                                && requestedSecondaryTransports != null
+                                                && supportedSecondaryTransports != null) {
+                                            for (TransportType secondaryTransport : requestedSecondaryTransports) {
+                                                DebugTool.logInfo(TAG, "Checking secondary " + secondaryTransport.name());
+                                                if (supportedSecondaryTransports.contains(secondaryTransport)) {
+                                                    //Should only be USB or TCP
+                                                    highBandwidthAvailable = true;
+                                                    break;
+                                                }
                                             }
                                         }
-                                    }
-                                } // High bandwidth already available
-                            }
+                                    } // High bandwidth already available
+                                }
 
-                            if(!requiresHighBandwidth  || (requiresHighBandwidth && highBandwidthAvailable )) {
-                                primaryTransportAvailable = true;
-                                transportManager.updateTransportConfig(transportConfig);
-                                break;
+                                if (!requiresHighBandwidth || (requiresHighBandwidth && highBandwidthAvailable)) {
+                                    primaryTransportAvailable = true;
+                                    transportManager.updateTransportConfig(transportConfig);
+                                    break;
+                                }
                             }
                         }
                     }
                 }
                 connectedPrimaryTransport = null;
-                if (transportManager != null) {
-                    transportManager.close(iSdlProtocol.getSessionId());
+                synchronized (TRANSPORT_MANAGER_LOCK) {
+                    if (transportManager != null) {
+                        transportManager.close(iSdlProtocol.getSessionId());
+                    }
+                    transportManager = null;
                 }
-                transportManager = null;
                 requestedSession = false;
 
                 activeTransports.clear();
@@ -1400,7 +1413,7 @@ public class SdlProtocolBase {
 
             }else if (frameInfo == FrameDataControlFrameType.StartSessionACK.getValue()) {
 
-                handleProtocolSessionStarted(packet, serviceType);
+                handleStartServiceACK(packet, serviceType);
 
             } else if (frameInfo == FrameDataControlFrameType.StartSessionNACK.getValue()) {
 
@@ -1409,7 +1422,7 @@ public class SdlProtocolBase {
             } else if (frameInfo == FrameDataControlFrameType.EndSession.getValue()
                     || frameInfo == FrameDataControlFrameType.EndSessionACK.getValue()) {
 
-                handleServiceEnded(packet,serviceType);
+                handleServiceEnded(packet, serviceType);
 
             } else if (frameInfo == FrameDataControlFrameType.EndSessionNACK.getValue()) {
 
@@ -1417,7 +1430,7 @@ public class SdlProtocolBase {
 
             } else if (frameInfo == FrameDataControlFrameType.ServiceDataACK.getValue()) {
 
-                handleServiceDataACK(packet, serviceType);
+                //Currently unused
 
             } else if (frameInfo == FrameDataControlFrameType.RegisterSecondaryTransportACK.getValue()) {
 

@@ -198,7 +198,7 @@ public class Show extends RPCRequest {
 	public static final String KEY_MAIN_FIELD_3 = "mainField3";
 	public static final String KEY_MAIN_FIELD_4 = "mainField4";
 	public static final String KEY_STATUS_BAR = "statusBar";
-	public static final String KEY_MEDIA_CLOCK = "mediaClock";
+	@Deprecated public static final String KEY_MEDIA_CLOCK = "mediaClock";
 	public static final String KEY_ALIGNMENT = "alignment";
 	public static final String KEY_MEDIA_TRACK = "mediaTrack";
 	public static final String KEY_SECONDARY_GRAPHIC = "secondaryGraphic";

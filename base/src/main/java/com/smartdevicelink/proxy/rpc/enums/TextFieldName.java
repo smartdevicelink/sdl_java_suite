@@ -186,6 +186,24 @@ public enum TextFieldName {
      * @since SmartDeviceLink 6.0
      */
     templateTitle,
+    /**
+     * The first line of the subtle alert text field; applies to `SubtleAlert` `alertText1`
+     *
+     * @since SmartDeviceLink 7.0.0
+     */
+    subtleAlertText1,
+    /**
+     * The second line of the subtle alert text field; applies to `SubtleAlert` `alertText2`
+     *
+     * @since SmartDeviceLink 7.0.0
+     */
+    subtleAlertText2,
+    /**
+     * A text field in the soft button of a subtle alert; applies to `SubtleAlert` `softButtons`
+     *
+     * @since SmartDeviceLink 7.0.0
+     */
+    subtleAlertSoftButtonText;
     ;
 	  /**
        * Convert String to TextFieldName

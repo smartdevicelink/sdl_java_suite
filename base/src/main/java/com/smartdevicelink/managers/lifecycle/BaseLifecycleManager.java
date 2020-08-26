@@ -32,11 +32,11 @@
 
 package com.smartdevicelink.managers.lifecycle;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.RestrictTo;
+import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 
 import com.livio.taskmaster.Taskmaster;
-import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
+import com.smartdevicelink.SdlConnection.ISdlSessionListener;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.SdlManager;
@@ -50,12 +50,11 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.managers.lifecycle.BaseSystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
-import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
+import com.smartdevicelink.proxy.rpc.GenericResponse;
 import com.smartdevicelink.proxy.rpc.OnAppInterfaceUnregistered;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
@@ -81,7 +80,6 @@ import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
-import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCRequestListener;
@@ -158,7 +156,7 @@ abstract class BaseLifecycleManager {
      */
     public void startRPCEncryption() {
         if (session != null) {
-            session.startService(SessionType.RPC, session.getSessionId(), true);
+            session.startService(SessionType.RPC, true);
         }
     }
 
@@ -210,17 +208,6 @@ abstract class BaseLifecycleManager {
                                     listener.getSingleRpcResponseListener().onResponse(correlationId, response);
                                 }
                             }
-
-                            @Override
-                            public void onError(int correlationId, Result resultCode, String info) {
-                                super.onError(correlationId, resultCode, info);
-                                if (devOnRPCResponseListener != null) {
-                                    devOnRPCResponseListener.onError(correlationId, resultCode, info);
-                                }
-                                if (listener.getSingleRpcResponseListener() != null) {
-                                    listener.getSingleRpcResponseListener().onError(correlationId, resultCode, info);
-                                }
-                            }
                         });
                     }
                     sendRPCMessagePrivate(request, false);
@@ -268,20 +255,6 @@ abstract class BaseLifecycleManager {
                             listener.onUpdate(messages.size());
                         }
                         // recurse after onResponse
-                        sendSequentialRPCs(messages, listener);
-                    }
-
-                    @Override
-                    public void onError(int correlationId, Result resultCode, String info) {
-                        if (devOnRPCResponseListener != null) {
-                            devOnRPCResponseListener.onError(correlationId, resultCode, info);
-                        }
-                        if (listener != null) {
-                            listener.onError(correlationId, resultCode, info);
-                            listener.onUpdate(messages.size());
-
-                        }
-                        // recurse after onError
                         sendSequentialRPCs(messages, listener);
                     }
                 });
@@ -530,24 +503,6 @@ abstract class BaseLifecycleManager {
     }
 
     /**
-     * Only call this method for a PutFile response. It will cause a class cast exception if not.
-     *
-     * @param correlationId correlation id of the packet being updated
-     * @param bytesWritten  how many bytes were written
-     * @param totalSize     the total size in bytes
-     */
-    @SuppressWarnings("unused")
-    private void onPacketProgress(int correlationId, long bytesWritten, long totalSize) {
-        synchronized (ON_UPDATE_LISTENER_LOCK) {
-            if (rpcResponseListeners != null
-                    && rpcResponseListeners.containsKey(correlationId)) {
-                ((OnPutFileUpdateListener) rpcResponseListeners.get(correlationId)).onUpdate(correlationId, bytesWritten, totalSize);
-            }
-        }
-
-    }
-
-    /**
      * Will provide callback to the listener either onFinish or onError depending on the RPCResponses result code,
      * <p>Will automatically remove the listener for the list of listeners on completion.
      *
@@ -561,10 +516,8 @@ abstract class BaseLifecycleManager {
             if (rpcResponseListeners != null
                     && rpcResponseListeners.containsKey(correlationId)) {
                 OnRPCResponseListener listener = rpcResponseListeners.get(correlationId);
-                if (msg.getSuccess()) {
+                if (listener != null) {
                     listener.onResponse(correlationId, msg);
-                } else {
-                    listener.onError(correlationId, msg.getResultCode(), msg.getInfo());
                 }
                 rpcResponseListeners.remove(correlationId);
                 return true;
@@ -578,15 +531,11 @@ abstract class BaseLifecycleManager {
      *
      * @param listener      that will get called back when a response is received
      * @param correlationId of the RPCRequest that was sent
-     * @param totalSize     only include if this is an OnPutFileUpdateListener. Otherwise it will be ignored.
      */
-    private void addOnRPCResponseListener(OnRPCResponseListener listener, int correlationId, int totalSize) {
+    private void addOnRPCResponseListener(OnRPCResponseListener listener, int correlationId) {
         synchronized (ON_UPDATE_LISTENER_LOCK) {
             if (rpcResponseListeners != null
                     && listener != null) {
-                if (listener.getListenerType() == OnRPCResponseListener.UPDATE_LISTENER_TYPE_PUT_FILE) {
-                    ((OnPutFileUpdateListener) listener).setTotalSize(totalSize);
-                }
                 listener.onStart(correlationId);
                 rpcResponseListeners.put(correlationId, listener);
             }
@@ -735,7 +684,9 @@ abstract class BaseLifecycleManager {
                 // Test for illegal correlation ID
                 if (request.getCorrelationID() == REGISTER_APP_INTERFACE_CORRELATION_ID || request.getCorrelationID() == UNREGISTER_APP_INTERFACE_CORRELATION_ID || request.getCorrelationID() == PoliciesFetcher.POLICIES_CORRELATION_ID) {
                     if (listener != null) {
-                        request.getOnRPCResponseListener().onError(request.getCorrelationID(), Result.REJECTED, "Invalid correlation ID. The correlation ID, " + request.getCorrelationID() + " , is a reserved correlation ID.");
+                        GenericResponse response = new GenericResponse(false, Result.REJECTED);
+                        response.setInfo("Invalid correlation ID. The correlation ID, " + request.getCorrelationID() + " , is a reserved correlation ID.");
+                        request.getOnRPCResponseListener().onResponse(request.getCorrelationID(), response);
                     }
                     return;
                 }
@@ -743,7 +694,9 @@ abstract class BaseLifecycleManager {
                 // Prevent developer from sending RAI or UAI manually
                 if (request.getFunctionName().equals(FunctionID.REGISTER_APP_INTERFACE.toString()) || request.getFunctionName().equals(FunctionID.UNREGISTER_APP_INTERFACE.toString())) {
                     if (listener != null) {
-                        request.getOnRPCResponseListener().onError(request.getCorrelationID(), Result.REJECTED, "The RPCRequest, " + message.getFunctionName() + ", is un-allowed to be sent manually by the developer.");
+                        GenericResponse response = new GenericResponse(false, Result.REJECTED);
+                        response.setInfo("The RPCRequest, " + message.getFunctionName() + ", is un-allowed to be sent manually by the developer.");
+                        request.getOnRPCResponseListener().onResponse(request.getCorrelationID(), response);
                     }
                     return;
                 }
@@ -785,7 +738,7 @@ abstract class BaseLifecycleManager {
             final ProtocolMessage pm = new ProtocolMessage();
             pm.setData(msgBytes);
             if (session != null) {
-                pm.setSessionID(session.getSessionId());
+                pm.setSessionID((byte)session.getSessionId());
             }
 
             pm.setMessageType(MessageType.RPC);
@@ -803,7 +756,9 @@ abstract class BaseLifecycleManager {
                     RPCRequest request = (RPCRequest) message;
                     OnRPCResponseListener listener = ((RPCRequest) message).getOnRPCResponseListener();
                     if (listener != null) {
-                        listener.onError(request.getCorrelationID(), Result.ABORTED, errorInfo);
+                        GenericResponse response = new GenericResponse(false, Result.ABORTED);
+                        response.setInfo(errorInfo);
+                        request.getOnRPCResponseListener().onResponse(request.getCorrelationID(), response);
                     }
                 }
                 DebugTool.logWarning(TAG, errorInfo);
@@ -821,7 +776,7 @@ abstract class BaseLifecycleManager {
 
                     OnRPCResponseListener listener = ((RPCRequest) message).getOnRPCResponseListener();
                     if (listener != null) {
-                        addOnRPCResponseListener(listener, corrId, msgBytes.length);
+                        addOnRPCResponseListener(listener, corrId);
                     }
                 }
             } else if (RPCMessage.KEY_RESPONSE.equals(message.getMessageType())) { // Response Specifics
@@ -855,106 +810,98 @@ abstract class BaseLifecycleManager {
     }
 
     /* *******************************************************************************************************
-     *************************************** ISdlConnectionListener START ************************************
+     **************************************** ISdlSessionListener START **************************************
      *********************************************************************************************************/
 
-    final ISdlConnectionListener sdlConnectionListener = new ISdlConnectionListener() {
-        @Override
-        public void onTransportDisconnected(String info) {
-            onClose(info, null, null);
-
-        }
+    final ISdlSessionListener sdlSessionListener = new ISdlSessionListener() {
 
         @Override
         public void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
             BaseLifecycleManager.this.onTransportDisconnected(info, availablePrimary, transportConfig);
-
         }
 
         @Override
-        public void onTransportError(String info, Exception e) {
-            onClose(info, e, null);
-
-        }
-
-        @Override
-        public void onProtocolMessageReceived(ProtocolMessage msg) {
+        public void onRPCMessageReceived(RPCMessage rpc) {
             //Incoming message
-            if (SessionType.RPC.equals(msg.getSessionType())
-                    || SessionType.BULK_DATA.equals(msg.getSessionType())) {
+            if (rpc != null) {
+                String messageType = rpc.getMessageType();
+                DebugTool.logInfo(TAG, "RPC received - " + messageType);
 
-                RPCMessage rpc = RpcConverter.extractRpc(msg, session.getProtocolVersion());
-                if (rpc != null) {
-                    String messageType = rpc.getMessageType();
-                    DebugTool.logInfo(TAG, "RPC received - " + messageType);
+                rpc.format(rpcSpecVersion, true);
 
-                    rpc.format(rpcSpecVersion, true);
+                BaseLifecycleManager.this.onRPCReceived(rpc);
 
-                    onRPCReceived(rpc);
+                if (RPCMessage.KEY_RESPONSE.equals(messageType)) {
 
-                    if (RPCMessage.KEY_RESPONSE.equals(messageType)) {
+                    onRPCResponseReceived((RPCResponse) rpc);
 
-                        onRPCResponseReceived((RPCResponse) rpc);
-
-                    } else if (RPCMessage.KEY_NOTIFICATION.equals(messageType)) {
-                        FunctionID functionID = rpc.getFunctionID();
-                        if (functionID != null && (functionID.equals(FunctionID.ON_BUTTON_PRESS)) || functionID.equals(FunctionID.ON_BUTTON_EVENT)) {
-                            RPCNotification notificationCompat = handleButtonNotificationFormatting(rpc);
-                            if (notificationCompat != null) {
-                                onRPCNotificationReceived((notificationCompat));
-                            }
+                } else if (RPCMessage.KEY_NOTIFICATION.equals(messageType)) {
+                    FunctionID functionID = rpc.getFunctionID();
+                    if (functionID != null && (functionID.equals(FunctionID.ON_BUTTON_PRESS)) || functionID.equals(FunctionID.ON_BUTTON_EVENT)) {
+                        RPCNotification notificationCompat = handleButtonNotificationFormatting(rpc);
+                        if (notificationCompat != null) {
+                            onRPCNotificationReceived((notificationCompat));
                         }
-
-                        onRPCNotificationReceived((RPCNotification) rpc);
-
-                    } else if (RPCMessage.KEY_REQUEST.equals(messageType)) {
-
-                        onRPCRequestReceived((RPCRequest) rpc);
-
                     }
-                } else {
-                    DebugTool.logWarning(TAG, "Shouldn't be here");
+
+                    onRPCNotificationReceived((RPCNotification) rpc);
+
+                } else if (RPCMessage.KEY_REQUEST.equals(messageType)) {
+
+                    onRPCRequestReceived((RPCRequest) rpc);
+
                 }
+            } else {
+                DebugTool.logWarning(TAG, "Shouldn't be here");
             }
-
         }
 
-        @Override
-        public void onProtocolSessionStartedNACKed(SessionType sessionType, byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
-            DebugTool.logWarning(TAG, sessionType.getName() + " onProtocolSessionStartedNACKed " + sessionID + " RejectedParams: " + rejectedParams);
-            BaseLifecycleManager.this.onStartServiceNACKed(sessionType);
-        }
 
         @Override
-        public void onProtocolSessionStarted(SessionType sessionType, byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted) {
+        public void onSessionStarted(int sessionID, Version version) {
             DebugTool.logInfo(TAG, "on protocol session started");
-            BaseLifecycleManager.this.onServiceStarted(sessionType);
+            if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(version) == 1) {
+                DebugTool.logWarning(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
+                session.endService(SessionType.RPC);
+                clean();
+                return;
+            }
+            if (appConfig != null) {
+                appConfig.prepare();
+
+                SdlMsgVersion sdlMsgVersion = new SdlMsgVersion();
+                sdlMsgVersion.setMajorVersion(MAX_SUPPORTED_RPC_VERSION.getMajor());
+                sdlMsgVersion.setMinorVersion(MAX_SUPPORTED_RPC_VERSION.getMinor());
+                sdlMsgVersion.setPatchVersion(MAX_SUPPORTED_RPC_VERSION.getPatch());
+
+                RegisterAppInterface rai = new RegisterAppInterface(sdlMsgVersion,
+                        appConfig.getAppName(), appConfig.isMediaApp(), appConfig.getLanguageDesired(),
+                        appConfig.getHmiDisplayLanguageDesired(), appConfig.getAppID());
+                rai.setCorrelationID(REGISTER_APP_INTERFACE_CORRELATION_ID);
+
+                rai.setTtsName(appConfig.getTtsName());
+                rai.setNgnMediaScreenAppName(appConfig.getNgnMediaScreenAppName());
+                rai.setVrSynonyms(appConfig.getVrSynonyms());
+                rai.setAppHMIType(appConfig.getAppType());
+                rai.setDayColorScheme(appConfig.getDayColorScheme());
+                rai.setNightColorScheme(appConfig.getNightColorScheme());
+                rai.setHashID(appConfig.getResumeHash());
+
+                //Add device/system info in the future
+
+                sendRPCMessagePrivate(rai, true);
+            } else {
+                DebugTool.logError(TAG, "App config was null, soo...");
+            }
         }
 
         @Override
-        public void onProtocolSessionEnded(SessionType sessionType, byte sessionID, String correlationID) {
-            //Currently not necessary
+        public void onSessionEnded(int sessionID) {
+            DebugTool.logInfo(TAG, "on protocol session ended");
         }
 
         @Override
-        public void onProtocolSessionEndedNACKed(SessionType sessionType, byte sessionID, String correlationID) {
-            //Currently not necessary
-        }
-
-        @Override
-        public void onProtocolError(String info, Exception e) {
-            DebugTool.logError(TAG, "Protocol Error - " + info, e);
-        }
-
-        @Override
-        public void onHeartbeatTimedOut(byte sessionID) { /* Deprecated */ }
-
-        @Override
-        public void onProtocolServiceDataACK(SessionType sessionType, int dataSize, byte sessionID) {/* Unused */ }
-
-
-        @Override
-        public void onAuthTokenReceived(String token, byte sessionID) {
+        public void onAuthTokenReceived(String token, int sessionID) {
             BaseLifecycleManager.this.authToken = token;
         }
     };
@@ -1212,7 +1159,7 @@ abstract class BaseLifecycleManager {
                     } else if (notification instanceof OnButtonPress) {
                         OnButtonPress onButtonPress = new OnButtonPress();
                         onButtonPress.setButtonPressMode(((OnButtonPress) notification).getButtonPressMode());
-                        onButtonPress.setCustomButtonName(((OnButtonPress) notification).getCustomButtonName());
+                        onButtonPress.setCustomButtonID(((OnButtonPress) notification).getCustomButtonID());
                         notification2 = onButtonPress;
                     } else {
                         return null;
@@ -1317,56 +1264,11 @@ abstract class BaseLifecycleManager {
         setupInternalRpcListeners();
     }
 
-    void onServiceStarted(SessionType sessionType) {
-        if (sessionType != null) {
-            if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(getProtocolVersion()) == 1) {
-                DebugTool.logWarning(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
-                session.endService(sessionType, session.getSessionId());
-                clean();
-                return;
-            }
-
-            if (sessionType.equals(SessionType.RPC)) {
-                if (appConfig != null) {
-
-                    appConfig.prepare();
-
-                    SdlMsgVersion sdlMsgVersion = new SdlMsgVersion();
-                    sdlMsgVersion.setMajorVersion(MAX_SUPPORTED_RPC_VERSION.getMajor());
-                    sdlMsgVersion.setMinorVersion(MAX_SUPPORTED_RPC_VERSION.getMinor());
-                    sdlMsgVersion.setPatchVersion(MAX_SUPPORTED_RPC_VERSION.getPatch());
-
-                    RegisterAppInterface rai = new RegisterAppInterface(sdlMsgVersion,
-                            appConfig.getAppName(), appConfig.isMediaApp(), appConfig.getLanguageDesired(),
-                            appConfig.getHmiDisplayLanguageDesired(), appConfig.getAppID());
-                    rai.setCorrelationID(REGISTER_APP_INTERFACE_CORRELATION_ID);
-
-                    rai.setTtsName(appConfig.getTtsName());
-                    rai.setNgnMediaScreenAppName(appConfig.getNgnMediaScreenAppName());
-                    rai.setVrSynonyms(appConfig.getVrSynonyms());
-                    rai.setAppHMIType(appConfig.getAppType());
-                    rai.setDayColorScheme(appConfig.getDayColorScheme());
-                    rai.setNightColorScheme(appConfig.getNightColorScheme());
-                    rai.setHashID(appConfig.getResumeHash());
-
-                    //Add device/system info in the future
-
-                    sendRPCMessagePrivate(rai, true);
-                } else {
-                    DebugTool.logError(TAG, "App config was null, soo...");
-                }
-            }
-        }
-    }
 
     abstract void cycle(SdlDisconnectedReason disconnectedReason);
 
     void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
     }
-
-    void onStartServiceNACKed(SessionType sessionType) {
-    }
-
 
     void startVideoService(boolean encrypted, VideoStreamingParameters parameters) {
     }
