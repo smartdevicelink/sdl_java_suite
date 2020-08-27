@@ -289,7 +289,6 @@ public class GetVehicleData extends RPCRequest {
 	public static final String KEY_SPEED = "speed";
 	public static final String KEY_RPM = "rpm";
 	public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
-	public static final String KEY_FUEL_LEVEL = "fuelLevel";
 	public static final String KEY_VIN = "vin";
 	public static final String KEY_PRNDL = "prndl";
 	public static final String KEY_TIRE_PRESSURE = "tirePressure";
@@ -297,7 +296,6 @@ public class GetVehicleData extends RPCRequest {
 	public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
 	public static final String KEY_ODOMETER = "odometer";
 	public static final String KEY_GPS = "gps";
-	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
 	public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
 	public static final String KEY_BELT_STATUS = "beltStatus";
 	public static final String KEY_BODY_INFORMATION = "bodyInformation";
@@ -319,6 +317,17 @@ public class GetVehicleData extends RPCRequest {
     public static final String KEY_WINDOW_STATUS = "windowStatus";
     public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
     public static final String KEY_GEAR_STATUS = "gearStatus";
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public static final String KEY_FUEL_LEVEL = "fuelLevel";
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
 
 	/**
 	 * Constructs a new GetVehicleData object
@@ -380,9 +389,13 @@ public class GetVehicleData extends RPCRequest {
     public Boolean getFuelLevel() {
         return getBoolean(KEY_FUEL_LEVEL);
     }
+
+    @Deprecated
     public void setFuelLevelState(Boolean fuelLevelState) {
         setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
     }
+
+    @Deprecated
     public Boolean getFuelLevelState() {
         return getBoolean(KEY_FUEL_LEVEL_STATE);
     }
@@ -393,26 +406,10 @@ public class GetVehicleData extends RPCRequest {
         return getBoolean(KEY_INSTANT_FUEL_CONSUMPTION);
     }
 
-    /**
-     * Sets the fuelRange.
-     *
-     * @param fuelRange The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
-     * vehicle. See struct FuelRange for details.
-     * @since SmartDeviceLink 5.0.0
-     */
-    @Deprecated
     public void setFuelRange(Boolean fuelRange) {
         setParameters(KEY_FUEL_RANGE, fuelRange);
     }
 
-    /**
-     * Gets the fuelRange.
-     *
-     * @return Boolean The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
-     * vehicle. See struct FuelRange for details.
-     * @since SmartDeviceLink 5.0.0
-     */
-    @Deprecated
     public Boolean getFuelRange() {
         return getBoolean(KEY_FUEL_RANGE);
     }

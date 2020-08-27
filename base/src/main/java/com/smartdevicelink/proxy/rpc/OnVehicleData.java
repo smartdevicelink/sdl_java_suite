@@ -332,7 +332,6 @@ public class OnVehicleData extends RPCNotification {
 	public static final String KEY_SPEED = "speed";
 	public static final String KEY_RPM = "rpm";
 	public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
-	public static final String KEY_FUEL_LEVEL = "fuelLevel";
 	public static final String KEY_VIN = "vin";
 	public static final String KEY_PRNDL = "prndl";
 	public static final String KEY_TIRE_PRESSURE = "tirePressure";
@@ -340,7 +339,6 @@ public class OnVehicleData extends RPCNotification {
 	public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
 	public static final String KEY_ODOMETER = "odometer";
 	public static final String KEY_GPS = "gps";
-	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
 	public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
 	public static final String KEY_BELT_STATUS = "beltStatus";
 	public static final String KEY_BODY_INFORMATION = "bodyInformation";
@@ -362,6 +360,16 @@ public class OnVehicleData extends RPCNotification {
     public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
     public static final String KEY_WINDOW_STATUS = "windowStatus";
     public static final String KEY_GEAR_STATUS = "gearStatus";
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public static final String KEY_FUEL_LEVEL = "fuelLevel";
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
 
 
     public OnVehicleData() {
@@ -413,9 +421,11 @@ public class OnVehicleData extends RPCNotification {
     	Object object = getParameters(KEY_FUEL_LEVEL);
     	return SdlDataTypeConverter.objectToDouble(object);
     }
+    @Deprecated
     public void setFuelLevelState(ComponentVolumeStatus fuelLevelState) {
         setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
     }
+    @Deprecated
     public ComponentVolumeStatus getFuelLevelState() {
         return (ComponentVolumeStatus) getObject(ComponentVolumeStatus.class, KEY_FUEL_LEVEL_STATE);
     }

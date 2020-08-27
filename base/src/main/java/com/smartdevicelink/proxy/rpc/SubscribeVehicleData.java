@@ -323,14 +323,12 @@ import java.util.Hashtable;
 public class SubscribeVehicleData extends RPCRequest {
 	public static final String KEY_RPM = "rpm";
 	public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
-	public static final String KEY_FUEL_LEVEL = "fuelLevel";
 	public static final String KEY_PRNDL = "prndl";
 	public static final String KEY_TIRE_PRESSURE = "tirePressure";
 	public static final String KEY_ENGINE_TORQUE = "engineTorque";
 	public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
 	public static final String KEY_ODOMETER = "odometer";
 	public static final String KEY_GPS = "gps";
-	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
 	public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
 	public static final String KEY_BELT_STATUS = "beltStatus";
 	public static final String KEY_BODY_INFORMATION = "bodyInformation";
@@ -353,6 +351,16 @@ public class SubscribeVehicleData extends RPCRequest {
 	public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
 	public static final String KEY_WINDOW_STATUS = "windowStatus";
 	public static final String KEY_GEAR_STATUS = "gearStatus";
+	/**
+	 * @deprecated
+	 */
+	@Deprecated
+	public static final String KEY_FUEL_LEVEL = "fuelLevel";
+	/**
+	 * @deprecated
+	 */
+	@Deprecated
+	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
 
 	/**
 	 * Constructs a new SubscribeVehicleData object
@@ -461,6 +469,7 @@ public class SubscribeVehicleData extends RPCRequest {
      * @param fuelLevelState
      *            a boolean value
      */
+    @Deprecated
     public void setFuelLevelState(Boolean fuelLevelState) {
 		setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
     }
@@ -472,7 +481,8 @@ public class SubscribeVehicleData extends RPCRequest {
      * @return Boolean -a Boolean value. If true, means the fuelLevelState data
      *         has been subscribed.
      */
-    public Boolean getFuelLevelState() {
+	@Deprecated
+	public Boolean getFuelLevelState() {
         return getBoolean(KEY_FUEL_LEVEL_STATE);
     }
 

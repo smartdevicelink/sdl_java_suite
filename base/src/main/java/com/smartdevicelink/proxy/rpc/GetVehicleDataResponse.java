@@ -141,6 +141,7 @@ public class GetVehicleDataResponse extends RPCResponse {
      * Sets Fuel Level State
      * @param fuelLevelState a ComponentVolumeStatus related to FuelLevel State
      */
+    @Deprecated
     public void setFuelLevelState(ComponentVolumeStatus fuelLevelState) {
         setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
     }
@@ -148,6 +149,7 @@ public class GetVehicleDataResponse extends RPCResponse {
      * Gets Fuel Level State
      * @return a ComponentVolumeStatus related to FuelLevel State
      */
+    @Deprecated
     @SuppressWarnings("unchecked")
     public ComponentVolumeStatus getFuelLevelState() {
         return (ComponentVolumeStatus) getObject(ComponentVolumeStatus.class, KEY_FUEL_LEVEL_STATE);
