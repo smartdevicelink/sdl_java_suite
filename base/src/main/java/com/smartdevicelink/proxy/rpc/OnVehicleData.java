@@ -589,6 +589,7 @@ public class OnVehicleData extends RPCNotification {
      *
      * @param fuelRange The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
      * vehicle. See struct FuelRange for details.
+     * {"array_min_size": 0, "array_max_size": 100}
      * @since SmartDeviceLink 5.0.0
      */
     public void setFuelRange(List<FuelRange> fuelRange) {
