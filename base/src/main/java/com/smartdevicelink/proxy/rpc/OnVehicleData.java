@@ -111,8 +111,8 @@ import java.util.List;
  * 			<td>fuelRange</td>
  * 			<td>Boolean</td>
  * 			<td>The fuel type, estimated range in KM, fuel level/capacity and fuel level state for thevehicle. See struct FuelRange for details.</td>
- *                 <td>N</td>
- * 			<td>Subscribable</td>
+ * 			<td>N</td>
+ * 			<td>{"array_min_size": 0, "array_max_size": 100}</td>
  * 			<td>SmartDeviceLink 5.0.0</td>
  * 		</tr>
  * 		<tr>
