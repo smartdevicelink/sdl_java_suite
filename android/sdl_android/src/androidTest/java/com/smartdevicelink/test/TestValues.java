@@ -125,6 +125,7 @@ import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.ButtonEventMode;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.ButtonPressMode;
+import com.smartdevicelink.proxy.rpc.enums.CapacityUnit;
 import com.smartdevicelink.proxy.rpc.enums.CarModeStatus;
 import com.smartdevicelink.proxy.rpc.enums.CharacterSet;
 import com.smartdevicelink.proxy.rpc.enums.CompassDirection;
@@ -335,6 +336,7 @@ public class TestValues {
 	public static final VehicleDataResultCode          GENERAL_VEHICLEDATARESULTCODE          = VehicleDataResultCode.IGNORED;
 	public static final ComponentVolumeStatus          GENERAL_COMPONENTVOLUMESTATUS          = ComponentVolumeStatus.LOW;
 	public static final PresetBankCapabilities         GENERAL_PRESETBANKCAPABILITIES         = new PresetBankCapabilities();
+	public static final CapacityUnit         		   GENERAL_CAPACITYUNIT			          = CapacityUnit.KILOGRAMS;
 	public static final VehicleDataEventStatus         GENERAL_VEHCILEDATAEVENTSTATUS         = VehicleDataEventStatus.YES;
 	public static final VehicleDataEventStatus         GENERAL_VEHICLEDATAEVENTSTATUS         = VehicleDataEventStatus.YES;
 	public static final TouchEventCapabilities         GENERAL_TOUCHEVENTCAPABILITIES         = new TouchEventCapabilities();

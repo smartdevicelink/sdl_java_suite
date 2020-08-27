@@ -47,7 +47,6 @@ import java.util.Hashtable;
 public class SubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_SPEED = "speed";
 	public static final String KEY_RPM = "rpm";
-	public static final String KEY_FUEL_LEVEL = "fuelLevel";
 	public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
 	public static final String KEY_PRNDL = "prndl";
 	public static final String KEY_TIRE_PRESSURE = "tirePressure";
@@ -55,7 +54,6 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
 	public static final String KEY_ODOMETER = "odometer";
 	public static final String KEY_GPS = "gps";
-	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
 	public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
 	public static final String KEY_BELT_STATUS = "beltStatus";
 	public static final String KEY_BODY_INFORMATION = "bodyInformation";
@@ -77,6 +75,16 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
     public static final String KEY_GEAR_STATUS = "gearStatus";
     public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
     public static final String KEY_WINDOW_STATUS = "windowStatus";
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public static final String KEY_FUEL_LEVEL = "fuelLevel";
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
 
 	/**
 	 * Constructs a new SubscribeVehicleDataResponse object
@@ -151,17 +159,23 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_RPM);
     }
     /**
-     * Sets Fuel Level
-     * @param fuelLevel a VehicleDataResult related to Fuel Level
+     * Sets the fuelLevel.
+     *
+     * @param fuelLevel The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
+     * 7.0, please see fuelRange.
      */
+    @Deprecated
     public void setFuelLevel(VehicleDataResult fuelLevel) {
         setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
     /**
-     * Gets Fuel Level
-     * @return a VehicleDataResult related to FuelLevel
+     * Gets the fuelLevel.
+     *
+     * @return VehicleDataResult The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
+     * 7.0, please see fuelRange.
      */
     @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getFuelLevel() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_FUEL_LEVEL);
     }
@@ -169,6 +183,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * Sets Fuel Level State
      * @param fuelLevelState a VehicleDataResult related to FuelLevel State
      */
+    @Deprecated
     public void setFuelLevelState(VehicleDataResult fuelLevelState) {
         setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
     }
@@ -176,6 +191,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * Gets Fuel Level State
      * @return a VehicleDataResult related to FuelLevel State
      */
+    @Deprecated
     @SuppressWarnings("unchecked")
     public VehicleDataResult getFuelLevelState() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_FUEL_LEVEL_STATE);
@@ -443,16 +459,22 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
     }
 
     /**
-     * Sets Fuel Range
-     * @param fuelRange a VehicleDataResult related to the fuel range
+     * Sets the fuelRange.
+     *
+     * @param fuelRange The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
+     * vehicle. See struct FuelRange for details.
+     * @since SmartDeviceLink 5.0.0
      */
     public void setFuelRange(VehicleDataResult fuelRange) {
         setParameters(KEY_FUEL_RANGE, fuelRange);
     }
 
     /**
-     * Gets Fuel Range
-     * @return a VehicleDataResult related to the fuel range
+     * Gets the fuelRange.
+     *
+     * @return VehicleDataResult The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
+     * vehicle. See struct FuelRange for details.
+     * @since SmartDeviceLink 5.0.0
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getFuelRange() {

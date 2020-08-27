@@ -84,18 +84,26 @@ import java.util.Hashtable;
  * 		<tr>
  * 			<td>fuelLevel</td>
  * 			<td>Boolean</td>
- * 			<td>The fuel level in the tank (percentage)</td>
+ * 			<td>The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec7.0, please see fuelRange.</td>
  *                 <td>N</td>
  *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
+ * 			<td>SmartDeviceLink 7.0.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>fuelLevel_State</td>
  * 			<td>Boolean</td>
- * 			<td>The fuel level state</td>
+ * 			<td>The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please seefuelRange.</td>
  *                 <td>N</td>
  *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
+ * 			<td>SmartDeviceLink 7.0.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>fuelRange</td>
+ * 			<td>Boolean</td>
+ * 			<td>The fuel type, estimated range in KM, fuel level/capacity and fuel level state for thevehicle. See struct FuelRange for details.</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 5.0.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>instantFuelConsumption</td>
@@ -315,14 +323,12 @@ import java.util.Hashtable;
 public class SubscribeVehicleData extends RPCRequest {
 	public static final String KEY_RPM = "rpm";
 	public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
-	public static final String KEY_FUEL_LEVEL = "fuelLevel";
 	public static final String KEY_PRNDL = "prndl";
 	public static final String KEY_TIRE_PRESSURE = "tirePressure";
 	public static final String KEY_ENGINE_TORQUE = "engineTorque";
 	public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
 	public static final String KEY_ODOMETER = "odometer";
 	public static final String KEY_GPS = "gps";
-	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
 	public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
 	public static final String KEY_BELT_STATUS = "beltStatus";
 	public static final String KEY_BODY_INFORMATION = "bodyInformation";
@@ -345,6 +351,16 @@ public class SubscribeVehicleData extends RPCRequest {
 	public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
 	public static final String KEY_WINDOW_STATUS = "windowStatus";
 	public static final String KEY_GEAR_STATUS = "gearStatus";
+	/**
+	 * @deprecated
+	 */
+	@Deprecated
+	public static final String KEY_FUEL_LEVEL = "fuelLevel";
+	/**
+	 * @deprecated
+	 */
+	@Deprecated
+	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
 
 	/**
 	 * Constructs a new SubscribeVehicleData object
@@ -426,22 +442,23 @@ public class SubscribeVehicleData extends RPCRequest {
     }
 
 	/**
-	 * Sets a boolean value. If true, subscribes FuelLevel data
+	 * Sets the fuelLevel.
 	 * 
-	 * @param fuelLevel
-	 *            a boolean value
+	 * @param fuelLevel The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
+	 * 7.0, please see fuelRange.
 	 */
+	@Deprecated
     public void setFuelLevel(Boolean fuelLevel) {
 		setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
 
 	/**
-	 * Gets a boolean value. If true, means the FuelLevel data has been
-	 * subscribed.
+	 * Gets the fuelLevel.
 	 * 
-	 * @return Boolean -a Boolean value. If true, means the FuelLevel data has
-	 *         been subscribed.
+	 * @return Float The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
+	 * 7.0, please see fuelRange.
 	 */
+	@Deprecated
     public Boolean getFuelLevel() {
         return getBoolean(KEY_FUEL_LEVEL);
     }
@@ -452,6 +469,7 @@ public class SubscribeVehicleData extends RPCRequest {
      * @param fuelLevelState
      *            a boolean value
      */
+    @Deprecated
     public void setFuelLevelState(Boolean fuelLevelState) {
 		setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
     }
@@ -463,7 +481,8 @@ public class SubscribeVehicleData extends RPCRequest {
      * @return Boolean -a Boolean value. If true, means the fuelLevelState data
      *         has been subscribed.
      */
-    public Boolean getFuelLevelState() {
+	@Deprecated
+	public Boolean getFuelLevelState() {
         return getBoolean(KEY_FUEL_LEVEL_STATE);
     }
 
@@ -821,22 +840,22 @@ public class SubscribeVehicleData extends RPCRequest {
     }
 
 	/**
-	 * Sets a boolean value. If true, subscribes fuelRange data
+	 * Sets the fuelRange.
 	 *
-	 * @param fuelRange
-	 *            a boolean value
+	 * @param fuelRange The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
+	 * vehicle. See struct FuelRange for details.
+	 * @since SmartDeviceLink 5.0.0
 	 */
 	public void setFuelRange(Boolean fuelRange) {
 		setParameters(KEY_FUEL_RANGE, fuelRange);
 	}
 
 	/**
-	 * Gets a boolean value. If true, means the Fuel Range data has been
-	 * subscribed.
+	 * Gets the fuelRange.
 	 *
-	 * @return Boolean -a Boolean value. If true, means the Fuel Range data
-	 *         has been subscribed.
-	 *
+	 * @return Boolean The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
+	 * vehicle. See struct FuelRange for details.
+	 * @since SmartDeviceLink 5.0.0
 	 */
 	public Boolean getFuelRange() {
 		return getBoolean(KEY_FUEL_RANGE);

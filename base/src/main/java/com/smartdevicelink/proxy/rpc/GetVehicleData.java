@@ -76,18 +76,26 @@ import java.util.Hashtable;
  * 		<tr>
  * 			<td>fuelLevel</td>
  * 			<td>Boolean</td>
- * 			<td>The fuel level in the tank (percentage)</td>
+ * 			<td>The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec7.0, please see fuelRange.</td>
  *                 <td>N</td>
  *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
+ * 			<td>SmartDeviceLink 7.0.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>fuelLevel_State</td>
  * 			<td>Boolean</td>
- * 			<td>The fuel level state</td>
+ * 			<td>The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please seefuelRange.</td>
  *                 <td>N</td>
  *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
+ * 			<td>SmartDeviceLink 7.0.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>fuelRange</td>
+ * 			<td>Boolean</td>
+ * 			<td>The fuel type, estimated range in KM, fuel level/capacity and fuel level state for thevehicle. See struct FuelRange for details.</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 5.0.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>instantFuelConsumption</td>
@@ -281,7 +289,6 @@ public class GetVehicleData extends RPCRequest {
 	public static final String KEY_SPEED = "speed";
 	public static final String KEY_RPM = "rpm";
 	public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
-	public static final String KEY_FUEL_LEVEL = "fuelLevel";
 	public static final String KEY_VIN = "vin";
 	public static final String KEY_PRNDL = "prndl";
 	public static final String KEY_TIRE_PRESSURE = "tirePressure";
@@ -289,7 +296,6 @@ public class GetVehicleData extends RPCRequest {
 	public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
 	public static final String KEY_ODOMETER = "odometer";
 	public static final String KEY_GPS = "gps";
-	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
 	public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
 	public static final String KEY_BELT_STATUS = "beltStatus";
 	public static final String KEY_BODY_INFORMATION = "bodyInformation";
@@ -311,6 +317,17 @@ public class GetVehicleData extends RPCRequest {
     public static final String KEY_WINDOW_STATUS = "windowStatus";
     public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
     public static final String KEY_GEAR_STATUS = "gearStatus";
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public static final String KEY_FUEL_LEVEL = "fuelLevel";
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
 
 	/**
 	 * Constructs a new GetVehicleData object
@@ -350,15 +367,35 @@ public class GetVehicleData extends RPCRequest {
     public Boolean getRpm() {
         return getBoolean(KEY_RPM);
     }
+
+    /**
+     * Sets the fuelLevel.
+     *
+     * @param fuelLevel The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
+     * 7.0, please see fuelRange.
+     */
+    @Deprecated
     public void setFuelLevel(Boolean fuelLevel) {
         setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
+
+    /**
+     * Gets the fuelLevel.
+     *
+     * @return Boolean The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
+     * 7.0, please see fuelRange.
+     */
+    @Deprecated
     public Boolean getFuelLevel() {
         return getBoolean(KEY_FUEL_LEVEL);
     }
+
+    @Deprecated
     public void setFuelLevelState(Boolean fuelLevelState) {
         setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
     }
+
+    @Deprecated
     public Boolean getFuelLevelState() {
         return getBoolean(KEY_FUEL_LEVEL_STATE);
     }
@@ -368,6 +405,15 @@ public class GetVehicleData extends RPCRequest {
     public Boolean getInstantFuelConsumption() {
         return getBoolean(KEY_INSTANT_FUEL_CONSUMPTION);
     }
+
+    public void setFuelRange(Boolean fuelRange) {
+        setParameters(KEY_FUEL_RANGE, fuelRange);
+    }
+
+    public Boolean getFuelRange() {
+        return getBoolean(KEY_FUEL_RANGE);
+    }
+
     public void setExternalTemperature(Boolean externalTemperature) {
         setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
     }
@@ -507,25 +553,6 @@ public class GetVehicleData extends RPCRequest {
     }
     public Boolean getMyKey() {
         return getBoolean(KEY_MY_KEY);
-    }
-
-    /**
-     * Sets a boolean value. If true, gets fuelRange data
-     * @param fuelRange
-      *            a boolean value
-     */
-    public void setFuelRange(Boolean fuelRange) {
-        setParameters(KEY_FUEL_RANGE, fuelRange);
-    }
-
-    /**
-     * Gets a boolean value.
-     *
-     * @return Boolean -a Boolean value.
-     *
-     */
-    public Boolean getFuelRange() {
-        return getBoolean(KEY_FUEL_RANGE);
     }
 
     /**
