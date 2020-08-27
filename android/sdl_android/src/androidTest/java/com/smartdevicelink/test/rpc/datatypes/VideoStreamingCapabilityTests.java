@@ -77,7 +77,6 @@ public class VideoStreamingCapabilityTests extends TestCase {
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
-		// should not ever be serialized on the mobile side
 		msg.setAdditionalVideoStreamingCapabilities(null);
 		assertNull(TestValues.NOT_NULL, msg.getAdditionalVideoStreamingCapabilities());
 
