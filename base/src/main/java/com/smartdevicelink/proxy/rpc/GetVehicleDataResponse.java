@@ -62,7 +62,11 @@ public class GetVehicleDataResponse extends RPCResponse {
        */
       @Deprecated
 	public static final String KEY_FUEL_LEVEL = "fuelLevel";
-	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
 	public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
 	public static final String KEY_FUEL_RANGE = "fuelRange";
 	public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
