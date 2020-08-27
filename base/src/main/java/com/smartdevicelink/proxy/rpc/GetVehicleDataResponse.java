@@ -57,6 +57,10 @@ public class GetVehicleDataResponse extends RPCResponse {
 	public static final String KEY_GPS = "gps";
 	public static final String KEY_SPEED = "speed";
 	public static final String KEY_RPM = "rpm";
+      /**
+       * @deprecated
+       */
+      @Deprecated
 	public static final String KEY_FUEL_LEVEL = "fuelLevel";
 	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
 	public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
