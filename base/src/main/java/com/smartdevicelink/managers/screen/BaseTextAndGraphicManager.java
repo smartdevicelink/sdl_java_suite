@@ -196,7 +196,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			}
 		}
 
-		// If Task is IN_PROGRESS it's not on the queue, we need to cancel it, operation will take care of stopping it.
+		// If Task is IN_PROGRESS it's not on the queue, we need to cancel it, the operation will take care of stopping it and will call the listener back
 		if (updateOperation != null && updateOperation.getState() == Task.IN_PROGRESS) {
 			updateOperation.cancelTask();
 		}
@@ -491,7 +491,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				// Update the queue's suspend state
 				updateTransactionQueueSuspended();
 				if (hasData()) {
-					update(null);
+					sdlUpdate(null);
 				}
 			}
 

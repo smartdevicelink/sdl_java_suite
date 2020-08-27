@@ -617,7 +617,7 @@ class TextAndGraphicUpdateOperation extends Task {
         return currentScreenData;
     }
 
-    public void setCurrentScreenData(Show currentScreenData) {
+    void setCurrentScreenData(Show currentScreenData) {
         this.currentScreenData = currentScreenData;
     }
 
