@@ -490,7 +490,7 @@ class TextAndGraphicUpdateOperation extends Task {
             currentScreenData.setSecondaryGraphic(show.getSecondaryGraphic());
         }
         if (currentScreenDataUpdateListener != null) {
-            currentScreenDataUpdateListener.onUpdate(show);
+            currentScreenDataUpdateListener.onUpdate(currentScreenData);
         }
     }
 
