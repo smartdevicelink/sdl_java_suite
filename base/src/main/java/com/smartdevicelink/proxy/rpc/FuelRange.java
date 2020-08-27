@@ -171,6 +171,7 @@ public class FuelRange extends RPCStruct {
      * Sets the level.
      *
      * @param level The relative remaining capacity of this fuel type (percentage).
+     * {"num_min_value": -6.0, "num_max_value": 1000000.0}
      * @since SmartDeviceLink 7.0.0
      */
     public void setLevel(Float level) {
