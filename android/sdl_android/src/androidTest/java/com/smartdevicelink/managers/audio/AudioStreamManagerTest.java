@@ -287,10 +287,6 @@ public class AudioStreamManagerTest extends TestCase {
                         Boolean encrypted = (Boolean) args[0];
                         serviceListener.onServiceStarted(mockSession, SessionType.PCM, encrypted);
                         break;
-                    case "stopAudioService":
-                        // parameters ()
-                        serviceListener.onServiceEnded(mockSession, SessionType.PCM);
-                        break;
                 }
 
                 return null;
@@ -523,10 +519,6 @@ public class AudioStreamManagerTest extends TestCase {
                         //(boolean encrypted, AudioStreamingCodec codec, AudioStreamingParams params);
                         Boolean encrypted = (Boolean) args[0];
                         serviceListener.onServiceStarted(mockSession, SessionType.PCM, encrypted);
-                        break;
-                    case "stopAudioService":
-                        // parameters ()
-                        serviceListener.onServiceEnded(mockSession, SessionType.PCM);
                         break;
                 }
 
