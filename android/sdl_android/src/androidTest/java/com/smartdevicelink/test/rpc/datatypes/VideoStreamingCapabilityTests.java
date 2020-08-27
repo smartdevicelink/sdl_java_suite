@@ -33,6 +33,7 @@ public class VideoStreamingCapabilityTests extends TestCase {
 		msg.setDiagonalScreenSize(TestValues.GENERAL_DOUBLE);
 		msg.setPixelPerInch(TestValues.GENERAL_DOUBLE);
 		msg.setScale(TestValues.GENERAL_DOUBLE);
+		msg.setAdditionalVideoStreamingCapabilities(TestValues.GENERAL_ADDITIONAL_CAPABILITY_LIST);
 	}
 
 	/**
@@ -47,6 +48,7 @@ public class VideoStreamingCapabilityTests extends TestCase {
 		Double diagonalScreenSize = msg.getDiagonalScreenSize();
 		Double pixelPerInch = msg.getPixelPerInch();
 		Double scale = msg.getScale();
+		List<VideoStreamingCapability> additionalVideoStreamingCapabilities = msg.getAdditionalVideoStreamingCapabilities();
 
 		// Valid Tests
 		assertEquals(TestValues.MATCH, (List<VideoStreamingFormat>) TestValues.GENERAL_VIDEOSTREAMINGFORMAT_LIST, format);
@@ -56,6 +58,7 @@ public class VideoStreamingCapabilityTests extends TestCase {
 		assertEquals(TestValues.MATCH, TestValues.GENERAL_DOUBLE, diagonalScreenSize);
 		assertEquals(TestValues.MATCH, TestValues.GENERAL_DOUBLE, pixelPerInch);
 		assertEquals(TestValues.MATCH, TestValues.GENERAL_DOUBLE, scale);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_ADDITIONAL_CAPABILITY_LIST, additionalVideoStreamingCapabilities);
 
 		// Invalid/Null Tests
 		VideoStreamingCapability msg = new VideoStreamingCapability();
@@ -68,10 +71,15 @@ public class VideoStreamingCapabilityTests extends TestCase {
 		assertNull(TestValues.NULL, msg.getDiagonalScreenSize());
 		assertNull(TestValues.NULL, msg.getPixelPerInch());
 		assertNull(TestValues.NULL, msg.getScale());
+		assertNull(TestValues.NULL, msg.getAdditionalVideoStreamingCapabilities());
 	}
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
+
+		// should not ever be serialized on the mobile side
+		msg.setAdditionalVideoStreamingCapabilities(null);
+		assertNull(TestValues.NOT_NULL, msg.getAdditionalVideoStreamingCapabilities());
 
 		try {
 			reference.put(VideoStreamingCapability.KEY_MAX_BITRATE, TestValues.GENERAL_INT);
