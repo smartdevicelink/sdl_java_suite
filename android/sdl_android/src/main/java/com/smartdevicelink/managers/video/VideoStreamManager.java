@@ -45,6 +45,7 @@ import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.StreamingStateMachine;
+import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
 import com.smartdevicelink.managers.video.resolution.AspectRatio;
 import com.smartdevicelink.managers.video.resolution.Resolution;
 import com.smartdevicelink.managers.video.resolution.VideoStreamingRange;

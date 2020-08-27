@@ -63,6 +63,7 @@ public class GetVehicleDataTests extends BaseRpcTests {
 		msg.setElectronicParkBrakeStatus(TestValues.GENERAL_BOOLEAN);
 		msg.setHandsOffSteering(TestValues.GENERAL_BOOLEAN);
 		msg.setWindowStatus(TestValues.GENERAL_BOOLEAN);
+		msg.setGearStatus(TestValues.GENERAL_BOOLEAN);
 		msg.setOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_BOOLEAN);
 
         return msg;
@@ -113,6 +114,7 @@ public class GetVehicleDataTests extends BaseRpcTests {
             result.put(GetVehicleData.KEY_TURN_SIGNAL, TestValues.GENERAL_BOOLEAN);
             result.put(GetVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS, TestValues.GENERAL_BOOLEAN);
             result.put(GetVehicleData.KEY_HANDS_OFF_STEERING, TestValues.GENERAL_BOOLEAN);
+            result.put(GetVehicleData.KEY_GEAR_STATUS, TestValues.GENERAL_BOOLEAN);
             result.put(GetVehicleData.KEY_WINDOW_STATUS, TestValues.GENERAL_BOOLEAN);
             result.put(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_BOOLEAN);
         }catch(JSONException e){
@@ -160,6 +162,7 @@ public class GetVehicleDataTests extends BaseRpcTests {
 		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getElectronicParkBrakeStatus());
 		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getHandsOffSteering());
 		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getWindowStatus());
+		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getGearStatus());
 		assertTrue(TestValues.TRUE, ( (GetVehicleData) msg ).getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
     
 		// Invalid/Null Tests
@@ -198,6 +201,7 @@ public class GetVehicleDataTests extends BaseRpcTests {
         assertNull(TestValues.NULL, msg.getElectronicParkBrakeStatus());
         assertNull(TestValues.NULL, msg.getHandsOffSteering());
         assertNull(TestValues.NULL, msg.getWindowStatus());
+        assertNull(TestValues.NULL, msg.getGearStatus());
         assertNull(TestValues.NULL, msg.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
     }
     
@@ -252,6 +256,7 @@ public class GetVehicleDataTests extends BaseRpcTests {
 			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS), cmd.getElectronicParkBrakeStatus());
 			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_HANDS_OFF_STEERING), cmd.getHandsOffSteering());
 			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_WINDOW_STATUS), cmd.getWindowStatus());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_GEAR_STATUS), cmd.getGearStatus());
 			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME), cmd.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
 		} catch (JSONException e) {
 			fail(TestValues.JSON_FAIL);

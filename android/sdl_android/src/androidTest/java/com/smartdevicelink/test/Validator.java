@@ -1,7 +1,6 @@
 package com.smartdevicelink.test;
 
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
-import com.smartdevicelink.protocol.enums.FrameData;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -11,8 +10,10 @@ import com.smartdevicelink.proxy.rpc.enums.DefrostZone;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.TransmissionType;
 import com.smartdevicelink.proxy.rpc.enums.VentilationMode;
 
 import java.util.Iterator;
@@ -144,28 +145,7 @@ public class Validator{
     	
     	return true;
     }
-    
-    public static boolean validateFrameDataArray (FrameData[] array1, FrameData[] array2) {
-    	if (array1 == null) {
-    		return (array2 == null);
-    	}
-    	
-    	if (array2 == null) {
-    		return (array1 == null);
-    	}
-    	
-    	if (array1.length != array2.length) {
-    		return false;
-    	}
-    	
-    	for (int i = 0; i < array1.length; i++) {
-    		if (array1[i] != array2[i]) {
-    			return false;
-    		}
-    	}
-    	
-    	return true;
-    }
+
 
     public static boolean validateImage(Image image1, Image image2){
         if(image1 == null){
@@ -3826,6 +3806,28 @@ public class Validator{
 		}
 		return validateGrid(cap1.getGrid(), cap2.getGrid());
 	}
+
+    public static boolean validateGearStatuses(GearStatus status1, GearStatus status2) {
+        if (status1 == null) {
+            return (status2 == null);
+        }
+        if (status2 == null) {
+            return (status1 == null);
+        }
+
+        PRNDL actualGear1 = status1.getActualGear();
+        PRNDL actualGear2 = status2.getActualGear();
+
+        TransmissionType transmissionType1 = status1.getTransmissionType();
+        TransmissionType transmissionType2 = status2.getTransmissionType();
+
+        PRNDL userSelectedGear1 = status1.getUserSelectedGear();
+        PRNDL userSelectedGear2 = status2.getUserSelectedGear();
+
+        return actualGear1.equals(actualGear2)
+                && transmissionType1.equals(transmissionType2)
+                && userSelectedGear1.equals(userSelectedGear2);
+    }
 
     public static boolean validateWindowStatuses(List<WindowStatus> item1, List<WindowStatus> item2) {
         if (item1 == null) {
