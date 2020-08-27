@@ -1,7 +1,6 @@
 package com.smartdevicelink.test;
 
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
-import com.smartdevicelink.protocol.enums.FrameData;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -146,28 +145,7 @@ public class Validator{
     	
     	return true;
     }
-    
-    public static boolean validateFrameDataArray (FrameData[] array1, FrameData[] array2) {
-    	if (array1 == null) {
-    		return (array2 == null);
-    	}
-    	
-    	if (array2 == null) {
-    		return (array1 == null);
-    	}
-    	
-    	if (array1.length != array2.length) {
-    		return false;
-    	}
-    	
-    	for (int i = 0; i < array1.length; i++) {
-    		if (array1[i] != array2[i]) {
-    			return false;
-    		}
-    	}
-    	
-    	return true;
-    }
+
 
     public static boolean validateImage(Image image1, Image image2){
         if(image1 == null){
