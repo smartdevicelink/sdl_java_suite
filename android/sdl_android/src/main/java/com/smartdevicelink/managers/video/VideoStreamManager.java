@@ -727,7 +727,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
 	}
 
-	public IVideoStreamListener startVideoStream(VideoStreamingParameters params, final SdlSession session) {
+	protected IVideoStreamListener startVideoStream(VideoStreamingParameters params, final SdlSession session) {
 		VideoStreamingProtocol protocol = getAcceptedProtocol(params);
 
 		IStreamListener iStreamListener = new IStreamListener() {
@@ -760,7 +760,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
 	}
 
-	public boolean stopVideoStream() {
+	protected boolean stopVideoStream() {
 		if (videoPacketizer != null) {
 			videoPacketizer.stop();
 			return true;

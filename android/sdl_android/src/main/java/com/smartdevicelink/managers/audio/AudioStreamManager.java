@@ -502,7 +502,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
         int FLOAT = Float.SIZE >> 3;
     }
 
-    public IAudioStreamListener startAudioStream(final SdlSession session) {
+    protected IAudioStreamListener startAudioStream(final SdlSession session) {
 
         IStreamListener streamListener = new IStreamListener() {
             @Override
@@ -520,7 +520,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
         }
     }
 
-    public boolean stopAudioStream() {
+    protected boolean stopAudioStream() {
         if (audioPacketizer != null) {
             audioPacketizer.stop();
             return true;
