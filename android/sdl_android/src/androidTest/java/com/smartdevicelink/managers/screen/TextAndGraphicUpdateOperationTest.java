@@ -5,6 +5,7 @@ import android.net.Uri;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
@@ -58,6 +59,7 @@ public class TextAndGraphicUpdateOperationTest {
     private Show currentScreenData;
     private CompletionListener listener;
     private TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdatedListener;
+    private SdlArtwork blankArtwork;
     ISdl internalInterface;
     FileManager fileManager;
 
@@ -129,6 +131,11 @@ public class TextAndGraphicUpdateOperationTest {
         textField4 = "Dudes";
         mediaTrackField = "dudes";
         title = "dudes";
+
+        blankArtwork = new SdlArtwork();
+        blankArtwork.setType(FileType.GRAPHIC_PNG);
+        blankArtwork.setName("blankArtwork");
+        blankArtwork.setResourceId(R.drawable.transparent);
 
         textField1Type = MetadataType.MEDIA_TITLE;
         textField2Type = MetadataType.MEDIA_TITLE;
@@ -276,7 +283,7 @@ public class TextAndGraphicUpdateOperationTest {
 
         //Test: If there are no images to update, just send the text
         TextsAndGraphicsState textsAndGraphicsStateNullImages = new TextsAndGraphicsState(textField1, textField2, textField3, textField4,
-                mediaTrackField, title, null, null, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type);
+                mediaTrackField, title, blankArtwork, blankArtwork, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type);
         textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsStateNullImages, listener, currentScreenDataUpdatedListener);
         textAndGraphicUpdateOperation.onExecute();
         assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getMainField1(), textField1);
