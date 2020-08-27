@@ -196,7 +196,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			}
 		}
 
-		// If Task is IN_PROGRESS it's not on the queue, we need to cancel it, the operation will take care of stopping it and will call the listener back
+		// If Task is IN_PROGRESS, it’s not on the queue, we need to mark it as cancelled. The task will return at some point when it checks its status and call the listener back
 		if (updateOperation != null && updateOperation.getState() == Task.IN_PROGRESS) {
 			updateOperation.cancelTask();
 		}
