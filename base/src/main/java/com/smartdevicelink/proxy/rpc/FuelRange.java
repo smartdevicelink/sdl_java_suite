@@ -49,6 +49,7 @@ import java.util.Hashtable;
  *      <th>Type</th>
  *      <th>Description</th>
  *      <th>Required</th>
+  *      <th>Notes</th>
  *      <th>Version Available</th>
  *  </tr>
  *  <tr>
@@ -57,12 +58,14 @@ import java.util.Hashtable;
  *      <td></td>
  *      <td>N</td>
  *      <td></td>
+ *      <td></td>
  *  </tr>
  *  <tr>
  *      <td>range</td>
  *      <td>Float</td>
  *      <td>The estimate range in KM the vehicle can travel based on fuel level and consumption.</td>
  *      <td>N</td>
+ *      <td>{"num_min_value": 0.0, "num_max_value": 10000.0}</td>
  *      <td></td>
  *  </tr>
  *  <tr>
@@ -70,6 +73,7 @@ import java.util.Hashtable;
  *      <td>Float</td>
  *      <td>The relative remaining capacity of this fuel type (percentage).</td>
  *      <td>N</td>
+ *      <td>{"num_min_value": -6.0, "num_max_value": 1000000.0}</td>
  *      <td>SmartDeviceLink 7.0.0</td>
  *  </tr>
  *  <tr>
@@ -77,6 +81,7 @@ import java.util.Hashtable;
  *      <td>ComponentVolumeStatus</td>
  *      <td>The fuel level state</td>
  *      <td>N</td>
+ *      <td></td>
  *      <td>SmartDeviceLink 7.0.0</td>
  *  </tr>
  *  <tr>
@@ -84,6 +89,7 @@ import java.util.Hashtable;
  *      <td>Float</td>
  *      <td>The absolute capacity of this fuel type.</td>
  *      <td>N</td>
+ *      <td>{"num_min_value": 0.0, "num_max_value": 1000000.0}</td>
  *      <td>SmartDeviceLink 7.0.0</td>
  *  </tr>
  *  <tr>
@@ -91,6 +97,7 @@ import java.util.Hashtable;
  *      <td>CapacityUnit</td>
  *      <td>The unit of the capacity of this fuel type such as liters for gasoline or kWh forbatteries.</td>
  *      <td>N</td>
+ *      <td></td>
  *      <td>SmartDeviceLink 7.0.0</td>
  *  </tr>
  * </table>
