@@ -613,7 +613,7 @@ class TextAndGraphicUpdateOperation extends Task {
         return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, name);
     }
 
-    public Show getCurrentScreenData() {
+    Show getCurrentScreenData() {
         return currentScreenData;
     }
 
