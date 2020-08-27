@@ -225,6 +225,7 @@ public class FuelRange extends RPCStruct {
      * Gets the capacity.
      *
      * @return Float The absolute capacity of this fuel type.
+     * {"num_min_value": 0.0, "num_max_value": 1000000.0}
      * @since SmartDeviceLink 7.0.0
      */
     public Float getCapacity() {
