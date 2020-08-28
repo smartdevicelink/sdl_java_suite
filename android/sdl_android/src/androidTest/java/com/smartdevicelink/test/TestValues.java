@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.smartdevicelink.R;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.lifecycle.LifecycleManager;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
 import com.smartdevicelink.managers.screen.menu.MenuCell;
@@ -15,7 +16,6 @@ import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
 import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.SdlProxyBase;
 import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.AppInfo;
 import com.smartdevicelink.proxy.rpc.AppServiceCapability;
@@ -225,7 +225,7 @@ import java.util.Vector;
 public class TestValues {
 
 	//Versions
-	public static final Version MAX_RPC_VERSION_SUPPORTED		= SdlProxyBase.MAX_SUPPORTED_RPC_VERSION;
+	public static final Version MAX_RPC_VERSION_SUPPORTED		= LifecycleManager.MAX_SUPPORTED_RPC_VERSION;
 	/**
 	 * @see SdlProtocol
 	 */

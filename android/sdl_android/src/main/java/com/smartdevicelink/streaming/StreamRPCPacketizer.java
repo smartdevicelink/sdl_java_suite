@@ -39,8 +39,6 @@ import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.SdlProxyBase;
-import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
 import com.smartdevicelink.proxy.interfaces.IPutFileResponseListener;
 import com.smartdevicelink.proxy.rpc.PutFile;
 import com.smartdevicelink.proxy.rpc.PutFileResponse;
@@ -57,8 +55,8 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 	private Thread thread = null;
 	private long lFileSize = 0;
 	private String sFileName;
-	private SdlProxyBase<IProxyListenerBase> _proxy;
-	private IProxyListenerBase _proxyListener;
+	private Object _proxy;
+	private Object _proxyListener;
 
     private Object mPauseLock;
     private boolean mPaused;
@@ -67,7 +65,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 
 	private Version rpcSpecVersion;
 
-	public StreamRPCPacketizer(SdlProxyBase<IProxyListenerBase> proxy, IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion, long lLength, SdlSession session) throws IOException {
+	public StreamRPCPacketizer(Object proxy, IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion, long lLength, SdlSession session) throws IOException {
 		super(streamListener, is, request, sType, rpcSessionID, wiproVersion, session);
 		lFileSize = lLength;
 		iInitialCorrID = request.getCorrelationID();
@@ -77,15 +75,15 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 		if (proxy != null)
 		{
 			_proxy = proxy;
-			_proxyListener = _proxy.getProxyListener();
-			_proxy.addPutFileResponseListener(this);
+			//_proxyListener = _proxy.getProxyListener();
+			//_proxy.addPutFileResponseListener(this);
 		}
 		if(_request.getFunctionName().equalsIgnoreCase(FunctionID.PUT_FILE.toString())){
 			//callBack = ((PutFile)_request).getOnPutFileUpdateListener();
 		}
 	}
 
-	public StreamRPCPacketizer(SdlProxyBase<IProxyListenerBase> proxy, IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, Version wiproVersion, Version rpcSpecVersion, long lLength, SdlSession session) throws IOException {
+	public StreamRPCPacketizer(Object proxy, IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, Version wiproVersion, Version rpcSpecVersion, long lLength, SdlSession session) throws IOException {
 		super(streamListener, is, request, sType, rpcSessionID, wiproVersion, session);
 		this.rpcSpecVersion = rpcSpecVersion;
 		lFileSize = lLength;
@@ -95,8 +93,8 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 		isRPCProtected = request.isPayloadProtected();
 		if (proxy != null) {
 			_proxy = proxy;
-			_proxyListener = _proxy.getProxyListener();
-			_proxy.addPutFileResponseListener(this);
+			//_proxyListener = _proxy.getProxyListener();
+			//_proxy.addPutFileResponseListener(this);
 		}
 		if(_request.getFunctionName().equalsIgnoreCase(FunctionID.PUT_FILE.toString())){
 			//callBack = ((PutFile)_request).getOnPutFileUpdateListener();
