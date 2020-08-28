@@ -36,7 +36,12 @@ import androidx.annotation.NonNull;
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.PutFile;
+import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.FileUtls;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
 
 /**
  * <strong>FileManager</strong> <br>
@@ -94,6 +99,14 @@ public class FileManager extends BaseFileManager {
 			}else{
 				throw new IllegalArgumentException("File at path was empty");
 			}
+		}else if(file.getURI() != null){
+			// Use URI to upload file
+			byte[] data = contentsOfUri(file.getURI());
+			if(data != null){
+				putFile.setFileData(data);
+			}else{
+				throw new IllegalArgumentException("Uri was empty");
+			}
 		}else if(file.getFileData() != null){
 			// Use file data (raw bytes) to upload file
 			putFile.setFileData(file.getFileData());
@@ -110,4 +123,28 @@ public class FileManager extends BaseFileManager {
 		return putFile;
 	}
 
+
+	/**
+	 * Helper method to take Uri and turn it into byte array
+	 * @param uri Uri for desired file
+	 * @return Resulting byte array
+	 */
+	private byte[] contentsOfUri(URI uri){
+		InputStream is = null;
+		try{
+			is = uri.toURL().openStream();
+			return contentsOfInputStream(is);
+		} catch (IOException e){
+			DebugTool.logError(TAG, "Can't read from URI", e);
+			return null;
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 }

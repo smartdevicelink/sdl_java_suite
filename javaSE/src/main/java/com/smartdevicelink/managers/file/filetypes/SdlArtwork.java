@@ -38,6 +38,8 @@ import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
 import com.smartdevicelink.util.DebugTool;
 
+import java.net.URI;
+
 /**
  * A class that extends SdlFile, representing artwork (JPEG, PNG, or BMP) to be uploaded to core
  */
@@ -59,6 +61,17 @@ public class SdlArtwork extends SdlFile implements Cloneable{
      */
     public SdlArtwork(String fileName, @NonNull FileType fileType, String filePath, boolean persistentFile) {
         super(fileName, fileType, filePath, persistentFile);
+    }
+
+    /**
+     * Creates a new instance of SdlArtwork
+     * @param fileName a String value representing the name that will be used to store the file in the head unit. You can pass null if you want the library to auto generate the name
+     * @param fileType a FileType enum value representing the type of the file
+     * @param uri a URI value representing a file's location. Currently, it only supports local files
+     * @param persistentFile a boolean value that indicates if the file is meant to persist between sessions / ignition cycles
+     */
+    public SdlArtwork(String fileName, @NonNull FileType fileType, URI uri, boolean persistentFile) {
+        super(fileName, fileType, uri, persistentFile);
     }
 
     /**
