@@ -295,7 +295,8 @@ import java.util.Hashtable;
  *        	<td>N</td>
  *        	<td>SmartDeviceLink 7.0.0</td>
  *    	</tr>
- *  *
+ *  
+
  *  </table>
  * <p><b> Response</b></p>
  * <p><b>Non-default Result Codes:</b></p>
