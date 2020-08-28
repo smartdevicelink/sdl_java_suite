@@ -569,12 +569,16 @@ class TextAndGraphicUpdateOperation extends Task {
      * @return true if secondaryGraphic should be updated, false if not
      */
     private boolean shouldUpdateSecondaryImage() {
-        boolean templateSupportsSecondaryArtwork = (templateSupportsImageField(ImageFieldName.graphic) || templateSupportsImageField(ImageFieldName.secondaryGraphic));
+        boolean templateSupportsSecondaryArtwork = templateSupportsImageField(ImageFieldName.secondaryGraphic);
 
         String currentScreenDataSecondaryGraphicName = (currentScreenData != null && currentScreenData.getSecondaryGraphic() != null) ? currentScreenData.getSecondaryGraphic().getValue() : null;
         String secondaryGraphicName = updatedState.getSecondaryGraphic() != null ? updatedState.getSecondaryGraphic().getName() : null;
-        return templateSupportsSecondaryArtwork
-                && !CompareUtils.areStringsEqual(currentScreenDataSecondaryGraphicName, secondaryGraphicName, true, true);
+        // Cannot detect if there is a secondary image below v5.0, so we'll just try to detect if the primary image is allowed and allow the secondary image if it is.
+        if (internalInterface.get().getSdlMsgVersion().getMajorVersion() > 5) {
+            return templateSupportsSecondaryArtwork && !CompareUtils.areStringsEqual(currentScreenDataSecondaryGraphicName, secondaryGraphicName, true, true);
+        } else {
+            return templateSupportsImageField(ImageFieldName.graphic);
+        }
     }
 
     /**
