@@ -9,7 +9,7 @@ import com.smartdevicelink.transport.TCPTransportConfig;
 
 import junit.framework.TestCase;
 
-import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -19,7 +19,7 @@ import static org.mockito.Mockito.mock;
 public class SdlSessionTests extends TestCase {
 
 	public void testServiceListeners(){
-		SdlSession session = new SdlSession(new MockInterfaceBroker(),  new MultiplexTransportConfig(getTargetContext(),"19216801"));
+		SdlSession session = new SdlSession(new MockInterfaceBroker(),  new MultiplexTransportConfig(getInstrumentation().getTargetContext(),"19216801"));
 		ISdlServiceListener test = new ISdlServiceListener() {
 			@Override
 			public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {

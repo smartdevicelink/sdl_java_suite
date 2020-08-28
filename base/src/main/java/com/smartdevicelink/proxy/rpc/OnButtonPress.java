@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
@@ -178,22 +178,6 @@ public class OnButtonPress extends RPCNotification {
      */    
     public void setButtonPressMode( @NonNull ButtonPressMode buttonPressMode ) {
         setParameters(KEY_BUTTON_PRESS_MODE, buttonPressMode);
-    }
-
-    @Deprecated
-    /**
-    * @deprecated use {@link #setCustomButtonID(Integer)} ()} instead.
-    */
-    public void setCustomButtonName(Integer customButtonID) {
-        setParameters(KEY_CUSTOM_BUTTON_ID, customButtonID);
-    }
-
-    @Deprecated
-    /**
-     * @deprecated use {@link #getCustomButtonID()} ()} instead.
-    */
-    public Integer getCustomButtonName() {
-    	return getInteger(KEY_CUSTOM_BUTTON_ID);
     }
 
     /**

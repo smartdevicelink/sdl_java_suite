@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -47,7 +47,6 @@ import java.util.Hashtable;
 public class SubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_SPEED = "speed";
 	public static final String KEY_RPM = "rpm";
-	public static final String KEY_FUEL_LEVEL = "fuelLevel";
 	public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
 	public static final String KEY_PRNDL = "prndl";
 	public static final String KEY_TIRE_PRESSURE = "tirePressure";
@@ -55,7 +54,6 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
 	public static final String KEY_ODOMETER = "odometer";
 	public static final String KEY_GPS = "gps";
-	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
 	public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
 	public static final String KEY_BELT_STATUS = "beltStatus";
 	public static final String KEY_BODY_INFORMATION = "bodyInformation";
@@ -74,7 +72,19 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
+    public static final String KEY_GEAR_STATUS = "gearStatus";
     public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
+    public static final String KEY_WINDOW_STATUS = "windowStatus";
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public static final String KEY_FUEL_LEVEL = "fuelLevel";
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
     public static final String KEY_STABILITY_CONTROLS_STATUS = "stabilityControlsStatus";
 
 	/**
@@ -150,40 +160,31 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_RPM);
     }
     /**
-     * Sets Fuel Level
-     * @param fuelLevel a VehicleDataResult related to Fuel Level
+     * Sets the fuelLevel.
+     *
+     * @param fuelLevel The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
+     * 7.0, please see fuelRange.
      */
+    @Deprecated
     public void setFuelLevel(VehicleDataResult fuelLevel) {
         setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
     /**
-     * Gets Fuel Level
-     * @return a VehicleDataResult related to FuelLevel
+     * Gets the fuelLevel.
+     *
+     * @return VehicleDataResult The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
+     * 7.0, please see fuelRange.
      */
     @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getFuelLevel() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_FUEL_LEVEL);
     }
     /**
      * Sets Fuel Level State
-     * @param fuelLevel_State a VehicleDataResult related to FuelLevel State
-     */
-    @Deprecated
-    public void setFuelLevel_State(VehicleDataResult fuelLevel_State) {
-        setFuelLevel(fuelLevel_State);
-    }
-    /**
-     * Gets Fuel Level State
-     * @return a VehicleDataResult related to FuelLevel State
-     */
-    @Deprecated
-    public VehicleDataResult getFuelLevel_State() {
-        return getFuelLevelState();
-    }
-    /**
-     * Sets Fuel Level State
      * @param fuelLevelState a VehicleDataResult related to FuelLevel State
      */
+    @Deprecated
     public void setFuelLevelState(VehicleDataResult fuelLevelState) {
         setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
     }
@@ -191,6 +192,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * Gets Fuel Level State
      * @return a VehicleDataResult related to FuelLevel State
      */
+    @Deprecated
     @SuppressWarnings("unchecked")
     public VehicleDataResult getFuelLevelState() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_FUEL_LEVEL_STATE);
@@ -226,16 +228,22 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_EXTERNAL_TEMPERATURE);
     }
     /**
-     * Gets currently selected gear data
-     * @param prndl a VehicleDataResult related to the PRNDL status (automatic transmission gear)
+     * Sets the prndl.
+     *
+     * @param prndl See PRNDL. This parameter is deprecated and it is now covered in `gearStatus`
+     * @deprecated in SmartDeviceLink 7.0.0
      */
+    @Deprecated
     public void setPrndl(VehicleDataResult prndl) {
         setParameters(KEY_PRNDL, prndl);
     }
     /**
-     * Gets currently selected gear data
-     * @return a VehicleDataResult related to the PRNDL status (automatic transmission gear)
+     * Gets the prndl.
+     *
+     * @return VehicleDataResult See PRNDL. This parameter is deprecated and it is now covered in `gearStatus`
+     * @deprecated in SmartDeviceLink 7.0.0
      */
+    @Deprecated
     @SuppressWarnings("unchecked")
     public VehicleDataResult getPrndl() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_PRNDL);
@@ -452,16 +460,22 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
     }
 
     /**
-     * Sets Fuel Range
-     * @param fuelRange a VehicleDataResult related to the fuel range
+     * Sets the fuelRange.
+     *
+     * @param fuelRange The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
+     * vehicle. See struct FuelRange for details.
+     * @since SmartDeviceLink 5.0.0
      */
     public void setFuelRange(VehicleDataResult fuelRange) {
         setParameters(KEY_FUEL_RANGE, fuelRange);
     }
 
     /**
-     * Gets Fuel Range
-     * @return a VehicleDataResult related to the fuel range
+     * Gets the fuelRange.
+     *
+     * @return VehicleDataResult The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
+     * vehicle. See struct FuelRange for details.
+     * @since SmartDeviceLink 5.0.0
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getFuelRange() {
@@ -552,6 +566,46 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      */
     public VehicleDataResult getHandsOffSteering() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_HANDS_OFF_STEERING);
+    }
+    /**
+     * Sets the gearStatus.
+     *
+     * @param gearStatus See GearStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setGearStatus(VehicleDataResult gearStatus){
+        setParameters(KEY_GEAR_STATUS, gearStatus);
+    }
+
+    /**
+     * Gets the gearStatus.
+     *
+     * @return VehicleDataResult See GearStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    @SuppressWarnings("unchecked")
+    public VehicleDataResult getGearStatus(){
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_GEAR_STATUS);
+    }
+
+    /**
+     * Sets the windowStatus.
+     *
+     * @param windowStatus See WindowStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setWindowStatus(VehicleDataResult windowStatus) {
+        setParameters(KEY_WINDOW_STATUS, windowStatus);
+    }
+
+    /**
+     * Gets the windowStatus.
+     *
+     * @return VehicleDataResult See WindowStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public VehicleDataResult getWindowStatus() {
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_WINDOW_STATUS);
     }
 
     /**

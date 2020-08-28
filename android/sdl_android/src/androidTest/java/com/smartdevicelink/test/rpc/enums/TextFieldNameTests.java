@@ -175,6 +175,9 @@ public class TextFieldNameTests extends TestCase {
 		enumTestList.add(TextFieldName.addressLines);	
 		enumTestList.add(TextFieldName.phoneNumber);
 		enumTestList.add(TextFieldName.templateTitle);
+		enumTestList.add(TextFieldName.subtleAlertText1);
+		enumTestList.add(TextFieldName.subtleAlertText2);
+		enumTestList.add(TextFieldName.subtleAlertSoftButtonText);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

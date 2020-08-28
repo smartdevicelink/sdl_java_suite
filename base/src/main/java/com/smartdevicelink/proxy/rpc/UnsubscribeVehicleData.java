@@ -79,18 +79,26 @@ import java.util.Hashtable;
  * 		<tr>
  * 			<td>fuelLevel</td>
  * 			<td>Boolean</td>
- * 			<td>The fuel level in the tank (percentage)</td>
+ * 			<td>The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec7.0, please see fuelRange.</td>
  *                 <td>N</td>
  *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
+ * 			<td>SmartDeviceLink 7.0.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>fuelLevel_State</td>
  * 			<td>Boolean</td>
- * 			<td>The fuel level state</td>
+ * 			<td>The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please seefuelRange.</td>
  *                 <td>N</td>
  *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
+ * 			<td>SmartDeviceLink 7.0.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>fuelRange</td>
+ * 			<td>Boolean</td>
+ * 			<td>The fuel type, estimated range in KM, fuel level/capacity and fuel level state for thevehicle. See struct FuelRange for details.</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 5.0.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>instantFuelConsumption</td>
@@ -108,14 +116,20 @@ import java.util.Hashtable;
  *                 <td>Subscribable</td>
  * 			<td>SmartDeviceLink 2.0 </td>
  * 		</tr>
- * 		<tr>
- * 			<td>prndl</td>
- * 			<td>Boolean</td>
- * 			<td>Currently selected gear.</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
+ *  	<tr>
+ *      	<td>gearStatus</td>
+ *      	<td>Boolean</td>
+ *      	<td>See GearStatus</td>
+ *      	<td>N</td>
+ *      	<td>SmartDeviceLink 7.0.0</td>
+ *  	</tr>
+ *  	<tr>
+ *      	<td>prndl</td>
+ *      	<td>Boolean</td>
+ *      	<td>See PRNDL. This parameter is deprecated and it is now covered in `gearStatus`</td>
+ *      	<td>N</td>
+ *      	<td>SmartDeviceLink 7.0.0</td>
+ *  	</tr>
  * 		<tr>
  * 			<td>tirePressure</td>
  * 			<td>Boolean</td>
@@ -267,6 +281,13 @@ import java.util.Hashtable;
  *          <td>N</td>
  *          <td>SmartDeviceLink 7.0.0</td>
  *      </tr>
+ *      <tr>
+ *          <td>windowStatus</td>
+ *          <td>Boolean</td>
+ *          <td>See WindowStatus</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
  * 		<tr>
  * 	      	<td>stabilityControlsStatus</td>
  *        	<td>Boolean</td>
@@ -296,14 +317,12 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	public static final String KEY_SPEED = "speed";
 	public static final String KEY_RPM = "rpm";
 	public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
-	public static final String KEY_FUEL_LEVEL = "fuelLevel";
 	public static final String KEY_PRNDL = "prndl";
 	public static final String KEY_TIRE_PRESSURE = "tirePressure";
 	public static final String KEY_ENGINE_TORQUE = "engineTorque";
 	public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
 	public static final String KEY_ODOMETER = "odometer";
 	public static final String KEY_GPS = "gps";
-	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
 	public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
 	public static final String KEY_BELT_STATUS = "beltStatus";
 	public static final String KEY_BODY_INFORMATION = "bodyInformation";
@@ -323,6 +342,18 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
 	public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
 	public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
+	public static final String KEY_GEAR_STATUS = "gearStatus";
+	public static final String KEY_WINDOW_STATUS = "windowStatus";
+	/**
+	 * @deprecated
+	 */
+	@Deprecated
+	public static final String KEY_FUEL_LEVEL = "fuelLevel";
+	/**
+	 * @deprecated
+	 */
+	@Deprecated
+	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
     public static final String KEY_STABILITY_CONTROLS_STATUS = "stabilityControlsStatus";
 
 	/**
@@ -405,66 +436,47 @@ public class UnsubscribeVehicleData extends RPCRequest {
     }
 
 	/**
-	 * Sets a boolean value. If true, unsubscribes from FuelLevel data
+	 * Sets the fuelLevel.
 	 * 
-	 * @param fuelLevel
-	 *            a boolean value
+	 * @param fuelLevel The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
+	 * 7.0, please see fuelRange.
 	 */
+	@Deprecated
     public void setFuelLevel(Boolean fuelLevel) {
 		setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
 
 	/**
-	 * Gets a boolean value. If true, means the FuelLevel data has been
-	 * unsubscribed.
+	 * Gets the fuelLevel.
 	 * 
-	 * @return Boolean -a Boolean value. If true, means the FuelLevel data has
-	 *         been unsubscribed.
+	 * @return Boolean The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
+	 * 7.0, please see fuelRange.
 	 */
+	@Deprecated
     public Boolean getFuelLevel() {
         return getBoolean(KEY_FUEL_LEVEL);
     }
 
-    /**
-     * Sets a boolean value. If true, unsubscribes from fuelLevel_State data
-     * 
-     * @param fuelLevel_State
-     *            a boolean value
-     */
+	/**
+	 * Sets the fuelRange.
+	 *
+	 * @param fuelLevelState The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
+	 * vehicle. See struct FuelRange for details.
+	 * @since SmartDeviceLink 5.0.0
+	 */
     @Deprecated
-    public void setFuelLevel_State(Boolean fuelLevel_State) {
-        setFuelLevelState(fuelLevel_State);
-    }
-
-    /**
-     * Gets a boolean value. If true, means the fuelLevel_State data has been
-     * unsubscribed.
-     * 
-     * @return Boolean -a Boolean value. If true, means the fuelLevel_State data
-     *         has been unsubscribed.
-     */
-    @Deprecated
-    public Boolean getFuelLevel_State() {
-        return getFuelLevelState();
-    }
-
-    /**
-     * Sets a boolean value. If true, unsubscribes from fuelLevelState data
-     * 
-     * @param fuelLevelState
-     *            a boolean value
-     */
     public void setFuelLevelState(Boolean fuelLevelState) {
 		setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
     }
 
-    /**
-     * Gets a boolean value. If true, means the fuelLevel_State data has been
-     * unsubscribed.
-     * 
-     * @return Boolean -a Boolean value. If true, means the fuelLevelState data
-     *         has been unsubscribed.
-     */
+	/**
+	 * Gets the fuelRange.
+	 *
+	 * @return Boolean The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
+	 * vehicle. See struct FuelRange for details.
+	 * @since SmartDeviceLink 5.0.0
+	 */
+	@Deprecated
     public Boolean getFuelLevelState() {
         return getBoolean(KEY_FUEL_LEVEL_STATE);
     }
@@ -511,23 +523,24 @@ public class UnsubscribeVehicleData extends RPCRequest {
         return getBoolean(KEY_EXTERNAL_TEMPERATURE);
     }
 
-	/**
-	 * Sets a boolean value. If true, unsubscribes Currently selected gear data
-	 * 
-	 * @param prndl
-	 *            a boolean value
-	 */
+    /**
+     * Sets the prndl.
+     *
+     * @param prndl See PRNDL. This parameter since SmartDeviceLink 7.0.0 is deprecated and it is now covered in `gearStatus`
+     * @deprecated in SmartDeviceLink 7.0.0
+     */
+    @Deprecated
     public void setPrndl(Boolean prndl) {
-		setParameters(KEY_PRNDL, prndl);
+        setParameters(KEY_PRNDL, prndl);
     }
 
-	/**
-	 * Gets a boolean value. If true, means the Currently selected gear data has been
-	 * unsubscribed.
-	 * 
-	 * @return Boolean -a Boolean value. If true, means the Currently selected gear data
-	 *         has been unsubscribed.
-	 */
+    /**
+     * Gets the prndl.
+     *
+     * @return Boolean See PRNDL. This parameter is deprecated since SmartDeviceLink 7.0.0 and it is now covered in `gearStatus`
+     * @deprecated in SmartDeviceLink 7.0.0
+     */
+    @Deprecated
     public Boolean getPrndl() {
         return getBoolean(KEY_PRNDL);
     }
@@ -886,6 +899,26 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	}
 
     /**
+     * Sets the gearStatus.
+     *
+     * @param gearStatus See GearStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setGearStatus(Boolean gearStatus) {
+        setParameters(KEY_GEAR_STATUS, gearStatus);
+    }
+
+    /**
+     * Gets the gearStatus.
+     *
+     * @return Boolean See GearStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public Boolean getGearStatus() {
+        return getBoolean(KEY_GEAR_STATUS);
+    }
+
+    /**
      * Sets the handsOffSteering.
      *
      * @param handsOffSteering To indicate whether driver hands are off the steering wheel
@@ -903,6 +936,26 @@ public class UnsubscribeVehicleData extends RPCRequest {
      */
     public Boolean getHandsOffSteering() {
         return getBoolean(KEY_HANDS_OFF_STEERING);
+    }
+
+    /**
+     * Sets the windowStatus.
+     *
+     * @param windowStatus See WindowStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setWindowStatus(Boolean windowStatus) {
+        setParameters(KEY_WINDOW_STATUS, windowStatus);
+    }
+
+    /**
+     * Gets the windowStatus.
+     *
+     * @return Boolean See WindowStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public Boolean getWindowStatus() {
+        return getBoolean(KEY_WINDOW_STATUS);
     }
 
     /**

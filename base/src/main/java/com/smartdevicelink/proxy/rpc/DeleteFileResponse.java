@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -58,22 +58,6 @@ public class DeleteFileResponse extends RPCResponse {
 
     public DeleteFileResponse(Hashtable<String, Object> hash) {
         super(hash);
-    }
-
-    /**
-     * @deprecated use {@link DeleteFileResponse#DeleteFileResponse(Boolean, Result)} instead <br>
-     *
-     * Constructs a new DeleteFileResponse object
-     * @param success whether the request is successfully processed
-     * @param resultCode whether the request is successfully processed
-     * @param spaceAvailable  the total local space available on the module for the registered app.
-     */
-    @Deprecated
-    public DeleteFileResponse(@NonNull Boolean success, @NonNull Result resultCode, @NonNull Integer spaceAvailable) {
-        this();
-        setSuccess(success);
-        setResultCode(resultCode);
-        setSpaceAvailable(spaceAvailable);
     }
 
     /**

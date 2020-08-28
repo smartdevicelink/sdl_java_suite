@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 
@@ -47,7 +47,7 @@ public class RadioControlCapabilities extends RPCStruct{
     public static final String KEY_RADIO_FREQUENCY_AVAILABLE= "radioFrequencyAvailable";
     public static final String KEY_HD_CHANNEL_AVAILABLE= "hdChannelAvailable";
     public static final String KEY_RDS_DATA_AVAILABLE= "rdsDataAvailable";
-    public static final String KEY_AVAILABLE_HDS_AVAILABLE= "availableHDsAvailable";
+    @Deprecated public static final String KEY_AVAILABLE_HDS_AVAILABLE= "availableHDsAvailable";
     public static final String KEY_STATE_AVAILABLE= "stateAvailable";
     public static final String KEY_SIGNAL_STRENGTH_AVAILABLE= "signalStrengthAvailable";
     public static final String KEY_SIGNAL_CHANGE_THRESHOLD_AVAILABLE= "signalChangeThresholdAvailable";

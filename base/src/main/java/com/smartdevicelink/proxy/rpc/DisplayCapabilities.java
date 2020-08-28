@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
@@ -94,7 +94,7 @@ import java.util.List;
  * 
  */
 public class DisplayCapabilities extends RPCStruct {
-	public static final String KEY_DISPLAY_TYPE = "displayType";
+	@Deprecated public static final String KEY_DISPLAY_TYPE = "displayType";
 	public static final String KEY_DISPLAY_NAME = "displayName";
 	public static final String KEY_MEDIA_CLOCK_FORMATS = "mediaClockFormats";
 	public static final String KEY_TEXT_FIELDS = "textFields";

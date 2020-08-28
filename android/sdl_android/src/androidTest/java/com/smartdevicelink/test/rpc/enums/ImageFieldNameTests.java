@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.enums.ImageFieldName}
+ * {@link com.smartdevicelink.proxy.rpc.enums.ImageFieldName}
  */
 public class ImageFieldNameTests extends TestCase {
 
@@ -109,6 +109,8 @@ public class ImageFieldNameTests extends TestCase {
 		enumTestList.add(ImageFieldName.locationImage);
 		enumTestList.add(ImageFieldName.secondaryGraphic);
 		enumTestList.add(ImageFieldName.alertIcon);
+		enumTestList.add(ImageFieldName.subtleAlertIcon);
+		enumTestList.add(ImageFieldName.subMenuIcon);
 
 
 		assertTrue("Enum value list does not match enum class list", 

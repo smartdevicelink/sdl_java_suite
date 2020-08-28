@@ -41,10 +41,12 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
+import android.os.Debug;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.util.AndroidRuntimeException;
@@ -55,6 +57,7 @@ import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.SdlDeviceListener;
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.IntegrationValidator;
 import com.smartdevicelink.util.SdlAppInfo;
 import com.smartdevicelink.util.ServiceFinder;
 
@@ -132,30 +135,10 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 		if (localRouterClass == null){
 			localRouterClass = defineLocalSdlRouterClass();
 			// we need to check this again because for USB apps, the returned class can still be null
-			if (localRouterClass != null) {
-
-				// Check if the service declaration in AndroidManifest has the intent-filter action specified correctly
-				boolean serviceFilterHasAction = false;
-				String className = localRouterClass.getName();
-				List<SdlAppInfo> services = AndroidTools.querySdlAppInfo(context, null);
-				for (SdlAppInfo sdlAppInfo : services) {
-					if(sdlAppInfo != null && sdlAppInfo.getRouterServiceComponentName() != null && className.equals((sdlAppInfo.getRouterServiceComponentName().getClassName()))){
-						serviceFilterHasAction = true;
-						break;
-					}
-				}
-				if (!serviceFilterHasAction){
-					DebugTool.logError(TAG, "WARNING: This application has not specified its intent-filter for the SdlRouterService. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
-				}
-
-				// Check if the service declaration in AndroidManifest has the router service version metadata specified correctly
-				ResolveInfo info = context.getPackageManager().resolveService(new Intent(context, localRouterClass), PackageManager.GET_META_DATA);
-				if (info != null) {
-					if (info.serviceInfo.metaData == null || !info.serviceInfo.metaData.containsKey(context.getString(R.string.sdl_router_service_version_name))) {
-						DebugTool.logError(TAG, "WARNING: This application has not specified its metadata tags for the SdlRouterService. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
-					}
-				} else {
-					DebugTool.logError(TAG, "WARNING: This application has not specified its SdlRouterService correctly in the manifest. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
+			if (AndroidTools.isDebugMode(context)) {
+				IntegrationValidator.ValidationResult result =	IntegrationValidator.validate(context, localRouterClass, 0);
+				if(!result.isSuccessful()){
+					throw new RuntimeException(result.getResultText());
 				}
 			}
 		}
@@ -448,6 +431,17 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	 * @param context
 	 */
 	public static void queryForConnectedService(final Context context){
+		if (AndroidTools.isDebugMode(context)) {
+			int flag = 0;
+			if(localRouterClass == null) {
+				flag = IntegrationValidator.FLAG_SKIP_ROUTER_SERVICE_CHECK;
+			}
+
+			IntegrationValidator.ValidationResult result =	IntegrationValidator.validate(context, localRouterClass, flag);
+			if(!result.isSuccessful()){
+				throw new RuntimeException(result.getResultText());
+			}
+		}
 		//Leverage existing call. Include ping bit
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
 			ServiceFinder finder = new ServiceFinder(context, context.getPackageName(), new ServiceFinder.ServiceFinderCallback() {

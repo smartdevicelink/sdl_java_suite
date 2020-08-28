@@ -43,6 +43,7 @@ public enum SdlDisconnectedReason {
     MASTER_RESET,
     FACTORY_DEFAULTS,
     TRANSPORT_ERROR,
+	RESOURCE_CONSTRAINT,
     APPLICATION_REQUESTED_DISCONNECT,
     DEFAULT,
     TRANSPORT_DISCONNECT,
@@ -108,6 +109,9 @@ public enum SdlDisconnectedReason {
 				break;
 			case FACTORY_DEFAULTS:
 				returnReason = SdlDisconnectedReason.FACTORY_DEFAULTS;
+				break;
+			case RESOURCE_CONSTRAINT:
+				returnReason = SdlDisconnectedReason.RESOURCE_CONSTRAINT;
 				break;
             default:
                 break;

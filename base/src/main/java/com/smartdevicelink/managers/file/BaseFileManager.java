@@ -33,7 +33,7 @@
 package com.smartdevicelink.managers.file;
 
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
@@ -146,23 +146,20 @@ abstract class BaseFileManager extends BaseSubManager {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
 				ListFilesResponse listFilesResponse = (ListFilesResponse) response;
-				if(listFilesResponse.getSuccess()){
+				if (listFilesResponse.getSuccess()) {
 					bytesAvailable = listFilesResponse.getSpaceAvailable() != null ? listFilesResponse.getSpaceAvailable() : SPACE_AVAILABLE_MAX_VALUE;
 
-					if(listFilesResponse.getFilenames() != null){
+					if (listFilesResponse.getFilenames() != null) {
 						remoteFiles.addAll(listFilesResponse.getFilenames());
 					}
 					// on callback set manager to ready state
 					transitionToState(BaseSubManager.READY);
+				} else {
+					// file list could not be received. assume that setting can work and allow SDLManager to start
+					DebugTool.logError(TAG, "File Manager could not list files");
+					bytesAvailable = SPACE_AVAILABLE_MAX_VALUE;
+					transitionToState(BaseSubManager.READY);
 				}
-			}
-
-			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-				// file list could not be received. assume that setting can work and allow SDLManager to start
-				DebugTool.logError(TAG, "File Manager could not list files");
-				bytesAvailable = SPACE_AVAILABLE_MAX_VALUE;
-				transitionToState(BaseSubManager.READY);
 			}
 		});
 		internalInterface.sendRPC(listFiles);
@@ -273,23 +270,6 @@ abstract class BaseFileManager extends BaseSubManager {
 			}
 
 			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-				final RPCRequest request = requestMap.get(correlationId);
-				if (request != null) {
-					if (!deletionOperation) {
-						if (shouldReUploadFile(((PutFile) request).getSdlFileName(), ((PutFile) request).getFileType())) {
-							request.setOnRPCResponseListener(null);
-							requestsToResend.add(request);
-						} else {
-							errors.put(((PutFile) request).getSdlFileName(), buildErrorString(resultCode, info));
-						}
-					} else {
-						errors.put(((DeleteFile) request).getSdlFileName(), buildErrorString(resultCode, info));
-					}
-				}
-			}
-
-			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
 				if (response.getSuccess()) {
 					if (response instanceof PutFileResponse) {
@@ -310,9 +290,22 @@ abstract class BaseFileManager extends BaseSubManager {
 							uploadedEphemeralFileNames.remove(((DeleteFile) requestMap.get(correlationId)).getSdlFileName());
 						}
 					}
+				} else {
+					final RPCRequest request = requestMap.get(correlationId);
+					if (request != null) {
+						if (!deletionOperation) {
+							if (shouldReUploadFile(((PutFile) request).getSdlFileName(), ((PutFile) request).getFileType())) {
+								request.setOnRPCResponseListener(null);
+								requestsToResend.add(request);
+							} else {
+								errors.put(((PutFile) request).getSdlFileName(), buildErrorString(response.getResultCode(), response.getInfo()));
+							}
+						} else {
+							errors.put(((DeleteFile) request).getSdlFileName(), buildErrorString(response.getResultCode(), response.getInfo()));
+						}
+					}
 				}
 			}
-
 		};
 		internalInterface.sendRequests(requests, onMultipleRequestListener);
 	}
@@ -342,19 +335,15 @@ abstract class BaseFileManager extends BaseSubManager {
 					bytesAvailable = putFileResponse.getSpaceAvailable() != null ? putFileResponse.getSpaceAvailable() : SPACE_AVAILABLE_MAX_VALUE;
 					remoteFiles.add(file.getName());
 					uploadedEphemeralFileNames.add(file.getName());
-				}
-				if (listener != null) {
-					listener.onComplete(putFileResponse.getSuccess());
-				}
-			}
-
-			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-				super.onError(correlationId, resultCode, info);
-				if (shouldReUploadFile(file.getName(), file.getType())) {
-					uploadFile(file, listener);
-				} else if (listener != null) {
-					listener.onComplete(false);
+					if (listener != null) {
+						listener.onComplete(true);
+					}
+				} else {
+					if (shouldReUploadFile(file.getName(), file.getType())) {
+						uploadFile(file, listener);
+					} else if (listener != null) {
+						listener.onComplete(false);
+					}
 				}
 			}
 		});
@@ -369,9 +358,9 @@ abstract class BaseFileManager extends BaseSubManager {
 	 */
 	private boolean shouldReUploadFile(String fileName, FileType fileType) {
 		if (!failedFileUploadsIndex.containsKey(fileName)) {
-			if (fileType.equals(FileType.GRAPHIC_JPEG) ||
-					fileType.equals(FileType.GRAPHIC_BMP) ||
-					fileType.equals(FileType.GRAPHIC_PNG)) {
+			if (FileType.GRAPHIC_JPEG.equals(fileType) ||
+					FileType.GRAPHIC_BMP.equals(fileType) ||
+					FileType.GRAPHIC_PNG.equals(fileType)) {
 				failedFileUploadsIndex.put(fileName, fileManagerConfig.getArtworkRetryCount());
 			} else {
 				failedFileUploadsIndex.put(fileName, fileManagerConfig.getFileRetryCount());

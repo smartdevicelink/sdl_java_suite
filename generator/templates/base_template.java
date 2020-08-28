@@ -53,6 +53,7 @@ import {{i}};{{ '\n' if loop.last }}
  *      <th>Type</th>
  *      <th>Description</th>
  *      <th>Required</th>
+ *      <th>Notes</th>
  *      <th>Version Available</th>
  *  </tr>
  {%- for param in params %}
@@ -61,6 +62,7 @@ import {{i}};{{ '\n' if loop.last }}
  *      <td>{{param.return_type}}</td>
  *      <td>{%- for d in param.description %}{{d}}{%- endfor %}</td>
  *      <td>{%- if param.mandatory is eq true %}Y{%- else %}N{%- endif %}</td>
+ *      <td>{%- for k in param.values %}{{ '{' if loop.first}}"{{k}}": {{param.values[k]}}{{ ', ' if not loop.last else  '}'}}{%- endfor %}</td>
  *      <td>{%- if param.since is defined %}SmartDeviceLink {{param.since}}{%- endif %}</td>
  *  </tr>
  {%- endfor %}

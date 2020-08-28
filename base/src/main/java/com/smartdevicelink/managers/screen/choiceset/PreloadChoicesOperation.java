@@ -35,7 +35,7 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
@@ -51,7 +51,6 @@ import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
-import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.util.DebugTool;
@@ -171,14 +170,11 @@ class PreloadChoicesOperation extends Task {
 				}
 
 				@Override
-				public void onError(int correlationId, Result resultCode, String info) {
-					DebugTool.logError(TAG, "There was an error uploading a choice cell: "+ info + " resultCode: " + resultCode);
-					choiceError = true;
-				}
-
-				@Override
 				public void onResponse(int correlationId, RPCResponse response) {
-
+					if (!response.getSuccess()) {
+						DebugTool.logError(TAG, "There was an error uploading a choice cell: "+ response.getInfo() + " resultCode: " + response.getResultCode());
+						choiceError = true;
+					}
 				}
 			});
 		}else{

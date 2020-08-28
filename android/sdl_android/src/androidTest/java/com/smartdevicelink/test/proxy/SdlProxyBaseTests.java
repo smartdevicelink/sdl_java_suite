@@ -1,7 +1,7 @@
 package com.smartdevicelink.test.proxy;
 
 import android.content.Context;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -15,6 +15,7 @@ import com.smartdevicelink.proxy.SdlProxyBase;
 import com.smartdevicelink.proxy.SdlProxyBuilder;
 import com.smartdevicelink.proxy.SdlProxyConfigurationResources;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
+import com.smartdevicelink.proxy.rpc.GenericResponse;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.ShowResponse;
 import com.smartdevicelink.proxy.rpc.Speak;
@@ -46,7 +47,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 @RunWith(AndroidJUnit4.class)
 public class SdlProxyBaseTests {
@@ -60,8 +61,8 @@ public class SdlProxyBaseTests {
     @Test
     public void testNullSdlProxyConfigurationResources() {
         SdlProxyALM proxy = null;
-        SdlProxyBuilder.Builder builder = new SdlProxyBuilder.Builder(mock(IProxyListenerALM.class), "appId", "appName", true, getTargetContext());
-        SdlProxyConfigurationResources config = new SdlProxyConfigurationResources("path", (TelephonyManager) getTargetContext().getSystemService(Context.TELEPHONY_SERVICE));
+        SdlProxyBuilder.Builder builder = new SdlProxyBuilder.Builder(mock(IProxyListenerALM.class), "appId", "appName", true, getInstrumentation().getTargetContext());
+        SdlProxyConfigurationResources config = new SdlProxyConfigurationResources("path", (TelephonyManager) getInstrumentation().getTargetContext().getSystemService(Context.TELEPHONY_SERVICE));
         //Construct with a non-null SdlProxyConfigurationResources
         builder.setSdlProxyConfigurationResources(config);
         try {
@@ -127,14 +128,14 @@ public class SdlProxyBaseTests {
     @Test
     public void testRemoteDisplayStreaming(){
         SdlProxyALM proxy = null;
-        SdlProxyBuilder.Builder builder = new SdlProxyBuilder.Builder(mock(IProxyListenerALM.class), "appId", "appName", true, getTargetContext());
+        SdlProxyBuilder.Builder builder = new SdlProxyBuilder.Builder(mock(IProxyListenerALM.class), "appId", "appName", true, getInstrumentation().getTargetContext());
         try{
             proxy = builder.build();
             //	public void startRemoteDisplayStream(Context context, final Class<? extends SdlRemoteDisplay> remoteDisplay, final VideoStreamingParameters parameters, final boolean encrypted){
             Method m = SdlProxyALM.class.getDeclaredMethod("startRemoteDisplayStream", Context.class, SdlRemoteDisplay.class, VideoStreamingParameters.class, boolean.class);
             assertNotNull(m);
             m.setAccessible(true);
-            m.invoke(proxy,getTargetContext(), SdlRemoteDisplayTest.MockRemoteDisplay.class, (VideoStreamingParameters)null, false);
+            m.invoke(proxy,getInstrumentation().getTargetContext(), SdlRemoteDisplayTest.MockRemoteDisplay.class, (VideoStreamingParameters)null, false);
             assert true;
 
         }catch (Exception e){
@@ -229,15 +230,14 @@ public class SdlProxyBaseTests {
             }
 
             @Override
-            public void onError(int correlationId, Result resultCode, String info) {
-                onErrorListenerCounter++;
-                remainingRequestsExpected--;
-            }
-
-            @Override
             public void onResponse(int correlationId, RPCResponse response) {
-                onResponseListenerCounter++;
-                remainingRequestsExpected--;
+                if (response.getSuccess()) {
+                    onResponseListenerCounter++;
+                    remainingRequestsExpected--;
+                } else {
+                    onErrorListenerCounter++;
+                    remainingRequestsExpected--;
+                }
             }
         };
         try {
@@ -280,7 +280,7 @@ public class SdlProxyBaseTests {
                 while (rpcsTempList.size() != 0){
                     RPCRequest request = rpcsTempList.remove(0);
                     if (request instanceof Speak) {
-                        requestsMap.get(request).onError(request.getCorrelationID(), Result.DISALLOWED, "ERROR");
+                        requestsMap.get(request).onResponse(request.getCorrelationID(), new GenericResponse(false, Result.DISALLOWED));
                     } else if (request instanceof Show) {
                         requestsMap.get(request).onResponse(request.getCorrelationID(), new ShowResponse(true, Result.SUCCESS));
                     }

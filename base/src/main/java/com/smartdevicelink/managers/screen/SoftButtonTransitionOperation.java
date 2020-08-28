@@ -5,7 +5,6 @@ import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.SoftButton;
-import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.DebugTool;
 
@@ -51,13 +50,6 @@ class SoftButtonTransitionOperation extends Task {
                 if (!response.getSuccess()) {
                     DebugTool.logWarning(TAG, "Failed to transition soft button to new state");
                 }
-                onFinished();
-            }
-
-            @Override
-            public void onError(int correlationId, Result resultCode, String info) {
-                super.onError(correlationId, resultCode, info);
-                DebugTool.logWarning(TAG, "Failed to transition soft button to new state. " + info);
                 onFinished();
             }
         });

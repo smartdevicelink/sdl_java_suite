@@ -84,6 +84,10 @@ public class VehicleDataTypeTests extends TestCase {
 		VehicleDataType enumVehicleDataOemVehicleDataType= VehicleDataType.valueForString(example);
 		example = "VEHICLEDATA_HANDSOFFSTEERING";
 		VehicleDataType enumVehicleDataHandsOffSteeringType= VehicleDataType.valueForString(example);
+		example = "VEHICLEDATA_GEARSTATUS";
+		VehicleDataType enumVehicleDataGearStatus= VehicleDataType.valueForString(example);
+		example = "VEHICLEDATA_WINDOWSTATUS";
+		VehicleDataType enumVehicleDataTypeWindowStatus= VehicleDataType.valueForString(example);
 		example = "VEHICLEDATA_STABILITYCONTROLSSTATUS";
 		VehicleDataType enumVehicleDataStabilityControlsStatus = VehicleDataType.valueForString(example);
 
@@ -120,6 +124,8 @@ public class VehicleDataTypeTests extends TestCase {
 		assertNotNull("VEHICLEDATA_CLOUDAPPVEHICLEID returned null", enumVehicleCloudAppVehicleId);
 		assertNotNull("VEHICLEDATA_OEM_CUSTOM_DATA returned null", enumVehicleDataOemVehicleDataType);
 		assertNotNull("VEHICLEDATA_HANDSOFFSTEERING returned null", enumVehicleDataHandsOffSteeringType);
+		assertNotNull("VEHICLEDATA_WINDOWSTATUS returned null", enumVehicleDataTypeWindowStatus);
+		assertNotNull("VEHICLEDATA_GEARSTATUS returned null", enumVehicleDataGearStatus);
 		assertNotNull("VEHICLEDATA_STABILITYCONTROLSSTATUS returned null", enumVehicleDataStabilityControlsStatus);
 	}
 	
@@ -191,6 +197,8 @@ public class VehicleDataTypeTests extends TestCase {
 		enumTestList.add(VehicleDataType.VEHICLEDATA_CLOUDAPPVEHICLEID);
 		enumTestList.add(VehicleDataType.VEHICLEDATA_OEM_CUSTOM_DATA);
 		enumTestList.add(VehicleDataType.VEHICLEDATA_HANDSOFFSTEERING);
+		enumTestList.add(VehicleDataType.VEHICLEDATA_WINDOWSTATUS);
+		enumTestList.add(VehicleDataType.VEHICLEDATA_GEARSTATUS);
 		enumTestList.add(VehicleDataType.VEHICLEDATA_STABILITYCONTROLSSTATUS);
 
 		assertTrue("Enum value list does not match enum class list", 

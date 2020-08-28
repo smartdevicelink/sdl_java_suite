@@ -76,18 +76,26 @@ import java.util.Hashtable;
  * 		<tr>
  * 			<td>fuelLevel</td>
  * 			<td>Boolean</td>
- * 			<td>The fuel level in the tank (percentage)</td>
+ * 			<td>The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec7.0, please see fuelRange.</td>
  *                 <td>N</td>
  *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
+ * 			<td>SmartDeviceLink 7.0.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>fuelLevel_State</td>
  * 			<td>Boolean</td>
- * 			<td>The fuel level state</td>
+ * 			<td>The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please seefuelRange.</td>
  *                 <td>N</td>
  *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
+ * 			<td>SmartDeviceLink 7.0.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>fuelRange</td>
+ * 			<td>Boolean</td>
+ * 			<td>The fuel type, estimated range in KM, fuel level/capacity and fuel level state for thevehicle. See struct FuelRange for details.</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 5.0.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>instantFuelConsumption</td>
@@ -114,13 +122,20 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>
- * 			<td>prndl</td>
- * 			<td>Boolean</td>
- * 			<td>Currently selected gear.</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
+ *      <tr>
+ *          <td>gearStatus</td>
+ *          <td>Boolean</td>
+ *          <td>See GearStatus</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
+ *      <tr>
+ *          <td>prndl</td>
+ *          <td>Boolean</td>
+ *          <td>See PRNDL. This parameter is deprecated and it is now covered in `gearStatus`</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
  * 		<tr>
  * 			<td>tirePressure</td>
  * 			<td>Boolean</td>
@@ -247,6 +262,13 @@ import java.util.Hashtable;
  *          <td>N</td>
  *          <td>SmartDeviceLink 7.0.0</td>
  *      </tr>
+ *      <tr>
+ *          <td>windowStatus</td>
+ *          <td>Boolean</td>
+ *          <td>See WindowStatus</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
  * 		</table>
  *  
  *  
@@ -274,7 +296,6 @@ public class GetVehicleData extends RPCRequest {
 	public static final String KEY_SPEED = "speed";
 	public static final String KEY_RPM = "rpm";
 	public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
-	public static final String KEY_FUEL_LEVEL = "fuelLevel";
 	public static final String KEY_VIN = "vin";
 	public static final String KEY_PRNDL = "prndl";
 	public static final String KEY_TIRE_PRESSURE = "tirePressure";
@@ -282,7 +303,6 @@ public class GetVehicleData extends RPCRequest {
 	public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
 	public static final String KEY_ODOMETER = "odometer";
 	public static final String KEY_GPS = "gps";
-	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
 	public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
 	public static final String KEY_BELT_STATUS = "beltStatus";
 	public static final String KEY_BODY_INFORMATION = "bodyInformation";
@@ -301,7 +321,20 @@ public class GetVehicleData extends RPCRequest {
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
+    public static final String KEY_WINDOW_STATUS = "windowStatus";
     public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
+    public static final String KEY_GEAR_STATUS = "gearStatus";
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public static final String KEY_FUEL_LEVEL = "fuelLevel";
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
     public static final String KEY_STABILITY_CONTROLS_STATUS = "stabilityControlsStatus";
 
 	/**
@@ -342,23 +375,35 @@ public class GetVehicleData extends RPCRequest {
     public Boolean getRpm() {
         return getBoolean(KEY_RPM);
     }
+
+    /**
+     * Sets the fuelLevel.
+     *
+     * @param fuelLevel The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
+     * 7.0, please see fuelRange.
+     */
+    @Deprecated
     public void setFuelLevel(Boolean fuelLevel) {
         setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
+
+    /**
+     * Gets the fuelLevel.
+     *
+     * @return Boolean The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
+     * 7.0, please see fuelRange.
+     */
+    @Deprecated
     public Boolean getFuelLevel() {
         return getBoolean(KEY_FUEL_LEVEL);
     }
+
     @Deprecated
-    public void setFuelLevel_State(Boolean fuelLevel_State) {
-        setFuelLevelState(fuelLevel_State);
-    }
-    @Deprecated
-    public Boolean getFuelLevel_State() {
-        return getFuelLevelState();
-    }
     public void setFuelLevelState(Boolean fuelLevelState) {
         setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
     }
+
+    @Deprecated
     public Boolean getFuelLevelState() {
         return getBoolean(KEY_FUEL_LEVEL_STATE);
     }
@@ -368,6 +413,15 @@ public class GetVehicleData extends RPCRequest {
     public Boolean getInstantFuelConsumption() {
         return getBoolean(KEY_INSTANT_FUEL_CONSUMPTION);
     }
+
+    public void setFuelRange(Boolean fuelRange) {
+        setParameters(KEY_FUEL_RANGE, fuelRange);
+    }
+
+    public Boolean getFuelRange() {
+        return getBoolean(KEY_FUEL_RANGE);
+    }
+
     public void setExternalTemperature(Boolean externalTemperature) {
         setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
     }
@@ -382,9 +436,24 @@ public class GetVehicleData extends RPCRequest {
         return getBoolean(KEY_VIN);
     }
     
+    /**
+     * Sets the prndl.
+     *
+     * @param prndl See PRNDL.
+     * @deprecated in SmartDeviceLink 7.0.0
+     */
+    @Deprecated
     public void setPrndl(Boolean prndl) {
         setParameters(KEY_PRNDL, prndl);
     }
+
+    /**
+     * Gets the prndl.
+     *
+     * @return Boolean See PRNDL.
+     * @deprecated in SmartDeviceLink 7.0.0
+     */
+    @Deprecated
     public Boolean getPrndl() {
         return getBoolean(KEY_PRNDL);
     }
@@ -495,25 +564,6 @@ public class GetVehicleData extends RPCRequest {
     }
 
     /**
-     * Sets a boolean value. If true, gets fuelRange data
-     * @param fuelRange
-      *            a boolean value
-     */
-    public void setFuelRange(Boolean fuelRange) {
-        setParameters(KEY_FUEL_RANGE, fuelRange);
-    }
-
-    /**
-     * Gets a boolean value.
-     *
-     * @return Boolean -a Boolean value.
-     *
-     */
-    public Boolean getFuelRange() {
-        return getBoolean(KEY_FUEL_RANGE);
-    }
-
-    /**
      * Sets a boolean value. If true, subscribes turnSignal data
      * @param turnSignal a boolean value
      */
@@ -575,6 +625,26 @@ public class GetVehicleData extends RPCRequest {
     }
 
     /**
+     * Sets the windowStatus.
+     *
+     * @param windowStatus See WindowStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setWindowStatus(Boolean windowStatus) {
+        setParameters(KEY_WINDOW_STATUS, windowStatus);
+    }
+
+    /**
+     * Gets the windowStatus.
+     *
+     * @return Boolean See WindowStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public Boolean getWindowStatus() {
+        return getBoolean(KEY_WINDOW_STATUS);
+    }
+
+    /**
      * Sets the handsOffSteering.
      *
      * @param handsOffSteering To indicate whether driver hands are off the steering wheel
@@ -592,6 +662,26 @@ public class GetVehicleData extends RPCRequest {
      */
     public Boolean getHandsOffSteering() {
         return getBoolean(KEY_HANDS_OFF_STEERING);
+    }
+
+    /**
+     * Sets the gearStatus.
+     *
+     * @param gearStatus See GearStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setGearStatus(Boolean gearStatus) {
+        setParameters(KEY_GEAR_STATUS, gearStatus);
+    }
+
+    /**
+     * Gets the gearStatus.
+     *
+     * @return GearStatus See GearStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public Boolean getGearStatus() {
+        return getBoolean(KEY_GEAR_STATUS);
     }
 
     /**

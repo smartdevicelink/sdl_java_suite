@@ -1,6 +1,6 @@
 package com.smartdevicelink.managers.screen;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
@@ -13,7 +13,6 @@ import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.SubscribeButton;
 import com.smartdevicelink.proxy.rpc.UnsubscribeButton;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
-import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.DebugTool;
@@ -124,12 +123,11 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
         unsubscribeButtonRequest.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
-                onButtonListeners.remove(buttonName);
-            }
-
-            @Override
-            public void onError(int correlationId, Result resultCode, String info) {
-                listener.onError("Attempt to unsubscribe to button named " + buttonName + " Failed. ResultCode: " + resultCode + " info: " + info);
+                if (response.getSuccess()) {
+                    onButtonListeners.remove(buttonName);
+                } else {
+                    listener.onError("Attempt to unsubscribe to button named " + buttonName + " Failed. ResultCode: " + response.getResultCode() + " info: " + response.getInfo());
+                }
             }
         });
         internalInterface.sendRPC(unsubscribeButtonRequest);
@@ -146,13 +144,12 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
         subscribeButtonRequest.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
-                onButtonListeners.put(buttonName, new CopyOnWriteArrayList<OnButtonListener>());
-                onButtonListeners.get(buttonName).add(listener);
-            }
-
-            @Override
-            public void onError(int correlationId, Result resultCode, String info) {
-                listener.onError("Attempt to subscribe to button named " + buttonName + " Failed . ResultCode: " + resultCode + " info: " + info);
+                if (response.getSuccess()) {
+                    onButtonListeners.put(buttonName, new CopyOnWriteArrayList<OnButtonListener>());
+                    onButtonListeners.get(buttonName).add(listener);
+                } else {
+                    listener.onError("Attempt to subscribe to button named " + buttonName + " Failed . ResultCode: " + response.getResultCode() + " info: " + response.getInfo());
+                }
             }
         });
         internalInterface.sendRPC(subscribeButtonRequest);

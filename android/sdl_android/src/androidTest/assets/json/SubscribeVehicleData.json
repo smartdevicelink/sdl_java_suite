@@ -32,7 +32,9 @@
       "turnSignal":true,
       "electronicParkBrakeStatus":true,
       "stabilityControlsStatus": true,
+      "gearStatus": true,
       "oemCustomVehicleDataName":true,
+      "windowStatus": true,
       "handsOffSteering": true
     }
   },
@@ -160,8 +162,16 @@
         "dataType":"VEHICLEDATA_STABILITYCONTROLSSTATUS",
         "resultCode":"SUCCESS"
       },
+      "gearStatus":{
+        "dataType":"VEHICLEDATA_GEARSTATUS",
+        "resultCode":"SUCCESS"
+      },
       "oemCustomVehicleDataName":{
         "oemCustomDataType":"oemCustomVehicleDataName",
+        "resultCode":"SUCCESS"
+      },
+      "windowStatus":{
+        "dataType":"VEHICLEDATA_WINDOWSTATUS",
         "resultCode":"SUCCESS"
       }
     }

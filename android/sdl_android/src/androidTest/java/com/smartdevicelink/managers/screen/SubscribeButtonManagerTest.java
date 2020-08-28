@@ -1,6 +1,6 @@
 package com.smartdevicelink.managers.screen;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.proxy.RPCMessage;
@@ -61,9 +61,9 @@ public class SubscribeButtonManagerTest {
             Object[] args = invocation.getArguments();
             RPCRequest message = (RPCRequest) args[0];
             if(message instanceof SubscribeButton){
-                SubscribeButtonResponse subscribeButtonResponse = new SubscribeButtonResponse();
-                subscribeButtonResponse.setSuccess(false);
-                message.getOnRPCResponseListener().onError(message.getCorrelationID(), Result.GENERIC_ERROR, "Fail");
+                SubscribeButtonResponse subscribeButtonResponse = new SubscribeButtonResponse(false, Result.GENERIC_ERROR);
+                subscribeButtonResponse.setInfo("Fail");
+                message.getOnRPCResponseListener().onResponse(message.getCorrelationID(), subscribeButtonResponse);
             }
             return null;
         }

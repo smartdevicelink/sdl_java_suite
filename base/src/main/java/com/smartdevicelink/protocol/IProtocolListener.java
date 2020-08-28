@@ -36,6 +36,7 @@ import com.smartdevicelink.protocol.enums.SessionType;
 
 import java.util.List;
 
+@Deprecated
 public interface IProtocolListener {
 	// Called to indicate that these bytes are to be sent as part of a message.
 	// This call includes the part of the message.
