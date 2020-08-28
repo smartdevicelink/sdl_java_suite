@@ -294,4 +294,14 @@ public class TransportConstants {
 	public static final String AOA_USB                                      = "AOA_USB";
 	public static final String TCP_WIFI                                     = "TCP_WIFI";
 
+
+	/**
+	 * Broadcast action: sent when a USB accessory is attached.
+	 *
+	 * UsbManager.EXTRA_ACCESSORY extra contains UsbAccessory object that has
+	 * been attached.
+	 */
+	public static final String ACTION_USB_ACCESSORY_ATTACHED = "com.smartdevicelink.USB_ACCESSORY_ATTACHED";
+
+
 }
