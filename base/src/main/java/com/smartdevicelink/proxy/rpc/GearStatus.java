@@ -97,8 +97,9 @@ public class GearStatus extends RPCStruct {
      *
      * @param userSelectedGear Gear position selected by the user i.e. Park, Drive, Reverse
      */
-    public void setUserSelectedGear(PRNDL selectedGear){
+    public GearStatus setUserSelectedGear( PRNDL selectedGear) {
         setValue(KEY_USER_SELECTED_GEAR, selectedGear);
+        return this;
     }
 
     /**
@@ -116,8 +117,9 @@ public class GearStatus extends RPCStruct {
      *
      * @param actualGear Actual Gear in use by the transmission
      */
-    public void setActualGear(PRNDL actualGear){
+    public GearStatus setActualGear( PRNDL actualGear) {
         setValue(KEY_ACTUAL_GEAR, actualGear);
+        return this;
     }
 
     /**
@@ -135,8 +137,9 @@ public class GearStatus extends RPCStruct {
      *
      * @param transmissionType Tells the transmission type
      */
-    public void setTransmissionType(TransmissionType transmissionType){
+    public GearStatus setTransmissionType( TransmissionType transmissionType) {
         setValue(KEY_TRANSMISSION_TYPE, transmissionType);
+        return this;
     }
 
     /**

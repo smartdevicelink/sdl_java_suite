@@ -86,8 +86,9 @@ public class PresetBankCapabilities extends RPCStruct {
      * set if Onscreen custom presets are available.
      * @param onScreenPresetsAvailable if Onscreen custom presets are available.
      */
-    public void setOnScreenPresetsAvailable(@NonNull Boolean onScreenPresetsAvailable) {
-    	setValue(KEY_ON_SCREEN_PRESETS_AVAILABLE, onScreenPresetsAvailable);
+    public PresetBankCapabilities setOnScreenPresetsAvailable(@NonNull Boolean onScreenPresetsAvailable) {
+        setValue(KEY_ON_SCREEN_PRESETS_AVAILABLE, onScreenPresetsAvailable);
+        return this;
     }
     
     /**

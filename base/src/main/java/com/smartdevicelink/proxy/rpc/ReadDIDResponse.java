@@ -64,8 +64,9 @@ public class ReadDIDResponse extends RPCResponse {
         setSuccess(success);
         setResultCode(resultCode);
     }
-    public void setDidResult(List<DIDResult> didResult) {
-		setParameters(KEY_DID_RESULT, didResult);
+    public ReadDIDResponse setDidResult( List<DIDResult> didResult) {
+        setParameters(KEY_DID_RESULT, didResult);
+        return this;
     }
     @SuppressWarnings("unchecked")
     public List<DIDResult> getDidResult() {

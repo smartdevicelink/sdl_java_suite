@@ -65,8 +65,9 @@ public class Temperature extends RPCStruct{
      * @param unit
      * Temperature Unit.
      */
-    public void setUnit(@NonNull TemperatureUnit unit) {
+    public Temperature setUnit(@NonNull TemperatureUnit unit) {
         setValue(KEY_UNIT, unit);
+        return this;
     }
 
     /**
@@ -94,7 +95,8 @@ public class Temperature extends RPCStruct{
      * @param value
      * Temperature Value in TemperatureUnit specified unit. Range depends on OEM and is not checked by SDL.
      */
-    public void setValue(@NonNull Float value) {
+    public Temperature setValue(@NonNull Float value) {
         setValue(KEY_VALUE, value);
+        return this;
     }
 }

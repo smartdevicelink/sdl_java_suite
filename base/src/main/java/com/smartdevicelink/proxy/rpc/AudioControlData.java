@@ -65,9 +65,10 @@ public class AudioControlData extends RPCStruct {
 	 *               In a setter request, it is the target audio source that the system shall switch to.
 	 *               If the value is MOBILE_APP, the system shall switch to the mobile media app that issues the setter RPC.
 	 */
-	public void setSource(PrimaryAudioSource source) {
-		setValue(KEY_SOURCE, source);
-	}
+	public AudioControlData setSource( PrimaryAudioSource source) {
+        setValue(KEY_SOURCE, source);
+        return this;
+    }
 
 	/**
 	 * Gets the source portion of the AudioControlData class
@@ -89,9 +90,10 @@ public class AudioControlData extends RPCStruct {
 	 *       system UI associated with the audio source to foreground.
 	 *       If it is true, the system only changes the audio source, but keeps the current application in foreground.
 	 */
-	public void setKeepContext(Boolean keepContext) {
-		setValue(KEY_KEEP_CONTEXT, keepContext);
-	}
+	public AudioControlData setKeepContext( Boolean keepContext) {
+        setValue(KEY_KEEP_CONTEXT, keepContext);
+        return this;
+    }
 
 	/**
 	 * Gets the keepContext portion of the AudioControlData class
@@ -111,9 +113,10 @@ public class AudioControlData extends RPCStruct {
 	 *
 	 * @param volume Reflects the volume of audio, from 0%-100%.
 	 */
-	public void setVolume(Integer volume) {
-		setValue(KEY_VOLUME, volume);
-	}
+	public AudioControlData setVolume( Integer volume) {
+        setValue(KEY_VOLUME, volume);
+        return this;
+    }
 
 	/**
 	 * Gets the volume portion of the AudioControlData class
@@ -139,8 +142,9 @@ public class AudioControlData extends RPCStruct {
 	 *
 	 * @param equalizerSettings Defines the list of supported channels (band) and their current/desired settings on HMI.
 	 */
-	public void setEqualizerSettings(List<EqualizerSettings> equalizerSettings) {
-		setValue(KEY_EQUALIZER_SETTINGS, equalizerSettings);
-	}
+	public AudioControlData setEqualizerSettings( List<EqualizerSettings> equalizerSettings) {
+        setValue(KEY_EQUALIZER_SETTINGS, equalizerSettings);
+        return this;
+    }
 
 }

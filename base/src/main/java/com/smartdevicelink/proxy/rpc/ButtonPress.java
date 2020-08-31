@@ -96,8 +96,9 @@ public class ButtonPress extends RPCRequest {
      * @param moduleType
      * Represents module where the button should be pressed
      */
-    public void setModuleType(@NonNull ModuleType moduleType) {
+    public ButtonPress setModuleType(@NonNull ModuleType moduleType) {
         setParameters(KEY_MODULE_TYPE, moduleType);
+        return this;
     }
 
     /**
@@ -115,8 +116,9 @@ public class ButtonPress extends RPCRequest {
      * @param buttonName
      * Represents name of supported RC climate or radio button
      */
-    public void setButtonName(@NonNull ButtonName buttonName) {
+    public ButtonPress setButtonName(@NonNull ButtonName buttonName) {
         setParameters(KEY_BUTTON_NAME, buttonName);
+        return this;
     }
 
     /**
@@ -134,16 +136,18 @@ public class ButtonPress extends RPCRequest {
      * @param buttonPressMode
      * Indicates whether this is a LONG or SHORT button press event.
      */
-    public void setButtonPressMode(@NonNull ButtonPressMode buttonPressMode) {
+    public ButtonPress setButtonPressMode(@NonNull ButtonPressMode buttonPressMode) {
         setParameters(KEY_BUTTON_PRESS_MODE, buttonPressMode);
+        return this;
     }
 
     /**
      * Sets the module id for this object
      * @param id the id to be set
      */
-    public void setModuleId(String id) {
+    public ButtonPress setModuleId( String id) {
         setParameters(KEY_MODULE_ID, id);
+        return this;
     }
 
     /**

@@ -133,9 +133,10 @@ public class ButtonCapabilities extends RPCStruct {
     /**
      * Set the name of theSDL HMI button.
      * @param name the name of button
-     */    
-    public void setName( @NonNull  ButtonName name ) {
+     */
+    public ButtonCapabilities setName(@NonNull ButtonName name) {
         setValue(KEY_NAME, name);
+        return this;
     }
     /**
      * Whether the button supports a SHORT press. See <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonPressMode}</i> for more information.
@@ -147,9 +148,10 @@ public class ButtonCapabilities extends RPCStruct {
     /**
      * Set the button supports a SHORT press. See <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonPressMode}</i> for more information.
      * @param shortPressAvailable True if support otherwise False.
-     */    
-    public void setShortPressAvailable( @NonNull Boolean shortPressAvailable ) {
+     */
+    public ButtonCapabilities setShortPressAvailable(@NonNull Boolean shortPressAvailable) {
         setValue(KEY_SHORT_PRESS_AVAILABLE, shortPressAvailable);
+        return this;
     }
     /**
      * Whether the button supports a LONG press. See <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonPressMode}</i> for more information.
@@ -161,9 +163,10 @@ public class ButtonCapabilities extends RPCStruct {
     /**
      * Set the button supports a LONG press. See <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonPressMode}</i> for more information.
      * @param longPressAvailable True if support otherwise False.
-     */    
-    public void setLongPressAvailable( @NonNull Boolean longPressAvailable ) {
+     */
+    public ButtonCapabilities setLongPressAvailable(@NonNull Boolean longPressAvailable) {
         setValue(KEY_LONG_PRESS_AVAILABLE, longPressAvailable);
+        return this;
     }
     /**
      * Whether the button supports "button down" and "button up". When the button is depressed, the <i>{@linkplain OnButtonEvent}</i> notification will be invoked with a value of BUTTONDOWN.
@@ -175,17 +178,19 @@ public class ButtonCapabilities extends RPCStruct {
     /**
      * Set the button supports "button down" and "button up". When the button is depressed, the <i>{@linkplain OnButtonEvent}</i> notification will be invoked with a value of BUTTONDOWN.
      * @param upDownAvailable True if support otherwise False.
-     */    
-    public void setUpDownAvailable( @NonNull Boolean upDownAvailable ) {
+     */
+    public ButtonCapabilities setUpDownAvailable(@NonNull Boolean upDownAvailable) {
         setValue(KEY_UP_DOWN_AVAILABLE, upDownAvailable);
+        return this;
     }
 
     /**
      * Sets ModuleInfo for this capability
      * @param info the ModuleInfo to be set
      */
-    public void setModuleInfo(ModuleInfo info) {
+    public ButtonCapabilities setModuleInfo( ModuleInfo info) {
         setValue(KEY_MODULE_INFO, info);
+        return this;
     }
 
     /**

@@ -63,8 +63,9 @@ public class CloudAppProperties extends RPCStruct {
         setValue(KEY_APP_ID, appID);
     }
 
-    public void setNicknames(List<String> nicknames){
+    public CloudAppProperties setNicknames( List<String> nicknames) {
         setValue(KEY_NICKNAMES, nicknames);
+        return this;
     }
 
     @SuppressWarnings("unchecked")
@@ -72,8 +73,9 @@ public class CloudAppProperties extends RPCStruct {
         return (List<String>) getObject(String.class, KEY_NICKNAMES);
     }
 
-    public void setAppID(@NonNull String appID){
+    public CloudAppProperties setAppID(@NonNull String appID) {
         setValue(KEY_APP_ID, appID);
+        return this;
     }
 
     public String getAppID(){
@@ -84,8 +86,9 @@ public class CloudAppProperties extends RPCStruct {
      * If true, this cloud app entry will designate it should appear in the HMI
      * @param enabled if the app should be
      */
-    public void setEnabled(boolean enabled){
+    public CloudAppProperties setEnabled( boolean enabled) {
         setValue(KEY_ENABLED, enabled);
+        return this;
     }
 
     /**
@@ -95,24 +98,27 @@ public class CloudAppProperties extends RPCStruct {
         return getBoolean(KEY_ENABLED);
     }
 
-    public void setAuthToken(String token){
+    public CloudAppProperties setAuthToken( String token) {
         setValue(KEY_AUTH_TOKEN, token);
+        return this;
     }
 
     public String getAuthToken(){
         return getString(KEY_AUTH_TOKEN);
     }
 
-    public void setCloudTransportType(String transportType){
+    public CloudAppProperties setCloudTransportType( String transportType) {
         setValue(KEY_CLOUD_TRANSPORT_TYPE, transportType);
+        return this;
     }
 
     public String getCloudTransportType(){
         return getString(KEY_CLOUD_TRANSPORT_TYPE);
     }
 
-    public void setHybridAppPreference(HybridAppPreference hybridAppPreference){
+    public CloudAppProperties setHybridAppPreference( HybridAppPreference hybridAppPreference) {
         setValue(KEY_HYBRID_APP_PREFERENCE, hybridAppPreference);
+        return this;
     }
 
     public HybridAppPreference getHybridAppPreference(){
@@ -122,8 +128,9 @@ public class CloudAppProperties extends RPCStruct {
     /**
      * @param token - max length ="65535"
      */
-    public void setEndpoint(String token){
+    public CloudAppProperties setEndpoint( String token) {
         setValue(KEY_ENDPOINT, token);
+        return this;
     }
 
     /**

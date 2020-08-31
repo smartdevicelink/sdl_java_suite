@@ -101,8 +101,9 @@ public class StabilityControlsStatus extends RPCStruct {
      *
      * @param escSystem true if vehicle stability control is ON, else false
      */
-    public void setEscSystem(VehicleDataStatus escSystem) {
+    public StabilityControlsStatus setEscSystem( VehicleDataStatus escSystem) {
         setValue(KEY_ESC_SYSTEM, escSystem);
+        return this;
     }
 
     /**
@@ -110,8 +111,9 @@ public class StabilityControlsStatus extends RPCStruct {
      *
      * @param trailerSwayControl true if vehicle trailer sway control is ON, else false
      */
-    public void setTrailerSwayControl(VehicleDataStatus trailerSwayControl) {
+    public StabilityControlsStatus setTrailerSwayControl( VehicleDataStatus trailerSwayControl) {
         setValue(KEY_TRAILER_SWAY_CONTROL, trailerSwayControl);
+        return this;
     }
 
     /**

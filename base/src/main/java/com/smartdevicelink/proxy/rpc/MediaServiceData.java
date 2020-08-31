@@ -68,9 +68,10 @@ public class MediaServiceData extends RPCStruct {
 	/**
 	 * @param mediaType - The type of the currently playing or paused track.
 	 */
-	public void setMediaType(MediaType mediaType) {
-		setValue(KEY_MEDIA_TYPE, mediaType);
-	}
+	public MediaServiceData setMediaType( MediaType mediaType) {
+        setValue(KEY_MEDIA_TYPE, mediaType);
+        return this;
+    }
 
 	/**
 	 * @return mediaType - The type of the currently playing or paused track.
@@ -85,9 +86,10 @@ public class MediaServiceData extends RPCStruct {
 	 * Audiobook: The name of the current chapter
 	 * @param mediaTitle -
 	 */
-	public void setMediaTitle(String mediaTitle) {
-		setValue(KEY_MEDIA_TITLE, mediaTitle);
-	}
+	public MediaServiceData setMediaTitle( String mediaTitle) {
+        setValue(KEY_MEDIA_TITLE, mediaTitle);
+        return this;
+    }
 
 	/**
 	 * Music: The name of the current track
@@ -105,9 +107,10 @@ public class MediaServiceData extends RPCStruct {
 	 * Audiobook: The book author's name
 	 * @param mediaArtist -
 	 */
-	public void setMediaArtist(String mediaArtist) {
-		setValue(KEY_MEDIA_ARTIST, mediaArtist);
-	}
+	public MediaServiceData setMediaArtist( String mediaArtist) {
+        setValue(KEY_MEDIA_ARTIST, mediaArtist);
+        return this;
+    }
 
 	/**
 	 * Music: The name of the current album artist
@@ -125,9 +128,10 @@ public class MediaServiceData extends RPCStruct {
 	 * Audiobook: The name of the current book
 	 * @param mediaAlbum -
 	 */
-	public void setMediaAlbum(String mediaAlbum) {
-		setValue(KEY_MEDIA_ALBUM, mediaAlbum);
-	}
+	public MediaServiceData setMediaAlbum( String mediaAlbum) {
+        setValue(KEY_MEDIA_ALBUM, mediaAlbum);
+        return this;
+    }
 
 	/**
 	 * Music: The name of the current album
@@ -146,9 +150,10 @@ public class MediaServiceData extends RPCStruct {
 	 * Audiobook: The book or chapter artwork of the current audiobook
 	 * @param mediaImage
 	 */
-	public void setMediaImage(Image mediaImage){
-		setValue(KEY_MEDIA_IMAGE, mediaImage);
-	}
+	public MediaServiceData setMediaImage( Image mediaImage) {
+        setValue(KEY_MEDIA_IMAGE, mediaImage);
+        return this;
+    }
 
 	/**
 	 * Returns the media image associated with the currently playing media
@@ -166,9 +171,10 @@ public class MediaServiceData extends RPCStruct {
 	 * Audiobook: Likely not applicable, possibly a collection or "playlist" of books
 	 * @param playlistName -
 	 */
-	public void setPlaylistName(String playlistName) {
-		setValue(KEY_PLAYLIST_NAME, playlistName);
-	}
+	public MediaServiceData setPlaylistName( String playlistName) {
+        setValue(KEY_PLAYLIST_NAME, playlistName);
+        return this;
+    }
 
 	/**
 	 * Music: The name of the playlist or radio station, if the user is playing from a playlist, otherwise, Null
@@ -183,9 +189,10 @@ public class MediaServiceData extends RPCStruct {
 	/**
 	 * @param isExplicit - Whether or not the content currently playing (e.g. the track, episode, or book) contains explicit content
 	 */
-	public void setIsExplicit(Boolean isExplicit) {
-		setValue(KEY_IS_EXPLICIT, isExplicit);
-	}
+	public MediaServiceData setIsExplicit( Boolean isExplicit) {
+        setValue(KEY_IS_EXPLICIT, isExplicit);
+        return this;
+    }
 
 	/**
 	 * @return isExplicit - Whether or not the content currently playing (e.g. the track, episode, or book) contains explicit content
@@ -200,9 +207,10 @@ public class MediaServiceData extends RPCStruct {
 	 * Audiobook: The current progress of the current segment (e.g. the chapter) in seconds
 	 * @param trackPlaybackProgress -
 	 */
-	public void setTrackPlaybackProgress(Integer trackPlaybackProgress) {
-		setValue(KEY_TRACK_PLAYBACK_PROGRESS, trackPlaybackProgress);
-	}
+	public MediaServiceData setTrackPlaybackProgress( Integer trackPlaybackProgress) {
+        setValue(KEY_TRACK_PLAYBACK_PROGRESS, trackPlaybackProgress);
+        return this;
+    }
 
 	/**
 	 * Music: The current progress of the track in seconds
@@ -220,9 +228,10 @@ public class MediaServiceData extends RPCStruct {
 	 * Audiobook: The total duration of the current segment (e.g. the chapter) in seconds
 	 * @param trackPlaybackDuration -
 	 */
-	public void setTrackPlaybackDuration(Integer trackPlaybackDuration) {
-		setValue(KEY_TRACK_PLAYBACK_DURATION, trackPlaybackDuration);
-	}
+	public MediaServiceData setTrackPlaybackDuration( Integer trackPlaybackDuration) {
+        setValue(KEY_TRACK_PLAYBACK_DURATION, trackPlaybackDuration);
+        return this;
+    }
 
 	/**
 	 * Music: The total duration of the track in seconds
@@ -240,9 +249,10 @@ public class MediaServiceData extends RPCStruct {
 	 * Audiobook: The current progress of the playback queue (e.g. the book) in seconds
 	 * @param queuePlaybackProgress -
 	 */
-	public void setQueuePlaybackProgress(Integer queuePlaybackProgress) {
-		setValue(KEY_QUEUE_PLAYBACK_PROGRESS, queuePlaybackProgress);
-	}
+	public MediaServiceData setQueuePlaybackProgress( Integer queuePlaybackProgress) {
+        setValue(KEY_QUEUE_PLAYBACK_PROGRESS, queuePlaybackProgress);
+        return this;
+    }
 
 	/**
 	 * Music: The current progress of the playback queue in seconds
@@ -260,9 +270,10 @@ public class MediaServiceData extends RPCStruct {
 	 * Audiobook: The total duration of the playback queue (e.g. the book) in seconds
 	 * @param queuePlaybackDuration -
 	 */
-	public void setQueuePlaybackDuration(Integer queuePlaybackDuration) {
-		setValue(KEY_QUEUE_PLAYBACK_DURATION, queuePlaybackDuration);
-	}
+	public MediaServiceData setQueuePlaybackDuration( Integer queuePlaybackDuration) {
+        setValue(KEY_QUEUE_PLAYBACK_DURATION, queuePlaybackDuration);
+        return this;
+    }
 
 	/**
 	 * Music: The total duration of the playback queue in seconds
@@ -280,9 +291,10 @@ public class MediaServiceData extends RPCStruct {
 	 * Audiobook: The current number (1 based) of the episode in the playback queue (e.g. the chapter number in the book)
 	 * @param queueCurrentTrackNumber -
 	 */
-	public void setQueueCurrentTrackNumber(Integer queueCurrentTrackNumber) {
-		setValue(KEY_QUEUE_CURRENT_TRACK_NUMBER, queueCurrentTrackNumber);
-	}
+	public MediaServiceData setQueueCurrentTrackNumber( Integer queueCurrentTrackNumber) {
+        setValue(KEY_QUEUE_CURRENT_TRACK_NUMBER, queueCurrentTrackNumber);
+        return this;
+    }
 
 	/**
 	 * Music: The current number (1 based) of the track in the playback queue
@@ -300,9 +312,10 @@ public class MediaServiceData extends RPCStruct {
 	 * Audiobook: The total number of sections in the playback queue (e.g. the number of chapters in the book)
 	 * @param queueTotalTrackCount -
 	 */
-	public void setQueueTotalTrackCount(Integer queueTotalTrackCount) {
-		setValue(KEY_QUEUE_TOTAL_TRACK_COUNT, queueTotalTrackCount);
-	}
+	public MediaServiceData setQueueTotalTrackCount( Integer queueTotalTrackCount) {
+        setValue(KEY_QUEUE_TOTAL_TRACK_COUNT, queueTotalTrackCount);
+        return this;
+    }
 
 	/**
 	 * Music: The total number of tracks in the playback queue

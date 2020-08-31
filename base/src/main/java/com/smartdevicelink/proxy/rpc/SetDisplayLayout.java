@@ -131,12 +131,13 @@ public class SetDisplayLayout extends RPCRequest {
 	 * Currently only predefined screen layouts are defined. Predefined layouts
 	 * include: "ONSCREEN_PRESETS" Custom screen containing app-defined onscreen
 	 * presets. Currently defined for GEN2
-	 * 
+	 *
 	 * @param displayLayout
 	 *            a String value representing a display layout
 	 */
-    public void setDisplayLayout(@NonNull String displayLayout) {
-		setParameters(KEY_DISPLAY_LAYOUT, displayLayout);
+    public SetDisplayLayout setDisplayLayout(@NonNull String displayLayout) {
+        setParameters(KEY_DISPLAY_LAYOUT, displayLayout);
+        return this;
     }
 
 	/**
@@ -164,9 +165,10 @@ public class SetDisplayLayout extends RPCRequest {
 	 * used for day color scheme
 	 * @since SmartDeviceLink 5.0
 	 */
-	public void setDayColorScheme(TemplateColorScheme templateColorScheme){
-		setParameters(KEY_DAY_COLOR_SCHEME, templateColorScheme);
-	}
+	public SetDisplayLayout setDayColorScheme( TemplateColorScheme templateColorScheme) {
+        setParameters(KEY_DAY_COLOR_SCHEME, templateColorScheme);
+        return this;
+    }
 
 	/**
 	 * Gets the color scheme that is currently used for night
@@ -186,7 +188,8 @@ public class SetDisplayLayout extends RPCRequest {
 	 * used for night color scheme
 	 * @since SmartDeviceLink 5.0
 	 */
-	public void setNightColorScheme(TemplateColorScheme templateColorScheme){
-		setParameters(KEY_NIGHT_COLOR_SCHEME, templateColorScheme);
-	}
+	public SetDisplayLayout setNightColorScheme( TemplateColorScheme templateColorScheme) {
+        setParameters(KEY_NIGHT_COLOR_SCHEME, templateColorScheme);
+        return this;
+    }
 }

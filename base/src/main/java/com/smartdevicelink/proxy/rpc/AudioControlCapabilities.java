@@ -76,9 +76,10 @@ public class AudioControlCapabilities extends RPCStruct {
 	 *
 	 * @param moduleName The short friendly name of the light control module. It should not be used to identify a module by mobile application.
 	 */
-	public void setModuleName(@NonNull String moduleName) {
-		setValue(KEY_MODULE_NAME, moduleName);
-	}
+	public AudioControlCapabilities setModuleName(@NonNull String moduleName) {
+        setValue(KEY_MODULE_NAME, moduleName);
+        return this;
+    }
 
 	/**
 	 * Gets the moduleName portion of the AudioControlCapabilities class
@@ -94,9 +95,10 @@ public class AudioControlCapabilities extends RPCStruct {
 	 *
 	 * @param keepContextAvailable Availability of the keepContext parameter.
 	 */
-	public void setKeepContextAvailable(Boolean keepContextAvailable) {
-		setValue(KEY_KEEP_CONTEXT_AVAILABLE, keepContextAvailable);
-	}
+	public AudioControlCapabilities setKeepContextAvailable( Boolean keepContextAvailable) {
+        setValue(KEY_KEEP_CONTEXT_AVAILABLE, keepContextAvailable);
+        return this;
+    }
 
 	/**
 	 * Gets the keepContextAvailable portion of the AudioControlCapabilities class
@@ -112,9 +114,10 @@ public class AudioControlCapabilities extends RPCStruct {
 	 *
 	 * @param sourceAvailable Availability of the control of audio source.
 	 */
-	public void setSourceAvailable(Boolean sourceAvailable) {
-		setValue(KEY_SOURCE_AVAILABLE, sourceAvailable);
-	}
+	public AudioControlCapabilities setSourceAvailable( Boolean sourceAvailable) {
+        setValue(KEY_SOURCE_AVAILABLE, sourceAvailable);
+        return this;
+    }
 
 	/**
 	 * Gets the sourceAvailable portion of the AudioControlCapabilities class
@@ -130,9 +133,10 @@ public class AudioControlCapabilities extends RPCStruct {
 	 *
 	 * @param volumeAvailable Availability of the control of audio volume.
 	 */
-	public void setVolumeAvailable(Boolean volumeAvailable) {
-		setValue(KEY_VOLUME_AVAILABLE, volumeAvailable);
-	}
+	public AudioControlCapabilities setVolumeAvailable( Boolean volumeAvailable) {
+        setValue(KEY_VOLUME_AVAILABLE, volumeAvailable);
+        return this;
+    }
 
 	/**
 	 * Gets the volumeAvailable portion of the AudioControlCapabilities class
@@ -148,9 +152,10 @@ public class AudioControlCapabilities extends RPCStruct {
 	 *
 	 * @param equalizerAvailable Availability of the control of Equalizer Settings.
 	 */
-	public void setEqualizerAvailable(Boolean equalizerAvailable) {
-		setValue(KEY_EQUALIZER_AVAILABLE, equalizerAvailable);
-	}
+	public AudioControlCapabilities setEqualizerAvailable( Boolean equalizerAvailable) {
+        setValue(KEY_EQUALIZER_AVAILABLE, equalizerAvailable);
+        return this;
+    }
 
 	/**
 	 * Gets the equalizerAvailable portion of the AudioControlCapabilities class
@@ -166,9 +171,10 @@ public class AudioControlCapabilities extends RPCStruct {
 	 *
 	 * @param equalizerMaxChannelId Must be included if equalizerAvailable=true, and assume all IDs starting from 1 to this value are valid.
 	 */
-	public void setEqualizerMaxChannelId(Integer equalizerMaxChannelId) {
-		setValue(KEY_EQUALIZER_MAX_CHANNEL_ID, equalizerMaxChannelId);
-	}
+	public AudioControlCapabilities setEqualizerMaxChannelId( Integer equalizerMaxChannelId) {
+        setValue(KEY_EQUALIZER_MAX_CHANNEL_ID, equalizerMaxChannelId);
+        return this;
+    }
 
 	/**
 	 * Gets the equalizerMaxChannelId portion of the AudioControlCapabilities class
@@ -183,9 +189,10 @@ public class AudioControlCapabilities extends RPCStruct {
 	 * Sets ModuleInfo for this capability
 	 * @param info the ModuleInfo to be set
 	 */
-	public void setModuleInfo(ModuleInfo info) {
-		setValue(KEY_MODULE_INFO, info);
-	}
+	public AudioControlCapabilities setModuleInfo( ModuleInfo info) {
+        setValue(KEY_MODULE_INFO, info);
+        return this;
+    }
 
 	/**
 	 * Gets a ModuleInfo of this capability

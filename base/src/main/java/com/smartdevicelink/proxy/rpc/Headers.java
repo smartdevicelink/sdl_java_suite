@@ -67,48 +67,54 @@ public class Headers extends RPCStruct {
         super(hash);
     }	
 	
-    public void setContentType(String contenttype) {
+    public Headers setContentType( String contenttype) {
         setValue(KEY_CONTENT_TYPE, contenttype);
+        return this;
     }
     
     public String getContentType() {
         return getString(KEY_CONTENT_TYPE);
     }     
     
-    public void setConnectTimeout(Integer connectiontimeout) {
+    public Headers setConnectTimeout( Integer connectiontimeout) {
         setValue(KEY_CONNECT_TIMEOUT, connectiontimeout);
+        return this;
     }
     
     public Integer getConnectTimeout() {
         return getInteger(KEY_CONNECT_TIMEOUT);
     }
     
-    public void setDoOutput(Boolean dooutput) {
+    public Headers setDoOutput( Boolean dooutput) {
         setValue(KEY_DO_OUTPUT, dooutput);
+        return this;
     }
     
     public Boolean getDoOutput() {
         return getBoolean(KEY_DO_OUTPUT);
     }    
     
-    public void setDoInput(Boolean doinput) {
+    public Headers setDoInput( Boolean doinput) {
         setValue(KEY_DO_INPUT, doinput);
+        return this;
     }
     
     public Boolean getDoInput() {
         return getBoolean(KEY_DO_INPUT);
     }       
 
-    public void setUseCaches(Boolean usescaches) {
+    public Headers setUseCaches( Boolean usescaches) {
         setValue(KEY_USE_CACHES, usescaches);
+        return this;
     }
     
     public Boolean getUseCaches() {
         return getBoolean(KEY_USE_CACHES);
     }      
     
-    public void setRequestMethod(String requestmethod) {
+    public Headers setRequestMethod( String requestmethod) {
         setValue(KEY_REQUEST_METHOD, requestmethod);
+        return this;
     }
     
     public String getRequestMethod() {
@@ -116,32 +122,36 @@ public class Headers extends RPCStruct {
     }   
     
     
-    public void setReadTimeout(Integer readtimeout) {
+    public Headers setReadTimeout( Integer readtimeout) {
         setValue(KEY_READ_TIMEOUT, readtimeout);
+        return this;
     }
     
     public Integer getReadTimeout() {
         return getInteger(KEY_READ_TIMEOUT);
     }
     
-    public void setInstanceFollowRedirects(Boolean instancefollowredirects) {
+    public Headers setInstanceFollowRedirects( Boolean instancefollowredirects) {
         setValue(KEY_INSTANCE_FOLLOW_REDIRECTS, instancefollowredirects);
+        return this;
     }
     
     public Boolean getInstanceFollowRedirects() {
         return getBoolean(KEY_INSTANCE_FOLLOW_REDIRECTS);
     }
     
-    public void setCharset(String charset) {
+    public Headers setCharset( String charset) {
         setValue(KEY_CHARSET, charset);
+        return this;
     }
     
     public String getCharset() {
         return getString(KEY_CHARSET);
     }
 
-    public void setContentLength(Integer contentlength) {
+    public Headers setContentLength( Integer contentlength) {
         setValue(KEY_CONTENT_LENGTH, contentlength);
+        return this;
     }
     
     public Integer getContentLength() {

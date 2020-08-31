@@ -101,11 +101,12 @@ public class ImageResolution extends RPCStruct {
      *                        the Android H264 decoder, as a workaround the odd value is
      *                        converted to a pair value.
      */
-    public void setResolutionWidth(@NonNull Integer resolutionWidth) {
+    public ImageResolution setResolutionWidth(@NonNull Integer resolutionWidth) {
         if(resolutionWidth != null && resolutionWidth % 2 != 0) {
             resolutionWidth++;
         }
         setValue(KEY_RESOLUTION_WIDTH, resolutionWidth);
+        return this;
     }
     
     public Integer getResolutionWidth() {
@@ -117,11 +118,12 @@ public class ImageResolution extends RPCStruct {
      *                        the Android H264 decoder, as a workaround the odd value is
      *                        converted to a pair value.
      */
-    public void setResolutionHeight(@NonNull Integer resolutionHeight) {
+    public ImageResolution setResolutionHeight(@NonNull Integer resolutionHeight) {
         if(resolutionHeight != null && resolutionHeight % 2 != 0) {
             resolutionHeight++;
         }
         setValue(KEY_RESOLUTION_HEIGHT, resolutionHeight);
+        return this;
     }
     
     public Integer getResolutionHeight() {

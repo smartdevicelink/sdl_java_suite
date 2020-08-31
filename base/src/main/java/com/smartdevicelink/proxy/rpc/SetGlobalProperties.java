@@ -188,7 +188,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 * Sets a List<TTSChunk> for Help Prompt that Array of one or more
 	 * TTSChunk elements specifying the help prompt used in an interaction
 	 * started by PTT
-	 * 
+	 *
 	 * @param helpPrompt
 	 *            a List<TTSChunk> of one or more TTSChunk elements
 	 *            <p></p>
@@ -197,9 +197,10 @@ public class SetGlobalProperties extends RPCRequest {
 	 *            <li>Array must have at least one element</li>
 	 *            <li>Only optional it timeoutPrompt has been specified</li>
 	 *            </ul>
-	 */    
-    public void setHelpPrompt(List<TTSChunk> helpPrompt) {
-		setParameters(KEY_HELP_PROMPT, helpPrompt);
+	 */
+    public SetGlobalProperties setHelpPrompt( List<TTSChunk> helpPrompt) {
+        setParameters(KEY_HELP_PROMPT, helpPrompt);
+        return this;
     }
 	/**
 	 * Gets a List<TTSChunk> for Timeout Prompt representing Array of one or
@@ -217,10 +218,11 @@ public class SetGlobalProperties extends RPCRequest {
 	 * Sets a List<TTSChunk> for Timeout Prompt representing Array of one or
 	 * more TTSChunk elements specifying the help prompt used in an interaction
 	 * started by PTT
-	 * 
-	 */    
-    public void setTimeoutPrompt(List<TTSChunk> timeoutPrompt) {
-		setParameters(KEY_TIMEOUT_PROMPT, timeoutPrompt);
+	 *
+	 */
+    public SetGlobalProperties setTimeoutPrompt( List<TTSChunk> timeoutPrompt) {
+        setParameters(KEY_TIMEOUT_PROMPT, timeoutPrompt);
+        return this;
     }
 
 	/**
@@ -236,7 +238,7 @@ public class SetGlobalProperties extends RPCRequest {
 
 	/**
 	 * Sets a voice recognition Help Title
-	 * 
+	 *
 	 * @param vrHelpTitle
 	 *            a String value representing a voice recognition Help Title
 	 *            <p></p>
@@ -250,8 +252,9 @@ public class SetGlobalProperties extends RPCRequest {
 	 *            </ul>
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setVrHelpTitle(String vrHelpTitle) {
-		setParameters(KEY_VR_HELP_TITLE, vrHelpTitle);
+    public SetGlobalProperties setVrHelpTitle( String vrHelpTitle) {
+        setParameters(KEY_VR_HELP_TITLE, vrHelpTitle);
+        return this;
     }
 
 	/**
@@ -270,7 +273,7 @@ public class SetGlobalProperties extends RPCRequest {
 	/**
 	 * Sets the items listed in the VR help screen used in an interaction
 	 * started by PTT
-	 * 
+	 *
 	 * @param vrHelp
 	 *            a List value representing items listed in the VR help screen
 	 *            used in an interaction started by PTT
@@ -288,20 +291,23 @@ public class SetGlobalProperties extends RPCRequest {
 	 *            </ul>
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setVrHelp(List<VrHelpItem> vrHelp) {
-		setParameters(KEY_VR_HELP, vrHelp);
+    public SetGlobalProperties setVrHelp( List<VrHelpItem> vrHelp) {
+        setParameters(KEY_VR_HELP, vrHelp);
+        return this;
     }
     
     public String getMenuTitle() {
         return getString(KEY_MENU_TITLE);
     }
 
-    public void setMenuTitle(String menuTitle) {
-		setParameters(KEY_MENU_TITLE, menuTitle);
+    public SetGlobalProperties setMenuTitle( String menuTitle) {
+        setParameters(KEY_MENU_TITLE, menuTitle);
+        return this;
     }
 
-    public void setMenuIcon(Image menuIcon) {
-		setParameters(KEY_MENU_ICON, menuIcon);
+    public SetGlobalProperties setMenuIcon( Image menuIcon) {
+        setParameters(KEY_MENU_ICON, menuIcon);
+        return this;
     }
 
     @SuppressWarnings("unchecked")
@@ -309,17 +315,19 @@ public class SetGlobalProperties extends RPCRequest {
 		return (Image) getObject(Image.class, KEY_MENU_ICON);
     }
     
-    public void setKeyboardProperties(KeyboardProperties keyboardProperties) {
-		setParameters(KEY_KEYBOARD_PROPERTIES, keyboardProperties);
+    public SetGlobalProperties setKeyboardProperties( KeyboardProperties keyboardProperties) {
+        setParameters(KEY_KEYBOARD_PROPERTIES, keyboardProperties);
+        return this;
     }
 
 	/**
 	 * Sets the user seat location
 	 * @param location the location to be set
 	 */
-	public void setUserLocation(SeatLocation location) {
-    	setParameters(KEY_USER_LOCATION, location);
-	}
+	public SetGlobalProperties setUserLocation( SeatLocation location) {
+        setParameters(KEY_USER_LOCATION, location);
+        return this;
+    }
 
 	/**
 	 * Gets the user seat location
@@ -339,9 +347,10 @@ public class SetGlobalProperties extends RPCRequest {
 	 * the head unit will change the display to the new layout type.
 	 * @param menuLayout - the menuLayout
 	 */
-	public void setMenuLayout(MenuLayout menuLayout) {
-		setParameters(KEY_MENU_LAYOUT, menuLayout);
-	}
+	public SetGlobalProperties setMenuLayout( MenuLayout menuLayout) {
+        setParameters(KEY_MENU_LAYOUT, menuLayout);
+        return this;
+    }
 
 	/**
 	 * Sets the layout of the main menu screen. If this is sent while a menu is already on-screen,

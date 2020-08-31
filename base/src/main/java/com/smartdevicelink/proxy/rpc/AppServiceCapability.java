@@ -69,9 +69,10 @@ public class AppServiceCapability extends RPCStruct {
 	 * Only included in OnSystemCapabilityUpdated. Update reason for this service record.
 	 * @param updateReason -
 	 */
-	public void setUpdateReason(ServiceUpdateReason updateReason){
-		setValue(KEY_UPDATE_REASON, updateReason);
-	}
+	public AppServiceCapability setUpdateReason( ServiceUpdateReason updateReason) {
+        setValue(KEY_UPDATE_REASON, updateReason);
+        return this;
+    }
 
 	/**
 	 * Only included in OnSystemCapabilityUpdated. Update reason for this service record.
@@ -85,9 +86,10 @@ public class AppServiceCapability extends RPCStruct {
 	 * Only included in OnSystemCapabilityUpdated. Update reason for this service record.
 	 * @param updatedAppServiceRecord -
 	 */
-	public void setUpdatedAppServiceRecord(AppServiceRecord updatedAppServiceRecord){
-		setValue(KEY_UPDATED_APP_SERVICE_RECORD, updatedAppServiceRecord);
-	}
+	public AppServiceCapability setUpdatedAppServiceRecord( AppServiceRecord updatedAppServiceRecord) {
+        setValue(KEY_UPDATED_APP_SERVICE_RECORD, updatedAppServiceRecord);
+        return this;
+    }
 
 	/**
 	 * Only included in OnSystemCapabilityUpdated. Update reason for this service record.

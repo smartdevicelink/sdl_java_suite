@@ -378,12 +378,13 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from Gps data
-	 * 
+	 *
 	 * @param gps
 	 *            a boolean value
 	 */
-    public void setGps(Boolean gps) {
-		setParameters(KEY_GPS, gps);
+    public UnsubscribeVehicleData setGps( Boolean gps) {
+        setParameters(KEY_GPS, gps);
+        return this;
     }
 
 	/**
@@ -398,12 +399,13 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from speed data
-	 * 
+	 *
 	 * @param speed
 	 *            a boolean value
 	 */
-    public void setSpeed(Boolean speed) {
-		setParameters(KEY_SPEED, speed);
+    public UnsubscribeVehicleData setSpeed( Boolean speed) {
+        setParameters(KEY_SPEED, speed);
+        return this;
     }
 
 	/**
@@ -418,12 +420,13 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribe data
-	 * 
+	 *
 	 * @param rpm
 	 *            a boolean value
 	 */
-    public void setRpm(Boolean rpm) {
-		setParameters(KEY_RPM, rpm);
+    public UnsubscribeVehicleData setRpm( Boolean rpm) {
+        setParameters(KEY_RPM, rpm);
+        return this;
     }
 
 	/**
@@ -438,13 +441,14 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets the fuelLevel.
-	 * 
+	 *
 	 * @param fuelLevel The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
 	 * 7.0, please see fuelRange.
 	 */
 	@Deprecated
-    public void setFuelLevel(Boolean fuelLevel) {
-		setParameters(KEY_FUEL_LEVEL, fuelLevel);
+    public UnsubscribeVehicleData setFuelLevel( Boolean fuelLevel) {
+        setParameters(KEY_FUEL_LEVEL, fuelLevel);
+        return this;
     }
 
 	/**
@@ -466,8 +470,9 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	 * @since SmartDeviceLink 5.0.0
 	 */
     @Deprecated
-    public void setFuelLevelState(Boolean fuelLevelState) {
-		setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
+    public UnsubscribeVehicleData setFuelLevelState( Boolean fuelLevelState) {
+        setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
+        return this;
     }
 
 	/**
@@ -484,12 +489,13 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from instantFuelConsumption data
-	 * 
+	 *
 	 * @param instantFuelConsumption
 	 *            a boolean value
 	 */
-    public void setInstantFuelConsumption(Boolean instantFuelConsumption) {
-		setParameters(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
+    public UnsubscribeVehicleData setInstantFuelConsumption( Boolean instantFuelConsumption) {
+        setParameters(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
+        return this;
     }
 
 	/**
@@ -505,12 +511,13 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from externalTemperature data
-	 * 
+	 *
 	 * @param externalTemperature
 	 *            a boolean value
 	 */
-    public void setExternalTemperature(Boolean externalTemperature) {
-		setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
+    public UnsubscribeVehicleData setExternalTemperature( Boolean externalTemperature) {
+        setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
+        return this;
     }
 
 	/**
@@ -531,8 +538,9 @@ public class UnsubscribeVehicleData extends RPCRequest {
      * @deprecated in SmartDeviceLink 7.0.0
      */
     @Deprecated
-    public void setPrndl(Boolean prndl) {
+    public UnsubscribeVehicleData setPrndl( Boolean prndl) {
         setParameters(KEY_PRNDL, prndl);
+        return this;
     }
 
     /**
@@ -548,12 +556,13 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from tire pressure status data
-	 * 
+	 *
 	 * @param tirePressure
 	 *            a boolean value
 	 */
-    public void setTirePressure(Boolean tirePressure) {
-		setParameters(KEY_TIRE_PRESSURE, tirePressure);
+    public UnsubscribeVehicleData setTirePressure( Boolean tirePressure) {
+        setParameters(KEY_TIRE_PRESSURE, tirePressure);
+        return this;
     }
 
 	/**
@@ -569,12 +578,13 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from odometer data
-	 * 
+	 *
 	 * @param odometer
 	 *            a boolean value
 	 */
-    public void setOdometer(Boolean odometer) {
-		setParameters(KEY_ODOMETER, odometer);
+    public UnsubscribeVehicleData setOdometer( Boolean odometer) {
+        setParameters(KEY_ODOMETER, odometer);
+        return this;
     }
 
 	/**
@@ -590,12 +600,13 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from belt Status data
-	 * 
+	 *
 	 * @param beltStatus
 	 *            a boolean value
 	 */
-    public void setBeltStatus(Boolean beltStatus) {
-		setParameters(KEY_BELT_STATUS, beltStatus);
+    public UnsubscribeVehicleData setBeltStatus( Boolean beltStatus) {
+        setParameters(KEY_BELT_STATUS, beltStatus);
+        return this;
     }
 
 	/**
@@ -611,12 +622,13 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from body Information data
-	 * 
+	 *
 	 * @param bodyInformation
 	 *            a boolean value
 	 */
-    public void setBodyInformation(Boolean bodyInformation) {
-		setParameters(KEY_BODY_INFORMATION, bodyInformation);
+    public UnsubscribeVehicleData setBodyInformation( Boolean bodyInformation) {
+        setParameters(KEY_BODY_INFORMATION, bodyInformation);
+        return this;
     }
 
 	/**
@@ -632,12 +644,13 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from device Status data
-	 * 
+	 *
 	 * @param deviceStatus
 	 *            a boolean value
 	 */
-    public void setDeviceStatus(Boolean deviceStatus) {
-		setParameters(KEY_DEVICE_STATUS, deviceStatus);
+    public UnsubscribeVehicleData setDeviceStatus( Boolean deviceStatus) {
+        setParameters(KEY_DEVICE_STATUS, deviceStatus);
+        return this;
     }
 
 	/**
@@ -653,12 +666,13 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from driver Braking data
-	 * 
+	 *
 	 * @param driverBraking
 	 *            a boolean value
 	 */
-    public void setDriverBraking(Boolean driverBraking) {
-		setParameters(KEY_DRIVER_BRAKING, driverBraking);
+    public UnsubscribeVehicleData setDriverBraking( Boolean driverBraking) {
+        setParameters(KEY_DRIVER_BRAKING, driverBraking);
+        return this;
     }
 
 	/**
@@ -674,12 +688,13 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from wiper Status data
-	 * 
+	 *
 	 * @param wiperStatus
 	 *            a boolean value
 	 */
-    public void setWiperStatus(Boolean wiperStatus) {
-		setParameters(KEY_WIPER_STATUS, wiperStatus);
+    public UnsubscribeVehicleData setWiperStatus( Boolean wiperStatus) {
+        setParameters(KEY_WIPER_STATUS, wiperStatus);
+        return this;
     }
 
 	/**
@@ -695,12 +710,13 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from Head Lamp Status data
-	 * 
+	 *
 	 * @param headLampStatus
 	 *            a boolean value
 	 */
-    public void setHeadLampStatus(Boolean headLampStatus) {
-		setParameters(KEY_HEAD_LAMP_STATUS, headLampStatus);
+    public UnsubscribeVehicleData setHeadLampStatus( Boolean headLampStatus) {
+        setParameters(KEY_HEAD_LAMP_STATUS, headLampStatus);
+        return this;
     }
 
 	/**
@@ -720,9 +736,10 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	 * @param engineTorque
 	 *            a boolean value
 	 */
-	public void setEngineTorque(Boolean engineTorque) {
-		setParameters(KEY_ENGINE_TORQUE, engineTorque);
-	}
+	public UnsubscribeVehicleData setEngineTorque( Boolean engineTorque) {
+        setParameters(KEY_ENGINE_TORQUE, engineTorque);
+        return this;
+    }
 
 	/**
 	 * Gets a boolean value. If true, means the Engine Torque data has been
@@ -741,9 +758,10 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	 * @param engineOilLife
 	 *            a boolean value
 	 */
-	public void setEngineOilLife(Boolean engineOilLife) {
-		setParameters(KEY_ENGINE_OIL_LIFE, engineOilLife);
-	}
+	public UnsubscribeVehicleData setEngineOilLife( Boolean engineOilLife) {
+        setParameters(KEY_ENGINE_OIL_LIFE, engineOilLife);
+        return this;
+    }
 
 	/**
 	 * Gets a boolean value. If true, means the Engine Oil Life data has been
@@ -759,12 +777,13 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from accPedalPosition data
-	 * 
+	 *
 	 * @param accPedalPosition
 	 *            a boolean value
 	 */
-    public void setAccPedalPosition(Boolean accPedalPosition) {
-		setParameters(KEY_ACC_PEDAL_POSITION, accPedalPosition);
+    public UnsubscribeVehicleData setAccPedalPosition( Boolean accPedalPosition) {
+        setParameters(KEY_ACC_PEDAL_POSITION, accPedalPosition);
+        return this;
     }
 
 	/**
@@ -778,40 +797,46 @@ public class UnsubscribeVehicleData extends RPCRequest {
         return getBoolean(KEY_ACC_PEDAL_POSITION);
     }
 
-    public void setSteeringWheelAngle(Boolean steeringWheelAngle) {
-		setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
+    public UnsubscribeVehicleData setSteeringWheelAngle( Boolean steeringWheelAngle) {
+        setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
+        return this;
     }
 
     public Boolean getSteeringWheelAngle() {
         return getBoolean(KEY_STEERING_WHEEL_ANGLE);
     }    
         
-    public void setECallInfo(Boolean eCallInfo) {
-		setParameters(KEY_E_CALL_INFO, eCallInfo);
+    public UnsubscribeVehicleData setECallInfo( Boolean eCallInfo) {
+        setParameters(KEY_E_CALL_INFO, eCallInfo);
+        return this;
     }
     public Boolean getECallInfo() {
         return getBoolean(KEY_E_CALL_INFO);
     }
-    public void setAirbagStatus(Boolean airbagStatus) {
-		setParameters(KEY_AIRBAG_STATUS, airbagStatus);
+    public UnsubscribeVehicleData setAirbagStatus( Boolean airbagStatus) {
+        setParameters(KEY_AIRBAG_STATUS, airbagStatus);
+        return this;
     }
     public Boolean getAirbagStatus() {
         return getBoolean(KEY_AIRBAG_STATUS);
     }
-    public void setEmergencyEvent(Boolean emergencyEvent) {
-		setParameters(KEY_EMERGENCY_EVENT, emergencyEvent);
+    public UnsubscribeVehicleData setEmergencyEvent( Boolean emergencyEvent) {
+        setParameters(KEY_EMERGENCY_EVENT, emergencyEvent);
+        return this;
     }
     public Boolean getEmergencyEvent() {
         return getBoolean(KEY_EMERGENCY_EVENT);
     }
-    public void setClusterModeStatus(Boolean clusterModeStatus) {
-		setParameters(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
+    public UnsubscribeVehicleData setClusterModeStatus( Boolean clusterModeStatus) {
+        setParameters(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
+        return this;
     }
     public Boolean getClusterModeStatus() {
         return getBoolean(KEY_CLUSTER_MODE_STATUS);
     }
-    public void setMyKey(Boolean myKey) {
-		setParameters(KEY_MY_KEY, myKey);
+    public UnsubscribeVehicleData setMyKey( Boolean myKey) {
+        setParameters(KEY_MY_KEY, myKey);
+        return this;
     }
     public Boolean getMyKey() {
         return getBoolean(KEY_MY_KEY);
@@ -823,9 +848,10 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	 * @param fuelRange
 	 *            a boolean value
 	 */
-	public void setFuelRange(Boolean fuelRange) {
-		setParameters(KEY_FUEL_RANGE, fuelRange);
-	}
+	public UnsubscribeVehicleData setFuelRange( Boolean fuelRange) {
+        setParameters(KEY_FUEL_RANGE, fuelRange);
+        return this;
+    }
 
 	/**
 	 * Gets a boolean value. If true, means the fuelRange data has been
@@ -842,7 +868,10 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	 * Sets a boolean value. If true, unsubscribes from turnSignal data
 	 * @param turnSignal a boolean value
 	 */
-	public void setTurnSignal(Boolean turnSignal) { setParameters(KEY_TURN_SIGNAL, turnSignal); }
+	public UnsubscribeVehicleData setTurnSignal( Boolean turnSignal) {
+        setParameters(KEY_TURN_SIGNAL, turnSignal);
+        return this;
+    }
 
 	/**
 	 * Gets a boolean value. If true, means the turnSignal data has been unsubscribed.
@@ -854,9 +883,10 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	 * Sets a boolean value. If true, unsubscribes from electronicParkBrakeStatus data
 	 * @param electronicParkBrakeStatus a boolean value
 	 */
-	public void setElectronicParkBrakeStatus(Boolean electronicParkBrakeStatus) {
-		setParameters(KEY_ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
-	}
+	public UnsubscribeVehicleData setElectronicParkBrakeStatus( Boolean electronicParkBrakeStatus) {
+        setParameters(KEY_ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
+        return this;
+    }
 
 	/**
 	 * Gets a boolean value. If true, means the electronicParkBrakeStatus data has been subscribed.
@@ -868,11 +898,12 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from cloudAppVehicleID data
-	 * @param cloudAppVehicleID a boolean value. 
+	 * @param cloudAppVehicleID a boolean value.
 	 */
-	public void setCloudAppVehicleID(boolean cloudAppVehicleID){
-		setParameters(KEY_CLOUD_APP_VEHICLE_ID, cloudAppVehicleID);
-	}
+	public UnsubscribeVehicleData setCloudAppVehicleID( boolean cloudAppVehicleID) {
+        setParameters(KEY_CLOUD_APP_VEHICLE_ID, cloudAppVehicleID);
+        return this;
+    }
 
 	/**
 	 * Gets a boolean value. If true, means the cloudAppVehicleID data has been unsubscribed.
@@ -887,9 +918,10 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	 * @param vehicleDataName a String value
 	 * @param vehicleDataState a boolean value
 	 */
-	public void setOEMCustomVehicleData(String vehicleDataName, Boolean vehicleDataState){
-		setParameters(vehicleDataName, vehicleDataState);
-	}
+	public UnsubscribeVehicleData setOEMCustomVehicleData( String vehicleDataName, Boolean vehicleDataState) {
+        setParameters(vehicleDataName, vehicleDataState);
+        return this;
+    }
 
 	/**
 	 * Gets a boolean value for OEM Custom VehicleData.
@@ -905,8 +937,9 @@ public class UnsubscribeVehicleData extends RPCRequest {
      * @param gearStatus See GearStatus
      * @since SmartDeviceLink 7.0.0
      */
-    public void setGearStatus(Boolean gearStatus) {
+    public UnsubscribeVehicleData setGearStatus( Boolean gearStatus) {
         setParameters(KEY_GEAR_STATUS, gearStatus);
+        return this;
     }
 
     /**
@@ -925,8 +958,9 @@ public class UnsubscribeVehicleData extends RPCRequest {
      * @param handsOffSteering To indicate whether driver hands are off the steering wheel
      * @since SmartDeviceLink 7.0.0
      */
-    public void setHandsOffSteering(Boolean handsOffSteering) {
+    public UnsubscribeVehicleData setHandsOffSteering( Boolean handsOffSteering) {
         setParameters(KEY_HANDS_OFF_STEERING, handsOffSteering);
+        return this;
     }
 
     /**
@@ -945,8 +979,9 @@ public class UnsubscribeVehicleData extends RPCRequest {
      * @param windowStatus See WindowStatus
      * @since SmartDeviceLink 7.0.0
      */
-    public void setWindowStatus(Boolean windowStatus) {
+    public UnsubscribeVehicleData setWindowStatus( Boolean windowStatus) {
         setParameters(KEY_WINDOW_STATUS, windowStatus);
+        return this;
     }
 
     /**
@@ -965,8 +1000,9 @@ public class UnsubscribeVehicleData extends RPCRequest {
      * @param stabilityControlsStatus See StabilityControlsStatus
      * @since SmartDeviceLink 7.0.0
      */
-    public void setStabilityControlsStatus(Boolean stabilityControlsStatus) {
+    public UnsubscribeVehicleData setStabilityControlsStatus( Boolean stabilityControlsStatus) {
         setParameters(KEY_STABILITY_CONTROLS_STATUS, stabilityControlsStatus);
+        return this;
     }
 
     /**

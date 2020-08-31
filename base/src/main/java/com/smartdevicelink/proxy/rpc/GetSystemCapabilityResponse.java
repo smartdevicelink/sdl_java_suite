@@ -87,7 +87,8 @@ public class GetSystemCapabilityResponse extends RPCResponse {
      * Set a SystemCapability object in the response
      * @param value SystemCapability object
      */
-    public void setSystemCapability(SystemCapability value){
+    public GetSystemCapabilityResponse setSystemCapability( SystemCapability value) {
         setParameters(KEY_SYSTEM_CAPABILITY, value);
+        return this;
     }
 }

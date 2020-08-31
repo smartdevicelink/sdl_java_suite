@@ -116,8 +116,9 @@ public class TouchEvent extends RPCStruct {
 		setTouchCoordinates(c);
 	}
     
-    public void setId(@NonNull Integer id) {
+    public TouchEvent setId(@NonNull Integer id) {
         setValue(KEY_ID, id);
+        return this;
     }
     
     public Integer getId() {
@@ -156,18 +157,20 @@ public class TouchEvent extends RPCStruct {
         return null;
     }
     
-    public void setTimestamps(@NonNull List<Long> ts){
+    public TouchEvent setTimestamps(@NonNull List<Long> ts) {
         setValue(KEY_TS, ts);
+        return this;
     }
     
     /**
-     * Use setTimestamps. 
+     * Use setTimestamps.
      * @deprecated 4.0.2
      * @param ts
      */
     @Deprecated
-    public void setTs(List<Long> ts) {
-       setTimestamps(ts);
+    public TouchEvent setTs( List<Long> ts) {
+        setTimestamps(ts);
+        return this;
     }
     
     /**
@@ -190,11 +193,13 @@ public class TouchEvent extends RPCStruct {
      * @return
      */
     @Deprecated
-    public void setC( List<TouchCoord> c ) {
-    	setTouchCoordinates(c);
+    public TouchEvent setC( List<TouchCoord> c) {
+        setTouchCoordinates(c);
+        return this;
     }
     
-    public void setTouchCoordinates(@NonNull List<TouchCoord> c ) {
+    public TouchEvent setTouchCoordinates(@NonNull List<TouchCoord> c) {
         setValue(KEY_C, c);
-    }          
+        return this;
+    }
 }
