@@ -319,6 +319,13 @@ import java.util.List;
  *          <td>N</td>
  *          <td>SmartDeviceLink 7.0.0</td>
  *      </tr>
+ *      <tr>
+ *          <td>stabilityControlsStatus</td>
+ *          <td>StabilityControlsStatus</td>
+ *          <td>See StabilityControlsStatus</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *  </tr>
  *  </table>
  *
  * @since SmartDeviceLink 1.0
@@ -371,6 +378,7 @@ public class OnVehicleData extends RPCNotification {
     @Deprecated
     public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
 
+    public static final String KEY_STABILITY_CONTROLS_STATUS = "stabilityControlsStatus";
 
     public OnVehicleData() {
         super(FunctionID.ON_VEHICLE_DATA.toString());
@@ -705,6 +713,26 @@ public class OnVehicleData extends RPCNotification {
     @SuppressWarnings("unchecked")
     public List<WindowStatus> getWindowStatus() {
         return (List<WindowStatus>) getObject(WindowStatus.class, KEY_WINDOW_STATUS);
+    }
+
+    /**
+     * Gets the stabilityControlsStatus.
+     *
+     * @return StabilityControlsStatus See StabilityControlsStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public StabilityControlsStatus getStabilityControlsStatus() {
+        return (StabilityControlsStatus) getObject(StabilityControlsStatus.class, KEY_STABILITY_CONTROLS_STATUS);
+    }
+
+    /**
+     * Sets the stabilityControlsStatus.
+     *
+     * @param stabilityControlsStatus See StabilityControlsStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setStabilityControlsStatus(StabilityControlsStatus stabilityControlsStatus) {
+        setParameters(KEY_STABILITY_CONTROLS_STATUS, stabilityControlsStatus);
     }
 
     /**

@@ -85,6 +85,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      */
     @Deprecated
     public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
+    public static final String KEY_STABILITY_CONTROLS_STATUS = "stabilityControlsStatus";
 
 	/**
 	 * Constructs a new SubscribeVehicleDataResponse object
@@ -605,5 +606,25 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      */
     public VehicleDataResult getWindowStatus() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_WINDOW_STATUS);
+    }
+
+    /**
+     * Gets the stabilityControlsStatus.
+     *
+     * @return VehicleDataResult See StabilityControlsStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public VehicleDataResult getStabilityControlsStatus() {
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_STABILITY_CONTROLS_STATUS);
+    }
+
+    /**
+     * Sets the stabilityControlsStatus.
+     *
+     * @param stabilityControlsStatus See StabilityControlsStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setStabilityControlsStatus(VehicleDataResult stabilityControlsStatus) {
+        setParameters(KEY_STABILITY_CONTROLS_STATUS, stabilityControlsStatus);
     }
 }

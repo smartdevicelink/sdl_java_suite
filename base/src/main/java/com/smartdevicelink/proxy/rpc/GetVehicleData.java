@@ -247,6 +247,13 @@ import java.util.Hashtable;
  *				<td>N</td>
  *				<td>Subscribable</td>
  * 			<td>SmartDeviceLink 5.1 </td>
+ *      <tr>
+ *          <td>stabilityControlsStatus</td>
+ *          <td>Boolean</td>
+ *          <td>See StabilityControlsStatus</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
  * 		</tr>
  *      <tr>
  *          <td>handsOffSteering</td>
@@ -328,6 +335,7 @@ public class GetVehicleData extends RPCRequest {
      */
     @Deprecated
     public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
+    public static final String KEY_STABILITY_CONTROLS_STATUS = "stabilityControlsStatus";
 
 	/**
 	 * Constructs a new GetVehicleData object
@@ -674,5 +682,25 @@ public class GetVehicleData extends RPCRequest {
      */
     public Boolean getGearStatus() {
         return getBoolean(KEY_GEAR_STATUS);
+    }
+
+    /**
+     * Sets the stabilityControlsStatus.
+     *
+     * @param stabilityControlsStatus See StabilityControlsStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setStabilityControlsStatus(Boolean stabilityControlsStatus) {
+        setParameters(KEY_STABILITY_CONTROLS_STATUS, stabilityControlsStatus);
+    }
+
+    /**
+     * Gets the stabilityControlsStatus.
+     *
+     * @return Boolean See StabilityControlsStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public Boolean getStabilityControlsStatus() {
+        return getBoolean(KEY_STABILITY_CONTROLS_STATUS);
     }
 }

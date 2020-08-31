@@ -95,6 +95,7 @@ public class GetVehicleDataResponse extends RPCResponse {
     public static final String KEY_WINDOW_STATUS = "windowStatus";
     public static final String KEY_GEAR_STATUS = "gearStatus";
     public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
+    public static final String KEY_STABILITY_CONTROLS_STATUS = "stabilityControlsStatus";
 
 	/** 
 	 * Constructs a new GetVehicleDataResponse object
@@ -499,5 +500,25 @@ public class GetVehicleDataResponse extends RPCResponse {
      */
     public GearStatus getGearStatus() {
         return (GearStatus) getObject(GearStatus.class, KEY_GEAR_STATUS);
+    }
+
+    /**
+     * Gets the stabilityControlsStatus.
+     *
+     * @return StabilityControlsStatus See StabilityControlsStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public StabilityControlsStatus getStabilityControlsStatus() {
+        return (StabilityControlsStatus) getObject(StabilityControlsStatus.class, KEY_STABILITY_CONTROLS_STATUS);
+    }
+
+    /**
+     * Sets the stabilityControlsStatus.
+     *
+     * @param stabilityControlsStatus See StabilityControlsStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setStabilityControlsStatus(StabilityControlsStatus stabilityControlsStatus) {
+        setParameters(KEY_STABILITY_CONTROLS_STATUS, stabilityControlsStatus);
     }
 }

@@ -3907,4 +3907,24 @@ public class Validator{
 
         return approxPosition1.equals(approxPosition2) && deviation1.equals(deviation2);
     }
+
+    public static boolean validateStabilityControlStatus(StabilityControlsStatus status1, StabilityControlsStatus status2) {
+        if (status1 == null) {
+            return (status2 == null);
+        }
+        if (status2 == null) {
+            return (status2 == null);
+        }
+        return status1.getEscSystem().equals(status2.getEscSystem()) && status1.getTrailerSwayControl().equals(status2.getTrailerSwayControl());
+    }
+
+    public static boolean validateStabilityControlStatus(VehicleDataResult status1, VehicleDataResult status2) {
+        if (status1 == null) {
+            return (status2 == null);
+        }
+        if (status2 == null) {
+            return (status2 == null);
+        }
+        return status1.getDataType().equals(status2.getDataType()) && status1.getResultCode().equals(status2.getResultCode());
+    }
 }

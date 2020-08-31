@@ -16,6 +16,7 @@ import com.smartdevicelink.proxy.rpc.HeadLampStatus;
 import com.smartdevicelink.proxy.rpc.MyKey;
 import com.smartdevicelink.proxy.rpc.OnVehicleData;
 import com.smartdevicelink.proxy.rpc.SingleTireStatus;
+import com.smartdevicelink.proxy.rpc.StabilityControlsStatus;
 import com.smartdevicelink.proxy.rpc.TireStatus;
 import com.smartdevicelink.proxy.rpc.WindowState;
 import com.smartdevicelink.proxy.rpc.WindowStatus;
@@ -85,6 +86,7 @@ public class VehicleDataHelper{
 	public static final List<FuelRange> FUEL_RANGE_LIST = new ArrayList<FuelRange>(1);
 	public static final TurnSignal TURN_SIGNAL = TurnSignal.OFF;
 	public static final ElectronicParkBrakeStatus ELECTRONIC_PARK_BRAKE_STATUS = ElectronicParkBrakeStatus.CLOSED;
+	public static final StabilityControlsStatus STABILITY_CONTROLS_STATUS = new StabilityControlsStatus();
 	public static final String OEM_CUSTOM_VEHICLE_DATA_STATE = "oemCustomVehicleDataState";
 	public static final Boolean HANDS_OFF_STEERING = Boolean.TRUE;
 
@@ -212,6 +214,10 @@ public class VehicleDataHelper{
 	// WindowStatus
 	public static final Grid LOCATION_GRID = TestValues.GENERAL_LOCATION_GRID;
 	public static final WindowState WINDOW_STATE = TestValues.GENERAL_WINDOW_STATE;
+
+	// stability control status
+	public static final VehicleDataStatus ESC_SYSTEM = VehicleDataStatus.ON;
+	public static final VehicleDataStatus S_WAY_TRAILER = VehicleDataStatus.OFF;
 
 	public static final JSONArray JSON_FUEL_RANGE = new JSONArray();
 
@@ -358,6 +364,10 @@ public class VehicleDataHelper{
 			e.printStackTrace();
 		}
 
+		// STABILITY_CONTROLS_STATUS
+		STABILITY_CONTROLS_STATUS.setEscSystem(VehicleDataStatus.ON);
+		STABILITY_CONTROLS_STATUS.setTrailerSwayControl(VehicleDataStatus.OFF);
+
 		// GEAR_STATUS
 		GEAR_STATUS.setTransmissionType(TRANSMISSION_TYPE);
 		GEAR_STATUS.setUserSelectedGear(USER_SELECTED_GEAR);
@@ -395,6 +405,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA.setElectronicParkBrakeStatus(ELECTRONIC_PARK_BRAKE_STATUS);
 		VEHICLE_DATA.setGearStatus(GEAR_STATUS);
 		VEHICLE_DATA.setWindowStatus(WINDOW_STATUS_LIST);
+		VEHICLE_DATA.setStabilityControlsStatus(STABILITY_CONTROLS_STATUS);
 		VEHICLE_DATA.setOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, OEM_CUSTOM_VEHICLE_DATA_STATE);
 		VEHICLE_DATA.setHandsOffSteering(HANDS_OFF_STEERING);
 		//set up the GetVehicleDataResponse object
@@ -429,6 +440,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA_RESPONSE.setElectronicParkBrakeStatus(ELECTRONIC_PARK_BRAKE_STATUS);
 		VEHICLE_DATA_RESPONSE.setGearStatus(GEAR_STATUS);
 		VEHICLE_DATA_RESPONSE.setWindowStatus(WINDOW_STATUS_LIST);
+		VEHICLE_DATA_RESPONSE.setStabilityControlsStatus(STABILITY_CONTROLS_STATUS);
 		VEHICLE_DATA_RESPONSE.setOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, OEM_CUSTOM_VEHICLE_DATA_STATE);
 		VEHICLE_DATA_RESPONSE.setHandsOffSteering(HANDS_OFF_STEERING);
 	}
