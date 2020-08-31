@@ -40,11 +40,13 @@ public class RPCConstructorsTests {
         private String name;
         private String type;
         private boolean isArray;
+        private boolean isMandatory;
 
-        public Parameter(String name, String type, boolean isArray) {
+        public Parameter(String name, String type, boolean isArray, boolean isMandatory) {
             this.name = name;
             this.type = type;
             this.isArray = isArray;
+            this.isMandatory = isMandatory;
         }
     }
 
@@ -130,7 +132,7 @@ public class RPCConstructorsTests {
                                 }
                                 // -------------------------------------------------------------------------------------------------------------
 
-                                Parameter param = new Parameter(paramName, paramType, paramIsArray);
+                                Parameter param = new Parameter(paramName, paramType, paramIsArray, mandatory);
                                 rpcParamsMap.get(rpcName).add(param);
                             }
                         }
