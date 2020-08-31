@@ -36,6 +36,7 @@ import androidx.annotation.NonNull;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
 
+import java.net.URI;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -45,6 +46,7 @@ import java.security.NoSuchAlgorithmException;
 public class SdlFile{
     private String fileName;
     private String filePath;
+    private URI uri;
     private byte[] fileData;
     private FileType fileType;
     private boolean persistentFile;
@@ -69,6 +71,20 @@ public class SdlFile{
         setName(fileName);
         setType(fileType);
         setFilePath(filePath);
+        setPersistent(persistentFile);
+    }
+
+    /**
+     * Creates a new instance of SdlFile
+     * @param fileName a String value representing the name that will be used to store the file in the head unit. You can pass null if you want the library to auto generate the name
+     * @param fileType a FileType enum value representing the type of the file
+     * @param uri a URI value representing a file's location. Currently, it only supports local files
+     * @param persistentFile a boolean value that indicates if the file is meant to persist between sessions / ignition cycles
+     */
+    public SdlFile(String fileName, @NonNull FileType fileType, URI uri, boolean persistentFile){
+        setName(fileName);
+        setType(fileType);
+        setURI(uri);
         setPersistent(persistentFile);
     }
 
@@ -109,6 +125,8 @@ public class SdlFile{
             this.shouldAutoGenerateName = true;
             if (this.getFileData() != null) {
                 this.fileName = generateFileNameFromData(this.getFileData());
+            } else if (this.getURI() != null) {
+                this.fileName = generateFileNameFromUri(this.getURI());
             } else if (this.getFilePath() != null) {
                 this.fileName = generateFileNameFromFilePath(this.getFilePath());
             }
@@ -140,6 +158,25 @@ public class SdlFile{
      */
     public String getFilePath(){
         return this.filePath;
+    }
+
+    /**
+     * Sets the uri of the file
+     * @param uri a URI value representing a file's location. Currently, it only supports local files
+     */
+    public void setURI(URI uri){
+        this.uri = uri;
+        if (shouldAutoGenerateName && uri != null) {
+            this.fileName = generateFileNameFromUri(uri);
+        }
+    }
+
+    /**
+     * Gets the uri of the file
+     * @return a URI value representing a file's location. Currently, it only supports local files
+     */
+    public URI getURI(){
+        return uri;
     }
 
     /**
@@ -262,6 +299,15 @@ public class SdlFile{
     }
 
     /**
+     * Generates a file name from uri by hashing the uri string and returning the last 16 chars
+     * @param uri a URI value representing a file's location
+     * @return a String value representing the name that will be used to store the file in the head unit
+     */
+    private String generateFileNameFromUri(@NonNull URI uri) {
+        return generateFileNameFromData(uri.toString().getBytes());
+    }
+
+    /**
      * Used to compile hashcode for SdlFile for use to compare in equals method
      * @return Custom hashcode of SdlFile variables
      */
@@ -269,11 +315,12 @@ public class SdlFile{
     public int hashCode() {
         int result = 1;
         result += ((getName() == null) ? 0 : Integer.rotateLeft(getName().hashCode(), 1));
-        result += ((getFilePath() == null) ? 0 : Integer.rotateLeft(getFilePath().hashCode(), 2));
-        result += ((getFileData() == null) ? 0 : Integer.rotateLeft(getFileData().hashCode(), 3));
-        result += ((getType() == null) ? 0 : Integer.rotateLeft(getType().hashCode(), 4));
-        result += Integer.rotateLeft(Boolean.valueOf(isStaticIcon()).hashCode(), 5);
-        result += Integer.rotateLeft(Boolean.valueOf(isPersistent()).hashCode(), 6);
+        result += ((getURI() == null) ? 0 : Integer.rotateLeft(getURI().hashCode(), 2));
+        result += ((getFilePath() == null) ? 0 : Integer.rotateLeft(getFilePath().hashCode(), 3));
+        result += ((getFileData() == null) ? 0 : Integer.rotateLeft(getFileData().hashCode(), 4));
+        result += ((getType() == null) ? 0 : Integer.rotateLeft(getType().hashCode(), 5));
+        result += Integer.rotateLeft(Boolean.valueOf(isStaticIcon()).hashCode(), 6);
+        result += Integer.rotateLeft(Boolean.valueOf(isPersistent()).hashCode(), 7);
         return result;
     }
 
