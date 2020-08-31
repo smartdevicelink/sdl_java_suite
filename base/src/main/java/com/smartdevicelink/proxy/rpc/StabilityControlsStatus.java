@@ -97,9 +97,10 @@ public class StabilityControlsStatus extends RPCStruct {
         return (VehicleDataStatus) getObject(VehicleDataStatus.class, KEY_ESC_SYSTEM);
     }
 
-    /***
-     * sets EscSystem
-     * @param status VehicleDataStatus
+    /**
+     * Sets the escSystem.
+     *
+     * @param escSystem true if vehicle stability control is ON, else false
      */
     public void setEscSystem(VehicleDataStatus escSystem) {
         setValue(KEY_ESC_SYSTEM, escSystem);
