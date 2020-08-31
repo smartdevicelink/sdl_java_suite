@@ -37,6 +37,7 @@ import com.smartdevicelink.proxy.rpc.enums.VehicleDataStatus;
 import java.util.Hashtable;
 
 /**
+ *
  * <p><b>Parameter List</b></p>
  *
  * <table border="1" rules="all">
@@ -45,6 +46,7 @@ import java.util.Hashtable;
  *      <th>Type</th>
  *      <th>Description</th>
  *      <th>Required</th>
+ *      <th>Notes</th>
  *      <th>Version Available</th>
  *  </tr>
  *  <tr>
@@ -53,6 +55,7 @@ import java.util.Hashtable;
  *      <td>true if vehicle stability control is ON, else false</td>
  *      <td>N</td>
  *      <td></td>
+ *      <td></td>
  *  </tr>
  *  <tr>
  *      <td>trailerSwayControl</td>
@@ -60,10 +63,10 @@ import java.util.Hashtable;
  *      <td>true if vehicle trailer sway control is ON, else false</td>
  *      <td>N</td>
  *      <td></td>
+ *      <td></td>
  *  </tr>
  * </table>
- *
- * @since SmartDeviceLink 6.2.0
+ * @since SmartDeviceLink 7.0.0
  */
 public class StabilityControlsStatus extends RPCStruct {
     public static final String KEY_ESC_SYSTEM = "escSystem";
