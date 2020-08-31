@@ -89,8 +89,10 @@ public class StabilityControlsStatus extends RPCStruct {
         super(hash);
     }
 
-    /***
-     * @return VehicleDataStatus for escSystem
+    /**
+     * Gets the escSystem.
+     *
+     * @return VehicleDataStatus true if vehicle stability control is ON, else false
      */
     public VehicleDataStatus getEscSystem() {
         return (VehicleDataStatus) getObject(VehicleDataStatus.class, KEY_ESC_SYSTEM);
