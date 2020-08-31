@@ -110,8 +110,8 @@ public class StabilityControlsStatus extends RPCStruct {
      *
      * @param trailerSwayControl true if vehicle trailer sway control is ON, else false
      */
-    public void setTrailerSwayControl(VehicleDataStatus status) {
-        setValue(KEY_TRAILER_SWAY_CONTROL, status);
+    public void setTrailerSwayControl(VehicleDataStatus trailerSwayControl) {
+        setValue(KEY_TRAILER_SWAY_CONTROL, trailerSwayControl);
     }
 
     /**
@@ -119,7 +119,7 @@ public class StabilityControlsStatus extends RPCStruct {
      *
      * @return VehicleDataStatus true if vehicle trailer sway control is ON, else false
      */
-    public VehicleDataStatus getTrailerSWayControl() {
+    public VehicleDataStatus getTrailerSwayControl() {
         return (VehicleDataStatus) getObject(VehicleDataStatus.class, KEY_TRAILER_SWAY_CONTROL);
     }
 }

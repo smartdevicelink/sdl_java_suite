@@ -29,7 +29,7 @@ public class StabilityControlsStatusTests extends TestCase {
     public void testRpcValues () {
         // Test Values
         VehicleDataStatus esc = msg.getEscSystem();
-        VehicleDataStatus sTrailer = msg.getTrailerSWayControl();
+        VehicleDataStatus sTrailer = msg.getTrailerSwayControl();
 
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_ESC_SYSTEM, esc);

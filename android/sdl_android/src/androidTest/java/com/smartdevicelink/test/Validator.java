@@ -3915,7 +3915,7 @@ public class Validator{
         if (status2 == null) {
             return (status2 == null);
         }
-        return status1.getEscSystem().equals(status2.getEscSystem()) && status1.getTrailerSWayControl().equals(status2.getTrailerSWayControl());
+        return status1.getEscSystem().equals(status2.getEscSystem()) && status1.getTrailerSwayControl().equals(status2.getTrailerSwayControl());
     }
 
     public static boolean validateStabilityControlStatus(VehicleDataResult status1, VehicleDataResult status2) {
