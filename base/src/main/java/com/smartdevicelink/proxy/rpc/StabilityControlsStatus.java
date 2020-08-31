@@ -76,8 +76,7 @@ public class StabilityControlsStatus extends RPCStruct {
     /**
      * Constructs a new StabilityControlsStatus object
      */
-    public StabilityControlsStatus() {
-    }
+    public StabilityControlsStatus() { }
 
     /**
      * <p>Constructs a new StabilityControlsStatus object indicated by the Hashtable parameter
