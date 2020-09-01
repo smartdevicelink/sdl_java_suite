@@ -122,11 +122,12 @@ public class RPCConstructorsTests {
             myParser.setInput(stream, null);
             int event = myParser.getEventType();
             String rpcName = null;
-            String setterMethodName;
-            String getterMethodName1, getterMethodName2;
-            Class<?> javaParamType = null;
-            boolean skipParam = false;
             boolean ignoreRPC = false;
+            String setterMethodName;
+            String getterMethodName1;
+            String getterMethodName2;
+            Class<?> javaParamType;
+            boolean skipParam;
             while (event != XmlPullParser.END_DOCUMENT)  {
                 String name = myParser.getName();
                 switch (event){
@@ -159,6 +160,11 @@ public class RPCConstructorsTests {
                         }
                         // Store the params for the current RPC in the map
                         if(name.equals("param") && myParser.getAttributeValue(null, "until") == null && !ignoreRPC){
+                            setterMethodName = null;
+                            getterMethodName1 = null;
+                            getterMethodName2 = null;
+                            javaParamType = null;
+                            skipParam = false;
                             boolean isMandatory = Boolean.valueOf(myParser.getAttributeValue(null,"mandatory"));
                             if (isMandatory || !includeMandatoryOnly) {
                                 String paramName = myParser.getAttributeValue(null, "name");
@@ -327,7 +333,9 @@ public class RPCConstructorsTests {
 
                                 javaParamType = findJavaTypeForParam(paramType, isArray);
                                 getterMethodName1 = "get" + setterMethodName.substring(3);
-                                getterMethodName2 = "is" + setterMethodName.substring(3);
+                                if (paramType.equalsIgnoreCase("boolean")) {
+                                    getterMethodName2 = "is" + setterMethodName.substring(3);
+                                }
 
                                 Parameter param = new Parameter()
                                         .setRPCName(rpcName)
@@ -424,6 +432,9 @@ public class RPCConstructorsTests {
     // This method returns the correct java reflection method in a specific class
     private Method getMethod(Class aClass, String methodName, Class<?> paramType, String rpcName) throws NoSuchMethodException {
         Method method;
+        if (methodName == null) {
+            throw new NoSuchMethodException();
+        }
         if (paramType == null) {
             if (rpcName.equals("SystemCapability") && !methodName.contains("SystemCapabilityType")) {
                 method = aClass.getMethod(methodName, SystemCapabilityType.class);
@@ -446,10 +457,10 @@ public class RPCConstructorsTests {
         Class<?> javaType = null;
 
         // List of types that exist in java.lang.*
-        List<String> javaLangBuiltInTypes = Arrays.asList("String", "Integer", "Float", "Double", "Boolean");
+        List<String> javaLangBuiltInTypes = Arrays.asList("String", "Integer", "Long", "Float", "Double", "Boolean");
 
         // List of primitive types in java
-        List<String> javaLangPrimitiveTypes = Arrays.asList("int", "float", "double", "boolean");
+        List<String> javaLangPrimitiveTypes = Arrays.asList("int", "long", "float", "double", "boolean");
 
         // Find the full Java type for the current param
         try {
@@ -613,7 +624,7 @@ public class RPCConstructorsTests {
                         errors.add(errMsg);
                     }
                 } catch (NoSuchMethodException e) {
-                    String errMsg = rpcName + "." + parameter.setterName + "(" + parameter.javaType + ")" + " cannot be found. Make sure that the method exists. \n";
+                    String errMsg = rpcName + "." + parameter.setterName + "(" + parameter.type + ")" + " cannot be found. Make sure that the method exists. \n";
                     errors.add(errMsg);
                 }
 
@@ -633,7 +644,7 @@ public class RPCConstructorsTests {
                         getterMethod = getMethod(aClass, parameter.getterName2, null, rpcName);
                     } catch (NoSuchMethodException ex) {
                         ex.printStackTrace();
-                        String errMsg = rpcName + "." + parameter.getterName1 + "()" + "/" + parameter.getterName2 + "()" + " cannot be found. Make sure that the method exists. \n";
+                        String errMsg = String.format(rpcName + "." + parameter.getterName1 + "()" + "%s" + " cannot be found. Make sure that the method exists. \n", parameter.type.equalsIgnoreCase("boolean")? "/" + parameter.getterName2 + "()" : "");
                         errors.add(errMsg);
                     }
                 }
