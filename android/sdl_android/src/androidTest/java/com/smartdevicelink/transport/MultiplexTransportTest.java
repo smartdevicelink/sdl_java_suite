@@ -6,7 +6,6 @@ import android.os.Looper;
 import android.os.Message;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.smartdevicelink.protocol.SdlPacket;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -15,13 +14,11 @@ import org.junit.runner.RunWith;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
 public class MultiplexTransportTest {
 
 	RouterServiceValidator rsvp;
-	ITransportListener transportListener;
 
 	
 	@Before
@@ -29,26 +26,7 @@ public class MultiplexTransportTest {
 		rsvp = new RouterServiceValidator(getInstrumentation().getTargetContext());
 		rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_NONE);
 		rsvp.validate();
-		
-		transportListener = new ITransportListener(){
 
-			@Override
-			public void onTransportPacketReceived(SdlPacket packet) {
-			}
-
-			@Override
-			public void onTransportConnected() {
-			}
-
-			@Override
-			public void onTransportDisconnected(String info) {
-			}
-
-			@Override
-			public void onTransportError(String info, Exception e) {
-			}
-			
-		};
 		
 	}
 	// test for setting error state.
