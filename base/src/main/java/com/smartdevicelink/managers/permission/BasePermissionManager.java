@@ -33,6 +33,7 @@ package com.smartdevicelink.managers.permission;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
@@ -146,6 +147,7 @@ abstract class BasePermissionManager extends BaseSubManager{
     }
 
     @Override
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
     public void start(CompletionListener listener) {
         checkState();
         super.start(listener);
@@ -289,6 +291,7 @@ abstract class BasePermissionManager extends BaseSubManager{
      * Clean up everything after the manager is no longer needed
      */
     @Override
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
     public void dispose(){
         super.dispose();
 

@@ -40,6 +40,7 @@ import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.managers.CompletionListener;
@@ -175,6 +176,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
      * Creates a new object of AudioStreamManager
      * @param internalInterface The internal interface to the connected device.
      */
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
     public AudioStreamManager(@NonNull ISdl internalInterface, @NonNull Context context) {
         super(internalInterface);
         this.queue = new LinkedList<>();
@@ -227,6 +229,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
     }
 
     @Override
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
     public void dispose() {
         stopAudioStream(new CompletionListener() {
             @Override

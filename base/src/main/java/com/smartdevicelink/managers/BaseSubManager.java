@@ -32,6 +32,7 @@
 package com.smartdevicelink.managers;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.transport.utl.TransportRecord;
@@ -47,6 +48,7 @@ import java.util.List;
  *
  * 1. <br>
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public abstract class BaseSubManager {
 
 	// states - if this gets more complicated we can move elsewhere

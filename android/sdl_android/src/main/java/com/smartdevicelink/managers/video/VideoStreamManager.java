@@ -40,6 +40,8 @@ import android.view.Display;
 import android.view.InputDevice;
 import android.view.MotionEvent;
 
+import androidx.annotation.RestrictTo;
+
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.managers.BaseSubManager;
@@ -177,6 +179,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	};
 
 	// MANAGER APIs
+	@RestrictTo(RestrictTo.Scope.LIBRARY)
 	public VideoStreamManager(ISdl internalInterface){
 		super(internalInterface);
 
@@ -367,6 +370,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 * Stops streaming, ends video streaming service and removes service listeners.
 	 */
 	@Override
+	@RestrictTo(RestrictTo.Scope.LIBRARY)
 	public void dispose(){
 		stopStreaming();
 
