@@ -35,7 +35,7 @@ android {
 
     sourceSets {
         main.java.srcDirs += '../../base/src/main/java'
-        androidTest.assets.json.srcDirs += '../../generator/rpc_spec/'
+        androidTest.assets.srcDirs += '../../generator/rpc_spec/'
     }
 }
 
