@@ -30,7 +30,7 @@ import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.fail;
 
 @RunWith(AndroidJUnit4.class)
-public class RPCConstructorsTests {
+public class RPCGenericTests {
 
     private final String XML_FILE_NAME = "xml/MOBILE_API.xml";
     private final String RPC_PACKAGE_PREFIX = "com.smartdevicelink.proxy.rpc.";
