@@ -31,6 +31,8 @@
  */
 package com.smartdevicelink.streaming;
 
+import androidx.annotation.RestrictTo;
+
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -45,6 +47,7 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class StreamPacketizer extends AbstractPacketizer implements IVideoStreamListener, IAudioStreamListener, Runnable{
 
 	public final static String TAG = "StreamPacketizer";

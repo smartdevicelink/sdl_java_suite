@@ -32,6 +32,8 @@
 
 package com.smartdevicelink.streaming.video;
 
+import androidx.annotation.RestrictTo;
+
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
@@ -42,6 +44,7 @@ import com.smartdevicelink.util.DebugTool;
 import java.util.List;
 
 @SuppressWarnings("FieldCanBeLocal")
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class VideoStreamingParameters {
     private static final String TAG = "VideoStreamingParameters";
 	private final VideoStreamingProtocol DEFAULT_PROTOCOL = VideoStreamingProtocol.RAW;
