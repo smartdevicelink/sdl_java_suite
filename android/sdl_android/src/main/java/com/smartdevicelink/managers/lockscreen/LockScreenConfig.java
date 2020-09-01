@@ -101,17 +101,6 @@ public class LockScreenConfig {
 	}
 
 	/**
-	 * Gets whether the lock screen is being managed for you
-	 * @return boolean
-	 *
-	 * @deprecated to disable the lockscreen, use setDisplayMode with DISPLAY_MODE_NEVER instead
-	 */
-	@Deprecated
-	public boolean isEnabled() {
-		return enable;
-	}
-
-	/**
 	 * Set the resource int of the background color. Colors should define colors in your Colors.xml file
 	 * @param resourceColor resource int of the color
 	 */

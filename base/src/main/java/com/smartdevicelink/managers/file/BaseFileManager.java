@@ -86,14 +86,6 @@ abstract class BaseFileManager extends BaseSubManager {
 	private FileManagerConfig fileManagerConfig;
 	private HashMap<String, Integer> failedFileUploadsIndex;
 
-	@Deprecated
-	BaseFileManager(ISdl internalInterface) {
-
-		// setup
-		super(internalInterface);
-		uploadedEphemeralFileNames = new ArrayList<>();
-	}
-
 	/**
 	 * Constructor for BaseFileManager
 	 * @param internalInterface ISDL

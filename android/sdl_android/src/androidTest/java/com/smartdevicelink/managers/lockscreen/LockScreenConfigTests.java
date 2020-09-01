@@ -30,7 +30,6 @@ public class LockScreenConfigTests {
 		lockScreenConfig.setAppIcon(TestValues.GENERAL_INT);
 		lockScreenConfig.setBackgroundColor(TestValues.GENERAL_INT);
 		lockScreenConfig.showDeviceLogo(true);
-		lockScreenConfig.setEnabled(true);
 		lockScreenConfig.setDisplayMode(LockScreenConfig.DISPLAY_MODE_OPTIONAL_OR_REQUIRED);
 	}
 
@@ -41,7 +40,6 @@ public class LockScreenConfigTests {
 		assertEquals(TestValues.GENERAL_INT, lockScreenConfig.getCustomView());
 		assertEquals(TestValues.GENERAL_INT, lockScreenConfig.getAppIcon());
 		assertEquals(TestValues.GENERAL_INT, lockScreenConfig.getBackgroundColor());
-		assertTrue(lockScreenConfig.isEnabled());
 		assertTrue(lockScreenConfig.isDeviceLogoEnabled());
 		assertEquals(LockScreenConfig.DISPLAY_MODE_OPTIONAL_OR_REQUIRED, lockScreenConfig.getDisplayMode());
 	}
