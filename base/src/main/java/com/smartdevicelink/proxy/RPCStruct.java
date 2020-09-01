@@ -274,8 +274,18 @@ public class RPCStruct {
 		} else if (obj instanceof List<?>) {
 			List<?> list = (List<?>) obj;
 			if (list != null && list.size() > 0) {
-				Object item = list.get(0);
-				if (tClass.isInstance(item)) {
+				Object item = null;
+				//Iterate through list to find first non-null object
+				for(Object object: list){
+					if(object != null) {
+						item = object;
+						break;
+					}
+				}
+
+				if (item == null) {
+					return list;
+				} else if (tClass.isInstance(item)) {
 					return list;
 				} else if (item instanceof Hashtable) {
 					List<Object> newList = new ArrayList<Object>();
@@ -306,6 +316,10 @@ public class RPCStruct {
 					}
 					return newList;
 				}
+			} else {
+				//If the list is either null or empty it should be returned. It will keep the same
+				//behavior as it does today with null lists, but empty ones will now also be returned.
+				return list;
 			}
 		}
 		return null;
