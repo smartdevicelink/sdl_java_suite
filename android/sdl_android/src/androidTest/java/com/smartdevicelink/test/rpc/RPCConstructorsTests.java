@@ -432,22 +432,22 @@ public class RPCConstructorsTests {
     }
 
     // This method returns the correct java reflection method in a specific class
-    private Method getMethod(Class aClass, String methodName, Class<?> paramType, String rpcName) throws NoSuchMethodException {
-        Method method;
+    private Method getMethod(Class aClass, Parameter parameter, String methodName, boolean isGetter) throws NoSuchMethodException {
+        Method method = null;
         if (methodName == null) {
             throw new NoSuchMethodException();
         }
-        if (paramType == null) {
-            if (rpcName.equals("SystemCapability") && !methodName.contains("SystemCapabilityType")) {
+        if (isGetter) {
+            if (parameter.rpcName.equals("SystemCapability") && !methodName.contains("SystemCapabilityType")) {
                 method = aClass.getMethod(methodName, SystemCapabilityType.class);
             } else {
                 method = aClass.getMethod(methodName);
             }
         } else {
-            if (rpcName.equals("SystemCapability") && !methodName.contains("SystemCapabilityType")) {
-                method = aClass.getMethod(methodName, paramType, Object.class);
+            if (parameter.rpcName.equals("SystemCapability") && !methodName.contains("SystemCapabilityType")) {
+                method = aClass.getMethod(methodName, SystemCapabilityType.class, Object.class);
             } else {
-                method = aClass.getMethod(methodName, paramType);
+                method = aClass.getMethod(methodName, parameter.javaType);
             }
         }
         return method;
@@ -573,7 +573,7 @@ public class RPCConstructorsTests {
             if (instance != null) {
                 for (int i = 0; i < parameters.size(); i++) {
                     try {
-                        Method getterMethod = getMethod(aClass, parameters.get(i).getterName1, null, rpcName);
+                        Method getterMethod = getMethod(aClass, parameters.get(i), parameters.get(i).getterName1, true);
                         Object val = getterMethod.invoke(instance);
                         if (val == null || !val.equals(mandatoryParamsValues.get(i))) {
                             rpcsWithInvalidConstructor.add(rpcName);
@@ -621,7 +621,7 @@ public class RPCConstructorsTests {
 
                 // Confirm that the setter is correct
                 try {
-                    Method setterMethod = getMethod(aClass, parameter.setterName, parameter.javaType, rpcName);
+                    Method setterMethod = getMethod(aClass, parameter, parameter.setterName, false);
                     List<String> expectedReturnTypes = Arrays.asList(aClass.getName(), aClass.getSuperclass().getName());
                     String actualReturnType = setterMethod.getReturnType().getName();
                     if (!expectedReturnTypes.contains(actualReturnType)) {
@@ -643,10 +643,10 @@ public class RPCConstructorsTests {
                         parameter.getterName1 = "getSeatLocations";
                     }
                     // -------------------------------------------------------------------------------------------------------------
-                    getterMethod = getMethod(aClass, parameter.getterName1, null, rpcName);
+                    getterMethod = getMethod(aClass, parameter, parameter.getterName1, true);
                 } catch (NoSuchMethodException e) {
                     try {
-                        getterMethod = getMethod(aClass, parameter.getterName2, null, rpcName);
+                        getterMethod = getMethod(aClass, parameter, parameter.getterName2, true);
                     } catch (NoSuchMethodException ex) {
                         ex.printStackTrace();
                         String errMsg = String.format(rpcName + "." + parameter.getterName1 + "()" + "%s" + " cannot be found. Make sure that the method exists. \n", parameter.type.equalsIgnoreCase("boolean")? "/" + parameter.getterName2 + "()" : "");
