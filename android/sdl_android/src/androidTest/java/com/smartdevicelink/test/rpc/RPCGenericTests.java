@@ -32,7 +32,7 @@ import static junit.framework.TestCase.fail;
 @RunWith(AndroidJUnit4.class)
 public class RPCGenericTests {
 
-    private final String XML_FILE_NAME = "xml/MOBILE_API.xml";
+    private final String XML_FILE_NAME = "MOBILE_API.xml";
     private final String RPC_PACKAGE_PREFIX = "com.smartdevicelink.proxy.rpc.";
     private final String TEST_VALUES_CLASS = "com.smartdevicelink.test.TestValues";
     private Map<String, List<Parameter>> rpcMandatoryParamsMapFromXml;
