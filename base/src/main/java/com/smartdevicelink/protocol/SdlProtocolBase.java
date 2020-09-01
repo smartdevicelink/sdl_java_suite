@@ -32,6 +32,7 @@
 package com.smartdevicelink.protocol;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
@@ -64,6 +65,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class SdlProtocolBase {
     private static final String TAG ="SdlProtocol";
     private final static String FailurePropagating_Msg = "Failure propagating ";
