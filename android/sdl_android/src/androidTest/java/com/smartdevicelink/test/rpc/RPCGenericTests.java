@@ -362,7 +362,7 @@ public class RPCGenericTests {
             }
             stream.close();
         } catch (IOException | XmlPullParserException e) {
-            fail(e.getMessage());
+            fail("Cannot parse mobile APIs XML file: " + e.getMessage());
         }
         return rpcParamsMap;
     }
