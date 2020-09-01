@@ -16,6 +16,7 @@ import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.ShowResponse;
 import com.smartdevicelink.proxy.rpc.TextField;
@@ -261,6 +262,7 @@ public class TextAndGraphicUpdateOperationTest {
     public void testUploads() {
         doAnswer(onShowSuccess).when(internalInterface).sendRPC(any(Show.class));
         doAnswer(onArtworkUploadSuccess).when(fileManager).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(4, 0));
 
         // Test Images need to be uploaded, sending text and uploading images
         textAndGraphicUpdateOperation.onExecute();
@@ -303,6 +305,7 @@ public class TextAndGraphicUpdateOperationTest {
     public void testTaskCanceledAfterImageUpload() {
         doAnswer(onShowSuccess).when(internalInterface).sendRPC(any(Show.class));
         doAnswer(onImageUploadSuccessTaskCanceled).when(fileManager).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(5, 0));
 
         // Test Canceled after Image upload
         textAndGraphicUpdateOperation.onExecute();
@@ -314,6 +317,8 @@ public class TextAndGraphicUpdateOperationTest {
     @Test
     public void testTaskCanceledAfterTextSent() {
         doAnswer(onShowSuccessCanceled).when(internalInterface).sendRPC(any(Show.class));
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(5, 0));
+
         textAndGraphicUpdateOperation.onExecute();
         verify(fileManager, times(0)).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
 
