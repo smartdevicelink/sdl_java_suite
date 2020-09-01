@@ -25,7 +25,9 @@ import java.util.List;
 import java.util.Map;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
 
 @RunWith(AndroidJUnit4.class)
 public class RPCConstructorsTests {
@@ -359,7 +361,7 @@ public class RPCConstructorsTests {
             }
             stream.close();
         } catch (IOException | XmlPullParserException e) {
-            e.printStackTrace();
+            fail(e.getMessage());
         }
         return rpcParamsMap;
     }
@@ -469,6 +471,8 @@ public class RPCConstructorsTests {
             } else if (javaLangPrimitiveTypes.contains(type)) {
                 if (type.equals("int")) {
                     javaType = int.class;
+                } else if (type.equals("long")) {
+                    javaType = long.class;
                 } else if (type.equals("float")) {
                     javaType = float.class;
                 } else if (type.equals("double")) {
@@ -495,6 +499,7 @@ public class RPCConstructorsTests {
                 e1.printStackTrace();
             }
         }
+        assertNotNull("Java type cannot be found for: " + type, javaType);
         return javaType;
     }
 
@@ -511,7 +516,7 @@ public class RPCConstructorsTests {
             try {
                 aClass = Class.forName(RPC_PACKAGE_PREFIX + rpcName);
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                fail(e.getMessage());
                 continue;
             }
 
@@ -545,7 +550,7 @@ public class RPCConstructorsTests {
 
                 } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
                     e.printStackTrace();
-                    assertTrue("Value: " + valueString + " cannot be found for RPC: " + rpcName + ". Make sure that you declared that value in com.smartdevicelink.test.Test" , false);
+                    fail("Value: " + valueString + " cannot be found for RPC: " + rpcName + ". Make sure that you declared that value in com.smartdevicelink.test.Test");
                 }
 
                 mandatoryParamsTypes.add(param.javaType);
@@ -560,7 +565,7 @@ public class RPCConstructorsTests {
                 instance = constructor.newInstance(mandatoryParamsValues.toArray(new Object[mandatoryParamsValues.size()]));
             } catch (NoSuchMethodException | IllegalAccessException |  InstantiationException | InvocationTargetException e) {
                 e.printStackTrace();
-                assertTrue("Constructor for RPC " + rpcName + " cannot be invoked. Make sure that the constructor parameters order and types are identical to the RPC specs", false);
+                fail("Constructor for RPC " + rpcName + " cannot be invoked. Make sure that the constructor parameters order and types are identical to the RPC specs");
             }
 
 
@@ -576,7 +581,7 @@ public class RPCConstructorsTests {
                         }
                     } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                         e.printStackTrace();
-                        assertTrue("Method: " + parameters.get(i).getterName1 + " cannot be found for RPC: " + rpcName + ". Make sure that the method exists and that the parameters order and types are identical to the RPC specs", false);
+                        fail("Method: " + parameters.get(i).getterName1 + " cannot be found for RPC: " + rpcName + ". Make sure that the method exists and that the parameters order and types are identical to the RPC specs");
                     }
                 }
             }
