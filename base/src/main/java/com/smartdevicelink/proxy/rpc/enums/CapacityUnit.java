@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@
  * disclaimer in the documentation and/or other materials provided with the
  * distribution.
  *
- * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
- * software without specific prior written permission.
+ * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -29,36 +29,29 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.smartdevicelink.proxy;
+package com.smartdevicelink.proxy.rpc.enums;
 
-import com.smartdevicelink.streaming.StreamRPCPacketizer;
+/**
+ * @since SmartDeviceLink 7.0.0
+ */
+public enum CapacityUnit {
+    LITERS,
 
-@Deprecated
-public class RPCStreamController {
-	private StreamRPCPacketizer rpcPacketizer;
-	private Integer iCorrelationID;
+    KILOWATTHOURS,
 
-	public RPCStreamController(StreamRPCPacketizer rpcPacketizer, Integer iCorrelationID)
-	{
-		this.rpcPacketizer = rpcPacketizer;
-		this.iCorrelationID = iCorrelationID;
-	}	
-	
-	public Integer getCorrelationID()
-	{
-		return iCorrelationID;
-	}
-	
-	public void pause()
-	{
-		rpcPacketizer.pause();
-	}
-	public void resume()
-	{
-		rpcPacketizer.resume();
-	}
-	public void stop()
-	{
-		rpcPacketizer.onPutFileStreamError(null, "Stop Putfile Stream Requested");
-	}	
+    KILOGRAMS;
+
+    /**
+     * Convert String to CapacityUnit
+     *
+     * @param value String
+     * @return CapacityUnit
+     */
+    public static CapacityUnit valueForString(String value) {
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
+    }
 }

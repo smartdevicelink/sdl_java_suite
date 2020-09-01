@@ -5,8 +5,6 @@ import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.test.TestValues;
-import com.smartdevicelink.transport.BTTransportConfig;
-import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.util.Version;
 

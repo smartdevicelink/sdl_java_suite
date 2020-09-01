@@ -1,6 +1,8 @@
 package com.smartdevicelink.test.rpc.datatypes;
 
 import com.smartdevicelink.proxy.rpc.FuelRange;
+import com.smartdevicelink.proxy.rpc.enums.CapacityUnit;
+import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
 import com.smartdevicelink.proxy.rpc.enums.FuelType;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.TestValues;
@@ -26,6 +28,10 @@ public class FuelRangeTests extends TestCase{
 
         msg.setType(TestValues.GENERAL_FUELTYPE);
         msg.setRange(TestValues.GENERAL_FLOAT);
+        msg.setLevel(TestValues.GENERAL_FLOAT);
+        msg.setLevelState(TestValues.GENERAL_COMPONENTVOLUMESTATUS);
+        msg.setCapacity(TestValues.GENERAL_FLOAT);
+        msg.setCapacityUnit(TestValues.GENERAL_CAPACITYUNIT);
     }
 
     /**
@@ -35,10 +41,18 @@ public class FuelRangeTests extends TestCase{
     	// Test Values
         FuelType fuelType = msg.getType();
         float range = msg.getRange();
-        
+        float level = msg.getLevel();
+        ComponentVolumeStatus levelState = msg.getLevelState();
+        CapacityUnit capacityUnit = msg.getCapacityUnit();
+        float capacity = msg.getCapacity();
+
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_FLOAT, range);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_FUELTYPE, fuelType);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_FLOAT, level);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_COMPONENTVOLUMESTATUS, levelState);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_CAPACITYUNIT, capacityUnit);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_FLOAT, capacity);
         
         // Invalid/Null Tests
         FuelRange msg = new FuelRange();
@@ -46,6 +60,10 @@ public class FuelRangeTests extends TestCase{
 
         assertNull(TestValues.NULL, msg.getType());
         assertNull(TestValues.NULL, msg.getRange());
+        assertNull(TestValues.NULL, msg.getLevel());
+        assertNull(TestValues.NULL, msg.getLevelState());
+        assertNull(TestValues.NULL, msg.getCapacityUnit());
+        assertNull(TestValues.NULL, msg.getCapacity());
     }
 
     public void testJson(){
@@ -54,6 +72,10 @@ public class FuelRangeTests extends TestCase{
         try{
             reference.put(FuelRange.KEY_TYPE, TestValues.GENERAL_FUELTYPE);
             reference.put(FuelRange.KEY_RANGE, (Float) TestValues.GENERAL_FLOAT);
+            reference.put(FuelRange.KEY_LEVEL, TestValues.GENERAL_FLOAT);
+            reference.put(FuelRange.KEY_LEVEL_STATE, TestValues.GENERAL_COMPONENTVOLUMESTATUS);
+            reference.put(FuelRange.KEY_CAPACITY, TestValues.GENERAL_FLOAT);
+            reference.put(FuelRange.KEY_CAPACITY_UNIT, TestValues.GENERAL_CAPACITYUNIT);
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());

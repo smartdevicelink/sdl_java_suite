@@ -3,12 +3,9 @@ package com.smartdevicelink.test.streaming;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.SdlProxyBase;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
 import com.smartdevicelink.test.TestValues;
-import com.smartdevicelink.transport.BTTransportConfig;
-import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 
 import junit.framework.TestCase;
@@ -28,7 +25,7 @@ public class StreamRPCPacketizerTests extends TestCase {
 		
 	/**
 	 * This is a unit test for the following methods : 
-	 * {@link com.smartdevicelink.streaming.StreamRPCPacketizer#StreamRPCPacketizer(SdlProxyBase, IStreamListener, InputStream, RPCRequest, SessionType, byte, byte, long, SdlSession)}
+	 * {@link com.smartdevicelink.streaming.StreamRPCPacketizer#StreamRPCPacketizer(Object, IStreamListener, InputStream, RPCRequest, SessionType, byte, byte, long, SdlSession)}
 	 */
 	public void testConstructor () {
 		

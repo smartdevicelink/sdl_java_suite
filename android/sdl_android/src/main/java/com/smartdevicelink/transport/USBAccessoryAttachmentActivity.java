@@ -222,7 +222,7 @@ public class USBAccessoryAttachmentActivity extends Activity {
     private void attemptLegacyUsbConnection(UsbAccessory usbAccessory){
         if(usbAccessory != null) {
             DebugTool.logInfo(TAG, "Attempting to send USB connection intent using legacy method");
-            Intent usbAccessoryAttachedIntent = new Intent(USBTransport.ACTION_USB_ACCESSORY_ATTACHED);
+            Intent usbAccessoryAttachedIntent = new Intent(TransportConstants.ACTION_USB_ACCESSORY_ATTACHED);
             usbAccessoryAttachedIntent.putExtra(UsbManager.EXTRA_ACCESSORY, usbAccessory);
             usbAccessoryAttachedIntent.putExtra(UsbManager.EXTRA_PERMISSION_GRANTED, permissionGranted);
             AndroidTools.sendExplicitBroadcast(getApplicationContext(), usbAccessoryAttachedIntent, null);

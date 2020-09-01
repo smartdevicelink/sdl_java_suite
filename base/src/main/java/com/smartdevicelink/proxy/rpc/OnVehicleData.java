@@ -93,19 +93,27 @@ import java.util.List;
  * 		</tr>
  * 		<tr>
  * 			<td>fuelLevel</td>
- * 			<td>Float</td>
- * 			<td>The fuel level in the tank (percentage)</td>
+ * 			<td>Boolean</td>
+ * 			<td>The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec7.0, please see fuelRange.</td>
  *                 <td>N</td>
  * 			<td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
+ * 			<td>SmartDeviceLink 7.0.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>fuelLevel_State</td>
- * 			<td>ComponentVolumeStatus</td>
- * 			<td>The fuel level state (Ok/Low)</td>
+ * 			<td>Boolean</td>
+ * 			<td>The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please seefuelRange.</td>
  *                 <td>N</td>
  * 			<td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
+ * 			<td>SmartDeviceLink 7.0.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>fuelRange</td>
+ * 			<td>Boolean</td>
+ * 			<td>The fuel type, estimated range in KM, fuel level/capacity and fuel level state for thevehicle. See struct FuelRange for details.</td>
+ * 			<td>N</td>
+ * 			<td>{"array_min_size": 0, "array_max_size": 100}</td>
+ * 			<td>SmartDeviceLink 5.0.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>instantFuelConsumption</td>
@@ -311,6 +319,13 @@ import java.util.List;
  *          <td>N</td>
  *          <td>SmartDeviceLink 7.0.0</td>
  *      </tr>
+ *      <tr>
+ *          <td>stabilityControlsStatus</td>
+ *          <td>StabilityControlsStatus</td>
+ *          <td>See StabilityControlsStatus</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *  </tr>
  *  </table>
  *
  * @since SmartDeviceLink 1.0
@@ -324,7 +339,6 @@ public class OnVehicleData extends RPCNotification {
 	public static final String KEY_SPEED = "speed";
 	public static final String KEY_RPM = "rpm";
 	public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
-	public static final String KEY_FUEL_LEVEL = "fuelLevel";
 	public static final String KEY_VIN = "vin";
 	public static final String KEY_PRNDL = "prndl";
 	public static final String KEY_TIRE_PRESSURE = "tirePressure";
@@ -332,7 +346,6 @@ public class OnVehicleData extends RPCNotification {
 	public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
 	public static final String KEY_ODOMETER = "odometer";
 	public static final String KEY_GPS = "gps";
-	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
 	public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
 	public static final String KEY_BELT_STATUS = "beltStatus";
 	public static final String KEY_BODY_INFORMATION = "bodyInformation";
@@ -354,7 +367,18 @@ public class OnVehicleData extends RPCNotification {
     public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
     public static final String KEY_WINDOW_STATUS = "windowStatus";
     public static final String KEY_GEAR_STATUS = "gearStatus";
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public static final String KEY_FUEL_LEVEL = "fuelLevel";
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
 
+    public static final String KEY_STABILITY_CONTROLS_STATUS = "stabilityControlsStatus";
 
     public OnVehicleData() {
         super(FunctionID.ON_VEHICLE_DATA.toString());
@@ -382,16 +406,34 @@ public class OnVehicleData extends RPCNotification {
     public Integer getRpm() {
     	return getInteger(KEY_RPM);
     }
+
+    /**
+     * Sets the fuelLevel.
+     *
+     * @param fuelLevel The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
+     * 7.0, please see fuelRange.
+     */
+    @Deprecated
     public void setFuelLevel(Double fuelLevel) {
         setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
+
+    /**
+     * Gets the fuelLevel.
+     *
+     * @return Float The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
+     * 7.0, please see fuelRange.
+     */
+    @Deprecated
     public Double getFuelLevel() {
     	Object object = getParameters(KEY_FUEL_LEVEL);
     	return SdlDataTypeConverter.objectToDouble(object);
     }
+    @Deprecated
     public void setFuelLevelState(ComponentVolumeStatus fuelLevelState) {
         setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
     }
+    @Deprecated
     public ComponentVolumeStatus getFuelLevelState() {
         return (ComponentVolumeStatus) getObject(ComponentVolumeStatus.class, KEY_FUEL_LEVEL_STATE);
     }
@@ -561,17 +603,25 @@ public class OnVehicleData extends RPCNotification {
     }
 
     /**
-     * Sets Fuel Range List. Fuel Range - The estimate range in KM the vehicle can travel based on fuel level and consumption.
-     * @param fuelRange
+     * Sets the fuelRange.
+     *
+     * @param fuelRange The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
+     * vehicle. See struct FuelRange for details.
+     * {"array_min_size": 0, "array_max_size": 100}
+     * @since SmartDeviceLink 5.0.0
      */
     public void setFuelRange(List<FuelRange> fuelRange) {
         setParameters(KEY_FUEL_RANGE, fuelRange);
     }
 
     /**
-     * Gets Fuel Range List.
-     * @return List<FuelRange>
-     *     Fuel Range - The estimate range in KM the vehicle can travel based on fuel level and consumption.
+     * Gets the fuelRange.
+     *
+     * @return List<FuelRange> The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the
+     * vehicle. See struct FuelRange for details.
+     * {"array_min_size": 0, "array_max_size": 100}
+     * @since SmartDeviceLink 5.0.0
+
      */
     @SuppressWarnings("unchecked")
     public List<FuelRange> getFuelRange() {
@@ -663,6 +713,26 @@ public class OnVehicleData extends RPCNotification {
     @SuppressWarnings("unchecked")
     public List<WindowStatus> getWindowStatus() {
         return (List<WindowStatus>) getObject(WindowStatus.class, KEY_WINDOW_STATUS);
+    }
+
+    /**
+     * Gets the stabilityControlsStatus.
+     *
+     * @return StabilityControlsStatus See StabilityControlsStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public StabilityControlsStatus getStabilityControlsStatus() {
+        return (StabilityControlsStatus) getObject(StabilityControlsStatus.class, KEY_STABILITY_CONTROLS_STATUS);
+    }
+
+    /**
+     * Sets the stabilityControlsStatus.
+     *
+     * @param stabilityControlsStatus See StabilityControlsStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public void setStabilityControlsStatus(StabilityControlsStatus stabilityControlsStatus) {
+        setParameters(KEY_STABILITY_CONTROLS_STATUS, stabilityControlsStatus);
     }
 
     /**
