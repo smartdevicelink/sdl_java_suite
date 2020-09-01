@@ -1417,6 +1417,8 @@ public class SdlProtocolBase {
 
             } else if (frameInfo == FrameDataControlFrameType.StartSessionNACK.getValue()) {
 
+                String reason = (String) packet.getTag(ControlFrameTags.RPC.StartServiceNAK.REASON);
+                DebugTool.logWarning(TAG, reason);
                 handleProtocolSessionNAKed(packet, serviceType);
 
             } else if (frameInfo == FrameDataControlFrameType.EndSession.getValue()
@@ -1426,6 +1428,8 @@ public class SdlProtocolBase {
 
             } else if (frameInfo == FrameDataControlFrameType.EndSessionNACK.getValue()) {
 
+                String reason = (String) packet.getTag(ControlFrameTags.RPC.EndServiceNAK.REASON);
+                DebugTool.logWarning(TAG, reason);
                 handleServiceEndedNAK(packet, serviceType);
 
             } else if (frameInfo == FrameDataControlFrameType.ServiceDataACK.getValue()) {

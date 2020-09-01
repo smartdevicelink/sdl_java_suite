@@ -91,9 +91,7 @@ public class ControlFrameTags {
 		 **/
 		public static class RegisterSecondaryTransport {}
 		public static class RegisterSecondaryTransportACK {}
-		public static class RegisterSecondaryTransportNAK extends NAKBase {
-			public static final String REASON = "reason";
-		}
+		public static class RegisterSecondaryTransportNAK extends NAKBase {}
 	}
 
 	/**
