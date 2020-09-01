@@ -34,6 +34,7 @@ public class RPCGenericTests {
 
     private final String XML_FILE_NAME = "xml/MOBILE_API.xml";
     private final String RPC_PACKAGE_PREFIX = "com.smartdevicelink.proxy.rpc.";
+    private final String TEST_VALUES_CLASS = "com.smartdevicelink.test.TestValues";
     private Map<String, List<Parameter>> rpcMandatoryParamsMapFromXml;
     private Map<String, List<Parameter>> rpcAllParamsMapFromXml;
 
@@ -490,8 +491,8 @@ public class RPCGenericTests {
             }
 
         } catch (ClassNotFoundException e) {
-            // If the class was not found in the com.smartdevicelink.proxy.rpc package
-            // try to see if it can be found in com.smartdevicelink.proxy.rpc.enums package
+            // If the class was not found in the rpc package
+            // try to see if it can be found in enums package
             typeString = RPC_PACKAGE_PREFIX + "enums." + type;
             try {
                 javaType = Class.forName(typeString);
@@ -526,12 +527,12 @@ public class RPCGenericTests {
 
             // Loop through all mandatory params for the current RPC
             // and try to find the full Java type for each param
-            // also assign a value for each param from com.smartdevicelink.test.Test class
+            // also assign a value for each param from TestValues class
             for (Parameter param : parameters) {
                 String valueString = null;
                 Object value = null;
 
-                // Assign a value for the current param from com.smartdevicelink.test.Test based of the param type
+                // Assign a value for the current param from TestValues based of the param type
                 try {
                     // --------------------------------------------- Exceptional cases ---------------------------------------------
                     // This case is exceptional because the setter changes the input if it is not all digits
@@ -545,12 +546,12 @@ public class RPCGenericTests {
                         if (param.isArray){
                             valueString += "_LIST";
                         }
-                        value = Class.forName("com.smartdevicelink.test.TestValues").getDeclaredField(valueString).get(null);
+                        value = Class.forName(TEST_VALUES_CLASS).getDeclaredField(valueString).get(null);
                     }
 
                 } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
                     e.printStackTrace();
-                    fail("Value: " + valueString + " cannot be found for RPC: " + rpcName + ". Make sure that you declared that value in com.smartdevicelink.test.Test");
+                    fail("Value: " + valueString + " cannot be found for RPC: " + rpcName + ". Make sure that you declared that value in " + TEST_VALUES_CLASS);
                 }
 
                 mandatoryParamsTypes.add(param.javaType);
