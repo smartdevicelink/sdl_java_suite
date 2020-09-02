@@ -780,17 +780,6 @@ abstract class BaseSdlManager {
         }
 
         /**
-         * Sets the Security libraries
-         *
-         * @param secList The list of security class(es)
-         */
-        @Deprecated
-        public Builder setSdlSecurity(List<Class<? extends SdlSecurityBase>> secList) {
-            sdlManager.sdlSecList = secList;
-            return this;
-        }
-
-        /**
          * Sets the security libraries and a callback to notify caller when there is update to encryption service
          *
          * @param secList  The list of security class(es)
