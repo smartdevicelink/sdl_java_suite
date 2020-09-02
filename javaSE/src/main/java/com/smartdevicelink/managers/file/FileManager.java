@@ -33,6 +33,7 @@ package com.smartdevicelink.managers.file;
 
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.PutFile;
@@ -56,6 +57,7 @@ import com.smartdevicelink.util.FileUtls;
 public class FileManager extends BaseFileManager {
 
 	@Deprecated
+	@RestrictTo(RestrictTo.Scope.LIBRARY)
 	public FileManager(ISdl internalInterface) {
 
 		// setup
@@ -67,6 +69,7 @@ public class FileManager extends BaseFileManager {
 	 * @param internalInterface an instance of the ISdl interface that can be used for common SDL operations (sendRpc, addRpcListener, etc)
 	 * @param fileManagerConfig an instance of the FileManagerConfig gives access to artworkRetryCount and fileRetryCount to let us if those file types can be re-upload if they fail
 	 */
+	@RestrictTo(RestrictTo.Scope.LIBRARY)
 	public FileManager(ISdl internalInterface, FileManagerConfig fileManagerConfig) {
 		// setup
 		super(internalInterface, fileManagerConfig);

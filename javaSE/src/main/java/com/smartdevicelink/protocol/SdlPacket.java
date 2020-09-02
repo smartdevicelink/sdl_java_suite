@@ -33,7 +33,9 @@ package com.smartdevicelink.protocol;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import androidx.annotation.RestrictTo;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class SdlPacket extends BaseSdlPacket {
 
     public SdlPacket(int version, boolean encryption, int frameType,

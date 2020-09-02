@@ -32,6 +32,7 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
+import androidx.annotation.RestrictTo;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 
 /**
@@ -41,6 +42,7 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
  *
  * The VoiceCommandManager takes a List of VoiceCommand objects and sets them on the Head unit for you.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class VoiceCommandManager extends BaseVoiceCommandManager {
 
 	public VoiceCommandManager(ISdl internalInterface) {
