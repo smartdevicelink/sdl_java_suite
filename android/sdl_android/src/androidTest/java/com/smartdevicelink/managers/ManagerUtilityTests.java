@@ -189,7 +189,7 @@ public class ManagerUtilityTests {
 		assertNotNull(nullList);
 		capability.setTextFields(nullList);
 		assertNotNull(capability);
-		assertNotNull(capability.getTextFields()); //Fails
+		assertNotNull(capability.getTextFields());
 
 		maxNumerOfLines = ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(capability);
 		assertEquals(0, maxNumerOfLines);
