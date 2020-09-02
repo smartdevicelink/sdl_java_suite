@@ -91,19 +91,11 @@ public class RPCStruct {
 		store = JsonRPCMarshaller.deserializeJSONObject(jsonObject);
 
 	}
-	
-	// deserializeJSONObject method moved to JsonRPCMarshaller for consistency
-	// Keep reference here for backwards compatibility
-	@Deprecated
-	public static Hashtable<String, Object> deserializeJSONObject(JSONObject jsonObject) 
-			throws JSONException {
-		return JsonRPCMarshaller.deserializeJSONObject(jsonObject);
-	}
 
 	public JSONObject serializeJSON() throws JSONException {
 		return JsonRPCMarshaller.serializeHashtable(store);
 	}
-	
+
 	@SuppressWarnings("unchecked")
     public JSONObject serializeJSON(byte protocolVersion) throws JSONException {
 		if (protocolVersion > 1) {
