@@ -46,7 +46,6 @@ public class WebSocketServerConfig extends BaseTransportConfig{
      */
     public WebSocketServerConfig(int port, int connectionLostTimeout){
         this.port = port;
-        this.shareConnection = false;
         this.connectionLostTimeout = connectionLostTimeout;
     }
 
