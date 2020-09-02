@@ -102,6 +102,8 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 			t = null;
 		}
 
+		mOutputQueue.clear();
+
 	}
 
 	public void run() {
@@ -261,6 +263,10 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 			throw new ArrayIndexOutOfBoundsException();
 		}
 
+		if (data == null || t == null || t.isInterrupted()) {
+			return;
+		}
+
 		// StreamPacketizer does not need to split a video frame into NAL units
 		ByteBuffer buffer = ByteBuffer.allocate(length);
 		buffer.put(data, offset, length);
@@ -274,7 +280,7 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 	}
 
 	private void sendByteBufferData(ByteBuffer data, CompletionListener completionListener) {
-		if (data == null || data.remaining() == 0) {
+		if (data == null || data.remaining() == 0 || t == null || t.isInterrupted()) {
 			return;
 		}
 

@@ -36,6 +36,7 @@ import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.streaming.AbstractPacketizer;
 import com.smartdevicelink.streaming.IStreamListener;
+import com.smartdevicelink.util.DebugTool;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -61,6 +62,8 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @author Sho Amano
  */
 public class RTPH264Packetizer extends AbstractPacketizer implements IVideoStreamListener, Runnable {
+
+	private static final String TAG = "RTPH264Packetizer";
 
 	// Approximate size of data that mOutputQueue can hold in bytes.
 	// By adding a buffer, we accept underlying transport being stuck for a short time. By setting
@@ -168,6 +171,10 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IVideoStrea
 	public void start() throws IOException {
 		if (mThread != null) {
 			return;
+		}
+
+		if(mOutputQueue != null){
+			mOutputQueue.clear();
 		}
 
 		mThread = new Thread(this);
@@ -293,13 +300,18 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IVideoStrea
 	}
 
 	private boolean outputRTPFrames(ByteBuffer nalUnit, long ptsInUs, boolean isLast) {
+		if((mThread == null || mThread.isInterrupted())) {
+			DebugTool.logError(TAG, "Dropping potential buffer because consumer thread is not alive");
+			return false;
+		}
+
 		if (RTP_HEADER_LEN + nalUnit.remaining() > MAX_RTP_PACKET_SIZE) {
 			// Split into multiple Fragmentation Units ([5.8] in RFC 6184)
 			byte firstByte = nalUnit.get();
 			boolean firstFragment = true;
 			boolean lastFragment = false;
 
-			while (nalUnit.remaining() > 0) {
+			while (nalUnit.remaining() > 0 && mThread != null && !mThread.isInterrupted()) {
 				int payloadLength = MAX_RTP_PACKET_SIZE - (RTP_HEADER_LEN + FU_INDICATOR_LEN + FU_HEADER_LEN);
 				if (nalUnit.remaining() <= payloadLength) {
 					payloadLength = nalUnit.remaining();
