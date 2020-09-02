@@ -70,23 +70,6 @@ abstract public class AbstractPacketizer {
 		}
 	}
 
-	@Deprecated
-	public AbstractPacketizer(IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion, SdlSession session) throws IOException, IllegalArgumentException {
-		this._streamListener = streamListener;
-		this.is = is;
-		_rpcSessionID = rpcSessionID;
-		_serviceType = sType;
-		_request = request;
-		_wiproVersion = new Version(wiproVersion+".0.0");
-		this._session = session;
-		if (this._session != null) {
-			bufferSize = this._session.getMtu();
-			buffer = new byte[bufferSize];
-		}else{
-			throw new IllegalArgumentException("Session variable is null");
-		}
-	}
-
 	public AbstractPacketizer(IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, Version protocolVersion, SdlSession session) throws IOException, IllegalArgumentException {
 		this._streamListener = streamListener;
 		this.is = is;
