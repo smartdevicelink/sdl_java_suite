@@ -371,7 +371,7 @@ public class RSVTestCase {
 			}
 		};
 		
-		assertTrue(RouterServiceValidator.createTrustedListRequest(getInstrumentation().getTargetContext(),true, cb));
+		assertTrue(RouterServiceValidator.createTrustedListRequest(getInstrumentation().getTargetContext(),true, cb, null));
 		//Now wait for call to finish
 		synchronized(REQUEST_LOCK){
 			try {
