@@ -57,7 +57,6 @@ import com.smartdevicelink.util.FileUtls;
 public class FileManager extends BaseFileManager {
 
 	@Deprecated
-	@RestrictTo(RestrictTo.Scope.LIBRARY)
 	public FileManager(ISdl internalInterface) {
 
 		// setup
