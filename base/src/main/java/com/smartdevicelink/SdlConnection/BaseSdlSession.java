@@ -375,12 +375,4 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
     public boolean isTransportForServiceAvailable(SessionType sessionType){
         return sdlProtocol!=null && sdlProtocol.isTransportForServiceAvailable(sessionType);
     }
-
-
-    @Deprecated
-    public void clearConnection(){/* Not supported */}
-
-
-
-
 }
