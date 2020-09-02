@@ -32,7 +32,6 @@ public class AbstractPacketizerTests extends TestCase {
 		
 		// Test Values
 		byte            testSessionId    = (byte) 0x0A;
-		byte            testWiproVersion = (byte) 0x0B;
 		SessionType     testSessionType  = SessionType.RPC;
 		SdlSession      testSdlSession  = null;
 		InputStream     testInputStream  = null;

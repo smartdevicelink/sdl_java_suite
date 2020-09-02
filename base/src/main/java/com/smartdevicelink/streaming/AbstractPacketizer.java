@@ -49,12 +49,8 @@ abstract public class AbstractPacketizer {
 	protected InputStream is = null;
 	protected int bufferSize;
 	protected byte[] buffer;
-	protected boolean upts = false;
 	protected RPCRequest _request = null;
 	protected Version _wiproVersion = new Version("1.0.0");
-
-	//protected long ts = 0, intervalBetweenReports = 5000, delta = 0;
-	protected long intervalBetweenReports = 5000, delta = 0;
 
 	public AbstractPacketizer(IStreamListener streamListener, InputStream is, SessionType sType, byte rpcSessionID, SdlSession session) throws IOException, IllegalArgumentException {
 		this._streamListener = streamListener;
