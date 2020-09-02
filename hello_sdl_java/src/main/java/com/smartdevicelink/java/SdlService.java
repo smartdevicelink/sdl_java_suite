@@ -47,7 +47,6 @@ import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.*;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
@@ -170,7 +169,7 @@ public class SdlService {
                             break;
                     }
                     if (isNeedUpdate) {
-                        return new LifecycleConfigurationUpdate(appName, null, TTSChunkFactory.createSimpleTTSChunks(ttsName), null);
+                        return new LifecycleConfigurationUpdate(appName, null, createSimpleTTSChunks(ttsName), null);
                     } else {
                         return null;
                     }
@@ -302,7 +301,7 @@ public class SdlService {
      * Will speak a sample welcome message
      */
     private void performWelcomeSpeak(){
-        sdlManager.sendRPC(new Speak(TTSChunkFactory.createSimpleTTSChunks(WELCOME_SPEAK)));
+        sdlManager.sendRPC(new Speak(createSimpleTTSChunks(WELCOME_SPEAK)));
     }
 
     /**
@@ -365,7 +364,7 @@ public class SdlService {
         sdlManager.getScreenManager().setTextField2("");
         sdlManager.getScreenManager().commit(null);
 
-        sdlManager.sendRPC(new Speak(TTSChunkFactory.createSimpleTTSChunks(TEST_COMMAND_NAME)));
+        sdlManager.sendRPC(new Speak(createSimpleTTSChunks(TEST_COMMAND_NAME)));
     }
 
     private void showAlert(String text){
@@ -404,5 +403,14 @@ public class SdlService {
             });
             sdlManager.getScreenManager().presentChoiceSet(choiceSet, InteractionMode.MANUAL_ONLY);
         }
+    }
+
+    private Vector<TTSChunk> createSimpleTTSChunks(String simple) {
+        if (simple == null) {
+            return null;
+        }
+        Vector<TTSChunk> chunks = new Vector<>();
+        chunks.add(new TTSChunk(simple, SpeechCapabilities.TEXT));
+        return chunks;
     }
 }
