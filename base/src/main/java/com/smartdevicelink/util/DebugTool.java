@@ -97,11 +97,6 @@ public class DebugTool {
 		}
 	}
 
-	@Deprecated
-	public static void logError(String msg) {
-		logError(TAG, msg);
-	}
-
 	public static void logError(String tag, String msg, Throwable ex) {
 		Boolean wasWritten = false;
 
@@ -119,11 +114,6 @@ public class DebugTool {
 		}
 	}
 
-	@Deprecated
-	public static void logError(String msg, Throwable ex) {
-		logError(TAG, msg, ex);
-	}
-
 	public static void logWarning(String tag, String msg) {
 		Boolean wasWritten = false;
 
@@ -135,11 +125,6 @@ public class DebugTool {
 			tag = tag != null ? tag : TAG;
 			NativeLogTool.logWarning(tag, msg);
 		}
-	}
-
-	@Deprecated
-	public static void logWarning(String msg) {
-		logWarning(TAG, msg);
 	}
 
 	public static void logInfo(String tag, String msg) {
@@ -155,11 +140,6 @@ public class DebugTool {
 		}
 	}
 
-	@Deprecated
-	public static void logInfo(String msg) {
-		logInfo(TAG, msg);
-	}
-
 	public static void logInfo(String tag, String msg, Boolean bPrependVersion) {
 		Boolean wasWritten = false;
 
@@ -171,11 +151,6 @@ public class DebugTool {
 			tag = tag != null ? tag : TAG;
 			NativeLogTool.logInfo(tag, msg);
 		}
-	}
-
-	@Deprecated
-	public static void logInfo(String msg, boolean bPrependVersion) {
-		logInfo(TAG, msg, bPrependVersion);
 	}
 
 	protected static Boolean logToSiphon(String msg) {

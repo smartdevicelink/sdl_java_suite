@@ -622,7 +622,7 @@ abstract class BaseLifecycleManager {
     @SuppressWarnings("UnusedReturnValue")
     private boolean onRPCRequestReceived(RPCRequest request) {
         if (request == null) {
-            DebugTool.logError("onRPCRequestReceived - request was null");
+            DebugTool.logError(TAG, "onRPCRequestReceived - request was null");
             return false;
         }
         DebugTool.logInfo(TAG, "onRPCRequestReceived - " + request.getFunctionName());
