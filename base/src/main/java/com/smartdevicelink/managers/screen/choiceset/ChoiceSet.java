@@ -403,11 +403,8 @@ public class ChoiceSet {
         if (simple == null) {
             return null;
         }
-        Vector<TTSChunk> chunks = new Vector<TTSChunk>();
-        TTSChunk chunk = new TTSChunk();
-        chunk.setType(SpeechCapabilities.TEXT);
-        chunk.setText(simple);
-        chunks.add(chunk);
+        Vector<TTSChunk> chunks = new Vector<>();
+        chunks.add(new TTSChunk(simple, SpeechCapabilities.TEXT));
         return chunks;
     }
 }

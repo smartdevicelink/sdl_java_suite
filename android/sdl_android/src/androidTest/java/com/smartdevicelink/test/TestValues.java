@@ -16,7 +16,6 @@ import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
 import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.AppInfo;
 import com.smartdevicelink.proxy.rpc.AppServiceCapability;
 import com.smartdevicelink.proxy.rpc.AppServiceData;
@@ -494,7 +493,7 @@ public class TestValues {
 	public static final List<ClimateControlCapabilities> GENERAL_CLIMATECONTROLCAPABILITIES_LIST = new ArrayList<ClimateControlCapabilities>(1);
 	public static final List<RadioControlCapabilities>   GENERAL_RADIOCONTROLCAPABILITIES_LIST   = new ArrayList<RadioControlCapabilities>(1);
 	public static final Vector<String>                   GENERAL_VECTOR_STRING                   = new Vector<>(Arrays.asList(new String[] { "a", "b"}));
-	public static final Vector<TTSChunk>                 GENERAL_VECTOR_TTS_CHUNKS               = new Vector<>(Arrays.asList(TTSChunkFactory.createChunk(SpeechCapabilities.TEXT, "Welcome to the jungle")));
+	public static final Vector<TTSChunk>                 GENERAL_VECTOR_TTS_CHUNKS               = new Vector<>(Arrays.asList(new TTSChunk("Welcome to the jungle", SpeechCapabilities.TEXT)));
 	public static final List<SeatControlCapabilities>   GENERAL_SEATCONTROLCAPABILITIES_LIST   = new ArrayList<SeatControlCapabilities>(1);
 	public static final List<EqualizerSettings>         GENERAL_EQUALIZERSETTINGS_LIST         = new ArrayList<EqualizerSettings>(1);
 	public static final List<LightCapabilities>         GENERAL_LIGHTCAPABILITIES_LIST         = new ArrayList<LightCapabilities>(1);
@@ -794,8 +793,8 @@ public class TestValues {
 		GENERAL_VRHELPITEM.setPosition(100);
     	GENERAL_VRHELPITEM_LIST.add(GENERAL_VRHELPITEM);
 
-    	GENERAL_TTSCHUNK_LIST.add(TTSChunkFactory.createChunk(SpeechCapabilities.TEXT, "Welcome to the jungle"));
-    	GENERAL_TTSCHUNK_LIST.add(TTSChunkFactory.createChunk(SpeechCapabilities.TEXT, "Say a command"));
+    	GENERAL_TTSCHUNK_LIST.add(new TTSChunk("Welcome to the jungle", SpeechCapabilities.TEXT));
+    	GENERAL_TTSCHUNK_LIST.add(new TTSChunk("Say a command", SpeechCapabilities.TEXT));
 
     	GENERAL_KEYBOARDPROPERTIES.setAutoCompleteText(GENERAL_STRING);
     	GENERAL_KEYBOARDPROPERTIES.setKeypressMode(KeypressMode.SINGLE_KEYPRESS);
