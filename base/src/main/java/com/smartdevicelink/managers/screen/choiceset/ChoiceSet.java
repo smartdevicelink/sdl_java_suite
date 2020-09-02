@@ -35,15 +35,16 @@ package com.smartdevicelink.managers.screen.choiceset;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
+import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.util.DebugTool;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Vector;
 
 public class ChoiceSet {
     private static final String TAG = "ChoiceSet";
@@ -108,15 +109,15 @@ public class ChoiceSet {
 
         // Help the dev by creating TTS chunks for them
         if (initialPrompt != null){
-            setInitialPrompt(TTSChunkFactory.createSimpleTTSChunks(initialPrompt));
+            setInitialPrompt(createSimpleTTSChunks(initialPrompt));
         }
 
         if (timeoutPrompt != null){
-            setTimeoutPrompt(TTSChunkFactory.createSimpleTTSChunks(timeoutPrompt));
+            setTimeoutPrompt(createSimpleTTSChunks(timeoutPrompt));
         }
 
         if (helpPrompt != null){
-            setHelpPrompt(TTSChunkFactory.createSimpleTTSChunks(helpPrompt));
+            setHelpPrompt(createSimpleTTSChunks(helpPrompt));
         }
 
         // things to do
@@ -398,4 +399,15 @@ public class ChoiceSet {
         return clonedHelpItems;
     }
 
+    private Vector<TTSChunk> createSimpleTTSChunks(String simple) {
+        if (simple == null) {
+            return null;
+        }
+        Vector<TTSChunk> chunks = new Vector<TTSChunk>();
+        TTSChunk chunk = new TTSChunk();
+        chunk.setType(SpeechCapabilities.TEXT);
+        chunk.setText(simple);
+        chunks.add(chunk);
+        return chunks;
+    }
 }
