@@ -947,11 +947,6 @@ abstract class BaseLifecycleManager {
         }
 
         @Override
-        public void stopVideoService() {
-            BaseLifecycleManager.this.endVideoStream();
-        }
-
-        @Override
         public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
             DebugTool.logWarning(TAG, "startVideoStream is not currently implemented");
             return null;
@@ -965,11 +960,6 @@ abstract class BaseLifecycleManager {
         @Override
         public void startAudioService(boolean encrypted) {
             BaseLifecycleManager.this.startAudioService(encrypted);
-        }
-
-        @Override
-        public void stopAudioService() {
-            BaseLifecycleManager.this.endAudioStream();
         }
 
         @Override
@@ -1273,13 +1263,7 @@ abstract class BaseLifecycleManager {
     void startVideoService(boolean encrypted, VideoStreamingParameters parameters) {
     }
 
-    void endVideoStream() {
-    }
-
     void startAudioService(boolean encrypted) {
-    }
-
-    void endAudioStream() {
     }
 
     void setSdlSecurityStaticVars() {

@@ -960,12 +960,6 @@ public class SystemCapabilityManagerTests {
 		public void startVideoService(VideoStreamingParameters parameters, boolean encrypted) {	}
 
 		@Override
-		public void stopVideoService() {}
-
-		@Override
-		public void stopAudioService() {}
-
-		@Override
 		public void sendRPCRequest(RPCRequest message) {}
 
 		@Override
