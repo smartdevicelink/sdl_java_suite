@@ -67,7 +67,6 @@ public class FileManager extends BaseFileManager {
 	private final WeakReference<Context> context;
 
 	@Deprecated
-	@RestrictTo(RestrictTo.Scope.LIBRARY)
 	public FileManager(ISdl internalInterface, Context context) {
 
 		// setup
