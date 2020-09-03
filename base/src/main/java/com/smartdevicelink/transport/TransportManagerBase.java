@@ -59,6 +59,9 @@ public abstract class TransportManagerBase {
 
     public abstract void close(long sessionId);
 
+    @Deprecated
+    public abstract void resetSession();
+
     /**
      * Check to see if a transport is connected.
      * @param transportType the transport to have its connection status returned. If `null` is
