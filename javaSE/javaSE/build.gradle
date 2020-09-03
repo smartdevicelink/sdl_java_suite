@@ -1,7 +1,7 @@
 apply plugin: 'java-library'
 
 group 'com.smartdevicelink'
-version new File(projectDir.path, ('/../VERSION')).text.trim()
+version new File(projectDir.path, ('/../../VERSION')).text.trim()
 
 sourceCompatibility = 1.7
 
@@ -36,7 +36,7 @@ dependencies {
 }
 
 sourceSets {
-    main.java.srcDirs += '../base/src/main/java'
+    main.java.srcDirs += '../../base/src/main/java'
 }
 
 jar {
