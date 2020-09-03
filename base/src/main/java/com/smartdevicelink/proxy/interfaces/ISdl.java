@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
+import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
@@ -168,63 +169,10 @@ public interface ISdl {
     boolean removeOnRPCListener(FunctionID responseId, OnRPCListener listener);
 
     /**
-     * Get SystemCapability Object
-     * @param systemCapabilityType a system capability type that should be retrieved
-     * @return the system capability provided if available, null if not
-     * @deprecated use {@link #getCapability(SystemCapabilityType, OnSystemCapabilityListener, boolean)} instead.
-     */
-    @Deprecated
-    Object getCapability(SystemCapabilityType systemCapabilityType);
-
-    /**
-     * Get Capability
-     * @param systemCapabilityType a system capability type that should be retrieved
-     * @param scListener listener that will be called when the system capability is retrieved. If already cached, it
-     *                   will be called immediately
-     * @deprecated use {@link #getCapability(SystemCapabilityType, OnSystemCapabilityListener, boolean)} instead.
-     */
-    @Deprecated
-    void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener);
-
-    /** Gets the capability object that corresponds to the supplied capability type by returning the currently cached value immediately (or null) as well as calling the listener immediately with the cached value, if available. If not available, the listener will retrieve a new value and return that when the head unit responds.
-     * <strong>If capability is not cached, the method will return null and trigger the supplied listener when the capability becomes available</strong>
-     * @param systemCapabilityType type of capability desired
-     * @param scListener callback to execute upon retrieving capability
-     * @param forceUpdate flag to force getting a new fresh copy of the capability from the head unit even if it is cached
-     * @return desired capability if it is cached in the manager, otherwise returns a null object
-     */
-    @Deprecated
-    Object getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener, boolean forceUpdate);
-
-    /**
      * Get RegisterAppInterfaceResponse
      * @return the RegisterAppInterfaceResponse if available, null if not
      */
     RegisterAppInterfaceResponse getRegisterAppInterfaceResponse();
-
-    /**
-     * Check if capability is supported
-     * @param systemCapabilityType a system capability type that should be checked for support
-     * @return Boolean whether or not the supplied capability type is supported on the connected module
-     */
-    @Deprecated
-    boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType);
-
-    /**
-     * Add a listener to be called whenever a new capability is retrieved
-     * @param systemCapabilityType Type of capability desired
-     * @param listener callback to execute upon retrieving capability
-     */
-    @Deprecated
-    void addOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener);
-
-    /**
-     * Remove an OnSystemCapabilityListener that was previously added
-     * @param systemCapabilityType Type of capability
-     * @param listener the listener that should be removed
-     */
-    @Deprecated
-    boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener);
 
     /**
      * Check to see if a transport is available to start/use the supplied service.
@@ -256,4 +204,6 @@ public interface ISdl {
     void startRPCEncryption();
 
     Taskmaster getTaskmaster();
+
+    SystemCapabilityManager getSystemCapabilityManager();
 }

@@ -50,10 +50,8 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
-import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.rpc.GenericResponse;
 import com.smartdevicelink.proxy.rpc.OnAppInterfaceUnregistered;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
@@ -78,15 +76,12 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
-import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.security.SdlSecurityBase;
-import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
-import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.util.CorrelationIdGenerator;
@@ -999,58 +994,8 @@ abstract class BaseLifecycleManager {
         }
 
         @Override
-        public Object getCapability(SystemCapabilityType systemCapabilityType) {
-            if (BaseLifecycleManager.this.systemCapabilityManager != null) {
-                return BaseLifecycleManager.this.systemCapabilityManager.getCapability(systemCapabilityType, null, false);
-            } else {
-                return null;
-            }
-        }
-
-        @Override
-        public void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener) {
-            if (BaseLifecycleManager.this.systemCapabilityManager != null) {
-                BaseLifecycleManager.this.systemCapabilityManager.getCapability(systemCapabilityType, scListener, false);
-            }
-        }
-
-        @Override
-        public Object getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener, boolean forceUpdate) {
-            if (BaseLifecycleManager.this.systemCapabilityManager != null) {
-                return BaseLifecycleManager.this.systemCapabilityManager.getCapability(systemCapabilityType, scListener, forceUpdate);
-            } else {
-                return null;
-            }
-        }
-
-        @Override
         public RegisterAppInterfaceResponse getRegisterAppInterfaceResponse() {
             return raiResponse;
-        }
-
-        @Override
-        public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType) {
-            if (BaseLifecycleManager.this.systemCapabilityManager != null) {
-                return BaseLifecycleManager.this.systemCapabilityManager.isCapabilitySupported(systemCapabilityType);
-            } else {
-                return false;
-            }
-        }
-
-        @Override
-        public void addOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) {
-            if (BaseLifecycleManager.this.systemCapabilityManager != null) {
-                BaseLifecycleManager.this.systemCapabilityManager.addOnSystemCapabilityListener(systemCapabilityType, listener);
-            }
-        }
-
-        @Override
-        public boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) {
-            if (BaseLifecycleManager.this.systemCapabilityManager != null) {
-                return BaseLifecycleManager.this.systemCapabilityManager.removeOnSystemCapabilityListener(systemCapabilityType, listener);
-            } else {
-                return false;
-            }
         }
 
         @Override
@@ -1078,6 +1023,11 @@ abstract class BaseLifecycleManager {
         @Override
         public Taskmaster getTaskmaster() {
             return BaseLifecycleManager.this.getTaskmaster();
+        }
+
+        @Override
+        public SystemCapabilityManager getSystemCapabilityManager() {
+            return BaseLifecycleManager.this.systemCapabilityManager;
         }
     };
 
