@@ -140,7 +140,9 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 		// remove listeners
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
-		internalInterface.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplaysCapabilityListener);
+		if (internalInterface.getSystemCapabilityManager() != null) {
+			internalInterface.getSystemCapabilityManager().removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplaysCapabilityListener);
+		}
 
 		super.dispose();
 	}
@@ -502,6 +504,8 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				updateTransactionQueueSuspended();
 			}
 		};
-		this.internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplaysCapabilityListener);
+		if (internalInterface.getSystemCapabilityManager() != null) {
+			this.internalInterface.getSystemCapabilityManager().addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplaysCapabilityListener);
+		}
 	}
 }
