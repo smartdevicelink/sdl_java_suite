@@ -960,15 +960,7 @@ public class SystemCapabilityManagerTests {
 		public void startVideoService(VideoStreamingParameters parameters, boolean encrypted) {	}
 
 		@Override
-		public void sendRPCRequest(RPCRequest message) {}
-
-		@Override
 		public void sendRPC(RPCMessage message) {}
-
-		@Override
-		public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
-
-		}
 
 		@Override
 		public void sendRPCs(List<? extends RPCMessage> rpcs, OnMultipleRequestListener listener) {
