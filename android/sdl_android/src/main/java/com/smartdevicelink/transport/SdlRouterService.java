@@ -152,11 +152,6 @@ public class SdlRouterService extends Service{
 
 	public static final String SDL_NOTIFICATION_FAQS_PAGE = "https://smartdevicelink.com/en/guides/android/frequently-asked-questions/sdl-notifications/";
 
-	/**
-	 * @deprecated use {@link TransportConstants#START_ROUTER_SERVICE_ACTION} instead
-	 */
-	@Deprecated
-	public static final String START_SERVICE_ACTION							= "sdl.router.startservice";
 	public static final String REGISTER_WITH_ROUTER_ACTION 					= "com.sdl.android.register";
 	
 	/** Message types sent from the BluetoothReadService Handler */
@@ -1610,12 +1605,6 @@ public class SdlRouterService extends Service{
 	***********************************************  Helper Methods **************************************************************
 	****************************************************************************************************************************************/
 
-	@SuppressWarnings("SameReturnValue")
-	@Deprecated
-	public  String getConnectedDeviceName(){
-		return null;
-	}
-
 	private ArrayList<TransportRecord> getConnectedTransports(){
 		ArrayList<TransportRecord> connected = new ArrayList<>();
         if(bluetoothTransport != null && bluetoothTransport.isConnected()){
@@ -1733,11 +1722,6 @@ public class SdlRouterService extends Service{
 		}
 	}
 
-	@Deprecated
-	public void onTransportConnected(final TransportType type){
-		onTransportConnected(new TransportRecord(type,null));
-	}
-
 	public void onTransportConnected(final TransportRecord record){
 		cancelForegroundTimeOut();
 		enterForeground(createConnectedNotificationText(),0,true);
@@ -1796,11 +1780,6 @@ public class SdlRouterService extends Service{
 			message.setData(bundle);
 			return message;
 		
-	}
-
-	@Deprecated
-	public void onTransportDisconnected(TransportType type) {
-		onTransportDisconnected(new TransportRecord(type,null));
 	}
 
 	public void onTransportDisconnected(TransportRecord record){
@@ -1909,16 +1888,6 @@ public class SdlRouterService extends Service{
 			}
 			registeredApps.clear();
 		}
-	}
-
-	@Deprecated
-	public void onTransportError(TransportType transportType){
-		onTransportError(new TransportRecord(transportType,null), null);
-	}
-
-	@Deprecated
-	public void onTransportError(TransportRecord record) {
-		onTransportError(record, null);
 	}
 
 	public void onTransportError(TransportRecord transport, Bundle errorBundle){
@@ -3071,24 +3040,6 @@ public class SdlRouterService extends Service{
 
 		//Primary will always be first
 		final SparseArray<ArrayList<TransportType>> registeredTransports;
-		
-		/**
-		 * This is a simple class to hold onto a reference of a registered app.
-		 * @param appId the supplied id for this app that is attempting to register
-		 * @param messenger the specific messenger that is tied to this app
-		 */
-		@Deprecated
-		public RegisteredApp(String appId, Messenger messenger){			
-			this.appId = appId;
-			this.messenger = messenger;
-			this.sessionIds = new Vector<Long>();
-			this.queues = new ConcurrentHashMap<>();
-			queueWaitHandler = new Handler();
-			registeredTransports = new SparseArray<ArrayList<TransportType>>();
-			awaitingSession = new Vector<>();
-			setDeathNote();
-			routerMessagingVersion = 1;
-		}
 
 		/**
 		 * This is a simple class to hold onto a reference of a registered app.
@@ -3135,9 +3086,6 @@ public class SdlRouterService extends Service{
 			return appId;
 		}
 
-		/*public long getAppId() {
-			return appId;
-		}*/
 		/**
 		 * This is a convenience variable and may not be used or useful in different protocols
 		 * @return a vector of all the session ids associated with this app
@@ -3373,11 +3321,6 @@ public class SdlRouterService extends Service{
 			}
 		}
 
-		@Deprecated
-		public void handleMessage(int flags, byte[] packet) {
-			handleMessage(flags,packet,null);
-		}
-
 		public void handleMessage(int flags, byte[] packet, TransportType transportType){
 			if(flags == TransportConstants.BYTES_TO_SEND_FLAG_LARGE_PACKET_START){
 				clearBuffer();
@@ -3514,12 +3457,6 @@ public class SdlRouterService extends Service{
 		private final long timestamp;
 		final Bundle receivedBundle;
 		TransportType transportType;
-		
-		@SuppressWarnings("SameParameterValue")
-		@Deprecated
-		public PacketWriteTask(byte[] bytes, int offset, int size, int priorityCoefficient) {
-			this(bytes, offset, size, priorityCoefficient,null);
-		}
 
 		public PacketWriteTask(byte[] bytes, int offset, int size, int priorityCoefficient, TransportType transportType){
 			timestamp = System.currentTimeMillis();

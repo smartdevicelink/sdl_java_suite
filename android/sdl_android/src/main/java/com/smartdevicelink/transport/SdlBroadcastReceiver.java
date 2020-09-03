@@ -457,15 +457,6 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			requestTransportStatus(context,null,true,true);
 		}
 	}
-	/**
-	 * If a Router Service is running, this method determines if that service is connected to a device over some form of transport.
-	 * @param context A context to access Android system services through. If null is passed, this will always return false
-	 * @param callback Use this callback to find out if the router service is connected or not. 
-	 */
-	@Deprecated
-	public static void requestTransportStatus(Context context, final SdlRouterStatusProvider.ConnectedStatusCallback callback){
-		requestTransportStatus(context,callback,false, true);
-	}
 
 	private static void requestTransportStatus(Context context, final SdlRouterStatusProvider.ConnectedStatusCallback callback, final boolean triggerRouterServicePing, final boolean lookForServices){
 		if(context == null){
