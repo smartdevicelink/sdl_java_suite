@@ -48,7 +48,7 @@ jar {
 
 task generateSources {
     outputs.upToDateWhen { false }
-    File outputDir = file("$buildDir/../../javaSE/src/main/java/com/smartdevicelink/")
+    File outputDir = file("$buildDir/../../../javaSE/javaSE/src/main/java/com/smartdevicelink/")
     outputs.dir outputDir
     doFirst {
         println "Generating BuildConfig.java ..."
