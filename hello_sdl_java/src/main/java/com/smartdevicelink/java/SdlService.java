@@ -47,7 +47,6 @@ import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.*;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
@@ -165,7 +164,8 @@ public class SdlService {
                             break;
                     }
                     if (isNeedUpdate) {
-                        return new LifecycleConfigurationUpdate(appName, null, TTSChunkFactory.createSimpleTTSChunks(ttsName), null);
+                        Vector<TTSChunk> chunks = new Vector<>(Collections.singletonList(new TTSChunk(ttsName, SpeechCapabilities.TEXT)));
+                        return new LifecycleConfigurationUpdate(appName, null, chunks, null);
                     } else {
                         return null;
                     }
@@ -297,7 +297,8 @@ public class SdlService {
      * Will speak a sample welcome message
      */
     private void performWelcomeSpeak(){
-        sdlManager.sendRPC(new Speak(TTSChunkFactory.createSimpleTTSChunks(WELCOME_SPEAK)));
+        List<TTSChunk> chunks = Collections.singletonList(new TTSChunk(WELCOME_SPEAK, SpeechCapabilities.TEXT));
+        sdlManager.sendRPC(new Speak(chunks));
     }
 
     /**
@@ -360,7 +361,8 @@ public class SdlService {
         sdlManager.getScreenManager().setTextField2("");
         sdlManager.getScreenManager().commit(null);
 
-        sdlManager.sendRPC(new Speak(TTSChunkFactory.createSimpleTTSChunks(TEST_COMMAND_NAME)));
+        List<TTSChunk> chunks = Collections.singletonList(new TTSChunk(TEST_COMMAND_NAME, SpeechCapabilities.TEXT));
+        sdlManager.sendRPC(new Speak(chunks));
     }
 
     private void showAlert(String text){

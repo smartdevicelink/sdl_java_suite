@@ -752,11 +752,6 @@ public class TransportBroker {
     /**
      * Use this method to let the router service know that you are requesting a new session from the head unit.
      */
-    @Deprecated
-    public void requestNewSession() {
-        requestNewSession(null);
-    }
-
     public void requestNewSession(TransportRecord transportRecord) {
         Message msg = Message.obtain();
         msg.what = TransportConstants.ROUTER_REQUEST_NEW_SESSION;
