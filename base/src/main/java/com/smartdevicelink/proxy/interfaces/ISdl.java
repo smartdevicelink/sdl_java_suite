@@ -94,35 +94,10 @@ public interface ISdl {
     void startVideoService(VideoStreamingParameters parameters, boolean encrypted);
 
     /**
-     * Starts the video streaming service
-     * @param isEncrypted flag to start this service with encryption or not
-     * @param parameters desired video streaming params for this sevice to be started with
-     */
-    @Deprecated
-    IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters);
-
-    /**
-     * Starts the Audio streaming service
-     * @param encrypted flag to start this service with encryption or not
-     */
-    @Deprecated
-    void startAudioService(boolean encrypted, AudioStreamingCodec codec, AudioStreamingParams params);
-
-    /**
      * Starts the Audio streaming service
      * @param encrypted flag to start this service with encryption or not
      */
     void startAudioService(boolean encrypted);
-
-    /**
-     * Start Audio Stream and return IAudioStreamListener
-     * @param isEncrypted whether or not the audio stream should be encrypted
-     * @param codec the codec that should be used for the audio stream
-     * @param params specific options and settings associated with the audio stream
-     * @return IAudioStreamListener, an interface that allows the writing of audio data
-     */
-    @Deprecated
-    IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec, AudioStreamingParams params);
 
     /**
      * Pass an RPC message through the proxy to be sent to the connected module

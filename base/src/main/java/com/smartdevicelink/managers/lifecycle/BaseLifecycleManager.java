@@ -947,25 +947,8 @@ abstract class BaseLifecycleManager {
         }
 
         @Override
-        public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
-            DebugTool.logWarning(TAG, "startVideoStream is not currently implemented");
-            return null;
-        }
-
-        @Override
-        public void startAudioService(boolean encrypted, AudioStreamingCodec codec, AudioStreamingParams params) {
-            DebugTool.logWarning(TAG, "startAudioService is not currently implemented");
-        }
-
-        @Override
         public void startAudioService(boolean encrypted) {
             BaseLifecycleManager.this.startAudioService(encrypted);
-        }
-
-        @Override
-        public IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec, AudioStreamingParams params) {
-            DebugTool.logWarning(TAG, "startAudioStream is not currently implemented");
-            return null;
         }
 
         @Override
