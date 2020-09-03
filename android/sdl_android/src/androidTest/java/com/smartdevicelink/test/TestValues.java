@@ -1031,7 +1031,7 @@ public class TestValues {
 
 		GENERAL_LOCKSCREENCONFIG.setAppIcon(R.drawable.sdl_lockscreen_icon);
 		GENERAL_LOCKSCREENCONFIG.setBackgroundColor(Color.BLUE);
-		GENERAL_LOCKSCREENCONFIG.setEnabled(true);
+		GENERAL_LOCKSCREENCONFIG.setDisplayMode(LockScreenConfig.DISPLAY_MODE_ALWAYS);
 		GENERAL_LOCKSCREENCONFIG.setCustomView(R.layout.activity_sdllock_screen);
 		GENERAL_CLOUDAPPPROPERTIES.setNicknames(GENERAL_STRING_LIST);
 		GENERAL_CLOUDAPPPROPERTIES.setAppID(GENERAL_STRING);

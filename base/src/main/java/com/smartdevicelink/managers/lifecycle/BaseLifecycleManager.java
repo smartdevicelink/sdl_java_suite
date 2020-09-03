@@ -1028,7 +1028,7 @@ abstract class BaseLifecycleManager {
         @Override
         public Object getCapability(SystemCapabilityType systemCapabilityType) {
             if (BaseLifecycleManager.this.systemCapabilityManager != null) {
-                return BaseLifecycleManager.this.systemCapabilityManager.getCapability(systemCapabilityType);
+                return BaseLifecycleManager.this.systemCapabilityManager.getCapability(systemCapabilityType, null, false);
             } else {
                 return null;
             }
@@ -1037,7 +1037,7 @@ abstract class BaseLifecycleManager {
         @Override
         public void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener) {
             if (BaseLifecycleManager.this.systemCapabilityManager != null) {
-                BaseLifecycleManager.this.systemCapabilityManager.getCapability(systemCapabilityType, scListener);
+                BaseLifecycleManager.this.systemCapabilityManager.getCapability(systemCapabilityType, scListener, false);
             }
         }
 
@@ -1186,11 +1186,6 @@ abstract class BaseLifecycleManager {
         if (encryptionLifecycleManager != null) {
             encryptionLifecycleManager.dispose();
         }
-    }
-
-    @Deprecated
-    public void setSdlSecurityClassList(List<Class<? extends SdlSecurityBase>> list) {
-        _secList = list;
     }
 
     /**
