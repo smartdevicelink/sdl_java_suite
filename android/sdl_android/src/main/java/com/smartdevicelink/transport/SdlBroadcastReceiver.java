@@ -462,11 +462,6 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	 * @param context A context to access Android system services through. If null is passed, this will always return false
 	 * @param callback Use this callback to find out if the router service is connected or not. 
 	 */
-	@Deprecated
-	public static void requestTransportStatus(Context context, final SdlRouterStatusProvider.ConnectedStatusCallback callback){
-		requestTransportStatus(context,callback,false, true);
-	}
-
 	private static void requestTransportStatus(Context context, final SdlRouterStatusProvider.ConnectedStatusCallback callback, final boolean triggerRouterServicePing, final boolean lookForServices){
 		if(context == null){
 			if(callback!=null){

@@ -89,41 +89,6 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
         mBluetoothLevel = SdlRouterService.getBluetoothPrefs(SHARED_PREFS);
     }
 
-
-    /**
-     * This method has been deprecated. It will return an instance of MultiplexBluetoothTransport but <b>should not</b> be used.
-     * @param handler for receiving status messages from the transport
-     * @return an instance of MultiplexBluetoothTransport
-     * @deprecated
-     */
-	@Deprecated
-    public synchronized static MultiplexBluetoothTransport getBluetoothSerialServerInstance(Handler handler){
-    	return new MultiplexBluetoothTransport(handler);
-    }
-    /**
-     * This method has been deprecated. It will return an instance of MultiplexBluetoothTransport but <b>should not</b> be used.
-     * @param handler for receiving status messages from the transport
-     * @param keepSocketAlive Flag for keeping the socket alive
-     * @return an instance of MultiplexBluetoothTransport
-     * @deprecated
-     */
-	@Deprecated
-    public synchronized static MultiplexBluetoothTransport getBluetoothSerialServerInstance(Handler handler, boolean keepSocketAlive){
-        MultiplexBluetoothTransport transport = new MultiplexBluetoothTransport(handler);
-        transport.setKeepSocketAlive(keepSocketAlive);
-    	return transport;
-    }
-
-    /**
-     * This method has been deprecated. <b>It will always return null.</b>
-     * @return always null
-     * @deprecated
-     */
-    @Deprecated
-    public synchronized static MultiplexBluetoothTransport getBluetoothSerialServerInstance(){
-    	return null;
-    }
-
     //These methods are used so we can have a semi-static reference to the Accept Thread (Static reference inherited by housing class)
     private synchronized AcceptThread getAcceptThread(){
     	return mSecureAcceptThread;
