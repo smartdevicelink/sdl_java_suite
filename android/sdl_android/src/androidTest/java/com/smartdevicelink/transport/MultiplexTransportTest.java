@@ -25,9 +25,6 @@ public class MultiplexTransportTest {
 	public void setUp() throws Exception {
 		rsvp = new RouterServiceValidator(getInstrumentation().getTargetContext());
 		rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_NONE);
-		rsvp.validate();
-
-		
 	}
 	// test for setting error state.
 	@Test

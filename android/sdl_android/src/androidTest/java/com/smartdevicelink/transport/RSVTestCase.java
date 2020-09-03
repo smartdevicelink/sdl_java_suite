@@ -76,51 +76,6 @@ public class RSVTestCase {
 			releaseTListLock();
 		}
 	};
-	
-/*
- * These tests are a little strange because they don't test the logic behind the validation of each piece.
- * However, they allow us to test
- */
-
-	@Test
-	public void testInstalledFrom(){
-		if(liveTest){
-			rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_INSTALLED_FROM_CHECK);
-			assertTrue(rsvp.validate());
-		}
-	}
-
-	@Test
-	public void testPackageCheck(){
-		if(liveTest){
-			rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_PACKAGE_CHECK);
-			assertTrue(rsvp.validate());
-		}
-	}
-
-	@Test
-	public void testVersionCheck(){
-		if(liveTest){
-			rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_VERSION_CHECK);
-			assertTrue(rsvp.validate());
-		}
-	}
-
-	@Test
-	public void testNoFlags(){
-		if(liveTest){
-			rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_NONE);
-			assertTrue(rsvp.validate());
-		}
-	}
-
-	@Test
-	public void testAllFlags(){
-		if(liveTest){
-			rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_PERFORM_ALL_CHECKS);
-			assertTrue(rsvp.validate());
-		}
-	}
 
 	@Test
 	public void testSecuritySetting(){
@@ -185,25 +140,6 @@ public class RSVTestCase {
 		assertEquals(RouterServiceValidator.getRefreshRate(), REFRESH_TRUSTED_APP_LIST_TIME_MONTH);
 		
 		assertTrue(RouterServiceValidator.createTrustedListRequest(getInstrumentation().getTargetContext(), true, null, trustedListCallback));
-		
-	}
-
-	@Test
-	public void testNoSecurity(){
-		requestTListLock();
-
-		RouterServiceValidator rsvp = new RouterServiceValidator(getInstrumentation().getTargetContext()); //Use a locally scoped instance
-		rsvp.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
-		rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_INSTALLED_FROM_CHECK);
-		
-		assertTrue(checkShouldOverrideInstalledFrom(rsvp,true));
-		
-		assertEquals(RouterServiceValidator.getRefreshRate(), REFRESH_TRUSTED_APP_LIST_TIME_WEEK);
-		
-		assertFalse(RouterServiceValidator.createTrustedListRequest(getInstrumentation().getTargetContext(), true, null, trustedListCallback));
-		
-		//This should always return true
-		assertTrue(rsvp.validate());
 		
 	}
 	
@@ -370,8 +306,14 @@ public class RSVTestCase {
 				releaseTListLock();
 			}
 		};
-		
-		assertTrue(RouterServiceValidator.createTrustedListRequest(getInstrumentation().getTargetContext(),true, cb));
+
+		assertTrue(RouterServiceValidator.createTrustedListRequest(getInstrumentation().getTargetContext(), true, cb, new RouterServiceValidator.TrustedListCallback() {
+			@Override
+			public void onListObtained(boolean successful) {
+				assertTrue(successful);
+			}
+		}));
+
 		//Now wait for call to finish
 		synchronized(REQUEST_LOCK){
 			try {
@@ -424,39 +366,6 @@ public class RSVTestCase {
 		RouterServiceValidator.setLastRequest(getInstrumentation().getTargetContext(), null);
 
 		releaseTListLock();
-	}
-
-	/**
-	 * Test app's router validation. Validation should fail when the given context and ComponentName object are from different packages and security setting is not OFF
-	 * and app is not on trusted list. Validation should pass when the given context and ComponentName object are from the same package.
-	 */
-	@Test
-	public void testAppSelfValidation() {
-
-		class RouterServiceValidatorTest extends RouterServiceValidator{
-			public RouterServiceValidatorTest(Context context){
-				super(context);
-			}
-
-			public RouterServiceValidatorTest(Context context, ComponentName service){
-				super(context, service);
-			}
-
-			// Override this method and simply returning true for the purpose of this test
-			protected boolean isServiceRunning(Context context, ComponentName service){
-				return true;
-			}
-		}
-
-		// Fail, different package name for context and service and app security setting is not OFF and app is not on trusted list
-		RouterServiceValidatorTest rsvpFail = new RouterServiceValidatorTest(getInstrumentation().getTargetContext(), new ComponentName("anything", getInstrumentation().getTargetContext().getClass().getSimpleName()));
-		rsvpFail.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH);
-		assertFalse(rsvpFail.validate());
-
-		// Success, same package name for context and service
-		RouterServiceValidatorTest rsvpPass = new RouterServiceValidatorTest(getInstrumentation().getTargetContext(), new ComponentName(getInstrumentation().getTargetContext().getPackageName(), getInstrumentation().getTargetContext().getClass().getSimpleName()));
-		rsvpPass.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH);
-		assertTrue(rsvpPass.validate());
 	}
 
 	/**

@@ -27,8 +27,6 @@ public class TransportBrokerTest { //FIXME this test class needs to be fixed. At
 	@Before
 	public void setUp() throws Exception {
 		rsvp = new RouterServiceValidator(getInstrumentation().getTargetContext());
-		rsvp.validate();
-		
 	}
 	
 	private void sleep(){
