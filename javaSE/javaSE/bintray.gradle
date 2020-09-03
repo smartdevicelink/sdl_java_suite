@@ -5,7 +5,7 @@ apply plugin: 'maven'
 def siteUrl = 'https://github.com/smartdevicelink/sdl_java_suite'      // Homepage URL of the library
 def gitUrl = 'https://github.com/smartdevicelink/sdl_java_suite.git'   // Git repository URL
 def libDescription = 'SmartDeviceLink mobile library'
-def libVersion = new File(projectDir.path, ('/../VERSION')).text.trim()
+def libVersion = new File(projectDir.path, ('/../../VERSION')).text.trim()
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
@@ -54,7 +54,7 @@ bintray {
 def pomConfig = {
     Properties props = new Properties()
     props.load(new FileInputStream("$projectDir/bintray.properties"))
-
+    
     licenses {
         license {
             name 'BSD 3-Clause'
