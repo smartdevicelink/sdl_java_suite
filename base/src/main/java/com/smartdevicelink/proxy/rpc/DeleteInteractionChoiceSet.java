@@ -131,8 +131,9 @@ public class DeleteInteractionChoiceSet extends RPCRequest {
 	 * Sets a unique ID that identifies the Choice Set
 	 * @param interactionChoiceSetID a unique ID that identifies the Choice Set
 	 * <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000 </p>
-	 */    
-    public void setInteractionChoiceSetID( @NonNull Integer interactionChoiceSetID ) {
-		setParameters(KEY_INTERACTION_CHOICE_SET_ID, interactionChoiceSetID);
+	 */
+    public DeleteInteractionChoiceSet setInteractionChoiceSetID(@NonNull Integer interactionChoiceSetID) {
+        setParameters(KEY_INTERACTION_CHOICE_SET_ID, interactionChoiceSetID);
+        return this;
     }
 }

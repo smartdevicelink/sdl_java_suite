@@ -71,9 +71,10 @@ public class SendHapticData extends RPCRequest {
      * When a request is sent, if successful, it will replace all spatial data previously sent through RPC.
 	 * If an empty array is sent, the existing spatial data will be cleared
 	 */
-	public void setHapticRectData(List<HapticRect> hapticRectData) {
-		setParameters(KEY_HAPTIC_RECT_DATA, hapticRectData);
-	}
+	public SendHapticData setHapticRectData( List<HapticRect> hapticRectData) {
+        setParameters(KEY_HAPTIC_RECT_DATA, hapticRectData);
+        return this;
+    }
 
 	/**
 	 * Get the haptic data

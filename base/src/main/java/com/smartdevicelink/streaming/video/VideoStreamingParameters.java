@@ -175,44 +175,6 @@ public class VideoStreamingParameters {
 
     }
 
-    /**
-     * Update the values contained in the capability that should have been returned through the SystemCapabilityManager.
-     * This update will use the most preferred streaming format from the module.
-     * @param capability the video streaming capability returned from the SystemCapabilityManager
-     * @see com.smartdevicelink.proxy.SystemCapabilityManager
-     * @see VideoStreamingCapability
-     */
-    @Deprecated
-    public void update(VideoStreamingCapability capability){
-        if(capability.getMaxBitrate()!=null){ this.bitrate = capability.getMaxBitrate() * 1000; } // NOTE: the unit of maxBitrate in getSystemCapability is kbps.
-        double scale = DEFAULT_SCALE;
-        if(capability.getScale() != null) { scale = capability.getScale(); }
-        ImageResolution resolution = capability.getPreferredResolution();
-        if(resolution!=null){
-
-            if(resolution.getResolutionHeight()!=null && resolution.getResolutionHeight() > 0){ this.resolution.setResolutionHeight((int)(resolution.getResolutionHeight() / scale)); }
-            if(resolution.getResolutionWidth()!=null && resolution.getResolutionWidth() > 0){ this.resolution.setResolutionWidth((int)(resolution.getResolutionWidth() / scale)); }
-        }
-
-        // This should be the last call as it will return out once a suitable format is found
-        final List<VideoStreamingFormat> formats = capability.getSupportedFormats();
-        if(formats != null && formats.size()>0){
-            for(VideoStreamingFormat format : formats){
-                for(int i = 0; i < CURRENTLY_SUPPORTED_FORMATS.length; i ++){
-                    if(CURRENTLY_SUPPORTED_FORMATS[i].equals(format) ){
-                        this.format = format;
-                        return;
-                    }
-                }
-            }
-            DebugTool.logWarning(TAG, "The VideoStreamingFormat has not been updated because none of the provided formats are supported.");
-
-            //TODO In the future we should set format to null, but might be a breaking change
-            // For now, format will remain whatever was set prior to this update
-        }
-
-    }
-
     @SuppressWarnings("unused")
     public void setDisplayDensity(int displayDensity) {
         this.displayDensity = displayDensity;

@@ -70,6 +70,7 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
 		msg.setWindowStatus(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_WINDOWSTATUS.ordinal()));
 		msg.setHandsOffSteering(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_HANDSOFFSTEERING.ordinal()));
 		msg.setGearStatus(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_GEARSTATUS.ordinal()));
+		msg.setStabilityControlsStatus(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_STABILITYCONTROLSSTATUS.ordinal()));
 		msg.setOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA);
 
 		return msg;
@@ -124,6 +125,8 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
 	        result.put(SubscribeVehicleDataResponse.KEY_TURN_SIGNAL, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_TURNSIGNAL.ordinal()).serializeJSON());
 			result.put(SubscribeVehicleDataResponse.KEY_GEAR_STATUS, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_GEARSTATUS.ordinal()).serializeJSON());
 			result.put(SubscribeVehicleDataResponse.KEY_ELECTRONIC_PARK_BRAKE_STATUS, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_ELECTRONICPARKBRAKESTATUS.ordinal()).serializeJSON());
+	        result.put(SubscribeVehicleDataResponse.KEY_STABILITY_CONTROLS_STATUS, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_STABILITYCONTROLSSTATUS.ordinal()).serializeJSON());
+	        result.put(SubscribeVehicleDataResponse.KEY_ELECTRONIC_PARK_BRAKE_STATUS, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_ELECTRONICPARKBRAKESTATUS.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_HANDS_OFF_STEERING, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_HANDSOFFSTEERING.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_WINDOW_STATUS, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_WINDOWSTATUS.ordinal()).serializeJSON());
 	        result.put(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA.serializeJSON());
@@ -171,6 +174,7 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
 		VehicleDataResult testHOffSteering   = ( (UnsubscribeVehicleDataResponse) msg ).getHandsOffSteering();
 		VehicleDataResult testGearStatus     = ( (UnsubscribeVehicleDataResponse) msg ).getGearStatus();
 		VehicleDataResult testWindowStatus   = ( (UnsubscribeVehicleDataResponse) msg ).getWindowStatus();
+		VehicleDataResult testStabilityControlStatus   = ( (UnsubscribeVehicleDataResponse) msg ).getStabilityControlsStatus();
 		VehicleDataResult testOemCustomData   = ( (UnsubscribeVehicleDataResponse) msg ).getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME);
 		
 		// Valid Tests
@@ -204,6 +208,7 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
 	    assertTrue(TestValues.TRUE, testEBrakeStatus.getDataType().equals(VehicleDataType.VEHICLEDATA_ELECTRONICPARKBRAKESTATUS));
 	    assertTrue(TestValues.TRUE, testHOffSteering.getDataType().equals(VehicleDataType.VEHICLEDATA_HANDSOFFSTEERING));
 	    assertTrue(TestValues.TRUE, testWindowStatus.getDataType().equals(VehicleDataType.VEHICLEDATA_WINDOWSTATUS));
+	    assertTrue(TestValues.TRUE, testStabilityControlStatus.getDataType().equals(VehicleDataType.VEHICLEDATA_STABILITYCONTROLSSTATUS));
 	    assertTrue(TestValues.TRUE, testOemCustomData.getOEMCustomVehicleDataType().equals(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
 		assertTrue(TestValues.TRUE, testGearStatus.getDataType().equals(VehicleDataType.VEHICLEDATA_GEARSTATUS));
 
@@ -243,6 +248,8 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
 		assertNull(TestValues.NULL, msg.getGearStatus());
 		assertNull(TestValues.NULL, msg.getHandsOffSteering());
 		assertNull(TestValues.NULL, msg.getWindowStatus());
+        assertNull(TestValues.NULL, msg.getHandsOffSteering());
+        assertNull(TestValues.NULL, msg.getStabilityControlsStatus());
         assertNull(TestValues.NULL, msg.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
     }
 
@@ -394,6 +401,10 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
 			JSONObject oemCustomData = JsonUtils.readJsonObjectFromJsonObject(parameters, TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME);
 			VehicleDataResult referenceOemCustomData = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(oemCustomData));
 			assertTrue(TestValues.TRUE, Validator.validateVehicleDataResult(referenceOemCustomData, cmd.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME)));
+
+			JSONObject stabilityControlsStatus = JsonUtils.readJsonObjectFromJsonObject(parameters, UnsubscribeVehicleDataResponse.KEY_STABILITY_CONTROLS_STATUS);
+			VehicleDataResult referenceStabilityControlStatus = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(stabilityControlsStatus));
+			assertTrue(TestValues.TRUE, Validator.validateStabilityControlStatus(referenceStabilityControlStatus, cmd.getStabilityControlsStatus()));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

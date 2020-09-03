@@ -78,9 +78,10 @@ public class MassageModeData extends RPCStruct {
 	 *
 	 * @param massageZone the zone of a multi-contour massage seat
 	 */
-	public void setMassageZone(@NonNull MassageZone massageZone) {
-		setValue(KEY_MASSAGE_ZONE, massageZone);
-	}
+	public MassageModeData setMassageZone(@NonNull MassageZone massageZone) {
+        setValue(KEY_MASSAGE_ZONE, massageZone);
+        return this;
+    }
 
 	/**
 	 * Gets the massageZone that will be associated with the supplied massage mode
@@ -105,7 +106,8 @@ public class MassageModeData extends RPCStruct {
 	 *
 	 * @param massageMode mode of massage to be used (OFF, LOW, HIGH)
 	 */
-	public void setMassageMode(@NonNull MassageMode massageMode) {
-		setValue(KEY_MASSAGE_MODE, massageMode);
-	}
+	public MassageModeData setMassageMode(@NonNull MassageMode massageMode) {
+        setValue(KEY_MASSAGE_MODE, massageMode);
+        return this;
+    }
 }

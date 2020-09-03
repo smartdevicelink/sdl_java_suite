@@ -73,9 +73,10 @@ public class GetFileResponse extends RPCResponse {
 	 * File type that is being sent in response
 	 * @param fileType -
 	 */
-	public void setFileType(FileType fileType){
-		setParameters(KEY_FILE_TYPE, fileType);
-	}
+	public GetFileResponse setFileType( FileType fileType) {
+        setParameters(KEY_FILE_TYPE, fileType);
+        return this;
+    }
 
 	/**
 	 * File type that is being sent in response
@@ -90,9 +91,10 @@ public class GetFileResponse extends RPCResponse {
 	 * minvalue="0" maxvalue="2000000000"
 	 * @param offset -
 	 */
-	public void setOffset(Integer offset){
-		setParameters(KEY_OFFSET, offset);
-	}
+	public GetFileResponse setOffset( Integer offset) {
+        setParameters(KEY_OFFSET, offset);
+        return this;
+    }
 
 	/**
 	 * Optional offset in bytes for resuming partial data chunks
@@ -109,9 +111,10 @@ public class GetFileResponse extends RPCResponse {
 	 * minvalue="0" maxvalue="2000000000"
 	 * @param length -
 	 */
-	public void setLength(Integer length){
-		setParameters(KEY_LENGTH, length);
-	}
+	public GetFileResponse setLength( Integer length) {
+        setParameters(KEY_LENGTH, length);
+        return this;
+    }
 
 	/**
 	 * Optional length in bytes for resuming partial data chunks if offset is set to 0, then length
@@ -128,9 +131,10 @@ public class GetFileResponse extends RPCResponse {
 	 * minvalue="0" maxvalue="4294967295"
 	 * @param crc -
 	 */
-	public void setCRC(Integer crc){
-		setParameters(KEY_CRC, crc);
-	}
+	public GetFileResponse setCRC( Integer crc) {
+        setParameters(KEY_CRC, crc);
+        return this;
+    }
 
 	/**
 	 * Additional CRC32 checksum to protect data integrity up to 512 Mbits

@@ -112,11 +112,6 @@ public class SdlManagerTests {
 			}
 
 			@Override
-			public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language) {
-				return null;
-			}
-
-			@Override
 			public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language, Language hmiLanguage) {
 				return null;
 			}
@@ -222,7 +217,7 @@ public class SdlManagerTests {
 		sdlManager.getPermissionManager().transitionToState(BaseSubManager.READY);
 		sdlManager.getFileManager().transitionToState(BaseSubManager.READY);
 		sdlManager.getScreenManager().transitionToState(BaseSubManager.READY);
-		sdlManager.getLockScreenConfig().setEnabled(true);
+		sdlManager.getLockScreenConfig().setDisplayMode(LockScreenConfig.DISPLAY_MODE_ALWAYS);
 		sdlManager.getLockScreenManager().transitionToState(BaseSubManager.READY);
 		sdlManager.checkState();
 		assertEquals(BaseSubManager.READY, sdlManager.getState());
@@ -232,7 +227,7 @@ public class SdlManagerTests {
 		sdlManager.getPermissionManager().transitionToState(BaseSubManager.READY);
 		sdlManager.getFileManager().transitionToState(BaseSubManager.READY);
 		sdlManager.getScreenManager().transitionToState(BaseSubManager.READY);
-		sdlManager.getLockScreenConfig().setEnabled(false);
+		sdlManager.getLockScreenConfig().setDisplayMode(LockScreenConfig.DISPLAY_MODE_NEVER);
 		sdlManager.getLockScreenManager().transitionToState(BaseSubManager.SETTING_UP);
 		sdlManager.checkState();
 		assertEquals(BaseSubManager.READY, sdlManager.getState());
@@ -242,7 +237,7 @@ public class SdlManagerTests {
 		sdlManager.getPermissionManager().transitionToState(BaseSubManager.ERROR);
 		sdlManager.getFileManager().transitionToState(BaseSubManager.ERROR);
 		sdlManager.getScreenManager().transitionToState(BaseSubManager.ERROR);
-		sdlManager.getLockScreenConfig().setEnabled(true);
+		sdlManager.getLockScreenConfig().setDisplayMode(LockScreenConfig.DISPLAY_MODE_ALWAYS);
 		sdlManager.getLockScreenManager().transitionToState(BaseSubManager.ERROR);
 		sdlManager.checkState();
 		assertEquals(BaseSubManager.ERROR, sdlManager.getState());
@@ -252,7 +247,7 @@ public class SdlManagerTests {
 		sdlManager.getPermissionManager().transitionToState(BaseSubManager.ERROR);
 		sdlManager.getFileManager().transitionToState(BaseSubManager.ERROR);
 		sdlManager.getScreenManager().transitionToState(BaseSubManager.ERROR);
-		sdlManager.getLockScreenConfig().setEnabled(false);
+		sdlManager.getLockScreenConfig().setDisplayMode(LockScreenConfig.DISPLAY_MODE_NEVER);
 		sdlManager.getLockScreenManager().transitionToState(BaseSubManager.SETTING_UP);
 		sdlManager.checkState();
 		assertEquals(BaseSubManager.ERROR, sdlManager.getState());
@@ -262,7 +257,7 @@ public class SdlManagerTests {
 		sdlManager.getPermissionManager().transitionToState(BaseSubManager.ERROR);
 		sdlManager.getFileManager().transitionToState(BaseSubManager.READY);
 		sdlManager.getScreenManager().transitionToState(BaseSubManager.SETTING_UP);
-		sdlManager.getLockScreenConfig().setEnabled(true);
+		sdlManager.getLockScreenConfig().setDisplayMode(LockScreenConfig.DISPLAY_MODE_ALWAYS);
 		sdlManager.getLockScreenManager().transitionToState(BaseSubManager.LIMITED);
 		sdlManager.checkState();
 		assertEquals(BaseSubManager.SETTING_UP, sdlManager.getState());
@@ -272,7 +267,7 @@ public class SdlManagerTests {
 		sdlManager.getPermissionManager().transitionToState(BaseSubManager.ERROR);
 		sdlManager.getFileManager().transitionToState(BaseSubManager.READY);
 		sdlManager.getScreenManager().transitionToState(BaseSubManager.SETTING_UP);
-		sdlManager.getLockScreenConfig().setEnabled(false);
+		sdlManager.getLockScreenConfig().setDisplayMode(LockScreenConfig.DISPLAY_MODE_NEVER);
 		sdlManager.getLockScreenManager().transitionToState(BaseSubManager.SETTING_UP);
 		sdlManager.checkState();
 		assertEquals(BaseSubManager.SETTING_UP, sdlManager.getState());
@@ -282,7 +277,7 @@ public class SdlManagerTests {
 		sdlManager.getPermissionManager().transitionToState(BaseSubManager.READY);
 		sdlManager.getFileManager().transitionToState(BaseSubManager.ERROR);
 		sdlManager.getScreenManager().transitionToState(BaseSubManager.READY);
-		sdlManager.getLockScreenConfig().setEnabled(true);
+		sdlManager.getLockScreenConfig().setDisplayMode(LockScreenConfig.DISPLAY_MODE_ALWAYS);
 		sdlManager.getLockScreenManager().transitionToState(BaseSubManager.READY);
 		sdlManager.checkState();
 		assertEquals(BaseSubManager.LIMITED, sdlManager.getState());
@@ -292,7 +287,7 @@ public class SdlManagerTests {
 		sdlManager.getPermissionManager().transitionToState(BaseSubManager.READY);
 		sdlManager.getFileManager().transitionToState(BaseSubManager.ERROR);
 		sdlManager.getScreenManager().transitionToState(BaseSubManager.READY);
-		sdlManager.getLockScreenConfig().setEnabled(false);
+		sdlManager.getLockScreenConfig().setDisplayMode(LockScreenConfig.DISPLAY_MODE_NEVER);
 		sdlManager.getLockScreenManager().transitionToState(BaseSubManager.SETTING_UP);
 		sdlManager.checkState();
 		assertEquals(BaseSubManager.LIMITED, sdlManager.getState());
@@ -302,7 +297,7 @@ public class SdlManagerTests {
 		sdlManager.getPermissionManager().transitionToState(BaseSubManager.READY);
 		sdlManager.getFileManager().transitionToState(BaseSubManager.LIMITED);
 		sdlManager.getScreenManager().transitionToState(BaseSubManager.ERROR);
-		sdlManager.getLockScreenConfig().setEnabled(true);
+		sdlManager.getLockScreenConfig().setDisplayMode(LockScreenConfig.DISPLAY_MODE_ALWAYS);
 		sdlManager.getLockScreenManager().transitionToState(BaseSubManager.READY);
 		sdlManager.checkState();
 		assertEquals(BaseSubManager.LIMITED, sdlManager.getState());
@@ -312,7 +307,7 @@ public class SdlManagerTests {
 		sdlManager.getPermissionManager().transitionToState(BaseSubManager.READY);
 		sdlManager.getFileManager().transitionToState(BaseSubManager.LIMITED);
 		sdlManager.getScreenManager().transitionToState(BaseSubManager.ERROR);
-		sdlManager.getLockScreenConfig().setEnabled(false);
+		sdlManager.getLockScreenConfig().setDisplayMode(LockScreenConfig.DISPLAY_MODE_NEVER);
 		sdlManager.getLockScreenManager().transitionToState(BaseSubManager.SETTING_UP);
 		sdlManager.checkState();
 		assertEquals(BaseSubManager.LIMITED, sdlManager.getState());

@@ -149,50 +149,58 @@ public class AirbagStatus extends RPCStruct {
         setPassengerKneeAirbagDeployed(passengerKneeAirbagDeployed);
     }
 
-    public void setDriverAirbagDeployed(@NonNull VehicleDataEventStatus driverAirbagDeployed) {
+    public AirbagStatus setDriverAirbagDeployed(@NonNull VehicleDataEventStatus driverAirbagDeployed) {
         setValue(KEY_DRIVER_AIRBAG_DEPLOYED, driverAirbagDeployed);
+        return this;
     }
     public VehicleDataEventStatus getDriverAirbagDeployed() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_DRIVER_AIRBAG_DEPLOYED);
     }
-    public void setDriverSideAirbagDeployed(@NonNull VehicleDataEventStatus driverSideAirbagDeployed) {
+    public AirbagStatus setDriverSideAirbagDeployed(@NonNull VehicleDataEventStatus driverSideAirbagDeployed) {
         setValue(KEY_DRIVER_SIDE_AIRBAG_DEPLOYED, driverSideAirbagDeployed);
+        return this;
     }
     public VehicleDataEventStatus getDriverSideAirbagDeployed() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_DRIVER_SIDE_AIRBAG_DEPLOYED);
     }
-    public void setDriverCurtainAirbagDeployed(@NonNull VehicleDataEventStatus driverCurtainAirbagDeployed) {
+    public AirbagStatus setDriverCurtainAirbagDeployed(@NonNull VehicleDataEventStatus driverCurtainAirbagDeployed) {
         setValue(KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED, driverCurtainAirbagDeployed);
+        return this;
     }
     public VehicleDataEventStatus getDriverCurtainAirbagDeployed() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED);
     }
-    public void setPassengerAirbagDeployed(@NonNull VehicleDataEventStatus passengerAirbagDeployed) {
+    public AirbagStatus setPassengerAirbagDeployed(@NonNull VehicleDataEventStatus passengerAirbagDeployed) {
         setValue(KEY_PASSENGER_AIRBAG_DEPLOYED, passengerAirbagDeployed);
+        return this;
     }
     public VehicleDataEventStatus getPassengerAirbagDeployed() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_PASSENGER_AIRBAG_DEPLOYED);
     }
-    public void setPassengerCurtainAirbagDeployed(@NonNull VehicleDataEventStatus passengerCurtainAirbagDeployed) {
+    public AirbagStatus setPassengerCurtainAirbagDeployed(@NonNull VehicleDataEventStatus passengerCurtainAirbagDeployed) {
         setValue(KEY_PASSENGER_CURTAIN_AIRBAG_DEPLOYED, passengerCurtainAirbagDeployed);
+        return this;
     }
     public VehicleDataEventStatus getPassengerCurtainAirbagDeployed() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_PASSENGER_CURTAIN_AIRBAG_DEPLOYED);
     }
-    public void setDriverKneeAirbagDeployed(@NonNull VehicleDataEventStatus driverKneeAirbagDeployed) {
+    public AirbagStatus setDriverKneeAirbagDeployed(@NonNull VehicleDataEventStatus driverKneeAirbagDeployed) {
         setValue(KEY_DRIVER_KNEE_AIRBAG_DEPLOYED, driverKneeAirbagDeployed);
+        return this;
     }
     public VehicleDataEventStatus getDriverKneeAirbagDeployed() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_DRIVER_KNEE_AIRBAG_DEPLOYED);
     }
-    public void setPassengerSideAirbagDeployed(@NonNull VehicleDataEventStatus passengerSideAirbagDeployed) {
+    public AirbagStatus setPassengerSideAirbagDeployed(@NonNull VehicleDataEventStatus passengerSideAirbagDeployed) {
         setValue(KEY_PASSENGER_SIDE_AIRBAG_DEPLOYED, passengerSideAirbagDeployed);
+        return this;
     }
     public VehicleDataEventStatus getPassengerSideAirbagDeployed() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_PASSENGER_SIDE_AIRBAG_DEPLOYED);
     }
-    public void setPassengerKneeAirbagDeployed(@NonNull VehicleDataEventStatus passengerKneeAirbagDeployed) {
+    public AirbagStatus setPassengerKneeAirbagDeployed(@NonNull VehicleDataEventStatus passengerKneeAirbagDeployed) {
         setValue(KEY_PASSENGER_KNEE_AIRBAG_DEPLOYED, passengerKneeAirbagDeployed);
+        return this;
     }
     public VehicleDataEventStatus getPassengerKneeAirbagDeployed() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_PASSENGER_KNEE_AIRBAG_DEPLOYED);

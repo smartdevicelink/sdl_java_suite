@@ -116,14 +116,14 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 		}
 		
         if(!(action.equalsIgnoreCase(BluetoothDevice.ACTION_ACL_CONNECTED)
-        		|| action.equalsIgnoreCase(USBTransport.ACTION_USB_ACCESSORY_ATTACHED)
+        		|| action.equalsIgnoreCase(TransportConstants.ACTION_USB_ACCESSORY_ATTACHED)
         		|| action.equalsIgnoreCase(TransportConstants.START_ROUTER_SERVICE_ACTION))){
         	//We don't want anything else here if the child class called super and has different intent filters
         	//Log.i(TAG, "Unwanted intent from child class");
         	return;
         }
         
-        if(action.equalsIgnoreCase(USBTransport.ACTION_USB_ACCESSORY_ATTACHED)){
+        if(action.equalsIgnoreCase(TransportConstants.ACTION_USB_ACCESSORY_ATTACHED)){
 			DebugTool.logInfo(TAG,"Usb connected");
         	intent.setAction(null);
 			onSdlEnabled(context, intent);
@@ -240,7 +240,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 				context.startService(serviceIntent);
 			} else {
 				serviceIntent.putExtra(FOREGROUND_EXTRA, true);
-				DebugTool.logInfo("Attempting to startForegroundService - " + System.currentTimeMillis());
+				DebugTool.logInfo(TAG, "Attempting to startForegroundService - " + System.currentTimeMillis());
 				setForegroundExceptionHandler(); //Prevent ANR in case the OS takes too long to start the service
 				context.startForegroundService(serviceIntent);
 
@@ -300,7 +300,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 					} else { //There are currently running services
 						if(DebugTool.isDebugEnabled()){
 							for(ComponentName service : runningBluetoothServicePackage){
-								DebugTool.logInfo("Currently running router service: " + service.getPackageName());
+								DebugTool.logInfo(TAG, "Currently running router service: " + service.getPackageName());
 							}
 						}
 						if (altTransportWake) {
@@ -465,11 +465,6 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	 * @param context A context to access Android system services through. If null is passed, this will always return false
 	 * @param callback Use this callback to find out if the router service is connected or not. 
 	 */
-	@Deprecated
-	public static void requestTransportStatus(Context context, final SdlRouterStatusProvider.ConnectedStatusCallback callback){
-		requestTransportStatus(context,callback,false, true);
-	}
-
 	private static void requestTransportStatus(Context context, final SdlRouterStatusProvider.ConnectedStatusCallback callback, final boolean triggerRouterServicePing, final boolean lookForServices){
 		if(context == null){
 			if(callback!=null){

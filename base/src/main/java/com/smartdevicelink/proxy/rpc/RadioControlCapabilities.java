@@ -81,8 +81,9 @@ public class RadioControlCapabilities extends RPCStruct{
      * The short friendly name of the climate control module.
      * It should not be used to identify a module by mobile application.
      */
-    public void setModuleName(@NonNull String moduleName) {
+    public RadioControlCapabilities setModuleName(@NonNull String moduleName) {
         setValue(KEY_MODULE_NAME, moduleName);
+        return this;
     }
 
     /**
@@ -101,8 +102,9 @@ public class RadioControlCapabilities extends RPCStruct{
      * Availability of the control of enable/disable radio.
      * True: Available, False: Not Available, Not present: Not Available.
      */
-    public void setRadioEnableAvailable(Boolean radioEnableAvailable) {
+    public RadioControlCapabilities setRadioEnableAvailable( Boolean radioEnableAvailable) {
         setValue(KEY_RADIO_ENABLE_AVAILABLE, radioEnableAvailable);
+        return this;
     }
 
     /**
@@ -122,8 +124,9 @@ public class RadioControlCapabilities extends RPCStruct{
      * Availability of the control of radio band.
      * True: Available, False: Not Available, Not present: Not Available.
      */
-    public void setRadioBandAvailable(Boolean radioBandAvailable) {
+    public RadioControlCapabilities setRadioBandAvailable( Boolean radioBandAvailable) {
         setValue(KEY_RADIO_BAND_AVAILABLE, radioBandAvailable);
+        return this;
     }
 
     /**
@@ -143,8 +146,9 @@ public class RadioControlCapabilities extends RPCStruct{
      * Availability of the control of radio frequency.
      * True: Available, False: Not Available, Not present: Not Available.
      */
-    public void setRadioFrequencyAvailable(Boolean radioFrequencyAvailable) {
+    public RadioControlCapabilities setRadioFrequencyAvailable( Boolean radioFrequencyAvailable) {
         setValue(KEY_RADIO_FREQUENCY_AVAILABLE, radioFrequencyAvailable);
+        return this;
     }
 
     /**
@@ -164,8 +168,9 @@ public class RadioControlCapabilities extends RPCStruct{
      * Availability of the control of HD radio channel.
      * True: Available, False: Not Available, Not present: Not Available.
      */
-    public void setHdChannelAvailable(Boolean hdChannelAvailable) {
+    public RadioControlCapabilities setHdChannelAvailable( Boolean hdChannelAvailable) {
         setValue(KEY_HD_CHANNEL_AVAILABLE, hdChannelAvailable);
+        return this;
     }
 
     /**
@@ -185,8 +190,9 @@ public class RadioControlCapabilities extends RPCStruct{
      * Availability of the getting Radio Data System (RDS) data.
      * True: Available, False: Not Available, Not present: Not Available.
      */
-    public void setRdsDataAvailable(Boolean rdsDataAvailable) {
+    public RadioControlCapabilities setRdsDataAvailable( Boolean rdsDataAvailable) {
         setValue(KEY_RDS_DATA_AVAILABLE, rdsDataAvailable);
+        return this;
     }
 
     /**
@@ -207,8 +213,9 @@ public class RadioControlCapabilities extends RPCStruct{
      * True: Available, False: Not Available, Not present: Not Available.
      */
     @Deprecated
-    public void setAvailableHDsAvailable(Boolean availableHDsAvailable) {
+    public RadioControlCapabilities setAvailableHDsAvailable( Boolean availableHDsAvailable) {
         setValue(KEY_AVAILABLE_HDS_AVAILABLE, availableHDsAvailable);
+        return this;
     }
 
     /**
@@ -229,8 +236,9 @@ public class RadioControlCapabilities extends RPCStruct{
      * Availability of the list of available HD sub-channel indexes.
      * True: Available, False: Not Available, Not present: Not Available.
      */
-    public void setAvailableHdChannelsAvailable(Boolean availableHdChannelsAvailable) {
+    public RadioControlCapabilities setAvailableHdChannelsAvailable( Boolean availableHdChannelsAvailable) {
         setValue(KEY_AVAILABLE_HD_CHANNELS_AVAILABLE, availableHdChannelsAvailable);
+        return this;
     }
 
     /**
@@ -250,8 +258,9 @@ public class RadioControlCapabilities extends RPCStruct{
      * Availability of the getting the Radio state.
      * True: Available, False: Not Available, Not present: Not Available.
      */
-    public void setStateAvailable(Boolean stateAvailable) {
+    public RadioControlCapabilities setStateAvailable( Boolean stateAvailable) {
         setValue(KEY_STATE_AVAILABLE, stateAvailable);
+        return this;
     }
 
     /**
@@ -271,8 +280,9 @@ public class RadioControlCapabilities extends RPCStruct{
      * Availability of the getting the signal strength.
      * True: Available, False: Not Available, Not present: Not Available.
      */
-    public void setSignalStrengthAvailable(Boolean signalStrengthAvailable) {
+    public RadioControlCapabilities setSignalStrengthAvailable( Boolean signalStrengthAvailable) {
         setValue(KEY_SIGNAL_STRENGTH_AVAILABLE, signalStrengthAvailable);
+        return this;
     }
 
     /**
@@ -292,8 +302,9 @@ public class RadioControlCapabilities extends RPCStruct{
      * Availability of the getting the signal Change Threshold.
      * True: Available, False: Not Available, Not present: Not Available.
      */
-    public void setSignalChangeThresholdAvailable(Boolean signalChangeThresholdAvailable) {
+    public RadioControlCapabilities setSignalChangeThresholdAvailable( Boolean signalChangeThresholdAvailable) {
         setValue(KEY_SIGNAL_CHANGE_THRESHOLD_AVAILABLE, signalChangeThresholdAvailable);
+        return this;
     }
 
     /**
@@ -312,8 +323,9 @@ public class RadioControlCapabilities extends RPCStruct{
      * @param hdRadioEnableAvailable Availability of the control of enable/disable HD radio.
      *                               True: Available, False: Not Available, Not present: Not Available.
      */
-    public void setHdRadioEnableAvailable(Boolean hdRadioEnableAvailable) {
+    public RadioControlCapabilities setHdRadioEnableAvailable( Boolean hdRadioEnableAvailable) {
         setValue(KEY_HD_RADIO_ENABLE_AVAILABLE, hdRadioEnableAvailable);
+        return this;
     }
 
     /**
@@ -332,8 +344,9 @@ public class RadioControlCapabilities extends RPCStruct{
      * @param siriusxmRadioAvailable Availability of sirius XM radio.
      *                               True: Available, False: Not Available, Not present: Not Available.
      */
-    public void setSiriusXMRadioAvailable(Boolean siriusxmRadioAvailable) {
+    public RadioControlCapabilities setSiriusXMRadioAvailable( Boolean siriusxmRadioAvailable) {
         setValue(KEY_SIRIUS_XM_RADIO_AVAILABLE, siriusxmRadioAvailable);
+        return this;
     }
 
     /**
@@ -352,8 +365,9 @@ public class RadioControlCapabilities extends RPCStruct{
      * @param sisDataAvailable Availability of the getting HD radio Station Information Service (SIS) data.
      *                         True: Available, False: Not Available, Not present: Not Available.
      */
-    public void setSisDataAvailable(Boolean sisDataAvailable) {
+    public RadioControlCapabilities setSisDataAvailable( Boolean sisDataAvailable) {
         setValue(KEY_SIS_DATA_AVAILABLE, sisDataAvailable);
+        return this;
     }
 
     /**
@@ -370,8 +384,9 @@ public class RadioControlCapabilities extends RPCStruct{
      * Sets ModuleInfo for this capability
      * @param info the ModuleInfo to be set
      */
-    public void setModuleInfo(ModuleInfo info) {
+    public RadioControlCapabilities setModuleInfo( ModuleInfo info) {
         setValue(KEY_MODULE_INFO, info);
+        return this;
     }
 
     /**

@@ -99,7 +99,7 @@ public class LockScreenManager extends BaseSubManager {
 		lockScreenIcon = lockScreenConfig.getAppIcon();
 		lockScreenColor = lockScreenConfig.getBackgroundColor();
 		customView = lockScreenConfig.getCustomView();
-		lockScreenEnabled = lockScreenConfig.isEnabled();
+		lockScreenEnabled = lockScreenConfig.getDisplayMode() != LockScreenConfig.DISPLAY_MODE_NEVER;
 		deviceLogoEnabled = lockScreenConfig.isDeviceLogoEnabled();
 		displayMode = lockScreenConfig.getDisplayMode();
 		enableDismissGesture = lockScreenConfig.enableDismissGesture();

@@ -73,9 +73,10 @@ public class WeatherData extends RPCStruct {
 	/**
 	 * @param currentTemperature -
 	 */
-	public void setCurrentTemperature(Temperature currentTemperature) {
-		setValue(KEY_CURRENT_TEMPERATURE, currentTemperature);
-	}
+	public WeatherData setCurrentTemperature( Temperature currentTemperature) {
+        setValue(KEY_CURRENT_TEMPERATURE, currentTemperature);
+        return this;
+    }
 
 	/**
 	 * @return currentTemperature
@@ -87,9 +88,10 @@ public class WeatherData extends RPCStruct {
 	/**
 	 * @param temperatureHigh -
 	 */
-	public void setTemperatureHigh(Temperature temperatureHigh) {
-		setValue(KEY_TEMPERATURE_HIGH, temperatureHigh);
-	}
+	public WeatherData setTemperatureHigh( Temperature temperatureHigh) {
+        setValue(KEY_TEMPERATURE_HIGH, temperatureHigh);
+        return this;
+    }
 
 	/**
 	 * @return temperatureHigh
@@ -101,9 +103,10 @@ public class WeatherData extends RPCStruct {
 	/**
 	 * @param temperatureLow -
 	 */
-	public void setTemperatureLow(Temperature temperatureLow) {
-		setValue(KEY_TEMPERATURE_LOW, temperatureLow);
-	}
+	public WeatherData setTemperatureLow( Temperature temperatureLow) {
+        setValue(KEY_TEMPERATURE_LOW, temperatureLow);
+        return this;
+    }
 
 	/**
 	 * @return temperatureLow
@@ -115,9 +118,10 @@ public class WeatherData extends RPCStruct {
 	/**
 	 * @param apparentTemperature -
 	 */
-	public void setApparentTemperature(Temperature apparentTemperature) {
-		setValue(KEY_APPARENT_TEMPERATURE, apparentTemperature);
-	}
+	public WeatherData setApparentTemperature( Temperature apparentTemperature) {
+        setValue(KEY_APPARENT_TEMPERATURE, apparentTemperature);
+        return this;
+    }
 
 	/**
 	 * @return apparentTemperature
@@ -129,9 +133,10 @@ public class WeatherData extends RPCStruct {
 	/**
 	 * @param apparentTemperatureHigh -
 	 */
-	public void setApparentTemperatureHigh(Temperature apparentTemperatureHigh) {
-		setValue(KEY_APPARENT_TEMPERATURE_HIGH, apparentTemperatureHigh);
-	}
+	public WeatherData setApparentTemperatureHigh( Temperature apparentTemperatureHigh) {
+        setValue(KEY_APPARENT_TEMPERATURE_HIGH, apparentTemperatureHigh);
+        return this;
+    }
 
 	/**
 	 * @return apparentTemperatureHigh
@@ -143,9 +148,10 @@ public class WeatherData extends RPCStruct {
 	/**
 	 * @param apparentTemperatureLow -
 	 */
-	public void setApparentTemperatureLow(Temperature apparentTemperatureLow) {
-		setValue(KEY_APPARENT_TEMPERATURE_LOW, apparentTemperatureLow);
-	}
+	public WeatherData setApparentTemperatureLow( Temperature apparentTemperatureLow) {
+        setValue(KEY_APPARENT_TEMPERATURE_LOW, apparentTemperatureLow);
+        return this;
+    }
 
 	/**
 	 * @return apparentTemperatureLow
@@ -157,9 +163,10 @@ public class WeatherData extends RPCStruct {
 	/**
 	 * @param weatherSummary -
 	 */
-	public void setWeatherSummary(String weatherSummary) {
-		setValue(KEY_WEATHER_SUMMARY, weatherSummary);
-	}
+	public WeatherData setWeatherSummary( String weatherSummary) {
+        setValue(KEY_WEATHER_SUMMARY, weatherSummary);
+        return this;
+    }
 
 	/**
 	 * @return weatherSummary
@@ -171,9 +178,10 @@ public class WeatherData extends RPCStruct {
 	/**
 	 * @param time -
 	 */
-	public void setTime(DateTime time) {
-		setValue(KEY_TIME, time);
-	}
+	public WeatherData setTime( DateTime time) {
+        setValue(KEY_TIME, time);
+        return this;
+    }
 
 	/**
 	 * @return time
@@ -186,9 +194,10 @@ public class WeatherData extends RPCStruct {
 	 * minValue: 0, maxValue: 1
 	 * @param humidity - percentage humidity
 	 */
-	public void setHumidity(Float humidity) {
-		setValue(KEY_HUMIDITY, humidity);
-	}
+	public WeatherData setHumidity( Float humidity) {
+        setValue(KEY_HUMIDITY, humidity);
+        return this;
+    }
 
 	/**
 	 * minValue: 0, maxValue: 1
@@ -202,9 +211,10 @@ public class WeatherData extends RPCStruct {
 	 * minValue: 0, maxValue: 1
 	 * @param cloudCover - cloud cover
 	 */
-	public void setCloudCover(Float cloudCover) {
-		setValue(KEY_CLOUD_COVER, cloudCover);
-	}
+	public WeatherData setCloudCover( Float cloudCover) {
+        setValue(KEY_CLOUD_COVER, cloudCover);
+        return this;
+    }
 
 	/**
 	 * minValue: 0, maxValue: 1
@@ -218,9 +228,10 @@ public class WeatherData extends RPCStruct {
 	 * minValue: 0, maxValue: 1
 	 * @param moonPhase - percentage of the moon seen, e.g. 0 = no moon, 0.25 = quarter moon
 	 */
-	public void setMoonPhase(Float moonPhase) {
-		setValue(KEY_MOON_PHASE, moonPhase);
-	}
+	public WeatherData setMoonPhase( Float moonPhase) {
+        setValue(KEY_MOON_PHASE, moonPhase);
+        return this;
+    }
 
 	/**
 	 * minValue: 0, maxValue: 1
@@ -233,9 +244,10 @@ public class WeatherData extends RPCStruct {
 	/**
 	 * @param windBearing - In degrees, true north at 0 degrees
 	 */
-	public void setWindBearing(Integer windBearing) {
-		setValue(KEY_WIND_BEARING, windBearing);
-	}
+	public WeatherData setWindBearing( Integer windBearing) {
+        setValue(KEY_WIND_BEARING, windBearing);
+        return this;
+    }
 
 	/**
 	 * @return windBearing - In degrees, true north at 0 degrees
@@ -247,9 +259,10 @@ public class WeatherData extends RPCStruct {
 	/**
 	 * @param windGust - km/hr
 	 */
-	public void setWindGust(Float windGust) {
-		setValue(KEY_WIND_GUST, windGust);
-	}
+	public WeatherData setWindGust( Float windGust) {
+        setValue(KEY_WIND_GUST, windGust);
+        return this;
+    }
 
 	/**
 	 * @return windGust - km/hr
@@ -261,9 +274,10 @@ public class WeatherData extends RPCStruct {
 	/**
 	 * @param windSpeed - km/hr
 	 */
-	public void setWindSpeed(Float windSpeed) {
-		setValue(KEY_WIND_SPEED, windSpeed);
-	}
+	public WeatherData setWindSpeed( Float windSpeed) {
+        setValue(KEY_WIND_SPEED, windSpeed);
+        return this;
+    }
 
 	/**
 	 * @return windSpeed - km/hr
@@ -275,9 +289,10 @@ public class WeatherData extends RPCStruct {
 	/**
 	 * @param nearestStormBearing - In degrees, true north at 0 degrees
 	 */
-	public void setNearestStormBearing(Integer nearestStormBearing) {
-		setValue(KEY_NEAREST_STORM_BEARING, nearestStormBearing);
-	}
+	public WeatherData setNearestStormBearing( Integer nearestStormBearing) {
+        setValue(KEY_NEAREST_STORM_BEARING, nearestStormBearing);
+        return this;
+    }
 
 	/**
 	 * @return nearestStormBearing - In degrees, true north at 0 degrees
@@ -289,9 +304,10 @@ public class WeatherData extends RPCStruct {
 	/**
 	 * @param nearestStormDistance - In km
 	 */
-	public void setNearestStormDistance(Integer nearestStormDistance) {
-		setValue(KEY_NEAREST_STORM_DISTANCE, nearestStormDistance);
-	}
+	public WeatherData setNearestStormDistance( Integer nearestStormDistance) {
+        setValue(KEY_NEAREST_STORM_DISTANCE, nearestStormDistance);
+        return this;
+    }
 
 	/**
 	 * @return nearestStormDistance - In km
@@ -303,9 +319,10 @@ public class WeatherData extends RPCStruct {
 	/**
 	 * @param precipAccumulation - cm
 	 */
-	public void setPrecipAccumulation(Float precipAccumulation) {
-		setValue(KEY_PRECIP_ACCUMULATION, precipAccumulation);
-	}
+	public WeatherData setPrecipAccumulation( Float precipAccumulation) {
+        setValue(KEY_PRECIP_ACCUMULATION, precipAccumulation);
+        return this;
+    }
 
 	/**
 	 * @return precipAccumulation - cm
@@ -317,9 +334,10 @@ public class WeatherData extends RPCStruct {
 	/**
 	 * @param precipIntensity - cm of water per hour
 	 */
-	public void setPrecipIntensity(Float precipIntensity) {
-		setValue(KEY_PRECIP_INTENSITY, precipIntensity);
-	}
+	public WeatherData setPrecipIntensity( Float precipIntensity) {
+        setValue(KEY_PRECIP_INTENSITY, precipIntensity);
+        return this;
+    }
 
 	/**
 	 * @return precipIntensity - cm of water per hour
@@ -332,9 +350,10 @@ public class WeatherData extends RPCStruct {
 	 * minValue: 0, maxValue: 1
 	 * @param precipProbability - percentage chance
 	 */
-	public void setPrecipProbability(Float precipProbability) {
-		setValue(KEY_PRECIP_PROBABILITY, precipProbability);
-	}
+	public WeatherData setPrecipProbability( Float precipProbability) {
+        setValue(KEY_PRECIP_PROBABILITY, precipProbability);
+        return this;
+    }
 
 	/**
 	 * minValue: 0, maxValue: 1
@@ -347,9 +366,10 @@ public class WeatherData extends RPCStruct {
 	/**
 	 * @param precipType - e.g. "rain", "snow", "sleet", "hail"
 	 */
-	public void setPrecipType(String precipType) {
-		setValue(KEY_PRECIP_TYPE, precipType);
-	}
+	public WeatherData setPrecipType( String precipType) {
+        setValue(KEY_PRECIP_TYPE, precipType);
+        return this;
+    }
 
 	/**
 	 * @return precipType - e.g. "rain", "snow", "sleet", "hail"
@@ -361,9 +381,10 @@ public class WeatherData extends RPCStruct {
 	/**
 	 * @param weatherIcon -
 	 */
-	public void setWeatherIcon(Image weatherIcon) {
-		setValue(KEY_WEATHER_ICON, weatherIcon);
-	}
+	public WeatherData setWeatherIcon( Image weatherIcon) {
+        setValue(KEY_WEATHER_ICON, weatherIcon);
+        return this;
+    }
 
 	/**
 	 * @return weatherIcon
@@ -375,9 +396,10 @@ public class WeatherData extends RPCStruct {
 	/**
 	 * @param visibility - In km
 	 */
-	public void setVisibility(Float visibility) {
-		setValue(KEY_VISIBILITY, visibility);
-	}
+	public WeatherData setVisibility( Float visibility) {
+        setValue(KEY_VISIBILITY, visibility);
+        return this;
+    }
 
 	/**
 	 * @return visibility - In km

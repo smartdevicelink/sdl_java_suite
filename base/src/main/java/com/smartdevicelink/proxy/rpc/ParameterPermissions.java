@@ -116,8 +116,9 @@ public class ParameterPermissions extends RPCStruct {
      * set a set of all parameters that are permitted for this given RPC.
      * @param allowed parameter that is permitted for this given RPC
      */
-    public void setAllowed(@NonNull List<String> allowed) {
+    public ParameterPermissions setAllowed(@NonNull List<String> allowed) {
         setValue(KEY_ALLOWED, allowed);
+        return this;
     }
     
     /**
@@ -133,7 +134,8 @@ public class ParameterPermissions extends RPCStruct {
      * set a set of all parameters that are prohibited for this given RPC.
      * @param userDisallowed paramter that is prohibited for this given RPC
      */
-    public void setUserDisallowed(@NonNull List<String> userDisallowed) {
+    public ParameterPermissions setUserDisallowed(@NonNull List<String> userDisallowed) {
         setValue(KEY_USER_DISALLOWED, userDisallowed);
+        return this;
     }
 }

@@ -44,6 +44,7 @@ public class ControlFrameTags {
 	private static class NAKBase{
 		/** An array of rejected parameters related to the corresponding request*/
 		public static final String REJECTED_PARAMS = "rejectedParams";
+		public static final String REASON = "reason";
 	}
 
 	/**
@@ -90,9 +91,7 @@ public class ControlFrameTags {
 		 **/
 		public static class RegisterSecondaryTransport {}
 		public static class RegisterSecondaryTransportACK {}
-		public static class RegisterSecondaryTransportNAK extends NAKBase {
-			public static final String REASON = "reason";
-		}
+		public static class RegisterSecondaryTransportNAK extends NAKBase {}
 	}
 
 	/**

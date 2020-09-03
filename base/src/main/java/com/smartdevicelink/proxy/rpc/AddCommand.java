@@ -165,15 +165,16 @@ public class AddCommand extends RPCRequest {
 	 * <p>Sets an Unique Command ID that identifies the command. Is returned in an
 	 * <i>{@linkplain OnCommand}</i> notification to identify the command
 	 * selected by the user</p>
-	 * 
-	 * 
+	 *
+	 *
 	 * @param cmdID
 	 *            an integer object representing a Command ID
 	 *            <p>
 	 *            <b>Notes:</b> Min Value: 0; Max Value: 2000000000</p>
 	 */
-    public void setCmdID(@NonNull Integer cmdID) {
-		setParameters(KEY_CMD_ID, cmdID);
+    public AddCommand setCmdID(@NonNull Integer cmdID) {
+        setParameters(KEY_CMD_ID, cmdID);
+        return this;
     }
 	/**
 	 * <p>
@@ -195,12 +196,13 @@ public class AddCommand extends RPCRequest {
 	 * Command Menu<p>
 	 * If null, commands will not be accessible through the HMI application menu
 	 * </p>
-	 * 
+	 *
 	 * @param menuParams
 	 *            a menuParams object
-	 */    
-    public void setMenuParams(MenuParams menuParams) {
+	 */
+    public AddCommand setMenuParams( MenuParams menuParams) {
         setParameters(KEY_MENU_PARAMS, menuParams);
+        return this;
     }
 	/**
 	 * <p>
@@ -222,7 +224,7 @@ public class AddCommand extends RPCRequest {
 	 * <p>If null, commands will not be accessible by voice commands (when the user
 	 * hits push-to-talk)
 	 * </p>
-	 * 
+	 *
 	 * @param vrCommands
 	 *            List<String> indicating one or more VR phrases
 	 *            <p>
@@ -230,8 +232,9 @@ public class AddCommand extends RPCRequest {
 	 *            provided, array must contain at least one non-empty (not null,
 	 *            not zero-length, not whitespace only) element</p>
 	 */
-    public void setVrCommands( List<String> vrCommands ) {
-		setParameters(KEY_VR_COMMANDS, vrCommands);
+    public AddCommand setVrCommands( List<String> vrCommands) {
+        setParameters(KEY_VR_COMMANDS, vrCommands);
+        return this;
     }
 
 	/**
@@ -256,7 +259,8 @@ public class AddCommand extends RPCRequest {
 	 *            default if applicable) icon will be displayed</p>
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setCmdIcon(Image cmdIcon) {
+    public AddCommand setCmdIcon( Image cmdIcon) {
         setParameters(KEY_CMD_ICON, cmdIcon);
+        return this;
     }
 }

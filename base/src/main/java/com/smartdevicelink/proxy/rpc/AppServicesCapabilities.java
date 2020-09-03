@@ -72,9 +72,10 @@ public class AppServicesCapabilities extends RPCStruct {
 	 * capability the affected services will include an update reason in that item
 	 * @param appServices -
 	 */
-	public void setAppServices(List<AppServiceCapability> appServices){
-		setValue(KEY_APP_SERVICES, appServices);
-	}
+	public AppServicesCapabilities setAppServices( List<AppServiceCapability> appServices) {
+        setValue(KEY_APP_SERVICES, appServices);
+        return this;
+    }
 
 	/**
 	 * An array of currently available services. If this is an update to the

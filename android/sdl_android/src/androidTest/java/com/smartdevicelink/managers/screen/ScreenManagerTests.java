@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -99,14 +98,11 @@ public class ScreenManagerTests {
 		screenManager.setPrimaryGraphic(testArtwork);
 		assertEquals(screenManager.getPrimaryGraphic(), testArtwork);
 	}
-
 	@Test
 	public void testSetPrimaryGraphicWithBlankImage() {
 		screenManager.setPrimaryGraphic(null);
-		assertNotNull(screenManager.getPrimaryGraphic());
-		assertEquals(screenManager.getPrimaryGraphic().getName(), "blankArtwork");
+		assertNull(screenManager.getPrimaryGraphic());
 	}
-
 	@Test
 	public void testSetSecondaryGraphic() {
 		screenManager.setSecondaryGraphic(testArtwork);
@@ -116,8 +112,7 @@ public class ScreenManagerTests {
 	@Test
 	public void testSetSecondaryGraphicWithBlankImage() {
 		screenManager.setSecondaryGraphic(null);
-		assertNotNull(screenManager.getSecondaryGraphic());
-		assertEquals(screenManager.getSecondaryGraphic().getName(), "blankArtwork");
+		assertNull(screenManager.getSecondaryGraphic());
 	}
 
 	@Test

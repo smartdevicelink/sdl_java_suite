@@ -73,9 +73,10 @@ public class NavigationServiceData extends RPCStruct {
 	 * given in the data can accurately be adjusted if necessary.
 	 * @param timeStamp -
 	 */
-	public void setTimeStamp(@NonNull DateTime timeStamp){
-		setValue(KEY_TIMESTAMP, timeStamp);
-	}
+	public NavigationServiceData setTimeStamp(@NonNull DateTime timeStamp) {
+        setValue(KEY_TIMESTAMP, timeStamp);
+        return this;
+    }
 
 	/**
 	 * This is the timeStamp of when the data was generated. This is to ensure any time or distance
@@ -89,9 +90,10 @@ public class NavigationServiceData extends RPCStruct {
 	/**
 	 * @param origin -
 	 */
-	public void setOrigin(LocationDetails origin){
-		setValue(KEY_ORIGIN, origin);
-	}
+	public NavigationServiceData setOrigin( LocationDetails origin) {
+        setValue(KEY_ORIGIN, origin);
+        return this;
+    }
 
 	/**
 	 * @return origin
@@ -103,9 +105,10 @@ public class NavigationServiceData extends RPCStruct {
 	/**
 	 * @param destination -
 	 */
-	public void setDestination(LocationDetails destination){
-		setValue(KEY_DESTINATION, destination);
-	}
+	public NavigationServiceData setDestination( LocationDetails destination) {
+        setValue(KEY_DESTINATION, destination);
+        return this;
+    }
 
 	/**
 	 * @return destination
@@ -117,9 +120,10 @@ public class NavigationServiceData extends RPCStruct {
 	/**
 	 * @param destinationETA -
 	 */
-	public void setDestinationETA(DateTime destinationETA){
-		setValue(KEY_DESTINATION_ETA, destinationETA);
-	}
+	public NavigationServiceData setDestinationETA( DateTime destinationETA) {
+        setValue(KEY_DESTINATION_ETA, destinationETA);
+        return this;
+    }
 
 	/**
 	 * @return destinationETA
@@ -133,9 +137,10 @@ public class NavigationServiceData extends RPCStruct {
 	 * always contain the next instruction.
 	 * @param instructions -
 	 */
-	public void setInstructions(List<NavigationInstruction> instructions){
-		setValue(KEY_INSTRUCTIONS, instructions);
-	}
+	public NavigationServiceData setInstructions( List<NavigationInstruction> instructions) {
+        setValue(KEY_INSTRUCTIONS, instructions);
+        return this;
+    }
 
 	/**
 	 * This array should be ordered with all remaining instructions. The start of this array should
@@ -150,9 +155,10 @@ public class NavigationServiceData extends RPCStruct {
 	/**
 	 * @param nextInstructionETA -
 	 */
-	public void setNextInstructionETA(DateTime nextInstructionETA){
-		setValue(KEY_NEXT_INSTRUCTION_ETA, nextInstructionETA);
-	}
+	public NavigationServiceData setNextInstructionETA( DateTime nextInstructionETA) {
+        setValue(KEY_NEXT_INSTRUCTION_ETA, nextInstructionETA);
+        return this;
+    }
 
 	/**
 	 * @return nextInstructionETA
@@ -167,9 +173,10 @@ public class NavigationServiceData extends RPCStruct {
 	 * the next instruction.
 	 * @param nextInstructionDistance -
 	 */
-	public void setNextInstructionDistance(Float nextInstructionDistance){
-		setValue(KEY_NEXT_INSTRUCTION_DISTANCE, nextInstructionDistance);
-	}
+	public NavigationServiceData setNextInstructionDistance( Float nextInstructionDistance) {
+        setValue(KEY_NEXT_INSTRUCTION_DISTANCE, nextInstructionDistance);
+        return this;
+    }
 
 	/**
 	 * The distance to this instruction from current location. This should only be updated every
@@ -185,9 +192,10 @@ public class NavigationServiceData extends RPCStruct {
 	 * Distance till next maneuver (starting from) from previous maneuver.
 	 * @param nextInstructionDistanceScale -
 	 */
-	public void setNextInstructionDistanceScale(Float nextInstructionDistanceScale){
-		setValue(KEY_NEXT_INSTRUCTION_DISTANCE_SCALE, nextInstructionDistanceScale);
-	}
+	public NavigationServiceData setNextInstructionDistanceScale( Float nextInstructionDistanceScale) {
+        setValue(KEY_NEXT_INSTRUCTION_DISTANCE_SCALE, nextInstructionDistanceScale);
+        return this;
+    }
 
 	/**
 	 * Distance till next maneuver (starting from) from previous maneuver.
@@ -203,9 +211,10 @@ public class NavigationServiceData extends RPCStruct {
 	 * instruction, post instruction, alerts that affect the current navigation session, etc.
 	 * @param prompt -
 	 */
-	public void setPrompt(String prompt){
-		setValue(KEY_PROMPT, prompt);
-	}
+	public NavigationServiceData setPrompt( String prompt) {
+        setValue(KEY_PROMPT, prompt);
+        return this;
+    }
 
 	/**
 	 * This is a prompt message that should be conveyed to the user through either display or voice

@@ -231,9 +231,10 @@ public class OnSystemRequest extends RPCNotification {
     }
     
     @Override
-    public void setBulkData(byte[] bulkData){
+    public OnSystemRequest setBulkData(byte[] bulkData){
         super.setBulkData(bulkData);
         handleBulkData(bulkData);
+        return this;
     }
     
     
@@ -246,12 +247,14 @@ public class OnSystemRequest extends RPCNotification {
         return this.body;
     }
     
-    public void setBody(String body) {
+    public OnSystemRequest setBody( String body) {
         this.body = body;
+        return this;
     }
     
-    public void setHeaders(Headers header) {
+    public OnSystemRequest setHeaders( Headers header) {
         this.headers = header;
+        return this;
     }
 
     public Headers getHeader() {
@@ -262,16 +265,18 @@ public class OnSystemRequest extends RPCNotification {
         return (RequestType) getObject(RequestType.class, KEY_REQUEST_TYPE);
     }
 
-    public void setRequestType(@NonNull RequestType requestType) {
+    public OnSystemRequest setRequestType(@NonNull RequestType requestType) {
         setParameters(KEY_REQUEST_TYPE, requestType);
+        return this;
     }
 
     public String getRequestSubType() {
         return getString(KEY_REQUEST_SUB_TYPE);
     }
 
-    public void setRequestSubType(String requestSubType) {
+    public OnSystemRequest setRequestSubType( String requestSubType) {
         setParameters(KEY_REQUEST_SUB_TYPE, requestSubType);
+        return this;
     }
 
     public String getUrl() {
@@ -290,28 +295,31 @@ public class OnSystemRequest extends RPCNotification {
         return null;
     }
 
-    public void setUrl(String url) {
+    public OnSystemRequest setUrl( String url) {
         setParameters(KEY_URL, url);
+        return this;
     }
 
     public FileType getFileType() {
         return (FileType) getObject(FileType.class, KEY_FILE_TYPE);
     }
 
-    public void setFileType(FileType fileType) {
+    public OnSystemRequest setFileType( FileType fileType) {
         setParameters(KEY_FILE_TYPE, fileType);
+        return this;
     }
 
     /**
      * @deprecated as of SmartDeviceLink 4.0
      * @param offset  of the data attached
      */
-    public void setOffset(Integer offset) {
-    	if(offset == null){
+    public OnSystemRequest setOffset( Integer offset) {
+        if(offset == null){
     		setOffset((Long)null);
     	}else{
     		setOffset(offset.longValue());
     	}
+        return this;
     }
     
     public Long getOffset() {
@@ -329,8 +337,9 @@ public class OnSystemRequest extends RPCNotification {
         return null;
     }
 
-    public void setOffset(Long offset) {
+    public OnSystemRequest setOffset( Long offset) {
         setParameters(KEY_OFFSET, offset);
+        return this;
     }
     
     public Integer getTimeout() {
@@ -347,9 +356,10 @@ public class OnSystemRequest extends RPCNotification {
         return null;
     }
 
-    public void setTimeout(Integer timeout) {
+    public OnSystemRequest setTimeout( Integer timeout) {
         setParameters(KEY_TIMEOUT, timeout);
-    }    
+        return this;
+    }
     
     public Long getLength() {
         final Object o = getParameters(KEY_LENGTH);
@@ -369,15 +379,17 @@ public class OnSystemRequest extends RPCNotification {
      * @deprecated as of SmartDeviceLink 4.0
      * @param length of the data attached
      */
-    public void setLength(Integer length) {
-    	if(length == null){
+    public OnSystemRequest setLength( Integer length) {
+        if(length == null){
     		setLength((Long)null);
     	}else{
     		setLength(length.longValue());
     	}
+        return this;
     }
     
-    public void setLength(Long length) {
+    public OnSystemRequest setLength( Long length) {
         setParameters(KEY_LENGTH, length);
+        return this;
     }
 }

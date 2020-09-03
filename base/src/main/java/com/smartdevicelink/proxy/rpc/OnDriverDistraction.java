@@ -106,17 +106,19 @@ public class OnDriverDistraction  extends RPCNotification {
     /**
      * <p>Called to set the driver distraction state(i.e. whether driver distraction rules are in effect, or not)</p>
      * @param state the current driver distraction state
-     */    
-    public void setState( @NonNull DriverDistractionState state ) {
+     */
+    public OnDriverDistraction setState(@NonNull DriverDistractionState state) {
         setParameters(KEY_STATE, state);
+        return this;
     }
 
     /**
      * <p>Called to set dismissible state of Lockscreen</p>
      * @param isDismissible the Lockscreen's dismissibility
      */
-    public void setLockscreenDismissibility(boolean isDismissible) {
+    public OnDriverDistraction setLockscreenDismissibility( boolean isDismissible) {
         setParameters(KEY_LOCKSCREEN_DISMISSIBLE, isDismissible);
+        return this;
     }
 
     /**
@@ -131,8 +133,9 @@ public class OnDriverDistraction  extends RPCNotification {
      * Called to set a warning message for the lockscreen
      * @param msg the message to be set
      */
-    public void setLockscreenWarningMessage(String msg) {
+    public OnDriverDistraction setLockscreenWarningMessage( String msg) {
         setParameters(KEY_LOCKSCREEN_DISMISSIBLE_MSG, msg);
+        return this;
     }
 
     /**

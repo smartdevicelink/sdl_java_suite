@@ -94,11 +94,6 @@ public interface ISdl {
     void startVideoService(VideoStreamingParameters parameters, boolean encrypted);
 
     /**
-     * Stops the video service if open
-     */
-    void stopVideoService();
-
-    /**
      * Starts the video streaming service
      * @param isEncrypted flag to start this service with encryption or not
      * @param parameters desired video streaming params for this sevice to be started with
@@ -118,11 +113,6 @@ public interface ISdl {
      * @param encrypted flag to start this service with encryption or not
      */
     void startAudioService(boolean encrypted);
-
-    /**
-     * Stops the audio service if open
-     */
-    void stopAudioService();
 
     /**
      * Start Audio Stream and return IAudioStreamListener

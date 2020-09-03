@@ -16,10 +16,12 @@ import com.smartdevicelink.proxy.rpc.HeadLampStatus;
 import com.smartdevicelink.proxy.rpc.MyKey;
 import com.smartdevicelink.proxy.rpc.OnVehicleData;
 import com.smartdevicelink.proxy.rpc.SingleTireStatus;
+import com.smartdevicelink.proxy.rpc.StabilityControlsStatus;
 import com.smartdevicelink.proxy.rpc.TireStatus;
 import com.smartdevicelink.proxy.rpc.WindowState;
 import com.smartdevicelink.proxy.rpc.WindowStatus;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
+import com.smartdevicelink.proxy.rpc.enums.CapacityUnit;
 import com.smartdevicelink.proxy.rpc.enums.CarModeStatus;
 import com.smartdevicelink.proxy.rpc.enums.CompassDirection;
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
@@ -84,6 +86,7 @@ public class VehicleDataHelper{
 	public static final List<FuelRange> FUEL_RANGE_LIST = new ArrayList<FuelRange>(1);
 	public static final TurnSignal TURN_SIGNAL = TurnSignal.OFF;
 	public static final ElectronicParkBrakeStatus ELECTRONIC_PARK_BRAKE_STATUS = ElectronicParkBrakeStatus.CLOSED;
+	public static final StabilityControlsStatus STABILITY_CONTROLS_STATUS = new StabilityControlsStatus();
 	public static final String OEM_CUSTOM_VEHICLE_DATA_STATE = "oemCustomVehicleDataState";
 	public static final Boolean HANDS_OFF_STEERING = Boolean.TRUE;
 
@@ -197,6 +200,10 @@ public class VehicleDataHelper{
 	// fuel range
 	public static final FuelType FUEL_RANGE_TYPE = FuelType.GASOLINE;
 	public static final Float FUEL_RANGE_RANGE = TestValues.GENERAL_FLOAT;
+	public static final Float FUEL_RANGE_CAPACITY = TestValues.GENERAL_FLOAT;
+	public static final CapacityUnit FUEL_RANGE_CAPACITY_UNIT = TestValues.GENERAL_CAPACITYUNIT;
+	public static final Float FUEL_RANGE_LEVEL = TestValues.GENERAL_FLOAT;
+	public static final ComponentVolumeStatus FUEL_RANGE_LEVEL_STATE = TestValues.GENERAL_COMPONENTVOLUMESTATUS;
 
 	// Gear status
 	public static final GearStatus GEAR_STATUS = new GearStatus();
@@ -207,6 +214,10 @@ public class VehicleDataHelper{
 	// WindowStatus
 	public static final Grid LOCATION_GRID = TestValues.GENERAL_LOCATION_GRID;
 	public static final WindowState WINDOW_STATE = TestValues.GENERAL_WINDOW_STATE;
+
+	// stability control status
+	public static final VehicleDataStatus ESC_SYSTEM = VehicleDataStatus.ON;
+	public static final VehicleDataStatus S_WAY_TRAILER = VehicleDataStatus.OFF;
 
 	public static final JSONArray JSON_FUEL_RANGE = new JSONArray();
 
@@ -336,6 +347,10 @@ public class VehicleDataHelper{
 		// FUEL_RANGE and FUEL_RANGE_LIST set up
 		FUEL_RANGE.setType(FUEL_RANGE_TYPE);
 		FUEL_RANGE.setRange(FUEL_RANGE_RANGE);
+		FUEL_RANGE.setCapacity(FUEL_RANGE_CAPACITY);
+		FUEL_RANGE.setCapacityUnit(FUEL_RANGE_CAPACITY_UNIT);
+		FUEL_RANGE.setLevel(FUEL_RANGE_LEVEL);
+		FUEL_RANGE.setLevelState(FUEL_RANGE_LEVEL_STATE);
 		FUEL_RANGE_LIST.add(FUEL_RANGE);
 
 		//WINDOW_STATUS and WINDOW_STATUS_LIST set up
@@ -348,6 +363,10 @@ public class VehicleDataHelper{
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+
+		// STABILITY_CONTROLS_STATUS
+		STABILITY_CONTROLS_STATUS.setEscSystem(VehicleDataStatus.ON);
+		STABILITY_CONTROLS_STATUS.setTrailerSwayControl(VehicleDataStatus.OFF);
 
 		// GEAR_STATUS
 		GEAR_STATUS.setTransmissionType(TRANSMISSION_TYPE);
@@ -386,6 +405,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA.setElectronicParkBrakeStatus(ELECTRONIC_PARK_BRAKE_STATUS);
 		VEHICLE_DATA.setGearStatus(GEAR_STATUS);
 		VEHICLE_DATA.setWindowStatus(WINDOW_STATUS_LIST);
+		VEHICLE_DATA.setStabilityControlsStatus(STABILITY_CONTROLS_STATUS);
 		VEHICLE_DATA.setOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, OEM_CUSTOM_VEHICLE_DATA_STATE);
 		VEHICLE_DATA.setHandsOffSteering(HANDS_OFF_STEERING);
 		//set up the GetVehicleDataResponse object
@@ -420,6 +440,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA_RESPONSE.setElectronicParkBrakeStatus(ELECTRONIC_PARK_BRAKE_STATUS);
 		VEHICLE_DATA_RESPONSE.setGearStatus(GEAR_STATUS);
 		VEHICLE_DATA_RESPONSE.setWindowStatus(WINDOW_STATUS_LIST);
+		VEHICLE_DATA_RESPONSE.setStabilityControlsStatus(STABILITY_CONTROLS_STATUS);
 		VEHICLE_DATA_RESPONSE.setOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, OEM_CUSTOM_VEHICLE_DATA_STATE);
 		VEHICLE_DATA_RESPONSE.setHandsOffSteering(HANDS_OFF_STEERING);
 	}

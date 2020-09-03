@@ -65,9 +65,10 @@ public class OnSystemCapabilityUpdated extends RPCNotification {
 	/**
 	 * @param systemCapability - The system capability that has been updated
 	 */
-	public void setSystemCapability(@NonNull SystemCapability systemCapability){
-		setParameters(KEY_SYSTEM_CAPABILITY, systemCapability);
-	}
+	public OnSystemCapabilityUpdated setSystemCapability(@NonNull SystemCapability systemCapability) {
+        setParameters(KEY_SYSTEM_CAPABILITY, systemCapability);
+        return this;
+    }
 
 	/**
 	 * @return systemCapability - The system capability that has been updated

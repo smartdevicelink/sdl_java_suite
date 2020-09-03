@@ -119,8 +119,9 @@ public class VehicleType extends RPCStruct {
      * set the make of the vehicle
      *@param make the make of the vehicle
      */
-    public void setMake(String make) {
+    public VehicleType setMake( String make) {
         setValue(KEY_MAKE, make);
+        return this;
     }
     
     /**
@@ -135,8 +136,9 @@ public class VehicleType extends RPCStruct {
      * set the model of the vehicle
      * @param model the model of the vehicle
      */
-    public void setModel(String model) {
+    public VehicleType setModel( String model) {
         setValue(KEY_MODEL, model);
+        return this;
     }
     
     /**
@@ -151,8 +153,9 @@ public class VehicleType extends RPCStruct {
      * set the model year of the vehicle
      * @param modelYear the model year of the vehicle
      */
-    public void setModelYear(String modelYear) {
+    public VehicleType setModelYear( String modelYear) {
         setValue(KEY_MODEL_YEAR, modelYear);
+        return this;
     }
     
     /**
@@ -167,7 +170,8 @@ public class VehicleType extends RPCStruct {
      * set the trim of the vehicle
      * @param trim the trim of the vehicle
      */
-    public void setTrim(String trim) {
+    public VehicleType setTrim( String trim) {
         setValue(KEY_TRIM, trim);
+        return this;
     }
 }

@@ -67,9 +67,10 @@ public class PerformAppServiceInteraction extends RPCRequest {
 	 * URI is correct.
 	 * @param serviceUri -
 	 */
-	public void setServiceUri(@NonNull String serviceUri){
-		setParameters(KEY_SERVICE_URI, serviceUri);
-	}
+	public PerformAppServiceInteraction setServiceUri(@NonNull String serviceUri) {
+        setParameters(KEY_SERVICE_URI, serviceUri);
+        return this;
+    }
 
 	/**
 	 * Fully qualified URI based on a predetermined scheme provided by the app service. SDL makes no guarantee that this
@@ -84,9 +85,10 @@ public class PerformAppServiceInteraction extends RPCRequest {
 	 * The service ID that the app consumer wishes to send this URI.
 	 * @param appServiceId -
 	 */
-	public void setServiceID(@NonNull String appServiceId){
-		setParameters(KEY_SERVICE_ID, appServiceId);
-	}
+	public PerformAppServiceInteraction setServiceID(@NonNull String appServiceId) {
+        setParameters(KEY_SERVICE_ID, appServiceId);
+        return this;
+    }
 
 	/**
 	 * The service ID that the app consumer wishes to send this URI.
@@ -100,9 +102,10 @@ public class PerformAppServiceInteraction extends RPCRequest {
 	 * This string is the appID of the app requesting the app service provider take the specific action.
 	 * @param originApp -
 	 */
-	public void setOriginApp(@NonNull String originApp){
-		setParameters(KEY_ORIGIN_APP, originApp);
-	}
+	public PerformAppServiceInteraction setOriginApp(@NonNull String originApp) {
+        setParameters(KEY_ORIGIN_APP, originApp);
+        return this;
+    }
 
 	/**
 	 * This string is the appID of the app requesting the app service provider take the specific action.
@@ -117,9 +120,10 @@ public class PerformAppServiceInteraction extends RPCRequest {
 	 * service of the destination's type.
 	 * @param requestServiceActive -
 	 */
-	public void setRequestServiceActive(Boolean requestServiceActive){
-		setParameters(KEY_REQUEST_SERVICE_ACTIVE, requestServiceActive);
-	}
+	public PerformAppServiceInteraction setRequestServiceActive( Boolean requestServiceActive) {
+        setParameters(KEY_REQUEST_SERVICE_ACTIVE, requestServiceActive);
+        return this;
+    }
 
 	/**
 	 * This string is the appID of the app requesting the app service provider take the specific action.

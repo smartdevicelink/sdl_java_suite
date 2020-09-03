@@ -62,8 +62,9 @@ public class GetCloudAppPropertiesResponse extends RPCResponse {
         setResultCode(resultCode);
     }
 
-    public void setCloudAppProperties(CloudAppProperties cloudAppProperties){
+    public GetCloudAppPropertiesResponse setCloudAppProperties( CloudAppProperties cloudAppProperties) {
         setParameters(KEY_PROPERTIES, cloudAppProperties);
+        return this;
     }
 
     public CloudAppProperties getCloudAppProperties(){

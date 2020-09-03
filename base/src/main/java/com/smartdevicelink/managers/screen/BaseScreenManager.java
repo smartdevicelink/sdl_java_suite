@@ -79,6 +79,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 
 	// Sub manager listener
 	private final CompletionListener subManagerListener = new CompletionListener() {
+
 		@Override
 		public synchronized void onComplete(boolean success) {
 			if (softButtonManager != null && textAndGraphicManager != null && voiceCommandManager != null && menuManager != null && choiceSetManager != null && subscribeButtonManager != null) {
@@ -251,6 +252,9 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * @return an SdlArtwork object represents the current primaryGraphic
 	 */
 	public SdlArtwork getPrimaryGraphic() {
+		if (this.textAndGraphicManager.getPrimaryGraphic() == null ||  textAndGraphicManager.getPrimaryGraphic().getName() == null || this.textAndGraphicManager.getPrimaryGraphic().getName().equals(textAndGraphicManager.getBlankArtwork().getName())) {
+			return null;
+		}
 		return this.textAndGraphicManager.getPrimaryGraphic();
 	}
 
@@ -270,6 +274,9 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * @return an SdlArtwork object represents the current secondaryGraphic
 	 */
 	public SdlArtwork getSecondaryGraphic() {
+		if (this.textAndGraphicManager.getSecondaryGraphic() == null || textAndGraphicManager.getSecondaryGraphic().getName() == null || this.textAndGraphicManager.getSecondaryGraphic().getName().equals(textAndGraphicManager.getBlankArtwork().getName())) {
+			return null;
+		}
 		return this.textAndGraphicManager.getSecondaryGraphic();
 	}
 

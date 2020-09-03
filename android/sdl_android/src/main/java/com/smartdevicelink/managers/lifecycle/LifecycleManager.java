@@ -48,7 +48,6 @@ import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
-import com.smartdevicelink.transport.USBTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
 
@@ -75,22 +74,6 @@ public class LifecycleManager extends BaseLifecycleManager {
     @Override
     void initialize() {
         super.initialize();
-
-        //Handle legacy USB connections
-        if (_transportConfig != null && TransportType.USB.equals(_transportConfig.getTransportType())) {
-            //A USB transport config was provided
-            USBTransportConfig usbTransportConfig = (USBTransportConfig) _transportConfig;
-            if (usbTransportConfig.getUsbAccessory() == null) {
-                DebugTool.logInfo(TAG,"Legacy USB transport config was used, but received null for accessory. Attempting to connect with router service");
-                //The accessory was null which means it came from a router service
-                MultiplexTransportConfig multiplexTransportConfig = new MultiplexTransportConfig(usbTransportConfig.getUSBContext(), appConfig.getAppID());
-                multiplexTransportConfig.setRequiresHighBandwidth(true);
-                multiplexTransportConfig.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
-                multiplexTransportConfig.setPrimaryTransports(Collections.singletonList(TransportType.USB));
-                multiplexTransportConfig.setSecondaryTransports(new ArrayList<TransportType>());
-                _transportConfig = multiplexTransportConfig;
-            }
-        }
 
         if (_transportConfig != null && _transportConfig.getTransportType().equals(TransportType.MULTIPLEX)) {
             this.session = new SdlSession(sdlSessionListener, (MultiplexTransportConfig) _transportConfig);
@@ -128,15 +111,9 @@ public class LifecycleManager extends BaseLifecycleManager {
         super.setSdlSecurityStaticVars();
 
         Context context = null;
-        Service service = null;
-
         if(this.contextWeakReference != null){
             context = contextWeakReference.get();
         }
-        if (context != null && context instanceof Service) {
-            service = (Service) context;
-        }
-        SdlSecurityBase.setAppService(service);
         SdlSecurityBase.setContext(context);
     }
 
@@ -242,25 +219,6 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
     }
 
-    /**
-     * Closes the opened video service (serviceType 11)
-     *
-     * @return true if the video service is closed successfully, return false otherwise
-     */
-    @Override
-    void endVideoStream() {
-        if (session == null) {
-            DebugTool.logWarning(TAG, "SdlSession is not created yet.");
-            return;
-        }
-        if (!session.getIsConnected()) {
-            DebugTool.logWarning(TAG, "Connection is not available.");
-            return;
-        }
-
-        session.stopVideoStream();
-    }
-
     @Override
     void startAudioService(boolean isEncrypted) {
         if (session == null) {
@@ -272,24 +230,5 @@ public class LifecycleManager extends BaseLifecycleManager {
             return;
         }
         session.startService(SessionType.PCM, isEncrypted);
-    }
-
-    /**
-     * Closes the opened audio service (serviceType 10)
-     *
-     * @return true if the audio service is closed successfully, return false otherwise
-     */
-    @Override
-    void endAudioStream() {
-        if (session == null) {
-            DebugTool.logWarning(TAG, "SdlSession is not created yet.");
-            return;
-        }
-        if (!session.getIsConnected()) {
-            DebugTool.logWarning(TAG, "Connection is not available.");
-            return;
-        }
-
-        session.stopAudioStream();
     }
 }

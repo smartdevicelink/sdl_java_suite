@@ -76,9 +76,10 @@ public class LightControlCapabilities extends RPCStruct {
 	 *
 	 * @param moduleName The short friendly name of the light control module. It should not be used to identify a module by mobile application.
 	 */
-	public void setModuleName(@NonNull String moduleName) {
-		setValue(KEY_MODULE_NAME, moduleName);
-	}
+	public LightControlCapabilities setModuleName(@NonNull String moduleName) {
+        setValue(KEY_MODULE_NAME, moduleName);
+        return this;
+    }
 
 	/**
 	 * Gets the moduleName portion of the LightControlCapabilities class
@@ -104,17 +105,19 @@ public class LightControlCapabilities extends RPCStruct {
 	 *
 	 * @param supportedLights An array of available LightCapabilities that are controllable.
 	 */
-	public void setSupportedLights(@NonNull List<LightCapabilities> supportedLights) {
-		setValue(KEY_SUPPORTED_LIGHTS, supportedLights);
-	}
+	public LightControlCapabilities setSupportedLights(@NonNull List<LightCapabilities> supportedLights) {
+        setValue(KEY_SUPPORTED_LIGHTS, supportedLights);
+        return this;
+    }
 
 	/**
 	 * Sets ModuleInfo for this capability
 	 * @param info the ModuleInfo to be set
 	 */
-	public void setModuleInfo(ModuleInfo info) {
-		setValue(KEY_MODULE_INFO, info);
-	}
+	public LightControlCapabilities setModuleInfo( ModuleInfo info) {
+        setValue(KEY_MODULE_INFO, info);
+        return this;
+    }
 
 	/**
 	 * Gets a ModuleInfo of this capability

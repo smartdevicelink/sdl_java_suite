@@ -88,9 +88,10 @@ public class AppServiceManifest extends RPCStruct {
 	 * Unique name of this service
 	 * @param serviceName - the service name
 	 */
-	public void setServiceName(String serviceName){
-		setValue(KEY_SERVICE_NAME, serviceName);
-	}
+	public AppServiceManifest setServiceName( String serviceName) {
+        setValue(KEY_SERVICE_NAME, serviceName);
+        return this;
+    }
 
 	/**
 	 * Unique name of this service
@@ -102,12 +103,13 @@ public class AppServiceManifest extends RPCStruct {
 
 	/**
 	 * The type of service that is to be offered by this app
-	 * @param serviceType - the serviceType use {@link com.smartdevicelink.proxy.rpc.enums.AppServiceType}
-	 * @see com.smartdevicelink.proxy.rpc.enums.AppServiceType
+	 * @param serviceType - the serviceType use {@link AppServiceType}
+	 * @see AppServiceType
 	 */
-	public void setServiceType(@NonNull String serviceType){
-		setValue(KEY_SERVICE_TYPE, serviceType);
-	}
+	public AppServiceManifest setServiceType(@NonNull String serviceType) {
+        setValue(KEY_SERVICE_TYPE, serviceType);
+        return this;
+    }
 
 	/**
 	 * The type of service that is to be offered by this app
@@ -122,9 +124,10 @@ public class AppServiceManifest extends RPCStruct {
 	 * The icon to be associated with this service Most likely the same as the appIcon.
 	 * @param serviceIcon - The Service Icon Image
 	 */
-	public void setServiceIcon(Image serviceIcon){
-		setValue(KEY_SERVICE_ICON, serviceIcon);
-	}
+	public AppServiceManifest setServiceIcon( Image serviceIcon) {
+        setValue(KEY_SERVICE_ICON, serviceIcon);
+        return this;
+    }
 
 	/**
 	 * The icon to be associated with this service Most likely the same as the appIcon.
@@ -139,9 +142,10 @@ public class AppServiceManifest extends RPCStruct {
 	 * only the IVI system will be able consume the service. If not provided, it is assumed to be false.
 	 * @param allowAppConsumers - boolean
 	 */
-	public void setAllowAppConsumers(Boolean allowAppConsumers){
-		setValue(KEY_ALLOW_APP_CONSUMERS, allowAppConsumers);
-	}
+	public AppServiceManifest setAllowAppConsumers( Boolean allowAppConsumers) {
+        setValue(KEY_ALLOW_APP_CONSUMERS, allowAppConsumers);
+        return this;
+    }
 
 	/**
 	 * If true, app service consumers beyond the IVI system will be able to access this service. If false,
@@ -157,9 +161,10 @@ public class AppServiceManifest extends RPCStruct {
 	 * If not included, it is assumed the max version of the module is acceptable.
 	 * @param rpcSpecVersion - The rpcSpecVersion
 	 */
-	public void setRpcSpecVersion(SdlMsgVersion rpcSpecVersion){
-		setValue(KEY_RPC_SPEC_VERSION, rpcSpecVersion);
-	}
+	public AppServiceManifest setRpcSpecVersion( SdlMsgVersion rpcSpecVersion) {
+        setValue(KEY_RPC_SPEC_VERSION, rpcSpecVersion);
+        return this;
+    }
 
 	/**
 	 * This is the max RPC Spec version the app service understands. This is important during the RPC pass through functionality.
@@ -174,20 +179,21 @@ public class AppServiceManifest extends RPCStruct {
 	 * This field contains the Function IDs for the RPCs that this service intends to handle correctly.
 	 * This means the service will provide meaningful responses.
 	 * @param handledRPCs - The List of Handled RPCs using their ID value from the FunctionID enum
-	 * @see com.smartdevicelink.protocol.enums.FunctionID
-	 * @see #setHandledRpcsUsingFunctionIDs(List)
+	 * @see FunctionID
+	 * @see #setHandledRpcsUsingFunctionIDs( List )
 	 */
-	public void setHandledRpcs(List<Integer> handledRPCs){
-		setValue(KEY_HANDLED_RPCS, handledRPCs);
-	}
+	public AppServiceManifest setHandledRpcs( List<Integer> handledRPCs) {
+        setValue(KEY_HANDLED_RPCS, handledRPCs);
+        return this;
+    }
 	/**
 	 * This field contains the Function IDs for the RPCs that this service intends to handle correctly.
 	 * This means the service will provide meaningful responses.
 	 * @param handledRPCs - The List of Handled RPCs using the FunctionID enum
-	 * @see #setHandledRpcs(List)
+	 * @see #setHandledRpcs( List )
 	 */
-	public void setHandledRpcsUsingFunctionIDs(List<FunctionID> handledRPCs){
-		if(handledRPCs != null){
+	public AppServiceManifest setHandledRpcsUsingFunctionIDs( List<FunctionID> handledRPCs) {
+        if(handledRPCs != null){
 			List<Integer> rpcIds = new ArrayList<>();
 			for(FunctionID functionID : handledRPCs){
 				rpcIds.add(functionID.getId());
@@ -196,7 +202,8 @@ public class AppServiceManifest extends RPCStruct {
 		}else{
 			setValue(KEY_HANDLED_RPCS, null);
 		}
-	}
+        return this;
+    }
 
 	/**
 	 * This field contains the FunctionID integer ID values for the RPCs that this service intends to handle correctly.
@@ -213,9 +220,10 @@ public class AppServiceManifest extends RPCStruct {
 	 * The MediaServiceManifest
 	 * @param mediaServiceManifest - The mediaServiceManifest
 	 */
-	public void setMediaServiceManifest(MediaServiceManifest mediaServiceManifest){
-		setValue(KEY_MEDIA_SERVICE_MANIFEST, mediaServiceManifest);
-	}
+	public AppServiceManifest setMediaServiceManifest( MediaServiceManifest mediaServiceManifest) {
+        setValue(KEY_MEDIA_SERVICE_MANIFEST, mediaServiceManifest);
+        return this;
+    }
 
 	/**
 	 * The MediaServiceManifest
@@ -229,9 +237,10 @@ public class AppServiceManifest extends RPCStruct {
 	 * The WeatherServiceManifest
 	 * @param weatherServiceManifest - The weatherServiceManifest
 	 */
-	public void setWeatherServiceManifest(WeatherServiceManifest weatherServiceManifest){
-		setValue(KEY_WEATHER_SERVICE_MANIFEST, weatherServiceManifest);
-	}
+	public AppServiceManifest setWeatherServiceManifest( WeatherServiceManifest weatherServiceManifest) {
+        setValue(KEY_WEATHER_SERVICE_MANIFEST, weatherServiceManifest);
+        return this;
+    }
 
 	/**
 	 * The WeatherServiceManifest
@@ -245,9 +254,10 @@ public class AppServiceManifest extends RPCStruct {
 	 * The NavigationServiceManifest
 	 * @param navigationServiceManifest - The navigationServiceManifest
 	 */
-	public void setNavigationServiceManifest(NavigationServiceManifest navigationServiceManifest){
-		setValue(KEY_NAVIGATION_SERVICE_MANIFEST, navigationServiceManifest);
-	}
+	public AppServiceManifest setNavigationServiceManifest( NavigationServiceManifest navigationServiceManifest) {
+        setValue(KEY_NAVIGATION_SERVICE_MANIFEST, navigationServiceManifest);
+        return this;
+    }
 
 	/**
 	 * The NavigationServiceManifest

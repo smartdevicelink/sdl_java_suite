@@ -68,17 +68,6 @@ public class ByteArrayMessageSpliter {
 		this.priorityCoef = priorityCoef;
 	}
 	
-	@Deprecated
-	public ByteArrayMessageSpliter(Long appId,int what, byte[] bytes, int priorityCoef){
-		this.appId = appId+"";
-		this.what = what;
-		stream = new ByteArrayInputStream(bytes);
-		orginalSize  = stream.available();
-		bytesRead = 0; 
-		firstPacket = true;
-		this.priorityCoef = priorityCoef;
-	}
-	
 	public void setRouterServiceVersion(int version){
 		this.routerServiceVersion = version;
 	}
