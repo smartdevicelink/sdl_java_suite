@@ -111,15 +111,9 @@ public class LifecycleManager extends BaseLifecycleManager {
         super.setSdlSecurityStaticVars();
 
         Context context = null;
-        Service service = null;
-
         if(this.contextWeakReference != null){
             context = contextWeakReference.get();
         }
-        if (context != null && context instanceof Service) {
-            service = (Service) context;
-        }
-        SdlSecurityBase.setAppService(service);
         SdlSecurityBase.setContext(context);
     }
 

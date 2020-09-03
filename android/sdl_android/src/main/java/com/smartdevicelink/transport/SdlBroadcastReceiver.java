@@ -237,7 +237,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 				context.startService(serviceIntent);
 			} else {
 				serviceIntent.putExtra(FOREGROUND_EXTRA, true);
-				DebugTool.logInfo("Attempting to startForegroundService - " + System.currentTimeMillis());
+				DebugTool.logInfo(TAG, "Attempting to startForegroundService - " + System.currentTimeMillis());
 				setForegroundExceptionHandler(); //Prevent ANR in case the OS takes too long to start the service
 				context.startForegroundService(serviceIntent);
 
@@ -297,7 +297,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 					} else { //There are currently running services
 						if(DebugTool.isDebugEnabled()){
 							for(ComponentName service : runningBluetoothServicePackage){
-								DebugTool.logInfo("Currently running router service: " + service.getPackageName());
+								DebugTool.logInfo(TAG, "Currently running router service: " + service.getPackageName());
 							}
 						}
 						if (altTransportWake) {

@@ -31,8 +31,6 @@
  */
 package com.smartdevicelink.protocol;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 
 public class SdlPacket extends BaseSdlPacket {
 
@@ -55,28 +53,4 @@ public class SdlPacket extends BaseSdlPacket {
     protected SdlPacket(BaseSdlPacket packet) {
         super(packet);
     }
-
-    @Deprecated
-    public SdlPacket(Parcel p){}
-
-    @Deprecated
-    public int describeContents() {
-        return 0;
-    }
-
-    @Deprecated
-    public void writeToParcel(Parcel dest, int flags) {}
-
-    @Deprecated
-    public static final Parcelable.Creator<SdlPacket> CREATOR = new Parcelable.Creator<SdlPacket>() {
-        public SdlPacket createFromParcel(Parcel in) {
-            return new SdlPacket(in);
-        }
-
-        @Override
-        public SdlPacket[] newArray(int size) {
-            return new SdlPacket[size];
-        }
-
-    };
 }
