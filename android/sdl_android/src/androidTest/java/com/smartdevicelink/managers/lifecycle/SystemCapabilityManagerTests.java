@@ -1013,20 +1013,9 @@ public class SystemCapabilityManagerTests {
 			return false;
 		}
 
-		@Override
-		public Object getCapability(SystemCapabilityType systemCapabilityType){return null;}
-
-		@Override
-		public void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener) {
-		}
 
 		@Override
 		public RegisterAppInterfaceResponse getRegisterAppInterfaceResponse() {
-			return null;
-		}
-
-		@Override
-		public Object getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener, boolean forceUpdate) {
 			return null;
 		}
 
@@ -1039,18 +1028,6 @@ public class SystemCapabilityManagerTests {
 		public Version getProtocolVersion() {
 			return new Version(1,0,0);
 		}
-
-
-		@Override
-		public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType){
-			return false;
-		}
-
-		@Override
-		public void addOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) { }
-
-		@Override
-		public boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) { return false; }
 
 		@Override
 		public boolean isTransportForServiceAvailable(SessionType serviceType) {
@@ -1065,6 +1042,11 @@ public class SystemCapabilityManagerTests {
 
 		@Override
 		public Taskmaster getTaskmaster() {
+			return null;
+		}
+
+		@Override
+		public SystemCapabilityManager getSystemCapabilityManager() {
 			return null;
 		}
 	}
