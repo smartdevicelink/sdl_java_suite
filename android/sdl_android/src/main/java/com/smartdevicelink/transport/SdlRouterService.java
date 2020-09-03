@@ -2398,29 +2398,6 @@ public class SdlRouterService extends Service{
 		//**************************************************************************************************************************************
 		//********************************************************* PREFERENCES ****************************************************************
 		//**************************************************************************************************************************************
-		/**
-		 * @deprecated
-		 * This method will set the last known bluetooth connection method that worked with this phone.
-		 * This helps speed up the process of connecting
-		 * @param level The level of bluetooth connecting method that last worked
-		 * @param prefLocation Where the preference should be stored
-		 */
-		@SuppressWarnings("DeprecatedIsStillUsed")
-		@Deprecated
-		public static void setBluetoothPrefs (int level, String prefLocation) {
-			DebugTool.logWarning(TAG, "This method is deprecated and will not take any action");
-		}
-
-		/**
-		* @deprecated
-	 	* This method has been deprecated as it was bad practice.
-	 	*/
-		@SuppressWarnings({"DeprecatedIsStillUsed", "SameReturnValue"})
-		@Deprecated
-		public static int getBluetoothPrefs(String prefLocation)
-		{		
-			return 0;
-		}
 
 	/**
 	 * Set the connection establishment status of the particular device

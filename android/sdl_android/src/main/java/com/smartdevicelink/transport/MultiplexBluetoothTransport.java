@@ -85,8 +85,6 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
      */
     public MultiplexBluetoothTransport(Handler handler) {
         super(handler, TransportType.BLUETOOTH);
-         //This will keep track of which method worked last night
-        mBluetoothLevel = SdlRouterService.getBluetoothPrefs(SHARED_PREFS);
     }
 
     //These methods are used so we can have a semi-static reference to the Accept Thread (Static reference inherited by housing class)
@@ -487,7 +485,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
 	            try {
 	                // This is a blocking call and will only return on a
 	                // successful connection or an exception
-	            	mBluetoothLevel = SdlRouterService.getBluetoothPrefs(SHARED_PREFS);
+	            	mBluetoothLevel = 0;
 	            	long waitTime = 3000;
 	                try {
 						Thread.sleep(waitTime);
@@ -503,7 +501,6 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
 
 	                if(mBluetoothLevel<=1){
 	                try {
-	                	SdlRouterService.setBluetoothPrefs(2,SHARED_PREFS);
 	                      Method m = mmDevice.getClass().getMethod("createRfcommSocket", new Class[] {int.class});
 	                      //Log.i(TAG,"connecting using createRfcommSocket");
 	                        mmSocket = (BluetoothSocket) m.invoke(mmDevice, Integer.valueOf(1));
@@ -517,14 +514,10 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
 	    						    Looper.myLooper().quit();
 	    						}
 	    						success=true;
-	    						SdlRouterService.setBluetoothPrefs(1,SHARED_PREFS);
 	    	                	break;
 	    					} else{trySecure = true;}
 
 	                } catch (Exception e) {
-	                      //Log.e(TAG,"createRfcommSocket exception - " + e.toString());
-	                      SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
-
 	                		trySecure = true;
 	    	                try {
 	    						Thread.sleep(500);
@@ -535,7 +528,6 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
 	            }else{trySecure = true;}
 	                if(trySecure && mBluetoothLevel<=2){
 	                    try {
-	                    	SdlRouterService.setBluetoothPrefs(3,SHARED_PREFS);
     	                	//Log.i(TAG, "connecting using createRfcommSocketToServiceRecord ");
 	                         mmSocket = mmDevice.createRfcommSocketToServiceRecord(SERVER_UUID);                        
 	     					if(mmSocket!=null){
@@ -548,25 +540,19 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
 	    						    Looper.myLooper().quit();
 	    						}
 	    						success=true;
-	    						SdlRouterService.setBluetoothPrefs(2,SHARED_PREFS);
 	    	                	break;
 	    					}else{tryInsecure = true;}
 	                    } catch (IOException io) {
 	                        tryInsecure = true;
                             DebugTool.logError(TAG, "createRfcommSocketToServiceRecord exception - " + io.toString());
-	                         SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
-
 	                    } catch (Exception e){
                             DebugTool.logError(TAG, "createRfcommSocketToServiceRecord exception - " + e.toString());
-	                         SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
-
 	                    }
 	                }else{tryInsecure = true;}
 
 	                if (tryInsecure && mBluetoothLevel<=3) {
 	                    // try again using insecure comm if available
 	                    try {
-	                    	SdlRouterService.setBluetoothPrefs(4,SHARED_PREFS);
 	                        //Log.i(TAG,"connecting using createInsecureRfcommSocketToServiceRecord");
 	                        Method m = mmDevice.getClass().getMethod("createInsecureRfcommSocketToServiceRecord", new Class[] {UUID.class});
 	                        mmSocket = (BluetoothSocket) m.invoke(mmDevice, new Object[] {SERVER_UUID});
@@ -580,24 +566,19 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
     						}
     						success=true;
 		                	tryInsecure = false;
-		                	SdlRouterService.setBluetoothPrefs(3,SHARED_PREFS);
 		                	break;
 	                    } catch (NoSuchMethodException ie) {
-	                    	SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
 	                    } catch (IllegalAccessException ie) {
-	                    	SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
 	                    } catch (InvocationTargetException ie) {
-	                    	SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
 	                    }
 	                }
 	                if (tryInsecure && mBluetoothLevel<=4) {
 	                    // try again using insecure comm if available
 	                    try {
-	                    	SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
 	                        //Log.i(TAG,"connecting using createInsecureRfcommSocket()");
 	                        Method m = mmDevice.getClass().getMethod("createInsecureRfcommSocket()", new Class[] {UUID.class});
 	                        mmSocket = (BluetoothSocket) m.invoke(mmDevice, new Object[] {SERVER_UUID});
-    						//Looper.prepare(); 
+    						//Looper.prepare();
     						timerDelayRemoveDialog(mmSocket);
     						//Looper.loop();
     						mmSocket.connect();
@@ -606,14 +587,10 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
     						    Looper.myLooper().quit();
     						}
     						success=true;
-    						SdlRouterService.setBluetoothPrefs(4,SHARED_PREFS);
 		                	break;
 	                    } catch (NoSuchMethodException ie) {
-	                    	SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
 	                    } catch (IllegalAccessException ie) {
-	                    	SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
 	                    } catch (InvocationTargetException ie) {
-	                    	SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
 	                    }
 	                }
 	            }  catch (IOException e) {
