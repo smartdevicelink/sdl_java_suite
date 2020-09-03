@@ -286,12 +286,6 @@ class PresentKeyboardOperation extends Task {
 					// Notify of Keypress
 					keyboardListener.updateAutocompleteWithInput(onKeyboard.getData(), new KeyboardAutocompleteCompletionListener() {
 						@Override
-						public void onUpdatedAutoCompleteText(String updatedAutoCompleteText) {
-							keyboardProperties.setAutoCompleteText(updatedAutoCompleteText);
-							updateKeyboardProperties(null);
-						}
-
-						@Override
 						public void onUpdatedAutoCompleteList(List<String> updatedAutoCompleteList) {
 							keyboardProperties.setAutoCompleteList(updatedAutoCompleteList != null ? updatedAutoCompleteList : new ArrayList<String>());
 							keyboardProperties.setAutoCompleteText(updatedAutoCompleteList != null && !updatedAutoCompleteList.isEmpty() ? updatedAutoCompleteList.get(0) : null);

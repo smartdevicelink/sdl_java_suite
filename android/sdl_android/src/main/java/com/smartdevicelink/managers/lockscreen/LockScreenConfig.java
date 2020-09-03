@@ -88,30 +88,6 @@ public class LockScreenConfig {
 	}
 
 	/**
-	 * If set to true, SDL will manage the showing and dismissing of the lock screen for you. <br>
-	 *
-	 * If false, you must manage the lock screen
-	 * @param enable boolean
-	 *
-	 * @deprecated to disable the lockscreen, use setDisplayMode with DISPLAY_MODE_NEVER instead
-	 */
-	@Deprecated
-	public void setEnabled(boolean enable){
-		this.enable = enable;
-	}
-
-	/**
-	 * Gets whether the lock screen is being managed for you
-	 * @return boolean
-	 *
-	 * @deprecated to disable the lockscreen, use setDisplayMode with DISPLAY_MODE_NEVER instead
-	 */
-	@Deprecated
-	public boolean isEnabled() {
-		return enable;
-	}
-
-	/**
 	 * Set the resource int of the background color. Colors should define colors in your Colors.xml file
 	 * @param resourceColor resource int of the color
 	 */

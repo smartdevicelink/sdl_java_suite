@@ -203,11 +203,6 @@ public class SdlService extends Service {
 				}
 
 				@Override
-				public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language) {
-					return null;
-				}
-
-				@Override
 				public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language, Language hmiLanguage) {
 					boolean isNeedUpdate = false;
 					String appName = APP_NAME;

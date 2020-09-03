@@ -60,13 +60,6 @@ import java.net.URI;
  */
 public class FileManager extends BaseFileManager {
 
-	@Deprecated
-	public FileManager(ISdl internalInterface) {
-
-		// setup
-		super(internalInterface);
-	}
-
 	/**
 	 * Constructor for FileManager
 	 * @param internalInterface an instance of the ISdl interface that can be used for common SDL operations (sendRpc, addRpcListener, etc)

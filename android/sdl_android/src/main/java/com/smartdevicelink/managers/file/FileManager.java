@@ -65,14 +65,6 @@ public class FileManager extends BaseFileManager {
 
 	private final WeakReference<Context> context;
 
-	@Deprecated
-	public FileManager(ISdl internalInterface, Context context) {
-
-		// setup
-		super(internalInterface);
-		this.context = new WeakReference<>(context);
-	}
-
 	/**
 	 * Constructor for FileManager
 	 * @param internalInterface an instance of the ISdl interface that can be used for common SDL operations (sendRpc, addRpcListener, etc)
