@@ -120,8 +120,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Sets Gps
      * @param gps a VehicleDataResult related to GPS
      */
-    public void setGps(VehicleDataResult gps) {
+    public UnsubscribeVehicleDataResponse setGps( VehicleDataResult gps) {
         setParameters(KEY_GPS, gps);
+        return this;
     }
     /**
      * Gets Gps
@@ -135,8 +136,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Sets Speed
      * @param speed a VehicleDataResult related to speed
      */
-    public void setSpeed(VehicleDataResult speed) {
+    public UnsubscribeVehicleDataResponse setSpeed( VehicleDataResult speed) {
         setParameters(KEY_SPEED, speed);
+        return this;
     }
     /**
      * Gets Speed
@@ -150,8 +152,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Sets rpm
      * @param rpm a VehicleDataResult related to RPM
      */
-    public void setRpm(VehicleDataResult rpm) {
+    public UnsubscribeVehicleDataResponse setRpm( VehicleDataResult rpm) {
         setParameters(KEY_RPM, rpm);
+        return this;
     }
     /**
      * Gets rpm
@@ -168,8 +171,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * 7.0, please see fuelRange.
      */
     @Deprecated
-    public void setFuelLevel(VehicleDataResult fuelLevel) {
+    public UnsubscribeVehicleDataResponse setFuelLevel( VehicleDataResult fuelLevel) {
         setParameters(KEY_FUEL_LEVEL, fuelLevel);
+        return this;
     }
     /**
      * Gets the fuelLevel.
@@ -187,8 +191,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @param fuelLevelState a VehicleDataResult related to FuelLevel State
      */
     @Deprecated
-    public void setFuelLevelState(VehicleDataResult fuelLevelState) {
+    public UnsubscribeVehicleDataResponse setFuelLevelState( VehicleDataResult fuelLevelState) {
         setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
+        return this;
     }
     /**
      * Gets Fuel Level State
@@ -203,8 +208,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Sets Instant Fuel Consumption
      * @param instantFuelConsumption a VehicleDataResult related to instant fuel consumption
      */
-    public void setInstantFuelConsumption(VehicleDataResult instantFuelConsumption) {
+    public UnsubscribeVehicleDataResponse setInstantFuelConsumption( VehicleDataResult instantFuelConsumption) {
         setParameters(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
+        return this;
     }
     /**
      * Gets Instant Fuel Consumption
@@ -218,8 +224,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Sets External Temperature
      * @param externalTemperature a VehicleDataResult related to external temperature
      */
-    public void setExternalTemperature(VehicleDataResult externalTemperature) {
+    public UnsubscribeVehicleDataResponse setExternalTemperature( VehicleDataResult externalTemperature) {
         setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
+        return this;
     }
     /**
      * Gets External Temperature
@@ -236,8 +243,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @deprecated in SmartDeviceLink 7.0.0
      */
     @Deprecated
-    public void setPrndl(VehicleDataResult prndl) {
+    public UnsubscribeVehicleDataResponse setPrndl( VehicleDataResult prndl) {
         setParameters(KEY_PRNDL, prndl);
+        return this;
     }
     /**
      * Gets the prndl.
@@ -254,8 +262,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Sets Tire Pressure
      * @param tirePressure a VehicleDataResult related to tire pressure
      */
-    public void setTirePressure(VehicleDataResult tirePressure) {
+    public UnsubscribeVehicleDataResponse setTirePressure( VehicleDataResult tirePressure) {
         setParameters(KEY_TIRE_PRESSURE, tirePressure);
+        return this;
     }
     /**
      * Gets Tire Pressure
@@ -269,8 +278,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Sets Odometer
      * @param odometer a VehicleDataResult related to the odometer
      */
-    public void setOdometer(VehicleDataResult odometer) {
+    public UnsubscribeVehicleDataResponse setOdometer( VehicleDataResult odometer) {
         setParameters(KEY_ODOMETER, odometer);
+        return this;
     }
     /**
      * Gets Odometer
@@ -284,8 +294,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Sets Belt Status
      * @param beltStatus a VehicleDataResult related to the seat belt status
      */
-    public void setBeltStatus(VehicleDataResult beltStatus) {
+    public UnsubscribeVehicleDataResponse setBeltStatus( VehicleDataResult beltStatus) {
         setParameters(KEY_BELT_STATUS, beltStatus);
+        return this;
     }
     /**
      * Gets Belt Status
@@ -299,8 +310,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Sets Body Information
      * @param bodyInformation a VehicleDataResult related to the body info
      */
-    public void setBodyInformation(VehicleDataResult bodyInformation) {
+    public UnsubscribeVehicleDataResponse setBodyInformation( VehicleDataResult bodyInformation) {
         setParameters(KEY_BODY_INFORMATION, bodyInformation);
+        return this;
     }
     /**
      * Gets Body Information
@@ -314,8 +326,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Sets Device Status
      * @param deviceStatus a VehicleDataResult related to the device status of the connected device
      */
-    public void setDeviceStatus(VehicleDataResult deviceStatus) {
+    public UnsubscribeVehicleDataResponse setDeviceStatus( VehicleDataResult deviceStatus) {
         setParameters(KEY_DEVICE_STATUS, deviceStatus);
+        return this;
     }
     /**
      * Gets Device Status
@@ -329,8 +342,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Sets Driver Braking
      * @param driverBraking a VehicleDataResult related to the driver breaking status
      */
-    public void setDriverBraking(VehicleDataResult driverBraking) {
+    public UnsubscribeVehicleDataResponse setDriverBraking( VehicleDataResult driverBraking) {
         setParameters(KEY_DRIVER_BRAKING, driverBraking);
+        return this;
     }
     /**
      * Gets Driver Braking
@@ -344,8 +358,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Sets Wiper Status
      * @param wiperStatus a VehicleDataResult related to the wiper status
      */
-    public void setWiperStatus(VehicleDataResult wiperStatus) {
+    public UnsubscribeVehicleDataResponse setWiperStatus( VehicleDataResult wiperStatus) {
         setParameters(KEY_WIPER_STATUS, wiperStatus);
+        return this;
     }
     /**
      * Gets Wiper Status
@@ -359,8 +374,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Sets Head Lamp Status
      * @param headLampStatus a VehicleDataResult related to the headlamp status
      */
-    public void setHeadLampStatus(VehicleDataResult headLampStatus) {
+    public UnsubscribeVehicleDataResponse setHeadLampStatus( VehicleDataResult headLampStatus) {
         setParameters(KEY_HEAD_LAMP_STATUS, headLampStatus);
+        return this;
     }
     /**
      * Gets Head Lamp Status
@@ -374,8 +390,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Sets Engine Torque
      * @param engineTorque a VehicleDataResult related to the engine's torque
      */
-    public void setEngineTorque(VehicleDataResult engineTorque) {
+    public UnsubscribeVehicleDataResponse setEngineTorque( VehicleDataResult engineTorque) {
         setParameters(KEY_ENGINE_TORQUE, engineTorque);
+        return this;
     }
     /**
      * Gets Engine Torque
@@ -389,8 +406,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Sets Engine Oil Life
      * @param engineOilLife a VehicleDataResult related to the engine's oil life
      */
-    public void setEngineOilLife(VehicleDataResult engineOilLife) {
+    public UnsubscribeVehicleDataResponse setEngineOilLife( VehicleDataResult engineOilLife) {
         setParameters(KEY_ENGINE_OIL_LIFE, engineOilLife);
+        return this;
     }
     /**
      * Gets Engine Oil Life
@@ -404,8 +422,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Sets AccPedal Position
      * @param accPedalPosition a VehicleDataResult related to the accelerator pedal's position
      */
-    public void setAccPedalPosition(VehicleDataResult accPedalPosition) {
+    public UnsubscribeVehicleDataResponse setAccPedalPosition( VehicleDataResult accPedalPosition) {
         setParameters(KEY_ACC_PEDAL_POSITION, accPedalPosition);
+        return this;
     }
     /**
      * Gets AccPedal Position
@@ -416,8 +435,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_ACC_PEDAL_POSITION);
     }  
     
-    public void setSteeringWheelAngle(VehicleDataResult steeringWheelAngle) {
+    public UnsubscribeVehicleDataResponse setSteeringWheelAngle( VehicleDataResult steeringWheelAngle) {
         setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
+        return this;
     }
 
     @SuppressWarnings("unchecked")
@@ -425,36 +445,41 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_STEERING_WHEEL_ANGLE);
     }    
     
-    public void setECallInfo(VehicleDataResult eCallInfo) {
+    public UnsubscribeVehicleDataResponse setECallInfo( VehicleDataResult eCallInfo) {
         setParameters(KEY_E_CALL_INFO, eCallInfo);
+        return this;
     }
     @SuppressWarnings("unchecked")
     public VehicleDataResult getECallInfo() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_E_CALL_INFO);
     }
-    public void setAirbagStatus(VehicleDataResult airbagStatus) {
+    public UnsubscribeVehicleDataResponse setAirbagStatus( VehicleDataResult airbagStatus) {
         setParameters(KEY_AIRBAG_STATUS, airbagStatus);
+        return this;
     }
     @SuppressWarnings("unchecked")
     public VehicleDataResult getAirbagStatus() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_AIRBAG_STATUS);
     }
-    public void setEmergencyEvent(VehicleDataResult emergencyEvent) {
+    public UnsubscribeVehicleDataResponse setEmergencyEvent( VehicleDataResult emergencyEvent) {
         setParameters(KEY_EMERGENCY_EVENT, emergencyEvent);
+        return this;
     }
     @SuppressWarnings("unchecked")
     public VehicleDataResult getEmergencyEvent() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_EMERGENCY_EVENT);
     }
-    public void setClusterModeStatus(VehicleDataResult clusterModeStatus) {
+    public UnsubscribeVehicleDataResponse setClusterModeStatus( VehicleDataResult clusterModeStatus) {
         setParameters(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
+        return this;
     }
     @SuppressWarnings("unchecked")
     public VehicleDataResult getClusterModeStatus() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_CLUSTER_MODE_STATUS);
     }
-    public void setMyKey(VehicleDataResult myKey) {
+    public UnsubscribeVehicleDataResponse setMyKey( VehicleDataResult myKey) {
         setParameters(KEY_MY_KEY, myKey);
+        return this;
     }
     @SuppressWarnings("unchecked")
     public VehicleDataResult getMyKey() {
@@ -468,8 +493,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * vehicle. See struct FuelRange for details.
      * @since SmartDeviceLink 5.0.0
      */
-    public void setFuelRange(VehicleDataResult fuelRange) {
+    public UnsubscribeVehicleDataResponse setFuelRange( VehicleDataResult fuelRange) {
         setParameters(KEY_FUEL_RANGE, fuelRange);
+        return this;
     }
 
     /**
@@ -487,8 +513,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Sets turnSignal
      * @param turnSignal a VehicleDataResult related to the turn signal status
      */
-    public void setTurnSignal(VehicleDataResult turnSignal) {
+    public UnsubscribeVehicleDataResponse setTurnSignal( VehicleDataResult turnSignal) {
         setParameters(KEY_TURN_SIGNAL, turnSignal);
+        return this;
     }
 
     /**
@@ -504,8 +531,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Sets electronicParkBrakeStatus
      * @param electronicParkBrakeStatus a VehicleDataResult related to the electronic park brake status
      */
-    public void setElectronicParkBrakeStatus(VehicleDataResult electronicParkBrakeStatus){
+    public UnsubscribeVehicleDataResponse setElectronicParkBrakeStatus( VehicleDataResult electronicParkBrakeStatus) {
         setParameters(KEY_ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
+        return this;
     }
 
     /**
@@ -520,8 +548,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Sets cloudAppVehicleID
      * @param cloudAppVehicleID a VehicleDataResult related to the cloud app vehicle ID
      */
-    public void setCloudAppVehicleID(VehicleDataResult cloudAppVehicleID){
+    public UnsubscribeVehicleDataResponse setCloudAppVehicleID( VehicleDataResult cloudAppVehicleID) {
         setParameters(KEY_CLOUD_APP_VEHICLE_ID, cloudAppVehicleID);
+        return this;
     }
 
     /**
@@ -537,8 +566,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @param vehicleDataName a String value
      * @param vehicleDataState a VehicleDataResult value
      */
-    public void setOEMCustomVehicleData(String vehicleDataName, VehicleDataResult vehicleDataState){
+    public UnsubscribeVehicleDataResponse setOEMCustomVehicleData( String vehicleDataName, VehicleDataResult vehicleDataState) {
         setParameters(vehicleDataName, vehicleDataState);
+        return this;
     }
 
     /**
@@ -555,8 +585,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @param handsOffSteering To indicate whether driver hands are off the steering wheel
      * @since SmartDeviceLink 7.0.0
      */
-    public void setHandsOffSteering(VehicleDataResult handsOffSteering) {
+    public UnsubscribeVehicleDataResponse setHandsOffSteering( VehicleDataResult handsOffSteering) {
         setParameters(KEY_HANDS_OFF_STEERING, handsOffSteering);
+        return this;
     }
 
     /**
@@ -575,8 +606,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @param windowStatus See WindowStatus
      * @since SmartDeviceLink 7.0.0
      */
-    public void setWindowStatus(VehicleDataResult windowStatus) {
+    public UnsubscribeVehicleDataResponse setWindowStatus( VehicleDataResult windowStatus) {
         setParameters(KEY_WINDOW_STATUS, windowStatus);
+        return this;
     }
 
     /**
@@ -595,8 +627,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @param gearStatus See GearStatus
      * @since SmartDeviceLink 7.0.0
      */
-    public void setGearStatus(VehicleDataResult gearStatus){
+    public UnsubscribeVehicleDataResponse setGearStatus( VehicleDataResult gearStatus) {
         setParameters(KEY_GEAR_STATUS, gearStatus);
+        return this;
     }
 
     /**
@@ -626,7 +659,8 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @param stabilityControlsStatus See StabilityControlsStatus
      * @since SmartDeviceLink 7.0.0
      */
-    public void setStabilityControlsStatus(VehicleDataResult stabilityControlsStatus) {
+    public UnsubscribeVehicleDataResponse setStabilityControlsStatus( VehicleDataResult stabilityControlsStatus) {
         setParameters(KEY_STABILITY_CONTROLS_STATUS, stabilityControlsStatus);
+        return this;
     }
 }

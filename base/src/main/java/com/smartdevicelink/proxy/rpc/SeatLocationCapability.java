@@ -22,8 +22,9 @@ public class SeatLocationCapability extends RPCStruct {
      * Sets the seat rows for this capability
      * @param rows rows to be set
      */
-    public void setRows(Integer rows) {
+    public SeatLocationCapability setRows( Integer rows) {
         setValue(KEY_ROWS, rows);
+        return this;
     }
 
     /**
@@ -38,8 +39,9 @@ public class SeatLocationCapability extends RPCStruct {
      * Sets the seat columns for this capability
      * @param cols the seat columns to be set
      */
-    public void setCols(Integer cols) {
+    public SeatLocationCapability setCols( Integer cols) {
         setValue(KEY_COLS, cols);
+        return this;
     }
 
     /**
@@ -54,8 +56,9 @@ public class SeatLocationCapability extends RPCStruct {
      * Sets the levels for this capability
      * @param levels the levels to be set
      */
-    public void setLevels(Integer levels) {
+    public SeatLocationCapability setLevels( Integer levels) {
         setValue(KEY_LEVELS, levels);
+        return this;
     }
 
     /**
@@ -70,8 +73,9 @@ public class SeatLocationCapability extends RPCStruct {
      * Sets the seat locations for this capability
      * @param locations the locations to be set
      */
-    public void setSeats(List<SeatLocation> locations) {
+    public SeatLocationCapability setSeats( List<SeatLocation> locations) {
         setValue(KEY_SEATS, locations);
+        return this;
     }
 
     /**

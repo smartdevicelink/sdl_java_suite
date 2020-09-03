@@ -78,8 +78,9 @@ public class SetInteriorVehicleData extends RPCRequest {
      *
      * @param moduleData
      */
-    public void setModuleData(@NonNull ModuleData moduleData) {
+    public SetInteriorVehicleData setModuleData(@NonNull ModuleData moduleData) {
         setParameters(KEY_MODULE_DATA, moduleData);
+        return this;
     }
 
     /**

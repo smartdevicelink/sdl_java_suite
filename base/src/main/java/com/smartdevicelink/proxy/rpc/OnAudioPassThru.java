@@ -84,8 +84,9 @@ public class OnAudioPassThru extends RPCNotification {
     public OnAudioPassThru(Hashtable<String, Object> hash) {
         super(hash);
     }
-    public void setAPTData(byte[] aptData) {
+    public OnAudioPassThru setAPTData( byte[] aptData) {
         setBulkData(aptData);
+        return this;
     }
     public byte[] getAPTData() {
         return getBulkData();

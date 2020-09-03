@@ -83,7 +83,8 @@ public class LightControlData extends RPCStruct {
 	 *
 	 * @param lightState An array of LightNames and their current or desired status. Status of the LightNames that are not listed in the array shall remain unchanged.
 	 */
-	public void setLightState(@NonNull List<LightState> lightState) {
-		setValue(KEY_LIGHT_STATE, lightState);
-	}
+	public LightControlData setLightState(@NonNull List<LightState> lightState) {
+        setValue(KEY_LIGHT_STATE, lightState);
+        return this;
+    }
 }

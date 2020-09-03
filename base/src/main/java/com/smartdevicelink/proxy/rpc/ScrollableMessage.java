@@ -144,15 +144,16 @@ public class ScrollableMessage extends RPCRequest {
 
 	/**
 	 * Sets a Body of text that can include newlines and tabs
-	 * 
+	 *
 	 * @param scrollableMessageBody
 	 *            a String value representing the Body of text that can include
 	 *            newlines and tabs
 	 *            <p></p>
 	 *            <b>Notes: </b>Maxlength=500
 	 */
-    public void setScrollableMessageBody(@NonNull String scrollableMessageBody) {
-		setParameters(KEY_SCROLLABLE_MESSAGE_BODY, scrollableMessageBody);
+    public ScrollableMessage setScrollableMessageBody(@NonNull String scrollableMessageBody) {
+        setParameters(KEY_SCROLLABLE_MESSAGE_BODY, scrollableMessageBody);
+        return this;
     }
 
 	/**
@@ -167,14 +168,15 @@ public class ScrollableMessage extends RPCRequest {
 	/**
 	 * Sets an App defined timeout. Indicates how long of a timeout from the
 	 * last action
-	 * 
+	 *
 	 * @param timeout
 	 *            an Integer value representing an App defined timeout
 	 *            <p></p>
 	 *            <b>Notes</b>:Minval=0; Maxval=65535;Default=30000
 	 */
-    public void setTimeout(Integer timeout) {
-		setParameters(KEY_TIMEOUT, timeout);
+    public ScrollableMessage setTimeout( Integer timeout) {
+        setParameters(KEY_TIMEOUT, timeout);
+        return this;
     }
 
 	/**
@@ -189,15 +191,16 @@ public class ScrollableMessage extends RPCRequest {
 	/**
 	 * Sets App defined SoftButtons.If omitted on supported displays, only the
 	 * system defined "Close" SoftButton will be displayed
-	 * 
+	 *
 	 * @param softButtons
 	 *            a List<SoftButton> value representing App defined
 	 *            SoftButtons
 	 *            <p></p>
 	 *            <b>Notes: </b>Minsize=0, Maxsize=8
 	 */
-    public void setSoftButtons(List<SoftButton> softButtons) {
-		setParameters(KEY_SOFT_BUTTONS, softButtons);
+    public ScrollableMessage setSoftButtons( List<SoftButton> softButtons) {
+        setParameters(KEY_SOFT_BUTTONS, softButtons);
+        return this;
     }
 
 	/**
@@ -227,7 +230,8 @@ public class ScrollableMessage extends RPCRequest {
 	 *
 	 * @since SmartDeviceLink 6.0
 	 */
-	public void setCancelID(Integer cancelID) {
-		setParameters(KEY_CANCEL_ID, cancelID);
-	}
+	public ScrollableMessage setCancelID( Integer cancelID) {
+        setParameters(KEY_CANCEL_ID, cancelID);
+        return this;
+    }
 }

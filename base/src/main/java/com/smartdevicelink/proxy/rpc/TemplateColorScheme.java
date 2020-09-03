@@ -94,8 +94,9 @@ public class TemplateColorScheme extends RPCStruct {
      * Sets the primaryColor of the scheme
      * @param color an RGBColor object representing the primaryColor
      */
-    public void setPrimaryColor(RGBColor color) {
+    public TemplateColorScheme setPrimaryColor( RGBColor color) {
         setValue(KEY_PRIMARY_COLOR, color);
+        return this;
     }
 
     /**
@@ -110,8 +111,9 @@ public class TemplateColorScheme extends RPCStruct {
      * Sets the secondaryColor of the scheme
      * @param color an RGBColor object representing the secondaryColor
      */
-    public void setSecondaryColor(RGBColor color) {
+    public TemplateColorScheme setSecondaryColor( RGBColor color) {
         setValue(KEY_SECONDARY_COLOR, color);
+        return this;
     }
 
     /**
@@ -126,8 +128,9 @@ public class TemplateColorScheme extends RPCStruct {
      * Sets the backgroundColor of the scheme
      * @param color an RGBColor object representing the backgroundColor
      */
-    public void setBackgroundColor(RGBColor color) {
+    public TemplateColorScheme setBackgroundColor( RGBColor color) {
         setValue(KEY_BACKGROUND_COLOR, color);
+        return this;
     }
 
     /**

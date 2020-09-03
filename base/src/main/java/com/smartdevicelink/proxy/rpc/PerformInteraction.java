@@ -207,12 +207,13 @@ public class PerformInteraction extends RPCRequest {
 	 * be overlaid by the "Listening" prompt during the interaction. Text is
 	 * displayed on first line of multiline display, and is centered. If text
 	 * does not fit on line, it will be truncated
-	 * 
+	 *
 	 * @param initialText
 	 *            a String value that Displayed when the interaction begins
-	 */    
-    public void setInitialText(@NonNull String initialText) {
-		setParameters(KEY_INITIAL_TEXT, initialText);
+	 */
+    public PerformInteraction setInitialText(@NonNull String initialText) {
+        setParameters(KEY_INITIAL_TEXT, initialText);
+        return this;
     }
 	/**
 	 * Gets an An array of one or more TTSChunks that, taken together, specify
@@ -228,13 +229,14 @@ public class PerformInteraction extends RPCRequest {
 	/**
 	 * Sets An array of one or more TTSChunks that, taken together, specify what
 	 * is to be spoken to the user at the start of an interaction
-	 * 
+	 *
 	 * @param initialPrompt
 	 *            a List<TTSChunk> value, specify what is to be spoken to the
 	 *            user at the start of an interaction
-	 */    
-    public void setInitialPrompt(List<TTSChunk> initialPrompt) {
-		setParameters(KEY_INITIAL_PROMPT, initialPrompt);
+	 */
+    public PerformInteraction setInitialPrompt( List<TTSChunk> initialPrompt) {
+        setParameters(KEY_INITIAL_PROMPT, initialPrompt);
+        return this;
     }
 	/**
 	 * Gets the Indicates mode that indicate how user selects interaction
@@ -251,13 +253,14 @@ public class PerformInteraction extends RPCRequest {
 	 * Sets the Indicates mode that indicate how user selects interaction
 	 * choice. User can choose either by voice (VR_ONLY), by visual selection
 	 * from the menu (MANUAL_ONLY), or by either mode (BOTH)
-	 * 
+	 *
 	 * @param interactionMode
 	 *            indicate how user selects interaction choice (VR_ONLY,
 	 *            MANUAL_ONLY or BOTH)
-	 */    
-    public void setInteractionMode(@NonNull InteractionMode interactionMode) {
-		setParameters(KEY_INTERACTION_MODE, interactionMode);
+	 */
+    public PerformInteraction setInteractionMode(@NonNull InteractionMode interactionMode) {
+        setParameters(KEY_INTERACTION_MODE, interactionMode);
+        return this;
     }
 	/**
 	 * Gets a List<Integer> value representing an Array of one or more Choice
@@ -274,16 +277,17 @@ public class PerformInteraction extends RPCRequest {
 	/**
 	 * Sets a List<Integer> representing an Array of one or more Choice Set
 	 * IDs. User can select any choice from any of the specified Choice Sets
-	 * 
+	 *
 	 * @param interactionChoiceSetIDList
 	 *            -a List<Integer> representing an Array of one or more Choice
 	 *            Set IDs. User can select any choice from any of the specified
 	 *            Choice Sets
 	 *            <p></p>
 	 *            <b>Notes: </b>Min Value: 0; Max Vlaue: 2000000000
-	 */    
-    public void setInteractionChoiceSetIDList(@NonNull List<Integer> interactionChoiceSetIDList) {
-		setParameters(KEY_INTERACTION_CHOICE_SET_ID_LIST, interactionChoiceSetIDList);
+	 */
+    public PerformInteraction setInteractionChoiceSetIDList(@NonNull List<Integer> interactionChoiceSetIDList) {
+        setParameters(KEY_INTERACTION_CHOICE_SET_ID_LIST, interactionChoiceSetIDList);
+        return this;
     }
 	/**
 	 * Gets a List<TTSChunk> which taken together, specify the help phrase to
@@ -307,14 +311,15 @@ public class PerformInteraction extends RPCRequest {
 	 * <P></p>
 	 * <b>Notes: </b>The helpPrompt specified in
 	 * {@linkplain SetGlobalProperties} is not used by PerformInteraction
-	 * 
+	 *
 	 * @param helpPrompt
 	 *            a List<TTSChunk> which taken together, specify the help
 	 *            phrase to be spoken when the user says "help" during the VR
 	 *            session
-	 */    
-    public void setHelpPrompt(List<TTSChunk> helpPrompt) {
-		setParameters(KEY_HELP_PROMPT, helpPrompt);
+	 */
+    public PerformInteraction setHelpPrompt( List<TTSChunk> helpPrompt) {
+        setParameters(KEY_HELP_PROMPT, helpPrompt);
+        return this;
     }
 	/**
 	 * Gets An array of TTSChunks which, taken together, specify the phrase to
@@ -333,13 +338,14 @@ public class PerformInteraction extends RPCRequest {
 	 * <p></p>
 	 * <b>Notes: </b>The timeoutPrompt specified in
 	 * {@linkplain SetGlobalProperties} is not used by PerformInteraction
-	 * 
+	 *
 	 * @param timeoutPrompt
 	 *            a List<TTSChunk> specify the phrase to be spoken when the
 	 *            listen times out during the VR session
-	 */    
-    public void setTimeoutPrompt(List<TTSChunk> timeoutPrompt) {
-		setParameters(KEY_TIMEOUT_PROMPT, timeoutPrompt);
+	 */
+    public PerformInteraction setTimeoutPrompt( List<TTSChunk> timeoutPrompt) {
+        setParameters(KEY_TIMEOUT_PROMPT, timeoutPrompt);
+        return this;
     }
 	/**
 	 * Gets a Integer value representing the amount of time, in milliseconds,
@@ -360,16 +366,17 @@ public class PerformInteraction extends RPCRequest {
 	 * take place after SDL speaks the timeout prompt. If that times out as
 	 * well, the interaction will end completely. If omitted, the default is
 	 * 10000ms
-	 * 
+	 *
 	 * @param timeout
 	 *            an Integer value representing the amount of time, in
 	 *            milliseconds, SDL will wait for the user to make a choice (VR
 	 *            or Menu)
 	 *            <p></p>
 	 *            <b>Notes: </b>Min Value: 5000; Max Value: 100000
-	 */    
-    public void setTimeout(Integer timeout) {
-		setParameters(KEY_TIMEOUT, timeout);
+	 */
+    public PerformInteraction setTimeout( Integer timeout) {
+        setParameters(KEY_TIMEOUT, timeout);
+        return this;
     }
 
 	/**
@@ -396,8 +403,9 @@ public class PerformInteraction extends RPCRequest {
 	 *            <b>Notes: </b>Min=1; Max=100
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setVrHelp(List<VrHelpItem> vrHelp) {
-		setParameters(KEY_VR_HELP, vrHelp);
+    public PerformInteraction setVrHelp( List<VrHelpItem> vrHelp) {
+        setParameters(KEY_VR_HELP, vrHelp);
+        return this;
     }
 
 	/**
@@ -418,8 +426,9 @@ public class PerformInteraction extends RPCRequest {
 	 *
 	 * @since SmartDeviceLink 3.0
 	 */
-    public void setInteractionLayout(LayoutMode interactionLayout ) {
-		setParameters(KEY_INTERACTION_LAYOUT, interactionLayout);
+    public PerformInteraction setInteractionLayout( LayoutMode interactionLayout) {
+        setParameters(KEY_INTERACTION_LAYOUT, interactionLayout);
+        return this;
     }
 
 	/**
@@ -440,7 +449,8 @@ public class PerformInteraction extends RPCRequest {
 	 *
 	 * @since SmartDeviceLink 6.0
 	 */
-	public void setCancelID(Integer cancelID) {
-		setParameters(KEY_CANCEL_ID, cancelID);
-	}
+	public PerformInteraction setCancelID( Integer cancelID) {
+        setParameters(KEY_CANCEL_ID, cancelID);
+        return this;
+    }
 }

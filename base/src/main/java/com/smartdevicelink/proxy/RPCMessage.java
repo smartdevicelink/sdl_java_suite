@@ -100,8 +100,9 @@ public class RPCMessage extends RPCStruct  {
 		return (String)function.get(KEY_FUNCTION_NAME);
 	}
 	
-	protected void setFunctionName(String functionName) {
+	protected RPCMessage setFunctionName(String functionName) {
 		function.put(KEY_FUNCTION_NAME, functionName);
+		return this;
 	}
 
 	public String getMessageType() {
@@ -115,12 +116,13 @@ public class RPCMessage extends RPCStruct  {
 
 	// Generalized Getters and Setters
 	
-	public void setParameters(String key, Object value) {
+	public RPCMessage setParameters(String key, Object value) {
 		if (value != null) {
 			parameters.put(key, value);
 		} else {
 			parameters.remove(key);
 		}
+		return this;
 	}
 
 	public Object getParameters(String key) {

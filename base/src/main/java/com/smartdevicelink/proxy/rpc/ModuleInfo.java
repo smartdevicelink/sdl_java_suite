@@ -34,8 +34,9 @@ public class ModuleInfo extends RPCStruct {
      * Sets the Module ID for this Module
      * @param id the id to be set
      */
-    public void setModuleId(@NonNull String id) {
+    public ModuleInfo setModuleId(@NonNull String id) {
         setValue(KEY_MODULE_ID, id);
+        return this;
     }
 
     /**
@@ -50,8 +51,9 @@ public class ModuleInfo extends RPCStruct {
      * Sets the location of this Module
      * @param location the location to be set
      */
-    public void setModuleLocation(Grid location) {
+    public ModuleInfo setModuleLocation( Grid location) {
         setValue(KEY_MODULE_LOCATION, location);
+        return this;
     }
 
     /**
@@ -66,8 +68,9 @@ public class ModuleInfo extends RPCStruct {
      * Sets the service area of this Module
      * @param serviceArea the service area of this Module
      */
-    public void setModuleServiceArea(Grid serviceArea) {
+    public ModuleInfo setModuleServiceArea( Grid serviceArea) {
         setValue(KEY_MODULE_SERVICE_AREA, serviceArea);
+        return this;
     }
 
     /**
@@ -82,8 +85,9 @@ public class ModuleInfo extends RPCStruct {
      * Sets the multiple access allowance for this Module
      * @param isMultipleAccess the access to be set
      */
-    public void setMultipleAccessAllowance(Boolean isMultipleAccess) {
+    public ModuleInfo setMultipleAccessAllowance( Boolean isMultipleAccess) {
         setValue(KEY_MULTIPLE_ACCESS_ALLOWED, isMultipleAccess);
+        return this;
     }
 
     /**

@@ -86,7 +86,8 @@ public class SetInteriorVehicleDataResponse extends RPCResponse {
 	 *
 	 * @param moduleData
 	 */
-	public void setModuleData(ModuleData moduleData) {
-		setParameters(KEY_MODULE_DATA, moduleData);
-	}
+	public SetInteriorVehicleDataResponse setModuleData( ModuleData moduleData) {
+        setParameters(KEY_MODULE_DATA, moduleData);
+        return this;
+    }
 }

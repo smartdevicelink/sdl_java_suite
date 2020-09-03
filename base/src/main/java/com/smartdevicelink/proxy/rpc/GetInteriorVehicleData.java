@@ -95,8 +95,9 @@ public class GetInteriorVehicleData extends RPCRequest {
      * The type of a RC module to retrieve module data from the vehicle.
      * In the future, this should be the Identification of a module.
      */
-    public void setModuleType(@NonNull ModuleType moduleType) {
+    public GetInteriorVehicleData setModuleType(@NonNull ModuleType moduleType) {
         setParameters(KEY_MODULE_TYPE, moduleType);
+        return this;
     }
 
     /**
@@ -106,8 +107,9 @@ public class GetInteriorVehicleData extends RPCRequest {
      * If subscribe is true, the head unit will register onInteriorVehicleData notifications for the requested moduelType.
      * If subscribe is false, the head unit will unregister onInteriorVehicleData notifications for the requested moduelType.
      */
-    public void setSubscribe(Boolean subscribe) {
+    public GetInteriorVehicleData setSubscribe( Boolean subscribe) {
         setParameters(KEY_SUBSCRIBE, subscribe);
+        return this;
     }
 
     /**
@@ -124,8 +126,9 @@ public class GetInteriorVehicleData extends RPCRequest {
      * Sets the Module ID for this class
      * @param id the id to be set
      */
-    public void setModuleId(String id) {
+    public GetInteriorVehicleData setModuleId( String id) {
         setParameters(KEY_MODULE_ID, id);
+        return this;
     }
 
     /**

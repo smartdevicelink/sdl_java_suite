@@ -123,9 +123,10 @@ public class MenuParams extends RPCStruct {
      * Set the unique ID of an existing submenu to which a command will be added.
      *	If this element is not provided, the command will be added to the top level of the Command Menu.
      * @param parentID Min: 0; Max: 2000000000
-     */    
-    public void setParentID( Integer parentID ) {
+     */
+    public MenuParams setParentID( Integer parentID) {
         setValue(KEY_PARENT_ID, parentID);
+        return this;
     }
     /**
      * Get the position within the items of the parent Command Menu. 0 will insert at the front, 1 will insert after the first existing element, etc. 
@@ -142,7 +143,7 @@ public class MenuParams extends RPCStruct {
         return getInteger( KEY_POSITION );
     }
     /**
-     * Set the position within the items of the parent Command Menu. 0 will insert at the front, 1 will insert after the first existing element, etc. 
+     * Set the position within the items of the parent Command Menu. 0 will insert at the front, 1 will insert after the first existing element, etc.
      * 	Position of any submenu will always be located before the return and exit options.
      * 					<ul>
      * 						<li>Min Value: 0</li>
@@ -151,9 +152,10 @@ public class MenuParams extends RPCStruct {
      * 						<li>If this element is omitted, the entry will be added at the end of the parent menu.</li>
      * 					</ul>
      * @param position Mix: 0 Max: 1000
-     */    
-    public void setPosition( Integer position ) {
+     */
+    public MenuParams setPosition( Integer position) {
         setValue(KEY_POSITION, position);
+        return this;
     }
     /**
      * Get the text which appears in menu, representing this command.
@@ -175,8 +177,9 @@ public class MenuParams extends RPCStruct {
      * 					</ul>
      * @param menuName the menu name
      */
-    
-    public void setMenuName( @NonNull String menuName ) {
+
+    public MenuParams setMenuName(@NonNull String menuName) {
         setValue(KEY_MENU_NAME, menuName);
+        return this;
     }
 }

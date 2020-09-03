@@ -83,7 +83,8 @@ public class OnInteriorVehicleData extends RPCNotification {
      *
      * @param moduleData
      */
-    public void setModuleData(@NonNull ModuleData moduleData) {
+    public OnInteriorVehicleData setModuleData(@NonNull ModuleData moduleData) {
         setParameters(KEY_MODULE_DATA, moduleData);
+        return this;
     }
 }

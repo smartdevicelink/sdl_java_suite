@@ -90,9 +90,10 @@ public class SeatControlData extends RPCStruct {
 	 *
 	 * @param id
 	 */
-	public void setId(@NonNull SupportedSeat id) {
-		setValue(KEY_ID, id);
-	}
+	public SeatControlData setId(@NonNull SupportedSeat id) {
+        setValue(KEY_ID, id);
+        return this;
+    }
 
 	/**
 	 * Gets the id portion of the SeatControlData class
@@ -108,9 +109,10 @@ public class SeatControlData extends RPCStruct {
 	 *
 	 * @param heatingEnabled
 	 */
-	public void setHeatingEnabled(Boolean heatingEnabled) {
-		setValue(KEY_HEATING_ENABLED, heatingEnabled);
-	}
+	public SeatControlData setHeatingEnabled( Boolean heatingEnabled) {
+        setValue(KEY_HEATING_ENABLED, heatingEnabled);
+        return this;
+    }
 
 	/**
 	 * Gets the heatingEnabled portion of the SeatControlData class
@@ -126,9 +128,10 @@ public class SeatControlData extends RPCStruct {
 	 *
 	 * @param coolingEnabled
 	 */
-	public void setCoolingEnabled(Boolean coolingEnabled) {
-		setValue(KEY_COOLING_ENABLED, coolingEnabled);
-	}
+	public SeatControlData setCoolingEnabled( Boolean coolingEnabled) {
+        setValue(KEY_COOLING_ENABLED, coolingEnabled);
+        return this;
+    }
 
 	/**
 	 * Gets the coolingEnabled portion of the SeatControlData class
@@ -144,9 +147,10 @@ public class SeatControlData extends RPCStruct {
 	 *
 	 * @param heatingLevel
 	 */
-	public void setHeatingLevel(Integer heatingLevel) {
-		setValue(KEY_HEATING_LEVEL, heatingLevel);
-	}
+	public SeatControlData setHeatingLevel( Integer heatingLevel) {
+        setValue(KEY_HEATING_LEVEL, heatingLevel);
+        return this;
+    }
 
 	/**
 	 * Gets the heatingLevel portion of the SeatControlData class
@@ -162,9 +166,10 @@ public class SeatControlData extends RPCStruct {
 	 *
 	 * @param coolingLevel
 	 */
-	public void setCoolingLevel(Integer coolingLevel) {
-		setValue(KEY_COOLING_LEVEL, coolingLevel);
-	}
+	public SeatControlData setCoolingLevel( Integer coolingLevel) {
+        setValue(KEY_COOLING_LEVEL, coolingLevel);
+        return this;
+    }
 
 	/**
 	 * Gets the coolingLevel portion of the SeatControlData class
@@ -180,9 +185,10 @@ public class SeatControlData extends RPCStruct {
 	 *
 	 * @param horizontalPosition
 	 */
-	public void setHorizontalPosition(Integer horizontalPosition) {
-		setValue(KEY_HORIZONTAL_POSITION, horizontalPosition);
-	}
+	public SeatControlData setHorizontalPosition( Integer horizontalPosition) {
+        setValue(KEY_HORIZONTAL_POSITION, horizontalPosition);
+        return this;
+    }
 
 	/**
 	 * Gets the horizontalPosition portion of the SeatControlData class
@@ -198,9 +204,10 @@ public class SeatControlData extends RPCStruct {
 	 *
 	 * @param verticalPosition
 	 */
-	public void setVerticalPosition(Integer verticalPosition) {
-		setValue(KEY_VERTICAL_POSITION, verticalPosition);
-	}
+	public SeatControlData setVerticalPosition( Integer verticalPosition) {
+        setValue(KEY_VERTICAL_POSITION, verticalPosition);
+        return this;
+    }
 
 	/**
 	 * Gets the verticalPosition portion of the SeatControlData class
@@ -216,9 +223,10 @@ public class SeatControlData extends RPCStruct {
 	 *
 	 * @param frontVerticalPosition
 	 */
-	public void setFrontVerticalPosition(Integer frontVerticalPosition) {
-		setValue(KEY_FRONT_VERTICAL_POSITION, frontVerticalPosition);
-	}
+	public SeatControlData setFrontVerticalPosition( Integer frontVerticalPosition) {
+        setValue(KEY_FRONT_VERTICAL_POSITION, frontVerticalPosition);
+        return this;
+    }
 
 	/**
 	 * Gets the frontVerticalPosition portion of the SeatControlData class
@@ -234,9 +242,10 @@ public class SeatControlData extends RPCStruct {
 	 *
 	 * @param backVerticalPosition
 	 */
-	public void setBackVerticalPosition(Integer backVerticalPosition) {
-		setValue(KEY_BACK_VERTICAL_POSITION, backVerticalPosition);
-	}
+	public SeatControlData setBackVerticalPosition( Integer backVerticalPosition) {
+        setValue(KEY_BACK_VERTICAL_POSITION, backVerticalPosition);
+        return this;
+    }
 
 	/**
 	 * Gets the backVerticalPosition portion of the SeatControlData class
@@ -252,9 +261,10 @@ public class SeatControlData extends RPCStruct {
 	 *
 	 * @param backTiltAngle
 	 */
-	public void setBackTiltAngle(Integer backTiltAngle) {
-		setValue(KEY_BACK_TILT_ANGLE, backTiltAngle);
-	}
+	public SeatControlData setBackTiltAngle( Integer backTiltAngle) {
+        setValue(KEY_BACK_TILT_ANGLE, backTiltAngle);
+        return this;
+    }
 
 	/**
 	 * Gets the backTiltAngle portion of the SeatControlData class
@@ -270,9 +280,10 @@ public class SeatControlData extends RPCStruct {
 	 *
 	 * @param headSupportHorizontalPosition
 	 */
-	public void setHeadSupportHorizontalPosition(Integer headSupportHorizontalPosition) {
-		setValue(KEY_HEAD_SUPPORT_HORIZONTAL_POSITION, headSupportHorizontalPosition);
-	}
+	public SeatControlData setHeadSupportHorizontalPosition( Integer headSupportHorizontalPosition) {
+        setValue(KEY_HEAD_SUPPORT_HORIZONTAL_POSITION, headSupportHorizontalPosition);
+        return this;
+    }
 
 	/**
 	 * Gets the headSupportHorizontalPosition portion of the SeatControlData class
@@ -288,9 +299,10 @@ public class SeatControlData extends RPCStruct {
 	 *
 	 * @param headSupportVerticalPosition
 	 */
-	public void setHeadSupportVerticalPosition(Integer headSupportVerticalPosition) {
-		setValue(KEY_HEAD_SUPPORT_VERTICAL_POSITION, headSupportVerticalPosition);
-	}
+	public SeatControlData setHeadSupportVerticalPosition( Integer headSupportVerticalPosition) {
+        setValue(KEY_HEAD_SUPPORT_VERTICAL_POSITION, headSupportVerticalPosition);
+        return this;
+    }
 
 	/**
 	 * Gets the headSupportVerticalPosition portion of the SeatControlData class
@@ -306,9 +318,10 @@ public class SeatControlData extends RPCStruct {
 	 *
 	 * @param massageEnabled
 	 */
-	public void setMassageEnabled(Boolean massageEnabled) {
-		setValue(KEY_MASSAGE_ENABLED, massageEnabled);
-	}
+	public SeatControlData setMassageEnabled( Boolean massageEnabled) {
+        setValue(KEY_MASSAGE_ENABLED, massageEnabled);
+        return this;
+    }
 
 	/**
 	 * Gets the massageEnabled portion of the SeatControlData class
@@ -334,9 +347,10 @@ public class SeatControlData extends RPCStruct {
 	 *
 	 * @param massageMode
 	 */
-	public void setMassageMode(List<MassageModeData> massageMode) {
-		setValue(KEY_MASSAGE_MODE, massageMode);
-	}
+	public SeatControlData setMassageMode( List<MassageModeData> massageMode) {
+        setValue(KEY_MASSAGE_MODE, massageMode);
+        return this;
+    }
 
 	/**
 	 * Gets the List<MassageCushionFirmness> portion of the SeatControlData class
@@ -353,18 +367,20 @@ public class SeatControlData extends RPCStruct {
 	 *
 	 * @param massageCushionFirmness
 	 */
-	public void setMassageCushionFirmness(List<MassageCushionFirmness> massageCushionFirmness) {
-		setValue(KEY_MASSAGE_CUSHION_FIRMNESS, massageCushionFirmness);
-	}
+	public SeatControlData setMassageCushionFirmness( List<MassageCushionFirmness> massageCushionFirmness) {
+        setValue(KEY_MASSAGE_CUSHION_FIRMNESS, massageCushionFirmness);
+        return this;
+    }
 
 	/**
 	 * Sets the memory portion of the SeatControlData class
 	 *
 	 * @param memory
 	 */
-	public void setMemory(SeatMemoryAction memory) {
-		setValue(KEY_MEMORY, memory);
-	}
+	public SeatControlData setMemory( SeatMemoryAction memory) {
+        setValue(KEY_MEMORY, memory);
+        return this;
+    }
 
 	/**
 	 * Gets the memory portion of the SeatControlData class

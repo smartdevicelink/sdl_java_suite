@@ -105,9 +105,10 @@ public class TTSChunk extends RPCStruct {
     /**
      * Set the text to be spoken, or a phoneme specification, or the name of a pre-recorded sound. The contents of this field are indicated by the "type" field.
      * @param text to be spoken, or a phoneme specification, or the name of a pre-recorded sound.
-     */    
-    public void setText(@NonNull String text ) {
+     */
+    public TTSChunk setText(@NonNull String text) {
         setValue(KEY_TEXT, text);
+        return this;
     }
     /**
      * Get the type of information in the "text" field (e.g. phrase to be spoken, phoneme specification, name of pre-recorded sound).	
@@ -117,10 +118,11 @@ public class TTSChunk extends RPCStruct {
         return (SpeechCapabilities) getObject(SpeechCapabilities.class, KEY_TYPE);
     }
     /**
-     * Set the type of information in the "text" field (e.g. phrase to be spoken, phoneme specification, name of pre-recorded sound).	
+     * Set the type of information in the "text" field (e.g. phrase to be spoken, phoneme specification, name of pre-recorded sound).
      * @param type the type of information in the "text" field
-     */    
-    public void setType(@NonNull SpeechCapabilities type ) {
+     */
+    public TTSChunk setType(@NonNull SpeechCapabilities type) {
         setValue(KEY_TYPE, type);
+        return this;
     }
 }

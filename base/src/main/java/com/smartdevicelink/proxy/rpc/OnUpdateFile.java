@@ -96,8 +96,9 @@ public class OnUpdateFile extends RPCNotification {
      *
      * @param fileName File reference name.
      */
-    public void setFileName(@NonNull String fileName) {
+    public OnUpdateFile setFileName(@NonNull String fileName) {
         setParameters(KEY_FILE_NAME, fileName);
+        return this;
     }
 
     /**

@@ -62,8 +62,9 @@ public class RdsData extends RPCStruct{
      * @param programService
      * Program Service Name.
      */
-    public void setProgramService(String programService) {
+    public RdsData setProgramService( String programService) {
         setValue(KEY_PS, programService);
+        return this;
     }
 
     /**
@@ -81,8 +82,9 @@ public class RdsData extends RPCStruct{
      * @param radioText
      * Radio Text.
      */
-    public void setRadioText(String radioText) {
+    public RdsData setRadioText( String radioText) {
         setValue(KEY_RT, radioText);
+        return this;
     }
 
     /**
@@ -100,8 +102,9 @@ public class RdsData extends RPCStruct{
      * @param clockText
      * The clock text in UTC format as YYYY-MM-DDThh:mm:ss.sTZD.
      */
-    public void setClockText(String clockText) {
+    public RdsData setClockText( String clockText) {
         setValue(KEY_CT, clockText);
+        return this;
     }
 
     /**
@@ -119,8 +122,9 @@ public class RdsData extends RPCStruct{
      * @param programIdentification
      * Program Identification - the call sign for the radio station.
      */
-    public void setProgramIdentification(String programIdentification) {
+    public RdsData setProgramIdentification( String programIdentification) {
         setValue(KEY_PI, programIdentification);
+        return this;
     }
 
     /**
@@ -138,8 +142,9 @@ public class RdsData extends RPCStruct{
      * @param region
      * Region.
      */
-    public void setRegion(String region) {
+    public RdsData setRegion( String region) {
         setValue(KEY_REG, region);
+        return this;
     }
 
     /**
@@ -157,8 +162,9 @@ public class RdsData extends RPCStruct{
      * @param trafficProgram
      * Traffic Program Identification - Identifies a station that offers traffic.
      */
-    public void setTrafficProgram(Boolean trafficProgram) {
+    public RdsData setTrafficProgram( Boolean trafficProgram) {
         setValue(KEY_TP, trafficProgram);
+        return this;
     }
 
     /**
@@ -176,8 +182,9 @@ public class RdsData extends RPCStruct{
      * @param trafficAnnouncement
      * Traffic Announcement Identification - Indicates an ongoing traffic announcement.
      */
-    public void setTrafficAnnouncement(Boolean trafficAnnouncement) {
+    public RdsData setTrafficAnnouncement( Boolean trafficAnnouncement) {
         setValue(KEY_TA, trafficAnnouncement);
+        return this;
     }
 
     /**
@@ -195,8 +202,9 @@ public class RdsData extends RPCStruct{
      * @param programType
      * The program type - The region should be used to differentiate between EU and North America program types.
      */
-    public void setProgramType(Integer programType) {
+    public RdsData setProgramType( Integer programType) {
         setValue(KEY_PTY, programType);
+        return this;
     }
 
     /**

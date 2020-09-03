@@ -64,15 +64,17 @@ public class RPCRequest extends RPCMessage {
 		return (Integer)function.get(RPCMessage.KEY_CORRELATION_ID);
 	}
 	
-	public void setCorrelationID(Integer correlationID) {
+	public RPCRequest setCorrelationID(Integer correlationID) {
 		if (correlationID != null) {
             function.put(RPCMessage.KEY_CORRELATION_ID, correlationID );
         } else {
         	function.remove(RPCMessage.KEY_CORRELATION_ID);
         }
+		return this;
 	}
-    public void setOnRPCResponseListener(OnRPCResponseListener listener){
+    public RPCRequest setOnRPCResponseListener(OnRPCResponseListener listener){
     	onResponseListener = listener;
+		return this;
     }
     
     public OnRPCResponseListener getOnRPCResponseListener(){

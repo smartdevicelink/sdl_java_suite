@@ -73,9 +73,10 @@ public class AppInfo extends RPCStruct {
 	/** Sets the name displayed for the mobile application on the mobile device (can differ from the app name set in the initial RAI request).
 	 * @param appDisplayName - name displayed for the mobile application on the mobile device.
 	 */
-	public void setAppDisplayName(@NonNull String appDisplayName) {
-		setValue(KEY_APP_DISPLAY_NAME, appDisplayName);
-	}
+	public AppInfo setAppDisplayName(@NonNull String appDisplayName) {
+        setValue(KEY_APP_DISPLAY_NAME, appDisplayName);
+        return this;
+    }
 
 	/** Gets the name displayed for the mobile application on the mobile device (can differ from the app name set in the initial RAI request).
 	 * @return appDisplayName - name displayed for the mobile application on the mobile device.
@@ -87,9 +88,10 @@ public class AppInfo extends RPCStruct {
 	/** Sets package name of the Android application. This supports App Launch strategies for each platform.
 	 * @param appBundleID - package name of the application
 	 */
-	public void setAppBundleID(@NonNull String appBundleID) {
-		setValue(KEY_APP_BUNDLE_ID, appBundleID);
-	}
+	public AppInfo setAppBundleID(@NonNull String appBundleID) {
+        setValue(KEY_APP_BUNDLE_ID, appBundleID);
+        return this;
+    }
 
 	/** Gets package name of the Android application. This supports App Launch strategies for each platform.
 	 * @return appBundleID - package name of the application.
@@ -101,9 +103,10 @@ public class AppInfo extends RPCStruct {
 	/** Sets build version number of this particular mobile app.
 	 * @param appVersion - build version number of this particular mobile app.
 	 */
-	public void setAppVersion(@NonNull String appVersion) {
-		setValue(KEY_APP_VERSION, appVersion);
-	}
+	public AppInfo setAppVersion(@NonNull String appVersion) {
+        setValue(KEY_APP_VERSION, appVersion);
+        return this;
+    }
 
 	/** Gets build version number of this particular mobile app.
 	 * @return appVersion - build version number of this particular mobile app.
@@ -115,9 +118,10 @@ public class AppInfo extends RPCStruct {
 	/** Sets file reference to the icon utilized by this app (simplifies the process of setting an app icon during app registration).
 	 * @param appIcon - file reference to the icon utilized by this app
 	 */
-	public void setAppIcon(String appIcon) {
-		setValue(KEY_APP_ICON, appIcon);
-	}
+	public AppInfo setAppIcon( String appIcon) {
+        setValue(KEY_APP_ICON, appIcon);
+        return this;
+    }
 
 	/** Gets build version number of this particular mobile app.
 	 * @return appIcon - build version number of this particular mobile app.

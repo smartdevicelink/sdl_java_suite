@@ -53,9 +53,10 @@ public class VideoStreamingCapability extends RPCStruct {
 	public VideoStreamingCapability(){}
 	public VideoStreamingCapability(Hashtable<String, Object> hash){super(hash);}
 
-	public void setPreferredResolution(ImageResolution res){
-		setValue(KEY_PREFERRED_RESOLUTION, res);
-	}
+	public VideoStreamingCapability setPreferredResolution( ImageResolution res) {
+        setValue(KEY_PREFERRED_RESOLUTION, res);
+        return this;
+    }
 
 	public ImageResolution getPreferredResolution(){
 		return (ImageResolution) getObject(ImageResolution.class, KEY_PREFERRED_RESOLUTION);
@@ -67,9 +68,10 @@ public class VideoStreamingCapability extends RPCStruct {
 	 * <b>NOTE: </b> Unit is in kbps.
 	 * @param maxBitrate in kbps
 	 */
-	public void setMaxBitrate(Integer maxBitrate){
-		setValue(KEY_MAX_BITRATE, maxBitrate);
-	}
+	public VideoStreamingCapability setMaxBitrate( Integer maxBitrate) {
+        setValue(KEY_MAX_BITRATE, maxBitrate);
+        return this;
+    }
 
 	/**
 	 * Retrieves the max bitrate supported by this module.
@@ -81,9 +83,10 @@ public class VideoStreamingCapability extends RPCStruct {
 		return getInteger(KEY_MAX_BITRATE);
 	}
 
-	public void setSupportedFormats(List<VideoStreamingFormat> formats){
-		setValue(KEY_SUPPORTED_FORMATS, formats);
-	}
+	public VideoStreamingCapability setSupportedFormats( List<VideoStreamingFormat> formats) {
+        setValue(KEY_SUPPORTED_FORMATS, formats);
+        return this;
+    }
 
 	public List<VideoStreamingFormat> getSupportedFormats(){
 		return (List<VideoStreamingFormat>) getObject(VideoStreamingFormat.class, KEY_SUPPORTED_FORMATS);
@@ -93,9 +96,10 @@ public class VideoStreamingCapability extends RPCStruct {
 		return getBoolean(KEY_HAPTIC_SPATIAL_DATA_SUPPORTED);
 	}
 
-	public void setIsHapticSpatialDataSupported(Boolean hapticSpatialDataSupported) {
-		setValue(KEY_HAPTIC_SPATIAL_DATA_SUPPORTED, hapticSpatialDataSupported);
-	}
+	public VideoStreamingCapability setIsHapticSpatialDataSupported( Boolean hapticSpatialDataSupported) {
+        setValue(KEY_HAPTIC_SPATIAL_DATA_SUPPORTED, hapticSpatialDataSupported);
+        return this;
+    }
 
 	/**
 	 * @return the diagonal screen size in inches.
@@ -108,9 +112,10 @@ public class VideoStreamingCapability extends RPCStruct {
 	/**
 	 * @param diagonalScreenSize the diagonal screen size in inches.
 	 */
-	public void setDiagonalScreenSize(Double diagonalScreenSize) {
-		setValue(KEY_DIAGONAL_SCREEN_SIZE, diagonalScreenSize);
-	}
+	public VideoStreamingCapability setDiagonalScreenSize( Double diagonalScreenSize) {
+        setValue(KEY_DIAGONAL_SCREEN_SIZE, diagonalScreenSize);
+        return this;
+    }
 
 	/**
 	 * @return the diagonal resolution in pixels divided by the diagonal screen size in inches.
@@ -123,9 +128,10 @@ public class VideoStreamingCapability extends RPCStruct {
 	/**
 	 * @param pixelPerInch the diagonal resolution in pixels divided by the diagonal screen size in inches.
 	 */
-	public void setPixelPerInch(Double pixelPerInch) {
-		setValue(KEY_PIXEL_PER_INCH, pixelPerInch);
-	}
+	public VideoStreamingCapability setPixelPerInch( Double pixelPerInch) {
+        setValue(KEY_PIXEL_PER_INCH, pixelPerInch);
+        return this;
+    }
 
 	/**
 	 * @return the scaling factor the app should use to change the size of the projecting view.
@@ -138,7 +144,8 @@ public class VideoStreamingCapability extends RPCStruct {
 	/**
 	 * @param scale the scaling factor the app should use to change the size of the projecting view.
 	 */
-	public void setScale(Double scale) {
-		setValue(KEY_SCALE, scale);
-	}
+	public VideoStreamingCapability setScale( Double scale) {
+        setValue(KEY_SCALE, scale);
+        return this;
+    }
 }

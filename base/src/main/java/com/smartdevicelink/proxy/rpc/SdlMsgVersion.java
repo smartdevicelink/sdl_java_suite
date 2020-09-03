@@ -138,10 +138,11 @@ public class SdlMsgVersion extends RPCStruct {
      * 					<li>minvalue="1"</li>
      * 				    <li>maxvalue="10"</li>
      *					</ul>
-     * @param majorVersion minvalue="1" and maxvalue="10" 
-     */    
-    public void setMajorVersion( @NonNull Integer majorVersion ) {
+     * @param majorVersion minvalue="1" and maxvalue="10"
+     */
+    public SdlMsgVersion setMajorVersion(@NonNull Integer majorVersion) {
         setValue(KEY_MAJOR_VERSION, majorVersion);
+        return this;
     }
     /**
      * Get minor version
@@ -162,8 +163,9 @@ public class SdlMsgVersion extends RPCStruct {
      *					</ul>
      * @param minorVersion min: 0; max: 1000
      */
-    public void setMinorVersion( @NonNull Integer minorVersion ) {
+    public SdlMsgVersion setMinorVersion(@NonNull Integer minorVersion) {
         setValue(KEY_MINOR_VERSION, minorVersion);
+        return this;
     }
 
     /**
@@ -185,8 +187,9 @@ public class SdlMsgVersion extends RPCStruct {
      *					</ul>
      * @param patchVersion min: 0; max: 1000
      */
-    public void setPatchVersion( Integer patchVersion ) {
+    public SdlMsgVersion setPatchVersion( Integer patchVersion) {
         setValue(KEY_PATCH_VERSION, patchVersion);
+        return this;
     }
 
 }

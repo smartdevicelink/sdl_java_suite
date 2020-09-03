@@ -168,15 +168,16 @@ public class Slider extends RPCRequest {
 
 	/**
 	 * Sets a number of selectable items on a horizontal axis
-	 * 
+	 *
 	 * @param numTicks
 	 *            an Integer value representing a number of selectable items on
 	 *            a horizontal axis
 	 *            <p></p>
 	 *            <b>Notes: </b>Minvalue=2; Maxvalue=26
 	 */
-    public void setNumTicks(@NonNull Integer numTicks) {
-    	setParameters(KEY_NUM_TICKS, numTicks);
+    public Slider setNumTicks(@NonNull Integer numTicks) {
+        setParameters(KEY_NUM_TICKS, numTicks);
+        return this;
     }
 
 	/**
@@ -191,15 +192,16 @@ public class Slider extends RPCRequest {
 
 	/**
 	 * Sets an Initial position of slider control
-	 * 
+	 *
 	 * @param position
 	 *            an Integer value representing an Initial position of slider
 	 *            control
 	 *            <p></p>
 	 *            <b>Notes: </b>Minvalue=1; Maxvalue=26
 	 */
-    public void setPosition(@NonNull Integer position) {
-    	setParameters(KEY_POSITION, position);
+    public Slider setPosition(@NonNull Integer position) {
+        setParameters(KEY_POSITION, position);
+        return this;
     }
 
 	/**
@@ -214,14 +216,15 @@ public class Slider extends RPCRequest {
 
 	/**
 	 * Sets a text header to display
-	 * 
+	 *
 	 * @param sliderHeader
 	 *            a String value
 	 *            <p></p>
 	 *            <b>Notes: </b>Maxlength=500
 	 */
-    public void setSliderHeader(@NonNull String sliderHeader) {
-    	setParameters(KEY_SLIDER_HEADER, sliderHeader);
+    public Slider setSliderHeader(@NonNull String sliderHeader) {
+        setParameters(KEY_SLIDER_HEADER, sliderHeader);
+        return this;
     }
 
 	/**
@@ -235,14 +238,15 @@ public class Slider extends RPCRequest {
 
 	/**
 	 * Sets a text footer to display
-	 * 
+	 *
 	 * @param sliderFooter
 	 *            a List<String> value representing a text footer to display
 	 *            <p></p>
 	 *            <b>Notes: </b>Maxlength=500; Minvalue=1; Maxvalue=26
 	 */
-    public void setSliderFooter(List<String> sliderFooter) {
-    	setParameters(KEY_SLIDER_FOOTER, sliderFooter);
+    public Slider setSliderFooter( List<String> sliderFooter) {
+        setParameters(KEY_SLIDER_FOOTER, sliderFooter);
+        return this;
     }
 
 	/**
@@ -257,14 +261,15 @@ public class Slider extends RPCRequest {
 
 	/**
 	 * Sets an App defined timeout
-	 * 
+	 *
 	 * @param timeout
 	 *            an Integer value representing an App defined timeout
 	 *            <p></p>
 	 *            <b>Notes: </b>Minvalue=0; Maxvalue=65535; Defvalue=10000
 	 */
-    public void setTimeout(Integer timeout) {
-    	setParameters(KEY_TIMEOUT, timeout);
+    public Slider setTimeout( Integer timeout) {
+        setParameters(KEY_TIMEOUT, timeout);
+        return this;
     }
 
 	/**
@@ -293,7 +298,8 @@ public class Slider extends RPCRequest {
 	 *
 	 * @since SmartDeviceLink 6.0
 	 */
-	public void setCancelID(Integer cancelID) {
-		setParameters(KEY_CANCEL_ID, cancelID);
-	}
+	public Slider setCancelID( Integer cancelID) {
+        setParameters(KEY_CANCEL_ID, cancelID);
+        return this;
+    }
 }
