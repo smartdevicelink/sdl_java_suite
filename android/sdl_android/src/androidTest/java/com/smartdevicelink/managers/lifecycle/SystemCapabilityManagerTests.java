@@ -1066,21 +1066,6 @@ public class SystemCapabilityManagerTests {
 		}
 
 		@Override
-		public void startAudioService(boolean isEncrypted, AudioStreamingCodec codec,
-									  AudioStreamingParams params) {}
-
-		@Override
-		public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters){
-			return null;
-		}
-
-		@Override
-		public IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec,
-													 AudioStreamingParams params) {
-			return null;
-		}
-
-		@Override
 		public void startAudioService(boolean encrypted){}
 
 		@Override

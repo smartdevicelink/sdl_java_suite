@@ -247,13 +247,6 @@ public class VideoStreamManagerTests {
 
 		doAnswer(onRemoveServiceListener).when(internalInterface).removeServiceListener(eq(SessionType.NAV), any(ISdlServiceListener.class));
 
-		when(internalInterface.startVideoStream(anyBoolean(), any(VideoStreamingParameters.class))).thenReturn(new IVideoStreamListener() {
-			@Override
-			public void sendFrame(byte[] data, int offset, int length, long presentationTimeUs) throws ArrayIndexOutOfBoundsException {}
-			@Override
-			public void sendFrame(ByteBuffer data, long presentationTimeUs) {}
-		});
-
 		when(internalInterface.getCapability(SystemCapabilityType.VIDEO_STREAMING)).thenReturn(TestValues.GENERAL_VIDEOSTREAMINGCAPABILITY);
 
 		final VideoStreamManager videoStreamManager = new VideoStreamManager(internalInterface);
