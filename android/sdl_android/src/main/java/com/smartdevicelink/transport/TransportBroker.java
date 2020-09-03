@@ -479,29 +479,8 @@ public class TransportBroker {
     public void onServiceUnregsiteredFromRouterService(int unregisterCode) {
     }
 
-    @Deprecated
-    public void onHardwareDisconnected(TransportType type) {
-        stop();
-    }
-
     public void onHardwareDisconnected(TransportRecord record, List<TransportRecord> connectedTransports) {
 
-    }
-
-    /**
-     * WILL NO LONGER BE CALLED
-     *
-     * @param type
-     * @return
-     */
-    @Deprecated
-    public boolean onHardwareConnected(TransportType type) {
-        synchronized (INIT_LOCK) {
-            if (routerServiceMessenger == null) {
-                return false;
-            }
-            return true;
-        }
     }
 
     public boolean onHardwareConnected(List<TransportRecord> transports) {
@@ -619,7 +598,8 @@ public class TransportBroker {
         if (this.routerService == null) {
             if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.O) && !isRouterServiceRunning(getContext())) {//We should be able to ignore this case because of the validation now
                 DebugTool.logInfo(TAG, whereToReply + " found no router service. Shutting down.");
-                this.onHardwareDisconnected(null);
+                stop();
+                this.onHardwareDisconnected(null, null);
                 return false;
             }
         } else {//We were already told where to bind. This should be the case.
@@ -752,11 +732,6 @@ public class TransportBroker {
     /**
      * Use this method to let the router service know that you are requesting a new session from the head unit.
      */
-    @Deprecated
-    public void requestNewSession() {
-        requestNewSession(null);
-    }
-
     public void requestNewSession(TransportRecord transportRecord) {
         Message msg = Message.obtain();
         msg.what = TransportConstants.ROUTER_REQUEST_NEW_SESSION;
