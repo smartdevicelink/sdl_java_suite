@@ -42,9 +42,9 @@ import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.util.DebugTool;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Vector;
 
 public class ChoiceSet {
     private static final String TAG = "ChoiceSet";
@@ -109,15 +109,15 @@ public class ChoiceSet {
 
         // Help the dev by creating TTS chunks for them
         if (initialPrompt != null){
-            setInitialPrompt(createSimpleTTSChunks(initialPrompt));
+            setInitialPrompt(Collections.singletonList(new TTSChunk(initialPrompt, SpeechCapabilities.TEXT)));
         }
 
         if (timeoutPrompt != null){
-            setTimeoutPrompt(createSimpleTTSChunks(timeoutPrompt));
+            setTimeoutPrompt(Collections.singletonList(new TTSChunk(timeoutPrompt, SpeechCapabilities.TEXT)));
         }
 
         if (helpPrompt != null){
-            setHelpPrompt(createSimpleTTSChunks(helpPrompt));
+            setHelpPrompt(Collections.singletonList(new TTSChunk(helpPrompt, SpeechCapabilities.TEXT)));
         }
 
         // things to do
@@ -397,14 +397,5 @@ public class ChoiceSet {
             }
         }
         return clonedHelpItems;
-    }
-
-    private Vector<TTSChunk> createSimpleTTSChunks(String simple) {
-        if (simple == null) {
-            return null;
-        }
-        Vector<TTSChunk> chunks = new Vector<>();
-        chunks.add(new TTSChunk(simple, SpeechCapabilities.TEXT));
-        return chunks;
     }
 }
