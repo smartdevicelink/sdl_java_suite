@@ -68,9 +68,10 @@ public class AppServiceData extends RPCStruct {
 	/**
 	 * @param serviceType -
 	 */
-	public void setServiceType(@NonNull String serviceType) {
-		setValue(KEY_SERVICE_TYPE, serviceType);
-	}
+	public AppServiceData setServiceType(@NonNull String serviceType) {
+        setValue(KEY_SERVICE_TYPE, serviceType);
+        return this;
+    }
 
 	/**
 	 * @return serviceType -
@@ -82,9 +83,10 @@ public class AppServiceData extends RPCStruct {
 	/**
 	 * @param serviceId -
 	 */
-	public void setServiceID(@NonNull String serviceId) {
-		setValue(KEY_SERVICE_ID, serviceId);
-	}
+	public AppServiceData setServiceID(@NonNull String serviceId) {
+        setValue(KEY_SERVICE_ID, serviceId);
+        return this;
+    }
 
 	/**
 	 * @return serviceId -
@@ -96,9 +98,10 @@ public class AppServiceData extends RPCStruct {
 	/**
 	 * @param mediaServiceData -
 	 */
-	public void setMediaServiceData(MediaServiceData mediaServiceData) {
-		setValue(KEY_MEDIA_SERVICE_DATA, mediaServiceData);
-	}
+	public AppServiceData setMediaServiceData( MediaServiceData mediaServiceData) {
+        setValue(KEY_MEDIA_SERVICE_DATA, mediaServiceData);
+        return this;
+    }
 
 	/**
 	 * @return mediaServiceData -
@@ -110,9 +113,10 @@ public class AppServiceData extends RPCStruct {
 	/**
 	 * @param weatherServiceData -
 	 */
-	public void setWeatherServiceData(WeatherServiceData weatherServiceData) {
-		setValue(KEY_WEATHER_SERVICE_DATA, weatherServiceData);
-	}
+	public AppServiceData setWeatherServiceData( WeatherServiceData weatherServiceData) {
+        setValue(KEY_WEATHER_SERVICE_DATA, weatherServiceData);
+        return this;
+    }
 
 	/**
 	 * @return weatherServiceData -
@@ -124,9 +128,10 @@ public class AppServiceData extends RPCStruct {
 	/**
 	 * @param navigationServiceData -
 	 */
-	public void setNavigationServiceData(NavigationServiceData navigationServiceData) {
-		setValue(KEY_NAVIGATION_SERVICE_DATA, navigationServiceData);
-	}
+	public AppServiceData setNavigationServiceData( NavigationServiceData navigationServiceData) {
+        setValue(KEY_NAVIGATION_SERVICE_DATA, navigationServiceData);
+        return this;
+    }
 
 	/**
 	 * @return navigationServiceData -

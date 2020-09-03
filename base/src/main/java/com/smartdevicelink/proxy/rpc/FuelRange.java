@@ -132,10 +132,11 @@ public class FuelRange extends RPCStruct {
      *
      * @param fuelType the type of fuel related to this FuelRange object.
      *
-     * @see com.smartdevicelink.proxy.rpc.enums.FuelType
+     * @see FuelType
      */
-    public void setType(FuelType fuelType) {
+    public FuelRange setType( FuelType fuelType) {
         setValue(KEY_TYPE, fuelType);
+        return this;
     }
 
     /**
@@ -163,8 +164,9 @@ public class FuelRange extends RPCStruct {
      * @param range
      * The estimate range in KM the vehicle can travel based on fuel level and consumption.
      */
-    public void setRange(Float range) {
+    public FuelRange setRange( Float range) {
         setValue(KEY_RANGE, range);
+        return this;
     }
 
     /**
@@ -174,8 +176,9 @@ public class FuelRange extends RPCStruct {
      * {"num_min_value": -6.0, "num_max_value": 1000000.0}
      * @since SmartDeviceLink 7.0.0
      */
-    public void setLevel(Float level) {
+    public FuelRange setLevel( Float level) {
         setValue(KEY_LEVEL, level);
+        return this;
     }
 
     /**
@@ -196,8 +199,9 @@ public class FuelRange extends RPCStruct {
      * @param levelState The fuel level state
      * @since SmartDeviceLink 7.0.0
      */
-    public void setLevelState(ComponentVolumeStatus levelState) {
+    public FuelRange setLevelState( ComponentVolumeStatus levelState) {
         setValue(KEY_LEVEL_STATE, levelState);
+        return this;
     }
 
     /**
@@ -217,8 +221,9 @@ public class FuelRange extends RPCStruct {
      * {"num_min_value": 0.0, "num_max_value": 1000000.0}
      * @since SmartDeviceLink 7.0.0
      */
-    public void setCapacity(Float capacity) {
+    public FuelRange setCapacity( Float capacity) {
         setValue(KEY_CAPACITY, capacity);
+        return this;
     }
 
     /**
@@ -240,8 +245,9 @@ public class FuelRange extends RPCStruct {
      * batteries.
      * @since SmartDeviceLink 7.0.0
      */
-    public void setCapacityUnit(CapacityUnit capacityUnit) {
+    public FuelRange setCapacityUnit( CapacityUnit capacityUnit) {
         setValue(KEY_CAPACITY_UNIT, capacityUnit);
+        return this;
     }
 
     /**

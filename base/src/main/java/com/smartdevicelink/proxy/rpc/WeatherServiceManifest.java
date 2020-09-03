@@ -56,9 +56,10 @@ public class WeatherServiceManifest extends RPCStruct {
 	 * Set whether the current forecast is supported
 	 * @param currentForecastSupported -
 	 */
-	public void setCurrentForecastSupported(Boolean currentForecastSupported){
-		setValue(KEY_CURRENT_FORECAST_SUPPORTED, currentForecastSupported);
-	}
+	public WeatherServiceManifest setCurrentForecastSupported( Boolean currentForecastSupported) {
+        setValue(KEY_CURRENT_FORECAST_SUPPORTED, currentForecastSupported);
+        return this;
+    }
 
 	/**
 	 * Get whether the current forecast is supported
@@ -72,9 +73,10 @@ public class WeatherServiceManifest extends RPCStruct {
 	 * Set the max multi day forecast amount
 	 * @param maxMultidayForecastAmount -
 	 */
-	public void setMaxMultidayForecastAmount(Integer maxMultidayForecastAmount){
-		setValue(KEY_MAX_MULTIDAY_FORECAST_AMOUNT, maxMultidayForecastAmount);
-	}
+	public WeatherServiceManifest setMaxMultidayForecastAmount( Integer maxMultidayForecastAmount) {
+        setValue(KEY_MAX_MULTIDAY_FORECAST_AMOUNT, maxMultidayForecastAmount);
+        return this;
+    }
 
 	/**
 	 * Get the max multi day forecast amount
@@ -88,9 +90,10 @@ public class WeatherServiceManifest extends RPCStruct {
 	 * Set the max hourly forecast amount
 	 * @param maxHourlyForecastAmount -
 	 */
-	public void setMaxHourlyForecastAmount(Integer maxHourlyForecastAmount){
-		setValue(KEY_MAX_HOURLY_FORECAST_AMOUNT, maxHourlyForecastAmount);
-	}
+	public WeatherServiceManifest setMaxHourlyForecastAmount( Integer maxHourlyForecastAmount) {
+        setValue(KEY_MAX_HOURLY_FORECAST_AMOUNT, maxHourlyForecastAmount);
+        return this;
+    }
 
 	/**
 	 * Get the max hourly forecast amount
@@ -104,9 +107,10 @@ public class WeatherServiceManifest extends RPCStruct {
 	 * Set the max minutely forecast amount
 	 * @param maxMinutelyForecastAmount -
 	 */
-	public void setMaxMinutelyForecastAmount(Integer maxMinutelyForecastAmount){
-		setValue(KEY_MAX_MINUTELY_FORECAST_AMOUNT, maxMinutelyForecastAmount);
-	}
+	public WeatherServiceManifest setMaxMinutelyForecastAmount( Integer maxMinutelyForecastAmount) {
+        setValue(KEY_MAX_MINUTELY_FORECAST_AMOUNT, maxMinutelyForecastAmount);
+        return this;
+    }
 
 	/**
 	 * Get the max minutely forecast amount
@@ -120,9 +124,10 @@ public class WeatherServiceManifest extends RPCStruct {
 	 * Set whether the weather is supported for the current location
 	 * @param weatherForLocationSupported -
 	 */
-	public void setWeatherForLocationSupported(Boolean weatherForLocationSupported){
-		setValue(KEY_WEATHER_FOR_LOCATION_SUPPORTED, weatherForLocationSupported);
-	}
+	public WeatherServiceManifest setWeatherForLocationSupported( Boolean weatherForLocationSupported) {
+        setValue(KEY_WEATHER_FOR_LOCATION_SUPPORTED, weatherForLocationSupported);
+        return this;
+    }
 
 	/**
 	 * Get whether the weather is supported for the current location

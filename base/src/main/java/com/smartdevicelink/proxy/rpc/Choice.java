@@ -171,9 +171,10 @@ public class Choice extends RPCStruct {
     /**
      * Set the application-scoped identifier that uniquely identifies this choice.
      * @param choiceID Min: 0  Max: 65535
-     */    
-    public void setChoiceID(@NonNull Integer choiceID) {
+     */
+    public Choice setChoiceID(@NonNull Integer choiceID) {
         setValue(KEY_CHOICE_ID, choiceID);
+        return this;
     }
     /**
      * Text which appears in menu, representing this choice.
@@ -189,9 +190,10 @@ public class Choice extends RPCStruct {
      *				Min: 1;
      *				Max: 100
      * @param menuName the menu name
-     */    
-    public void setMenuName(@NonNull String menuName) {
+     */
+    public Choice setMenuName(@NonNull String menuName) {
         setValue(KEY_MENU_NAME, menuName);
+        return this;
     }
     /**
      * Get an array of strings to be used as VR synonyms for this choice. If this array is provided, it must have at least one non-empty element
@@ -206,16 +208,18 @@ public class Choice extends RPCStruct {
      * Set an array of strings to be used as VR synonyms for this choice. If this array is provided, it must have at least one non-empty element
      * @param vrCommands the List of  vrCommands
      * @since SmartDeviceLink 2.0
-     */    
-    public void setVrCommands(List<String> vrCommands) {
+     */
+    public Choice setVrCommands( List<String> vrCommands) {
         setValue(KEY_VR_COMMANDS, vrCommands);
+        return this;
     }
     /**
      * Set the image
      * @param image the image of the choice
-     */    
-    public void setImage(Image image) {
+     */
+    public Choice setImage( Image image) {
         setValue(KEY_IMAGE, image);
+        return this;
     }
     /**
      * Get the image
@@ -230,20 +234,23 @@ public class Choice extends RPCStruct {
         return getString(KEY_SECONDARY_TEXT);
     }
 
-    public void setSecondaryText(String secondaryText) {
+    public Choice setSecondaryText( String secondaryText) {
         setValue(KEY_SECONDARY_TEXT, secondaryText);
+        return this;
     }
 
     public String getTertiaryText() {
         return getString(KEY_TERTIARY_TEXT);
     }
 
-    public void setTertiaryText(String tertiaryText) {
+    public Choice setTertiaryText( String tertiaryText) {
         setValue(KEY_TERTIARY_TEXT, tertiaryText);
+        return this;
     }
 
-    public void setSecondaryImage(Image image) {
+    public Choice setSecondaryImage( Image image) {
         setValue(KEY_SECONDARY_IMAGE, image);
+        return this;
     }
 
     @SuppressWarnings("unchecked")
@@ -255,7 +262,8 @@ public class Choice extends RPCStruct {
      * This prevents the @{link Choice#format} method from adding VR commands if set to true
      * @param ignoreAddingVRItems - whether or not to let the format method add vr commands
      */
-    public void setIgnoreAddingVRItems(boolean ignoreAddingVRItems){
+    public Choice setIgnoreAddingVRItems( boolean ignoreAddingVRItems) {
         this.ignoreAddingVRItems = ignoreAddingVRItems;
+        return this;
     }
 }

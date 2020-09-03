@@ -75,9 +75,10 @@ public class SeatMemoryAction extends RPCStruct {
 	 *
 	 * @param id
 	 */
-	public void setId(@NonNull Integer id) {
-		setValue(KEY_ID, id);
-	}
+	public SeatMemoryAction setId(@NonNull Integer id) {
+        setValue(KEY_ID, id);
+        return this;
+    }
 
 	/**
 	 * Gets the id portion of the SeatMemoryAction class
@@ -93,9 +94,10 @@ public class SeatMemoryAction extends RPCStruct {
 	 *
 	 * @param label
 	 */
-	public void setLabel(String label) {
-		setValue(KEY_LABEL, label);
-	}
+	public SeatMemoryAction setLabel( String label) {
+        setValue(KEY_LABEL, label);
+        return this;
+    }
 
 	/**
 	 * Gets the label portion of the SeatMemoryAction class
@@ -111,9 +113,10 @@ public class SeatMemoryAction extends RPCStruct {
 	 *
 	 * @param action
 	 */
-	public void setAction(@NonNull SeatMemoryActionType action) {
-		setValue(KEY_ACTION, action);
-	}
+	public SeatMemoryAction setAction(@NonNull SeatMemoryActionType action) {
+        setValue(KEY_ACTION, action);
+        return this;
+    }
 
 	/**
 	 * Gets the action portion of the SeatMemoryAction class

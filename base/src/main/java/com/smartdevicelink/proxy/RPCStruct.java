@@ -172,7 +172,7 @@ public class RPCStruct {
 		return this._bulkData;
 	}
 
-	public void setBulkData(byte[] bulkData) {
+	public RPCStruct setBulkData(byte[] bulkData) {
 		if (bulkData != null) {
 			this._bulkData = new byte[bulkData.length];
 			System.arraycopy(bulkData, 0, _bulkData, 0, bulkData.length);
@@ -180,10 +180,12 @@ public class RPCStruct {
 		else{
 		    this._bulkData = null;
 		}
+		return this;
 	}
 	
-	public void setPayloadProtected(Boolean bVal) {
+	public RPCStruct setPayloadProtected(Boolean bVal) {
 		protectedPayload = bVal;
+		return this;
 	}
 	
 	public Boolean isPayloadProtected() {
@@ -217,12 +219,13 @@ public class RPCStruct {
 
 	// Generalized Getters and Setters
 
-	public void setValue(String key, Object value){
+	public RPCStruct setValue(String key, Object value){
 		if (value != null) {
 			store.put(key, value);
 		} else {
 			store.remove(key);
 		}
+		return this;
 	}
 
 	public Object getValue(String key) {

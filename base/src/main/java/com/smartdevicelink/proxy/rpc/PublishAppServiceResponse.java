@@ -70,9 +70,10 @@ public class PublishAppServiceResponse extends RPCResponse {
 	 * for the published service. This will include the Core supplied service ID.
 	 * @param appServiceRecord - the App Service Record
 	 */
-	public void setServiceRecord(AppServiceRecord appServiceRecord){
-		setParameters(KEY_APP_SERVICE_RECORD, appServiceRecord);
-	}
+	public PublishAppServiceResponse setServiceRecord( AppServiceRecord appServiceRecord) {
+        setParameters(KEY_APP_SERVICE_RECORD, appServiceRecord);
+        return this;
+    }
 
 	/**
 	 * If the request was successful, this object will be the current status of the service record

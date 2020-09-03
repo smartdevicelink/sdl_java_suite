@@ -79,9 +79,10 @@ public class LightState extends RPCStruct {
 	 *
 	 * @param id The name of a light or a group of lights.
 	 */
-	public void setId(@NonNull LightName id) {
-		setValue(KEY_ID, id);
-	}
+	public LightState setId(@NonNull LightName id) {
+        setValue(KEY_ID, id);
+        return this;
+    }
 
 	/**
 	 * Gets the id portion of the LightState class
@@ -97,11 +98,12 @@ public class LightState extends RPCStruct {
 	 *
 	 * @param status enum value of type LightStatus that describes the specific lights state
 	 *
-	 * @see com.smartdevicelink.proxy.rpc.enums.LightStatus
+	 * @see LightStatus
 	 */
-	public void setStatus(@NonNull LightStatus status) {
-		setValue(KEY_STATUS, status);
-	}
+	public LightState setStatus(@NonNull LightStatus status) {
+        setValue(KEY_STATUS, status);
+        return this;
+    }
 
 	/**
 	 * Gets the status portion of the LightState class
@@ -129,9 +131,10 @@ public class LightState extends RPCStruct {
 	 *
 	 * @param density a float representation of the density of the specific light state
 	 */
-	public void setDensity(Float density) {
-		setValue(KEY_DENSITY, density);
-	}
+	public LightState setDensity( Float density) {
+        setValue(KEY_DENSITY, density);
+        return this;
+    }
 
 	/**
 	 * Gets the color portion of the LightState class
@@ -150,9 +153,10 @@ public class LightState extends RPCStruct {
 	 *
 	 * @param color an RGBColor representation of the color of this specific light state
 	 *
-	 * @see com.smartdevicelink.proxy.rpc.RGBColor
+	 * @see RGBColor
 	 */
-	public void setColor(RGBColor color) {
-		setValue(KEY_COLOR, color);
-	}
+	public LightState setColor( RGBColor color) {
+        setValue(KEY_COLOR, color);
+        return this;
+    }
 }

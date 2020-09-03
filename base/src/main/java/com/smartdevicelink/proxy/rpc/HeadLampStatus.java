@@ -98,20 +98,23 @@ public class HeadLampStatus extends RPCStruct {
         setLowBeamsOn(lowBeamsOn);
         setHighBeamsOn(highBeamsOn);
     }
-    public void setAmbientLightStatus(AmbientLightStatus ambientLightSensorStatus) {
+    public HeadLampStatus setAmbientLightStatus( AmbientLightStatus ambientLightSensorStatus) {
         setValue(KEY_AMBIENT_LIGHT_SENSOR_STATUS, ambientLightSensorStatus);
+        return this;
     }
     public AmbientLightStatus getAmbientLightStatus() {
         return (AmbientLightStatus) getObject(AmbientLightStatus.class, KEY_AMBIENT_LIGHT_SENSOR_STATUS);
     }
-    public void setHighBeamsOn(@NonNull Boolean highBeamsOn) {
+    public HeadLampStatus setHighBeamsOn(@NonNull Boolean highBeamsOn) {
         setValue(KEY_HIGH_BEAMS_ON, highBeamsOn);
+        return this;
     }
     public Boolean getHighBeamsOn() {
     	return getBoolean(KEY_HIGH_BEAMS_ON);
     }
-    public void setLowBeamsOn(@NonNull Boolean lowBeamsOn) {
+    public HeadLampStatus setLowBeamsOn(@NonNull Boolean lowBeamsOn) {
         setValue(KEY_LOW_BEAMS_ON, lowBeamsOn);
+        return this;
     }
     public Boolean getLowBeamsOn() {
     	return getBoolean(KEY_LOW_BEAMS_ON);

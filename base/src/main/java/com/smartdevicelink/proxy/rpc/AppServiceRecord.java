@@ -70,9 +70,10 @@ public class AppServiceRecord extends RPCStruct {
 	 * ID of this service
 	 * @param serviceID - the service ID
 	 */
-	public void setServiceID(@NonNull String serviceID){
-		setValue(KEY_SERVICE_ID, serviceID);
-	}
+	public AppServiceRecord setServiceID(@NonNull String serviceID) {
+        setValue(KEY_SERVICE_ID, serviceID);
+        return this;
+    }
 
 	/**
 	 * ID of this service
@@ -86,9 +87,10 @@ public class AppServiceRecord extends RPCStruct {
 	 * the App Service Manifest
 	 * @param serviceManifest - the App Service Manifest
 	 */
-	public void setServiceManifest(@NonNull AppServiceManifest serviceManifest){
-		setValue(KEY_SERVICE_MANIFEST, serviceManifest);
-	}
+	public AppServiceRecord setServiceManifest(@NonNull AppServiceManifest serviceManifest) {
+        setValue(KEY_SERVICE_MANIFEST, serviceManifest);
+        return this;
+    }
 
 	/**
 	 * the App Service Manifest
@@ -103,9 +105,10 @@ public class AppServiceRecord extends RPCStruct {
 	 * unpublished, and should be considered unavailable.
 	 * @param servicePublished - boolean
 	 */
-	public void setServicePublished(@NonNull Boolean servicePublished){
-		setValue(KEY_SERVICE_PUBLISHED, servicePublished);
-	}
+	public AppServiceRecord setServicePublished(@NonNull Boolean servicePublished) {
+        setValue(KEY_SERVICE_PUBLISHED, servicePublished);
+        return this;
+    }
 
 	/**
 	 * If true, the service is published and available. If false, the service has likely just been
@@ -122,9 +125,10 @@ public class AppServiceRecord extends RPCStruct {
 	 * service of the supplied type. See servicePublished for its availability.
 	 * @param serviceActive - boolean
 	 */
-	public void setServiceActive(@NonNull Boolean serviceActive){
-		setValue(KEY_SERVICE_ACTIVE, serviceActive);
-	}
+	public AppServiceRecord setServiceActive(@NonNull Boolean serviceActive) {
+        setValue(KEY_SERVICE_ACTIVE, serviceActive);
+        return this;
+    }
 
 	/**
 	 * If true, the service is the active primary service of the supplied service type. It will receive

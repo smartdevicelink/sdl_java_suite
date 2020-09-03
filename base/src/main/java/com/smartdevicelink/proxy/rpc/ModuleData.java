@@ -66,9 +66,10 @@ public class ModuleData extends RPCStruct {
 	 * @param moduleType The moduleType indicates which type of data should be changed and identifies which data object exists in this struct.
 	 *                   For example, if the moduleType is CLIMATE then a "climateControlData" should exist
 	 */
-	public void setModuleType(@NonNull ModuleType moduleType) {
-		setValue(KEY_MODULE_TYPE, moduleType);
-	}
+	public ModuleData setModuleType(@NonNull ModuleType moduleType) {
+        setValue(KEY_MODULE_TYPE, moduleType);
+        return this;
+    }
 
 	/**
 	 * Gets the moduleType portion of the ModuleData class
@@ -85,9 +86,10 @@ public class ModuleData extends RPCStruct {
 	 *
 	 * @param radioControlData
 	 */
-	public void setRadioControlData(RadioControlData radioControlData) {
-		setValue(KEY_RADIO_CONTROL_DATA, radioControlData);
-	}
+	public ModuleData setRadioControlData( RadioControlData radioControlData) {
+        setValue(KEY_RADIO_CONTROL_DATA, radioControlData);
+        return this;
+    }
 
 	/**
 	 * Gets the radioControlData portion of the ModuleData class
@@ -103,9 +105,10 @@ public class ModuleData extends RPCStruct {
 	 *
 	 * @param climateControlData
 	 */
-	public void setClimateControlData(ClimateControlData climateControlData) {
-		setValue(KEY_CLIMATE_CONTROL_DATA, climateControlData);
-	}
+	public ModuleData setClimateControlData( ClimateControlData climateControlData) {
+        setValue(KEY_CLIMATE_CONTROL_DATA, climateControlData);
+        return this;
+    }
 
 	/**
 	 * Gets the climateControlData portion of the ModuleData class
@@ -121,9 +124,10 @@ public class ModuleData extends RPCStruct {
 	 *
 	 * @param seatControlData
 	 */
-	public void setSeatControlData(SeatControlData seatControlData) {
-		setValue(KEY_SEAT_CONTROL_DATA, seatControlData);
-	}
+	public ModuleData setSeatControlData( SeatControlData seatControlData) {
+        setValue(KEY_SEAT_CONTROL_DATA, seatControlData);
+        return this;
+    }
 
 	/**
 	 * Gets the seatControlData portion of the ModuleData class
@@ -139,9 +143,10 @@ public class ModuleData extends RPCStruct {
 	 *
 	 * @param audioControlData
 	 */
-	public void setAudioControlData(AudioControlData audioControlData) {
-		setValue(KEY_AUDIO_CONTROL_DATA, audioControlData);
-	}
+	public ModuleData setAudioControlData( AudioControlData audioControlData) {
+        setValue(KEY_AUDIO_CONTROL_DATA, audioControlData);
+        return this;
+    }
 
 	/**
 	 * Gets the audioControlData portion of the ModuleData class
@@ -157,9 +162,10 @@ public class ModuleData extends RPCStruct {
 	 *
 	 * @param lightControlData
 	 */
-	public void setLightControlData(LightControlData lightControlData) {
-		setValue(KEY_LIGHT_CONTROL_DATA, lightControlData);
-	}
+	public ModuleData setLightControlData( LightControlData lightControlData) {
+        setValue(KEY_LIGHT_CONTROL_DATA, lightControlData);
+        return this;
+    }
 
 	/**
 	 * Gets the lightControlData portion of the ModuleData class
@@ -175,9 +181,10 @@ public class ModuleData extends RPCStruct {
 	 *
 	 * @param hmiSettingsControlData
 	 */
-	public void setHmiSettingsControlData(HMISettingsControlData hmiSettingsControlData) {
-		setValue(KEY_HMI_SETTINGS_CONTROL_DATA, hmiSettingsControlData);
-	}
+	public ModuleData setHmiSettingsControlData( HMISettingsControlData hmiSettingsControlData) {
+        setValue(KEY_HMI_SETTINGS_CONTROL_DATA, hmiSettingsControlData);
+        return this;
+    }
 
 	/**
 	 * Gets the hmiSettingsControlData portion of the ModuleData class
@@ -192,9 +199,10 @@ public class ModuleData extends RPCStruct {
 	 * Sets the Module ID of the ModuleData class
 	 * @param id the id to be set
 	 */
-	public void setModuleId(String id) {
-		setValue(KEY_MODULE_ID, id);
-	}
+	public ModuleData setModuleId( String id) {
+        setValue(KEY_MODULE_ID, id);
+        return this;
+    }
 
 	/**
 	 * Gets the Module ID of the ModuleData class

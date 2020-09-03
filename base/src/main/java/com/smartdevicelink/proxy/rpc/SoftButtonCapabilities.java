@@ -131,8 +131,9 @@ public class SoftButtonCapabilities extends RPCStruct {
      * set the button supports a short press.
      * @param shortPressAvailable whether the button supports a short press.
      */
-    public void setShortPressAvailable(@NonNull Boolean shortPressAvailable) {
+    public SoftButtonCapabilities setShortPressAvailable(@NonNull Boolean shortPressAvailable) {
         setValue(KEY_SHORT_PRESS_AVAILABLE, shortPressAvailable);
+        return this;
     }
     
     /**
@@ -147,8 +148,9 @@ public class SoftButtonCapabilities extends RPCStruct {
      * set the button supports a LONG press.
      * @param longPressAvailable whether the button supports a long press
      */
-    public void setLongPressAvailable(@NonNull Boolean longPressAvailable) {
+    public SoftButtonCapabilities setLongPressAvailable(@NonNull Boolean longPressAvailable) {
         setValue(KEY_LONG_PRESS_AVAILABLE, longPressAvailable);
+        return this;
     }
     
     /**
@@ -160,11 +162,12 @@ public class SoftButtonCapabilities extends RPCStruct {
     }
     
     /**
-     * set the button supports "button down" and "button up". 
-     * @param upDownAvailable the button supports "button down" and "button up". 
+     * set the button supports "button down" and "button up".
+     * @param upDownAvailable the button supports "button down" and "button up".
      */
-    public void setUpDownAvailable(@NonNull Boolean upDownAvailable) {
+    public SoftButtonCapabilities setUpDownAvailable(@NonNull Boolean upDownAvailable) {
         setValue(KEY_UP_DOWN_AVAILABLE, upDownAvailable);
+        return this;
     }
     
     /**
@@ -179,8 +182,9 @@ public class SoftButtonCapabilities extends RPCStruct {
      * set the button supports referencing a static or dynamic image.
      * @param imageSupported whether the button supports referencing a static or dynamic image.
      */
-    public void setImageSupported(@NonNull Boolean imageSupported) {
+    public SoftButtonCapabilities setImageSupported(@NonNull Boolean imageSupported) {
         setValue(KEY_IMAGE_SUPPORTED, imageSupported);
+        return this;
     }
     
     /**
@@ -196,8 +200,9 @@ public class SoftButtonCapabilities extends RPCStruct {
      * @param textSupported whether the button supports the use of text or not.
      * @since 6.0
      */
-    public void setTextSupported(Boolean textSupported) {
+    public SoftButtonCapabilities setTextSupported( Boolean textSupported) {
         setValue(KEY_TEXT_SUPPORTED, textSupported);
+        return this;
     }
 
     /**

@@ -132,32 +132,37 @@ public class EmergencyEvent extends RPCStruct {
         setMultipleEvents(multipleEvents);
     }
 
-    public void setEmergencyEventType(@NonNull EmergencyEventType emergencyEventType) {
+    public EmergencyEvent setEmergencyEventType(@NonNull EmergencyEventType emergencyEventType) {
         setValue(KEY_EMERGENCY_EVENT_TYPE, emergencyEventType);
+        return this;
     }
     public EmergencyEventType getEmergencyEventType() {
         return (EmergencyEventType) getObject(EmergencyEventType.class, KEY_EMERGENCY_EVENT_TYPE);
     }
-    public void setFuelCutoffStatus(@NonNull FuelCutoffStatus fuelCutoffStatus) {
+    public EmergencyEvent setFuelCutoffStatus(@NonNull FuelCutoffStatus fuelCutoffStatus) {
         setValue(KEY_FUEL_CUTOFF_STATUS, fuelCutoffStatus);
+        return this;
     }
     public FuelCutoffStatus getFuelCutoffStatus() {
         return (FuelCutoffStatus) getObject(FuelCutoffStatus.class, KEY_FUEL_CUTOFF_STATUS);
     }
-    public void setRolloverEvent(@NonNull VehicleDataEventStatus rolloverEvent) {
+    public EmergencyEvent setRolloverEvent(@NonNull VehicleDataEventStatus rolloverEvent) {
         setValue(KEY_ROLLOVER_EVENT, rolloverEvent);
+        return this;
     }
     public VehicleDataEventStatus getRolloverEvent() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_ROLLOVER_EVENT);
     }
-    public void setMaximumChangeVelocity(@NonNull Integer maximumChangeVelocity) {
+    public EmergencyEvent setMaximumChangeVelocity(@NonNull Integer maximumChangeVelocity) {
         setValue(KEY_MAXIMUM_CHANGE_VELOCITY, maximumChangeVelocity);
+        return this;
     }
     public Integer getMaximumChangeVelocity() {
     	return getInteger(KEY_MAXIMUM_CHANGE_VELOCITY);
     }
-    public void setMultipleEvents(@NonNull VehicleDataEventStatus multipleEvents) {
+    public EmergencyEvent setMultipleEvents(@NonNull VehicleDataEventStatus multipleEvents) {
         setValue(KEY_MULTIPLE_EVENTS, multipleEvents);
+        return this;
     }
     public VehicleDataEventStatus getMultipleEvents() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_MULTIPLE_EVENTS);

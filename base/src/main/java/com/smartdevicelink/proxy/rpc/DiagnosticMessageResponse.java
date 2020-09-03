@@ -74,8 +74,9 @@ public class DiagnosticMessageResponse extends RPCResponse {
         return (List<Integer>) getObject(Integer.class, KEY_MESSAGE_DATA_RESULT);
     }
     
-    public void setMessageDataResult(List<Integer> messageDataResult) {
+    public DiagnosticMessageResponse setMessageDataResult( List<Integer> messageDataResult) {
         setParameters(KEY_MESSAGE_DATA_RESULT, messageDataResult);
+        return this;
     }
 
 

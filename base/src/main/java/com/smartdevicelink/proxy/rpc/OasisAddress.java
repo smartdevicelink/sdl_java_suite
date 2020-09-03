@@ -71,13 +71,14 @@ public class OasisAddress extends RPCStruct{
 
 	/**
  	* Sets the localized Name of the country associated with the OasisAddress class.
-	* 
+	*
 	* @param countryName
 	* The localized Name of the country associated with the OasisAddress class.
-	* 
+	*
 	*/
-    public void setCountryName(String countryName) {
+    public OasisAddress setCountryName( String countryName) {
         setValue(KEY_COUNTRY_NAME, countryName);
+        return this;
     }
 
     /**
@@ -92,13 +93,14 @@ public class OasisAddress extends RPCStruct{
 
 	/**
  	* Sets the country code in ISO 3166-2 format associated with the OasisAddress class.
-	* 
+	*
 	* @param countryCode
 	* The country code in ISO 3166-2 format associated with the OasisAddress class.
-	* 
-	*/ 
-    public void setCountryCode(String countryCode) {
+	*
+	*/
+    public OasisAddress setCountryCode( String countryCode) {
         setValue(KEY_COUNTRY_CODE, countryCode);
+        return this;
     }
 
     /**
@@ -113,13 +115,14 @@ public class OasisAddress extends RPCStruct{
 
 	/**
  	* Sets the Postal Code associated with the OasisAddress class.
-	* 
+	*
 	* @param postalCode
 	* The Postal Code associated with the OasisAddress class.
-	* 
-	*/ 
-    public void setPostalCode(String postalCode) {
+	*
+	*/
+    public OasisAddress setPostalCode( String postalCode) {
         setValue(KEY_POSTAL_CODE, postalCode);
+        return this;
     }
 
     /**
@@ -134,13 +137,14 @@ public class OasisAddress extends RPCStruct{
 
 	/**
  	* Sets the Administrative Area associated with the OasisAddress class.   A portion of the country - Administrative Area can include details of the top-level area division in the country, such as state, district, province, island, region, etc.
-	* 
+	*
 	* @param administrativeArea
 	* The Administrative Area associated with the OasisAddress class.
-	* 
-	*/ 
-    public void setAdministrativeArea(String administrativeArea) {
+	*
+	*/
+    public OasisAddress setAdministrativeArea( String administrativeArea) {
         setValue(KEY_ADMINISTRATIVE_AREA, administrativeArea);
+        return this;
     }
 
     /**
@@ -155,13 +159,14 @@ public class OasisAddress extends RPCStruct{
 
 	/**
  	* Sets the SubAdministrative Area associated with the OasisAddress class.   A portion of the administrativeArea - The next level down division of the area. E.g. state / county, province / reservation.
-	* 
+	*
 	* @param subAdministrativeArea
 	* The SubAdministrative Area associated with the OasisAddress class.
-	* 
-	*/ 
-    public void setSubAdministrativeArea(String subAdministrativeArea) {
+	*
+	*/
+    public OasisAddress setSubAdministrativeArea( String subAdministrativeArea) {
         setValue(KEY_SUB_ADMINISTRATIVE_AREA, subAdministrativeArea);
+        return this;
     }
 
     /**
@@ -176,13 +181,14 @@ public class OasisAddress extends RPCStruct{
 
 	/**
  	* Sets the Locality associated with the OasisAddress class. - A hypernym for city/village.
-	* 
+	*
 	* @param locality
 	* The Locality associated with the OasisAddress class.
-	* 
+	*
 	*/
-    public void setLocality(String locality) {
+    public OasisAddress setLocality( String locality) {
         setValue(KEY_LOCALITY, locality);
+        return this;
     }
 
     /**
@@ -197,13 +203,14 @@ public class OasisAddress extends RPCStruct{
 
 	/**
  	* Sets the Sub-Locality associated with the OasisAddress class.   A hypernym for district.
-	* 
+	*
 	* @param subLocality
 	* The Sub-Locality associated with the OasisAddress class.
-	* 
-	*/ 
-    public void setSubLocality(String subLocality) {
+	*
+	*/
+    public OasisAddress setSubLocality( String subLocality) {
         setValue(KEY_SUB_LOCALITY, subLocality);
+        return this;
     }
 
     /**
@@ -218,13 +225,14 @@ public class OasisAddress extends RPCStruct{
 
 	/**
  	* Sets the Thoroughfare associated with the OasisAddress class.   A hypernym for street, road etc.
-	* 
+	*
 	* @param thoroughFare
 	* The Thoroughfare associated with the OasisAddress class.
-	* 
-	*/ 
-    public void setThoroughfare(String thoroughFare) {
+	*
+	*/
+    public OasisAddress setThoroughfare( String thoroughFare) {
         setValue(KEY_THOROUGH_FARE, thoroughFare);
+        return this;
     }
     
     /**
@@ -238,12 +246,13 @@ public class OasisAddress extends RPCStruct{
     
 	/**
  	* Sets the Sub-Thoroughfare associated with the OasisAddress class. - A Portion of thoroughfare (e.g. house number).
-	* 
+	*
 	* @param subThoroughfare
 	* The Sub-Thoroughfare associated with the OasisAddress class.
-	* 
-	*/ 
-    public void setSubThoroughfare(String subThoroughfare) {
+	*
+	*/
+    public OasisAddress setSubThoroughfare( String subThoroughfare) {
         setValue(KEY_SUB_THOROUGH_FARE, subThoroughfare);
+        return this;
     }
 }

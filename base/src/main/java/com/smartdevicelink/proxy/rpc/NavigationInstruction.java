@@ -70,9 +70,10 @@ public class NavigationInstruction extends RPCStruct {
 	/**
 	 * @param locationDetails -
 	 */
-	public void setLocationDetails(@NonNull LocationDetails locationDetails){
-		setValue(KEY_LOCATION_DETAILS, locationDetails);
-	}
+	public NavigationInstruction setLocationDetails(@NonNull LocationDetails locationDetails) {
+        setValue(KEY_LOCATION_DETAILS, locationDetails);
+        return this;
+    }
 
 	/**
 	 * @return locationDetails
@@ -84,9 +85,10 @@ public class NavigationInstruction extends RPCStruct {
 	/**
 	 * @param action -
 	 */
-	public void setAction(@NonNull NavigationAction action){
-		setValue(KEY_ACTION, action);
-	}
+	public NavigationInstruction setAction(@NonNull NavigationAction action) {
+        setValue(KEY_ACTION, action);
+        return this;
+    }
 
 	/**
 	 * @return action
@@ -98,9 +100,10 @@ public class NavigationInstruction extends RPCStruct {
 	/**
 	 * @param eta -
 	 */
-	public void setEta(DateTime eta){
-		setValue(KEY_ETA, eta);
-	}
+	public NavigationInstruction setEta( DateTime eta) {
+        setValue(KEY_ETA, eta);
+        return this;
+    }
 
 	/**
 	 * @return eta
@@ -115,9 +118,10 @@ public class NavigationInstruction extends RPCStruct {
 	 * a U-Turn, etc.
 	 * @param bearing - minValue="0" maxValue="359"
 	 */
-	public void setBearing(Integer bearing){
-		setValue(KEY_BEARING, bearing);
-	}
+	public NavigationInstruction setBearing( Integer bearing) {
+        setValue(KEY_BEARING, bearing);
+        return this;
+    }
 
 	/**
 	 * The angle at which this instruction takes place. For example, 0 would mean straight, <=45
@@ -132,9 +136,10 @@ public class NavigationInstruction extends RPCStruct {
 	/**
 	 * @param junctionType -
 	 */
-	public void setJunctionType(NavigationJunction junctionType){
-		setValue(KEY_JUNCTION_TYPE, junctionType);
-	}
+	public NavigationInstruction setJunctionType( NavigationJunction junctionType) {
+        setValue(KEY_JUNCTION_TYPE, junctionType);
+        return this;
+    }
 
 	/**
 	 * @return junctionType
@@ -148,9 +153,10 @@ public class NavigationInstruction extends RPCStruct {
 	 * will determine which direction the turn should take place.
 	 * @param drivingSide - Direction enum value that represents the driving side
 	 */
-	public void setDrivingSide(Direction drivingSide){
-		setValue(KEY_DRIVING_SIDE, drivingSide);
-	}
+	public NavigationInstruction setDrivingSide( Direction drivingSide) {
+        setValue(KEY_DRIVING_SIDE, drivingSide);
+        return this;
+    }
 
 	/**
 	 * Used to infer which side of the road this instruction takes place. For a U-Turn (action=TURN, bearing=180) this
@@ -167,9 +173,10 @@ public class NavigationInstruction extends RPCStruct {
 	 * NavigationServiceData for that.
 	 * @param details -
 	 */
-	public void setDetails(String details){
-		setValue(KEY_DETAILS, details);
-	}
+	public NavigationInstruction setDetails( String details) {
+        setValue(KEY_DETAILS, details);
+        return this;
+    }
 
 	/**
 	 * This is a string representation of this instruction, used to display instructions to the
@@ -185,9 +192,10 @@ public class NavigationInstruction extends RPCStruct {
 	 * An image representation of this instruction.
 	 * @param image -
 	 */
-	public void setImage(Image image){
-		setValue(KEY_IMAGE, image);
-	}
+	public NavigationInstruction setImage( Image image) {
+        setValue(KEY_IMAGE, image);
+        return this;
+    }
 
 	/**
 	 * An image representation of this instruction.

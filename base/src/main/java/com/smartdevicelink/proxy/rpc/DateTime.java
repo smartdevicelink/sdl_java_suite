@@ -66,13 +66,14 @@ public class DateTime extends RPCStruct{
 
 	/**
  	* Sets the Milliseconds portion of the DateTime class
-	* 
+	*
 	* @param milliSecond
 	* The milliseconds associated with this DateTime class
-	* 
-	*/    
-    public void setMilliSecond(Integer milliSecond) {
+	*
+	*/
+    public DateTime setMilliSecond( Integer milliSecond) {
         setValue(KEY_MILLISECOND, milliSecond);
+        return this;
     }
 
     
@@ -88,13 +89,14 @@ public class DateTime extends RPCStruct{
     
 	/**
  	* Sets the Seconds portion of the DateTime class
-	* 
+	*
 	* @param second
 	* The Seconds associated with this DateTime class
-	* 
+	*
 	*/
-    public void setSecond(Integer second) {
+    public DateTime setSecond( Integer second) {
         setValue(KEY_SECOND, second);
+        return this;
     }
 
     
@@ -110,13 +112,14 @@ public class DateTime extends RPCStruct{
     
 	/**
  	* Sets the Minutes portion of the DateTime class
-	* 
+	*
 	* @param minute
 	* The Minutes associated with this DateTime class
-	* 
-	*/ 
-    public void setMinute(Integer minute) {
+	*
+	*/
+    public DateTime setMinute( Integer minute) {
         setValue(KEY_MINUTE, minute);
+        return this;
     }
 
     /**
@@ -130,14 +133,15 @@ public class DateTime extends RPCStruct{
     }
 
 	/**
- 	* Sets the Hours portion of the DateTime class.  
-	* 
+ 	* Sets the Hours portion of the DateTime class.
+	*
 	* @param hour
 	* The Hours associated with this DateTime class.  This structure is used to store hours in a 24 hour format.
-	* 
-	*/ 
-    public void setHour(Integer hour) {
+	*
+	*/
+    public DateTime setHour( Integer hour) {
         setValue(KEY_HOUR, hour);
+        return this;
     }
 
     /**
@@ -152,13 +156,14 @@ public class DateTime extends RPCStruct{
 
 	/**
  	* Sets the Day portion of the DateTime class
-	* 
+	*
 	* @param day
 	* The Day of the month associated with this DateTime class
-	* 
-	*/ 
-    public void setDay(Integer day) {
+	*
+	*/
+    public DateTime setDay( Integer day) {
         setValue(KEY_DAY, day);
+        return this;
     }
 
     /**
@@ -173,13 +178,14 @@ public class DateTime extends RPCStruct{
 
 	/**
  	* Sets the Month portion of the DateTime class
-	* 
+	*
 	* @param month
 	* The Month of the year associate with this DateTime class
-	* 
-	*/ 
-    public void setMonth(Integer month) {
+	*
+	*/
+    public DateTime setMonth( Integer month) {
         setValue(KEY_MONTH, month);
+        return this;
     }
 
     /**
@@ -194,13 +200,14 @@ public class DateTime extends RPCStruct{
 
 	/**
  	* Sets the Year portion of the DateTime class
-	* 
+	*
 	* @param year
 	* The Year in YYYY format associated with this DateTime class
-	* 
-	*/ 
-    public void setYear(Integer year) {
+	*
+	*/
+    public DateTime setYear( Integer year) {
         setValue(KEY_YEAR, year);
+        return this;
     }
 
     /**
@@ -215,13 +222,14 @@ public class DateTime extends RPCStruct{
 
 	/**
  	* Sets the Time Zone Hours portion of the DateTime class
-	* 
+	*
 	* @param tzHour
 	* The time zone offset in Hours with regard to UTC time associated with this DateTime class
-	* 
-	*/ 
-    public void setTzHour(Integer tzHour) {
+	*
+	*/
+    public DateTime setTzHour( Integer tzHour) {
         setValue(KEY_TZ_HOUR, tzHour);
+        return this;
     }
     
     /**
@@ -236,11 +244,12 @@ public class DateTime extends RPCStruct{
 
 	/**
  	* Sets the Time Zone Minutes portion of the DateTime class
-	* 
+	*
 	* @param tzMinute
 	* The time zone offset in Minutes with regard to UTC associated with this DateTime class
-	*/ 
-    public void setTzMinute(Integer tzMinute) {
+	*/
+    public DateTime setTzMinute( Integer tzMinute) {
         setValue(KEY_TZ_MINUTE, tzMinute);
+        return this;
     }
 }

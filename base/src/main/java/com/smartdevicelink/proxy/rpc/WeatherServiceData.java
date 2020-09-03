@@ -68,9 +68,10 @@ public class WeatherServiceData extends RPCStruct {
 	/**
 	 * @param location -
 	 */
-	public void setLocation(@NonNull LocationDetails location) {
-		setValue(KEY_LOCATION, location);
-	}
+	public WeatherServiceData setLocation(@NonNull LocationDetails location) {
+        setValue(KEY_LOCATION, location);
+        return this;
+    }
 
 	/**
 	 * @return location
@@ -82,9 +83,10 @@ public class WeatherServiceData extends RPCStruct {
 	/**
 	 * @param currentForecast -
 	 */
-	public void setCurrentForecast(WeatherData currentForecast) {
-		setValue(KEY_CURRENT_FORECAST, currentForecast);
-	}
+	public WeatherServiceData setCurrentForecast( WeatherData currentForecast) {
+        setValue(KEY_CURRENT_FORECAST, currentForecast);
+        return this;
+    }
 
 	/**
 	 * @return currentForecast
@@ -97,9 +99,10 @@ public class WeatherServiceData extends RPCStruct {
 	 * minsize: 15, maxsize: 60
 	 * @param minuteForecast -
 	 */
-	public void setMinuteForecast(List<WeatherData> minuteForecast){
-		setValue(KEY_MINUTE_FORECAST, minuteForecast);
-	}
+	public WeatherServiceData setMinuteForecast( List<WeatherData> minuteForecast) {
+        setValue(KEY_MINUTE_FORECAST, minuteForecast);
+        return this;
+    }
 
 	/**
 	 * minsize: 15, maxsize: 60
@@ -114,9 +117,10 @@ public class WeatherServiceData extends RPCStruct {
 	 * minsize: 1, maxsize: 96
 	 * @param hourlyForecast -
 	 */
-	public void setHourlyForecast(List<WeatherData> hourlyForecast){
-		setValue(KEY_HOURLY_FORECAST, hourlyForecast);
-	}
+	public WeatherServiceData setHourlyForecast( List<WeatherData> hourlyForecast) {
+        setValue(KEY_HOURLY_FORECAST, hourlyForecast);
+        return this;
+    }
 
 	/**
 	 * minsize: 1, maxsize: 96
@@ -131,9 +135,10 @@ public class WeatherServiceData extends RPCStruct {
 	 * minsize: 1, maxsize: 30
 	 * @param multidayForecast -
 	 */
-	public void setMultidayForecast(List<WeatherData> multidayForecast){
-		setValue(KEY_MULTIDAY_FORECAST, multidayForecast);
-	}
+	public WeatherServiceData setMultidayForecast( List<WeatherData> multidayForecast) {
+        setValue(KEY_MULTIDAY_FORECAST, multidayForecast);
+        return this;
+    }
 
 	/**
 	 * minsize: 1, maxsize: 30
@@ -148,9 +153,10 @@ public class WeatherServiceData extends RPCStruct {
 	 * minsize: 1, maxsize: 10
 	 * @param alerts -
 	 */
-	public void setAlerts(List<WeatherAlert> alerts){
-		setValue(KEY_ALERTS, alerts);
-	}
+	public WeatherServiceData setAlerts( List<WeatherAlert> alerts) {
+        setValue(KEY_ALERTS, alerts);
+        return this;
+    }
 
 	/**
 	 * minsize: 1, maxsize: 10

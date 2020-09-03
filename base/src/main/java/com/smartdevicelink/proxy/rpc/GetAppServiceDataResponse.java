@@ -67,9 +67,10 @@ public class GetAppServiceDataResponse extends RPCResponse {
 	/**
 	 * @param serviceData -
 	 */
-	public void setServiceData(AppServiceData serviceData){
-		setParameters(KEY_SERVICE_DATA, serviceData);
-	}
+	public GetAppServiceDataResponse setServiceData( AppServiceData serviceData) {
+        setParameters(KEY_SERVICE_DATA, serviceData);
+        return this;
+    }
 
 	/**
 	 * @return serviceData

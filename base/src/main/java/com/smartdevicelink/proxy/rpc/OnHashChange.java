@@ -99,8 +99,9 @@ public class OnHashChange extends RPCNotification {
         return getString(KEY_HASH_ID);
     }
    
-    public void setHashID(@NonNull String hashID) {
+    public OnHashChange setHashID(@NonNull String hashID) {
         setParameters(KEY_HASH_ID, hashID);
-    }   
+        return this;
+    }
     
 }

@@ -166,15 +166,16 @@ public class AddSubMenu extends RPCRequest {
 	 * <p>Sets a Menu ID that identifies a sub menu.</p><p> This value is used in
 	 * {@linkplain AddCommand} to which SubMenu is the parent of the command
 	 * being added</p>
-	 * 
-	 * 
+	 *
+	 *
 	 * @param menuID
 	 *            an integer object representing a Menu ID
-	 *            
+	 *
 	 *           <p><b>Notes:</b> Min Value: 0; Max Value: 2000000000</p>
-	 */    
-    public void setMenuID( @NonNull Integer menuID ) {
-		setParameters(KEY_MENU_ID, menuID);
+	 */
+    public AddSubMenu setMenuID(@NonNull Integer menuID) {
+        setParameters(KEY_MENU_ID, menuID);
+        return this;
     }
 	/**
 	 * <p>Returns an <i>Integer</i> object representing the position of menu</p>
@@ -187,7 +188,7 @@ public class AddSubMenu extends RPCRequest {
     }
 	/**
 	 * Sets a position of menu
-	 * 
+	 *
 	 * @param position
 	 *            <p>An Integer object representing the position within the items
 	 *            of the top level Command Menu. 0 will insert at the front, 1
@@ -204,9 +205,10 @@ public class AddSubMenu extends RPCRequest {
 	 *            <li>If this parameter is omitted, the entry will be added at
 	 *            the end of the list</li>
 	 *            </ul>
-	 */    
-    public void setPosition( Integer position ) {
-		setParameters(KEY_POSITION, position);
+	 */
+    public AddSubMenu setPosition( Integer position) {
+        setParameters(KEY_POSITION, position);
+        return this;
     }
 	/**
 	 * Returns String which is displayed representing this submenu item
@@ -218,12 +220,13 @@ public class AddSubMenu extends RPCRequest {
     }
 	/**
 	 * Sets a menuName which is displayed representing this submenu item
-	 * 
+	 *
 	 * @param menuName
 	 *            String which will be displayed representing this submenu item
-	 */    
-    public void setMenuName( @NonNull String menuName ) {
-		setParameters(KEY_MENU_NAME, menuName);
+	 */
+    public AddSubMenu setMenuName(@NonNull String menuName) {
+        setParameters(KEY_MENU_NAME, menuName);
+        return this;
     }
 	/**
 	 * Returns Image to be be shown along with the submenu item
@@ -239,17 +242,19 @@ public class AddSubMenu extends RPCRequest {
 	 * @param menuIcon
 	 *            Image to be be shown along with the submenu item
 	 */
-	public void setMenuIcon(Image menuIcon) {
-		setParameters(KEY_MENU_ICON, menuIcon);
-	}
+	public AddSubMenu setMenuIcon( Image menuIcon) {
+        setParameters(KEY_MENU_ICON, menuIcon);
+        return this;
+    }
 
 	/**
 	 * Sets the layout of the submenu screen.
 	 * @param menuLayout - the menuLayout
 	 */
-	public void setMenuLayout(MenuLayout menuLayout) {
-		setParameters(KEY_MENU_LAYOUT, menuLayout);
-	}
+	public AddSubMenu setMenuLayout( MenuLayout menuLayout) {
+        setParameters(KEY_MENU_LAYOUT, menuLayout);
+        return this;
+    }
 
 	/**
 	 * Gets the layout of the submenu screen.
@@ -267,9 +272,10 @@ public class AddSubMenu extends RPCRequest {
 	 * provided to the top level of the in application menu.
 	 * @since SmartDeviceLink 7.0.0
 	 */
-	public void setParentID(Integer parentID) {
-		setParameters(KEY_PARENT_ID, parentID);
-	}
+	public AddSubMenu setParentID( Integer parentID) {
+        setParameters(KEY_PARENT_ID, parentID);
+        return this;
+    }
 
 	/**
 	 * Gets the parentID.

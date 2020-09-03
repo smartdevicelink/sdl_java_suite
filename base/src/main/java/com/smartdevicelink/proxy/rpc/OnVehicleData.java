@@ -386,22 +386,25 @@ public class OnVehicleData extends RPCNotification {
     public OnVehicleData(Hashtable<String, Object> hash) {
         super(hash);
     }
-    public void setGps(GPSData gps) {
+    public OnVehicleData setGps( GPSData gps) {
         setParameters(KEY_GPS, gps);
+        return this;
     }
     @SuppressWarnings("unchecked")
     public GPSData getGps() {
         return (GPSData) getObject(GPSData.class, KEY_GPS);
     }
-    public void setSpeed(Double speed) {
+    public OnVehicleData setSpeed( Double speed) {
         setParameters(KEY_SPEED, speed);
+        return this;
     }
     public Double getSpeed() {
     	Object object = getParameters(KEY_SPEED);
     	return SdlDataTypeConverter.objectToDouble(object);
     }
-    public void setRpm(Integer rpm) {
+    public OnVehicleData setRpm( Integer rpm) {
         setParameters(KEY_RPM, rpm);
+        return this;
     }
     public Integer getRpm() {
     	return getInteger(KEY_RPM);
@@ -414,8 +417,9 @@ public class OnVehicleData extends RPCNotification {
      * 7.0, please see fuelRange.
      */
     @Deprecated
-    public void setFuelLevel(Double fuelLevel) {
+    public OnVehicleData setFuelLevel( Double fuelLevel) {
         setParameters(KEY_FUEL_LEVEL, fuelLevel);
+        return this;
     }
 
     /**
@@ -430,29 +434,33 @@ public class OnVehicleData extends RPCNotification {
     	return SdlDataTypeConverter.objectToDouble(object);
     }
     @Deprecated
-    public void setFuelLevelState(ComponentVolumeStatus fuelLevelState) {
+    public OnVehicleData setFuelLevelState( ComponentVolumeStatus fuelLevelState) {
         setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
+        return this;
     }
     @Deprecated
     public ComponentVolumeStatus getFuelLevelState() {
         return (ComponentVolumeStatus) getObject(ComponentVolumeStatus.class, KEY_FUEL_LEVEL_STATE);
     }
-    public void setInstantFuelConsumption(Double instantFuelConsumption) {
+    public OnVehicleData setInstantFuelConsumption( Double instantFuelConsumption) {
         setParameters(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
+        return this;
     }
     public Double getInstantFuelConsumption() {
     	Object object = getParameters(KEY_INSTANT_FUEL_CONSUMPTION);
     	return SdlDataTypeConverter.objectToDouble(object);
     }
-    public void setExternalTemperature(Double externalTemperature) {
+    public OnVehicleData setExternalTemperature( Double externalTemperature) {
         setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
+        return this;
     }
     public Double getExternalTemperature() {
     	Object object = getParameters(KEY_EXTERNAL_TEMPERATURE);
     	return SdlDataTypeConverter.objectToDouble(object);
     }
-    public void setVin(String vin) {
+    public OnVehicleData setVin( String vin) {
         setParameters(KEY_VIN, vin);
+        return this;
     }
     public String getVin() {
     	return getString(KEY_VIN);
@@ -465,8 +473,9 @@ public class OnVehicleData extends RPCNotification {
      * @deprecated in SmartDeviceLink 7.0.0
      */
     @Deprecated
-    public void setPrndl(PRNDL prndl) {
+    public OnVehicleData setPrndl( PRNDL prndl) {
         setParameters(KEY_PRNDL, prndl);
+        return this;
     }
 
     /**
@@ -485,117 +494,134 @@ public class OnVehicleData extends RPCNotification {
      *
      * @param tirePressure See TireStatus
      */
-    public void setTirePressure(TireStatus tirePressure) {
+    public OnVehicleData setTirePressure( TireStatus tirePressure) {
         setParameters(KEY_TIRE_PRESSURE, tirePressure);
+        return this;
     }
     @SuppressWarnings("unchecked")
     public TireStatus getTirePressure() {
         return (TireStatus) getObject(TireStatus.class, KEY_TIRE_PRESSURE);
     }
-    public void setOdometer(Integer odometer) {
+    public OnVehicleData setOdometer( Integer odometer) {
         setParameters(KEY_ODOMETER, odometer);
+        return this;
     }
     public Integer getOdometer() {
     	return getInteger(KEY_ODOMETER);
     }
-    public void setBeltStatus(BeltStatus beltStatus) {
+    public OnVehicleData setBeltStatus( BeltStatus beltStatus) {
         setParameters(KEY_BELT_STATUS, beltStatus);
+        return this;
     }
     @SuppressWarnings("unchecked")
     public BeltStatus getBeltStatus() {
         return (BeltStatus) getObject(BeltStatus.class, KEY_BELT_STATUS);
     }
-    public void setBodyInformation(BodyInformation bodyInformation) {
+    public OnVehicleData setBodyInformation( BodyInformation bodyInformation) {
         setParameters(KEY_BODY_INFORMATION, bodyInformation);
+        return this;
     }
     @SuppressWarnings("unchecked")
     public BodyInformation getBodyInformation() {
         return (BodyInformation) getObject(BodyInformation.class, KEY_BODY_INFORMATION);
     }
-    public void setDeviceStatus(DeviceStatus deviceStatus) {
+    public OnVehicleData setDeviceStatus( DeviceStatus deviceStatus) {
         setParameters(KEY_DEVICE_STATUS, deviceStatus);
+        return this;
     }
     @SuppressWarnings("unchecked")
     public DeviceStatus getDeviceStatus() {
         return (DeviceStatus) getObject(DeviceStatus.class, KEY_DEVICE_STATUS);
     }
-    public void setDriverBraking(VehicleDataEventStatus driverBraking) {
+    public OnVehicleData setDriverBraking( VehicleDataEventStatus driverBraking) {
         setParameters(KEY_DRIVER_BRAKING, driverBraking);
+        return this;
     }
     public VehicleDataEventStatus getDriverBraking() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_DRIVER_BRAKING);
     }
-    public void setWiperStatus(WiperStatus wiperStatus) {
+    public OnVehicleData setWiperStatus( WiperStatus wiperStatus) {
         setParameters(KEY_WIPER_STATUS, wiperStatus);
+        return this;
     }
     public WiperStatus getWiperStatus() {
         return (WiperStatus) getObject(WiperStatus.class, KEY_WIPER_STATUS);
     }
-    public void setHeadLampStatus(HeadLampStatus headLampStatus) {
+    public OnVehicleData setHeadLampStatus( HeadLampStatus headLampStatus) {
         setParameters(KEY_HEAD_LAMP_STATUS, headLampStatus);
+        return this;
     }
     @SuppressWarnings("unchecked")
     public HeadLampStatus getHeadLampStatus() {
         return (HeadLampStatus) getObject(HeadLampStatus.class, KEY_HEAD_LAMP_STATUS);
     }
-    public void setEngineTorque(Double engineTorque) {
+    public OnVehicleData setEngineTorque( Double engineTorque) {
         setParameters(KEY_ENGINE_TORQUE, engineTorque);
+        return this;
     }
     public Double getEngineTorque() {
         Object object = getParameters(KEY_ENGINE_TORQUE);
         return SdlDataTypeConverter.objectToDouble(object);
     }
-    public void setEngineOilLife(Float engineOilLife) {
+    public OnVehicleData setEngineOilLife( Float engineOilLife) {
         setParameters(KEY_ENGINE_OIL_LIFE, engineOilLife);
+        return this;
     }
     public Float getEngineOilLife() {
         Object object = getParameters(KEY_ENGINE_OIL_LIFE);
         return SdlDataTypeConverter.objectToFloat(object);
     }
-    public void setAccPedalPosition(Double accPedalPosition) {
+    public OnVehicleData setAccPedalPosition( Double accPedalPosition) {
         setParameters(KEY_ACC_PEDAL_POSITION, accPedalPosition);
+        return this;
     }
     public Double getAccPedalPosition() {
     	Object object = getParameters(KEY_ACC_PEDAL_POSITION);
     	return SdlDataTypeConverter.objectToDouble(object);
     }
-    public void setSteeringWheelAngle(Double steeringWheelAngle) {
+    public OnVehicleData setSteeringWheelAngle( Double steeringWheelAngle) {
         setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
+        return this;
     }
     public Double getSteeringWheelAngle() {
     	Object object = getParameters(KEY_STEERING_WHEEL_ANGLE);
     	return SdlDataTypeConverter.objectToDouble(object);
     }
-    public void setECallInfo(ECallInfo eCallInfo) {
+    public OnVehicleData setECallInfo( ECallInfo eCallInfo) {
         setParameters(KEY_E_CALL_INFO, eCallInfo);
+        return this;
     }
     @SuppressWarnings("unchecked")
     public ECallInfo getECallInfo() {
         return (ECallInfo) getObject(ECallInfo.class, KEY_E_CALL_INFO);
     }
-    public void setAirbagStatus(AirbagStatus airbagStatus) {
+    public OnVehicleData setAirbagStatus( AirbagStatus airbagStatus) {
         setParameters(KEY_AIRBAG_STATUS, airbagStatus);
+        return this;
     }
     @SuppressWarnings("unchecked")
     public AirbagStatus getAirbagStatus() {
         return (AirbagStatus) getObject(AirbagStatus.class, KEY_AIRBAG_STATUS);
     }
-    public void setEmergencyEvent(EmergencyEvent emergencyEvent) {
+    public OnVehicleData setEmergencyEvent( EmergencyEvent emergencyEvent) {
         setParameters(KEY_EMERGENCY_EVENT, emergencyEvent);
+        return this;
     }
     @SuppressWarnings("unchecked")
     public EmergencyEvent getEmergencyEvent() {
         return (EmergencyEvent) getObject(EmergencyEvent.class, KEY_EMERGENCY_EVENT);
     }
-    public void setClusterModeStatus(ClusterModeStatus clusterModeStatus) {
+    public OnVehicleData setClusterModeStatus( ClusterModeStatus clusterModeStatus) {
         setParameters(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
+        return this;
     }
     @SuppressWarnings("unchecked")
     public ClusterModeStatus getClusterModeStatus() {
         return (ClusterModeStatus) getObject(ClusterModeStatus.class, KEY_CLUSTER_MODE_STATUS);
     }
-    public void setMyKey(MyKey myKey) {
+    public OnVehicleData setMyKey( MyKey myKey) {
         setParameters(KEY_MY_KEY, myKey);
+        return this;
     }
     @SuppressWarnings("unchecked")
     public MyKey getMyKey() {
@@ -610,8 +636,9 @@ public class OnVehicleData extends RPCNotification {
      * {"array_min_size": 0, "array_max_size": 100}
      * @since SmartDeviceLink 5.0.0
      */
-    public void setFuelRange(List<FuelRange> fuelRange) {
+    public OnVehicleData setFuelRange( List<FuelRange> fuelRange) {
         setParameters(KEY_FUEL_RANGE, fuelRange);
+        return this;
     }
 
     /**
@@ -632,8 +659,9 @@ public class OnVehicleData extends RPCNotification {
      * Sets turnSignal
      * @param turnSignal
      */
-    public void setTurnSignal(TurnSignal turnSignal) {
+    public OnVehicleData setTurnSignal( TurnSignal turnSignal) {
         setParameters(KEY_TURN_SIGNAL, turnSignal);
+        return this;
     }
 
     /**
@@ -649,8 +677,9 @@ public class OnVehicleData extends RPCNotification {
      * Sets electronicParkBrakeStatus
      * @param electronicParkBrakeStatus
      */
-    public void setElectronicParkBrakeStatus(ElectronicParkBrakeStatus electronicParkBrakeStatus){
+    public OnVehicleData setElectronicParkBrakeStatus( ElectronicParkBrakeStatus electronicParkBrakeStatus) {
         setParameters(KEY_ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
+        return this;
     }
 
     /**
@@ -665,8 +694,9 @@ public class OnVehicleData extends RPCNotification {
      * Sets a string value for the cloud app vehicle ID
      * @param cloudAppVehicleID a string value
      */
-    public void setCloudAppVehicleID(String cloudAppVehicleID){
+    public OnVehicleData setCloudAppVehicleID( String cloudAppVehicleID) {
         setParameters(KEY_CLOUD_APP_VEHICLE_ID, cloudAppVehicleID);
+        return this;
     }
 
     /**
@@ -682,8 +712,9 @@ public class OnVehicleData extends RPCNotification {
      * @param vehicleDataName a String value
      * @param vehicleDataState a VehicleDataResult value
      */
-    public void setOEMCustomVehicleData(String vehicleDataName, Object vehicleDataState){
+    public OnVehicleData setOEMCustomVehicleData( String vehicleDataName, Object vehicleDataState) {
         setParameters(vehicleDataName, vehicleDataState);
+        return this;
     }
 
     /**
@@ -700,8 +731,9 @@ public class OnVehicleData extends RPCNotification {
      * @param windowStatus See WindowStatus
      * @since SmartDeviceLink 7.0.0
      */
-    public void setWindowStatus(List<WindowStatus> windowStatus) {
+    public OnVehicleData setWindowStatus( List<WindowStatus> windowStatus) {
         setParameters(KEY_WINDOW_STATUS, windowStatus);
+        return this;
     }
 
     /**
@@ -731,8 +763,9 @@ public class OnVehicleData extends RPCNotification {
      * @param stabilityControlsStatus See StabilityControlsStatus
      * @since SmartDeviceLink 7.0.0
      */
-    public void setStabilityControlsStatus(StabilityControlsStatus stabilityControlsStatus) {
+    public OnVehicleData setStabilityControlsStatus( StabilityControlsStatus stabilityControlsStatus) {
         setParameters(KEY_STABILITY_CONTROLS_STATUS, stabilityControlsStatus);
+        return this;
     }
 
     /**
@@ -741,8 +774,9 @@ public class OnVehicleData extends RPCNotification {
      * @param handsOffSteering To indicate whether driver hands are off the steering wheel
      * @since SmartDeviceLink 7.0.0
      */
-    public void setHandsOffSteering(Boolean handsOffSteering) {
+    public OnVehicleData setHandsOffSteering( Boolean handsOffSteering) {
         setParameters(KEY_HANDS_OFF_STEERING, handsOffSteering);
+        return this;
     }
 
     /**
@@ -760,8 +794,9 @@ public class OnVehicleData extends RPCNotification {
      * @param gearStatus See GearStatus
      * @since SmartDeviceLink 7.0.0
      */
-    public void setGearStatus(GearStatus gearStatus) {
+    public OnVehicleData setGearStatus( GearStatus gearStatus) {
         setParameters(KEY_GEAR_STATUS, gearStatus);
+        return this;
     }
 
     /**
