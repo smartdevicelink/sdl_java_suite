@@ -65,8 +65,6 @@ public class TransportConstants {
 	public static final String FORCE_TRANSPORT_CONNECTED					= "force_connect"; //This is legacy, do not refactor this. 
 	public static final String ROUTER_SERVICE_VALIDATED						= "router_service_validated"; 
 
-	@Deprecated
-	public static final String REPLY_TO_INTENT_EXTRA 						= "ReplyAddress";
 	public static final String CONNECT_AS_CLIENT_BOOLEAN_EXTRA				= "connectAsClient";
 	public static final String PACKAGE_NAME_STRING							= "package.name";
 	public static final String APP_ID_EXTRA									= "app.id";//Sent as a Long. This is no longer used
