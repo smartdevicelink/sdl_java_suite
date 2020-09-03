@@ -190,15 +190,6 @@ public class SdlProtocolBase {
         return mtu;
     }
 
-    public void resetSession (){
-        synchronized (TRANSPORT_MANAGER_LOCK) {
-            if (transportManager == null) {
-                throw new IllegalStateException("Attempting to reset session without setting a transport manager.");
-            }
-            transportManager.resetSession();
-        }
-    }
-
     public boolean isConnected(){
         synchronized (TRANSPORT_MANAGER_LOCK) {
             return transportManager != null && transportManager.isConnected(null, null);
