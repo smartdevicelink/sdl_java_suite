@@ -54,7 +54,7 @@ task generateSources {
         println "Generating BuildConfig.java ..."
         def srcFile = new File(outputDir, "BuildConfig.java")
         srcFile.parentFile.mkdirs()
-        File license = new File("$buildDir/../../LICENSE")
+        File license = new File("$buildDir/../../../LICENSE")
         if (license.exists()) {
             srcFile.write("/*\n")
             def lines = license.readLines()
