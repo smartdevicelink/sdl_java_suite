@@ -952,20 +952,10 @@ abstract class BaseLifecycleManager {
         }
 
         @Override
-        public void sendRPCRequest(RPCRequest message) {
-            BaseLifecycleManager.this.sendRPCMessagePrivate(message, false);
-        }
-
-        @Override
         public void sendRPC(RPCMessage message) {
             if (isConnected()) {
                 BaseLifecycleManager.this.sendRPCMessagePrivate(message, false);
             }
-        }
-
-        @Override
-        public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
-            BaseLifecycleManager.this.sendRPCs(rpcs, listener);
         }
 
         @Override

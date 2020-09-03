@@ -299,7 +299,7 @@ abstract class BaseFileManager extends BaseSubManager {
 				}
 			}
 		};
-		internalInterface.sendRequests(requests, onMultipleRequestListener);
+		internalInterface.sendRPCs(requests, onMultipleRequestListener);
 	}
 
 	/**

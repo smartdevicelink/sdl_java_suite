@@ -154,7 +154,7 @@ class PreloadChoicesOperation extends Task {
 		}
 
 		if (internalInterface.get() != null){
-			internalInterface.get().sendRequests(choiceRPCs, new OnMultipleRequestListener() {
+			internalInterface.get().sendRPCs(choiceRPCs, new OnMultipleRequestListener() {
 				@Override
 				public void onUpdate(int remainingRequests) {
 

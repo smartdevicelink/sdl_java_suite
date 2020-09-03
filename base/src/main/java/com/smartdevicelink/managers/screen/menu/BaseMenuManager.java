@@ -1299,7 +1299,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 			return;
 		}
 
-		internalInterface.sendRequests(deleteCommands, new OnMultipleRequestListener() {
+		internalInterface.sendRPCs(deleteCommands, new OnMultipleRequestListener() {
 			@Override
 			public void onUpdate(int remainingRequests) {
 

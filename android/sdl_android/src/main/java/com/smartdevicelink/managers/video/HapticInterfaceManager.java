@@ -65,7 +65,7 @@ class HapticInterfaceManager extends BaseHapticInterfaceManager {
             ISdl proxy = proxyHolder.get();
             SendHapticData msg = new SendHapticData();
             msg.setHapticRectData(userHapticData);
-            proxy.sendRPCRequest(msg);
+            proxy.sendRPC(msg);
         }
     }
 
