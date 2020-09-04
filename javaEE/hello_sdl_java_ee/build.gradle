@@ -20,7 +20,7 @@ configurations {
 dependencies {
     extraLibs fileTree(dir: 'libs', include: ['*.jar'])
     //testCompile group: 'junit', name: 'junit', version: '4.12'
-    extraLibs project(path: ':sdl_java_ee')
+    extraLibs project(path: ':javaSE')
     configurations.implementation.extendsFrom(configurations.extraLibs)
 
 }

@@ -1,2 +1,1 @@
-include ':javaSE', ':hello_sdl_java', ':sdl_java_se'
-project (":sdl_java_se").projectDir = new File("/javaSE/")
+include ':javaSE', ':hello_sdl_java'
