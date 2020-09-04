@@ -73,9 +73,6 @@ build/
 /.idea/libraries
 /captures
 .externalNativeBuild
-gradle/
-gradlew
-gradlew.bat
 
 ##############################
 # Python
