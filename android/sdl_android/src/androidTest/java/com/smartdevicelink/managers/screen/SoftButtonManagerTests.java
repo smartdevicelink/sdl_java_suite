@@ -90,7 +90,7 @@ public class SoftButtonManagerTests {
         doAnswer(onHMIStatusAnswer).when(internalInterface).addOnRPCNotificationListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCNotificationListener.class));
 
 
-        // When internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onSystemCapabilityListener) is called
+        // When internalInterface.getSystemCapabilityManager().addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onSystemCapabilityListener) is called
         // inside SoftButtonManager, respond with a fake response to let the SoftButtonManager continue working.
         Answer<Void> onSystemCapabilityAnswer = new Answer<Void>() {
             @Override
