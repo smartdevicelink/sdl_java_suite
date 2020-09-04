@@ -222,14 +222,6 @@ public class TransportManager extends TransportManagerBase{
         return config;
     }
 
-    @Deprecated
-    public ComponentName getRouterService(){
-        if(transport != null) {
-            return transport.getRouterService();
-        }
-        return null;
-    }
-
     @Override
     public void sendPacket(SdlPacket packet){
         if(transport !=null){
@@ -247,11 +239,6 @@ public class TransportManager extends TransportManagerBase{
         }else if(legacyBluetoothTransport != null){
             DebugTool.logWarning(TAG, "Session requested for non-bluetooth transport while in legacy mode");
         }
-    }
-
-    @Deprecated
-    public void requestSecondaryTransportConnection(byte sessionId, Bundle params){
-        transport.requestSecondaryTransportConnection(sessionId, (Bundle)params);
     }
 
     @Override
