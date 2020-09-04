@@ -31,7 +31,9 @@
  */
 package com.smartdevicelink.managers;
 
+import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.transport.utl.TransportRecord;
@@ -47,6 +49,7 @@ import java.util.List;
  *
  * 1. <br>
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public abstract class BaseSubManager {
 
 	// states - if this gets more complicated we can move elsewhere
@@ -65,6 +68,7 @@ public abstract class BaseSubManager {
 	 * Starts up a BaseSubManager, and calls provided callback once BaseSubManager is done setting up or failed setup.
 	 * @param listener CompletionListener that is called once the BaseSubManager's state is READY, LIMITED, or ERROR
 	 */
+	@CallSuper
 	public void start(CompletionListener listener){
 		this.completionListener = listener;
 		int state = getState();
@@ -77,6 +81,7 @@ public abstract class BaseSubManager {
 	/**
 	 * <p>Called when manager is being torn down</p>
 	 */
+	@CallSuper
 	public void dispose(){
 		transitionToState(SHUTDOWN);
 	}

@@ -36,6 +36,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
 import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.proxy.interfaces.ISdl;
@@ -71,6 +72,7 @@ public class FileManager extends BaseFileManager {
 	 * @param context an instances of Context interface to global information for application
 	 * @param fileManagerConfig an instance of the FileManagerConfig gives access to artworkRetryCount and fileRetryCount to let us if those file types can be re-upload if they fail
 	 */
+	@RestrictTo(RestrictTo.Scope.LIBRARY)
 	public FileManager(ISdl internalInterface, Context context, FileManagerConfig fileManagerConfig) {
 		// setup
 		super(internalInterface, fileManagerConfig);

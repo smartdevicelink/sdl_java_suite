@@ -35,7 +35,9 @@ package com.smartdevicelink.protocol.heartbeat;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.annotation.RestrictTo;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class HeartbeatMonitor implements IHeartbeatMonitor {
 
 	public static final int HEARTBEAT_INTERVAL = 5000;

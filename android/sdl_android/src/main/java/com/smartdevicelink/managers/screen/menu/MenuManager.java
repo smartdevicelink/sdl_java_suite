@@ -32,6 +32,8 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
+import androidx.annotation.RestrictTo;
+
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 
@@ -42,6 +44,7 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
  *
  * The MenuManager takes MenuCell objects and creates and sends all necessary RPCs to build out a menu
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class MenuManager extends BaseMenuManager {
 
 	public MenuManager(ISdl internalInterface, FileManager fileManager) {
