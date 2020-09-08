@@ -33,6 +33,7 @@
 package com.smartdevicelink.protocol;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
@@ -45,6 +46,7 @@ import java.util.Collections;
 
 
 @SuppressWarnings("WeakerAccess")
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class SdlProtocol extends SdlProtocolBase {
     private static final String TAG ="SdlProtocol";
 

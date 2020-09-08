@@ -74,7 +74,7 @@ class DeleteChoicesOperation extends Task {
 		if (deleteChoices.size() > 0) {
 
 			if (internalInterface.get() != null) {
-				internalInterface.get().sendRequests(deleteChoices, new OnMultipleRequestListener() {
+				internalInterface.get().sendRPCs(deleteChoices, new OnMultipleRequestListener() {
 					@Override
 					public void onUpdate(int remainingRequests) {
 					}
