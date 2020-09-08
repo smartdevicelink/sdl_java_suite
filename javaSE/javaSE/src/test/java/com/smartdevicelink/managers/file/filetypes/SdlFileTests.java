@@ -70,7 +70,7 @@ public class SdlFileTests {
         assertEquals(sdlFile.getType(), TestValues.GENERAL_FILETYPE);
         sdlFile.setPersistent(TestValues.GENERAL_BOOLEAN);
         assertEquals(sdlFile.isPersistent(), TestValues.GENERAL_BOOLEAN);
-        assertFalse(true);
+        assertFalse(sdlFile.getOverwrite());
 
         // Case 3 (Setting URI)
         sdlFile = new SdlFile();
