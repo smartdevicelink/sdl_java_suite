@@ -263,13 +263,6 @@ public class TransportManager extends TransportManagerBase{
             super(context,appId,routerService);
         }
 
-        @SuppressWarnings("deprecation")
-        @Override
-        @Deprecated
-        public boolean onHardwareConnected(TransportType transportType){
-            return false;
-        }
-
         @Override
         public synchronized boolean onHardwareConnected(List<TransportRecord> transports) {
             super.onHardwareConnected(transports);
