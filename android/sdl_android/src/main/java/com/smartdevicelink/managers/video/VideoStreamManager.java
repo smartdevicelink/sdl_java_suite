@@ -40,8 +40,6 @@ import android.view.Display;
 import android.view.InputDevice;
 import android.view.MotionEvent;
 
-import androidx.annotation.RestrictTo;
-
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.managers.BaseSubManager;
@@ -123,10 +121,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 					stateMachine.transitionToState(StreamingStateMachine.ERROR);
 					return;
 				}
-				VideoStreamingCapability capability = null;
-				if (internalInterface.getSystemCapabilityManager() != null) {
-					capability = (VideoStreamingCapability) internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.VIDEO_STREAMING, null, false);
-				}
+				VideoStreamingCapability capability = (VideoStreamingCapability) internalInterface.getCapability(SystemCapabilityType.VIDEO_STREAMING);
 				if(capability != null && Boolean.TRUE.equals(capability.getIsHapticSpatialDataSupported())){
 					hapticManager = new HapticInterfaceManager(internalInterface);
 				}
@@ -193,7 +188,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	};
 
 	// MANAGER APIs
-	@RestrictTo(RestrictTo.Scope.LIBRARY)
 	public VideoStreamManager(ISdl internalInterface){
 		super(internalInterface);
 
@@ -238,33 +232,28 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
 	private void getVideoStreamingParams(){
 		if(internalInterface.getProtocolVersion().getMajor() >= 5) {
-			if (internalInterface.getSystemCapabilityManager() != null) {
-				internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.VIDEO_STREAMING, new OnSystemCapabilityListener() {
-					@Override
-					public void onCapabilityRetrieved(Object capability) {
-						VideoStreamingParameters params = new VideoStreamingParameters();
-						params.update((VideoStreamingCapability) capability, vehicleMake);    //Streaming parameters are ready time to stream
-						VideoStreamManager.this.parameters = params;
+			internalInterface.getCapability(SystemCapabilityType.VIDEO_STREAMING, new OnSystemCapabilityListener() {
+				@Override
+				public void onCapabilityRetrieved(Object capability) {
+					VideoStreamingParameters params = new VideoStreamingParameters();
+					params.update((VideoStreamingCapability)capability, vehicleMake);	//Streaming parameters are ready time to stream
+					VideoStreamManager.this.parameters = params;
 
-						checkState();
+					checkState();
 
-					}
+				}
 
-					@Override
-					public void onError(String info) {
-						DebugTool.logError(TAG, "Error retrieving video streaming capability: " + info);
-						stateMachine.transitionToState(StreamingStateMachine.ERROR);
-						transitionToState(ERROR);
-					}
-				}, false);
-			}
+				@Override
+				public void onError(String info) {
+					DebugTool.logError(TAG, "Error retrieving video streaming capability: " + info);
+					stateMachine.transitionToState(StreamingStateMachine.ERROR);
+					transitionToState(ERROR);
+				}
+			});
 		}else{
 			//We just use default video streaming params
 			VideoStreamingParameters params = new VideoStreamingParameters();
-			DisplayCapabilities dispCap = null;
-			if (internalInterface.getSystemCapabilityManager() != null) {
-				dispCap = (DisplayCapabilities) internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.DISPLAY, null, false);
-			}
+			DisplayCapabilities dispCap = (DisplayCapabilities)internalInterface.getCapability(SystemCapabilityType.DISPLAY);
 			if(dispCap !=null){
 				params.setResolution(dispCap.getScreenParams().getImageResolution());
 			}
@@ -288,37 +277,31 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		this.context = new WeakReference<>(context);
 		this.remoteDisplayClass = remoteDisplayClass;
 		int majorProtocolVersion = internalInterface.getProtocolVersion().getMajor();
-		boolean isCapabilitySupported = internalInterface.getSystemCapabilityManager() != null && internalInterface.getSystemCapabilityManager().isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING);
-		if(majorProtocolVersion >= 5 && !isCapabilitySupported){
+		if(majorProtocolVersion >= 5 && !internalInterface.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
 			DebugTool.logError(TAG, "Video streaming not supported on this module");
 			stateMachine.transitionToState(StreamingStateMachine.ERROR);
 			return;
 		}
 		if(parameters == null){
 			if(majorProtocolVersion >= 5) {
-				if (internalInterface.getSystemCapabilityManager() != null) {
-					internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.VIDEO_STREAMING, new OnSystemCapabilityListener() {
-						@Override
-						public void onCapabilityRetrieved(Object capability) {
-							VideoStreamingParameters params = new VideoStreamingParameters();
-							params.update((VideoStreamingCapability) capability, vehicleMake);    //Streaming parameters are ready time to stream
-							startStreaming(params, encrypted);
-						}
+				internalInterface.getCapability(SystemCapabilityType.VIDEO_STREAMING, new OnSystemCapabilityListener() {
+					@Override
+					public void onCapabilityRetrieved(Object capability) {
+						VideoStreamingParameters params = new VideoStreamingParameters();
+						params.update((VideoStreamingCapability)capability, vehicleMake);	//Streaming parameters are ready time to stream
+						startStreaming(params, encrypted);
+					}
 
-						@Override
-						public void onError(String info) {
-							stateMachine.transitionToState(StreamingStateMachine.ERROR);
-							DebugTool.logError(TAG, "Error retrieving video streaming capability: " + info);
-						}
-					}, false);
-				}
+					@Override
+					public void onError(String info) {
+						stateMachine.transitionToState(StreamingStateMachine.ERROR);
+						DebugTool.logError(TAG, "Error retrieving video streaming capability: " + info);
+					}
+				});
 			}else{
 				//We just use default video streaming params
 				VideoStreamingParameters params = new VideoStreamingParameters();
-				DisplayCapabilities dispCap = null;
-				if (internalInterface.getSystemCapabilityManager() != null) {
-					dispCap = (DisplayCapabilities) internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.DISPLAY, null, false);
-				}
+				DisplayCapabilities dispCap = (DisplayCapabilities)internalInterface.getCapability(SystemCapabilityType.DISPLAY);
 				if(dispCap !=null){
 					params.setResolution(dispCap.getScreenParams().getImageResolution());
 				}
@@ -395,7 +378,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 * Stops streaming, ends video streaming service and removes service listeners.
 	 */
 	@Override
-	@RestrictTo(RestrictTo.Scope.LIBRARY)
 	public void dispose(){
 		stopStreaming();
 
@@ -483,20 +465,14 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 					//Get touch scalars
 					ImageResolution resolution = null;
 					if(internalInterface.getProtocolVersion().getMajor() >= 5){ //At this point we should already have the capability
-						VideoStreamingCapability capability = null;
-						if (internalInterface.getSystemCapabilityManager() != null) {
-							capability = (VideoStreamingCapability) internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.VIDEO_STREAMING, null, false);
-						}
+						VideoStreamingCapability capability = (VideoStreamingCapability) internalInterface.getCapability(SystemCapabilityType.VIDEO_STREAMING);
 						if(capability != null){
 							resolution = capability.getPreferredResolution();
 						}
 					}
 
 					if(resolution == null){ //Either the protocol version is too low to access video streaming caps, or they were null
-						DisplayCapabilities dispCap = null;
-						if (internalInterface.getSystemCapabilityManager() != null) {
-							dispCap = (DisplayCapabilities) internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.DISPLAY, null, false);
-						}
+						DisplayCapabilities dispCap = (DisplayCapabilities) internalInterface.getCapability(SystemCapabilityType.DISPLAY);
 						if (dispCap != null) {
 							resolution = (dispCap.getScreenParams().getImageResolution());
 						}

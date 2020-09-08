@@ -960,7 +960,15 @@ public class SystemCapabilityManagerTests {
 		public void startVideoService(VideoStreamingParameters parameters, boolean encrypted) {	}
 
 		@Override
+		public void sendRPCRequest(RPCRequest message) {}
+
+		@Override
 		public void sendRPC(RPCMessage message) {}
+
+		@Override
+		public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
+
+		}
 
 		@Override
 		public void sendRPCs(List<? extends RPCMessage> rpcs, OnMultipleRequestListener listener) {
@@ -1013,9 +1021,20 @@ public class SystemCapabilityManagerTests {
 			return false;
 		}
 
+		@Override
+		public Object getCapability(SystemCapabilityType systemCapabilityType){return null;}
+
+		@Override
+		public void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener) {
+		}
 
 		@Override
 		public RegisterAppInterfaceResponse getRegisterAppInterfaceResponse() {
+			return null;
+		}
+
+		@Override
+		public Object getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener, boolean forceUpdate) {
 			return null;
 		}
 
@@ -1029,9 +1048,36 @@ public class SystemCapabilityManagerTests {
 			return new Version(1,0,0);
 		}
 
+
+		@Override
+		public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType){
+			return false;
+		}
+
+		@Override
+		public void addOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) { }
+
+		@Override
+		public boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) { return false; }
+
 		@Override
 		public boolean isTransportForServiceAvailable(SessionType serviceType) {
 			return false;
+		}
+
+		@Override
+		public void startAudioService(boolean isEncrypted, AudioStreamingCodec codec,
+									  AudioStreamingParams params) {}
+
+		@Override
+		public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters){
+			return null;
+		}
+
+		@Override
+		public IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec,
+													 AudioStreamingParams params) {
+			return null;
 		}
 
 		@Override
@@ -1042,11 +1088,6 @@ public class SystemCapabilityManagerTests {
 
 		@Override
 		public Taskmaster getTaskmaster() {
-			return null;
-		}
-
-		@Override
-		public SystemCapabilityManager getSystemCapabilityManager() {
 			return null;
 		}
 	}

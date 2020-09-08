@@ -30,8 +30,6 @@
 
 package com.smartdevicelink.streaming.video;
 
-import androidx.annotation.RestrictTo;
-
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -62,7 +60,6 @@ import java.util.concurrent.LinkedBlockingQueue;
  *
  * @author Sho Amano
  */
-@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class RTPH264Packetizer extends AbstractPacketizer implements IVideoStreamListener, Runnable {
 
 	// Approximate size of data that mOutputQueue can hold in bytes.

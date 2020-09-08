@@ -19,7 +19,7 @@ configurations {
 }
 dependencies {
     extraLibs fileTree(dir: 'libs', include: ['*.jar'])
-    extraLibs project(path: ':javaSE')
+    extraLibs project(path: ':sdl_java_se')
     configurations.implementation.extendsFrom(configurations.extraLibs)
 }
 jar {

@@ -31,9 +31,7 @@
  */
 package com.smartdevicelink.protocol;
 
-import androidx.annotation.RestrictTo;
 
-@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class SdlPacket extends BaseSdlPacket {
 
     public SdlPacket(int version, boolean encryption, int frameType,

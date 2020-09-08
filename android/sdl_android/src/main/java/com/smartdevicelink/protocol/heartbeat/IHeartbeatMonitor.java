@@ -31,9 +31,7 @@
  */
 package com.smartdevicelink.protocol.heartbeat;
 
-import androidx.annotation.RestrictTo;
 
-@RestrictTo(RestrictTo.Scope.LIBRARY)
 public interface IHeartbeatMonitor {
     /**
      * Starts the monitor. If the monitor is already started, nothing happens.

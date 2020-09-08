@@ -248,7 +248,7 @@ public class FileManagerTests {
 		final ISdl internalInterface = mock(ISdl.class);
 
 		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
-		doAnswer(onListDeleteRequestSuccess).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
+		doAnswer(onListDeleteRequestSuccess).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
 
 		final List<String> fileNames = new ArrayList<>();
 		fileNames.add("Julian");
@@ -280,7 +280,7 @@ public class FileManagerTests {
 		final ISdl internalInterface = mock(ISdl.class);
 
 		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
-		doAnswer(onListDeleteRequestFail).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
+		doAnswer(onListDeleteRequestFail).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
 
 		final List<String> fileNames = new ArrayList<>();
 		fileNames.add("Julian");
@@ -403,7 +403,7 @@ public class FileManagerTests {
 		final ISdl internalInterface = mock(ISdl.class);
 
 		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
-		doAnswer(onSendRequestsFailOnError).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
+		doAnswer(onSendRequestsFailOnError).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
 
 		SdlFile validFile2 = new SdlFile();
 		validFile2.setName(TestValues.GENERAL_STRING + "2");
@@ -434,7 +434,7 @@ public class FileManagerTests {
 
 			}
 		});
-		verify(internalInterface, times(5)).sendRPCs(any(List.class),any(OnMultipleRequestListener.class));
+		verify(internalInterface, times(5)).sendRequests(any(List.class),any(OnMultipleRequestListener.class));
 	}
 
 	/**
@@ -552,7 +552,7 @@ public class FileManagerTests {
 		ISdl internalInterface = mock(ISdl.class);
 
 		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
-		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
+		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
 
 		FileManagerConfig fileManagerConfig = new FileManagerConfig();
 		final FileManager fileManager = new FileManager(internalInterface, mTestContext, fileManagerConfig);
@@ -573,7 +573,7 @@ public class FileManagerTests {
 				});
 			}
 		});
-		verify(internalInterface, times(0)).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
+		verify(internalInterface, times(0)).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
 	}
 
 	/**
@@ -584,7 +584,7 @@ public class FileManagerTests {
 		ISdl internalInterface = mock(ISdl.class);
 
 		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
-		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
+		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
 
 		FileManagerConfig fileManagerConfig = new FileManagerConfig();
 		final FileManager fileManager = new FileManager(internalInterface, mTestContext, fileManagerConfig);
@@ -606,7 +606,7 @@ public class FileManagerTests {
 				});
 			}
 		});
-		verify(internalInterface, times(1)).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
+		verify(internalInterface, times(1)).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
 	}
 
 	/**
@@ -702,7 +702,7 @@ public class FileManagerTests {
 		ISdl internalInterface = mock(ISdl.class);
 
 		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
-		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
+		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
 
 		FileManagerConfig fileManagerConfig = new FileManagerConfig();
 
@@ -739,7 +739,7 @@ public class FileManagerTests {
 		ISdl internalInterface = mock(ISdl.class);
 
 		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
-		doAnswer(onSendRequestsFailPartialOnError).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
+		doAnswer(onSendRequestsFailPartialOnError).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
 
 		SdlFile validFile2 = new SdlFile();
 		validFile2.setName(TestValues.GENERAL_STRING + "2");
@@ -788,7 +788,7 @@ public class FileManagerTests {
 		ISdl internalInterface = mock(ISdl.class);
 
 		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
-		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
+		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
 
 		FileManagerConfig fileManagerConfig = new FileManagerConfig();
 		final FileManager fileManager = new FileManager(internalInterface, mTestContext, fileManagerConfig);
@@ -908,7 +908,7 @@ public class FileManagerTests {
 		final ISdl internalInterface = mock(ISdl.class);
 
 		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
-		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
+		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
 
 		final SdlFile validFile2 = new SdlFile();
 		validFile2.setName(TestValues.GENERAL_STRING + "2");
@@ -944,7 +944,7 @@ public class FileManagerTests {
 
 			}
 		});
-		verify(internalInterface, times(1)).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
+		verify(internalInterface, times(1)).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
 	}
 
 	/**

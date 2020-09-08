@@ -73,7 +73,7 @@ public class SdlService {
 
     private static final String TEST_COMMAND_NAME 		= "Test Command";
 
-    private static final String IMAGE_DIR =             "hello_sdl_java/assets/images/";
+    private static final String IMAGE_DIR =             "assets/images/";
 
     // variable to create and call functions of the SyncProxy
     private SdlManager sdlManager = null;

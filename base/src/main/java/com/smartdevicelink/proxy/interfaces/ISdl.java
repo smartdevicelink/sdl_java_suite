@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 
 import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
-import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
@@ -95,16 +94,56 @@ public interface ISdl {
     void startVideoService(VideoStreamingParameters parameters, boolean encrypted);
 
     /**
+     * Starts the video streaming service
+     * @param isEncrypted flag to start this service with encryption or not
+     * @param parameters desired video streaming params for this sevice to be started with
+     */
+    @Deprecated
+    IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters);
+
+    /**
+     * Starts the Audio streaming service
+     * @param encrypted flag to start this service with encryption or not
+     */
+    @Deprecated
+    void startAudioService(boolean encrypted, AudioStreamingCodec codec, AudioStreamingParams params);
+
+    /**
      * Starts the Audio streaming service
      * @param encrypted flag to start this service with encryption or not
      */
     void startAudioService(boolean encrypted);
 
     /**
+     * Start Audio Stream and return IAudioStreamListener
+     * @param isEncrypted whether or not the audio stream should be encrypted
+     * @param codec the codec that should be used for the audio stream
+     * @param params specific options and settings associated with the audio stream
+     * @return IAudioStreamListener, an interface that allows the writing of audio data
+     */
+    @Deprecated
+    IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec, AudioStreamingParams params);
+
+    /**
+     * Pass an RPC message through the proxy to be sent to the connected module
+     * @param message RPCRequest that should be sent to the module
+     */
+    @Deprecated
+    void sendRPCRequest(RPCRequest message);
+
+    /**
      * Pass an RPC message through the proxy to be sent to the connected module
      * @param message RPCMessage that should be sent to the module
      */
     void sendRPC(RPCMessage message);
+
+    /**
+     * Pass a list of RPC requests through the proxy to be sent to core
+     * @param rpcs List of RPC requests
+     * @param listener OnMultipleRequestListener that is called between requests and after all are processed
+     */
+    @Deprecated
+    void sendRequests(List<? extends RPCRequest> rpcs, final OnMultipleRequestListener listener);
 
     /**
      * Pass a list of RPC messages through the proxy to be sent to core
@@ -169,10 +208,63 @@ public interface ISdl {
     boolean removeOnRPCListener(FunctionID responseId, OnRPCListener listener);
 
     /**
+     * Get SystemCapability Object
+     * @param systemCapabilityType a system capability type that should be retrieved
+     * @return the system capability provided if available, null if not
+     * @deprecated use {@link #getCapability(SystemCapabilityType, OnSystemCapabilityListener, boolean)} instead.
+     */
+    @Deprecated
+    Object getCapability(SystemCapabilityType systemCapabilityType);
+
+    /**
+     * Get Capability
+     * @param systemCapabilityType a system capability type that should be retrieved
+     * @param scListener listener that will be called when the system capability is retrieved. If already cached, it
+     *                   will be called immediately
+     * @deprecated use {@link #getCapability(SystemCapabilityType, OnSystemCapabilityListener, boolean)} instead.
+     */
+    @Deprecated
+    void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener);
+
+    /** Gets the capability object that corresponds to the supplied capability type by returning the currently cached value immediately (or null) as well as calling the listener immediately with the cached value, if available. If not available, the listener will retrieve a new value and return that when the head unit responds.
+     * <strong>If capability is not cached, the method will return null and trigger the supplied listener when the capability becomes available</strong>
+     * @param systemCapabilityType type of capability desired
+     * @param scListener callback to execute upon retrieving capability
+     * @param forceUpdate flag to force getting a new fresh copy of the capability from the head unit even if it is cached
+     * @return desired capability if it is cached in the manager, otherwise returns a null object
+     */
+    @Deprecated
+    Object getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener, boolean forceUpdate);
+
+    /**
      * Get RegisterAppInterfaceResponse
      * @return the RegisterAppInterfaceResponse if available, null if not
      */
     RegisterAppInterfaceResponse getRegisterAppInterfaceResponse();
+
+    /**
+     * Check if capability is supported
+     * @param systemCapabilityType a system capability type that should be checked for support
+     * @return Boolean whether or not the supplied capability type is supported on the connected module
+     */
+    @Deprecated
+    boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType);
+
+    /**
+     * Add a listener to be called whenever a new capability is retrieved
+     * @param systemCapabilityType Type of capability desired
+     * @param listener callback to execute upon retrieving capability
+     */
+    @Deprecated
+    void addOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener);
+
+    /**
+     * Remove an OnSystemCapabilityListener that was previously added
+     * @param systemCapabilityType Type of capability
+     * @param listener the listener that should be removed
+     */
+    @Deprecated
+    boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener);
 
     /**
      * Check to see if a transport is available to start/use the supplied service.
@@ -204,6 +296,4 @@ public interface ISdl {
     void startRPCEncryption();
 
     Taskmaster getTaskmaster();
-
-    SystemCapabilityManager getSystemCapabilityManager();
 }

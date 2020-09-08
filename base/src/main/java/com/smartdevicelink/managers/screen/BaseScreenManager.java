@@ -33,7 +33,6 @@ package com.smartdevicelink.managers.screen;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
@@ -114,7 +113,6 @@ abstract class BaseScreenManager extends BaseSubManager {
 	}
 
 	@Override
-	@RestrictTo(RestrictTo.Scope.LIBRARY)
 	public void start(CompletionListener listener) {
 		super.start(listener);
 		this.softButtonManager.start(subManagerListener);
@@ -140,7 +138,6 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * <p>Called when manager is being torn down</p>
 	 */
 	@Override
-	@RestrictTo(RestrictTo.Scope.LIBRARY)
 	public void dispose() {
 		softButtonManager.dispose();
 		textAndGraphicManager.dispose();

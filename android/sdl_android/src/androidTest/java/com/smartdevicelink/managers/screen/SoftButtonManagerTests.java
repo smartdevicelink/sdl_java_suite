@@ -3,12 +3,12 @@ package com.smartdevicelink.managers.screen;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.smartdevicelink.managers.CompletionListener;
 import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
-import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
@@ -51,7 +51,6 @@ import static org.junit.Assert.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -90,7 +89,7 @@ public class SoftButtonManagerTests {
         doAnswer(onHMIStatusAnswer).when(internalInterface).addOnRPCNotificationListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCNotificationListener.class));
 
 
-        // When internalInterface.getSystemCapabilityManager().addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onSystemCapabilityListener) is called
+        // When internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onSystemCapabilityListener) is called
         // inside SoftButtonManager, respond with a fake response to let the SoftButtonManager continue working.
         Answer<Void> onSystemCapabilityAnswer = new Answer<Void>() {
             @Override
@@ -109,9 +108,8 @@ public class SoftButtonManagerTests {
                 return null;
             }
         };
-        SystemCapabilityManager systemCapabilityManager = mock(SystemCapabilityManager.class);
-        doAnswer(onSystemCapabilityAnswer).when(systemCapabilityManager).addOnSystemCapabilityListener(eq(SystemCapabilityType.DISPLAYS), any(OnSystemCapabilityListener.class));
-        doReturn(systemCapabilityManager).when(internalInterface).getSystemCapabilityManager();
+        doAnswer(onSystemCapabilityAnswer).when(internalInterface).addOnSystemCapabilityListener(eq(SystemCapabilityType.DISPLAYS), any(OnSystemCapabilityListener.class));
+
 
         // When fileManager.uploadArtworks() is called inside the SoftButtonManager, respond with
         // a fake onComplete() callback to let the SoftButtonManager continue working.

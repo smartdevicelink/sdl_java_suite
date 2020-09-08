@@ -190,7 +190,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
 		List<DeleteCommand> deleteVoiceCommands = deleteCommandsForVoiceCommands(oldVoiceCommands);
 		oldVoiceCommands.clear();
-		internalInterface.sendRPCs(deleteVoiceCommands, new OnMultipleRequestListener() {
+		internalInterface.sendRequests(deleteVoiceCommands, new OnMultipleRequestListener() {
 			@Override
 			public void onUpdate(int remainingRequests) {
 
@@ -223,7 +223,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
 		inProgressUpdate = addCommandsForVoiceCommands(voiceCommands);
 
-		internalInterface.sendRPCs(inProgressUpdate, new OnMultipleRequestListener() {
+		internalInterface.sendRequests(inProgressUpdate, new OnMultipleRequestListener() {
 			@Override
 			public void onUpdate(int remainingRequests) {
 

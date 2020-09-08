@@ -1,1 +1,2 @@
-include ':javaEE', ':hello_sdl_java_ee'
+include ':javaEE', ':hello_sdl_java_ee', ':sdl_java_ee'
+project (":sdl_java_ee").projectDir = new File("/javaEE/")

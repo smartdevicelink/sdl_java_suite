@@ -38,8 +38,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 
-import androidx.annotation.RestrictTo;
-
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -66,7 +64,6 @@ import java.lang.ref.WeakReference;
  * The LockscreenManager handles the logic of showing and hiding the lock screen. <br>
  *
  */
-@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class LockScreenManager extends BaseSubManager {
 
 	private static final String TAG = "LockScreenManager";

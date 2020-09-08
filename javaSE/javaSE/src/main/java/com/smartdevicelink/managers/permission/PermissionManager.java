@@ -32,7 +32,6 @@
 package com.smartdevicelink.managers.permission;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RestrictTo;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 
 /**
@@ -50,7 +49,6 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
      *
      * @param internalInterface an instance of the FileManager so that button graphics can be sent
      */
-    @RestrictTo(RestrictTo.Scope.LIBRARY)
     public PermissionManager(@NonNull ISdl internalInterface) {
         super(internalInterface);
     }

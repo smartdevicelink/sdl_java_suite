@@ -31,11 +31,8 @@
  */
 package com.smartdevicelink.protocol;
 
-import androidx.annotation.RestrictTo;
-
 import com.smartdevicelink.transport.utl.TransportRecord;
 
-@RestrictTo(RestrictTo.Scope.LIBRARY)
 public interface ISecondaryTransportListener {
 	void onConnectionSuccess(TransportRecord transportRecord);
 	void onConnectionFailure();

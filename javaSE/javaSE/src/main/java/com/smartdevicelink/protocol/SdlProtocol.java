@@ -33,13 +33,11 @@
 package com.smartdevicelink.protocol;
 
 
-import androidx.annotation.RestrictTo;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.TransportManager;
 
 
 @SuppressWarnings("WeakerAccess")
-@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class SdlProtocol extends SdlProtocolBase {
     private static final String TAG ="SdlProtocol";
 

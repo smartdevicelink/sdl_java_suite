@@ -31,11 +31,8 @@
  */
 package com.smartdevicelink.streaming;
 
-import androidx.annotation.RestrictTo;
-
 import com.smartdevicelink.protocol.ProtocolMessage;
 
-@RestrictTo(RestrictTo.Scope.LIBRARY)
 public interface IStreamListener {
 	void sendStreamPacket(ProtocolMessage pm);
 }

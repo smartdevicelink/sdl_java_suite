@@ -51,8 +51,6 @@ import android.os.Looper;
 import android.os.Parcelable;
 import android.util.AndroidRuntimeException;
 
-import androidx.annotation.CallSuper;
-
 import com.smartdevicelink.R;
 import com.smartdevicelink.transport.RouterServiceValidator.TrustedListCallback;
 import com.smartdevicelink.transport.enums.TransportType;
@@ -98,7 +96,6 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	}
 	
 	@Override
-	@CallSuper
 	public void onReceive(Context context, Intent intent) {
 		//Log.i(TAG, "Sdl Receiver Activated");
 		final String action = intent.getAction();
