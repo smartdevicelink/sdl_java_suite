@@ -39,6 +39,12 @@ public class TCPTransportManager extends TransportManagerBase{
 
     @Deprecated
     public void resetSession() {
+        if(transport != null){
+            transport.stop();
+        }
+        //TODO make sure this makes sense
+        transport = new MultiplexTcpTransport(config.getPort(), config.getIPAddress(),config.getAutoReconnect(), tcpHandler, null);
+
     }
 
     @Override
