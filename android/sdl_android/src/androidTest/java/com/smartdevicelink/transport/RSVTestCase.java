@@ -86,7 +86,12 @@ public class RSVTestCase {
 	public void testInstalledFrom(){
 		if(liveTest){
 			rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_INSTALLED_FROM_CHECK);
-			assertTrue(rsvp.validate());
+			rsvp.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
+				@Override
+				public void onFinishedValidation(boolean valid, ComponentName name) {
+					assertTrue(valid);
+				}
+			});
 		}
 	}
 
@@ -94,7 +99,12 @@ public class RSVTestCase {
 	public void testPackageCheck(){
 		if(liveTest){
 			rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_PACKAGE_CHECK);
-			assertTrue(rsvp.validate());
+			rsvp.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
+				@Override
+				public void onFinishedValidation(boolean valid, ComponentName name) {
+					assertTrue(valid);
+				}
+			});
 		}
 	}
 
@@ -102,7 +112,12 @@ public class RSVTestCase {
 	public void testVersionCheck(){
 		if(liveTest){
 			rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_VERSION_CHECK);
-			assertTrue(rsvp.validate());
+			rsvp.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
+				@Override
+				public void onFinishedValidation(boolean valid, ComponentName name) {
+					assertTrue(valid);
+				}
+			});
 		}
 	}
 
@@ -110,7 +125,12 @@ public class RSVTestCase {
 	public void testNoFlags(){
 		if(liveTest){
 			rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_NONE);
-			assertTrue(rsvp.validate());
+			rsvp.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
+				@Override
+				public void onFinishedValidation(boolean valid, ComponentName name) {
+					assertTrue(valid);
+				}
+			});
 		}
 	}
 
@@ -118,7 +138,12 @@ public class RSVTestCase {
 	public void testAllFlags(){
 		if(liveTest){
 			rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_PERFORM_ALL_CHECKS);
-			assertTrue(rsvp.validate());
+			rsvp.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
+				@Override
+				public void onFinishedValidation(boolean valid, ComponentName name) {
+					assertTrue(valid);
+				}
+			});
 		}
 	}
 
@@ -192,7 +217,7 @@ public class RSVTestCase {
 	public void testNoSecurity(){
 		requestTListLock();
 
-		RouterServiceValidator rsvp = new RouterServiceValidator(getInstrumentation().getTargetContext()); //Use a locally scoped instance
+		final RouterServiceValidator rsvp = new RouterServiceValidator(getInstrumentation().getTargetContext()); //Use a locally scoped instance
 		rsvp.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
 		rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_INSTALLED_FROM_CHECK);
 		
@@ -203,7 +228,12 @@ public class RSVTestCase {
 		assertFalse(RouterServiceValidator.createTrustedListRequest(getInstrumentation().getTargetContext(), true, null, trustedListCallback));
 		
 		//This should always return true
-		assertTrue(rsvp.validate());
+		rsvp.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
+			@Override
+			public void onFinishedValidation(boolean valid, ComponentName name) {
+				assertTrue(valid);
+			}
+		});
 		
 	}
 	
@@ -451,12 +481,22 @@ public class RSVTestCase {
 		// Fail, different package name for context and service and app security setting is not OFF and app is not on trusted list
 		RouterServiceValidatorTest rsvpFail = new RouterServiceValidatorTest(getInstrumentation().getTargetContext(), new ComponentName("anything", getInstrumentation().getTargetContext().getClass().getSimpleName()));
 		rsvpFail.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH);
-		assertFalse(rsvpFail.validate());
+		rsvpFail.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
+			@Override
+			public void onFinishedValidation(boolean valid, ComponentName name) {
+				assertFalse(valid);
+			}
+		});
 
 		// Success, same package name for context and service
 		RouterServiceValidatorTest rsvpPass = new RouterServiceValidatorTest(getInstrumentation().getTargetContext(), new ComponentName(getInstrumentation().getTargetContext().getPackageName(), getInstrumentation().getTargetContext().getClass().getSimpleName()));
 		rsvpPass.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH);
-		assertTrue(rsvpPass.validate());
+		rsvpPass.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
+			@Override
+			public void onFinishedValidation(boolean valid, ComponentName name) {
+				assertTrue(valid);
+			}
+		});
 	}
 
 	/**
