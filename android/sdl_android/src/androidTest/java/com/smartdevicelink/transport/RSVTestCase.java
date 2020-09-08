@@ -45,10 +45,6 @@ public class RSVTestCase {
 	private static final String TEST =  "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] },\"com.ford.fordpass\" : { \"versionBlacklist\":[] } }}";
 	RouterServiceValidator rsvp;
 	private static final String APP_ID = "com.smartdevicelink.test.RSVTestCase";
-	/**
-	 * Set this boolean if you want to test the actual validation of router service
-	 */
-	boolean liveTest = false;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -76,46 +72,6 @@ public class RSVTestCase {
 			releaseTListLock();
 		}
 	};
-	
-/*
- * These tests are a little strange because they don't test the logic behind the validation of each piece.
- * However, they allow us to test
- */
-
-	@Test
-	public void testInstalledFrom(){
-		if(liveTest){
-			rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_INSTALLED_FROM_CHECK);
-		}
-	}
-
-	@Test
-	public void testPackageCheck(){
-		if(liveTest){
-			rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_PACKAGE_CHECK);
-		}
-	}
-
-	@Test
-	public void testVersionCheck(){
-		if(liveTest){
-			rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_VERSION_CHECK);
-		}
-	}
-
-	@Test
-	public void testNoFlags(){
-		if(liveTest){
-			rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_NONE);
-		}
-	}
-
-	@Test
-	public void testAllFlags(){
-		if(liveTest){
-			rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_PERFORM_ALL_CHECKS);
-		}
-	}
 
 	@Test
 	public void testSecuritySetting(){
