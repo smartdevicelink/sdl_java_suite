@@ -53,7 +53,7 @@ public class SdlFile{
     private boolean isStaticIcon;
     private boolean shouldAutoGenerateName;
     // Overwrite property by default is set to true in SdlFile constructors indicating that a file can be overwritten
-    private boolean overwrite = true;
+    private boolean overwrite = false;
 
     /**
      * Creates a new instance of SdlFile
