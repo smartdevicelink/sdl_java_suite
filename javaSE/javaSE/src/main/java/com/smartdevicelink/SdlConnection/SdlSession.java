@@ -33,6 +33,7 @@
 package com.smartdevicelink.SdlConnection;
 
 
+import androidx.annotation.RestrictTo;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.protocol.SdlProtocolBase;
@@ -44,6 +45,7 @@ import com.smartdevicelink.util.Version;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class SdlSession extends BaseSdlSession {
 
     private static final String TAG = "SdlSession";

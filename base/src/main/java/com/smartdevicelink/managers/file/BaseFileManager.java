@@ -34,6 +34,7 @@ package com.smartdevicelink.managers.file;
 
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
@@ -101,6 +102,7 @@ abstract class BaseFileManager extends BaseSubManager {
 	}
 
 	@Override
+	@RestrictTo(RestrictTo.Scope.LIBRARY)
 	public void start(CompletionListener listener) {
 		// prepare manager - don't set state to ready until we have list of files
 		retrieveRemoteFiles();
@@ -299,7 +301,7 @@ abstract class BaseFileManager extends BaseSubManager {
 				}
 			}
 		};
-		internalInterface.sendRequests(requests, onMultipleRequestListener);
+		internalInterface.sendRPCs(requests, onMultipleRequestListener);
 	}
 
 	/**

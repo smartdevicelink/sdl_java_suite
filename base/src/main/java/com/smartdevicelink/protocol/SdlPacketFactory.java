@@ -31,11 +31,14 @@
  */
 package com.smartdevicelink.protocol;
 
+import androidx.annotation.RestrictTo;
+
 import com.smartdevicelink.protocol.enums.ControlFrameTags;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.util.BitConverter;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class SdlPacketFactory {
 
 	/* 
