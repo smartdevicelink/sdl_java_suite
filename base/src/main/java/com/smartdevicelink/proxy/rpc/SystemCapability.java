@@ -79,8 +79,9 @@ public class SystemCapability extends RPCStruct {
     /**
      * @param value Set the SystemCapabilityType that indicates which type of data should be changed and identifies which data object exists in this struct.
      */
-    public void setSystemCapabilityType(@NonNull SystemCapabilityType value){
+    public SystemCapability setSystemCapabilityType(@NonNull SystemCapabilityType value) {
         setValue(KEY_SYSTEM_CAPABILITY_TYPE, value);
+        return this;
     }
 
     public Object getCapabilityForType(SystemCapabilityType type) {
@@ -107,9 +108,9 @@ public class SystemCapability extends RPCStruct {
         }
     }
 
-    public void setCapabilityForType(SystemCapabilityType type, Object capability) {
+    public SystemCapability setCapabilityForType( SystemCapabilityType type, Object capability) {
         if (type == null) {
-            return;
+            return this;
         } else if (type.equals(SystemCapabilityType.NAVIGATION)) {
             setValue(KEY_NAVIGATION_CAPABILITY, capability);
         } else if (type.equals(SystemCapabilityType.PHONE_CALL)) {
@@ -127,8 +128,9 @@ public class SystemCapability extends RPCStruct {
         } else if (type.equals(SystemCapabilityType.DRIVER_DISTRACTION)) {
             setValue(KEY_DRIVER_DISTRACTION_CAPABILITY, capability);
         } else {
-            return;
+            return this;
         }
+        return this;
     }
 
 }

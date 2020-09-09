@@ -125,13 +125,14 @@ public class DeleteCommand extends RPCRequest {
     }
 	/**
 	 * Sets the Command ID that identifies the Command to be deleted from Command Menu
-	 * 
+	 *
 	 * @param cmdID
 	 *            an Integer value representing Command ID
-	 *            
+	 *
 	 *            <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000</p>
-	 */    
-    public void setCmdID( @NonNull Integer cmdID ) {
-		setParameters(KEY_CMD_ID, cmdID);
+	 */
+    public DeleteCommand setCmdID(@NonNull Integer cmdID) {
+        setParameters(KEY_CMD_ID, cmdID);
+        return this;
     }
 }

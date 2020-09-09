@@ -99,24 +99,27 @@ public class TouchEventCapabilities extends RPCStruct {
 		setDoublePressAvailable(doublePressAvailable);
 	}
     
-    public void setPressAvailable(@NonNull Boolean pressAvailable) {
+    public TouchEventCapabilities setPressAvailable(@NonNull Boolean pressAvailable) {
         setValue(KEY_PRESS_AVAILABLE, pressAvailable);
+        return this;
     }
     
     public Boolean getPressAvailable() {
         return getBoolean(KEY_PRESS_AVAILABLE);
     }
     
-    public void setMultiTouchAvailable(@NonNull Boolean multiTouchAvailable) {
+    public TouchEventCapabilities setMultiTouchAvailable(@NonNull Boolean multiTouchAvailable) {
         setValue(KEY_MULTI_TOUCH_AVAILABLE, multiTouchAvailable);
+        return this;
     }
     
     public Boolean getMultiTouchAvailable() {
         return getBoolean(KEY_MULTI_TOUCH_AVAILABLE);
     }
     
-    public void setDoublePressAvailable(@NonNull Boolean doublePressAvailable) {
+    public TouchEventCapabilities setDoublePressAvailable(@NonNull Boolean doublePressAvailable) {
         setValue(KEY_DOUBLE_PRESS_AVAILABLE, doublePressAvailable);
+        return this;
     }
     
     public Boolean getDoublePressAvailable() {

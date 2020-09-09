@@ -132,15 +132,16 @@ public class ResetGlobalProperties extends RPCRequest {
 	/**
 	 * Sets an array of one or more GlobalProperty enumeration elements
 	 * indicating which global properties to reset to their default value
-	 * 
+	 *
 	 * @param properties
 	 *            a List<GlobalProperty> An array of one or more
 	 *            GlobalProperty enumeration elements indicating which global
 	 *            properties to reset to their default value
 	 *            <p></p>
 	 *            <b>Notes: </b>Array must have at least one element
-	 */    
-    public void setProperties(@NonNull List<GlobalProperty> properties ) {
-		setParameters(KEY_PROPERTIES, properties);
+	 */
+    public ResetGlobalProperties setProperties(@NonNull List<GlobalProperty> properties) {
+        setParameters(KEY_PROPERTIES, properties);
+        return this;
     }
 }

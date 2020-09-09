@@ -60,7 +60,6 @@ public class LockScreenManagerTests {
 		lockScreenConfig.setAppIcon(TestValues.GENERAL_INT);
 		lockScreenConfig.setBackgroundColor(TestValues.GENERAL_INT);
 		lockScreenConfig.showDeviceLogo(true);
-		lockScreenConfig.setEnabled(true);
 		lockScreenConfig.setDisplayMode(LockScreenConfig.DISPLAY_MODE_OPTIONAL_OR_REQUIRED);
 
 		lockScreenManager = new LockScreenManager(lockScreenConfig, context, internalInterface);

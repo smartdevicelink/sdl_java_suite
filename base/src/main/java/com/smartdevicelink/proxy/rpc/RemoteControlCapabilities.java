@@ -58,9 +58,10 @@ public class RemoteControlCapabilities extends RPCStruct {
 	 * @param climateControlCapabilities If included, the platform supports RC climate controls.
 	 *                                   For this baseline version, maxsize=1. i.e. only one climate control module is supported.
 	 */
-	public void setClimateControlCapabilities(List<ClimateControlCapabilities> climateControlCapabilities) {
-		setValue(KEY_CLIMATE_CONTROL_CAPABILITIES, climateControlCapabilities);
-	}
+	public RemoteControlCapabilities setClimateControlCapabilities( List<ClimateControlCapabilities> climateControlCapabilities) {
+        setValue(KEY_CLIMATE_CONTROL_CAPABILITIES, climateControlCapabilities);
+        return this;
+    }
 
 	/**
 	 * Gets the climateControlCapabilities portion of the RemoteControlCapabilities class
@@ -79,9 +80,10 @@ public class RemoteControlCapabilities extends RPCStruct {
 	 * @param radioControlCapabilities If included, the platform supports RC climate controls.
 	 *                                 For this baseline version, maxsize=1. i.e. only one radio control module is supported.
 	 */
-	public void setRadioControlCapabilities(List<RadioControlCapabilities> radioControlCapabilities) {
-		setValue(KEY_RADIO_CONTROL_CAPABILITIES, radioControlCapabilities);
-	}
+	public RemoteControlCapabilities setRadioControlCapabilities( List<RadioControlCapabilities> radioControlCapabilities) {
+        setValue(KEY_RADIO_CONTROL_CAPABILITIES, radioControlCapabilities);
+        return this;
+    }
 
 	/**
 	 * Gets the radioControlCapabilities portion of the RemoteControlCapabilities class
@@ -99,9 +101,10 @@ public class RemoteControlCapabilities extends RPCStruct {
 	 *
 	 * @param buttonCapabilities If included, the platform supports RC button controls with the included button names.
 	 */
-	public void setButtonCapabilities(List<ButtonCapabilities> buttonCapabilities) {
-		setValue(KEY_BUTTON_CAPABILITIES, buttonCapabilities);
-	}
+	public RemoteControlCapabilities setButtonCapabilities( List<ButtonCapabilities> buttonCapabilities) {
+        setValue(KEY_BUTTON_CAPABILITIES, buttonCapabilities);
+        return this;
+    }
 
 	/**
 	 * Gets the buttonCapabilities portion of the RemoteControlCapabilities class
@@ -118,9 +121,10 @@ public class RemoteControlCapabilities extends RPCStruct {
 	 *
 	 * @param seatControlCapabilities If included, the platform supports seat controls.
 	 */
-	public void setSeatControlCapabilities(List<SeatControlCapabilities> seatControlCapabilities) {
-		setValue(KEY_SEAT_CONTROL_CAPABILITIES, seatControlCapabilities);
-	}
+	public RemoteControlCapabilities setSeatControlCapabilities( List<SeatControlCapabilities> seatControlCapabilities) {
+        setValue(KEY_SEAT_CONTROL_CAPABILITIES, seatControlCapabilities);
+        return this;
+    }
 
 	/**
 	 * Gets the seatControlCapabilities portion of the RemoteControlCapabilities class
@@ -137,9 +141,10 @@ public class RemoteControlCapabilities extends RPCStruct {
 	 *
 	 * @param audioControlCapabilities If included, the platform supports audio controls.
 	 */
-	public void setAudioControlCapabilities(List<AudioControlCapabilities> audioControlCapabilities) {
-		setValue(KEY_AUDIO_CONTROL_CAPABILITIES, audioControlCapabilities);
-	}
+	public RemoteControlCapabilities setAudioControlCapabilities( List<AudioControlCapabilities> audioControlCapabilities) {
+        setValue(KEY_AUDIO_CONTROL_CAPABILITIES, audioControlCapabilities);
+        return this;
+    }
 
 	/**
 	 * Gets the audioControlCapabilities portion of the RemoteControlCapabilities class
@@ -156,9 +161,10 @@ public class RemoteControlCapabilities extends RPCStruct {
 	 *
 	 * @param hmiSettingsControlCapabilities If included, the platform supports hmi setting controls.
 	 */
-	public void setHmiSettingsControlCapabilities(HMISettingsControlCapabilities hmiSettingsControlCapabilities) {
-		setValue(KEY_HMI_SETTINGS_CONTROL_CAPABILITIES, hmiSettingsControlCapabilities);
-	}
+	public RemoteControlCapabilities setHmiSettingsControlCapabilities( HMISettingsControlCapabilities hmiSettingsControlCapabilities) {
+        setValue(KEY_HMI_SETTINGS_CONTROL_CAPABILITIES, hmiSettingsControlCapabilities);
+        return this;
+    }
 
 	/**
 	 * Gets the hmiSettingsControlCapabilities portion of the RemoteControlCapabilities class
@@ -174,9 +180,10 @@ public class RemoteControlCapabilities extends RPCStruct {
 	 *
 	 * @param lightControlCapabilities If included, the platform supports light controls.
 	 */
-	public void setLightControlCapabilities(LightControlCapabilities lightControlCapabilities) {
-		setValue(KEY_LIGHT_CONTROL_CAPABILITIES, lightControlCapabilities);
-	}
+	public RemoteControlCapabilities setLightControlCapabilities( LightControlCapabilities lightControlCapabilities) {
+        setValue(KEY_LIGHT_CONTROL_CAPABILITIES, lightControlCapabilities);
+        return this;
+    }
 
 	/**
 	 * Gets the lightControlCapabilities portion of the RemoteControlCapabilities class

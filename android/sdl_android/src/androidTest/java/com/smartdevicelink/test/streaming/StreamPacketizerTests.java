@@ -7,8 +7,6 @@ import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
 import com.smartdevicelink.test.TestValues;
-import com.smartdevicelink.transport.BTTransportConfig;
-import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 
 import junit.framework.TestCase;

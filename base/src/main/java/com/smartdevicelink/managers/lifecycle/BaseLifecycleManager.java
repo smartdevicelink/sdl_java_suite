@@ -50,10 +50,8 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
-import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.rpc.GenericResponse;
 import com.smartdevicelink.proxy.rpc.OnAppInterfaceUnregistered;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
@@ -78,15 +76,12 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
-import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.security.SdlSecurityBase;
-import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
-import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.util.CorrelationIdGenerator;
@@ -622,7 +617,7 @@ abstract class BaseLifecycleManager {
     @SuppressWarnings("UnusedReturnValue")
     private boolean onRPCRequestReceived(RPCRequest request) {
         if (request == null) {
-            DebugTool.logError("onRPCRequestReceived - request was null");
+            DebugTool.logError(TAG, "onRPCRequestReceived - request was null");
             return false;
         }
         DebugTool.logInfo(TAG, "onRPCRequestReceived - " + request.getFunctionName());
@@ -947,40 +942,8 @@ abstract class BaseLifecycleManager {
         }
 
         @Override
-        public void stopVideoService() {
-            BaseLifecycleManager.this.endVideoStream();
-        }
-
-        @Override
-        public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
-            DebugTool.logWarning(TAG, "startVideoStream is not currently implemented");
-            return null;
-        }
-
-        @Override
-        public void startAudioService(boolean encrypted, AudioStreamingCodec codec, AudioStreamingParams params) {
-            DebugTool.logWarning(TAG, "startAudioService is not currently implemented");
-        }
-
-        @Override
         public void startAudioService(boolean encrypted) {
             BaseLifecycleManager.this.startAudioService(encrypted);
-        }
-
-        @Override
-        public void stopAudioService() {
-            BaseLifecycleManager.this.endAudioStream();
-        }
-
-        @Override
-        public IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec, AudioStreamingParams params) {
-            DebugTool.logWarning(TAG, "startAudioStream is not currently implemented");
-            return null;
-        }
-
-        @Override
-        public void sendRPCRequest(RPCRequest message) {
-            BaseLifecycleManager.this.sendRPCMessagePrivate(message, false);
         }
 
         @Override
@@ -988,11 +951,6 @@ abstract class BaseLifecycleManager {
             if (isConnected()) {
                 BaseLifecycleManager.this.sendRPCMessagePrivate(message, false);
             }
-        }
-
-        @Override
-        public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
-            BaseLifecycleManager.this.sendRPCs(rpcs, listener);
         }
 
         @Override
@@ -1036,58 +994,8 @@ abstract class BaseLifecycleManager {
         }
 
         @Override
-        public Object getCapability(SystemCapabilityType systemCapabilityType) {
-            if (BaseLifecycleManager.this.systemCapabilityManager != null) {
-                return BaseLifecycleManager.this.systemCapabilityManager.getCapability(systemCapabilityType);
-            } else {
-                return null;
-            }
-        }
-
-        @Override
-        public void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener) {
-            if (BaseLifecycleManager.this.systemCapabilityManager != null) {
-                BaseLifecycleManager.this.systemCapabilityManager.getCapability(systemCapabilityType, scListener);
-            }
-        }
-
-        @Override
-        public Object getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener, boolean forceUpdate) {
-            if (BaseLifecycleManager.this.systemCapabilityManager != null) {
-                return BaseLifecycleManager.this.systemCapabilityManager.getCapability(systemCapabilityType, scListener, forceUpdate);
-            } else {
-                return null;
-            }
-        }
-
-        @Override
         public RegisterAppInterfaceResponse getRegisterAppInterfaceResponse() {
             return raiResponse;
-        }
-
-        @Override
-        public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType) {
-            if (BaseLifecycleManager.this.systemCapabilityManager != null) {
-                return BaseLifecycleManager.this.systemCapabilityManager.isCapabilitySupported(systemCapabilityType);
-            } else {
-                return false;
-            }
-        }
-
-        @Override
-        public void addOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) {
-            if (BaseLifecycleManager.this.systemCapabilityManager != null) {
-                BaseLifecycleManager.this.systemCapabilityManager.addOnSystemCapabilityListener(systemCapabilityType, listener);
-            }
-        }
-
-        @Override
-        public boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) {
-            if (BaseLifecycleManager.this.systemCapabilityManager != null) {
-                return BaseLifecycleManager.this.systemCapabilityManager.removeOnSystemCapabilityListener(systemCapabilityType, listener);
-            } else {
-                return false;
-            }
         }
 
         @Override
@@ -1115,6 +1023,11 @@ abstract class BaseLifecycleManager {
         @Override
         public Taskmaster getTaskmaster() {
             return BaseLifecycleManager.this.getTaskmaster();
+        }
+
+        @Override
+        public SystemCapabilityManager getSystemCapabilityManager() {
+            return BaseLifecycleManager.this.systemCapabilityManager;
         }
     };
 
@@ -1198,11 +1111,6 @@ abstract class BaseLifecycleManager {
         }
     }
 
-    @Deprecated
-    public void setSdlSecurityClassList(List<Class<? extends SdlSecurityBase>> list) {
-        _secList = list;
-    }
-
     /**
      * Sets the security libraries and a callback to notify caller when there is update to encryption service
      *
@@ -1273,13 +1181,7 @@ abstract class BaseLifecycleManager {
     void startVideoService(boolean encrypted, VideoStreamingParameters parameters) {
     }
 
-    void endVideoStream() {
-    }
-
     void startAudioService(boolean encrypted) {
-    }
-
-    void endAudioStream() {
     }
 
     void setSdlSecurityStaticVars() {

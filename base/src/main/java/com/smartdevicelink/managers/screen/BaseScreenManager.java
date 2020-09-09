@@ -33,6 +33,7 @@ package com.smartdevicelink.managers.screen;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
@@ -78,6 +79,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 
 	// Sub manager listener
 	private final CompletionListener subManagerListener = new CompletionListener() {
+
 		@Override
 		public synchronized void onComplete(boolean success) {
 			if (softButtonManager != null && textAndGraphicManager != null && voiceCommandManager != null && menuManager != null && choiceSetManager != null && subscribeButtonManager != null) {
@@ -112,6 +114,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	}
 
 	@Override
+	@RestrictTo(RestrictTo.Scope.LIBRARY)
 	public void start(CompletionListener listener) {
 		super.start(listener);
 		this.softButtonManager.start(subManagerListener);
@@ -137,6 +140,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * <p>Called when manager is being torn down</p>
 	 */
 	@Override
+	@RestrictTo(RestrictTo.Scope.LIBRARY)
 	public void dispose() {
 		softButtonManager.dispose();
 		textAndGraphicManager.dispose();
@@ -248,6 +252,9 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * @return an SdlArtwork object represents the current primaryGraphic
 	 */
 	public SdlArtwork getPrimaryGraphic() {
+		if (this.textAndGraphicManager.getPrimaryGraphic() == null ||  textAndGraphicManager.getPrimaryGraphic().getName() == null || this.textAndGraphicManager.getPrimaryGraphic().getName().equals(textAndGraphicManager.getBlankArtwork().getName())) {
+			return null;
+		}
 		return this.textAndGraphicManager.getPrimaryGraphic();
 	}
 
@@ -267,6 +274,9 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * @return an SdlArtwork object represents the current secondaryGraphic
 	 */
 	public SdlArtwork getSecondaryGraphic() {
+		if (this.textAndGraphicManager.getSecondaryGraphic() == null || textAndGraphicManager.getSecondaryGraphic().getName() == null || this.textAndGraphicManager.getSecondaryGraphic().getName().equals(textAndGraphicManager.getBlankArtwork().getName())) {
+			return null;
+		}
 		return this.textAndGraphicManager.getSecondaryGraphic();
 	}
 

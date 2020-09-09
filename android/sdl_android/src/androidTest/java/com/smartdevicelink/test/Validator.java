@@ -1,7 +1,6 @@
 package com.smartdevicelink.test;
 
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
-import com.smartdevicelink.protocol.enums.FrameData;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -146,28 +145,7 @@ public class Validator{
     	
     	return true;
     }
-    
-    public static boolean validateFrameDataArray (FrameData[] array1, FrameData[] array2) {
-    	if (array1 == null) {
-    		return (array2 == null);
-    	}
-    	
-    	if (array2 == null) {
-    		return (array1 == null);
-    	}
-    	
-    	if (array1.length != array2.length) {
-    		return false;
-    	}
-    	
-    	for (int i = 0; i < array1.length; i++) {
-    		if (array1[i] != array2[i]) {
-    			return false;
-    		}
-    	}
-    	
-    	return true;
-    }
+
 
     public static boolean validateImage(Image image1, Image image2){
         if(image1 == null){
@@ -2343,7 +2321,23 @@ public class Validator{
             if (item1.get(i).getType() != item2.get(i).getType()) {
                 return false;
             }
-            if (item1.get(i).getRange() != item2.get(i).getRange()) {
+            if (!item1.get(i).getRange().equals(item2.get(i).getRange())) {
+                return false;
+            }
+
+            if (!item1.get(i).getCapacity().equals(item2.get(i).getCapacity())) {
+                return false;
+            }
+
+            if (!item1.get(i).getCapacityUnit().equals(item2.get(i).getCapacityUnit())) {
+                return false;
+            }
+
+            if (!item1.get(i).getLevel().equals(item2.get(i).getLevel())) {
+                return false;
+            }
+
+            if (!item1.get(i).getLevelState().equals(item2.get(i).getLevelState())) {
                 return false;
             }
         }
@@ -3912,5 +3906,25 @@ public class Validator{
 
 
         return approxPosition1.equals(approxPosition2) && deviation1.equals(deviation2);
+    }
+
+    public static boolean validateStabilityControlStatus(StabilityControlsStatus status1, StabilityControlsStatus status2) {
+        if (status1 == null) {
+            return (status2 == null);
+        }
+        if (status2 == null) {
+            return (status2 == null);
+        }
+        return status1.getEscSystem().equals(status2.getEscSystem()) && status1.getTrailerSwayControl().equals(status2.getTrailerSwayControl());
+    }
+
+    public static boolean validateStabilityControlStatus(VehicleDataResult status1, VehicleDataResult status2) {
+        if (status1 == null) {
+            return (status2 == null);
+        }
+        if (status2 == null) {
+            return (status2 == null);
+        }
+        return status1.getDataType().equals(status2.getDataType()) && status1.getResultCode().equals(status2.getResultCode());
     }
 }

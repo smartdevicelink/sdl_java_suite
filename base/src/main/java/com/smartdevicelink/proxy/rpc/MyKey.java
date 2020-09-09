@@ -84,8 +84,9 @@ public class MyKey extends RPCStruct {
         this();
         setE911Override(e911Override);
     }
-    public void setE911Override(@NonNull VehicleDataStatus e911Override) {
+    public MyKey setE911Override(@NonNull VehicleDataStatus e911Override) {
         setValue(KEY_E_911_OVERRIDE, e911Override);
+        return this;
     }
     public VehicleDataStatus getE911Override() {
         return (VehicleDataStatus) getObject(VehicleDataStatus.class, KEY_E_911_OVERRIDE);

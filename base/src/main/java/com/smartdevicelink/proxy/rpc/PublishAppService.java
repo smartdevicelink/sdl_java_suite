@@ -79,9 +79,10 @@ public class PublishAppService extends RPCRequest {
 	 * If already published, the updated manifest for this service.
 	 * @param serviceManifest - the App Service Manifest
 	 */
-	public void setAppServiceManifest(@NonNull AppServiceManifest serviceManifest){
-		setParameters(KEY_APP_SERVICE_MANIFEST, serviceManifest);
-	}
+	public PublishAppService setAppServiceManifest(@NonNull AppServiceManifest serviceManifest) {
+        setParameters(KEY_APP_SERVICE_MANIFEST, serviceManifest);
+        return this;
+    }
 
 	/**
 	 * The manifest of the service that wishes to be published.

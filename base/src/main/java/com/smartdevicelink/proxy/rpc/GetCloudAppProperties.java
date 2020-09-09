@@ -55,8 +55,9 @@ public class GetCloudAppProperties extends RPCRequest {
         setParameters(KEY_APP_ID, appID);
     }
 
-    public void setAppID(String appId){
+    public GetCloudAppProperties setAppID( String appId) {
         setParameters(KEY_APP_ID, appId);
+        return this;
     }
 
     public String getAppID(){

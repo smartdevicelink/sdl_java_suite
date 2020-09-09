@@ -170,12 +170,13 @@ public class ChangeRegistration extends RPCRequest {
 
 	/**
 	 * Sets language
-	 * 
+	 *
 	 * @param language
 	 *            a language value
 	 */
-    public void setLanguage(@NonNull Language language) {
+    public ChangeRegistration setLanguage(@NonNull Language language) {
         setParameters(KEY_LANGUAGE, language);
+        return this;
     }
 
 	/**
@@ -189,12 +190,13 @@ public class ChangeRegistration extends RPCRequest {
 
 	/**
 	 * Sets HMI display language
-	 * 
+	 *
 	 * @param hmiDisplayLanguage
 	 *            a Language value
 	 */
-    public void setHmiDisplayLanguage(@NonNull Language hmiDisplayLanguage) {
+    public ChangeRegistration setHmiDisplayLanguage(@NonNull Language hmiDisplayLanguage) {
         setParameters(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
+        return this;
     }
 
 	/**
@@ -208,11 +210,12 @@ public class ChangeRegistration extends RPCRequest {
     
     /**
      * Sets app name
-     * 
+     *
      * @param appName App name to set
      */
-    public void setAppName(String appName){
+    public ChangeRegistration setAppName( String appName) {
         setParameters(KEY_APP_NAME, appName);
+        return this;
     }
     
     /**
@@ -226,11 +229,12 @@ public class ChangeRegistration extends RPCRequest {
     
     /**
      * Sets NGN media screen app name
-     * 
+     *
      * @param ngnAppName The NGN app name
      */
-    public void setNgnMediaScreenAppName(String ngnAppName){
+    public ChangeRegistration setNgnMediaScreenAppName( String ngnAppName) {
         setParameters(KEY_NGN_MEDIA_SCREEN_NAME, ngnAppName);
+        return this;
     }
     
     /**
@@ -244,11 +248,12 @@ public class ChangeRegistration extends RPCRequest {
     
     /**
      * Sets the TTS name
-     * 
+     *
      * @param ttsName The TTS name to set
      */
-    public void setTtsName(List<TTSChunk> ttsName){
+    public ChangeRegistration setTtsName( List<TTSChunk> ttsName) {
         setParameters(KEY_TTS_NAME, ttsName);
+        return this;
     }
     
     /**
@@ -277,7 +282,7 @@ public class ChangeRegistration extends RPCRequest {
     /**
      * Sets a vrSynonyms representing the an array of 1-100 elements, each
      * element containing a voice-recognition synonym
-     * 
+     *
      * @param vrSynonyms
      *            a List<String> value representing the an array of 1-100
      *            elements
@@ -290,8 +295,9 @@ public class ChangeRegistration extends RPCRequest {
      *            the name or any synonym of any currently-registered
      *            application</li>
      *            </ul>
-     */    
-    public void setVrSynonyms(List<String> vrSynonyms) {
+     */
+    public ChangeRegistration setVrSynonyms( List<String> vrSynonyms) {
         setParameters(KEY_VR_SYNONYMS, vrSynonyms);
+        return this;
     }
 }

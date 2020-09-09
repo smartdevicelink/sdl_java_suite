@@ -1,14 +1,12 @@
 ##############################
 # Project Specific
 ##############################
-javaSE/out/
-javaSE/build/
-javaSE/local.properties
-javaEE/out/
-javaEE/build/
-javaEE/local.properties
-baseAndroid/windows/
-
+javaSE/javaSE/out/
+javaSE/javaSE/build/
+javaSE/javaSE/local.properties
+javaEE/javaEE/out/
+javaEE/javaEE/build/
+javaEE/javaEE/local.properties
 
 ##############################
 # OS generated files 

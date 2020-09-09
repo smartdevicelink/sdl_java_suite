@@ -51,9 +51,10 @@ public class StationIDNumber extends RPCStruct {
 	 *
 	 * @param countryCode Binary Representation of ITU Country Code. USA Code is 001.
 	 */
-	public void setCountryCode(Integer countryCode) {
-		setValue(KEY_COUNTRY_CODE, countryCode);
-	}
+	public StationIDNumber setCountryCode( Integer countryCode) {
+        setValue(KEY_COUNTRY_CODE, countryCode);
+        return this;
+    }
 
 	/**
 	 * Gets the countryCode portion of the StationIDNumber class
@@ -69,9 +70,10 @@ public class StationIDNumber extends RPCStruct {
 	 *
 	 * @param fccFacilityId Binary representation  of unique facility ID assigned by the FCC; FCC controlled for U.S. territory.
 	 */
-	public void setFccFacilityId(Integer fccFacilityId) {
-		setValue(KEY_FCC_FACILITY_ID, fccFacilityId);
-	}
+	public StationIDNumber setFccFacilityId( Integer fccFacilityId) {
+        setValue(KEY_FCC_FACILITY_ID, fccFacilityId);
+        return this;
+    }
 
 	/**
 	 * Gets the fccFacilityId portion of the StationIDNumber class

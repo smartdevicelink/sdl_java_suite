@@ -72,9 +72,10 @@ public class GetFile extends RPCRequest {
 	 * maxlength="255"
 	 * @param fileName -
 	 */
-	public void setFileName(@NonNull String fileName){
-		setParameters(KEY_FILE_NAME, fileName);
-	}
+	public GetFile setFileName(@NonNull String fileName) {
+        setParameters(KEY_FILE_NAME, fileName);
+        return this;
+    }
 
 	/**
 	 * File name that should be retrieved.
@@ -89,9 +90,10 @@ public class GetFile extends RPCRequest {
 	 * ID of the service that should have uploaded the requested file
 	 * @param appServiceId -
 	 */
-	public void setAppServiceId(String appServiceId){
-		setParameters(KEY_APP_SERVICE_ID, appServiceId);
-	}
+	public GetFile setAppServiceId( String appServiceId) {
+        setParameters(KEY_APP_SERVICE_ID, appServiceId);
+        return this;
+    }
 
 	/**
 	 * ID of the service that should have uploaded the requested file
@@ -105,9 +107,10 @@ public class GetFile extends RPCRequest {
 	 * Selected file type.
 	 * @param fileType -
 	 */
-	public void setFileType(FileType fileType){
-		setParameters(KEY_FILE_TYPE, fileType);
-	}
+	public GetFile setFileType( FileType fileType) {
+        setParameters(KEY_FILE_TYPE, fileType);
+        return this;
+    }
 
 	/**
 	 * Selected file type.
@@ -122,9 +125,10 @@ public class GetFile extends RPCRequest {
 	 * minvalue="0" maxvalue="2000000000"
 	 * @param offset -
 	 */
-	public void setOffset(Integer offset){
-		setParameters(KEY_OFFSET, offset);
-	}
+	public GetFile setOffset( Integer offset) {
+        setParameters(KEY_OFFSET, offset);
+        return this;
+    }
 
 	/**
 	 * Optional offset in bytes for resuming partial data chunks
@@ -141,9 +145,10 @@ public class GetFile extends RPCRequest {
 	 * minvalue="0" maxvalue="2000000000"
 	 * @param length -
 	 */
-	public void setLength(Integer length){
-		setParameters(KEY_LENGTH, length);
-	}
+	public GetFile setLength( Integer length) {
+        setParameters(KEY_LENGTH, length);
+        return this;
+    }
 
 	/**
 	 * Optional length in bytes for resuming partial data chunks if offset is set to 0, then length

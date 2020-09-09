@@ -88,9 +88,10 @@ public class PerformInteractionResponse extends RPCResponse {
     /**
      * Sets the application-scoped identifier that uniquely identifies this choice.
      * @param choiceID Min: 0  Max: 65535
-     */ 
-    public void setChoiceID( Integer choiceID ) {
+     */
+    public PerformInteractionResponse setChoiceID( Integer choiceID) {
         setParameters(KEY_CHOICE_ID, choiceID);
+        return this;
     }
     /**
      * <p>Returns a <I>TriggerSource</I> object which will be shown in the HMI</p>    
@@ -101,15 +102,17 @@ public class PerformInteractionResponse extends RPCResponse {
     }
     /**
      * <p>Sets TriggerSource
-     * Indicates whether command was selected via VR or via a menu selection (using the OK button).</p>    
+     * Indicates whether command was selected via VR or via a menu selection (using the OK button).</p>
      * @param triggerSource a TriggerSource object
-     */    
-    public void setTriggerSource( TriggerSource triggerSource ) {
+     */
+    public PerformInteractionResponse setTriggerSource( TriggerSource triggerSource) {
         setParameters(KEY_TRIGGER_SOURCE, triggerSource);
+        return this;
     }
     
-    public void setManualTextEntry(String manualTextEntry) {
+    public PerformInteractionResponse setManualTextEntry( String manualTextEntry) {
         setParameters(KEY_MANUAL_TEXT_ENTRY, manualTextEntry);
+        return this;
     }
     public String getManualTextEntry() {
         return getString(KEY_MANUAL_TEXT_ENTRY);

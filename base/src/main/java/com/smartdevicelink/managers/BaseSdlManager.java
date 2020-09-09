@@ -178,17 +178,10 @@ abstract class BaseSdlManager {
 
         if ((actualLanguage != null && !actualLanguage.equals(language)) || (actualHMILanguage != null && !actualHMILanguage.equals(hmiLanguage))) {
 
-            LifecycleConfigurationUpdate lcuNew = managerListener.managerShouldUpdateLifecycle(actualLanguage, actualHMILanguage);
-            LifecycleConfigurationUpdate lcuOld = managerListener.managerShouldUpdateLifecycle(actualLanguage);
-            final LifecycleConfigurationUpdate lcu;
+            final LifecycleConfigurationUpdate lcu = managerListener.managerShouldUpdateLifecycle(actualLanguage, actualHMILanguage);
+
             ChangeRegistration changeRegistration;
-            if (lcuNew == null) {
-                lcu = lcuOld;
-                changeRegistration = new ChangeRegistration(actualLanguage, actualLanguage);
-            } else {
-                lcu = lcuNew;
-                changeRegistration = new ChangeRegistration(actualLanguage, actualHMILanguage);
-            }
+            changeRegistration = new ChangeRegistration(actualLanguage, actualHMILanguage);
 
             if (lcu != null) {
                 changeRegistration.setAppName(lcu.getAppName());
@@ -783,17 +776,6 @@ abstract class BaseSdlManager {
          */
         public Builder setTransportType(@NonNull BaseTransportConfig transport) {
             sdlManager.transport = transport;
-            return this;
-        }
-
-        /**
-         * Sets the Security libraries
-         *
-         * @param secList The list of security class(es)
-         */
-        @Deprecated
-        public Builder setSdlSecurity(List<Class<? extends SdlSecurityBase>> secList) {
-            sdlManager.sdlSecList = secList;
             return this;
         }
 

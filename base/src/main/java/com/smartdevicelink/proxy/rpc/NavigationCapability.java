@@ -52,15 +52,17 @@ public class NavigationCapability extends RPCStruct{
 		return getBoolean(KEY_LOCATION_ENABLED);
 	}
 
-	public void setSendLocationEnabled(Boolean sendLocationEnabled){
-		setValue(KEY_LOCATION_ENABLED, sendLocationEnabled);
-	}
+	public NavigationCapability setSendLocationEnabled( Boolean sendLocationEnabled) {
+        setValue(KEY_LOCATION_ENABLED, sendLocationEnabled);
+        return this;
+    }
 
 	public Boolean getWayPointsEnabled(){
 		return getBoolean(KEY_GETWAYPOINTS_ENABLED);
 	}
 
-	public void setWayPointsEnabled(Boolean getWayPointsEnabled){
-		setValue(KEY_GETWAYPOINTS_ENABLED, getWayPointsEnabled);
-	}
+	public NavigationCapability setWayPointsEnabled( Boolean getWayPointsEnabled) {
+        setValue(KEY_GETWAYPOINTS_ENABLED, getWayPointsEnabled);
+        return this;
+    }
 }

@@ -90,8 +90,9 @@ public class DeleteFileResponse extends RPCResponse {
         super.format(rpcVersion, formatParams);
     }
 
-    public void setSpaceAvailable(Integer spaceAvailable) {
+    public DeleteFileResponse setSpaceAvailable( Integer spaceAvailable) {
         setParameters(KEY_SPACE_AVAILABLE, spaceAvailable);
+        return this;
     }
 
     public Integer getSpaceAvailable() {

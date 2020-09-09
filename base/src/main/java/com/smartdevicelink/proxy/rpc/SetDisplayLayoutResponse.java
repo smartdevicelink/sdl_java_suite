@@ -87,8 +87,9 @@ public class SetDisplayLayoutResponse extends RPCResponse {
         return (DisplayCapabilities) getObject(DisplayCapabilities.class, KEY_DISPLAY_CAPABILITIES);
     }
 
-    public void setDisplayCapabilities(DisplayCapabilities displayCapabilities) {
+    public SetDisplayLayoutResponse setDisplayCapabilities( DisplayCapabilities displayCapabilities) {
         setParameters(KEY_DISPLAY_CAPABILITIES, displayCapabilities);
+        return this;
     }
 
     @SuppressWarnings("unchecked")
@@ -96,8 +97,9 @@ public class SetDisplayLayoutResponse extends RPCResponse {
         return (List<ButtonCapabilities>) getObject(ButtonCapabilities.class, KEY_BUTTON_CAPABILITIES);
     }
 
-    public void setButtonCapabilities(List<ButtonCapabilities> buttonCapabilities) {
+    public SetDisplayLayoutResponse setButtonCapabilities( List<ButtonCapabilities> buttonCapabilities) {
         setParameters(KEY_BUTTON_CAPABILITIES, buttonCapabilities);
+        return this;
     }
 
     @SuppressWarnings("unchecked")
@@ -105,8 +107,9 @@ public class SetDisplayLayoutResponse extends RPCResponse {
         return (List<SoftButtonCapabilities>) getObject(SoftButtonCapabilities.class, KEY_SOFT_BUTTON_CAPABILITIES);
     }
 
-    public void setSoftButtonCapabilities(List<SoftButtonCapabilities> softButtonCapabilities) {
+    public SetDisplayLayoutResponse setSoftButtonCapabilities( List<SoftButtonCapabilities> softButtonCapabilities) {
         setParameters(KEY_SOFT_BUTTON_CAPABILITIES, softButtonCapabilities);
+        return this;
     }
 
     @SuppressWarnings("unchecked")
@@ -114,8 +117,9 @@ public class SetDisplayLayoutResponse extends RPCResponse {
         return (PresetBankCapabilities) getObject(PresetBankCapabilities.class, KEY_PRESET_BANK_CAPABILITIES);
     }
 
-    public void setPresetBankCapabilities(PresetBankCapabilities presetBankCapabilities) {
+    public SetDisplayLayoutResponse setPresetBankCapabilities( PresetBankCapabilities presetBankCapabilities) {
         setParameters(KEY_PRESET_BANK_CAPABILITIES, presetBankCapabilities);
+        return this;
     }
     
 }

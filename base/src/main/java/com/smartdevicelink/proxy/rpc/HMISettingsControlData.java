@@ -59,11 +59,12 @@ public class HMISettingsControlData extends RPCStruct {
 	 *
 	 * @param displayMode the display mode (DAY, NIGHT, AUTO)  of screen on the respective module
 	 *
-	 * @see com.smartdevicelink.proxy.rpc.enums.DisplayMode
+	 * @see DisplayMode
 	 */
-	public void setDisplayMode(DisplayMode displayMode) {
-		setValue(KEY_DISPLAY_MODE, displayMode);
-	}
+	public HMISettingsControlData setDisplayMode( DisplayMode displayMode) {
+        setValue(KEY_DISPLAY_MODE, displayMode);
+        return this;
+    }
 
 	/**
 	 * Gets the displayMode portion of the HMISettingsControlData class
@@ -81,11 +82,12 @@ public class HMISettingsControlData extends RPCStruct {
 	 *
 	 * @param temperatureUnit enum value of temperature unit associated with the display of the current module
 	 *
-	 * @see com.smartdevicelink.proxy.rpc.enums.TemperatureUnit
+	 * @see TemperatureUnit
 	 */
-	public void setTemperatureUnit(TemperatureUnit temperatureUnit) {
-		setValue(KEY_TEMPERATURE_UNIT, temperatureUnit);
-	}
+	public HMISettingsControlData setTemperatureUnit( TemperatureUnit temperatureUnit) {
+        setValue(KEY_TEMPERATURE_UNIT, temperatureUnit);
+        return this;
+    }
 
 	/**
 	 * Gets the temperatureUnit portion of the HMISettingsControlData class
@@ -103,11 +105,12 @@ public class HMISettingsControlData extends RPCStruct {
 	 *
 	 * @param distanceUnit enum value of distance unit associated with the display of the current module
 	 *
-	 * @see com.smartdevicelink.proxy.rpc.enums.DistanceUnit
+	 * @see DistanceUnit
 	 */
-	public void setDistanceUnit(DistanceUnit distanceUnit) {
-		setValue(KEY_DISTANCE_UNIT, distanceUnit);
-	}
+	public HMISettingsControlData setDistanceUnit( DistanceUnit distanceUnit) {
+        setValue(KEY_DISTANCE_UNIT, distanceUnit);
+        return this;
+    }
 
 	/**
 	 * Gets the distanceUnit portion of the HMISettingsControlData class

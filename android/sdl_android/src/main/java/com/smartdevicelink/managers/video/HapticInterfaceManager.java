@@ -65,7 +65,7 @@ class HapticInterfaceManager extends BaseHapticInterfaceManager {
             ISdl proxy = proxyHolder.get();
             SendHapticData msg = new SendHapticData();
             msg.setHapticRectData(userHapticData);
-            proxy.sendRPCRequest(msg);
+            proxy.sendRPC(msg);
         }
     }
 
@@ -99,8 +99,10 @@ class HapticInterfaceManager extends BaseHapticInterfaceManager {
 
         if (proxyHolder.get() != null) {
             ISdl proxy = proxyHolder.get();
-            VideoStreamingCapability videoStreamingCapability = (VideoStreamingCapability)
-                    proxy.getCapability(SystemCapabilityType.VIDEO_STREAMING);
+            VideoStreamingCapability videoStreamingCapability = null;
+            if (proxy.getSystemCapabilityManager() != null) {
+                videoStreamingCapability = (VideoStreamingCapability) proxy.getSystemCapabilityManager().getCapability(SystemCapabilityType.VIDEO_STREAMING, null, false);
+            }
             if (videoStreamingCapability != null && videoStreamingCapability.getScale() != null) {
                 scale = videoStreamingCapability.getScale();
             }

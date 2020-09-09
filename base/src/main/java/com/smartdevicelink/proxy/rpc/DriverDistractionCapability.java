@@ -87,8 +87,9 @@ public class DriverDistractionCapability extends RPCStruct {
      *
      * @param menuLength The number of items allowed in a Choice Set or Command menu while the driver is distracted
      */
-    public void setMenuLength(Integer menuLength) {
+    public DriverDistractionCapability setMenuLength( Integer menuLength) {
         setValue(KEY_MENU_LENGTH, menuLength);
+        return this;
     }
 
     /**
@@ -106,8 +107,9 @@ public class DriverDistractionCapability extends RPCStruct {
      * @param subMenuDepth The depth of submenus allowed when the driver is distracted. e.g. 3 == top level menu ->
      * submenu -> submenu; 1 == top level menu only
      */
-    public void setSubMenuDepth(Integer subMenuDepth) {
+    public DriverDistractionCapability setSubMenuDepth( Integer subMenuDepth) {
         setValue(KEY_SUB_MENU_DEPTH, subMenuDepth);
+        return this;
     }
 
     /**

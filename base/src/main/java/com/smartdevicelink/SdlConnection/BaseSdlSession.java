@@ -32,6 +32,8 @@
 
 package com.smartdevicelink.SdlConnection;
 
+import androidx.annotation.RestrictTo;
+
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.lifecycle.RpcConverter;
 import com.smartdevicelink.protocol.ISdlProtocol;
@@ -56,6 +58,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializedListener {
 
     private static final String TAG = "SdlSession";
@@ -375,12 +378,4 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
     public boolean isTransportForServiceAvailable(SessionType sessionType){
         return sdlProtocol!=null && sdlProtocol.isTransportForServiceAvailable(sessionType);
     }
-
-
-    @Deprecated
-    public void clearConnection(){/* Not supported */}
-
-
-
-
 }

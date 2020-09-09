@@ -32,9 +32,11 @@
 package com.smartdevicelink.protocol;
 
 
+import androidx.annotation.RestrictTo;
+
 import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.DebugTool;
-
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class BinaryFrameHeader {
 	private static final String TAG = "BinaryFrameHeader";
 

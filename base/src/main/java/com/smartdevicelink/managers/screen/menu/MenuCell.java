@@ -116,24 +116,6 @@ public class MenuCell implements Cloneable{
 	 * Creates a new MenuCell Object with multiple parameters set
 	 * <strong>NOTE: because this has sub-cells, there does not need to be a listener</strong>
 	 * @param title The cell's primary text
-	 * @param icon The cell's image
-	 * @param subCells The sub-cells for the sub menu that will appear when the cell is selected
-	 *
-	 * @deprecated use {@link #MenuCell(String, MenuLayout, SdlArtwork, List)}
-	 */
-	@Deprecated
-	public MenuCell(@NonNull String title, @Nullable SdlArtwork icon, @Nullable List<MenuCell> subCells) {
-		setTitle(title); // title is the only required param
-		setIcon(icon);
-		setSubCells(subCells);
-		setCellId(MAX_ID);
-		setParentCellId(MAX_ID);
-	}
-
-	/**
-	 * Creates a new MenuCell Object with multiple parameters set
-	 * <strong>NOTE: because this has sub-cells, there does not need to be a listener</strong>
-	 * @param title The cell's primary text
 	 * @param subMenuLayout The submenu's layout that the subCells will be shown in. If `null`, the
 	 *                      default submenu layout in the screen manager's `MenuConfiguration` will be used.
 	 * @param icon The cell's image

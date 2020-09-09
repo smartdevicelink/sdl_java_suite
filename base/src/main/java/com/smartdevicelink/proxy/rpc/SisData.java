@@ -63,9 +63,10 @@ public class SisData extends RPCStruct {
 	 *
 	 * @param stationShortName Identifies the 4-alpha-character station call sign plus an optional (-FM) extension.
 	 */
-	public void setStationShortName(String stationShortName) {
-		setValue(KEY_STATION_SHORT_NAME, stationShortName);
-	}
+	public SisData setStationShortName( String stationShortName) {
+        setValue(KEY_STATION_SHORT_NAME, stationShortName);
+        return this;
+    }
 
 	/**
 	 * Gets the stationShortName portion of the SisData class
@@ -81,9 +82,10 @@ public class SisData extends RPCStruct {
 	 *
 	 * @param stationIDNumber Consists of Country Code and FCC Facility ID
 	 */
-	public void setStationIDNumber(StationIDNumber stationIDNumber) {
-		setValue(KEY_STATION_ID_NUMBER, stationIDNumber);
-	}
+	public SisData setStationIDNumber( StationIDNumber stationIDNumber) {
+        setValue(KEY_STATION_ID_NUMBER, stationIDNumber);
+        return this;
+    }
 
 	/**
 	 * Gets the stationIDNumber which is used for network Application. Consists of Country Code and FCC Facility ID
@@ -100,9 +102,10 @@ public class SisData extends RPCStruct {
 	 *
 	 * @param stationLongName Identifies the station call sign or other identifying information in the long format.
 	 */
-	public void setStationLongName(String stationLongName) {
-		setValue(KEY_STATION_LONG_NAME, stationLongName);
-	}
+	public SisData setStationLongName( String stationLongName) {
+        setValue(KEY_STATION_LONG_NAME, stationLongName);
+        return this;
+    }
 
 	/**
 	 * Gets the stationLongName portion of the SisData class
@@ -118,9 +121,10 @@ public class SisData extends RPCStruct {
 	 *
 	 * @param stationLocation Provides the 3-dimensional geographic station location.
 	 */
-	public void setStationLocation(GPSData stationLocation) {
-		setValue(KEY_STATION_LOCATION, stationLocation);
-	}
+	public SisData setStationLocation( GPSData stationLocation) {
+        setValue(KEY_STATION_LOCATION, stationLocation);
+        return this;
+    }
 
 	/**
 	 * Gets the stationLocation portion of the SisData class
@@ -138,9 +142,10 @@ public class SisData extends RPCStruct {
 	 * @param stationMessage May be used to convey textual information of general interest to the consumer such as weather forecasts or public service announcements.
 	 *                       Includes a high priority delivery feature to convey emergencies that may be in the listening area.
 	 */
-	public void setStationMessage(String stationMessage) {
-		setValue(KEY_STATION_MESSAGE, stationMessage);
-	}
+	public SisData setStationMessage( String stationMessage) {
+        setValue(KEY_STATION_MESSAGE, stationMessage);
+        return this;
+    }
 
 	/**
 	 * Gets the stationMessage portion of the SisData class

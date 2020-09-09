@@ -124,9 +124,10 @@ public class StartTime extends RPCStruct {
      * Set the hour. Minvalue="0", maxvalue="59"
  *					<p><b>Note:</b></p>Some display types only support a max value of 19. If out of range, it will be rejected.
      * @param hours min: 0; max: 59
-     */    
-    public void setHours(@NonNull Integer hours ) {
+     */
+    public StartTime setHours(@NonNull Integer hours) {
         setValue(KEY_HOURS, hours);
+        return this;
     }
     /**
      * Get the minute. Minvalue="0", maxvalue="59".
@@ -138,9 +139,10 @@ public class StartTime extends RPCStruct {
     /**
      * Set the minute. Minvalue="0", maxvalue="59".
      * @param minutes min: 0; max: 59
-     */    
-    public void setMinutes( @NonNull Integer minutes ) {
+     */
+    public StartTime setMinutes(@NonNull Integer minutes) {
         setValue(KEY_MINUTES, minutes);
+        return this;
     }
     /**
      * Get the second. Minvalue="0", maxvalue="59".
@@ -152,8 +154,9 @@ public class StartTime extends RPCStruct {
     /**
      * Set the second. Minvalue="0", maxvalue="59".
      * @param seconds min: 0 max: 59
-     */    
-    public void setSeconds( @NonNull Integer seconds ) {
+     */
+    public StartTime setSeconds(@NonNull Integer seconds) {
         setValue(KEY_SECONDS, seconds);
+        return this;
     }
 }

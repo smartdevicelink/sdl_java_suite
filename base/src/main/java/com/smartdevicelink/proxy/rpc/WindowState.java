@@ -104,8 +104,9 @@ public class WindowState extends RPCStruct {
      * @param approximatePosition The approximate percentage that the window is open - 0 being fully closed, 100 being fully
      * open
      */
-    public void setApproximatePosition(@NonNull Integer approximatePosition) {
+    public WindowState setApproximatePosition(@NonNull Integer approximatePosition) {
         setValue(KEY_APPROXIMATE_POSITION, approximatePosition);
+        return this;
     }
 
     /**
@@ -124,8 +125,9 @@ public class WindowState extends RPCStruct {
      * @param deviation The percentage deviation of the approximatePosition. e.g. If the approximatePosition is 50
      * and the deviation is 10, then the window's location is somewhere between 40 and 60.
      */
-    public void setDeviation(@NonNull Integer deviation) {
+    public WindowState setDeviation(@NonNull Integer deviation) {
         setValue(KEY_DEVIATION, deviation);
+        return this;
     }
 
     /**

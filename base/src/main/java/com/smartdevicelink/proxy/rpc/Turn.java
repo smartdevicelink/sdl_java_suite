@@ -77,12 +77,13 @@ public class Turn extends RPCStruct{
 
     /**
      * set the text to describe the turn (e.g. streetname)
-     * 
+     *
      * @param navigationText
      *            the text to describe the turn (e.g. streetname)
      */
-    public void setNavigationText(String navigationText){
+    public Turn setNavigationText( String navigationText) {
         setValue(KEY_NAVIGATION_TEXT, navigationText);
+        return this;
     }
 
     /**
@@ -96,12 +97,13 @@ public class Turn extends RPCStruct{
 
     /**
      * set Image to be shown for a turn
-     * 
+     *
      * @param turnIcon
      *            the image to be shown for a turn
      */
-    public void setTurnIcon(Image turnIcon){
+    public Turn setTurnIcon( Image turnIcon) {
         setValue(KEY_TURN_IMAGE, turnIcon);
+        return this;
     }
 
     /**

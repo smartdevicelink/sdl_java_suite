@@ -31,6 +31,7 @@
       "fuelRange":true,
       "turnSignal":true,
       "electronicParkBrakeStatus":true,
+      "stabilityControlsStatus": true,
       "gearStatus": true,
       "oemCustomVehicleDataName":true,
       "windowStatus": true,
@@ -155,6 +156,10 @@
       },
       "handsOffSteering":{
         "dataType":"VEHICLEDATA_HANDSOFFSTEERING",
+        "resultCode":"SUCCESS"
+      },
+      "stabilityControlsStatus":{
+        "dataType":"VEHICLEDATA_STABILITYCONTROLSSTATUS",
         "resultCode":"SUCCESS"
       },
       "gearStatus":{

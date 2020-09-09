@@ -180,7 +180,7 @@ public class Speak extends RPCRequest {
 	/**
 	 * Sets a List<TTSChunk> representing an array of 1-100 TTSChunk structs
 	 * which, taken together, specify the phrase to be spoken
-	 * 
+	 *
 	 * @param ttsChunks
 	 *            a List<TTSChunk> value representing an array of 1-100 TTSChunk structs
 	 * which specify the phrase to be spoken
@@ -192,8 +192,9 @@ public class Speak extends RPCRequest {
 	 *            be rejected</li>
 	 *            <li>Each chunk can be no more than 500 characters</li>
 	 *            </ul>
-	 */    
-    public void setTtsChunks( @NonNull List<TTSChunk> ttsChunks ) {
-		setParameters(KEY_TTS_CHUNKS, ttsChunks);
+	 */
+    public Speak setTtsChunks(@NonNull List<TTSChunk> ttsChunks) {
+        setParameters(KEY_TTS_CHUNKS, ttsChunks);
+        return this;
     }
 }

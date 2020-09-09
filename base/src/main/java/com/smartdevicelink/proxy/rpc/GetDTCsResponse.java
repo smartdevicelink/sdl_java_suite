@@ -74,16 +74,18 @@ public class GetDTCsResponse extends RPCResponse{
         return (List<String>) getObject(String.class, KEY_DTC);
     }
 
-    public void setDtc(List<String> dtc){
+    public GetDTCsResponse setDtc( List<String> dtc) {
         setParameters(KEY_DTC, dtc);
+        return this;
     }
     
     public Integer getEcuHeader(){
         return getInteger(KEY_ECU_HEADER);
     }
     
-    public void setEcuHeader(Integer ecuHeader){
+    public GetDTCsResponse setEcuHeader( Integer ecuHeader) {
         setParameters(KEY_ECU_HEADER, ecuHeader);
+        return this;
     }
 
 }

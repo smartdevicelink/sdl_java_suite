@@ -121,10 +121,11 @@ public class UnsubscribeButton extends RPCRequest {
     }
 	/**
 	 * Sets the name of the button to unsubscribe from
-	 * 
-	 * @param buttonName an enum value, see <i> {@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonName}</i>
+	 *
+	 * @param buttonName an enum value, see <i> {@linkplain ButtonName}</i>
 	 */
-    public void setButtonName(@NonNull ButtonName buttonName ) {
-		setParameters(KEY_BUTTON_NAME, buttonName);
+    public UnsubscribeButton setButtonName(@NonNull ButtonName buttonName) {
+        setParameters(KEY_BUTTON_NAME, buttonName);
+        return this;
     }
 }

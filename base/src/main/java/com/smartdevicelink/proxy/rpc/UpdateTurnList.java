@@ -75,14 +75,15 @@ public class UpdateTurnList extends RPCRequest{
     
     /**
      * Sets a list of turns to be shown to the user
-     * 
+     *
      * @param turnList
      *            a List<Turn> value representing a list of turns to be shown to the user
      *            <p>
      *            <b>Notes: </b>Minsize=1; Maxsize=100</p>
      */
-    public void setTurnList(List<Turn> turnList){
+    public UpdateTurnList setTurnList( List<Turn> turnList) {
         setParameters(KEY_TURN_LIST, turnList);
+        return this;
     }
     
     /**
@@ -108,7 +109,7 @@ public class UpdateTurnList extends RPCRequest{
 
     /**
      * Sets the SoftButtons
-     * 
+     *
      * @param softButtons
      *            a List<SoftButton> value
      *            <p>
@@ -121,8 +122,9 @@ public class UpdateTurnList extends RPCRequest{
      * @since SmartDeviceLink 2.0
      */
 
-    public void setSoftButtons(List<SoftButton> softButtons){
+    public UpdateTurnList setSoftButtons( List<SoftButton> softButtons) {
         setParameters(KEY_SOFT_BUTTONS, softButtons);
+        return this;
     }
 
 }

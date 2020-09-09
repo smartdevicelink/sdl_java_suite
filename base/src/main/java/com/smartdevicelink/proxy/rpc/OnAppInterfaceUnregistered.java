@@ -105,8 +105,9 @@ public class OnAppInterfaceUnregistered extends RPCNotification {
     /**
      * <p>Set the reason application's interface was terminated</p>
      * @param reason The reason application's interface registration was terminated
-     */    
-    public void setReason( @NonNull AppInterfaceUnregisteredReason reason ) {
+     */
+    public OnAppInterfaceUnregistered setReason(@NonNull AppInterfaceUnregisteredReason reason) {
         setParameters(KEY_REASON, reason);
+        return this;
     }
 }

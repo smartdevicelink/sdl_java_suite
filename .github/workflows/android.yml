@@ -28,13 +28,13 @@ jobs:
       run: ./android/gradlew -p ./android/hello_sdl_android test
       
     - name: Sdl JavaSE Tests
-      run: ./javaSE/gradlew -p ./javaSE test
+      run: ./javaSE/gradlew -p ./javaSE/javaSE test
       
     - name: Hello Sdl JavaSE Tests
-      run: ./hello_sdl_java/gradlew -p ./hello_sdl_java test
+      run: ./javaSE/gradlew -p ./javaSE/hello_sdl_java test
     
     - name: Sdl JavaEE Tests
-      run: ./javaEE/gradlew -p ./javaEE test
+      run: ./javaEE/gradlew -p ./javaEE/javaEE test
 
     - name: RPC Generator Tests
       run: |

@@ -148,14 +148,15 @@ public class CreateInteractionChoiceSet extends RPCRequest {
     }
 	/**
 	 * Sets a unique ID that identifies the Choice Set
-	 * 
+	 *
 	 * @param interactionChoiceSetID
 	 *            an Integer value representing the Choice Set ID
-	 *            
+	 *
 	 *            <b>Notes: </b>Min Value: 0; Max Value: 2000000000
-	 */    
-    public void setInteractionChoiceSetID( @NonNull Integer interactionChoiceSetID ) {
-		setParameters(KEY_INTERACTION_CHOICE_SET_ID, interactionChoiceSetID);
+	 */
+    public CreateInteractionChoiceSet setInteractionChoiceSetID(@NonNull Integer interactionChoiceSetID) {
+        setParameters(KEY_INTERACTION_CHOICE_SET_ID, interactionChoiceSetID);
+        return this;
     }
 	/**
 	 * Gets Choice Set Array of one or more elements
@@ -169,14 +170,15 @@ public class CreateInteractionChoiceSet extends RPCRequest {
     }
 	/**
 	 * Sets a Choice Set that is an Array of one or more elements
-	 * 
+	 *
 	 * @param choiceSet
 	 *            a List<Choice> representing the array of one or more
 	 *            elements
-	 *            
+	 *
 	 *            <b>Notes: </b>Min Value: 1; Max Value: 100
-	 */    
-    public void setChoiceSet( @NonNull List<Choice> choiceSet ) {
-		setParameters(KEY_CHOICE_SET, choiceSet);
+	 */
+    public CreateInteractionChoiceSet setChoiceSet(@NonNull List<Choice> choiceSet) {
+        setParameters(KEY_CHOICE_SET, choiceSet);
+        return this;
     }
 }

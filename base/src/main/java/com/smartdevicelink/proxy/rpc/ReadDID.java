@@ -139,14 +139,15 @@ public class ReadDID extends RPCRequest {
 
 	/**
 	 * Sets an ID of the vehicle module
-	 * 
+	 *
 	 * @param ecuName
 	 *            an Integer value representing the ID of the vehicle module
 	 *            <p></p>
 	 *            <b>Notes: </b>Minvalue:0; Maxvalue:65535
 	 */
-    public void setEcuName(@NonNull Integer ecuName) {
-		setParameters(KEY_ECU_NAME, ecuName);
+    public ReadDID setEcuName(@NonNull Integer ecuName) {
+        setParameters(KEY_ECU_NAME, ecuName);
+        return this;
     }
 
 	/**
@@ -161,7 +162,7 @@ public class ReadDID extends RPCRequest {
 
 	/**
 	 * Sets raw data from vehicle data DID location(s)
-	 * 
+	 *
 	 * @param didLocation
 	 *            a List<Integer> value representing raw data from vehicle
 	 *            data DID location(s)
@@ -172,8 +173,9 @@ public class ReadDID extends RPCRequest {
 	 *            <li>ArrayMin:0; ArrayMax:1000</li>
 	 *            </ul>
 	 */
-    public void setDidLocation(@NonNull List<Integer> didLocation) {
-		setParameters(KEY_DID_LOCATION, didLocation);
+    public ReadDID setDidLocation(@NonNull List<Integer> didLocation) {
+        setParameters(KEY_DID_LOCATION, didLocation);
+        return this;
     }
 
 	/**

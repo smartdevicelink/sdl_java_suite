@@ -77,9 +77,10 @@ public class EqualizerSettings extends RPCStruct {
 	 *
 	 * @param channelId ID that represents the channel these settings should be applied
 	 */
-	public void setChannelId(@NonNull Integer channelId) {
-		setValue(KEY_CHANNEL_ID, channelId);
-	}
+	public EqualizerSettings setChannelId(@NonNull Integer channelId) {
+        setValue(KEY_CHANNEL_ID, channelId);
+        return this;
+    }
 
 	/**
 	 * Gets the channelId portion of the EqualizerSettings class
@@ -95,9 +96,10 @@ public class EqualizerSettings extends RPCStruct {
 	 *
 	 * @param channelName Read-only channel / frequency name (e.i. "Treble, Midrange, Bass" or "125 Hz").
 	 */
-	public void setChannelName(String channelName) {
-		setValue(KEY_CHANNEL_NAME, channelName);
-	}
+	public EqualizerSettings setChannelName( String channelName) {
+        setValue(KEY_CHANNEL_NAME, channelName);
+        return this;
+    }
 
 	/**
 	 * Gets the channelName portion of the EqualizerSettings class
@@ -113,9 +115,10 @@ public class EqualizerSettings extends RPCStruct {
 	 *
 	 * @param channelSetting Reflects the setting, from 0%-100%.
 	 */
-	public void setChannelSetting(@NonNull Integer channelSetting) {
-		setValue(KEY_CHANNEL_SETTING, channelSetting);
-	}
+	public EqualizerSettings setChannelSetting(@NonNull Integer channelSetting) {
+        setValue(KEY_CHANNEL_SETTING, channelSetting);
+        return this;
+    }
 
 	/**
 	 * Gets the channelSetting portion of the EqualizerSettings class
