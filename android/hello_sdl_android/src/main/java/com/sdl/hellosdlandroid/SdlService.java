@@ -12,11 +12,11 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.smartdevicelink.managers.CompletionListener;
-import com.smartdevicelink.managers.screen.OnButtonListener;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
+import com.smartdevicelink.managers.screen.OnButtonListener;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceSet;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceSetSelectionListener;
