@@ -125,14 +125,6 @@ public class TransportManager extends TransportManagerBase{
         }
     }
 
-    @Override
-    @Deprecated
-    public void resetSession(){
-       if(transport != null){
-           transport.resetSession();
-       }
-    }
-
     /**
      * Check to see if a transport is connected.
      * @param transportType the transport to have its connection status returned. If `null` is
@@ -222,14 +214,6 @@ public class TransportManager extends TransportManagerBase{
         return config;
     }
 
-    @Deprecated
-    public ComponentName getRouterService(){
-        if(transport != null) {
-            return transport.getRouterService();
-        }
-        return null;
-    }
-
     @Override
     public void sendPacket(SdlPacket packet){
         if(transport !=null){
@@ -247,11 +231,6 @@ public class TransportManager extends TransportManagerBase{
         }else if(legacyBluetoothTransport != null){
             DebugTool.logWarning(TAG, "Session requested for non-bluetooth transport while in legacy mode");
         }
-    }
-
-    @Deprecated
-    public void requestSecondaryTransportConnection(byte sessionId, Bundle params){
-        transport.requestSecondaryTransportConnection(sessionId, (Bundle)params);
     }
 
     @Override
@@ -282,13 +261,6 @@ public class TransportManager extends TransportManagerBase{
         boolean shuttingDown = false;
         public TransportBrokerImpl(Context context, String appId, ComponentName routerService){
             super(context,appId,routerService);
-        }
-
-        @SuppressWarnings("deprecation")
-        @Override
-        @Deprecated
-        public boolean onHardwareConnected(TransportType transportType){
-            return false;
         }
 
         @Override

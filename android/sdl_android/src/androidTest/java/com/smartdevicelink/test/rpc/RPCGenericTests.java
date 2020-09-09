@@ -362,7 +362,7 @@ public class RPCGenericTests {
             }
             stream.close();
         } catch (IOException | XmlPullParserException e) {
-            fail("Cannot parse mobile APIs XML file: " + e.getMessage());
+            fail("Cannot parse mobile APIs XML file. Please make sure that the RPC Spec submodule is initialized: " + e.getMessage());
         }
         return rpcParamsMap;
     }

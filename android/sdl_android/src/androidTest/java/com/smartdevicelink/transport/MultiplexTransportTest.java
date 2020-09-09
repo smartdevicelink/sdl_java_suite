@@ -1,5 +1,6 @@
 package com.smartdevicelink.transport;
 
+import android.content.ComponentName;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -25,7 +26,12 @@ public class MultiplexTransportTest {
 	public void setUp() throws Exception {
 		rsvp = new RouterServiceValidator(getInstrumentation().getTargetContext());
 		rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_NONE);
-		rsvp.validate();
+		rsvp.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
+			@Override
+			public void onFinishedValidation(boolean valid, ComponentName name) {
+
+			}
+		});
 
 		
 	}

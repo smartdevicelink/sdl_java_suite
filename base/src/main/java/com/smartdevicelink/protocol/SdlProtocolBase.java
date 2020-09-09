@@ -192,13 +192,8 @@ public class SdlProtocolBase {
         return mtu;
     }
 
+    @Deprecated
     public void resetSession (){
-        synchronized (TRANSPORT_MANAGER_LOCK) {
-            if (transportManager == null) {
-                throw new IllegalStateException("Attempting to reset session without setting a transport manager.");
-            }
-            transportManager.resetSession();
-        }
     }
 
     public boolean isConnected(){
