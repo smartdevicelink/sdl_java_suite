@@ -49,8 +49,8 @@ import java.util.Collections;
 
 class CheckChoiceVROptionalOperation extends Task {
 	private static final String TAG = "CheckChoiceVROptionalOperation";
-	private CheckChoiceVROptionalInterface checkChoiceVROptionalInterface;
-	private WeakReference<ISdl> internalInterface;
+	private final CheckChoiceVROptionalInterface checkChoiceVROptionalInterface;
+	private final WeakReference<ISdl> internalInterface;
 	private boolean isVROptional;
 
 	CheckChoiceVROptionalOperation(ISdl internalInterface, CheckChoiceVROptionalInterface checkChoiceVROptionalInterface){

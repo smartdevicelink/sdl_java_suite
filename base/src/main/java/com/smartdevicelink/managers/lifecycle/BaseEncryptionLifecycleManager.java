@@ -53,12 +53,12 @@ import java.util.Set;
 
 abstract class BaseEncryptionLifecycleManager {
     private static final String TAG = "BaseEncryptionLifecycleManager";
-    private ISdl internalInterface;
+    private final ISdl internalInterface;
     private ServiceEncryptionListener serviceEncryptionListener;
     private HMILevel currentHMILevel;
-    private Set<String> encryptionRequiredRPCs = new HashSet<>();
+    private final Set<String> encryptionRequiredRPCs = new HashSet<>();
     private boolean rpcSecuredServiceStarted;
-    ISdlServiceListener securedServiceListener;
+    final ISdlServiceListener securedServiceListener;
 
     BaseEncryptionLifecycleManager(@NonNull ISdl isdl, ServiceEncryptionListener listener) {
         internalInterface = isdl;

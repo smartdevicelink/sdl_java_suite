@@ -63,19 +63,20 @@ import java.util.List;
 
 class PresentChoiceSetOperation extends Task {
 	private static final String TAG = "PresentChoiceSetOperation";
-	private WeakReference<ISdl> internalInterface;
-	private ChoiceSet choiceSet;
-	private Integer cancelID;
-	private InteractionMode presentationMode;
-	private KeyboardProperties originalKeyboardProperties, keyboardProperties;
+	private final WeakReference<ISdl> internalInterface;
+	private final ChoiceSet choiceSet;
+	private final Integer cancelID;
+	private final InteractionMode presentationMode;
+	private final KeyboardProperties originalKeyboardProperties;
+	private KeyboardProperties keyboardProperties;
 	private ChoiceCell selectedCell;
 	private TriggerSource selectedTriggerSource;
 	private boolean updatedKeyboardProperties;
 	private OnRPCNotificationListener keyboardRPCListener;
-	private ChoiceSetSelectionListener choiceSetSelectionListener;
+	private final ChoiceSetSelectionListener choiceSetSelectionListener;
 	Integer selectedCellRow;
 	KeyboardListener keyboardListener;
-	SdlMsgVersion sdlMsgVersion;
+	final SdlMsgVersion sdlMsgVersion;
 
 	PresentChoiceSetOperation(ISdl internalInterface, ChoiceSet choiceSet, InteractionMode mode,
 									 KeyboardProperties originalKeyboardProperties, KeyboardListener keyboardListener, ChoiceSetSelectionListener choiceSetSelectionListener, Integer cancelID){

@@ -33,9 +33,9 @@ class TextAndGraphicUpdateOperation extends Task {
     private final WeakReference<FileManager> fileManager;
     WindowCapability defaultMainWindowCapability;
     private Show currentScreenData;
-    private TextsAndGraphicsState updatedState;
-    private CompletionListener listener;
-    private TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener;
+    private final TextsAndGraphicsState updatedState;
+    private final CompletionListener listener;
+    private final TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener;
 
     TextAndGraphicUpdateOperation(ISdl internalInterface, FileManager fileManager, WindowCapability currentCapabilities,
                                          Show currentScreenData, TextsAndGraphicsState newState, CompletionListener listener, TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener) {

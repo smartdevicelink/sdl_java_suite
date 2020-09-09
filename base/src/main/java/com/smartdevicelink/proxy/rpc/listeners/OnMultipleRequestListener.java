@@ -60,8 +60,8 @@ public abstract class OnMultipleRequestListener extends OnRPCResponseListener {
 		};
 	}
 
-	public void addCorrelationId(int correlationid){
-		correlationIds.add(correlationid);
+	public void addCorrelationId(int correlationId){
+		correlationIds.add(correlationId);
 	}
 	/**
 	 * onUpdate is called during multiple stream request

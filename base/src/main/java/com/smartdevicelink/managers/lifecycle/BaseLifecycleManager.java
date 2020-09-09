@@ -110,7 +110,7 @@ abstract class BaseLifecycleManager {
             ON_NOTIFICATION_LISTENER_LOCK = new Object();
 
     SdlSession session;
-    AppConfig appConfig;
+    final AppConfig appConfig;
     Version rpcSpecVersion = MAX_SUPPORTED_RPC_VERSION;
     HashMap<Integer, CopyOnWriteArrayList<OnRPCListener>> rpcListeners;
     HashMap<Integer, OnRPCResponseListener> rpcResponseListeners;
@@ -121,11 +121,11 @@ abstract class BaseLifecycleManager {
     RegisterAppInterfaceResponse raiResponse = null;
     private OnHMIStatus currentHMIStatus;
     boolean firstTimeFull = true;
-    LifecycleListener lifecycleListener;
+    final LifecycleListener lifecycleListener;
     private List<Class<? extends SdlSecurityBase>> _secList = null;
     private String authToken;
-    Version minimumProtocolVersion;
-    Version minimumRPCVersion;
+    final Version minimumProtocolVersion;
+    final Version minimumRPCVersion;
     BaseTransportConfig _transportConfig;
     private Taskmaster taskmaster;
 
@@ -270,7 +270,7 @@ abstract class BaseLifecycleManager {
      * This method is used to ensure all of the methods in this class can remain private and no grantees can be made
      * to the developer what methods are available or not.
      *
-     * <b>NOTE: THERE IS NO GURANTEE THIS WILL BE A VALID SYSTEM CAPABILITY MANAGER</b>
+     * <b>NOTE: THERE IS NO GUARANTEE THIS WILL BE A VALID SYSTEM CAPABILITY MANAGER</b>
      *
      * @param sdlManager this must be a working manager instance
      * @return the system capability manager.
@@ -347,7 +347,7 @@ abstract class BaseLifecycleManager {
         addRpcListener(FunctionID.UNREGISTER_APP_INTERFACE, rpcListener);
     }
 
-    private OnRPCListener rpcListener = new OnRPCListener() {
+    private final OnRPCListener rpcListener = new OnRPCListener() {
         @Override
         public void onReceived(RPCMessage message) {
             //Make sure this is a response as expected
@@ -480,7 +480,10 @@ abstract class BaseLifecycleManager {
                     rpcListeners.put(id.getId(), new CopyOnWriteArrayList<OnRPCListener>());
                 }
 
-                rpcListeners.get(id.getId()).add(listener);
+                CopyOnWriteArrayList<OnRPCListener> listeners = rpcListeners.get(id.getId());
+                if (listeners != null) {
+                    listeners.add(listener);
+                }
             }
         }
     }
@@ -537,7 +540,6 @@ abstract class BaseLifecycleManager {
         }
     }
 
-    @SuppressWarnings("unused")
     private HashMap<Integer, OnRPCResponseListener> getResponseListeners() {
         synchronized (ON_UPDATE_LISTENER_LOCK) {
             return this.rpcResponseListeners;
@@ -590,7 +592,6 @@ abstract class BaseLifecycleManager {
      * @param notificationId The notification type that this listener is designated for
      * @param listener       The listener that will be called when a notification of the provided type is received
      */
-    @SuppressWarnings("unused")
     private void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
         synchronized (ON_NOTIFICATION_LISTENER_LOCK) {
             if (notificationId != null && listener != null) {
@@ -641,7 +642,6 @@ abstract class BaseLifecycleManager {
      * @param requestId The request type that this listener is designated for
      * @param listener  The listener that will be called when a request of the provided type is received
      */
-    @SuppressWarnings("unused")
     private void addOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener) {
         synchronized (ON_REQUEST_LISTENER_LOCK) {
             if (requestId != null && listener != null) {
