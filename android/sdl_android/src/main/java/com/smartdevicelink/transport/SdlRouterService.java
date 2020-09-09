@@ -70,11 +70,12 @@ import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.os.RemoteException;
-import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
 import android.util.AndroidRuntimeException;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
 
 import com.smartdevicelink.R;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;

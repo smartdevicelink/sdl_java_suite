@@ -41,19 +41,14 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
-import android.os.Debug;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.util.AndroidRuntimeException;
 
 import androidx.annotation.CallSuper;
 
-import com.smartdevicelink.R;
 import com.smartdevicelink.transport.RouterServiceValidator.TrustedListCallback;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.SdlDeviceListener;
