@@ -33,6 +33,7 @@
 package com.smartdevicelink.managers.file.filetypes;
 
 import com.smartdevicelink.test.TestValues;
+
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertEquals;
