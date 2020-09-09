@@ -151,7 +151,9 @@ abstract class BaseMenuManager extends BaseSubManager {
 		// remove listeners
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_COMMAND, commandListener);
-		internalInterface.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplaysCapabilityListener);
+		if (internalInterface.getSystemCapabilityManager() != null) {
+			internalInterface.getSystemCapabilityManager().removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplaysCapabilityListener);
+		}
 
 		super.dispose();
 	}
@@ -1020,7 +1022,9 @@ abstract class BaseMenuManager extends BaseSubManager {
 				defaultMainWindowCapability = null;
 			}
 		};
-		this.internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplaysCapabilityListener);
+		if (internalInterface.getSystemCapabilityManager() != null) {
+			this.internalInterface.getSystemCapabilityManager().addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplaysCapabilityListener);
+		}
 
 		// HMI UPDATES
 		hmiListener = new OnRPCNotificationListener() {
@@ -1299,7 +1303,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 			return;
 		}
 
-		internalInterface.sendRequests(deleteCommands, new OnMultipleRequestListener() {
+		internalInterface.sendRPCs(deleteCommands, new OnMultipleRequestListener() {
 			@Override
 			public void onUpdate(int remainingRequests) {
 

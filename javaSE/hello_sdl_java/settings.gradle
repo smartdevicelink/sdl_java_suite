@@ -1,4 +1,0 @@
-rootProject.name = 'hello_sdl_java'
-include ":sdl_java_se"
-project (":sdl_java_se").projectDir = new File("../javaSE/")
-
