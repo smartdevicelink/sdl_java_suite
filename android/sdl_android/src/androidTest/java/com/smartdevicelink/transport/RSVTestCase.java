@@ -45,6 +45,10 @@ public class RSVTestCase {
 	private static final String TEST =  "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] },\"com.ford.fordpass\" : { \"versionBlacklist\":[] } }}";
 	RouterServiceValidator rsvp;
 	private static final String APP_ID = "com.smartdevicelink.test.RSVTestCase";
+	/**
+	 * Set this boolean if you want to test the actual validation of router service
+	 */
+	boolean liveTest = false;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -72,6 +76,76 @@ public class RSVTestCase {
 			releaseTListLock();
 		}
 	};
+	
+/*
+ * These tests are a little strange because they don't test the logic behind the validation of each piece.
+ * However, they allow us to test
+ */
+
+	@Test
+	public void testInstalledFrom(){
+		if(liveTest){
+			rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_INSTALLED_FROM_CHECK);
+			rsvp.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
+				@Override
+				public void onFinishedValidation(boolean valid, ComponentName name) {
+					assertTrue(valid);
+				}
+			});
+		}
+	}
+
+	@Test
+	public void testPackageCheck(){
+		if(liveTest){
+			rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_PACKAGE_CHECK);
+			rsvp.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
+				@Override
+				public void onFinishedValidation(boolean valid, ComponentName name) {
+					assertTrue(valid);
+				}
+			});
+		}
+	}
+
+	@Test
+	public void testVersionCheck(){
+		if(liveTest){
+			rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_VERSION_CHECK);
+			rsvp.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
+				@Override
+				public void onFinishedValidation(boolean valid, ComponentName name) {
+					assertTrue(valid);
+				}
+			});
+		}
+	}
+
+	@Test
+	public void testNoFlags(){
+		if(liveTest){
+			rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_NONE);
+			rsvp.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
+				@Override
+				public void onFinishedValidation(boolean valid, ComponentName name) {
+					assertTrue(valid);
+				}
+			});
+		}
+	}
+
+	@Test
+	public void testAllFlags(){
+		if(liveTest){
+			rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_PERFORM_ALL_CHECKS);
+			rsvp.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
+				@Override
+				public void onFinishedValidation(boolean valid, ComponentName name) {
+					assertTrue(valid);
+				}
+			});
+		}
+	}
 
 	@Test
 	public void testSecuritySetting(){
@@ -143,7 +217,12 @@ public class RSVTestCase {
 	public void testNoSecurity(){
 		requestTListLock();
 
-		RouterServiceValidator rsvp = new RouterServiceValidator(getInstrumentation().getTargetContext()); //Use a locally scoped instance
+		RouterServiceValidator rsvp = new RouterServiceValidator(getInstrumentation().getTargetContext(), new ComponentName("anything", getInstrumentation().getTargetContext().getClass().getSimpleName())) {
+			@Override
+			protected boolean isServiceRunning(Context context, ComponentName service) {
+				return true;
+			}
+		};
 		rsvp.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
 		rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_INSTALLED_FROM_CHECK);
 		
@@ -152,6 +231,14 @@ public class RSVTestCase {
 		assertEquals(RouterServiceValidator.getRefreshRate(), REFRESH_TRUSTED_APP_LIST_TIME_WEEK);
 		
 		assertFalse(RouterServiceValidator.createTrustedListRequest(getInstrumentation().getTargetContext(), true, null, trustedListCallback));
+		
+		//This should always return true
+		rsvp.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
+			@Override
+			public void onFinishedValidation(boolean valid, ComponentName name) {
+				assertTrue(valid);
+			}
+		});
 		
 	}
 	
