@@ -187,8 +187,8 @@ public class SdlRouterServiceTests {
 
 			// We need a registered app for this to work
 			Message message = Message.obtain();
-			SdlRouterService.RegisteredApp app1 = sdlRouterService.new RegisteredApp("12345",message.replyTo);
-			SdlRouterService.RegisteredApp app2 = sdlRouterService.new RegisteredApp("12344",message.replyTo);
+			SdlRouterService.RegisteredApp app1 = sdlRouterService.new RegisteredApp("12345", 1, message.replyTo);
+			SdlRouterService.RegisteredApp app2 = sdlRouterService.new RegisteredApp("12344", 1, message.replyTo);
 			HashMap<String,SdlRouterService.RegisteredApp> registeredApps = new HashMap<>();
 			registeredApps.put(app1.getAppId(),app1);
 			registeredApps.put(app2.getAppId(),app2);
@@ -280,8 +280,8 @@ public class SdlRouterServiceTests {
 
 			// We need a registered app for this to work
 			Message message = Message.obtain();
-			SdlRouterService.RegisteredApp app1 = sdlRouterService.new RegisteredApp("12345",message.replyTo);
-			SdlRouterService.RegisteredApp app2 = sdlRouterService.new RegisteredApp("12344",message.replyTo);
+			SdlRouterService.RegisteredApp app1 = sdlRouterService.new RegisteredApp("12345", 1, message.replyTo);
+			SdlRouterService.RegisteredApp app2 = sdlRouterService.new RegisteredApp("12344", 1, message.replyTo);
 			HashMap<String,SdlRouterService.RegisteredApp> registeredApps = new HashMap<>();
 			registeredApps.put(app1.getAppId(),app1);
 			registeredApps.put(app2.getAppId(),app2);
@@ -688,7 +688,7 @@ public class SdlRouterServiceTests {
 	private void addDummyRegisteredApp(SdlRouterService routerService, String appId, int sessionId)
 			throws IllegalAccessException, NoSuchFieldException {
 		Message message = Message.obtain();
-		SdlRouterService.RegisteredApp app = routerService.new RegisteredApp(appId, message.replyTo);
+		SdlRouterService.RegisteredApp app = routerService.new RegisteredApp(appId, 1, message.replyTo);
 
 		Field raf = routerService.getClass().getDeclaredField("registeredApps");
 		raf.setAccessible(true);
