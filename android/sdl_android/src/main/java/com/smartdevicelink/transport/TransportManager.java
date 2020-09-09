@@ -97,7 +97,7 @@ public class TransportManager extends TransportManagerBase{
             @Override
             public void onFinishedValidation(boolean valid, ComponentName name) {
                 DebugTool.logInfo(TAG, "onFinishedValidation valid=" + valid + "; name=" + ((name == null)? "null" : name.getPackageName()));
-                if (valid) {
+                if (valid && name != null) {
                     mConfig.service = name;
                     transport = new TransportBrokerImpl(contextWeakReference.get(), mConfig.appId, mConfig.service);
                     DebugTool.logInfo(TAG, "TransportManager start was called; transport=" + transport);
