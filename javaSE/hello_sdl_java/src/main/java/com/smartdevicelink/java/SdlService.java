@@ -79,7 +79,7 @@ public class SdlService {
     private SdlManager sdlManager = null;
     private List<ChoiceCell> choiceCellList;
 
-    private SdlServiceCallback callback;
+    private final SdlServiceCallback callback;
 
     public SdlService(BaseTransportConfig config, SdlServiceCallback callback){
         this.callback = callback;
@@ -173,7 +173,7 @@ public class SdlService {
             };
 
 
-            HashMap<FunctionID,OnRPCNotificationListener> notificationListenerHashMap = new HashMap<FunctionID,OnRPCNotificationListener>();
+            HashMap<FunctionID,OnRPCNotificationListener> notificationListenerHashMap = new HashMap<>();
             notificationListenerHashMap.put(FunctionID.ON_HMI_STATUS, new OnRPCNotificationListener() {
                 @Override
                 public void onNotified(RPCNotification notification) {
