@@ -5,8 +5,9 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.ConditionVariable;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 import android.util.Log;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.transport.RouterServiceValidator.TrustedAppStore;
 import com.smartdevicelink.util.HttpRequestTask.HttpRequestTaskCallback;

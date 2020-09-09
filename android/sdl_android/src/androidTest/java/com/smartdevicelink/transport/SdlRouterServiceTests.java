@@ -5,10 +5,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.BinaryFrameHeader;
