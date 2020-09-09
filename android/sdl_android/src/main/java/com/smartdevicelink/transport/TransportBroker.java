@@ -49,6 +49,9 @@ import android.os.Parcelable;
 import android.os.RemoteException;
 import android.os.TransactionTooLargeException;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
+
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.ByteAraryMessageAssembler;
@@ -65,6 +68,7 @@ import java.util.List;
 import java.util.Locale;
 
 
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class TransportBroker {
 
     private static final String TAG = "SdlTransportBroker";
@@ -80,9 +84,9 @@ public class TransportBroker {
     private static final TransportRecord LEGACY_TRANSPORT_RECORD = new TransportRecord(TransportType.BLUETOOTH,null);
 
     private final String WHERE_TO_REPLY_PREFIX = "com.sdl.android.";
-    private String appId = null;
-    private String whereToReply = null;
-    private Context currentContext = null;
+    private String appId;
+    private String whereToReply;
+    private Context currentContext;
 
     private final Object INIT_LOCK = new Object();
     private final Object MESSAGE_SEND_LOCK = new Object();
@@ -235,7 +239,6 @@ public class TransportBroker {
                             broker.registeredWithRouterService = false;
                             broker.enableLegacyMode(true);
                             //We call this so we can start the process of legacy connection
-                            //onHardwareDisconnected(TransportType.BLUETOOTH);
                             broker.onLegacyModeEnabled();
                             break;
                         default:
@@ -251,7 +254,6 @@ public class TransportBroker {
                     if (msg.arg1 == TransportConstants.UNREGISTRATION_RESPONSE_SUCESS) {
                         // We've been unregistered. Now what?
 
-
                     } else { //We were denied our unregister request to the router service, let's see why
                         DebugTool.logWarning(TAG, "Unregister request denied from router service. Reason - " + msg.arg1);
                         //Do we care?
@@ -263,7 +265,7 @@ public class TransportBroker {
                         DebugTool.logWarning(TAG, "Received packet message from router service with no bundle");
                         return;
                     }
-                    //So the intent has a packet with it. PEFRECT! Let's send it through the library
+                    //So the intent has a packet with it. PERFECT! Let's send it through the library
                     int flags = bundle.getInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_NONE);
 
                     if (bundle.containsKey(TransportConstants.FORMED_PACKET_EXTRA_NAME)) {
@@ -310,10 +312,8 @@ public class TransportBroker {
                                 broker.bufferedPacket = null;
                             }
                         }
-                        //}
-                        //}
                     } else {
-                        DebugTool.logWarning(TAG, "Flase positive packet reception");
+                        DebugTool.logWarning(TAG, "False positive packet reception");
                     }
                     break;
                 case TransportConstants.HARDWARE_CONNECTION_EVENT:
@@ -393,25 +393,19 @@ public class TransportBroker {
 
 
     @SuppressLint("SimpleDateFormat")
-    public TransportBroker(Context context, String appId, ComponentName service) {
+    public TransportBroker(@NonNull Context context, @NonNull String appId, @NonNull ComponentName service) {
         synchronized (INIT_LOCK) {
-            clientMessenger = new Messenger(new ClientHandler(this));
-            initRouterConnection();
-            //So the user should have set the AppId, lets define where the intents need to be sent
-            SimpleDateFormat s = new SimpleDateFormat("hhmmssss"); //So we have a time stamp of the event
-            String timeStamp = s.format(new Date(System.currentTimeMillis()));
-            if (whereToReply == null) {
-                if (appId == null) { //This should really just throw an error
-                    whereToReply = WHERE_TO_REPLY_PREFIX + "." + timeStamp;
-                } else {
-                    whereToReply = WHERE_TO_REPLY_PREFIX + appId + "." + timeStamp;
-                }
-            }
-            //this.appId = appId.concat(timeStamp);
             this.appId = appId;
             currentContext = context;
-            //Log.d(TAG, "Registering our reply receiver: " + whereToReply);
             this.routerService = service;
+
+            clientMessenger = new Messenger(new ClientHandler(this));
+            initRouterConnection();
+
+            //So the user should have set the AppId, lets define where the messages need to be sent
+            SimpleDateFormat s = new SimpleDateFormat("hhmmssss"); //So we have a time stamp of the event
+            String timeStamp = s.format(new Date(System.currentTimeMillis()));
+            whereToReply = WHERE_TO_REPLY_PREFIX + appId + "." + timeStamp;
         }
     }
 
@@ -422,7 +416,7 @@ public class TransportBroker {
         //Log.d(TAG, "Starting up transport broker for " + whereToReply);
         synchronized (INIT_LOCK) {
             if (currentContext == null) {
-                throw new IllegalStateException("This instance can't be started since it's local reference of context is null. Ensure when suppling a context to the TransportBroker that it is valid");
+                throw new IllegalStateException("This instance can't be started since it's local reference of context is null. Ensure when supplying a context to the TransportBroker that it is valid");
             }
             if (routerConnection == null) {
                 initRouterConnection();
@@ -479,29 +473,9 @@ public class TransportBroker {
     public void onServiceUnregsiteredFromRouterService(int unregisterCode) {
     }
 
-    @Deprecated
-    public void onHardwareDisconnected(TransportType type) {
-        stop();
-    }
 
     public void onHardwareDisconnected(TransportRecord record, List<TransportRecord> connectedTransports) {
 
-    }
-
-    /**
-     * WILL NO LONGER BE CALLED
-     *
-     * @param type
-     * @return
-     */
-    @Deprecated
-    public boolean onHardwareConnected(TransportType type) {
-        synchronized (INIT_LOCK) {
-            if (routerServiceMessenger == null) {
-                return false;
-            }
-            return true;
-        }
     }
 
     public boolean onHardwareConnected(List<TransportRecord> transports) {
@@ -524,30 +498,6 @@ public class TransportBroker {
     protected int getRouterServiceVersion(){
         return routerServiceVersion;
     }
-
-    /**
-     * We want to check to see if the Router service is already up and running
-     *
-     * @param context
-     * @return
-     */
-    private boolean isRouterServiceRunning(Context context) {
-        if (context == null) {
-
-            return false;
-        }
-        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            //We will check to see if it contains this name, should be pretty specific
-            if ((service.service.getClassName()).toLowerCase(Locale.US).contains(SdlBroadcastReceiver.SDL_ROUTER_SERVICE_CLASS_NAME)) {
-                this.routerClassName = service.service.getClassName();
-                this.routerPackage = service.service.getPackageName();
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     public boolean sendPacketToRouterService(SdlPacket packet) { //We use ints because that is all that is supported by the outputstream class
         //Log.d(TAG,whereToReply + "Sending packet to router service");
@@ -617,15 +567,13 @@ public class TransportBroker {
         }
         //Make sure we know where to bind to
         if (this.routerService == null) {
-            if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.O) && !isRouterServiceRunning(getContext())) {//We should be able to ignore this case because of the validation now
-                DebugTool.logInfo(TAG, whereToReply + " found no router service. Shutting down.");
-                this.onHardwareDisconnected(null);
-                return false;
-            }
-        } else {//We were already told where to bind. This should be the case.
-            this.routerClassName = this.routerService.getClassName();
-            this.routerPackage = this.routerService.getPackageName();
+            DebugTool.logInfo(TAG, whereToReply + " has no router service reference; should shut down.");
+            return false;
         }
+
+        this.routerClassName = this.routerService.getClassName();
+        this.routerPackage = this.routerService.getPackageName();
+
 
         if (!sendBindingIntent()) {
             DebugTool.logError(TAG, "Something went wrong while trying to bind with the router service.");
