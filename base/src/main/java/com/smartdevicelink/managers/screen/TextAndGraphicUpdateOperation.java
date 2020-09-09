@@ -9,7 +9,9 @@ import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
+import com.smartdevicelink.proxy.rpc.SetDisplayLayout;
 import com.smartdevicelink.proxy.rpc.Show;
+import com.smartdevicelink.proxy.rpc.TemplateConfiguration;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
@@ -36,6 +38,7 @@ class TextAndGraphicUpdateOperation extends Task {
     private TextsAndGraphicsState updatedState;
     private CompletionListener listener;
     private TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener;
+    private Show fullShow;
 
     TextAndGraphicUpdateOperation(ISdl internalInterface, FileManager fileManager, WindowCapability currentCapabilities,
                                          Show currentScreenData, TextsAndGraphicsState newState, CompletionListener listener, TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener) {
@@ -61,15 +64,48 @@ class TextAndGraphicUpdateOperation extends Task {
         }
 
         // Build a show with everything from `self.newState`, we'll pull things out later if we can.
-        Show fullShow = new Show();
+        fullShow = new Show();
         fullShow.setAlignment(updatedState.getTextAlignment());
         fullShow = assembleShowText(fullShow);
         fullShow = assembleShowImages(fullShow);
+        fullShow = assembleLayout(fullShow);
 
+
+        if (internalInterface.get().getSdlMsgVersion().getMajorVersion() >= 6) {
+            updateGraphicsAndShow(fullShow);
+        } else {
+            if (shouldUpdateTemplateConfig()) {
+                sendSetDisplayLayoutWithTemplateConfiguration(updatedState.getTemplateConfiguration(), new CompletionListener() {
+                    @Override
+                    public void onComplete(boolean success) {
+                        if(getState() == Task.CANCELED){
+                            finishOperation(false);
+                            return;
+                        }
+                        if(!success){
+                            finishOperation(false);
+                            return;
+                        }
+                        updateGraphicsAndShow(fullShow);
+                    }
+                });
+            } else {
+                updateGraphicsAndShow(fullShow);
+            }
+        }
+    }
+
+
+    private Boolean shouldUpdateTemplateConfig() {
+        return updatedState.getTemplateConfiguration().equals(currentScreenData.getTemplateConfiguration());
+    }
+
+    void updateGraphicsAndShow(Show show) {
+        //TODO check about || vs && here
         if (!shouldUpdatePrimaryImage() && !shouldUpdateSecondaryImage()) {
             DebugTool.logInfo(TAG, "No images to send, sending text");
             // If there are no images to update, just send the text
-            sendShow(extractTextFromShow(fullShow), new CompletionListener() {
+            sendShow(extractTextFromShow(show), new CompletionListener() {
                 @Override
                 public void onComplete(boolean success) {
                     finishOperation(success);
@@ -79,7 +115,7 @@ class TextAndGraphicUpdateOperation extends Task {
         } else if (!sdlArtworkNeedsUpload(updatedState.getPrimaryGraphic()) && !sdlArtworkNeedsUpload(updatedState.getSecondaryGraphic())) {
             DebugTool.logInfo(TAG, "Images already uploaded, sending full update");
             // The files to be updated are already uploaded, send the full show immediately
-            sendShow(fullShow, new CompletionListener() {
+            sendShow(show, new CompletionListener() {
                 @Override
                 public void onComplete(boolean success) {
                     finishOperation(success);
@@ -88,7 +124,7 @@ class TextAndGraphicUpdateOperation extends Task {
         } else {
             DebugTool.logInfo(TAG, "Images need to be uploaded, sending text and uploading images");
 
-            sendShow(extractTextFromShow(fullShow), new CompletionListener() {
+            sendShow(extractTextFromShow(show), new CompletionListener() {
                 @Override
                 public void onComplete(boolean success) {
                     if (getState() == Task.CANCELED) {
@@ -115,11 +151,33 @@ class TextAndGraphicUpdateOperation extends Task {
                 if (response.getSuccess()) {
                     updateCurrentScreenDataFromShow(show);
                 }
+                else{
+                    // TODO UPDATE TEXT AND GRAPHICS MANAGER THAT DATA FAILED USE LAST CURRENT DATA currentScreenDataUpdateListener.onError(show);
+                }
                 listener.onComplete(response.getSuccess());
 
             }
         });
         internalInterface.get().sendRPC(show);
+    }
+
+    private void sendSetDisplayLayoutWithTemplateConfiguration(TemplateConfiguration configuration, final CompletionListener listener){
+        final SetDisplayLayout setLayout = new SetDisplayLayout(configuration.getTemplate(), configuration.getDayColorScheme(), configuration.getNightColorScheme());
+        setLayout.setOnRPCResponseListener(new OnRPCResponseListener() {
+            @Override
+            public void onResponse(int correlationId, RPCResponse response) {
+                if(response.getSuccess()){
+                    //TODO see if this works
+                    updateCurrentScreenDataFromSetDisplayLayout(setLayout);
+                    listener.onComplete(true);
+                }
+                else {
+                    //TODO Update if fail
+                    listener.onComplete(false);
+                }
+            }
+        });
+        internalInterface.get().sendRPC(setLayout);
     }
 
 
@@ -438,6 +496,12 @@ class TextAndGraphicUpdateOperation extends Task {
         newShow.setMetadataTags(show.getMetadataTags());
         newShow.setAlignment(show.getAlignment());
 
+        //TODO added
+        newShow.setTemplateConfiguration(show.getTemplateConfiguration());
+/*
+        if(shouldUpdateTemplateConfig() && internalInterface.get().getSdlMsgVersion().getMajorVersion() >= 6) {
+            newShow.setTemplateConfiguration(show.getTemplateConfiguration());
+        }*/
         return newShow;
     }
 
@@ -450,6 +514,22 @@ class TextAndGraphicUpdateOperation extends Task {
         newShow.setTemplateTitle("");
 
         return newShow;
+    }
+
+    Show assembleLayout(Show show) {
+        if (!(internalInterface.get().getSdlMsgVersion().getMajorVersion() >= 6) || !shouldUpdateTemplateConfig()) {
+            return show;
+        }
+        show.setTemplateConfiguration(updatedState.getTemplateConfiguration());
+        return show;
+    }
+
+    private void updateCurrentScreenDataFromSetDisplayLayout(SetDisplayLayout setDisplayLayout) {
+        currentScreenData.setTemplateConfiguration(new TemplateConfiguration(setDisplayLayout.getDisplayLayout(), setDisplayLayout.getDayColorScheme(), setDisplayLayout.getNightColorScheme()));
+
+        if(currentScreenDataUpdateListener != null){
+            currentScreenDataUpdateListener.onUpdate(currentScreenData);
+        }
     }
 
     private void updateCurrentScreenDataFromShow(Show show) {
@@ -630,6 +710,7 @@ class TextAndGraphicUpdateOperation extends Task {
 
     private void finishOperation(boolean success) {
         DebugTool.logInfo(TAG, "Finishing text and graphic update operation");
+        // TODO pending updateSuperseded flag?
         if(listener != null){
             listener.onComplete(success);
         }

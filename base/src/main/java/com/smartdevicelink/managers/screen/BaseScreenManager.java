@@ -51,6 +51,7 @@ import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
+import com.smartdevicelink.proxy.rpc.TemplateConfiguration;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
@@ -377,6 +378,10 @@ abstract class BaseScreenManager extends BaseSubManager {
 		return this.textAndGraphicManager.getTitle();
 	}
 
+	public void changeLayout(TemplateConfiguration templateConfiguration, CompletionListener listener) {
+		textAndGraphicManager.changeLayout(templateConfiguration, listener);
+	}
+
 	/**
 	 * Set softButtonObjects list and upload the images to the head unit
 	 * @param softButtonObjects the list of the SoftButtonObject values that should be displayed on the head unit
@@ -602,4 +607,6 @@ abstract class BaseScreenManager extends BaseSubManager {
 	public void removeButtonListener(@NonNull ButtonName buttonName, @NonNull OnButtonListener listener){
 		subscribeButtonManager.removeButtonListener(buttonName, listener);
 	}
+
+
 }

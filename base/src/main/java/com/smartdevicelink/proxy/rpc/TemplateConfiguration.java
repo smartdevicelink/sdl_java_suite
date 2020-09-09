@@ -25,6 +25,13 @@ public class TemplateConfiguration extends RPCStruct {
         setTemplate(template);
     }
 
+    public TemplateConfiguration(@NonNull String template, TemplateColorScheme dayColorScheme, TemplateColorScheme nightColorScheme){
+        this();
+        setTemplate(template);
+        setDayColorScheme(dayColorScheme);
+        setNightColorScheme(nightColorScheme);
+    }
+
     /**
      * Constructs a new TemplateConfiguration object indicated by the Hashtable
      * parameter

@@ -47,6 +47,7 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.Show;
+import com.smartdevicelink.proxy.rpc.TemplateConfiguration;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
@@ -85,8 +86,9 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	private TextAlignment textAlignment;
 	private String textField1, textField2, textField3, textField4, mediaTrackTextField, title;
 	private MetadataType textField1Type, textField2Type, textField3Type, textField4Type;
+	private TemplateConfiguration templateConfiguration;
 	TextAndGraphicUpdateOperation updateOperation;
-	private CompletionListener currentOperationListener;
+	private CompletionListener currentOperationListener, templateConfigurationListener;
 	Queue transactionQueue;
 
 	//Constructors
@@ -210,11 +212,30 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			public void onUpdate(Show show) {
 				updatePendingOperationsWithNewScreenData(show);
 				currentScreenData = show;
+
 			}
+
+			@Override
+			public void onError(TextsAndGraphicsState state) {
+				// Invalidate data that's different from our current screen data
+			}
+
+
 		};
 
 		updateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager.get(), defaultMainWindowCapability, currentScreenData, currentState(), currentOperationListener, currentScreenDataUpdateListener);
 		transactionQueue.add(updateOperation, false);
+	}
+
+	void resetFieldsToCurrentScreenData() {
+		textField1 = currentScreenData.getMainField1();
+		textField2 = currentScreenData.getMainField2();
+		textField3 = currentScreenData.getMainField3();
+		textField4 = currentScreenData.getMainField4();
+		mediaTrackTextField = currentScreenData.getMediaTrack();
+		title = currentScreenData.getTemplateTitle();
+		textAlignment = currentScreenData.getAlignment();
+		//TODO how to do Images/metadata
 	}
 
 	//Updates pending task with current screen data
@@ -232,6 +253,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 	interface CurrentScreenDataUpdatedListener {
 		void onUpdate(Show show);
+		void onError(TextsAndGraphicsState state);
 	}
 
 
@@ -279,7 +301,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 	private TextsAndGraphicsState currentState() {
 		return new TextsAndGraphicsState(textField1, textField2, textField3, textField4, mediaTrackTextField,
-				title, primaryGraphic, secondaryGraphic, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type);
+				title, primaryGraphic, secondaryGraphic, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type, templateConfiguration);
 	}
 
 	// Getters / Setters
@@ -450,6 +472,17 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		}
 	}
 
+	void changeLayout(TemplateConfiguration templateConfiguration, CompletionListener templateConfigurationListener) {
+		this.templateConfiguration = templateConfiguration;
+		sdlUpdate(templateConfigurationListener);
+	}
+
+	void setTemplateConfiguration(TemplateConfiguration templateConfiguration){
+		this.templateConfiguration = templateConfiguration;
+		isDirty = true;
+		// Don't do the `isBatchingUpdates` like elsewhere because the call is already handled in `changeLayout(TemplateConfiguration templateConfiguration, CompletionListener templateConfigurationListener) `
+	}
+
 	SdlArtwork getSecondaryGraphic() {
 		return secondaryGraphic;
 	}
@@ -486,6 +519,11 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 					for (WindowCapability windowCapability : display.getWindowCapabilities()) {
 						int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
 						if (currentWindowID == PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+							//TODO probably wrong
+							// Check if the window capability is equal to the one we already have. If it is, abort.
+							if(defaultMainWindowCapability.equals(windowCapability)){
+								return;
+							}
 							defaultMainWindowCapability = windowCapability;
 						}
 					}

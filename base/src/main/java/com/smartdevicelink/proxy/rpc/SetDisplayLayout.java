@@ -126,6 +126,13 @@ public class SetDisplayLayout extends RPCRequest {
 		setDisplayLayout(displayLayout);
 	}
 
+	public SetDisplayLayout(@NonNull String displayLayout, TemplateColorScheme dayColorScheme, TemplateColorScheme nightColorScheme) {
+		this();
+		setDisplayLayout(displayLayout);
+		setDayColorScheme(dayColorScheme);
+		setNightColorScheme(nightColorScheme);
+	}
+
 	/**
 	 * Sets a display layout. Predefined or dynamically created screen layout.
 	 * Currently only predefined screen layouts are defined. Predefined layouts
