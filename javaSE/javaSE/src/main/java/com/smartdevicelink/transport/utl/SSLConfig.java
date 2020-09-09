@@ -34,9 +34,9 @@ package com.smartdevicelink.transport.utl;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 
+import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.io.File;
 
 public class SSLConfig {
 

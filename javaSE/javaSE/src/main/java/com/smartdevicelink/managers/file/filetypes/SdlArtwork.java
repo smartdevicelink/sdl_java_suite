@@ -32,6 +32,7 @@
 package com.smartdevicelink.managers.file.filetypes;
 
 import androidx.annotation.NonNull;
+
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;

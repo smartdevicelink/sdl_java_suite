@@ -32,9 +32,16 @@
 package com.livio.BSON;
 
 import com.smartdevicelink.util.DebugTool;
-import org.bson.*;
 
-import java.util.*;
+import org.bson.BSONObject;
+import org.bson.BasicBSONDecoder;
+import org.bson.BasicBSONEncoder;
+import org.bson.BasicBSONObject;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class BsonEncoder {
     private static final String TAG = "BsonEncoder";

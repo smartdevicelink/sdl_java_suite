@@ -34,6 +34,7 @@ package com.smartdevicelink.protocol;
 
 
 import androidx.annotation.RestrictTo;
+
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.TransportManager;
 
