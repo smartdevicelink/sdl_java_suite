@@ -161,7 +161,9 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
                 updateTransactionQueueSuspended();
             }
         };
-        this.internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplayCapabilityListener);
+        if (internalInterface.getSystemCapabilityManager() != null) {
+            this.internalInterface.getSystemCapabilityManager().addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplayCapabilityListener);
+        }
 
         // Add OnButtonPressListener to notify SoftButtonObjects when there is a button press
         this.onButtonPressListener = new OnRPCNotificationListener() {
@@ -232,7 +234,9 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, onHMIStatusListener);
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_BUTTON_PRESS, onButtonPressListener);
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_BUTTON_EVENT, onButtonEventListener);
-        internalInterface.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplayCapabilityListener);
+        if (internalInterface.getSystemCapabilityManager() != null) {
+            internalInterface.getSystemCapabilityManager().removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplayCapabilityListener);
+        }
     }
 
     private Queue newTransactionQueue() {

@@ -220,22 +220,24 @@ public class AudioStreamManager extends BaseAudioStreamManager {
     }
 
     private void getAudioStreamingCapabilities(){
-        internalInterface.getCapability(SystemCapabilityType.PCM_STREAMING, new OnSystemCapabilityListener() {
-            @Override
-            public void onCapabilityRetrieved(Object capability) {
-                if(capability != null && capability instanceof AudioPassThruCapabilities){
-                    audioStreamingCapabilities = (AudioPassThruCapabilities) capability;
-                    checkState();
+        if (internalInterface.getSystemCapabilityManager() != null) {
+            internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.PCM_STREAMING, new OnSystemCapabilityListener() {
+                @Override
+                public void onCapabilityRetrieved(Object capability) {
+                    if (capability != null && capability instanceof AudioPassThruCapabilities) {
+                        audioStreamingCapabilities = (AudioPassThruCapabilities) capability;
+                        checkState();
+                    }
                 }
-            }
 
-            @Override
-            public void onError(String info) {
-                DebugTool.logError(TAG, "Error retrieving audio streaming capability: " + info);
-                streamingStateMachine.transitionToState(StreamingStateMachine.ERROR);
-                transitionToState(ERROR);
-            }
-        });
+                @Override
+                public void onError(String info) {
+                    DebugTool.logError(TAG, "Error retrieving audio streaming capability: " + info);
+                    streamingStateMachine.transitionToState(StreamingStateMachine.ERROR);
+                    transitionToState(ERROR);
+                }
+            }, false);
+        }
     }
 
     @Override
@@ -271,7 +273,10 @@ public class AudioStreamManager extends BaseAudioStreamManager {
             return;
         }
 
-        AudioPassThruCapabilities capabilities = (AudioPassThruCapabilities) internalInterface.getCapability(SystemCapabilityType.PCM_STREAMING);
+        AudioPassThruCapabilities capabilities = null;
+        if (internalInterface.getSystemCapabilityManager() != null) {
+            capabilities = (AudioPassThruCapabilities) internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.PCM_STREAMING, null, false);
+        }
 
         if (capabilities != null) {
             switch (capabilities.getSamplingRate()) {

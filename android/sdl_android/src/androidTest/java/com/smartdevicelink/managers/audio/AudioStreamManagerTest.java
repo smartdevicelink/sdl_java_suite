@@ -12,6 +12,8 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.audio.AudioStreamManager.SampleType;
+import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
+import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.ISdl;
@@ -39,7 +41,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -65,9 +69,11 @@ public class AudioStreamManagerTest extends TestCase {
 
     public void testCreatingAudioStreamManager() {
         ISdl internalInterface = mock(ISdl.class);
+        SystemCapabilityManager systemCapabilityManager = mock(SystemCapabilityManager.class);
+        doReturn(systemCapabilityManager).when(internalInterface).getSystemCapabilityManager();
         AudioPassThruCapabilities audioCapabilities = new AudioPassThruCapabilities(SamplingRate._16KHZ, BitsPerSample._16_BIT, AudioType.PCM);
         doReturn(true).when(internalInterface).isConnected();
-        doReturn(audioCapabilities).when(internalInterface).getCapability(SystemCapabilityType.PCM_STREAMING);
+        doReturn(audioCapabilities).when(systemCapabilityManager).getCapability(eq(SystemCapabilityType.PCM_STREAMING), (OnSystemCapabilityListener) isNull(), anyBoolean());
 
         new AudioStreamManager(internalInterface, mContext);
     }
@@ -101,9 +107,11 @@ public class AudioStreamManagerTest extends TestCase {
         };
 
         ISdl internalInterface = mock(ISdl.class);
+        SystemCapabilityManager systemCapabilityManager = mock(SystemCapabilityManager.class);
+        doReturn(systemCapabilityManager).when(internalInterface).getSystemCapabilityManager();
         AudioPassThruCapabilities audioCapabilities = new AudioPassThruCapabilities(SamplingRate._16KHZ, BitsPerSample._16_BIT, AudioType.PCM);
         doReturn(true).when(internalInterface).isConnected();
-        doReturn(audioCapabilities).when(internalInterface).getCapability(SystemCapabilityType.PCM_STREAMING);
+        doReturn(audioCapabilities).when(systemCapabilityManager).getCapability(eq(SystemCapabilityType.PCM_STREAMING), (OnSystemCapabilityListener) isNull(), anyBoolean());
         doAnswer(audioServiceAnswer).when(internalInterface).addServiceListener(any(SessionType.class), any(ISdlServiceListener.class));
         doAnswer(audioServiceAnswer).when(internalInterface).startAudioService(any(Boolean.class));
 
@@ -289,8 +297,10 @@ public class AudioStreamManagerTest extends TestCase {
         };
 
         ISdl internalInterface = mock(ISdl.class);
+        SystemCapabilityManager systemCapabilityManager = mock(SystemCapabilityManager.class);
+        doReturn(systemCapabilityManager).when(internalInterface).getSystemCapabilityManager();
         doReturn(true).when(internalInterface).isConnected();
-        doReturn(audioCapabilities).when(internalInterface).getCapability(any(SystemCapabilityType.class));
+        doReturn(audioCapabilities).when(systemCapabilityManager).getCapability(any(SystemCapabilityType.class), (OnSystemCapabilityListener) isNull(), anyBoolean());
         doAnswer(audioServiceAnswer).when(internalInterface).addServiceListener(any(SessionType.class), any(ISdlServiceListener.class));
         doAnswer(audioServiceAnswer).when(internalInterface).startAudioService(any(Boolean.class));
 
@@ -517,8 +527,10 @@ public class AudioStreamManagerTest extends TestCase {
         };
 
         ISdl internalInterface = mock(ISdl.class);
+        SystemCapabilityManager systemCapabilityManager = mock(SystemCapabilityManager.class);
+        doReturn(systemCapabilityManager).when(internalInterface).getSystemCapabilityManager();
         doReturn(true).when(internalInterface).isConnected();
-        doReturn(audioCapabilities).when(internalInterface).getCapability(any(SystemCapabilityType.class));
+        doReturn(audioCapabilities).when(systemCapabilityManager).getCapability(any(SystemCapabilityType.class), (OnSystemCapabilityListener) isNull(), anyBoolean());
         doAnswer(audioServiceAnswer).when(internalInterface).addServiceListener(any(SessionType.class), any(ISdlServiceListener.class));
         doAnswer(audioServiceAnswer).when(internalInterface).startAudioService(any(Boolean.class));
 
@@ -594,8 +606,10 @@ public class AudioStreamManagerTest extends TestCase {
         };
 
         ISdl internalInterface = mock(ISdl.class);
+        SystemCapabilityManager systemCapabilityManager = mock(SystemCapabilityManager.class);
+        doReturn(systemCapabilityManager).when(internalInterface).getSystemCapabilityManager();
         doReturn(true).when(internalInterface).isConnected();
-        doReturn(audioCapabilities).when(internalInterface).getCapability(any(SystemCapabilityType.class));
+        doReturn(audioCapabilities).when(systemCapabilityManager).getCapability(any(SystemCapabilityType.class), (OnSystemCapabilityListener) isNull(), anyBoolean());
         doAnswer(audioServiceAnswer).when(internalInterface).addServiceListener(any(SessionType.class), any(ISdlServiceListener.class));
         doAnswer(audioServiceAnswer).when(internalInterface).startAudioService(any(Boolean.class));
 

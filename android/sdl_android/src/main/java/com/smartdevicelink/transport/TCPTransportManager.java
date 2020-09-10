@@ -37,7 +37,7 @@ public class TCPTransportManager extends TransportManagerBase{
         transport.stop();
     }
 
-    @Override
+    @Deprecated
     public void resetSession() {
         if(transport != null){
             transport.stop();

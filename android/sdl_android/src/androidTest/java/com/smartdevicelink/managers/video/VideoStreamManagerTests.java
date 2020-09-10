@@ -2,20 +2,21 @@ package com.smartdevicelink.managers.video;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
+import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
-import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnTouchEvent;
@@ -47,6 +48,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
@@ -55,11 +57,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink video streaming manager class :
@@ -146,6 +148,9 @@ public class VideoStreamManagerTests {
 	public void testHMILevelNotFull(){
 		final ISdl internalInterface = mock(ISdl.class);
 
+		SystemCapabilityManager systemCapabilityManager = mock(SystemCapabilityManager.class);
+		doReturn(systemCapabilityManager).when(internalInterface).getSystemCapabilityManager();
+
 		when(internalInterface.getProtocolVersion()).thenReturn((new Version(5,0,0)));
 
 		RegisterAppInterfaceResponse mockRegisterAppInterfaceResponse = new RegisterAppInterfaceResponse();
@@ -154,7 +159,7 @@ public class VideoStreamManagerTests {
 		mockRegisterAppInterfaceResponse.setVehicleType(mockVehicleType);
 		when(internalInterface.getRegisterAppInterfaceResponse()).thenReturn(mockRegisterAppInterfaceResponse);
 
-		when(internalInterface.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)).thenReturn(true);
+		when(systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)).thenReturn(true);
 
 		final VideoStreamManager videoStreamManager = new VideoStreamManager(internalInterface);
 		videoStreamManager.start(new CompletionListener() {
@@ -181,7 +186,10 @@ public class VideoStreamManagerTests {
 		final Set<Object> listenerSet = new HashSet<>();
 
 		when(internalInterface.getProtocolVersion()).thenReturn(new Version(5,0,0));
-		when(internalInterface.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)).thenReturn(true);
+
+		SystemCapabilityManager systemCapabilityManager = mock(SystemCapabilityManager.class);
+		doReturn(systemCapabilityManager).when(internalInterface).getSystemCapabilityManager();
+		when(systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)).thenReturn(true);
 
 		Answer<Void> onGetCapability = new Answer<Void>() {
 			@Override
@@ -193,7 +201,7 @@ public class VideoStreamManagerTests {
 			}
 		};
 
-		doAnswer(onGetCapability).when(internalInterface).getCapability(eq(SystemCapabilityType.VIDEO_STREAMING), any(OnSystemCapabilityListener.class));
+		doAnswer(onGetCapability).when(systemCapabilityManager).getCapability(eq(SystemCapabilityType.VIDEO_STREAMING), any(OnSystemCapabilityListener.class), anyBoolean());
 
 		Answer<Void> onAddServiceListener = new Answer<Void>() {
 			@Override
@@ -254,14 +262,7 @@ public class VideoStreamManagerTests {
 
 		doAnswer(onRemoveServiceListener).when(internalInterface).removeServiceListener(eq(SessionType.NAV), any(ISdlServiceListener.class));
 
-		when(internalInterface.startVideoStream(anyBoolean(), any(VideoStreamingParameters.class))).thenReturn(new IVideoStreamListener() {
-			@Override
-			public void sendFrame(byte[] data, int offset, int length, long presentationTimeUs) throws ArrayIndexOutOfBoundsException {}
-			@Override
-			public void sendFrame(ByteBuffer data, long presentationTimeUs) {}
-		});
-
-		when(internalInterface.getCapability(SystemCapabilityType.VIDEO_STREAMING)).thenReturn(TestValues.GENERAL_VIDEOSTREAMINGCAPABILITY);
+		when(systemCapabilityManager.getCapability(eq(SystemCapabilityType.VIDEO_STREAMING), any(OnSystemCapabilityListener.class), anyBoolean())).thenReturn(TestValues.GENERAL_VIDEOSTREAMINGCAPABILITY);
 
 		final VideoStreamManager videoStreamManager = new VideoStreamManager(internalInterface);
 		videoStreamManager.start(new CompletionListener() {
