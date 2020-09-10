@@ -36,11 +36,10 @@ import com.smartdevicelink.util.ByteEnumer;
 import java.util.Vector;
 
 public class FrameDataControlFrameType extends ByteEnumer {
-	private static Vector<FrameDataControlFrameType> theList = new Vector<FrameDataControlFrameType>();
+	private static final Vector<FrameDataControlFrameType> theList = new Vector<>();
 	public static Vector<FrameDataControlFrameType> getList() { return theList; } 
 
-	@SuppressWarnings("unused")
-    private byte _i = 0x00;
+	private byte _i = 0x00;
 
 	protected FrameDataControlFrameType(byte value, String name) {
 		super(value, name);
