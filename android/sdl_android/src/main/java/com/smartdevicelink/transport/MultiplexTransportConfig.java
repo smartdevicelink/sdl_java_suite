@@ -67,8 +67,8 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
      */
     public static final int FLAG_MULTI_SECURITY_HIGH        = 0x30;
 	
-	Context context;
-	String appId;
+	final Context context;
+	final String appId;
 	ComponentName service;
 	int securityLevel;
 
@@ -143,7 +143,7 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 	}
 
 	/**
-	 * Get the securitly level that will be used to verify a router service before binding
+	 * Get the security level that will be used to verify a router service before binding
 	 * @return the set security level
 	 * @see #FLAG_MULTI_SECURITY_OFF
 	 * @see #FLAG_MULTI_SECURITY_LOW

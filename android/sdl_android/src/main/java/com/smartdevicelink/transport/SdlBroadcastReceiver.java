@@ -162,7 +162,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 						RouterServiceValidator.createTrustedListRequest(context, false, new TrustedListCallback(){
 							@Override
 							public void onListObtained(boolean successful) {
-								//Log.v(TAG, "SDL enabled by router service from " + packageName + " compnent package " + componentName.getPackageName()  + " - " + componentName.getClassName());
+								//Log.v(TAG, "SDL enabled by router service from " + packageName + " component package " + componentName.getPackageName()  + " - " + componentName.getClassName());
 								//List obtained. Let's start our service
 								queuedService = componentName;
 								finalIntent.setAction("com.sdl.noaction"); //Replace what's there so we do go into some unintended loop
@@ -261,7 +261,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	    new ServiceFinder(context, context.getPackageName(), new ServiceFinder.ServiceFinderCallback() {
 				@Override
 				public void onComplete(Vector<ComponentName> routerServices) {
-					runningBluetoothServicePackage = new Vector<ComponentName>();
+					runningBluetoothServicePackage = new Vector<>();
 					runningBluetoothServicePackage.addAll(routerServices);
 					if (runningBluetoothServicePackage.isEmpty()) {
 						//If there isn't a service running we should try to start one
@@ -350,6 +350,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 					if (e != null
 							&& e instanceof AndroidRuntimeException
 							&& "android.app.RemoteServiceException".equals(e.getClass().getName())  //android.app.RemoteServiceException is a private class
+							&& e.getMessage() != null
 							&& e.getMessage().contains("SdlRouterService")) {
 
 						DebugTool.logInfo(TAG, "Handling failed startForegroundService call");
@@ -375,13 +376,15 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			return false;
 		}
 		if (runningBluetoothServicePackage == null) {
-			runningBluetoothServicePackage = new Vector<ComponentName>();
+			runningBluetoothServicePackage = new Vector<>();
 		} else {
 			runningBluetoothServicePackage.clear();
 		}
 		ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-		manager.getRunningAppProcesses();
-		List<RunningServiceInfo> runningServices = null;
+		if (manager != null) {
+			manager.getRunningAppProcesses();
+		}
+		List<RunningServiceInfo> runningServices;
 		try {
 			runningServices = manager.getRunningServices(Integer.MAX_VALUE);
 		} catch (NullPointerException e) {
@@ -450,7 +453,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			ServiceFinder finder = new ServiceFinder(context, context.getPackageName(), new ServiceFinder.ServiceFinderCallback() {
 				@Override
 				public void onComplete(Vector<ComponentName> routerServices) {
-					runningBluetoothServicePackage = new Vector<ComponentName>();
+					runningBluetoothServicePackage = new Vector<>();
 					runningBluetoothServicePackage.addAll(routerServices);
 					requestTransportStatus(context,null,true,false);
 				}
@@ -473,7 +476,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			return;
 		}
 		if((!lookForServices || isRouterServiceRunning(context)) && !runningBluetoothServicePackage.isEmpty()){	//So there is a service up, let's see if it's connected
-			final ConcurrentLinkedQueue<ComponentName> list = new ConcurrentLinkedQueue<ComponentName>(runningBluetoothServicePackage);
+			final ConcurrentLinkedQueue<ComponentName> list = new ConcurrentLinkedQueue<>(runningBluetoothServicePackage);
 			final SdlRouterStatusProvider.ConnectedStatusCallback sdlBrCallback = new SdlRouterStatusProvider.ConnectedStatusCallback() {	
 
 				@Override

@@ -157,8 +157,7 @@ public class SdlRouterService extends Service{
 	/** Message types sent from the BluetoothReadService Handler */
     public static final int MESSAGE_STATE_CHANGE = 1;
     public static final int MESSAGE_READ = 2;
-    @SuppressWarnings("unused")
-	public static final int MESSAGE_WRITE = 3;
+    public static final int MESSAGE_WRITE = 3;
     public static final int MESSAGE_DEVICE_NAME = 4;
     public static final int MESSAGE_LOG = 5;
 
@@ -1018,7 +1017,6 @@ public class SdlRouterService extends Service{
 		return true;
 	}
 	
-	@SuppressWarnings("unused")
 	private void pingClients(){
 		Message message = Message.obtain();
 		DebugTool.logInfo(TAG, "Pinging "+ registeredApps.size()+ " clients");
@@ -1224,6 +1222,7 @@ public class SdlRouterService extends Service{
 					if (e != null
 							&& e instanceof AndroidRuntimeException
 							&& "android.app.RemoteServiceException".equals(e.getClass().getName())  //android.app.RemoteServiceException is a private class
+							&& e.getMessage() != null
 							&& e.getMessage().contains("invalid channel for service notification")) { //This is the message received in the exception for notification channel issues
 
 						// Set the flag to not delete the notification channel to avoid this exception in the future
@@ -1437,7 +1436,6 @@ public class SdlRouterService extends Service{
 	}
 
 	@SuppressLint("NewApi")
-	@SuppressWarnings("deprecation")
 	private void enterForeground(String content, long chronometerLength, boolean ongoing) {
 		DebugTool.logInfo(TAG, "Attempting to enter the foreground - " + System.currentTimeMillis());
 
@@ -1981,7 +1979,7 @@ public class SdlRouterService extends Service{
 	        }
 	    }
 
-		@SuppressWarnings("unused") //The return false after the packet null check is not dead code. Read the getByteArray method from bundle
+		//The return false after the packet null check is not dead code. Read the getByteArray method from bundle
 		public boolean writeBytesToTransport(Bundle bundle){
 			if(bundle == null){
 				return false;
@@ -2354,7 +2352,7 @@ public class SdlRouterService extends Service{
 	     * And start SDL
 	     * @return a boolean if a connection was attempted
 	     */
-		 @SuppressWarnings({"MissingPermission", "unused"})
+		 @SuppressWarnings({"MissingPermission"})
 		public synchronized boolean bluetoothQuerryAndConnect(){
 			BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
 			if(adapter != null && adapter.isEnabled()){
@@ -2408,7 +2406,7 @@ public class SdlRouterService extends Service{
 		SharedPreferences preferences = this.getSharedPreferences(SDL_DEVICE_STATUS_SHARED_PREFS, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putBoolean(address,hasSDLConnected);
-		editor.commit();
+		editor.apply();
 	}
 
 	/**
@@ -2439,7 +2437,7 @@ public class SdlRouterService extends Service{
 		SharedPreferences preferences = this.getSharedPreferences(SDL_ROUTER_SERVICE_PREFS, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putBoolean(key,value);
-		editor.commit();
+		editor.apply();
 		DebugTool.logInfo(TAG, "Preference set: " + key + " : " + value);
 	}
 
@@ -2702,7 +2700,6 @@ public class SdlRouterService extends Service{
 	// ***********************************************************   UTILITY   ****************************************************************
 	//*****************************************************************************************************************************************/
 	
-	@SuppressWarnings("unused")
 	private void debugPacket(byte[] bytes){
 		//DEBUG
 		
@@ -2886,7 +2883,7 @@ public class SdlRouterService extends Service{
 	 * @deprecated Move to the new version checking system with meta-data
 	 *
 	 */
-	@SuppressWarnings({"unused", "DeprecatedIsStillUsed"})
+	@SuppressWarnings({"DeprecatedIsStillUsed"})
 	@Deprecated
 	static class LocalRouterService implements Parcelable{
 		Intent launchIntent = null;
@@ -3112,7 +3109,6 @@ public class SdlRouterService extends Service{
 			}
 		}
 		
-		@SuppressWarnings("unused")
 		public void clearSessionIds(){
 			this.sessionIds.clear();
 		}
@@ -3432,7 +3428,7 @@ public class SdlRouterService extends Service{
 		private static final int DELAY_COEF = 1;
 		private static final int SIZE_COEF = 1;
 		
-		private byte[] bytesToWrite = null;
+		private byte[] bytesToWrite;
 		private final int offset, size, priorityCoefficient;
 		private final long timestamp;
 		final Bundle receivedBundle;

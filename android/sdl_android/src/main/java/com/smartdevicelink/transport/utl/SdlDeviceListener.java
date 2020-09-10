@@ -196,7 +196,7 @@ public class SdlDeviceListener {
                 }
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putBoolean(address, hasSDLConnected);
-                editor.commit();
+                editor.apply();
             }
         }
     }

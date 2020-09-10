@@ -54,16 +54,16 @@ public class SdlRouterStatusProvider {
 
 	private static final String TAG = "SdlRouterStateProvider";
 		
-	private Context context = null;
+	private Context context;
 	private boolean isBound = false;
-	ConnectedStatusCallback cb = null;
+	ConnectedStatusCallback cb;
 	Messenger routerServiceMessenger = null;
-	private ComponentName routerService = null;
+	private ComponentName routerService;
 	private int flags = 0;
 
 	final Messenger clientMessenger; 
 	
-	private ServiceConnection routerConnection= new ServiceConnection() {
+	private final ServiceConnection routerConnection= new ServiceConnection() {
 
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			DebugTool.logInfo(TAG, "Bound to service " + className.toString());
@@ -167,7 +167,7 @@ public class SdlRouterStatusProvider {
 
 		 public ClientHandler(SdlRouterStatusProvider provider){
 			 super(Looper.getMainLooper());
-			 this.provider = new WeakReference<SdlRouterStatusProvider>(provider);
+			 this.provider = new WeakReference<>(provider);
 		 }
 		 
     	@Override
@@ -183,7 +183,7 @@ public class SdlRouterStatusProvider {
     			  break;
     		  }
     	}
-	};
+	}
 	
 	public interface ConnectedStatusCallback{
 		void onConnectionStatusUpdate(boolean connected, ComponentName service, Context context);
