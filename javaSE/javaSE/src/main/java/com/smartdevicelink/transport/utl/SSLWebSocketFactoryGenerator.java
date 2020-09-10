@@ -61,7 +61,7 @@ public class SSLWebSocketFactoryGenerator {
     private static final String SUNX509 = "SunX509";
 
     public static WebSocketServerFactory generateWebSocketServer(SSLConfig config){
-        SSLContext context = null;
+        SSLContext context;
         switch (config.getSslCertificateType()){
             case SSLConfig.JKS:
                 context = getSSLContextFromJKS(config);
@@ -95,7 +95,7 @@ public class SSLWebSocketFactoryGenerator {
             TrustManagerFactory tmf = TrustManagerFactory.getInstance(SUNX509);
             tmf.init(ks);
 
-            SSLContext sslContext = null;
+            SSLContext sslContext;
             sslContext = SSLContext.getInstance(TLS);
             sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
             return sslContext;
