@@ -94,7 +94,7 @@ public class EqualizerSettings extends RPCStruct {
 	/**
 	 * Sets the channelName portion of the EqualizerSettings class
 	 *
-	 * @param channelName Read-only channel / frequency name (e.i. "Treble, Midrange, Bass" or "125 Hz").
+	 * @param channelName Read-only channel / frequency name (e.i. "Treble, MidRange, Bass" or "125 Hz").
 	 */
 	public EqualizerSettings setChannelName( String channelName) {
         setValue(KEY_CHANNEL_NAME, channelName);
@@ -104,7 +104,7 @@ public class EqualizerSettings extends RPCStruct {
 	/**
 	 * Gets the channelName portion of the EqualizerSettings class
 	 *
-	 * @return String - Read-only channel / frequency name (e.i. "Treble, Midrange, Bass" or "125 Hz").
+	 * @return String - Read-only channel / frequency name (e.i. "Treble, MidRange, Bass" or "125 Hz").
 	 */
 	public String getChannelName() {
 		return getString(KEY_CHANNEL_NAME);

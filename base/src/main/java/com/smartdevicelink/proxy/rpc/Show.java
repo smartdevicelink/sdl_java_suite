@@ -430,7 +430,7 @@ public class Show extends RPCRequest {
 	 * MediaClockFormat enumeration
 	 *
 	 * @param mediaClock
-	 *            a String value for the MdaiaClock
+	 *            a String value for the MediaClock
 	 *            <p></p>
 	 *            <b>Notes: </b>
 	 *            <ul>
@@ -526,7 +526,7 @@ public class Show extends RPCRequest {
 	 * Sets the the Soft buttons defined by the App
 	 *
 	 * @param softButtons
-	 *            a List value represemting the Soft buttons defined by the
+	 *            a List value representing the Soft buttons defined by the
 	 *            App
 	 *            <p></p>
 	 *            <b>Notes: </b>

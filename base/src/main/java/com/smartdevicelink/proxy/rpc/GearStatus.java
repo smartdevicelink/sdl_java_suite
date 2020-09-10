@@ -95,7 +95,7 @@ public class GearStatus extends RPCStruct {
     /**
      * Sets the userSelectedGear.
      *
-     * @param userSelectedGear Gear position selected by the user i.e. Park, Drive, Reverse
+     * @param selectedGear Gear position selected by the user i.e. Park, Drive, Reverse
      */
     public GearStatus setUserSelectedGear( PRNDL selectedGear) {
         setValue(KEY_USER_SELECTED_GEAR, selectedGear);

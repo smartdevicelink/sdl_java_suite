@@ -46,7 +46,7 @@ import java.util.Hashtable;
  * added to a SubMenu), and may only contain commands as children</p>
  * 
  * 
- * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUD</b></p>
+ * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
  * 
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">

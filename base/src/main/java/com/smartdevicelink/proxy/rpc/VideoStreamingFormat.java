@@ -90,7 +90,7 @@ public class VideoStreamingFormat extends RPCStruct {
 
 	@Override
 	public String toString() {
-		return "codec=" + String.valueOf(getCodec()) +
-				", protocol=" + String.valueOf(getProtocol());
+		return "codec=" + getCodec() +
+				", protocol=" + getProtocol();
 	}
 }

@@ -95,7 +95,7 @@ import java.util.Hashtable;
  *  <tr>
  *      <td>capacityUnit</td>
  *      <td>CapacityUnit</td>
- *      <td>The unit of the capacity of this fuel type such as liters for gasoline or kWh forbatteries.</td>
+ *      <td>The unit of the capacity of this fuel type such as liters for gasoline or kWh for batteries.</td>
  *      <td>N</td>
  *      <td></td>
  *      <td>SmartDeviceLink 7.0.0</td>

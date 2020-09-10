@@ -66,7 +66,7 @@ import java.util.List;
 * <li>Choices having both MenuParams and VR synonym definitions</li>
 * </ul>
 * 
-* <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUD</b></p>
+* <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
 * 
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">

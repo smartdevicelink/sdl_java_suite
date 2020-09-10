@@ -46,7 +46,7 @@ import java.util.Hashtable;
  * count-down, etc.)
  * 
  * <p>Function Group: Base </p>
- * <p><b>HMILevel needs to be FULL, LIMITIED or BACKGROUND</b></p>
+ * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
  * 
  * <p><b>Parameter List</b></p>
  * 

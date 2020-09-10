@@ -83,7 +83,7 @@ import java.util.List;
  * 			<td>string</td>
  * 			<td>Text, which is shown as title of the VR help screen used in an interaction started by PTT.</td>
  *                 <td>N</td>
- * 			<td>If omitted on supported displays, the default SDL help title will be used. <p>If omitted and one or more vrHelp items are provided, the request will be rejected.</p>maxlength: 500</td>
+ * 			<td>If omitted on supported displays, the default SDL help title will be used. <p>If omitted and one or more vrHelp items are provided, the request will be rejected.</p>maxLength: 500</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * 		<tr>
@@ -91,7 +91,7 @@ import java.util.List;
  * 			<td>VrHelp</td>
  * 			<td>Items listed in the VR help screen used in an interaction started by PTT.</td>
  *                 <td>N</td>
- * 			<td>If omitted on supported displays, the default SDL VR help / What Can I Say? screen will be used<p>If the list of VR Help Items contains nonsequential positions (e.g. [1,2,4]), the RPC will be rejected.</p><p>If omitted and a vrHelpTitle is provided, the request will be rejected.</p>minsize:1; maxsize: 100 </td>
+ * 			<td>If omitted on supported displays, the default SDL VR help / What Can I Say? screen will be used<p>If the list of VR Help Items contains non-sequential positions (e.g. [1,2,4]), the RPC will be rejected.</p><p>If omitted and a vrHelpTitle is provided, the request will be rejected.</p>minsize:1; maxsize: 100 </td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * 		<tr>
@@ -282,7 +282,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 *            <ul>
 	 *            <li>If omitted on supported displays, the default SmartDeviceLink VR
 	 *            help / What Can I Say? screen will be used</li>
-	 *            <li>If the list of VR Help Items contains nonsequential
+	 *            <li>If the list of VR Help Items contains non-sequential
 	 *            positions (e.g. [1,2,4]), the RPC will be rejected</li>
 	 *            <li>If omitted and a vrHelpTitle is provided, the request
 	 *            will be rejected</li>

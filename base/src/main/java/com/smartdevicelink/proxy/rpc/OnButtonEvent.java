@@ -91,7 +91,7 @@ import java.util.Hashtable;
  * <tr>
  * <td>buttonEventMode</td>
  * <td>{@linkplain ButtonEventMode}</td>
- * <td>Indicats button was depressed (DOWN) or released (UP)</td>
+ * <td>Indicates button was depressed (DOWN) or released (UP)</td>
  * <td></td>
  * <td></td>
  * <td>SmartDeviceLink 1.0</td>

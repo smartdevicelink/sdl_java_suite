@@ -380,7 +380,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
     /**
      * Gets Engine Torque
-     * @return a VehicleDataResult related to the enginer's torque
+     * @return a VehicleDataResult related to the engine's torque
      */
     public VehicleDataResult getEngineTorque() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_ENGINE_TORQUE);

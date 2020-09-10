@@ -80,7 +80,7 @@ public class ScreenParams extends RPCStruct {
 	public ScreenParams() { }
 	/**
 	* <p>
-	* Constructs a new ScreenParamst object indicated by the Hashtable
+	* Constructs a new ScreenParams object indicated by the Hashtable
 	* parameter
 	* </p>
 	* 

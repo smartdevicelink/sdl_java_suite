@@ -171,7 +171,7 @@ public class ShowConstantTbt extends RPCRequest{
     }
 
     /**
-     * Sets an Image for turnicon
+     * Sets an Image for turn icon
      *
      * @param turnIcon
      *            an Image value
@@ -182,7 +182,7 @@ public class ShowConstantTbt extends RPCRequest{
     }
 
     /**
-     * Gets an Image for turnicon
+     * Gets an Image for turn icon
      * 
      * @return Image -an Image value representing an Image for turnicon
      */

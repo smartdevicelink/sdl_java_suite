@@ -49,7 +49,7 @@ import java.util.Hashtable;
  * <tr>
  * <td>navigationText</td>
  * <td>String</td>
- * <td>Text to describe the turn (e.g. streetname)
+ * <td>Text to describe the turn (e.g. street name)
  * <ul>
  * <li>Maxlength = 500</li>
  * </ul>
@@ -76,10 +76,10 @@ public class Turn extends RPCStruct{
     }
 
     /**
-     * set the text to describe the turn (e.g. streetname)
+     * set the text to describe the turn (e.g. street name)
      *
      * @param navigationText
-     *            the text to describe the turn (e.g. streetname)
+     *            the text to describe the turn (e.g. street name)
      */
     public Turn setNavigationText( String navigationText) {
         setValue(KEY_NAVIGATION_TEXT, navigationText);
@@ -87,9 +87,9 @@ public class Turn extends RPCStruct{
     }
 
     /**
-     * get the text to describe the turn (e.g. streetname)
+     * get the text to describe the turn (e.g. street name)
      * 
-     * @return the text to describe the turn (e.g. streetname)
+     * @return the text to describe the turn (e.g. street name)
      */
     public String getNavigationText(){
         return getString(KEY_NAVIGATION_TEXT);
