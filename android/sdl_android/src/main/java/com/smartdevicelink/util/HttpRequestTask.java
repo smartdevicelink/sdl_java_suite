@@ -146,7 +146,7 @@ public class HttpRequestTask extends AsyncTask<String, String, String> {
 					}
 					return null;
 				}
-				String response = null;
+				String response;
 
 				response = buffer.toString();
 				//send to post execute

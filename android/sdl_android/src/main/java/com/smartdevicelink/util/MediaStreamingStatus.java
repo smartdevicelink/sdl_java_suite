@@ -63,9 +63,9 @@ public class MediaStreamingStatus {
     private static final Object BROADCAST_RECEIVER_LOCK = new Object();
 
     private boolean broadcastReceiverValid = true;
-    private WeakReference<Context> contextWeakReference;
+    private final WeakReference<Context> contextWeakReference;
     private Callback callback;
-    private List<String> intentList;
+    private final List<String> intentList;
 
     public MediaStreamingStatus(@NonNull Context context, @NonNull Callback callback){
         contextWeakReference = new WeakReference<>(context);
@@ -115,11 +115,13 @@ public class MediaStreamingStatus {
         // If API level 23+ audio manager can iterate over all current devices to see if a supported
         // device is present.
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            AudioDeviceInfo[] deviceInfos = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
-            if(deviceInfos != null) {
-                for (AudioDeviceInfo deviceInfo : deviceInfos) {
-                    if (deviceInfo != null && isSupportedAudioDevice(deviceInfo.getType())) {
-                        return true;
+            if (audioManager != null) {
+                AudioDeviceInfo[] deviceInfos = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
+                if (deviceInfos != null) {
+                    for (AudioDeviceInfo deviceInfo : deviceInfos) {
+                        if (deviceInfo != null && isSupportedAudioDevice(deviceInfo.getType())) {
+                            return true;
+                        }
                     }
                 }
             }
@@ -127,7 +129,11 @@ public class MediaStreamingStatus {
         }
 
         //This means the SDK version is < M, and our min is 8 so this API is always available
-        return audioManager.isBluetoothA2dpOn();
+        if (audioManager != null) {
+            return audioManager.isBluetoothA2dpOn();
+        }
+
+        return false;
     }
 
     /**
@@ -268,7 +274,7 @@ public class MediaStreamingStatus {
         }
     }
 
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             synchronized (BROADCAST_RECEIVER_LOCK) {
