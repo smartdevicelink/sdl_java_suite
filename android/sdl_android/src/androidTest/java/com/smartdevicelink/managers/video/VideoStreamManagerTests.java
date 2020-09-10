@@ -163,7 +163,7 @@ public class VideoStreamManagerTests {
 				VideoStreamingParameters params = new VideoStreamingParameters();
 				boolean encrypted = false;
 				videoStreamManager.startStreaming(params, encrypted);
-				verify(internalInterface, times(0)).startVideoService(params, encrypted);
+				verify(internalInterface, times(0)).startVideoService(params, encrypted, false);
 			}
 		});
 	}

@@ -32,7 +32,6 @@ import com.smartdevicelink.managers.video.resolution.Resolution;
 import com.smartdevicelink.managers.video.resolution.VideoStreamingRange;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
@@ -241,11 +240,6 @@ public class SdlService extends Service {
 				}
 
 				@Override
-				public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language) {
-					return null;
-				}
-
-				@Override
 				public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language, Language hmiLanguage) {
 					boolean isNeedUpdate = false;
 					String appName = APP_NAME;
@@ -274,11 +268,7 @@ public class SdlService extends Service {
 						default:
 							break;
 					}
-					if (isNeedUpdate) {
-						return new LifecycleConfigurationUpdate(appName, null, TTSChunkFactory.createSimpleTTSChunks(ttsName), null);
-					} else {
-						return null;
-					}
+					return null;
 				}
 			};
 

@@ -942,8 +942,8 @@ abstract class BaseLifecycleManager {
         }
 
         @Override
-        public void startVideoService(VideoStreamingParameters parameters, boolean encrypted) {
-            BaseLifecycleManager.this.startVideoService(encrypted, parameters);
+        public void startVideoService(VideoStreamingParameters parameters, boolean encrypted, boolean afterPendingRestart) {
+            BaseLifecycleManager.this.startVideoService(encrypted, parameters, afterPendingRestart);
         }
 
         @Override
@@ -1255,7 +1255,7 @@ abstract class BaseLifecycleManager {
     void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
     }
 
-    void startVideoService(boolean encrypted, VideoStreamingParameters parameters) {
+    void startVideoService(boolean encrypted, VideoStreamingParameters parameters, boolean afterPendingRestart) {
     }
 
     void startAudioService(boolean encrypted) {

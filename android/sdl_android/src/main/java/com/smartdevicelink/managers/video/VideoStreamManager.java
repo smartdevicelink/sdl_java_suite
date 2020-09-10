@@ -160,7 +160,8 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 					VideoStreamManager manager = VideoStreamManager.this;
 					manager.internalInterface.startVideoService(
 							manager.getLastCachedStreamingParameters(),
-							manager.isEncrypted
+							manager.isEncrypted,
+							withPendingRestart
 					);
 				}
 			}
@@ -442,7 +443,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			return;
 		}
 		//Start the video service
-		this.internalInterface.startVideoService(parameters, encrypted);
+		this.internalInterface.startVideoService(parameters, encrypted, false);
 	}
 
 	/**
@@ -483,7 +484,8 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			}
 			stateMachine.transitionToState(StreamingStateMachine.PAUSED);
 
-			this.internalInterface.stopVideoService();
+//			this.internalInterface.stopVideoService();
+			stopVideoStream();
 		}
 	}
 

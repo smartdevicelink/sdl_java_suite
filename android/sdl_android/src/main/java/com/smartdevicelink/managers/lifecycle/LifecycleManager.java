@@ -138,7 +138,7 @@ public class LifecycleManager extends BaseLifecycleManager {
      * @param parameters  the desired video streaming parameters
      */
     @Override
-    void startVideoService(boolean isEncrypted, VideoStreamingParameters parameters) {
+    void startVideoService(boolean isEncrypted, VideoStreamingParameters parameters, boolean afterPendingRestart) {
         if (session == null) {
             DebugTool.logWarning(TAG, "SdlSession is not created yet.");
             return;
@@ -149,7 +149,7 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
 
         session.setDesiredVideoParams(parameters);
-        tryStartVideoStream(isEncrypted, parameters);
+        tryStartVideoStream(isEncrypted, parameters, afterPendingRestart);
     }
 
     /**
@@ -163,7 +163,7 @@ public class LifecycleManager extends BaseLifecycleManager {
      * mode (i.e. without any negotiation) then an instance of VideoStreamingParams is
      * returned. If the service was not opened then null is returned.
      */
-    private void tryStartVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
+    private void tryStartVideoStream(boolean isEncrypted, VideoStreamingParameters parameters, boolean afterPendingRestart) {
         if (session == null) {
             DebugTool.logWarning(TAG, "SdlSession is not created yet.");
             return;
@@ -178,7 +178,7 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
 
 
-        if (!videoServiceStartResponseReceived || !videoServiceStartResponse //If we haven't started the service before
+        if (afterPendingRestart || !videoServiceStartResponseReceived || !videoServiceStartResponse //If we haven't started the service before
                 || (videoServiceStartResponse && isEncrypted && !session.isServiceProtected(SessionType.NAV))) { //Or the service has been started but we'd like to start an encrypted one
             session.setDesiredVideoParams(parameters);
 
