@@ -258,7 +258,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		// Listen for HMILevel changes
 		internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
 		// Listen for SystemCapabilityType VIDEO_STREAMING
-		internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, systemCapabilityListener);
+		internalInterface.getSystemCapabilityManager().addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, systemCapabilityListener);
 		stateMachine = new StreamingStateMachine();
 	}
 
@@ -337,7 +337,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 */
 	public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted, VideoStreamingRange streamingRange) {
 		configureGlobalParameters(context, remoteDisplayClass, isEncrypted, streamingRange);
-		if(majorProtocolVersion >= 5 && !internalInterface.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
+		if(majorProtocolVersion >= 5 && !internalInterface.getSystemCapabilityManager().isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
 			stateMachine.transitionToState(StreamingStateMachine.ERROR);
 			return;
 		}
