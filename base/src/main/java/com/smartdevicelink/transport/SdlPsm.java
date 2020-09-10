@@ -39,7 +39,7 @@ import static com.smartdevicelink.protocol.SdlProtocol.V1_V2_MTU_SIZE;
 
 public class SdlPsm{
 	//private static final String TAG = "Sdl PSM";
-	//Each state represents the byte that should be incomming
+	//Each state represents the byte that should be incoming
 	
 	public static final int START_STATE							= 	0x0;
 	public static final int SERVICE_TYPE_STATE					= 	0x02;
@@ -84,13 +84,10 @@ public class SdlPsm{
 	}
 	
 	public boolean handleByte(byte data) {
-		//Log.trace(TAG, data + " = incomming");
+		//Log.trace(TAG, data + " = incoming");
 		state = transitionOnInput(data,state);
-		
-		if(state==ERROR_STATE){
-			return false;
-		}
-		return true;
+
+		return state != ERROR_STATE;
 	}
 	
 	private int transitionOnInput(byte rawByte, int state){
