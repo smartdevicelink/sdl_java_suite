@@ -156,6 +156,7 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
                         e.printStackTrace();
                     } finally {
                         reference.mThread = null;
+                        break;
                     }
                 }
             }
