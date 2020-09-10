@@ -1003,6 +1003,7 @@ abstract class BaseLifecycleManager {
             return BaseLifecycleManager.this.session.isTransportForServiceAvailable(serviceType);
         }
 
+        @NonNull
         @Override
         public SdlMsgVersion getSdlMsgVersion() {
             SdlMsgVersion msgVersion = new SdlMsgVersion(rpcSpecVersion.getMajor(), rpcSpecVersion.getMinor());
@@ -1010,6 +1011,7 @@ abstract class BaseLifecycleManager {
             return msgVersion;
         }
 
+        @NonNull
         @Override
         public Version getProtocolVersion() {
             return BaseLifecycleManager.this.getProtocolVersion();

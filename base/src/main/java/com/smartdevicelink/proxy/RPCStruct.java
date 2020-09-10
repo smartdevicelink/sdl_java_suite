@@ -57,7 +57,7 @@ public class RPCStruct {
 	private Version rpcSpecVersion = null;
 
 
-	protected Hashtable<String, Object> store = null;
+	protected Hashtable<String, Object> store;
 	
 	public boolean getStoreValue(String key) { // for unit testing
 		return store.contains(key);
@@ -68,7 +68,7 @@ public class RPCStruct {
 	}
 	
 	public RPCStruct() {
-		store = new Hashtable<String, Object>();
+		store = new Hashtable<>();
 	}
 	
 	protected RPCStruct(RPCStruct rpcs) {
@@ -150,9 +150,9 @@ public class RPCStruct {
 	}
 
 	/**
-	 * Cycles through parameters in this RPC to ensure they all get formated
+	 * Cycles through parameters in this RPC to ensure they all get formatted
 	 * @param rpcVersion version of the rpc spec that should be used to format this rpc
-	 * @param value the object to investigate if it needs to be formated
+	 * @param value the object to investigate if it needs to be formatted
 	 */
 	private void internalFormat(Version rpcVersion, Object value) {
 		if(value instanceof RPCStruct) {
@@ -284,7 +284,7 @@ public class RPCStruct {
 				} else if (tClass.isInstance(item)) {
 					return list;
 				} else if (item instanceof Hashtable) {
-					List<Object> newList = new ArrayList<Object>();
+					List<Object> newList = new ArrayList<>();
 					Object customObject;
 					for (Object hashObj : list) {
 						try {
@@ -303,7 +303,7 @@ public class RPCStruct {
 					}
 					return newList;
 				} else if (item instanceof String){
-					List<Object> newList = new ArrayList<Object>();
+					List<Object> newList = new ArrayList<>();
 					for (Object hashObj : list) {
 						Object toAdd = getValueForString(tClass, (String) hashObj);
 						if (toAdd != null) {
@@ -336,9 +336,7 @@ public class RPCStruct {
 		if(valueForString != null){
 			try {
 				return valueForString.invoke(null, (String) s);
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
+			} catch (IllegalAccessException | InvocationTargetException e) {
 				e.printStackTrace();
 			}
 		}
