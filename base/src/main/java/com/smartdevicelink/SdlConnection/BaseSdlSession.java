@@ -65,7 +65,7 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
 
     final protected SdlProtocolBase sdlProtocol;
 
-    protected BaseTransportConfig transportConfig;
+    protected final BaseTransportConfig transportConfig;
     protected ISdlSessionListener sessionListener;
     protected SdlSecurityBase sdlSecurity = null;
     protected VideoStreamingParameters desiredVideoParams = null;
@@ -73,7 +73,7 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
 
     protected int sessionId = -1;
     protected HashMap<SessionType, CopyOnWriteArrayList<ISdlServiceListener>> serviceListeners;
-    protected CopyOnWriteArrayList<SessionType> encryptedServices = new CopyOnWriteArrayList<SessionType>();
+    protected final CopyOnWriteArrayList<SessionType> encryptedServices = new CopyOnWriteArrayList<>();
 
     boolean sdlSecurityInitializing = false;
 
@@ -184,9 +184,9 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
     protected void processControlService(ProtocolMessage msg) {
         if (sdlSecurity == null)
             return;
-        int ilen = msg.getData().length - 12;
-        byte[] data = new byte[ilen];
-        System.arraycopy(msg.getData(), 12, data, 0, ilen);
+        int iLen = msg.getData().length - 12;
+        byte[] data = new byte[iLen];
+        System.arraycopy(msg.getData(), 12, data, 0, iLen);
 
         byte[] dataToRead = new byte[4096];
 
