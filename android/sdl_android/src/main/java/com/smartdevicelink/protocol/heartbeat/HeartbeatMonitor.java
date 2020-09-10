@@ -47,7 +47,7 @@ public class HeartbeatMonitor implements IHeartbeatMonitor {
     private final Object listenerLock = new Object();
 
     private int mHeartBeatInterval = HEARTBEAT_INTERVAL;
-    private boolean mHeartBeatAck = true;
+    private final boolean mHeartBeatAck = true;
 
     private IHeartbeatMonitorListener mListener;
     private volatile boolean mIsAckReceived;
@@ -64,7 +64,7 @@ public class HeartbeatMonitor implements IHeartbeatMonitor {
     public Runnable getHeartbeatRunnable () { return heartbeatTimeoutRunnable; }
     public boolean isHeartbeatReceived () { return isHeartbeatReceived; }
     
-    private Runnable heartbeatTimeoutRunnable = new Runnable() {
+    private final Runnable heartbeatTimeoutRunnable = new Runnable() {
 
         @Override
         public void run() {            
@@ -91,7 +91,7 @@ public class HeartbeatMonitor implements IHeartbeatMonitor {
         }
     };
 
-    private Runnable heartbeatAckTimeoutRunnable = new Runnable() {
+    private final Runnable heartbeatAckTimeoutRunnable = new Runnable() {
 
         @Override
         public void run() {
