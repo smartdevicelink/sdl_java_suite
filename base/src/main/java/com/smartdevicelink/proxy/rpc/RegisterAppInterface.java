@@ -352,7 +352,6 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @return SdlMsgVersion -a SdlMsgVersion object representing version of
 	 *         the SDL&reg; SmartDeviceLink interface
 	 */    
-    @SuppressWarnings("unchecked")
     public SdlMsgVersion getSdlMsgVersion() {
 		return (SdlMsgVersion) getObject(SdlMsgVersion.class, KEY_SDL_MSG_VERSION);
     }
@@ -381,7 +380,6 @@ public class RegisterAppInterface extends RPCRequest {
         return this;
     }
     
-    @SuppressWarnings("unchecked")
     public DeviceInfo getDeviceInfo() {
         return (DeviceInfo) getObject(DeviceInfo.class, KEY_DEVICE_INFO);
     }    

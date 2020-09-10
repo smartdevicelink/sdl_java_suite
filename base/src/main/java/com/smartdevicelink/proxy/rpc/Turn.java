@@ -111,7 +111,6 @@ public class Turn extends RPCStruct{
      * 
      * @return the image to be shown for a turn
      */
-    @SuppressWarnings("unchecked")
     public Image getTurnIcon(){
         return (Image) getObject(Image.class, KEY_TURN_IMAGE);
     }

@@ -390,7 +390,6 @@ public class OnVehicleData extends RPCNotification {
         setParameters(KEY_GPS, gps);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public GPSData getGps() {
         return (GPSData) getObject(GPSData.class, KEY_GPS);
     }
@@ -498,7 +497,6 @@ public class OnVehicleData extends RPCNotification {
         setParameters(KEY_TIRE_PRESSURE, tirePressure);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public TireStatus getTirePressure() {
         return (TireStatus) getObject(TireStatus.class, KEY_TIRE_PRESSURE);
     }
@@ -513,7 +511,6 @@ public class OnVehicleData extends RPCNotification {
         setParameters(KEY_BELT_STATUS, beltStatus);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public BeltStatus getBeltStatus() {
         return (BeltStatus) getObject(BeltStatus.class, KEY_BELT_STATUS);
     }
@@ -521,7 +518,6 @@ public class OnVehicleData extends RPCNotification {
         setParameters(KEY_BODY_INFORMATION, bodyInformation);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public BodyInformation getBodyInformation() {
         return (BodyInformation) getObject(BodyInformation.class, KEY_BODY_INFORMATION);
     }
@@ -529,7 +525,6 @@ public class OnVehicleData extends RPCNotification {
         setParameters(KEY_DEVICE_STATUS, deviceStatus);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public DeviceStatus getDeviceStatus() {
         return (DeviceStatus) getObject(DeviceStatus.class, KEY_DEVICE_STATUS);
     }
@@ -551,7 +546,6 @@ public class OnVehicleData extends RPCNotification {
         setParameters(KEY_HEAD_LAMP_STATUS, headLampStatus);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public HeadLampStatus getHeadLampStatus() {
         return (HeadLampStatus) getObject(HeadLampStatus.class, KEY_HEAD_LAMP_STATUS);
     }
@@ -591,7 +585,6 @@ public class OnVehicleData extends RPCNotification {
         setParameters(KEY_E_CALL_INFO, eCallInfo);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public ECallInfo getECallInfo() {
         return (ECallInfo) getObject(ECallInfo.class, KEY_E_CALL_INFO);
     }
@@ -599,7 +592,6 @@ public class OnVehicleData extends RPCNotification {
         setParameters(KEY_AIRBAG_STATUS, airbagStatus);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public AirbagStatus getAirbagStatus() {
         return (AirbagStatus) getObject(AirbagStatus.class, KEY_AIRBAG_STATUS);
     }
@@ -607,7 +599,6 @@ public class OnVehicleData extends RPCNotification {
         setParameters(KEY_EMERGENCY_EVENT, emergencyEvent);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public EmergencyEvent getEmergencyEvent() {
         return (EmergencyEvent) getObject(EmergencyEvent.class, KEY_EMERGENCY_EVENT);
     }
@@ -615,7 +606,6 @@ public class OnVehicleData extends RPCNotification {
         setParameters(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public ClusterModeStatus getClusterModeStatus() {
         return (ClusterModeStatus) getObject(ClusterModeStatus.class, KEY_CLUSTER_MODE_STATUS);
     }
@@ -623,7 +613,6 @@ public class OnVehicleData extends RPCNotification {
         setParameters(KEY_MY_KEY, myKey);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public MyKey getMyKey() {
         return (MyKey) getObject(MyKey.class, KEY_MY_KEY);
     }
@@ -668,7 +657,6 @@ public class OnVehicleData extends RPCNotification {
      * Gets turnSignal
      * @return TurnSignal
      */
-    @SuppressWarnings("unchecked")
     public TurnSignal getTurnSignal() {
         return (TurnSignal) getObject(TurnSignal.class, KEY_TURN_SIGNAL);
     }

@@ -101,7 +101,6 @@ public class ScreenParams extends RPCStruct {
         setImageResolution(resolution);
     }
 
-    @SuppressWarnings("unchecked")
     public ImageResolution getImageResolution() {
         return (ImageResolution) getObject(ImageResolution.class, KEY_RESOLUTION);
     } 
@@ -109,7 +108,6 @@ public class ScreenParams extends RPCStruct {
         setValue(KEY_RESOLUTION, resolution);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public TouchEventCapabilities getTouchEventAvailable() {
     	return (TouchEventCapabilities) getObject(TouchEventCapabilities.class, KEY_TOUCH_EVENT_AVAILABLE);
     } 

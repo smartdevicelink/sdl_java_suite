@@ -92,7 +92,6 @@ public class SisData extends RPCStruct {
 	 *
 	 * @return StationIDNumber.
 	 */
-	@SuppressWarnings("unchecked")
 	public StationIDNumber getStationIDNumber() {
 		return (StationIDNumber) getObject(StationIDNumber.class, KEY_STATION_ID_NUMBER);
 	}
@@ -131,7 +130,6 @@ public class SisData extends RPCStruct {
 	 *
 	 * @return GPSData - Provides the 3-dimensional geographic station location.
 	 */
-	@SuppressWarnings("unchecked")
 	public GPSData getStationLocation() {
 		return (GPSData) getObject(GPSData.class, KEY_STATION_LOCATION);
 	}

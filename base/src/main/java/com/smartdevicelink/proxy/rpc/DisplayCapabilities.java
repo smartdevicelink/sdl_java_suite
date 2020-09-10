@@ -276,7 +276,6 @@ public class DisplayCapabilities extends RPCStruct {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     public ScreenParams getScreenParams() {
         return (ScreenParams) getObject(ScreenParams.class, KEY_SCREEN_PARAMS);
     }

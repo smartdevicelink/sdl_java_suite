@@ -310,7 +310,6 @@ public class SetGlobalProperties extends RPCRequest {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     public Image getMenuIcon() {
 		return (Image) getObject(Image.class, KEY_MENU_ICON);
     }
@@ -337,7 +336,6 @@ public class SetGlobalProperties extends RPCRequest {
     	return (SeatLocation) getObject(SeatLocation.class, KEY_USER_LOCATION);
 	}
 
-    @SuppressWarnings("unchecked")
     public KeyboardProperties getKeyboardProperties() {
 		return (KeyboardProperties) getObject(KeyboardProperties.class, KEY_KEYBOARD_PROPERTIES);
     }
@@ -357,7 +355,6 @@ public class SetGlobalProperties extends RPCRequest {
 	 * the head unit will change the display to the new layout type.
 	 * @return the MenuLayout
 	 */
-	@SuppressWarnings("unchecked")
 	public MenuLayout getMenuLayout() {
 		return (MenuLayout) getObject(MenuLayout.class, KEY_MENU_LAYOUT);
 	}

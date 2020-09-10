@@ -494,7 +494,6 @@ public class Show extends RPCRequest {
 	 *         displays
 	 * @since SmartDeviceLink 2.0
 	 */
-    @SuppressWarnings("unchecked")
     public Image getGraphic() {
 		return (Image) getObject(Image.class, KEY_GRAPHIC);
     }
@@ -506,7 +505,6 @@ public class Show extends RPCRequest {
     }
 
 
-    @SuppressWarnings("unchecked")
     public Image getSecondaryGraphic() {
 		return (Image) getObject(Image.class, KEY_SECONDARY_GRAPHIC);
     }    
@@ -633,7 +631,6 @@ public class Show extends RPCRequest {
 	 *
 	 * @since 6.0
 	 */
-	@SuppressWarnings("unchecked")
 	public TemplateConfiguration getTemplateConfiguration() {
 		return (TemplateConfiguration) getObject(TemplateConfiguration.class, KEY_TEMPLATE_CONFIGURATION);
 	}

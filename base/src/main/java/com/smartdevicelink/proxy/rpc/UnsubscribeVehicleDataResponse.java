@@ -128,7 +128,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Gets Gps
      * @return a VehicleDataResult related to GPS
      */
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getGps() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_GPS);
     }
@@ -144,7 +143,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Gets Speed
      * @return a VehicleDataResult related to speed
      */
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getSpeed() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_SPEED);
     }
@@ -160,7 +158,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Gets rpm
      * @return a VehicleDataResult related to RPM
      */
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getRpm() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_RPM);
     }
@@ -181,7 +178,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @return VehicleDataResult The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
      * 7.0, please see fuelRange.
      */
-    @SuppressWarnings("unchecked")
     @Deprecated
     public VehicleDataResult getFuelLevel() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_FUEL_LEVEL);
@@ -200,7 +196,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @return a VehicleDataResult related to FuelLevel State
      */
     @Deprecated
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getFuelLevelState() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_FUEL_LEVEL_STATE);
     }
@@ -216,7 +211,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Gets Instant Fuel Consumption
      * @return a VehicleDataResult related to instant fuel consumption
      */
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getInstantFuelConsumption() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_INSTANT_FUEL_CONSUMPTION);
     }
@@ -232,7 +226,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Gets External Temperature
      * @return a VehicleDataResult related to external temperature
      */
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getExternalTemperature() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_EXTERNAL_TEMPERATURE);
     }
@@ -254,7 +247,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @deprecated in SmartDeviceLink 7.0.0
      */
     @Deprecated
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getPrndl() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_PRNDL);
     }
@@ -270,7 +262,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Gets Tire Pressure
      * @return a VehicleDataResult related to tire pressure
      */
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getTirePressure() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_TIRE_PRESSURE);
     }
@@ -286,7 +277,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Gets Odometer
      * @return a VehicleDataResult related to the odometer
      */
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getOdometer() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_ODOMETER);
     }
@@ -302,7 +292,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Gets Belt Status
      * @return a VehicleDataResult related to the seat belt status
      */
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getBeltStatus() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_BELT_STATUS);
     }
@@ -318,7 +307,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Gets Body Information
      * @return a VehicleDataResult related to the body info
      */
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getBodyInformation() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_BODY_INFORMATION);
     }
@@ -334,7 +322,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Gets Device Status
      * @return a VehicleDataResult related to the device status of the connected device
      */
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getDeviceStatus() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_DEVICE_STATUS);
     }
@@ -350,7 +337,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Gets Driver Braking
      * @return a VehicleDataResult related to the driver breaking status
      */
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getDriverBraking() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_DRIVER_BRAKING);
     }
@@ -366,7 +352,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Gets Wiper Status
      * @return a VehicleDataResult related to the wiper status
      */
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getWiperStatus() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_WIPER_STATUS);
     }
@@ -382,7 +367,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Gets Head Lamp Status
      * @return a VehicleDataResult related to the headlamp status
      */
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getHeadLampStatus() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_HEAD_LAMP_STATUS);
     }
@@ -398,7 +382,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Gets Engine Torque
      * @return a VehicleDataResult related to the enginer's torque
      */
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getEngineTorque() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_ENGINE_TORQUE);
     }
@@ -414,7 +397,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Gets Engine Oil Life
      * @return a VehicleDataResult related to the engine's oil life
      */
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getEngineOilLife() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_ENGINE_OIL_LIFE);
     }
@@ -430,7 +412,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Gets AccPedal Position
      * @return a VehicleDataResult related to the accelerator pedal's position
      */
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getAccPedalPosition() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_ACC_PEDAL_POSITION);
     }  
@@ -440,7 +421,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getSteeringWheelAngle() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_STEERING_WHEEL_ANGLE);
     }    
@@ -449,7 +429,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
         setParameters(KEY_E_CALL_INFO, eCallInfo);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getECallInfo() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_E_CALL_INFO);
     }
@@ -457,7 +436,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
         setParameters(KEY_AIRBAG_STATUS, airbagStatus);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getAirbagStatus() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_AIRBAG_STATUS);
     }
@@ -465,7 +443,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
         setParameters(KEY_EMERGENCY_EVENT, emergencyEvent);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getEmergencyEvent() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_EMERGENCY_EVENT);
     }
@@ -473,7 +450,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
         setParameters(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getClusterModeStatus() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_CLUSTER_MODE_STATUS);
     }
@@ -481,7 +457,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
         setParameters(KEY_MY_KEY, myKey);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getMyKey() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_MY_KEY);
     }
@@ -522,7 +497,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Gets turnSignal
      * @return a VehicleDataResult related to the turn signal status
      */
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getTurnSignal() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_TURN_SIGNAL);
     }
@@ -638,7 +612,6 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @return VehicleDataResult See GearStatus
      * @since SmartDeviceLink 7.0.0
      */
-    @SuppressWarnings("unchecked")
     public VehicleDataResult getGearStatus(){
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_GEAR_STATUS);
     }

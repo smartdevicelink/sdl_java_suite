@@ -185,7 +185,6 @@ public class AddCommand extends RPCRequest {
 	 * @return MenuParams -a MenuParams object
 	 * 
 	 */
-    @SuppressWarnings("unchecked")
     public MenuParams getMenuParams() {
 		return (MenuParams) getObject(MenuParams.class, KEY_MENU_PARAMS);
     }
@@ -243,7 +242,6 @@ public class AddCommand extends RPCRequest {
 	 * @return Image -an Image object
 	 * @since SmartDeviceLink 2.0
 	 */
-    @SuppressWarnings("unchecked")
     public Image getCmdIcon() {
 		return (Image) getObject(Image.class, KEY_CMD_ICON);
     }
