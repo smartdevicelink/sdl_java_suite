@@ -111,7 +111,7 @@ public class SdlArtwork extends SdlFile implements Cloneable{
 
 
     @Override
-    public void setType(FileType fileType) {
+    public void setType(@NonNull FileType fileType) {
         if(fileType == null || fileType.equals(FileType.GRAPHIC_JPEG) || fileType.equals(FileType.GRAPHIC_PNG)
                 || fileType.equals(FileType.GRAPHIC_BMP)){
             super.setType(fileType);

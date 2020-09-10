@@ -157,10 +157,6 @@ public class LifecycleManager extends BaseLifecycleManager {
      *
      * @param isEncrypted Specify true if packets on this service have to be encrypted
      * @param parameters  VideoStreamingParameters that are desired. Does not guarantee this is what will be accepted.
-     * @return If the service is opened successfully, an instance of VideoStreamingParams is
-     * returned which contains accepted video format. If the service is opened with legacy
-     * mode (i.e. without any negotiation) then an instance of VideoStreamingParams is
-     * returned. If the service was not opened then null is returned.
      */
     private void tryStartVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
         if (session == null) {

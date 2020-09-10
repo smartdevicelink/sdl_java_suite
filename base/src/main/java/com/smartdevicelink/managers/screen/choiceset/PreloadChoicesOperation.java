@@ -226,7 +226,7 @@ class PreloadChoicesOperation extends Task {
 
 	// HELPERS
 	boolean shouldSendChoiceText() {
-		if (this.displayName != null && this.displayName.equals(DisplayType.GEN3_8_INCH)){
+		if (this.displayName != null && this.displayName.equals(DisplayType.GEN3_8_INCH.toString())){
 			return true;
 		}
 		return templateSupportsTextField(TextFieldName.menuName);

@@ -68,7 +68,7 @@ public class BsonEncoder {
     }
 
     /**
-     * Goes thorugh the map and ensures that all the values included are supported by SDL. If they are not of a supported
+     * Goes through the map and ensures that all the values included are supported by SDL. If they are not of a supported
      * value it is removed from the map
      * @param map the map to be sanitized
      * @return a sanitized HashMap with non-supported object type removes

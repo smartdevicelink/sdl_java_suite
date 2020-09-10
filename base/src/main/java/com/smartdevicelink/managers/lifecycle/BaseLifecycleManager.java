@@ -832,7 +832,7 @@ abstract class BaseLifecycleManager {
 
                 } else if (RPCMessage.KEY_NOTIFICATION.equals(messageType)) {
                     FunctionID functionID = rpc.getFunctionID();
-                    if (functionID != null && (functionID.equals(FunctionID.ON_BUTTON_PRESS)) || functionID.equals(FunctionID.ON_BUTTON_EVENT)) {
+                    if ((FunctionID.ON_BUTTON_PRESS.equals(functionID)) || FunctionID.ON_BUTTON_EVENT.equals(functionID)) {
                         RPCNotification notificationCompat = handleButtonNotificationFormatting(rpc);
                         if (notificationCompat != null) {
                             onRPCNotificationReceived((notificationCompat));
