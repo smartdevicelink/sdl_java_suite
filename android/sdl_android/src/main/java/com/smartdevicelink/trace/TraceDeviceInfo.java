@@ -29,8 +29,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-/**
- * 
+/*
+
  */
 package com.smartdevicelink.trace;
 
@@ -145,9 +145,8 @@ public class TraceDeviceInfo {
 				.getBondedDevices();
 
 		StringBuilder write = new StringBuilder("<btpairs>");
-		Iterator<BluetoothDevice> iter = btDevices.iterator();
-		while (iter.hasNext()) {
-			write.append(SdlTrace.getBTDeviceInfo(iter.next()));
+		for (BluetoothDevice btDevice : btDevices) {
+			write.append(SdlTrace.getBTDeviceInfo(btDevice));
 		}
 		write.append("</btpairs>");
 
