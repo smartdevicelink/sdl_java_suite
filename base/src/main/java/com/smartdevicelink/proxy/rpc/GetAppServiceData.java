@@ -78,9 +78,10 @@ public class GetAppServiceData extends RPCRequest {
 	/**
 	 * @param appServiceType - the appServiceType
 	 */
-	public void setServiceType(@NonNull String appServiceType){
-		setParameters(KEY_SERVICE_TYPE, appServiceType);
-	}
+	public GetAppServiceData setServiceType(@NonNull String appServiceType) {
+        setParameters(KEY_SERVICE_TYPE, appServiceType);
+        return this;
+    }
 
 	/**
 	 * @return appServiceType
@@ -95,9 +96,10 @@ public class GetAppServiceData extends RPCRequest {
 	 * if it was previously subscribed.
 	 * @param subscribe -
 	 */
-	public void setSubscribe(Boolean subscribe){
-		setParameters(KEY_SUBSCRIBE, subscribe);
-	}
+	public GetAppServiceData setSubscribe( Boolean subscribe) {
+        setParameters(KEY_SUBSCRIBE, subscribe);
+        return this;
+    }
 
 	/**
 	 * If true, the consumer is requesting to subscribe to all future updates from the service

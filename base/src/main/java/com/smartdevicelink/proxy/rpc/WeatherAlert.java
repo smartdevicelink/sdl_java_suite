@@ -66,9 +66,10 @@ public class WeatherAlert extends RPCStruct {
 	/**
 	 * @param title -
 	 */
-	public void setTitle(String title) {
-		setValue(KEY_TITLE, title);
-	}
+	public WeatherAlert setTitle( String title) {
+        setValue(KEY_TITLE, title);
+        return this;
+    }
 
 	/**
 	 * @return title
@@ -80,9 +81,10 @@ public class WeatherAlert extends RPCStruct {
 	/**
 	 * @param summary -
 	 */
-	public void setSummary(String summary) {
-		setValue(KEY_SUMMARY, summary);
-	}
+	public WeatherAlert setSummary( String summary) {
+        setValue(KEY_SUMMARY, summary);
+        return this;
+    }
 
 	/**
 	 * @return summary
@@ -94,9 +96,10 @@ public class WeatherAlert extends RPCStruct {
 	/**
 	 * @param severity -
 	 */
-	public void setSeverity(String severity) {
-		setValue(KEY_SEVERITY, severity);
-	}
+	public WeatherAlert setSeverity( String severity) {
+        setValue(KEY_SEVERITY, severity);
+        return this;
+    }
 
 	/**
 	 * @return severity
@@ -109,9 +112,10 @@ public class WeatherAlert extends RPCStruct {
 	 * Min Size: 1, Max Size: 99
 	 * @param regions -
 	 */
-	public void setRegions(@NonNull List<String> regions) {
-		setValue(KEY_REGIONS, regions);
-	}
+	public WeatherAlert setRegions(@NonNull List<String> regions) {
+        setValue(KEY_REGIONS, regions);
+        return this;
+    }
 
 	/**
 	 * @return regions list
@@ -124,9 +128,10 @@ public class WeatherAlert extends RPCStruct {
 	/**
 	 * @param expires -
 	 */
-	public void setExpires(DateTime expires) {
-		setValue(KEY_EXPIRES, expires);
-	}
+	public WeatherAlert setExpires( DateTime expires) {
+        setValue(KEY_EXPIRES, expires);
+        return this;
+    }
 
 	/**
 	 * @return expires
@@ -138,9 +143,10 @@ public class WeatherAlert extends RPCStruct {
 	/**
 	 * @param timeIssued -
 	 */
-	public void setTimeIssued(DateTime timeIssued) {
-		setValue(KEY_TIME_ISSUED, timeIssued);
-	}
+	public WeatherAlert setTimeIssued( DateTime timeIssued) {
+        setValue(KEY_TIME_ISSUED, timeIssued);
+        return this;
+    }
 
 	/**
 	 * @return timeIssued

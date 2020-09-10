@@ -26,6 +26,7 @@ public class VideoStreamingParametersTest {
     private VideoStreamingParameters params;
     private VideoStreamingCapability capability;
     private ImageResolution preferredResolution;
+    private final String vehicleMake = "SDL";
 
     @Before
     public void setUp() {
@@ -40,7 +41,7 @@ public class VideoStreamingParametersTest {
         capability.setScale(null);
         capability.setPreferredResolution(preferredResolution);
 
-        params.update(capability);
+        params.update(capability, vehicleMake);
 
         int width = params.getResolution().getResolutionWidth();
         int height = params.getResolution().getResolutionHeight();
@@ -56,7 +57,7 @@ public class VideoStreamingParametersTest {
         capability.setScale(1.0);
         capability.setPreferredResolution(preferredResolution);
 
-        params.update(capability);
+        params.update(capability, vehicleMake);
 
         int width = params.getResolution().getResolutionWidth();
         int height = params.getResolution().getResolutionHeight();
@@ -72,7 +73,7 @@ public class VideoStreamingParametersTest {
         capability.setScale(1.25);
         capability.setPreferredResolution(preferredResolution);
 
-        params.update(capability);
+        params.update(capability, vehicleMake);
 
         int width = params.getResolution().getResolutionWidth();
         int height = params.getResolution().getResolutionHeight();
@@ -88,7 +89,7 @@ public class VideoStreamingParametersTest {
         capability.setScale(1.5);
         capability.setPreferredResolution(preferredResolution);
 
-        params.update(capability);
+        params.update(capability, vehicleMake);
 
         int width = params.getResolution().getResolutionWidth();
         int height = params.getResolution().getResolutionHeight();
@@ -176,23 +177,23 @@ public class VideoStreamingParametersTest {
 
         assertNull(params.getFormat());
 
-        params.update(capability);
+        params.update(capability, vehicleMake);
 
         assertEquals(params.getFormat(), format);
 
         format = new VideoStreamingFormat(VideoStreamingProtocol.RTP, VideoStreamingCodec.H264);
         capability.setSupportedFormats(Collections.singletonList(format));
-        params.update(capability);
+        params.update(capability, vehicleMake);
         assertEquals(params.getFormat(), format);
 
         format = new VideoStreamingFormat(VideoStreamingProtocol.RTP, VideoStreamingCodec.H265);
         capability.setSupportedFormats(Collections.singletonList(format));
-        params.update(capability);
+        params.update(capability, vehicleMake);
         assertFalse(params.getFormat().equals(format));
 
         format = new VideoStreamingFormat(VideoStreamingProtocol.RAW, VideoStreamingCodec.VP8);
         capability.setSupportedFormats(Collections.singletonList(format));
-        params.update(capability);
+        params.update(capability, vehicleMake);
         assertFalse(params.getFormat().equals(format));
 
     }

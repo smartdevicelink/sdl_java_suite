@@ -75,11 +75,12 @@ public class LightCapabilities extends RPCStruct {
 	 *
 	 * @param name enum value of type LightName that describes the specific light
 	 *
-	 * @see com.smartdevicelink.proxy.rpc.enums.LightName
+	 * @see LightName
 	 */
-	public void setName(@NonNull LightName name) {
-		setValue(KEY_NAME, name);
-	}
+	public LightCapabilities setName(@NonNull LightName name) {
+        setValue(KEY_NAME, name);
+        return this;
+    }
 
 	/**
 	 * Gets the name portion of the LightCapabilities class
@@ -97,9 +98,10 @@ public class LightCapabilities extends RPCStruct {
 	 *
 	 * @param densityAvailable Indicates if the light's density can be set remotely (similar to a dimmer).
 	 */
-	public void setDensityAvailable(Boolean densityAvailable) {
-		setValue(KEY_DENSITY_AVAILABLE, densityAvailable);
-	}
+	public LightCapabilities setDensityAvailable( Boolean densityAvailable) {
+        setValue(KEY_DENSITY_AVAILABLE, densityAvailable);
+        return this;
+    }
 
 	/**
 	 * Gets the densityAvailable portion of the LightCapabilities class
@@ -115,9 +117,10 @@ public class LightCapabilities extends RPCStruct {
 	 *
 	 * @param RGBColorSpaceAvailable Indicates if the light's color can be set remotely by using the RGB color space.
 	 */
-	public void setRGBColorSpaceAvailable(Boolean RGBColorSpaceAvailable) {
-		setValue(KEY_RGB_COLOR_SPACE_AVAILABLE, RGBColorSpaceAvailable);
-	}
+	public LightCapabilities setRGBColorSpaceAvailable( Boolean RGBColorSpaceAvailable) {
+        setValue(KEY_RGB_COLOR_SPACE_AVAILABLE, RGBColorSpaceAvailable);
+        return this;
+    }
 
 	/**
 	 * Gets the RGBColorSpaceAvailable portion of the LightCapabilities class
@@ -133,9 +136,10 @@ public class LightCapabilities extends RPCStruct {
 	 *
 	 * @param statusAvailable Indicates if the status (ON/OFF) can be set remotely. App shall not use read-only values (RAMP_UP/RAMP_DOWN/UNKNOWN/INVALID) in a setInteriorVehicleData request.
 	 */
-	public void setStatusAvailable(Boolean statusAvailable) {
-		setValue(KEY_STATUS_AVAILABLE, statusAvailable);
-	}
+	public LightCapabilities setStatusAvailable( Boolean statusAvailable) {
+        setValue(KEY_STATUS_AVAILABLE, statusAvailable);
+        return this;
+    }
 
 	/**
 	 * Gets the statusAvailable portion of the LightCapabilities class

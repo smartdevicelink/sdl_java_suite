@@ -121,10 +121,11 @@ public class RGBColor extends RPCStruct{
      * Sets the red value of the color object
      * @param color red value - min: 0; max: 255
      */
-    public void setRed(Integer color) {
+    public RGBColor setRed( Integer color) {
         if (color != null && color >= MIN_VALUE && color <= MAX_VALUE) {
             setValue(KEY_RED, color);
         }
+        return this;
     }
 
     /**
@@ -139,10 +140,11 @@ public class RGBColor extends RPCStruct{
      * Sets the green value of the color object
      * @param color green value - min: 0; max: 255
      */
-    public void setGreen(Integer color) {
+    public RGBColor setGreen( Integer color) {
         if (color != null && color >= MIN_VALUE && color <= MAX_VALUE) {
             setValue(KEY_GREEN, color);
         }
+        return this;
     }
 
     /**
@@ -157,10 +159,11 @@ public class RGBColor extends RPCStruct{
      * Sets the blue value of the color object
      * @param color blue value - min: 0; max: 255
      */
-    public void setBlue(Integer color) {
+    public RGBColor setBlue( Integer color) {
         if (color != null && color >= MIN_VALUE && color <= MAX_VALUE) {
             setValue(KEY_BLUE, color);
         }
+        return this;
     }
 
     /**

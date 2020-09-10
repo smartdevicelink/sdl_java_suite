@@ -30,9 +30,13 @@
 
 package com.smartdevicelink.streaming.audio;
 
+import androidx.annotation.RestrictTo;
+
 /**
  * A struct to hold audio format information that are common to codecs.
  */
+
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class AudioStreamingParams {
 	/**
 	 * Sampling rate in Hz, e.g. 44100

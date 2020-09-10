@@ -103,8 +103,9 @@ public class WindowStatus extends RPCStruct {
      *
      * @param location
      */
-    public void setLocation(@NonNull Grid location) {
+    public WindowStatus setLocation(@NonNull Grid location) {
         setValue(KEY_LOCATION, location);
+        return this;
     }
 
     /**
@@ -121,8 +122,9 @@ public class WindowStatus extends RPCStruct {
      *
      * @param state
      */
-    public void setState(@NonNull WindowState state) {
+    public WindowStatus setState(@NonNull WindowState state) {
         setValue(KEY_STATE, state);
+        return this;
     }
 
     /**

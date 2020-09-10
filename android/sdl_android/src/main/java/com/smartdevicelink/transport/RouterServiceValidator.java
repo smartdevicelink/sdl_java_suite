@@ -638,11 +638,6 @@ public class RouterServiceValidator {
 		return createTrustedListRequest(context,forceRefresh,null,listCallback);
 	}
 	
-	@Deprecated
-	protected static boolean createTrustedListRequest(final Context context, boolean forceRefresh,HttpRequestTask.HttpRequestTaskCallback cb ){
-		return createTrustedListRequest(context,forceRefresh,cb,null);
-	}
-	
 	protected static boolean createTrustedListRequest(final Context context, boolean forceRefresh,HttpRequestTask.HttpRequestTaskCallback cb, final TrustedListCallback listCallback ){
 		if(context == null){
 			return false;

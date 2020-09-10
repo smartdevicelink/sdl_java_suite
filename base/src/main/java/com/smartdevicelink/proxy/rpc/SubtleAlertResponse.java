@@ -80,8 +80,9 @@ public class SubtleAlertResponse extends RPCResponse {
      * If provided, another system event or overlay currently has a higher priority than this alert.
      * An app must not send an alert without waiting at least the amount of time dictated.
      */
-    public void setTryAgainTime(Integer tryAgainTime) {
+    public SubtleAlertResponse setTryAgainTime( Integer tryAgainTime) {
         setParameters(KEY_TRY_AGAIN_TIME, tryAgainTime);
+        return this;
     }
 
     /**

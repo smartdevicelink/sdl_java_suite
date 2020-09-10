@@ -53,9 +53,10 @@ public class NavigationServiceManifest extends RPCStruct {
 	 * Informs the subscriber if this service can actually accept way points.
 	 * @param acceptsWayPoints -
 	 */
-	public void setAcceptsWayPoints(Boolean acceptsWayPoints){
-		setValue(KEY_ACCEPTS_WAY_POINTS, acceptsWayPoints);
-	}
+	public NavigationServiceManifest setAcceptsWayPoints( Boolean acceptsWayPoints) {
+        setValue(KEY_ACCEPTS_WAY_POINTS, acceptsWayPoints);
+        return this;
+    }
 
 	/**
 	 * Informs the subscriber if this service can actually accept way points.

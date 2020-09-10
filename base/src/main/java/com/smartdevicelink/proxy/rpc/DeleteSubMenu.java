@@ -118,12 +118,13 @@ public class DeleteSubMenu extends RPCRequest {
         return getInteger( KEY_MENU_ID );
     }
     /**
-     * Sets the MenuID that identifies the SubMenu to be delete  
+     * Sets the MenuID that identifies the SubMenu to be delete
      * @param menuID an Integer value representing menuID that identifies the SubMenu to be delete
-     * 
+     *
      * <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000</p>
-     */    
-    public void setMenuID( @NonNull Integer menuID ) {
+     */
+    public DeleteSubMenu setMenuID(@NonNull Integer menuID) {
         setParameters(KEY_MENU_ID, menuID);
+        return this;
     }
 }

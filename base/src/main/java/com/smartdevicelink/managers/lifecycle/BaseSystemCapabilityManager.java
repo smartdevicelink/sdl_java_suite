@@ -167,7 +167,7 @@ abstract class BaseSystemCapabilityManager {
 
 	private void updateDeprecatedDisplayCapabilities() {
 		WindowCapability defaultMainWindowCapabilities = getDefaultMainWindowCapability();
-		List<DisplayCapability> displayCapabilityList = convertToList(getCapability(SystemCapabilityType.DISPLAYS), DisplayCapability.class);
+		List<DisplayCapability> displayCapabilityList = convertToList(getCapability(SystemCapabilityType.DISPLAYS, null, false), DisplayCapability.class);
 
 		if (defaultMainWindowCapabilities == null || displayCapabilityList == null || displayCapabilityList.size() == 0) {
 			return;
@@ -185,7 +185,7 @@ abstract class BaseSystemCapabilityManager {
 			return;
 		}
 
-		List<DisplayCapability> oldCapabilities = convertToList(getCapability(SystemCapabilityType.DISPLAYS), DisplayCapability.class);
+		List<DisplayCapability> oldCapabilities = convertToList(getCapability(SystemCapabilityType.DISPLAYS, null, false), DisplayCapability.class);
 
 		if (oldCapabilities == null || oldCapabilities.size() == 0) {
 			setCapability(SystemCapabilityType.DISPLAYS, newCapabilities);
@@ -227,7 +227,7 @@ abstract class BaseSystemCapabilityManager {
 	}
 
 	public WindowCapability getWindowCapability(int windowID) {
-		List<DisplayCapability> capabilities = convertToList(getCapability(SystemCapabilityType.DISPLAYS), DisplayCapability.class);
+		List<DisplayCapability> capabilities = convertToList(getCapability(SystemCapabilityType.DISPLAYS, null, false), DisplayCapability.class);
 		if (capabilities == null || capabilities.size() == 0) {
 			return null;
 		}
@@ -408,7 +408,7 @@ abstract class BaseSystemCapabilityManager {
 							if (rpcVersion.isBetween(new Version(3, 0, 0), new Version(4, 4, 0)) >= 0) {
 								//This was before the system capability feature was added so check if
 								// graphics are supported instead
-								DisplayCapabilities displayCapabilities = (DisplayCapabilities) getCapability(SystemCapabilityType.DISPLAY);
+								DisplayCapabilities displayCapabilities = (DisplayCapabilities) getCapability(SystemCapabilityType.DISPLAY, null, false);
 								if (displayCapabilities != null) {
 									return displayCapabilities.getGraphicSupported() != null && displayCapabilities.getGraphicSupported();
 								}
@@ -499,26 +499,6 @@ abstract class BaseSystemCapabilityManager {
 	 */
 	public Object getCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener, final boolean forceUpdate) {
 		return getCapabilityPrivate(systemCapabilityType, scListener, null, forceUpdate);
-	}
-
-	/** Gets the capability object that corresponds to the supplied capability type by calling the listener immediately with the cached value, if available. If not available, the listener will retrieve a new value and return that when the head unit responds.
-	 * @param systemCapabilityType Type of capability desired
-	 * @param scListener callback to execute upon retrieving capability
-	 * @deprecated use {@link #getCapability(SystemCapabilityType, OnSystemCapabilityListener, boolean)} instead.
-	 */
-	@Deprecated
-	public void getCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener) {
-		getCapabilityPrivate(systemCapabilityType, scListener, null, false);
-	}
-
-	/** Gets the capability object that corresponds to the supplied capability type by returning the currently cached value immediately if available. Otherwise returns a null object and works in the background to retrieve the capability for the next call
-	 * @param systemCapabilityType Type of capability desired
-	 * @return Desired capability if it is cached in the manager, otherwise returns null
-	 * @deprecated use {@link #getCapability(SystemCapabilityType, OnSystemCapabilityListener, boolean)} instead.
-	 */
-	@Deprecated
-	public Object getCapability(final SystemCapabilityType systemCapabilityType) {
-		return getCapabilityPrivate(systemCapabilityType, null, null, false);
 	}
 
 	/**

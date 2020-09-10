@@ -32,6 +32,7 @@
 package com.smartdevicelink.protocol;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
@@ -64,6 +65,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class SdlProtocolBase {
     private static final String TAG ="SdlProtocol";
     private final static String FailurePropagating_Msg = "Failure propagating ";
@@ -83,7 +85,7 @@ public class SdlProtocolBase {
     public static final int V2_HEADER_SIZE = 12;
 
     //If increasing MAX PROTOCOL VERSION major version, make sure to alter it in SdlPsm
-    private static final Version MAX_PROTOCOL_VERSION = new Version(5, 2, 0);
+    private static final Version MAX_PROTOCOL_VERSION = new Version(5, 3, 0);
 
     public static final int V1_V2_MTU_SIZE = 1500;
     public static final int V3_V4_MTU_SIZE = 131072;
@@ -1417,6 +1419,8 @@ public class SdlProtocolBase {
 
             } else if (frameInfo == FrameDataControlFrameType.StartSessionNACK.getValue()) {
 
+                String reason = (String) packet.getTag(ControlFrameTags.RPC.StartServiceNAK.REASON);
+                DebugTool.logWarning(TAG, reason);
                 handleProtocolSessionNAKed(packet, serviceType);
 
             } else if (frameInfo == FrameDataControlFrameType.EndSession.getValue()
@@ -1426,6 +1430,8 @@ public class SdlProtocolBase {
 
             } else if (frameInfo == FrameDataControlFrameType.EndSessionNACK.getValue()) {
 
+                String reason = (String) packet.getTag(ControlFrameTags.RPC.EndServiceNAK.REASON);
+                DebugTool.logWarning(TAG, reason);
                 handleServiceEndedNAK(packet, serviceType);
 
             } else if (frameInfo == FrameDataControlFrameType.ServiceDataACK.getValue()) {

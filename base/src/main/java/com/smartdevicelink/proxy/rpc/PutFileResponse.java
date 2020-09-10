@@ -97,8 +97,9 @@ public class PutFileResponse extends RPCResponse {
 		super.format(rpcVersion, formatParams);
 	}
 
-    public void setSpaceAvailable(Integer spaceAvailable) {
+    public PutFileResponse setSpaceAvailable( Integer spaceAvailable) {
         setParameters(KEY_SPACE_AVAILABLE, spaceAvailable);
+        return this;
     }
 
     public Integer getSpaceAvailable() {

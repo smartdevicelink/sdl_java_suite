@@ -622,7 +622,7 @@ abstract class BaseLifecycleManager {
     @SuppressWarnings("UnusedReturnValue")
     private boolean onRPCRequestReceived(RPCRequest request) {
         if (request == null) {
-            DebugTool.logError("onRPCRequestReceived - request was null");
+            DebugTool.logError(TAG, "onRPCRequestReceived - request was null");
             return false;
         }
         DebugTool.logInfo(TAG, "onRPCRequestReceived - " + request.getFunctionName());
@@ -947,11 +947,6 @@ abstract class BaseLifecycleManager {
         }
 
         @Override
-        public void stopVideoService() {
-            BaseLifecycleManager.this.endVideoStream();
-        }
-
-        @Override
         public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
             DebugTool.logWarning(TAG, "startVideoStream is not currently implemented");
             return null;
@@ -965,11 +960,6 @@ abstract class BaseLifecycleManager {
         @Override
         public void startAudioService(boolean encrypted) {
             BaseLifecycleManager.this.startAudioService(encrypted);
-        }
-
-        @Override
-        public void stopAudioService() {
-            BaseLifecycleManager.this.endAudioStream();
         }
 
         @Override
@@ -1038,7 +1028,7 @@ abstract class BaseLifecycleManager {
         @Override
         public Object getCapability(SystemCapabilityType systemCapabilityType) {
             if (BaseLifecycleManager.this.systemCapabilityManager != null) {
-                return BaseLifecycleManager.this.systemCapabilityManager.getCapability(systemCapabilityType);
+                return BaseLifecycleManager.this.systemCapabilityManager.getCapability(systemCapabilityType, null, false);
             } else {
                 return null;
             }
@@ -1047,7 +1037,7 @@ abstract class BaseLifecycleManager {
         @Override
         public void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener) {
             if (BaseLifecycleManager.this.systemCapabilityManager != null) {
-                BaseLifecycleManager.this.systemCapabilityManager.getCapability(systemCapabilityType, scListener);
+                BaseLifecycleManager.this.systemCapabilityManager.getCapability(systemCapabilityType, scListener, false);
             }
         }
 
@@ -1198,11 +1188,6 @@ abstract class BaseLifecycleManager {
         }
     }
 
-    @Deprecated
-    public void setSdlSecurityClassList(List<Class<? extends SdlSecurityBase>> list) {
-        _secList = list;
-    }
-
     /**
      * Sets the security libraries and a callback to notify caller when there is update to encryption service
      *
@@ -1273,13 +1258,7 @@ abstract class BaseLifecycleManager {
     void startVideoService(boolean encrypted, VideoStreamingParameters parameters) {
     }
 
-    void endVideoStream() {
-    }
-
     void startAudioService(boolean encrypted) {
-    }
-
-    void endAudioStream() {
     }
 
     void setSdlSecurityStaticVars() {

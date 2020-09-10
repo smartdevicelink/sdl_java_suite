@@ -184,25 +184,25 @@ public class SystemCapabilityManagerTests {
 
 		List<DisplayCapability> displayCapabilityList = createDisplayCapabilityList(TestValues.GENERAL_DISPLAYCAPABILITIES, TestValues.GENERAL_BUTTONCAPABILITIES_LIST, TestValues.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
 		assertTrue(TestValues.TRUE,
-				Validator.validateDisplayCapabilityList(displayCapabilityList, (List<DisplayCapability>) systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS)));
+				Validator.validateDisplayCapabilityList(displayCapabilityList, (List<DisplayCapability>) systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS, null, false)));
 		assertTrue(TestValues.TRUE,
-				Validator.validateHMICapabilities(TestValues.GENERAL_HMICAPABILITIES, (HMICapabilities) systemCapabilityManager.getCapability(SystemCapabilityType.HMI)));
+				Validator.validateHMICapabilities(TestValues.GENERAL_HMICAPABILITIES, (HMICapabilities) systemCapabilityManager.getCapability(SystemCapabilityType.HMI, null, false)));
 		assertTrue(TestValues.TRUE,
-				Validator.validateDisplayCapabilities(TestValues.GENERAL_DISPLAYCAPABILITIES, (DisplayCapabilities) systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY)));
+				Validator.validateDisplayCapabilities(TestValues.GENERAL_DISPLAYCAPABILITIES, (DisplayCapabilities) systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY, null, false)));
 		assertTrue(TestValues.TRUE,
-				Validator.validateAudioPassThruCapabilities(TestValues.GENERAL_AUDIOPASSTHRUCAPABILITIES_LIST, (List<AudioPassThruCapabilities>) systemCapabilityManager.getCapability(SystemCapabilityType.AUDIO_PASSTHROUGH)));
+				Validator.validateAudioPassThruCapabilities(TestValues.GENERAL_AUDIOPASSTHRUCAPABILITIES_LIST, (List<AudioPassThruCapabilities>) systemCapabilityManager.getCapability(SystemCapabilityType.AUDIO_PASSTHROUGH, null, false)));
 		assertTrue(TestValues.TRUE,
-				Validator.validateButtonCapabilities(TestValues.GENERAL_BUTTONCAPABILITIES_LIST, (List<ButtonCapabilities> )systemCapabilityManager.getCapability(SystemCapabilityType.BUTTON)));
+				Validator.validateButtonCapabilities(TestValues.GENERAL_BUTTONCAPABILITIES_LIST, (List<ButtonCapabilities> )systemCapabilityManager.getCapability(SystemCapabilityType.BUTTON, null, false)));
 		assertTrue(TestValues.TRUE,
-				Validator.validateHMIZoneCapabilities(TestValues.GENERAL_HMIZONECAPABILITIES_LIST, (List<HmiZoneCapabilities>) systemCapabilityManager.getCapability(SystemCapabilityType.HMI_ZONE)));
+				Validator.validateHMIZoneCapabilities(TestValues.GENERAL_HMIZONECAPABILITIES_LIST, (List<HmiZoneCapabilities>) systemCapabilityManager.getCapability(SystemCapabilityType.HMI_ZONE, null, false)));
 		assertTrue(TestValues.TRUE,
-				Validator.validatePresetBankCapabilities(TestValues.GENERAL_PRESETBANKCAPABILITIES, (PresetBankCapabilities) systemCapabilityManager.getCapability(SystemCapabilityType.PRESET_BANK)));
+				Validator.validatePresetBankCapabilities(TestValues.GENERAL_PRESETBANKCAPABILITIES, (PresetBankCapabilities) systemCapabilityManager.getCapability(SystemCapabilityType.PRESET_BANK, null, false)));
 		assertTrue(TestValues.TRUE,
-				Validator.validateSoftButtonCapabilities(TestValues.GENERAL_SOFTBUTTONCAPABILITIES_LIST, (List<SoftButtonCapabilities>) systemCapabilityManager.getCapability(SystemCapabilityType.SOFTBUTTON)));
+				Validator.validateSoftButtonCapabilities(TestValues.GENERAL_SOFTBUTTONCAPABILITIES_LIST, (List<SoftButtonCapabilities>) systemCapabilityManager.getCapability(SystemCapabilityType.SOFTBUTTON, null, false)));
 		assertTrue(TestValues.TRUE,
-				Validator.validateSpeechCapabilities(TestValues.GENERAL_SPEECHCAPABILITIES_LIST, (List<SpeechCapabilities>) systemCapabilityManager.getCapability(SystemCapabilityType.SPEECH)));
+				Validator.validateSpeechCapabilities(TestValues.GENERAL_SPEECHCAPABILITIES_LIST, (List<SpeechCapabilities>) systemCapabilityManager.getCapability(SystemCapabilityType.SPEECH, null, false)));
 		assertTrue(TestValues.TRUE,
-				Validator.validatePreRecordedSpeechCapabilities(TestValues.GENERAL_PRERECORDEDSPEECH_LIST, (List<PrerecordedSpeech>) systemCapabilityManager.getCapability(SystemCapabilityType.PRERECORDED_SPEECH)));
+				Validator.validatePreRecordedSpeechCapabilities(TestValues.GENERAL_PRERECORDEDSPEECH_LIST, (List<PrerecordedSpeech>) systemCapabilityManager.getCapability(SystemCapabilityType.PRERECORDED_SPEECH, null, false)));
 
 	}
 
@@ -258,7 +258,7 @@ public class SystemCapabilityManagerTests {
 			public void onError(String info) {
 				assertTrue(false);
 			}
-		});
+		}, false);
 	}
 
 	private Answer<Void> createOnHMIStatusAnswer(final HMILevel hmiLevel){
@@ -689,7 +689,7 @@ public class SystemCapabilityManagerTests {
 	@Test
 	public void testListConversion(){
 		SystemCapabilityManager systemCapabilityManager = createSampleManager();
-		Object capability = systemCapabilityManager.getCapability(SystemCapabilityType.SOFTBUTTON);
+		Object capability = systemCapabilityManager.getCapability(SystemCapabilityType.SOFTBUTTON, null, false);
 		assertNotNull(capability);
 		List<SoftButtonCapabilities> list = SystemCapabilityManager.convertToList(capability, SoftButtonCapabilities.class);
 		assertNotNull(list);
@@ -709,7 +709,7 @@ public class SystemCapabilityManagerTests {
 		OnRPCListener scmRpcListener = iSDL.rpcListeners.get(FunctionID.ON_SYSTEM_CAPABILITY_UPDATED.getId()).get(0);
 		assertNotNull(scmRpcListener);
 
-		assertNull(systemCapabilityManager.getCapability(SystemCapabilityType.APP_SERVICES));
+		assertNull(systemCapabilityManager.getCapability(SystemCapabilityType.APP_SERVICES, null, false));
 
 		/* PERFORM A NOTIFICATION SEND THROUGH THE SCM */
 		AppServiceCapability addServiceID = AppServiceFactory.createAppServiceCapability(AppServiceType.NAVIGATION, "test", "3453", true, null);
@@ -725,7 +725,7 @@ public class SystemCapabilityManagerTests {
 
 		scmRpcListener.onReceived(onSystemCapabilityUpdated);
 
-		assertNotNull(systemCapabilityManager.getCapability(SystemCapabilityType.APP_SERVICES));
+		assertNotNull(systemCapabilityManager.getCapability(SystemCapabilityType.APP_SERVICES, null, false));
 	}
 
 	@Test
@@ -735,8 +735,8 @@ public class SystemCapabilityManagerTests {
 		OnRPCListener scmRpcListener = iSDL.rpcListeners.get(FunctionID.ON_SYSTEM_CAPABILITY_UPDATED.getId()).get(0);
 		assertNotNull(scmRpcListener);
 
-		assertNotNull(systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS));
-		assertNotNull(systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY));
+		assertNotNull(systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS, null, false));
+		assertNotNull(systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY, null, false));
 
 		List<DisplayCapability> newCaps = createDisplayCapabilityList(TestValues.GENERAL_DISPLAYCAPABILITIES, TestValues.GENERAL_BUTTONCAPABILITIES_LIST, TestValues.GENERAL_SOFTBUTTONCAPABILITIES_LIST);;
 
@@ -749,11 +749,11 @@ public class SystemCapabilityManagerTests {
 
 		scmRpcListener.onReceived(onSystemCapabilityUpdated);
 
-		List<DisplayCapability> appliedCaps = (List<DisplayCapability>)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS);
+		List<DisplayCapability> appliedCaps = (List<DisplayCapability>)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS, null, false);
 		assertNotNull(appliedCaps);
 		assertTrue(Validator.validateDisplayCapabilityList(newCaps, appliedCaps));
 
-		DisplayCapabilities appliedConvertedCaps = (DisplayCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY);
+		DisplayCapabilities appliedConvertedCaps = (DisplayCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY, null, false);
 		assertNotNull(appliedConvertedCaps);
 		DisplayCapabilities testConvertedCaps = createDisplayCapabilities(newCaps.get(0).getDisplayName(), newCaps.get(0).getWindowCapabilities().get(0));
 		assertTrue(Validator.validateDisplayCapabilities(appliedConvertedCaps, testConvertedCaps));
@@ -774,13 +774,13 @@ public class SystemCapabilityManagerTests {
 		assertNotNull(scmRpcListener);
 
 		/* CONFIRM THE CAP DOESN'T EXIST IN SCM */
-		AppServicesCapabilities cachedCap = (AppServicesCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.APP_SERVICES);
+		AppServicesCapabilities cachedCap = (AppServicesCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.APP_SERVICES, null, false);
 		assertNull(cachedCap);
 
 		/* ADD THE CAP IN SCM */
 		systemCapabilityManager.setCapability(SystemCapabilityType.APP_SERVICES, appServicesCapabilities);
 		/* CONFIRM THE CAP DOES EXIST IN SCM */
-		cachedCap = (AppServicesCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.APP_SERVICES);
+		cachedCap = (AppServicesCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.APP_SERVICES, null, false);
 		assertNotNull(cachedCap);
 		/* CONFIRM THE CAP IN SCM EQUALS ORIGINAL*/
 		assertEquals(cachedCap, appServicesCapabilities);
@@ -800,7 +800,7 @@ public class SystemCapabilityManagerTests {
 
 		scmRpcListener.onReceived(onSystemCapabilityUpdated);
 
-		cachedCap = (AppServicesCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.APP_SERVICES);
+		cachedCap = (AppServicesCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.APP_SERVICES, null, false);
 		assertNotNull(cachedCap);
 
 		assertTrue(cachedCap.getAppServices().get(0).getUpdatedAppServiceRecord().getServiceID().equals(baseID));
@@ -825,7 +825,7 @@ public class SystemCapabilityManagerTests {
 
 		scmRpcListener.onReceived(onSystemCapabilityUpdated);
 
-		cachedCap = (AppServicesCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.APP_SERVICES);
+		cachedCap = (AppServicesCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.APP_SERVICES, null, false);
 		assertNotNull(cachedCap);
 		assertEquals(cachedCap.getAppServices().size(), 1);
 
@@ -844,7 +844,7 @@ public class SystemCapabilityManagerTests {
 
 		scmRpcListener.onReceived(onSystemCapabilityUpdated);
 
-		cachedCap = (AppServicesCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.APP_SERVICES);
+		cachedCap = (AppServicesCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.APP_SERVICES, null, false);
 		assertNotNull(cachedCap);
 		assertEquals(cachedCap.getAppServices().size(), 2);
 
@@ -863,7 +863,7 @@ public class SystemCapabilityManagerTests {
 
 		scmRpcListener.onReceived(onSystemCapabilityUpdated);
 
-		cachedCap = (AppServicesCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.APP_SERVICES);
+		cachedCap = (AppServicesCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.APP_SERVICES, null, false);
 		assertNotNull(cachedCap);
 		assertEquals(cachedCap.getAppServices().size(), 1);
 
@@ -878,7 +878,7 @@ public class SystemCapabilityManagerTests {
 		assertNotNull(scmRpcListener);
 		systemCapabilityManager.setCapability(SystemCapabilityType.PHONE_CALL, TestValues.GENERAL_PHONECAPABILITY);
 
-		PhoneCapability phoneCapability = (PhoneCapability)systemCapabilityManager.getCapability(SystemCapabilityType.PHONE_CALL);
+		PhoneCapability phoneCapability = (PhoneCapability)systemCapabilityManager.getCapability(SystemCapabilityType.PHONE_CALL, null, false);
 		assertNotNull(phoneCapability);
 		assertEquals(phoneCapability, TestValues.GENERAL_PHONECAPABILITY);
 
@@ -891,7 +891,7 @@ public class SystemCapabilityManagerTests {
 
 		scmRpcListener.onReceived(onSystemCapabilityUpdated);
 
-		PhoneCapability phoneCapabilityUpdated = (PhoneCapability)systemCapabilityManager.getCapability(SystemCapabilityType.PHONE_CALL);
+		PhoneCapability phoneCapabilityUpdated = (PhoneCapability)systemCapabilityManager.getCapability(SystemCapabilityType.PHONE_CALL, null, false);
 		assertNotNull(phoneCapabilityUpdated);
 		assertFalse(phoneCapabilityUpdated.getDialNumberEnabled());
 		assertEquals(phoneCapability, phoneCapabilityUpdated);
@@ -915,11 +915,11 @@ public class SystemCapabilityManagerTests {
 		dlRpcListener.onReceived(newLayout);
 
 
-		DisplayCapabilities appliedCaps = (DisplayCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY);
+		DisplayCapabilities appliedCaps = (DisplayCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY, null, false);
 		assertNotNull(appliedCaps);
 		assertTrue(Validator.validateDisplayCapabilities(newLayout.getDisplayCapabilities(), appliedCaps));
 
-		List<DisplayCapability> convertedCaps = (List<DisplayCapability>)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS);
+		List<DisplayCapability> convertedCaps = (List<DisplayCapability>)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS, null, false);
 		assertNotNull(convertedCaps);
 		List<DisplayCapability> testCaps = createDisplayCapabilityList(newLayout.getDisplayCapabilities(), newLayout.getButtonCapabilities(), newLayout.getSoftButtonCapabilities());
 		assertTrue(Validator.validateDisplayCapabilityList(convertedCaps, testCaps));
@@ -960,12 +960,6 @@ public class SystemCapabilityManagerTests {
 
 		@Override
 		public void startVideoService(VideoStreamingParameters parameters, boolean encrypted) {	}
-
-		@Override
-		public void stopVideoService() {}
-
-		@Override
-		public void stopAudioService() {}
 
 		@Override
 		public void sendRPCRequest(RPCRequest message) {}

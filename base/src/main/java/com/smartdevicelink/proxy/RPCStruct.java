@@ -91,19 +91,11 @@ public class RPCStruct {
 		store = JsonRPCMarshaller.deserializeJSONObject(jsonObject);
 
 	}
-	
-	// deserializeJSONObject method moved to JsonRPCMarshaller for consistency
-	// Keep reference here for backwards compatibility
-	@Deprecated
-	public static Hashtable<String, Object> deserializeJSONObject(JSONObject jsonObject) 
-			throws JSONException {
-		return JsonRPCMarshaller.deserializeJSONObject(jsonObject);
-	}
 
 	public JSONObject serializeJSON() throws JSONException {
 		return JsonRPCMarshaller.serializeHashtable(store);
 	}
-	
+
 	@SuppressWarnings("unchecked")
     public JSONObject serializeJSON(byte protocolVersion) throws JSONException {
 		if (protocolVersion > 1) {
@@ -180,7 +172,7 @@ public class RPCStruct {
 		return this._bulkData;
 	}
 
-	public void setBulkData(byte[] bulkData) {
+	public RPCStruct setBulkData(byte[] bulkData) {
 		if (bulkData != null) {
 			this._bulkData = new byte[bulkData.length];
 			System.arraycopy(bulkData, 0, _bulkData, 0, bulkData.length);
@@ -188,10 +180,12 @@ public class RPCStruct {
 		else{
 		    this._bulkData = null;
 		}
+		return this;
 	}
 	
-	public void setPayloadProtected(Boolean bVal) {
+	public RPCStruct setPayloadProtected(Boolean bVal) {
 		protectedPayload = bVal;
+		return this;
 	}
 	
 	public Boolean isPayloadProtected() {
@@ -225,12 +219,13 @@ public class RPCStruct {
 
 	// Generalized Getters and Setters
 
-	public void setValue(String key, Object value){
+	public RPCStruct setValue(String key, Object value){
 		if (value != null) {
 			store.put(key, value);
 		} else {
 			store.remove(key);
 		}
+		return this;
 	}
 
 	public Object getValue(String key) {
@@ -275,8 +270,18 @@ public class RPCStruct {
 		} else if (obj instanceof List<?>) {
 			List<?> list = (List<?>) obj;
 			if (list != null && list.size() > 0) {
-				Object item = list.get(0);
-				if (tClass.isInstance(item)) {
+				Object item = null;
+				//Iterate through list to find first non-null object
+				for(Object object: list){
+					if(object != null) {
+						item = object;
+						break;
+					}
+				}
+
+				if (item == null) {
+					return list;
+				} else if (tClass.isInstance(item)) {
 					return list;
 				} else if (item instanceof Hashtable) {
 					List<Object> newList = new ArrayList<Object>();
@@ -307,6 +312,10 @@ public class RPCStruct {
 					}
 					return newList;
 				}
+			} else {
+				//If the list is either null or empty it should be returned. It will keep the same
+				//behavior as it does today with null lists, but empty ones will now also be returned.
+				return list;
 			}
 		}
 		return null;

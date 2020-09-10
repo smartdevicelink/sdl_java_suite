@@ -95,18 +95,20 @@ public class SeatControlCapabilities extends RPCStruct {
 	 *
 	 * @param moduleName -  The short friendly name of the light control module. It should not be used to identify a module by mobile application.
 	 */
-	public void setModuleName(@NonNull String moduleName) {
-		setValue(KEY_MODULE_NAME, moduleName);
-	}
+	public SeatControlCapabilities setModuleName(@NonNull String moduleName) {
+        setValue(KEY_MODULE_NAME, moduleName);
+        return this;
+    }
 
 	/**
 	 * Sets the heatingEnabledAvailable portion of the SeatControlCapabilities class
 	 *
 	 * @param heatingEnabledAvailable
 	 */
-	public void setHeatingEnabledAvailable(Boolean heatingEnabledAvailable) {
-		setValue(KEY_HEATING_ENABLED_AVAILABLE, heatingEnabledAvailable);
-	}
+	public SeatControlCapabilities setHeatingEnabledAvailable( Boolean heatingEnabledAvailable) {
+        setValue(KEY_HEATING_ENABLED_AVAILABLE, heatingEnabledAvailable);
+        return this;
+    }
 
 	/**
 	 * Gets the heatingEnabledAvailable portion of the SeatControlCapabilities class
@@ -122,9 +124,10 @@ public class SeatControlCapabilities extends RPCStruct {
 	 *
 	 * @param coolingEnabledAvailable
 	 */
-	public void setCoolingEnabledAvailable(Boolean coolingEnabledAvailable) {
-		setValue(KEY_COOLING_ENABLED_AVAILABLE, coolingEnabledAvailable);
-	}
+	public SeatControlCapabilities setCoolingEnabledAvailable( Boolean coolingEnabledAvailable) {
+        setValue(KEY_COOLING_ENABLED_AVAILABLE, coolingEnabledAvailable);
+        return this;
+    }
 
 	/**
 	 * Gets the coolingEnabledAvailable portion of the SeatControlCapabilities class
@@ -140,9 +143,10 @@ public class SeatControlCapabilities extends RPCStruct {
 	 *
 	 * @param heatingLevelAvailable
 	 */
-	public void setHeatingLevelAvailable(Boolean heatingLevelAvailable) {
-		setValue(KEY_HEATING_LEVEL_AVAILABLE, heatingLevelAvailable);
-	}
+	public SeatControlCapabilities setHeatingLevelAvailable( Boolean heatingLevelAvailable) {
+        setValue(KEY_HEATING_LEVEL_AVAILABLE, heatingLevelAvailable);
+        return this;
+    }
 
 	/**
 	 * Gets the heatingLevelAvailable portion of the SeatControlCapabilities class
@@ -158,9 +162,10 @@ public class SeatControlCapabilities extends RPCStruct {
 	 *
 	 * @param coolingLevelAvailable
 	 */
-	public void setCoolingLevelAvailable(Boolean coolingLevelAvailable) {
-		setValue(KEY_COOLING_LEVEL_AVAILABLE, coolingLevelAvailable);
-	}
+	public SeatControlCapabilities setCoolingLevelAvailable( Boolean coolingLevelAvailable) {
+        setValue(KEY_COOLING_LEVEL_AVAILABLE, coolingLevelAvailable);
+        return this;
+    }
 
 	/**
 	 * Gets the coolingLevelAvailable portion of the SeatControlCapabilities class
@@ -176,9 +181,10 @@ public class SeatControlCapabilities extends RPCStruct {
 	 *
 	 * @param horizontalPositionAvailable
 	 */
-	public void setHorizontalPositionAvailable(Boolean horizontalPositionAvailable) {
-		setValue(KEY_HORIZONTAL_POSITION_AVAILABLE, horizontalPositionAvailable);
-	}
+	public SeatControlCapabilities setHorizontalPositionAvailable( Boolean horizontalPositionAvailable) {
+        setValue(KEY_HORIZONTAL_POSITION_AVAILABLE, horizontalPositionAvailable);
+        return this;
+    }
 
 	/**
 	 * Gets the horizontalPositionAvailable portion of the SeatControlCapabilities class
@@ -194,9 +200,10 @@ public class SeatControlCapabilities extends RPCStruct {
 	 *
 	 * @param verticalPositionAvailable
 	 */
-	public void setVerticalPositionAvailable(Boolean verticalPositionAvailable) {
-		setValue(KEY_VERTICAL_POSITION_AVAILABLE, verticalPositionAvailable);
-	}
+	public SeatControlCapabilities setVerticalPositionAvailable( Boolean verticalPositionAvailable) {
+        setValue(KEY_VERTICAL_POSITION_AVAILABLE, verticalPositionAvailable);
+        return this;
+    }
 
 	/**
 	 * Gets the verticalPositionAvailable portion of the SeatControlCapabilities class
@@ -212,9 +219,10 @@ public class SeatControlCapabilities extends RPCStruct {
 	 *
 	 * @param frontVerticalPositionAvailable
 	 */
-	public void setFrontVerticalPositionAvailable(Boolean frontVerticalPositionAvailable) {
-		setValue(KEY_FRONT_VERTICAL_POSITION_AVAILABLE, frontVerticalPositionAvailable);
-	}
+	public SeatControlCapabilities setFrontVerticalPositionAvailable( Boolean frontVerticalPositionAvailable) {
+        setValue(KEY_FRONT_VERTICAL_POSITION_AVAILABLE, frontVerticalPositionAvailable);
+        return this;
+    }
 
 	/**
 	 * Gets the frontVerticalPositionAvailable portion of the SeatControlCapabilities class
@@ -230,9 +238,10 @@ public class SeatControlCapabilities extends RPCStruct {
 	 *
 	 * @param backVerticalPositionAvailable
 	 */
-	public void setBackVerticalPositionAvailable(Boolean backVerticalPositionAvailable) {
-		setValue(KEY_BACK_VERTICAL_POSITION_AVAILABLE, backVerticalPositionAvailable);
-	}
+	public SeatControlCapabilities setBackVerticalPositionAvailable( Boolean backVerticalPositionAvailable) {
+        setValue(KEY_BACK_VERTICAL_POSITION_AVAILABLE, backVerticalPositionAvailable);
+        return this;
+    }
 
 	/**
 	 * Gets the backVerticalPositionAvailable portion of the SeatControlCapabilities class
@@ -248,9 +257,10 @@ public class SeatControlCapabilities extends RPCStruct {
 	 *
 	 * @param backTiltAngleAvailable
 	 */
-	public void setBackTiltAngleAvailable(Boolean backTiltAngleAvailable) {
-		setValue(KEY_BACK_TILT_ANGLE_AVAILABLE, backTiltAngleAvailable);
-	}
+	public SeatControlCapabilities setBackTiltAngleAvailable( Boolean backTiltAngleAvailable) {
+        setValue(KEY_BACK_TILT_ANGLE_AVAILABLE, backTiltAngleAvailable);
+        return this;
+    }
 
 	/**
 	 * Gets the backTiltAngleAvailable portion of the SeatControlCapabilities class
@@ -266,9 +276,10 @@ public class SeatControlCapabilities extends RPCStruct {
 	 *
 	 * @param headSupportHorizontalPositionAvailable
 	 */
-	public void setHeadSupportHorizontalPositionAvailable(Boolean headSupportHorizontalPositionAvailable) {
-		setValue(KEY_HEAD_SUPPORT_HORIZONTAL_POSITION_AVAILABLE, headSupportHorizontalPositionAvailable);
-	}
+	public SeatControlCapabilities setHeadSupportHorizontalPositionAvailable( Boolean headSupportHorizontalPositionAvailable) {
+        setValue(KEY_HEAD_SUPPORT_HORIZONTAL_POSITION_AVAILABLE, headSupportHorizontalPositionAvailable);
+        return this;
+    }
 
 	/**
 	 * Gets the headSupportHorizontalPositionAvailable portion of the SeatControlCapabilities class
@@ -284,9 +295,10 @@ public class SeatControlCapabilities extends RPCStruct {
 	 *
 	 * @param headSupportVerticalPositionAvailable
 	 */
-	public void setHeadSupportVerticalPositionAvailable(Boolean headSupportVerticalPositionAvailable) {
-		setValue(KEY_HEAD_SUPPORT_VERTICAL_POSITION_AVAILABLE, headSupportVerticalPositionAvailable);
-	}
+	public SeatControlCapabilities setHeadSupportVerticalPositionAvailable( Boolean headSupportVerticalPositionAvailable) {
+        setValue(KEY_HEAD_SUPPORT_VERTICAL_POSITION_AVAILABLE, headSupportVerticalPositionAvailable);
+        return this;
+    }
 
 	/**
 	 * Gets the headSupportVerticalPositionAvailable portion of the SeatControlCapabilities class
@@ -302,9 +314,10 @@ public class SeatControlCapabilities extends RPCStruct {
 	 *
 	 * @param massageEnabledAvailable
 	 */
-	public void setMassageEnabledAvailable(Boolean massageEnabledAvailable) {
-		setValue(KEY_MASSAGE_ENABLED_AVAILABLE, massageEnabledAvailable);
-	}
+	public SeatControlCapabilities setMassageEnabledAvailable( Boolean massageEnabledAvailable) {
+        setValue(KEY_MASSAGE_ENABLED_AVAILABLE, massageEnabledAvailable);
+        return this;
+    }
 
 	/**
 	 * Gets the massageEnabledAvailable portion of the SeatControlCapabilities class
@@ -320,9 +333,10 @@ public class SeatControlCapabilities extends RPCStruct {
 	 *
 	 * @param massageModeAvailable
 	 */
-	public void setMassageModeAvailable(Boolean massageModeAvailable) {
-		setValue(KEY_MASSAGE_MODE_AVAILABLE, massageModeAvailable);
-	}
+	public SeatControlCapabilities setMassageModeAvailable( Boolean massageModeAvailable) {
+        setValue(KEY_MASSAGE_MODE_AVAILABLE, massageModeAvailable);
+        return this;
+    }
 
 	/**
 	 * Gets the massageModeAvailable portion of the SeatControlCapabilities class
@@ -338,9 +352,10 @@ public class SeatControlCapabilities extends RPCStruct {
 	 *
 	 * @param massageCushionFirmnessAvailable
 	 */
-	public void setMassageCushionFirmnessAvailable(Boolean massageCushionFirmnessAvailable) {
-		setValue(KEY_MASSAGE_CUSHION_FIRMNESS_AVAILABLE, massageCushionFirmnessAvailable);
-	}
+	public SeatControlCapabilities setMassageCushionFirmnessAvailable( Boolean massageCushionFirmnessAvailable) {
+        setValue(KEY_MASSAGE_CUSHION_FIRMNESS_AVAILABLE, massageCushionFirmnessAvailable);
+        return this;
+    }
 
 	/**
 	 * Gets the massageCushionFirmnessAvailable portion of the SeatControlCapabilities class
@@ -356,9 +371,10 @@ public class SeatControlCapabilities extends RPCStruct {
 	 *
 	 * @param memoryAvailable
 	 */
-	public void setMemoryAvailable(Boolean memoryAvailable) {
-		setValue(KEY_MEMORY_AVAILABLE, memoryAvailable);
-	}
+	public SeatControlCapabilities setMemoryAvailable( Boolean memoryAvailable) {
+        setValue(KEY_MEMORY_AVAILABLE, memoryAvailable);
+        return this;
+    }
 
 	/**
 	 * Gets the memoryAvailable portion of the SeatControlCapabilities class
@@ -373,9 +389,10 @@ public class SeatControlCapabilities extends RPCStruct {
 	 * Sets ModuleInfo for this capability
 	 * @param info the ModuleInfo to be set
 	 */
-	public void setModuleInfo(ModuleInfo info) {
-		setValue(KEY_MODULE_INFO, info);
-	}
+	public SeatControlCapabilities setModuleInfo( ModuleInfo info) {
+        setValue(KEY_MODULE_INFO, info);
+        return this;
+    }
 
 	/**
 	 * Gets a ModuleInfo of this capability

@@ -60,8 +60,9 @@ public class CreateWindow extends RPCRequest {
      *
      * @param windowID A unique ID to identify the window. The value of '0' will always be the default main window on the main display and should not be used in this context as it will already be created for the app. See PredefinedWindows enum. Creating a window with an ID that is already in use will be rejected with `INVALID_ID`.
      */
-    public void setWindowID(@NonNull Integer windowID) {
+    public CreateWindow setWindowID(@NonNull Integer windowID) {
         setParameters(KEY_WINDOW_ID, windowID);
+        return this;
     }
 
     /**
@@ -83,8 +84,9 @@ public class CreateWindow extends RPCRequest {
      *        Multiple apps can share the same window name except for the default main window.
      *        {@code windowName.length() <= 100}
      */
-    public void setWindowName(@NonNull String windowName) {
+    public CreateWindow setWindowName(@NonNull String windowName) {
         setParameters(KEY_WINDOW_NAME, windowName);
+        return this;
     }
 
     /**
@@ -101,8 +103,9 @@ public class CreateWindow extends RPCRequest {
      *
      * @param type The type of the window to be created. Main window or widget.
      */
-    public void setType(@NonNull WindowType type) {
+    public CreateWindow setType(@NonNull WindowType type) {
         setParameters(KEY_TYPE, type);
+        return this;
     }
 
     /**
@@ -127,8 +130,9 @@ public class CreateWindow extends RPCRequest {
      * @param associatedServiceType Allows an app to create a widget related to a specific service type.
      *                              As an example if a `MEDIA` app becomes active, this app becomes audible and is allowed to play audio.
      */
-    public void setAssociatedServiceType(String associatedServiceType) {
+    public CreateWindow setAssociatedServiceType( String associatedServiceType) {
         setParameters(KEY_ASSOCIATED_SERVICE_TYPE, associatedServiceType);
+        return this;
     }
 
     /**
@@ -148,8 +152,9 @@ public class CreateWindow extends RPCRequest {
      *
      * @param duplicateUpdatesFromWindowID Specify whether the content sent to an existing window should be duplicated to the created window.
      */
-    public void setDuplicateUpdatesFromWindowID(Integer duplicateUpdatesFromWindowID) {
+    public CreateWindow setDuplicateUpdatesFromWindowID( Integer duplicateUpdatesFromWindowID) {
         setParameters(KEY_DUPLICATE_UPDATES_FROM_WINDOW_ID, duplicateUpdatesFromWindowID);
+        return this;
     }
 
     /**

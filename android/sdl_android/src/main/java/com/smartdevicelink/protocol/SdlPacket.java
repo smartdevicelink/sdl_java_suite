@@ -3,9 +3,12 @@ package com.smartdevicelink.protocol;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.RestrictTo;
+
 import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.DebugTool;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class SdlPacket extends BaseSdlPacket implements Parcelable {
     private static final String TAG = "SdlPacket";
     private static final int EXTRA_PARCEL_DATA_LENGTH 			= 24;

@@ -101,8 +101,9 @@ public class Image extends RPCStruct {
      * Set either the static hex icon value or the binary image file name identifier (sent by PutFile)
      * @param value either the static hex icon value or the binary image file name identifier (sent by PutFile)
      */
-    public void setValue(@NonNull String value) {
+    public Image setValue(@NonNull String value) {
         setValue(KEY_VALUE, value);
+        return this;
     }
     
     /**
@@ -117,8 +118,9 @@ public class Image extends RPCStruct {
      * Set the image type (static or dynamic image)
      * @param imageType whether it is a static or dynamic image
      */
-    public void setImageType(@NonNull ImageType imageType) {
+    public Image setImageType(@NonNull ImageType imageType) {
         setValue(KEY_IMAGE_TYPE, imageType);
+        return this;
     }
     
     /**
@@ -133,8 +135,9 @@ public class Image extends RPCStruct {
      * Set whether this Image is a template image whose coloring should be decided by the HMI
      * @param isTemplate boolean that tells whether this Image is a template image
      */
-    public void setIsTemplate(Boolean isTemplate){
+    public Image setIsTemplate( Boolean isTemplate) {
         setValue(KEY_IS_TEMPLATE, isTemplate);
+        return this;
     }
 
     /**

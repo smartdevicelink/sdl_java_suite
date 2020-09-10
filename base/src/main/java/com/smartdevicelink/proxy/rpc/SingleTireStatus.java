@@ -105,8 +105,9 @@ public class SingleTireStatus extends RPCStruct {
      * set the volume status of a single tire
      * @param status the volume status of a single tire
      */
-    public void setStatus(@NonNull ComponentVolumeStatus status) {
-    	setValue(KEY_STATUS, status);
+    public SingleTireStatus setStatus(@NonNull ComponentVolumeStatus status) {
+        setValue(KEY_STATUS, status);
+        return this;
     }
     
     /**
@@ -121,7 +122,10 @@ public class SingleTireStatus extends RPCStruct {
 	 * Set the status of TPMS according to the particular tire.
 	 * @param tpms The status of TPMS
 	 */
-	public void setTPMS(@NonNull TPMS tpms) { setValue(KEY_TPMS, tpms); }
+	public SingleTireStatus setTPMS(@NonNull TPMS tpms) {
+        setValue(KEY_TPMS, tpms);
+        return this;
+    }
 
 	/**
 	 * Get the status of TPMS according to the particular tire.
@@ -134,7 +138,10 @@ public class SingleTireStatus extends RPCStruct {
 	/**
 	 * @param pressure The pressure value of the particular tire in kilo pascal.
 	 */
-	public void setPressure(@NonNull Float pressure) { setValue(KEY_PRESSURE, pressure); }
+	public SingleTireStatus setPressure(@NonNull Float pressure) {
+        setValue(KEY_PRESSURE, pressure);
+        return this;
+    }
 
 	/**
 	 * @return the pressure value of the particular tire in kilo pascal.

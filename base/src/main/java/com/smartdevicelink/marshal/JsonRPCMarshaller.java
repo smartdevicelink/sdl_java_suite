@@ -31,6 +31,8 @@
  */
 package com.smartdevicelink.marshal;
 
+import androidx.annotation.RestrictTo;
+
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.trace.SdlTrace;
@@ -50,7 +52,7 @@ import java.util.List;
  * Responsible for marshalling and unmarshing between RPC Objects and byte streams that are sent
  * over transmission
  */
-
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class JsonRPCMarshaller {
 	private static final String TAG = "JsonRPCMarshaller";
 	private static final String SDL_LIB_PRIVATE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";

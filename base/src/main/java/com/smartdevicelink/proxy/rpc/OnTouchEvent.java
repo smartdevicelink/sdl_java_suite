@@ -109,16 +109,18 @@ public class OnTouchEvent extends RPCNotification {
 		setEvent(event);
 	}
     
-    public void setType(@NonNull TouchType type) {
-		setParameters(KEY_TYPE, type);
+    public OnTouchEvent setType(@NonNull TouchType type) {
+        setParameters(KEY_TYPE, type);
+        return this;
     }
     
     public TouchType getType() {
 		return (TouchType) getObject(TouchType.class, KEY_TYPE);
     }
     
-    public void setEvent(@NonNull List<TouchEvent> event) {
-		setParameters(KEY_EVENT, event);
+    public OnTouchEvent setEvent(@NonNull List<TouchEvent> event) {
+        setParameters(KEY_EVENT, event);
+        return this;
     }
     
     @SuppressWarnings("unchecked")

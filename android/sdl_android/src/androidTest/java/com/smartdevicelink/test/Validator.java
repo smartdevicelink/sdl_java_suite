@@ -2321,7 +2321,23 @@ public class Validator{
             if (item1.get(i).getType() != item2.get(i).getType()) {
                 return false;
             }
-            if (item1.get(i).getRange() != item2.get(i).getRange()) {
+            if (!item1.get(i).getRange().equals(item2.get(i).getRange())) {
+                return false;
+            }
+
+            if (!item1.get(i).getCapacity().equals(item2.get(i).getCapacity())) {
+                return false;
+            }
+
+            if (!item1.get(i).getCapacityUnit().equals(item2.get(i).getCapacityUnit())) {
+                return false;
+            }
+
+            if (!item1.get(i).getLevel().equals(item2.get(i).getLevel())) {
+                return false;
+            }
+
+            if (!item1.get(i).getLevelState().equals(item2.get(i).getLevelState())) {
                 return false;
             }
         }
@@ -3890,5 +3906,25 @@ public class Validator{
 
 
         return approxPosition1.equals(approxPosition2) && deviation1.equals(deviation2);
+    }
+
+    public static boolean validateStabilityControlStatus(StabilityControlsStatus status1, StabilityControlsStatus status2) {
+        if (status1 == null) {
+            return (status2 == null);
+        }
+        if (status2 == null) {
+            return (status2 == null);
+        }
+        return status1.getEscSystem().equals(status2.getEscSystem()) && status1.getTrailerSwayControl().equals(status2.getTrailerSwayControl());
+    }
+
+    public static boolean validateStabilityControlStatus(VehicleDataResult status1, VehicleDataResult status2) {
+        if (status1 == null) {
+            return (status2 == null);
+        }
+        if (status2 == null) {
+            return (status2 == null);
+        }
+        return status1.getDataType().equals(status2.getDataType()) && status1.getResultCode().equals(status2.getResultCode());
     }
 }

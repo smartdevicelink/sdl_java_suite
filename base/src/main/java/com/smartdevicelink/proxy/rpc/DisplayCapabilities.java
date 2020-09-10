@@ -167,8 +167,9 @@ public class DisplayCapabilities extends RPCStruct {
      * @param displayType the display type
      */
     @Deprecated
-    public void setDisplayType( @NonNull DisplayType displayType ) {
+    public DisplayCapabilities setDisplayType(@NonNull DisplayType displayType) {
         setValue(KEY_DISPLAY_TYPE, displayType);
+        return this;
     }
     /** Get the name of the display
      * @return the name of the display
@@ -180,8 +181,9 @@ public class DisplayCapabilities extends RPCStruct {
      * Set the name of the display
      * @param displayName the name of the display
      */
-    public void setDisplayName( String displayName ) {
+    public DisplayCapabilities setDisplayName( String displayName) {
         setValue(KEY_DISPLAY_NAME, displayName);
+        return this;
     }
     /**
      *Get an array of TextField structures, each of which describes a field in the HMI which the application can write to using operations such as <i>{@linkplain Show}</i>, <i>{@linkplain SetMediaClockTimer}</i>, etc. 
@@ -193,12 +195,13 @@ public class DisplayCapabilities extends RPCStruct {
         return (List<TextField>) getObject(TextField.class, KEY_TEXT_FIELDS);
     }
     /**
-     * Set an array of TextField structures, each of which describes a field in the HMI which the application can write to using operations such as <i>{@linkplain Show}</i>, <i>{@linkplain SetMediaClockTimer}</i>, etc. 
+     * Set an array of TextField structures, each of which describes a field in the HMI which the application can write to using operations such as <i>{@linkplain Show}</i>, <i>{@linkplain SetMediaClockTimer}</i>, etc.
      *	 This array of TextField structures identify all the text fields to which the application can write on the current display (identified by DisplayType ).
      * @param textFields the List of textFields
-     */    
-    public void setTextFields( @NonNull List<TextField> textFields ) {
+     */
+    public DisplayCapabilities setTextFields(@NonNull List<TextField> textFields) {
         setValue(KEY_TEXT_FIELDS, textFields);
+        return this;
     }
     
     
@@ -208,16 +211,18 @@ public class DisplayCapabilities extends RPCStruct {
         return (List<ImageField>) getObject(ImageField.class, KEY_IMAGE_FIELDS);
     }
   
-    public void setImageFields( List<ImageField> imageFields ) {
+    public DisplayCapabilities setImageFields( List<ImageField> imageFields) {
         setValue(KEY_IMAGE_FIELDS, imageFields);
-    }    
+        return this;
+    }
     
     public Integer getNumCustomPresetsAvailable() {
         return getInteger(KEY_NUM_CUSTOM_PRESETS_AVAILABLE);
     }
  
-    public void setNumCustomPresetsAvailable(Integer numCustomPresetsAvailable) {
+    public DisplayCapabilities setNumCustomPresetsAvailable( Integer numCustomPresetsAvailable) {
         setValue(KEY_NUM_CUSTOM_PRESETS_AVAILABLE, numCustomPresetsAvailable);
+        return this;
     }
       
     /**
@@ -231,9 +236,10 @@ public class DisplayCapabilities extends RPCStruct {
     /**
      * Set an array of MediaClockFormat elements, defining the valid string formats used in specifying the contents of the media clock field
      * @param mediaClockFormats the List of MediaClockFormat
-     */    
-    public void setMediaClockFormats( @NonNull List<MediaClockFormat> mediaClockFormats ) {
+     */
+    public DisplayCapabilities setMediaClockFormats(@NonNull List<MediaClockFormat> mediaClockFormats) {
         setValue(KEY_MEDIA_CLOCK_FORMATS, mediaClockFormats);
+        return this;
     }
     
     /**
@@ -241,8 +247,9 @@ public class DisplayCapabilities extends RPCStruct {
      * @param graphicSupported true if the display supports graphics, false if it does not
      * @since SmartDeviceLink 2.0
      */
-    public void setGraphicSupported(@NonNull Boolean graphicSupported) {
-    	setValue(KEY_GRAPHIC_SUPPORTED, graphicSupported);
+    public DisplayCapabilities setGraphicSupported(@NonNull Boolean graphicSupported) {
+        setValue(KEY_GRAPHIC_SUPPORTED, graphicSupported);
+        return this;
     }
     
     /**
@@ -259,12 +266,14 @@ public class DisplayCapabilities extends RPCStruct {
         return (List<String>) getObject(String.class, KEY_TEMPLATES_AVAILABLE);
     }   
     
-    public void setTemplatesAvailable(List<String> templatesAvailable) {
+    public DisplayCapabilities setTemplatesAvailable( List<String> templatesAvailable) {
         setValue(KEY_TEMPLATES_AVAILABLE, templatesAvailable);
+        return this;
     }
         
-    public void setScreenParams(ScreenParams screenParams) {
+    public DisplayCapabilities setScreenParams( ScreenParams screenParams) {
         setValue(KEY_SCREEN_PARAMS, screenParams);
+        return this;
     }
 
     @SuppressWarnings("unchecked")

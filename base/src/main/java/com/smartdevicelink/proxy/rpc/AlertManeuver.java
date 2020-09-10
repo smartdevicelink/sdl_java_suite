@@ -86,7 +86,7 @@ public class AlertManeuver extends RPCRequest{
 
     /**
      * Sets the SoftButtons
-     * 
+     *
      * @param softButtons
      *            a List<SoftButton> value
      *            <p>
@@ -99,8 +99,9 @@ public class AlertManeuver extends RPCRequest{
      * @since SmartDeviceLink 2.0
      */
 
-    public void setSoftButtons(List<SoftButton> softButtons){
+    public AlertManeuver setSoftButtons( List<SoftButton> softButtons) {
         setParameters(KEY_SOFT_BUTTONS, softButtons);
+        return this;
     }
 
     /**
@@ -115,13 +116,14 @@ public class AlertManeuver extends RPCRequest{
 
     /**
      * Sets array of type TTSChunk which, taken together, specify what is to be spoken to the user
-     * 
+     *
      * @param ttsChunks
      *            <p>
      *            <b>Notes: </b></p>Array must have a least one element
      */
-    public void setTtsChunks(List<TTSChunk> ttsChunks){
+    public AlertManeuver setTtsChunks( List<TTSChunk> ttsChunks) {
         setParameters(KEY_TTS_CHUNKS, ttsChunks);
+        return this;
     }
 
 }

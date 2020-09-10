@@ -59,9 +59,10 @@ public class HMICapabilities extends RPCStruct{
 		 return (Boolean)available;
 	 }
 	 
-	 public void setNavigationAvilable(Boolean available){
-		 setValue(KEY_NAVIGATION, available);
-	 }
+	 public HMICapabilities setNavigationAvilable( Boolean available) {
+        setValue(KEY_NAVIGATION, available);
+        return this;
+    }
 	 
 	 public boolean isPhoneCallAvailable(){
 		 Object available = getValue(KEY_PHONE_CALL);
@@ -71,9 +72,10 @@ public class HMICapabilities extends RPCStruct{
 		 return (Boolean)available;
 	 }
 	 
-	 public void setPhoneCallAvilable(Boolean available){
-		 setValue(KEY_PHONE_CALL, available);
-	 }
+	 public HMICapabilities setPhoneCallAvilable( Boolean available) {
+        setValue(KEY_PHONE_CALL, available);
+        return this;
+    }
 
 	public boolean isVideoStreamingAvailable(){
 		Object available = getValue(KEY_VIDEO_STREAMING);
@@ -83,9 +85,10 @@ public class HMICapabilities extends RPCStruct{
 		return (Boolean)available;
 	}
 
-	public void setVideoStreamingAvailable(Boolean available){
-		setValue(KEY_VIDEO_STREAMING, available);
-	}
+	public HMICapabilities setVideoStreamingAvailable( Boolean available) {
+        setValue(KEY_VIDEO_STREAMING, available);
+        return this;
+    }
 
 	public boolean isRemoteControlAvailable(){
 		Object available = getValue(KEY_REMOTE_CONTROL);
@@ -95,9 +98,10 @@ public class HMICapabilities extends RPCStruct{
 		return (Boolean)available;
 	}
 
-	public void setRemoteControlAvailable(Boolean available){
-		setValue(KEY_REMOTE_CONTROL, available);
-	}
+	public HMICapabilities setRemoteControlAvailable( Boolean available) {
+        setValue(KEY_REMOTE_CONTROL, available);
+        return this;
+    }
 
 	public boolean isAppServicesAvailable(){
 		Object available = getValue(KEY_APP_SERVICES);
@@ -107,9 +111,10 @@ public class HMICapabilities extends RPCStruct{
 		return (Boolean)available;
 	}
 
-	public void setAppServicesAvailable(Boolean available){
-		setValue(KEY_APP_SERVICES, available);
-	}
+	public HMICapabilities setAppServicesAvailable( Boolean available) {
+        setValue(KEY_APP_SERVICES, available);
+        return this;
+    }
 
 	public boolean isDisplaysCapabilityAvailable(){
 		Object available = getValue(KEY_DISPLAYS);
@@ -119,9 +124,10 @@ public class HMICapabilities extends RPCStruct{
 		return (Boolean)available;
 	}
 
-	public void setDisplaysCapabilityAvailable(Boolean available){
-		setValue(KEY_DISPLAYS, available);
-	}
+	public HMICapabilities setDisplaysCapabilityAvailable( Boolean available) {
+        setValue(KEY_DISPLAYS, available);
+        return this;
+    }
 
 	public boolean isSeatLocationAvailable(){
 		Object available = getValue(KEY_SEAT_LOCATION);
@@ -131,9 +137,10 @@ public class HMICapabilities extends RPCStruct{
 		return (Boolean)available;
 	}
 
-	public void setSeatLocationAvailable(Boolean available){
-		setValue(KEY_SEAT_LOCATION, available);
-	}
+	public HMICapabilities setSeatLocationAvailable( Boolean available) {
+        setValue(KEY_SEAT_LOCATION, available);
+        return this;
+    }
 
     /**
      * Sets the driverDistraction.
@@ -141,8 +148,9 @@ public class HMICapabilities extends RPCStruct{
      * @param driverDistraction Availability of driver distraction capability. True: Available, False: Not Available
      * @since SmartDeviceLink 7.0.0
      */
-    public void setDriverDistraction(Boolean driverDistraction) {
+    public HMICapabilities setDriverDistraction( Boolean driverDistraction) {
         setValue(KEY_DRIVER_DISTRACTION, driverDistraction);
+        return this;
     }
 
     /**

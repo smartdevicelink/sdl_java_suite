@@ -61,8 +61,6 @@ public abstract class MultiplexBaseTransport {
     protected final TransportType transportType;
 
     protected TransportRecord transportRecord;
-    @Deprecated
-    public static String currentlyConnectedDevice = null;
     protected String connectedDeviceName = null;
     public String connectedDeviceAddress = null;
 

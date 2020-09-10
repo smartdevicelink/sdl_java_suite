@@ -123,8 +123,9 @@ public class DiagnosticMessage extends RPCRequest {
 	 *
 	 * @param targetID the target for this Diagnostic Message
 	 */
-    public void setTargetID(@NonNull Integer targetID) {
-		setParameters(KEY_TARGET_ID, targetID);
+    public DiagnosticMessage setTargetID(@NonNull Integer targetID) {
+        setParameters(KEY_TARGET_ID, targetID);
+        return this;
     }
 
     /**
@@ -138,8 +139,9 @@ public class DiagnosticMessage extends RPCRequest {
     	return getInteger(KEY_TARGET_ID);
     }    
 
-    public void setMessageLength(@NonNull Integer messageLength) {
-		setParameters(KEY_MESSAGE_LENGTH, messageLength);
+    public DiagnosticMessage setMessageLength(@NonNull Integer messageLength) {
+        setParameters(KEY_MESSAGE_LENGTH, messageLength);
+        return this;
     }
     public Integer getMessageLength() {
     	return getInteger(KEY_MESSAGE_LENGTH);
@@ -150,7 +152,8 @@ public class DiagnosticMessage extends RPCRequest {
         return (List<Integer>) getObject(Integer.class, KEY_MESSAGE_DATA);
     }
     
-    public void setMessageData(@NonNull List<Integer> messageData) {
-		setParameters(KEY_MESSAGE_DATA, messageData);
-    }    
+    public DiagnosticMessage setMessageData(@NonNull List<Integer> messageData) {
+        setParameters(KEY_MESSAGE_DATA, messageData);
+        return this;
+    }
 }

@@ -87,9 +87,10 @@ public class GetInteriorVehicleDataResponse extends RPCResponse {
 	 *
 	 * @param moduleData specific data for the module that was requested
 	 */
-	public void setModuleData(ModuleData moduleData) {
-		setParameters(KEY_MODULE_DATA, moduleData);
-	}
+	public GetInteriorVehicleDataResponse setModuleData( ModuleData moduleData) {
+        setParameters(KEY_MODULE_DATA, moduleData);
+        return this;
+    }
 
 	/**
 	 * Sets isSubscribed parameter
@@ -99,9 +100,10 @@ public class GetInteriorVehicleDataResponse extends RPCResponse {
 	 * If "true" - the "moduleType" from request is successfully subscribed and the head unit will send onInteriorVehicleData notifications for the moduleType.
 	 * If "false" - the "moduleType" from request is either unsubscribed or failed to subscribe.
 	 * */
-	public void setIsSubscribed(Boolean isSubscribed) {
-		setParameters(KEY_IS_SUBSCRIBED, isSubscribed);
-	}
+	public GetInteriorVehicleDataResponse setIsSubscribed( Boolean isSubscribed) {
+        setParameters(KEY_IS_SUBSCRIBED, isSubscribed);
+        return this;
+    }
 
 	/**
 	 * Gets isSubscribed parameter

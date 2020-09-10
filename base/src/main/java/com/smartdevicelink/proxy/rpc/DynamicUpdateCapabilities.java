@@ -93,8 +93,9 @@ public class DynamicUpdateCapabilities extends RPCStruct {
      * you upload the data with PutFile at a later point when the HMI needs it. The HMI will then
      * display the image in the appropriate field. If not sent, assume false.
      */
-    public void setSupportedDynamicImageFieldNames(List<ImageFieldName> supportedDynamicImageFieldNames) {
+    public DynamicUpdateCapabilities setSupportedDynamicImageFieldNames( List<ImageFieldName> supportedDynamicImageFieldNames) {
         setValue(KEY_SUPPORTED_DYNAMIC_IMAGE_FIELD_NAMES, supportedDynamicImageFieldNames);
+        return this;
     }
 
     /**
@@ -119,8 +120,9 @@ public class DynamicUpdateCapabilities extends RPCStruct {
      * AddSubMenu until OnUpdateSubMenu is received with the menuID. At that point, you should
      * send all AddCommands with a parentID that match the menuID. If not set, assume false.
      */
-    public void setSupportsDynamicSubMenus(Boolean supportsDynamicSubMenus) {
+    public DynamicUpdateCapabilities setSupportsDynamicSubMenus( Boolean supportsDynamicSubMenus) {
         setValue(KEY_SUPPORTS_DYNAMIC_SUB_MENUS, supportsDynamicSubMenus);
+        return this;
     }
 
     /**

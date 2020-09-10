@@ -32,6 +32,8 @@
 
 package com.smartdevicelink.streaming.video;
 
+import androidx.annotation.RestrictTo;
+
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
@@ -43,6 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("FieldCanBeLocal")
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class VideoStreamingParameters {
     private static final String TAG = "VideoStreamingParameters";
 	private final VideoStreamingProtocol DEFAULT_PROTOCOL = VideoStreamingProtocol.RAW;
@@ -118,7 +121,6 @@ public class VideoStreamingParameters {
             if (params.interval > 0) {
                 this.interval = params.interval;
             }
-
             if (params.resolution != null) {
                 if (params.resolution.getResolutionHeight() != null && params.resolution.getResolutionHeight() > 0) {
                     this.resolution.setResolutionHeight(params.resolution.getResolutionHeight());
@@ -136,7 +138,6 @@ public class VideoStreamingParameters {
             }
         }
     }
-
 
     /**
      * Update the values contained in the capability that should have been returned through the SystemCapabilityManager.

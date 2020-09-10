@@ -62,9 +62,10 @@ public class HapticRect extends RPCStruct {
 	/**
 	 * Set a user control spatial identifier that references the supplied spatial data
 	 */
-	public void setId(@NonNull Integer id) {
-		setValue(KEY_ID, id);
-	}
+	public HapticRect setId(@NonNull Integer id) {
+        setValue(KEY_ID, id);
+        return this;
+    }
 
 	/**
 	 * @return  a user control spatial identifier that references the supplied spatial data
@@ -76,9 +77,10 @@ public class HapticRect extends RPCStruct {
 	/**
 	 * Set the position of the haptic rectangle to be highlighted. The center of this rectangle will be "touched" when a press occurs.
 	 */
-	public void setRect(@NonNull Rectangle rect) {
-		setValue(KEY_RECT, rect);
-	}
+	public HapticRect setRect(@NonNull Rectangle rect) {
+        setValue(KEY_RECT, rect);
+        return this;
+    }
 
 	/**
 	 * @return the position of the haptic rectangle to be highlighted. The center of this rectangle will be "touched" when a press occurs.

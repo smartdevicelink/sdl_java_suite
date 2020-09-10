@@ -84,8 +84,9 @@ public class GetSystemCapability extends RPCRequest {
      * Used to set the SystemCapabilityType being requested
      * @param value SystemCapabilityType being requested
      */
-    public void setSystemCapabilityType(@NonNull SystemCapabilityType value){
+    public GetSystemCapability setSystemCapabilityType(@NonNull SystemCapabilityType value) {
         setParameters(KEY_SYSTEM_CAPABILITY_TYPE, value);
+        return this;
     }
 
     /**
@@ -104,7 +105,8 @@ public class GetSystemCapability extends RPCRequest {
      * subscriber if it was previously subscribed.
      * @param subscribe to changes in the SystemCapabilityType
      */
-    public void setSubscribe(Boolean subscribe){
+    public GetSystemCapability setSubscribe( Boolean subscribe) {
         setParameters(KEY_SUBSCRIBE, subscribe);
+        return this;
     }
 }

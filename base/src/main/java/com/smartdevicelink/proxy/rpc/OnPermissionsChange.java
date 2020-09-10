@@ -113,12 +113,13 @@ public class OnPermissionsChange extends RPCNotification {
 		return (List<PermissionItem>) getObject(PermissionItem.class, KEY_PERMISSION_ITEM);
 	}
     /**
-     * <p>Sets PermissionItems describing change in permissions for a given set of RPCs</p>    
+     * <p>Sets PermissionItems describing change in permissions for a given set of RPCs</p>
      * @param permissionItem an List of  PermissionItem describing change in permissions for a given set of RPCs
-     */  
-	public void setPermissionItem(@NonNull List<PermissionItem> permissionItem) {
-		setParameters(KEY_PERMISSION_ITEM, permissionItem);
-	}
+     */
+	public OnPermissionsChange setPermissionItem(@NonNull List<PermissionItem> permissionItem) {
+        setParameters(KEY_PERMISSION_ITEM, permissionItem);
+        return this;
+    }
 
 	/**
 	 * Returns the encryption requirement for this permission change
@@ -132,7 +133,8 @@ public class OnPermissionsChange extends RPCNotification {
 	 * Sets the encryption requirement for this permission change
 	 * @param isRequired the boolean requirement to be set
 	 */
-	public void setRequireEncryption(Boolean isRequired) {
-		setParameters(KEY_REQUIRE_ENCRYPTION, isRequired);
-	}
+	public OnPermissionsChange setRequireEncryption( Boolean isRequired) {
+        setParameters(KEY_REQUIRE_ENCRYPTION, isRequired);
+        return this;
+    }
 }

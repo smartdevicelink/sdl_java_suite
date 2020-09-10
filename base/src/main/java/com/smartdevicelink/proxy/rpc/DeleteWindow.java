@@ -50,8 +50,9 @@ public class DeleteWindow extends RPCRequest {
      *
      * @param windowID A unique ID to identify the window. The value of '0' will always be the default main window on the main display and should not be used in this context as it will already be created for the app. See PredefinedWindows enum. Creating a window with an ID that is already in use will be rejected with `INVALID_ID`.
      */
-    public void setWindowID(@NonNull Integer windowID) {
+    public DeleteWindow setWindowID(@NonNull Integer windowID) {
         setParameters(KEY_WINDOW_ID, windowID);
+        return this;
     }
 
     /**

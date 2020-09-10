@@ -110,8 +110,9 @@ public class AudioPassThruCapabilities extends RPCStruct {
      * set the sampling rate for AudioPassThru
      * @param samplingRate the sampling rate for AudioPassThru
      */
-    public void setSamplingRate(@NonNull SamplingRate samplingRate) {
-    	setValue(KEY_SAMPLING_RATE, samplingRate);
+    public AudioPassThruCapabilities setSamplingRate(@NonNull SamplingRate samplingRate) {
+        setValue(KEY_SAMPLING_RATE, samplingRate);
+        return this;
     }
     
     /**
@@ -126,8 +127,9 @@ public class AudioPassThruCapabilities extends RPCStruct {
      * set the sample depth in bit for AudioPassThru
      * @param bitsPerSample the sample depth in bit for AudioPassThru
      */
-    public void setBitsPerSample(@NonNull BitsPerSample bitsPerSample) {
-    	setValue(KEY_BITS_PER_SAMPLE, bitsPerSample);
+    public AudioPassThruCapabilities setBitsPerSample(@NonNull BitsPerSample bitsPerSample) {
+        setValue(KEY_BITS_PER_SAMPLE, bitsPerSample);
+        return this;
     }
     
     /**
@@ -142,8 +144,9 @@ public class AudioPassThruCapabilities extends RPCStruct {
      * set the audiotype for AudioPassThru
      * @param audioType the audiotype for AudioPassThru
      */
-    public void setAudioType(@NonNull AudioType audioType) {
-    	setValue(KEY_AUDIO_TYPE, audioType);
+    public AudioPassThruCapabilities setAudioType(@NonNull AudioType audioType) {
+        setValue(KEY_AUDIO_TYPE, audioType);
+        return this;
     }
     
     /**

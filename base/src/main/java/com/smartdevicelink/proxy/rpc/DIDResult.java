@@ -96,20 +96,23 @@ public class DIDResult extends RPCStruct {
         setResultCode(resultCode);
         setDidLocation(didLocation);
     }
-    public void setResultCode(@NonNull VehicleDataResultCode resultCode) {
-    	setValue(KEY_RESULT_CODE, resultCode);
+    public DIDResult setResultCode(@NonNull VehicleDataResultCode resultCode) {
+        setValue(KEY_RESULT_CODE, resultCode);
+        return this;
     }
     public VehicleDataResultCode getResultCode() {
 		return (VehicleDataResultCode) getObject(VehicleDataResultCode.class, KEY_RESULT_CODE);
     }
-    public void setDidLocation(@NonNull Integer didLocation) {
-    	setValue(KEY_DID_LOCATION, didLocation);
+    public DIDResult setDidLocation(@NonNull Integer didLocation) {
+        setValue(KEY_DID_LOCATION, didLocation);
+        return this;
     }
     public Integer getDidLocation() {
     	return getInteger(KEY_DID_LOCATION);
     }    
-    public void setData(String data) {
-    	setValue(KEY_DATA, data);
+    public DIDResult setData( String data) {
+        setValue(KEY_DATA, data);
+        return this;
     }
     public String getData() {
     	return getString(KEY_DATA);

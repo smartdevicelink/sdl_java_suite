@@ -77,24 +77,27 @@ public class OnRCStatus extends RPCNotification {
 		return (List<ModuleData>) getObject(ModuleData.class, KEY_ALLOCATED_MODULES);
 	}
 
-	public void setAllocatedModules(@NonNull List<ModuleData> allocatedModules) {
-		setParameters(KEY_ALLOCATED_MODULES, allocatedModules);
-	}
+	public OnRCStatus setAllocatedModules(@NonNull List<ModuleData> allocatedModules) {
+        setParameters(KEY_ALLOCATED_MODULES, allocatedModules);
+        return this;
+    }
 
 	@SuppressWarnings("unchecked")
 	public List<ModuleData> getFreeModules() {
 		return (List<ModuleData>) getObject(ModuleData.class, KEY_FREE_MODULES);
 	}
 
-	public void setFreeModules(@NonNull List<ModuleData> freeModules) {
-		setParameters(KEY_FREE_MODULES, freeModules);
-	}
+	public OnRCStatus setFreeModules(@NonNull List<ModuleData> freeModules) {
+        setParameters(KEY_FREE_MODULES, freeModules);
+        return this;
+    }
 
 	public Boolean getAllowed() {
 		return getBoolean(KEY_ALLOWED);
 	}
 
-	public void setAllowed(Boolean allowed) {
-		setParameters(KEY_ALLOWED, allowed);
-	}
+	public OnRCStatus setAllowed( Boolean allowed) {
+        setParameters(KEY_ALLOWED, allowed);
+        return this;
+    }
 }
