@@ -32,5 +32,5 @@
 package com.smartdevicelink.security;
 
 public interface ISecurityInitializedListener {
-	public void onSecurityInitialized();
+	void onSecurityInitialized();
 }
