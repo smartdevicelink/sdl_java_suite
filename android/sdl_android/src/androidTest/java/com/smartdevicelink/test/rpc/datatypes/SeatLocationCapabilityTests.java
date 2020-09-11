@@ -35,7 +35,7 @@ public class SeatLocationCapabilityTests extends TestCase {
 		int row = msg.getRows();
 		int col = msg.getCols();
 		int level = msg.getLevels();
-		List<SeatLocation> seats = msg.getSeatLocations();
+		List<SeatLocation> seats = msg.getSeats();
 
 		//valid tests
 		assertEquals(TestValues.MATCH, row, TestValues.GENERAL_INT);
@@ -51,7 +51,7 @@ public class SeatLocationCapabilityTests extends TestCase {
 		assertNull(TestValues.NULL, msg.getCols());
 		assertNull(TestValues.NULL, msg.getRows());
 		assertNull(TestValues.NULL, msg.getLevels());
-		assertNull(TestValues.NULL, msg.getSeatLocations());
+		assertNull(TestValues.NULL, msg.getSeats());
 	}
 
 	public void testJson() {

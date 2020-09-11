@@ -201,12 +201,6 @@ public class RPCGenericTests {
                                     setterMethodName = "setInteractionFunctionID";
                                 } else if (rpcName.equals("NavigationCapability") && setterMethodName.equals("setGetWayPointsEnabled")) {
                                     setterMethodName = "setWayPointsEnabled";
-                                } else if (rpcName.equals("HMICapabilities") && setterMethodName.equals("setNavigation")) {
-                                    setterMethodName = "setNavigationAvilable";
-                                } else if (rpcName.equals("HMICapabilities") && setterMethodName.equals("setPhoneCall")) {
-                                    setterMethodName = "setPhoneCallAvilable";
-                                } else if (rpcName.equals("HMICapabilities") && setterMethodName.equals("setDisplays")) {
-                                    setterMethodName = "setDisplaysCapabilityAvailable";
                                 } else if (rpcName.equals("HMICapabilities")) {
                                     setterMethodName += "Available";
                                 } else if (rpcName.equals("VideoStreamingCapability") && setterMethodName.equals("setHapticSpatialDataSupported")) {
@@ -623,13 +617,6 @@ public class RPCGenericTests {
                 // Confirm that the getter is correct
                 Method getterMethod = null;
                 try {
-                    // --------------------------------------------- Exceptional cases ---------------------------------------------
-                    if (parameter.getterName1.contains("Avilable")) {
-                        continue;
-                    } else if (parameter.getterName1.equals("getSeats")) {
-                        parameter.getterName1 = "getSeatLocations";
-                    }
-                    // -------------------------------------------------------------------------------------------------------------
                     getterMethod = getMethod(aClass, parameter, parameter.getterName1, true);
                 } catch (NoSuchMethodException e) {
                     try {

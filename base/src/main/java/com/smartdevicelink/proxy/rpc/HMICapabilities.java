@@ -58,11 +58,17 @@ public class HMICapabilities extends RPCStruct{
 		 }
 		 return (Boolean)available;
 	 }
-	 
+
+	 @Deprecated
 	 public HMICapabilities setNavigationAvilable( Boolean available) {
         setValue(KEY_NAVIGATION, available);
         return this;
     }
+
+	public HMICapabilities setNavigationAvailable(Boolean available) {
+		setValue(KEY_NAVIGATION, available);
+		return this;
+	}
 	 
 	 public boolean isPhoneCallAvailable(){
 		 Object available = getValue(KEY_PHONE_CALL);
@@ -71,11 +77,17 @@ public class HMICapabilities extends RPCStruct{
 		 }
 		 return (Boolean)available;
 	 }
-	 
+
+	 @Deprecated
 	 public HMICapabilities setPhoneCallAvilable( Boolean available) {
         setValue(KEY_PHONE_CALL, available);
         return this;
     }
+
+	public HMICapabilities setPhoneCallAvailable( Boolean available) {
+		setValue(KEY_PHONE_CALL, available);
+		return this;
+	}
 
 	public boolean isVideoStreamingAvailable(){
 		Object available = getValue(KEY_VIDEO_STREAMING);
@@ -116,18 +128,29 @@ public class HMICapabilities extends RPCStruct{
         return this;
     }
 
+    @Deprecated
 	public boolean isDisplaysCapabilityAvailable(){
-		Object available = getValue(KEY_DISPLAYS);
-		if(available == null){
-			return false;
-		}
-		return (Boolean)available;
+		return isDisplaysAvailable();
 	}
 
+	@Deprecated
 	public HMICapabilities setDisplaysCapabilityAvailable( Boolean available) {
         setValue(KEY_DISPLAYS, available);
         return this;
     }
+
+	public boolean isDisplaysAvailable() {
+		Object available = getValue(KEY_DISPLAYS);
+		if (available == null) {
+			return false;
+		}
+		return (Boolean) available;
+	}
+
+	public HMICapabilities setDisplaysAvailable(Boolean available) {
+		setValue(KEY_DISPLAYS, available);
+		return this;
+	}
 
 	public boolean isSeatLocationAvailable(){
 		Object available = getValue(KEY_SEAT_LOCATION);
