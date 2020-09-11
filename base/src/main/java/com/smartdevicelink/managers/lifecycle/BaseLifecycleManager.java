@@ -810,6 +810,8 @@ abstract class BaseLifecycleManager {
 
     final ISdlSessionListener sdlSessionListener = new ISdlSessionListener() {
 
+        private final Object HANDLE_RPC_LOCK = new Object();
+
         @Override
         public void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
             BaseLifecycleManager.this.onTransportDisconnected(info, availablePrimary, transportConfig);
@@ -819,32 +821,34 @@ abstract class BaseLifecycleManager {
         public void onRPCMessageReceived(RPCMessage rpc) {
             //Incoming message
             if (rpc != null) {
-                String messageType = rpc.getMessageType();
-                DebugTool.logInfo(TAG, "RPC received - " + messageType);
+                synchronized (HANDLE_RPC_LOCK) {
+                    String messageType = rpc.getMessageType();
+                    DebugTool.logInfo(TAG, "RPC received - " + messageType);
 
-                rpc.format(rpcSpecVersion, true);
+                    rpc.format(rpcSpecVersion, true);
 
-                BaseLifecycleManager.this.onRPCReceived(rpc);
+                    BaseLifecycleManager.this.onRPCReceived(rpc);
 
-                if (RPCMessage.KEY_RESPONSE.equals(messageType)) {
+                    if (RPCMessage.KEY_RESPONSE.equals(messageType)) {
 
-                    onRPCResponseReceived((RPCResponse) rpc);
+                        onRPCResponseReceived((RPCResponse) rpc);
 
-                } else if (RPCMessage.KEY_NOTIFICATION.equals(messageType)) {
-                    FunctionID functionID = rpc.getFunctionID();
-                    if (functionID != null && (functionID.equals(FunctionID.ON_BUTTON_PRESS)) || functionID.equals(FunctionID.ON_BUTTON_EVENT)) {
-                        RPCNotification notificationCompat = handleButtonNotificationFormatting(rpc);
-                        if (notificationCompat != null) {
-                            onRPCNotificationReceived((notificationCompat));
+                    } else if (RPCMessage.KEY_NOTIFICATION.equals(messageType)) {
+                        FunctionID functionID = rpc.getFunctionID();
+                        if (functionID != null && (functionID.equals(FunctionID.ON_BUTTON_PRESS)) || functionID.equals(FunctionID.ON_BUTTON_EVENT)) {
+                            RPCNotification notificationCompat = handleButtonNotificationFormatting(rpc);
+                            if (notificationCompat != null) {
+                                onRPCNotificationReceived((notificationCompat));
+                            }
                         }
+
+                        onRPCNotificationReceived((RPCNotification) rpc);
+
+                    } else if (RPCMessage.KEY_REQUEST.equals(messageType)) {
+
+                        onRPCRequestReceived((RPCRequest) rpc);
+
                     }
-
-                    onRPCNotificationReceived((RPCNotification) rpc);
-
-                } else if (RPCMessage.KEY_REQUEST.equals(messageType)) {
-
-                    onRPCRequestReceived((RPCRequest) rpc);
-
                 }
             } else {
                 DebugTool.logWarning(TAG, "Shouldn't be here");
