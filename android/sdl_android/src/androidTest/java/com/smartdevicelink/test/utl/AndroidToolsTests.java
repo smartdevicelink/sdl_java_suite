@@ -1,6 +1,7 @@
 package com.smartdevicelink.test.utl;
 
 import android.content.ComponentName;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.util.AndroidTools;

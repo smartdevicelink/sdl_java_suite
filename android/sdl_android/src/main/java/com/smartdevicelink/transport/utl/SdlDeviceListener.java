@@ -39,6 +39,7 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+
 import androidx.annotation.NonNull;
 
 import com.smartdevicelink.transport.MultiplexBaseTransport;

@@ -1,6 +1,7 @@
 package com.smartdevicelink.managers.lockscreen;
 
 import android.content.Context;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.protocol.enums.FunctionID;

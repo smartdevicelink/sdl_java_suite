@@ -3,6 +3,7 @@ package com.smartdevicelink.transport;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Parcel;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Test;
