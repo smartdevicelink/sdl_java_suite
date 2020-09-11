@@ -12,6 +12,10 @@ class TextsAndGraphicsState {
     private SdlArtwork primaryGraphic, secondaryGraphic;
     private TemplateConfiguration templateConfiguration;
 
+    TextsAndGraphicsState() {
+
+    }
+
     TextsAndGraphicsState(String textField1, String textField2, String textField3, String textField4, String mediaTrackTextField,
                           String title, SdlArtwork primaryGraphic, SdlArtwork secondaryGraphic, TextAlignment textAlignment,
                           MetadataType textField1Type, MetadataType textField2Type, MetadataType textField3Type, MetadataType textField4Type,
@@ -116,15 +120,31 @@ class TextsAndGraphicsState {
         return textAlignment;
     }
 
+    void setTextAlignment(TextAlignment textAlignment) {
+        this.textAlignment = textAlignment;
+    }
+
     SdlArtwork getPrimaryGraphic() {
         return primaryGraphic;
+    }
+
+    void setPrimaryGraphic(SdlArtwork primaryGraphic) {
+        this.primaryGraphic = primaryGraphic;
     }
 
     SdlArtwork getSecondaryGraphic() {
         return secondaryGraphic;
     }
 
+    void setSecondaryGraphic(SdlArtwork secondaryGraphic) {
+        this.secondaryGraphic = secondaryGraphic;
+    }
+
     TemplateConfiguration getTemplateConfiguration() {
         return templateConfiguration;
+    }
+
+    void setTemplateConfiguration(TemplateConfiguration templateConfiguration) {
+        this.templateConfiguration = templateConfiguration;
     }
 }
