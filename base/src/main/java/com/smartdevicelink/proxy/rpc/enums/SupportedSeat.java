@@ -34,6 +34,7 @@ package com.smartdevicelink.proxy.rpc.enums;
 /**
  * List possible seats that is a remote controllable seat.
  */
+@Deprecated
 public enum SupportedSeat {
 	DRIVER,
 	FRONT_PASSENGER,
