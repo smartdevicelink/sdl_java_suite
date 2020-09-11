@@ -66,7 +66,8 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_E_CALL_INFO = "eCallInfo";
 	public static final String KEY_AIRBAG_STATUS = "airbagStatus";
 	public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
-	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
+	@Deprecated public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
+    public static final String KEY_CLUSTER_MODES = "clusterModes";
 	public static final String KEY_MY_KEY = "myKey";
 	public static final String KEY_FUEL_RANGE = "fuelRange";
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
@@ -469,13 +470,22 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     public VehicleDataResult getEmergencyEvent() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_EMERGENCY_EVENT);
     }
+    @Deprecated
     public UnsubscribeVehicleDataResponse setClusterModeStatus( VehicleDataResult clusterModeStatus) {
         setParameters(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
         return this;
     }
     @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getClusterModeStatus() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_CLUSTER_MODE_STATUS);
+    }
+    public UnsubscribeVehicleDataResponse setClusterModes(VehicleDataResult clusterMode) {
+        setParameters(KEY_CLUSTER_MODES, clusterMode);
+        return this;
+    }
+    public VehicleDataResult getClusterModes() {
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_CLUSTER_MODES);
     }
     public UnsubscribeVehicleDataResponse setMyKey( VehicleDataResult myKey) {
         setParameters(KEY_MY_KEY, myKey);

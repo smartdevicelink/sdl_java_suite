@@ -141,11 +141,20 @@ public class TireStatus extends RPCStruct {
 		setInnerRightRear(innerRightRear);
 	}
 
+	@Deprecated
     public TireStatus setPressureTellTale(@NonNull WarningLightStatus pressureTellTale) {
         setValue(KEY_PRESSURE_TELL_TALE, pressureTellTale);
         return this;
     }
+    @Deprecated
     public WarningLightStatus getPressureTellTale() {
+        return (WarningLightStatus) getObject(WarningLightStatus.class, KEY_PRESSURE_TELL_TALE);
+    }
+    public TireStatus setPressureTelltale(@NonNull WarningLightStatus pressureTellTale) {
+        setValue(KEY_PRESSURE_TELL_TALE, pressureTellTale);
+        return this;
+    }
+    public WarningLightStatus getPressureTelltale() {
         return (WarningLightStatus) getObject(WarningLightStatus.class, KEY_PRESSURE_TELL_TALE);
     }
     public TireStatus setLeftFront(@NonNull SingleTireStatus leftFront) {

@@ -3,6 +3,7 @@ package com.smartdevicelink.test.rpc.responses;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
+import com.smartdevicelink.proxy.rpc.LocationDetails;
 import com.smartdevicelink.proxy.rpc.UnsubscribeWayPointsResponse;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
@@ -14,6 +15,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 import java.util.Hashtable;
+import java.util.List;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
@@ -51,8 +53,13 @@ public class UnsubscribeWayPointsResponseTests extends BaseRpcTests{
     public void testRpcValues () {
         // Invalid/Null Tests
         UnsubscribeWayPointsResponse msg = new UnsubscribeWayPointsResponse();
+        msg.setWayPoints(TestValues.GENERAL_LOCATIONDETAILS_LIST);
         assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
+
+        // test getter
+        List<LocationDetails> wayPoints = msg.getWayPoints();
+        assertEquals(TestValues.GENERAL_LOCATIONDETAILS_LIST, wayPoints);
     }
 
     /**

@@ -48,6 +48,7 @@ public class ClimateControlCapabilities extends RPCStruct{
     public static final String KEY_MODULE_NAME= "moduleName";
     public static final String KEY_FAN_SPEED_AVAILABLE= "fanSpeedAvailable";
     public static final String KEY_DESIRED_TEMPERATURE_AVAILABLE= "desiredTemperatureAvailable";
+    public static final String KEY_CURRENT_TEMPERATURE_AVAILABLE= "currentTemperatureAvailable";
     public static final String KEY_AC_ENABLE_AVAILABLE= "acEnableAvailable";
     public static final String KEY_AC_MAX_ENABLE_AVAILABLE= "acMaxEnableAvailable";
     public static final String KEY_CIRCULATE_AIR_ENABLE_AVAILABLE= "circulateAirEnableAvailable";
@@ -142,6 +143,28 @@ public class ClimateControlCapabilities extends RPCStruct{
      */
     public Boolean getDesiredTemperatureAvailable() {
         return getBoolean(KEY_DESIRED_TEMPERATURE_AVAILABLE);
+    }
+
+    /**
+     * Sets the currentTemperatureAvailable portion of the ClimateControlCapabilities class
+     *
+     * @param currentTemperatureAvailable
+     * Availability of the reading of current temperature.
+     * True: Available, False: Not Available, Not present: Not Available.
+     */
+    public ClimateControlCapabilities setCurrentTemperatureAvailable(Boolean currentTemperatureAvailable) {
+        setValue(KEY_CURRENT_TEMPERATURE_AVAILABLE, currentTemperatureAvailable);
+        return this;
+    }
+
+    /**
+     * Gets the currentTemperatureAvailable portion of the ClimateControlCapabilities class
+     *
+     * @return Boolean - Availability of the reading of current temperature.
+     * True: Available, False: Not Available, Not present: Not Available.
+     */
+    public Boolean getCurrentTemperatureAvailable() {
+        return getBoolean(KEY_CURRENT_TEMPERATURE_AVAILABLE);
     }
 
     /**

@@ -180,11 +180,7 @@ public class RPCGenericTests {
                                 } else if (paramName.equals("syncMsgVersion")){
                                     paramName = "sdlMsgVersion";
                                 } else if (paramName.equals("hmiPermissions")){
-                                    paramName = "hMIPermissions";
-                                } else if (paramName.equals("resolution")){
-                                    paramName = "imageResolution";
-                                } else if (paramName.equals("pressureTelltale")){
-                                    paramName = "pressureTellTale";
+                                    paramName = "HMIPermissions";
                                 }
 
                                 setterMethodName = "set" + paramName.substring(0, 1).toUpperCase() + paramName.substring(1);
@@ -204,8 +200,6 @@ public class RPCGenericTests {
                                 } else if (rpcName.equals("CancelInteraction") && setterMethodName.equals("setFunctionID")) {
                                     setterMethodName = "setInteractionFunctionID";
                                 } else if (rpcName.equals("NavigationCapability") && setterMethodName.equals("setGetWayPointsEnabled")) {
-                                    setterMethodName = "setWayPointsEnabled";
-                                } else if (rpcName.equals("UnsubscribeWayPointsResponse") && setterMethodName.equals("setGetWayPointsEnabled")) {
                                     setterMethodName = "setWayPointsEnabled";
                                 } else if (rpcName.equals("HMICapabilities") && setterMethodName.equals("setNavigation")) {
                                     setterMethodName = "setNavigationAvilable";
@@ -322,14 +316,6 @@ public class RPCGenericTests {
                                 }  else if (rpcName.equals("SystemCapability") && !setterMethodName.equals("setSystemCapabilityType")) {
                                     setterMethodName = "setCapabilityForType";
                                     paramType = "SystemCapabilityType";
-                                } else if (rpcName.equals("UnsubscribeWayPointsResponse") && paramName.equals("wayPoints")) {
-                                    skipParam = true;
-                                } else if (rpcName.equals("UnsubscribeVehicleDataResponse") && paramName.equals("clusterModes")) {
-                                    skipParam = true;
-                                } else if (rpcName.equals("ClimateControlCapabilities") && paramName.equals("currentTemperatureAvailable")) {
-                                    skipParam = true;
-                                } else if (rpcName.equals("SubscribeVehicleDataResponse") && paramName.equals("clusterModes")) {
-                                    skipParam = true;
                                 }
 
                                 // -------------------------------------------------------------------------------------------------------------

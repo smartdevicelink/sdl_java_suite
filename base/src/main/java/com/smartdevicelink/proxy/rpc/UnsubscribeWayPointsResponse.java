@@ -38,10 +38,13 @@ import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 
 import java.util.Hashtable;
+import java.util.List;
 
 public class UnsubscribeWayPointsResponse extends RPCResponse {
+	public static final String KEY_WAY_POINTS = "wayPoints";
 
-    public UnsubscribeWayPointsResponse() {
+
+	public UnsubscribeWayPointsResponse() {
         super(FunctionID.UNSUBSCRIBE_WAY_POINTS.toString());
     }
     public UnsubscribeWayPointsResponse(Hashtable<String, Object> hash) {
@@ -57,5 +60,14 @@ public class UnsubscribeWayPointsResponse extends RPCResponse {
 		this();
 		setSuccess(success);
 		setResultCode(resultCode);
+	}
+
+	public UnsubscribeWayPointsResponse setWayPoints(List<LocationDetails> wayPoints) {
+		setParameters(KEY_WAY_POINTS, wayPoints);
+		return this;
+	}
+
+	public List<LocationDetails> getWayPoints() {
+		return (List<LocationDetails>) getObject(LocationDetails.class, KEY_WAY_POINTS);
 	}
 }
