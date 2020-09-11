@@ -16,10 +16,13 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+import com.smartdevicelink.proxy.rpc.TemplateConfiguration;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.MetadataType;
+import com.smartdevicelink.proxy.rpc.enums.PredefinedLayout;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
@@ -57,7 +60,8 @@ public class TextAndGraphicManagerTests {
 
 	// SETUP / HELPERS
 	private TextAndGraphicManager textAndGraphicManager;
-	private SdlArtwork testArtwork;
+	private SdlArtwork testArtwork1, testArtwork2;
+	private TemplateConfiguration configuration1, configuration2;
 
 	@Before
 	public void setUp() throws Exception{
@@ -68,11 +72,20 @@ public class TextAndGraphicManagerTests {
 		FileManager fileManager = mock(FileManager.class);
 		SoftButtonManager softButtonManager = mock(SoftButtonManager.class);
 
-		testArtwork = new SdlArtwork();
-		testArtwork.setName("testFile");
+		testArtwork1 = new SdlArtwork();
+		testArtwork1.setName("testFile");
 		Uri uri = Uri.parse("android.resource://" + mTestContext.getPackageName() + "/drawable/ic_sdl");
-		testArtwork.setUri(uri);
-		testArtwork.setType(FileType.GRAPHIC_PNG);
+		testArtwork1.setUri(uri);
+		testArtwork1.setType(FileType.GRAPHIC_PNG);
+
+		testArtwork2 = new SdlArtwork();
+		testArtwork2.setName("testFile2");
+		Uri uri2 = Uri.parse("android.resource://" + mTestContext.getPackageName() + "/drawable/ic_sdl");
+		testArtwork2.setUri(uri2);
+		testArtwork2.setType(FileType.GRAPHIC_PNG);
+
+		configuration1 = new TemplateConfiguration(PredefinedLayout.GRAPHIC_WITH_TEXT.toString());
+		configuration2 = new TemplateConfiguration(PredefinedLayout.DOUBLE_GRAPHIC_WITH_SOFTBUTTONS.toString());
 
 		Taskmaster taskmaster = new Taskmaster.Builder().build();
 		taskmaster.start();
@@ -109,6 +122,35 @@ public class TextAndGraphicManagerTests {
 		doReturn(systemCapabilityManager).when(internalInterface).getSystemCapabilityManager();
 
 		textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager, softButtonManager);
+		textAndGraphicManager.setTextField1("textField1");
+		textAndGraphicManager.setTextField2("textField2");
+		textAndGraphicManager.setTextField3("textField3");
+		textAndGraphicManager.setTextField4("textField4");
+		textAndGraphicManager.setTextField1Type(MetadataType.MEDIA_TITLE);
+		textAndGraphicManager.setTextField2Type(MetadataType.MEDIA_TITLE);
+		textAndGraphicManager.setTextField3Type(MetadataType.MEDIA_TITLE);
+		textAndGraphicManager.setTextField4Type(MetadataType.MEDIA_TITLE);
+		textAndGraphicManager.setMediaTrackTextField("mediaTrackTextField");
+		textAndGraphicManager.setTitle("title");
+		textAndGraphicManager.setPrimaryGraphic(testArtwork1);
+		textAndGraphicManager.setSecondaryGraphic(testArtwork2);
+		textAndGraphicManager.setTemplateConfiguration(configuration1);
+
+/*		currentScreenData = new TextsAndGraphicsState();
+		currentScreenData.setTextField1(textAndGraphicManager.getTextField1());
+		currentScreenData.setTextField2("textField2");
+		currentScreenData.setTextField3("textField3");
+		currentScreenData.setTextField4("textField4");
+		currentScreenData.setTextField1Type(MetadataType.MEDIA_TITLE);
+		currentScreenData.setTextField2Type(MetadataType.MEDIA_TITLE);
+		currentScreenData.setTextField3Type(MetadataType.MEDIA_TITLE);
+		currentScreenData.setTextField4Type(MetadataType.MEDIA_TITLE);
+		currentScreenData.setMediaTrackTextField("mediaTrackTextField");
+		currentScreenData.setTitle("title");
+		currentScreenData.setPrimaryGraphic(testArtwork1);
+		currentScreenData.setSecondaryGraphic(testArtwork2);
+		currentScreenData.setTemplateConfiguration(configuration);*/
+
 	}
 
 
@@ -223,14 +265,14 @@ public class TextAndGraphicManagerTests {
 
 	@Test
 	public void testSetPrimaryGraphic() {
-		textAndGraphicManager.setPrimaryGraphic(testArtwork);
-		assertEquals(textAndGraphicManager.getPrimaryGraphic(), testArtwork);
+		textAndGraphicManager.setPrimaryGraphic(testArtwork1);
+		assertEquals(textAndGraphicManager.getPrimaryGraphic(), testArtwork1);
 	}
 
 	@Test
 	public void testSetSecondaryGraphic() {
-		textAndGraphicManager.setSecondaryGraphic(testArtwork);
-		assertEquals(textAndGraphicManager.getSecondaryGraphic(), testArtwork);
+		textAndGraphicManager.setSecondaryGraphic(testArtwork1);
+		assertEquals(textAndGraphicManager.getSecondaryGraphic(), testArtwork1);
 	}
 
 	// TEST DISPOSE
@@ -287,7 +329,71 @@ public class TextAndGraphicManagerTests {
 		assertTrue(textAndGraphicManager.hasData());
 
 		textAndGraphicManager.setTextField1(null);
-		textAndGraphicManager.setPrimaryGraphic(testArtwork);
+		textAndGraphicManager.setPrimaryGraphic(testArtwork1);
 		assertTrue(textAndGraphicManager.hasData());
+	}
+
+	@Test
+	public void resetFieldsToCurrentScreenDataTest() {
+		textAndGraphicManager.currentScreenData = textAndGraphicManager.currentState();
+
+		assertTrue(textAndGraphicManager.currentScreenData.getTextField1().equals(textAndGraphicManager.getTextField1()));
+		assertTrue(textAndGraphicManager.currentScreenData.getTextField2().equals(textAndGraphicManager.getTextField2()));
+		assertTrue(textAndGraphicManager.currentScreenData.getTextField3().equals(textAndGraphicManager.getTextField3()));
+		assertTrue(textAndGraphicManager.currentScreenData.getTextField4().equals(textAndGraphicManager.getTextField4()));
+		assertTrue(textAndGraphicManager.currentScreenData.getTitle().equals(textAndGraphicManager.getTitle()));
+		assertTrue(textAndGraphicManager.currentScreenData.getMediaTrackTextField().equals(textAndGraphicManager.getMediaTrackTextField()));
+		assertTrue(textAndGraphicManager.currentScreenData.getTextField1Type().toString().equals(textAndGraphicManager.getTextField1Type().toString()));
+		assertTrue(textAndGraphicManager.currentScreenData.getTextField2Type().toString().equals(textAndGraphicManager.getTextField2Type().toString()));
+		assertTrue(textAndGraphicManager.currentScreenData.getTextField3Type().toString().equals(textAndGraphicManager.getTextField3Type().toString()));
+		assertTrue(textAndGraphicManager.currentScreenData.getTextField4Type().toString().equals(textAndGraphicManager.getTextField4Type().toString()));
+		assertTrue(textAndGraphicManager.currentScreenData.getPrimaryGraphic().getName().equals(textAndGraphicManager.getPrimaryGraphic().getName()));
+		assertTrue(textAndGraphicManager.currentScreenData.getSecondaryGraphic().getName().equals(textAndGraphicManager.getSecondaryGraphic().getName()));
+		assertTrue(textAndGraphicManager.currentScreenData.getTemplateConfiguration().getStore().equals(textAndGraphicManager.getTemplateConfiguration().getStore()));
+		
+		textAndGraphicManager.setTextField1("BadData");
+		textAndGraphicManager.setTextField2("BadData");
+		textAndGraphicManager.setTextField3("BadData");
+		textAndGraphicManager.setTextField4("BadData");
+		textAndGraphicManager.setTextField1Type(MetadataType.HUMIDITY);
+		textAndGraphicManager.setTextField2Type(MetadataType.HUMIDITY);
+		textAndGraphicManager.setTextField3Type(MetadataType.HUMIDITY);
+		textAndGraphicManager.setTextField4Type(MetadataType.HUMIDITY);
+		textAndGraphicManager.setMediaTrackTextField("BadData");
+		textAndGraphicManager.setTitle("BadData");
+		textAndGraphicManager.setPrimaryGraphic(testArtwork2);
+		textAndGraphicManager.setSecondaryGraphic(testArtwork1);
+		textAndGraphicManager.setTemplateConfiguration(configuration2);
+
+		assertFalse(textAndGraphicManager.currentScreenData.getTextField1().equals(textAndGraphicManager.getTextField1()));
+		assertFalse(textAndGraphicManager.currentScreenData.getTextField2().equals(textAndGraphicManager.getTextField2()));
+		assertFalse(textAndGraphicManager.currentScreenData.getTextField3().equals(textAndGraphicManager.getTextField3()));
+		assertFalse(textAndGraphicManager.currentScreenData.getTextField4().equals(textAndGraphicManager.getTextField4()));
+		assertFalse(textAndGraphicManager.currentScreenData.getTitle().equals(textAndGraphicManager.getTitle()));
+		assertFalse(textAndGraphicManager.currentScreenData.getMediaTrackTextField().equals(textAndGraphicManager.getMediaTrackTextField()));
+		assertFalse(textAndGraphicManager.currentScreenData.getTextField1Type().toString().equals(textAndGraphicManager.getTextField1Type().toString()));
+		assertFalse(textAndGraphicManager.currentScreenData.getTextField2Type().toString().equals(textAndGraphicManager.getTextField2Type().toString()));
+		assertFalse(textAndGraphicManager.currentScreenData.getTextField3Type().toString().equals(textAndGraphicManager.getTextField3Type().toString()));
+		assertFalse(textAndGraphicManager.currentScreenData.getTextField4Type().toString().equals(textAndGraphicManager.getTextField4Type().toString()));
+		assertFalse(textAndGraphicManager.currentScreenData.getPrimaryGraphic().getName().equals(textAndGraphicManager.getPrimaryGraphic().getName()));
+		assertFalse(textAndGraphicManager.currentScreenData.getSecondaryGraphic().getName().equals(textAndGraphicManager.getSecondaryGraphic().getName()));
+		assertFalse(textAndGraphicManager.currentScreenData.getTemplateConfiguration().getStore().equals(textAndGraphicManager.getTemplateConfiguration().getStore()));
+
+		textAndGraphicManager.resetFieldsToCurrentScreenData();
+
+		assertTrue(textAndGraphicManager.currentScreenData.getTextField1().equals(textAndGraphicManager.getTextField1()));
+		assertTrue(textAndGraphicManager.currentScreenData.getTextField2().equals(textAndGraphicManager.getTextField2()));
+		assertTrue(textAndGraphicManager.currentScreenData.getTextField3().equals(textAndGraphicManager.getTextField3()));
+		assertTrue(textAndGraphicManager.currentScreenData.getTextField4().equals(textAndGraphicManager.getTextField4()));
+		assertTrue(textAndGraphicManager.currentScreenData.getTitle().equals(textAndGraphicManager.getTitle()));
+		assertTrue(textAndGraphicManager.currentScreenData.getMediaTrackTextField().equals(textAndGraphicManager.getMediaTrackTextField()));
+		assertTrue(textAndGraphicManager.currentScreenData.getTextField1Type().toString().equals(textAndGraphicManager.getTextField1Type().toString()));
+		assertTrue(textAndGraphicManager.currentScreenData.getTextField2Type().toString().equals(textAndGraphicManager.getTextField2Type().toString()));
+		assertTrue(textAndGraphicManager.currentScreenData.getTextField3Type().toString().equals(textAndGraphicManager.getTextField3Type().toString()));
+		assertTrue(textAndGraphicManager.currentScreenData.getTextField4Type().toString().equals(textAndGraphicManager.getTextField4Type().toString()));
+		assertTrue(textAndGraphicManager.currentScreenData.getPrimaryGraphic().getName().equals(textAndGraphicManager.getPrimaryGraphic().getName()));
+		assertTrue(textAndGraphicManager.currentScreenData.getSecondaryGraphic().getName().equals(textAndGraphicManager.getSecondaryGraphic().getName()));
+		assertTrue(textAndGraphicManager.currentScreenData.getTemplateConfiguration().getStore().equals(textAndGraphicManager.getTemplateConfiguration().getStore()));
+
 	}
 }
