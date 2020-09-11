@@ -122,34 +122,6 @@ public class TextAndGraphicManagerTests {
 		doReturn(systemCapabilityManager).when(internalInterface).getSystemCapabilityManager();
 
 		textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager, softButtonManager);
-		textAndGraphicManager.setTextField1("textField1");
-		textAndGraphicManager.setTextField2("textField2");
-		textAndGraphicManager.setTextField3("textField3");
-		textAndGraphicManager.setTextField4("textField4");
-		textAndGraphicManager.setTextField1Type(MetadataType.MEDIA_TITLE);
-		textAndGraphicManager.setTextField2Type(MetadataType.MEDIA_TITLE);
-		textAndGraphicManager.setTextField3Type(MetadataType.MEDIA_TITLE);
-		textAndGraphicManager.setTextField4Type(MetadataType.MEDIA_TITLE);
-		textAndGraphicManager.setMediaTrackTextField("mediaTrackTextField");
-		textAndGraphicManager.setTitle("title");
-		textAndGraphicManager.setPrimaryGraphic(testArtwork1);
-		textAndGraphicManager.setSecondaryGraphic(testArtwork2);
-		textAndGraphicManager.setTemplateConfiguration(configuration1);
-
-/*		currentScreenData = new TextsAndGraphicsState();
-		currentScreenData.setTextField1(textAndGraphicManager.getTextField1());
-		currentScreenData.setTextField2("textField2");
-		currentScreenData.setTextField3("textField3");
-		currentScreenData.setTextField4("textField4");
-		currentScreenData.setTextField1Type(MetadataType.MEDIA_TITLE);
-		currentScreenData.setTextField2Type(MetadataType.MEDIA_TITLE);
-		currentScreenData.setTextField3Type(MetadataType.MEDIA_TITLE);
-		currentScreenData.setTextField4Type(MetadataType.MEDIA_TITLE);
-		currentScreenData.setMediaTrackTextField("mediaTrackTextField");
-		currentScreenData.setTitle("title");
-		currentScreenData.setPrimaryGraphic(testArtwork1);
-		currentScreenData.setSecondaryGraphic(testArtwork2);
-		currentScreenData.setTemplateConfiguration(configuration);*/
 
 	}
 
@@ -198,7 +170,6 @@ public class TextAndGraphicManagerTests {
 
 	@Test
 	public void testInstantiation(){
-
 		assertNull(textAndGraphicManager.getTextField1());
 		assertNull(textAndGraphicManager.getTextField2());
 		assertNull(textAndGraphicManager.getTextField3());
@@ -335,6 +306,20 @@ public class TextAndGraphicManagerTests {
 
 	@Test
 	public void resetFieldsToCurrentScreenDataTest() {
+
+		textAndGraphicManager.setTextField1("textField1");
+		textAndGraphicManager.setTextField2("textField2");
+		textAndGraphicManager.setTextField3("textField3");
+		textAndGraphicManager.setTextField4("textField4");
+		textAndGraphicManager.setTextField1Type(MetadataType.MEDIA_TITLE);
+		textAndGraphicManager.setTextField2Type(MetadataType.MEDIA_TITLE);
+		textAndGraphicManager.setTextField3Type(MetadataType.MEDIA_TITLE);
+		textAndGraphicManager.setTextField4Type(MetadataType.MEDIA_TITLE);
+		textAndGraphicManager.setMediaTrackTextField("mediaTrackTextField");
+		textAndGraphicManager.setTitle("title");
+		textAndGraphicManager.setPrimaryGraphic(testArtwork1);
+		textAndGraphicManager.setSecondaryGraphic(testArtwork2);
+		textAndGraphicManager.setTemplateConfiguration(configuration1);
 		textAndGraphicManager.currentScreenData = textAndGraphicManager.currentState();
 
 		assertTrue(textAndGraphicManager.currentScreenData.getTextField1().equals(textAndGraphicManager.getTextField1()));
@@ -350,7 +335,7 @@ public class TextAndGraphicManagerTests {
 		assertTrue(textAndGraphicManager.currentScreenData.getPrimaryGraphic().getName().equals(textAndGraphicManager.getPrimaryGraphic().getName()));
 		assertTrue(textAndGraphicManager.currentScreenData.getSecondaryGraphic().getName().equals(textAndGraphicManager.getSecondaryGraphic().getName()));
 		assertTrue(textAndGraphicManager.currentScreenData.getTemplateConfiguration().getStore().equals(textAndGraphicManager.getTemplateConfiguration().getStore()));
-		
+
 		textAndGraphicManager.setTextField1("BadData");
 		textAndGraphicManager.setTextField2("BadData");
 		textAndGraphicManager.setTextField3("BadData");
