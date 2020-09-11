@@ -702,7 +702,6 @@ class TextAndGraphicUpdateOperation extends Task {
 
     private void finishOperation(boolean success) {
         DebugTool.logInfo(TAG, "Finishing text and graphic update operation");
-        // TODO pending updateSuperseded flag?
         if(listener != null){
             listener.onComplete(success);
         }
