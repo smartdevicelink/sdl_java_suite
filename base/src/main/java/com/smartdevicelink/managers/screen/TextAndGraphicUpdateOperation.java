@@ -38,6 +38,7 @@ class TextAndGraphicUpdateOperation extends Task {
     private CompletionListener listener;
     private TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener;
     private Show fullShow;
+    private SetDisplayLayout setLayout;
 
     TextAndGraphicUpdateOperation(ISdl internalInterface, FileManager fileManager, WindowCapability currentCapabilities,
                                        TextsAndGraphicsState currentScreenData, TextsAndGraphicsState newState, CompletionListener listener, TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener) {
@@ -152,7 +153,7 @@ class TextAndGraphicUpdateOperation extends Task {
     }
 
     private void sendSetDisplayLayoutWithTemplateConfiguration(TemplateConfiguration configuration, final CompletionListener listener){
-        final SetDisplayLayout setLayout = new SetDisplayLayout(configuration.getTemplate(), configuration.getDayColorScheme(), configuration.getNightColorScheme());
+        setLayout = new SetDisplayLayout().setDisplayLayout(configuration.getTemplate()).setDayColorScheme(configuration.getDayColorScheme()).setNightColorScheme(configuration.getNightColorScheme());
         setLayout.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
@@ -507,7 +508,7 @@ class TextAndGraphicUpdateOperation extends Task {
     }
 
     private void updateCurrentScreenDataFromSetDisplayLayout(SetDisplayLayout setDisplayLayout) {
-        currentScreenData.setTemplateConfiguration(new TemplateConfiguration(setDisplayLayout.getDisplayLayout(), setDisplayLayout.getDayColorScheme(), setDisplayLayout.getNightColorScheme()));
+        currentScreenData.setTemplateConfiguration(new TemplateConfiguration().setTemplate(setDisplayLayout.getDisplayLayout()).setDayColorScheme(setDisplayLayout.getDayColorScheme()).setNightColorScheme(setDisplayLayout.getNightColorScheme()));
         if(currentScreenDataUpdateListener != null){
             currentScreenDataUpdateListener.onUpdate(currentScreenData);
         }
