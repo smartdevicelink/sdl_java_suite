@@ -34,14 +34,13 @@ class TextAndGraphicUpdateOperation extends Task {
     private final WeakReference<ISdl> internalInterface;
     private final WeakReference<FileManager> fileManager;
     WindowCapability defaultMainWindowCapability;
-    private Show currentScreenData;
-    private TextsAndGraphicsState updatedState;
+    private TextsAndGraphicsState currentScreenData, updatedState;
     private CompletionListener listener;
     private TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener;
     private Show fullShow;
 
     TextAndGraphicUpdateOperation(ISdl internalInterface, FileManager fileManager, WindowCapability currentCapabilities,
-                                         Show currentScreenData, TextsAndGraphicsState newState, CompletionListener listener, TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener) {
+                                       TextsAndGraphicsState currentScreenData, TextsAndGraphicsState newState, CompletionListener listener, TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener) {
         super("TextAndGraphicUpdateOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
@@ -78,11 +77,7 @@ class TextAndGraphicUpdateOperation extends Task {
                 sendSetDisplayLayoutWithTemplateConfiguration(updatedState.getTemplateConfiguration(), new CompletionListener() {
                     @Override
                     public void onComplete(boolean success) {
-                        if(getState() == Task.CANCELED){
-                            finishOperation(false);
-                            return;
-                        }
-                        if(!success){
+                        if (getState() == Task.CANCELED || !success) {
                             finishOperation(false);
                             return;
                         }
@@ -90,22 +85,17 @@ class TextAndGraphicUpdateOperation extends Task {
                     }
                 });
             } else {
+                // just send the show
                 updateGraphicsAndShow(fullShow);
             }
         }
     }
 
-
-    private Boolean shouldUpdateTemplateConfig() {
-        return updatedState.getTemplateConfiguration().equals(currentScreenData.getTemplateConfiguration());
-    }
-
     void updateGraphicsAndShow(Show show) {
-        //TODO check about || vs && here
         if (!shouldUpdatePrimaryImage() && !shouldUpdateSecondaryImage()) {
             DebugTool.logInfo(TAG, "No images to send, sending text");
             // If there are no images to update, just send the text
-            sendShow(extractTextFromShow(show), new CompletionListener() {
+            sendShow(extractTextAndLayoutFromShow(show), new CompletionListener() {
                 @Override
                 public void onComplete(boolean success) {
                     finishOperation(success);
@@ -124,7 +114,7 @@ class TextAndGraphicUpdateOperation extends Task {
         } else {
             DebugTool.logInfo(TAG, "Images need to be uploaded, sending text and uploading images");
 
-            sendShow(extractTextFromShow(show), new CompletionListener() {
+            sendShow(extractTextAndLayoutFromShow(show), new CompletionListener() {
                 @Override
                 public void onComplete(boolean success) {
                     if (getState() == Task.CANCELED) {
@@ -150,9 +140,9 @@ class TextAndGraphicUpdateOperation extends Task {
                 DebugTool.logInfo(TAG, "Text and Graphic update completed");
                 if (response.getSuccess()) {
                     updateCurrentScreenDataFromShow(show);
-                }
-                else{
-                    // TODO UPDATE TEXT AND GRAPHICS MANAGER THAT DATA FAILED USE LAST CURRENT DATA currentScreenDataUpdateListener.onError(show);
+                } else {
+                    DebugTool.logInfo(TAG, "Text and Graphic Show completed successfully");
+                    currentScreenDataUpdateListener.onError();
                 }
                 listener.onComplete(response.getSuccess());
 
@@ -167,13 +157,11 @@ class TextAndGraphicUpdateOperation extends Task {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
                 if(response.getSuccess()){
-                    //TODO see if this works
                     updateCurrentScreenDataFromSetDisplayLayout(setLayout);
                     listener.onComplete(true);
                 }
                 else {
-                    //TODO Update if fail
-                    listener.onComplete(false);
+                    currentScreenDataUpdateListener.onError();
                 }
             }
         });
@@ -279,7 +267,7 @@ class TextAndGraphicUpdateOperation extends Task {
             return show;
         }
 
-        int numberOfLines = defaultMainWindowCapability != null ? ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(defaultMainWindowCapability) : 4;
+        int numberOfLines = defaultMainWindowCapability == null || shouldUpdateTemplateConfig() ? 4 : ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(defaultMainWindowCapability);
 
         switch (numberOfLines) {
             case 1:
@@ -486,7 +474,7 @@ class TextAndGraphicUpdateOperation extends Task {
 
     // Extraction
 
-    Show extractTextFromShow(Show show) {
+    Show extractTextAndLayoutFromShow(Show show) {
         Show newShow = new Show();
         newShow.setMainField1(show.getMainField1());
         newShow.setMainField2(show.getMainField2());
@@ -495,13 +483,7 @@ class TextAndGraphicUpdateOperation extends Task {
         newShow.setTemplateTitle(show.getTemplateTitle());
         newShow.setMetadataTags(show.getMetadataTags());
         newShow.setAlignment(show.getAlignment());
-
-        //TODO added
         newShow.setTemplateConfiguration(show.getTemplateConfiguration());
-/*
-        if(shouldUpdateTemplateConfig() && internalInterface.get().getSdlMsgVersion().getMajorVersion() >= 6) {
-            newShow.setTemplateConfiguration(show.getTemplateConfiguration());
-        }*/
         return newShow;
     }
 
@@ -526,7 +508,6 @@ class TextAndGraphicUpdateOperation extends Task {
 
     private void updateCurrentScreenDataFromSetDisplayLayout(SetDisplayLayout setDisplayLayout) {
         currentScreenData.setTemplateConfiguration(new TemplateConfiguration(setDisplayLayout.getDisplayLayout(), setDisplayLayout.getDayColorScheme(), setDisplayLayout.getNightColorScheme()));
-
         if(currentScreenDataUpdateListener != null){
             currentScreenDataUpdateListener.onUpdate(currentScreenData);
         }
@@ -537,37 +518,39 @@ class TextAndGraphicUpdateOperation extends Task {
             DebugTool.logError(TAG, "can not updateCurrentScreenDataFromShow from null show");
             return;
         }
-
-        // If the items are null, they were not updated, so we can't just set it directly
         if (show.getMainField1() != null) {
-            currentScreenData.setMainField1(show.getMainField1());
+            currentScreenData.setTextField1(updatedState.getTextField1());
         }
         if (show.getMainField2() != null) {
-            currentScreenData.setMainField2(show.getMainField2());
+            currentScreenData.setTextField2(updatedState.getTextField2());
         }
         if (show.getMainField3() != null) {
-            currentScreenData.setMainField3(show.getMainField3());
+            currentScreenData.setTextField3(updatedState.getTextField3());
         }
         if (show.getMainField4() != null) {
-            currentScreenData.setMainField4(show.getMainField4());
+            currentScreenData.setTextField4(updatedState.getTextField4());
         }
         if (show.getTemplateTitle() != null) {
-            currentScreenData.setTemplateTitle(show.getTemplateTitle());
+            currentScreenData.setTitle(updatedState.getTitle());
         }
         if (show.getMediaTrack() != null) {
-            currentScreenData.setMediaTrack(show.getMediaTrack());
+            currentScreenData.setMediaTrackTextField(updatedState.getMediaTrackTextField());
         }
-        if (show.getMetadataTags() != null) {
-            currentScreenData.setMetadataTags(show.getMetadataTags());
+
+        if(show.getMetadataTags() != null){
+            currentScreenData.setTextField1Type(updatedState.getTextField1Type());
+            currentScreenData.setTextField2Type(updatedState.getTextField2Type());
+            currentScreenData.setTextField3Type(updatedState.getTextField3Type());
+            currentScreenData.setTextField4Type(updatedState.getTextField4Type());
         }
         if (show.getAlignment() != null) {
-            currentScreenData.setAlignment(show.getAlignment());
+            currentScreenData.setTextAlignment(updatedState.getTextAlignment());
         }
         if (show.getGraphic() != null) {
-            currentScreenData.setGraphic(show.getGraphic());
+            currentScreenData.setPrimaryGraphic(updatedState.getPrimaryGraphic());
         }
         if (show.getSecondaryGraphic() != null) {
-            currentScreenData.setSecondaryGraphic(show.getSecondaryGraphic());
+            currentScreenData.setSecondaryGraphic(updatedState.getSecondaryGraphic());
         }
         if (currentScreenDataUpdateListener != null) {
             currentScreenDataUpdateListener.onUpdate(currentScreenData);
@@ -635,8 +618,8 @@ class TextAndGraphicUpdateOperation extends Task {
      * @return true if primaryGraphic should be updated, false if not
      */
     private boolean shouldUpdatePrimaryImage() {
-        boolean templateSupportsPrimaryArtwork = templateSupportsImageField(ImageFieldName.graphic);
-        String currentScreenDataPrimaryGraphicName = (currentScreenData != null && currentScreenData.getGraphic() != null) ? currentScreenData.getGraphic().getValue() : null;
+        boolean templateSupportsPrimaryArtwork = templateSupportsImageField(ImageFieldName.graphic) || shouldUpdateTemplateConfig();
+        String currentScreenDataPrimaryGraphicName = (currentScreenData != null && currentScreenData.getPrimaryGraphic() != null) ? currentScreenData.getPrimaryGraphic().getName() : null;
         String primaryGraphicName = updatedState.getPrimaryGraphic() != null ? updatedState.getPrimaryGraphic().getName() : null;
 
         boolean graphicMatchesExisting = CompareUtils.areStringsEqual(currentScreenDataPrimaryGraphicName, primaryGraphicName, true, true);
@@ -650,8 +633,8 @@ class TextAndGraphicUpdateOperation extends Task {
      * @return true if secondaryGraphic should be updated, false if not
      */
     private boolean shouldUpdateSecondaryImage() {
-        boolean templateSupportsSecondaryArtwork = templateSupportsImageField(ImageFieldName.secondaryGraphic);
-        String currentScreenDataSecondaryGraphicName = (currentScreenData != null && currentScreenData.getSecondaryGraphic() != null) ? currentScreenData.getSecondaryGraphic().getValue() : null;
+        boolean templateSupportsSecondaryArtwork = templateSupportsImageField(ImageFieldName.secondaryGraphic) || shouldUpdateTemplateConfig();
+        String currentScreenDataSecondaryGraphicName = (currentScreenData != null && currentScreenData.getSecondaryGraphic() != null) ? currentScreenData.getSecondaryGraphic().getName() : null;
         String secondaryGraphicName = updatedState.getSecondaryGraphic() != null ? updatedState.getSecondaryGraphic().getName() : null;
 
         boolean graphicMatchesExisting = CompareUtils.areStringsEqual(currentScreenDataSecondaryGraphicName, secondaryGraphicName, true, true);
@@ -679,7 +662,7 @@ class TextAndGraphicUpdateOperation extends Task {
      * @return true if mediaTrackTextField should be updated, false if not
      */
     private boolean shouldUpdateMediaTrackField() {
-        return templateSupportsTextField(TextFieldName.mediaTrack);
+        return templateSupportsTextField(TextFieldName.mediaTrack) || shouldUpdateTemplateConfig();
     }
 
     /**
@@ -688,7 +671,16 @@ class TextAndGraphicUpdateOperation extends Task {
      * @return true if title should be updated, false if not
      */
     private boolean shouldUpdateTitleField() {
-        return templateSupportsTextField(TextFieldName.templateTitle);
+        return templateSupportsTextField(TextFieldName.templateTitle) || shouldUpdateTemplateConfig();
+    }
+
+    private Boolean shouldUpdateTemplateConfig() {
+        if(updatedState.getTemplateConfiguration() == null) {
+            return false;
+        } else if(currentScreenData.getTemplateConfiguration() == null) {
+            return true;
+        }
+        return updatedState.getTemplateConfiguration().equals(currentScreenData.getTemplateConfiguration());
     }
 
     /**
@@ -700,11 +692,11 @@ class TextAndGraphicUpdateOperation extends Task {
         return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, name);
     }
 
-    Show getCurrentScreenData() {
+    TextsAndGraphicsState getCurrentScreenData() {
         return currentScreenData;
     }
 
-    void setCurrentScreenData(Show currentScreenData) {
+    void setCurrentScreenData(TextsAndGraphicsState currentScreenData) {
         this.currentScreenData = currentScreenData;
     }
 
