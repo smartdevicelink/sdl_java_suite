@@ -5,12 +5,10 @@ import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.test.streaming.MockInterfaceBroker;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
-import com.smartdevicelink.transport.TCPTransportConfig;
 
 import junit.framework.TestCase;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
-import static org.mockito.Mockito.mock;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

@@ -33,12 +33,10 @@
 package com.smartdevicelink.managers;
 
 import androidx.annotation.NonNull;
-import com.smartdevicelink.util.Log;
 
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.managers.screen.ScreenManager;
-import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
 

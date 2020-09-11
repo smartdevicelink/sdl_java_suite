@@ -34,6 +34,7 @@ package com.smartdevicelink.managers.screen.choiceset;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
+
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 

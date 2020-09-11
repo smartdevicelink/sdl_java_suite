@@ -3,9 +3,12 @@ package com.smartdevicelink.test.rpc.datatypes;
 import com.smartdevicelink.proxy.rpc.DriverDistractionCapability;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.TestValues;
+
 import junit.framework.TestCase;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.Iterator;
 
 /**

@@ -37,6 +37,7 @@ import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.SSLWebSocketFactoryGenerator;
 import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.DebugTool;
+
 import org.java_websocket.WebSocket;
 import org.java_websocket.WebSocketServerFactory;
 import org.java_websocket.handshake.ClientHandshake;

@@ -33,6 +33,7 @@
 package com.smartdevicelink.managers.file.filetypes;
 
 import android.net.Uri;
+
 import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.rpc.Image;

@@ -32,8 +32,8 @@
 
 package com.smartdevicelink.managers.lifecycle;
 
-import android.app.Service;
 import android.content.Context;
+
 import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
@@ -52,8 +52,6 @@ import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * The lifecycle manager creates a central point for all SDL session logic to converge. It should only be used by
