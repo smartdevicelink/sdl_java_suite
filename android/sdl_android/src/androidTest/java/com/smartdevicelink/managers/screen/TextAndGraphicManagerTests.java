@@ -319,7 +319,7 @@ public class TextAndGraphicManagerTests {
 		textAndGraphicManager.setTitle("title");
 		textAndGraphicManager.setPrimaryGraphic(testArtwork1);
 		textAndGraphicManager.setSecondaryGraphic(testArtwork2);
-		textAndGraphicManager.setTemplateConfiguration(configuration1);
+		textAndGraphicManager.changeLayout(configuration1, null);
 		textAndGraphicManager.currentScreenData = textAndGraphicManager.currentState();
 
 		assertTrue(textAndGraphicManager.currentScreenData.getTextField1().equals(textAndGraphicManager.getTextField1()));
@@ -348,7 +348,7 @@ public class TextAndGraphicManagerTests {
 		textAndGraphicManager.setTitle("BadData");
 		textAndGraphicManager.setPrimaryGraphic(testArtwork2);
 		textAndGraphicManager.setSecondaryGraphic(testArtwork1);
-		textAndGraphicManager.setTemplateConfiguration(configuration2);
+		textAndGraphicManager.changeLayout(configuration2, null);
 
 		assertFalse(textAndGraphicManager.currentScreenData.getTextField1().equals(textAndGraphicManager.getTextField1()));
 		assertFalse(textAndGraphicManager.currentScreenData.getTextField2().equals(textAndGraphicManager.getTextField2()));
