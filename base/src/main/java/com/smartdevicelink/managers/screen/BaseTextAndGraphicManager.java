@@ -239,6 +239,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		textField4Type = currentScreenData.getTextField4Type();
 		primaryGraphic = currentScreenData.getPrimaryGraphic();
 		secondaryGraphic = currentScreenData.getSecondaryGraphic();
+		templateConfiguration = currentScreenData.getTemplateConfiguration();
 	}
 
 	//Updates pending task with current screen data
@@ -302,7 +303,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 	// Convert to State
 
-	private TextsAndGraphicsState currentState() {
+	TextsAndGraphicsState currentState() {
 		return new TextsAndGraphicsState(textField1, textField2, textField3, textField4, mediaTrackTextField,
 				title, primaryGraphic, secondaryGraphic, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type, templateConfiguration);
 	}
@@ -482,6 +483,10 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		} else {
 			isDirty = true;
 		}
+	}
+
+	TemplateConfiguration getTemplateConfiguration() {
+		return templateConfiguration;
 	}
 
 	void setTemplateConfiguration(TemplateConfiguration templateConfiguration) {
