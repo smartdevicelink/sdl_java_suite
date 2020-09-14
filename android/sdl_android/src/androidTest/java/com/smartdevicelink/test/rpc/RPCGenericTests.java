@@ -181,6 +181,8 @@ public class RPCGenericTests {
                                     paramName = "sdlMsgVersion";
                                 } else if (paramName.equals("hmiPermissions")){
                                     paramName = "HMIPermissions";
+                                } else if (paramName.equals("resolution")){
+                                    paramName = "imageResolution";
                                 }
 
                                 setterMethodName = "set" + paramName.substring(0, 1).toUpperCase() + paramName.substring(1);
@@ -211,8 +213,6 @@ public class RPCGenericTests {
                                     setterMethodName = "setInteractionFunctionID";
                                 } else if (rpcName.equals("NavigationCapability") && setterMethodName.equals("setGetWayPointsEnabled")) {
                                     setterMethodName = "setWayPointsEnabled";
-                                } else if (rpcName.equals("HMICapabilities")) {
-                                    setterMethodName += "Available";
                                 } else if (setterMethodName.equals("setFuelLevel_State")) {
                                     setterMethodName = "setFuelLevelState";
                                 } else if (rpcName.equals("SystemCapability") && !setterMethodName.equals("setSystemCapabilityType")) {
@@ -286,6 +286,10 @@ public class RPCGenericTests {
                                     setterMethodName = "setTPMS";
                                 } else if (rpcName.equals("VehicleDataResult") && setterMethodName.equals("setOemCustomDataType")) {
                                     setterMethodName = "setOEMCustomVehicleDataType";
+                                } else if (rpcName.equals("HMICapabilities") && setterMethodName.equals("setDisplays")) {
+                                    setterMethodName = "setDisplaysCapabilityAvailable";
+                                } else if (rpcName.equals("HMICapabilities")) {
+                                    setterMethodName += "Available";
                                 }
 
                                 // -------------------------------------------------------------------------------------------------------------

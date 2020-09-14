@@ -128,18 +128,7 @@ public class HMICapabilities extends RPCStruct{
         return this;
     }
 
-    @Deprecated
 	public boolean isDisplaysCapabilityAvailable(){
-		return isDisplaysAvailable();
-	}
-
-	@Deprecated
-	public HMICapabilities setDisplaysCapabilityAvailable( Boolean available) {
-        setValue(KEY_DISPLAYS, available);
-        return this;
-    }
-
-	public boolean isDisplaysAvailable() {
 		Object available = getValue(KEY_DISPLAYS);
 		if (available == null) {
 			return false;
@@ -147,10 +136,10 @@ public class HMICapabilities extends RPCStruct{
 		return (Boolean) available;
 	}
 
-	public HMICapabilities setDisplaysAvailable(Boolean available) {
-		setValue(KEY_DISPLAYS, available);
-		return this;
-	}
+	public HMICapabilities setDisplaysCapabilityAvailable( Boolean available) {
+        setValue(KEY_DISPLAYS, available);
+        return this;
+    }
 
 	public boolean isSeatLocationAvailable(){
 		Object available = getValue(KEY_SEAT_LOCATION);

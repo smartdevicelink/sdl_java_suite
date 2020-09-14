@@ -102,25 +102,13 @@ public class ScreenParams extends RPCStruct {
     }
 
     @SuppressWarnings("unchecked")
-    @Deprecated
     public ImageResolution getImageResolution() {
         return (ImageResolution) getObject(ImageResolution.class, KEY_RESOLUTION);
-    }
-    @Deprecated
+    } 
     public ScreenParams setImageResolution(@NonNull ImageResolution resolution) {
         setValue(KEY_RESOLUTION, resolution);
         return this;
     }
-
-    public ImageResolution getResolution() {
-        return (ImageResolution) getObject(ImageResolution.class, KEY_RESOLUTION);
-    }
-
-    public ScreenParams setResolution(@NonNull ImageResolution resolution) {
-        setValue(KEY_RESOLUTION, resolution);
-        return this;
-    }
-
     @SuppressWarnings("unchecked")
     public TouchEventCapabilities getTouchEventAvailable() {
     	return (TouchEventCapabilities) getObject(TouchEventCapabilities.class, KEY_TOUCH_EVENT_AVAILABLE);
