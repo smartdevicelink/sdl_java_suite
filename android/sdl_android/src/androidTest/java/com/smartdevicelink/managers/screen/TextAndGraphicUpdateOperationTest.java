@@ -84,6 +84,21 @@ public class TextAndGraphicUpdateOperationTest {
         }
     };
 
+    private Answer<Void> onShowFail = new Answer<Void>() {
+        @Override
+        public Void answer(InvocationOnMock invocation) {
+            Object[] args = invocation.getArguments();
+            RPCRequest message = (RPCRequest) args[0];
+            if (message instanceof Show) {
+                int correlationId = message.getCorrelationID();
+                ShowResponse showResponse = new ShowResponse();
+                showResponse.setSuccess(false);
+                message.getOnRPCResponseListener().onResponse(correlationId, showResponse);
+            }
+            return null;
+        }
+    };
+
     private Answer<Void> onSetDisplayLayoutSuccess = new Answer<Void>() {
         @Override
         public Void answer(InvocationOnMock invocation) {
@@ -981,6 +996,22 @@ public class TextAndGraphicUpdateOperationTest {
         textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
         textAndGraphicUpdateOperation.onExecute();
         assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration().getStore(), configuration2.getStore());
+    }
+
+    @Test
+    public void testOnShowFail() {
+        doAnswer(onShowFail).when(internalInterface).sendRPC(any(Show.class));
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
+
+        TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField1, textField2, textField3, textField4,
+                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type, configuration);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
+        textAndGraphicUpdateOperation.onExecute();
+        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration().getStore(), configuration.getStore());
+
+        // Verifies that uploadArtworks does not get called because a sendShow failed with text and layout change
+        verify(fileManager, times(0)).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
+
     }
 
 }
