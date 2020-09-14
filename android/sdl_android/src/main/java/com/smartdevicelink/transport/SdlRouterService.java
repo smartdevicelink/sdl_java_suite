@@ -2407,7 +2407,7 @@ public class SdlRouterService extends Service{
 		SharedPreferences preferences = this.getSharedPreferences(SDL_DEVICE_STATUS_SHARED_PREFS, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putBoolean(address,hasSDLConnected);
-		editor.apply();
+		editor.commit();
 	}
 
 	/**
@@ -2438,7 +2438,7 @@ public class SdlRouterService extends Service{
 		SharedPreferences preferences = this.getSharedPreferences(SDL_ROUTER_SERVICE_PREFS, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putBoolean(key,value);
-		editor.apply();
+		editor.commit();
 		DebugTool.logInfo(TAG, "Preference set: " + key + " : " + value);
 	}
 

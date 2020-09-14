@@ -105,7 +105,7 @@ class LockScreenDeviceIconManager {
             } catch (NumberFormatException e) {
                 DebugTool.logInfo(TAG, "Invalid time stamp stored to shared preferences, clearing cache and share preferences");
                 clearIconDirectory();
-                sharedPref.edit().clear().apply();
+                sharedPref.edit().clear().commit();
             }
             long currentTime = System.currentTimeMillis();
 
@@ -155,7 +155,7 @@ class LockScreenDeviceIconManager {
             if(cachedIcon == null) {
                 DebugTool.logError(TAG, "Failed to get Bitmap from decoding file cache");
                 clearIconDirectory();
-                sharedPref.edit().clear().apply();
+                sharedPref.edit().clear().commit();
                 return null;
             } else {
                 return cachedIcon;
@@ -175,7 +175,7 @@ class LockScreenDeviceIconManager {
         SharedPreferences sharedPref = this.context.getSharedPreferences(SDL_DEVICE_STATUS_SHARED_PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(iconHash, String.valueOf(System.currentTimeMillis()));
-        editor.apply();
+        editor.commit();
     }
 
     /**
