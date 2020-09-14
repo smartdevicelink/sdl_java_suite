@@ -2,7 +2,7 @@ package com.smartdevicelink.test.security;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.test.TestValues;

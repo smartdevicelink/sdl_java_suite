@@ -30,7 +30,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.smartdevicelink.SdlConnection;
+package com.smartdevicelink.session;
 
 import androidx.annotation.RestrictTo;
 
