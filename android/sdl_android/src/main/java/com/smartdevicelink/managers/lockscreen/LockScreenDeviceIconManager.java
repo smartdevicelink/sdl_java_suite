@@ -206,7 +206,7 @@ class LockScreenDeviceIconManager {
      */
     private void clearIconDirectory() {
         File iconDir = new File(context.getCacheDir() + "/" + STORED_ICON_DIRECTORY_PATH);
-        if (iconDir != null && iconDir.listFiles() != null) {
+        if (iconDir.listFiles() != null) {
             for (File child : iconDir.listFiles()) {
                 if (child != null) {
                     child.delete();

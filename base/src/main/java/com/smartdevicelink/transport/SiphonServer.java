@@ -239,6 +239,9 @@ public class SiphonServer {
 		deltaTimeMills = (int)(currentDateTime - m_startTimeStamp);
 		
 		switch(direction) {
+			case fromSdl:
+				siphonDataTypeIndicator = 0x00;
+				break;
 			case fromApp:
 				siphonDataTypeIndicator = 0x01;
 				break;
