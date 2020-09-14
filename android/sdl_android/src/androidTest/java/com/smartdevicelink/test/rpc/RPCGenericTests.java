@@ -187,48 +187,26 @@ public class RPCGenericTests {
 
                                 if (paramType.equals("SyncMsgVersion")){
                                     paramType = "SdlMsgVersion";
-                                } else if (rpcName.equals("GPSData") && paramType.equals("Float")){
-                                    paramType = "Double";
-                                } else if (rpcName.equals("TouchEvent") && paramType.equals("Integer") && isArray){
-                                    paramType = "Long";
                                 } else if (paramType.equals("OASISAddress")) {
                                     paramType = "OasisAddress";
-                                } else if (rpcName.equals("VideoStreamingCapability") && paramType.equals("Float")) {
+                                } else if (rpcName.equals("TouchEvent") && paramType.equals("Integer") && isArray){
+                                    paramType = "Long";
+                                }  else if (Arrays.asList("GPSData", "VideoStreamingCapability").contains(rpcName) && paramType.equals("Float")){
+                                    paramType = "Double";
+                                } else if (Arrays.asList("GetVehicleDataResponse", "OnVehicleData").contains(rpcName) && Arrays.asList("setInstantFuelConsumption", "setFuelLevel", "setSpeed", "setExternalTemperature", "setEngineTorque", "setAccPedalPosition", "setSteeringWheelAngle").contains(setterMethodName)) {
+                                    paramType = "Double";
+                                } else if (rpcName.equals("ShowConstantTbt") && Arrays.asList("setDistanceToManeuver", "setDistanceToManeuverScale").contains(setterMethodName)) {
+                                    paramType = "Double";
+                                } else if (rpcName.equals("SendLocation") && Arrays.asList("setLongitudeDegrees", "setLatitudeDegrees").contains(setterMethodName)) {
                                     paramType = "Double";
                                 } else if (rpcName.equals("UnsubscribeVehicleData") && setterMethodName.equals("setCloudAppVehicleID")) {
                                     paramType = "boolean";
                                 } else if (rpcName.equals("CloudAppProperties") && setterMethodName.equals("setEnabled")) {
                                     paramType = "boolean";
-                                } else if (rpcName.equals("SendLocation") && setterMethodName.equals("setLongitudeDegrees")) {
-                                    paramType = "Double";
-                                } else if (rpcName.equals("SendLocation") && setterMethodName.equals("setLatitudeDegrees")) {
-                                    paramType = "Double";
                                 } else if (rpcName.equals("GetVehicleData") && setterMethodName.equals("setCloudAppVehicleID")) {
                                     paramType = "boolean";
-                                } else if (rpcName.equals("SubscribeVehicleData") && setterMethodName.equals("setElectronicParkBrakeStatus")) {
+                                } else if (rpcName.equals("SubscribeVehicleData") && Arrays.asList("setElectronicParkBrakeStatus", "setCloudAppVehicleID").contains(setterMethodName)) {
                                     paramType = "boolean";
-                                } else if (rpcName.equals("SubscribeVehicleData") && setterMethodName.equals("setCloudAppVehicleID")) {
-                                    paramType = "boolean";
-                                } else if (rpcName.equals("GetVehicleDataResponse") && Arrays.asList("setInstantFuelConsumption", "setFuelLevel", "setSpeed", "setExternalTemperature", "setEngineTorque", "setAccPedalPosition", "setSteeringWheelAngle").contains(setterMethodName)) {
-                                    paramType = "Double";
-                                } else if (rpcName.equals("ShowConstantTbt") && setterMethodName.equals("setDistanceToManeuver")) {
-                                    paramType = "Double";
-                                } else if (rpcName.equals("ShowConstantTbt") && setterMethodName.equals("setDistanceToManeuverScale")) {
-                                    paramType = "Double";
-                                } else if (rpcName.equals("OnVehicleData") && setterMethodName.equals("setSpeed")) {
-                                    paramType = "Double";
-                                } else if (rpcName.equals("OnVehicleData") && setterMethodName.equals("setFuelLevel")) {
-                                    paramType = "Double";
-                                } else if (rpcName.equals("OnVehicleData") && setterMethodName.equals("setInstantFuelConsumption")) {
-                                    paramType = "Double";
-                                } else if (rpcName.equals("OnVehicleData") && setterMethodName.equals("setExternalTemperature")) {
-                                    paramType = "Double";
-                                } else if (rpcName.equals("OnVehicleData") && setterMethodName.equals("setEngineTorque")) {
-                                    paramType = "Double";
-                                } else if (rpcName.equals("OnVehicleData") && setterMethodName.equals("setAccPedalPosition")) {
-                                    paramType = "Double";
-                                } else if (rpcName.equals("OnVehicleData") && setterMethodName.equals("setSteeringWheelAngle")) {
-                                    paramType = "Double";
                                 } else if (rpcName.equals("CancelInteraction") && setterMethodName.equals("setFunctionID")) {
                                     setterMethodName = "setInteractionFunctionID";
                                 } else if (rpcName.equals("NavigationCapability") && setterMethodName.equals("setGetWayPointsEnabled")) {
@@ -240,10 +218,7 @@ public class RPCGenericTests {
                                 } else if (rpcName.equals("SystemCapability") && !setterMethodName.equals("setSystemCapabilityType")) {
                                     setterMethodName = "setCapabilityForType";
                                     paramType = "SystemCapabilityType";
-                                }
-
-
-                                else if (rpcName.equals("OnDriverDistraction") && setterMethodName.equals("setLockScreenDismissalEnabled")) {
+                                } else if (rpcName.equals("OnDriverDistraction") && setterMethodName.equals("setLockScreenDismissalEnabled")) {
                                     setterMethodName = "setLockscreenDismissibility";
                                     paramType = "boolean";
                                 } else if (rpcName.equals("OnDriverDistraction") && setterMethodName.equals("setLockScreenDismissalWarning")) {
