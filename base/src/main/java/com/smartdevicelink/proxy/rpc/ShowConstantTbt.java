@@ -171,7 +171,7 @@ public class ShowConstantTbt extends RPCRequest{
     }
 
     /**
-     * Sets an Image for turnicon
+     * Sets an Image for turn icon
      *
      * @param turnIcon
      *            an Image value
@@ -182,11 +182,10 @@ public class ShowConstantTbt extends RPCRequest{
     }
 
     /**
-     * Gets an Image for turnicon
+     * Gets an Image for turn icon
      * 
      * @return Image -an Image value representing an Image for turnicon
      */
-    @SuppressWarnings("unchecked")
     public Image getTurnIcon(){
         return (Image) getObject(Image.class, KEY_MANEUVER_IMAGE);
     }
@@ -207,7 +206,6 @@ public class ShowConstantTbt extends RPCRequest{
      * 
      * @return Image -an Image value representing an Image for nextTurnIcon
      */
-    @SuppressWarnings("unchecked")
     public Image getNextTurnIcon(){
         return (Image) getObject(Image.class, KEY_NEXT_MANEUVER_IMAGE);
     }

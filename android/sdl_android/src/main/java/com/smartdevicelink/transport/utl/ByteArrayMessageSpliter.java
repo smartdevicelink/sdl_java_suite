@@ -50,11 +50,11 @@ public class ByteArrayMessageSpliter {
 	boolean firstPacket;
 	ByteArrayInputStream stream;
 	int bytesRead; 
-	int what;
-	String appId;
+	final int what;
+	final String appId;
 	byte[] buffer;
-	int orginalSize;
-	int priorityCoef;
+	final int orginalSize;
+	final int priorityCoef;
 	int routerServiceVersion = 1;
 	TransportRecord transportRecord;
 	

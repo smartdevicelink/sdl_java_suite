@@ -69,7 +69,7 @@ import java.util.Hashtable;
  * 		<tr>
  * 			<td>audioType</td>
  * 			<td>AudioType</td>
- * 			<td>Describes the audiotype for AudioPassThru
+ * 			<td>Describes the audioType for AudioPassThru
  * 			</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
@@ -97,7 +97,7 @@ public class AudioPassThruCapabilities extends RPCStruct {
      * Constructs a newly allocated AudioPassThruCapabilities object
      * @param samplingRate the sampling rate for AudioPassThru
      * @param bitsPerSample the sample depth in bit for AudioPassThru
-     * @param audioType the audiotype for AudioPassThru
+     * @param audioType the audioType for AudioPassThru
      */
     public AudioPassThruCapabilities(@NonNull SamplingRate samplingRate, @NonNull BitsPerSample bitsPerSample, @NonNull AudioType audioType) {
         this();
@@ -141,8 +141,8 @@ public class AudioPassThruCapabilities extends RPCStruct {
     }
     
     /**
-     * set the audiotype for AudioPassThru
-     * @param audioType the audiotype for AudioPassThru
+     * set the audioType for AudioPassThru
+     * @param audioType the audioType for AudioPassThru
      */
     public AudioPassThruCapabilities setAudioType(@NonNull AudioType audioType) {
         setValue(KEY_AUDIO_TYPE, audioType);
@@ -150,8 +150,8 @@ public class AudioPassThruCapabilities extends RPCStruct {
     }
     
     /**
-     * get the audiotype for AudioPassThru
-     * @return the audiotype for AudioPassThru
+     * get the audioType for AudioPassThru
+     * @return the audioType for AudioPassThru
      */
     public AudioType getAudioType() {
         return (AudioType) getObject(AudioType.class, KEY_AUDIO_TYPE);

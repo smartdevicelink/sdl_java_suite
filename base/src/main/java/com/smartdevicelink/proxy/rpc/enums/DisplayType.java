@@ -33,7 +33,7 @@ package com.smartdevicelink.proxy.rpc.enums;
 /** The type of the display.
  * 
  * 
- * @since SmartDevcieLink 1.0 
+ * @since SmartDeviceLink 1.0
  *
  */
 

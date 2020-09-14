@@ -39,6 +39,7 @@ import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
 import java.net.URI;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 /**
  * A class representing data to be uploaded to core
@@ -154,7 +155,7 @@ public class SdlFile{
 
     /**
      * Gets the location of the file
-     * @return
+     * @return represents the path of the file
      */
     public String getFilePath(){
         return this.filePath;
@@ -317,7 +318,7 @@ public class SdlFile{
         result += ((getName() == null) ? 0 : Integer.rotateLeft(getName().hashCode(), 1));
         result += ((getURI() == null) ? 0 : Integer.rotateLeft(getURI().hashCode(), 2));
         result += ((getFilePath() == null) ? 0 : Integer.rotateLeft(getFilePath().hashCode(), 3));
-        result += ((getFileData() == null) ? 0 : Integer.rotateLeft(getFileData().hashCode(), 4));
+        result += ((getFileData() == null) ? 0 : Integer.rotateLeft(Arrays.hashCode(getFileData()), 4));
         result += ((getType() == null) ? 0 : Integer.rotateLeft(getType().hashCode(), 5));
         result += Integer.rotateLeft(Boolean.valueOf(isStaticIcon()).hashCode(), 6);
         result += Integer.rotateLeft(Boolean.valueOf(isPersistent()).hashCode(), 7);

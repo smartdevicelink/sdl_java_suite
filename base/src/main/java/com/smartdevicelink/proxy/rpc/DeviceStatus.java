@@ -80,7 +80,7 @@ import java.util.Hashtable;
  * 		<tr>
  * 			<td>textMsgAvailable</td>
  * 			<td>Boolean</td>
- * 			<td>A textmessage is available
+ * 			<td>A text message is available
  * 			</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
@@ -166,7 +166,7 @@ public class DeviceStatus extends RPCStruct {
      * @param btIconOn the bluetooth connection established
      * @param callActive a call is being active
      * @param phoneRoaming  the phone is in roaming mode
-     * @param textMsgAvailable a textmessage is available
+     * @param textMsgAvailable a text message is available
      * @param battLevelStatus battery level status
      * @param stereoAudioOutputMuted the status of the stereo audio output channel
      * @param monoAudioOutputMuted the status of the mono audio output channel
@@ -263,8 +263,8 @@ public class DeviceStatus extends RPCStruct {
     }
     
     /**
-     * get a textmessage is available
-     * @return a textmessage is available
+     * get a text message is available
+     * @return a text message is available
      */
     public Boolean getTextMsgAvailable() {
         return getBoolean(KEY_TEXT_MSG_AVAILABLE);

@@ -67,7 +67,7 @@ public enum HMILevel {
     HMI_BACKGROUND("BACKGROUND"),
     /**
      * Application has been discovered by SDL, but application cannot send any requests or receive any notifications
-     * An HMILevel of NONE can also mean that the user has exited the application by saying "exit appname" or selecting "exit" from the application's menu. When this happens, the application still has an active interface registration with SDL and all SDL resources the application has created (e.g. Choice Sets, subscriptions, etc.) still exist. But while the HMILevel is NONE, the application cannot send any messages to SDL, except <i>{@linkplain com.smartdevicelink.proxy.rpc.UnregisterAppInterface}</li>
+     * An HMILevel of NONE can also mean that the user has exited the application by saying "exit appName" or selecting "exit" from the application's menu. When this happens, the application still has an active interface registration with SDL and all SDL resources the application has created (e.g. Choice Sets, subscriptions, etc.) still exist. But while the HMILevel is NONE, the application cannot send any messages to SDL, except <i>{@linkplain com.smartdevicelink.proxy.rpc.UnregisterAppInterface}</li>
      */
     HMI_NONE("NONE");
 

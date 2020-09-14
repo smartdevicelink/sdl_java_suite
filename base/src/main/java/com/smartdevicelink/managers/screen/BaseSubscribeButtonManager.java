@@ -28,7 +28,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 abstract class BaseSubscribeButtonManager extends BaseSubManager {
 
     private static final String TAG = "SubscribeButtonManager";
-    HashMap<ButtonName, CopyOnWriteArrayList<OnButtonListener>> onButtonListeners;
+    final HashMap<ButtonName, CopyOnWriteArrayList<OnButtonListener>> onButtonListeners;
     private OnRPCNotificationListener onButtonPressListener;
     private OnRPCNotificationListener onButtonEventListener;
 

@@ -225,7 +225,6 @@ public class Choice extends RPCStruct {
      * Get the image
      * @return the image of the choice
      */    
-    @SuppressWarnings("unchecked")
     public Image getImage() {
         return (Image) getObject(Image.class, KEY_IMAGE);
     }
@@ -253,7 +252,6 @@ public class Choice extends RPCStruct {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     public Image getSecondaryImage() {
         return (Image) getObject(Image.class, KEY_SECONDARY_IMAGE);
     }

@@ -14,9 +14,9 @@ public class TCPTransportManager extends TransportManagerBase{
 
     private static final String TAG = "TCPTransportManager";
 
-    private TCPHandler tcpHandler;
+    private final TCPHandler tcpHandler;
     private MultiplexTcpTransport transport;
-    private TCPTransportConfig config;
+    private final TCPTransportConfig config;
 
     public TCPTransportManager(TCPTransportConfig config, TransportEventListener transportEventListener){
         super(config,transportEventListener);
@@ -37,7 +37,7 @@ public class TCPTransportManager extends TransportManagerBase{
         transport.stop();
     }
 
-    @Override
+    @Deprecated
     public void resetSession() {
         if(transport != null){
             transport.stop();

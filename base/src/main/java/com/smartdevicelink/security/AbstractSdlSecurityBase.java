@@ -44,7 +44,7 @@ abstract class AbstractSdlSecurityBase {
 	protected List<String> makeList = null;
 	protected boolean isInitSuccess = false;
 	protected byte sessionId = 0;
-	protected List<SessionType> startServiceList = new ArrayList<SessionType>();	
+	protected List<SessionType> startServiceList = new ArrayList<>();
 	
     public AbstractSdlSecurityBase() {
 	}

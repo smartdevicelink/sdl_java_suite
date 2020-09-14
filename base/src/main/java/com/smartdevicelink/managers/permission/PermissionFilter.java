@@ -47,13 +47,9 @@ class PermissionFilter {
 
     /**
      * Creates a new instance of PermissionFilter
-     * @param identifier
-     * @param permissionElements
-     * @param groupType
-     * @param listener
      * @see com.smartdevicelink.managers.permission.PermissionManager.PermissionGroupType
      */
-    PermissionFilter(UUID identifier, @NonNull List<PermissionElement> permissionElements, @NonNull @PermissionManager.PermissionGroupType int groupType, @NonNull OnPermissionChangeListener listener) {
+    PermissionFilter(UUID identifier, @NonNull List<PermissionElement> permissionElements, @PermissionManager.PermissionGroupType int groupType, @NonNull OnPermissionChangeListener listener) {
         if (identifier == null) {
             this.identifier = UUID.randomUUID();
         } else {

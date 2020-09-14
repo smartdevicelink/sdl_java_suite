@@ -70,19 +70,26 @@ import java.lang.ref.WeakReference;
 public class LockScreenManager extends BaseSubManager {
 
 	private static final String TAG = "LockScreenManager";
-	private WeakReference<Context> context;
+	private final WeakReference<Context> context;
 	HMILevel hmiLevel;
 	private OnRPCNotificationListener systemRequestListener, ddListener, hmiListener;
 	private String deviceIconUrl;
-	boolean driverDistStatus, mIsLockscreenDismissible, enableDismissGesture, lockScreenEnabled, deviceLogoEnabled;
+	boolean driverDistStatus;
+    boolean mIsLockscreenDismissible;
+    boolean enableDismissGesture;
+    final boolean lockScreenEnabled;
+    final boolean deviceLogoEnabled;
 	private volatile boolean isApplicationForegrounded;
 	private androidx.lifecycle.LifecycleObserver lifecycleObserver;
-	int lockScreenIcon, lockScreenColor, customView, displayMode;
+	final int lockScreenIcon;
+    final int lockScreenColor;
+    final int customView;
+    int displayMode;
 	Bitmap deviceLogo;
 	private boolean mLockScreenHasBeenDismissed, lockscreenDismissReceiverRegistered, receivedFirstDDNotification;
 	private String mLockscreenWarningMsg;
 	private BroadcastReceiver mLockscreenDismissedReceiver;
-	private LockScreenDeviceIconManager mLockScreenDeviceIconManager;
+	private final LockScreenDeviceIconManager mLockScreenDeviceIconManager;
 
 	public LockScreenManager(LockScreenConfig lockScreenConfig, Context context, ISdl internalInterface){
 

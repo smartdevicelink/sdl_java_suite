@@ -33,6 +33,7 @@
 package com.smartdevicelink.managers.screen.menu;
 
 import androidx.annotation.RestrictTo;
+
 import com.smartdevicelink.proxy.interfaces.ISdl;
 
 /**

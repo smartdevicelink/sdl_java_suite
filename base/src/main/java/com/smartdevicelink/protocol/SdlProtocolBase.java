@@ -192,13 +192,8 @@ public class SdlProtocolBase {
         return mtu;
     }
 
+    @Deprecated
     public void resetSession (){
-        synchronized (TRANSPORT_MANAGER_LOCK) {
-            if (transportManager == null) {
-                throw new IllegalStateException("Attempting to reset session without setting a transport manager.");
-            }
-            transportManager.resetSession();
-        }
     }
 
     public boolean isConnected(){
@@ -665,7 +660,8 @@ public class SdlProtocolBase {
                 }
             } else {
                 messageID++;
-                SdlPacket header = SdlPacketFactory.createSingleSendData(sessionType, sessionID, data.length, messageID, (byte)protocolVersion.getMajor(),data, protocolMsg.getPayloadProtected());
+                int dataLength = data != null ? data.length : 0;
+                SdlPacket header = SdlPacketFactory.createSingleSendData(sessionType, sessionID, dataLength, messageID, (byte)protocolVersion.getMajor(),data, protocolMsg.getPayloadProtected());
                 header.setPriorityCoefficient(protocolMsg.priorityCoefficient);
                 header.setTransportRecord(activeTransports.get(sessionType));
                 handlePacketToSend(header);
@@ -1074,7 +1070,7 @@ public class SdlProtocolBase {
                 activeTransports.put(SessionType.PCM, transportRecord);
 
                 if (protocolVersion.getMajor() > 1) {
-                    if (packet.payload != null && packet.dataSize == 4) { //hashid will be 4 bytes in length
+                    if (packet.payload != null && packet.dataSize == 4) { //hashId will be 4 bytes in length
                         hashID = BitConverter.intFromByteArray(packet.payload, 0);
                     }
                 }
@@ -1083,12 +1079,14 @@ public class SdlProtocolBase {
                 iSdlProtocol.setAcceptedVideoParams(iSdlProtocol.getDesiredVideoParams());
             }
         }
-        iSdlProtocol.onServiceStarted(packet, serviceType, (byte) packet.getSessionId(), protocolVersion, packet.isEncrypted());
+        if (iSdlProtocol != null) {
+            iSdlProtocol.onServiceStarted(packet, serviceType, (byte) packet.getSessionId(), protocolVersion, packet.isEncrypted());
+        }
     }
 
     protected void handleProtocolSessionNAKed(SdlPacket packet, SessionType serviceType) {
         String error = "Service start NAK received for service type " + serviceType.getName();
-        List<String> rejectedParams = null;
+        List<String> rejectedParams;
         if(packet.version >= 5){
             if(DebugTool.isDebugEnabled()) {
                 //Currently this is only during a debugging session. Might pass back in the future
@@ -1142,7 +1140,6 @@ public class SdlProtocolBase {
        -----------------------------------   TRANSPORT_TYPE LISTENER   ---------------------------------
        -------------------------------------------------------------------------------------------*/
 
-    @SuppressWarnings("FieldCanBeLocal")
     final TransportManagerBase.TransportEventListener transportEventListener = new TransportManagerBase.TransportEventListener() {
         private boolean requestedSession = false;
 
@@ -1334,8 +1331,8 @@ public class SdlProtocolBase {
 
                 try {
                     iSdlProtocol.onProtocolMessageReceived(message);
-                } catch (Exception excp) {
-                    DebugTool.logError(TAG, FailurePropagating_Msg + "onProtocolMessageReceived: " + excp.toString(), excp);
+                } catch (Exception e) {
+                    DebugTool.logError(TAG, FailurePropagating_Msg + "onProtocolMessageReceived: " + e.toString(), e);
                 } // end-catch
 
                 accumulator = null;

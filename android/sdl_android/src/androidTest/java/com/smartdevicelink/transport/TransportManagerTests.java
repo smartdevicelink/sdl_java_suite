@@ -2,6 +2,7 @@ package com.smartdevicelink.transport;
 
 import android.content.ComponentName;
 import android.os.Looper;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.protocol.SdlPacket;

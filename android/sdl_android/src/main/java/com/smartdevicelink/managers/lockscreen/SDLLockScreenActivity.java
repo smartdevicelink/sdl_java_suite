@@ -55,7 +55,6 @@ import com.smartdevicelink.R;
 
 public class SDLLockScreenActivity extends Activity {
 
-	private static final String TAG = "SDLLockScreenActivity";
 	public static final String LOCKSCREEN_COLOR_EXTRA = "LOCKSCREEN_COLOR_EXTRA";
 	public static final String LOCKSCREEN_ICON_EXTRA = "LOCKSCREEN_ICON_EXTRA";
 	public static final String LOCKSCREEN_DEVICE_LOGO_EXTRA = "LOCKSCREEN_DEVICE_LOGO_EXTRA";

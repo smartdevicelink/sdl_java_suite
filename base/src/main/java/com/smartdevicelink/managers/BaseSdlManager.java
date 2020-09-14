@@ -257,7 +257,7 @@ abstract class BaseSdlManager {
         if (onRPCNotificationListeners != null) {
             Set<FunctionID> functionIDSet = onRPCNotificationListeners.keySet();
             if (functionIDSet != null && !functionIDSet.isEmpty()) {
-                queuedNotifications = new ConcurrentLinkedQueue<RPCNotification>();
+                queuedNotifications = new ConcurrentLinkedQueue<>();
                 queuedNotificationListener = new OnRPCNotificationListener() {
                     @Override
                     public void onNotified(RPCNotification notification) {
@@ -306,7 +306,6 @@ abstract class BaseSdlManager {
     /**
      * Starts up a SdlManager, and calls provided callback called once all BaseSubManagers are done setting up
      */
-    @SuppressWarnings("unchecked")
     public void start() {
         LifecycleManager.AppConfig appConfig = new LifecycleManager.AppConfig();
         appConfig.setAppName(appName);
@@ -600,7 +599,7 @@ abstract class BaseSdlManager {
 
     // BUILDER
     public static class Builder {
-        SdlManager sdlManager;
+        final SdlManager sdlManager;
 
         Builder(@NonNull final String appId, @NonNull final String appName, @NonNull final SdlManagerListener listener) {
             sdlManager = new SdlManager();
@@ -612,7 +611,7 @@ abstract class BaseSdlManager {
         /**
          * Sets the App ID
          *
-         * @param appId String representation of the App ID retreived from the SDL Developer Portal
+         * @param appId String representation of the App ID retrieved from the SDL Developer Portal
          */
         public Builder setAppId(@NonNull final String appId) {
             sdlManager.appId = appId;

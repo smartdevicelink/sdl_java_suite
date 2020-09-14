@@ -144,11 +144,11 @@ public class TouchEvent extends RPCStruct {
         		if(obj instanceof Integer){ //Backwards case
         			int size = list.size();
         			List<Integer> listOfInt = (List<Integer>) list;
-        			List<Long> listofLongs = new ArrayList<Long>(size);
+        			List<Long> listOfLongs = new ArrayList<>(size);
         			for(int i = 0; i<size;i++){
-        				listofLongs.add(listOfInt.get(i).longValue());
+        				listOfLongs.add(listOfInt.get(i).longValue());
         			}
-        			return listofLongs;
+        			return listOfLongs;
         		}else if(obj instanceof Long){
         			return (List<Long>) list;
         		}    		

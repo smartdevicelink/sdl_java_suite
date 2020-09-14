@@ -46,7 +46,7 @@ import java.util.Hashtable;
  * added to a SubMenu), and may only contain commands as children</p>
  * 
  * 
- * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUD</b></p>
+ * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
  * 
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
@@ -260,7 +260,6 @@ public class AddSubMenu extends RPCRequest {
 	 * Gets the layout of the submenu screen.
 	 * @return the MenuLayout
 	 */
-	@SuppressWarnings("unchecked")
 	public MenuLayout getMenuLayout() {
 		return (MenuLayout) getObject(MenuLayout.class, KEY_MENU_LAYOUT);
 	}

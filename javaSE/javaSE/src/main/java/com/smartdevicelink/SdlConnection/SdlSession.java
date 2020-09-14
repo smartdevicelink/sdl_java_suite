@@ -34,6 +34,7 @@ package com.smartdevicelink.SdlConnection;
 
 
 import androidx.annotation.RestrictTo;
+
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.protocol.SdlProtocolBase;

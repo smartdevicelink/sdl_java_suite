@@ -80,7 +80,6 @@ abstract class BaseSystemCapabilityManager {
 	private final HashMap<SystemCapabilityType, CopyOnWriteArrayList<OnSystemCapabilityListener>> onSystemCapabilityListeners;
 	private final Object LISTENER_LOCK;
 	private final ISdl callback;
-	private OnRPCListener rpcListener;
 	private boolean shouldConvertDeprecatedDisplayCapabilities;
 	private HMILevel currentHMILevel;
 
@@ -265,7 +264,7 @@ abstract class BaseSystemCapabilityManager {
 	}
 
 	private void setupRpcListeners() {
-		rpcListener = new OnRPCListener() {
+		OnRPCListener rpcListener = new OnRPCListener() {
 			@Override
 			public void onReceived(RPCMessage message) {
 				if (message != null) {
@@ -627,7 +626,7 @@ abstract class BaseSystemCapabilityManager {
 				//We return a new list of type T instead of null because while we don't know if
 				//the original list was of type T we want to ensure that we don't throw a cast class exception
 				//but still
-				return new ArrayList<T>();
+				return new ArrayList<>();
 			}
 		} else {
 			return null;

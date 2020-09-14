@@ -67,8 +67,8 @@ public class Headers extends RPCStruct {
         super(hash);
     }	
 	
-    public Headers setContentType( String contenttype) {
-        setValue(KEY_CONTENT_TYPE, contenttype);
+    public Headers setContentType( String contentType) {
+        setValue(KEY_CONTENT_TYPE, contentType);
         return this;
     }
     
@@ -76,8 +76,8 @@ public class Headers extends RPCStruct {
         return getString(KEY_CONTENT_TYPE);
     }     
     
-    public Headers setConnectTimeout( Integer connectiontimeout) {
-        setValue(KEY_CONNECT_TIMEOUT, connectiontimeout);
+    public Headers setConnectTimeout( Integer connectionTimeout) {
+        setValue(KEY_CONNECT_TIMEOUT, connectionTimeout);
         return this;
     }
     
@@ -85,8 +85,8 @@ public class Headers extends RPCStruct {
         return getInteger(KEY_CONNECT_TIMEOUT);
     }
     
-    public Headers setDoOutput( Boolean dooutput) {
-        setValue(KEY_DO_OUTPUT, dooutput);
+    public Headers setDoOutput( Boolean doOutput) {
+        setValue(KEY_DO_OUTPUT, doOutput);
         return this;
     }
     
@@ -94,8 +94,8 @@ public class Headers extends RPCStruct {
         return getBoolean(KEY_DO_OUTPUT);
     }    
     
-    public Headers setDoInput( Boolean doinput) {
-        setValue(KEY_DO_INPUT, doinput);
+    public Headers setDoInput( Boolean doInput) {
+        setValue(KEY_DO_INPUT, doInput);
         return this;
     }
     
@@ -103,8 +103,8 @@ public class Headers extends RPCStruct {
         return getBoolean(KEY_DO_INPUT);
     }       
 
-    public Headers setUseCaches( Boolean usescaches) {
-        setValue(KEY_USE_CACHES, usescaches);
+    public Headers setUseCaches( Boolean usesCaches) {
+        setValue(KEY_USE_CACHES, usesCaches);
         return this;
     }
     
@@ -112,8 +112,8 @@ public class Headers extends RPCStruct {
         return getBoolean(KEY_USE_CACHES);
     }      
     
-    public Headers setRequestMethod( String requestmethod) {
-        setValue(KEY_REQUEST_METHOD, requestmethod);
+    public Headers setRequestMethod( String requestMethod) {
+        setValue(KEY_REQUEST_METHOD, requestMethod);
         return this;
     }
     
@@ -122,8 +122,8 @@ public class Headers extends RPCStruct {
     }   
     
     
-    public Headers setReadTimeout( Integer readtimeout) {
-        setValue(KEY_READ_TIMEOUT, readtimeout);
+    public Headers setReadTimeout( Integer readTimeout) {
+        setValue(KEY_READ_TIMEOUT, readTimeout);
         return this;
     }
     
@@ -131,8 +131,8 @@ public class Headers extends RPCStruct {
         return getInteger(KEY_READ_TIMEOUT);
     }
     
-    public Headers setInstanceFollowRedirects( Boolean instancefollowredirects) {
-        setValue(KEY_INSTANCE_FOLLOW_REDIRECTS, instancefollowredirects);
+    public Headers setInstanceFollowRedirects( Boolean instanceFollowRedirects) {
+        setValue(KEY_INSTANCE_FOLLOW_REDIRECTS, instanceFollowRedirects);
         return this;
     }
     
@@ -149,8 +149,8 @@ public class Headers extends RPCStruct {
         return getString(KEY_CHARSET);
     }
 
-    public Headers setContentLength( Integer contentlength) {
-        setValue(KEY_CONTENT_LENGTH, contentlength);
+    public Headers setContentLength( Integer contentLength) {
+        setValue(KEY_CONTENT_LENGTH, contentLength);
         return this;
     }
     

@@ -60,7 +60,9 @@ import java.lang.annotation.RetentionPolicy;
  */
 public class LockScreenConfig {
 
-	private boolean enable, deviceLogo, enableDismissGesture;
+	private final boolean enable;
+	private boolean deviceLogo;
+	private boolean enableDismissGesture;
 	private int backgroundColor, appIconInt, customViewInt;
 	private @DisplayMode int displayMode;
 

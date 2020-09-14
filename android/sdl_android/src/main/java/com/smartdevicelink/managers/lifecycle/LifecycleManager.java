@@ -32,8 +32,8 @@
 
 package com.smartdevicelink.managers.lifecycle;
 
-import android.app.Service;
 import android.content.Context;
+
 import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
@@ -52,8 +52,6 @@ import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * The lifecycle manager creates a central point for all SDL session logic to converge. It should only be used by
@@ -157,10 +155,6 @@ public class LifecycleManager extends BaseLifecycleManager {
      *
      * @param isEncrypted Specify true if packets on this service have to be encrypted
      * @param parameters  VideoStreamingParameters that are desired. Does not guarantee this is what will be accepted.
-     * @return If the service is opened successfully, an instance of VideoStreamingParams is
-     * returned which contains accepted video format. If the service is opened with legacy
-     * mode (i.e. without any negotiation) then an instance of VideoStreamingParams is
-     * returned. If the service was not opened then null is returned.
      */
     private void tryStartVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
         if (session == null) {

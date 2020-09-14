@@ -41,7 +41,6 @@ import com.smartdevicelink.util.DebugTool;
 import java.util.Collections;
 import java.util.List;
 
-@SuppressWarnings("unused")
 public class TransportManager extends TransportManagerBase{
     private static final String TAG = "TransportManager";
 
@@ -83,12 +82,6 @@ public class TransportManager extends TransportManagerBase{
         if(transport != null) {
             transport.stop();
         }
-    }
-
-    @Deprecated
-    @Override
-    public void resetSession(){
-
     }
 
     /**

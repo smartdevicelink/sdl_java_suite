@@ -195,13 +195,13 @@ import java.util.List;
  * 			<td>String</td>
  * 			<td>ID used to uniquely identify current state of all app data that can persist through connection cycles (e.g. ignition cycles).This registered data (commands, submenus, choice sets, etc.) can be reestablished without needing to explicitly reregister each piece. If omitted, then the previous state of an app's commands, etc. will not be restored.When sending hashID, all RegisterAppInterface parameters should still be provided (e.g. ttsName, etc.). </td>
  *                 <td>N</td>
- *                 <td>maxlength:100</td>
+ *                 <td>maxLength:100</td>
  * 			<td>SmartDeviceLink 2.3.1 </td>
  * 		</tr>
  * 		<tr>
  * 			<td>deviceInfo</td>
  * 			<td>DeviceInfo</td>
- * 			<td>Various information abount connecting device.</td>
+ * 			<td>Various information about connecting device.</td>
  *                 <td>N</td>
  *                 <td></td>
  * 			<td>SmartDeviceLink 2.3.1 </td>
@@ -211,7 +211,7 @@ import java.util.List;
  * 			<td>String</td>
  * 			<td>ID used to validate app with policy table entries</td>
  *                 <td>Y</td>
- *                 <td>Maxlength: 100</td>
+ *                 <td>maxLength: 100</td>
  * 			<td>SmartDeviceLink 2.0 </td>
  * 		</tr>
  * 		<tr>
@@ -334,7 +334,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @param languageDesired a Language Enumeration
 	 * @param hmiDisplayLanguageDesired the requested language to be used on the HMI/Display
 	 * @param fullAppID a String value representing a unique ID, which an app will be given when approved <br>
-	 *            <b>Notes: </b>Maxlength = 100
+	 *            <b>Notes: </b>maxLength = 100
 	 */
 	public RegisterAppInterface(@NonNull SdlMsgVersion syncMsgVersion, @NonNull String appName, @NonNull Boolean isMediaApplication,
 								@NonNull Language languageDesired, @NonNull Language hmiDisplayLanguageDesired, @NonNull String fullAppID) {
@@ -352,7 +352,6 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @return SdlMsgVersion -a SdlMsgVersion object representing version of
 	 *         the SDL&reg; SmartDeviceLink interface
 	 */    
-    @SuppressWarnings("unchecked")
     public SdlMsgVersion getSdlMsgVersion() {
 		return (SdlMsgVersion) getObject(SdlMsgVersion.class, KEY_SDL_MSG_VERSION);
     }
@@ -381,7 +380,6 @@ public class RegisterAppInterface extends RPCRequest {
         return this;
     }
     
-    @SuppressWarnings("unchecked")
     public DeviceInfo getDeviceInfo() {
         return (DeviceInfo) getObject(DeviceInfo.class, KEY_DEVICE_INFO);
     }    
@@ -433,7 +431,7 @@ public class RegisterAppInterface extends RPCRequest {
 	/**
 	 *
 	 * @param ttsName
-	 *            a List<TTSChunk> value represeting the TTS Name
+	 *            a List<TTSChunk> value representing the TTS Name
 	 *            <p></p>
 	 *            <b>Notes: </b>
 	 *            <ul>
@@ -454,23 +452,23 @@ public class RegisterAppInterface extends RPCRequest {
     }
 	/**
 	 * Gets a String representing an abbreviated version of the mobile
-	 * applincation's name (if necessary) that will be displayed on the NGN
+	 * application's name (if necessary) that will be displayed on the NGN
 	 * media screen
 	 * 
 	 * @return String -a String value representing an abbreviated version of the
-	 *         mobile applincation's name
+	 *         mobile application's name
 	 */    
     public String getNgnMediaScreenAppName() {
         return getString(KEY_NGN_MEDIA_SCREEN_APP_NAME);
     }
 	/**
 	 * Sets a String representing an abbreviated version of the mobile
-	 * applincation's name (if necessary) that will be displayed on the NGN
+	 * application's name (if necessary) that will be displayed on the NGN
 	 * media screen
 	 *
 	 * @param ngnMediaScreenAppName
 	 *            a String value representing an abbreviated version of the
-	 *            mobile applincation's name
+	 *            mobile application's name
 	 *            <p></p>
 	 *            <b>Notes: </b>
 	 *            <ul>
@@ -592,7 +590,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @return List<AppHMIType> - a List value representing a list of all
 	 *         applicable app types stating which classifications to be given to
 	 *         the app
-	 * @since SmartDeviceLinke 2.0
+	 * @since SmartDeviceLink 2.0
 	 */
     @SuppressWarnings("unchecked")
     public List<AppHMIType> getAppHMIType() {
@@ -663,7 +661,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            a String value representing a unique ID, which an app will be
 	 *            given when approved
 	 *            <p></p>
-	 *            <b>Notes: </b>Maxlength = 100
+	 *            <b>Notes: </b>maxLength = 100
 	 * @since SmartDeviceLink 2.0
 	 */
 	public RegisterAppInterface setAppID(@NonNull String appID) {
@@ -693,7 +691,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            a String value representing a unique ID, which an app will be
 	 *            given when approved
 	 *            <p></p>
-	 *            <b>Notes: </b>Maxlength = 100
+	 *            <b>Notes: </b>maxLength = 100
 	 * @since SmartDeviceLink 5.0
 	 */
 	public RegisterAppInterface setFullAppID( String fullAppID) {

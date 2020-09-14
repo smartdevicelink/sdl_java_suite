@@ -59,9 +59,6 @@ public abstract class TransportManagerBase {
 
     public abstract void close(long sessionId);
 
-    @Deprecated
-    public abstract void resetSession();
-
     /**
      * Check to see if a transport is connected.
      * @param transportType the transport to have its connection status returned. If `null` is
@@ -111,7 +108,7 @@ public abstract class TransportManagerBase {
     public abstract void sendPacket(SdlPacket packet);
 
     /**
-     * Base implementation does nothing and assumes it is not necssary. This method should be
+     * Base implementation does nothing and assumes it is not necessary. This method should be
      * overridden in children classes that need to add a prerequest to their transports to make
      * space ready for a new session.
      * @param transportRecord the transport that the new session should be assigned to

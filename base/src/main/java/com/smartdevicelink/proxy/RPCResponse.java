@@ -100,7 +100,7 @@ public class RPCResponse extends RPCMessage {
 	}
 	
 	static RPCMessage preprocessMsg (RPCMessage rpcMsg) {
-		if (rpcMsg.getMessageType() != RPCMessage.KEY_RESPONSE) {
+		if (!RPCMessage.KEY_RESPONSE.equals(rpcMsg.getMessageType())) {
 			rpcMsg.messageType = RPCMessage.KEY_RESPONSE;
 		}
 		

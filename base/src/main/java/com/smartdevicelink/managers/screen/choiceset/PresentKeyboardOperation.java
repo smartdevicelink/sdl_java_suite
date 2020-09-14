@@ -62,14 +62,16 @@ import java.util.List;
 
 class PresentKeyboardOperation extends Task {
 	private static final String TAG = "PresentKeyboardOperation";
-	private WeakReference<ISdl> internalInterface;
-	private KeyboardListener keyboardListener;
-	private KeyboardProperties originalKeyboardProperties, keyboardProperties, customConfig;
+	private final WeakReference<ISdl> internalInterface;
+	private final KeyboardListener keyboardListener;
+	private final KeyboardProperties originalKeyboardProperties;
+	private KeyboardProperties keyboardProperties;
+	private final KeyboardProperties customConfig;
 	private boolean updatedKeyboardProperties;
-	private String initialText;
+	private final String initialText;
 	private OnRPCNotificationListener keyboardRPCListener;
-	private Integer cancelID;
-	SdlMsgVersion sdlMsgVersion;
+	private final Integer cancelID;
+	final SdlMsgVersion sdlMsgVersion;
 
 	PresentKeyboardOperation(ISdl internalInterface, KeyboardProperties originalKeyboardProperties, String initialText, KeyboardProperties customConfig, KeyboardListener keyboardListener, Integer cancelID){
 		super("PresentKeyboardOperation");

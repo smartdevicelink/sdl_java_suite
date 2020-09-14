@@ -79,7 +79,7 @@ import java.util.List;
  *  <tr>
  *      <td>ttsChunks</td>
  *      <td>List<TTSChunk></td>
- *      <td>An array of text chunks of type TTSChunk. See TTSChunk. The array must have at least oneitem.</td>
+ *      <td>An array of text chunks of type TTSChunk. See TTSChunk. The array must have at least one item.</td>
  *      <td>N</td>
  *      <td>Min Value: 1; Max Value: 100</td>
  *      <td></td>
@@ -95,7 +95,7 @@ import java.util.List;
  *  <tr>
  *      <td>softButtons</td>
  *      <td>List<SoftButton></td>
- *      <td>App defined SoftButtons. If omitted on supported displays, the displayed alert shall nothave any SoftButtons.</td>
+ *      <td>App defined SoftButtons. If omitted on supported displays, the displayed alert shall not have any SoftButtons.</td>
  *      <td>N</td>
  *      <td>Min Value: 0; Max Value: 2</td>
  *      <td></td>

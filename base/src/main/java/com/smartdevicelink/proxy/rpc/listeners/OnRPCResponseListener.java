@@ -57,7 +57,7 @@ public abstract class OnRPCResponseListener extends OnRPCListener {
 	 */
 	public void onStart(int correlationId){
 		
-	};
+	}
 
 	/**
 	 * This is the only method that must be extended. Other methods that are able to be extended are 

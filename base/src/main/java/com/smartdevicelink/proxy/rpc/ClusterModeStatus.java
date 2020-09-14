@@ -67,13 +67,13 @@ import java.util.Hashtable;
  * 			<td>carModeStatus</td>
  * 			<td>CarModeStatus</td>
  * 			<td></td>
- * 			<td>Describes the carmode the vehicle is in.</td>
+ * 			<td>Describes the car mode the vehicle is in.</td>
  *           </tr>
  * 		<tr>
  * 			<td>powerModeStatus</td>
  * 			<td>PowerModeStatus</td>
  * 			<td>true</td>
- * 			<td>Describes the different powermodes</td>
+ * 			<td>Describes the different power modes</td>
  * 		</tr>
  * 
  *  </table>

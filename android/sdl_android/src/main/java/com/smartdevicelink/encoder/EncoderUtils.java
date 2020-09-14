@@ -87,14 +87,18 @@ public final class EncoderUtils {
         }
 
         ByteBuffer sps = format.getByteBuffer("csd-0");
-        int spsLen = sps.remaining();
+        int spsLen = sps != null ? sps.remaining() : 0;
         ByteBuffer pps = format.getByteBuffer("csd-1");
-        int ppsLen = pps.remaining();
+        int ppsLen = pps != null ? pps.remaining() : 0;
 
         byte[] output = new byte[spsLen + ppsLen];
         try {
-            sps.get(output, 0, spsLen);
-            pps.get(output, spsLen, ppsLen);
+            if (sps != null) {
+                sps.get(output, 0, spsLen);
+            }
+            if (pps != null) {
+                pps.get(output, spsLen, ppsLen);
+            }
         } catch (Exception e) {
             // should not happen
             DebugTool.logWarning(TAG, "Error while copying H264 codec specific data: " + e);

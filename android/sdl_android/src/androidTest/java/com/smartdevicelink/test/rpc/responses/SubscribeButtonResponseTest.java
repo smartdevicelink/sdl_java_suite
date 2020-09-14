@@ -15,9 +15,9 @@ import org.junit.Test;
 
 import java.util.Hashtable;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
-import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 
 /**

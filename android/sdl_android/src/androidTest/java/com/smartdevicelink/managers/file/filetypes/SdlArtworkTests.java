@@ -2,7 +2,6 @@ package com.smartdevicelink.managers.file.filetypes;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
 import com.smartdevicelink.test.TestValues;
 

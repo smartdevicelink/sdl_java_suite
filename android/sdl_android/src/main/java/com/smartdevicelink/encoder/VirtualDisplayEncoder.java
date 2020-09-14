@@ -101,17 +101,14 @@ public class VirtualDisplayEncoder {
         initPassed = true;
     }
 
-    @SuppressWarnings("unused")
     public VideoStreamingParameters getStreamingParams(){
         return this.streamingParams;
     }
 
-    @SuppressWarnings("unused")
     public void setStreamingParams(int displayDensity, ImageResolution resolution, int frameRate, int bitrate, int interval, VideoStreamingFormat format) {
         this.streamingParams = new VideoStreamingParameters(displayDensity, frameRate, bitrate, interval, resolution, format);
     }
 
-    @SuppressWarnings("unused")
     public void setStreamingParams(VideoStreamingParameters streamingParams) {
         this.streamingParams = streamingParams;
     }
@@ -321,7 +318,6 @@ public class VirtualDisplayEncoder {
             }
         }
 
-        @SuppressWarnings("deprecation")
         void drainEncoder(boolean endOfStream) {
             if (mVideoEncoder == null || mOutputListener == null) {
                 return;

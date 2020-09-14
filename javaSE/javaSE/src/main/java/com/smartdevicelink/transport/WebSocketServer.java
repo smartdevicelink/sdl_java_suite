@@ -37,6 +37,7 @@ import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.SSLWebSocketFactoryGenerator;
 import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.DebugTool;
+
 import org.java_websocket.WebSocket;
 import org.java_websocket.WebSocketServerFactory;
 import org.java_websocket.handshake.ClientHandshake;
@@ -46,8 +47,8 @@ import java.nio.ByteBuffer;
 
 public class WebSocketServer extends org.java_websocket.server.WebSocketServer implements TransportInterface{
     private static final String TAG = "WebSocketServer";
-    TransportCallback callback;
-    WebSocketServerConfig config;
+    final TransportCallback callback;
+    final WebSocketServerConfig config;
     WebSocket webSocket;
     SdlPsm psm;
 
@@ -87,7 +88,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
 
     @Override
     public void write(SdlPacket packet){
-        //DebugTool.logInfo(TAG, "Atttempt to write packet " + packet);
+        //DebugTool.logInfo(TAG, "Attempt to write packet " + packet);
         if(packet != null
                 && this.webSocket != null
                 && this.webSocket.isOpen()) {
