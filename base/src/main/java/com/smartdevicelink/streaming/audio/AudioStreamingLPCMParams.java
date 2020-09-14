@@ -33,6 +33,7 @@ package com.smartdevicelink.streaming.audio;
 /**
  * A struct to hold LPCM specific audio format information.
  */
+@Deprecated
 public class AudioStreamingLPCMParams extends AudioStreamingParams {
 	/**
 	 * Sample format of linear PCM data.
