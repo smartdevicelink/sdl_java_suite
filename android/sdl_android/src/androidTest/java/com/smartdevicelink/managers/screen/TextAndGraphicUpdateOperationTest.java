@@ -84,13 +84,29 @@ public class TextAndGraphicUpdateOperationTest {
         }
     };
 
-    private Answer<Void> onSetDesplayLayoutSuccess = new Answer<Void>() {
+    private Answer<Void> onSetDisplayLayoutSuccess = new Answer<Void>() {
         @Override
         public Void answer(InvocationOnMock invocation) {
             Object[] args = invocation.getArguments();
             RPCRequest message = (RPCRequest) args[0];
             if (message instanceof SetDisplayLayout) {
                 int correlationId = message.getCorrelationID();
+                SetDisplayLayoutResponse setDisplayLayoutResponse = new SetDisplayLayoutResponse();
+                setDisplayLayoutResponse.setSuccess(true);
+                message.getOnRPCResponseListener().onResponse(correlationId, setDisplayLayoutResponse);
+            }
+            return null;
+        }
+    };
+
+    private Answer<Void> onSetDisplayLayoutCanceled = new Answer<Void>() {
+        @Override
+        public Void answer(InvocationOnMock invocation) {
+            Object[] args = invocation.getArguments();
+            RPCRequest message = (RPCRequest) args[0];
+            if (message instanceof SetDisplayLayout) {
+                int correlationId = message.getCorrelationID();
+                textAndGraphicUpdateOperation.cancelTask();
                 SetDisplayLayoutResponse setDisplayLayoutResponse = new SetDisplayLayoutResponse();
                 setDisplayLayoutResponse.setSuccess(true);
                 message.getOnRPCResponseListener().onResponse(correlationId, setDisplayLayoutResponse);
@@ -352,6 +368,22 @@ public class TextAndGraphicUpdateOperationTest {
         verify(fileManager, times(0)).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
 
     }
+
+    @Test
+    public void testTaskCanceledAfterSetDisplayLayout() {
+        doAnswer(onSetDisplayLayoutCanceled).when(internalInterface).sendRPC(any(SetDisplayLayout.class));
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(5, 0));
+
+        TemplateConfiguration configuration = new TemplateConfiguration().setTemplate(PredefinedLayout.DOUBLE_GRAPHIC_WITH_SOFTBUTTONS.toString());
+        TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField1, textField2, textField3, textField4,
+                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type, configuration);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
+        textAndGraphicUpdateOperation.onExecute();
+        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration().getStore(), configuration.getStore());
+        verify(internalInterface, times(0)).sendRPC(any(Show.class));
+    }
+
+
 
     /**
      * Test getting number of lines available to be set based off of windowCapability
@@ -931,10 +963,10 @@ public class TextAndGraphicUpdateOperationTest {
     @Test
     public void testTemplateChange() {
         doAnswer(onShowSuccess).when(internalInterface).sendRPC(any(Show.class));
-        doAnswer(onSetDesplayLayoutSuccess).when(internalInterface).sendRPC(any(SetDisplayLayout.class));
-
+        doAnswer(onSetDisplayLayoutSuccess).when(internalInterface).sendRPC(any(SetDisplayLayout.class));
         doAnswer(onArtworkUploadSuccess).when(fileManager).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
+
         TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField1, textField2, textField3, textField4,
                 mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type, configuration);
         textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
@@ -942,14 +974,13 @@ public class TextAndGraphicUpdateOperationTest {
         assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration().getStore(), configuration.getStore());
 
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(5, 0));
+
         TemplateConfiguration configuration2 = new TemplateConfiguration().setTemplate(PredefinedLayout.DOUBLE_GRAPHIC_WITH_SOFTBUTTONS.toString());
         textsAndGraphicsState = new TextsAndGraphicsState(textField1, textField2, textField3, textField4,
                 mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type, configuration2);
         textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
         textAndGraphicUpdateOperation.onExecute();
         assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration().getStore(), configuration2.getStore());
-
-
     }
 
 }
