@@ -79,6 +79,7 @@ class TextAndGraphicUpdateOperation extends Task {
                     @Override
                     public void onComplete(boolean success) {
                         if (getState() == Task.CANCELED || !success) {
+                            // Task was canceled or SetDisplayLayout was not a success
                             finishOperation(false);
                             return;
                         }
@@ -118,11 +119,8 @@ class TextAndGraphicUpdateOperation extends Task {
             sendShow(extractTextAndLayoutFromShow(show), new CompletionListener() {
                 @Override
                 public void onComplete(boolean success) {
-                    if (getState() == Task.CANCELED) {
-                        finishOperation(false);
-                        return;
-                    } else if(!success) {
-                        // the show to change the text / layout failed, so fail the operation
+                    if (getState() == Task.CANCELED || !success) {
+                        // Task was canceled or update to text / layout was not a success
                         finishOperation(false);
                         return;
                     }
