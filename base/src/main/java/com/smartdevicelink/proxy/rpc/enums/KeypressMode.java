@@ -41,11 +41,11 @@ public enum KeypressMode {
 	 */
     SINGLE_KEYPRESS,
     /**
-     * The keypresses are queued and a string is eventually sent once the user chooses to submit their entry.
+     * The key presses are queued and a string is eventually sent once the user chooses to submit their entry.
      */
     QUEUE_KEYPRESSES,
     /**
-     * The keypresses are queue and a string is sent each time the user presses a keyboard key; the string contains the entire current entry.
+     * The key presses are queue and a string is sent each time the user presses a keyboard key; the string contains the entire current entry.
      */
     RESEND_CURRENT_ENTRY;
 

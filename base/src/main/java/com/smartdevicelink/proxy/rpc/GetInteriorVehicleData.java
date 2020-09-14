@@ -104,8 +104,8 @@ public class GetInteriorVehicleData extends RPCRequest {
      * Sets subscribe parameter
      *
      * @param subscribe
-     * If subscribe is true, the head unit will register onInteriorVehicleData notifications for the requested moduelType.
-     * If subscribe is false, the head unit will unregister onInteriorVehicleData notifications for the requested moduelType.
+     * If subscribe is true, the head unit will register onInteriorVehicleData notifications for the requested moduleType.
+     * If subscribe is false, the head unit will unregister onInteriorVehicleData notifications for the requested moduleType.
      */
     public GetInteriorVehicleData setSubscribe( Boolean subscribe) {
         setParameters(KEY_SUBSCRIBE, subscribe);

@@ -47,7 +47,7 @@ public enum PowerModeStatus {
     
     KEY_APPROVED_0,
     POST_ACCESORY_0,
-    /** Key is in accessory positon
+    /** Key is in accessory position
      * 
      */
 

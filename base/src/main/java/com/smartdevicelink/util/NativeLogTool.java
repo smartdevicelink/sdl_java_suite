@@ -32,7 +32,7 @@
 package com.smartdevicelink.util;
 
 public class NativeLogTool {
-	private static String TAG = "NativeLogTool";
+	private static final String TAG = "NativeLogTool";
 	static private boolean logToSystemEnabled = true;
 	private static final int ChunkSize = 4000;
 	
@@ -103,19 +103,19 @@ public class NativeLogTool {
 		return logToSystemEnabled;
 	}
 	
-	private static boolean log(LogTarget ltarg, String source, String logMsg) {
+	private static boolean log(LogTarget logTarget, String source, String logMsg) {
 		// Don't log empty messages
 		if (logMsg == null || logMsg.length() == 0) {
 			return false;
 		}
 
-		int substrSize = 0;
-		String chunk = null;
+		int subStrSize = 0;
+		String chunk;
 		try {
-			for (int idx=0;idx < logMsg.length();idx += substrSize) {
-				substrSize = Math.min(ChunkSize, logMsg.length() - idx);
-				chunk = logMsg.substring(idx, idx + substrSize);
-				switch (ltarg) {
+			for (int idx=0;idx < logMsg.length();idx += subStrSize) {
+				subStrSize = Math.min(ChunkSize, logMsg.length() - idx);
+				chunk = logMsg.substring(idx, idx + subStrSize);
+				switch (logTarget) {
 					case Info:
 						Log.i(source, chunk);
 						break;
@@ -128,7 +128,7 @@ public class NativeLogTool {
 				}
 			}			
 		} catch (Exception ex) {
-			Log.e(TAG, "Failure writing " + ltarg.name() + " fragments to android log:" + ex.toString(), null);
+			Log.e(TAG, "Failure writing " + logTarget.name() + " fragments to android log:" + ex.toString(), null);
 			return false;
 		}		
 		return true;

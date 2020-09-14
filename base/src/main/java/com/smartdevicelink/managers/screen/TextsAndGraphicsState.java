@@ -7,8 +7,9 @@ import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 class TextsAndGraphicsState {
     private String textField1, textField2, textField3, textField4, mediaTrackTextField, title;
     private MetadataType textField1Type, textField2Type, textField3Type, textField4Type;
-    private TextAlignment textAlignment;
-    private SdlArtwork primaryGraphic, secondaryGraphic;
+    private final TextAlignment textAlignment;
+    private final SdlArtwork primaryGraphic;
+    private final SdlArtwork secondaryGraphic;
 
     TextsAndGraphicsState(String textField1, String textField2, String textField3, String textField4, String mediaTrackTextField,
                                  String title, SdlArtwork primaryGraphic, SdlArtwork secondaryGraphic, TextAlignment textAlignment,

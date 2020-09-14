@@ -35,19 +35,19 @@ package com.smartdevicelink.proxy.rpc.enums;
  * @since SmartDeviceLink 2.0
  */
 public enum CarModeStatus {
-	/** Provides carmode NORMAL to each module.
+	/** Provides car mode NORMAL to each module.
 	 */
 
 	NORMAL,
-	/** Provides carmode FACTORY to each module.
+	/** Provides car mode FACTORY to each module.
 	 */
 
 	FACTORY,
-	/** Provides carmode TRANSPORT to each module.
+	/** Provides car mode TRANSPORT to each module.
 	 */
 
 	TRANSPORT,
-	/** Provides carmode CRASH to each module.
+	/** Provides car mode CRASH to each module.
 	 */
 
 

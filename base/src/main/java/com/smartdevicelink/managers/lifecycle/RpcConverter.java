@@ -79,9 +79,9 @@ public class RpcConverter {
             Hashtable<String, Object> hashTemp = new Hashtable<>();
             hashTemp.put(RPCMessage.KEY_CORRELATION_ID, message.getCorrID());
             if (message.getJsonSize() > 0) {
-                final Hashtable<String, Object> mhash = JsonRPCMarshaller.unmarshall(message.getData());
-                if (mhash != null) {
-                    hashTemp.put(RPCMessage.KEY_PARAMETERS, mhash);
+                final Hashtable<String, Object> mHash = JsonRPCMarshaller.unmarshall(message.getData());
+                if (mHash != null) {
+                    hashTemp.put(RPCMessage.KEY_PARAMETERS, mHash);
                 }
             }
 

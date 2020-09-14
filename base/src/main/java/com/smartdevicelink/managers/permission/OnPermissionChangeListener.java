@@ -47,5 +47,5 @@ public interface OnPermissionChangeListener {
      * @param permissionGroupStatus a detailed view about which permissions are allowed and which ones are not
      * @see PermissionManager.PermissionGroupStatus
      */
-    void onPermissionsChange(@NonNull Map<FunctionID, PermissionStatus> allowedPermissions, @NonNull @PermissionManager.PermissionGroupStatus int permissionGroupStatus);
+    void onPermissionsChange(@NonNull Map<FunctionID, PermissionStatus> allowedPermissions, @PermissionManager.PermissionGroupStatus int permissionGroupStatus);
 }

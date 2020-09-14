@@ -63,9 +63,9 @@ public class Version {
         if(versions.length!=3){
             throw new IllegalArgumentException("Incorrect version string format");
         }
-        major = Integer.valueOf(versions[0]);
-        minor = Integer.valueOf(versions[1]);
-        patch = Integer.valueOf(versions[2]);
+        major = Integer.parseInt(versions[0]);
+        minor = Integer.parseInt(versions[1]);
+        patch = Integer.parseInt(versions[2]);
 
     }
 

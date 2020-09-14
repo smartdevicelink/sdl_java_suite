@@ -118,7 +118,6 @@ public class VrHelpItem extends RPCStruct {
         setValue(KEY_IMAGE, image);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public Image getImage() {
         return (Image) getObject(Image.class, KEY_IMAGE);
     }

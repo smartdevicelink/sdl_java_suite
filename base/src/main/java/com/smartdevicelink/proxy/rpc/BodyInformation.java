@@ -56,7 +56,7 @@ import java.util.Hashtable;
  * 			<td>parkBrakeActive</td>
  * 			<td>Boolean</td>
  * 			<td>true</td>
- * 			<td>Describes, if the parkbreak is active. The information about the park brake: - true, if active - false if not.</td>
+ * 			<td>Describes, if the park break is active. The information about the park brake: - true, if active - false if not.</td>
  *  			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>

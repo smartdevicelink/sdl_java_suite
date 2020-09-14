@@ -72,7 +72,7 @@ public class DisplayCapability extends RPCStruct {
      *                           After registration, only windows with capabilities changed will be included.
      *                           Following cases will cause only affected windows to be included:
      *                           1. App creates a new window. After the window is created, a system capability notification will be sent related only to the created window.
-     *                           2. App sets a new template to the window. The new template changes window capabilties. The notification will reflect those changes to the single window.
+     *                           2. App sets a new template to the window. The new template changes window capabilities. The notification will reflect those changes to the single window.
      */
     public DisplayCapability setWindowCapabilities( List<WindowCapability> windowCapabilities) {
         setValue(KEY_WINDOW_CAPABILITIES, windowCapabilities);

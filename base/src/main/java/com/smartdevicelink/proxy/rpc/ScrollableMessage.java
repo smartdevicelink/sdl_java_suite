@@ -72,7 +72,7 @@ import java.util.List;
  * 			<td>Integer</td>
  * 			<td>App defined timeout.  Indicates how long of a timeout from the last action (i.e. scrolling message resets timeout).</td>
  *                 <td>N</td>
- *                 <td>minvalue=1000; maxvalue=65535; defvalue=30000</td>
+ *                 <td>minValue=1000; maxValue=65535; defValue=30000</td>
  * 			<td>SmartDevice Link 1.0 </td>
  * 		</tr>
  * 		<tr>

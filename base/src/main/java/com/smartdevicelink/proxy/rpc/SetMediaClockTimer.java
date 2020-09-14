@@ -46,7 +46,7 @@ import java.util.Hashtable;
  * count-down, etc.)
  * 
  * <p>Function Group: Base </p>
- * <p><b>HMILevel needs to be FULL, LIMITIED or BACKGROUND</b></p>
+ * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
  * 
  * <p><b>Parameter List</b></p>
  * 
@@ -262,7 +262,6 @@ public class SetMediaClockTimer extends RPCRequest {
 	 * @return StartTime -a StartTime object specifying hour, minute, second
 	 *         values
 	 */    
-    @SuppressWarnings("unchecked")
     public StartTime getStartTime() {
 		return (StartTime) getObject(StartTime.class, KEY_START_TIME);
     }
@@ -284,7 +283,6 @@ public class SetMediaClockTimer extends RPCRequest {
         return this;
     }
     
-    @SuppressWarnings("unchecked")
     public StartTime getEndTime() {
 		return (StartTime) getObject(StartTime.class, KEY_END_TIME);
     }

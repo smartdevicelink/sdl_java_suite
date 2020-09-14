@@ -430,7 +430,7 @@ public class Show extends RPCRequest {
 	 * MediaClockFormat enumeration
 	 *
 	 * @param mediaClock
-	 *            a String value for the MdaiaClock
+	 *            a String value for the MediaClock
 	 *            <p></p>
 	 *            <b>Notes: </b>
 	 *            <ul>
@@ -494,7 +494,6 @@ public class Show extends RPCRequest {
 	 *         displays
 	 * @since SmartDeviceLink 2.0
 	 */
-    @SuppressWarnings("unchecked")
     public Image getGraphic() {
 		return (Image) getObject(Image.class, KEY_GRAPHIC);
     }
@@ -506,7 +505,6 @@ public class Show extends RPCRequest {
     }
 
 
-    @SuppressWarnings("unchecked")
     public Image getSecondaryGraphic() {
 		return (Image) getObject(Image.class, KEY_SECONDARY_GRAPHIC);
     }    
@@ -528,7 +526,7 @@ public class Show extends RPCRequest {
 	 * Sets the the Soft buttons defined by the App
 	 *
 	 * @param softButtons
-	 *            a List value represemting the Soft buttons defined by the
+	 *            a List value representing the Soft buttons defined by the
 	 *            App
 	 *            <p></p>
 	 *            <b>Notes: </b>
@@ -633,7 +631,6 @@ public class Show extends RPCRequest {
 	 *
 	 * @since 6.0
 	 */
-	@SuppressWarnings("unchecked")
 	public TemplateConfiguration getTemplateConfiguration() {
 		return (TemplateConfiguration) getObject(TemplateConfiguration.class, KEY_TEMPLATE_CONFIGURATION);
 	}

@@ -91,7 +91,7 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
      * Runnable to decode audio data
      */
     private static class DecoderRunnable implements Runnable {
-        WeakReference<AudioDecoderCompat> weakReference;
+        final WeakReference<AudioDecoderCompat> weakReference;
 
         /**
          * Decodes all audio data from source

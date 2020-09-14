@@ -53,7 +53,7 @@ public class SdlAppInfo {
 
     String packageName;
     ComponentName routerServiceComponentName;
-    int routerServiceVersion = 4; //We use this as a default and assume if the number doens't exist in meta data it is because the app hasn't updated.
+    int routerServiceVersion = 4; //We use this as a default and assume if the number doesn't exist in meta data it is because the app hasn't updated.
     boolean isCustomRouterService = false;
     long lastUpdateTime;
 

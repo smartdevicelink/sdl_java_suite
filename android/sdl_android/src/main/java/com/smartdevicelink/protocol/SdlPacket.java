@@ -34,7 +34,7 @@ public class SdlPacket extends BaseSdlPacket implements Parcelable {
     }
 
     /* ***************************************************************************************************************************************************
-     * ***********************************************************  Parceable Overrides  *****************************************************************
+     * ***********************************************************  Parcelable Overrides  *****************************************************************
      *****************************************************************************************************************************************************/
 
 
@@ -42,7 +42,7 @@ public class SdlPacket extends BaseSdlPacket implements Parcelable {
     //I think this is FIFO...right?
     public SdlPacket(Parcel p) {
         this.version = p.readInt();
-        this.encryption = (p.readInt() == 0) ? false : true;
+        this.encryption = p.readInt() != 0;
         this.frameType = p.readInt();
         this.serviceType = p.readInt();
         this.frameInfo = p.readInt();
@@ -61,7 +61,7 @@ public class SdlPacket extends BaseSdlPacket implements Parcelable {
                 messagingVersion = p.readInt();
                 if (messagingVersion >= 2) {
                     if (p.readInt() == 1) { //We should have a transport type attached
-                        this.transportRecord = (TransportRecord) p.readParcelable(TransportRecord.class.getClassLoader());
+                        this.transportRecord = p.readParcelable(TransportRecord.class.getClassLoader());
                     }
                 }
             }catch (RuntimeException e){

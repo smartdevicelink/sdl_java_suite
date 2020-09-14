@@ -69,7 +69,7 @@ import java.util.List;
  * 			<td>Boolean</td>
  * 			<td>false</td>
  *                 <td></td>
- * 			<td>In this mode, all keypresses will be sent as they occur. If disabled, entire string of text will be returned only once submitted by user.If omitted, this value will be set to FALSE.</td>
+ * 			<td>In this mode, all key presses will be sent as they occur. If disabled, entire string of text will be returned only once submitted by user.If omitted, this value will be set to FALSE.</td>
  * 		</tr>
  * 		<tr>
  * 			<td>keypressMode</td>
@@ -82,7 +82,7 @@ import java.util.List;
  * 			<td>limitedCharacterList</td>
  * 			<td>String</td>
  * 			<td>false</td>
- *                 <td>Array = true maxlength = 1 minsize = 1 maxsize = 100</td>
+ *                 <td>Array = true maxLength = 1 minsize = 1 maxsize = 100</td>
  * 			<td>Array of keyboard characters to enable. All omitted characters will be greyed out (disabled) on the keyboard. If omitted, the entire keyboard will be enabled.</td>
  * 		</tr>
  *

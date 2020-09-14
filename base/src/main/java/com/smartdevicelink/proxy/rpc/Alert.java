@@ -125,7 +125,7 @@ import java.util.List;
  * 		<tr>
  * 			<td>softButtons</td>
  * 			<td>SoftButton[]</td>
- * 			<td>Specifies the softbuttons, the apps wants to use in this alert.</td>
+ * 			<td>Specifies the soft buttons, the apps wants to use in this alert.</td>
  *          <td>N</td>
  * 			<td>If omitted on supported displays, the alert will not have any SoftButton.ArrayMin: 0; ArrayMax: 4</td>
  * 			<td>SmartDeviceLink 1.0</td>
@@ -439,7 +439,7 @@ public class Alert extends RPCRequest {
 	public Alert setCancelID( Integer cancelID) {
         setParameters(KEY_CANCEL_ID, cancelID);
         return this;
-    };
+    }
 	
 	/**
 	 * <p>Sets the Image

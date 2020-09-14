@@ -288,13 +288,10 @@ class BaseSdlPacket {
 			int dataSize, int messageId, byte[] payload){
 
 		ByteBuffer builder;
-		switch(version){
-			case 1:
-				builder = ByteBuffer.allocate(HEADER_SIZE_V1 + dataSize);
-				break;
-			default:
-				builder = ByteBuffer.allocate(HEADER_SIZE + dataSize);
-				break;
+		if (version == 1) {
+			builder = ByteBuffer.allocate(HEADER_SIZE_V1 + dataSize);
+		} else {
+			builder = ByteBuffer.allocate(HEADER_SIZE + dataSize);
 		}
 		
 		builder.put((byte)((version<<4) + getEncryptionBit(encryption) + frameType));

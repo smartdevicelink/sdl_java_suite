@@ -42,7 +42,6 @@ import com.smartdevicelink.transport.TransportManager;
 @SuppressWarnings("WeakerAccess")
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public class SdlProtocol extends SdlProtocolBase {
-    private static final String TAG ="SdlProtocol";
 
     public SdlProtocol( ISdlProtocol iSdlProtocol,  BaseTransportConfig config) {
         super(iSdlProtocol, config);

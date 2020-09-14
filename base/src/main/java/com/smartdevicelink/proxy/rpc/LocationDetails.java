@@ -52,7 +52,6 @@ public class LocationDetails extends RPCStruct{
         super(hash);
     }
 
-    @SuppressWarnings("unchecked")
     public Coordinate getCoordinate() {
         return (Coordinate) getObject(Coordinate.class, KEY_COORDINATE);
     }
@@ -98,7 +97,6 @@ public class LocationDetails extends RPCStruct{
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     public Image getLocationImage() {
         return (Image) getObject(Image.class, KEY_LOCATION_IMAGE);
     }
@@ -108,7 +106,6 @@ public class LocationDetails extends RPCStruct{
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     public OasisAddress getSearchAddress() {
         return (OasisAddress) getObject(OasisAddress.class, KEY_SEARCH_ADDRESS);
     }

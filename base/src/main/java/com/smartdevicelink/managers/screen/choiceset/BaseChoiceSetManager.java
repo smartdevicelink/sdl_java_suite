@@ -89,7 +89,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     ChoiceSet pendingPresentationSet;
 
     // We will pass operations into this to be completed
-    Queue transactionQueue;
+    final Queue transactionQueue;
     Task pendingPresentOperation;
 
     PresentKeyboardOperation currentlyPresentedKeyboardOperation;

@@ -136,7 +136,6 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * @return SdlMsgVersion -a SdlMsgVersion object representing version of
 	 *         the SDL&reg; SmartDeviceLink interface
 	 */
-    @SuppressWarnings("unchecked")
     public SdlMsgVersion getSdlMsgVersion() {
 		return (SdlMsgVersion) getObject(SdlMsgVersion.class, KEY_SDL_MSG_VERSION);
     }
@@ -220,7 +219,6 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * @return DisplayCapabilities
 	 */
     @Deprecated
-    @SuppressWarnings("unchecked")
     public DisplayCapabilities getDisplayCapabilities() {
 		return (DisplayCapabilities) getObject(DisplayCapabilities.class, KEY_DISPLAY_CAPABILITIES);
     }
@@ -279,7 +277,6 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * @return PresetBankCapabilities 
 	 */
     @Deprecated
-    @SuppressWarnings("unchecked")
     public PresetBankCapabilities getPresetBankCapabilities() {
 		return (PresetBankCapabilities) getObject(PresetBankCapabilities.class, KEY_PRESET_BANK_CAPABILITIES);
     }
@@ -373,7 +370,6 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return vehicleType 
 	 */
-    @SuppressWarnings("unchecked")
     public VehicleType getVehicleType() {
 		return (VehicleType) getObject(VehicleType.class, KEY_VEHICLE_TYPE);
     }
@@ -409,7 +405,6 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 *
 	 * @return pcmStreamingCapabilities
 	 */
-	@SuppressWarnings("unchecked")
 	public AudioPassThruCapabilities getPcmStreamingCapabilities() {
 		return (AudioPassThruCapabilities) getObject(AudioPassThruCapabilities.class, KEY_PCM_STREAM_CAPABILITIES);
 	}
@@ -437,7 +432,6 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     public HMICapabilities getHmiCapabilities() {
 		return (HMICapabilities) getObject(HMICapabilities.class, KEY_HMI_CAPABILITIES);
     }  

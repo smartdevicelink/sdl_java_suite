@@ -68,7 +68,7 @@ import java.util.List;
 */
 abstract class BaseScreenManager extends BaseSubManager {
 
-	private static String TAG = "ScreenManager";
+	private static final String TAG = "ScreenManager";
 	private final WeakReference<FileManager> fileManager;
 	private SoftButtonManager softButtonManager;
 	private TextAndGraphicManager textAndGraphicManager;
@@ -363,7 +363,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	/**
 	 * Sets the title of the new template that will be displayed.
 	 * Sending an empty String "" will clear the field
-	 * @param title the title of the new template that will be displayed. Maxlength: 100.
+	 * @param title the title of the new template that will be displayed. MaxLength: 100.
 	 */
 	public void setTitle(String title){
 		this.textAndGraphicManager.setTitle(title);

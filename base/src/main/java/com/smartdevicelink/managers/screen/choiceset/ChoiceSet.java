@@ -59,8 +59,8 @@ public class ChoiceSet {
     ChoiceSetCanceledListener canceledListener;
 
     // defaults
-    private Integer defaultTimeout = 10;
-    private ChoiceSetLayout defaultLayout = ChoiceSetLayout.CHOICE_SET_LAYOUT_LIST;
+    private final Integer defaultTimeout = 10;
+    private final ChoiceSetLayout defaultLayout = ChoiceSetLayout.CHOICE_SET_LAYOUT_LIST;
 
     /**
      * Initialize with a title, listener, and choices. It will use the default timeout and layout,
