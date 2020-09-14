@@ -121,6 +121,10 @@ class TextAndGraphicUpdateOperation extends Task {
                     if (getState() == Task.CANCELED) {
                         finishOperation(false);
                         return;
+                    } else if(!success) {
+                        // the show to change the text / layout failed, so fail the operation
+                        finishOperation(false);
+                        return;
                     }
                     uploadImagesAndSendWhenDone(new CompletionListener() {
                         @Override
@@ -138,11 +142,11 @@ class TextAndGraphicUpdateOperation extends Task {
         show.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
-                DebugTool.logInfo(TAG, "Text and Graphic update completed");
                 if (response.getSuccess()) {
+                    DebugTool.logInfo(TAG, "Text and Graphic update completed");
                     updateCurrentScreenDataFromShow(show);
                 } else {
-                    DebugTool.logInfo(TAG, "Text and Graphic Show completed successfully");
+                    DebugTool.logInfo(TAG, "Text and Graphic Show failed");
                     currentScreenDataUpdateListener.onError();
                 }
                 listener.onComplete(response.getSuccess());
