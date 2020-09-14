@@ -17,6 +17,8 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.SetDisplayLayout;
+import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.ShowResponse;
 import com.smartdevicelink.proxy.rpc.TemplateConfiguration;
@@ -77,6 +79,21 @@ public class TextAndGraphicUpdateOperationTest {
                 ShowResponse showResponse = new ShowResponse();
                 showResponse.setSuccess(true);
                 message.getOnRPCResponseListener().onResponse(correlationId, showResponse);
+            }
+            return null;
+        }
+    };
+
+    private Answer<Void> onSetDesplayLayoutSuccess = new Answer<Void>() {
+        @Override
+        public Void answer(InvocationOnMock invocation) {
+            Object[] args = invocation.getArguments();
+            RPCRequest message = (RPCRequest) args[0];
+            if (message instanceof SetDisplayLayout) {
+                int correlationId = message.getCorrelationID();
+                SetDisplayLayoutResponse setDisplayLayoutResponse = new SetDisplayLayoutResponse();
+                setDisplayLayoutResponse.setSuccess(true);
+                message.getOnRPCResponseListener().onResponse(correlationId, setDisplayLayoutResponse);
             }
             return null;
         }
@@ -909,6 +926,30 @@ public class TextAndGraphicUpdateOperationTest {
         testShow = textAndGraphicUpdateOperation.createImageOnlyShowWithPrimaryArtwork(testArtwork1, testArtwork2);
         assertEquals(testShow.getGraphic(), testArtwork1.getImageRPC());
         assertEquals(testShow.getSecondaryGraphic(), testArtwork2.getImageRPC());
+    }
+
+    @Test
+    public void testTemplateChange() {
+        doAnswer(onShowSuccess).when(internalInterface).sendRPC(any(Show.class));
+        doAnswer(onSetDesplayLayoutSuccess).when(internalInterface).sendRPC(any(SetDisplayLayout.class));
+
+        doAnswer(onArtworkUploadSuccess).when(fileManager).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
+        TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField1, textField2, textField3, textField4,
+                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type, configuration);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
+        textAndGraphicUpdateOperation.onExecute();
+        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration().getStore(), configuration.getStore());
+
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(5, 0));
+        TemplateConfiguration configuration2 = new TemplateConfiguration().setTemplate(PredefinedLayout.DOUBLE_GRAPHIC_WITH_SOFTBUTTONS.toString());
+        textsAndGraphicsState = new TextsAndGraphicsState(textField1, textField2, textField3, textField4,
+                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type, configuration2);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
+        textAndGraphicUpdateOperation.onExecute();
+        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration().getStore(), configuration2.getStore());
+
+
     }
 
 }
