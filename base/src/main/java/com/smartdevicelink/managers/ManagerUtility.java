@@ -80,7 +80,7 @@ public class ManagerUtility {
             if (windowCapability != null && windowCapability.getTextFields() != null) {
                 for (TextField field : windowCapability.getTextFields()) {
                     int fieldNumber = 0;
-                    if(field != null) {
+                    if(field != null && field.getName() != null) {
                         switch (field.getName()) {
                             case mainField1:
                                 fieldNumber = 1;
