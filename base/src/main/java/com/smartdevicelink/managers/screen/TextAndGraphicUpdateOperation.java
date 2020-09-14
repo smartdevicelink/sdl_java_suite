@@ -683,7 +683,7 @@ class TextAndGraphicUpdateOperation extends Task {
         } else if(currentScreenData.getTemplateConfiguration() == null) {
             return true;
         }
-        return !updatedState.getTemplateConfiguration().equals(currentScreenData.getTemplateConfiguration());
+        return !updatedState.getTemplateConfiguration().getStore().equals(currentScreenData.getTemplateConfiguration().getStore());
     }
 
     /**
