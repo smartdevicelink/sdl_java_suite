@@ -92,14 +92,25 @@ public class VideoStreamingCapability extends RPCStruct {
 		return (List<VideoStreamingFormat>) getObject(VideoStreamingFormat.class, KEY_SUPPORTED_FORMATS);
 	}
 
+	@Deprecated
 	public Boolean getIsHapticSpatialDataSupported() {
 		return getBoolean(KEY_HAPTIC_SPATIAL_DATA_SUPPORTED);
 	}
 
+	@Deprecated
 	public VideoStreamingCapability setIsHapticSpatialDataSupported( Boolean hapticSpatialDataSupported) {
         setValue(KEY_HAPTIC_SPATIAL_DATA_SUPPORTED, hapticSpatialDataSupported);
         return this;
     }
+
+	public Boolean isHapticSpatialDataSupported() {
+		return getBoolean(KEY_HAPTIC_SPATIAL_DATA_SUPPORTED);
+	}
+
+	public VideoStreamingCapability setHapticSpatialDataSupported( Boolean hapticSpatialDataSupported) {
+		setValue(KEY_HAPTIC_SPATIAL_DATA_SUPPORTED, hapticSpatialDataSupported);
+		return this;
+	}
 
 	/**
 	 * @return the diagonal screen size in inches.
