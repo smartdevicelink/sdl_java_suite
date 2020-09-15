@@ -136,7 +136,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
                     for (WindowCapability windowCapability : mainDisplay.getWindowCapabilities()) {
                         int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
                         if (currentWindowID == PredefinedWindows.DEFAULT_WINDOW.getValue()) {
-                            if (windowCapability.getSoftButtonCapabilities() != null) {
+                            if (windowCapability.getSoftButtonCapabilities() != null && windowCapability.getSoftButtonCapabilities().size() > 0) {
                                 softButtonCapabilities = windowCapability.getSoftButtonCapabilities().get(0);
                             } else {
                                 softButtonCapabilities = null;
