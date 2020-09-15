@@ -89,7 +89,7 @@ public class Main {
             @Override
             public void run() {
                 DebugTool.logInfo(TAG, "Starting SDL Service");
-                sdlService  = new SdlService(new WebSocketServerConfig(5433, -1), serviceCallback);
+                sdlService  = new SdlService(new WebSocketServerConfig(5432, -1), serviceCallback);
                 sdlService.start();
 
                 System.gc();
