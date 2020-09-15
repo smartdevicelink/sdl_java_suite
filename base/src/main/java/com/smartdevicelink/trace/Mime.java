@@ -33,6 +33,8 @@ package com.smartdevicelink.trace;
 
 // Borrowed from Dave Boll's infamous SdlLinkRelay.java
 
+import java.nio.charset.StandardCharsets;
+
 public class Mime {
 
 	private static final String BASE_64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -48,7 +50,7 @@ public class Mime {
 
 		String b64String = "";
 		try {
-			byte[] strBytes = str.getBytes("US-ASCII");
+			byte[] strBytes = str.getBytes(StandardCharsets.US_ASCII);
 			b64String = base64Encode(strBytes);
 		} catch (Exception ex) {
 			// Don't care?
@@ -60,7 +62,7 @@ public class Mime {
 	 * @param bytesToEncode A byte array to encode into base64 String.
 	 * @return Base64 encoded String or a null String if input array is null.
 	 */
-	public static String base64Encode(byte bytesToEncode[]) {
+	public static String base64Encode(byte[] bytesToEncode) {
 		if(bytesToEncode != null){
 			return base64Encode(bytesToEncode, 0, bytesToEncode.length);
 		}
@@ -73,7 +75,7 @@ public class Mime {
 	 * @param length        Length to read
 	 * @return Base64 encoded String or a null String if input array is null or the input range is out of bounds.
 	 */
-	public static String base64Encode(byte bytesToEncode[], int offset, int length) {
+	public static String base64Encode(byte[] bytesToEncode, int offset, int length) {
 		if (bytesToEncode == null || bytesToEncode.length < length || bytesToEncode.length < offset + length) {
 			return null;
 		}

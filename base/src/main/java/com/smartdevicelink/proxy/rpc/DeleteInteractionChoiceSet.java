@@ -46,7 +46,7 @@ import java.util.Hashtable;
  * 
  * <p>Function Group: Base</p>
  * 
- * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUD</b></p>
+ * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
  * 
  * <p>AudioStreamingState: Any</p>
  * 

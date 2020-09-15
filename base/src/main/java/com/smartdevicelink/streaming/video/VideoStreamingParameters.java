@@ -49,7 +49,7 @@ public class VideoStreamingParameters {
     private static final String TAG = "VideoStreamingParameters";
 	private final VideoStreamingProtocol DEFAULT_PROTOCOL = VideoStreamingProtocol.RAW;
 	private final VideoStreamingCodec DEFAULT_CODEC = VideoStreamingCodec.H264;
-	private final VideoStreamingFormat[] CURRENTLY_SUPPORTED_FORMATS = { new VideoStreamingFormat(VideoStreamingProtocol.RTP, VideoStreamingCodec.H264),
+	private final VideoStreamingFormat[] currentlySupportedFormats = { new VideoStreamingFormat(VideoStreamingProtocol.RTP, VideoStreamingCodec.H264),
                                                                          new VideoStreamingFormat(VideoStreamingProtocol.RAW, VideoStreamingCodec.H264) };
 	private final int DEFAULT_WIDTH = 1024;
 	private final int DEFAULT_HEIGHT = 576;
@@ -94,7 +94,6 @@ public class VideoStreamingParameters {
      * Will only copy values that are not null or are greater than 0
      * @param params VideoStreamingParameters that should be copied into this new instants
      */
-    @SuppressWarnings("unused")
     public VideoStreamingParameters(VideoStreamingParameters params){
         update(params);
     }
@@ -136,7 +135,7 @@ public class VideoStreamingParameters {
      * This update will use the most preferred streaming format from the module.
      * @param capability the video streaming capability returned from the SystemCapabilityManager
      * @param vehicleMake the vehicle make from the RegisterAppInterfaceResponse
-     * @see com.smartdevicelink.proxy.SystemCapabilityManager
+     * @see com.smartdevicelink.managers.lifecycle.SystemCapabilityManager
      * @see VideoStreamingCapability
      */
     public void update(VideoStreamingCapability capability, String vehicleMake){
@@ -160,8 +159,8 @@ public class VideoStreamingParameters {
         final List<VideoStreamingFormat> formats = capability.getSupportedFormats();
         if(formats != null && formats.size()>0){
             for(VideoStreamingFormat format : formats){
-                for(int i = 0; i < CURRENTLY_SUPPORTED_FORMATS.length; i ++){
-                    if(CURRENTLY_SUPPORTED_FORMATS[i].equals(format) ){
+                for (VideoStreamingFormat currentlySupportedFormat : currentlySupportedFormats) {
+                    if (currentlySupportedFormat.equals(format)) {
                         this.format = format;
                         return;
                     }
@@ -175,7 +174,6 @@ public class VideoStreamingParameters {
 
     }
 
-    @SuppressWarnings("unused")
     public void setDisplayDensity(int displayDensity) {
         this.displayDensity = displayDensity;
     }

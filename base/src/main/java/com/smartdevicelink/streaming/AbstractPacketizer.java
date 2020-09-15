@@ -41,12 +41,12 @@ import java.io.InputStream;
 
 abstract public class AbstractPacketizer {
 
-	protected IStreamListener _streamListener = null;
+	protected IStreamListener _streamListener;
 	protected byte _rpcSessionID = 0;
 
-	protected SessionType _serviceType = null;
-	protected SdlSession _session = null;
-	protected InputStream is = null;
+	protected SessionType _serviceType;
+	protected SdlSession _session;
+	protected InputStream is;
 	protected int bufferSize;
 	protected byte[] buffer;
 	protected RPCRequest _request = null;

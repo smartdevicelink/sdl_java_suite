@@ -70,7 +70,7 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 	private OutputStream mOutputStream = null;
 	private MultiplexTcpTransport.TcpTransportThread mThread = null;
 	private WriterThread writerThread;
-	private Context mContext;
+	private final Context mContext;
 
 
 	public MultiplexTcpTransport(int port, String ipAddress, boolean autoReconnect, Handler handler, Context context) {
@@ -182,7 +182,7 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 	 * Internal class that represents separate thread, that does actual work, related to connecting/reading/writing data
 	 */
 	private class TcpTransportThread extends Thread {
-		SdlPsm psm;
+		final SdlPsm psm;
 		public TcpTransportThread(){
 			psm = new SdlPsm();
 		}
@@ -358,7 +358,7 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 
 	private class WriterThread extends Thread {
 		private boolean isHalted = false;
-		private boolean mVerbose = false;
+		private final boolean mVerbose = false;
 		final BlockingQueue<OutPacket> packetQueue = new LinkedBlockingQueue<>();
 
 		@Override
@@ -433,9 +433,9 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 	}
 
 	private final class OutPacket{
-		byte[] bytes;
-		int count;
-		int offset;
+		final byte[] bytes;
+		final int count;
+		final int offset;
 
 		OutPacket(byte[] bytes, int offset, int count){
 			this.bytes = bytes;

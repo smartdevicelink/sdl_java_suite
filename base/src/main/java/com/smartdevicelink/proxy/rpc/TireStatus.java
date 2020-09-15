@@ -152,7 +152,6 @@ public class TireStatus extends RPCStruct {
         setValue(KEY_LEFT_FRONT, leftFront);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public SingleTireStatus getLeftFront() {
         return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_LEFT_FRONT);
     }
@@ -160,7 +159,6 @@ public class TireStatus extends RPCStruct {
         setValue(KEY_RIGHT_FRONT, rightFront);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public SingleTireStatus getRightFront() {
         return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_RIGHT_FRONT);
     }
@@ -168,7 +166,6 @@ public class TireStatus extends RPCStruct {
         setValue(KEY_LEFT_REAR, leftRear);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public SingleTireStatus getLeftRear() {
         return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_LEFT_REAR);
     }
@@ -176,7 +173,6 @@ public class TireStatus extends RPCStruct {
         setValue(KEY_RIGHT_REAR, rightRear);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public SingleTireStatus getRightRear() {
         return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_RIGHT_REAR);
     }
@@ -184,7 +180,6 @@ public class TireStatus extends RPCStruct {
         setValue(KEY_INNER_LEFT_REAR, innerLeftRear);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public SingleTireStatus getInnerLeftRear() {
         return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_INNER_LEFT_REAR);
     }
@@ -192,7 +187,6 @@ public class TireStatus extends RPCStruct {
         setValue(KEY_INNER_RIGHT_REAR, innerRightRear);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public SingleTireStatus getInnerRightRear() {
         return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_INNER_RIGHT_REAR);
     }

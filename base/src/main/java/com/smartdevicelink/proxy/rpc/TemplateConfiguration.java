@@ -65,7 +65,6 @@ public class TemplateConfiguration extends RPCStruct {
      *
      * @return TemplateColorScheme
      */
-    @SuppressWarnings("unchecked")
     public TemplateColorScheme getDayColorScheme() {
         return (TemplateColorScheme) getObject(TemplateColorScheme.class, KEY_DAY_COLOR_SCHEME);
     }
@@ -85,7 +84,6 @@ public class TemplateConfiguration extends RPCStruct {
      *
      * @return TemplateColorScheme
      */
-    @SuppressWarnings("unchecked")
     public TemplateColorScheme getNightColorScheme() {
         return (TemplateColorScheme) getObject(TemplateColorScheme.class, KEY_NIGHT_COLOR_SCHEME);
     }

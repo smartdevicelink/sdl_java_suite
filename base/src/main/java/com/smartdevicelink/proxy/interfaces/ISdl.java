@@ -49,7 +49,6 @@ import java.util.List;
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-@SuppressWarnings("unused")
 public interface ISdl {
 
     /**
@@ -84,7 +83,7 @@ public interface ISdl {
 
     /**
      * Starts the video streaming service
-     * @param parameters desired video streaming params for this sevice to be started with
+     * @param parameters desired video streaming params for this service to be started with
      * @param encrypted flag to start this service with encryption or not
      */
     void startVideoService(VideoStreamingParameters parameters, boolean encrypted);

@@ -387,7 +387,6 @@ public class SeatControlData extends RPCStruct {
 	 *
 	 * @return SeatMemoryAction.
 	 */
-	@SuppressWarnings("unchecked")
 	public SeatMemoryAction getMemory() {
 		return (SeatMemoryAction) getObject(SeatMemoryAction.class, KEY_MEMORY);
 	}

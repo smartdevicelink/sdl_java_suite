@@ -82,7 +82,6 @@ public class SetDisplayLayoutResponse extends RPCResponse {
         setResultCode(resultCode);
     }
 
-    @SuppressWarnings("unchecked")
     public DisplayCapabilities getDisplayCapabilities() {
         return (DisplayCapabilities) getObject(DisplayCapabilities.class, KEY_DISPLAY_CAPABILITIES);
     }
@@ -112,7 +111,6 @@ public class SetDisplayLayoutResponse extends RPCResponse {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     public PresetBankCapabilities getPresetBankCapabilities() {
         return (PresetBankCapabilities) getObject(PresetBankCapabilities.class, KEY_PRESET_BANK_CAPABILITIES);
     }

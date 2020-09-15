@@ -38,7 +38,7 @@ import java.util.Vector;
 
 public class SessionType extends ByteEnumer {
 
-	private static Vector<SessionType> theList = new Vector<SessionType>();
+	private static final Vector<SessionType> theList = new Vector<>();
 	public static Vector<SessionType> getList() { return theList; } 
 	
 	byte i = 0x00;

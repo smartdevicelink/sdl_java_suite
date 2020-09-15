@@ -39,7 +39,7 @@ import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import java.util.Hashtable;
 
 /**
- *Specifies, which image shall be used, e.g. in Alerts or on Softbuttons provided the display supports it.
+ *Specifies, which image shall be used, e.g. in Alerts or on SoftButtons provided the display supports it.
  *<p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>

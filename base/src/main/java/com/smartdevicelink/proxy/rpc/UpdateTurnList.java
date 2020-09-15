@@ -38,8 +38,8 @@ import java.util.Hashtable;
 import java.util.List;
 
 /**
- * Updates the list of next maneuvers, which can be requested by the user pressing the softbutton "Turns" on the
- * Navigation base screen. Three softbuttons are predefined by the system: Up, Down, Close
+ * Updates the list of next maneuvers, which can be requested by the user pressing the soft button "Turns" on the
+ * Navigation base screen. Three soft buttons are predefined by the system: Up, Down, Close
  * 
  * <p>Function Group: Navigation</p>
  * 

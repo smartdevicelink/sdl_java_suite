@@ -121,7 +121,6 @@ public class GetVehicleDataResponse extends RPCResponse {
         setParameters(KEY_GPS, gps);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public GPSData getGps() {
         return (GPSData) getObject(GPSData.class, KEY_GPS);
     }
@@ -155,7 +154,6 @@ public class GetVehicleDataResponse extends RPCResponse {
      * @return a ComponentVolumeStatus related to FuelLevel State
      */
     @Deprecated
-    @SuppressWarnings("unchecked")
     public ComponentVolumeStatus getFuelLevelState() {
         return (ComponentVolumeStatus) getObject(ComponentVolumeStatus.class, KEY_FUEL_LEVEL_STATE);
     }
@@ -235,7 +233,6 @@ public class GetVehicleDataResponse extends RPCResponse {
         setParameters(KEY_TIRE_PRESSURE, tirePressure);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public TireStatus getTirePressure() {
         return (TireStatus) getObject(TireStatus.class, KEY_TIRE_PRESSURE);
     }
@@ -250,7 +247,6 @@ public class GetVehicleDataResponse extends RPCResponse {
         setParameters(KEY_BELT_STATUS, beltStatus);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public BeltStatus getBeltStatus() {
         return (BeltStatus) getObject(BeltStatus.class, KEY_BELT_STATUS);
     }
@@ -258,7 +254,6 @@ public class GetVehicleDataResponse extends RPCResponse {
         setParameters(KEY_BODY_INFORMATION, bodyInformation);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public BodyInformation getBodyInformation() {
         return (BodyInformation) getObject(BodyInformation.class, KEY_BODY_INFORMATION);
     }
@@ -266,7 +261,6 @@ public class GetVehicleDataResponse extends RPCResponse {
         setParameters(KEY_DEVICE_STATUS, deviceStatus);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public DeviceStatus getDeviceStatus() {
         return (DeviceStatus) getObject(DeviceStatus.class, KEY_DEVICE_STATUS);
     }
@@ -289,7 +283,6 @@ public class GetVehicleDataResponse extends RPCResponse {
         setParameters(KEY_HEAD_LAMP_STATUS, headLampStatus);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public HeadLampStatus getHeadLampStatus() {
         return (HeadLampStatus) getObject(HeadLampStatus.class, KEY_HEAD_LAMP_STATUS);
     }
@@ -332,7 +325,6 @@ public class GetVehicleDataResponse extends RPCResponse {
         setParameters(KEY_E_CALL_INFO, eCallInfo);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public ECallInfo getECallInfo() {
         return (ECallInfo) getObject(ECallInfo.class, KEY_E_CALL_INFO);
     }	
@@ -341,7 +333,6 @@ public class GetVehicleDataResponse extends RPCResponse {
         setParameters(KEY_AIRBAG_STATUS, airbagStatus);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public AirbagStatus getAirbagStatus() {
         return (AirbagStatus) getObject(AirbagStatus.class, KEY_AIRBAG_STATUS);
     }	
@@ -350,7 +341,6 @@ public class GetVehicleDataResponse extends RPCResponse {
         setParameters(KEY_EMERGENCY_EVENT, emergencyEvent);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public EmergencyEvent getEmergencyEvent() {
         return (EmergencyEvent) getObject(EmergencyEvent.class, KEY_EMERGENCY_EVENT);
     }
@@ -358,7 +348,6 @@ public class GetVehicleDataResponse extends RPCResponse {
         setParameters(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public ClusterModeStatus getClusterModeStatus() {
         return (ClusterModeStatus) getObject(ClusterModeStatus.class, KEY_CLUSTER_MODE_STATUS);
     }
@@ -366,7 +355,6 @@ public class GetVehicleDataResponse extends RPCResponse {
         setParameters(KEY_MY_KEY, myKey);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public MyKey getMyKey() {
         return (MyKey) getObject(MyKey.class, KEY_MY_KEY);
     }
@@ -410,7 +398,6 @@ public class GetVehicleDataResponse extends RPCResponse {
      *
      * @see com.smartdevicelink.proxy.rpc.enums.TurnSignal
      */
-    @SuppressWarnings("unchecked")
     public TurnSignal getTurnSignal() {
         return (TurnSignal) getObject(TurnSignal.class, KEY_TURN_SIGNAL);
     }

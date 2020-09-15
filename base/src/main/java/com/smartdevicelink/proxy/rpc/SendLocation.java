@@ -199,7 +199,6 @@ public class SendLocation extends RPCRequest{
      * Getter for image of the location to send.
      * @return The image of the location to send
      */
-    @SuppressWarnings("unchecked")
     public Image getLocationImage(){
         return (Image) getObject(Image.class, KEY_LOCATION_IMAGE);
     }
@@ -222,8 +221,7 @@ public class SendLocation extends RPCRequest{
         return this;
     }
 
-    @SuppressWarnings("unchecked")
-	public DateTime getTimeStamp() {
+    public DateTime getTimeStamp() {
         return (DateTime) getObject(DateTime.class, KEY_TIME_STAMP);
 	}
 
@@ -232,8 +230,7 @@ public class SendLocation extends RPCRequest{
         return this;
     }
 
-    @SuppressWarnings("unchecked")
-	public OasisAddress getAddress() {
+    public OasisAddress getAddress() {
         return (OasisAddress) getObject(OasisAddress.class, KEY_ADDRESS);
 	}
 

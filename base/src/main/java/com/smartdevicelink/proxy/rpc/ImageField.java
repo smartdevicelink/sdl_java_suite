@@ -120,7 +120,6 @@ public class ImageField extends RPCStruct {
         setValue(KEY_IMAGE_TYPE_SUPPORTED, imageTypeSupported);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public ImageResolution getImageResolution() {
         return (ImageResolution) getObject(ImageResolution.class, KEY_IMAGE_RESOLUTION);
     } 

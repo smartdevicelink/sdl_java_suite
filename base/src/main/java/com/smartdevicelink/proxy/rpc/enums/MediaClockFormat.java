@@ -88,7 +88,7 @@ public enum MediaClockFormat {
 	 * <li>c : character out of following character set: sp|0-9|[letters, see
 	 * TypeII column in XLS.</li>
 	 * <li>:|sp : colon or space</li>
-	 * <li>used for Type II headunit</li>
+	 * <li>used for Type II head unit</li>
 	 * </ul>
 	 * 
 	 * @since SmartDeviceLink 1.0
@@ -104,7 +104,7 @@ public enum MediaClockFormat {
 	 * <li>c : character out of following character set: sp|0-9|[letters, see
 	 * CID column in XLS.</li>
 	 * <li>:|sp : colon or space</li>
-	 * <li>used for CID headunit</li>
+	 * <li>used for CID head unit</li>
 	 * </ul>
 	 * difference between CLOCKTEXT1 and CLOCKTEXT2 is the supported character
 	 * set
@@ -122,7 +122,7 @@ public enum MediaClockFormat {
 	 * <li>c : character out of following character set: sp|0-9|[letters, see
 	 * Type 5 column in XLS].</li>
 	 * <li>:|sp : colon or space</li>
-	 * <li>used for Type V headunit</li>
+	 * <li>used for Type V head unit</li>
 	 * </ul>
 	 * difference between CLOCKTEXT1 and CLOCKTEXT2 is the supported character
 	 * set
@@ -139,7 +139,7 @@ public enum MediaClockFormat {
 	 * <li>Format:      c   :|sp   c   c   :   c   c</li>
 	 * <li>:|sp : colon or space</li>
 	 * <li>c    : character out of following character set: sp|0-9|[letters]</li>
-	 * <li>used for MFD3/4/5 headunits</li>
+	 * <li>used for MFD3/4/5 head units</li>
 	 * </ul>
 	 * 
 	 * 

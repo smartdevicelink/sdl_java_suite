@@ -98,7 +98,8 @@ public class SdlSession extends BaseSdlSession {
         }
 
         // If requiresAudioSupport is false, or a supported audio output device is available
-        return !requiresAudioSupport || mediaStreamingStatus.isAudioOutputAvailable();
+        boolean isAudioOutputAvailable = mediaStreamingStatus != null && mediaStreamingStatus.isAudioOutputAvailable();
+        return !requiresAudioSupport || isAudioOutputAvailable;
 
     }
 

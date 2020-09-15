@@ -63,7 +63,7 @@ import java.util.List;
  * 		<tr>
  * 			<td>userDisallowed</td>
  * 			<td>String</td>
- * 			<td>A set of all parameters that are prohibated for this given RPC.
+ * 			<td>A set of all parameters that are prohibited for this given RPC.
  * 					<ul>
  *					<li>Min size: 0</li>
  *					<li>Max size: 100</li>
@@ -132,7 +132,7 @@ public class ParameterPermissions extends RPCStruct {
     
     /**
      * set a set of all parameters that are prohibited for this given RPC.
-     * @param userDisallowed paramter that is prohibited for this given RPC
+     * @param userDisallowed parameter that is prohibited for this given RPC
      */
     public ParameterPermissions setUserDisallowed(@NonNull List<String> userDisallowed) {
         setValue(KEY_USER_DISALLOWED, userDisallowed);

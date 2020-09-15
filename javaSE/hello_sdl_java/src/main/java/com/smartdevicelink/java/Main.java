@@ -37,17 +37,17 @@ import com.smartdevicelink.util.DebugTool;
 
 public class Main {
     private static final String TAG = "Main";
-    static Thread thread = null, mainThread;
-    static Object LOCK;
+    private static Thread thread = null;
+    private static Thread mainThread;
+    private static final Object LOCK = new Object();
 
-    static SdlService sdlService;
+    private static SdlService sdlService;
 
     public static void main(String[] args) {
         //Enable DebugTool
         DebugTool.enableDebugTool();
 
         mainThread = Thread.currentThread();
-        LOCK = new Object();
         startSdlService();
 
         while(!mainThread.isInterrupted()) {
@@ -68,7 +68,7 @@ public class Main {
         }
     }
 
-    static SdlService.SdlServiceCallback serviceCallback = new SdlService.SdlServiceCallback() {
+    private static final SdlService.SdlServiceCallback serviceCallback = new SdlService.SdlServiceCallback() {
         @Override
         public void onEnd() {
             if (thread != null) {

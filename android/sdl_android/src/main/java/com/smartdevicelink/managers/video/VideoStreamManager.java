@@ -89,17 +89,17 @@ import java.util.concurrent.FutureTask;
 
 @TargetApi(19)
 public class VideoStreamManager extends BaseVideoStreamManager {
-	private static String TAG = "VideoStreamManager";
+	private static final String TAG = "VideoStreamManager";
 
 	private WeakReference<Context> context;
 	private volatile VirtualDisplayEncoder virtualDisplayEncoder;
 	private Class<? extends SdlRemoteDisplay> remoteDisplayClass = null;
 	private SdlRemoteDisplay remoteDisplay;
-	private float[] touchScalar = {1.0f,1.0f}; //x, y
+	private final float[] touchScalar = {1.0f,1.0f}; //x, y
 	private HapticInterfaceManager hapticManager;
 	private SdlMotionEvent sdlMotionEvent = null;
 	private OnHMIStatus currentOnHMIStatus;
-	private StreamingStateMachine stateMachine;
+	private final StreamingStateMachine stateMachine;
 	private VideoStreamingParameters parameters;
 	private IVideoStreamListener streamListener;
 	private boolean isTransportAvailable = false;
@@ -466,13 +466,13 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				remoteDisplay.dismissPresentation();
 			}
 
-			FutureTask<Boolean> fTask =  new FutureTask<Boolean>( new SdlRemoteDisplay.Creator(context.get(), disp, remoteDisplay, remoteDisplayClass, new SdlRemoteDisplay.Callback(){
+			FutureTask<Boolean> fTask = new FutureTask<>(new SdlRemoteDisplay.Creator(context.get(), disp, remoteDisplay, remoteDisplayClass, new SdlRemoteDisplay.Callback() {
 				@Override
 				public void onCreated(final SdlRemoteDisplay remoteDisplay) {
 					//Remote display has been created.
 					//Now is a good time to do parsing for spatial data
 					VideoStreamManager.this.remoteDisplay = remoteDisplay;
-					if(hapticManager != null) {
+					if (hapticManager != null) {
 						remoteDisplay.getMainView().post(new Runnable() {
 							@Override
 							public void run() {
@@ -482,17 +482,17 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 					}
 					//Get touch scalars
 					ImageResolution resolution = null;
-					if(internalInterface.getProtocolVersion().getMajor() >= 5){ //At this point we should already have the capability
+					if (internalInterface.getProtocolVersion().getMajor() >= 5) { //At this point we should already have the capability
 						VideoStreamingCapability capability = null;
 						if (internalInterface.getSystemCapabilityManager() != null) {
 							capability = (VideoStreamingCapability) internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.VIDEO_STREAMING, null, false);
 						}
-						if(capability != null){
+						if (capability != null) {
 							resolution = capability.getPreferredResolution();
 						}
 					}
 
-					if(resolution == null){ //Either the protocol version is too low to access video streaming caps, or they were null
+					if (resolution == null) { //Either the protocol version is too low to access video streaming caps, or they were null
 						DisplayCapabilities dispCap = null;
 						if (internalInterface.getSystemCapabilityManager() != null) {
 							dispCap = (DisplayCapabilities) internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.DISPLAY, null, false);
@@ -502,11 +502,11 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 						}
 					}
 
-					if(resolution != null){
+					if (resolution != null) {
 						DisplayMetrics displayMetrics = new DisplayMetrics();
 						disp.getMetrics(displayMetrics);
 						createTouchScalar(resolution, displayMetrics);
-                    }
+					}
 
 				}
 
@@ -514,7 +514,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				public void onInvalidated(final SdlRemoteDisplay remoteDisplay) {
 					//Our view has been invalidated
 					//A good time to refresh spatial data
-					if(hapticManager != null) {
+					if (hapticManager != null) {
 						remoteDisplay.getMainView().post(new Runnable() {
 							@Override
 							public void run() {
@@ -523,7 +523,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 						});
 					}
 				}
-			} ));
+			}));
 			Thread showPresentation = new Thread(fTask);
 			showPresentation.setName("RmtDispThread");
 
@@ -562,7 +562,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
     }
 
 	List<MotionEvent> convertTouchEvent(OnTouchEvent onTouchEvent){
-		List<MotionEvent> motionEventList = new ArrayList<MotionEvent>();
+		List<MotionEvent> motionEventList = new ArrayList<>();
 
 		List<TouchEvent> touchEventList = onTouchEvent.getEvent();
 		if (touchEventList == null || touchEventList.size() == 0) return null;
@@ -643,7 +643,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 */
 	private static class SdlMotionEvent {
 		class Pointer {
-			int id;
+			final int id;
 			float x;
 			float y;
 			Pointer (int id) {
@@ -657,7 +657,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			}
 		}
 
-		private CopyOnWriteArrayList<Pointer> pointers = new CopyOnWriteArrayList<>();
+		private final CopyOnWriteArrayList<Pointer> pointers = new CopyOnWriteArrayList<>();
 		private long downTime;
 		private long downTimeOnHMI;
 		private long eventTime;
