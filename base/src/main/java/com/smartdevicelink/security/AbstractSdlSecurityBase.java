@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.security;
 
-import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.protocol.enums.SessionType;
 
 import java.util.ArrayList;

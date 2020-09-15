@@ -32,7 +32,7 @@ package com.smartdevicelink.streaming.video;
 
 import androidx.annotation.RestrictTo;
 
-import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;

@@ -36,8 +36,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 
 import com.livio.taskmaster.Taskmaster;
-import com.smartdevicelink.SdlConnection.ISdlSessionListener;
-import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.session.ISdlSessionListener;
+import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.ServiceEncryptionListener;

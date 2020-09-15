@@ -9,7 +9,7 @@ import android.util.Log;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.audio.AudioStreamManager.SampleType;
 import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
