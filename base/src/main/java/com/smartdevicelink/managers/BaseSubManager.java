@@ -35,7 +35,6 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.transport.utl.TransportRecord;
 
 import java.util.List;

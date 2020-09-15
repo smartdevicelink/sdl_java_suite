@@ -29,10 +29,10 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.smartdevicelink.proxy.interfaces;
+package com.smartdevicelink.protocol;
 
 
-import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.protocol.enums.SessionType;
 
 public interface ISdlServiceListener {

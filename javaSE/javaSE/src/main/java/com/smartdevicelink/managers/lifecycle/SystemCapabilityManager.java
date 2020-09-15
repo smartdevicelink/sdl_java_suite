@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.managers.lifecycle;
 
-import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.managers.ISdl;
 
 /**
  * <strong>SystemCapabilityManager</strong> <br>

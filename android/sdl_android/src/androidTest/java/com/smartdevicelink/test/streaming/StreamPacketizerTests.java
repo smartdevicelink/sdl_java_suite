@@ -1,9 +1,9 @@
 package com.smartdevicelink.test.streaming;
 
-import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
+import com.smartdevicelink.streaming.video.IVideoStreamListener;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
 import com.smartdevicelink.test.TestValues;

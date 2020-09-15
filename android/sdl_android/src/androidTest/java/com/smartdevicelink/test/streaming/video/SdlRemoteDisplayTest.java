@@ -11,7 +11,7 @@ import android.widget.RelativeLayout;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.smartdevicelink.encoder.VirtualDisplayEncoder;
-import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
+import com.smartdevicelink.streaming.video.IVideoStreamListener;
 import com.smartdevicelink.streaming.video.SdlRemoteDisplay;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 

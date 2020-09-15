@@ -37,12 +37,12 @@ import com.livio.taskmaster.Queue;
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
 import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
@@ -136,7 +136,11 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
                     for (WindowCapability windowCapability : mainDisplay.getWindowCapabilities()) {
                         int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
                         if (currentWindowID == PredefinedWindows.DEFAULT_WINDOW.getValue()) {
-                            softButtonCapabilities = windowCapability.getSoftButtonCapabilities().get(0);
+                            if (windowCapability.getSoftButtonCapabilities() != null && windowCapability.getSoftButtonCapabilities().size() > 0) {
+                                softButtonCapabilities = windowCapability.getSoftButtonCapabilities().get(0);
+                            } else {
+                                softButtonCapabilities = null;
+                            }
                             break;
                         }
                     }

@@ -43,10 +43,10 @@ import android.os.Build;
 import android.view.Display;
 import android.view.Surface;
 
-import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
+import com.smartdevicelink.streaming.video.IVideoStreamListener;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.util.DebugTool;
 
