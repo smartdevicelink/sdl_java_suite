@@ -247,7 +247,7 @@ public class SdlService extends Service {
 			// The manager builder sets options for your session
 			SdlManager.Builder builder = new SdlManager.Builder(this, APP_ID, APP_NAME, listener);
 			builder.setAppTypes(appType);
-			builder.setTransportType(new TCPTransportConfig(16919, DEV_MACHINE_IP_ADDRESS, true));
+			builder.setTransportType(transport);
 			builder.setAppIcon(appIcon);
 			sdlManager = builder.build();
 			sdlManager.start();
