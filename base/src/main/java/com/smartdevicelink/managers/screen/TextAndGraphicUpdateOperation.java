@@ -39,7 +39,6 @@ class TextAndGraphicUpdateOperation extends Task {
     private final TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener;
     private final CompletionListener listener;
     private Show fullShow;
-    private SetDisplayLayout setLayout;
 
     TextAndGraphicUpdateOperation(ISdl internalInterface, FileManager fileManager, WindowCapability currentCapabilities,
                                        TextsAndGraphicsState currentScreenData, TextsAndGraphicsState newState, CompletionListener listener, TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener) {
@@ -155,7 +154,7 @@ class TextAndGraphicUpdateOperation extends Task {
     }
 
     private void sendSetDisplayLayoutWithTemplateConfiguration(TemplateConfiguration configuration, final CompletionListener listener){
-        setLayout = new SetDisplayLayout().setDisplayLayout(configuration.getTemplate()).setDayColorScheme(configuration.getDayColorScheme()).setNightColorScheme(configuration.getNightColorScheme());
+       final SetDisplayLayout setLayout = new SetDisplayLayout().setDisplayLayout(configuration.getTemplate()).setDayColorScheme(configuration.getDayColorScheme()).setNightColorScheme(configuration.getNightColorScheme());
         setLayout.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
