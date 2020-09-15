@@ -34,8 +34,8 @@ package com.smartdevicelink.managers.screen.menu;
 
 import androidx.annotation.RestrictTo;
 
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 
 /**
  * <strong>MenuManager</strong> <br>
