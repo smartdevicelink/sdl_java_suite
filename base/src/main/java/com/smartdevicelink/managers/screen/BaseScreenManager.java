@@ -389,7 +389,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * @param templateConfiguration The new configuration of the template, including the layout and color scheme.
 	 * @param listener A listener that will be called when the layout change finished.
 	 */
-	public void changeLayout(TemplateConfiguration templateConfiguration, CompletionListener listener) {
+	public void changeLayout(@NonNull TemplateConfiguration templateConfiguration, CompletionListener listener) {
 		textAndGraphicManager.changeLayout(templateConfiguration, listener);
 	}
 
