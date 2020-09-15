@@ -51,9 +51,9 @@ import java.util.List;
  */
 public class SoftButtonObject {
     private static final String TAG = "SoftButtonObject";
-    static int SOFT_BUTTON_ID_NOT_SET_VALUE = -1;
-    static int SOFT_BUTTON_ID_MIN_VALUE = 0;
-    static int SOFT_BUTTON_ID_MAX_VALUE = 65535;
+    static final int SOFT_BUTTON_ID_NOT_SET_VALUE = -1;
+    static final int SOFT_BUTTON_ID_MIN_VALUE = 0;
+    static final int SOFT_BUTTON_ID_MAX_VALUE = 65535;
     private String name;
     private List<SoftButtonState> states;
     private String currentStateName;

@@ -37,7 +37,7 @@ import java.util.Vector;
 
 public class FrameType extends ByteEnumer {
 
-	private static Vector<FrameType> theList = new Vector<FrameType>();
+	private static final Vector<FrameType> theList = new Vector<>();
 	public static Vector<FrameType> getList() { return theList; } 
 	
 	byte i = 0x00;

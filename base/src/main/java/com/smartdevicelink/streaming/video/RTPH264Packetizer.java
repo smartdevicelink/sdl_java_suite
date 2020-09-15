@@ -122,7 +122,7 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IVideoStrea
 			bufferSize = MAX_DATA_SIZE_FOR_ENCRYPTED_SERVICE;
 		}
 
-		mOutputQueue = new LinkedBlockingQueue<ByteBuffer>(MAX_QUEUE_SIZE / bufferSize);
+		mOutputQueue = new LinkedBlockingQueue<>(MAX_QUEUE_SIZE / bufferSize);
 		mNALUnitReader = new NALUnitReader();
 		mPayloadType = DEFAULT_RTP_PAYLOAD_TYPE;
 
@@ -230,7 +230,7 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IVideoStrea
 			}
 
 			while (frame.hasRemaining()) {
-				int len = frame.remaining() > bufferSize ? bufferSize : frame.remaining();
+				int len = Math.min(frame.remaining(), bufferSize);
 
 				ProtocolMessage pm = new ProtocolMessage();
 				pm.setSessionID(_rpcSessionID);
@@ -391,7 +391,7 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IVideoStrea
 	}
 
 
-	private static int SKIP_TABLE[] = new int[256];
+	private static int[] SKIP_TABLE = new int[256];
 	static {
 		// Sunday's quick search algorithm is used to find the start code.
 		// Prepare the table (SKIP_TABLE[0] = 2, SKIP_TABLE[1] = 1 and other elements will be 4).

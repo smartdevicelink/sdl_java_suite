@@ -64,7 +64,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
     // Key names received from the BluetoothSerialServer Handler
     private static final long MS_TILL_TIMEOUT = 2500;
     private static final int READ_BUFFER_SIZE = 4096;
-    private final Object THREAD_LOCK =  new Object();;
+    private final Object THREAD_LOCK =  new Object();
 
     protected static final String SHARED_PREFS = "sdl.bluetoothprefs";
 
@@ -76,7 +76,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
     private ConnectedThread mConnectedThread;
     private ConnectedWriteThread mConnectedWriteThread;
     Handler timeOutHandler;
-    Runnable socketRunable;
+    Runnable socketRunnable;
     boolean keepSocketAlive = true;
 
     /**
@@ -311,7 +311,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
     
     private void timerDelayRemoveDialog(final BluetoothSocket sock){
     	timeOutHandler = new Handler();
-    	socketRunable = new Runnable() {
+    	socketRunnable = new Runnable() {
             public void run() {
             	//Log.e(TAG, "BLUETOOTH SOCKET CONNECT TIMEOUT - ATTEMPT TO CLOSE SOCKET");
             	try {
@@ -321,7 +321,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
 				}         
             }
         };
-        timeOutHandler.postDelayed(socketRunable, MS_TILL_TIMEOUT);
+        timeOutHandler.postDelayed(socketRunnable, MS_TILL_TIMEOUT);
     }
     
     
@@ -333,7 +333,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
      */
     private class AcceptThread extends Thread {
         // The local server socket
-        private String mSocketType;
+        private final String mSocketType;
        final BluetoothServerSocket mmServerSocket;
         
         @SuppressLint("NewApi")
@@ -351,7 +351,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
             	} catch (IOException e) {
                 	//Log.e(TAG, "Socket Type: " + mSocketType + "listen() failed", e);
 		            MultiplexBluetoothTransport.this.stop(STATE_ERROR, REASON_SPP_ERROR);
-                	 //Let's try to shut down this thead
+                	 //Let's try to shut down this thread
             	}catch(SecurityException e2){
             		//Log.e(TAG, "<LIVIO> Security Exception in Accept Thread - "+e2.toString());
             		interrupt();
@@ -370,7 +370,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                     " BEGIN mAcceptThread" + this);
             setName("AcceptThread" + mSocketType);
 
-            BluetoothSocket socket = null;
+            BluetoothSocket socket;
             int listenAttempts = 0; 
             
             // Listen to the server socket if we're not connected
@@ -454,8 +454,8 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
         private final BluetoothDevice mmDevice;
         public ConnectThread(BluetoothDevice device) {
             mmDevice = device;
-            //Log.d(TAG, "Attempting to conenct to " + device.getName());
-            //Log.d(TAG, "UUID to conenct to " + SERVER_UUID.toString());
+            //Log.d(TAG, "Attempting to connect to " + device.getName());
+            //Log.d(TAG, "UUID to connect to " + SERVER_UUID.toString());
 
         }
 
@@ -464,7 +464,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
         	try{
         		mAdapter.cancelDiscovery();
         	}catch(SecurityException e2){
-                DebugTool.logError(TAG, "Don't have required permision to cancel discovery. Moving on");
+                DebugTool.logError(TAG, "Don't have required permission to cancel discovery. Moving on");
         	}
         }
 
@@ -500,13 +500,13 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                     try {
                         Method m = mmDevice.getClass().getMethod("createRfcommSocket", new Class[]{int.class});
                         //Log.i(TAG,"connecting using createRfcommSocket");
-                        mmSocket = (BluetoothSocket) m.invoke(mmDevice, Integer.valueOf(1));
+                        mmSocket = (BluetoothSocket) m.invoke(mmDevice, 1);
                         if (mmSocket != null) {
                             //Looper.prepare();
                             timerDelayRemoveDialog(mmSocket);
                             //Looper.loop();
                             mmSocket.connect();
-                            timeOutHandler.removeCallbacks(socketRunable);
+                            timeOutHandler.removeCallbacks(socketRunnable);
                             if (Looper.myLooper() != null) {
                                 Looper.myLooper().quit();
                             }
@@ -534,7 +534,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                                 timerDelayRemoveDialog(mmSocket);
                                 //Looper.loop();
                                 mmSocket.connect();
-                                timeOutHandler.removeCallbacks(socketRunable);
+                                timeOutHandler.removeCallbacks(socketRunnable);
                                 if (Looper.myLooper() != null) {
                                     Looper.myLooper().quit();
                                 }
@@ -563,7 +563,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                             timerDelayRemoveDialog(mmSocket);
                             //Looper.loop();
                             mmSocket.connect();
-                            timeOutHandler.removeCallbacks(socketRunable);
+                            timeOutHandler.removeCallbacks(socketRunnable);
                             if (Looper.myLooper() != null) {
                                 Looper.myLooper().quit();
                             }
@@ -585,7 +585,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                             timerDelayRemoveDialog(mmSocket);
                             //Looper.loop();
                             mmSocket.connect();
-                            timeOutHandler.removeCallbacks(socketRunable);
+                            timeOutHandler.removeCallbacks(socketRunnable);
                             if (Looper.myLooper() != null) {
                                 Looper.myLooper().quit();
                             }
@@ -702,7 +702,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
     private class ConnectedThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
-    	SdlPsm psm;
+    	final SdlPsm psm;
         public ConnectedThread(BluetoothSocket socket) {
         	this.psm = new SdlPsm();
         	//Log.d(TAG, "Creating a Connected - Read Thread");
@@ -792,7 +792,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
 		Field[] f = bsSocket.getClass().getDeclaredFields();
 
 	    //int channel = -1;
-	    BluetoothSocket mySocket = null;
+	    BluetoothSocket mySocket;
 	    for (Field field : f) {
 	        if(field.getName().equals("mSocket")){
 	            field.setAccessible(true);

@@ -205,7 +205,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
     }
 
     private class ReaderThread extends Thread{
-        SdlPsm psm;
+        final SdlPsm psm;
 
         final InputStream inputStream;
 

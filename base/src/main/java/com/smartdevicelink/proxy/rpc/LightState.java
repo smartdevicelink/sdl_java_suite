@@ -143,7 +143,6 @@ public class LightState extends RPCStruct {
 	 *
 	 * @see com.smartdevicelink.proxy.rpc.RGBColor
 	 */
-	@SuppressWarnings("unchecked")
 	public RGBColor getColor() {
 		return (RGBColor) getObject(RGBColor.class, KEY_COLOR);
 	}

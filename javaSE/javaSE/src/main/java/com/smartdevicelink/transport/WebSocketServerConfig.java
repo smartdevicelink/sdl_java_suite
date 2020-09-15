@@ -39,10 +39,10 @@ public class WebSocketServerConfig extends BaseTransportConfig{
     final int port, connectionLostTimeout;
     SSLConfig sslConfig;
     /**
-     * Default constructor for WebsocketConfig
+     * Default constructor for WebSocketConfig
      * @param port the port this web socket should listen on
      * @param connectionLostTimeout the timeout for a connection lost, default would be 60 seconds. If a value less than
-     *                              0 is used, then the websocket will wait indefinitely.
+     *                              0 is used, then the web socket will wait indefinitely.
      */
     public WebSocketServerConfig(int port, int connectionLostTimeout){
         this.port = port;

@@ -214,7 +214,7 @@ public class SdlEncoder {
 
 				if (mBufferInfo.size != 0) {
 					ByteBuffer encoderOutputBuffer = encoderOutputBuffers[encoderStatus];
-					byte[] dataToWrite = null;
+					byte[] dataToWrite;
 					int dataOffset = 0;
 
 					// append SPS and PPS in front of every IDR NAL unit

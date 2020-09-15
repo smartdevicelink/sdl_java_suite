@@ -32,6 +32,7 @@
 package com.smartdevicelink.util;
 
 import java.util.Enumeration;
+import java.util.Objects;
 import java.util.Vector;
 
 public abstract class ByteEnumer {	
@@ -41,14 +42,14 @@ public abstract class ByteEnumer {
 		this.name = name;
 	}
 	
-	private byte value;
-	private String name;
+	private final byte value;
+	private final String name;
 	
 	public byte getValue() { return value; }
 	public String getName() { return name; }
 	
 	public boolean equals(ByteEnumer other) {
-		return name == other.getName();
+		return Objects.equals(name, other.getName());
 	}
 	
 	public boolean eq(ByteEnumer other) {

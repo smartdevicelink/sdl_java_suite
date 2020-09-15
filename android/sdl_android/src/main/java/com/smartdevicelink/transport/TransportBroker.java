@@ -80,8 +80,8 @@ public class TransportBroker {
     private static final TransportRecord LEGACY_TRANSPORT_RECORD = new TransportRecord(TransportType.BLUETOOTH,null);
 
     private final String WHERE_TO_REPLY_PREFIX = "com.sdl.android.";
-    private String appId;
-    private String whereToReply;
+    private final String appId;
+    private final String whereToReply;
     private Context currentContext;
 
     private final Object INIT_LOCK = new Object();
@@ -92,7 +92,7 @@ public class TransportBroker {
 
     boolean isBound = false, registeredWithRouterService = false;
     private String routerPackage = null, routerClassName = null;
-    private ComponentName routerService = null;
+    private ComponentName routerService;
 
 
     private SdlPacket bufferedPacket = null;
@@ -100,7 +100,7 @@ public class TransportBroker {
 
     private ServiceConnection routerConnection;
     private int routerServiceVersion = 1;
-    private int messagingVersion = MAX_MESSAGING_VERSION;
+    private final int messagingVersion = MAX_MESSAGING_VERSION;
 
     private void initRouterConnection() {
         routerConnection = new ServiceConnection() {
@@ -180,11 +180,11 @@ public class TransportBroker {
      * Handler of incoming messages from service.
      */
     static class ClientHandler extends Handler {
-        ClassLoader loader;
+        final ClassLoader loader;
         final WeakReference<TransportBroker> provider;
 
         public ClientHandler(TransportBroker provider) {
-            this.provider = new WeakReference<TransportBroker>(provider);
+            this.provider = new WeakReference<>(provider);
             loader = getClass().getClassLoader();
         }
 
@@ -242,7 +242,7 @@ public class TransportBroker {
                             DebugTool.logWarning(TAG, "Registration denied from router service. Reason - " + msg.arg1);
                             break;
                     }
-                    ;
+
 
 
                     break;
@@ -352,7 +352,7 @@ public class TransportBroker {
         }
 
         /**
-         * Handle a potential connection event. This will adapt legacy router service implementaions
+         * Handle a potential connection event. This will adapt legacy router service implementations
          * into the new multiple transport scheme.
          * @param bundle the received bundle from the router service
          * @param broker reference to the transport broker that this handler exists
@@ -495,7 +495,7 @@ public class TransportBroker {
         return routerServiceVersion;
     }
 
-    public boolean sendPacketToRouterService(SdlPacket packet) { //We use ints because that is all that is supported by the outputstream class
+    public boolean sendPacketToRouterService(SdlPacket packet) { //We use ints because that is all that is supported by the output stream class
         //Log.d(TAG,whereToReply + "Sending packet to router service");
 
         if (routerServiceMessenger == null) {
@@ -674,7 +674,7 @@ public class TransportBroker {
      */
 
     private static boolean legacyModeEnabled = false;
-    private static Object LEGACY_LOCK = new Object();
+    private static final Object LEGACY_LOCK = new Object();
 
     protected void enableLegacyMode(boolean enable) {
         synchronized (LEGACY_LOCK) {

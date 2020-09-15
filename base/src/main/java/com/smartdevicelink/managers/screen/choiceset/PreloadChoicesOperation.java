@@ -64,14 +64,14 @@ import java.util.Map;
 
 class PreloadChoicesOperation extends Task {
 	private static final String TAG = "PreloadChoicesOperation";
-	private WeakReference<ISdl> internalInterface;
-	private WeakReference<FileManager> fileManager;
-	private WindowCapability defaultMainWindowCapability;
-	private String displayName;
-	private HashSet<ChoiceCell> cellsToUpload;
-	private CompletionListener completionListener;
+	private final WeakReference<ISdl> internalInterface;
+	private final WeakReference<FileManager> fileManager;
+	private final WindowCapability defaultMainWindowCapability;
+	private final String displayName;
+	private final HashSet<ChoiceCell> cellsToUpload;
+	private final CompletionListener completionListener;
 	private boolean isRunning;
-	private boolean isVROptional;
+	private final boolean isVROptional;
 	private boolean choiceError = false;
 
 	PreloadChoicesOperation(ISdl internalInterface, FileManager fileManager, String displayName, WindowCapability defaultMainWindowCapability,
@@ -226,7 +226,7 @@ class PreloadChoicesOperation extends Task {
 
 	// HELPERS
 	boolean shouldSendChoiceText() {
-		if (this.displayName != null && this.displayName.equals(DisplayType.GEN3_8_INCH)){
+		if (this.displayName != null && this.displayName.equals(DisplayType.GEN3_8_INCH.toString())){
 			return true;
 		}
 		return templateSupportsTextField(TextFieldName.menuName);

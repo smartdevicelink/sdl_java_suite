@@ -36,7 +36,7 @@ import com.smartdevicelink.proxy.RPCMessage;
 public abstract class OnRPCListener {
 
     /**
-     * Generic listener for all RPCs including Requests, response, and notificaiton
+     * Generic listener for all RPCs including Requests, response, and notification
      */
     public final static int UPDATE_LISTENER_TYPE_ALL_RPCS		= -1;
 

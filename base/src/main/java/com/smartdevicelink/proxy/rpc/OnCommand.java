@@ -73,7 +73,7 @@ import java.util.Hashtable;
  * <tr>
  * <td>triggerSource</td>
  * <td>{@linkplain TriggerSource}</td>
- * <td>Indicates whether command was selected via VR or via a menu selection (using the OKbutton).</td>
+ * <td>Indicates whether command was selected via VR or via a menu selection (using the OK button).</td>
  * <td></td>
  * <td>SmartDeviceLink 1.0</td>
  * </tr>

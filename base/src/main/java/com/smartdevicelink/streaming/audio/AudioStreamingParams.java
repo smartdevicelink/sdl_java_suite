@@ -43,14 +43,14 @@ public class AudioStreamingParams {
 	 * <p>
 	 * This is reserved for future and not used right now.
 	 */
-	public int samplingRate;
+	public final int samplingRate;
 
 	/**
 	 * Number of channels in the audio stream
 	 * <p>
 	 * This is reserved for future and not used right now.
 	 */
-	public int channels;
+	public final int channels;
 
 	public AudioStreamingParams(int samplingRate, int channels) {
 		this.samplingRate = samplingRate;

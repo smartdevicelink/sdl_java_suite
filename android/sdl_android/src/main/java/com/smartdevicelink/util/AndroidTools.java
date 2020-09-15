@@ -84,7 +84,7 @@ public class AndroidTools {
 	public static HashMap<String,ResolveInfo> getSdlEnabledApps(Context context, String myPackageName){
 		Intent intent = new Intent(TransportConstants.START_ROUTER_SERVICE_ACTION);
 		List<ResolveInfo> infos = context.getPackageManager().queryBroadcastReceivers(intent, 0);
-		HashMap<String,ResolveInfo> sdlMultiList = new HashMap<String,ResolveInfo>();
+		HashMap<String,ResolveInfo> sdlMultiList = new HashMap<>();
 		for(ResolveInfo info: infos){
 			if(info.activityInfo.applicationInfo.packageName.equals(myPackageName)){
 				continue; //Ignoring my own package
@@ -111,7 +111,7 @@ public class AndroidTools {
 			if(packageManager != null) {
 
 				for (ResolveInfo info : resolveInfoList) {
-					PackageInfo packageInfo = null;
+					PackageInfo packageInfo;
 					try {
 						packageInfo = packageManager.getPackageInfo(info.serviceInfo.packageName, 0);
 						sdlAppInfoList.add(new SdlAppInfo(info, packageInfo));

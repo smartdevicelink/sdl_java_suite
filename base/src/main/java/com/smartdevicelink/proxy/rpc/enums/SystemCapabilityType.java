@@ -579,9 +579,9 @@ public enum SystemCapabilityType {
 	 */
 	DRIVER_DISTRACTION(true);
 
-	;
 
-    boolean IS_QUERYABLE;
+
+    final boolean IS_QUERYABLE;
 
     SystemCapabilityType(boolean isQueryable) {
         this.IS_QUERYABLE = isQueryable;

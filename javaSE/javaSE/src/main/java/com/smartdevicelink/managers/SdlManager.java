@@ -127,9 +127,9 @@ public class SdlManager extends BaseSdlManager {
     private void notifyDevListener(String info) {
         if (managerListener != null) {
             if (getState() == BaseSubManager.ERROR) {
-                managerListener.onError((SdlManager) this, info, null);
+                managerListener.onError(this, info, null);
             } else {
-                managerListener.onStart((SdlManager) this);
+                managerListener.onStart(this);
             }
         }
     }
@@ -158,7 +158,7 @@ public class SdlManager extends BaseSdlManager {
         }
 
         if (managerListener != null) {
-            managerListener.onDestroy((SdlManager) this);
+            managerListener.onDestroy(this);
             managerListener = null;
         }
 

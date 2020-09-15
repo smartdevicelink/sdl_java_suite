@@ -37,15 +37,15 @@ package com.smartdevicelink.proxy.rpc.enums;
  */
 public enum WarningLightStatus {
 	/**
-	 * Warninglight Off
+	 * Warning light Off
 	 */
 	OFF,
 	/**
-	 * Warninglight On
+	 * Warning light On
 	 */
 	ON,
 	/**
-	 * Warninglight is flashing
+	 * Warning light is flashing
 	 */
 	FLASH,
 	NOT_USED;

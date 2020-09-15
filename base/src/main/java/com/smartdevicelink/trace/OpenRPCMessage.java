@@ -65,12 +65,11 @@ class OpenRPCMessage extends RPCMessage {
 		
 		pd.append("]");
 
-		return;
 	} // end-method
 
 	private void dumpParams(Hashtable<String, Object> ht, StringBuilder pd) {
 		Iterator<String> keySet = ht.keySet().iterator();
-		Object obj = null;
+		Object obj;
 		String key = "";
 		boolean isFirstParam = true;
 
