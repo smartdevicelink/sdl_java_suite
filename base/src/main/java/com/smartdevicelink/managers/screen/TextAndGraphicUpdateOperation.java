@@ -501,7 +501,10 @@ class TextAndGraphicUpdateOperation extends Task {
         newShow.setTemplateTitle(show.getTemplateTitle());
         newShow.setMetadataTags(show.getMetadataTags());
         newShow.setAlignment(show.getAlignment());
-        newShow.setTemplateConfiguration(show.getTemplateConfiguration());
+
+        if (showRPCSupportsTemplateConfiguration()) {
+            newShow.setTemplateConfiguration(show.getTemplateConfiguration());
+        }
         return newShow;
     }
 
