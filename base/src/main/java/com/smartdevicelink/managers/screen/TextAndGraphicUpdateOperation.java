@@ -160,11 +160,12 @@ class TextAndGraphicUpdateOperation extends Task {
             public void onResponse(int correlationId, RPCResponse response) {
                 if(response.getSuccess()){
                     updateCurrentScreenDataFromSetDisplayLayout(setLayout);
-                    listener.onComplete(true);
                 }
                 else {
+                    DebugTool.logInfo(TAG, "Text and Graphic SetDisplayLayout failed");
                     currentScreenDataUpdateListener.onError();
                 }
+                listener.onComplete(response.getSuccess());
             }
         });
         internalInterface.get().sendRPC(setLayout);
