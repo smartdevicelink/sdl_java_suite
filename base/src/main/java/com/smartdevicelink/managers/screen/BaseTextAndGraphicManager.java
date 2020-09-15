@@ -212,7 +212,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				if(newScreenData != null) {
 					// Update our current screen data
 					currentScreenData = newScreenData;
-					updatePendingOperationsWithNewScreenData(newScreenData);
+					updatePendingOperationsWithNewScreenData();
 				}
 			}
 
@@ -245,14 +245,14 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	}
 
 	//Updates pending task with current screen data
-	void updatePendingOperationsWithNewScreenData(TextsAndGraphicsState newScreenData) {
+	void updatePendingOperationsWithNewScreenData() {
 		for (Task task : transactionQueue.getTasksAsList()) {
 			if (!(task instanceof TextAndGraphicUpdateOperation)) {
 				continue;
 			}
-			((TextAndGraphicUpdateOperation) task).setCurrentScreenData(newScreenData);
+			((TextAndGraphicUpdateOperation) task).setCurrentScreenData(currentScreenData);
 		}
-		if (this.softButtonManager.get() != null && newScreenData.getTextField1() != null) {
+		if (this.softButtonManager.get() != null && currentScreenData.getTextField1() != null) {
 			this.softButtonManager.get().setCurrentMainField1(currentScreenData.getTextField1());
 		}
 	}
