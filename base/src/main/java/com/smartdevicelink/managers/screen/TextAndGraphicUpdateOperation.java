@@ -70,7 +70,7 @@ class TextAndGraphicUpdateOperation extends Task {
         fullShow = assembleLayout(fullShow);
 
 
-        if (internalInterface.get().getSdlMsgVersion().getMajorVersion() >= 6) {
+        if (showRPCSupportsTemplateConfiguration()) {
             updateGraphicsAndShow(fullShow);
         } else {
             if (shouldUpdateTemplateConfig()) {
@@ -502,7 +502,7 @@ class TextAndGraphicUpdateOperation extends Task {
     }
 
     Show assembleLayout(Show show) {
-        if (!(internalInterface.get().getSdlMsgVersion().getMajorVersion() >= 6) || !shouldUpdateTemplateConfig()) {
+        if (!showRPCSupportsTemplateConfiguration() || !shouldUpdateTemplateConfig()) {
             return show;
         }
         show.setTemplateConfiguration(updatedState.getTemplateConfiguration());
@@ -561,6 +561,13 @@ class TextAndGraphicUpdateOperation extends Task {
     }
 
     // Helpers
+
+    private boolean showRPCSupportsTemplateConfiguration() {
+        if (internalInterface.get() == null || internalInterface.get().getSdlMsgVersion() == null) {
+            return false;
+        }
+        return internalInterface.get().getSdlMsgVersion().getMajorVersion() >= 6;
+    }
 
     private List<String> findValidMainTextFields() {
         List<String> array = new ArrayList<>();
