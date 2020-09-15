@@ -13,7 +13,6 @@ class TextsAndGraphicsState {
     private TemplateConfiguration templateConfiguration;
 
     TextsAndGraphicsState() {
-
     }
 
     TextsAndGraphicsState(String textField1, String textField2, String textField3, String textField4, String mediaTrackTextField,

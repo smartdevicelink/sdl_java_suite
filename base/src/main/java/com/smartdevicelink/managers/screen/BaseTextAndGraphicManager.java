@@ -210,6 +210,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			@Override
 			public void onUpdate(TextsAndGraphicsState newScreenData) {
 				if(newScreenData != null) {
+					// Update our current screen data
 					currentScreenData = newScreenData;
 					updatePendingOperationsWithNewScreenData(newScreenData);
 				}
@@ -217,6 +218,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 			@Override
 			public void onError() {
+				// Invalidate data that's different from our current screen data
 				resetFieldsToCurrentScreenData();
 			}
 		};
@@ -530,6 +532,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 					for (WindowCapability windowCapability : display.getWindowCapabilities()) {
 						int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
 						if (currentWindowID == PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+							// Check if the window capability is equal to the one we already have. If it is, abort.
 							if(defaultMainWindowCapability != null && defaultMainWindowCapability.getStore().equals(windowCapability.getStore())){
 								return;
 							}
@@ -540,6 +543,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				// Update the queue's suspend state
 				updateTransactionQueueSuspended();
 				if (hasData()) {
+					// HAX: Capability updates cannot supersede earlier updates because of the case where a developer batched a `changeLayout` call w/ T&G changes on < 6.0 systems could cause this to come in before the operation completes. That would cause the operation to report a "failure" (because it was superseded by this call) when in fact the operation didn't fail at all and is just being adjusted.
 					sdlUpdate(false, null);
 				}
 			}

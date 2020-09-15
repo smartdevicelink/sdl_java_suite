@@ -63,7 +63,6 @@ class TextAndGraphicUpdateOperation extends Task {
             return;
         }
 
-        // Build a show with everything from `self.newState`, we'll pull things out later if we can.
         fullShow = new Show();
         fullShow.setAlignment(updatedState.getTextAlignment());
         fullShow = assembleShowText(fullShow);
