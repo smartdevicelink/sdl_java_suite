@@ -1,6 +1,6 @@
 package com.smartdevicelink.test.streaming;
 
-import com.smartdevicelink.SdlConnection.ISdlSessionListener;
+import com.smartdevicelink.session.ISdlSessionListener;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.util.Version;

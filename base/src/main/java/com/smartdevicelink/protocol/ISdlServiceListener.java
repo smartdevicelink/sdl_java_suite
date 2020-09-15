@@ -32,7 +32,7 @@
 package com.smartdevicelink.protocol;
 
 
-import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.protocol.enums.SessionType;
 
 public interface ISdlServiceListener {

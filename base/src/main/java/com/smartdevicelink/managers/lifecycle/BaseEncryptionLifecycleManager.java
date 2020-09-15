@@ -34,7 +34,7 @@ package com.smartdevicelink.managers.lifecycle;
 
 import androidx.annotation.NonNull;
 
-import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.managers.ServiceEncryptionListener;
 import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
