@@ -1,8 +1,8 @@
 package com.smartdevicelink.test.SdlConnection;
 
 import com.smartdevicelink.session.SdlSession;
+import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.test.streaming.MockInterfaceBroker;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 

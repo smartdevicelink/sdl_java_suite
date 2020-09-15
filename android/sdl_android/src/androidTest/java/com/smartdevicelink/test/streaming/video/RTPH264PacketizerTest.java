@@ -36,7 +36,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
+import com.smartdevicelink.streaming.video.IVideoStreamListener;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.video.RTPH264Packetizer;
 import com.smartdevicelink.test.streaming.MockInterfaceBroker;

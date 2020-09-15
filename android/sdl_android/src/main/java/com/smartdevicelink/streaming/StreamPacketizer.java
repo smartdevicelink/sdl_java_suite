@@ -37,8 +37,8 @@ import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
-import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
+import com.smartdevicelink.streaming.audio.IAudioStreamListener;
+import com.smartdevicelink.streaming.video.IVideoStreamListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.io.IOException;

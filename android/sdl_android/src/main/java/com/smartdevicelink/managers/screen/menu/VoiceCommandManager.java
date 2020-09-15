@@ -34,7 +34,7 @@ package com.smartdevicelink.managers.screen.menu;
 
 import androidx.annotation.RestrictTo;
 
-import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.managers.ISdl;
 
 /**
  * <strong>VoiceCommandManager</strong> <br>

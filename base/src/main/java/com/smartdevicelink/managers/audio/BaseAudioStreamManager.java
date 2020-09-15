@@ -34,7 +34,7 @@ package com.smartdevicelink.managers.audio;
 import androidx.annotation.NonNull;
 
 import com.smartdevicelink.managers.BaseSubManager;
-import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.managers.ISdl;
 
 abstract class BaseAudioStreamManager extends BaseSubManager {
     BaseAudioStreamManager(@NonNull ISdl internalInterface) {

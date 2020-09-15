@@ -38,7 +38,7 @@ import android.media.MediaFormat;
 import android.os.Build;
 import android.view.Surface;
 
-import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
+import com.smartdevicelink.streaming.video.IVideoStreamListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.io.IOException;
