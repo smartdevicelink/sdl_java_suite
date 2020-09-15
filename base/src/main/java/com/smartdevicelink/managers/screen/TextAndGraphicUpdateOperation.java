@@ -150,7 +150,15 @@ class TextAndGraphicUpdateOperation extends Task {
 
             }
         });
-        internalInterface.get().sendRPC(show);
+        if(internalInterface.get() != null){
+            internalInterface.get().sendRPC(show);
+        } else {
+            DebugTool.logInfo(TAG, "ISdl is null Text and Graphic update failed");
+            currentScreenDataUpdateListener.onError();
+            finishOperation(false);
+            return;
+        }
+
     }
 
     private void sendSetDisplayLayoutWithTemplateConfiguration(TemplateConfiguration configuration, final CompletionListener listener){
@@ -168,7 +176,14 @@ class TextAndGraphicUpdateOperation extends Task {
                 listener.onComplete(response.getSuccess());
             }
         });
-        internalInterface.get().sendRPC(setLayout);
+        if(internalInterface.get() != null){
+            internalInterface.get().sendRPC(setLayout);
+        } else {
+            DebugTool.logInfo(TAG, "ISdl is null Text and Graphic update failed");
+            currentScreenDataUpdateListener.onError();
+            finishOperation(false);
+            return;
+        }
     }
 
 
@@ -650,7 +665,7 @@ class TextAndGraphicUpdateOperation extends Task {
         boolean graphicMatchesExisting = CompareUtils.areStringsEqual(currentScreenDataSecondaryGraphicName, secondaryGraphicName, true, true);
 
         // Cannot detect if there is a secondary image below v5.0, so we'll just try to detect if the primary image is allowed and allow the secondary image if it is.
-        if (internalInterface.get().getSdlMsgVersion().getMajorVersion() >= 5) {
+        if (internalInterface.get() != null && internalInterface.get().getSdlMsgVersion().getMajorVersion() >= 5) {
             return templateSupportsSecondaryArtwork && !graphicMatchesExisting;
         } else {
             return templateSupportsImageField(ImageFieldName.graphic) && !graphicMatchesExisting;
