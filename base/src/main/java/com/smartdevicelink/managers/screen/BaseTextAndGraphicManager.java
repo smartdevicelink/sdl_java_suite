@@ -478,10 +478,10 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		}
 	}
 
-	void changeLayout(TemplateConfiguration templateConfiguration, CompletionListener templateConfigurationListener) {
+	void changeLayout(TemplateConfiguration templateConfiguration, CompletionListener listener) {
 		setTemplateConfiguration(templateConfiguration);
 		if(!batchingUpdates) {
-			sdlUpdate(true, templateConfigurationListener);
+			sdlUpdate(true, listener);
 		} else {
 			isDirty = true;
 		}
@@ -492,7 +492,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	}
 
 	void setTemplateConfiguration(TemplateConfiguration templateConfiguration) {
-		// Don't do the `isBatchingUpdates` like elsewhere because the call is already handled in `changeLayout(TemplateConfiguration templateConfiguration, CompletionListener templateConfigurationListener) `
+		// Don't do the `isBatchingUpdates` like elsewhere because the call is already handled in `changeLayout(TemplateConfiguration templateConfiguration, CompletionListener listener) `
 		this.templateConfiguration = templateConfiguration;
 	}
 

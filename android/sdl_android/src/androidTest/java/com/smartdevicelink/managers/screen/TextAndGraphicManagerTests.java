@@ -123,7 +123,6 @@ public class TextAndGraphicManagerTests {
 		doReturn(systemCapabilityManager).when(internalInterface).getSystemCapabilityManager();
 
 		textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager, softButtonManager);
-
 	}
 
 
@@ -307,7 +306,6 @@ public class TextAndGraphicManagerTests {
 
 	@Test
 	public void resetFieldsToCurrentScreenDataTest() {
-
 		textAndGraphicManager.setTextField1("textField1");
 		textAndGraphicManager.setTextField2("textField2");
 		textAndGraphicManager.setTextField3("textField3");
@@ -380,6 +378,5 @@ public class TextAndGraphicManagerTests {
 		assertTrue(textAndGraphicManager.currentScreenData.getPrimaryGraphic().getName().equals(textAndGraphicManager.getPrimaryGraphic().getName()));
 		assertTrue(textAndGraphicManager.currentScreenData.getSecondaryGraphic().getName().equals(textAndGraphicManager.getSecondaryGraphic().getName()));
 		assertTrue(textAndGraphicManager.currentScreenData.getTemplateConfiguration().getStore().equals(textAndGraphicManager.getTemplateConfiguration().getStore()));
-
 	}
 }

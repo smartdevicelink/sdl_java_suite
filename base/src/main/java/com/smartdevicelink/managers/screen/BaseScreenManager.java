@@ -618,6 +618,4 @@ abstract class BaseScreenManager extends BaseSubManager {
 	public void removeButtonListener(@NonNull ButtonName buttonName, @NonNull OnButtonListener listener){
 		subscribeButtonManager.removeButtonListener(buttonName, listener);
 	}
-
-
 }
