@@ -529,7 +529,7 @@ class TextAndGraphicUpdateOperation extends Task {
 
     private void updateCurrentScreenDataFromSetDisplayLayout(SetDisplayLayout setDisplayLayout) {
         currentScreenData.setTemplateConfiguration(new TemplateConfiguration().setTemplate(setDisplayLayout.getDisplayLayout()).setDayColorScheme(setDisplayLayout.getDayColorScheme()).setNightColorScheme(setDisplayLayout.getNightColorScheme()));
-        if(currentScreenDataUpdateListener != null){
+        if (currentScreenDataUpdateListener != null) {
             currentScreenDataUpdateListener.onUpdate(currentScreenData);
         }
     }
