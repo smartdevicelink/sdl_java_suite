@@ -335,9 +335,6 @@ public class StreamPacketizerTests extends TestCase {
 		assertTrue(mockReceiver.verify(sampleAudio));
 	}
 
-	/**
-	 * Test for {@link com.smartdevicelink.streaming.StreamPacketizer#sendAudio(ByteBuffer, long)}
-	 */
 	public void testSendAudioInterfaceWithByteBuffer() {
 		// assume 100 data of 16kHz / 16bits audio for 10 msecs
 		int dataCount = 100;
@@ -372,10 +369,6 @@ public class StreamPacketizerTests extends TestCase {
 		assertTrue(mockReceiver.verify(sampleAudio));
 	}
 
-	/**
-	 * Test for {@link com.smartdevicelink.streaming.StreamPacketizer#sendAudio(ByteBuffer, long)}
-	 * with direct ByteBuffer
-	 */
 	public void testSendAudioInterfaceWithDirectByteBuffer() {
 		// assume 100 data of 16kHz / 16bits audio for 10 msecs
 		int dataCount = 100;

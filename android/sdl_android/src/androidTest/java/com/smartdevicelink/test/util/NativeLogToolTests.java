@@ -60,12 +60,7 @@ public class NativeLogToolTests extends TestCase {
 			fail("Could not retrieve value for invalid string, should return null.");
 		}
 	}
-	
-	/**
-	 * This is a unit test for the following methods : 
-	 * {@link com.smartdevicelink.util.NativeLogTool#setEnableState(boolean)}
-	 * {@link com.smartdevicelink.util.NativeLogTool#getEnableState()}
-	 */
+
 	public void testEnabled () {
 		NativeLogTool.setEnableState(false);
 		assertFalse("Value should be false.", NativeLogTool.isEnabled());		

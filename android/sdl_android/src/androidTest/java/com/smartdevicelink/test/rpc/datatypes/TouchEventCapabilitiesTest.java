@@ -13,7 +13,7 @@ import java.util.Iterator;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.proxy.rpc.TouchEventCapabilties}
+ * {@link com.smartdevicelink.proxy.rpc.TouchEventCapabilities}
  */
 public class TouchEventCapabilitiesTest extends TestCase {
 	

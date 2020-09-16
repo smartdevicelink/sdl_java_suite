@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.proxy.rpc.enums.HmiLevel}
+ * {@link com.smartdevicelink.proxy.rpc.enums.HMILevel}
  */
 public class HmiLevelTests extends TestCase {
 

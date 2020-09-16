@@ -40,11 +40,7 @@ public class SdlPsmTests extends TestCase {
 		controlFrameInfo.setAccessible(true);
 	}
 	
-	/**
-	 * These are unit tests for the following methods : 
-	 * {@link com.smartdevicelink.transport.SdlPsm#transitionOnInput()}
-	 */
-	
+
 	public void testGarbledControlFrame() {
 		try{
 			rawByte = 0x0;
