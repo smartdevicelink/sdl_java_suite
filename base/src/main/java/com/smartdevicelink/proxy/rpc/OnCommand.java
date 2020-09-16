@@ -73,7 +73,7 @@ import java.util.Hashtable;
  * <tr>
  * <td>triggerSource</td>
  * <td>{@linkplain TriggerSource}</td>
- * <td>Indicates whether command was selected via VR or via a menu selection (using the OKbutton).</td>
+ * <td>Indicates whether command was selected via VR or via a menu selection (using the OK button).</td>
  * <td></td>
  * <td>SmartDeviceLink 1.0</td>
  * </tr>
@@ -118,11 +118,12 @@ public class OnCommand extends RPCNotification {
         return getInteger( KEY_CMD_ID );
     }
     /**
-     * <p>Sets a Command ID</p>    
+     * <p>Sets a Command ID</p>
      * @param cmdID an integer object representing a Command ID
-     */    
-    public void setCmdID( @NonNull Integer cmdID ) {
+     */
+    public OnCommand setCmdID(@NonNull Integer cmdID) {
         setParameters(KEY_CMD_ID, cmdID);
+        return this;
     }
     /**
      * <p>Returns a <I>TriggerSource</I> object which will be shown in the HMI</p>    
@@ -133,10 +134,11 @@ public class OnCommand extends RPCNotification {
     }
     /**
      * <p>Sets TriggerSource</p>
-     * <p>Indicates whether command was selected via VR or via a menu selection (using the OK button).</p>    
+     * <p>Indicates whether command was selected via VR or via a menu selection (using the OK button).</p>
      * @param triggerSource a TriggerSource object
-     */    
-    public void setTriggerSource( @NonNull TriggerSource triggerSource ) {
+     */
+    public OnCommand setTriggerSource(@NonNull TriggerSource triggerSource) {
         setParameters(KEY_TRIGGER_SOURCE, triggerSource);
+        return this;
     }
 }

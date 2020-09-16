@@ -2,6 +2,7 @@ package com.smartdevicelink.managers.file;
 
 import android.content.Context;
 import android.net.Uri;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.managers.BaseSubManager;
@@ -10,7 +11,7 @@ import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.proxy.rpc.DeleteFile;
 import com.smartdevicelink.proxy.rpc.DeleteFileResponse;
 import com.smartdevicelink.proxy.rpc.ListFiles;
@@ -72,10 +73,9 @@ public class FileManagerTests {
 			RPCRequest message = (RPCRequest) args[0];
 			if (message instanceof PutFile) {
 				int correlationId = message.getCorrelationID();
-				Result resultCode = Result.REJECTED;
-				PutFileResponse putFileResponse = new PutFileResponse();
-				putFileResponse.setSuccess(false);
-				message.getOnRPCResponseListener().onError(correlationId, resultCode, "Binary data empty");
+				PutFileResponse putFileResponse = new PutFileResponse(false, Result.REJECTED);
+				putFileResponse.setInfo("Binary data empty");
+				message.getOnRPCResponseListener().onResponse(correlationId, putFileResponse);
 			}
 			return null;
 		}
@@ -88,13 +88,12 @@ public class FileManagerTests {
 			List<RPCRequest> rpcs = (List<RPCRequest>) args[0];
 			OnMultipleRequestListener listener = (OnMultipleRequestListener) args[1];
 			if (rpcs.get(0) instanceof PutFile) {
-				Result resultCode = Result.REJECTED;
 				for (RPCRequest message : rpcs) {
 					int correlationId = message.getCorrelationID();
 					listener.addCorrelationId(correlationId);
-					PutFileResponse putFileResponse = new PutFileResponse();
-					putFileResponse.setSuccess(true);
-					listener.onError(correlationId, resultCode, "Binary data empty");
+					PutFileResponse putFileResponse = new PutFileResponse(false, Result.REJECTED);
+					putFileResponse.setInfo("Binary data empty");
+					listener.onResponse(correlationId, putFileResponse);
 				}
 				listener.onFinished();
 			}
@@ -197,13 +196,12 @@ public class FileManagerTests {
 			List<RPCRequest> rpcs = (List<RPCRequest>) args[0];
 			OnMultipleRequestListener listener = (OnMultipleRequestListener) args[1];
 			if (rpcs.get(0) instanceof DeleteFile) {
-				Result resultCode = Result.REJECTED;
 				for (RPCRequest message : rpcs) {
 					int correlationId = message.getCorrelationID();
 					listener.addCorrelationId(correlationId);
-					DeleteFileResponse deleteFileResponse = new DeleteFileResponse();
-					deleteFileResponse.setSuccess(true);
-					listener.onError(correlationId, resultCode, "Binary data empty");
+					DeleteFileResponse deleteFileResponse = new DeleteFileResponse(false, Result.REJECTED);
+					deleteFileResponse.setInfo("Binary data empty");
+					listener.onResponse(correlationId, deleteFileResponse);
 				}
 				listener.onFinished();
 			}
@@ -218,7 +216,6 @@ public class FileManagerTests {
 			List<RPCRequest> rpcs = (List<RPCRequest>) args[0];
 			OnMultipleRequestListener listener = (OnMultipleRequestListener) args[1];
 			if (rpcs.get(0) instanceof PutFile) {
-				Result resultCode = Result.REJECTED;
 				boolean flip = false;
 				for (RPCRequest message : rpcs) {
 					int correlationId = message.getCorrelationID();
@@ -231,7 +228,9 @@ public class FileManagerTests {
 					} else {
 						flip = true;
 						putFileResponse.setSuccess(false);
-						listener.onError(correlationId, resultCode, "Binary data empty");
+						putFileResponse.setResultCode(Result.REJECTED);
+						putFileResponse.setInfo("Binary data empty");
+						listener.onResponse(correlationId, putFileResponse);
 					}
 				}
 				listener.onFinished();
@@ -250,7 +249,7 @@ public class FileManagerTests {
 		final ISdl internalInterface = mock(ISdl.class);
 
 		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
-		doAnswer(onListDeleteRequestSuccess).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
+		doAnswer(onListDeleteRequestSuccess).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
 
 		final List<String> fileNames = new ArrayList<>();
 		fileNames.add("Julian");
@@ -282,7 +281,7 @@ public class FileManagerTests {
 		final ISdl internalInterface = mock(ISdl.class);
 
 		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
-		doAnswer(onListDeleteRequestFail).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
+		doAnswer(onListDeleteRequestFail).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
 
 		final List<String> fileNames = new ArrayList<>();
 		fileNames.add("Julian");
@@ -405,7 +404,7 @@ public class FileManagerTests {
 		final ISdl internalInterface = mock(ISdl.class);
 
 		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
-		doAnswer(onSendRequestsFailOnError).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
+		doAnswer(onSendRequestsFailOnError).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
 
 		SdlFile validFile2 = new SdlFile();
 		validFile2.setName(TestValues.GENERAL_STRING + "2");
@@ -436,7 +435,7 @@ public class FileManagerTests {
 
 			}
 		});
-		verify(internalInterface, times(5)).sendRequests(any(List.class),any(OnMultipleRequestListener.class));
+		verify(internalInterface, times(5)).sendRPCs(any(List.class),any(OnMultipleRequestListener.class));
 	}
 
 	/**
@@ -554,7 +553,7 @@ public class FileManagerTests {
 		ISdl internalInterface = mock(ISdl.class);
 
 		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
-		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
+		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
 
 		FileManagerConfig fileManagerConfig = new FileManagerConfig();
 		final FileManager fileManager = new FileManager(internalInterface, mTestContext, fileManagerConfig);
@@ -575,7 +574,7 @@ public class FileManagerTests {
 				});
 			}
 		});
-		verify(internalInterface, times(0)).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
+		verify(internalInterface, times(0)).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
 	}
 
 	/**
@@ -586,7 +585,7 @@ public class FileManagerTests {
 		ISdl internalInterface = mock(ISdl.class);
 
 		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
-		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
+		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
 
 		FileManagerConfig fileManagerConfig = new FileManagerConfig();
 		final FileManager fileManager = new FileManager(internalInterface, mTestContext, fileManagerConfig);
@@ -608,7 +607,7 @@ public class FileManagerTests {
 				});
 			}
 		});
-		verify(internalInterface, times(1)).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
+		verify(internalInterface, times(1)).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
 	}
 
 	/**
@@ -704,7 +703,7 @@ public class FileManagerTests {
 		ISdl internalInterface = mock(ISdl.class);
 
 		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
-		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
+		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
 
 		FileManagerConfig fileManagerConfig = new FileManagerConfig();
 
@@ -741,7 +740,7 @@ public class FileManagerTests {
 		ISdl internalInterface = mock(ISdl.class);
 
 		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
-		doAnswer(onSendRequestsFailPartialOnError).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
+		doAnswer(onSendRequestsFailPartialOnError).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
 
 		SdlFile validFile2 = new SdlFile();
 		validFile2.setName(TestValues.GENERAL_STRING + "2");
@@ -790,7 +789,7 @@ public class FileManagerTests {
 		ISdl internalInterface = mock(ISdl.class);
 
 		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
-		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
+		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
 
 		FileManagerConfig fileManagerConfig = new FileManagerConfig();
 		final FileManager fileManager = new FileManager(internalInterface, mTestContext, fileManagerConfig);
@@ -910,7 +909,7 @@ public class FileManagerTests {
 		final ISdl internalInterface = mock(ISdl.class);
 
 		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
-		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
+		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
 
 		final SdlFile validFile2 = new SdlFile();
 		validFile2.setName(TestValues.GENERAL_STRING + "2");
@@ -946,7 +945,7 @@ public class FileManagerTests {
 
 			}
 		});
-		verify(internalInterface, times(1)).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
+		verify(internalInterface, times(1)).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
 	}
 
 	/**

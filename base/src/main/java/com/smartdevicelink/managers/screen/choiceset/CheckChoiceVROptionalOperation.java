@@ -36,12 +36,11 @@
 package com.smartdevicelink.managers.screen.choiceset;
 
 import com.livio.taskmaster.Task;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.Choice;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
-import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.DebugTool;
 
@@ -50,8 +49,8 @@ import java.util.Collections;
 
 class CheckChoiceVROptionalOperation extends Task {
 	private static final String TAG = "CheckChoiceVROptionalOperation";
-	private CheckChoiceVROptionalInterface checkChoiceVROptionalInterface;
-	private WeakReference<ISdl> internalInterface;
+	private final CheckChoiceVROptionalInterface checkChoiceVROptionalInterface;
+	private final WeakReference<ISdl> internalInterface;
 	private boolean isVROptional;
 
 	CheckChoiceVROptionalOperation(ISdl internalInterface, CheckChoiceVROptionalInterface checkChoiceVROptionalInterface){
@@ -86,12 +85,6 @@ class CheckChoiceVROptionalOperation extends Task {
 					sendTestChoiceWithVR();
 				}
 			}
-
-			@Override
-			public void onError(int correlationId, Result resultCode, String info){
-				DebugTool.logWarning(TAG, "Head unit doesn't support choices with no VR. Error: " + info + " resultCode: " + resultCode);
-				sendTestChoiceWithVR();
-			}
 		});
 
 		if (internalInterface.get() != null) {
@@ -123,17 +116,6 @@ class CheckChoiceVROptionalOperation extends Task {
 					CheckChoiceVROptionalOperation.super.onFinished();
 				}
 			}
-
-			@Override
-			public void onError(int correlationId, Result resultCode, String info){
-				DebugTool.logError(TAG, "There was an error in the check choice vr optional operation. Send test choice with VR failed. Error: " + info + " resultCode: " + resultCode);
-				isVROptional = false;
-				if (checkChoiceVROptionalInterface != null){
-					checkChoiceVROptionalInterface.onError(info);
-				}
-
-				CheckChoiceVROptionalOperation.super.onFinished();
-			}
 		});
 
 		if (internalInterface.get() != null) {
@@ -146,24 +128,17 @@ class CheckChoiceVROptionalOperation extends Task {
 		delete.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
-				if (response.getSuccess() != null){
+				if (response.getSuccess()){
 					DebugTool.logInfo(TAG, "Delete choice test set: "+ response.getSuccess());
+					if (checkChoiceVROptionalInterface != null){
+						checkChoiceVROptionalInterface.onCheckChoiceVROperationComplete(isVROptional);
+					}
+				} else {
+					DebugTool.logError(TAG, "There was an error presenting the keyboard. Finishing operation - choice set manager - . Error: " + response.getInfo() + " resultCode: " + response.getResultCode());
+					if (checkChoiceVROptionalInterface != null){
+						checkChoiceVROptionalInterface.onError(response.getInfo());
+					}
 				}
-
-				if (checkChoiceVROptionalInterface != null){
-					checkChoiceVROptionalInterface.onCheckChoiceVROperationComplete(isVROptional);
-				}
-
-				CheckChoiceVROptionalOperation.super.onFinished();
-			}
-
-			@Override
-			public void onError(int correlationId, Result resultCode, String info){
-				DebugTool.logError(TAG, "There was an error presenting the keyboard. Finishing operation - choice set manager - . Error: " + info + " resultCode: " + resultCode);
-				if (checkChoiceVROptionalInterface != null){
-					checkChoiceVROptionalInterface.onError(info);
-				}
-
 				CheckChoiceVROptionalOperation.super.onFinished();
 			}
 		});

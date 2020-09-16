@@ -16,12 +16,12 @@ import org.junit.Test;
 
 import java.util.Hashtable;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.fail;
-import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 
 /**
@@ -66,6 +66,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
 		msg.setGearStatus(TestValues.GENERAL_BOOLEAN);
 		msg.setHandsOffSteering(TestValues.GENERAL_BOOLEAN);
 		msg.setWindowStatus(TestValues.GENERAL_BOOLEAN);
+		msg.setStabilityControlsStatus(TestValues.GENERAL_BOOLEAN);
 		msg.setOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_BOOLEAN);
 
 		return msg;
@@ -118,6 +119,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
 			result.put(UnsubscribeVehicleData.KEY_HANDS_OFF_STEERING, TestValues.GENERAL_BOOLEAN);
 			result.put(UnsubscribeVehicleData.KEY_WINDOW_STATUS, TestValues.GENERAL_BOOLEAN);
 			result.put(UnsubscribeVehicleData.KEY_GEAR_STATUS, TestValues.GENERAL_BOOLEAN);
+			result.put(UnsubscribeVehicleData.KEY_STABILITY_CONTROLS_STATUS, TestValues.GENERAL_BOOLEAN);
 			result.put(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_BOOLEAN);
 		} catch (JSONException e) {
 			fail(TestValues.JSON_FAIL);
@@ -164,6 +166,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
 		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getHandsOffSteering());
 		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getWindowStatus());
 		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getGearStatus());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getStabilityControlsStatus());
 		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
 		// Invalid/Null Tests
 		UnsubscribeVehicleData msg = new UnsubscribeVehicleData();
@@ -202,6 +205,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
 		assertNull(TestValues.NULL, msg.getHandsOffSteering());
 		assertNull(TestValues.NULL, msg.getWindowStatus());
 		assertNull(TestValues.NULL, msg.getGearStatus());
+		assertNull(TestValues.NULL, msg.getStabilityControlsStatus());
 		assertNull(TestValues.NULL, msg.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
 	}
 
@@ -257,6 +261,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
 			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_HANDS_OFF_STEERING), cmd.getHandsOffSteering());
 			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_WINDOW_STATUS), cmd.getWindowStatus());
 			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_GEAR_STATUS), cmd.getGearStatus());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_STABILITY_CONTROLS_STATUS), cmd.getStabilityControlsStatus());
 			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME), cmd.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
 
 		} 

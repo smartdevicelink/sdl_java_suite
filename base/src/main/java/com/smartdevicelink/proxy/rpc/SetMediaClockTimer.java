@@ -46,7 +46,7 @@ import java.util.Hashtable;
  * count-down, etc.)
  * 
  * <p>Function Group: Base </p>
- * <p><b>HMILevel needs to be FULL, LIMITIED or BACKGROUND</b></p>
+ * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
  * 
  * <p><b>Parameter List</b></p>
  * 
@@ -262,13 +262,12 @@ public class SetMediaClockTimer extends RPCRequest {
 	 * @return StartTime -a StartTime object specifying hour, minute, second
 	 *         values
 	 */    
-    @SuppressWarnings("unchecked")
     public StartTime getStartTime() {
 		return (StartTime) getObject(StartTime.class, KEY_START_TIME);
     }
 	/**
 	 * Sets a Start Time with specifying hour, minute, second values
-	 * 
+	 *
 	 * @param startTime
 	 *            a startTime object with specifying hour, minute, second values
 	 *            <p></p>
@@ -278,18 +277,19 @@ public class SetMediaClockTimer extends RPCRequest {
 	 *            must be provided</li>
 	 *            <li>Will be ignored for PAUSE/RESUME and CLEAR</li>
 	 *            </ul>
-	 */    
-    public void setStartTime( StartTime startTime ) {
-		setParameters(KEY_START_TIME, startTime);
+	 */
+    public SetMediaClockTimer setStartTime( StartTime startTime) {
+        setParameters(KEY_START_TIME, startTime);
+        return this;
     }
     
-    @SuppressWarnings("unchecked")
     public StartTime getEndTime() {
 		return (StartTime) getObject(StartTime.class, KEY_END_TIME);
     }
     
-    public void setEndTime( StartTime endTime ) {
-		setParameters(KEY_END_TIME, endTime);
+    public SetMediaClockTimer setEndTime( StartTime endTime) {
+        setParameters(KEY_END_TIME, endTime);
+        return this;
     }
     
 	/**
@@ -302,7 +302,7 @@ public class SetMediaClockTimer extends RPCRequest {
     }
 	/**
 	 * Sets the media clock/timer update mode (COUNTUP/COUNTDOWN/PAUSE/RESUME)
-	 * 
+	 *
 	 * @param updateMode
 	 *            a Enumeration value (COUNTUP/COUNTDOWN/PAUSE/RESUME)
 	 *            <p></p>
@@ -313,9 +313,10 @@ public class SetMediaClockTimer extends RPCRequest {
 	 *            <li>When updateMode is RESUME, the timer resumes counting from
 	 *            the timer's value when it was paused</li>
 	 *            </ul>
-	 */    
-    public void setUpdateMode( @NonNull UpdateMode updateMode ) {
-		setParameters(KEY_UPDATE_MODE, updateMode);
+	 */
+    public SetMediaClockTimer setUpdateMode(@NonNull UpdateMode updateMode) {
+        setParameters(KEY_UPDATE_MODE, updateMode);
+        return this;
     }
 
 	/**
@@ -330,7 +331,8 @@ public class SetMediaClockTimer extends RPCRequest {
 	/**
 	 * Sets the playback status of a media app
 	 */
-	public void setAudioStreamingIndicator(AudioStreamingIndicator audioStreamingIndicator ) {
-		setParameters(KEY_AUDIO_STREAMING_INDICATOR, audioStreamingIndicator);
-	}
+	public SetMediaClockTimer setAudioStreamingIndicator( AudioStreamingIndicator audioStreamingIndicator) {
+        setParameters(KEY_AUDIO_STREAMING_INDICATOR, audioStreamingIndicator);
+        return this;
+    }
 }

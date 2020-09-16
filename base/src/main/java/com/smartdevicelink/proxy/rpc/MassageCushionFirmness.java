@@ -77,9 +77,10 @@ public class MassageCushionFirmness extends RPCStruct {
 	 *
 	 * @param cushion type of MassageCushion for multi-contour massage seat
 	 */
-	public void setCushion(@NonNull MassageCushion cushion) {
-		setValue(KEY_CUSHION, cushion);
-	}
+	public MassageCushionFirmness setCushion(@NonNull MassageCushion cushion) {
+        setValue(KEY_CUSHION, cushion);
+        return this;
+    }
 
 	/**
 	 * Gets the type of MassageCushion for multi-contour massage seat
@@ -95,9 +96,10 @@ public class MassageCushionFirmness extends RPCStruct {
 	 *
 	 * @param firmness firmness of the supplied MassageCushion (Min: 0  Max: 100)
 	 */
-	public void setFirmness(@NonNull Integer firmness) {
-		setValue(KEY_FIRMNESS, firmness);
-	}
+	public MassageCushionFirmness setFirmness(@NonNull Integer firmness) {
+        setValue(KEY_FIRMNESS, firmness);
+        return this;
+    }
 
 	/**
 	 * Gets the firmness associated with the supplied MassageCushion

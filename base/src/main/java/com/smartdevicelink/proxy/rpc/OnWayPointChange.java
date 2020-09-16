@@ -60,7 +60,8 @@ public class OnWayPointChange extends RPCNotification {
 		return (List<LocationDetails>) getObject(LocationDetails.class, KEY_WAY_POINTS);
 	}
 
-	public void setWayPoints(@NonNull List<LocationDetails> wayPoints) {
-		setParameters(KEY_WAY_POINTS, wayPoints);
-	}
+	public OnWayPointChange setWayPoints(@NonNull List<LocationDetails> wayPoints) {
+        setParameters(KEY_WAY_POINTS, wayPoints);
+        return this;
+    }
 }

@@ -62,7 +62,7 @@ import java.util.Hashtable;
  *  <tr>
  *      <td>updateSubCells</td>
  *      <td>Boolean</td>
- *      <td>If not set, assume false. If true, the app should send AddCommands with parentIDs matchingthe menuID. These AddCommands will then be attached to the submenu and displayed if thesubmenu is selected.</td>
+ *      <td>If not set, assume false. If true, the app should send AddCommands with parentIDs matching the menuID. These AddCommands will then be attached to the submenu and displayed if the submenu is selected.</td>
  *      <td>N</td>
  *      <td></td>
  *  </tr>
@@ -105,8 +105,9 @@ public class OnUpdateSubMenu extends RPCNotification {
      *
      * @param menuID This menuID must match a menuID in the current menu structure
      */
-    public void setMenuID(@NonNull Integer menuID) {
+    public OnUpdateSubMenu setMenuID(@NonNull Integer menuID) {
         setParameters(KEY_MENU_ID, menuID);
+        return this;
     }
 
     /**
@@ -125,8 +126,9 @@ public class OnUpdateSubMenu extends RPCNotification {
      * the menuID. These AddCommands will then be attached to the submenu and displayed if the
      * submenu is selected.
      */
-    public void setUpdateSubCells(Boolean updateSubCells) {
+    public OnUpdateSubMenu setUpdateSubCells( Boolean updateSubCells) {
         setParameters(KEY_UPDATE_SUB_CELLS, updateSubCells);
+        return this;
     }
 
     /**

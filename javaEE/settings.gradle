@@ -1,1 +1,1 @@
-rootProject.name = 'javaEE'
+include ':javaEE', ':hello_sdl_java_ee'

@@ -70,9 +70,7 @@ public class DebugTool {
 	
 	public static boolean isDebugEnabled() 
 	{
-		if (isWarningEnabled && isInfoEnabled) return true;
-		
-		return false;		
+		return isWarningEnabled && isInfoEnabled;
 	}
 	
 	@SuppressWarnings("ConstantConditions")
@@ -97,11 +95,6 @@ public class DebugTool {
 		}
 	}
 
-	@Deprecated
-	public static void logError(String msg) {
-		logError(TAG, msg);
-	}
-
 	public static void logError(String tag, String msg, Throwable ex) {
 		Boolean wasWritten = false;
 
@@ -119,11 +112,6 @@ public class DebugTool {
 		}
 	}
 
-	@Deprecated
-	public static void logError(String msg, Throwable ex) {
-		logError(TAG, msg, ex);
-	}
-
 	public static void logWarning(String tag, String msg) {
 		Boolean wasWritten = false;
 
@@ -135,11 +123,6 @@ public class DebugTool {
 			tag = tag != null ? tag : TAG;
 			NativeLogTool.logWarning(tag, msg);
 		}
-	}
-
-	@Deprecated
-	public static void logWarning(String msg) {
-		logWarning(TAG, msg);
 	}
 
 	public static void logInfo(String tag, String msg) {
@@ -155,11 +138,6 @@ public class DebugTool {
 		}
 	}
 
-	@Deprecated
-	public static void logInfo(String msg) {
-		logInfo(TAG, msg);
-	}
-
 	public static void logInfo(String tag, String msg, Boolean bPrependVersion) {
 		Boolean wasWritten = false;
 
@@ -171,11 +149,6 @@ public class DebugTool {
 			tag = tag != null ? tag : TAG;
 			NativeLogTool.logInfo(tag, msg);
 		}
-	}
-
-	@Deprecated
-	public static void logInfo(String msg, boolean bPrependVersion) {
-		logInfo(TAG, msg, bPrependVersion);
 	}
 
 	protected static Boolean logToSiphon(String msg) {
@@ -209,7 +182,7 @@ public class DebugTool {
 	}
 
 
-	protected static Vector<IConsole> consoleListenerList = new Vector<IConsole>();
+	protected static final Vector<IConsole> consoleListenerList = new Vector<>();
 
 	protected final static boolean isTransportEnabled = false;
 	protected final static boolean isRPCEnabled = false;
@@ -381,14 +354,14 @@ public class DebugTool {
 		} else {
 			message.setData(packet.getPayload());
 		}
-		Hashtable<String, Object> hash = new Hashtable<String, Object>();
+		Hashtable<String, Object> hash = new Hashtable<>();
 		if (packet.getVersion() > 1) {
-			Hashtable<String, Object> hashTemp = new Hashtable<String, Object>();
+			Hashtable<String, Object> hashTemp = new Hashtable<>();
 			
 			hashTemp.put(RPCMessage.KEY_CORRELATION_ID, message.getCorrID());
 			if (message.getJsonSize() > 0) {
-				final Hashtable<String, Object> mhash = JsonRPCMarshaller.unmarshall(message.getData());
-				hashTemp.put(RPCMessage.KEY_PARAMETERS, mhash);
+				final Hashtable<String, Object> mHash = JsonRPCMarshaller.unmarshall(message.getData());
+				hashTemp.put(RPCMessage.KEY_PARAMETERS, mHash);
 			}
 
 			String functionName = FunctionID.getFunctionName(message.getFunctionID());

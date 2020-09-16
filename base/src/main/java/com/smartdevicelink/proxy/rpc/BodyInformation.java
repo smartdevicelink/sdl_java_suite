@@ -56,7 +56,7 @@ import java.util.Hashtable;
  * 			<td>parkBrakeActive</td>
  * 			<td>Boolean</td>
  * 			<td>true</td>
- * 			<td>Describes, if the parkbreak is active. The information about the park brake: - true, if active - false if not.</td>
+ * 			<td>Describes, if the park break is active. The information about the park brake: - true, if active - false if not.</td>
  *  			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>
@@ -142,50 +142,57 @@ public class BodyInformation extends RPCStruct {
         setIgnitionStableStatus(ignitionStableStatus);
         setIgnitionStatus(ignitionStatus);
     }
-    public void setParkBrakeActive(@NonNull Boolean parkBrakeActive) {
+    public BodyInformation setParkBrakeActive(@NonNull Boolean parkBrakeActive) {
         setValue(KEY_PARK_BRAKE_ACTIVE, parkBrakeActive);
+        return this;
     }
     public Boolean getParkBrakeActive() {
         return getBoolean(KEY_PARK_BRAKE_ACTIVE);
     }
-    public void setIgnitionStableStatus(@NonNull IgnitionStableStatus ignitionStableStatus) {
+    public BodyInformation setIgnitionStableStatus(@NonNull IgnitionStableStatus ignitionStableStatus) {
         setValue(KEY_IGNITION_STABLE_STATUS, ignitionStableStatus);
+        return this;
     }
     public IgnitionStableStatus getIgnitionStableStatus() {
         return (IgnitionStableStatus) getObject(IgnitionStableStatus.class, KEY_IGNITION_STABLE_STATUS);
     }
-    public void setIgnitionStatus(@NonNull IgnitionStatus ignitionStatus) {
+    public BodyInformation setIgnitionStatus(@NonNull IgnitionStatus ignitionStatus) {
         setValue(KEY_IGNITION_STATUS, ignitionStatus);
+        return this;
     }
     public IgnitionStatus getIgnitionStatus() {
         return (IgnitionStatus) getObject(IgnitionStatus.class, KEY_IGNITION_STATUS);
     }
     
-    public void setDriverDoorAjar(Boolean driverDoorAjar) {
+    public BodyInformation setDriverDoorAjar( Boolean driverDoorAjar) {
         setValue(KEY_DRIVER_DOOR_AJAR, driverDoorAjar);
-    }    
+        return this;
+    }
     public Boolean getDriverDoorAjar() {
         return getBoolean(KEY_DRIVER_DOOR_AJAR);
     }
     
     
-    public void setPassengerDoorAjar(Boolean passengerDoorAjar) {
+    public BodyInformation setPassengerDoorAjar( Boolean passengerDoorAjar) {
         setValue(KEY_PASSENGER_DOOR_AJAR, passengerDoorAjar);
-    }    
+        return this;
+    }
     public Boolean getPassengerDoorAjar() {
         return getBoolean(KEY_PASSENGER_DOOR_AJAR);
     }
     
-    public void setRearLeftDoorAjar(Boolean rearLeftDoorAjar) {
+    public BodyInformation setRearLeftDoorAjar( Boolean rearLeftDoorAjar) {
         setValue(KEY_REAR_LEFT_DOOR_AJAR, rearLeftDoorAjar);
-    }    
+        return this;
+    }
     public Boolean getRearLeftDoorAjar() {
         return getBoolean(KEY_REAR_LEFT_DOOR_AJAR);
     }
 
-    public void setRearRightDoorAjar(Boolean rearRightDoorAjar) {
+    public BodyInformation setRearRightDoorAjar( Boolean rearRightDoorAjar) {
         setValue(KEY_REAR_RIGHT_DOOR_AJAR, rearRightDoorAjar);
-    }    
+        return this;
+    }
     public Boolean getRearRightDoorAjar() {
         return getBoolean(KEY_REAR_RIGHT_DOOR_AJAR);
     }     

@@ -33,8 +33,9 @@
 package com.smartdevicelink.managers.permission;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 
-import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.managers.ISdl;
 
 /**
  PermissionManager gives the developer information about what permissions are permitted in specific HMI level
@@ -51,6 +52,7 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
      *
      * @param internalInterface
      */
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
     public PermissionManager(@NonNull ISdl internalInterface) {
         super(internalInterface);
     }

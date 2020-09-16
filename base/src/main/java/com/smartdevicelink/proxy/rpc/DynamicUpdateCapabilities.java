@@ -52,14 +52,14 @@ import java.util.List;
  *  <tr>
  *      <td>supportedDynamicImageFieldNames</td>
  *      <td>List<ImageFieldName></td>
- *      <td>An array of ImageFieldName values for which the system supports sending OnFileUpdatenotifications. If you send an Image struct for that image field with a name without havinguploaded the image data using PutFile that matches that name, the system will request thatyou upload the data with PutFile at a later point when the HMI needs it. The HMI will thendisplay the image in the appropriate field. If not sent, assume false.</td>
+ *      <td>An array of ImageFieldName values for which the system supports sending OnFileUpdateNotifications. If you send an Image struct for that image field with a name without having uploaded the image data using PutFile that matches that name, the system will request that you upload the data with PutFile at a later point when the HMI needs it. The HMI will then display the image in the appropriate field. If not sent, assume false.</td>
  *      <td>N</td>
  *      <td></td>
  *  </tr>
  *  <tr>
  *      <td>supportsDynamicSubMenus</td>
  *      <td>Boolean</td>
- *      <td>If true, the head unit supports dynamic sub-menus by sending OnUpdateSubMenunotifications. If true, you should not send AddCommands that attach to a parentID for anAddSubMenu until OnUpdateSubMenu is received with the menuID. At that point, you shouldsend all AddCommands with a parentID that match the menuID. If not set, assume false.</td>
+ *      <td>If true, the head unit supports dynamic sub-menus by sending OnUpdateSubMenuNotifications. If true, you should not send AddCommands that attach to a parentID for anAddSubMenu until OnUpdateSubMenu is received with the menuID. At that point, you should send all AddCommands with a parentID that match the menuID. If not set, assume false.</td>
  *      <td>N</td>
  *      <td></td>
  *  </tr>
@@ -93,8 +93,9 @@ public class DynamicUpdateCapabilities extends RPCStruct {
      * you upload the data with PutFile at a later point when the HMI needs it. The HMI will then
      * display the image in the appropriate field. If not sent, assume false.
      */
-    public void setSupportedDynamicImageFieldNames(List<ImageFieldName> supportedDynamicImageFieldNames) {
+    public DynamicUpdateCapabilities setSupportedDynamicImageFieldNames( List<ImageFieldName> supportedDynamicImageFieldNames) {
         setValue(KEY_SUPPORTED_DYNAMIC_IMAGE_FIELD_NAMES, supportedDynamicImageFieldNames);
+        return this;
     }
 
     /**
@@ -119,8 +120,9 @@ public class DynamicUpdateCapabilities extends RPCStruct {
      * AddSubMenu until OnUpdateSubMenu is received with the menuID. At that point, you should
      * send all AddCommands with a parentID that match the menuID. If not set, assume false.
      */
-    public void setSupportsDynamicSubMenus(Boolean supportsDynamicSubMenus) {
+    public DynamicUpdateCapabilities setSupportsDynamicSubMenus( Boolean supportsDynamicSubMenus) {
         setValue(KEY_SUPPORTS_DYNAMIC_SUB_MENUS, supportsDynamicSubMenus);
+        return this;
     }
 
     /**

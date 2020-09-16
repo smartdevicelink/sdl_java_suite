@@ -120,15 +120,16 @@ public class GetDTCs extends RPCRequest {
 
 	/**
 	 * Sets a name of the module to receive the DTC form
-	 * 
+	 *
 	 * @param ecuName
 	 *            an Integer value representing a name of the module to receive
 	 *            the DTC form
 	 *            <p>
 	 *            <b>Notes:</p> </b>Minvalue:0; Maxvalue:65535
 	 */
-    public void setEcuName(@NonNull Integer ecuName) {
-		setParameters(KEY_ECU_NAME, ecuName);
+    public GetDTCs setEcuName(@NonNull Integer ecuName) {
+        setParameters(KEY_ECU_NAME, ecuName);
+        return this;
     }
 
 	/**
@@ -140,8 +141,9 @@ public class GetDTCs extends RPCRequest {
     public Integer getEcuName() {
     	return getInteger(KEY_ECU_NAME);
     }
-    public void setDtcMask(Integer dtcMask) {
-		setParameters(KEY_DTC_MASK, dtcMask);
+    public GetDTCs setDtcMask( Integer dtcMask) {
+        setParameters(KEY_DTC_MASK, dtcMask);
+        return this;
     }
     public Integer getDtcMask() {
     	return getInteger(KEY_DTC_MASK);

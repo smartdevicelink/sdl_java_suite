@@ -40,7 +40,7 @@ import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
 import java.util.Hashtable;
 
 /**
- * On-screen keyboard event. Can be full string or individual keypresses depending on keyboard mode.
+ * On-screen keyboard event. Can be full string or individual key presses depending on keyboard mode.
  * <p></p>
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
@@ -107,12 +107,14 @@ public class OnKeyboardInput extends RPCNotification {
         return (KeyboardEvent) getObject(KeyboardEvent.class, KEY_EVENT);
     }
 
-    public void setEvent(@NonNull KeyboardEvent event) {
+    public OnKeyboardInput setEvent(@NonNull KeyboardEvent event) {
         setParameters(KEY_EVENT, event);
+        return this;
     }
 
-    public void setData(String data) {
+    public OnKeyboardInput setData( String data) {
         setParameters(KEY_DATA, data);
+        return this;
     }
     public String getData() {
         Object obj = getParameters(KEY_DATA);

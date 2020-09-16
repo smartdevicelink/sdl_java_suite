@@ -144,9 +144,10 @@ public class SubscribeButton extends RPCRequest {
     }
 	/**
 	 * Sets a name of the button to subscribe to
-	 * @param buttonName a <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonName}</i> value
-	 */    
-    public void setButtonName(@NonNull ButtonName buttonName ) {
+	 * @param buttonName a <i>{@linkplain ButtonName}</i> value
+	 */
+    public SubscribeButton setButtonName(@NonNull ButtonName buttonName) {
         setParameters(KEY_BUTTON_NAME, buttonName);
+        return this;
     }
 }

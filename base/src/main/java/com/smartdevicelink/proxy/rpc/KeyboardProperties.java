@@ -69,7 +69,7 @@ import java.util.List;
  * 			<td>Boolean</td>
  * 			<td>false</td>
  *                 <td></td>
- * 			<td>In this mode, all keypresses will be sent as they occur. If disabled, entire string of text will be returned only once submitted by user.If omitted, this value will be set to FALSE.</td>
+ * 			<td>In this mode, all key presses will be sent as they occur. If disabled, entire string of text will be returned only once submitted by user.If omitted, this value will be set to FALSE.</td>
  * 		</tr>
  * 		<tr>
  * 			<td>keypressMode</td>
@@ -82,7 +82,7 @@ import java.util.List;
  * 			<td>limitedCharacterList</td>
  * 			<td>String</td>
  * 			<td>false</td>
- *                 <td>Array = true maxlength = 1 minsize = 1 maxsize = 100</td>
+ *                 <td>Array = true maxLength = 1 minsize = 1 maxsize = 100</td>
  * 			<td>Array of keyboard characters to enable. All omitted characters will be greyed out (disabled) on the keyboard. If omitted, the entire keyboard will be enabled.</td>
  * 		</tr>
  *
@@ -131,16 +131,18 @@ public class KeyboardProperties extends RPCStruct {
         return (Language) getObject(Language.class, KEY_LANGUAGE);
     }
 
-    public void setLanguage(Language language) {
+    public KeyboardProperties setLanguage( Language language) {
         setValue(KEY_LANGUAGE, language);
+        return this;
     }
 
     public KeyboardLayout getKeyboardLayout() {
         return (KeyboardLayout) getObject(KeyboardLayout.class, KEY_KEYBOARD_LAYOUT);
     }
 
-    public void setKeyboardLayout(KeyboardLayout keyboardLayout) {
+    public KeyboardProperties setKeyboardLayout( KeyboardLayout keyboardLayout) {
         setValue(KEY_KEYBOARD_LAYOUT, keyboardLayout);
+        return this;
     }
 
     public KeypressMode getKeypressMode() {
@@ -151,12 +153,13 @@ public class KeyboardProperties extends RPCStruct {
         return kp;
     }
 
-    public void setKeypressMode(KeypressMode keypressMode) {
+    public KeyboardProperties setKeypressMode( KeypressMode keypressMode) {
         if (keypressMode != null) {
             setValue(KEY_KEYPRESS_MODE, keypressMode);
         } else {
             setValue(KEY_KEYPRESS_MODE, KEYPRESS_MODE_DEFAULT);
         }
+        return this;
     }
 
     @SuppressWarnings("unchecked")
@@ -164,8 +167,9 @@ public class KeyboardProperties extends RPCStruct {
         return (List<String>) getObject(String.class, KEY_LIMITED_CHARACTER_LIST);
     }
 
-    public void setLimitedCharacterList(List<String> limitedCharacterList) {
+    public KeyboardProperties setLimitedCharacterList( List<String> limitedCharacterList) {
         setValue(KEY_LIMITED_CHARACTER_LIST, limitedCharacterList);
+        return this;
     }
 
     /**
@@ -180,11 +184,11 @@ public class KeyboardProperties extends RPCStruct {
     /**
      * Sets the text that allows an app to prepopulate the text field with a suggested entry as the user types
      * @param autoCompleteText String representing the suggestions text
-     * @deprecated use {@link #setAutoCompleteList(List<String>)} instead
+     * @deprecated use {@link #setAutoCompleteList( List <String>)} instead
      */
-    @Deprecated // Note: removing autoCompleteText setter will leave no way to provide auto complete suggestions on old head units that don't support autoCompleteList
-    public void setAutoCompleteText(String autoCompleteText) {
+    @Deprecated public KeyboardProperties setAutoCompleteText( String autoCompleteText) {
         setValue(KEY_AUTO_COMPLETE_TEXT, autoCompleteText);
+        return this;
     }
 
     /**
@@ -201,7 +205,8 @@ public class KeyboardProperties extends RPCStruct {
      * completed entries as the user types. Set to an empty array to remove the auto-complete list from the screen
      * @param autoCompleteList List<String> representing the suggestions list
      */
-    public void setAutoCompleteList(List<String> autoCompleteList) {
+    public KeyboardProperties setAutoCompleteList( List<String> autoCompleteList) {
         setValue(KEY_AUTO_COMPLETE_LIST, autoCompleteList);
+        return this;
     }
 }

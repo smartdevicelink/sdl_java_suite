@@ -105,12 +105,13 @@ public class DeleteFile extends RPCRequest {
 
 	/**
 	 * Sets a file reference name
-	 * 
+	 *
 	 * @param sdlFileName
 	 *            a String value representing a file reference name
 	 */
-    public void setSdlFileName(@NonNull String sdlFileName) {
-		setParameters(KEY_SDL_FILE_NAME, sdlFileName);
+    public DeleteFile setSdlFileName(@NonNull String sdlFileName) {
+        setParameters(KEY_SDL_FILE_NAME, sdlFileName);
+        return this;
     }
 
 	/**

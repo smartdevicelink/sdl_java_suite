@@ -91,8 +91,9 @@ public class ListFilesResponse extends RPCResponse {
         super.format(rpcVersion, formatParams);
     }
 
-    public void setFilenames(List<String> filenames) {
+    public ListFilesResponse setFilenames( List<String> filenames) {
         setParameters(KEY_FILENAMES, filenames);
+        return this;
     }
 
     @SuppressWarnings("unchecked")
@@ -100,8 +101,9 @@ public class ListFilesResponse extends RPCResponse {
         return (List<String>) getObject(String.class, KEY_FILENAMES);
     }
 
-    public void setSpaceAvailable(Integer spaceAvailable) {
+    public ListFilesResponse setSpaceAvailable( Integer spaceAvailable) {
         setParameters(KEY_SPACE_AVAILABLE, spaceAvailable);
+        return this;
     }
 
     public Integer getSpaceAvailable() {

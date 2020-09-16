@@ -17,8 +17,9 @@ public class SeatLocation extends RPCStruct {
      * Sets grid data for this seat location
      * @param grid the grid to be set
      */
-    public void setGrid(Grid grid) {
+    public SeatLocation setGrid( Grid grid) {
         setValue(KEY_GRID, grid);
+        return this;
     }
 
     /**

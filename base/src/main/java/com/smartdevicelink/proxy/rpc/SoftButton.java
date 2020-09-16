@@ -136,39 +136,44 @@ public class SoftButton extends RPCStruct {
 		setSoftButtonID(softButtonID);
 	}
 
-    public void setType(@NonNull SoftButtonType type) {
+    public SoftButton setType(@NonNull SoftButtonType type) {
         setValue(KEY_TYPE, type);
+        return this;
     }
     public SoftButtonType getType() {
     	return (SoftButtonType) getObject(SoftButtonType.class, KEY_TYPE);
     }
-    public void setText(String text) {
+    public SoftButton setText( String text) {
         setValue(KEY_TEXT, text);
+        return this;
     }
     public String getText() {
         return getString(KEY_TEXT);
     }
-    public void setImage(Image image) {
+    public SoftButton setImage( Image image) {
         setValue(KEY_IMAGE, image);
+        return this;
     }
-    @SuppressWarnings("unchecked")
     public Image getImage() {
     	return (Image) getObject(Image.class, KEY_IMAGE);
     }
-    public void setIsHighlighted(Boolean isHighlighted) {
+    public SoftButton setIsHighlighted( Boolean isHighlighted) {
         setValue(KEY_IS_HIGHLIGHTED, isHighlighted);
+        return this;
     }
     public Boolean getIsHighlighted() {
         return getBoolean(KEY_IS_HIGHLIGHTED);
     }
-    public void setSoftButtonID(@NonNull Integer softButtonID) {
+    public SoftButton setSoftButtonID(@NonNull Integer softButtonID) {
         setValue(KEY_SOFT_BUTTON_ID, softButtonID);
+        return this;
     }
     public Integer getSoftButtonID() {
         return getInteger(KEY_SOFT_BUTTON_ID);
     }
-    public void setSystemAction(SystemAction systemAction) {
+    public SoftButton setSystemAction( SystemAction systemAction) {
         setValue(KEY_SYSTEM_ACTION, systemAction);
+        return this;
     }
     public SystemAction getSystemAction() {
         return (SystemAction) getObject(SystemAction.class, KEY_SYSTEM_ACTION);

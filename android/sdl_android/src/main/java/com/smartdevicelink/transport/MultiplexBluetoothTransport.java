@@ -29,6 +29,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+
 import androidx.annotation.RequiresPermission;
 
 import com.smartdevicelink.protocol.SdlPacket;
@@ -63,7 +64,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
     // Key names received from the BluetoothSerialServer Handler
     private static final long MS_TILL_TIMEOUT = 2500;
     private static final int READ_BUFFER_SIZE = 4096;
-    private final Object THREAD_LOCK =  new Object();;
+    private final Object THREAD_LOCK =  new Object();
 
     protected static final String SHARED_PREFS = "sdl.bluetoothprefs";
 
@@ -74,9 +75,8 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
     private ConnectThread mConnectThread;
     private ConnectedThread mConnectedThread;
     private ConnectedWriteThread mConnectedWriteThread;
-    private int mBluetoothLevel = 0;
     Handler timeOutHandler;
-    Runnable socketRunable;
+    Runnable socketRunnable;
     boolean keepSocketAlive = true;
 
     /**
@@ -85,43 +85,6 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
      */
     public MultiplexBluetoothTransport(Handler handler) {
         super(handler, TransportType.BLUETOOTH);
-         //This will keep track of which method worked last night
-        mBluetoothLevel = SdlRouterService.getBluetoothPrefs(SHARED_PREFS);
-    }
-
-
-    /**
-     * This method has been deprecated. It will return an instance of MultiplexBluetoothTransport but <b>should not</b> be used.
-     * @param handler for receiving status messages from the transport
-     * @return an instance of MultiplexBluetoothTransport
-     * @deprecated
-     */
-	@Deprecated
-    public synchronized static MultiplexBluetoothTransport getBluetoothSerialServerInstance(Handler handler){
-    	return new MultiplexBluetoothTransport(handler);
-    }
-    /**
-     * This method has been deprecated. It will return an instance of MultiplexBluetoothTransport but <b>should not</b> be used.
-     * @param handler for receiving status messages from the transport
-     * @param keepSocketAlive Flag for keeping the socket alive
-     * @return an instance of MultiplexBluetoothTransport
-     * @deprecated
-     */
-	@Deprecated
-    public synchronized static MultiplexBluetoothTransport getBluetoothSerialServerInstance(Handler handler, boolean keepSocketAlive){
-        MultiplexBluetoothTransport transport = new MultiplexBluetoothTransport(handler);
-        transport.setKeepSocketAlive(keepSocketAlive);
-    	return transport;
-    }
-
-    /**
-     * This method has been deprecated. <b>It will always return null.</b>
-     * @return always null
-     * @deprecated
-     */
-    @Deprecated
-    public synchronized static MultiplexBluetoothTransport getBluetoothSerialServerInstance(){
-    	return null;
     }
 
     //These methods are used so we can have a semi-static reference to the Accept Thread (Static reference inherited by housing class)
@@ -348,7 +311,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
     
     private void timerDelayRemoveDialog(final BluetoothSocket sock){
     	timeOutHandler = new Handler();
-    	socketRunable = new Runnable() {
+    	socketRunnable = new Runnable() {
             public void run() {
             	//Log.e(TAG, "BLUETOOTH SOCKET CONNECT TIMEOUT - ATTEMPT TO CLOSE SOCKET");
             	try {
@@ -358,7 +321,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
 				}         
             }
         };
-        timeOutHandler.postDelayed(socketRunable, MS_TILL_TIMEOUT);
+        timeOutHandler.postDelayed(socketRunnable, MS_TILL_TIMEOUT);
     }
     
     
@@ -370,7 +333,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
      */
     private class AcceptThread extends Thread {
         // The local server socket
-        private String mSocketType;
+        private final String mSocketType;
        final BluetoothServerSocket mmServerSocket;
         
         @SuppressLint("NewApi")
@@ -388,7 +351,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
             	} catch (IOException e) {
                 	//Log.e(TAG, "Socket Type: " + mSocketType + "listen() failed", e);
 		            MultiplexBluetoothTransport.this.stop(STATE_ERROR, REASON_SPP_ERROR);
-                	 //Let's try to shut down this thead
+                	 //Let's try to shut down this thread
             	}catch(SecurityException e2){
             		//Log.e(TAG, "<LIVIO> Security Exception in Accept Thread - "+e2.toString());
             		interrupt();
@@ -407,7 +370,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                     " BEGIN mAcceptThread" + this);
             setName("AcceptThread" + mSocketType);
 
-            BluetoothSocket socket = null;
+            BluetoothSocket socket;
             int listenAttempts = 0; 
             
             // Listen to the server socket if we're not connected
@@ -491,8 +454,8 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
         private final BluetoothDevice mmDevice;
         public ConnectThread(BluetoothDevice device) {
             mmDevice = device;
-            //Log.d(TAG, "Attempting to conenct to " + device.getName());
-            //Log.d(TAG, "UUID to conenct to " + SERVER_UUID.toString());
+            //Log.d(TAG, "Attempting to connect to " + device.getName());
+            //Log.d(TAG, "UUID to connect to " + SERVER_UUID.toString());
 
         }
 
@@ -501,7 +464,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
         	try{
         		mAdapter.cancelDiscovery();
         	}catch(SecurityException e2){
-                DebugTool.logError(TAG, "Don't have required permision to cancel discovery. Moving on");
+                DebugTool.logError(TAG, "Don't have required permission to cancel discovery. Moving on");
         	}
         }
 
@@ -515,169 +478,148 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
             boolean success = false;
             Looper.prepare();
 
-            while(attemptCount < 5)
-            {
+            while (attemptCount < 5) {
                 //Looper.loop()
-            	attemptCount++;
-	            try {
-	                // This is a blocking call and will only return on a
-	                // successful connection or an exception
-	            	mBluetoothLevel = SdlRouterService.getBluetoothPrefs(SHARED_PREFS);
-	            	long waitTime = 3000;
-	                try {
-						Thread.sleep(waitTime);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					//This sequence tries to use reflection first to connect with a certain number of phones that require this
-					//Next is the most common methods for phones
-					//Finally if both have failed an insecure connection is attempted, though this is not available on lower SDK's
-	                boolean tryInsecure = false;
-	                boolean trySecure = false;
-	                //Log.i(TAG,mmDevice.getName() + " socket connecting...");
+                attemptCount++;
+                try {
+                    // This is a blocking call and will only return on a
+                    // successful connection or an exception
+                    long waitTime = 3000;
+                    try {
+                        Thread.sleep(waitTime);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    //This sequence tries to use reflection first to connect with a certain number of phones that require this
+                    //Next is the most common methods for phones
+                    //Finally if both have failed an insecure connection is attempted, though this is not available on lower SDK's
+                    boolean tryInsecure = false;
+                    boolean trySecure = false;
+                    //Log.i(TAG,mmDevice.getName() + " socket connecting...");
 
-	                if(mBluetoothLevel<=1){
-	                try {
-	                	SdlRouterService.setBluetoothPrefs(2,SHARED_PREFS);
-	                      Method m = mmDevice.getClass().getMethod("createRfcommSocket", new Class[] {int.class});
-	                      //Log.i(TAG,"connecting using createRfcommSocket");
-	                        mmSocket = (BluetoothSocket) m.invoke(mmDevice, Integer.valueOf(1));
-	    					if(mmSocket!=null){
-	    						//Looper.prepare(); 
-	    						timerDelayRemoveDialog(mmSocket);
-	    						//Looper.loop();
-	    						mmSocket.connect();
-	    						timeOutHandler.removeCallbacks(socketRunable);
-	    						if(Looper.myLooper() != null){
-	    						    Looper.myLooper().quit();
-	    						}
-	    						success=true;
-	    						SdlRouterService.setBluetoothPrefs(1,SHARED_PREFS);
-	    	                	break;
-	    					} else{trySecure = true;}
+                    try {
+                        Method m = mmDevice.getClass().getMethod("createRfcommSocket", new Class[]{int.class});
+                        //Log.i(TAG,"connecting using createRfcommSocket");
+                        mmSocket = (BluetoothSocket) m.invoke(mmDevice, 1);
+                        if (mmSocket != null) {
+                            //Looper.prepare();
+                            timerDelayRemoveDialog(mmSocket);
+                            //Looper.loop();
+                            mmSocket.connect();
+                            timeOutHandler.removeCallbacks(socketRunnable);
+                            if (Looper.myLooper() != null) {
+                                Looper.myLooper().quit();
+                            }
+                            success = true;
+                            break;
+                        } else {
+                            trySecure = true;
+                        }
 
-	                } catch (Exception e) {
-	                      //Log.e(TAG,"createRfcommSocket exception - " + e.toString());
-	                      SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
-
-	                		trySecure = true;
-	    	                try {
-	    						Thread.sleep(500);
-	    					} catch (InterruptedException e2) {
-	    						e2.printStackTrace();
-	    					}
-	                }
-	            }else{trySecure = true;}
-	                if(trySecure && mBluetoothLevel<=2){
-	                    try {
-	                    	SdlRouterService.setBluetoothPrefs(3,SHARED_PREFS);
-    	                	//Log.i(TAG, "connecting using createRfcommSocketToServiceRecord ");
-	                         mmSocket = mmDevice.createRfcommSocketToServiceRecord(SERVER_UUID);                        
-	     					if(mmSocket!=null){
-	    						//Looper.prepare(); 
-	    						timerDelayRemoveDialog(mmSocket);
-	    						//Looper.loop();
-	    						mmSocket.connect();
-	    						timeOutHandler.removeCallbacks(socketRunable);
-	    						if(Looper.myLooper() != null){
-	    						    Looper.myLooper().quit();
-	    						}
-	    						success=true;
-	    						SdlRouterService.setBluetoothPrefs(2,SHARED_PREFS);
-	    	                	break;
-	    					}else{tryInsecure = true;}
-	                    } catch (IOException io) {
-	                        tryInsecure = true;
+                    } catch (Exception e) {
+                        //Log.e(TAG,"createRfcommSocket exception - " + e.toString());
+                        trySecure = true;
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e2) {
+                            e2.printStackTrace();
+                        }
+                    }
+                    if (trySecure) {
+                        try {
+                            //Log.i(TAG, "connecting using createRfcommSocketToServiceRecord ");
+                            mmSocket = mmDevice.createRfcommSocketToServiceRecord(SERVER_UUID);
+                            if (mmSocket != null) {
+                                //Looper.prepare();
+                                timerDelayRemoveDialog(mmSocket);
+                                //Looper.loop();
+                                mmSocket.connect();
+                                timeOutHandler.removeCallbacks(socketRunnable);
+                                if (Looper.myLooper() != null) {
+                                    Looper.myLooper().quit();
+                                }
+                                success = true;
+                                break;
+                            } else {
+                                tryInsecure = true;
+                            }
+                        } catch (IOException io) {
+                            tryInsecure = true;
                             DebugTool.logError(TAG, "createRfcommSocketToServiceRecord exception - " + io.toString());
-	                         SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
-
-	                    } catch (Exception e){
+                        } catch (Exception e) {
                             DebugTool.logError(TAG, "createRfcommSocketToServiceRecord exception - " + e.toString());
-	                         SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
+                        }
+                    } else {
+                        tryInsecure = true;
+                    }
 
-	                    }
-	                }else{tryInsecure = true;}
-
-	                if (tryInsecure && mBluetoothLevel<=3) {
-	                    // try again using insecure comm if available
-	                    try {
-	                    	SdlRouterService.setBluetoothPrefs(4,SHARED_PREFS);
-	                        //Log.i(TAG,"connecting using createInsecureRfcommSocketToServiceRecord");
-	                        Method m = mmDevice.getClass().getMethod("createInsecureRfcommSocketToServiceRecord", new Class[] {UUID.class});
-	                        mmSocket = (BluetoothSocket) m.invoke(mmDevice, new Object[] {SERVER_UUID});
-    						//Looper.prepare(); 
-    						timerDelayRemoveDialog(mmSocket);
-    						//Looper.loop();
-    						mmSocket.connect();
-    						timeOutHandler.removeCallbacks(socketRunable);
-    						if(Looper.myLooper() != null){
-    						    Looper.myLooper().quit();
-    						}
-    						success=true;
-		                	tryInsecure = false;
-		                	SdlRouterService.setBluetoothPrefs(3,SHARED_PREFS);
-		                	break;
-	                    } catch (NoSuchMethodException ie) {
-	                    	SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
-	                    } catch (IllegalAccessException ie) {
-	                    	SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
-	                    } catch (InvocationTargetException ie) {
-	                    	SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
-	                    }
-	                }
-	                if (tryInsecure && mBluetoothLevel<=4) {
-	                    // try again using insecure comm if available
-	                    try {
-	                    	SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
-	                        //Log.i(TAG,"connecting using createInsecureRfcommSocket()");
-	                        Method m = mmDevice.getClass().getMethod("createInsecureRfcommSocket()", new Class[] {UUID.class});
-	                        mmSocket = (BluetoothSocket) m.invoke(mmDevice, new Object[] {SERVER_UUID});
-    						//Looper.prepare(); 
-    						timerDelayRemoveDialog(mmSocket);
-    						//Looper.loop();
-    						mmSocket.connect();
-    						timeOutHandler.removeCallbacks(socketRunable);
-    						if(Looper.myLooper() != null){
-    						    Looper.myLooper().quit();
-    						}
-    						success=true;
-    						SdlRouterService.setBluetoothPrefs(4,SHARED_PREFS);
-		                	break;
-	                    } catch (NoSuchMethodException ie) {
-	                    	SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
-	                    } catch (IllegalAccessException ie) {
-	                    	SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
-	                    } catch (InvocationTargetException ie) {
-	                    	SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
-	                    }
-	                }
-	            }  catch (IOException e) {
-              connectionFailed();
-                    DebugTool.logError(TAG,e.getClass().getSimpleName()
-                      + " caught connecting to the bluetooth socket: "
-                      + e.toString());
-              try {
-                  mmSocket.close();
-              } catch (IOException e2) {
-                  DebugTool.logError(TAG, "unable to close() socket during connection failure" + e2);
-              }
-              return;
-          }
+                    if (tryInsecure) {
+                        // try again using insecure comm if available
+                        try {
+                            //Log.i(TAG,"connecting using createInsecureRfcommSocketToServiceRecord");
+                            Method m = mmDevice.getClass().getMethod("createInsecureRfcommSocketToServiceRecord", new Class[]{UUID.class});
+                            mmSocket = (BluetoothSocket) m.invoke(mmDevice, new Object[]{SERVER_UUID});
+                            //Looper.prepare();
+                            timerDelayRemoveDialog(mmSocket);
+                            //Looper.loop();
+                            mmSocket.connect();
+                            timeOutHandler.removeCallbacks(socketRunnable);
+                            if (Looper.myLooper() != null) {
+                                Looper.myLooper().quit();
+                            }
+                            success = true;
+                            tryInsecure = false;
+                            break;
+                        } catch (NoSuchMethodException ie) {
+                        } catch (IllegalAccessException ie) {
+                        } catch (InvocationTargetException ie) {
+                        }
+                    }
+                    if (tryInsecure) {
+                        // try again using insecure comm if available
+                        try {
+                            //Log.i(TAG,"connecting using createInsecureRfcommSocket()");
+                            Method m = mmDevice.getClass().getMethod("createInsecureRfcommSocket()", new Class[]{UUID.class});
+                            mmSocket = (BluetoothSocket) m.invoke(mmDevice, new Object[]{SERVER_UUID});
+                            //Looper.prepare();
+                            timerDelayRemoveDialog(mmSocket);
+                            //Looper.loop();
+                            mmSocket.connect();
+                            timeOutHandler.removeCallbacks(socketRunnable);
+                            if (Looper.myLooper() != null) {
+                                Looper.myLooper().quit();
+                            }
+                            success = true;
+                            break;
+                        } catch (NoSuchMethodException ie) {
+                        } catch (IllegalAccessException ie) {
+                        } catch (InvocationTargetException ie) {
+                        }
+                    }
+                } catch (IOException e) {
+                    connectionFailed();
+                    DebugTool.logError(TAG, e.getClass().getSimpleName()
+                            + " caught connecting to the bluetooth socket: "
+                            + e.toString());
+                    try {
+                        mmSocket.close();
+                    } catch (IOException e2) {
+                        DebugTool.logError(TAG, "unable to close() socket during connection failure" + e2);
+                    }
+                    return;
+                }
             }
             // Reset the ConnectThread because we're done
-            if(success)
-            {
-	            synchronized (MultiplexBluetoothTransport.this) {
-	                mConnectThread = null;
-	            }
-	
+            if (success) {
+                synchronized (MultiplexBluetoothTransport.this) {
+                    mConnectThread = null;
+                }
 
-	            // Start the connected thread
-	
-	           	connected(mmSocket, mmDevice);
-            }
-            else
-            {
+
+                // Start the connected thread
+
+                connected(mmSocket, mmDevice);
+            } else {
                 DebugTool.logError(TAG, "There was a problem opening up RFCOMM");
             }
         }
@@ -688,9 +630,8 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                 mmSocket.close();
             } catch (IOException e) {
                 // close() of connect socket failed
-            }
-            catch(NullPointerException e){
-            	//mSocket was pry never initialized
+            } catch (NullPointerException e) {
+                //mSocket was pry never initialized
             }
         }
     }
@@ -761,7 +702,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
     private class ConnectedThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
-    	SdlPsm psm;
+    	final SdlPsm psm;
         public ConnectedThread(BluetoothSocket socket) {
         	this.psm = new SdlPsm();
         	//Log.d(TAG, "Creating a Connected - Read Thread");
@@ -851,7 +792,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
 		Field[] f = bsSocket.getClass().getDeclaredFields();
 
 	    //int channel = -1;
-	    BluetoothSocket mySocket = null;
+	    BluetoothSocket mySocket;
 	    for (Field field : f) {
 	        if(field.getName().equals("mSocket")){
 	            field.setAccessible(true);

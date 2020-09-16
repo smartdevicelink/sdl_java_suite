@@ -97,8 +97,9 @@ public class SendLocation extends RPCRequest{
      * Setter for longitude of the location to send.
      * @param longitudeDegrees degrees of the longitudinal position
      */
-    public void setLongitudeDegrees(Double longitudeDegrees){
+    public SendLocation setLongitudeDegrees( Double longitudeDegrees) {
         setParameters(KEY_LON_DEGREES, longitudeDegrees);
+        return this;
     }
 
     /**
@@ -120,8 +121,9 @@ public class SendLocation extends RPCRequest{
      * Setter for latitude of the location to send.
      * @param latitudeDegrees degrees of the latitudinal position
      */
-    public void setLatitudeDegrees(Double latitudeDegrees){
+    public SendLocation setLatitudeDegrees( Double latitudeDegrees) {
         setParameters(KEY_LAT_DEGREES, latitudeDegrees);
+        return this;
     }
 
     /**
@@ -136,8 +138,9 @@ public class SendLocation extends RPCRequest{
      * Setter for name of the location to send.
      * @param locationName The name of the location
      */
-    public void setLocationName(String locationName){
+    public SendLocation setLocationName( String locationName) {
         setParameters(KEY_LOCATION_NAME, locationName);
+        return this;
     }
 
     /**
@@ -152,8 +155,9 @@ public class SendLocation extends RPCRequest{
      * Setter for description of the location to send.
      * @param locationDescription The description of the location
      */
-    public void setLocationDescription(String locationDescription){
+    public SendLocation setLocationDescription( String locationDescription) {
         setParameters(KEY_LOCATION_DESCRIPTION, locationDescription);
+        return this;
     }
 
     /**
@@ -168,8 +172,9 @@ public class SendLocation extends RPCRequest{
      * Setter for phone number of the location to send.
      * @param phoneNumber The phone number of the location
      */
-    public void setPhoneNumber(String phoneNumber){
+    public SendLocation setPhoneNumber( String phoneNumber) {
         setParameters(KEY_PHONE_NUMBER, phoneNumber);
+        return this;
     }
 
     /**
@@ -185,15 +190,15 @@ public class SendLocation extends RPCRequest{
      * Setter for address lines of the location to send.
      * @param addressLines The address lines of the location
      */
-    public void setAddressLines(List<String> addressLines){
+    public SendLocation setAddressLines( List<String> addressLines) {
         setParameters(KEY_ADDRESS_LINES, addressLines);
+        return this;
     }
 
     /**
      * Getter for image of the location to send.
      * @return The image of the location to send
      */
-    @SuppressWarnings("unchecked")
     public Image getLocationImage(){
         return (Image) getObject(Image.class, KEY_LOCATION_IMAGE);
     }
@@ -202,33 +207,35 @@ public class SendLocation extends RPCRequest{
      * Setter for image of the location to send.
      * @param locationImage The image of the location to send
      */
-    public void setLocationImage(Image locationImage){
+    public SendLocation setLocationImage( Image locationImage) {
         setParameters(KEY_LOCATION_IMAGE, locationImage);
+        return this;
     }
 
 	public DeliveryMode getDeliveryMode() {
         return (DeliveryMode) getObject(DeliveryMode.class, KEY_DELIVERY_MODE);
 	}
 
-	public void setDeliveryMode(DeliveryMode deliveryMode) {
+	public SendLocation setDeliveryMode( DeliveryMode deliveryMode) {
         setParameters(KEY_DELIVERY_MODE, deliveryMode);
-	}
+        return this;
+    }
 
-    @SuppressWarnings("unchecked")
-	public DateTime getTimeStamp() {
+    public DateTime getTimeStamp() {
         return (DateTime) getObject(DateTime.class, KEY_TIME_STAMP);
 	}
 
-	public void setTimeStamp(DateTime timeStamp) {
+	public SendLocation setTimeStamp( DateTime timeStamp) {
         setParameters(KEY_TIME_STAMP, timeStamp);
-	}
+        return this;
+    }
 
-    @SuppressWarnings("unchecked")
-	public OasisAddress getAddress() {
+    public OasisAddress getAddress() {
         return (OasisAddress) getObject(OasisAddress.class, KEY_ADDRESS);
 	}
 
-	public void setAddress(OasisAddress address) {
+	public SendLocation setAddress( OasisAddress address) {
         setParameters(KEY_ADDRESS, address);
-	}
+        return this;
+    }
 }

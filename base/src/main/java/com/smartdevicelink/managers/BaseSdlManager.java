@@ -38,6 +38,7 @@ import com.smartdevicelink.managers.file.FileManagerConfig;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
 import com.smartdevicelink.managers.lifecycle.LifecycleManager;
+import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.managers.screen.ScreenManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -46,8 +47,6 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.ChangeRegistration;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
@@ -56,7 +55,6 @@ import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
-import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
@@ -179,17 +177,10 @@ abstract class BaseSdlManager {
 
         if ((actualLanguage != null && !actualLanguage.equals(language)) || (actualHMILanguage != null && !actualHMILanguage.equals(hmiLanguage))) {
 
-            LifecycleConfigurationUpdate lcuNew = managerListener.managerShouldUpdateLifecycle(actualLanguage, actualHMILanguage);
-            LifecycleConfigurationUpdate lcuOld = managerListener.managerShouldUpdateLifecycle(actualLanguage);
-            final LifecycleConfigurationUpdate lcu;
+            final LifecycleConfigurationUpdate lcu = managerListener.managerShouldUpdateLifecycle(actualLanguage, actualHMILanguage);
+
             ChangeRegistration changeRegistration;
-            if (lcuNew == null) {
-                lcu = lcuOld;
-                changeRegistration = new ChangeRegistration(actualLanguage, actualLanguage);
-            } else {
-                lcu = lcuNew;
-                changeRegistration = new ChangeRegistration(actualLanguage, actualHMILanguage);
-            }
+            changeRegistration = new ChangeRegistration(actualLanguage, actualHMILanguage);
 
             if (lcu != null) {
                 changeRegistration.setAppName(lcu.getAppName());
@@ -200,6 +191,12 @@ abstract class BaseSdlManager {
                     @Override
                     public void onResponse(int correlationId, RPCResponse response) {
                         if (response.getSuccess()) {
+                            try {
+                                DebugTool.logInfo(TAG, response.serializeJSON().toString());
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
                             // go through and change sdlManager properties that were changed via the LCU update
                             hmiLanguage = actualHMILanguage;
                             language = actualLanguage;
@@ -219,18 +216,10 @@ abstract class BaseSdlManager {
                             if (lcu.getVoiceRecognitionCommandNames() != null) {
                                 vrSynonyms = lcu.getVoiceRecognitionCommandNames();
                             }
+                        } else {
+                            DebugTool.logError(TAG, "Change Registration onError: " + response.getResultCode() + " | Info: " + response.getInfo());
+                            retryChangeRegistration();
                         }
-                        try {
-                            DebugTool.logInfo(TAG, response.serializeJSON().toString());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(int correlationId, Result resultCode, String info) {
-                        DebugTool.logError(TAG, "Change Registration onError: " + resultCode + " | Info: " + info);
-                        retryChangeRegistration();
                     }
                 });
                 this.sendRPC(changeRegistration);
@@ -267,7 +256,7 @@ abstract class BaseSdlManager {
         if (onRPCNotificationListeners != null) {
             Set<FunctionID> functionIDSet = onRPCNotificationListeners.keySet();
             if (functionIDSet != null && !functionIDSet.isEmpty()) {
-                queuedNotifications = new ConcurrentLinkedQueue<RPCNotification>();
+                queuedNotifications = new ConcurrentLinkedQueue<>();
                 queuedNotificationListener = new OnRPCNotificationListener() {
                     @Override
                     public void onNotified(RPCNotification notification) {
@@ -316,7 +305,6 @@ abstract class BaseSdlManager {
     /**
      * Starts up a SdlManager, and calls provided callback called once all BaseSubManagers are done setting up
      */
-    @SuppressWarnings("unchecked")
     public void start() {
         LifecycleManager.AppConfig appConfig = new LifecycleManager.AppConfig();
         appConfig.setAppName(appName);
@@ -610,7 +598,7 @@ abstract class BaseSdlManager {
 
     // BUILDER
     public static class Builder {
-        SdlManager sdlManager;
+        final SdlManager sdlManager;
 
         Builder(@NonNull final String appId, @NonNull final String appName, @NonNull final SdlManagerListener listener) {
             sdlManager = new SdlManager();
@@ -622,7 +610,7 @@ abstract class BaseSdlManager {
         /**
          * Sets the App ID
          *
-         * @param appId String representation of the App ID retreived from the SDL Developer Portal
+         * @param appId String representation of the App ID retrieved from the SDL Developer Portal
          */
         public Builder setAppId(@NonNull final String appId) {
             sdlManager.appId = appId;
@@ -786,17 +774,6 @@ abstract class BaseSdlManager {
          */
         public Builder setTransportType(@NonNull BaseTransportConfig transport) {
             sdlManager.transport = transport;
-            return this;
-        }
-
-        /**
-         * Sets the Security libraries
-         *
-         * @param secList The list of security class(es)
-         */
-        @Deprecated
-        public Builder setSdlSecurity(List<Class<? extends SdlSecurityBase>> secList) {
-            sdlManager.sdlSecList = secList;
             return this;
         }
 

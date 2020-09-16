@@ -107,21 +107,23 @@ public class VrHelpItem extends RPCStruct {
     	setPosition(position);
 	}
 
-    public void setText(@NonNull String text) {
+    public VrHelpItem setText(@NonNull String text) {
         setValue(KEY_TEXT, text);
+        return this;
     }
     public String getText() {
         return getString(KEY_TEXT);
     }
-    public void setImage(Image image) {
+    public VrHelpItem setImage( Image image) {
         setValue(KEY_IMAGE, image);
+        return this;
     }
-    @SuppressWarnings("unchecked")
     public Image getImage() {
         return (Image) getObject(Image.class, KEY_IMAGE);
     }
-    public void setPosition(@NonNull Integer position) {
+    public VrHelpItem setPosition(@NonNull Integer position) {
         setValue(KEY_POSITION, position);
+        return this;
     }
     public Integer getPosition() {
         return getInteger(KEY_POSITION);

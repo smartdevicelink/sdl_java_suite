@@ -37,12 +37,12 @@ import com.livio.taskmaster.Queue;
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
+import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
+import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
-import com.smartdevicelink.proxy.interfaces.ISdl;
-import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
@@ -136,7 +136,11 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
                     for (WindowCapability windowCapability : mainDisplay.getWindowCapabilities()) {
                         int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
                         if (currentWindowID == PredefinedWindows.DEFAULT_WINDOW.getValue()) {
-                            softButtonCapabilities = windowCapability.getSoftButtonCapabilities().get(0);
+                            if (windowCapability.getSoftButtonCapabilities() != null && windowCapability.getSoftButtonCapabilities().size() > 0) {
+                                softButtonCapabilities = windowCapability.getSoftButtonCapabilities().get(0);
+                            } else {
+                                softButtonCapabilities = null;
+                            }
                             break;
                         }
                     }
@@ -161,7 +165,9 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
                 updateTransactionQueueSuspended();
             }
         };
-        this.internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplayCapabilityListener);
+        if (internalInterface.getSystemCapabilityManager() != null) {
+            this.internalInterface.getSystemCapabilityManager().addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplayCapabilityListener);
+        }
 
         // Add OnButtonPressListener to notify SoftButtonObjects when there is a button press
         this.onButtonPressListener = new OnRPCNotificationListener() {
@@ -232,7 +238,9 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, onHMIStatusListener);
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_BUTTON_PRESS, onButtonPressListener);
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_BUTTON_EVENT, onButtonEventListener);
-        internalInterface.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplayCapabilityListener);
+        if (internalInterface.getSystemCapabilityManager() != null) {
+            internalInterface.getSystemCapabilityManager().removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplayCapabilityListener);
+        }
     }
 
     private Queue newTransactionQueue() {

@@ -44,7 +44,6 @@ import java.nio.ByteOrder;
 public class SampleBuffer {
     private static final String TAG = SampleBuffer.class.getSimpleName();
 
-    @SuppressWarnings({"unused", "FieldCanBeLocal"})
     private @SampleType final int sampleType;
     private final ByteBuffer byteBuffer;
     private final int channelCount;
@@ -94,7 +93,6 @@ public class SampleBuffer {
      * @param presentationTimeUs The presentation time for the buffer.
      * @return A new and empty sample buffer.
      */
-    @SuppressWarnings("unused")
     public static SampleBuffer allocate(int capacity, @SampleType int sampleType, int channelCount, ByteOrder byteOrder, long presentationTimeUs) {
         return new SampleBuffer(capacity, sampleType, channelCount, byteOrder, presentationTimeUs);
     }
@@ -117,7 +115,6 @@ public class SampleBuffer {
     /**
      * Returns the capacity of the buffer per channel.
      */
-    @SuppressWarnings("unused")
     public int capacity() {
         return byteBuffer.capacity() / sampleType / channelCount;
     }

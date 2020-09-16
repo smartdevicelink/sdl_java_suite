@@ -65,9 +65,10 @@ public class OnAppServiceData extends RPCNotification {
 	/**
 	 * @param serviceData -
 	 */
-	public void setServiceData(@NonNull AppServiceData serviceData){
-		setParameters(KEY_SERVICE_DATA, serviceData);
-	}
+	public OnAppServiceData setServiceData(@NonNull AppServiceData serviceData) {
+        setParameters(KEY_SERVICE_DATA, serviceData);
+        return this;
+    }
 
 	/**
 	 * @return serviceData

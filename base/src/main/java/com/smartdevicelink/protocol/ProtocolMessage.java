@@ -31,9 +31,12 @@
  */
 package com.smartdevicelink.protocol;
 
+import androidx.annotation.RestrictTo;
+
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class ProtocolMessage {
 	private byte version = 1;
 	private SessionType _sessionType = SessionType.RPC;

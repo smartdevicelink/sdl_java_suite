@@ -31,6 +31,8 @@
  */
 package com.smartdevicelink.marshal;
 
+import androidx.annotation.RestrictTo;
+
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.trace.SdlTrace;
@@ -50,7 +52,7 @@ import java.util.List;
  * Responsible for marshalling and unmarshing between RPC Objects and byte streams that are sent
  * over transmission
  */
-
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class JsonRPCMarshaller {
 	private static final String TAG = "JsonRPCMarshaller";
 	private static final String SDL_LIB_PRIVATE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
@@ -86,12 +88,11 @@ public class JsonRPCMarshaller {
 		return ret;
 	}
 	
-	@SuppressWarnings("unchecked")
-    public static Hashtable<String, Object> deserializeJSONObject(JSONObject jsonObject) 
+	public static Hashtable<String, Object> deserializeJSONObject(JSONObject jsonObject)
 			throws JSONException {
-		Hashtable<String, Object> ret = new Hashtable<String, Object>();
+		Hashtable<String, Object> ret = new Hashtable<>();
 		Iterator<String> it = jsonObject.keys();
-		String key = null;
+		String key;
 		while (it.hasNext()) {
 			key = it.next();
 			Object value = jsonObject.get(key);
@@ -99,7 +100,7 @@ public class JsonRPCMarshaller {
 				ret.put(key, deserializeJSONObject((JSONObject)value));
 			} else if (value instanceof JSONArray) {
 				JSONArray arrayValue = (JSONArray) value;
-				List<Object> putList = new ArrayList<Object>(arrayValue.length());
+				List<Object> putList = new ArrayList<>(arrayValue.length());
 				for (int i = 0; i < arrayValue.length(); i++) {
 					Object anObject = arrayValue.get(i); 
 					if (anObject instanceof JSONObject) {
@@ -139,16 +140,14 @@ public class JsonRPCMarshaller {
 	@SuppressWarnings({"unchecked" })
     public static JSONObject serializeHashtable(Hashtable<String, Object> hash) throws JSONException{
 		JSONObject obj = new JSONObject();
-		Iterator<String> hashKeyIterator = hash.keySet().iterator();
-		while (hashKeyIterator.hasNext()){
-			String key = (String) hashKeyIterator.next();
+		for (String key : hash.keySet()) {
 			Object value = hash.get(key);
 			if (value instanceof RPCStruct) {
 				obj.put(key, ((RPCStruct) value).serializeJSON());
 			} else if (value instanceof List<?>) {
 				obj.put(key, serializeList((List<?>) value));
 			} else if (value instanceof Hashtable) {
-				obj.put(key, serializeHashtable((Hashtable<String, Object>)value));
+				obj.put(key, serializeHashtable((Hashtable<String, Object>) value));
 			} else {
 				obj.put(key, value);
 			}

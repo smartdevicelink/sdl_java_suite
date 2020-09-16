@@ -84,14 +84,15 @@ public class ShowConstantTbt extends RPCRequest{
 
     /**
      * Sets a text for navigation text field 1
-     * 
+     *
      * @param navigationText1
      *            a String value representing a text for navigation text field 1
      *            <p></p>
      *            <b>Notes: </b>Maxlength=500
      */
-    public void setNavigationText1(String navigationText1){
+    public ShowConstantTbt setNavigationText1( String navigationText1) {
         setParameters(KEY_TEXT1, navigationText1);
+        return this;
     }
 
     /**
@@ -105,14 +106,15 @@ public class ShowConstantTbt extends RPCRequest{
 
     /**
      * Sets a text for navigation text field 2
-     * 
+     *
      * @param navigationText2
      *            a String value representing a text for navigation text field 2
      *            <p></p>
      *            <b>Notes: </b>Maxlength=500
      */
-    public void setNavigationText2(String navigationText2){
+    public ShowConstantTbt setNavigationText2( String navigationText2) {
         setParameters(KEY_TEXT2, navigationText2);
+        return this;
     }
 
     /**
@@ -126,14 +128,15 @@ public class ShowConstantTbt extends RPCRequest{
 
     /**
      * Sets a text field for estimated time of arrival
-     * 
+     *
      * @param eta
      *            a String value representing a text field for estimated time of arrival
      *            <p></p>
      *            <b>Notes: </b>Maxlength=500
      */
-    public void setEta(String eta){
+    public ShowConstantTbt setEta( String eta) {
         setParameters(KEY_ETA, eta);
+        return this;
     }
 
     /**
@@ -147,14 +150,15 @@ public class ShowConstantTbt extends RPCRequest{
 
     /**
      * Sets a text field for total distance
-     * 
+     *
      * @param totalDistance
      *            a String value representing a text field for total distance
      *            <p></p>
      *            <b>Notes: </b>Maxlength=500
      */
-    public void setTotalDistance(String totalDistance){
+    public ShowConstantTbt setTotalDistance( String totalDistance) {
         setParameters(KEY_TOTAL_DISTANCE, totalDistance);
+        return this;
     }
 
     /**
@@ -167,33 +171,34 @@ public class ShowConstantTbt extends RPCRequest{
     }
 
     /**
-     * Sets an Image for turnicon
-     * 
+     * Sets an Image for turn icon
+     *
      * @param turnIcon
      *            an Image value
      */
-    public void setTurnIcon(Image turnIcon){
+    public ShowConstantTbt setTurnIcon( Image turnIcon) {
         setParameters(KEY_MANEUVER_IMAGE, turnIcon);
+        return this;
     }
 
     /**
-     * Gets an Image for turnicon
+     * Gets an Image for turn icon
      * 
      * @return Image -an Image value representing an Image for turnicon
      */
-    @SuppressWarnings("unchecked")
     public Image getTurnIcon(){
         return (Image) getObject(Image.class, KEY_MANEUVER_IMAGE);
     }
 
     /**
      * Sets an Image for nextTurnIcon
-     * 
+     *
      * @param nextTurnIcon
      *            an Image value
      */
-    public void setNextTurnIcon(Image nextTurnIcon){
+    public ShowConstantTbt setNextTurnIcon( Image nextTurnIcon) {
         setParameters(KEY_NEXT_MANEUVER_IMAGE, nextTurnIcon);
+        return this;
     }
 
     /**
@@ -201,21 +206,21 @@ public class ShowConstantTbt extends RPCRequest{
      * 
      * @return Image -an Image value representing an Image for nextTurnIcon
      */
-    @SuppressWarnings("unchecked")
     public Image getNextTurnIcon(){
         return (Image) getObject(Image.class, KEY_NEXT_MANEUVER_IMAGE);
     }
 
     /**
      * Sets a Fraction of distance till next maneuver
-     * 
+     *
      * @param distanceToManeuver
      *            a Double value representing a Fraction of distance till next maneuver
      *            <p></p>
      *            <b>Notes: </b>Minvalue=0; Maxvalue=1000000000
      */
-    public void setDistanceToManeuver(Double distanceToManeuver){
+    public ShowConstantTbt setDistanceToManeuver( Double distanceToManeuver) {
         setParameters(KEY_MANEUVER_DISTANCE, distanceToManeuver);
+        return this;
     }
 
     /**
@@ -229,14 +234,15 @@ public class ShowConstantTbt extends RPCRequest{
 
     /**
      * Sets a Distance till next maneuver (starting from) from previous maneuver
-     * 
+     *
      * @param distanceToManeuverScale
      *            a Double value representing a Distance till next maneuver (starting from) from previous maneuver
      *            <p></p>
      *            <b>Notes: </b>Minvalue=0; Maxvalue=1000000000
      */
-    public void setDistanceToManeuverScale(Double distanceToManeuverScale){
+    public ShowConstantTbt setDistanceToManeuverScale( Double distanceToManeuverScale) {
         setParameters(KEY_MANEUVER_DISTANCE_SCALE, distanceToManeuverScale);
+        return this;
     }
 
     /**
@@ -252,13 +258,14 @@ public class ShowConstantTbt extends RPCRequest{
      * <p>Sets a maneuver complete flag. If and when a maneuver has completed while an AlertManeuver is active, the app
      * must send this value set to TRUE in order to clear the AlertManeuver overlay
      * If omitted the value will be assumed as FALSE</p>
-     * 
-     * 
+     *
+     *
      * @param maneuverComplete
      *            a Boolean value
      */
-    public void setManeuverComplete(Boolean maneuverComplete){
+    public ShowConstantTbt setManeuverComplete( Boolean maneuverComplete) {
         setParameters(KEY_MANEUVER_COMPLETE, maneuverComplete);
+        return this;
     }
 
     /**
@@ -273,14 +280,15 @@ public class ShowConstantTbt extends RPCRequest{
     /**
      * <p>Sets Three dynamic SoftButtons available (first SoftButton is fixed to "Turns"). If omitted on supported
      * displays, the currently displayed SoftButton values will not change</p>
-     * 
+     *
      * <p><b>Notes: </b>Minsize=0; Maxsize=3</p>
-     * 
+     *
      * @param softButtons
      *            a List<SoftButton> value
      */
-    public void setSoftButtons(List<SoftButton> softButtons){
+    public ShowConstantTbt setSoftButtons( List<SoftButton> softButtons) {
         setParameters(KEY_SOFT_BUTTONS, softButtons);
+        return this;
     }
 
     /**
@@ -294,8 +302,9 @@ public class ShowConstantTbt extends RPCRequest{
         return (List<SoftButton>) getObject(SoftButton.class, KEY_SOFT_BUTTONS);
     }
 
-    public void setTimeToDestination(String timeToDestination){
+    public ShowConstantTbt setTimeToDestination( String timeToDestination) {
         setParameters(KEY_TIME_TO_DESTINATION, timeToDestination);
+        return this;
     }
 
     public String getTimeToDestination(){

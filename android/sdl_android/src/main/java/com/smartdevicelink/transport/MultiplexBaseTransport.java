@@ -61,8 +61,6 @@ public abstract class MultiplexBaseTransport {
     protected final TransportType transportType;
 
     protected TransportRecord transportRecord;
-    @Deprecated
-    public static String currentlyConnectedDevice = null;
     protected String connectedDeviceName = null;
     public String connectedDeviceAddress = null;
 
@@ -126,7 +124,7 @@ public abstract class MultiplexBaseTransport {
     }
 
     protected abstract void stop(int state);
-    protected void stop(int state, byte error) {};
+    protected void stop(int state, byte error) {}
 
     public abstract void write(byte[] out,  int offset, int count);
 

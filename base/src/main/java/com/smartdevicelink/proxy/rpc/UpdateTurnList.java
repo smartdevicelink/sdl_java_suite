@@ -38,8 +38,8 @@ import java.util.Hashtable;
 import java.util.List;
 
 /**
- * Updates the list of next maneuvers, which can be requested by the user pressing the softbutton "Turns" on the
- * Navigation base screen. Three softbuttons are predefined by the system: Up, Down, Close
+ * Updates the list of next maneuvers, which can be requested by the user pressing the soft button "Turns" on the
+ * Navigation base screen. Three soft buttons are predefined by the system: Up, Down, Close
  * 
  * <p>Function Group: Navigation</p>
  * 
@@ -75,14 +75,15 @@ public class UpdateTurnList extends RPCRequest{
     
     /**
      * Sets a list of turns to be shown to the user
-     * 
+     *
      * @param turnList
      *            a List<Turn> value representing a list of turns to be shown to the user
      *            <p>
      *            <b>Notes: </b>Minsize=1; Maxsize=100</p>
      */
-    public void setTurnList(List<Turn> turnList){
+    public UpdateTurnList setTurnList( List<Turn> turnList) {
         setParameters(KEY_TURN_LIST, turnList);
+        return this;
     }
     
     /**
@@ -108,7 +109,7 @@ public class UpdateTurnList extends RPCRequest{
 
     /**
      * Sets the SoftButtons
-     * 
+     *
      * @param softButtons
      *            a List<SoftButton> value
      *            <p>
@@ -121,8 +122,9 @@ public class UpdateTurnList extends RPCRequest{
      * @since SmartDeviceLink 2.0
      */
 
-    public void setSoftButtons(List<SoftButton> softButtons){
+    public UpdateTurnList setSoftButtons( List<SoftButton> softButtons) {
         setParameters(KEY_SOFT_BUTTONS, softButtons);
+        return this;
     }
 
 }

@@ -141,51 +141,52 @@ public class TireStatus extends RPCStruct {
 		setInnerRightRear(innerRightRear);
 	}
 
-    public void setPressureTellTale(@NonNull WarningLightStatus pressureTellTale) {
-    	setValue(KEY_PRESSURE_TELL_TALE, pressureTellTale);
+    public TireStatus setPressureTellTale(@NonNull WarningLightStatus pressureTellTale) {
+        setValue(KEY_PRESSURE_TELL_TALE, pressureTellTale);
+        return this;
     }
     public WarningLightStatus getPressureTellTale() {
         return (WarningLightStatus) getObject(WarningLightStatus.class, KEY_PRESSURE_TELL_TALE);
     }
-    public void setLeftFront(@NonNull SingleTireStatus leftFront) {
-    	setValue(KEY_LEFT_FRONT, leftFront);
+    public TireStatus setLeftFront(@NonNull SingleTireStatus leftFront) {
+        setValue(KEY_LEFT_FRONT, leftFront);
+        return this;
     }
-    @SuppressWarnings("unchecked")
     public SingleTireStatus getLeftFront() {
         return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_LEFT_FRONT);
     }
-    public void setRightFront(@NonNull SingleTireStatus rightFront) {
-    	setValue(KEY_RIGHT_FRONT, rightFront);
+    public TireStatus setRightFront(@NonNull SingleTireStatus rightFront) {
+        setValue(KEY_RIGHT_FRONT, rightFront);
+        return this;
     }
-    @SuppressWarnings("unchecked")
     public SingleTireStatus getRightFront() {
         return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_RIGHT_FRONT);
     }
-    public void setLeftRear(@NonNull SingleTireStatus leftRear) {
-    	setValue(KEY_LEFT_REAR, leftRear);
+    public TireStatus setLeftRear(@NonNull SingleTireStatus leftRear) {
+        setValue(KEY_LEFT_REAR, leftRear);
+        return this;
     }
-    @SuppressWarnings("unchecked")
     public SingleTireStatus getLeftRear() {
         return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_LEFT_REAR);
     }
-    public void setRightRear(@NonNull SingleTireStatus rightRear) {
-    	setValue(KEY_RIGHT_REAR, rightRear);
+    public TireStatus setRightRear(@NonNull SingleTireStatus rightRear) {
+        setValue(KEY_RIGHT_REAR, rightRear);
+        return this;
     }
-    @SuppressWarnings("unchecked")
     public SingleTireStatus getRightRear() {
         return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_RIGHT_REAR);
     }
-    public void setInnerLeftRear(@NonNull SingleTireStatus innerLeftRear) {
-    	setValue(KEY_INNER_LEFT_REAR, innerLeftRear);
+    public TireStatus setInnerLeftRear(@NonNull SingleTireStatus innerLeftRear) {
+        setValue(KEY_INNER_LEFT_REAR, innerLeftRear);
+        return this;
     }
-    @SuppressWarnings("unchecked")
     public SingleTireStatus getInnerLeftRear() {
         return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_INNER_LEFT_REAR);
     }
-    public void setInnerRightRear(@NonNull SingleTireStatus innerRightRear) {
-    	setValue(KEY_INNER_RIGHT_REAR, innerRightRear);
+    public TireStatus setInnerRightRear(@NonNull SingleTireStatus innerRightRear) {
+        setValue(KEY_INNER_RIGHT_REAR, innerRightRear);
+        return this;
     }
-    @SuppressWarnings("unchecked")
     public SingleTireStatus getInnerRightRear() {
         return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_INNER_RIGHT_REAR);
     }

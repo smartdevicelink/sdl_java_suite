@@ -33,9 +33,11 @@ package com.smartdevicelink.managers.screen;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
@@ -48,7 +50,6 @@ import com.smartdevicelink.managers.screen.menu.MenuConfiguration;
 import com.smartdevicelink.managers.screen.menu.MenuManager;
 import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandManager;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
@@ -67,7 +68,7 @@ import java.util.List;
 */
 abstract class BaseScreenManager extends BaseSubManager {
 
-	private static String TAG = "ScreenManager";
+	private static final String TAG = "ScreenManager";
 	private final WeakReference<FileManager> fileManager;
 	private SoftButtonManager softButtonManager;
 	private TextAndGraphicManager textAndGraphicManager;
@@ -78,6 +79,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 
 	// Sub manager listener
 	private final CompletionListener subManagerListener = new CompletionListener() {
+
 		@Override
 		public synchronized void onComplete(boolean success) {
 			if (softButtonManager != null && textAndGraphicManager != null && voiceCommandManager != null && menuManager != null && choiceSetManager != null && subscribeButtonManager != null) {
@@ -112,6 +114,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	}
 
 	@Override
+	@RestrictTo(RestrictTo.Scope.LIBRARY)
 	public void start(CompletionListener listener) {
 		super.start(listener);
 		this.softButtonManager.start(subManagerListener);
@@ -137,6 +140,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * <p>Called when manager is being torn down</p>
 	 */
 	@Override
+	@RestrictTo(RestrictTo.Scope.LIBRARY)
 	public void dispose() {
 		softButtonManager.dispose();
 		textAndGraphicManager.dispose();
@@ -248,6 +252,9 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * @return an SdlArtwork object represents the current primaryGraphic
 	 */
 	public SdlArtwork getPrimaryGraphic() {
+		if (this.textAndGraphicManager.getPrimaryGraphic() == null ||  textAndGraphicManager.getPrimaryGraphic().getName() == null || this.textAndGraphicManager.getPrimaryGraphic().getName().equals(textAndGraphicManager.getBlankArtwork().getName())) {
+			return null;
+		}
 		return this.textAndGraphicManager.getPrimaryGraphic();
 	}
 
@@ -267,6 +274,9 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * @return an SdlArtwork object represents the current secondaryGraphic
 	 */
 	public SdlArtwork getSecondaryGraphic() {
+		if (this.textAndGraphicManager.getSecondaryGraphic() == null || textAndGraphicManager.getSecondaryGraphic().getName() == null || this.textAndGraphicManager.getSecondaryGraphic().getName().equals(textAndGraphicManager.getBlankArtwork().getName())) {
+			return null;
+		}
 		return this.textAndGraphicManager.getSecondaryGraphic();
 	}
 
@@ -353,7 +363,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	/**
 	 * Sets the title of the new template that will be displayed.
 	 * Sending an empty String "" will clear the field
-	 * @param title the title of the new template that will be displayed. Maxlength: 100.
+	 * @param title the title of the new template that will be displayed. MaxLength: 100.
 	 */
 	public void setTitle(String title){
 		this.textAndGraphicManager.setTitle(title);

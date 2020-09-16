@@ -41,12 +41,12 @@ import com.livio.taskmaster.Queue;
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
+import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
+import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
-import com.smartdevicelink.proxy.interfaces.ISdl;
-import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
@@ -89,7 +89,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     ChoiceSet pendingPresentationSet;
 
     // We will pass operations into this to be completed
-    Queue transactionQueue;
+    final Queue transactionQueue;
     Task pendingPresentOperation;
 
     PresentKeyboardOperation currentlyPresentedKeyboardOperation;
@@ -149,7 +149,9 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         // remove listeners
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
-        internalInterface.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplayCapabilityListener);
+        if (internalInterface.getSystemCapabilityManager() != null) {
+            internalInterface.getSystemCapabilityManager().removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplayCapabilityListener);
+        }
 
         super.dispose();
     }
@@ -537,8 +539,10 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                 defaultMainWindowCapability = null;
             }
         };
-        this.internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplayCapabilityListener);
-
+        if (internalInterface.getSystemCapabilityManager() != null) {
+            this.internalInterface.getSystemCapabilityManager().addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplayCapabilityListener);
+        }
+        
         // HMI UPDATES
         hmiListener = new OnRPCNotificationListener() {
             @Override

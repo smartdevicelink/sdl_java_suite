@@ -32,8 +32,9 @@ public class ReleaseInteriorVehicleDataModule extends RPCRequest {
      * Sets the Module Type for this class
      * @param type the Module Type to be set
      */
-    public void setModuleType(@NonNull ModuleType type) {
+    public ReleaseInteriorVehicleDataModule setModuleType(@NonNull ModuleType type) {
         setParameters(KEY_MODULE_TYPE, type);
+        return this;
     }
 
     /**
@@ -48,8 +49,9 @@ public class ReleaseInteriorVehicleDataModule extends RPCRequest {
      * Sets the Module Ids for this class
      * @param id the ids to be set
      */
-    public void setModuleId(String id) {
+    public ReleaseInteriorVehicleDataModule setModuleId( String id) {
         setParameters(KEY_MODULE_ID, id);
+        return this;
     }
 
     /**

@@ -159,7 +159,7 @@ public enum FunctionID{
     }
 
     private static void initFunctionMap(){
-        functionMap = new HashMap<String, Integer>(values().length);
+        functionMap = new HashMap<>(values().length);
 
         for(FunctionID value : EnumSet.allOf(FunctionID.class)){
             functionMap.put(value.toString(), value.getId());
@@ -171,10 +171,8 @@ public enum FunctionID{
             initFunctionMap();
         }
 
-        Iterator<Entry<String, Integer>> iterator = functionMap.entrySet().iterator();
-        while(iterator.hasNext()){
-            Entry<String, Integer> thisEntry = iterator.next();
-            if(Integer.valueOf(i).equals(thisEntry.getValue())){
+        for (Entry<String, Integer> thisEntry : functionMap.entrySet()) {
+            if (Integer.valueOf(i).equals(thisEntry.getValue())) {
                 return thisEntry.getKey();
             }
         }

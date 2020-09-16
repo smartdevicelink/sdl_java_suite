@@ -1,20 +1,18 @@
 package com.smartdevicelink.test.SdlConnection;
 
-import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.session.SdlSession;
+import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.test.streaming.MockInterfaceBroker;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
-import com.smartdevicelink.transport.TCPTransportConfig;
 
 import junit.framework.TestCase;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
-import static org.mockito.Mockito.mock;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.SdlConnection.SdlSession}
+ * {@link com.smartdevicelink.session.SdlSession}
  */
 public class SdlSessionTests extends TestCase {
 

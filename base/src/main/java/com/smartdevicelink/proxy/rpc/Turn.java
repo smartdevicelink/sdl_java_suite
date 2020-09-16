@@ -49,7 +49,7 @@ import java.util.Hashtable;
  * <tr>
  * <td>navigationText</td>
  * <td>String</td>
- * <td>Text to describe the turn (e.g. streetname)
+ * <td>Text to describe the turn (e.g. street name)
  * <ul>
  * <li>Maxlength = 500</li>
  * </ul>
@@ -76,19 +76,20 @@ public class Turn extends RPCStruct{
     }
 
     /**
-     * set the text to describe the turn (e.g. streetname)
-     * 
+     * set the text to describe the turn (e.g. street name)
+     *
      * @param navigationText
-     *            the text to describe the turn (e.g. streetname)
+     *            the text to describe the turn (e.g. street name)
      */
-    public void setNavigationText(String navigationText){
+    public Turn setNavigationText( String navigationText) {
         setValue(KEY_NAVIGATION_TEXT, navigationText);
+        return this;
     }
 
     /**
-     * get the text to describe the turn (e.g. streetname)
+     * get the text to describe the turn (e.g. street name)
      * 
-     * @return the text to describe the turn (e.g. streetname)
+     * @return the text to describe the turn (e.g. street name)
      */
     public String getNavigationText(){
         return getString(KEY_NAVIGATION_TEXT);
@@ -96,12 +97,13 @@ public class Turn extends RPCStruct{
 
     /**
      * set Image to be shown for a turn
-     * 
+     *
      * @param turnIcon
      *            the image to be shown for a turn
      */
-    public void setTurnIcon(Image turnIcon){
+    public Turn setTurnIcon( Image turnIcon) {
         setValue(KEY_TURN_IMAGE, turnIcon);
+        return this;
     }
 
     /**
@@ -109,7 +111,6 @@ public class Turn extends RPCStruct{
      * 
      * @return the image to be shown for a turn
      */
-    @SuppressWarnings("unchecked")
     public Image getTurnIcon(){
         return (Image) getObject(Image.class, KEY_TURN_IMAGE);
     }

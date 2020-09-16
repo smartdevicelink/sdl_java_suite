@@ -36,6 +36,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -90,7 +91,7 @@ public class SdlManager extends BaseSdlManager {
                     @Override
                     public void onTransportEvent(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail, boolean videoStreamTransportAvail) {
 
-                        //Pass to submanagers that need it
+                        //Pass to sub managers that need it
                         if (videoStreamManager != null) {
                             videoStreamManager.handleTransportUpdated(connectedTransports, audioStreamTransportAvail, videoStreamTransportAvail);
                         }
@@ -124,7 +125,7 @@ public class SdlManager extends BaseSdlManager {
         // Instantiate sub managers
         this.permissionManager = new PermissionManager(_internalInterface);
         this.fileManager = new FileManager(_internalInterface, context, fileManagerConfig);
-        if (lockScreenConfig.isEnabled()) {
+        if (lockScreenConfig.getDisplayMode() != LockScreenConfig.DISPLAY_MODE_NEVER) {
             this.lockScreenManager = new LockScreenManager(lockScreenConfig, context, _internalInterface);
         }
         this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
@@ -142,7 +143,7 @@ public class SdlManager extends BaseSdlManager {
         // Start sub managers
         this.permissionManager.start(subManagerListener);
         this.fileManager.start(subManagerListener);
-        if (lockScreenConfig.isEnabled()) {
+        if (lockScreenConfig.getDisplayMode() != LockScreenConfig.DISPLAY_MODE_NEVER) {
             this.lockScreenManager.start(subManagerListener);
         }
         this.screenManager.start(subManagerListener);
@@ -150,19 +151,19 @@ public class SdlManager extends BaseSdlManager {
 
     @Override
     void checkState() {
-        if (permissionManager != null && fileManager != null && screenManager != null && (!lockScreenConfig.isEnabled() || lockScreenManager != null)) {
-            if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.READY)) {
+        if (permissionManager != null && fileManager != null && screenManager != null && (lockScreenConfig.getDisplayMode() == LockScreenConfig.DISPLAY_MODE_NEVER || lockScreenManager != null)) {
+            if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY && (lockScreenConfig.getDisplayMode() == LockScreenConfig.DISPLAY_MODE_NEVER || lockScreenManager.getState() == BaseSubManager.READY)) {
                 DebugTool.logInfo(TAG, "Starting sdl manager, all sub managers are in ready state");
                 transitionToState(BaseSubManager.READY);
                 handleQueuedNotifications();
                 notifyDevListener(null);
                 onReady();
-            } else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.ERROR)) {
+            } else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR && (lockScreenConfig.getDisplayMode() == LockScreenConfig.DISPLAY_MODE_NEVER || lockScreenManager.getState() == BaseSubManager.ERROR)) {
                 String info = "ERROR starting sdl manager, all sub managers are in error state";
                 DebugTool.logError(TAG, info);
                 transitionToState(BaseSubManager.ERROR);
                 notifyDevListener(info);
-            } else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP || screenManager.getState() == BaseSubManager.SETTING_UP || (lockScreenConfig.isEnabled() && lockScreenManager != null && lockScreenManager.getState() == BaseSubManager.SETTING_UP)) {
+            } else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP || screenManager.getState() == BaseSubManager.SETTING_UP || (lockScreenConfig.getDisplayMode() != LockScreenConfig.DISPLAY_MODE_NEVER && lockScreenManager != null && lockScreenManager.getState() == BaseSubManager.SETTING_UP)) {
                 DebugTool.logInfo(TAG, "SETTING UP sdl manager, some sub managers are still setting up");
                 transitionToState(BaseSubManager.SETTING_UP);
                 // No need to notify developer here!

@@ -52,20 +52,21 @@ public class LocationDetails extends RPCStruct{
         super(hash);
     }
 
-    @SuppressWarnings("unchecked")
     public Coordinate getCoordinate() {
         return (Coordinate) getObject(Coordinate.class, KEY_COORDINATE);
     }
-    public void setCoordinate(Coordinate coordinate) {
+    public LocationDetails setCoordinate( Coordinate coordinate) {
         setValue(KEY_COORDINATE, coordinate);
+        return this;
     }
 
     public String getLocationName() {
         return getString(KEY_LOCATION_NAME);
     }
 
-    public void setLocationName(String locationName) {
+    public LocationDetails setLocationName( String locationName) {
         setValue(KEY_LOCATION_NAME, locationName);
+        return this;
     }
 
     @SuppressWarnings("unchecked")
@@ -73,40 +74,43 @@ public class LocationDetails extends RPCStruct{
         return (List<String>) getObject(String.class, KEY_ADDRESS_LINES);
     }
 
-    public void setAddressLines(List<String> addressLines) {
+    public LocationDetails setAddressLines( List<String> addressLines) {
         setValue(KEY_ADDRESS_LINES, addressLines);
+        return this;
     }
 
     public String getLocationDescription() {
         return getString(KEY_LOCATION_DESCRIPTION);
     }
 
-    public void setLocationDescription(String locationDescription) {
+    public LocationDetails setLocationDescription( String locationDescription) {
         setValue(KEY_LOCATION_DESCRIPTION, locationDescription);
+        return this;
     }
 
     public String getPhoneNumber() {
         return getString(KEY_PHONE_NUMBER);
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public LocationDetails setPhoneNumber( String phoneNumber) {
         setValue(KEY_PHONE_NUMBER, phoneNumber);
+        return this;
     }
 
-    @SuppressWarnings("unchecked")
     public Image getLocationImage() {
         return (Image) getObject(Image.class, KEY_LOCATION_IMAGE);
     }
 
-    public void setLocationImage(Image locationImage) {
+    public LocationDetails setLocationImage( Image locationImage) {
         setValue(KEY_LOCATION_IMAGE, locationImage);
+        return this;
     }
 
-    @SuppressWarnings("unchecked")
     public OasisAddress getSearchAddress() {
         return (OasisAddress) getObject(OasisAddress.class, KEY_SEARCH_ADDRESS);
     }
-    public void setSearchAddress(OasisAddress searchAddress) {
+    public LocationDetails setSearchAddress( OasisAddress searchAddress) {
         setValue(KEY_SEARCH_ADDRESS, searchAddress);
+        return this;
     }
 }

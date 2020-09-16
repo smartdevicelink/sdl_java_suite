@@ -37,10 +37,10 @@ package com.smartdevicelink.managers.screen.choiceset;
 
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.CancelInteraction;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
@@ -63,19 +63,20 @@ import java.util.List;
 
 class PresentChoiceSetOperation extends Task {
 	private static final String TAG = "PresentChoiceSetOperation";
-	private WeakReference<ISdl> internalInterface;
-	private ChoiceSet choiceSet;
-	private Integer cancelID;
-	private InteractionMode presentationMode;
-	private KeyboardProperties originalKeyboardProperties, keyboardProperties;
+	private final WeakReference<ISdl> internalInterface;
+	private final ChoiceSet choiceSet;
+	private final Integer cancelID;
+	private final InteractionMode presentationMode;
+	private final KeyboardProperties originalKeyboardProperties;
+	private KeyboardProperties keyboardProperties;
 	private ChoiceCell selectedCell;
 	private TriggerSource selectedTriggerSource;
 	private boolean updatedKeyboardProperties;
 	private OnRPCNotificationListener keyboardRPCListener;
-	private ChoiceSetSelectionListener choiceSetSelectionListener;
+	private final ChoiceSetSelectionListener choiceSetSelectionListener;
 	Integer selectedCellRow;
 	KeyboardListener keyboardListener;
-	SdlMsgVersion sdlMsgVersion;
+	final SdlMsgVersion sdlMsgVersion;
 
 	PresentChoiceSetOperation(ISdl internalInterface, ChoiceSet choiceSet, InteractionMode mode,
 									 KeyboardProperties originalKeyboardProperties, KeyboardListener keyboardListener, ChoiceSetSelectionListener choiceSetSelectionListener, Integer cancelID){
@@ -159,14 +160,6 @@ class PresentChoiceSetOperation extends Task {
 				}
 				DebugTool.logInfo(TAG, "Success Setting keyboard properties in present choice set operation");
 			}
-
-			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-				if (listener != null){
-					listener.onComplete(false);
-				}
-				DebugTool.logError(TAG, "Error Setting keyboard properties in present keyboard operation - choice manager - " + info);
-			}
 		});
 		if (internalInterface.get() != null){
 			internalInterface.get().sendRPC(setGlobalProperties);
@@ -187,6 +180,7 @@ class PresentChoiceSetOperation extends Task {
 						choiceSetSelectionListener.onError(response.getInfo());
 					}
 					finishOperation();
+					return;
 				}
 
 				PerformInteractionResponse performInteractionResponse = (PerformInteractionResponse) response;
@@ -197,16 +191,6 @@ class PresentChoiceSetOperation extends Task {
 					choiceSetSelectionListener.onChoiceSelected(selectedCell, selectedTriggerSource, selectedCellRow);
 				}
 
-				finishOperation();
-			}
-
-			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-				DebugTool.logError(TAG, "Presenting Choice set failed: " + resultCode + ", " + info);
-
-				if (choiceSetSelectionListener != null){
-					choiceSetSelectionListener.onError(resultCode + ", " + info);
-				}
 				finishOperation();
 			}
 		});
@@ -225,14 +209,12 @@ class PresentChoiceSetOperation extends Task {
 			setGlobalProperties.setOnRPCResponseListener(new OnRPCResponseListener() {
 				@Override
 				public void onResponse(int correlationId, RPCResponse response) {
-					updatedKeyboardProperties = false;
-					DebugTool.logInfo(TAG, "Successfully reset choice keyboard properties to original config");
-					PresentChoiceSetOperation.super.onFinished();
-				}
-
-				@Override
-				public void onError(int correlationId, Result resultCode, String info) {
-					DebugTool.logError(TAG, "Failed to reset choice keyboard properties to original config " + resultCode + ", " + info);
+					if (response.getSuccess()) {
+						updatedKeyboardProperties = false;
+						DebugTool.logInfo(TAG, "Successfully reset choice keyboard properties to original config");
+					} else {
+						DebugTool.logError(TAG, "Failed to reset choice keyboard properties to original config " + response.getResultCode() + ", " + response.getInfo());
+					}
 					PresentChoiceSetOperation.super.onFinished();
 				}
 			});
@@ -271,11 +253,6 @@ class PresentChoiceSetOperation extends Task {
 				@Override
 				public void onResponse(int correlationId, RPCResponse response) {
 					DebugTool.logInfo(TAG, "Canceled the presented choice set " + ((response.getResultCode() == Result.SUCCESS) ? "successfully" : "unsuccessfully"));
-				}
-
-				@Override
-				public void onError(int correlationId, Result resultCode, String info){
-					DebugTool.logError(TAG, "Error canceling the presented choice set " + resultCode + " " + info);
 				}
 			});
 
@@ -365,15 +342,8 @@ class PresentChoiceSetOperation extends Task {
 					// Notify of Keypress
 					keyboardListener.updateAutocompleteWithInput(onKeyboard.getData(), new KeyboardAutocompleteCompletionListener() {
 						@Override
-						public void onUpdatedAutoCompleteText(String updatedAutoCompleteText) {
-							keyboardProperties.setAutoCompleteText(updatedAutoCompleteText);
-							updateKeyboardProperties(null);
-						}
-
-						@Override
 						public void onUpdatedAutoCompleteList(List<String> updatedAutoCompleteList) {
 							keyboardProperties.setAutoCompleteList(updatedAutoCompleteList != null ? updatedAutoCompleteList : new ArrayList<String>());
-							keyboardProperties.setAutoCompleteText(updatedAutoCompleteList != null && !updatedAutoCompleteList.isEmpty() ? updatedAutoCompleteList.get(0) : null);
 							updateKeyboardProperties(null);
 						}
 					});

@@ -34,7 +34,8 @@
       "electronicParkBrakeStatus":true,
       "gearStatus": true,
       "oemCustomVehicleDataName":true,
-      "windowStatus": true
+      "windowStatus": true,
+      "stabilityControlsStatus": true
     }
   },
   "response":{
@@ -172,6 +173,10 @@
           "range":10.0
         }
       ],
+      "stabilityControlsStatus": {
+        "escSystem": "ON",
+        "trailerSwayControl": "OFF"
+      },
       "oemCustomVehicleDataName":"oemCustomVehicleDataState",
       "gearStatus": {
         "userSelectedGear": "PARK",

@@ -38,11 +38,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 
+import androidx.annotation.RestrictTo;
+
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.proxy.rpc.OnDriverDistraction;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnSystemRequest;
@@ -64,22 +66,30 @@ import java.lang.ref.WeakReference;
  * The LockscreenManager handles the logic of showing and hiding the lock screen. <br>
  *
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class LockScreenManager extends BaseSubManager {
 
 	private static final String TAG = "LockScreenManager";
-	private WeakReference<Context> context;
+	private final WeakReference<Context> context;
 	HMILevel hmiLevel;
 	private OnRPCNotificationListener systemRequestListener, ddListener, hmiListener;
 	private String deviceIconUrl;
-	boolean driverDistStatus, mIsLockscreenDismissible, enableDismissGesture, lockScreenEnabled, deviceLogoEnabled;
+	boolean driverDistStatus;
+    boolean mIsLockscreenDismissible;
+    boolean enableDismissGesture;
+    final boolean lockScreenEnabled;
+    final boolean deviceLogoEnabled;
 	private volatile boolean isApplicationForegrounded;
 	private androidx.lifecycle.LifecycleObserver lifecycleObserver;
-	int lockScreenIcon, lockScreenColor, customView, displayMode;
+	final int lockScreenIcon;
+    final int lockScreenColor;
+    final int customView;
+    int displayMode;
 	Bitmap deviceLogo;
 	private boolean mLockScreenHasBeenDismissed, lockscreenDismissReceiverRegistered, receivedFirstDDNotification;
 	private String mLockscreenWarningMsg;
 	private BroadcastReceiver mLockscreenDismissedReceiver;
-	private LockScreenDeviceIconManager mLockScreenDeviceIconManager;
+	private final LockScreenDeviceIconManager mLockScreenDeviceIconManager;
 
 	public LockScreenManager(LockScreenConfig lockScreenConfig, Context context, ISdl internalInterface){
 
@@ -96,7 +106,7 @@ public class LockScreenManager extends BaseSubManager {
 		lockScreenIcon = lockScreenConfig.getAppIcon();
 		lockScreenColor = lockScreenConfig.getBackgroundColor();
 		customView = lockScreenConfig.getCustomView();
-		lockScreenEnabled = lockScreenConfig.isEnabled();
+		lockScreenEnabled = lockScreenConfig.getDisplayMode() != LockScreenConfig.DISPLAY_MODE_NEVER;
 		deviceLogoEnabled = lockScreenConfig.isDeviceLogoEnabled();
 		displayMode = lockScreenConfig.getDisplayMode();
 		enableDismissGesture = lockScreenConfig.enableDismissGesture();

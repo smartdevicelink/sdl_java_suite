@@ -33,6 +33,7 @@
 package com.smartdevicelink.protocol;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
@@ -45,11 +46,11 @@ import java.util.Collections;
 
 
 @SuppressWarnings("WeakerAccess")
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class SdlProtocol extends SdlProtocolBase {
     private static final String TAG ="SdlProtocol";
 
 
-    @SuppressWarnings("ConstantConditions")
     public SdlProtocol(@NonNull ISdlProtocol iSdlProtocol, @NonNull MultiplexTransportConfig config) {
         super(iSdlProtocol,config);
         this.requestedPrimaryTransports = config.getPrimaryTransports();

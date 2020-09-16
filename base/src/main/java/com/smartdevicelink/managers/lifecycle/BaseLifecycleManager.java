@@ -36,9 +36,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 
 import com.livio.taskmaster.Taskmaster;
-import com.smartdevicelink.SdlConnection.ISdlSessionListener;
-import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.session.ISdlSessionListener;
+import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.ServiceEncryptionListener;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
@@ -50,12 +51,8 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.managers.lifecycle.BaseSystemCapabilityManager;
-import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
-import com.smartdevicelink.proxy.interfaces.ISdl;
-import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
-import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
-import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
+import com.smartdevicelink.protocol.ISdlServiceListener;
+import com.smartdevicelink.proxy.rpc.GenericResponse;
 import com.smartdevicelink.proxy.rpc.OnAppInterfaceUnregistered;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
@@ -79,16 +76,12 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
-import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
-import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.security.SdlSecurityBase;
-import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
-import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.util.CorrelationIdGenerator;
@@ -117,7 +110,7 @@ abstract class BaseLifecycleManager {
             ON_NOTIFICATION_LISTENER_LOCK = new Object();
 
     SdlSession session;
-    AppConfig appConfig;
+    final AppConfig appConfig;
     Version rpcSpecVersion = MAX_SUPPORTED_RPC_VERSION;
     HashMap<Integer, CopyOnWriteArrayList<OnRPCListener>> rpcListeners;
     HashMap<Integer, OnRPCResponseListener> rpcResponseListeners;
@@ -128,11 +121,11 @@ abstract class BaseLifecycleManager {
     RegisterAppInterfaceResponse raiResponse = null;
     private OnHMIStatus currentHMIStatus;
     boolean firstTimeFull = true;
-    LifecycleListener lifecycleListener;
+    final LifecycleListener lifecycleListener;
     private List<Class<? extends SdlSecurityBase>> _secList = null;
     private String authToken;
-    Version minimumProtocolVersion;
-    Version minimumRPCVersion;
+    final Version minimumProtocolVersion;
+    final Version minimumRPCVersion;
     BaseTransportConfig _transportConfig;
     private Taskmaster taskmaster;
 
@@ -210,17 +203,6 @@ abstract class BaseLifecycleManager {
                                     listener.getSingleRpcResponseListener().onResponse(correlationId, response);
                                 }
                             }
-
-                            @Override
-                            public void onError(int correlationId, Result resultCode, String info) {
-                                super.onError(correlationId, resultCode, info);
-                                if (devOnRPCResponseListener != null) {
-                                    devOnRPCResponseListener.onError(correlationId, resultCode, info);
-                                }
-                                if (listener.getSingleRpcResponseListener() != null) {
-                                    listener.getSingleRpcResponseListener().onError(correlationId, resultCode, info);
-                                }
-                            }
                         });
                     }
                     sendRPCMessagePrivate(request, false);
@@ -270,20 +252,6 @@ abstract class BaseLifecycleManager {
                         // recurse after onResponse
                         sendSequentialRPCs(messages, listener);
                     }
-
-                    @Override
-                    public void onError(int correlationId, Result resultCode, String info) {
-                        if (devOnRPCResponseListener != null) {
-                            devOnRPCResponseListener.onError(correlationId, resultCode, info);
-                        }
-                        if (listener != null) {
-                            listener.onError(correlationId, resultCode, info);
-                            listener.onUpdate(messages.size());
-
-                        }
-                        // recurse after onError
-                        sendSequentialRPCs(messages, listener);
-                    }
                 });
                 sendRPCMessagePrivate(request, false);
             } else {
@@ -302,7 +270,7 @@ abstract class BaseLifecycleManager {
      * This method is used to ensure all of the methods in this class can remain private and no grantees can be made
      * to the developer what methods are available or not.
      *
-     * <b>NOTE: THERE IS NO GURANTEE THIS WILL BE A VALID SYSTEM CAPABILITY MANAGER</b>
+     * <b>NOTE: THERE IS NO GUARANTEE THIS WILL BE A VALID SYSTEM CAPABILITY MANAGER</b>
      *
      * @param sdlManager this must be a working manager instance
      * @return the system capability manager.
@@ -379,7 +347,7 @@ abstract class BaseLifecycleManager {
         addRpcListener(FunctionID.UNREGISTER_APP_INTERFACE, rpcListener);
     }
 
-    private OnRPCListener rpcListener = new OnRPCListener() {
+    private final OnRPCListener rpcListener = new OnRPCListener() {
         @Override
         public void onReceived(RPCMessage message) {
             //Make sure this is a response as expected
@@ -512,7 +480,10 @@ abstract class BaseLifecycleManager {
                     rpcListeners.put(id.getId(), new CopyOnWriteArrayList<OnRPCListener>());
                 }
 
-                rpcListeners.get(id.getId()).add(listener);
+                CopyOnWriteArrayList<OnRPCListener> listeners = rpcListeners.get(id.getId());
+                if (listeners != null) {
+                    listeners.add(listener);
+                }
             }
         }
     }
@@ -530,24 +501,6 @@ abstract class BaseLifecycleManager {
     }
 
     /**
-     * Only call this method for a PutFile response. It will cause a class cast exception if not.
-     *
-     * @param correlationId correlation id of the packet being updated
-     * @param bytesWritten  how many bytes were written
-     * @param totalSize     the total size in bytes
-     */
-    @SuppressWarnings("unused")
-    private void onPacketProgress(int correlationId, long bytesWritten, long totalSize) {
-        synchronized (ON_UPDATE_LISTENER_LOCK) {
-            if (rpcResponseListeners != null
-                    && rpcResponseListeners.containsKey(correlationId)) {
-                ((OnPutFileUpdateListener) rpcResponseListeners.get(correlationId)).onUpdate(correlationId, bytesWritten, totalSize);
-            }
-        }
-
-    }
-
-    /**
      * Will provide callback to the listener either onFinish or onError depending on the RPCResponses result code,
      * <p>Will automatically remove the listener for the list of listeners on completion.
      *
@@ -561,10 +514,8 @@ abstract class BaseLifecycleManager {
             if (rpcResponseListeners != null
                     && rpcResponseListeners.containsKey(correlationId)) {
                 OnRPCResponseListener listener = rpcResponseListeners.get(correlationId);
-                if (msg.getSuccess()) {
+                if (listener != null) {
                     listener.onResponse(correlationId, msg);
-                } else {
-                    listener.onError(correlationId, msg.getResultCode(), msg.getInfo());
                 }
                 rpcResponseListeners.remove(correlationId);
                 return true;
@@ -578,22 +529,17 @@ abstract class BaseLifecycleManager {
      *
      * @param listener      that will get called back when a response is received
      * @param correlationId of the RPCRequest that was sent
-     * @param totalSize     only include if this is an OnPutFileUpdateListener. Otherwise it will be ignored.
      */
-    private void addOnRPCResponseListener(OnRPCResponseListener listener, int correlationId, int totalSize) {
+    private void addOnRPCResponseListener(OnRPCResponseListener listener, int correlationId) {
         synchronized (ON_UPDATE_LISTENER_LOCK) {
             if (rpcResponseListeners != null
                     && listener != null) {
-                if (listener.getListenerType() == OnRPCResponseListener.UPDATE_LISTENER_TYPE_PUT_FILE) {
-                    ((OnPutFileUpdateListener) listener).setTotalSize(totalSize);
-                }
                 listener.onStart(correlationId);
                 rpcResponseListeners.put(correlationId, listener);
             }
         }
     }
 
-    @SuppressWarnings("unused")
     private HashMap<Integer, OnRPCResponseListener> getResponseListeners() {
         synchronized (ON_UPDATE_LISTENER_LOCK) {
             return this.rpcResponseListeners;
@@ -646,7 +592,6 @@ abstract class BaseLifecycleManager {
      * @param notificationId The notification type that this listener is designated for
      * @param listener       The listener that will be called when a notification of the provided type is received
      */
-    @SuppressWarnings("unused")
     private void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
         synchronized (ON_NOTIFICATION_LISTENER_LOCK) {
             if (notificationId != null && listener != null) {
@@ -673,7 +618,7 @@ abstract class BaseLifecycleManager {
     @SuppressWarnings("UnusedReturnValue")
     private boolean onRPCRequestReceived(RPCRequest request) {
         if (request == null) {
-            DebugTool.logError("onRPCRequestReceived - request was null");
+            DebugTool.logError(TAG, "onRPCRequestReceived - request was null");
             return false;
         }
         DebugTool.logInfo(TAG, "onRPCRequestReceived - " + request.getFunctionName());
@@ -697,7 +642,6 @@ abstract class BaseLifecycleManager {
      * @param requestId The request type that this listener is designated for
      * @param listener  The listener that will be called when a request of the provided type is received
      */
-    @SuppressWarnings("unused")
     private void addOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener) {
         synchronized (ON_REQUEST_LISTENER_LOCK) {
             if (requestId != null && listener != null) {
@@ -735,7 +679,9 @@ abstract class BaseLifecycleManager {
                 // Test for illegal correlation ID
                 if (request.getCorrelationID() == REGISTER_APP_INTERFACE_CORRELATION_ID || request.getCorrelationID() == UNREGISTER_APP_INTERFACE_CORRELATION_ID || request.getCorrelationID() == PoliciesFetcher.POLICIES_CORRELATION_ID) {
                     if (listener != null) {
-                        request.getOnRPCResponseListener().onError(request.getCorrelationID(), Result.REJECTED, "Invalid correlation ID. The correlation ID, " + request.getCorrelationID() + " , is a reserved correlation ID.");
+                        GenericResponse response = new GenericResponse(false, Result.REJECTED);
+                        response.setInfo("Invalid correlation ID. The correlation ID, " + request.getCorrelationID() + " , is a reserved correlation ID.");
+                        request.getOnRPCResponseListener().onResponse(request.getCorrelationID(), response);
                     }
                     return;
                 }
@@ -743,7 +689,9 @@ abstract class BaseLifecycleManager {
                 // Prevent developer from sending RAI or UAI manually
                 if (request.getFunctionName().equals(FunctionID.REGISTER_APP_INTERFACE.toString()) || request.getFunctionName().equals(FunctionID.UNREGISTER_APP_INTERFACE.toString())) {
                     if (listener != null) {
-                        request.getOnRPCResponseListener().onError(request.getCorrelationID(), Result.REJECTED, "The RPCRequest, " + message.getFunctionName() + ", is un-allowed to be sent manually by the developer.");
+                        GenericResponse response = new GenericResponse(false, Result.REJECTED);
+                        response.setInfo("The RPCRequest, " + message.getFunctionName() + ", is un-allowed to be sent manually by the developer.");
+                        request.getOnRPCResponseListener().onResponse(request.getCorrelationID(), response);
                     }
                     return;
                 }
@@ -803,7 +751,9 @@ abstract class BaseLifecycleManager {
                     RPCRequest request = (RPCRequest) message;
                     OnRPCResponseListener listener = ((RPCRequest) message).getOnRPCResponseListener();
                     if (listener != null) {
-                        listener.onError(request.getCorrelationID(), Result.ABORTED, errorInfo);
+                        GenericResponse response = new GenericResponse(false, Result.ABORTED);
+                        response.setInfo(errorInfo);
+                        request.getOnRPCResponseListener().onResponse(request.getCorrelationID(), response);
                     }
                 }
                 DebugTool.logWarning(TAG, errorInfo);
@@ -821,7 +771,7 @@ abstract class BaseLifecycleManager {
 
                     OnRPCResponseListener listener = ((RPCRequest) message).getOnRPCResponseListener();
                     if (listener != null) {
-                        addOnRPCResponseListener(listener, corrId, msgBytes.length);
+                        addOnRPCResponseListener(listener, corrId);
                     }
                 }
             } else if (RPCMessage.KEY_RESPONSE.equals(message.getMessageType())) { // Response Specifics
@@ -882,7 +832,7 @@ abstract class BaseLifecycleManager {
 
                 } else if (RPCMessage.KEY_NOTIFICATION.equals(messageType)) {
                     FunctionID functionID = rpc.getFunctionID();
-                    if (functionID != null && (functionID.equals(FunctionID.ON_BUTTON_PRESS)) || functionID.equals(FunctionID.ON_BUTTON_EVENT)) {
+                    if ((FunctionID.ON_BUTTON_PRESS.equals(functionID)) || FunctionID.ON_BUTTON_EVENT.equals(functionID)) {
                         RPCNotification notificationCompat = handleButtonNotificationFormatting(rpc);
                         if (notificationCompat != null) {
                             onRPCNotificationReceived((notificationCompat));
@@ -992,40 +942,8 @@ abstract class BaseLifecycleManager {
         }
 
         @Override
-        public void stopVideoService() {
-            BaseLifecycleManager.this.endVideoStream();
-        }
-
-        @Override
-        public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
-            DebugTool.logWarning(TAG, "startVideoStream is not currently implemented");
-            return null;
-        }
-
-        @Override
-        public void startAudioService(boolean encrypted, AudioStreamingCodec codec, AudioStreamingParams params) {
-            DebugTool.logWarning(TAG, "startAudioService is not currently implemented");
-        }
-
-        @Override
         public void startAudioService(boolean encrypted) {
             BaseLifecycleManager.this.startAudioService(encrypted);
-        }
-
-        @Override
-        public void stopAudioService() {
-            BaseLifecycleManager.this.endAudioStream();
-        }
-
-        @Override
-        public IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec, AudioStreamingParams params) {
-            DebugTool.logWarning(TAG, "startAudioStream is not currently implemented");
-            return null;
-        }
-
-        @Override
-        public void sendRPCRequest(RPCRequest message) {
-            BaseLifecycleManager.this.sendRPCMessagePrivate(message, false);
         }
 
         @Override
@@ -1033,11 +951,6 @@ abstract class BaseLifecycleManager {
             if (isConnected()) {
                 BaseLifecycleManager.this.sendRPCMessagePrivate(message, false);
             }
-        }
-
-        @Override
-        public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
-            BaseLifecycleManager.this.sendRPCs(rpcs, listener);
         }
 
         @Override
@@ -1081,58 +994,8 @@ abstract class BaseLifecycleManager {
         }
 
         @Override
-        public Object getCapability(SystemCapabilityType systemCapabilityType) {
-            if (BaseLifecycleManager.this.systemCapabilityManager != null) {
-                return BaseLifecycleManager.this.systemCapabilityManager.getCapability(systemCapabilityType);
-            } else {
-                return null;
-            }
-        }
-
-        @Override
-        public void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener) {
-            if (BaseLifecycleManager.this.systemCapabilityManager != null) {
-                BaseLifecycleManager.this.systemCapabilityManager.getCapability(systemCapabilityType, scListener);
-            }
-        }
-
-        @Override
-        public Object getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener, boolean forceUpdate) {
-            if (BaseLifecycleManager.this.systemCapabilityManager != null) {
-                return BaseLifecycleManager.this.systemCapabilityManager.getCapability(systemCapabilityType, scListener, forceUpdate);
-            } else {
-                return null;
-            }
-        }
-
-        @Override
         public RegisterAppInterfaceResponse getRegisterAppInterfaceResponse() {
             return raiResponse;
-        }
-
-        @Override
-        public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType) {
-            if (BaseLifecycleManager.this.systemCapabilityManager != null) {
-                return BaseLifecycleManager.this.systemCapabilityManager.isCapabilitySupported(systemCapabilityType);
-            } else {
-                return false;
-            }
-        }
-
-        @Override
-        public void addOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) {
-            if (BaseLifecycleManager.this.systemCapabilityManager != null) {
-                BaseLifecycleManager.this.systemCapabilityManager.addOnSystemCapabilityListener(systemCapabilityType, listener);
-            }
-        }
-
-        @Override
-        public boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) {
-            if (BaseLifecycleManager.this.systemCapabilityManager != null) {
-                return BaseLifecycleManager.this.systemCapabilityManager.removeOnSystemCapabilityListener(systemCapabilityType, listener);
-            } else {
-                return false;
-            }
         }
 
         @Override
@@ -1140,6 +1003,7 @@ abstract class BaseLifecycleManager {
             return BaseLifecycleManager.this.session.isTransportForServiceAvailable(serviceType);
         }
 
+        @NonNull
         @Override
         public SdlMsgVersion getSdlMsgVersion() {
             SdlMsgVersion msgVersion = new SdlMsgVersion(rpcSpecVersion.getMajor(), rpcSpecVersion.getMinor());
@@ -1147,6 +1011,7 @@ abstract class BaseLifecycleManager {
             return msgVersion;
         }
 
+        @NonNull
         @Override
         public Version getProtocolVersion() {
             return BaseLifecycleManager.this.getProtocolVersion();
@@ -1160,6 +1025,11 @@ abstract class BaseLifecycleManager {
         @Override
         public Taskmaster getTaskmaster() {
             return BaseLifecycleManager.this.getTaskmaster();
+        }
+
+        @Override
+        public SystemCapabilityManager getSystemCapabilityManager() {
+            return BaseLifecycleManager.this.systemCapabilityManager;
         }
     };
 
@@ -1243,11 +1113,6 @@ abstract class BaseLifecycleManager {
         }
     }
 
-    @Deprecated
-    public void setSdlSecurityClassList(List<Class<? extends SdlSecurityBase>> list) {
-        _secList = list;
-    }
-
     /**
      * Sets the security libraries and a callback to notify caller when there is update to encryption service
      *
@@ -1318,13 +1183,7 @@ abstract class BaseLifecycleManager {
     void startVideoService(boolean encrypted, VideoStreamingParameters parameters) {
     }
 
-    void endVideoStream() {
-    }
-
     void startAudioService(boolean encrypted) {
-    }
-
-    void endAudioStream() {
     }
 
     void setSdlSecurityStaticVars() {

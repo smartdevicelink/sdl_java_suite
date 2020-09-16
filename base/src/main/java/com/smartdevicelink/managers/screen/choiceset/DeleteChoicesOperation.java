@@ -37,10 +37,9 @@ package com.smartdevicelink.managers.screen.choiceset;
 
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
-import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.util.DebugTool;
 
@@ -51,9 +50,9 @@ import java.util.List;
 
 class DeleteChoicesOperation extends Task {
 	private static final String TAG = "DeleteChoicesOperation";
-	private WeakReference<ISdl> internalInterface;
-	private HashSet<ChoiceCell> cellsToDelete;
-	private CompletionListener completionListener;
+	private final WeakReference<ISdl> internalInterface;
+	private final HashSet<ChoiceCell> cellsToDelete;
+	private final CompletionListener completionListener;
 
 	DeleteChoicesOperation(ISdl internalInterface, HashSet<ChoiceCell> cellsToDelete, CompletionListener completionListener){
 		super("DeleteChoicesOperation");
@@ -75,7 +74,7 @@ class DeleteChoicesOperation extends Task {
 		if (deleteChoices.size() > 0) {
 
 			if (internalInterface.get() != null) {
-				internalInterface.get().sendRequests(deleteChoices, new OnMultipleRequestListener() {
+				internalInterface.get().sendRPCs(deleteChoices, new OnMultipleRequestListener() {
 					@Override
 					public void onUpdate(int remainingRequests) {
 					}
@@ -91,17 +90,15 @@ class DeleteChoicesOperation extends Task {
 					}
 
 					@Override
-					public void onError(int correlationId, Result resultCode, String info) {
-						if (completionListener != null) {
-							completionListener.onComplete(false);
-						}
-						DebugTool.logError(TAG, "Failed to delete choice: " + info + " | Corr ID: " + correlationId);
-
-						DeleteChoicesOperation.super.onFinished();
-					}
-
-					@Override
 					public void onResponse(int correlationId, RPCResponse response) {
+						if (!response.getSuccess()) {
+							if (completionListener != null) {
+								completionListener.onComplete(false);
+							}
+							DebugTool.logError(TAG, "Failed to delete choice: " + response.getInfo() + " | Corr ID: " + correlationId);
+
+							DeleteChoicesOperation.super.onFinished();
+						}
 					}
 				});
 			}

@@ -80,7 +80,7 @@ import java.util.Hashtable;
  * 		<tr>
  * 			<td>textMsgAvailable</td>
  * 			<td>Boolean</td>
- * 			<td>A textmessage is available
+ * 			<td>A text message is available
  * 			</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
@@ -166,7 +166,7 @@ public class DeviceStatus extends RPCStruct {
      * @param btIconOn the bluetooth connection established
      * @param callActive a call is being active
      * @param phoneRoaming  the phone is in roaming mode
-     * @param textMsgAvailable a textmessage is available
+     * @param textMsgAvailable a text message is available
      * @param battLevelStatus battery level status
      * @param stereoAudioOutputMuted the status of the stereo audio output channel
      * @param monoAudioOutputMuted the status of the mono audio output channel
@@ -194,8 +194,9 @@ public class DeviceStatus extends RPCStruct {
      * set the voice recognition on or off
      * @param voiceRecOn
      */
-    public void setVoiceRecOn(@NonNull Boolean voiceRecOn) {
+    public DeviceStatus setVoiceRecOn(@NonNull Boolean voiceRecOn) {
         setValue(KEY_VOICE_REC_ON, voiceRecOn);
+        return this;
     }
     
     /**
@@ -210,8 +211,9 @@ public class DeviceStatus extends RPCStruct {
      * set the bluetooth connection established
      * @param btIconOn the bluetooth connection established
      */
-    public void setBtIconOn(@NonNull Boolean btIconOn) {
+    public DeviceStatus setBtIconOn(@NonNull Boolean btIconOn) {
         setValue(KEY_BT_ICON_ON, btIconOn);
+        return this;
     }
     
     /**
@@ -226,8 +228,9 @@ public class DeviceStatus extends RPCStruct {
      * set a call is being active
      * @param callActive a call is being active
      */
-    public void setCallActive(@NonNull Boolean callActive) {
+    public DeviceStatus setCallActive(@NonNull Boolean callActive) {
         setValue(KEY_CALL_ACTIVE, callActive);
+        return this;
     }
     
     /**
@@ -242,8 +245,9 @@ public class DeviceStatus extends RPCStruct {
      * set the phone is in roaming mode
      * @param phoneRoaming  the phone is in roaming mode
      */
-    public void setPhoneRoaming(@NonNull Boolean phoneRoaming) {
+    public DeviceStatus setPhoneRoaming(@NonNull Boolean phoneRoaming) {
         setValue(KEY_PHONE_ROAMING, phoneRoaming);
+        return this;
     }
     
     /**
@@ -253,13 +257,14 @@ public class DeviceStatus extends RPCStruct {
     public Boolean getPhoneRoaming() {
         return getBoolean(KEY_PHONE_ROAMING);
     }
-    public void setTextMsgAvailable(@NonNull Boolean textMsgAvailable) {
+    public DeviceStatus setTextMsgAvailable(@NonNull Boolean textMsgAvailable) {
         setValue(KEY_TEXT_MSG_AVAILABLE, textMsgAvailable);
+        return this;
     }
     
     /**
-     * get a textmessage is available
-     * @return a textmessage is available
+     * get a text message is available
+     * @return a text message is available
      */
     public Boolean getTextMsgAvailable() {
         return getBoolean(KEY_TEXT_MSG_AVAILABLE);
@@ -269,8 +274,9 @@ public class DeviceStatus extends RPCStruct {
      * set battery level status
      * @param battLevelStatus battery level status
      */
-    public void setBattLevelStatus(@NonNull DeviceLevelStatus battLevelStatus) {
+    public DeviceStatus setBattLevelStatus(@NonNull DeviceLevelStatus battLevelStatus) {
         setValue(KEY_BATT_LEVEL_STATUS, battLevelStatus);
+        return this;
     }
     
     /**
@@ -285,8 +291,9 @@ public class DeviceStatus extends RPCStruct {
      * set the status of the stereo audio output channel
      * @param stereoAudioOutputMuted the status of the stereo audio output channel
      */
-    public void setStereoAudioOutputMuted(@NonNull Boolean stereoAudioOutputMuted) {
+    public DeviceStatus setStereoAudioOutputMuted(@NonNull Boolean stereoAudioOutputMuted) {
         setValue(KEY_STEREO_AUDIO_OUTPUT_MUTED, stereoAudioOutputMuted);
+        return this;
     }
     
     /**
@@ -301,8 +308,9 @@ public class DeviceStatus extends RPCStruct {
      * set the status of the mono audio output channel
      * @param monoAudioOutputMuted the status of the mono audio output channel
      */
-    public void setMonoAudioOutputMuted(@NonNull Boolean monoAudioOutputMuted) {
+    public DeviceStatus setMonoAudioOutputMuted(@NonNull Boolean monoAudioOutputMuted) {
         setValue(KEY_MONO_AUDIO_OUTPUT_MUTED, monoAudioOutputMuted);
+        return this;
     }
     
     /**
@@ -317,8 +325,9 @@ public class DeviceStatus extends RPCStruct {
      * set signal level status
      * @param signalLevelStatus signal level status
      */
-    public void setSignalLevelStatus(@NonNull DeviceLevelStatus signalLevelStatus) {
+    public DeviceStatus setSignalLevelStatus(@NonNull DeviceLevelStatus signalLevelStatus) {
         setValue(KEY_SIGNAL_LEVEL_STATUS, signalLevelStatus);
+        return this;
     }
     
     /**
@@ -333,8 +342,9 @@ public class DeviceStatus extends RPCStruct {
      * set the current primary audio source of SDL (if selected).
      * @param primaryAudioSource the current primary audio source of SDL (if selected).
      */
-    public void setPrimaryAudioSource(@NonNull PrimaryAudioSource primaryAudioSource) {
+    public DeviceStatus setPrimaryAudioSource(@NonNull PrimaryAudioSource primaryAudioSource) {
         setValue(KEY_PRIMARY_AUDIO_SOURCE, primaryAudioSource);
+        return this;
     }
     
     /**
@@ -344,8 +354,9 @@ public class DeviceStatus extends RPCStruct {
     public PrimaryAudioSource getPrimaryAudioSource() {
         return (PrimaryAudioSource) getObject(PrimaryAudioSource.class, KEY_PRIMARY_AUDIO_SOURCE);
     }
-    public void setECallEventActive(@NonNull Boolean eCallEventActive) {
+    public DeviceStatus setECallEventActive(@NonNull Boolean eCallEventActive) {
         setValue(KEY_E_CALL_EVENT_ACTIVE, eCallEventActive);
+        return this;
     }
     public Boolean getECallEventActive() {
         return getBoolean(KEY_E_CALL_EVENT_ACTIVE);

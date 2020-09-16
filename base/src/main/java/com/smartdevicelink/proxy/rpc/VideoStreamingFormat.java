@@ -61,17 +61,19 @@ public class VideoStreamingFormat extends RPCStruct {
 		setCodec(codec);
 	}
 
-	public void setProtocol(@NonNull VideoStreamingProtocol protocol){
-		setValue(KEY_PROTOCOL, protocol);
-	}
+	public VideoStreamingFormat setProtocol(@NonNull VideoStreamingProtocol protocol) {
+        setValue(KEY_PROTOCOL, protocol);
+        return this;
+    }
 
 	public VideoStreamingProtocol getProtocol(){
 		return (VideoStreamingProtocol) getObject(VideoStreamingProtocol.class, KEY_PROTOCOL);
 	}
 
-	public void setCodec(@NonNull VideoStreamingCodec codec){
-		setValue(KEY_CODEC, codec);
-	}
+	public VideoStreamingFormat setCodec(@NonNull VideoStreamingCodec codec) {
+        setValue(KEY_CODEC, codec);
+        return this;
+    }
 
 	public VideoStreamingCodec getCodec(){
 		return (VideoStreamingCodec) getObject(VideoStreamingCodec.class, KEY_CODEC);
@@ -88,7 +90,7 @@ public class VideoStreamingFormat extends RPCStruct {
 
 	@Override
 	public String toString() {
-		return "codec=" + String.valueOf(getCodec()) +
-				", protocol=" + String.valueOf(getProtocol());
+		return "codec=" + getCodec() +
+				", protocol=" + getProtocol();
 	}
 }

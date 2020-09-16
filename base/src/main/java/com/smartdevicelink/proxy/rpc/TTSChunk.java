@@ -43,9 +43,9 @@ import java.util.Hashtable;
  *  It can also be phonemes from either the Microsoft SAPI phoneme set, or from the LHPLUS phoneme set. 
  *  It can also be a pre-recorded sound in WAV format (either developer-defined, or provided by the SDL platform).</p>
  *  
- *  <p>In SDL, words, and therefore sentences, can be built up from phonemes and are used to explicitly provide the proper pronounciation to the TTS engine.
+ *  <p>In SDL, words, and therefore sentences, can be built up from phonemes and are used to explicitly provide the proper pronunciation to the TTS engine.
  *   For example, to have SDL pronounce the word "read" as "red", rather than as when it is pronounced like "reed",
- *   the developer would use phonemes to express this desired pronounciation.</p>
+ *   the developer would use phonemes to express this desired pronunciation.</p>
  *  <p>For more information about phonemes, see <a href="http://en.wikipedia.org/wiki/Phoneme">http://en.wikipedia.org/wiki/Phoneme</a></p>.
  *  <p><b> Parameter List</b></p>
  * <table border="1" rules="all">
@@ -105,9 +105,10 @@ public class TTSChunk extends RPCStruct {
     /**
      * Set the text to be spoken, or a phoneme specification, or the name of a pre-recorded sound. The contents of this field are indicated by the "type" field.
      * @param text to be spoken, or a phoneme specification, or the name of a pre-recorded sound.
-     */    
-    public void setText(@NonNull String text ) {
+     */
+    public TTSChunk setText(@NonNull String text) {
         setValue(KEY_TEXT, text);
+        return this;
     }
     /**
      * Get the type of information in the "text" field (e.g. phrase to be spoken, phoneme specification, name of pre-recorded sound).	
@@ -117,10 +118,11 @@ public class TTSChunk extends RPCStruct {
         return (SpeechCapabilities) getObject(SpeechCapabilities.class, KEY_TYPE);
     }
     /**
-     * Set the type of information in the "text" field (e.g. phrase to be spoken, phoneme specification, name of pre-recorded sound).	
+     * Set the type of information in the "text" field (e.g. phrase to be spoken, phoneme specification, name of pre-recorded sound).
      * @param type the type of information in the "text" field
-     */    
-    public void setType(@NonNull SpeechCapabilities type ) {
+     */
+    public TTSChunk setType(@NonNull SpeechCapabilities type) {
         setValue(KEY_TYPE, type);
+        return this;
     }
 }

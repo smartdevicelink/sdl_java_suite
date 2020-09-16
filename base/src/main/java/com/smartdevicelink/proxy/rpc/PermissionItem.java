@@ -109,22 +109,23 @@ public class PermissionItem extends RPCStruct {
     public String getRpcName() {
         return getString(KEY_RPC_NAME);
     }
-    public void setRpcName(@NonNull String rpcName) {
+    public PermissionItem setRpcName(@NonNull String rpcName) {
         setValue(KEY_RPC_NAME, rpcName);
+        return this;
     }
-    @SuppressWarnings("unchecked")
     public HMIPermissions getHMIPermissions() {
         return (HMIPermissions) getObject(HMIPermissions.class, KEY_HMI_PERMISSIONS);
     }
-    public void setHMIPermissions(@NonNull HMIPermissions hmiPermissions) {
+    public PermissionItem setHMIPermissions(@NonNull HMIPermissions hmiPermissions) {
         setValue(KEY_HMI_PERMISSIONS, hmiPermissions);
+        return this;
     }
-    @SuppressWarnings("unchecked")
     public ParameterPermissions getParameterPermissions() {
     	return (ParameterPermissions) getObject(ParameterPermissions.class, KEY_PARAMETER_PERMISSIONS);
     }
-    public void setParameterPermissions(@NonNull ParameterPermissions parameterPermissions) {
+    public PermissionItem setParameterPermissions(@NonNull ParameterPermissions parameterPermissions) {
         setValue(KEY_PARAMETER_PERMISSIONS, parameterPermissions);
+        return this;
     }
 
     /**
@@ -139,7 +140,8 @@ public class PermissionItem extends RPCStruct {
      * Sets the encryption requirement for this item
      * @param isRequired the boolean requirement to be set
      */
-    public void setRequireEncryption(Boolean isRequired) {
+    public PermissionItem setRequireEncryption( Boolean isRequired) {
         setValue(KEY_REQUIRE_ENCRYPTION, isRequired);
+        return this;
     }
 }

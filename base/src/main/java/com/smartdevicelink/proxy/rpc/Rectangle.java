@@ -64,9 +64,10 @@ public class Rectangle extends RPCStruct {
 	/**
 	 * Set the X-coordinate pixel in of the user control that starts in the upper left corner
 	 */
-	public void setX(@NonNull Float x) {
-		setValue(KEY_X, x);
-	}
+	public Rectangle setX(@NonNull Float x) {
+        setValue(KEY_X, x);
+        return this;
+    }
 
 	/**
 	 * @return  the X-coordinate pixel of the user control that starts in the upper left corner
@@ -78,9 +79,10 @@ public class Rectangle extends RPCStruct {
 	/**
 	 * Set the Y-coordinate pixel of the user control that starts in the upper left corner
 	 */
-	public void setY(@NonNull Float y) {
-		setValue(KEY_Y, y);
-	}
+	public Rectangle setY(@NonNull Float y) {
+        setValue(KEY_Y, y);
+        return this;
+    }
 
 	/**
 	 * @return the Y-coordinate pixel of the user control that starts in the upper left corner
@@ -92,9 +94,10 @@ public class Rectangle extends RPCStruct {
 	/**
 	 * Set the width in pixels of the user control's bounding rectangle in pixels
 	 */
-	public void setWidth(@NonNull Float width) {
-		setValue(KEY_WIDTH, width);
-	}
+	public Rectangle setWidth(@NonNull Float width) {
+        setValue(KEY_WIDTH, width);
+        return this;
+    }
 
 	/**
 	 * @return  the width in pixels of the user control's bounding rectangle in pixels
@@ -106,9 +109,10 @@ public class Rectangle extends RPCStruct {
 	/**
 	 * The height in pixels of the user control's bounding rectangle
 	 */
-	public void setHeight(@NonNull Float height) {
-		setValue(KEY_HEIGHT, height);
-	}
+	public Rectangle setHeight(@NonNull Float height) {
+        setValue(KEY_HEIGHT, height);
+        return this;
+    }
 
 	/**
 	 * @return the width in pixels of the user control's bounding rectangle in pixels

@@ -62,7 +62,7 @@ import java.util.Hashtable;
  * 		<tr>
  * 			<td>auxECallNotificationStatus</td>
  * 			<td>VehicleDataNotificationStatus</td>
- * 			<td>References signal "eCallNotification". This is an alternative signal available on some carlines replacing the eCallNotificationStatus, but showing the same values.</td>
+ * 			<td>References signal "eCallNotification". This is an alternative signal available on some car lines replacing the eCallNotificationStatus, but showing the same values.</td>
  *                 <td></td>
  * 			<td></td>
  * 			<td>SmartDeviceLink 2.0</td>
@@ -107,20 +107,23 @@ public class ECallInfo extends RPCStruct {
         setECallConfirmationStatus(eCallConfirmationStatus);
     }
 
-    public void setECallNotificationStatus(@NonNull VehicleDataNotificationStatus eCallNotificationStatus) {
+    public ECallInfo setECallNotificationStatus(@NonNull VehicleDataNotificationStatus eCallNotificationStatus) {
         setValue(KEY_E_CALL_NOTIFICATION_STATUS, eCallNotificationStatus);
+        return this;
     }
     public VehicleDataNotificationStatus getECallNotificationStatus() {
         return (VehicleDataNotificationStatus) getObject(VehicleDataNotificationStatus.class, KEY_E_CALL_NOTIFICATION_STATUS);
     }
-    public void setAuxECallNotificationStatus(@NonNull VehicleDataNotificationStatus auxECallNotificationStatus) {
+    public ECallInfo setAuxECallNotificationStatus(@NonNull VehicleDataNotificationStatus auxECallNotificationStatus) {
         setValue(KEY_AUX_E_CALL_NOTIFICATION_STATUS, auxECallNotificationStatus);
+        return this;
     }
     public VehicleDataNotificationStatus getAuxECallNotificationStatus() {
         return (VehicleDataNotificationStatus) getObject(VehicleDataNotificationStatus.class, KEY_AUX_E_CALL_NOTIFICATION_STATUS);
     }
-    public void setECallConfirmationStatus(@NonNull ECallConfirmationStatus eCallConfirmationStatus) {
+    public ECallInfo setECallConfirmationStatus(@NonNull ECallConfirmationStatus eCallConfirmationStatus) {
         setValue(KEY_E_CALL_CONFIRMATION_STATUS, eCallConfirmationStatus);
+        return this;
     }
     public ECallConfirmationStatus getECallConfirmationStatus() {
         return (ECallConfirmationStatus) getObject(ECallConfirmationStatus.class, KEY_E_CALL_CONFIRMATION_STATUS);

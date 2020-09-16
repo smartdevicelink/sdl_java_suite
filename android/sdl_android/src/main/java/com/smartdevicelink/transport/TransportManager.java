@@ -55,7 +55,6 @@ import com.smartdevicelink.util.DebugTool;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-@SuppressWarnings("unused")
 public class TransportManager extends TransportManagerBase{
     private static final String TAG = "TransportManager";
 
@@ -97,7 +96,7 @@ public class TransportManager extends TransportManagerBase{
             @Override
             public void onFinishedValidation(boolean valid, ComponentName name) {
                 DebugTool.logInfo(TAG, "onFinishedValidation valid=" + valid + "; name=" + ((name == null)? "null" : name.getPackageName()));
-                if (valid) {
+                if (valid && name != null) {
                     mConfig.service = name;
                     transport = new TransportBrokerImpl(contextWeakReference.get(), mConfig.appId, mConfig.service);
                     DebugTool.logInfo(TAG, "TransportManager start was called; transport=" + transport);
@@ -123,14 +122,6 @@ public class TransportManager extends TransportManagerBase{
             legacyBluetoothTransport.stop();
             legacyBluetoothTransport = null;
         }
-    }
-
-    @Override
-    @Deprecated
-    public void resetSession(){
-       if(transport != null){
-           transport.resetSession();
-       }
     }
 
     /**
@@ -222,14 +213,6 @@ public class TransportManager extends TransportManagerBase{
         return config;
     }
 
-    @Deprecated
-    public ComponentName getRouterService(){
-        if(transport != null) {
-            return transport.getRouterService();
-        }
-        return null;
-    }
-
     @Override
     public void sendPacket(SdlPacket packet){
         if(transport !=null){
@@ -249,11 +232,6 @@ public class TransportManager extends TransportManagerBase{
         }
     }
 
-    @Deprecated
-    public void requestSecondaryTransportConnection(byte sessionId, Bundle params){
-        transport.requestSecondaryTransportConnection(sessionId, (Bundle)params);
-    }
-
     @Override
     public void requestSecondaryTransportConnection(byte sessionId, TransportRecord transportRecord){
         if(transportRecord != null){
@@ -265,7 +243,7 @@ public class TransportManager extends TransportManagerBase{
                     String[] split = address.split(":");
                     if(split.length == 2) {
                         bundle.putString(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS, split[0]);
-                        bundle.putInt(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT, Integer.valueOf(split[1]));
+                        bundle.putInt(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT, Integer.parseInt(split[1]));
                     } //else {something went wrong;}
                 }else{
                     bundle.putString(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS, address);
@@ -282,13 +260,6 @@ public class TransportManager extends TransportManagerBase{
         boolean shuttingDown = false;
         public TransportBrokerImpl(Context context, String appId, ComponentName routerService){
             super(context,appId,routerService);
-        }
-
-        @SuppressWarnings("deprecation")
-        @Override
-        @Deprecated
-        public boolean onHardwareConnected(TransportType transportType){
-            return false;
         }
 
         @Override
@@ -478,7 +449,7 @@ public class TransportManager extends TransportManagerBase{
                 String action = intent.getAction();
                 if(BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)){
                     exitLegacyMode("Bluetooth disconnected");
-                }else if(action.equalsIgnoreCase(BluetoothAdapter.ACTION_STATE_CHANGED)){
+                }else if(action != null && action.equalsIgnoreCase(BluetoothAdapter.ACTION_STATE_CHANGED)){
                     int bluetoothState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
                     if(bluetoothState == BluetoothAdapter.STATE_TURNING_OFF || bluetoothState == BluetoothAdapter.STATE_OFF){
                         DebugTool.logInfo(TAG, "Bluetooth is shutting off, exiting legacy mode.");

@@ -41,7 +41,7 @@ import com.smartdevicelink.util.SdlDataTypeConverter;
 import java.util.Hashtable;
 
 /**
- * Describes the GPS data. Not all data will be available on all carlines.
+ * Describes the GPS data. Not all data will be available on all car lines.
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -222,8 +222,9 @@ public class GPSData extends RPCStruct {
      * set longitude degrees
      * @param longitudeDegrees degrees of the longitudinal position
      */
-    public void setLongitudeDegrees(@NonNull Double longitudeDegrees) {
-    	setValue(KEY_LONGITUDE_DEGREES, longitudeDegrees);
+    public GPSData setLongitudeDegrees(@NonNull Double longitudeDegrees) {
+        setValue(KEY_LONGITUDE_DEGREES, longitudeDegrees);
+        return this;
     }
     
     /**
@@ -239,8 +240,9 @@ public class GPSData extends RPCStruct {
      * set latitude degrees
      * @param latitudeDegrees degrees of the latitudinal position
      */
-    public void setLatitudeDegrees(@NonNull Double latitudeDegrees) {
-    	setValue(KEY_LATITUDE_DEGREES, latitudeDegrees);
+    public GPSData setLatitudeDegrees(@NonNull Double latitudeDegrees) {
+        setValue(KEY_LATITUDE_DEGREES, latitudeDegrees);
+        return this;
     }
     
     /**
@@ -256,8 +258,9 @@ public class GPSData extends RPCStruct {
      * set utc year
      * @param utcYear utc year
      */
-    public void setUtcYear(Integer utcYear) {
-    	setValue(KEY_UTC_YEAR, utcYear);
+    public GPSData setUtcYear( Integer utcYear) {
+        setValue(KEY_UTC_YEAR, utcYear);
+        return this;
     }
     
     /**
@@ -272,8 +275,9 @@ public class GPSData extends RPCStruct {
      * set utc month
      * @param utcMonth utc month
      */
-    public void setUtcMonth(Integer utcMonth) {
-    	setValue(KEY_UTC_MONTH, utcMonth);
+    public GPSData setUtcMonth( Integer utcMonth) {
+        setValue(KEY_UTC_MONTH, utcMonth);
+        return this;
     }
     
     /**
@@ -288,8 +292,9 @@ public class GPSData extends RPCStruct {
      * set utc day
      * @param utcDay utc day
      */
-    public void setUtcDay(Integer utcDay) {
-    	setValue(KEY_UTC_DAY, utcDay);
+    public GPSData setUtcDay( Integer utcDay) {
+        setValue(KEY_UTC_DAY, utcDay);
+        return this;
     }
     
     /**
@@ -304,8 +309,9 @@ public class GPSData extends RPCStruct {
      * set utc hours
      * @param utcHours utc hours
      */
-    public void setUtcHours(Integer utcHours) {
-    	setValue(KEY_UTC_HOURS, utcHours);
+    public GPSData setUtcHours( Integer utcHours) {
+        setValue(KEY_UTC_HOURS, utcHours);
+        return this;
     }
     
     /**
@@ -320,8 +326,9 @@ public class GPSData extends RPCStruct {
      * set utc minutes
      * @param utcMinutes utc minutes
      */
-    public void setUtcMinutes(Integer utcMinutes) {
-    	setValue(KEY_UTC_MINUTES, utcMinutes);
+    public GPSData setUtcMinutes( Integer utcMinutes) {
+        setValue(KEY_UTC_MINUTES, utcMinutes);
+        return this;
     }
     
     /**
@@ -336,8 +343,9 @@ public class GPSData extends RPCStruct {
      * set utc seconds
      * @param utcSeconds utc seconds
      */
-    public void setUtcSeconds(Integer utcSeconds) {
-    	setValue(KEY_UTC_SECONDS, utcSeconds);
+    public GPSData setUtcSeconds( Integer utcSeconds) {
+        setValue(KEY_UTC_SECONDS, utcSeconds);
+        return this;
     }
     
     /**
@@ -347,8 +355,9 @@ public class GPSData extends RPCStruct {
     public Integer getUtcSeconds() {
     	return getInteger(KEY_UTC_SECONDS);
     }
-    public void setCompassDirection(CompassDirection compassDirection) {
-    	setValue(KEY_COMPASS_DIRECTION, compassDirection);
+    public GPSData setCompassDirection( CompassDirection compassDirection) {
+        setValue(KEY_COMPASS_DIRECTION, compassDirection);
+        return this;
     }
     public CompassDirection getCompassDirection() {
 		return (CompassDirection) getObject(CompassDirection.class, KEY_COMPASS_DIRECTION);
@@ -358,8 +367,9 @@ public class GPSData extends RPCStruct {
      * set the positional dilution of precision
      * @param pdop the positional dilution of precision
      */
-    public void setPdop(Double pdop) {
-    	setValue(KEY_PDOP, pdop);
+    public GPSData setPdop( Double pdop) {
+        setValue(KEY_PDOP, pdop);
+        return this;
     }
     
     /**
@@ -374,8 +384,9 @@ public class GPSData extends RPCStruct {
      * set the horizontal dilution of precision
      * @param hdop the horizontal dilution of precision
      */
-    public void setHdop(Double hdop) {
-    	setValue(KEY_HDOP, hdop);
+    public GPSData setHdop( Double hdop) {
+        setValue(KEY_HDOP, hdop);
+        return this;
     }
     
     /**
@@ -391,8 +402,9 @@ public class GPSData extends RPCStruct {
      * set the vertical dilution of precision
      * @param vdop the vertical dilution of precision
      */
-    public void setVdop(Double vdop) {
-    	setValue(KEY_VDOP, vdop);
+    public GPSData setVdop( Double vdop) {
+        setValue(KEY_VDOP, vdop);
+        return this;
     }
     
     /**
@@ -405,11 +417,12 @@ public class GPSData extends RPCStruct {
     }
     
     /**
-     * set what coordinates based on 
+     * set what coordinates based on
      * @param actual True, if coordinates are based on satellites.False, if based on dead reckoning
      */
-    public void setActual(Boolean actual) {
-    	setValue(KEY_ACTUAL, actual);
+    public GPSData setActual( Boolean actual) {
+        setValue(KEY_ACTUAL, actual);
+        return this;
     }
     
     /**
@@ -424,8 +437,9 @@ public class GPSData extends RPCStruct {
      * set the number of satellites in view
      * @param satellites the number of satellites in view
      */
-    public void setSatellites(Integer satellites) {
-    	setValue(KEY_SATELLITES, satellites);
+    public GPSData setSatellites( Integer satellites) {
+        setValue(KEY_SATELLITES, satellites);
+        return this;
     }
     
     /**
@@ -435,8 +449,9 @@ public class GPSData extends RPCStruct {
     public Integer getSatellites() {
     	return getInteger(KEY_SATELLITES);
     }
-    public void setDimension(Dimension dimension) {
-    	setValue(KEY_DIMENSION, dimension);
+    public GPSData setDimension( Dimension dimension) {
+        setValue(KEY_DIMENSION, dimension);
+        return this;
     }
     public Dimension getDimension() {
 		return (Dimension) getObject(Dimension.class, KEY_DIMENSION);
@@ -446,8 +461,9 @@ public class GPSData extends RPCStruct {
      * set altitude in meters
      * @param altitude altitude in meters
      */
-    public void setAltitude(Double altitude) {
-    	setValue(KEY_ALTITUDE, altitude);
+    public GPSData setAltitude( Double altitude) {
+        setValue(KEY_ALTITUDE, altitude);
+        return this;
     }
     
     /**
@@ -461,10 +477,11 @@ public class GPSData extends RPCStruct {
     
     /**
      * set the heading.North is 0, East is 90, etc.
-     * @param heading the heading. 
+     * @param heading the heading.
      */
-    public void setHeading(Double heading) {
-    	setValue(KEY_HEADING, heading);
+    public GPSData setHeading( Double heading) {
+        setValue(KEY_HEADING, heading);
+        return this;
     }
     
     /**
@@ -479,8 +496,9 @@ public class GPSData extends RPCStruct {
      * set speed in KPH
      * @param speed the speed
      */
-    public void setSpeed(Double speed) {
-    	setValue(KEY_SPEED, speed);
+    public GPSData setSpeed( Double speed) {
+        setValue(KEY_SPEED, speed);
+        return this;
     }
     
     /**
@@ -498,8 +516,9 @@ public class GPSData extends RPCStruct {
      *                False, if the GPS data is raw and un-shifted.
      *                If not provided, then value is assumed False.
      */
-    public void setShifted(Boolean shifted) {
+    public GPSData setShifted( Boolean shifted) {
         setValue(KEY_SHIFTED, shifted);
+        return this;
     }
 
     /**

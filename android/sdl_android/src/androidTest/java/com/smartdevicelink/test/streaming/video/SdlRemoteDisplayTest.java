@@ -4,13 +4,14 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Looper;
-import androidx.test.platform.app.InstrumentationRegistry;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.widget.RelativeLayout;
 
+import androidx.test.platform.app.InstrumentationRegistry;
+
 import com.smartdevicelink.encoder.VirtualDisplayEncoder;
-import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
+import com.smartdevicelink.streaming.video.IVideoStreamListener;
 import com.smartdevicelink.streaming.video.SdlRemoteDisplay;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 

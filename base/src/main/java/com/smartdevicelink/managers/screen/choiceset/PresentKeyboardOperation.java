@@ -37,10 +37,10 @@ package com.smartdevicelink.managers.screen.choiceset;
 
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.CancelInteraction;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
@@ -62,14 +62,16 @@ import java.util.List;
 
 class PresentKeyboardOperation extends Task {
 	private static final String TAG = "PresentKeyboardOperation";
-	private WeakReference<ISdl> internalInterface;
-	private KeyboardListener keyboardListener;
-	private KeyboardProperties originalKeyboardProperties, keyboardProperties, customConfig;
+	private final WeakReference<ISdl> internalInterface;
+	private final KeyboardListener keyboardListener;
+	private final KeyboardProperties originalKeyboardProperties;
+	private KeyboardProperties keyboardProperties;
+	private final KeyboardProperties customConfig;
 	private boolean updatedKeyboardProperties;
-	private String initialText;
+	private final String initialText;
 	private OnRPCNotificationListener keyboardRPCListener;
-	private Integer cancelID;
-	SdlMsgVersion sdlMsgVersion;
+	private final Integer cancelID;
+	final SdlMsgVersion sdlMsgVersion;
 
 	PresentKeyboardOperation(ISdl internalInterface, KeyboardProperties originalKeyboardProperties, String initialText, KeyboardProperties customConfig, KeyboardListener keyboardListener, Integer cancelID){
 		super("PresentKeyboardOperation");
@@ -124,12 +126,9 @@ class PresentKeyboardOperation extends Task {
 			pi.setOnRPCResponseListener(new OnRPCResponseListener() {
 				@Override
 				public void onResponse(int correlationId, RPCResponse response) {
-					finishOperation();
-				}
-
-				@Override
-				public void onError(int correlationId, Result resultCode, String info){
-					DebugTool.logError(TAG, "There was an error presenting the keyboard. Finishing operation - choice set manager - . Error: " + info + " resultCode: " + resultCode);
+					if (!response.getSuccess()) {
+						DebugTool.logError(TAG, "There was an error presenting the keyboard. Finishing operation - choice set manager - . Error: " + response.getInfo() + " resultCode: " + response.getResultCode());
+					}
 					finishOperation();
 				}
 			});
@@ -166,11 +165,6 @@ class PresentKeyboardOperation extends Task {
 				@Override
 				public void onResponse(int correlationId, RPCResponse response) {
 					DebugTool.logInfo(TAG, "Canceled the presented keyboard " + ((response.getResultCode() == Result.SUCCESS) ? "successfully" : "unsuccessfully"));
-				}
-
-				@Override
-				public void onError(int correlationId, Result resultCode, String info){
-					DebugTool.logError(TAG, "Error canceling the presented keyboard " + resultCode + " " + info);
 				}
 			});
 			if (internalInterface.get() != null){
@@ -213,15 +207,6 @@ class PresentKeyboardOperation extends Task {
 				}
 				DebugTool.logInfo(TAG, "Success Setting keyboard properties in present keyboard operation - choice manager");
 			}
-
-			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-				if (listener != null){
-					listener.onComplete(false);
-				}
-				DebugTool.logError(TAG, "Error Setting keyboard properties in present keyboard operation - choice manager - " + info);
-				super.onError(correlationId, resultCode, info);
-			}
 		});
 
 		if (internalInterface.get() != null){
@@ -239,14 +224,12 @@ class PresentKeyboardOperation extends Task {
 			setGlobalProperties.setOnRPCResponseListener(new OnRPCResponseListener() {
 				@Override
 				public void onResponse(int correlationId, RPCResponse response) {
-					updatedKeyboardProperties = false;
-					DebugTool.logInfo(TAG, "Successfully reset choice keyboard properties to original config");
-					PresentKeyboardOperation.super.onFinished();
-				}
-
-				@Override
-				public void onError(int correlationId, Result resultCode, String info) {
-					DebugTool.logError(TAG, "Failed to reset choice keyboard properties to original config " + resultCode + ", " + info);
+					if (response.getSuccess()) {
+						updatedKeyboardProperties = false;
+						DebugTool.logInfo(TAG, "Successfully reset choice keyboard properties to original config");
+					} else {
+						DebugTool.logError(TAG, "Failed to reset choice keyboard properties to original config " + response.getResultCode() + ", " + response.getInfo());
+					}
 					PresentKeyboardOperation.super.onFinished();
 				}
 			});
@@ -304,12 +287,6 @@ class PresentKeyboardOperation extends Task {
 				} else if (onKeyboard.getEvent().equals(KeyboardEvent.KEYPRESS)){
 					// Notify of Keypress
 					keyboardListener.updateAutocompleteWithInput(onKeyboard.getData(), new KeyboardAutocompleteCompletionListener() {
-						@Override
-						public void onUpdatedAutoCompleteText(String updatedAutoCompleteText) {
-							keyboardProperties.setAutoCompleteText(updatedAutoCompleteText);
-							updateKeyboardProperties(null);
-						}
-
 						@Override
 						public void onUpdatedAutoCompleteList(List<String> updatedAutoCompleteList) {
 							keyboardProperties.setAutoCompleteList(updatedAutoCompleteList != null ? updatedAutoCompleteList : new ArrayList<String>());

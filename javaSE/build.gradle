@@ -1,80 +1,14 @@
-apply plugin: 'java-library'
+plugins {
+    id 'java'
+}
 
 group 'com.smartdevicelink'
-version new File(projectDir.path, ('/../VERSION')).text.trim()
 
-sourceCompatibility = 1.7
-
-
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
-    }
-}
+sourceCompatibility = 1.8
 
 repositories {
-    google()
-    jcenter()
-}
-
-// This extraLibs solution is explained here: https://discuss.gradle.org/t/how-to-include-dependencies-in-jar/19571/5
-configurations {
-    // configuration that holds jars to include in the jar
-    extraLibs
+    mavenCentral()
 }
 
 dependencies {
-    extraLibs fileTree(dir: 'libs', include: ['*.jar'])
-    extraLibs 'org.mongodb:bson:3.10.1'
-    extraLibs 'androidx.annotation:annotation:1.0.0'
-    extraLibs 'org.java-websocket:Java-WebSocket:1.3.9'
-    extraLibs 'com.livio.taskmaster:taskmaster:0.3.0'
-    configurations.api.extendsFrom(configurations.extraLibs)
 }
-
-sourceSets {
-    main.java.srcDirs += '../base/src/main/java'
-}
-
-jar {
-    dependsOn 'generateSources'
-    from {
-        configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-}
-
-task generateSources {
-    outputs.upToDateWhen { false }
-    File outputDir = file("$buildDir/../src/main/java/com/smartdevicelink/")
-    outputs.dir outputDir
-    doFirst {
-        println "Generating BuildConfig.java ..."
-        def srcFile = new File(outputDir, "BuildConfig.java")
-        srcFile.parentFile.mkdirs()
-        File license = new File("$buildDir/../../LICENSE")
-        if (license.exists()) {
-            srcFile.write("/*\n")
-            def lines = license.readLines()
-            for (line in lines) {
-                srcFile.append("* ")
-                srcFile.append(line)
-                srcFile.append("\n")
-            }
-            srcFile.append("*/\n")
-        }else{
-            srcFile.write("\n")
-        }
-        srcFile.append(
-"""package com.smartdevicelink;
-
-// THIS FILE IS AUTO GENERATED, DO NOT MODIFY!!
-public final class BuildConfig {
-    public static final String VERSION_NAME = "$project.version";
-}""")
-    }
-}
-
-apply from: 'bintray.gradle'

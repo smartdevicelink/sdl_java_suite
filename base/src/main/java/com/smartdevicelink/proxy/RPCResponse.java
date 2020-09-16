@@ -100,7 +100,7 @@ public class RPCResponse extends RPCMessage {
 	}
 	
 	static RPCMessage preprocessMsg (RPCMessage rpcMsg) {
-		if (rpcMsg.getMessageType() != RPCMessage.KEY_RESPONSE) {
+		if (!RPCMessage.KEY_RESPONSE.equals(rpcMsg.getMessageType())) {
 			rpcMsg.messageType = RPCMessage.KEY_RESPONSE;
 		}
 		
@@ -126,12 +126,13 @@ public class RPCResponse extends RPCMessage {
 	 * @param correlationID
 	 *            the ID of the response
 	 */
-	public void setCorrelationID(Integer correlationID) {
+	public RPCResponse setCorrelationID(Integer correlationID) {
 		if (correlationID != null) {
             function.put(RPCMessage.KEY_CORRELATION_ID, correlationID );
         } else {
         	function.remove(RPCMessage.KEY_CORRELATION_ID);
         }
+		return this;
 	}
 	/**
 	 * <p>
@@ -151,10 +152,11 @@ public class RPCResponse extends RPCMessage {
 	 * @param success
 	 *             whether the request is successfully processed
 	 */
-    public void setSuccess( @NonNull Boolean success ) {
+    public RPCResponse setSuccess( @NonNull Boolean success ) {
         if (success != null) {
             parameters.put(RPCResponse.KEY_SUCCESS, success );
         }
+		return this;
     }
 	/**
 	 * <p>
@@ -180,10 +182,11 @@ public class RPCResponse extends RPCMessage {
 	 * @param resultCode
 	 *             whether the request is successfully processed
 	 */
-    public void setResultCode( @NonNull Result resultCode ) {
+    public RPCResponse setResultCode( @NonNull Result resultCode ) {
         if (resultCode != null) {
             parameters.put(RPCResponse.KEY_RESULT_CODE, resultCode );
         }
+		return this;
     }
 	/**
 	 * <p>
@@ -203,9 +206,10 @@ public class RPCResponse extends RPCMessage {
 	 * @param info
 	 *             a string of text representing additional information returned from SDL
 	 */
-    public void setInfo( String info ) {
+    public RPCResponse setInfo( String info ) {
         if (info != null) {
             parameters.put(RPCResponse.KEY_INFO, info );
         }
+		return this;
     }
 }

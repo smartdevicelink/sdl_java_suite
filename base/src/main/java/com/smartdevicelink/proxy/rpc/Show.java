@@ -238,7 +238,7 @@ public class Show extends RPCRequest {
 	/**
 	 * Sets the text displayed in a single-line display, or in the upper display
 	 * line in a two-line display
-	 * 
+	 *
 	 * @param mainField1
 	 *            the String value representing the text displayed in a
 	 *            single-line display, or in the upper display line in a
@@ -251,9 +251,10 @@ public class Show extends RPCRequest {
 	 *            <li>If this parameter is an empty string, the field will be
 	 *            cleared</li>
 	 *            </ul>
-	 */    
-    public void setMainField1(String mainField1) {
-		setParameters(KEY_MAIN_FIELD_1, mainField1);
+	 */
+    public Show setMainField1( String mainField1) {
+        setParameters(KEY_MAIN_FIELD_1, mainField1);
+        return this;
     }
 	/**
 	 * Gets the text displayed on the second display line of a two-line display
@@ -266,7 +267,7 @@ public class Show extends RPCRequest {
     }
 	/**
 	 * Sets the text displayed on the second display line of a two-line display
-	 * 
+	 *
 	 * @param mainField2
 	 *            the String value representing the text displayed on the second
 	 *            display line of a two-line display
@@ -281,9 +282,10 @@ public class Show extends RPCRequest {
 	 *            parameter is ignored</li>
 	 *            <li>Maxlength = 500</li>
 	 *            </ul>
-	 */    
-    public void setMainField2(String mainField2) {
-		setParameters(KEY_MAIN_FIELD_2, mainField2);
+	 */
+    public Show setMainField2( String mainField2) {
+        setParameters(KEY_MAIN_FIELD_2, mainField2);
+        return this;
     }
 
 	/**
@@ -299,7 +301,7 @@ public class Show extends RPCRequest {
 
 	/**
 	 * Sets the text displayed on the first display line of the second page
-	 * 
+	 *
 	 * @param mainField3
 	 *            the String value representing the text displayed on the first
 	 *            display line of the second page
@@ -316,8 +318,9 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setMainField3(String mainField3) {
-		setParameters(KEY_MAIN_FIELD_3, mainField3);
+    public Show setMainField3( String mainField3) {
+        setParameters(KEY_MAIN_FIELD_3, mainField3);
+        return this;
     }
 
 	/**
@@ -333,7 +336,7 @@ public class Show extends RPCRequest {
 
 	/**
 	 * Sets the text displayed on the second display line of the second page
-	 * 
+	 *
 	 * @param mainField4
 	 *            the String value representing the text displayed on the second
 	 *            display line of the second page
@@ -350,8 +353,9 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setMainField4(String mainField4) {
-		setParameters(KEY_MAIN_FIELD_4, mainField4);
+    public Show setMainField4( String mainField4) {
+        setParameters(KEY_MAIN_FIELD_4, mainField4);
+        return this;
     }
 	/**
 	 * Gets the alignment that Specifies how mainField1 and mainField2 text
@@ -365,7 +369,7 @@ public class Show extends RPCRequest {
 	/**
 	 * Sets the alignment that Specifies how mainField1 and mainField2 text
 	 * should be aligned on display
-	 * 
+	 *
 	 * @param alignment
 	 *            an Enumeration value
 	 *            <p></p>
@@ -377,9 +381,10 @@ public class Show extends RPCRequest {
 	 *            mainField2 will be centered</li>
 	 *            <li>Has no effect with navigation display</li>
 	 *            </ul>
-	 */    
-    public void setAlignment(TextAlignment alignment) {
-		setParameters(KEY_ALIGNMENT, alignment);
+	 */
+    public Show setAlignment( TextAlignment alignment) {
+        setParameters(KEY_ALIGNMENT, alignment);
+        return this;
     }
 	/**
 	 * Gets text in the Status Bar
@@ -391,7 +396,7 @@ public class Show extends RPCRequest {
     }
 	/**
 	 * Sets text in the Status Bar
-	 * 
+	 *
 	 * @param statusBar
 	 *            a String representing the text you want to add in the Status
 	 *            Bar
@@ -406,9 +411,10 @@ public class Show extends RPCRequest {
 	 *            <li>If provided and the display has no status bar, this
 	 *            parameter is ignored</li>
 	 *            </ul>
-	 */    
-    public void setStatusBar(String statusBar) {
-		setParameters(KEY_STATUS_BAR, statusBar);
+	 */
+    public Show setStatusBar( String statusBar) {
+        setParameters(KEY_STATUS_BAR, statusBar);
+        return this;
     }
 	/**
 	 * Gets the String value of the MediaClock
@@ -422,9 +428,9 @@ public class Show extends RPCRequest {
 	/**
 	 * Sets the value for the MediaClock field using a format described in the
 	 * MediaClockFormat enumeration
-	 * 
+	 *
 	 * @param mediaClock
-	 *            a String value for the MdaiaClock
+	 *            a String value for the MediaClock
 	 *            <p></p>
 	 *            <b>Notes: </b>
 	 *            <ul>
@@ -436,8 +442,9 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 */
 	@Deprecated
-    public void setMediaClock(String mediaClock) {
-		setParameters(KEY_MEDIA_CLOCK, mediaClock);
+    public Show setMediaClock( String mediaClock) {
+        setParameters(KEY_MEDIA_CLOCK, mediaClock);
+        return this;
     }
 	/**
 	 * Gets the text in the track field
@@ -449,7 +456,7 @@ public class Show extends RPCRequest {
     }
 	/**
 	 * Sets the text in the track field
-	 * 
+	 *
 	 * @param mediaTrack
 	 *            a String value displayed in the track field
 	 *            <p></p>
@@ -459,14 +466,15 @@ public class Show extends RPCRequest {
 	 *            <li>If an empty string is provided, the field will be cleared</li>
 	 *            <li>This field is only valid for media applications on navigation displays</li>
 	 *            </ul>
-	 */    
-    public void setMediaTrack(String mediaTrack) {
-		setParameters(KEY_MEDIA_TRACK, mediaTrack);
+	 */
+    public Show setMediaTrack( String mediaTrack) {
+        setParameters(KEY_MEDIA_TRACK, mediaTrack);
+        return this;
     }
 
 	/**
 	 * Sets an image to be shown on supported displays
-	 * 
+	 *
 	 * @param graphic
 	 *            the value representing the image shown on supported displays
 	 *            <p></p>
@@ -474,8 +482,9 @@ public class Show extends RPCRequest {
 	 *            graphic shall not change
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setGraphic(Image graphic) {
-		setParameters(KEY_GRAPHIC, graphic);
+    public Show setGraphic( Image graphic) {
+        setParameters(KEY_GRAPHIC, graphic);
+        return this;
     }
 
 	/**
@@ -485,18 +494,17 @@ public class Show extends RPCRequest {
 	 *         displays
 	 * @since SmartDeviceLink 2.0
 	 */
-    @SuppressWarnings("unchecked")
     public Image getGraphic() {
 		return (Image) getObject(Image.class, KEY_GRAPHIC);
     }
 
     
-    public void setSecondaryGraphic(Image secondaryGraphic) {
-		setParameters(KEY_SECONDARY_GRAPHIC, secondaryGraphic);
+    public Show setSecondaryGraphic( Image secondaryGraphic) {
+        setParameters(KEY_SECONDARY_GRAPHIC, secondaryGraphic);
+        return this;
     }
 
 
-    @SuppressWarnings("unchecked")
     public Image getSecondaryGraphic() {
 		return (Image) getObject(Image.class, KEY_SECONDARY_GRAPHIC);
     }    
@@ -516,9 +524,9 @@ public class Show extends RPCRequest {
 
 	/**
 	 * Sets the the Soft buttons defined by the App
-	 * 
+	 *
 	 * @param softButtons
-	 *            a List value represemting the Soft buttons defined by the
+	 *            a List value representing the Soft buttons defined by the
 	 *            App
 	 *            <p></p>
 	 *            <b>Notes: </b>
@@ -528,11 +536,12 @@ public class Show extends RPCRequest {
 	 *            <li>Array Minsize: 0</li>
 	 *            <li>Array Maxsize: 8</li>
 	 *            </ul>
-	 * 
+	 *
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setSoftButtons(List<SoftButton> softButtons) {
-		setParameters(KEY_SOFT_BUTTONS, softButtons);
+    public Show setSoftButtons( List<SoftButton> softButtons) {
+        setParameters(KEY_SOFT_BUTTONS, softButtons);
+        return this;
     }
 
 	/**
@@ -549,7 +558,7 @@ public class Show extends RPCRequest {
 
 	/**
 	 * Sets the Custom Presets defined by the App
-	 * 
+	 *
 	 * @param customPresets
 	 *            a List value representing the Custom Presets defined by the
 	 *            App
@@ -561,8 +570,9 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setCustomPresets(List<String> customPresets) {
-		setParameters(KEY_CUSTOM_PRESETS, customPresets);
+    public Show setCustomPresets( List<String> customPresets) {
+        setParameters(KEY_CUSTOM_PRESETS, customPresets);
+        return this;
     }
 
 	/**
@@ -574,9 +584,10 @@ public class Show extends RPCRequest {
 	 *            <ul>
 	 * @since SmartDeviceLink 4.5.0
 	 */
-    public void setMetadataTags(MetadataTags metadataTags){
-		setParameters(KEY_METADATA_TAGS, metadataTags);
-	}
+    public Show setMetadataTags( MetadataTags metadataTags) {
+        setParameters(KEY_METADATA_TAGS, metadataTags);
+        return this;
+    }
 
 	/**
 	 * Gets text field metadata defined by the App
@@ -599,9 +610,10 @@ public class Show extends RPCRequest {
 	 *
 	 * @since 6.0
 	 */
-	public void setWindowID(Integer windowID) {
-		setParameters(KEY_WINDOW_ID, windowID);
-	}
+	public Show setWindowID( Integer windowID) {
+        setParameters(KEY_WINDOW_ID, windowID);
+        return this;
+    }
 
 	/**
 	 * Gets the windowID.
@@ -619,7 +631,6 @@ public class Show extends RPCRequest {
 	 *
 	 * @since 6.0
 	 */
-	@SuppressWarnings("unchecked")
 	public TemplateConfiguration getTemplateConfiguration() {
 		return (TemplateConfiguration) getObject(TemplateConfiguration.class, KEY_TEMPLATE_CONFIGURATION);
 	}
@@ -628,9 +639,10 @@ public class Show extends RPCRequest {
 	 * Sets the templateConfiguration. It's used to set an alternate template layout to a window.
 	 * @param templateConfiguration
 	 */
-	public void setTemplateConfiguration(TemplateConfiguration templateConfiguration) {
-		setParameters(KEY_TEMPLATE_CONFIGURATION, templateConfiguration);
-	}
+	public Show setTemplateConfiguration( TemplateConfiguration templateConfiguration) {
+        setParameters(KEY_TEMPLATE_CONFIGURATION, templateConfiguration);
+        return this;
+    }
 	
 	/**
 	 * Sets the title of the new template that will be displayed.
@@ -643,9 +655,10 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 * @since SmartDeviceLink 6.0.0
 	 */
-	public void setTemplateTitle(String templateTitle){
-		setParameters(KEY_TEMPLATE_TITLE, templateTitle);
-	}
+	public Show setTemplateTitle( String templateTitle) {
+        setParameters(KEY_TEMPLATE_TITLE, templateTitle);
+        return this;
+    }
 
 	/**
 	 * Gets the title of the new template that will be displayed

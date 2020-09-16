@@ -3,9 +3,12 @@ package com.smartdevicelink.protocol;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.RestrictTo;
+
 import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.DebugTool;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class SdlPacket extends BaseSdlPacket implements Parcelable {
     private static final String TAG = "SdlPacket";
     private static final int EXTRA_PARCEL_DATA_LENGTH 			= 24;
@@ -31,7 +34,7 @@ public class SdlPacket extends BaseSdlPacket implements Parcelable {
     }
 
     /* ***************************************************************************************************************************************************
-     * ***********************************************************  Parceable Overrides  *****************************************************************
+     * ***********************************************************  Parcelable Overrides  *****************************************************************
      *****************************************************************************************************************************************************/
 
 
@@ -39,7 +42,7 @@ public class SdlPacket extends BaseSdlPacket implements Parcelable {
     //I think this is FIFO...right?
     public SdlPacket(Parcel p) {
         this.version = p.readInt();
-        this.encryption = (p.readInt() == 0) ? false : true;
+        this.encryption = p.readInt() != 0;
         this.frameType = p.readInt();
         this.serviceType = p.readInt();
         this.frameInfo = p.readInt();
@@ -58,7 +61,7 @@ public class SdlPacket extends BaseSdlPacket implements Parcelable {
                 messagingVersion = p.readInt();
                 if (messagingVersion >= 2) {
                     if (p.readInt() == 1) { //We should have a transport type attached
-                        this.transportRecord = (TransportRecord) p.readParcelable(TransportRecord.class.getClassLoader());
+                        this.transportRecord = p.readParcelable(TransportRecord.class.getClassLoader());
                     }
                 }
             }catch (RuntimeException e){

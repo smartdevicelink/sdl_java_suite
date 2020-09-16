@@ -36,17 +36,16 @@ import androidx.annotation.NonNull;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.AddCommand;
 import com.smartdevicelink.proxy.rpc.DeleteCommand;
 import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
-import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
@@ -191,7 +190,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
 		List<DeleteCommand> deleteVoiceCommands = deleteCommandsForVoiceCommands(oldVoiceCommands);
 		oldVoiceCommands.clear();
-		internalInterface.sendRequests(deleteVoiceCommands, new OnMultipleRequestListener() {
+		internalInterface.sendRPCs(deleteVoiceCommands, new OnMultipleRequestListener() {
 			@Override
 			public void onUpdate(int remainingRequests) {
 
@@ -203,11 +202,6 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 				if (listener != null){
 					listener.onComplete(true);
 				}
-			}
-
-			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-
 			}
 
 			@Override
@@ -229,7 +223,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
 		inProgressUpdate = addCommandsForVoiceCommands(voiceCommands);
 
-		internalInterface.sendRequests(inProgressUpdate, new OnMultipleRequestListener() {
+		internalInterface.sendRPCs(inProgressUpdate, new OnMultipleRequestListener() {
 			@Override
 			public void onUpdate(int remainingRequests) {
 
@@ -242,11 +236,6 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 					listener.onComplete(true);
 				}
 				oldVoiceCommands = voiceCommands;
-			}
-
-			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-
 			}
 
 			@Override

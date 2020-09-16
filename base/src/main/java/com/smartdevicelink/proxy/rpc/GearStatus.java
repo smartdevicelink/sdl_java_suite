@@ -95,10 +95,11 @@ public class GearStatus extends RPCStruct {
     /**
      * Sets the userSelectedGear.
      *
-     * @param userSelectedGear Gear position selected by the user i.e. Park, Drive, Reverse
+     * @param selectedGear Gear position selected by the user i.e. Park, Drive, Reverse
      */
-    public void setUserSelectedGear(PRNDL selectedGear){
+    public GearStatus setUserSelectedGear( PRNDL selectedGear) {
         setValue(KEY_USER_SELECTED_GEAR, selectedGear);
+        return this;
     }
 
     /**
@@ -106,7 +107,6 @@ public class GearStatus extends RPCStruct {
      *
      * @return PRNDL Gear position selected by the user i.e. Park, Drive, Reverse
      */
-    @SuppressWarnings("unchecked")
     public PRNDL getUserSelectedGear(){
         return (PRNDL)getObject(PRNDL.class, KEY_USER_SELECTED_GEAR);
     }
@@ -116,8 +116,9 @@ public class GearStatus extends RPCStruct {
      *
      * @param actualGear Actual Gear in use by the transmission
      */
-    public void setActualGear(PRNDL actualGear){
+    public GearStatus setActualGear( PRNDL actualGear) {
         setValue(KEY_ACTUAL_GEAR, actualGear);
+        return this;
     }
 
     /**
@@ -125,7 +126,6 @@ public class GearStatus extends RPCStruct {
      *
      * @return PRNDL Actual Gear in use by the transmission
      */
-    @SuppressWarnings("unchecked")
     public PRNDL getActualGear(){
         return (PRNDL)getObject(PRNDL.class, KEY_ACTUAL_GEAR);
     }
@@ -135,8 +135,9 @@ public class GearStatus extends RPCStruct {
      *
      * @param transmissionType Tells the transmission type
      */
-    public void setTransmissionType(TransmissionType transmissionType){
+    public GearStatus setTransmissionType( TransmissionType transmissionType) {
         setValue(KEY_TRANSMISSION_TYPE, transmissionType);
+        return this;
     }
 
     /**

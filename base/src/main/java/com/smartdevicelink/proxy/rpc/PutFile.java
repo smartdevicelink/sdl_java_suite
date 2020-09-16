@@ -189,14 +189,15 @@ public class PutFile extends RPCRequest {
 
 	/**
 	 * Sets a file reference name
-	 * 
+	 *
 	 * @param sdlFileName
 	 *            a String value representing a file reference name
 	 *            <p></p>
 	 *            <b>Notes: </b>Maxlength=500, however the max file name length may vary based on remote filesystem limitations
 	 */
-    public void setSdlFileName(@NonNull String sdlFileName) {
+    public PutFile setSdlFileName(@NonNull String sdlFileName) {
         setParameters(KEY_SDL_FILE_NAME, sdlFileName);
+        return this;
     }
 
 	/**
@@ -210,12 +211,13 @@ public class PutFile extends RPCRequest {
 
 	/**
 	 * Sets file type
-	 * 
+	 *
 	 * @param fileType
 	 *            a FileType value representing a selected file type
 	 */
-    public void setFileType(@NonNull FileType fileType) {
+    public PutFile setFileType(@NonNull FileType fileType) {
         setParameters(KEY_FILE_TYPE, fileType);
+        return this;
     }
 
 	/**
@@ -236,12 +238,13 @@ public class PutFile extends RPCRequest {
 	 * system, the app will receive a rejection and have to resend the file. If
 	 * omitted, the value will be set to false
 	 * <p></p>
-	 * 
+	 *
 	 * @param persistentFile
 	 *            a Boolean value
 	 */
-    public void setPersistentFile(Boolean persistentFile) {
+    public PutFile setPersistentFile( Boolean persistentFile) {
         setParameters(KEY_PERSISTENT_FILE, persistentFile);
+        return this;
     }
 
 	/**
@@ -254,8 +257,9 @@ public class PutFile extends RPCRequest {
     public Boolean getPersistentFile() {
         return getBoolean(KEY_PERSISTENT_FILE);
     }
-    public void setFileData(byte[] fileData) {
+    public PutFile setFileData( byte[] fileData) {
         setBulkData(fileData);
+        return this;
     }
     public byte[] getFileData() {
         return getBulkData();
@@ -265,19 +269,21 @@ public class PutFile extends RPCRequest {
      * @deprecated as of SmartDeviceLink 4.0
      * @param offset Optional offset in bytes for resuming partial data chunks
      */
-    public void setOffset(Integer offset) {
-    	if(offset == null){
+    public PutFile setOffset( Integer offset) {
+        if(offset == null){
     		setOffset((Long)null);
     	}else{
     		setOffset(offset.longValue());
     	}
+        return this;
     }
 
 	/**
 	 * @param offset Optional offset in bytes for resuming partial data chunks
 	 */
-    public void setOffset(Long offset) {
+    public PutFile setOffset( Long offset) {
         setParameters(KEY_OFFSET, offset);
+        return this;
     }
 
     public Long getOffset() {
@@ -300,20 +306,22 @@ public class PutFile extends RPCRequest {
      * @param length Optional length in bytes for resuming partial data chunks. If offset is set to 0, then length is
 	 *               the total length of the file to be downloaded
      */
-    public void setLength(Integer length) {
-    	if(length == null){
+    public PutFile setLength( Integer length) {
+        if(length == null){
     		setLength((Long)null);
     	}else{
     		setLength(length.longValue());
     	}
+        return this;
     }
 
 	/**
 	 * @param length Optional length in bytes for resuming partial data chunks. If offset is set to 0, then length is
 	 *               the total length of the file to be downloaded
 	 */
-    public void setLength(Long length) {
+    public PutFile setLength( Long length) {
         setParameters(KEY_LENGTH, length);
+        return this;
     }
 
     public Long getLength() {
@@ -330,8 +338,9 @@ public class PutFile extends RPCRequest {
         return null;
     }
 
-    public void setSystemFile(Boolean systemFile) {
+    public PutFile setSystemFile( Boolean systemFile) {
         setParameters(KEY_SYSTEM_FILE, systemFile);
+        return this;
     }
 
     public Boolean getSystemFile() {
@@ -348,15 +357,16 @@ public class PutFile extends RPCRequest {
 	 * CRC32 for it.
 	 * @param fileData - the file as a byte array
 	 */
-	public void setCRC(byte[] fileData) {
-		if (fileData != null) {
+	public PutFile setCRC( byte[] fileData) {
+        if (fileData != null) {
 			CRC32 crc = new CRC32();
 			crc.update(fileData);
 			parameters.put(KEY_CRC, crc.getValue());
 		} else {
 			parameters.remove(KEY_CRC);
 		}
-	}
+        return this;
+    }
 
 	/**
 	 * This assumes you have created your own CRC32 and are setting it with the file
@@ -364,13 +374,14 @@ public class PutFile extends RPCRequest {
 	 * included in java.util</STRONG>
 	 * @param crc - the CRC32 of the file being set
 	 */
-	public void setCRC(Long crc) {
-		if (crc != null) {
+	public PutFile setCRC( Long crc) {
+        if (crc != null) {
 			parameters.put(KEY_CRC, crc);
 		} else {
 			parameters.remove(KEY_CRC);
 		}
-	}
+        return this;
+    }
 
 	/**
 	 * This returns the CRC, if it has been set, for the file object

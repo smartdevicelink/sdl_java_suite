@@ -1,10 +1,12 @@
 package com.smartdevicelink.transport;
 
 import android.bluetooth.BluetoothAdapter;
+import android.content.ComponentName;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.test.SdlUnitTestContants;
@@ -27,7 +29,12 @@ public class TransportBrokerTest { //FIXME this test class needs to be fixed. At
 	@Before
 	public void setUp() throws Exception {
 		rsvp = new RouterServiceValidator(getInstrumentation().getTargetContext());
-		rsvp.validate();
+		rsvp.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
+			@Override
+			public void onFinishedValidation(boolean valid, ComponentName name) {
+				
+			}
+		});
 		
 	}
 	

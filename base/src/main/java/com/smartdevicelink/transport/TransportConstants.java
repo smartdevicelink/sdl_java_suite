@@ -65,8 +65,6 @@ public class TransportConstants {
 	public static final String FORCE_TRANSPORT_CONNECTED					= "force_connect"; //This is legacy, do not refactor this. 
 	public static final String ROUTER_SERVICE_VALIDATED						= "router_service_validated"; 
 
-	@Deprecated
-	public static final String REPLY_TO_INTENT_EXTRA 						= "ReplyAddress";
 	public static final String CONNECT_AS_CLIENT_BOOLEAN_EXTRA				= "connectAsClient";
 	public static final String PACKAGE_NAME_STRING							= "package.name";
 	public static final String APP_ID_EXTRA									= "app.id";//Sent as a Long. This is no longer used
@@ -78,7 +76,7 @@ public class TransportConstants {
 	public static final String ENABLE_LEGACY_MODE_EXTRA 					= "ENABLE_LEGACY_MODE_EXTRA";
 
 	@Deprecated
-	public static final String HARDWARE_DISCONNECTED						= "hardware.disconect";
+	public static final String HARDWARE_DISCONNECTED						= "hardware.disconect"; //This is legacy, do not refactor this.
 	public static final String TRANSPORT_DISCONNECTED						= "transport.disconect";
 	public static final String HARDWARE_CONNECTED							= "hardware.connected";
 	public static final String CURRENT_HARDWARE_CONNECTED					= "current.hardware.connected";
@@ -293,5 +291,15 @@ public class TransportConstants {
 	public static final String SPP_BLUETOOTH                                = "SPP_BLUETOOTH";
 	public static final String AOA_USB                                      = "AOA_USB";
 	public static final String TCP_WIFI                                     = "TCP_WIFI";
+
+
+	/**
+	 * Broadcast action: sent when a USB accessory is attached.
+	 *
+	 * UsbManager.EXTRA_ACCESSORY extra contains UsbAccessory object that has
+	 * been attached.
+	 */
+	public static final String ACTION_USB_ACCESSORY_ATTACHED = "com.smartdevicelink.USB_ACCESSORY_ATTACHED";
+
 
 }

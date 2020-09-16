@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.security;
 
-import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.protocol.enums.SessionType;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ abstract class AbstractSdlSecurityBase {
 	protected List<String> makeList = null;
 	protected boolean isInitSuccess = false;
 	protected byte sessionId = 0;
-	protected List<SessionType> startServiceList = new ArrayList<SessionType>();	
+	protected List<SessionType> startServiceList = new ArrayList<>();
 	
     public AbstractSdlSecurityBase() {
 	}

@@ -31,22 +31,26 @@
  */
 package com.smartdevicelink.protocol.heartbeat;
 
+import androidx.annotation.RestrictTo;
+
 /**
  * Listener (aka delegate) that actually knows how to work with the outside
  * world.
  */
+
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public interface IHeartbeatMonitorListener {
     /**
      * The listener should create and send a heartbeat message.
      *
      * @param monitor the caller
      */
-    public void sendHeartbeat(IHeartbeatMonitor monitor);
+    void sendHeartbeat(IHeartbeatMonitor monitor);
 
     /**
      * Notifies the listener that the heartbeat timed out.
      *
      * @param monitor the caller
      */
-    public void heartbeatTimedOut(IHeartbeatMonitor monitor);
+    void heartbeatTimedOut(IHeartbeatMonitor monitor);
 }

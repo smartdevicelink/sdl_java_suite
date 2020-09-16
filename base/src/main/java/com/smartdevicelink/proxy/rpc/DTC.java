@@ -78,8 +78,9 @@ public class DTC extends RPCStruct {
      * set identifier
      * @param identifier the hexadecimal id of the DTC
      */
-    public void setIdentifier(String identifier) {
-    	setValue(KEY_IDENTIFIER, identifier);
+    public DTC setIdentifier( String identifier) {
+        setValue(KEY_IDENTIFIER, identifier);
+        return this;
     }
     
     /**
@@ -94,8 +95,9 @@ public class DTC extends RPCStruct {
      * set Hexadecimal byte string
      * @param statusByte Hexadecimal byte string
      */
-    public void setStatusByte(String statusByte) {
-    	setValue(KEY_STATUS_BYTE, statusByte);
+    public DTC setStatusByte( String statusByte) {
+        setValue(KEY_STATUS_BYTE, statusByte);
+        return this;
     }
     
     /**

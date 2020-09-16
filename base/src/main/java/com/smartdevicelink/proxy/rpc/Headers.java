@@ -67,48 +67,54 @@ public class Headers extends RPCStruct {
         super(hash);
     }	
 	
-    public void setContentType(String contenttype) {
-        setValue(KEY_CONTENT_TYPE, contenttype);
+    public Headers setContentType( String contentType) {
+        setValue(KEY_CONTENT_TYPE, contentType);
+        return this;
     }
     
     public String getContentType() {
         return getString(KEY_CONTENT_TYPE);
     }     
     
-    public void setConnectTimeout(Integer connectiontimeout) {
-        setValue(KEY_CONNECT_TIMEOUT, connectiontimeout);
+    public Headers setConnectTimeout( Integer connectionTimeout) {
+        setValue(KEY_CONNECT_TIMEOUT, connectionTimeout);
+        return this;
     }
     
     public Integer getConnectTimeout() {
         return getInteger(KEY_CONNECT_TIMEOUT);
     }
     
-    public void setDoOutput(Boolean dooutput) {
-        setValue(KEY_DO_OUTPUT, dooutput);
+    public Headers setDoOutput( Boolean doOutput) {
+        setValue(KEY_DO_OUTPUT, doOutput);
+        return this;
     }
     
     public Boolean getDoOutput() {
         return getBoolean(KEY_DO_OUTPUT);
     }    
     
-    public void setDoInput(Boolean doinput) {
-        setValue(KEY_DO_INPUT, doinput);
+    public Headers setDoInput( Boolean doInput) {
+        setValue(KEY_DO_INPUT, doInput);
+        return this;
     }
     
     public Boolean getDoInput() {
         return getBoolean(KEY_DO_INPUT);
     }       
 
-    public void setUseCaches(Boolean usescaches) {
-        setValue(KEY_USE_CACHES, usescaches);
+    public Headers setUseCaches( Boolean usesCaches) {
+        setValue(KEY_USE_CACHES, usesCaches);
+        return this;
     }
     
     public Boolean getUseCaches() {
         return getBoolean(KEY_USE_CACHES);
     }      
     
-    public void setRequestMethod(String requestmethod) {
-        setValue(KEY_REQUEST_METHOD, requestmethod);
+    public Headers setRequestMethod( String requestMethod) {
+        setValue(KEY_REQUEST_METHOD, requestMethod);
+        return this;
     }
     
     public String getRequestMethod() {
@@ -116,32 +122,36 @@ public class Headers extends RPCStruct {
     }   
     
     
-    public void setReadTimeout(Integer readtimeout) {
-        setValue(KEY_READ_TIMEOUT, readtimeout);
+    public Headers setReadTimeout( Integer readTimeout) {
+        setValue(KEY_READ_TIMEOUT, readTimeout);
+        return this;
     }
     
     public Integer getReadTimeout() {
         return getInteger(KEY_READ_TIMEOUT);
     }
     
-    public void setInstanceFollowRedirects(Boolean instancefollowredirects) {
-        setValue(KEY_INSTANCE_FOLLOW_REDIRECTS, instancefollowredirects);
+    public Headers setInstanceFollowRedirects( Boolean instanceFollowRedirects) {
+        setValue(KEY_INSTANCE_FOLLOW_REDIRECTS, instanceFollowRedirects);
+        return this;
     }
     
     public Boolean getInstanceFollowRedirects() {
         return getBoolean(KEY_INSTANCE_FOLLOW_REDIRECTS);
     }
     
-    public void setCharset(String charset) {
+    public Headers setCharset( String charset) {
         setValue(KEY_CHARSET, charset);
+        return this;
     }
     
     public String getCharset() {
         return getString(KEY_CHARSET);
     }
 
-    public void setContentLength(Integer contentlength) {
-        setValue(KEY_CONTENT_LENGTH, contentlength);
+    public Headers setContentLength( Integer contentLength) {
+        setValue(KEY_CONTENT_LENGTH, contentLength);
+        return this;
     }
     
     public Integer getContentLength() {

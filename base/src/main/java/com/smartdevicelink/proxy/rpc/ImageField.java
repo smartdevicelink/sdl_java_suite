@@ -108,21 +108,23 @@ public class ImageField extends RPCStruct {
     public ImageFieldName getName() {
         return (ImageFieldName) getObject(ImageFieldName.class, KEY_NAME);
     } 
-    public void setName(@NonNull ImageFieldName name ) {
+    public ImageField setName(@NonNull ImageFieldName name) {
         setValue(KEY_NAME, name);
-    } 
+        return this;
+    }
     @SuppressWarnings("unchecked")
 	public List<FileType> getImageTypeSupported() {
         return (List<FileType>) getObject(FileType.class, KEY_IMAGE_TYPE_SUPPORTED);
     }
-    public void setImageTypeSupported(@NonNull List<FileType> imageTypeSupported ) {
+    public ImageField setImageTypeSupported(@NonNull List<FileType> imageTypeSupported) {
         setValue(KEY_IMAGE_TYPE_SUPPORTED, imageTypeSupported);
+        return this;
     }
-    @SuppressWarnings("unchecked")
     public ImageResolution getImageResolution() {
         return (ImageResolution) getObject(ImageResolution.class, KEY_IMAGE_RESOLUTION);
     } 
-    public void setImageResolution( ImageResolution imageResolution ) {
+    public ImageField setImageResolution( ImageResolution imageResolution) {
         setValue(KEY_IMAGE_RESOLUTION, imageResolution);
-    }      
+        return this;
+    }
 }

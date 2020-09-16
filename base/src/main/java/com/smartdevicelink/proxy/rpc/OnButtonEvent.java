@@ -91,7 +91,7 @@ import java.util.Hashtable;
  * <tr>
  * <td>buttonEventMode</td>
  * <td>{@linkplain ButtonEventMode}</td>
- * <td>Indicats button was depressed (DOWN) or released (UP)</td>
+ * <td>Indicates button was depressed (DOWN) or released (UP)</td>
  * <td></td>
  * <td></td>
  * <td>SmartDeviceLink 1.0</td>
@@ -160,11 +160,12 @@ public class OnButtonEvent extends RPCNotification {
     }
 
     /**
-     * <p>Set the button's name</p>    
+     * <p>Set the button's name</p>
      * @param buttonName name of the button
-     */    
-    public void setButtonName(@NonNull ButtonName buttonName) {
+     */
+    public OnButtonEvent setButtonName(@NonNull ButtonName buttonName) {
         setParameters(KEY_BUTTON_NAME, buttonName);
+        return this;
     }
 
     /**
@@ -179,13 +180,15 @@ public class OnButtonEvent extends RPCNotification {
      * <p> Set the event mode of the button,pressed or released</p>
      * @param buttonEventMode indicates the button is pressed or released
      * @see ButtonEventMode
-     */    
-    public void setButtonEventMode(@NonNull ButtonEventMode buttonEventMode) {
+     */
+    public OnButtonEvent setButtonEventMode(@NonNull ButtonEventMode buttonEventMode) {
         setParameters(KEY_BUTTON_EVENT_MODE, buttonEventMode);
+        return this;
     }
 
-    public void setCustomButtonID(Integer customButtonID) {
+    public OnButtonEvent setCustomButtonID( Integer customButtonID) {
         setParameters(KEY_CUSTOM_BUTTON_ID, customButtonID);
+        return this;
     }
     public Integer getCustomButtonID() {
     	return getInteger(KEY_CUSTOM_BUTTON_ID);

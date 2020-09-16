@@ -62,7 +62,7 @@ public class SiphonServer {
 	private static Boolean m_siphonInitialized = false;
 	private static Boolean m_foundOpenSocket = false;
 	private static Socket m_siphonSocket = null;
-	private static Object m_siphonLock = new Object();
+	private static final Object m_siphonLock = new Object();
 	private static ServerSocket m_listeningSocket = null;
 	private static short m_listenPort = -1;
 	private static OutputStream m_siphonSocketOutputStream = null;
@@ -72,7 +72,7 @@ public class SiphonServer {
 	private static long m_startTimeStamp = 0;
 	
 	// SDL Trace Message Version
-	private static byte m_sdlTraceMsgVersionNumber = 1;
+	private static final byte m_sdlTraceMsgVersionNumber = 1;
 	
 	// Max number of ports to attempt a connection on
 	private final static Integer MAX_NUMBER_OF_PORT_ATTEMPTS = 20;
@@ -192,7 +192,7 @@ public class SiphonServer {
 			return false;
 		}
 				
-		byte messageBytes[] = null;
+		byte[] messageBytes;
 		int messageLength = 0;
 		
 		try {
@@ -212,7 +212,7 @@ public class SiphonServer {
 			return false;
 		}
 		
-		byte messageBytes[] = null;
+		byte[] messageBytes;
 		int messageLength = 0;
 				
 		try {
@@ -234,7 +234,7 @@ public class SiphonServer {
 		byte siphonDataTypeIndicator = 0x00;
 		
 		long currentDateTime = System.currentTimeMillis();
-		Integer deltaTimeMills = null;
+		Integer deltaTimeMills;
 			
 		deltaTimeMills = (int)(currentDateTime - m_startTimeStamp);
 		
@@ -278,7 +278,7 @@ public class SiphonServer {
 			return false;
 		}
 		
-		OutputStream siphonOutputStream = null;
+		OutputStream siphonOutputStream;
 
 		synchronized (m_siphonLock) {
 			siphonOutputStream = m_siphonSocketOutputStream;
@@ -315,7 +315,7 @@ public class SiphonServer {
 		}
     	
     	private boolean findOpenSocket(short port) {
-    		// Accept incoming sihpon connection from trace utility.
+    		// Accept incoming siphon connection from trace utility.
     		Boolean foundOpenPort = false;
     		listenPort = port;
     		
@@ -339,7 +339,7 @@ public class SiphonServer {
     	}
     	
     	private void startServerOnPort() throws IOException {
-    		Socket newSocket = null;
+    		Socket newSocket;
     		
     		// Wait for a connection
     		newSocket = m_listeningSocket.accept(); 
@@ -407,7 +407,7 @@ public class SiphonServer {
     	}
     }
     
-    private static final byte[] intToByteArray(int value) {
+    private static byte[] intToByteArray(int value) {
         return new byte[] {
                 (byte)(value >>> 24),
                 (byte)(value >>> 16),

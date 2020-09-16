@@ -47,8 +47,8 @@ public class RPCMessage extends RPCStruct  {
 		this(functionName, "request");
 	}
 	
-	protected RPCMessage(RPCMessage rpcm) {
-		this(cloneStore(rpcm));
+	protected RPCMessage(RPCMessage rpcMessage) {
+		this(cloneStore(rpcMessage));
 	}
 	
 	protected RPCMessage(RPCStruct rpcs) {
@@ -57,8 +57,8 @@ public class RPCMessage extends RPCStruct  {
 	}
 	
 	public RPCMessage(String functionName, String messageType) {
-		function   = new Hashtable<String, Object>();
-		parameters = new Hashtable<String, Object>();
+		function   = new Hashtable<>();
+		parameters = new Hashtable<>();
 		
 		this.messageType = messageType;
 		function.put(KEY_PARAMETERS, parameters);
@@ -94,14 +94,15 @@ public class RPCMessage extends RPCStruct  {
 
 	protected String messageType;
 	protected Hashtable<String, Object> parameters;
-	protected Hashtable<String, Object> function;
+	protected final Hashtable<String, Object> function;
 
 	public String getFunctionName() {
 		return (String)function.get(KEY_FUNCTION_NAME);
 	}
 	
-	protected void setFunctionName(String functionName) {
+	protected RPCMessage setFunctionName(String functionName) {
 		function.put(KEY_FUNCTION_NAME, functionName);
+		return this;
 	}
 
 	public String getMessageType() {
@@ -115,12 +116,13 @@ public class RPCMessage extends RPCStruct  {
 
 	// Generalized Getters and Setters
 	
-	public void setParameters(String key, Object value) {
+	public RPCMessage setParameters(String key, Object value) {
 		if (value != null) {
 			parameters.put(key, value);
 		} else {
 			parameters.remove(key);
 		}
+		return this;
 	}
 
 	public Object getParameters(String key) {

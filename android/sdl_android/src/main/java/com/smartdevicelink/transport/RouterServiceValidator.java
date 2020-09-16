@@ -47,6 +47,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+
 import androidx.annotation.NonNull;
 
 import com.smartdevicelink.util.AndroidTools;
@@ -89,7 +90,7 @@ public class RouterServiceValidator {
 	
 	
 	private static final String JSON_RESPONSE_OBJECT_TAG = "response";
-	private static final String JSON_RESONSE_APP_VERSIONS_TAG = "versionBlacklist";
+	private static final String JSON_RESPONSE_APP_VERSIONS_TAG = "versionBlacklist";
 
 	private static final String JSON_PUT_ARRAY_TAG = "installedApps";
 	private static final String JSON_APP_PACKAGE_TAG = "packageName";
@@ -112,7 +113,7 @@ public class RouterServiceValidator {
 	 * This will flag the validator to check for app version during debugging. 
 	 * <br><br><b>NOTE: This flag will include a package check as well.
 	 */
-	public static final int FLAG_DEBUG_VERSION_CHECK 		= 0x03; //We use 3 becuase version check will be 2, but since a version check implies a package check we do 2+1=3;
+	public static final int FLAG_DEBUG_VERSION_CHECK 		= 0x03; //We use 3 because version check will be 2, but since a version check implies a package check we do 2+1=3;
 	public static final int FLAG_DEBUG_INSTALLED_FROM_CHECK = 0x04;
 	public static final int FLAG_DEBUG_USE_TIMESTAMP_CHECK = 0x05;
 
@@ -121,11 +122,10 @@ public class RouterServiceValidator {
 	
 	private int flags = FLAG_DEBUG_NONE;
 
-	private Context context= null;
+	private Context context;
 	private boolean inDebugMode = false;
-	@SuppressWarnings("unused")
 	private static boolean pendingListRefresh = false;
-	
+
 	private ComponentName service;//This is how we can save different routers over another in a waterfall method if we choose to.
 
 	private static int securityLevel = -1;
@@ -146,71 +146,6 @@ public class RouterServiceValidator {
 		this.service = config.service;
 		setSecurityLevel(config.securityLevel);
 		inDebugMode = inDebugMode();
-	}
-
-	/**
-	 * Main function to call to ensure we are connecting to a validated router service
-	 * @return whether or not the currently running router service can be trusted.
-	 *
-	 * Due to SDL 0220 proposal, we should use validateAsync always.
-	 * This function remains only for backward compatibility.
-	 */
-	@Deprecated
-	public boolean validate(){
-		
-		if(securityLevel == -1){
-			securityLevel = getSecurityLevel(context);
-		}
-		
-		if(securityLevel == MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF){ //If security isn't an issue, just return true;
-			return true;
-		}
-		
-		PackageManager pm = context.getPackageManager();
-		//Grab the package for the currently running router service. We need this call regardless of if we are in debug mode or not.
-		String packageName = null;
-		
-		if(this.service != null){
-			DebugTool.logInfo(TAG, "Supplied service name of " + this.service.getClassName());
-			if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O && !isServiceRunning(context,this.service)){
-				//This means our service isn't actually running, so set to null. Hopefully we can find a real router service after this.
-				service = null;
-				DebugTool.logWarning(TAG, "Supplied service is not actually running.");
-			} else {
-				// If the running router service is created by this app, the validation is good by default
-				if (this.service.getPackageName().equals(context.getPackageName())) {
-					return true;
-				}
-			}
-		}
-		if(this.service == null){
-			if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O ) {
-				this.service = componentNameForServiceRunning(pm); //Change this to an array if multiple services are started?
-				if (this.service == null) { //if this is still null we know there is no service running so we can return false
-					wakeUpRouterServices();
-					return false;
-				}
-			}else{
-				wakeUpRouterServices();
-				return false;
-			}
-
-		}
-		
-		//Log.d(TAG, "Checking app package: " + service.getClassName());
-		packageName = this.appPackageForComponentName(service, pm);
-		
-
-		if(packageName!=null){//Make sure there is a service running
-			if(wasInstalledByAppStore(packageName)){ //Was this package installed from a trusted app store
-				if( isTrustedPackage(packageName, pm)){//Is this package on the list of trusted apps.
-					return true;
-				}
-			}
-		}//No running service found. Might need to attempt to start one
-		//TODO spin up a known good router service
-		wakeUpRouterServices();
-		return false;
 	}
 
 	/**
@@ -305,7 +240,7 @@ public class RouterServiceValidator {
 	 * FindRouterTask: AsyncTask to find the connected RouterService.
 	 */
 	class FindRouterTask extends AsyncTask<Context, Void, ComponentName> {
-		FindConnectedRouterCallback mCallback;
+		final FindConnectedRouterCallback mCallback;
 		final Handler mHandler = new Handler(Looper.getMainLooper());
 		final Integer TIMEOUT_MSEC = 10000; // 10 sec
 
@@ -421,7 +356,6 @@ public class RouterServiceValidator {
 				|| (this.inDebugMode && ((this.flags & FLAG_DEBUG_INSTALLED_FROM_CHECK) != FLAG_DEBUG_INSTALLED_FROM_CHECK));
 	}
 	
-	@SuppressWarnings("unused")
 	private boolean shouldOverrideTimeCheck(){
 		return (this.inDebugMode && ((this.flags & FLAG_DEBUG_USE_TIMESTAMP_CHECK) != FLAG_DEBUG_USE_TIMESTAMP_CHECK));
 	}
@@ -467,17 +401,18 @@ public class RouterServiceValidator {
 		ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 		//PackageManager pm = context.getPackageManager();
 		
-		
-		for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-			//Log.d(TAG, service.service.getClassName());
-			//We will check to see if it contains this name, should be pretty specific
-			if ((service.service.getClassName()).toLowerCase(Locale.US).contains(SdlBroadcastReceiver.SDL_ROUTER_SERVICE_CLASS_NAME)){ 
-				//this.service = service.service; //This is great
-				if(service.started && service.restarting==0){ //If this service has been started and is not crashed
-					return service.service; //appPackageForComponenetName(service.service,pm);
+		if (manager != null) {
+			for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+				//Log.d(TAG, service.service.getClassName());
+				//We will check to see if it contains this name, should be pretty specific
+				if ((service.service.getClassName()).toLowerCase(Locale.US).contains(SdlBroadcastReceiver.SDL_ROUTER_SERVICE_CLASS_NAME)) {
+					//this.service = service.service; //This is great
+					if (service.started && service.restarting == 0) { //If this service has been started and is not crashed
+						return service.service; //appPackageForComponenetName(service.service,pm);
+					}
 				}
 			}
-		}			
+		}
 
 		return null;
 	}
@@ -549,7 +484,7 @@ public class RouterServiceValidator {
 		
 		JSONObject trustedApps = stringToJson(getTrustedList(context));
 		JSONArray versions;
-		JSONObject app = null;
+		JSONObject app;
 
 		try {
 			app = trustedApps.getJSONObject(packageName);
@@ -563,7 +498,7 @@ public class RouterServiceValidator {
 			if(shouldOverrideVersionCheck()){ //If we don't care about versions, just return true
 				return true;
 			}
-			try { versions = app.getJSONArray(JSON_RESONSE_APP_VERSIONS_TAG); } catch (JSONException e) {	e.printStackTrace();return false;}
+			try { versions = app.getJSONArray(JSON_RESPONSE_APP_VERSIONS_TAG); } catch (JSONException e) {	e.printStackTrace();return false;}
 			return verifyVersion(version, versions);
 		}
 		
@@ -595,12 +530,12 @@ public class RouterServiceValidator {
 	 * @return 
 	 */
 	private static List<SdlApp> findAllSdlApps(Context context){
-		List<SdlApp> apps = new ArrayList<SdlApp>();
+		List<SdlApp> apps = new ArrayList<>();
 		PackageManager packageManager = context.getPackageManager();
 		Intent intent = new Intent();
 		intent.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
 		List<ResolveInfo> infoList = packageManager.queryBroadcastReceivers(intent, 0);
-		//We want to sort our list so that we know it's the same everytime
+		//We want to sort our list so that we know it's the same every time
 		Collections.sort(infoList,new Comparator<ResolveInfo>() {
 	        @Override
 	        public int compare(ResolveInfo lhs, ResolveInfo rhs) {
@@ -638,11 +573,6 @@ public class RouterServiceValidator {
 		return createTrustedListRequest(context,forceRefresh,null,listCallback);
 	}
 	
-	@Deprecated
-	protected static boolean createTrustedListRequest(final Context context, boolean forceRefresh,HttpRequestTask.HttpRequestTaskCallback cb ){
-		return createTrustedListRequest(context,forceRefresh,cb,null);
-	}
-	
 	protected static boolean createTrustedListRequest(final Context context, boolean forceRefresh,HttpRequestTask.HttpRequestTaskCallback cb, final TrustedListCallback listCallback ){
 		if(context == null){
 			return false;
@@ -653,7 +583,7 @@ public class RouterServiceValidator {
 			}
 			return false;
 		}
-		
+
 		pendingListRefresh = true;
 		//Might want to store a flag letting this class know a request is currently pending
 		StringBuilder builder = new StringBuilder();
@@ -730,11 +660,13 @@ public class RouterServiceValidator {
 	 */
 	protected boolean isServiceRunning(Context context, ComponentName service){
 		 ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-		    for (RunningServiceInfo serviceInfo : manager.getRunningServices(Integer.MAX_VALUE)) {
-		        if (serviceInfo.service.equals(service)) {
-		            return true;
-		        }
-		    }
+		 if (manager != null) {
+			 for (RunningServiceInfo serviceInfo : manager.getRunningServices(Integer.MAX_VALUE)) {
+				 if (serviceInfo.service.equals(service)) {
+					 return true;
+				 }
+			 }
+		 }
 		return false;
 	}
 	
@@ -773,9 +705,9 @@ public class RouterServiceValidator {
 		return prefAdd.commit();
 	}
 	/******************************************************************
-	 * 
+	 *
 	 * Saving the list for later!!!
-	 * 
+	 *
 	 ******************************************************************/
 
 	/**
@@ -866,8 +798,8 @@ public class RouterServiceValidator {
 	 * Class that holds all the info we want to send/receive from the validation server
 	 */
 	public static class SdlApp{
-		String packageName;
-		int versionCode;
+		final String packageName;
+		final int versionCode;
 		
 		SdlApp(String packageName, int versionCode){
 			this.packageName = packageName;
@@ -875,7 +807,7 @@ public class RouterServiceValidator {
 		}
 	}
 	
-	public static enum TrustedAppStore{
+	public enum TrustedAppStore{
 		PLAY_STORE("com.android.vending"),
 		AMAZON("com.amazon.venezia"),
 		XIAOMI("com.xiaomi.market"),
@@ -885,7 +817,7 @@ public class RouterServiceValidator {
 		HIAPK("com.hiapk.marketpho"),
 		;
 		
-		String packageString;
+		final String packageString;
 		private TrustedAppStore(String packageString){
 			this.packageString = packageString;
 		}
@@ -900,8 +832,8 @@ public class RouterServiceValidator {
 				return false;
 			}
 			TrustedAppStore[] stores = TrustedAppStore.values();
-			for(int i =0; i<stores.length; i++){
-				if(packageString.equalsIgnoreCase(stores[i].packageString)){
+			for (TrustedAppStore store : stores) {
+				if (packageString.equalsIgnoreCase(store.packageString)) {
 					return true;
 				}
 			}
@@ -913,8 +845,8 @@ public class RouterServiceValidator {
 	 * This interface is used as a callback to know when we have either obtained a list or at least returned from our attempt.
 	 *
 	 */
-	public static interface TrustedListCallback{
-		public void onListObtained(boolean successful);
+	public interface TrustedListCallback{
+		void onListObtained(boolean successful);
 	}
 
 }

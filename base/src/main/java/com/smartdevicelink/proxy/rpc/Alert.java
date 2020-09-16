@@ -125,7 +125,7 @@ import java.util.List;
  * 		<tr>
  * 			<td>softButtons</td>
  * 			<td>SoftButton[]</td>
- * 			<td>Specifies the softbuttons, the apps wants to use in this alert.</td>
+ * 			<td>Specifies the soft buttons, the apps wants to use in this alert.</td>
  *          <td>N</td>
  * 			<td>If omitted on supported displays, the alert will not have any SoftButton.ArrayMin: 0; ArrayMax: 4</td>
  * 			<td>SmartDeviceLink 1.0</td>
@@ -204,10 +204,10 @@ public class Alert extends RPCRequest {
 	/**
 	 * Sets the String to be displayed in the first field of the display during
 	 * the Alert
-	 * 
+	 *
 	 * @param alertText1
 	 *            String Value
-	 *            
+	 *
 	 *            <p><b>Notes: </b></p>
 	 *            <ul>
 	 *            <li>Length is limited to what is indicated in <i>
@@ -215,9 +215,10 @@ public class Alert extends RPCRequest {
 	 *            <li>If omitted, top display line will be cleared</li>
 	 *            <li>Text is always centered</li>
 	 *            </ul>
-	 */    
-    public void setAlertText1(String alertText1) {
-		setParameters(KEY_ALERT_TEXT_1, alertText1);
+	 */
+    public Alert setAlertText1( String alertText1) {
+        setParameters(KEY_ALERT_TEXT_1, alertText1);
+        return this;
     }
 	/**
 	 * Gets the text which is displayed in the second field of the display
@@ -232,10 +233,10 @@ public class Alert extends RPCRequest {
 	/**
 	 * Sets the String to be displayed in the second field of the display during
 	 * the Alert
-	 * 
+	 *
 	 * @param alertText2
 	 *            String Value
-	 *            
+	 *
 	 *            <p><b>Notes: </b></p>
 	 *            <ul>
 	 *            <li>Only permitted if HMI supports a second display line</li>
@@ -244,9 +245,10 @@ public class Alert extends RPCRequest {
 	 *            <li>If omitted, second display line will be cleared</li>
 	 *            <li>Text is always centered</li>
 	 *            </ul>
-	 */    
-    public void setAlertText2(String alertText2) {
-		setParameters(KEY_ALERT_TEXT_2, alertText2);
+	 */
+    public Alert setAlertText2( String alertText2) {
+        setParameters(KEY_ALERT_TEXT_2, alertText2);
+        return this;
     }
 
 	/**
@@ -265,10 +267,10 @@ public class Alert extends RPCRequest {
 	/**
 	 * Sets the String to be displayed in the third field of the display during
 	 * the Alert
-	 * 
+	 *
 	 * @param alertText3
 	 *            String Value
-	 *            
+	 *
 	 *           <p> <b>Notes: </b></p>
 	 *            <ul>
 	 *            <li>Only permitted if HMI supports a third display line</li>
@@ -277,11 +279,12 @@ public class Alert extends RPCRequest {
 	 *            <li>If omitted, third display line will be cleared</li>
 	 *            <li>Text is always centered</li>
 	 *            </ul>
-	 * 
+	 *
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setAlertText3(String alertText3) {
-		setParameters(KEY_ALERT_TEXT_3, alertText3);
+    public Alert setAlertText3( String alertText3) {
+        setParameters(KEY_ALERT_TEXT_3, alertText3);
+        return this;
     }
 	/**
 	 * Gets TTSChunk[], the Array of type TTSChunk which, taken together,
@@ -297,13 +300,14 @@ public class Alert extends RPCRequest {
 	/**
 	 * Sets array of type TTSChunk which, taken together, specify what is to be
 	 * spoken to the user
-	 * 
+	 *
 	 * @param ttsChunks
-	 *            
+	 *
 	 *           <p> <b>Notes: </b>Array must have a least one element</p>
-	 */    
-    public void setTtsChunks(List<TTSChunk> ttsChunks) {
-		setParameters(KEY_TTS_CHUNKS, ttsChunks);
+	 */
+    public Alert setTtsChunks( List<TTSChunk> ttsChunks) {
+        setParameters(KEY_TTS_CHUNKS, ttsChunks);
+        return this;
     }
 	/**
 	 * Gets the duration of the displayed portion of the alert, in milliseconds
@@ -319,8 +323,8 @@ public class Alert extends RPCRequest {
 	 * After this amount of time has passed, the display fields alertText1 and
 	 * alertText2 will revert to what was displayed in those fields before the
 	 * alert began</p>
-	 * 
-	 * 
+	 *
+	 *
 	 * @param duration
 	 *            the Integer values representing the duration time, in
 	 *            milliseconds
@@ -330,9 +334,10 @@ public class Alert extends RPCRequest {
 	 *            <li>Min Value: 3000; Max Value: 10000</li>
 	 *            <li>If omitted, the default is 5000 milliseconds</li>
 	 *            </ul>
-	 */    
-    public void setDuration(Integer duration) {
-		setParameters(KEY_DURATION, duration);
+	 */
+    public Alert setDuration( Integer duration) {
+        setParameters(KEY_DURATION, duration);
+        return this;
     }
 	/**
 	 * Gets a Boolean value representing the alert tone
@@ -346,15 +351,16 @@ public class Alert extends RPCRequest {
 	/**
 	 * Sets whether the alert tone should be played before the TTS (if any) is
 	 * spoken
-	 * 
+	 *
 	 * @param playTone
 	 *            a Boolean value which specifies whether the alert tone should
 	 *            be played before the TTS (if any) is spoken
-	 *            
+	 *
 	 *           <p> <b>Notes: </b>If omitted, default is true</p>
-	 */    
-    public void setPlayTone(Boolean playTone) {
-		setParameters(KEY_PLAY_TONE, playTone);
+	 */
+    public Alert setPlayTone( Boolean playTone) {
+        setParameters(KEY_PLAY_TONE, playTone);
+        return this;
     }
 
 	/**
@@ -371,7 +377,7 @@ public class Alert extends RPCRequest {
 
 	/**
 	 * Sets the SoftButtons
-	 * 
+	 *
 	 * @param softButtons
 	 *            a List<SoftButton> value
 	 *            <p>
@@ -384,8 +390,9 @@ public class Alert extends RPCRequest {
 	 *            </ul>
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setSoftButtons(List<SoftButton> softButtons) {
-		setParameters(KEY_SOFT_BUTTONS, softButtons);
+    public Alert setSoftButtons( List<SoftButton> softButtons) {
+        setParameters(KEY_SOFT_BUTTONS, softButtons);
+        return this;
     }
 
 	/**
@@ -406,8 +413,9 @@ public class Alert extends RPCRequest {
 	 *
 	 * @since SmartDeviceLink 3.0
 	 */
-	public void setProgressIndicator(Boolean progressIndicator) {
+	public Alert setProgressIndicator( Boolean progressIndicator) {
         setParameters(KEY_PROGRESS_INDICATOR, progressIndicator);
+        return this;
     }
 
 	/**
@@ -428,9 +436,10 @@ public class Alert extends RPCRequest {
 	 *
 	 * @since SmartDeviceLink 6.0
 	 */
-	public void setCancelID(Integer cancelID) {
-		setParameters(KEY_CANCEL_ID, cancelID);
-	};
+	public Alert setCancelID( Integer cancelID) {
+        setParameters(KEY_CANCEL_ID, cancelID);
+        return this;
+    }
 	
 	/**
 	 * <p>Sets the Image
@@ -441,9 +450,10 @@ public class Alert extends RPCRequest {
 	 *            <b>Notes: </b>If omitted on supported displays, no (or the
 	 *            default if applicable) icon will be displayed</p>
 	 */
-	public void setAlertIcon(Image alertIcon) {
-		setParameters(KEY_ALERT_ICON, alertIcon);
-	}
+	public Alert setAlertIcon( Image alertIcon) {
+        setParameters(KEY_ALERT_ICON, alertIcon);
+        return this;
+    }
 
 	/**
 	 * <p>Gets the image to be shown along with the alert </p>

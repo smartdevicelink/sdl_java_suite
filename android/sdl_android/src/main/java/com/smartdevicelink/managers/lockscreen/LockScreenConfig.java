@@ -60,7 +60,9 @@ import java.lang.annotation.RetentionPolicy;
  */
 public class LockScreenConfig {
 
-	private boolean enable, deviceLogo, enableDismissGesture;
+	private final boolean enable;
+	private boolean deviceLogo;
+	private boolean enableDismissGesture;
 	private int backgroundColor, appIconInt, customViewInt;
 	private @DisplayMode int displayMode;
 
@@ -85,30 +87,6 @@ public class LockScreenConfig {
 		this.deviceLogo = true;
 		this.displayMode = DISPLAY_MODE_REQUIRED_ONLY;
 		this.enableDismissGesture = true;
-	}
-
-	/**
-	 * If set to true, SDL will manage the showing and dismissing of the lock screen for you. <br>
-	 *
-	 * If false, you must manage the lock screen
-	 * @param enable boolean
-	 *
-	 * @deprecated to disable the lockscreen, use setDisplayMode with DISPLAY_MODE_NEVER instead
-	 */
-	@Deprecated
-	public void setEnabled(boolean enable){
-		this.enable = enable;
-	}
-
-	/**
-	 * Gets whether the lock screen is being managed for you
-	 * @return boolean
-	 *
-	 * @deprecated to disable the lockscreen, use setDisplayMode with DISPLAY_MODE_NEVER instead
-	 */
-	@Deprecated
-	public boolean isEnabled() {
-		return enable;
 	}
 
 	/**

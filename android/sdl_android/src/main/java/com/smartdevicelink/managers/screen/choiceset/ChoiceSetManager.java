@@ -33,15 +33,17 @@
 package com.smartdevicelink.managers.screen.choiceset;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 
 /**
  * <strong>ChoiceSetManager</strong> <br>
  * ChoiceSetManager gives the developer the ability to control how soft choice sets are displayed on the head unit.<br>
  * Note: This class must be accessed through the SdlManager->ScreenManager. Do not instantiate it by itself.<br>
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class ChoiceSetManager extends BaseChoiceSetManager {
 
     /**

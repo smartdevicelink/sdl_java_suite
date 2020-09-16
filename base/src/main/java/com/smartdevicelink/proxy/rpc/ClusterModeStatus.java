@@ -67,13 +67,13 @@ import java.util.Hashtable;
  * 			<td>carModeStatus</td>
  * 			<td>CarModeStatus</td>
  * 			<td></td>
- * 			<td>Describes the carmode the vehicle is in.</td>
+ * 			<td>Describes the car mode the vehicle is in.</td>
  *           </tr>
  * 		<tr>
  * 			<td>powerModeStatus</td>
  * 			<td>PowerModeStatus</td>
  * 			<td>true</td>
- * 			<td>Describes the different powermodes</td>
+ * 			<td>Describes the different power modes</td>
  * 		</tr>
  * 
  *  </table>
@@ -109,27 +109,31 @@ public class ClusterModeStatus extends RPCStruct {
 	   	setPowerModeStatus(powerModeStatus);
 	}
 
-	    public void setPowerModeActive(@NonNull Boolean powerModeActive) {
-	        setValue(KEY_POWER_MODE_ACTIVE, powerModeActive);
-	    }
+	    public ClusterModeStatus setPowerModeActive(@NonNull Boolean powerModeActive) {
+        setValue(KEY_POWER_MODE_ACTIVE, powerModeActive);
+        return this;
+    }
 	    public Boolean getPowerModeActive() {
 	        return getBoolean(KEY_POWER_MODE_ACTIVE);
 	    }
-	    public void setPowerModeQualificationStatus(@NonNull PowerModeQualificationStatus powerModeQualificationStatus) {
-	        setValue(KEY_POWER_MODE_QUALIFICATION_STATUS, powerModeQualificationStatus);
-	    }
+	    public ClusterModeStatus setPowerModeQualificationStatus(@NonNull PowerModeQualificationStatus powerModeQualificationStatus) {
+        setValue(KEY_POWER_MODE_QUALIFICATION_STATUS, powerModeQualificationStatus);
+        return this;
+    }
 	    public PowerModeQualificationStatus getPowerModeQualificationStatus() {
 			return (PowerModeQualificationStatus) getObject(PowerModeQualificationStatus.class, KEY_POWER_MODE_QUALIFICATION_STATUS);
 	    }
-	    public void setCarModeStatus(@NonNull CarModeStatus carModeStatus) {
-	        setValue(KEY_CAR_MODE_STATUS, carModeStatus);
-	    }
+	    public ClusterModeStatus setCarModeStatus(@NonNull CarModeStatus carModeStatus) {
+        setValue(KEY_CAR_MODE_STATUS, carModeStatus);
+        return this;
+    }
 	    public CarModeStatus getCarModeStatus() {
 			return (CarModeStatus) getObject(CarModeStatus.class, KEY_CAR_MODE_STATUS);
 	    }
-	    public void setPowerModeStatus(@NonNull PowerModeStatus powerModeStatus) {
-	        setValue(KEY_POWER_MODE_STATUS, powerModeStatus);
-	    }
+	    public ClusterModeStatus setPowerModeStatus(@NonNull PowerModeStatus powerModeStatus) {
+        setValue(KEY_POWER_MODE_STATUS, powerModeStatus);
+        return this;
+    }
 	    public PowerModeStatus getPowerModeStatus() {
 			return (PowerModeStatus) getObject(PowerModeStatus.class, KEY_POWER_MODE_STATUS);
 	    }

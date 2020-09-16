@@ -113,8 +113,8 @@ public class IntegrationValidator {
 
             if (permissionInfos != null && permissionInfos.length > 0) {
                 String permissionInfo;
-                for (int i = 0; i < permissionInfos.length; i++) {
-                    permissionInfo = permissionInfos[i];
+                for (String info : permissionInfos) {
+                    permissionInfo = info;
                     permissionList.remove(permissionInfo);
                 }
             }
@@ -147,9 +147,9 @@ public class IntegrationValidator {
 
             if (receivers != null && receivers.length > 0) {
                 ActivityInfo receiver;
-                for (int i = 0; i < receivers.length; i++) {
+                for (ActivityInfo activityInfo : receivers) {
 
-                    receiver = receivers[i];
+                    receiver = activityInfo;
                     if (receiver != null) {
                         int j = 0;
                         for (ResolveInfo sdlReceiver : sdlReceivers) {

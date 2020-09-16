@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.smartdevicelink.R;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.lifecycle.LifecycleManager;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
 import com.smartdevicelink.managers.screen.menu.MenuCell;
@@ -15,8 +16,6 @@ import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
 import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.SdlProxyBase;
-import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.AppInfo;
 import com.smartdevicelink.proxy.rpc.AppServiceCapability;
 import com.smartdevicelink.proxy.rpc.AppServiceData;
@@ -89,6 +88,7 @@ import com.smartdevicelink.proxy.rpc.SingleTireStatus;
 import com.smartdevicelink.proxy.rpc.SisData;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
+import com.smartdevicelink.proxy.rpc.StabilityControlsStatus;
 import com.smartdevicelink.proxy.rpc.StartTime;
 import com.smartdevicelink.proxy.rpc.StationIDNumber;
 import com.smartdevicelink.proxy.rpc.SystemCapability;
@@ -125,6 +125,7 @@ import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.ButtonEventMode;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.ButtonPressMode;
+import com.smartdevicelink.proxy.rpc.enums.CapacityUnit;
 import com.smartdevicelink.proxy.rpc.enums.CarModeStatus;
 import com.smartdevicelink.proxy.rpc.enums.CharacterSet;
 import com.smartdevicelink.proxy.rpc.enums.CompassDirection;
@@ -224,7 +225,7 @@ import java.util.Vector;
 public class TestValues {
 
 	//Versions
-	public static final Version MAX_RPC_VERSION_SUPPORTED		= SdlProxyBase.MAX_SUPPORTED_RPC_VERSION;
+	public static final Version MAX_RPC_VERSION_SUPPORTED		= LifecycleManager.MAX_SUPPORTED_RPC_VERSION;
 	/**
 	 * @see SdlProtocol
 	 */
@@ -335,6 +336,7 @@ public class TestValues {
 	public static final VehicleDataResultCode          GENERAL_VEHICLEDATARESULTCODE          = VehicleDataResultCode.IGNORED;
 	public static final ComponentVolumeStatus          GENERAL_COMPONENTVOLUMESTATUS          = ComponentVolumeStatus.LOW;
 	public static final PresetBankCapabilities         GENERAL_PRESETBANKCAPABILITIES         = new PresetBankCapabilities();
+	public static final CapacityUnit         		   GENERAL_CAPACITYUNIT			          = CapacityUnit.KILOGRAMS;
 	public static final VehicleDataEventStatus         GENERAL_VEHCILEDATAEVENTSTATUS         = VehicleDataEventStatus.YES;
 	public static final VehicleDataEventStatus         GENERAL_VEHICLEDATAEVENTSTATUS         = VehicleDataEventStatus.YES;
 	public static final TouchEventCapabilities         GENERAL_TOUCHEVENTCAPABILITIES         = new TouchEventCapabilities();
@@ -444,6 +446,9 @@ public class TestValues {
 	public static final Grid                           GENERAL_GRID                           = new Grid();
 	public static final SeatLocation                   GENERAL_SEAT_LOCATION                  = new SeatLocation();
 	public static final ModuleInfo                     GENERAL_MODULE_INFO                    = new ModuleInfo();
+	public static final StabilityControlsStatus		   GENERAL_STABILITY_CONTROL_STATUS       = new StabilityControlsStatus();
+	public static final VehicleDataStatus		   	   GENERAL_ESC_SYSTEM      				  = VehicleDataStatus.ON;
+	public static final VehicleDataStatus		   	   GENERAL_S_WAY_CONTROL      			  = VehicleDataStatus.OFF;
 	public static final WindowType                     GENERAL_WINDOWTYPE                     = WindowType.MAIN;
 	public static final GearStatus                     GENERAL_GEAR_STATUS                    = new GearStatus();
 	public static final PRNDL                    	 	GENERAL_USER_SELECTED_GEAR             = PRNDL.NEUTRAL;
@@ -488,7 +493,7 @@ public class TestValues {
 	public static final List<ClimateControlCapabilities> GENERAL_CLIMATECONTROLCAPABILITIES_LIST = new ArrayList<ClimateControlCapabilities>(1);
 	public static final List<RadioControlCapabilities>   GENERAL_RADIOCONTROLCAPABILITIES_LIST   = new ArrayList<RadioControlCapabilities>(1);
 	public static final Vector<String>                   GENERAL_VECTOR_STRING                   = new Vector<>(Arrays.asList(new String[] { "a", "b"}));
-	public static final Vector<TTSChunk>                 GENERAL_VECTOR_TTS_CHUNKS               = new Vector<>(Arrays.asList(TTSChunkFactory.createChunk(SpeechCapabilities.TEXT, "Welcome to the jungle")));
+	public static final Vector<TTSChunk>                 GENERAL_VECTOR_TTS_CHUNKS               = new Vector<>(Arrays.asList(new TTSChunk("Welcome to the jungle", SpeechCapabilities.TEXT)));
 	public static final List<SeatControlCapabilities>   GENERAL_SEATCONTROLCAPABILITIES_LIST   = new ArrayList<SeatControlCapabilities>(1);
 	public static final List<EqualizerSettings>         GENERAL_EQUALIZERSETTINGS_LIST         = new ArrayList<EqualizerSettings>(1);
 	public static final List<LightCapabilities>         GENERAL_LIGHTCAPABILITIES_LIST         = new ArrayList<LightCapabilities>(1);
@@ -788,8 +793,8 @@ public class TestValues {
 		GENERAL_VRHELPITEM.setPosition(100);
     	GENERAL_VRHELPITEM_LIST.add(GENERAL_VRHELPITEM);
 
-    	GENERAL_TTSCHUNK_LIST.add(TTSChunkFactory.createChunk(SpeechCapabilities.TEXT, "Welcome to the jungle"));
-    	GENERAL_TTSCHUNK_LIST.add(TTSChunkFactory.createChunk(SpeechCapabilities.TEXT, "Say a command"));
+    	GENERAL_TTSCHUNK_LIST.add(new TTSChunk("Welcome to the jungle", SpeechCapabilities.TEXT));
+    	GENERAL_TTSCHUNK_LIST.add(new TTSChunk("Say a command", SpeechCapabilities.TEXT));
 
     	GENERAL_KEYBOARDPROPERTIES.setAutoCompleteText(GENERAL_STRING);
     	GENERAL_KEYBOARDPROPERTIES.setKeypressMode(KeypressMode.SINGLE_KEYPRESS);
@@ -1025,7 +1030,7 @@ public class TestValues {
 
 		GENERAL_LOCKSCREENCONFIG.setAppIcon(R.drawable.sdl_lockscreen_icon);
 		GENERAL_LOCKSCREENCONFIG.setBackgroundColor(Color.BLUE);
-		GENERAL_LOCKSCREENCONFIG.setEnabled(true);
+		GENERAL_LOCKSCREENCONFIG.setDisplayMode(LockScreenConfig.DISPLAY_MODE_ALWAYS);
 		GENERAL_LOCKSCREENCONFIG.setCustomView(R.layout.activity_sdllock_screen);
 		GENERAL_CLOUDAPPPROPERTIES.setNicknames(GENERAL_STRING_LIST);
 		GENERAL_CLOUDAPPPROPERTIES.setAppID(GENERAL_STRING);
@@ -1143,6 +1148,8 @@ public class TestValues {
 
 		GENERAL_WINDOW_STATUS.setLocation(TestValues.GENERAL_GRID);
 		GENERAL_WINDOW_STATUS.setState(TestValues.GENERAL_WINDOW_STATE);
+		GENERAL_STABILITY_CONTROL_STATUS.setEscSystem(GENERAL_ESC_SYSTEM);
+		GENERAL_STABILITY_CONTROL_STATUS.setTrailerSwayControl(GENERAL_S_WAY_CONTROL);
 
 		try {
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);

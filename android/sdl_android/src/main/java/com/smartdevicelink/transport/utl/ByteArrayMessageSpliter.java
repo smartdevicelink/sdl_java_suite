@@ -50,27 +50,16 @@ public class ByteArrayMessageSpliter {
 	boolean firstPacket;
 	ByteArrayInputStream stream;
 	int bytesRead; 
-	int what;
-	String appId;
+	final int what;
+	final String appId;
 	byte[] buffer;
-	int orginalSize;
-	int priorityCoef;
+	final int orginalSize;
+	final int priorityCoef;
 	int routerServiceVersion = 1;
 	TransportRecord transportRecord;
 	
 	public ByteArrayMessageSpliter(String appId,int what, byte[] bytes, int priorityCoef){
 		this.appId = appId;
-		this.what = what;
-		stream = new ByteArrayInputStream(bytes);
-		orginalSize  = stream.available();
-		bytesRead = 0; 
-		firstPacket = true;
-		this.priorityCoef = priorityCoef;
-	}
-	
-	@Deprecated
-	public ByteArrayMessageSpliter(Long appId,int what, byte[] bytes, int priorityCoef){
-		this.appId = appId+"";
 		this.what = what;
 		stream = new ByteArrayInputStream(bytes);
 		orginalSize  = stream.available();

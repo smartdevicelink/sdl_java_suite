@@ -158,9 +158,10 @@ public class OnHMIStatus extends RPCNotification {
     /**
      * <p>Set the HMILevel of OnHMIStatus</p>
      * @param hmiLevel the HMILevel to set
-     */    
-    public void setHmiLevel( @NonNull HMILevel hmiLevel ) {
+     */
+    public OnHMIStatus setHmiLevel(@NonNull HMILevel hmiLevel) {
         setParameters(KEY_HMI_LEVEL, hmiLevel);
+        return this;
     }
     /**
      * <p>Get current state of audio streaming for the application</p>
@@ -172,9 +173,10 @@ public class OnHMIStatus extends RPCNotification {
     /**
      * <p>Set the audio streaming state</p>
      * @param audioStreamingState the state of audio streaming of the application
-     */    
-    public void setAudioStreamingState(@NonNull AudioStreamingState audioStreamingState ) {
+     */
+    public OnHMIStatus setAudioStreamingState(@NonNull AudioStreamingState audioStreamingState) {
         setParameters(KEY_AUDIO_STREAMING_STATE, audioStreamingState);
+        return this;
     }
     /**
      * <p>Get current state of video streaming for the application</p>
@@ -187,8 +189,9 @@ public class OnHMIStatus extends RPCNotification {
      * <p>Set the video streaming state</p>
      * @param videoStreamingState the state of video streaming of the application
      */
-    public void setVideoStreamingState( VideoStreamingState videoStreamingState ) {
+    public OnHMIStatus setVideoStreamingState( VideoStreamingState videoStreamingState) {
         setParameters(KEY_VIDEO_STREAMING_STATE, videoStreamingState);
+        return this;
     }
     /**
      * <p>Get the System Context</p>
@@ -199,11 +202,12 @@ public class OnHMIStatus extends RPCNotification {
     }
     /**
      * <p>Set the System Context of OnHMIStatus</p>
-     * @param systemContext Indicates that a user-initiated interaction is in-progress 
+     * @param systemContext Indicates that a user-initiated interaction is in-progress
      * (VRSESSION or MENU), or not (MAIN)
-     */    
-    public void setSystemContext( @NonNull SystemContext systemContext ) {
+     */
+    public OnHMIStatus setSystemContext(@NonNull SystemContext systemContext) {
         setParameters(KEY_SYSTEM_CONTEXT, systemContext);
+        return this;
     }
     /**
      * <p>Query whether it's the first run</p>
@@ -215,9 +219,10 @@ public class OnHMIStatus extends RPCNotification {
     /**
      * <p>Set the firstRun value</p>
      * @param firstRun True if it is the first run, False or not
-     */    
-    public void setFirstRun(Boolean firstRun) {
-    	this.firstRun = firstRun;
+     */
+    public OnHMIStatus setFirstRun( Boolean firstRun) {
+        this.firstRun = firstRun;
+        return this;
     }
     /**
      * <p>Set the windowID value</p>
@@ -226,8 +231,9 @@ public class OnHMIStatus extends RPCNotification {
      *                See PredefinedWindows enum.
      * @since 6.0
      */
-    public void setWindowID(Integer windowID) {
+    public OnHMIStatus setWindowID( Integer windowID) {
         setParameters(KEY_WINDOW_ID, windowID);
+        return this;
     }
     /**
      * <p>Get the windowID value</p>

@@ -1,10 +1,11 @@
 package com.smartdevicelink.managers.lockscreen;
 
 import android.content.Context;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.proxy.rpc.OnDriverDistraction;
 import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
@@ -60,7 +61,6 @@ public class LockScreenManagerTests {
 		lockScreenConfig.setAppIcon(TestValues.GENERAL_INT);
 		lockScreenConfig.setBackgroundColor(TestValues.GENERAL_INT);
 		lockScreenConfig.showDeviceLogo(true);
-		lockScreenConfig.setEnabled(true);
 		lockScreenConfig.setDisplayMode(LockScreenConfig.DISPLAY_MODE_OPTIONAL_OR_REQUIRED);
 
 		lockScreenManager = new LockScreenManager(lockScreenConfig, context, internalInterface);

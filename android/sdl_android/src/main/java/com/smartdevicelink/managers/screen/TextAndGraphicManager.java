@@ -33,11 +33,12 @@
 package com.smartdevicelink.managers.screen;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.R;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 
 /**
@@ -46,6 +47,7 @@ import com.smartdevicelink.proxy.rpc.enums.FileType;
  * Note: This class must be accessed through the SdlManager. Do not instantiate it by itself. <br>
  *
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 class TextAndGraphicManager extends BaseTextAndGraphicManager {
 
 	TextAndGraphicManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager, @NonNull SoftButtonManager softButtonManager) {
@@ -53,8 +55,8 @@ class TextAndGraphicManager extends BaseTextAndGraphicManager {
 	}
 
 	@Override
-	SdlArtwork getBlankArtwork(){
-		if (blankArtwork == null){
+	SdlArtwork getBlankArtwork() {
+		if (blankArtwork == null) {
 			blankArtwork = new SdlArtwork();
 			blankArtwork.setType(FileType.GRAPHIC_PNG);
 			blankArtwork.setName("blankArtwork");

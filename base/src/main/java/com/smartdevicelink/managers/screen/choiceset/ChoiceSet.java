@@ -35,13 +35,14 @@ package com.smartdevicelink.managers.screen.choiceset;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
+import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.util.DebugTool;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -58,8 +59,8 @@ public class ChoiceSet {
     ChoiceSetCanceledListener canceledListener;
 
     // defaults
-    private Integer defaultTimeout = 10;
-    private ChoiceSetLayout defaultLayout = ChoiceSetLayout.CHOICE_SET_LAYOUT_LIST;
+    private final Integer defaultTimeout = 10;
+    private final ChoiceSetLayout defaultLayout = ChoiceSetLayout.CHOICE_SET_LAYOUT_LIST;
 
     /**
      * Initialize with a title, listener, and choices. It will use the default timeout and layout,
@@ -108,15 +109,15 @@ public class ChoiceSet {
 
         // Help the dev by creating TTS chunks for them
         if (initialPrompt != null){
-            setInitialPrompt(TTSChunkFactory.createSimpleTTSChunks(initialPrompt));
+            setInitialPrompt(Collections.singletonList(new TTSChunk(initialPrompt, SpeechCapabilities.TEXT)));
         }
 
         if (timeoutPrompt != null){
-            setTimeoutPrompt(TTSChunkFactory.createSimpleTTSChunks(timeoutPrompt));
+            setTimeoutPrompt(Collections.singletonList(new TTSChunk(timeoutPrompt, SpeechCapabilities.TEXT)));
         }
 
         if (helpPrompt != null){
-            setHelpPrompt(TTSChunkFactory.createSimpleTTSChunks(helpPrompt));
+            setHelpPrompt(Collections.singletonList(new TTSChunk(helpPrompt, SpeechCapabilities.TEXT)));
         }
 
         // things to do
@@ -397,5 +398,4 @@ public class ChoiceSet {
         }
         return clonedHelpItems;
     }
-
 }

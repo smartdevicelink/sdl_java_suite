@@ -32,15 +32,15 @@
 
 package com.smartdevicelink.managers.lifecycle;
 
-import android.app.Service;
 import android.content.Context;
+
 import androidx.annotation.RestrictTo;
 
-import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
+import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.security.SdlSecurityBase;
@@ -48,13 +48,10 @@ import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
-import com.smartdevicelink.transport.USBTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * The lifecycle manager creates a central point for all SDL session logic to converge. It should only be used by
@@ -75,22 +72,6 @@ public class LifecycleManager extends BaseLifecycleManager {
     @Override
     void initialize() {
         super.initialize();
-
-        //Handle legacy USB connections
-        if (_transportConfig != null && TransportType.USB.equals(_transportConfig.getTransportType())) {
-            //A USB transport config was provided
-            USBTransportConfig usbTransportConfig = (USBTransportConfig) _transportConfig;
-            if (usbTransportConfig.getUsbAccessory() == null) {
-                DebugTool.logInfo(TAG,"Legacy USB transport config was used, but received null for accessory. Attempting to connect with router service");
-                //The accessory was null which means it came from a router service
-                MultiplexTransportConfig multiplexTransportConfig = new MultiplexTransportConfig(usbTransportConfig.getUSBContext(), appConfig.getAppID());
-                multiplexTransportConfig.setRequiresHighBandwidth(true);
-                multiplexTransportConfig.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
-                multiplexTransportConfig.setPrimaryTransports(Collections.singletonList(TransportType.USB));
-                multiplexTransportConfig.setSecondaryTransports(new ArrayList<TransportType>());
-                _transportConfig = multiplexTransportConfig;
-            }
-        }
 
         if (_transportConfig != null && _transportConfig.getTransportType().equals(TransportType.MULTIPLEX)) {
             this.session = new SdlSession(sdlSessionListener, (MultiplexTransportConfig) _transportConfig);
@@ -128,15 +109,9 @@ public class LifecycleManager extends BaseLifecycleManager {
         super.setSdlSecurityStaticVars();
 
         Context context = null;
-        Service service = null;
-
         if(this.contextWeakReference != null){
             context = contextWeakReference.get();
         }
-        if (context != null && context instanceof Service) {
-            service = (Service) context;
-        }
-        SdlSecurityBase.setAppService(service);
         SdlSecurityBase.setContext(context);
     }
 
@@ -180,10 +155,6 @@ public class LifecycleManager extends BaseLifecycleManager {
      *
      * @param isEncrypted Specify true if packets on this service have to be encrypted
      * @param parameters  VideoStreamingParameters that are desired. Does not guarantee this is what will be accepted.
-     * @return If the service is opened successfully, an instance of VideoStreamingParams is
-     * returned which contains accepted video format. If the service is opened with legacy
-     * mode (i.e. without any negotiation) then an instance of VideoStreamingParams is
-     * returned. If the service was not opened then null is returned.
      */
     private void tryStartVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
         if (session == null) {
@@ -242,25 +213,6 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
     }
 
-    /**
-     * Closes the opened video service (serviceType 11)
-     *
-     * @return true if the video service is closed successfully, return false otherwise
-     */
-    @Override
-    void endVideoStream() {
-        if (session == null) {
-            DebugTool.logWarning(TAG, "SdlSession is not created yet.");
-            return;
-        }
-        if (!session.getIsConnected()) {
-            DebugTool.logWarning(TAG, "Connection is not available.");
-            return;
-        }
-
-        session.stopVideoStream();
-    }
-
     @Override
     void startAudioService(boolean isEncrypted) {
         if (session == null) {
@@ -272,24 +224,5 @@ public class LifecycleManager extends BaseLifecycleManager {
             return;
         }
         session.startService(SessionType.PCM, isEncrypted);
-    }
-
-    /**
-     * Closes the opened audio service (serviceType 10)
-     *
-     * @return true if the audio service is closed successfully, return false otherwise
-     */
-    @Override
-    void endAudioStream() {
-        if (session == null) {
-            DebugTool.logWarning(TAG, "SdlSession is not created yet.");
-            return;
-        }
-        if (!session.getIsConnected()) {
-            DebugTool.logWarning(TAG, "Connection is not available.");
-            return;
-        }
-
-        session.stopAudioStream();
     }
 }

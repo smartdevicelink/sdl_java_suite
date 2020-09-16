@@ -195,13 +195,13 @@ import java.util.List;
  * 			<td>String</td>
  * 			<td>ID used to uniquely identify current state of all app data that can persist through connection cycles (e.g. ignition cycles).This registered data (commands, submenus, choice sets, etc.) can be reestablished without needing to explicitly reregister each piece. If omitted, then the previous state of an app's commands, etc. will not be restored.When sending hashID, all RegisterAppInterface parameters should still be provided (e.g. ttsName, etc.). </td>
  *                 <td>N</td>
- *                 <td>maxlength:100</td>
+ *                 <td>maxLength:100</td>
  * 			<td>SmartDeviceLink 2.3.1 </td>
  * 		</tr>
  * 		<tr>
  * 			<td>deviceInfo</td>
  * 			<td>DeviceInfo</td>
- * 			<td>Various information abount connecting device.</td>
+ * 			<td>Various information about connecting device.</td>
  *                 <td>N</td>
  *                 <td></td>
  * 			<td>SmartDeviceLink 2.3.1 </td>
@@ -211,7 +211,7 @@ import java.util.List;
  * 			<td>String</td>
  * 			<td>ID used to validate app with policy table entries</td>
  *                 <td>Y</td>
- *                 <td>Maxlength: 100</td>
+ *                 <td>maxLength: 100</td>
  * 			<td>SmartDeviceLink 2.0 </td>
  * 		</tr>
  * 		<tr>
@@ -334,7 +334,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @param languageDesired a Language Enumeration
 	 * @param hmiDisplayLanguageDesired the requested language to be used on the HMI/Display
 	 * @param fullAppID a String value representing a unique ID, which an app will be given when approved <br>
-	 *            <b>Notes: </b>Maxlength = 100
+	 *            <b>Notes: </b>maxLength = 100
 	 */
 	public RegisterAppInterface(@NonNull SdlMsgVersion syncMsgVersion, @NonNull String appName, @NonNull Boolean isMediaApplication,
 								@NonNull Language languageDesired, @NonNull Language hmiDisplayLanguageDesired, @NonNull String fullAppID) {
@@ -352,13 +352,12 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @return SdlMsgVersion -a SdlMsgVersion object representing version of
 	 *         the SDL&reg; SmartDeviceLink interface
 	 */    
-    @SuppressWarnings("unchecked")
     public SdlMsgVersion getSdlMsgVersion() {
 		return (SdlMsgVersion) getObject(SdlMsgVersion.class, KEY_SDL_MSG_VERSION);
     }
 	/**
 	 * Sets the version of the SDL&reg; SmartDeviceLink interface
-	 * 
+	 *
 	 * @param sdlMsgVersion
 	 *            a SdlMsgVersion object representing version of the SDL&reg;
 	 *            SmartDeviceLink interface
@@ -375,19 +374,20 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            number sent from the app to SDL&reg; (in RegisterAppInterface
 	 *            request) is ignored by SDL&reg;
 	 *
-	 */    
-    public void setSdlMsgVersion(@NonNull SdlMsgVersion sdlMsgVersion) {
+	 */
+    public RegisterAppInterface setSdlMsgVersion(@NonNull SdlMsgVersion sdlMsgVersion) {
         setParameters(KEY_SDL_MSG_VERSION, sdlMsgVersion);
+        return this;
     }
     
-    @SuppressWarnings("unchecked")
     public DeviceInfo getDeviceInfo() {
         return (DeviceInfo) getObject(DeviceInfo.class, KEY_DEVICE_INFO);
     }    
     
-    public void setDeviceInfo(DeviceInfo deviceInfo) {
-		setParameters(KEY_DEVICE_INFO, deviceInfo);
-    }    
+    public RegisterAppInterface setDeviceInfo( DeviceInfo deviceInfo) {
+        setParameters(KEY_DEVICE_INFO, deviceInfo);
+        return this;
+    }
 	/**
 	 * Gets Mobile Application's Name
 	 * 
@@ -400,7 +400,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * Sets Mobile Application's Name, This name is displayed in the SDL&reg;
 	 * Mobile Applications menu. It also serves as the unique identifier of the
 	 * application for SmartDeviceLink
-	 * 
+	 *
 	 * @param appName
 	 *            a String value representing the Mobile Application's Name
 	 *            <p></p>
@@ -411,9 +411,10 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            the name or any synonym of any currently-registered
 	 *            application</li>
 	 *            </ul>
-	 */    
-    public void setAppName(@NonNull String appName) {
-		setParameters(KEY_APP_NAME, appName);
+	 */
+    public RegisterAppInterface setAppName(@NonNull String appName) {
+        setParameters(KEY_APP_NAME, appName);
+        return this;
     }
 
 	/**
@@ -428,9 +429,9 @@ public class RegisterAppInterface extends RPCRequest {
     }
 
 	/**
-	 * 
+	 *
 	 * @param ttsName
-	 *            a List<TTSChunk> value represeting the TTS Name
+	 *            a List<TTSChunk> value representing the TTS Name
 	 *            <p></p>
 	 *            <b>Notes: </b>
 	 *            <ul>
@@ -445,28 +446,29 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            </ul>
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setTtsName(List<TTSChunk> ttsName) {
-		setParameters(KEY_TTS_NAME, ttsName);
+    public RegisterAppInterface setTtsName( List<TTSChunk> ttsName) {
+        setParameters(KEY_TTS_NAME, ttsName);
+        return this;
     }
 	/**
 	 * Gets a String representing an abbreviated version of the mobile
-	 * applincation's name (if necessary) that will be displayed on the NGN
+	 * application's name (if necessary) that will be displayed on the NGN
 	 * media screen
 	 * 
 	 * @return String -a String value representing an abbreviated version of the
-	 *         mobile applincation's name
+	 *         mobile application's name
 	 */    
     public String getNgnMediaScreenAppName() {
         return getString(KEY_NGN_MEDIA_SCREEN_APP_NAME);
     }
 	/**
 	 * Sets a String representing an abbreviated version of the mobile
-	 * applincation's name (if necessary) that will be displayed on the NGN
+	 * application's name (if necessary) that will be displayed on the NGN
 	 * media screen
-	 * 
+	 *
 	 * @param ngnMediaScreenAppName
 	 *            a String value representing an abbreviated version of the
-	 *            mobile applincation's name
+	 *            mobile application's name
 	 *            <p></p>
 	 *            <b>Notes: </b>
 	 *            <ul>
@@ -474,9 +476,10 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            <li>If not provided, value will be derived from appName
 	 *            truncated to 5 characters</li>
 	 *            </ul>
-	 */    
-    public void setNgnMediaScreenAppName(String ngnMediaScreenAppName) {
-		setParameters(KEY_NGN_MEDIA_SCREEN_APP_NAME, ngnMediaScreenAppName);
+	 */
+    public RegisterAppInterface setNgnMediaScreenAppName( String ngnMediaScreenAppName) {
+        setParameters(KEY_NGN_MEDIA_SCREEN_APP_NAME, ngnMediaScreenAppName);
+        return this;
     }
 	/**
 	 * Gets the List<String> representing the an array of 1-100 elements, each
@@ -493,7 +496,7 @@ public class RegisterAppInterface extends RPCRequest {
 	/**
 	 * Sets a vrSynonyms representing the an array of 1-100 elements, each
 	 * element containing a voice-recognition synonym
-	 * 
+	 *
 	 * @param vrSynonyms
 	 *            a List<String> value representing the an array of 1-100
 	 *            elements
@@ -506,9 +509,10 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            the name or any synonym of any currently-registered
 	 *            application</li>
 	 *            </ul>
-	 */    
-    public void setVrSynonyms(List<String> vrSynonyms) {
-		setParameters(KEY_VR_SYNONYMS, vrSynonyms);
+	 */
+    public RegisterAppInterface setVrSynonyms( List<String> vrSynonyms) {
+        setParameters(KEY_VR_SYNONYMS, vrSynonyms);
+        return this;
     }
 	/**
 	 * Gets a Boolean representing MediaApplication
@@ -522,12 +526,13 @@ public class RegisterAppInterface extends RPCRequest {
 	/**
 	 * Sets a Boolean to indicate a mobile application that is a media
 	 * application or not
-	 * 
+	 *
 	 * @param isMediaApplication
 	 *            a Boolean value
-	 */    
-    public void setIsMediaApplication(@NonNull Boolean isMediaApplication) {
-		setParameters(KEY_IS_MEDIA_APPLICATION, isMediaApplication);
+	 */
+    public RegisterAppInterface setIsMediaApplication(@NonNull Boolean isMediaApplication) {
+        setParameters(KEY_IS_MEDIA_APPLICATION, isMediaApplication);
+        return this;
     }
 	/**
 	 * Gets a Language enumeration indicating what language the application
@@ -541,14 +546,15 @@ public class RegisterAppInterface extends RPCRequest {
 	/**
 	 * Sets an enumeration indicating what language the application intends to
 	 * use for user interaction (Display, TTS and VR)
-	 * 
+	 *
 	 * @param languageDesired
 	 *            a Language Enumeration
-	 *            
-	 * 
-	 */    
-    public void setLanguageDesired(@NonNull Language languageDesired) {
-		setParameters(KEY_LANGUAGE_DESIRED, languageDesired);
+	 *
+	 *
+	 */
+    public RegisterAppInterface setLanguageDesired(@NonNull Language languageDesired) {
+        setParameters(KEY_LANGUAGE_DESIRED, languageDesired);
+        return this;
     }
 
 	/**
@@ -567,12 +573,13 @@ public class RegisterAppInterface extends RPCRequest {
 	/**
 	 * Sets an enumeration indicating what language the application intends to
 	 * use for user interaction ( Display)
-	 * 
+	 *
 	 * @param hmiDisplayLanguageDesired the requested language to be used on the HMI/Display
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setHmiDisplayLanguageDesired(@NonNull Language hmiDisplayLanguageDesired) {
-		setParameters(KEY_HMI_DISPLAY_LANGUAGE_DESIRED, hmiDisplayLanguageDesired);
+    public RegisterAppInterface setHmiDisplayLanguageDesired(@NonNull Language hmiDisplayLanguageDesired) {
+        setParameters(KEY_HMI_DISPLAY_LANGUAGE_DESIRED, hmiDisplayLanguageDesired);
+        return this;
     }
 
 	/**
@@ -583,7 +590,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @return List<AppHMIType> - a List value representing a list of all
 	 *         applicable app types stating which classifications to be given to
 	 *         the app
-	 * @since SmartDeviceLinke 2.0
+	 * @since SmartDeviceLink 2.0
 	 */
     @SuppressWarnings("unchecked")
     public List<AppHMIType> getAppHMIType() {
@@ -594,7 +601,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * Sets a a list of all applicable app types stating which classifications
 	 * to be given to the app. e.g. for platforms , like GEN2, this will
 	 * determine which "corner(s)" the app can populate
-	 * 
+	 *
 	 * @param appHMIType
 	 *            a List<AppHMIType>
 	 *            <p></p>
@@ -605,16 +612,18 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            </ul>
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setAppHMIType(List<AppHMIType> appHMIType) {
-		setParameters(KEY_APP_HMI_TYPE, appHMIType);
+    public RegisterAppInterface setAppHMIType( List<AppHMIType> appHMIType) {
+        setParameters(KEY_APP_HMI_TYPE, appHMIType);
+        return this;
     }
     
     public String getHashID() {
         return getString(KEY_HASH_ID);
     }
    
-    public void setHashID(String hashID) {
-		setParameters(KEY_HASH_ID, hashID);
+    public RegisterAppInterface setHashID( String hashID) {
+        setParameters(KEY_HASH_ID, hashID);
+        return this;
     }
 
 	/**
@@ -629,9 +638,10 @@ public class RegisterAppInterface extends RPCRequest {
 	 * Sets detailed information about the registered application
 	 * @param appInfo - detailed information about the registered application
 	 */
-	public void setAppInfo(AppInfo appInfo) {
-		setParameters(KEY_APP_INFO, appInfo);
-	}
+	public RegisterAppInterface setAppInfo( AppInfo appInfo) {
+        setParameters(KEY_APP_INFO, appInfo);
+        return this;
+    }
 
 	/**
 	 * Gets the unique ID, which an app will be given when approved
@@ -651,16 +661,17 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            a String value representing a unique ID, which an app will be
 	 *            given when approved
 	 *            <p></p>
-	 *            <b>Notes: </b>Maxlength = 100
+	 *            <b>Notes: </b>maxLength = 100
 	 * @since SmartDeviceLink 2.0
 	 */
-	public void setAppID(@NonNull String appID) {
-		if (appID != null) {
+	public RegisterAppInterface setAppID(@NonNull String appID) {
+        if (appID != null) {
 			setParameters(KEY_APP_ID, appID.toLowerCase());
 		} else {
 			setParameters(KEY_APP_ID, appID);
 		}
-	}
+        return this;
+    }
 
 	/**
 	 * Gets the unique ID, which an app will be given when approved
@@ -680,11 +691,11 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            a String value representing a unique ID, which an app will be
 	 *            given when approved
 	 *            <p></p>
-	 *            <b>Notes: </b>Maxlength = 100
+	 *            <b>Notes: </b>maxLength = 100
 	 * @since SmartDeviceLink 5.0
 	 */
-	public void setFullAppID(String fullAppID) {
-		if (fullAppID != null) {
+	public RegisterAppInterface setFullAppID( String fullAppID) {
+        if (fullAppID != null) {
 			fullAppID = fullAppID.toLowerCase();
 			setParameters(KEY_FULL_APP_ID, fullAppID);
 			String appID;
@@ -697,7 +708,8 @@ public class RegisterAppInterface extends RPCRequest {
 		} else {
 			setParameters(KEY_FULL_APP_ID, null);
 		}
-	}
+        return this;
+    }
 
 	@Override
 	public void format(Version rpcVersion, boolean formatParams) {
@@ -727,9 +739,10 @@ public class RegisterAppInterface extends RPCRequest {
 	 * used for day color scheme
 	 * @since SmartDeviceLink 5.0
 	 */
-    public void setDayColorScheme(TemplateColorScheme templateColorScheme){
-		setParameters(KEY_DAY_COLOR_SCHEME, templateColorScheme);
-	}
+    public RegisterAppInterface setDayColorScheme( TemplateColorScheme templateColorScheme) {
+        setParameters(KEY_DAY_COLOR_SCHEME, templateColorScheme);
+        return this;
+    }
 
 	/**
 	 * Gets the color scheme that is currently used for night
@@ -749,7 +762,8 @@ public class RegisterAppInterface extends RPCRequest {
 	 * used for night color scheme
 	 * @since SmartDeviceLink 5.0
 	 */
-	public void setNightColorScheme(TemplateColorScheme templateColorScheme){
-		setParameters(KEY_NIGHT_COLOR_SCHEME, templateColorScheme);
-	}
+	public RegisterAppInterface setNightColorScheme( TemplateColorScheme templateColorScheme) {
+        setParameters(KEY_NIGHT_COLOR_SCHEME, templateColorScheme);
+        return this;
+    }
 }
