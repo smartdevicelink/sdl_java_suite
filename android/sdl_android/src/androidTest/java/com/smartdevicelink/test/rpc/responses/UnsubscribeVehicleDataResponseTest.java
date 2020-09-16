@@ -62,7 +62,7 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
 		msg.setECallInfo(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_ECALLINFO.ordinal()));
 		msg.setAirbagStatus(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_AIRBAGSTATUS.ordinal()));
 		msg.setEmergencyEvent(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_EMERGENCYEVENT.ordinal()));
-		msg.setClusterModeStatus(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_CLUSTERMODESTATUS.ordinal()));
+		msg.setClusterModes(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_CLUSTERMODESTATUS.ordinal()));
 		msg.setMyKey(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_MYKEY.ordinal()));
 		msg.setFuelRange(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_FUELRANGE.ordinal()));
 		msg.setTurnSignal(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_TURNSIGNAL.ordinal()));
@@ -119,7 +119,7 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
 	        result.put(SubscribeVehicleDataResponse.KEY_E_CALL_INFO, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_ECALLINFO.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_AIRBAG_STATUS, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_AIRBAGSTATUS.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_EMERGENCY_EVENT, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_EMERGENCYEVENT.ordinal()).serializeJSON());
-	        result.put(SubscribeVehicleDataResponse.KEY_CLUSTER_MODE_STATUS, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_CLUSTERMODESTATUS.ordinal()).serializeJSON());
+	        result.put(SubscribeVehicleDataResponse.KEY_CLUSTER_MODES, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_CLUSTERMODESTATUS.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_MY_KEY, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_MYKEY.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_FUEL_RANGE, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_FUELRANGE.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_TURN_SIGNAL, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_TURNSIGNAL.ordinal()).serializeJSON());
@@ -153,7 +153,7 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
 		VehicleDataResult testECallInfo      = ( (UnsubscribeVehicleDataResponse) msg ).getECallInfo();
 		VehicleDataResult testAirbagStatus   = ( (UnsubscribeVehicleDataResponse) msg ).getAirbagStatus();
 		VehicleDataResult testEmergencyEvent = ( (UnsubscribeVehicleDataResponse) msg ).getEmergencyEvent();
-		VehicleDataResult testClusterMode    = ( (UnsubscribeVehicleDataResponse) msg ).getClusterModeStatus();
+		VehicleDataResult testClusterMode    = ( (UnsubscribeVehicleDataResponse) msg ).getClusterModes();
 		VehicleDataResult testMyKey          = ( (UnsubscribeVehicleDataResponse) msg ).getMyKey();
 		VehicleDataResult testSpeed          = ( (UnsubscribeVehicleDataResponse) msg ).getSpeed();
 		VehicleDataResult testRpm            = ( (UnsubscribeVehicleDataResponse) msg ).getRpm();
@@ -240,7 +240,7 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
         assertNull(TestValues.NULL, msg.getSteeringWheelAngle());
         assertNull(TestValues.NULL, msg.getECallInfo());
         assertNull(TestValues.NULL, msg.getEmergencyEvent());
-        assertNull(TestValues.NULL, msg.getClusterModeStatus());
+        assertNull(TestValues.NULL, msg.getClusterModes());
         assertNull(TestValues.NULL, msg.getMyKey());
         assertNull(TestValues.NULL, msg.getFuelRange());
         assertNull(TestValues.NULL, msg.getTurnSignal());
@@ -366,9 +366,9 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
 			VehicleDataResult referenceEmergencyEvent = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(emergencyEvent));
 			assertTrue(TestValues.TRUE, Validator.validateVehicleDataResult(referenceEmergencyEvent, cmd.getEmergencyEvent()));
 			
-			JSONObject clusterModeStatus = JsonUtils.readJsonObjectFromJsonObject(parameters, UnsubscribeVehicleDataResponse.KEY_CLUSTER_MODE_STATUS);
-			VehicleDataResult referenceClusterModeStatus = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(clusterModeStatus));
-			assertTrue(TestValues.TRUE, Validator.validateVehicleDataResult(referenceClusterModeStatus, cmd.getClusterModeStatus()));
+			JSONObject clusterModes = JsonUtils.readJsonObjectFromJsonObject(parameters, UnsubscribeVehicleDataResponse.KEY_CLUSTER_MODES);
+			VehicleDataResult referenceClusterModes = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(clusterModes));
+			assertTrue(TestValues.TRUE, Validator.validateVehicleDataResult(referenceClusterModes, cmd.getClusterModes()));
 			
 			JSONObject myKey = JsonUtils.readJsonObjectFromJsonObject(parameters, UnsubscribeVehicleDataResponse.KEY_MY_KEY);
 			VehicleDataResult referenceMyKey = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(myKey));

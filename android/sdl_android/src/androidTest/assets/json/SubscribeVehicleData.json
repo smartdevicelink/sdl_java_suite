@@ -134,7 +134,7 @@
         "dataType":"VEHICLEDATA_EMERGENCYEVENT",
         "resultCode":"DISALLOWED"
       },
-      "clusterModeStatus":{
+      "clusterModes":{
         "dataType":"VEHICLEDATA_CLUSTERMODESTATUS",
         "resultCode":"SUCCESS"
       },

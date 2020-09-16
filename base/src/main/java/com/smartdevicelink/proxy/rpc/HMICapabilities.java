@@ -58,11 +58,24 @@ public class HMICapabilities extends RPCStruct{
 		 }
 		 return (Boolean)available;
 	 }
-	 
+
+	/**
+	 * @deprecated use {@link #setNavigationAvailable(Boolean available)} instead.
+	 */
+	 @Deprecated
 	 public HMICapabilities setNavigationAvilable( Boolean available) {
-        setValue(KEY_NAVIGATION, available);
-        return this;
+        return setNavigationAvailable(available);
     }
+
+	/**
+	 * Sets the navigationAvailable.
+	 *
+	 * @param available Availability of driver Navigation capability. True: Available, False: Not Available
+	 */
+	public HMICapabilities setNavigationAvailable(Boolean available) {
+		setValue(KEY_NAVIGATION, available);
+		return this;
+	}
 	 
 	 public boolean isPhoneCallAvailable(){
 		 Object available = getValue(KEY_PHONE_CALL);
@@ -71,11 +84,24 @@ public class HMICapabilities extends RPCStruct{
 		 }
 		 return (Boolean)available;
 	 }
-	 
+
+	/**
+	 * @deprecated use {@link #setPhoneCallAvailable(Boolean available)} instead.
+	 */
+	 @Deprecated
 	 public HMICapabilities setPhoneCallAvilable( Boolean available) {
-        setValue(KEY_PHONE_CALL, available);
-        return this;
+        return setPhoneCallAvailable(available);
     }
+
+	/**
+	 * Sets the PhoneCallAvailable.
+	 *
+	 * @param available Availability of PhoneCall capability. True: Available, False: Not Available
+	 */
+	public HMICapabilities setPhoneCallAvailable( Boolean available) {
+		setValue(KEY_PHONE_CALL, available);
+		return this;
+	}
 
 	public boolean isVideoStreamingAvailable(){
 		Object available = getValue(KEY_VIDEO_STREAMING);
@@ -118,10 +144,10 @@ public class HMICapabilities extends RPCStruct{
 
 	public boolean isDisplaysCapabilityAvailable(){
 		Object available = getValue(KEY_DISPLAYS);
-		if(available == null){
+		if (available == null) {
 			return false;
 		}
-		return (Boolean)available;
+		return (Boolean) available;
 	}
 
 	public HMICapabilities setDisplaysCapabilityAvailable( Boolean available) {

@@ -66,7 +66,8 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_E_CALL_INFO = "eCallInfo";
 	public static final String KEY_AIRBAG_STATUS = "airbagStatus";
 	public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
-	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
+	@Deprecated public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
+    public static final String KEY_CLUSTER_MODES = "clusterModes";
 	public static final String KEY_MY_KEY = "myKey";
 	public static final String KEY_FUEL_RANGE = "fuelRange";
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
@@ -446,12 +447,34 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     public VehicleDataResult getEmergencyEvent() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_EMERGENCY_EVENT);
     }
+    /**
+     * @deprecated use {@link #setClusterModes(VehicleDataResult clusterMode)} instead.
+     */
+    @Deprecated
     public UnsubscribeVehicleDataResponse setClusterModeStatus( VehicleDataResult clusterModeStatus) {
-        setParameters(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
+        return setClusterModes(clusterModeStatus);
+    }
+    /**
+     * @deprecated use {@link #getClusterModes()} instead.
+     */
+    @Deprecated
+    public VehicleDataResult getClusterModeStatus() {
+        return getClusterModes();
+    }
+    /**
+     * Sets the status modes of the cluster
+     * @param clusterMode the status modes of the cluster
+     */
+    public UnsubscribeVehicleDataResponse setClusterModes(VehicleDataResult clusterMode) {
+        setParameters(KEY_CLUSTER_MODES, clusterMode);
         return this;
     }
-    public VehicleDataResult getClusterModeStatus() {
-        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_CLUSTER_MODE_STATUS);
+    /**
+     * Gets the status modes of the cluster
+     * @return The status modes of the cluster
+     */
+    public VehicleDataResult getClusterModes() {
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_CLUSTER_MODES);
     }
     public UnsubscribeVehicleDataResponse setMyKey( VehicleDataResult myKey) {
         setParameters(KEY_MY_KEY, myKey);

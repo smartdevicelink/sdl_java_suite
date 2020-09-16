@@ -60,7 +60,7 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
 		msg.setECallInfo(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_ECALLINFO.ordinal()));
 		msg.setAirbagStatus(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_AIRBAGSTATUS.ordinal()));
 		msg.setEmergencyEvent(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_EMERGENCYEVENT.ordinal()));
-		msg.setClusterModeStatus(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_CLUSTERMODESTATUS.ordinal()));
+		msg.setClusterModes(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_CLUSTERMODESTATUS.ordinal()));
 		msg.setMyKey(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_MYKEY.ordinal()));
 		msg.setFuelRange(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_FUELRANGE.ordinal()));
 		msg.setTurnSignal(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_TURNSIGNAL.ordinal()));
@@ -117,7 +117,7 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
 	        result.put(SubscribeVehicleDataResponse.KEY_E_CALL_INFO, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_ECALLINFO.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_AIRBAG_STATUS, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_AIRBAGSTATUS.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_EMERGENCY_EVENT, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_EMERGENCYEVENT.ordinal()).serializeJSON());
-	        result.put(SubscribeVehicleDataResponse.KEY_CLUSTER_MODE_STATUS, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_CLUSTERMODESTATUS.ordinal()).serializeJSON());
+	        result.put(SubscribeVehicleDataResponse.KEY_CLUSTER_MODES, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_CLUSTERMODESTATUS.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_MY_KEY, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_MYKEY.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_FUEL_RANGE, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_FUELRANGE.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_TURN_SIGNAL, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_TURNSIGNAL.ordinal()).serializeJSON());
@@ -150,7 +150,7 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
 		VehicleDataResult testECallInfo      = ( (SubscribeVehicleDataResponse) msg ).getECallInfo();
 		VehicleDataResult testAirbagStatus   = ( (SubscribeVehicleDataResponse) msg ).getAirbagStatus();
 		VehicleDataResult testEmergencyEvent = ( (SubscribeVehicleDataResponse) msg ).getEmergencyEvent();
-		VehicleDataResult testClusterMode    = ( (SubscribeVehicleDataResponse) msg ).getClusterModeStatus();
+		VehicleDataResult testClusterMode    = ( (SubscribeVehicleDataResponse) msg ).getClusterModes();
 		VehicleDataResult testMyKey          = ( (SubscribeVehicleDataResponse) msg ).getMyKey();
 		VehicleDataResult testSpeed          = ( (SubscribeVehicleDataResponse) msg ).getSpeed();
 		VehicleDataResult testRpm            = ( (SubscribeVehicleDataResponse) msg ).getRpm();
@@ -237,7 +237,7 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
         assertNull(TestValues.NULL, msg.getSteeringWheelAngle());
         assertNull(TestValues.NULL, msg.getECallInfo());
         assertNull(TestValues.NULL, msg.getEmergencyEvent());
-        assertNull(TestValues.NULL, msg.getClusterModeStatus());
+        assertNull(TestValues.NULL, msg.getClusterModes());
         assertNull(TestValues.NULL, msg.getMyKey());
         assertNull(TestValues.NULL, msg.getFuelRange());
         assertNull(TestValues.NULL, msg.getTurnSignal());
@@ -362,9 +362,9 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
 			VehicleDataResult referenceEmergencyEvent = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(emergencyEvent));
 			assertTrue(TestValues.TRUE, Validator.validateVehicleDataResult(referenceEmergencyEvent, cmd.getEmergencyEvent()));
 			
-			JSONObject clusterModeStatus = JsonUtils.readJsonObjectFromJsonObject(parameters, SubscribeVehicleDataResponse.KEY_CLUSTER_MODE_STATUS);
-			VehicleDataResult referenceClusterModeStatus = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(clusterModeStatus));
-			assertTrue(TestValues.TRUE, Validator.validateVehicleDataResult(referenceClusterModeStatus, cmd.getClusterModeStatus()));
+			JSONObject clusterModes = JsonUtils.readJsonObjectFromJsonObject(parameters, SubscribeVehicleDataResponse.KEY_CLUSTER_MODES);
+			VehicleDataResult referenceClusterModes = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(clusterModes));
+			assertTrue(TestValues.TRUE, Validator.validateVehicleDataResult(referenceClusterModes, cmd.getClusterModes()));
 			
 			JSONObject myKey = JsonUtils.readJsonObjectFromJsonObject(parameters, SubscribeVehicleDataResponse.KEY_MY_KEY);
 			VehicleDataResult referenceMyKey = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(myKey));

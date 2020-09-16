@@ -35,6 +35,7 @@ public class ClimateControlCapabilitiesTests extends TestCase{
         msg.setModuleName(TestValues.GENERAL_STRING);
         msg.setFanSpeedAvailable(TestValues.GENERAL_BOOLEAN);
         msg.setDesiredTemperatureAvailable(TestValues.GENERAL_BOOLEAN);
+        msg.setCurrentTemperatureAvailable(TestValues.GENERAL_BOOLEAN);
         msg.setAcEnableAvailable(TestValues.GENERAL_BOOLEAN);
         msg.setAcMaxEnableAvailable(TestValues.GENERAL_BOOLEAN);
         msg.setCirculateAirEnableAvailable(TestValues.GENERAL_BOOLEAN);
@@ -60,6 +61,7 @@ public class ClimateControlCapabilitiesTests extends TestCase{
         String moduleName = msg.getModuleName();
         boolean fanSpeedAvailable = msg.getFanSpeedAvailable();
         boolean desiredTemperatureAvailable = msg.getDesiredTemperatureAvailable();
+        boolean currentTemperatureAvailable = msg.getCurrentTemperatureAvailable();
         boolean acEnableAvailable = msg.getAcEnableAvailable();
         boolean acMaxEnableAvailable = msg.getAcMaxEnableAvailable();
         boolean circulateAirEnableAvailable = msg.getCirculateAirEnableAvailable();
@@ -80,6 +82,7 @@ public class ClimateControlCapabilitiesTests extends TestCase{
         assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, moduleName);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, fanSpeedAvailable);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, desiredTemperatureAvailable);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, currentTemperatureAvailable);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, acEnableAvailable);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, acMaxEnableAvailable);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, circulateAirEnableAvailable);
@@ -112,6 +115,7 @@ public class ClimateControlCapabilitiesTests extends TestCase{
         assertNull(TestValues.NULL, msg.getModuleName());
         assertNull(TestValues.NULL, msg.getFanSpeedAvailable());
         assertNull(TestValues.NULL, msg.getDesiredTemperatureAvailable());
+        assertNull(TestValues.NULL, msg.getCurrentTemperatureAvailable());
         assertNull(TestValues.NULL, msg.getAcEnableAvailable());
         assertNull(TestValues.NULL, msg.getAcMaxEnableAvailable());
         assertNull(TestValues.NULL, msg.getAutoModeEnableAvailable());
@@ -135,6 +139,7 @@ public class ClimateControlCapabilitiesTests extends TestCase{
             reference.put(ClimateControlCapabilities.KEY_MODULE_NAME, TestValues.GENERAL_STRING);
             reference.put(ClimateControlCapabilities.KEY_FAN_SPEED_AVAILABLE, TestValues.GENERAL_BOOLEAN);
             reference.put(ClimateControlCapabilities.KEY_DESIRED_TEMPERATURE_AVAILABLE, TestValues.GENERAL_BOOLEAN);
+            reference.put(ClimateControlCapabilities.KEY_CURRENT_TEMPERATURE_AVAILABLE, TestValues.GENERAL_BOOLEAN);
             reference.put(ClimateControlCapabilities.KEY_AC_ENABLE_AVAILABLE, TestValues.GENERAL_BOOLEAN);
             reference.put(ClimateControlCapabilities.KEY_AC_MAX_ENABLE_AVAILABLE, TestValues.GENERAL_BOOLEAN);
             reference.put(ClimateControlCapabilities.KEY_CIRCULATE_AIR_ENABLE_AVAILABLE, TestValues.GENERAL_BOOLEAN);
