@@ -132,7 +132,7 @@ public class TireStatus extends RPCStruct {
 	 */
 	public TireStatus(@NonNull WarningLightStatus pressureTellTale, @NonNull SingleTireStatus leftFront, @NonNull SingleTireStatus rightFront, @NonNull SingleTireStatus leftRear, @NonNull SingleTireStatus rightRear, @NonNull SingleTireStatus innerLeftRear, @NonNull SingleTireStatus innerRightRear){
 		this();
-		setPressureTellTale(pressureTellTale);
+		setPressureTelltale(pressureTellTale);
 		setLeftFront(leftFront);
 		setRightFront(rightFront);
 		setLeftRear(leftRear);
