@@ -539,16 +539,17 @@ class TextAndGraphicUpdateOperation extends Task {
             DebugTool.logError(TAG, "can not updateCurrentScreenDataFromShow from null show");
             return;
         }
+        // This is intentionally checking `mainField1` for every textField because the fields may be in different places based on the capabilities, then check it's own field in case that's the only field thats being used.
         if (show.getMainField1() != null) {
             currentScreenData.setTextField1(updatedState.getTextField1());
         }
-        if (show.getMainField2() != null) {
+        if (show.getMainField1() != null || show.getMainField2() != null) {
             currentScreenData.setTextField2(updatedState.getTextField2());
         }
-        if (show.getMainField3() != null) {
+        if (show.getMainField1() != null || show.getMainField3() != null) {
             currentScreenData.setTextField3(updatedState.getTextField3());
         }
-        if (show.getMainField4() != null) {
+        if (show.getMainField1() != null || show.getMainField4() != null) {
             currentScreenData.setTextField4(updatedState.getTextField4());
         }
         if (show.getTemplateTitle() != null) {
@@ -558,12 +559,22 @@ class TextAndGraphicUpdateOperation extends Task {
             currentScreenData.setMediaTrackTextField(updatedState.getMediaTrackTextField());
         }
 
+        // This is intentionally checking show.metadataTags.mainField1 because the tags may be in different places based on the capabilities, then check its own field in case that's the only field that's being used.
         if(show.getMetadataTags() != null){
-            currentScreenData.setTextField1Type(updatedState.getTextField1Type());
-            currentScreenData.setTextField2Type(updatedState.getTextField2Type());
-            currentScreenData.setTextField3Type(updatedState.getTextField3Type());
-            currentScreenData.setTextField4Type(updatedState.getTextField4Type());
+            if(show.getMetadataTags().getMainField1() != null) {
+                currentScreenData.setTextField1Type(updatedState.getTextField1Type());
+            }
+            if (show.getMetadataTags().getMainField1() != null || show.getMetadataTags().getMainField2() != null) {
+                currentScreenData.setTextField2Type(updatedState.getTextField2Type());
+            }
+            if (show.getMetadataTags().getMainField1() != null || show.getMetadataTags().getMainField3() != null) {
+                currentScreenData.setTextField3Type(updatedState.getTextField3Type());
+            }
+            if (show.getMetadataTags().getMainField1() != null || show.getMetadataTags().getMainField4() != null) {
+                currentScreenData.setTextField4Type(updatedState.getTextField4Type());
+            }
         }
+
         if (show.getAlignment() != null) {
             currentScreenData.setTextAlignment(updatedState.getTextAlignment());
         }
