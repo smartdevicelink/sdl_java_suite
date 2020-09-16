@@ -478,6 +478,15 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		}
 	}
 
+	/**
+	 * Change the current layout to a new layout and optionally update the layout's night and day color schemes.
+	 * The values set for the text, graphics, buttons and template title persist between layout changes.
+	 * To update the text, graphics, buttons and template title at the same time as the template, batch all the updates between beginTransaction and commit.
+	 * If the layout update fails while batching, then the updated text, graphics, buttons or template title will also not be updated.
+	 *
+	 * @param templateConfiguration The new configuration of the template, including the layout and color scheme.
+	 * @param listener A listener that will be called when the layout change finished.
+	 */
 	void changeLayout(TemplateConfiguration templateConfiguration, CompletionListener listener) {
 		setTemplateConfiguration(templateConfiguration);
 		if(!batchingUpdates) {

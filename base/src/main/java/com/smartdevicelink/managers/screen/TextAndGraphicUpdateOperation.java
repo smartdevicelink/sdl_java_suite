@@ -646,6 +646,7 @@ class TextAndGraphicUpdateOperation extends Task {
      * @return true if primaryGraphic should be updated, false if not
      */
     private boolean shouldUpdatePrimaryImage() {
+        // If the template is updating, we don't yet know it's capabilities. Just assume the template supports the primary image.
         boolean templateSupportsPrimaryArtwork = templateSupportsImageField(ImageFieldName.graphic) || shouldUpdateTemplateConfig();
         String currentScreenDataPrimaryGraphicName = (currentScreenData != null && currentScreenData.getPrimaryGraphic() != null) ? currentScreenData.getPrimaryGraphic().getName() : null;
         String primaryGraphicName = updatedState.getPrimaryGraphic() != null ? updatedState.getPrimaryGraphic().getName() : null;
@@ -661,6 +662,7 @@ class TextAndGraphicUpdateOperation extends Task {
      * @return true if secondaryGraphic should be updated, false if not
      */
     private boolean shouldUpdateSecondaryImage() {
+        // If the template is updating, we don't yet know it's capabilities. Just assume the template supports the secondary image.
         boolean templateSupportsSecondaryArtwork = templateSupportsImageField(ImageFieldName.secondaryGraphic) || shouldUpdateTemplateConfig();
         String currentScreenDataSecondaryGraphicName = (currentScreenData != null && currentScreenData.getSecondaryGraphic() != null) ? currentScreenData.getSecondaryGraphic().getName() : null;
         String secondaryGraphicName = updatedState.getSecondaryGraphic() != null ? updatedState.getSecondaryGraphic().getName() : null;
@@ -690,6 +692,7 @@ class TextAndGraphicUpdateOperation extends Task {
      * @return true if mediaTrackTextField should be updated, false if not
      */
     private boolean shouldUpdateMediaTrackField() {
+        // If the template is updating, we don't yet know it's capabilities. Just assume the template supports the media text field.
         return templateSupportsTextField(TextFieldName.mediaTrack) || shouldUpdateTemplateConfig();
     }
 
@@ -699,6 +702,7 @@ class TextAndGraphicUpdateOperation extends Task {
      * @return true if title should be updated, false if not
      */
     private boolean shouldUpdateTitleField() {
+        // If the template is updating, we don't yet know it's capabilities. Just assume the template supports the template title text field.
         return templateSupportsTextField(TextFieldName.templateTitle) || shouldUpdateTemplateConfig();
     }
 

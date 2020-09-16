@@ -413,10 +413,15 @@ abstract class BaseScreenManager extends BaseSubManager {
 	/**
 	 * Change the current layout to a new layout and optionally update the layout's night and day color schemes. The values set for the text, graphics,
 	 * buttons and template title persist between layout changes. To update the text, graphics, buttons and template title at the same time as the template,
-	 * batch all the updates between `beginUpdates` and `endUpdates`. If the layout update fails while batching, then the updated text, graphics, buttons or template title will also not be updated.
+	 * batch all the updates between beginTransaction and commit. If the layout update fails while batching, then the updated text, graphics, buttons or template title will also not be updated.
 	 *
 	 * If you are connected on a < v6.0 connection and batching the update, the layout will be updated, then the text and graphics will be updated.
 	 * If you are connected on a >= v6.0 connection, the layout will be updated at the same time that the text and graphics are updated.
+	 *
+	 * If this update is batched between beginTransaction and commit, the completionListener here will not be called. Use the completionListener with commit(completionListener)
+	 *
+	 * NOTE: If this update returns an false, it may have been superseded by another update.
+	 * This means that it was cancelled while in-progress because another update was requested, whether batched or not.
 	 *
 	 * @param templateConfiguration The new configuration of the template, including the layout and color scheme.
 	 * @param listener A listener that will be called when the layout change finished.
