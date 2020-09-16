@@ -153,8 +153,16 @@ abstract class BaseScreenManager extends BaseSubManager {
 	}
 
 	/**
-	 * Set the textField1 on the head unit screen
-	 * Sending an empty String "" will clear the field
+	 * The top text field within a template layout. Pass an empty string "" to clear the text field.
+	 *
+	 *  If the system does not support a full 4 fields, this will automatically be concatenated and properly send the field available.
+	 *
+	 *  If 3 lines are available: [field1, field2, field3 - field 4]
+	 *
+	 *  If 2 lines are available: [field1 - field2, field3 - field4]
+	 *
+	 *  If 1 line is available: [field1 - field2 - field3 - field4]
+	 *
 	 * @param textField1 String value represents the textField1
 	 */
 	public void setTextField1(String textField1) {
@@ -171,8 +179,16 @@ abstract class BaseScreenManager extends BaseSubManager {
 	}
 
 	/**
-	 * Set the textField2 on the head unit screen
-	 * Sending an empty String "" will clear the field
+	 * Sets the second text field within a template layout. Pass an empty string "" to clear the text field.
+	 *
+	 * If the system does not support a full 4 fields, this will automatically be concatenated and properly send the field available.
+	 *
+	 * If 3 lines are available: [field1, field2, field3 - field 4]
+	 *
+	 * If 2 lines are available: [field1 - field2, field3 - field4]
+	 *
+	 * If 1 line is available: [field1 - field2 - field3 - field4]
+	 *
 	 * @param textField2 String value represents the textField1
 	 */
 	public void setTextField2(String textField2) {
@@ -188,8 +204,16 @@ abstract class BaseScreenManager extends BaseSubManager {
 	}
 
 	/**
-	 * Set the textField3 on the head unit screen
-	 * Sending an empty String "" will clear the field
+	 * Sets the third text field within a template layout. Pass an empty string "" to clear the text field.
+	 *
+	 * If the system does not support a full 4 fields, this will automatically be concatenated and properly send the field available.
+	 *
+	 * If 3 lines are available: [field1, field2, field3 - field 4]
+	 *
+	 * If 2 lines are available: [field1 - field2, field3 - field4]
+	 *
+	 * If 1 line is available: [field1 - field2 - field3 - field4]
+	 *
 	 * @param textField3 String value represents the textField1
 	 */
 	public void setTextField3(String textField3) {
@@ -205,8 +229,16 @@ abstract class BaseScreenManager extends BaseSubManager {
 	}
 
 	/**
-	 * Set the textField4 on the head unit screen
-	 * Sending an empty String "" will clear the field
+	 * Sets the fourth text field within a template layout. Pass an empty string "" to clear the text field.
+	 *
+	 * If the system does not support a full 4 fields, this will automatically be concatenated and properly send the field available.
+	 *
+	 * If 3 lines are available: [field1, field2, field3 - field 4]
+	 *
+	 * If 2 lines are available: [field1 - field2, field3 - field4]
+	 *
+	 * If 1 line is available: [field1 - field2 - field3 - field4]
+	 *
 	 * @param textField4 String value represents the textField1
 	 */
 	public void setTextField4(String textField4) {
@@ -596,7 +628,11 @@ abstract class BaseScreenManager extends BaseSubManager {
 	}
 
 	/**
-	 * Send the updates that were started after beginning the transaction
+	 * Pairs with beginTransaction() to batch text, graphic, and layout changes into a single update with a callback when the update is complete.
+	 * Update text fields with new text set into the text field properties, updates the primary and secondary images with new image(s) if new one(s) been set,
+	 * and updates the template if one was changed using changeLayout(TemplateConfiguration, CompletionListener).
+	 * NOTE: The CompletionListener in changeLayout(TemplateConfiguration, CompletionListener) will not be called if the update is batched into this update
+	 * NOTE: If this CompletionListener returns false, it may have been superseded by another update. This means that it was cancelled while in-progress because another update was requested, whether batched or not.
 	 * @param listener a CompletionListener that has a callback that will be called when the updates are finished
 	 */
 	public void commit(final CompletionListener listener){
