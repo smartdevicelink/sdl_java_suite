@@ -19,7 +19,7 @@ import static junit.framework.TestCase.fail;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.OnButtonPress}
+ * {@link com.smartdevicelink.proxy.rpc.OnButtonPress}
  */
 public class OnButtonPressTests extends BaseRpcTests{
 

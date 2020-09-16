@@ -18,7 +18,7 @@ import java.util.Iterator;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.ButtonCapabilities}
+ * {@link com.smartdevicelink.proxy.rpc.ButtonCapabilities}
  */
 public class ButtonCapabilitiesTests extends TestCase{
 

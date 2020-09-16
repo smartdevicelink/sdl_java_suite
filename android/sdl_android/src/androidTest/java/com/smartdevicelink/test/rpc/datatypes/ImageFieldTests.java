@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.ImageField}
+ * {@link com.smartdevicelink.proxy.rpc.ImageField}
  */
 public class ImageFieldTests extends TestCase{
 

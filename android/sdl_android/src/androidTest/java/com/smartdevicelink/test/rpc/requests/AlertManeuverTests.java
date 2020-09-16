@@ -30,7 +30,7 @@ import static junit.framework.TestCase.fail;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.AlertManeuver}
+ * {@link com.smartdevicelink.proxy.rpc.AlertManeuver}
  */
 public class AlertManeuverTests extends BaseRpcTests {
 

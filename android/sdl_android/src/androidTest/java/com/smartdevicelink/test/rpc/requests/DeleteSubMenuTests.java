@@ -23,7 +23,7 @@ import static junit.framework.TestCase.fail;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.DeleteSubMenu}
+ * {@link com.smartdevicelink.proxy.rpc.DeleteSubMenu}
  */
 public class DeleteSubMenuTests extends BaseRpcTests{
 

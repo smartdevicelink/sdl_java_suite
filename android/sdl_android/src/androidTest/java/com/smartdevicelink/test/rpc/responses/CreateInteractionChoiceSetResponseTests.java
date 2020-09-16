@@ -13,7 +13,7 @@ import static junit.framework.TestCase.assertNotNull;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.CreateInteractionChoiceSetResponse}
+ * {@link com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSetResponse}
  */
 public class CreateInteractionChoiceSetResponseTests extends BaseRpcTests{
 

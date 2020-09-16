@@ -15,7 +15,7 @@ import java.util.Iterator;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.DeviceStatus}
+ * {@link com.smartdevicelink.proxy.rpc.DeviceStatus}
  */
 public class DeviceStatusTests extends TestCase {
 

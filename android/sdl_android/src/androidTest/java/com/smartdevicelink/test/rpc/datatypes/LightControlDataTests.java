@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link com.smartdevicelink.rpc.LightControlData}
+ * {@link com.smartdevicelink.proxy.rpc.LightControlData}
  */
 public class LightControlDataTests extends TestCase {
 

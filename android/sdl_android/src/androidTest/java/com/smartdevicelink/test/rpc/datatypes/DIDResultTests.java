@@ -14,7 +14,7 @@ import java.util.Iterator;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.DIDResult}
+ * {@link com.smartdevicelink.proxy.rpc.DIDResult}
  */
 public class DIDResultTests extends TestCase {
 

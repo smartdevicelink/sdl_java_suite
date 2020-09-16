@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.enums.CompassDirection}
+ * {@link com.smartdevicelink.proxy.rpc.enums.CompassDirection}
  */
 public class CompassDirectionTests extends TestCase {
 

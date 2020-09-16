@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link com.smartdevicelink.rpc.enums.DistanceUnit}
+ * {@link com.smartdevicelink.proxy.rpc.enums.DistanceUnit}
  */
 public class DistanceUnitTests extends TestCase {
 

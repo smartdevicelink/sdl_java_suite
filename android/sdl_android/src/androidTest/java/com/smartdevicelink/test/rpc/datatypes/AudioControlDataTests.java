@@ -19,7 +19,7 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link com.smartdevicelink.rpc.AudioControlData}
+ * {@link com.smartdevicelink.proxy.rpc.AudioControlData}
  */
 public class AudioControlDataTests extends TestCase {
 

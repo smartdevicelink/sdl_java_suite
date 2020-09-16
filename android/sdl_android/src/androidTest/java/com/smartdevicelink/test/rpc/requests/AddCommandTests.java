@@ -28,7 +28,7 @@ import static org.junit.Assert.assertNull;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.AddCommand}
+ * {@link com.smartdevicelink.proxy.rpc.AddCommand}
  */
 public class AddCommandTests extends BaseRpcTests{
 

@@ -22,7 +22,7 @@ import static junit.framework.TestCase.assertNotNull;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.SetGlobalPropertiesResponse}
+ * {@link com.smartdevicelink.proxy.rpc.SetGlobalPropertiesResponse}
  */
 public class SetGlobalPropertiesResponseTest extends BaseRpcTests {
 

@@ -22,7 +22,7 @@ import static junit.framework.TestCase.assertNotNull;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.UnsubscribeButtonResponse}
+ * {@link com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse}
  */
 public class UnsubscribeButtonResponseTest extends BaseRpcTests {
 

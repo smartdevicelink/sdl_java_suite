@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.ParameterPermissions}
+ * {@link com.smartdevicelink.proxy.rpc.ParameterPermissions}
  */
 public class ParameterPermissionsTests extends TestCase{
     

@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.TouchEvent}
+ * {@link com.smartdevicelink.proxy.rpc.TouchEvent}
  */
 public class TouchEventTest extends TestCase {
 	

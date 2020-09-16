@@ -23,7 +23,7 @@ import static junit.framework.TestCase.fail;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.GetDTCs}
+ * {@link com.smartdevicelink.proxy.rpc.GetDTCs}
  */
 public class GetDTCsTests extends BaseRpcTests{
 

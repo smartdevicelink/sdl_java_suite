@@ -17,7 +17,7 @@ import java.util.Iterator;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link com.smartdevicelink.rpc.HMISettingsControlCapabilities}
+ * {@link com.smartdevicelink.proxy.rpc.HMISettingsControlCapabilities}
  */
 public class HMISettingsControlCapabilitiesTests extends TestCase {
 

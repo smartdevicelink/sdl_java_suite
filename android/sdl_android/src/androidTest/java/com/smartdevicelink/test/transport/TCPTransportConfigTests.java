@@ -8,16 +8,16 @@ import junit.framework.TestCase;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.transport.TcpTransportConfig}
+ * {@link com.smartdevicelink.transport.TCPTransportConfig}
  */
 public class TCPTransportConfigTests extends TestCase {
 	
 	/**
 	 * This is a unit test for the following methods : 
-	 * {@link com.smartdevicelink.transport.TcpTransportConfig#getPort()}
-	 * {@link com.smartdevicelink.transport.TcpTransportConfig#getIPAddress()}
-	 * {@link com.smartdevicelink.transport.TcpTransportConfig#getAutoReconnect()}
-	 * {@link com.smartdevicelink.transport.TcpTransportConfig#getTransportType()}
+	 * {@link com.smartdevicelink.transport.TCPTransportConfig#getPort()}
+	 * {@link com.smartdevicelink.transport.TCPTransportConfig#getIPAddress()}
+	 * {@link com.smartdevicelink.transport.TCPTransportConfig#getAutoReconnect()}
+	 * {@link com.smartdevicelink.transport.TCPTransportConfig#getTransportType()}
 	 */
 	public void testConfigs () {
 		

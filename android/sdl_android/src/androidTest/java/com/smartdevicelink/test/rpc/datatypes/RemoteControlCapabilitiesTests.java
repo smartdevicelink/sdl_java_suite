@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link com.smartdevicelink.rpc.RemoteControlCapabilities}
+ * {@link com.smartdevicelink.proxy.rpc.RemoteControlCapabilities}
  */
 public class RemoteControlCapabilitiesTests extends TestCase {
 
