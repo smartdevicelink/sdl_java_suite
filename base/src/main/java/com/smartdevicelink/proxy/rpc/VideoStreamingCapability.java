@@ -160,8 +160,9 @@ public class VideoStreamingCapability extends RPCStruct {
 	/**
 	 * @param preferredFPS preferred frame rate per second
 	 */
-	public void setPreferredFPS(Integer preferredFPS) {
+	public VideoStreamingCapability setPreferredFPS(Integer preferredFPS) {
 		setValue(KEY_PREFERRED_FPS, preferredFPS);
+		return this;
 	}
 
 }
