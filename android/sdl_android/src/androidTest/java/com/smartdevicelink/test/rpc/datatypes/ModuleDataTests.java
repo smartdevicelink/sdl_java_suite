@@ -23,7 +23,7 @@ import java.util.Iterator;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link com.smartdevicelink.rpc.ModuleData}
+ * {@link com.smartdevicelink.proxy.rpc.ModuleData}
  */
 public class ModuleDataTests extends TestCase {
 

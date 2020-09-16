@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link com.smartdevicelink.rpc.RadioControlData}
+ * {@link com.smartdevicelink.proxy.rpc.RadioControlData}
  */
 public class RadioControlDataTests extends TestCase{
 	

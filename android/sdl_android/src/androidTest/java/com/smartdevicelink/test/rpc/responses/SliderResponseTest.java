@@ -24,7 +24,7 @@ import static junit.framework.TestCase.fail;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.SliderResponse}
+ * {@link com.smartdevicelink.proxy.rpc.SliderResponse}
  */
 public class SliderResponseTest extends BaseRpcTests {
 	

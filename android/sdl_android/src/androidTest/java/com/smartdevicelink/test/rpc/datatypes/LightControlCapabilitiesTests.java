@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link com.smartdevicelink.rpc.LightControlCapabilities}
+ * {@link com.smartdevicelink.proxy.rpc.LightControlCapabilities}
  */
 public class LightControlCapabilitiesTests extends TestCase {
 

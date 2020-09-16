@@ -30,7 +30,7 @@ import static junit.framework.TestCase.fail;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.UpdateTurnList}
+ * {@link com.smartdevicelink.proxy.rpc.UpdateTurnList}
  */
 public class UpdateTurnListTests extends BaseRpcTests {
 

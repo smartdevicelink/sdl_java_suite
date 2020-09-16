@@ -19,7 +19,7 @@ import java.util.Iterator;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link com.smartdevicelink.rpc.ClimateControlData}
+ * {@link com.smartdevicelink.proxy.rpc.ClimateControlData}
  */
 public class ClimateControlDataTests extends TestCase{
 	

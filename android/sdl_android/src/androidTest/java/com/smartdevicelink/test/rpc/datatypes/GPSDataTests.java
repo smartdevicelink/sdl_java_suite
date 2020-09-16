@@ -15,7 +15,7 @@ import java.util.Iterator;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.GPSData}
+ * {@link com.smartdevicelink.proxy.rpc.GPSData}
  */
 public class GPSDataTests extends TestCase{
 

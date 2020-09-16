@@ -13,7 +13,7 @@ import java.util.Iterator;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.SdlMsgVersion}
+ * {@link com.smartdevicelink.proxy.rpc.SdlMsgVersion}
  */
 public class SdlMsgVersionTest extends TestCase {
 	

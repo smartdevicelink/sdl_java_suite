@@ -16,7 +16,7 @@ import java.util.Iterator;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.AudioPassThruCapabilities}
+ * {@link com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities}
  */
 public class AudioPassThruCapabilitiesTest extends TestCase{
 

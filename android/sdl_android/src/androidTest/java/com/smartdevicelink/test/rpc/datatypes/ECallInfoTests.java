@@ -15,7 +15,7 @@ import java.util.Iterator;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.ECallInfo}
+ * {@link com.smartdevicelink.proxy.rpc.ECallInfo}
  */
 public class ECallInfoTests extends TestCase{
 

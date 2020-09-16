@@ -32,7 +32,7 @@ import static junit.framework.TestCase.fail;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.PerformAudioPassThru}
+ * {@link com.smartdevicelink.proxy.rpc.PerformAudioPassThru}
  */
 public class PerformAudioPassThruTests extends BaseRpcTests {
 

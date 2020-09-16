@@ -21,7 +21,7 @@ import static junit.framework.TestCase.assertNotNull;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.SystemRequestResponse}
+ * {@link com.smartdevicelink.proxy.rpc.SystemRequestResponse}
  */
 public class SystemRequestResponseTest extends BaseRpcTests {
 	

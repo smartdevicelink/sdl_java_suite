@@ -20,7 +20,7 @@ import static junit.framework.TestCase.fail;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.OnInteriorVehicleData}
+ * {@link com.smartdevicelink.proxy.rpc.OnInteriorVehicleData}
  */
 public class OnInteriorVehicleDataTests extends BaseRpcTests{
 

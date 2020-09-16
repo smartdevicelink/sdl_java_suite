@@ -13,7 +13,7 @@ import static junit.framework.TestCase.assertNotNull;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.OnAudioPassThru}
+ * {@link com.smartdevicelink.proxy.rpc.OnAudioPassThru}
  */
 public class OnAudioPassThruTests extends BaseRpcTests{
 

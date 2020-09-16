@@ -19,7 +19,7 @@ import java.util.Iterator;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link com.smartdevicelink.rpc.LightState}
+ * {@link com.smartdevicelink.proxy.rpc.LightState}
  */
 public class LightStateTests extends TestCase {
 

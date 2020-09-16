@@ -26,7 +26,7 @@ import static junit.framework.TestCase.fail;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.DiagnosticMessage}
+ * {@link com.smartdevicelink.proxy.rpc.DiagnosticMessage}
  */
 public class DiagnosticMessageTests extends BaseRpcTests{
 
