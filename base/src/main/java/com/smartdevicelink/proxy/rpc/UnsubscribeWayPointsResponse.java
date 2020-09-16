@@ -62,11 +62,19 @@ public class UnsubscribeWayPointsResponse extends RPCResponse {
 		setResultCode(resultCode);
 	}
 
+	/**
+	 * Sets the way points location details
+	 * @param wayPoints the way points location details
+	 */
 	public UnsubscribeWayPointsResponse setWayPoints(List<LocationDetails> wayPoints) {
 		setParameters(KEY_WAY_POINTS, wayPoints);
 		return this;
 	}
 
+	/**
+	 * Gets the way points location details
+	 * @return the way points location details
+	 */
 	public List<LocationDetails> getWayPoints() {
 		return (List<LocationDetails>) getObject(LocationDetails.class, KEY_WAY_POINTS);
 	}

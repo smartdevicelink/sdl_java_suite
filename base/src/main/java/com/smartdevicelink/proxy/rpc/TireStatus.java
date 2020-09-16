@@ -141,19 +141,34 @@ public class TireStatus extends RPCStruct {
 		setInnerRightRear(innerRightRear);
 	}
 
+    /**
+     * @deprecated use {@link #setPressureTelltale(WarningLightStatus pressureTellTale)} instead.
+     */
 	@Deprecated
     public TireStatus setPressureTellTale(@NonNull WarningLightStatus pressureTellTale) {
-        setValue(KEY_PRESSURE_TELL_TALE, pressureTellTale);
-        return this;
+        return setPressureTelltale(pressureTellTale);
     }
+    /**
+     * @deprecated use {@link #getPressureTelltale()} instead.
+     */
     @Deprecated
     public WarningLightStatus getPressureTellTale() {
-        return (WarningLightStatus) getObject(WarningLightStatus.class, KEY_PRESSURE_TELL_TALE);
+        return getPressureTelltale();
     }
+
+    /**
+     * Sets the status of the tire pressure Telltale.
+     * @param pressureTellTale the status of the tire pressure Telltale.
+     */
     public TireStatus setPressureTelltale(@NonNull WarningLightStatus pressureTellTale) {
         setValue(KEY_PRESSURE_TELL_TALE, pressureTellTale);
         return this;
     }
+
+    /**
+     * Gets the status of the tire pressure Telltale.
+     * @return the status of the tire pressure Telltale.
+     */
     public WarningLightStatus getPressureTelltale() {
         return (WarningLightStatus) getObject(WarningLightStatus.class, KEY_PRESSURE_TELL_TALE);
     }

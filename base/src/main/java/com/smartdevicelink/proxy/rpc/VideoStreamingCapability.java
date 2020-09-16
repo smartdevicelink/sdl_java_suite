@@ -92,21 +92,34 @@ public class VideoStreamingCapability extends RPCStruct {
 		return (List<VideoStreamingFormat>) getObject(VideoStreamingFormat.class, KEY_SUPPORTED_FORMATS);
 	}
 
+	/**
+	 * @deprecated use {@link #isHapticSpatialDataSupported()} instead.
+	 */
 	@Deprecated
 	public Boolean getIsHapticSpatialDataSupported() {
-		return getBoolean(KEY_HAPTIC_SPATIAL_DATA_SUPPORTED);
+		return isHapticSpatialDataSupported();
 	}
 
+	/**
+	 * @deprecated use {@link #setHapticSpatialDataSupported(Boolean hapticSpatialDataSupported)} instead.
+	 */
 	@Deprecated
 	public VideoStreamingCapability setIsHapticSpatialDataSupported( Boolean hapticSpatialDataSupported) {
-        setValue(KEY_HAPTIC_SPATIAL_DATA_SUPPORTED, hapticSpatialDataSupported);
-        return this;
+        return setHapticSpatialDataSupported(hapticSpatialDataSupported);
     }
 
+	/**
+	 * Gets whether the dead unit supports HapticSpatialData
+	 * @return True if the system can utilize the haptic spatial data from the source being streamed. If not included, it can be assumed the module doesn't support haptic spatial data.
+	 */
 	public Boolean isHapticSpatialDataSupported() {
 		return getBoolean(KEY_HAPTIC_SPATIAL_DATA_SUPPORTED);
 	}
 
+	/**
+	 * Sets whether the dead unit supports HapticSpatialData
+	 * @param hapticSpatialDataSupported True if the system can utilize the haptic spatial data from the source being streamed. If not included, it can be assumed the module doesn't support haptic spatial data.
+	 */
 	public VideoStreamingCapability setHapticSpatialDataSupported( Boolean hapticSpatialDataSupported) {
 		setValue(KEY_HAPTIC_SPATIAL_DATA_SUPPORTED, hapticSpatialDataSupported);
 		return this;

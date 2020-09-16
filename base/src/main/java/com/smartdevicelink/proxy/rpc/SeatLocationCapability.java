@@ -81,11 +81,12 @@ public class SeatLocationCapability extends RPCStruct {
     /**
      * Gets the seat locations of this capability
      * @return the seat locations
+     * @deprecated use {@link #getSeats()} instead.
      */
     @SuppressWarnings("unchecked")
     @Deprecated
     public List<SeatLocation> getSeatLocations() {
-        return (List<SeatLocation>) getObject(SeatLocation.class, KEY_SEATS);
+        return getSeats();
     }
 
     /**

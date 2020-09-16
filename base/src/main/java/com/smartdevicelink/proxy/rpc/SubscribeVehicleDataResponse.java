@@ -445,19 +445,34 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
     public VehicleDataResult getEmergencyEvent() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_EMERGENCY_EVENT);
     }
+
+    /**
+     * @deprecated use {@link #setClusterModes(VehicleDataResult clusterMode)} instead.
+     */
     @Deprecated
     public SubscribeVehicleDataResponse setClusterModeStatus( VehicleDataResult clusterModeStatus) {
-        setParameters(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
-        return this;
+        return setClusterModes(clusterModeStatus);
     }
+    /**
+     * @deprecated use {@link #getClusterModes()} instead.
+     */
     @Deprecated
     public VehicleDataResult getClusterModeStatus() {
-        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_CLUSTER_MODE_STATUS);
+        return getClusterModes();
     }
+    /**
+     * Sets the status modes of the cluster
+     * @param clusterMode the status modes of the cluster
+     */
     public SubscribeVehicleDataResponse setClusterModes(VehicleDataResult clusterMode) {
         setParameters(KEY_CLUSTER_MODES, clusterMode);
         return this;
     }
+
+    /**
+     * Gets the status modes of the cluster
+     * @return The status modes of the cluster
+     */
     public VehicleDataResult getClusterModes() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_CLUSTER_MODES);
     }
