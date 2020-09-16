@@ -33,6 +33,7 @@
 package com.smartdevicelink.managers.file.filetypes;
 
 import android.net.Uri;
+
 import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.rpc.enums.FileType;
@@ -40,6 +41,7 @@ import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 /**
  * A class representing data to be uploaded to core
@@ -317,7 +319,7 @@ public class SdlFile{
         int result = 1;
         result += ((getName() == null) ? 0 : Integer.rotateLeft(getName().hashCode(), 1));
         result += ((getUri() == null) ? 0 : Integer.rotateLeft(getUri().hashCode(), 2));
-        result += ((getFileData() == null) ? 0 : Integer.rotateLeft(getFileData().hashCode(), 3));
+        result += ((getFileData() == null) ? 0 : Integer.rotateLeft(Arrays.hashCode(getFileData()), 3));
         result += ((getType() == null) ? 0 : Integer.rotateLeft(getType().hashCode(), 4));
         result += Integer.rotateLeft(Boolean.valueOf(isStaticIcon()).hashCode(), 5);
         result += Integer.rotateLeft(Boolean.valueOf(isPersistent()).hashCode(), 6);

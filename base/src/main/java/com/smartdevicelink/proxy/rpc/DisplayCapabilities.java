@@ -227,7 +227,7 @@ public class DisplayCapabilities extends RPCStruct {
       
     /**
      * Get an array of MediaClockFormat elements, defining the valid string formats used in specifying the contents of the media clock field
-     * @return the Veotor of mediaClockFormat
+     * @return the Vector of mediaClockFormat
      */    
     @SuppressWarnings("unchecked")
     public List<MediaClockFormat> getMediaClockFormats() {
@@ -276,7 +276,6 @@ public class DisplayCapabilities extends RPCStruct {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     public ScreenParams getScreenParams() {
         return (ScreenParams) getObject(ScreenParams.class, KEY_SCREEN_PARAMS);
     }

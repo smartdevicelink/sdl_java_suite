@@ -4,10 +4,10 @@ import androidx.annotation.NonNull;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.SubscribeButton;
@@ -28,7 +28,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 abstract class BaseSubscribeButtonManager extends BaseSubManager {
 
     private static final String TAG = "SubscribeButtonManager";
-    HashMap<ButtonName, CopyOnWriteArrayList<OnButtonListener>> onButtonListeners;
+    final HashMap<ButtonName, CopyOnWriteArrayList<OnButtonListener>> onButtonListeners;
     private OnRPCNotificationListener onButtonPressListener;
     private OnRPCNotificationListener onButtonEventListener;
 

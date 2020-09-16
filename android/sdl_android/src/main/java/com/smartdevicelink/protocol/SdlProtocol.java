@@ -51,7 +51,6 @@ public class SdlProtocol extends SdlProtocolBase {
     private static final String TAG ="SdlProtocol";
 
 
-    @SuppressWarnings("ConstantConditions")
     public SdlProtocol(@NonNull ISdlProtocol iSdlProtocol, @NonNull MultiplexTransportConfig config) {
         super(iSdlProtocol,config);
         this.requestedPrimaryTransports = config.getPrimaryTransports();

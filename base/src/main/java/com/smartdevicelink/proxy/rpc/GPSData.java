@@ -41,7 +41,7 @@ import com.smartdevicelink.util.SdlDataTypeConverter;
 import java.util.Hashtable;
 
 /**
- * Describes the GPS data. Not all data will be available on all carlines.
+ * Describes the GPS data. Not all data will be available on all car lines.
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>

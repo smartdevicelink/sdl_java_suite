@@ -32,9 +32,16 @@
 package com.livio.BSON;
 
 import com.smartdevicelink.util.DebugTool;
-import org.bson.*;
 
-import java.util.*;
+import org.bson.BSONObject;
+import org.bson.BasicBSONDecoder;
+import org.bson.BasicBSONEncoder;
+import org.bson.BasicBSONObject;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class BsonEncoder {
     private static final String TAG = "BsonEncoder";
@@ -68,7 +75,7 @@ public class BsonEncoder {
     }
 
     /**
-     * Goes thorugh the map and ensures that all the values included are supported by SDL. If they are not of a supported
+     * Goes through the map and ensures that all the values included are supported by SDL. If they are not of a supported
      * value it is removed from the map
      * @param map the map to be sanitized
      * @return a sanitized HashMap with non-supported object type removes

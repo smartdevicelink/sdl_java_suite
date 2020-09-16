@@ -2,12 +2,12 @@ package com.smartdevicelink.managers.screen;
 
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
@@ -33,9 +33,9 @@ class TextAndGraphicUpdateOperation extends Task {
     private final WeakReference<FileManager> fileManager;
     WindowCapability defaultMainWindowCapability;
     private Show currentScreenData;
-    private TextsAndGraphicsState updatedState;
-    private CompletionListener listener;
-    private TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener;
+    private final TextsAndGraphicsState updatedState;
+    private final CompletionListener listener;
+    private final TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener;
 
     TextAndGraphicUpdateOperation(ISdl internalInterface, FileManager fileManager, WindowCapability currentCapabilities,
                                          Show currentScreenData, TextsAndGraphicsState newState, CompletionListener listener, TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener) {

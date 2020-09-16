@@ -33,13 +33,14 @@
 package com.smartdevicelink.managers.lifecycle;
 
 import androidx.annotation.NonNull;
-import com.smartdevicelink.SdlConnection.SdlSession;
+
+import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.managers.ServiceEncryptionListener;
+import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.interfaces.ISdl;
-import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
@@ -53,12 +54,12 @@ import java.util.Set;
 
 abstract class BaseEncryptionLifecycleManager {
     private static final String TAG = "BaseEncryptionLifecycleManager";
-    private ISdl internalInterface;
+    private final ISdl internalInterface;
     private ServiceEncryptionListener serviceEncryptionListener;
     private HMILevel currentHMILevel;
-    private Set<String> encryptionRequiredRPCs = new HashSet<>();
+    private final Set<String> encryptionRequiredRPCs = new HashSet<>();
     private boolean rpcSecuredServiceStarted;
-    ISdlServiceListener securedServiceListener;
+    final ISdlServiceListener securedServiceListener;
 
     BaseEncryptionLifecycleManager(@NonNull ISdl isdl, ServiceEncryptionListener listener) {
         internalInterface = isdl;

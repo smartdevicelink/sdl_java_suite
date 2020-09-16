@@ -43,10 +43,10 @@ import android.os.Build;
 import android.view.Display;
 import android.view.Surface;
 
-import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
+import com.smartdevicelink.streaming.video.IVideoStreamListener;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.util.DebugTool;
 
@@ -101,17 +101,14 @@ public class VirtualDisplayEncoder {
         initPassed = true;
     }
 
-    @SuppressWarnings("unused")
     public VideoStreamingParameters getStreamingParams(){
         return this.streamingParams;
     }
 
-    @SuppressWarnings("unused")
     public void setStreamingParams(int displayDensity, ImageResolution resolution, int frameRate, int bitrate, int interval, VideoStreamingFormat format) {
         this.streamingParams = new VideoStreamingParameters(displayDensity, frameRate, bitrate, interval, resolution, format);
     }
 
-    @SuppressWarnings("unused")
     public void setStreamingParams(VideoStreamingParameters streamingParams) {
         this.streamingParams = streamingParams;
     }
@@ -321,7 +318,6 @@ public class VirtualDisplayEncoder {
             }
         }
 
-        @SuppressWarnings("deprecation")
         void drainEncoder(boolean endOfStream) {
             if (mVideoEncoder == null || mOutputListener == null) {
                 return;

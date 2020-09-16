@@ -38,11 +38,11 @@ import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.DeleteFile;
 import com.smartdevicelink.proxy.rpc.DeleteFileResponse;
 import com.smartdevicelink.proxy.rpc.ListFiles;
@@ -82,10 +82,11 @@ abstract class BaseFileManager extends BaseSubManager {
 
 	final static String TAG = "FileManager";
 	final static int SPACE_AVAILABLE_MAX_VALUE = 2000000000;
-	private List<String> remoteFiles, uploadedEphemeralFileNames;
+	private List<String> remoteFiles;
+	private final List<String> uploadedEphemeralFileNames;
 	private int bytesAvailable = SPACE_AVAILABLE_MAX_VALUE;
-	private FileManagerConfig fileManagerConfig;
-	private HashMap<String, Integer> failedFileUploadsIndex;
+	private final FileManagerConfig fileManagerConfig;
+	private final HashMap<String, Integer> failedFileUploadsIndex;
 
 	/**
 	 * Constructor for BaseFileManager
@@ -117,7 +118,7 @@ abstract class BaseFileManager extends BaseSubManager {
 	 */
 	public List<String> getRemoteFileNames() {
 		if (getState() != BaseSubManager.READY){
-			// error and dont return list
+			// error and don't return list
 			throw new IllegalArgumentException("FileManager is not READY");
 		}
 		// return list (this is synchronous at this point)
@@ -239,9 +240,9 @@ abstract class BaseFileManager extends BaseSubManager {
 			int fileNum = 0;
 
 			@Override
-			public void addCorrelationId(int correlationid) {
-				super.addCorrelationId(correlationid);
-				requestMap.put(correlationid, requests.get(fileNum++));
+			public void addCorrelationId(int correlationId) {
+				super.addCorrelationId(correlationId);
+				requestMap.put(correlationId, requests.get(fileNum++));
 			}
 
 			@Override
@@ -270,18 +271,20 @@ abstract class BaseFileManager extends BaseSubManager {
 						PutFileResponse putFileResponse = (PutFileResponse) response;
 						bytesAvailable = putFileResponse.getSpaceAvailable() != null ? putFileResponse.getSpaceAvailable() : SPACE_AVAILABLE_MAX_VALUE;
 
-						if (requestMap.get(correlationId) != null) {
-							remoteFiles.add(((PutFile) requestMap.get(correlationId)).getSdlFileName());
-							uploadedEphemeralFileNames.add(((PutFile) requestMap.get(correlationId)).getSdlFileName());
+						PutFile putFile = ((PutFile) requestMap.get(correlationId));
+						if (putFile != null) {
+							remoteFiles.add(putFile.getSdlFileName());
+							uploadedEphemeralFileNames.add(putFile.getSdlFileName());
 						}
 
 					} else if (response instanceof DeleteFileResponse) {
 						DeleteFileResponse deleteFileResponse = (DeleteFileResponse) response;
 						bytesAvailable = deleteFileResponse.getSpaceAvailable() != null ? deleteFileResponse.getSpaceAvailable() : SPACE_AVAILABLE_MAX_VALUE;
 
-						if (requestMap.get(correlationId) != null) {
-							remoteFiles.remove(((DeleteFile) requestMap.get(correlationId)).getSdlFileName());
-							uploadedEphemeralFileNames.remove(((DeleteFile) requestMap.get(correlationId)).getSdlFileName());
+						DeleteFile deleteFile = (DeleteFile) requestMap.get(correlationId);
+						if (deleteFile != null) {
+							remoteFiles.remove(deleteFile.getSdlFileName());
+							uploadedEphemeralFileNames.remove(deleteFile.getSdlFileName());
 						}
 					}
 				} else {

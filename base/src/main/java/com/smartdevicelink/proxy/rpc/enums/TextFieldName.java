@@ -204,7 +204,7 @@ public enum TextFieldName {
      * @since SmartDeviceLink 7.0.0
      */
     subtleAlertSoftButtonText;
-    ;
+
 	  /**
        * Convert String to TextFieldName
        * @param value String

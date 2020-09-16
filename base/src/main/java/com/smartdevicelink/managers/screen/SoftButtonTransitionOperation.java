@@ -1,8 +1,8 @@
 package com.smartdevicelink.managers.screen;
 
 import com.livio.taskmaster.Task;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;

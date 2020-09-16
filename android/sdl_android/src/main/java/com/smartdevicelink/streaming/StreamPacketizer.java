@@ -33,12 +33,12 @@ package com.smartdevicelink.streaming;
 
 import androidx.annotation.RestrictTo;
 
-import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
-import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
+import com.smartdevicelink.streaming.audio.IAudioStreamListener;
+import com.smartdevicelink.streaming.video.IVideoStreamListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.io.IOException;
@@ -68,14 +68,13 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 	// a limit of the buffer size, we avoid buffer overflows when underlying transport is too slow.
 	private static final int MAX_QUEUE_SIZE = 256 * 1024;
 
-    private Object mPauseLock;
+    private final Object mPauseLock = new Object();
     private boolean mPaused;
     private boolean isServiceProtected = false;
     private BlockingQueue<ByteBufferWithListener> mOutputQueue;
 
 	public StreamPacketizer(IStreamListener streamListener, InputStream is, SessionType sType, byte rpcSessionID, SdlSession session) throws IOException {
 		super(streamListener, is, sType, rpcSessionID, session);
-        mPauseLock = new Object();
         mPaused = false;
         isServiceProtected = _session.isServiceProtected(_serviceType);
 		if (bufferSize == 0) {
@@ -87,7 +86,7 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 			bufferSize = BUFF_READ_SIZE;
 			buffer = new byte[bufferSize];
 		}
-		mOutputQueue = new LinkedBlockingQueue<ByteBufferWithListener>(MAX_QUEUE_SIZE / bufferSize);
+		mOutputQueue = new LinkedBlockingQueue<>(MAX_QUEUE_SIZE / bufferSize);
 	}
 
 	public void start() throws IOException {
@@ -158,7 +157,7 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 					}
 
 					while (frame.hasRemaining()) {
-						int len = frame.remaining() > bufferSize ? bufferSize : frame.remaining();
+						int len = Math.min(frame.remaining(), bufferSize);
 
 						ProtocolMessage pm = new ProtocolMessage();
 						pm.setSessionID(_rpcSessionID);

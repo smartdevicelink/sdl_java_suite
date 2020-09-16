@@ -38,7 +38,7 @@ import android.media.MediaFormat;
 import android.os.Build;
 import android.view.Surface;
 
-import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
+import com.smartdevicelink.streaming.video.IVideoStreamListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.io.IOException;
@@ -214,7 +214,7 @@ public class SdlEncoder {
 
 				if (mBufferInfo.size != 0) {
 					ByteBuffer encoderOutputBuffer = encoderOutputBuffers[encoderStatus];
-					byte[] dataToWrite = null;
+					byte[] dataToWrite;
 					int dataOffset = 0;
 
 					// append SPS and PPS in front of every IDR NAL unit

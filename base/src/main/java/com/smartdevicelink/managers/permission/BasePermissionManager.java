@@ -37,9 +37,9 @@ import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
@@ -69,8 +69,8 @@ abstract class BasePermissionManager extends BaseSubManager{
     private HMILevel currentHMILevel;
     private Map<FunctionID, PermissionItem> currentPermissionItems;
     private OnRPCNotificationListener onHMIStatusListener, onPermissionsChangeListener;
-    private List<PermissionFilter> filters;
-    private Set<String> encryptionRequiredRPCs = new HashSet<>();
+    private final List<PermissionFilter> filters;
+    private final Set<String> encryptionRequiredRPCs = new HashSet<>();
 
     // Permission groups status constants
     @IntDef({PERMISSION_GROUP_STATUS_ALLOWED, PERMISSION_GROUP_STATUS_DISALLOWED,
@@ -179,10 +179,6 @@ abstract class BasePermissionManager extends BaseSubManager{
 
     /**
      * Go over all developer's listeners and call them if needed because of HMI level change or permission items change
-     * @param previousPermissionItems
-     * @param previousHmiLevel
-     * @param currentPermissionItems
-     * @param currentHMILevel
      */
     private void notifyListeners(Map<FunctionID, PermissionItem> previousPermissionItems, HMILevel previousHmiLevel, Map<FunctionID, PermissionItem> currentPermissionItems, HMILevel currentHMILevel){
         for (PermissionFilter filter : filters) {

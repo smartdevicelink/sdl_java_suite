@@ -39,12 +39,12 @@ import androidx.annotation.NonNull;
 
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.Choice;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
 import com.smartdevicelink.proxy.rpc.Image;
@@ -64,14 +64,14 @@ import java.util.Map;
 
 class PreloadChoicesOperation extends Task {
 	private static final String TAG = "PreloadChoicesOperation";
-	private WeakReference<ISdl> internalInterface;
-	private WeakReference<FileManager> fileManager;
-	private WindowCapability defaultMainWindowCapability;
-	private String displayName;
-	private HashSet<ChoiceCell> cellsToUpload;
-	private CompletionListener completionListener;
+	private final WeakReference<ISdl> internalInterface;
+	private final WeakReference<FileManager> fileManager;
+	private final WindowCapability defaultMainWindowCapability;
+	private final String displayName;
+	private final HashSet<ChoiceCell> cellsToUpload;
+	private final CompletionListener completionListener;
 	private boolean isRunning;
-	private boolean isVROptional;
+	private final boolean isVROptional;
 	private boolean choiceError = false;
 
 	PreloadChoicesOperation(ISdl internalInterface, FileManager fileManager, String displayName, WindowCapability defaultMainWindowCapability,
@@ -226,7 +226,7 @@ class PreloadChoicesOperation extends Task {
 
 	// HELPERS
 	boolean shouldSendChoiceText() {
-		if (this.displayName != null && this.displayName.equals(DisplayType.GEN3_8_INCH)){
+		if (this.displayName != null && this.displayName.equals(DisplayType.GEN3_8_INCH.toString())){
 			return true;
 		}
 		return templateSupportsTextField(TextFieldName.menuName);

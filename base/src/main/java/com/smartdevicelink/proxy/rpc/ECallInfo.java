@@ -62,7 +62,7 @@ import java.util.Hashtable;
  * 		<tr>
  * 			<td>auxECallNotificationStatus</td>
  * 			<td>VehicleDataNotificationStatus</td>
- * 			<td>References signal "eCallNotification". This is an alternative signal available on some carlines replacing the eCallNotificationStatus, but showing the same values.</td>
+ * 			<td>References signal "eCallNotification". This is an alternative signal available on some car lines replacing the eCallNotificationStatus, but showing the same values.</td>
  *                 <td></td>
  * 			<td></td>
  * 			<td>SmartDeviceLink 2.0</td>

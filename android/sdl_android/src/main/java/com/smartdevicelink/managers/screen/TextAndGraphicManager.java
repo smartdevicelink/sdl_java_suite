@@ -36,9 +36,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.R;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 
 /**

@@ -36,8 +36,8 @@
 package com.smartdevicelink.managers.screen.choiceset;
 
 import com.livio.taskmaster.Task;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.Choice;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
@@ -49,8 +49,8 @@ import java.util.Collections;
 
 class CheckChoiceVROptionalOperation extends Task {
 	private static final String TAG = "CheckChoiceVROptionalOperation";
-	private CheckChoiceVROptionalInterface checkChoiceVROptionalInterface;
-	private WeakReference<ISdl> internalInterface;
+	private final CheckChoiceVROptionalInterface checkChoiceVROptionalInterface;
+	private final WeakReference<ISdl> internalInterface;
 	private boolean isVROptional;
 
 	CheckChoiceVROptionalOperation(ISdl internalInterface, CheckChoiceVROptionalInterface checkChoiceVROptionalInterface){

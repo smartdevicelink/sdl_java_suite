@@ -40,7 +40,7 @@ import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
 import java.util.Hashtable;
 
 /**
- * On-screen keyboard event. Can be full string or individual keypresses depending on keyboard mode.
+ * On-screen keyboard event. Can be full string or individual key presses depending on keyboard mode.
  * <p></p>
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">

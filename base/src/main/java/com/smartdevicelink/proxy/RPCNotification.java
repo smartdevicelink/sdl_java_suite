@@ -48,7 +48,7 @@ public class RPCNotification extends RPCMessage {
 	}
 	
 	static RPCMessage preprocessMsg (RPCMessage rpcMsg) {
-		if (rpcMsg.getMessageType() != RPCMessage.KEY_NOTIFICATION) {
+		if (!RPCMessage.KEY_NOTIFICATION.equals(rpcMsg.getMessageType())) {
 			rpcMsg.messageType = RPCMessage.KEY_NOTIFICATION;
 		}
 		

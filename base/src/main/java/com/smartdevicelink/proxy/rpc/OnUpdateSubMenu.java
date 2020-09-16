@@ -62,7 +62,7 @@ import java.util.Hashtable;
  *  <tr>
  *      <td>updateSubCells</td>
  *      <td>Boolean</td>
- *      <td>If not set, assume false. If true, the app should send AddCommands with parentIDs matchingthe menuID. These AddCommands will then be attached to the submenu and displayed if thesubmenu is selected.</td>
+ *      <td>If not set, assume false. If true, the app should send AddCommands with parentIDs matching the menuID. These AddCommands will then be attached to the submenu and displayed if the submenu is selected.</td>
  *      <td>N</td>
  *      <td></td>
  *  </tr>

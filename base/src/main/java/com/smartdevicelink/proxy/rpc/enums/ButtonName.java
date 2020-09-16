@@ -54,12 +54,12 @@ package com.smartdevicelink.proxy.rpc.enums;
  */
 public enum ButtonName{
 	/**
-	 * <br><b>THIS ENUM VALUE WILL CHANGE IN FUNCITONALITY DURING THE NEXT MAJOR RELEASE!</b>
+	 * <br><b>THIS ENUM VALUE WILL CHANGE IN FUNCTIONALITY DURING THE NEXT MAJOR RELEASE!</b>
 	 * <br><br>
 	 * This ButtonName value originally was used for both the OK button and PLAY_PAUSE button. As of
 	 * SmartDeviceLink 5.0.0, the functionality was broken out into the OK and PLAY_PAUSE buttons.
 	 * <br><br> For this version of the library OK will be received for both OK and PLAY_PAUSE to
-	 * mitigate a potential break in functionliaty. If the desire is only for the OK functionality,
+	 * mitigate a potential break in functionality. If the desire is only for the OK functionality,
 	 * this button should still be used. If the desired functionality was actually for the play/pause
 	 * toggle, then the new PLAY_PAUSE should be used.
 	 * <br><br>

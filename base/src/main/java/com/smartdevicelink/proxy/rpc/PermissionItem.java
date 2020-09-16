@@ -113,7 +113,6 @@ public class PermissionItem extends RPCStruct {
         setValue(KEY_RPC_NAME, rpcName);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public HMIPermissions getHMIPermissions() {
         return (HMIPermissions) getObject(HMIPermissions.class, KEY_HMI_PERMISSIONS);
     }
@@ -121,7 +120,6 @@ public class PermissionItem extends RPCStruct {
         setValue(KEY_HMI_PERMISSIONS, hmiPermissions);
         return this;
     }
-    @SuppressWarnings("unchecked")
     public ParameterPermissions getParameterPermissions() {
     	return (ParameterPermissions) getObject(ParameterPermissions.class, KEY_PARAMETER_PERMISSIONS);
     }

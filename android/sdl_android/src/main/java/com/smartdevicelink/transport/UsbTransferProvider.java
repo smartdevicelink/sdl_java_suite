@@ -71,7 +71,7 @@ public class UsbTransferProvider {
     ParcelFileDescriptor usbPfd;
     Bundle usbInfoBundle;
 
-    private ServiceConnection routerConnection= new ServiceConnection() {
+    private final ServiceConnection routerConnection= new ServiceConnection() {
 
         public void onServiceConnected(ComponentName className, IBinder service) {
             DebugTool.logInfo(TAG, "Bound to service " + className.toString());
@@ -212,7 +212,7 @@ public class UsbTransferProvider {
 
         public ClientHandler(UsbTransferProvider provider){
             super(Looper.getMainLooper());
-            this.provider = new WeakReference<UsbTransferProvider>(provider);
+            this.provider = new WeakReference<>(provider);
         }
 
         @Override

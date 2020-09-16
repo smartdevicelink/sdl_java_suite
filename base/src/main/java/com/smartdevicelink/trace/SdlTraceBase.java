@@ -59,7 +59,7 @@ class SdlTraceBase {
 			
 	public static final String SYSTEM_LOG_TAG = "SdlTrace";
 	
-	private static long baseTics  = java.lang.System.currentTimeMillis();
+	private static final long baseTics  = java.lang.System.currentTimeMillis();
 	private static boolean acceptAPITraceAdjustments = true;
 
 	protected static ISTListener m_appTraceListener = null;
@@ -214,8 +214,8 @@ class SdlTraceBase {
 		//rpcAsXml.append(newline);
 
 		if (dl == DetailLevel.VERBOSE) {
-			OpenRPCMessage orpcmsg = new OpenRPCMessage(rpcMsg);
-			String rpcParamList = orpcmsg.msgDump();
+			OpenRPCMessage openRPCMessage = new OpenRPCMessage(rpcMsg);
+			String rpcParamList = openRPCMessage.msgDump();
 			String msg = SdlTrace.B64EncodeForXML(rpcParamList);
 			rpcAsXml.append("<d>");
 			rpcAsXml.append(msg);
@@ -342,7 +342,7 @@ class SdlTraceBase {
 		return sb.toString();
 	} // end-method
 
-	public static boolean logTransportEvent(String preamble, String transportSpecificInfoXml, InterfaceActivityDirection msgDirection, byte buf[], int byteLength, String token) {
+	public static boolean logTransportEvent(String preamble, String transportSpecificInfoXml, InterfaceActivityDirection msgDirection, byte[] buf, int byteLength, String token) {
 		return logTransportEvent(preamble, transportSpecificInfoXml, msgDirection, buf, 0, byteLength, token);
 	} 
 
@@ -352,7 +352,7 @@ class SdlTraceBase {
 		} // end-if
 	} // end-method
 
-	public static boolean logTransportEvent(String preamble, String transportSpecificInfoXml, InterfaceActivityDirection msgDirection, byte buf[], int offset, int byteLength, String token) {
+	public static boolean logTransportEvent(String preamble, String transportSpecificInfoXml, InterfaceActivityDirection msgDirection, byte[] buf, int offset, int byteLength, String token) {
 		if (DiagLevel.getLevel(Mod.tran) == DetailLevel.OFF || !token.equals(SDL_LIB_TRACE_KEY)) {
 			return false;
 		}
@@ -402,7 +402,7 @@ class SdlTraceBase {
 	private static boolean writeXmlTraceMessage(String msg) {
 		try {			
 			// Attempt to write formatted message to the Siphon
-			if (false == writeMessageToSiphonServer(msg)) {				
+			if (!writeMessageToSiphonServer(msg)) {
 				// If writing to the Siphon fails, write to the native log
 				NativeLogTool.logInfo(SdlTrace.SYSTEM_LOG_TAG, msg);
 				return false;

@@ -70,11 +70,12 @@ import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.os.RemoteException;
-import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
 import android.util.AndroidRuntimeException;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
 
 import com.smartdevicelink.R;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
@@ -152,18 +153,12 @@ public class SdlRouterService extends Service{
 
 	public static final String SDL_NOTIFICATION_FAQS_PAGE = "https://smartdevicelink.com/en/guides/android/frequently-asked-questions/sdl-notifications/";
 
-	/**
-	 * @deprecated use {@link TransportConstants#START_ROUTER_SERVICE_ACTION} instead
-	 */
-	@Deprecated
-	public static final String START_SERVICE_ACTION							= "sdl.router.startservice";
 	public static final String REGISTER_WITH_ROUTER_ACTION 					= "com.sdl.android.register";
 	
 	/** Message types sent from the BluetoothReadService Handler */
     public static final int MESSAGE_STATE_CHANGE = 1;
     public static final int MESSAGE_READ = 2;
-    @SuppressWarnings("unused")
-	public static final int MESSAGE_WRITE = 3;
+    public static final int MESSAGE_WRITE = 3;
     public static final int MESSAGE_DEVICE_NAME = 4;
     public static final int MESSAGE_LOG = 5;
 
@@ -1023,7 +1018,6 @@ public class SdlRouterService extends Service{
 		return true;
 	}
 	
-	@SuppressWarnings("unused")
 	private void pingClients(){
 		Message message = Message.obtain();
 		DebugTool.logInfo(TAG, "Pinging "+ registeredApps.size()+ " clients");
@@ -1229,6 +1223,7 @@ public class SdlRouterService extends Service{
 					if (e != null
 							&& e instanceof AndroidRuntimeException
 							&& "android.app.RemoteServiceException".equals(e.getClass().getName())  //android.app.RemoteServiceException is a private class
+							&& e.getMessage() != null
 							&& e.getMessage().contains("invalid channel for service notification")) { //This is the message received in the exception for notification channel issues
 
 						// Set the flag to not delete the notification channel to avoid this exception in the future
@@ -1442,7 +1437,6 @@ public class SdlRouterService extends Service{
 	}
 
 	@SuppressLint("NewApi")
-	@SuppressWarnings("deprecation")
 	private void enterForeground(String content, long chronometerLength, boolean ongoing) {
 		DebugTool.logInfo(TAG, "Attempting to enter the foreground - " + System.currentTimeMillis());
 
@@ -1610,12 +1604,6 @@ public class SdlRouterService extends Service{
 	***********************************************  Helper Methods **************************************************************
 	****************************************************************************************************************************************/
 
-	@SuppressWarnings("SameReturnValue")
-	@Deprecated
-	public  String getConnectedDeviceName(){
-		return null;
-	}
-
 	private ArrayList<TransportRecord> getConnectedTransports(){
 		ArrayList<TransportRecord> connected = new ArrayList<>();
         if(bluetoothTransport != null && bluetoothTransport.isConnected()){
@@ -1733,11 +1721,6 @@ public class SdlRouterService extends Service{
 		}
 	}
 
-	@Deprecated
-	public void onTransportConnected(final TransportType type){
-		onTransportConnected(new TransportRecord(type,null));
-	}
-
 	public void onTransportConnected(final TransportRecord record){
 		cancelForegroundTimeOut();
 		enterForeground(createConnectedNotificationText(),0,true);
@@ -1796,11 +1779,6 @@ public class SdlRouterService extends Service{
 			message.setData(bundle);
 			return message;
 		
-	}
-
-	@Deprecated
-	public void onTransportDisconnected(TransportType type) {
-		onTransportDisconnected(new TransportRecord(type,null));
 	}
 
 	public void onTransportDisconnected(TransportRecord record){
@@ -1911,16 +1889,6 @@ public class SdlRouterService extends Service{
 		}
 	}
 
-	@Deprecated
-	public void onTransportError(TransportType transportType){
-		onTransportError(new TransportRecord(transportType,null), null);
-	}
-
-	@Deprecated
-	public void onTransportError(TransportRecord record) {
-		onTransportError(record, null);
-	}
-
 	public void onTransportError(TransportRecord transport, Bundle errorBundle){
         switch (transport.getType()){
             case BLUETOOTH:
@@ -2012,7 +1980,7 @@ public class SdlRouterService extends Service{
 	        }
 	    }
 
-		@SuppressWarnings("unused") //The return false after the packet null check is not dead code. Read the getByteArray method from bundle
+		//The return false after the packet null check is not dead code. Read the getByteArray method from bundle
 		public boolean writeBytesToTransport(Bundle bundle){
 			if(bundle == null){
 				return false;
@@ -2385,7 +2353,7 @@ public class SdlRouterService extends Service{
 	     * And start SDL
 	     * @return a boolean if a connection was attempted
 	     */
-		 @SuppressWarnings({"MissingPermission", "unused"})
+		 @SuppressWarnings({"MissingPermission"})
 		public synchronized boolean bluetoothQuerryAndConnect(){
 			BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
 			if(adapter != null && adapter.isEnabled()){
@@ -2429,29 +2397,6 @@ public class SdlRouterService extends Service{
 		//**************************************************************************************************************************************
 		//********************************************************* PREFERENCES ****************************************************************
 		//**************************************************************************************************************************************
-		/**
-		 * @deprecated
-		 * This method will set the last known bluetooth connection method that worked with this phone.
-		 * This helps speed up the process of connecting
-		 * @param level The level of bluetooth connecting method that last worked
-		 * @param prefLocation Where the preference should be stored
-		 */
-		@SuppressWarnings("DeprecatedIsStillUsed")
-		@Deprecated
-		public static void setBluetoothPrefs (int level, String prefLocation) {
-			DebugTool.logWarning(TAG, "This method is deprecated and will not take any action");
-		}
-
-		/**
-		* @deprecated
-	 	* This method has been deprecated as it was bad practice.
-	 	*/
-		@SuppressWarnings({"DeprecatedIsStillUsed", "SameReturnValue"})
-		@Deprecated
-		public static int getBluetoothPrefs(String prefLocation)
-		{		
-			return 0;
-		}
 
 	/**
 	 * Set the connection establishment status of the particular device
@@ -2756,7 +2701,6 @@ public class SdlRouterService extends Service{
 	// ***********************************************************   UTILITY   ****************************************************************
 	//*****************************************************************************************************************************************/
 	
-	@SuppressWarnings("unused")
 	private void debugPacket(byte[] bytes){
 		//DEBUG
 		
@@ -2940,7 +2884,7 @@ public class SdlRouterService extends Service{
 	 * @deprecated Move to the new version checking system with meta-data
 	 *
 	 */
-	@SuppressWarnings({"unused", "DeprecatedIsStillUsed"})
+	@SuppressWarnings({"DeprecatedIsStillUsed"})
 	@Deprecated
 	static class LocalRouterService implements Parcelable{
 		Intent launchIntent = null;
@@ -3075,24 +3019,6 @@ public class SdlRouterService extends Service{
 		/**
 		 * This is a simple class to hold onto a reference of a registered app.
 		 * @param appId the supplied id for this app that is attempting to register
-		 * @param messenger the specific messenger that is tied to this app
-		 */
-		@Deprecated
-		public RegisteredApp(String appId, Messenger messenger){			
-			this.appId = appId;
-			this.messenger = messenger;
-			this.sessionIds = new Vector<Long>();
-			this.queues = new ConcurrentHashMap<>();
-			queueWaitHandler = new Handler();
-			registeredTransports = new SparseArray<ArrayList<TransportType>>();
-			awaitingSession = new Vector<>();
-			setDeathNote();
-			routerMessagingVersion = 1;
-		}
-
-		/**
-		 * This is a simple class to hold onto a reference of a registered app.
-		 * @param appId the supplied id for this app that is attempting to register
 		 * @param routerMessagingVersion
 		 * @param messenger the specific messenger that is tied to this app
 		 */
@@ -3184,7 +3110,6 @@ public class SdlRouterService extends Service{
 			}
 		}
 		
-		@SuppressWarnings("unused")
 		public void clearSessionIds(){
 			this.sessionIds.clear();
 		}
@@ -3373,11 +3298,6 @@ public class SdlRouterService extends Service{
 			}
 		}
 
-		@Deprecated
-		public void handleMessage(int flags, byte[] packet) {
-			handleMessage(flags,packet,null);
-		}
-
 		public void handleMessage(int flags, byte[] packet, TransportType transportType){
 			if(flags == TransportConstants.BYTES_TO_SEND_FLAG_LARGE_PACKET_START){
 				clearBuffer();
@@ -3509,17 +3429,11 @@ public class SdlRouterService extends Service{
 		private static final int DELAY_COEF = 1;
 		private static final int SIZE_COEF = 1;
 		
-		private byte[] bytesToWrite = null;
+		private byte[] bytesToWrite;
 		private final int offset, size, priorityCoefficient;
 		private final long timestamp;
 		final Bundle receivedBundle;
 		TransportType transportType;
-		
-		@SuppressWarnings("SameParameterValue")
-		@Deprecated
-		public PacketWriteTask(byte[] bytes, int offset, int size, int priorityCoefficient) {
-			this(bytes, offset, size, priorityCoefficient,null);
-		}
 
 		public PacketWriteTask(byte[] bytes, int offset, int size, int priorityCoefficient, TransportType transportType){
 			timestamp = System.currentTimeMillis();

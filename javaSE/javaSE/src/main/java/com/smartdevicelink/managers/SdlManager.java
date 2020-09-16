@@ -33,12 +33,10 @@
 package com.smartdevicelink.managers;
 
 import androidx.annotation.NonNull;
-import com.smartdevicelink.util.Log;
 
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.managers.screen.ScreenManager;
-import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
 
@@ -129,9 +127,9 @@ public class SdlManager extends BaseSdlManager {
     private void notifyDevListener(String info) {
         if (managerListener != null) {
             if (getState() == BaseSubManager.ERROR) {
-                managerListener.onError((SdlManager) this, info, null);
+                managerListener.onError(this, info, null);
             } else {
-                managerListener.onStart((SdlManager) this);
+                managerListener.onStart(this);
             }
         }
     }
@@ -160,7 +158,7 @@ public class SdlManager extends BaseSdlManager {
         }
 
         if (managerListener != null) {
-            managerListener.onDestroy((SdlManager) this);
+            managerListener.onDestroy(this);
             managerListener = null;
         }
 

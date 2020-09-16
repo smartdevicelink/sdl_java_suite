@@ -37,7 +37,7 @@ import com.smartdevicelink.trace.enums.Mod;
 
 public class DiagLevel {
 
-	static private DetailLevel[] levels;
+	static private final DetailLevel[] levels;
 	
 	static {   // this is a static c-tor!!
 		levels = new DetailLevel[Mod.values().length];

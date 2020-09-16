@@ -91,7 +91,7 @@ public class ServiceFinder {
 
     }
 
-    BroadcastReceiver mainServiceReceiver = new BroadcastReceiver() {
+    final BroadcastReceiver mainServiceReceiver = new BroadcastReceiver() {
         private final Object LIST_LOCK = new Object();
 
         @Override

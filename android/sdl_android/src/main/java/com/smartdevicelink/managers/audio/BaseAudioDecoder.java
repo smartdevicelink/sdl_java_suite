@@ -38,6 +38,7 @@ import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.net.Uri;
 import android.os.Build;
+
 import androidx.annotation.NonNull;
 
 import com.smartdevicelink.managers.audio.AudioStreamManager.SampleType;
@@ -109,7 +110,7 @@ public abstract class BaseAudioDecoder {
         for (int i = 0; i < numTracks; ++i) {
             MediaFormat f = extractor.getTrackFormat(i);
             String m = f.getString(MediaFormat.KEY_MIME);
-            if (m.startsWith("audio/")) {
+            if (m != null && m.startsWith("audio/")) {
                 format = f;
                 mime = m;
                 extractor.selectTrack(i);

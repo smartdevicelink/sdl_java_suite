@@ -33,13 +33,14 @@ package com.smartdevicelink.streaming.audio;
 /**
  * A struct to hold LPCM specific audio format information.
  */
+@Deprecated
 public class AudioStreamingLPCMParams extends AudioStreamingParams {
 	/**
 	 * Sample format of linear PCM data.
 	 */
 	public enum SampleFormat {
 		/**
-		 * LPCM data is represented by 8-bit unsigned integers. Centerpoint is 128.
+		 * LPCM data is represented by 8-bit unsigned integers. Center point is 128.
 		 */
 		LPCM_8BIT_UNSIGNED,
 
@@ -55,7 +56,7 @@ public class AudioStreamingLPCMParams extends AudioStreamingParams {
 	 * <p>
 	 * This is reserved for future and not used right now.
 	 */
-	public SampleFormat sampleFormat;
+	public final SampleFormat sampleFormat;
 
 	public AudioStreamingLPCMParams(SampleFormat sampleFormat, int samplingRate, int channels) {
 		super(samplingRate, channels);

@@ -84,7 +84,7 @@ public enum PredefinedLayout {
 	TEXT_WITH_GRAPHIC("TEXT_WITH_GRAPHIC"),
 
 	/**
-	 A layout with only softbuttons placed in a tile layout
+	 A layout with only soft buttons placed in a tile layout
 	 */
 	TILES_ONLY("TILES_ONLY"),
 

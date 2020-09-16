@@ -124,7 +124,7 @@ public abstract class MultiplexBaseTransport {
     }
 
     protected abstract void stop(int state);
-    protected void stop(int state, byte error) {};
+    protected void stop(int state, byte error) {}
 
     public abstract void write(byte[] out,  int offset, int count);
 

@@ -37,6 +37,7 @@ import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
@@ -49,7 +50,6 @@ import com.smartdevicelink.managers.screen.menu.MenuConfiguration;
 import com.smartdevicelink.managers.screen.menu.MenuManager;
 import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandManager;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
@@ -68,7 +68,7 @@ import java.util.List;
 */
 abstract class BaseScreenManager extends BaseSubManager {
 
-	private static String TAG = "ScreenManager";
+	private static final String TAG = "ScreenManager";
 	private final WeakReference<FileManager> fileManager;
 	private SoftButtonManager softButtonManager;
 	private TextAndGraphicManager textAndGraphicManager;
@@ -363,7 +363,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	/**
 	 * Sets the title of the new template that will be displayed.
 	 * Sending an empty String "" will clear the field
-	 * @param title the title of the new template that will be displayed. Maxlength: 100.
+	 * @param title the title of the new template that will be displayed. MaxLength: 100.
 	 */
 	public void setTitle(String title){
 		this.textAndGraphicManager.setTitle(title);

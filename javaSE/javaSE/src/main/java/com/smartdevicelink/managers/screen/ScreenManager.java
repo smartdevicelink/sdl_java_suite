@@ -33,8 +33,9 @@ package com.smartdevicelink.managers.screen;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
+
 import com.smartdevicelink.managers.file.FileManager;
-import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.managers.ISdl;
 
 /**
  * <strong>ScreenManager</strong> <br>

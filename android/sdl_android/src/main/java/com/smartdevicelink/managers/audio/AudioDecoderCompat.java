@@ -35,6 +35,7 @@ import android.content.Context;
 import android.media.MediaCodec;
 import android.media.MediaFormat;
 import android.net.Uri;
+
 import androidx.annotation.NonNull;
 
 import com.smartdevicelink.managers.audio.AudioStreamManager.SampleType;
@@ -90,7 +91,7 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
      * Runnable to decode audio data
      */
     private static class DecoderRunnable implements Runnable {
-        WeakReference<AudioDecoderCompat> weakReference;
+        final WeakReference<AudioDecoderCompat> weakReference;
 
         /**
          * Decodes all audio data from source

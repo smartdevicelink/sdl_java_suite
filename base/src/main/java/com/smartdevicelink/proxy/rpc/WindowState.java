@@ -52,7 +52,7 @@ import java.util.Hashtable;
  *  <tr>
  *      <td>approximatePosition</td>
  *      <td>Integer</td>
- *      <td>The approximate percentage that the window is open - 0 being fully closed, 100 being fullyopen</td>
+ *      <td>The approximate percentage that the window is open - 0 being fully closed, 100 being fully open</td>
  *      <td>Y</td>
  *      <td></td>
  *  </tr>
