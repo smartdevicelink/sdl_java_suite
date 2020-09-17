@@ -101,6 +101,11 @@
       "vrCapabilities": [
         "Text"
       ],
+      "pcmStreamCapabilities": {
+        "samplingRate": "16KHZ",
+        "audioType": "PCM",
+        "bitsPerSample": "16_BIT"
+      },
       "audioPassThruCapabilities": [
         {
           "samplingRate": "16KHZ",

@@ -15,6 +15,7 @@ import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.TransmissionType;
 import com.smartdevicelink.proxy.rpc.enums.VentilationMode;
+import com.smartdevicelink.util.CompareUtils;
 
 import java.util.Iterator;
 import java.util.List;
@@ -2708,7 +2709,7 @@ public class Validator {
             return false;
         }
 
-        if (!item1.getDisplayName().equals(item2.getDisplayName())) {
+        if (!CompareUtils.areStringsEqual(item1.getDisplayName(), item2.getDisplayName(), true, true)) {
             return false;
         }
 
