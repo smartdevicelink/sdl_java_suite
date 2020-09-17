@@ -34,14 +34,14 @@ class TextAndGraphicUpdateOperation extends Task {
     private final WeakReference<ISdl> internalInterface;
     private final WeakReference<FileManager> fileManager;
     WindowCapability defaultMainWindowCapability;
-    private TextsAndGraphicsState currentScreenData;
-    private final TextsAndGraphicsState updatedState;
+    private TextAndGraphicState currentScreenData;
+    private final TextAndGraphicState updatedState;
     private final TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener;
     private final CompletionListener listener;
     private Show fullShow;
 
     TextAndGraphicUpdateOperation(ISdl internalInterface, FileManager fileManager, WindowCapability currentCapabilities,
-                                       TextsAndGraphicsState currentScreenData, TextsAndGraphicsState newState, CompletionListener listener, TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener) {
+                                  TextAndGraphicState currentScreenData, TextAndGraphicState newState, CompletionListener listener, TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener) {
         super("TextAndGraphicUpdateOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
@@ -735,11 +735,11 @@ class TextAndGraphicUpdateOperation extends Task {
         return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, name);
     }
 
-    TextsAndGraphicsState getCurrentScreenData() {
+    TextAndGraphicState getCurrentScreenData() {
         return currentScreenData;
     }
 
-    void setCurrentScreenData(TextsAndGraphicsState currentScreenData) {
+    void setCurrentScreenData(TextAndGraphicState currentScreenData) {
         this.currentScreenData = currentScreenData;
     }
 

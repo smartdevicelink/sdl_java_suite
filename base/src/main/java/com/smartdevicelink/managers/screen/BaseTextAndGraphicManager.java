@@ -72,7 +72,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	private static final String TAG = "TextAndGraphicManager";
 
 	boolean isDirty;
-	TextsAndGraphicsState currentScreenData;
+	TextAndGraphicState currentScreenData;
 	HMILevel currentHMILevel;
 	private final WeakReference<SoftButtonManager> softButtonManager;
 	WindowCapability defaultMainWindowCapability;
@@ -101,7 +101,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		isDirty = false;
 		textAlignment = CENTERED;
 		currentHMILevel = HMILevel.HMI_NONE;
-		currentScreenData = new TextsAndGraphicsState();
+		currentScreenData = new TextAndGraphicState();
 		this.transactionQueue = newTransactionQueue();
 		addListeners();
 	}
@@ -208,7 +208,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 		CurrentScreenDataUpdatedListener currentScreenDataUpdateListener = new CurrentScreenDataUpdatedListener() {
 			@Override
-			public void onUpdate(TextsAndGraphicsState newScreenData) {
+			public void onUpdate(TextAndGraphicState newScreenData) {
 				if(newScreenData != null) {
 					// Update our current screen data
 					currentScreenData = newScreenData;
@@ -258,7 +258,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	}
 
 	interface CurrentScreenDataUpdatedListener {
-		void onUpdate(TextsAndGraphicsState newState);
+		void onUpdate(TextAndGraphicState newState);
 		void onError();
 	}
 
@@ -305,8 +305,8 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 	// Convert to State
 
-	TextsAndGraphicsState currentState() {
-		return new TextsAndGraphicsState(textField1, textField2, textField3, textField4, mediaTrackTextField,
+	TextAndGraphicState currentState() {
+		return new TextAndGraphicState(textField1, textField2, textField3, textField4, mediaTrackTextField,
 				title, primaryGraphic, secondaryGraphic, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type, templateConfiguration);
 	}
 
