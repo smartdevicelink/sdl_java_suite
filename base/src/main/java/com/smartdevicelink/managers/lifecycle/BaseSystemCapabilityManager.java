@@ -272,6 +272,10 @@ abstract class BaseSystemCapabilityManager {
 						switch (message.getFunctionID()) {
 							case SET_DISPLAY_LAYOUT:
 								SetDisplayLayoutResponse response = (SetDisplayLayoutResponse) message;
+								// If a setDisplayLayout fails, Capabilities did not change
+								if (!response.getSuccess()) {
+									return;
+								}
 								setCapability(SystemCapabilityType.DISPLAY, response.getDisplayCapabilities());
 								setCapability(SystemCapabilityType.BUTTON, response.getButtonCapabilities());
 								setCapability(SystemCapabilityType.PRESET_BANK, response.getPresetBankCapabilities());

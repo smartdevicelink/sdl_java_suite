@@ -46,7 +46,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
-import com.smartdevicelink.proxy.rpc.Show;
+import com.smartdevicelink.proxy.rpc.TemplateConfiguration;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
@@ -72,7 +72,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	private static final String TAG = "TextAndGraphicManager";
 
 	boolean isDirty;
-	Show currentScreenData;
+	TextAndGraphicState currentScreenData;
 	HMILevel currentHMILevel;
 	private final WeakReference<SoftButtonManager> softButtonManager;
 	WindowCapability defaultMainWindowCapability;
@@ -85,6 +85,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	private TextAlignment textAlignment;
 	private String textField1, textField2, textField3, textField4, mediaTrackTextField, title;
 	private MetadataType textField1Type, textField2Type, textField3Type, textField4Type;
+	private TemplateConfiguration templateConfiguration;
 	TextAndGraphicUpdateOperation updateOperation;
 	private CompletionListener currentOperationListener;
 	Queue transactionQueue;
@@ -100,7 +101,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		isDirty = false;
 		textAlignment = CENTERED;
 		currentHMILevel = HMILevel.HMI_NONE;
-		currentScreenData = new Show();
+		currentScreenData = new TextAndGraphicState();
 		this.transactionQueue = newTransactionQueue();
 		addListeners();
 	}
@@ -174,14 +175,14 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		}
 		if (isDirty) {
 			isDirty = false;
-			sdlUpdate(listener);
+			sdlUpdate(true, listener);
 		} else if (listener != null) {
 			listener.onComplete(true);
 		}
 	}
 
-	private synchronized void sdlUpdate(final CompletionListener listener) {
-		if (this.transactionQueue.getTasksAsList().size() > 0) {
+	private synchronized void sdlUpdate(Boolean supersedePreviousOperations, final CompletionListener listener) {
+		if (this.transactionQueue.getTasksAsList().size() > 0 && supersedePreviousOperations) {
 			// Transactions already in queue, we need to clear it out
 			transactionQueue.clear();
 			updateOperation = null;
@@ -191,7 +192,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		}
 
 		// Task can be READY, about to start and popped of the queue, so we have to cancel it, to prevent it from starting
-		if (updateOperation != null && updateOperation.getState() == Task.READY) {
+		if (updateOperation != null && updateOperation.getState() == Task.READY && supersedePreviousOperations) {
 			updateOperation.cancelTask();
 			if (currentOperationListener != null) {
 				currentOperationListener.onComplete(false);
@@ -199,7 +200,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		}
 
 		// If Task is IN_PROGRESS, it’s not on the queue, we need to mark it as cancelled. The task will return at some point when it checks its status and call the listener back
-		if (updateOperation != null && updateOperation.getState() == Task.IN_PROGRESS) {
+		if (updateOperation != null && updateOperation.getState() == Task.IN_PROGRESS && supersedePreviousOperations) {
 			updateOperation.cancelTask();
 		}
 
@@ -207,9 +208,18 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 		CurrentScreenDataUpdatedListener currentScreenDataUpdateListener = new CurrentScreenDataUpdatedListener() {
 			@Override
-			public void onUpdate(Show show) {
-				updatePendingOperationsWithNewScreenData(show);
-				currentScreenData = show;
+			public void onUpdate(TextAndGraphicState newScreenData) {
+				if(newScreenData != null) {
+					// Update our current screen data
+					currentScreenData = newScreenData;
+					updatePendingOperationsWithNewScreenData();
+				}
+			}
+
+			@Override
+			public void onError() {
+				// Invalidate data that's different from our current screen data
+				resetFieldsToCurrentScreenData();
 			}
 		};
 
@@ -217,21 +227,39 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		transactionQueue.add(updateOperation, false);
 	}
 
+	void resetFieldsToCurrentScreenData() {
+		textField1 = currentScreenData.getTextField1();
+		textField2 = currentScreenData.getTextField2();
+		textField3 = currentScreenData.getTextField3();
+		textField4 = currentScreenData.getTextField4();
+		mediaTrackTextField = currentScreenData.getMediaTrackTextField();
+		title = currentScreenData.getTitle();
+		textAlignment = currentScreenData.getTextAlignment();
+		textField1Type = currentScreenData.getTextField1Type();
+		textField2Type = currentScreenData.getTextField2Type();
+		textField3Type = currentScreenData.getTextField3Type();
+		textField4Type = currentScreenData.getTextField4Type();
+		primaryGraphic = currentScreenData.getPrimaryGraphic();
+		secondaryGraphic = currentScreenData.getSecondaryGraphic();
+		templateConfiguration = currentScreenData.getTemplateConfiguration();
+	}
+
 	//Updates pending task with current screen data
-	void updatePendingOperationsWithNewScreenData(Show newScreenData) {
+	void updatePendingOperationsWithNewScreenData() {
 		for (Task task : transactionQueue.getTasksAsList()) {
 			if (!(task instanceof TextAndGraphicUpdateOperation)) {
 				continue;
 			}
-			((TextAndGraphicUpdateOperation) task).setCurrentScreenData(newScreenData);
+			((TextAndGraphicUpdateOperation) task).setCurrentScreenData(currentScreenData);
 		}
-		if (this.softButtonManager.get() != null && newScreenData.getMainField1() != null) {
-			this.softButtonManager.get().setCurrentMainField1(currentScreenData.getMainField1());
+		if (this.softButtonManager.get() != null && currentScreenData.getTextField1() != null) {
+			this.softButtonManager.get().setCurrentMainField1(currentScreenData.getTextField1());
 		}
 	}
 
 	interface CurrentScreenDataUpdatedListener {
-		void onUpdate(Show show);
+		void onUpdate(TextAndGraphicState newState);
+		void onError();
 	}
 
 
@@ -277,9 +305,9 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 	// Convert to State
 
-	private TextsAndGraphicsState currentState() {
-		return new TextsAndGraphicsState(textField1, textField2, textField3, textField4, mediaTrackTextField,
-				title, primaryGraphic, secondaryGraphic, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type);
+	TextAndGraphicState currentState() {
+		return new TextAndGraphicState(textField1, textField2, textField3, textField4, mediaTrackTextField,
+				title, primaryGraphic, secondaryGraphic, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type, templateConfiguration);
 	}
 
 	// Getters / Setters
@@ -288,7 +316,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		this.textAlignment = textAlignment;
 		// If we aren't batching, send the update immediately, if we are, set ourselves as dirty (so we know we should send an update after the batch ends)
 		if (!batchingUpdates) {
-			sdlUpdate(null);
+			sdlUpdate(true, null);
 		} else {
 			isDirty = true;
 		}
@@ -301,7 +329,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	void setMediaTrackTextField(String mediaTrackTextField) {
 		this.mediaTrackTextField = mediaTrackTextField;
 		if (!batchingUpdates) {
-			sdlUpdate(null);
+			sdlUpdate(true, null);
 		} else {
 			isDirty = true;
 		}
@@ -314,7 +342,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	void setTextField1(String textField1) {
 		this.textField1 = textField1;
 		if (!batchingUpdates) {
-			sdlUpdate(null);
+			sdlUpdate(true, null);
 		} else {
 			isDirty = true;
 		}
@@ -327,7 +355,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	void setTextField2(String textField2) {
 		this.textField2 = textField2;
 		if (!batchingUpdates) {
-			sdlUpdate(null);
+			sdlUpdate(true, null);
 		} else {
 			isDirty = true;
 		}
@@ -340,7 +368,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	void setTextField3(String textField3) {
 		this.textField3 = textField3;
 		if (!batchingUpdates) {
-			sdlUpdate(null);
+			sdlUpdate(true, null);
 		} else {
 			isDirty = true;
 		}
@@ -353,7 +381,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	void setTextField4(String textField4) {
 		this.textField4 = textField4;
 		if (!batchingUpdates) {
-			sdlUpdate(null);
+			sdlUpdate(true, null);
 		} else {
 			isDirty = true;
 		}
@@ -366,7 +394,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	void setTextField1Type(MetadataType textField1Type) {
 		this.textField1Type = textField1Type;
 		if (!batchingUpdates) {
-			sdlUpdate(null);
+			sdlUpdate(true, null);
 		} else {
 			isDirty = true;
 		}
@@ -379,7 +407,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	void setTextField2Type(MetadataType textField2Type) {
 		this.textField2Type = textField2Type;
 		if (!batchingUpdates) {
-			sdlUpdate(null);
+			sdlUpdate(true, null);
 		} else {
 			isDirty = true;
 		}
@@ -392,7 +420,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	void setTextField3Type(MetadataType textField3Type) {
 		this.textField3Type = textField3Type;
 		if (!batchingUpdates) {
-			sdlUpdate(null);
+			sdlUpdate(true, null);
 		} else {
 			isDirty = true;
 		}
@@ -405,7 +433,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	void setTextField4Type(MetadataType textField4Type) {
 		this.textField4Type = textField4Type;
 		if (!batchingUpdates) {
-			sdlUpdate(null);
+			sdlUpdate(true, null);
 		} else {
 			isDirty = true;
 		}
@@ -418,7 +446,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	void setTitle(String title) {
 		this.title = title;
 		if (!batchingUpdates) {
-			sdlUpdate(null);
+			sdlUpdate(true, null);
 		} else {
 			isDirty = true;
 		}
@@ -431,7 +459,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	void setPrimaryGraphic(SdlArtwork primaryGraphic) {
 		this.primaryGraphic = primaryGraphic;
 		if (!batchingUpdates) {
-			sdlUpdate(null);
+			sdlUpdate(true, null);
 		} else {
 			isDirty = true;
 		}
@@ -444,10 +472,37 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	void setSecondaryGraphic(SdlArtwork secondaryGraphic) {
 		this.secondaryGraphic = secondaryGraphic;
 		if (!batchingUpdates) {
-			sdlUpdate(null);
+			sdlUpdate(true, null);
 		} else {
 			isDirty = true;
 		}
+	}
+
+	/**
+	 * Change the current layout to a new layout and optionally update the layout's night and day color schemes.
+	 * The values set for the text, graphics, buttons and template title persist between layout changes.
+	 * To update the text, graphics, buttons and template title at the same time as the template, batch all the updates between beginTransaction and commit.
+	 * If the layout update fails while batching, then the updated text, graphics, buttons or template title will also not be updated.
+	 *
+	 * @param templateConfiguration The new configuration of the template, including the layout and color scheme.
+	 * @param listener A listener that will be called when the layout change finished.
+	 */
+	void changeLayout(TemplateConfiguration templateConfiguration, CompletionListener listener) {
+		setTemplateConfiguration(templateConfiguration);
+		if(!batchingUpdates) {
+			sdlUpdate(true, listener);
+		} else {
+			isDirty = true;
+		}
+	}
+
+	TemplateConfiguration getTemplateConfiguration() {
+		return templateConfiguration;
+	}
+
+	void setTemplateConfiguration(TemplateConfiguration templateConfiguration) {
+		// Don't do the `isBatchingUpdates` like elsewhere because the call is already handled in `changeLayout(TemplateConfiguration templateConfiguration, CompletionListener listener) `
+		this.templateConfiguration = templateConfiguration;
 	}
 
 	SdlArtwork getSecondaryGraphic() {
@@ -486,6 +541,10 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 					for (WindowCapability windowCapability : display.getWindowCapabilities()) {
 						int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
 						if (currentWindowID == PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+							// Check if the window capability is equal to the one we already have. If it is, abort.
+							if(defaultMainWindowCapability != null && defaultMainWindowCapability.getStore().equals(windowCapability.getStore())){
+								return;
+							}
 							defaultMainWindowCapability = windowCapability;
 						}
 					}
@@ -493,7 +552,8 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				// Update the queue's suspend state
 				updateTransactionQueueSuspended();
 				if (hasData()) {
-					sdlUpdate(null);
+					// HAX: Capability updates cannot supersede earlier updates because of the case where a developer batched a `changeLayout` call w/ T&G changes on < 6.0 systems could cause this to come in before the operation completes. That would cause the operation to report a "failure" (because it was superseded by this call) when in fact the operation didn't fail at all and is just being adjusted.
+					sdlUpdate(false, null);
 				}
 			}
 

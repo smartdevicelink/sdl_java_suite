@@ -1,19 +1,24 @@
 package com.smartdevicelink.managers.screen;
 
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.proxy.rpc.TemplateConfiguration;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 
-class TextsAndGraphicsState {
+class TextAndGraphicState {
     private String textField1, textField2, textField3, textField4, mediaTrackTextField, title;
     private MetadataType textField1Type, textField2Type, textField3Type, textField4Type;
-    private final TextAlignment textAlignment;
-    private final SdlArtwork primaryGraphic;
-    private final SdlArtwork secondaryGraphic;
+    private TextAlignment textAlignment;
+    private SdlArtwork primaryGraphic, secondaryGraphic;
+    private TemplateConfiguration templateConfiguration;
 
-    TextsAndGraphicsState(String textField1, String textField2, String textField3, String textField4, String mediaTrackTextField,
-                                 String title, SdlArtwork primaryGraphic, SdlArtwork secondaryGraphic, TextAlignment textAlignment,
-                                 MetadataType textField1Type, MetadataType textField2Type, MetadataType textField3Type, MetadataType textField4Type) {
+    TextAndGraphicState() {
+    }
+
+    TextAndGraphicState(String textField1, String textField2, String textField3, String textField4, String mediaTrackTextField,
+                          String title, SdlArtwork primaryGraphic, SdlArtwork secondaryGraphic, TextAlignment textAlignment,
+                          MetadataType textField1Type, MetadataType textField2Type, MetadataType textField3Type, MetadataType textField4Type,
+                          TemplateConfiguration templateConfiguration) {
         this.textField1 = textField1;
         this.textField2 = textField2;
         this.textField3 = textField3;
@@ -27,6 +32,7 @@ class TextsAndGraphicsState {
         this.textField2Type = textField2Type;
         this.textField3Type = textField3Type;
         this.textField4Type = textField4Type;
+        this.templateConfiguration = templateConfiguration;
     }
 
     String getTextField1() {
@@ -113,11 +119,31 @@ class TextsAndGraphicsState {
         return textAlignment;
     }
 
+    void setTextAlignment(TextAlignment textAlignment) {
+        this.textAlignment = textAlignment;
+    }
+
     SdlArtwork getPrimaryGraphic() {
         return primaryGraphic;
     }
 
+    void setPrimaryGraphic(SdlArtwork primaryGraphic) {
+        this.primaryGraphic = primaryGraphic;
+    }
+
     SdlArtwork getSecondaryGraphic() {
         return secondaryGraphic;
+    }
+
+    void setSecondaryGraphic(SdlArtwork secondaryGraphic) {
+        this.secondaryGraphic = secondaryGraphic;
+    }
+
+    TemplateConfiguration getTemplateConfiguration() {
+        return templateConfiguration;
+    }
+
+    void setTemplateConfiguration(TemplateConfiguration templateConfiguration) {
+        this.templateConfiguration = templateConfiguration;
     }
 }

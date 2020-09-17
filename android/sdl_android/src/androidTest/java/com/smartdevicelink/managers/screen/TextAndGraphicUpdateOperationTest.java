@@ -17,13 +17,17 @@ import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.SetDisplayLayout;
+import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.ShowResponse;
+import com.smartdevicelink.proxy.rpc.TemplateConfiguration;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
+import com.smartdevicelink.proxy.rpc.enums.PredefinedLayout;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 
@@ -57,10 +61,11 @@ public class TextAndGraphicUpdateOperationTest {
     private SdlArtwork testArtwork1, testArtwork2, testArtwork3, testArtwork4;
     private TextAlignment textAlignment;
     private WindowCapability defaultMainWindowCapability;
-    private Show currentScreenData;
+    private TextAndGraphicState currentScreenData;
     private CompletionListener listener;
     private TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdatedListener;
     private SdlArtwork blankArtwork;
+    private TemplateConfiguration configuration;
     ISdl internalInterface;
     FileManager fileManager;
 
@@ -74,6 +79,52 @@ public class TextAndGraphicUpdateOperationTest {
                 ShowResponse showResponse = new ShowResponse();
                 showResponse.setSuccess(true);
                 message.getOnRPCResponseListener().onResponse(correlationId, showResponse);
+            }
+            return null;
+        }
+    };
+
+    private Answer<Void> onShowFail = new Answer<Void>() {
+        @Override
+        public Void answer(InvocationOnMock invocation) {
+            Object[] args = invocation.getArguments();
+            RPCRequest message = (RPCRequest) args[0];
+            if (message instanceof Show) {
+                int correlationId = message.getCorrelationID();
+                ShowResponse showResponse = new ShowResponse();
+                showResponse.setSuccess(false);
+                message.getOnRPCResponseListener().onResponse(correlationId, showResponse);
+            }
+            return null;
+        }
+    };
+
+    private Answer<Void> onSetDisplayLayoutSuccess = new Answer<Void>() {
+        @Override
+        public Void answer(InvocationOnMock invocation) {
+            Object[] args = invocation.getArguments();
+            RPCRequest message = (RPCRequest) args[0];
+            if (message instanceof SetDisplayLayout) {
+                int correlationId = message.getCorrelationID();
+                SetDisplayLayoutResponse setDisplayLayoutResponse = new SetDisplayLayoutResponse();
+                setDisplayLayoutResponse.setSuccess(true);
+                message.getOnRPCResponseListener().onResponse(correlationId, setDisplayLayoutResponse);
+            }
+            return null;
+        }
+    };
+
+    private Answer<Void> onSetDisplayLayoutCanceled = new Answer<Void>() {
+        @Override
+        public Void answer(InvocationOnMock invocation) {
+            Object[] args = invocation.getArguments();
+            RPCRequest message = (RPCRequest) args[0];
+            if (message instanceof SetDisplayLayout) {
+                int correlationId = message.getCorrelationID();
+                textAndGraphicUpdateOperation.cancelTask();
+                SetDisplayLayoutResponse setDisplayLayoutResponse = new SetDisplayLayoutResponse();
+                setDisplayLayoutResponse.setSuccess(true);
+                message.getOnRPCResponseListener().onResponse(correlationId, setDisplayLayoutResponse);
             }
             return null;
         }
@@ -170,26 +221,35 @@ public class TextAndGraphicUpdateOperationTest {
         testArtwork4.setUri(uri4);
         testArtwork4.setType(FileType.GRAPHIC_PNG);
 
-        currentScreenData = new Show();
-        currentScreenData.setMainField1("Old");
-        currentScreenData.setMainField2("Text");
-        currentScreenData.setMainField3("Not");
-        currentScreenData.setMainField4("Important");
+        configuration = new TemplateConfiguration();
+        configuration.setTemplate(PredefinedLayout.GRAPHIC_WITH_TEXT.toString());
 
-        currentScreenData.setGraphic(testArtwork1.getImageRPC());
-        currentScreenData.setSecondaryGraphic(testArtwork2.getImageRPC());
+        currentScreenData = new TextAndGraphicState();
+        currentScreenData.setTextField1("Old");
+        currentScreenData.setTextField2("Text");
+        currentScreenData.setTextField3("Not");
+        currentScreenData.setTextField4("Important");
+
+        currentScreenData.setPrimaryGraphic(testArtwork1);
+        currentScreenData.setSecondaryGraphic(testArtwork2);
+        currentScreenData.setTemplateConfiguration(configuration);
 
         currentScreenDataUpdatedListener = new TextAndGraphicManager.CurrentScreenDataUpdatedListener() {
             @Override
-            public void onUpdate(Show show) {
+            public void onUpdate(TextAndGraphicState newState) {
+
+            }
+
+            @Override
+            public void onError() {
 
             }
         };
 
         defaultMainWindowCapability = getWindowCapability(4);
 
-        TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField1, textField2, textField3, textField4,
-                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type);
+        TextAndGraphicState textsAndGraphicsState = new TextAndGraphicState(textField1, textField2, textField3, textField4,
+                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type, null);
         textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
     }
 
@@ -266,29 +326,29 @@ public class TextAndGraphicUpdateOperationTest {
 
         // Test Images need to be uploaded, sending text and uploading images
         textAndGraphicUpdateOperation.onExecute();
-        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getMainField1(), textField1);
-        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getMainField2(), textField2);
-        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getMainField3(), textField3);
-        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getMainField4(), textField4);
-        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getAlignment(), textAlignment);
-        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getGraphic(), testArtwork3.getImageRPC());
-        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getSecondaryGraphic(), testArtwork4.getImageRPC());
+        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField1(), textField1);
+        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField2(), textField2);
+        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField3(), textField3);
+        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField4(), textField4);
+        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getTextAlignment(), textAlignment);
+        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getPrimaryGraphic(), testArtwork3);
+        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getSecondaryGraphic(), testArtwork4);
 
 
         // Test The files to be updated are already uploaded, send the full show immediately
         String textField11 = "It's not";
-        TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField11, textField2, textField3, textField4,
-                mediaTrackField, title, testArtwork1, testArtwork2, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type);
+        TextAndGraphicState textsAndGraphicsState = new TextAndGraphicState(textField11, textField2, textField3, textField4,
+                mediaTrackField, title, testArtwork1, testArtwork2, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type, null);
         textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
         textAndGraphicUpdateOperation.onExecute();
-        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getMainField1(), textField11);
+        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField1(), textField11);
 
         //Test: If there are no images to update, just send the text
-        TextsAndGraphicsState textsAndGraphicsStateNullImages = new TextsAndGraphicsState(textField1, textField2, textField3, textField4,
-                mediaTrackField, title, blankArtwork, blankArtwork, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type);
+        TextAndGraphicState textsAndGraphicsStateNullImages = new TextAndGraphicState(textField1, textField2, textField3, textField4,
+                mediaTrackField, title, blankArtwork, blankArtwork, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type, null);
         textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsStateNullImages, listener, currentScreenDataUpdatedListener);
         textAndGraphicUpdateOperation.onExecute();
-        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getMainField1(), textField1);
+        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField1(), textField1);
 
         // Verifies that uploadArtworks gets called only with the fist textAndGraphicsUpdateOperation.onExecute call
         verify(fileManager, times(1)).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
@@ -298,7 +358,7 @@ public class TextAndGraphicUpdateOperationTest {
     public void testCanceledRightAway() {
         textAndGraphicUpdateOperation.cancelTask();
         textAndGraphicUpdateOperation.onExecute();
-        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getMainField1(), "Old");
+        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField1(), "Old");
     }
 
     @Test
@@ -310,7 +370,7 @@ public class TextAndGraphicUpdateOperationTest {
         // Test Canceled after Image upload
         textAndGraphicUpdateOperation.onExecute();
         verify(internalInterface, times(1)).sendRPC(any(Show.class));
-        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getMainField1(), textField1);
+        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField1(), textField1);
 
     }
 
@@ -323,6 +383,22 @@ public class TextAndGraphicUpdateOperationTest {
         verify(fileManager, times(0)).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
 
     }
+
+    @Test
+    public void testTaskCanceledAfterSetDisplayLayout() {
+        doAnswer(onSetDisplayLayoutCanceled).when(internalInterface).sendRPC(any(SetDisplayLayout.class));
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(5, 0));
+
+        TemplateConfiguration configuration = new TemplateConfiguration().setTemplate(PredefinedLayout.DOUBLE_GRAPHIC_WITH_SOFTBUTTONS.toString());
+        TextAndGraphicState textsAndGraphicsState = new TextAndGraphicState(textField1, textField2, textField3, textField4,
+                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type, configuration);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
+        textAndGraphicUpdateOperation.onExecute();
+        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration().getStore(), configuration.getStore());
+        verify(internalInterface, times(0)).sendRPC(any(Show.class));
+    }
+
+
 
     /**
      * Test getting number of lines available to be set based off of windowCapability
@@ -348,8 +424,8 @@ public class TextAndGraphicUpdateOperationTest {
 
         Show inputShow = new Show();
 
-        TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField1, null, null, null,
-                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, MetadataType.HUMIDITY, null, null, null);
+        TextAndGraphicState textsAndGraphicsState = new TextAndGraphicState(textField1, null, null, null,
+                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, MetadataType.HUMIDITY, null, null, null, null);
         textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, getWindowCapability(1), currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         Show assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
@@ -404,8 +480,8 @@ public class TextAndGraphicUpdateOperationTest {
         defaultMainWindowCapability = getWindowCapability(2);
 
         // Force it to return display with support for only 2 lines of text
-        TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField1, null, null, null,
-                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, MetadataType.HUMIDITY, null, null, null);
+        TextAndGraphicState textsAndGraphicsState = new TextAndGraphicState(textField1, null, null, null,
+                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, MetadataType.HUMIDITY, null, null, null, null);
         textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         Show assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
@@ -507,8 +583,8 @@ public class TextAndGraphicUpdateOperationTest {
 
         // Force it to return display with support for only 3 lines of text
         defaultMainWindowCapability = getWindowCapability(3);
-        TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField1, null, null, null,
-                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, MetadataType.HUMIDITY, null, null, null);
+        TextAndGraphicState textsAndGraphicsState = new TextAndGraphicState(textField1, null, null, null,
+                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, MetadataType.HUMIDITY, null, null, null, null);
         textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
 
         Show assembledShow = textAndGraphicUpdateOperation.assembleShowText(inputShow);
@@ -621,8 +697,8 @@ public class TextAndGraphicUpdateOperationTest {
         List<TextField> textFieldNames = Arrays.asList(tx1, tx2, tx3, tx4, tx5, tx6);
         defaultMainWindowCapability.setTextFields(textFieldNames);
 
-        TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField1, null, null, null,
-                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, MetadataType.HUMIDITY, null, null, null);
+        TextAndGraphicState textsAndGraphicsState = new TextAndGraphicState(textField1, null, null, null,
+                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, MetadataType.HUMIDITY, null, null, null, null);
         textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
         textsAndGraphicsState.setMediaTrackTextField("HI");
         textsAndGraphicsState.setTitle("bye");
@@ -741,8 +817,8 @@ public class TextAndGraphicUpdateOperationTest {
 
         Show inputShow = new Show();
 
-        TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField1, null, null, null,
-                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, MetadataType.HUMIDITY, null, null, null);
+        TextAndGraphicState textsAndGraphicsState = new TextAndGraphicState(textField1, null, null, null,
+                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, MetadataType.HUMIDITY, null, null, null, null);
 
         textsAndGraphicsState.setMediaTrackTextField("HI");
         textsAndGraphicsState.setTitle("bye");
@@ -867,7 +943,7 @@ public class TextAndGraphicUpdateOperationTest {
         mainShow.setMainField3("Sauce");
         mainShow.setMainField4("");
 
-        Show newShow = textAndGraphicUpdateOperation.extractTextFromShow(mainShow);
+        Show newShow = textAndGraphicUpdateOperation.extractTextAndLayoutFromShow(mainShow);
 
         assertEquals(newShow.getMainField1(), "test");
         assertEquals(newShow.getMainField3(), "Sauce");
@@ -883,20 +959,59 @@ public class TextAndGraphicUpdateOperationTest {
 
         // Test when artwork hasn't been uploaded
         when(fileManager.hasUploadedFile(any(SdlFile.class))).thenReturn(false);
-        TextsAndGraphicsState textsAndGraphicsState = new TextsAndGraphicsState(textField1, textField2, textField3, textField4,
-                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type);
+        TextAndGraphicState textsAndGraphicsState = new TextAndGraphicState(textField1, textField2, textField3, textField4,
+                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type, configuration);
         textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
         testShow = textAndGraphicUpdateOperation.createImageOnlyShowWithPrimaryArtwork(testArtwork1, testArtwork2);
         assertNull(testShow);
 
         // Test when artwork has been uploaded
         when(fileManager.hasUploadedFile(any(SdlFile.class))).thenReturn(true);
-        textsAndGraphicsState = new TextsAndGraphicsState(textField1, textField2, textField3, textField4,
-                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type);
+        textsAndGraphicsState = new TextAndGraphicState(textField1, textField2, textField3, textField4,
+                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type, configuration);
         textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
         testShow = textAndGraphicUpdateOperation.createImageOnlyShowWithPrimaryArtwork(testArtwork1, testArtwork2);
         assertEquals(testShow.getGraphic(), testArtwork1.getImageRPC());
         assertEquals(testShow.getSecondaryGraphic(), testArtwork2.getImageRPC());
+    }
+
+    @Test
+    public void testTemplateChange() {
+        doAnswer(onShowSuccess).when(internalInterface).sendRPC(any(Show.class));
+        doAnswer(onSetDisplayLayoutSuccess).when(internalInterface).sendRPC(any(SetDisplayLayout.class));
+        doAnswer(onArtworkUploadSuccess).when(fileManager).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
+
+        TextAndGraphicState textsAndGraphicsState = new TextAndGraphicState(textField1, textField2, textField3, textField4,
+                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type, configuration);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
+        textAndGraphicUpdateOperation.onExecute();
+        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration().getStore(), configuration.getStore());
+
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(5, 0));
+
+        TemplateConfiguration configuration2 = new TemplateConfiguration().setTemplate(PredefinedLayout.DOUBLE_GRAPHIC_WITH_SOFTBUTTONS.toString());
+        textsAndGraphicsState = new TextAndGraphicState(textField1, textField2, textField3, textField4,
+                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type, configuration2);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
+        textAndGraphicUpdateOperation.onExecute();
+        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration().getStore(), configuration2.getStore());
+    }
+
+    @Test
+    public void testOnShowFail() {
+        doAnswer(onShowFail).when(internalInterface).sendRPC(any(Show.class));
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
+
+        TextAndGraphicState textsAndGraphicsState = new TextAndGraphicState(textField1, textField2, textField3, textField4,
+                mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type, configuration);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
+        textAndGraphicUpdateOperation.onExecute();
+        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration().getStore(), configuration.getStore());
+
+        // Verifies that uploadArtworks does not get called because a sendShow failed with text and layout change
+        verify(fileManager, times(0)).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
+
     }
 
 }
