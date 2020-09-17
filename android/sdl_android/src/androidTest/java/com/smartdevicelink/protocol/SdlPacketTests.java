@@ -4,6 +4,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.livio.BSON.BsonEncoder;
 import com.smartdevicelink.protocol.enums.ControlFrameTags;
+import com.smartdevicelink.test.TestValues;
+import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.TransportRecord;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +18,6 @@ import static junit.framework.TestCase.assertNull;
 
 @RunWith(AndroidJUnit4.class)
 public class SdlPacketTests {
-	//TODO: Add tests to cover other parts of SdlPacket class
 
 	// Test variables
 	private final int TEST_HASH_ID = 65537;
@@ -43,9 +45,19 @@ public class SdlPacketTests {
 		String tag = "hello";
 
 		SdlPacket sdlPacket = new SdlPacket();
+
 		assertNull(sdlPacket.getTag(tag));
 		sdlPacket.setPayload(testPayload);
 		assertEquals(sdlPacket.getTag("hello"),"world");
+
+		assertEquals(1, sdlPacket.getVersion());
+
+		sdlPacket.setPriorityCoefficient(TestValues.GENERAL_INT);
+		assertEquals(TestValues.GENERAL_INT, sdlPacket.getPrioirtyCoefficient());
+
+		sdlPacket.setTransportRecord(new TransportRecord(TransportType.TCP, TestValues.GENERAL_STRING));
+		assertEquals(TransportType.TCP, sdlPacket.getTransportRecord().getType());
+		assertEquals(TestValues.GENERAL_STRING, sdlPacket.getTransportRecord().getAddress());
 	}
 
 	@Test

@@ -289,7 +289,6 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
 
     @Override
     public void onProtocolError(String info, Exception e) {
-        //TODO is there anything to pass forward here?
         DebugTool.logError(TAG,"on protocol error", e);
     }
 

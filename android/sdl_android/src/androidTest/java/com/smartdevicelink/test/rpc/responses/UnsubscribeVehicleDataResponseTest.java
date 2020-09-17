@@ -7,6 +7,7 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.SubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.VehicleDataResult;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataType;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
@@ -33,12 +34,11 @@ import static junit.framework.TestCase.fail;
  */
 public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
 
-	// TODO : Test different result codes.
-	
 	@Override
 	protected RPCMessage createMessage() {
 		UnsubscribeVehicleDataResponse msg = new UnsubscribeVehicleDataResponse();
 
+		msg.setResultCode(TestValues.GENERAL_RESULT);
 		msg.setSpeed(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_SPEED.ordinal()));
 		msg.setRpm(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_RPM.ordinal()));
 		msg.setExternalTemperature(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_EXTERNTEMP.ordinal()));
@@ -95,7 +95,8 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
         	// Note: If the key values stored in SubscribeVehicleDataResponse
         	// were to be in a list then this could be easily looped through
         	// instead of individually set.
-        	
+
+			result.put(SubscribeVehicleDataResponse.KEY_RESULT_CODE, TestValues.GENERAL_RESULT);
 			result.put(SubscribeVehicleDataResponse.KEY_SPEED, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_SPEED.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_RPM, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_RPM.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_EXTERNAL_TEMPERATURE, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_EXTERNTEMP.ordinal()).serializeJSON());
@@ -143,6 +144,7 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
 	@Test
     public void testRpcValues () {
     	// Test Values
+		Result testResult                    = ( (UnsubscribeVehicleDataResponse) msg ).getResultCode();
 		VehicleDataResult testGps            = ( (UnsubscribeVehicleDataResponse) msg ).getGps();
 		VehicleDataResult testOdometer       = ( (UnsubscribeVehicleDataResponse) msg ).getOdometer();
 		VehicleDataResult testTirePressure   = ( (UnsubscribeVehicleDataResponse) msg ).getTirePressure();
@@ -178,6 +180,7 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
 		VehicleDataResult testOemCustomData   = ( (UnsubscribeVehicleDataResponse) msg ).getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME);
 		
 		// Valid Tests
+		assertTrue(TestValues.TRUE, testResult.equals(TestValues.GENERAL_RESULT));
 		assertTrue(TestValues.TRUE, testGps.getDataType().equals(VehicleDataType.VEHICLEDATA_GPS));
 		assertTrue(TestValues.TRUE, testOdometer.getDataType().equals(VehicleDataType.VEHICLEDATA_ODOMETER));
 		assertTrue(TestValues.TRUE, testTirePressure.getDataType().equals(VehicleDataType.VEHICLEDATA_TIREPRESSURE));
@@ -216,8 +219,9 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
 		UnsubscribeVehicleDataResponse msg = new UnsubscribeVehicleDataResponse();
         assertNotNull("Null object creation failed.", msg);        
         testNullBase(msg);
-        
-        assertNull(TestValues.NULL, msg.getAccPedalPosition());
+
+		assertNull(TestValues.NULL, msg.getResultCode());
+		assertNull(TestValues.NULL, msg.getAccPedalPosition());
         assertNull(TestValues.NULL, msg.getAirbagStatus());
         assertNull(TestValues.NULL, msg.getBeltStatus());
         assertNull(TestValues.NULL, msg.getDriverBraking());

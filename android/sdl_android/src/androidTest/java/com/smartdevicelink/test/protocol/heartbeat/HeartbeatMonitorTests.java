@@ -14,9 +14,7 @@ import java.util.TimerTask;
  * {@link com.smartdevicelink.protocol.heartbeat.HeartbeatMonitor}
  */
 public class HeartbeatMonitorTests extends TestCase {
-	
-	// TODO : Proper thread testing.
-	
+
 	private HeartbeatMonitor monitor = new HeartbeatMonitor();
 	private Runnable testRunnable;
 	private Timer timer;
