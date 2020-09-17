@@ -17,15 +17,15 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.Choice}
  */
-public class ChoiceTests extends TestCase{
-	
+public class ChoiceTests extends TestCase {
+
     private Choice msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new Choice();
 
         msg.setChoiceID(TestValues.GENERAL_INT);
@@ -38,10 +38,10 @@ public class ChoiceTests extends TestCase{
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
-    	// Test Values
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
         String text3 = msg.getTertiaryText();
         String text2 = msg.getSecondaryText();
         String menuName = msg.getMenuName();
@@ -49,7 +49,7 @@ public class ChoiceTests extends TestCase{
         List<String> vrCommands = msg.getVrCommands();
         Image image2 = msg.getSecondaryImage();
         Image image = msg.getImage();
-        
+
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, text3);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, text2);
@@ -58,7 +58,7 @@ public class ChoiceTests extends TestCase{
         assertTrue(TestValues.TRUE, Validator.validateStringList(TestValues.GENERAL_STRING_LIST, vrCommands));
         assertTrue(TestValues.TRUE, Validator.validateImage(TestValues.GENERAL_IMAGE, image2));
         assertTrue(TestValues.TRUE, Validator.validateImage(TestValues.GENERAL_IMAGE, image));
-        
+
         // Invalid/Null Tests
         Choice msg = new Choice();
         assertNotNull(TestValues.NOT_NULL, msg);
@@ -72,10 +72,10 @@ public class ChoiceTests extends TestCase{
         assertNull(TestValues.NULL, msg.getVrCommands());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(Choice.KEY_CHOICE_ID, TestValues.GENERAL_INT);
             reference.put(Choice.KEY_MENU_NAME, TestValues.GENERAL_STRING);
             reference.put(Choice.KEY_SECONDARY_TEXT, TestValues.GENERAL_STRING);
@@ -83,31 +83,31 @@ public class ChoiceTests extends TestCase{
             reference.put(Choice.KEY_IMAGE, TestValues.JSON_IMAGE);
             reference.put(Choice.KEY_SECONDARY_IMAGE, TestValues.JSON_IMAGE);
             reference.put(Choice.KEY_VR_COMMANDS, JsonUtils.createJsonArray(TestValues.GENERAL_STRING_LIST));
-            
+
             JSONObject underTest = msg.serializeJSON();
 
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
-                if(key.equals(Choice.KEY_VR_COMMANDS)){
+                if (key.equals(Choice.KEY_VR_COMMANDS)) {
                     assertTrue(TestValues.TRUE,
                             Validator.validateStringList(JsonUtils.readStringListFromJsonObject(reference, key),
                                     JsonUtils.readStringListFromJsonObject(underTest, key)));
-                } else if(key.equals(Choice.KEY_IMAGE) || key.equals(Choice.KEY_SECONDARY_IMAGE)){
-                	JSONObject objectEquals = JsonUtils.readJsonObjectFromJsonObject(reference, key);
-                	JSONObject testEquals = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
-                	Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
-                	Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-                	
+                } else if (key.equals(Choice.KEY_IMAGE) || key.equals(Choice.KEY_SECONDARY_IMAGE)) {
+                    JSONObject objectEquals = JsonUtils.readJsonObjectFromJsonObject(reference, key);
+                    JSONObject testEquals = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
+                    Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
+                    Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
+
                     assertTrue(TestValues.TRUE, Validator.validateImage(new Image(hashReference), new Image(hashTest)));
-                } else{
+                } else {
                     assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
                 }
             }
-        } catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

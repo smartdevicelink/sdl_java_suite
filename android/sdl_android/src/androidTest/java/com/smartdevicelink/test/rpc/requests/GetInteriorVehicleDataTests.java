@@ -29,7 +29,7 @@ import static junit.framework.TestCase.fail;
 public class GetInteriorVehicleDataTests extends BaseRpcTests {
 
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         GetInteriorVehicleData msg = new GetInteriorVehicleData();
 
         msg.setModuleType(TestValues.GENERAL_MODULETYPE);
@@ -40,24 +40,24 @@ public class GetInteriorVehicleDataTests extends BaseRpcTests {
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_REQUEST;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.GET_INTERIOR_VEHICLE_DATA.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
+        try {
             result.put(GetInteriorVehicleData.KEY_MODULE_TYPE, TestValues.GENERAL_MODULETYPE);
             result.put(GetInteriorVehicleData.KEY_SUBSCRIBE, TestValues.GENERAL_BOOLEAN);
             result.put(GetInteriorVehicleData.KEY_MODULE_ID, TestValues.GENERAL_STRING);
-        }catch(JSONException e){
+        } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
 
@@ -68,10 +68,10 @@ public class GetInteriorVehicleDataTests extends BaseRpcTests {
      * Tests the expected values of the RPC message.
      */
     @Test
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Test Values
-        ModuleType testModuleType = ( (GetInteriorVehicleData) msg ).getModuleType();
-        boolean testSubscribed = ( (GetInteriorVehicleData) msg ).getSubscribe();
+        ModuleType testModuleType = ((GetInteriorVehicleData) msg).getModuleType();
+        boolean testSubscribed = ((GetInteriorVehicleData) msg).getSubscribe();
         String testModuleId = ((GetInteriorVehicleData) msg).getModuleId();
 
         // Valid Tests
@@ -93,7 +93,7 @@ public class GetInteriorVehicleDataTests extends BaseRpcTests {
      * Tests a valid JSON construction of this RPC message.
      */
     @Test
-    public void testJsonConstructor () {
+    public void testJsonConstructor() {
         JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
         assertNotNull(TestValues.NOT_NULL, commandJson);
 
@@ -113,7 +113,7 @@ public class GetInteriorVehicleDataTests extends BaseRpcTests {
             assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(parameters, GetInteriorVehicleData.KEY_MODULE_TYPE).toString(), cmd.getModuleType().toString());
             assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(parameters, GetInteriorVehicleData.KEY_SUBSCRIBE), cmd.getSubscribe());
             assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(parameters, GetInteriorVehicleData.KEY_MODULE_ID), cmd.getModuleId());
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
     }

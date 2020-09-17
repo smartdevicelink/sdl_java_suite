@@ -45,26 +45,29 @@ import com.smartdevicelink.util.Version;
 public interface ISdlProtocol {
 
     /**
-     *  Called to indicate that a complete message (RPC, BULK, etc.) has been received.
+     * Called to indicate that a complete message (RPC, BULK, etc.) has been received.
+     *
      * @param msg the message that was received
      */
     void onProtocolMessageReceived(ProtocolMessage msg);
 
     /**
      * Called to indicate that a service has been started
-     * @param packet the control packet StartServiceACK received from the connected device
+     *
+     * @param packet      the control packet StartServiceACK received from the connected device
      * @param serviceType the service type that has been started
-     * @param sessionID the session ID that this service has been started on
-     * @param version the protocol version used for this session and service
+     * @param sessionID   the session ID that this service has been started on
+     * @param version     the protocol version used for this session and service
      * @param isEncrypted if the service is encrypted
      */
     void onServiceStarted(SdlPacket packet, SessionType serviceType, int sessionID, Version version, boolean isEncrypted);
 
     /**
      * This will get called when a service has ended
-     * @param packet the packet received that ended this service
+     *
+     * @param packet      the packet received that ended this service
      * @param serviceType the service type that has ended
-     * @param sessionID the id of the session that this service was operating on
+     * @param sessionID   the id of the session that this service was operating on
      */
     void onServiceEnded(SdlPacket packet, SessionType serviceType, int sessionID);
 
@@ -72,23 +75,26 @@ public interface ISdlProtocol {
      * If there is an error with starting or stopping the service or any other error this method
      * will be called. This will also be called if the service was operating on a transport that
      * has been disconnected.
-     * @param packet if there is a packet that caused this error it will be included, however this
-     *               can be null.
+     *
+     * @param packet      if there is a packet that caused this error it will be included, however this
+     *                    can be null.
      * @param serviceType the service type that experienced the error
-     * @param sessionID the session ID that this service was associated with
-     * @param error a human readable string of the error
+     * @param sessionID   the session ID that this service was associated with
+     * @param error       a human readable string of the error
      */
     void onServiceError(SdlPacket packet, SessionType serviceType, int sessionID, String error);
 
     /**
      * Called to indicate that a protocol error was detected in received data.
+     *
      * @param info a human readable string of the error
-     * @param e the exception if one occurred
+     * @param e    the exception if one occurred
      */
     void onProtocolError(String info, Exception e);
 
     /**
      * Method that the protocol layer will use to obtain the session ID
+     *
      * @return the session ID associated with the protocol instance
      */
     int getSessionId();
@@ -96,22 +102,25 @@ public interface ISdlProtocol {
     /**
      * A request made by the protocol layer to shutdown the layers above it. Likely due to
      * the RPC service being shutdown or the primary transport disconnecting.
+     *
      * @param info human readable string on why the shutdown should occur
      */
     void shutdown(String info);
 
     /**
      * Called when a transport disconnects
-     * @param info a human readable string including information on the disconnected transport
+     *
+     * @param info                  a human readable string including information on the disconnected transport
      * @param altTransportAvailable a boolean flag indicating if there is another transport that can
      *                              be used to connect with the SDL enabled device.
-     * @param transportConfig the previously supplied transport config
+     * @param transportConfig       the previously supplied transport config
      */
     void onTransportDisconnected(String info, boolean altTransportAvailable, BaseTransportConfig transportConfig);
 
     /**
      * A method that should be implemented by the hosting class of the SdlProtocol instance that will
      * return the currently being used security library if any.
+     *
      * @return the security library to be used to encrypt/decrypt packets
      */
     SdlSecurityBase getSdlSecurity();
@@ -120,6 +129,7 @@ public interface ISdlProtocol {
      * A method that should be implemented by the hosting class of the SdlProtocol instance that will
      * return the desired video streaming parameters. These parameters will be requested if
      * another component has requested the video streaming service to start.
+     *
      * @return the developer supplied desired video streaming parameters
      */
     VideoStreamingParameters getDesiredVideoParams();
@@ -128,6 +138,7 @@ public interface ISdlProtocol {
      * A callback that will be called when the video service has been successfully started and the
      * streaming parameters have been negotiated. This should be called prior to the video service
      * started callback.
+     *
      * @param acceptedVideoParams the negotiated and accepted video parameters that should be used
      *                            to stream to the SDL enabled device.
      */
@@ -136,6 +147,7 @@ public interface ISdlProtocol {
     /**
      * A callback to indicate the SDL connected device has supplied an authentication token to this
      * application. It will be called after the service start callback.
+     *
      * @param authToken
      */
     void onAuthTokenReceived(String authToken);

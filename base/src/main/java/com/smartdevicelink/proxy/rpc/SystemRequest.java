@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -40,8 +40,9 @@ import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import java.util.Hashtable;
 import java.util.List;
 
-/** An asynchronous request from the device; binary data can be included in hybrid part of message for some requests (such as HTTP, Proprietary, or Authentication requests)
- * 
+/**
+ * An asynchronous request from the device; binary data can be included in hybrid part of message for some requests (such as HTTP, Proprietary, or Authentication requests)
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -77,57 +78,57 @@ import java.util.List;
  * 			<td>SmartDeviceLink 3.0 </td>
  * 		</tr>
  *  </table>
- * @since SmartDeviceLink 3.0
- * 
- * 
  *
+ * @since SmartDeviceLink 3.0
  */
 
 public class SystemRequest extends RPCRequest {
-	public static final String KEY_FILE_NAME = "fileName";
-	public static final String KEY_REQUEST_TYPE = "requestType";
-	public static final String KEY_REQUEST_SUB_TYPE = "requestSubType";
-	public static final String KEY_DATA = "data";
-	/**
-	 * Constructs a new SystemRequest object
-	 */ 
+    public static final String KEY_FILE_NAME = "fileName";
+    public static final String KEY_REQUEST_TYPE = "requestType";
+    public static final String KEY_REQUEST_SUB_TYPE = "requestSubType";
+    public static final String KEY_DATA = "data";
+
+    /**
+     * Constructs a new SystemRequest object
+     */
 
     public SystemRequest() {
         super(FunctionID.SYSTEM_REQUEST.toString());
     }
 
-	public SystemRequest(boolean bLegacy) {
+    public SystemRequest(boolean bLegacy) {
         super(FunctionID.ENCODED_SYNC_P_DATA.toString());
     }
-    
+
     public SystemRequest(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-	/**
-	 * Constructs a new SystemRequest object
-	 * @param requestType The type of system request.
-	 */
-	public SystemRequest(@NonNull RequestType requestType){
-		this();
-		setRequestType(requestType);
-	}
+    /**
+     * Constructs a new SystemRequest object
+     *
+     * @param requestType The type of system request.
+     */
+    public SystemRequest(@NonNull RequestType requestType) {
+        this();
+        setRequestType(requestType);
+    }
 
-    @SuppressWarnings("unchecked")    
+    @SuppressWarnings("unchecked")
     public List<String> getLegacyData() {
         return (List<String>) getObject(String.class, KEY_DATA);
     }
- 
-    public SystemRequest setLegacyData( List<String> data) {
+
+    public SystemRequest setLegacyData(List<String> data) {
         setParameters(KEY_DATA, data);
         return this;
     }
-            
+
     public String getFileName() {
         return getString(KEY_FILE_NAME);
     }
-    
-    public SystemRequest setFileName( String fileName) {
+
+    public SystemRequest setFileName(String fileName) {
         setParameters(KEY_FILE_NAME, fileName);
         return this;
     }
@@ -145,7 +146,7 @@ public class SystemRequest extends RPCRequest {
         return getString(KEY_REQUEST_SUB_TYPE);
     }
 
-    public SystemRequest setRequestSubType( String requestSubType) {
+    public SystemRequest setRequestSubType(String requestSubType) {
         setParameters(KEY_REQUEST_SUB_TYPE, requestSubType);
         return this;
     }

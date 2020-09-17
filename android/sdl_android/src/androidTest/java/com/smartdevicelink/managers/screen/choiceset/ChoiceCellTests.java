@@ -52,7 +52,7 @@ public class ChoiceCellTests {
     private SdlArtwork artwork = new SdlArtwork("image", FileType.GRAPHIC_PNG, 1, true);
 
     @Test
-    public void testSettersAndGetters(){
+    public void testSettersAndGetters() {
 
         // set everything
         ChoiceCell choiceCell = new ChoiceCell(TestValues.GENERAL_STRING);
@@ -100,7 +100,7 @@ public class ChoiceCellTests {
     }
 
     @Test
-    public void testCellEquality(){
+    public void testCellEquality() {
 
         ChoiceCell choiceCell = new ChoiceCell(TestValues.GENERAL_STRING, TestValues.GENERAL_STRING_LIST, artwork);
         choiceCell.setSecondaryText(TestValues.GENERAL_STRING);

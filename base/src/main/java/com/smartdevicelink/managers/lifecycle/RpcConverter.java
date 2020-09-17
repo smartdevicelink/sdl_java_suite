@@ -50,31 +50,32 @@ public class RpcConverter {
 
     private static final String TAG = "RpcConverter";
 
-    private static final String RPC_PACKAGE             = "com.smartdevicelink.proxy.rpc.";
-    private static final String RESPONSE_KEY            = "Response";
+    private static final String RPC_PACKAGE = "com.smartdevicelink.proxy.rpc.";
+    private static final String RESPONSE_KEY = "Response";
     private static final String GENERIC_RESPONSE_STRING = FunctionID.GENERIC_RESPONSE.toString();
 
     /**
      * Extracts the RPC out of the payload of a given protocol message
-     * @param message protocolMessage that has the RPC in the payload
+     *
+     * @param message         protocolMessage that has the RPC in the payload
      * @param protocolVersion RPC spec version that should be used to create RPC
      * @return the extracted RPC
      */
-    public static RPCMessage extractRpc(ProtocolMessage message, Version protocolVersion){
+    public static RPCMessage extractRpc(ProtocolMessage message, Version protocolVersion) {
         Hashtable<String, Object> tempTable = convertProtocolMessage(message, protocolVersion);
-        if(tempTable != null){
-            try{
+        if (tempTable != null) {
+            try {
                 return convertTableToRpc(tempTable);
-            }catch (Exception e){
-                DebugTool.logError(TAG, "Error converting RPC",e);
+            } catch (Exception e) {
+                DebugTool.logError(TAG, "Error converting RPC", e);
             }
         }
         return null;
     }
 
-    static Hashtable<String, Object> convertProtocolMessage(ProtocolMessage message, Version protocolVersion){
+    static Hashtable<String, Object> convertProtocolMessage(ProtocolMessage message, Version protocolVersion) {
         Hashtable<String, Object> hash = new Hashtable<>();
-        if (protocolVersion!= null && protocolVersion.getMajor() > 1) {
+        if (protocolVersion != null && protocolVersion.getMajor() > 1) {
 
             Hashtable<String, Object> hashTemp = new Hashtable<>();
             hashTemp.put(RPCMessage.KEY_CORRELATION_ID, message.getCorrID());
@@ -102,7 +103,8 @@ public class RpcConverter {
                 hash.put(RPCMessage.KEY_NOTIFICATION, hashTemp);
             }
 
-            if (message.getBulkData() != null) hash.put(RPCStruct.KEY_BULK_DATA, message.getBulkData());
+            if (message.getBulkData() != null)
+                hash.put(RPCStruct.KEY_BULK_DATA, message.getBulkData());
             if (message.getPayloadProtected()) hash.put(RPCStruct.KEY_PROTECTED, true);
 
             return hash;
@@ -112,21 +114,21 @@ public class RpcConverter {
     }
 
 
-    public static RPCMessage convertTableToRpc(Hashtable<String,Object> rpcHashTable){
+    public static RPCMessage convertTableToRpc(Hashtable<String, Object> rpcHashTable) {
 
-        Hashtable<String,Object> params;
-        if(rpcHashTable.containsKey((RPCMessage.KEY_RESPONSE))){
-            params = (Hashtable)rpcHashTable.get((RPCMessage.KEY_RESPONSE));
-        }else if(rpcHashTable.containsKey((RPCMessage.KEY_NOTIFICATION))){
-            params = (Hashtable)rpcHashTable.get((RPCMessage.KEY_NOTIFICATION));
-        }else if(rpcHashTable.containsKey((RPCMessage.KEY_REQUEST))){
-            params = (Hashtable)rpcHashTable.get((RPCMessage.KEY_REQUEST));
-        }else{
+        Hashtable<String, Object> params;
+        if (rpcHashTable.containsKey((RPCMessage.KEY_RESPONSE))) {
+            params = (Hashtable) rpcHashTable.get((RPCMessage.KEY_RESPONSE));
+        } else if (rpcHashTable.containsKey((RPCMessage.KEY_NOTIFICATION))) {
+            params = (Hashtable) rpcHashTable.get((RPCMessage.KEY_NOTIFICATION));
+        } else if (rpcHashTable.containsKey((RPCMessage.KEY_REQUEST))) {
+            params = (Hashtable) rpcHashTable.get((RPCMessage.KEY_REQUEST));
+        } else {
             DebugTool.logError(TAG, " Corrupted RPC table.");
             return null;
         }
 
-        if(DebugTool.isDebugEnabled()) {
+        if (DebugTool.isDebugEnabled()) {
             if (params != null) {
                 Set<String> keySet = params.keySet();
                 for (String key : keySet) {
@@ -135,27 +137,27 @@ public class RpcConverter {
             }
         }
 
-        if(params != null && params.containsKey(RPCMessage.KEY_FUNCTION_NAME)){
+        if (params != null && params.containsKey(RPCMessage.KEY_FUNCTION_NAME)) {
             StringBuilder rpcClassName = new StringBuilder();
-            String functionName = (String)params.get(RPCMessage.KEY_FUNCTION_NAME);
-            if(FunctionID.SHOW_CONSTANT_TBT.toString().equals(functionName)) {
-                    functionName = "ShowConstantTbt";
+            String functionName = (String) params.get(RPCMessage.KEY_FUNCTION_NAME);
+            if (FunctionID.SHOW_CONSTANT_TBT.toString().equals(functionName)) {
+                functionName = "ShowConstantTbt";
             }
             rpcClassName.append(RPC_PACKAGE);
-            rpcClassName.append (functionName);
+            rpcClassName.append(functionName);
 
-            if(rpcHashTable.containsKey(RPCMessage.KEY_RESPONSE)
-                    && !GENERIC_RESPONSE_STRING.equals(functionName)){
+            if (rpcHashTable.containsKey(RPCMessage.KEY_RESPONSE)
+                    && !GENERIC_RESPONSE_STRING.equals(functionName)) {
                 rpcClassName.append(RESPONSE_KEY);
             }
 
             DebugTool.logInfo(TAG, " Attempting to create " + rpcClassName.toString());
             try {
                 Class rpcClass = Class.forName(rpcClassName.toString());
-                if(rpcClass != null){
-                    java.lang.reflect.Constructor rpcConstructor =  rpcClass.getConstructor(Hashtable.class);
-                    if(rpcConstructor != null){
-                        return (RPCMessage)rpcConstructor.newInstance(rpcHashTable);
+                if (rpcClass != null) {
+                    java.lang.reflect.Constructor rpcConstructor = rpcClass.getConstructor(Hashtable.class);
+                    if (rpcConstructor != null) {
+                        return (RPCMessage) rpcConstructor.newInstance(rpcHashTable);
                     }
                 } else {
                     DebugTool.logError(TAG, " Java class cannot be found for " + rpcClassName.toString());
@@ -163,7 +165,7 @@ public class RpcConverter {
             } catch (Exception e) {
                 DebugTool.logError(TAG, "RPCConverter was unable to process RPC", e);
             }
-        }else{
+        } else {
             DebugTool.logError(TAG, " Unable to parse into RPC");
         }
 

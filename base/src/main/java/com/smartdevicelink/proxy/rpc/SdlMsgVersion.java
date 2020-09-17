@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -55,8 +55,8 @@ import java.util.Hashtable;
  * 					<ul>
  * 					<li>minvalue="1"</li>
  * 				    <li>maxvalue="10"</li>
- *					</ul>
- *			</td>
+ * 					</ul>
+ * 			</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * 		<tr>
@@ -66,32 +66,37 @@ import java.util.Hashtable;
  * 					<ul>
  * 					<li>minvalue="0"</li>
  * 				    <li>maxvalue="1000"</li>
- *					</ul>
- *			</td>
+ * 					</ul>
+ * 			</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
- * </table> 
+ * </table>
+ *
  * @since SmartDeviceLink 1.0
  */
 public class SdlMsgVersion extends RPCStruct {
-	public static final String KEY_MAJOR_VERSION = "majorVersion";
-	public static final String KEY_MINOR_VERSION = "minorVersion";
-	public static final String KEY_PATCH_VERSION = "patchVersion";
+    public static final String KEY_MAJOR_VERSION = "majorVersion";
+    public static final String KEY_MINOR_VERSION = "minorVersion";
+    public static final String KEY_PATCH_VERSION = "patchVersion";
 
-	/**
-	 * Constructs a newly allocated SdlMsgVersion object
-	 */
-	public SdlMsgVersion() { }
+    /**
+     * Constructs a newly allocated SdlMsgVersion object
+     */
+    public SdlMsgVersion() {
+    }
+
     /**
      * Constructs a newly allocated SdlMsgVersion object indicated by the Hashtable parameter
+     *
      * @param hash The Hashtable to use
-     */    
-	public SdlMsgVersion(Hashtable<String, Object> hash) {
+     */
+    public SdlMsgVersion(Hashtable<String, Object> hash) {
         super(hash);
     }
 
     /**
      * Constructs a newly allocated SdlMsgVersion object
+     *
      * @param majorVersion minvalue="1" and maxvalue="10"
      * @param minorVersion min: 0; max: 1000
      */
@@ -101,8 +106,10 @@ public class SdlMsgVersion extends RPCStruct {
         setMinorVersion(minorVersion);
 
     }
+
     /**
      * Constructs a newly allocated SdlMsgVersion object
+     *
      * @param version Creates a new RPC struct SdlMsgVersion based on the utility class
      */
     public SdlMsgVersion(@NonNull Version version) {
@@ -115,52 +122,59 @@ public class SdlMsgVersion extends RPCStruct {
 
     @Override
     public void format(com.smartdevicelink.util.Version rpcVersion, boolean formatParams) {
-        if(getPatchVersion() == null){
+        if (getPatchVersion() == null) {
             setPatchVersion(0);
         }
-        super.format(rpcVersion,formatParams);
+        super.format(rpcVersion, formatParams);
     }
 
     /**
      * Get major version
-     * 					<ul>
-     * 					<li>minvalue="1"</li>
-     * 				    <li>maxvalue="10"</li>
-     *					</ul>
+     * <ul>
+     * <li>minvalue="1"</li>
+     *    <li>maxvalue="10"</li>
+     * </ul>
+     *
      * @return the major version
      */
     public Integer getMajorVersion() {
-        return getInteger( KEY_MAJOR_VERSION );
+        return getInteger(KEY_MAJOR_VERSION);
     }
+
     /**
      * Set major version
-     * 					<ul>
-     * 					<li>minvalue="1"</li>
-     * 				    <li>maxvalue="10"</li>
-     *					</ul>
+     * <ul>
+     * <li>minvalue="1"</li>
+     *    <li>maxvalue="10"</li>
+     * </ul>
+     *
      * @param majorVersion minvalue="1" and maxvalue="10"
      */
     public SdlMsgVersion setMajorVersion(@NonNull Integer majorVersion) {
         setValue(KEY_MAJOR_VERSION, majorVersion);
         return this;
     }
+
     /**
      * Get minor version
-     * 					<ul>
-     * 					<li>minvalue="0"</li>
-     * 				    <li>maxvalue="1000"</li>
-     *					</ul>
+     * <ul>
+     * <li>minvalue="0"</li>
+     *    <li>maxvalue="1000"</li>
+     * </ul>
+     *
      * @return the minor version
-     */    
+     */
     public Integer getMinorVersion() {
-        return getInteger( KEY_MINOR_VERSION );
+        return getInteger(KEY_MINOR_VERSION);
     }
+
     /**
      * Set minor version
-     * 					<ul>
-     * 					<li>minvalue="0"</li>
-     * 				    <li>maxvalue="1000"</li>
-     *					</ul>
+     * <ul>
+     * <li>minvalue="0"</li>
+     *    <li>maxvalue="1000"</li>
+     * </ul>
+     *
      * @param minorVersion min: 0; max: 1000
      */
     public SdlMsgVersion setMinorVersion(@NonNull Integer minorVersion) {
@@ -170,24 +184,27 @@ public class SdlMsgVersion extends RPCStruct {
 
     /**
      * Get patch version
-     * 					<ul>
-     * 					<li>minvalue="0"</li>
-     * 				    <li>maxvalue="1000"</li>
-     *					</ul>
+     * <ul>
+     * <li>minvalue="0"</li>
+     *    <li>maxvalue="1000"</li>
+     * </ul>
+     *
      * @return the patch version
      */
     public Integer getPatchVersion() {
-        return getInteger( KEY_PATCH_VERSION );
+        return getInteger(KEY_PATCH_VERSION);
     }
+
     /**
      * Set patch version
-     * 					<ul>
-     * 					<li>minvalue="0"</li>
-     * 				    <li>maxvalue="1000"</li>
-     *					</ul>
+     * <ul>
+     * <li>minvalue="0"</li>
+     *    <li>maxvalue="1000"</li>
+     * </ul>
+     *
      * @param patchVersion min: 0; max: 1000
      */
-    public SdlMsgVersion setPatchVersion( Integer patchVersion) {
+    public SdlMsgVersion setPatchVersion(Integer patchVersion) {
         setValue(KEY_PATCH_VERSION, patchVersion);
         return this;
     }

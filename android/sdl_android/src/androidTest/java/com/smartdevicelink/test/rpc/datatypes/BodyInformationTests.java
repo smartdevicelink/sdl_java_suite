@@ -14,15 +14,15 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.BodyInformation}
  */
-public class BodyInformationTests extends TestCase{
-	
-    private BodyInformation                   msg;
+public class BodyInformationTests extends TestCase {
+
+    private BodyInformation msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new BodyInformation();
         msg.setParkBrakeActive(TestValues.GENERAL_BOOLEAN);
         msg.setIgnitionStatus(TestValues.GENERAL_IGNITIONSTATUS);
@@ -35,25 +35,25 @@ public class BodyInformationTests extends TestCase{
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {       	
-    	// Test Values
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
         boolean parkBrake = msg.getParkBrakeActive();
         IgnitionStatus ignitionStatus = msg.getIgnitionStatus();
         IgnitionStableStatus ignitionStable = msg.getIgnitionStableStatus();
-        
+
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, parkBrake);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_IGNITIONSTATUS, ignitionStatus);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_IGNITIONSTABLESTATUS, ignitionStable);
-   
-    	assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, (boolean) msg.getDriverDoorAjar());
-    	assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, (boolean) msg.getPassengerDoorAjar());
-    	assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, (boolean) msg.getRearLeftDoorAjar());
-    	assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, (boolean) msg.getRearRightDoorAjar());
-    
-    	// Invalid/Null Tests
+
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, (boolean) msg.getDriverDoorAjar());
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, (boolean) msg.getPassengerDoorAjar());
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, (boolean) msg.getRearLeftDoorAjar());
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, (boolean) msg.getRearRightDoorAjar());
+
+        // Invalid/Null Tests
         BodyInformation msg = new BodyInformation();
         assertNotNull(TestValues.NOT_NULL, msg);
 
@@ -66,10 +66,10 @@ public class BodyInformationTests extends TestCase{
         assertNull(TestValues.NULL, msg.getRearRightDoorAjar());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(BodyInformation.KEY_PARK_BRAKE_ACTIVE, TestValues.GENERAL_BOOLEAN);
             reference.put(BodyInformation.KEY_IGNITION_STATUS, TestValues.GENERAL_IGNITIONSTATUS);
             reference.put(BodyInformation.KEY_IGNITION_STABLE_STATUS, TestValues.GENERAL_IGNITIONSTABLESTATUS);
@@ -78,16 +78,16 @@ public class BodyInformationTests extends TestCase{
             reference.put(BodyInformation.KEY_REAR_LEFT_DOOR_AJAR, TestValues.GENERAL_BOOLEAN);
             reference.put(BodyInformation.KEY_REAR_RIGHT_DOOR_AJAR, TestValues.GENERAL_BOOLEAN);
 
-            JSONObject underTest = msg.serializeJSON();            
+            JSONObject underTest = msg.serializeJSON();
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
                 assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
-        }catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

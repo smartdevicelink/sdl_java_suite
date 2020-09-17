@@ -29,6 +29,7 @@ public class GetInteriorVehicleDataConsentResponse extends RPCResponse {
 
     /**
      * Sets the list of allowances for this class
+     *
      * @param allowances the allowances to be set
      */
     public GetInteriorVehicleDataConsentResponse setAllowances(@NonNull List<Boolean> allowances) {
@@ -38,6 +39,7 @@ public class GetInteriorVehicleDataConsentResponse extends RPCResponse {
 
     /**
      * Gets the list of allowances of this class
+     *
      * @return the list of allowances of this class
      */
     @SuppressWarnings("unchecked")

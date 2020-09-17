@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -32,42 +32,44 @@
 package com.smartdevicelink.proxy.rpc.enums;
 
 import java.util.EnumSet;
-/** The enumeration defines the types of the soft buttons to be displayed on UI component:<p>The text is displayed on the soft button</p>
- *<p>The image is displayed  on the soft button</p>
- *<p>Both image and text are displayed on the soft button.</p>
- * 
+
+/**
+ * The enumeration defines the types of the soft buttons to be displayed on UI component:<p>The text is displayed on the soft button</p>
+ * <p>The image is displayed  on the soft button</p>
+ * <p>Both image and text are displayed on the soft button.</p>
+ *
  * @since SmartDeviceLink 2.0
  */
 public enum SoftButtonType {
-	/** Text displayed
-	 * 
-	 */
-	SBT_TEXT("TEXT"),
-	/** Image displayed
-	 * 
-	 */
-	SBT_IMAGE("IMAGE"),
-	/** Image displayed
-	 * 
-	 */
-	SBT_BOTH("BOTH");
+    /**
+     * Text displayed
+     */
+    SBT_TEXT("TEXT"),
+    /**
+     * Image displayed
+     */
+    SBT_IMAGE("IMAGE"),
+    /**
+     * Image displayed
+     */
+    SBT_BOTH("BOTH");
 
-	private final String VALUE;
-    
+    private final String VALUE;
+
     private SoftButtonType(String value) {
         this.VALUE = value;
     }
-    
+
     public String toString() {
         return this.VALUE;
     }
-    
+
     public static SoftButtonType valueForString(String value) {
-        if(value == null){
+        if (value == null) {
             return null;
         }
-        
-    	for (SoftButtonType anEnum : EnumSet.allOf(SoftButtonType.class)) {
+
+        for (SoftButtonType anEnum : EnumSet.allOf(SoftButtonType.class)) {
             if (anEnum.toString().equals(value)) {
                 return anEnum;
             }

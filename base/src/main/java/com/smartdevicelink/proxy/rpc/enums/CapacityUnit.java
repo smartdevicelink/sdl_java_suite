@@ -48,9 +48,9 @@ public enum CapacityUnit {
      * @return CapacityUnit
      */
     public static CapacityUnit valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

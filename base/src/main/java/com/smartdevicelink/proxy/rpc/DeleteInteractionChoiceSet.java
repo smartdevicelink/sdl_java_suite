@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -43,17 +43,17 @@ import java.util.Hashtable;
  * interactionChoiceSetID. If the specified interactionChoiceSetID is currently
  * in use by an active <i> {@linkplain PerformInteraction}</i> this call to
  * delete the Choice Set will fail returning an IN_USE resultCode
- * 
+ *
  * <p>Function Group: Base</p>
- * 
+ *
  * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
- * 
+ *
  * <p>AudioStreamingState: Any</p>
- * 
+ *
  * <p>SystemContext: MAIN, MENU, VR </p>
- * 
+ *
  * <p><b>Parameter List</b></p>
- * 
+ *
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -74,9 +74,9 @@ import java.util.Hashtable;
  *  </table>
  *
  * <p><b>Response </b></p>
- * 
+ * <p>
  * If a resultCode of "SUCCESS" is returned, the requested choice set has been created and can now be referenced by the application using the value of interactionChoiceSetID provided by the application.
- * 
+ *
  * <p><b>Non-default Result Codes:</b></p>
  * 	<p>SUCCESS</p>
  * 	<p>INVALID_DATA</p>
@@ -84,54 +84,59 @@ import java.util.Hashtable;
  * 	<p>TOO_MANY_PENDING_REQUESTS</p>
  * 	<p>APPLICATION_NOT_REGISTERED</p>
  * 	<p>GENERIC_ERROR</p>
- * 	<p>REJECTED</p> 
+ * 	<p>REJECTED</p>
  *   <p>INVALID_ID</p>
-
- * @since SmartDeviceLink 1.0
+ *
  * @see CreateInteractionChoiceSet
  * @see PerformInteraction
+ * @since SmartDeviceLink 1.0
  */
 public class DeleteInteractionChoiceSet extends RPCRequest {
-	public static final String KEY_INTERACTION_CHOICE_SET_ID = "interactionChoiceSetID";
+    public static final String KEY_INTERACTION_CHOICE_SET_ID = "interactionChoiceSetID";
 
-	/**
-	 * Constructs a new DeleteInteractionChoiceSet object
-	 */
+    /**
+     * Constructs a new DeleteInteractionChoiceSet object
+     */
     public DeleteInteractionChoiceSet() {
         super(FunctionID.DELETE_INTERACTION_CHOICE_SET.toString());
     }
-	/**
-	 * <p>Constructs a new DeleteInteractionChoiceSet object indicated by the
-	 * Hashtable parameter</p>
-	 * 
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */    
+
+    /**
+     * <p>Constructs a new DeleteInteractionChoiceSet object indicated by the
+     * Hashtable parameter</p>
+     *
+     * @param hash The Hashtable to use
+     */
     public DeleteInteractionChoiceSet(Hashtable<String, Object> hash) {
         super(hash);
     }
-	/**
-	 * Constructs a new DeleteInteractionChoiceSet object
-	 * @param interactionChoiceSetID a unique ID that identifies the Choice Set
-	 * <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000 </p>
-	 */
-	public DeleteInteractionChoiceSet(@NonNull Integer interactionChoiceSetID) {
-		this();
-		setInteractionChoiceSetID(interactionChoiceSetID);
-	}
+
     /**
-	 * Gets a unique ID that identifies the Choice Set
-	 * @return Integer -an Integer value representing the unique Choice Set ID
-	 */    
-    public Integer getInteractionChoiceSetID() {
-        return getInteger( KEY_INTERACTION_CHOICE_SET_ID );
+     * Constructs a new DeleteInteractionChoiceSet object
+     *
+     * @param interactionChoiceSetID a unique ID that identifies the Choice Set
+     *                               <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000 </p>
+     */
+    public DeleteInteractionChoiceSet(@NonNull Integer interactionChoiceSetID) {
+        this();
+        setInteractionChoiceSetID(interactionChoiceSetID);
     }
-	/**
-	 * Sets a unique ID that identifies the Choice Set
-	 * @param interactionChoiceSetID a unique ID that identifies the Choice Set
-	 * <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000 </p>
-	 */
+
+    /**
+     * Gets a unique ID that identifies the Choice Set
+     *
+     * @return Integer -an Integer value representing the unique Choice Set ID
+     */
+    public Integer getInteractionChoiceSetID() {
+        return getInteger(KEY_INTERACTION_CHOICE_SET_ID);
+    }
+
+    /**
+     * Sets a unique ID that identifies the Choice Set
+     *
+     * @param interactionChoiceSetID a unique ID that identifies the Choice Set
+     *                               <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000 </p>
+     */
     public DeleteInteractionChoiceSet setInteractionChoiceSetID(@NonNull Integer interactionChoiceSetID) {
         setParameters(KEY_INTERACTION_CHOICE_SET_ID, interactionChoiceSetID);
         return this;

@@ -31,21 +31,32 @@ public class TransportManagerTests {
 
     MultiplexTransportConfig config;
     final TransportRecord defaultBtRecord = new TransportRecord(TransportType.BLUETOOTH, "12:34:56:78:90");
-    final ComponentName routerServiceComponentName = new ComponentName("com.smartdevicelink.test","com.smartdevicelink.test.SdlRouterService");
-    final SdlPacket defaultPacket = SdlPacketFactory.createStartSessionACK(SessionType.RPC,(byte)1,100,(byte)5);
+    final ComponentName routerServiceComponentName = new ComponentName("com.smartdevicelink.test", "com.smartdevicelink.test.SdlRouterService");
+    final SdlPacket defaultPacket = SdlPacketFactory.createStartSessionACK(SessionType.RPC, (byte) 1, 100, (byte) 5);
 
 
     TransportManager.TransportEventListener defaultListener = new TransportManager.TransportEventListener() {
         @Override
-        public void onPacketReceived(SdlPacket packet) { assertEquals(defaultPacket,packet);}
+        public void onPacketReceived(SdlPacket packet) {
+            assertEquals(defaultPacket, packet);
+        }
+
         @Override
-        public void onTransportConnected(List<TransportRecord> transports) {}
+        public void onTransportConnected(List<TransportRecord> transports) {
+        }
+
         @Override
-        public void onTransportDisconnected(String info, TransportRecord type, List<TransportRecord> connectedTransports) {}
+        public void onTransportDisconnected(String info, TransportRecord type, List<TransportRecord> connectedTransports) {
+        }
+
         @Override
-        public void onError(String info) {}
+        public void onError(String info) {
+        }
+
         @Override
-        public boolean onLegacyModeEnabled(String info) {return false; }
+        public boolean onLegacyModeEnabled(String info) {
+            return false;
+        }
     };
 
 
@@ -60,8 +71,8 @@ public class TransportManagerTests {
 
     }
 
-    public TransportManager createTransportManager(){
-        TransportManager manager = new TransportManager(config,defaultListener);
+    public TransportManager createTransportManager() {
+        TransportManager manager = new TransportManager(config, defaultListener);
 
         //The default listener returns false as legacy is unacceptable
         assertNull(manager.legacyBluetoothHandler);
@@ -75,14 +86,14 @@ public class TransportManagerTests {
     }
 
     @Test
-    public void testBase(){
-        TransportManager manager = new TransportManager(config,defaultListener);
+    public void testBase() {
+        TransportManager manager = new TransportManager(config, defaultListener);
         assertNotNull(manager);
     }
 
     @Test
-    public void testConnectionStatus(){
-        TransportManager manager = new TransportManager(config,defaultListener);
+    public void testConnectionStatus() {
+        TransportManager manager = new TransportManager(config, defaultListener);
 
         manager.transportStatus.clear();
         manager.transportStatus.add(defaultBtRecord);
@@ -100,14 +111,14 @@ public class TransportManagerTests {
 
         assertFalse(manager.isHighBandwidthAvailable());
 
-        manager.transportStatus.add(new TransportRecord(TransportType.USB,"test"));
+        manager.transportStatus.add(new TransportRecord(TransportType.USB, "test"));
         assertTrue(manager.isHighBandwidthAvailable());
         assertNotNull(manager.getTransportRecord(TransportType.USB, null));
 
     }
 
     @Test
-    public void testOnTransportConnections(){
+    public void testOnTransportConnections() {
 
         TransportManager manager = createTransportManager();
 
@@ -129,14 +140,13 @@ public class TransportManagerTests {
     }
 
     @Test
-    public void testOnPacket(){
+    public void testOnPacket() {
         TransportManager manager = createTransportManager();
         assertNotNull(manager.transportListener);
 
         manager.transport.onPacketReceived(defaultPacket);
 
     }
-
 
 
 }

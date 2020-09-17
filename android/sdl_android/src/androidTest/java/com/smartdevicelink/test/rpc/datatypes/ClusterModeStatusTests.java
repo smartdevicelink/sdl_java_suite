@@ -15,15 +15,15 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.ClusterModeStatus}
  */
-public class ClusterModeStatusTests extends TestCase{
+public class ClusterModeStatusTests extends TestCase {
 
-    private ClusterModeStatus                         msg;
+    private ClusterModeStatus msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new ClusterModeStatus();
 
         msg.setPowerModeActive(TestValues.GENERAL_BOOLEAN);
@@ -33,21 +33,21 @@ public class ClusterModeStatusTests extends TestCase{
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
-    	// Test Values
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
         boolean powerMode = msg.getPowerModeActive();
         PowerModeQualificationStatus qualification = msg.getPowerModeQualificationStatus();
         PowerModeStatus status = msg.getPowerModeStatus();
         CarModeStatus carStatus = msg.getCarModeStatus();
-        
+
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, powerMode);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_POWERMODEQUALIFICATIONSTATUS, qualification);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_POWERMODESTATUS, status);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_CARMODESTATUS, carStatus);
-        
+
         // Invalid/Null Tests
         ClusterModeStatus msg = new ClusterModeStatus();
         assertNotNull(TestValues.NOT_NULL, msg);
@@ -57,11 +57,11 @@ public class ClusterModeStatusTests extends TestCase{
         assertNull(TestValues.NULL, msg.getPowerModeQualificationStatus());
         assertNull(TestValues.NULL, msg.getCarModeStatus());
     }
-    
-    public void testJson(){
+
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(ClusterModeStatus.KEY_POWER_MODE_ACTIVE, TestValues.GENERAL_BOOLEAN);
             reference.put(ClusterModeStatus.KEY_POWER_MODE_STATUS, TestValues.GENERAL_POWERMODESTATUS);
             reference.put(ClusterModeStatus.KEY_POWER_MODE_QUALIFICATION_STATUS, TestValues.GENERAL_POWERMODEQUALIFICATIONSTATUS);
@@ -71,12 +71,12 @@ public class ClusterModeStatusTests extends TestCase{
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
                 assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
-        } catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

@@ -25,24 +25,24 @@ import static junit.framework.TestCase.assertNotNull;
  * Created by austinkirk on 6/7/17.
  */
 
-public class UnsubscribeWayPointsResponseTests extends BaseRpcTests{
+public class UnsubscribeWayPointsResponseTests extends BaseRpcTests {
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         return new UnsubscribeWayPointsResponse();
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_RESPONSE;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.UNSUBSCRIBE_WAY_POINTS.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         return new JSONObject();
     }
 
@@ -50,7 +50,7 @@ public class UnsubscribeWayPointsResponseTests extends BaseRpcTests{
      * Tests the expected values of the RPC message.
      */
     @Test
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Invalid/Null Tests
         UnsubscribeWayPointsResponse msg = new UnsubscribeWayPointsResponse();
         msg.setWayPoints(TestValues.GENERAL_LOCATIONDETAILS_LIST);
@@ -66,7 +66,7 @@ public class UnsubscribeWayPointsResponseTests extends BaseRpcTests{
      * Tests a valid JSON construction of this RPC message.
      */
     @Test
-    public void testJsonConstructor () {
+    public void testJsonConstructor() {
         JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
         assertNotNull(TestValues.NOT_NULL, commandJson);
 

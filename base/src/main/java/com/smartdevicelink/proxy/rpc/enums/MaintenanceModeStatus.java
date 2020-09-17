@@ -44,6 +44,7 @@ public enum MaintenanceModeStatus {
 
     /**
      * Convert String to MaintenanceModeStatus
+     *
      * @param value String
      * @return MaintenanceModeStatus
      */

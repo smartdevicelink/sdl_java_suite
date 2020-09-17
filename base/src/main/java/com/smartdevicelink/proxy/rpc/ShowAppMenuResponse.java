@@ -47,30 +47,31 @@ import java.util.Hashtable;
  * The response to ShowAppMenuResponse
  */
 public class ShowAppMenuResponse extends RPCResponse {
-	/**
-	 * Constructs a new ShowAppMenuResponse object
-	 */
-	public ShowAppMenuResponse() {
-		super(FunctionID.SHOW_APP_MENU.toString());
-	}
+    /**
+     * Constructs a new ShowAppMenuResponse object
+     */
+    public ShowAppMenuResponse() {
+        super(FunctionID.SHOW_APP_MENU.toString());
+    }
 
-	/**
-	 * Constructs a new ShowAppMenuResponse object indicated by the Hashtable parameter
-	 *
-	 * @param hash The Hashtable to use
-	 */
-	public ShowAppMenuResponse(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+    /**
+     * Constructs a new ShowAppMenuResponse object indicated by the Hashtable parameter
+     *
+     * @param hash The Hashtable to use
+     */
+    public ShowAppMenuResponse(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
-	/**
-	 * Constructs a new ShowAppMenuResponse object
-	 * @param success whether the request is successfully processed
-	 * @param resultCode whether the request is successfully processed
-	 */
-	public ShowAppMenuResponse(@NonNull Boolean success, @NonNull Result resultCode) {
-		this();
-		setSuccess(success);
-		setResultCode(resultCode);
-	}
+    /**
+     * Constructs a new ShowAppMenuResponse object
+     *
+     * @param success    whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     */
+    public ShowAppMenuResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
+    }
 }

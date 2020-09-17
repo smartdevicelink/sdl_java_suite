@@ -21,60 +21,60 @@ import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.fail;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.OnPermissionsChange}
  */
-public class OnPermissionsChangeTests extends BaseRpcTests{
+public class OnPermissionsChangeTests extends BaseRpcTests {
 
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         OnPermissionsChange msg = new OnPermissionsChange();
 
         msg.setPermissionItem(TestValues.GENERAL_PERMISSIONITEM_LIST);
         msg.setRequireEncryption(TestValues.GENERAL_BOOLEAN);
-        
+
         return msg;
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_NOTIFICATION;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.ON_PERMISSIONS_CHANGE.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
+        try {
             result.put(OnPermissionsChange.KEY_PERMISSION_ITEM, TestValues.JSON_PERMISSIONITEMS);
             result.put(OnPermissionsChange.KEY_REQUIRE_ENCRYPTION, TestValues.GENERAL_BOOLEAN);
-        }catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
 
         return result;
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
+     * Tests the expected values of the RPC message.
+     */
     @Test
-    public void testRpcValues () {       	
-    	// Test Values
-        List<PermissionItem> data = ( (OnPermissionsChange) msg ).getPermissionItem();
-        boolean isRequired = ((OnPermissionsChange)msg).getRequireEncryption();
+    public void testRpcValues() {
+        // Test Values
+        List<PermissionItem> data = ((OnPermissionsChange) msg).getPermissionItem();
+        boolean isRequired = ((OnPermissionsChange) msg).getRequireEncryption();
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_PERMISSIONITEM_LIST.size(), data.size());
-        for(int i=0; i<data.size(); i++){
+        for (int i = 0; i < data.size(); i++) {
             assertTrue(TestValues.TRUE, Validator.validatePermissionItem(TestValues.GENERAL_PERMISSIONITEM_LIST.get(i), data.get(i)));
         }
         assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, isRequired);
-    
+
         // Invalid/Null Tests
         OnPermissionsChange msg = new OnPermissionsChange();
         assertNotNull(TestValues.NOT_NULL, msg);

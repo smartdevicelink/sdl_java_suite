@@ -61,259 +61,259 @@ import java.util.Collections;
 import java.util.List;
 
 class PresentKeyboardOperation extends Task {
-	private static final String TAG = "PresentKeyboardOperation";
-	private final WeakReference<ISdl> internalInterface;
-	private final KeyboardListener keyboardListener;
-	private final KeyboardProperties originalKeyboardProperties;
-	private KeyboardProperties keyboardProperties;
-	private final KeyboardProperties customConfig;
-	private boolean updatedKeyboardProperties;
-	private final String initialText;
-	private OnRPCNotificationListener keyboardRPCListener;
-	private final Integer cancelID;
-	final SdlMsgVersion sdlMsgVersion;
+    private static final String TAG = "PresentKeyboardOperation";
+    private final WeakReference<ISdl> internalInterface;
+    private final KeyboardListener keyboardListener;
+    private final KeyboardProperties originalKeyboardProperties;
+    private KeyboardProperties keyboardProperties;
+    private final KeyboardProperties customConfig;
+    private boolean updatedKeyboardProperties;
+    private final String initialText;
+    private OnRPCNotificationListener keyboardRPCListener;
+    private final Integer cancelID;
+    final SdlMsgVersion sdlMsgVersion;
 
-	PresentKeyboardOperation(ISdl internalInterface, KeyboardProperties originalKeyboardProperties, String initialText, KeyboardProperties customConfig, KeyboardListener keyboardListener, Integer cancelID){
-		super("PresentKeyboardOperation");
-		this.internalInterface = new WeakReference<>(internalInterface);
-		this.keyboardListener = keyboardListener;
-		this.originalKeyboardProperties = originalKeyboardProperties;
-		this.keyboardProperties = originalKeyboardProperties;
-		this.customConfig = customConfig;
-		this.initialText = initialText;
-		this.cancelID = cancelID;
-		this.sdlMsgVersion = internalInterface.getSdlMsgVersion();
-	}
+    PresentKeyboardOperation(ISdl internalInterface, KeyboardProperties originalKeyboardProperties, String initialText, KeyboardProperties customConfig, KeyboardListener keyboardListener, Integer cancelID) {
+        super("PresentKeyboardOperation");
+        this.internalInterface = new WeakReference<>(internalInterface);
+        this.keyboardListener = keyboardListener;
+        this.originalKeyboardProperties = originalKeyboardProperties;
+        this.keyboardProperties = originalKeyboardProperties;
+        this.customConfig = customConfig;
+        this.initialText = initialText;
+        this.cancelID = cancelID;
+        this.sdlMsgVersion = internalInterface.getSdlMsgVersion();
+    }
 
-	@Override
-	public void onExecute() {
-		DebugTool.logInfo(TAG, "Keyboard Operation: Executing present keyboard operation");
-		addListeners();
-		start();
-	}
+    @Override
+    public void onExecute() {
+        DebugTool.logInfo(TAG, "Keyboard Operation: Executing present keyboard operation");
+        addListeners();
+        start();
+    }
 
-	private void start(){
-		DebugTool.logInfo(TAG, "Choice Operation: Executing present keyboard operation");
+    private void start() {
+        DebugTool.logInfo(TAG, "Choice Operation: Executing present keyboard operation");
 
-		if (getState() == Task.CANCELED) {
-			finishOperation();
-			return;
-		}
+        if (getState() == Task.CANCELED) {
+            finishOperation();
+            return;
+        }
 
-		if (keyboardListener != null){
-			keyboardProperties = customConfig;
-			updatedKeyboardProperties = true;
-		}
+        if (keyboardListener != null) {
+            keyboardProperties = customConfig;
+            updatedKeyboardProperties = true;
+        }
 
-		updateKeyboardProperties(new CompletionListener() {
-			@Override
-			public void onComplete(boolean success) {
-				if (getState() == Task.CANCELED) {
-					finishOperation();
-					return;
-				}
+        updateKeyboardProperties(new CompletionListener() {
+            @Override
+            public void onComplete(boolean success) {
+                if (getState() == Task.CANCELED) {
+                    finishOperation();
+                    return;
+                }
 
-				presentKeyboard();
-			}
-		});
-	}
+                presentKeyboard();
+            }
+        });
+    }
 
-	// SENDING REQUESTS
+    // SENDING REQUESTS
 
-	private void presentKeyboard(){
-		if (internalInterface.get() != null){
-			PerformInteraction pi = getPerformInteraction();
-			pi.setOnRPCResponseListener(new OnRPCResponseListener() {
-				@Override
-				public void onResponse(int correlationId, RPCResponse response) {
-					if (!response.getSuccess()) {
-						DebugTool.logError(TAG, "There was an error presenting the keyboard. Finishing operation - choice set manager - . Error: " + response.getInfo() + " resultCode: " + response.getResultCode());
-					}
-					finishOperation();
-				}
-			});
+    private void presentKeyboard() {
+        if (internalInterface.get() != null) {
+            PerformInteraction pi = getPerformInteraction();
+            pi.setOnRPCResponseListener(new OnRPCResponseListener() {
+                @Override
+                public void onResponse(int correlationId, RPCResponse response) {
+                    if (!response.getSuccess()) {
+                        DebugTool.logError(TAG, "There was an error presenting the keyboard. Finishing operation - choice set manager - . Error: " + response.getInfo() + " resultCode: " + response.getResultCode());
+                    }
+                    finishOperation();
+                }
+            });
 
-			internalInterface.get().sendRPC(pi);
+            internalInterface.get().sendRPC(pi);
 
-		}else{
-			DebugTool.logError(TAG, "Internal Interface null in present keyboard operation - choice");
-		}
-	}
+        } else {
+            DebugTool.logError(TAG, "Internal Interface null in present keyboard operation - choice");
+        }
+    }
 
-	/**
-	 *  Cancels the keyboard-only interface if it is currently showing. If the keyboard has not yet been sent to Core, it will not be sent.
-	 *
-	 *  This will only dismiss an already presented keyboard if connected to head units running SDL 6.0+.
-	 */
-	void dismissKeyboard() {
-		if ((getState() == Task.FINISHED)) {
-			DebugTool.logInfo(TAG, "This operation has already finished so it can not be canceled.");
-			return;
-		} else if (getState() == Task.CANCELED) {
-			DebugTool.logInfo(TAG, "This operation has already been canceled. It will be finished at some point during the operation.");
-			return;
-		} else if (getState() == Task.IN_PROGRESS) {
-			if (sdlMsgVersion.getMajorVersion() < 6){
-				DebugTool.logWarning(TAG, "Canceling a keyboard is not supported on this head unit");
-				return;
-			}
+    /**
+     * Cancels the keyboard-only interface if it is currently showing. If the keyboard has not yet been sent to Core, it will not be sent.
+     * <p>
+     * This will only dismiss an already presented keyboard if connected to head units running SDL 6.0+.
+     */
+    void dismissKeyboard() {
+        if ((getState() == Task.FINISHED)) {
+            DebugTool.logInfo(TAG, "This operation has already finished so it can not be canceled.");
+            return;
+        } else if (getState() == Task.CANCELED) {
+            DebugTool.logInfo(TAG, "This operation has already been canceled. It will be finished at some point during the operation.");
+            return;
+        } else if (getState() == Task.IN_PROGRESS) {
+            if (sdlMsgVersion.getMajorVersion() < 6) {
+                DebugTool.logWarning(TAG, "Canceling a keyboard is not supported on this head unit");
+                return;
+            }
 
-			DebugTool.logInfo(TAG, "Canceling the presented keyboard.");
+            DebugTool.logInfo(TAG, "Canceling the presented keyboard.");
 
-			CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.PERFORM_INTERACTION.getId(), cancelID);
-			cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
-				@Override
-				public void onResponse(int correlationId, RPCResponse response) {
-					DebugTool.logInfo(TAG, "Canceled the presented keyboard " + ((response.getResultCode() == Result.SUCCESS) ? "successfully" : "unsuccessfully"));
-				}
-			});
-			if (internalInterface.get() != null){
-				internalInterface.get().sendRPC(cancelInteraction);
-			} else {
-				DebugTool.logError(TAG, "Internal interface null - could not send cancel interaction for keyboard.");
-			}
-		} else {
-			DebugTool.logInfo(TAG, "Canceling a keyboard that has not yet been sent to Core.");
-			this.cancelTask();
-		}
-	}
+            CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.PERFORM_INTERACTION.getId(), cancelID);
+            cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
+                @Override
+                public void onResponse(int correlationId, RPCResponse response) {
+                    DebugTool.logInfo(TAG, "Canceled the presented keyboard " + ((response.getResultCode() == Result.SUCCESS) ? "successfully" : "unsuccessfully"));
+                }
+            });
+            if (internalInterface.get() != null) {
+                internalInterface.get().sendRPC(cancelInteraction);
+            } else {
+                DebugTool.logError(TAG, "Internal interface null - could not send cancel interaction for keyboard.");
+            }
+        } else {
+            DebugTool.logInfo(TAG, "Canceling a keyboard that has not yet been sent to Core.");
+            this.cancelTask();
+        }
+    }
 
-	private void updateKeyboardProperties(final CompletionListener listener){
-		if (keyboardProperties == null){
-			if (listener != null){
-				listener.onComplete(false);
-			}
-			return;
-		}
+    private void updateKeyboardProperties(final CompletionListener listener) {
+        if (keyboardProperties == null) {
+            if (listener != null) {
+                listener.onComplete(false);
+            }
+            return;
+        }
 
-		SetGlobalProperties setGlobalProperties = new SetGlobalProperties();
-		setGlobalProperties.setKeyboardProperties(keyboardProperties);
-		setGlobalProperties.setOnRPCResponseListener(new OnRPCResponseListener() {
-			@Override
-			public void onResponse(int correlationId, RPCResponse response) {
+        SetGlobalProperties setGlobalProperties = new SetGlobalProperties();
+        setGlobalProperties.setKeyboardProperties(keyboardProperties);
+        setGlobalProperties.setOnRPCResponseListener(new OnRPCResponseListener() {
+            @Override
+            public void onResponse(int correlationId, RPCResponse response) {
 
-				if (!response.getSuccess()){
-					if (listener != null){
-						listener.onComplete(false);
-					}
-					DebugTool.logError(TAG, "Error Setting keyboard properties in present keyboard operation - choice manager");
-					return;
-				}
+                if (!response.getSuccess()) {
+                    if (listener != null) {
+                        listener.onComplete(false);
+                    }
+                    DebugTool.logError(TAG, "Error Setting keyboard properties in present keyboard operation - choice manager");
+                    return;
+                }
 
-				updatedKeyboardProperties = true;
+                updatedKeyboardProperties = true;
 
-				if (listener != null){
-					listener.onComplete(true);
-				}
-				DebugTool.logInfo(TAG, "Success Setting keyboard properties in present keyboard operation - choice manager");
-			}
-		});
+                if (listener != null) {
+                    listener.onComplete(true);
+                }
+                DebugTool.logInfo(TAG, "Success Setting keyboard properties in present keyboard operation - choice manager");
+            }
+        });
 
-		if (internalInterface.get() != null){
-			internalInterface.get().sendRPC(setGlobalProperties);
-		} else {
-			DebugTool.logError(TAG, "Internal interface null - present keyboard op - choice");
-		}
-	}
+        if (internalInterface.get() != null) {
+            internalInterface.get().sendRPC(setGlobalProperties);
+        } else {
+            DebugTool.logError(TAG, "Internal interface null - present keyboard op - choice");
+        }
+    }
 
-	void finishOperation() {
-		if (updatedKeyboardProperties) {
-			// We need to reset the keyboard properties
-			SetGlobalProperties setGlobalProperties = new SetGlobalProperties();
-			setGlobalProperties.setKeyboardProperties(originalKeyboardProperties);
-			setGlobalProperties.setOnRPCResponseListener(new OnRPCResponseListener() {
-				@Override
-				public void onResponse(int correlationId, RPCResponse response) {
-					if (response.getSuccess()) {
-						updatedKeyboardProperties = false;
-						DebugTool.logInfo(TAG, "Successfully reset choice keyboard properties to original config");
-					} else {
-						DebugTool.logError(TAG, "Failed to reset choice keyboard properties to original config " + response.getResultCode() + ", " + response.getInfo());
-					}
-					PresentKeyboardOperation.super.onFinished();
-				}
-			});
+    void finishOperation() {
+        if (updatedKeyboardProperties) {
+            // We need to reset the keyboard properties
+            SetGlobalProperties setGlobalProperties = new SetGlobalProperties();
+            setGlobalProperties.setKeyboardProperties(originalKeyboardProperties);
+            setGlobalProperties.setOnRPCResponseListener(new OnRPCResponseListener() {
+                @Override
+                public void onResponse(int correlationId, RPCResponse response) {
+                    if (response.getSuccess()) {
+                        updatedKeyboardProperties = false;
+                        DebugTool.logInfo(TAG, "Successfully reset choice keyboard properties to original config");
+                    } else {
+                        DebugTool.logError(TAG, "Failed to reset choice keyboard properties to original config " + response.getResultCode() + ", " + response.getInfo());
+                    }
+                    PresentKeyboardOperation.super.onFinished();
+                }
+            });
 
-			if (internalInterface.get() != null) {
-				internalInterface.get().sendRPC(setGlobalProperties);
-				internalInterface.get().removeOnRPCNotificationListener(FunctionID.ON_KEYBOARD_INPUT, keyboardRPCListener);
-			} else {
-				DebugTool.logError(TAG, "Internal Interface null when finishing choice keyboard reset");
-			}
-		} else {
-			PresentKeyboardOperation.super.onFinished();
-		}
-	}
+            if (internalInterface.get() != null) {
+                internalInterface.get().sendRPC(setGlobalProperties);
+                internalInterface.get().removeOnRPCNotificationListener(FunctionID.ON_KEYBOARD_INPUT, keyboardRPCListener);
+            } else {
+                DebugTool.logError(TAG, "Internal Interface null when finishing choice keyboard reset");
+            }
+        } else {
+            PresentKeyboardOperation.super.onFinished();
+        }
+    }
 
-	// GETTERS
+    // GETTERS
 
-	PerformInteraction getPerformInteraction() {
-		PerformInteraction pi = new PerformInteraction();
-		pi.setInitialText(initialText);
-		pi.setInteractionMode(InteractionMode.MANUAL_ONLY);
-		pi.setInteractionChoiceSetIDList(Collections.<Integer>emptyList());
-		pi.setInteractionLayout(LayoutMode.KEYBOARD);
-		pi.setCancelID(cancelID);
-		return pi;
-	}
+    PerformInteraction getPerformInteraction() {
+        PerformInteraction pi = new PerformInteraction();
+        pi.setInitialText(initialText);
+        pi.setInteractionMode(InteractionMode.MANUAL_ONLY);
+        pi.setInteractionChoiceSetIDList(Collections.<Integer>emptyList());
+        pi.setInteractionLayout(LayoutMode.KEYBOARD);
+        pi.setCancelID(cancelID);
+        return pi;
+    }
 
-	public Integer getCancelID() {
-		return cancelID;
-	}
+    public Integer getCancelID() {
+        return cancelID;
+    }
 
-	// LISTENERS
+    // LISTENERS
 
-	private void addListeners(){
+    private void addListeners() {
 
-		keyboardRPCListener = new OnRPCNotificationListener() {
-			@Override
-			public void onNotified(RPCNotification notification) {
-				if (getState() == Task.CANCELED) {
-					finishOperation();
-					return;
-				}
+        keyboardRPCListener = new OnRPCNotificationListener() {
+            @Override
+            public void onNotified(RPCNotification notification) {
+                if (getState() == Task.CANCELED) {
+                    finishOperation();
+                    return;
+                }
 
-				if (keyboardListener == null){
-					DebugTool.logError(TAG, "Received Keyboard Input But Listener is null");
-					return;
-				}
+                if (keyboardListener == null) {
+                    DebugTool.logError(TAG, "Received Keyboard Input But Listener is null");
+                    return;
+                }
 
-				OnKeyboardInput onKeyboard = (OnKeyboardInput) notification;
-				keyboardListener.onKeyboardDidSendEvent(onKeyboard.getEvent(), onKeyboard.getData());
+                OnKeyboardInput onKeyboard = (OnKeyboardInput) notification;
+                keyboardListener.onKeyboardDidSendEvent(onKeyboard.getEvent(), onKeyboard.getData());
 
-				if (onKeyboard.getEvent().equals(KeyboardEvent.ENTRY_VOICE) || onKeyboard.getEvent().equals(KeyboardEvent.ENTRY_SUBMITTED)){
-					// Submit Voice or Text
-					keyboardListener.onUserDidSubmitInput(onKeyboard.getData(), onKeyboard.getEvent());
-				} else if (onKeyboard.getEvent().equals(KeyboardEvent.KEYPRESS)){
-					// Notify of Keypress
-					keyboardListener.updateAutocompleteWithInput(onKeyboard.getData(), new KeyboardAutocompleteCompletionListener() {
-						@Override
-						public void onUpdatedAutoCompleteList(List<String> updatedAutoCompleteList) {
-							keyboardProperties.setAutoCompleteList(updatedAutoCompleteList != null ? updatedAutoCompleteList : new ArrayList<String>());
-							keyboardProperties.setAutoCompleteText(updatedAutoCompleteList != null && !updatedAutoCompleteList.isEmpty() ? updatedAutoCompleteList.get(0) : null);
-							updateKeyboardProperties(null);
-						}
-					});
+                if (onKeyboard.getEvent().equals(KeyboardEvent.ENTRY_VOICE) || onKeyboard.getEvent().equals(KeyboardEvent.ENTRY_SUBMITTED)) {
+                    // Submit Voice or Text
+                    keyboardListener.onUserDidSubmitInput(onKeyboard.getData(), onKeyboard.getEvent());
+                } else if (onKeyboard.getEvent().equals(KeyboardEvent.KEYPRESS)) {
+                    // Notify of Keypress
+                    keyboardListener.updateAutocompleteWithInput(onKeyboard.getData(), new KeyboardAutocompleteCompletionListener() {
+                        @Override
+                        public void onUpdatedAutoCompleteList(List<String> updatedAutoCompleteList) {
+                            keyboardProperties.setAutoCompleteList(updatedAutoCompleteList != null ? updatedAutoCompleteList : new ArrayList<String>());
+                            keyboardProperties.setAutoCompleteText(updatedAutoCompleteList != null && !updatedAutoCompleteList.isEmpty() ? updatedAutoCompleteList.get(0) : null);
+                            updateKeyboardProperties(null);
+                        }
+                    });
 
-					keyboardListener.updateCharacterSetWithInput(onKeyboard.getData(), new KeyboardCharacterSetCompletionListener() {
-						@Override
-						public void onUpdatedCharacterSet(List<String> updatedCharacterSet) {
-							keyboardProperties.setLimitedCharacterList(updatedCharacterSet);
-							updateKeyboardProperties(null);
-						}
-					});
-				} else if (onKeyboard.getEvent().equals(KeyboardEvent.ENTRY_ABORTED) || onKeyboard.getEvent().equals(KeyboardEvent.ENTRY_CANCELLED)){
-					// Notify of abort / Cancellation
-					keyboardListener.onKeyboardDidAbortWithReason(onKeyboard.getEvent());
-				}
+                    keyboardListener.updateCharacterSetWithInput(onKeyboard.getData(), new KeyboardCharacterSetCompletionListener() {
+                        @Override
+                        public void onUpdatedCharacterSet(List<String> updatedCharacterSet) {
+                            keyboardProperties.setLimitedCharacterList(updatedCharacterSet);
+                            updateKeyboardProperties(null);
+                        }
+                    });
+                } else if (onKeyboard.getEvent().equals(KeyboardEvent.ENTRY_ABORTED) || onKeyboard.getEvent().equals(KeyboardEvent.ENTRY_CANCELLED)) {
+                    // Notify of abort / Cancellation
+                    keyboardListener.onKeyboardDidAbortWithReason(onKeyboard.getEvent());
+                }
 
-			}
-		};
+            }
+        };
 
-		if (internalInterface.get() != null) {
-			internalInterface.get().addOnRPCNotificationListener(FunctionID.ON_KEYBOARD_INPUT, keyboardRPCListener);
-		} else {
-			DebugTool.logError(TAG, "Present Keyboard Listener Not Added - choice manager");
-		}
-	}
+        if (internalInterface.get() != null) {
+            internalInterface.get().addOnRPCNotificationListener(FunctionID.ON_KEYBOARD_INPUT, keyboardRPCListener);
+        } else {
+            DebugTool.logError(TAG, "Present Keyboard Listener Not Added - choice manager");
+        }
+    }
 }

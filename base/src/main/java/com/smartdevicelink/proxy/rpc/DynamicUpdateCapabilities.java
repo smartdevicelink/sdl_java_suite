@@ -38,7 +38,6 @@ import java.util.Hashtable;
 import java.util.List;
 
 /**
- *
  * <p><b>Parameter List</b></p>
  *
  * <table border="1" rules="all">
@@ -64,6 +63,7 @@ import java.util.List;
  *      <td></td>
  *  </tr>
  * </table>
+ *
  * @since SmartDeviceLink 7.0.0
  */
 public class DynamicUpdateCapabilities extends RPCStruct {
@@ -73,7 +73,8 @@ public class DynamicUpdateCapabilities extends RPCStruct {
     /**
      * Constructs a new DynamicUpdateCapabilities object
      */
-    public DynamicUpdateCapabilities() { }
+    public DynamicUpdateCapabilities() {
+    }
 
     /**
      * Constructs a new DynamicUpdateCapabilities object indicated by the Hashtable parameter
@@ -88,12 +89,12 @@ public class DynamicUpdateCapabilities extends RPCStruct {
      * Sets the supportedDynamicImageFieldNames.
      *
      * @param supportedDynamicImageFieldNames An array of ImageFieldName values for which the system supports sending OnFileUpdate
-     * notifications. If you send an Image struct for that image field with a name without having
-     * uploaded the image data using PutFile that matches that name, the system will request that
-     * you upload the data with PutFile at a later point when the HMI needs it. The HMI will then
-     * display the image in the appropriate field. If not sent, assume false.
+     *                                        notifications. If you send an Image struct for that image field with a name without having
+     *                                        uploaded the image data using PutFile that matches that name, the system will request that
+     *                                        you upload the data with PutFile at a later point when the HMI needs it. The HMI will then
+     *                                        display the image in the appropriate field. If not sent, assume false.
      */
-    public DynamicUpdateCapabilities setSupportedDynamicImageFieldNames( List<ImageFieldName> supportedDynamicImageFieldNames) {
+    public DynamicUpdateCapabilities setSupportedDynamicImageFieldNames(List<ImageFieldName> supportedDynamicImageFieldNames) {
         setValue(KEY_SUPPORTED_DYNAMIC_IMAGE_FIELD_NAMES, supportedDynamicImageFieldNames);
         return this;
     }
@@ -116,11 +117,11 @@ public class DynamicUpdateCapabilities extends RPCStruct {
      * Sets the supportsDynamicSubMenus.
      *
      * @param supportsDynamicSubMenus If true, the head unit supports dynamic sub-menus by sending OnUpdateSubMenu
-     * notifications. If true, you should not send AddCommands that attach to a parentID for an
-     * AddSubMenu until OnUpdateSubMenu is received with the menuID. At that point, you should
-     * send all AddCommands with a parentID that match the menuID. If not set, assume false.
+     *                                notifications. If true, you should not send AddCommands that attach to a parentID for an
+     *                                AddSubMenu until OnUpdateSubMenu is received with the menuID. At that point, you should
+     *                                send all AddCommands with a parentID that match the menuID. If not set, assume false.
      */
-    public DynamicUpdateCapabilities setSupportsDynamicSubMenus( Boolean supportsDynamicSubMenus) {
+    public DynamicUpdateCapabilities setSupportsDynamicSubMenus(Boolean supportsDynamicSubMenus) {
         setValue(KEY_SUPPORTS_DYNAMIC_SUB_MENUS, supportsDynamicSubMenus);
         return this;
     }

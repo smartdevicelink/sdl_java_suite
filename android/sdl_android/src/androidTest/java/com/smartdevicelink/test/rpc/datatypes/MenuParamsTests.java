@@ -12,15 +12,15 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.MenuParams}
  */
-public class MenuParamsTests extends TestCase{
+public class MenuParamsTests extends TestCase {
 
     private MenuParams msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new MenuParams();
 
         msg.setMenuName(TestValues.GENERAL_STRING);
@@ -29,19 +29,19 @@ public class MenuParamsTests extends TestCase{
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
-    	// Test Values
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
         String menuName = msg.getMenuName();
         int parentId = msg.getParentID();
         int position = msg.getPosition();
-        
+
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, menuName);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, parentId);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, position);
-        
+
         // Invalid/Null Tests
         MenuParams msg = new MenuParams();
         assertNotNull(TestValues.NOT_NULL, msg);
@@ -51,10 +51,10 @@ public class MenuParamsTests extends TestCase{
         assertNull(TestValues.NULL, msg.getPosition());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(MenuParams.KEY_MENU_NAME, TestValues.GENERAL_STRING);
             reference.put(MenuParams.KEY_PARENT_ID, TestValues.GENERAL_INT);
             reference.put(MenuParams.KEY_POSITION, TestValues.GENERAL_INT);
@@ -63,12 +63,12 @@ public class MenuParamsTests extends TestCase{
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
                 assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
-        }catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

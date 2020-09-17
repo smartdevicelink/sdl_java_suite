@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -36,8 +36,8 @@ import androidx.annotation.NonNull;
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
+
 /**
- * 
  * VR help items  i.e. the text strings to be displayed, and when pronounced by the user the recognition of any of which must trigger the corresponding VR command.
  *
  * <p><b>Parameter List</b></p>
@@ -75,56 +75,63 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 2.3.2</td>
  * 		</tr>
  *  </table>
- *
  */
 public class VrHelpItem extends RPCStruct {
-	public static final String KEY_POSITION = "position";
-	public static final String KEY_TEXT = "text";
-	public static final String KEY_IMAGE = "image";
+    public static final String KEY_POSITION = "position";
+    public static final String KEY_TEXT = "text";
+    public static final String KEY_IMAGE = "image";
 
-	public VrHelpItem() { }
-	  /**
-		* <p>
-		* Constructs a new VrHelpItem object indicated by the Hashtable
-		* parameter
-		* </p>
-		* 
-		* @param hash -The Hashtable to use
-		*/
+    public VrHelpItem() {
+    }
+
+    /**
+     * <p>
+     * Constructs a new VrHelpItem object indicated by the Hashtable
+     * parameter
+     * </p>
+     *
+     * @param hash -The Hashtable to use
+     */
     public VrHelpItem(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-	/**
-	 * VR help items  i.e. the text strings to be displayed, and when pronounced
-	 * by the user the recognition of any of which must trigger the corresponding VR command.
-	 * @param text Text to display for VR Help item
-	 * @param position Position to display item in VR Help list
-	 */
-	public VrHelpItem(@NonNull String text, @NonNull Integer position){
-    	this();
-    	setText(text);
-    	setPosition(position);
-	}
+    /**
+     * VR help items  i.e. the text strings to be displayed, and when pronounced
+     * by the user the recognition of any of which must trigger the corresponding VR command.
+     *
+     * @param text     Text to display for VR Help item
+     * @param position Position to display item in VR Help list
+     */
+    public VrHelpItem(@NonNull String text, @NonNull Integer position) {
+        this();
+        setText(text);
+        setPosition(position);
+    }
 
     public VrHelpItem setText(@NonNull String text) {
         setValue(KEY_TEXT, text);
         return this;
     }
+
     public String getText() {
         return getString(KEY_TEXT);
     }
-    public VrHelpItem setImage( Image image) {
+
+    public VrHelpItem setImage(Image image) {
         setValue(KEY_IMAGE, image);
         return this;
     }
+
     public Image getImage() {
         return (Image) getObject(Image.class, KEY_IMAGE);
     }
+
     public VrHelpItem setPosition(@NonNull Integer position) {
         setValue(KEY_POSITION, position);
         return this;
     }
+
     public Integer getPosition() {
         return getInteger(KEY_POSITION);
     }

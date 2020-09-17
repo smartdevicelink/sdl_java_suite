@@ -7,13 +7,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.R;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
@@ -397,7 +397,6 @@ public class TextAndGraphicUpdateOperationTest {
         assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration().getStore(), configuration.getStore());
         verify(internalInterface, times(0)).sendRPC(any(Show.class));
     }
-
 
 
     /**

@@ -35,11 +35,11 @@ package com.smartdevicelink.session;
 
 import androidx.annotation.RestrictTo;
 
+import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.protocol.SdlProtocolBase;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;

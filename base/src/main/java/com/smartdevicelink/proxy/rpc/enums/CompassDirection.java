@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -33,51 +33,53 @@ package com.smartdevicelink.proxy.rpc.enums;
 
 /**
  * The list of potential compass directions
- * @since SmartDeviceLink 2.0 
+ *
+ * @since SmartDeviceLink 2.0
  */
 public enum CompassDirection {
-	/**
-	 * Direction North
-	 */
-	NORTH,
-	/**
-	 * Direction Northwest
-	 */
-	NORTHWEST,
-	/**
-	 * Direction West
-	 */
-	WEST,
-	/**
-	 * Direction Southwest
-	 */
-	SOUTHWEST,
-	/**
-	 * Direction South
-	 */
-	SOUTH,
-	/**
-	 * Direction Southeast
-	 */
-	SOUTHEAST,
-	/**
-	 * Direction East
-	 */
-	EAST,
-	/**
-	 * Direction Northeast
-	 */
-	NORTHEAST;
+    /**
+     * Direction North
+     */
+    NORTH,
+    /**
+     * Direction Northwest
+     */
+    NORTHWEST,
+    /**
+     * Direction West
+     */
+    WEST,
+    /**
+     * Direction Southwest
+     */
+    SOUTHWEST,
+    /**
+     * Direction South
+     */
+    SOUTH,
+    /**
+     * Direction Southeast
+     */
+    SOUTHEAST,
+    /**
+     * Direction East
+     */
+    EAST,
+    /**
+     * Direction Northeast
+     */
+    NORTHEAST;
 
     /**
      * Convert String to CompassDirection
+     *
      * @param value String
      * @return CompassDirection
      */
     public static CompassDirection valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

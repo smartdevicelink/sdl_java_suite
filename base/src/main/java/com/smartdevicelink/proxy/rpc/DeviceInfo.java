@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -34,13 +34,14 @@ package com.smartdevicelink.proxy.rpc;
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
+
 /**
  * Various information about connecting device.
- * 
- * 
- * 
+ *
+ *
+ *
  * <p><b>Parameter List</b></p>
- * 
+ *
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -99,9 +100,8 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 3.0 </td>
  * 		</tr>
  *  </table>
- *
  */
-public class DeviceInfo extends RPCStruct{
+public class DeviceInfo extends RPCStruct {
     public static final String KEY_HARDWARE = "hardware";
     public static final String KEY_FIRMWARE_REV = "firmwareRev";
     public static final String KEY_OS = "os";
@@ -109,66 +109,69 @@ public class DeviceInfo extends RPCStruct{
     public static final String KEY_CARRIER = "carrier";
     public static final String KEY_MAX_NUMBER_RFCOMM_PORTS = "maxNumberRFCOMMPorts";
 
-    public DeviceInfo() { }
+    public DeviceInfo() {
+    }
 
-    /** Constructs a new DeviceInfo object indicated by the Hashtable
-	 * parameter
-	 * @param hash The hash table to use to create an instance of this RPC
-	 */
-	public DeviceInfo(Hashtable<String, Object> hash) {
+    /**
+     * Constructs a new DeviceInfo object indicated by the Hashtable
+     * parameter
+     *
+     * @param hash The hash table to use to create an instance of this RPC
+     */
+    public DeviceInfo(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-   public DeviceInfo setHardware( String hardware) {
+    public DeviceInfo setHardware(String hardware) {
         setValue(KEY_HARDWARE, hardware);
         return this;
     }
 
-   public String getHardware() {
-       return getString(KEY_HARDWARE);
-   }
-    
-   public DeviceInfo setFirmwareRev( String firmwareRev) {
+    public String getHardware() {
+        return getString(KEY_HARDWARE);
+    }
+
+    public DeviceInfo setFirmwareRev(String firmwareRev) {
         setValue(KEY_FIRMWARE_REV, firmwareRev);
         return this;
     }
 
-  public String getFirmwareRev() {
-      return getString(KEY_FIRMWARE_REV);
-  }
+    public String getFirmwareRev() {
+        return getString(KEY_FIRMWARE_REV);
+    }
 
-  public DeviceInfo setOs( String os) {
+    public DeviceInfo setOs(String os) {
         setValue(KEY_OS, os);
         return this;
     }
 
- public String getOs() {
-     return getString(KEY_OS);
- }  
+    public String getOs() {
+        return getString(KEY_OS);
+    }
 
- public DeviceInfo setOsVersion( String osVersion) {
+    public DeviceInfo setOsVersion(String osVersion) {
         setValue(KEY_OS_VERSION, osVersion);
         return this;
     }
 
-public String getOsVersion() {
-    return getString(KEY_OS_VERSION);
-}  
-    
-public DeviceInfo setCarrier( String carrier) {
+    public String getOsVersion() {
+        return getString(KEY_OS_VERSION);
+    }
+
+    public DeviceInfo setCarrier(String carrier) {
         setValue(KEY_CARRIER, carrier);
         return this;
     }
 
-public String getCarrier() {
-   return getString(KEY_CARRIER);
-} 
+    public String getCarrier() {
+        return getString(KEY_CARRIER);
+    }
 
-public Integer getMaxNumberRFCOMMPorts() {
-    return getInteger( KEY_MAX_NUMBER_RFCOMM_PORTS );
-}
+    public Integer getMaxNumberRFCOMMPorts() {
+        return getInteger(KEY_MAX_NUMBER_RFCOMM_PORTS);
+    }
 
-public DeviceInfo setMaxNumberRFCOMMPorts( Integer maxNumberRFCOMMPorts) {
+    public DeviceInfo setMaxNumberRFCOMMPorts(Integer maxNumberRFCOMMPorts) {
         setValue(KEY_MAX_NUMBER_RFCOMM_PORTS, maxNumberRFCOMMPorts);
         return this;
     }

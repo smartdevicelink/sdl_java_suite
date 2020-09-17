@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -40,41 +40,46 @@ import com.smartdevicelink.util.Version;
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public interface ISdlSessionListener {
 
-	/**
-	 * Called when a transport disconnects
-	 * @param info a human readable string including information on the disconnected transport
-	 * @param availablePrimary a boolean flag indicating if there is another transport that can
-	 *                              be used to connect with the SDL enabled device.
-	 * @param transportConfig the previously supplied transport config
-	 */
-	void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig);
+    /**
+     * Called when a transport disconnects
+     *
+     * @param info             a human readable string including information on the disconnected transport
+     * @param availablePrimary a boolean flag indicating if there is another transport that can
+     *                         be used to connect with the SDL enabled device.
+     * @param transportConfig  the previously supplied transport config
+     */
+    void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig);
 
-	/**
-	 * Called when an RPC message has been received from the connected SDL device
-	 * @param rpcMessage the RPC message that was received
-	 */
-	void onRPCMessageReceived(RPCMessage rpcMessage);
+    /**
+     * Called when an RPC message has been received from the connected SDL device
+     *
+     * @param rpcMessage the RPC message that was received
+     */
+    void onRPCMessageReceived(RPCMessage rpcMessage);
 
-	/**
-	 * Called to indicate that a session has started with the connected SDL device. This means the
-	 * RPC and Bulk service types have also been started.
-	 * @param sessionID session ID associated with the session that was established
-	 * @param version the protocol version that has been negotiated for this session
-	 */
-	void onSessionStarted(int sessionID, Version version);
+    /**
+     * Called to indicate that a session has started with the connected SDL device. This means the
+     * RPC and Bulk service types have also been started.
+     *
+     * @param sessionID session ID associated with the session that was established
+     * @param version   the protocol version that has been negotiated for this session
+     */
+    void onSessionStarted(int sessionID, Version version);
 
-	/**
-	 * Called to indicate that the session that was previously established has now ended. This means
-	 * that all services previously started on this session are also closed.
-	 * @param sessionID the session ID that was assigned to this now closed session
-	 */
-	void onSessionEnded( int sessionID);
+    /**
+     * Called to indicate that the session that was previously established has now ended. This means
+     * that all services previously started on this session are also closed.
+     *
+     * @param sessionID the session ID that was assigned to this now closed session
+     */
+    void onSessionEnded(int sessionID);
 
-	/**
-	 * Called when an auth token has been received. This should always happen after the session
-	 * has been created.
-	 * @param authToken the actual auth token that has been stringified
-	 * @param sessionID the session ID that this auth token is associated with
-	 */
-	void onAuthTokenReceived(String authToken, int sessionID);
+    /**
+     * Called when an auth token has been received. This should always happen after the session
+     * has been created.
+     *
+     * @param authToken the actual auth token that has been stringified
+     * @param sessionID the session ID that this auth token is associated with
+     */
+    void onAuthTokenReceived(String authToken, int sessionID);
 }

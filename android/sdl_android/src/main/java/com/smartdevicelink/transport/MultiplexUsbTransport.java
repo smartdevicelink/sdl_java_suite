@@ -48,16 +48,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class MultiplexUsbTransport extends MultiplexBaseTransport{
+public class MultiplexUsbTransport extends MultiplexBaseTransport {
 
     private static final String TAG = "MultiplexUsbTransport";
 
-    public static final String MANUFACTURER     = "manufacturer";
-    public static final String MODEL            = "model";
-    public static final String VERSION          = "version";
-    public static final String URI              = "uri";
-    public static final String SERIAL           = "serial";
-    public static final String DESCRIPTION      = "description";
+    public static final String MANUFACTURER = "manufacturer";
+    public static final String MODEL = "model";
+    public static final String VERSION = "version";
+    public static final String URI = "uri";
+    public static final String SERIAL = "serial";
+    public static final String DESCRIPTION = "description";
 
     private final Bundle deviceInfo;
     private ReaderThread readerThread;
@@ -65,22 +65,22 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
     private ParcelFileDescriptor parcelFileDescriptor;
     private Boolean connectionSuccessful = null;
 
-    MultiplexUsbTransport(ParcelFileDescriptor parcelFileDescriptor, Handler handler, Bundle bundle){
+    MultiplexUsbTransport(ParcelFileDescriptor parcelFileDescriptor, Handler handler, Bundle bundle) {
         super(handler, TransportType.USB);
-        if(parcelFileDescriptor == null){
+        if (parcelFileDescriptor == null) {
             DebugTool.logError(TAG, "Error with object");
             this.parcelFileDescriptor = null;
             throw new ExceptionInInitializerError("ParcelFileDescriptor can't be null");
-        }else{
+        } else {
             this.parcelFileDescriptor = parcelFileDescriptor;
             connectedDeviceName = "USB";
             deviceInfo = bundle;
-            if(deviceInfo != null){
+            if (deviceInfo != null) {
                 //Fill in info
                 connectedDeviceAddress = bundle.getString(SERIAL);
-                if(connectedDeviceAddress == null){
+                if (connectedDeviceAddress == null) {
                     connectedDeviceAddress = bundle.getString(URI);
-                    if(connectedDeviceAddress == null) {
+                    if (connectedDeviceAddress == null) {
                         connectedDeviceAddress = bundle.getString(DESCRIPTION);
                         if (connectedDeviceAddress == null) {
                             connectedDeviceAddress = bundle.getString(MODEL);
@@ -91,16 +91,16 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
                     }
                 }
 
-            }else{
+            } else {
                 connectedDeviceAddress = "USB";
             }
         }
     }
 
-    public synchronized void start(){
+    public synchronized void start() {
         setState(STATE_CONNECTING);
         FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-        if(fileDescriptor == null || !fileDescriptor.valid()){
+        if (fileDescriptor == null || !fileDescriptor.valid()) {
             DebugTool.logError(TAG, "USB FD was null or not valid,");
             setState(STATE_NONE);
             return;
@@ -138,8 +138,8 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
             readerThread = null;
         }
 
-        if( (connectionSuccessful== null || connectionSuccessful == true )      //else, the connection was bad. Not closing the PFD helps recover
-                && parcelFileDescriptor != null){
+        if ((connectionSuccessful == null || connectionSuccessful == true)      //else, the connection was bad. Not closing the PFD helps recover
+                && parcelFileDescriptor != null) {
             try {
                 parcelFileDescriptor.close();
             } catch (IOException e) {
@@ -156,9 +156,10 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
 
     /**
      * Write to the ConnectedThread in an unsynchronized manner
+     *
      * @param out The bytes to write
      */
-    public void write(byte[] out,  int offset, int count) {
+    public void write(byte[] out, int offset, int count) {
         // Create temporary object
         MultiplexUsbTransport.WriterThread r;
         // Synchronize a copy of the ConnectedThread
@@ -168,7 +169,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
             //r.write(out,offset,count);
         }
         // Perform the write unsynchronized
-        r.write(out,offset,count);
+        r.write(out, offset, count);
     }
 
     /**
@@ -204,12 +205,12 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
         }, 250);
     }
 
-    private class ReaderThread extends Thread{
+    private class ReaderThread extends Thread {
         final SdlPsm psm;
 
         final InputStream inputStream;
 
-        public ReaderThread(final FileDescriptor fileDescriptor){
+        public ReaderThread(final FileDescriptor fileDescriptor) {
             psm = new SdlPsm();
             inputStream = new FileInputStream(fileDescriptor);
         }
@@ -228,31 +229,31 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
                     bytesRead = inputStream.read(buffer);
                     if (bytesRead == -1) {
                         if (isInterrupted()) {
-                            DebugTool.logError(TAG,"EOF reached, and thread is interrupted");
+                            DebugTool.logError(TAG, "EOF reached, and thread is interrupted");
                         } else {
-                            DebugTool.logInfo(TAG,"EOF reached, disconnecting!");
+                            DebugTool.logInfo(TAG, "EOF reached, disconnecting!");
                             connectionLost();
                         }
                         return;
                     }
                     if (isInterrupted()) {
-                        DebugTool.logWarning(TAG,"Read some data, but thread is interrupted");
+                        DebugTool.logWarning(TAG, "Read some data, but thread is interrupted");
                         return;
                     }
-                    if(connectionSuccessful != null && connectionSuccessful == false){
+                    if (connectionSuccessful != null && connectionSuccessful == false) {
                         connectionSuccessful = true;
                     }
                     byte input;
-                    for(int i=0;i<bytesRead; i++){
-                        input=buffer[i];
+                    for (int i = 0; i < bytesRead; i++) {
+                        input = buffer[i];
                         stateProgress = psm.handleByte(input);
-                        if(!stateProgress){//We are trying to weed through the bad packet info until we get something
+                        if (!stateProgress) {//We are trying to weed through the bad packet info until we get something
                             //Log.w(TAG, "Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
                             psm.reset();
                             continue; //Move to the next iteration of the loop
                         }
 
-                        if(psm.getState() == SdlPsm.FINISHED_STATE){
+                        if (psm.getState() == SdlPsm.FINISHED_STATE) {
                             synchronized (MultiplexUsbTransport.this) {
                                 //Log.d(TAG, "Packet formed, sending off");
                                 SdlPacket packet = psm.getFormedPacket();
@@ -268,13 +269,13 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
                     }
                 } catch (IOException e) {
                     if (isInterrupted()) {
-                        DebugTool.logWarning(TAG,"Can't read data, and thread is interrupted");
+                        DebugTool.logWarning(TAG, "Can't read data, and thread is interrupted");
                     } else {
-                        DebugTool.logWarning(TAG,"Can't read data, disconnecting!");
+                        DebugTool.logWarning(TAG, "Can't read data, disconnecting!");
                         connectionLost();
                     }
                     return;
-                } catch (Exception e){
+                } catch (Exception e) {
                     connectionLost();
                 }
             }
@@ -284,11 +285,11 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
         public synchronized void cancel() {
             try {
                 //Log.d(TAG, "Calling Cancel in the Read thread");
-                if(inputStream!=null){
+                if (inputStream != null) {
                     inputStream.close();
                 }
 
-            } catch (IOException|NullPointerException e) { // NPE is ONLY to catch error on mmInStream
+            } catch (IOException | NullPointerException e) { // NPE is ONLY to catch error on mmInStream
                 // Log.trace(TAG, "Read Thread: " + e.getMessage());
                 // Socket or stream is already closed
             }
@@ -314,21 +315,22 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
 
         /**
          * Write to the connected OutStream.
-         * @param buffer  The bytes to write
+         *
+         * @param buffer The bytes to write
          */
         public void write(byte[] buffer, int offset, int count) {
             try {
-                if(buffer==null){
+                if (buffer == null) {
                     DebugTool.logWarning(TAG, "Can't write to device, nothing to send");
                     return;
                 }
                 //This would be a good spot to log out all bytes received
                 mmOutStream.write(buffer, offset, count);
-                if(connectionSuccessful == null){
+                if (connectionSuccessful == null) {
                     connectionSuccessful = false;
                 }
                 //Log.w(TAG, "Wrote out to device: bytes = "+ count);
-            } catch (IOException|NullPointerException e) { // STRICTLY to catch mmOutStream NPE
+            } catch (IOException | NullPointerException e) { // STRICTLY to catch mmOutStream NPE
                 // Exception during write
                 //OMG! WE MUST NOT BE CONNECTED ANYMORE! LET THE USER KNOW
                 DebugTool.logError(TAG, "Error sending bytes to connected device!");
@@ -338,14 +340,14 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
 
         public synchronized void cancel() {
             try {
-                if(mmOutStream!=null){
+                if (mmOutStream != null) {
                     mmOutStream.flush();
                     mmOutStream.close();
 
                 }
             } catch (IOException e) {
                 // close() of connect socket failed
-                DebugTool.logInfo(TAG,  "Write Thread: " + e.getMessage());
+                DebugTool.logInfo(TAG, "Write Thread: " + e.getMessage());
             }
         }
     }

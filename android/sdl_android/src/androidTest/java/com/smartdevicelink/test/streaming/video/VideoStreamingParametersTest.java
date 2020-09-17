@@ -162,10 +162,10 @@ public class VideoStreamingParametersTest {
     }
 
     @Test
-    public void testUpdateCapabilityFormat(){
+    public void testUpdateCapabilityFormat() {
         VideoStreamingCapability capability = new VideoStreamingCapability();
         capability.setMaxBitrate(10000);
-        capability.setPreferredResolution( new ImageResolution(800,600));
+        capability.setPreferredResolution(new ImageResolution(800, 600));
         capability.setIsHapticSpatialDataSupported(false);
 
         VideoStreamingFormat format = new VideoStreamingFormat(VideoStreamingProtocol.RAW, VideoStreamingCodec.H264);

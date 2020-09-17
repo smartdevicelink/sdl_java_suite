@@ -41,118 +41,120 @@ import java.util.List;
 
 public class WeatherAlert extends RPCStruct {
 
-	public static final String KEY_TITLE = "title";
-	public static final String KEY_SUMMARY = "summary";
-	public static final String KEY_EXPIRES = "expires";
-	public static final String KEY_REGIONS = "regions";
-	public static final String KEY_SEVERITY = "severity";
-	public static final String KEY_TIME_ISSUED = "timeIssued";
+    public static final String KEY_TITLE = "title";
+    public static final String KEY_SUMMARY = "summary";
+    public static final String KEY_EXPIRES = "expires";
+    public static final String KEY_REGIONS = "regions";
+    public static final String KEY_SEVERITY = "severity";
+    public static final String KEY_TIME_ISSUED = "timeIssued";
 
-	// Constructors
+    // Constructors
 
-	public WeatherAlert() { }
+    public WeatherAlert() {
+    }
 
-	public WeatherAlert(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+    public WeatherAlert(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
-	public WeatherAlert(@NonNull List<String> regions) {
-		this();
-		setRegions(regions);
-	}
+    public WeatherAlert(@NonNull List<String> regions) {
+        this();
+        setRegions(regions);
+    }
 
-	// Setters and Getters
+    // Setters and Getters
 
-	/**
-	 * @param title -
-	 */
-	public WeatherAlert setTitle( String title) {
+    /**
+     * @param title -
+     */
+    public WeatherAlert setTitle(String title) {
         setValue(KEY_TITLE, title);
         return this;
     }
 
-	/**
-	 * @return title
-	 */
-	public String getTitle() {
-		return getString(KEY_TITLE);
-	}
+    /**
+     * @return title
+     */
+    public String getTitle() {
+        return getString(KEY_TITLE);
+    }
 
-	/**
-	 * @param summary -
-	 */
-	public WeatherAlert setSummary( String summary) {
+    /**
+     * @param summary -
+     */
+    public WeatherAlert setSummary(String summary) {
         setValue(KEY_SUMMARY, summary);
         return this;
     }
 
-	/**
-	 * @return summary
-	 */
-	public String getSummary() {
-		return getString(KEY_SUMMARY);
-	}
+    /**
+     * @return summary
+     */
+    public String getSummary() {
+        return getString(KEY_SUMMARY);
+    }
 
-	/**
-	 * @param severity -
-	 */
-	public WeatherAlert setSeverity( String severity) {
+    /**
+     * @param severity -
+     */
+    public WeatherAlert setSeverity(String severity) {
         setValue(KEY_SEVERITY, severity);
         return this;
     }
 
-	/**
-	 * @return severity
-	 */
-	public String getSeverity() {
-		return getString(KEY_SEVERITY);
-	}
+    /**
+     * @return severity
+     */
+    public String getSeverity() {
+        return getString(KEY_SEVERITY);
+    }
 
-	/**
-	 * Min Size: 1, Max Size: 99
-	 * @param regions -
-	 */
-	public WeatherAlert setRegions(@NonNull List<String> regions) {
+    /**
+     * Min Size: 1, Max Size: 99
+     *
+     * @param regions -
+     */
+    public WeatherAlert setRegions(@NonNull List<String> regions) {
         setValue(KEY_REGIONS, regions);
         return this;
     }
 
-	/**
-	 * @return regions list
-	 */
-	@SuppressWarnings("unchecked")
-	public List<String> getRegions(){
-		return (List<String>) getObject(String.class,KEY_REGIONS);
-	}
+    /**
+     * @return regions list
+     */
+    @SuppressWarnings("unchecked")
+    public List<String> getRegions() {
+        return (List<String>) getObject(String.class, KEY_REGIONS);
+    }
 
-	/**
-	 * @param expires -
-	 */
-	public WeatherAlert setExpires( DateTime expires) {
+    /**
+     * @param expires -
+     */
+    public WeatherAlert setExpires(DateTime expires) {
         setValue(KEY_EXPIRES, expires);
         return this;
     }
 
-	/**
-	 * @return expires
-	 */
-	public DateTime getExpires() {
-		return (DateTime) getObject(DateTime.class,KEY_EXPIRES);
-	}
+    /**
+     * @return expires
+     */
+    public DateTime getExpires() {
+        return (DateTime) getObject(DateTime.class, KEY_EXPIRES);
+    }
 
-	/**
-	 * @param timeIssued -
-	 */
-	public WeatherAlert setTimeIssued( DateTime timeIssued) {
+    /**
+     * @param timeIssued -
+     */
+    public WeatherAlert setTimeIssued(DateTime timeIssued) {
         setValue(KEY_TIME_ISSUED, timeIssued);
         return this;
     }
 
-	/**
-	 * @return timeIssued
-	 */
-	public DateTime getTimeIssued() {
-		return (DateTime) getObject(DateTime.class,KEY_TIME_ISSUED);
-	}
+    /**
+     * @return timeIssued
+     */
+    public DateTime getTimeIssued() {
+        return (DateTime) getObject(DateTime.class, KEY_TIME_ISSUED);
+    }
 
 }

@@ -47,6 +47,7 @@ class PermissionFilter {
 
     /**
      * Creates a new instance of PermissionFilter
+     *
      * @see com.smartdevicelink.managers.permission.PermissionManager.PermissionGroupType
      */
     PermissionFilter(UUID identifier, @NonNull List<PermissionElement> permissionElements, @PermissionManager.PermissionGroupType int groupType, @NonNull OnPermissionChangeListener listener) {
@@ -62,6 +63,7 @@ class PermissionFilter {
 
     /**
      * Get the unique id for the listener
+     *
      * @return UUID object represents the id for the listener
      */
     protected UUID getIdentifier() {
@@ -70,6 +72,7 @@ class PermissionFilter {
 
     /**
      * Get the permission elements that the developer wants to add a listener for
+     *
      * @return List<PermissionElement> represents the RPCs and their parameters that the developer wants to add a listener for
      */
     protected List<PermissionElement> getPermissionElements() {
@@ -78,15 +81,18 @@ class PermissionFilter {
 
     /**
      * Get how we want the listener to be called: when any change happens? or when all permissions become allowed?
+     *
      * @return PermissionGroupType int value represents whether the developer needs the listener to be called when there is any permissions change or only when all permission become allowed
      * @see com.smartdevicelink.managers.permission.PermissionManager.PermissionGroupType
      */
-    protected @PermissionManager.PermissionGroupType int getGroupType() {
+    protected @PermissionManager.PermissionGroupType
+    int getGroupType() {
         return groupType;
     }
 
     /**
      * Get the listener object
+     *
      * @return OnPermissionChangeListener object represents the listener for that filter
      */
     protected OnPermissionChangeListener getListener() {

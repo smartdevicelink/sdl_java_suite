@@ -19,12 +19,12 @@ import java.util.Iterator;
  * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.RadioControlCapabilities}
  */
-public class RadioControlCapabilitiesTests extends TestCase{
-	
+public class RadioControlCapabilitiesTests extends TestCase {
+
     private RadioControlCapabilities msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new RadioControlCapabilities();
 
         msg.setModuleName(TestValues.GENERAL_STRING);
@@ -45,9 +45,9 @@ public class RadioControlCapabilitiesTests extends TestCase{
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
         // Test Values
         String moduleName = msg.getModuleName();
         boolean radioEnableAvailable = msg.getRadioEnableAvailable();
@@ -104,10 +104,10 @@ public class RadioControlCapabilitiesTests extends TestCase{
         assertNull(TestValues.NULL, msg.getAvailableHdChannelsAvailable());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(RadioControlCapabilities.KEY_MODULE_NAME, TestValues.GENERAL_STRING);
             reference.put(RadioControlCapabilities.KEY_RADIO_ENABLE_AVAILABLE, TestValues.GENERAL_BOOLEAN);
             reference.put(RadioControlCapabilities.KEY_RADIO_BAND_AVAILABLE, TestValues.GENERAL_BOOLEAN);
@@ -128,7 +128,7 @@ public class RadioControlCapabilitiesTests extends TestCase{
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
                 if (key.equals(RadioControlCapabilities.KEY_MODULE_INFO)) {
                     JSONObject o1 = (JSONObject) JsonUtils.readObjectFromJsonObject(reference, key);
@@ -141,8 +141,8 @@ public class RadioControlCapabilitiesTests extends TestCase{
                 }
 
             }
-        } catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

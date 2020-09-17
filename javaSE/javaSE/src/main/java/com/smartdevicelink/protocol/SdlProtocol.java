@@ -43,11 +43,10 @@ import com.smartdevicelink.transport.TransportManager;
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public class SdlProtocol extends SdlProtocolBase {
 
-    public SdlProtocol( ISdlProtocol iSdlProtocol,  BaseTransportConfig config) {
+    public SdlProtocol(ISdlProtocol iSdlProtocol, BaseTransportConfig config) {
         super(iSdlProtocol, config);
         this.setTransportManager(new TransportManager(config, transportEventListener));
     }
-
 
 
 }

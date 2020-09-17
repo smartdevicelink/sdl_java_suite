@@ -37,54 +37,54 @@ import java.nio.ByteBuffer;
  */
 public interface IVideoStreamListener {
 
-	/**
-	 * Sends a chunk of data which represents a frame to SDL Core.
-	 * <p>
-	 * The format of the chunk should align with MediaCodec's "Compressed Buffer" format, i.e. it
-	 * should contain a single video frame, and it should start and end on frame boundaries.
-	 * Please refer to https://developer.android.com/reference/android/media/MediaCodec.html
-	 * Also, for H.264 codec case the stream must be in byte-stream format (also known as Annex-B
-	 * format). This isn't explained in the document above, but MediaCodec does output in this
-	 * format.
-	 * <p>
-	 * In short, you can just provide MediaCodec's data outputs to this method without tweaking
-	 * any data.
-	 * <p>
-	 * Note: this method must not be called after SdlProxyBase.endVideoStream() is called.
-	 *
-	 * @param data               Byte array containing a video frame
-	 * @param offset             Starting offset in 'data'
-	 * @param length             Length of the data
-	 * @param presentationTimeUs Presentation timestamp (PTS) of this frame, in microseconds.
-	 *                           It must be greater than the previous timestamp.
-	 *                           Specify -1 if unknown.
-	 * @throws ArrayIndexOutOfBoundsException When offset does not satisfy
-	 *                                        {@code 0 <= offset && offset <= data.length}
-	 *                                        or length does not satisfy
-	 *                                        {@code 0 < length && offset + length <= data.length}
-	 */
-	void sendFrame(byte[] data, int offset, int length, long presentationTimeUs)
-			throws ArrayIndexOutOfBoundsException;
+    /**
+     * Sends a chunk of data which represents a frame to SDL Core.
+     * <p>
+     * The format of the chunk should align with MediaCodec's "Compressed Buffer" format, i.e. it
+     * should contain a single video frame, and it should start and end on frame boundaries.
+     * Please refer to https://developer.android.com/reference/android/media/MediaCodec.html
+     * Also, for H.264 codec case the stream must be in byte-stream format (also known as Annex-B
+     * format). This isn't explained in the document above, but MediaCodec does output in this
+     * format.
+     * <p>
+     * In short, you can just provide MediaCodec's data outputs to this method without tweaking
+     * any data.
+     * <p>
+     * Note: this method must not be called after SdlProxyBase.endVideoStream() is called.
+     *
+     * @param data               Byte array containing a video frame
+     * @param offset             Starting offset in 'data'
+     * @param length             Length of the data
+     * @param presentationTimeUs Presentation timestamp (PTS) of this frame, in microseconds.
+     *                           It must be greater than the previous timestamp.
+     *                           Specify -1 if unknown.
+     * @throws ArrayIndexOutOfBoundsException When offset does not satisfy
+     *                                        {@code 0 <= offset && offset <= data.length}
+     *                                        or length does not satisfy
+     *                                        {@code 0 < length && offset + length <= data.length}
+     */
+    void sendFrame(byte[] data, int offset, int length, long presentationTimeUs)
+            throws ArrayIndexOutOfBoundsException;
 
-	/**
-	 * Sends chunks of data which represent a frame to SDL Core.
-	 * <p>
-	 * The format of the chunk should align with MediaCodec's "Compressed Buffer" format, i.e. it
-	 * should contain a single video frame, and it should start and end on frame boundaries.
-	 * Please refer to https://developer.android.com/reference/android/media/MediaCodec.html
-	 * Also, for H.264 codec case the stream must be in byte-stream format (also known as Annex-B
-	 * format). This isn't explained in the document above, but MediaCodec does output in this
-	 * format.
-	 * <p>
-	 * In short, you can just provide MediaCodec's data outputs to this method without tweaking
-	 * any data.
-	 * <p>
-	 * Note: this method must not be called after SdlProxyBase.endVideoStream() is called.
-	 *
-	 * @param data               Data chunk to send. Its position will be updated upon return.
-	 * @param presentationTimeUs Presentation timestamp (PTS) of this frame, in microseconds.
-	 *                           It must be greater than the previous timestamp.
-	 *                           Specify -1 if unknown.
-	 */
-	void sendFrame(ByteBuffer data, long presentationTimeUs);
+    /**
+     * Sends chunks of data which represent a frame to SDL Core.
+     * <p>
+     * The format of the chunk should align with MediaCodec's "Compressed Buffer" format, i.e. it
+     * should contain a single video frame, and it should start and end on frame boundaries.
+     * Please refer to https://developer.android.com/reference/android/media/MediaCodec.html
+     * Also, for H.264 codec case the stream must be in byte-stream format (also known as Annex-B
+     * format). This isn't explained in the document above, but MediaCodec does output in this
+     * format.
+     * <p>
+     * In short, you can just provide MediaCodec's data outputs to this method without tweaking
+     * any data.
+     * <p>
+     * Note: this method must not be called after SdlProxyBase.endVideoStream() is called.
+     *
+     * @param data               Data chunk to send. Its position will be updated upon return.
+     * @param presentationTimeUs Presentation timestamp (PTS) of this frame, in microseconds.
+     *                           It must be greater than the previous timestamp.
+     *                           Specify -1 if unknown.
+     */
+    void sendFrame(ByteBuffer data, long presentationTimeUs);
 }

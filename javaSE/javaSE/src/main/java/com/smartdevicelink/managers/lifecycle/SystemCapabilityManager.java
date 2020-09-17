@@ -35,7 +35,7 @@ import com.smartdevicelink.managers.ISdl;
 
 /**
  * <strong>SystemCapabilityManager</strong> <br>
- *
+ * <p>
  * Note: This class must be accessed through the SdlManager. Do not instantiate it by itself. <br>
  */
 public class SystemCapabilityManager extends BaseSystemCapabilityManager {

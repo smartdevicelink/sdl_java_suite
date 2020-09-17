@@ -158,7 +158,6 @@ public class HapticInterfaceManagerTest extends TestCase {
     }
 
 
-
     @Test
     public void testRefreshHapticData_NullCapability() {
         final int buttonX = 60;
@@ -261,7 +260,7 @@ public class HapticInterfaceManagerTest extends TestCase {
         doAnswer(new Answer() {
             @Override
             public int[] answer(InvocationOnMock invocation) throws Throwable {
-                int[] args = (int[])(invocation.getArguments()[0]);
+                int[] args = (int[]) (invocation.getArguments()[0]);
                 args[0] = x;
                 args[1] = y;
                 return args;

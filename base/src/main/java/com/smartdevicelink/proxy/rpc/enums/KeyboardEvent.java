@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -30,46 +30,47 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 package com.smartdevicelink.proxy.rpc.enums;
+
 /**
  * Enumeration listing possible keyboard events.
- * 
- *
  */
 public enum KeyboardEvent {
-	/** The use has pressed the keyboard key (applies to both SINGLE_KEYPRESS and RESEND_CURRENT_ENTRY modes).
-	 * 
-	 */
+    /**
+     * The use has pressed the keyboard key (applies to both SINGLE_KEYPRESS and RESEND_CURRENT_ENTRY modes).
+     */
 
     KEYPRESS,
-    /** The User has finished entering text from the keyboard and submitted the entry.
-     * 
+    /**
+     * The User has finished entering text from the keyboard and submitted the entry.
      */
 
     ENTRY_SUBMITTED,
-    /** The User has pressed the HMI-defined "Cancel" button.
-     * 
+    /**
+     * The User has pressed the HMI-defined "Cancel" button.
      */
 
     ENTRY_CANCELLED,
-    /** The User has not finished entering text and the keyboard is aborted with the event of higher priority.
-     *   
+    /**
+     * The User has not finished entering text and the keyboard is aborted with the event of higher priority.
      */
     ENTRY_ABORTED,
-    /** 
+    /**
      * @since SmartDeviceLink 4.0
      */
     ENTRY_VOICE,
     ;
+
     /**
      * Convert String to KeyboardEvent
+     *
      * @param value String
      * @return KeyboardEvent
-     */ 
+     */
 
     public static KeyboardEvent valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

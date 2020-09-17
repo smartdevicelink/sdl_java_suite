@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -56,11 +56,12 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
 
     /**
      * Creates a new object of AudioDecoder.
+     *
      * @param audioSource The audio source to decode.
-     * @param context The context object to use to open the audio source.
-     * @param sampleRate The desired sample rate for decoded audio data.
-     * @param sampleType The desired sample type (8bit, 16bit, float).
-     * @param listener A listener who receives the decoded audio.
+     * @param context     The context object to use to open the audio source.
+     * @param sampleRate  The desired sample rate for decoded audio data.
+     * @param sampleType  The desired sample type (8bit, 16bit, float).
+     * @param listener    A listener who receives the decoded audio.
      */
     AudioDecoderCompat(@NonNull Uri audioSource, @NonNull Context context, int sampleRate, @SampleType int sampleType, AudioDecoderListener listener) {
         super(audioSource, context, sampleRate, sampleType, listener);
@@ -78,7 +79,7 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
 
         } catch (Exception e) {
             e.printStackTrace();
-            if(this.listener != null) {
+            if (this.listener != null) {
                 this.listener.onDecoderError(e);
                 this.listener.onDecoderFinish(false);
             }
@@ -95,12 +96,14 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
 
         /**
          * Decodes all audio data from source
+         *
          * @param audioDecoderCompat instance of this class
          */
-        DecoderRunnable(@NonNull AudioDecoderCompat audioDecoderCompat){
+        DecoderRunnable(@NonNull AudioDecoderCompat audioDecoderCompat) {
             weakReference = new WeakReference<>(audioDecoderCompat);
 
         }
+
         @Override
         public void run() {
             final AudioDecoderCompat reference = weakReference.get();
@@ -115,7 +118,7 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
             ByteBuffer inputBuffer, outputBuffer;
             SampleBuffer sampleBuffer;
 
-            while (reference!= null && !reference.mThread.isInterrupted()) {
+            while (reference != null && !reference.mThread.isInterrupted()) {
                 int inputBuffersArrayIndex = 0;
                 while (inputBuffersArrayIndex != MediaCodec.INFO_TRY_AGAIN_LATER) {
                     inputBuffersArrayIndex = reference.decoder.dequeueInputBuffer(DEQUEUE_TIMEOUT);
@@ -135,7 +138,7 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
                             reference.decoder.releaseOutputBuffer(outputBuffersArrayIndex, false);
                         } else if (outputBuffer.limit() > 0) {
                             sampleBuffer = reference.onOutputBufferAvailable(outputBuffer);
-                            if(reference.listener!=null){
+                            if (reference.listener != null) {
                                 reference.listener.onAudioDataAvailable(sampleBuffer);
                             }
                             reference.decoder.releaseOutputBuffer(outputBuffersArrayIndex, false);

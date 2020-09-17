@@ -35,7 +35,6 @@ import static org.mockito.Mockito.spy;
 public class MediaStreamingStatusTests {
 
 
-
     @Mock
     private AudioManager audioManager = mock(AudioManager.class);
 
@@ -49,9 +48,9 @@ public class MediaStreamingStatusTests {
         public Object answer(InvocationOnMock invocation) {
             Object[] args = invocation.getArguments();
             String serviceName = (String) args[0];
-            if(serviceName != null && serviceName.equalsIgnoreCase(Context.AUDIO_SERVICE)){
+            if (serviceName != null && serviceName.equalsIgnoreCase(Context.AUDIO_SERVICE)) {
                 return audioManager;
-            }else{
+            } else {
                 return null;
             }
         }
@@ -59,7 +58,7 @@ public class MediaStreamingStatusTests {
 
 
     @Before
-    public void setUp() throws Exception{
+    public void setUp() throws Exception {
         mockedContext = mock(Context.class);
         doAnswer(onGetSystemService).when(mockedContext).getSystemService(Context.AUDIO_SERVICE);
         defaultMediaStreamingStatus = new MediaStreamingStatus(mockedContext, mock(MediaStreamingStatus.Callback.class));
@@ -67,7 +66,7 @@ public class MediaStreamingStatusTests {
 
 
     @Test
-    public void testEmptyAudioDeviceInfoList(){
+    public void testEmptyAudioDeviceInfoList() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             assertNotNull(mockedContext);
             MediaStreamingStatus mediaStreamingStatus = new MediaStreamingStatus(mockedContext, new MediaStreamingStatus.Callback() {
@@ -89,7 +88,7 @@ public class MediaStreamingStatusTests {
     }
 
     @Test
-    public void testNullAudioDeviceInfoList(){
+    public void testNullAudioDeviceInfoList() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             assertNotNull(mockedContext);
             MediaStreamingStatus mediaStreamingStatus = new MediaStreamingStatus(mockedContext, mock(MediaStreamingStatus.Callback.class));
@@ -106,7 +105,7 @@ public class MediaStreamingStatusTests {
 
 
     @Test
-    public void testSdlManagerMedia(){
+    public void testSdlManagerMedia() {
         SdlManager.Builder builder = new SdlManager.Builder(getInstrumentation().getTargetContext(), TestValues.GENERAL_FULL_APP_ID, TestValues.GENERAL_STRING, mock(SdlManagerListener.class));
         Vector<AppHMIType> appType = new Vector<>();
         appType.add(AppHMIType.MEDIA);
@@ -124,7 +123,7 @@ public class MediaStreamingStatusTests {
     }
 
     @Test
-    public void testSdlManagerNonMedia(){
+    public void testSdlManagerNonMedia() {
         SdlManager.Builder builder = new SdlManager.Builder(getInstrumentation().getTargetContext(), TestValues.GENERAL_FULL_APP_ID, TestValues.GENERAL_STRING, mock(SdlManagerListener.class));
         Vector<AppHMIType> appType = new Vector<>();
         appType.add(AppHMIType.DEFAULT);
@@ -142,7 +141,7 @@ public class MediaStreamingStatusTests {
     }
 
     @Test
-    public void testAcceptedBTDevices(){
+    public void testAcceptedBTDevices() {
         MediaStreamingStatus mediaStreamingStatus = spy(new MediaStreamingStatus(getInstrumentation().getTargetContext(), mock(MediaStreamingStatus.Callback.class)));
 
         doAnswer(new Answer() {
@@ -157,7 +156,7 @@ public class MediaStreamingStatusTests {
     }
 
     @Test
-    public void testAcceptedUSBDevices(){
+    public void testAcceptedUSBDevices() {
         MediaStreamingStatus mediaStreamingStatus = spy(new MediaStreamingStatus(getInstrumentation().getTargetContext(), mock(MediaStreamingStatus.Callback.class)));
 
         doAnswer(new Answer() {
@@ -175,7 +174,7 @@ public class MediaStreamingStatusTests {
     }
 
     @Test
-    public void testAcceptedLineDevices(){
+    public void testAcceptedLineDevices() {
         assertTrue(defaultMediaStreamingStatus.isSupportedAudioDevice(AudioDeviceInfo.TYPE_LINE_ANALOG));
         assertTrue(defaultMediaStreamingStatus.isSupportedAudioDevice(AudioDeviceInfo.TYPE_LINE_DIGITAL));
         assertTrue(defaultMediaStreamingStatus.isSupportedAudioDevice(AudioDeviceInfo.TYPE_AUX_LINE));

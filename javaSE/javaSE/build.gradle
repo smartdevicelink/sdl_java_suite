@@ -65,11 +65,11 @@ task generateSources {
                 srcFile.append("\n")
             }
             srcFile.append("*/\n")
-        }else{
+        } else {
             srcFile.write("\n")
         }
         srcFile.append(
-"""package com.smartdevicelink;
+                """package com.smartdevicelink;
 
 // THIS FILE IS AUTO GENERATED, DO NOT MODIFY!!
 public final class BuildConfig {

@@ -38,7 +38,7 @@ public class CustomTransportConfig extends BaseTransportConfig {
 
     final CustomTransport customTransport;
 
-    public CustomTransportConfig(CustomTransport customTransport){
+    public CustomTransportConfig(CustomTransport customTransport) {
         this.customTransport = customTransport;
     }
 
@@ -47,7 +47,7 @@ public class CustomTransportConfig extends BaseTransportConfig {
         return TransportType.CUSTOM;
     }
 
-    public TransportInterface getTransportInterface(){
+    public TransportInterface getTransportInterface() {
         return this.customTransport;
     }
 }

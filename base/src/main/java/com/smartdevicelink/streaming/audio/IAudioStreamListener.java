@@ -38,37 +38,37 @@ import java.nio.ByteBuffer;
  * A listener that receives audio streaming data from app.
  */
 public interface IAudioStreamListener {
-	/**
-	 * Sends a chunk of audio data to SDL Core.
-	 * <p>
-	 * Note: this method must not be called after SdlProxyBase.endAudioStream() is called.
-	 *
-	 * @param data               Byte array containing audio data
-	 * @param offset             Starting offset in 'data'
-	 * @param length             Length of the data
-	 * @param presentationTimeUs (Reserved for future use) Presentation timestamp (PTS) of the
-	 *                           last audio sample data included in this chunk, in microseconds.
-	 *                           It must be greater than the previous timestamp.
-	 *                           Specify -1 if unknown.
-	 * @throws ArrayIndexOutOfBoundsException When offset does not satisfy
-	 *                                        {@code 0 <= offset && offset <= data.length}
-	 *                                        or length does not satisfy
-	 *                                        {@code 0 < length && offset + length <= data.length}
-	 */
-	void sendAudio(byte[] data, int offset, int length, long presentationTimeUs)
-			throws ArrayIndexOutOfBoundsException;
+    /**
+     * Sends a chunk of audio data to SDL Core.
+     * <p>
+     * Note: this method must not be called after SdlProxyBase.endAudioStream() is called.
+     *
+     * @param data               Byte array containing audio data
+     * @param offset             Starting offset in 'data'
+     * @param length             Length of the data
+     * @param presentationTimeUs (Reserved for future use) Presentation timestamp (PTS) of the
+     *                           last audio sample data included in this chunk, in microseconds.
+     *                           It must be greater than the previous timestamp.
+     *                           Specify -1 if unknown.
+     * @throws ArrayIndexOutOfBoundsException When offset does not satisfy
+     *                                        {@code 0 <= offset && offset <= data.length}
+     *                                        or length does not satisfy
+     *                                        {@code 0 < length && offset + length <= data.length}
+     */
+    void sendAudio(byte[] data, int offset, int length, long presentationTimeUs)
+            throws ArrayIndexOutOfBoundsException;
 
-	/**
-	 * Sends a chunk of audio data to SDL Core.
-	 * <p>
-	 * Note: this method must not be called after SdlProxyBase.endAudioStream() is called.
-	 *
-	 * @param data               Data chunk to send. Its position will be updated upon return.
-	 * @param presentationTimeUs (Reserved for future use) Presentation timestamp (PTS) of the
-	 *                           last audio sample data included in this chunk, in microseconds.
-	 *                           It must be greater than the previous timestamp.
-	 *                           Specify -1 if unknown.
-	 * @param completionListener A completion listener that informs when the audio file is played
-	 */
-	void sendAudio(ByteBuffer data, long presentationTimeUs, CompletionListener completionListener);
+    /**
+     * Sends a chunk of audio data to SDL Core.
+     * <p>
+     * Note: this method must not be called after SdlProxyBase.endAudioStream() is called.
+     *
+     * @param data               Data chunk to send. Its position will be updated upon return.
+     * @param presentationTimeUs (Reserved for future use) Presentation timestamp (PTS) of the
+     *                           last audio sample data included in this chunk, in microseconds.
+     *                           It must be greater than the previous timestamp.
+     *                           Specify -1 if unknown.
+     * @param completionListener A completion listener that informs when the audio file is played
+     */
+    void sendAudio(ByteBuffer data, long presentationTimeUs, CompletionListener completionListener);
 }

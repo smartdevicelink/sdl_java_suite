@@ -10,6 +10,7 @@ import java.util.Hashtable;
 
 /**
  * This RCP creates a window, by default the main is 0.
+ *
  * @since 6.0
  */
 public class CreateWindowResponse extends RPCResponse {

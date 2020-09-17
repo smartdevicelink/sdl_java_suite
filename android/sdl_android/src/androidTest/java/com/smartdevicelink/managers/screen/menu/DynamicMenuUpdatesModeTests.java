@@ -40,60 +40,60 @@ import java.util.List;
 
 public class DynamicMenuUpdatesModeTests extends TestCase {
 
-	/**
-	 * Verifies that the enum values are not null upon valid assignment.
-	 */
-	public void testValidEnums() {
-		String example = "FORCE_ON";
-		DynamicMenuUpdatesMode forceOn = DynamicMenuUpdatesMode.valueForString(example);
-		example = "FORCE_OFF";
-		DynamicMenuUpdatesMode forceOff = DynamicMenuUpdatesMode.valueForString(example);
-		example = "ON_WITH_COMPAT_MODE";
-		DynamicMenuUpdatesMode onWithCompatMode = DynamicMenuUpdatesMode.valueForString(example);
+    /**
+     * Verifies that the enum values are not null upon valid assignment.
+     */
+    public void testValidEnums() {
+        String example = "FORCE_ON";
+        DynamicMenuUpdatesMode forceOn = DynamicMenuUpdatesMode.valueForString(example);
+        example = "FORCE_OFF";
+        DynamicMenuUpdatesMode forceOff = DynamicMenuUpdatesMode.valueForString(example);
+        example = "ON_WITH_COMPAT_MODE";
+        DynamicMenuUpdatesMode onWithCompatMode = DynamicMenuUpdatesMode.valueForString(example);
 
-		assertNotNull("FORCE_ON returned null", forceOn);
-		assertNotNull("FORCE_OFF returned null", forceOff);
-		assertNotNull("ON_WITH_COMPAT_MODE returned null", onWithCompatMode);
-	}
+        assertNotNull("FORCE_ON returned null", forceOn);
+        assertNotNull("FORCE_OFF returned null", forceOff);
+        assertNotNull("ON_WITH_COMPAT_MODE returned null", onWithCompatMode);
+    }
 
-	/**
-	 * Verifies that an invalid assignment is null.
-	 */
-	public void testInvalidEnum() {
-		String example = "deFaUlt";
-		try {
-			DynamicMenuUpdatesMode temp = DynamicMenuUpdatesMode.valueForString(example);
-			assertNull("Result of valueForString should be null.", temp);
-		} catch (IllegalArgumentException exception) {
-			fail("Invalid enum throws IllegalArgumentException.");
-		}
-	}
+    /**
+     * Verifies that an invalid assignment is null.
+     */
+    public void testInvalidEnum() {
+        String example = "deFaUlt";
+        try {
+            DynamicMenuUpdatesMode temp = DynamicMenuUpdatesMode.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
+        } catch (IllegalArgumentException exception) {
+            fail("Invalid enum throws IllegalArgumentException.");
+        }
+    }
 
-	/**
-	 * Verifies that a null assignment is invalid.
-	 */
-	public void testNullEnum() {
-		String example = null;
-		try {
-			DynamicMenuUpdatesMode temp = DynamicMenuUpdatesMode.valueForString(example);
-			assertNull("Result of valueForString should be null.", temp);
-		} catch (NullPointerException exception) {
-			fail("Null string throws NullPointerException.");
-		}
-	}
+    /**
+     * Verifies that a null assignment is invalid.
+     */
+    public void testNullEnum() {
+        String example = null;
+        try {
+            DynamicMenuUpdatesMode temp = DynamicMenuUpdatesMode.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
+        } catch (NullPointerException exception) {
+            fail("Null string throws NullPointerException.");
+        }
+    }
 
-	/**
-	 * Verifies the possible enum values of DynamicMenuUpdatesMode.
-	 */
-	public void testListEnum() {
-		List<DynamicMenuUpdatesMode> enumValueList = Arrays.asList(DynamicMenuUpdatesMode.values());
+    /**
+     * Verifies the possible enum values of DynamicMenuUpdatesMode.
+     */
+    public void testListEnum() {
+        List<DynamicMenuUpdatesMode> enumValueList = Arrays.asList(DynamicMenuUpdatesMode.values());
 
-		List<DynamicMenuUpdatesMode> enumTestList = new ArrayList<>();
-		enumTestList.add(DynamicMenuUpdatesMode.FORCE_ON);
-		enumTestList.add(DynamicMenuUpdatesMode.FORCE_OFF);
-		enumTestList.add(DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE);
+        List<DynamicMenuUpdatesMode> enumTestList = new ArrayList<>();
+        enumTestList.add(DynamicMenuUpdatesMode.FORCE_ON);
+        enumTestList.add(DynamicMenuUpdatesMode.FORCE_OFF);
+        enumTestList.add(DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE);
 
-		assertTrue("Enum value list does not match enum class list",
-				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
+        assertTrue("Enum value list does not match enum class list",
+                enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
+    }
 }

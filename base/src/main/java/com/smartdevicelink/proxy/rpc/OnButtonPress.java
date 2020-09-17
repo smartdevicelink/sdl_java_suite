@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -115,36 +115,39 @@ import java.util.Hashtable;
  * </tr>
  * </table>
  * </p>
- * 
- * @since SmartDeviceLink 1.0
+ *
  * @see SubscribeButton
  * @see UnsubscribeButton
+ * @since SmartDeviceLink 1.0
  */
 public class OnButtonPress extends RPCNotification {
-	public static final String KEY_BUTTON_PRESS_MODE = "buttonPressMode";
-	public static final String KEY_BUTTON_NAME = "buttonName";
-	public static final String KEY_CUSTOM_BUTTON_ID = "customButtonID";
-	/**
-	*Constructs a newly allocated OnButtonPress object
-	*/   
+    public static final String KEY_BUTTON_PRESS_MODE = "buttonPressMode";
+    public static final String KEY_BUTTON_NAME = "buttonName";
+    public static final String KEY_CUSTOM_BUTTON_ID = "customButtonID";
+
+    /**
+     * Constructs a newly allocated OnButtonPress object
+     */
     public OnButtonPress() {
         super(FunctionID.ON_BUTTON_PRESS.toString());
     }
+
     /**
-	 * <p>
-	 * Constructs a newly allocated OnButtonPress object indicated by the
-	 * Hashtable parameter
-	 * </p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-     */    
+     * <p>
+     * Constructs a newly allocated OnButtonPress object indicated by the
+     * Hashtable parameter
+     * </p>
+     *
+     * @param hash The Hashtable to use
+     */
     public OnButtonPress(Hashtable<String, Object> hash) {
         super(hash);
     }
+
     /**
-     *Constructs a newly allocated OnButtonPress object
-     * @param buttonName name of the button
+     * Constructs a newly allocated OnButtonPress object
+     *
+     * @param buttonName      name of the button
      * @param buttonPressMode indicates whether this is a short or long press
      */
     public OnButtonPress(@NonNull ButtonName buttonName, @NonNull ButtonPressMode buttonPressMode) {
@@ -152,29 +155,38 @@ public class OnButtonPress extends RPCNotification {
         setButtonName(buttonName);
         setButtonPressMode(buttonPressMode);
     }
+
     /**
      * <p>Returns an <i>{@linkplain ButtonName}</i> the button's name</p>
+     *
      * @return ButtonName Name of the button
-     */    
+     */
     public ButtonName getButtonName() {
         return (ButtonName) getObject(ButtonName.class, KEY_BUTTON_NAME);
     }
+
     /**
      * <p>Set the button's name</p>
+     *
      * @param buttonName name of the button
      */
     public OnButtonPress setButtonName(@NonNull ButtonName buttonName) {
         setParameters(KEY_BUTTON_NAME, buttonName);
         return this;
     }
-    /**<p>Returns <i>{@linkplain ButtonPressMode}</i></p>
+
+    /**
+     * <p>Returns <i>{@linkplain ButtonPressMode}</i></p>
+     *
      * @return ButtonPressMode whether this is a long or short button press event
-     */    
+     */
     public ButtonPressMode getButtonPressMode() {
         return (ButtonPressMode) getObject(ButtonPressMode.class, KEY_BUTTON_PRESS_MODE);
     }
+
     /**
      * <p>Set the button press mode of the event</p>
+     *
      * @param buttonPressMode indicates whether this is a short or long press
      */
     public OnButtonPress setButtonPressMode(@NonNull ButtonPressMode buttonPressMode) {
@@ -185,9 +197,10 @@ public class OnButtonPress extends RPCNotification {
     /**
      * Set CustomButtonID of the button
      * If ButtonName is "CUSTOM_BUTTON", this references the integer ID passed by a custom button. (e.g. softButton ID)
+     *
      * @param customButtonID CustomButtonID of the button
      */
-    public OnButtonPress setCustomButtonID( Integer customButtonID) {
+    public OnButtonPress setCustomButtonID(Integer customButtonID) {
         setParameters(KEY_CUSTOM_BUTTON_ID, customButtonID);
         return this;
     }
@@ -195,6 +208,7 @@ public class OnButtonPress extends RPCNotification {
     /**
      * Get CustomButtonID of the button
      * If ButtonName is "CUSTOM_BUTTON", this references the integer ID passed by a custom button. (e.g. softButton ID)
+     *
      * @return CustomButtonID of the button
      */
     public Integer getCustomButtonID() {

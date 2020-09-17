@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -30,15 +30,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 package com.smartdevicelink.proxy.rpc.enums;
+
 /**
  * Enumeration listing possible keyboard events.
- * 
- *
  */
 public enum KeypressMode {
-	/**
-	 * Each keypress is individually sent as the user presses the keyboard keys.
-	 */
+    /**
+     * Each keypress is individually sent as the user presses the keyboard keys.
+     */
     SINGLE_KEYPRESS,
     /**
      * The key presses are queued and a string is eventually sent once the user chooses to submit their entry.
@@ -50,9 +49,9 @@ public enum KeypressMode {
     RESEND_CURRENT_ENTRY;
 
     public static KeypressMode valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

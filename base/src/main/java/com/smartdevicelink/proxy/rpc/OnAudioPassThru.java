@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -38,7 +38,7 @@ import java.util.Hashtable;
 
 /**
  * Binary data is in binary part of hybrid msg.
- *  <p>
+ * <p>
  * </p>
  * <b>HMI Status Requirements:</b>
  * <ul>
@@ -68,26 +68,29 @@ import java.util.Hashtable;
  * </tr>
  * </table>
  * </p>
- *
  */
 public class OnAudioPassThru extends RPCNotification {
-	/**
-	*Constructs a newly allocated OnCommand object
-	*/    
+    /**
+     * Constructs a newly allocated OnCommand object
+     */
     public OnAudioPassThru() {
         super(FunctionID.ON_AUDIO_PASS_THRU.toString());
     }
+
     /**
-     *<p>Constructs a newly allocated OnAudioPassThru object indicated by the Hashtable parameter</p>
-     *@param hash The Hashtable to use
-     */ 
+     * <p>Constructs a newly allocated OnAudioPassThru object indicated by the Hashtable parameter</p>
+     *
+     * @param hash The Hashtable to use
+     */
     public OnAudioPassThru(Hashtable<String, Object> hash) {
         super(hash);
     }
-    public OnAudioPassThru setAPTData( byte[] aptData) {
+
+    public OnAudioPassThru setAPTData(byte[] aptData) {
         setBulkData(aptData);
         return this;
     }
+
     public byte[] getAPTData() {
         return getBulkData();
     }

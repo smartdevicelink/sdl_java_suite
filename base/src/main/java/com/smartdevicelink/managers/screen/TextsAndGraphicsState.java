@@ -16,9 +16,9 @@ class TextAndGraphicState {
     }
 
     TextAndGraphicState(String textField1, String textField2, String textField3, String textField4, String mediaTrackTextField,
-                          String title, SdlArtwork primaryGraphic, SdlArtwork secondaryGraphic, TextAlignment textAlignment,
-                          MetadataType textField1Type, MetadataType textField2Type, MetadataType textField3Type, MetadataType textField4Type,
-                          TemplateConfiguration templateConfiguration) {
+                        String title, SdlArtwork primaryGraphic, SdlArtwork secondaryGraphic, TextAlignment textAlignment,
+                        MetadataType textField1Type, MetadataType textField2Type, MetadataType textField3Type, MetadataType textField4Type,
+                        TemplateConfiguration templateConfiguration) {
         this.textField1 = textField1;
         this.textField2 = textField2;
         this.textField3 = textField3;

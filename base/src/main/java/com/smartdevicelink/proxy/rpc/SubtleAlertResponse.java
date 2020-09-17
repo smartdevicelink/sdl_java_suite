@@ -64,7 +64,7 @@ public class SubtleAlertResponse extends RPCResponse {
     /**
      * Constructs a new SubtleAlertResponse object
      *
-     * @param success whether the request is successfully processed
+     * @param success    whether the request is successfully processed
      * @param resultCode additional information about a response returning a failed outcome
      */
     public SubtleAlertResponse(@NonNull Boolean success, @NonNull Result resultCode) {
@@ -77,10 +77,10 @@ public class SubtleAlertResponse extends RPCResponse {
      * Sets the tryAgainTime.
      *
      * @param tryAgainTime Amount of time (in milliseconds) that an app must wait before resending an alert.
-     * If provided, another system event or overlay currently has a higher priority than this alert.
-     * An app must not send an alert without waiting at least the amount of time dictated.
+     *                     If provided, another system event or overlay currently has a higher priority than this alert.
+     *                     An app must not send an alert without waiting at least the amount of time dictated.
      */
-    public SubtleAlertResponse setTryAgainTime( Integer tryAgainTime) {
+    public SubtleAlertResponse setTryAgainTime(Integer tryAgainTime) {
         setParameters(KEY_TRY_AGAIN_TIME, tryAgainTime);
         return this;
     }

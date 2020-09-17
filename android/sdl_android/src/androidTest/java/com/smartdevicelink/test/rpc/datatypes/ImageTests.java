@@ -13,15 +13,15 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.Image}
  */
-public class ImageTests extends TestCase{
+public class ImageTests extends TestCase {
 
     private Image msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new Image();
 
         msg.setImageType(TestValues.GENERAL_IMAGETYPE);
@@ -30,19 +30,19 @@ public class ImageTests extends TestCase{
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
-    	// Test Values
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
         ImageType imageType = msg.getImageType();
         String value = msg.getValue();
         Boolean isTemplate = msg.getIsTemplate();
-        
+
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_IMAGETYPE, imageType);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, value);
         assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, isTemplate);
-        
+
         // Invalid/Null Tests
         Image msg = new Image();
         assertNotNull(TestValues.NOT_NULL, msg);
@@ -53,10 +53,10 @@ public class ImageTests extends TestCase{
         assertNull(TestValues.NULL, msg.getIsTemplate());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(Image.KEY_IMAGE_TYPE, TestValues.GENERAL_IMAGETYPE);
             reference.put(Image.KEY_VALUE, TestValues.GENERAL_STRING);
             reference.put(Image.KEY_IS_TEMPLATE, TestValues.GENERAL_BOOLEAN);
@@ -65,12 +65,12 @@ public class ImageTests extends TestCase{
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
                 assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
-        }catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

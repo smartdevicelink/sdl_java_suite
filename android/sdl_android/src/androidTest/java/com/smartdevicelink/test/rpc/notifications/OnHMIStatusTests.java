@@ -21,13 +21,13 @@ import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.fail;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.OnHMIStatus}
  */
-public class OnHMIStatusTests extends BaseRpcTests{
+public class OnHMIStatusTests extends BaseRpcTests {
 
-	@Override
-    protected RPCMessage createMessage(){
+    @Override
+    protected RPCMessage createMessage() {
         OnHMIStatus msg = new OnHMIStatus();
 
         msg.setAudioStreamingState(TestValues.GENERAL_AUDIOSTREAMINGSTATE);
@@ -41,51 +41,51 @@ public class OnHMIStatusTests extends BaseRpcTests{
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_NOTIFICATION;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.ON_HMI_STATUS.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
+        try {
             result.put(OnHMIStatus.KEY_AUDIO_STREAMING_STATE, TestValues.GENERAL_AUDIOSTREAMINGSTATE);
             result.put(OnHMIStatus.KEY_VIDEO_STREAMING_STATE, TestValues.GENERAL_VIDEOSTREAMINGSTATE);
             result.put(OnHMIStatus.KEY_HMI_LEVEL, TestValues.GENERAL_HMILEVEL);
             result.put(OnHMIStatus.KEY_SYSTEM_CONTEXT, TestValues.GENERAL_SYSTEMCONTEXT);
             result.put(OnHMIStatus.KEY_WINDOW_ID, TestValues.GENERAL_INT);
-        }catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
 
         return result;
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
+     * Tests the expected values of the RPC message.
+     */
     @Test
-    public void testRpcValues () {       	
-    	// Test Values
-        AudioStreamingState audioStreamingState = ( (OnHMIStatus) msg ).getAudioStreamingState();
-        VideoStreamingState videoStreamingState = ( (OnHMIStatus) msg ).getVideoStreamingState();
-        HMILevel hmiLevel = ( (OnHMIStatus) msg ).getHmiLevel();
-        SystemContext context = ( (OnHMIStatus) msg ).getSystemContext();
-        int testWindowID = ( (OnHMIStatus) msg ).getWindowID();
-        
+    public void testRpcValues() {
+        // Test Values
+        AudioStreamingState audioStreamingState = ((OnHMIStatus) msg).getAudioStreamingState();
+        VideoStreamingState videoStreamingState = ((OnHMIStatus) msg).getVideoStreamingState();
+        HMILevel hmiLevel = ((OnHMIStatus) msg).getHmiLevel();
+        SystemContext context = ((OnHMIStatus) msg).getSystemContext();
+        int testWindowID = ((OnHMIStatus) msg).getWindowID();
+
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_AUDIOSTREAMINGSTATE, audioStreamingState);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_VIDEOSTREAMINGSTATE, videoStreamingState);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_HMILEVEL, hmiLevel);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_SYSTEMCONTEXT, context);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, testWindowID);
-   
+
         // Invalid/Null Tests
         OnHMIStatus msg = new OnHMIStatus();
         assertNotNull(TestValues.NOT_NULL, msg);
@@ -94,7 +94,7 @@ public class OnHMIStatusTests extends BaseRpcTests{
         assertNull(TestValues.NULL, msg.getAudioStreamingState());
 
         assertNull(TestValues.NULL, msg.getVideoStreamingState());
-        msg.format(new Version(4,5,0),true);
+        msg.format(new Version(4, 5, 0), true);
         assertEquals(TestValues.MATCH, VideoStreamingState.STREAMABLE, msg.getVideoStreamingState());
         assertNull(TestValues.NULL, msg.getHmiLevel());
         assertNull(TestValues.NULL, msg.getSystemContext());

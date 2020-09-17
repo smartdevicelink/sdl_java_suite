@@ -150,7 +150,7 @@ class TextAndGraphicUpdateOperation extends Task {
 
             }
         });
-        if(internalInterface.get() != null){
+        if (internalInterface.get() != null) {
             internalInterface.get().sendRPC(show);
         } else {
             DebugTool.logInfo(TAG, "ISdl is null Text and Graphic update failed");
@@ -161,22 +161,21 @@ class TextAndGraphicUpdateOperation extends Task {
 
     }
 
-    private void sendSetDisplayLayoutWithTemplateConfiguration(TemplateConfiguration configuration, final CompletionListener listener){
-       final SetDisplayLayout setLayout = new SetDisplayLayout().setDisplayLayout(configuration.getTemplate()).setDayColorScheme(configuration.getDayColorScheme()).setNightColorScheme(configuration.getNightColorScheme());
+    private void sendSetDisplayLayoutWithTemplateConfiguration(TemplateConfiguration configuration, final CompletionListener listener) {
+        final SetDisplayLayout setLayout = new SetDisplayLayout().setDisplayLayout(configuration.getTemplate()).setDayColorScheme(configuration.getDayColorScheme()).setNightColorScheme(configuration.getNightColorScheme());
         setLayout.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
-                if(response.getSuccess()){
+                if (response.getSuccess()) {
                     updateCurrentScreenDataFromSetDisplayLayout(setLayout);
-                }
-                else {
+                } else {
                     DebugTool.logInfo(TAG, "Text and Graphic SetDisplayLayout failed");
                     currentScreenDataUpdateListener.onError();
                 }
                 listener.onComplete(response.getSuccess());
             }
         });
-        if(internalInterface.get() != null){
+        if (internalInterface.get() != null) {
             internalInterface.get().sendRPC(setLayout);
         } else {
             DebugTool.logInfo(TAG, "ISdl is null Text and Graphic update failed");
@@ -560,8 +559,8 @@ class TextAndGraphicUpdateOperation extends Task {
         }
 
         // This is intentionally checking show.metadataTags.mainField1 because the tags may be in different places based on the capabilities, then check its own field in case that's the only field that's being used.
-        if(show.getMetadataTags() != null){
-            if(show.getMetadataTags().getMainField1() != null) {
+        if (show.getMetadataTags() != null) {
+            if (show.getMetadataTags().getMainField1() != null) {
                 currentScreenData.setTextField1Type(updatedState.getTextField1Type());
             }
             if (show.getMetadataTags().getMainField1() != null || show.getMetadataTags().getMainField2() != null) {
@@ -718,9 +717,9 @@ class TextAndGraphicUpdateOperation extends Task {
     }
 
     private Boolean shouldUpdateTemplateConfig() {
-        if(updatedState.getTemplateConfiguration() == null) {
+        if (updatedState.getTemplateConfiguration() == null) {
             return false;
-        } else if(currentScreenData.getTemplateConfiguration() == null) {
+        } else if (currentScreenData.getTemplateConfiguration() == null) {
             return true;
         }
         return !updatedState.getTemplateConfiguration().getStore().equals(currentScreenData.getTemplateConfiguration().getStore());
@@ -745,7 +744,7 @@ class TextAndGraphicUpdateOperation extends Task {
 
     private void finishOperation(boolean success) {
         DebugTool.logInfo(TAG, "Finishing text and graphic update operation");
-        if(listener != null){
+        if (listener != null) {
             listener.onComplete(success);
         }
         onFinished();

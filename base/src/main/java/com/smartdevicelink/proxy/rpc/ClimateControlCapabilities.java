@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -44,20 +44,20 @@ import java.util.List;
  * Contains information about a climate control module's capabilities.
  */
 
-public class ClimateControlCapabilities extends RPCStruct{
-    public static final String KEY_MODULE_NAME= "moduleName";
-    public static final String KEY_FAN_SPEED_AVAILABLE= "fanSpeedAvailable";
-    public static final String KEY_DESIRED_TEMPERATURE_AVAILABLE= "desiredTemperatureAvailable";
-    public static final String KEY_CURRENT_TEMPERATURE_AVAILABLE= "currentTemperatureAvailable";
-    public static final String KEY_AC_ENABLE_AVAILABLE= "acEnableAvailable";
-    public static final String KEY_AC_MAX_ENABLE_AVAILABLE= "acMaxEnableAvailable";
-    public static final String KEY_CIRCULATE_AIR_ENABLE_AVAILABLE= "circulateAirEnableAvailable";
-    public static final String KEY_AUTO_MODE_ENABLE_AVAILABLE= "autoModeEnableAvailable";
-    public static final String KEY_DUAL_MODE_ENABLE_AVAILABLE= "dualModeEnableAvailable";
-    public static final String KEY_DEFROST_ZONE_AVAILABLE= "defrostZoneAvailable";
-    public static final String KEY_DEFROST_ZONE= "defrostZone";
-    public static final String KEY_VENTILATION_MODE_AVAILABLE= "ventilationModeAvailable";
-    public static final String KEY_VENTILATION_MODE= "ventilationMode";
+public class ClimateControlCapabilities extends RPCStruct {
+    public static final String KEY_MODULE_NAME = "moduleName";
+    public static final String KEY_FAN_SPEED_AVAILABLE = "fanSpeedAvailable";
+    public static final String KEY_DESIRED_TEMPERATURE_AVAILABLE = "desiredTemperatureAvailable";
+    public static final String KEY_CURRENT_TEMPERATURE_AVAILABLE = "currentTemperatureAvailable";
+    public static final String KEY_AC_ENABLE_AVAILABLE = "acEnableAvailable";
+    public static final String KEY_AC_MAX_ENABLE_AVAILABLE = "acMaxEnableAvailable";
+    public static final String KEY_CIRCULATE_AIR_ENABLE_AVAILABLE = "circulateAirEnableAvailable";
+    public static final String KEY_AUTO_MODE_ENABLE_AVAILABLE = "autoModeEnableAvailable";
+    public static final String KEY_DUAL_MODE_ENABLE_AVAILABLE = "dualModeEnableAvailable";
+    public static final String KEY_DEFROST_ZONE_AVAILABLE = "defrostZoneAvailable";
+    public static final String KEY_DEFROST_ZONE = "defrostZone";
+    public static final String KEY_VENTILATION_MODE_AVAILABLE = "ventilationModeAvailable";
+    public static final String KEY_VENTILATION_MODE = "ventilationMode";
     public static final String KEY_HEATED_STEERING_WHEEL_AVAILABLE = "heatedSteeringWheelAvailable";
     public static final String KEY_HEATED_WIND_SHIELD_AVAILABLE = "heatedWindshieldAvailable";
     public static final String KEY_HEATED_REAR_WINDOW_AVAILABLE = "heatedRearWindowAvailable";
@@ -74,7 +74,7 @@ public class ClimateControlCapabilities extends RPCStruct{
 
     /**
      * Constructs a newly allocated ClimateControlCapabilities
-	 *
+     *
      * @param moduleName The short friendly name of the climate control module. It should not be used to identify a module by mobile application.
      */
     public ClimateControlCapabilities(@NonNull String moduleName) {
@@ -104,11 +104,10 @@ public class ClimateControlCapabilities extends RPCStruct{
     /**
      * Sets the fanSpeedAvailable portion of the ClimateControlCapabilities class
      *
-     * @param fanSpeedAvailable
-     * Availability of the control of fan speed.
-     * True: Available, False: Not Available, Not present: Not Available.
+     * @param fanSpeedAvailable Availability of the control of fan speed.
+     *                          True: Available, False: Not Available, Not present: Not Available.
      */
-    public ClimateControlCapabilities setFanSpeedAvailable( Boolean fanSpeedAvailable) {
+    public ClimateControlCapabilities setFanSpeedAvailable(Boolean fanSpeedAvailable) {
         setValue(KEY_FAN_SPEED_AVAILABLE, fanSpeedAvailable);
         return this;
     }
@@ -126,11 +125,10 @@ public class ClimateControlCapabilities extends RPCStruct{
     /**
      * Sets the desiredTemperatureAvailable portion of the ClimateControlCapabilities class
      *
-     * @param desiredTemperatureAvailable
-     * Availability of the control of desired temperature.
-     * True: Available, False: Not Available, Not present: Not Available.
+     * @param desiredTemperatureAvailable Availability of the control of desired temperature.
+     *                                    True: Available, False: Not Available, Not present: Not Available.
      */
-    public ClimateControlCapabilities setDesiredTemperatureAvailable( Boolean desiredTemperatureAvailable) {
+    public ClimateControlCapabilities setDesiredTemperatureAvailable(Boolean desiredTemperatureAvailable) {
         setValue(KEY_DESIRED_TEMPERATURE_AVAILABLE, desiredTemperatureAvailable);
         return this;
     }
@@ -148,9 +146,8 @@ public class ClimateControlCapabilities extends RPCStruct{
     /**
      * Sets the currentTemperatureAvailable portion of the ClimateControlCapabilities class
      *
-     * @param currentTemperatureAvailable
-     * Availability of the reading of current temperature.
-     * True: Available, False: Not Available, Not present: Not Available.
+     * @param currentTemperatureAvailable Availability of the reading of current temperature.
+     *                                    True: Available, False: Not Available, Not present: Not Available.
      */
     public ClimateControlCapabilities setCurrentTemperatureAvailable(Boolean currentTemperatureAvailable) {
         setValue(KEY_CURRENT_TEMPERATURE_AVAILABLE, currentTemperatureAvailable);
@@ -170,11 +167,10 @@ public class ClimateControlCapabilities extends RPCStruct{
     /**
      * Sets the acEnableAvailable portion of the ClimateControlCapabilities class
      *
-     * @param acEnableAvailable
-     * Availability of the control of turn on/off AC.
-     * True: Available, False: Not Available, Not present: Not Available.
+     * @param acEnableAvailable Availability of the control of turn on/off AC.
+     *                          True: Available, False: Not Available, Not present: Not Available.
      */
-    public ClimateControlCapabilities setAcEnableAvailable( Boolean acEnableAvailable) {
+    public ClimateControlCapabilities setAcEnableAvailable(Boolean acEnableAvailable) {
         setValue(KEY_AC_ENABLE_AVAILABLE, acEnableAvailable);
         return this;
     }
@@ -192,11 +188,10 @@ public class ClimateControlCapabilities extends RPCStruct{
     /**
      * Sets the acMaxEnableAvailable portion of the ClimateControlCapabilities class
      *
-     * @param acMaxEnableAvailable
-     * Availability of the control of enable/disable air conditioning is ON on the maximum level.
-     * True: Available, False: Not Available, Not present: Not Available.
+     * @param acMaxEnableAvailable Availability of the control of enable/disable air conditioning is ON on the maximum level.
+     *                             True: Available, False: Not Available, Not present: Not Available.
      */
-    public ClimateControlCapabilities setAcMaxEnableAvailable( Boolean acMaxEnableAvailable) {
+    public ClimateControlCapabilities setAcMaxEnableAvailable(Boolean acMaxEnableAvailable) {
         setValue(KEY_AC_MAX_ENABLE_AVAILABLE, acMaxEnableAvailable);
         return this;
     }
@@ -214,11 +209,10 @@ public class ClimateControlCapabilities extends RPCStruct{
     /**
      * Sets the circulateAirEnableAvailable portion of the ClimateControlCapabilities class
      *
-     * @param circulateAirEnableAvailable
-     * Availability of the control of enable/disable circulate Air mode.
-     * True: Available, False: Not Available, Not present: Not Available.
+     * @param circulateAirEnableAvailable Availability of the control of enable/disable circulate Air mode.
+     *                                    True: Available, False: Not Available, Not present: Not Available.
      */
-    public ClimateControlCapabilities setCirculateAirEnableAvailable( Boolean circulateAirEnableAvailable) {
+    public ClimateControlCapabilities setCirculateAirEnableAvailable(Boolean circulateAirEnableAvailable) {
         setValue(KEY_CIRCULATE_AIR_ENABLE_AVAILABLE, circulateAirEnableAvailable);
         return this;
     }
@@ -236,11 +230,10 @@ public class ClimateControlCapabilities extends RPCStruct{
     /**
      * Sets the autoModeEnableAvailable portion of the ClimateControlCapabilities class
      *
-     * @param autoModeEnableAvailable
-     * Availability of the control of enable/disable auto mode.
-     * True: Available, False: Not Available, Not present: Not Available.
+     * @param autoModeEnableAvailable Availability of the control of enable/disable auto mode.
+     *                                True: Available, False: Not Available, Not present: Not Available.
      */
-    public ClimateControlCapabilities setAutoModeEnableAvailable( Boolean autoModeEnableAvailable) {
+    public ClimateControlCapabilities setAutoModeEnableAvailable(Boolean autoModeEnableAvailable) {
         setValue(KEY_AUTO_MODE_ENABLE_AVAILABLE, autoModeEnableAvailable);
         return this;
     }
@@ -258,11 +251,10 @@ public class ClimateControlCapabilities extends RPCStruct{
     /**
      * Sets the dualModeEnableAvailable portion of the ClimateControlCapabilities class
      *
-     * @param dualModeEnableAvailable
-     * Availability of the control of enable/disable dual mode.
-     * True: Available, False: Not Available, Not present: Not Available.
+     * @param dualModeEnableAvailable Availability of the control of enable/disable dual mode.
+     *                                True: Available, False: Not Available, Not present: Not Available.
      */
-    public ClimateControlCapabilities setDualModeEnableAvailable( Boolean dualModeEnableAvailable) {
+    public ClimateControlCapabilities setDualModeEnableAvailable(Boolean dualModeEnableAvailable) {
         setValue(KEY_DUAL_MODE_ENABLE_AVAILABLE, dualModeEnableAvailable);
         return this;
     }
@@ -280,11 +272,10 @@ public class ClimateControlCapabilities extends RPCStruct{
     /**
      * Sets the defrostZoneAvailable portion of the ClimateControlCapabilities class
      *
-     * @param defrostZoneAvailable
-     * Availability of the control of defrost zones.
-     * True: Available, False: Not Available, Not present: Not Available.
+     * @param defrostZoneAvailable Availability of the control of defrost zones.
+     *                             True: Available, False: Not Available, Not present: Not Available.
      */
-    public ClimateControlCapabilities setDefrostZoneAvailable( Boolean defrostZoneAvailable) {
+    public ClimateControlCapabilities setDefrostZoneAvailable(Boolean defrostZoneAvailable) {
         setValue(KEY_DEFROST_ZONE_AVAILABLE, defrostZoneAvailable);
         return this;
     }
@@ -311,10 +302,9 @@ public class ClimateControlCapabilities extends RPCStruct{
     /**
      * Sets the defrostZone portion of the ClimateControlCapabilities class
      *
-     * @param defrostZone
-     * A set of all defrost zones that are controllable.
+     * @param defrostZone A set of all defrost zones that are controllable.
      */
-    public ClimateControlCapabilities setDefrostZone( List<DefrostZone> defrostZone) {
+    public ClimateControlCapabilities setDefrostZone(List<DefrostZone> defrostZone) {
         setValue(KEY_DEFROST_ZONE, defrostZone);
         return this;
     }
@@ -322,11 +312,10 @@ public class ClimateControlCapabilities extends RPCStruct{
     /**
      * Sets the ventilationModeAvailable portion of the ClimateControlCapabilities class
      *
-     * @param ventilationModeAvailable
-     * Availability of the control of air ventilation mode.
-     * True: Available, False: Not Available, Not present: Not Available.
+     * @param ventilationModeAvailable Availability of the control of air ventilation mode.
+     *                                 True: Available, False: Not Available, Not present: Not Available.
      */
-    public ClimateControlCapabilities setVentilationModeAvailable( Boolean ventilationModeAvailable) {
+    public ClimateControlCapabilities setVentilationModeAvailable(Boolean ventilationModeAvailable) {
         setValue(KEY_VENTILATION_MODE_AVAILABLE, ventilationModeAvailable);
         return this;
     }
@@ -353,10 +342,9 @@ public class ClimateControlCapabilities extends RPCStruct{
     /**
      * Sets the ventilationMode portion of the ClimateControlCapabilities class
      *
-     * @param ventilationMode
-     * A set of all ventilation modes that are controllable.
+     * @param ventilationMode A set of all ventilation modes that are controllable.
      */
-    public ClimateControlCapabilities setVentilationMode( List<VentilationMode> ventilationMode) {
+    public ClimateControlCapabilities setVentilationMode(List<VentilationMode> ventilationMode) {
         setValue(KEY_VENTILATION_MODE, ventilationMode);
         return this;
     }
@@ -367,7 +355,7 @@ public class ClimateControlCapabilities extends RPCStruct{
      * @param heatedSteeringWheelAvailable Availability of the control (enable/disable) of heated Steering Wheel.
      *                                     True: Available, False: Not Available, Not present: Not Available.
      */
-    public ClimateControlCapabilities setHeatedSteeringWheelAvailable( Boolean heatedSteeringWheelAvailable) {
+    public ClimateControlCapabilities setHeatedSteeringWheelAvailable(Boolean heatedSteeringWheelAvailable) {
         setValue(KEY_HEATED_STEERING_WHEEL_AVAILABLE, heatedSteeringWheelAvailable);
         return this;
     }
@@ -388,7 +376,7 @@ public class ClimateControlCapabilities extends RPCStruct{
      * @param heatedWindshieldAvailable Availability of the control (enable/disable) of heated Windshield.
      *                                  True: Available, False: Not Available, Not present: Not Available.
      */
-    public ClimateControlCapabilities setHeatedWindshieldAvailable( Boolean heatedWindshieldAvailable) {
+    public ClimateControlCapabilities setHeatedWindshieldAvailable(Boolean heatedWindshieldAvailable) {
         setValue(KEY_HEATED_WIND_SHIELD_AVAILABLE, heatedWindshieldAvailable);
         return this;
     }
@@ -409,7 +397,7 @@ public class ClimateControlCapabilities extends RPCStruct{
      * @param heatedRearWindowAvailable Availability of the control (enable/disable) of heated Rear Window.
      *                                  True: Available, False: Not Available, Not present: Not Available.
      */
-    public ClimateControlCapabilities setHeatedRearWindowAvailable( Boolean heatedRearWindowAvailable) {
+    public ClimateControlCapabilities setHeatedRearWindowAvailable(Boolean heatedRearWindowAvailable) {
         setValue(KEY_HEATED_REAR_WINDOW_AVAILABLE, heatedRearWindowAvailable);
         return this;
     }
@@ -430,7 +418,7 @@ public class ClimateControlCapabilities extends RPCStruct{
      * @param heatedMirrorsAvailable Availability of the control (enable/disable) of heated Mirrors.
      *                               True: Available, False: Not Available, Not present: Not Available.
      */
-    public ClimateControlCapabilities setHeatedMirrorsAvailable( Boolean heatedMirrorsAvailable) {
+    public ClimateControlCapabilities setHeatedMirrorsAvailable(Boolean heatedMirrorsAvailable) {
         setValue(KEY_HEATED_MIRRORS_AVAILABLE, heatedMirrorsAvailable);
         return this;
     }
@@ -442,32 +430,35 @@ public class ClimateControlCapabilities extends RPCStruct{
      * True: Available, False: Not Available, Not present: Not Available.
      */
     public Boolean getHeatedMirrorsAvailable() {
-	    return getBoolean(KEY_HEATED_MIRRORS_AVAILABLE);
+        return getBoolean(KEY_HEATED_MIRRORS_AVAILABLE);
     }
 
     /**
      * Sets ModuleInfo for this capability
+     *
      * @param info the ModuleInfo to be set
      */
-    public ClimateControlCapabilities setModuleInfo( ModuleInfo info) {
+    public ClimateControlCapabilities setModuleInfo(ModuleInfo info) {
         setValue(KEY_MODULE_INFO, info);
         return this;
     }
 
     /**
      * Gets a ModuleInfo of this capability
+     *
      * @return module info of this capability
      */
     public ModuleInfo getModuleInfo() {
         return (ModuleInfo) getObject(ModuleInfo.class, KEY_MODULE_INFO);
     }
+
     /**
      * Sets the climateEnableAvailable portion of the ClimateControlCapabilities class
      *
      * @param climateEnableAvailable Availability of the control of enable/disable climate control.
      *                               True: Available, False: Not Available, Not present: Not Available.
      */
-    public ClimateControlCapabilities setClimateEnableAvailable( Boolean climateEnableAvailable) {
+    public ClimateControlCapabilities setClimateEnableAvailable(Boolean climateEnableAvailable) {
         setValue(KEY_CLIMATE_ENABLE_AVAILABLE, climateEnableAvailable);
         return this;
     }

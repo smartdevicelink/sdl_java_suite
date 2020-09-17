@@ -41,58 +41,64 @@ import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 
 public class MenuConfiguration {
 
-	private MenuLayout mainMenuLayout, submenuLayout;
+    private MenuLayout mainMenuLayout, submenuLayout;
 
-	/**
-	 * Create a MenuConfiguration Object
-	 * @param mainMenuLayout - the layout of the main menu. If `null`, it will default to whatever the head unit uses
-	 * @param submenuLayout - the layout of the main menu. If `null`, it will default to whatever the head unit uses
-	 */
-	public MenuConfiguration(MenuLayout mainMenuLayout, MenuLayout submenuLayout){
-		setMenuLayout(mainMenuLayout);
-		setSubMenuLayout(submenuLayout);
-	}
+    /**
+     * Create a MenuConfiguration Object
+     *
+     * @param mainMenuLayout - the layout of the main menu. If `null`, it will default to whatever the head unit uses
+     * @param submenuLayout  - the layout of the main menu. If `null`, it will default to whatever the head unit uses
+     */
+    public MenuConfiguration(MenuLayout mainMenuLayout, MenuLayout submenuLayout) {
+        setMenuLayout(mainMenuLayout);
+        setSubMenuLayout(submenuLayout);
+    }
 
-	/**
-	 * Changes the default main menu layout.
-	 * @param mainMenuLayout - the layout of the main menu
-	 */
-	private void setMenuLayout(MenuLayout mainMenuLayout){
-		this.mainMenuLayout = mainMenuLayout;
-	}
+    /**
+     * Changes the default main menu layout.
+     *
+     * @param mainMenuLayout - the layout of the main menu
+     */
+    private void setMenuLayout(MenuLayout mainMenuLayout) {
+        this.mainMenuLayout = mainMenuLayout;
+    }
 
-	/**
-	 * Changes the default main menu layout.
-	 * @return - the layout of the main menu
-	 */
-	public MenuLayout getMenuLayout() {
-		return this.mainMenuLayout;
-	}
+    /**
+     * Changes the default main menu layout.
+     *
+     * @return - the layout of the main menu
+     */
+    public MenuLayout getMenuLayout() {
+        return this.mainMenuLayout;
+    }
 
-	/**
-	 * Changes the default submenu layout. To change this for an individual submenu, set the
-	 * `menuLayout` property on the `MenuCell` constructor for creating a cell with sub-cells.
-	 * @param submenuLayout - the MenuLayout for this sub menu
-	 */
-	private void setSubMenuLayout(MenuLayout submenuLayout){
-		this.submenuLayout = submenuLayout;
-	}
+    /**
+     * Changes the default submenu layout. To change this for an individual submenu, set the
+     * `menuLayout` property on the `MenuCell` constructor for creating a cell with sub-cells.
+     *
+     * @param submenuLayout - the MenuLayout for this sub menu
+     */
+    private void setSubMenuLayout(MenuLayout submenuLayout) {
+        this.submenuLayout = submenuLayout;
+    }
 
-	/**
-	 * Changes the default submenu layout. To change this for an individual submenu, set the
-	 * `menuLayout` property on the `MenuCell` constructor for creating a cell with sub-cells.
-	 * @return - the MenuLayout for this sub menu
-	 */
-	public MenuLayout getSubMenuLayout() {
-		return submenuLayout;
-	}
+    /**
+     * Changes the default submenu layout. To change this for an individual submenu, set the
+     * `menuLayout` property on the `MenuCell` constructor for creating a cell with sub-cells.
+     *
+     * @return - the MenuLayout for this sub menu
+     */
+    public MenuLayout getSubMenuLayout() {
+        return submenuLayout;
+    }
 
-	/**
-	 * @return A string description of the cell, useful for debugging.
-	 */
-	@Override @NonNull
-	public String toString() {
-		return "MenuConfiguration: MenuLayout = "+ this.mainMenuLayout + " | SubMenuLayout = "+ this.submenuLayout;
-	}
+    /**
+     * @return A string description of the cell, useful for debugging.
+     */
+    @Override
+    @NonNull
+    public String toString() {
+        return "MenuConfiguration: MenuLayout = " + this.mainMenuLayout + " | SubMenuLayout = " + this.submenuLayout;
+    }
 
 }

@@ -12,15 +12,15 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.Headers}
  */
-public class HeadersTests extends TestCase{
+public class HeadersTests extends TestCase {
 
     private Headers msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new Headers();
 
         msg.setCharset(TestValues.GENERAL_STRING);
@@ -36,10 +36,10 @@ public class HeadersTests extends TestCase{
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
-    	// Test Values
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
         String charset = msg.getCharset();
         String contentType = msg.getContentType();
         String requestMode = msg.getRequestMethod();
@@ -50,7 +50,7 @@ public class HeadersTests extends TestCase{
         boolean doInput = msg.getDoInput();
         boolean useCache = msg.getUseCaches();
         boolean instanceFollow = msg.getInstanceFollowRedirects();
-        
+
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, charset);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, contentType);
@@ -62,7 +62,7 @@ public class HeadersTests extends TestCase{
         assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, doInput);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, useCache);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, instanceFollow);
-        
+
         // Invalid/Null Tests
         Headers msg = new Headers();
         assertNotNull(TestValues.NOT_NULL, msg);
@@ -79,10 +79,10 @@ public class HeadersTests extends TestCase{
         assertNull(TestValues.NULL, msg.getUseCaches());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(Headers.KEY_CHARSET, TestValues.GENERAL_STRING);
             reference.put(Headers.KEY_CONTENT_TYPE, TestValues.GENERAL_STRING);
             reference.put(Headers.KEY_REQUEST_METHOD, TestValues.GENERAL_STRING);
@@ -98,12 +98,12 @@ public class HeadersTests extends TestCase{
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
                 assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
-        }catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

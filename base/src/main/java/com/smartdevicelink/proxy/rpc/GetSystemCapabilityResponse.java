@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -49,16 +49,14 @@ public class GetSystemCapabilityResponse extends RPCResponse {
     /**
      * Constructs a new GetSystemCapability object
      */
-    public GetSystemCapabilityResponse(){
+    public GetSystemCapabilityResponse() {
         super(FunctionID.GET_SYSTEM_CAPABILITY.toString());
     }
 
     /**
      * <p>Constructs a new GetSystemCapability object indicated by the Hashtable parameter</p>
      *
-     *
-     * @param hash
-     *            The Hashtable to use
+     * @param hash The Hashtable to use
      */
     public GetSystemCapabilityResponse(Hashtable<String, Object> hash) {
         super(hash);
@@ -66,8 +64,9 @@ public class GetSystemCapabilityResponse extends RPCResponse {
 
     /**
      * Constructs a new GetSystemCapabilityResponse object
+     *
      * @param resultCode whether the request is successfully processed
-     * @param success whether the request is successfully processed
+     * @param success    whether the request is successfully processed
      */
     public GetSystemCapabilityResponse(@NonNull Result resultCode, @NonNull Boolean success) {
         this();
@@ -77,17 +76,19 @@ public class GetSystemCapabilityResponse extends RPCResponse {
 
     /**
      * Get the SystemCapability object returned after a GetSystemCapability call
+     *
      * @return SystemCapability object
      */
-    public SystemCapability getSystemCapability(){
+    public SystemCapability getSystemCapability() {
         return (SystemCapability) getObject(SystemCapability.class, KEY_SYSTEM_CAPABILITY);
     }
 
     /**
      * Set a SystemCapability object in the response
+     *
      * @param value SystemCapability object
      */
-    public GetSystemCapabilityResponse setSystemCapability( SystemCapability value) {
+    public GetSystemCapabilityResponse setSystemCapability(SystemCapability value) {
         setParameters(KEY_SYSTEM_CAPABILITY, value);
         return this;
     }

@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -51,11 +51,11 @@ import java.util.Hashtable;
  * 			<td>hours</td>
  * 			<td>Integer</td>
  * 			<td>The hour. Minvalue="0", maxvalue="59"
- *					<p><b>Note:</b></p>Some display types only support a max value of 19. If out of range, it will be rejected.
- *			</td>
+ * 					<p><b>Note:</b></p>Some display types only support a max value of 19. If out of range, it will be rejected.
+ * 			</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
-  * 		<tr>
+ * 		<tr>
  * 			<td>minutes</td>
  * 			<td>Integer</td>
  * 			<td>The minute. Minvalue="0", maxvalue="59".</td>
@@ -68,91 +68,110 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * </table>
+ *
  * @since SmartDeviceLink 1.0
  */
 public class StartTime extends RPCStruct {
-	public static final String KEY_MINUTES = "minutes";
-	public static final String KEY_SECONDS = "seconds";
-	public static final String KEY_HOURS = "hours";
+    public static final String KEY_MINUTES = "minutes";
+    public static final String KEY_SECONDS = "seconds";
+    public static final String KEY_HOURS = "hours";
 
-	/**
-	 * Constructs a newly allocated StartTime object
-	 */
-	public StartTime() { }
+    /**
+     * Constructs a newly allocated StartTime object
+     */
+    public StartTime() {
+    }
+
     /**
      * Constructs a newly allocated StartTime object indicated by the Hashtable parameter
+     *
      * @param hash The Hashtable to use
      */
     public StartTime(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-	/**
-	 * Constructs a newly allocated StartTime object
-	 * @param timeInterval time interval in seconds
-	 */
-	public StartTime(@NonNull Integer timeInterval){
-		this();
-		int hours = timeInterval / 3600;
-		int minutes = (timeInterval % 3600) / 60;
-		int seconds = timeInterval % 60;
-		setHours(hours);
-		setMinutes(minutes);
-		setSeconds(seconds);
-	}
-	/**
-	 * Constructs a newly allocated StartTime object
-	 * @param hours The hour
-	 * @param minutes The minute
-	 * @param seconds The second
-	 */
-	public StartTime(@NonNull Integer hours, @NonNull Integer minutes, @NonNull Integer seconds){
-		this();
-		setHours(hours);
-		setMinutes(minutes);
-		setSeconds(seconds);
-	}
+    /**
+     * Constructs a newly allocated StartTime object
+     *
+     * @param timeInterval time interval in seconds
+     */
+    public StartTime(@NonNull Integer timeInterval) {
+        this();
+        int hours = timeInterval / 3600;
+        int minutes = (timeInterval % 3600) / 60;
+        int seconds = timeInterval % 60;
+        setHours(hours);
+        setMinutes(minutes);
+        setSeconds(seconds);
+    }
+
+    /**
+     * Constructs a newly allocated StartTime object
+     *
+     * @param hours   The hour
+     * @param minutes The minute
+     * @param seconds The second
+     */
+    public StartTime(@NonNull Integer hours, @NonNull Integer minutes, @NonNull Integer seconds) {
+        this();
+        setHours(hours);
+        setMinutes(minutes);
+        setSeconds(seconds);
+    }
+
     /**
      * Get the hour. Minvalue="0", maxvalue="59"
- *					<p><b>Note:</b></p>Some display types only support a max value of 19. If out of range, it will be rejected.
+     * <p><b>Note:</b></p>Some display types only support a max value of 19. If out of range, it will be rejected.
+     *
      * @return hours Minvalue="0", maxvalue="59"
-     */    
+     */
     public Integer getHours() {
-        return getInteger( KEY_HOURS );
+        return getInteger(KEY_HOURS);
     }
+
     /**
      * Set the hour. Minvalue="0", maxvalue="59"
- *					<p><b>Note:</b></p>Some display types only support a max value of 19. If out of range, it will be rejected.
+     * <p><b>Note:</b></p>Some display types only support a max value of 19. If out of range, it will be rejected.
+     *
      * @param hours min: 0; max: 59
      */
     public StartTime setHours(@NonNull Integer hours) {
         setValue(KEY_HOURS, hours);
         return this;
     }
+
     /**
      * Get the minute. Minvalue="0", maxvalue="59".
+     *
      * @return minutes Minvalue="0", maxvalue="59"
-     */    
+     */
     public Integer getMinutes() {
-        return getInteger( KEY_MINUTES );
+        return getInteger(KEY_MINUTES);
     }
+
     /**
      * Set the minute. Minvalue="0", maxvalue="59".
+     *
      * @param minutes min: 0; max: 59
      */
     public StartTime setMinutes(@NonNull Integer minutes) {
         setValue(KEY_MINUTES, minutes);
         return this;
     }
+
     /**
      * Get the second. Minvalue="0", maxvalue="59".
+     *
      * @return seconds. Minvalue="0", maxvalue="59".
-     */    
+     */
     public Integer getSeconds() {
-        return getInteger( KEY_SECONDS );
+        return getInteger(KEY_SECONDS);
     }
+
     /**
      * Set the second. Minvalue="0", maxvalue="59".
+     *
      * @param seconds min: 0 max: 59
      */
     public StartTime setSeconds(@NonNull Integer seconds) {

@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -37,9 +37,10 @@ import androidx.annotation.NonNull;
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
+
 /**
  * Change in permissions for a given set of RPCs
- * 
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -80,19 +81,21 @@ import java.util.Hashtable;
  * @since SmartDeviceLink 2.0
  */
 public class PermissionItem extends RPCStruct {
-	public static final String KEY_RPC_NAME = "rpcName";
-	public static final String KEY_HMI_PERMISSIONS = "hmiPermissions";
-	public static final String KEY_PARAMETER_PERMISSIONS = "parameterPermissions";
-	public static final String KEY_REQUIRE_ENCRYPTION = "requireEncryption";
-	/**
-	* Constructs a new PermissionItem object
-	*/
+    public static final String KEY_RPC_NAME = "rpcName";
+    public static final String KEY_HMI_PERMISSIONS = "hmiPermissions";
+    public static final String KEY_PARAMETER_PERMISSIONS = "parameterPermissions";
+    public static final String KEY_REQUIRE_ENCRYPTION = "requireEncryption";
+
+    /**
+     * Constructs a new PermissionItem object
+     */
     public PermissionItem(@NonNull String rpcName, @NonNull HMIPermissions hmiPermissions, @NonNull ParameterPermissions parameterPermissions) {
         this();
         setRpcName(rpcName);
         setHMIPermissions(hmiPermissions);
         setParameterPermissions(parameterPermissions);
     }
+
     /**
      * Constructs a new PermissionItem object indicated by the Hashtable
      * parameter
@@ -102,27 +105,35 @@ public class PermissionItem extends RPCStruct {
     public PermissionItem(Hashtable<String, Object> hash) {
         super(hash);
     }
+
     /**
      * Constructs a new PermissionItem object
      */
-    public PermissionItem() { }
+    public PermissionItem() {
+    }
+
     public String getRpcName() {
         return getString(KEY_RPC_NAME);
     }
+
     public PermissionItem setRpcName(@NonNull String rpcName) {
         setValue(KEY_RPC_NAME, rpcName);
         return this;
     }
+
     public HMIPermissions getHMIPermissions() {
         return (HMIPermissions) getObject(HMIPermissions.class, KEY_HMI_PERMISSIONS);
     }
+
     public PermissionItem setHMIPermissions(@NonNull HMIPermissions hmiPermissions) {
         setValue(KEY_HMI_PERMISSIONS, hmiPermissions);
         return this;
     }
+
     public ParameterPermissions getParameterPermissions() {
-    	return (ParameterPermissions) getObject(ParameterPermissions.class, KEY_PARAMETER_PERMISSIONS);
+        return (ParameterPermissions) getObject(ParameterPermissions.class, KEY_PARAMETER_PERMISSIONS);
     }
+
     public PermissionItem setParameterPermissions(@NonNull ParameterPermissions parameterPermissions) {
         setValue(KEY_PARAMETER_PERMISSIONS, parameterPermissions);
         return this;
@@ -130,6 +141,7 @@ public class PermissionItem extends RPCStruct {
 
     /**
      * Gets the encryption requirement for this item
+     *
      * @return true is encryption is required, false otherwise
      */
     public Boolean getRequireEncryption() {
@@ -138,9 +150,10 @@ public class PermissionItem extends RPCStruct {
 
     /**
      * Sets the encryption requirement for this item
+     *
      * @param isRequired the boolean requirement to be set
      */
-    public PermissionItem setRequireEncryption( Boolean isRequired) {
+    public PermissionItem setRequireEncryption(Boolean isRequired) {
         setValue(KEY_REQUIRE_ENCRYPTION, isRequired);
         return this;
     }
