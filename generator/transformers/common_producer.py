@@ -72,11 +72,11 @@ class InterfaceProducerCommon(ABC):
     @staticmethod
     def extract_description(d):
         """
-        Evaluate, align and delete @TODO
+        Extract description
         :param d: list with description
         :return: evaluated string
         """
-        return re.sub(r'(\s{2,}|\n|\[@TODO.+)', ' ', ''.join(d)).strip() if d else ''
+        return re.sub(r'(\s{2,}|\n)', ' ', ''.join(d)).strip() if d else ''
 
     @staticmethod
     def extract_values(param):
