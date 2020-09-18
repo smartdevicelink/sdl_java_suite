@@ -115,8 +115,6 @@ public class SdlProtocolTests {
 
     }
 
-    ;
-
     DidReceiveListener onProtocolMessageReceivedListener = new DidReceiveListener();
 
 
