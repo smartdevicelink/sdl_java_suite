@@ -135,7 +135,6 @@ public class ManagerUtilityTests {
         capability.setImageFields(imageFieldList);
         assertTrue(ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(capability, ImageFieldName.graphic));
         assertTrue(ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(capability, ImageFieldName.alertIcon));
-        ;
 
         imageFieldList.clear();
         imageFieldList.add(null);
