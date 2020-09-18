@@ -182,7 +182,7 @@ public class Alert extends RPCRequest {
     }
 
     /**
-     * <p>Constructs a new Alert object indicated by the Hashtable parameter</p>
+     * Constructs a new Alert object indicated by the Hashtable parameter
      *
      * @param hash The Hashtable to use
      */
@@ -191,29 +191,18 @@ public class Alert extends RPCRequest {
     }
 
     /**
-     * Gets the text which is displayed in the first field of the display during
-     * the Alert
+     * Gets the text which is displayed in the first field of the display during the Alert
      *
-     * @return String - a String value representing the text which is displayed
-     * in the first field during the Alert
+     * @return String - a String value representing the text which is displayed in the first field during the Alert
      */
     public String getAlertText1() {
         return getString(KEY_ALERT_TEXT_1);
     }
 
     /**
-     * Sets the String to be displayed in the first field of the display during
-     * the Alert
+     * Sets the String to be displayed in the first field of the display during the Alert
      *
-     * @param alertText1 String Value
-     *                   <p>
-     *                   : </b></p>
-     *                   <ul>
-     *                   <li>Length is limited to what is indicated in <i>
-     *                   {@linkplain RegisterAppInterface}</i> response</li>
-     *                   <li>If omitted, top display line will be cleared</li>
-     *                   <li>Text is always centered</li>
-     *                   </ul>
+     * @param alertText1 a String value representing the text which is displayed in the first field during the Alert
      */
     public Alert setAlertText1(String alertText1) {
         setParameters(KEY_ALERT_TEXT_1, alertText1);
@@ -221,30 +210,18 @@ public class Alert extends RPCRequest {
     }
 
     /**
-     * Gets the text which is displayed in the second field of the display
-     * during the Alert
+     * Gets the text which is displayed in the second field of the display during the Alert
      *
-     * @return String -a String value representing the text which is displayed
-     * in the second field during the Alert
+     * @return String -a String value representing the text which is displayed in the second field during the Alert
      */
     public String getAlertText2() {
         return getString(KEY_ALERT_TEXT_2);
     }
 
     /**
-     * Sets the String to be displayed in the second field of the display during
-     * the Alert
+     * Sets the String to be displayed in the second field of the display during the Alert
      *
-     * @param alertText2 String Value
-     *                   <p>
-     *                   : </b></p>
-     *                   <ul>
-     *                   <li>Only permitted if HMI supports a second display line</li>
-     *                   <li>Length is limited to what is indicated in <i>
-     *                   {@linkplain RegisterAppInterface}</i> response</li>
-     *                   <li>If omitted, second display line will be cleared</li>
-     *                   <li>Text is always centered</li>
-     *                   </ul>
+     * @param alertText2 a String value representing the text which is displayed in the third field during the Alert
      */
     public Alert setAlertText2(String alertText2) {
         setParameters(KEY_ALERT_TEXT_2, alertText2);
@@ -252,11 +229,9 @@ public class Alert extends RPCRequest {
     }
 
     /**
-     * Gets the text which is displayed in the third field of the display during
-     * the Alert
+     * Gets the text which is displayed in the third field of the display during the Alert
      *
-     * @return String -a String value representing the text which is displayed
-     * in the third field during the Alert
+     * @return String -a String value representing the text which is displayed in the third field during the Alert
      * @since SmartDeviceLink 2.0
      */
     public String getAlertText3() {
@@ -267,16 +242,7 @@ public class Alert extends RPCRequest {
      * Sets the String to be displayed in the third field of the display during
      * the Alert
      *
-     * @param alertText3 String Value
-     *                   <p>
-     *                   s: </b></p>
-     *                   <ul>
-     *                   <li>Only permitted if HMI supports a third display line</li>
-     *                   <li>Length is limited to what is indicated in <i>
-     *                   {@linkplain RegisterAppInterface}</i> response</li>
-     *                   <li>If omitted, third display line will be cleared</li>
-     *                   <li>Text is always centered</li>
-     *                   </ul>
+     * @param alertText3 a String value representing the text which is displayed in the third field during the Alert
      * @since SmartDeviceLink 2.0
      */
     public Alert setAlertText3(String alertText3) {
@@ -310,27 +276,19 @@ public class Alert extends RPCRequest {
     /**
      * Gets the duration of the displayed portion of the alert, in milliseconds
      *
-     * @return Integer -an Integer value representing the duration of the
-     * displayed portion of the alert, in milliseconds
+     * @return Integer -an Integer value representing the duration of the displayed portion of the alert, in milliseconds
      */
     public Integer getDuration() {
         return getInteger(KEY_DURATION);
     }
 
     /**
-     * <p>Sets the duration of the displayed portion of the alert, in milliseconds.
+     * Sets the duration of the displayed portion of the alert, in milliseconds.
      * After this amount of time has passed, the display fields alertText1 and
      * alertText2 will revert to what was displayed in those fields before the
-     * alert began</p>
+     * alert began
      *
-     * @param duration the Integer values representing the duration time, in
-     *                 milliseconds
-     *                 <p>
-     *                 <b>Notes: </b></p>
-     *                 <ul>
-     *                 <li>Min Value: 3000; Max Value: 10000</li>
-     *                 <li>If omitted, the default is 5000 milliseconds</li>
-     *                 </ul>
+     * @param duration -an Integer value representing the duration of the displayed portion of the alert, in milliseconds
      */
     public Alert setDuration(Integer duration) {
         setParameters(KEY_DURATION, duration);
@@ -351,10 +309,7 @@ public class Alert extends RPCRequest {
      * Sets whether the alert tone should be played before the TTS (if any) is
      * spoken
      *
-     * @param playTone a Boolean value which specifies whether the alert tone should
-     *                 be played before the TTS (if any) is spoken
-     *
-     *                 <p> <b>Notes: </b>If omitted, default is true</p>
+     * @param playTone a Boolean value which specifies whether the alert tone should be played before the TTS (if any) is spoken. <p> <b>Notes: </b>If omitted, default is true</p>
      */
     public Alert setPlayTone(Boolean playTone) {
         setParameters(KEY_PLAY_TONE, playTone);
@@ -364,8 +319,7 @@ public class Alert extends RPCRequest {
     /**
      * Gets the SoftButton List object
      *
-     * @return List<SoftButton> -a List<SoftButton> representing the List
-     * object
+     * @return List<SoftButton> -a List<SoftButton> representing the List object
      * @since SmartDeviceLink 2.0
      */
     @SuppressWarnings("unchecked")
@@ -376,15 +330,7 @@ public class Alert extends RPCRequest {
     /**
      * Sets the SoftButtons
      *
-     * @param softButtons a List<SoftButton> value
-     *                    <p>
-     *                    <b>Notes: </b></p>
-     *                    <ul>
-     *                    <li>If omitted on supported displays, the alert will not have
-     *                    any SoftButton</li>
-     *                    <li>ArrayMin: 0</li>
-     *                    <li>ArrayMax: 4</li>
-     *                    </ul>
+     * @param softButtons a List<SoftButton> value. If omitted on supported displays, the alert will not have any SoftButton. ArrayMin: 0. ArrayMax: 4.
      * @since SmartDeviceLink 2.0
      */
     public Alert setSoftButtons(List<SoftButton> softButtons) {
@@ -438,10 +384,7 @@ public class Alert extends RPCRequest {
      * <p>Sets the Image
      * If provided, defines the image to be shown along with the alert</p>
      *
-     * @param alertIcon <p>an Image object representing the Image shown along with the alert</p>
-     *                  <p>
-     *                  <b>Notes: </b>If omitted on supported displays, no (or the
-     *                  default if applicable) icon will be displayed</p>
+     * @param alertIcon an Image object representing the Image shown along with the alert. <b>Notes: </b>If omitted on supported displays, no (or the default if applicable) icon will be displayed</p>
      */
     public Alert setAlertIcon(Image alertIcon) {
         setParameters(KEY_ALERT_ICON, alertIcon);

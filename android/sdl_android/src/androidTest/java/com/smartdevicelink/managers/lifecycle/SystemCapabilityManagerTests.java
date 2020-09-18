@@ -733,7 +733,6 @@ public class SystemCapabilityManagerTests {
         assertNotNull(systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY, null, false));
 
         List<DisplayCapability> newCaps = createDisplayCapabilityList(TestValues.GENERAL_DISPLAYCAPABILITIES, TestValues.GENERAL_BUTTONCAPABILITIES_LIST, TestValues.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
-        ;
 
         SystemCapability systemCapability = new SystemCapability();
         systemCapability.setSystemCapabilityType(SystemCapabilityType.DISPLAYS);
