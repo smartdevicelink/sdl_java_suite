@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this
+ * contributors may be used to endorse or promote products derived from this 
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -33,10 +33,10 @@ package com.smartdevicelink.streaming;
 
 import androidx.annotation.RestrictTo;
 
+import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.streaming.audio.IAudioStreamListener;
 import com.smartdevicelink.streaming.video.IVideoStreamListener;
 import com.smartdevicelink.util.DebugTool;
@@ -48,140 +48,151 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY)
-public class StreamPacketizer extends AbstractPacketizer implements IVideoStreamListener, IAudioStreamListener, Runnable {
+public class StreamPacketizer extends AbstractPacketizer implements IVideoStreamListener, IAudioStreamListener, Runnable{
 
-    public final static String TAG = "StreamPacketizer";
+	public final static String TAG = "StreamPacketizer";
 
-    private Thread t = null;
-
-
-    private final static int TLS_MAX_RECORD_SIZE = 16384;
-    private final static int TLS_RECORD_HEADER_SIZE = 5;
-    private final static int TLS_RECORD_MES_AUTH_CDE_SIZE = 32;
-    private final static int TLS_MAX_RECORD_PADDING_SIZE = 256;
+	private Thread t = null;
 
 
-    private final static int BUFF_READ_SIZE = TLS_MAX_RECORD_SIZE - TLS_RECORD_HEADER_SIZE - TLS_RECORD_MES_AUTH_CDE_SIZE - TLS_MAX_RECORD_PADDING_SIZE;
+	private final static int TLS_MAX_RECORD_SIZE = 16384;
+	private final static int TLS_RECORD_HEADER_SIZE = 5;
+	private final static int TLS_RECORD_MES_AUTH_CDE_SIZE = 32;
+	private final static int TLS_MAX_RECORD_PADDING_SIZE = 256;
 
-    // Approximate size of data that mOutputQueue can hold in bytes.
-    // By adding a buffer, we accept underlying transport being stuck for a short time. By setting
-    // a limit of the buffer size, we avoid buffer overflows when underlying transport is too slow.
-    private static final int MAX_QUEUE_SIZE = 256 * 1024;
+
+	private final static int BUFF_READ_SIZE = TLS_MAX_RECORD_SIZE - TLS_RECORD_HEADER_SIZE - TLS_RECORD_MES_AUTH_CDE_SIZE - TLS_MAX_RECORD_PADDING_SIZE;
+
+	// Approximate size of data that mOutputQueue can hold in bytes.
+	// By adding a buffer, we accept underlying transport being stuck for a short time. By setting
+	// a limit of the buffer size, we avoid buffer overflows when underlying transport is too slow.
+	private static final int MAX_QUEUE_SIZE = 256 * 1024;
 
     private final Object mPauseLock = new Object();
     private boolean mPaused;
     private boolean isServiceProtected = false;
     private BlockingQueue<ByteBufferWithListener> mOutputQueue;
 
-    public StreamPacketizer(IStreamListener streamListener, InputStream is, SessionType sType, byte rpcSessionID, SdlSession session) throws IOException {
-        super(streamListener, is, sType, rpcSessionID, session);
+	public StreamPacketizer(IStreamListener streamListener, InputStream is, SessionType sType, byte rpcSessionID, SdlSession session) throws IOException {
+		super(streamListener, is, sType, rpcSessionID, session);
         mPaused = false;
         isServiceProtected = _session.isServiceProtected(_serviceType);
-        if (bufferSize == 0) {
-            // fail safe
-            bufferSize = BUFF_READ_SIZE;
-            buffer = new byte[bufferSize];
-        }
-        if (isServiceProtected) { //If our service is encrypted we can only use 1024 as the max buffer size.
-            bufferSize = BUFF_READ_SIZE;
-            buffer = new byte[bufferSize];
-        }
-        mOutputQueue = new LinkedBlockingQueue<>(MAX_QUEUE_SIZE / bufferSize);
-    }
+		if (bufferSize == 0) {
+			// fail safe
+			bufferSize = BUFF_READ_SIZE;
+			buffer = new byte[bufferSize];
+		}
+		if(isServiceProtected){ //If our service is encrypted we can only use 1024 as the max buffer size. 
+			bufferSize = BUFF_READ_SIZE;
+			buffer = new byte[bufferSize];
+		}
+		mOutputQueue = new LinkedBlockingQueue<>(MAX_QUEUE_SIZE / bufferSize);
+	}
 
-    public void start() throws IOException {
-        if (t == null) {
-            t = new Thread(this);
-            t.start();
-        }
-    }
+	public void start() throws IOException {
+		if (t == null) {
+			t = new Thread(this);
+			t.start();
+		}
+	}
 
-    public void stop() {
+	public void stop() {
 
-        if (t != null) {
-            t.interrupt();
-            t = null;
-        }
+		if (t != null)
+		{
+			t.interrupt();
+			t = null;
+		}
 
-    }
+		mOutputQueue.clear();
 
-    public void run() {
-        int length;
-        try {
-            while (t != null && !t.isInterrupted()) {
-                synchronized (mPauseLock) {
-                    while (mPaused) {
-                        try {
-                            mPauseLock.wait();
-                        } catch (InterruptedException e) {
+	}
+
+	public void run() {
+		int length;
+		try 
+		{
+			while (t != null && !t.isInterrupted()) 
+			{
+				synchronized(mPauseLock)
+				{
+					while (mPaused)
+                    {
+						try
+                        {
+							mPauseLock.wait();
                         }
+                        catch (InterruptedException e) {}
                     }
                 }
 
-                if (is != null) { // using InputStream interface
-                    length = is.read(buffer, 0, bufferSize);
+				if (is != null) { // using InputStream interface
+					length = is.read(buffer, 0, bufferSize);
 
-                    if (length >= 0) {
-                        ProtocolMessage pm = new ProtocolMessage();
-                        pm.setSessionID(_rpcSessionID);
-                        pm.setSessionType(_serviceType);
-                        pm.setFunctionID(0);
-                        pm.setCorrID(0);
-                        pm.setData(buffer, length);
-                        pm.setPayloadProtected(isServiceProtected);
+					if (length >= 0) {
+						ProtocolMessage pm = new ProtocolMessage();
+						pm.setSessionID(_rpcSessionID);
+						pm.setSessionType(_serviceType);
+						pm.setFunctionID(0);
+						pm.setCorrID(0);
+						pm.setData(buffer, length);
+						pm.setPayloadProtected(isServiceProtected);
 
-                        if (t != null && !t.isInterrupted()) {
-                            _streamListener.sendStreamPacket(pm);
-                        }
-                    }
-                } else { // using sendFrame interface
-                    ByteBufferWithListener byteBufferWithListener;
-                    ByteBuffer frame;
-                    CompletionListener completionListener;
-                    try {
-                        byteBufferWithListener = mOutputQueue.take();
-                        frame = byteBufferWithListener.byteBuffer;
-                        completionListener = byteBufferWithListener.completionListener;
-                    } catch (InterruptedException e) {
-                        if (DebugTool.isDebugEnabled()) {
-                            e.printStackTrace();
-                        }
-                        Thread.currentThread().interrupt();
-                        break;
-                    }
+						if (t != null && !t.isInterrupted()) {
+							_streamListener.sendStreamPacket(pm);
+						}
+					}
+				} else { // using sendFrame interface
+					ByteBufferWithListener byteBufferWithListener;
+					ByteBuffer frame;
+					CompletionListener completionListener;
+					try {
+						byteBufferWithListener = mOutputQueue.take();
+						frame = byteBufferWithListener.byteBuffer;
+						completionListener = byteBufferWithListener.completionListener;
+					} catch (InterruptedException e) {
+						if(DebugTool.isDebugEnabled()){
+							e.printStackTrace();
+						}
+						Thread.currentThread().interrupt();
+						break;
+					}
 
-                    while (frame.hasRemaining()) {
-                        int len = Math.min(frame.remaining(), bufferSize);
+					while (frame.hasRemaining()) {
+						int len = Math.min(frame.remaining(), bufferSize);
 
-                        ProtocolMessage pm = new ProtocolMessage();
-                        pm.setSessionID(_rpcSessionID);
-                        pm.setSessionType(_serviceType);
-                        pm.setFunctionID(0);
-                        pm.setCorrID(0);
-                        pm.setData(frame.array(), frame.arrayOffset() + frame.position(), len);
-                        pm.setPayloadProtected(isServiceProtected);
+						ProtocolMessage pm = new ProtocolMessage();
+						pm.setSessionID(_rpcSessionID);
+						pm.setSessionType(_serviceType);
+						pm.setFunctionID(0);
+						pm.setCorrID(0);
+						pm.setData(frame.array(), frame.arrayOffset() + frame.position(), len);
+						pm.setPayloadProtected(isServiceProtected);
 
-                        if (t != null && !t.isInterrupted()) {
-                            _streamListener.sendStreamPacket(pm);
-                        }
+						if (t != null && !t.isInterrupted()) {
+							_streamListener.sendStreamPacket(pm);
+						}
 
-                        frame.position(frame.position() + len);
-                    }
+						frame.position(frame.position() + len);
+					}
 
-                    if (completionListener != null) {
-                        completionListener.onComplete(true);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            _session.endService(_serviceType);
-        }
-    }
+					if (completionListener != null){
+						completionListener.onComplete(true);
+					}
+				}
+			}
+		} catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			_session.endService(_serviceType);
+		}
+	}
 
     @Override
-    public void pause() {
+	public void pause() {
         synchronized (mPauseLock) {
             mPaused = true;
         }
@@ -195,91 +206,94 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
         }
     }
 
-    /**
-     * Called by the app.
-     *
-     * @see IVideoStreamListener#sendFrame(byte[], int, int, long)
-     */
-    @Override
-    public void sendFrame(byte[] data, int offset, int length, long presentationTimeUs)
-            throws ArrayIndexOutOfBoundsException {
-        sendArrayData(data, offset, length);
-    }
+	/**
+	 * Called by the app.
+	 *
+	 * @see IVideoStreamListener#sendFrame(byte[], int, int, long)
+	 */
+	@Override
+	public void sendFrame(byte[] data, int offset, int length, long presentationTimeUs)
+			throws ArrayIndexOutOfBoundsException {
+		sendArrayData(data, offset, length);
+	}
 
-    /**
-     * Called by the app.
-     *
-     * @see IVideoStreamListener#sendFrame(ByteBuffer, long)
-     */
-    @Override
-    public void sendFrame(ByteBuffer data, long presentationTimeUs) {
-        sendByteBufferData(data, null);
-    }
+	/**
+	 * Called by the app.
+	 *
+	 * @see IVideoStreamListener#sendFrame(ByteBuffer, long)
+	 */
+	@Override
+	public void sendFrame(ByteBuffer data, long presentationTimeUs) {
+		sendByteBufferData(data, null);
+	}
 
-    /**
-     * Called by the app.
-     *
-     * @see IAudioStreamListener#sendAudio(byte[], int, int, long)
-     */
-    @Override
-    public void sendAudio(byte[] data, int offset, int length, long presentationTimeUs)
-            throws ArrayIndexOutOfBoundsException {
-        sendArrayData(data, offset, length);
-    }
+	/**
+	 * Called by the app.
+	 *
+	 * @see IAudioStreamListener#sendAudio(byte[], int, int, long)
+	 */
+	@Override
+	public void sendAudio(byte[] data, int offset, int length, long presentationTimeUs)
+			throws ArrayIndexOutOfBoundsException {
+		sendArrayData(data, offset, length);
+	}
 
-    /**
-     * Called by the app.
-     *
-     * @see IAudioStreamListener#sendAudio(ByteBuffer, long, CompletionListener)
-     */
-    @Override
-    public void sendAudio(ByteBuffer data, long presentationTimeUs, CompletionListener completionListener) {
-        sendByteBufferData(data, completionListener);
-    }
+	/**
+	 * Called by the app.
+	 *
+	 * @see IAudioStreamListener#sendAudio(ByteBuffer, long, CompletionListener)
+	 */
+	@Override
+	public void sendAudio(ByteBuffer data, long presentationTimeUs, CompletionListener completionListener) {
+		sendByteBufferData(data, completionListener);
+	}
 
-    private void sendArrayData(byte[] data, int offset, int length)
-            throws ArrayIndexOutOfBoundsException {
-        if (offset < 0 || offset > data.length || length <= 0 || offset + length > data.length) {
-            throw new ArrayIndexOutOfBoundsException();
-        }
+	private void sendArrayData(byte[] data, int offset, int length)
+			throws ArrayIndexOutOfBoundsException {
+		if (offset < 0 || offset > data.length || length <= 0 || offset + length > data.length) {
+			throw new ArrayIndexOutOfBoundsException();
+		}
 
-        // StreamPacketizer does not need to split a video frame into NAL units
-        ByteBuffer buffer = ByteBuffer.allocate(length);
-        buffer.put(data, offset, length);
-        buffer.flip();
+		if (data == null || t == null || t.isInterrupted()) {
+			return;
+		}
 
-        try {
-            mOutputQueue.put(new ByteBufferWithListener(buffer, null));
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-    }
+		// StreamPacketizer does not need to split a video frame into NAL units
+		ByteBuffer buffer = ByteBuffer.allocate(length);
+		buffer.put(data, offset, length);
+		buffer.flip();
 
-    private void sendByteBufferData(ByteBuffer data, CompletionListener completionListener) {
-        if (data == null || data.remaining() == 0) {
-            return;
-        }
+		try {
+			mOutputQueue.put(new ByteBufferWithListener(buffer, null));
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
+	}
 
-        // copy the whole buffer, so that even if the app modifies original ByteBuffer after
-        // sendFrame() or sendAudio() call, our buffer will stay intact
-        ByteBuffer buffer = ByteBuffer.allocate(data.remaining());
-        buffer.put(data);
-        buffer.flip();
+	private void sendByteBufferData(ByteBuffer data, CompletionListener completionListener) {
+		if (data == null || data.remaining() == 0 || t == null || t.isInterrupted()) {
+			return;
+		}
 
-        try {
-            mOutputQueue.put(new ByteBufferWithListener(buffer, completionListener));
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-    }
+		// copy the whole buffer, so that even if the app modifies original ByteBuffer after
+		// sendFrame() or sendAudio() call, our buffer will stay intact
+		ByteBuffer buffer = ByteBuffer.allocate(data.remaining());
+		buffer.put(data);
+		buffer.flip();
 
-    private class ByteBufferWithListener {
-        final ByteBuffer byteBuffer;
-        final CompletionListener completionListener;
+		try {
+			mOutputQueue.put(new ByteBufferWithListener(buffer, completionListener));
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
+	}
 
-        ByteBufferWithListener(ByteBuffer byteBuffer, CompletionListener completionListener) {
-            this.byteBuffer = byteBuffer;
-            this.completionListener = completionListener;
-        }
-    }
+	private class ByteBufferWithListener{
+		final ByteBuffer byteBuffer;
+		final CompletionListener completionListener;
+		ByteBufferWithListener (ByteBuffer byteBuffer, CompletionListener completionListener){
+			this.byteBuffer = byteBuffer;
+			this.completionListener = completionListener;
+		}
+	}
 }
