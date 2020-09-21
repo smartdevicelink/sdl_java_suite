@@ -24,7 +24,7 @@ public class HMICapabilitiesTests extends TestCase {
         msg.setNavigationAvilable(TestValues.GENERAL_BOOLEAN);
         msg.setPhoneCallAvilable(TestValues.GENERAL_BOOLEAN);
         msg.setVideoStreamingAvailable(TestValues.GENERAL_BOOLEAN);
-        msg.setDriverDistraction(TestValues.GENERAL_BOOLEAN);
+        msg.setDriverDistractionAvailable(TestValues.GENERAL_BOOLEAN);
     }
 
     /**

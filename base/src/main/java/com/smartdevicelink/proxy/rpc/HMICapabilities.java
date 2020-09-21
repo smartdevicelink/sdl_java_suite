@@ -172,11 +172,11 @@ public class HMICapabilities extends RPCStruct {
     /**
      * Sets the driverDistraction.
      *
-     * @param driverDistraction Availability of driver distraction capability. True: Available, False: Not Available
+     * @param available Availability of driver distraction capability. True: Available, False: Not Available
      * @since SmartDeviceLink 7.0.0
      */
-    public HMICapabilities setDriverDistraction(Boolean driverDistraction) {
-        setValue(KEY_DRIVER_DISTRACTION, driverDistraction);
+    public HMICapabilities setDriverDistractionAvailable(Boolean available) {
+        setValue(KEY_DRIVER_DISTRACTION, available);
         return this;
     }
 
