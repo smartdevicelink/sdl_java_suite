@@ -168,7 +168,7 @@ public class HapticInterfaceManagerTest extends TestCase {
 
 
     @Test
-    public void testRefreshHapticData_NullCapability() {
+    public void testRefreshHapticDataWithNullCapability() {
         final int buttonX = 60;
         final int buttonY = 60;
         final int buttonWidth = 150;
@@ -184,7 +184,7 @@ public class HapticInterfaceManagerTest extends TestCase {
     }
 
     @Test
-    public void testRefreshHapticData_NullScale() {
+    public void testRefreshHapticDataWithNullScale() {
         final int buttonX = 60;
         final int buttonY = 60;
         final int buttonWidth = 150;
