@@ -68,23 +68,23 @@ public class ImageResolutionTests extends TestCase {
         }
     }
 
-    public void testSetResolutionWidth_Odd() {
+    public void testSetResolutionWidthAsOdd() {
         msg.setResolutionWidth(175);
         assertEquals(176, (int) msg.getResolutionWidth());
     }
 
-    public void testSetResolutionHeight_Odd() {
+    public void testSetResolutionHeightAsOdd() {
         msg.setResolutionHeight(175);
         assertEquals(176, (int) msg.getResolutionHeight());
     }
 
-    public void testSetResolutionWidth_Pair() {
+    public void testSetResolutionWidth() {
         msg.setResolutionWidth(176);
         assertEquals(176, (int) msg.getResolutionWidth());
 
     }
 
-    public void testSetResolutionHeight_Pair() {
+    public void testSetResolutionHeight() {
         msg.setResolutionHeight(176);
         assertEquals(176, (int) msg.getResolutionHeight());
 
