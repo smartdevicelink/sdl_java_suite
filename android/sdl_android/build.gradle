@@ -41,7 +41,7 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-    api 'com.smartdevicelink:bson_java_port:1.2.0'
+    api 'com.smartdevicelink:bson_java_port:RC1_1.2.2'
     api 'com.livio.taskmaster:taskmaster:0.3.0'
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
