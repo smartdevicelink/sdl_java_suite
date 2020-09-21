@@ -425,6 +425,8 @@ public class TestValues {
     public static final LightControlData GENERAL_LIGHTCONTROLDATA = new LightControlData();
     public static final HMISettingsControlData GENERAL_HMISETTINGSCONTROLDATA = new HMISettingsControlData();
     public static final DynamicUpdateCapabilities GENERAL_DYNAMICUPDATECAPABILITIES = new DynamicUpdateCapabilities();
+    public static final WindowState GENERAL_WINDOWSTATE = new WindowState();
+
 
     public static final VehicleDataResult GENERAL_OEM_CUSTOM_VEHICLE_DATA = new VehicleDataResult();
     public static final TemplateConfiguration GENERAL_TEMPLATE_CONFIGURATION = new TemplateConfiguration();
