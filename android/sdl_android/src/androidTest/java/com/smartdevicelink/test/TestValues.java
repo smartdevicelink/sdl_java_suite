@@ -16,8 +16,6 @@ import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
 import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.SdlProxyBase;
-import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.AppCapability;
 import com.smartdevicelink.proxy.rpc.AppInfo;
 import com.smartdevicelink.proxy.rpc.AppServiceCapability;

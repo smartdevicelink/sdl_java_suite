@@ -959,7 +959,7 @@ public class SystemCapabilityManagerTests {
 		public void removeServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {}
 
 		@Override
-		public void startVideoService(VideoStreamingParameters parameters, boolean encrypted) {	}
+		public void startVideoService(VideoStreamingParameters parameters, boolean encrypted, boolean withPendingRestart) { }
 
 		@Override
 		public void sendRPC(RPCMessage message) {}

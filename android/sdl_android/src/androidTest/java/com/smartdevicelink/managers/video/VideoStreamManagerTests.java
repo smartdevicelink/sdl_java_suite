@@ -21,6 +21,7 @@ import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnTouchEvent;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
 import com.smartdevicelink.proxy.rpc.VehicleType;
@@ -41,7 +42,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import java.lang.reflect.Field;
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -114,6 +114,7 @@ public class VideoStreamManagerTests {
 	public void testInitialization(){
 		ISdl internalInterface = mock(ISdl.class);
 		when(internalInterface.getProtocolVersion()).thenReturn(new Version(5,1,0));
+		when(internalInterface.getSystemCapabilityManager()).thenReturn(mock(SystemCapabilityManager.class));
 
 		RegisterAppInterfaceResponse mockRegisterAppInterfaceResponse = new RegisterAppInterfaceResponse();
 		VehicleType mockVehicleType = new VehicleType();
@@ -176,6 +177,7 @@ public class VideoStreamManagerTests {
 	@Test
 	public void testRemoteDisplayStream(){
 		ISdl internalInterface = mock(ISdl.class);
+		when(internalInterface.getSystemCapabilityManager()).thenReturn(mock(SystemCapabilityManager.class));
 
 		RegisterAppInterfaceResponse mockRegisterAppInterfaceResponse = new RegisterAppInterfaceResponse();
 		VehicleType mockVehicleType = new VehicleType();
@@ -287,6 +289,7 @@ public class VideoStreamManagerTests {
 	@Test
 	public void testOnViewResized() {
 		ISdl internalInterface = mock(ISdl.class);
+		when(internalInterface.getSystemCapabilityManager()).thenReturn(mock(SystemCapabilityManager.class));
 
 		final OnRPCNotificationListener[] hmiListener = {null};
 
@@ -333,6 +336,7 @@ public class VideoStreamManagerTests {
 	@Test
 	public void testConvertTouchEvent() {
 		ISdl internalInterface = mock(ISdl.class);
+		when(internalInterface.getSystemCapabilityManager()).thenReturn(mock(SystemCapabilityManager.class));
 
 		RegisterAppInterfaceResponse mockRegisterAppInterfaceResponse = new RegisterAppInterfaceResponse();
 		VehicleType mockVehicleType = new VehicleType();
@@ -557,6 +561,7 @@ public class VideoStreamManagerTests {
 
     private void assertMotionEventWithScale(int width, int height, float scale) {
         ISdl internalInterface = mock(ISdl.class);
+		when(internalInterface.getSystemCapabilityManager()).thenReturn(mock(SystemCapabilityManager.class));
 
 		RegisterAppInterfaceResponse mockRegisterAppInterfaceResponse = new RegisterAppInterfaceResponse();
 		VehicleType mockVehicleType = new VehicleType();
@@ -596,7 +601,10 @@ public class VideoStreamManagerTests {
 
     @Test
 	public void testIsHMIStateVideoStreamCapable() {
-		VideoStreamManager videoStreamManager = new VideoStreamManager(mock(ISdl.class));
+		ISdl internalInterface = mock(ISdl.class);
+		when(internalInterface.getSystemCapabilityManager()).thenReturn(mock(SystemCapabilityManager.class));
+
+		VideoStreamManager videoStreamManager = new VideoStreamManager(internalInterface);
 
 		// Case 1 (VideoStreamingState = STREAMABLE)
 		assertTrue(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_FULL, VideoStreamingState.STREAMABLE)));
