@@ -64,7 +64,8 @@ public class CloseApplicationResponse extends RPCResponse {
 
     /**
      * Constructs a new CloseApplicationResponse object
-     * @param success whether the request is successfully processed
+     *
+     * @param success    whether the request is successfully processed
      * @param resultCode whether the request is successfully processed
      */
     public CloseApplicationResponse(@NonNull Boolean success, @NonNull Result resultCode) {

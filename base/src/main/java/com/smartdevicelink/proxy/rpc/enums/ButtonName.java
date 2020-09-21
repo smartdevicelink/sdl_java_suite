@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -49,304 +49,302 @@ package com.smartdevicelink.proxy.rpc.enums;
  * interrogating the ButtonCapabilities parameter of the
  * RegisterAppInterface response.
  * </p>
- * 
+ *
  * @since SmartDeviceLink 1.0
  */
-public enum ButtonName{
-	/**
-	 * <br><b>THIS ENUM VALUE WILL CHANGE IN FUNCTIONALITY DURING THE NEXT MAJOR RELEASE!</b>
-	 * <br><br>
-	 * This ButtonName value originally was used for both the OK button and PLAY_PAUSE button. As of
-	 * SmartDeviceLink 5.0.0, the functionality was broken out into the OK and PLAY_PAUSE buttons.
-	 * <br><br> For this version of the library OK will be received for both OK and PLAY_PAUSE to
-	 * mitigate a potential break in functionality. If the desire is only for the OK functionality,
-	 * this button should still be used. If the desired functionality was actually for the play/pause
-	 * toggle, then the new PLAY_PAUSE should be used.
-	 * <br><br>
-	 * Represents the button usually labeled "OK". A typical use of this button
-	 * is for the user to press it to make a selection (and until a major library version release,
-	 * play pause toggle).
-	 *
-	 * @since SmartDeviceLink 1.0
-	 * @see #PLAY_PAUSE
-	 */
-	OK,
-	/**
-	 * Represents the seek-left button. A typical use of this button is for the
-	 * user to scroll to the left through menu choices one menu item per press.
-	 * 
-	 * @since SmartDeviceLink 1.0
-	 */
-	SEEKLEFT,
-	/**
-	 * Represents the seek-right button. A typical use of this button is for the
-	 * user to scroll to the right through menu choices one menu item per press.
-	 * 
-	 * @since SmartDeviceLink 1.0
-	 */
-	SEEKRIGHT,
-	/**
-	 * Represents a turn of the tuner knob in the clockwise direction one tick.
-	 * 
-	 * @since SmartDeviceLink 1.0
-	 */
-	TUNEUP,
-	/**
-	 * Represents a turn of the tuner knob in the counter-clockwise direction
-	 * one tick.
-	 * 
-	 * @since SmartDeviceLink 1.0
-	 */
-	TUNEDOWN,
-	/**
-	 * Represents the preset 0 button.
-	 * 
-	 * @since SmartDeviceLink 1.0
-	 */
-	PRESET_0,
-	/**
-	 * Represents the preset 1 button.
-	 * 
-	 * @since SmartDeviceLink 1.0
-	 */
-	PRESET_1,
-	/**
-	 * Represents the preset 2 button.
-	 * 
-	 * @since SmartDeviceLink 1.0
-	 */
-	PRESET_2,
-	/**
-	 * Represents the preset 3 button.
-	 * 
-	 * @since SmartDeviceLink 1.0
-	 */
-	PRESET_3,
-	/**
-	 * Represents the preset 4 button.
-	 * 
-	 * @since SmartDeviceLink 1.0
-	 */
-	PRESET_4,
-	/**
-	 * Represents the preset 5 button.
-	 * 
-	 * @since SmartDeviceLink 1.0
-	 */
-	PRESET_5,
-	/**
-	 * Represents the preset 6 button.
-	 * 
-	 * @since SmartDeviceLink 1.0
-	 */
-	PRESET_6,
-	/**
-	 * Represents the preset 7 button.
-	 * 
-	 * @since SmartDeviceLink 1.0
-	 */
-	PRESET_7,
-	/**
-	 * Represents the preset 8 button.
-	 * 
-	 * @since SmartDeviceLink 1.0
-	 */
-	PRESET_8,
-	/**
-	 * Represents the preset 9 button.
-	 * 
-	 * @since SmartDeviceLink 1.0
-	 */
-	PRESET_9,
-	CUSTOM_BUTTON,
-	SEARCH,
-	AC_MAX,
-	AC,
-	RECIRCULATE,
-	FAN_UP,
-	FAN_DOWN,
-	TEMP_UP,
-	TEMP_DOWN,
-	DEFROST_MAX,
-	DEFROST,
-	DEFROST_REAR,
-	UPPER_VENT,
-	LOWER_VENT,
-	VOLUME_UP,
-	VOLUME_DOWN,
-	EJECT,
-	SOURCE,
-	SHUFFLE,
-	REPEAT,
-	/**
-	 * Represents the play/pause button. A typical use of this button
-	 * is for the user to press it to toggle between media playing and pausing.
-	 *
-	 * <br><br><b>NOTE:</b> This functionality used to be represented by the OK button.
-	 *
-	 * @since SmartDeviceLink 5.0
-	 * @see #OK
-	 */
-	PLAY_PAUSE,
-	/**
-	 * Represents the center location button.
-	 *
-	 * @since SmartDeviceLink 6.0
-	 */
-	NAV_CENTER_LOCATION,
-	/**
-	 * Represents the the zoom in button.
-	 *
-	 * @since SmartDeviceLink 6.0
-	 */
-	NAV_ZOOM_IN,
-	/**
-	 * Represents the zoom out button.
-	 *
-	 * @since SmartDeviceLink 6.0
-	 */
-	NAV_ZOOM_OUT,
-	/**
-	 * Represents the pan up button.
-	 *
-	 * @since SmartDeviceLink 6.0
-	 */
-	NAV_PAN_UP,
-	/**
-	 * Represents the pan up-right button.
-	 *
-	 * @since SmartDeviceLink 6.0
-	 */
-	NAV_PAN_UP_RIGHT,
-	/**
-	 * Represents the pan right button.
-	 *
-	 * @since SmartDeviceLink 6.0
-	 */
-	NAV_PAN_RIGHT,
-	/**
-	 * Represents the pan down-right button.
-	 *
-	 * @since SmartDeviceLink 6.0
-	 */
-	NAV_PAN_DOWN_RIGHT,
-	/**
-	 * Represents the pan down button.
-	 *
-	 * @since SmartDeviceLink 6.0
-	 */
-	NAV_PAN_DOWN,
-	/**
-	 * Represents the pan down-left button.
-	 *
-	 * @since SmartDeviceLink 6.0
-	 */
-	NAV_PAN_DOWN_LEFT,
-	/**
-	 * Represents the pan left button.
-	 *
-	 * @since SmartDeviceLink 6.0
-	 */
-	NAV_PAN_LEFT,
-	/**
-	 * Represents the pan up-left button.
-	 *
-	 * @since SmartDeviceLink 6.0
-	 */
-	NAV_PAN_UP_LEFT,
-	/**
-	 * Represents the title toggle button
-	 * If supported, this toggles between a top-down view and an angled/3D view.
-	 * If your app supports different, but substantially similar options, then you may implement those.
-	 * If you don't implement these or similar options, do not subscribe to this button.
-	 *
-	 * @since SmartDeviceLink 6.0
-	 */
-	NAV_TILT_TOGGLE,
-	/**
-	 * Represents the rotate clockwise button
-	 *
-	 * @since SmartDeviceLink 6.0
-	 */
-	NAV_ROTATE_CLOCKWISE,
-	/**
-	 * Represents the rotate counterclockwise button
-	 *
-	 * @since SmartDeviceLink 6.0
-	 */
-	NAV_ROTATE_COUNTERCLOCKWISE,
-	/**
-	 * Represents the heading toggle button
-	 * If supported, this toggles between locking the orientation to north or to the vehicle's heading.
-	 * If your app supports different, but substantially similar options, then you may implement those.
-	 * If you don't implement these or similar options, do not subscribe to this button.
-	 *
-	 * @since SmartDeviceLink 6.0
-	 */
-	NAV_HEADING_TOGGLE
-
-	;
+public enum ButtonName {
+    /**
+     * <br><b>THIS ENUM VALUE WILL CHANGE IN FUNCTIONALITY DURING THE NEXT MAJOR RELEASE!</b>
+     * <br><br>
+     * This ButtonName value originally was used for both the OK button and PLAY_PAUSE button. As of
+     * SmartDeviceLink 5.0.0, the functionality was broken out into the OK and PLAY_PAUSE buttons.
+     * <br><br> For this version of the library OK will be received for both OK and PLAY_PAUSE to
+     * mitigate a potential break in functionality. If the desire is only for the OK functionality,
+     * this button should still be used. If the desired functionality was actually for the play/pause
+     * toggle, then the new PLAY_PAUSE should be used.
+     * <br><br>
+     * Represents the button usually labeled "OK". A typical use of this button
+     * is for the user to press it to make a selection (and until a major library version release,
+     * play pause toggle).
+     *
+     * @see #PLAY_PAUSE
+     * @since SmartDeviceLink 1.0
+     */
+    OK,
+    /**
+     * Represents the seek-left button. A typical use of this button is for the
+     * user to scroll to the left through menu choices one menu item per press.
+     *
+     * @since SmartDeviceLink 1.0
+     */
+    SEEKLEFT,
+    /**
+     * Represents the seek-right button. A typical use of this button is for the
+     * user to scroll to the right through menu choices one menu item per press.
+     *
+     * @since SmartDeviceLink 1.0
+     */
+    SEEKRIGHT,
+    /**
+     * Represents a turn of the tuner knob in the clockwise direction one tick.
+     *
+     * @since SmartDeviceLink 1.0
+     */
+    TUNEUP,
+    /**
+     * Represents a turn of the tuner knob in the counter-clockwise direction
+     * one tick.
+     *
+     * @since SmartDeviceLink 1.0
+     */
+    TUNEDOWN,
+    /**
+     * Represents the preset 0 button.
+     *
+     * @since SmartDeviceLink 1.0
+     */
+    PRESET_0,
+    /**
+     * Represents the preset 1 button.
+     *
+     * @since SmartDeviceLink 1.0
+     */
+    PRESET_1,
+    /**
+     * Represents the preset 2 button.
+     *
+     * @since SmartDeviceLink 1.0
+     */
+    PRESET_2,
+    /**
+     * Represents the preset 3 button.
+     *
+     * @since SmartDeviceLink 1.0
+     */
+    PRESET_3,
+    /**
+     * Represents the preset 4 button.
+     *
+     * @since SmartDeviceLink 1.0
+     */
+    PRESET_4,
+    /**
+     * Represents the preset 5 button.
+     *
+     * @since SmartDeviceLink 1.0
+     */
+    PRESET_5,
+    /**
+     * Represents the preset 6 button.
+     *
+     * @since SmartDeviceLink 1.0
+     */
+    PRESET_6,
+    /**
+     * Represents the preset 7 button.
+     *
+     * @since SmartDeviceLink 1.0
+     */
+    PRESET_7,
+    /**
+     * Represents the preset 8 button.
+     *
+     * @since SmartDeviceLink 1.0
+     */
+    PRESET_8,
+    /**
+     * Represents the preset 9 button.
+     *
+     * @since SmartDeviceLink 1.0
+     */
+    PRESET_9,
+    CUSTOM_BUTTON,
+    SEARCH,
+    AC_MAX,
+    AC,
+    RECIRCULATE,
+    FAN_UP,
+    FAN_DOWN,
+    TEMP_UP,
+    TEMP_DOWN,
+    DEFROST_MAX,
+    DEFROST,
+    DEFROST_REAR,
+    UPPER_VENT,
+    LOWER_VENT,
+    VOLUME_UP,
+    VOLUME_DOWN,
+    EJECT,
+    SOURCE,
+    SHUFFLE,
+    REPEAT,
+    /**
+     * Represents the play/pause button. A typical use of this button
+     * is for the user to press it to toggle between media playing and pausing.
+     *
+     * <br><br><b>NOTE:</b> This functionality used to be represented by the OK button.
+     *
+     * @see #OK
+     * @since SmartDeviceLink 5.0
+     */
+    PLAY_PAUSE,
+    /**
+     * Represents the center location button.
+     *
+     * @since SmartDeviceLink 6.0
+     */
+    NAV_CENTER_LOCATION,
+    /**
+     * Represents the the zoom in button.
+     *
+     * @since SmartDeviceLink 6.0
+     */
+    NAV_ZOOM_IN,
+    /**
+     * Represents the zoom out button.
+     *
+     * @since SmartDeviceLink 6.0
+     */
+    NAV_ZOOM_OUT,
+    /**
+     * Represents the pan up button.
+     *
+     * @since SmartDeviceLink 6.0
+     */
+    NAV_PAN_UP,
+    /**
+     * Represents the pan up-right button.
+     *
+     * @since SmartDeviceLink 6.0
+     */
+    NAV_PAN_UP_RIGHT,
+    /**
+     * Represents the pan right button.
+     *
+     * @since SmartDeviceLink 6.0
+     */
+    NAV_PAN_RIGHT,
+    /**
+     * Represents the pan down-right button.
+     *
+     * @since SmartDeviceLink 6.0
+     */
+    NAV_PAN_DOWN_RIGHT,
+    /**
+     * Represents the pan down button.
+     *
+     * @since SmartDeviceLink 6.0
+     */
+    NAV_PAN_DOWN,
+    /**
+     * Represents the pan down-left button.
+     *
+     * @since SmartDeviceLink 6.0
+     */
+    NAV_PAN_DOWN_LEFT,
+    /**
+     * Represents the pan left button.
+     *
+     * @since SmartDeviceLink 6.0
+     */
+    NAV_PAN_LEFT,
+    /**
+     * Represents the pan up-left button.
+     *
+     * @since SmartDeviceLink 6.0
+     */
+    NAV_PAN_UP_LEFT,
+    /**
+     * Represents the title toggle button
+     * If supported, this toggles between a top-down view and an angled/3D view.
+     * If your app supports different, but substantially similar options, then you may implement those.
+     * If you don't implement these or similar options, do not subscribe to this button.
+     *
+     * @since SmartDeviceLink 6.0
+     */
+    NAV_TILT_TOGGLE,
+    /**
+     * Represents the rotate clockwise button
+     *
+     * @since SmartDeviceLink 6.0
+     */
+    NAV_ROTATE_CLOCKWISE,
+    /**
+     * Represents the rotate counterclockwise button
+     *
+     * @since SmartDeviceLink 6.0
+     */
+    NAV_ROTATE_COUNTERCLOCKWISE,
+    /**
+     * Represents the heading toggle button
+     * If supported, this toggles between locking the orientation to north or to the vehicle's heading.
+     * If your app supports different, but substantially similar options, then you may implement those.
+     * If you don't implement these or similar options, do not subscribe to this button.
+     *
+     * @since SmartDeviceLink 6.0
+     */
+    NAV_HEADING_TOGGLE;
 
     public static ButtonName valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }
-    
+
     /**
      * indexForPresetButton returns the integer index for preset buttons
      * which match the preset order. E.G.: indexForPresetButton(PRESET_1)
      * returns the value 1. If the buttonName given is not a preset button,
      * the method will return null.
-     *  
+     *
      * @param buttonName the buttonName of PRESET_0 through PRESET_9 to
      * @return Integer that represents which preset the supplied button name represents. It will return null if the
-	 *         ButtonName is not one of the PRESET_# names.
+     * ButtonName is not one of the PRESET_# names.
      */
     public static Integer indexForPresetButton(ButtonName buttonName) {
-        if(buttonName == null){
+        if (buttonName == null) {
             return null;
         }
-        
-    	Integer returnIndex = null;
-    	
-    	switch(buttonName) {        	
-        	case PRESET_0:
-        		returnIndex = 0;
-        		break;
-        	case PRESET_1:
-        		returnIndex = 1;
-        		break;
-        	case PRESET_2:
-        		returnIndex = 2;
-        		break;
-        	case PRESET_3:
-        		returnIndex = 3;
-        		break;
-        	case PRESET_4:
-        		returnIndex = 4;
-        		break;
-        	case PRESET_5:
-        		returnIndex = 5;
-        		break;
-        	case PRESET_6:
-        		returnIndex = 6;
-        		break;
-        	case PRESET_7:
-        		returnIndex = 7;
-        		break;
-        	case PRESET_8:
-        		returnIndex = 8;
-        		break;
-        	case PRESET_9:
-        		returnIndex = 9;
-        		break;
+
+        Integer returnIndex = null;
+
+        switch (buttonName) {
+            case PRESET_0:
+                returnIndex = 0;
+                break;
+            case PRESET_1:
+                returnIndex = 1;
+                break;
+            case PRESET_2:
+                returnIndex = 2;
+                break;
+            case PRESET_3:
+                returnIndex = 3;
+                break;
+            case PRESET_4:
+                returnIndex = 4;
+                break;
+            case PRESET_5:
+                returnIndex = 5;
+                break;
+            case PRESET_6:
+                returnIndex = 6;
+                break;
+            case PRESET_7:
+                returnIndex = 7;
+                break;
+            case PRESET_8:
+                returnIndex = 8;
+                break;
+            case PRESET_9:
+                returnIndex = 9;
+                break;
             default:
                 break;
-    	}
-    	
-    	return returnIndex;
+        }
+
+        return returnIndex;
     }
 }

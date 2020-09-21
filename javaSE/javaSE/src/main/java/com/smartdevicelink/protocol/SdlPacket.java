@@ -48,7 +48,7 @@ public class SdlPacket extends BaseSdlPacket {
         super(version, encryption, frameType, serviceType, frameInfo, sessionId, dataSize, messageId, payload, offset, bytesToWrite);
     }
 
-    protected  SdlPacket() {
+    protected SdlPacket() {
         super();
     }
 

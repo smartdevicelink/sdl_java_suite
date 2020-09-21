@@ -61,22 +61,22 @@ import static junit.framework.TestCase.fail;
 public class CloseApplicationTests extends BaseRpcTests {
 
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         return new CloseApplication();
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_REQUEST;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.CLOSE_APPLICATION.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         return new JSONObject();
     }
 
@@ -84,7 +84,7 @@ public class CloseApplicationTests extends BaseRpcTests {
      * Tests the expected values of the RPC message.
      */
     @Test
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Invalid/Null Tests
         CloseApplication msg = new CloseApplication();
         assertNotNull(TestValues.NOT_NULL, msg);
@@ -95,7 +95,7 @@ public class CloseApplicationTests extends BaseRpcTests {
      * Tests a valid JSON construction of this RPC message.
      */
     @Test
-    public void testJsonConstructor () {
+    public void testJsonConstructor() {
         JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
         assertNotNull(TestValues.NOT_NULL, commandJson);
 
@@ -109,8 +109,7 @@ public class CloseApplicationTests extends BaseRpcTests {
             // Test everything in the json body.
             assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
             assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
-        }
-        catch (JSONException e) {
+        } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
     }

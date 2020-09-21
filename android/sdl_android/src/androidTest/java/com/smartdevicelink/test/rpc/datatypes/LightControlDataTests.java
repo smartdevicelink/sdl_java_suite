@@ -22,58 +22,58 @@ import java.util.List;
  */
 public class LightControlDataTests extends TestCase {
 
-	private LightControlData msg;
+    private LightControlData msg;
 
-	@Override
-	public void setUp() {
-		msg = new LightControlData();
+    @Override
+    public void setUp() {
+        msg = new LightControlData();
 
-		msg.setLightState(TestValues.GENERAL_LIGHTSTATE_LIST);
-	}
+        msg.setLightState(TestValues.GENERAL_LIGHTSTATE_LIST);
+    }
 
-	/**
-	 * Tests the expected values of the RPC message.
-	 */
-	public void testRpcValues() {
-		// Test Values
-		List<LightState> lightState = msg.getLightState();
+    /**
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
+        List<LightState> lightState = msg.getLightState();
 
-		// Valid Tests
-		assertEquals(TestValues.MATCH, TestValues.GENERAL_LIGHTSTATE_LIST.size(), lightState.size());
+        // Valid Tests
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_LIGHTSTATE_LIST.size(), lightState.size());
 
-		assertTrue(TestValues.TRUE, Validator.validateLightStateList(TestValues.GENERAL_LIGHTSTATE_LIST, lightState));
+        assertTrue(TestValues.TRUE, Validator.validateLightStateList(TestValues.GENERAL_LIGHTSTATE_LIST, lightState));
 
-		// Invalid/Null Tests
-		LightControlData msg = new LightControlData();
-		assertNotNull(TestValues.NOT_NULL, msg);
+        // Invalid/Null Tests
+        LightControlData msg = new LightControlData();
+        assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(TestValues.NULL, msg.getLightState());
-	}
+        assertNull(TestValues.NULL, msg.getLightState());
+    }
 
-	public void testJson() {
-		JSONObject reference = new JSONObject();
+    public void testJson() {
+        JSONObject reference = new JSONObject();
 
-		try {
-			reference.put(LightControlData.KEY_LIGHT_STATE, TestValues.GENERAL_LIGHTSTATE_LIST);
+        try {
+            reference.put(LightControlData.KEY_LIGHT_STATE, TestValues.GENERAL_LIGHTSTATE_LIST);
 
-			JSONObject underTest = msg.serializeJSON();
-			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
+            JSONObject underTest = msg.serializeJSON();
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
-			Iterator<?> iterator = reference.keys();
-			while (iterator.hasNext()) {
-				String key = (String) iterator.next();
+            Iterator<?> iterator = reference.keys();
+            while (iterator.hasNext()) {
+                String key = (String) iterator.next();
 
-				if (key.equals(LightControlData.KEY_LIGHT_STATE)) {
-					List<LightState> lsReference = (List<LightState>) JsonUtils.readObjectFromJsonObject(reference, key);
-					JSONArray lsArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
-					int i = 0;
-					for (LightState ls : lsReference) {
-						assertTrue(Validator.validateLightState(ls, new LightState(JsonRPCMarshaller.deserializeJSONObject(lsArray.getJSONObject(i++)))));
-					}
-				}
-			}
-		} catch (JSONException e) {
-			fail(TestValues.JSON_FAIL);
-		}
-	}
+                if (key.equals(LightControlData.KEY_LIGHT_STATE)) {
+                    List<LightState> lsReference = (List<LightState>) JsonUtils.readObjectFromJsonObject(reference, key);
+                    JSONArray lsArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
+                    int i = 0;
+                    for (LightState ls : lsReference) {
+                        assertTrue(Validator.validateLightState(ls, new LightState(JsonRPCMarshaller.deserializeJSONObject(lsArray.getJSONObject(i++)))));
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
+        }
+    }
 }

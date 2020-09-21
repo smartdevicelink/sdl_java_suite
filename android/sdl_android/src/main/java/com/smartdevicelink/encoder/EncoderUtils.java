@@ -44,7 +44,7 @@ public final class EncoderUtils {
 
     /**
      * Extracts codec-specific data from MediaFormat instance
-     *
+     * <p>
      * Currently, only AVC is supported.
      *
      * @param format MediaFormat instance retrieved from MediaCodec
@@ -71,7 +71,7 @@ public final class EncoderUtils {
 
     /**
      * Extracts H.264 codec-specific data (SPS and PPS) from MediaFormat instance
-     *
+     * <p>
      * The codec-specific data is in byte-stream format; 4-byte start codes (0x00 0x00 0x00 0x01)
      * are added in front of SPS and PPS NAL units.
      *
@@ -108,5 +108,6 @@ public final class EncoderUtils {
         return output;
     }
 
-    private EncoderUtils() {}
+    private EncoderUtils() {
+    }
 }

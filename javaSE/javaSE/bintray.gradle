@@ -45,7 +45,7 @@ bintray {
         version {
             name = libVersion  // Change to release version
             desc = libDescription
-            released  = new Date()  // Will be the current date & time
+            released = new Date()  // Will be the current date & time
             vcsTag = libVersion // Should match git tag
         }
     }
@@ -54,7 +54,7 @@ bintray {
 def pomConfig = {
     Properties props = new Properties()
     props.load(new FileInputStream("$projectDir/bintray.properties"))
-    
+
     licenses {
         license {
             name 'BSD 3-Clause'

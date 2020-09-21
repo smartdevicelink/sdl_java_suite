@@ -24,14 +24,14 @@ public class LocationDetailsTests extends TestCase {
     private LocationDetails msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = TestValues.GENERAL_LOCATIONDETAILS;
     }
 
     /**
      * Tests the expected values of the RPC message.
      */
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Test Values
         List<String> field1 = msg.getAddressLines();
         String field2 = msg.getLocationDescription();
@@ -64,10 +64,10 @@ public class LocationDetailsTests extends TestCase {
         assertNull(msg.getSearchAddress());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(LocationDetails.KEY_ADDRESS_LINES, JsonUtils.createJsonArray(TestValues.GENERAL_STRING_LIST));
             reference.put(LocationDetails.KEY_LOCATION_DESCRIPTION, TestValues.GENERAL_STRING);
             reference.put(LocationDetails.KEY_LOCATION_NAME, TestValues.GENERAL_STRING);
@@ -93,20 +93,20 @@ public class LocationDetailsTests extends TestCase {
 
             assertTrue(Validator.validateCoordinate(
                     (Coordinate) JsonUtils.readObjectFromJsonObject(reference, LocationDetails.KEY_COORDINATE),
-                    new Coordinate(JsonRPCMarshaller.deserializeJSONObject( (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, LocationDetails.KEY_COORDINATE))))
-                    );
+                    new Coordinate(JsonRPCMarshaller.deserializeJSONObject((JSONObject) JsonUtils.readObjectFromJsonObject(underTest, LocationDetails.KEY_COORDINATE))))
+            );
 
             assertTrue(Validator.validateImage(
                     (Image) JsonUtils.readObjectFromJsonObject(reference, LocationDetails.KEY_LOCATION_IMAGE),
                     new Image(JsonRPCMarshaller.deserializeJSONObject((JSONObject) JsonUtils.readObjectFromJsonObject(underTest, LocationDetails.KEY_LOCATION_IMAGE)))
-                    ));
+            ));
 
             assertTrue(Validator.validateOasisAddress(
                     (OasisAddress) JsonUtils.readObjectFromJsonObject(reference, LocationDetails.KEY_SEARCH_ADDRESS),
                     new OasisAddress(JsonRPCMarshaller.deserializeJSONObject((JSONObject) JsonUtils.readObjectFromJsonObject(underTest, LocationDetails.KEY_SEARCH_ADDRESS)))
             ));
 
-        } catch(JSONException e){
+        } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
     }

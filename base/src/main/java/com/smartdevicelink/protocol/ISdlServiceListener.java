@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -32,11 +32,13 @@
 package com.smartdevicelink.protocol;
 
 
-import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.session.SdlSession;
 
 public interface ISdlServiceListener {
     void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted);
+
     void onServiceEnded(SdlSession session, SessionType type);
+
     void onServiceError(SdlSession session, SessionType type, String reason);
 }

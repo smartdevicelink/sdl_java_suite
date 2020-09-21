@@ -4,13 +4,13 @@ package com.smartdevicelink.managers.screen;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.livio.taskmaster.Taskmaster;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
 import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
@@ -202,7 +202,7 @@ public class SoftButtonManagerTests {
 
         // Check that everything got called as expected
         assertEquals("FileManager.uploadArtworks() did not get called correctly", 1, fileManagerUploadArtworksListenerCalledCounter);
-        assertEquals("InternalInterface.sendRPC() did not get called correctly",2, internalInterfaceSendRPCListenerCalledCounter);
+        assertEquals("InternalInterface.sendRPC() did not get called correctly", 2, internalInterfaceSendRPCListenerCalledCounter);
 
 
         // Test getSoftButtonObjects
@@ -231,7 +231,7 @@ public class SoftButtonManagerTests {
     }
 
     @Test
-    public void testSoftButtonState(){
+    public void testSoftButtonState() {
         // Test SoftButtonState.getName()
         String nameExpectedValue = "object1-state1";
         assertEquals("Returned state name doesn't match the expected value", nameExpectedValue, softButtonState1.getName());
@@ -254,7 +254,7 @@ public class SoftButtonManagerTests {
     }
 
     @Test
-    public void testSoftButtonObject(){
+    public void testSoftButtonObject() {
         // Test SoftButtonObject.getName()
         assertEquals("Returned object name doesn't match the expected value", "object1", softButtonObject1.getName());
 

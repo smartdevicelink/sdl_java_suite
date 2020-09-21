@@ -25,95 +25,95 @@ import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.fail;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.ReadDID}
  */
 public class ReadDidTests extends BaseRpcTests {
-	
-	@Override
-	protected RPCMessage createMessage() {
-		ReadDID msg = new ReadDID();
 
-		msg.setEcuName(TestValues.GENERAL_INT);
-		msg.setDidLocation(TestValues.GENERAL_INTEGER_LIST);
+    @Override
+    protected RPCMessage createMessage() {
+        ReadDID msg = new ReadDID();
 
-		return msg;
-	}
+        msg.setEcuName(TestValues.GENERAL_INT);
+        msg.setDidLocation(TestValues.GENERAL_INTEGER_LIST);
 
-	@Override
-	protected String getMessageType() {
-		return RPCMessage.KEY_REQUEST;
-	}
+        return msg;
+    }
 
-	@Override
-	protected String getCommandType() {
-		return FunctionID.READ_DID.toString();
-	}
+    @Override
+    protected String getMessageType() {
+        return RPCMessage.KEY_REQUEST;
+    }
 
-	@Override
-	protected JSONObject getExpectedParameters(int sdlVersion) {
-		JSONObject result = new JSONObject();
+    @Override
+    protected String getCommandType() {
+        return FunctionID.READ_DID.toString();
+    }
 
-		try {
-			result.put(ReadDID.KEY_ECU_NAME, TestValues.GENERAL_INT);
-			result.put(ReadDID.KEY_DID_LOCATION, JsonUtils.createJsonArray(TestValues.GENERAL_INTEGER_LIST));
-		} catch (JSONException e) {
-			fail(TestValues.JSON_FAIL);
-		}
+    @Override
+    protected JSONObject getExpectedParameters(int sdlVersion) {
+        JSONObject result = new JSONObject();
 
-		return result;
-	}
+        try {
+            result.put(ReadDID.KEY_ECU_NAME, TestValues.GENERAL_INT);
+            result.put(ReadDID.KEY_DID_LOCATION, JsonUtils.createJsonArray(TestValues.GENERAL_INTEGER_LIST));
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
+        }
 
-	/**
-	 * Tests the expected values of the RPC message.
-	 */
-	@Test
-    public void testRpcValues () { 
-    	// Test Values
-		Integer testEcuName = ( (ReadDID) msg ).getEcuName();
-		List<Integer> testDidLocation = ( (ReadDID) msg ).getDidLocation();
-		
-		// Valid Tests
-		assertEquals(TestValues.MATCH, (Integer) TestValues.GENERAL_INT, testEcuName);
-		assertEquals(TestValues.MATCH, TestValues.GENERAL_INTEGER_LIST, testDidLocation);
-		
-		// Invalid/Null Tests
-		ReadDID msg = new ReadDID();
-		assertNotNull(TestValues.NOT_NULL, msg);
-		testNullBase(msg);
+        return result;
+    }
 
-		assertNull(TestValues.NULL, msg.getEcuName());
-		assertNull(TestValues.NULL, msg.getDidLocation());
-	}
+    /**
+     * Tests the expected values of the RPC message.
+     */
+    @Test
+    public void testRpcValues() {
+        // Test Values
+        Integer testEcuName = ((ReadDID) msg).getEcuName();
+        List<Integer> testDidLocation = ((ReadDID) msg).getDidLocation();
 
-	/**
+        // Valid Tests
+        assertEquals(TestValues.MATCH, (Integer) TestValues.GENERAL_INT, testEcuName);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INTEGER_LIST, testDidLocation);
+
+        // Invalid/Null Tests
+        ReadDID msg = new ReadDID();
+        assertNotNull(TestValues.NOT_NULL, msg);
+        testNullBase(msg);
+
+        assertNull(TestValues.NULL, msg.getEcuName());
+        assertNull(TestValues.NULL, msg.getDidLocation());
+    }
+
+    /**
      * Tests a valid JSON construction of this RPC message.
      */
-	@Test
-    public void testJsonConstructor () {
-    	JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
-    	assertNotNull(TestValues.NOT_NULL, commandJson);
-    	
-		try {
-			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
-			ReadDID cmd = new ReadDID(hash);
-			
-			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(TestValues.NOT_NULL, body);
-			
-			// Test everything in the json body.
-			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+    @Test
+    public void testJsonConstructor() {
+        JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
+        assertNotNull(TestValues.NOT_NULL, commandJson);
 
-			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, ReadDID.KEY_ECU_NAME), cmd.getEcuName());
+        try {
+            Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
+            ReadDID cmd = new ReadDID(hash);
 
-			List<Integer> didLocationList = JsonUtils.readIntegerListFromJsonObject(parameters, ReadDID.KEY_DID_LOCATION);
-			List<Integer> testLocationList = cmd.getDidLocation();
-			assertEquals(TestValues.MATCH, didLocationList.size(), testLocationList.size());
-			assertTrue(TestValues.TRUE, Validator.validateIntegerList(didLocationList, testLocationList));
-		} catch (JSONException e) {
-			fail(TestValues.JSON_FAIL);
-		}    	
-    }	
+            JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
+            assertNotNull(TestValues.NOT_NULL, body);
+
+            // Test everything in the json body.
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+
+            JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, ReadDID.KEY_ECU_NAME), cmd.getEcuName());
+
+            List<Integer> didLocationList = JsonUtils.readIntegerListFromJsonObject(parameters, ReadDID.KEY_DID_LOCATION);
+            List<Integer> testLocationList = cmd.getDidLocation();
+            assertEquals(TestValues.MATCH, didLocationList.size(), testLocationList.size());
+            assertTrue(TestValues.TRUE, Validator.validateIntegerList(didLocationList, testLocationList));
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
+        }
+    }
 }

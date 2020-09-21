@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -43,22 +43,22 @@ import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 
-import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.StreamingStateMachine;
 import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
+import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.managers.ISdl;
-import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
 import com.smartdevicelink.streaming.audio.IAudioStreamListener;
@@ -86,7 +86,8 @@ public class AudioStreamManager extends BaseAudioStreamManager {
 
     private IAudioStreamListener sdlAudioStream;
     private int sdlSampleRate;
-    private @SampleType int sdlSampleType;
+    private @SampleType
+    int sdlSampleType;
     private final Queue<BaseAudioDecoder> queue;
     private final WeakReference<Context> context;
     private final StreamingStateMachine streamingStateMachine;
@@ -107,7 +108,6 @@ public class AudioStreamManager extends BaseAudioStreamManager {
             serviceListener.onServiceError(null, SessionType.PCM, "Service operation timeout reached");
         }
     };
-
 
 
     // INTERNAL INTERFACE
@@ -170,13 +170,13 @@ public class AudioStreamManager extends BaseAudioStreamManager {
     private final OnRPCNotificationListener hmiListener = new OnRPCNotificationListener() {
         @Override
         public void onNotified(RPCNotification notification) {
-            if(notification != null){
-                OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
+            if (notification != null) {
+                OnHMIStatus onHMIStatus = (OnHMIStatus) notification;
                 if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
                     return;
                 }
                 hmiLevel = onHMIStatus.getHmiLevel();
-                if(hmiLevel.equals(HMILevel.HMI_FULL) || hmiLevel.equals(HMILevel.HMI_LIMITED)){
+                if (hmiLevel.equals(HMILevel.HMI_FULL) || hmiLevel.equals(HMILevel.HMI_LIMITED)) {
                     checkState();
                 }
             }
@@ -185,6 +185,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
 
     /**
      * Creates a new object of AudioStreamManager
+     *
      * @param internalInterface The internal interface to the connected device.
      */
     @RestrictTo(RestrictTo.Scope.LIBRARY)
@@ -211,16 +212,16 @@ public class AudioStreamManager extends BaseAudioStreamManager {
         super.start(listener);
     }
 
-    private void checkState(){
-        if(audioStreamingCapabilities != null
+    private void checkState() {
+        if (audioStreamingCapabilities != null
                 && isTransportAvailable
                 && hmiLevel != null
-                && (hmiLevel.equals(HMILevel.HMI_LIMITED) || hmiLevel.equals(HMILevel.HMI_FULL))){
+                && (hmiLevel.equals(HMILevel.HMI_LIMITED) || hmiLevel.equals(HMILevel.HMI_FULL))) {
             transitionToState(READY);
         }
     }
 
-    private void getAudioStreamingCapabilities(){
+    private void getAudioStreamingCapabilities() {
         if (internalInterface.getSystemCapabilityManager() != null) {
             internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.PCM_STREAMING, new OnSystemCapabilityListener() {
                 @Override
@@ -257,6 +258,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
     /**
      * Starts the audio service and audio stream to the connected device.
      * The method is non-blocking.
+     *
      * @param encrypted Specify whether or not the audio stream should be encrypted.
      */
     public void startAudioStream(boolean encrypted, final CompletionListener completionListener) {
@@ -327,7 +329,8 @@ public class AudioStreamManager extends BaseAudioStreamManager {
 
     /**
      * Makes the callback to the listener
-     * @param listener the listener to notify
+     *
+     * @param listener  the listener to notify
      * @param isSuccess flag to notify
      */
     private void finish(CompletionListener listener, boolean isSuccess) {
@@ -365,7 +368,8 @@ public class AudioStreamManager extends BaseAudioStreamManager {
      * Pushes the specified resource file to the playback queue.
      * The audio file will be played immediately. If another audio file is currently playing
      * the specified file will stay queued and automatically played when ready.
-     * @param resourceId The specified resource file to be played.
+     *
+     * @param resourceId         The specified resource file to be played.
      * @param completionListener A completion listener that informs when the audio file is played.
      */
     public void pushResource(int resourceId, final CompletionListener completionListener) {
@@ -385,7 +389,8 @@ public class AudioStreamManager extends BaseAudioStreamManager {
      * Pushes the specified audio file to the playback queue.
      * The audio file will be played immediately. If another audio file is currently playing
      * the specified file will stay queued and automatically played when ready.
-     * @param audioSource The specified audio file to be played.
+     *
+     * @param audioSource        The specified audio file to be played.
      * @param completionListener A completion listener that informs when the audio file is played.
      */
     @SuppressWarnings("WeakerAccess")
@@ -448,7 +453,8 @@ public class AudioStreamManager extends BaseAudioStreamManager {
      * Pushes raw audio data to SDL Core.
      * The audio file will be played immediately. If another audio file is currently playing,
      * the specified file will stay queued and automatically played when ready.
-     * @param data Audio raw data to send.
+     *
+     * @param data               Audio raw data to send.
      * @param completionListener A completion listener that informs when the audio file is played.
      */
     public void pushBuffer(ByteBuffer data, CompletionListener completionListener) {
@@ -464,17 +470,17 @@ public class AudioStreamManager extends BaseAudioStreamManager {
     }
 
     @Override
-    protected void onTransportUpdate(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail, boolean videoStreamTransportAvail){
+    protected void onTransportUpdate(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail, boolean videoStreamTransportAvail) {
 
         isTransportAvailable = audioStreamTransportAvail;
 
-        if(internalInterface.getProtocolVersion().isNewerThan(new Version(5,1,0)) >= 0){
-            if(audioStreamTransportAvail){
+        if (internalInterface.getProtocolVersion().isNewerThan(new Version(5, 1, 0)) >= 0) {
+            if (audioStreamTransportAvail) {
                 checkState();
             }
-        }else{
+        } else {
             //The protocol version doesn't support simultaneous transports.
-            if(!audioStreamTransportAvail){
+            if (!audioStreamTransportAvail) {
                 //If video streaming isn't available on primary transport then it is not possible to
                 //use the video streaming manager until a complete register on a transport that
                 //supports video

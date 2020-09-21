@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -42,25 +42,28 @@ import java.util.List;
 
 /**
  * Diagnostic Message Response is sent, when DiagnosticMessage has been called.
- * 
+ *
  * @since SmartDeviceLink 3.0
  */
 public class DiagnosticMessageResponse extends RPCResponse {
-	public static final String KEY_MESSAGE_DATA_RESULT = "messageDataResult";
-	/** 
-	 * Constructs a new DiagnosticMessageResponse object
-	 */
+    public static final String KEY_MESSAGE_DATA_RESULT = "messageDataResult";
+
+    /**
+     * Constructs a new DiagnosticMessageResponse object
+     */
 
     public DiagnosticMessageResponse() {
         super(FunctionID.DIAGNOSTIC_MESSAGE.toString());
     }
+
     public DiagnosticMessageResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 
     /**
      * Constructs a new DiagnosticMessageResponse object
-     * @param success whether the request is successfully processed
+     *
+     * @param success    whether the request is successfully processed
      * @param resultCode whether the request is successfully processed
      */
     public DiagnosticMessageResponse(@NonNull Boolean success, @NonNull Result resultCode) {
@@ -73,8 +76,8 @@ public class DiagnosticMessageResponse extends RPCResponse {
     public List<Integer> getMessageDataResult() {
         return (List<Integer>) getObject(Integer.class, KEY_MESSAGE_DATA_RESULT);
     }
-    
-    public DiagnosticMessageResponse setMessageDataResult( List<Integer> messageDataResult) {
+
+    public DiagnosticMessageResponse setMessageDataResult(List<Integer> messageDataResult) {
         setParameters(KEY_MESSAGE_DATA_RESULT, messageDataResult);
         return this;
     }

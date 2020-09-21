@@ -12,63 +12,63 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.TouchEventCapabilities}
  */
 public class TouchEventCapabilitiesTest extends TestCase {
-	
-	private TouchEventCapabilities msg;
 
-	@Override
-	public void setUp() {
-		msg = new TouchEventCapabilities();
-		
-		msg.setPressAvailable(TestValues.GENERAL_BOOLEAN);
-		msg.setDoublePressAvailable(TestValues.GENERAL_BOOLEAN);
-		msg.setMultiTouchAvailable(TestValues.GENERAL_BOOLEAN);
-	}
+    private TouchEventCapabilities msg;
+
+    @Override
+    public void setUp() {
+        msg = new TouchEventCapabilities();
+
+        msg.setPressAvailable(TestValues.GENERAL_BOOLEAN);
+        msg.setDoublePressAvailable(TestValues.GENERAL_BOOLEAN);
+        msg.setMultiTouchAvailable(TestValues.GENERAL_BOOLEAN);
+    }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
-    	// Test Values
-		Boolean press = msg.getPressAvailable();
-		Boolean multiTouch = msg.getMultiTouchAvailable();
-		Boolean doublePress = msg.getDoublePressAvailable();
-		
-		// Valid Tests
-		assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, press);
-		assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, multiTouch);
-		assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, doublePress);
-		
-		// Invalid/Null Tests
-		TouchEventCapabilities msg = new TouchEventCapabilities();
-		assertNotNull(TestValues.NOT_NULL, msg);
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
+        Boolean press = msg.getPressAvailable();
+        Boolean multiTouch = msg.getMultiTouchAvailable();
+        Boolean doublePress = msg.getDoublePressAvailable();
 
-		assertNull(TestValues.NULL, msg.getPressAvailable());
-		assertNull(TestValues.NULL, msg.getMultiTouchAvailable());
-		assertNull(TestValues.NULL, msg.getDoublePressAvailable());
-	}
+        // Valid Tests
+        assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, press);
+        assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, multiTouch);
+        assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, doublePress);
 
-	public void testJson() {
-		JSONObject reference = new JSONObject();
+        // Invalid/Null Tests
+        TouchEventCapabilities msg = new TouchEventCapabilities();
+        assertNotNull(TestValues.NOT_NULL, msg);
 
-		try {
-			reference.put(TouchEventCapabilities.KEY_PRESS_AVAILABLE, TestValues.GENERAL_BOOLEAN);
-			reference.put(TouchEventCapabilities.KEY_MULTI_TOUCH_AVAILABLE, TestValues.GENERAL_BOOLEAN);
-			reference.put(TouchEventCapabilities.KEY_DOUBLE_PRESS_AVAILABLE, TestValues.GENERAL_BOOLEAN);
+        assertNull(TestValues.NULL, msg.getPressAvailable());
+        assertNull(TestValues.NULL, msg.getMultiTouchAvailable());
+        assertNull(TestValues.NULL, msg.getDoublePressAvailable());
+    }
 
-			JSONObject underTest = msg.serializeJSON();
-			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
+    public void testJson() {
+        JSONObject reference = new JSONObject();
 
-			Iterator<?> iterator = reference.keys();
-			while (iterator.hasNext()) {
-				String key = (String) iterator.next();
-				assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
-			}
-		} catch (JSONException e) {
-			fail(TestValues.JSON_FAIL);
-		}
-	}
+        try {
+            reference.put(TouchEventCapabilities.KEY_PRESS_AVAILABLE, TestValues.GENERAL_BOOLEAN);
+            reference.put(TouchEventCapabilities.KEY_MULTI_TOUCH_AVAILABLE, TestValues.GENERAL_BOOLEAN);
+            reference.put(TouchEventCapabilities.KEY_DOUBLE_PRESS_AVAILABLE, TestValues.GENERAL_BOOLEAN);
+
+            JSONObject underTest = msg.serializeJSON();
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
+
+            Iterator<?> iterator = reference.keys();
+            while (iterator.hasNext()) {
+                String key = (String) iterator.next();
+                assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+            }
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
+        }
+    }
 }

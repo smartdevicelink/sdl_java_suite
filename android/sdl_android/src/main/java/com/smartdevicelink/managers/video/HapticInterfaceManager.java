@@ -37,7 +37,7 @@ import java.util.List;
 
 /**
  * Created on 9/22/2017.
- * 
+ * <p>
  * Manages haptic data used to render focusable areas on the HU screen.  App developers can
  * over-ride the default logic used to find focusable Views by passing their own data to
  * {@link #setHapticData(List)}
@@ -56,12 +56,11 @@ class HapticInterfaceManager extends BaseHapticInterfaceManager {
      * Sets haptic data and sends update to the HU.  To be used by app code instead of letting
      * Presentation find the Views and automatically send to HU.
      *
-     * @param hapticData
-     *          Rect data indicating "focusable" screen elements or areas
+     * @param hapticData Rect data indicating "focusable" screen elements or areas
      */
     void setHapticData(List<HapticRect> hapticData) {
         userHapticData = hapticData;
-        if(proxyHolder.get() != null) {
+        if (proxyHolder.get() != null) {
             ISdl proxy = proxyHolder.get();
             SendHapticData msg = new SendHapticData();
             msg.setHapticRectData(userHapticData);
@@ -72,12 +71,11 @@ class HapticInterfaceManager extends BaseHapticInterfaceManager {
     /**
      * Sends haptic data found by searching for focusable and clickable Views in the view hierarchy
      * to the HU.  Should be called by Presentation's OnShowListener.
-     * 
-     * @param root
-     *          the root or parent View
+     *
+     * @param root the root or parent View
      */
     void refreshHapticData(View root) {
-        if(proxyHolder.get() != null) {
+        if (proxyHolder.get() != null) {
             ISdl proxy = proxyHolder.get();
             if (userHapticData == null) {
                 List<HapticRect> hapticRects = new ArrayList<>();
@@ -108,7 +106,7 @@ class HapticInterfaceManager extends BaseHapticInterfaceManager {
             }
         }
 
-        int [] loc = new int[2];
+        int[] loc = new int[2];
         int id = 0;
         for (View view : focusables) {
             int w = view.getWidth();

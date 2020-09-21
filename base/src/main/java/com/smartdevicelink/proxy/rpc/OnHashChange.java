@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -39,10 +39,10 @@ import com.smartdevicelink.proxy.RPCNotification;
 import java.util.Hashtable;
 
 /**
- * 	Notification containing an updated hashID which can be used over connection cycles (i.e. loss of connection, ignition cycles, etc.).
+ * Notification containing an updated hashID which can be used over connection cycles (i.e. loss of connection, ignition cycles, etc.).
  * Sent after initial registration and subsequently after any change in the calculated hash of all persisted app data.
  * <p></p>
- *  <p><b>Parameter List</b></p>
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -61,27 +61,28 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 3.0 </td>
  * 		</tr>
  *  </table>
- * @since SmartDeviceLink 3.0
  *
+ * @since SmartDeviceLink 3.0
  */
 public class OnHashChange extends RPCNotification {
-	public static final String KEY_HASH_ID = "hashID";
-	/**
-	 * Constructs a new OnHashChange object
-	 */
+    public static final String KEY_HASH_ID = "hashID";
+
+    /**
+     * Constructs a new OnHashChange object
+     */
 
     public OnHashChange() {
         super(FunctionID.ON_HASH_CHANGE.toString());
     }
+
     /**
-	* <p>
-	* Constructs a new OnKeyboardInput object indicated by the Hashtable
-	* parameter
-	* </p>
-	* 
-	* @param hash
-	*            The Hashtable to use
-	*/
+     * <p>
+     * Constructs a new OnKeyboardInput object indicated by the Hashtable
+     * parameter
+     * </p>
+     *
+     * @param hash The Hashtable to use
+     */
 
     public OnHashChange(Hashtable<String, Object> hash) {
         super(hash);
@@ -94,14 +95,14 @@ public class OnHashChange extends RPCNotification {
         this();
         setHashID(hashID);
     }
-    
+
     public String getHashID() {
         return getString(KEY_HASH_ID);
     }
-   
+
     public OnHashChange setHashID(@NonNull String hashID) {
         setParameters(KEY_HASH_ID, hashID);
         return this;
     }
-    
+
 }

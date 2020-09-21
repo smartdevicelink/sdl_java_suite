@@ -8,6 +8,7 @@ import java.util.Hashtable;
 
 /**
  * Used to set an alternate template layout to a window.
+ *
  * @since 6.0
  */
 public class TemplateConfiguration extends RPCStruct {
@@ -17,8 +18,9 @@ public class TemplateConfiguration extends RPCStruct {
 
     /**
      * Constructs a new TemplateConfiguration object
+     *
      * @param template Predefined or dynamically created window template.
-     *         Currently only predefined window template layouts are defined.
+     *                 Currently only predefined window template layouts are defined.
      */
     public TemplateConfiguration(@NonNull String template) {
         this();
@@ -74,7 +76,7 @@ public class TemplateConfiguration extends RPCStruct {
      *
      * @param dayColorScheme TemplateColorScheme for the day
      */
-    public TemplateConfiguration setDayColorScheme( TemplateColorScheme dayColorScheme) {
+    public TemplateConfiguration setDayColorScheme(TemplateColorScheme dayColorScheme) {
         setValue(KEY_DAY_COLOR_SCHEME, dayColorScheme);
         return this;
     }
@@ -93,7 +95,7 @@ public class TemplateConfiguration extends RPCStruct {
      *
      * @param nightColorScheme TemplateColorScheme for the night
      */
-    public TemplateConfiguration setNightColorScheme( TemplateColorScheme nightColorScheme) {
+    public TemplateConfiguration setNightColorScheme(TemplateColorScheme nightColorScheme) {
         setValue(KEY_NIGHT_COLOR_SCHEME, nightColorScheme);
         return this;
     }

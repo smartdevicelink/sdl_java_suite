@@ -72,6 +72,7 @@ public enum TransmissionType {
 
     /**
      * Convert String to TransmissionType
+     *
      * @param value String
      * @return TransmissionType
      */

@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -37,10 +37,11 @@ import com.smartdevicelink.proxy.RPCRequest;
 import java.util.Hashtable;
 
 public class SubscribeWayPoints extends RPCRequest {
-	public SubscribeWayPoints() {
+    public SubscribeWayPoints() {
         super(FunctionID.SUBSCRIBE_WAY_POINTS.toString());
     }
-	public SubscribeWayPoints(Hashtable<String, Object> hash) {
+
+    public SubscribeWayPoints(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

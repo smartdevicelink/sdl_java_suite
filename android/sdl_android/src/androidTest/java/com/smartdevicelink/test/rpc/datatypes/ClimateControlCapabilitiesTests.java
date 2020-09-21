@@ -24,12 +24,12 @@ import java.util.List;
  * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.ClimateControlCapabilities}
  */
-public class ClimateControlCapabilitiesTests extends TestCase{
-	
+public class ClimateControlCapabilitiesTests extends TestCase {
+
     private ClimateControlCapabilities msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new ClimateControlCapabilities();
 
         msg.setModuleName(TestValues.GENERAL_STRING);
@@ -54,9 +54,9 @@ public class ClimateControlCapabilitiesTests extends TestCase{
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
         // Test Values
         String moduleName = msg.getModuleName();
         boolean fanSpeedAvailable = msg.getFanSpeedAvailable();
@@ -95,10 +95,10 @@ public class ClimateControlCapabilitiesTests extends TestCase{
         assertEquals(TestValues.MATCH, TestValues.GENERAL_DEFROSTZONE_LIST.size(), defrostZone.size());
         assertEquals(TestValues.MATCH, TestValues.GENERAL_VENTILATIONMODE_LIST.size(), ventilationMode.size());
 
-        for(int i = 0; i < TestValues.GENERAL_DEFROSTZONE_LIST.size(); i++){
+        for (int i = 0; i < TestValues.GENERAL_DEFROSTZONE_LIST.size(); i++) {
             assertEquals(TestValues.MATCH, TestValues.GENERAL_DEFROSTZONE_LIST.get(i), defrostZone.get(i));
         }
-        for(int i = 0; i < TestValues.GENERAL_VENTILATIONMODE_LIST.size(); i++){
+        for (int i = 0; i < TestValues.GENERAL_VENTILATIONMODE_LIST.size(); i++) {
             assertEquals(TestValues.MATCH, TestValues.GENERAL_VENTILATIONMODE_LIST.get(i), ventilationMode.get(i));
         }
 
@@ -132,10 +132,10 @@ public class ClimateControlCapabilitiesTests extends TestCase{
         assertNull(TestValues.NULL, msg.getClimateEnableAvailable());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(ClimateControlCapabilities.KEY_MODULE_NAME, TestValues.GENERAL_STRING);
             reference.put(ClimateControlCapabilities.KEY_FAN_SPEED_AVAILABLE, TestValues.GENERAL_BOOLEAN);
             reference.put(ClimateControlCapabilities.KEY_DESIRED_TEMPERATURE_AVAILABLE, TestValues.GENERAL_BOOLEAN);
@@ -160,10 +160,10 @@ public class ClimateControlCapabilitiesTests extends TestCase{
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
 
-                if(key.equals(ClimateControlCapabilities.KEY_DEFROST_ZONE)) {
+                if (key.equals(ClimateControlCapabilities.KEY_DEFROST_ZONE)) {
                     JSONArray defrostZoneArrayReference = JsonUtils.readJsonArrayFromJsonObject(reference, key);
                     JSONArray defrostZoneArrayTest = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
                     List<DefrostZone> defrostZoneListReference = new ArrayList<DefrostZone>();
@@ -171,12 +171,12 @@ public class ClimateControlCapabilitiesTests extends TestCase{
 
                     assertEquals(TestValues.MATCH, defrostZoneArrayReference.length(), defrostZoneArrayTest.length());
 
-                    for (int index = 0 ; index < defrostZoneArrayReference.length(); index++) {
-                        defrostZoneListReference.add( (DefrostZone)defrostZoneArrayReference.get(index) );
-                        defrostZoneListTest.add( (DefrostZone)defrostZoneArrayTest.get(index) );
+                    for (int index = 0; index < defrostZoneArrayReference.length(); index++) {
+                        defrostZoneListReference.add((DefrostZone) defrostZoneArrayReference.get(index));
+                        defrostZoneListTest.add((DefrostZone) defrostZoneArrayTest.get(index));
                     }
                     assertTrue(TestValues.TRUE, defrostZoneListReference.containsAll(defrostZoneListTest) && defrostZoneListTest.containsAll(defrostZoneListReference));
-                } else if(key.equals(ClimateControlCapabilities.KEY_VENTILATION_MODE)) {
+                } else if (key.equals(ClimateControlCapabilities.KEY_VENTILATION_MODE)) {
                     JSONArray ventilationModeArrayReference = JsonUtils.readJsonArrayFromJsonObject(reference, key);
                     JSONArray ventilationModeArrayTest = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
                     List<VentilationMode> ventilationModeListReference = new ArrayList<VentilationMode>();
@@ -184,9 +184,9 @@ public class ClimateControlCapabilitiesTests extends TestCase{
 
                     assertEquals(TestValues.MATCH, ventilationModeArrayReference.length(), ventilationModeArrayTest.length());
 
-                    for (int index = 0 ; index < ventilationModeArrayReference.length(); index++) {
-                        ventilationModeListReference.add( (VentilationMode)ventilationModeArrayReference.get(index) );
-                        ventilationModeListTest.add( (VentilationMode)ventilationModeArrayTest.get(index) );
+                    for (int index = 0; index < ventilationModeArrayReference.length(); index++) {
+                        ventilationModeListReference.add((VentilationMode) ventilationModeArrayReference.get(index));
+                        ventilationModeListTest.add((VentilationMode) ventilationModeArrayTest.get(index));
                     }
                     assertTrue(TestValues.TRUE, ventilationModeListReference.containsAll(ventilationModeListTest) && ventilationModeListTest.containsAll(ventilationModeListReference));
                 } else if (key.equals(ClimateControlCapabilities.KEY_MODULE_INFO)) {
@@ -195,12 +195,12 @@ public class ClimateControlCapabilitiesTests extends TestCase{
                     Hashtable<String, Object> h1 = JsonRPCMarshaller.deserializeJSONObject(o1);
                     Hashtable<String, Object> h2 = JsonRPCMarshaller.deserializeJSONObject(o2);
                     assertTrue(TestValues.TRUE, Validator.validateModuleInfo(new ModuleInfo(h1), new ModuleInfo(h2)));
-                } else{
+                } else {
                     assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
                 }
             }
-        } catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

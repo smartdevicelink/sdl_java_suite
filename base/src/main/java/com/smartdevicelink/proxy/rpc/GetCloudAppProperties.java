@@ -50,17 +50,17 @@ public class GetCloudAppProperties extends RPCRequest {
         super(hash);
     }
 
-    public GetCloudAppProperties(@NonNull String appID){
+    public GetCloudAppProperties(@NonNull String appID) {
         this();
         setParameters(KEY_APP_ID, appID);
     }
 
-    public GetCloudAppProperties setAppID( String appId) {
+    public GetCloudAppProperties setAppID(String appId) {
         setParameters(KEY_APP_ID, appId);
         return this;
     }
 
-    public String getAppID(){
+    public String getAppID() {
         return getString((KEY_APP_ID));
     }
 

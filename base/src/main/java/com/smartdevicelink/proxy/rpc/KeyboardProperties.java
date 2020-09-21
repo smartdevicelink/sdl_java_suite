@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -39,8 +39,9 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import java.util.Hashtable;
 import java.util.List;
 
-/** This mode causes the interaction to immediately display a keyboard entry through the HMI.
- * 
+/**
+ * This mode causes the interaction to immediately display a keyboard entry through the HMI.
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -101,19 +102,19 @@ import java.util.List;
  * 			<td>Allows an app to prepopulate the text field with a list of suggested or completed entry as the user types. Set to an empty array to remove the auto-complete list from the screen</td>
  * 		</tr>
  *  </table>
- * 
- * @since SmartDeviceLink 3.0
  *
+ * @since SmartDeviceLink 3.0
  */
 
 public class KeyboardProperties extends RPCStruct {
     public static final String KEY_KEYPRESS_MODE = "keypressMode";
-	public static final String KEY_KEYBOARD_LAYOUT = "keyboardLayout";
-	public static final String KEY_LIMITED_CHARACTER_LIST = "limitedCharacterList";
-	@Deprecated public static final String KEY_AUTO_COMPLETE_TEXT = "autoCompleteText";
-	public static final String KEY_AUTO_COMPLETE_LIST = "autoCompleteList";
-	public static final String KEY_LANGUAGE = "language";
-	
+    public static final String KEY_KEYBOARD_LAYOUT = "keyboardLayout";
+    public static final String KEY_LIMITED_CHARACTER_LIST = "limitedCharacterList";
+    @Deprecated
+    public static final String KEY_AUTO_COMPLETE_TEXT = "autoCompleteText";
+    public static final String KEY_AUTO_COMPLETE_LIST = "autoCompleteList";
+    public static final String KEY_LANGUAGE = "language";
+
     private static final KeypressMode KEYPRESS_MODE_DEFAULT = KeypressMode.RESEND_CURRENT_ENTRY;
 
     public KeyboardProperties() {
@@ -131,7 +132,7 @@ public class KeyboardProperties extends RPCStruct {
         return (Language) getObject(Language.class, KEY_LANGUAGE);
     }
 
-    public KeyboardProperties setLanguage( Language language) {
+    public KeyboardProperties setLanguage(Language language) {
         setValue(KEY_LANGUAGE, language);
         return this;
     }
@@ -140,20 +141,20 @@ public class KeyboardProperties extends RPCStruct {
         return (KeyboardLayout) getObject(KeyboardLayout.class, KEY_KEYBOARD_LAYOUT);
     }
 
-    public KeyboardProperties setKeyboardLayout( KeyboardLayout keyboardLayout) {
+    public KeyboardProperties setKeyboardLayout(KeyboardLayout keyboardLayout) {
         setValue(KEY_KEYBOARD_LAYOUT, keyboardLayout);
         return this;
     }
 
     public KeypressMode getKeypressMode() {
         KeypressMode kp = (KeypressMode) getObject(KeypressMode.class, KEY_KEYPRESS_MODE);
-        if(kp == null){
+        if (kp == null) {
             kp = KEYPRESS_MODE_DEFAULT;
         }
         return kp;
     }
 
-    public KeyboardProperties setKeypressMode( KeypressMode keypressMode) {
+    public KeyboardProperties setKeypressMode(KeypressMode keypressMode) {
         if (keypressMode != null) {
             setValue(KEY_KEYPRESS_MODE, keypressMode);
         } else {
@@ -167,13 +168,14 @@ public class KeyboardProperties extends RPCStruct {
         return (List<String>) getObject(String.class, KEY_LIMITED_CHARACTER_LIST);
     }
 
-    public KeyboardProperties setLimitedCharacterList( List<String> limitedCharacterList) {
+    public KeyboardProperties setLimitedCharacterList(List<String> limitedCharacterList) {
         setValue(KEY_LIMITED_CHARACTER_LIST, limitedCharacterList);
         return this;
     }
 
     /**
      * Gets the text that allows an app to prepopulate the text field with a suggested entry as the user types
+     *
      * @return String representing the suggestions text
      */
     @Deprecated
@@ -183,10 +185,12 @@ public class KeyboardProperties extends RPCStruct {
 
     /**
      * Sets the text that allows an app to prepopulate the text field with a suggested entry as the user types
+     *
      * @param autoCompleteText String representing the suggestions text
-     * @deprecated use {@link #setAutoCompleteList( List <String>)} instead
+     * @deprecated use {@link #setAutoCompleteList(List <String>)} instead
      */
-    @Deprecated public KeyboardProperties setAutoCompleteText( String autoCompleteText) {
+    @Deprecated
+    public KeyboardProperties setAutoCompleteText(String autoCompleteText) {
         setValue(KEY_AUTO_COMPLETE_TEXT, autoCompleteText);
         return this;
     }
@@ -194,6 +198,7 @@ public class KeyboardProperties extends RPCStruct {
     /**
      * Gets the list that allows an app to prepopulate the text field with a list of suggested or
      * completed entries as the user types.
+     *
      * @return List<String> representing the suggestions list
      */
     public List<String> getAutoCompleteList() {
@@ -203,9 +208,10 @@ public class KeyboardProperties extends RPCStruct {
     /**
      * Sets the lists that allows an app to prepopulate the text field with a list of suggested or
      * completed entries as the user types. Set to an empty array to remove the auto-complete list from the screen
+     *
      * @param autoCompleteList List<String> representing the suggestions list
      */
-    public KeyboardProperties setAutoCompleteList( List<String> autoCompleteList) {
+    public KeyboardProperties setAutoCompleteList(List<String> autoCompleteList) {
         setValue(KEY_AUTO_COMPLETE_LIST, autoCompleteList);
         return this;
     }

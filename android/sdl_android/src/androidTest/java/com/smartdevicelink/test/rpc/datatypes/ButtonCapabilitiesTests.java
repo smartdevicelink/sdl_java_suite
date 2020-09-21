@@ -17,15 +17,15 @@ import java.util.Hashtable;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.ButtonCapabilities}
  */
-public class ButtonCapabilitiesTests extends TestCase{
+public class ButtonCapabilitiesTests extends TestCase {
 
     private ButtonCapabilities msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new ButtonCapabilities();
 
         msg.setLongPressAvailable(TestValues.GENERAL_BOOLEAN);
@@ -37,23 +37,23 @@ public class ButtonCapabilitiesTests extends TestCase{
 
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
-    	// Test Values
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
         boolean shortPress = msg.getShortPressAvailable();
         boolean longPress = msg.getLongPressAvailable();
         boolean upDown = msg.getUpDownAvailable();
         ButtonName buttonName = msg.getName();
         ModuleInfo info = msg.getModuleInfo();
-        
+
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, shortPress);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, longPress);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, upDown);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_BUTTONNAME, buttonName);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_MODULE_INFO, info);
-        
+
         // Invalid/Null Tests
         ButtonCapabilities msg = new ButtonCapabilities();
         assertNotNull(TestValues.NOT_NULL, msg);
@@ -64,10 +64,10 @@ public class ButtonCapabilitiesTests extends TestCase{
         assertNull(TestValues.NULL, msg.getName());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(ButtonCapabilities.KEY_SHORT_PRESS_AVAILABLE, TestValues.GENERAL_BOOLEAN);
             reference.put(ButtonCapabilities.KEY_LONG_PRESS_AVAILABLE, TestValues.GENERAL_BOOLEAN);
             reference.put(ButtonCapabilities.KEY_UP_DOWN_AVAILABLE, TestValues.GENERAL_BOOLEAN);
@@ -91,8 +91,8 @@ public class ButtonCapabilitiesTests extends TestCase{
                     assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
                 }
             }
-        } catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
-    }    
+    }
 }

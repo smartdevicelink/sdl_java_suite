@@ -1,14 +1,14 @@
 {
-  "request":{
-    "name":"ReleaseInteriorVehicleDataModule",
-    "correlationID":172,
-    "parameters":{
-      "moduleType":"CLIMATE",
-      "moduleIds":"A0A"
+  "request": {
+    "name": "ReleaseInteriorVehicleDataModule",
+    "correlationID": 172,
+    "parameters": {
+      "moduleType": "CLIMATE",
+      "moduleIds": "A0A"
     }
   },
-  "response":{
-    "name":"ReleaseInteriorVehicleDataModule",
-    "correlationID":173
+  "response": {
+    "name": "ReleaseInteriorVehicleDataModule",
+    "correlationID": 173
   }
 }

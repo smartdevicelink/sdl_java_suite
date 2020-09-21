@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -40,113 +40,111 @@ import java.util.Hashtable;
 
 public class LightCapabilities extends RPCStruct {
 
-	public static final String KEY_NAME = "name";
-	public static final String KEY_DENSITY_AVAILABLE = "densityAvailable";
-	public static final String KEY_RGB_COLOR_SPACE_AVAILABLE = "rgbColorSpaceAvailable";
-	public static final String KEY_STATUS_AVAILABLE = "statusAvailable";
+    public static final String KEY_NAME = "name";
+    public static final String KEY_DENSITY_AVAILABLE = "densityAvailable";
+    public static final String KEY_RGB_COLOR_SPACE_AVAILABLE = "rgbColorSpaceAvailable";
+    public static final String KEY_STATUS_AVAILABLE = "statusAvailable";
 
-	/**
-	 * Constructs a newly allocated LightCapabilities object
-	 */
-	public LightCapabilities() {
-	}
+    /**
+     * Constructs a newly allocated LightCapabilities object
+     */
+    public LightCapabilities() {
+    }
 
-	/**
-	 * Constructs a newly allocated LightCapabilities object indicated by the Hashtable parameter
-	 *
-	 * @param hash The Hashtable to use
-	 */
-	public LightCapabilities(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+    /**
+     * Constructs a newly allocated LightCapabilities object indicated by the Hashtable parameter
+     *
+     * @param hash The Hashtable to use
+     */
+    public LightCapabilities(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
-	/**
-	 * Constructs a newly allocated LightCapabilities object
-	 *
-	 * @param name name of Light
-	 */
-	public LightCapabilities(@NonNull LightName name) {
-		this();
-		setName(name);
-	}
+    /**
+     * Constructs a newly allocated LightCapabilities object
+     *
+     * @param name name of Light
+     */
+    public LightCapabilities(@NonNull LightName name) {
+        this();
+        setName(name);
+    }
 
-	/**
-	 * Sets the name portion of the LightCapabilities class
-	 *
-	 * @param name enum value of type LightName that describes the specific light
-	 *
-	 * @see LightName
-	 */
-	public LightCapabilities setName(@NonNull LightName name) {
+    /**
+     * Sets the name portion of the LightCapabilities class
+     *
+     * @param name enum value of type LightName that describes the specific light
+     * @see LightName
+     */
+    public LightCapabilities setName(@NonNull LightName name) {
         setValue(KEY_NAME, name);
         return this;
     }
 
-	/**
-	 * Gets the name portion of the LightCapabilities class
-	 *
-	 * @return LightName enum value that describes the specific light
-	 *
-	 *  @see com.smartdevicelink.proxy.rpc.enums.LightName
-	 */
-	public LightName getName() {
-		return (LightName) getObject(LightName.class, KEY_NAME);
-	}
+    /**
+     * Gets the name portion of the LightCapabilities class
+     *
+     * @return LightName enum value that describes the specific light
+     * @see com.smartdevicelink.proxy.rpc.enums.LightName
+     */
+    public LightName getName() {
+        return (LightName) getObject(LightName.class, KEY_NAME);
+    }
 
-	/**
-	 * Sets the densityAvailable portion of the LightCapabilities class
-	 *
-	 * @param densityAvailable Indicates if the light's density can be set remotely (similar to a dimmer).
-	 */
-	public LightCapabilities setDensityAvailable( Boolean densityAvailable) {
+    /**
+     * Sets the densityAvailable portion of the LightCapabilities class
+     *
+     * @param densityAvailable Indicates if the light's density can be set remotely (similar to a dimmer).
+     */
+    public LightCapabilities setDensityAvailable(Boolean densityAvailable) {
         setValue(KEY_DENSITY_AVAILABLE, densityAvailable);
         return this;
     }
 
-	/**
-	 * Gets the densityAvailable portion of the LightCapabilities class
-	 *
-	 * @return Boolean - Indicates if the light's density can be set remotely (similar to a dimmer).
-	 */
-	public Boolean getDensityAvailable() {
-		return getBoolean(KEY_DENSITY_AVAILABLE);
-	}
+    /**
+     * Gets the densityAvailable portion of the LightCapabilities class
+     *
+     * @return Boolean - Indicates if the light's density can be set remotely (similar to a dimmer).
+     */
+    public Boolean getDensityAvailable() {
+        return getBoolean(KEY_DENSITY_AVAILABLE);
+    }
 
-	/**
-	 * Sets the RGBColorSpaceAvailable portion of the LightCapabilities class
-	 *
-	 * @param RGBColorSpaceAvailable Indicates if the light's color can be set remotely by using the RGB color space.
-	 */
-	public LightCapabilities setRGBColorSpaceAvailable( Boolean RGBColorSpaceAvailable) {
+    /**
+     * Sets the RGBColorSpaceAvailable portion of the LightCapabilities class
+     *
+     * @param RGBColorSpaceAvailable Indicates if the light's color can be set remotely by using the RGB color space.
+     */
+    public LightCapabilities setRGBColorSpaceAvailable(Boolean RGBColorSpaceAvailable) {
         setValue(KEY_RGB_COLOR_SPACE_AVAILABLE, RGBColorSpaceAvailable);
         return this;
     }
 
-	/**
-	 * Gets the RGBColorSpaceAvailable portion of the LightCapabilities class
-	 *
-	 * @return Boolean - Indicates if the light's color can be set remotely by using the RGB color space.
-	 */
-	public Boolean getRGBColorSpaceAvailable() {
-		return getBoolean(KEY_RGB_COLOR_SPACE_AVAILABLE);
-	}
+    /**
+     * Gets the RGBColorSpaceAvailable portion of the LightCapabilities class
+     *
+     * @return Boolean - Indicates if the light's color can be set remotely by using the RGB color space.
+     */
+    public Boolean getRGBColorSpaceAvailable() {
+        return getBoolean(KEY_RGB_COLOR_SPACE_AVAILABLE);
+    }
 
-	/**
-	 * Sets the statusAvailable portion of the LightCapabilities class
-	 *
-	 * @param statusAvailable Indicates if the status (ON/OFF) can be set remotely. App shall not use read-only values (RAMP_UP/RAMP_DOWN/UNKNOWN/INVALID) in a setInteriorVehicleData request.
-	 */
-	public LightCapabilities setStatusAvailable( Boolean statusAvailable) {
+    /**
+     * Sets the statusAvailable portion of the LightCapabilities class
+     *
+     * @param statusAvailable Indicates if the status (ON/OFF) can be set remotely. App shall not use read-only values (RAMP_UP/RAMP_DOWN/UNKNOWN/INVALID) in a setInteriorVehicleData request.
+     */
+    public LightCapabilities setStatusAvailable(Boolean statusAvailable) {
         setValue(KEY_STATUS_AVAILABLE, statusAvailable);
         return this;
     }
 
-	/**
-	 * Gets the statusAvailable portion of the LightCapabilities class
-	 *
-	 * @return Boolean - Indicates if the status (ON/OFF) can be set remotely. App shall not use read-only values (RAMP_UP/RAMP_DOWN/UNKNOWN/INVALID) in a setInteriorVehicleData request.
-	 */
-	public Boolean getStatusAvailable() {
-		return getBoolean(KEY_STATUS_AVAILABLE);
-	}
+    /**
+     * Gets the statusAvailable portion of the LightCapabilities class
+     *
+     * @return Boolean - Indicates if the status (ON/OFF) can be set remotely. App shall not use read-only values (RAMP_UP/RAMP_DOWN/UNKNOWN/INVALID) in a setInteriorVehicleData request.
+     */
+    public Boolean getStatusAvailable() {
+        return getBoolean(KEY_STATUS_AVAILABLE);
+    }
 }

@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -38,9 +38,10 @@ import com.smartdevicelink.proxy.rpc.enums.WarningLightStatus;
 
 import java.util.Hashtable;
 
-/** <p>The status and pressure of the tires.</p>
- *   <p><b> Parameter List:</b></p>
- *   
+/**
+ * <p>The status and pressure of the tires.</p>
+ * <p><b> Parameter List:</b></p>
+ *
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Param Name</th>
@@ -91,63 +92,66 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  *  </table>
- *  
+ * <p>
  *  @since SmartDeviceLink 2.0
- *  
+ *
  * @see WarningLightStatus
  * @see SingleTireStatus
- * @see GetVehicleData 
+ * @see GetVehicleData
  * @see OnVehicleData
  */
 
 public class TireStatus extends RPCStruct {
-	public static final String KEY_PRESSURE_TELL_TALE = "pressureTelltale";
-	public static final String KEY_LEFT_FRONT = "leftFront";
-	public static final String KEY_RIGHT_FRONT = "rightFront";
-	public static final String KEY_LEFT_REAR = "leftRear";
-	public static final String KEY_INNER_LEFT_REAR = "innerLeftRear";
-	public static final String KEY_INNER_RIGHT_REAR = "innerRightRear";
-	public static final String KEY_RIGHT_REAR = "rightRear";
+    public static final String KEY_PRESSURE_TELL_TALE = "pressureTelltale";
+    public static final String KEY_LEFT_FRONT = "leftFront";
+    public static final String KEY_RIGHT_FRONT = "rightFront";
+    public static final String KEY_LEFT_REAR = "leftRear";
+    public static final String KEY_INNER_LEFT_REAR = "innerLeftRear";
+    public static final String KEY_INNER_RIGHT_REAR = "innerRightRear";
+    public static final String KEY_RIGHT_REAR = "rightRear";
 
-	public TireStatus() { }
+    public TireStatus() {
+    }
 
-	 /**
-		 * <p>Constructs a new TireStatus object indicated by the Hashtable parameter</p>
-		 *
-		 * @param hash The Hashtable to use
-		 */
-	public TireStatus(Hashtable<String, Object> hash) {
+    /**
+     * <p>Constructs a new TireStatus object indicated by the Hashtable parameter</p>
+     *
+     * @param hash The Hashtable to use
+     */
+    public TireStatus(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-	/**
-	 * Constructs a new TireStatus object
-	 * @param pressureTellTale Status of the Tire Pressure TellTale
-	 * @param leftFront The status of the left front tire.
-	 * @param rightFront The status of the right front tire.
-	 * @param leftRear The status of the left rear tire.
-	 * @param rightRear The status of the right rear tire
-	 * @param innerLeftRear The status of the inner left rear tire.
-	 * @param innerRightRear The status of the inner right rear tire.
-	 */
-	public TireStatus(@NonNull WarningLightStatus pressureTellTale, @NonNull SingleTireStatus leftFront, @NonNull SingleTireStatus rightFront, @NonNull SingleTireStatus leftRear, @NonNull SingleTireStatus rightRear, @NonNull SingleTireStatus innerLeftRear, @NonNull SingleTireStatus innerRightRear){
-		this();
-		setPressureTelltale(pressureTellTale);
-		setLeftFront(leftFront);
-		setRightFront(rightFront);
-		setLeftRear(leftRear);
-		setRightRear(rightRear);
-		setInnerLeftRear(innerLeftRear);
-		setInnerRightRear(innerRightRear);
-	}
+    /**
+     * Constructs a new TireStatus object
+     *
+     * @param pressureTellTale Status of the Tire Pressure TellTale
+     * @param leftFront        The status of the left front tire.
+     * @param rightFront       The status of the right front tire.
+     * @param leftRear         The status of the left rear tire.
+     * @param rightRear        The status of the right rear tire
+     * @param innerLeftRear    The status of the inner left rear tire.
+     * @param innerRightRear   The status of the inner right rear tire.
+     */
+    public TireStatus(@NonNull WarningLightStatus pressureTellTale, @NonNull SingleTireStatus leftFront, @NonNull SingleTireStatus rightFront, @NonNull SingleTireStatus leftRear, @NonNull SingleTireStatus rightRear, @NonNull SingleTireStatus innerLeftRear, @NonNull SingleTireStatus innerRightRear) {
+        this();
+        setPressureTelltale(pressureTellTale);
+        setLeftFront(leftFront);
+        setRightFront(rightFront);
+        setLeftRear(leftRear);
+        setRightRear(rightRear);
+        setInnerLeftRear(innerLeftRear);
+        setInnerRightRear(innerRightRear);
+    }
 
     /**
      * @deprecated use {@link #setPressureTelltale(WarningLightStatus pressureTellTale)} instead.
      */
-	@Deprecated
+    @Deprecated
     public TireStatus setPressureTellTale(@NonNull WarningLightStatus pressureTellTale) {
         return setPressureTelltale(pressureTellTale);
     }
+
     /**
      * @deprecated use {@link #getPressureTelltale()} instead.
      */
@@ -158,6 +162,7 @@ public class TireStatus extends RPCStruct {
 
     /**
      * Sets the status of the tire pressure Telltale.
+     *
      * @param pressureTellTale the status of the tire pressure Telltale.
      */
     public TireStatus setPressureTelltale(@NonNull WarningLightStatus pressureTellTale) {
@@ -167,50 +172,63 @@ public class TireStatus extends RPCStruct {
 
     /**
      * Gets the status of the tire pressure Telltale.
+     *
      * @return the status of the tire pressure Telltale.
      */
     public WarningLightStatus getPressureTelltale() {
         return (WarningLightStatus) getObject(WarningLightStatus.class, KEY_PRESSURE_TELL_TALE);
     }
+
     public TireStatus setLeftFront(@NonNull SingleTireStatus leftFront) {
         setValue(KEY_LEFT_FRONT, leftFront);
         return this;
     }
+
     public SingleTireStatus getLeftFront() {
         return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_LEFT_FRONT);
     }
+
     public TireStatus setRightFront(@NonNull SingleTireStatus rightFront) {
         setValue(KEY_RIGHT_FRONT, rightFront);
         return this;
     }
+
     public SingleTireStatus getRightFront() {
         return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_RIGHT_FRONT);
     }
+
     public TireStatus setLeftRear(@NonNull SingleTireStatus leftRear) {
         setValue(KEY_LEFT_REAR, leftRear);
         return this;
     }
+
     public SingleTireStatus getLeftRear() {
         return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_LEFT_REAR);
     }
+
     public TireStatus setRightRear(@NonNull SingleTireStatus rightRear) {
         setValue(KEY_RIGHT_REAR, rightRear);
         return this;
     }
+
     public SingleTireStatus getRightRear() {
         return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_RIGHT_REAR);
     }
+
     public TireStatus setInnerLeftRear(@NonNull SingleTireStatus innerLeftRear) {
         setValue(KEY_INNER_LEFT_REAR, innerLeftRear);
         return this;
     }
+
     public SingleTireStatus getInnerLeftRear() {
         return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_INNER_LEFT_REAR);
     }
+
     public TireStatus setInnerRightRear(@NonNull SingleTireStatus innerRightRear) {
         setValue(KEY_INNER_RIGHT_REAR, innerRightRear);
         return this;
     }
+
     public SingleTireStatus getInnerRightRear() {
         return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_INNER_RIGHT_REAR);
     }

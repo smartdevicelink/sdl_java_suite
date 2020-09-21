@@ -40,8 +40,12 @@ import com.smartdevicelink.transport.utl.TransportRecord;
  */
 public interface TransportInterface {
     void start();
+
     void stop();
+
     void write(SdlPacket packet);
+
     void setCallback(TransportCallback callback);
+
     TransportRecord getTransportRecord();
 }

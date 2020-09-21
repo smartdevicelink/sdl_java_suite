@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -38,46 +38,47 @@ import java.util.Hashtable;
 
 public class RPCRequest extends RPCMessage {
 
-	protected OnRPCResponseListener onResponseListener;
+    protected OnRPCResponseListener onResponseListener;
 
-	public RPCRequest(String functionName) {
-		super(functionName, RPCMessage.KEY_REQUEST);
-		messageType = RPCMessage.KEY_REQUEST;
-	}
-
-	public RPCRequest(Hashtable<String, Object> hash) {
-		super(hash);
-	}
-
-	public RPCRequest(RPCRequest request){
-		super(request);
-		if (request == null || request.getCorrelationID() == null) {
-			setCorrelationID(CorrelationIdGenerator.generateId());
-		}
-	}
-
-	public Integer getCorrelationID() {
-		//First we check to see if a correlation ID is set. If not, create one.
-		if(!function.containsKey(RPCMessage.KEY_CORRELATION_ID)){
-			setCorrelationID(CorrelationIdGenerator.generateId());
-		}
-		return (Integer)function.get(RPCMessage.KEY_CORRELATION_ID);
-	}
-	
-	public RPCRequest setCorrelationID(Integer correlationID) {
-		if (correlationID != null) {
-            function.put(RPCMessage.KEY_CORRELATION_ID, correlationID );
-        } else {
-        	function.remove(RPCMessage.KEY_CORRELATION_ID);
-        }
-		return this;
-	}
-    public RPCRequest setOnRPCResponseListener(OnRPCResponseListener listener){
-    	onResponseListener = listener;
-		return this;
+    public RPCRequest(String functionName) {
+        super(functionName, RPCMessage.KEY_REQUEST);
+        messageType = RPCMessage.KEY_REQUEST;
     }
-    
-    public OnRPCResponseListener getOnRPCResponseListener(){
-    	return this.onResponseListener;
+
+    public RPCRequest(Hashtable<String, Object> hash) {
+        super(hash);
+    }
+
+    public RPCRequest(RPCRequest request) {
+        super(request);
+        if (request == null || request.getCorrelationID() == null) {
+            setCorrelationID(CorrelationIdGenerator.generateId());
+        }
+    }
+
+    public Integer getCorrelationID() {
+        //First we check to see if a correlation ID is set. If not, create one.
+        if (!function.containsKey(RPCMessage.KEY_CORRELATION_ID)) {
+            setCorrelationID(CorrelationIdGenerator.generateId());
+        }
+        return (Integer) function.get(RPCMessage.KEY_CORRELATION_ID);
+    }
+
+    public RPCRequest setCorrelationID(Integer correlationID) {
+        if (correlationID != null) {
+            function.put(RPCMessage.KEY_CORRELATION_ID, correlationID);
+        } else {
+            function.remove(RPCMessage.KEY_CORRELATION_ID);
+        }
+        return this;
+    }
+
+    public RPCRequest setOnRPCResponseListener(OnRPCResponseListener listener) {
+        onResponseListener = listener;
+        return this;
+    }
+
+    public OnRPCResponseListener getOnRPCResponseListener() {
+        return this.onResponseListener;
     }
 }

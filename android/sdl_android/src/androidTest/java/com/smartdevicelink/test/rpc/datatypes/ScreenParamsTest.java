@@ -16,75 +16,75 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.ScreenParams}
  */
 public class ScreenParamsTest extends TestCase {
-	    
-	private ScreenParams msg;
 
-	@Override
-	public void setUp() {
-		msg = new ScreenParams();
-		
-		msg.setImageResolution(TestValues.GENERAL_IMAGERESOLUTION);
-		msg.setTouchEventAvailable(TestValues.GENERAL_TOUCHEVENTCAPABILITIES);
-	}
+    private ScreenParams msg;
+
+    @Override
+    public void setUp() {
+        msg = new ScreenParams();
+
+        msg.setImageResolution(TestValues.GENERAL_IMAGERESOLUTION);
+        msg.setTouchEventAvailable(TestValues.GENERAL_TOUCHEVENTCAPABILITIES);
+    }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
-    	// Test Values
-		ImageResolution imageRes = msg.getImageResolution();
-		TouchEventCapabilities touchEvent = msg.getTouchEventAvailable();
-		
-		// Valid Tests
-		assertTrue(TestValues.TRUE, Validator.validateImageResolution(TestValues.GENERAL_IMAGERESOLUTION, imageRes));
-		assertTrue(TestValues.TRUE, Validator.validateTouchEventCapabilities(TestValues.GENERAL_TOUCHEVENTCAPABILITIES, touchEvent));
-		
-		// Invalid/Null Tests
-		ScreenParams msg = new ScreenParams();
-		assertNotNull(TestValues.NOT_NULL, msg);
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
+        ImageResolution imageRes = msg.getImageResolution();
+        TouchEventCapabilities touchEvent = msg.getTouchEventAvailable();
 
-		assertNull(TestValues.NULL, msg.getImageResolution());
-		assertNull(TestValues.NULL, msg.getTouchEventAvailable());
-	}
-    
-	public void testJson() {
-		JSONObject reference = new JSONObject();
+        // Valid Tests
+        assertTrue(TestValues.TRUE, Validator.validateImageResolution(TestValues.GENERAL_IMAGERESOLUTION, imageRes));
+        assertTrue(TestValues.TRUE, Validator.validateTouchEventCapabilities(TestValues.GENERAL_TOUCHEVENTCAPABILITIES, touchEvent));
 
-		try {
-			reference.put(ScreenParams.KEY_RESOLUTION, TestValues.JSON_IMAGERESOLUTION);
-			reference.put(ScreenParams.KEY_TOUCH_EVENT_AVAILABLE, TestValues.JSON_TOUCHEVENTCAPABILITIES);
+        // Invalid/Null Tests
+        ScreenParams msg = new ScreenParams();
+        assertNotNull(TestValues.NOT_NULL, msg);
 
-			JSONObject underTest = msg.serializeJSON();
-			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
+        assertNull(TestValues.NULL, msg.getImageResolution());
+        assertNull(TestValues.NULL, msg.getTouchEventAvailable());
+    }
 
-			Iterator<?> iterator = reference.keys();
-			while (iterator.hasNext()) {
-				String key = (String) iterator.next();
-				
-				if (key.equals(ScreenParams.KEY_TOUCH_EVENT_AVAILABLE)) {
-					JSONObject touchEventObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
-					JSONObject touchEventObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
-					
-					assertTrue(TestValues.TRUE, Validator.validateTouchEventCapabilities(
-						new TouchEventCapabilities(JsonRPCMarshaller.deserializeJSONObject(touchEventObjReference)),
-						new TouchEventCapabilities(JsonRPCMarshaller.deserializeJSONObject(touchEventObjTest))));
-				} else if (key.equals(ScreenParams.KEY_RESOLUTION)) {
-					JSONObject resolutionObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
-					JSONObject resolutionObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
-					
-					assertTrue(TestValues.TRUE, Validator.validateImageResolution(
-						new ImageResolution(JsonRPCMarshaller.deserializeJSONObject(resolutionObjReference)),
-						new ImageResolution(JsonRPCMarshaller.deserializeJSONObject(resolutionObjTest))));
-				} else {
-					assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
-				}
-			}
-		} catch (JSONException e) {
-			fail(TestValues.JSON_FAIL);
-		}
-	}
+    public void testJson() {
+        JSONObject reference = new JSONObject();
+
+        try {
+            reference.put(ScreenParams.KEY_RESOLUTION, TestValues.JSON_IMAGERESOLUTION);
+            reference.put(ScreenParams.KEY_TOUCH_EVENT_AVAILABLE, TestValues.JSON_TOUCHEVENTCAPABILITIES);
+
+            JSONObject underTest = msg.serializeJSON();
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
+
+            Iterator<?> iterator = reference.keys();
+            while (iterator.hasNext()) {
+                String key = (String) iterator.next();
+
+                if (key.equals(ScreenParams.KEY_TOUCH_EVENT_AVAILABLE)) {
+                    JSONObject touchEventObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
+                    JSONObject touchEventObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
+
+                    assertTrue(TestValues.TRUE, Validator.validateTouchEventCapabilities(
+                            new TouchEventCapabilities(JsonRPCMarshaller.deserializeJSONObject(touchEventObjReference)),
+                            new TouchEventCapabilities(JsonRPCMarshaller.deserializeJSONObject(touchEventObjTest))));
+                } else if (key.equals(ScreenParams.KEY_RESOLUTION)) {
+                    JSONObject resolutionObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
+                    JSONObject resolutionObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
+
+                    assertTrue(TestValues.TRUE, Validator.validateImageResolution(
+                            new ImageResolution(JsonRPCMarshaller.deserializeJSONObject(resolutionObjReference)),
+                            new ImageResolution(JsonRPCMarshaller.deserializeJSONObject(resolutionObjTest))));
+                } else {
+                    assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+                }
+            }
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
+        }
+    }
 }

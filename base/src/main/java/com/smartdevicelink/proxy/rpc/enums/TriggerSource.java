@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -36,38 +36,37 @@ import java.util.EnumSet;
 /**
  * Indicates whether choice/command was selected via VR or via a menu selection
  * (using SEEKRIGHT/SEEKLEFT, TUNEUP, TUNEDOWN and OK buttons)
- * 
+ *
  * @since SmartDeviceLink 1.0
- * 
  */
 public enum TriggerSource {
-	/**
-	 * Selection made via menu (i.e. using SEEKRIGHT/SEEKLEFT, TUNEUP, TUNEDOWN
-	 * and OK buttons)
-	 */
-	TS_MENU("MENU"),
-	/**
-	 * Selection made via VR session
-	 */
-	TS_VR("VR"),
-	
-	TS_KEYBOARD("KEYBOARD");
+    /**
+     * Selection made via menu (i.e. using SEEKRIGHT/SEEKLEFT, TUNEUP, TUNEDOWN
+     * and OK buttons)
+     */
+    TS_MENU("MENU"),
+    /**
+     * Selection made via VR session
+     */
+    TS_VR("VR"),
 
-	private final String VALUE;
-    
+    TS_KEYBOARD("KEYBOARD");
+
+    private final String VALUE;
+
     private TriggerSource(String value) {
         this.VALUE = value;
     }
-    
+
     public String toString() {
         return this.VALUE;
     }
-    
+
     public static TriggerSource valueForString(String value) {
-        if(value == null){
+        if (value == null) {
             return null;
         }
-        
+
         for (TriggerSource anEnum : EnumSet.allOf(TriggerSource.class)) {
             if (anEnum.toString().equals(value)) {
                 return anEnum;

@@ -37,7 +37,6 @@ import com.smartdevicelink.proxy.rpc.enums.VehicleDataStatus;
 import java.util.Hashtable;
 
 /**
- *
  * <p><b>Parameter List</b></p>
  *
  * <table border="1" rules="all">
@@ -66,6 +65,7 @@ import java.util.Hashtable;
  *      <td></td>
  *  </tr>
  * </table>
+ *
  * @since SmartDeviceLink 7.0.0
  */
 public class StabilityControlsStatus extends RPCStruct {
@@ -76,7 +76,8 @@ public class StabilityControlsStatus extends RPCStruct {
     /**
      * Constructs a new StabilityControlsStatus object
      */
-    public StabilityControlsStatus() { }
+    public StabilityControlsStatus() {
+    }
 
     /**
      * Constructs a new StabilityControlsStatus object indicated by the Hashtable parameter
@@ -101,7 +102,7 @@ public class StabilityControlsStatus extends RPCStruct {
      *
      * @param escSystem true if vehicle stability control is ON, else false
      */
-    public StabilityControlsStatus setEscSystem( VehicleDataStatus escSystem) {
+    public StabilityControlsStatus setEscSystem(VehicleDataStatus escSystem) {
         setValue(KEY_ESC_SYSTEM, escSystem);
         return this;
     }
@@ -111,7 +112,7 @@ public class StabilityControlsStatus extends RPCStruct {
      *
      * @param trailerSwayControl true if vehicle trailer sway control is ON, else false
      */
-    public StabilityControlsStatus setTrailerSwayControl( VehicleDataStatus trailerSwayControl) {
+    public StabilityControlsStatus setTrailerSwayControl(VehicleDataStatus trailerSwayControl) {
         setValue(KEY_TRAILER_SWAY_CONTROL, trailerSwayControl);
         return this;
     }

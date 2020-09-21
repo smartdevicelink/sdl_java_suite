@@ -14,7 +14,7 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.DeviceStatus}
  */
 public class DeviceStatusTests extends TestCase {
@@ -22,7 +22,7 @@ public class DeviceStatusTests extends TestCase {
     private DeviceStatus msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new DeviceStatus();
 
         msg.setBattLevelStatus(TestValues.GENERAL_DEVICELEVELSTATUS);
@@ -39,10 +39,10 @@ public class DeviceStatusTests extends TestCase {
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
-    	// Test Values
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
         DeviceLevelStatus battLevel = msg.getBattLevelStatus();
         boolean btIcon = msg.getBtIconOn();
         boolean callActive = msg.getCallActive();
@@ -54,7 +54,7 @@ public class DeviceStatusTests extends TestCase {
         boolean stereoAudio = msg.getStereoAudioOutputMuted();
         boolean textAvailable = msg.getTextMsgAvailable();
         boolean voiceRec = msg.getVoiceRecOn();
-        
+
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_DEVICELEVELSTATUS, battLevel);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, btIcon);
@@ -67,7 +67,7 @@ public class DeviceStatusTests extends TestCase {
         assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, stereoAudio);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, textAvailable);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, voiceRec);
-        
+
         // Invalid/Null Tests
         DeviceStatus msg = new DeviceStatus();
         assertNotNull(TestValues.NOT_NULL, msg);
@@ -85,10 +85,10 @@ public class DeviceStatusTests extends TestCase {
         assertNull(TestValues.NULL, msg.getVoiceRecOn());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(DeviceStatus.KEY_BATT_LEVEL_STATUS, TestValues.GENERAL_DEVICELEVELSTATUS);
             reference.put(DeviceStatus.KEY_SIGNAL_LEVEL_STATUS, TestValues.GENERAL_DEVICELEVELSTATUS);
             reference.put(DeviceStatus.KEY_PRIMARY_AUDIO_SOURCE, TestValues.GENERAL_PRIMARYAUDIOSOURCE);
@@ -105,12 +105,12 @@ public class DeviceStatusTests extends TestCase {
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
                 assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
-        } catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

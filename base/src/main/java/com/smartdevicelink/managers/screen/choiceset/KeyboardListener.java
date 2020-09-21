@@ -38,24 +38,24 @@ public interface KeyboardListener {
 
     /**
      * The keyboard session completed with some input.
-     *
-     *  This will be sent upon ENTRY_SUBMITTED or ENTRY_VOICE. If the event is ENTRY_VOICE, the user
-     *  requested to start a voice session in order to submit input to this keyboard. This MUST be
-     *  handled by you. Start an Audio Pass Thru session if supported.
+     * <p>
+     * This will be sent upon ENTRY_SUBMITTED or ENTRY_VOICE. If the event is ENTRY_VOICE, the user
+     * requested to start a voice session in order to submit input to this keyboard. This MUST be
+     * handled by you. Start an Audio Pass Thru session if supported.
      *
      * @param inputText - The submitted input text on the keyboard
-     * @param event - ENTRY_SUBMITTED if the user pressed the submit button on the keyboard, ENTRY_VOICE
-     * if the user requested that a voice session begin
+     * @param event     - ENTRY_SUBMITTED if the user pressed the submit button on the keyboard, ENTRY_VOICE
+     *                  if the user requested that a voice session begin
      */
     void onUserDidSubmitInput(String inputText, KeyboardEvent event);
 
     /**
      * The keyboard session aborted.
-     *
+     * <p>
      * This will be sent if the keyboard event ENTRY_CANCELLED or ENTRY_ABORTED is sent
      *
      * @param event - ENTRY_CANCELLED if the user cancelled the keyboard input, or ENTRY_ABORTED if
-     * the system aborted the input due to a higher priority event
+     *              the system aborted the input due to a higher priority event
      */
     void onKeyboardDidAbortWithReason(KeyboardEvent event);
 
@@ -63,7 +63,7 @@ public interface KeyboardListener {
      * Implement this in order to provide a custom keyboard configuration to just this keyboard. To
      * apply default settings to all keyboards, see SDLScreenManager.keyboardConfiguration
      *
-     * @param currentInputText - The user's full current input text
+     * @param currentInputText                       - The user's full current input text
      * @param keyboardAutocompleteCompletionListener - A listener to update the autoCompleteText
      */
     void updateAutocompleteWithInput(String currentInputText, KeyboardAutocompleteCompletionListener keyboardAutocompleteCompletionListener);
@@ -72,7 +72,7 @@ public interface KeyboardListener {
      * Implement this if you wish to update the limitedCharacterSet as the user updates their input.
      * This is called upon a KEYPRESS event.
      *
-     * @param currentInputText - The user's full current input text
+     * @param currentInputText                       - The user's full current input text
      * @param keyboardCharacterSetCompletionListener - A listener to update the limitedCharacterSet
      */
     void updateCharacterSetWithInput(String currentInputText, KeyboardCharacterSetCompletionListener keyboardCharacterSetCompletionListener);
@@ -80,7 +80,7 @@ public interface KeyboardListener {
     /**
      * Implement this to be notified of all events occurring on the keyboard
      *
-     * @param event - The event that occurred
+     * @param event            - The event that occurred
      * @param currentInputText - The user's full current input text
      */
     void onKeyboardDidSendEvent(KeyboardEvent event, String currentInputText);

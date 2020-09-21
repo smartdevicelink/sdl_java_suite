@@ -1,14 +1,14 @@
 {
- "request":{
-    "name":"ChangeRegistration",
-    "correlationID":111,
-    "parameters":{
-    	"language":"ES-ES",
-    	"hmiDisplayLanguage":"EN-US"
+  "request": {
+    "name": "ChangeRegistration",
+    "correlationID": 111,
+    "parameters": {
+      "language": "ES-ES",
+      "hmiDisplayLanguage": "EN-US"
     }
   },
-  "response":{
-    "name":"ChangeRegistrationResponse",
-    "correlationID":112
+  "response": {
+    "name": "ChangeRegistrationResponse",
+    "correlationID": 112
   }
 }

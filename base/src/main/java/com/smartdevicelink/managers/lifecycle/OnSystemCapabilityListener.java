@@ -32,6 +32,7 @@
 package com.smartdevicelink.managers.lifecycle;
 
 public interface OnSystemCapabilityListener {
-	void onCapabilityRetrieved(Object capability);
-	void onError(String info);
+    void onCapabilityRetrieved(Object capability);
+
+    void onError(String info);
 }

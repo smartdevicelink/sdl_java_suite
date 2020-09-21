@@ -38,7 +38,6 @@ import com.smartdevicelink.proxy.rpc.enums.TransmissionType;
 import java.util.Hashtable;
 
 /**
- *
  * <p><b>Parameter List</b></p>
  *
  * <table border="1" rules="all">
@@ -71,6 +70,7 @@ import java.util.Hashtable;
  *      <td></td>
  *  </tr>
  * </table>
+ *
  * @since SmartDeviceLink 7.0.0
  */
 public class GearStatus extends RPCStruct {
@@ -81,7 +81,8 @@ public class GearStatus extends RPCStruct {
     /**
      * Constructs a newly allocated GearStatus object
      */
-    public GearStatus() {}
+    public GearStatus() {
+    }
 
     /**
      * Constructs a new GearStatus object indicated by the Hashtable parameter
@@ -97,7 +98,7 @@ public class GearStatus extends RPCStruct {
      *
      * @param selectedGear Gear position selected by the user i.e. Park, Drive, Reverse
      */
-    public GearStatus setUserSelectedGear( PRNDL selectedGear) {
+    public GearStatus setUserSelectedGear(PRNDL selectedGear) {
         setValue(KEY_USER_SELECTED_GEAR, selectedGear);
         return this;
     }
@@ -107,8 +108,8 @@ public class GearStatus extends RPCStruct {
      *
      * @return PRNDL Gear position selected by the user i.e. Park, Drive, Reverse
      */
-    public PRNDL getUserSelectedGear(){
-        return (PRNDL)getObject(PRNDL.class, KEY_USER_SELECTED_GEAR);
+    public PRNDL getUserSelectedGear() {
+        return (PRNDL) getObject(PRNDL.class, KEY_USER_SELECTED_GEAR);
     }
 
     /**
@@ -116,7 +117,7 @@ public class GearStatus extends RPCStruct {
      *
      * @param actualGear Actual Gear in use by the transmission
      */
-    public GearStatus setActualGear( PRNDL actualGear) {
+    public GearStatus setActualGear(PRNDL actualGear) {
         setValue(KEY_ACTUAL_GEAR, actualGear);
         return this;
     }
@@ -126,8 +127,8 @@ public class GearStatus extends RPCStruct {
      *
      * @return PRNDL Actual Gear in use by the transmission
      */
-    public PRNDL getActualGear(){
-        return (PRNDL)getObject(PRNDL.class, KEY_ACTUAL_GEAR);
+    public PRNDL getActualGear() {
+        return (PRNDL) getObject(PRNDL.class, KEY_ACTUAL_GEAR);
     }
 
     /**
@@ -135,7 +136,7 @@ public class GearStatus extends RPCStruct {
      *
      * @param transmissionType Tells the transmission type
      */
-    public GearStatus setTransmissionType( TransmissionType transmissionType) {
+    public GearStatus setTransmissionType(TransmissionType transmissionType) {
         setValue(KEY_TRANSMISSION_TYPE, transmissionType);
         return this;
     }
@@ -145,7 +146,7 @@ public class GearStatus extends RPCStruct {
      *
      * @return TransmissionType Tells the transmission type
      */
-    public TransmissionType getTransmissionType(){
-        return  (TransmissionType)getObject(TransmissionType.class, KEY_TRANSMISSION_TYPE);
+    public TransmissionType getTransmissionType() {
+        return (TransmissionType) getObject(TransmissionType.class, KEY_TRANSMISSION_TYPE);
     }
 }

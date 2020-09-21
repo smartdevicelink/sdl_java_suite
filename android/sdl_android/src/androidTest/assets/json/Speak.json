@@ -1,22 +1,22 @@
 {
-  "request":{
-    "name":"Speak",
-    "correlationID":159,
-    "parameters":{
-      "ttsChunks":[
+  "request": {
+    "name": "Speak",
+    "correlationID": 159,
+    "parameters": {
+      "ttsChunks": [
         {
-          "text":"Phrase 1",
-          "type":"TEXT"
+          "text": "Phrase 1",
+          "type": "TEXT"
         },
         {
-          "text":"Phrase 2",
-          "type":"TEXT"
+          "text": "Phrase 2",
+          "type": "TEXT"
         }
       ]
     }
   },
-  "response":{
-    "name":"SpeakResponse",
-    "correlationID":160
+  "response": {
+    "name": "SpeakResponse",
+    "correlationID": 160
   }
 }

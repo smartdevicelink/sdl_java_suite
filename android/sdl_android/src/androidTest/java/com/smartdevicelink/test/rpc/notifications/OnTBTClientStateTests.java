@@ -17,13 +17,13 @@ import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.fail;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.OnTBTClientState}
  */
-public class OnTBTClientStateTests extends BaseRpcTests{
+public class OnTBTClientStateTests extends BaseRpcTests {
 
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         OnTBTClientState msg = new OnTBTClientState();
 
         msg.setState(TestValues.GENERAL_TBTSTATE);
@@ -32,39 +32,39 @@ public class OnTBTClientStateTests extends BaseRpcTests{
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_NOTIFICATION;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.ON_TBT_CLIENT_STATE.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
+        try {
             result.put(OnTBTClientState.KEY_STATE, TestValues.GENERAL_TBTSTATE);
-        } catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
 
         return result;
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
+     * Tests the expected values of the RPC message.
+     */
     @Test
-    public void testRpcValues () {       	
-    	// Test Values
-        TBTState data = ( (OnTBTClientState) msg ).getState();
-        
+    public void testRpcValues() {
+        // Test Values
+        TBTState data = ((OnTBTClientState) msg).getState();
+
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_TBTSTATE, data);
-    
+
         // Invalid/Null Tests
         OnTBTClientState msg = new OnTBTClientState();
         assertNotNull(TestValues.NOT_NULL, msg);

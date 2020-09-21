@@ -13,18 +13,18 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.AirbagStatus}
  */
-public class AirbagStatusTests extends TestCase{
+public class AirbagStatusTests extends TestCase {
 
     private AirbagStatus msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new AirbagStatus();
         assertNotNull(TestValues.NOT_NULL, msg);
-        
+
         msg.setDriverAirbagDeployed(TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
         msg.setDriverCurtainAirbagDeployed(TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
         msg.setDriverKneeAirbagDeployed(TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
@@ -33,14 +33,14 @@ public class AirbagStatusTests extends TestCase{
         msg.setPassengerCurtainAirbagDeployed(TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
         msg.setPassengerKneeAirbagDeployed(TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
         msg.setPassengerSideAirbagDeployed(TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
-        
+
     }
-    
+
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {       	
-    	// Test Values
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
         VehicleDataEventStatus airbagStatus = msg.getDriverAirbagDeployed();
         VehicleDataEventStatus curtainStatus = msg.getDriverCurtainAirbagDeployed();
         VehicleDataEventStatus kneeStatus = msg.getDriverKneeAirbagDeployed();
@@ -49,7 +49,7 @@ public class AirbagStatusTests extends TestCase{
         VehicleDataEventStatus passengerCurtainStatus = msg.getPassengerCurtainAirbagDeployed();
         VehicleDataEventStatus passengerKneeStatus = msg.getPassengerKneeAirbagDeployed();
         VehicleDataEventStatus passengerSideStatus = msg.getPassengerSideAirbagDeployed();
-        
+
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS, airbagStatus);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS, curtainStatus);
@@ -59,11 +59,11 @@ public class AirbagStatusTests extends TestCase{
         assertEquals(TestValues.MATCH, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS, passengerCurtainStatus);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS, passengerKneeStatus);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS, passengerSideStatus);
-    
+
         // Invalid/Null Tests
         AirbagStatus msg = new AirbagStatus();
         assertNotNull(TestValues.NOT_NULL, msg);
-        
+
         assertNull(TestValues.NULL, msg.getDriverAirbagDeployed());
         assertNull(TestValues.NULL, msg.getDriverSideAirbagDeployed());
         assertNull(TestValues.NULL, msg.getDriverCurtainAirbagDeployed());
@@ -74,10 +74,10 @@ public class AirbagStatusTests extends TestCase{
         assertNull(TestValues.NULL, msg.getPassengerKneeAirbagDeployed());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(AirbagStatus.KEY_DRIVER_AIRBAG_DEPLOYED, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
             reference.put(AirbagStatus.KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
             reference.put(AirbagStatus.KEY_DRIVER_KNEE_AIRBAG_DEPLOYED, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
@@ -91,12 +91,12 @@ public class AirbagStatusTests extends TestCase{
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
                 assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
-        } catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

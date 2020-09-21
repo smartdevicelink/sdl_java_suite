@@ -42,84 +42,86 @@ import com.smartdevicelink.proxy.rpc.TTSChunk;
 import java.util.Vector;
 
 /**
- *  Configuration update options for SDLManager. This class can be used to update the lifecycle configuration in
- *  cases the language of the head unit changes or does not match the app language.
+ * Configuration update options for SDLManager. This class can be used to update the lifecycle configuration in
+ * cases the language of the head unit changes or does not match the app language.
  */
 public class LifecycleConfigurationUpdate {
 
-	private String appName, shortAppName;
-	private Vector<TTSChunk> ttsName;
-	private Vector<String> voiceRecognitionCommandNames;
+    private String appName, shortAppName;
+    private Vector<TTSChunk> ttsName;
+    private Vector<String> voiceRecognitionCommandNames;
 
-	// default constructor
-	public LifecycleConfigurationUpdate(){}
+    // default constructor
+    public LifecycleConfigurationUpdate() {
+    }
 
-	/**
-	 *  Initializes and returns a newly allocated lifecycle configuration update object with the specified app data.
-	 *  @param appName The full name of the app to that the configuration should be updated to.
-	 *  @param shortAppName An abbreviated application name that will be used on the app launching screen if the full one would be truncated.
-	 *  @param ttsName A Text to Speech String for voice recognition of the mobile application name.
-	 *  @param voiceRecognitionCommandNames Additional voice recognition commands. May not interfere with any other app name or global commands.
-	 */
-	public LifecycleConfigurationUpdate(@Nullable String appName, @Nullable String shortAppName, @Nullable Vector<TTSChunk> ttsName, @Nullable Vector<String> voiceRecognitionCommandNames){
-		setAppName(appName);
-		setShortAppName(shortAppName);
-		setTtsName(ttsName);
-		setVoiceRecognitionCommandNames(voiceRecognitionCommandNames);
-	}
+    /**
+     * Initializes and returns a newly allocated lifecycle configuration update object with the specified app data.
+     *
+     * @param appName                      The full name of the app to that the configuration should be updated to.
+     * @param shortAppName                 An abbreviated application name that will be used on the app launching screen if the full one would be truncated.
+     * @param ttsName                      A Text to Speech String for voice recognition of the mobile application name.
+     * @param voiceRecognitionCommandNames Additional voice recognition commands. May not interfere with any other app name or global commands.
+     */
+    public LifecycleConfigurationUpdate(@Nullable String appName, @Nullable String shortAppName, @Nullable Vector<TTSChunk> ttsName, @Nullable Vector<String> voiceRecognitionCommandNames) {
+        setAppName(appName);
+        setShortAppName(shortAppName);
+        setTtsName(ttsName);
+        setVoiceRecognitionCommandNames(voiceRecognitionCommandNames);
+    }
 
-	// SETTERS AND GETTERS
+    // SETTERS AND GETTERS
 
-	/**
-	 *  The full name of the app to that the configuration should be updated to.
-	 */
-	public void setAppName(String appName) {
-		this.appName = appName;
-	}
+    /**
+     * The full name of the app to that the configuration should be updated to.
+     */
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
 
-	/**
-	 *  The full name of the app to that the configuration should be updated to.
-	 */
-	public String getAppName() {
-		return appName;
-	}
+    /**
+     * The full name of the app to that the configuration should be updated to.
+     */
+    public String getAppName() {
+        return appName;
+    }
 
-	/**
-	 *  An abbreviated application name that will be used on the app launching screen if the full one would be truncated.
-	 */
-	public void setShortAppName(String shortAppName) {
-		this.shortAppName = shortAppName;
-	}
+    /**
+     * An abbreviated application name that will be used on the app launching screen if the full one would be truncated.
+     */
+    public void setShortAppName(String shortAppName) {
+        this.shortAppName = shortAppName;
+    }
 
-	/**
-	 *  An abbreviated application name that will be used on the app launching screen if the full one would be truncated.
-	 */
-	public String getShortAppName() {
-		return shortAppName;
-	}
+    /**
+     * An abbreviated application name that will be used on the app launching screen if the full one would be truncated.
+     */
+    public String getShortAppName() {
+        return shortAppName;
+    }
 
-	/**
-	 *  A Text to Speech String for voice recognition of the mobile application name.
-	 */
-	public void setTtsName(Vector<TTSChunk> ttsName) {
-		this.ttsName = ttsName;
-	}
+    /**
+     * A Text to Speech String for voice recognition of the mobile application name.
+     */
+    public void setTtsName(Vector<TTSChunk> ttsName) {
+        this.ttsName = ttsName;
+    }
 
-	/**
-	 *  A Text to Speech String for voice recognition of the mobile application name.
-	 */
-	public Vector<TTSChunk> getTtsName() {
-		return ttsName;
-	}
+    /**
+     * A Text to Speech String for voice recognition of the mobile application name.
+     */
+    public Vector<TTSChunk> getTtsName() {
+        return ttsName;
+    }
 
-	public void setVoiceRecognitionCommandNames(Vector<String> voiceRecognitionCommandNames) {
-		this.voiceRecognitionCommandNames = voiceRecognitionCommandNames;
-	}
+    public void setVoiceRecognitionCommandNames(Vector<String> voiceRecognitionCommandNames) {
+        this.voiceRecognitionCommandNames = voiceRecognitionCommandNames;
+    }
 
-	/**
-	 *  Additional voice recognition commands. May not interfere with any other app name or global commands.
-	 */
-	public Vector<String> getVoiceRecognitionCommandNames() {
-		return voiceRecognitionCommandNames;
-	}
+    /**
+     * Additional voice recognition commands. May not interfere with any other app name or global commands.
+     */
+    public Vector<String> getVoiceRecognitionCommandNames() {
+        return voiceRecognitionCommandNames;
+    }
 }

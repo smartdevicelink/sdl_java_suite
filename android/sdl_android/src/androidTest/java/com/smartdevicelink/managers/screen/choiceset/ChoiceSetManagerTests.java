@@ -39,8 +39,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.BaseSubManager;
-import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.ISdl;
+import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
@@ -76,243 +76,245 @@ import static org.mockito.Mockito.when;
 @RunWith(AndroidJUnit4.class)
 public class ChoiceSetManagerTests {
 
-	private ChoiceSetManager csm;
-	Taskmaster taskmaster;
+    private ChoiceSetManager csm;
+    Taskmaster taskmaster;
 
-	@Before
-	public void setUp() throws Exception{
+    @Before
+    public void setUp() throws Exception {
 
-		ISdl internalInterface = mock(ISdl.class);
-		FileManager fileManager = mock(FileManager.class);
-		taskmaster = new Taskmaster.Builder().build();
-		when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
-		csm = new ChoiceSetManager(internalInterface, fileManager);
+        ISdl internalInterface = mock(ISdl.class);
+        FileManager fileManager = mock(FileManager.class);
+        taskmaster = new Taskmaster.Builder().build();
+        when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
+        csm = new ChoiceSetManager(internalInterface, fileManager);
 
-		assertEquals(csm.getState(), BaseSubManager.SETTING_UP);
-		assertEquals(csm.currentSystemContext, SystemContext.SYSCTXT_MAIN);
-		assertEquals(csm.currentHMILevel, HMILevel.HMI_NONE);
-		assertEquals(csm.choiceCellIdMin, 1);
-		assertEquals(csm.nextChoiceId, 1);
-		assertFalse(csm.isVROptional);
-		assertNotNull(csm.fileManager);
-		assertNotNull(csm.preloadedChoices);
-		assertNotNull(csm.pendingPreloadChoices);
-		assertNotNull(csm.transactionQueue);
-		assertNotNull(csm.hmiListener);
-		assertNotNull(csm.onDisplayCapabilityListener);
-		assertNull(csm.pendingPresentOperation);
-	}
+        assertEquals(csm.getState(), BaseSubManager.SETTING_UP);
+        assertEquals(csm.currentSystemContext, SystemContext.SYSCTXT_MAIN);
+        assertEquals(csm.currentHMILevel, HMILevel.HMI_NONE);
+        assertEquals(csm.choiceCellIdMin, 1);
+        assertEquals(csm.nextChoiceId, 1);
+        assertFalse(csm.isVROptional);
+        assertNotNull(csm.fileManager);
+        assertNotNull(csm.preloadedChoices);
+        assertNotNull(csm.pendingPreloadChoices);
+        assertNotNull(csm.transactionQueue);
+        assertNotNull(csm.hmiListener);
+        assertNotNull(csm.onDisplayCapabilityListener);
+        assertNull(csm.pendingPresentOperation);
+    }
 
-	@After
-	public void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
 
-		csm.dispose();
+        csm.dispose();
 
-		assertNull(csm.currentHMILevel);
-		assertNull(csm.currentSystemContext);
-		assertNull(csm.defaultMainWindowCapability);
-		assertNull(csm.pendingPresentationSet);
-		assertNull(csm.pendingPresentOperation);
+        assertNull(csm.currentHMILevel);
+        assertNull(csm.currentSystemContext);
+        assertNull(csm.defaultMainWindowCapability);
+        assertNull(csm.pendingPresentationSet);
+        assertNull(csm.pendingPresentOperation);
 
-		assertEquals(csm.transactionQueue.getTasksAsList().size(), 0);
-		assertEquals(csm.nextChoiceId, 1);
+        assertEquals(csm.transactionQueue.getTasksAsList().size(), 0);
+        assertEquals(csm.nextChoiceId, 1);
 
-		assertFalse(csm.isVROptional);
+        assertFalse(csm.isVROptional);
 
-		assertEquals(csm.getState(), BaseSubManager.SHUTDOWN);
+        assertEquals(csm.getState(), BaseSubManager.SHUTDOWN);
 
-	}
+    }
 
-	@Test
-	public void testDefaultKeyboardConfiguration(){
-		KeyboardProperties properties = csm.defaultKeyboardConfiguration();
-		assertEquals(properties.getLanguage(), Language.EN_US);
-		assertEquals(properties.getKeyboardLayout(), KeyboardLayout.QWERTY);
-		assertEquals(properties.getKeypressMode(), KeypressMode.RESEND_CURRENT_ENTRY);
-	}
+    @Test
+    public void testDefaultKeyboardConfiguration() {
+        KeyboardProperties properties = csm.defaultKeyboardConfiguration();
+        assertEquals(properties.getLanguage(), Language.EN_US);
+        assertEquals(properties.getKeyboardLayout(), KeyboardLayout.QWERTY);
+        assertEquals(properties.getKeypressMode(), KeypressMode.RESEND_CURRENT_ENTRY);
+    }
 
-	@Test
-	public void testSetupChoiceSet(){
+    @Test
+    public void testSetupChoiceSet() {
 
-		ChoiceSetSelectionListener choiceSetSelectionListener = new ChoiceSetSelectionListener() {
-			@Override
-			public void onChoiceSelected(ChoiceCell choiceCell, TriggerSource triggerSource, int rowIndex) {}
+        ChoiceSetSelectionListener choiceSetSelectionListener = new ChoiceSetSelectionListener() {
+            @Override
+            public void onChoiceSelected(ChoiceCell choiceCell, TriggerSource triggerSource, int rowIndex) {
+            }
 
-			@Override
-			public void onError(String error) {}
-		};
+            @Override
+            public void onError(String error) {
+            }
+        };
 
-		// Cannot send choice set with empty or null choice list
-		ChoiceSet choiceSet1 = new ChoiceSet("test", Collections.<ChoiceCell>emptyList(), choiceSetSelectionListener);
-		assertFalse(csm.setUpChoiceSet(choiceSet1));
+        // Cannot send choice set with empty or null choice list
+        ChoiceSet choiceSet1 = new ChoiceSet("test", Collections.<ChoiceCell>emptyList(), choiceSetSelectionListener);
+        assertFalse(csm.setUpChoiceSet(choiceSet1));
 
-		// cells cant have duplicate text
-		ChoiceCell cell1 = new ChoiceCell("test");
-		ChoiceCell cell2 = new ChoiceCell("test");
-		ChoiceSet choiceSet2 = new ChoiceSet("test", Arrays.asList(cell1, cell2), choiceSetSelectionListener);
-		assertFalse(csm.setUpChoiceSet(choiceSet2));
+        // cells cant have duplicate text
+        ChoiceCell cell1 = new ChoiceCell("test");
+        ChoiceCell cell2 = new ChoiceCell("test");
+        ChoiceSet choiceSet2 = new ChoiceSet("test", Arrays.asList(cell1, cell2), choiceSetSelectionListener);
+        assertFalse(csm.setUpChoiceSet(choiceSet2));
 
-		// cells cannot mix and match VR / non-VR
-		ChoiceCell cell3 = new ChoiceCell("test", Collections.singletonList("Test"), null);
-		ChoiceCell cell4 = new ChoiceCell("test2");
-		ChoiceSet choiceSet3 = new ChoiceSet("test", Arrays.asList(cell3, cell4), choiceSetSelectionListener);
-		assertFalse(csm.setUpChoiceSet(choiceSet3));
+        // cells cannot mix and match VR / non-VR
+        ChoiceCell cell3 = new ChoiceCell("test", Collections.singletonList("Test"), null);
+        ChoiceCell cell4 = new ChoiceCell("test2");
+        ChoiceSet choiceSet3 = new ChoiceSet("test", Arrays.asList(cell3, cell4), choiceSetSelectionListener);
+        assertFalse(csm.setUpChoiceSet(choiceSet3));
 
-		// VR Commands must be unique
-		ChoiceCell cell5 = new ChoiceCell("test", Collections.singletonList("Test"), null);
-		ChoiceCell cell6 = new ChoiceCell("test2", Collections.singletonList("Test"), null);
-		ChoiceSet choiceSet4 = new ChoiceSet("test", Arrays.asList(cell5, cell6), choiceSetSelectionListener);
-		assertFalse(csm.setUpChoiceSet(choiceSet4));
+        // VR Commands must be unique
+        ChoiceCell cell5 = new ChoiceCell("test", Collections.singletonList("Test"), null);
+        ChoiceCell cell6 = new ChoiceCell("test2", Collections.singletonList("Test"), null);
+        ChoiceSet choiceSet4 = new ChoiceSet("test", Arrays.asList(cell5, cell6), choiceSetSelectionListener);
+        assertFalse(csm.setUpChoiceSet(choiceSet4));
 
-		// Passing Case
-		ChoiceCell cell7 = new ChoiceCell("test", Collections.singletonList("Test"), null);
-		ChoiceCell cell8 = new ChoiceCell("test2", Collections.singletonList("Test2"), null);
-		ChoiceSet choiceSet5 = new ChoiceSet("test", Arrays.asList(cell7, cell8), choiceSetSelectionListener);
-		assertTrue(csm.setUpChoiceSet(choiceSet5));
-	}
+        // Passing Case
+        ChoiceCell cell7 = new ChoiceCell("test", Collections.singletonList("Test"), null);
+        ChoiceCell cell8 = new ChoiceCell("test2", Collections.singletonList("Test2"), null);
+        ChoiceSet choiceSet5 = new ChoiceSet("test", Arrays.asList(cell7, cell8), choiceSetSelectionListener);
+        assertTrue(csm.setUpChoiceSet(choiceSet5));
+    }
 
-	@Test
-	public void testFindIfPresent(){
+    @Test
+    public void testFindIfPresent() {
 
-		ChoiceCell cell1 = new ChoiceCell("test");
-		ChoiceCell cell2 = new ChoiceCell("test2");
-		ChoiceCell cell3 = new ChoiceCell("test3");
-		HashSet<ChoiceCell> cellSet = new HashSet<>();
-		cellSet.add(cell1);
-		cellSet.add(cell2);
+        ChoiceCell cell1 = new ChoiceCell("test");
+        ChoiceCell cell2 = new ChoiceCell("test2");
+        ChoiceCell cell3 = new ChoiceCell("test3");
+        HashSet<ChoiceCell> cellSet = new HashSet<>();
+        cellSet.add(cell1);
+        cellSet.add(cell2);
 
-		assertNotNull(csm.findIfPresent(cell1, cellSet));
-		assertNull(csm.findIfPresent(cell3, cellSet));
-	}
+        assertNotNull(csm.findIfPresent(cell1, cellSet));
+        assertNull(csm.findIfPresent(cell3, cellSet));
+    }
 
-	@Test
-	public void testUpdateIdsOnChoices(){
+    @Test
+    public void testUpdateIdsOnChoices() {
 
-		ChoiceCell cell1 = new ChoiceCell("test");
-		ChoiceCell cell2 = new ChoiceCell("test2");
-		ChoiceCell cell3 = new ChoiceCell("test3");
-		HashSet<ChoiceCell> cellSet = new HashSet<>();
-		cellSet.add(cell1);
-		cellSet.add(cell2);
-		cellSet.add(cell3);
-		// Cells are initially set to MAX_ID
-		assertEquals(cell1.getChoiceId(), 2000000000);
-		assertEquals(cell2.getChoiceId(), 2000000000);
-		assertEquals(cell3.getChoiceId(), 2000000000);
-		csm.updateIdsOnChoices(cellSet);
-		// We are looking for unique IDs
-		assertNotSame(cell1.getChoiceId(), 2000000000);
-		assertNotSame(cell2.getChoiceId(), 2000000000);
-		assertNotSame(cell3.getChoiceId(), 2000000000);
-	}
+        ChoiceCell cell1 = new ChoiceCell("test");
+        ChoiceCell cell2 = new ChoiceCell("test2");
+        ChoiceCell cell3 = new ChoiceCell("test3");
+        HashSet<ChoiceCell> cellSet = new HashSet<>();
+        cellSet.add(cell1);
+        cellSet.add(cell2);
+        cellSet.add(cell3);
+        // Cells are initially set to MAX_ID
+        assertEquals(cell1.getChoiceId(), 2000000000);
+        assertEquals(cell2.getChoiceId(), 2000000000);
+        assertEquals(cell3.getChoiceId(), 2000000000);
+        csm.updateIdsOnChoices(cellSet);
+        // We are looking for unique IDs
+        assertNotSame(cell1.getChoiceId(), 2000000000);
+        assertNotSame(cell2.getChoiceId(), 2000000000);
+        assertNotSame(cell3.getChoiceId(), 2000000000);
+    }
 
-	@Test
-	public void testChoicesToBeRemovedFromPendingWithArray(){
+    @Test
+    public void testChoicesToBeRemovedFromPendingWithArray() {
 
-		ChoiceCell cell1 = new ChoiceCell("test");
-		ChoiceCell cell2 = new ChoiceCell("test2");
-		ChoiceCell cell3 = new ChoiceCell("test3");
+        ChoiceCell cell1 = new ChoiceCell("test");
+        ChoiceCell cell2 = new ChoiceCell("test2");
+        ChoiceCell cell3 = new ChoiceCell("test3");
 
-		HashSet<ChoiceCell> pendingPreloadSet = new HashSet<>();
-		pendingPreloadSet.add(cell1);
-		pendingPreloadSet.add(cell2);
-		pendingPreloadSet.add(cell3);
+        HashSet<ChoiceCell> pendingPreloadSet = new HashSet<>();
+        pendingPreloadSet.add(cell1);
+        pendingPreloadSet.add(cell2);
+        pendingPreloadSet.add(cell3);
 
-		csm.pendingPreloadChoices.clear();
-		csm.pendingPreloadChoices = pendingPreloadSet;
+        csm.pendingPreloadChoices.clear();
+        csm.pendingPreloadChoices = pendingPreloadSet;
 
-		List<ChoiceCell> choices = new ArrayList<>();
-		choices.add(cell2);
+        List<ChoiceCell> choices = new ArrayList<>();
+        choices.add(cell2);
 
-		HashSet<ChoiceCell> returnedChoices = csm.choicesToBeRemovedFromPendingWithArray(choices);
+        HashSet<ChoiceCell> returnedChoices = csm.choicesToBeRemovedFromPendingWithArray(choices);
 
-		assertEquals(returnedChoices.size(), 1);
-		for (ChoiceCell cell : returnedChoices){
-			assertEquals(cell.getText(), "test2");
-		}
-	}
+        assertEquals(returnedChoices.size(), 1);
+        for (ChoiceCell cell : returnedChoices) {
+            assertEquals(cell.getText(), "test2");
+        }
+    }
 
-	@Test
-	public void testChoicesToBeUploadedWithArray(){
+    @Test
+    public void testChoicesToBeUploadedWithArray() {
 
-		ChoiceCell cell1 = new ChoiceCell("test");
-		ChoiceCell cell2 = new ChoiceCell("test2");
-		ChoiceCell cell3 = new ChoiceCell("test3");
+        ChoiceCell cell1 = new ChoiceCell("test");
+        ChoiceCell cell2 = new ChoiceCell("test2");
+        ChoiceCell cell3 = new ChoiceCell("test3");
 
-		HashSet<ChoiceCell> pendingDeleteSet = new HashSet<>();
-		pendingDeleteSet.add(cell1);
-		pendingDeleteSet.add(cell2);
-		pendingDeleteSet.add(cell3);
+        HashSet<ChoiceCell> pendingDeleteSet = new HashSet<>();
+        pendingDeleteSet.add(cell1);
+        pendingDeleteSet.add(cell2);
+        pendingDeleteSet.add(cell3);
 
-		csm.preloadedChoices.clear();
-		csm.preloadedChoices = pendingDeleteSet;
+        csm.preloadedChoices.clear();
+        csm.preloadedChoices = pendingDeleteSet;
 
-		List<ChoiceCell> choices = new ArrayList<>();
-		choices.add(cell2);
+        List<ChoiceCell> choices = new ArrayList<>();
+        choices.add(cell2);
 
-		HashSet<ChoiceCell> returnedChoices = csm.choicesToBeDeletedWithArray(choices);
+        HashSet<ChoiceCell> returnedChoices = csm.choicesToBeDeletedWithArray(choices);
 
-		assertEquals(returnedChoices.size(), 1);
-		for (ChoiceCell cell : returnedChoices){
-			assertEquals(cell.getText(), "test2");
-		}
-	}
+        assertEquals(returnedChoices.size(), 1);
+        for (ChoiceCell cell : returnedChoices) {
+            assertEquals(cell.getText(), "test2");
+        }
+    }
 
-	@Test
-	public void testPresentingKeyboardShouldReturnCancelIDIfKeyboardCanBeSent() {
-		ISdl internalInterface = mock(ISdl.class);
-		when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
-		FileManager fileManager = mock(FileManager.class);
+    @Test
+    public void testPresentingKeyboardShouldReturnCancelIDIfKeyboardCanBeSent() {
+        ISdl internalInterface = mock(ISdl.class);
+        when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
+        FileManager fileManager = mock(FileManager.class);
 
-		ChoiceSetManager newCSM = new ChoiceSetManager(internalInterface, fileManager);
-		ChoiceSetManager partialMockCSM = spy(newCSM);
-		when(partialMockCSM.getState()).thenReturn(BaseSubManager.READY);
+        ChoiceSetManager newCSM = new ChoiceSetManager(internalInterface, fileManager);
+        ChoiceSetManager partialMockCSM = spy(newCSM);
+        when(partialMockCSM.getState()).thenReturn(BaseSubManager.READY);
 
-		Integer cancelId = partialMockCSM.presentKeyboard("initial text", mock(KeyboardProperties.class), mock(KeyboardListener.class));
-		assertNotNull(cancelId);
-	}
+        Integer cancelId = partialMockCSM.presentKeyboard("initial text", mock(KeyboardProperties.class), mock(KeyboardListener.class));
+        assertNotNull(cancelId);
+    }
 
-	@Test
-	public void testPresentingKeyboardShouldNotReturnCancelIDIfKeyboardCannotBeSent() {
-		ISdl internalInterface = mock(ISdl.class);
-		when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
-		FileManager fileManager = mock(FileManager.class);
+    @Test
+    public void testPresentingKeyboardShouldNotReturnCancelIDIfKeyboardCannotBeSent() {
+        ISdl internalInterface = mock(ISdl.class);
+        when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
+        FileManager fileManager = mock(FileManager.class);
 
-		ChoiceSetManager newCSM = new ChoiceSetManager(internalInterface, fileManager);
-		ChoiceSetManager partialMockCSM = spy(newCSM);
-		when(partialMockCSM.getState()).thenReturn(BaseSubManager.ERROR);
+        ChoiceSetManager newCSM = new ChoiceSetManager(internalInterface, fileManager);
+        ChoiceSetManager partialMockCSM = spy(newCSM);
+        when(partialMockCSM.getState()).thenReturn(BaseSubManager.ERROR);
 
-		Integer cancelId = partialMockCSM.presentKeyboard("initial text", mock(KeyboardProperties.class), mock(KeyboardListener.class));
-		assertNull(cancelId);
-	}
+        Integer cancelId = partialMockCSM.presentKeyboard("initial text", mock(KeyboardProperties.class), mock(KeyboardListener.class));
+        assertNull(cancelId);
+    }
 
-	@Test
-	public void testDismissingExecutingKeyboard(){
-		Integer testCancelID = 42;
-		PresentKeyboardOperation testKeyboardOp = mock(PresentKeyboardOperation.class);
-		doReturn(testCancelID).when(testKeyboardOp).getCancelID();
-		csm.currentlyPresentedKeyboardOperation = testKeyboardOp;
-		csm.dismissKeyboard(testCancelID);
-		verify(testKeyboardOp, times(1)).dismissKeyboard();
-	}
+    @Test
+    public void testDismissingExecutingKeyboard() {
+        Integer testCancelID = 42;
+        PresentKeyboardOperation testKeyboardOp = mock(PresentKeyboardOperation.class);
+        doReturn(testCancelID).when(testKeyboardOp).getCancelID();
+        csm.currentlyPresentedKeyboardOperation = testKeyboardOp;
+        csm.dismissKeyboard(testCancelID);
+        verify(testKeyboardOp, times(1)).dismissKeyboard();
+    }
 
-	@Test
-	public void testDismissingQueuedKeyboard(){
-		Integer testCancelID = 42;
+    @Test
+    public void testDismissingQueuedKeyboard() {
+        Integer testCancelID = 42;
 
-		// Currently executing operation
-		PresentKeyboardOperation testKeyboardOp = mock(PresentKeyboardOperation.class);
-		doReturn(96).when(testKeyboardOp).getCancelID();
-		csm.currentlyPresentedKeyboardOperation = testKeyboardOp;
+        // Currently executing operation
+        PresentKeyboardOperation testKeyboardOp = mock(PresentKeyboardOperation.class);
+        doReturn(96).when(testKeyboardOp).getCancelID();
+        csm.currentlyPresentedKeyboardOperation = testKeyboardOp;
 
-		// Queued operations
-		PresentKeyboardOperation testKeyboardOp2 = mock(PresentKeyboardOperation.class);
-		doReturn(testCancelID).when(testKeyboardOp2).getCancelID();
-		csm.currentlyPresentedKeyboardOperation = testKeyboardOp2;
+        // Queued operations
+        PresentKeyboardOperation testKeyboardOp2 = mock(PresentKeyboardOperation.class);
+        doReturn(testCancelID).when(testKeyboardOp2).getCancelID();
+        csm.currentlyPresentedKeyboardOperation = testKeyboardOp2;
 
-		// Queued operation should be canceled
-		csm.dismissKeyboard(testCancelID);
-		verify(testKeyboardOp, times(0)).dismissKeyboard();
-		verify(testKeyboardOp2, times(1)).dismissKeyboard();
-	}
+        // Queued operation should be canceled
+        csm.dismissKeyboard(testCancelID);
+        verify(testKeyboardOp, times(0)).dismissKeyboard();
+        verify(testKeyboardOp2, times(1)).dismissKeyboard();
+    }
 }

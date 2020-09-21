@@ -1,183 +1,183 @@
 {
-  "request":{
-    "name":"GetVehicleData",
-    "correlationID":129,
-    "parameters":{
-      "speed":true,
-      "rpm":true,
-      "externalTemperature":false,
-      "fuelLevel":true,
-      "vin":true,
-      "prndl":true,
-      "tirePressure":true,
-      "engineTorque":false,
-      "engineOilLife":true,
-      "odometer":true,
-      "gps":false,
-      "fuelLevel_State":true,
-      "instantFuelConsumption":false,
-      "beltStatus":true,
-      "bodyInformation":false,
-      "deviceStatus":true,
-      "driverBraking":true,
-      "wiperStatus":false,
-      "headLampStatus":true,
-      "accPedalPosition":true,
-      "steeringWheelAngle":true,
-      "eCallInfo":false,
-      "airbagStatus":true,
-      "emergencyEvent":false,
-      "clusterModeStatus":true,
-      "myKey":true,
-      "fuelRange":true,
-      "turnSignal":true,
-      "electronicParkBrakeStatus":true,
+  "request": {
+    "name": "GetVehicleData",
+    "correlationID": 129,
+    "parameters": {
+      "speed": true,
+      "rpm": true,
+      "externalTemperature": false,
+      "fuelLevel": true,
+      "vin": true,
+      "prndl": true,
+      "tirePressure": true,
+      "engineTorque": false,
+      "engineOilLife": true,
+      "odometer": true,
+      "gps": false,
+      "fuelLevel_State": true,
+      "instantFuelConsumption": false,
+      "beltStatus": true,
+      "bodyInformation": false,
+      "deviceStatus": true,
+      "driverBraking": true,
+      "wiperStatus": false,
+      "headLampStatus": true,
+      "accPedalPosition": true,
+      "steeringWheelAngle": true,
+      "eCallInfo": false,
+      "airbagStatus": true,
+      "emergencyEvent": false,
+      "clusterModeStatus": true,
+      "myKey": true,
+      "fuelRange": true,
+      "turnSignal": true,
+      "electronicParkBrakeStatus": true,
       "gearStatus": true,
-      "oemCustomVehicleDataName":true,
+      "oemCustomVehicleDataName": true,
       "windowStatus": true,
       "stabilityControlsStatus": true
     }
   },
-  "response":{
-    "name":"GetVehicleDataResponse",
-    "correlationID":130,
-    "parameters":{
-      "speed":35.6,
-      "rpm":2500,
-      "externalTemperature":140.1,
-      "fuelLevel":3.7,
-      "vin":"FIUE4WHR3984579THIRU",
-      "prndl":"SECOND",
-      "tirePressure":{
-        "pressureTellTale":"ON",
-        "leftFront":"NORMAL",
-        "rightFront":"FAULT",
-        "leftRear":"LOW",
-        "innerLeftRear":"NORMAL",
-        "innerRightRear":"LOW",
-        "rightRear":"ALERT"
+  "response": {
+    "name": "GetVehicleDataResponse",
+    "correlationID": 130,
+    "parameters": {
+      "speed": 35.6,
+      "rpm": 2500,
+      "externalTemperature": 140.1,
+      "fuelLevel": 3.7,
+      "vin": "FIUE4WHR3984579THIRU",
+      "prndl": "SECOND",
+      "tirePressure": {
+        "pressureTellTale": "ON",
+        "leftFront": "NORMAL",
+        "rightFront": "FAULT",
+        "leftRear": "LOW",
+        "innerLeftRear": "NORMAL",
+        "innerRightRear": "LOW",
+        "rightRear": "ALERT"
       },
-      "engineTorque":518.3,
-      "engineOilLife":19.3,
-      "odometer":140000,
-      "gps":{
-        "longitudeDegrees":104.2,
-        "latitudeDegrees":56.3,
-        "utcYear":2015,
-        "utcMonth":7,
-        "utcDay":14,
-        "utcHours":11,
-        "utcMinutes":38,
-        "utcSeconds":12,
-        "compassDirection":"NORTHWEST",
-        "pdop":4.1,
-        "vdop":2.4,
-        "hdop":5.5,
-        "actual":true,
-        "satellites":3,
-        "dimension":"_2D",
-        "altitude":768.5,
-        "heading":315.0,
-        "speed":30.5
+      "engineTorque": 518.3,
+      "engineOilLife": 19.3,
+      "odometer": 140000,
+      "gps": {
+        "longitudeDegrees": 104.2,
+        "latitudeDegrees": 56.3,
+        "utcYear": 2015,
+        "utcMonth": 7,
+        "utcDay": 14,
+        "utcHours": 11,
+        "utcMinutes": 38,
+        "utcSeconds": 12,
+        "compassDirection": "NORTHWEST",
+        "pdop": 4.1,
+        "vdop": 2.4,
+        "hdop": 5.5,
+        "actual": true,
+        "satellites": 3,
+        "dimension": "_2D",
+        "altitude": 768.5,
+        "heading": 315.0,
+        "speed": 30.5
       },
-      "fuelLevel_State":"ALERT",
-      "turnSignal":"OFF",
-      "instantFuelConsumption":2.76,
-      "beltStatus":{
-        "driverBeltDeployed":"NO",
-        "passengerBeltDeployed":"YES",
-        "passengerBuckleBelted":"NO",
-        "driverBuckleBelted":"NO",
-        "leftRow2BuckleBelted":"NO_EVENT",
-        "passengerChildDetected":"NO",
-        "rightRow2BuckleBelted":"NO_EVENT",
-        "middleRow2BuckleBelted":"YES",
-        "middleRow3BuckleBelted":"NO_EVENT",
-        "leftRow3BuckleBelted":"NO",
-        "rightRow3BuckleBelted":"NO_EVENT",
-        "rearInflatableBelted":"NO",
-        "rightRearInflatableBelted":"NO_EVENT",
-        "middleRow1BeltDeployed":"NO",
-        "middleRow1BuckleBelted":"YES"
+      "fuelLevel_State": "ALERT",
+      "turnSignal": "OFF",
+      "instantFuelConsumption": 2.76,
+      "beltStatus": {
+        "driverBeltDeployed": "NO",
+        "passengerBeltDeployed": "YES",
+        "passengerBuckleBelted": "NO",
+        "driverBuckleBelted": "NO",
+        "leftRow2BuckleBelted": "NO_EVENT",
+        "passengerChildDetected": "NO",
+        "rightRow2BuckleBelted": "NO_EVENT",
+        "middleRow2BuckleBelted": "YES",
+        "middleRow3BuckleBelted": "NO_EVENT",
+        "leftRow3BuckleBelted": "NO",
+        "rightRow3BuckleBelted": "NO_EVENT",
+        "rearInflatableBelted": "NO",
+        "rightRearInflatableBelted": "NO_EVENT",
+        "middleRow1BeltDeployed": "NO",
+        "middleRow1BuckleBelted": "YES"
       },
-      "bodyInformation":{
-        "parkBrakeActive":false,
-        "ignitionStableStatus":"IGNITION_SWITCH_NOT_STABLE",
-        "ignitionStatus":"ACCESSORY",
-        "driverDoorAjar":true,
-        "passengerDoorAjar":true,
-        "rearLeftDoorAjar":false,
-        "rearRightDoorAjar":true
+      "bodyInformation": {
+        "parkBrakeActive": false,
+        "ignitionStableStatus": "IGNITION_SWITCH_NOT_STABLE",
+        "ignitionStatus": "ACCESSORY",
+        "driverDoorAjar": true,
+        "passengerDoorAjar": true,
+        "rearLeftDoorAjar": false,
+        "rearRightDoorAjar": true
       },
-      "deviceStatus":{
-        "voiceRecOn":true,
-        "btIconOn":true,
-        "callActive":true,
-        "phoneRoaming":false,
-        "textMsgAvailable":false,
-        "battLevelStatus":"TWO_LEVEL_BARS",
-        "stereoAudioOutputMuted":false,
-        "monoAudioOutputMuted":true,
-        "signalLevelStatus":"ONE_LEVEL_BARS",
-        "primaryAudioSource":"BLUETOOTH_STEREO_BTST",
-        "eCallEventActive":false
+      "deviceStatus": {
+        "voiceRecOn": true,
+        "btIconOn": true,
+        "callActive": true,
+        "phoneRoaming": false,
+        "textMsgAvailable": false,
+        "battLevelStatus": "TWO_LEVEL_BARS",
+        "stereoAudioOutputMuted": false,
+        "monoAudioOutputMuted": true,
+        "signalLevelStatus": "ONE_LEVEL_BARS",
+        "primaryAudioSource": "BLUETOOTH_STEREO_BTST",
+        "eCallEventActive": false
       },
-      "driverBraking":"NO",
-      "wiperStatus":"COURTESYWIPE",
-      "headLampStatus":{
-        "ambientLightSensorStatus":"TWILIGHT_3",
-        "highBeamsOn":true,
-        "lowBeamsOn":false
+      "driverBraking": "NO",
+      "wiperStatus": "COURTESYWIPE",
+      "headLampStatus": {
+        "ambientLightSensorStatus": "TWILIGHT_3",
+        "highBeamsOn": true,
+        "lowBeamsOn": false
       },
-      "accPedalPosition":28.29,
-      "steeringWheelAngle":70.5,
-      "eCallInfo":{
-        "eCallNotificationStatus":"NOT_SUPPORTED",
-        "auxECallNotificationStatus":"NOT_USED",
-        "eCallConfirmationStatus":"ECALL_CONFIGURED_OFF"
+      "accPedalPosition": 28.29,
+      "steeringWheelAngle": 70.5,
+      "eCallInfo": {
+        "eCallNotificationStatus": "NOT_SUPPORTED",
+        "auxECallNotificationStatus": "NOT_USED",
+        "eCallConfirmationStatus": "ECALL_CONFIGURED_OFF"
       },
-      "airbagStatus":{
-        "driverAirbagDeployed":"NO",
-        "driverSideAirbagDeployed":"NO",
-        "driverCurtainAirbagDeployed":"YES",
-        "driverKneeAirbagDeployed":"NO",
-        "passengerAirbagDeployed":"NO",
-        "passengerSideAirbagDeployed":"NO",
-        "passengerCurtainAirbagDeployed":"YES",
-        "passengerKneeAirbagDeployed":"NO"
+      "airbagStatus": {
+        "driverAirbagDeployed": "NO",
+        "driverSideAirbagDeployed": "NO",
+        "driverCurtainAirbagDeployed": "YES",
+        "driverKneeAirbagDeployed": "NO",
+        "passengerAirbagDeployed": "NO",
+        "passengerSideAirbagDeployed": "NO",
+        "passengerCurtainAirbagDeployed": "YES",
+        "passengerKneeAirbagDeployed": "NO"
       },
-      "emergencyEvent":{
-        "emergencyEventType":"FRONTAL",
-        "fuelCutoffStatus":"TERMINATE_FUEL",
-        "rolloverEvent":"YES",
-        "maximumChangeVelocity":5,
-        "multipleEvents":"NO"
+      "emergencyEvent": {
+        "emergencyEventType": "FRONTAL",
+        "fuelCutoffStatus": "TERMINATE_FUEL",
+        "rolloverEvent": "YES",
+        "maximumChangeVelocity": 5,
+        "multipleEvents": "NO"
       },
-      "clusterModeStatus":{
-        "powerModeActive":true,
-        "powerModeQualificationStatus":"POWER_MODE_EVALUATION_IN_PROGRESS",
-        "carModeStatus":"TRANSPORT",
-        "powerModeStatus":"POST_ACCESORY_0"
+      "clusterModeStatus": {
+        "powerModeActive": true,
+        "powerModeQualificationStatus": "POWER_MODE_EVALUATION_IN_PROGRESS",
+        "carModeStatus": "TRANSPORT",
+        "powerModeStatus": "POST_ACCESORY_0"
       },
-      "myKey":{
-        "e911Override":"NO_DATA_EXISTS"
+      "myKey": {
+        "e911Override": "NO_DATA_EXISTS"
       },
-      "electronicParkBrakeStatus":"CLOSED",
-      "fuelRange":[
+      "electronicParkBrakeStatus": "CLOSED",
+      "fuelRange": [
         {
-          "type":"GASOLINE",
-          "range":100.0
+          "type": "GASOLINE",
+          "range": 100.0
         },
         {
-          "type":"DIESEL",
-          "range":10.0
+          "type": "DIESEL",
+          "range": 10.0
         }
       ],
       "stabilityControlsStatus": {
         "escSystem": "ON",
         "trailerSwayControl": "OFF"
       },
-      "oemCustomVehicleDataName":"oemCustomVehicleDataState",
+      "oemCustomVehicleDataName": "oemCustomVehicleDataState",
       "gearStatus": {
         "userSelectedGear": "PARK",
         "transmissionType": "ELECTRIC_VARIABLE",
@@ -185,7 +185,7 @@
       },
       "windowStatus": [
         {
-          "location":  {
+          "location": {
             "row": 2,
             "col": 3
           },

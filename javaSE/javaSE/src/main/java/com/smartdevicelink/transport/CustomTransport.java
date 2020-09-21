@@ -39,7 +39,7 @@ import com.smartdevicelink.util.DebugTool;
 
 import java.nio.ByteBuffer;
 
-public abstract class CustomTransport implements TransportInterface{
+public abstract class CustomTransport implements TransportInterface {
     private static final String TAG = "CustomTransport";
 
     final TransportRecord transportRecord;
@@ -47,27 +47,27 @@ public abstract class CustomTransport implements TransportInterface{
     TransportCallback transportCallback;
 
 
-
     public CustomTransport(String address) {
         //Creates a callback for when packets
         psm = new SdlPsm();
-        transportRecord = new TransportRecord(TransportType.CUSTOM,address);
+        transportRecord = new TransportRecord(TransportType.CUSTOM, address);
     }
 
-    public TransportRecord getTransportRecord(){
+    public TransportRecord getTransportRecord() {
         return this.transportRecord;
     }
 
 
     /**
      * Call this method when reading a byte array off the transport
+     *
      * @param bytes the bytes read off the transport
      */
-    public synchronized void onByteArrayReceived (byte[] bytes, int offset, int length) {
+    public synchronized void onByteArrayReceived(byte[] bytes, int offset, int length) {
 
-        if(bytes != null && bytes.length > 0){
+        if (bytes != null && bytes.length > 0) {
             boolean stateProgress;
-            for(int i = 0; i < length; i++){
+            for (int i = 0; i < length; i++) {
                 stateProgress = psm.handleByte(bytes[i]);
                 if (!stateProgress) {//We are trying to weed through the bad packet info until we get something
                     //Log.w(TAG, "Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
@@ -90,10 +90,11 @@ public abstract class CustomTransport implements TransportInterface{
 
     /**
      * Call this method when reading a ByteBuffer off the transport
+     *
      * @param message the byte buffer that was read off the transport
      */
-    public synchronized void onByteBufferReceived (ByteBuffer message) {
-        if(message != null){
+    public synchronized void onByteBufferReceived(ByteBuffer message) {
+        if (message != null) {
             boolean stateProgress;
             while (message.hasRemaining()) {
                 stateProgress = psm.handleByte(message.get());
@@ -134,7 +135,7 @@ public abstract class CustomTransport implements TransportInterface{
     @Override
     public void write(SdlPacket packet) {
         byte[] bytes = packet.constructPacket();
-        if(bytes != null && bytes.length > 0) {
+        if (bytes != null && bytes.length > 0) {
             try {
                 onWrite(bytes, 0, bytes.length);
             } catch (Exception exc) {
@@ -148,7 +149,7 @@ public abstract class CustomTransport implements TransportInterface{
         this.transportCallback = transportCallback;
     }
 
-    public void onError(){
+    public void onError() {
         if (transportCallback != null) {
             transportCallback.onError();
         }
@@ -158,14 +159,12 @@ public abstract class CustomTransport implements TransportInterface{
     /**
      * Integrator should write out these bytes to whatever actual transport there is. This will be called from the
      * internals of the library.
-     * @param bytes a deconstructed packet into a byte array that needs to be written out
+     *
+     * @param bytes  a deconstructed packet into a byte array that needs to be written out
      * @param offset in bytes
      * @param length in bytes
      */
     public abstract void onWrite(byte[] bytes, int offset, int length);
-
-
-
 
 
 }

@@ -17,13 +17,13 @@ import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.fail;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.OnCommand}
  */
-public class OnCommandTests extends BaseRpcTests{
+public class OnCommandTests extends BaseRpcTests {
 
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         OnCommand msg = new OnCommand();
 
         msg.setCmdID(TestValues.GENERAL_INT);
@@ -33,42 +33,42 @@ public class OnCommandTests extends BaseRpcTests{
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_NOTIFICATION;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.ON_COMMAND.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
+        try {
             result.put(OnCommand.KEY_CMD_ID, TestValues.GENERAL_INT);
             result.put(OnCommand.KEY_TRIGGER_SOURCE, TestValues.GENERAL_TRIGGERSOURCE);
-        }catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
 
         return result;
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
+     * Tests the expected values of the RPC message.
+     */
     @Test
-    public void testRpcValues () {       	
-    	// Test Values
-        int cmdId = ( (OnCommand) msg ).getCmdID();
-        TriggerSource triggerSource = ( (OnCommand) msg ).getTriggerSource();
-        
+    public void testRpcValues() {
+        // Test Values
+        int cmdId = ((OnCommand) msg).getCmdID();
+        TriggerSource triggerSource = ((OnCommand) msg).getTriggerSource();
+
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, cmdId);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_TRIGGERSOURCE, triggerSource);
-       
+
         // Invalid/Null Tests
         OnCommand msg = new OnCommand();
         assertNotNull(TestValues.NOT_NULL, msg);

@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -33,18 +33,19 @@ package com.smartdevicelink.proxy.rpc.enums;
 
 /**
  * Properties of a user-initiated VR interaction (i.e. interactions started by the user pressing the PTT button).
+ *
  * @since SmartDeviceLink 1.0
  */
-public enum GlobalProperty{
-	/**
-	 * The help prompt to be spoken if the user needs assistance during a user-initiated interaction.
-	 */
+public enum GlobalProperty {
+    /**
+     * The help prompt to be spoken if the user needs assistance during a user-initiated interaction.
+     */
     HELPPROMPT,
     /**
      * The prompt to be spoken if the user-initiated interaction times out waiting for the user's verbal input.
      */
     TIMEOUTPROMPT,
-    /** 
+    /**
      * The property vrHelpTitle of setGlobalProperties
      */
 
@@ -77,13 +78,14 @@ public enum GlobalProperty{
 
     /**
      * Convert String to GlobalProperty
+     *
      * @param value String
      * @return GlobalProperty
      */
     public static GlobalProperty valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

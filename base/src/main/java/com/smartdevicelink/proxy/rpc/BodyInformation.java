@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -39,10 +39,11 @@ import com.smartdevicelink.proxy.rpc.enums.IgnitionStatus;
 
 import java.util.Hashtable;
 
-/** The body information including power modes.
- * 
+/**
+ * The body information including power modes.
+ *
  * <p><b>Note:</b> The structure defines the information about the park brake and ignition.</p>
- * 
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -108,13 +109,13 @@ import java.util.Hashtable;
  * 			<td>References signal "DrStatRr_B_Actl".</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
- * 
- *  </table>
- * @since SmartDeviceLink 2.0
- * @see SubscribeVehicleData  
- * @see GetVehicleData
- * @see OnVehicleData 
  *
+ *  </table>
+ *
+ * @see SubscribeVehicleData
+ * @see GetVehicleData
+ * @see OnVehicleData
+ * @since SmartDeviceLink 2.0
  */
 
 public class BodyInformation extends RPCStruct {
@@ -126,75 +127,89 @@ public class BodyInformation extends RPCStruct {
     public static final String KEY_REAR_LEFT_DOOR_AJAR = "rearLeftDoorAjar";
     public static final String KEY_REAR_RIGHT_DOOR_AJAR = "rearRightDoorAjar";
 
-    public BodyInformation() { }
+    public BodyInformation() {
+    }
 
-    /** Constructs a new BodyInformation object indicated by the Hashtable
-	 * parameter
+    /**
+     * Constructs a new BodyInformation object indicated by the Hashtable
+     * parameter
+     *
      * @param hash hashtable filled with params to create an instance of this RPC
-	 * The hash table to use
-	 */
+     *             The hash table to use
+     */
     public BodyInformation(Hashtable<String, Object> hash) {
         super(hash);
     }
+
     public BodyInformation(@NonNull Boolean parkBrakeActive, @NonNull IgnitionStableStatus ignitionStableStatus, @NonNull IgnitionStatus ignitionStatus) {
         this();
         setParkBrakeActive(parkBrakeActive);
         setIgnitionStableStatus(ignitionStableStatus);
         setIgnitionStatus(ignitionStatus);
     }
+
     public BodyInformation setParkBrakeActive(@NonNull Boolean parkBrakeActive) {
         setValue(KEY_PARK_BRAKE_ACTIVE, parkBrakeActive);
         return this;
     }
+
     public Boolean getParkBrakeActive() {
         return getBoolean(KEY_PARK_BRAKE_ACTIVE);
     }
+
     public BodyInformation setIgnitionStableStatus(@NonNull IgnitionStableStatus ignitionStableStatus) {
         setValue(KEY_IGNITION_STABLE_STATUS, ignitionStableStatus);
         return this;
     }
+
     public IgnitionStableStatus getIgnitionStableStatus() {
         return (IgnitionStableStatus) getObject(IgnitionStableStatus.class, KEY_IGNITION_STABLE_STATUS);
     }
+
     public BodyInformation setIgnitionStatus(@NonNull IgnitionStatus ignitionStatus) {
         setValue(KEY_IGNITION_STATUS, ignitionStatus);
         return this;
     }
+
     public IgnitionStatus getIgnitionStatus() {
         return (IgnitionStatus) getObject(IgnitionStatus.class, KEY_IGNITION_STATUS);
     }
-    
-    public BodyInformation setDriverDoorAjar( Boolean driverDoorAjar) {
+
+    public BodyInformation setDriverDoorAjar(Boolean driverDoorAjar) {
         setValue(KEY_DRIVER_DOOR_AJAR, driverDoorAjar);
         return this;
     }
+
     public Boolean getDriverDoorAjar() {
         return getBoolean(KEY_DRIVER_DOOR_AJAR);
     }
-    
-    
-    public BodyInformation setPassengerDoorAjar( Boolean passengerDoorAjar) {
+
+
+    public BodyInformation setPassengerDoorAjar(Boolean passengerDoorAjar) {
         setValue(KEY_PASSENGER_DOOR_AJAR, passengerDoorAjar);
         return this;
     }
+
     public Boolean getPassengerDoorAjar() {
         return getBoolean(KEY_PASSENGER_DOOR_AJAR);
     }
-    
-    public BodyInformation setRearLeftDoorAjar( Boolean rearLeftDoorAjar) {
+
+    public BodyInformation setRearLeftDoorAjar(Boolean rearLeftDoorAjar) {
         setValue(KEY_REAR_LEFT_DOOR_AJAR, rearLeftDoorAjar);
         return this;
     }
+
     public Boolean getRearLeftDoorAjar() {
         return getBoolean(KEY_REAR_LEFT_DOOR_AJAR);
     }
 
-    public BodyInformation setRearRightDoorAjar( Boolean rearRightDoorAjar) {
+    public BodyInformation setRearRightDoorAjar(Boolean rearRightDoorAjar) {
         setValue(KEY_REAR_RIGHT_DOOR_AJAR, rearRightDoorAjar);
         return this;
     }
+
     public Boolean getRearRightDoorAjar() {
         return getBoolean(KEY_REAR_RIGHT_DOOR_AJAR);
-    }     
-    
+    }
+
 }

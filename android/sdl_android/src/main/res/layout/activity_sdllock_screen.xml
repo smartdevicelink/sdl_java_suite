@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/lockscreen_relative_layout"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+    android:id="@+id/lockscreen_relative_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
     <LinearLayout
         android:id="@+id/lockscreen_linear_layout"
@@ -26,7 +26,7 @@
             android:scaleType="fitXY"
             android:layout_gravity="center_horizontal"
             android:contentDescription="@string/lockscreen_image_description"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/device_image"
@@ -35,7 +35,7 @@
             android:layout_marginTop="30dp"
             android:scaleType="fitXY"
             android:layout_gravity="center_horizontal"
-            android:contentDescription="@string/lockscreen_device_image_description"/>
+            android:contentDescription="@string/lockscreen_device_image_description" />
 
     </LinearLayout>
 
@@ -47,6 +47,6 @@
         android:textSize="18sp"
         android:gravity="center|bottom"
         android:textColor="#FFFFFF"
-        android:paddingBottom="10dp"/>
+        android:paddingBottom="10dp" />
 
 </RelativeLayout>

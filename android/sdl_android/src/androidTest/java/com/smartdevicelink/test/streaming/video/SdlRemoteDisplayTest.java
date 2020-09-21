@@ -28,12 +28,12 @@ public class SdlRemoteDisplayTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        if(Looper.myLooper() == null){
+        if (Looper.myLooper() == null) {
             Looper.prepare();
         }
     }
 
-    public void testCreator(){
+    public void testCreator() {
         VirtualDisplayEncoder encoder = createVDE();
         assertNotNull(encoder);
 
@@ -46,7 +46,7 @@ public class SdlRemoteDisplayTest extends TestCase {
         assert true;
     }
 
-    public void testConstructor(){
+    public void testConstructor() {
         VirtualDisplayEncoder encoder = createVDE();
         assertNotNull(encoder);
         MockRemoteDisplay remoteDisplay = new MockRemoteDisplay(InstrumentationRegistry.getInstrumentation().getContext(), encoder.getVirtualDisplay());
@@ -57,7 +57,7 @@ public class SdlRemoteDisplayTest extends TestCase {
 
 
     @TargetApi(19)
-    public void testTouchEvents(){
+    public void testTouchEvents() {
         VirtualDisplayEncoder encoder = createVDE();
         assertNotNull(encoder);
         MockRemoteDisplay remoteDisplay = new MockRemoteDisplay(InstrumentationRegistry.getInstrumentation().getContext(), encoder.getVirtualDisplay());
@@ -66,9 +66,9 @@ public class SdlRemoteDisplayTest extends TestCase {
 
         assertNotNull(remoteDisplay.getMainView());
 
-        try{
+        try {
             remoteDisplay.handleMotionEvent(MotionEvent.obtain(10, System.currentTimeMillis(), MotionEvent.ACTION_DOWN, 100, 100, 0));
-        }catch (Exception e){
+        } catch (Exception e) {
             assert false;
         }
 
@@ -77,13 +77,13 @@ public class SdlRemoteDisplayTest extends TestCase {
     }
 
 
-    public VirtualDisplayEncoder createVDE(){
-        try{
+    public VirtualDisplayEncoder createVDE() {
+        try {
             VirtualDisplayEncoder displayEncoder = new VirtualDisplayEncoder();
             displayEncoder.init(InstrumentationRegistry.getInstrumentation().getContext(), new MockVideoStreamListener(), new VideoStreamingParameters());
             displayEncoder.start();
             return displayEncoder;
-        }catch (Exception e ){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -92,7 +92,7 @@ public class SdlRemoteDisplayTest extends TestCase {
 
     //Mock classes
 
-    public static class MockRemoteDisplay extends SdlRemoteDisplay{
+    public static class MockRemoteDisplay extends SdlRemoteDisplay {
 
         public MockRemoteDisplay(Context context, Display display) {
             super(context, display);
@@ -102,14 +102,14 @@ public class SdlRemoteDisplayTest extends TestCase {
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            setContentView( new RelativeLayout(getContext()));
+            setContentView(new RelativeLayout(getContext()));
 
         }
 
 
     }
 
-    class MockVideoStreamListener implements IVideoStreamListener{
+    class MockVideoStreamListener implements IVideoStreamListener {
 
         @Override
         public void sendFrame(byte[] data, int offset, int length, long presentationTimeUs) throws ArrayIndexOutOfBoundsException {
@@ -122,7 +122,7 @@ public class SdlRemoteDisplayTest extends TestCase {
         }
     }
 
-    class MockRemoteDisplayCallback implements SdlRemoteDisplay.Callback{
+    class MockRemoteDisplayCallback implements SdlRemoteDisplay.Callback {
 
         @Override
         public void onCreated(SdlRemoteDisplay remoteDisplay) {

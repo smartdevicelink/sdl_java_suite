@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -42,133 +42,141 @@ import java.util.List;
  */
 
 public class VideoStreamingCapability extends RPCStruct {
-	public static final String KEY_PREFERRED_RESOLUTION = "preferredResolution";
-	public static final String KEY_MAX_BITRATE = "maxBitrate";
-	public static final String KEY_SUPPORTED_FORMATS = "supportedFormats";
-	public static final String KEY_HAPTIC_SPATIAL_DATA_SUPPORTED = "hapticSpatialDataSupported";
-	public static final String KEY_DIAGONAL_SCREEN_SIZE = "diagonalScreenSize";
-	public static final String KEY_PIXEL_PER_INCH = "pixelPerInch";
-	public static final String KEY_SCALE = "scale";
+    public static final String KEY_PREFERRED_RESOLUTION = "preferredResolution";
+    public static final String KEY_MAX_BITRATE = "maxBitrate";
+    public static final String KEY_SUPPORTED_FORMATS = "supportedFormats";
+    public static final String KEY_HAPTIC_SPATIAL_DATA_SUPPORTED = "hapticSpatialDataSupported";
+    public static final String KEY_DIAGONAL_SCREEN_SIZE = "diagonalScreenSize";
+    public static final String KEY_PIXEL_PER_INCH = "pixelPerInch";
+    public static final String KEY_SCALE = "scale";
 
-	public VideoStreamingCapability(){}
-	public VideoStreamingCapability(Hashtable<String, Object> hash){super(hash);}
+    public VideoStreamingCapability() {
+    }
 
-	public VideoStreamingCapability setPreferredResolution( ImageResolution res) {
+    public VideoStreamingCapability(Hashtable<String, Object> hash) {
+        super(hash);
+    }
+
+    public VideoStreamingCapability setPreferredResolution(ImageResolution res) {
         setValue(KEY_PREFERRED_RESOLUTION, res);
         return this;
     }
 
-	public ImageResolution getPreferredResolution(){
-		return (ImageResolution) getObject(ImageResolution.class, KEY_PREFERRED_RESOLUTION);
-	}
+    public ImageResolution getPreferredResolution() {
+        return (ImageResolution) getObject(ImageResolution.class, KEY_PREFERRED_RESOLUTION);
+    }
 
-	/**
-	 * Set the max bitrate supported by this module.
-	 *
-	 * <b>NOTE: </b> Unit is in kbps.
-	 * @param maxBitrate in kbps
-	 */
-	public VideoStreamingCapability setMaxBitrate( Integer maxBitrate) {
+    /**
+     * Set the max bitrate supported by this module.
+     *
+     * <b>NOTE: </b> Unit is in kbps.
+     *
+     * @param maxBitrate in kbps
+     */
+    public VideoStreamingCapability setMaxBitrate(Integer maxBitrate) {
         setValue(KEY_MAX_BITRATE, maxBitrate);
         return this;
     }
 
-	/**
-	 * Retrieves the max bitrate supported by this module.
-	 *
-	 * <b>NOTE: </b> Unit is in kbps.
-	 * @return max bitrate in kbps
-	 */
-	public Integer getMaxBitrate(){
-		return getInteger(KEY_MAX_BITRATE);
-	}
+    /**
+     * Retrieves the max bitrate supported by this module.
+     *
+     * <b>NOTE: </b> Unit is in kbps.
+     *
+     * @return max bitrate in kbps
+     */
+    public Integer getMaxBitrate() {
+        return getInteger(KEY_MAX_BITRATE);
+    }
 
-	public VideoStreamingCapability setSupportedFormats( List<VideoStreamingFormat> formats) {
+    public VideoStreamingCapability setSupportedFormats(List<VideoStreamingFormat> formats) {
         setValue(KEY_SUPPORTED_FORMATS, formats);
         return this;
     }
 
-	public List<VideoStreamingFormat> getSupportedFormats(){
-		return (List<VideoStreamingFormat>) getObject(VideoStreamingFormat.class, KEY_SUPPORTED_FORMATS);
-	}
+    public List<VideoStreamingFormat> getSupportedFormats() {
+        return (List<VideoStreamingFormat>) getObject(VideoStreamingFormat.class, KEY_SUPPORTED_FORMATS);
+    }
 
-	/**
-	 * @deprecated use {@link #isHapticSpatialDataSupported()} instead.
-	 */
-	@Deprecated
-	public Boolean getIsHapticSpatialDataSupported() {
-		return isHapticSpatialDataSupported();
-	}
+    /**
+     * @deprecated use {@link #isHapticSpatialDataSupported()} instead.
+     */
+    @Deprecated
+    public Boolean getIsHapticSpatialDataSupported() {
+        return isHapticSpatialDataSupported();
+    }
 
-	/**
-	 * @deprecated use {@link #setHapticSpatialDataSupported(Boolean hapticSpatialDataSupported)} instead.
-	 */
-	@Deprecated
-	public VideoStreamingCapability setIsHapticSpatialDataSupported( Boolean hapticSpatialDataSupported) {
+    /**
+     * @deprecated use {@link #setHapticSpatialDataSupported(Boolean hapticSpatialDataSupported)} instead.
+     */
+    @Deprecated
+    public VideoStreamingCapability setIsHapticSpatialDataSupported(Boolean hapticSpatialDataSupported) {
         return setHapticSpatialDataSupported(hapticSpatialDataSupported);
     }
 
-	/**
-	 * Gets whether the dead unit supports HapticSpatialData
-	 * @return True if the system can utilize the haptic spatial data from the source being streamed. If not included, it can be assumed the module doesn't support haptic spatial data.
-	 */
-	public Boolean isHapticSpatialDataSupported() {
-		return getBoolean(KEY_HAPTIC_SPATIAL_DATA_SUPPORTED);
-	}
+    /**
+     * Gets whether the dead unit supports HapticSpatialData
+     *
+     * @return True if the system can utilize the haptic spatial data from the source being streamed. If not included, it can be assumed the module doesn't support haptic spatial data.
+     */
+    public Boolean isHapticSpatialDataSupported() {
+        return getBoolean(KEY_HAPTIC_SPATIAL_DATA_SUPPORTED);
+    }
 
-	/**
-	 * Sets whether the dead unit supports HapticSpatialData
-	 * @param hapticSpatialDataSupported True if the system can utilize the haptic spatial data from the source being streamed. If not included, it can be assumed the module doesn't support haptic spatial data.
-	 */
-	public VideoStreamingCapability setHapticSpatialDataSupported( Boolean hapticSpatialDataSupported) {
-		setValue(KEY_HAPTIC_SPATIAL_DATA_SUPPORTED, hapticSpatialDataSupported);
-		return this;
-	}
+    /**
+     * Sets whether the dead unit supports HapticSpatialData
+     *
+     * @param hapticSpatialDataSupported True if the system can utilize the haptic spatial data from the source being streamed. If not included, it can be assumed the module doesn't support haptic spatial data.
+     */
+    public VideoStreamingCapability setHapticSpatialDataSupported(Boolean hapticSpatialDataSupported) {
+        setValue(KEY_HAPTIC_SPATIAL_DATA_SUPPORTED, hapticSpatialDataSupported);
+        return this;
+    }
 
-	/**
-	 * @return the diagonal screen size in inches.
-	 */
-	public Double getDiagonalScreenSize() {
-	    Object object = getValue(KEY_DIAGONAL_SCREEN_SIZE);
-		return SdlDataTypeConverter.objectToDouble(object);
-	}
+    /**
+     * @return the diagonal screen size in inches.
+     */
+    public Double getDiagonalScreenSize() {
+        Object object = getValue(KEY_DIAGONAL_SCREEN_SIZE);
+        return SdlDataTypeConverter.objectToDouble(object);
+    }
 
-	/**
-	 * @param diagonalScreenSize the diagonal screen size in inches.
-	 */
-	public VideoStreamingCapability setDiagonalScreenSize( Double diagonalScreenSize) {
+    /**
+     * @param diagonalScreenSize the diagonal screen size in inches.
+     */
+    public VideoStreamingCapability setDiagonalScreenSize(Double diagonalScreenSize) {
         setValue(KEY_DIAGONAL_SCREEN_SIZE, diagonalScreenSize);
         return this;
     }
 
-	/**
-	 * @return the diagonal resolution in pixels divided by the diagonal screen size in inches.
-	 */
-	public Double getPixelPerInch() {
-	    Object object = getValue(KEY_PIXEL_PER_INCH);
-	    return SdlDataTypeConverter.objectToDouble(object);
-	}
+    /**
+     * @return the diagonal resolution in pixels divided by the diagonal screen size in inches.
+     */
+    public Double getPixelPerInch() {
+        Object object = getValue(KEY_PIXEL_PER_INCH);
+        return SdlDataTypeConverter.objectToDouble(object);
+    }
 
-	/**
-	 * @param pixelPerInch the diagonal resolution in pixels divided by the diagonal screen size in inches.
-	 */
-	public VideoStreamingCapability setPixelPerInch( Double pixelPerInch) {
+    /**
+     * @param pixelPerInch the diagonal resolution in pixels divided by the diagonal screen size in inches.
+     */
+    public VideoStreamingCapability setPixelPerInch(Double pixelPerInch) {
         setValue(KEY_PIXEL_PER_INCH, pixelPerInch);
         return this;
     }
 
-	/**
-	 * @return the scaling factor the app should use to change the size of the projecting view.
-	 */
-	public Double getScale() {
-	    Object object = getValue(KEY_SCALE);
-	    return SdlDataTypeConverter.objectToDouble(object);
-	}
+    /**
+     * @return the scaling factor the app should use to change the size of the projecting view.
+     */
+    public Double getScale() {
+        Object object = getValue(KEY_SCALE);
+        return SdlDataTypeConverter.objectToDouble(object);
+    }
 
-	/**
-	 * @param scale the scaling factor the app should use to change the size of the projecting view.
-	 */
-	public VideoStreamingCapability setScale( Double scale) {
+    /**
+     * @param scale the scaling factor the app should use to change the size of the projecting view.
+     */
+    public VideoStreamingCapability setScale(Double scale) {
         setValue(KEY_SCALE, scale);
         return this;
     }

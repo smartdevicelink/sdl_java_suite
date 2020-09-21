@@ -76,8 +76,9 @@ public class VirtualDisplayEncoder {
     /**
      * Initialization method for VirtualDisplayEncoder object. MUST be called before start() or shutdown()
      * Will overwrite previously set videoWeight and videoHeight
-     * @param context to create the virtual display
-     * @param outputListener the listener that the video frames will be sent through
+     *
+     * @param context         to create the virtual display
+     * @param outputListener  the listener that the video frames will be sent through
      * @param streamingParams parameters to create the virtual display and encoder
      * @throws Exception if the API level is <19 or supplied parameters were null
      */
@@ -101,7 +102,7 @@ public class VirtualDisplayEncoder {
         initPassed = true;
     }
 
-    public VideoStreamingParameters getStreamingParams(){
+    public VideoStreamingParameters getStreamingParams() {
         return this.streamingParams;
     }
 
@@ -331,7 +332,7 @@ public class VirtualDisplayEncoder {
             Thread currentThread = Thread.currentThread();
             while (!currentThread.isInterrupted()) {
                 int encoderStatus = mVideoEncoder.dequeueOutputBuffer(mVideoBufferInfo, -1);
-                if(encoderStatus < 0){
+                if (encoderStatus < 0) {
                     if (encoderStatus == MediaCodec.INFO_TRY_AGAIN_LATER) {
                         // no output available yet
                         if (!endOfStream) {

@@ -9,6 +9,7 @@ import java.util.Hashtable;
 
 /**
  * Used to inform an app how many window instances per type they can be created.
+ *
  * @since 6.0
  */
 public class WindowTypeCapabilities extends RPCStruct {
@@ -33,7 +34,7 @@ public class WindowTypeCapabilities extends RPCStruct {
     /**
      * Constructs a newly allocated WindowTypeCapabilities object
      *
-     * @param type Type of windows available, to create.
+     * @param type                   Type of windows available, to create.
      * @param maximumNumberOfWindows Number of windows available, to create.
      */
     public WindowTypeCapabilities(@NonNull WindowType type, @NonNull Integer maximumNumberOfWindows) {

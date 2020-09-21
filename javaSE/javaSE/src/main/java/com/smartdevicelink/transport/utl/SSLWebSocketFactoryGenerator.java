@@ -62,9 +62,9 @@ public class SSLWebSocketFactoryGenerator {
     private static final String TLS = "TLS";
     private static final String SUNX509 = "SunX509";
 
-    public static WebSocketServerFactory generateWebSocketServer(SSLConfig config){
+    public static WebSocketServerFactory generateWebSocketServer(SSLConfig config) {
         SSLContext context;
-        switch (config.getSslCertificateType()){
+        switch (config.getSslCertificateType()) {
             case SSLConfig.JKS:
                 context = getSSLContextFromJKS(config);
                 break;
@@ -75,17 +75,17 @@ public class SSLWebSocketFactoryGenerator {
                 DebugTool.logError(TAG, "Unable to generateWebSocketServer. Unsupported cert type.");
                 return null;
         }
-        if(context != null) {
+        if (context != null) {
             return new DefaultSSLWebSocketServerFactory(context);
-        }else{
+        } else {
             DebugTool.logError(TAG, "SSLWebSocketFactoryGenerator: Unable to create SSL Context");
             return null;
         }
     }
 
-/* ******************************************* JKS ********************************************/
+    /* ******************************************* JKS ********************************************/
 
-    private static SSLContext getSSLContextFromJKS(SSLConfig config){
+    private static SSLContext getSSLContextFromJKS(SSLConfig config) {
 
         try {
             KeyStore ks = KeyStore.getInstance(JAVA_KEY_STORE);
@@ -101,9 +101,8 @@ public class SSLWebSocketFactoryGenerator {
             sslContext = SSLContext.getInstance(TLS);
             sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
             return sslContext;
-        }
-        catch(Exception e){
-            DebugTool.logError(TAG, "Issue creating SSLContext with JKS : " , e);
+        } catch (Exception e) {
+            DebugTool.logError(TAG, "Issue creating SSLContext with JKS : ", e);
         }
         return null;
     }
@@ -114,51 +113,51 @@ public class SSLWebSocketFactoryGenerator {
         SSLContext context;
 
         try {
-            context = SSLContext.getInstance( TLS );
+            context = SSLContext.getInstance(TLS);
 
-            byte[] certBytes = parseDERFromPEM( config.getPemCertificate().getBytes(), "-----BEGIN CERTIFICATE-----", "-----END CERTIFICATE-----" );
-            byte[] keyBytes = parseDERFromPEM( config.getPrivateKey().getBytes(), "-----BEGIN PRIVATE KEY-----", "-----END PRIVATE KEY-----" );
+            byte[] certBytes = parseDERFromPEM(config.getPemCertificate().getBytes(), "-----BEGIN CERTIFICATE-----", "-----END CERTIFICATE-----");
+            byte[] keyBytes = parseDERFromPEM(config.getPrivateKey().getBytes(), "-----BEGIN PRIVATE KEY-----", "-----END PRIVATE KEY-----");
 
-            X509Certificate cert = generateCertificateFromDER( certBytes );
-            RSAPrivateKey key = generatePrivateKeyFromDER( keyBytes );
+            X509Certificate cert = generateCertificateFromDER(certBytes);
+            RSAPrivateKey key = generatePrivateKeyFromDER(keyBytes);
 
-            KeyStore keystore = KeyStore.getInstance( JAVA_KEY_STORE );
-            keystore.load( null );
-            keystore.setCertificateEntry( "cert-alias", cert );
-            keystore.setKeyEntry( "key-alias", key, config.getPassword().toCharArray(), new Certificate[]{ cert } );
+            KeyStore keystore = KeyStore.getInstance(JAVA_KEY_STORE);
+            keystore.load(null);
+            keystore.setCertificateEntry("cert-alias", cert);
+            keystore.setKeyEntry("key-alias", key, config.getPassword().toCharArray(), new Certificate[]{cert});
 
-            KeyManagerFactory kmf = KeyManagerFactory.getInstance( SUNX509 );
-            kmf.init( keystore, config.getPassword().toCharArray() );
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance(SUNX509);
+            kmf.init(keystore, config.getPassword().toCharArray());
 
             KeyManager[] km = kmf.getKeyManagers();
 
-            context.init( km, null, null );
-        } catch ( Exception e ) {
+            context.init(km, null, null);
+        } catch (Exception e) {
             context = null;
-            DebugTool.logError(TAG, "Issue creating SSLContext with PEM Cert : " , e);
+            DebugTool.logError(TAG, "Issue creating SSLContext with PEM Cert : ", e);
         }
         return context;
     }
 
-    private static byte[] parseDERFromPEM( byte[] pem, String beginDelimiter, String endDelimiter ) {
-        String data = new String( pem );
-        String[] tokens = data.split( beginDelimiter );
-        tokens = tokens[1].split( endDelimiter );
-        return DatatypeConverter.parseBase64Binary( tokens[0] );
+    private static byte[] parseDERFromPEM(byte[] pem, String beginDelimiter, String endDelimiter) {
+        String data = new String(pem);
+        String[] tokens = data.split(beginDelimiter);
+        tokens = tokens[1].split(endDelimiter);
+        return DatatypeConverter.parseBase64Binary(tokens[0]);
     }
 
-    private static RSAPrivateKey generatePrivateKeyFromDER( byte[] keyBytes ) throws InvalidKeySpecException, NoSuchAlgorithmException {
-        PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec( keyBytes );
+    private static RSAPrivateKey generatePrivateKeyFromDER(byte[] keyBytes) throws InvalidKeySpecException, NoSuchAlgorithmException {
+        PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
 
-        KeyFactory factory = KeyFactory.getInstance( "RSA" );
+        KeyFactory factory = KeyFactory.getInstance("RSA");
 
-        return ( RSAPrivateKey ) factory.generatePrivate( spec );
+        return (RSAPrivateKey) factory.generatePrivate(spec);
     }
 
-    private static X509Certificate generateCertificateFromDER( byte[] certBytes ) throws CertificateException {
-        CertificateFactory factory = CertificateFactory.getInstance( "X.509" );
+    private static X509Certificate generateCertificateFromDER(byte[] certBytes) throws CertificateException {
+        CertificateFactory factory = CertificateFactory.getInstance("X.509");
 
-        return ( X509Certificate ) factory.generateCertificate( new ByteArrayInputStream( certBytes ) );
+        return (X509Certificate) factory.generateCertificate(new ByteArrayInputStream(certBytes));
     }
 
 

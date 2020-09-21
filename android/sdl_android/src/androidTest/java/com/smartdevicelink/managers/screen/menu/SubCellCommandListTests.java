@@ -44,20 +44,20 @@ import static junit.framework.TestCase.assertEquals;
 @RunWith(AndroidJUnit4.class)
 public class SubCellCommandListTests {
 
-	@Test
-	public void testSettersAndGetters() {
+    @Test
+    public void testSettersAndGetters() {
 
-		RunScore runScore = new RunScore(TestValues.GENERAL_INT, TestValues.GENERAL_INTEGER_LIST, TestValues.GENERAL_INTEGER_LIST);
+        RunScore runScore = new RunScore(TestValues.GENERAL_INT, TestValues.GENERAL_INTEGER_LIST, TestValues.GENERAL_INTEGER_LIST);
 
-		// set everything
-		SubCellCommandList subCellCommandList = new SubCellCommandList(TestValues.GENERAL_STRING, TestValues.GENERAL_INTEGER, runScore, TestValues.GENERAL_MENUCELL_LIST, TestValues.GENERAL_MENUCELL_LIST);
+        // set everything
+        SubCellCommandList subCellCommandList = new SubCellCommandList(TestValues.GENERAL_STRING, TestValues.GENERAL_INTEGER, runScore, TestValues.GENERAL_MENUCELL_LIST, TestValues.GENERAL_MENUCELL_LIST);
 
-		// use getters and assert equality
-		assertEquals(subCellCommandList.getMenuTitle(), TestValues.GENERAL_STRING);
-		assertEquals(subCellCommandList.getParentId(), TestValues.GENERAL_INTEGER);
-		assertEquals(runScore, runScore);
-		assertEquals(subCellCommandList.getNewList(), TestValues.GENERAL_MENUCELL_LIST);
-		assertEquals(subCellCommandList.getOldList(), TestValues.GENERAL_MENUCELL_LIST);
+        // use getters and assert equality
+        assertEquals(subCellCommandList.getMenuTitle(), TestValues.GENERAL_STRING);
+        assertEquals(subCellCommandList.getParentId(), TestValues.GENERAL_INTEGER);
+        assertEquals(runScore, runScore);
+        assertEquals(subCellCommandList.getNewList(), TestValues.GENERAL_MENUCELL_LIST);
+        assertEquals(subCellCommandList.getOldList(), TestValues.GENERAL_MENUCELL_LIST);
 
-	}
+    }
 }

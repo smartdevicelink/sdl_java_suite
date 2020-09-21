@@ -40,37 +40,40 @@ import java.util.Vector;
  */
 public abstract class OnMultipleRequestListener extends OnRPCResponseListener {
 
-	final Vector<Integer> correlationIds;
-	final OnRPCResponseListener rpcResponseListener;
+    final Vector<Integer> correlationIds;
+    final OnRPCResponseListener rpcResponseListener;
 
-	public OnMultipleRequestListener(){
-		setListenerType(UPDATE_LISTENER_TYPE_MULTIPLE_REQUESTS);
-		correlationIds = new Vector<>();
+    public OnMultipleRequestListener() {
+        setListenerType(UPDATE_LISTENER_TYPE_MULTIPLE_REQUESTS);
+        correlationIds = new Vector<>();
 
-		rpcResponseListener = new OnRPCResponseListener() {
-			@Override
-			public void onResponse(int correlationId, RPCResponse response) {
-				OnMultipleRequestListener.this.onResponse(correlationId, response);
-				correlationIds.remove(Integer.valueOf(correlationId));
-				onUpdate(correlationIds.size());
-				if(correlationIds.size() == 0){
-					onFinished();
-				}
-			}
-		};
-	}
+        rpcResponseListener = new OnRPCResponseListener() {
+            @Override
+            public void onResponse(int correlationId, RPCResponse response) {
+                OnMultipleRequestListener.this.onResponse(correlationId, response);
+                correlationIds.remove(Integer.valueOf(correlationId));
+                onUpdate(correlationIds.size());
+                if (correlationIds.size() == 0) {
+                    onFinished();
+                }
+            }
+        };
+    }
 
-	public void addCorrelationId(int correlationId){
-		correlationIds.add(correlationId);
-	}
-	/**
-	 * onUpdate is called during multiple stream request
-	 * @param remainingRequests of the original request
-	 */
-	public abstract void onUpdate(int remainingRequests);
-	public abstract void onFinished();
+    public void addCorrelationId(int correlationId) {
+        correlationIds.add(correlationId);
+    }
 
-	public OnRPCResponseListener getSingleRpcResponseListener(){
-		return rpcResponseListener;
-	}
+    /**
+     * onUpdate is called during multiple stream request
+     *
+     * @param remainingRequests of the original request
+     */
+    public abstract void onUpdate(int remainingRequests);
+
+    public abstract void onFinished();
+
+    public OnRPCResponseListener getSingleRpcResponseListener() {
+        return rpcResponseListener;
+    }
 }

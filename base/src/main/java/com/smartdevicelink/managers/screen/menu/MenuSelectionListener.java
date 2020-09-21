@@ -36,6 +36,6 @@ import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 
 public interface MenuSelectionListener {
 
-	void onTriggered(TriggerSource trigger);
+    void onTriggered(TriggerSource trigger);
 
 }

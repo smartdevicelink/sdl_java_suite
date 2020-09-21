@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -53,10 +53,10 @@ import java.util.List;
  * 			<td>String</td>
  * 			<td>A set of all parameters that are permitted for this given RPC.
  * 					<ul>
- *					<li>Min size: 0</li>
- *					<li>Max size: 100</li>
- *					<li>Max length: 100</li>
- *					</ul>
+ * 					<li>Min size: 0</li>
+ * 					<li>Max size: 100</li>
+ * 					<li>Max length: 100</li>
+ * 					</ul>
  * 			</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
@@ -65,27 +65,30 @@ import java.util.List;
  * 			<td>String</td>
  * 			<td>A set of all parameters that are prohibited for this given RPC.
  * 					<ul>
- *					<li>Min size: 0</li>
- *					<li>Max size: 100</li>
- *					<li>Max length: 100</li>
- *					</ul>
+ * 					<li>Min size: 0</li>
+ * 					<li>Max size: 100</li>
+ * 					<li>Max length: 100</li>
+ * 					</ul>
  * 			</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  *  </table>
+ *
  * @since SmartDeviceLink 2.0
  */
 public class ParameterPermissions extends RPCStruct {
-	public static final String KEY_ALLOWED = "allowed";
-	public static final String KEY_USER_DISALLOWED = "userDisallowed";
+    public static final String KEY_ALLOWED = "allowed";
+    public static final String KEY_USER_DISALLOWED = "userDisallowed";
 
-	/**
-	 *  Constructs a newly allocated ParameterPermissions object
-	 */
-    public ParameterPermissions() { }
-    
+    /**
+     * Constructs a newly allocated ParameterPermissions object
+     */
+    public ParameterPermissions() {
+    }
+
     /**
      * Constructs a newly allocated ParameterPermissions object indicated by the Hashtable parameter
+     *
      * @param hash The Hashtable to use
      */
     public ParameterPermissions(Hashtable<String, Object> hash) {
@@ -93,8 +96,9 @@ public class ParameterPermissions extends RPCStruct {
     }
 
     /**
-     *  Constructs a newly allocated ParameterPermissions object
-     * @param allowed parameter that is permitted for this given RPC
+     * Constructs a newly allocated ParameterPermissions object
+     *
+     * @param allowed        parameter that is permitted for this given RPC
      * @param userDisallowed parameter that is prohibited for this given RPC
      */
     public ParameterPermissions(@NonNull List<String> allowed, @NonNull List<String> userDisallowed) {
@@ -105,33 +109,37 @@ public class ParameterPermissions extends RPCStruct {
 
     /**
      * get a set of all parameters that are permitted for this given RPC.
+     *
      * @return a set of all parameters that are permitted for this given RPC.
      */
     @SuppressWarnings("unchecked")
     public List<String> getAllowed() {
         return (List<String>) getObject(String.class, KEY_ALLOWED);
     }
-    
+
     /**
      * set a set of all parameters that are permitted for this given RPC.
+     *
      * @param allowed parameter that is permitted for this given RPC
      */
     public ParameterPermissions setAllowed(@NonNull List<String> allowed) {
         setValue(KEY_ALLOWED, allowed);
         return this;
     }
-    
+
     /**
      * get a set of all parameters that are prohibited for this given RPC.
+     *
      * @return a set of all parameters that are prohibited for this given RPC
      */
     @SuppressWarnings("unchecked")
     public List<String> getUserDisallowed() {
         return (List<String>) getObject(String.class, KEY_USER_DISALLOWED);
     }
-    
+
     /**
      * set a set of all parameters that are prohibited for this given RPC.
+     *
      * @param userDisallowed parameter that is prohibited for this given RPC
      */
     public ParameterPermissions setUserDisallowed(@NonNull List<String> userDisallowed) {

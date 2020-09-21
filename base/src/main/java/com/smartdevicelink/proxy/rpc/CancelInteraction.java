@@ -70,6 +70,7 @@ public class CancelInteraction extends RPCRequest {
 
     /**
      * Convenience init for dismissing an interaction type.
+     *
      * @param functionID - The ID of the type of interaction to dismiss
      */
     public CancelInteraction(@NonNull Integer functionID) {
@@ -79,8 +80,9 @@ public class CancelInteraction extends RPCRequest {
 
     /**
      * Convenience init for dismissing a specific interaction.
+     *
      * @param functionID - The ID of the type of interaction to dismiss
-     * @param cancelID - The ID of the specific interaction to dismiss
+     * @param cancelID   - The ID of the specific interaction to dismiss
      */
     public CancelInteraction(@NonNull Integer functionID, Integer cancelID) {
         this();
@@ -93,6 +95,7 @@ public class CancelInteraction extends RPCRequest {
     /**
      * Gets the ID of the type of interaction the developer wants to dismiss.
      * Only values 10 (PerformInteractionID), 12 (AlertID), 25 (ScrollableMessageID), 26 (SliderID), and 64 (SubtleAlertID) are permitted.
+     *
      * @return - the functionID
      */
     public Integer getInteractionFunctionID() {
@@ -102,6 +105,7 @@ public class CancelInteraction extends RPCRequest {
     /**
      * Sets the ID of the type of interaction the developer wants to dismiss.
      * Only values 10 (PerformInteractionID), 12 (AlertID), 25 (ScrollableMessageID), 26 (SliderID), and 64 (SubtleAlertID) are permitted.
+     *
      * @param functionID - the functionID
      */
     public CancelInteraction setInteractionFunctionID(@NonNull Integer functionID) {
@@ -111,6 +115,7 @@ public class CancelInteraction extends RPCRequest {
 
     /**
      * The ID of the specific interaction to dismiss. If not set, the most recent of the RPC type set in functionID will be dismissed.
+     *
      * @return - the cancelID
      */
     public Integer getCancelID() {
@@ -119,9 +124,10 @@ public class CancelInteraction extends RPCRequest {
 
     /**
      * The ID of the specific interaction to dismiss. If not set, the most recent of the RPC type set in functionID will be dismissed.
+     *
      * @param cancelID - the cancelID
      */
-    public CancelInteraction setCancelID( Integer cancelID) {
+    public CancelInteraction setCancelID(Integer cancelID) {
         setParameters(KEY_CANCEL_ID, cancelID);
         return this;
     }

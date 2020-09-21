@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -33,9 +33,13 @@ package com.smartdevicelink.util;
 
 
 public interface IConsole {
-	void logInfo(String msg);
-	void logError(String msg);
-	void logError(String msg, Throwable ex);
-	void logRPCSend(String rpcMsg);
-	void logRPCReceive(String rpcMsg);
+    void logInfo(String msg);
+
+    void logError(String msg);
+
+    void logError(String msg, Throwable ex);
+
+    void logRPCSend(String rpcMsg);
+
+    void logRPCReceive(String rpcMsg);
 }

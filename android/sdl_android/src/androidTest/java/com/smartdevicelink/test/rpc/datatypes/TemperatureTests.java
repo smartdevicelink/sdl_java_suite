@@ -13,15 +13,15 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.Temperature}
  */
-public class TemperatureTests extends TestCase{
-	
+public class TemperatureTests extends TestCase {
+
     private Temperature msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new Temperature();
 
         msg.setUnit(TestValues.GENERAL_TEMPERATUREUNIT);
@@ -29,9 +29,9 @@ public class TemperatureTests extends TestCase{
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
         // Test Values
         TemperatureUnit unit = msg.getUnit();
         float value = msg.getValue();
@@ -48,10 +48,10 @@ public class TemperatureTests extends TestCase{
         assertNull(TestValues.NULL, msg.getValue());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(Temperature.KEY_VALUE, (Float) TestValues.GENERAL_FLOAT);
             reference.put(Temperature.KEY_UNIT, TestValues.GENERAL_TEMPERATUREUNIT);
 
@@ -59,14 +59,14 @@ public class TemperatureTests extends TestCase{
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
 
                 assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 
             }
-        } catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

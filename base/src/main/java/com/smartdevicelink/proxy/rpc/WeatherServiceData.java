@@ -43,128 +43,137 @@ import java.util.List;
  */
 public class WeatherServiceData extends RPCStruct {
 
-	public static final String KEY_LOCATION = "location";
-	public static final String KEY_CURRENT_FORECAST = "currentForecast";
-	public static final String KEY_MINUTE_FORECAST = "minuteForecast";
-	public static final String KEY_HOURLY_FORECAST = "hourlyForecast";
-	public static final String KEY_MULTIDAY_FORECAST = "multidayForecast";
-	public static final String KEY_ALERTS = "alerts";
+    public static final String KEY_LOCATION = "location";
+    public static final String KEY_CURRENT_FORECAST = "currentForecast";
+    public static final String KEY_MINUTE_FORECAST = "minuteForecast";
+    public static final String KEY_HOURLY_FORECAST = "hourlyForecast";
+    public static final String KEY_MULTIDAY_FORECAST = "multidayForecast";
+    public static final String KEY_ALERTS = "alerts";
 
-	// Constructors
+    // Constructors
 
-	public WeatherServiceData() { }
+    public WeatherServiceData() {
+    }
 
-	public WeatherServiceData(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+    public WeatherServiceData(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
-	public WeatherServiceData(@NonNull LocationDetails location) {
-		this();
-		setLocation(location);
-	}
+    public WeatherServiceData(@NonNull LocationDetails location) {
+        this();
+        setLocation(location);
+    }
 
-	// Setters and Getters
+    // Setters and Getters
 
-	/**
-	 * @param location -
-	 */
-	public WeatherServiceData setLocation(@NonNull LocationDetails location) {
+    /**
+     * @param location -
+     */
+    public WeatherServiceData setLocation(@NonNull LocationDetails location) {
         setValue(KEY_LOCATION, location);
         return this;
     }
 
-	/**
-	 * @return location
-	 */
-	public LocationDetails getLocation() {
-		return (LocationDetails) getObject(LocationDetails.class,KEY_LOCATION);
-	}
+    /**
+     * @return location
+     */
+    public LocationDetails getLocation() {
+        return (LocationDetails) getObject(LocationDetails.class, KEY_LOCATION);
+    }
 
-	/**
-	 * @param currentForecast -
-	 */
-	public WeatherServiceData setCurrentForecast( WeatherData currentForecast) {
+    /**
+     * @param currentForecast -
+     */
+    public WeatherServiceData setCurrentForecast(WeatherData currentForecast) {
         setValue(KEY_CURRENT_FORECAST, currentForecast);
         return this;
     }
 
-	/**
-	 * @return currentForecast
-	 */
-	public WeatherData getCurrentForecast() {
-		return (WeatherData) getObject(WeatherData.class,KEY_CURRENT_FORECAST);
-	}
+    /**
+     * @return currentForecast
+     */
+    public WeatherData getCurrentForecast() {
+        return (WeatherData) getObject(WeatherData.class, KEY_CURRENT_FORECAST);
+    }
 
-	/**
-	 * minsize: 15, maxsize: 60
-	 * @param minuteForecast -
-	 */
-	public WeatherServiceData setMinuteForecast( List<WeatherData> minuteForecast) {
+    /**
+     * minsize: 15, maxsize: 60
+     *
+     * @param minuteForecast -
+     */
+    public WeatherServiceData setMinuteForecast(List<WeatherData> minuteForecast) {
         setValue(KEY_MINUTE_FORECAST, minuteForecast);
         return this;
     }
 
-	/**
-	 * minsize: 15, maxsize: 60
-	 * @return minuteForecast
-	 */
-	@SuppressWarnings("unchecked")
-	public List<WeatherData> getMinuteForecast(){
-		return (List<WeatherData>) getObject(WeatherData.class,KEY_MINUTE_FORECAST);
-	}
+    /**
+     * minsize: 15, maxsize: 60
+     *
+     * @return minuteForecast
+     */
+    @SuppressWarnings("unchecked")
+    public List<WeatherData> getMinuteForecast() {
+        return (List<WeatherData>) getObject(WeatherData.class, KEY_MINUTE_FORECAST);
+    }
 
-	/**
-	 * minsize: 1, maxsize: 96
-	 * @param hourlyForecast -
-	 */
-	public WeatherServiceData setHourlyForecast( List<WeatherData> hourlyForecast) {
+    /**
+     * minsize: 1, maxsize: 96
+     *
+     * @param hourlyForecast -
+     */
+    public WeatherServiceData setHourlyForecast(List<WeatherData> hourlyForecast) {
         setValue(KEY_HOURLY_FORECAST, hourlyForecast);
         return this;
     }
 
-	/**
-	 * minsize: 1, maxsize: 96
-	 * @return hourlyForecast
-	 */
-	@SuppressWarnings("unchecked")
-	public List<WeatherData> getHourlyForecast(){
-		return (List<WeatherData>) getObject(WeatherData.class,KEY_HOURLY_FORECAST);
-	}
+    /**
+     * minsize: 1, maxsize: 96
+     *
+     * @return hourlyForecast
+     */
+    @SuppressWarnings("unchecked")
+    public List<WeatherData> getHourlyForecast() {
+        return (List<WeatherData>) getObject(WeatherData.class, KEY_HOURLY_FORECAST);
+    }
 
-	/**
-	 * minsize: 1, maxsize: 30
-	 * @param multidayForecast -
-	 */
-	public WeatherServiceData setMultidayForecast( List<WeatherData> multidayForecast) {
+    /**
+     * minsize: 1, maxsize: 30
+     *
+     * @param multidayForecast -
+     */
+    public WeatherServiceData setMultidayForecast(List<WeatherData> multidayForecast) {
         setValue(KEY_MULTIDAY_FORECAST, multidayForecast);
         return this;
     }
 
-	/**
-	 * minsize: 1, maxsize: 30
-	 * @return multidayForecast
-	 */
-	@SuppressWarnings("unchecked")
-	public List<WeatherData> getMultidayForecast(){
-		return (List<WeatherData>) getObject(WeatherData.class,KEY_MULTIDAY_FORECAST);
-	}
+    /**
+     * minsize: 1, maxsize: 30
+     *
+     * @return multidayForecast
+     */
+    @SuppressWarnings("unchecked")
+    public List<WeatherData> getMultidayForecast() {
+        return (List<WeatherData>) getObject(WeatherData.class, KEY_MULTIDAY_FORECAST);
+    }
 
-	/**
-	 * minsize: 1, maxsize: 10
-	 * @param alerts -
-	 */
-	public WeatherServiceData setAlerts( List<WeatherAlert> alerts) {
+    /**
+     * minsize: 1, maxsize: 10
+     *
+     * @param alerts -
+     */
+    public WeatherServiceData setAlerts(List<WeatherAlert> alerts) {
         setValue(KEY_ALERTS, alerts);
         return this;
     }
 
-	/**
-	 * minsize: 1, maxsize: 10
-	 * @return alerts
-	 */
-	@SuppressWarnings("unchecked")
-	public List<WeatherAlert> getAlerts(){
-		return (List<WeatherAlert>) getObject(WeatherAlert.class,KEY_ALERTS);
-	}
+    /**
+     * minsize: 1, maxsize: 10
+     *
+     * @return alerts
+     */
+    @SuppressWarnings("unchecked")
+    public List<WeatherAlert> getAlerts() {
+        return (List<WeatherAlert>) getObject(WeatherAlert.class, KEY_ALERTS);
+    }
 
 }

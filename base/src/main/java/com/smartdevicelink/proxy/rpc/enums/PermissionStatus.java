@@ -44,6 +44,7 @@ public enum PermissionStatus {
 
     /**
      * Convert String to PermissionStatus
+     *
      * @param value String
      * @return PermissionStatus
      */

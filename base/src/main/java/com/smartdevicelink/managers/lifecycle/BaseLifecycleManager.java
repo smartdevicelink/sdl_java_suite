@@ -36,13 +36,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 
 import com.livio.taskmaster.Taskmaster;
-import com.smartdevicelink.session.ISdlSessionListener;
-import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.ServiceEncryptionListener;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
+import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.MessageType;
@@ -51,7 +50,6 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.proxy.rpc.GenericResponse;
 import com.smartdevicelink.proxy.rpc.OnAppInterfaceUnregistered;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
@@ -82,6 +80,8 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.security.SdlSecurityBase;
+import com.smartdevicelink.session.ISdlSessionListener;
+import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.util.CorrelationIdGenerator;
@@ -156,7 +156,7 @@ abstract class BaseLifecycleManager {
     }
 
     public synchronized void stop() {
-        if(session != null) {
+        if (session != null) {
             session.close();
             session = null;
         }
@@ -733,7 +733,7 @@ abstract class BaseLifecycleManager {
             final ProtocolMessage pm = new ProtocolMessage();
             pm.setData(msgBytes);
             if (session != null) {
-                pm.setSessionID((byte)session.getSessionId());
+                pm.setSessionID((byte) session.getSessionId());
             }
 
             pm.setMessageType(MessageType.RPC);

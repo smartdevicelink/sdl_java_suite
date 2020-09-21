@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -54,11 +54,12 @@ public class AudioDecoder extends BaseAudioDecoder {
 
     /**
      * Creates a new object of AudioDecoder.
+     *
      * @param audioSource The audio source to decode.
-     * @param context The context object to use to open the audio source.
-     * @param sampleRate The desired sample rate for decoded audio data.
-     * @param sampleType The desired sample type (8bit, 16bit, float).
-     * @param listener A listener who receives the decoded audio.
+     * @param context     The context object to use to open the audio source.
+     * @param sampleRate  The desired sample rate for decoded audio data.
+     * @param sampleType  The desired sample type (8bit, 16bit, float).
+     * @param listener    A listener who receives the decoded audio.
      */
     AudioDecoder(Uri audioSource, Context context, int sampleRate, @SampleType int sampleType, AudioDecoderListener listener) {
         super(audioSource, context, sampleRate, sampleType, listener);

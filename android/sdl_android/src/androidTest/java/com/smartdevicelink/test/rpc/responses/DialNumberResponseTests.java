@@ -49,7 +49,7 @@ public class DialNumberResponseTests extends BaseRpcTests {
      * Tests the expected values of the RPC message.
      */
     @Test
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Invalid/Null Tests
         DialNumberResponse msg = new DialNumberResponse();
         assertNotNull(TestValues.NOT_NULL, msg);
@@ -60,7 +60,7 @@ public class DialNumberResponseTests extends BaseRpcTests {
      * Tests a valid JSON construction of this RPC message.
      */
     @Test
-    public void testJsonConstructor () {
+    public void testJsonConstructor() {
         JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
         assertNotNull(TestValues.NOT_NULL, commandJson);
 

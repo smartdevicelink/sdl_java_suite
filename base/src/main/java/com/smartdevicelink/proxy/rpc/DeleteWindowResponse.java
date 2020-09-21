@@ -10,6 +10,7 @@ import java.util.Hashtable;
 
 /**
  * This RPC is the response of the DeleteWindow RPC
+ *
  * @see DeleteWindow
  * @since 6.0
  */

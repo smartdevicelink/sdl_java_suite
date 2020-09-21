@@ -14,7 +14,7 @@ public class TransportRecord extends BaseTransportRecord implements Parcelable {
     public TransportRecord(Parcel p) {
         if (p.readInt() == 1) { //We should have a transport type attached
             String transportName = p.readString();
-            if(transportName != null){
+            if (transportName != null) {
                 this.type = TransportType.valueOf(transportName);
             }
         }
@@ -31,13 +31,13 @@ public class TransportRecord extends BaseTransportRecord implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(type!=null? 1 : 0);
-        if(type != null){
+        dest.writeInt(type != null ? 1 : 0);
+        if (type != null) {
             dest.writeString(type.name());
         }
 
-        dest.writeInt(address !=null? 1 : 0);
-        if(address != null){
+        dest.writeInt(address != null ? 1 : 0);
+        if (address != null) {
             dest.writeString(address);
         }
     }

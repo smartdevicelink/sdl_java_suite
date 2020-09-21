@@ -62,9 +62,9 @@ public class ChoiceCell {
     /**
      * Initialize the cell with text, optional artwork, and optional voice commands
      *
-     * @param text - The primary text of the cell
+     * @param text          - The primary text of the cell
      * @param voiceCommands - Strings that can be spoken by the user to activate this cell in a voice or both interaction mode
-     * @param artwork - The primary artwork of the cell
+     * @param artwork       - The primary artwork of the cell
      */
     public ChoiceCell(@NonNull String text, List<String> voiceCommands, SdlArtwork artwork) {
         setText(text);
@@ -76,11 +76,11 @@ public class ChoiceCell {
     /**
      * Initialize the cell with all optional items
      *
-     * @param text - The primary text
-     * @param secondaryText - The secondary text
-     * @param tertiaryText - The tertiary text
-     * @param voiceCommands - Strings that can be spoken by the user to activate this cell in a voice or both interaction mode
-     * @param artwork - The primary artwork of the cell
+     * @param text             - The primary text
+     * @param secondaryText    - The secondary text
+     * @param tertiaryText     - The tertiary text
+     * @param voiceCommands    - Strings that can be spoken by the user to activate this cell in a voice or both interaction mode
+     * @param artwork          - The primary artwork of the cell
      * @param secondaryArtwork - The secondary artwork of the cell
      */
     public ChoiceCell(@NonNull String text, String secondaryText, String tertiaryText, List<String> voiceCommands, SdlArtwork artwork, SdlArtwork secondaryArtwork) {
@@ -96,6 +96,7 @@ public class ChoiceCell {
     /**
      * Maps to Choice.menuName. The primary text of the cell. Duplicates within an `ChoiceSet`
      * are not permitted and will result in the `ChoiceSet` failing to initialize.
+     *
      * @return The primary text of the cell
      */
     public String getText() {
@@ -104,7 +105,7 @@ public class ChoiceCell {
 
     /**
      * @param text - Maps to Choice.menuName. The primary text of the cell. Duplicates within an `ChoiceSet`
-     * are not permitted and will result in the `ChoiceSet` failing to initialize.
+     *             are not permitted and will result in the `ChoiceSet` failing to initialize.
      */
     void setText(@NonNull String text) {
         this.text = text;
@@ -113,6 +114,7 @@ public class ChoiceCell {
     /**
      * Maps to Choice.secondaryText. Optional secondary text of the cell, if available. Duplicates
      * within an `ChoiceSet` are permitted.
+     *
      * @return Optional secondary text of the cell
      */
     public String getSecondaryText() {
@@ -121,7 +123,7 @@ public class ChoiceCell {
 
     /**
      * @param secondaryText - Maps to Choice.secondaryText. Optional secondary text of the cell, if
-     * available. Duplicates within an `ChoiceSet` are permitted.
+     *                      available. Duplicates within an `ChoiceSet` are permitted.
      */
     void setSecondaryText(String secondaryText) {
         this.secondaryText = secondaryText;
@@ -129,6 +131,7 @@ public class ChoiceCell {
 
     /**
      * Maps to Choice.tertiaryText. Optional tertiary text of the cell, if available. Duplicates within an `ChoiceSet` are permitted.
+     *
      * @return Optional tertiary text of the cell
      */
     public String getTertiaryText() {
@@ -137,7 +140,7 @@ public class ChoiceCell {
 
     /**
      * @param tertiaryText - Maps to Choice.tertiaryText. Optional tertiary text of the cell, if
-     * available. Duplicates within an `ChoiceSet` are permitted.
+     *                     available. Duplicates within an `ChoiceSet` are permitted.
      */
     void setTertiaryText(String tertiaryText) {
         this.tertiaryText = tertiaryText;
@@ -149,6 +152,7 @@ public class ChoiceCell {
      * item appears. However, this would be a very poor experience for a user if the choice set is
      * presented as a voice only interaction or both interaction mode. Therefore, consider not setting
      * this only when you know the choice set will be presented as a touch only interaction.
+     *
      * @return The list of voice command strings
      */
     public List<String> getVoiceCommands() {
@@ -157,10 +161,10 @@ public class ChoiceCell {
 
     /**
      * @param voiceCommands - Maps to Choice.vrCommands. Optional voice commands the user can speak to activate the cell.
-     * If not set and the head unit requires it, this will be set to the number in the list that this
-     * item appears. However, this would be a very poor experience for a user if the choice set is
-     * presented as a voice only interaction or both interaction mode. Therefore, consider not setting
-     * this only when you know the choice set will be presented as a touch only interaction.
+     *                      If not set and the head unit requires it, this will be set to the number in the list that this
+     *                      item appears. However, this would be a very poor experience for a user if the choice set is
+     *                      presented as a voice only interaction or both interaction mode. Therefore, consider not setting
+     *                      this only when you know the choice set will be presented as a touch only interaction.
      */
     void setVoiceCommands(List<String> voiceCommands) {
         this.voiceCommands = voiceCommands;
@@ -169,6 +173,7 @@ public class ChoiceCell {
     /**
      * Maps to Choice.image. Optional image for the cell. This will be uploaded before the cell is
      * used when the cell is preloaded or presented for the first time.
+     *
      * @return The SdlArtwork
      */
     public SdlArtwork getArtwork() {
@@ -177,7 +182,7 @@ public class ChoiceCell {
 
     /**
      * @param artwork - Maps to Choice.image. Optional image for the cell. This will be uploaded
-     * before the cell is used when the cell is preloaded or presented for the first time.
+     *                before the cell is used when the cell is preloaded or presented for the first time.
      */
     void setArtwork(SdlArtwork artwork) {
         this.artwork = artwork;
@@ -186,6 +191,7 @@ public class ChoiceCell {
     /**
      * Maps to Choice.secondaryImage. Optional secondary image for the cell. This will be uploaded
      * before the cell is used when the cell is preloaded or presented for the first time.
+     *
      * @return The SdlArtwork
      */
     public SdlArtwork getSecondaryArtwork() {
@@ -194,7 +200,7 @@ public class ChoiceCell {
 
     /**
      * @param secondaryArtwork - Maps to Choice.secondaryImage. Optional secondary image for the cell.
-     * This will be uploaded before the cell is used when the cell is preloaded or presented for the first time.
+     *                         This will be uploaded before the cell is used when the cell is preloaded or presented for the first time.
      */
     void setSecondaryArtwork(SdlArtwork secondaryArtwork) {
         this.secondaryArtwork = secondaryArtwork;
@@ -203,6 +209,7 @@ public class ChoiceCell {
     /**
      * NOTE: USED INTERNALLY
      * Set the choice Id.
+     *
      * @param choiceId - the choice Id
      */
     void setChoiceId(int choiceId) {
@@ -212,6 +219,7 @@ public class ChoiceCell {
     /**
      * NOTE: USED INTERNALLY
      * Get the choiceId
+     *
      * @return the choiceId for this Choice Cell
      */
     int getChoiceId() {
@@ -232,12 +240,15 @@ public class ChoiceCell {
 
     /**
      * Uses our custom hashCode for ChoiceCell objects
+     *
      * @param o - The object to compare
      * @return boolean of whether the objects are the same or not
      */
     @Override
     public boolean equals(Object o) {
-        if (o == null) { return false; }
+        if (o == null) {
+            return false;
+        }
         // if this is the same memory address, its the same
         if (this == o) return true;
         // if this is not an instance of this class, not the same
@@ -249,12 +260,13 @@ public class ChoiceCell {
     /**
      * @return A string description of the cell, useful for debugging.
      */
-    @Override @NonNull
+    @Override
+    @NonNull
     public String toString() {
-        return "ChoiceCell: ID: " + this.choiceId + " Text: " + text+ " - Secondary Text: "+ secondaryText+" - Tertiary Text: "+ tertiaryText+ " " +
-                "| Artwork Names: "+ ((getArtwork() == null || getArtwork().getName() == null) ? "Primary Art null" : getArtwork().getName())
-                + " Secondary Art - "+((getSecondaryArtwork() == null || getSecondaryArtwork().getName() == null) ? "Secondary Art null" : getSecondaryArtwork().getName()) +
-                " | Voice Commands Size: "+ ((getVoiceCommands() == null) ? 0 : getVoiceCommands().size());
+        return "ChoiceCell: ID: " + this.choiceId + " Text: " + text + " - Secondary Text: " + secondaryText + " - Tertiary Text: " + tertiaryText + " " +
+                "| Artwork Names: " + ((getArtwork() == null || getArtwork().getName() == null) ? "Primary Art null" : getArtwork().getName())
+                + " Secondary Art - " + ((getSecondaryArtwork() == null || getSecondaryArtwork().getName() == null) ? "Secondary Art null" : getSecondaryArtwork().getName()) +
+                " | Voice Commands Size: " + ((getVoiceCommands() == null) ? 0 : getVoiceCommands().size());
     }
 
 }

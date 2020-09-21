@@ -44,10 +44,10 @@ public class OnUpdateSubMenuTest extends BaseRpcTests {
     protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
+        try {
             result.put(OnUpdateSubMenu.KEY_MENU_ID, TestValues.GENERAL_INT);
             result.put(OnUpdateSubMenu.KEY_UPDATE_SUB_CELLS, TestValues.GENERAL_BOOLEAN);
-        }catch(JSONException e){
+        } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
 
@@ -58,10 +58,10 @@ public class OnUpdateSubMenuTest extends BaseRpcTests {
      * Tests the expected values of the RPC message.
      */
     @Test
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Test Values
-        int menuId = ( (OnUpdateSubMenu) msg ).getMenuID();
-        boolean updateSubCells = ( (OnUpdateSubMenu) msg ).getUpdateSubCells();
+        int menuId = ((OnUpdateSubMenu) msg).getMenuID();
+        boolean updateSubCells = ((OnUpdateSubMenu) msg).getUpdateSubCells();
 
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, menuId);

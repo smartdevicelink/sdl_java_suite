@@ -40,9 +40,9 @@ import java.util.Hashtable;
 
 public class SetCloudAppProperties extends RPCRequest {
 
-    public static final String KEY_PROPERTIES         = "properties";
+    public static final String KEY_PROPERTIES = "properties";
 
-    public SetCloudAppProperties(){
+    public SetCloudAppProperties() {
         super(FunctionID.SET_CLOUD_APP_PROPERTIES.toString());
     }
 
@@ -50,7 +50,7 @@ public class SetCloudAppProperties extends RPCRequest {
         super(hash);
     }
 
-    public SetCloudAppProperties(@NonNull CloudAppProperties cloudAppProperties){
+    public SetCloudAppProperties(@NonNull CloudAppProperties cloudAppProperties) {
         this();
         setParameters(KEY_PROPERTIES, cloudAppProperties);
     }
@@ -60,7 +60,7 @@ public class SetCloudAppProperties extends RPCRequest {
         return this;
     }
 
-    public CloudAppProperties getProperties(){
+    public CloudAppProperties getProperties() {
         return (CloudAppProperties) getObject(CloudAppProperties.class, KEY_PROPERTIES);
     }
 

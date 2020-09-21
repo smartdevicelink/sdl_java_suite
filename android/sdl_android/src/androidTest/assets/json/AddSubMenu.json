@@ -1,19 +1,19 @@
 {
-	"request":{
-		"name":"AddSubMenu",
-    "correlationID":107,
-    "parameters":{
-    	"menuID":765,
-    	"position":2,
-    	"menuName":"Menu Name",
-    	"menuIcon":{
-    		"value":"cmdImage1.png",
-    		"imageType":"DYNAMIC"
-    	}
+  "request": {
+    "name": "AddSubMenu",
+    "correlationID": 107,
+    "parameters": {
+      "menuID": 765,
+      "position": 2,
+      "menuName": "Menu Name",
+      "menuIcon": {
+        "value": "cmdImage1.png",
+        "imageType": "DYNAMIC"
+      }
     }
-	},
-	"response":{
-		"name":"AddSubMenuResponse",
-		"correlationID":108
-	}
+  },
+  "response": {
+    "name": "AddSubMenuResponse",
+    "correlationID": 108
+  }
 }

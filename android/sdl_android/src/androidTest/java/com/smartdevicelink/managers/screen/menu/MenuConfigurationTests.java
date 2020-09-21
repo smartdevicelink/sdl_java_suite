@@ -48,14 +48,14 @@ import static junit.framework.TestCase.assertEquals;
 public class MenuConfigurationTests {
 
 
-	@Test
-	public void testSettersAndGetters(){
+    @Test
+    public void testSettersAndGetters() {
 
-		// set everything - we only use the constructor to set variables in the Menu Manager
-		MenuConfiguration menuConfiguration = new MenuConfiguration(TestValues.GENERAL_MENU_LAYOUT, TestValues.GENERAL_MENU_LAYOUT);
+        // set everything - we only use the constructor to set variables in the Menu Manager
+        MenuConfiguration menuConfiguration = new MenuConfiguration(TestValues.GENERAL_MENU_LAYOUT, TestValues.GENERAL_MENU_LAYOUT);
 
-		// use getters and assert equality
-		assertEquals(menuConfiguration.getMenuLayout(), TestValues.GENERAL_MENU_LAYOUT);
-		assertEquals(menuConfiguration.getSubMenuLayout(), TestValues.GENERAL_MENU_LAYOUT);
-	}
+        // use getters and assert equality
+        assertEquals(menuConfiguration.getMenuLayout(), TestValues.GENERAL_MENU_LAYOUT);
+        assertEquals(menuConfiguration.getSubMenuLayout(), TestValues.GENERAL_MENU_LAYOUT);
+    }
 }

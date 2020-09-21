@@ -78,7 +78,7 @@ public abstract class SdlRemoteDisplay extends Presentation {
         super.onCreate(savedInstanceState);
         setTitle(TAG);
 
-        w  = getWindow();
+        w = getWindow();
 
         startRefreshTask();
 
@@ -97,7 +97,7 @@ public abstract class SdlRemoteDisplay extends Presentation {
 
     protected final Runnable mStartRefreshTaskCallback = new Runnable() {
         public void run() {
-            if(mainView == null){
+            if (mainView == null) {
                 mainView = w.getDecorView().findViewById(android.R.id.content);
             }
             if (mainView != null) {
@@ -108,21 +108,21 @@ public abstract class SdlRemoteDisplay extends Presentation {
         }
     };
 
-    public View getMainView(){
-        if(mainView == null){
+    public View getMainView() {
+        if (mainView == null) {
             mainView = w.getDecorView().findViewById(android.R.id.content);
         }
         return this.mainView;
     }
 
-    public void invalidate(){
+    public void invalidate() {
         // let listeners know the view has been invalidated
-        if(callback != null){
+        if (callback != null) {
             callback.onInvalidated(this);
         }
     }
 
-    public void handleMotionEvent(final MotionEvent motionEvent){
+    public void handleMotionEvent(final MotionEvent motionEvent) {
         uiHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -131,7 +131,7 @@ public abstract class SdlRemoteDisplay extends Presentation {
         });
     }
 
-    public void stop(){
+    public void stop() {
         stopRefreshTask();
         dismissPresentation();
     }
@@ -144,8 +144,10 @@ public abstract class SdlRemoteDisplay extends Presentation {
             }
         });
     }
-    public interface Callback{
+
+    public interface Callback {
         void onCreated(SdlRemoteDisplay remoteDisplay);
+
         void onInvalidated(SdlRemoteDisplay remoteDisplay);
     }
 
@@ -159,7 +161,7 @@ public abstract class SdlRemoteDisplay extends Presentation {
         private final Callback callback;
 
 
-        public Creator(Context context, Display display, SdlRemoteDisplay remoteDisplay, Class<? extends SdlRemoteDisplay> remoteDisplayClass, Callback callback){
+        public Creator(Context context, Display display, SdlRemoteDisplay remoteDisplay, Class<? extends SdlRemoteDisplay> remoteDisplayClass, Callback callback) {
             this.context = context;
             this.mDisplay = display;
             this.remoteDisplay = remoteDisplay;
@@ -175,8 +177,7 @@ public abstract class SdlRemoteDisplay extends Presentation {
                 public void run() {
                     // Want to create presentation on UI thread so it finds the right Looper
                     // when setting up the Dialog.
-                    if((mDisplay!=null) && (remoteDisplay == null || remoteDisplay.getDisplay() != mDisplay))
-                    {
+                    if ((mDisplay != null) && (remoteDisplay == null || remoteDisplay.getDisplay() != mDisplay)) {
                         try {
                             Constructor constructor = remoteDisplayClass.getConstructor(Context.class, Display.class);
                             remoteDisplay = (SdlRemoteDisplay) constructor.newInstance(context, mDisplay);
@@ -190,7 +191,7 @@ public abstract class SdlRemoteDisplay extends Presentation {
                         try {
                             remoteDisplay.show();
                             remoteDisplay.callback = callback;
-                            if(callback!=null){
+                            if (callback != null) {
                                 callback.onCreated(remoteDisplay);
                             }
 

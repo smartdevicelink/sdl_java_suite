@@ -17,7 +17,7 @@ import static junit.framework.TestCase.assertTrue;
 public class SdlArtworkTests {
 
     @Test
-    public void testClone(){
+    public void testClone() {
         SdlArtwork original = TestValues.GENERAL_ARTWORK;
         SdlArtwork clone = original.clone();
 
@@ -36,11 +36,11 @@ public class SdlArtworkTests {
 
     }
 
-    public static boolean equalTest(SdlArtwork original, SdlArtwork clone){
+    public static boolean equalTest(SdlArtwork original, SdlArtwork clone) {
 
         assertNotNull(original);
         assertNotNull(clone);
-        assertNotSame(original,clone);
+        assertNotSame(original, clone);
 
 
         assertEquals(original.getResourceId(), clone.getResourceId());
@@ -50,7 +50,7 @@ public class SdlArtworkTests {
         assertNotNull(original.getImageRPC());
         assertNotNull(clone.getImageRPC());
 
-        assertNotSame(original.getImageRPC(),clone.getImageRPC());
+        assertNotSame(original.getImageRPC(), clone.getImageRPC());
         assertEquals(original.getImageRPC().getIsTemplate(), clone.getImageRPC().getIsTemplate());
         assertEquals(original.getImageRPC().getValue(), clone.getImageRPC().getValue());
         assertEquals(original.getImageRPC().getImageType(), clone.getImageRPC().getImageType());

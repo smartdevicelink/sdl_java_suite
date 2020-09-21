@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -33,32 +33,34 @@ package com.smartdevicelink.proxy.rpc.enums;
 
 /**
  * Reflects the status of a cluster instrument warning light.
+ *
  * @since SmartDeviceLink 2.0
  */
 public enum WarningLightStatus {
-	/**
-	 * Warning light Off
-	 */
-	OFF,
-	/**
-	 * Warning light On
-	 */
-	ON,
-	/**
-	 * Warning light is flashing
-	 */
-	FLASH,
-	NOT_USED;
+    /**
+     * Warning light Off
+     */
+    OFF,
+    /**
+     * Warning light On
+     */
+    ON,
+    /**
+     * Warning light is flashing
+     */
+    FLASH,
+    NOT_USED;
 
     /**
      * Convert String to WarningLightStatus
+     *
      * @param value String
      * @return WarningLightStatus
-     */    
+     */
     public static WarningLightStatus valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

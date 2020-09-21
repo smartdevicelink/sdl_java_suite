@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -42,15 +42,15 @@ import java.util.List;
 /**
  * Creates a Choice Set which can be used in subsequent <i>
  * {@linkplain PerformInteraction}</i> Operations.
- * 
+ *
  * <p>Function Group: Base </p>
- * 
+ *
  * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
- * 
+ *
  * <p>AudioStreamingState : ANY</p>
- * 
+ *
  * <p>SystemContext: MAIN, MENU, VR</p>
- * 
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -78,16 +78,16 @@ import java.util.List;
  * 			<td>SmartDeviceLink 1.0 </td>
  * 		</tr>
  *  </table>
- *  
- *   
+ *
+ *
  * <p> <b>Note:</b></p>Second Utterance issue with CreateInteractionChoiceSet RPC.  Before a perform interaction
  * is sent you MUST wait for the success from the CreateInteractionChoiceSet RPC.
  * If you do not wait the system may not recognize the first utterance from the user.
- * 
- * <p><b>Response</b></p>
  *
- * Indicates that the corresponding request either failed or succeeded. If the response returns with a SUCCESS result code, this means the Choice Set was created. 
- * 
+ * <p><b>Response</b></p>
+ * <p>
+ * Indicates that the corresponding request either failed or succeeded. If the response returns with a SUCCESS result code, this means the Choice Set was created.
+ *
  * <p><b>Non-default Result Codes:</b></p>
  * 	<p>SUCCESS</p>
  * 	<p>INVALID_DATA</p>
@@ -95,88 +95,90 @@ import java.util.List;
  * 	<p>TOO_MANY_PENDING_REQUESTS</p>
  * 	<p>APPLICATION_NOT_REGISTERED</p>
  * 	<p>GENERIC_ERROR</p>
- * <p>	REJECTED</p> 
+ * <p>	REJECTED</p>
  * <p> INVALID_ID</p>
  * <p> DUPLICATE_NAME</p>
- *  <p>UNSUPPORTED_RESOURCE </p>    
- *  
- * 
- * @since SmartDeviceLink 1.0
+ *  <p>UNSUPPORTED_RESOURCE </p>
+ *
  * @see DeleteInteractionChoiceSet
  * @see PerformInteraction
+ * @since SmartDeviceLink 1.0
  */
 public class CreateInteractionChoiceSet extends RPCRequest {
-	public static final String KEY_CHOICE_SET = "choiceSet";
-	public static final String KEY_INTERACTION_CHOICE_SET_ID = "interactionChoiceSetID";
+    public static final String KEY_CHOICE_SET = "choiceSet";
+    public static final String KEY_INTERACTION_CHOICE_SET_ID = "interactionChoiceSetID";
 
-	/**
-	 * Constructs a new CreateInteractionChoiceSet object
-	 */    
-	public CreateInteractionChoiceSet() {
+    /**
+     * Constructs a new CreateInteractionChoiceSet object
+     */
+    public CreateInteractionChoiceSet() {
         super(FunctionID.CREATE_INTERACTION_CHOICE_SET.toString());
     }
-	/**
-	 * <p>Constructs a new CreateInteractionChoiceSet object indicated by the
-	 * Hashtable parameter</p>
-	 * 
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */	
+
+    /**
+     * <p>Constructs a new CreateInteractionChoiceSet object indicated by the
+     * Hashtable parameter</p>
+     *
+     * @param hash The Hashtable to use
+     */
     public CreateInteractionChoiceSet(Hashtable<String, Object> hash) {
         super(hash);
     }
-	/**
-	 * Constructs a new CreateInteractionChoiceSet object
-	 * @param interactionChoiceSetID: an Integer value representing the Choice Set ID
-	 *            <b>Notes: </b>Min Value: 0; Max Value: 2000000000
-	 * @param choiceSet: a List<Choice> representing the array of one or more elements
-	 *            <b>Notes: </b>Min Value: 1; Max Value: 100
-	 */
-	public CreateInteractionChoiceSet(@NonNull Integer interactionChoiceSetID, @NonNull List<Choice> choiceSet) {
-		this();
-		setInteractionChoiceSetID(interactionChoiceSetID);
-		setChoiceSet(choiceSet);
-	}
-	/**
-	 * Gets the Choice Set unique ID
-	 * 
-	 * @return Integer -an Integer representing the Choice Set ID
-	 */    
-    public Integer getInteractionChoiceSetID() {
-        return getInteger( KEY_INTERACTION_CHOICE_SET_ID );
+
+    /**
+     * Constructs a new CreateInteractionChoiceSet object
+     *
+     * @param interactionChoiceSetID: an Integer value representing the Choice Set ID
+     *                                <b>Notes: </b>Min Value: 0; Max Value: 2000000000
+     * @param choiceSet:              a List<Choice> representing the array of one or more elements
+     *                                <b>Notes: </b>Min Value: 1; Max Value: 100
+     */
+    public CreateInteractionChoiceSet(@NonNull Integer interactionChoiceSetID, @NonNull List<Choice> choiceSet) {
+        this();
+        setInteractionChoiceSetID(interactionChoiceSetID);
+        setChoiceSet(choiceSet);
     }
-	/**
-	 * Sets a unique ID that identifies the Choice Set
-	 *
-	 * @param interactionChoiceSetID
-	 *            an Integer value representing the Choice Set ID
-	 *
-	 *            <b>Notes: </b>Min Value: 0; Max Value: 2000000000
-	 */
+
+    /**
+     * Gets the Choice Set unique ID
+     *
+     * @return Integer -an Integer representing the Choice Set ID
+     */
+    public Integer getInteractionChoiceSetID() {
+        return getInteger(KEY_INTERACTION_CHOICE_SET_ID);
+    }
+
+    /**
+     * Sets a unique ID that identifies the Choice Set
+     *
+     * @param interactionChoiceSetID an Integer value representing the Choice Set ID
+     *
+     *                               <b>Notes: </b>Min Value: 0; Max Value: 2000000000
+     */
     public CreateInteractionChoiceSet setInteractionChoiceSetID(@NonNull Integer interactionChoiceSetID) {
         setParameters(KEY_INTERACTION_CHOICE_SET_ID, interactionChoiceSetID);
         return this;
     }
-	/**
-	 * Gets Choice Set Array of one or more elements
-	 * 
-	 * @return List<Choice> -a List<Choice> representing the array of one or
-	 *         more elements
-	 */   
-    @SuppressWarnings("unchecked") 
+
+    /**
+     * Gets Choice Set Array of one or more elements
+     *
+     * @return List<Choice> -a List<Choice> representing the array of one or
+     * more elements
+     */
+    @SuppressWarnings("unchecked")
     public List<Choice> getChoiceSet() {
-		return (List<Choice>) getObject(Choice.class, KEY_CHOICE_SET);
+        return (List<Choice>) getObject(Choice.class, KEY_CHOICE_SET);
     }
-	/**
-	 * Sets a Choice Set that is an Array of one or more elements
-	 *
-	 * @param choiceSet
-	 *            a List<Choice> representing the array of one or more
-	 *            elements
-	 *
-	 *            <b>Notes: </b>Min Value: 1; Max Value: 100
-	 */
+
+    /**
+     * Sets a Choice Set that is an Array of one or more elements
+     *
+     * @param choiceSet a List<Choice> representing the array of one or more
+     *                  elements
+     *
+     *                  <b>Notes: </b>Min Value: 1; Max Value: 100
+     */
     public CreateInteractionChoiceSet setChoiceSet(@NonNull List<Choice> choiceSet) {
         setParameters(KEY_CHOICE_SET, choiceSet);
         return this;

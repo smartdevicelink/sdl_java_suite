@@ -24,8 +24,6 @@ package com.smartdevicelink.managers.video;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
@@ -47,7 +45,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
@@ -168,7 +165,6 @@ public class HapticInterfaceManagerTest extends TestCase {
 
         assertViewWithCapability(buttonX, buttonY, buttonWidth, buttonHeight, expected, capability);
     }
-
 
 
     @Test

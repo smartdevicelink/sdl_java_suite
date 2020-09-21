@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -40,17 +40,17 @@ import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import java.util.Hashtable;
 
 /**
- * This is called when a command was selected via VR after pressing the PTT button, or selected from the menu after 
+ * This is called when a command was selected via VR after pressing the PTT button, or selected from the menu after
  * pressing the MENU button. <p>
  * <b>Note: </b>Sequence of OnHMIStatus and OnCommand notifications for user-initiated interactions is indeterminate.
  * <p></p>
  * <b>HMI Status Requirements:</b>
  * <ul>
- * HMILevel: 
+ * HMILevel:
  * <ul><li>FULL,LIMITED</li></ul>
- * AudioStreamingState: 
+ * AudioStreamingState:
  * <ul><li>Any</li></ul>
- * SystemContext: 
+ * SystemContext:
  * <ul><li>Any</li></ul>
  * </ul>
  * <p>
@@ -79,30 +79,36 @@ import java.util.Hashtable;
  * </tr>
  * </table>
  * </p>
- * @since SmartDeviceLink 1.0
+ *
  * @see AddCommand
  * @see DeleteCommand
  * @see DeleteSubMenu
+ * @since SmartDeviceLink 1.0
  */
 public class OnCommand extends RPCNotification {
-	public static final String KEY_CMD_ID = "cmdID";
-	public static final String KEY_TRIGGER_SOURCE = "triggerSource";
-	/**
-	*Constructs a newly allocated OnCommand object
-	*/    
+    public static final String KEY_CMD_ID = "cmdID";
+    public static final String KEY_TRIGGER_SOURCE = "triggerSource";
+
+    /**
+     * Constructs a newly allocated OnCommand object
+     */
     public OnCommand() {
         super(FunctionID.ON_COMMAND.toString());
     }
+
     /**
-    *<p>Constructs a newly allocated OnCommand object indicated by the Hashtable parameter</p>
-    *@param hash The Hashtable to use
-    */    
+     * <p>Constructs a newly allocated OnCommand object indicated by the Hashtable parameter</p>
+     *
+     * @param hash The Hashtable to use
+     */
     public OnCommand(Hashtable<String, Object> hash) {
         super(hash);
     }
+
     /**
-     *Constructs a newly allocated OnCommand object
-     * @param cmdID an integer object representing a Command ID
+     * Constructs a newly allocated OnCommand object
+     *
+     * @param cmdID         an integer object representing a Command ID
      * @param triggerSource a TriggerSource object
      */
     public OnCommand(@NonNull Integer cmdID, @NonNull TriggerSource triggerSource) {
@@ -110,31 +116,39 @@ public class OnCommand extends RPCNotification {
         setCmdID(cmdID);
         setTriggerSource(triggerSource);
     }
+
     /**
      * <p>Returns an <i>Integer</i> object representing the Command ID</p>
+     *
      * @return Integer an integer representation of this object
-     */    
+     */
     public Integer getCmdID() {
-        return getInteger( KEY_CMD_ID );
+        return getInteger(KEY_CMD_ID);
     }
+
     /**
      * <p>Sets a Command ID</p>
+     *
      * @param cmdID an integer object representing a Command ID
      */
     public OnCommand setCmdID(@NonNull Integer cmdID) {
         setParameters(KEY_CMD_ID, cmdID);
         return this;
     }
+
     /**
-     * <p>Returns a <I>TriggerSource</I> object which will be shown in the HMI</p>    
+     * <p>Returns a <I>TriggerSource</I> object which will be shown in the HMI</p>
+     *
      * @return TriggerSource a TriggerSource object
-     */    
+     */
     public TriggerSource getTriggerSource() {
         return (TriggerSource) getObject(TriggerSource.class, KEY_TRIGGER_SOURCE);
     }
+
     /**
      * <p>Sets TriggerSource</p>
      * <p>Indicates whether command was selected via VR or via a menu selection (using the OK button).</p>
+     *
      * @param triggerSource a TriggerSource object
      */
     public OnCommand setTriggerSource(@NonNull TriggerSource triggerSource) {

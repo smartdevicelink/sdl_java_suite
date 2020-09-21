@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -35,58 +35,63 @@ import java.util.Enumeration;
 import java.util.Objects;
 import java.util.Vector;
 
-public abstract class ByteEnumer {	
-	
-	protected ByteEnumer(byte value, String name) {
-		this.value = value;
-		this.name = name;
-	}
-	
-	private final byte value;
-	private final String name;
-	
-	public byte getValue() { return value; }
-	public String getName() { return name; }
-	
-	public boolean equals(ByteEnumer other) {
-		return Objects.equals(name, other.getName());
-	}
-	
-	public boolean eq(ByteEnumer other) {
-		return equals(other);
-	}
-		
-	public byte value() {
-		return value;
-	}
-	
-	public static ByteEnumer get(Vector<?> theList, byte value) {
-		Enumeration<?> enumer = theList.elements();
-		while (enumer.hasMoreElements()) {			
-			try {
-				ByteEnumer current = (ByteEnumer)enumer.nextElement();
-				if (current.getValue() == value) {
-					return current;
-				}
-			} catch (ClassCastException e) {
-				return null;
-			}
-		}
-		return null;
-	}
-	
-	public static ByteEnumer get(Vector<?> theList, String name) {
-		Enumeration<?> enumer = theList.elements();
-		while (enumer.hasMoreElements()) {
-			try {
-			ByteEnumer current = (ByteEnumer)enumer.nextElement();
-			if (current.getName().equals(name)) {
-				return current;
-			}
-			} catch (ClassCastException e) {
-				return null;
-			}
-		}
-		return null;
-	}
+public abstract class ByteEnumer {
+
+    protected ByteEnumer(byte value, String name) {
+        this.value = value;
+        this.name = name;
+    }
+
+    private final byte value;
+    private final String name;
+
+    public byte getValue() {
+        return value;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean equals(ByteEnumer other) {
+        return Objects.equals(name, other.getName());
+    }
+
+    public boolean eq(ByteEnumer other) {
+        return equals(other);
+    }
+
+    public byte value() {
+        return value;
+    }
+
+    public static ByteEnumer get(Vector<?> theList, byte value) {
+        Enumeration<?> enumer = theList.elements();
+        while (enumer.hasMoreElements()) {
+            try {
+                ByteEnumer current = (ByteEnumer) enumer.nextElement();
+                if (current.getValue() == value) {
+                    return current;
+                }
+            } catch (ClassCastException e) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    public static ByteEnumer get(Vector<?> theList, String name) {
+        Enumeration<?> enumer = theList.elements();
+        while (enumer.hasMoreElements()) {
+            try {
+                ByteEnumer current = (ByteEnumer) enumer.nextElement();
+                if (current.getName().equals(name)) {
+                    return current;
+                }
+            } catch (ClassCastException e) {
+                return null;
+            }
+        }
+        return null;
+    }
 }

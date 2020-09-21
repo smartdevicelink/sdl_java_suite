@@ -54,30 +54,30 @@ import static org.mockito.Mockito.mock;
 @RunWith(AndroidJUnit4.class)
 public class DeleteChoicesOperationTests {
 
-	private DeleteChoicesOperation deleteChoicesOperation;
+    private DeleteChoicesOperation deleteChoicesOperation;
 
-	@Before
-	public void setUp() throws Exception{
+    @Before
+    public void setUp() throws Exception {
 
-		ChoiceCell cell1 = new ChoiceCell("cell 1");
-		ChoiceCell cell2 = new ChoiceCell("cell 2");
-		HashSet<ChoiceCell> cellsToDelete = new HashSet<>();
-		cellsToDelete.add(cell1);
-		cellsToDelete.add(cell2);
+        ChoiceCell cell1 = new ChoiceCell("cell 1");
+        ChoiceCell cell2 = new ChoiceCell("cell 2");
+        HashSet<ChoiceCell> cellsToDelete = new HashSet<>();
+        cellsToDelete.add(cell1);
+        cellsToDelete.add(cell2);
 
-		ISdl internalInterface = mock(ISdl.class);
-		deleteChoicesOperation = new DeleteChoicesOperation(internalInterface, cellsToDelete, null);
-	}
+        ISdl internalInterface = mock(ISdl.class);
+        deleteChoicesOperation = new DeleteChoicesOperation(internalInterface, cellsToDelete, null);
+    }
 
 
-	@Test
-	public void testCreateListDeleteInteractionSets(){
-		List<DeleteInteractionChoiceSet> deletes = deleteChoicesOperation.createDeleteSets();
-		assertNotNull(deletes);
-		assertEquals(deletes.size(), 2);
-		for (DeleteInteractionChoiceSet delete : deletes) {
-			assertNotNull(delete);
-		}
-	}
+    @Test
+    public void testCreateListDeleteInteractionSets() {
+        List<DeleteInteractionChoiceSet> deletes = deleteChoicesOperation.createDeleteSets();
+        assertNotNull(deletes);
+        assertEquals(deletes.size(), 2);
+        for (DeleteInteractionChoiceSet delete : deletes) {
+            assertNotNull(delete);
+        }
+    }
 
 }

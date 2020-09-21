@@ -20,38 +20,38 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.SetMediaClockTimerResponse}
  */
 public class SetMediaClockTimerResponseTest extends BaseRpcTests {
 
-	@Override
-    protected RPCMessage createMessage(){
+    @Override
+    protected RPCMessage createMessage() {
         return new SetMediaClockTimerResponse();
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_RESPONSE;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.SET_MEDIA_CLOCK_TIMER.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         return new JSONObject();
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
+     * Tests the expected values of the RPC message.
+     */
     @Test
-    public void testRpcValues () {   
-    	// Invalid/Null Tests
-    	SetMediaClockTimerResponse msg = new SetMediaClockTimerResponse();
+    public void testRpcValues() {
+        // Invalid/Null Tests
+        SetMediaClockTimerResponse msg = new SetMediaClockTimerResponse();
         assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
     }
@@ -60,22 +60,22 @@ public class SetMediaClockTimerResponseTest extends BaseRpcTests {
      * Tests a valid JSON construction of this RPC message.
      */
     @Test
-    public void testJsonConstructor () {
-    	JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getContext(), getCommandType(), getMessageType());
-    	assertNotNull(TestValues.NOT_NULL, commandJson);
-    	
-		try {
-			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
-			SetMediaClockTimerResponse cmd = new SetMediaClockTimerResponse(hash);
-			
-			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(TestValues.NOT_NULL, body);
-			
-			// Test everything in the json body.
-			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}   	
-    }	
+    public void testJsonConstructor() {
+        JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getContext(), getCommandType(), getMessageType());
+        assertNotNull(TestValues.NOT_NULL, commandJson);
+
+        try {
+            Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
+            SetMediaClockTimerResponse cmd = new SetMediaClockTimerResponse(hash);
+
+            JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
+            assertNotNull(TestValues.NOT_NULL, body);
+
+            // Test everything in the json body.
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 }

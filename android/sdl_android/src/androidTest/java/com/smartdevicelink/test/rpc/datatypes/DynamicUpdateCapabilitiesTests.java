@@ -76,15 +76,15 @@ public class DynamicUpdateCapabilitiesTests extends TestCase {
                     assertEquals(TestValues.MATCH, referenceArray.length(), underTestArray.length());
 
                     for (int i = 0; i < referenceArray.length(); i++) {
-                        imageFieldNameListReference.add( (ImageFieldName) referenceArray.get(i));
-                        imageFieldNameListTest.add( (ImageFieldName) underTestArray.get(i));
+                        imageFieldNameListReference.add((ImageFieldName) referenceArray.get(i));
+                        imageFieldNameListTest.add((ImageFieldName) underTestArray.get(i));
                     }
                     assertTrue(TestValues.TRUE, imageFieldNameListReference.containsAll(imageFieldNameListTest) && imageFieldNameListTest.containsAll(imageFieldNameListReference));
                 } else if (key.equals(DynamicUpdateCapabilities.KEY_SUPPORTS_DYNAMIC_SUB_MENUS)) {
                     boolean referenceBool = JsonUtils.readBooleanFromJsonObject(reference, key);
                     boolean underTestBool = JsonUtils.readBooleanFromJsonObject(underTest, key);
                     assertEquals(TestValues.MATCH, referenceBool, underTestBool);
-                }  else {
+                } else {
                     assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
                 }
             }

@@ -2,7 +2,7 @@ package com.smartdevicelink.managers.file;
 
 /**
  * <strong>FileManagerConfig</strong> <br>
- * 
+ * <p>
  * This is set during SdlManager instantiation. <br>
  *
  * <li> artworkRetryCount -  # of attempts allowed for SdlArtwork to be re-uploaded if they fail </li>

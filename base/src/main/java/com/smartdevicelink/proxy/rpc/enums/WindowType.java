@@ -2,6 +2,7 @@ package com.smartdevicelink.proxy.rpc.enums;
 
 /**
  * The type of the window to be created. Main window or widget.
+ *
  * @since 6.0
  */
 public enum WindowType {

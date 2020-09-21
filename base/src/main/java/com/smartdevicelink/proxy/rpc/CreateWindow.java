@@ -11,6 +11,7 @@ import java.util.Hashtable;
 /**
  * The RPC CreateWindow allows an app to create a new window on the display.
  * The app needs to specify a window ID that is used for window manipulation e.g. with the RPC Show and the window type which can either be MAIN or WIDGET (see sub-section Window types).
+ *
  * @since 6.0
  */
 public class CreateWindow extends RPCRequest {
@@ -39,11 +40,12 @@ public class CreateWindow extends RPCRequest {
 
     /**
      * Constructs a new CreateWindow object
-     * @param windowID A unique ID to identify the window. The value of '0' will always be the default main window on the main display and should not be used in this context as it will already be created for the app. See PredefinedWindows enum. Creating a window with an ID that is already in use will be rejected with `INVALID_ID`.
+     *
+     * @param windowID   A unique ID to identify the window. The value of '0' will always be the default main window on the main display and should not be used in this context as it will already be created for the app. See PredefinedWindows enum. Creating a window with an ID that is already in use will be rejected with `INVALID_ID`.
      * @param windowName The window name to be used by the HMI. The name of the pre-created default window will match the app name.
-     *        Multiple apps can share the same window name except for the default main window.
-     *        {@code windowName.length() <= 100}
-     * @param type The type of the window to be created. Main window or widget.
+     *                   Multiple apps can share the same window name except for the default main window.
+     *                   {@code windowName.length() <= 100}
+     * @param type       The type of the window to be created. Main window or widget.
      */
     public CreateWindow(@NonNull Integer windowID, @NonNull String windowName, @NonNull WindowType type) {
         this();
@@ -81,8 +83,8 @@ public class CreateWindow extends RPCRequest {
      * Creating a window with a name which is already in use by the app will result in `DUPLICATE_NAME`.
      *
      * @param windowName The window name to be used by the HMI. The name of the pre-created default window will match the app name.
-     *        Multiple apps can share the same window name except for the default main window.
-     *        {@code windowName.length() <= 100}
+     *                   Multiple apps can share the same window name except for the default main window.
+     *                   {@code windowName.length() <= 100}
      */
     public CreateWindow setWindowName(@NonNull String windowName) {
         setParameters(KEY_WINDOW_NAME, windowName);
@@ -130,7 +132,7 @@ public class CreateWindow extends RPCRequest {
      * @param associatedServiceType Allows an app to create a widget related to a specific service type.
      *                              As an example if a `MEDIA` app becomes active, this app becomes audible and is allowed to play audio.
      */
-    public CreateWindow setAssociatedServiceType( String associatedServiceType) {
+    public CreateWindow setAssociatedServiceType(String associatedServiceType) {
         setParameters(KEY_ASSOCIATED_SERVICE_TYPE, associatedServiceType);
         return this;
     }
@@ -152,7 +154,7 @@ public class CreateWindow extends RPCRequest {
      *
      * @param duplicateUpdatesFromWindowID Specify whether the content sent to an existing window should be duplicated to the created window.
      */
-    public CreateWindow setDuplicateUpdatesFromWindowID( Integer duplicateUpdatesFromWindowID) {
+    public CreateWindow setDuplicateUpdatesFromWindowID(Integer duplicateUpdatesFromWindowID) {
         setParameters(KEY_DUPLICATE_UPDATES_FROM_WINDOW_ID, duplicateUpdatesFromWindowID);
         return this;
     }

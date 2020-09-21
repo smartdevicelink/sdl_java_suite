@@ -31,7 +31,7 @@ import static junit.framework.TestCase.fail;
 public class SetInteriorVehicleDataTests extends BaseRpcTests {
 
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         SetInteriorVehicleData msg = new SetInteriorVehicleData();
 
         msg.setModuleData(TestValues.GENERAL_MODULEDATA);
@@ -40,22 +40,22 @@ public class SetInteriorVehicleDataTests extends BaseRpcTests {
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_REQUEST;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.SET_INTERIOR_VEHICLE_DATA.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
+        try {
             result.put(SetInteriorVehicleData.KEY_MODULE_DATA, JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_MODULEDATA.getStore()));
-        }catch(JSONException e){
+        } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
 
@@ -66,9 +66,9 @@ public class SetInteriorVehicleDataTests extends BaseRpcTests {
      * Tests the expected values of the RPC message.
      */
     @Test
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Test Values
-        ModuleData testModuleData = ( (SetInteriorVehicleData) msg ).getModuleData();
+        ModuleData testModuleData = ((SetInteriorVehicleData) msg).getModuleData();
 
         // Valid Tests
         assertTrue(TestValues.TRUE, Validator.validateModuleData(TestValues.GENERAL_MODULEDATA, testModuleData));
@@ -85,7 +85,7 @@ public class SetInteriorVehicleDataTests extends BaseRpcTests {
      * Tests a valid JSON construction of this RPC message.
      */
     @Test
-    public void testJsonConstructor () {
+    public void testJsonConstructor() {
         JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
         assertNotNull(TestValues.NOT_NULL, commandJson);
 
@@ -105,7 +105,7 @@ public class SetInteriorVehicleDataTests extends BaseRpcTests {
             ModuleData referenceModuleData = new ModuleData(JsonRPCMarshaller.deserializeJSONObject((JSONObject) JsonUtils.readObjectFromJsonObject(parameters, SetInteriorVehicleData.KEY_MODULE_DATA)));
 
             assertTrue(TestValues.TRUE, Validator.validateModuleData(referenceModuleData, cmd.getModuleData()));
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
     }

@@ -43,9 +43,9 @@ public class OnUpdateFileTest extends BaseRpcTests {
     protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
+        try {
             result.put(OnUpdateFile.KEY_FILE_NAME, TestValues.GENERAL_STRING);
-        }catch(JSONException e){
+        } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
 
@@ -56,9 +56,9 @@ public class OnUpdateFileTest extends BaseRpcTests {
      * Tests the expected values of the RPC message.
      */
     @Test
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Test Values
-        String fileName = ( (OnUpdateFile) msg).getFileName();
+        String fileName = ((OnUpdateFile) msg).getFileName();
 
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, fileName);

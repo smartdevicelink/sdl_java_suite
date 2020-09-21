@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -44,43 +44,43 @@ import java.util.Hashtable;
  * @since SmartDeviceLink 4.0
  */
 public class DialNumber extends RPCRequest {
-	public static final String KEY_NUMBER = "number";
+    public static final String KEY_NUMBER = "number";
 
 
-	public DialNumber(){
+    public DialNumber() {
         super(FunctionID.DIAL_NUMBER.toString());
-	}
-	
-	public DialNumber(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+    }
 
-	public DialNumber(@NonNull String number){
-		this();
-		setNumber(number);
-	}
-	/**
-	 * Sets a number to dial
-	 * 
-	 * @param number
-	 *             a phone number is a string, which can be up to 40 chars.
-	 *            <p>
-	 *            <b>Notes: </b>Maxlength=40</p>
-	 *             All characters shall be stripped from string except digits 0-9 and * # , ; +
-	 */
+    public DialNumber(Hashtable<String, Object> hash) {
+        super(hash);
+    }
+
+    public DialNumber(@NonNull String number) {
+        this();
+        setNumber(number);
+    }
+
+    /**
+     * Sets a number to dial
+     *
+     * @param number a phone number is a string, which can be up to 40 chars.
+     *               <p>
+     *               <b>Notes: </b>Maxlength=40</p>
+     *               All characters shall be stripped from string except digits 0-9 and * # , ; +
+     */
     public DialNumber setNumber(@NonNull String number) {
         if (number != null) {
-        	number = number.replaceAll("[^0-9*#,;+]", ""); //This will sanitize the input
+            number = number.replaceAll("[^0-9*#,;+]", ""); //This will sanitize the input
         }
-		setParameters(KEY_NUMBER, number);
+        setParameters(KEY_NUMBER, number);
         return this;
     }
 
-	/**
-	 * Gets a number to dial
-	 * 
-	 * @return String - a String value representing a number to dial
-	 */
+    /**
+     * Gets a number to dial
+     *
+     * @return String - a String value representing a number to dial
+     */
     public String getNumber() {
         return getString(KEY_NUMBER);
     }

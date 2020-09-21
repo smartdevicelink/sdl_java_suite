@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * of a specific remote control module.
  */
 public class SetInteriorVehicleData extends RPCRequest {
-	public static final String KEY_MODULE_DATA = "moduleData";
+    public static final String KEY_MODULE_DATA = "moduleData";
 
     /**
      * Constructs a new SetInteriorVehicleData object
@@ -56,9 +56,7 @@ public class SetInteriorVehicleData extends RPCRequest {
      * <p>Constructs a new SetInteriorVehicleData object indicated by the
      * Hashtable parameter</p>
      *
-     *
-     * @param hash
-     * The Hashtable to use
+     * @param hash The Hashtable to use
      */
     public SetInteriorVehicleData(Hashtable<String, Object> hash) {
         super(hash);
@@ -66,6 +64,7 @@ public class SetInteriorVehicleData extends RPCRequest {
 
     /**
      * Constructs a new SetInteriorVehicleData object
+     *
      * @param moduleData
      */
     public SetInteriorVehicleData(@NonNull ModuleData moduleData) {

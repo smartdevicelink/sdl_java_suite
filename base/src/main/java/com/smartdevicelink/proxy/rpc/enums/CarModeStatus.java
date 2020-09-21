@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,36 +31,45 @@
  */
 package com.smartdevicelink.proxy.rpc.enums;
 
-/** Describes the carmode the vehicle is in.
+/**
+ * Describes the carmode the vehicle is in.
+ *
  * @since SmartDeviceLink 2.0
  */
 public enum CarModeStatus {
-	/** Provides car mode NORMAL to each module.
-	 */
+    /**
+     * Provides car mode NORMAL to each module.
+     */
 
-	NORMAL,
-	/** Provides car mode FACTORY to each module.
-	 */
+    NORMAL,
+    /**
+     * Provides car mode FACTORY to each module.
+     */
 
-	FACTORY,
-	/** Provides car mode TRANSPORT to each module.
-	 */
+    FACTORY,
+    /**
+     * Provides car mode TRANSPORT to each module.
+     */
 
-	TRANSPORT,
-	/** Provides car mode CRASH to each module.
-	 */
+    TRANSPORT,
+    /**
+     * Provides car mode CRASH to each module.
+     */
 
 
-	CRASH;
-	/** Convert String to CarModeStatus
-	 * @param value String
-	 * @return CarModeStatus
-	 */
+    CRASH;
+
+    /**
+     * Convert String to CarModeStatus
+     *
+     * @param value String
+     * @return CarModeStatus
+     */
 
     public static CarModeStatus valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

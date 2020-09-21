@@ -16,7 +16,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.TemplateConfiguration}
  */
 public class TemplateConfigurationTests extends TestCase {
@@ -24,7 +24,7 @@ public class TemplateConfigurationTests extends TestCase {
     private TemplateConfiguration msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new TemplateConfiguration();
 
         msg.setTemplate(TestValues.GENERAL_STRING);
@@ -36,17 +36,17 @@ public class TemplateConfigurationTests extends TestCase {
     /**
      * Tests the expected values of the RPC message.
      */
-    public void testRpcValues () {
-    	// Test Values
+    public void testRpcValues() {
+        // Test Values
         String testTemplate = msg.getTemplate();
         TemplateColorScheme testDayColorScheme = msg.getDayColorScheme();
         TemplateColorScheme testNightColorScheme = msg.getNightColorScheme();
-        
+
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, testTemplate);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_DAYCOLORSCHEME, testDayColorScheme);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_NIGHTCOLORSCHEME, testNightColorScheme);
-        
+
         // Invalid/Null Tests
         TemplateConfiguration msg = new TemplateConfiguration();
         assertNotNull(TestValues.NOT_NULL, msg);
@@ -56,10 +56,10 @@ public class TemplateConfigurationTests extends TestCase {
         assertNull(TestValues.NULL, msg.getNightColorScheme());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(TemplateConfiguration.KEY_TEMPLATE, TestValues.GENERAL_STRING);
             reference.put(TemplateConfiguration.KEY_DAY_COLOR_SCHEME, JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_DAYCOLORSCHEME.getStore()));
             reference.put(TemplateConfiguration.KEY_NIGHT_COLOR_SCHEME, JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_NIGHTCOLORSCHEME.getStore()));
@@ -68,7 +68,7 @@ public class TemplateConfigurationTests extends TestCase {
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
 
                 if (key.equals(TemplateConfiguration.KEY_DAY_COLOR_SCHEME)) {
@@ -87,8 +87,8 @@ public class TemplateConfigurationTests extends TestCase {
                     assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
                 }
             }
-        } catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

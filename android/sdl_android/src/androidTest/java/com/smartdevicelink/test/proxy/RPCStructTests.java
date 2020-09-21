@@ -37,7 +37,7 @@ public class RPCStructTests extends TestCase {
         super.tearDown();
     }
 
-    public void testGeneralGettersAndSetters(){
+    public void testGeneralGettersAndSetters() {
         String testKey = TestValues.GENERAL_STRING;
         Integer testInt = TestValues.GENERAL_INT;
 
@@ -48,7 +48,7 @@ public class RPCStructTests extends TestCase {
         assertNull(testStruct.getValue(testKey));
     }
 
-    public void testCommonObjectGetters(){
+    public void testCommonObjectGetters() {
         String stringKey = "String";
         String testString = TestValues.GENERAL_STRING;
         testStruct.setValue(stringKey, testString);
@@ -88,7 +88,7 @@ public class RPCStructTests extends TestCase {
         assertNull(testStruct.getLong(longKey));
     }
 
-    public void testGetObject(){
+    public void testGetObject() {
         String keyIsEmpty = "EMPTY";
         assertNull(testStruct.getObject(Integer.class, keyIsEmpty));
 
@@ -117,13 +117,13 @@ public class RPCStructTests extends TestCase {
         assertEquals(TestValues.MATCH, testImageFields, testStruct.getObject(ImageField.class, keyImageFields));
 
         List<Hashtable<String, Object>> testListImageFields = new ArrayList<>();
-        for(ImageField imgField : testImageFields){
+        for (ImageField imgField : testImageFields) {
             testListImageFields.add(imgField.getStore());
         }
         testStruct.setValue(keyImageFields, testListImageFields);
         List<ImageField> underTest = (List<ImageField>) testStruct.getObject(ImageField.class, keyImageFields);
         int index = 0;
-        for(ImageField imgField : testImageFields){
+        for (ImageField imgField : testImageFields) {
             assertTrue(Validator.validateImageFields(imgField, underTest.get(index++)));
         }
 
@@ -133,7 +133,7 @@ public class RPCStructTests extends TestCase {
         assertEquals(TestValues.MATCH, testMediaClockFormats, testStruct.getObject(MediaClockFormat.class, keyMediaClockFormats));
 
         List<String> testListMediaClockFormats = new ArrayList<>();
-        for(MediaClockFormat mcFormat : testMediaClockFormats){
+        for (MediaClockFormat mcFormat : testMediaClockFormats) {
             testListMediaClockFormats.add(mcFormat.toString());
         }
         testStruct.setValue(keyMediaClockFormats, testListMediaClockFormats);
@@ -142,7 +142,7 @@ public class RPCStructTests extends TestCase {
         assertNull(testStruct.getObject(Image.class, keyAirbag)); // Test incorrect class
     }
 
-    public void testGetObjectExceptions(){
+    public void testGetObjectExceptions() {
         String invalidKey = "invalid";
         testStruct.setValue(invalidKey, new Hashtable<>());
         assertNull(testStruct.getObject(Integer.class, invalidKey));
@@ -157,7 +157,7 @@ public class RPCStructTests extends TestCase {
     }
 
     public void testGetFloat() {
-        Hashtable <String, Object> map = new Hashtable<>();
+        Hashtable<String, Object> map = new Hashtable<>();
         String key = "test";
         Double value = 42.00;
         map.put(key, value);
@@ -171,7 +171,7 @@ public class RPCStructTests extends TestCase {
     }
 
     public void testGetDouble() {
-        Hashtable <String, Object> map = new Hashtable<>();
+        Hashtable<String, Object> map = new Hashtable<>();
         String key = "test";
         Integer value = 42;
         map.put(key, value);

@@ -17,62 +17,62 @@ import java.util.Iterator;
  */
 public class EqualizerSettingsTests extends TestCase {
 
-	private EqualizerSettings msg;
+    private EqualizerSettings msg;
 
-	@Override
-	public void setUp() {
-		msg = new EqualizerSettings();
+    @Override
+    public void setUp() {
+        msg = new EqualizerSettings();
 
-		msg.setChannelId(TestValues.GENERAL_INT);
-		msg.setChannelName(TestValues.GENERAL_STRING);
-		msg.setChannelSetting(TestValues.GENERAL_INT);
-	}
+        msg.setChannelId(TestValues.GENERAL_INT);
+        msg.setChannelName(TestValues.GENERAL_STRING);
+        msg.setChannelSetting(TestValues.GENERAL_INT);
+    }
 
-	/**
-	 * Tests the expected values of the RPC message.
-	 */
-	public void testRpcValues() {
-		// Test Values
+    /**
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
 
-		int channelId = msg.getChannelId();
-		String channelName = msg.getChannelName();
-		int channelSetting = msg.getChannelSetting();
+        int channelId = msg.getChannelId();
+        String channelName = msg.getChannelName();
+        int channelSetting = msg.getChannelSetting();
 
-		// Valid Tests
-		assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, channelId);
-		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, channelName);
-		assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, channelSetting);
+        // Valid Tests
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, channelId);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, channelName);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, channelSetting);
 
-		// Invalid/Null Tests
-		EqualizerSettings msg = new EqualizerSettings();
-		assertNotNull(TestValues.NOT_NULL, msg);
+        // Invalid/Null Tests
+        EqualizerSettings msg = new EqualizerSettings();
+        assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(TestValues.NULL, msg.getChannelId());
-		assertNull(TestValues.NULL, msg.getChannelName());
-		assertNull(TestValues.NULL, msg.getChannelSetting());
-	}
+        assertNull(TestValues.NULL, msg.getChannelId());
+        assertNull(TestValues.NULL, msg.getChannelName());
+        assertNull(TestValues.NULL, msg.getChannelSetting());
+    }
 
-	public void testJson() {
-		JSONObject reference = new JSONObject();
+    public void testJson() {
+        JSONObject reference = new JSONObject();
 
-		try {
+        try {
 
-			reference.put(EqualizerSettings.KEY_CHANNEL_ID, TestValues.GENERAL_INT);
-			reference.put(EqualizerSettings.KEY_CHANNEL_NAME, TestValues.GENERAL_STRING);
-			reference.put(EqualizerSettings.KEY_CHANNEL_SETTING, TestValues.GENERAL_INT);
+            reference.put(EqualizerSettings.KEY_CHANNEL_ID, TestValues.GENERAL_INT);
+            reference.put(EqualizerSettings.KEY_CHANNEL_NAME, TestValues.GENERAL_STRING);
+            reference.put(EqualizerSettings.KEY_CHANNEL_SETTING, TestValues.GENERAL_INT);
 
-			JSONObject underTest = msg.serializeJSON();
-			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
+            JSONObject underTest = msg.serializeJSON();
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
-			Iterator<?> iterator = reference.keys();
-			while (iterator.hasNext()) {
-				String key = (String) iterator.next();
+            Iterator<?> iterator = reference.keys();
+            while (iterator.hasNext()) {
+                String key = (String) iterator.next();
 
-				assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 
-			}
-		} catch (JSONException e) {
-			fail(TestValues.JSON_FAIL);
-		}
-	}
+            }
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
+        }
+    }
 }

@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -37,19 +37,20 @@ import com.smartdevicelink.transport.enums.TransportType;
  * Defines base abstract class for transport configurations.
  */
 public abstract class BaseTransportConfig {
-	protected int iHeartBeatTimeout = Integer.MAX_VALUE;
-	/**
-	 * Gets transport type for this transport configuration.
-	 * 
-	 * @return One of {@link TransportType} enumeration values that represents type of this transport configuration.
-	 */
-	public abstract TransportType getTransportType();
-	
-	public int getHeartBeatTimeout() {
-		return iHeartBeatTimeout;
-	}		
-	
-	public void setHeartBeatTimeout(int iTimeout) {
-		iHeartBeatTimeout = iTimeout;
-	}	
+    protected int iHeartBeatTimeout = Integer.MAX_VALUE;
+
+    /**
+     * Gets transport type for this transport configuration.
+     *
+     * @return One of {@link TransportType} enumeration values that represents type of this transport configuration.
+     */
+    public abstract TransportType getTransportType();
+
+    public int getHeartBeatTimeout() {
+        return iHeartBeatTimeout;
+    }
+
+    public void setHeartBeatTimeout(int iTimeout) {
+        iHeartBeatTimeout = iTimeout;
+    }
 }

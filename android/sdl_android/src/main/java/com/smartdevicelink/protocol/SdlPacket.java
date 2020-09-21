@@ -11,21 +11,21 @@ import com.smartdevicelink.util.DebugTool;
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public class SdlPacket extends BaseSdlPacket implements Parcelable {
     private static final String TAG = "SdlPacket";
-    private static final int EXTRA_PARCEL_DATA_LENGTH 			= 24;
+    private static final int EXTRA_PARCEL_DATA_LENGTH = 24;
 
     public SdlPacket(int version, boolean encryption, int frameType,
-                         int serviceType, int frameInfo, int sessionId,
-                         int dataSize, int messageId, byte[] payload) {
+                     int serviceType, int frameInfo, int sessionId,
+                     int dataSize, int messageId, byte[] payload) {
         super(version, encryption, frameType, serviceType, frameInfo, sessionId, dataSize, messageId, payload);
     }
 
     public SdlPacket(int version, boolean encryption, int frameType,
-                         int serviceType, int frameInfo, int sessionId,
-                         int dataSize, int messageId, byte[] payload, int offset, int bytesToWrite) {
+                     int serviceType, int frameInfo, int sessionId,
+                     int dataSize, int messageId, byte[] payload, int offset, int bytesToWrite) {
         super(version, encryption, frameType, serviceType, frameInfo, sessionId, dataSize, messageId, payload, offset, bytesToWrite);
     }
 
-    protected  SdlPacket() {
+    protected SdlPacket() {
         super();
     }
 
@@ -38,7 +38,6 @@ public class SdlPacket extends BaseSdlPacket implements Parcelable {
      *****************************************************************************************************************************************************/
 
 
-
     //I think this is FIFO...right?
     public SdlPacket(Parcel p) {
         this.version = p.readInt();
@@ -49,14 +48,14 @@ public class SdlPacket extends BaseSdlPacket implements Parcelable {
         this.sessionId = p.readInt();
         this.dataSize = p.readInt();
         this.messageId = p.readInt();
-        if(p.readInt() == 1){ //We should have a payload attached
+        if (p.readInt() == 1) { //We should have a payload attached
             payload = new byte[dataSize];
             p.readByteArray(payload);
         }
 
         this.priorityCoefficient = p.readInt();
 
-        if(p.dataAvail() > EXTRA_PARCEL_DATA_LENGTH) {	//See note on constant for why not 0
+        if (p.dataAvail() > EXTRA_PARCEL_DATA_LENGTH) {    //See note on constant for why not 0
             try {
                 messagingVersion = p.readInt();
                 if (messagingVersion >= 2) {
@@ -64,7 +63,7 @@ public class SdlPacket extends BaseSdlPacket implements Parcelable {
                         this.transportRecord = p.readParcelable(TransportRecord.class.getClassLoader());
                     }
                 }
-            }catch (RuntimeException e){
+            } catch (RuntimeException e) {
                 DebugTool.logError(TAG, "Error creating packet from parcel", e);
             }
         }
@@ -80,26 +79,26 @@ public class SdlPacket extends BaseSdlPacket implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
 
         dest.writeInt(version);
-        dest.writeInt(encryption? 1 : 0);
+        dest.writeInt(encryption ? 1 : 0);
         dest.writeInt(frameType);
         dest.writeInt(serviceType);
         dest.writeInt(frameInfo);
         dest.writeInt(sessionId);
         dest.writeInt(dataSize);
         dest.writeInt(messageId);
-        dest.writeInt(payload!=null? 1 : 0);
-        if(payload!=null){
+        dest.writeInt(payload != null ? 1 : 0);
+        if (payload != null) {
             dest.writeByteArray(payload);
         }
         dest.writeInt(priorityCoefficient);
 
         ///Additions after initial creation
-        if(messagingVersion > 1){
+        if (messagingVersion > 1) {
             dest.writeInt(messagingVersion);
 
-            dest.writeInt(transportRecord!=null? 1 : 0);
-            if(transportRecord != null){
-                dest.writeParcelable(transportRecord,0);
+            dest.writeInt(transportRecord != null ? 1 : 0);
+            if (transportRecord != null) {
+                dest.writeParcelable(transportRecord, 0);
             }
         }
 

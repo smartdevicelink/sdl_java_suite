@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -54,9 +54,9 @@ import java.util.List;
  * 			<td>HMILevel</td>
  * 			<td>A set of all HMI levels that are permitted for this given RPC.
  * 					<ul>
- *					<li>Min: 0</li>
- *					<li>Max: 100</li>
- *					</ul>
+ * 					<li>Min: 0</li>
+ * 					<li>Max: 100</li>
+ * 					</ul>
  * 			</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
@@ -65,70 +65,81 @@ import java.util.List;
  * 			<td>HMILevel</td>
  * 			<td>A set of all HMI levels that are prohibited for this given RPC.
  * 					<ul>
- *					<li>Min: 0</li>
- *					<li>Max: 100</li>
- *					</ul>
+ * 					<li>Min: 0</li>
+ * 					<li>Max: 100</li>
+ * 					</ul>
  * 			</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  *  </table>
+ *
  * @since SmartDeviceLink 2.0
  */
 public class HMIPermissions extends RPCStruct {
-	public static final String KEY_ALLOWED = "allowed";
-	public static final String KEY_USER_DISALLOWED = "userDisallowed";
-	/**
-	 * Constructs a newly allocated HMIPermissions object
-	 */
-    public HMIPermissions() { }
-    
+    public static final String KEY_ALLOWED = "allowed";
+    public static final String KEY_USER_DISALLOWED = "userDisallowed";
+
+    /**
+     * Constructs a newly allocated HMIPermissions object
+     */
+    public HMIPermissions() {
+    }
+
     /**
      * Constructs a newly allocated HMIPermissions object indicated by the Hashtable parameter
+     *
      * @param hash The Hashtable to use
      */
     public HMIPermissions(Hashtable<String, Object> hash) {
         super(hash);
     }
+
     /**
      * Constructs a newly allocated HMIPermissions object
-     * @param allowed HMI level that is permitted for this given RPC
-     * @param userDisallowed  HMI level that is prohibited for this given RPC
+     *
+     * @param allowed        HMI level that is permitted for this given RPC
+     * @param userDisallowed HMI level that is prohibited for this given RPC
      */
     public HMIPermissions(@NonNull List<HMILevel> allowed, @NonNull List<HMILevel> userDisallowed) {
         this();
         setAllowed(allowed);
         setUserDisallowed(userDisallowed);
     }
+
     /**
      * get a set of all HMI levels that are permitted for this given RPC.
-     * @return   a set of all HMI levels that are permitted for this given RPC
+     *
+     * @return a set of all HMI levels that are permitted for this given RPC
      */
     @SuppressWarnings("unchecked")
     public List<HMILevel> getAllowed() {
-		return (List<HMILevel>) getObject(HMILevel.class, KEY_ALLOWED);
+        return (List<HMILevel>) getObject(HMILevel.class, KEY_ALLOWED);
     }
-    
+
     /**
      * set  HMI level that is permitted for this given RPC.
+     *
      * @param allowed HMI level that is permitted for this given RPC
      */
     public HMIPermissions setAllowed(@NonNull List<HMILevel> allowed) {
         setValue(KEY_ALLOWED, allowed);
         return this;
     }
-    
+
     /**
      * get a set of all HMI levels that are prohibited for this given RPC
+     *
      * @return a set of all HMI levels that are prohibited for this given RPC
      */
     @SuppressWarnings("unchecked")
     public List<HMILevel> getUserDisallowed() {
-		return (List<HMILevel>) getObject(HMILevel.class, KEY_USER_DISALLOWED);
+        return (List<HMILevel>) getObject(HMILevel.class, KEY_USER_DISALLOWED);
     }
-    
+
     /**
      * set a set of all HMI levels that are prohibited for this given RPC
-     * @param userDisallowed  HMI level that is prohibited for this given RPC
+     *
+     * @param userDisallowed HMI level that is prohibited for this given RPC
      */
     public HMIPermissions setUserDisallowed(@NonNull List<HMILevel> userDisallowed) {
         setValue(KEY_USER_DISALLOWED, userDisallowed);

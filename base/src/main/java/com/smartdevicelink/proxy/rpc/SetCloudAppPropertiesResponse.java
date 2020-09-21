@@ -41,7 +41,7 @@ import java.util.Hashtable;
 
 public class SetCloudAppPropertiesResponse extends RPCResponse {
 
-    public SetCloudAppPropertiesResponse(){
+    public SetCloudAppPropertiesResponse() {
         super(FunctionID.SET_CLOUD_APP_PROPERTIES.toString());
     }
 
@@ -51,7 +51,8 @@ public class SetCloudAppPropertiesResponse extends RPCResponse {
 
     /**
      * Constructs a new SetCloudAppPropertiesResponse object
-     * @param success whether the request is successfully processed
+     *
+     * @param success    whether the request is successfully processed
      * @param resultCode whether the request is successfully processed
      */
     public SetCloudAppPropertiesResponse(@NonNull Boolean success, @NonNull Result resultCode) {

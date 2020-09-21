@@ -42,45 +42,47 @@ import java.util.Hashtable;
 
 public class ShowAppMenu extends RPCRequest {
 
-	public static final String KEY_MENU_ID = "menuID";
+    public static final String KEY_MENU_ID = "menuID";
 
-	/**
-	 * Constructs a new ShowAppMenu object
-	 */
-	public ShowAppMenu() {
-		super(FunctionID.SHOW_APP_MENU.toString());
-	}
+    /**
+     * Constructs a new ShowAppMenu object
+     */
+    public ShowAppMenu() {
+        super(FunctionID.SHOW_APP_MENU.toString());
+    }
 
-	/**
-	 * Constructs a new ShowAppMenu object indicated by the Hashtable parameter
-	 *
-	 * @param hash The Hashtable to use
-	 */
-	public ShowAppMenu(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+    /**
+     * Constructs a new ShowAppMenu object indicated by the Hashtable parameter
+     *
+     * @param hash The Hashtable to use
+     */
+    public ShowAppMenu(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
-	// SETTERS AND GETTERS
+    // SETTERS AND GETTERS
 
-	/**
-	 * If omitted the HMI opens the apps menu.
-	 * If set to a sub-menu ID the HMI opens the corresponding sub-menu
-	 * previously added using `AddSubMenu`.
-	 * @param menuID - The SubMenu ID to open
-	 */
-	public ShowAppMenu setMenuID( Integer menuID) {
+    /**
+     * If omitted the HMI opens the apps menu.
+     * If set to a sub-menu ID the HMI opens the corresponding sub-menu
+     * previously added using `AddSubMenu`.
+     *
+     * @param menuID - The SubMenu ID to open
+     */
+    public ShowAppMenu setMenuID(Integer menuID) {
         setParameters(KEY_MENU_ID, menuID);
         return this;
     }
 
-	/**
-	 * If omitted the HMI opens the apps menu.
-	 * If set to a sub-menu ID the HMI opens the corresponding sub-menu
-	 * previously added using `AddSubMenu`.
-	 * @return - MenuID int
-	 */
-	public Integer getMenuID(){
-		return getInteger(KEY_MENU_ID);
-	}
+    /**
+     * If omitted the HMI opens the apps menu.
+     * If set to a sub-menu ID the HMI opens the corresponding sub-menu
+     * previously added using `AddSubMenu`.
+     *
+     * @return - MenuID int
+     */
+    public Integer getMenuID() {
+        return getInteger(KEY_MENU_ID);
+    }
 
 }
