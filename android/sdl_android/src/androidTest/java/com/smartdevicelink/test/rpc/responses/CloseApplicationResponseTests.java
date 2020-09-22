@@ -60,22 +60,22 @@ import static junit.framework.TestCase.assertNotNull;
 public class CloseApplicationResponseTests extends BaseRpcTests {
 
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         return new CloseApplicationResponse();
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_RESPONSE;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.CLOSE_APPLICATION.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         return new JSONObject();
     }
 
@@ -83,7 +83,7 @@ public class CloseApplicationResponseTests extends BaseRpcTests {
      * Tests the expected values of the RPC message.
      */
     @Test
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Invalid/Null Tests
         CloseApplicationResponse msg = new CloseApplicationResponse();
         assertNotNull(TestValues.NOT_NULL, msg);
@@ -94,7 +94,7 @@ public class CloseApplicationResponseTests extends BaseRpcTests {
      * Tests a valid JSON construction of this RPC message.
      */
     @Test
-    public void testJsonConstructor () {
+    public void testJsonConstructor() {
         JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getContext(), getCommandType(), getMessageType());
         assertNotNull(TestValues.NOT_NULL, commandJson);
 

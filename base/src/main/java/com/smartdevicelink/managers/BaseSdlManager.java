@@ -245,8 +245,8 @@ abstract class BaseSdlManager {
         }
     }
 
-    void checkSdlManagerState(){
-        if (getState() != BaseSubManager.READY && getState() != BaseSubManager.LIMITED){
+    void checkSdlManagerState() {
+        if (getState() != BaseSubManager.READY && getState() != BaseSubManager.LIMITED) {
             DebugTool.logError(TAG, "SdlManager is not ready for use, be sure to initialize with start() method, implement callback, and use SubManagers in the SdlManager's callback");
         }
     }

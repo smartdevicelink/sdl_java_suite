@@ -59,7 +59,7 @@ import java.lang.ref.WeakReference;
 public class UsbTransferProvider {
     private static final String TAG = "UsbTransferProvider";
 
-    private Context context ;
+    private Context context;
     private boolean isBound = false;
     private ComponentName routerService;
     private int flags = 0;
@@ -71,7 +71,7 @@ public class UsbTransferProvider {
     ParcelFileDescriptor usbPfd;
     Bundle usbInfoBundle;
 
-    private final ServiceConnection routerConnection= new ServiceConnection() {
+    private final ServiceConnection routerConnection = new ServiceConnection() {
 
         public void onServiceConnected(ComponentName className, IBinder service) {
             DebugTool.logInfo(TAG, "Bound to service " + className.toString());
@@ -84,7 +84,7 @@ public class UsbTransferProvider {
             msg.arg1 = flags;
             msg.replyTo = clientMessenger;
             msg.obj = usbPfd;
-            if(usbInfoBundle != null){
+            if (usbInfoBundle != null) {
                 msg.setData(usbInfoBundle);
             }
             try {
@@ -101,12 +101,12 @@ public class UsbTransferProvider {
         }
     };
 
-    public UsbTransferProvider(Context context, ComponentName service, UsbAccessory usbAccessory, UsbTransferCallback callback){
-        if(context == null || service == null || usbAccessory == null){
-            throw new IllegalStateException("Supplied params are not correct. Context == null? "+ (context==null) + " ComponentName == null? " + (service == null) + " Usb Accessory == null? " + usbAccessory);
+    public UsbTransferProvider(Context context, ComponentName service, UsbAccessory usbAccessory, UsbTransferCallback callback) {
+        if (context == null || service == null || usbAccessory == null) {
+            throw new IllegalStateException("Supplied params are not correct. Context == null? " + (context == null) + " ComponentName == null? " + (service == null) + " Usb Accessory == null? " + usbAccessory);
         }
         usbPfd = getFileDescriptor(usbAccessory, context);
-        if(usbPfd != null && usbPfd.getFileDescriptor() != null && usbPfd.getFileDescriptor().valid()){
+        if (usbPfd != null && usbPfd.getFileDescriptor() != null && usbPfd.getFileDescriptor().valid()) {
             this.context = context;
             this.routerService = service;
             this.callback = callback;
@@ -120,10 +120,10 @@ public class UsbTransferProvider {
             usbInfoBundle.putString(MultiplexUsbTransport.SERIAL, usbAccessory.getSerial());
             usbInfoBundle.putString(MultiplexUsbTransport.DESCRIPTION, usbAccessory.getDescription());
             checkIsConnected();
-        }else{
+        } else {
             DebugTool.logError(TAG, "Unable to open accessory");
             clientMessenger = null;
-            if(callback != null){
+            if (callback != null) {
                 callback.onUsbTransferUpdate(false);
             }
         }
@@ -142,67 +142,67 @@ public class UsbTransferProvider {
             } catch (Exception e) {
             }
         }
-        return  null;
+        return null;
     }
 
-    public void setFlags(int flags){
+    public void setFlags(int flags) {
         this.flags = flags;
     }
 
-    public void checkIsConnected(){
-        if(!AndroidTools.isServiceExported(context,routerService) || !bindToService()){
+    public void checkIsConnected() {
+        if (!AndroidTools.isServiceExported(context, routerService) || !bindToService()) {
             //We are unable to bind to service
             DebugTool.logError(TAG, "Unable to bind to service");
             unBindFromService();
         }
     }
 
-    public void cancel(){
-        if(isBound){
+    public void cancel() {
+        if (isBound) {
             unBindFromService();
         }
     }
 
-    private boolean bindToService(){
-        if(isBound){
+    private boolean bindToService() {
+        if (isBound) {
             return true;
         }
-        if(clientMessenger == null){
+        if (clientMessenger == null) {
             return false;
         }
         Intent bindingIntent = new Intent();
         bindingIntent.setClassName(this.routerService.getPackageName(), this.routerService.getClassName());//This sets an explicit intent
         //Quickly make sure it's just up and running
         context.startService(bindingIntent);
-        bindingIntent.setAction( TransportConstants.BIND_REQUEST_TYPE_USB_PROVIDER);
+        bindingIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_USB_PROVIDER);
         return context.bindService(bindingIntent, routerConnection, Context.BIND_AUTO_CREATE);
     }
 
-    private void unBindFromService(){
-        try{
-            if(context!=null && routerConnection!=null){
+    private void unBindFromService() {
+        try {
+            if (context != null && routerConnection != null) {
                 context.unbindService(routerConnection);
-            }else{
+            } else {
                 DebugTool.logWarning(TAG, "Unable to unbind from router service, context was null");
             }
 
-        }catch(IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             //This is ok
         }
     }
 
-    private void finish(){
-       try {
+    private void finish() {
+        try {
             usbPfd.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
         usbPfd = null;
         unBindFromService();
-        routerServiceMessenger =null;
+        routerServiceMessenger = null;
         context = null;
         System.gc();
-        if(callback != null){
+        if (callback != null) {
             callback.onUsbTransferUpdate(true);
         }
     }
@@ -210,14 +210,14 @@ public class UsbTransferProvider {
     static class ClientHandler extends Handler {
         final WeakReference<UsbTransferProvider> provider;
 
-        public ClientHandler(UsbTransferProvider provider){
+        public ClientHandler(UsbTransferProvider provider) {
             super(Looper.getMainLooper());
             this.provider = new WeakReference<>(provider);
         }
 
         @Override
         public void handleMessage(Message msg) {
-            if(provider.get()==null){
+            if (provider.get() == null) {
                 return;
             }
             switch (msg.what) {
@@ -231,7 +231,7 @@ public class UsbTransferProvider {
         }
     }
 
-    public interface UsbTransferCallback{
+    public interface UsbTransferCallback {
         void onUsbTransferUpdate(boolean success);
     }
 

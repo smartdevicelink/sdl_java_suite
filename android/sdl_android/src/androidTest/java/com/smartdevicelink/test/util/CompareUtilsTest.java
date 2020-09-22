@@ -15,7 +15,7 @@ import static junit.framework.TestCase.assertTrue;
 public class CompareUtilsTest {
 
     @Test
-    public void testAreStringsEqual(){
+    public void testAreStringsEqual() {
 
         assertTrue(CompareUtils.areStringsEqual(TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, true, true));
         assertTrue(CompareUtils.areStringsEqual(TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, false, true));

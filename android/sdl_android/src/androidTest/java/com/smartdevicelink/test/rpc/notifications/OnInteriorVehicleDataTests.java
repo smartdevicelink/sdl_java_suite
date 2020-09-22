@@ -19,13 +19,13 @@ import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.fail;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.OnInteriorVehicleData}
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.proxy.rpc.OnInteriorVehicleData}
  */
-public class OnInteriorVehicleDataTests extends BaseRpcTests{
+public class OnInteriorVehicleDataTests extends BaseRpcTests {
 
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         OnInteriorVehicleData msg = new OnInteriorVehicleData();
         msg.setModuleData(TestValues.GENERAL_MODULEDATA);
 
@@ -33,35 +33,35 @@ public class OnInteriorVehicleDataTests extends BaseRpcTests{
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_NOTIFICATION;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.ON_INTERIOR_VEHICLE_DATA.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
+        try {
             result.put(OnInteriorVehicleData.KEY_MODULE_DATA, JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_MODULEDATA.getStore()));
-        }catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
 
         return result;
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
+     * Tests the expected values of the RPC message.
+     */
     @Test
-    public void testRpcValues () { 
-    	// Test Values
-        ModuleData moduleData = ( (OnInteriorVehicleData) msg ).getModuleData();
+    public void testRpcValues() {
+        // Test Values
+        ModuleData moduleData = ((OnInteriorVehicleData) msg).getModuleData();
 
         // Valid Tests
         assertTrue(TestValues.TRUE, Validator.validateModuleData(TestValues.GENERAL_MODULEDATA, moduleData));

@@ -26,7 +26,7 @@ public class StabilityControlsStatusTests extends TestCase {
     /**
      * Tests the expected values of the RPC message.
      */
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Test Values
         VehicleDataStatus esc = msg.getEscSystem();
         VehicleDataStatus sTrailer = msg.getTrailerSwayControl();

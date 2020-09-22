@@ -12,15 +12,15 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.DeviceInfo}
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.proxy.rpc.DeviceInfo}
  */
-public class DeviceInfoTests extends TestCase{
+public class DeviceInfoTests extends TestCase {
 
-    private DeviceInfo          msg;
+    private DeviceInfo msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new DeviceInfo();
 
         msg.setCarrier(TestValues.GENERAL_STRING);
@@ -32,17 +32,17 @@ public class DeviceInfoTests extends TestCase{
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
-    	// Test Values
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
         String carrier = msg.getCarrier();
         String hardware = msg.getHardware();
         String firmwareRev = msg.getFirmwareRev();
         String os = msg.getOs();
         String osVer = msg.getOsVersion();
         int maxNum = msg.getMaxNumberRFCOMMPorts();
-        
+
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, maxNum);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, osVer);
@@ -50,7 +50,7 @@ public class DeviceInfoTests extends TestCase{
         assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, firmwareRev);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, hardware);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, carrier);
-        
+
         // Invalid/Null Tests
         DeviceInfo msg = new DeviceInfo();
         assertNotNull(TestValues.NOT_NULL, msg);
@@ -63,10 +63,10 @@ public class DeviceInfoTests extends TestCase{
         assertNull(TestValues.NULL, msg.getMaxNumberRFCOMMPorts());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(DeviceInfo.KEY_CARRIER, TestValues.GENERAL_STRING);
             reference.put(DeviceInfo.KEY_HARDWARE, TestValues.GENERAL_STRING);
             reference.put(DeviceInfo.KEY_FIRMWARE_REV, TestValues.GENERAL_STRING);
@@ -78,12 +78,12 @@ public class DeviceInfoTests extends TestCase{
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
                 assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
-        } catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

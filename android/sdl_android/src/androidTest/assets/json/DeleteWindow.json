@@ -1,13 +1,13 @@
 {
-  "request":{
-    "name":"DeleteWindow",
-    "correlationID":109,
-    "parameters":{
-    	"windowID":765
-	}
+  "request": {
+    "name": "DeleteWindow",
+    "correlationID": 109,
+    "parameters": {
+      "windowID": 765
+    }
   },
-  "response":{
-    "name":"DeleteWindowResponse",
-    "correlationID":110
+  "response": {
+    "name": "DeleteWindowResponse",
+    "correlationID": 110
   }
 }

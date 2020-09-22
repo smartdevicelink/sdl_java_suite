@@ -23,83 +23,83 @@ import static junit.framework.TestCase.fail;
 
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.SliderResponse}
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.proxy.rpc.SliderResponse}
  */
 public class SliderResponseTest extends BaseRpcTests {
-	
-	@Override
-	protected RPCMessage createMessage() {
-		SliderResponse msg = new SliderResponse();
 
-		msg.setSliderPosition(TestValues.GENERAL_INT);
+    @Override
+    protected RPCMessage createMessage() {
+        SliderResponse msg = new SliderResponse();
 
-		return msg;
-	}
+        msg.setSliderPosition(TestValues.GENERAL_INT);
 
-	@Override
-	protected String getMessageType() {
-		return RPCMessage.KEY_RESPONSE;
-	}
+        return msg;
+    }
 
-	@Override
-	protected String getCommandType() {
-		return FunctionID.SLIDER.toString();
-	}
+    @Override
+    protected String getMessageType() {
+        return RPCMessage.KEY_RESPONSE;
+    }
 
-	@Override
-	protected JSONObject getExpectedParameters(int sdlVersion) {
-		JSONObject result = new JSONObject();
+    @Override
+    protected String getCommandType() {
+        return FunctionID.SLIDER.toString();
+    }
 
-		try {
-			result.put(SliderResponse.KEY_SLIDER_POSITION, TestValues.GENERAL_INT);
-			
-		} catch (JSONException e) {
-			fail(TestValues.JSON_FAIL);
-		}
+    @Override
+    protected JSONObject getExpectedParameters(int sdlVersion) {
+        JSONObject result = new JSONObject();
 
-		return result;
-	}
+        try {
+            result.put(SliderResponse.KEY_SLIDER_POSITION, TestValues.GENERAL_INT);
 
-	@Test
-	public void testPosition() {
-		Integer copy = ( (SliderResponse) msg ).getSliderPosition();
-		assertEquals(TestValues.MATCH, (Integer) TestValues.GENERAL_INT, copy);
-	}
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
+        }
 
-	@Test
-	public void testNull() {
-		SliderResponse msg = new SliderResponse();
-		assertNotNull(TestValues.NOT_NULL, msg);
+        return result;
+    }
 
-		testNullBase(msg);
+    @Test
+    public void testPosition() {
+        Integer copy = ((SliderResponse) msg).getSliderPosition();
+        assertEquals(TestValues.MATCH, (Integer) TestValues.GENERAL_INT, copy);
+    }
 
-		assertNull(TestValues.NULL, msg.getSliderPosition());
-	}
+    @Test
+    public void testNull() {
+        SliderResponse msg = new SliderResponse();
+        assertNotNull(TestValues.NOT_NULL, msg);
+
+        testNullBase(msg);
+
+        assertNull(TestValues.NULL, msg.getSliderPosition());
+    }
 
     /**
      * Tests a valid JSON construction of this RPC message.
      */
     @Test
-    public void testJsonConstructor () {
-    	JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getContext(), getCommandType(), getMessageType());
-    	assertNotNull(TestValues.NOT_NULL, commandJson);
-    	
-		try {
-			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
-			SliderResponse cmd = new SliderResponse(hash);
-			
-			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(TestValues.NOT_NULL, body);
-			
-			// Test everything in the json body.
-			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+    public void testJsonConstructor() {
+        JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getContext(), getCommandType(), getMessageType());
+        assertNotNull(TestValues.NOT_NULL, commandJson);
 
-			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, SliderResponse.KEY_SLIDER_POSITION), cmd.getSliderPosition());
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}    	
+        try {
+            Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
+            SliderResponse cmd = new SliderResponse(hash);
+
+            JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
+            assertNotNull(TestValues.NOT_NULL, body);
+
+            // Test everything in the json body.
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+
+            JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, SliderResponse.KEY_SLIDER_POSITION), cmd.getSliderPosition());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

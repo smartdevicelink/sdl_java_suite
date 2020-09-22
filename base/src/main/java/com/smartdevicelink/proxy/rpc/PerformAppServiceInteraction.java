@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -40,97 +40,105 @@ import java.util.Hashtable;
 
 public class PerformAppServiceInteraction extends RPCRequest {
 
-	public static final String KEY_SERVICE_URI = "serviceUri";
-	public static final String KEY_SERVICE_ID = "serviceID";
-	public static final String KEY_ORIGIN_APP = "originApp";
-	public static final String KEY_REQUEST_SERVICE_ACTIVE = "requestServiceActive";
+    public static final String KEY_SERVICE_URI = "serviceUri";
+    public static final String KEY_SERVICE_ID = "serviceID";
+    public static final String KEY_ORIGIN_APP = "originApp";
+    public static final String KEY_REQUEST_SERVICE_ACTIVE = "requestServiceActive";
 
-	// Constructors
+    // Constructors
 
-	public PerformAppServiceInteraction() {
-		super(FunctionID.PERFORM_APP_SERVICES_INTERACTION.toString());
-	}
+    public PerformAppServiceInteraction() {
+        super(FunctionID.PERFORM_APP_SERVICES_INTERACTION.toString());
+    }
 
-	public PerformAppServiceInteraction(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+    public PerformAppServiceInteraction(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
-	public PerformAppServiceInteraction(@NonNull String serviceUri, @NonNull String appServiceId, @NonNull String originApp) {
-		this();
-		setServiceUri(serviceUri);
-		setServiceID(appServiceId);
-		setOriginApp(originApp);
-	}
+    public PerformAppServiceInteraction(@NonNull String serviceUri, @NonNull String appServiceId, @NonNull String originApp) {
+        this();
+        setServiceUri(serviceUri);
+        setServiceID(appServiceId);
+        setOriginApp(originApp);
+    }
 
-	/**
-	 * Fully qualified URI based on a predetermined scheme provided by the app service. SDL makes no guarantee that this
-	 * URI is correct.
-	 * @param serviceUri -
-	 */
-	public PerformAppServiceInteraction setServiceUri(@NonNull String serviceUri) {
+    /**
+     * Fully qualified URI based on a predetermined scheme provided by the app service. SDL makes no guarantee that this
+     * URI is correct.
+     *
+     * @param serviceUri -
+     */
+    public PerformAppServiceInteraction setServiceUri(@NonNull String serviceUri) {
         setParameters(KEY_SERVICE_URI, serviceUri);
         return this;
     }
 
-	/**
-	 * Fully qualified URI based on a predetermined scheme provided by the app service. SDL makes no guarantee that this
-	 * URI is correct.
-	 * @return serviceUri
-	 */
-	public String getServiceUri(){
-		return getString(KEY_SERVICE_URI);
-	}
+    /**
+     * Fully qualified URI based on a predetermined scheme provided by the app service. SDL makes no guarantee that this
+     * URI is correct.
+     *
+     * @return serviceUri
+     */
+    public String getServiceUri() {
+        return getString(KEY_SERVICE_URI);
+    }
 
-	/**
-	 * The service ID that the app consumer wishes to send this URI.
-	 * @param appServiceId -
-	 */
-	public PerformAppServiceInteraction setServiceID(@NonNull String appServiceId) {
+    /**
+     * The service ID that the app consumer wishes to send this URI.
+     *
+     * @param appServiceId -
+     */
+    public PerformAppServiceInteraction setServiceID(@NonNull String appServiceId) {
         setParameters(KEY_SERVICE_ID, appServiceId);
         return this;
     }
 
-	/**
-	 * The service ID that the app consumer wishes to send this URI.
-	 * @return appServiceId
-	 */
-	public String getServiceID(){
-		return getString(KEY_SERVICE_ID);
-	}
+    /**
+     * The service ID that the app consumer wishes to send this URI.
+     *
+     * @return appServiceId
+     */
+    public String getServiceID() {
+        return getString(KEY_SERVICE_ID);
+    }
 
-	/**
-	 * This string is the appID of the app requesting the app service provider take the specific action.
-	 * @param originApp -
-	 */
-	public PerformAppServiceInteraction setOriginApp(@NonNull String originApp) {
+    /**
+     * This string is the appID of the app requesting the app service provider take the specific action.
+     *
+     * @param originApp -
+     */
+    public PerformAppServiceInteraction setOriginApp(@NonNull String originApp) {
         setParameters(KEY_ORIGIN_APP, originApp);
         return this;
     }
 
-	/**
-	 * This string is the appID of the app requesting the app service provider take the specific action.
-	 * @return originApp
-	 */
-	public String getOriginApp(){
-		return getString(KEY_ORIGIN_APP);
-	}
+    /**
+     * This string is the appID of the app requesting the app service provider take the specific action.
+     *
+     * @return originApp
+     */
+    public String getOriginApp() {
+        return getString(KEY_ORIGIN_APP);
+    }
 
-	/**
-	 * This flag signals the requesting consumer would like this service to become the active primary
-	 * service of the destination's type.
-	 * @param requestServiceActive -
-	 */
-	public PerformAppServiceInteraction setRequestServiceActive( Boolean requestServiceActive) {
+    /**
+     * This flag signals the requesting consumer would like this service to become the active primary
+     * service of the destination's type.
+     *
+     * @param requestServiceActive -
+     */
+    public PerformAppServiceInteraction setRequestServiceActive(Boolean requestServiceActive) {
         setParameters(KEY_REQUEST_SERVICE_ACTIVE, requestServiceActive);
         return this;
     }
 
-	/**
-	 * This string is the appID of the app requesting the app service provider take the specific action.
-	 * @return requestServiceActive
-	 */
-	public Boolean getRequestServiceActive(){
-		return getBoolean(KEY_REQUEST_SERVICE_ACTIVE);
-	}
+    /**
+     * This string is the appID of the app requesting the app service provider take the specific action.
+     *
+     * @return requestServiceActive
+     */
+    public Boolean getRequestServiceActive() {
+        return getBoolean(KEY_REQUEST_SERVICE_ACTIVE);
+    }
 
 }

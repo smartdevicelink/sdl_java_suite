@@ -25,7 +25,7 @@ import static junit.framework.TestCase.fail;
 public class GetSystemCapabilityTests extends BaseRpcTests {
 
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         GetSystemCapability msg = new GetSystemCapability();
 
         msg.setSystemCapabilityType(TestValues.GENERAL_SYSTEMCAPABILITYTYPE);
@@ -35,23 +35,23 @@ public class GetSystemCapabilityTests extends BaseRpcTests {
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_REQUEST;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.GET_SYSTEM_CAPABILITY.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
+        try {
             result.put(GetSystemCapability.KEY_SYSTEM_CAPABILITY_TYPE, TestValues.GENERAL_SYSTEMCAPABILITYTYPE);
             result.put(GetSystemCapability.KEY_SUBSCRIBE, TestValues.GENERAL_BOOLEAN);
-        }catch(JSONException e){
+        } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
 
@@ -62,10 +62,10 @@ public class GetSystemCapabilityTests extends BaseRpcTests {
      * Tests the expected values of the RPC message.
      */
     @Test
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Test Values
-        SystemCapabilityType testType = ( (GetSystemCapability) msg ).getSystemCapabilityType();
-        boolean testSubscribe = ( (GetSystemCapability) msg ).getSubscribe();
+        SystemCapabilityType testType = ((GetSystemCapability) msg).getSystemCapabilityType();
+        boolean testSubscribe = ((GetSystemCapability) msg).getSubscribe();
 
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_SYSTEMCAPABILITYTYPE, testType);
@@ -84,7 +84,7 @@ public class GetSystemCapabilityTests extends BaseRpcTests {
      * Tests a valid JSON construction of this RPC message.
      */
     @Test
-    public void testJsonConstructor () {
+    public void testJsonConstructor() {
         JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
         assertNotNull(TestValues.NOT_NULL, commandJson);
 
@@ -103,7 +103,7 @@ public class GetSystemCapabilityTests extends BaseRpcTests {
 
             assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(parameters, GetSystemCapability.KEY_SYSTEM_CAPABILITY_TYPE).toString(), cmd.getSystemCapabilityType().toString());
             assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(parameters, GetSystemCapability.KEY_SUBSCRIBE), cmd.getSubscribe());
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
     }

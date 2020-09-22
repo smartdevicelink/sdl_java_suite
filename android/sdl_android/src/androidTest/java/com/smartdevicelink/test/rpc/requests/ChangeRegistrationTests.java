@@ -23,13 +23,13 @@ import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.fail;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.ChangeRegistration}
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.proxy.rpc.ChangeRegistration}
  */
-public class ChangeRegistrationTests extends BaseRpcTests{
-    
+public class ChangeRegistrationTests extends BaseRpcTests {
+
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         ChangeRegistration msg = new ChangeRegistration();
 
         msg.setLanguage(TestValues.GENERAL_LANGUAGE);
@@ -39,43 +39,43 @@ public class ChangeRegistrationTests extends BaseRpcTests{
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_REQUEST;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.CHANGE_REGISTRATION.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
+        try {
             result.put(ChangeRegistration.KEY_LANGUAGE, TestValues.GENERAL_LANGUAGE);
             result.put(ChangeRegistration.KEY_HMI_DISPLAY_LANGUAGE, TestValues.GENERAL_LANGUAGE);
-        }catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
 
         return result;
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
+     * Tests the expected values of the RPC message.
+     */
     @Test
-    public void testRpcValues () { 
-    	// Test Values
-        Language testLanguage    = ( (ChangeRegistration) msg ).getLanguage();
-        Language testHmiLanguage = ( (ChangeRegistration) msg ).getHmiDisplayLanguage();
-        
+    public void testRpcValues() {
+        // Test Values
+        Language testLanguage = ((ChangeRegistration) msg).getLanguage();
+        Language testHmiLanguage = ((ChangeRegistration) msg).getHmiDisplayLanguage();
+
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_LANGUAGE, testLanguage);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_LANGUAGE, testHmiLanguage);
-   
-    	// Invalid/Null Tests
+
+        // Invalid/Null Tests
         ChangeRegistration msg = new ChangeRegistration();
         assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
@@ -83,31 +83,31 @@ public class ChangeRegistrationTests extends BaseRpcTests{
         assertNull(TestValues.NULL, msg.getLanguage());
         assertNull(TestValues.NULL, msg.getHmiDisplayLanguage());
     }
-    
+
     /**
      * Tests a valid JSON construction of this RPC message.
      */
     @Test
-    public void testJsonConstructor () {
-    	JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
-    	assertNotNull(TestValues.NOT_NULL, commandJson);
-    	
-		try {
-			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
-			ChangeRegistration cmd = new ChangeRegistration(hash);
-			
-			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(TestValues.NOT_NULL, body);
-			
-			// Test everything in the json body.
-			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+    public void testJsonConstructor() {
+        JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
+        assertNotNull(TestValues.NOT_NULL, commandJson);
 
-			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, ChangeRegistration.KEY_LANGUAGE), cmd.getLanguage().toString());
-			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, ChangeRegistration.KEY_HMI_DISPLAY_LANGUAGE), cmd.getHmiDisplayLanguage().toString());
-		} catch (JSONException e) {
-			fail(TestValues.JSON_FAIL);
-		}    	
+        try {
+            Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
+            ChangeRegistration cmd = new ChangeRegistration(hash);
+
+            JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
+            assertNotNull(TestValues.NOT_NULL, body);
+
+            // Test everything in the json body.
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+
+            JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, ChangeRegistration.KEY_LANGUAGE), cmd.getLanguage().toString());
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, ChangeRegistration.KEY_HMI_DISPLAY_LANGUAGE), cmd.getHmiDisplayLanguage().toString());
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
+        }
     }
 }

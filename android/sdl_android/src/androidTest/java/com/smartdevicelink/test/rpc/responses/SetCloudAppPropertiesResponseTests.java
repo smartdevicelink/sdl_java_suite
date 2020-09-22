@@ -13,22 +13,22 @@ import static junit.framework.TestCase.assertNotNull;
 
 public class SetCloudAppPropertiesResponseTests extends BaseRpcTests {
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         return new SetCloudAppPropertiesResponse();
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_RESPONSE;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.SET_CLOUD_APP_PROPERTIES.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         return new JSONObject();
     }
 
@@ -36,7 +36,7 @@ public class SetCloudAppPropertiesResponseTests extends BaseRpcTests {
      * Tests the expected values of the RPC message.
      */
     @Test
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Invalid/Null Tests
         SetCloudAppPropertiesResponse msg = new SetCloudAppPropertiesResponse();
         assertNotNull(TestValues.NOT_NULL, msg);

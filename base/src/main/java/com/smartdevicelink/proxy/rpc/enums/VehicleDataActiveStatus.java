@@ -45,6 +45,7 @@ public enum VehicleDataActiveStatus {
 
     /**
      * Convert String to VehicleDataActiveStatus
+     *
      * @param value String
      * @return VehicleDataActiveStatus
      */

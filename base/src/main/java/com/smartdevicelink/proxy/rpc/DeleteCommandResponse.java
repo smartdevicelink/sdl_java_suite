@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -41,23 +41,26 @@ import java.util.Hashtable;
 
 /**
  * Delete Command Response is sent, when DeleteCommand has been called.
- * 
+ *
  * @since SmartDeviceLink 1.0
  */
 public class DeleteCommandResponse extends RPCResponse {
-	/** Constructs a new DeleteCommandResponse object
-	 * 
-	 */
+    /**
+     * Constructs a new DeleteCommandResponse object
+     */
 
     public DeleteCommandResponse() {
         super(FunctionID.DELETE_COMMAND.toString());
     }
+
     public DeleteCommandResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
+
     /**
      * Constructs a new DeleteCommandResponse object
-     * @param success whether the request is successfully processed
+     *
+     * @param success    whether the request is successfully processed
      * @param resultCode whether the request is successfully processed
      */
     public DeleteCommandResponse(@NonNull Boolean success, @NonNull Result resultCode) {

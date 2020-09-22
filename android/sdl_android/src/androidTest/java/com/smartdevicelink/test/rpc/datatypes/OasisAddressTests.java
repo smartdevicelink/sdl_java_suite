@@ -18,14 +18,14 @@ public class OasisAddressTests extends TestCase {
     private OasisAddress msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = TestValues.GENERAL_OASISADDRESS;
     }
 
     /**
      * Tests the expected values of the RPC message.
      */
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Test Values
         String f1 = msg.getAdministrativeArea();
         String f2 = msg.getSubAdministrativeArea();
@@ -64,10 +64,10 @@ public class OasisAddressTests extends TestCase {
         assertNull(msg.getSubThoroughfare());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(OasisAddress.KEY_ADMINISTRATIVE_AREA, TestValues.GENERAL_STRING);
             reference.put(OasisAddress.KEY_SUB_ADMINISTRATIVE_AREA, TestValues.GENERAL_STRING);
             reference.put(OasisAddress.KEY_COUNTRY_CODE, TestValues.GENERAL_STRING);
@@ -88,7 +88,7 @@ public class OasisAddressTests extends TestCase {
                         underTest.get(key));
             }
 
-        } catch(JSONException e){
+        } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
     }

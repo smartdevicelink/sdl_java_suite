@@ -92,7 +92,7 @@ public class WindowCapabilityTests extends TestCase {
             assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING_LIST.get(i), templatesAvailable.get(i));
         }
 
-        for(int i = 0; i < TestValues.GENERAL_MENU_LAYOUT_LIST.size(); i++){
+        for (int i = 0; i < TestValues.GENERAL_MENU_LAYOUT_LIST.size(); i++) {
             assertEquals(TestValues.MATCH, TestValues.GENERAL_MENU_LAYOUT_LIST.get(i), menuLayouts.get(i));
         }
 
@@ -210,8 +210,8 @@ public class WindowCapabilityTests extends TestCase {
                     assertEquals(TestValues.MATCH, referenceArray.length(), underTestArray.length());
 
                     for (int i = 0; i < referenceArray.length(); i++) {
-                        imageFieldNameListReference.add( (ImageFieldName) referenceArray.get(i));
-                        imageFieldNameListTest.add( (ImageFieldName) underTestArray.get(i));
+                        imageFieldNameListReference.add((ImageFieldName) referenceArray.get(i));
+                        imageFieldNameListTest.add((ImageFieldName) underTestArray.get(i));
                     }
                     assertTrue(TestValues.TRUE, imageFieldNameListReference.containsAll(imageFieldNameListTest) && imageFieldNameListTest.containsAll(imageFieldNameListReference));
                 } else {

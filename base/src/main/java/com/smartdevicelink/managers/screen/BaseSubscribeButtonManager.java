@@ -116,7 +116,7 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
      * Send the UnsubscribeButton RPC
      *
      * @param buttonName - ButtonName - name of button
-     * @param listener - OnButtonListener - listener to get notified
+     * @param listener   - OnButtonListener - listener to get notified
      */
     private void unsubscribeButtonRequest(final ButtonName buttonName, final OnButtonListener listener) {
         UnsubscribeButton unsubscribeButtonRequest = new UnsubscribeButton(buttonName);

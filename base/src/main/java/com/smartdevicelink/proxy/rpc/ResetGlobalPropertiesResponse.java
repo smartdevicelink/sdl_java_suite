@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -41,37 +41,37 @@ import java.util.Hashtable;
 
 /**
  * Reset Global Properties Response is sent, when ResetGlobalProperties has been called
- * 
+ *
  * @since SmartDeviceLink 1.0
  */
 public class ResetGlobalPropertiesResponse extends RPCResponse {
 
-	/**
-	 * Constructs a new ResetGlobalPropertiesResponse object
-	 */
+    /**
+     * Constructs a new ResetGlobalPropertiesResponse object
+     */
     public ResetGlobalPropertiesResponse() {
         super(FunctionID.RESET_GLOBAL_PROPERTIES.toString());
     }
 
-	/**
-	 * Constructs a new ResetGlobalPropertiesResponse object indicated by the Hashtable
-	 * parameter
-	 * 
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
+    /**
+     * Constructs a new ResetGlobalPropertiesResponse object indicated by the Hashtable
+     * parameter
+     *
+     * @param hash The Hashtable to use
+     */
     public ResetGlobalPropertiesResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
-	/**
-	 * Constructs a new ResetGlobalPropertiesResponse object
-	 * @param success whether the request is successfully processed
-	 * @param resultCode whether the request is successfully processed
-	 */
-	public ResetGlobalPropertiesResponse(@NonNull Boolean success, @NonNull Result resultCode) {
-		this();
-		setSuccess(success);
-		setResultCode(resultCode);
-	}
+
+    /**
+     * Constructs a new ResetGlobalPropertiesResponse object
+     *
+     * @param success    whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     */
+    public ResetGlobalPropertiesResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
+    }
 }

@@ -34,18 +34,18 @@ package com.smartdevicelink.managers.lifecycle;
 
 import androidx.annotation.NonNull;
 
-import com.smartdevicelink.session.SdlSession;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.ServiceEncryptionListener;
 import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.util.DebugTool;
 
 import java.util.HashSet;
@@ -100,7 +100,7 @@ abstract class BaseEncryptionLifecycleManager {
         securedServiceListener = new ISdlServiceListener() {
             @Override
             public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
-                if(SessionType.RPC.equals(type)){
+                if (SessionType.RPC.equals(type)) {
                     rpcSecuredServiceStarted = isEncrypted;
                 }
                 if (serviceEncryptionListener != null) {
@@ -160,7 +160,7 @@ abstract class BaseEncryptionLifecycleManager {
      * Checks the current state and make the call back to initiate secured service flow
      */
     private void checkStatusAndInitSecuredService() {
-        if ((currentHMILevel != null && currentHMILevel != HMILevel.HMI_NONE) && getRequiresEncryption() && !isEncryptionReady() ) {
+        if ((currentHMILevel != null && currentHMILevel != HMILevel.HMI_NONE) && getRequiresEncryption() && !isEncryptionReady()) {
             internalInterface.startRPCEncryption();
         }
     }

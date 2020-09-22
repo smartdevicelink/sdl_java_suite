@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -32,7 +32,7 @@
 package com.smartdevicelink.proxy.rpc.enums;
 
 public enum SdlDisconnectedReason {
-	USER_EXIT,
+    USER_EXIT,
     IGNITION_OFF,
     BLUETOOTH_OFF,
     USB_DISCONNECTED,
@@ -43,7 +43,7 @@ public enum SdlDisconnectedReason {
     MASTER_RESET,
     FACTORY_DEFAULTS,
     TRANSPORT_ERROR,
-	RESOURCE_CONSTRAINT,
+    RESOURCE_CONSTRAINT,
     APPLICATION_REQUESTED_DISCONNECT,
     DEFAULT,
     TRANSPORT_DISCONNECT,
@@ -58,65 +58,65 @@ public enum SdlDisconnectedReason {
      */
     LEGACY_BLUETOOTH_MODE_ENABLED,
     RPC_SESSION_ENDED,
-	PRIMARY_TRANSPORT_CYCLE_REQUEST,
-	MINIMUM_PROTOCOL_VERSION_HIGHER_THAN_SUPPORTED,
-	MINIMUM_RPC_VERSION_HIGHER_THAN_SUPPORTED,
+    PRIMARY_TRANSPORT_CYCLE_REQUEST,
+    MINIMUM_PROTOCOL_VERSION_HIGHER_THAN_SUPPORTED,
+    MINIMUM_RPC_VERSION_HIGHER_THAN_SUPPORTED,
     ;
 
-	
-	public static SdlDisconnectedReason valueForString(String value) {
-        try{
+
+    public static SdlDisconnectedReason valueForString(String value) {
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }
-	
-	public static SdlDisconnectedReason convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason reason) {
-	    if(reason == null){
-	        return null;
-	    }
-		
-		SdlDisconnectedReason returnReason = SdlDisconnectedReason.DEFAULT;
-		
-		switch(reason) {
-			case USER_EXIT:
-				returnReason = SdlDisconnectedReason.USER_EXIT;
-				break;
-			case IGNITION_OFF:
-				returnReason = SdlDisconnectedReason.IGNITION_OFF;
-				break;
-			case BLUETOOTH_OFF:
-				returnReason = SdlDisconnectedReason.BLUETOOTH_OFF;
-				break;
-			case USB_DISCONNECTED:
-				returnReason = SdlDisconnectedReason.USB_DISCONNECTED;
-				break;
-			case REQUEST_WHILE_IN_NONE_HMI_LEVEL:
-				returnReason = SdlDisconnectedReason.REQUEST_WHILE_IN_NONE_HMI_LEVEL;
-				break;
-			case TOO_MANY_REQUESTS:
-				returnReason = SdlDisconnectedReason.TOO_MANY_REQUESTS;
-				break;
-			case DRIVER_DISTRACTION_VIOLATION:
-				returnReason = SdlDisconnectedReason.DRIVER_DISTRACTION_VIOLATION;
-				break;
-			case LANGUAGE_CHANGE:
-				returnReason = SdlDisconnectedReason.LANGUAGE_CHANGE;
-				break;
-			case MASTER_RESET:
-				returnReason = SdlDisconnectedReason.MASTER_RESET;
-				break;
-			case FACTORY_DEFAULTS:
-				returnReason = SdlDisconnectedReason.FACTORY_DEFAULTS;
-				break;
-			case RESOURCE_CONSTRAINT:
-				returnReason = SdlDisconnectedReason.RESOURCE_CONSTRAINT;
-				break;
+
+    public static SdlDisconnectedReason convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason reason) {
+        if (reason == null) {
+            return null;
+        }
+
+        SdlDisconnectedReason returnReason = SdlDisconnectedReason.DEFAULT;
+
+        switch (reason) {
+            case USER_EXIT:
+                returnReason = SdlDisconnectedReason.USER_EXIT;
+                break;
+            case IGNITION_OFF:
+                returnReason = SdlDisconnectedReason.IGNITION_OFF;
+                break;
+            case BLUETOOTH_OFF:
+                returnReason = SdlDisconnectedReason.BLUETOOTH_OFF;
+                break;
+            case USB_DISCONNECTED:
+                returnReason = SdlDisconnectedReason.USB_DISCONNECTED;
+                break;
+            case REQUEST_WHILE_IN_NONE_HMI_LEVEL:
+                returnReason = SdlDisconnectedReason.REQUEST_WHILE_IN_NONE_HMI_LEVEL;
+                break;
+            case TOO_MANY_REQUESTS:
+                returnReason = SdlDisconnectedReason.TOO_MANY_REQUESTS;
+                break;
+            case DRIVER_DISTRACTION_VIOLATION:
+                returnReason = SdlDisconnectedReason.DRIVER_DISTRACTION_VIOLATION;
+                break;
+            case LANGUAGE_CHANGE:
+                returnReason = SdlDisconnectedReason.LANGUAGE_CHANGE;
+                break;
+            case MASTER_RESET:
+                returnReason = SdlDisconnectedReason.MASTER_RESET;
+                break;
+            case FACTORY_DEFAULTS:
+                returnReason = SdlDisconnectedReason.FACTORY_DEFAULTS;
+                break;
+            case RESOURCE_CONSTRAINT:
+                returnReason = SdlDisconnectedReason.RESOURCE_CONSTRAINT;
+                break;
             default:
                 break;
-		}
-		
-		return returnReason;
-	}
+        }
+
+        return returnReason;
+    }
 }

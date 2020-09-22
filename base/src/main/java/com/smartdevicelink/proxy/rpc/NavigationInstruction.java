@@ -42,167 +42,176 @@ import java.util.Hashtable;
 
 public class NavigationInstruction extends RPCStruct {
 
-	public static final String KEY_LOCATION_DETAILS = "locationDetails";
-	public static final String KEY_ACTION = "action";
-	public static final String KEY_ETA = "eta";
-	public static final String KEY_BEARING = "bearing";
-	public static final String KEY_JUNCTION_TYPE = "junctionType";
-	public static final String KEY_DRIVING_SIDE = "drivingSide";
-	public static final String KEY_DETAILS = "details";
-	public static final String KEY_IMAGE = "image";
+    public static final String KEY_LOCATION_DETAILS = "locationDetails";
+    public static final String KEY_ACTION = "action";
+    public static final String KEY_ETA = "eta";
+    public static final String KEY_BEARING = "bearing";
+    public static final String KEY_JUNCTION_TYPE = "junctionType";
+    public static final String KEY_DRIVING_SIDE = "drivingSide";
+    public static final String KEY_DETAILS = "details";
+    public static final String KEY_IMAGE = "image";
 
-	// Constructors
+    // Constructors
 
-	public NavigationInstruction() { }
+    public NavigationInstruction() {
+    }
 
-	public NavigationInstruction(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+    public NavigationInstruction(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
-	public NavigationInstruction(@NonNull LocationDetails locationDetails, @NonNull NavigationAction action){
-		this();
-		setLocationDetails(locationDetails);
-		setAction(action);
-	}
+    public NavigationInstruction(@NonNull LocationDetails locationDetails, @NonNull NavigationAction action) {
+        this();
+        setLocationDetails(locationDetails);
+        setAction(action);
+    }
 
-	// Setters and Getters
+    // Setters and Getters
 
-	/**
-	 * @param locationDetails -
-	 */
-	public NavigationInstruction setLocationDetails(@NonNull LocationDetails locationDetails) {
+    /**
+     * @param locationDetails -
+     */
+    public NavigationInstruction setLocationDetails(@NonNull LocationDetails locationDetails) {
         setValue(KEY_LOCATION_DETAILS, locationDetails);
         return this;
     }
 
-	/**
-	 * @return locationDetails
-	 */
-	public LocationDetails getLocationDetails(){
-		return (LocationDetails) getObject(LocationDetails.class, KEY_LOCATION_DETAILS);
-	}
+    /**
+     * @return locationDetails
+     */
+    public LocationDetails getLocationDetails() {
+        return (LocationDetails) getObject(LocationDetails.class, KEY_LOCATION_DETAILS);
+    }
 
-	/**
-	 * @param action -
-	 */
-	public NavigationInstruction setAction(@NonNull NavigationAction action) {
+    /**
+     * @param action -
+     */
+    public NavigationInstruction setAction(@NonNull NavigationAction action) {
         setValue(KEY_ACTION, action);
         return this;
     }
 
-	/**
-	 * @return action
-	 */
-	public NavigationAction getAction(){
-		return (NavigationAction) getObject(NavigationAction.class, KEY_ACTION);
-	}
+    /**
+     * @return action
+     */
+    public NavigationAction getAction() {
+        return (NavigationAction) getObject(NavigationAction.class, KEY_ACTION);
+    }
 
-	/**
-	 * @param eta -
-	 */
-	public NavigationInstruction setEta( DateTime eta) {
+    /**
+     * @param eta -
+     */
+    public NavigationInstruction setEta(DateTime eta) {
         setValue(KEY_ETA, eta);
         return this;
     }
 
-	/**
-	 * @return eta
-	 */
-	public DateTime getEta(){
-		return (DateTime) getObject(DateTime.class, KEY_ETA);
-	}
+    /**
+     * @return eta
+     */
+    public DateTime getEta() {
+        return (DateTime) getObject(DateTime.class, KEY_ETA);
+    }
 
-	/**
-	 * The angle at which this instruction takes place. For example, 0 would mean straight, <=45
-	 * is bearing right, >= 135 is sharp right, between 45 and 135 is a regular right, and 180 is
-	 * a U-Turn, etc.
-	 * @param bearing - minValue="0" maxValue="359"
-	 */
-	public NavigationInstruction setBearing( Integer bearing) {
+    /**
+     * The angle at which this instruction takes place. For example, 0 would mean straight, <=45
+     * is bearing right, >= 135 is sharp right, between 45 and 135 is a regular right, and 180 is
+     * a U-Turn, etc.
+     *
+     * @param bearing - minValue="0" maxValue="359"
+     */
+    public NavigationInstruction setBearing(Integer bearing) {
         setValue(KEY_BEARING, bearing);
         return this;
     }
 
-	/**
-	 * The angle at which this instruction takes place. For example, 0 would mean straight, <=45
-	 * is bearing right, >= 135 is sharp right, between 45 and 135 is a regular right, and 180 is
-	 * a U-Turn, etc.
-	 * @return bearing - minValue="0" maxValue="359"
-	 */
-	public Integer getBearing(){
-		return getInteger(KEY_BEARING);
-	}
+    /**
+     * The angle at which this instruction takes place. For example, 0 would mean straight, <=45
+     * is bearing right, >= 135 is sharp right, between 45 and 135 is a regular right, and 180 is
+     * a U-Turn, etc.
+     *
+     * @return bearing - minValue="0" maxValue="359"
+     */
+    public Integer getBearing() {
+        return getInteger(KEY_BEARING);
+    }
 
-	/**
-	 * @param junctionType -
-	 */
-	public NavigationInstruction setJunctionType( NavigationJunction junctionType) {
+    /**
+     * @param junctionType -
+     */
+    public NavigationInstruction setJunctionType(NavigationJunction junctionType) {
         setValue(KEY_JUNCTION_TYPE, junctionType);
         return this;
     }
 
-	/**
-	 * @return junctionType
-	 */
-	public NavigationJunction getJunctionType(){
-		return (NavigationJunction) getObject(NavigationJunction.class, KEY_JUNCTION_TYPE);
-	}
+    /**
+     * @return junctionType
+     */
+    public NavigationJunction getJunctionType() {
+        return (NavigationJunction) getObject(NavigationJunction.class, KEY_JUNCTION_TYPE);
+    }
 
-	/**
-	 * Used to infer which side of the road this instruction takes place. For a U-Turn (action=TURN, bearing=180) this
-	 * will determine which direction the turn should take place.
-	 * @param drivingSide - Direction enum value that represents the driving side
-	 */
-	public NavigationInstruction setDrivingSide( Direction drivingSide) {
+    /**
+     * Used to infer which side of the road this instruction takes place. For a U-Turn (action=TURN, bearing=180) this
+     * will determine which direction the turn should take place.
+     *
+     * @param drivingSide - Direction enum value that represents the driving side
+     */
+    public NavigationInstruction setDrivingSide(Direction drivingSide) {
         setValue(KEY_DRIVING_SIDE, drivingSide);
         return this;
     }
 
-	/**
-	 * Used to infer which side of the road this instruction takes place. For a U-Turn (action=TURN, bearing=180) this
-	 * will determine which direction the turn should take place.
-	 * @return drivingSide
-	 */
-	public Direction getDrivingSide(){
-		return (Direction) getObject(Direction.class, KEY_DRIVING_SIDE);
-	}
+    /**
+     * Used to infer which side of the road this instruction takes place. For a U-Turn (action=TURN, bearing=180) this
+     * will determine which direction the turn should take place.
+     *
+     * @return drivingSide
+     */
+    public Direction getDrivingSide() {
+        return (Direction) getObject(Direction.class, KEY_DRIVING_SIDE);
+    }
 
-	/**
-	 * This is a string representation of this instruction, used to display instructions to the
-	 * users. This is not intended to be read aloud to the users, see the param prompt in
-	 * NavigationServiceData for that.
-	 * @param details -
-	 */
-	public NavigationInstruction setDetails( String details) {
+    /**
+     * This is a string representation of this instruction, used to display instructions to the
+     * users. This is not intended to be read aloud to the users, see the param prompt in
+     * NavigationServiceData for that.
+     *
+     * @param details -
+     */
+    public NavigationInstruction setDetails(String details) {
         setValue(KEY_DETAILS, details);
         return this;
     }
 
-	/**
-	 * This is a string representation of this instruction, used to display instructions to the
-	 * users. This is not intended to be read aloud to the users, see the param prompt in
-	 * NavigationServiceData for that.
-	 * @return details
-	 */
-	public String getDetails(){
-		return getString(KEY_DETAILS);
-	}
+    /**
+     * This is a string representation of this instruction, used to display instructions to the
+     * users. This is not intended to be read aloud to the users, see the param prompt in
+     * NavigationServiceData for that.
+     *
+     * @return details
+     */
+    public String getDetails() {
+        return getString(KEY_DETAILS);
+    }
 
-	/**
-	 * An image representation of this instruction.
-	 * @param image -
-	 */
-	public NavigationInstruction setImage( Image image) {
+    /**
+     * An image representation of this instruction.
+     *
+     * @param image -
+     */
+    public NavigationInstruction setImage(Image image) {
         setValue(KEY_IMAGE, image);
         return this;
     }
 
-	/**
-	 * An image representation of this instruction.
-	 * @return image
-	 */
-	public Image getImage(){
-		return (Image) getObject(Image.class, KEY_IMAGE);
-	}
+    /**
+     * An image representation of this instruction.
+     *
+     * @return image
+     */
+    public Image getImage() {
+        return (Image) getObject(Image.class, KEY_IMAGE);
+    }
 
 }

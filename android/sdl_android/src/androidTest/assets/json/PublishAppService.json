@@ -1,25 +1,29 @@
 {
-  "request":{
-    "name":"PublishAppService",
-    "correlationID":52,
-    "parameters":{
-      "appServiceManifest":{
-        "allowAppConsumers":true,
+  "request": {
+    "name": "PublishAppService",
+    "correlationID": 52,
+    "parameters": {
+      "appServiceManifest": {
+        "allowAppConsumers": true,
         "serviceIcon": "test",
-        "rpcSpecVersion":{
-          "majorVersion":5,
-          "minorVersion":1,
-          "patchVersion":0},
-        "serviceName":"Mobile_MEDIA",
-        "serviceType":"MEDIA",
-        "handledRPCs":[39,41]
+        "rpcSpecVersion": {
+          "majorVersion": 5,
+          "minorVersion": 1,
+          "patchVersion": 0
+        },
+        "serviceName": "Mobile_MEDIA",
+        "serviceType": "MEDIA",
+        "handledRPCs": [
+          39,
+          41
+        ]
       }
     }
   },
-  "response":{
-    "name":"PublishAppServiceResponse",
-    "correlationID":52,
-    "parameters":{
+  "response": {
+    "name": "PublishAppServiceResponse",
+    "correlationID": 52,
+    "parameters": {
       "appServiceRecord": {
         "serviceID": "test",
         "serviceManifest": {
@@ -32,10 +36,13 @@
           "serviceName": "Mobile_MEDIA",
           "serviceType": "MEDIA",
           "serviceIcon": "test",
-          "handledRPCs": [39,41]
+          "handledRPCs": [
+            39,
+            41
+          ]
         },
         "servicePublished": true,
-        "serviceActive":true
+        "serviceActive": true
       }
     }
   }

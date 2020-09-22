@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -42,8 +42,8 @@ import java.util.Hashtable;
  * <Strong>If using Widgets with Core > 6.0, use {@link Show} to change widget layouts</Strong> <br>
  * Used to set an alternate display layout. If not sent, default screen for
  * given platform will be shown
- * 
- * 
+ *
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -81,114 +81,114 @@ import java.util.Hashtable;
  * 		</tr>
  *
  *  </table>
- *<p><b>Response </b></p>
+ * <p><b>Response </b></p>
  *
- *<p><b> Non-default Result Codes: </b></p>
- *<p> SUCCESS </p>
- *<p> INVALID_DATA</p>
- *<p> OUT_OF_MEMORY</p>
- *<p>  TOO_MANY_PENDING_REQUESTS</p>
+ * <p><b> Non-default Result Codes: </b></p>
+ * <p> SUCCESS </p>
+ * <p> INVALID_DATA</p>
+ * <p> OUT_OF_MEMORY</p>
+ * <p>  TOO_MANY_PENDING_REQUESTS</p>
  * <p>  APPLICATION_NOT_REGISTERED</p>
  * <p>  GENERIC_ERROR</p>
  * <p>   REJECTED</p>
+ *
  * @since SmartDeviceLink 2.0
  */
 public class SetDisplayLayout extends RPCRequest {
-	public static final String KEY_DISPLAY_LAYOUT = "displayLayout";
-	public static final String KEY_DAY_COLOR_SCHEME = "dayColorScheme";
-	public static final String KEY_NIGHT_COLOR_SCHEME = "nightColorScheme";
-	/**
-	 * Constructs a new SetDisplayLayout object
-	 */
+    public static final String KEY_DISPLAY_LAYOUT = "displayLayout";
+    public static final String KEY_DAY_COLOR_SCHEME = "dayColorScheme";
+    public static final String KEY_NIGHT_COLOR_SCHEME = "nightColorScheme";
+
+    /**
+     * Constructs a new SetDisplayLayout object
+     */
     public SetDisplayLayout() {
         super(FunctionID.SET_DISPLAY_LAYOUT.toString());
     }
 
-	/**
-	 * Constructs a new SetDisplayLayout object indicated by the Hashtable
-	 * parameter
-	 * <p></p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
+    /**
+     * Constructs a new SetDisplayLayout object indicated by the Hashtable
+     * parameter
+     * <p></p>
+     *
+     * @param hash The Hashtable to use
+     */
     public SetDisplayLayout(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-	/**
-	 * Constructs a new SetDisplayLayout object
-	 * @param displayLayout
-	 *            a String value representing a display layout
-	 */
-	public SetDisplayLayout(@NonNull String displayLayout) {
-		this();
-		setDisplayLayout(displayLayout);
-	}
+    /**
+     * Constructs a new SetDisplayLayout object
+     *
+     * @param displayLayout a String value representing a display layout
+     */
+    public SetDisplayLayout(@NonNull String displayLayout) {
+        this();
+        setDisplayLayout(displayLayout);
+    }
 
-	/**
-	 * Sets a display layout. Predefined or dynamically created screen layout.
-	 * Currently only predefined screen layouts are defined. Predefined layouts
-	 * include: "ONSCREEN_PRESETS" Custom screen containing app-defined onscreen
-	 * presets. Currently defined for GEN2
-	 *
-	 * @param displayLayout
-	 *            a String value representing a display layout
-	 */
+    /**
+     * Sets a display layout. Predefined or dynamically created screen layout.
+     * Currently only predefined screen layouts are defined. Predefined layouts
+     * include: "ONSCREEN_PRESETS" Custom screen containing app-defined onscreen
+     * presets. Currently defined for GEN2
+     *
+     * @param displayLayout a String value representing a display layout
+     */
     public SetDisplayLayout setDisplayLayout(@NonNull String displayLayout) {
         setParameters(KEY_DISPLAY_LAYOUT, displayLayout);
         return this;
     }
 
-	/**
-	 * Gets a display layout.
-	 */
+    /**
+     * Gets a display layout.
+     */
     public String getDisplayLayout() {
-    	return getString(KEY_DISPLAY_LAYOUT);
+        return getString(KEY_DISPLAY_LAYOUT);
     }
 
-	/**
-	 * Gets the color scheme that is currently used for day
-	 *
-	 * @return TemplateColorScheme - a TemplateColorScheme object representing the colors that are used
-	 * for day color scheme
-	 * @since SmartDeviceLink 5.0
-	 */
-	public TemplateColorScheme getDayColorScheme(){
-		return (TemplateColorScheme) getObject(TemplateColorScheme.class, KEY_DAY_COLOR_SCHEME);
-	}
+    /**
+     * Gets the color scheme that is currently used for day
+     *
+     * @return TemplateColorScheme - a TemplateColorScheme object representing the colors that are used
+     * for day color scheme
+     * @since SmartDeviceLink 5.0
+     */
+    public TemplateColorScheme getDayColorScheme() {
+        return (TemplateColorScheme) getObject(TemplateColorScheme.class, KEY_DAY_COLOR_SCHEME);
+    }
 
-	/**
-	 * Sets the color scheme that is intended to be used for day
-	 *
-	 * @param templateColorScheme a TemplateColorScheme object representing the colors that will be
-	 * used for day color scheme
-	 * @since SmartDeviceLink 5.0
-	 */
-	public SetDisplayLayout setDayColorScheme( TemplateColorScheme templateColorScheme) {
+    /**
+     * Sets the color scheme that is intended to be used for day
+     *
+     * @param templateColorScheme a TemplateColorScheme object representing the colors that will be
+     *                            used for day color scheme
+     * @since SmartDeviceLink 5.0
+     */
+    public SetDisplayLayout setDayColorScheme(TemplateColorScheme templateColorScheme) {
         setParameters(KEY_DAY_COLOR_SCHEME, templateColorScheme);
         return this;
     }
 
-	/**
-	 * Gets the color scheme that is currently used for night
-	 *
-	 * @return TemplateColorScheme - a TemplateColorScheme object representing the colors that are used
-	 * for night color scheme
-	 * @since SmartDeviceLink 5.0
-	 */
-	public TemplateColorScheme getNightColorScheme(){
-		return (TemplateColorScheme) getObject(TemplateColorScheme.class, KEY_NIGHT_COLOR_SCHEME);
-	}
+    /**
+     * Gets the color scheme that is currently used for night
+     *
+     * @return TemplateColorScheme - a TemplateColorScheme object representing the colors that are used
+     * for night color scheme
+     * @since SmartDeviceLink 5.0
+     */
+    public TemplateColorScheme getNightColorScheme() {
+        return (TemplateColorScheme) getObject(TemplateColorScheme.class, KEY_NIGHT_COLOR_SCHEME);
+    }
 
-	/**
-	 * Sets the color scheme that is intended to be used for night
-	 *
-	 * @param templateColorScheme a TemplateColorScheme object representing the colors that will be
-	 * used for night color scheme
-	 * @since SmartDeviceLink 5.0
-	 */
-	public SetDisplayLayout setNightColorScheme( TemplateColorScheme templateColorScheme) {
+    /**
+     * Sets the color scheme that is intended to be used for night
+     *
+     * @param templateColorScheme a TemplateColorScheme object representing the colors that will be
+     *                            used for night color scheme
+     * @since SmartDeviceLink 5.0
+     */
+    public SetDisplayLayout setNightColorScheme(TemplateColorScheme templateColorScheme) {
         setParameters(KEY_NIGHT_COLOR_SCHEME, templateColorScheme);
         return this;
     }

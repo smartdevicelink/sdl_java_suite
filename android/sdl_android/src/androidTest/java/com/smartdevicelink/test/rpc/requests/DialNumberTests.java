@@ -30,7 +30,7 @@ public class DialNumberTests extends BaseRpcTests {
     private final String TEST_NUMBER = "5558675309";
 
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         DialNumber msg = new DialNumber();
 
         msg.setNumber(TEST_NUMBER);
@@ -39,22 +39,22 @@ public class DialNumberTests extends BaseRpcTests {
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_REQUEST;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.DIAL_NUMBER.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
+        try {
             result.put(DialNumber.KEY_NUMBER, TEST_NUMBER);
-        }catch(JSONException e){
+        } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
 
@@ -65,7 +65,7 @@ public class DialNumberTests extends BaseRpcTests {
      * Tests the expected values of the RPC message.
      */
     @Test
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Test Values
         String testNumber = ((DialNumber) msg).getNumber();
 
@@ -83,7 +83,7 @@ public class DialNumberTests extends BaseRpcTests {
      * Tests a valid JSON construction of this RPC message.
      */
     @Test
-    public void testJsonConstructor () {
+    public void testJsonConstructor() {
         JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
         assertNotNull(TestValues.NOT_NULL, commandJson);
 

@@ -23,59 +23,59 @@ import static junit.framework.TestCase.fail;
  */
 public class OnAppServiceDataTests extends BaseRpcTests {
 
-	@Override
-	protected RPCMessage createMessage(){
-		OnAppServiceData msg = new OnAppServiceData();
+    @Override
+    protected RPCMessage createMessage() {
+        OnAppServiceData msg = new OnAppServiceData();
 
-		msg.setServiceData(TestValues.GENERAL_APPSERVICEDATA);
+        msg.setServiceData(TestValues.GENERAL_APPSERVICEDATA);
 
-		return msg;
-	}
+        return msg;
+    }
 
-	@Override
-	protected String getMessageType(){
-		return RPCMessage.KEY_NOTIFICATION;
-	}
+    @Override
+    protected String getMessageType() {
+        return RPCMessage.KEY_NOTIFICATION;
+    }
 
-	@Override
-	protected String getCommandType(){
-		return FunctionID.ON_APP_SERVICE_DATA.toString();
-	}
+    @Override
+    protected String getCommandType() {
+        return FunctionID.ON_APP_SERVICE_DATA.toString();
+    }
 
-	@Override
-	protected JSONObject getExpectedParameters(int sdlVersion){
-		JSONObject result = new JSONObject();
+    @Override
+    protected JSONObject getExpectedParameters(int sdlVersion) {
+        JSONObject result = new JSONObject();
 
-		try{
-			result.put(OnAppServiceData.KEY_SERVICE_DATA, TestValues.GENERAL_APPSERVICEDATA.serializeJSON());
-		}catch(JSONException e){
-			fail(TestValues.JSON_FAIL);
-		}
+        try {
+            result.put(OnAppServiceData.KEY_SERVICE_DATA, TestValues.GENERAL_APPSERVICEDATA.serializeJSON());
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * Tests the expected values of the RPC message.
-	 */
-	@Test
-	public void testRpcValues () {
-		// Test Values
-		AppServiceData cmdId = ( (OnAppServiceData) msg ).getServiceData();
+    /**
+     * Tests the expected values of the RPC message.
+     */
+    @Test
+    public void testRpcValues() {
+        // Test Values
+        AppServiceData cmdId = ((OnAppServiceData) msg).getServiceData();
 
-		// Valid Tests
-		assertEquals(TestValues.MATCH, TestValues.GENERAL_APPSERVICEDATA, cmdId);
+        // Valid Tests
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_APPSERVICEDATA, cmdId);
 
-		// Invalid/Null Tests
-		OnAppServiceData msg = new OnAppServiceData();
-		assertNotNull(TestValues.NOT_NULL, msg);
-		testNullBase(msg);
+        // Invalid/Null Tests
+        OnAppServiceData msg = new OnAppServiceData();
+        assertNotNull(TestValues.NOT_NULL, msg);
+        testNullBase(msg);
 
-		assertNull(TestValues.NULL, msg.getServiceData());
+        assertNull(TestValues.NULL, msg.getServiceData());
 
-		// test constructor with param
-		msg = new OnAppServiceData(TestValues.GENERAL_APPSERVICEDATA);
-		AppServiceData serviceData = msg.getServiceData();
-		assertEquals(serviceData, TestValues.GENERAL_APPSERVICEDATA);
-	}
+        // test constructor with param
+        msg = new OnAppServiceData(TestValues.GENERAL_APPSERVICEDATA);
+        AppServiceData serviceData = msg.getServiceData();
+        assertEquals(serviceData, TestValues.GENERAL_APPSERVICEDATA);
+    }
 }

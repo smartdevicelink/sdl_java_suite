@@ -123,10 +123,10 @@ public class OnUpdateSubMenu extends RPCNotification {
      * Sets the updateSubCells.
      *
      * @param updateSubCells If not set, assume false. If true, the app should send AddCommands with parentIDs matching
-     * the menuID. These AddCommands will then be attached to the submenu and displayed if the
-     * submenu is selected.
+     *                       the menuID. These AddCommands will then be attached to the submenu and displayed if the
+     *                       submenu is selected.
      */
-    public OnUpdateSubMenu setUpdateSubCells( Boolean updateSubCells) {
+    public OnUpdateSubMenu setUpdateSubCells(Boolean updateSubCells) {
         setParameters(KEY_UPDATE_SUB_CELLS, updateSubCells);
         return this;
     }

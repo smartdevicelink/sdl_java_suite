@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -85,12 +85,15 @@ public class GenericResponse extends RPCResponse {
     public GenericResponse() {
         super(FunctionID.GENERIC_RESPONSE.toString());
     }
+
     public GenericResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
+
     /**
      * Constructs a new GenericResponse object
-     * @param success whether the request is successfully processed
+     *
+     * @param success    whether the request is successfully processed
      * @param resultCode whether the request is successfully processed
      */
     public GenericResponse(@NonNull Boolean success, @NonNull Result resultCode) {

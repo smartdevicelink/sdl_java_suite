@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -42,12 +42,12 @@ import java.util.Hashtable;
 /**
  * Deletes a subscription to button notifications for the specified button. For
  * more information about button subscriptions, see {@linkplain SubscribeButton}
- * 
+ *
  * <p>Application can unsubscribe from a button that is currently being pressed
  * (i.e. has not yet been released), but app will not get button event</p>
- * 
+ *
  * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
- * 
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -67,7 +67,7 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  *  </table>
- *  
+ *
  * <p> <b>Response</b></p>
  * <p><b>Non-default Result Codes:</b></p>
  *  <p>SUCCESS</p>
@@ -75,55 +75,59 @@ import java.util.Hashtable;
  *  <p>OUT_OF_MEMORY</p>
  *  <p>TOO_MANY_PENDING_REQUESTS</p>
  *  <p>APPLICATION_NOT_REGISTERED</p>
- *  <p>GENERIC_ERROR </p> 
+ *  <p>GENERIC_ERROR </p>
  *  <p>UNSUPPORTED_RESOURCE</p>
  *  <p>IGNORED</p>
  *  <p>REJECTED</p>
- * @since SmartDeviceLink 1.0
+ *
  * @see SubscribeButton
+ * @since SmartDeviceLink 1.0
  */
 public class UnsubscribeButton extends RPCRequest {
-	public static final String KEY_BUTTON_NAME = "buttonName";
+    public static final String KEY_BUTTON_NAME = "buttonName";
 
-	/**
-	 * Constructs a new UnsubscribeButton object
-	 */    
-	public UnsubscribeButton() {
+    /**
+     * Constructs a new UnsubscribeButton object
+     */
+    public UnsubscribeButton() {
         super(FunctionID.UNSUBSCRIBE_BUTTON.toString());
     }
-	/**
-	 * Constructs a new UnsubscribeButton object indicated by the Hashtable
-	 * parameter
-	 * <p></p>
-	 * 
-	 * @param hash The Hashtable to use
-	 */
+
+    /**
+     * Constructs a new UnsubscribeButton object indicated by the Hashtable
+     * parameter
+     * <p></p>
+     *
+     * @param hash The Hashtable to use
+     */
     public UnsubscribeButton(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-	/**
-	 * Constructs a new UnsubscribeButton object
-	 * @param buttonName Name of the button to unsubscribe.
-	 */
-	public UnsubscribeButton(@NonNull ButtonName buttonName){
-		this();
-		setButtonName(buttonName);
-	}
-
-	/**
-	 * Gets a name of the button to unsubscribe from
-	 * 
-	 * @return ButtonName -an Enumeration value, see <i> {@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonName}</i>
-	 */
-    public ButtonName getButtonName() {
-		return (ButtonName) getObject(ButtonName.class, KEY_BUTTON_NAME);
+    /**
+     * Constructs a new UnsubscribeButton object
+     *
+     * @param buttonName Name of the button to unsubscribe.
+     */
+    public UnsubscribeButton(@NonNull ButtonName buttonName) {
+        this();
+        setButtonName(buttonName);
     }
-	/**
-	 * Sets the name of the button to unsubscribe from
-	 *
-	 * @param buttonName an enum value, see <i> {@linkplain ButtonName}</i>
-	 */
+
+    /**
+     * Gets a name of the button to unsubscribe from
+     *
+     * @return ButtonName -an Enumeration value, see <i> {@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonName}</i>
+     */
+    public ButtonName getButtonName() {
+        return (ButtonName) getObject(ButtonName.class, KEY_BUTTON_NAME);
+    }
+
+    /**
+     * Sets the name of the button to unsubscribe from
+     *
+     * @param buttonName an enum value, see <i> {@linkplain ButtonName}</i>
+     */
     public UnsubscribeButton setButtonName(@NonNull ButtonName buttonName) {
         setParameters(KEY_BUTTON_NAME, buttonName);
         return this;

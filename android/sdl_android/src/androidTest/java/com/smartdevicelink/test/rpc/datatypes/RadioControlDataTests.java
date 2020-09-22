@@ -21,14 +21,14 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link com.smartdevicelink.rpc.RadioControlData}
+ * {@link com.smartdevicelink.proxy.rpc.RadioControlData}
  */
-public class RadioControlDataTests extends TestCase{
-	
+public class RadioControlDataTests extends TestCase {
+
     private RadioControlData msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new RadioControlData();
 
         msg.setFrequencyInteger(TestValues.GENERAL_INT);
@@ -47,9 +47,9 @@ public class RadioControlDataTests extends TestCase{
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
         // Test Values
         int frequencyInteger = msg.getFrequencyInteger();
         int frequencyFraction = msg.getFrequencyFraction();
@@ -99,10 +99,10 @@ public class RadioControlDataTests extends TestCase{
         assertNull(TestValues.NULL, msg.getAvailableHdChannels());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(RadioControlData.KEY_FREQUENCY_INTEGER, TestValues.GENERAL_INT);
             reference.put(RadioControlData.KEY_FREQUENCY_FRACTION, TestValues.GENERAL_INT);
             reference.put(RadioControlData.KEY_BAND, TestValues.GENERAL_RADIOBAND);
@@ -121,31 +121,31 @@ public class RadioControlDataTests extends TestCase{
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
 
-                if(key.equals(RadioControlData.KEY_RDS_DATA)){
+                if (key.equals(RadioControlData.KEY_RDS_DATA)) {
                     JSONObject objectEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(reference, key);
                     JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
                     Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
                     Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
                     assertTrue(TestValues.TRUE, Validator.validateRdsData(new RdsData(hashReference), new RdsData(hashTest)));
                 } else if (key.equals(RadioControlData.KEY_SIS_DATA)) {
-	                JSONObject objectEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(reference, key);
-	                JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
-	                Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
-	                Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-	                assertTrue(TestValues.TRUE, Validator.validateSisData(new SisData(hashReference), new SisData(hashTest)));
-                } else if(key.equals(RadioControlData.KEY_AVAILABLE_HD_CHANNELS)){
+                    JSONObject objectEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(reference, key);
+                    JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
+                    Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
+                    Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
+                    assertTrue(TestValues.TRUE, Validator.validateSisData(new SisData(hashReference), new SisData(hashTest)));
+                } else if (key.equals(RadioControlData.KEY_AVAILABLE_HD_CHANNELS)) {
                     List<Integer> list1 = TestValues.GENERAL_AVAILABLE_HD_CHANNELS_LIST;
                     List<Integer> list2 = JsonUtils.readIntegerListFromJsonObject(underTest, key);
-                    assertTrue(TestValues.TRUE, Validator.validateIntegerList(list1,list2));
-                } else{
+                    assertTrue(TestValues.TRUE, Validator.validateIntegerList(list1, list2));
+                } else {
                     assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
                 }
             }
-        } catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

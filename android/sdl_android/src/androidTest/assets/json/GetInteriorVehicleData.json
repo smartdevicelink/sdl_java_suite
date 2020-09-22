@@ -1,36 +1,36 @@
 {
-  "request":{
-    "name":"GetInteriorVehicleData",
-    "correlationID":101,
-    "parameters":{
-      "subscribe":true,
-      "moduleType":"CLIMATE"
+  "request": {
+    "name": "GetInteriorVehicleData",
+    "correlationID": 101,
+    "parameters": {
+      "subscribe": true,
+      "moduleType": "CLIMATE"
     }
   },
-  "response":{
-    "name":"GetInteriorVehicleDataResponse",
-    "correlationID":102,
-    "parameters":{
-      "isSubscribed":true,
-      "moduleData":{
-        "moduleType":"CLIMATE",
-        "climateControlData":{
-          "circulateAirEnable":true,
-          "ventilationMode":"UPPER",
-          "acEnable":true,
-          "currentTemperature":{
-            "unit":"CELSIUS",
-            "value":100.0
+  "response": {
+    "name": "GetInteriorVehicleDataResponse",
+    "correlationID": 102,
+    "parameters": {
+      "isSubscribed": true,
+      "moduleData": {
+        "moduleType": "CLIMATE",
+        "climateControlData": {
+          "circulateAirEnable": true,
+          "ventilationMode": "UPPER",
+          "acEnable": true,
+          "currentTemperature": {
+            "unit": "CELSIUS",
+            "value": 100.0
           },
-          "acMaxEnable":true,
-          "desiredTemperature":{
-            "unit":"CELSIUS",
-            "value":100.0
+          "acMaxEnable": true,
+          "desiredTemperature": {
+            "unit": "CELSIUS",
+            "value": 100.0
           },
-          "dualModeEnable":true,
-          "autoModeEnable":true,
-          "fanSpeed":100,
-          "defrostZone":"FRONT"
+          "dualModeEnable": true,
+          "autoModeEnable": true,
+          "fanSpeed": 100,
+          "defrostZone": "FRONT"
         }
       }
     }

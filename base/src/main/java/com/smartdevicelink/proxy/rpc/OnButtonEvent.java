@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -107,42 +107,41 @@ import java.util.Hashtable;
  * </tr>
  * </table>
  * <p></p>
- * 
- * @since SmartDeviceLink 1.0
- * 
+ *
  * @see SubscribeButton
  * @see UnsubscribeButton
- * 
- * 
+ * @since SmartDeviceLink 1.0
  */
 public class OnButtonEvent extends RPCNotification {
-	public static final String KEY_BUTTON_EVENT_MODE = "buttonEventMode";
-	public static final String KEY_BUTTON_NAME = "buttonName";
-	public static final String KEY_CUSTOM_BUTTON_ID = "customButtonID";
-	/**
-	*Constructs a newly allocated OnButtonEvent object
-	*/
+    public static final String KEY_BUTTON_EVENT_MODE = "buttonEventMode";
+    public static final String KEY_BUTTON_NAME = "buttonName";
+    public static final String KEY_CUSTOM_BUTTON_ID = "customButtonID";
+
+    /**
+     * Constructs a newly allocated OnButtonEvent object
+     */
 
     public OnButtonEvent() {
         super(FunctionID.ON_BUTTON_EVENT.toString());
     }
+
     /**
-	 * <p>
-	 * Constructs a newly allocated OnButtonEvent object indicated by the
-	 * Hashtable parameter
-	 * </p>
-	 * 
-	 * @param hash The Hashtable to use to create this RPC
-	 *
-     */    
+     * <p>
+     * Constructs a newly allocated OnButtonEvent object indicated by the
+     * Hashtable parameter
+     * </p>
+     *
+     * @param hash The Hashtable to use to create this RPC
+     */
     public OnButtonEvent(Hashtable<String, Object> hash) {
         super(hash);
     }
 
 
     /**
-     *Constructs a newly allocated OnButtonEvent object
-     * @param buttonName name of the button
+     * Constructs a newly allocated OnButtonEvent object
+     *
+     * @param buttonName      name of the button
      * @param buttonEventMode indicates the button is pressed or released
      */
     public OnButtonEvent(@NonNull ButtonName buttonName, @NonNull ButtonEventMode buttonEventMode) {
@@ -153,6 +152,7 @@ public class OnButtonEvent extends RPCNotification {
 
     /**
      * <p>Returns <i>{@linkplain ButtonName}</i> the button's name</p>
+     *
      * @return ButtonName Name of the button
      */
     public ButtonName getButtonName() {
@@ -161,6 +161,7 @@ public class OnButtonEvent extends RPCNotification {
 
     /**
      * <p>Set the button's name</p>
+     *
      * @param buttonName name of the button
      */
     public OnButtonEvent setButtonName(@NonNull ButtonName buttonName) {
@@ -170,14 +171,16 @@ public class OnButtonEvent extends RPCNotification {
 
     /**
      * <p>Return <i>{@linkplain ButtonEventMode} indicates the button was depressed or released</i></p>
+     *
      * @return ButtonEventMode the button depressed or released
-     */    
+     */
     public ButtonEventMode getButtonEventMode() {
         return (ButtonEventMode) getObject(ButtonEventMode.class, KEY_BUTTON_EVENT_MODE);
     }
 
     /**
      * <p> Set the event mode of the button,pressed or released</p>
+     *
      * @param buttonEventMode indicates the button is pressed or released
      * @see ButtonEventMode
      */
@@ -186,11 +189,12 @@ public class OnButtonEvent extends RPCNotification {
         return this;
     }
 
-    public OnButtonEvent setCustomButtonID( Integer customButtonID) {
+    public OnButtonEvent setCustomButtonID(Integer customButtonID) {
         setParameters(KEY_CUSTOM_BUTTON_ID, customButtonID);
         return this;
     }
+
     public Integer getCustomButtonID() {
-    	return getInteger(KEY_CUSTOM_BUTTON_ID);
+        return getInteger(KEY_CUSTOM_BUTTON_ID);
     }
 }

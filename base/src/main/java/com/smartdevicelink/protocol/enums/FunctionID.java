@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -33,10 +33,9 @@ package com.smartdevicelink.protocol.enums;
 
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map.Entry;
 
-public enum FunctionID{
+public enum FunctionID {
     // DEPRECATED FUNCTIONS
     SYNC_P_DATA(65537, "SyncPData"),
     ON_SYNC_P_DATA(98305, "OnSyncPData"),
@@ -95,9 +94,9 @@ public enum FunctionID{
     SUBSCRIBE_WAY_POINTS(46, "SubscribeWayPoints"),
     UNSUBSCRIBE_WAY_POINTS(47, "UnsubscribeWayPoints"),
     GET_SYSTEM_CAPABILITY(48, "GetSystemCapability"),
-	SEND_HAPTIC_DATA(49, "SendHapticData"),
+    SEND_HAPTIC_DATA(49, "SendHapticData"),
     SET_CLOUD_APP_PROPERTIES(50, "SetCloudAppProperties"),
-	GET_CLOUD_APP_PROPERTIES(51, "GetCloudAppProperties"),
+    GET_CLOUD_APP_PROPERTIES(51, "GetCloudAppProperties"),
     PUBLISH_APP_SERVICE(52, "PublishAppService"),
     GET_APP_SERVICE_DATA(53, "GetAppServiceData"),
     GET_FILE(54, "GetFile"),
@@ -137,37 +136,37 @@ public enum FunctionID{
     ON_UPDATE_SUB_MENU(32790, "OnUpdateSubMenu"),
     ;
 
-    public static final int                 INVALID_ID = -1;
+    public static final int INVALID_ID = -1;
 
     private static HashMap<String, Integer> functionMap;
 
-    private final int                       ID;
-    private final String                    JSON_NAME;
+    private final int ID;
+    private final String JSON_NAME;
 
-    private FunctionID(int id, String jsonName){
+    private FunctionID(int id, String jsonName) {
         this.ID = id;
         this.JSON_NAME = jsonName;
     }
 
-    public int getId(){
+    public int getId() {
         return this.ID;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return this.JSON_NAME;
     }
 
-    private static void initFunctionMap(){
+    private static void initFunctionMap() {
         functionMap = new HashMap<>(values().length);
 
-        for(FunctionID value : EnumSet.allOf(FunctionID.class)){
+        for (FunctionID value : EnumSet.allOf(FunctionID.class)) {
             functionMap.put(value.toString(), value.getId());
         }
     }
 
-    public static String getFunctionName(int i){
-        if(functionMap == null){
+    public static String getFunctionName(int i) {
+        if (functionMap == null) {
             initFunctionMap();
         }
 
@@ -180,23 +179,24 @@ public enum FunctionID{
         return null;
     }
 
-    public static int getFunctionId(String functionName){
-        if(functionMap == null){
+    public static int getFunctionId(String functionName) {
+        if (functionMap == null) {
             initFunctionMap();
         }
 
         Integer result = functionMap.get(functionName);
-        return ( result == null ) ? INVALID_ID : result;
+        return (result == null) ? INVALID_ID : result;
     }
 
     /**
-     * This method gives the corresponding FunctionID enum value for a string RPC 
+     * This method gives the corresponding FunctionID enum value for a string RPC
+     *
      * @param name String value represents the name of the RPC
      * @return FunctionID represents the equivalent enum value for the provided string
      */
-    public static FunctionID getEnumForString(String name){
-        for(FunctionID value : EnumSet.allOf(FunctionID.class)) {
-            if(value.JSON_NAME.equals(name)){
+    public static FunctionID getEnumForString(String name) {
+        for (FunctionID value : EnumSet.allOf(FunctionID.class)) {
+            if (value.JSON_NAME.equals(name)) {
                 return value;
             }
         }

@@ -29,100 +29,100 @@ import static junit.framework.TestCase.fail;
  */
 public class GetFileResponseTests extends BaseRpcTests {
 
-	@Override
-	protected RPCMessage createMessage(){
+    @Override
+    protected RPCMessage createMessage() {
 
-		GetFileResponse msg = new GetFileResponse();
+        GetFileResponse msg = new GetFileResponse();
 
-		msg.setCRC(TestValues.GENERAL_INT);
-		msg.setFileType(TestValues.GENERAL_FILETYPE);
-		msg.setOffset(TestValues.GENERAL_INT);
-		msg.setLength(TestValues.GENERAL_INT);
+        msg.setCRC(TestValues.GENERAL_INT);
+        msg.setFileType(TestValues.GENERAL_FILETYPE);
+        msg.setOffset(TestValues.GENERAL_INT);
+        msg.setLength(TestValues.GENERAL_INT);
 
-		return msg;
-	}
+        return msg;
+    }
 
-	@Override
-	protected String getMessageType(){
-		return RPCMessage.KEY_RESPONSE;
-	}
+    @Override
+    protected String getMessageType() {
+        return RPCMessage.KEY_RESPONSE;
+    }
 
-	@Override
-	protected String getCommandType(){
-		return FunctionID.GET_FILE.toString();
-	}
+    @Override
+    protected String getCommandType() {
+        return FunctionID.GET_FILE.toString();
+    }
 
-	@Override
-	protected JSONObject getExpectedParameters(int sdlVersion){
-		JSONObject result = new JSONObject();
+    @Override
+    protected JSONObject getExpectedParameters(int sdlVersion) {
+        JSONObject result = new JSONObject();
 
-		try{
-			result.put(GetFileResponse.KEY_CRC, TestValues.GENERAL_INTEGER);
-			result.put(GetFileResponse.KEY_FILE_TYPE, TestValues.GENERAL_FILETYPE);
-			result.put(GetFileResponse.KEY_OFFSET, TestValues.GENERAL_INTEGER);
-			result.put(GetFileResponse.KEY_LENGTH, TestValues.GENERAL_INTEGER);
-		}catch(JSONException e){
-			fail(TestValues.JSON_FAIL);
-		}
+        try {
+            result.put(GetFileResponse.KEY_CRC, TestValues.GENERAL_INTEGER);
+            result.put(GetFileResponse.KEY_FILE_TYPE, TestValues.GENERAL_FILETYPE);
+            result.put(GetFileResponse.KEY_OFFSET, TestValues.GENERAL_INTEGER);
+            result.put(GetFileResponse.KEY_LENGTH, TestValues.GENERAL_INTEGER);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * Tests the expected values of the RPC message.
-	 */
-	@Test
-	public void testRpcValues () {
-		// Test Values
-		Integer crc = ( (GetFileResponse) msg ).getCRC();
-		FileType fileType = ( (GetFileResponse) msg ).getFileType();
-		Integer offset = ( (GetFileResponse) msg ).getOffset();
-		Integer length = ( (GetFileResponse) msg ).getLength();
+    /**
+     * Tests the expected values of the RPC message.
+     */
+    @Test
+    public void testRpcValues() {
+        // Test Values
+        Integer crc = ((GetFileResponse) msg).getCRC();
+        FileType fileType = ((GetFileResponse) msg).getFileType();
+        Integer offset = ((GetFileResponse) msg).getOffset();
+        Integer length = ((GetFileResponse) msg).getLength();
 
-		// Valid Tests
-		assertEquals(TestValues.MATCH, TestValues.GENERAL_INTEGER, crc);
-		assertEquals(TestValues.MATCH, TestValues.GENERAL_FILETYPE, fileType);
-		assertEquals(TestValues.MATCH, TestValues.GENERAL_INTEGER, offset);
-		assertEquals(TestValues.MATCH, TestValues.GENERAL_INTEGER, length);
+        // Valid Tests
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INTEGER, crc);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_FILETYPE, fileType);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INTEGER, offset);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INTEGER, length);
 
-		// Invalid/Null Tests
-		GetFileResponse msg = new GetFileResponse();
-		assertNotNull(TestValues.NOT_NULL, msg);
-		testNullBase(msg);
+        // Invalid/Null Tests
+        GetFileResponse msg = new GetFileResponse();
+        assertNotNull(TestValues.NOT_NULL, msg);
+        testNullBase(msg);
 
-		assertNull(TestValues.NULL, msg.getCRC());
-		assertNull(TestValues.NULL, msg.getFileType());
-		assertNull(TestValues.NULL, msg.getOffset());
-		assertNull(TestValues.NULL, msg.getLength());
-	}
+        assertNull(TestValues.NULL, msg.getCRC());
+        assertNull(TestValues.NULL, msg.getFileType());
+        assertNull(TestValues.NULL, msg.getOffset());
+        assertNull(TestValues.NULL, msg.getLength());
+    }
 
-	/**
-	 * Tests a valid JSON construction of this RPC message.
-	 */
-	@Test
-	public void testJsonConstructor () {
-		JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
-		assertNotNull(TestValues.NOT_NULL, commandJson);
+    /**
+     * Tests a valid JSON construction of this RPC message.
+     */
+    @Test
+    public void testJsonConstructor() {
+        JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
+        assertNotNull(TestValues.NOT_NULL, commandJson);
 
-		try {
-			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
-			GetFileResponse cmd = new GetFileResponse (hash);
+        try {
+            Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
+            GetFileResponse cmd = new GetFileResponse(hash);
 
-			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(TestValues.NOT_NULL, body);
+            JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
+            assertNotNull(TestValues.NOT_NULL, body);
 
-			// Test everything in the json body.
-			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+            // Test everything in the json body.
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
-			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
+            JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
 
-			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, GetFileResponse.KEY_CRC), cmd.getCRC());
-			assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(parameters, GetFileResponse.KEY_FILE_TYPE).toString(), cmd.getFileType().toString());
-			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, GetFileResponse.KEY_LENGTH), cmd.getLength());
-			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, GetFileResponse.KEY_OFFSET), cmd.getOffset());
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, GetFileResponse.KEY_CRC), cmd.getCRC());
+            assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(parameters, GetFileResponse.KEY_FILE_TYPE).toString(), cmd.getFileType().toString());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, GetFileResponse.KEY_LENGTH), cmd.getLength());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, GetFileResponse.KEY_OFFSET), cmd.getOffset());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 }

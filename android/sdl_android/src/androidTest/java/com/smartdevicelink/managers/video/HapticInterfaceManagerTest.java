@@ -23,8 +23,13 @@ package com.smartdevicelink.managers.video;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.smartdevicelink.managers.ISdl;
+import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
+import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.proxy.rpc.HapticRect;
 import com.smartdevicelink.proxy.rpc.Rectangle;
 import com.smartdevicelink.proxy.rpc.SendHapticData;
@@ -47,8 +52,12 @@ import org.mockito.stubbing.Answer;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -60,7 +69,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.Strict.class)
 public class HapticInterfaceManagerTest extends TestCase {
     @Mock
-    private ISdl mockProxy;
+    private ISdl interalInterface;
 
     @Captor
     private ArgumentCaptor<SendHapticData> captor;
@@ -69,7 +78,7 @@ public class HapticInterfaceManagerTest extends TestCase {
 
     @Before
     public void setUp() throws Exception {
-        hapticMgr = new HapticInterfaceManager(mockProxy);
+        hapticMgr = new HapticInterfaceManager(interalInterface);
     }
 
     @After
@@ -89,14 +98,14 @@ public class HapticInterfaceManagerTest extends TestCase {
         hRect.setRect(rect);
         rects.add(hRect);
         hapticMgr.setHapticData(rects);
-        verify(mockProxy).sendRPCRequest(any(SendHapticData.class));
+        verify(interalInterface).sendRPC(any(SendHapticData.class));
     }
 
     @Test
     public void testRefreshHapticData() throws Exception {
         View root = createViews();
         hapticMgr.refreshHapticData(root);
-        verify(mockProxy).sendRPC(captor.capture());
+        verify(interalInterface).sendRPC(captor.capture());
         SendHapticData data = captor.getValue();
         assertNotNull("SendHapticData RPC", data);
         List<HapticRect> list = data.getHapticRectData();
@@ -107,11 +116,11 @@ public class HapticInterfaceManagerTest extends TestCase {
     @Test
     public void testRefreshHapticDataNull() throws Exception {
         hapticMgr.refreshHapticData(null);
-        verify(mockProxy).sendRPC(captor.capture());
+        verify(interalInterface).sendRPC(captor.capture());
         SendHapticData data = captor.getValue();
         assertNotNull("SendHapticData RPC", data);
         List<HapticRect> list = data.getHapticRectData();
-        assertNull("List", list);
+        assertTrue("List", list.isEmpty());
     }
 
     @Test
@@ -158,9 +167,8 @@ public class HapticInterfaceManagerTest extends TestCase {
     }
 
 
-
     @Test
-    public void testRefreshHapticData_NullCapability() {
+    public void testRefreshHapticDataWithNullCapability() {
         final int buttonX = 60;
         final int buttonY = 60;
         final int buttonWidth = 150;
@@ -176,7 +184,7 @@ public class HapticInterfaceManagerTest extends TestCase {
     }
 
     @Test
-    public void testRefreshHapticData_NullScale() {
+    public void testRefreshHapticDataWithNullScale() {
         final int buttonX = 60;
         final int buttonY = 60;
         final int buttonWidth = 150;
@@ -206,11 +214,11 @@ public class HapticInterfaceManagerTest extends TestCase {
         hRect.setRect(rect);
         rects.add(hRect);
         hapticMgr.setHapticData(rects);
-        verify(mockProxy).sendRPCRequest(any(SendHapticData.class));
+        verify(interalInterface).sendRPC(any(SendHapticData.class));
 
         View root = createViews();
         hapticMgr.refreshHapticData(root);
-        verify(mockProxy, times(1)).sendRPCRequest(any(SendHapticData.class));
+        verify(interalInterface, times(1)).sendRPC(any(SendHapticData.class));
     }
 
     private View createViews() {
@@ -232,55 +240,45 @@ public class HapticInterfaceManagerTest extends TestCase {
         when(parent2.getChildAt(0)).thenReturn(view);
         when(parent2.getChildAt(1)).thenReturn(view);
 
-        when(view.isFocusable()).then(new Answer<Boolean>() {
+
+        doAnswer(new Answer<Boolean>() {
             private int count = 0;
 
             @Override
             public Boolean answer(InvocationOnMock invocation) throws Throwable {
                 int curCount = count++;
-                return (curCount == 1) || (curCount == 2) || (curCount == 3);
+                return (curCount >= 1) && (curCount <= 4);
             }
-        });
-        when(view.isClickable()).then(new Answer<Boolean>() {
-            private int count = 0;
-
-            @Override
-            public Boolean answer(InvocationOnMock invocation) throws Throwable {
-                int curCount = count++;
-                return (curCount == 0) || (curCount == 3);
-            }
-        });
+        }).when(view).isClickable();
 
         return parent1;
     }
 
 
     private View createView(final int x, final int y, int w, int h) {
-        View button = mock(View.class);
-        when(button.isFocusable()).thenReturn(true);
-        doAnswer(new Answer() {
+        View button = new Button(InstrumentationRegistry.getInstrumentation().getContext()) {
             @Override
-            public int[] answer(InvocationOnMock invocation) throws Throwable {
-                int[] args = (int[])(invocation.getArguments()[0]);
-                args[0] = x;
-                args[1] = y;
-                return args;
+            public void getLocationOnScreen(int[] outLocation) {
+                super.getLocationOnScreen(outLocation);
+                outLocation[0] = x;
+                outLocation[1] = y;
             }
-        }).when(button).getLocationOnScreen(any(int[].class));
-
-        when(button.getWidth()).thenReturn(w);
-        when(button.getHeight()).thenReturn(h);
+        };
+        button.setClickable(true);
+        button.setRight(w);
+        button.setBottom(h);
         return button;
     }
 
     private void assertViewWithCapability(int x, int y, int w, int h, Rectangle expected, VideoStreamingCapability capability) {
-        when(mockProxy.getCapability(SystemCapabilityType.VIDEO_STREAMING)).thenReturn(capability);
+        SystemCapabilityManager systemCapabilityManager = mock(SystemCapabilityManager.class);
+        when(systemCapabilityManager.getCapability(eq(SystemCapabilityType.VIDEO_STREAMING), (OnSystemCapabilityListener) isNull(), anyBoolean())).thenReturn(capability);
+        doReturn(systemCapabilityManager).when(interalInterface).getSystemCapabilityManager();
 
         View button = createView(x, y, w, h);
 
-
         hapticMgr.refreshHapticData(button);
-        verify(mockProxy).sendRPC(captor.capture());
+        verify(interalInterface).sendRPC(captor.capture());
 
         SendHapticData data = captor.getValue();
         List<HapticRect> list = data.getHapticRectData();

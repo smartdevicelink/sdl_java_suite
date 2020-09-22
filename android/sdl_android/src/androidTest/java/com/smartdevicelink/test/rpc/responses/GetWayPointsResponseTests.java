@@ -78,10 +78,10 @@ public class GetWayPointsResponseTests extends BaseRpcTests {
      * Tests the expected values of the RPC message.
      */
     @Test
-    public void testRpcValues () {
+    public void testRpcValues() {
 
         // Test Values
-        List<LocationDetails> testWPs = ( (GetWayPointsResponse) msg ).getWayPoints();
+        List<LocationDetails> testWPs = ((GetWayPointsResponse) msg).getWayPoints();
 
         // Valid Tests
         assertEquals(TestValues.MATCH, waypoints, testWPs);
@@ -98,7 +98,7 @@ public class GetWayPointsResponseTests extends BaseRpcTests {
      * Tests a valid JSON construction of this RPC message.
      */
     @Test
-    public void testJsonConstructor () {
+    public void testJsonConstructor() {
         JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
         assertNotNull(TestValues.NOT_NULL, commandJson);
 
@@ -118,11 +118,11 @@ public class GetWayPointsResponseTests extends BaseRpcTests {
             JSONArray locArray = JsonUtils.readJsonArrayFromJsonObject(parameters, GetWayPointsResponse.KEY_WAY_POINTS);
             List<LocationDetails> locationList = new ArrayList<LocationDetails>();
             for (int index = 0; index < locArray.length(); index++) {
-                LocationDetails det = new LocationDetails(JsonRPCMarshaller.deserializeJSONObject( (JSONObject) locArray.get(index)));
+                LocationDetails det = new LocationDetails(JsonRPCMarshaller.deserializeJSONObject((JSONObject) locArray.get(index)));
                 locationList.add(det);
             }
             List<LocationDetails> dets = cmd.getWayPoints();
-            assertEquals(TestValues.MATCH,  locationList.size(), dets.size());
+            assertEquals(TestValues.MATCH, locationList.size(), dets.size());
 
         } catch (JSONException e) {
             e.printStackTrace();

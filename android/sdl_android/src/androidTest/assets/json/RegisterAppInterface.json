@@ -1,43 +1,43 @@
 {
-  "request":{
-    "name":"RegisterAppInterface",
-    "correlationID":141,
-    "parameters":{
-      "ttsName":[
+  "request": {
+    "name": "RegisterAppInterface",
+    "correlationID": 141,
+    "parameters": {
+      "ttsName": [
         {
-          "text":"Phrase 1",
-          "type":"TEXT"
+          "text": "Phrase 1",
+          "type": "TEXT"
         },
         {
-          "text":"Phrase 2",
-          "type":"TEXT"
+          "text": "Phrase 2",
+          "type": "TEXT"
         }
       ],
-      "hmiDisplayLanguageDesired":"EN-US",
-      "appHMIType":[
+      "hmiDisplayLanguageDesired": "EN-US",
+      "appHMIType": [
         "SOCIAL",
         "MEDIA"
       ],
-      "appID":"123e4567e8",
-      "fullAppID":"123e4567-e89b-12d3-a456-426655440000",
-      "languageDesired":"PT-BR",
-      "deviceInfo":{
-        "hardware":"My Hardware",
-        "firmwareRev":"My Firmware Revision",
-        "os":"Windows",
-        "osVersion":"95",
-        "carrier":"nobody",
-        "maxNumberRFCOMMPorts":2
+      "appID": "123e4567e8",
+      "fullAppID": "123e4567-e89b-12d3-a456-426655440000",
+      "languageDesired": "PT-BR",
+      "deviceInfo": {
+        "hardware": "My Hardware",
+        "firmwareRev": "My Firmware Revision",
+        "os": "Windows",
+        "osVersion": "95",
+        "carrier": "nobody",
+        "maxNumberRFCOMMPorts": 2
       },
-      "appInfo":{
-        "appDisplayName":"Test",
-        "appBundleID":"com.sample.test",
-        "appVersion":"1.0",
-        "appIcon":"icon.png"
+      "appInfo": {
+        "appDisplayName": "Test",
+        "appBundleID": "com.sample.test",
+        "appVersion": "1.0",
+        "appIcon": "icon.png"
       },
-      "appName":"Dumb app",
-      "ngnMediaScreenAppName":"DA",
-      "isMediaApplication":true,
+      "appName": "Dumb app",
+      "ngnMediaScreenAppName": "DA",
+      "isMediaApplication": true,
       "dayColorScheme": {
         "backgroundColor": {
           "blue": 9,
@@ -72,169 +72,174 @@
           "red": 10
         }
       },
-      "vrSynonyms":[
+      "vrSynonyms": [
         "dumb",
         "really dumb app"
       ],
-      "syncMsgVersion":{
-        "majorVersion":3,
-        "minorVersion":64
+      "syncMsgVersion": {
+        "majorVersion": 3,
+        "minorVersion": 64
       },
-      "hashID":"y534htz"
+      "hashID": "y534htz"
     }
   },
-  "response":{
-    "name":"RegisterAppInterfaceResponse",
-    "correlationID":142,
-    "parameters":{
-      "vehicleType":{
-        "make":"Chrysler",
-        "model":"Crossfire",
-        "modelYear":"1820",
-        "trim":"Gold"
+  "response": {
+    "name": "RegisterAppInterfaceResponse",
+    "correlationID": 142,
+    "parameters": {
+      "vehicleType": {
+        "make": "Chrysler",
+        "model": "Crossfire",
+        "modelYear": "1820",
+        "trim": "Gold"
       },
-      "speechCapabilities":[
+      "speechCapabilities": [
         "SAPI_PHONEMES",
         "TEXT",
         "PRE_RECORDED"
       ],
-      "vrCapabilities":[
+      "vrCapabilities": [
         "Text"
       ],
-      "audioPassThruCapabilities":[
+      "pcmStreamCapabilities": {
+        "samplingRate": "16KHZ",
+        "audioType": "PCM",
+        "bitsPerSample": "16_BIT"
+      },
+      "audioPassThruCapabilities": [
         {
-          "samplingRate":"16KHZ",
-          "audioType":"PCM",
-          "bitsPerSample":"16_BIT"
+          "samplingRate": "16KHZ",
+          "audioType": "PCM",
+          "bitsPerSample": "16_BIT"
         },
         {
-          "samplingRate":"44KHZ",
-          "audioType":"PCM",
-          "bitsPerSample":"8_BIT"
+          "samplingRate": "44KHZ",
+          "audioType": "PCM",
+          "bitsPerSample": "8_BIT"
         }
       ],
-      "hmiZoneCapabilities":[
+      "hmiZoneCapabilities": [
         "FRONT",
         "BACK"
       ],
-      "prerecordedSpeech":[
+      "prerecordedSpeech": [
         "HELP_JINGLE",
         "LISTEN_JINGLE",
         "NEGATIVE_JINGLE"
       ],
-      "supportedDiagModes":[
+      "supportedDiagModes": [
         324,
         2356,
         865,
         211,
         8098
       ],
-      "syncMsgVersion":{
-        "majorVersion":3,
-        "minorVersion":64
+      "syncMsgVersion": {
+        "majorVersion": 3,
+        "minorVersion": 64
       },
-      "language":"EN-US",
-      "buttonCapabilities":[
+      "language": "EN-US",
+      "buttonCapabilities": [
         {
-          "name":"SEEKRIGHT",
-          "shortPressAvailable":true,
-          "longPressAvailable":false,
-          "upDownAvailable":true
+          "name": "SEEKRIGHT",
+          "shortPressAvailable": true,
+          "longPressAvailable": false,
+          "upDownAvailable": true
         },
         {
-          "name":"TUNEDOWN",
-          "shortPressAvailable":false,
-          "longPressAvailable":true,
-          "upDownAvailable":false
+          "name": "TUNEDOWN",
+          "shortPressAvailable": false,
+          "longPressAvailable": true,
+          "upDownAvailable": false
         }
       ],
-      "displayCapabilities":{
-        "displayType":"TYPE2",
-        "mediaClockFormats":[
+      "displayCapabilities": {
+        "displayType": "TYPE2",
+        "mediaClockFormats": [
           "CLOCKTEXT3",
           "CLOCK1"
         ],
-        "textFields":[
+        "textFields": [
           {
-            "width":480,
-            "characterSet":"TYPE5SET",
-            "rows":360,
-            "name":"alertText2"
+            "width": 480,
+            "characterSet": "TYPE5SET",
+            "rows": 360,
+            "name": "alertText2"
           },
           {
-            "width":1980,
-            "characterSet":"UTF_8",
-            "rows":960,
-            "name":"scrollableMessageBody"
-          },
+            "width": 1980,
+            "characterSet": "UTF_8",
+            "rows": 960,
+            "name": "scrollableMessageBody"
+          }
         ],
-        "imageFields":[
+        "imageFields": [
           {
-            "imageTypeSupported":[
+            "imageTypeSupported": [
               "GRAPHIC_JPEG",
               "AUDIO_AAC"
             ],
-            "imageResolution":{
-              "resolutionWidth":640,
-              "resolutionHeight":480
+            "imageResolution": {
+              "resolutionWidth": 640,
+              "resolutionHeight": 480
             },
-            "name":"menuIcon"
+            "name": "menuIcon"
           },
           {
-            "imageTypeSupported":[
+            "imageTypeSupported": [
               "BINARY",
               "AUDIO_WAVE"
             ],
-            "imageResolution":{
-              "resolutionWidth":320,
-              "resolutionHeight":240
+            "imageResolution": {
+              "resolutionWidth": 320,
+              "resolutionHeight": 240
             },
-            "name":"graphic"
+            "name": "graphic"
           }
         ],
-        "graphicSupported":true,
-        "screenParams":{
-          "resolution":{
-            "resolutionWidth":1200,
-            "resolutionHeight":800
+        "graphicSupported": true,
+        "screenParams": {
+          "resolution": {
+            "resolutionWidth": 1200,
+            "resolutionHeight": 800
           },
-          "touchEventAvailable":{
-            "pressAvailable":true,
-            "multiTouchAvailable":false,
-            "doublePressAvailable":true
+          "touchEventAvailable": {
+            "pressAvailable": true,
+            "multiTouchAvailable": false,
+            "doublePressAvailable": true
           }
         },
-        "templatesAvailable":[
+        "templatesAvailable": [
           "Template 1",
           "Template 2",
           "Template 3"
         ],
-        "numCustomPresetsAvailable":5
+        "numCustomPresetsAvailable": 5
       },
-      "hmiDisplayLanguage":"ES-ES",
-      "softButtonCapabilities":[
+      "hmiDisplayLanguage": "ES-ES",
+      "softButtonCapabilities": [
         {
-          "imageSupported":false,
-          "shortPressAvailable":true,
-          "longPressAvailable":false,
-          "upDownAvailable":true
+          "imageSupported": false,
+          "shortPressAvailable": true,
+          "longPressAvailable": false,
+          "upDownAvailable": true
         },
         {
-          "imageSupported":true,
-          "shortPressAvailable":false,
-          "longPressAvailable":true,
-          "upDownAvailable":false
+          "imageSupported": true,
+          "shortPressAvailable": false,
+          "longPressAvailable": true,
+          "upDownAvailable": false
         }
       ],
-      "presetBankCapabilities":{
-        "OnScreenPresetsAvailable":false
+      "presetBankCapabilities": {
+        "OnScreenPresetsAvailable": false
       },
-      "bulkData":[
+      "bulkData": [
         0,
         1,
         2
       ],
-      "iconResumed":true
+      "iconResumed": true
     }
   }
 }

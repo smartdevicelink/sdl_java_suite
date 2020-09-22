@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -34,24 +34,24 @@ package com.smartdevicelink.proxy.rpc.enums;
 import java.util.EnumSet;
 
 
-public enum Jingle{
+public enum Jingle {
     POSITIVE("POSITIVE_JINGLE"),
     NEGATIVE("NEGATIVE_JINGLE"),
     INITIAL("INITIAL_JINGLE"),
     LISTEN("LISTEN_JINGLE"),
     HELP("HELP_JINGLE");
-    
+
     private final String VALUE;
-    
-    private Jingle(String value){
+
+    private Jingle(String value) {
         this.VALUE = value;
     }
-    
+
     public String toString() {
         return this.VALUE;
     }
-    
-    public static Jingle valueForString(String value) {          
+
+    public static Jingle valueForString(String value) {
         for (Jingle anEnum : EnumSet.allOf(Jingle.class)) {
             if (anEnum.toString().equals(value)) {
                 return anEnum;

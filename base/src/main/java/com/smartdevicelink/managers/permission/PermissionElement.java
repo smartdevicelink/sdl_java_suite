@@ -47,16 +47,18 @@ public class PermissionElement {
 
     /**
      * Create a new instance of PermissionElement
-     * @param rpcName the name of the RPC
+     *
+     * @param rpcName    the name of the RPC
      * @param parameters a list of the RPC parameters
      */
-    public PermissionElement(@NonNull FunctionID rpcName, List<String> parameters){
+    public PermissionElement(@NonNull FunctionID rpcName, List<String> parameters) {
         this.rpcName = rpcName;
         this.parameters = parameters;
     }
 
     /**
      * Get the RPC name
+     *
      * @return FunctionID value represents the RPC name
      */
     public FunctionID getRPCName() {
@@ -65,6 +67,7 @@ public class PermissionElement {
 
     /**
      * Get the permission parameters for the RPC
+     *
      * @return List<String> represents the permission parameters for the RPC
      */
     public List<String> getParameters() {

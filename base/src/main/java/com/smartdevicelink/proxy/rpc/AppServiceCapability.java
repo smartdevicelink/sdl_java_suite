@@ -40,93 +40,99 @@ import java.util.Hashtable;
 
 public class AppServiceCapability extends RPCStruct {
 
-	public static final String KEY_UPDATE_REASON = "updateReason";
-	public static final String KEY_UPDATED_APP_SERVICE_RECORD = "updatedAppServiceRecord";
+    public static final String KEY_UPDATE_REASON = "updateReason";
+    public static final String KEY_UPDATED_APP_SERVICE_RECORD = "updatedAppServiceRecord";
 
-	// Constructors
+    // Constructors
 
-	public AppServiceCapability(){}
+    public AppServiceCapability() {
+    }
 
-	/**
-	 * @param hash of parameters
-	 */
-	public AppServiceCapability(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+    /**
+     * @param hash of parameters
+     */
+    public AppServiceCapability(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
 
-	/**
-	 * @param updatedAppServiceRecord -
-	 */
-	public AppServiceCapability(@NonNull AppServiceRecord updatedAppServiceRecord){
-		this();
-		setUpdatedAppServiceRecord(updatedAppServiceRecord);
-	}
+    /**
+     * @param updatedAppServiceRecord -
+     */
+    public AppServiceCapability(@NonNull AppServiceRecord updatedAppServiceRecord) {
+        this();
+        setUpdatedAppServiceRecord(updatedAppServiceRecord);
+    }
 
-	// Setters and Getters
+    // Setters and Getters
 
-	/**
-	 * Only included in OnSystemCapabilityUpdated. Update reason for this service record.
-	 * @param updateReason -
-	 */
-	public AppServiceCapability setUpdateReason( ServiceUpdateReason updateReason) {
+    /**
+     * Only included in OnSystemCapabilityUpdated. Update reason for this service record.
+     *
+     * @param updateReason -
+     */
+    public AppServiceCapability setUpdateReason(ServiceUpdateReason updateReason) {
         setValue(KEY_UPDATE_REASON, updateReason);
         return this;
     }
 
-	/**
-	 * Only included in OnSystemCapabilityUpdated. Update reason for this service record.
-	 * @return updateReason - The updateReason
-	 */
-	public ServiceUpdateReason getUpdateReason(){
-		return (ServiceUpdateReason) getObject(ServiceUpdateReason.class, KEY_UPDATE_REASON);
-	}
+    /**
+     * Only included in OnSystemCapabilityUpdated. Update reason for this service record.
+     *
+     * @return updateReason - The updateReason
+     */
+    public ServiceUpdateReason getUpdateReason() {
+        return (ServiceUpdateReason) getObject(ServiceUpdateReason.class, KEY_UPDATE_REASON);
+    }
 
-	/**
-	 * Only included in OnSystemCapabilityUpdated. Update reason for this service record.
-	 * @param updatedAppServiceRecord -
-	 */
-	public AppServiceCapability setUpdatedAppServiceRecord( AppServiceRecord updatedAppServiceRecord) {
+    /**
+     * Only included in OnSystemCapabilityUpdated. Update reason for this service record.
+     *
+     * @param updatedAppServiceRecord -
+     */
+    public AppServiceCapability setUpdatedAppServiceRecord(AppServiceRecord updatedAppServiceRecord) {
         setValue(KEY_UPDATED_APP_SERVICE_RECORD, updatedAppServiceRecord);
         return this;
     }
 
-	/**
-	 * Only included in OnSystemCapabilityUpdated. Update reason for this service record.
-	 * @return updateReason - The updateReason
-	 */
-	public AppServiceRecord getUpdatedAppServiceRecord(){
-		return (AppServiceRecord) getObject(AppServiceRecord.class, KEY_UPDATED_APP_SERVICE_RECORD);
-	}
+    /**
+     * Only included in OnSystemCapabilityUpdated. Update reason for this service record.
+     *
+     * @return updateReason - The updateReason
+     */
+    public AppServiceRecord getUpdatedAppServiceRecord() {
+        return (AppServiceRecord) getObject(AppServiceRecord.class, KEY_UPDATED_APP_SERVICE_RECORD);
+    }
 
-	/**
-	 * Helper method to compare an AppServiceCapability to this instance.
-	 * @param capability the AppServiceCapability to compare to this one
-	 * @return if both AppServiceCapability objects refer to the same service
-	 */
-	public boolean matchesAppService(AppServiceCapability capability){
-		if(capability != null){
-			AppServiceRecord appServiceRecord = getUpdatedAppServiceRecord();
-			AppServiceRecord otherASR = capability.getUpdatedAppServiceRecord();
+    /**
+     * Helper method to compare an AppServiceCapability to this instance.
+     *
+     * @param capability the AppServiceCapability to compare to this one
+     * @return if both AppServiceCapability objects refer to the same service
+     */
+    public boolean matchesAppService(AppServiceCapability capability) {
+        if (capability != null) {
+            AppServiceRecord appServiceRecord = getUpdatedAppServiceRecord();
+            AppServiceRecord otherASR = capability.getUpdatedAppServiceRecord();
 
-			if(appServiceRecord != null && otherASR != null) {
-				// If both service IDs exists we can compare them. If either is null we can't use
-				// only this check.
-				if(appServiceRecord.getServiceID() != null && otherASR.getServiceID() != null){
-					//return whether the app service IDs are equal or not
-					return appServiceRecord.getServiceID().equalsIgnoreCase(otherASR.getServiceID());
-				}else{
-					AppServiceManifest manifest = appServiceRecord.getServiceManifest();
-					AppServiceManifest otherManifest = otherASR.getServiceManifest();
-					if(manifest != null && otherManifest != null){
-						//Check the service names, if they are the same it can be assumed they are the same service
-						return (manifest.getServiceName() != null && manifest.getServiceName().equalsIgnoreCase(otherManifest.getServiceName()));
-					}
-				}
-			}
-		}
-		// If it got to this point it was not the same
-		return false;
-	}
+            if (appServiceRecord != null && otherASR != null) {
+                // If both service IDs exists we can compare them. If either is null we can't use
+                // only this check.
+                if (appServiceRecord.getServiceID() != null && otherASR.getServiceID() != null) {
+                    //return whether the app service IDs are equal or not
+                    return appServiceRecord.getServiceID().equalsIgnoreCase(otherASR.getServiceID());
+                } else {
+                    AppServiceManifest manifest = appServiceRecord.getServiceManifest();
+                    AppServiceManifest otherManifest = otherASR.getServiceManifest();
+                    if (manifest != null && otherManifest != null) {
+                        //Check the service names, if they are the same it can be assumed they are the same service
+                        return (manifest.getServiceName() != null && manifest.getServiceName().equalsIgnoreCase(otherManifest.getServiceName()));
+                    }
+                }
+            }
+        }
+        // If it got to this point it was not the same
+        return false;
+    }
 
 }

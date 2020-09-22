@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -30,8 +30,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 package com.smartdevicelink.proxy.rpc.enums;
+
 /**
  * Character sets supported by SDL.
+ *
  * @since SmartDeviceLink 1.0
  */
 public enum CharacterSet {
@@ -79,13 +81,14 @@ public enum CharacterSet {
 
     /**
      * Convert String to CharacterSet
+     *
      * @param value String
      * @return CharacterSet
      */
     public static CharacterSet valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

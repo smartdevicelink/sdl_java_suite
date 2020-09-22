@@ -77,7 +77,7 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
 
     boolean sdlSecurityInitializing = false;
 
-    public BaseSdlSession(ISdlSessionListener listener, BaseTransportConfig config){
+    public BaseSdlSession(ISdlSessionListener listener, BaseTransportConfig config) {
         this.transportConfig = config;
         this.sessionListener = listener;
         this.sdlProtocol = getSdlProtocolImplementation();
@@ -86,10 +86,10 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
 
     protected abstract SdlProtocolBase getSdlProtocolImplementation();
 
-    public int getMtu(){
-        if(this.sdlProtocol!=null){
+    public int getMtu() {
+        if (this.sdlProtocol != null) {
             return this.sdlProtocol.getMtu();
-        }else{
+        } else {
             return 0;
         }
     }
@@ -103,20 +103,19 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
     }
 
     public void close() {
-        if (sdlSecurity != null)
-        {
+        if (sdlSecurity != null) {
             sdlSecurity.resetParams();
             sdlSecurity.shutDown();
         }
-        if(sdlProtocol != null){
-            sdlProtocol.endSession((byte)sessionId);
+        if (sdlProtocol != null) {
+            sdlProtocol.endSession((byte) sessionId);
         }
     }
 
 
-    public void startService (SessionType serviceType, boolean isEncrypted) {
-        if (isEncrypted){
-            if (sdlSecurity != null){
+    public void startService(SessionType serviceType, boolean isEncrypted) {
+        if (isEncrypted) {
+            if (sdlSecurity != null) {
                 List<SessionType> serviceList = sdlSecurity.getServiceList();
                 if (!serviceList.contains(serviceType)) {
                     serviceList.add(serviceType);
@@ -129,14 +128,14 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
                 }
             }
         }
-        sdlProtocol.startService(serviceType, (byte)this.sessionId, isEncrypted);
+        sdlProtocol.startService(serviceType, (byte) this.sessionId, isEncrypted);
     }
 
-    public void endService (SessionType serviceType) {
+    public void endService(SessionType serviceType) {
         if (sdlProtocol == null) {
             return;
         }
-        sdlProtocol.endService(serviceType, (byte)this.sessionId);
+        sdlProtocol.endService(serviceType, (byte) this.sessionId);
     }
 
 
@@ -146,7 +145,7 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
 
 
     public void sendMessage(ProtocolMessage msg) {
-        if (sdlProtocol == null){
+        if (sdlProtocol == null) {
             return;
         }
         sdlProtocol.sendMessage(msg);
@@ -162,13 +161,14 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
 
     /**
      * Get the current protocol version used by this session
+     *
      * @return Version that represents the Protocol version being used
      */
-    public Version getProtocolVersion(){
-        if(sdlProtocol!=null){
+    public Version getProtocolVersion() {
+        if (sdlProtocol != null) {
             return sdlProtocol.getProtocolVersion();
         }
-        return new Version(1,0,0);
+        return new Version(1, 0, 0);
     }
 
 
@@ -201,8 +201,8 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
         protocolMessage.setSessionType(SessionType.CONTROL);
         protocolMessage.setData(returnBytes);
         protocolMessage.setFunctionID(0x01);
-        protocolMessage.setVersion((byte)sdlProtocol.getProtocolVersion().getMajor());
-        protocolMessage.setSessionID((byte)this.sessionId);
+        protocolMessage.setVersion((byte) sdlProtocol.getProtocolVersion().getMajor());
+        protocolMessage.setSessionID((byte) this.sessionId);
 
         //sdlSecurity.hs();
 
@@ -214,35 +214,35 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
         return encryptedServices.contains(sType);
     }
 
-    public void addServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener){
-        if(serviceListeners == null){
+    public void addServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {
+        if (serviceListeners == null) {
             serviceListeners = new HashMap<>();
         }
-        if(serviceType != null && sdlServiceListener != null){
-            if(!serviceListeners.containsKey(serviceType)){
-                serviceListeners.put(serviceType,new CopyOnWriteArrayList<ISdlServiceListener>());
+        if (serviceType != null && sdlServiceListener != null) {
+            if (!serviceListeners.containsKey(serviceType)) {
+                serviceListeners.put(serviceType, new CopyOnWriteArrayList<ISdlServiceListener>());
             }
             serviceListeners.get(serviceType).add(sdlServiceListener);
         }
     }
 
-    public boolean removeServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener){
-        if(serviceListeners!= null && serviceType != null && sdlServiceListener != null && serviceListeners.containsKey(serviceType)){
+    public boolean removeServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {
+        if (serviceListeners != null && serviceType != null && sdlServiceListener != null && serviceListeners.containsKey(serviceType)) {
             return serviceListeners.get(serviceType).remove(sdlServiceListener);
         }
         return false;
     }
 
 
-    public HashMap<SessionType, CopyOnWriteArrayList<ISdlServiceListener>> getServiceListeners(){
+    public HashMap<SessionType, CopyOnWriteArrayList<ISdlServiceListener>> getServiceListeners() {
         return serviceListeners;
     }
 
-    public void setDesiredVideoParams(VideoStreamingParameters params){
+    public void setDesiredVideoParams(VideoStreamingParameters params) {
         this.desiredVideoParams = params;
     }
 
-    public VideoStreamingParameters getAcceptedVideoParams(){
+    public VideoStreamingParameters getAcceptedVideoParams() {
         return acceptedVideoParams;
     }
 
@@ -278,19 +278,21 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
         }
 
     }
+
     //To be implemented by child class
     @Override
     public abstract void onServiceStarted(SdlPacket packet, SessionType sessionType, int sessionID, Version version, boolean isEncrypted);
+
     @Override
     public abstract void onServiceEnded(SdlPacket packet, SessionType sessionType, int sessionID);
+
     @Override
     public abstract void onServiceError(SdlPacket packet, SessionType sessionType, int sessionID, String error);
 
 
     @Override
     public void onProtocolError(String info, Exception e) {
-        //TODO is there anything to pass forward here?
-        DebugTool.logError(TAG,"on protocol error", e);
+        DebugTool.logError(TAG, "on protocol error", e);
     }
 
     @Override
@@ -317,6 +319,7 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
     /**
      * Returns the currently set desired video streaming parameters. If there haven't been any set,
      * the default options will be returned and set for this instance.
+     *
      * @return the desired video streaming parameters
      */
     @Override
@@ -345,8 +348,7 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
     @Override
     public void onSecurityInitialized() {
 
-        if (sdlProtocol != null && sdlSecurity != null)
-        {
+        if (sdlProtocol != null && sdlSecurity != null) {
             List<SessionType> list = sdlSecurity.getServiceList();
 
             SessionType service;
@@ -356,7 +358,7 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
                 service = iter.next();
 
                 if (service != null)
-                    sdlProtocol.startService(service, (byte)this.sessionId, true);
+                    sdlProtocol.startService(service, (byte) this.sessionId, true);
 
                 iter.remove();
             }
@@ -364,18 +366,18 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
     }
 
 
-
     /**
      * Check to see if a transport is available to start/use the supplied service.
+     *
      * @param sessionType the session that should be checked for transport availability
      * @return true if there is either a supported
-     *         transport currently connected or a transport is
-     *         available to connect with for the supplied service type.
-     *         <br>false if there is no
-     *         transport connected to support the service type in question and
-     *          no possibility in the foreseeable future.
+     * transport currently connected or a transport is
+     * available to connect with for the supplied service type.
+     * <br>false if there is no
+     * transport connected to support the service type in question and
+     * no possibility in the foreseeable future.
      */
-    public boolean isTransportForServiceAvailable(SessionType sessionType){
-        return sdlProtocol!=null && sdlProtocol.isTransportForServiceAvailable(sessionType);
+    public boolean isTransportForServiceAvailable(SessionType sessionType) {
+        return sdlProtocol != null && sdlProtocol.isTransportForServiceAvailable(sessionType);
     }
 }

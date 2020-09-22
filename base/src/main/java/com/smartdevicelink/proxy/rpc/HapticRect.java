@@ -40,52 +40,54 @@ import java.util.Hashtable;
 
 /**
  * Defines a haptic rectangle that contains a reference ID and the spatial data of a rectangle UI component.
- * @since SmartDeviceLink 4.5.0
  *
+ * @since SmartDeviceLink 4.5.0
  */
 
 public class HapticRect extends RPCStruct {
-	public static final String KEY_ID = "id";
-	public static final String KEY_RECT = "rect";
+    public static final String KEY_ID = "id";
+    public static final String KEY_RECT = "rect";
 
-	public HapticRect() {}
+    public HapticRect() {
+    }
 
-	public HapticRect(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+    public HapticRect(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
-	public HapticRect(@NonNull Integer id, @NonNull Rectangle rect) {
-		this();
-		setId(id);
-		setRect(rect);
-	}
-	/**
-	 * Set a user control spatial identifier that references the supplied spatial data
-	 */
-	public HapticRect setId(@NonNull Integer id) {
+    public HapticRect(@NonNull Integer id, @NonNull Rectangle rect) {
+        this();
+        setId(id);
+        setRect(rect);
+    }
+
+    /**
+     * Set a user control spatial identifier that references the supplied spatial data
+     */
+    public HapticRect setId(@NonNull Integer id) {
         setValue(KEY_ID, id);
         return this;
     }
 
-	/**
-	 * @return  a user control spatial identifier that references the supplied spatial data
-	 */
-	public Integer getId() {
-		return getInteger(KEY_ID);
-	}
+    /**
+     * @return a user control spatial identifier that references the supplied spatial data
+     */
+    public Integer getId() {
+        return getInteger(KEY_ID);
+    }
 
-	/**
-	 * Set the position of the haptic rectangle to be highlighted. The center of this rectangle will be "touched" when a press occurs.
-	 */
-	public HapticRect setRect(@NonNull Rectangle rect) {
+    /**
+     * Set the position of the haptic rectangle to be highlighted. The center of this rectangle will be "touched" when a press occurs.
+     */
+    public HapticRect setRect(@NonNull Rectangle rect) {
         setValue(KEY_RECT, rect);
         return this;
     }
 
-	/**
-	 * @return the position of the haptic rectangle to be highlighted. The center of this rectangle will be "touched" when a press occurs.
-	 */
-	public Rectangle getRect() {
-		return (Rectangle) getObject(Rectangle.class, KEY_RECT);
-	}
+    /**
+     * @return the position of the haptic rectangle to be highlighted. The center of this rectangle will be "touched" when a press occurs.
+     */
+    public Rectangle getRect() {
+        return (Rectangle) getObject(Rectangle.class, KEY_RECT);
+    }
 }

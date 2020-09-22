@@ -38,106 +38,107 @@ import com.smartdevicelink.proxy.RPCStruct;
 import java.util.Hashtable;
 
 /**
- Contains all the current data of the app service. The serviceType will link to which of the service data objects are
- included in this object (e.g. if the service type is MEDIA, the mediaServiceData param should be included).
+ * Contains all the current data of the app service. The serviceType will link to which of the service data objects are
+ * included in this object (e.g. if the service type is MEDIA, the mediaServiceData param should be included).
  */
 public class AppServiceData extends RPCStruct {
 
-	public static final String KEY_SERVICE_TYPE = "serviceType";
-	public static final String KEY_SERVICE_ID   = "serviceID";
-	public static final String KEY_MEDIA_SERVICE_DATA = "mediaServiceData";
-	public static final String KEY_WEATHER_SERVICE_DATA = "weatherServiceData";
-	public static final String KEY_NAVIGATION_SERVICE_DATA = "navigationServiceData";
+    public static final String KEY_SERVICE_TYPE = "serviceType";
+    public static final String KEY_SERVICE_ID = "serviceID";
+    public static final String KEY_MEDIA_SERVICE_DATA = "mediaServiceData";
+    public static final String KEY_WEATHER_SERVICE_DATA = "weatherServiceData";
+    public static final String KEY_NAVIGATION_SERVICE_DATA = "navigationServiceData";
 
 
-	// Constructors
-	public AppServiceData() { }
+    // Constructors
+    public AppServiceData() {
+    }
 
-	public AppServiceData(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+    public AppServiceData(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
-	public AppServiceData(@NonNull String serviceType, @NonNull String serviceId) {
-		this();
-		setServiceType(serviceType);
-		setServiceID(serviceId);
-	}
+    public AppServiceData(@NonNull String serviceType, @NonNull String serviceId) {
+        this();
+        setServiceType(serviceType);
+        setServiceID(serviceId);
+    }
 
-	// Setters and Getters
+    // Setters and Getters
 
-	/**
-	 * @param serviceType -
-	 */
-	public AppServiceData setServiceType(@NonNull String serviceType) {
+    /**
+     * @param serviceType -
+     */
+    public AppServiceData setServiceType(@NonNull String serviceType) {
         setValue(KEY_SERVICE_TYPE, serviceType);
         return this;
     }
 
-	/**
-	 * @return serviceType -
-	 */
-	public String getServiceType() {
-		return getString(KEY_SERVICE_TYPE);
-	}
+    /**
+     * @return serviceType -
+     */
+    public String getServiceType() {
+        return getString(KEY_SERVICE_TYPE);
+    }
 
-	/**
-	 * @param serviceId -
-	 */
-	public AppServiceData setServiceID(@NonNull String serviceId) {
+    /**
+     * @param serviceId -
+     */
+    public AppServiceData setServiceID(@NonNull String serviceId) {
         setValue(KEY_SERVICE_ID, serviceId);
         return this;
     }
 
-	/**
-	 * @return serviceId -
-	 */
-	public String getServiceID() {
-		return getString(KEY_SERVICE_ID);
-	}
+    /**
+     * @return serviceId -
+     */
+    public String getServiceID() {
+        return getString(KEY_SERVICE_ID);
+    }
 
-	/**
-	 * @param mediaServiceData -
-	 */
-	public AppServiceData setMediaServiceData( MediaServiceData mediaServiceData) {
+    /**
+     * @param mediaServiceData -
+     */
+    public AppServiceData setMediaServiceData(MediaServiceData mediaServiceData) {
         setValue(KEY_MEDIA_SERVICE_DATA, mediaServiceData);
         return this;
     }
 
-	/**
-	 * @return mediaServiceData -
-	 */
-	public MediaServiceData getMediaServiceData() {
-		return (MediaServiceData) getObject(MediaServiceData.class,KEY_MEDIA_SERVICE_DATA);
-	}
+    /**
+     * @return mediaServiceData -
+     */
+    public MediaServiceData getMediaServiceData() {
+        return (MediaServiceData) getObject(MediaServiceData.class, KEY_MEDIA_SERVICE_DATA);
+    }
 
-	/**
-	 * @param weatherServiceData -
-	 */
-	public AppServiceData setWeatherServiceData( WeatherServiceData weatherServiceData) {
+    /**
+     * @param weatherServiceData -
+     */
+    public AppServiceData setWeatherServiceData(WeatherServiceData weatherServiceData) {
         setValue(KEY_WEATHER_SERVICE_DATA, weatherServiceData);
         return this;
     }
 
-	/**
-	 * @return weatherServiceData -
-	 */
-	public WeatherServiceData getWeatherServiceData() {
-		return (WeatherServiceData) getObject(WeatherServiceData.class,KEY_WEATHER_SERVICE_DATA);
-	}
+    /**
+     * @return weatherServiceData -
+     */
+    public WeatherServiceData getWeatherServiceData() {
+        return (WeatherServiceData) getObject(WeatherServiceData.class, KEY_WEATHER_SERVICE_DATA);
+    }
 
-	/**
-	 * @param navigationServiceData -
-	 */
-	public AppServiceData setNavigationServiceData( NavigationServiceData navigationServiceData) {
+    /**
+     * @param navigationServiceData -
+     */
+    public AppServiceData setNavigationServiceData(NavigationServiceData navigationServiceData) {
         setValue(KEY_NAVIGATION_SERVICE_DATA, navigationServiceData);
         return this;
     }
 
-	/**
-	 * @return navigationServiceData -
-	 */
-	public NavigationServiceData getNavigationServiceData() {
-		return (NavigationServiceData) getObject(NavigationServiceData.class, KEY_NAVIGATION_SERVICE_DATA);
-	}
+    /**
+     * @return navigationServiceData -
+     */
+    public NavigationServiceData getNavigationServiceData() {
+        return (NavigationServiceData) getObject(NavigationServiceData.class, KEY_NAVIGATION_SERVICE_DATA);
+    }
 
 }

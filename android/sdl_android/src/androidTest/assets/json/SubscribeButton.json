@@ -1,13 +1,13 @@
 {
-  "request":{
-    "name":"SubscribeButton",
-    "correlationID":161,
-    "parameters":{
-      "buttonName":"TUNEUP"
+  "request": {
+    "name": "SubscribeButton",
+    "correlationID": 161,
+    "parameters": {
+      "buttonName": "TUNEUP"
     }
   },
-  "response":{
-    "name":"SubscribeButtonResponse",
-    "correlationID":162
+  "response": {
+    "name": "SubscribeButtonResponse",
+    "correlationID": 162
   }
 }

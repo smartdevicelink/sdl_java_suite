@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -49,10 +49,10 @@ import java.util.List;
  * pressed
  * <p>The TIMEOUTPROMPT global property default value is the same as the HELPPROMPT
  * global property default value</p>
- * 
+ *
  * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
- * 
- * 
+ *
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -74,72 +74,78 @@ import java.util.List;
  *
  *  </table>
  *  <p><b>Response</b></p>
- *  
+ *
  * <p>Indicates whether the Global Properties were successfully set to their default values.</p>
- * 
+ *
  * <p><b>Non-default Result Codes:</b></p>
- * 
+ *
  * <p>	SUCCESS</p>
  * 	<p>INVALID_DATA</p>
  * <p>	OUT_OF_MEMORY</p>
  *  <p>	TOO_MANY_PENDING_REQUESTS</p>
  * <p>	APPLICATION_NOT_REGISTERED</p>
- * <p>	GENERIC_ERROR </p>     
+ * <p>	GENERIC_ERROR </p>
  * <p>	REJECTED </p>
  * 	<p>DISALLOWED    </p>
- * @since SmartDeviceLink 1.0
+ *
  * @see SetGlobalProperties
+ * @since SmartDeviceLink 1.0
  */
 public class ResetGlobalProperties extends RPCRequest {
-	public static final String KEY_PROPERTIES = "properties";
-	/**
-	 * Constructs a new ResetGlobalProperties object
-	 */
+    public static final String KEY_PROPERTIES = "properties";
+
+    /**
+     * Constructs a new ResetGlobalProperties object
+     */
     public ResetGlobalProperties() {
         super(FunctionID.RESET_GLOBAL_PROPERTIES.toString());
     }
-	/**
-	 * Constructs a new ResetGlobalProperties object indicated by the Hashtable
-	 * parameter
-	 *
-	 * @param hash The Hashtable to use
-	 */    
+
+    /**
+     * Constructs a new ResetGlobalProperties object indicated by the Hashtable
+     * parameter
+     *
+     * @param hash The Hashtable to use
+     */
     public ResetGlobalProperties(Hashtable<String, Object> hash) {
         super(hash);
     }
-	/**
-	 * Constructs a new ResetGlobalProperties object
-	 * @param properties a List<GlobalProperty> An array of one or more
-	 *            GlobalProperty enumeration elements indicating which global
-	 *            properties to reset to their default value <br>
-	 *            <b>Notes: </b>Array must have at least one element
-	 */
-	public ResetGlobalProperties(@NonNull List<GlobalProperty> properties) {
-		this();
-		setProperties(properties);
-	}
-	/**
-	 * Gets an array of one or more GlobalProperty enumeration elements
-	 * indicating which global properties to reset to their default value
-	 * 
-	 * @return List<GlobalProperty> -an array of one or more GlobalProperty
-	 *         enumeration elements
-	 */    
+
+    /**
+     * Constructs a new ResetGlobalProperties object
+     *
+     * @param properties a List<GlobalProperty> An array of one or more
+     *                   GlobalProperty enumeration elements indicating which global
+     *                   properties to reset to their default value <br>
+     *                   <b>Notes: </b>Array must have at least one element
+     */
+    public ResetGlobalProperties(@NonNull List<GlobalProperty> properties) {
+        this();
+        setProperties(properties);
+    }
+
+    /**
+     * Gets an array of one or more GlobalProperty enumeration elements
+     * indicating which global properties to reset to their default value
+     *
+     * @return List<GlobalProperty> -an array of one or more GlobalProperty
+     * enumeration elements
+     */
     @SuppressWarnings("unchecked")
     public List<GlobalProperty> getProperties() {
-		return (List<GlobalProperty>) getObject(GlobalProperty.class, KEY_PROPERTIES);
+        return (List<GlobalProperty>) getObject(GlobalProperty.class, KEY_PROPERTIES);
     }
-	/**
-	 * Sets an array of one or more GlobalProperty enumeration elements
-	 * indicating which global properties to reset to their default value
-	 *
-	 * @param properties
-	 *            a List<GlobalProperty> An array of one or more
-	 *            GlobalProperty enumeration elements indicating which global
-	 *            properties to reset to their default value
-	 *            <p></p>
-	 *            <b>Notes: </b>Array must have at least one element
-	 */
+
+    /**
+     * Sets an array of one or more GlobalProperty enumeration elements
+     * indicating which global properties to reset to their default value
+     *
+     * @param properties a List<GlobalProperty> An array of one or more
+     *                   GlobalProperty enumeration elements indicating which global
+     *                   properties to reset to their default value
+     *                   <p></p>
+     *                   <b>Notes: </b>Array must have at least one element
+     */
     public ResetGlobalProperties setProperties(@NonNull List<GlobalProperty> properties) {
         setParameters(KEY_PROPERTIES, properties);
         return this;

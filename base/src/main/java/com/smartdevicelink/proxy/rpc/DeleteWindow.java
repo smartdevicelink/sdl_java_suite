@@ -9,6 +9,7 @@ import java.util.Hashtable;
 
 /**
  * This RPC deletes the window created by the CreateWindow RPC
+ *
  * @see CreateWindow
  * @since 6.0
  */
@@ -36,7 +37,7 @@ public class DeleteWindow extends RPCRequest {
      * Constructs a new DeleteWindow object
      *
      * @param windowID A unique ID to identify the window. The value of '0' will always be the default main window on the main display and cannot be deleted.
-     *       See PredefinedWindows enum.
+     *                 See PredefinedWindows enum.
      */
     public DeleteWindow(@NonNull Integer windowID) {
         this();

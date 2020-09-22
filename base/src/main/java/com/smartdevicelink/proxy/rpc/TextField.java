@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -66,10 +66,10 @@ import java.util.Hashtable;
  * 			<td>Integer</td>
  * 			<td>The number of characters in one row of this field.
  * 					<ul>
- *					<li>Minvalue="1"</li>
- *					<li>maxvalue="500"</li>
- *					</ul>
- *			</td>
+ * 					<li>Minvalue="1"</li>
+ * 					<li>maxvalue="500"</li>
+ * 					</ul>
+ * 			</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * 		<tr>
@@ -77,15 +77,14 @@ import java.util.Hashtable;
  * 			<td>Integer</td>
  * 			<td>The number of rows for this text field.
  * 					<ul>
- *					<li>Minvalue="1"</li>
- *					<li>maxvalue="3"</li>
- *					</ul>
- *			</td>
+ * 					<li>Minvalue="1"</li>
+ * 					<li>maxvalue="3"</li>
+ * 					</ul>
+ * 			</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  *  </table>
- * @since SmartDeviceLink 1.0
- * 
+ *
  * @see TextFieldName
  * @see Alert
  * @see Show
@@ -93,108 +92,129 @@ import java.util.Hashtable;
  * @see ScrollableMessage
  * @see PerformAudioPassThru
  * @see ShowConstantTbt
- * 
+ * @since SmartDeviceLink 1.0
  */
 public class TextField extends RPCStruct {
-	public static final String KEY_WIDTH = "width";
-	public static final String KEY_CHARACTER_SET = "characterSet";
-	public static final String KEY_ROWS = "rows";
-	public static final String KEY_NAME = "name";
-	/**
-	 * Constructs a newly allocated TextField object
-	 */
-    public TextField() { }
+    public static final String KEY_WIDTH = "width";
+    public static final String KEY_CHARACTER_SET = "characterSet";
+    public static final String KEY_ROWS = "rows";
+    public static final String KEY_NAME = "name";
+
+    /**
+     * Constructs a newly allocated TextField object
+     */
+    public TextField() {
+    }
+
     /**
      * Constructs a newly allocated TextField object indicated by the Hashtable parameter
+     *
      * @param hash The Hashtable to use
-     */    
+     */
     public TextField(Hashtable<String, Object> hash) {
         super(hash);
     }
-	/**
-	 * Constructs a newly allocated TextField object
-	 * @param name Enumeration identifying the field.
-	 * @param characterSet The set of characters that are supported by this text field.
-     * All text is sent in UTF-8 format, but not all systems may support all of the characters expressed by UTF-8.
-     * All systems will support at least ASCII, but they may support more, either the LATIN-1 character set, or the full UTF-8 character set.
-	 * @param width The number of characters in one row of this field.
-	 * @param rows The number of rows for this text field.
-	 */
-	public TextField(@NonNull TextFieldName name, @NonNull CharacterSet characterSet, @NonNull Integer width, @NonNull Integer rows){
-		this();
-		setName(name);
-		setCharacterSet(characterSet);
-		setWidth(width);
-		setRows(rows);
-	}
+
     /**
-     * Get the enumeration identifying the field.	
+     * Constructs a newly allocated TextField object
+     *
+     * @param name         Enumeration identifying the field.
+     * @param characterSet The set of characters that are supported by this text field.
+     *                     All text is sent in UTF-8 format, but not all systems may support all of the characters expressed by UTF-8.
+     *                     All systems will support at least ASCII, but they may support more, either the LATIN-1 character set, or the full UTF-8 character set.
+     * @param width        The number of characters in one row of this field.
+     * @param rows         The number of rows for this text field.
+     */
+    public TextField(@NonNull TextFieldName name, @NonNull CharacterSet characterSet, @NonNull Integer width, @NonNull Integer rows) {
+        this();
+        setName(name);
+        setCharacterSet(characterSet);
+        setWidth(width);
+        setRows(rows);
+    }
+
+    /**
+     * Get the enumeration identifying the field.
+     *
      * @return the name of TextField
-     */    
+     */
     public TextFieldName getName() {
         return (TextFieldName) getObject(TextFieldName.class, KEY_NAME);
     }
+
     /**
      * Set the enumeration identifying the field.
+     *
      * @param name the name of TextField
      */
     public TextField setName(@NonNull TextFieldName name) {
         setValue(KEY_NAME, name);
         return this;
     }
+
     /**
      * Get the character set that is supported in this field.
+     *
      * @return The set of characters that are supported by this text field.
      * All text is sent in UTF-8 format, but not all systems may support all of the characters expressed by UTF-8.
      * All systems will support at least ASCII, but they may support more, either the LATIN-1 character set, or the full UTF-8 character set.
-     */    
+     */
     public CharacterSet getCharacterSet() {
         return (CharacterSet) getObject(CharacterSet.class, KEY_CHARACTER_SET);
     }
+
     /**
      * Set the character set that is supported in this field.
+     *
      * @param characterSet - The set of characters that are supported by this text field.
-     * All text is sent in UTF-8 format, but not all systems may support all of the characters expressed by UTF-8.
-     * All systems will support at least ASCII, but they may support more, either the LATIN-1 character set, or the full UTF-8 character set.
+     *                     All text is sent in UTF-8 format, but not all systems may support all of the characters expressed by UTF-8.
+     *                     All systems will support at least ASCII, but they may support more, either the LATIN-1 character set, or the full UTF-8 character set.
      */
     public TextField setCharacterSet(@NonNull CharacterSet characterSet) {
         setValue(KEY_CHARACTER_SET, characterSet);
         return this;
     }
+
     /**
      * Get the number of characters in one row of this field.
-     * 					<ul>
-     *					<li>Minvalue="1"</li>
-     *					<li>maxvalue="500"</li>
-     *					</ul>
+     * <ul>
+     * <li>Minvalue="1"</li>
+     * <li>maxvalue="500"</li>
+     * </ul>
+     *
      * @return the number of characters in one row of this field
-     */    
+     */
     public Integer getWidth() {
-        return getInteger( KEY_WIDTH );
+        return getInteger(KEY_WIDTH);
     }
+
     /**
      * Set the number of characters in one row of this field.
-     * 					<ul>
-     *					<li>Minvalue="1"</li>
-     *					<li>maxvalue="500"</li>
-     *					</ul>
-     * @param width  the number of characters in one row of this field
+     * <ul>
+     * <li>Minvalue="1"</li>
+     * <li>maxvalue="500"</li>
+     * </ul>
+     *
+     * @param width the number of characters in one row of this field
      */
     public TextField setWidth(@NonNull Integer width) {
         setValue(KEY_WIDTH, width);
         return this;
     }
+
     /**
-     *Get the number of rows for this text field.
-     * 					<ul>
-     *					<li>Minvalue="1"</li>
-     *					<li>maxvalue="3"</li>
-     *					</ul>
-     * @return  the number of rows for this text field
-     */    
+     * Get the number of rows for this text field.
+     * <ul>
+     * <li>Minvalue="1"</li>
+     * <li>maxvalue="3"</li>
+     * </ul>
+     *
+     * @return the number of rows for this text field
+     */
     public Integer getRows() {
-        return getInteger( KEY_ROWS );
+        return getInteger(KEY_ROWS);
     }
+
     public TextField setRows(@NonNull Integer rows) {
         setValue(KEY_ROWS, rows);
         return this;

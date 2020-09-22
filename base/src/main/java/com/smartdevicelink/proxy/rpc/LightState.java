@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -41,120 +41,116 @@ import com.smartdevicelink.util.SdlDataTypeConverter;
 import java.util.Hashtable;
 
 public class LightState extends RPCStruct {
-	public static final String KEY_ID = "id";
-	public static final String KEY_STATUS = "status";
-	public static final String KEY_DENSITY = "density";
-	public static final String KEY_COLOR = "color";
+    public static final String KEY_ID = "id";
+    public static final String KEY_STATUS = "status";
+    public static final String KEY_DENSITY = "density";
+    public static final String KEY_COLOR = "color";
 
-	/**
-	 * Constructs a new LightState object
-	 */
-	public LightState() {
-	}
+    /**
+     * Constructs a new LightState object
+     */
+    public LightState() {
+    }
 
-	/**
-	 * <p>Constructs a new LightState object indicated by the Hashtable parameter
-	 * </p>
-	 *
-	 * @param hash The Hashtable to use
-	 */
-	public LightState(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+    /**
+     * <p>Constructs a new LightState object indicated by the Hashtable parameter
+     * </p>
+     *
+     * @param hash The Hashtable to use
+     */
+    public LightState(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
-	/**
-	 * Constructs a newly allocated LightState object
-	 *
-	 * @param id     The name of a light or a group of lights.
-	 * @param status Status of Light.
-	 */
-	public LightState(@NonNull LightName id, @NonNull LightStatus status) {
-		this();
-		setId(id);
-		setStatus(status);
-	}
+    /**
+     * Constructs a newly allocated LightState object
+     *
+     * @param id     The name of a light or a group of lights.
+     * @param status Status of Light.
+     */
+    public LightState(@NonNull LightName id, @NonNull LightStatus status) {
+        this();
+        setId(id);
+        setStatus(status);
+    }
 
-	/**
-	 * Sets the id portion of the LightState class
-	 *
-	 * @param id The name of a light or a group of lights.
-	 */
-	public LightState setId(@NonNull LightName id) {
+    /**
+     * Sets the id portion of the LightState class
+     *
+     * @param id The name of a light or a group of lights.
+     */
+    public LightState setId(@NonNull LightName id) {
         setValue(KEY_ID, id);
         return this;
     }
 
-	/**
-	 * Gets the id portion of the LightState class
-	 *
-	 * @return LightName  - The name of a light or a group of lights.
-	 */
-	public LightName getId() {
-		return (LightName) getObject(LightName.class, KEY_ID);
-	}
+    /**
+     * Gets the id portion of the LightState class
+     *
+     * @return LightName  - The name of a light or a group of lights.
+     */
+    public LightName getId() {
+        return (LightName) getObject(LightName.class, KEY_ID);
+    }
 
-	/**
-	 * Sets the status portion of the LightState class
-	 *
-	 * @param status enum value of type LightStatus that describes the specific lights state
-	 *
-	 * @see LightStatus
-	 */
-	public LightState setStatus(@NonNull LightStatus status) {
+    /**
+     * Sets the status portion of the LightState class
+     *
+     * @param status enum value of type LightStatus that describes the specific lights state
+     * @see LightStatus
+     */
+    public LightState setStatus(@NonNull LightStatus status) {
         setValue(KEY_STATUS, status);
         return this;
     }
 
-	/**
-	 * Gets the status portion of the LightState class
-	 *
-	 * @return LightStatus enum value that describes the specific lights state
-	 *
-	 *  @see com.smartdevicelink.proxy.rpc.enums.LightStatus
-	 */
-	public LightStatus getStatus() {
-		return (LightStatus) getObject(LightStatus.class, KEY_STATUS);
-	}
+    /**
+     * Gets the status portion of the LightState class
+     *
+     * @return LightStatus enum value that describes the specific lights state
+     * @see com.smartdevicelink.proxy.rpc.enums.LightStatus
+     */
+    public LightStatus getStatus() {
+        return (LightStatus) getObject(LightStatus.class, KEY_STATUS);
+    }
 
-	/**
-	 * Gets the density portion of the LightState class
-	 *
-	 * @return a float representation of the density of the specific light state
-	 */
-	public Float getDensity() {
-		Object value = getValue(KEY_DENSITY);
-		return SdlDataTypeConverter.objectToFloat(value);
-	}
+    /**
+     * Gets the density portion of the LightState class
+     *
+     * @return a float representation of the density of the specific light state
+     */
+    public Float getDensity() {
+        Object value = getValue(KEY_DENSITY);
+        return SdlDataTypeConverter.objectToFloat(value);
+    }
 
-	/**
-	 * Sets the density portion of the LightState class
-	 *
-	 * @param density a float representation of the density of the specific light state
-	 */
-	public LightState setDensity( Float density) {
+    /**
+     * Sets the density portion of the LightState class
+     *
+     * @param density a float representation of the density of the specific light state
+     */
+    public LightState setDensity(Float density) {
         setValue(KEY_DENSITY, density);
         return this;
     }
 
-	/**
-	 * Gets the color portion of the LightState class
-	 *
-	 * @return an RGBColor representation of the color of this specific light state
-	 *
-	 * @see com.smartdevicelink.proxy.rpc.RGBColor
-	 */
-	public RGBColor getColor() {
-		return (RGBColor) getObject(RGBColor.class, KEY_COLOR);
-	}
+    /**
+     * Gets the color portion of the LightState class
+     *
+     * @return an RGBColor representation of the color of this specific light state
+     * @see com.smartdevicelink.proxy.rpc.RGBColor
+     */
+    public RGBColor getColor() {
+        return (RGBColor) getObject(RGBColor.class, KEY_COLOR);
+    }
 
-	/**
-	 * Sets the color portion of the LightState class
-	 *
-	 * @param color an RGBColor representation of the color of this specific light state
-	 *
-	 * @see RGBColor
-	 */
-	public LightState setColor( RGBColor color) {
+    /**
+     * Sets the color portion of the LightState class
+     *
+     * @param color an RGBColor representation of the color of this specific light state
+     * @see RGBColor
+     */
+    public LightState setColor(RGBColor color) {
         setValue(KEY_COLOR, color);
         return this;
     }

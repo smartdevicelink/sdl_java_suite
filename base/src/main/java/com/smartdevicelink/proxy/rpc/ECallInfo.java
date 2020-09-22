@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -39,8 +39,9 @@ import com.smartdevicelink.proxy.rpc.enums.VehicleDataNotificationStatus;
 
 import java.util.Hashtable;
 
-/** Emergency Call notification and confirmation data.
- * 
+/**
+ * Emergency Call notification and confirmation data.
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -76,29 +77,34 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  *  </table>
- * @since SmartDeviceLink 2.0
+ *
  * @see SubscribeVehicleData
- * 
- *
- *
+ * @since SmartDeviceLink 2.0
  */
 
 public class ECallInfo extends RPCStruct {
     public static final String KEY_E_CALL_NOTIFICATION_STATUS = "eCallNotificationStatus";
     public static final String KEY_AUX_E_CALL_NOTIFICATION_STATUS = "auxECallNotificationStatus";
     public static final String KEY_E_CALL_CONFIRMATION_STATUS = "eCallConfirmationStatus";
-    /** Constructs a new ECallInfo object
-	 */
-    public ECallInfo() { }
-    /** Constructs a new ECallInfo object indicated by the Hashtable
+
+    /**
+     * Constructs a new ECallInfo object
+     */
+    public ECallInfo() {
+    }
+
+    /**
+     * Constructs a new ECallInfo object indicated by the Hashtable
      * parameter
+     *
      * @param hash <p>The hash table to use</p>
      */
     public ECallInfo(Hashtable<String, Object> hash) {
         super(hash);
     }
+
     /**
-	 * Constructs a new ECallInfo object
+     * Constructs a new ECallInfo object
      */
     public ECallInfo(@NonNull VehicleDataNotificationStatus eCallNotificationStatus, @NonNull VehicleDataNotificationStatus auxECallNotificationStatus, @NonNull ECallConfirmationStatus eCallConfirmationStatus) {
         this();
@@ -111,20 +117,25 @@ public class ECallInfo extends RPCStruct {
         setValue(KEY_E_CALL_NOTIFICATION_STATUS, eCallNotificationStatus);
         return this;
     }
+
     public VehicleDataNotificationStatus getECallNotificationStatus() {
         return (VehicleDataNotificationStatus) getObject(VehicleDataNotificationStatus.class, KEY_E_CALL_NOTIFICATION_STATUS);
     }
+
     public ECallInfo setAuxECallNotificationStatus(@NonNull VehicleDataNotificationStatus auxECallNotificationStatus) {
         setValue(KEY_AUX_E_CALL_NOTIFICATION_STATUS, auxECallNotificationStatus);
         return this;
     }
+
     public VehicleDataNotificationStatus getAuxECallNotificationStatus() {
         return (VehicleDataNotificationStatus) getObject(VehicleDataNotificationStatus.class, KEY_AUX_E_CALL_NOTIFICATION_STATUS);
     }
+
     public ECallInfo setECallConfirmationStatus(@NonNull ECallConfirmationStatus eCallConfirmationStatus) {
         setValue(KEY_E_CALL_CONFIRMATION_STATUS, eCallConfirmationStatus);
         return this;
     }
+
     public ECallConfirmationStatus getECallConfirmationStatus() {
         return (ECallConfirmationStatus) getObject(ECallConfirmationStatus.class, KEY_E_CALL_CONFIRMATION_STATUS);
     }

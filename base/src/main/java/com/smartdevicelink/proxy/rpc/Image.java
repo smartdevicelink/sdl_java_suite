@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -39,8 +39,8 @@ import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import java.util.Hashtable;
 
 /**
- *Specifies, which image shall be used, e.g. in Alerts or on SoftButtons provided the display supports it.
- *<p><b>Parameter List</b></p>
+ * Specifies, which image shall be used, e.g. in Alerts or on SoftButtons provided the display supports it.
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -53,9 +53,9 @@ import java.util.Hashtable;
  * 			<td>String</td>
  * 			<td>Either the static hex icon value or the binary image file name identifier (sent by PutFile).
  * 					<ul>
- *					<li>Min: 0</li>
- *					<li>Max: 65535</li>
- *					</ul>
+ * 					<li>Min: 0</li>
+ * 					<li>Max: 65535</li>
+ * 					</ul>
  * 			</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
@@ -66,29 +66,33 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  *  </table>
+ *
  * @since SmartDeviceLink 2.0
  */
 public class Image extends RPCStruct {
-	public static final String KEY_VALUE = "value";
-	public static final String KEY_IMAGE_TYPE = "imageType";
-	public static final String KEY_IS_TEMPLATE = "isTemplate";
+    public static final String KEY_VALUE = "value";
+    public static final String KEY_IMAGE_TYPE = "imageType";
+    public static final String KEY_IS_TEMPLATE = "isTemplate";
 
-	/**
-	 * Constructs a newly allocated Image object
-	 */
-    public Image() { }
-    
+    /**
+     * Constructs a newly allocated Image object
+     */
+    public Image() {
+    }
+
     /**
      * Constructs a newly allocated Image object indicated by the Hashtable parameter
+     *
      * @param hash The Hashtable to use
-     */      
+     */
     public Image(Hashtable<String, Object> hash) {
         super(hash);
     }
 
     /**
      * Constructs a newly allocated Image object
-     * @param value either the static hex icon value or the binary image file name identifier (sent by PutFile)
+     *
+     * @param value     either the static hex icon value or the binary image file name identifier (sent by PutFile)
      * @param imageType whether it is a static or dynamic image
      */
     public Image(@NonNull String value, @NonNull ImageType imageType) {
@@ -99,32 +103,36 @@ public class Image extends RPCStruct {
 
     /**
      * Set either the static hex icon value or the binary image file name identifier (sent by PutFile)
+     *
      * @param value either the static hex icon value or the binary image file name identifier (sent by PutFile)
      */
     public Image setValue(@NonNull String value) {
         setValue(KEY_VALUE, value);
         return this;
     }
-    
+
     /**
      * Get either the static hex icon value or the binary image file name identifier (sent by PutFile)
-     * @return  either the static hex icon value or the binary image file name identifier (sent by PutFile)
+     *
+     * @return either the static hex icon value or the binary image file name identifier (sent by PutFile)
      */
     public String getValue() {
         return getString(KEY_VALUE);
     }
-    
+
     /**
      * Set the image type (static or dynamic image)
+     *
      * @param imageType whether it is a static or dynamic image
      */
     public Image setImageType(@NonNull ImageType imageType) {
         setValue(KEY_IMAGE_TYPE, imageType);
         return this;
     }
-    
+
     /**
      * Get image type (static or dynamic image)
+     *
      * @return the image type (static or dynamic image)
      */
     public ImageType getImageType() {
@@ -133,18 +141,20 @@ public class Image extends RPCStruct {
 
     /**
      * Set whether this Image is a template image whose coloring should be decided by the HMI
+     *
      * @param isTemplate boolean that tells whether this Image is a template image
      */
-    public Image setIsTemplate( Boolean isTemplate) {
+    public Image setIsTemplate(Boolean isTemplate) {
         setValue(KEY_IS_TEMPLATE, isTemplate);
         return this;
     }
 
     /**
      * Get whether this Image is a template image whose coloring should be decided by the HMI
+     *
      * @return boolean that tells whether this Image is a template image
      */
-    public Boolean getIsTemplate(){
+    public Boolean getIsTemplate() {
         return getBoolean(KEY_IS_TEMPLATE);
     }
 }

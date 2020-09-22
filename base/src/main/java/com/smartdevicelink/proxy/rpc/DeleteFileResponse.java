@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -42,12 +42,12 @@ import java.util.Hashtable;
 
 /**
  * Delete File Response is sent, when DeleteFile has been called
- * 
+ *
  * @since SmartDeviceLink 2.0
  */
 public class DeleteFileResponse extends RPCResponse {
-	public static final String KEY_SPACE_AVAILABLE = "spaceAvailable";
-	private static final Integer MAX_VALUE = 2000000000;
+    public static final String KEY_SPACE_AVAILABLE = "spaceAvailable";
+    private static final Integer MAX_VALUE = 2000000000;
 
     /**
      * Constructs a new DeleteFileResponse object
@@ -62,7 +62,8 @@ public class DeleteFileResponse extends RPCResponse {
 
     /**
      * Constructs a new DeleteFileResponse object
-     * @param success whether the request is successfully processed
+     *
+     * @param success    whether the request is successfully processed
      * @param resultCode whether the request is successfully processed
      */
     public DeleteFileResponse(@NonNull Boolean success, @NonNull Result resultCode) {
@@ -76,21 +77,21 @@ public class DeleteFileResponse extends RPCResponse {
      * always have a value connects to such a system, it could return null. Check to see if there
      * is a value, and if not, set it to MAX_VALUE as defined by the RPC Spec
      *
-     * @param rpcVersion the rpc spec version that has been negotiated. If value is null the
-     *                   the max value of RPC spec version this library supports should be used.
+     * @param rpcVersion   the rpc spec version that has been negotiated. If value is null the
+     *                     the max value of RPC spec version this library supports should be used.
      * @param formatParams if true, the format method will be called on subsequent params
      */
     @Override
-    public void format(Version rpcVersion, boolean formatParams){
-        if (rpcVersion == null || rpcVersion.getMajor() >= 5){
-            if (getSpaceAvailable() == null){
+    public void format(Version rpcVersion, boolean formatParams) {
+        if (rpcVersion == null || rpcVersion.getMajor() >= 5) {
+            if (getSpaceAvailable() == null) {
                 setSpaceAvailable(MAX_VALUE);
             }
         }
         super.format(rpcVersion, formatParams);
     }
 
-    public DeleteFileResponse setSpaceAvailable( Integer spaceAvailable) {
+    public DeleteFileResponse setSpaceAvailable(Integer spaceAvailable) {
         setParameters(KEY_SPACE_AVAILABLE, spaceAvailable);
         return this;
     }

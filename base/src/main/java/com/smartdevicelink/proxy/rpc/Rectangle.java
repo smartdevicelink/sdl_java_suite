@@ -39,85 +39,88 @@ import java.util.Hashtable;
 
 /**
  * Defines Rectangle for each user control object for video streaming application
+ *
  * @since SmartDeviceLink 4.5.0
  */
 
 public class Rectangle extends RPCStruct {
-	public static final String KEY_X = "x";
-	public static final String KEY_Y = "y";
-	public static final String KEY_WIDTH = "width";
-	public static final String KEY_HEIGHT = "height";
+    public static final String KEY_X = "x";
+    public static final String KEY_Y = "y";
+    public static final String KEY_WIDTH = "width";
+    public static final String KEY_HEIGHT = "height";
 
-	public Rectangle() {}
-	public Rectangle(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+    public Rectangle() {
+    }
 
-	public Rectangle(@NonNull Float x, @NonNull Float y, @NonNull Float width, @NonNull Float height) {
-		this();
-		setX(x);
-		setY(y);
-		setWidth(width);
-		setHeight(height);
-	}
+    public Rectangle(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
-	/**
-	 * Set the X-coordinate pixel in of the user control that starts in the upper left corner
-	 */
-	public Rectangle setX(@NonNull Float x) {
+    public Rectangle(@NonNull Float x, @NonNull Float y, @NonNull Float width, @NonNull Float height) {
+        this();
+        setX(x);
+        setY(y);
+        setWidth(width);
+        setHeight(height);
+    }
+
+    /**
+     * Set the X-coordinate pixel in of the user control that starts in the upper left corner
+     */
+    public Rectangle setX(@NonNull Float x) {
         setValue(KEY_X, x);
         return this;
     }
 
-	/**
-	 * @return  the X-coordinate pixel of the user control that starts in the upper left corner
-	 */
-	public Float getX() {
-		return getFloat(KEY_X);
-	}
+    /**
+     * @return the X-coordinate pixel of the user control that starts in the upper left corner
+     */
+    public Float getX() {
+        return getFloat(KEY_X);
+    }
 
-	/**
-	 * Set the Y-coordinate pixel of the user control that starts in the upper left corner
-	 */
-	public Rectangle setY(@NonNull Float y) {
+    /**
+     * Set the Y-coordinate pixel of the user control that starts in the upper left corner
+     */
+    public Rectangle setY(@NonNull Float y) {
         setValue(KEY_Y, y);
         return this;
     }
 
-	/**
-	 * @return the Y-coordinate pixel of the user control that starts in the upper left corner
-	 */
-	public Float getY() {
-		return getFloat(KEY_Y);
-	}
+    /**
+     * @return the Y-coordinate pixel of the user control that starts in the upper left corner
+     */
+    public Float getY() {
+        return getFloat(KEY_Y);
+    }
 
-	/**
-	 * Set the width in pixels of the user control's bounding rectangle in pixels
-	 */
-	public Rectangle setWidth(@NonNull Float width) {
+    /**
+     * Set the width in pixels of the user control's bounding rectangle in pixels
+     */
+    public Rectangle setWidth(@NonNull Float width) {
         setValue(KEY_WIDTH, width);
         return this;
     }
 
-	/**
-	 * @return  the width in pixels of the user control's bounding rectangle in pixels
-	 */
-	public Float getWidth() {
-		return getFloat(KEY_WIDTH);
-	}
+    /**
+     * @return the width in pixels of the user control's bounding rectangle in pixels
+     */
+    public Float getWidth() {
+        return getFloat(KEY_WIDTH);
+    }
 
-	/**
-	 * The height in pixels of the user control's bounding rectangle
-	 */
-	public Rectangle setHeight(@NonNull Float height) {
+    /**
+     * The height in pixels of the user control's bounding rectangle
+     */
+    public Rectangle setHeight(@NonNull Float height) {
         setValue(KEY_HEIGHT, height);
         return this;
     }
 
-	/**
-	 * @return the width in pixels of the user control's bounding rectangle in pixels
-	 */
-	public Float getHeight() {
-		return getFloat(KEY_HEIGHT);
-	}
+    /**
+     * @return the width in pixels of the user control's bounding rectangle in pixels
+     */
+    public Float getHeight() {
+        return getFloat(KEY_HEIGHT);
+    }
 }

@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -41,37 +41,38 @@ import java.util.Hashtable;
 
 /**
  * Scrollable Message Response is sent, when ScrollableMessage has been called
- * 
+ *
  * @since SmartDeviceLink 2.0
  */
 public class ScrollableMessageResponse extends RPCResponse {
 
-	/**
-	 * Constructs a new ScrollableMessageResponse object
-	 */
+    /**
+     * Constructs a new ScrollableMessageResponse object
+     */
     public ScrollableMessageResponse() {
         super(FunctionID.SCROLLABLE_MESSAGE.toString());
     }
 
-	/**
-	 * Constructs a new ScrollableMessageResponse object indicated by the Hashtable
-	 * parameter
-	 * <p></p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
+    /**
+     * Constructs a new ScrollableMessageResponse object indicated by the Hashtable
+     * parameter
+     * <p></p>
+     *
+     * @param hash The Hashtable to use
+     */
     public ScrollableMessageResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
-	/**
-	 * Constructs a new ScrollableMessageResponse object
-	 * @param success whether the request is successfully processed
-	 * @param resultCode whether the request is successfully processed
-	 */
-	public ScrollableMessageResponse(@NonNull Boolean success, @NonNull Result resultCode) {
-		this();
-		setSuccess(success);
-		setResultCode(resultCode);
-	}
+
+    /**
+     * Constructs a new ScrollableMessageResponse object
+     *
+     * @param success    whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     */
+    public ScrollableMessageResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
+    }
 }

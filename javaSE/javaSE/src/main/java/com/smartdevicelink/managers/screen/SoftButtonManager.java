@@ -34,8 +34,8 @@ package com.smartdevicelink.managers.screen;
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 
-import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.ISdl;
+import com.smartdevicelink.managers.file.FileManager;
 
 /**
  * <strong>SoftButtonManager</strong> <br>
@@ -49,7 +49,7 @@ class SoftButtonManager extends BaseSoftButtonManager {
      * Creates a new instance of the SoftButtonManager
      *
      * @param internalInterface an instance of the ISdl interface that can be used for common SDL operations (sendRpc, addRpcListener, etc)
-     * @param fileManager an instance of the FileManager so that button graphics can be sent
+     * @param fileManager       an instance of the FileManager so that button graphics can be sent
      */
     SoftButtonManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface, fileManager);

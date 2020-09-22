@@ -39,94 +39,113 @@ import java.util.Hashtable;
 
 public class AppInfo extends RPCStruct {
 
-	public static final String KEY_APP_DISPLAY_NAME = "appDisplayName";
-	public static final String KEY_APP_BUNDLE_ID = "appBundleID";
-	public static final String KEY_APP_VERSION = "appVersion";
-	public static final String KEY_APP_ICON = "appIcon";
+    public static final String KEY_APP_DISPLAY_NAME = "appDisplayName";
+    public static final String KEY_APP_BUNDLE_ID = "appBundleID";
+    public static final String KEY_APP_VERSION = "appVersion";
+    public static final String KEY_APP_ICON = "appIcon";
 
-	/**
-	 * Constructs a new AppInfo object
-	 */
-	public AppInfo() { }
+    /**
+     * Constructs a new AppInfo object
+     */
+    public AppInfo() {
+    }
 
-	/**
-	 * Constructs a new AppInfo object indicated by the Hashtable parameter
-	 * @param hash The Hashtable to use
-	 */
-	public AppInfo(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+    /**
+     * Constructs a new AppInfo object indicated by the Hashtable parameter
+     *
+     * @param hash The Hashtable to use
+     */
+    public AppInfo(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
-	/**
-	 * Constructs a new AppInfo object
-	 * @param appDisplayName - name displayed for the mobile application on the mobile device
-	 * @param appBundleID - package name of the application.
-	 * @param appVersion - build version number of this particular mobile app.
-	 */
-	public AppInfo(@NonNull String appDisplayName, String appBundleID, String appVersion){
-		this();
-		setAppDisplayName(appDisplayName);
-		setAppBundleID(appBundleID);
-		setAppVersion(appVersion);
-	}
+    /**
+     * Constructs a new AppInfo object
+     *
+     * @param appDisplayName - name displayed for the mobile application on the mobile device
+     * @param appBundleID    - package name of the application.
+     * @param appVersion     - build version number of this particular mobile app.
+     */
+    public AppInfo(@NonNull String appDisplayName, String appBundleID, String appVersion) {
+        this();
+        setAppDisplayName(appDisplayName);
+        setAppBundleID(appBundleID);
+        setAppVersion(appVersion);
+    }
 
-	/** Sets the name displayed for the mobile application on the mobile device (can differ from the app name set in the initial RAI request).
-	 * @param appDisplayName - name displayed for the mobile application on the mobile device.
-	 */
-	public AppInfo setAppDisplayName(@NonNull String appDisplayName) {
+    /**
+     * Sets the name displayed for the mobile application on the mobile device (can differ from the app name set in the initial RAI request).
+     *
+     * @param appDisplayName - name displayed for the mobile application on the mobile device.
+     */
+    public AppInfo setAppDisplayName(@NonNull String appDisplayName) {
         setValue(KEY_APP_DISPLAY_NAME, appDisplayName);
         return this;
     }
 
-	/** Gets the name displayed for the mobile application on the mobile device (can differ from the app name set in the initial RAI request).
-	 * @return appDisplayName - name displayed for the mobile application on the mobile device.
-	 */
-	public String getAppDisplayName() {
-		return getString(KEY_APP_DISPLAY_NAME);
-	}
+    /**
+     * Gets the name displayed for the mobile application on the mobile device (can differ from the app name set in the initial RAI request).
+     *
+     * @return appDisplayName - name displayed for the mobile application on the mobile device.
+     */
+    public String getAppDisplayName() {
+        return getString(KEY_APP_DISPLAY_NAME);
+    }
 
-	/** Sets package name of the Android application. This supports App Launch strategies for each platform.
-	 * @param appBundleID - package name of the application
-	 */
-	public AppInfo setAppBundleID(@NonNull String appBundleID) {
+    /**
+     * Sets package name of the Android application. This supports App Launch strategies for each platform.
+     *
+     * @param appBundleID - package name of the application
+     */
+    public AppInfo setAppBundleID(@NonNull String appBundleID) {
         setValue(KEY_APP_BUNDLE_ID, appBundleID);
         return this;
     }
 
-	/** Gets package name of the Android application. This supports App Launch strategies for each platform.
-	 * @return appBundleID - package name of the application.
-	 */
-	public String getAppBundleID() {
-		return getString(KEY_APP_BUNDLE_ID);
-	}
+    /**
+     * Gets package name of the Android application. This supports App Launch strategies for each platform.
+     *
+     * @return appBundleID - package name of the application.
+     */
+    public String getAppBundleID() {
+        return getString(KEY_APP_BUNDLE_ID);
+    }
 
-	/** Sets build version number of this particular mobile app.
-	 * @param appVersion - build version number of this particular mobile app.
-	 */
-	public AppInfo setAppVersion(@NonNull String appVersion) {
+    /**
+     * Sets build version number of this particular mobile app.
+     *
+     * @param appVersion - build version number of this particular mobile app.
+     */
+    public AppInfo setAppVersion(@NonNull String appVersion) {
         setValue(KEY_APP_VERSION, appVersion);
         return this;
     }
 
-	/** Gets build version number of this particular mobile app.
-	 * @return appVersion - build version number of this particular mobile app.
-	 */
-	public String getAppVersion() {
-		return getString(KEY_APP_VERSION);
-	}
+    /**
+     * Gets build version number of this particular mobile app.
+     *
+     * @return appVersion - build version number of this particular mobile app.
+     */
+    public String getAppVersion() {
+        return getString(KEY_APP_VERSION);
+    }
 
-	/** Sets file reference to the icon utilized by this app (simplifies the process of setting an app icon during app registration).
-	 * @param appIcon - file reference to the icon utilized by this app
-	 */
-	public AppInfo setAppIcon( String appIcon) {
+    /**
+     * Sets file reference to the icon utilized by this app (simplifies the process of setting an app icon during app registration).
+     *
+     * @param appIcon - file reference to the icon utilized by this app
+     */
+    public AppInfo setAppIcon(String appIcon) {
         setValue(KEY_APP_ICON, appIcon);
         return this;
     }
 
-	/** Gets build version number of this particular mobile app.
-	 * @return appIcon - build version number of this particular mobile app.
-	 */
-	public String getAppIcon() {
-		return getString(KEY_APP_ICON);
-	}
+    /**
+     * Gets build version number of this particular mobile app.
+     *
+     * @return appIcon - build version number of this particular mobile app.
+     */
+    public String getAppIcon() {
+        return getString(KEY_APP_ICON);
+    }
 }

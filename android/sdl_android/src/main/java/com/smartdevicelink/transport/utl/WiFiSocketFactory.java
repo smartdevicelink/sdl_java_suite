@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -50,7 +50,7 @@ import static com.smartdevicelink.util.NativeLogTool.logInfo;
 public class WiFiSocketFactory {
     /**
      * Try to create a TCP socket which is bound to Wi-Fi network (for Android 5+)
-     *
+     * <p>
      * On Android 5 and later, this method tries to create a Socket instance which is bound to a
      * Wi-Fi network. If the phone is not connected to a Wi-Fi network, or the app lacks
      * required permission (ACCESS_NETWORK_STATE), then this method simply creates a Socket instance
@@ -72,7 +72,7 @@ public class WiFiSocketFactory {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private static Socket createWiFiSocket(Context context) {
-        if(context == null){
+        if (context == null) {
             logInfo("Context supplied was null");
             return null;
         }
@@ -87,7 +87,7 @@ public class WiFiSocketFactory {
             return null;
         }
 
-        ConnectivityManager connMan = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connMan == null) {
             logInfo("ConnectivityManager isn't available.");
             return null;
