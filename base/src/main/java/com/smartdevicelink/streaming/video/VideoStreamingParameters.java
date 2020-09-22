@@ -66,6 +66,7 @@ public class VideoStreamingParameters {
     private int interval;
     private ImageResolution resolution;
     private VideoStreamingFormat format;
+    private boolean stableFrameRate;
 
     public VideoStreamingParameters() {
         displayDensity = DEFAULT_DENSITY;
