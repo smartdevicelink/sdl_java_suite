@@ -32,6 +32,7 @@
 package com.smartdevicelink.util;
 
 import androidx.annotation.NonNull;
+import com.smartdevicelink.BuildConfig;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -85,6 +86,7 @@ public class FileUtls {
         try {
             URL url = new URL(urlStr);
             URLConnection connection = url.openConnection();
+            connection.setRequestProperty("User-Agent", "SmartDeviceLink/" + BuildConfig.VERSION_NAME);
             InputStream inputStream = connection.getInputStream();
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
