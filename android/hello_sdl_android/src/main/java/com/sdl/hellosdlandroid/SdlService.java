@@ -154,14 +154,29 @@ public class SdlService extends Service {
 						} else {
 							myClass = UIStreamingDisplay.class;
 						}
-						VideoStreamingRange.Builder builder = new VideoStreamingRange.Builder();
-						builder
+						VideoStreamingRange.Builder landscapeBuilder = new VideoStreamingRange.Builder();
+						landscapeBuilder
 								.setMaxSupportedResolution(new Resolution(800, 480))
 								.setMinSupportedResolution(new Resolution(400, 200))
 								.setAspectRatio(new AspectRatio(1., 6.))
 								.setMinScreenDiagonal(1.);
-						VideoStreamingRange range = builder.build();
-						sdlManager.getVideoStreamManager().startRemoteDisplayStream(getApplicationContext(), myClass, null, false, range);
+						VideoStreamingRange landscapeRange = landscapeBuilder.build();
+
+						VideoStreamingRange.Builder portraitBuilder = new VideoStreamingRange.Builder();
+						portraitBuilder
+								.setMaxSupportedResolution(new Resolution(480, 800))
+								.setMinSupportedResolution(new Resolution(200, 400))
+								.setAspectRatio(new AspectRatio(1., 6.))
+								.setMinScreenDiagonal(1.);
+						VideoStreamingRange portraitRange = portraitBuilder.build();
+						sdlManager.getVideoStreamManager().startRemoteDisplayStream(
+								getApplicationContext(),
+								myClass,
+								null,
+								false,
+								landscapeRange,
+								portraitRange
+						);
 					} else {
 						Log.e(TAG, "Failed to start video streaming manager");
 					}

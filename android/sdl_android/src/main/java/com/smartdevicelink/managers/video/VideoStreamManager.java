@@ -111,7 +111,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	private IVideoStreamListener streamListener;
 	private boolean isTransportAvailable = false;
 	private Integer majorProtocolVersion;
-	private VideoStreamingRange streamingRange;
+	private List<VideoStreamingRange> streamingRange;
 	private boolean hasStarted;
 	private String vehicleMake = null;
 	private boolean isEncrypted = false;
@@ -333,9 +333,10 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 *                   works best for the currently connected module.
 	 *
 	 * @param encrypted a flag of if the stream should be encrypted. Only set if you have a supplied encryption library that the module can understand.
-	 * @param streamingRange constraints for vehicle display : aspect ratio, min/max resolutions, max diagonal size.
+	 * @param portraitRange constraints for vehicle display : aspect ratio, min/max resolutions, max diagonal size.
+	 * @param landscapeRange constraints for vehicle display : aspect ratio, min/max resolutions, max diagonal size.
 	 */
-	public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted, VideoStreamingRange streamingRange) {
+	public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted, VideoStreamingRange landscapeRange, VideoStreamingRange portraitRange) {
 		configureGlobalParameters(context, remoteDisplayClass, isEncrypted, streamingRange);
 		if(majorProtocolVersion >= 5 && !internalInterface.getSystemCapabilityManager().isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
 			stateMachine.transitionToState(StreamingStateMachine.ERROR);
@@ -373,7 +374,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		processCapabilitiesWithPendingStart(encrypted, parameters);
 	}
 
-	private void configureGlobalParameters(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, boolean encrypted, VideoStreamingRange streamingRange) {
+	private void configureGlobalParameters(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, boolean encrypted, List<VideoStreamingRange> streamingRange) {
 		this.context = new WeakReference<>(context);
 		this.remoteDisplayClass = remoteDisplayClass;
 		this.isEncrypted = encrypted;
@@ -403,10 +404,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 							// filtering
 							castedCapability.setAdditionalVideoStreamingCapabilities(
 									getSupportedCapabilities(
-											streamingRange.getMinResolution(),
-											streamingRange.getMaxResolution(),
-											streamingRange.getMinScreenDiagonal(),
-											streamingRange.getAspectRatio(),
+											streamingRange,
 											castedCapability.getAdditionalVideoStreamingCapabilities()
 									)
 							);
@@ -779,14 +777,9 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	}
 
 	private List<VideoStreamingCapability> getSupportedCapabilities(
-			Resolution minResolution,
-			Resolution maxResolution,
-			Double minScreenDiagonal,
-			AspectRatio aspectRatio,
+			List<VideoStreamingRange> ranges,
 			List<VideoStreamingCapability> originalAdditionalCapabilities
 	){
-		Integer constraintHeightMax = maxResolution.getResolutionHeight();
-		Integer constraintHeightMin = minResolution.getResolutionHeight();
 
 		List<VideoStreamingCapability> validCapabilities = new ArrayList<>();
 
@@ -799,35 +792,40 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
 		// get the first one - the Desired resolution to guarantee streaming will start
 		validCapabilities.add(preferredCapability);
+		for (VideoStreamingRange range: ranges) {
 
-		for (VideoStreamingCapability capability : originalAdditionalCapabilities) {
-			double diagonal;
-			if (capability.getPreferredResolution() == null
-					|| capability.getPreferredResolution().getResolutionHeight() == null
-					|| capability.getPreferredResolution().getResolutionWidth() == null) {
-				continue;
-			}
-			if (capability.getDiagonalScreenSize() == null ) {
-				diagonal = parameters.getPreferredDiagonal();
-			} else {
-				diagonal = capability.getDiagonalScreenSize();
-			}
+			Integer constraintHeightMax = range.getMaxResolution().getResolutionHeight();
+			Integer constraintHeightMin = range.getMinResolution().getResolutionHeight();
 
-			if (minScreenDiagonal > diagonal) {
-				continue;
-			}
-
-			if (!isAspectRatioInRange(aspectRatio, capability.getPreferredResolution())) {
-				if (constraintHeightMax == null && constraintHeightMin == null) {
+			for (VideoStreamingCapability capability : originalAdditionalCapabilities) {
+				double diagonal;
+				if (capability.getPreferredResolution() == null
+						|| capability.getPreferredResolution().getResolutionHeight() == null
+						|| capability.getPreferredResolution().getResolutionWidth() == null) {
 					continue;
 				}
-			}
+				if (capability.getDiagonalScreenSize() == null) {
+					diagonal = parameters.getPreferredDiagonal();
+				} else {
+					diagonal = capability.getDiagonalScreenSize();
+				}
 
-			if (!isImageResolutionInRange(minResolution, maxResolution, capability.getPreferredResolution())) {
-				continue;
-			}
+				if (range.getMinScreenDiagonal() > diagonal) {
+					continue;
+				}
 
-			validCapabilities.add(capability);
+				if (!isAspectRatioInRange(range.getAspectRatio(), capability.getPreferredResolution())) {
+					if (constraintHeightMax == null && constraintHeightMin == null) {
+						continue;
+					}
+				}
+
+				if (!isImageResolutionInRange(range.getMinResolution(), range.getMaxResolution(), capability.getPreferredResolution())) {
+					continue;
+				}
+
+				validCapabilities.add(capability);
+			}
 		}
 
 		return validCapabilities;
