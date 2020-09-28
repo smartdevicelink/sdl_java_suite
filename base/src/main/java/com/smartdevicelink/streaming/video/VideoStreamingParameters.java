@@ -184,8 +184,8 @@ public class VideoStreamingParameters {
         final List<VideoStreamingFormat> formats = capability.getSupportedFormats();
         if(formats != null && formats.size()>0){
             for(VideoStreamingFormat format : formats){
-                for(int i = 0; i < CURRENTLY_SUPPORTED_FORMATS.length; i ++){
-                    if(CURRENTLY_SUPPORTED_FORMATS[i].equals(format) ){
+                for(int i = 0; i < currentlySupportedFormats.length; i ++){
+                    if(currentlySupportedFormats[i].equals(format) ){
                         this.format = format;
                         return;
                     }
@@ -203,7 +203,7 @@ public class VideoStreamingParameters {
      * Update the values contained in the capability that should have been returned through the SystemCapabilityManager.
      * This update will use the most preferred streaming format from the module.
      * @param capability the video streaming capability returned from the SystemCapabilityManager
-     * @see com.smartdevicelink.proxy.SystemCapabilityManager
+     * @see com.smartdevicelink.managers.lifecycle.SystemCapabilityManager
      * @see VideoStreamingCapability
      */
     @Deprecated

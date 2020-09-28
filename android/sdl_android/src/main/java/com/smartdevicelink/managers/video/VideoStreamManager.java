@@ -56,9 +56,6 @@ import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.interfaces.ISdl;
-import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
-import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.rpc.AppCapability;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
@@ -192,7 +189,10 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				}
 				OnHMIStatus prevOnHMIStatus = currentOnHMIStatus;
 				currentOnHMIStatus = onHMIStatus;
-
+                if (!HMILevel.HMI_NONE.equals(currentOnHMIStatus.getHmiLevel()) && VideoStreamManager.this.parameters == null) {
+                    getVideoStreamingParams();
+                }
+                checkState();
                 if (hasStarted && (isHMIStateVideoStreamCapable(prevOnHMIStatus)) && (!isHMIStateVideoStreamCapable(currentOnHMIStatus))) {
                     stopVideoStream();
                 }

@@ -90,6 +90,7 @@ abstract class BaseSystemCapabilityManager {
         this.cachedSystemCapabilities = new HashMap<>();
         this.systemCapabilitiesSubscriptionStatus = new HashMap<>();
         this.systemCapabilitiesSubscriptionStatus.put(SystemCapabilityType.DISPLAYS, true);
+        this.systemCapabilitiesSubscriptionStatus.put(SystemCapabilityType.VIDEO_STREAMING, true);
         this.shouldConvertDeprecatedDisplayCapabilities = true;
         this.currentHMILevel = HMILevel.HMI_NONE;
 
@@ -331,9 +332,6 @@ abstract class BaseSystemCapabilityManager {
 												// this notification can return only affected windows (hence not all windows)
 												List<DisplayCapability> newCapabilities = (List<DisplayCapability>) capability;
 												updateCachedDisplayCapabilityList(newCapabilities);
-												break;
-											case VIDEO_STREAMING:
-												systemCapabilitiesSubscriptionStatus.put(SystemCapabilityType.VIDEO_STREAMING, true);
 												break;
 										}
 									}
