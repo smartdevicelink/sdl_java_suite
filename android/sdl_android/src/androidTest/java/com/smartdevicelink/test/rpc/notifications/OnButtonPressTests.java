@@ -18,13 +18,13 @@ import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.fail;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.OnButtonPress}
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.proxy.rpc.OnButtonPress}
  */
-public class OnButtonPressTests extends BaseRpcTests{
+public class OnButtonPressTests extends BaseRpcTests {
 
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         OnButtonPress msg = new OnButtonPress();
 
         msg.setButtonName(TestValues.GENERAL_BUTTONNAME);
@@ -35,45 +35,45 @@ public class OnButtonPressTests extends BaseRpcTests{
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_NOTIFICATION;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.ON_BUTTON_PRESS.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
+        try {
             result.put(OnButtonPress.KEY_CUSTOM_BUTTON_ID, TestValues.GENERAL_INT);
             result.put(OnButtonPress.KEY_BUTTON_NAME, TestValues.GENERAL_BUTTONNAME);
             result.put(OnButtonPress.KEY_BUTTON_PRESS_MODE, TestValues.GENERAL_BUTTONPRESSMODE);
-        }catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
 
         return result;
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
+     * Tests the expected values of the RPC message.
+     */
     @Test
-    public void testRpcValues () { 
-    	// Test Values
-        int customName = ( (OnButtonPress) msg ).getCustomButtonID();
-        ButtonName buttonName = ( (OnButtonPress) msg ).getButtonName();
-        ButtonPressMode buttonPressMode = ( (OnButtonPress) msg ).getButtonPressMode();
-        
+    public void testRpcValues() {
+        // Test Values
+        int customName = ((OnButtonPress) msg).getCustomButtonID();
+        ButtonName buttonName = ((OnButtonPress) msg).getButtonName();
+        ButtonPressMode buttonPressMode = ((OnButtonPress) msg).getButtonPressMode();
+
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, customName);
-	    assertEquals(TestValues.MATCH, TestValues.GENERAL_BUTTONNAME, buttonName);
-	    assertEquals(TestValues.MATCH, TestValues.GENERAL_BUTTONPRESSMODE, buttonPressMode);
-    
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_BUTTONNAME, buttonName);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_BUTTONPRESSMODE, buttonPressMode);
+
         // Invalid/Null Tests
         OnButtonPress msg = new OnButtonPress();
         assertNotNull(TestValues.NOT_NULL, msg);

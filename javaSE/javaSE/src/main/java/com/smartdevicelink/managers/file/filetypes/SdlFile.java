@@ -39,11 +39,12 @@ import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
 import java.net.URI;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 /**
  * A class representing data to be uploaded to core
  */
-public class SdlFile{
+public class SdlFile {
     private String fileName;
     private String filePath;
     private URI uri;
@@ -53,21 +54,23 @@ public class SdlFile{
     private boolean isStaticIcon;
     private boolean shouldAutoGenerateName;
     // Overwrite property by default is set to true in SdlFile constructors indicating that a file can be overwritten
-    private boolean overwrite = true;
+    private boolean overwrite = false;
 
     /**
      * Creates a new instance of SdlFile
      */
-    public SdlFile(){}
+    public SdlFile() {
+    }
 
     /**
      * Creates a new instance of SdlFile
-     * @param fileName a String value representing the name that will be used to store the file in the head unit. You can pass null if you want the library to auto generate the name
-     * @param fileType a FileType enum value representing the type of the file
-     * @param filePath a String value representing the the location of the file
+     *
+     * @param fileName       a String value representing the name that will be used to store the file in the head unit. You can pass null if you want the library to auto generate the name
+     * @param fileType       a FileType enum value representing the type of the file
+     * @param filePath       a String value representing the the location of the file
      * @param persistentFile a boolean value that indicates if the file is meant to persist between sessions / ignition cycles
      */
-    public SdlFile(String fileName, @NonNull FileType fileType, String filePath, boolean persistentFile){
+    public SdlFile(String fileName, @NonNull FileType fileType, String filePath, boolean persistentFile) {
         setName(fileName);
         setType(fileType);
         setFilePath(filePath);
@@ -76,12 +79,13 @@ public class SdlFile{
 
     /**
      * Creates a new instance of SdlFile
-     * @param fileName a String value representing the name that will be used to store the file in the head unit. You can pass null if you want the library to auto generate the name
-     * @param fileType a FileType enum value representing the type of the file
-     * @param uri a URI value representing a file's location. Currently, it only supports local files
+     *
+     * @param fileName       a String value representing the name that will be used to store the file in the head unit. You can pass null if you want the library to auto generate the name
+     * @param fileType       a FileType enum value representing the type of the file
+     * @param uri            a URI value representing a file's location. Currently, it only supports local files
      * @param persistentFile a boolean value that indicates if the file is meant to persist between sessions / ignition cycles
      */
-    public SdlFile(String fileName, @NonNull FileType fileType, URI uri, boolean persistentFile){
+    public SdlFile(String fileName, @NonNull FileType fileType, URI uri, boolean persistentFile) {
         setName(fileName);
         setType(fileType);
         setURI(uri);
@@ -90,12 +94,13 @@ public class SdlFile{
 
     /**
      * Creates a new instance of SdlFile
-     * @param fileName a String value representing the name that will be used to store the file in the head unit. You can pass null if you want the library to auto generate the name
-     * @param fileType a FileType enum value representing the type of the file
-     * @param data a byte array representing the data of the file
+     *
+     * @param fileName       a String value representing the name that will be used to store the file in the head unit. You can pass null if you want the library to auto generate the name
+     * @param fileType       a FileType enum value representing the type of the file
+     * @param data           a byte array representing the data of the file
      * @param persistentFile a boolean value that indicates if the file is meant to persist between sessions / ignition cycles
      */
-    public SdlFile(String fileName, @NonNull FileType fileType, byte[] data, boolean persistentFile){
+    public SdlFile(String fileName, @NonNull FileType fileType, byte[] data, boolean persistentFile) {
         setName(fileName);
         setType(fileType);
         setFileData(data);
@@ -104,9 +109,10 @@ public class SdlFile{
 
     /**
      * Creates a new instance of SdlFile
+     *
      * @param staticIconName a StaticIconName enum value representing the name of a static file that comes pre-shipped with the head unit
      */
-    public SdlFile(@NonNull StaticIconName staticIconName){
+    public SdlFile(@NonNull StaticIconName staticIconName) {
         setName(staticIconName.toString());
         setFileData(staticIconName.toString().getBytes());
         setPersistent(false);
@@ -115,6 +121,7 @@ public class SdlFile{
 
     /**
      * Sets the name of the file
+     *
      * @param fileName a String value representing the name that will be used to store the file in the head unit. You can pass null if you want the library to auto generate the name
      */
     public void setName(String fileName) {
@@ -135,17 +142,19 @@ public class SdlFile{
 
     /**
      * Gets the name of the file
+     *
      * @return a String value representing the name that will be used to store the file in the head unit
      */
-    public String getName(){
+    public String getName() {
         return fileName;
     }
 
     /**
      * Sets the location of the file
+     *
      * @param filePath a String value representing the the location of the file
      */
-    public void setFilePath(String filePath){
+    public void setFilePath(String filePath) {
         this.filePath = filePath;
         if (shouldAutoGenerateName && filePath != null) {
             this.fileName = generateFileNameFromFilePath(filePath);
@@ -154,17 +163,19 @@ public class SdlFile{
 
     /**
      * Gets the location of the file
-     * @return
+     *
+     * @return represents the path of the file
      */
-    public String getFilePath(){
+    public String getFilePath() {
         return this.filePath;
     }
 
     /**
      * Sets the uri of the file
+     *
      * @param uri a URI value representing a file's location. Currently, it only supports local files
      */
-    public void setURI(URI uri){
+    public void setURI(URI uri) {
         this.uri = uri;
         if (shouldAutoGenerateName && uri != null) {
             this.fileName = generateFileNameFromUri(uri);
@@ -173,17 +184,19 @@ public class SdlFile{
 
     /**
      * Gets the uri of the file
+     *
      * @return a URI value representing a file's location. Currently, it only supports local files
      */
-    public URI getURI(){
+    public URI getURI() {
         return uri;
     }
 
     /**
      * Sets the byte array that represents the content of the file
+     *
      * @param data a byte array representing the data of the file
      */
-    public void setFileData(byte[] data){
+    public void setFileData(byte[] data) {
         this.fileData = data;
         if (shouldAutoGenerateName && data != null) {
             this.fileName = generateFileNameFromData(data);
@@ -192,46 +205,52 @@ public class SdlFile{
 
     /**
      * Gets the byte array that represents the content of the file
+     *
      * @return a byte array representing the data of the file
      */
-    public byte[] getFileData(){
+    public byte[] getFileData() {
         return fileData;
     }
 
     /**
      * Sets the type of the file
+     *
      * @param fileType a FileType enum value representing the type of the file
      */
-    public void setType(@NonNull FileType fileType){
+    public void setType(@NonNull FileType fileType) {
         this.fileType = fileType;
     }
 
     /**
      * Gets the type of the file
+     *
      * @return a FileType enum value representing the type of the file
      */
-    public FileType getType(){
+    public FileType getType() {
         return fileType;
     }
 
     /**
      * Sets whether the file should persist between sessions / ignition cycles
+     *
      * @param persistentFile a boolean value that indicates if the file is meant to persist between sessions / ignition cycles
      */
-    public void setPersistent(boolean persistentFile){
+    public void setPersistent(boolean persistentFile) {
         this.persistentFile = persistentFile;
     }
 
     /**
      * Gets whether the file should persist between sessions / ignition cycles
+     *
      * @return a boolean value that indicates if the file is meant to persist between sessions / ignition cycles
      */
-    public boolean isPersistent(){
+    public boolean isPersistent() {
         return this.persistentFile;
     }
 
     /**
      * Sets the the name of the static file. Static files comes pre-shipped with the head unit
+     *
      * @param staticIcon a StaticIconName enum value representing the name of a static file that comes pre-shipped with the head unit
      */
     public void setStaticIcon(boolean staticIcon) {
@@ -240,6 +259,7 @@ public class SdlFile{
 
     /**
      * Gets the the name of the static file. Static files comes pre-shipped with the head unit
+     *
      * @return a StaticIconName enum value representing the name of a static file that comes pre-shipped with the head unit
      */
     public boolean isStaticIcon() {
@@ -248,6 +268,7 @@ public class SdlFile{
 
     /**
      * Gets the overwrite property for an SdlFile by default its set to true
+     *
      * @return a boolean value that indicates if a file can be overwritten.
      */
     public boolean getOverwrite() {
@@ -256,6 +277,7 @@ public class SdlFile{
 
     /**
      * Sets the overwrite property for an SdlFile by default its set to true
+     *
      * @param overwrite a boolean value that indicates if a file can be overwritten
      */
     public void setOverwrite(boolean overwrite) {
@@ -264,6 +286,7 @@ public class SdlFile{
 
     /**
      * Generates a file name from data by hashing the data and returning the last 16 chars
+     *
      * @param data a byte array representing the data of the file
      * @return a String value representing the name that will be used to store the file in the head unit
      */
@@ -291,6 +314,7 @@ public class SdlFile{
 
     /**
      * Generates a file name from filePath by hashing the filePath and returning the last 16 chars
+     *
      * @param filePath a String value representing the the location of the file
      * @return a String value representing the name that will be used to store the file in the head unit
      */
@@ -300,6 +324,7 @@ public class SdlFile{
 
     /**
      * Generates a file name from uri by hashing the uri string and returning the last 16 chars
+     *
      * @param uri a URI value representing a file's location
      * @return a String value representing the name that will be used to store the file in the head unit
      */
@@ -309,6 +334,7 @@ public class SdlFile{
 
     /**
      * Used to compile hashcode for SdlFile for use to compare in equals method
+     *
      * @return Custom hashcode of SdlFile variables
      */
     @Override
@@ -317,7 +343,7 @@ public class SdlFile{
         result += ((getName() == null) ? 0 : Integer.rotateLeft(getName().hashCode(), 1));
         result += ((getURI() == null) ? 0 : Integer.rotateLeft(getURI().hashCode(), 2));
         result += ((getFilePath() == null) ? 0 : Integer.rotateLeft(getFilePath().hashCode(), 3));
-        result += ((getFileData() == null) ? 0 : Integer.rotateLeft(getFileData().hashCode(), 4));
+        result += ((getFileData() == null) ? 0 : Integer.rotateLeft(Arrays.hashCode(getFileData()), 4));
         result += ((getType() == null) ? 0 : Integer.rotateLeft(getType().hashCode(), 5));
         result += Integer.rotateLeft(Boolean.valueOf(isStaticIcon()).hashCode(), 6);
         result += Integer.rotateLeft(Boolean.valueOf(isPersistent()).hashCode(), 7);
@@ -326,6 +352,7 @@ public class SdlFile{
 
     /**
      * Uses our custom hashCode for SdlFile objects
+     *
      * @param o - The object to compare
      * @return boolean of whether the objects are the same or not
      */

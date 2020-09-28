@@ -17,143 +17,142 @@ import org.junit.Test;
 import java.util.Hashtable;
 import java.util.zip.CRC32;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.fail;
-import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.PutFile}
  */
 public class PutFileTests extends BaseRpcTests {
-	
-	@Override
-	protected RPCMessage createMessage() {
-		PutFile msg = new PutFile();
 
-		msg.setFileType(TestValues.GENERAL_FILETYPE);
-		msg.setPersistentFile(TestValues.GENERAL_BOOLEAN);
-		msg.setSystemFile(TestValues.GENERAL_BOOLEAN);
-		msg.setOffset(TestValues.GENERAL_LONG);
-		msg.setLength(TestValues.GENERAL_LONG);
-		msg.setCRC(TestValues.GENERAL_BYTE_ARRAY);
-		msg.setCRC(TestValues.GENERAL_LONG);
+    @Override
+    protected RPCMessage createMessage() {
+        PutFile msg = new PutFile();
 
-		return msg;
-	}
+        msg.setFileType(TestValues.GENERAL_FILETYPE);
+        msg.setPersistentFile(TestValues.GENERAL_BOOLEAN);
+        msg.setSystemFile(TestValues.GENERAL_BOOLEAN);
+        msg.setOffset(TestValues.GENERAL_LONG);
+        msg.setLength(TestValues.GENERAL_LONG);
+        msg.setCRC(TestValues.GENERAL_BYTE_ARRAY);
+        msg.setCRC(TestValues.GENERAL_LONG);
 
-	@Override
-	protected String getMessageType() {
-		return RPCMessage.KEY_REQUEST;
-	}
+        return msg;
+    }
 
-	@Override
-	protected String getCommandType() {
-		return FunctionID.PUT_FILE.toString();
-	}
+    @Override
+    protected String getMessageType() {
+        return RPCMessage.KEY_REQUEST;
+    }
 
-	@Override
-	protected JSONObject getExpectedParameters(int sdlVersion) {
-		JSONObject result = new JSONObject();
+    @Override
+    protected String getCommandType() {
+        return FunctionID.PUT_FILE.toString();
+    }
 
-		try {
-			result.put(PutFile.KEY_FILE_TYPE, TestValues.GENERAL_FILETYPE);
-			result.put(PutFile.KEY_PERSISTENT_FILE, TestValues.GENERAL_BOOLEAN);
-			result.put(PutFile.KEY_SYSTEM_FILE, TestValues.GENERAL_BOOLEAN);
-			result.put(PutFile.KEY_OFFSET, TestValues.GENERAL_LONG);
-			result.put(PutFile.KEY_LENGTH, TestValues.GENERAL_LONG);
-			result.put(PutFile.KEY_CRC, TestValues.GENERAL_LONG);
-		} catch (JSONException e) {
-			fail(TestValues.JSON_FAIL);
-		}
+    @Override
+    protected JSONObject getExpectedParameters(int sdlVersion) {
+        JSONObject result = new JSONObject();
 
-		return result;
-	}
-	
-	/**
-	 * Tests the expected values of the RPC message.
-	 */
-	@Test
-    public void testRpcValues () {    	
-    	// Test Values
-		FileType testFileType = ( (PutFile) msg ).getFileType();
-		boolean  testPersistentFile = ( (PutFile) msg ).getPersistentFile();
-		boolean  testSystemFile = ( (PutFile) msg ).getSystemFile();
-		Long     testOffset = ( (PutFile) msg ).getOffset();
-		Long     testLength = ( (PutFile) msg ).getLength();
-		Long     testCRC = ( (PutFile) msg ).getCRC();
+        try {
+            result.put(PutFile.KEY_FILE_TYPE, TestValues.GENERAL_FILETYPE);
+            result.put(PutFile.KEY_PERSISTENT_FILE, TestValues.GENERAL_BOOLEAN);
+            result.put(PutFile.KEY_SYSTEM_FILE, TestValues.GENERAL_BOOLEAN);
+            result.put(PutFile.KEY_OFFSET, TestValues.GENERAL_LONG);
+            result.put(PutFile.KEY_LENGTH, TestValues.GENERAL_LONG);
+            result.put(PutFile.KEY_CRC, TestValues.GENERAL_LONG);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
+        }
 
-		// Valid Tests
-		assertEquals(TestValues.MATCH, TestValues.GENERAL_FILETYPE, testFileType);
-		assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, testPersistentFile);
-		assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, testSystemFile);
-		assertEquals(TestValues.MATCH, TestValues.GENERAL_LONG, testOffset);
-		assertEquals(TestValues.MATCH, TestValues.GENERAL_LONG, testLength);
-		assertEquals(TestValues.MATCH, TestValues.GENERAL_LONG, testCRC);
+        return result;
+    }
 
-		// Invalid/Null Tests
-		PutFile msg = new PutFile();
-		assertNotNull("Null object creation failed.", msg);
-		testNullBase(msg);
+    /**
+     * Tests the expected values of the RPC message.
+     */
+    @Test
+    public void testRpcValues() {
+        // Test Values
+        FileType testFileType = ((PutFile) msg).getFileType();
+        boolean testPersistentFile = ((PutFile) msg).getPersistentFile();
+        boolean testSystemFile = ((PutFile) msg).getSystemFile();
+        Long testOffset = ((PutFile) msg).getOffset();
+        Long testLength = ((PutFile) msg).getLength();
+        Long testCRC = ((PutFile) msg).getCRC();
 
-		assertNull(TestValues.NULL, msg.getFileType());
-		assertNull(TestValues.NULL, msg.getPersistentFile());
-		assertNull(TestValues.NULL, msg.getSystemFile());
-		assertNull(TestValues.NULL, msg.getOffset());
-		assertNull(TestValues.NULL, msg.getLength());
-		assertNull(TestValues.NULL, msg.getCRC());
-	}
+        // Valid Tests
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_FILETYPE, testFileType);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, testPersistentFile);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, testSystemFile);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_LONG, testOffset);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_LONG, testLength);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_LONG, testCRC);
 
-	/**
-	 * Tests the expected values of the CRC checksum.
-	 */
-	@Test
-	public void testByteArrayCheckSum () {
-		// Test Values
-		PutFile msgCRC = new PutFile();
-		msgCRC.setCRC(TestValues.GENERAL_BYTE_ARRAY);
-		Long testCRCByteArray = msgCRC.getCRC();
+        // Invalid/Null Tests
+        PutFile msg = new PutFile();
+        assertNotNull("Null object creation failed.", msg);
+        testNullBase(msg);
 
-		CRC32 crc = new CRC32();
-		crc.update(TestValues.GENERAL_BYTE_ARRAY);
-		Long crcValue = crc.getValue();
+        assertNull(TestValues.NULL, msg.getFileType());
+        assertNull(TestValues.NULL, msg.getPersistentFile());
+        assertNull(TestValues.NULL, msg.getSystemFile());
+        assertNull(TestValues.NULL, msg.getOffset());
+        assertNull(TestValues.NULL, msg.getLength());
+        assertNull(TestValues.NULL, msg.getCRC());
+    }
 
-		assertEquals(TestValues.MATCH, crcValue, testCRCByteArray);
-	}
+    /**
+     * Tests the expected values of the CRC checksum.
+     */
+    @Test
+    public void testByteArrayCheckSum() {
+        // Test Values
+        PutFile msgCRC = new PutFile();
+        msgCRC.setCRC(TestValues.GENERAL_BYTE_ARRAY);
+        Long testCRCByteArray = msgCRC.getCRC();
 
+        CRC32 crc = new CRC32();
+        crc.update(TestValues.GENERAL_BYTE_ARRAY);
+        Long crcValue = crc.getValue();
+
+        assertEquals(TestValues.MATCH, crcValue, testCRCByteArray);
+    }
 
 
     /**
      * Tests a valid JSON construction of this RPC message.
      */
     @Test
-    public void testJsonConstructor () {
-    	JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
-    	assertNotNull(TestValues.NOT_NULL, commandJson);
-    	
-		try {
-			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
-			PutFile cmd = new PutFile(hash);
-			
-			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(TestValues.NOT_NULL, body);
-			
-			// Test everything in the json body.
-			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+    public void testJsonConstructor() {
+        JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
+        assertNotNull(TestValues.NOT_NULL, commandJson);
 
-			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, PutFile.KEY_PERSISTENT_FILE), cmd.getPersistentFile());
-			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, PutFile.KEY_SYSTEM_FILE), cmd.getSystemFile());
-			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, PutFile.KEY_FILE_TYPE), cmd.getFileType().toString());
-			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, PutFile.KEY_SDL_FILE_NAME), cmd.getSdlFileName());
-			assertEquals(TestValues.MATCH, (Long) JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_OFFSET).longValue(), cmd.getOffset());
-			assertEquals(TestValues.MATCH, (Long) JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_LENGTH).longValue(), cmd.getLength());
-			assertEquals(TestValues.MATCH, (Long) JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_CRC).longValue(), cmd.getCRC());
-		} catch (JSONException e) {
-			fail(TestValues.JSON_FAIL);
-		}    	
+        try {
+            Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
+            PutFile cmd = new PutFile(hash);
+
+            JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
+            assertNotNull(TestValues.NOT_NULL, body);
+
+            // Test everything in the json body.
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+
+            JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
+            assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, PutFile.KEY_PERSISTENT_FILE), cmd.getPersistentFile());
+            assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, PutFile.KEY_SYSTEM_FILE), cmd.getSystemFile());
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, PutFile.KEY_FILE_TYPE), cmd.getFileType().toString());
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, PutFile.KEY_SDL_FILE_NAME), cmd.getSdlFileName());
+            assertEquals(TestValues.MATCH, (Long) JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_OFFSET).longValue(), cmd.getOffset());
+            assertEquals(TestValues.MATCH, (Long) JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_LENGTH).longValue(), cmd.getLength());
+            assertEquals(TestValues.MATCH, (Long) JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_CRC).longValue(), cmd.getCRC());
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
+        }
     }
 }

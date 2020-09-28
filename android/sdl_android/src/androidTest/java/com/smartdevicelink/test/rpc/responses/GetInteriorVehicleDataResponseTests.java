@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 import java.util.Hashtable;
+
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
@@ -25,12 +26,12 @@ import static junit.framework.TestCase.fail;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link com.smartdevicelink.rpc.GetInteriorVehicleDataResponse}
+ * {@link com.smartdevicelink.proxy.rpc.GetInteriorVehicleDataResponse}
  */
 public class GetInteriorVehicleDataResponseTests extends BaseRpcTests {
 
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
 
         GetInteriorVehicleDataResponse msg = new GetInteriorVehicleDataResponse();
 
@@ -41,23 +42,23 @@ public class GetInteriorVehicleDataResponseTests extends BaseRpcTests {
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_RESPONSE;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.GET_INTERIOR_VEHICLE_DATA.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
+        try {
             result.put(GetInteriorVehicleDataResponse.KEY_IS_SUBSCRIBED, TestValues.GENERAL_BOOLEAN);
             result.put(GetInteriorVehicleDataResponse.KEY_MODULE_DATA, JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_MODULEDATA.getStore()));
-        }catch(JSONException e){
+        } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
 
@@ -68,10 +69,10 @@ public class GetInteriorVehicleDataResponseTests extends BaseRpcTests {
      * Tests the expected values of the RPC message.
      */
     @Test
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Test Values
-        boolean testIsSubscribed = ( (GetInteriorVehicleDataResponse) msg ).getIsSubscribed();
-        ModuleData testModuleData = ( (GetInteriorVehicleDataResponse) msg ).getModuleData();
+        boolean testIsSubscribed = ((GetInteriorVehicleDataResponse) msg).getIsSubscribed();
+        ModuleData testModuleData = ((GetInteriorVehicleDataResponse) msg).getModuleData();
 
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, testIsSubscribed);
@@ -90,13 +91,13 @@ public class GetInteriorVehicleDataResponseTests extends BaseRpcTests {
      * Tests a valid JSON construction of this RPC message.
      */
     @Test
-    public void testJsonConstructor () {
+    public void testJsonConstructor() {
         JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
         assertNotNull(TestValues.NOT_NULL, commandJson);
 
         try {
             Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
-            GetInteriorVehicleDataResponse cmd = new GetInteriorVehicleDataResponse (hash);
+            GetInteriorVehicleDataResponse cmd = new GetInteriorVehicleDataResponse(hash);
 
             JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
             assertNotNull(TestValues.NOT_NULL, body);
@@ -110,7 +111,7 @@ public class GetInteriorVehicleDataResponseTests extends BaseRpcTests {
             ModuleData testModuleData = new ModuleData(JsonRPCMarshaller.deserializeJSONObject((JSONObject) JsonUtils.readObjectFromJsonObject(parameters, GetInteriorVehicleDataResponse.KEY_MODULE_DATA)));
             ModuleData cmdModuleData = cmd.getModuleData();
 
-            assertTrue(TestValues.TRUE, Validator.validateModuleData(testModuleData, cmdModuleData) );
+            assertTrue(TestValues.TRUE, Validator.validateModuleData(testModuleData, cmdModuleData));
             assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(parameters, GetInteriorVehicleDataResponse.KEY_IS_SUBSCRIBED), cmd.getIsSubscribed());
         } catch (JSONException e) {
             e.printStackTrace();

@@ -30,18 +30,18 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.smartdevicelink.SdlConnection;
+package com.smartdevicelink.session;
 
 import android.content.Context;
 
 import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.protocol.SdlProtocolBase;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
@@ -98,7 +98,8 @@ public class SdlSession extends BaseSdlSession {
         }
 
         // If requiresAudioSupport is false, or a supported audio output device is available
-        return !requiresAudioSupport || mediaStreamingStatus.isAudioOutputAvailable();
+        boolean isAudioOutputAvailable = mediaStreamingStatus != null && mediaStreamingStatus.isAudioOutputAvailable();
+        return !requiresAudioSupport || isAudioOutputAvailable;
 
     }
 

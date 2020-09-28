@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -41,91 +41,91 @@ import java.util.Hashtable;
  * Defines the each Equalizer channel settings.
  */
 public class EqualizerSettings extends RPCStruct {
-	public static final String KEY_CHANNEL_ID = "channelId";
-	public static final String KEY_CHANNEL_NAME = "channelName";
-	public static final String KEY_CHANNEL_SETTING = "channelSetting";
+    public static final String KEY_CHANNEL_ID = "channelId";
+    public static final String KEY_CHANNEL_NAME = "channelName";
+    public static final String KEY_CHANNEL_SETTING = "channelSetting";
 
-	/**
-	 * Constructs a newly allocated EqualizerSettings object
-	 */
-	public EqualizerSettings() {
-	}
+    /**
+     * Constructs a newly allocated EqualizerSettings object
+     */
+    public EqualizerSettings() {
+    }
 
-	/**
-	 * Constructs a newly allocated EqualizerSettings object indicated by the Hashtable parameter
-	 *
-	 * @param hash The Hashtable to use
-	 */
-	public EqualizerSettings(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+    /**
+     * Constructs a newly allocated EqualizerSettings object indicated by the Hashtable parameter
+     *
+     * @param hash The Hashtable to use
+     */
+    public EqualizerSettings(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
-	/**
-	 * Constructs a newly allocated EqualizerSettings object
-	 *
-	 * @param channelId      Min: 0  Max: 100
-	 * @param channelSetting Min: 0  Max: 100
-	 */
-	public EqualizerSettings(@NonNull Integer channelId, @NonNull Integer channelSetting) {
-		this();
-		setChannelId(channelId);
-		setChannelSetting(channelSetting);
-	}
+    /**
+     * Constructs a newly allocated EqualizerSettings object
+     *
+     * @param channelId      Min: 0  Max: 100
+     * @param channelSetting Min: 0  Max: 100
+     */
+    public EqualizerSettings(@NonNull Integer channelId, @NonNull Integer channelSetting) {
+        this();
+        setChannelId(channelId);
+        setChannelSetting(channelSetting);
+    }
 
-	/**
-	 * Sets the channelId portion of the EqualizerSettings class
-	 *
-	 * @param channelId ID that represents the channel these settings should be applied
-	 */
-	public EqualizerSettings setChannelId(@NonNull Integer channelId) {
+    /**
+     * Sets the channelId portion of the EqualizerSettings class
+     *
+     * @param channelId ID that represents the channel these settings should be applied
+     */
+    public EqualizerSettings setChannelId(@NonNull Integer channelId) {
         setValue(KEY_CHANNEL_ID, channelId);
         return this;
     }
 
-	/**
-	 * Gets the channelId portion of the EqualizerSettings class
-	 *
-	 * @return Integer
-	 */
-	public Integer getChannelId() {
-		return getInteger(KEY_CHANNEL_ID);
-	}
+    /**
+     * Gets the channelId portion of the EqualizerSettings class
+     *
+     * @return Integer
+     */
+    public Integer getChannelId() {
+        return getInteger(KEY_CHANNEL_ID);
+    }
 
-	/**
-	 * Sets the channelName portion of the EqualizerSettings class
-	 *
-	 * @param channelName Read-only channel / frequency name (e.i. "Treble, Midrange, Bass" or "125 Hz").
-	 */
-	public EqualizerSettings setChannelName( String channelName) {
+    /**
+     * Sets the channelName portion of the EqualizerSettings class
+     *
+     * @param channelName Read-only channel / frequency name (e.i. "Treble, MidRange, Bass" or "125 Hz").
+     */
+    public EqualizerSettings setChannelName(String channelName) {
         setValue(KEY_CHANNEL_NAME, channelName);
         return this;
     }
 
-	/**
-	 * Gets the channelName portion of the EqualizerSettings class
-	 *
-	 * @return String - Read-only channel / frequency name (e.i. "Treble, Midrange, Bass" or "125 Hz").
-	 */
-	public String getChannelName() {
-		return getString(KEY_CHANNEL_NAME);
-	}
+    /**
+     * Gets the channelName portion of the EqualizerSettings class
+     *
+     * @return String - Read-only channel / frequency name (e.i. "Treble, MidRange, Bass" or "125 Hz").
+     */
+    public String getChannelName() {
+        return getString(KEY_CHANNEL_NAME);
+    }
 
-	/**
-	 * Sets the channelSetting portion of the EqualizerSettings class
-	 *
-	 * @param channelSetting Reflects the setting, from 0%-100%.
-	 */
-	public EqualizerSettings setChannelSetting(@NonNull Integer channelSetting) {
+    /**
+     * Sets the channelSetting portion of the EqualizerSettings class
+     *
+     * @param channelSetting Reflects the setting, from 0%-100%.
+     */
+    public EqualizerSettings setChannelSetting(@NonNull Integer channelSetting) {
         setValue(KEY_CHANNEL_SETTING, channelSetting);
         return this;
     }
 
-	/**
-	 * Gets the channelSetting portion of the EqualizerSettings class
-	 *
-	 * @return Integer - Reflects the setting, from 0%-100%.
-	 */
-	public Integer getChannelSetting() {
-		return getInteger(KEY_CHANNEL_SETTING);
-	}
+    /**
+     * Gets the channelSetting portion of the EqualizerSettings class
+     *
+     * @return Integer - Reflects the setting, from 0%-100%.
+     */
+    public Integer getChannelSetting() {
+        return getInteger(KEY_CHANNEL_SETTING);
+    }
 }

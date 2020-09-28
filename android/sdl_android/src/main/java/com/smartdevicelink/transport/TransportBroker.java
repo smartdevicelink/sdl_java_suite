@@ -33,13 +33,10 @@
 package com.smartdevicelink.transport;
 
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningServiceInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -65,7 +62,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 
 @RestrictTo(RestrictTo.Scope.LIBRARY)
@@ -79,13 +75,15 @@ public class TransportBroker {
     private static final int MAX_MESSAGING_VERSION = 2;
     private static final int MIN_MESSAGING_VERSION = 1;
 
-    /** Version of the router service that supports the new additional transports (USB and TCP) */
+    /**
+     * Version of the router service that supports the new additional transports (USB and TCP)
+     */
     private static final int RS_MULTI_TRANSPORT_SUPPORT = 8;
-    private static final TransportRecord LEGACY_TRANSPORT_RECORD = new TransportRecord(TransportType.BLUETOOTH,null);
+    private static final TransportRecord LEGACY_TRANSPORT_RECORD = new TransportRecord(TransportType.BLUETOOTH, null);
 
     private final String WHERE_TO_REPLY_PREFIX = "com.sdl.android.";
-    private String appId;
-    private String whereToReply;
+    private final String appId;
+    private final String whereToReply;
     private Context currentContext;
 
     private final Object INIT_LOCK = new Object();
@@ -96,7 +94,7 @@ public class TransportBroker {
 
     boolean isBound = false, registeredWithRouterService = false;
     private String routerPackage = null, routerClassName = null;
-    private ComponentName routerService = null;
+    private ComponentName routerService;
 
 
     private SdlPacket bufferedPacket = null;
@@ -104,7 +102,7 @@ public class TransportBroker {
 
     private ServiceConnection routerConnection;
     private int routerServiceVersion = 1;
-    private int messagingVersion = MAX_MESSAGING_VERSION;
+    private final int messagingVersion = MAX_MESSAGING_VERSION;
 
     private void initRouterConnection() {
         routerConnection = new ServiceConnection() {
@@ -184,11 +182,11 @@ public class TransportBroker {
      * Handler of incoming messages from service.
      */
     static class ClientHandler extends Handler {
-        ClassLoader loader;
+        final ClassLoader loader;
         final WeakReference<TransportBroker> provider;
 
         public ClientHandler(TransportBroker provider) {
-            this.provider = new WeakReference<TransportBroker>(provider);
+            this.provider = new WeakReference<>(provider);
             loader = getClass().getClassLoader();
         }
 
@@ -246,7 +244,6 @@ public class TransportBroker {
                             DebugTool.logWarning(TAG, "Registration denied from router service. Reason - " + msg.arg1);
                             break;
                     }
-                    ;
 
 
                     break;
@@ -261,7 +258,7 @@ public class TransportBroker {
 
                     break;
                 case TransportConstants.ROUTER_RECEIVED_PACKET:
-                    if(bundle == null){
+                    if (bundle == null) {
                         DebugTool.logWarning(TAG, "Received packet message from router service with no bundle");
                         return;
                     }
@@ -274,7 +271,7 @@ public class TransportBroker {
                         if (flags == TransportConstants.BYTES_TO_SEND_FLAG_NONE) {
                             if (packet != null) { //Log.i(TAG, "received packet to process "+  packet.toString());
 
-                                if(packet.getTransportRecord() == null){
+                                if (packet.getTransportRecord() == null) {
                                     // If the transport record is null, one must be added
                                     // This is likely due to an older router service being used
                                     // in which only a bluetooth transport is available
@@ -317,7 +314,7 @@ public class TransportBroker {
                     }
                     break;
                 case TransportConstants.HARDWARE_CONNECTION_EVENT:
-                    if(bundle == null){
+                    if (bundle == null) {
                         DebugTool.logWarning(TAG, "Received hardware connection message from router service with no bundle");
                         return;
                     }
@@ -345,7 +342,7 @@ public class TransportBroker {
 
                     if (bundle.containsKey(TransportConstants.HARDWARE_CONNECTED) || bundle.containsKey(TransportConstants.CURRENT_HARDWARE_CONNECTED)) {
                         //This is a connection event
-                        handleConnectionEvent(bundle,broker);
+                        handleConnectionEvent(bundle, broker);
                         break;
                     }
                     break;
@@ -356,13 +353,14 @@ public class TransportBroker {
         }
 
         /**
-         * Handle a potential connection event. This will adapt legacy router service implementaions
+         * Handle a potential connection event. This will adapt legacy router service implementations
          * into the new multiple transport scheme.
+         *
          * @param bundle the received bundle from the router service
          * @param broker reference to the transport broker that this handler exists
          * @return if a connection event was triggered in the supplied broker
          */
-        private boolean handleConnectionEvent(Bundle bundle, TransportBroker broker){
+        private boolean handleConnectionEvent(Bundle bundle, TransportBroker broker) {
             if (broker.routerServiceVersion < RS_MULTI_TRANSPORT_SUPPORT) {
                 //Previous versions of the router service only supports a single
                 //transport, so this will be the only extra received
@@ -372,7 +370,7 @@ public class TransportBroker {
                     broker.onHardwareConnected(Collections.singletonList(LEGACY_TRANSPORT_RECORD));
                     return true;
                 }
-            } else{
+            } else {
                 //Router service supports multiple transport
 
                 if (bundle.containsKey(TransportConstants.CURRENT_HARDWARE_CONNECTED)) {
@@ -459,8 +457,8 @@ public class TransportBroker {
 
         } catch (Exception e) {
             //This is ok
-            DebugTool.logWarning(TAG, "Unable to unbind from router service. bound? " + isBound + " context? " + (getContext()!=null) + " router connection?" + (routerConnection != null));
-        }finally {
+            DebugTool.logWarning(TAG, "Unable to unbind from router service. bound? " + isBound + " context? " + (getContext() != null) + " router connection?" + (routerConnection != null));
+        } finally {
             isBound = false;
         }
     }
@@ -495,11 +493,11 @@ public class TransportBroker {
 
     }
 
-    protected int getRouterServiceVersion(){
+    protected int getRouterServiceVersion() {
         return routerServiceVersion;
     }
 
-    public boolean sendPacketToRouterService(SdlPacket packet) { //We use ints because that is all that is supported by the outputstream class
+    public boolean sendPacketToRouterService(SdlPacket packet) { //We use ints because that is all that is supported by the output stream class
         //Log.d(TAG,whereToReply + "Sending packet to router service");
 
         if (routerServiceMessenger == null) {
@@ -509,7 +507,7 @@ public class TransportBroker {
         if (packet == null
             //|| offset<0
             //|| count<0
-                ) {//|| count>(bytes.length-offset)){
+        ) {//|| count>(bytes.length-offset)){
             DebugTool.logWarning(TAG, whereToReply + "incorrect params supplied");
             return false;
         }
@@ -586,7 +584,7 @@ public class TransportBroker {
 
     @SuppressLint("InlinedApi")
     private boolean sendBindingIntent() {
-        if(this.isBound){
+        if (this.isBound) {
             DebugTool.logError(TAG, "Already bound");
             return false;
         }
@@ -678,7 +676,7 @@ public class TransportBroker {
      */
 
     private static boolean legacyModeEnabled = false;
-    private static Object LEGACY_LOCK = new Object();
+    private static final Object LEGACY_LOCK = new Object();
 
     protected void enableLegacyMode(boolean enable) {
         synchronized (LEGACY_LOCK) {

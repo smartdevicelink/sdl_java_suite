@@ -16,11 +16,11 @@ import org.junit.Test;
 
 import java.util.Hashtable;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.fail;
-import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 /**
  * Created by austinkirk on 6/6/17.
@@ -28,7 +28,7 @@ import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentat
 
 public class GetWayPointsTests extends BaseRpcTests {
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         GetWayPoints msg = new GetWayPoints();
 
         msg.setWayPointType(WayPointType.DESTINATION);
@@ -37,22 +37,22 @@ public class GetWayPointsTests extends BaseRpcTests {
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_REQUEST;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.GET_WAY_POINTS.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
+        try {
             result.put(GetWayPoints.KEY_WAY_POINT_TYPE, WayPointType.DESTINATION);
-        }catch(JSONException e){
+        } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
 
@@ -63,9 +63,9 @@ public class GetWayPointsTests extends BaseRpcTests {
      * Tests the expected values of the RPC message.
      */
     @Test
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Test Values
-        WayPointType testType      = ( (GetWayPoints) msg ).getWayPointType();
+        WayPointType testType = ((GetWayPoints) msg).getWayPointType();
 
         // Valid Tests
         assertEquals(TestValues.MATCH, WayPointType.DESTINATION, testType);
@@ -82,7 +82,7 @@ public class GetWayPointsTests extends BaseRpcTests {
      * Tests a valid JSON construction of this RPC message.
      */
     @Test
-    public void testJsonConstructor () {
+    public void testJsonConstructor() {
         JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
         assertNotNull(TestValues.NOT_NULL, commandJson);
 

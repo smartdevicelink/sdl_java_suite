@@ -44,7 +44,7 @@ public final class EncoderUtils {
 
     /**
      * Extracts codec-specific data from MediaFormat instance
-     *
+     * <p>
      * Currently, only AVC is supported.
      *
      * @param format MediaFormat instance retrieved from MediaCodec
@@ -71,7 +71,7 @@ public final class EncoderUtils {
 
     /**
      * Extracts H.264 codec-specific data (SPS and PPS) from MediaFormat instance
-     *
+     * <p>
      * The codec-specific data is in byte-stream format; 4-byte start codes (0x00 0x00 0x00 0x01)
      * are added in front of SPS and PPS NAL units.
      *
@@ -87,14 +87,18 @@ public final class EncoderUtils {
         }
 
         ByteBuffer sps = format.getByteBuffer("csd-0");
-        int spsLen = sps.remaining();
+        int spsLen = sps != null ? sps.remaining() : 0;
         ByteBuffer pps = format.getByteBuffer("csd-1");
-        int ppsLen = pps.remaining();
+        int ppsLen = pps != null ? pps.remaining() : 0;
 
         byte[] output = new byte[spsLen + ppsLen];
         try {
-            sps.get(output, 0, spsLen);
-            pps.get(output, spsLen, ppsLen);
+            if (sps != null) {
+                sps.get(output, 0, spsLen);
+            }
+            if (pps != null) {
+                pps.get(output, spsLen, ppsLen);
+            }
         } catch (Exception e) {
             // should not happen
             DebugTool.logWarning(TAG, "Error while copying H264 codec specific data: " + e);
@@ -104,5 +108,6 @@ public final class EncoderUtils {
         return output;
     }
 
-    private EncoderUtils() {}
+    private EncoderUtils() {
+    }
 }

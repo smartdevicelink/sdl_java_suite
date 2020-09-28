@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -36,10 +36,12 @@ import androidx.annotation.NonNull;
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
-/** The image resolution of this field.
- * 
+
+/**
+ * The image resolution of this field.
+ *
  * <p><b>Parameter List</b></p>
- * 
+ *
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -65,26 +67,27 @@ import java.util.Hashtable;
  *                 <td>minvalue:1;  maxvalue: 10000</td>
  * 			<td>SmartDeviceLink 3.0 </td>
  * 		</tr>
- * 		
+ *
  *  </table>
+ *
  * @since SmartDeviceLink 3.0
- *  
  */
 
 public class ImageResolution extends RPCStruct {
-	public static final String KEY_RESOLUTION_WIDTH = "resolutionWidth";
-	public static final String KEY_RESOLUTION_HEIGHT = "resolutionHeight";
-	
-    public ImageResolution() {}
+    public static final String KEY_RESOLUTION_WIDTH = "resolutionWidth";
+    public static final String KEY_RESOLUTION_HEIGHT = "resolutionHeight";
+
+    public ImageResolution() {
+    }
+
     /**
-	* <p>
-	* Constructs a new ImageResolution object indicated by the Hashtable
-	* parameter
-	* </p>
-	* 
-	* @param hash
-	*            The Hashtable to use
-	*/    
+     * <p>
+     * Constructs a new ImageResolution object indicated by the Hashtable
+     * parameter
+     * </p>
+     *
+     * @param hash The Hashtable to use
+     */
 
     public ImageResolution(Hashtable<String, Object> hash) {
         super(hash);
@@ -102,37 +105,37 @@ public class ImageResolution extends RPCStruct {
      *                        converted to a pair value.
      */
     public ImageResolution setResolutionWidth(@NonNull Integer resolutionWidth) {
-        if(resolutionWidth != null && resolutionWidth % 2 != 0) {
+        if (resolutionWidth != null && resolutionWidth % 2 != 0) {
             resolutionWidth++;
         }
         setValue(KEY_RESOLUTION_WIDTH, resolutionWidth);
         return this;
     }
-    
+
     public Integer getResolutionWidth() {
         return getInteger(KEY_RESOLUTION_WIDTH);
     }
 
     /**
      * @param resolutionHeight the desired resolution height. Odds values cause problems in
-     *                        the Android H264 decoder, as a workaround the odd value is
-     *                        converted to a pair value.
+     *                         the Android H264 decoder, as a workaround the odd value is
+     *                         converted to a pair value.
      */
     public ImageResolution setResolutionHeight(@NonNull Integer resolutionHeight) {
-        if(resolutionHeight != null && resolutionHeight % 2 != 0) {
+        if (resolutionHeight != null && resolutionHeight % 2 != 0) {
             resolutionHeight++;
         }
         setValue(KEY_RESOLUTION_HEIGHT, resolutionHeight);
         return this;
     }
-    
+
     public Integer getResolutionHeight() {
         return getInteger(KEY_RESOLUTION_HEIGHT);
     }
 
     @Override
     public String toString() {
-        return "width=" + String.valueOf(getResolutionWidth()) +
-               ", height=" + String.valueOf(getResolutionHeight());
+        return "width=" + getResolutionWidth() +
+                ", height=" + getResolutionHeight();
     }
 }

@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -44,167 +44,168 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class HttpRequestTask extends AsyncTask<String, String, String> {
-	private static final String TAG = "Http Request Task";
+    private static final String TAG = "Http Request Task";
 
-	public static final String REQUEST_TYPE_POST = "POST";
-	public static final String REQUEST_TYPE_GET = "GET";
-	public static final String REQUEST_TYPE_DELETE = "DELETE";
+    public static final String REQUEST_TYPE_POST = "POST";
+    public static final String REQUEST_TYPE_GET = "GET";
+    public static final String REQUEST_TYPE_DELETE = "DELETE";
 
-	HttpRequestTaskCallback cb;
+    HttpRequestTaskCallback cb;
 
-	/**
-	 * @param hcb callback for when this task finishes
-	 * <br><br><b> - When calling execute, params as followed: </b><br>
-	 *  1. Url String<br>
-	 *  2. Request type (Defined in this class) REQUEST_TYPE_POST, REQUEST_TYPE_GET, REQUEST_TYPE_DELETE<br>
-	 *  3. (Optional) Data to be sent. <br>
-	 *  4. (Optional) Content Type  Default will be application/json<br>
-	 *  5. (Optional) Accept Type  default will be application/json
-	 * 
-	 */
-	public HttpRequestTask( HttpRequestTaskCallback hcb){
-		this.cb = hcb; 
-	}
+    /**
+     * @param hcb callback for when this task finishes
+     *            <br><br><b> - When calling execute, params as followed: </b><br>
+     *            1. Url String<br>
+     *            2. Request type (Defined in this class) REQUEST_TYPE_POST, REQUEST_TYPE_GET, REQUEST_TYPE_DELETE<br>
+     *            3. (Optional) Data to be sent. <br>
+     *            4. (Optional) Content Type  Default will be application/json<br>
+     *            5. (Optional) Accept Type  default will be application/json
+     */
+    public HttpRequestTask(HttpRequestTaskCallback hcb) {
+        this.cb = hcb;
+    }
 
-	@Override
-	protected String doInBackground(String... params) {
-		int length = params.length;
-		String urlString = params[0];
-		String request_type = params[1];
+    @Override
+    protected String doInBackground(String... params) {
+        int length = params.length;
+        String urlString = params[0];
+        String request_type = params[1];
 
-		//Grab and set data to be written if included
-		String data;
-		if(length>2){
-			data = params[2];
-		}else{
-			data = null;
-		}
+        //Grab and set data to be written if included
+        String data;
+        if (length > 2) {
+            data = params[2];
+        } else {
+            data = null;
+        }
 
-		//Grab and set content type for the header if included
-		String contentType;
-		if(length>3){
-			contentType = params[3];
-		}else{
-			contentType = "application/json";
-		}
-		//Grab and set accept type for the header if included
-		String acceptType;
-		if(length>4){
-			acceptType = params[4];
-		}else{
-			acceptType = "application/json";
-		}
+        //Grab and set content type for the header if included
+        String contentType;
+        if (length > 3) {
+            contentType = params[3];
+        } else {
+            contentType = "application/json";
+        }
+        //Grab and set accept type for the header if included
+        String acceptType;
+        if (length > 4) {
+            acceptType = params[4];
+        } else {
+            acceptType = "application/json";
+        }
 
-		if(urlString == null || request_type == null){
-			DebugTool.logError(TAG, "Can't process request, param error");
-			if(cb!=null){
-				cb.httpFailure(-1);
-				cb = null;
-			}
-			return "Error";
-		}
+        if (urlString == null || request_type == null) {
+            DebugTool.logError(TAG, "Can't process request, param error");
+            if (cb != null) {
+                cb.httpFailure(-1);
+                cb = null;
+            }
+            return "Error";
+        }
 
-		HttpURLConnection urlConnection = null;
-		BufferedReader reader = null;
-		try {
-			URL url = new URL(urlString);
-			urlConnection = (HttpURLConnection) url.openConnection();
-			urlConnection.setDoOutput(true);
-			urlConnection.setRequestMethod(request_type);
-			urlConnection.setRequestProperty("Content-Type", contentType);
-			urlConnection.setRequestProperty("Accept", acceptType);
-			//If we have data, we should write it out
-			if(data !=null){
-				Writer writer = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream(), "UTF-8"));
-				writer.write(data);
-				writer.close();
-			}
-			InputStream inputStream = urlConnection.getInputStream();
+        HttpURLConnection urlConnection = null;
+        BufferedReader reader = null;
+        try {
+            URL url = new URL(urlString);
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setDoOutput(true);
+            urlConnection.setRequestMethod(request_type);
+            urlConnection.setRequestProperty("Content-Type", contentType);
+            urlConnection.setRequestProperty("Accept", acceptType);
+            //If we have data, we should write it out
+            if (data != null) {
+                Writer writer = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream(), "UTF-8"));
+                writer.write(data);
+                writer.close();
+            }
+            InputStream inputStream = urlConnection.getInputStream();
 
-			int responseCode = urlConnection.getResponseCode();
-			if (responseCode == 200) { //Success
-				//input stream
-				StringBuffer buffer = new StringBuffer();
-				if (inputStream == null) {
-					// Nothing to do.
-					if(cb!=null){
-						cb.httpCallComplete(null);
-						cb = null;
-					}
-					return null;
-				}
-				reader = new BufferedReader(new InputStreamReader(inputStream));
+            int responseCode = urlConnection.getResponseCode();
+            if (responseCode == 200) { //Success
+                //input stream
+                StringBuffer buffer = new StringBuffer();
+                if (inputStream == null) {
+                    // Nothing to do.
+                    if (cb != null) {
+                        cb.httpCallComplete(null);
+                        cb = null;
+                    }
+                    return null;
+                }
+                reader = new BufferedReader(new InputStreamReader(inputStream));
 
-				String inputLine;
-				while ((inputLine = reader.readLine()) != null)
-					buffer.append(inputLine).append("\n");
-				if (buffer.length() == 0) {
-					// Stream was empty. No point in parsing.
-					if(cb!=null){
-						cb.httpCallComplete(null);
-						cb = null;
-					}
-					return null;
-				}
-				String response = null;
+                String inputLine;
+                while ((inputLine = reader.readLine()) != null)
+                    buffer.append(inputLine).append("\n");
+                if (buffer.length() == 0) {
+                    // Stream was empty. No point in parsing.
+                    if (cb != null) {
+                        cb.httpCallComplete(null);
+                        cb = null;
+                    }
+                    return null;
+                }
+                String response;
 
-				response = buffer.toString();
-				//send to post execute
-				if(cb!=null){
-					cb.httpCallComplete(response);
-					cb = null;
-				}
-				return response;
-			}else{
-				if(cb!=null){
-					cb.httpFailure(responseCode);
-					cb = null;
-				}
-				DebugTool.logError(TAG, "Failed to download file - " + responseCode);
-				return null;
-			}
+                response = buffer.toString();
+                //send to post execute
+                if (cb != null) {
+                    cb.httpCallComplete(response);
+                    cb = null;
+                }
+                return response;
+            } else {
+                if (cb != null) {
+                    cb.httpFailure(responseCode);
+                    cb = null;
+                }
+                DebugTool.logError(TAG, "Failed to download file - " + responseCode);
+                return null;
+            }
 
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (NullPointerException e){ // Only to catch error in urlConnection.getOutputStream() - when servers are down
-			e.printStackTrace();
-			urlConnection = null;
-		}
-		finally {
-			if (urlConnection != null) {
-				urlConnection.disconnect();
-			}
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (final IOException e) {
-					DebugTool.logError(TAG, "Error closing stream", e);
-				}
-			}
-			if(cb!=null){
-				cb.httpFailure(-1);
-			}
-		}
-		return null;
-	}
 
-	/**
-	 * Callback interface for HTTP requests.
-	 * @author Joey Grover
-	 *
-	 */
-	public interface HttpRequestTaskCallback{
-		/**
-		 * Called when HTTP request is successfully completed.
-		 * @param response The response to the HTTP request.
-		 */
-		public abstract void httpCallComplete(String response);
-		/**
-		 * Called when HTTP request failed.
-		 * @param statusCode The HTTP failure code.
-		 */
-		public abstract void httpFailure(int statusCode);
-	}
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) { // Only to catch error in urlConnection.getOutputStream() - when servers are down
+            e.printStackTrace();
+            urlConnection = null;
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (final IOException e) {
+                    DebugTool.logError(TAG, "Error closing stream", e);
+                }
+            }
+            if (cb != null) {
+                cb.httpFailure(-1);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Callback interface for HTTP requests.
+     *
+     * @author Joey Grover
+     */
+    public interface HttpRequestTaskCallback {
+        /**
+         * Called when HTTP request is successfully completed.
+         *
+         * @param response The response to the HTTP request.
+         */
+        void httpCallComplete(String response);
+
+        /**
+         * Called when HTTP request failed.
+         *
+         * @param statusCode The HTTP failure code.
+         */
+        void httpFailure(int statusCode);
+    }
 
 }

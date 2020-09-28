@@ -15,15 +15,15 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.FuelRange}
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.proxy.rpc.FuelRange}
  */
-public class FuelRangeTests extends TestCase{
+public class FuelRangeTests extends TestCase {
 
     private FuelRange msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new FuelRange();
 
         msg.setType(TestValues.GENERAL_FUELTYPE);
@@ -35,10 +35,10 @@ public class FuelRangeTests extends TestCase{
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
-    	// Test Values
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
         FuelType fuelType = msg.getType();
         float range = msg.getRange();
         float level = msg.getLevel();
@@ -53,7 +53,7 @@ public class FuelRangeTests extends TestCase{
         assertEquals(TestValues.MATCH, TestValues.GENERAL_COMPONENTVOLUMESTATUS, levelState);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_CAPACITYUNIT, capacityUnit);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_FLOAT, capacity);
-        
+
         // Invalid/Null Tests
         FuelRange msg = new FuelRange();
         assertNotNull(TestValues.NOT_NULL, msg);
@@ -66,10 +66,10 @@ public class FuelRangeTests extends TestCase{
         assertNull(TestValues.NULL, msg.getCapacity());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(FuelRange.KEY_TYPE, TestValues.GENERAL_FUELTYPE);
             reference.put(FuelRange.KEY_RANGE, (Float) TestValues.GENERAL_FLOAT);
             reference.put(FuelRange.KEY_LEVEL, TestValues.GENERAL_FLOAT);
@@ -81,13 +81,13 @@ public class FuelRangeTests extends TestCase{
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()) {
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
 
                 assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
-        }catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

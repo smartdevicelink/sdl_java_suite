@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -40,8 +40,9 @@ import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import java.util.Hashtable;
 import java.util.List;
 
-/** <p>The name that identifies the field.For example AppIcon,SoftButton, LocationImage, etc.</p>
- * 
+/**
+ * <p>The name that identifies the field.For example AppIcon,SoftButton, LocationImage, etc.</p>
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -77,24 +78,22 @@ import java.util.List;
  * 			<td>SmartDeviceLink 3.0 </td>
  * 		</tr>
  *  </table>
- * @since SmartDeviceLink 3.0
+ *
  * @see com.smartdevicelink.proxy.rpc.enums.ImageType
  * @see com.smartdevicelink.proxy.rpc.ImageResolution
  * @see com.smartdevicelink.proxy.rpc.enums.ImageFieldName
- *
- *
- * 
- *
+ * @since SmartDeviceLink 3.0
  */
 
 public class ImageField extends RPCStruct {
     public static final String KEY_IMAGE_TYPE_SUPPORTED = "imageTypeSupported";
     public static final String KEY_IMAGE_RESOLUTION = "imageResolution";
     public static final String KEY_NAME = "name";
-    
-    
-    public ImageField() { }
-   
+
+
+    public ImageField() {
+    }
+
     public ImageField(Hashtable<String, Object> hash) {
         super(hash);
     }
@@ -107,24 +106,28 @@ public class ImageField extends RPCStruct {
 
     public ImageFieldName getName() {
         return (ImageFieldName) getObject(ImageFieldName.class, KEY_NAME);
-    } 
+    }
+
     public ImageField setName(@NonNull ImageFieldName name) {
         setValue(KEY_NAME, name);
         return this;
     }
+
     @SuppressWarnings("unchecked")
-	public List<FileType> getImageTypeSupported() {
+    public List<FileType> getImageTypeSupported() {
         return (List<FileType>) getObject(FileType.class, KEY_IMAGE_TYPE_SUPPORTED);
     }
+
     public ImageField setImageTypeSupported(@NonNull List<FileType> imageTypeSupported) {
         setValue(KEY_IMAGE_TYPE_SUPPORTED, imageTypeSupported);
         return this;
     }
-    @SuppressWarnings("unchecked")
+
     public ImageResolution getImageResolution() {
         return (ImageResolution) getObject(ImageResolution.class, KEY_IMAGE_RESOLUTION);
-    } 
-    public ImageField setImageResolution( ImageResolution imageResolution) {
+    }
+
+    public ImageField setImageResolution(ImageResolution imageResolution) {
         setValue(KEY_IMAGE_RESOLUTION, imageResolution);
         return this;
     }

@@ -1,10 +1,10 @@
 {
-  "request":{
-    "name":"EndAudioPassThru",
-    "correlationID":125
+  "request": {
+    "name": "EndAudioPassThru",
+    "correlationID": 125
   },
-  "response":{
-    "name":"EndAudioPassThruResponse",
-    "correlationID":126
+  "response": {
+    "name": "EndAudioPassThruResponse",
+    "correlationID": 126
   }
 }

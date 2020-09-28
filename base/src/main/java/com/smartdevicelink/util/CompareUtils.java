@@ -2,7 +2,7 @@ package com.smartdevicelink.util;
 
 public class CompareUtils {
 
-    public static boolean areStringsEqual(String string1, String string2, boolean ignoreCase, boolean nullIsEqual){
+    public static boolean areStringsEqual(String string1, String string2, boolean ignoreCase, boolean nullIsEqual) {
 
         if (string1 == null) {
             if (string2 == null) {

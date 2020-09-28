@@ -2,6 +2,7 @@ package com.smartdevicelink.transport;
 
 import android.os.Looper;
 import android.os.Messenger;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.transport.enums.TransportType;
@@ -35,7 +36,7 @@ public class RegisteredAppTests {
         SdlRouterService.RegisteredApp app = router.new RegisteredApp(APP_ID, 1, messenger);
 
         // Call Handle Message
-        app.handleMessage(TransportConstants.BYTES_TO_SEND_FLAG_LARGE_PACKET_START,bytes, TransportType.BLUETOOTH);
+        app.handleMessage(TransportConstants.BYTES_TO_SEND_FLAG_LARGE_PACKET_START, bytes, TransportType.BLUETOOTH);
 
         // Insure that the buffer is not null, if it is the test will fail
         assertNotNull(app.buffer);

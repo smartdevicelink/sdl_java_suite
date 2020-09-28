@@ -17,48 +17,48 @@ import java.util.Iterator;
  */
 public class NavigationServiceManifestTests extends TestCase {
 
-	private NavigationServiceManifest msg;
+    private NavigationServiceManifest msg;
 
-	@Override
-	public void setUp(){
-		msg = new NavigationServiceManifest();
+    @Override
+    public void setUp() {
+        msg = new NavigationServiceManifest();
 
-		msg.setAcceptsWayPoints(TestValues.GENERAL_BOOLEAN);
-	}
+        msg.setAcceptsWayPoints(TestValues.GENERAL_BOOLEAN);
+    }
 
-	/**
-	 * Tests the expected values of the RPC message.
-	 */
-	public void testRpcValues () {
-		// Test Values
-		boolean acceptsWayPoints = msg.getAcceptsWayPoints();
+    /**
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
+        boolean acceptsWayPoints = msg.getAcceptsWayPoints();
 
-		// Valid Tests
-		assertEquals(TestValues.GENERAL_BOOLEAN, acceptsWayPoints);
+        // Valid Tests
+        assertEquals(TestValues.GENERAL_BOOLEAN, acceptsWayPoints);
 
-		// Invalid/Null Tests
-		NavigationServiceManifest msg = new NavigationServiceManifest();
-		assertNotNull(TestValues.NOT_NULL, msg);
+        // Invalid/Null Tests
+        NavigationServiceManifest msg = new NavigationServiceManifest();
+        assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(TestValues.NULL, msg.getAcceptsWayPoints());
-	}
+        assertNull(TestValues.NULL, msg.getAcceptsWayPoints());
+    }
 
-	public void testJson(){
-		JSONObject reference = new JSONObject();
+    public void testJson() {
+        JSONObject reference = new JSONObject();
 
-		try{
-			reference.put(NavigationServiceManifest.KEY_ACCEPTS_WAY_POINTS, TestValues.GENERAL_BOOLEAN);
+        try {
+            reference.put(NavigationServiceManifest.KEY_ACCEPTS_WAY_POINTS, TestValues.GENERAL_BOOLEAN);
 
-			JSONObject underTest = msg.serializeJSON();
-			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
+            JSONObject underTest = msg.serializeJSON();
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
-			Iterator<?> iterator = reference.keys();
-			while(iterator.hasNext()){
-				String key = (String) iterator.next();
-				assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
-			}
-		} catch(JSONException e){
-			fail(TestValues.JSON_FAIL);
-		}
-	}
+            Iterator<?> iterator = reference.keys();
+            while (iterator.hasNext()) {
+                String key = (String) iterator.next();
+                assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+            }
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
+        }
+    }
 }

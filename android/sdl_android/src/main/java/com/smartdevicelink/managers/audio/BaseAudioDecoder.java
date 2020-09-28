@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -38,6 +38,7 @@ import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.net.Uri;
 import android.os.Build;
+
 import androidx.annotation.NonNull;
 
 import com.smartdevicelink.managers.audio.AudioStreamManager.SampleType;
@@ -53,11 +54,13 @@ public abstract class BaseAudioDecoder {
     private static final String TAG = AudioDecoder.class.getSimpleName();
 
     protected final int targetSampleRate;
-    protected @SampleType final int targetSampleType;
+    protected @SampleType
+    final int targetSampleType;
 
     private int outputChannelCount;
     private int outputSampleRate;
-    private @SampleType int outputSampleType;
+    private @SampleType
+    int outputSampleType;
 
     private double lastOutputSample = 0;
 
@@ -72,14 +75,13 @@ public abstract class BaseAudioDecoder {
     protected final AudioDecoderListener listener;
 
     /**
-     *
      * @param audioSource Uri of the audio source to be converted
-     * @param context the context
-     * @param sampleRate can be either 8000, 16000, 22050 or 44100
+     * @param context     the context
+     * @param sampleRate  can be either 8000, 16000, 22050 or 44100
+     * @param sampleType  can be either UNSIGNED_8_BIT, SIGNED_16_BIT, FLOAT
+     * @param listener    listener for event callbacks
      * @see AudioPassThruCapabilities#getSamplingRate()
-     * @param sampleType can be either UNSIGNED_8_BIT, SIGNED_16_BIT, FLOAT
      * @see SampleType
-     * @param listener listener for event callbacks
      */
     public BaseAudioDecoder(@NonNull Uri audioSource, @NonNull Context context, int sampleRate, @SampleType int sampleType, AudioDecoderListener listener) {
         this.audioSource = audioSource;
@@ -91,13 +93,13 @@ public abstract class BaseAudioDecoder {
     }
 
     protected void initMediaComponents() throws Exception {
-        if(targetSampleRate <= 0){
+        if (targetSampleRate <= 0) {
             throw new InstantiationException("Target sample rate of " + targetSampleRate + " is unsupported");
         }
 
         extractor = new MediaExtractor();
         Context contextRef = contextWeakReference.get();
-        if(contextRef == null){
+        if (contextRef == null) {
             throw new InstantiationException("Context reference was null");
         }
         extractor.setDataSource(contextRef, audioSource, null);
@@ -109,7 +111,7 @@ public abstract class BaseAudioDecoder {
         for (int i = 0; i < numTracks; ++i) {
             MediaFormat f = extractor.getTrackFormat(i);
             String m = f.getString(MediaFormat.KEY_MIME);
-            if (m.startsWith("audio/")) {
+            if (m != null && m.startsWith("audio/")) {
                 format = f;
                 mime = m;
                 extractor.selectTrack(i);
@@ -186,20 +188,20 @@ public abstract class BaseAudioDecoder {
 
     protected SampleBuffer onOutputBufferAvailable(@NonNull ByteBuffer outputBuffer) {
         double outputPresentationTimeUs = lastOutputPresentationTimeUs;
-        double outputDurationPerSampleUs = 1000000.0 / (double)outputSampleRate;
+        double outputDurationPerSampleUs = 1000000.0 / (double) outputSampleRate;
 
         double targetPresentationTimeUs = lastTargetPresentationTimeUs;
-        double targetDurationPerSampleUs = 1000000.0 / (double)targetSampleRate;
+        double targetDurationPerSampleUs = 1000000.0 / (double) targetSampleRate;
 
         // wrap the output buffer to make it provide audio samples
-        SampleBuffer outputSampleBuffer = SampleBuffer.wrap(outputBuffer, outputSampleType, outputChannelCount, (long)outputPresentationTimeUs);
+        SampleBuffer outputSampleBuffer = SampleBuffer.wrap(outputBuffer, outputSampleType, outputChannelCount, (long) outputPresentationTimeUs);
         outputSampleBuffer.position(0);
 
         // the buffer size is related to the output and target sample rate
         // add 2 samples to round up and add an extra sample
         int sampleSize = outputSampleBuffer.limit() * targetSampleRate / outputSampleRate + 2;
 
-        SampleBuffer targetSampleBuffer = SampleBuffer.allocate(sampleSize, targetSampleType, ByteOrder.LITTLE_ENDIAN, (long)targetPresentationTimeUs);
+        SampleBuffer targetSampleBuffer = SampleBuffer.allocate(sampleSize, targetSampleType, ByteOrder.LITTLE_ENDIAN, (long) targetPresentationTimeUs);
         Double sample;
 
         do {

@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -40,13 +40,13 @@ import java.util.Hashtable;
 
 /**
  * Deletes a submenu from the Command Menu.
- * 
+ *
  * <p><b>Notes: </b>When an app deletes a submenu that has child commands, those
  * child commands are also deleted</p>
- * 
+ *
  * <p><b>HMILevel needs to be  FULL, LIMITED or BACKGROUND</b></p>
- * 
- * 
+ *
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -67,61 +67,70 @@ import java.util.Hashtable;
  * 		</tr>
  *  </table>
  *
- *<p> <b>Response </b></p>
- * 
+ * <p> <b>Response </b></p>
+ *
  * <p><b>Non-default Result Codes:</b></p>
- *<p>SUCCESS</p>
- *<p> 	INVALID_DATA</p>
+ * <p>SUCCESS</p>
+ * <p> 	INVALID_DATA</p>
  * <p>	OUT_OF_MEMORY</p>
  * <p>	TOO_MANY_PENDING_REQUESTS</p>
  * <p>	APPLICATION_NOT_REGISTERED</p>
  * <p>	GENERIC_ERROR</p>
  * <p>	REJECTED</p>
  * <p> INVALID_ID</p>
- * <p> IN_USE   </p>   
- * 
- * @since SmartDeviceLink 1.0
+ * <p> IN_USE   </p>
+ *
  * @see AddCommand
  * @see AddSubMenu
  * @see DeleteCommand
+ * @since SmartDeviceLink 1.0
  */
 public class DeleteSubMenu extends RPCRequest {
-	public static final String KEY_MENU_ID = "menuID";
-	/**
-	* Constructs a new DeleteSubMenu object
-	*/
-	public DeleteSubMenu() {
+    public static final String KEY_MENU_ID = "menuID";
+
+    /**
+     * Constructs a new DeleteSubMenu object
+     */
+    public DeleteSubMenu() {
         super(FunctionID.DELETE_SUB_MENU.toString());
     }
+
     /**
-     * Constructs a new DeleteSubMenu object indicated by the Hashtable parameter    
+     * Constructs a new DeleteSubMenu object indicated by the Hashtable parameter
+     *
      * @param hash The Hashtable to use
      */
     public DeleteSubMenu(Hashtable<String, Object> hash) {
         super(hash);
     }
+
     /**
      * Constructs a new DeleteSubMenu object
+     *
      * @param menuID an Integer value representing menuID that identifies the SubMenu to be delete
      *
-     * <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000</p>
+     *               <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000</p>
      */
     public DeleteSubMenu(@NonNull Integer menuID) {
         this();
         setMenuID(menuID);
     }
+
     /**
      * Gets the Menu ID that identifies the SubMenu to be delete
+     *
      * @return Integer -an Integer value representing menuID that identifies the SubMenu to be delete
-     */    
+     */
     public Integer getMenuID() {
-        return getInteger( KEY_MENU_ID );
+        return getInteger(KEY_MENU_ID);
     }
+
     /**
      * Sets the MenuID that identifies the SubMenu to be delete
+     *
      * @param menuID an Integer value representing menuID that identifies the SubMenu to be delete
      *
-     * <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000</p>
+     *               <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000</p>
      */
     public DeleteSubMenu setMenuID(@NonNull Integer menuID) {
         setParameters(KEY_MENU_ID, menuID);

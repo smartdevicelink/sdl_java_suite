@@ -12,7 +12,8 @@ public class SeatLocationCapability extends RPCStruct {
     public static final String KEY_LEVELS = "levels";
     public static final String KEY_SEATS = "seats";
 
-    public SeatLocationCapability(){}
+    public SeatLocationCapability() {
+    }
 
     public SeatLocationCapability(Hashtable<String, Object> hash) {
         super(hash);
@@ -20,15 +21,17 @@ public class SeatLocationCapability extends RPCStruct {
 
     /**
      * Sets the seat rows for this capability
+     *
      * @param rows rows to be set
      */
-    public SeatLocationCapability setRows( Integer rows) {
+    public SeatLocationCapability setRows(Integer rows) {
         setValue(KEY_ROWS, rows);
         return this;
     }
 
     /**
      * Gets the seat rows of this capability
+     *
      * @return the seat rows
      */
     public Integer getRows() {
@@ -37,15 +40,17 @@ public class SeatLocationCapability extends RPCStruct {
 
     /**
      * Sets the seat columns for this capability
+     *
      * @param cols the seat columns to be set
      */
-    public SeatLocationCapability setCols( Integer cols) {
+    public SeatLocationCapability setCols(Integer cols) {
         setValue(KEY_COLS, cols);
         return this;
     }
 
     /**
      * Gets the seat columns of this capability
+     *
      * @return the seat columns
      */
     public Integer getCols() {
@@ -54,15 +59,17 @@ public class SeatLocationCapability extends RPCStruct {
 
     /**
      * Sets the levels for this capability
+     *
      * @param levels the levels to be set
      */
-    public SeatLocationCapability setLevels( Integer levels) {
+    public SeatLocationCapability setLevels(Integer levels) {
         setValue(KEY_LEVELS, levels);
         return this;
     }
 
     /**
      * Gets the seat levels of this capability
+     *
      * @return the seat levels
      */
     public Integer getLevels() {
@@ -71,19 +78,32 @@ public class SeatLocationCapability extends RPCStruct {
 
     /**
      * Sets the seat locations for this capability
+     *
      * @param locations the locations to be set
      */
-    public SeatLocationCapability setSeats( List<SeatLocation> locations) {
+    public SeatLocationCapability setSeats(List<SeatLocation> locations) {
         setValue(KEY_SEATS, locations);
         return this;
     }
 
     /**
      * Gets the seat locations of this capability
+     *
      * @return the seat locations
+     * @deprecated use {@link #getSeats()} instead.
      */
     @SuppressWarnings("unchecked")
+    @Deprecated
     public List<SeatLocation> getSeatLocations() {
+        return getSeats();
+    }
+
+    /**
+     * Gets the seat locations of this capability
+     *
+     * @return the seat locations
+     */
+    public List<SeatLocation> getSeats() {
         return (List<SeatLocation>) getObject(SeatLocation.class, KEY_SEATS);
     }
 }

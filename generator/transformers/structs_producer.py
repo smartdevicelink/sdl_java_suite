@@ -58,6 +58,7 @@ class StructsProducer(InterfaceProducerCommon):
         render['imports'] = imports
         render['deprecated'] = item.deprecated
         render['since'] = item.since
+        render['history'] = item.history
 
         description = self.extract_description(item.description)
         if description:
@@ -104,6 +105,7 @@ class StructsProducer(InterfaceProducerCommon):
         if param.since:
             p['since'] = param.since
         p['deprecated'] = param.deprecated
+        p['history'] = param.history
         p['origin'] = param.origin
         p['values'] = self.extract_values(param)
         d = self.extract_description(param.description)

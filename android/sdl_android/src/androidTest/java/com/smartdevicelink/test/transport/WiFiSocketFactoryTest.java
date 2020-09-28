@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 /**
  * This is a unit test class for the WiFiSocketFactory class:
  * {@link com.smartdevicelink.transport.utl.WiFiSocketFactory}
- *
+ * <p>
  * Requires LOLLIPOP or later since the tests use android.net.NetworkCapabilities class
  */
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -168,7 +168,7 @@ public class WiFiSocketFactoryTest extends TestCase {
 
     // test the happy path
     public void testWithWiFiNetwork() {
-        setupMockNetworks(new MockNetworkConfig[] {
+        setupMockNetworks(new MockNetworkConfig[]{
                 new MockNetworkConfig(false, NetworkCapabilities.TRANSPORT_CELLULAR, FactoryRet.RETURNS_ANOTHER_FACTORY),
                 new MockNetworkConfig(false, NetworkCapabilities.TRANSPORT_WIFI, FactoryRet.RETURNS_CORRECT_FACTORY),
         });
@@ -204,8 +204,8 @@ public class WiFiSocketFactoryTest extends TestCase {
 
     // test the case where we do not have ACCESS_NETWORK_STATE permission
     public void testWithoutPermission() {
-        setupMockNetworks(new MockNetworkConfig[] {
-            new MockNetworkConfig(false, NetworkCapabilities.TRANSPORT_WIFI, FactoryRet.RETURNS_CORRECT_FACTORY),
+        setupMockNetworks(new MockNetworkConfig[]{
+                new MockNetworkConfig(false, NetworkCapabilities.TRANSPORT_WIFI, FactoryRet.RETURNS_CORRECT_FACTORY),
         });
 
         // simulate the case where required permission isn't available
@@ -220,7 +220,7 @@ public class WiFiSocketFactoryTest extends TestCase {
 
     // test the case where context.getPackageManager() returns null
     public void testPackageManagerNull() {
-        setupMockNetworks(new MockNetworkConfig[] {
+        setupMockNetworks(new MockNetworkConfig[]{
                 new MockNetworkConfig(false, NetworkCapabilities.TRANSPORT_WIFI, FactoryRet.RETURNS_CORRECT_FACTORY),
         });
 
@@ -236,7 +236,7 @@ public class WiFiSocketFactoryTest extends TestCase {
 
     // test the case where getSystemService() returns null
     public void testConnectivityManagerNull() {
-        setupMockNetworks(new MockNetworkConfig[] {
+        setupMockNetworks(new MockNetworkConfig[]{
                 new MockNetworkConfig(false, NetworkCapabilities.TRANSPORT_WIFI, FactoryRet.RETURNS_CORRECT_FACTORY),
         });
 
@@ -263,7 +263,7 @@ public class WiFiSocketFactoryTest extends TestCase {
 
     // test the case where the network list contains a null for Network instance
     public void testNetworkListHasNull() {
-        setupMockNetworks(new MockNetworkConfig[] {
+        setupMockNetworks(new MockNetworkConfig[]{
                 // multiple Network instances in the list, the first one being NULL
                 new MockNetworkConfig(true, 0, FactoryRet.RETURNS_ANOTHER_FACTORY),
                 new MockNetworkConfig(false, NetworkCapabilities.TRANSPORT_WIFI, FactoryRet.RETURNS_CORRECT_FACTORY),
@@ -277,7 +277,7 @@ public class WiFiSocketFactoryTest extends TestCase {
 
     // test the case where the phone isn't connected to Wi-Fi network
     public void testNoWiFiNetwork() {
-        setupMockNetworks(new MockNetworkConfig[] {
+        setupMockNetworks(new MockNetworkConfig[]{
                 // none of the instances has TRANSPORT_WIFI in their capabilities
                 new MockNetworkConfig(false, NetworkCapabilities.TRANSPORT_CELLULAR, FactoryRet.RETURNS_ANOTHER_FACTORY),
                 new MockNetworkConfig(false, NetworkCapabilities.TRANSPORT_BLUETOOTH, FactoryRet.RETURNS_ANOTHER_FACTORY),
@@ -293,7 +293,7 @@ public class WiFiSocketFactoryTest extends TestCase {
 
     // test the case where we get null for SocketFactory
     public void testSocketFactoryNull() {
-        setupMockNetworks(new MockNetworkConfig[] {
+        setupMockNetworks(new MockNetworkConfig[]{
                 new MockNetworkConfig(false, NetworkCapabilities.TRANSPORT_CELLULAR, FactoryRet.RETURNS_ANOTHER_FACTORY),
                 new MockNetworkConfig(false, NetworkCapabilities.TRANSPORT_WIFI, FactoryRet.RETURNS_NULL),
         });
@@ -307,7 +307,7 @@ public class WiFiSocketFactoryTest extends TestCase {
 
     // test the case where we get a null for SocketFactory, then a valid one for another
     public void testSocketFactoryNull2() {
-        setupMockNetworks(new MockNetworkConfig[] {
+        setupMockNetworks(new MockNetworkConfig[]{
                 new MockNetworkConfig(false, NetworkCapabilities.TRANSPORT_CELLULAR, FactoryRet.RETURNS_ANOTHER_FACTORY),
                 new MockNetworkConfig(false, NetworkCapabilities.TRANSPORT_WIFI, FactoryRet.RETURNS_NULL),
                 new MockNetworkConfig(false, NetworkCapabilities.TRANSPORT_WIFI, FactoryRet.RETURNS_CORRECT_FACTORY),
@@ -321,7 +321,7 @@ public class WiFiSocketFactoryTest extends TestCase {
 
     // test the case where we get an exception with SocketFactory.createSocket()
     public void testFactoryReturnsException() throws IOException {
-        setupMockNetworks(new MockNetworkConfig[] {
+        setupMockNetworks(new MockNetworkConfig[]{
                 new MockNetworkConfig(false, NetworkCapabilities.TRANSPORT_WIFI, FactoryRet.RETURNS_CORRECT_FACTORY),
         });
 
@@ -338,13 +338,13 @@ public class WiFiSocketFactoryTest extends TestCase {
     // the first one throws Exception and the other one succeeds.
     // This is to simulate Samsung Galaxy S9.
     public void testFactoryReturnsException2() throws IOException {
-        setupMockNetworks(new MockNetworkConfig[] {
+        setupMockNetworks(new MockNetworkConfig[]{
                 new MockNetworkConfig(false, NetworkCapabilities.TRANSPORT_WIFI, FactoryRet.RETURNS_CORRECT_FACTORY),
                 new MockNetworkConfig(false, NetworkCapabilities.TRANSPORT_WIFI, FactoryRet.RETURNS_CORRECT_FACTORY),
         });
 
         when(mMockSocketFactory.createSocket()).thenThrow(new IOException("Dummy IOException for testing!"))
-        .thenReturn(mWiFiBoundSocket);
+                .thenReturn(mWiFiBoundSocket);
 
         Socket ret = WiFiSocketFactory.createSocket(mMockContext);
 

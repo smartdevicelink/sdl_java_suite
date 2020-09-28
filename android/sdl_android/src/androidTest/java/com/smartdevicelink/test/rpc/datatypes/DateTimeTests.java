@@ -20,7 +20,7 @@ public class DateTimeTests extends TestCase {
     private DateTime msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new DateTime();
 
         msg.setYear(TestValues.GENERAL_INT);
@@ -37,7 +37,7 @@ public class DateTimeTests extends TestCase {
     /**
      * Tests the expected values of the RPC message.
      */
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Test Values
         Integer year = msg.getYear();
         Integer month = msg.getMonth();
@@ -75,10 +75,10 @@ public class DateTimeTests extends TestCase {
         assertNull(TestValues.NULL, msg.getTzMinute());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(DateTime.KEY_YEAR, (Integer) TestValues.GENERAL_INT);
             reference.put(DateTime.KEY_MONTH, (Integer) TestValues.GENERAL_INT);
             reference.put(DateTime.KEY_DAY, (Integer) TestValues.GENERAL_INT);
@@ -94,7 +94,7 @@ public class DateTimeTests extends TestCase {
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
 
                 Object a = JsonUtils.readObjectFromJsonObject(reference, key);
@@ -102,7 +102,7 @@ public class DateTimeTests extends TestCase {
 
                 assertEquals(TestValues.MATCH, a, b);
             }
-        } catch(JSONException e){
+        } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
     }

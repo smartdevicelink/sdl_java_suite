@@ -3,9 +3,12 @@ package com.smartdevicelink.test.rpc.datatypes;
 import com.smartdevicelink.proxy.rpc.DriverDistractionCapability;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.TestValues;
+
 import junit.framework.TestCase;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.Iterator;
 
 /**
@@ -54,7 +57,7 @@ public class DriverDistractionCapabilityTest extends TestCase {
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
                 assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }

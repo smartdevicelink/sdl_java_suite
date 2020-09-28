@@ -32,18 +32,18 @@
 
 package com.smartdevicelink.managers.lifecycle;
 
-import android.app.Service;
 import android.content.Context;
+
 import androidx.annotation.RestrictTo;
 
-import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
+import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.security.SdlSecurityBase;
+import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
@@ -52,13 +52,10 @@ import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * The lifecycle manager creates a central point for all SDL session logic to converge. It should only be used by
  * the library itself. Usage outside the library is not permitted and will not be protected for in the future.
- *
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public class LifecycleManager extends BaseLifecycleManager {
@@ -81,7 +78,7 @@ public class LifecycleManager extends BaseLifecycleManager {
         } else if (_transportConfig != null && _transportConfig.getTransportType().equals(TransportType.TCP)) {
             this.session = new SdlSession(sdlSessionListener, (TCPTransportConfig) _transportConfig);
         } else {
-            DebugTool.logError(TAG,"Unable to create session for transport type");
+            DebugTool.logError(TAG, "Unable to create session for transport type");
         }
     }
 
@@ -112,7 +109,7 @@ public class LifecycleManager extends BaseLifecycleManager {
         super.setSdlSecurityStaticVars();
 
         Context context = null;
-        if(this.contextWeakReference != null){
+        if (this.contextWeakReference != null) {
             context = contextWeakReference.get();
         }
         SdlSecurityBase.setContext(context);
@@ -158,10 +155,6 @@ public class LifecycleManager extends BaseLifecycleManager {
      *
      * @param isEncrypted Specify true if packets on this service have to be encrypted
      * @param parameters  VideoStreamingParameters that are desired. Does not guarantee this is what will be accepted.
-     * @return If the service is opened successfully, an instance of VideoStreamingParams is
-     * returned which contains accepted video format. If the service is opened with legacy
-     * mode (i.e. without any negotiation) then an instance of VideoStreamingParams is
-     * returned. If the service was not opened then null is returned.
      */
     private void tryStartVideoStream(boolean isEncrypted, VideoStreamingParameters parameters, boolean afterPendingRestart) {
         if (session == null) {

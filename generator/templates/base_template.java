@@ -63,23 +63,21 @@ import {{i}};{{ '\n' if loop.last }}
  *      <td>{%- for d in param.description %}{{d}}{%- endfor %}</td>
  *      <td>{%- if param.mandatory is eq true %}Y{%- else %}N{%- endif %}</td>
  *      <td>{%- for k in param.values %}{{ '{' if loop.first}}"{{k}}": {{param.values[k]}}{{ ', ' if not loop.last else  '}'}}{%- endfor %}</td>
- *      <td>{%- if param.since is defined %}SmartDeviceLink {{param.since}}{%- endif %}</td>
+        {%- if param.since is defined and param.since is not none %}{% set see, deprecated, since, history, spacing = param.see, param.deprecated, param.since, param.history, ' *         ' %}
+ *      <td>
+        {%- include "javadoc_version_info.java" %}
+ *      </td>
+        {%- else %}
+ *      <td></td>
+        {%- endif %}
  *  </tr>
  {%- endfor %}
  * </table>
  {%- endif %}
  {%- if description is defined and (see is defined or since is defined) %}
  *
- {%- endif %}
- {%- if deprecated is not none %}
- * @deprecated
- {%- endif %}
- {%- if see is defined %}
- * @see {{see}}
- {%- endif %}
- {%- if since is defined %}
- * @since SmartDeviceLink {{since}}
- {%- endif %}
+ {%- endif %}{% set prefix = ' * ' %}
+ {%- include "javadoc_version_info.java" %}
  */
 {%- endif %}
 {%- if deprecated is not none %}

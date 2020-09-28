@@ -41,107 +41,107 @@ import com.smartdevicelink.util.BitConverter;
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public class SdlPacketFactory {
 
-	/* 
-	 * public SdlPacket(int version, boolean compression, int frameType,
-			int serviceType, int frameInfo, int sessionId,
-			int dataSize, int messageId, byte[] payload) {
-	 */
-	public static SdlPacket createStartSession(SessionType serviceType, int messageID, byte version, byte sessionID, boolean encrypted) {
+    /*
+     * public SdlPacket(int version, boolean compression, int frameType,
+            int serviceType, int frameInfo, int sessionId,
+            int dataSize, int messageId, byte[] payload) {
+     */
+    public static SdlPacket createStartSession(SessionType serviceType, int messageID, byte version, byte sessionID, boolean encrypted) {
 
-		return new SdlPacket(version,encrypted,SdlPacket.FRAME_TYPE_CONTROL,
-				serviceType.getValue(),SdlPacket.FRAME_INFO_START_SERVICE,sessionID,
-				0,messageID,null);
-	}
+        return new SdlPacket(version, encrypted, SdlPacket.FRAME_TYPE_CONTROL,
+                serviceType.getValue(), SdlPacket.FRAME_INFO_START_SERVICE, sessionID,
+                0, messageID, null);
+    }
 
     public static SdlPacket createHeartbeat(SessionType serviceType, byte sessionID, byte version) {
-    
-    	return new SdlPacket(version,false,SdlPacket.FRAME_TYPE_CONTROL,
-				serviceType.getValue(),FrameDataControlFrameType.Heartbeat.value(),sessionID,
-				0,0,null);
+
+        return new SdlPacket(version, false, SdlPacket.FRAME_TYPE_CONTROL,
+                serviceType.getValue(), FrameDataControlFrameType.Heartbeat.value(), sessionID,
+                0, 0, null);
 
     }
 
-	public static SdlPacket createHeartbeatACK(SessionType serviceType, byte sessionID, byte version) {
-		return new SdlPacket(version,false,SdlPacket.FRAME_TYPE_CONTROL,
-				serviceType.getValue(),FrameDataControlFrameType.HeartbeatACK.value(),sessionID,
-				0,0,null);
-		}
-	
-	public static SdlPacket createStartSessionACK(SessionType serviceType, byte sessionID, int messageID, byte version) {
-		
-		return new SdlPacket(version,false,SdlPacket.FRAME_TYPE_CONTROL,
-				serviceType.getValue(),FrameDataControlFrameType.StartSessionACK.value(),sessionID,
-				0,messageID,null);
+    public static SdlPacket createHeartbeatACK(SessionType serviceType, byte sessionID, byte version) {
+        return new SdlPacket(version, false, SdlPacket.FRAME_TYPE_CONTROL,
+                serviceType.getValue(), FrameDataControlFrameType.HeartbeatACK.value(), sessionID,
+                0, 0, null);
+    }
 
-	}
+    public static SdlPacket createStartSessionACK(SessionType serviceType, byte sessionID, int messageID, byte version) {
 
-	public static SdlPacket createStartSessionNACK(SessionType serviceType, byte sessionID, int messageID, byte version) {
-		
-		return new SdlPacket(version,false,SdlPacket.FRAME_TYPE_CONTROL,
-				serviceType.getValue(),SdlPacket.FRAME_INFO_START_SERVICE_NAK,sessionID,
-				0,messageID,null);
-	}
+        return new SdlPacket(version, false, SdlPacket.FRAME_TYPE_CONTROL,
+                serviceType.getValue(), FrameDataControlFrameType.StartSessionACK.value(), sessionID,
+                0, messageID, null);
 
-	public static SdlPacket createEndSession(SessionType serviceType, byte sessionID, int messageID, byte version, byte[] payload) {
-		return new SdlPacket(version,false,SdlPacket.FRAME_TYPE_CONTROL,
-				serviceType.getValue(),SdlPacket.FRAME_INFO_END_SERVICE,sessionID,
-				payload.length,messageID,payload);
-	}
+    }
 
-	public static SdlPacket createEndSession(SessionType serviceType, byte sessionID, int messageID, byte version, int hashID) {
-		if (version < 5) {
-			byte[] payload = BitConverter.intToByteArray(hashID);
-			return new SdlPacket(version, false, SdlPacket.FRAME_TYPE_CONTROL,
-					serviceType.getValue(), SdlPacket.FRAME_INFO_END_SERVICE, sessionID,
-					payload.length, messageID, payload);
-		} else {
-			SdlPacket endSession = new SdlPacket(version, false, SdlPacket.FRAME_TYPE_CONTROL,
-					serviceType.getValue(), SdlPacket.FRAME_INFO_END_SERVICE, sessionID,
-					0, messageID, null);
-			endSession.putTag(ControlFrameTags.RPC.EndService.HASH_ID, hashID);
-			return endSession;
-		}
-	}
+    public static SdlPacket createStartSessionNACK(SessionType serviceType, byte sessionID, int messageID, byte version) {
 
-	public static SdlPacket createSingleSendData(SessionType serviceType, byte sessionID,
-			int dataLength, int messageID, byte version, byte[] payload, boolean encrypted) {
-		
-		return new SdlPacket(version,encrypted,SdlPacket.FRAME_TYPE_SINGLE,
-				serviceType.getValue(),0,sessionID,
-				payload.length,messageID,payload);
-	}
+        return new SdlPacket(version, false, SdlPacket.FRAME_TYPE_CONTROL,
+                serviceType.getValue(), SdlPacket.FRAME_INFO_START_SERVICE_NAK, sessionID,
+                0, messageID, null);
+    }
 
-	public static SdlPacket createMultiSendDataFirst(SessionType serviceType, byte sessionID, 
-			int messageID, byte version, byte[] payload, boolean encrypted) {
-		
-		return new SdlPacket(version,encrypted,SdlPacket.FRAME_TYPE_FIRST,
-				serviceType.getValue(),0,sessionID,
-				8,messageID,payload);
+    public static SdlPacket createEndSession(SessionType serviceType, byte sessionID, int messageID, byte version, byte[] payload) {
+        return new SdlPacket(version, false, SdlPacket.FRAME_TYPE_CONTROL,
+                serviceType.getValue(), SdlPacket.FRAME_INFO_END_SERVICE, sessionID,
+                payload.length, messageID, payload);
+    }
 
-	}
+    public static SdlPacket createEndSession(SessionType serviceType, byte sessionID, int messageID, byte version, int hashID) {
+        if (version < 5) {
+            byte[] payload = BitConverter.intToByteArray(hashID);
+            return new SdlPacket(version, false, SdlPacket.FRAME_TYPE_CONTROL,
+                    serviceType.getValue(), SdlPacket.FRAME_INFO_END_SERVICE, sessionID,
+                    payload.length, messageID, payload);
+        } else {
+            SdlPacket endSession = new SdlPacket(version, false, SdlPacket.FRAME_TYPE_CONTROL,
+                    serviceType.getValue(), SdlPacket.FRAME_INFO_END_SERVICE, sessionID,
+                    0, messageID, null);
+            endSession.putTag(ControlFrameTags.RPC.EndService.HASH_ID, hashID);
+            return endSession;
+        }
+    }
 
-	public static SdlPacket createMultiSendDataRest(SessionType serviceType, byte sessionID,
-			int dataLength, byte frameSequenceNumber, int messageID, byte version, byte[] payload,int offset,int length, boolean encrypted) {
-		
-		return new SdlPacket(version,encrypted,SdlPacket.FRAME_TYPE_CONSECUTIVE,
-				serviceType.getValue(),frameSequenceNumber,sessionID,
-				length,messageID,payload,offset,length);
-	}
+    public static SdlPacket createSingleSendData(SessionType serviceType, byte sessionID,
+                                                 int dataLength, int messageID, byte version, byte[] payload, boolean encrypted) {
 
-	public static SdlPacket createRegisterSecondaryTransport(byte sessionID, byte version) {
-		return new SdlPacket(version, false, SdlPacket.FRAME_TYPE_CONTROL,
-				SessionType.CONTROL.getValue(), SdlPacket.FRAME_INFO_REGISTER_SECONDARY_TRANSPORT,
-				sessionID, 0, 0x01, null);
-	}
-	
-	public static BinaryFrameHeader createBinaryFrameHeader(byte rpcType, int functionID, int corrID, int jsonSize) {
-		BinaryFrameHeader msg = new BinaryFrameHeader();
-		msg.setRPCType(rpcType);
-		msg.setFunctionID(functionID);
-		msg.setCorrID(corrID);
-		msg.setJsonSize(jsonSize);
-		
-		return msg;
-	}
-	
+        return new SdlPacket(version, encrypted, SdlPacket.FRAME_TYPE_SINGLE,
+                serviceType.getValue(), 0, sessionID,
+                payload.length, messageID, payload);
+    }
+
+    public static SdlPacket createMultiSendDataFirst(SessionType serviceType, byte sessionID,
+                                                     int messageID, byte version, byte[] payload, boolean encrypted) {
+
+        return new SdlPacket(version, encrypted, SdlPacket.FRAME_TYPE_FIRST,
+                serviceType.getValue(), 0, sessionID,
+                8, messageID, payload);
+
+    }
+
+    public static SdlPacket createMultiSendDataRest(SessionType serviceType, byte sessionID,
+                                                    int dataLength, byte frameSequenceNumber, int messageID, byte version, byte[] payload, int offset, int length, boolean encrypted) {
+
+        return new SdlPacket(version, encrypted, SdlPacket.FRAME_TYPE_CONSECUTIVE,
+                serviceType.getValue(), frameSequenceNumber, sessionID,
+                length, messageID, payload, offset, length);
+    }
+
+    public static SdlPacket createRegisterSecondaryTransport(byte sessionID, byte version) {
+        return new SdlPacket(version, false, SdlPacket.FRAME_TYPE_CONTROL,
+                SessionType.CONTROL.getValue(), SdlPacket.FRAME_INFO_REGISTER_SECONDARY_TRANSPORT,
+                sessionID, 0, 0x01, null);
+    }
+
+    public static BinaryFrameHeader createBinaryFrameHeader(byte rpcType, int functionID, int corrID, int jsonSize) {
+        BinaryFrameHeader msg = new BinaryFrameHeader();
+        msg.setRPCType(rpcType);
+        msg.setFunctionID(functionID);
+        msg.setCorrID(corrID);
+        msg.setJsonSize(jsonSize);
+
+        return msg;
+    }
+
 }

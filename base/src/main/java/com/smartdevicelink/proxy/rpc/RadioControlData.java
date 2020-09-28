@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -42,20 +42,21 @@ import java.util.List;
  * Include information (both read-only and changeable data) about a
  * remote control radio module.
  */
-public class RadioControlData extends RPCStruct{
-    public static final String KEY_FREQUENCY_INTEGER= "frequencyInteger";
-    public static final String KEY_FREQUENCY_FRACTION= "frequencyFraction";
-    public static final String KEY_BAND= "band";
-    public static final String KEY_RDS_DATA= "rdsData";
-    @Deprecated public static final String KEY_AVAILABLE_HDS= "availableHDs";
-    public static final String KEY_HD_CHANNEL= "hdChannel";
-    public static final String KEY_SIGNAL_STRENGTH= "signalStrength";
-    public static final String KEY_SIGNAL_CHANGE_THRESHOLD= "signalChangeThreshold";
-    public static final String KEY_RADIO_ENABLE= "radioEnable";
-    public static final String KEY_STATE= "state";
+public class RadioControlData extends RPCStruct {
+    public static final String KEY_FREQUENCY_INTEGER = "frequencyInteger";
+    public static final String KEY_FREQUENCY_FRACTION = "frequencyFraction";
+    public static final String KEY_BAND = "band";
+    public static final String KEY_RDS_DATA = "rdsData";
+    @Deprecated
+    public static final String KEY_AVAILABLE_HDS = "availableHDs";
+    public static final String KEY_HD_CHANNEL = "hdChannel";
+    public static final String KEY_SIGNAL_STRENGTH = "signalStrength";
+    public static final String KEY_SIGNAL_CHANGE_THRESHOLD = "signalChangeThreshold";
+    public static final String KEY_RADIO_ENABLE = "radioEnable";
+    public static final String KEY_STATE = "state";
     public static final String KEY_HD_RADIO_ENABLE = "hdRadioEnable";
     public static final String KEY_SIS_DATA = "sisData";
-    public static final String KEY_AVAILABLE_HD_CHANNELS= "availableHdChannels";
+    public static final String KEY_AVAILABLE_HD_CHANNELS = "availableHdChannels";
 
     public RadioControlData() {
     }
@@ -67,10 +68,9 @@ public class RadioControlData extends RPCStruct{
     /**
      * Sets the frequencyInteger portion of the RadioControlData class
      *
-     * @param frequencyInteger
-     * The integer part of the frequency i.e. for 101.7 this value should be 101
+     * @param frequencyInteger The integer part of the frequency i.e. for 101.7 this value should be 101
      */
-    public RadioControlData setFrequencyInteger( Integer frequencyInteger) {
+    public RadioControlData setFrequencyInteger(Integer frequencyInteger) {
         setValue(KEY_FREQUENCY_INTEGER, frequencyInteger);
         return this;
     }
@@ -87,10 +87,9 @@ public class RadioControlData extends RPCStruct{
     /**
      * Sets the frequencyFraction portion of the RadioControlData class
      *
-     * @param frequencyFraction
-     * The fractional part of the frequency i.e. for 101.7 is 7.
+     * @param frequencyFraction The fractional part of the frequency i.e. for 101.7 is 7.
      */
-    public RadioControlData setFrequencyFraction( Integer frequencyFraction) {
+    public RadioControlData setFrequencyFraction(Integer frequencyFraction) {
         setValue(KEY_FREQUENCY_FRACTION, frequencyFraction);
         return this;
     }
@@ -107,10 +106,9 @@ public class RadioControlData extends RPCStruct{
     /**
      * Sets the band portion of the RadioControlData class
      *
-     * @param band
-     * The radio band (AM|FM|XM) of the radio tuner.
+     * @param band The radio band (AM|FM|XM) of the radio tuner.
      */
-    public RadioControlData setBand( RadioBand band) {
+    public RadioControlData setBand(RadioBand band) {
         setValue(KEY_BAND, band);
         return this;
     }
@@ -127,10 +125,9 @@ public class RadioControlData extends RPCStruct{
     /**
      * Sets the rdsData portion of the RadioControlData class
      *
-     * @param rdsData
-     * Read only parameter. See RdsData data type for details.
+     * @param rdsData Read only parameter. See RdsData data type for details.
      */
-    public RadioControlData setRdsData( RdsData rdsData) {
+    public RadioControlData setRdsData(RdsData rdsData) {
         setValue(KEY_RDS_DATA, rdsData);
         return this;
     }
@@ -147,11 +144,10 @@ public class RadioControlData extends RPCStruct{
     /**
      * Sets the availableHDs portion of the RadioControlData class
      *
-     * @param availableHDs
-     * Number of HD sub-channels if available.
+     * @param availableHDs Number of HD sub-channels if available.
      */
     @Deprecated
-    public RadioControlData setAvailableHDs( Integer availableHDs) {
+    public RadioControlData setAvailableHDs(Integer availableHDs) {
         setValue(KEY_AVAILABLE_HDS, availableHDs);
         return this;
     }
@@ -169,10 +165,9 @@ public class RadioControlData extends RPCStruct{
     /**
      * Sets the hdChannel portion of the RadioControlData class
      *
-     * @param hdChannel
-     * Current HD sub-channel if available.
+     * @param hdChannel Current HD sub-channel if available.
      */
-    public RadioControlData setHdChannel( Integer hdChannel) {
+    public RadioControlData setHdChannel(Integer hdChannel) {
         setValue(KEY_HD_CHANNEL, hdChannel);
         return this;
     }
@@ -189,10 +184,9 @@ public class RadioControlData extends RPCStruct{
     /**
      * Sets the signalStrength portion of the RadioControlData class
      *
-     * @param signalStrength
-     * Read only parameter. Indicates the strength of receiving radio signal in current frequency.
+     * @param signalStrength Read only parameter. Indicates the strength of receiving radio signal in current frequency.
      */
-    public RadioControlData setSignalStrength( Integer signalStrength) {
+    public RadioControlData setSignalStrength(Integer signalStrength) {
         setValue(KEY_SIGNAL_STRENGTH, signalStrength);
         return this;
     }
@@ -209,10 +203,9 @@ public class RadioControlData extends RPCStruct{
     /**
      * Sets the signalChangeThreshold portion of the RadioControlData class
      *
-     * @param signalChangeThreshold
-     * If the signal strength falls below the set value for this parameter, the radio will tune to an alternative frequency.
+     * @param signalChangeThreshold If the signal strength falls below the set value for this parameter, the radio will tune to an alternative frequency.
      */
-    public RadioControlData setSignalChangeThreshold( Integer signalChangeThreshold) {
+    public RadioControlData setSignalChangeThreshold(Integer signalChangeThreshold) {
         setValue(KEY_SIGNAL_CHANGE_THRESHOLD, signalChangeThreshold);
         return this;
     }
@@ -231,10 +224,9 @@ public class RadioControlData extends RPCStruct{
      * <br><b>Note: </b> If this is set to false, no other data will be included.
      * <br><b>Note: </b> This setting is normally a <b>READ-ONLY</b> setting.
      *
-     * @param radioEnable
-     * True if the radio is on, false is the radio is off.
+     * @param radioEnable True if the radio is on, false is the radio is off.
      */
-    public RadioControlData setRadioEnable( Boolean radioEnable) {
+    public RadioControlData setRadioEnable(Boolean radioEnable) {
         setValue(KEY_RADIO_ENABLE, radioEnable);
         return this;
     }
@@ -252,10 +244,9 @@ public class RadioControlData extends RPCStruct{
     /**
      * Sets the state portion of the RadioControlData class
      *
-     * @param state
-     * Read only parameter. See RadioState data type for details.
+     * @param state Read only parameter. See RadioState data type for details.
      */
-    public RadioControlData setState( RadioState state) {
+    public RadioControlData setState(RadioState state) {
         setValue(KEY_STATE, state);
         return this;
     }
@@ -274,7 +265,7 @@ public class RadioControlData extends RPCStruct{
      *
      * @param hdRadioEnable True if the hd radio is on, false if the radio is off.
      */
-    public RadioControlData setHdRadioEnable( Boolean hdRadioEnable) {
+    public RadioControlData setHdRadioEnable(Boolean hdRadioEnable) {
         setValue(KEY_HD_RADIO_ENABLE, hdRadioEnable);
         return this;
     }
@@ -293,7 +284,7 @@ public class RadioControlData extends RPCStruct{
      *
      * @param sisData Read-only Station Information Service (SIS) data provides basic information about the station such as call sign, as well as information not displayable to the consumer such as the station identification number.
      */
-    public RadioControlData setSisData( SisData sisData) {
+    public RadioControlData setSisData(SisData sisData) {
         setValue(KEY_SIS_DATA, sisData);
         return this;
     }
@@ -312,7 +303,7 @@ public class RadioControlData extends RPCStruct{
      *
      * @param availableHdChannels List of available hd sub-channel indexes, empty list means no Hd channel is available, read-only.
      */
-    public RadioControlData setAvailableHdChannels( List<Integer> availableHdChannels) {
+    public RadioControlData setAvailableHdChannels(List<Integer> availableHdChannels) {
         setValue(KEY_AVAILABLE_HD_CHANNELS, availableHdChannels);
         return this;
     }
@@ -323,7 +314,7 @@ public class RadioControlData extends RPCStruct{
      * @return List<Integer> - List of available hd sub-channel indexes, empty list means no Hd channel is available, read-only.
      */
     @SuppressWarnings("unchecked")
-    public List<Integer> getAvailableHdChannels(){
-        return (List<Integer>) getObject(Integer.class,KEY_AVAILABLE_HD_CHANNELS);
+    public List<Integer> getAvailableHdChannels() {
+        return (List<Integer>) getObject(Integer.class, KEY_AVAILABLE_HD_CHANNELS);
     }
 }

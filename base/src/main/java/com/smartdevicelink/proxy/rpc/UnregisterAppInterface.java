@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -41,7 +41,7 @@ import java.util.Hashtable;
  * dispose of all resources associated with the application's interface
  * registration (e.g. Command Menu items, Choice Sets, button subscriptions,
  * etc.)
- * 
+ *
  * <p>After the UnregisterAppInterface operation is performed, no other operations
  * can be performed until a new app interface registration is established by
  * calling <i>{@linkplain RegisterAppInterface}</i></p>
@@ -50,20 +50,19 @@ import java.util.Hashtable;
  * @see OnAppInterfaceUnregistered
  */
 public class UnregisterAppInterface extends RPCRequest {
-	/**
-	 * Constructs a new UnregisterAppInterface object
-	 */
+    /**
+     * Constructs a new UnregisterAppInterface object
+     */
     public UnregisterAppInterface() {
         super(FunctionID.UNREGISTER_APP_INTERFACE.toString());
     }
-	/**
-	 * <p>Constructs a new UnregisterAppInterface object indicated by the Hashtable
-	 * parameter</p>
-	 * 
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */    
+
+    /**
+     * <p>Constructs a new UnregisterAppInterface object indicated by the Hashtable
+     * parameter</p>
+     *
+     * @param hash The Hashtable to use
+     */
     public UnregisterAppInterface(Hashtable<String, Object> hash) {
         super(hash);
     }

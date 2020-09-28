@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 import java.util.Hashtable;
+
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
@@ -24,22 +25,22 @@ import static junit.framework.TestCase.assertNotNull;
 
 public class SubscribeWaypointsResponseTests extends BaseRpcTests {
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         return new SubscribeWayPointsResponse();
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_RESPONSE;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.SUBSCRIBE_WAY_POINTS.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         return new JSONObject();
     }
 
@@ -47,7 +48,7 @@ public class SubscribeWaypointsResponseTests extends BaseRpcTests {
      * Tests the expected values of the RPC message.
      */
     @Test
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Invalid/Null Tests
         SubscribeWayPointsResponse msg = new SubscribeWayPointsResponse();
         assertNotNull(TestValues.NOT_NULL, msg);
@@ -58,7 +59,7 @@ public class SubscribeWaypointsResponseTests extends BaseRpcTests {
      * Tests a valid JSON construction of this RPC message.
      */
     @Test
-    public void testJsonConstructor () {
+    public void testJsonConstructor() {
         JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
         assertNotNull(TestValues.NOT_NULL, commandJson);
 

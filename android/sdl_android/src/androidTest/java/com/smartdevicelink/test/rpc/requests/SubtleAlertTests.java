@@ -83,12 +83,12 @@ public class SubtleAlertTests extends BaseRpcTests {
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_REQUEST;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.SUBTLE_ALERT.toString();
     }
 
@@ -115,7 +115,7 @@ public class SubtleAlertTests extends BaseRpcTests {
      * Tests the expected values of the RPC message.
      */
     @Test
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Test Values
         String testAlertText1 = ((SubtleAlert) msg).getAlertText1();
         String testAlertText2 = ((SubtleAlert) msg).getAlertText2();
@@ -152,7 +152,7 @@ public class SubtleAlertTests extends BaseRpcTests {
      * Tests a valid JSON construction of this RPC message.
      */
     @Test
-    public void testJsonConstructor () {
+    public void testJsonConstructor() {
         JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
         assertNotNull(TestValues.NOT_NULL, commandJson);
 
@@ -177,25 +177,24 @@ public class SubtleAlertTests extends BaseRpcTests {
             JSONArray ttsChunkArray = JsonUtils.readJsonArrayFromJsonObject(parameters, SubtleAlert.KEY_TTS_CHUNKS);
             List<TTSChunk> ttsChunkList = new ArrayList<TTSChunk>();
             for (int index = 0; index < ttsChunkArray.length(); index++) {
-                TTSChunk chunk = new TTSChunk(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)ttsChunkArray.get(index)) );
+                TTSChunk chunk = new TTSChunk(JsonRPCMarshaller.deserializeJSONObject((JSONObject) ttsChunkArray.get(index)));
                 ttsChunkList.add(chunk);
             }
-            assertTrue(TestValues.TRUE,  Validator.validateTtsChunks(ttsChunkList, cmd.getTtsChunks()));
+            assertTrue(TestValues.TRUE, Validator.validateTtsChunks(ttsChunkList, cmd.getTtsChunks()));
 
             assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, SubtleAlert.KEY_DURATION), cmd.getDuration());
 
             JSONArray softButtonArray = JsonUtils.readJsonArrayFromJsonObject(parameters, SubtleAlert.KEY_SOFT_BUTTONS);
             List<SoftButton> softButtonList = new ArrayList<SoftButton>();
             for (int index = 0; index < softButtonArray.length(); index++) {
-                SoftButton chunk = new SoftButton(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)softButtonArray.get(index)) );
+                SoftButton chunk = new SoftButton(JsonRPCMarshaller.deserializeJSONObject((JSONObject) softButtonArray.get(index)));
                 softButtonList.add(chunk);
             }
-            assertTrue(TestValues.TRUE,  Validator.validateSoftButtons(softButtonList, cmd.getSoftButtons()));
+            assertTrue(TestValues.TRUE, Validator.validateSoftButtons(softButtonList, cmd.getSoftButtons()));
 
             assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, SubtleAlert.KEY_CANCEL_ID), cmd.getCancelID());
 
-        }
-        catch (JSONException e) {
+        } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
     }

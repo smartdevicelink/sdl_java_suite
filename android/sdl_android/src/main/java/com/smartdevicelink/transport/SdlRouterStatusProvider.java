@@ -52,141 +52,143 @@ import static com.smartdevicelink.transport.TransportConstants.FOREGROUND_EXTRA;
 
 public class SdlRouterStatusProvider {
 
-	private static final String TAG = "SdlRouterStateProvider";
-		
-	private Context context = null;
-	private boolean isBound = false;
-	ConnectedStatusCallback cb = null;
-	Messenger routerServiceMessenger = null;
-	private ComponentName routerService = null;
-	private int flags = 0;
+    private static final String TAG = "SdlRouterStateProvider";
 
-	final Messenger clientMessenger; 
-	
-	private ServiceConnection routerConnection= new ServiceConnection() {
+    private Context context;
+    private boolean isBound = false;
+    ConnectedStatusCallback cb;
+    Messenger routerServiceMessenger = null;
+    private ComponentName routerService;
+    private int flags = 0;
 
-		public void onServiceConnected(ComponentName className, IBinder service) {
-			DebugTool.logInfo(TAG, "Bound to service " + className.toString());
-			routerServiceMessenger = new Messenger(service);
-			isBound = true;
-			//So we just established our connection
-			//Register with router service
-			Message msg = Message.obtain();
-			msg.what = TransportConstants.ROUTER_STATUS_CONNECTED_STATE_REQUEST;
-			msg.arg1 = flags;
-			msg.replyTo = clientMessenger;
-			try {
-				routerServiceMessenger.send(msg);
-			} catch (RemoteException e) {
-				e.printStackTrace();
-				if(cb!=null){
-					cb.onConnectionStatusUpdate(false, routerService, context);
-				}
-			}			
-		}
+    final Messenger clientMessenger;
 
-		public void onServiceDisconnected(ComponentName className) {
-			DebugTool.logInfo(TAG, "UN-Bound from service " + className.getClassName());
-			routerServiceMessenger = null;
-			isBound = false;
-		}
-	};
+    private final ServiceConnection routerConnection = new ServiceConnection() {
 
-	public SdlRouterStatusProvider(Context context, ComponentName service, ConnectedStatusCallback callback){
-		if(context == null || service == null || callback == null){
-			throw new IllegalStateException("Supplied params are not correct. Context == null? "+ (context==null) + " ComponentName == null? " + (service == null) + " ConnectedStatusListener == null? " + callback);
-		}
-		this.context = context;
-		this.routerService = service;
-		this.cb = callback;
-		this.clientMessenger = new Messenger(new ClientHandler(this));
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            DebugTool.logInfo(TAG, "Bound to service " + className.toString());
+            routerServiceMessenger = new Messenger(service);
+            isBound = true;
+            //So we just established our connection
+            //Register with router service
+            Message msg = Message.obtain();
+            msg.what = TransportConstants.ROUTER_STATUS_CONNECTED_STATE_REQUEST;
+            msg.arg1 = flags;
+            msg.replyTo = clientMessenger;
+            try {
+                routerServiceMessenger.send(msg);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+                if (cb != null) {
+                    cb.onConnectionStatusUpdate(false, routerService, context);
+                }
+            }
+        }
 
-	}
-	public void setFlags(int flags){
-		this.flags = flags;
-	}
-	public void checkIsConnected(){
-		if(!AndroidTools.isServiceExported(context,routerService) || !bindToService()){
-			//We are unable to bind to service
-			cb.onConnectionStatusUpdate(false, routerService, context);
-			unBindFromService();
-		}
-	}
-	
-	public void cancel(){
-		if(isBound){
-			unBindFromService();
-		}
-	}
+        public void onServiceDisconnected(ComponentName className) {
+            DebugTool.logInfo(TAG, "UN-Bound from service " + className.getClassName());
+            routerServiceMessenger = null;
+            isBound = false;
+        }
+    };
 
-	private boolean bindToService(){
-		if(isBound){
-			return true;
-		}
-		if(clientMessenger == null){
-			return false;
-		}
-		Intent bindingIntent = new Intent();
-		bindingIntent.setClassName(this.routerService.getPackageName(), this.routerService.getClassName());//This sets an explicit intent
-		//Quickly make sure it's just up and running
-		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-			context.startService(bindingIntent);
-		}else {
-			bindingIntent.putExtra(FOREGROUND_EXTRA, true);
-			SdlBroadcastReceiver.setForegroundExceptionHandler(); //Prevent ANR in case the OS takes too long to start the service
-			context.startForegroundService(bindingIntent);
+    public SdlRouterStatusProvider(Context context, ComponentName service, ConnectedStatusCallback callback) {
+        if (context == null || service == null || callback == null) {
+            throw new IllegalStateException("Supplied params are not correct. Context == null? " + (context == null) + " ComponentName == null? " + (service == null) + " ConnectedStatusListener == null? " + callback);
+        }
+        this.context = context;
+        this.routerService = service;
+        this.cb = callback;
+        this.clientMessenger = new Messenger(new ClientHandler(this));
 
-		}
-		bindingIntent.setAction( TransportConstants.BIND_REQUEST_TYPE_STATUS);
-		return context.bindService(bindingIntent, routerConnection, Context.BIND_AUTO_CREATE);
-	}
+    }
 
-	private void unBindFromService(){
-		try{
-			if(context!=null && routerConnection!=null){
-				context.unbindService(routerConnection);
-			}else{
-				DebugTool.logWarning(TAG, "Unable to unbind from router service, context was null");
-			}
-			
-		}catch(IllegalArgumentException e){
-			//This is ok
-		}
-	}
-	
-	private void handleRouterStatusConnectedResponse(int connectedStatus){
-		if(cb!=null){
-			  cb.onConnectionStatusUpdate(connectedStatus == 1, routerService,context);
-		  }
-		  unBindFromService();
-		  routerServiceMessenger =null;
-	}
-	
-	static class ClientHandler extends Handler {
-		final WeakReference<SdlRouterStatusProvider> provider;
+    public void setFlags(int flags) {
+        this.flags = flags;
+    }
 
-		 public ClientHandler(SdlRouterStatusProvider provider){
-			 super(Looper.getMainLooper());
-			 this.provider = new WeakReference<SdlRouterStatusProvider>(provider);
-		 }
-		 
-    	@Override
+    public void checkIsConnected() {
+        if (!AndroidTools.isServiceExported(context, routerService) || !bindToService()) {
+            //We are unable to bind to service
+            cb.onConnectionStatusUpdate(false, routerService, context);
+            unBindFromService();
+        }
+    }
+
+    public void cancel() {
+        if (isBound) {
+            unBindFromService();
+        }
+    }
+
+    private boolean bindToService() {
+        if (isBound) {
+            return true;
+        }
+        if (clientMessenger == null) {
+            return false;
+        }
+        Intent bindingIntent = new Intent();
+        bindingIntent.setClassName(this.routerService.getPackageName(), this.routerService.getClassName());//This sets an explicit intent
+        //Quickly make sure it's just up and running
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            context.startService(bindingIntent);
+        } else {
+            bindingIntent.putExtra(FOREGROUND_EXTRA, true);
+            SdlBroadcastReceiver.setForegroundExceptionHandler(); //Prevent ANR in case the OS takes too long to start the service
+            context.startForegroundService(bindingIntent);
+
+        }
+        bindingIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_STATUS);
+        return context.bindService(bindingIntent, routerConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    private void unBindFromService() {
+        try {
+            if (context != null && routerConnection != null) {
+                context.unbindService(routerConnection);
+            } else {
+                DebugTool.logWarning(TAG, "Unable to unbind from router service, context was null");
+            }
+
+        } catch (IllegalArgumentException e) {
+            //This is ok
+        }
+    }
+
+    private void handleRouterStatusConnectedResponse(int connectedStatus) {
+        if (cb != null) {
+            cb.onConnectionStatusUpdate(connectedStatus == 1, routerService, context);
+        }
+        unBindFromService();
+        routerServiceMessenger = null;
+    }
+
+    static class ClientHandler extends Handler {
+        final WeakReference<SdlRouterStatusProvider> provider;
+
+        public ClientHandler(SdlRouterStatusProvider provider) {
+            super(Looper.getMainLooper());
+            this.provider = new WeakReference<>(provider);
+        }
+
+        @Override
         public void handleMessage(Message msg) {
-    		if(provider.get()==null){
-    			return; 
-    		}
-    		  switch (msg.what) {
-    		  case TransportConstants.ROUTER_STATUS_CONNECTED_STATE_RESPONSE:
-    			  provider.get().handleRouterStatusConnectedResponse(msg.arg1);
-    			  break;
-    		  default:
-    			  break;
-    		  }
-    	}
-	};
-	
-	public interface ConnectedStatusCallback{
-		public void onConnectionStatusUpdate(boolean connected, ComponentName service, Context context);
-	}
-	
+            if (provider.get() == null) {
+                return;
+            }
+            switch (msg.what) {
+                case TransportConstants.ROUTER_STATUS_CONNECTED_STATE_RESPONSE:
+                    provider.get().handleRouterStatusConnectedResponse(msg.arg1);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    public interface ConnectedStatusCallback {
+        void onConnectionStatusUpdate(boolean connected, ComponentName service, Context context);
+    }
+
 }

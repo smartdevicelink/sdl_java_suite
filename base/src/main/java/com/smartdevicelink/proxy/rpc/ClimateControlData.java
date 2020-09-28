@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -37,17 +37,17 @@ import com.smartdevicelink.proxy.rpc.enums.VentilationMode;
 
 import java.util.Hashtable;
 
-public class ClimateControlData extends RPCStruct{
-    public static final String KEY_FAN_SPEED= "fanSpeed";
-    public static final String KEY_CURRENT_TEMPERATURE= "currentTemperature";
-    public static final String KEY_DESIRED_TEMPERATURE= "desiredTemperature";
-    public static final String KEY_AC_ENABLE= "acEnable";
-    public static final String KEY_CIRCULATE_AIR_ENABLE= "circulateAirEnable";
-    public static final String KEY_AUTO_MODE_ENABLE= "autoModeEnable";
-    public static final String KEY_DEFROST_ZONE= "defrostZone";
-    public static final String KEY_DUAL_MODE_ENABLE= "dualModeEnable";
-    public static final String KEY_AC_MAX_ENABLE= "acMaxEnable";
-    public static final String KEY_VENTILATION_MODE= "ventilationMode";
+public class ClimateControlData extends RPCStruct {
+    public static final String KEY_FAN_SPEED = "fanSpeed";
+    public static final String KEY_CURRENT_TEMPERATURE = "currentTemperature";
+    public static final String KEY_DESIRED_TEMPERATURE = "desiredTemperature";
+    public static final String KEY_AC_ENABLE = "acEnable";
+    public static final String KEY_CIRCULATE_AIR_ENABLE = "circulateAirEnable";
+    public static final String KEY_AUTO_MODE_ENABLE = "autoModeEnable";
+    public static final String KEY_DEFROST_ZONE = "defrostZone";
+    public static final String KEY_DUAL_MODE_ENABLE = "dualModeEnable";
+    public static final String KEY_AC_MAX_ENABLE = "acMaxEnable";
+    public static final String KEY_VENTILATION_MODE = "ventilationMode";
     public static final String KEY_HEATED_STEERING_WHEEL_ENABLE = "heatedSteeringWheelEnable";
     public static final String KEY_HEATED_WIND_SHIELD_ENABLE = "heatedWindshieldEnable";
     public static final String KEY_HEATED_REAR_WINDOW_ENABLE = "heatedRearWindowEnable";
@@ -61,7 +61,7 @@ public class ClimateControlData extends RPCStruct{
         super(hash);
     }
 
-    public ClimateControlData setFanSpeed( Integer fanSpeed) {
+    public ClimateControlData setFanSpeed(Integer fanSpeed) {
         setValue(KEY_FAN_SPEED, fanSpeed);
         return this;
     }
@@ -70,7 +70,7 @@ public class ClimateControlData extends RPCStruct{
         return getInteger(KEY_FAN_SPEED);
     }
 
-    public ClimateControlData setCurrentTemperature( Temperature currentTemperature) {
+    public ClimateControlData setCurrentTemperature(Temperature currentTemperature) {
         setValue(KEY_CURRENT_TEMPERATURE, currentTemperature);
         return this;
     }
@@ -79,7 +79,7 @@ public class ClimateControlData extends RPCStruct{
         return (Temperature) getObject(Temperature.class, KEY_CURRENT_TEMPERATURE);
     }
 
-    public ClimateControlData setDesiredTemperature( Temperature desiredTemperature) {
+    public ClimateControlData setDesiredTemperature(Temperature desiredTemperature) {
         setValue(KEY_DESIRED_TEMPERATURE, desiredTemperature);
         return this;
     }
@@ -88,7 +88,7 @@ public class ClimateControlData extends RPCStruct{
         return (Temperature) getObject(Temperature.class, KEY_DESIRED_TEMPERATURE);
     }
 
-    public ClimateControlData setAcEnable( Boolean acEnable) {
+    public ClimateControlData setAcEnable(Boolean acEnable) {
         setValue(KEY_AC_ENABLE, acEnable);
         return this;
     }
@@ -97,7 +97,7 @@ public class ClimateControlData extends RPCStruct{
         return getBoolean(KEY_AC_ENABLE);
     }
 
-    public ClimateControlData setCirculateAirEnable( Boolean circulateAirEnable) {
+    public ClimateControlData setCirculateAirEnable(Boolean circulateAirEnable) {
         setValue(KEY_CIRCULATE_AIR_ENABLE, circulateAirEnable);
         return this;
     }
@@ -106,7 +106,7 @@ public class ClimateControlData extends RPCStruct{
         return getBoolean(KEY_CIRCULATE_AIR_ENABLE);
     }
 
-    public ClimateControlData setAutoModeEnable( Boolean autoModeEnable) {
+    public ClimateControlData setAutoModeEnable(Boolean autoModeEnable) {
         setValue(KEY_AUTO_MODE_ENABLE, autoModeEnable);
         return this;
     }
@@ -115,7 +115,7 @@ public class ClimateControlData extends RPCStruct{
         return getBoolean(KEY_AUTO_MODE_ENABLE);
     }
 
-    public ClimateControlData setDefrostZone( DefrostZone defrostZone) {
+    public ClimateControlData setDefrostZone(DefrostZone defrostZone) {
         setValue(KEY_DEFROST_ZONE, defrostZone);
         return this;
     }
@@ -124,7 +124,7 @@ public class ClimateControlData extends RPCStruct{
         return (DefrostZone) getObject(DefrostZone.class, KEY_DEFROST_ZONE);
     }
 
-    public ClimateControlData setDualModeEnable( Boolean dualModeEnable) {
+    public ClimateControlData setDualModeEnable(Boolean dualModeEnable) {
         setValue(KEY_DUAL_MODE_ENABLE, dualModeEnable);
         return this;
     }
@@ -133,7 +133,7 @@ public class ClimateControlData extends RPCStruct{
         return getBoolean(KEY_DUAL_MODE_ENABLE);
     }
 
-    public ClimateControlData setAcMaxEnable( Boolean acMaxEnable) {
+    public ClimateControlData setAcMaxEnable(Boolean acMaxEnable) {
         setValue(KEY_AC_MAX_ENABLE, acMaxEnable);
         return this;
     }
@@ -142,7 +142,7 @@ public class ClimateControlData extends RPCStruct{
         return getBoolean(KEY_AC_MAX_ENABLE);
     }
 
-    public ClimateControlData setVentilationMode( VentilationMode ventilationMode) {
+    public ClimateControlData setVentilationMode(VentilationMode ventilationMode) {
         setValue(KEY_VENTILATION_MODE, ventilationMode);
         return this;
     }
@@ -156,7 +156,7 @@ public class ClimateControlData extends RPCStruct{
      *
      * @param heatedSteeringWheelEnable Value false means disabled/turn off, value true means enabled/turn on.
      */
-    public ClimateControlData setHeatedSteeringWheelEnable( Boolean heatedSteeringWheelEnable) {
+    public ClimateControlData setHeatedSteeringWheelEnable(Boolean heatedSteeringWheelEnable) {
         setValue(KEY_HEATED_STEERING_WHEEL_ENABLE, heatedSteeringWheelEnable);
         return this;
     }
@@ -175,7 +175,7 @@ public class ClimateControlData extends RPCStruct{
      *
      * @param heatedWindshieldEnable Value false means disabled, value true means enabled.
      */
-    public ClimateControlData setHeatedWindshieldEnable( Boolean heatedWindshieldEnable) {
+    public ClimateControlData setHeatedWindshieldEnable(Boolean heatedWindshieldEnable) {
         setValue(KEY_HEATED_WIND_SHIELD_ENABLE, heatedWindshieldEnable);
         return this;
     }
@@ -194,7 +194,7 @@ public class ClimateControlData extends RPCStruct{
      *
      * @param heatedRearWindowEnable Value false means disabled, value true means enabled.
      */
-    public ClimateControlData setHeatedRearWindowEnable( Boolean heatedRearWindowEnable) {
+    public ClimateControlData setHeatedRearWindowEnable(Boolean heatedRearWindowEnable) {
         setValue(KEY_HEATED_REAR_WINDOW_ENABLE, heatedRearWindowEnable);
         return this;
     }
@@ -213,7 +213,7 @@ public class ClimateControlData extends RPCStruct{
      *
      * @param heatedMirrorsEnable Value false means disabled, value true means enabled.
      */
-    public ClimateControlData setHeatedMirrorsEnable( Boolean heatedMirrorsEnable) {
+    public ClimateControlData setHeatedMirrorsEnable(Boolean heatedMirrorsEnable) {
         setValue(KEY_HEATED_MIRRORS_ENABLE, heatedMirrorsEnable);
         return this;
     }
@@ -232,7 +232,7 @@ public class ClimateControlData extends RPCStruct{
      *
      * @param climateEnable Value false means disabled, value true means enabled.
      */
-    public ClimateControlData setClimateEnable( Boolean climateEnable) {
+    public ClimateControlData setClimateEnable(Boolean climateEnable) {
         setValue(KEY_CLIMATE_ENABLE, climateEnable);
         return this;
     }

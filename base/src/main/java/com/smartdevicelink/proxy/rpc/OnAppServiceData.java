@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -43,38 +43,38 @@ import java.util.Hashtable;
  */
 public class OnAppServiceData extends RPCNotification {
 
-	public static final String KEY_SERVICE_DATA = "serviceData";
+    public static final String KEY_SERVICE_DATA = "serviceData";
 
-	// Constructors
+    // Constructors
 
-	public OnAppServiceData() {
-		super(FunctionID.ON_APP_SERVICE_DATA.toString());
-	}
+    public OnAppServiceData() {
+        super(FunctionID.ON_APP_SERVICE_DATA.toString());
+    }
 
-	public OnAppServiceData(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+    public OnAppServiceData(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
-	public OnAppServiceData(@NonNull AppServiceData serviceData) {
-		this();
-		setServiceData(serviceData);
-	}
+    public OnAppServiceData(@NonNull AppServiceData serviceData) {
+        this();
+        setServiceData(serviceData);
+    }
 
-	// Setters and Getters
+    // Setters and Getters
 
-	/**
-	 * @param serviceData -
-	 */
-	public OnAppServiceData setServiceData(@NonNull AppServiceData serviceData) {
+    /**
+     * @param serviceData -
+     */
+    public OnAppServiceData setServiceData(@NonNull AppServiceData serviceData) {
         setParameters(KEY_SERVICE_DATA, serviceData);
         return this;
     }
 
-	/**
-	 * @return serviceData
-	 */
-	public AppServiceData getServiceData(){
-		return (AppServiceData) getObject(AppServiceData.class, KEY_SERVICE_DATA);
-	}
+    /**
+     * @return serviceData
+     */
+    public AppServiceData getServiceData() {
+        return (AppServiceData) getObject(AppServiceData.class, KEY_SERVICE_DATA);
+    }
 
 }

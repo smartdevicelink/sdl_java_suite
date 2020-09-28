@@ -34,14 +34,15 @@ package com.smartdevicelink.transport.utl;
 
 import com.smartdevicelink.transport.enums.TransportType;
 
-class BaseTransportRecord{
+class BaseTransportRecord {
 
     protected TransportType type;
     protected String address;
 
-    BaseTransportRecord(){}
+    BaseTransportRecord() {
+    }
 
-    BaseTransportRecord(TransportType transportType, String address){
+    BaseTransportRecord(TransportType transportType, String address) {
         this.type = transportType;
         this.address = address;
     }
@@ -56,7 +57,7 @@ class BaseTransportRecord{
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == null) {
+        if (obj == null) {
             return false;
         }
 
@@ -71,7 +72,7 @@ class BaseTransportRecord{
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Transport Type: ");
         builder.append(type.name());

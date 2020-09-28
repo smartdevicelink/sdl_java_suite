@@ -42,26 +42,29 @@ import java.util.Hashtable;
 
 /**
  * Response to request that described UI elements boundaries to a connected modules.
+ *
  * @since SmartDeviceLink 4.5.0
  */
 
 public class SendHapticDataResponse extends RPCResponse {
 
-	public SendHapticDataResponse(){
-		super(FunctionID.SEND_HAPTIC_DATA.toString());
-	}
+    public SendHapticDataResponse() {
+        super(FunctionID.SEND_HAPTIC_DATA.toString());
+    }
 
-	public SendHapticDataResponse(Hashtable<String, Object> hash){
-		super(hash);
-	}
-	/**
-	 * Constructs a new SendHapticDataResponse object
-	 * @param success whether the request is successfully processed
-	 * @param resultCode whether the request is successfully processed
-	 */
-	public SendHapticDataResponse(@NonNull Boolean success, @NonNull Result resultCode) {
-		this();
-		setSuccess(success);
-		setResultCode(resultCode);
-	}
+    public SendHapticDataResponse(Hashtable<String, Object> hash) {
+        super(hash);
+    }
+
+    /**
+     * Constructs a new SendHapticDataResponse object
+     *
+     * @param success    whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     */
+    public SendHapticDataResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
+    }
 }

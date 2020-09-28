@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -40,7 +40,6 @@ import com.smartdevicelink.util.SdlDataTypeConverter;
 import java.util.Hashtable;
 
 /**
- *
  * <p><b>Parameter List</b></p>
  *
  * <table border="1" rules="all">
@@ -49,7 +48,7 @@ import java.util.Hashtable;
  *      <th>Type</th>
  *      <th>Description</th>
  *      <th>Required</th>
-  *      <th>Notes</th>
+ *      <th>Notes</th>
  *      <th>Version Available</th>
  *  </tr>
  *  <tr>
@@ -95,12 +94,13 @@ import java.util.Hashtable;
  *  <tr>
  *      <td>capacityUnit</td>
  *      <td>CapacityUnit</td>
- *      <td>The unit of the capacity of this fuel type such as liters for gasoline or kWh forbatteries.</td>
+ *      <td>The unit of the capacity of this fuel type such as liters for gasoline or kWh for batteries.</td>
  *      <td>N</td>
  *      <td></td>
  *      <td>SmartDeviceLink 7.0.0</td>
  *  </tr>
  * </table>
+ *
  * @since SmartDeviceLink 5.0.0
  */
 public class FuelRange extends RPCStruct {
@@ -114,14 +114,14 @@ public class FuelRange extends RPCStruct {
     /**
      * Constructs a new FuelRange object
      */
-    public FuelRange() { }
+    public FuelRange() {
+    }
 
     /**
      * <p>Constructs a new FuelRange object indicated by the Hashtable parameter
      * </p>
      *
-     * @param hash
-     *            The Hashtable to use
+     * @param hash The Hashtable to use
      */
     public FuelRange(Hashtable<String, Object> hash) {
         super(hash);
@@ -131,10 +131,9 @@ public class FuelRange extends RPCStruct {
      * Sets the type portion of the FuelRange class
      *
      * @param fuelType the type of fuel related to this FuelRange object.
-     *
      * @see FuelType
      */
-    public FuelRange setType( FuelType fuelType) {
+    public FuelRange setType(FuelType fuelType) {
         setValue(KEY_TYPE, fuelType);
         return this;
     }
@@ -161,10 +160,9 @@ public class FuelRange extends RPCStruct {
     /**
      * Sets the range portion of the FuelRange class
      *
-     * @param range
-     * The estimate range in KM the vehicle can travel based on fuel level and consumption.
+     * @param range The estimate range in KM the vehicle can travel based on fuel level and consumption.
      */
-    public FuelRange setRange( Float range) {
+    public FuelRange setRange(Float range) {
         setValue(KEY_RANGE, range);
         return this;
     }
@@ -173,10 +171,10 @@ public class FuelRange extends RPCStruct {
      * Sets the level.
      *
      * @param level The relative remaining capacity of this fuel type (percentage).
-     * {"num_min_value": -6.0, "num_max_value": 1000000.0}
+     *              {"num_min_value": -6.0, "num_max_value": 1000000.0}
      * @since SmartDeviceLink 7.0.0
      */
-    public FuelRange setLevel( Float level) {
+    public FuelRange setLevel(Float level) {
         setValue(KEY_LEVEL, level);
         return this;
     }
@@ -199,7 +197,7 @@ public class FuelRange extends RPCStruct {
      * @param levelState The fuel level state
      * @since SmartDeviceLink 7.0.0
      */
-    public FuelRange setLevelState( ComponentVolumeStatus levelState) {
+    public FuelRange setLevelState(ComponentVolumeStatus levelState) {
         setValue(KEY_LEVEL_STATE, levelState);
         return this;
     }
@@ -218,10 +216,10 @@ public class FuelRange extends RPCStruct {
      * Sets the capacity.
      *
      * @param capacity The absolute capacity of this fuel type.
-     * {"num_min_value": 0.0, "num_max_value": 1000000.0}
+     *                 {"num_min_value": 0.0, "num_max_value": 1000000.0}
      * @since SmartDeviceLink 7.0.0
      */
-    public FuelRange setCapacity( Float capacity) {
+    public FuelRange setCapacity(Float capacity) {
         setValue(KEY_CAPACITY, capacity);
         return this;
     }
@@ -242,10 +240,10 @@ public class FuelRange extends RPCStruct {
      * Sets the capacityUnit.
      *
      * @param capacityUnit The unit of the capacity of this fuel type such as liters for gasoline or kWh for
-     * batteries.
+     *                     batteries.
      * @since SmartDeviceLink 7.0.0
      */
-    public FuelRange setCapacityUnit( CapacityUnit capacityUnit) {
+    public FuelRange setCapacityUnit(CapacityUnit capacityUnit) {
         setValue(KEY_CAPACITY_UNIT, capacityUnit);
         return this;
     }

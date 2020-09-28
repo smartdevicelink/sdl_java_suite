@@ -36,7 +36,6 @@ import com.smartdevicelink.proxy.RPCStruct;
 import java.util.Hashtable;
 
 /**
- *
  * <p><b>Parameter List</b></p>
  *
  * <table border="1" rules="all">
@@ -62,6 +61,7 @@ import java.util.Hashtable;
  *      <td></td>
  *  </tr>
  * </table>
+ *
  * @since SmartDeviceLink 7.0.0
  */
 public class DriverDistractionCapability extends RPCStruct {
@@ -71,7 +71,8 @@ public class DriverDistractionCapability extends RPCStruct {
     /**
      * Constructs a new DriverDistractionCapability object
      */
-    public DriverDistractionCapability() { }
+    public DriverDistractionCapability() {
+    }
 
     /**
      * Constructs a new DriverDistractionCapability object indicated by the Hashtable parameter
@@ -87,7 +88,7 @@ public class DriverDistractionCapability extends RPCStruct {
      *
      * @param menuLength The number of items allowed in a Choice Set or Command menu while the driver is distracted
      */
-    public DriverDistractionCapability setMenuLength( Integer menuLength) {
+    public DriverDistractionCapability setMenuLength(Integer menuLength) {
         setValue(KEY_MENU_LENGTH, menuLength);
         return this;
     }
@@ -105,9 +106,9 @@ public class DriverDistractionCapability extends RPCStruct {
      * Sets the subMenuDepth.
      *
      * @param subMenuDepth The depth of submenus allowed when the driver is distracted. e.g. 3 == top level menu ->
-     * submenu -> submenu; 1 == top level menu only
+     *                     submenu -> submenu; 1 == top level menu only
      */
-    public DriverDistractionCapability setSubMenuDepth( Integer subMenuDepth) {
+    public DriverDistractionCapability setSubMenuDepth(Integer subMenuDepth) {
         setValue(KEY_SUB_MENU_DEPTH, subMenuDepth);
         return this;
     }

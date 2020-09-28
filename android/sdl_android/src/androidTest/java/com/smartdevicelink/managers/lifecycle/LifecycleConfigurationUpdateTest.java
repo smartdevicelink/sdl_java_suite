@@ -47,32 +47,32 @@ import static junit.framework.TestCase.assertEquals;
 @RunWith(AndroidJUnit4.class)
 public class LifecycleConfigurationUpdateTest {
 
-	@Test
-	public void testIndividualSettersAndGetters(){
+    @Test
+    public void testIndividualSettersAndGetters() {
 
-		LifecycleConfigurationUpdate lifecycleConfigurationUpdate = new LifecycleConfigurationUpdate();
+        LifecycleConfigurationUpdate lifecycleConfigurationUpdate = new LifecycleConfigurationUpdate();
 
-		lifecycleConfigurationUpdate.setAppName(TestValues.GENERAL_STRING);
-		lifecycleConfigurationUpdate.setShortAppName(TestValues.GENERAL_STRING);
-		lifecycleConfigurationUpdate.setTtsName(TestValues.GENERAL_VECTOR_TTS_CHUNKS);
-		lifecycleConfigurationUpdate.setVoiceRecognitionCommandNames(TestValues.GENERAL_VECTOR_STRING);
+        lifecycleConfigurationUpdate.setAppName(TestValues.GENERAL_STRING);
+        lifecycleConfigurationUpdate.setShortAppName(TestValues.GENERAL_STRING);
+        lifecycleConfigurationUpdate.setTtsName(TestValues.GENERAL_VECTOR_TTS_CHUNKS);
+        lifecycleConfigurationUpdate.setVoiceRecognitionCommandNames(TestValues.GENERAL_VECTOR_STRING);
 
-		assertEquals(TestValues.GENERAL_STRING, lifecycleConfigurationUpdate.getAppName());
-		assertEquals(TestValues.GENERAL_STRING, lifecycleConfigurationUpdate.getShortAppName());
-		assertEquals(TestValues.GENERAL_VECTOR_TTS_CHUNKS, lifecycleConfigurationUpdate.getTtsName());
-		assertEquals(TestValues.GENERAL_VECTOR_STRING, lifecycleConfigurationUpdate.getVoiceRecognitionCommandNames());
-	}
+        assertEquals(TestValues.GENERAL_STRING, lifecycleConfigurationUpdate.getAppName());
+        assertEquals(TestValues.GENERAL_STRING, lifecycleConfigurationUpdate.getShortAppName());
+        assertEquals(TestValues.GENERAL_VECTOR_TTS_CHUNKS, lifecycleConfigurationUpdate.getTtsName());
+        assertEquals(TestValues.GENERAL_VECTOR_STRING, lifecycleConfigurationUpdate.getVoiceRecognitionCommandNames());
+    }
 
-	@Test
-	public void testHelperConstructor(){
+    @Test
+    public void testHelperConstructor() {
 
-		LifecycleConfigurationUpdate lifecycleConfigurationUpdate = new LifecycleConfigurationUpdate(TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, TestValues.GENERAL_VECTOR_TTS_CHUNKS, TestValues.GENERAL_VECTOR_STRING);
+        LifecycleConfigurationUpdate lifecycleConfigurationUpdate = new LifecycleConfigurationUpdate(TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, TestValues.GENERAL_VECTOR_TTS_CHUNKS, TestValues.GENERAL_VECTOR_STRING);
 
-		assertEquals(TestValues.GENERAL_STRING, lifecycleConfigurationUpdate.getAppName());
-		assertEquals(TestValues.GENERAL_STRING, lifecycleConfigurationUpdate.getShortAppName());
-		assertEquals(TestValues.GENERAL_VECTOR_TTS_CHUNKS, lifecycleConfigurationUpdate.getTtsName());
-		assertEquals(TestValues.GENERAL_VECTOR_STRING, lifecycleConfigurationUpdate.getVoiceRecognitionCommandNames());
-	}
+        assertEquals(TestValues.GENERAL_STRING, lifecycleConfigurationUpdate.getAppName());
+        assertEquals(TestValues.GENERAL_STRING, lifecycleConfigurationUpdate.getShortAppName());
+        assertEquals(TestValues.GENERAL_VECTOR_TTS_CHUNKS, lifecycleConfigurationUpdate.getTtsName());
+        assertEquals(TestValues.GENERAL_VECTOR_STRING, lifecycleConfigurationUpdate.getVoiceRecognitionCommandNames());
+    }
 
 
 }

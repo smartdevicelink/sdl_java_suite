@@ -17,13 +17,13 @@ import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.fail;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.OnKeyboardInput}
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.proxy.rpc.OnKeyboardInput}
  */
-public class OnKeyboardInputTests extends BaseRpcTests{
+public class OnKeyboardInputTests extends BaseRpcTests {
 
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         OnKeyboardInput msg = new OnKeyboardInput();
 
         msg.setData(TestValues.GENERAL_STRING);
@@ -33,42 +33,42 @@ public class OnKeyboardInputTests extends BaseRpcTests{
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_NOTIFICATION;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.ON_KEYBOARD_INPUT.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
+        try {
             result.put(OnKeyboardInput.KEY_DATA, TestValues.GENERAL_STRING);
             result.put(OnKeyboardInput.KEY_EVENT, TestValues.GENERAL_KEYBOARDEVENT);
-        }catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
 
         return result;
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
+     * Tests the expected values of the RPC message.
+     */
     @Test
-    public void testRpcValues () { 
-    	// Test Values
-        KeyboardEvent event = ( (OnKeyboardInput) msg ).getEvent();
-        String data = ( (OnKeyboardInput) msg ).getData();
-        
+    public void testRpcValues() {
+        // Test Values
+        KeyboardEvent event = ((OnKeyboardInput) msg).getEvent();
+        String data = ((OnKeyboardInput) msg).getData();
+
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_KEYBOARDEVENT, event);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, data);
-    
+
         // Invalid/Null Tests
         OnKeyboardInput msg = new OnKeyboardInput();
         assertNotNull(TestValues.NOT_NULL, msg);

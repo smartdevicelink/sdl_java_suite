@@ -25,7 +25,7 @@ public class ManagerUtility {
          * Check to see if WindowCapability has an ImageFieldName of a given name.
          *
          * @param windowCapability WindowCapability representing the capabilities of the desired window
-         * @param name ImageFieldName representing a name of a given Image field that would be stored in WindowCapability
+         * @param name             ImageFieldName representing a name of a given Image field that would be stored in WindowCapability
          * @return true if name exist in WindowCapability else false
          */
         public static boolean hasImageFieldOfName(final WindowCapability windowCapability, final ImageFieldName name) {
@@ -34,7 +34,7 @@ public class ManagerUtility {
             }
             if (windowCapability.getImageFields() != null) {
                 List<ImageField> imageFields = windowCapability.getImageFields();
-                if(imageFields != null && imageFields.size() > 0) {
+                if (imageFields != null && imageFields.size() > 0) {
                     for (ImageField field : imageFields) {
                         if (field != null && name.equals(field.getName())) {
                             return true;
@@ -49,7 +49,7 @@ public class ManagerUtility {
          * Check to see if WindowCapability has a textField of a given name.
          *
          * @param windowCapability WindowCapability representing the capabilities of the desired window
-         * @param name TextFieldName representing a name of a given text field that would be stored in WindowCapability
+         * @param name             TextFieldName representing a name of a given text field that would be stored in WindowCapability
          * @return true if name exist in WindowCapability else false
          */
         public static boolean hasTextFieldOfName(final WindowCapability windowCapability, final TextFieldName name) {
@@ -80,7 +80,7 @@ public class ManagerUtility {
             if (windowCapability != null && windowCapability.getTextFields() != null) {
                 for (TextField field : windowCapability.getTextFields()) {
                     int fieldNumber = 0;
-                    if(field != null) {
+                    if (field != null && field.getName() != null) {
                         switch (field.getName()) {
                             case mainField1:
                                 fieldNumber = 1;

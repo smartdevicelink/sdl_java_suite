@@ -34,8 +34,8 @@ package com.smartdevicelink.managers.lifecycle;
 
 import androidx.annotation.NonNull;
 
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.ServiceEncryptionListener;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 
 class EncryptionLifecycleManager extends BaseEncryptionLifecycleManager {
 

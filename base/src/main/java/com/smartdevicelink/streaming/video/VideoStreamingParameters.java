@@ -48,67 +48,68 @@ import java.util.List;
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public class VideoStreamingParameters {
     private static final String TAG = "VideoStreamingParameters";
-	private final VideoStreamingProtocol DEFAULT_PROTOCOL = VideoStreamingProtocol.RAW;
-	private final VideoStreamingCodec DEFAULT_CODEC = VideoStreamingCodec.H264;
-	private final VideoStreamingFormat[] CURRENTLY_SUPPORTED_FORMATS = { new VideoStreamingFormat(VideoStreamingProtocol.RTP, VideoStreamingCodec.H264),
-                                                                         new VideoStreamingFormat(VideoStreamingProtocol.RAW, VideoStreamingCodec.H264) };
-	private final int DEFAULT_WIDTH = 1024;
-	private final int DEFAULT_HEIGHT = 576;
-	private final int DEFAULT_DENSITY = 240;
-	private final int DEFAULT_FRAMERATE = 30;
-	private final int DEFAULT_BITRATE = 512000;
-	private final int DEFAULT_INTERVAL = 5;
-	private final static double DEFAULT_SCALE = 1.0;
+    private final VideoStreamingProtocol DEFAULT_PROTOCOL = VideoStreamingProtocol.RAW;
+    private final VideoStreamingCodec DEFAULT_CODEC = VideoStreamingCodec.H264;
+    private final VideoStreamingFormat[] currentlySupportedFormats = {new VideoStreamingFormat(VideoStreamingProtocol.RTP, VideoStreamingCodec.H264),
+            new VideoStreamingFormat(VideoStreamingProtocol.RAW, VideoStreamingCodec.H264)};
+    private final int DEFAULT_WIDTH = 1024;
+    private final int DEFAULT_HEIGHT = 576;
+    private final int DEFAULT_DENSITY = 240;
+    private final int DEFAULT_FRAMERATE = 30;
+    private final int DEFAULT_BITRATE = 512000;
+    private final int DEFAULT_INTERVAL = 5;
+    private final static double DEFAULT_SCALE = 1.0;
 
 
-	private int displayDensity;
-	private int frameRate;
-	private int bitrate;
-	private int interval;
-	private double preferredDiagonal;
+    private int displayDensity;
+    private int frameRate;
+    private int bitrate;
+    private int interval;
+    private double preferredDiagonal;
 	private double scale = DEFAULT_SCALE;
 	private ImageResolution resolution;
-	private VideoStreamingFormat format;
+    private VideoStreamingFormat format;
 	private List<VideoStreamingCapability> additionalCapabilities = new ArrayList<>(1);
 
-    public VideoStreamingParameters(){
-	    displayDensity = DEFAULT_DENSITY;
-	    frameRate = DEFAULT_FRAMERATE;
-	    bitrate = DEFAULT_BITRATE;
-	    interval = DEFAULT_INTERVAL;
-	    resolution = new ImageResolution();
-	    resolution.setResolutionWidth(DEFAULT_WIDTH);
-	    resolution.setResolutionHeight(DEFAULT_HEIGHT);
-	    format = new VideoStreamingFormat();
-	    format.setProtocol(DEFAULT_PROTOCOL);
-	    format.setCodec(DEFAULT_CODEC);
+    public VideoStreamingParameters() {
+        displayDensity = DEFAULT_DENSITY;
+        frameRate = DEFAULT_FRAMERATE;
+        bitrate = DEFAULT_BITRATE;
+        interval = DEFAULT_INTERVAL;
+        resolution = new ImageResolution();
+        resolution.setResolutionWidth(DEFAULT_WIDTH);
+        resolution.setResolutionHeight(DEFAULT_HEIGHT);
+        format = new VideoStreamingFormat();
+        format.setProtocol(DEFAULT_PROTOCOL);
+        format.setCodec(DEFAULT_CODEC);
     }
 
     public VideoStreamingParameters(int displayDensity, int frameRate, int bitrate, int interval,
-                                    ImageResolution resolution, VideoStreamingFormat format){
-	    this.displayDensity = displayDensity;
-	    this.frameRate = frameRate;
-	    this.bitrate = bitrate;
-	    this.interval = interval;
-	    this.resolution = resolution;
-	    this.format = format;
+                                    ImageResolution resolution, VideoStreamingFormat format) {
+        this.displayDensity = displayDensity;
+        this.frameRate = frameRate;
+        this.bitrate = bitrate;
+        this.interval = interval;
+        this.resolution = resolution;
+        this.format = format;
     }
 
     /**
      * Will only copy values that are not null or are greater than 0
+     *
      * @param params VideoStreamingParameters that should be copied into this new instants
      */
-    @SuppressWarnings("unused")
-    public VideoStreamingParameters(VideoStreamingParameters params){
+    public VideoStreamingParameters(VideoStreamingParameters params) {
         update(params);
     }
 
     /**
      * Will only copy values that are not null or are greater than 0
+     *
      * @param params VideoStreamingParameters that should be copied into this new instants
      */
-    public void update(VideoStreamingParameters params){
-        if(params!=null) {
+    public void update(VideoStreamingParameters params) {
+        if (params != null) {
             if (params.displayDensity > 0) {
                 this.displayDensity = params.displayDensity;
             }
@@ -142,21 +143,26 @@ public class VideoStreamingParameters {
     /**
      * Update the values contained in the capability that should have been returned through the SystemCapabilityManager.
      * This update will use the most preferred streaming format from the module.
-     * @param capability the video streaming capability returned from the SystemCapabilityManager
+     *
+     * @param capability  the video streaming capability returned from the SystemCapabilityManager
      * @param vehicleMake the vehicle make from the RegisterAppInterfaceResponse
-     * @see com.smartdevicelink.proxy.SystemCapabilityManager
+     * @see com.smartdevicelink.managers.lifecycle.SystemCapabilityManager
      * @see VideoStreamingCapability
      */
-    public void update(VideoStreamingCapability capability, String vehicleMake){
-        if(capability.getMaxBitrate()!=null){ this.bitrate = capability.getMaxBitrate() * 1000; } // NOTE: the unit of maxBitrate in getSystemCapability is kbps.
-        if(capability.getScale() != null) { scale = capability.getScale(); }
+    public void update(VideoStreamingCapability capability, String vehicleMake) {
+        if (capability.getMaxBitrate() != null) {
+            this.bitrate = capability.getMaxBitrate() * 1000;
+        } // NOTE: the unit of maxBitrate in getSystemCapability is kbps.
+        if (capability.getScale() != null) {
+            scale = capability.getScale();
+        }
         if (capability.getDiagonalScreenSize() != null) { preferredDiagonal = capability.getDiagonalScreenSize(); }
         ImageResolution resolution = capability.getPreferredResolution();
         if (capability.getAdditionalVideoStreamingCapabilities() != null &&
                 !capability.getAdditionalVideoStreamingCapabilities().isEmpty()) {
             this.additionalCapabilities = capability.getAdditionalVideoStreamingCapabilities();
         }
-        if(resolution!=null){
+        if (resolution != null) {
 
             if (vehicleMake != null) {
                 if ((vehicleMake.contains("Ford") || vehicleMake.contains("Lincoln")) &&
@@ -166,8 +172,12 @@ public class VideoStreamingParameters {
                 }
             }
 
-            if(resolution.getResolutionHeight()!=null && resolution.getResolutionHeight() > 0){ this.resolution.setResolutionHeight((int)(resolution.getResolutionHeight() / scale)); }
-            if(resolution.getResolutionWidth()!=null && resolution.getResolutionWidth() > 0){ this.resolution.setResolutionWidth((int)(resolution.getResolutionWidth() / scale)); }
+            if (resolution.getResolutionHeight() != null && resolution.getResolutionHeight() > 0) {
+                this.resolution.setResolutionHeight((int) (resolution.getResolutionHeight() / scale));
+            }
+            if (resolution.getResolutionWidth() != null && resolution.getResolutionWidth() > 0) {
+                this.resolution.setResolutionWidth((int) (resolution.getResolutionWidth() / scale));
+            }
         }
 
         // This should be the last call as it will return out once a suitable format is found
@@ -211,10 +221,10 @@ public class VideoStreamingParameters {
 
         // This should be the last call as it will return out once a suitable format is found
         final List<VideoStreamingFormat> formats = capability.getSupportedFormats();
-        if(formats != null && formats.size()>0){
-            for(VideoStreamingFormat format : formats){
-                for(int i = 0; i < CURRENTLY_SUPPORTED_FORMATS.length; i ++){
-                    if(CURRENTLY_SUPPORTED_FORMATS[i].equals(format) ){
+        if (formats != null && formats.size() > 0) {
+            for (VideoStreamingFormat format : formats) {
+                for (VideoStreamingFormat currentlySupportedFormat : currentlySupportedFormats) {
+                    if (currentlySupportedFormat.equals(format)) {
                         this.format = format;
                         return;
                     }
@@ -228,7 +238,6 @@ public class VideoStreamingParameters {
 
     }
 
-    @SuppressWarnings("unused")
     public void setDisplayDensity(int displayDensity) {
         this.displayDensity = displayDensity;
     }
@@ -261,21 +270,21 @@ public class VideoStreamingParameters {
         return interval;
     }
 
-    public void setFormat(VideoStreamingFormat format){
-	    this.format = format;
+    public void setFormat(VideoStreamingFormat format) {
+        this.format = format;
     }
 
-    public VideoStreamingFormat getFormat(){
-	    return format;
+    public VideoStreamingFormat getFormat() {
+        return format;
     }
 
-    public void setResolution(ImageResolution resolution){
-	    this.resolution = resolution;
+    public void setResolution(ImageResolution resolution) {
+        this.resolution = resolution;
     }
 
-	public ImageResolution getResolution() {
-		return resolution;
-	}
+    public ImageResolution getResolution() {
+        return resolution;
+    }
 
     public double getScale() { return scale; }
 

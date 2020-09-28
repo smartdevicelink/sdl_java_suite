@@ -33,17 +33,17 @@ package com.smartdevicelink.proxy.rpc.enums;
 
 public enum Direction {
 
-	LEFT,
+    LEFT,
 
-	RIGHT,
+    RIGHT,
 
-	;
+    ;
 
-	public static Direction valueForString(String value) {
-		try{
-			return valueOf(value);
-		}catch(Exception e){
-			return null;
-		}
-	}
+    public static Direction valueForString(String value) {
+        try {
+            return valueOf(value);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

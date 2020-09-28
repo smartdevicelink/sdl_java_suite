@@ -48,25 +48,24 @@ import java.util.Collections;
 @SuppressWarnings("WeakerAccess")
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public class SdlProtocol extends SdlProtocolBase {
-    private static final String TAG ="SdlProtocol";
+    private static final String TAG = "SdlProtocol";
 
 
-    @SuppressWarnings("ConstantConditions")
     public SdlProtocol(@NonNull ISdlProtocol iSdlProtocol, @NonNull MultiplexTransportConfig config) {
-        super(iSdlProtocol,config);
+        super(iSdlProtocol, config);
         this.requestedPrimaryTransports = config.getPrimaryTransports();
         this.requestedSecondaryTransports = config.getSecondaryTransports();
         this.requiresHighBandwidth = config.requiresHighBandwidth();
-        this.setTransportManager(new TransportManager(config,transportEventListener));
+        this.setTransportManager(new TransportManager(config, transportEventListener));
     }
 
 
     public SdlProtocol(@NonNull ISdlProtocol iSdlProtocol, @NonNull TCPTransportConfig config) {
-        super(iSdlProtocol,config);
+        super(iSdlProtocol, config);
         this.requestedPrimaryTransports = Collections.singletonList(TransportType.TCP);
         this.requestedSecondaryTransports = null;
-        this.requiresHighBandwidth =false;
-        this.setTransportManager(new TCPTransportManager(config,transportEventListener));
+        this.requiresHighBandwidth = false;
+        this.setTransportManager(new TCPTransportManager(config, transportEventListener));
     }
 
     /**
@@ -74,8 +73,8 @@ public class SdlProtocol extends SdlProtocolBase {
      * call the onTransportEvent method.
      */
     @Override
-    void notifyDevTransportListener (){
-        if(TransportType.MULTIPLEX.equals(transportConfig.getTransportType() )) {
+    void notifyDevTransportListener() {
+        if (TransportType.MULTIPLEX.equals(transportConfig.getTransportType())) {
             MultiplexTransportConfig transportConfig = (MultiplexTransportConfig) this.transportConfig;
             if (transportConfig.getTransportListener() != null && transportManager != null) {
                 transportConfig.getTransportListener().onTransportEvent(transportManager.getConnectedTransports(), isTransportForServiceAvailable(SessionType.PCM), isTransportForServiceAvailable(SessionType.NAV));

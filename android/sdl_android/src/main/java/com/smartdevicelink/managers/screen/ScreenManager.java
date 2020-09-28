@@ -35,18 +35,18 @@ package com.smartdevicelink.managers.screen;
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 
 /**
  * <strong>ScreenManager</strong> <br>
- *
+ * <p>
  * Note: This class must be accessed through the SdlManager. Do not instantiate it by itself. <br>
-*/
+ */
 public class ScreenManager extends BaseScreenManager {
 
-	@RestrictTo(RestrictTo.Scope.LIBRARY)
-	public ScreenManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
-		super(internalInterface, fileManager);
-	}
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    public ScreenManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
+        super(internalInterface, fileManager);
+    }
 }

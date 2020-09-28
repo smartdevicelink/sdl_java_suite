@@ -11,6 +11,7 @@ public interface OnButtonListener {
 
     /**
      * Returns when a Subscribed button is pressed
+     *
      * @param buttonName  - Name of Button
      * @param buttonPress - OnButtonPress
      */
@@ -18,6 +19,7 @@ public interface OnButtonListener {
 
     /**
      * Returns when a Subscribed button Event has occurred
+     *
      * @param buttonName  - Name of Button
      * @param buttonEvent - OnButtonEvent
      */
@@ -25,6 +27,7 @@ public interface OnButtonListener {
 
     /**
      * Returns when there is an error with subscribing to button
+     *
      * @param info - Error info
      */
     void onError(String info);

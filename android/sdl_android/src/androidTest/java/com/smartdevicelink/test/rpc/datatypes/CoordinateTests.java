@@ -20,7 +20,7 @@ public class CoordinateTests extends TestCase {
     private Coordinate msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new Coordinate();
 
         msg.setLatitudeDegrees(TestValues.GENERAL_FLOAT);
@@ -30,7 +30,7 @@ public class CoordinateTests extends TestCase {
     /**
      * Tests the expected values of the RPC message.
      */
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Test Values
         float floatLat = msg.getLatitudeDegrees();
         float floatLong = msg.getLongitudeDegrees();
@@ -46,10 +46,10 @@ public class CoordinateTests extends TestCase {
         assertNull(TestValues.NULL, msg.getLongitudeDegrees());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(Coordinate.KEY_LATITUDE_DEGREES, (Float) TestValues.GENERAL_FLOAT);
             reference.put(Coordinate.KEY_LONGITUDE_DEGREES, (Float) TestValues.GENERAL_FLOAT);
 
@@ -58,7 +58,7 @@ public class CoordinateTests extends TestCase {
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
 
                 Object a = JsonUtils.readObjectFromJsonObject(reference, key);
@@ -66,7 +66,7 @@ public class CoordinateTests extends TestCase {
 
                 assertEquals(TestValues.MATCH, a, b);
             }
-        } catch(JSONException e){
+        } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
     }

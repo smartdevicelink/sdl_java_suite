@@ -53,7 +53,8 @@ public class SystemCapability extends RPCStruct {
     public static final String KEY_DISPLAY_CAPABILITIES = "displayCapabilities";
     public static final String KEY_DRIVER_DISTRACTION_CAPABILITY = "driverDistractionCapability";
 
-    public SystemCapability(){}
+    public SystemCapability() {
+    }
 
     public SystemCapability(Hashtable<String, Object> hash) {
         super(hash);
@@ -61,18 +62,18 @@ public class SystemCapability extends RPCStruct {
 
     /**
      * Create a systemCapability object
+     *
      * @param systemCapabilityType The type
      */
-    public SystemCapability(@NonNull SystemCapabilityType systemCapabilityType){
+    public SystemCapability(@NonNull SystemCapabilityType systemCapabilityType) {
         this();
         setSystemCapabilityType(systemCapabilityType);
     }
 
     /**
-     *
      * @return The SystemCapabilityType that indicates which type of data should be changed and identifies which data object exists in this struct. For example, if the SystemCapability Type is NAVIGATION then a "navigationCapability" should exist
      */
-    public SystemCapabilityType getSystemCapabilityType(){
+    public SystemCapabilityType getSystemCapabilityType() {
         return (SystemCapabilityType) getObject(SystemCapabilityType.class, KEY_SYSTEM_CAPABILITY_TYPE);
     }
 
@@ -108,7 +109,7 @@ public class SystemCapability extends RPCStruct {
         }
     }
 
-    public SystemCapability setCapabilityForType( SystemCapabilityType type, Object capability) {
+    public SystemCapability setCapabilityForType(SystemCapabilityType type, Object capability) {
         if (type == null) {
             return this;
         } else if (type.equals(SystemCapabilityType.NAVIGATION)) {

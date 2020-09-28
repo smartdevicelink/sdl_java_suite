@@ -41,8 +41,7 @@ import com.smartdevicelink.util.DebugTool;
 import java.util.Collections;
 import java.util.List;
 
-@SuppressWarnings("unused")
-public class TransportManager extends TransportManagerBase{
+public class TransportManager extends TransportManagerBase {
     private static final String TAG = "TransportManager";
 
     TransportInterface transport;
@@ -53,13 +52,13 @@ public class TransportManager extends TransportManagerBase{
      * If transport is not connected. Request Router service connect to it. Get connected message
      */
 
-    public TransportManager(BaseTransportConfig config, TransportEventListener listener){
+    public TransportManager(BaseTransportConfig config, TransportEventListener listener) {
         super(config, listener);
 
         //Start the new transport
-        switch (config.getTransportType()){
+        switch (config.getTransportType()) {
             case WEB_SOCKET_SERVER:
-                transport = new WebSocketServer((WebSocketServerConfig)config, new SingleTransportCallbackImpl(new TransportRecord(TransportType.WEB_SOCKET_SERVER,"127.0.0.1:"+((WebSocketServerConfig)config).port)));
+                transport = new WebSocketServer((WebSocketServerConfig) config, new SingleTransportCallbackImpl(new TransportRecord(TransportType.WEB_SOCKET_SERVER, "127.0.0.1:" + ((WebSocketServerConfig) config).port)));
                 break;
             case CUSTOM:
                 transport = ((CustomTransportConfig) config).getTransportInterface();
@@ -70,32 +69,33 @@ public class TransportManager extends TransportManagerBase{
     }
 
     @Override
-    public void start(){
-        if(transport != null){
+    public void start() {
+        if (transport != null) {
             transport.start();
-        }else{
+        } else {
             System.out.print("Unable to start transport.");
         }
     }
 
     @Override
-    public void close(long sessionId){
-        if(transport != null) {
+    public void close(long sessionId) {
+        if (transport != null) {
             transport.stop();
         }
     }
 
     /**
      * Check to see if a transport is connected.
+     *
      * @param transportType the transport to have its connection status returned. If `null` is
      *                      passed in, all transports will be checked and if any are connected a
      *                      true value will be returned.
-     * @param address the address associated with the transport type. If null, the first transport
-     *                of supplied type will be used to return if connected.
+     * @param address       the address associated with the transport type. If null, the first transport
+     *                      of supplied type will be used to return if connected.
      * @return if a transport is connected based on included variables
      */
     @Override
-    public boolean isConnected(TransportType transportType, String address){
+    public boolean isConnected(TransportType transportType, String address) {
         synchronized (TRANSPORT_STATUS_LOCK) {
             if (transportType == null) {
                 return !transportStatus.isEmpty();
@@ -115,15 +115,17 @@ public class TransportManager extends TransportManagerBase{
             return false;
         }
     }
+
     /**
      * Retrieve a transport record with the supplied params
+     *
      * @param transportType the transport to have its connection status returned.
-     * @param address the address associated with the transport type. If null, the first transport
-     *                of supplied type will be returned.
+     * @param address       the address associated with the transport type. If null, the first transport
+     *                      of supplied type will be returned.
      * @return the transport record for the transport type and address if supplied
      */
     @Override
-    public TransportRecord getTransportRecord(TransportType transportType, String address){
+    public TransportRecord getTransportRecord(TransportType transportType, String address) {
         synchronized (TRANSPORT_STATUS_LOCK) {
             if (transportType == null) {
                 return null;
@@ -146,26 +148,27 @@ public class TransportManager extends TransportManagerBase{
 
 
     @Override
-    public void sendPacket(SdlPacket packet){
-        if(transport !=null){
+    public void sendPacket(SdlPacket packet) {
+        if (transport != null) {
             transport.write(packet);
-        }else {
+        } else {
 
         }
     }
 
-    class  SingleTransportCallbackImpl implements TransportCallback {
+    class SingleTransportCallbackImpl implements TransportCallback {
 
         final List<TransportRecord> finalList;
         final TransportRecord record;
-        protected SingleTransportCallbackImpl(TransportRecord transportRecord){
-             record = transportRecord;
-             finalList = Collections.singletonList(record);
+
+        protected SingleTransportCallbackImpl(TransportRecord transportRecord) {
+            record = transportRecord;
+            finalList = Collections.singletonList(record);
         }
 
         @Override
         public void onConnectionEstablished() {
-            synchronized (TRANSPORT_STATUS_LOCK){
+            synchronized (TRANSPORT_STATUS_LOCK) {
                 transportStatus.clear();
                 transportStatus.addAll(finalList);
             }
@@ -175,21 +178,21 @@ public class TransportManager extends TransportManagerBase{
         @Override
         public void onError() {
             DebugTool.logError(TAG, "Error in the transport manager from the web socket server");
-            if(transportListener != null){
+            if (transportListener != null) {
                 transportListener.onError("");
             }
         }
 
         @Override
         public void onConnectionTerminated(String reason) {
-            if(record != null){
+            if (record != null) {
                 DebugTool.logInfo(TAG, "Transport disconnected - " + record);
-            }else{
+            } else {
                 DebugTool.logInfo(TAG, "Transport disconnected");
 
             }
 
-            synchronized (TRANSPORT_STATUS_LOCK){
+            synchronized (TRANSPORT_STATUS_LOCK) {
                 TransportManager.this.transportStatus.remove(record);
                 //Might check connectedTransports vs transportStatus to ensure they are equal
             }
@@ -199,7 +202,7 @@ public class TransportManager extends TransportManagerBase{
 
         @Override
         public void onPacketReceived(SdlPacket packet) {
-            if(packet!=null){
+            if (packet != null) {
                 transportListener.onPacketReceived(packet);
             }
         }

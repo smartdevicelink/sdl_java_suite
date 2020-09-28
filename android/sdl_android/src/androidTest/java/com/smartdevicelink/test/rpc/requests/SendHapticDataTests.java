@@ -26,67 +26,67 @@ import static junit.framework.TestCase.assertNull;
 
 public class SendHapticDataTests extends BaseRpcTests {
 
-	private SendHapticData msg;
+    private SendHapticData msg;
 
-	@Override
-	protected RPCMessage createMessage(){
-		msg = new SendHapticData();
+    @Override
+    protected RPCMessage createMessage() {
+        msg = new SendHapticData();
 
-		List<HapticRect> list = new ArrayList<>();
-		list.add(TestValues.GENERAL_HAPTIC_RECT);
+        List<HapticRect> list = new ArrayList<>();
+        list.add(TestValues.GENERAL_HAPTIC_RECT);
 
-		msg.setHapticRectData(list);
+        msg.setHapticRectData(list);
 
-		return msg;
-	}
+        return msg;
+    }
 
-	@Override
-	protected String getMessageType(){
-		return RPCMessage.KEY_REQUEST;
-	}
+    @Override
+    protected String getMessageType() {
+        return RPCMessage.KEY_REQUEST;
+    }
 
-	@Override
-	protected String getCommandType(){
-		return FunctionID.SEND_HAPTIC_DATA.toString();
-	}
+    @Override
+    protected String getCommandType() {
+        return FunctionID.SEND_HAPTIC_DATA.toString();
+    }
 
-	@Override
-	protected JSONObject getExpectedParameters(int sdlVersion){
-		JSONObject result = new JSONObject();
+    @Override
+    protected JSONObject getExpectedParameters(int sdlVersion) {
+        JSONObject result = new JSONObject();
 
-		JSONArray jsonArray = new JSONArray();
-		try {
-			jsonArray.put(JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_HAPTIC_RECT.getStore()));
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+        JSONArray jsonArray = new JSONArray();
+        try {
+            jsonArray.put(JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_HAPTIC_RECT.getStore()));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-		try {
-			result.put(SendHapticData.KEY_HAPTIC_RECT_DATA, jsonArray);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+        try {
+            result.put(SendHapticData.KEY_HAPTIC_RECT_DATA, jsonArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * Tests the expected values of the RPC message.
-	 */
-	@Test
-	public void testRpcValues () {
-		// Test Values
-		List<HapticRect> list = msg.getHapticRectData();
+    /**
+     * Tests the expected values of the RPC message.
+     */
+    @Test
+    public void testRpcValues() {
+        // Test Values
+        List<HapticRect> list = msg.getHapticRectData();
 
-		// Valid Tests
-		assertEquals(TestValues.MATCH, TestValues.GENERAL_HAPTIC_RECT, list.get(0));
+        // Valid Tests
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_HAPTIC_RECT, list.get(0));
 
-		// Invalid/Null Tests
-		SendHapticData msg = new SendHapticData();
-		assertNotNull(TestValues.NOT_NULL, msg);
-		testNullBase(msg);
+        // Invalid/Null Tests
+        SendHapticData msg = new SendHapticData();
+        assertNotNull(TestValues.NOT_NULL, msg);
+        testNullBase(msg);
 
-		assertNull(TestValues.NULL, msg.getHapticRectData());
-	}
+        assertNull(TestValues.NULL, msg.getHapticRectData());
+    }
 
 }

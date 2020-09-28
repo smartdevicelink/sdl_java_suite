@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 import java.util.Hashtable;
+
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
@@ -21,85 +22,85 @@ import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.fail;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.PutFileResponse}
  */
 public class PutFileResponseTest extends BaseRpcTests {
-	
-	@Override
-	protected RPCMessage createMessage() {
-		PutFileResponse msg = new PutFileResponse();
 
-		msg.setSpaceAvailable(TestValues.GENERAL_INT);
+    @Override
+    protected RPCMessage createMessage() {
+        PutFileResponse msg = new PutFileResponse();
 
-		return msg;
-	}
+        msg.setSpaceAvailable(TestValues.GENERAL_INT);
 
-	@Override
-	protected String getMessageType() {
-		return RPCMessage.KEY_RESPONSE;
-	}
+        return msg;
+    }
 
-	@Override
-	protected String getCommandType() {
-		return FunctionID.PUT_FILE.toString();
-	}
+    @Override
+    protected String getMessageType() {
+        return RPCMessage.KEY_RESPONSE;
+    }
 
-	@Override
-	protected JSONObject getExpectedParameters(int sdlVersion) {
-		JSONObject result = new JSONObject();
+    @Override
+    protected String getCommandType() {
+        return FunctionID.PUT_FILE.toString();
+    }
 
-		try {
-			result.put(PutFileResponse.KEY_SPACE_AVAILABLE, TestValues.GENERAL_INT);
-		} catch (JSONException e) {
-			fail(TestValues.JSON_FAIL);
-		}
+    @Override
+    protected JSONObject getExpectedParameters(int sdlVersion) {
+        JSONObject result = new JSONObject();
 
-		return result;
-	}
+        try {
+            result.put(PutFileResponse.KEY_SPACE_AVAILABLE, TestValues.GENERAL_INT);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
+        }
 
-	/**
-	 * Tests the expected values of the RPC message.
-	 */
-	@Test
-    public void testRpcValues () {   
-    	// Test Values
-		Integer testSpace = ( (PutFileResponse) msg ).getSpaceAvailable();
-		
-		// Valid Tests
-		assertEquals(TestValues.MATCH, (Integer) TestValues.GENERAL_INT, testSpace);
-	
-		// Invalid/Null Tests
-		PutFileResponse msg = new PutFileResponse();
-		assertNotNull(TestValues.NOT_NULL, msg);
-		testNullBase(msg);
+        return result;
+    }
 
-		assertNull(TestValues.NULL, msg.getSpaceAvailable());
-	}
+    /**
+     * Tests the expected values of the RPC message.
+     */
+    @Test
+    public void testRpcValues() {
+        // Test Values
+        Integer testSpace = ((PutFileResponse) msg).getSpaceAvailable();
+
+        // Valid Tests
+        assertEquals(TestValues.MATCH, (Integer) TestValues.GENERAL_INT, testSpace);
+
+        // Invalid/Null Tests
+        PutFileResponse msg = new PutFileResponse();
+        assertNotNull(TestValues.NOT_NULL, msg);
+        testNullBase(msg);
+
+        assertNull(TestValues.NULL, msg.getSpaceAvailable());
+    }
 
     /**
      * Tests a valid JSON construction of this RPC message.
      */
     @Test
-    public void testJsonConstructor () {
-    	JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getContext(), getCommandType(), getMessageType());
-    	assertNotNull(TestValues.NOT_NULL, commandJson);
-    	
-		try {
-			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
-			PutFileResponse cmd = new PutFileResponse(hash);
-			
-			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(TestValues.NOT_NULL, body);
-			
-			// Test everything in the json body.
-			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+    public void testJsonConstructor() {
+        JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getContext(), getCommandType(), getMessageType());
+        assertNotNull(TestValues.NOT_NULL, commandJson);
 
-			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, PutFileResponse.KEY_SPACE_AVAILABLE), cmd.getSpaceAvailable());
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}    	
+        try {
+            Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
+            PutFileResponse cmd = new PutFileResponse(hash);
+
+            JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
+            assertNotNull(TestValues.NOT_NULL, body);
+
+            // Test everything in the json body.
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+
+            JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, PutFileResponse.KEY_SPACE_AVAILABLE), cmd.getSpaceAvailable());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

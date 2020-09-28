@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -38,24 +38,48 @@ import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 
 import java.util.Hashtable;
+import java.util.List;
 
 public class UnsubscribeWayPointsResponse extends RPCResponse {
+    public static final String KEY_WAY_POINTS = "wayPoints";
+
 
     public UnsubscribeWayPointsResponse() {
         super(FunctionID.UNSUBSCRIBE_WAY_POINTS.toString());
     }
+
     public UnsubscribeWayPointsResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-	/**
-	 * Constructs a new UnsubscribeWayPointsResponse object
-	 * @param success whether the request is successfully processed
-	 * @param resultCode whether the request is successfully processed
-	 */
-	public UnsubscribeWayPointsResponse(@NonNull Boolean success, @NonNull Result resultCode) {
-		this();
-		setSuccess(success);
-		setResultCode(resultCode);
-	}
+    /**
+     * Constructs a new UnsubscribeWayPointsResponse object
+     *
+     * @param success    whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     */
+    public UnsubscribeWayPointsResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
+    }
+
+    /**
+     * Sets the way points location details
+     *
+     * @param wayPoints the way points location details
+     */
+    public UnsubscribeWayPointsResponse setWayPoints(List<LocationDetails> wayPoints) {
+        setParameters(KEY_WAY_POINTS, wayPoints);
+        return this;
+    }
+
+    /**
+     * Gets the way points location details
+     *
+     * @return the way points location details
+     */
+    public List<LocationDetails> getWayPoints() {
+        return (List<LocationDetails>) getObject(LocationDetails.class, KEY_WAY_POINTS);
+    }
 }

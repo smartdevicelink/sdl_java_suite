@@ -21,7 +21,7 @@ import java.util.List;
 
 public class VideoStreamingCapabilityTests extends TestCase {
 
-	private VideoStreamingCapability msg;
+    private VideoStreamingCapability msg;
 
 	@Override
 	public void setUp() {
@@ -36,33 +36,33 @@ public class VideoStreamingCapabilityTests extends TestCase {
 		msg.setAdditionalVideoStreamingCapabilities(TestValues.GENERAL_ADDITIONAL_CAPABILITY_LIST);
 	}
 
-	/**
-	 * Tests the expected values of the RPC message.
-	 */
-	public void testRpcValues () {
-		// Test Values
-		List<VideoStreamingFormat> format = msg.getSupportedFormats();
-		ImageResolution res = msg.getPreferredResolution();
-		Integer maxBitrate = msg.getMaxBitrate();
-		Boolean isHapticSpatialDataSupported = msg.getIsHapticSpatialDataSupported();
-		Double diagonalScreenSize = msg.getDiagonalScreenSize();
-		Double pixelPerInch = msg.getPixelPerInch();
-		Double scale = msg.getScale();
+    /**
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
+        List<VideoStreamingFormat> format = msg.getSupportedFormats();
+        ImageResolution res = msg.getPreferredResolution();
+        Integer maxBitrate = msg.getMaxBitrate();
+        Boolean isHapticSpatialDataSupported = msg.getIsHapticSpatialDataSupported();
+        Double diagonalScreenSize = msg.getDiagonalScreenSize();
+        Double pixelPerInch = msg.getPixelPerInch();
+        Double scale = msg.getScale();
 		List<VideoStreamingCapability> additionalVideoStreamingCapabilities = msg.getAdditionalVideoStreamingCapabilities();
 
-		// Valid Tests
-		assertEquals(TestValues.MATCH, (List<VideoStreamingFormat>) TestValues.GENERAL_VIDEOSTREAMINGFORMAT_LIST, format);
-		assertEquals(TestValues.MATCH, (ImageResolution) TestValues.GENERAL_IMAGERESOLUTION, res);
-		assertEquals(TestValues.MATCH, (Integer) TestValues.GENERAL_INT, maxBitrate);
-		assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, isHapticSpatialDataSupported);
-		assertEquals(TestValues.MATCH, TestValues.GENERAL_DOUBLE, diagonalScreenSize);
-		assertEquals(TestValues.MATCH, TestValues.GENERAL_DOUBLE, pixelPerInch);
-		assertEquals(TestValues.MATCH, TestValues.GENERAL_DOUBLE, scale);
+        // Valid Tests
+        assertEquals(TestValues.MATCH, (List<VideoStreamingFormat>) TestValues.GENERAL_VIDEOSTREAMINGFORMAT_LIST, format);
+        assertEquals(TestValues.MATCH, (ImageResolution) TestValues.GENERAL_IMAGERESOLUTION, res);
+        assertEquals(TestValues.MATCH, (Integer) TestValues.GENERAL_INT, maxBitrate);
+        assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, isHapticSpatialDataSupported);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_DOUBLE, diagonalScreenSize);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_DOUBLE, pixelPerInch);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_DOUBLE, scale);
 		assertEquals(TestValues.MATCH, TestValues.GENERAL_ADDITIONAL_CAPABILITY_LIST, additionalVideoStreamingCapabilities);
 
-		// Invalid/Null Tests
-		VideoStreamingCapability msg = new VideoStreamingCapability();
-		assertNotNull(TestValues.NOT_NULL, msg);
+        // Invalid/Null Tests
+        VideoStreamingCapability msg = new VideoStreamingCapability();
+        assertNotNull(TestValues.NOT_NULL, msg);
 
 		assertNull(TestValues.NULL, msg.getMaxBitrate());
 		assertNull(TestValues.NULL, msg.getPreferredResolution());
@@ -74,10 +74,10 @@ public class VideoStreamingCapabilityTests extends TestCase {
 		assertNull(TestValues.NULL, msg.getAdditionalVideoStreamingCapabilities());
 	}
 
-	public void testJson() {
-		JSONObject reference = new JSONObject();
+    public void testJson() {
+        JSONObject reference = new JSONObject();
 
-		msg.setAdditionalVideoStreamingCapabilities(null);
+        msg.setAdditionalVideoStreamingCapabilities(null);
 		assertNull(msg.getAdditionalVideoStreamingCapabilities());
 
 		try {
@@ -89,33 +89,33 @@ public class VideoStreamingCapabilityTests extends TestCase {
 			reference.put(VideoStreamingCapability.KEY_PIXEL_PER_INCH, TestValues.GENERAL_DOUBLE);
 			reference.put(VideoStreamingCapability.KEY_SCALE, TestValues.GENERAL_DOUBLE);
 
-			JSONObject underTest = msg.serializeJSON();
-			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
+            JSONObject underTest = msg.serializeJSON();
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
-			Iterator<?> iterator = reference.keys();
-			while (iterator.hasNext()) {
-				String key = (String) iterator.next();
+            Iterator<?> iterator = reference.keys();
+            while (iterator.hasNext()) {
+                String key = (String) iterator.next();
 
-				if (key.equals(VideoStreamingCapability.KEY_MAX_BITRATE) || key.equals(VideoStreamingCapability.KEY_HAPTIC_SPATIAL_DATA_SUPPORTED)) {
-					assertTrue(TestValues.TRUE, JsonUtils.readIntegerFromJsonObject(reference, key) == JsonUtils.readIntegerFromJsonObject(underTest, key));
-				} else if (key.equals(VideoStreamingCapability.KEY_PREFERRED_RESOLUTION)) {
-					ImageResolution irReference = (ImageResolution) JsonUtils.readObjectFromJsonObject(reference, key);
-					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(JsonUtils.readJsonObjectFromJsonObject(underTest, key));
-					assertTrue(Validator.validateImageResolution(irReference, new ImageResolution(hashTest)));
-				} else if (key.equals(VideoStreamingCapability.KEY_SUPPORTED_FORMATS)){
-					List<VideoStreamingFormat> vsfReference = (List<VideoStreamingFormat>) JsonUtils.readObjectFromJsonObject(reference, key);
-					JSONArray vsfArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
-					int i = 0;
-					for(VideoStreamingFormat vsf : vsfReference){
-						assertTrue(Validator.validateSupportedFormats(vsf, new VideoStreamingFormat(JsonRPCMarshaller.deserializeJSONObject(vsfArray.getJSONObject(i++)))));
-					}
-				} else if (key.equals(VideoStreamingCapability.KEY_DIAGONAL_SCREEN_SIZE) || key.equals(VideoStreamingCapability.KEY_PIXEL_PER_INCH) ||
-						key.equals(VideoStreamingCapability.KEY_SCALE)) {
-					assertEquals(JsonUtils.readDoubleFromJsonObject(reference, key), JsonUtils.readDoubleFromJsonObject(underTest, key), 0.0005);
-				}
-			}
-		} catch (JSONException e) {
-			fail(TestValues.JSON_FAIL);
-		}
-	}
+                if (key.equals(VideoStreamingCapability.KEY_MAX_BITRATE) || key.equals(VideoStreamingCapability.KEY_HAPTIC_SPATIAL_DATA_SUPPORTED)) {
+                    assertTrue(TestValues.TRUE, JsonUtils.readIntegerFromJsonObject(reference, key) == JsonUtils.readIntegerFromJsonObject(underTest, key));
+                } else if (key.equals(VideoStreamingCapability.KEY_PREFERRED_RESOLUTION)) {
+                    ImageResolution irReference = (ImageResolution) JsonUtils.readObjectFromJsonObject(reference, key);
+                    Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(JsonUtils.readJsonObjectFromJsonObject(underTest, key));
+                    assertTrue(Validator.validateImageResolution(irReference, new ImageResolution(hashTest)));
+                } else if (key.equals(VideoStreamingCapability.KEY_SUPPORTED_FORMATS)) {
+                    List<VideoStreamingFormat> vsfReference = (List<VideoStreamingFormat>) JsonUtils.readObjectFromJsonObject(reference, key);
+                    JSONArray vsfArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
+                    int i = 0;
+                    for (VideoStreamingFormat vsf : vsfReference) {
+                        assertTrue(Validator.validateSupportedFormats(vsf, new VideoStreamingFormat(JsonRPCMarshaller.deserializeJSONObject(vsfArray.getJSONObject(i++)))));
+                    }
+                } else if (key.equals(VideoStreamingCapability.KEY_DIAGONAL_SCREEN_SIZE) || key.equals(VideoStreamingCapability.KEY_PIXEL_PER_INCH) ||
+                        key.equals(VideoStreamingCapability.KEY_SCALE)) {
+                    assertEquals(JsonUtils.readDoubleFromJsonObject(reference, key), JsonUtils.readDoubleFromJsonObject(underTest, key), 0.0005);
+                }
+            }
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
+        }
+    }
 }

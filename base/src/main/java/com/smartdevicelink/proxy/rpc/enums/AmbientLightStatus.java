@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -32,31 +32,33 @@
 package com.smartdevicelink.proxy.rpc.enums;
 
 
-/** Reflects the status of the ambient light sensor.
- * 
- * @since SmartDeviceLink 2.3.2
+/**
+ * Reflects the status of the ambient light sensor.
  *
+ * @since SmartDeviceLink 2.3.2
  */
 
 public enum AmbientLightStatus {
-	NIGHT,
-	TWILIGHT_1,
-	TWILIGHT_2,
-	TWILIGHT_3,
-	TWILIGHT_4,
-	DAY,
-	UNKNOWN,
-	INVALID;
-	/**
+    NIGHT,
+    TWILIGHT_1,
+    TWILIGHT_2,
+    TWILIGHT_3,
+    TWILIGHT_4,
+    DAY,
+    UNKNOWN,
+    INVALID;
+
+    /**
      * Convert String to AmbientLightStatus
+     *
      * @param value String
      * @return AmbientLightStatus
-     */ 
+     */
 
     public static AmbientLightStatus valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

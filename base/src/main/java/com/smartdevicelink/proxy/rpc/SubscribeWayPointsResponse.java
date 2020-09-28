@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -44,18 +44,20 @@ public class SubscribeWayPointsResponse extends RPCResponse {
     public SubscribeWayPointsResponse() {
         super(FunctionID.SUBSCRIBE_WAY_POINTS.toString());
     }
+
     public SubscribeWayPointsResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-	/**
-	 * Constructs a new SubscribeWayPointsResponse object
-	 * @param success whether the request is successfully processed
-	 * @param resultCode whether the request is successfully processed
-	 */
-	public SubscribeWayPointsResponse(@NonNull Boolean success, @NonNull Result resultCode) {
-		this();
-		setSuccess(success);
-		setResultCode(resultCode);
-	}
+    /**
+     * Constructs a new SubscribeWayPointsResponse object
+     *
+     * @param success    whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     */
+    public SubscribeWayPointsResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
+    }
 }

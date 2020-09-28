@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -37,7 +37,7 @@ import java.util.Hashtable;
 
 /**
  * Describes a navigation turn including an optional icon
- * 
+ *
  * <p><b>Parameter List</p>
  * <table border="1" rules="all">
  * <tr>
@@ -49,7 +49,7 @@ import java.util.Hashtable;
  * <tr>
  * <td>navigationText</td>
  * <td>String</td>
- * <td>Text to describe the turn (e.g. streetname)
+ * <td>Text to describe the turn (e.g. street name)
  * <ul>
  * <li>Maxlength = 500</li>
  * </ul>
@@ -63,56 +63,55 @@ import java.util.Hashtable;
  * <td>SmartDeviceLink 2.0</td>
  * </tr>
  * </table>
- * 
+ *
  * @since SmartDeviceLink 2.0
  */
-public class Turn extends RPCStruct{
+public class Turn extends RPCStruct {
     public static final String KEY_NAVIGATION_TEXT = "navigationText";
     public static final String KEY_TURN_IMAGE = "turnIcon";
-    
-    public Turn() { }
+
+    public Turn() {
+    }
+
     public Turn(Hashtable<String, Object> hash) {
         super(hash);
     }
 
     /**
-     * set the text to describe the turn (e.g. streetname)
+     * set the text to describe the turn (e.g. street name)
      *
-     * @param navigationText
-     *            the text to describe the turn (e.g. streetname)
+     * @param navigationText the text to describe the turn (e.g. street name)
      */
-    public Turn setNavigationText( String navigationText) {
+    public Turn setNavigationText(String navigationText) {
         setValue(KEY_NAVIGATION_TEXT, navigationText);
         return this;
     }
 
     /**
-     * get the text to describe the turn (e.g. streetname)
-     * 
-     * @return the text to describe the turn (e.g. streetname)
+     * get the text to describe the turn (e.g. street name)
+     *
+     * @return the text to describe the turn (e.g. street name)
      */
-    public String getNavigationText(){
+    public String getNavigationText() {
         return getString(KEY_NAVIGATION_TEXT);
     }
 
     /**
      * set Image to be shown for a turn
      *
-     * @param turnIcon
-     *            the image to be shown for a turn
+     * @param turnIcon the image to be shown for a turn
      */
-    public Turn setTurnIcon( Image turnIcon) {
+    public Turn setTurnIcon(Image turnIcon) {
         setValue(KEY_TURN_IMAGE, turnIcon);
         return this;
     }
 
     /**
      * get the image to be shown for a turn
-     * 
+     *
      * @return the image to be shown for a turn
      */
-    @SuppressWarnings("unchecked")
-    public Image getTurnIcon(){
+    public Image getTurnIcon() {
         return (Image) getObject(Image.class, KEY_TURN_IMAGE);
     }
 

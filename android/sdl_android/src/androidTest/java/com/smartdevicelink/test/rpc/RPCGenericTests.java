@@ -108,7 +108,7 @@ public class RPCGenericTests {
     }
 
     @Before
-    public void setUp(){
+    public void setUp() {
         // Map that has keys correspond to the RPC names and values correspond to the params for that RPC.
         rpcMandatoryParamsMapFromXml = getRPCParamsMap(XML_FILE_NAME, true);
         rpcAllParamsMapFromXml = getRPCParamsMap(XML_FILE_NAME, false);
@@ -131,30 +131,30 @@ public class RPCGenericTests {
             String getterMethodName2;
             Class<?> javaParamType;
             boolean skipParam;
-            while (event != XmlPullParser.END_DOCUMENT)  {
+            while (event != XmlPullParser.END_DOCUMENT) {
                 String name = myParser.getName();
-                switch (event){
+                switch (event) {
                     case XmlPullParser.START_TAG:
                         // Store the RPC name in the map
-                        if(name.equals("function") || name.equals("struct")){
-                            rpcName = myParser.getAttributeValue(null,"name");
+                        if (name.equals("function") || name.equals("struct")) {
+                            rpcName = myParser.getAttributeValue(null, "name");
                             ignoreRPC = false;
-                            if (name.equals("function") && myParser.getAttributeValue(null, "messagetype").equals("response") && !rpcName.contains("Response")){
+                            if (name.equals("function") && myParser.getAttributeValue(null, "messagetype").equals("response") && !rpcName.contains("Response")) {
                                 rpcName += "Response";
                             }
 
                             // -------------- Exceptional cases because of mismatch between the RPC spec and the Android code --------------
-                                if(rpcName.equals("SyncMsgVersion")){
-                                    rpcName = "SdlMsgVersion";
-                                } else if(rpcName.equals("ShowConstantTBTResponse")){
-                                    rpcName = "ShowConstantTbtResponse";
-                                } else if(rpcName.equals("OASISAddress")) {
-                                    rpcName = "OasisAddress";
-                                } else if(rpcName.equals("ShowConstantTBT")) {
-                                    rpcName = "ShowConstantTbt";
-                                } else if (rpcName.equals("EncodedSyncPData") || rpcName.equals("OnEncodedSyncPData") || rpcName.equals("EncodedSyncPDataResponse")){
-                                    ignoreRPC = true;
-                                }
+                            if (rpcName.equals("SyncMsgVersion")) {
+                                rpcName = "SdlMsgVersion";
+                            } else if (rpcName.equals("ShowConstantTBTResponse")) {
+                                rpcName = "ShowConstantTbtResponse";
+                            } else if (rpcName.equals("OASISAddress")) {
+                                rpcName = "OasisAddress";
+                            } else if (rpcName.equals("ShowConstantTBT")) {
+                                rpcName = "ShowConstantTbt";
+                            } else if (rpcName.equals("EncodedSyncPData") || rpcName.equals("OnEncodedSyncPData") || rpcName.equals("EncodedSyncPDataResponse")) {
+                                ignoreRPC = true;
+                            }
                             // -------------------------------------------------------------------------------------------------------------
 
                             if (!ignoreRPC) {
@@ -162,61 +162,62 @@ public class RPCGenericTests {
                             }
                         }
                         // Store the params for the current RPC in the map
-                        if(name.equals("param") && myParser.getAttributeValue(null, "until") == null && !ignoreRPC){
+                        if (name.equals("param") && myParser.getAttributeValue(null, "until") == null && !ignoreRPC) {
                             setterMethodName = null;
                             getterMethodName1 = null;
                             getterMethodName2 = null;
                             javaParamType = null;
                             skipParam = false;
-                            boolean isMandatory = Boolean.valueOf(myParser.getAttributeValue(null,"mandatory"));
+                            boolean isMandatory = Boolean.valueOf(myParser.getAttributeValue(null, "mandatory"));
                             if (isMandatory || !includeMandatoryOnly) {
                                 String paramName = myParser.getAttributeValue(null, "name");
                                 String paramType = myParser.getAttributeValue(null, "type");
                                 boolean isArray = Boolean.valueOf(myParser.getAttributeValue(null, "array"));
 
                                 // -------------- Exceptional cases because of mismatch between the RPC spec and the Android code --------------
-                                if (paramName.equals("syncFileName")){
+                                if (paramName.equals("syncFileName")) {
                                     paramName = "sdlFileName";
-                                } else if (paramName.equals("syncMsgVersion")){
+                                } else if (paramName.equals("syncMsgVersion")) {
                                     paramName = "sdlMsgVersion";
-                                } else if (paramName.equals("hmiPermissions")){
-                                    paramName = "hMIPermissions";
-                                } else if (paramName.equals("resolution")){
+                                } else if (paramName.equals("hmiPermissions")) {
+                                    paramName = "HMIPermissions";
+                                } else if (paramName.equals("resolution")) {
                                     paramName = "imageResolution";
-                                } else if (paramName.equals("pressureTelltale")){
-                                    paramName = "pressureTellTale";
                                 }
 
                                 setterMethodName = "set" + paramName.substring(0, 1).toUpperCase() + paramName.substring(1);
 
-                                if (paramType.equals("SyncMsgVersion")){
+                                if (paramType.equals("SyncMsgVersion")) {
                                     paramType = "SdlMsgVersion";
-                                } else if (rpcName.equals("GPSData") && paramType.equals("Float")){
-                                    paramType = "Double";
-                                } else if (rpcName.equals("TouchEvent") && paramType.equals("Integer") && isArray){
-                                    paramType = "Long";
                                 } else if (paramType.equals("OASISAddress")) {
                                     paramType = "OasisAddress";
-                                } else if (rpcName.equals("VideoStreamingCapability") && paramType.equals("Float")) {
+                                } else if (rpcName.equals("TouchEvent") && paramType.equals("Integer") && isArray) {
+                                    paramType = "Long";
+                                } else if (Arrays.asList("GPSData", "VideoStreamingCapability").contains(rpcName) && paramType.equals("Float")) {
+                                    paramType = "Double";
+                                } else if (Arrays.asList("GetVehicleDataResponse", "OnVehicleData").contains(rpcName) && Arrays.asList("setInstantFuelConsumption", "setFuelLevel", "setSpeed", "setExternalTemperature", "setEngineTorque", "setAccPedalPosition", "setSteeringWheelAngle").contains(setterMethodName)) {
+                                    paramType = "Double";
+                                } else if (rpcName.equals("ShowConstantTbt") && Arrays.asList("setDistanceToManeuver", "setDistanceToManeuverScale").contains(setterMethodName)) {
+                                    paramType = "Double";
+                                } else if (rpcName.equals("SendLocation") && Arrays.asList("setLongitudeDegrees", "setLatitudeDegrees").contains(setterMethodName)) {
                                     paramType = "Double";
                                 } else if (rpcName.equals("UnsubscribeVehicleData") && setterMethodName.equals("setCloudAppVehicleID")) {
+                                    paramType = "boolean";
+                                } else if (rpcName.equals("CloudAppProperties") && setterMethodName.equals("setEnabled")) {
+                                    paramType = "boolean";
+                                } else if (rpcName.equals("GetVehicleData") && setterMethodName.equals("setCloudAppVehicleID")) {
+                                    paramType = "boolean";
+                                } else if (rpcName.equals("SubscribeVehicleData") && Arrays.asList("setElectronicParkBrakeStatus", "setCloudAppVehicleID").contains(setterMethodName)) {
                                     paramType = "boolean";
                                 } else if (rpcName.equals("CancelInteraction") && setterMethodName.equals("setFunctionID")) {
                                     setterMethodName = "setInteractionFunctionID";
                                 } else if (rpcName.equals("NavigationCapability") && setterMethodName.equals("setGetWayPointsEnabled")) {
                                     setterMethodName = "setWayPointsEnabled";
-                                } else if (rpcName.equals("UnsubscribeWayPointsResponse") && setterMethodName.equals("setGetWayPointsEnabled")) {
-                                    setterMethodName = "setWayPointsEnabled";
-                                } else if (rpcName.equals("HMICapabilities") && setterMethodName.equals("setNavigation")) {
-                                    setterMethodName = "setNavigationAvilable";
-                                } else if (rpcName.equals("HMICapabilities") && setterMethodName.equals("setPhoneCall")) {
-                                    setterMethodName = "setPhoneCallAvilable";
-                                } else if (rpcName.equals("HMICapabilities") && setterMethodName.equals("setDisplays")) {
-                                    setterMethodName = "setDisplaysCapabilityAvailable";
-                                } else if (rpcName.equals("HMICapabilities")) {
-                                    setterMethodName += "Available";
-                                } else if (rpcName.equals("VideoStreamingCapability") && setterMethodName.equals("setHapticSpatialDataSupported")) {
-                                    setterMethodName = "setIsHapticSpatialDataSupported";
+                                } else if (setterMethodName.equals("setFuelLevel_State")) {
+                                    setterMethodName = "setFuelLevelState";
+                                } else if (rpcName.equals("SystemCapability") && !setterMethodName.equals("setSystemCapabilityType")) {
+                                    setterMethodName = "setCapabilityForType";
+                                    paramType = "SystemCapabilityType";
                                 } else if (rpcName.equals("OnDriverDistraction") && setterMethodName.equals("setLockScreenDismissalEnabled")) {
                                     setterMethodName = "setLockscreenDismissibility";
                                     paramType = "boolean";
@@ -224,12 +225,8 @@ public class RPCGenericTests {
                                     setterMethodName = "setLockscreenWarningMessage";
                                 } else if (rpcName.equals("PublishAppServiceResponse") && setterMethodName.equals("setAppServiceRecord")) {
                                     setterMethodName = "setServiceRecord";
-                                } else if (setterMethodName.equals("setFuelLevel_State")) {
-                                    setterMethodName = "setFuelLevelState";
                                 } else if (rpcName.equals("LightCapabilities") && setterMethodName.equals("setRgbColorSpaceAvailable")) {
                                     setterMethodName = "setRGBColorSpaceAvailable";
-                                } else if (rpcName.equals("CloudAppProperties") && setterMethodName.equals("setEnabled")) {
-                                    paramType = "boolean";
                                 } else if (rpcName.equals("DateTime") && setterMethodName.equals("setMillisecond")) {
                                     setterMethodName = "setMilliSecond";
                                 } else if (rpcName.equals("DateTime") && setterMethodName.equals("setTz_hour")) {
@@ -243,10 +240,6 @@ public class RPCGenericTests {
                                     setterMethodName = "setHandledRpcs";
                                 } else if (rpcName.equals("LocationDetails") && setterMethodName.equals("setHandledRPCs")) {
                                     setterMethodName = "setHandledRpcs";
-                                } else if (rpcName.equals("SendLocation") && setterMethodName.equals("setLongitudeDegrees")) {
-                                    paramType = "Double";
-                                } else if (rpcName.equals("SendLocation") && setterMethodName.equals("setLatitudeDegrees")) {
-                                    paramType = "Double";
                                 } else if (rpcName.equals("Grid") && setterMethodName.equals("setColspan")) {
                                     setterMethodName = "setColSpan";
                                 } else if (rpcName.equals("Grid") && setterMethodName.equals("setRowspan")) {
@@ -255,10 +248,6 @@ public class RPCGenericTests {
                                     setterMethodName = "setLevelSpan";
                                 } else if (rpcName.equals("HeadLampStatus") && setterMethodName.equals("setAmbientLightSensorStatus")) {
                                     setterMethodName = "setAmbientLightStatus";
-                                } else if (rpcName.equals("GetVehicleData") && setterMethodName.equals("setCloudAppVehicleID")) {
-                                    paramType = "boolean";
-                                } else if (rpcName.equals("GetVehicleDataResponse") && Arrays.asList("setInstantFuelConsumption", "setFuelLevel", "setSpeed", "setExternalTemperature", "setEngineTorque", "setAccPedalPosition", "setSteeringWheelAngle").contains(setterMethodName)) {
-                                    paramType = "Double";
                                 } else if (rpcName.equals("RdsData") && setterMethodName.equals("setPS")) {
                                     setterMethodName = "setProgramService";
                                 } else if (rpcName.equals("RdsData") && setterMethodName.equals("setCT")) {
@@ -283,53 +272,24 @@ public class RPCGenericTests {
                                     setterMethodName = "setCRC";
                                 } else if (rpcName.equals("RegisterAppInterfaceResponse") && setterMethodName.equals("setPcmStreamCapabilities")) {
                                     setterMethodName = "setPcmStreamingCapabilities";
-                                } else if (rpcName.equals("SubscribeVehicleData") && setterMethodName.equals("setElectronicParkBrakeStatus")) {
-                                    paramType = "boolean";
-                                } else if (rpcName.equals("SubscribeVehicleData") && setterMethodName.equals("setCloudAppVehicleID")) {
-                                    paramType = "boolean";
                                 } else if (rpcName.equals("ModuleInfo") && setterMethodName.equals("setLocation")) {
                                     setterMethodName = "setModuleLocation";
                                 } else if (rpcName.equals("ModuleInfo") && setterMethodName.equals("setServiceArea")) {
                                     setterMethodName = "setModuleServiceArea";
                                 } else if (rpcName.equals("ModuleInfo") && setterMethodName.equals("setAllowMultipleAccess")) {
                                     setterMethodName = "setMultipleAccessAllowance";
-                                } else if (rpcName.equals("OnVehicleData") && setterMethodName.equals("setSpeed")) {
-                                    paramType = "Double";
-                                } else if (rpcName.equals("OnVehicleData") && setterMethodName.equals("setFuelLevel")) {
-                                    paramType = "Double";
-                                } else if (rpcName.equals("OnVehicleData") && setterMethodName.equals("setInstantFuelConsumption")) {
-                                    paramType = "Double";
-                                } else if (rpcName.equals("OnVehicleData") && setterMethodName.equals("setExternalTemperature")) {
-                                    paramType = "Double";
-                                } else if (rpcName.equals("OnVehicleData") && setterMethodName.equals("setEngineTorque")) {
-                                    paramType = "Double";
-                                } else if (rpcName.equals("OnVehicleData") && setterMethodName.equals("setAccPedalPosition")) {
-                                    paramType = "Double";
-                                } else if (rpcName.equals("OnVehicleData") && setterMethodName.equals("setSteeringWheelAngle")) {
-                                    paramType = "Double";
                                 } else if (rpcName.equals("GetInteriorVehicleDataConsentResponse") && setterMethodName.equals("setAllowed")) {
                                     setterMethodName = "setAllowances";
                                 } else if (rpcName.equals("SeatLocationCapability") && setterMethodName.equals("setColumns")) {
                                     setterMethodName = "setCols";
-                                } else if (rpcName.equals("ShowConstantTbt") && setterMethodName.equals("setDistanceToManeuver")) {
-                                    paramType = "Double";
-                                } else if (rpcName.equals("ShowConstantTbt") && setterMethodName.equals("setDistanceToManeuverScale")) {
-                                    paramType = "Double";
                                 } else if (rpcName.equals("SingleTireStatus") && setterMethodName.equals("setTpms")) {
                                     setterMethodName = "setTPMS";
                                 } else if (rpcName.equals("VehicleDataResult") && setterMethodName.equals("setOemCustomDataType")) {
                                     setterMethodName = "setOEMCustomVehicleDataType";
-                                }  else if (rpcName.equals("SystemCapability") && !setterMethodName.equals("setSystemCapabilityType")) {
-                                    setterMethodName = "setCapabilityForType";
-                                    paramType = "SystemCapabilityType";
-                                } else if (rpcName.equals("UnsubscribeWayPointsResponse") && paramName.equals("wayPoints")) {
-                                    skipParam = true;
-                                } else if (rpcName.equals("UnsubscribeVehicleDataResponse") && paramName.equals("clusterModes")) {
-                                    skipParam = true;
-                                } else if (rpcName.equals("ClimateControlCapabilities") && paramName.equals("currentTemperatureAvailable")) {
-                                    skipParam = true;
-                                } else if (rpcName.equals("SubscribeVehicleDataResponse") && paramName.equals("clusterModes")) {
-                                    skipParam = true;
+                                } else if (rpcName.equals("HMICapabilities") && setterMethodName.equals("setDisplays")) {
+                                    setterMethodName = "setDisplaysCapabilityAvailable";
+                                } else if (rpcName.equals("HMICapabilities")) {
+                                    setterMethodName += "Available";
                                 }
 
                                 // -------------------------------------------------------------------------------------------------------------
@@ -350,8 +310,7 @@ public class RPCGenericTests {
                                         .setSkip(skipParam)
                                         .setSetterName(setterMethodName)
                                         .setGetterName1(getterMethodName1)
-                                        .setGetterName2(getterMethodName2)
-                                        ;
+                                        .setGetterName2(getterMethodName2);
 
                                 rpcParamsMap.get(rpcName).add(param);
                             }
@@ -393,16 +352,16 @@ public class RPCGenericTests {
             for (Parameter param : rpcMandatoryParamsMapFromXml.get(rpcName)) {
                 String type = param.type;
                 // If the param is a list of objects, the type should be like "List<Object>"
-                if (param.isArray){
+                if (param.isArray) {
                     type = String.format("List<%s>", type);
                 }
                 mandatoryParamsListFromXML.add(type);
             }
             List<String> mandatoryParamsListFromCode = new ArrayList<>();
             boolean rpcHasValidConstructor = false;
-            for (Constructor constructor : aClass.getConstructors()){
+            for (Constructor constructor : aClass.getConstructors()) {
                 mandatoryParamsListFromCode.clear();
-                for (Type paramType : constructor.getGenericParameterTypes()){
+                for (Type paramType : constructor.getGenericParameterTypes()) {
                     String paramFullType = paramType.toString();
                     String paramSimpleType;
 
@@ -411,20 +370,19 @@ public class RPCGenericTests {
                         paramSimpleType = String.format("List<%s>", paramFullType.substring(paramFullType.lastIndexOf('.') + 1, paramFullType.length() - 1));
                     }
                     // If the param is a simple object for example "java.lang.String", the type should be the last part "String"
-                    else if (!paramFullType.contains(">")){
+                    else if (!paramFullType.contains(">")) {
                         paramSimpleType = paramFullType.substring(paramFullType.lastIndexOf('.') + 1, paramFullType.length());
-                    }
-                    else {
+                    } else {
                         paramSimpleType = paramFullType;
                     }
                     mandatoryParamsListFromCode.add(paramSimpleType);
                 }
-                if (mandatoryParamsListFromCode.containsAll(mandatoryParamsListFromXML) && mandatoryParamsListFromXML.containsAll(mandatoryParamsListFromCode)){
+                if (mandatoryParamsListFromCode.containsAll(mandatoryParamsListFromXML) && mandatoryParamsListFromXML.containsAll(mandatoryParamsListFromCode)) {
                     rpcHasValidConstructor = true;
                     break;
                 }
             }
-            if (!rpcHasValidConstructor){
+            if (!rpcHasValidConstructor) {
                 rpcsWithInvalidConstructor.add(rpcName);
             }
         }
@@ -536,14 +494,14 @@ public class RPCGenericTests {
                 try {
                     // --------------------------------------------- Exceptional cases ---------------------------------------------
                     // This case is exceptional because the setter changes the input if it is not all digits
-                    if (rpcName.equals("DialNumber") && param.type.equals("String")){
+                    if (rpcName.equals("DialNumber") && param.type.equals("String")) {
                         value = "5558675309";
                     }
                     // -------------------------------------------------------------------------------------------------------------
 
                     if (value == null) {
                         valueString = "GENERAL_" + param.type.toUpperCase();
-                        if (param.isArray){
+                        if (param.isArray) {
                             valueString += "_LIST";
                         }
                         value = Class.forName(TEST_VALUES_CLASS).getDeclaredField(valueString).get(null);
@@ -564,7 +522,7 @@ public class RPCGenericTests {
             try {
                 Constructor constructor = aClass.getConstructor(mandatoryParamsTypes.toArray(new Class<?>[mandatoryParamsTypes.size()]));
                 instance = constructor.newInstance(mandatoryParamsValues.toArray(new Object[mandatoryParamsValues.size()]));
-            } catch (NoSuchMethodException | IllegalAccessException |  InstantiationException | InvocationTargetException e) {
+            } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
                 e.printStackTrace();
                 fail("Constructor for RPC " + rpcName + " cannot be invoked. Make sure that the constructor parameters order and types are identical to the RPC specs");
             }
@@ -608,7 +566,7 @@ public class RPCGenericTests {
                 aClass = Class.forName(RPC_PACKAGE_PREFIX + rpcName);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
-                errors.add("Class not found for rpc: "+ rpcName + ". \n");
+                errors.add("Class not found for rpc: " + rpcName + ". \n");
                 continue;
             }
 
@@ -637,20 +595,13 @@ public class RPCGenericTests {
                 // Confirm that the getter is correct
                 Method getterMethod = null;
                 try {
-                    // --------------------------------------------- Exceptional cases ---------------------------------------------
-                    if (parameter.getterName1.contains("Avilable")) {
-                        continue;
-                    } else if (parameter.getterName1.equals("getSeats")) {
-                        parameter.getterName1 = "getSeatLocations";
-                    }
-                    // -------------------------------------------------------------------------------------------------------------
                     getterMethod = getMethod(aClass, parameter, parameter.getterName1, true);
                 } catch (NoSuchMethodException e) {
                     try {
                         getterMethod = getMethod(aClass, parameter, parameter.getterName2, true);
                     } catch (NoSuchMethodException ex) {
                         ex.printStackTrace();
-                        String errMsg = String.format(rpcName + "." + parameter.getterName1 + "()" + "%s" + " cannot be found. Make sure that the method exists. \n", parameter.type.equalsIgnoreCase("boolean")? "/" + parameter.getterName2 + "()" : "");
+                        String errMsg = String.format(rpcName + "." + parameter.getterName1 + "()" + "%s" + " cannot be found. Make sure that the method exists. \n", parameter.type.equalsIgnoreCase("boolean") ? "/" + parameter.getterName2 + "()" : "");
                         errors.add(errMsg);
                     }
                 }

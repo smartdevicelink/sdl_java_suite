@@ -75,7 +75,8 @@ public class WindowStatus extends RPCStruct {
     /**
      * Constructs a new WindowStatus object
      */
-    public WindowStatus() { }
+    public WindowStatus() {
+    }
 
     /**
      * Constructs a new WindowStatus object indicated by the Hashtable parameter

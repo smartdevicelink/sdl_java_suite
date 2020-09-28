@@ -9,20 +9,20 @@ import android.util.Log;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.audio.AudioStreamManager.SampleType;
 import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
 import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
+import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
-import com.smartdevicelink.proxy.interfaces.ISdl;
-import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
+import com.smartdevicelink.session.SdlSession;
+import com.smartdevicelink.streaming.audio.IAudioStreamListener;
 
 import junit.framework.TestCase;
 
@@ -83,6 +83,7 @@ public class AudioStreamManagerTest extends TestCase {
 
         Answer<Void> audioServiceAnswer = new Answer<Void>() {
             ISdlServiceListener serviceListener = null;
+
             @Override
             public Void answer(InvocationOnMock invocation) {
                 Method method = invocation.getMethod();
@@ -228,6 +229,7 @@ public class AudioStreamManagerTest extends TestCase {
 
     private int testFullAudioManagerDecodeFlowCorrectCounter = 0;
     private int testFullAudioManagerDecodeFlowWrongCounter = 0;
+
     private void runFullAudioManagerDecodeFlowWithSquareSampleAudio(final int sampleRate, final @SampleType int sampleType, final AudioPassThruCapabilities audioCapabilities) {
         testFullAudioManagerDecodeFlowCorrectCounter = 0;
         testFullAudioManagerDecodeFlowWrongCounter = 0;
@@ -272,6 +274,7 @@ public class AudioStreamManagerTest extends TestCase {
 
         Answer<Void> audioServiceAnswer = new Answer<Void>() {
             ISdlServiceListener serviceListener = null;
+
             @Override
             public Void answer(InvocationOnMock invocation) {
                 Method method = invocation.getMethod();
@@ -310,7 +313,7 @@ public class AudioStreamManagerTest extends TestCase {
                 assertEquals(true, success);
 
                 // not more than 2.5 percent samples must be wrong
-                double relation = 100.0 * (double)testFullAudioManagerDecodeFlowWrongCounter / (double)testFullAudioManagerDecodeFlowCorrectCounter;
+                double relation = 100.0 * (double) testFullAudioManagerDecodeFlowWrongCounter / (double) testFullAudioManagerDecodeFlowCorrectCounter;
                 Log.v(TAG, "Validating number of correct samples (" + Math.round(relation) + "%)");
                 if (relation > 2.5) {
                     fail("Validating raw audio failed. " + Math.round(relation) + " % wrong samples detected. Correct: " + testFullAudioManagerDecodeFlowCorrectCounter + ", Wrong: " + testFullAudioManagerDecodeFlowWrongCounter);
@@ -411,11 +414,11 @@ public class AudioStreamManagerTest extends TestCase {
 
             // channel count, sample rate, sample type
             int key_channel_count = 0, key_sample_rate = 1, key_sample_type = 2, key_sample_type_result = 3;
-            int[][] tests = new int[][] {
-                    { 47, 42000, AudioFormat.ENCODING_PCM_8BIT, SampleType.UNSIGNED_8_BIT },
-                    { 2, 16000, AudioFormat.ENCODING_PCM_16BIT, SampleType.SIGNED_16_BIT },
-                    { 1, 22050, AudioFormat.ENCODING_PCM_FLOAT, SampleType.FLOAT },
-                    { 3, 48000, AudioFormat.ENCODING_INVALID, SampleType.SIGNED_16_BIT },
+            int[][] tests = new int[][]{
+                    {47, 42000, AudioFormat.ENCODING_PCM_8BIT, SampleType.UNSIGNED_8_BIT},
+                    {2, 16000, AudioFormat.ENCODING_PCM_16BIT, SampleType.SIGNED_16_BIT},
+                    {1, 22050, AudioFormat.ENCODING_PCM_FLOAT, SampleType.FLOAT},
+                    {3, 48000, AudioFormat.ENCODING_INVALID, SampleType.SIGNED_16_BIT},
             };
 
             for (int[] test : tests) {
@@ -502,6 +505,7 @@ public class AudioStreamManagerTest extends TestCase {
 
         Answer<Void> audioServiceAnswer = new Answer<Void>() {
             ISdlServiceListener serviceListener = null;
+
             @Override
             public Void answer(InvocationOnMock invocation) {
                 Method method = invocation.getMethod();
@@ -629,7 +633,7 @@ public class AudioStreamManagerTest extends TestCase {
             }
         });
 
-        verify(audioStreamListener, timeout(10000)).sendAudio(any(ByteBuffer.class), any(Long.class),  eq(completionListener));
+        verify(audioStreamListener, timeout(10000)).sendAudio(any(ByteBuffer.class), any(Long.class), eq(completionListener));
     }
 
     private Method getSampleAtTargetMethod() {
@@ -666,10 +670,10 @@ public class AudioStreamManagerTest extends TestCase {
         header[2] = 'F';
         header[3] = 'F';
         // Total data length (UInt32).
-        header[4] = (byte)((datalength) & 0xff);
-        header[5] = (byte)((datalength >> 8) & 0xff);
-        header[6] = (byte)((datalength >> 16) & 0xff);
-        header[7] = (byte)((datalength >> 24) & 0xff);
+        header[4] = (byte) ((datalength) & 0xff);
+        header[5] = (byte) ((datalength >> 8) & 0xff);
+        header[6] = (byte) ((datalength >> 16) & 0xff);
+        header[7] = (byte) ((datalength >> 24) & 0xff);
         // WAVE header.
         header[8] = 'W';
         header[9] = 'A';
@@ -686,42 +690,44 @@ public class AudioStreamManagerTest extends TestCase {
         header[18] = 0;
         header[19] = 0;
         // Format type (UInt16). Set 1 for PCM.
-        header[20] = (byte)((format) & 0xff);
-        header[21] = (byte)((format >> 8) & 0xff);
+        header[20] = (byte) ((format) & 0xff);
+        header[21] = (byte) ((format >> 8) & 0xff);
         // Channels
-        header[22] = (byte)((channels) & 0xff);
-        header[23] = (byte)((channels >> 8) & 0xff);
+        header[22] = (byte) ((channels) & 0xff);
+        header[23] = (byte) ((channels >> 8) & 0xff);
         // Sample rate (UInt32).
-        header[24] = (byte)((samplerate) & 0xff);
-        header[25] = (byte)((samplerate >> 8) & 0xff);
-        header[26] = (byte)((samplerate >> 16) & 0xff);
-        header[27] = (byte)((samplerate >> 24) & 0xff);
+        header[24] = (byte) ((samplerate) & 0xff);
+        header[25] = (byte) ((samplerate >> 8) & 0xff);
+        header[26] = (byte) ((samplerate >> 16) & 0xff);
+        header[27] = (byte) ((samplerate >> 24) & 0xff);
         // Byte rate (UInt32).
-        header[28] = (byte)((byterate) & 0xff);
-        header[29] = (byte)((byterate >> 8) & 0xff);
-        header[30] = (byte)((byterate >> 16) & 0xff);
-        header[31] = (byte)((byterate >> 24) & 0xff);
+        header[28] = (byte) ((byterate) & 0xff);
+        header[29] = (byte) ((byterate >> 8) & 0xff);
+        header[30] = (byte) ((byterate >> 16) & 0xff);
+        header[31] = (byte) ((byterate >> 24) & 0xff);
         // Block alignment (UInt16).
-        header[32] = (byte)((blockalign) & 0xff);
-        header[33] = (byte)((blockalign >> 8) & 0xff);
+        header[32] = (byte) ((blockalign) & 0xff);
+        header[33] = (byte) ((blockalign >> 8) & 0xff);
         // Bits per sample (UInt16).
-        header[34] = (byte)((bitspersample) & 0xff);
-        header[35] = (byte)((bitspersample >> 8) & 0xff);
+        header[34] = (byte) ((bitspersample) & 0xff);
+        header[35] = (byte) ((bitspersample >> 8) & 0xff);
         // Data header
         header[36] = 'd';
         header[37] = 'a';
         header[38] = 't';
         header[39] = 'a';
         // Total audio length (UInt32).
-        header[40] = (byte)((audiolength) & 0xff);
-        header[41] = (byte)((audiolength >> 8) & 0xff);
-        header[42] = (byte)((audiolength >> 16) & 0xff);
-        header[43] = (byte)((audiolength >> 24) & 0xff);
+        header[40] = (byte) ((audiolength) & 0xff);
+        header[41] = (byte) ((audiolength >> 8) & 0xff);
+        header[42] = (byte) ((audiolength >> 16) & 0xff);
+        header[43] = (byte) ((audiolength >> 24) & 0xff);
 
         stream.write(header, 0, header.length);
     }
 
-    /** Updates the data length and audio length of an existing RIFF/WAVE header in the file pointed by the RandomAccessFile object. */
+    /**
+     * Updates the data length and audio length of an existing RIFF/WAVE header in the file pointed by the RandomAccessFile object.
+     */
     private void updateWaveHeaderLength(RandomAccessFile stream, long audiolength) throws IOException {
         // the data header is 36 bytes large
         long datalength = 36 + audiolength;
@@ -729,16 +735,16 @@ public class AudioStreamManagerTest extends TestCase {
         // Seek from the beginning to data length
         stream.seek(4);
         // Overwrite total data length
-        stream.write((int)((datalength) & 0xff));
-        stream.write((int)((datalength >> 8) & 0xff));
-        stream.write((int)((datalength >> 16) & 0xff));
-        stream.write((int)((datalength >> 24) & 0xff));
+        stream.write((int) ((datalength) & 0xff));
+        stream.write((int) ((datalength >> 8) & 0xff));
+        stream.write((int) ((datalength >> 16) & 0xff));
+        stream.write((int) ((datalength >> 24) & 0xff));
         // Seek from the end of data length to audio length
         stream.seek(40);
         // overwrite total audio length
-        stream.write((int)((audiolength) & 0xff));
-        stream.write((int)((audiolength >> 8) & 0xff));
-        stream.write((int)((audiolength >> 16) & 0xff));
-        stream.write((int)((audiolength >> 24) & 0xff));
+        stream.write((int) ((audiolength) & 0xff));
+        stream.write((int) ((audiolength >> 8) & 0xff));
+        stream.write((int) ((audiolength >> 16) & 0xff));
+        stream.write((int) ((audiolength >> 24) & 0xff));
     }
 }

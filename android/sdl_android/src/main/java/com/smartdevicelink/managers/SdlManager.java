@@ -36,6 +36,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -90,7 +91,7 @@ public class SdlManager extends BaseSdlManager {
                     @Override
                     public void onTransportEvent(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail, boolean videoStreamTransportAvail) {
 
-                        //Pass to submanagers that need it
+                        //Pass to sub managers that need it
                         if (videoStreamManager != null) {
                             videoStreamManager.handleTransportUpdated(connectedTransports, audioStreamTransportAvail, videoStreamTransportAvail);
                         }

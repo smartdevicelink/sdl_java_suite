@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -36,7 +36,7 @@ import com.smartdevicelink.proxy.RPCStruct;
 import java.util.Hashtable;
 import java.util.List;
 
-public class LocationDetails extends RPCStruct{
+public class LocationDetails extends RPCStruct {
     public static final String KEY_COORDINATE = "coordinate";
     public static final String KEY_LOCATION_NAME = "locationName";
     public static final String KEY_ADDRESS_LINES = "addressLines";
@@ -52,11 +52,11 @@ public class LocationDetails extends RPCStruct{
         super(hash);
     }
 
-    @SuppressWarnings("unchecked")
     public Coordinate getCoordinate() {
         return (Coordinate) getObject(Coordinate.class, KEY_COORDINATE);
     }
-    public LocationDetails setCoordinate( Coordinate coordinate) {
+
+    public LocationDetails setCoordinate(Coordinate coordinate) {
         setValue(KEY_COORDINATE, coordinate);
         return this;
     }
@@ -65,7 +65,7 @@ public class LocationDetails extends RPCStruct{
         return getString(KEY_LOCATION_NAME);
     }
 
-    public LocationDetails setLocationName( String locationName) {
+    public LocationDetails setLocationName(String locationName) {
         setValue(KEY_LOCATION_NAME, locationName);
         return this;
     }
@@ -75,7 +75,7 @@ public class LocationDetails extends RPCStruct{
         return (List<String>) getObject(String.class, KEY_ADDRESS_LINES);
     }
 
-    public LocationDetails setAddressLines( List<String> addressLines) {
+    public LocationDetails setAddressLines(List<String> addressLines) {
         setValue(KEY_ADDRESS_LINES, addressLines);
         return this;
     }
@@ -84,7 +84,7 @@ public class LocationDetails extends RPCStruct{
         return getString(KEY_LOCATION_DESCRIPTION);
     }
 
-    public LocationDetails setLocationDescription( String locationDescription) {
+    public LocationDetails setLocationDescription(String locationDescription) {
         setValue(KEY_LOCATION_DESCRIPTION, locationDescription);
         return this;
     }
@@ -93,26 +93,25 @@ public class LocationDetails extends RPCStruct{
         return getString(KEY_PHONE_NUMBER);
     }
 
-    public LocationDetails setPhoneNumber( String phoneNumber) {
+    public LocationDetails setPhoneNumber(String phoneNumber) {
         setValue(KEY_PHONE_NUMBER, phoneNumber);
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     public Image getLocationImage() {
         return (Image) getObject(Image.class, KEY_LOCATION_IMAGE);
     }
 
-    public LocationDetails setLocationImage( Image locationImage) {
+    public LocationDetails setLocationImage(Image locationImage) {
         setValue(KEY_LOCATION_IMAGE, locationImage);
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     public OasisAddress getSearchAddress() {
         return (OasisAddress) getObject(OasisAddress.class, KEY_SEARCH_ADDRESS);
     }
-    public LocationDetails setSearchAddress( OasisAddress searchAddress) {
+
+    public LocationDetails setSearchAddress(OasisAddress searchAddress) {
         setValue(KEY_SEARCH_ADDRESS, searchAddress);
         return this;
     }

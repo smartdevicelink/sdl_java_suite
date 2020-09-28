@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -44,12 +44,12 @@ import java.util.Hashtable;
 /**
  * Sets the media clock/timer value and the update method (e.g.count-up,
  * count-down, etc.)
- * 
+ *
  * <p>Function Group: Base </p>
- * <p><b>HMILevel needs to be FULL, LIMITIED or BACKGROUND</b></p>
- * 
+ * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
+ *
  * <p><b>Parameter List</b></p>
- * 
+ *
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Param Name</th>
@@ -96,244 +96,257 @@ import java.util.Hashtable;
  * 		</tr>
  *
  *  </table>
- *  
- *<p><b>Response </b></p>
  *
- *<p><b> Non-default Result Codes: </b></p>
+ * <p><b>Response </b></p>
  *
- *	<p> SUCCESS </p>
- *	<p> INVALID_DATA</p>
- *	<p> OUT_OF_MEMORY</p>
+ * <p><b> Non-default Result Codes: </b></p>
+ *
+ * 	<p> SUCCESS </p>
+ * 	<p> INVALID_DATA</p>
+ * 	<p> OUT_OF_MEMORY</p>
  *  <p>   TOO_MANY_PENDING_REQUESTS</p>
  *   <p>  APPLICATION_NOT_REGISTERED</p>
  *    <p> GENERIC_ERROR</p>
  *   <p>   REJECTED </p>
  *    <p>  IGNORED </p>
- * 
+ *
  * @since SmartDeviceLink 1.0
  */
 public class SetMediaClockTimer extends RPCRequest {
-	public static final String KEY_START_TIME = "startTime";
-	public static final String KEY_END_TIME = "endTime";
-	public static final String KEY_UPDATE_MODE = "updateMode";
-	public static final String KEY_AUDIO_STREAMING_INDICATOR = "audioStreamingIndicator";
-	/**
-	 * Constructs a new SetMediaClockTimer object
-	 */
+    public static final String KEY_START_TIME = "startTime";
+    public static final String KEY_END_TIME = "endTime";
+    public static final String KEY_UPDATE_MODE = "updateMode";
+    public static final String KEY_AUDIO_STREAMING_INDICATOR = "audioStreamingIndicator";
+
+    /**
+     * Constructs a new SetMediaClockTimer object
+     */
     public SetMediaClockTimer() {
         super(FunctionID.SET_MEDIA_CLOCK_TIMER.toString());
     }
-	/**
-	 * Constructs a new SetMediaClockTimer object indicated by the Hashtable
-	 * parameter
-	 * <p></p>
-	 * 
-	 * @param hash The Hashtable to use
-	 */    
+
+    /**
+     * Constructs a new SetMediaClockTimer object indicated by the Hashtable
+     * parameter
+     * <p></p>
+     *
+     * @param hash The Hashtable to use
+     */
     public SetMediaClockTimer(Hashtable<String, Object> hash) {
         super(hash);
     }
-	/**
-	 * Constructs a new SetMediaClockTimer object
-	 * @param updateMode a Enumeration value (COUNTUP/COUNTDOWN/PAUSE/RESUME) <br>
-	 * <b>Notes: </b>
-	 *      <ul>
-	 *            <li>When updateMode is PAUSE, RESUME or CLEAR, the start time value
-	 *            is ignored</li>
-	 *            <li>When updateMode is RESUME, the timer resumes counting from
-	 *            the timer's value when it was paused</li>
-	 *      </ul>
-	 */
-	public SetMediaClockTimer(@NonNull UpdateMode updateMode) {
-		this();
-		setUpdateMode(updateMode);
-	}
-	private SetMediaClockTimer(@NonNull UpdateMode updateMode, @Nullable StartTime startTime, @Nullable StartTime endTime, @Nullable AudioStreamingIndicator audioStreamingIndicator){
-		this();
-		this.setUpdateMode(updateMode);
-		if (startTime != null) {
-			this.setStartTime(startTime);
-		}
-		if (endTime != null) {
-			this.setEndTime(endTime);
-		}
-		if (audioStreamingIndicator != null) {
-			this.setAudioStreamingIndicator(audioStreamingIndicator);
-		}
-	}
-	/**
-	 * Create a media clock timer that counts up, e.g from 0:00 to 4:18.
-	 *
-	 * @param startTimeInterval       The start time interval, e.g. (0) 0:00
-	 * @param endTimeInterval         The end time interval, e.g. (258) 4:18
-	 * @param audioStreamingIndicator playPauseIndicator An optional audio indicator to change the play/pause button
-	 * @return An object of SetMediaClockTimer
-	 */
-	public static SetMediaClockTimer countUpFromStartTimeInterval(@NonNull Integer startTimeInterval, @NonNull Integer endTimeInterval, @Nullable AudioStreamingIndicator audioStreamingIndicator) {
-		return new SetMediaClockTimer(UpdateMode.COUNTUP, new StartTime(startTimeInterval), new StartTime(endTimeInterval), audioStreamingIndicator);
-	}
-	/**
-	 * Create a media clock timer that counts up, e.g from 0:00 to 4:18.
-	 *
-	 * @param startTime               The start time interval, e.g. 0:00
-	 * @param endTime                 The end time interval, e.g. 4:18
-	 * @param audioStreamingIndicator An optional audio indicator to change the play/pause button
-	 * @return An object of SetMediaClockTimer
-	 */
-	public static SetMediaClockTimer countUpFromStartTime(@NonNull StartTime startTime, @NonNull StartTime endTime, @Nullable AudioStreamingIndicator audioStreamingIndicator) {
-		return new SetMediaClockTimer(UpdateMode.COUNTUP, startTime, endTime, audioStreamingIndicator);
-	}
-	/**
-	 * Create a media clock timer that counts down, e.g. from 4:18 to 0:00
-	 * This will fail if endTime is greater than startTime
-	 *
-	 * @param startTimeInterval       The start time interval, e.g. (258) 4:18
-	 * @param endTimeInterval         The end time interval, e.g. (0) 0:00
-	 * @param audioStreamingIndicator An optional audio indicator to change the play/pause button
-	 * @return An object of SetMediaClockTimer
-	 */
-	public static SetMediaClockTimer countDownFromStartTimeInterval(@NonNull Integer startTimeInterval, @NonNull Integer endTimeInterval, @Nullable AudioStreamingIndicator audioStreamingIndicator) {
-		return new SetMediaClockTimer(UpdateMode.COUNTDOWN, new StartTime(startTimeInterval), new StartTime(endTimeInterval), audioStreamingIndicator);
-	}
-	/**
-	 * Create a media clock timer that counts down, e.g. from 4:18 to 0:00
-	 * This will fail if endTime is greater than startTime
-	 *
-	 * @param startTime               The start time interval, e.g. 4:18
-	 * @param endTime                 The end time interval, e.g. 0:00
-	 * @param audioStreamingIndicator An optional audio indicator to change the play/pause button
-	 * @return An object of SetMediaClockTimer
-	 */
-	public static SetMediaClockTimer countDownFromStartTime(@NonNull StartTime startTime, @NonNull StartTime endTime, @Nullable AudioStreamingIndicator audioStreamingIndicator) {
-		return new SetMediaClockTimer(UpdateMode.COUNTDOWN, startTime, endTime, audioStreamingIndicator);
-	}
-	/**
-	 * Pause an existing (counting up / down) media clock timer
-	 *
-	 * @param audioStreamingIndicator An optional audio indicator to change the play/pause button
-	 * @return An object of SetMediaClockTimer
-	 */
-	public static SetMediaClockTimer pauseWithPlayPauseIndicator(@Nullable AudioStreamingIndicator audioStreamingIndicator) {
-		return new SetMediaClockTimer(UpdateMode.PAUSE, null, null, audioStreamingIndicator);
-	}
-	/**
-	 * Update a pause time (or pause and update the time) on a media clock timer
-	 *
-	 * @param startTimeInterval       The new start time interval
-	 * @param endTimeInterval         The new end time interval
-	 * @param audioStreamingIndicator An optional audio indicator to change the play/pause button
-	 * @return An object of SetMediaClockTimer
-	 */
-	public static SetMediaClockTimer updatePauseWithNewStartTimeInterval(@NonNull Integer startTimeInterval, @NonNull Integer endTimeInterval, @Nullable AudioStreamingIndicator audioStreamingIndicator) {
-		return new SetMediaClockTimer(UpdateMode.PAUSE, new StartTime(startTimeInterval), new StartTime(endTimeInterval), audioStreamingIndicator);
-	}
-	/**
-	 * Update a pause time (or pause and update the time) on a media clock timer
-	 *
-	 * @param startTime               The new start time
-	 * @param endTime                 The new end time
-	 * @param audioStreamingIndicator An optional audio indicator to change the play/pause button
-	 * @return An object of SetMediaClockTimer
-	 */
-	public static SetMediaClockTimer updatePauseWithNewStartTime(@NonNull StartTime startTime, @NonNull StartTime endTime, @Nullable AudioStreamingIndicator audioStreamingIndicator) {
-		return new SetMediaClockTimer(UpdateMode.PAUSE, startTime, endTime, audioStreamingIndicator);
-	}
-	/**
-	 * Resume a paused media clock timer. It resumes at the same time at which it was paused.
-	 *
-	 * @param audioStreamingIndicator An optional audio indicator to change the play/pause button
-	 * @return An object of SetMediaClockTimer
-	 */
-	public static SetMediaClockTimer resumeWithPlayPauseIndicator(@Nullable AudioStreamingIndicator audioStreamingIndicator) {
-		return new SetMediaClockTimer(UpdateMode.RESUME, null, null, audioStreamingIndicator);
-	}
-	/**
-	 * Remove a media clock timer from the screen
-	 *
-	 * @param audioStreamingIndicator An optional audio indicator to change the play/pause button
-	 * @return An object of SetMediaClockTimer
-	 */
-	public static SetMediaClockTimer clearWithPlayPauseIndicator(@Nullable AudioStreamingIndicator audioStreamingIndicator) {
-		return new SetMediaClockTimer(UpdateMode.CLEAR, null, null, audioStreamingIndicator);
-	}
-	/**
-	 * Gets the Start Time which media clock timer is set
-	 * 
-	 * @return StartTime -a StartTime object specifying hour, minute, second
-	 *         values
-	 */    
-    @SuppressWarnings("unchecked")
-    public StartTime getStartTime() {
-		return (StartTime) getObject(StartTime.class, KEY_START_TIME);
+
+    /**
+     * Constructs a new SetMediaClockTimer object
+     *
+     * @param updateMode a Enumeration value (COUNTUP/COUNTDOWN/PAUSE/RESUME) <br>
+     *                   <b>Notes: </b>
+     *                   <ul>
+     *                         <li>When updateMode is PAUSE, RESUME or CLEAR, the start time value
+     *                         is ignored</li>
+     *                         <li>When updateMode is RESUME, the timer resumes counting from
+     *                         the timer's value when it was paused</li>
+     *                   </ul>
+     */
+    public SetMediaClockTimer(@NonNull UpdateMode updateMode) {
+        this();
+        setUpdateMode(updateMode);
     }
-	/**
-	 * Sets a Start Time with specifying hour, minute, second values
-	 *
-	 * @param startTime
-	 *            a startTime object with specifying hour, minute, second values
-	 *            <p></p>
-	 *            <b>Notes: </b>
-	 *            <ul>
-	 *            <li>If "updateMode" is COUNTUP or COUNTDOWN, this parameter
-	 *            must be provided</li>
-	 *            <li>Will be ignored for PAUSE/RESUME and CLEAR</li>
-	 *            </ul>
-	 */
-    public SetMediaClockTimer setStartTime( StartTime startTime) {
+
+    private SetMediaClockTimer(@NonNull UpdateMode updateMode, @Nullable StartTime startTime, @Nullable StartTime endTime, @Nullable AudioStreamingIndicator audioStreamingIndicator) {
+        this();
+        this.setUpdateMode(updateMode);
+        if (startTime != null) {
+            this.setStartTime(startTime);
+        }
+        if (endTime != null) {
+            this.setEndTime(endTime);
+        }
+        if (audioStreamingIndicator != null) {
+            this.setAudioStreamingIndicator(audioStreamingIndicator);
+        }
+    }
+
+    /**
+     * Create a media clock timer that counts up, e.g from 0:00 to 4:18.
+     *
+     * @param startTimeInterval       The start time interval, e.g. (0) 0:00
+     * @param endTimeInterval         The end time interval, e.g. (258) 4:18
+     * @param audioStreamingIndicator playPauseIndicator An optional audio indicator to change the play/pause button
+     * @return An object of SetMediaClockTimer
+     */
+    public static SetMediaClockTimer countUpFromStartTimeInterval(@NonNull Integer startTimeInterval, @NonNull Integer endTimeInterval, @Nullable AudioStreamingIndicator audioStreamingIndicator) {
+        return new SetMediaClockTimer(UpdateMode.COUNTUP, new StartTime(startTimeInterval), new StartTime(endTimeInterval), audioStreamingIndicator);
+    }
+
+    /**
+     * Create a media clock timer that counts up, e.g from 0:00 to 4:18.
+     *
+     * @param startTime               The start time interval, e.g. 0:00
+     * @param endTime                 The end time interval, e.g. 4:18
+     * @param audioStreamingIndicator An optional audio indicator to change the play/pause button
+     * @return An object of SetMediaClockTimer
+     */
+    public static SetMediaClockTimer countUpFromStartTime(@NonNull StartTime startTime, @NonNull StartTime endTime, @Nullable AudioStreamingIndicator audioStreamingIndicator) {
+        return new SetMediaClockTimer(UpdateMode.COUNTUP, startTime, endTime, audioStreamingIndicator);
+    }
+
+    /**
+     * Create a media clock timer that counts down, e.g. from 4:18 to 0:00
+     * This will fail if endTime is greater than startTime
+     *
+     * @param startTimeInterval       The start time interval, e.g. (258) 4:18
+     * @param endTimeInterval         The end time interval, e.g. (0) 0:00
+     * @param audioStreamingIndicator An optional audio indicator to change the play/pause button
+     * @return An object of SetMediaClockTimer
+     */
+    public static SetMediaClockTimer countDownFromStartTimeInterval(@NonNull Integer startTimeInterval, @NonNull Integer endTimeInterval, @Nullable AudioStreamingIndicator audioStreamingIndicator) {
+        return new SetMediaClockTimer(UpdateMode.COUNTDOWN, new StartTime(startTimeInterval), new StartTime(endTimeInterval), audioStreamingIndicator);
+    }
+
+    /**
+     * Create a media clock timer that counts down, e.g. from 4:18 to 0:00
+     * This will fail if endTime is greater than startTime
+     *
+     * @param startTime               The start time interval, e.g. 4:18
+     * @param endTime                 The end time interval, e.g. 0:00
+     * @param audioStreamingIndicator An optional audio indicator to change the play/pause button
+     * @return An object of SetMediaClockTimer
+     */
+    public static SetMediaClockTimer countDownFromStartTime(@NonNull StartTime startTime, @NonNull StartTime endTime, @Nullable AudioStreamingIndicator audioStreamingIndicator) {
+        return new SetMediaClockTimer(UpdateMode.COUNTDOWN, startTime, endTime, audioStreamingIndicator);
+    }
+
+    /**
+     * Pause an existing (counting up / down) media clock timer
+     *
+     * @param audioStreamingIndicator An optional audio indicator to change the play/pause button
+     * @return An object of SetMediaClockTimer
+     */
+    public static SetMediaClockTimer pauseWithPlayPauseIndicator(@Nullable AudioStreamingIndicator audioStreamingIndicator) {
+        return new SetMediaClockTimer(UpdateMode.PAUSE, null, null, audioStreamingIndicator);
+    }
+
+    /**
+     * Update a pause time (or pause and update the time) on a media clock timer
+     *
+     * @param startTimeInterval       The new start time interval
+     * @param endTimeInterval         The new end time interval
+     * @param audioStreamingIndicator An optional audio indicator to change the play/pause button
+     * @return An object of SetMediaClockTimer
+     */
+    public static SetMediaClockTimer updatePauseWithNewStartTimeInterval(@NonNull Integer startTimeInterval, @NonNull Integer endTimeInterval, @Nullable AudioStreamingIndicator audioStreamingIndicator) {
+        return new SetMediaClockTimer(UpdateMode.PAUSE, new StartTime(startTimeInterval), new StartTime(endTimeInterval), audioStreamingIndicator);
+    }
+
+    /**
+     * Update a pause time (or pause and update the time) on a media clock timer
+     *
+     * @param startTime               The new start time
+     * @param endTime                 The new end time
+     * @param audioStreamingIndicator An optional audio indicator to change the play/pause button
+     * @return An object of SetMediaClockTimer
+     */
+    public static SetMediaClockTimer updatePauseWithNewStartTime(@NonNull StartTime startTime, @NonNull StartTime endTime, @Nullable AudioStreamingIndicator audioStreamingIndicator) {
+        return new SetMediaClockTimer(UpdateMode.PAUSE, startTime, endTime, audioStreamingIndicator);
+    }
+
+    /**
+     * Resume a paused media clock timer. It resumes at the same time at which it was paused.
+     *
+     * @param audioStreamingIndicator An optional audio indicator to change the play/pause button
+     * @return An object of SetMediaClockTimer
+     */
+    public static SetMediaClockTimer resumeWithPlayPauseIndicator(@Nullable AudioStreamingIndicator audioStreamingIndicator) {
+        return new SetMediaClockTimer(UpdateMode.RESUME, null, null, audioStreamingIndicator);
+    }
+
+    /**
+     * Remove a media clock timer from the screen
+     *
+     * @param audioStreamingIndicator An optional audio indicator to change the play/pause button
+     * @return An object of SetMediaClockTimer
+     */
+    public static SetMediaClockTimer clearWithPlayPauseIndicator(@Nullable AudioStreamingIndicator audioStreamingIndicator) {
+        return new SetMediaClockTimer(UpdateMode.CLEAR, null, null, audioStreamingIndicator);
+    }
+
+    /**
+     * Gets the Start Time which media clock timer is set
+     *
+     * @return StartTime -a StartTime object specifying hour, minute, second
+     * values
+     */
+    public StartTime getStartTime() {
+        return (StartTime) getObject(StartTime.class, KEY_START_TIME);
+    }
+
+    /**
+     * Sets a Start Time with specifying hour, minute, second values
+     *
+     * @param startTime a startTime object with specifying hour, minute, second values
+     *                  <p></p>
+     *                  <b>Notes: </b>
+     *                  <ul>
+     *                  <li>If "updateMode" is COUNTUP or COUNTDOWN, this parameter
+     *                  must be provided</li>
+     *                  <li>Will be ignored for PAUSE/RESUME and CLEAR</li>
+     *                  </ul>
+     */
+    public SetMediaClockTimer setStartTime(StartTime startTime) {
         setParameters(KEY_START_TIME, startTime);
         return this;
     }
-    
-    @SuppressWarnings("unchecked")
+
     public StartTime getEndTime() {
-		return (StartTime) getObject(StartTime.class, KEY_END_TIME);
+        return (StartTime) getObject(StartTime.class, KEY_END_TIME);
     }
-    
-    public SetMediaClockTimer setEndTime( StartTime endTime) {
+
+    public SetMediaClockTimer setEndTime(StartTime endTime) {
         setParameters(KEY_END_TIME, endTime);
         return this;
     }
-    
-	/**
-	 * Gets the media clock/timer update mode (COUNTUP/COUNTDOWN/PAUSE/RESUME)
-	 * 
-	 * @return UpdateMode -a Enumeration value (COUNTUP/COUNTDOWN/PAUSE/RESUME)
-	 */    
+
+    /**
+     * Gets the media clock/timer update mode (COUNTUP/COUNTDOWN/PAUSE/RESUME)
+     *
+     * @return UpdateMode -a Enumeration value (COUNTUP/COUNTDOWN/PAUSE/RESUME)
+     */
     public UpdateMode getUpdateMode() {
-		return (UpdateMode) getObject(UpdateMode.class, KEY_UPDATE_MODE);
+        return (UpdateMode) getObject(UpdateMode.class, KEY_UPDATE_MODE);
     }
-	/**
-	 * Sets the media clock/timer update mode (COUNTUP/COUNTDOWN/PAUSE/RESUME)
-	 *
-	 * @param updateMode
-	 *            a Enumeration value (COUNTUP/COUNTDOWN/PAUSE/RESUME)
-	 *            <p></p>
-	 *            <b>Notes: </b>
-	 *            <ul>
-	 *            <li>When updateMode is PAUSE, RESUME or CLEAR, the start time value
-	 *            is ignored</li>
-	 *            <li>When updateMode is RESUME, the timer resumes counting from
-	 *            the timer's value when it was paused</li>
-	 *            </ul>
-	 */
+
+    /**
+     * Sets the media clock/timer update mode (COUNTUP/COUNTDOWN/PAUSE/RESUME)
+     *
+     * @param updateMode a Enumeration value (COUNTUP/COUNTDOWN/PAUSE/RESUME)
+     *                   <p></p>
+     *                   <b>Notes: </b>
+     *                   <ul>
+     *                   <li>When updateMode is PAUSE, RESUME or CLEAR, the start time value
+     *                   is ignored</li>
+     *                   <li>When updateMode is RESUME, the timer resumes counting from
+     *                   the timer's value when it was paused</li>
+     *                   </ul>
+     */
     public SetMediaClockTimer setUpdateMode(@NonNull UpdateMode updateMode) {
         setParameters(KEY_UPDATE_MODE, updateMode);
         return this;
     }
 
-	/**
-	 * Gets the playback status of a media app
-	 *
-	 * @return AudioStreamingIndicator - a Enumeration value
-	 */
-	public AudioStreamingIndicator getAudioStreamingIndicator() {
-		return (AudioStreamingIndicator) getObject(AudioStreamingIndicator.class, KEY_AUDIO_STREAMING_INDICATOR);
-	}
+    /**
+     * Gets the playback status of a media app
+     *
+     * @return AudioStreamingIndicator - a Enumeration value
+     */
+    public AudioStreamingIndicator getAudioStreamingIndicator() {
+        return (AudioStreamingIndicator) getObject(AudioStreamingIndicator.class, KEY_AUDIO_STREAMING_INDICATOR);
+    }
 
-	/**
-	 * Sets the playback status of a media app
-	 */
-	public SetMediaClockTimer setAudioStreamingIndicator( AudioStreamingIndicator audioStreamingIndicator) {
+    /**
+     * Sets the playback status of a media app
+     */
+    public SetMediaClockTimer setAudioStreamingIndicator(AudioStreamingIndicator audioStreamingIndicator) {
         setParameters(KEY_AUDIO_STREAMING_INDICATOR, audioStreamingIndicator);
         return this;
     }

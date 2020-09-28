@@ -17,13 +17,13 @@ import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.fail;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.OnAppInterfaceUnregistered}
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.proxy.rpc.OnAppInterfaceUnregistered}
  */
-public class OnAppInterfaceUnregisteredTests extends BaseRpcTests{
+public class OnAppInterfaceUnregisteredTests extends BaseRpcTests {
 
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         OnAppInterfaceUnregistered msg = new OnAppInterfaceUnregistered();
 
         msg.setReason(TestValues.GENERAL_APPINTERFACEUNREGISTEREDREASON);
@@ -32,39 +32,39 @@ public class OnAppInterfaceUnregisteredTests extends BaseRpcTests{
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_NOTIFICATION;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.ON_APP_INTERFACE_UNREGISTERED.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
+        try {
             result.put(OnAppInterfaceUnregistered.KEY_REASON, TestValues.GENERAL_APPINTERFACEUNREGISTEREDREASON);
-        } catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
 
         return result;
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
+     * Tests the expected values of the RPC message.
+     */
     @Test
-    public void testRpcValues () {       	
-    	// Test Values
-        AppInterfaceUnregisteredReason reason = ( (OnAppInterfaceUnregistered) msg ).getReason();
-        
+    public void testRpcValues() {
+        // Test Values
+        AppInterfaceUnregisteredReason reason = ((OnAppInterfaceUnregistered) msg).getReason();
+
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_APPINTERFACEUNREGISTEREDREASON, reason);
-    
+
         // Invalid/Null tests
         OnAppInterfaceUnregistered msg = new OnAppInterfaceUnregistered();
         assertNotNull(TestValues.NOT_NULL, msg);

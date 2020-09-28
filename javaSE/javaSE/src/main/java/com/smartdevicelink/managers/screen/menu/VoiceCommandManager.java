@@ -33,21 +33,22 @@
 package com.smartdevicelink.managers.screen.menu;
 
 import androidx.annotation.RestrictTo;
-import com.smartdevicelink.proxy.interfaces.ISdl;
+
+import com.smartdevicelink.managers.ISdl;
 
 /**
  * <strong>VoiceCommandManager</strong> <br>
- *
+ * <p>
  * Note: This class must be accessed through the ScreenManager via the SdlManager. Do not instantiate it by itself. <br>
- *
+ * <p>
  * The VoiceCommandManager takes a List of VoiceCommand objects and sets them on the Head unit for you.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public class VoiceCommandManager extends BaseVoiceCommandManager {
 
-	public VoiceCommandManager(ISdl internalInterface) {
-		// setup
-		super(internalInterface);
-	}
+    public VoiceCommandManager(ISdl internalInterface) {
+        // setup
+        super(internalInterface);
+    }
 
 }

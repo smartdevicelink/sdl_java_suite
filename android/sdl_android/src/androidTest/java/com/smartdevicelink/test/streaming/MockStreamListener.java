@@ -8,6 +8,10 @@ import com.smartdevicelink.streaming.IStreamListener;
  * {@link com.smartdevicelink.streaming.AbstractPacketizer}
  */
 public class MockStreamListener implements IStreamListener {
-	public MockStreamListener () { }
-	@Override public void sendStreamPacket(ProtocolMessage pm) { }
+    public MockStreamListener() {
+    }
+
+    @Override
+    public void sendStreamPacket(ProtocolMessage pm) {
+    }
 }

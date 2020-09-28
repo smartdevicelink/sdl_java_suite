@@ -16,15 +16,15 @@ import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.fail;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.OnHashChange}
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.proxy.rpc.OnHashChange}
  */
-public class OnHashChangeTests extends BaseRpcTests{
+public class OnHashChangeTests extends BaseRpcTests {
 
     private static final String HASH_ID = "agh4lg2hb1g9gq3";
 
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         OnHashChange msg = new OnHashChange();
 
         msg.setHashID(HASH_ID);
@@ -33,39 +33,39 @@ public class OnHashChangeTests extends BaseRpcTests{
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_NOTIFICATION;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.ON_HASH_CHANGE.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
+        try {
             result.put(OnHashChange.KEY_HASH_ID, HASH_ID);
-        }catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
 
         return result;
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
+     * Tests the expected values of the RPC message.
+     */
     @Test
-    public void testRpcValues () {       	
-    	// Test Values
-        String hashId = ( (OnHashChange) msg ).getHashID();
-        
+    public void testRpcValues() {
+        // Test Values
+        String hashId = ((OnHashChange) msg).getHashID();
+
         // Valid Tests
         assertEquals(TestValues.MATCH, HASH_ID, hashId);
-   
+
         // Invalid/Null Tests
         OnHashChange msg = new OnHashChange();
         assertNotNull(TestValues.NOT_NULL, msg);

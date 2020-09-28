@@ -37,6 +37,7 @@ import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.SSLWebSocketFactoryGenerator;
 import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.DebugTool;
+
 import org.java_websocket.WebSocket;
 import org.java_websocket.WebSocketServerFactory;
 import org.java_websocket.handshake.ClientHandshake;
@@ -44,40 +45,40 @@ import org.java_websocket.handshake.ClientHandshake;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
-public class WebSocketServer extends org.java_websocket.server.WebSocketServer implements TransportInterface{
+public class WebSocketServer extends org.java_websocket.server.WebSocketServer implements TransportInterface {
     private static final String TAG = "WebSocketServer";
-    TransportCallback callback;
-    WebSocketServerConfig config;
+    final TransportCallback callback;
+    final WebSocketServerConfig config;
     WebSocket webSocket;
     SdlPsm psm;
 
     final TransportRecord transportRecord;
 
-    public WebSocketServer(WebSocketServerConfig config, TransportCallback callback){
+    public WebSocketServer(WebSocketServerConfig config, TransportCallback callback) {
         super((new InetSocketAddress(config.port)));
 
         this.config = config;
         this.callback = callback;
-        transportRecord = new TransportRecord(TransportType.WEB_SOCKET_SERVER,"127.0.0.1:" + config.port); //If changed, change in transport manager as well
+        transportRecord = new TransportRecord(TransportType.WEB_SOCKET_SERVER, "127.0.0.1:" + config.port); //If changed, change in transport manager as well
         //This will set the connection lost timeout to not occur. So we might ping, but not pong
         this.setConnectionLostTimeout(config.connectionLostTimeout);
-        if(config.getSslConfig() != null){
+        if (config.getSslConfig() != null) {
             WebSocketServerFactory factory = SSLWebSocketFactoryGenerator.generateWebSocketServer(config.getSslConfig());
-            if(factory!=null){
+            if (factory != null) {
                 this.setWebSocketFactory(factory);
-            }else{
+            } else {
                 DebugTool.logError(TAG, "WebSocketServer: Unable to generate SSL Web Socket Server Factory");
             }
         }
 
     }
 
-    public TransportRecord getTransportRecord(){
+    public TransportRecord getTransportRecord() {
         return this.transportRecord;
     }
 
     @Override
-    public void stop(){
+    public void stop() {
         try {
             this.stop(500);
         } catch (InterruptedException e) {
@@ -86,9 +87,9 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
     }
 
     @Override
-    public void write(SdlPacket packet){
-        //DebugTool.logInfo(TAG, "Atttempt to write packet " + packet);
-        if(packet != null
+    public void write(SdlPacket packet) {
+        //DebugTool.logInfo(TAG, "Attempt to write packet " + packet);
+        if (packet != null
                 && this.webSocket != null
                 && this.webSocket.isOpen()) {
             this.webSocket.send(packet.constructPacket());
@@ -106,7 +107,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
         DebugTool.logInfo(TAG, "onOpen");
         this.webSocket = webSocket;
 
-        if(callback!=null){
+        if (callback != null) {
             callback.onConnectionEstablished();
         }
     }
@@ -114,15 +115,15 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
     @Override
     public void onClose(WebSocket webSocket, int i, String s, boolean b) {
         DebugTool.logInfo(TAG, "onClose");
-        try{
+        try {
             DebugTool.logInfo(TAG, "Closing id - " + i);
             DebugTool.logInfo(TAG, "Closing string - " + s);
             DebugTool.logInfo(TAG, "Closing from remote?  " + b);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        if(callback!=null) {
+        if (callback != null) {
             callback.onConnectionTerminated(s);
         }
     }
@@ -131,9 +132,10 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
     @Override
     public void onWebsocketCloseInitiated(WebSocket conn, int code, String reason) {
         super.onWebsocketCloseInitiated(conn, code, reason);
-        try{
+        try {
             DebugTool.logInfo(TAG, "Code - " + code + " Reason - " + reason);
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
     }
 
     @Override
@@ -147,7 +149,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
         //DebugTool.logInfo(TAG, "on Message - ByteBuffer");
         byte input;
 
-        if(message != null){
+        if (message != null) {
             synchronized (WebSocketServer.this) {
                 boolean stateProgress;
                 while (message.hasRemaining()) {
@@ -163,7 +165,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
                         synchronized (WebSocketServer.this) {
                             SdlPacket packet = psm.getFormedPacket();
                             if (callback != null && packet != null) {
-                               /// DebugTool.logInfo(TAG, "Read a packet: " + packet);
+                                /// DebugTool.logInfo(TAG, "Read a packet: " + packet);
                                 packet.setTransportRecord(transportRecord);
                                 callback.onPacketReceived(packet);
                             }
@@ -179,11 +181,10 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
     }
 
 
-
     @Override
     public void onError(WebSocket webSocket, Exception e) {
         DebugTool.logError(TAG, "bad", e);
-        if(callback!=null) {
+        if (callback != null) {
             callback.onError();
         }
     }

@@ -10,7 +10,5 @@
      {%- endif %}
      {%- if p.values is defined and p.values %}
      * {%- for k in p.values %}{{ ' {' if loop.first}}"{{k}}": {{p.values[k]}}{{ ', ' if not loop.last else  '}'}}{%- endfor %}
-     {%- endif %}
-     {%- if p.since is defined %}
-     * @since SmartDeviceLink {{p.since}}
-     {%- endif %}
+     {%- endif %}{% set see, deprecated, since, history, spacing, prefix = p.see, p.deprecated, p.since, p.history, '    ', ' * ' %}
+     {%- include "javadoc_version_info.java" %}

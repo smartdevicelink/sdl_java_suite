@@ -79,7 +79,7 @@ import java.util.List;
  *  <tr>
  *      <td>ttsChunks</td>
  *      <td>List<TTSChunk></td>
- *      <td>An array of text chunks of type TTSChunk. See TTSChunk. The array must have at least oneitem.</td>
+ *      <td>An array of text chunks of type TTSChunk. See TTSChunk. The array must have at least one item.</td>
  *      <td>N</td>
  *      <td>Min Value: 1; Max Value: 100</td>
  *      <td></td>
@@ -95,7 +95,7 @@ import java.util.List;
  *  <tr>
  *      <td>softButtons</td>
  *      <td>List<SoftButton></td>
- *      <td>App defined SoftButtons. If omitted on supported displays, the displayed alert shall nothave any SoftButtons.</td>
+ *      <td>App defined SoftButtons. If omitted on supported displays, the displayed alert shall not have any SoftButtons.</td>
  *      <td>N</td>
  *      <td>Min Value: 0; Max Value: 2</td>
  *      <td></td>
@@ -142,7 +142,7 @@ public class SubtleAlert extends RPCRequest {
      *
      * @param alertText1 The first line of the alert text field
      */
-    public SubtleAlert setAlertText1( String alertText1) {
+    public SubtleAlert setAlertText1(String alertText1) {
         setParameters(KEY_ALERT_TEXT_1, alertText1);
         return this;
     }
@@ -161,7 +161,7 @@ public class SubtleAlert extends RPCRequest {
      *
      * @param alertText2 The second line of the alert text field
      */
-    public SubtleAlert setAlertText2( String alertText2) {
+    public SubtleAlert setAlertText2(String alertText2) {
         setParameters(KEY_ALERT_TEXT_2, alertText2);
         return this;
     }
@@ -179,9 +179,9 @@ public class SubtleAlert extends RPCRequest {
      * Sets the alertIcon.
      *
      * @param alertIcon Image to be displayed for the corresponding alert. See Image. If omitted on supported
-     * displays, no (or the default if applicable) icon should be displayed.
+     *                  displays, no (or the default if applicable) icon should be displayed.
      */
-    public SubtleAlert setAlertIcon( Image alertIcon) {
+    public SubtleAlert setAlertIcon(Image alertIcon) {
         setParameters(KEY_ALERT_ICON, alertIcon);
         return this;
     }
@@ -200,9 +200,9 @@ public class SubtleAlert extends RPCRequest {
      * Sets the ttsChunks.
      *
      * @param ttsChunks An array of text chunks of type TTSChunk. See TTSChunk. The array must have at least one
-     * item.
+     *                  item.
      */
-    public SubtleAlert setTtsChunks( List<TTSChunk> ttsChunks) {
+    public SubtleAlert setTtsChunks(List<TTSChunk> ttsChunks) {
         setParameters(KEY_TTS_CHUNKS, ttsChunks);
         return this;
     }
@@ -222,9 +222,9 @@ public class SubtleAlert extends RPCRequest {
      * Sets the duration.
      *
      * @param duration Timeout in milliseconds. Typical timeouts are 3-5 seconds. If omitted, timeout is set to
-     * 5s.
+     *                 5s.
      */
-    public SubtleAlert setDuration( Integer duration) {
+    public SubtleAlert setDuration(Integer duration) {
         setParameters(KEY_DURATION, duration);
         return this;
     }
@@ -243,9 +243,9 @@ public class SubtleAlert extends RPCRequest {
      * Sets the softButtons.
      *
      * @param softButtons App defined SoftButtons. If omitted on supported displays, the displayed alert shall not
-     * have any SoftButtons.
+     *                    have any SoftButtons.
      */
-    public SubtleAlert setSoftButtons( List<SoftButton> softButtons) {
+    public SubtleAlert setSoftButtons(List<SoftButton> softButtons) {
         setParameters(KEY_SOFT_BUTTONS, softButtons);
         return this;
     }
@@ -266,7 +266,7 @@ public class SubtleAlert extends RPCRequest {
      *
      * @param cancelID An ID for this specific alert to allow cancellation through the `CancelInteraction` RPC.
      */
-    public SubtleAlert setCancelID( Integer cancelID) {
+    public SubtleAlert setCancelID(Integer cancelID) {
         setParameters(KEY_CANCEL_ID, cancelID);
         return this;
     }

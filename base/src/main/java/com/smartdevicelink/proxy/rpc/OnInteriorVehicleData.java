@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -39,12 +39,12 @@ import com.smartdevicelink.proxy.RPCNotification;
 import java.util.Hashtable;
 
 public class OnInteriorVehicleData extends RPCNotification {
-	public static final String KEY_MODULE_DATA = "moduleData";
+    public static final String KEY_MODULE_DATA = "moduleData";
 
     /**
      * Constructs a new OnInteriorVehicleData object
      */
-	public OnInteriorVehicleData() {
+    public OnInteriorVehicleData() {
         super(FunctionID.ON_INTERIOR_VEHICLE_DATA.toString());
     }
 
@@ -52,9 +52,7 @@ public class OnInteriorVehicleData extends RPCNotification {
      * <p>Constructs a new OnInteriorVehicleData object indicated by the
      * Hashtable parameter</p>
      *
-     *
-     * @param hash
-     * The Hashtable to use
+     * @param hash The Hashtable to use
      */
     public OnInteriorVehicleData(Hashtable<String, Object> hash) {
         super(hash);
@@ -62,6 +60,7 @@ public class OnInteriorVehicleData extends RPCNotification {
 
     /**
      * Constructs a new OnInteriorVehicleData object
+     *
      * @param moduleData
      */
     public OnInteriorVehicleData(@NonNull ModuleData moduleData) {

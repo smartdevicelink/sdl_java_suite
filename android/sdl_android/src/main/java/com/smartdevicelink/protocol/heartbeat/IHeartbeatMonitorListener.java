@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -45,12 +45,12 @@ public interface IHeartbeatMonitorListener {
      *
      * @param monitor the caller
      */
-    public void sendHeartbeat(IHeartbeatMonitor monitor);
+    void sendHeartbeat(IHeartbeatMonitor monitor);
 
     /**
      * Notifies the listener that the heartbeat timed out.
      *
      * @param monitor the caller
      */
-    public void heartbeatTimedOut(IHeartbeatMonitor monitor);
+    void heartbeatTimedOut(IHeartbeatMonitor monitor);
 }

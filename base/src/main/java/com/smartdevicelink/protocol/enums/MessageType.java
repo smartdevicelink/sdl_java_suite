@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -33,18 +33,18 @@ package com.smartdevicelink.protocol.enums;
 
 
 public enum MessageType {
-//	START_SESSION,
+    //	START_SESSION,
 //	START_SESSION_ACK,
 //	START_SESSION_NACK,
 //	END_SESSION,
-	UNDEFINED,
-	BULK,
-	RPC;
-	
-	public static MessageType valueForString (String value) {
-        try{
+    UNDEFINED,
+    BULK,
+    RPC;
+
+    public static MessageType valueForString(String value) {
+        try {
             return valueOf(value);
-        } catch(Exception e) {
+        } catch (Exception e) {
             return null;
         }
     }

@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -35,60 +35,60 @@ package com.smartdevicelink.util;
  * This is a utility class to aid in handling values stored in the RPC classes.
  */
 public class SdlDataTypeConverter {
-	
-	/**
-	 * Converts values that are retrieved from an RPC parameters Hashtable as an
-	 * Object into the standard number value of the mobile API, Double.
-	 * 
-	 * @param originalValue The value retrieved from an RPC parameters Hashtable.
-	 * @return The Double representation of an integer or double value stored in
-	 * the Object, or null if the value could not be converted. 
-	 */
-	public static Double objectToDouble(Object originalValue) {
 
-		if (originalValue == null) {
-			return null;
-		}
+    /**
+     * Converts values that are retrieved from an RPC parameters Hashtable as an
+     * Object into the standard number value of the mobile API, Double.
+     *
+     * @param originalValue The value retrieved from an RPC parameters Hashtable.
+     * @return The Double representation of an integer or double value stored in
+     * the Object, or null if the value could not be converted.
+     */
+    public static Double objectToDouble(Object originalValue) {
 
-		Double result = null;
+        if (originalValue == null) {
+            return null;
+        }
 
-		// Uses reflection to determine if the object is a valid type.
-		if (originalValue instanceof Integer) {
-			result = ((Integer) originalValue).doubleValue();
-		} else if (originalValue instanceof Float){
-			result = ((Float) originalValue).doubleValue();
-		} else if (originalValue instanceof Double){
-			result = (Double) originalValue;
-		}
+        Double result = null;
 
-		return result;
-	}
+        // Uses reflection to determine if the object is a valid type.
+        if (originalValue instanceof Integer) {
+            result = ((Integer) originalValue).doubleValue();
+        } else if (originalValue instanceof Float) {
+            result = ((Float) originalValue).doubleValue();
+        } else if (originalValue instanceof Double) {
+            result = (Double) originalValue;
+        }
 
-	/**
-	 * Converts values that are retrieved from an RPC parameters Hashtable as an
-	 * Object into the standard number value of the mobile API, Float.
-	 *
-	 * @param originalValue The value retrieved from an RPC parameters Hashtable.
-	 * @return The Float representation of an integer or float value stored in
-	 * the Object, or null if the value could not be converted.
-	 */
-	public static Float objectToFloat(Object originalValue) {
+        return result;
+    }
 
-		if (originalValue == null) {
-			return null;
-		}
+    /**
+     * Converts values that are retrieved from an RPC parameters Hashtable as an
+     * Object into the standard number value of the mobile API, Float.
+     *
+     * @param originalValue The value retrieved from an RPC parameters Hashtable.
+     * @return The Float representation of an integer or float value stored in
+     * the Object, or null if the value could not be converted.
+     */
+    public static Float objectToFloat(Object originalValue) {
 
-		Float result = null;
+        if (originalValue == null) {
+            return null;
+        }
 
-		// Uses reflection to determine if the object is a valid type.
-		if (originalValue instanceof Integer) {
-			result = ((Integer) originalValue).floatValue();
-		} else if (originalValue instanceof Double){
-			result = ((Double) originalValue).floatValue();
-		} else if (originalValue instanceof Float){
-			result = (Float) originalValue;
-		}
+        Float result = null;
 
-		return result;
-	}
+        // Uses reflection to determine if the object is a valid type.
+        if (originalValue instanceof Integer) {
+            result = ((Integer) originalValue).floatValue();
+        } else if (originalValue instanceof Double) {
+            result = ((Double) originalValue).floatValue();
+        } else if (originalValue instanceof Float) {
+            result = (Float) originalValue;
+        }
+
+        return result;
+    }
 }

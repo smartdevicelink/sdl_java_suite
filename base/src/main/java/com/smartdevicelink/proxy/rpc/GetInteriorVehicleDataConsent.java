@@ -23,9 +23,9 @@ public class GetInteriorVehicleDataConsent extends RPCRequest {
 
     /**
      * @param moduleType Sets the Module Type for this class
-     * @param moduleIds Sets the Module Ids for this class
+     * @param moduleIds  Sets the Module Ids for this class
      */
-    public GetInteriorVehicleDataConsent(@NonNull ModuleType moduleType, @NonNull List<String> moduleIds){
+    public GetInteriorVehicleDataConsent(@NonNull ModuleType moduleType, @NonNull List<String> moduleIds) {
         this();
         setModuleType(moduleType);
         setModuleIds(moduleIds);
@@ -33,6 +33,7 @@ public class GetInteriorVehicleDataConsent extends RPCRequest {
 
     /**
      * Sets the Module Type for this class
+     *
      * @param type the Module Type to be set
      */
     public GetInteriorVehicleDataConsent setModuleType(@NonNull ModuleType type) {
@@ -42,6 +43,7 @@ public class GetInteriorVehicleDataConsent extends RPCRequest {
 
     /**
      * Gets the Module Type of this class
+     *
      * @return the Module Type of this class
      */
     public ModuleType getModuleType() {
@@ -50,6 +52,7 @@ public class GetInteriorVehicleDataConsent extends RPCRequest {
 
     /**
      * Sets the Module Ids for this class
+     *
      * @param ids the ids to be set
      */
     public GetInteriorVehicleDataConsent setModuleIds(@NonNull List<String> ids) {
@@ -59,6 +62,7 @@ public class GetInteriorVehicleDataConsent extends RPCRequest {
 
     /**
      * Gets the Module Ids of this class
+     *
      * @return the Module Ids
      */
     @SuppressWarnings("unchecked")

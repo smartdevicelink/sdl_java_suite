@@ -9,7 +9,7 @@ import com.smartdevicelink.transport.SdlRouterService;
 import com.smartdevicelink.util.DebugTool;
 
 public class SdlReceiver  extends SdlBroadcastReceiver {
-	private static final String TAG = "SdlBroadcastReciever";
+	private static final String TAG = "SdlBroadcastReceiver";
 
 	@Override
 	public void onSdlEnabled(Context context, Intent intent) {

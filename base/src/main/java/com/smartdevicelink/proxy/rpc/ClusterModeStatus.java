@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -40,10 +40,11 @@ import com.smartdevicelink.proxy.rpc.enums.PowerModeStatus;
 
 import java.util.Hashtable;
 
-/** <p>The status modes of the instrument panel cluster.</p>
- * 
- * 
-  * <p><b>Parameter List</b></p>
+/**
+ * <p>The status modes of the instrument panel cluster.</p>
+ *
+ *
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Param Name</th>
@@ -67,22 +68,21 @@ import java.util.Hashtable;
  * 			<td>carModeStatus</td>
  * 			<td>CarModeStatus</td>
  * 			<td></td>
- * 			<td>Describes the carmode the vehicle is in.</td>
+ * 			<td>Describes the car mode the vehicle is in.</td>
  *           </tr>
  * 		<tr>
  * 			<td>powerModeStatus</td>
  * 			<td>PowerModeStatus</td>
  * 			<td>true</td>
- * 			<td>Describes the different powermodes</td>
+ * 			<td>Describes the different power modes</td>
  * 		</tr>
- * 
- *  </table>
- * @since SmartDeviceLink 1.0
- * 
- * @see SubscribeVehicleData
- * @see SubscribeVehicleData 
- * @see Image
  *
+ *  </table>
+ *
+ * @see SubscribeVehicleData
+ * @see SubscribeVehicleData
+ * @see Image
+ * @since SmartDeviceLink 1.0
  */
 
 public class ClusterModeStatus extends RPCStruct {
@@ -91,50 +91,60 @@ public class ClusterModeStatus extends RPCStruct {
     public static final String KEY_CAR_MODE_STATUS = "carModeStatus";
     public static final String KEY_POWER_MODE_STATUS = "powerModeStatus";
 
-	public ClusterModeStatus() { }
+    public ClusterModeStatus() {
+    }
 
-	/** <p>Constructs a new ClusterModeStatus object indicated by the Hashtable
-	 * parameter</p>
-	 * @param hash The hash table to use to create an instance of this RPC
-	 * 
-	 */
-	public ClusterModeStatus(Hashtable<String, Object> hash) {
-	        super(hash);
-	    }
-	public ClusterModeStatus(@NonNull Boolean powerModeActive, @NonNull PowerModeQualificationStatus powerModeQualificationStatus, @NonNull CarModeStatus carModeStatus, @NonNull PowerModeStatus powerModeStatus) {
-	   	this();
-	   	setPowerModeActive(powerModeActive);
-	   	setPowerModeQualificationStatus(powerModeQualificationStatus);
-	   	setCarModeStatus(carModeStatus);
-	   	setPowerModeStatus(powerModeStatus);
-	}
+    /**
+     * <p>Constructs a new ClusterModeStatus object indicated by the Hashtable
+     * parameter</p>
+     *
+     * @param hash The hash table to use to create an instance of this RPC
+     */
+    public ClusterModeStatus(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
-	    public ClusterModeStatus setPowerModeActive(@NonNull Boolean powerModeActive) {
+    public ClusterModeStatus(@NonNull Boolean powerModeActive, @NonNull PowerModeQualificationStatus powerModeQualificationStatus, @NonNull CarModeStatus carModeStatus, @NonNull PowerModeStatus powerModeStatus) {
+        this();
+        setPowerModeActive(powerModeActive);
+        setPowerModeQualificationStatus(powerModeQualificationStatus);
+        setCarModeStatus(carModeStatus);
+        setPowerModeStatus(powerModeStatus);
+    }
+
+    public ClusterModeStatus setPowerModeActive(@NonNull Boolean powerModeActive) {
         setValue(KEY_POWER_MODE_ACTIVE, powerModeActive);
         return this;
     }
-	    public Boolean getPowerModeActive() {
-	        return getBoolean(KEY_POWER_MODE_ACTIVE);
-	    }
-	    public ClusterModeStatus setPowerModeQualificationStatus(@NonNull PowerModeQualificationStatus powerModeQualificationStatus) {
+
+    public Boolean getPowerModeActive() {
+        return getBoolean(KEY_POWER_MODE_ACTIVE);
+    }
+
+    public ClusterModeStatus setPowerModeQualificationStatus(@NonNull PowerModeQualificationStatus powerModeQualificationStatus) {
         setValue(KEY_POWER_MODE_QUALIFICATION_STATUS, powerModeQualificationStatus);
         return this;
     }
-	    public PowerModeQualificationStatus getPowerModeQualificationStatus() {
-			return (PowerModeQualificationStatus) getObject(PowerModeQualificationStatus.class, KEY_POWER_MODE_QUALIFICATION_STATUS);
-	    }
-	    public ClusterModeStatus setCarModeStatus(@NonNull CarModeStatus carModeStatus) {
+
+    public PowerModeQualificationStatus getPowerModeQualificationStatus() {
+        return (PowerModeQualificationStatus) getObject(PowerModeQualificationStatus.class, KEY_POWER_MODE_QUALIFICATION_STATUS);
+    }
+
+    public ClusterModeStatus setCarModeStatus(@NonNull CarModeStatus carModeStatus) {
         setValue(KEY_CAR_MODE_STATUS, carModeStatus);
         return this;
     }
-	    public CarModeStatus getCarModeStatus() {
-			return (CarModeStatus) getObject(CarModeStatus.class, KEY_CAR_MODE_STATUS);
-	    }
-	    public ClusterModeStatus setPowerModeStatus(@NonNull PowerModeStatus powerModeStatus) {
+
+    public CarModeStatus getCarModeStatus() {
+        return (CarModeStatus) getObject(CarModeStatus.class, KEY_CAR_MODE_STATUS);
+    }
+
+    public ClusterModeStatus setPowerModeStatus(@NonNull PowerModeStatus powerModeStatus) {
         setValue(KEY_POWER_MODE_STATUS, powerModeStatus);
         return this;
     }
-	    public PowerModeStatus getPowerModeStatus() {
-			return (PowerModeStatus) getObject(PowerModeStatus.class, KEY_POWER_MODE_STATUS);
-	    }
+
+    public PowerModeStatus getPowerModeStatus() {
+        return (PowerModeStatus) getObject(PowerModeStatus.class, KEY_POWER_MODE_STATUS);
+    }
 }

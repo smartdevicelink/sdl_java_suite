@@ -1,6 +1,10 @@
 package com.sdl.hellosdlandroid;
 
-import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,8 +20,10 @@ import android.widget.Toast;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
+
 	private static final String TAG = "MainActivity";
 
 	public static final String IP = "ip";

@@ -12,15 +12,15 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.NavigationCapability}
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.proxy.rpc.NavigationCapability}
  */
-public class NavigationCapabilityTests extends TestCase{
+public class NavigationCapabilityTests extends TestCase {
 
     private NavigationCapability msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new NavigationCapability();
 
         msg.setSendLocationEnabled(TestValues.GENERAL_BOOLEAN);
@@ -28,10 +28,10 @@ public class NavigationCapabilityTests extends TestCase{
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
-    	// Test Values
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
         boolean sendLocationEnabled = msg.getSendLocationEnabled();
         boolean getWayPointsEnabled = msg.getWayPointsEnabled();
 
@@ -47,10 +47,10 @@ public class NavigationCapabilityTests extends TestCase{
         assertNull(TestValues.NULL, msg.getWayPointsEnabled());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(NavigationCapability.KEY_GETWAYPOINTS_ENABLED, TestValues.GENERAL_BOOLEAN);
             reference.put(NavigationCapability.KEY_LOCATION_ENABLED, TestValues.GENERAL_BOOLEAN);
 
@@ -58,12 +58,12 @@ public class NavigationCapabilityTests extends TestCase{
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
                 assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
-        }catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

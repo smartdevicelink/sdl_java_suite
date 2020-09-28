@@ -3,8 +3,8 @@ package com.smartdevicelink.managers.permission;
 import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
@@ -114,13 +114,13 @@ public class PermissionManagerTests {
         permissionManager.addListener(permissionElements, PermissionManager.PERMISSION_GROUP_TYPE_ALL_ALLOWED, new OnPermissionChangeListener() {
             @Override
             public void onPermissionsChange(@NonNull Map<FunctionID, PermissionStatus> allowedPermissions, @NonNull int permissionGroupStatus) {
-            // Make sure is the actual result matches the expected one
-            assertEquals(PERMISSION_GROUP_STATUS_ALLOWED, permissionGroupStatus);
-            assertTrue(allowedPermissions.get(FunctionID.SHOW).getIsRPCAllowed());
-            assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getIsRPCAllowed());
-            assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("rpm"));
-            assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("airbagStatus"));
-            listenerCalledCounter++;
+                // Make sure is the actual result matches the expected one
+                assertEquals(PERMISSION_GROUP_STATUS_ALLOWED, permissionGroupStatus);
+                assertTrue(allowedPermissions.get(FunctionID.SHOW).getIsRPCAllowed());
+                assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getIsRPCAllowed());
+                assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("rpm"));
+                assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("airbagStatus"));
+                listenerCalledCounter++;
             }
         });
 

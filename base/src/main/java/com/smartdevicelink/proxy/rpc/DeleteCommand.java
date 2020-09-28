@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -40,12 +40,12 @@ import java.util.Hashtable;
 
 /**
  * Removes a command from the Command Menu.
- * 
+ *
  * <p><b>HMI Status Requirements:</b></p>
  * <p>HMILevel: FULL, LIMITED or BACKGROUND</p>
  * AudioStreamingState: N/A
  * <p>SystemContext: Should not be attempted when VRSESSION or MENU</p>
- * 
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -65,72 +65,75 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  *  </table>
- *   
- *<p><b> Response:</b></p>
  *
- * Indicates that the corresponding request either failed or succeeded. If the response returns with a SUCCESS result code,this means a command was removed from the Command Menu successfully. 
- * 
- *<p><b> Non-default Result Codes:</b></p>
+ * <p><b> Response:</b></p>
+ * <p>
+ * Indicates that the corresponding request either failed or succeeded. If the response returns with a SUCCESS result code,this means a command was removed from the Command Menu successfully.
+ *
+ * <p><b> Non-default Result Codes:</b></p>
  * 	<p>SUCCESS</p>
  * 	<p>INVALID_DATA</p>
  * 	<p>OUT_OF_MEMORY</p>
  * 	<p>TOO_MANY_PENDING_REQUESTS</p>
  * 	<p>APPLICATION_NOT_REGISTERED</p>
  * <p>	GENERIC_ERROR</p>
- * 	<p>REJECTED</p> 
+ * 	<p>REJECTED</p>
  *  <p>  INVALID_ID</p>
- *   <p> IN_USER</p>  
- * @since SmartDeviceLink 1.0
+ *   <p> IN_USER</p>
+ *
  * @see AddCommand
  * @see AddSubMenu
  * @see DeleteSubMenu
+ * @since SmartDeviceLink 1.0
  */
 public class DeleteCommand extends RPCRequest {
-	public static final String KEY_CMD_ID = "cmdID";
+    public static final String KEY_CMD_ID = "cmdID";
 
-	/**
-	 * Constructs a new DeleteCommand object
-	 */
-	public DeleteCommand() {
+    /**
+     * Constructs a new DeleteCommand object
+     */
+    public DeleteCommand() {
         super(FunctionID.DELETE_COMMAND.toString());
     }
-	/**
-	 * Constructs a new DeleteCommand object indicated by the Hashtable
-	 * parameter
-	 * 
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */    
-	public DeleteCommand(Hashtable<String, Object> hash) {
+
+    /**
+     * Constructs a new DeleteCommand object indicated by the Hashtable
+     * parameter
+     *
+     * @param hash The Hashtable to use
+     */
+    public DeleteCommand(Hashtable<String, Object> hash) {
         super(hash);
     }
-	/**
-	 * Constructs a new DeleteCommand object
-	 * @param cmdID: an Integer value representing Command ID
-	 */
-	public DeleteCommand(@NonNull Integer cmdID) {
-		this();
-		setCmdID(cmdID);
-	}
-	/**
-	 * Gets the Command ID that identifies the Command to be deleted from
-	 * Command Menu
-	 * 
-	 * @return Integer - Integer value representing Command ID that identifies
-	 *         the Command to be deleted from Command Menu
-	 */	
-    public Integer getCmdID() {
-        return getInteger( KEY_CMD_ID );
+
+    /**
+     * Constructs a new DeleteCommand object
+     *
+     * @param cmdID: an Integer value representing Command ID
+     */
+    public DeleteCommand(@NonNull Integer cmdID) {
+        this();
+        setCmdID(cmdID);
     }
-	/**
-	 * Sets the Command ID that identifies the Command to be deleted from Command Menu
-	 *
-	 * @param cmdID
-	 *            an Integer value representing Command ID
-	 *
-	 *            <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000</p>
-	 */
+
+    /**
+     * Gets the Command ID that identifies the Command to be deleted from
+     * Command Menu
+     *
+     * @return Integer - Integer value representing Command ID that identifies
+     * the Command to be deleted from Command Menu
+     */
+    public Integer getCmdID() {
+        return getInteger(KEY_CMD_ID);
+    }
+
+    /**
+     * Sets the Command ID that identifies the Command to be deleted from Command Menu
+     *
+     * @param cmdID an Integer value representing Command ID
+     *
+     *              <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000</p>
+     */
     public DeleteCommand setCmdID(@NonNull Integer cmdID) {
         setParameters(KEY_CMD_ID, cmdID);
         return this;

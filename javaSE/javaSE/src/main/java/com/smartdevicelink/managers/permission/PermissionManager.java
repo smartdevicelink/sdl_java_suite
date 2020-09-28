@@ -33,16 +33,17 @@ package com.smartdevicelink.managers.permission;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
-import com.smartdevicelink.proxy.interfaces.ISdl;
+
+import com.smartdevicelink.managers.ISdl;
 
 /**
- PermissionManager gives the developer information about what permissions are permitted in specific HMI level
- and helps developers setup listeners to be called when specific permissions become allowed.<br>
+ * PermissionManager gives the developer information about what permissions are permitted in specific HMI level
+ * and helps developers setup listeners to be called when specific permissions become allowed.<br>
+ * <p>
+ * This should be used through the {@link com.smartdevicelink.managers.SdlManager} and not be instantiated by itself
+ **/
 
- This should be used through the {@link com.smartdevicelink.managers.SdlManager} and not be instantiated by itself
-**/
-
- public class PermissionManager extends BasePermissionManager{
+public class PermissionManager extends BasePermissionManager {
 
 
     /**

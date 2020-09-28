@@ -26,12 +26,12 @@ import static junit.framework.TestCase.fail;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link com.smartdevicelink.rpc.ButtonPress}
+ * {@link com.smartdevicelink.proxy.rpc.ButtonPress}
  */
 public class ButtonPressTests extends BaseRpcTests {
 
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         ButtonPress msg = new ButtonPress();
 
         msg.setModuleType(TestValues.GENERAL_MODULETYPE);
@@ -43,25 +43,25 @@ public class ButtonPressTests extends BaseRpcTests {
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_REQUEST;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.BUTTON_PRESS.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
+        try {
             result.put(ButtonPress.KEY_MODULE_TYPE, TestValues.GENERAL_MODULETYPE);
             result.put(ButtonPress.KEY_BUTTON_NAME, TestValues.GENERAL_BUTTONNAME);
             result.put(ButtonPress.KEY_BUTTON_PRESS_MODE, TestValues.GENERAL_BUTTONPRESSMODE);
             result.put(ButtonPress.KEY_MODULE_ID, TestValues.GENERAL_STRING);
-        }catch(JSONException e){
+        } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
 
@@ -72,11 +72,11 @@ public class ButtonPressTests extends BaseRpcTests {
      * Tests the expected values of the RPC message.
      */
     @Test
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Test Values
-        ModuleType testModuleType = ( (ButtonPress) msg ).getModuleType();
-        ButtonName testButtonName = ( (ButtonPress) msg ).getButtonName();
-        ButtonPressMode testButtonPressMode = ( (ButtonPress) msg ).getButtonPressMode();
+        ModuleType testModuleType = ((ButtonPress) msg).getModuleType();
+        ButtonName testButtonName = ((ButtonPress) msg).getButtonName();
+        ButtonPressMode testButtonPressMode = ((ButtonPress) msg).getButtonPressMode();
         String testButtonId = ((ButtonPress) msg).getModuleId();
 
         // Valid Tests
@@ -100,7 +100,7 @@ public class ButtonPressTests extends BaseRpcTests {
      * Tests a valid JSON construction of this RPC message.
      */
     @Test
-    public void testJsonConstructor () {
+    public void testJsonConstructor() {
         JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
         assertNotNull(TestValues.NOT_NULL, commandJson);
 
@@ -121,7 +121,7 @@ public class ButtonPressTests extends BaseRpcTests {
             assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(parameters, ButtonPress.KEY_BUTTON_NAME).toString(), cmd.getButtonName().toString());
             assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(parameters, ButtonPress.KEY_BUTTON_PRESS_MODE).toString(), cmd.getButtonPressMode().toString());
             assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(parameters, ButtonPress.KEY_MODULE_ID), cmd.getModuleId());
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
     }

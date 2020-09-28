@@ -38,7 +38,7 @@ public class RPCMessageTests extends TestCase {
         super.tearDown();
     }
 
-    public void testGeneralGettersAndSetters(){
+    public void testGeneralGettersAndSetters() {
         String testKey = TestValues.GENERAL_STRING;
         Integer testInt = TestValues.GENERAL_INT;
 
@@ -49,7 +49,7 @@ public class RPCMessageTests extends TestCase {
         assertNull(testMessage.getParameters(testKey));
     }
 
-    public void testCommonObjectGetters(){
+    public void testCommonObjectGetters() {
         String stringKey = "String";
         String testString = TestValues.GENERAL_STRING;
         testMessage.setParameters(stringKey, testString);
@@ -88,7 +88,7 @@ public class RPCMessageTests extends TestCase {
         assertNull(testMessage.getLong(longKey));
     }
 
-    public void testGetObject(){
+    public void testGetObject() {
         String keyIsEmpty = "EMPTY";
         assertNull(testMessage.getObject(Integer.class, keyIsEmpty));
 
@@ -117,7 +117,7 @@ public class RPCMessageTests extends TestCase {
         assertEquals(TestValues.MATCH, testTTSchunks, testMessage.getObject(TTSChunk.class, keyTTSchunks));
 
         List<Hashtable<String, Object>> testListTTSchunks = new ArrayList<>();
-        for(TTSChunk ttsChunk : testTTSchunks){
+        for (TTSChunk ttsChunk : testTTSchunks) {
             testListTTSchunks.add(ttsChunk.getStore());
         }
         testMessage.setParameters(keyTTSchunks, testListTTSchunks);
@@ -130,7 +130,7 @@ public class RPCMessageTests extends TestCase {
         assertEquals(TestValues.MATCH, testMediaClockFormats, testMessage.getObject(MediaClockFormat.class, keyMediaClockFormats));
 
         List<String> testListMediaClockFormats = new ArrayList<>();
-        for(MediaClockFormat mcFormat : testMediaClockFormats){
+        for (MediaClockFormat mcFormat : testMediaClockFormats) {
             testListMediaClockFormats.add(mcFormat.toString());
         }
         testMessage.setParameters(keyMediaClockFormats, testListMediaClockFormats);

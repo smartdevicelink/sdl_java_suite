@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -41,7 +41,7 @@ import java.util.Hashtable;
 /**
  * Used to delete a file resident on the SDL module in the app's local cache.
  * Not supported on first generation SDL vehicles
- * 
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -61,9 +61,9 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  *  </table>
- *  
+ *
  * <p><b>Response </b></p>
- * 
+ *
  * <p><b>Non-default Result Codes:</b></p>
  * <p>	SUCCESS</p>
  * <p>	INVALID_DATA</p>
@@ -71,54 +71,56 @@ import java.util.Hashtable;
  * <p>	TOO_MANY_PENDING_REQUESTS</p>
  * <p>	APPLICATION_NOT_REGISTERED</p>
  * 	<p>GENERIC_ERROR</p>
- * 	<p>REJECTED</p> 
- * @since SmartDeviceLink 2.0
+ * 	<p>REJECTED</p>
+ *
  * @see PutFile
  * @see ListFiles
+ * @since SmartDeviceLink 2.0
  */
 public class DeleteFile extends RPCRequest {
-	public static final String KEY_SDL_FILE_NAME = "syncFileName";
+    public static final String KEY_SDL_FILE_NAME = "syncFileName";
 
-	/**
-	 * Constructs a new DeleteFile object
-	 */
+    /**
+     * Constructs a new DeleteFile object
+     */
     public DeleteFile() {
         super(FunctionID.DELETE_FILE.toString());
     }
 
-	/**
-	 * <p>Constructs a new DeleteFile object indicated by the Hashtable parameter</p>
-	 * @param hash The Hashtable to use
-	 */
+    /**
+     * <p>Constructs a new DeleteFile object indicated by the Hashtable parameter</p>
+     *
+     * @param hash The Hashtable to use
+     */
     public DeleteFile(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-	/**
-	 * Constructs a new DeleteFile object
-	 * @param sdlFileName a String value representing a file reference name
-	 */
-	public DeleteFile(@NonNull String sdlFileName) {
-		this();
-		setSdlFileName(sdlFileName);
-	}
+    /**
+     * Constructs a new DeleteFile object
+     *
+     * @param sdlFileName a String value representing a file reference name
+     */
+    public DeleteFile(@NonNull String sdlFileName) {
+        this();
+        setSdlFileName(sdlFileName);
+    }
 
-	/**
-	 * Sets a file reference name
-	 *
-	 * @param sdlFileName
-	 *            a String value representing a file reference name
-	 */
+    /**
+     * Sets a file reference name
+     *
+     * @param sdlFileName a String value representing a file reference name
+     */
     public DeleteFile setSdlFileName(@NonNull String sdlFileName) {
         setParameters(KEY_SDL_FILE_NAME, sdlFileName);
         return this;
     }
 
-	/**
-	 * Gets a file reference name
-	 * 
-	 * @return String -a String value representing a file reference name
-	 */
+    /**
+     * Gets a file reference name
+     *
+     * @return String -a String value representing a file reference name
+     */
     public String getSdlFileName() {
         return getString(KEY_SDL_FILE_NAME);
     }

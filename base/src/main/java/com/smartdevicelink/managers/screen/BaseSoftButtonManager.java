@@ -37,12 +37,12 @@ import com.livio.taskmaster.Queue;
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
+import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
@@ -87,8 +87,9 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
     /**
      * Creates a new instance of the SoftButtonManager
+     *
      * @param internalInterface an instance of the ISdl interface that can be used for common SDL operations (sendRpc, addRpcListener, etc)
-     * @param fileManager an instance of the FileManager so that button graphics can be sent
+     * @param fileManager       an instance of the FileManager so that button graphics can be sent
      */
     BaseSoftButtonManager(@NonNull final ISdl internalInterface, @NonNull final FileManager fileManager) {
         super(internalInterface);
@@ -136,7 +137,11 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
                     for (WindowCapability windowCapability : mainDisplay.getWindowCapabilities()) {
                         int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
                         if (currentWindowID == PredefinedWindows.DEFAULT_WINDOW.getValue()) {
-                            softButtonCapabilities = windowCapability.getSoftButtonCapabilities().get(0);
+                            if (windowCapability.getSoftButtonCapabilities() != null && windowCapability.getSoftButtonCapabilities().size() > 0) {
+                                softButtonCapabilities = windowCapability.getSoftButtonCapabilities().get(0);
+                            } else {
+                                softButtonCapabilities = null;
+                            }
                             break;
                         }
                     }
@@ -259,6 +264,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
     /**
      * Get the soft button objects list
+     *
      * @return a List<SoftButtonObject>
      */
     protected List<SoftButtonObject> getSoftButtonObjects() {
@@ -267,6 +273,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
     /**
      * Set softButtonObjects list and upload the images to the head unit
+     *
      * @param list the list of the SoftButtonObject values that should be displayed on the head unit
      */
     protected void setSoftButtonObjects(@NonNull List<SoftButtonObject> list) {
@@ -317,6 +324,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
     /**
      * Check if two SoftButtonObject have the same name
+     *
      * @param softButtonObjects a list of SoftButton objects that will be iterated through
      * @return true if two buttons exist that are the same in the list, false if not
      */
@@ -334,6 +342,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
     /**
      * Check if there is a collision in the ids provided by the developer and assign ids to the SoftButtonObjects that do not have ids
+     *
      * @param softButtonObjects the list of the SoftButtonObject values that should be displayed on the head unit
      * @return boolean representing whether the ids are unique or not
      */
@@ -391,6 +400,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
     /**
      * Get the SoftButtonObject that has the provided name
+     *
      * @param name a String value that represents the name
      * @return a SoftButtonObject
      */
@@ -405,6 +415,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
     /**
      * Get the SoftButtonObject that has the provided buttonId
+     *
      * @param buttonId a int value that represents the id of the button
      * @return a SoftButtonObject
      */
@@ -419,6 +430,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
     /**
      * Set the batchUpdates flag that represents whether the manager should wait until commit() is called to send the updated show RPC
+     *
      * @param batchUpdates Set true if the manager should batch updates together, or false if it should send them as soon as they happen
      */
     protected void setBatchUpdates(boolean batchUpdates) {
@@ -434,6 +446,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
     /**
      * Get the current String associated with MainField1
+     *
      * @return the string that is currently used for MainField1
      */
     protected String getCurrentMainField1() {
@@ -445,6 +458,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
     /**
      * Sets the String to be associated with MainField1
+     *
      * @param currentMainField1 the String that will be set to TextField1 on the current template
      */
     protected void setCurrentMainField1(String currentMainField1) {

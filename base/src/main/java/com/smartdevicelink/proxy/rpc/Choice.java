@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -42,7 +42,7 @@ import java.util.List;
 
 /**
  * A choice is an option which a user can select either via the menu or via voice recognition (VR) during an application initiated interaction.
- *  For example, the application may request for the user`s choice among several suggested ones: Yes, No, Skip.
+ * For example, the application may request for the user`s choice among several suggested ones: Yes, No, Skip.
  * <p><b> Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -56,16 +56,16 @@ import java.util.List;
  * 			<td>Integer</td>
  * 			<td>Application-scoped identifier that uniquely identifies this choice.
  *             Min: 0;
- *				Max: 65535
- *			</td>
+ * 				Max: 65535
+ * 			</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>menuName</td>
  * 			<td>String</td>
  * 			<td>Text which appears in menu, representing this choice.
- *				Min: 1;
- *				Max: 100
+ * 				Min: 1;
+ * 				Max: 100
  * 			</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
@@ -82,43 +82,45 @@ import java.util.List;
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * </table>
- * 
-  * @since SmartDeviceLink 1.0
-  * 
-  * @see AddCommand
-  * @see PerformInteraction
-  * @see Image
+ *
+ * @see AddCommand
+ * @see PerformInteraction
+ * @see Image
+ * @since SmartDeviceLink 1.0
  */
 public class Choice extends RPCStruct {
-	public static final String KEY_SECONDARY_TEXT = "secondaryText";
-	public static final String KEY_TERTIARY_TEXT = "tertiaryText";
-	public static final String KEY_SECONDARY_IMAGE = "secondaryImage";
-	public static final String KEY_MENU_NAME = "menuName";
-	public static final String KEY_VR_COMMANDS = "vrCommands";
-	public static final String KEY_CHOICE_ID = "choiceID";
-	public static final String KEY_IMAGE = "image";
+    public static final String KEY_SECONDARY_TEXT = "secondaryText";
+    public static final String KEY_TERTIARY_TEXT = "tertiaryText";
+    public static final String KEY_SECONDARY_IMAGE = "secondaryImage";
+    public static final String KEY_MENU_NAME = "menuName";
+    public static final String KEY_VR_COMMANDS = "vrCommands";
+    public static final String KEY_CHOICE_ID = "choiceID";
+    public static final String KEY_IMAGE = "image";
 
     /**
      * Used to bypass the format() method that adds VR items based on RPC version. This is used by the
      * choiceSetManager, which has a more in-depth approach as to whether or not it should add VR items
      */
-	private boolean ignoreAddingVRItems;
+    private boolean ignoreAddingVRItems;
 
-	/**
-	 * Constructs a newly allocated Choice object
-	 */
-    public Choice() { }
+    /**
+     * Constructs a newly allocated Choice object
+     */
+    public Choice() {
+    }
 
     /**
      * Constructs a newly allocated Choice object indicated by the Hashtable parameter
+     *
      * @param hash The Hashtable to use
-     */    
+     */
     public Choice(Hashtable<String, Object> hash) {
         super(hash);
     }
 
     /**
      * Constructs a newly allocated Choice object
+     *
      * @param choiceID Min: 0  Max: 65535
      * @param menuName the menu name
      */
@@ -131,17 +133,17 @@ public class Choice extends RPCStruct {
     /**
      * VrCommands became optional as of RPC Spec 5.0. On legacy systems, we must still set VrCommands, as
      * they are expected, even though the developer may not specify them. <br>
-     *
+     * <p>
      * Additionally, VrCommands must be unique, therefore we will use the string value of the command's ID
      *
-     * @param rpcVersion the rpc spec version that has been negotiated. If value is null the
-     *                   the max value of RPC spec version this library supports should be used.
+     * @param rpcVersion   the rpc spec version that has been negotiated. If value is null the
+     *                     the max value of RPC spec version this library supports should be used.
      * @param formatParams if true, the format method will be called on subsequent params
      */
     @Override
-    public void format(Version rpcVersion, boolean formatParams){
+    public void format(Version rpcVersion, boolean formatParams) {
 
-        if (rpcVersion == null || rpcVersion.getMajor() < 5){
+        if (rpcVersion == null || rpcVersion.getMajor() < 5) {
 
             // this is added to allow the choice set manager to disable this functionality
             if (!ignoreAddingVRItems) {
@@ -163,78 +165,92 @@ public class Choice extends RPCStruct {
 
     /**
      * Get the application-scoped identifier that uniquely identifies this choice.
+     *
      * @return choiceID Min: 0;  Max: 65535
      */
     public Integer getChoiceID() {
         return getInteger(KEY_CHOICE_ID);
     }
+
     /**
      * Set the application-scoped identifier that uniquely identifies this choice.
+     *
      * @param choiceID Min: 0  Max: 65535
      */
     public Choice setChoiceID(@NonNull Integer choiceID) {
         setValue(KEY_CHOICE_ID, choiceID);
         return this;
     }
+
     /**
      * Text which appears in menu, representing this choice.
-     *				Min: 1;
-     *				Max: 100
+     * Min: 1;
+     * Max: 100
+     *
      * @return menuName the menu name
-     */    
+     */
     public String getMenuName() {
         return getString(KEY_MENU_NAME);
     }
+
     /**
      * Text which appears in menu, representing this choice.
-     *				Min: 1;
-     *				Max: 100
+     * Min: 1;
+     * Max: 100
+     *
      * @param menuName the menu name
      */
     public Choice setMenuName(@NonNull String menuName) {
         setValue(KEY_MENU_NAME, menuName);
         return this;
     }
+
     /**
      * Get an array of strings to be used as VR synonyms for this choice. If this array is provided, it must have at least one non-empty element
+     *
      * @return vrCommands List
      * @since SmartDeviceLink 2.0
-     */    
+     */
     @SuppressWarnings("unchecked")
     public List<String> getVrCommands() {
         return (List<String>) getObject(String.class, KEY_VR_COMMANDS);
     }
+
     /**
      * Set an array of strings to be used as VR synonyms for this choice. If this array is provided, it must have at least one non-empty element
+     *
      * @param vrCommands the List of  vrCommands
      * @since SmartDeviceLink 2.0
      */
-    public Choice setVrCommands( List<String> vrCommands) {
+    public Choice setVrCommands(List<String> vrCommands) {
         setValue(KEY_VR_COMMANDS, vrCommands);
         return this;
     }
+
     /**
      * Set the image
+     *
      * @param image the image of the choice
      */
-    public Choice setImage( Image image) {
+    public Choice setImage(Image image) {
         setValue(KEY_IMAGE, image);
         return this;
     }
+
     /**
      * Get the image
+     *
      * @return the image of the choice
-     */    
-    @SuppressWarnings("unchecked")
+     */
     public Image getImage() {
         return (Image) getObject(Image.class, KEY_IMAGE);
     }
-    
+
     public String getSecondaryText() {
         return getString(KEY_SECONDARY_TEXT);
     }
 
-    public Choice setSecondaryText( String secondaryText) {
+    public Choice setSecondaryText(String secondaryText) {
         setValue(KEY_SECONDARY_TEXT, secondaryText);
         return this;
     }
@@ -243,26 +259,26 @@ public class Choice extends RPCStruct {
         return getString(KEY_TERTIARY_TEXT);
     }
 
-    public Choice setTertiaryText( String tertiaryText) {
+    public Choice setTertiaryText(String tertiaryText) {
         setValue(KEY_TERTIARY_TEXT, tertiaryText);
         return this;
     }
 
-    public Choice setSecondaryImage( Image image) {
+    public Choice setSecondaryImage(Image image) {
         setValue(KEY_SECONDARY_IMAGE, image);
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     public Image getSecondaryImage() {
         return (Image) getObject(Image.class, KEY_SECONDARY_IMAGE);
     }
 
     /**
      * This prevents the @{link Choice#format} method from adding VR commands if set to true
+     *
      * @param ignoreAddingVRItems - whether or not to let the format method add vr commands
      */
-    public Choice setIgnoreAddingVRItems( boolean ignoreAddingVRItems) {
+    public Choice setIgnoreAddingVRItems(boolean ignoreAddingVRItems) {
         this.ignoreAddingVRItems = ignoreAddingVRItems;
         return this;
     }

@@ -50,11 +50,11 @@ import org.junit.Test;
 
 import java.util.Hashtable;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.fail;
-import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
@@ -62,93 +62,93 @@ import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentat
  */
 public class UnpublishAppServiceTests extends BaseRpcTests {
 
-	@Override
-	protected RPCMessage createMessage() {
-		UnpublishAppService msg = new UnpublishAppService();
-		msg.setServiceID(TestValues.GENERAL_STRING);
-		return msg;
-	}
+    @Override
+    protected RPCMessage createMessage() {
+        UnpublishAppService msg = new UnpublishAppService();
+        msg.setServiceID(TestValues.GENERAL_STRING);
+        return msg;
+    }
 
-	@Override
-	protected String getMessageType() {
-		return RPCMessage.KEY_REQUEST;
-	}
+    @Override
+    protected String getMessageType() {
+        return RPCMessage.KEY_REQUEST;
+    }
 
-	@Override
-	protected String getCommandType() {
-		return FunctionID.UNPUBLISH_APP_SERVICE.toString();
-	}
+    @Override
+    protected String getCommandType() {
+        return FunctionID.UNPUBLISH_APP_SERVICE.toString();
+    }
 
-	@Override
-	protected JSONObject getExpectedParameters(int sdlVersion) {
-		JSONObject result = new JSONObject();
+    @Override
+    protected JSONObject getExpectedParameters(int sdlVersion) {
+        JSONObject result = new JSONObject();
 
-		try {
-			result.put(UnpublishAppService.KEY_SERVICE_ID, TestValues.GENERAL_STRING);
-		} catch (JSONException e) {
-			fail(TestValues.JSON_FAIL);
-		}
+        try {
+            result.put(UnpublishAppService.KEY_SERVICE_ID, TestValues.GENERAL_STRING);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * Tests the expected values of the RPC message.
-	 */
-	@Test
-	public void testRpcValues () {
-		// Test Values
-		String copy = ( (UnpublishAppService) msg ).getServiceID();
+    /**
+     * Tests the expected values of the RPC message.
+     */
+    @Test
+    public void testRpcValues() {
+        // Test Values
+        String copy = ((UnpublishAppService) msg).getServiceID();
 
-		// Valid Tests
-		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, copy);
+        // Valid Tests
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, copy);
 
-		// Invalid/Null Tests
-		UnpublishAppService msg = new UnpublishAppService();
-		assertNotNull(TestValues.NOT_NULL, msg);
-		testNullBase(msg);
+        // Invalid/Null Tests
+        UnpublishAppService msg = new UnpublishAppService();
+        assertNotNull(TestValues.NOT_NULL, msg);
+        testNullBase(msg);
 
-		assertNull(TestValues.MATCH, msg.getServiceID());
-	}
+        assertNull(TestValues.MATCH, msg.getServiceID());
+    }
 
-	/**
-	 * Tests constructor with required params
-	 */
-	@Test
-	public void testRequiredParamsConstructor () {
+    /**
+     * Tests constructor with required params
+     */
+    @Test
+    public void testRequiredParamsConstructor() {
 
-		UnpublishAppService msg = new UnpublishAppService(TestValues.GENERAL_STRING);
-		assertNotNull(TestValues.NOT_NULL, msg);
-		// Valid Tests
-		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, msg.getServiceID());
-	}
+        UnpublishAppService msg = new UnpublishAppService(TestValues.GENERAL_STRING);
+        assertNotNull(TestValues.NOT_NULL, msg);
+        // Valid Tests
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, msg.getServiceID());
+    }
 
-	/**
-	 * Tests a valid JSON construction of this RPC message.
-	 */
-	@Test
-	public void testJsonConstructor () {
-		JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
-		assertNotNull(TestValues.NOT_NULL, commandJson);
+    /**
+     * Tests a valid JSON construction of this RPC message.
+     */
+    @Test
+    public void testJsonConstructor() {
+        JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
+        assertNotNull(TestValues.NOT_NULL, commandJson);
 
-		try {
-			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
-			UnpublishAppService cmd = new UnpublishAppService(hash);
+        try {
+            Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
+            UnpublishAppService cmd = new UnpublishAppService(hash);
 
-			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(TestValues.NOT_NULL, body);
+            JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
+            assertNotNull(TestValues.NOT_NULL, body);
 
-			// Test everything in the json body.
-			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+            // Test everything in the json body.
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
-			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
+            JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
 
-			String serviceID = JsonUtils.readStringFromJsonObject(parameters, UnpublishAppService.KEY_SERVICE_ID);
-			assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, serviceID);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
+            String serviceID = JsonUtils.readStringFromJsonObject(parameters, UnpublishAppService.KEY_SERVICE_ID);
+            assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, serviceID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

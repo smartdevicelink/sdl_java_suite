@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -40,9 +40,9 @@ package com.smartdevicelink.trace;
    It is manifested in the <SmartDeviceLink>...</SmartDeviceLink> tags
  */
 
-public class SdlTrace extends SdlTraceBase{
-	private static String getPid(){
-		//Default implementation is not able to get this information
-		return "UNKNOWN";
-	}
+public class SdlTrace extends SdlTraceBase {
+    private static String getPid() {
+        //Default implementation is not able to get this information
+        return "UNKNOWN";
+    }
 } // end-class

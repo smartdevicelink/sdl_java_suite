@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -34,7 +34,7 @@ package com.smartdevicelink.managers.audio;
 import androidx.annotation.NonNull;
 
 import com.smartdevicelink.managers.BaseSubManager;
-import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.managers.ISdl;
 
 abstract class BaseAudioStreamManager extends BaseSubManager {
     BaseAudioStreamManager(@NonNull ISdl internalInterface) {

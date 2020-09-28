@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -29,14 +29,16 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.smartdevicelink.proxy.interfaces;
+package com.smartdevicelink.protocol;
 
 
-import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.session.SdlSession;
 
 public interface ISdlServiceListener {
-    public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted);
-    public void onServiceEnded(SdlSession session, SessionType type);
-    public void onServiceError(SdlSession session, SessionType type, String reason);
+    void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted);
+
+    void onServiceEnded(SdlSession session, SessionType type);
+
+    void onServiceError(SdlSession session, SessionType type, String reason);
 }

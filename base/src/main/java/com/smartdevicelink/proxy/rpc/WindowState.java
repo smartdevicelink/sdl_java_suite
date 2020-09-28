@@ -38,7 +38,6 @@ import com.smartdevicelink.proxy.RPCStruct;
 import java.util.Hashtable;
 
 /**
- *
  * <p><b>Parameter List</b></p>
  *
  * <table border="1" rules="all">
@@ -52,7 +51,7 @@ import java.util.Hashtable;
  *  <tr>
  *      <td>approximatePosition</td>
  *      <td>Integer</td>
- *      <td>The approximate percentage that the window is open - 0 being fully closed, 100 being fullyopen</td>
+ *      <td>The approximate percentage that the window is open - 0 being fully closed, 100 being fully open</td>
  *      <td>Y</td>
  *      <td></td>
  *  </tr>
@@ -64,6 +63,7 @@ import java.util.Hashtable;
  *      <td></td>
  *  </tr>
  * </table>
+ *
  * @since SmartDeviceLink 7.0.0
  */
 public class WindowState extends RPCStruct {
@@ -73,7 +73,8 @@ public class WindowState extends RPCStruct {
     /**
      * Constructs a new WindowState object
      */
-    public WindowState() { }
+    public WindowState() {
+    }
 
     /**
      * Constructs a new WindowState object indicated by the Hashtable parameter
@@ -88,9 +89,9 @@ public class WindowState extends RPCStruct {
      * Constructs a new WindowState object
      *
      * @param approximatePosition The approximate percentage that the window is open - 0 being fully closed, 100 being fully
-     * open
-     * @param deviation The percentage deviation of the approximatePosition. e.g. If the approximatePosition is 50
-     * and the deviation is 10, then the window's location is somewhere between 40 and 60.
+     *                            open
+     * @param deviation           The percentage deviation of the approximatePosition. e.g. If the approximatePosition is 50
+     *                            and the deviation is 10, then the window's location is somewhere between 40 and 60.
      */
     public WindowState(@NonNull Integer approximatePosition, @NonNull Integer deviation) {
         this();
@@ -102,7 +103,7 @@ public class WindowState extends RPCStruct {
      * Sets the approximatePosition.
      *
      * @param approximatePosition The approximate percentage that the window is open - 0 being fully closed, 100 being fully
-     * open
+     *                            open
      */
     public WindowState setApproximatePosition(@NonNull Integer approximatePosition) {
         setValue(KEY_APPROXIMATE_POSITION, approximatePosition);
@@ -123,7 +124,7 @@ public class WindowState extends RPCStruct {
      * Sets the deviation.
      *
      * @param deviation The percentage deviation of the approximatePosition. e.g. If the approximatePosition is 50
-     * and the deviation is 10, then the window's location is somewhere between 40 and 60.
+     *                  and the deviation is 10, then the window's location is somewhere between 40 and 60.
      */
     public WindowState setDeviation(@NonNull Integer deviation) {
         setValue(KEY_DEVIATION, deviation);

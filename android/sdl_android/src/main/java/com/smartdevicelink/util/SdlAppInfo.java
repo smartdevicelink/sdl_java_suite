@@ -53,21 +53,21 @@ public class SdlAppInfo {
 
     String packageName;
     ComponentName routerServiceComponentName;
-    int routerServiceVersion = 4; //We use this as a default and assume if the number doens't exist in meta data it is because the app hasn't updated.
+    int routerServiceVersion = 4; //We use this as a default and assume if the number doesn't exist in meta data it is because the app hasn't updated.
     boolean isCustomRouterService = false;
     long lastUpdateTime;
 
 
-    public SdlAppInfo(ResolveInfo resolveInfo, PackageInfo packageInfo){
-        if(resolveInfo.serviceInfo != null){
+    public SdlAppInfo(ResolveInfo resolveInfo, PackageInfo packageInfo) {
+        if (resolveInfo.serviceInfo != null) {
 
             this.packageName = resolveInfo.serviceInfo.packageName;
             this.routerServiceComponentName = new ComponentName(resolveInfo.serviceInfo.packageName, resolveInfo.serviceInfo.name);
 
             Bundle metadata = resolveInfo.serviceInfo.metaData;
-            if(metadata != null) {
+            if (metadata != null) {
 
-                if (metadata.containsKey(SDL_ROUTER_VERSION_METADATA)){
+                if (metadata.containsKey(SDL_ROUTER_VERSION_METADATA)) {
                     this.routerServiceVersion = metadata.getInt(SDL_ROUTER_VERSION_METADATA);
                 }
 
@@ -79,12 +79,12 @@ public class SdlAppInfo {
             }
         }
 
-        if(packageInfo != null){
+        if (packageInfo != null) {
             this.lastUpdateTime = packageInfo.lastUpdateTime;
-            if(this.lastUpdateTime <= 0){
+            if (this.lastUpdateTime <= 0) {
                 this.lastUpdateTime = packageInfo.firstInstallTime;
             }
-        }else{
+        } else {
             this.lastUpdateTime = 0;
         }
     }
@@ -129,44 +129,43 @@ public class SdlAppInfo {
 
     /**
      * This comparator will sort a list to find the best router service to start out of the known SDL enabled apps
-     *
      */
-    public static class BestRouterComparator implements Comparator<SdlAppInfo>{
+    public static class BestRouterComparator implements Comparator<SdlAppInfo> {
 
         @Override
         public int compare(SdlAppInfo one, SdlAppInfo two) {
-            if(one != null){
-                if(two != null){
-                    if(one.isCustomRouterService){
-                        if(two.isCustomRouterService){
+            if (one != null) {
+                if (two != null) {
+                    if (one.isCustomRouterService) {
+                        if (two.isCustomRouterService) {
                             return 0;
-                        }else{
+                        } else {
                             return 1;
                         }
-                    }else if(two.isCustomRouterService){
+                    } else if (two.isCustomRouterService) {
                         return -1;
 
                     }//else, do nothing. Move to version check
 
-                    int versionCompare =  two.routerServiceVersion  - one.routerServiceVersion;
+                    int versionCompare = two.routerServiceVersion - one.routerServiceVersion;
 
-                    if(versionCompare == 0){ //Versions are equal so lets use the one that has been updated most recently
-                        long updateTime =  two.lastUpdateTime - one.lastUpdateTime;
-                        if(updateTime == 0){
+                    if (versionCompare == 0) { //Versions are equal so lets use the one that has been updated most recently
+                        long updateTime = two.lastUpdateTime - one.lastUpdateTime;
+                        if (updateTime == 0) {
                             //This is arbitrary, but we want to ensure all lists are sorted in the same order
-                            return  one.routerServiceComponentName.getPackageName().compareTo(two.routerServiceComponentName.getPackageName());
-                        }else{
+                            return one.routerServiceComponentName.getPackageName().compareTo(two.routerServiceComponentName.getPackageName());
+                        } else {
                             return (updateTime < 0 ? -1 : 1);
                         }
-                    }else{
+                    } else {
                         return (versionCompare < 0 ? -1 : 1);
                     }
 
-                }else{
+                } else {
                     return -1;
                 }
-            }else{
-                if(two != null){
+            } else {
+                if (two != null) {
                     return 1;
                 }
             }

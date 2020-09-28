@@ -1,7 +1,7 @@
 package com.smartdevicelink.test.streaming;
 
-import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.streaming.AbstractPacketizer;
 import com.smartdevicelink.streaming.IStreamListener;
 
@@ -13,16 +13,39 @@ import java.io.InputStream;
  * {@link com.smartdevicelink.streaming.AbstractPacketizer}
  */
 public class MockPacketizer extends AbstractPacketizer {
-	public MockPacketizer (IStreamListener l, InputStream i, SessionType s, byte sid, SdlSession sdlsession) throws IOException { super (l, i, s, sid, sdlsession); }
+    public MockPacketizer(IStreamListener l, InputStream i, SessionType s, byte sid, SdlSession sdlsession) throws IOException {
+        super(l, i, s, sid, sdlsession);
+    }
 
-	@Override public void start() throws IOException { }
-	@Override public void stop() { }
+    @Override
+    public void start() throws IOException {
+    }
 
-	public IStreamListener getListener () { return _streamListener; }
-	public InputStream getInputStream  () { return is;              }
-	public SessionType getSessionType  () { return _serviceType;    }
-	public byte getSessionId           () { return _rpcSessionID;   }
+    @Override
+    public void stop() {
+    }
 
-	@Override public void pause() { }
-	@Override public void resume() { }
+    public IStreamListener getListener() {
+        return _streamListener;
+    }
+
+    public InputStream getInputStream() {
+        return is;
+    }
+
+    public SessionType getSessionType() {
+        return _serviceType;
+    }
+
+    public byte getSessionId() {
+        return _rpcSessionID;
+    }
+
+    @Override
+    public void pause() {
+    }
+
+    @Override
+    public void resume() {
+    }
 }

@@ -47,10 +47,10 @@ public abstract class TransportManagerBase {
     final List<TransportRecord> transportStatus;
     final TransportEventListener transportListener;
 
-    public TransportManagerBase(BaseTransportConfig config,TransportEventListener listener){
+    public TransportManagerBase(BaseTransportConfig config, TransportEventListener listener) {
         transportListener = listener;
         this.TRANSPORT_STATUS_LOCK = new Object();
-        synchronized (TRANSPORT_STATUS_LOCK){
+        synchronized (TRANSPORT_STATUS_LOCK) {
             this.transportStatus = new ArrayList<>();
         }
     }
@@ -61,19 +61,22 @@ public abstract class TransportManagerBase {
 
     /**
      * Check to see if a transport is connected.
+     *
      * @param transportType the transport to have its connection status returned. If `null` is
      *                      passed in, all transports will be checked and if any are connected a
      *                      true value will be returned.
-     * @param address the address associated with the transport type. If null, the first transport
-     *                of supplied type will be used to return if connected.
+     * @param address       the address associated with the transport type. If null, the first transport
+     *                      of supplied type will be used to return if connected.
      * @return if a transport is connected based on included variables
      */
     public abstract boolean isConnected(TransportType transportType, String address);
+
     /**
      * Retrieve a transport record with the supplied params
+     *
      * @param transportType the transport to have its connection status returned.
-     * @param address the address associated with the transport type. If null, the first transport
-     *                of supplied type will be returned.
+     * @param address       the address associated with the transport type. If null, the first transport
+     *                      of supplied type will be returned.
      * @return the transport record for the transport type and address if supplied
      */
     public abstract TransportRecord getTransportRecord(TransportType transportType, String address);
@@ -81,14 +84,15 @@ public abstract class TransportManagerBase {
 
     /**
      * Retrieves the currently connected transports
+     *
      * @return the currently connected transports
      */
-    public List<TransportRecord> getConnectedTransports(){
+    public List<TransportRecord> getConnectedTransports() {
         return this.transportStatus;
     }
 
 
-    public boolean isHighBandwidthAvailable(){
+    public boolean isHighBandwidthAvailable() {
         synchronized (TRANSPORT_STATUS_LOCK) {
             for (TransportRecord record : transportStatus) {
                 if (record.getType().equals(TransportType.USB)
@@ -101,49 +105,58 @@ public abstract class TransportManagerBase {
         }
     }
 
-    public  BaseTransportConfig updateTransportConfig(BaseTransportConfig config){
+    public BaseTransportConfig updateTransportConfig(BaseTransportConfig config) {
         return config;
     }
 
     public abstract void sendPacket(SdlPacket packet);
 
     /**
-     * Base implementation does nothing and assumes it is not necssary. This method should be
+     * Base implementation does nothing and assumes it is not necessary. This method should be
      * overridden in children classes that need to add a prerequest to their transports to make
      * space ready for a new session.
+     *
      * @param transportRecord the transport that the new session should be assigned to
      */
-    public void requestNewSession(TransportRecord transportRecord){
+    public void requestNewSession(TransportRecord transportRecord) {
         //Base implementation does nothing
     }
 
-    public void requestSecondaryTransportConnection(byte sessionId, TransportRecord transportRecord){
+    public void requestSecondaryTransportConnection(byte sessionId, TransportRecord transportRecord) {
         //Base implementation does nothing
     }
 
-    synchronized void enterLegacyMode(final String info){
+    synchronized void enterLegacyMode(final String info) {
         //Base implementation does nothing
     }
 
-    synchronized void exitLegacyMode(String info ){
+    synchronized void exitLegacyMode(String info) {
         //Base implementation does nothing
     }
 
-    public interface TransportEventListener{
-        /** Called to indicate and deliver a packet received from transport */
+    public interface TransportEventListener {
+        /**
+         * Called to indicate and deliver a packet received from transport
+         */
         void onPacketReceived(SdlPacket packet);
 
-        /** Called to indicate that transport connection was established */
+        /**
+         * Called to indicate that transport connection was established
+         */
         void onTransportConnected(List<TransportRecord> transports);
 
-        /** Called to indicate that transport was disconnected (by either side) */
+        /**
+         * Called to indicate that transport was disconnected (by either side)
+         */
         void onTransportDisconnected(String info, TransportRecord type, List<TransportRecord> connectedTransports);
 
         // Called when the transport manager experiences an unrecoverable failure
         void onError(String info);
+
         /**
          * Called when the transport manager has determined it needs to move towards a legacy style
          * transport connection. It will always be bluetooth.
+         *
          * @param info simple info string about the situation
          * @return if the listener is ok with entering legacy mode
          */
