@@ -325,7 +325,7 @@ public class SystemCapabilityManagerTests {
         scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
         retrievedCapability = (VideoStreamingCapability) scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener, true);
         assertTrue(TestValues.TRUE, Validator.validateVideoStreamingCapability((VideoStreamingCapability) systemCapability.getCapabilityForType(SystemCapabilityType.VIDEO_STREAMING), retrievedCapability));
-        verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
+        verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
         verify(onSystemCapabilityListener, times(1)).onCapabilityRetrieved(any(Object.class));
 
 
@@ -338,7 +338,7 @@ public class SystemCapabilityManagerTests {
         scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
         retrievedCapability = (VideoStreamingCapability) scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener, true);
         assertTrue(TestValues.TRUE, Validator.validateVideoStreamingCapability((VideoStreamingCapability) systemCapability.getCapabilityForType(SystemCapabilityType.VIDEO_STREAMING), retrievedCapability));
-        verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
+        verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
 
 
         // Test case 4 (capability cached, listener null, forceUpdate false)
@@ -384,7 +384,7 @@ public class SystemCapabilityManagerTests {
         OnSystemCapabilityListener onSystemCapabilityListener1 = mock(OnSystemCapabilityListener.class);
         doAnswer(createOnSendGetSystemCapabilityAnswer(true, true)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
         scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener1);
-        verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
+        verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
         verify(onSystemCapabilityListener1, times(1)).onCapabilityRetrieved(any(Object.class));
 
 
@@ -412,7 +412,7 @@ public class SystemCapabilityManagerTests {
         // When the last listener is removed, GetSystemCapability request should go out with subscribe=false
         doAnswer(createOnSendGetSystemCapabilityAnswer(true, false)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
         scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener3);
-        verify(internalInterface, times(2)).sendRPC(any(GetSystemCapability.class));
+        verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
     }
 
     @Test
@@ -506,7 +506,7 @@ public class SystemCapabilityManagerTests {
         // When the last listener is removed, GetSystemCapability request should not go out because subscription is not supported
         doAnswer(createOnSendGetSystemCapabilityAnswer(true, false)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
         scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener3);
-        verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+        verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
     }
 
     @Test
@@ -553,7 +553,7 @@ public class SystemCapabilityManagerTests {
         // When the last listener is removed, GetSystemCapability request should not go out because subscription is not supported
         doAnswer(createOnSendGetSystemCapabilityAnswer(true, false)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
         scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener3);
-        verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
+        verify(internalInterface, times(2)).sendRPC(any(GetSystemCapability.class));
     }
 
     @Test
@@ -578,8 +578,8 @@ public class SystemCapabilityManagerTests {
 
         // Get Capability (should notify listener1 again)
         scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, null, true);
-        verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
-        verify(onSystemCapabilityListener1, times(2)).onCapabilityRetrieved(any(Object.class));
+        verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+        verify(onSystemCapabilityListener1, times(1)).onCapabilityRetrieved(any(Object.class));
 
 
         // Add listener2
@@ -590,9 +590,9 @@ public class SystemCapabilityManagerTests {
 
         // Get Capability (should notify listener1 & listener2 again)
         scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, null, true);
-        verify(internalInterface, times(2)).sendRPC(any(GetSystemCapability.class));
-        verify(onSystemCapabilityListener1, times(3)).onCapabilityRetrieved(any(Object.class));
-        verify(onSystemCapabilityListener2, times(2)).onCapabilityRetrieved(any(Object.class));
+        verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+        verify(onSystemCapabilityListener1, times(1)).onCapabilityRetrieved(any(Object.class));
+        verify(onSystemCapabilityListener2, times(1)).onCapabilityRetrieved(any(Object.class));
 
 
         // Add listener3
@@ -603,10 +603,10 @@ public class SystemCapabilityManagerTests {
 
         // Get Capability (should notify listener1 & listener2 & listener3 again)
         scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, null, true);
-        verify(internalInterface, times(3)).sendRPC(any(GetSystemCapability.class));
-        verify(onSystemCapabilityListener1, times(4)).onCapabilityRetrieved(any(Object.class));
-        verify(onSystemCapabilityListener2, times(3)).onCapabilityRetrieved(any(Object.class));
-        verify(onSystemCapabilityListener3, times(2)).onCapabilityRetrieved(any(Object.class));
+        verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+        verify(onSystemCapabilityListener1, times(1)).onCapabilityRetrieved(any(Object.class));
+        verify(onSystemCapabilityListener2, times(1)).onCapabilityRetrieved(any(Object.class));
+        verify(onSystemCapabilityListener3, times(1)).onCapabilityRetrieved(any(Object.class));
 
 
         // Remove listener1
@@ -615,10 +615,10 @@ public class SystemCapabilityManagerTests {
 
         // Get Capability (should notify listener2 & listener3 again)
         scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, null, true);
-        verify(internalInterface, times(4)).sendRPC(any(GetSystemCapability.class));
-        verify(onSystemCapabilityListener1, times(4)).onCapabilityRetrieved(any(Object.class));
-        verify(onSystemCapabilityListener2, times(4)).onCapabilityRetrieved(any(Object.class));
-        verify(onSystemCapabilityListener3, times(3)).onCapabilityRetrieved(any(Object.class));
+        verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+        verify(onSystemCapabilityListener1, times(1)).onCapabilityRetrieved(any(Object.class));
+        verify(onSystemCapabilityListener2, times(1)).onCapabilityRetrieved(any(Object.class));
+        verify(onSystemCapabilityListener3, times(1)).onCapabilityRetrieved(any(Object.class));
 
 
         // Remove listener2
@@ -627,23 +627,23 @@ public class SystemCapabilityManagerTests {
 
         // Get Capability (should notify listener3 again)
         scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, null, true);
-        verify(internalInterface, times(5)).sendRPC(any(GetSystemCapability.class));
-        verify(onSystemCapabilityListener1, times(4)).onCapabilityRetrieved(any(Object.class));
-        verify(onSystemCapabilityListener2, times(4)).onCapabilityRetrieved(any(Object.class));
-        verify(onSystemCapabilityListener3, times(4)).onCapabilityRetrieved(any(Object.class));
+        verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+        verify(onSystemCapabilityListener1, times(1)).onCapabilityRetrieved(any(Object.class));
+        verify(onSystemCapabilityListener2, times(1)).onCapabilityRetrieved(any(Object.class));
+        verify(onSystemCapabilityListener3, times(1)).onCapabilityRetrieved(any(Object.class));
 
 
         // Remove listener3
         scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener3);
-        verify(internalInterface, times(5)).sendRPC(any(GetSystemCapability.class));
+        verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
 
 
         // Get Capability (should not notify any listener again because they are all removed)
         scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, null, true);
-        verify(internalInterface, times(6)).sendRPC(any(GetSystemCapability.class));
-        verify(onSystemCapabilityListener1, times(4)).onCapabilityRetrieved(any(Object.class));
-        verify(onSystemCapabilityListener2, times(4)).onCapabilityRetrieved(any(Object.class));
-        verify(onSystemCapabilityListener3, times(4)).onCapabilityRetrieved(any(Object.class));
+        verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
+        verify(onSystemCapabilityListener1, times(1)).onCapabilityRetrieved(any(Object.class));
+        verify(onSystemCapabilityListener2, times(1)).onCapabilityRetrieved(any(Object.class));
+        verify(onSystemCapabilityListener3, times(1)).onCapabilityRetrieved(any(Object.class));
     }
 
     @Test
