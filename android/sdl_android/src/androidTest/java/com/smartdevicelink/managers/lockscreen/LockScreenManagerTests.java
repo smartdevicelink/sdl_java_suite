@@ -134,7 +134,7 @@ public class LockScreenManagerTests {
         onDriverDistraction.setState(DriverDistractionState.DD_ON);
         onDDListener.onNotified(onDriverDistraction);
         assertTrue(lockScreenManager.enableDismissGesture);
-        assertTrue(lockScreenManager.mIsLockscreenDismissible);
+        assertTrue(lockScreenManager.isLockscreenDismissible);
     }
 
     @Test
@@ -145,7 +145,7 @@ public class LockScreenManagerTests {
         onDriverDistraction.setState(DriverDistractionState.DD_ON);
         onDDListener.onNotified(onDriverDistraction);
         assertFalse(lockScreenManager.enableDismissGesture);
-        assertFalse(lockScreenManager.mIsLockscreenDismissible);
+        assertFalse(lockScreenManager.isLockscreenDismissible);
     }
 
     @Test
@@ -156,7 +156,7 @@ public class LockScreenManagerTests {
         onDriverDistraction.setState(DriverDistractionState.DD_ON);
         onDDListener.onNotified(onDriverDistraction);
         assertTrue(lockScreenManager.enableDismissGesture);
-        assertFalse(lockScreenManager.mIsLockscreenDismissible);
+        assertFalse(lockScreenManager.isLockscreenDismissible);
     }
 
     @Test
@@ -167,7 +167,7 @@ public class LockScreenManagerTests {
         onDriverDistraction.setState(DriverDistractionState.DD_ON);
         onDDListener.onNotified(onDriverDistraction);
         assertFalse(lockScreenManager.enableDismissGesture);
-        assertFalse(lockScreenManager.mIsLockscreenDismissible);
+        assertFalse(lockScreenManager.isLockscreenDismissible);
     }
 
 }

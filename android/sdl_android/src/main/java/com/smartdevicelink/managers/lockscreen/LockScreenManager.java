@@ -37,6 +37,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.os.Handler;
 
 import androidx.annotation.RestrictTo;
 
@@ -75,7 +76,7 @@ public class LockScreenManager extends BaseSubManager {
     private OnRPCNotificationListener systemRequestListener, ddListener, hmiListener;
     private String deviceIconUrl;
     boolean driverDistStatus;
-    boolean mIsLockscreenDismissible;
+    boolean isLockscreenDismissible;
     boolean enableDismissGesture;
     final boolean lockScreenEnabled;
     final boolean deviceLogoEnabled;
@@ -197,34 +198,40 @@ public class LockScreenManager extends BaseSubManager {
             public void onNotified(RPCNotification notification) {
                 // do something with the status
                 if (notification != null) {
-                    OnDriverDistraction ddState = (OnDriverDistraction) notification;
-                    Boolean isDismissible = ddState.getLockscreenDismissibility();
-                    DebugTool.logInfo(TAG, "Lock screen dismissible: " + isDismissible);
-                    if (isDismissible != null) {
+                    synchronized (this) {
+                        OnDriverDistraction ddState = (OnDriverDistraction) notification;
+                        driverDistStatus = DriverDistractionState.DD_ON.equals(ddState.getState());
+                        mLockscreenWarningMsg = ddState.getLockscreenWarningMessage();
+                        isLockscreenDismissible = ddState.getLockscreenDismissibility() != null && ddState.getLockscreenDismissibility();
+                        DebugTool.logInfo(TAG, "Lock screen dismissible: " + isLockscreenDismissible);
                         // both of these conditions must be met to be able to dismiss lockscreen
-                        if (isDismissible && enableDismissGesture) {
-                            mIsLockscreenDismissible = true;
+                        if (isLockscreenDismissible && enableDismissGesture) {
 
                             // if DisplayMode is set to ALWAYS, it will be shown before the first DD notification.
                             // If this is our first DD notification and we are in ALWAYS mode, send another intent to
-                            // enable the dismissal
+                            // enable the dismissal. There is a delay added to allow time for the activity
+                            // time to completely start and handle the new intent. There seems to be odd behavior
+                            // in Android when startActivity is called multiple times too quickly.
                             if (!receivedFirstDDNotification && displayMode == LockScreenConfig.DISPLAY_MODE_ALWAYS) {
-                                launchLockScreenActivity();
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        launchLockScreenActivity();
+                                    }
+                                }, 1000);
+                                return;
                             }
                         }
-                    }
-                    mLockscreenWarningMsg = ddState.getLockscreenWarningMessage();
 
-                    if (ddState.getState() == DriverDistractionState.DD_ON) {
-                        // launch lock screen
-                        driverDistStatus = true;
-                        launchLockScreenActivity();
-                    } else {
-                        // close lock screen
-                        driverDistStatus = false;
-                        closeLockScreenActivity();
+                        if (driverDistStatus) {
+                            // launch lock screen
+                            launchLockScreenActivity();
+                        } else {
+                            // close lock screen
+                            closeLockScreenActivity();
+                        }
+                        receivedFirstDDNotification = true;
                     }
-                    receivedFirstDDNotification = true;
                 }
             }
         };
@@ -302,7 +309,7 @@ public class LockScreenManager extends BaseSubManager {
             // intent to open SDLLockScreenActivity
             // pass in icon, background color, and custom view
             if (lockScreenEnabled && isApplicationForegrounded && context.get() != null) {
-                if (mIsLockscreenDismissible && !lockscreenDismissReceiverRegistered) {
+                if (isLockscreenDismissible && !lockscreenDismissReceiverRegistered) {
                     context.get().registerReceiver(mLockscreenDismissedReceiver, new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED));
                     lockscreenDismissReceiverRegistered = true;
 
@@ -318,7 +325,7 @@ public class LockScreenManager extends BaseSubManager {
                     showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_CUSTOM_VIEW_EXTRA, customView);
                     showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_EXTRA, deviceLogoEnabled);
                     showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_BITMAP, deviceLogo);
-                    showLockScreenIntent.putExtra(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSIBLE, mIsLockscreenDismissible);
+                    showLockScreenIntent.putExtra(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSIBLE, isLockscreenDismissible);
                     showLockScreenIntent.putExtra(SDLLockScreenActivity.KEY_LOCKSCREEN_WARNING_MSG, mLockscreenWarningMsg);
 
                     if (lastIntentUsed != null && lastIntentUsed.equals(showLockScreenIntent.toUri(0))) {
