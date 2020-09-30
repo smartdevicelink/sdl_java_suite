@@ -141,7 +141,7 @@ public class LockScreenManagerTests {
     public void testLockScreenDismissibleWithEnableFalseAndDismissibilityFalse() {
         lockScreenManager.enableDismissGesture = false;
         OnDriverDistraction onDriverDistraction = new OnDriverDistraction();
-        onDriverDistraction.setLockscreenDismissibility(true);
+        onDriverDistraction.setLockscreenDismissibility(false);
         onDriverDistraction.setState(DriverDistractionState.DD_ON);
         onDDListener.onNotified(onDriverDistraction);
         assertFalse(lockScreenManager.enableDismissGesture);
@@ -167,7 +167,7 @@ public class LockScreenManagerTests {
         onDriverDistraction.setState(DriverDistractionState.DD_ON);
         onDDListener.onNotified(onDriverDistraction);
         assertFalse(lockScreenManager.enableDismissGesture);
-        assertFalse(lockScreenManager.isLockscreenDismissible);
+        assertTrue(lockScreenManager.isLockscreenDismissible);
     }
 
 }
