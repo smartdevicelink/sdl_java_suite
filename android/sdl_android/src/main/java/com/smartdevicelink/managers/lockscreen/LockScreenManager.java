@@ -202,6 +202,7 @@ public class LockScreenManager extends BaseSubManager {
                         OnDriverDistraction ddState = (OnDriverDistraction) notification;
                         driverDistStatus = DriverDistractionState.DD_ON.equals(ddState.getState());
                         mLockscreenWarningMsg = ddState.getLockscreenWarningMessage();
+                        boolean previousDismissibleState = isLockscreenDismissible;
                         isLockscreenDismissible = ddState.getLockscreenDismissibility() != null && ddState.getLockscreenDismissibility();
                         DebugTool.logInfo(TAG, "Lock screen dismissible: " + isLockscreenDismissible);
                         // both of these conditions must be met to be able to dismiss lockscreen
@@ -225,6 +226,9 @@ public class LockScreenManager extends BaseSubManager {
 
                         if (driverDistStatus) {
                             // launch lock screen
+                            launchLockScreenActivity();
+                        } else if (isLockscreenDismissible != previousDismissibleState && displayMode == LockScreenConfig.DISPLAY_MODE_ALWAYS) {
+                            //Update dismissible state for display mode always
                             launchLockScreenActivity();
                         } else {
                             // close lock screen
