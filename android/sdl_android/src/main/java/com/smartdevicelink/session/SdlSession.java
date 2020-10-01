@@ -187,7 +187,7 @@ public class SdlSession extends BaseSdlSession {
         if (serviceListeners != null && serviceListeners.containsKey(serviceType)) {
             CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(serviceType);
             for (ISdlServiceListener listener : listeners) {
-                listener.onServiceError(this, serviceType, "End " + serviceType.toString() + " Service NACK'ed");
+                listener.onServiceError(this, serviceType, error);
             }
         }
     }
