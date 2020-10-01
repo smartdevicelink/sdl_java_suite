@@ -132,7 +132,7 @@ public class SDLLockScreenActivity extends Activity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
-        if (intent != null && intent.getBooleanExtra(KEY_LOCKSCREEN_DISMISSIBLE, false)) {
+        if (intent != null && (mIsDismissible != intent.getBooleanExtra(KEY_LOCKSCREEN_DISMISSIBLE, false))) {
             initializeActivity(intent);
         }
     }
