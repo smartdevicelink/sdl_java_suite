@@ -66,11 +66,10 @@ public class SDLLockScreenActivity extends Activity {
     public static final String KEY_LOCKSCREEN_DISMISSIBLE = "KEY_LOCKSCREEN_DISMISSIBLE";
     public static final String KEY_LOCKSCREEN_WARNING_MSG = "KEY_LOCKSCREEN_WARNING_MSG";
     private static final int MIN_SWIPE_DISTANCE = 200;
-    private boolean mIsDismissible;
-    private GestureDetector mGestureDetector;
+    private boolean isDismissible;
+    private GestureDetector dismissibleGestureDetector;
     private int backgroundColor = Color.parseColor("#394e60");
     private boolean useWhiteIconAndTextColor;
-
 
     private final BroadcastReceiver lockScreenBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -97,9 +96,9 @@ public class SDLLockScreenActivity extends Activity {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        mGestureDetector = new GestureDetector(this, new SwipeUpGestureListener());
+        dismissibleGestureDetector = new GestureDetector(this, new SwipeUpGestureListener());
         // set any parameters that came from the lock screen manager
-        initializeActivity(getIntent());
+        initializeActivity(getIntent(), true);
 
         // create intent filter
         IntentFilter lockscreenFilter = new IntentFilter();
@@ -112,8 +111,8 @@ public class SDLLockScreenActivity extends Activity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (mIsDismissible) {
-            return mGestureDetector.onTouchEvent(event);
+        if (isDismissible) {
+            return dismissibleGestureDetector.onTouchEvent(event);
         }
         return super.onTouchEvent(event);
     }
@@ -132,26 +131,32 @@ public class SDLLockScreenActivity extends Activity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
-        if (intent != null && (mIsDismissible != intent.getBooleanExtra(KEY_LOCKSCREEN_DISMISSIBLE, false))) {
-            initializeActivity(intent);
-        }
+        initializeActivity(intent, false);
     }
 
-    public void initializeActivity(Intent intent) {
+    public void initializeActivity(Intent intent, boolean inflateLayout) {
         if (intent != null) {
-            boolean deviceLogoEnabled = intent.getBooleanExtra(LOCKSCREEN_DEVICE_LOGO_EXTRA, true);
-            int customColor = intent.getIntExtra(LOCKSCREEN_COLOR_EXTRA, 0);
-            int customIcon = intent.getIntExtra(LOCKSCREEN_ICON_EXTRA, 0);
+            isDismissible = intent.getBooleanExtra(KEY_LOCKSCREEN_DISMISSIBLE, false);
             int customView = intent.getIntExtra(LOCKSCREEN_CUSTOM_VIEW_EXTRA, 0);
-            Bitmap deviceIcon = intent.getParcelableExtra(LOCKSCREEN_DEVICE_LOGO_BITMAP);
-            backgroundColor = (customColor != 0) ? customColor : backgroundColor;
-
             if (customView != 0) {
-                setCustomView(customView);
+                if (inflateLayout) {
+                    setContentView(customView);
+                } //Currently the only thing done with a custom view is to inflate it
             } else {
-                setContentView(R.layout.activity_sdllock_screen);
+                boolean deviceLogoEnabled = intent.getBooleanExtra(LOCKSCREEN_DEVICE_LOGO_EXTRA, true);
+                int customColor = intent.getIntExtra(LOCKSCREEN_COLOR_EXTRA, 0);
+                int customIcon = intent.getIntExtra(LOCKSCREEN_ICON_EXTRA, 0);
+                Bitmap deviceIcon = intent.getParcelableExtra(LOCKSCREEN_DEVICE_LOGO_BITMAP);
+
+                if (inflateLayout) {
+                    setContentView(R.layout.activity_sdllock_screen);
+                }
+
+                backgroundColor = (customColor != 0) ? customColor : backgroundColor;
                 setBackgroundColor();
+
                 useWhiteIconAndTextColor = shouldUseWhiteForegroundForBackgroundColor();
+                setTextColor(useWhiteIconAndTextColor ? Color.WHITE : Color.BLACK);
 
                 // set Lock Screen Icon
                 if (customIcon != 0) {
@@ -163,13 +168,11 @@ public class SDLLockScreenActivity extends Activity {
                 if (deviceLogoEnabled && deviceIcon != null) {
                     setDeviceLogo(deviceIcon);
                 }
-                mIsDismissible = intent.getBooleanExtra(KEY_LOCKSCREEN_DISMISSIBLE, false);
+
                 String warningMsg = intent.getStringExtra(KEY_LOCKSCREEN_WARNING_MSG);
-                if (mIsDismissible) {
-                    setLockscreenWarningMessage(warningMsg);
-                } else if (!useWhiteIconAndTextColor) {
-                    setTextColorBlack();
-                }
+                setLockscreenText(warningMsg);
+
+
             }
         }
     }
@@ -178,33 +181,37 @@ public class SDLLockScreenActivity extends Activity {
      * Sets the lockScreen logo
      */
     private void setSdlLogo() {
-        ImageView lockScreen_iv = findViewById(R.id.lockscreen_image);
-        Drawable sdlIcon = getResources().getDrawable(R.drawable.sdl_lockscreen_icon);
-        // Checks color contrast and determines if the logo should be black or white
-        if (useWhiteIconAndTextColor) {
-            int color = Color.parseColor("#ffffff");
+        ImageView lockScreenImageView = findViewById(R.id.lockscreen_image);
+        if (lockScreenImageView != null) {
+            Drawable sdlIcon = getResources().getDrawable(R.drawable.sdl_lockscreen_icon);
+            // Checks color contrast and determines if the logo should be black or white
+            if (sdlIcon != null && useWhiteIconAndTextColor) {
+                int color = Color.parseColor("#ffffff");
 
-            int red = (color & 0xFF0000) / 0xFFFF;
-            int green = (color & 0xFF00) / 0xFF;
-            int blue = color & 0xFF;
+                int red = (color & 0xFF0000) / 0xFFFF;
+                int green = (color & 0xFF00) / 0xFF;
+                int blue = color & 0xFF;
 
-            float[] matrix = {0, 0, 0, 0, red,
-                    0, 0, 0, 0, green,
-                    0, 0, 0, 0, blue,
-                    0, 0, 0, 1, 0};
+                float[] matrix = {0, 0, 0, 0, red,
+                        0, 0, 0, 0, green,
+                        0, 0, 0, 0, blue,
+                        0, 0, 0, 1, 0};
 
-            ColorFilter colorFilter = new ColorMatrixColorFilter(matrix);
-            sdlIcon.setColorFilter(colorFilter);
+                ColorFilter colorFilter = new ColorMatrixColorFilter(matrix);
+                sdlIcon.setColorFilter(colorFilter);
+            }
+            lockScreenImageView.setImageDrawable(sdlIcon);
         }
-        lockScreen_iv.setImageDrawable(sdlIcon);
     }
 
     /**
      * Changes the text color to white on the lockScreen
      */
-    private void setTextColorBlack() {
-        TextView tv = findViewById(R.id.lockscreen_text);
-        tv.setTextColor(Color.parseColor("#000000"));
+    private void setTextColor(int color) {
+        TextView lockscreenTextView = findViewById(R.id.lockscreen_text);
+        if (lockscreenTextView != null) {
+            lockscreenTextView.setTextColor(color);
+        }
     }
 
     /**
@@ -242,33 +249,34 @@ public class SDLLockScreenActivity extends Activity {
      * @param customIcon
      */
     private void changeIcon(int customIcon) {
-        ImageView lockScreen_iv = findViewById(R.id.lockscreen_image);
-        lockScreen_iv.setVisibility(View.GONE);
+        ImageView lockScreenImageView = findViewById(R.id.lockscreen_image);
+        if (lockScreenImageView != null) {
+            lockScreenImageView.setVisibility(View.GONE);
+        }
 
-        ImageView lockScreenCustom_iv = findViewById(R.id.appIcon);
-        lockScreenCustom_iv.setVisibility(View.VISIBLE);
-        lockScreenCustom_iv.setBackgroundResource(customIcon);
+        ImageView appIconImageView = findViewById(R.id.appIcon);
+        if (appIconImageView != null) {
+            appIconImageView.setVisibility(View.VISIBLE);
+            appIconImageView.setBackgroundResource(customIcon);
+        }
     }
 
     private void setDeviceLogo(Bitmap deviceLogo) {
-        ImageView device_iv = findViewById(R.id.device_image);
-        if (deviceLogo != null) {
-            device_iv.setImageBitmap(deviceLogo);
+        ImageView connectedDeviceImageView = findViewById(R.id.device_image);
+        if (deviceLogo != null && connectedDeviceImageView != null) {
+            connectedDeviceImageView.setImageBitmap(deviceLogo);
         }
     }
 
-    private void setLockscreenWarningMessage(String msg) {
-        TextView tv = findViewById(R.id.lockscreen_text);
-        if (tv != null) {
-            if (!useWhiteIconAndTextColor) {
-                tv.setTextColor(Color.parseColor("#000000"));
+    private void setLockscreenText(String msg) {
+        TextView lockscreenTextView = findViewById(R.id.lockscreen_text);
+        if (lockscreenTextView != null) {
+            if (isDismissible) {
+                lockscreenTextView.setText(msg != null ? msg : getString(R.string.default_lockscreen_warning_message));
+            } else {
+                lockscreenTextView.setText(getString(R.string.lockscreen_text));
             }
-            tv.setText(msg != null ? msg : getString(R.string.default_lockscreen_warning_message));
         }
-    }
-
-    private void setCustomView(int customView) {
-        setContentView(customView);
     }
 
     private class SwipeUpGestureListener extends GestureDetector.SimpleOnGestureListener {

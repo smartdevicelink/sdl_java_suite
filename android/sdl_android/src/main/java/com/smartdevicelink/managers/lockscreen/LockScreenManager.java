@@ -205,30 +205,37 @@ public class LockScreenManager extends BaseSubManager {
                         boolean previousDismissibleState = isLockscreenDismissible;
                         isLockscreenDismissible = ddState.getLockscreenDismissibility() != null && ddState.getLockscreenDismissibility();
                         DebugTool.logInfo(TAG, "Lock screen dismissible: " + isLockscreenDismissible);
-                        // both of these conditions must be met to be able to dismiss lockscreen
-                        if (isLockscreenDismissible && enableDismissGesture) {
 
-                            // if DisplayMode is set to ALWAYS, it will be shown before the first DD notification.
-                            // If this is our first DD notification and we are in ALWAYS mode, send another intent to
-                            // enable the dismissal. There is a delay added to allow time for the activity
-                            // time to completely start and handle the new intent. There seems to be odd behavior
-                            // in Android when startActivity is called multiple times too quickly.
-                            if (!receivedFirstDDNotification && displayMode == LockScreenConfig.DISPLAY_MODE_ALWAYS) {
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
+                        if (displayMode == LockScreenConfig.DISPLAY_MODE_ALWAYS) {
+                            //If the lockscreen is DISPLAY_MODE_ALWAYS, the only thing that matters
+                            // is the dismissible state
+                            if (enableDismissGesture) {
+                                //Check if there was a change to the dismissible state
+                                if (isLockscreenDismissible != previousDismissibleState) {
+                                    // if DisplayMode is set to ALWAYS, it will be shown before the first DD notification.
+                                    // If this is our first DD notification and we are in ALWAYS mode, send another intent to
+                                    // enable the dismissal. There is a delay added to allow time for the activity
+                                    // time to completely start and handle the new intent. There seems to be odd behavior
+                                    // in Android when startActivity is called multiple times too quickly.
+                                    if (!receivedFirstDDNotification) {
+                                        new Handler().postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                launchLockScreenActivity();
+                                            }
+                                        }, 1000);
+                                    } else {
                                         launchLockScreenActivity();
                                     }
-                                }, 1000);
-                                return;
+                                }
                             }
+                            receivedFirstDDNotification = true;
+                            return;
                         }
 
+                        //For all other states the logic will be handled in the launchLockScreenActivity method call
                         if (driverDistStatus) {
                             // launch lock screen
-                            launchLockScreenActivity();
-                        } else if (isLockscreenDismissible != previousDismissibleState && displayMode == LockScreenConfig.DISPLAY_MODE_ALWAYS) {
-                            //Update dismissible state for display mode always
                             launchLockScreenActivity();
                         } else {
                             // close lock screen
