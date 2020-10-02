@@ -42,7 +42,8 @@
 
         <service
             android:name="com.sdl.hellosdlandroid.SdlService"
-            android:foregroundServiceType="connectedDevice"></service>
+            android:foregroundServiceType="connectedDevice">
+        </service>
         <service
             android:name=".SdlRouterService"
             android:exported="true"
