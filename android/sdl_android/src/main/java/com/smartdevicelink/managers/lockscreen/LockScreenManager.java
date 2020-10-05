@@ -76,7 +76,7 @@ public class LockScreenManager extends BaseSubManager {
     private OnRPCNotificationListener systemRequestListener, ddListener, hmiListener;
     private String deviceIconUrl;
     boolean driverDistStatus;
-    boolean isLockscreenDismissible;
+    boolean isLockscreenDismissible = false;
     boolean enableDismissGesture;
     final boolean lockScreenEnabled;
     final boolean deviceLogoEnabled;
@@ -203,7 +203,10 @@ public class LockScreenManager extends BaseSubManager {
                         driverDistStatus = DriverDistractionState.DD_ON.equals(ddState.getState());
                         mLockscreenWarningMsg = ddState.getLockscreenWarningMessage();
                         boolean previousDismissibleState = isLockscreenDismissible;
-                        isLockscreenDismissible = ddState.getLockscreenDismissibility() != null && ddState.getLockscreenDismissibility();
+                        if(ddState.getLockscreenDismissibility() == null ) {
+                            isLockscreenDismissible = ddState.getLockscreenDismissibility();
+                        } //If the param is null, we assume it stays as the previous value
+
                         DebugTool.logInfo(TAG, "Lock screen dismissible: " + isLockscreenDismissible);
 
                         if (displayMode == LockScreenConfig.DISPLAY_MODE_ALWAYS) {
@@ -299,6 +302,7 @@ public class LockScreenManager extends BaseSubManager {
             }
         };
     }
+
 
     ////
     // LAUNCH LOCK SCREEN LOGIC
