@@ -1,14 +1,13 @@
 # 5.0.0 Release Notes
 
-### Summary:
+## Summary:
 ||Version|
 |--|--|
 | **Protocol** | 5.3.0
 | **RPC** | 7.0.0
 | **Tested Targeting** | Android 29
 
-
-## Features
+## Features:
 
 - [[SDL 0242] Subtle Alert Style](https://github.com/smartdevicelink/sdl_java_suite/issues/1120)
 
@@ -38,7 +37,7 @@
 
 - [[SDL 0202] Supported Character Sets](https://github.com/smartdevicelink/sdl_java_suite/issues/950)
 
-## Enhancements
+## Enhancements:
 
 - [[SDL 0286] Java Suite Cleanup](https://github.com/smartdevicelink/sdl_java_suite/issues/1306)
 
@@ -76,7 +75,7 @@
 
 - [Gradle dependencies needs to be updates](https://github.com/smartdevicelink/sdl_java_suite/issues/1459)
 
-## Bug Fixes
+## Bug Fixes:
 
 - [LockScreen behavior is incorrect for Display Always and Dismissible](https://github.com/smartdevicelink/sdl_java_suite/issues/1515)
 
