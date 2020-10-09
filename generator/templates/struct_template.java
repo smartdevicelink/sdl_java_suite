@@ -27,7 +27,7 @@
     {%- if p.deprecated is defined and p.deprecated is not none %}
     @Deprecated
     {%- endif %}
-    public void set{{p.title}}({% if p.mandatory %}@NonNull {% endif %}{{p.return_type}} {{p.last}}) {
+    public {{class_name}} set{{p.title}}({% if p.mandatory %}@NonNull {% endif %}{{p.return_type}} {{p.last}}) {
         setValue({{p.key}}, {{p.last}});
     }
 
