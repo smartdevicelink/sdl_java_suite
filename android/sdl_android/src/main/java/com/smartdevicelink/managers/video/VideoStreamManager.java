@@ -89,6 +89,7 @@ import com.smartdevicelink.util.Version;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.FutureTask;
@@ -111,7 +112,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
     private IVideoStreamListener streamListener;
     private boolean isTransportAvailable = false;
     private Integer majorProtocolVersion;
-	private List<VideoStreamingRange> streamingRange;
+	private List<VideoStreamingRange> listOfStreamingRanges;
 	private boolean hasStarted;
     private String vehicleMake = null;
 	private boolean isEncrypted = false;
@@ -336,11 +337,12 @@ public class VideoStreamManager extends BaseVideoStreamManager {
      *                           If you are unsure about what parameters to be used it is best to just send null and let the system determine what
      *                           works best for the currently connected module.
 	 * @param encrypted a flag of if the stream should be encrypted. Only set if you have a supplied encryption library that the module can understand.
-	 * @param portraitRange constraints for vehicle display : aspect ratio, min/max resolutions, max diagonal size.
 	 * @param landscapeRange constraints for vehicle display : aspect ratio, min/max resolutions, max diagonal size.
-	 */
+     * @param portraitRange constraints for vehicle display : aspect ratio, min/max resolutions, max diagonal size.
+     */
     public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted, VideoStreamingRange landscapeRange, VideoStreamingRange portraitRange) {
-		configureGlobalParameters(context, remoteDisplayClass, isEncrypted, streamingRange);
+        Collections.addAll(listOfStreamingRanges, portraitRange, landscapeRange);
+		configureGlobalParameters(context, remoteDisplayClass, isEncrypted, listOfStreamingRanges);
 		if(majorProtocolVersion >= 5 && !internalInterface.getSystemCapabilityManager().isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
 			stateMachine.transitionToState(StreamingStateMachine.ERROR);
 			return;
@@ -377,13 +379,13 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		processCapabilitiesWithPendingStart(encrypted, parameters);
 	}
 
-	private void configureGlobalParameters(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, boolean encrypted, List<VideoStreamingRange> streamingRange) {
+	private void configureGlobalParameters(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, boolean encrypted, List<VideoStreamingRange> listOfStreamingRange) {
 		this.context = new WeakReference<>(context);
 		this.remoteDisplayClass = remoteDisplayClass;
 		this.isEncrypted = encrypted;
 		this.majorProtocolVersion = internalInterface.getProtocolVersion().getMajor();
-		if (streamingRange != null) {
-			this.streamingRange = streamingRange;
+		if (listOfStreamingRange != null) {
+			this.listOfStreamingRanges = listOfStreamingRange;
 		}
 	}
 
@@ -403,11 +405,11 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 						params.update(castedCapability, vehicleMake);    //Streaming parameters are ready time to stream
                             VideoStreamManager.this.parameters = params;
 
-						if (streamingRange != null) {
+						if (listOfStreamingRanges != null) {
 							// filtering
 							castedCapability.setAdditionalVideoStreamingCapabilities(
 									getSupportedCapabilities(
-											streamingRange,
+                                            listOfStreamingRanges,
 											castedCapability.getAdditionalVideoStreamingCapabilities()
 									)
 							);
