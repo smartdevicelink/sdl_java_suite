@@ -200,7 +200,10 @@ public class LockScreenManager extends BaseSubManager {
                     DebugTool.logInfo(TAG, "Lock screen dismissible: " + isDismissible);
                     if (isDismissible != null) {
                         // both of these conditions must be met to be able to dismiss lockscreen
-                        if (isDismissible && enableDismissGesture) {
+                        if (!isDismissible) {
+                            mIsLockscreenDismissible = false;
+                        }
+                        else if (isDismissible && enableDismissGesture) {
                             mIsLockscreenDismissible = true;
 
                             // if DisplayMode is set to ALWAYS, it will be shown before the first DD notification.
@@ -216,6 +219,9 @@ public class LockScreenManager extends BaseSubManager {
                     if (ddState.getState() == DriverDistractionState.DD_ON) {
                         // launch lock screen
                         driverDistStatus = true;
+                        launchLockScreenActivity();
+                    } else if (ddState.getState() == DriverDistractionState.DD_OFF && displayMode == LockScreenConfig.DISPLAY_MODE_ALWAYS) {
+                        driverDistStatus = false;
                         launchLockScreenActivity();
                     } else {
                         // close lock screen
