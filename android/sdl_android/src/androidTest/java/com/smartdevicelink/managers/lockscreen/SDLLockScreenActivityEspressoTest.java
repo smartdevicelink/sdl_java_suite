@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
@@ -151,13 +153,16 @@ public class SDLLockScreenActivityEspressoTest {
         testLockScreenBehavior(DriverDistractionState.DD_ON, true, false, false, true);
     }
 
-    public void testLockScreenBehavior(final DriverDistractionState dd, final Boolean lockScreenDismissibility, final boolean firstDD, final Boolean previousLockScreenDismissibility, final boolean dismissEnabled){
+    public void testLockScreenBehavior(final DriverDistractionState dd, final Boolean lockScreenDismissibility, final boolean firstDD, final Boolean previousLockScreenDismissibility, final boolean dismissEnabled) {
         LockScreenConfig lockScreenConfig = new LockScreenConfig();
         lockScreenConfig.setDisplayMode(LockScreenConfig.DISPLAY_MODE_ALWAYS);
         lockScreenConfig.enableDismissGesture(true);
         lockScreenConfig.setCustomView(0);
         lockScreenConfig.setAppIcon(0);
 
+        if (Looper.myLooper() == null) {
+            Looper.prepare();
+        }
         LockScreenManager lockScreenManager = setupLockScreenManager(lockScreenConfig);
 
         lockScreenManager.start(new CompletionListener() {
@@ -190,27 +195,32 @@ public class SDLLockScreenActivityEspressoTest {
                 onDDListener.onNotified(onDriverDistraction);
 
 
-                if (dismissEnabled) {
-                    onView(withText("Swipe down to dismiss, acknowledging that you are not the driver.")).check(matches(isDisplayed()));
-                } else {
-                    onView(withText("Locked for your safety")).check(matches(isDisplayed()));
-                }
-
-                BroadcastReceiver receiver = new BroadcastReceiver() {
+                new Handler().postDelayed(new Runnable() {
                     @Override
-                    public void onReceive(Context context, Intent intent) {
+                    public void run() {
                         if (dismissEnabled) {
-                            assertEquals(intent.getAction(), SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED);
+                            onView(withText("Swipe down to dismiss, acknowledging that you are not the driver.")).check(matches(isDisplayed()));
                         } else {
-                            //Activity should not be dismissible test failed due to lock screen being dismissed
-                            fail();
+                            onView(withText("Locked for your safety")).check(matches(isDisplayed()));
                         }
+
+                        BroadcastReceiver receiver = new BroadcastReceiver() {
+                            @Override
+                            public void onReceive(Context context, Intent intent) {
+                                if (dismissEnabled) {
+                                    assertEquals(intent.getAction(), SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED);
+                                } else {
+                                    //Activity should not be dismissible test failed due to lock screen being dismissed
+                                    fail();
+                                }
+                            }
+                        };
+
+                        intentsTestRule.getActivity().registerReceiver(receiver, new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED));
+
+                        onView(ViewMatchers.withId(R.id.lockscreen_linear_layout)).perform(ViewActions.swipeDown());
                     }
-                };
-
-                intentsTestRule.getActivity().registerReceiver(receiver, new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED));
-
-                onView(ViewMatchers.withId(R.id.lockscreen_linear_layout)).perform(ViewActions.swipeDown());
+                }, 1000);
             }
         });
     }

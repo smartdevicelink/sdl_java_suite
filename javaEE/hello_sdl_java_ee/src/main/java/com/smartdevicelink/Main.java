@@ -7,8 +7,8 @@ package com.smartdevicelink;
 
 
 //    @ServerEndpoint("/")
- //   @Stateful(name = "SDLSessionEJB")
-    public class Main {
+//   @Stateful(name = "SDLSessionEJB")
+public class Main {
 
   /*      Session session;
         static Thread thread = null, mainThread;
@@ -48,4 +48,4 @@ package com.smartdevicelink;
             }
         };
         */
-    }
+}

@@ -98,9 +98,7 @@ public class SdlSession extends BaseSdlSession {
         }
 
         // If requiresAudioSupport is false, or a supported audio output device is available
-        boolean isAudioOutputAvailable = mediaStreamingStatus != null && mediaStreamingStatus.isAudioOutputAvailable();
-        return !requiresAudioSupport || isAudioOutputAvailable;
-
+        return !requiresAudioSupport || (mediaStreamingStatus != null && mediaStreamingStatus.isAudioOutputAvailable());
     }
 
 
@@ -189,7 +187,7 @@ public class SdlSession extends BaseSdlSession {
         if (serviceListeners != null && serviceListeners.containsKey(serviceType)) {
             CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(serviceType);
             for (ISdlServiceListener listener : listeners) {
-                listener.onServiceError(this, serviceType, "End " + serviceType.toString() + " Service NACK'ed");
+                listener.onServiceError(this, serviceType, error);
             }
         }
     }
