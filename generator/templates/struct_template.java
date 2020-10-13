@@ -29,6 +29,7 @@
     {%- endif %}
     public {{class_name}} set{{p.title}}({% if p.mandatory %}@NonNull {% endif %}{{p.return_type}} {{p.last}}) {
         setValue({{p.key}}, {{p.last}});
+        return this;
     }
 
     /**
