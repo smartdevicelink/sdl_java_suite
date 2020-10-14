@@ -48,12 +48,11 @@ import static org.mockito.Mockito.mock;
 //They are ignored for CICD purposes and should be run manually during release testing
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-@Ignore
+@Ignore //Remove this annotation before running these tests
 public class SDLLockScreenActivityEspressoTest {
 
     private OnRPCNotificationListener onDDListener;
     private OnRPCNotificationListener onHMIListener;
-    private OnRPCNotificationListener onSystemRequestListener;
 
     @Rule
     public ActivityScenarioRule<SDLLockScreenActivity> activityRule =
@@ -199,9 +198,9 @@ public class SDLLockScreenActivityEspressoTest {
                     @Override
                     public void run() {
                         if (dismissEnabled) {
-                            onView(withText("Swipe down to dismiss, acknowledging that you are not the driver.")).check(matches(isDisplayed()));
+                            onView(withText(R.string.default_lockscreen_warning_message)).check(matches(isDisplayed()));
                         } else {
-                            onView(withText("Locked for your safety")).check(matches(isDisplayed()));
+                            onView(withText(R.string.lockscreen_text)).check(matches(isDisplayed()));
                         }
 
                         BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -246,18 +245,8 @@ public class SDLLockScreenActivityEspressoTest {
             }
         };
 
-        Answer<Void> onSystemRequestAnswer = new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                onSystemRequestListener = (OnRPCNotificationListener) args[1];
-                return null;
-            }
-        };
-
         doAnswer(onDDStatusAnswer).when(internalInterface).addOnRPCNotificationListener(eq(FunctionID.ON_DRIVER_DISTRACTION), any(OnRPCNotificationListener.class));
         doAnswer(onHMIStatusAnswer).when(internalInterface).addOnRPCNotificationListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCNotificationListener.class));
-        doAnswer(onSystemRequestAnswer).when(internalInterface).addOnRPCNotificationListener(eq(FunctionID.ON_SYSTEM_REQUEST), any(OnRPCNotificationListener.class));
 
         Context context = getInstrumentation().getContext();
 
