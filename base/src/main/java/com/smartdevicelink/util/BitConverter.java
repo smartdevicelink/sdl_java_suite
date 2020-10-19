@@ -47,12 +47,19 @@ public class BitConverter {
      * @param bytes  byte array that will be converted to hex
      * @param offset int representing the offset to begin conversion at
      * @param length int representing number of bytes in array to convert
-     * @return the String containing converted hex values or null if byte array is null
+     * @return the String containing converted hex values or null if byte array is null,
+     * a null value if byte array is null,
+     * and an empty string if the offset is greater than the length
      */
     public static String bytesToHex(byte[] bytes, int offset, int length) {
         if (bytes == null) {
             return null;
         }
+
+        if (offset > bytes.length) {
+            return "";
+        }
+
         final char[] HexDigits = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
         byte b;
         char[] hexChars = new char[2 * length];
@@ -100,12 +107,20 @@ public class BitConverter {
 
     /**
      * @param sizeBuf byte array that will be converted to int
-     * @return int converted from byte array or -1 if byte array is null
+     * @param offset The position indicating where to begin converting.
+     * @return int converted from byte array,
+     * -1 if byte array is null,
+     * and 0 if the offset is greater than the length of the byte array
      */
     public static int intFromByteArray(byte[] sizeBuf, int offset) {
         if (sizeBuf == null) {
             return -1;
         }
+
+        if (offset >sizeBuf.length) {
+            return 0;
+        }
+
         int ret = 0;
         for (int i = offset; i < offset + 4; i++) {
             ret <<= 8;
@@ -122,12 +137,20 @@ public class BitConverter {
 
     /**
      * @param sizeBuf byte array that will be converted to short
-     * @return short converted from byte array or -1 if byte array is null
+     * @param offset The position indicating where to begin converting.
+     * @return short converted from byte array,
+     * -1 if byte array is null,
+     * and 0 if the offset is greater than the length of the byte array
      */
     public static short shortFromByteArray(byte[] sizeBuf, int offset) {
         if (sizeBuf == null) {
             return -1;
         }
+
+        if (offset > sizeBuf.length) {
+            return 0;
+        }
+
         short ret = 0;
         for (int i = offset; i < offset + 2; i++) {
             ret <<= 8;
