@@ -191,8 +191,6 @@ public class RPCGenericTests {
                                     paramType = "SdlMsgVersion";
                                 } else if (paramType.equals("OASISAddress")) {
                                     paramType = "OasisAddress";
-                                } else if (rpcName.equals("TouchEvent") && paramType.equals("Integer") && isArray) {
-                                    paramType = "Long";
                                 } else if (Arrays.asList("GPSData", "VideoStreamingCapability").contains(rpcName) && paramType.equals("Float")) {
                                     paramType = "Double";
                                 } else if (Arrays.asList("GetVehicleDataResponse", "OnVehicleData").contains(rpcName) && Arrays.asList("setInstantFuelConsumption", "setFuelLevel", "setSpeed", "setExternalTemperature", "setEngineTorque", "setAccPedalPosition", "setSteeringWheelAngle").contains(setterMethodName)) {
@@ -288,6 +286,11 @@ public class RPCGenericTests {
                                     setterMethodName = "setOEMCustomVehicleDataType";
                                 } else if (rpcName.equals("HMICapabilities") && setterMethodName.equals("setDisplays")) {
                                     setterMethodName = "setDisplaysCapabilityAvailable";
+                                } else if (rpcName.equals("TouchEvent") && setterMethodName.equals("setC")) {
+                                    setterMethodName = "setTouchCoordinates";
+                                } else if (rpcName.equals("TouchEvent") && setterMethodName.equals("setTs")) {
+                                    paramType = "Long";
+                                    setterMethodName = "setTimestamps";
                                 } else if (rpcName.equals("HMICapabilities")) {
                                     setterMethodName += "Available";
                                 }
