@@ -229,7 +229,9 @@ public class RPCGenericTests {
                                 rpcName = "OasisAddress";
                             } else if (rpcName.equals("ShowConstantTBT")) {
                                 rpcName = "ShowConstantTbt";
-                            } else if (rpcName.equals("EncodedSyncPData") || rpcName.equals("OnEncodedSyncPData") || rpcName.equals("EncodedSyncPDataResponse")) {
+                            } else if (rpcName.equals("messageType")) {
+                                rpcName = "MessageType";
+                            } else if (rpcName.equals("EncodedSyncPData") || rpcName.equals("OnEncodedSyncPData") || rpcName.equals("EncodedSyncPDataResponse") || rpcName.equals("FunctionID")) {
                                 skipRPC = true;
                             }
                             // -------------------------------------------------------------------------------------------------------------
