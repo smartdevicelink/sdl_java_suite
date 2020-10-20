@@ -428,19 +428,10 @@ public class RPCGenericTests {
         return rpcParamsMap;
     }
 
-    private boolean isDeprecated (AnnotatedElement element) {
-        for (Annotation annotation : element.getDeclaredAnnotations()) {
-            if (annotation.annotationType().getSimpleName().equalsIgnoreCase("deprecated")) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     // This method makes sure that for every function and struct RPC, there is a constructor that has all the mandatory params
     // It also checks if there are function and struct RPCs in the XML file that don't exist in the code
     @Test
-    public void testMandatoryParamsMatch() {
+    public void testConstructorWithMandatoryParamsExist() {
         // List of RPC names that don't have a constructor that has all mandatory params
         List<String> rpcsWithInvalidConstructor = new ArrayList<>();
 
@@ -503,6 +494,15 @@ public class RPCGenericTests {
         }
         assertTrue("The following RPCs were not found in the code: " + rpcsFromXmlNotFoundInCode, rpcsFromXmlNotFoundInCode.isEmpty());
         assertTrue("The following RPCs don't have a constructor that has all the mandatory params: " + rpcsWithInvalidConstructor, rpcsWithInvalidConstructor.isEmpty());
+    }
+
+    private boolean isDeprecated (AnnotatedElement element) {
+        for (Annotation annotation : element.getDeclaredAnnotations()) {
+            if (annotation.annotationType().getSimpleName().equalsIgnoreCase("deprecated")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // This method returns the correct java reflection method in a specific class
@@ -579,7 +579,7 @@ public class RPCGenericTests {
 
     // This method makes sure that for every function and struct RPC, the constructor that has the mandatory params is setting the values correctly
     @Test
-    public void testMandatoryParamsValues() {
+    public void testConstructorWithMandatoryParamsValues() {
         // List of RPC names that have a constructor which is not settings the values for the mandatory params correctly
         List<String> rpcsWithInvalidConstructor = new ArrayList<>();
 
