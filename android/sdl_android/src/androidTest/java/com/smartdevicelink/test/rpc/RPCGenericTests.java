@@ -156,7 +156,7 @@ public class RPCGenericTests {
 
     // This method parses the RPC spec xml file and returns a map that has
     // keys correspond to the RPCs names and values correspond to the RPCs properties and their params.
-    private Map<String, RPC> getRPCsMap(String fileName, boolean includeMandatoryOnly) {
+    private Map<String, RPC> getRPCsMap(String fileName, boolean includeMandatoryParamsOnly) {
         Map<String, RPC> rpcParamsMap = new HashMap<>();
         try {
             InputStream stream = getInstrumentation().getTargetContext().getAssets().open(fileName);
@@ -216,7 +216,7 @@ public class RPCGenericTests {
                             javaParamType = null;
                             skipParam = false;
                             boolean isMandatory = Boolean.valueOf(myParser.getAttributeValue(null, "mandatory"));
-                            if (isMandatory || !includeMandatoryOnly) {
+                            if (isMandatory || !includeMandatoryParamsOnly) {
                                 String paramName = myParser.getAttributeValue(null, "name");
                                 String paramType = myParser.getAttributeValue(null, "type");
                                 boolean isArray = Boolean.valueOf(myParser.getAttributeValue(null, "array"));
