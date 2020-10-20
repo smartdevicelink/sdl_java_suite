@@ -178,7 +178,7 @@ public class RPCGenericTests {
                         boolean isDeprecated = Boolean.valueOf(myParser.getAttributeValue(null, "deprecated"));
 
                         // Store the RPC name in the map
-                        if (elementType.equals("function") || elementType.equals("struct")) {
+                        if ((elementType.equals("function") || elementType.equals("struct") || elementType.equals("enum")) && myParser.getAttributeValue(null, "until") == null) {
                             rpcName = myParser.getAttributeValue(null, "name");
                             skipRPC = false;
                             if (elementType.equals("function") && myParser.getAttributeValue(null, "messagetype").equals("response") && !rpcName.contains("Response")) {
@@ -400,7 +400,7 @@ public class RPCGenericTests {
         // Loop through all RPCs that were loaded from RPC spec XML file
         // and make sure that every RPC has a constructor that has all mandatory params
         for (String rpcName : rpcMandatoryParamsMapFromXml.keySet()) {
-            if (rpcMandatoryParamsMapFromXml.get(rpcName).skip) {
+            if (rpcMandatoryParamsMapFromXml.get(rpcName).skip || rpcMandatoryParamsMapFromXml.get(rpcName).type.equals("enum")) {
                 continue;
             }
 
@@ -535,7 +535,7 @@ public class RPCGenericTests {
         // Loop through all RPCs that were loaded from RPC spec XML file
         // and make sure that the constructor that has the mandatory params is setting the values correctly
         for (String rpcName : rpcMandatoryParamsMapFromXml.keySet()) {
-            if (rpcMandatoryParamsMapFromXml.get(rpcName).skip) {
+            if (rpcMandatoryParamsMapFromXml.get(rpcName).skip || rpcMandatoryParamsMapFromXml.get(rpcName).type.equals("enum")) {
                 continue;
             }
 
@@ -629,7 +629,7 @@ public class RPCGenericTests {
 
         // Loop through all RPCs that were loaded from RPC spec XML file
         for (String rpcName : rpcAllParamsMapFromXml.keySet()) {
-            if (rpcAllParamsMapFromXml.get(rpcName).skip) {
+            if (rpcAllParamsMapFromXml.get(rpcName).skip || rpcAllParamsMapFromXml.get(rpcName).type.equals("enum")) {
                 continue;
             }
 
@@ -640,6 +640,11 @@ public class RPCGenericTests {
                 e.printStackTrace();
                 errors.add("Class not found for rpc: " + rpcName + ". \n");
                 continue;
+            }
+
+            if (aClass != null && isDeprecated(aClass) != rpcAllParamsMapFromXml.get(rpcName).isDeprecated) {
+                String errMsg = rpcName + " deprecation status does not match RPC spec" + ". \n";
+                errors.add(errMsg);
             }
 
             // Loop through all params for the current RPC and make sure everyone has a a setter and a getter
