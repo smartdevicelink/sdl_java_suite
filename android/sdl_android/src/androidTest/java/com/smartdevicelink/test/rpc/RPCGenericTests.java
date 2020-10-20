@@ -36,6 +36,7 @@ public class RPCGenericTests {
 
     private final String XML_FILE_NAME = "MOBILE_API.xml";
     private final String RPC_PACKAGE_PREFIX = "com.smartdevicelink.proxy.rpc.";
+    private final String ENUM_PACKAGE_PREFIX = "com.smartdevicelink.proxy.rpc.enums.";
     private final String TEST_VALUES_CLASS = "com.smartdevicelink.test.TestValues";
     private Map<String, RPC> rpcMandatoryParamsMapFromXml;
     private Map<String, RPC> rpcAllParamsMapFromXml;
@@ -45,7 +46,8 @@ public class RPCGenericTests {
         private String type;
         private boolean isDeprecated;
         private boolean skip;
-        private List<Parameter> parameters;
+        private List<Parameter> parameters; // For functions and structs
+        private List<Element> elements;  // For enums
 
         public RPC setRPCName(String rpcName) {
             this.rpcName = rpcName;
@@ -69,6 +71,11 @@ public class RPCGenericTests {
 
         public RPC setParameters(List<Parameter> parameters) {
             this.parameters = parameters;
+            return this;
+        }
+
+        public RPC setElements(List<Element> elements) {
+            this.elements = elements;
             return this;
         }
     }
@@ -147,6 +154,33 @@ public class RPCGenericTests {
         }
     }
 
+    private class Element {
+        private String rpcName;
+        private String name;
+        private boolean isDeprecated;
+        private boolean skip;
+
+        public Element setRPCName(String rpcName) {
+            this.rpcName = rpcName;
+            return this;
+        }
+
+        public Element setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Element setDeprecated(boolean deprecated) {
+            isDeprecated = deprecated;
+            return this;
+        }
+
+        public Element setSkip(boolean skip) {
+            this.skip = skip;
+            return this;
+        }
+    }
+
     @Before
     public void setUp() {
         // Map that has keys correspond to the RPCs names and values correspond to RPCs properties and their params
@@ -171,6 +205,7 @@ public class RPCGenericTests {
             String getterMethodName2;
             Class<?> javaParamType;
             boolean skipParam;
+            boolean skipElement;
             while (event != XmlPullParser.END_DOCUMENT) {
                 String elementType = myParser.getName();
                 switch (event) {
@@ -204,10 +239,12 @@ public class RPCGenericTests {
                                     .setType(elementType)
                                     .setDeprecated(isDeprecated)
                                     .setSkip(skipRPC)
-                                    .setParameters(new ArrayList<Parameter>());
+                                    .setParameters(new ArrayList<Parameter>())
+                                    .setElements(new ArrayList<Element>());
                             rpcParamsMap.put(rpcName, rpc);
 
                         }
+
                         // Store the params for the current RPC in the map
                         if (elementType.equals("param") && myParser.getAttributeValue(null, "until") == null) {
                             setterMethodName = null;
@@ -366,6 +403,20 @@ public class RPCGenericTests {
                                 rpcParamsMap.get(rpcName).parameters.add(param);
                             }
                         }
+
+                        // Store the elements for the current RPC in the map
+                        if (elementType.equals("element") && myParser.getAttributeValue(null, "until") == null) {
+                            skipElement = false;
+                            String elementName = myParser.getAttributeValue(null, "name");
+
+                            Element element = new Element()
+                                    .setRPCName(rpcName)
+                                    .setName(elementName)
+                                    .setDeprecated(isDeprecated)
+                                    .setSkip(skipElement);
+
+                            rpcParamsMap.get(rpcName).elements.add(element);
+                        }
                         break;
                 }
                 event = myParser.next();
@@ -386,8 +437,8 @@ public class RPCGenericTests {
         return false;
     }
 
-    // This method makes sure that for every RPC, there is a constructor that has all the mandatory params
-    // It also checks if there are RPC in the XML file that don't exist in the code
+    // This method makes sure that for every function and struct RPC, there is a constructor that has all the mandatory params
+    // It also checks if there are function and struct RPCs in the XML file that don't exist in the code
     @Test
     public void testMandatoryParamsMatch() {
         // List of RPC names that don't have a constructor that has all mandatory params
@@ -526,7 +577,7 @@ public class RPCGenericTests {
         return javaType;
     }
 
-    // This method makes sure that for every RPC, the constructor that has the mandatory params is setting the values correctly
+    // This method makes sure that for every function and struct RPC, the constructor that has the mandatory params is setting the values correctly
     @Test
     public void testMandatoryParamsValues() {
         // List of RPC names that have a constructor which is not settings the values for the mandatory params correctly
@@ -618,13 +669,14 @@ public class RPCGenericTests {
     }
 
     /**
-     * This method makes sure that for every param in every RPC:
-     * - A setter exists and its name matches the RPC spec
+     * This method makes sure that for every function and struct RPC, the class exists in the code
+     * and its annotations match the RPC spec. And for every param in that RPC:
+     * - A setter exists and its name & annotations match the RPC spec
      * - The setter return type matches the RPC type (to make RPCs chainable)
-     * - A getter exists and its name matches the RPC spec
+     * - A getter exists and its name & annotations match the RPC spec
      */
     @Test
-    public void testParamsSettersAndGetters() {
+    public void testFunctionsAndStructs() {
         List<String> errors = new ArrayList<>();
 
         // Loop through all RPCs that were loaded from RPC spec XML file
