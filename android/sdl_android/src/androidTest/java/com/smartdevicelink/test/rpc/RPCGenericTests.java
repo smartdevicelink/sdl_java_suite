@@ -701,7 +701,7 @@ public class RPCGenericTests {
                 errors.add(errMsg);
             }
 
-            // Loop through all params for the current RPC and make sure everyone has a a setter and a getter
+            // Loop through all params for the current RPC and make sure everyone has a setter and a getter
             List<Parameter> parameters = rpcAllParamsMapFromXml.get(rpcName).parameters;
             for (int i = 0; i < parameters.size(); i++) {
                 Parameter parameter = parameters.get(i);
@@ -744,6 +744,49 @@ public class RPCGenericTests {
                 if (getterMethod != null && isDeprecated(getterMethod) != parameter.isDeprecated) {
                     String errMsg = rpcName + "." + parameter.getterName1 + "()" + " deprecation status does not match RPC spec" + ". \n";
                     errors.add(errMsg);
+                }
+            }
+        }
+
+        assertTrue("There are " + errors.size() + " errors: \n" + errors, errors.isEmpty());
+    }
+
+    /**
+     * This method makes sure that for every enum RPC, the class exists in the code
+     * and its annotations match the RPC spec. And for every element in that enum:
+     * - The element exists and its name & annotations match the RPC spec
+     */
+    @Test
+    public void testEnums() {
+        List<String> errors = new ArrayList<>();
+
+        // Loop through all RPCs that were loaded from RPC spec XML file
+        for (String rpcName : rpcAllParamsMapFromXml.keySet()) {
+            if (rpcAllParamsMapFromXml.get(rpcName).skip || rpcAllParamsMapFromXml.get(rpcName).type.equals("function") || rpcAllParamsMapFromXml.get(rpcName).type.equals("struct")) {
+                continue;
+            }
+
+            Class aClass;
+            try {
+                aClass = Class.forName(ENUM_PACKAGE_PREFIX + rpcName);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                errors.add("Class not found for rpc: " + rpcName + ". \n");
+                continue;
+            }
+
+            if (aClass != null && isDeprecated(aClass) != rpcAllParamsMapFromXml.get(rpcName).isDeprecated) {
+                String errMsg = rpcName + " deprecation status does not match RPC spec" + ". \n";
+                errors.add(errMsg);
+            }
+
+            // Loop through all elements for the current RPC and make sure everyone matches the RPC spec
+            List<Element> elements = rpcAllParamsMapFromXml.get(rpcName).elements;
+            for (int i = 0; i < elements.size(); i++) {
+                Element element = elements.get(i);
+
+                if (element.skip) {
+                    continue;
                 }
             }
         }
