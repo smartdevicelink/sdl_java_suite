@@ -14,6 +14,8 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -45,6 +47,7 @@ public class RPCGenericTests {
         private Class<?> javaType;
         private boolean isArray;
         private boolean isMandatory;
+        private boolean isDeprecated;
         private String setterName;
         private String getterName1;
         private String getterName2;
@@ -79,6 +82,11 @@ public class RPCGenericTests {
 
         public Parameter setMandatory(boolean mandatory) {
             isMandatory = mandatory;
+            return this;
+        }
+
+        public Parameter setDeprecated(boolean deprecated) {
+            isDeprecated = deprecated;
             return this;
         }
 
@@ -169,6 +177,7 @@ public class RPCGenericTests {
                             javaParamType = null;
                             skipParam = false;
                             boolean isMandatory = Boolean.valueOf(myParser.getAttributeValue(null, "mandatory"));
+                            boolean isDeprecated = Boolean.valueOf(myParser.getAttributeValue(null, "deprecated"));
                             if (isMandatory || !includeMandatoryOnly) {
                                 String paramName = myParser.getAttributeValue(null, "name");
                                 String paramType = myParser.getAttributeValue(null, "type");
@@ -310,6 +319,7 @@ public class RPCGenericTests {
                                         .setJavaType(javaParamType)
                                         .setArray(isArray)
                                         .setMandatory(isMandatory)
+                                        .setDeprecated(isDeprecated)
                                         .setSkip(skipParam)
                                         .setSetterName(setterMethodName)
                                         .setGetterName1(getterMethodName1)
@@ -327,6 +337,15 @@ public class RPCGenericTests {
             fail("Cannot parse mobile APIs XML file. Please make sure that the RPC Spec submodule is initialized: " + e.getMessage());
         }
         return rpcParamsMap;
+    }
+
+    private boolean isDeprecated (AnnotatedElement element) {
+        for (Annotation annotation : element.getDeclaredAnnotations()) {
+            if (annotation.annotationType().getSimpleName().equalsIgnoreCase("deprecated")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // This method makes sure that for every RPC, there is a constructor that has all the mandatory params
@@ -582,8 +601,9 @@ public class RPCGenericTests {
                 }
 
                 // Confirm that the setter is correct
+                Method setterMethod = null;
                 try {
-                    Method setterMethod = getMethod(aClass, parameter, parameter.setterName, false);
+                    setterMethod = getMethod(aClass, parameter, parameter.setterName, false);
                     List<String> expectedReturnTypes = Arrays.asList(aClass.getName(), aClass.getSuperclass().getName());
                     String actualReturnType = setterMethod.getReturnType().getName();
                     if (!expectedReturnTypes.contains(actualReturnType)) {
@@ -592,6 +612,10 @@ public class RPCGenericTests {
                     }
                 } catch (NoSuchMethodException e) {
                     String errMsg = rpcName + "." + parameter.setterName + "(" + parameter.type + ")" + " cannot be found. Make sure that the method exists. \n";
+                    errors.add(errMsg);
+                }
+                if (setterMethod != null && isDeprecated(setterMethod) != parameter.isDeprecated) {
+                    String errMsg = rpcName + "." + parameter.setterName + "()" + " deprecation status does not match RPC spec" + ". \n";
                     errors.add(errMsg);
                 }
 
@@ -607,6 +631,10 @@ public class RPCGenericTests {
                         String errMsg = String.format(rpcName + "." + parameter.getterName1 + "()" + "%s" + " cannot be found. Make sure that the method exists. \n", parameter.type.equalsIgnoreCase("boolean") ? "/" + parameter.getterName2 + "()" : "");
                         errors.add(errMsg);
                     }
+                }
+                if (getterMethod != null && isDeprecated(getterMethod) != parameter.isDeprecated) {
+                    String errMsg = rpcName + "." + parameter.getterName1 + "()" + " deprecation status does not match RPC spec" + ". \n";
+                    errors.add(errMsg);
                 }
             }
         }
