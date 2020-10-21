@@ -117,7 +117,7 @@ public class BitConverter {
             return -1;
         }
 
-        if (offset >sizeBuf.length) {
+        if (offset > sizeBuf.length) {
             return 0;
         }
 
