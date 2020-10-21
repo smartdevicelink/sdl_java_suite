@@ -62,7 +62,7 @@ class TestFunctionsProducer(unittest.TestCase):
         expected['function_id'] = 'GET_VEHICLE_DATA'
         expected['class_name'] = 'GetVehicleDataResponse'
         expected['extends_class'] = 'RPCResponse'
-        expected['imports'] = ['android.support.annotation.NonNull', '',
+        expected['imports'] = ['androidx.annotation.NonNull', '',
                                'com.smartdevicelink.protocol.enums.FunctionID',
                                'com.smartdevicelink.proxy.RPCResponse',
                                'com.smartdevicelink.proxy.rpc.enums.Result',
@@ -86,7 +86,7 @@ class TestFunctionsProducer(unittest.TestCase):
         expected['function_id'] = 'REGISTER_APP_INTERFACE'
         expected['class_name'] = 'RegisterAppInterfaceResponse'
         expected['extends_class'] = 'RPCResponse'
-        expected['imports'] = ['android.support.annotation.NonNull', '',
+        expected['imports'] = ['androidx.annotation.NonNull', '',
                                'com.smartdevicelink.protocol.enums.FunctionID', 'com.smartdevicelink.proxy.RPCResponse',
                                'com.smartdevicelink.proxy.rpc.enums.Language',
                                'com.smartdevicelink.proxy.rpc.enums.Result', '', 'java.util.Hashtable']
@@ -108,7 +108,7 @@ class TestFunctionsProducer(unittest.TestCase):
         expected['function_id'] = 'REGISTER_APP_INTERFACE'
         expected['class_name'] = 'RegisterAppInterface'
         expected['extends_class'] = 'RPCRequest'
-        expected['imports'] = ['android.support.annotation.NonNull', '',
+        expected['imports'] = ['androidx.annotation.NonNull', '',
                                'com.smartdevicelink.protocol.enums.FunctionID',
                                'com.smartdevicelink.proxy.RPCRequest',
                                '', 'java.util.Hashtable', 'java.util.List']
@@ -139,7 +139,7 @@ class TestFunctionsProducer(unittest.TestCase):
         expected['function_id'] = 'PUT_FILE'
         expected['class_name'] = 'PutFile'
         expected['extends_class'] = 'RPCRequest'
-        expected['imports'] = ['android.support.annotation.NonNull', '',
+        expected['imports'] = ['androidx.annotation.NonNull', '',
                                'com.smartdevicelink.protocol.enums.FunctionID', 'com.smartdevicelink.proxy.RPCRequest',
                                'com.smartdevicelink.proxy.rpc.enums.FileType', '', 'java.util.Hashtable']
         expected['description'] = ['Used to']
@@ -163,7 +163,7 @@ class TestFunctionsProducer(unittest.TestCase):
         expected['function_id'] = 'ON_ENCODED_SYNC_PDATA'
         expected['class_name'] = 'OnEncodedSyncPData'
         expected['extends_class'] = 'RPCNotification'
-        expected['imports'] = ['android.support.annotation.NonNull', '',
+        expected['imports'] = ['androidx.annotation.NonNull', '',
                                'com.smartdevicelink.protocol.enums.FunctionID',
                                'com.smartdevicelink.proxy.RPCNotification', '', 'java.util.Hashtable']
         expected['description'] = ['Callback including']
@@ -184,7 +184,7 @@ class TestFunctionsProducer(unittest.TestCase):
         expected['function_id'] = 'DELETE_COMMAND'
         expected['class_name'] = 'DeleteCommand'
         expected['extends_class'] = 'RPCRequest'
-        expected['imports'] = ['android.support.annotation.NonNull', '',
+        expected['imports'] = ['androidx.annotation.NonNull', '',
                                'com.smartdevicelink.protocol.enums.FunctionID', 'com.smartdevicelink.proxy.RPCRequest',
                                '', 'java.util.Hashtable']
         expected['params'] = (
@@ -204,7 +204,7 @@ class TestFunctionsProducer(unittest.TestCase):
         expected['function_id'] = 'ALERT'
         expected['class_name'] = 'Alert'
         expected['extends_class'] = 'RPCRequest'
-        expected['imports'] = ['android.support.annotation.NonNull', '',
+        expected['imports'] = ['androidx.annotation.NonNull', '',
                                'com.smartdevicelink.protocol.enums.FunctionID',
                                'com.smartdevicelink.proxy.RPCRequest', '', 'java.util.Hashtable']
         expected['params'] = (
@@ -225,7 +225,7 @@ class TestFunctionsProducer(unittest.TestCase):
         expected['function_id'] = 'RELEASE_INTERIOR_VEHICLE_DATA_MODULE'
         expected['class_name'] = 'ReleaseInteriorVehicleDataModule'
         expected['extends_class'] = 'RPCRequest'
-        expected['imports'] = ['android.support.annotation.NonNull', '',
+        expected['imports'] = ['androidx.annotation.NonNull', '',
                                'com.smartdevicelink.protocol.enums.FunctionID',
                                'com.smartdevicelink.proxy.RPCRequest', '', 'java.util.Hashtable']
         expected['params'] = (

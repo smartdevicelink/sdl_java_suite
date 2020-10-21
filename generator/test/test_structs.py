@@ -40,7 +40,7 @@ class TestStructsProducer(unittest.TestCase):
             'class_name': 'AudioPassThruCapabilities',
             'extends_class': 'RPCStruct',
             'package_name': 'com.smartdevicelink.proxy.rpc',
-            'imports': ['android.support.annotation.NonNull', '', 'com.smartdevicelink.proxy.RPCStruct',
+            'imports': ['androidx.annotation.NonNull', '', 'com.smartdevicelink.proxy.RPCStruct',
                         'com.smartdevicelink.proxy.rpc.enums.SamplingRate',
                         'com.smartdevicelink.util.SdlDataTypeConverter', '', 'java.util.Hashtable'],
             'deprecated': None,
@@ -68,7 +68,7 @@ class TestStructsProducer(unittest.TestCase):
             'class_name': 'CloudAppProperties',
             'extends_class': 'RPCStruct',
             'package_name': 'com.smartdevicelink.proxy.rpc',
-            'imports': ['android.support.annotation.NonNull', '', 'com.smartdevicelink.proxy.RPCStruct', '',
+            'imports': ['androidx.annotation.NonNull', '', 'com.smartdevicelink.proxy.RPCStruct', '',
                         'java.util.Hashtable', 'java.util.List'],
             'deprecated': None,
             'since': None,
@@ -86,7 +86,7 @@ class TestStructsProducer(unittest.TestCase):
         }, description=['\n            Describes different audio type configurations for PerformAudioPassThru.\n     '])
         expected = {
             'package_name': 'com.smartdevicelink.proxy.rpc',
-            'imports': ['android.support.annotation.NonNull', '', 'com.smartdevicelink.proxy.RPCStruct', '',
+            'imports': ['androidx.annotation.NonNull', '', 'com.smartdevicelink.proxy.RPCStruct', '',
                         'java.util.Hashtable'],
             'class_name': 'SoftButton',
             'extends_class': 'RPCStruct',
@@ -107,7 +107,7 @@ class TestStructsProducer(unittest.TestCase):
         })
         expected = {
             'package_name': 'com.smartdevicelink.proxy.rpc',
-            'imports': ['android.support.annotation.NonNull', '', 'com.smartdevicelink.proxy.RPCStruct', '',
+            'imports': ['androidx.annotation.NonNull', '', 'com.smartdevicelink.proxy.RPCStruct', '',
                         'java.util.Hashtable'],
             'class_name': 'OASISAddress',
             'extends_class': 'RPCStruct',
@@ -127,7 +127,7 @@ class TestStructsProducer(unittest.TestCase):
         })
         expected = {
             'package_name': 'com.smartdevicelink.proxy.rpc',
-            'imports': ['android.support.annotation.NonNull', '', 'com.smartdevicelink.proxy.RPCStruct', '',
+            'imports': ['androidx.annotation.NonNull', '', 'com.smartdevicelink.proxy.RPCStruct', '',
                         'java.util.Hashtable'],
             'class_name': 'LocationDetails',
             'extends_class': 'RPCStruct',
@@ -147,7 +147,7 @@ class TestStructsProducer(unittest.TestCase):
         })
         expected = {
             'package_name': 'com.smartdevicelink.proxy.rpc',
-            'imports': ['android.support.annotation.NonNull', '', 'com.smartdevicelink.proxy.RPCStruct', '',
+            'imports': ['androidx.annotation.NonNull', '', 'com.smartdevicelink.proxy.RPCStruct', '',
                         'java.util.Hashtable'],
             'class_name': 'SingleTireStatus',
             'extends_class': 'RPCStruct',
