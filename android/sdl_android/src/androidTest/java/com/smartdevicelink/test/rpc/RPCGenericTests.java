@@ -229,8 +229,6 @@ public class RPCGenericTests {
                                 rpcName = "OasisAddress";
                             } else if (rpcName.equals("ShowConstantTBT")) {
                                 rpcName = "ShowConstantTbt";
-                            } else if (rpcName.equals("messageType")) {
-                                rpcName = "MessageType";
                             } else if (rpcName.equals("EncodedSyncPData") || rpcName.equals("OnEncodedSyncPData") || rpcName.equals("EncodedSyncPDataResponse") || rpcName.equals("FunctionID")) {
                                 skipRPC = true;
                             }
@@ -416,6 +414,9 @@ public class RPCGenericTests {
                             if (Character.isDigit(elementName.charAt(0))) {
                                 elementName = "_" + elementName;
                             }
+
+                            // Replace "-" with "_"
+                            elementName = elementName.replace('-', '_');
                             // -------------------------------------------------------------------------------------------------------------
 
                             Element element = new Element()
