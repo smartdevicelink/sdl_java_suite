@@ -32,6 +32,7 @@ def main():
     suite.addTests(TestLoader().loadTestsFromTestCase(TestStructsProducer))
     suite.addTests(TestLoader().loadTestsFromTestCase(CodeFormatAndQuality))
 
+    runner = TextTestRunner(verbosity=2)
     ret = not runner.run(suite).wasSuccessful()
     sys.exit(ret)
 
