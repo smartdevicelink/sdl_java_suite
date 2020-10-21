@@ -411,6 +411,13 @@ public class RPCGenericTests {
                             skipElement = false;
                             String elementName = myParser.getAttributeValue(null, "name");
 
+                            // -------------- Exceptional cases because of mismatch between the RPC spec and the Android code --------------
+                            // Add "_" to the beginning if the names starts with a digit
+                            if (Character.isDigit(elementName.charAt(0))) {
+                                elementName = "_" + elementName;
+                            }
+                            // -------------------------------------------------------------------------------------------------------------
+
                             Element element = new Element()
                                     .setRPCName(rpcName)
                                     .setName(elementName)
