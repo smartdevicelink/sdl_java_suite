@@ -62,7 +62,6 @@ class TestFunctionsProducer(unittest.TestCase):
         expected['function_id'] = 'GET_VEHICLE_DATA'
         expected['class_name'] = 'GetVehicleDataResponse'
         expected['extends_class'] = 'RPCResponse'
-        expected['history'] = None
         expected['imports'] = ['androidx.annotation.NonNull', '',
                                'com.smartdevicelink.protocol.enums.FunctionID',
                                'com.smartdevicelink.proxy.RPCResponse',
