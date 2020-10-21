@@ -45,6 +45,7 @@ class TestStructsProducer(unittest.TestCase):
                         'com.smartdevicelink.util.SdlDataTypeConverter', '', 'java.util.Hashtable'],
             'deprecated': None,
             'since': None,
+            'history': None,
             'params': (self.producer.params(deprecated=None, key='KEY_RANGE',
                                             last='range', mandatory=True,
                                             origin='range', return_type='Float',
@@ -72,6 +73,7 @@ class TestStructsProducer(unittest.TestCase):
                         'java.util.Hashtable', 'java.util.List'],
             'deprecated': None,
             'since': None,
+            'history': None,
             'params': (self.producer.params(deprecated=None, key='KEY_NICKNAMES',
                                             last='nicknames', mandatory=True,
                                             origin='nicknames', return_type='List<String>', name=None,
@@ -91,6 +93,7 @@ class TestStructsProducer(unittest.TestCase):
             'class_name': 'SoftButton',
             'extends_class': 'RPCStruct',
             'since': None,
+            'history': None,
             'deprecated': None,
             'description': ['Describes different audio type configurations for '
                             'PerformAudioPassThru.'],
@@ -112,6 +115,7 @@ class TestStructsProducer(unittest.TestCase):
             'class_name': 'OASISAddress',
             'extends_class': 'RPCStruct',
             'since': None,
+            'history': None,
             'deprecated': None,
             'params': (
                 self.producer.params(deprecated=None, key='KEY_COUNTRY_NAME', last='countryName', mandatory=True,
@@ -132,6 +136,7 @@ class TestStructsProducer(unittest.TestCase):
             'class_name': 'LocationDetails',
             'extends_class': 'RPCStruct',
             'since': None,
+            'history': None,
             'deprecated': None,
             'params': (
                 self.producer.params(deprecated=None, key='KEY_SEARCH_ADDRESS', last='searchAddress', mandatory=True,
@@ -152,6 +157,7 @@ class TestStructsProducer(unittest.TestCase):
             'class_name': 'SingleTireStatus',
             'extends_class': 'RPCStruct',
             'since': None,
+            'history': None,
             'deprecated': None,
             'params': (
                 self.producer.params(deprecated=None, key='KEY_TPMS', last='tpms', mandatory=True, origin='tpms',
