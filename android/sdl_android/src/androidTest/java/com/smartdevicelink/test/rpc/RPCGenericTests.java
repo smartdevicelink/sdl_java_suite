@@ -1,6 +1,5 @@
 package com.smartdevicelink.test.rpc;
 
-
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
@@ -17,11 +16,13 @@ import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,18 @@ import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.fail;
 
+/**
+ * This class tests the following
+ * Functions & Structs
+ *     - The classes exist in code and their names and deprecation status match the spec
+ *     - They have constructors with mandatory params and those constructors are setting the values correctly
+ *     - They have setter and getter for every param and their names and deprecations status match the spec
+ *     - The params setter return instance of class type (for chainable RPCs)
+ *
+ * Enums
+ *     - The enums exist in code and their names and deprecation status match the spec
+ *     - They enums have a value for every element in the spec and the names and deprecation status match the spec
+ */
 @RunWith(AndroidJUnit4.class)
 public class RPCGenericTests {
 
