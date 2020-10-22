@@ -8,27 +8,28 @@ SmartDeviceLink (SDL) is a standard set of protocols and messages that connect a
 
   * The [Core](https://github.com/smartdevicelink/sdl_core) component is the software which Vehicle Manufacturers (OEMs)  implement in their vehicle head units. Integrating this component into their head unit and HMI based on a set of guidelines and templates enables access to various smartphone applications.
   * The optional [SDL Server](https://github.com/smartdevicelink/sdl_server) can be used by Vehicle OEMs to update application policies and gather usage information for connected applications.
-  * The [iOS](https://github.com/smartdevicelink/sdl_ios) and [Android](https://github.com/smartdevicelink/sdl_java_suite) libraries are implemented by app developers into their applications to enable command and control via the connected head unit.
-  * The [JavaSE](https://github.com/smartdevicelink/sdl_java_suite) (Embedded) and [JavaEE](https://github.com/smartdevicelink/sdl_java_suite) (Cloud) libraries, written in Java, are implemented by app developers into their applications to enable command and control of a connected head unit.
-  
+  * The App Libraries - [Android](https://github.com/smartdevicelink/sdl_java_suite), [iOS](https://github.com/smartdevicelink/sdl_ios), [JavaScript](https://github.com/smartdevicelink/sdl_javascript_suite), [JavaSE](https://github.com/smartdevicelink/sdl_java_suite) (Embedded), and [JavaEE](https://github.com/smartdevicelink/sdl_java_suite) (Cloud) - are implemented by app developers into their applications to enable command and control of a connected head unit.
+
 Pull Requests Welcome!
 
-To understand if a contribution should be entered as an Android Pull Request (or issue), or an SDL Evolution Proposal, please reference [this document](https://github.com/smartdevicelink/sdl_evolution/blob/master/proposals_versus_issues.md).
+To understand if a contribution should be entered as a Java Suite Pull Request (or issue), or an SDL Evolution Proposal, please reference [this document](https://github.com/smartdevicelink/sdl_evolution/blob/master/proposals_versus_issues.md).
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=AzdQdSCS24M" target="_blank"><img src="http://i.imgur.com/nm8UujD.png?1" alt="SmartDeviceLink" border="10" /></a>
 
-## Client Proxy
+## App Library
 
-The client libraries component of SDL is meant to run on the end user’s smart-device from within SDL enabled apps, as an embedded app, or connected to from the cloud. The libraries allows the apps to connect to SDL enabled head-units and hardware through bluetooth, USB, TCP for Android and cloud and embedded apps can connect through web sockets, Java Beans, and other custom transports. Once the library establishes a connection between the smart device and head-unit through the preferred method of transport, the two components are able to communicate using the SDL defined protocol. The app integrating this library project is then able to expose its functionality to the head-unit through text, media, and other interactive elements.
+The app library component of SDL is meant to run on the end user’s smart-device from within SDL enabled apps, as an embedded app, or connected to the cloud. App libraries allow the apps to connect to SDL enabled head-units and hardware through bluetooth, USB, and TCP for Android, and cloud and embedded apps can connect through web sockets, Java Beans, and other custom transports. Once the library establishes a connection between the smart device and head-unit through the preferred method of transport, the two components are able to communicate using the SDL defined protocol. The app integrating this library project is then able to expose its functionality to the head-unit through text, media, and other interactive elements.
 
 # SmartDeviceLink Java Suite
 
+You can find guides and API Reference Documentation specific to SDL Android, JavaSE, and JavaEE libraries on [smartdevicelink.com](https://smartdevicelink.com/docs/).
+
+Contents and timing for SDL Java Suite releases can be tracked on the [GitHub Projects](https://github.com/smartdevicelink/sdl_java_suite/projects) page.
+
+Additional information about recent and upcoming SDL Releases can be found in the [SDL Evolution README](https://github.com/smartdevicelink/sdl_evolution#recent-and-upcoming-releases).
+
 ## SmartDeviceLink Android
 [ ![Download Android](https://api.bintray.com/packages/smartdevicelink/sdl_android/sdl_android/images/download.svg) ](https://bintray.com/smartdevicelink/sdl_android/sdl_android/_latestVersion)
-
-We're still working on creating documentation for each of these individual repositories, but in the meantime, you can find more information about SmartDeviceLink [here](https://smartdevicelink.com)
-
-You can also find some branches that have yet to be merged into this GitHub project on the GENIVI page [here](http://git.projects.genivi.org/?p=smartdevicelink_android.git;a=summary).
 
 ### Installation
 
