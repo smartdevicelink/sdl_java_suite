@@ -46,6 +46,7 @@ class TestEnumsProducer(unittest.TestCase):
                 self.producer.params(name='PRIMARY_WIDGET', origin='PRIMARY_WIDGET', deprecated=True,
                                      internal=1, description=None, since=None, value=None),),
             'since': None,
+            'history': None,
             'deprecated': True
         }
         actual = self.producer.transform(item)
@@ -64,6 +65,7 @@ class TestEnumsProducer(unittest.TestCase):
                 self.producer.params(name='EN_US', origin='EN-US', internal='"EN-US"', description=None, since=None,
                                      value=None, deprecated=None),),
             'since': None,
+            'history': None,
             'deprecated': None,
             'imports': {'java.util.EnumSet'}
         }
@@ -87,6 +89,7 @@ class TestEnumsProducer(unittest.TestCase):
                                             internal=1, description=None, since=None, value=None,
                                             deprecated=None)),
             'since': None,
+            'history': None,
             'deprecated': None
         }
         actual = self.producer.transform(item)
@@ -107,6 +110,7 @@ class TestEnumsProducer(unittest.TestCase):
                                      value=None,
                                      deprecated=None),),
             'since': None,
+            'history': None,
             'deprecated': None
         }
         actual = self.producer.transform(item)
@@ -129,6 +133,7 @@ class TestEnumsProducer(unittest.TestCase):
                 self.producer.params(name='VEHICLE_DATA_NOT_AVAILABLE', origin='VEHICLE_DATA_NOT_AVAILABLE',
                                      internal=None, description=None, since='2.0.0', value=None, deprecated=None)),
             'since': None,
+            'history': None,
             'deprecated': None
         }
         actual = self.producer.transform(item)
@@ -147,6 +152,7 @@ class TestEnumsProducer(unittest.TestCase):
                 self.producer.params(name='CID', origin='CID', internal=None, description=None,
                                      since='3.0.0', value=None, deprecated=None),),
             'since': '5.0.0',
+            'history': None,
             'deprecated': True
         }
         actual = self.producer.transform(item)
@@ -165,6 +171,7 @@ class TestEnumsProducer(unittest.TestCase):
                 self.producer.params(name='TEXT', origin='TEXT', description=None,
                                      since=None, value=None, deprecated=None, internal=None),),
             'since': '1.0.0',
+            'history': None,
             'deprecated': None
         }
         actual = self.producer.transform(item)
@@ -183,6 +190,7 @@ class TestEnumsProducer(unittest.TestCase):
                 self.producer.params(name='TEXT', origin='TEXT', description=None,
                                      since=None, value=None, deprecated=None, internal=None),),
             'since': None,
+            'history': None,
             'deprecated': None
         }
         actual = self.producer.transform(item)
@@ -201,6 +209,7 @@ class TestEnumsProducer(unittest.TestCase):
                 self.producer.params(deprecated=None, value=None, description=None,
                                      name='OK', origin='OK', since=None, internal=None),),
             'since': None,
+            'history': None,
             'deprecated': None
         }
         actual = self.producer.transform(item)
@@ -222,6 +231,7 @@ class TestEnumsProducer(unittest.TestCase):
                 self.producer.params(deprecated=None, value=None, description=None,
                                      name='_2D', origin='2D', since=None, internal='"2D"'),),
             'since': None,
+            'history': None,
             'deprecated': None,
             'imports': {'java.util.EnumSet'}
         }
@@ -241,6 +251,7 @@ class TestEnumsProducer(unittest.TestCase):
                 self.producer.params(deprecated=None, value=None, description=None,
                                      name='NO_EVENT', origin='NO_EVENT', since=None, internal=None),),
             'since': None,
+            'history': None,
             'deprecated': None,
         }
         actual = self.producer.transform(item)
@@ -263,6 +274,7 @@ class TestEnumsProducer(unittest.TestCase):
                 self.producer.params(deprecated=None, value=None, description=None,
                                      name='NAVIGATION', origin='NAVIGATION', since=None, internal=None)),
             'since': None,
+            'history': None,
             'deprecated': None,
         }
         actual = self.producer.transform(item)

@@ -80,7 +80,7 @@ class InterfaceProducerCommon(ABC):
 
     @staticmethod
     def extract_values(param):
-        p = OrderedDict()    
+        p = OrderedDict()
         if hasattr(param.param_type, 'min_size'):
             p['array_min_size'] = param.param_type.min_size
         if hasattr(param.param_type, 'max_size'):
@@ -93,7 +93,7 @@ class InterfaceProducerCommon(ABC):
         elif hasattr(param.param_type, 'default_value'):
             if hasattr(param.param_type.default_value, 'name'):
                 p['default_value'] = param.param_type.default_value.name
-            else:  
+            else:
                 p['default_value'] = param.param_type.default_value
         if hasattr(param.param_type, 'min_value'):
             p['num_min_value'] = param.param_type.min_value
