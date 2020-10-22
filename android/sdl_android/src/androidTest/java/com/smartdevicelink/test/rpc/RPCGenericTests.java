@@ -42,7 +42,7 @@ import static junit.framework.TestCase.fail;
  *
  * Enums
  *     - The enums exist in code and their names and deprecation status match the spec
- *     - They enums have a value for every element in the spec and the names and deprecation status match the spec
+ *     - The enums have a value for every element in the spec and the names and deprecation status match the spec
  */
 @RunWith(AndroidJUnit4.class)
 public class RPCGenericTests {
