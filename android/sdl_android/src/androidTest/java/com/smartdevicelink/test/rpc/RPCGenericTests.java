@@ -518,6 +518,22 @@ public class RPCGenericTests {
         return false;
     }
 
+    private Field getEnumField(Class aClass, String elementName) {
+        Field field = null;
+        for (Object anEnum : EnumSet.allOf(aClass)) {
+            if (anEnum.toString().equals(elementName)) {
+                try {
+                    String value = ((Enum)anEnum).name();
+                    field = aClass.getField(value);
+                    break;
+                } catch (NoSuchFieldException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return field;
+    }
+
     // This method returns the correct java reflection method in a specific class
     private Method getMethod(Class aClass, Parameter parameter, String methodName, boolean isGetter) throws NoSuchMethodException {
         Method method = null;
@@ -790,7 +806,7 @@ public class RPCGenericTests {
                 String errMsg = rpcName + " deprecation status does not match RPC spec" + ". \n";
                 errors.add(errMsg);
             }
-
+            
             // Loop through all elements for the current RPC and make sure everyone matches the RPC spec
             List<Element> elements = rpcAllParamsMapFromXml.get(rpcName).elements;
             for (int i = 0; i < elements.size(); i++) {
@@ -798,6 +814,17 @@ public class RPCGenericTests {
 
                 if (element.skip) {
                     continue;
+                }
+
+                Field field = getEnumField(aClass, element.name);
+                if (field != null) {
+                    if (isDeprecated(field) != element.isDeprecated) {
+                        String errMsg = rpcName + "." + element.name + " deprecation status does not match RPC spec" + ". \n";
+                        errors.add(errMsg);
+                    }
+                } else {
+                    String errMsg = rpcName + "." + element.name + " cannot be found in code" + ". \n";
+                    errors.add(errMsg);
                 }
             }
         }
