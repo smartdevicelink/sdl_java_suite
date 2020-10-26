@@ -642,7 +642,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertNull(TestValues.NULL, testRAI.getAppName());
 		assertNull(TestValues.NULL, testRAI.getTtsName());
 		assertNull(TestValues.NULL, testRAI.getNgnMediaScreenAppName());
-		assertNull(TestValues.NULL, testRAI.getVrSynonyms());
+		assertNull(TestValues.NULL, testRAI.getVrSynonyms().get(0));
 		assertNull(TestValues.NULL, testRAI.getIsMediaApplication());
 		assertNotNull(TestValues.NOT_NULL, testRAI.getLanguageDesired());
 		assertNotNull(TestValues.NOT_NULL, testRAI.getHmiDisplayLanguageDesired());
