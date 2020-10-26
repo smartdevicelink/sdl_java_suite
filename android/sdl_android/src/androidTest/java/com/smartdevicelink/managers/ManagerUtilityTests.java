@@ -1,6 +1,6 @@
 package com.smartdevicelink.managers;
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.TextField;
@@ -96,13 +96,13 @@ public class ManagerUtilityTests {
 	public void testHasTextFieldOfName() {
 		WindowCapability capability = new WindowCapability();
 		List<TextField> textFieldList = new ArrayList<>();
-		textFieldList.add(new TextField(TextFieldName.mainField1, CharacterSet.UTF_8, 500, 8));
+		textFieldList.add(new TextField(TextFieldName.mainField1, CharacterSet.CID2SET, 500, 8));
 		capability.setTextFields(textFieldList);
 
 		assertTrue(ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(capability, TextFieldName.mainField1));
 		assertFalse(ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(capability, TextFieldName.alertText3));
 
-		textFieldList.add(new TextField(TextFieldName.alertText3, CharacterSet.UTF_8, 500, 8));
+		textFieldList.add(new TextField(TextFieldName.alertText3, CharacterSet.CID2SET, 500, 8));
 		capability.setTextFields(textFieldList);
 		assertTrue(ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(capability, TextFieldName.mainField1));
 		assertTrue(ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(capability, TextFieldName.alertText3));
@@ -113,7 +113,7 @@ public class ManagerUtilityTests {
 		assertFalse(ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(capability, TextFieldName.mainField1));
 		assertFalse(ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(capability, TextFieldName.alertText3));
 
-		textFieldList.add(new TextField(TextFieldName.alertText3, CharacterSet.UTF_8, 500, 8));
+		textFieldList.add(new TextField(TextFieldName.alertText3, CharacterSet.CID2SET, 500, 8));
 		capability.setTextFields(textFieldList);
 		assertFalse(ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(capability, TextFieldName.mainField1));
 		assertTrue(ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(capability, TextFieldName.alertText3));
@@ -164,22 +164,22 @@ public class ManagerUtilityTests {
 
 		//Single line
 		List<TextField> singleLineList = new ArrayList<>();
-		singleLineList.add(new TextField(TextFieldName.mainField1, CharacterSet.UTF_8, 500, 8));
+		singleLineList.add(new TextField(TextFieldName.mainField1, CharacterSet.CID2SET, 500, 8));
 		capability.setTextFields(singleLineList);
 		maxNumerOfLines = ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(capability);
 		assertEquals(1, maxNumerOfLines);
 
-		singleLineList.add(new TextField(TextFieldName.mainField2, CharacterSet.UTF_8, 500, 8));
+		singleLineList.add(new TextField(TextFieldName.mainField2, CharacterSet.CID2SET, 500, 8));
 		capability.setTextFields(singleLineList);
 		maxNumerOfLines = ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(capability);
 		assertEquals(2, maxNumerOfLines);
 
-		singleLineList.add(new TextField(TextFieldName.mainField3, CharacterSet.UTF_8, 500, 8));
+		singleLineList.add(new TextField(TextFieldName.mainField3, CharacterSet.CID2SET, 500, 8));
 		capability.setTextFields(singleLineList);
 		maxNumerOfLines = ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(capability);
 		assertEquals(3, maxNumerOfLines);
 
-		singleLineList.add(new TextField(TextFieldName.mainField4, CharacterSet.UTF_8, 500, 8));
+		singleLineList.add(new TextField(TextFieldName.mainField4, CharacterSet.CID2SET, 500, 8));
 		capability.setTextFields(singleLineList);
 		maxNumerOfLines = ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(capability);
 		assertEquals(4, maxNumerOfLines);
@@ -194,7 +194,7 @@ public class ManagerUtilityTests {
 		maxNumerOfLines = ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(capability);
 		assertEquals(0, maxNumerOfLines);
 
-		nullList.add(new TextField(TextFieldName.mainField4, CharacterSet.UTF_8, 500, 8));
+		nullList.add(new TextField(TextFieldName.mainField4, CharacterSet.CID2SET, 500, 8));
 		assertNotNull(nullList);
 		capability.setTextFields(nullList);
 		assertNotNull(capability);
