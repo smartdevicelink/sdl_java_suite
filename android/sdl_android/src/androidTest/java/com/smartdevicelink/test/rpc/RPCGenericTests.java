@@ -519,7 +519,7 @@ public class RPCGenericTests {
     }
 
     private boolean isDeprecated (AnnotatedElement element) {
-        return annotationExists(element, "deprecated");
+        return annotationExists(element, "Deprecated");
     }
 
     private Field getEnumField(Class aClass, String elementName) {
