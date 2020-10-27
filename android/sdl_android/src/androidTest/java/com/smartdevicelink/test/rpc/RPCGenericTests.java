@@ -509,13 +509,17 @@ public class RPCGenericTests {
         assertTrue("The following RPCs don't have a constructor that has all the mandatory params: " + rpcsWithInvalidConstructor, rpcsWithInvalidConstructor.isEmpty());
     }
 
-    private boolean isDeprecated (AnnotatedElement element) {
+    private boolean annotationExists (AnnotatedElement element, String annotationName) {
         for (Annotation annotation : element.getDeclaredAnnotations()) {
-            if (annotation.annotationType().getSimpleName().equalsIgnoreCase("deprecated")) {
+            if (annotation.annotationType().getSimpleName().equalsIgnoreCase(annotationName)) {
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean isDeprecated (AnnotatedElement element) {
+        return annotationExists(element, "deprecated");
     }
 
     private Field getEnumField(Class aClass, String elementName) {
