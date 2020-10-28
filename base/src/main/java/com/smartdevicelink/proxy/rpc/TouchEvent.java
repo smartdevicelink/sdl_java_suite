@@ -132,7 +132,7 @@ public class TouchEvent extends RPCStruct {
      * Use getTimestamps
      *
      * @return
-     * @deprecated 4.0.2
+     * @deprecated in 4.0.2. Use {@link #getTimestamps()}()} instead.
      */
     @Deprecated
     public List<Long> getTs() {
@@ -170,7 +170,7 @@ public class TouchEvent extends RPCStruct {
      * Use setTimestamps.
      *
      * @param ts
-     * @deprecated 4.0.2
+     * @deprecated in 4.0.2. Use {@link #setTimestamps(List)} instead.
      */
     @Deprecated
     public TouchEvent setTs(List<Long> ts) {
@@ -182,7 +182,7 @@ public class TouchEvent extends RPCStruct {
      * Use getTouchCoordinates
      *
      * @return
-     * @deprecated 4.0.2
+     * @deprecated in 4.0.2. Use {@link #getTouchCoordinates()} instead.
      */
     @Deprecated
     public List<TouchCoord> getC() {
@@ -198,7 +198,7 @@ public class TouchEvent extends RPCStruct {
      * Use setTouchCoordinates
      *
      * @return
-     * @deprecated 4.0.2
+     * @deprecated in 4.0.2. Use {@link #setTouchCoordinates(List)} instead.
      */
     @Deprecated
     public TouchEvent setC(List<TouchCoord> c) {
