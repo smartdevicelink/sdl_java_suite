@@ -46,6 +46,7 @@ import java.util.List;
  *
  * @since SmartDeviceLink 2.0
  */
+@Deprecated
 public class SetDisplayLayoutResponse extends RPCResponse {
     public static final String KEY_BUTTON_CAPABILITIES = "buttonCapabilities";
     public static final String KEY_DISPLAY_CAPABILITIES = "displayCapabilities";

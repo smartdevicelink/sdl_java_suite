@@ -36,7 +36,7 @@ package com.smartdevicelink.proxy.rpc.enums;
  *
  * @since SmartDeviceLink 1.0
  */
-
+@Deprecated
 public enum DisplayType {
     /**
      * Center Information Display.

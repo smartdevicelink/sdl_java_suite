@@ -94,6 +94,7 @@ import java.util.Hashtable;
  *
  * @since SmartDeviceLink 2.0
  */
+@Deprecated
 public class SetDisplayLayout extends RPCRequest {
     public static final String KEY_DISPLAY_LAYOUT = "displayLayout";
     public static final String KEY_DAY_COLOR_SCHEME = "dayColorScheme";
