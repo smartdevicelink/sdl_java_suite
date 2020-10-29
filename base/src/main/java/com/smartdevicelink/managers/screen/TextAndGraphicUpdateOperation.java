@@ -161,6 +161,7 @@ class TextAndGraphicUpdateOperation extends Task {
 
     }
 
+    @SuppressWarnings("deprecation")
     private void sendSetDisplayLayoutWithTemplateConfiguration(TemplateConfiguration configuration, final CompletionListener listener) {
         final SetDisplayLayout setLayout = new SetDisplayLayout().setDisplayLayout(configuration.getTemplate()).setDayColorScheme(configuration.getDayColorScheme()).setNightColorScheme(configuration.getNightColorScheme());
         setLayout.setOnRPCResponseListener(new OnRPCResponseListener() {
@@ -526,6 +527,7 @@ class TextAndGraphicUpdateOperation extends Task {
         return show;
     }
 
+    @SuppressWarnings("deprecation")
     private void updateCurrentScreenDataFromSetDisplayLayout(SetDisplayLayout setDisplayLayout) {
         currentScreenData.setTemplateConfiguration(new TemplateConfiguration().setTemplate(setDisplayLayout.getDisplayLayout()).setDayColorScheme(setDisplayLayout.getDayColorScheme()).setNightColorScheme(setDisplayLayout.getNightColorScheme()));
         if (currentScreenDataUpdateListener != null) {
