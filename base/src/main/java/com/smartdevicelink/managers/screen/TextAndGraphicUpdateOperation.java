@@ -497,6 +497,7 @@ class TextAndGraphicUpdateOperation extends Task {
         newShow.setMainField2(show.getMainField2());
         newShow.setMainField3(show.getMainField3());
         newShow.setMainField4(show.getMainField4());
+        newShow.setMediaTrack(show.getMediaTrack());
         newShow.setTemplateTitle(show.getTemplateTitle());
         newShow.setMetadataTags(show.getMetadataTags());
         newShow.setAlignment(show.getAlignment());
