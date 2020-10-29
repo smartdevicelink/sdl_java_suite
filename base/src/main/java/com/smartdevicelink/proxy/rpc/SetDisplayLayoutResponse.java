@@ -45,6 +45,7 @@ import java.util.List;
  * Set Display Layout Response is sent, when SetDisplayLayout has been called
  *
  * @since SmartDeviceLink 2.0
+ * @deprecated in SmartDeviceLink 6.0
  */
 @Deprecated
 public class SetDisplayLayoutResponse extends RPCResponse {

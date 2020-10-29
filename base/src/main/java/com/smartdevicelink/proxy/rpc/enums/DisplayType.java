@@ -35,6 +35,7 @@ package com.smartdevicelink.proxy.rpc.enums;
  * The type of the display.
  *
  * @since SmartDeviceLink 1.0
+ * @deprecated in SmartDeviceLink 5.0
  */
 @Deprecated
 public enum DisplayType {
