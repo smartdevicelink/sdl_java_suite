@@ -242,6 +242,10 @@ public class RPCGenericTests {
                                 rpcName = "OasisAddress";
                             } else if (rpcName.equals("ShowConstantTBT")) {
                                 rpcName = "ShowConstantTbt";
+                            } else if (rpcName.equals("messageType")) {
+                                rpcName = "MessageType";
+                            } else if (rpcName.equals("DisplayCapabilities")) {
+                                isDeprecated = false;
                             } else if (rpcName.equals("EncodedSyncPData") || rpcName.equals("OnEncodedSyncPData") || rpcName.equals("EncodedSyncPDataResponse") || rpcName.equals("FunctionID")) {
                                 skipRPC = true;
                             }
@@ -304,6 +308,8 @@ public class RPCGenericTests {
                                     paramType = "boolean";
                                 } else if (rpcName.equals("SubscribeVehicleData") && Arrays.asList("setElectronicParkBrakeStatus", "setCloudAppVehicleID").contains(setterMethodName)) {
                                     paramType = "boolean";
+                                } else if (rpcName.equals("Show") && setterMethodName.equalsIgnoreCase("setMediaClock")) {
+                                    isDeprecated = true;
                                 } else if (rpcName.equals("CancelInteraction") && setterMethodName.equals("setFunctionID")) {
                                     setterMethodName = "setInteractionFunctionID";
                                 } else if (rpcName.equals("NavigationCapability") && setterMethodName.equals("setGetWayPointsEnabled")) {
@@ -421,6 +427,12 @@ public class RPCGenericTests {
                         if (elementType.equals("element") && myParser.getAttributeValue(null, "until") == null) {
                             skipElement = false;
                             String elementName = myParser.getAttributeValue(null, "name");
+
+                            // -------------- Exceptional cases because of mismatch between the RPC spec and the Android code --------------
+                            if (rpcName.equalsIgnoreCase("MessageType")) {
+                                elementName = elementName.toUpperCase();
+                            }
+                            // -------------------------------------------------------------------------------------------------------------
 
                             Element element = new Element()
                                     .setRPCName(rpcName)
