@@ -43,6 +43,7 @@ import java.util.List;
  * Seat control data corresponds to "SEAT" ModuleType.
  */
 public class SeatControlData extends RPCStruct {
+    @Deprecated
     public static final String KEY_ID = "id";
     public static final String KEY_HEATING_ENABLED = "heatingEnabled";
     public static final String KEY_COOLING_ENABLED = "coolingEnabled";
@@ -81,6 +82,7 @@ public class SeatControlData extends RPCStruct {
      *
      * @param id type of SupportedSeat.
      */
+    @Deprecated
     public SeatControlData(@NonNull SupportedSeat id) {
         this();
         setId(id);
@@ -91,6 +93,7 @@ public class SeatControlData extends RPCStruct {
      *
      * @param id
      */
+    @Deprecated
     public SeatControlData setId(@NonNull SupportedSeat id) {
         setValue(KEY_ID, id);
         return this;
@@ -101,6 +104,7 @@ public class SeatControlData extends RPCStruct {
      *
      * @return SupportedSeat.
      */
+    @Deprecated
     public SupportedSeat getId() {
         return (SupportedSeat) getObject(SupportedSeat.class, KEY_ID);
     }

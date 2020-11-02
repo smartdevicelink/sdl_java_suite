@@ -41,7 +41,7 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-    api 'com.smartdevicelink:bson_java_port:RC1_1.2.2'
+    api 'com.smartdevicelink:bson_java_port:1.2.2'
     api 'com.livio.taskmaster:taskmaster:0.3.0'
     api 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     api 'androidx.annotation:annotation:1.1.0'
