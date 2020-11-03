@@ -334,7 +334,7 @@ public class AudioStreamManagerTest extends TestCase {
             public void onComplete(boolean success) {
                 assertEquals(true, success);
 
-                manager.pushResource(com.smartdevicelink.test.R.raw.test_audio_square_250hz_80amp_1s, mockFileListener);
+                manager.pushResource(com.smartdevicelink.test.R.raw.test_audio_square_250hz_80amp_1s, mockFileListener, true);
             }
         });
 
@@ -567,7 +567,7 @@ public class AudioStreamManagerTest extends TestCase {
             public void onComplete(boolean success) {
                 assertEquals(true, success);
 
-                manager.pushResource(com.smartdevicelink.test.R.raw.test_audio_square_250hz_80amp_1s, mockFileListener);
+                manager.pushResource(com.smartdevicelink.test.R.raw.test_audio_square_250hz_80amp_1s, mockFileListener, true);
             }
         });
 
