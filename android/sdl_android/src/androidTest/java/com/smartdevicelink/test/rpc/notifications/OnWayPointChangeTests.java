@@ -27,7 +27,7 @@ import static junit.framework.TestCase.assertNull;
 
 public class OnWayPointChangeTests extends BaseRpcTests {
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         OnWayPointChange msg = new OnWayPointChange();
 
         List<LocationDetails> list = new ArrayList<>();
@@ -40,17 +40,17 @@ public class OnWayPointChangeTests extends BaseRpcTests {
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_NOTIFICATION;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.ON_WAY_POINT_CHANGE.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
         JSONArray jsonArray = new JSONArray();
@@ -74,7 +74,7 @@ public class OnWayPointChangeTests extends BaseRpcTests {
      * Tests the expected values of the RPC message.
      */
     @Test
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Test Values
         List<LocationDetails> list = ((OnWayPointChange) msg).getWayPoints();
 

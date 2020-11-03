@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -30,42 +30,45 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 package com.smartdevicelink.proxy.rpc.enums;
-/** The type of touch event.
- * 
- * @since SmartDeviceLink 2.3.2
+
+/**
+ * The type of touch event.
  *
+ * @since SmartDeviceLink 2.3.2
  */
 
 public enum TouchType {
-	/** The user has touched the screen.
-	 * 
-	 */
+    /**
+     * The user has touched the screen.
+     */
 
     BEGIN,
-	 /** The User has moved his finger over the screen.
-     * 
+    /**
+     * The User has moved his finger over the screen.
      */
 
     MOVE,
-    /** The User has removed his finger from the screen.
-     * 
+    /**
+     * The User has removed his finger from the screen.
      */
 
     END,
-    /** The user has made a cancellation gesture.
-     *
+    /**
+     * The user has made a cancellation gesture.
      */
     CANCEL;
-	   /**
-  * Convert String to TouchType
-  * @param value String
-  * @return TouchType
-  */
+
+    /**
+     * Convert String to TouchType
+     *
+     * @param value String
+     * @return TouchType
+     */
 
     public static TouchType valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

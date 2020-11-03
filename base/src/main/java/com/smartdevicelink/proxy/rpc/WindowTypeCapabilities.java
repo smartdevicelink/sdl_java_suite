@@ -1,6 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.WindowType;
@@ -9,6 +9,7 @@ import java.util.Hashtable;
 
 /**
  * Used to inform an app how many window instances per type they can be created.
+ *
  * @since 6.0
  */
 public class WindowTypeCapabilities extends RPCStruct {
@@ -33,7 +34,7 @@ public class WindowTypeCapabilities extends RPCStruct {
     /**
      * Constructs a newly allocated WindowTypeCapabilities object
      *
-     * @param type Type of windows available, to create.
+     * @param type                   Type of windows available, to create.
      * @param maximumNumberOfWindows Number of windows available, to create.
      */
     public WindowTypeCapabilities(@NonNull WindowType type, @NonNull Integer maximumNumberOfWindows) {
@@ -47,8 +48,9 @@ public class WindowTypeCapabilities extends RPCStruct {
      *
      * @param type Type of windows available, to create.
      */
-    public void setType(@NonNull WindowType type) {
+    public WindowTypeCapabilities setType(@NonNull WindowType type) {
         setValue(KEY_TYPE, type);
+        return this;
     }
 
     /**
@@ -65,8 +67,9 @@ public class WindowTypeCapabilities extends RPCStruct {
      *
      * @param maximumNumberOfWindows Number of windows available, to create.
      */
-    public void setMaximumNumberOfWindows(@NonNull Integer maximumNumberOfWindows) {
+    public WindowTypeCapabilities setMaximumNumberOfWindows(@NonNull Integer maximumNumberOfWindows) {
         setValue(KEY_MAXIMUM_NUMBER_OF_WINDOWS, maximumNumberOfWindows);
+        return this;
     }
 
     /**

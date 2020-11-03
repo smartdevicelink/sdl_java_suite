@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,13 +31,14 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.SystemAction;
 
 import java.util.Hashtable;
+
 /**
  * <p> A simulated button or keyboard key that is displayed on a touch screen.</p>
  *
@@ -98,78 +99,94 @@ import java.util.Hashtable;
  *                 <td>N</td>
  *                 <td>defvalue: DEFAULT_ACTION</td>
  * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>			
- * 			
- *  </table>
+ * 		</tr>
  *
+ *  </table>
  */
 public class SoftButton extends RPCStruct {
 
-	public static final String KEY_IS_HIGHLIGHTED = "isHighlighted";
-	public static final String KEY_SOFT_BUTTON_ID = "softButtonID";
-	public static final String KEY_SYSTEM_ACTION = "systemAction";
-	public static final String KEY_TEXT = "text";
-	public static final String KEY_TYPE = "type";
-	public static final String KEY_IMAGE = "image";
+    public static final String KEY_IS_HIGHLIGHTED = "isHighlighted";
+    public static final String KEY_SOFT_BUTTON_ID = "softButtonID";
+    public static final String KEY_SYSTEM_ACTION = "systemAction";
+    public static final String KEY_TEXT = "text";
+    public static final String KEY_TYPE = "type";
+    public static final String KEY_IMAGE = "image";
 
-	public SoftButton() { }
+    public SoftButton() {
+    }
 
-	/**
-	* 
-	* <p>Constructs a new SoftButton object indicated by the Hashtable
-	* parameter</p>
-	*
-	* @param hash The Hashtable to use
-	*/
-	public SoftButton(Hashtable<String, Object> hash) {
+    /**
+     * <p>Constructs a new SoftButton object indicated by the Hashtable
+     * parameter</p>
+     *
+     * @param hash The Hashtable to use
+     */
+    public SoftButton(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-	/**
-	 * Constructs a new SoftButton object
-	 * @param type Describes, whether it is text, highlighted text, icon, or dynamic image.
-	 * @param softButtonID Value which is returned via OnButtonPress / OnButtonEvent
-	 */
-	public SoftButton(@NonNull SoftButtonType type, @NonNull Integer softButtonID){
-		this();
-		setType(type);
-		setSoftButtonID(softButtonID);
-	}
+    /**
+     * Constructs a new SoftButton object
+     *
+     * @param type         Describes, whether it is text, highlighted text, icon, or dynamic image.
+     * @param softButtonID Value which is returned via OnButtonPress / OnButtonEvent
+     */
+    public SoftButton(@NonNull SoftButtonType type, @NonNull Integer softButtonID) {
+        this();
+        setType(type);
+        setSoftButtonID(softButtonID);
+    }
 
-    public void setType(@NonNull SoftButtonType type) {
+    public SoftButton setType(@NonNull SoftButtonType type) {
         setValue(KEY_TYPE, type);
+        return this;
     }
+
     public SoftButtonType getType() {
-    	return (SoftButtonType) getObject(SoftButtonType.class, KEY_TYPE);
+        return (SoftButtonType) getObject(SoftButtonType.class, KEY_TYPE);
     }
-    public void setText(String text) {
+
+    public SoftButton setText(String text) {
         setValue(KEY_TEXT, text);
+        return this;
     }
+
     public String getText() {
         return getString(KEY_TEXT);
     }
-    public void setImage(Image image) {
+
+    public SoftButton setImage(Image image) {
         setValue(KEY_IMAGE, image);
+        return this;
     }
-    @SuppressWarnings("unchecked")
+
     public Image getImage() {
-    	return (Image) getObject(Image.class, KEY_IMAGE);
+        return (Image) getObject(Image.class, KEY_IMAGE);
     }
-    public void setIsHighlighted(Boolean isHighlighted) {
+
+    public SoftButton setIsHighlighted(Boolean isHighlighted) {
         setValue(KEY_IS_HIGHLIGHTED, isHighlighted);
+        return this;
     }
+
     public Boolean getIsHighlighted() {
         return getBoolean(KEY_IS_HIGHLIGHTED);
     }
-    public void setSoftButtonID(@NonNull Integer softButtonID) {
+
+    public SoftButton setSoftButtonID(@NonNull Integer softButtonID) {
         setValue(KEY_SOFT_BUTTON_ID, softButtonID);
+        return this;
     }
+
     public Integer getSoftButtonID() {
         return getInteger(KEY_SOFT_BUTTON_ID);
     }
-    public void setSystemAction(SystemAction systemAction) {
+
+    public SoftButton setSystemAction(SystemAction systemAction) {
         setValue(KEY_SYSTEM_ACTION, systemAction);
+        return this;
     }
+
     public SystemAction getSystemAction() {
         return (SystemAction) getObject(SystemAction.class, KEY_SYSTEM_ACTION);
     }

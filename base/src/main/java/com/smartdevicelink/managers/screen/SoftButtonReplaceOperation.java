@@ -2,15 +2,14 @@ package com.smartdevicelink.managers.screen;
 
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
-import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.DebugTool;
@@ -229,14 +228,6 @@ class SoftButtonReplaceOperation extends Task {
                     completionListener.onComplete(response.getSuccess());
                 }
             }
-
-            @Override
-            public void onError(int correlationId, Result resultCode, String info) {
-                DebugTool.logWarning(TAG, "Failed to update soft buttons with text buttons");
-                if (completionListener != null) {
-                    completionListener.onComplete(false);
-                }
-            }
         });
         show.setMainField1(currentMainField1);
         show.setSoftButtons(softButtons);
@@ -283,14 +274,6 @@ class SoftButtonReplaceOperation extends Task {
                 }
                 if (completionListener != null) {
                     completionListener.onComplete(response.getSuccess());
-                }
-            }
-
-            @Override
-            public void onError(int correlationId, Result resultCode, String info) {
-                DebugTool.logWarning(TAG, "Failed to update soft buttons with text buttons");
-                if (completionListener != null) {
-                    completionListener.onComplete(false);
                 }
             }
         });

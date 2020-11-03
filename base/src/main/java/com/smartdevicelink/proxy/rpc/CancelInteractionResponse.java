@@ -34,7 +34,7 @@
 
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -49,7 +49,9 @@ public class CancelInteractionResponse extends RPCResponse {
     /**
      * Constructs a new CancelInteractionResponse object
      */
-    public CancelInteractionResponse() { super(FunctionID.CANCEL_INTERACTION.toString()); }
+    public CancelInteractionResponse() {
+        super(FunctionID.CANCEL_INTERACTION.toString());
+    }
 
     /**
      * Constructs a new CancelInteractionResponse object indicated by the Hashtable parameter
@@ -62,7 +64,8 @@ public class CancelInteractionResponse extends RPCResponse {
 
     /**
      * Constructs a new CancelInteractionResponse object
-     * @param success whether the request is successfully processed
+     *
+     * @param success    whether the request is successfully processed
      * @param resultCode whether the request is successfully processed
      */
     public CancelInteractionResponse(@NonNull Boolean success, @NonNull Result resultCode) {

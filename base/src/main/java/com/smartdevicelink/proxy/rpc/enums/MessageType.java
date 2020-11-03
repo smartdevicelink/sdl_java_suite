@@ -49,12 +49,13 @@ public enum MessageType {
     /**
      * Private constructor
      */
-    private MessageType (int value) {
+    private MessageType(int value) {
         this.VALUE = value;
     }
 
     /**
      * Convert value to MessageType
+     *
      * @param value int
      * @return MessageType
      */
@@ -69,9 +70,10 @@ public enum MessageType {
 
     /**
      * Gets the value for the MessageType
+     *
      * @return value for the MessageType
      */
-    public int getValue(){
+    public int getValue() {
         return VALUE;
     }
 }

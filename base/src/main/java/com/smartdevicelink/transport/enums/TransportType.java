@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -35,38 +35,38 @@ package com.smartdevicelink.transport.enums;
  * Defines available types of the transports.
  */
 public enum TransportType {
-	/**
-	 * Transport type will be anything the multiplexing service connects to.
-	 */
-	MULTIPLEX,
-	/**
-	 * Transport type is Bluetooth.
-	 */
-	BLUETOOTH,
-	
-	/**
-	 * Transport type is TCP.
-	 */
-	TCP,
-	USB,
-	/**
-	 * Used for cloud and embedded
-	 */
-	WEB_SOCKET_SERVER,
+    /**
+     * Transport type will be anything the multiplexing service connects to.
+     */
+    MULTIPLEX,
+    /**
+     * Transport type is Bluetooth.
+     */
+    BLUETOOTH,
 
-	/**
-	 * This transport is setup to be essentially a proxy to a different transport. It allows a developer to create a
-	 * custom transport without much effort.
-	 */
-	CUSTOM,
+    /**
+     * Transport type is TCP.
+     */
+    TCP,
+    USB,
+    /**
+     * Used for cloud and embedded
+     */
+    WEB_SOCKET_SERVER,
 
-	;
-	
-	public static TransportType valueForString(String value) {
-		try{
+    /**
+     * This transport is setup to be essentially a proxy to a different transport. It allows a developer to create a
+     * custom transport without much effort.
+     */
+    CUSTOM,
+
+    ;
+
+    public static TransportType valueForString(String value) {
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
-	}
+    }
 }

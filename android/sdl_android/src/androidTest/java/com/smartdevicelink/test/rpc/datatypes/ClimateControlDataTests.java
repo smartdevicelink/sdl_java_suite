@@ -19,14 +19,14 @@ import java.util.Iterator;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link com.smartdevicelink.rpc.ClimateControlData}
+ * {@link com.smartdevicelink.proxy.rpc.ClimateControlData}
  */
-public class ClimateControlDataTests extends TestCase{
-	
+public class ClimateControlDataTests extends TestCase {
+
     private ClimateControlData msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new ClimateControlData();
 
         msg.setFanSpeed(TestValues.GENERAL_INT);
@@ -47,9 +47,9 @@ public class ClimateControlDataTests extends TestCase{
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
         // Test Values
         int fanSpeed = msg.getFanSpeed();
         Temperature currentTemperature = msg.getCurrentTemperature();
@@ -105,10 +105,10 @@ public class ClimateControlDataTests extends TestCase{
         assertNull(TestValues.NULL, msg.getClimateEnable());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(ClimateControlData.KEY_FAN_SPEED, TestValues.GENERAL_INT);
             reference.put(ClimateControlData.KEY_CURRENT_TEMPERATURE, JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_TEMPERATURE.getStore()));
             reference.put(ClimateControlData.KEY_DESIRED_TEMPERATURE, JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_TEMPERATURE.getStore()));
@@ -129,27 +129,27 @@ public class ClimateControlDataTests extends TestCase{
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
 
-                if(key.equals(ClimateControlData.KEY_CURRENT_TEMPERATURE)){
+                if (key.equals(ClimateControlData.KEY_CURRENT_TEMPERATURE)) {
                     JSONObject objectEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(reference, key);
                     JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
                     Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
                     Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-                    assertTrue(TestValues.TRUE, Validator.validateTemperature( new Temperature(hashReference), new Temperature(hashTest)));
-                } else if(key.equals(ClimateControlData.KEY_DESIRED_TEMPERATURE)){
+                    assertTrue(TestValues.TRUE, Validator.validateTemperature(new Temperature(hashReference), new Temperature(hashTest)));
+                } else if (key.equals(ClimateControlData.KEY_DESIRED_TEMPERATURE)) {
                     JSONObject objectEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(reference, key);
                     JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
                     Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
                     Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-                    assertTrue(TestValues.TRUE, Validator.validateTemperature( new Temperature(hashReference), new Temperature(hashTest)));
-                } else{
+                    assertTrue(TestValues.TRUE, Validator.validateTemperature(new Temperature(hashReference), new Temperature(hashTest)));
+                } else {
                     assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
                 }
             }
-        } catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

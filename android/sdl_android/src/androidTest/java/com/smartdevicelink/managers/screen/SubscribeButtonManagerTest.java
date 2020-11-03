@@ -1,11 +1,11 @@
 package com.smartdevicelink.managers.screen;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.managers.BaseSubManager;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.SubscribeButton;
@@ -40,12 +40,12 @@ public class SubscribeButtonManagerTest {
         public Void answer(InvocationOnMock invocation) {
             Object[] args = invocation.getArguments();
             RPCRequest message = (RPCRequest) args[0];
-            if(message instanceof SubscribeButton){
+            if (message instanceof SubscribeButton) {
                 SubscribeButtonResponse subscribeButtonResponse = new SubscribeButtonResponse();
                 subscribeButtonResponse.setSuccess(true);
-                message.getOnRPCResponseListener().onResponse(message.getCorrelationID(),subscribeButtonResponse);
+                message.getOnRPCResponseListener().onResponse(message.getCorrelationID(), subscribeButtonResponse);
             }
-            if(message instanceof UnsubscribeButton) {
+            if (message instanceof UnsubscribeButton) {
                 UnsubscribeButtonResponse unsubscribeButtonResponse = new UnsubscribeButtonResponse();
                 unsubscribeButtonResponse.setSuccess(true);
                 message.getOnRPCResponseListener().onResponse(message.getCorrelationID(), unsubscribeButtonResponse);
@@ -60,10 +60,10 @@ public class SubscribeButtonManagerTest {
         public Void answer(InvocationOnMock invocation) {
             Object[] args = invocation.getArguments();
             RPCRequest message = (RPCRequest) args[0];
-            if(message instanceof SubscribeButton){
-                SubscribeButtonResponse subscribeButtonResponse = new SubscribeButtonResponse();
-                subscribeButtonResponse.setSuccess(false);
-                message.getOnRPCResponseListener().onError(message.getCorrelationID(), Result.GENERIC_ERROR, "Fail");
+            if (message instanceof SubscribeButton) {
+                SubscribeButtonResponse subscribeButtonResponse = new SubscribeButtonResponse(false, Result.GENERIC_ERROR);
+                subscribeButtonResponse.setInfo("Fail");
+                message.getOnRPCResponseListener().onResponse(message.getCorrelationID(), subscribeButtonResponse);
             }
             return null;
         }
@@ -109,7 +109,7 @@ public class SubscribeButtonManagerTest {
     }
 
     @Test
-    public void testInstantiation(){
+    public void testInstantiation() {
         assertNotNull(subscribeButtonManager.onButtonListeners);
         assertEquals(subscribeButtonManager.getState(), BaseSubManager.SETTING_UP);
     }
@@ -137,7 +137,7 @@ public class SubscribeButtonManagerTest {
     }
 
     @Test
-    public void testAddButtonListenerError(){
+    public void testAddButtonListenerError() {
         doAnswer(onSubscribeFail).when(internalInterface).sendRPC(any(RPCMessage.class));
         subscribeButtonManager.addButtonListener(ButtonName.VOLUME_UP, listener);
         assertFalse(subscribeButtonManager.onButtonListeners.containsKey(ButtonName.VOLUME_UP));

@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -35,17 +35,19 @@ package com.smartdevicelink.protocol.heartbeat;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.annotation.RestrictTo;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class HeartbeatMonitor implements IHeartbeatMonitor {
 
-	public static final int HEARTBEAT_INTERVAL = 5000;
+    public static final int HEARTBEAT_INTERVAL = 5000;
     public static final int HEARTBEAT_INTERVAL_MAX = Integer.MAX_VALUE;
 
     private final Object heartbeatThreadHandlerLock = new Object();
     private final Object listenerLock = new Object();
 
     private int mHeartBeatInterval = HEARTBEAT_INTERVAL;
-    private boolean mHeartBeatAck = true;
+    private final boolean mHeartBeatAck = true;
 
     private IHeartbeatMonitorListener mListener;
     private volatile boolean mIsAckReceived;
@@ -59,64 +61,64 @@ public class HeartbeatMonitor implements IHeartbeatMonitor {
 
     // Methods used to retrieve values for unit testing only.
     // See com/smartdevicelink/tests/protocol/heartbeat/HeartbeatMonitorTests.
-    public Runnable getHeartbeatRunnable () { return heartbeatTimeoutRunnable; }
-    public boolean isHeartbeatReceived () { return isHeartbeatReceived; }
-    
-    private Runnable heartbeatTimeoutRunnable = new Runnable() {
+    public Runnable getHeartbeatRunnable() {
+        return heartbeatTimeoutRunnable;
+    }
 
-        @Override
-        public void run() {            
-        	try{
-	        	synchronized (listenerLock) {
-	                if (isHeartbeatReceived) {
-	                    if (mListener != null) {
-	                        mListener.sendHeartbeat(HeartbeatMonitor.this);
-	                    } else {
-	
-	                    }
-	                    isHeartbeatReceived = false;
-	                } else {
-	                    if (mListener != null) {
-	                        mListener.heartbeatTimedOut(HeartbeatMonitor.this);
-	                    }
-	                }
-	            }
-        	}
-        	catch(Exception ex) 
-        	{ 
-        		stop(); 
-        	}
-        }
-    };
+    public boolean isHeartbeatReceived() {
+        return isHeartbeatReceived;
+    }
 
-    private Runnable heartbeatAckTimeoutRunnable = new Runnable() {
+    private final Runnable heartbeatTimeoutRunnable = new Runnable() {
 
         @Override
         public void run() {
-        	
-        	try
-        	{
-	        	synchronized (listenerLock) {
-	                if (mIsAckReceived) {
-	                    if (mListener != null) {
-	                        mListener.sendHeartbeat(HeartbeatMonitor.this);
-	                    } else {
-	                    }
-	                    mIsAckReceived = false;
-	                } else {
-	                    if (mListener != null) {
-	                        mListener.heartbeatTimedOut(HeartbeatMonitor.this);
-	                    }
-	                    stop();
-	                }
-	            }
-        	
-        	}
-        	catch(Exception ex)	
-        	{
-        		stop();
-        	}
-        	        
+            try {
+                synchronized (listenerLock) {
+                    if (isHeartbeatReceived) {
+                        if (mListener != null) {
+                            mListener.sendHeartbeat(HeartbeatMonitor.this);
+                        } else {
+
+                        }
+                        isHeartbeatReceived = false;
+                    } else {
+                        if (mListener != null) {
+                            mListener.heartbeatTimedOut(HeartbeatMonitor.this);
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                stop();
+            }
+        }
+    };
+
+    private final Runnable heartbeatAckTimeoutRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+
+            try {
+                synchronized (listenerLock) {
+                    if (mIsAckReceived) {
+                        if (mListener != null) {
+                            mListener.sendHeartbeat(HeartbeatMonitor.this);
+                        } else {
+                        }
+                        mIsAckReceived = false;
+                    } else {
+                        if (mListener != null) {
+                            mListener.heartbeatTimedOut(HeartbeatMonitor.this);
+                        }
+                        stop();
+                    }
+                }
+
+            } catch (Exception ex) {
+                stop();
+            }
+
             rescheduleHeartbeat();
         }
 

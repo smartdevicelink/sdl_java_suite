@@ -1,17 +1,17 @@
 {
-  "request":{
-    "name":"CreateWindow",
-    "correlationID":107,
-    "parameters":{
-    	"windowID":765,
-    	"windowName":"Window Name",
-    	"type": "MAIN",
-    	"associatedServiceType":"Service Type",
-    	"duplicateUpdatesFromWindowID":766
-	}
+  "request": {
+    "name": "CreateWindow",
+    "correlationID": 107,
+    "parameters": {
+      "windowID": 765,
+      "windowName": "Window Name",
+      "type": "MAIN",
+      "associatedServiceType": "Service Type",
+      "duplicateUpdatesFromWindowID": 766
+    }
   },
-  "response":{
-    "name":"CreateWindowResponse",
-    "correlationID":108
+  "response": {
+    "name": "CreateWindowResponse",
+    "correlationID": 108
   }
 }

@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -38,23 +38,23 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.IntDef;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
+
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 import android.util.Log;
 import android.media.MediaCodec;
 import android.os.Message;
 
-import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.StreamingStateMachine;
+import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
+import com.smartdevicelink.protocol.ISdlServiceListener;
+import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
-import com.smartdevicelink.proxy.interfaces.ISdl;
-import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
-import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
@@ -64,10 +64,15 @@ import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.session.SdlSession;
+import com.smartdevicelink.streaming.IStreamListener;
+import com.smartdevicelink.streaming.StreamPacketizer;
+import com.smartdevicelink.streaming.audio.IAudioStreamListener;
 import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
 
+import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
@@ -82,14 +87,14 @@ import java.util.Queue;
  * to the connected device. Audio files can be pushed to the manager in order to
  * play them on the connected device. The manager uses the Android built-in MediaCodec.
  */
-@RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
 public class AudioStreamManager extends BaseAudioStreamManager {
     private static final String TAG = AudioStreamManager.class.getSimpleName();
     private static final int COMPLETION_TIMEOUT = 2000;
 
     private IAudioStreamListener sdlAudioStream;
     private int sdlSampleRate;
-    private @SampleType int sdlSampleType;
+    private @SampleType
+    int sdlSampleType;
     //Decoder queue
     private final Queue<Decoder> queue;
     //Audio streaming send thread
@@ -109,6 +114,9 @@ public class AudioStreamManager extends BaseAudioStreamManager {
     private CompletionListener serviceCompletionListener;
     // As the internal interface does not provide timeout we need to use a future task
     private final Handler serviceCompletionHandler;
+    private StreamPacketizer audioPacketizer;
+    private SdlSession sdlSession = null;
+    private SessionType sessionType = null;
 
     private final Runnable serviceCompletionTimeoutCallback = new Runnable() {
         @Override
@@ -118,16 +126,17 @@ public class AudioStreamManager extends BaseAudioStreamManager {
     };
 
 
-
     // INTERNAL INTERFACE
 
     private final ISdlServiceListener serviceListener = new ISdlServiceListener() {
         @Override
         public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
+            sdlSession = session;
+            sessionType = type;
             if (SessionType.PCM.equals(type)) {
                 serviceCompletionHandler.removeCallbacks(serviceCompletionTimeoutCallback);
 
-                sdlAudioStream = session.startAudioStream();
+                sdlAudioStream = startAudioStream(session);
                 streamingStateMachine.transitionToState(StreamingStateMachine.STARTED);
 
                 if (serviceCompletionListener != null) {
@@ -143,7 +152,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
             if (SessionType.PCM.equals(type)) {
                 serviceCompletionHandler.removeCallbacks(serviceCompletionTimeoutCallback);
 
-                session.stopAudioStream();
+                stopAudioStream();
                 sdlAudioStream = null;
                 streamingStateMachine.transitionToState(StreamingStateMachine.NONE);
 
@@ -160,6 +169,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
             if (SessionType.PCM.equals(type)) {
                 serviceCompletionHandler.removeCallbacks(serviceCompletionTimeoutCallback);
 
+                stopAudioStream();
                 streamingStateMachine.transitionToState(StreamingStateMachine.ERROR);
                 DebugTool.logError(TAG, "OnServiceError: " + reason);
                 streamingStateMachine.transitionToState(StreamingStateMachine.NONE);
@@ -176,13 +186,13 @@ public class AudioStreamManager extends BaseAudioStreamManager {
     private final OnRPCNotificationListener hmiListener = new OnRPCNotificationListener() {
         @Override
         public void onNotified(RPCNotification notification) {
-            if(notification != null){
-                OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
+            if (notification != null) {
+                OnHMIStatus onHMIStatus = (OnHMIStatus) notification;
                 if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
                     return;
                 }
                 hmiLevel = onHMIStatus.getHmiLevel();
-                if(hmiLevel.equals(HMILevel.HMI_FULL) || hmiLevel.equals(HMILevel.HMI_LIMITED)){
+                if (hmiLevel.equals(HMILevel.HMI_FULL) || hmiLevel.equals(HMILevel.HMI_LIMITED)) {
                     checkState();
                 }
             }
@@ -191,18 +201,12 @@ public class AudioStreamManager extends BaseAudioStreamManager {
 
     /**
      * Creates a new object of AudioStreamManager
+     *
      * @param internalInterface The internal interface to the connected device.
      */
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
     public AudioStreamManager(@NonNull ISdl internalInterface, @NonNull Context context) {
         super(internalInterface);
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN){
-            this.queue = null;
-            this.context = null;
-            this.serviceCompletionHandler = null;
-            this.streamingStateMachine = null;
-            transitionToState(ERROR);
-            return;
-        }
         this.queue = new LinkedList<>();
         this.context = new WeakReference<>(context);
         this.serviceCompletionHandler = new Handler(Looper.getMainLooper());
@@ -224,37 +228,40 @@ public class AudioStreamManager extends BaseAudioStreamManager {
         super.start(listener);
     }
 
-    private void checkState(){
-        if(audioStreamingCapabilities != null
+    private void checkState() {
+        if (audioStreamingCapabilities != null
                 && isTransportAvailable
                 && hmiLevel != null
-                && (hmiLevel.equals(HMILevel.HMI_LIMITED) || hmiLevel.equals(HMILevel.HMI_FULL))){
+                && (hmiLevel.equals(HMILevel.HMI_LIMITED) || hmiLevel.equals(HMILevel.HMI_FULL))) {
             transitionToState(READY);
         }
     }
 
-    private void getAudioStreamingCapabilities(){
-        internalInterface.getCapability(SystemCapabilityType.PCM_STREAMING, new OnSystemCapabilityListener() {
-            @Override
-            public void onCapabilityRetrieved(Object capability) {
-                if(capability != null && capability instanceof AudioPassThruCapabilities){
-                    audioStreamingCapabilities = (AudioPassThruCapabilities) capability;
-                    checkState();
+    private void getAudioStreamingCapabilities() {
+        if (internalInterface.getSystemCapabilityManager() != null) {
+            internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.PCM_STREAMING, new OnSystemCapabilityListener() {
+                @Override
+                public void onCapabilityRetrieved(Object capability) {
+                    if (capability != null && capability instanceof AudioPassThruCapabilities) {
+                        audioStreamingCapabilities = (AudioPassThruCapabilities) capability;
+                        checkState();
+                    }
                 }
-            }
 
-            @Override
-            public void onError(String info) {
-                DebugTool.logError(TAG, "Error retrieving audio streaming capability: " + info);
-                //Added to get default audio passthrough function
-                audioStreamingCapabilities = getDefaultAudioPassThruCapabilities();
-                checkState();
+                @Override
+                public void onError(String info) {
+                    DebugTool.logError(TAG, "Error retrieving audio streaming capability: " + info);
+	                //Added to get default audio passthrough function
+	                audioStreamingCapabilities = getDefaultAudioPassThruCapabilities();
+	                checkState();
 
-            }
-        });
+                }
+            }, false);
+        }
     }
 
     @Override
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
     public void dispose() {
         mEndTimeOfSendData = 0;
         cleanAudioStreamThread();
@@ -271,6 +278,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
     /**
      * Starts the audio service and audio stream to the connected device.
      * The method is non-blocking.
+     *
      * @param encrypted Specify whether or not the audio stream should be encrypted.
      */
     public void startAudioStream(boolean encrypted, final CompletionListener completionListener) {
@@ -288,11 +296,14 @@ public class AudioStreamManager extends BaseAudioStreamManager {
             return;
         }
 
-        AudioPassThruCapabilities capabilities = (AudioPassThruCapabilities) internalInterface.getCapability(SystemCapabilityType.PCM_STREAMING);
-
+        AudioPassThruCapabilities capabilities = null;
+        if (internalInterface.getSystemCapabilityManager() != null) {
+            capabilities = (AudioPassThruCapabilities) internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.PCM_STREAMING, null, false);
+        }
         if(capabilities == null){
             capabilities = getDefaultAudioPassThruCapabilities();
         }
+
         if (capabilities != null) {
             switch (capabilities.getSamplingRate()) {
                 case _8KHZ:
@@ -341,7 +352,8 @@ public class AudioStreamManager extends BaseAudioStreamManager {
 
     /**
      * Makes the callback to the listener
-     * @param listener the listener to notify
+     *
+     * @param listener  the listener to notify
      * @param isSuccess flag to notify
      */
     private void finish(CompletionListener listener, boolean isSuccess) {
@@ -381,14 +393,16 @@ public class AudioStreamManager extends BaseAudioStreamManager {
         streamingStateMachine.transitionToState(StreamingStateMachine.STOPPED);
         serviceCompletionListener = completionListener;
         serviceCompletionHandler.postDelayed(serviceCompletionTimeoutCallback, COMPLETION_TIMEOUT);
-        internalInterface.stopAudioService();
+        stopAudioStream();
+        serviceListener.onServiceEnded(sdlSession, sessionType);
     }
 
     /**
      * Pushes the specified resource file to the playback queue.
      * The audio file will be played immediately. If another audio file is currently playing
      * the specified file will stay queued and automatically played when ready.
-     * @param resourceId The specified resource file to be played.
+     *
+     * @param resourceId         The specified resource file to be played.
      * @param completionListener A completion listener that informs when the audio file is played.
      */
     public void pushResource(int resourceId, final CompletionListener completionListener,boolean interrupt) {
@@ -407,7 +421,8 @@ public class AudioStreamManager extends BaseAudioStreamManager {
      * Pushes the specified audio file to the playback queue.
      * The audio file will be played immediately. If another audio file is currently playing
      * the specified file will stay queued and automatically played when ready.
-     * @param audioSource The specified audio file to be played.
+     *
+     * @param audioSource        The specified audio file to be played.
      * @param completionListener A completion listener that informs when the audio file is played.
      */
     @SuppressWarnings("WeakerAccess")
@@ -773,7 +788,8 @@ public class AudioStreamManager extends BaseAudioStreamManager {
      * Pushes raw audio data to SDL Core.
      * The audio file will be played immediately. If another audio file is currently playing,
      * the specified file will stay queued and automatically played when ready.
-     * @param data Audio raw data to send.
+     *
+     * @param data               Audio raw data to send.
      * @param completionListener A completion listener that informs when the audio file is played.
      */
     public void pushBuffer(ByteBuffer data, CompletionListener completionListener) {
@@ -789,17 +805,17 @@ public class AudioStreamManager extends BaseAudioStreamManager {
     }
 
     @Override
-    protected void onTransportUpdate(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail, boolean videoStreamTransportAvail){
+    protected void onTransportUpdate(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail, boolean videoStreamTransportAvail) {
 
         isTransportAvailable = audioStreamTransportAvail;
 
-        if(internalInterface.getProtocolVersion().isNewerThan(new Version(5,1,0)) >= 0){
-            if(audioStreamTransportAvail){
+        if (internalInterface.getProtocolVersion().isNewerThan(new Version(5, 1, 0)) >= 0) {
+            if (audioStreamTransportAvail) {
                 checkState();
             }
-        }else{
+        } else {
             //The protocol version doesn't support simultaneous transports.
-            if(!audioStreamTransportAvail){
+            if (!audioStreamTransportAvail) {
                 //If video streaming isn't available on primary transport then it is not possible to
                 //use the video streaming manager until a complete register on a transport that
                 //supports video
@@ -834,5 +850,31 @@ public class AudioStreamManager extends BaseAudioStreamManager {
         // float array, though within a ByteBuffer it is stored in native endian byte order. The nominal
         // range of ENCODING_PCM_FLOAT audio data is [-1.0, 1.0].
         int FLOAT = Float.SIZE >> 3;
+    }
+
+    protected IAudioStreamListener startAudioStream(final SdlSession session) {
+
+        IStreamListener streamListener = new IStreamListener() {
+            @Override
+            public void sendStreamPacket(ProtocolMessage pm) {
+                session.sendMessage(pm);
+            }
+        };
+
+        try {
+            audioPacketizer = new StreamPacketizer(streamListener, null, SessionType.PCM, (byte) session.getSessionId(), session);
+            audioPacketizer.start();
+            return audioPacketizer;
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    protected boolean stopAudioStream() {
+        if (audioPacketizer != null) {
+            audioPacketizer.stop();
+            return true;
+        }
+        return false;
     }
 }

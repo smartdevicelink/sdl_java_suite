@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,92 +31,92 @@
  */
 package com.smartdevicelink.security;
 
-import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.session.SdlSession;
 
 import java.util.ArrayList;
 import java.util.List;
 
 abstract class AbstractSdlSecurityBase {
-	
-	protected SdlSession session = null;	
-	protected String appId = null;
-	protected List<String> makeList = null;
-	protected boolean isInitSuccess = false;
-	protected byte sessionId = 0;
-	protected List<SessionType> startServiceList = new ArrayList<SessionType>();	
-	
+
+    protected SdlSession session = null;
+    protected String appId = null;
+    protected List<String> makeList = null;
+    protected boolean isInitSuccess = false;
+    protected byte sessionId = 0;
+    protected List<SessionType> startServiceList = new ArrayList<>();
+
     public AbstractSdlSecurityBase() {
-	}
-	
-	public abstract void initialize();
-	
-    public abstract Integer runHandshake(byte[] inputData,byte[] outputData);
-    
-	public abstract Integer encryptData(byte[] inputData,byte[] outputData);
-	
-    public abstract Integer decryptData(byte[] inputData,byte[] outputData);
-    
+    }
+
+    public abstract void initialize();
+
+    public abstract Integer runHandshake(byte[] inputData, byte[] outputData);
+
+    public abstract Integer encryptData(byte[] inputData, byte[] outputData);
+
+    public abstract Integer decryptData(byte[] inputData, byte[] outputData);
+
     public abstract void shutDown();
-    
+
     public void resetParams() {
-    	session = null;
-    	appId = null;
-    	isInitSuccess = false;
-    	startServiceList.clear();
+        session = null;
+        appId = null;
+        isInitSuccess = false;
+        startServiceList.clear();
     }
-    
+
     public List<SessionType> getServiceList() {
-    	return startServiceList;
+        return startServiceList;
     }
-    
+
     public void handleInitResult(boolean val) {
         if (session == null) return;
 
         setInitSuccess(val);
         session.onSecurityInitialized();
     }
-    
-    public void handleSdlSession(SdlSession val) {
-    	if (val == null) return;
-    	
-    	setSessionId(val.getSessionId());
-    	setSdlSession(val);
+
+    public void handleSdlSession(SdlSession sdlSession) {
+        if (sdlSession == null) return;
+
+        setSessionId((byte) sdlSession.getSessionId());
+        setSdlSession(sdlSession);
     }
-	
+
     private void setInitSuccess(boolean val) {
-    	isInitSuccess = val;
+        isInitSuccess = val;
     }
-    
+
     public boolean getInitSuccess() {
-    	return isInitSuccess;
+        return isInitSuccess;
     }
-    
+
     private void setSessionId(byte val) {
-    	sessionId = val;
+        sessionId = val;
     }
-    
+
     public byte getSessionId() {
-    	return sessionId;
+        return sessionId;
     }
 
     private void setSdlSession(SdlSession val) {
-    	session = val;
+        session = val;
     }
-    
+
     public String getAppId() {
-    	return appId;
+        return appId;
     }
-    
+
     public void setAppId(String val) {
-    	appId = val;
+        appId = val;
     }
 
     public List<String> getMakeList() {
-    	return makeList;
+        return makeList;
     }
-    
+
     public void setMakeList(List<String> val) {
-    	makeList = val;
+        makeList = val;
     }
 }

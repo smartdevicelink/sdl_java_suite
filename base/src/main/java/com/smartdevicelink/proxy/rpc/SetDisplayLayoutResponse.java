@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -43,37 +43,37 @@ import java.util.List;
 /**
  * <Strong>If using Widgets with Core > 6.0, use {@link Show} to change widget layouts</Strong> <br>
  * Set Display Layout Response is sent, when SetDisplayLayout has been called
- * 
+ *
  * @since SmartDeviceLink 2.0
  */
 public class SetDisplayLayoutResponse extends RPCResponse {
-	public static final String KEY_BUTTON_CAPABILITIES = "buttonCapabilities";
-	public static final String KEY_DISPLAY_CAPABILITIES = "displayCapabilities";
+    public static final String KEY_BUTTON_CAPABILITIES = "buttonCapabilities";
+    public static final String KEY_DISPLAY_CAPABILITIES = "displayCapabilities";
     public static final String KEY_SOFT_BUTTON_CAPABILITIES = "softButtonCapabilities";
     public static final String KEY_PRESET_BANK_CAPABILITIES = "presetBankCapabilities";
 
-	/**
-	 * Constructs a new SetDisplayLayoutResponse object
-	 */
+    /**
+     * Constructs a new SetDisplayLayoutResponse object
+     */
     public SetDisplayLayoutResponse() {
         super(FunctionID.SET_DISPLAY_LAYOUT.toString());
     }
 
-	/**
-	 * Constructs a new SetDisplayLayoutResponse object indicated by the Hashtable
-	 * parameter
-	 * <p></p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
+    /**
+     * Constructs a new SetDisplayLayoutResponse object indicated by the Hashtable
+     * parameter
+     * <p></p>
+     *
+     * @param hash The Hashtable to use
+     */
     public SetDisplayLayoutResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 
     /**
      * Constructs a new SetDisplayLayoutResponse object
-     * @param success whether the request is successfully processed
+     *
+     * @param success    whether the request is successfully processed
      * @param resultCode whether the request is successfully processed
      */
     public SetDisplayLayoutResponse(@NonNull Boolean success, @NonNull Result resultCode) {
@@ -82,13 +82,13 @@ public class SetDisplayLayoutResponse extends RPCResponse {
         setResultCode(resultCode);
     }
 
-    @SuppressWarnings("unchecked")
     public DisplayCapabilities getDisplayCapabilities() {
         return (DisplayCapabilities) getObject(DisplayCapabilities.class, KEY_DISPLAY_CAPABILITIES);
     }
 
-    public void setDisplayCapabilities(DisplayCapabilities displayCapabilities) {
+    public SetDisplayLayoutResponse setDisplayCapabilities(DisplayCapabilities displayCapabilities) {
         setParameters(KEY_DISPLAY_CAPABILITIES, displayCapabilities);
+        return this;
     }
 
     @SuppressWarnings("unchecked")
@@ -96,8 +96,9 @@ public class SetDisplayLayoutResponse extends RPCResponse {
         return (List<ButtonCapabilities>) getObject(ButtonCapabilities.class, KEY_BUTTON_CAPABILITIES);
     }
 
-    public void setButtonCapabilities(List<ButtonCapabilities> buttonCapabilities) {
+    public SetDisplayLayoutResponse setButtonCapabilities(List<ButtonCapabilities> buttonCapabilities) {
         setParameters(KEY_BUTTON_CAPABILITIES, buttonCapabilities);
+        return this;
     }
 
     @SuppressWarnings("unchecked")
@@ -105,17 +106,18 @@ public class SetDisplayLayoutResponse extends RPCResponse {
         return (List<SoftButtonCapabilities>) getObject(SoftButtonCapabilities.class, KEY_SOFT_BUTTON_CAPABILITIES);
     }
 
-    public void setSoftButtonCapabilities(List<SoftButtonCapabilities> softButtonCapabilities) {
+    public SetDisplayLayoutResponse setSoftButtonCapabilities(List<SoftButtonCapabilities> softButtonCapabilities) {
         setParameters(KEY_SOFT_BUTTON_CAPABILITIES, softButtonCapabilities);
+        return this;
     }
 
-    @SuppressWarnings("unchecked")
     public PresetBankCapabilities getPresetBankCapabilities() {
         return (PresetBankCapabilities) getObject(PresetBankCapabilities.class, KEY_PRESET_BANK_CAPABILITIES);
     }
 
-    public void setPresetBankCapabilities(PresetBankCapabilities presetBankCapabilities) {
+    public SetDisplayLayoutResponse setPresetBankCapabilities(PresetBankCapabilities presetBankCapabilities) {
         setParameters(KEY_PRESET_BANK_CAPABILITIES, presetBankCapabilities);
+        return this;
     }
-    
+
 }

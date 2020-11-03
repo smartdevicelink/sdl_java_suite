@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -37,43 +37,44 @@ package com.smartdevicelink.proxy.rpc.enums;
  * @since SmartDeviceLink 5.0
  */
 public enum AudioStreamingIndicator {
-	/**
-	 * Default playback indicator.
-	 *
-	 * @since SmartDeviceLink 5.0
-	 */
-	PLAY_PAUSE,
+    /**
+     * Default playback indicator.
+     *
+     * @since SmartDeviceLink 5.0
+     */
+    PLAY_PAUSE,
 
-	/**
-	 * Indicates that a button press of the Play/Pause button would start the playback.
-	 *
-	 * @since SmartDeviceLink 5.0
-	 */
-	PLAY,
-	/**
-	 * Indicates that a button press of the Play/Pause button would pause the current playback.
-	 *
-	 * @since SmartDeviceLink 5.0
-	 */
-	PAUSE,
-	/**
-	 * Indicates that a button press of the Play/Pause button would stop the current playback.
-	 *
-	 * @since SmartDeviceLink 5.0
-	 */
-	STOP,
-	;
+    /**
+     * Indicates that a button press of the Play/Pause button would start the playback.
+     *
+     * @since SmartDeviceLink 5.0
+     */
+    PLAY,
+    /**
+     * Indicates that a button press of the Play/Pause button would pause the current playback.
+     *
+     * @since SmartDeviceLink 5.0
+     */
+    PAUSE,
+    /**
+     * Indicates that a button press of the Play/Pause button would stop the current playback.
+     *
+     * @since SmartDeviceLink 5.0
+     */
+    STOP,
+    ;
 
-	/**
-	 * Convert String to AudioStreamingIndicator
-	 * @param value String
-	 * @return AudioStreamingIndicator
-	 */
-	public static AudioStreamingIndicator valueForString(String value) {
-		try{
-			return valueOf(value);
-		}catch(Exception e){
-			return null;
-		}
-	}
+    /**
+     * Convert String to AudioStreamingIndicator
+     *
+     * @param value String
+     * @return AudioStreamingIndicator
+     */
+    public static AudioStreamingIndicator valueForString(String value) {
+        try {
+            return valueOf(value);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

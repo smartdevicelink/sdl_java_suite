@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -81,12 +81,12 @@ import java.util.List;
  * to be sent by SDL) and begin the requested <i>
  * {@linkplain PerformInteraction}</i> operation
  * <p></p>
- * 
+ *
  * <p><b>HMI Status Requirements:</b></p>
  * <p>HMILevel: FULL, Limited</p>
- *<p> AudioStreamingState: Any</p>
+ * <p> AudioStreamingState: Any</p>
  * <p>SystemContext: MAIN, MENU, VR</p>
- * 
+ *
  * <p><b>Notes: </b></p>
  * <ul>
  * <li>When <i>{@linkplain Alert}</i> is issued with MENU in effect, <i>
@@ -99,8 +99,8 @@ import java.util.List;
  * VR, they are "played" back in the order in which they were queued, with all
  * existing rules for "collisions" still in effect</li>
  * </ul>
- * 
- * 
+ *
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -122,78 +122,82 @@ import java.util.List;
  *  </table>
  * <p><b>Response</b> </p>
  * <p>This Response notifies the application of the completion, interruption, or failure of a Speak Request.</p>
- * 
+ *
  * <p><b>Non-default Result Codes:</b> </p>
- * 
- *	<p> SUCCESS </p>
- *<p>	 INVALID_DATA</p>
- *	<p> OUT_OF_MEMORY </p>
- *	<p>APPLICATION_NOT_REGISTERED </p>
- *	<p>TOO_MANY_PENDING_REQUESTS </p>
- *<p>	GENERIC_ERROR </p>
- *	<p>REJECTED  </p>
- *	<p>DISALLOWED </p>
- *	<p>ABORTED </p>
- * 
- * <p><b>Additional Notes:</b></p><ul>Total character limit depends on platform. Chunks are limited to 500 characters; however you can have multiple TTS chunks. On Gen 1.1 there is a total character limit of 500 characters across all chunks. This could vary according to the VCA. 
- * 
- * @since SmartDeviceLink 1.0
+ *
+ * 	<p> SUCCESS </p>
+ * <p>	 INVALID_DATA</p>
+ * 	<p> OUT_OF_MEMORY </p>
+ * 	<p>APPLICATION_NOT_REGISTERED </p>
+ * 	<p>TOO_MANY_PENDING_REQUESTS </p>
+ * <p>	GENERIC_ERROR </p>
+ * 	<p>REJECTED  </p>
+ * 	<p>DISALLOWED </p>
+ * 	<p>ABORTED </p>
+ *
+ * <p><b>Additional Notes:</b></p><ul>Total character limit depends on platform. Chunks are limited to 500 characters; however you can have multiple TTS chunks. On Gen 1.1 there is a total character limit of 500 characters across all chunks. This could vary according to the VCA.
+ *
  * @see Alert
+ * @since SmartDeviceLink 1.0
  */
 public class Speak extends RPCRequest {
-	public static final String KEY_TTS_CHUNKS = "ttsChunks";
+    public static final String KEY_TTS_CHUNKS = "ttsChunks";
 
-	/**
-	 * Constructs a new Speak object
-	 */    
-	public Speak() {
+    /**
+     * Constructs a new Speak object
+     */
+    public Speak() {
         super(FunctionID.SPEAK.toString());
     }
-	/**
-	 * Constructs a new Speak object indicated by the Hashtable parameter
-	 * <p></p>
-	 * 
-	 * @param hash The Hashtable to use
-	 */	
+
+    /**
+     * Constructs a new Speak object indicated by the Hashtable parameter
+     * <p></p>
+     *
+     * @param hash The Hashtable to use
+     */
     public Speak(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-	/**
-	 * Constructs a new Speak object
-	 * @param ttsChunks An array of 1-100 TTSChunk structs which, taken together, specify the phrase to be spoken.
-	 */
-	public Speak(@NonNull List<TTSChunk> ttsChunks){
-		this();
-		setTtsChunks(ttsChunks);
-	}
-	/**
-	 * Gets a List<TTSChunk> representing an array of 1-100 TTSChunk structs
-	 * which, taken together, specify the phrase to be spoken
-	 * 
-	 * @return List<TTSChunk> -an Array of 1-100 TTSChunk specify the phrase to be spoken
-	 */    
+    /**
+     * Constructs a new Speak object
+     *
+     * @param ttsChunks An array of 1-100 TTSChunk structs which, taken together, specify the phrase to be spoken.
+     */
+    public Speak(@NonNull List<TTSChunk> ttsChunks) {
+        this();
+        setTtsChunks(ttsChunks);
+    }
+
+    /**
+     * Gets a List<TTSChunk> representing an array of 1-100 TTSChunk structs
+     * which, taken together, specify the phrase to be spoken
+     *
+     * @return List<TTSChunk> -an Array of 1-100 TTSChunk specify the phrase to be spoken
+     */
     @SuppressWarnings("unchecked")
     public List<TTSChunk> getTtsChunks() {
-		return (List<TTSChunk>) getObject(TTSChunk.class, KEY_TTS_CHUNKS);
+        return (List<TTSChunk>) getObject(TTSChunk.class, KEY_TTS_CHUNKS);
     }
-	/**
-	 * Sets a List<TTSChunk> representing an array of 1-100 TTSChunk structs
-	 * which, taken together, specify the phrase to be spoken
-	 * 
-	 * @param ttsChunks
-	 *            a List<TTSChunk> value representing an array of 1-100 TTSChunk structs
-	 * which specify the phrase to be spoken
-	 *            <p></p>
-	 *            <ul>
-	 *            <li>The array must have 1-100 elements</li>
-	 *            <li>The total length of the phrase composed from the ttsChunks
-	 *            provided must be less than 500 characters or the request will
-	 *            be rejected</li>
-	 *            <li>Each chunk can be no more than 500 characters</li>
-	 *            </ul>
-	 */    
-    public void setTtsChunks( @NonNull List<TTSChunk> ttsChunks ) {
-		setParameters(KEY_TTS_CHUNKS, ttsChunks);
+
+    /**
+     * Sets a List<TTSChunk> representing an array of 1-100 TTSChunk structs
+     * which, taken together, specify the phrase to be spoken
+     *
+     * @param ttsChunks a List<TTSChunk> value representing an array of 1-100 TTSChunk structs
+     *                  which specify the phrase to be spoken
+     *                  <p></p>
+     *                  <ul>
+     *                  <li>The array must have 1-100 elements</li>
+     *                  <li>The total length of the phrase composed from the ttsChunks
+     *                  provided must be less than 500 characters or the request will
+     *                  be rejected</li>
+     *                  <li>Each chunk can be no more than 500 characters</li>
+     *                  </ul>
+     */
+    public Speak setTtsChunks(@NonNull List<TTSChunk> ttsChunks) {
+        setParameters(KEY_TTS_CHUNKS, ttsChunks);
+        return this;
     }
 }

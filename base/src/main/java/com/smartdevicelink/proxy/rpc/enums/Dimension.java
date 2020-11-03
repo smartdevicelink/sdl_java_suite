@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -35,12 +35,13 @@ import java.util.EnumSet;
 
 /**
  * The supported dimensions of the GPS.
+ *
  * @since SmartDeviceLink 2.0
  */
 public enum Dimension {
-	/**
-	 * No GPS at all
-	 */
+    /**
+     * No GPS at all
+     */
     NO_FIX("NO_FIX"),
     /**
      * Longitude and latitude
@@ -50,28 +51,29 @@ public enum Dimension {
      * Longitude and latitude and altitude
      */
     _3D("3D");
-    
+
     private final String VALUE;
 
     private Dimension(String value) {
-    	this.VALUE = value;
+        this.VALUE = value;
     }
-    
+
     public String toString() {
         return this.VALUE;
     }
-    
+
     /**
      * Convert String to Dimension
+     *
      * @param value String
      * @return Dimension
-     */    
+     */
     public static Dimension valueForString(String value) {
-        if(value == null){
+        if (value == null) {
             return null;
         }
-        
-    	for (Dimension anEnum : EnumSet.allOf(Dimension.class)) {
+
+        for (Dimension anEnum : EnumSet.allOf(Dimension.class)) {
             if (anEnum.toString().equals(value)) {
                 return anEnum;
             }

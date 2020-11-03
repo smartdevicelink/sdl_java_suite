@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -36,52 +36,54 @@ import com.smartdevicelink.util.ByteEnumer;
 import java.util.Vector;
 
 public class FrameDataControlFrameType extends ByteEnumer {
-	private static Vector<FrameDataControlFrameType> theList = new Vector<FrameDataControlFrameType>();
-	public static Vector<FrameDataControlFrameType> getList() { return theList; } 
+    private static final Vector<FrameDataControlFrameType> theList = new Vector<>();
 
-	@SuppressWarnings("unused")
+    public static Vector<FrameDataControlFrameType> getList() {
+        return theList;
+    }
+
     private byte _i = 0x00;
 
-	protected FrameDataControlFrameType(byte value, String name) {
-		super(value, name);
-	}
-	
-	public final static FrameDataControlFrameType Heartbeat = new FrameDataControlFrameType((byte)0x0, "Heartbeat");
-	public final static FrameDataControlFrameType StartSession = new FrameDataControlFrameType((byte)0x01, "StartSession");
-	public final static FrameDataControlFrameType StartSessionACK = new FrameDataControlFrameType((byte)0x02, "StartSessionACK");
-	public final static FrameDataControlFrameType StartSessionNACK = new FrameDataControlFrameType((byte)0x03, "StartSessionNACK");
-	public final static FrameDataControlFrameType EndSession = new FrameDataControlFrameType((byte)0x04, "EndSession");
-	public final static FrameDataControlFrameType EndSessionACK = new FrameDataControlFrameType((byte)0x05, "EndSessionACK");
-	public final static FrameDataControlFrameType EndSessionNACK = new FrameDataControlFrameType((byte)0x06, "EndSessionNACK");
-	public final static FrameDataControlFrameType RegisterSecondaryTransport = new FrameDataControlFrameType((byte)0x07, "RegisterSecondaryTransport");
-	public final static FrameDataControlFrameType RegisterSecondaryTransportACK = new FrameDataControlFrameType((byte)0x08, "RegisterSecondaryTransportACK");
-	public final static FrameDataControlFrameType RegisterSecondaryTransportNACK = new FrameDataControlFrameType((byte)0x09, "RegisterSecondaryTransportNACK");
-	public final static FrameDataControlFrameType TransportEventUpdate = new FrameDataControlFrameType((byte)0xFD, "TransportEventUpdate");
-	public final static FrameDataControlFrameType ServiceDataACK = new FrameDataControlFrameType((byte)0xFE, "ServiceDataACK");
-	public final static FrameDataControlFrameType HeartbeatACK = new FrameDataControlFrameType((byte)0xFF, "HeartbeatACK");
+    protected FrameDataControlFrameType(byte value, String name) {
+        super(value, name);
+    }
 
-	static {
-		theList.addElement(Heartbeat);
-		theList.addElement(StartSession);
-		theList.addElement(StartSessionACK);
-		theList.addElement(StartSessionNACK);
-		theList.addElement(EndSession);	
-		theList.addElement(EndSessionACK);
-		theList.addElement(EndSessionNACK);
-		theList.addElement(RegisterSecondaryTransport);
-		theList.addElement(RegisterSecondaryTransportACK);
-		theList.addElement(RegisterSecondaryTransportNACK);
-		theList.addElement(TransportEventUpdate);
-		theList.addElement(ServiceDataACK);
-		theList.addElement(HeartbeatACK);
-	}
+    public final static FrameDataControlFrameType Heartbeat = new FrameDataControlFrameType((byte) 0x0, "Heartbeat");
+    public final static FrameDataControlFrameType StartSession = new FrameDataControlFrameType((byte) 0x01, "StartSession");
+    public final static FrameDataControlFrameType StartSessionACK = new FrameDataControlFrameType((byte) 0x02, "StartSessionACK");
+    public final static FrameDataControlFrameType StartSessionNACK = new FrameDataControlFrameType((byte) 0x03, "StartSessionNACK");
+    public final static FrameDataControlFrameType EndSession = new FrameDataControlFrameType((byte) 0x04, "EndSession");
+    public final static FrameDataControlFrameType EndSessionACK = new FrameDataControlFrameType((byte) 0x05, "EndSessionACK");
+    public final static FrameDataControlFrameType EndSessionNACK = new FrameDataControlFrameType((byte) 0x06, "EndSessionNACK");
+    public final static FrameDataControlFrameType RegisterSecondaryTransport = new FrameDataControlFrameType((byte) 0x07, "RegisterSecondaryTransport");
+    public final static FrameDataControlFrameType RegisterSecondaryTransportACK = new FrameDataControlFrameType((byte) 0x08, "RegisterSecondaryTransportACK");
+    public final static FrameDataControlFrameType RegisterSecondaryTransportNACK = new FrameDataControlFrameType((byte) 0x09, "RegisterSecondaryTransportNACK");
+    public final static FrameDataControlFrameType TransportEventUpdate = new FrameDataControlFrameType((byte) 0xFD, "TransportEventUpdate");
+    public final static FrameDataControlFrameType ServiceDataACK = new FrameDataControlFrameType((byte) 0xFE, "ServiceDataACK");
+    public final static FrameDataControlFrameType HeartbeatACK = new FrameDataControlFrameType((byte) 0xFF, "HeartbeatACK");
 
-	public static FrameDataControlFrameType valueOf(String passedButton) {
-		return (FrameDataControlFrameType) get(theList, passedButton);
-	}
+    static {
+        theList.addElement(Heartbeat);
+        theList.addElement(StartSession);
+        theList.addElement(StartSessionACK);
+        theList.addElement(StartSessionNACK);
+        theList.addElement(EndSession);
+        theList.addElement(EndSessionACK);
+        theList.addElement(EndSessionNACK);
+        theList.addElement(RegisterSecondaryTransport);
+        theList.addElement(RegisterSecondaryTransportACK);
+        theList.addElement(RegisterSecondaryTransportNACK);
+        theList.addElement(TransportEventUpdate);
+        theList.addElement(ServiceDataACK);
+        theList.addElement(HeartbeatACK);
+    }
 
-	public static FrameDataControlFrameType[] values() {
-		return theList.toArray(new FrameDataControlFrameType[theList.size()]);
-	}
+    public static FrameDataControlFrameType valueOf(String passedButton) {
+        return (FrameDataControlFrameType) get(theList, passedButton);
+    }
+
+    public static FrameDataControlFrameType[] values() {
+        return theList.toArray(new FrameDataControlFrameType[theList.size()]);
+    }
 
 }

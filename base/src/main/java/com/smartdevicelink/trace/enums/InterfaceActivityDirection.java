@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -32,15 +32,15 @@
 package com.smartdevicelink.trace.enums;
 
 public enum InterfaceActivityDirection {
-	Transmit,
-	Receive,
-	None;
-	
-	public static InterfaceActivityDirection valueForString(String value) {
-		try{
+    Transmit,
+    Receive,
+    None;
+
+    public static InterfaceActivityDirection valueForString(String value) {
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
-	}
+    }
 }

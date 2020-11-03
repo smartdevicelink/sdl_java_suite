@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,14 +31,16 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
 
 import java.util.Hashtable;
-/** Individual requested DID result and data.
- * 
+
+/**
+ * Individual requested DID result and data.
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -71,47 +73,60 @@ import java.util.Hashtable;
  * 			<td>The DID data which is the hex byte string of however many bytes are stored at that location</td>
  * 		</tr>
  *  </table>
- * @since SmartDeviceLink 1.0
- * 
+ *
  * @see VehicleDataResultCode
  * @see ReadDID
+ * @since SmartDeviceLink 1.0
  */
 
 public class DIDResult extends RPCStruct {
-	public static final String KEY_RESULT_CODE = "resultCode";
-	public static final String KEY_DATA = "data";
-	public static final String KEY_DID_LOCATION = "didLocation";
+    public static final String KEY_RESULT_CODE = "resultCode";
+    public static final String KEY_DATA = "data";
+    public static final String KEY_DID_LOCATION = "didLocation";
 
-    public DIDResult() {}
+    public DIDResult() {
+    }
 
-	/** <p>Constructs a new DIDResult object indicated by the Hashtable
-	 * parameter</p>
-	 * @param hash The hash table to use to create an instance of this RPC
-	 */	
+    /**
+     * <p>Constructs a new DIDResult object indicated by the Hashtable
+     * parameter</p>
+     *
+     * @param hash The hash table to use to create an instance of this RPC
+     */
     public DIDResult(Hashtable<String, Object> hash) {
         super(hash);
     }
+
     public DIDResult(@NonNull VehicleDataResultCode resultCode, @NonNull Integer didLocation) {
         this();
         setResultCode(resultCode);
         setDidLocation(didLocation);
     }
-    public void setResultCode(@NonNull VehicleDataResultCode resultCode) {
-    	setValue(KEY_RESULT_CODE, resultCode);
+
+    public DIDResult setResultCode(@NonNull VehicleDataResultCode resultCode) {
+        setValue(KEY_RESULT_CODE, resultCode);
+        return this;
     }
+
     public VehicleDataResultCode getResultCode() {
-		return (VehicleDataResultCode) getObject(VehicleDataResultCode.class, KEY_RESULT_CODE);
+        return (VehicleDataResultCode) getObject(VehicleDataResultCode.class, KEY_RESULT_CODE);
     }
-    public void setDidLocation(@NonNull Integer didLocation) {
-    	setValue(KEY_DID_LOCATION, didLocation);
+
+    public DIDResult setDidLocation(@NonNull Integer didLocation) {
+        setValue(KEY_DID_LOCATION, didLocation);
+        return this;
     }
+
     public Integer getDidLocation() {
-    	return getInteger(KEY_DID_LOCATION);
-    }    
-    public void setData(String data) {
-    	setValue(KEY_DATA, data);
+        return getInteger(KEY_DID_LOCATION);
     }
+
+    public DIDResult setData(String data) {
+        setValue(KEY_DATA, data);
+        return this;
+    }
+
     public String getData() {
-    	return getString(KEY_DATA);
+        return getString(KEY_DATA);
     }
 }

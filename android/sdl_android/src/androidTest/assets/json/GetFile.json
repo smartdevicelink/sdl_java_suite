@@ -1,20 +1,20 @@
 {
-  "request":{
-    "name":"GetFile",
-    "correlationID":1,
-    "parameters":{
-      "fileName":"test",
+  "request": {
+    "name": "GetFile",
+    "correlationID": 1,
+    "parameters": {
+      "fileName": "test",
       "appServiceId": "test",
-      "fileType":"GRAPHIC_JPEG",
+      "fileType": "GRAPHIC_JPEG",
       "offset": 100,
       "length": 100
     }
   },
-  "response":{
-    "name":"GetFileResponse",
-    "correlationID":1,
-    "parameters":{
-      "fileType":"GRAPHIC_JPEG",
+  "response": {
+    "name": "GetFileResponse",
+    "correlationID": 1,
+    "parameters": {
+      "fileType": "GRAPHIC_JPEG",
       "offset": 100,
       "length": 100,
       "crc": 1234

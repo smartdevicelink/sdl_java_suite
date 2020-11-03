@@ -32,9 +32,9 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.smartdevicelink.managers.file.SdlArtworkTests;
+import com.smartdevicelink.managers.file.filetypes.SdlArtworkTests;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.test.TestValues;
@@ -54,116 +54,115 @@ import static junit.framework.TestCase.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class MenuCellTests {
 
-	private MenuSelectionListener menuSelectionListener = new MenuSelectionListener() {
-		@Override
-		public void onTriggered(TriggerSource trigger) {
-			// stuff
-		}
-	};
+    private MenuSelectionListener menuSelectionListener = new MenuSelectionListener() {
+        @Override
+        public void onTriggered(TriggerSource trigger) {
+            // stuff
+        }
+    };
 
-	@Test
-	public void testSettersAndGetters(){
+    @Test
+    public void testSettersAndGetters() {
 
-		// set everything
-		MenuCell menuCell = new MenuCell(TestValues.GENERAL_STRING, null, null, menuSelectionListener);
-		menuCell.setIcon(TestValues.GENERAL_ARTWORK);
-		menuCell.setVoiceCommands(TestValues.GENERAL_STRING_LIST);
-		menuCell.setMenuSelectionListener(menuSelectionListener);
-		menuCell.setSubMenuLayout(TestValues.GENERAL_MENU_LAYOUT);
+        // set everything
+        MenuCell menuCell = new MenuCell(TestValues.GENERAL_STRING, null, null, menuSelectionListener);
+        menuCell.setIcon(TestValues.GENERAL_ARTWORK);
+        menuCell.setVoiceCommands(TestValues.GENERAL_STRING_LIST);
+        menuCell.setMenuSelectionListener(menuSelectionListener);
+        menuCell.setSubMenuLayout(TestValues.GENERAL_MENU_LAYOUT);
 
-		// use getters and assert equality
-		assertEquals(menuCell.getTitle(), TestValues.GENERAL_STRING);
-		assertEquals(menuCell.getIcon(), TestValues.GENERAL_ARTWORK);
-		assertEquals(menuCell.getVoiceCommands(), TestValues.GENERAL_STRING_LIST);
-		assertEquals(menuCell.getMenuSelectionListener(), menuSelectionListener);
-		assertEquals(menuCell.getCellId(), TestValues.GENERAL_MENU_MAX_ID);
-		assertEquals(menuCell.getParentCellId(), TestValues.GENERAL_MENU_MAX_ID);
-		assertEquals(menuCell.getSubMenuLayout(), TestValues.GENERAL_MENU_LAYOUT);
-	}
+        // use getters and assert equality
+        assertEquals(menuCell.getTitle(), TestValues.GENERAL_STRING);
+        assertEquals(menuCell.getIcon(), TestValues.GENERAL_ARTWORK);
+        assertEquals(menuCell.getVoiceCommands(), TestValues.GENERAL_STRING_LIST);
+        assertEquals(menuCell.getMenuSelectionListener(), menuSelectionListener);
+        assertEquals(menuCell.getCellId(), TestValues.GENERAL_MENU_MAX_ID);
+        assertEquals(menuCell.getParentCellId(), TestValues.GENERAL_MENU_MAX_ID);
+        assertEquals(menuCell.getSubMenuLayout(), TestValues.GENERAL_MENU_LAYOUT);
+    }
 
-	@Test
-	public void testConstructors(){
+    @Test
+    public void testConstructors() {
 
-		// first constructor was tested in previous method, use the last two here
+        // first constructor was tested in previous method, use the last two here
 
-		MenuCell menuCell3 =new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
-		assertEquals(menuCell3.getTitle(), TestValues.GENERAL_STRING);
-		assertEquals(menuCell3.getIcon(), TestValues.GENERAL_ARTWORK);
-		assertEquals(menuCell3.getVoiceCommands(), TestValues.GENERAL_STRING_LIST);
-		assertEquals(menuCell3.getMenuSelectionListener(), menuSelectionListener);
+        MenuCell menuCell3 = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
+        assertEquals(menuCell3.getTitle(), TestValues.GENERAL_STRING);
+        assertEquals(menuCell3.getIcon(), TestValues.GENERAL_ARTWORK);
+        assertEquals(menuCell3.getVoiceCommands(), TestValues.GENERAL_STRING_LIST);
+        assertEquals(menuCell3.getMenuSelectionListener(), menuSelectionListener);
 
-		MenuCell menuCell4 =new MenuCell(TestValues.GENERAL_STRING,null, null, menuSelectionListener);
-		assertEquals(menuCell4.getTitle(), TestValues.GENERAL_STRING);
-		assertEquals(menuCell4.getMenuSelectionListener(), menuSelectionListener);
+        MenuCell menuCell4 = new MenuCell(TestValues.GENERAL_STRING, null, null, menuSelectionListener);
+        assertEquals(menuCell4.getTitle(), TestValues.GENERAL_STRING);
+        assertEquals(menuCell4.getMenuSelectionListener(), menuSelectionListener);
 
-		MenuCell menuCell5 = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_MENU_LAYOUT, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_MENUCELL_LIST);
-		assertEquals(menuCell5.getTitle(), TestValues.GENERAL_STRING);
-		assertEquals(menuCell5.getIcon(), TestValues.GENERAL_ARTWORK);
-		assertEquals(menuCell5.getSubMenuLayout(), TestValues.GENERAL_MENU_LAYOUT);
-		assertEquals(menuCell5.getSubCells(), TestValues.GENERAL_MENUCELL_LIST);
-	}
+        MenuCell menuCell5 = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_MENU_LAYOUT, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_MENUCELL_LIST);
+        assertEquals(menuCell5.getTitle(), TestValues.GENERAL_STRING);
+        assertEquals(menuCell5.getIcon(), TestValues.GENERAL_ARTWORK);
+        assertEquals(menuCell5.getSubMenuLayout(), TestValues.GENERAL_MENU_LAYOUT);
+        assertEquals(menuCell5.getSubCells(), TestValues.GENERAL_MENUCELL_LIST);
+    }
 
-	@Test
-	public void testEquality(){
+    @Test
+    public void testEquality() {
 
-		//We should use assertTrue (or assertFalse) because we want to use the overridden equals() method
+        //We should use assertTrue (or assertFalse) because we want to use the overridden equals() method
 
-		MenuCell menuCell = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
-		MenuCell menuCell2 = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
+        MenuCell menuCell = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
+        MenuCell menuCell2 = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
 
-		// these are the same object, should be equal.
-		assertTrue(menuCell.equals(menuCell));
+        // these are the same object, should be equal.
+        assertTrue(menuCell.equals(menuCell));
 
-		// Make sure these are marked as equals, even though they are different objects
-		assertTrue(menuCell.equals(menuCell2));
+        // Make sure these are marked as equals, even though they are different objects
+        assertTrue(menuCell.equals(menuCell2));
 
-		MenuCell menuCell3 = new MenuCell(TestValues.GENERAL_STRING, null, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
+        MenuCell menuCell3 = new MenuCell(TestValues.GENERAL_STRING, null, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
 
-		// these should be different
-		assertFalse(menuCell.equals(menuCell3));
-	}
+        // these should be different
+        assertFalse(menuCell.equals(menuCell3));
+    }
 
-	@Test
-	public void testClone(){
-		MenuCell original = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
-		MenuCell clone = original.clone();
+    @Test
+    public void testClone() {
+        MenuCell original = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
+        MenuCell clone = original.clone();
 
-		assertNotNull(clone);
-		assertNotSame(original, clone);
+        assertNotNull(clone);
+        assertNotSame(original, clone);
 
-		assertEquals(original.getTitle(), clone.getTitle());
-		assertEquals(original.getCellId(), clone.getCellId());
-		assertEquals(original.getParentCellId(), clone.getParentCellId());
+        assertEquals(original.getTitle(), clone.getTitle());
+        assertEquals(original.getCellId(), clone.getCellId());
+        assertEquals(original.getParentCellId(), clone.getParentCellId());
 
-		SdlArtworkTests.equalTest(original.getIcon(), clone.getIcon());
+        SdlArtworkTests.equalTest(original.getIcon(), clone.getIcon());
 
-		//Test subcells
-		List<MenuCell> subcells = new ArrayList<>();
-		subcells.add(original.clone());
-		subcells.add(clone.clone());
+        //Test subcells
+        List<MenuCell> subcells = new ArrayList<>();
+        subcells.add(original.clone());
+        subcells.add(clone.clone());
 
-		original = new MenuCell(TestValues.GENERAL_STRING, MenuLayout.LIST, TestValues.GENERAL_ARTWORK,subcells);
-		clone = original.clone();
+        original = new MenuCell(TestValues.GENERAL_STRING, MenuLayout.LIST, TestValues.GENERAL_ARTWORK, subcells);
+        clone = original.clone();
 
-		assertNotNull(original.getSubCells());
-		assertNotNull(clone.getSubCells());
-		assertNotSame(original.getSubCells(), clone.getSubCells());
+        assertNotNull(original.getSubCells());
+        assertNotNull(clone.getSubCells());
+        assertNotSame(original.getSubCells(), clone.getSubCells());
 
-		List<MenuCell> originalSubCells = original.getSubCells();
-		List<MenuCell> cloneSubCells = clone.getSubCells();
+        List<MenuCell> originalSubCells = original.getSubCells();
+        List<MenuCell> cloneSubCells = clone.getSubCells();
 
-		assertEquals(originalSubCells.size(), cloneSubCells.size());
+        assertEquals(originalSubCells.size(), cloneSubCells.size());
 
-		for(int i = 0; i < originalSubCells.size(); i++){
+        for (int i = 0; i < originalSubCells.size(); i++) {
 
-			assertNotNull(originalSubCells.get(i));
-			assertNotNull(cloneSubCells.get(i));
+            assertNotNull(originalSubCells.get(i));
+            assertNotNull(cloneSubCells.get(i));
 
-			assertNotSame(originalSubCells.get(i), cloneSubCells.get(i));
-		}
+            assertNotSame(originalSubCells.get(i), cloneSubCells.get(i));
+        }
 
 
-
-	}
+    }
 
 }

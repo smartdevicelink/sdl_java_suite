@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -40,19 +40,21 @@ import java.util.Hashtable;
  */
 
 public class PhoneCapability extends RPCStruct {
-	public static final String KEY_DIALNUMBER_ENABLED = "dialNumberEnabled";
+    public static final String KEY_DIALNUMBER_ENABLED = "dialNumberEnabled";
 
-	public PhoneCapability(){}
+    public PhoneCapability() {
+    }
 
-	public PhoneCapability(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+    public PhoneCapability(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
-	public Boolean getDialNumberEnabled(){
-		return getBoolean(KEY_DIALNUMBER_ENABLED);
-	}
+    public Boolean getDialNumberEnabled() {
+        return getBoolean(KEY_DIALNUMBER_ENABLED);
+    }
 
-	public void setDialNumberEnabled(Boolean dialNumberEnabled){
-		setValue(KEY_DIALNUMBER_ENABLED, dialNumberEnabled);
-	}
+    public PhoneCapability setDialNumberEnabled(Boolean dialNumberEnabled) {
+        setValue(KEY_DIALNUMBER_ENABLED, dialNumberEnabled);
+        return this;
+    }
 }

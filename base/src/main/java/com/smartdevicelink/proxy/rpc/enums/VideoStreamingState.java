@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -33,21 +33,23 @@ package com.smartdevicelink.proxy.rpc.enums;
 
 /**
  * Enumeration that describes possible states of video streaming.
+ *
  * @since SmartDeviceLink 5.0
  */
 public enum VideoStreamingState {
-	/**
-	 * @since SmartDeviceLink 5.0
-	 */
-	STREAMABLE,
-	/**
-	 * @since SmartDeviceLink 5.0
-	 */
-	NOT_STREAMABLE;
+    /**
+     * @since SmartDeviceLink 5.0
+     */
+    STREAMABLE,
+    /**
+     * @since SmartDeviceLink 5.0
+     */
+    NOT_STREAMABLE;
+
     public static VideoStreamingState valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

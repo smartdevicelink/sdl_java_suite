@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -45,11 +45,11 @@ import java.util.List;
 /**
  * This will open an audio pass thru session. By doing so the app can receive
  * audio data through the vehicles microphone
- * 
+ *
  * <p>Function Group: AudioPassThru</p>
- * 
+ *
  * <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b>
- * 
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -117,241 +117,241 @@ import java.util.List;
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  *
- * 		
- * 			
- * 			
- * 			
+ *
+ *
+ *
+ *
  *  </table>
- * @since SmartDeviceLink 2.0
+ *
  * @see EndAudioPassThru
+ * @since SmartDeviceLink 2.0
  */
 public class PerformAudioPassThru extends RPCRequest {
-	public static final String KEY_MAX_DURATION = "maxDuration";
-	public static final String KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_1 = "audioPassThruDisplayText1";
-	public static final String KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_2 = "audioPassThruDisplayText2";
+    public static final String KEY_MAX_DURATION = "maxDuration";
+    public static final String KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_1 = "audioPassThruDisplayText1";
+    public static final String KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_2 = "audioPassThruDisplayText2";
     public static final String KEY_MUTE_AUDIO = "muteAudio";
     public static final String KEY_SAMPLING_RATE = "samplingRate";
     public static final String KEY_AUDIO_TYPE = "audioType";
     public static final String KEY_INITIAL_PROMPT = "initialPrompt";
     public static final String KEY_BITS_PER_SAMPLE = "bitsPerSample";
-	
-	/**
-	 * Constructs a new PerformAudioPassThru object
-	 */
+
+    /**
+     * Constructs a new PerformAudioPassThru object
+     */
     public PerformAudioPassThru() {
         super(FunctionID.PERFORM_AUDIO_PASS_THRU.toString());
     }
 
-	/**
-	 * <p>Constructs a new PerformAudioPassThru object indicated by the Hashtable
-	 * parameter</p>
-	 *
-	 * @param hash The Hashtable to use
-	 */
+    /**
+     * <p>Constructs a new PerformAudioPassThru object indicated by the Hashtable
+     * parameter</p>
+     *
+     * @param hash The Hashtable to use
+     */
     public PerformAudioPassThru(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-	/**
-	 * Constructs a new PerformAudioPassThru object
-	 * @param samplingRate a SamplingRate value representing a 8 or 16 or 22 or 24 khz
-	 * @param maxDuration an Integer value representing the maximum duration of audio recording in millisecond <b>Notes: </b>Minvalue:1; Maxvalue:1000000
-	 * @param bitsPerSample a BitsPerSample value representing 8 bit or 16 bit
-	 * @param audioType an audioType
-	 */
-	public PerformAudioPassThru(@NonNull SamplingRate samplingRate, @NonNull Integer maxDuration, @NonNull BitsPerSample bitsPerSample, @NonNull AudioType audioType) {
-		this();
-		setSamplingRate(samplingRate);
-		setMaxDuration(maxDuration);
-		setBitsPerSample(bitsPerSample);
-		setAudioType(audioType);
-	}
-
-	/**
-	 * Sets initial prompt which will be spoken before opening the audio pass
-	 * thru session by SDL
-	 * 
-	 * @param initialPrompt
-	 *            a List<TTSChunk> value represents the initial prompt which
-	 *            will be spoken before opening the audio pass thru session by
-	 *            SDL
-	 *            <p></p>
-	 *            <b>Notes: </b>
-	 *            <ul>
-	 *            <li>This is an array of text chunks of type TTSChunk</li>
-	 *            <li>The array must have at least one item</li>
-	 *            <li>If omitted, then no initial prompt is spoken</li>
-	 *            <li>Array Minsize: 1</li>
-	 *            <li>Array Maxsize: 100</li>
-	 *            </ul>
-	 */
-    public void setInitialPrompt(List<TTSChunk> initialPrompt) {
-		setParameters(KEY_INITIAL_PROMPT, initialPrompt);
+    /**
+     * Constructs a new PerformAudioPassThru object
+     *
+     * @param samplingRate  a SamplingRate value representing a 8 or 16 or 22 or 24 khz
+     * @param maxDuration   an Integer value representing the maximum duration of audio recording in millisecond <b>Notes: </b>Minvalue:1; Maxvalue:1000000
+     * @param bitsPerSample a BitsPerSample value representing 8 bit or 16 bit
+     * @param audioType     an audioType
+     */
+    public PerformAudioPassThru(@NonNull SamplingRate samplingRate, @NonNull Integer maxDuration, @NonNull BitsPerSample bitsPerSample, @NonNull AudioType audioType) {
+        this();
+        setSamplingRate(samplingRate);
+        setMaxDuration(maxDuration);
+        setBitsPerSample(bitsPerSample);
+        setAudioType(audioType);
     }
 
-	/**
-	 * Gets a List value representing an initial prompt which will be spoken
-	 * before opening the audio pass thru session by SDL
-	 * 
-	 * @return List<TTSChunk> -a List value representing an initial prompt
-	 *         which will be spoken before opening the audio pass thru session
-	 *         by SDL
-	 */
+    /**
+     * Sets initial prompt which will be spoken before opening the audio pass
+     * thru session by SDL
+     *
+     * @param initialPrompt a List<TTSChunk> value represents the initial prompt which
+     *                      will be spoken before opening the audio pass thru session by
+     *                      SDL
+     *                      <p></p>
+     *                      <b>Notes: </b>
+     *                      <ul>
+     *                      <li>This is an array of text chunks of type TTSChunk</li>
+     *                      <li>The array must have at least one item</li>
+     *                      <li>If omitted, then no initial prompt is spoken</li>
+     *                      <li>Array Minsize: 1</li>
+     *                      <li>Array Maxsize: 100</li>
+     *                      </ul>
+     */
+    public PerformAudioPassThru setInitialPrompt(List<TTSChunk> initialPrompt) {
+        setParameters(KEY_INITIAL_PROMPT, initialPrompt);
+        return this;
+    }
+
+    /**
+     * Gets a List value representing an initial prompt which will be spoken
+     * before opening the audio pass thru session by SDL
+     *
+     * @return List<TTSChunk> -a List value representing an initial prompt
+     * which will be spoken before opening the audio pass thru session
+     * by SDL
+     */
     @SuppressWarnings("unchecked")
     public List<TTSChunk> getInitialPrompt() {
-		return (List<TTSChunk>) getObject(TTSChunk.class, KEY_INITIAL_PROMPT);
+        return (List<TTSChunk>) getObject(TTSChunk.class, KEY_INITIAL_PROMPT);
     }
 
-	/**
-	 * Sets a line of text displayed during audio capture
-	 * 
-	 * @param audioPassThruDisplayText1
-	 *            <p>a String value representing the line of text displayed during
-	 *            audio capture</p>
-	 *            <p></p>
-	 *            <b>Notes: </b>Maxlength=500
-	 */
-    public void setAudioPassThruDisplayText1(String audioPassThruDisplayText1) {
-		setParameters(KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_1, audioPassThruDisplayText1);
+    /**
+     * Sets a line of text displayed during audio capture
+     *
+     * @param audioPassThruDisplayText1 <p>a String value representing the line of text displayed during
+     *                                  audio capture</p>
+     *                                  <p></p>
+     *                                  <b>Notes: </b>Maxlength=500
+     */
+    public PerformAudioPassThru setAudioPassThruDisplayText1(String audioPassThruDisplayText1) {
+        setParameters(KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_1, audioPassThruDisplayText1);
+        return this;
     }
 
-	/**
-	 * Gets a first line of text displayed during audio capture
-	 * 
-	 * @return String -a String value representing a first line of text
-	 *         displayed during audio capture
-	 */
+    /**
+     * Gets a first line of text displayed during audio capture
+     *
+     * @return String -a String value representing a first line of text
+     * displayed during audio capture
+     */
     public String getAudioPassThruDisplayText1() {
-    	return getString(KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_1);
+        return getString(KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_1);
     }
 
-	/**
-	 * Sets a line of text displayed during audio capture
-	 * 
-	 * @param audioPassThruDisplayText2
-	 *            <p>a String value representing the line of text displayed during
-	 *            audio capture</p>
-	 *            <p></p>
-	 *            <b>Notes: </b>Maxlength=500
-	 */
-    public void setAudioPassThruDisplayText2(String audioPassThruDisplayText2) {
-		setParameters(KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_2, audioPassThruDisplayText2);
+    /**
+     * Sets a line of text displayed during audio capture
+     *
+     * @param audioPassThruDisplayText2 <p>a String value representing the line of text displayed during
+     *                                  audio capture</p>
+     *                                  <p></p>
+     *                                  <b>Notes: </b>Maxlength=500
+     */
+    public PerformAudioPassThru setAudioPassThruDisplayText2(String audioPassThruDisplayText2) {
+        setParameters(KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_2, audioPassThruDisplayText2);
+        return this;
     }
 
-	/**
-	 * Gets a second line of text displayed during audio capture
-	 * 
-	 * @return String -a String value representing a first line of text
-	 *         displayed during audio capture
-	 */
+    /**
+     * Gets a second line of text displayed during audio capture
+     *
+     * @return String -a String value representing a first line of text
+     * displayed during audio capture
+     */
     public String getAudioPassThruDisplayText2() {
-    	return getString(KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_2);
+        return getString(KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_2);
     }
 
-	/**
-	 * Sets a samplingRate
-	 * 
-	 * @param samplingRate
-	 *            a SamplingRate value representing a 8 or 16 or 22 or 24 khz
-	 */
-    public void setSamplingRate(@NonNull SamplingRate samplingRate) {
-		setParameters(KEY_SAMPLING_RATE, samplingRate);
+    /**
+     * Sets a samplingRate
+     *
+     * @param samplingRate a SamplingRate value representing a 8 or 16 or 22 or 24 khz
+     */
+    public PerformAudioPassThru setSamplingRate(@NonNull SamplingRate samplingRate) {
+        setParameters(KEY_SAMPLING_RATE, samplingRate);
+        return this;
     }
 
-	/**
-	 * Gets a samplingRate
-	 * 
-	 * @return SamplingRate -a SamplingRate value
-	 */
+    /**
+     * Gets a samplingRate
+     *
+     * @return SamplingRate -a SamplingRate value
+     */
     public SamplingRate getSamplingRate() {
-		return (SamplingRate) getObject(SamplingRate.class, KEY_SAMPLING_RATE);
+        return (SamplingRate) getObject(SamplingRate.class, KEY_SAMPLING_RATE);
     }
 
-	/**
-	 * Sets the maximum duration of audio recording in milliseconds
-	 * 
-	 * @param maxDuration
-	 *            an Integer value representing the maximum duration of audio
-	 *            recording in millisecond
-	 *            <p></p>
-	 *            <b>Notes: </b>Minvalue:1; Maxvalue:1000000
-	 */
-    public void setMaxDuration(@NonNull Integer maxDuration) {
-		setParameters(KEY_MAX_DURATION, maxDuration);
+    /**
+     * Sets the maximum duration of audio recording in milliseconds
+     *
+     * @param maxDuration an Integer value representing the maximum duration of audio
+     *                    recording in millisecond
+     *                    <p></p>
+     *                    <b>Notes: </b>Minvalue:1; Maxvalue:1000000
+     */
+    public PerformAudioPassThru setMaxDuration(@NonNull Integer maxDuration) {
+        setParameters(KEY_MAX_DURATION, maxDuration);
+        return this;
     }
 
-	/**
-	 * Gets a max duration of audio recording in milliseconds
-	 * 
-	 * @return int -an int value representing the maximum duration of audio
-	 *         recording in milliseconds
-	 */
+    /**
+     * Gets a max duration of audio recording in milliseconds
+     *
+     * @return int -an int value representing the maximum duration of audio
+     * recording in milliseconds
+     */
     public Integer getMaxDuration() {
-    	return getInteger(KEY_MAX_DURATION);
+        return getInteger(KEY_MAX_DURATION);
     }
 
-	/**
-	 * Sets the quality the audio is recorded - 8 bit or 16 bit
-	 * 
-	 * @param audioQuality
-	 *            a BitsPerSample value representing 8 bit or 16 bit
-	 */
-    public void setBitsPerSample(@NonNull BitsPerSample audioQuality) {
-		setParameters(KEY_BITS_PER_SAMPLE, audioQuality);
+    /**
+     * Sets the quality the audio is recorded - 8 bit or 16 bit
+     *
+     * @param audioQuality a BitsPerSample value representing 8 bit or 16 bit
+     */
+    public PerformAudioPassThru setBitsPerSample(@NonNull BitsPerSample audioQuality) {
+        setParameters(KEY_BITS_PER_SAMPLE, audioQuality);
+        return this;
     }
 
-	/**
-	 * Gets a BitsPerSample value, 8 bit or 16 bit
-	 * 
-	 * @return BitsPerSample -a BitsPerSample value
-	 */
+    /**
+     * Gets a BitsPerSample value, 8 bit or 16 bit
+     *
+     * @return BitsPerSample -a BitsPerSample value
+     */
     public BitsPerSample getBitsPerSample() {
-		return (BitsPerSample) getObject(BitsPerSample.class, KEY_BITS_PER_SAMPLE);
+        return (BitsPerSample) getObject(BitsPerSample.class, KEY_BITS_PER_SAMPLE);
     }
 
-	/**
-	 * Sets an audioType
-	 * 
-	 * @param audioType
-	 *            an audioType
-	 */
-    public void setAudioType(@NonNull AudioType audioType) {
-		setParameters(KEY_AUDIO_TYPE, audioType);
+    /**
+     * Sets an audioType
+     *
+     * @param audioType an audioType
+     */
+    public PerformAudioPassThru setAudioType(@NonNull AudioType audioType) {
+        setParameters(KEY_AUDIO_TYPE, audioType);
+        return this;
     }
 
-	/**
-	 * Gets a type of audio data
-	 * 
-	 * @return AudioType -an AudioType
-	 */
+    /**
+     * Gets a type of audio data
+     *
+     * @return AudioType -an AudioType
+     */
     public AudioType getAudioType() {
-		return (AudioType) getObject(AudioType.class, KEY_AUDIO_TYPE);
+        return (AudioType) getObject(AudioType.class, KEY_AUDIO_TYPE);
     }
 
-	/**
-	 *<p> Gets a Boolean value representing if the current audio source should be
-	 * muted during the APT session</p>
-	 * 
-	 * 
-	 * @return Boolean -a Boolean value representing if the current audio source
-	 *         should be muted during the APT session
-	 */
+    /**
+     * <p> Gets a Boolean value representing if the current audio source should be
+     * muted during the APT session</p>
+     *
+     * @return Boolean -a Boolean value representing if the current audio source
+     * should be muted during the APT session
+     */
     public Boolean getMuteAudio() {
-    	return getBoolean(KEY_MUTE_AUDIO);
+        return getBoolean(KEY_MUTE_AUDIO);
     }
 
-	/**
-	 * <p>Sets a muteAudio value representing if the current audio source should be
-	 * muted during the APT session
-	 * If not, the audio source will play without interruption. If omitted, the
-	 * value is set to true</p>
-	 * 
-	 * 
-	 * @param muteAudio
-	 *            a Boolean value representing if the current audio source
-	 *            should be muted during the APT session
-	 */
-    public void setMuteAudio(Boolean muteAudio) {
-		setParameters(KEY_MUTE_AUDIO, muteAudio);
-    }    
+    /**
+     * <p>Sets a muteAudio value representing if the current audio source should be
+     * muted during the APT session
+     * If not, the audio source will play without interruption. If omitted, the
+     * value is set to true</p>
+     *
+     * @param muteAudio a Boolean value representing if the current audio source
+     *                  should be muted during the APT session
+     */
+    public PerformAudioPassThru setMuteAudio(Boolean muteAudio) {
+        setParameters(KEY_MUTE_AUDIO, muteAudio);
+        return this;
+    }
 }

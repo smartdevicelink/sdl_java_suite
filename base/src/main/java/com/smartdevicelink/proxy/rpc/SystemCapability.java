@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@
  * disclaimer in the documentation and/or other materials provided with the
  * distribution.
  *
- * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
- * software without specific prior written permission.
+ * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
@@ -51,7 +51,10 @@ public class SystemCapability extends RPCStruct {
     public static final String KEY_APP_SERVICES_CAPABILITIES = "appServicesCapabilities";
     public static final String KEY_SEAT_LOCATION_CAPABILITY = "seatLocationCapability";
     public static final String KEY_DISPLAY_CAPABILITIES = "displayCapabilities";
-    public SystemCapability(){}
+    public static final String KEY_DRIVER_DISTRACTION_CAPABILITY = "driverDistractionCapability";
+
+    public SystemCapability() {
+    }
 
     public SystemCapability(Hashtable<String, Object> hash) {
         super(hash);
@@ -59,26 +62,27 @@ public class SystemCapability extends RPCStruct {
 
     /**
      * Create a systemCapability object
+     *
      * @param systemCapabilityType The type
      */
-    public SystemCapability(@NonNull SystemCapabilityType systemCapabilityType){
+    public SystemCapability(@NonNull SystemCapabilityType systemCapabilityType) {
         this();
         setSystemCapabilityType(systemCapabilityType);
     }
 
     /**
-     *
      * @return The SystemCapabilityType that indicates which type of data should be changed and identifies which data object exists in this struct. For example, if the SystemCapability Type is NAVIGATION then a "navigationCapability" should exist
      */
-    public SystemCapabilityType getSystemCapabilityType(){
+    public SystemCapabilityType getSystemCapabilityType() {
         return (SystemCapabilityType) getObject(SystemCapabilityType.class, KEY_SYSTEM_CAPABILITY_TYPE);
     }
 
     /**
      * @param value Set the SystemCapabilityType that indicates which type of data should be changed and identifies which data object exists in this struct.
      */
-    public void setSystemCapabilityType(@NonNull SystemCapabilityType value){
+    public SystemCapability setSystemCapabilityType(@NonNull SystemCapabilityType value) {
         setValue(KEY_SYSTEM_CAPABILITY_TYPE, value);
+        return this;
     }
 
     public Object getCapabilityForType(SystemCapabilityType type) {
@@ -98,14 +102,16 @@ public class SystemCapability extends RPCStruct {
             return getObject(SeatLocationCapability.class, KEY_SEAT_LOCATION_CAPABILITY);
         } else if (type.equals(SystemCapabilityType.DISPLAYS)) {
             return getObject(DisplayCapability.class, KEY_DISPLAY_CAPABILITIES);
+        } else if (type.equals(SystemCapabilityType.DRIVER_DISTRACTION)) {
+            return getObject(DriverDistractionCapability.class, KEY_DRIVER_DISTRACTION_CAPABILITY);
         } else {
             return null;
         }
     }
 
-    public void setCapabilityForType(SystemCapabilityType type, Object capability) {
+    public SystemCapability setCapabilityForType(SystemCapabilityType type, Object capability) {
         if (type == null) {
-            return;
+            return this;
         } else if (type.equals(SystemCapabilityType.NAVIGATION)) {
             setValue(KEY_NAVIGATION_CAPABILITY, capability);
         } else if (type.equals(SystemCapabilityType.PHONE_CALL)) {
@@ -120,9 +126,12 @@ public class SystemCapability extends RPCStruct {
             setValue(KEY_SEAT_LOCATION_CAPABILITY, capability);
         } else if (type.equals(SystemCapabilityType.DISPLAYS)) {
             setValue(KEY_DISPLAY_CAPABILITIES, capability);
+        } else if (type.equals(SystemCapabilityType.DRIVER_DISTRACTION)) {
+            setValue(KEY_DRIVER_DISTRACTION_CAPABILITY, capability);
         } else {
-            return;
+            return this;
         }
+        return this;
     }
 
 }

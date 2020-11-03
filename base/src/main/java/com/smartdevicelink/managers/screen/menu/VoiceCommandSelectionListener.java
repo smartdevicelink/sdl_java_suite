@@ -34,6 +34,6 @@ package com.smartdevicelink.managers.screen.menu;
 
 public interface VoiceCommandSelectionListener {
 
-	void onVoiceCommandSelected();
+    void onVoiceCommandSelected();
 
 }

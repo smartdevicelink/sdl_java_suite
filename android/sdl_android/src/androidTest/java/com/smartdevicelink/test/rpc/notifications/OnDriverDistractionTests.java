@@ -17,15 +17,15 @@ import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.fail;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.OnDriverDistraction}
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.proxy.rpc.OnDriverDistraction}
  */
-public class OnDriverDistractionTests extends BaseRpcTests{
+public class OnDriverDistractionTests extends BaseRpcTests {
 
     private static final DriverDistractionState STATUS = DriverDistractionState.DD_ON;
 
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         OnDriverDistraction msg = new OnDriverDistraction();
 
         msg.setState(STATUS);
@@ -34,44 +34,44 @@ public class OnDriverDistractionTests extends BaseRpcTests{
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_NOTIFICATION;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.ON_DRIVER_DISTRACTION.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
+        try {
             result.put(OnDriverDistraction.KEY_STATE, STATUS);
-        }catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
 
         return result;
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
+     * Tests the expected values of the RPC message.
+     */
     @Test
-    public void testRpcValues () {       	
-    	// Test Values
-        DriverDistractionState cmdId = ( (OnDriverDistraction) msg ).getState();
-        
+    public void testRpcValues() {
+        // Test Values
+        DriverDistractionState cmdId = ((OnDriverDistraction) msg).getState();
+
         // Valid Tests
         assertEquals(TestValues.MATCH, STATUS, cmdId);
-    
+
         // Invalid/Null Tests
         OnDriverDistraction msg = new OnDriverDistraction();
         assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-         assertNull(TestValues.NULL, msg.getState());
+        assertNull(TestValues.NULL, msg.getState());
     }
 }

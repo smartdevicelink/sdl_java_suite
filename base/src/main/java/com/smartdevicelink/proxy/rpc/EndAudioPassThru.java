@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -38,43 +38,42 @@ import java.util.Hashtable;
 
 /**
  * When this request is invoked, the audio capture stops
- * 
+ *
  * <p>Function Group: AudioPassThru</p>
- * 
+ *
  * <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b>
- * 
- *  <p><b>Request</b></p>
- *  
- *  <p>No parameters.</p>
- *  <p><b>Response</b> </p>
- *  <p><b>Non-default Result Codes:</b></p>
- *  <p>SUCCESS</p>
- *  <p>INVALID_DATA</p>
- *  <p>OUT_OF_MEMORY</p>
- *  <p>TOO_MANY_PENDING_REQUESTS</p>
- *  <p>APPLICATION_NOT_REGISTERED</p>
- *  <p>GENERIC_ERROR</p>
- *  <p>REJECTED</p>
- *  <p>DISALLOWED</p>
- * @since SmartDeviceLink 2.0
+ *
+ * <p><b>Request</b></p>
+ *
+ * <p>No parameters.</p>
+ * <p><b>Response</b> </p>
+ * <p><b>Non-default Result Codes:</b></p>
+ * <p>SUCCESS</p>
+ * <p>INVALID_DATA</p>
+ * <p>OUT_OF_MEMORY</p>
+ * <p>TOO_MANY_PENDING_REQUESTS</p>
+ * <p>APPLICATION_NOT_REGISTERED</p>
+ * <p>GENERIC_ERROR</p>
+ * <p>REJECTED</p>
+ * <p>DISALLOWED</p>
+ *
  * @see PerformAudioPassThru
+ * @since SmartDeviceLink 2.0
  */
 public class EndAudioPassThru extends RPCRequest {
 
-	/**
-	 * Constructs a new EndAudioPassThru object
-	 */
+    /**
+     * Constructs a new EndAudioPassThru object
+     */
     public EndAudioPassThru() {
         super(FunctionID.END_AUDIO_PASS_THRU.toString());
     }
-    
+
     /**
-	 * <p>Constructs a new EndAudioPassThru object indicated by the Hashtable
-	 * parameter</p>
-	 * 
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
+     * <p>Constructs a new EndAudioPassThru object indicated by the Hashtable
+     * parameter</p>
+     *
+     * @param hash The Hashtable to use
      */
     public EndAudioPassThru(Hashtable<String, Object> hash) {
         super(hash);

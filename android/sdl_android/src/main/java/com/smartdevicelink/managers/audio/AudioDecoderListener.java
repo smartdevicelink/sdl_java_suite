@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -48,12 +48,14 @@ public interface AudioDecoderListener {
 
     /**
      * Notifies that the audio decoding is finished.
+     *
      * @param success Indicates whether audio decoding was successful or if an error occurred.
      */
     void onDecoderFinish(boolean success);
 
     /**
      * Notifies the caller that an error/exception occurred during audio decoding.
+     *
      * @param e The exception storing information about the error.
      */
     void onDecoderError(Exception e);

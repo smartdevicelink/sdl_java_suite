@@ -42,15 +42,15 @@ import com.smartdevicelink.transport.utl.TransportRecord;
 public abstract class MultiplexBaseTransport {
 
     // Constants that indicate the current connection state
-    public static final int STATE_NONE 			= 0;    // we're doing nothing
-    public static final int STATE_LISTEN 		= 1;    // now listening for incoming connections
-    public static final int STATE_CONNECTING	= 2; 	// now initiating an outgoing connection
-    public static final int STATE_CONNECTED 	= 3;  	// now connected to a remote device
-    public static final int STATE_ERROR 		= 4;  	// Something bad happened, we wil not try to restart the thread
+    public static final int STATE_NONE = 0;    // we're doing nothing
+    public static final int STATE_LISTEN = 1;    // now listening for incoming connections
+    public static final int STATE_CONNECTING = 2;    // now initiating an outgoing connection
+    public static final int STATE_CONNECTED = 3;    // now connected to a remote device
+    public static final int STATE_ERROR = 4;    // Something bad happened, we wil not try to restart the thread
 
     public static final String ERROR_REASON_KEY = "ERROR_REASON";
-    public static final byte REASON_SPP_ERROR   = 0x01;    // REASON = SPP error, which is sent through bundle.
-    public static final byte REASON_NONE        = 0x0;
+    public static final byte REASON_SPP_ERROR = 0x01;    // REASON = SPP error, which is sent through bundle.
+    public static final byte REASON_NONE = 0x0;
 
     public static final String LOG = "log";
     public static final String DEVICE_NAME = "device_name";
@@ -61,13 +61,11 @@ public abstract class MultiplexBaseTransport {
     protected final TransportType transportType;
 
     protected TransportRecord transportRecord;
-    @Deprecated
-    public static String currentlyConnectedDevice = null;
     protected String connectedDeviceName = null;
     public String connectedDeviceAddress = null;
 
 
-    protected MultiplexBaseTransport(Handler handler, TransportType transportType){
+    protected MultiplexBaseTransport(Handler handler, TransportType transportType) {
         this.handler = handler;
         this.transportType = transportType;
     }
@@ -77,7 +75,7 @@ public abstract class MultiplexBaseTransport {
     }
 
     protected synchronized void setState(int state, Bundle bundle) {
-        if(state == mState){
+        if (state == mState) {
             return; //State hasn't changed. Will not updated listeners.
         }
         //Log.d(TAG, "Setting state from: " +mState + " to: " +state);
@@ -91,33 +89,34 @@ public abstract class MultiplexBaseTransport {
         msg.sendToTarget();
     }
 
-    public String getAddress(){
+    public String getAddress() {
         return connectedDeviceAddress;
     }
 
-    public String getDeviceName(){
+    public String getDeviceName() {
         return connectedDeviceName;
     }
 
     /**
      * Should only be called after a connection has been established
+     *
      * @return
      */
     public TransportRecord getTransportRecord() {
-        if(transportRecord == null){
-            transportRecord = new TransportRecord(transportType,connectedDeviceAddress);
+        if (transportRecord == null) {
+            transportRecord = new TransportRecord(transportType, connectedDeviceAddress);
         }
         return transportRecord;
     }
 
     /**
-     * Return the current connection state. */
+     * Return the current connection state.
+     */
     public synchronized int getState() {
         return mState;
     }
 
-    public boolean isConnected()
-    {
+    public boolean isConnected() {
         return (mState == STATE_CONNECTED);
     }
 
@@ -126,8 +125,10 @@ public abstract class MultiplexBaseTransport {
     }
 
     protected abstract void stop(int state);
-    protected void stop(int state, byte error) {};
 
-    public abstract void write(byte[] out,  int offset, int count);
+    protected void stop(int state, byte error) {
+    }
+
+    public abstract void write(byte[] out, int offset, int count);
 
 }

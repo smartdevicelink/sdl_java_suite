@@ -36,5 +36,6 @@ import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 
 public interface ChoiceSetSelectionListener {
     void onChoiceSelected(ChoiceCell choiceCell, TriggerSource triggerSource, int rowIndex);
+
     void onError(String error);
 }

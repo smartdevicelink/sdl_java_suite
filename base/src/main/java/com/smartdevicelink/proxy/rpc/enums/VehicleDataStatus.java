@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -33,17 +33,17 @@ package com.smartdevicelink.proxy.rpc.enums;
 
 /**
  * Reflects the status of a binary vehicle data item.
- * @since SmartDeviceLink 2.0
  *
+ * @since SmartDeviceLink 2.0
  */
 public enum VehicleDataStatus {
-	/**
-	 * No data available
-	 */
-	NO_DATA_EXISTS,
-	/**
-	 * The vehicle item is in Off state
-	 */
+    /**
+     * No data available
+     */
+    NO_DATA_EXISTS,
+    /**
+     * The vehicle item is in Off state
+     */
 
     OFF,
     /**
@@ -54,13 +54,14 @@ public enum VehicleDataStatus {
 
     /**
      * Convert String to VehicleDataStatus
+     *
      * @param value String
      * @return VehicleDataStatus
-     */		
+     */
     public static VehicleDataStatus valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

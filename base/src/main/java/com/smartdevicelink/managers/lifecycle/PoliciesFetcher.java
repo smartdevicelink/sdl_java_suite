@@ -39,11 +39,17 @@ import com.smartdevicelink.proxy.rpc.SystemRequest;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.util.DebugTool;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -63,7 +69,7 @@ class PoliciesFetcher {
         boolean bDoOutput = true;
         boolean bDoInput = true;
         boolean bUsesCaches = false;
-        String sRequestMeth = "POST";
+        String sRequestMethod = "POST";
 
         boolean bInstFolRed = false;
         String sCharSet = "utf-8";
@@ -81,7 +87,7 @@ class PoliciesFetcher {
             bDoOutput = myHeader.getDoOutput();
             bDoInput = myHeader.getDoInput();
             bUsesCaches = myHeader.getUseCaches();
-            sRequestMeth = myHeader.getRequestMethod();
+            sRequestMethod = myHeader.getRequestMethod();
             iReadTimeout = myHeader.getReadTimeout();
             bInstFolRed = myHeader.getInstanceFollowRedirects();
             sCharSet = myHeader.getCharset();
@@ -96,12 +102,12 @@ class PoliciesFetcher {
             urlConnection.setConnectTimeout(CONNECTION_TIMEOUT);
             urlConnection.setDoOutput(bDoOutput);
             urlConnection.setDoInput(bDoInput);
-            urlConnection.setRequestMethod(sRequestMeth);
+            urlConnection.setRequestMethod(sRequestMethod);
             urlConnection.setReadTimeout(READ_TIMEOUT);
             urlConnection.setInstanceFollowRedirects(bInstFolRed);
             urlConnection.setRequestProperty("Content-Type", sContentType);
             urlConnection.setRequestProperty("charset", sCharSet);
-            urlConnection.setRequestProperty("Content-Length", "" + Integer.toString(iContentLength));
+            urlConnection.setRequestProperty("Content-Length", "" + iContentLength);
             urlConnection.setUseCaches(bUsesCaches);
             return urlConnection;
         } catch (Exception e) {
@@ -166,7 +172,7 @@ class PoliciesFetcher {
 
             long BeforeTime = System.currentTimeMillis();
             long AfterTime = System.currentTimeMillis();
-            final long roundtriptime = AfterTime - BeforeTime;
+            final long roundTripTime = AfterTime - BeforeTime;
 
             int iResponseCode = urlConnection.getResponseCode();
 
@@ -195,7 +201,7 @@ class PoliciesFetcher {
                 putFile.setCRC(response.toString().getBytes());
                 return putFile;
             } else {
-                Vector<String> cloudDataReceived = new Vector<String>();
+                Vector<String> cloudDataReceived = new Vector<>();
                 final String dataKey = "data";
                 // Convert the response to JSON
                 JSONObject jsonResponse = new JSONObject(response.toString());

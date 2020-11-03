@@ -12,15 +12,15 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.RdsData}
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.proxy.rpc.RdsData}
  */
-public class RdsDataTests extends TestCase{
-	
+public class RdsDataTests extends TestCase {
+
     private RdsData msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new RdsData();
 
         msg.setProgramService(TestValues.GENERAL_STRING);
@@ -34,9 +34,9 @@ public class RdsDataTests extends TestCase{
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
         // Test Values
         String ps = msg.getProgramService();
         String rt = msg.getRadioText();
@@ -71,10 +71,10 @@ public class RdsDataTests extends TestCase{
         assertNull(TestValues.NULL, msg.getProgramType());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(RdsData.KEY_PS, TestValues.GENERAL_STRING);
             reference.put(RdsData.KEY_RT, TestValues.GENERAL_STRING);
             reference.put(RdsData.KEY_CT, TestValues.GENERAL_STRING);
@@ -88,14 +88,14 @@ public class RdsDataTests extends TestCase{
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
 
                 assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 
             }
-        } catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

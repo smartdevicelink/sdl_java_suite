@@ -36,15 +36,15 @@ import com.smartdevicelink.proxy.RPCRequest;
 
 public abstract class OnRPCRequestListener extends OnRPCListener {
 
-	public final void onReceived(final RPCMessage message){
-		if (message instanceof RPCRequest){
-			onRequest((RPCRequest)message);
-		}
-	}
+    public final void onReceived(final RPCMessage message) {
+        if (message instanceof RPCRequest) {
+            onRequest((RPCRequest) message);
+        }
+    }
 
-	/**
-	 * @param request - The incoming RPC Request
-	 */
-	public abstract void onRequest(final RPCRequest request);
+    /**
+     * @param request - The incoming RPC Request
+     */
+    public abstract void onRequest(final RPCRequest request);
 
 }

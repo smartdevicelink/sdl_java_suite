@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -42,40 +42,26 @@ import java.util.List;
 
 /**
  * Get DTCs Response is sent, when GetDTCs has been called
- * 
+ *
  * @since SmartDeviceLink 2.0
  */
-public class GetDTCsResponse extends RPCResponse{
+public class GetDTCsResponse extends RPCResponse {
 
     public static final String KEY_ECU_HEADER = "ecuHeader";
     public static final String KEY_DTC = "dtc";
 
-    public GetDTCsResponse(){
+    public GetDTCsResponse() {
         super(FunctionID.GET_DTCS.toString());
     }
 
-    public GetDTCsResponse(Hashtable<String, Object> hash){
+    public GetDTCsResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 
     /**
      * Constructs a new GetDTCsResponse object
-     * @param success whether the request is successfully processed
-     * @param resultCode whether the request is successfully processed
-     * @param ecuHeader representation of the ecu header that was returned from the GetDTC request
-     * @deprecated use {@link GetDTCsResponse#GetDTCsResponse(Boolean, Result)}
-     */
-    @Deprecated
-    public GetDTCsResponse(@NonNull Boolean success, @NonNull Result resultCode, @NonNull Integer ecuHeader) {
-        this();
-        setSuccess(success);
-        setResultCode(resultCode);
-        setEcuHeader(ecuHeader);
-    }
-
-    /**
-     * Constructs a new GetDTCsResponse object
-     * @param success whether the request is successfully processed
+     *
+     * @param success    whether the request is successfully processed
      * @param resultCode whether the request is successfully processed
      */
     public GetDTCsResponse(@NonNull Boolean success, @NonNull Result resultCode) {
@@ -85,20 +71,22 @@ public class GetDTCsResponse extends RPCResponse{
     }
 
     @SuppressWarnings("unchecked")
-    public List<String> getDtc(){
+    public List<String> getDtc() {
         return (List<String>) getObject(String.class, KEY_DTC);
     }
 
-    public void setDtc(List<String> dtc){
+    public GetDTCsResponse setDtc(List<String> dtc) {
         setParameters(KEY_DTC, dtc);
+        return this;
     }
-    
-    public Integer getEcuHeader(){
+
+    public Integer getEcuHeader() {
         return getInteger(KEY_ECU_HEADER);
     }
-    
-    public void setEcuHeader(Integer ecuHeader){
+
+    public GetDTCsResponse setEcuHeader(Integer ecuHeader) {
         setParameters(KEY_ECU_HEADER, ecuHeader);
+        return this;
     }
 
 }

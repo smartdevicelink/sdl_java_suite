@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -42,11 +42,11 @@ import java.util.List;
 /**
  * Creates a full screen overlay containing a large block of formatted text that
  * can be scrolled with up to 8 SoftButtons defined
- *
+ * <p>
  * If connecting to SDL Core v.6.0+, the scrollable message can be canceled programmatically using the `cancelID`. On older versions of SDL Core, the scrollable message will persist until the user has interacted with the scrollable message or the specified timeout has elapsed.
- * 
+ *
  * <p>Function Group: ScrollableMessage</p>
- * 
+ *
  * <p><b>HMILevel needs to be FULL</b></p>
  *
  * <p><b>Parameter List</b></p>
@@ -72,7 +72,7 @@ import java.util.List;
  * 			<td>Integer</td>
  * 			<td>App defined timeout.  Indicates how long of a timeout from the last action (i.e. scrolling message resets timeout).</td>
  *                 <td>N</td>
- *                 <td>minvalue=1000; maxvalue=65535; defvalue=30000</td>
+ *                 <td>minValue=1000; maxValue=65535; defValue=30000</td>
  * 			<td>SmartDevice Link 1.0 </td>
  * 		</tr>
  * 		<tr>
@@ -93,141 +93,142 @@ import java.util.List;
  * 		</tr>
  *  </table>
  *  <p> <b>Response</b></p>
- *<b>Non-default Result Codes:</b>
- *	<p>SUCCESS</p>
- *	<p>INVALID_DATA </p>
- *	<p>OUT_OF_MEMORY</p>
- *	<p>CHAR_LIMIT_EXCEEDED</p>
- *	<p>TOO_MANY_PENDING_REQUESTS</p>
- *	<p>APPLICATION_NOT_REGISTERED</p>
- *	<p>GENERIC_ERROR </p>
- *	<p>DISALLOWED</p>
- *	<p>UNSUPPORTED_RESOURCE</p>          
- *	<p>REJECTED </p>
- *	<p>ABORTED</p>
- *
+ * <b>Non-default Result Codes:</b>
+ * 	<p>SUCCESS</p>
+ * 	<p>INVALID_DATA </p>
+ * 	<p>OUT_OF_MEMORY</p>
+ * 	<p>CHAR_LIMIT_EXCEEDED</p>
+ * 	<p>TOO_MANY_PENDING_REQUESTS</p>
+ * 	<p>APPLICATION_NOT_REGISTERED</p>
+ * 	<p>GENERIC_ERROR </p>
+ * 	<p>DISALLOWED</p>
+ * 	<p>UNSUPPORTED_RESOURCE</p>
+ * 	<p>REJECTED </p>
+ * 	<p>ABORTED</p>
+ * <p>
  *  @see com.smartdevicelink.proxy.rpc.SoftButton
  */
 public class ScrollableMessage extends RPCRequest {
-	public static final String KEY_SCROLLABLE_MESSAGE_BODY = "scrollableMessageBody";
-	public static final String KEY_TIMEOUT = "timeout";
-	public static final String KEY_SOFT_BUTTONS = "softButtons";
-	public static final String KEY_CANCEL_ID = "cancelID";
+    public static final String KEY_SCROLLABLE_MESSAGE_BODY = "scrollableMessageBody";
+    public static final String KEY_TIMEOUT = "timeout";
+    public static final String KEY_SOFT_BUTTONS = "softButtons";
+    public static final String KEY_CANCEL_ID = "cancelID";
 
-	/**
-	 * Constructs a new ScrollableMessage object
-	 */
+    /**
+     * Constructs a new ScrollableMessage object
+     */
     public ScrollableMessage() {
         super(FunctionID.SCROLLABLE_MESSAGE.toString());
     }
 
-	/**
-	 * Constructs a new ScrollableMessage object indicated by the Hashtable
-	 * parameter
-	 * <p></p>
-	 * 
-	 * @param hash The Hashtable to use
-	 */
+    /**
+     * Constructs a new ScrollableMessage object indicated by the Hashtable
+     * parameter
+     * <p></p>
+     *
+     * @param hash The Hashtable to use
+     */
     public ScrollableMessage(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-	/**
-	 * Constructs a new ScrollableMessage object
-	 * @param scrollableMessageBody a String value representing the Body of text that can include newlines and tabs <br>
-	 * <b>Notes: </b>Maxlength=500
-	 */
-	public ScrollableMessage(@NonNull String scrollableMessageBody) {
-		this();
-		setScrollableMessageBody(scrollableMessageBody);
-	}
-
-	/**
-	 * Sets a Body of text that can include newlines and tabs
-	 * 
-	 * @param scrollableMessageBody
-	 *            a String value representing the Body of text that can include
-	 *            newlines and tabs
-	 *            <p></p>
-	 *            <b>Notes: </b>Maxlength=500
-	 */
-    public void setScrollableMessageBody(@NonNull String scrollableMessageBody) {
-		setParameters(KEY_SCROLLABLE_MESSAGE_BODY, scrollableMessageBody);
+    /**
+     * Constructs a new ScrollableMessage object
+     *
+     * @param scrollableMessageBody a String value representing the Body of text that can include newlines and tabs <br>
+     *                              <b>Notes: </b>Maxlength=500
+     */
+    public ScrollableMessage(@NonNull String scrollableMessageBody) {
+        this();
+        setScrollableMessageBody(scrollableMessageBody);
     }
 
-	/**
-	 * Gets a Body of text that can include newlines and tabs
-	 * 
-	 * @return String -a String value
-	 */
+    /**
+     * Sets a Body of text that can include newlines and tabs
+     *
+     * @param scrollableMessageBody a String value representing the Body of text that can include
+     *                              newlines and tabs
+     *                              <p></p>
+     *                              <b>Notes: </b>Maxlength=500
+     */
+    public ScrollableMessage setScrollableMessageBody(@NonNull String scrollableMessageBody) {
+        setParameters(KEY_SCROLLABLE_MESSAGE_BODY, scrollableMessageBody);
+        return this;
+    }
+
+    /**
+     * Gets a Body of text that can include newlines and tabs
+     *
+     * @return String -a String value
+     */
     public String getScrollableMessageBody() {
         return getString(KEY_SCROLLABLE_MESSAGE_BODY);
     }
 
-	/**
-	 * Sets an App defined timeout. Indicates how long of a timeout from the
-	 * last action
-	 * 
-	 * @param timeout
-	 *            an Integer value representing an App defined timeout
-	 *            <p></p>
-	 *            <b>Notes</b>:Minval=0; Maxval=65535;Default=30000
-	 */
-    public void setTimeout(Integer timeout) {
-		setParameters(KEY_TIMEOUT, timeout);
+    /**
+     * Sets an App defined timeout. Indicates how long of a timeout from the
+     * last action
+     *
+     * @param timeout an Integer value representing an App defined timeout
+     *                <p></p>
+     *                <b>Notes</b>:Minval=0; Maxval=65535;Default=30000
+     */
+    public ScrollableMessage setTimeout(Integer timeout) {
+        setParameters(KEY_TIMEOUT, timeout);
+        return this;
     }
 
-	/**
-	 * Gets an App defined timeout
-	 * 
-	 * @return Integer -an Integer value representing an App defined timeout
-	 */
+    /**
+     * Gets an App defined timeout
+     *
+     * @return Integer -an Integer value representing an App defined timeout
+     */
     public Integer getTimeout() {
         return getInteger(KEY_TIMEOUT);
     }
 
-	/**
-	 * Sets App defined SoftButtons.If omitted on supported displays, only the
-	 * system defined "Close" SoftButton will be displayed
-	 * 
-	 * @param softButtons
-	 *            a List<SoftButton> value representing App defined
-	 *            SoftButtons
-	 *            <p></p>
-	 *            <b>Notes: </b>Minsize=0, Maxsize=8
-	 */
-    public void setSoftButtons(List<SoftButton> softButtons) {
-		setParameters(KEY_SOFT_BUTTONS, softButtons);
+    /**
+     * Sets App defined SoftButtons.If omitted on supported displays, only the
+     * system defined "Close" SoftButton will be displayed
+     *
+     * @param softButtons a List<SoftButton> value representing App defined
+     *                    SoftButtons
+     *                    <p></p>
+     *                    <b>Notes: </b>Minsize=0, Maxsize=8
+     */
+    public ScrollableMessage setSoftButtons(List<SoftButton> softButtons) {
+        setParameters(KEY_SOFT_BUTTONS, softButtons);
+        return this;
     }
 
-	/**
-	 * Gets App defined soft button
-	 * @return List -List<SoftButton> value
-	 */
+    /**
+     * Gets App defined soft button
+     *
+     * @return List -List<SoftButton> value
+     */
     @SuppressWarnings("unchecked")
     public List<SoftButton> getSoftButtons() {
-		return (List<SoftButton>) getObject(SoftButton.class, KEY_SOFT_BUTTONS);
+        return (List<SoftButton>) getObject(SoftButton.class, KEY_SOFT_BUTTONS);
     }
 
-	/**
-	 * Gets an Integer value representing the cancel ID
-	 *
-	 * @return Integer - An Integer value representing the ID for this specific scrollable message to allow cancellation through the `CancelInteraction` RPC.
-	 *
-	 * @since SmartDeviceLink 6.0
-	 */
-	public Integer getCancelID() {
-		return getInteger(KEY_CANCEL_ID);
-	}
+    /**
+     * Gets an Integer value representing the cancel ID
+     *
+     * @return Integer - An Integer value representing the ID for this specific scrollable message to allow cancellation through the `CancelInteraction` RPC.
+     * @since SmartDeviceLink 6.0
+     */
+    public Integer getCancelID() {
+        return getInteger(KEY_CANCEL_ID);
+    }
 
-	/**
-	 * Sets the cancel ID
-	 *
-	 * @param cancelID An Integer ID for this specific scrollable message to allow cancellation through the `CancelInteraction` RPC.
-	 *
-	 * @since SmartDeviceLink 6.0
-	 */
-	public void setCancelID(Integer cancelID) {
-		setParameters(KEY_CANCEL_ID, cancelID);
-	}
+    /**
+     * Sets the cancel ID
+     *
+     * @param cancelID An Integer ID for this specific scrollable message to allow cancellation through the `CancelInteraction` RPC.
+     * @since SmartDeviceLink 6.0
+     */
+    public ScrollableMessage setCancelID(Integer cancelID) {
+        setParameters(KEY_CANCEL_ID, cancelID);
+        return this;
+    }
 }

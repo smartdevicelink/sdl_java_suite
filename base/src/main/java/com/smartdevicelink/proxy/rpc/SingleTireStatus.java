@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
@@ -72,74 +72,89 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 5.0</td>
  * 		</tr>
  *  </table>
+ *
  * @since SmartDeviceLink 2.0
  */
 public class SingleTireStatus extends RPCStruct {
-	public static final String KEY_STATUS = "status";
-	public static final String KEY_TPMS = "tpms";
-	public static final String KEY_PRESSURE = "pressure";
+    public static final String KEY_STATUS = "status";
+    public static final String KEY_TPMS = "tpms";
+    public static final String KEY_PRESSURE = "pressure";
 
-	/**
-	 * Constructs a newly allocated SingleTireStatus object
-	 */
-    public SingleTireStatus() { }
-    
+    /**
+     * Constructs a newly allocated SingleTireStatus object
+     */
+    public SingleTireStatus() {
+    }
+
     /**
      * Constructs a newly allocated SingleTireStatus object indicated by the Hashtable parameter
+     *
      * @param hash The Hashtable to use
      */
     public SingleTireStatus(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-	/**
-	 * Constructs a newly allocated SingleTireStatus object
-	 * @param status Describes the volume status of a single tire
-	 */
-	public SingleTireStatus(@NonNull ComponentVolumeStatus status){
-		this();
-		setStatus(status);
-	}
-    
+    /**
+     * Constructs a newly allocated SingleTireStatus object
+     *
+     * @param status Describes the volume status of a single tire
+     */
+    public SingleTireStatus(@NonNull ComponentVolumeStatus status) {
+        this();
+        setStatus(status);
+    }
+
     /**
      * set the volume status of a single tire
+     *
      * @param status the volume status of a single tire
      */
-    public void setStatus(@NonNull ComponentVolumeStatus status) {
-    	setValue(KEY_STATUS, status);
+    public SingleTireStatus setStatus(@NonNull ComponentVolumeStatus status) {
+        setValue(KEY_STATUS, status);
+        return this;
     }
-    
+
     /**
      * get the volume status of a single tire
+     *
      * @return the volume status of a single tire
      */
     public ComponentVolumeStatus getStatus() {
         return (ComponentVolumeStatus) getObject(ComponentVolumeStatus.class, KEY_STATUS);
     }
 
-	/**
-	 * Set the status of TPMS according to the particular tire.
-	 * @param tpms The status of TPMS
-	 */
-	public void setTPMS(@NonNull TPMS tpms) { setValue(KEY_TPMS, tpms); }
+    /**
+     * Set the status of TPMS according to the particular tire.
+     *
+     * @param tpms The status of TPMS
+     */
+    public SingleTireStatus setTPMS(@NonNull TPMS tpms) {
+        setValue(KEY_TPMS, tpms);
+        return this;
+    }
 
-	/**
-	 * Get the status of TPMS according to the particular tire.
-	 * @return the TPMS status
-	 */
-	public TPMS getTPMS() {
-		return (TPMS) getObject(TPMS.class, KEY_TPMS);
-	}
+    /**
+     * Get the status of TPMS according to the particular tire.
+     *
+     * @return the TPMS status
+     */
+    public TPMS getTPMS() {
+        return (TPMS) getObject(TPMS.class, KEY_TPMS);
+    }
 
-	/**
-	 * @param pressure The pressure value of the particular tire in kilo pascal.
-	 */
-	public void setPressure(@NonNull Float pressure) { setValue(KEY_PRESSURE, pressure); }
+    /**
+     * @param pressure The pressure value of the particular tire in kilo pascal.
+     */
+    public SingleTireStatus setPressure(@NonNull Float pressure) {
+        setValue(KEY_PRESSURE, pressure);
+        return this;
+    }
 
-	/**
-	 * @return the pressure value of the particular tire in kilo pascal.
-	 */
-	public Float getPressure() {
-		return getFloat(KEY_PRESSURE);
-	}
+    /**
+     * @return the pressure value of the particular tire in kilo pascal.
+     */
+    public Float getPressure() {
+        return getFloat(KEY_PRESSURE);
+    }
 }

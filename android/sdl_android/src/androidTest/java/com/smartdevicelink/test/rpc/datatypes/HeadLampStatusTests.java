@@ -13,15 +13,15 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.HeadLampStatus}
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.proxy.rpc.HeadLampStatus}
  */
-public class HeadLampStatusTests extends TestCase{
-	
+public class HeadLampStatusTests extends TestCase {
+
     private HeadLampStatus msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new HeadLampStatus();
 
         msg.setAmbientLightStatus(TestValues.GENERAL_AMBIENTLIGHTSTATUS);
@@ -30,19 +30,19 @@ public class HeadLampStatusTests extends TestCase{
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
-    	// Test Values
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
         boolean lowBeams = msg.getLowBeamsOn();
         boolean highBeams = msg.getHighBeamsOn();
         AmbientLightStatus ambientLights = msg.getAmbientLightStatus();
-        
+
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_AMBIENTLIGHTSTATUS, ambientLights);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, highBeams);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, lowBeams);
-                
+
         // Invalid/Null Tests
         HeadLampStatus msg = new HeadLampStatus();
         assertNotNull(TestValues.NOT_NULL, msg);
@@ -52,10 +52,10 @@ public class HeadLampStatusTests extends TestCase{
         assertNull(TestValues.NULL, msg.getAmbientLightStatus());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(HeadLampStatus.KEY_HIGH_BEAMS_ON, TestValues.GENERAL_BOOLEAN);
             reference.put(HeadLampStatus.KEY_LOW_BEAMS_ON, TestValues.GENERAL_BOOLEAN);
             reference.put(HeadLampStatus.KEY_AMBIENT_LIGHT_SENSOR_STATUS, TestValues.GENERAL_AMBIENTLIGHTSTATUS);
@@ -64,12 +64,12 @@ public class HeadLampStatusTests extends TestCase{
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
                 assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
-        } catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

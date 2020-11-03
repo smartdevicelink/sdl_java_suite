@@ -1,18 +1,18 @@
 {
-  "request":{
-    "name":"ListFiles",
-    "correlationID":131
+  "request": {
+    "name": "ListFiles",
+    "correlationID": 131
   },
-  "response":{
-    "name":"ListFilesResponse",
-    "correlationID":132,
-    "parameters":{
-      "filenames":[
+  "response": {
+    "name": "ListFilesResponse",
+    "correlationID": 132,
+    "parameters": {
+      "filenames": [
         "file1",
         "file2",
         "file3"
       ],
-      "spaceAvailable":1947255
+      "spaceAvailable": 1947255
     }
   }
 }

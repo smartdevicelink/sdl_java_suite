@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -35,51 +35,52 @@ import java.util.EnumSet;
 
 /**
  * Describes different sampling rates for PerformAudioPassThru
+ *
  * @since SmartDeviceLink 2.0
  */
 public enum SamplingRate {
 
-	/**
-	 * Sampling rate of 8 kHz
-	 * 
-	 * @since SmartDeviceLink 2.0
-	 */
-	_8KHZ("8KHZ"),
-	/**
-	 * Sampling rate of 16 kHz
-	 * 
-	 * @since SmartDeviceLink 2.0
-	 */
-	_16KHZ("16KHZ"),
-	/**
-	 * Sampling rate of 22 kHz
-	 * 
-	 * @since SmartDeviceLink 2.0
-	 */
-	_22KHZ("22KHZ"),
-	/**
-	 * Sampling rate of 44 kHz
-	 * 
-	 * @since SmartDeviceLink 2.0
-	 */
-	_44KHZ("44KHZ");
+    /**
+     * Sampling rate of 8 kHz
+     *
+     * @since SmartDeviceLink 2.0
+     */
+    _8KHZ("8KHZ"),
+    /**
+     * Sampling rate of 16 kHz
+     *
+     * @since SmartDeviceLink 2.0
+     */
+    _16KHZ("16KHZ"),
+    /**
+     * Sampling rate of 22 kHz
+     *
+     * @since SmartDeviceLink 2.0
+     */
+    _22KHZ("22KHZ"),
+    /**
+     * Sampling rate of 44 kHz
+     *
+     * @since SmartDeviceLink 2.0
+     */
+    _44KHZ("44KHZ");
 
-	private final String VALUE;
-    
+    private final String VALUE;
+
     private SamplingRate(String value) {
         this.VALUE = value;
     }
-    
+
     public String toString() {
         return this.VALUE;
     }
-    
+
     public static SamplingRate valueForString(String value) {
-        if(value == null){
+        if (value == null) {
             return null;
         }
-        
-    	for (SamplingRate anEnum : EnumSet.allOf(SamplingRate.class)) {
+
+        for (SamplingRate anEnum : EnumSet.allOf(SamplingRate.class)) {
             if (anEnum.toString().equals(value)) {
                 return anEnum;
             }

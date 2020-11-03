@@ -1,6 +1,6 @@
 package com.smartdevicelink.managers.lifecycle;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -21,29 +21,25 @@ import static junit.framework.TestCase.assertNotNull;
 @RunWith(AndroidJUnit4.class)
 public class RpcConverterTest {
 
-    private static final String RPC_PACKAGE             = "com.smartdevicelink.proxy.rpc.";
-    private static final String RESPONSE_KEY            = "Response";
-    private static final Version MAX_RPC_VERSION        = new Version(5,1,0);
+    private static final String RPC_PACKAGE = "com.smartdevicelink.proxy.rpc.";
+    private static final String RESPONSE_KEY = "Response";
+    private static final Version MAX_RPC_VERSION = new Version(5, 1, 0);
 
     /**
      * The RPC converter relies on the function id json name to match the class name exactly.
      * Therefore we will test to ensure that they match up first.
      */
     @Test
-    public void testFunctionIdsAgainstFileNames(){
+    public void testFunctionIdsAgainstFileNames() {
         FunctionID[] functionIDs = FunctionID.values();
-        for(FunctionID functionID : functionIDs) {
-            switch (functionID){
+        for (FunctionID functionID : functionIDs) {
+            switch (functionID) {
                 case RESERVED:
                 case SYNC_P_DATA:
                 case ON_SYNC_P_DATA:
                 case ENCODED_SYNC_P_DATA:
                 case ON_ENCODED_SYNC_P_DATA:
                 case GENERIC_RESPONSE:
-                case STREAM_RPC:
-                case ON_LOCK_SCREEN_STATUS:
-                case ON_SDL_CHOICE_CHOSEN:
-                case ON_STREAM_RPC:
                     continue;
                 default:
 
@@ -70,10 +66,6 @@ public class RpcConverterTest {
                 case ENCODED_SYNC_P_DATA:
                 case ON_ENCODED_SYNC_P_DATA:
                 case GENERIC_RESPONSE:
-                case STREAM_RPC:
-                case ON_LOCK_SCREEN_STATUS:
-                case ON_SDL_CHOICE_CHOSEN:
-                case ON_STREAM_RPC:
                     return null;
                 case SHOW_CONSTANT_TBT:
                     rpcClassName.append("ShowConstantTbt");
@@ -97,22 +89,18 @@ public class RpcConverterTest {
     }
 
     @Test
-    public void testRpcCreation(){
+    public void testRpcCreation() {
 
         FunctionID[] functionIDs = FunctionID.values();
 
-        for(FunctionID functionID : functionIDs){
-            switch (functionID){
+        for (FunctionID functionID : functionIDs) {
+            switch (functionID) {
                 case RESERVED:
                 case SYNC_P_DATA:
                 case ON_SYNC_P_DATA:
                 case ENCODED_SYNC_P_DATA:
                 case ON_ENCODED_SYNC_P_DATA:
                 case GENERIC_RESPONSE:
-                case STREAM_RPC:
-                case ON_LOCK_SCREEN_STATUS:
-                case ON_SDL_CHOICE_CHOSEN:
-                case ON_STREAM_RPC:
                     continue;
                 default:
 
@@ -128,22 +116,22 @@ public class RpcConverterTest {
         }
     }
 
-    private void assertRpc(Class rpcClass){
+    private void assertRpc(Class rpcClass) {
         RPCMessage message = generateRpcMessage(rpcClass);
         assertNotNull(message);
         ProtocolMessage protocolMessage = generateProtocolMessageForRpc(message);
         assertNotNull(protocolMessage);
-        RPCMessage newMessage = RpcConverter.extractRpc(protocolMessage,MAX_RPC_VERSION);
+        RPCMessage newMessage = RpcConverter.extractRpc(protocolMessage, MAX_RPC_VERSION);
         assertNotNull(newMessage);
 
         assertEquals(message.getMessageType(), newMessage.getMessageType());
         assertEquals(message.getFunctionID(), newMessage.getFunctionID());
     }
 
-    private RPCMessage generateRpcMessage(Class rpcClass){
+    private RPCMessage generateRpcMessage(Class rpcClass) {
         try {
-            java.lang.reflect.Constructor rpcConstructor =  rpcClass.getConstructor();
-            return (RPCMessage)rpcConstructor.newInstance();
+            java.lang.reflect.Constructor rpcConstructor = rpcClass.getConstructor();
+            return (RPCMessage) rpcConstructor.newInstance();
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -156,15 +144,15 @@ public class RpcConverterTest {
         return null;
     }
 
-    private ProtocolMessage generateProtocolMessageForRpc(RPCMessage message){
+    private ProtocolMessage generateProtocolMessageForRpc(RPCMessage message) {
         try {
 
-            message.format(MAX_RPC_VERSION,true);
-            byte[] msgBytes = JsonRPCMarshaller.marshall(message, (byte)5);
+            message.format(MAX_RPC_VERSION, true);
+            byte[] msgBytes = JsonRPCMarshaller.marshall(message, (byte) 5);
 
             ProtocolMessage pm = new ProtocolMessage();
             pm.setData(msgBytes);
-            pm.setSessionID((byte)0);
+            pm.setSessionID((byte) 0);
 
             pm.setMessageType(MessageType.RPC);
             pm.setSessionType(SessionType.RPC);
@@ -172,16 +160,16 @@ public class RpcConverterTest {
             pm.setPayloadProtected(message.isPayloadProtected());
 
             if (message.getMessageType().equals(RPCMessage.KEY_REQUEST)) {
-                pm.setRPCType((byte)0x00);
-            }else if (message.getMessageType().equals(RPCMessage.KEY_RESPONSE)){
-                pm.setRPCType((byte)0x01);
-            }else if (message.getMessageType().equals(RPCMessage.KEY_NOTIFICATION)){
-                pm.setRPCType((byte)0x02);
-            }else{
+                pm.setRPCType((byte) 0x00);
+            } else if (message.getMessageType().equals(RPCMessage.KEY_RESPONSE)) {
+                pm.setRPCType((byte) 0x01);
+            } else if (message.getMessageType().equals(RPCMessage.KEY_NOTIFICATION)) {
+                pm.setRPCType((byte) 0x02);
+            } else {
                 return null;
             }
 
-            if (message.getBulkData() != null){
+            if (message.getBulkData() != null) {
                 pm.setBulkData(message.getBulkData());
             }
 

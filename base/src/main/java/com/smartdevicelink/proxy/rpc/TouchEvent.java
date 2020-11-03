@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 
@@ -43,7 +43,7 @@ import java.util.List;
  * <p>For touchscreen interactions, the mode of how the choices are presented.</p>
  *
  * <p><b>Parameter List</b></p>
- * 
+ *
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -80,9 +80,9 @@ import java.util.List;
  * 			<td>SmartDeviceLink 3.0</td>
  * 		</tr>
  *  </table>
- *  
- *   @since SmartDeviceLink 3.0 
- *   
+ * <p>
+ *   @since SmartDeviceLink 3.0
+ * <p>
  *   @see SoftButtonCapabilities
  *   @see ButtonCapabilities
  *   @see OnButtonPress
@@ -92,109 +92,122 @@ public class TouchEvent extends RPCStruct {
     public static final String KEY_ID = "id";
     public static final String KEY_TS = "ts";
     public static final String KEY_C = "c";
-    
-    public TouchEvent() { }
+
+    public TouchEvent() {
+    }
+
     /**
-	 * <p>Constructs a new TouchEvent object indicated by the Hashtable parameter</p>
-	 * 
-	 * @param hash The Hashtable to use
-	 */
+     * <p>Constructs a new TouchEvent object indicated by the Hashtable parameter</p>
+     *
+     * @param hash The Hashtable to use
+     */
     public TouchEvent(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-	/**
-	 * Constructs a new TouchEvent object
-	 * @param id A touch's unique identifier.
-	 * @param ts The time that the touch was recorded.
-	 * @param c The coordinates of the screen area where the touch event occurred.
-	 */
-	public TouchEvent(@NonNull Integer id, @NonNull List<Long> ts, @NonNull List<TouchCoord> c){
-		this();
-		setId(id);
-		setTimestamps(ts);
-		setTouchCoordinates(c);
-	}
-    
-    public void setId(@NonNull Integer id) {
-        setValue(KEY_ID, id);
+    /**
+     * Constructs a new TouchEvent object
+     *
+     * @param id A touch's unique identifier.
+     * @param ts The time that the touch was recorded.
+     * @param c  The coordinates of the screen area where the touch event occurred.
+     */
+    public TouchEvent(@NonNull Integer id, @NonNull List<Long> ts, @NonNull List<TouchCoord> c) {
+        this();
+        setId(id);
+        setTimestamps(ts);
+        setTouchCoordinates(c);
     }
-    
+
+    public TouchEvent setId(@NonNull Integer id) {
+        setValue(KEY_ID, id);
+        return this;
+    }
+
     public Integer getId() {
         return getInteger(KEY_ID);
     }
-    
+
     /**
      * Use getTimestamps
-     * @deprecated 4.0.2
+     *
      * @return
+     * @deprecated 4.0.2
      */
     @Deprecated
     public List<Long> getTs() {
-    	return getTimestamps();
+        return getTimestamps();
     }
-    
+
     @SuppressWarnings("unchecked")
     public List<Long> getTimestamps() {
-    	if(getValue(KEY_TS) instanceof List<?>){
-    		List<?> list = (List<?>) getValue(KEY_TS);
-    		if(list != null && list.size()>0){
-        		Object obj = list.get(0);
-        		if(obj instanceof Integer){ //Backwards case
-        			int size = list.size();
-        			List<Integer> listOfInt = (List<Integer>) list;
-        			List<Long> listofLongs = new ArrayList<Long>(size);
-        			for(int i = 0; i<size;i++){
-        				listofLongs.add(listOfInt.get(i).longValue());
-        			}
-        			return listofLongs;
-        		}else if(obj instanceof Long){
-        			return (List<Long>) list;
-        		}    		
-        	}
-    	}
+        if (getValue(KEY_TS) instanceof List<?>) {
+            List<?> list = (List<?>) getValue(KEY_TS);
+            if (list != null && list.size() > 0) {
+                Object obj = list.get(0);
+                if (obj instanceof Integer) { //Backwards case
+                    int size = list.size();
+                    List<Integer> listOfInt = (List<Integer>) list;
+                    List<Long> listOfLongs = new ArrayList<>(size);
+                    for (int i = 0; i < size; i++) {
+                        listOfLongs.add(listOfInt.get(i).longValue());
+                    }
+                    return listOfLongs;
+                } else if (obj instanceof Long) {
+                    return (List<Long>) list;
+                }
+            }
+        }
         return null;
     }
-    
-    public void setTimestamps(@NonNull List<Long> ts){
+
+    public TouchEvent setTimestamps(@NonNull List<Long> ts) {
         setValue(KEY_TS, ts);
+        return this;
     }
-    
+
     /**
-     * Use setTimestamps. 
-     * @deprecated 4.0.2
+     * Use setTimestamps.
+     *
      * @param ts
+     * @deprecated 4.0.2
      */
     @Deprecated
-    public void setTs(List<Long> ts) {
-       setTimestamps(ts);
+    public TouchEvent setTs(List<Long> ts) {
+        setTimestamps(ts);
+        return this;
     }
-    
+
     /**
      * Use getTouchCoordinates
-     * @deprecated 4.0.2
+     *
      * @return
+     * @deprecated 4.0.2
      */
     @Deprecated
     public List<TouchCoord> getC() {
-    	return getTouchCoordinates();
+        return getTouchCoordinates();
     }
-	@SuppressWarnings("unchecked")
+
+    @SuppressWarnings("unchecked")
     public List<TouchCoord> getTouchCoordinates() {
         return (List<TouchCoord>) getObject(TouchCoord.class, KEY_C);
-    } 
-    
+    }
+
     /**
      * Use setTouchCoordinates
-     * @deprecated 4.0.2
+     *
      * @return
+     * @deprecated 4.0.2
      */
     @Deprecated
-    public void setC( List<TouchCoord> c ) {
-    	setTouchCoordinates(c);
+    public TouchEvent setC(List<TouchCoord> c) {
+        setTouchCoordinates(c);
+        return this;
     }
-    
-    public void setTouchCoordinates(@NonNull List<TouchCoord> c ) {
+
+    public TouchEvent setTouchCoordinates(@NonNull List<TouchCoord> c) {
         setValue(KEY_C, c);
-    }          
+        return this;
+    }
 }

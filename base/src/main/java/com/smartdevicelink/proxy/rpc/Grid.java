@@ -1,6 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 
@@ -18,7 +18,8 @@ public class Grid extends RPCStruct {
     public static final String KEY_ROW_SPAN = "rowspan";
     public static final String KEY_LEVEL_SPAN = "levelspan";
 
-    public Grid() {}
+    public Grid() {
+    }
 
     public Grid(Hashtable<String, Object> hash) {
         super(hash);
@@ -26,10 +27,11 @@ public class Grid extends RPCStruct {
 
     /**
      * Struct that describes a location (origin coordinates and span) of a vehicle component (Module)
-     * @param row Sets the row's value of this Grid
+     *
+     * @param row    Sets the row's value of this Grid
      * @param column Sets the column of this Grid
      */
-    public Grid(@NonNull Integer row, @NonNull Integer column){
+    public Grid(@NonNull Integer row, @NonNull Integer column) {
         this();
         setRow(row);
         setCol(column);
@@ -37,14 +39,17 @@ public class Grid extends RPCStruct {
 
     /**
      * Sets the column of this Grid
+     *
      * @param col the column to be set
      */
-    public void setCol(@NonNull Integer col) {
+    public Grid setCol(@NonNull Integer col) {
         setValue(KEY_COL, col);
+        return this;
     }
 
     /**
      * Get the column value of this Grid
+     *
      * @return the column value
      */
     public Integer getCol() {
@@ -53,14 +58,17 @@ public class Grid extends RPCStruct {
 
     /**
      * Sets the row's value of this Grid
+     *
      * @param row the row to be set
      */
-    public void setRow(@NonNull Integer row) {
+    public Grid setRow(@NonNull Integer row) {
         setValue(KEY_ROW, row);
+        return this;
     }
 
     /**
      * Gets the row value of this Grid
+     *
      * @return the row value
      */
     public Integer getRow() {
@@ -69,14 +77,17 @@ public class Grid extends RPCStruct {
 
     /**
      * Sets the level value of this Grid
+     *
      * @param level the level to be set
      */
-    public void setLevel(Integer level) {
+    public Grid setLevel(Integer level) {
         setValue(KEY_LEVEL, level);
+        return this;
     }
 
     /**
      * Gets the level value of this Grid
+     *
      * @return the level
      */
     public Integer getLevel() {
@@ -85,14 +96,17 @@ public class Grid extends RPCStruct {
 
     /**
      * Sets the column span of this Grid
+     *
      * @param span the span to be set
      */
-    public void setColSpan(Integer span) {
+    public Grid setColSpan(Integer span) {
         setValue(KEY_COL_SPAN, span);
+        return this;
     }
 
     /**
      * Gets the column span of this Grid
+     *
      * @return the column span
      */
     public Integer getColSpan() {
@@ -101,14 +115,17 @@ public class Grid extends RPCStruct {
 
     /**
      * Sets the row span of this Grid
+     *
      * @param span the span to be set
      */
-    public void setRowSpan(Integer span) {
+    public Grid setRowSpan(Integer span) {
         setValue(KEY_ROW_SPAN, span);
+        return this;
     }
 
     /**
      * Gets the row span of this Grid
+     *
      * @return the row span
      */
     public Integer getRowSpan() {
@@ -117,14 +134,17 @@ public class Grid extends RPCStruct {
 
     /**
      * Sets the level span of this Grid
+     *
      * @param span the span to be set
      */
-    public void setLevelSpan(Integer span) {
+    public Grid setLevelSpan(Integer span) {
         setValue(KEY_LEVEL_SPAN, span);
+        return this;
     }
 
     /**
      * Gets the level span of this Grid
+     *
      * @return the level span
      */
     public Integer getLevelSpan() {

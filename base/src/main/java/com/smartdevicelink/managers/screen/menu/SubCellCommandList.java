@@ -36,56 +36,56 @@ import java.util.List;
 
 class SubCellCommandList {
 
-	private RunScore listsScore;
-	private String menuTitle;
-	private Integer parentId;
-	private List<MenuCell> oldList, newList;
+    private RunScore listsScore;
+    private String menuTitle;
+    private Integer parentId;
+    private List<MenuCell> oldList, newList;
 
-	SubCellCommandList(String menuTitle, Integer parentId, RunScore listsScore, List<MenuCell> oldList, List<MenuCell> newList){
-		setMenuTitle(menuTitle);
-		setParentId(parentId);
-		setListsScore(listsScore);
-		setOldList(oldList);
-		setNewList(newList);
-	}
+    SubCellCommandList(String menuTitle, Integer parentId, RunScore listsScore, List<MenuCell> oldList, List<MenuCell> newList) {
+        setMenuTitle(menuTitle);
+        setParentId(parentId);
+        setListsScore(listsScore);
+        setOldList(oldList);
+        setNewList(newList);
+    }
 
-	private void setParentId(Integer parentId) {
-		this.parentId = parentId;
-	}
+    private void setParentId(Integer parentId) {
+        this.parentId = parentId;
+    }
 
-	Integer getParentId() {
-		return parentId;
-	}
+    Integer getParentId() {
+        return parentId;
+    }
 
-	private void setMenuTitle(String menuTitle) {
-		this.menuTitle = menuTitle;
-	}
+    private void setMenuTitle(String menuTitle) {
+        this.menuTitle = menuTitle;
+    }
 
-	String getMenuTitle() {
-		return menuTitle;
-	}
+    String getMenuTitle() {
+        return menuTitle;
+    }
 
-	private void setListsScore(RunScore listsScore){
-		this.listsScore = listsScore;
-	}
+    private void setListsScore(RunScore listsScore) {
+        this.listsScore = listsScore;
+    }
 
-	RunScore getListsScore() {
-		return listsScore;
-	}
+    RunScore getListsScore() {
+        return listsScore;
+    }
 
-	private void setOldList(List<MenuCell> oldList) {
-		this.oldList = oldList;
-	}
+    private void setOldList(List<MenuCell> oldList) {
+        this.oldList = oldList;
+    }
 
-	List<MenuCell> getOldList() {
-		return oldList;
-	}
+    List<MenuCell> getOldList() {
+        return oldList;
+    }
 
-	private void setNewList(List<MenuCell> newList) {
-		this.newList = newList;
-	}
+    private void setNewList(List<MenuCell> newList) {
+        this.newList = newList;
+    }
 
-	List<MenuCell> getNewList() {
-		return newList;
-	}
+    List<MenuCell> getNewList() {
+        return newList;
+    }
 }

@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -35,23 +35,23 @@ import java.util.Hashtable;
 
 public class RPCNotification extends RPCMessage {
 
-	public RPCNotification(String functionName) {
-		super(functionName, RPCMessage.KEY_NOTIFICATION);
-	}
+    public RPCNotification(String functionName) {
+        super(functionName, RPCMessage.KEY_NOTIFICATION);
+    }
 
-	public RPCNotification(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+    public RPCNotification(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
-	public RPCNotification(RPCMessage rpcMsg) {
-		super(preprocessMsg(rpcMsg));
-	}
-	
-	static RPCMessage preprocessMsg (RPCMessage rpcMsg) {
-		if (rpcMsg.getMessageType() != RPCMessage.KEY_NOTIFICATION) {
-			rpcMsg.messageType = RPCMessage.KEY_NOTIFICATION;
-		}
-		
-		return rpcMsg;
-	}
+    public RPCNotification(RPCMessage rpcMsg) {
+        super(preprocessMsg(rpcMsg));
+    }
+
+    static RPCMessage preprocessMsg(RPCMessage rpcMsg) {
+        if (!RPCMessage.KEY_NOTIFICATION.equals(rpcMsg.getMessageType())) {
+            rpcMsg.messageType = RPCMessage.KEY_NOTIFICATION;
+        }
+
+        return rpcMsg;
+    }
 }

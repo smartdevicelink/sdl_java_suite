@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,17 +31,17 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataType;
 
 import java.util.Hashtable;
+
 /**
- * 
  * Individual published data request result.
- * 
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -69,58 +69,63 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  *  </table>
- *
  */
 public class VehicleDataResult extends RPCStruct {
-	public static final String KEY_DATA_TYPE = "dataType";
-	public static final String KEY_RESULT_CODE = "resultCode";
-	public static final String KEY_OEM_CUSTOM_DATA_TYPE = "oemCustomDataType";
+    public static final String KEY_DATA_TYPE = "dataType";
+    public static final String KEY_RESULT_CODE = "resultCode";
+    public static final String KEY_OEM_CUSTOM_DATA_TYPE = "oemCustomDataType";
 
-	public VehicleDataResult() { }
-	  /**
-		* <p>
-		* Constructs a new VehicleDataResult object indicated by the Hashtable
-		* parameter
-		* </p>
-		* 
-		* @param hash the Hashtable to use
-		*/
-	public VehicleDataResult(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+    public VehicleDataResult() {
+    }
 
-	/**
-	 * Individual published data request result.
-	 * @param dataType Defined published data element type.
-	 * @param resultCode Published data result code.
-	 */
-	public VehicleDataResult(@NonNull VehicleDataType dataType, @NonNull VehicleDataResultCode resultCode){
-		this();
-		setDataType(dataType);
-		setResultCode(resultCode);
-	}
-	
-	public void setResultCode(@NonNull VehicleDataResultCode resultCode) {
-		setValue(KEY_RESULT_CODE, resultCode);
-	}
-	
-	public VehicleDataResultCode getResultCode() {
-		return (VehicleDataResultCode) getObject(VehicleDataResultCode.class, KEY_RESULT_CODE);
-	}	
+    /**
+     * <p>
+     * Constructs a new VehicleDataResult object indicated by the Hashtable
+     * parameter
+     * </p>
+     *
+     * @param hash the Hashtable to use
+     */
+    public VehicleDataResult(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
-	public void setDataType(@NonNull VehicleDataType dataType) {
-		setValue(KEY_DATA_TYPE, dataType);
-	}
+    /**
+     * Individual published data request result.
+     *
+     * @param dataType   Defined published data element type.
+     * @param resultCode Published data result code.
+     */
+    public VehicleDataResult(@NonNull VehicleDataType dataType, @NonNull VehicleDataResultCode resultCode) {
+        this();
+        setDataType(dataType);
+        setResultCode(resultCode);
+    }
 
-	public VehicleDataType getDataType() {
-		return (VehicleDataType) getObject(VehicleDataType.class, KEY_DATA_TYPE);
-	}
-	
-	public void setOEMCustomVehicleDataType(String oemCustomDataType) {
-		setValue(KEY_OEM_CUSTOM_DATA_TYPE, oemCustomDataType);
-	}
+    public VehicleDataResult setResultCode(@NonNull VehicleDataResultCode resultCode) {
+        setValue(KEY_RESULT_CODE, resultCode);
+        return this;
+    }
 
-	public String getOEMCustomVehicleDataType() {
-		return (String) getObject(String.class, KEY_OEM_CUSTOM_DATA_TYPE);
-	}
+    public VehicleDataResultCode getResultCode() {
+        return (VehicleDataResultCode) getObject(VehicleDataResultCode.class, KEY_RESULT_CODE);
+    }
+
+    public VehicleDataResult setDataType(@NonNull VehicleDataType dataType) {
+        setValue(KEY_DATA_TYPE, dataType);
+        return this;
+    }
+
+    public VehicleDataType getDataType() {
+        return (VehicleDataType) getObject(VehicleDataType.class, KEY_DATA_TYPE);
+    }
+
+    public VehicleDataResult setOEMCustomVehicleDataType(String oemCustomDataType) {
+        setValue(KEY_OEM_CUSTOM_DATA_TYPE, oemCustomDataType);
+        return this;
+    }
+
+    public String getOEMCustomVehicleDataType() {
+        return (String) getObject(String.class, KEY_OEM_CUSTOM_DATA_TYPE);
+    }
 }

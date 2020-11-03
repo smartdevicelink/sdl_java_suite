@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * Contain the display related information and all windows related to that display.
+ *
  * @since 6.0
  */
 public class DisplayCapability extends RPCStruct {
@@ -36,8 +37,9 @@ public class DisplayCapability extends RPCStruct {
      *
      * @param displayName the name of the display
      */
-    public void setDisplayName(String displayName) {
+    public DisplayCapability setDisplayName(String displayName) {
         setValue(KEY_DISPLAY_NAME, displayName);
+        return this;
     }
 
     /**
@@ -46,8 +48,9 @@ public class DisplayCapability extends RPCStruct {
      *
      * @param windowTypeSupported It informs the application how many windows the app is allowed to create per type.
      */
-    public void setWindowTypeSupported(List<WindowTypeCapabilities> windowTypeSupported) {
+    public DisplayCapability setWindowTypeSupported(List<WindowTypeCapabilities> windowTypeSupported) {
         setValue(KEY_WINDOW_TYPE_SUPPORTED, windowTypeSupported);
+        return this;
     }
 
     /**
@@ -70,10 +73,11 @@ public class DisplayCapability extends RPCStruct {
      *                           After registration, only windows with capabilities changed will be included.
      *                           Following cases will cause only affected windows to be included:
      *                           1. App creates a new window. After the window is created, a system capability notification will be sent related only to the created window.
-     *                           2. App sets a new template to the window. The new template changes window capabilties. The notification will reflect those changes to the single window.
+     *                           2. App sets a new template to the window. The new template changes window capabilities. The notification will reflect those changes to the single window.
      */
-    public void setWindowCapabilities(List<WindowCapability> windowCapabilities) {
+    public DisplayCapability setWindowCapabilities(List<WindowCapability> windowCapabilities) {
         setValue(KEY_WINDOW_CAPABILITIES, windowCapabilities);
+        return this;
     }
 
     /**

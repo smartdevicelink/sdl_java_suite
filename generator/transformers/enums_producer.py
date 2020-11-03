@@ -59,6 +59,7 @@ class EnumsProducer(InterfaceProducerCommon):
         render['params'] = params
         render['since'] = item.since
         render['deprecated'] = item.deprecated
+        render['history'] = item.history
 
         description = self.extract_description(item.description)
         if description:
@@ -73,7 +74,7 @@ class EnumsProducer(InterfaceProducerCommon):
         return render
 
     def extract_param(self, param: EnumElement, kind):
-        d = {'origin': param.name, 'name': self.key(self.converted(param.name))}
+        d = {'origin': param.name, 'name': self.converted(param.name)}
         if kind == 'custom':
             d['internal'] = '"{}"'.format(param.name)
 
@@ -81,6 +82,8 @@ class EnumsProducer(InterfaceProducerCommon):
             d['since'] = param.since
         if getattr(param, 'deprecated', None):
             d['deprecated'] = param.deprecated
+        if getattr(param, 'history', None):
+            d['history'] = param.history
         if getattr(param, 'description', None):
             d['description'] = textwrap.wrap(self.extract_description(param.description), 90)
         Params = namedtuple('Params', sorted(d))

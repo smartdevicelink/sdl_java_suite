@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
@@ -40,17 +40,17 @@ import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
 import java.util.Hashtable;
 
 /**
- * <p>Notifies the application of the current driver distraction state (whether driver distraction rules are in effect, or 
+ * <p>Notifies the application of the current driver distraction state (whether driver distraction rules are in effect, or
  * not).</p>
  *
  * <p></p>
  * <b>HMI Status Requirements:</b>
  * <ul>
- * HMILevel: 
+ * HMILevel:
  * <ul><li>Can be sent with FULL, LIMITED or BACKGROUND</li></ul>
- * AudioStreamingState: 
+ * AudioStreamingState:
  * <ul><li>Any</li></ul>
- * SystemContext: 
+ * SystemContext:
  * <ul><li>Any</li></ul>
  * </ul>
  * <p></p>
@@ -68,59 +68,73 @@ import java.util.Hashtable;
  * <td>Current driver distraction state (i.e. whether driver distraction rules are in effect, or not). </td>
  * <td>SmartDeviceLink 1.0</td>
  * </tr>
- * </table> 
+ * </table>
+ *
  * @since SmartDeviceLink 1.0
  */
-public class OnDriverDistraction  extends RPCNotification {
-	public static final String KEY_STATE = "state";
+public class OnDriverDistraction extends RPCNotification {
+    public static final String KEY_STATE = "state";
     public static final String KEY_LOCKSCREEN_DISMISSIBLE = "lockScreenDismissalEnabled";
     public static final String KEY_LOCKSCREEN_DISMISSIBLE_MSG = "lockScreenDismissalWarning";
-	/**
-	*Constructs a newly allocated OnDriverDistraction object
-	*/ 
-	public OnDriverDistraction() {
+
+    /**
+     * Constructs a newly allocated OnDriverDistraction object
+     */
+    public OnDriverDistraction() {
         super(FunctionID.ON_DRIVER_DISTRACTION.toString());
     }
-	/**
-     *<p>Constructs a newly allocated OnDriverDistraction object indicated by the Hashtable parameter</p>
-     *@param hash The Hashtable to use
-     */	
+
+    /**
+     * <p>Constructs a newly allocated OnDriverDistraction object indicated by the Hashtable parameter</p>
+     *
+     * @param hash The Hashtable to use
+     */
     public OnDriverDistraction(Hashtable<String, Object> hash) {
         super(hash);
     }
+
     /**
-     *Constructs a newly allocated OnDriverDistraction object
+     * Constructs a newly allocated OnDriverDistraction object
+     *
      * @param state the current driver distraction state
      */
     public OnDriverDistraction(@NonNull DriverDistractionState state) {
         this();
         setState(state);
     }
+
     /**
      * <p>Called to get the current driver distraction state(i.e. whether driver distraction rules are in effect, or not)</p>
+     *
      * @return {@linkplain DriverDistractionState} the Current driver distraction state.
-     */    
+     */
     public DriverDistractionState getState() {
         return (DriverDistractionState) getObject(DriverDistractionState.class, KEY_STATE);
     }
+
     /**
      * <p>Called to set the driver distraction state(i.e. whether driver distraction rules are in effect, or not)</p>
+     *
      * @param state the current driver distraction state
-     */    
-    public void setState( @NonNull DriverDistractionState state ) {
+     */
+    public OnDriverDistraction setState(@NonNull DriverDistractionState state) {
         setParameters(KEY_STATE, state);
+        return this;
     }
 
     /**
      * <p>Called to set dismissible state of Lockscreen</p>
+     *
      * @param isDismissible the Lockscreen's dismissibility
      */
-    public void setLockscreenDismissibility(boolean isDismissible) {
+    public OnDriverDistraction setLockscreenDismissibility(boolean isDismissible) {
         setParameters(KEY_LOCKSCREEN_DISMISSIBLE, isDismissible);
+        return this;
     }
 
     /**
      * <p>Called to get the dismissible state of Lockscreen</p>
+     *
      * @return true if the Lockscreen is dismissible, false otherwise
      */
     public Boolean getLockscreenDismissibility() {
@@ -129,14 +143,17 @@ public class OnDriverDistraction  extends RPCNotification {
 
     /**
      * Called to set a warning message for the lockscreen
+     *
      * @param msg the message to be set
      */
-    public void setLockscreenWarningMessage(String msg) {
+    public OnDriverDistraction setLockscreenWarningMessage(String msg) {
         setParameters(KEY_LOCKSCREEN_DISMISSIBLE_MSG, msg);
+        return this;
     }
 
     /**
      * Called to get the lockscreen warning message
+     *
      * @return warning message
      */
     public String getLockscreenWarningMessage() {

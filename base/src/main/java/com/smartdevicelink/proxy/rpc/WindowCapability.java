@@ -20,6 +20,7 @@ public class WindowCapability extends RPCStruct {
     public static final String KEY_BUTTON_CAPABILITIES = "buttonCapabilities";
     public static final String KEY_SOFT_BUTTON_CAPABILITIES = "softButtonCapabilities";
     public static final String KEY_MENU_LAYOUTS_AVAILABLE = "menuLayoutsAvailable";
+    public static final String KEY_DYNAMIC_UPDATE_CAPABILITIES = "dynamicUpdateCapabilities";
 
     public WindowCapability() {
     }
@@ -33,8 +34,9 @@ public class WindowCapability extends RPCStruct {
      *
      * @param windowID A unique ID to identify the window. The value of '0' will always be the default main window on the main display and should not be used in this context as it will already be created for the app. See PredefinedWindows enum. Creating a window with an ID that is already in use will be rejected with `INVALID_ID`.
      */
-    public void setWindowID(Integer windowID) {
+    public WindowCapability setWindowID(Integer windowID) {
         setValue(KEY_WINDOW_ID, windowID);
+        return this;
     }
 
     /**
@@ -62,8 +64,9 @@ public class WindowCapability extends RPCStruct {
      *
      * @param textFields the List of textFields
      */
-    public void setTextFields(List<TextField> textFields) {
+    public WindowCapability setTextFields(List<TextField> textFields) {
         setValue(KEY_TEXT_FIELDS, textFields);
+        return this;
     }
 
     /**
@@ -82,8 +85,9 @@ public class WindowCapability extends RPCStruct {
      *
      * @param imageFields the List of imageFields
      */
-    public void setImageFields(List<ImageField> imageFields) {
+    public WindowCapability setImageFields(List<ImageField> imageFields) {
         setValue(KEY_IMAGE_FIELDS, imageFields);
+        return this;
     }
 
     /**
@@ -102,8 +106,9 @@ public class WindowCapability extends RPCStruct {
      *
      * @param imageTypeSupported the List of ImageType
      */
-    public void setImageTypeSupported(List<ImageType> imageTypeSupported) {
+    public WindowCapability setImageTypeSupported(List<ImageType> imageTypeSupported) {
         setValue(KEY_IMAGE_TYPE_SUPPORTED, imageTypeSupported);
+        return this;
     }
 
     /**
@@ -122,8 +127,9 @@ public class WindowCapability extends RPCStruct {
      *
      * @param templatesAvailable the List of String
      */
-    public void setTemplatesAvailable(List<String> templatesAvailable) {
+    public WindowCapability setTemplatesAvailable(List<String> templatesAvailable) {
         setValue(KEY_TEMPLATES_AVAILABLE, templatesAvailable);
+        return this;
     }
 
     /**
@@ -141,8 +147,9 @@ public class WindowCapability extends RPCStruct {
      *
      * @param numCustomPresetsAvailable
      */
-    public void setNumCustomPresetsAvailable(Integer numCustomPresetsAvailable) {
+    public WindowCapability setNumCustomPresetsAvailable(Integer numCustomPresetsAvailable) {
         setValue(KEY_NUM_CUSTOM_PRESETS_AVAILABLE, numCustomPresetsAvailable);
+        return this;
     }
 
     /**
@@ -151,8 +158,9 @@ public class WindowCapability extends RPCStruct {
      *
      * @param buttonCapabilities It refers to number of buttons and the capabilities of each on-window button.
      */
-    public void setButtonCapabilities(List<ButtonCapabilities> buttonCapabilities) {
+    public WindowCapability setButtonCapabilities(List<ButtonCapabilities> buttonCapabilities) {
         setValue(KEY_BUTTON_CAPABILITIES, buttonCapabilities);
+        return this;
     }
 
     /**
@@ -172,8 +180,9 @@ public class WindowCapability extends RPCStruct {
      *
      * @param softButtonCapabilities It refers to number of soft buttons available on-window and the capabilities for each button.
      */
-    public void setSoftButtonCapabilities(List<SoftButtonCapabilities> softButtonCapabilities) {
+    public WindowCapability setSoftButtonCapabilities(List<SoftButtonCapabilities> softButtonCapabilities) {
         setValue(KEY_SOFT_BUTTON_CAPABILITIES, softButtonCapabilities);
+        return this;
     }
 
     /**
@@ -190,19 +199,45 @@ public class WindowCapability extends RPCStruct {
     /**
      * An array of available menu layouts. If this parameter is not provided, only the `LIST` layout
      * is assumed to be available
+     *
      * @param menuLayout - An array of MenuLayouts
      */
-    public void setMenuLayoutsAvailable(List<MenuLayout> menuLayout) {
+    public WindowCapability setMenuLayoutsAvailable(List<MenuLayout> menuLayout) {
         setValue(KEY_MENU_LAYOUTS_AVAILABLE, menuLayout);
+        return this;
     }
 
     /**
      * An array of available menu layouts. If this parameter is not provided, only the `LIST` layout
      * is assumed to be available
+     *
      * @return MenuLayout[]
      */
     @SuppressWarnings("unchecked")
     public List<MenuLayout> getMenuLayoutsAvailable() {
         return (List<MenuLayout>) getObject(MenuLayout.class, KEY_MENU_LAYOUTS_AVAILABLE);
+    }
+
+    /**
+     * Sets the dynamicUpdateCapabilities.
+     *
+     * @param dynamicUpdateCapabilities Contains the head unit's capabilities for dynamic updating features declaring if the
+     *                                  module will send dynamic update RPCs.
+     * @since SmartDeviceLink 7.0.0
+     */
+    public WindowCapability setDynamicUpdateCapabilities(DynamicUpdateCapabilities dynamicUpdateCapabilities) {
+        setValue(KEY_DYNAMIC_UPDATE_CAPABILITIES, dynamicUpdateCapabilities);
+        return this;
+    }
+
+    /**
+     * Gets the dynamicUpdateCapabilities.
+     *
+     * @return DynamicUpdateCapabilities Contains the head unit's capabilities for dynamic updating features declaring if the
+     * module will send dynamic update RPCs.
+     * @since SmartDeviceLink 7.0.0
+     */
+    public DynamicUpdateCapabilities getDynamicUpdateCapabilities() {
+        return (DynamicUpdateCapabilities) getObject(DynamicUpdateCapabilities.class, KEY_DYNAMIC_UPDATE_CAPABILITIES);
     }
 }

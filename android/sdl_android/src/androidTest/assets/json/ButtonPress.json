@@ -1,15 +1,15 @@
 {
-  "request":{
-    "name":"ButtonPress",
-    "correlationID":215,
-    "parameters":{
-      "buttonName":"OK",
-      "buttonPressMode":"LONG",
-      "moduleType":"CLIMATE"
+  "request": {
+    "name": "ButtonPress",
+    "correlationID": 215,
+    "parameters": {
+      "buttonName": "OK",
+      "buttonPressMode": "LONG",
+      "moduleType": "CLIMATE"
     }
   },
-  "response":{
-    "name":"ButtonPressResponse",
-    "correlationID":216
+  "response": {
+    "name": "ButtonPressResponse",
+    "correlationID": 216
   }
 }

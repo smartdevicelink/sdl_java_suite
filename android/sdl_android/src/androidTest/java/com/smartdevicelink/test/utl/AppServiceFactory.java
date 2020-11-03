@@ -18,7 +18,7 @@ import java.util.List;
 public class AppServiceFactory {
 
 
-    public static AppServiceManifest createAppServiceManifest(AppServiceType type, String serviceName){
+    public static AppServiceManifest createAppServiceManifest(AppServiceType type, String serviceName) {
         AppServiceManifest manifest = new AppServiceManifest();
 
         manifest.setServiceName(serviceName);
@@ -26,7 +26,7 @@ public class AppServiceFactory {
         manifest.setAllowAppConsumers(true);
         List<FunctionID> handledRPCs = new ArrayList<>();
 
-        switch (type){
+        switch (type) {
             case MEDIA:
                 handledRPCs.add(FunctionID.BUTTON_PRESS);
                 manifest.setMediaServiceManifest(new MediaServiceManifest());
@@ -57,18 +57,18 @@ public class AppServiceFactory {
         return manifest;
     }
 
-    public static AppServiceRecord createAppServiceRecord(AppServiceType type, String serviceName, String serviceID, boolean isActive){
+    public static AppServiceRecord createAppServiceRecord(AppServiceType type, String serviceName, String serviceID, boolean isActive) {
         AppServiceRecord appServiceRecord = new AppServiceRecord();
-        appServiceRecord.setServiceManifest(createAppServiceManifest(type,serviceName));
+        appServiceRecord.setServiceManifest(createAppServiceManifest(type, serviceName));
         appServiceRecord.setServiceID(serviceID);
         appServiceRecord.setServiceActive(isActive);
         appServiceRecord.setServicePublished(true);
         return appServiceRecord;
     }
 
-    public static AppServiceCapability createAppServiceCapability(AppServiceType type, String serviceName, String serviceID, boolean isActive, ServiceUpdateReason updateReason){
+    public static AppServiceCapability createAppServiceCapability(AppServiceType type, String serviceName, String serviceID, boolean isActive, ServiceUpdateReason updateReason) {
         AppServiceCapability appServiceCapability = new AppServiceCapability();
-        appServiceCapability.setUpdatedAppServiceRecord(createAppServiceRecord(type,serviceName,serviceID,isActive));
+        appServiceCapability.setUpdatedAppServiceRecord(createAppServiceRecord(type, serviceName, serviceID, isActive));
         appServiceCapability.setUpdateReason(updateReason);
         return appServiceCapability;
     }

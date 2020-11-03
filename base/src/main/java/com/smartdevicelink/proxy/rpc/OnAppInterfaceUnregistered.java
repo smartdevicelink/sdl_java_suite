@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
@@ -40,17 +40,17 @@ import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
 import java.util.Hashtable;
 
 /**
- * <p>Notifies an application that its interface registration has been terminated. This means that all SDL resources 
+ * <p>Notifies an application that its interface registration has been terminated. This means that all SDL resources
  * associated with the application are discarded, including the Command Menu, Choice Sets, button subscriptions, etc.</p>
  * For more information about SDL resources related to an interface registration, see {@linkplain RegisterAppInterface}.
  * <p></p>
  * <b>HMI Status Requirements:</b>
  * <ul>
- * HMILevel: 
+ * HMILevel:
  * <ul><li>Any</li></ul>
- * AudioStreamingState: 
+ * AudioStreamingState:
  * <ul><li>Any</li></ul>
- * SystemContext: 
+ * SystemContext:
  * <ul><li>Any</li></ul>
  * </ul>
  * <p></p>
@@ -69,44 +69,55 @@ import java.util.Hashtable;
  * <td>SmartDeviceLink 1.0</td>
  * </tr>
  * </table>
- * @since SmartDeviceLink 1.0
+ *
  * @see RegisterAppInterface
+ * @since SmartDeviceLink 1.0
  */
 public class OnAppInterfaceUnregistered extends RPCNotification {
-	public static final String KEY_REASON = "reason";
-	/**
-	*Constructs a newly allocated OnAppInterfaceUnregistered object
-	*/ 
+    public static final String KEY_REASON = "reason";
+
+    /**
+     * Constructs a newly allocated OnAppInterfaceUnregistered object
+     */
     public OnAppInterfaceUnregistered() {
         super(FunctionID.ON_APP_INTERFACE_UNREGISTERED.toString());
     }
+
     /**
-    *<p>Constructs a newly allocated OnAppInterfaceUnregistered object indicated by the Hashtable parameter</p>
-    *@param hash The Hashtable to use
-    */    
+     * <p>Constructs a newly allocated OnAppInterfaceUnregistered object indicated by the Hashtable parameter</p>
+     *
+     * @param hash The Hashtable to use
+     */
     public OnAppInterfaceUnregistered(Hashtable<String, Object> hash) {
         super(hash);
     }
+
     /**
-     *Constructs a newly allocated OnAppInterfaceUnregistered object
+     * Constructs a newly allocated OnAppInterfaceUnregistered object
+     *
      * @param reason The reason application's interface registration was terminated
      */
     public OnAppInterfaceUnregistered(@NonNull AppInterfaceUnregisteredReason reason) {
         this();
         setReason(reason);
     }
+
     /**
      * <p>Get the reason the registration was terminated</p>
+     *
      * @return {@linkplain AppInterfaceUnregisteredReason} the reason the application's interface registration was terminated
-     */    
+     */
     public AppInterfaceUnregisteredReason getReason() {
         return (AppInterfaceUnregisteredReason) getObject(AppInterfaceUnregisteredReason.class, KEY_REASON);
     }
+
     /**
      * <p>Set the reason application's interface was terminated</p>
+     *
      * @param reason The reason application's interface registration was terminated
-     */    
-    public void setReason( @NonNull AppInterfaceUnregisteredReason reason ) {
+     */
+    public OnAppInterfaceUnregistered setReason(@NonNull AppInterfaceUnregisteredReason reason) {
         setParameters(KEY_REASON, reason);
+        return this;
     }
 }

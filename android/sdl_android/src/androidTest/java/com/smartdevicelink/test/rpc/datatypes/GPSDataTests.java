@@ -14,15 +14,15 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.GPSData}
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.proxy.rpc.GPSData}
  */
-public class GPSDataTests extends TestCase{
+public class GPSDataTests extends TestCase {
 
     private GPSData msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new GPSData();
 
         msg.setActual(TestValues.GENERAL_BOOLEAN);
@@ -47,10 +47,10 @@ public class GPSDataTests extends TestCase{
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
-    	// Test Values
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
         boolean actual = msg.getActual();
         double latitude = msg.getLatitudeDegrees();
         double longitude = msg.getLongitudeDegrees();
@@ -70,7 +70,7 @@ public class GPSDataTests extends TestCase{
         Dimension dimension = msg.getDimension();
         CompassDirection direction = msg.getCompassDirection();
         boolean shifted = msg.getShifted();
-        
+
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, actual);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_DOUBLE, latitude);
@@ -91,7 +91,7 @@ public class GPSDataTests extends TestCase{
         assertEquals(TestValues.MATCH, TestValues.GENERAL_DIMENSION, dimension);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_COMPASSDIRECTION, direction);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, shifted);
-        
+
         // Invalid/Null Tests
         GPSData msg = new GPSData();
         assertNotNull(TestValues.NOT_NULL, msg);
@@ -117,10 +117,10 @@ public class GPSDataTests extends TestCase{
         assertNull(TestValues.NULL, msg.getShifted());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(GPSData.KEY_ACTUAL, TestValues.GENERAL_BOOLEAN);
             reference.put(GPSData.KEY_LATITUDE_DEGREES, TestValues.GENERAL_DOUBLE);
             reference.put(GPSData.KEY_LONGITUDE_DEGREES, TestValues.GENERAL_DOUBLE);
@@ -145,12 +145,12 @@ public class GPSDataTests extends TestCase{
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
                 assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
-        }catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  * whenever new data is available for the module.
  */
 public class GetInteriorVehicleData extends RPCRequest {
-	public static final String KEY_MODULE_TYPE = "moduleType";
+    public static final String KEY_MODULE_TYPE = "moduleType";
     public static final String KEY_SUBSCRIBE = "subscribe";
     public static final String KEY_MODULE_ID = "moduleId";
 
@@ -62,9 +62,7 @@ public class GetInteriorVehicleData extends RPCRequest {
      * <p>Constructs a new GetInteriorVehicleData object indicated by the
      * Hashtable parameter</p>
      *
-     *
-     * @param hash
-     * The Hashtable to use
+     * @param hash The Hashtable to use
      */
     public GetInteriorVehicleData(Hashtable<String, Object> hash) {
         super(hash);
@@ -91,23 +89,23 @@ public class GetInteriorVehicleData extends RPCRequest {
     /**
      * Sets a ModuleType
      *
-     * @param moduleType
-     * The type of a RC module to retrieve module data from the vehicle.
-     * In the future, this should be the Identification of a module.
+     * @param moduleType The type of a RC module to retrieve module data from the vehicle.
+     *                   In the future, this should be the Identification of a module.
      */
-    public void setModuleType(@NonNull ModuleType moduleType) {
+    public GetInteriorVehicleData setModuleType(@NonNull ModuleType moduleType) {
         setParameters(KEY_MODULE_TYPE, moduleType);
+        return this;
     }
 
     /**
      * Sets subscribe parameter
      *
-     * @param subscribe
-     * If subscribe is true, the head unit will register onInteriorVehicleData notifications for the requested moduelType.
-     * If subscribe is false, the head unit will unregister onInteriorVehicleData notifications for the requested moduelType.
+     * @param subscribe If subscribe is true, the head unit will register onInteriorVehicleData notifications for the requested moduleType.
+     *                  If subscribe is false, the head unit will unregister onInteriorVehicleData notifications for the requested moduleType.
      */
-    public void setSubscribe(Boolean subscribe) {
+    public GetInteriorVehicleData setSubscribe(Boolean subscribe) {
         setParameters(KEY_SUBSCRIBE, subscribe);
+        return this;
     }
 
     /**
@@ -122,14 +120,17 @@ public class GetInteriorVehicleData extends RPCRequest {
 
     /**
      * Sets the Module ID for this class
+     *
      * @param id the id to be set
      */
-    public void setModuleId(String id) {
+    public GetInteriorVehicleData setModuleId(String id) {
         setParameters(KEY_MODULE_ID, id);
+        return this;
     }
 
     /**
      * Gets the Module ID of this class
+     *
      * @return the Module ID of this class
      */
     public String getModuleId() {

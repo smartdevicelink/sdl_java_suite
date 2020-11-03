@@ -1,6 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -10,6 +10,7 @@ import java.util.Hashtable;
 
 /**
  * This RPC is the response of the DeleteWindow RPC
+ *
  * @see DeleteWindow
  * @since 6.0
  */

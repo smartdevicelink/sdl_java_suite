@@ -32,7 +32,7 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.test.TestValues;
 
@@ -44,16 +44,16 @@ import static junit.framework.TestCase.assertEquals;
 @RunWith(AndroidJUnit4.class)
 public class RunScoreTests {
 
-	@Test
-	public void testSettersAndGetters(){
+    @Test
+    public void testSettersAndGetters() {
 
-		// set everything - we only use the constructor to set variables in the Menu Manager
-		RunScore runScore = new RunScore(TestValues.GENERAL_INT, TestValues.GENERAL_INTEGER_LIST, TestValues.GENERAL_INTEGER_LIST);
+        // set everything - we only use the constructor to set variables in the Menu Manager
+        RunScore runScore = new RunScore(TestValues.GENERAL_INT, TestValues.GENERAL_INTEGER_LIST, TestValues.GENERAL_INTEGER_LIST);
 
-		// use getters and assert equality
-		assertEquals(runScore.getScore(), TestValues.GENERAL_INT);
-		assertEquals(runScore.getCurrentMenu(), TestValues.GENERAL_INTEGER_LIST);
-		assertEquals(runScore.getOldMenu(), TestValues.GENERAL_INTEGER_LIST);
-	}
+        // use getters and assert equality
+        assertEquals(runScore.getScore(), TestValues.GENERAL_INT);
+        assertEquals(runScore.getCurrentMenu(), TestValues.GENERAL_INTEGER_LIST);
+        assertEquals(runScore.getOldMenu(), TestValues.GENERAL_INTEGER_LIST);
+    }
 
 }
