@@ -75,6 +75,12 @@
 
 - [Gradle dependencies needs to be updates](https://github.com/smartdevicelink/sdl_java_suite/issues/1459)
 
+- [BSON library should be updated to the latest version (1.2.2) #1542](https://github.com/smartdevicelink/sdl_java_suite/issues/1542)
+
+- [Update Project Documentation in README #1534](https://github.com/smartdevicelink/sdl_java_suite/issues/1534)
+
+- [Feature/lockscreen ui testing #1527](https://github.com/smartdevicelink/sdl_java_suite/pull/1527)
+
 ## Bug Fixes:
 
 - [LockScreen behavior is incorrect for Display Always and Dismissible](https://github.com/smartdevicelink/sdl_java_suite/issues/1515)
@@ -106,3 +112,18 @@
 - [RPC Generator is generating enum values with wrong capitalization](https://github.com/smartdevicelink/sdl_java_suite/issues/1425)
 
 - [RPC generator strips text after @TODO ](https://github.com/smartdevicelink/sdl_java_suite/issues/1506)
+
+- [Some RPCs in the code do not exactly match the spec #1545](https://github.com/smartdevicelink/sdl_java_suite/issues/1545)
+
+- [Fix issue in setting MediaTrack in the T&G manager #1544](https://github.com/smartdevicelink/sdl_java_suite/pull/1544)
+
+- [There are a few deprecated functions that don't link to the correct function. #1536](https://github.com/smartdevicelink/sdl_java_suite/issues/1536)
+
+- [OnServiceError logs a wrong message #1520](https://github.com/smartdevicelink/sdl_java_suite/issues/1520)
+
+- [Some cloud apps fail to download icons #1513](https://github.com/smartdevicelink/sdl_java_suite/issues/1513)
+ 
+- [Fix inconsistency with HMICapabilities API names #1508](https://github.com/smartdevicelink/sdl_java_suite/pull/1508)
+
+- [LockScreen behavior is incorrect for Display Always and Dismissible #1515](https://github.com/smartdevicelink/sdl_java_suite/issues/1515)
+
