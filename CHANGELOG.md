@@ -119,8 +119,6 @@
 
 - [There are a few deprecated functions that don't link to the correct function](https://github.com/smartdevicelink/sdl_java_suite/issues/1536)
 
-- [OnServiceError logs a wrong message](https://github.com/smartdevicelink/sdl_java_suite/issues/1520)
-
 - [Some cloud apps fail to download icons](https://github.com/smartdevicelink/sdl_java_suite/issues/1513)
  
 - [Fix inconsistency with HMICapabilities API names](https://github.com/smartdevicelink/sdl_java_suite/pull/1508)
