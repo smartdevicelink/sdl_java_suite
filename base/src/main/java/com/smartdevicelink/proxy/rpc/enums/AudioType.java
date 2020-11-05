@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -33,27 +33,28 @@ package com.smartdevicelink.proxy.rpc.enums;
 
 /**
  * Describes different audio type options for PerformAudioPassThru
- * 
+ *
  * @since SmartDeviceLink 2.0
-
  */
 public enum AudioType {
-	/**
-	 * PCM raw audio
-	 * 
-	 * @since SmartDeviceLink 2.0
-	 */
+    /**
+     * PCM raw audio
+     *
+     * @since SmartDeviceLink 2.0
+     */
     PCM;
+
     /**
      * Convert String to AudioType
+     *
      * @param value String
      * @return AudioType
-     */    
+     */
 
     public static AudioType valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -53,9 +53,9 @@ import java.util.List;
  * The Show operation cannot be used to create an animated scrolling screen. To
  * avoid distracting the driver, Show commands cannot be issued more than once
  * every 4 seconds. Requests made more frequently than this will be rejected
- * 
+ *
  * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
- *  
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -172,488 +172,502 @@ import java.util.List;
  * 		</tr>
  *
  *  </table>
- *<p><b>Response </b></p>
+ * <p><b>Response </b></p>
  *
- *<p><b> Non-default Result Codes: </b></p>
- *	 <p>SUCCESS </p>
- *	 <p>INVALID_DATA</p>
- *	 <p>OUT_OF_MEMORY</p>
+ * <p><b> Non-default Result Codes: </b></p>
+ * 	 <p>SUCCESS </p>
+ * 	 <p>INVALID_DATA</p>
+ * 	 <p>OUT_OF_MEMORY</p>
  *    <p> TOO_MANY_PENDING_REQUESTS</p>
  *     <p>APPLICATION_NOT_REGISTERED</p>
  *    <p> GENERIC_ERROR</p>
  *    <p>  REJECTED</p>
  *    <p>  DISALLOWED</p>
- * <p> UNSUPPORTED_RESOURCE </p>     
+ * <p> UNSUPPORTED_RESOURCE </p>
  *  <p>ABORTED</p>
- * 
- * @since SmartDeviceLink 1.0
+ *
  * @see Alert
  * @see SetMediaClockTimer
+ * @since SmartDeviceLink 1.0
  */
 public class Show extends RPCRequest {
-	public static final String KEY_GRAPHIC = "graphic";
-	public static final String KEY_CUSTOM_PRESETS = "customPresets";
-	public static final String KEY_MAIN_FIELD_1 = "mainField1";
-	public static final String KEY_MAIN_FIELD_2 = "mainField2";
-	public static final String KEY_MAIN_FIELD_3 = "mainField3";
-	public static final String KEY_MAIN_FIELD_4 = "mainField4";
-	public static final String KEY_STATUS_BAR = "statusBar";
-	public static final String KEY_MEDIA_CLOCK = "mediaClock";
-	public static final String KEY_ALIGNMENT = "alignment";
-	public static final String KEY_MEDIA_TRACK = "mediaTrack";
-	public static final String KEY_SECONDARY_GRAPHIC = "secondaryGraphic";
-	public static final String KEY_SOFT_BUTTONS = "softButtons";
-	public static final String KEY_METADATA_TAGS = "metadataTags";
-	public static final String KEY_WINDOW_ID = "windowID";
-	public static final String KEY_TEMPLATE_CONFIGURATION = "templateConfiguration";
-	public static final String KEY_TEMPLATE_TITLE = "templateTitle";
+    public static final String KEY_GRAPHIC = "graphic";
+    public static final String KEY_CUSTOM_PRESETS = "customPresets";
+    public static final String KEY_MAIN_FIELD_1 = "mainField1";
+    public static final String KEY_MAIN_FIELD_2 = "mainField2";
+    public static final String KEY_MAIN_FIELD_3 = "mainField3";
+    public static final String KEY_MAIN_FIELD_4 = "mainField4";
+    public static final String KEY_STATUS_BAR = "statusBar";
+    @Deprecated
+    public static final String KEY_MEDIA_CLOCK = "mediaClock";
+    public static final String KEY_ALIGNMENT = "alignment";
+    public static final String KEY_MEDIA_TRACK = "mediaTrack";
+    public static final String KEY_SECONDARY_GRAPHIC = "secondaryGraphic";
+    public static final String KEY_SOFT_BUTTONS = "softButtons";
+    public static final String KEY_METADATA_TAGS = "metadataTags";
+    public static final String KEY_WINDOW_ID = "windowID";
+    public static final String KEY_TEMPLATE_CONFIGURATION = "templateConfiguration";
+    public static final String KEY_TEMPLATE_TITLE = "templateTitle";
 
-	/**
-	 * Constructs a new Show object
-	 */
-	public Show() {
+    /**
+     * Constructs a new Show object
+     */
+    public Show() {
         super(FunctionID.SHOW.toString());
     }
-	/**
-	 * Constructs a new Show object indicated by the Hashtable parameter
-	 * <p></p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
+
+    /**
+     * Constructs a new Show object indicated by the Hashtable parameter
+     * <p></p>
+     *
+     * @param hash The Hashtable to use
+     */
     public Show(Hashtable<String, Object> hash) {
         super(hash);
     }
-	/**
-	 * Gets the text displayed in a single-line display, or in the upper display
-	 * line in a two-line display
-	 * 
-	 * @return String -a String value representing the text displayed in a
-	 *         single-line display, or in the upper display line in a two-line
-	 *         display
-	 */    
+
+    /**
+     * Gets the text displayed in a single-line display, or in the upper display
+     * line in a two-line display
+     *
+     * @return String -a String value representing the text displayed in a
+     * single-line display, or in the upper display line in a two-line
+     * display
+     */
     public String getMainField1() {
         return getString(KEY_MAIN_FIELD_1);
     }
-	/**
-	 * Sets the text displayed in a single-line display, or in the upper display
-	 * line in a two-line display
-	 * 
-	 * @param mainField1
-	 *            the String value representing the text displayed in a
-	 *            single-line display, or in the upper display line in a
-	 *            two-line display
-	 *            <p></p>
-	 *            <b>Notes: </b>
-	 *            <ul>
-	 *            <li>If this parameter is omitted, the text of mainField1 does
-	 *            not change</li>
-	 *            <li>If this parameter is an empty string, the field will be
-	 *            cleared</li>
-	 *            </ul>
-	 */    
-    public void setMainField1(String mainField1) {
-		setParameters(KEY_MAIN_FIELD_1, mainField1);
+
+    /**
+     * Sets the text displayed in a single-line display, or in the upper display
+     * line in a two-line display
+     *
+     * @param mainField1 the String value representing the text displayed in a
+     *                   single-line display, or in the upper display line in a
+     *                   two-line display
+     *                   <p></p>
+     *                   <b>Notes: </b>
+     *                   <ul>
+     *                   <li>If this parameter is omitted, the text of mainField1 does
+     *                   not change</li>
+     *                   <li>If this parameter is an empty string, the field will be
+     *                   cleared</li>
+     *                   </ul>
+     */
+    public Show setMainField1(String mainField1) {
+        setParameters(KEY_MAIN_FIELD_1, mainField1);
+        return this;
     }
-	/**
-	 * Gets the text displayed on the second display line of a two-line display
-	 * 
-	 * @return String -a String value representing the text displayed on the
-	 *         second display line of a two-line display
-	 */    
+
+    /**
+     * Gets the text displayed on the second display line of a two-line display
+     *
+     * @return String -a String value representing the text displayed on the
+     * second display line of a two-line display
+     */
     public String getMainField2() {
         return getString(KEY_MAIN_FIELD_2);
     }
-	/**
-	 * Sets the text displayed on the second display line of a two-line display
-	 * 
-	 * @param mainField2
-	 *            the String value representing the text displayed on the second
-	 *            display line of a two-line display
-	 *            <p></p>
-	 *            <b>Notes: </b>
-	 *            <ul>
-	 *            <li>If this parameter is omitted, the text of mainField2 does
-	 *            not change</li>
-	 *            <li>If this parameter is an empty string, the field will be
-	 *            cleared</li>
-	 *            <li>If provided and the display is a single-line display, the
-	 *            parameter is ignored</li>
-	 *            <li>Maxlength = 500</li>
-	 *            </ul>
-	 */    
-    public void setMainField2(String mainField2) {
-		setParameters(KEY_MAIN_FIELD_2, mainField2);
+
+    /**
+     * Sets the text displayed on the second display line of a two-line display
+     *
+     * @param mainField2 the String value representing the text displayed on the second
+     *                   display line of a two-line display
+     *                   <p></p>
+     *                   <b>Notes: </b>
+     *                   <ul>
+     *                   <li>If this parameter is omitted, the text of mainField2 does
+     *                   not change</li>
+     *                   <li>If this parameter is an empty string, the field will be
+     *                   cleared</li>
+     *                   <li>If provided and the display is a single-line display, the
+     *                   parameter is ignored</li>
+     *                   <li>Maxlength = 500</li>
+     *                   </ul>
+     */
+    public Show setMainField2(String mainField2) {
+        setParameters(KEY_MAIN_FIELD_2, mainField2);
+        return this;
     }
 
-	/**
-	 * Gets the text displayed on the first display line of the second page
-	 * 
-	 * @return String -a String value representing the text displayed on the
-	 *         first display line of the second page
-	 * @since SmartDeviceLink 2.0
-	 */
+    /**
+     * Gets the text displayed on the first display line of the second page
+     *
+     * @return String -a String value representing the text displayed on the
+     * first display line of the second page
+     * @since SmartDeviceLink 2.0
+     */
     public String getMainField3() {
         return getString(KEY_MAIN_FIELD_3);
     }
 
-	/**
-	 * Sets the text displayed on the first display line of the second page
-	 * 
-	 * @param mainField3
-	 *            the String value representing the text displayed on the first
-	 *            display line of the second page
-	 *            <p></p>
-	 *            <b>Notes: </b>
-	 *            <ul>
-	 *            <li>If this parameter is omitted, the text of mainField3 does
-	 *            not change</li>
-	 *            <li>If this parameter is an empty string, the field will be
-	 *            cleared</li>
-	 *            <li>If provided and the display is a single-line display, the
-	 *            parameter is ignored</li>
-	 *            <li>Maxlength = 500</li>
-	 *            </ul>
-	 * @since SmartDeviceLink 2.0
-	 */
-    public void setMainField3(String mainField3) {
-		setParameters(KEY_MAIN_FIELD_3, mainField3);
+    /**
+     * Sets the text displayed on the first display line of the second page
+     *
+     * @param mainField3 the String value representing the text displayed on the first
+     *                   display line of the second page
+     *                   <p></p>
+     *                   <b>Notes: </b>
+     *                   <ul>
+     *                   <li>If this parameter is omitted, the text of mainField3 does
+     *                   not change</li>
+     *                   <li>If this parameter is an empty string, the field will be
+     *                   cleared</li>
+     *                   <li>If provided and the display is a single-line display, the
+     *                   parameter is ignored</li>
+     *                   <li>Maxlength = 500</li>
+     *                   </ul>
+     * @since SmartDeviceLink 2.0
+     */
+    public Show setMainField3(String mainField3) {
+        setParameters(KEY_MAIN_FIELD_3, mainField3);
+        return this;
     }
 
-	/**
-	 * Gets the text displayed on the second display line of the second page
-	 * 
-	 * @return String -a String value representing the text displayed on the
-	 *         first display line of the second page
-	 * @since SmartDeviceLink 2.0
-	 */
+    /**
+     * Gets the text displayed on the second display line of the second page
+     *
+     * @return String -a String value representing the text displayed on the
+     * first display line of the second page
+     * @since SmartDeviceLink 2.0
+     */
     public String getMainField4() {
         return getString(KEY_MAIN_FIELD_4);
     }
 
-	/**
-	 * Sets the text displayed on the second display line of the second page
-	 * 
-	 * @param mainField4
-	 *            the String value representing the text displayed on the second
-	 *            display line of the second page
-	 *            <p></p>
-	 *            <b>Notes: </b>
-	 *            <ul>
-	 *            <li>If this parameter is omitted, the text of mainField4 does
-	 *            not change</li>
-	 *            <li>If this parameter is an empty string, the field will be
-	 *            cleared</li>
-	 *            <li>If provided and the display is a single-line display, the
-	 *            parameter is ignored</li>
-	 *            <li>Maxlength = 500</li>
-	 *            </ul>
-	 * @since SmartDeviceLink 2.0
-	 */
-    public void setMainField4(String mainField4) {
-		setParameters(KEY_MAIN_FIELD_4, mainField4);
+    /**
+     * Sets the text displayed on the second display line of the second page
+     *
+     * @param mainField4 the String value representing the text displayed on the second
+     *                   display line of the second page
+     *                   <p></p>
+     *                   <b>Notes: </b>
+     *                   <ul>
+     *                   <li>If this parameter is omitted, the text of mainField4 does
+     *                   not change</li>
+     *                   <li>If this parameter is an empty string, the field will be
+     *                   cleared</li>
+     *                   <li>If provided and the display is a single-line display, the
+     *                   parameter is ignored</li>
+     *                   <li>Maxlength = 500</li>
+     *                   </ul>
+     * @since SmartDeviceLink 2.0
+     */
+    public Show setMainField4(String mainField4) {
+        setParameters(KEY_MAIN_FIELD_4, mainField4);
+        return this;
     }
-	/**
-	 * Gets the alignment that Specifies how mainField1 and mainField2 text
-	 * should be aligned on display
-	 * 
-	 * @return TextAlignment -an Enumeration value
-	 */    
+
+    /**
+     * Gets the alignment that Specifies how mainField1 and mainField2 text
+     * should be aligned on display
+     *
+     * @return TextAlignment -an Enumeration value
+     */
     public TextAlignment getAlignment() {
-		return (TextAlignment) getObject(TextAlignment.class, KEY_ALIGNMENT);
+        return (TextAlignment) getObject(TextAlignment.class, KEY_ALIGNMENT);
     }
-	/**
-	 * Sets the alignment that Specifies how mainField1 and mainField2 text
-	 * should be aligned on display
-	 * 
-	 * @param alignment
-	 *            an Enumeration value
-	 *            <p></p>
-	 *            <b>Notes: </b>
-	 *            <ul>
-	 *            <li>Applies only to mainField1 and mainField2 provided on this
-	 *            call, not to what is already showing in display</li>
-	 *            <li>If this parameter is omitted, text in both mainField1 and
-	 *            mainField2 will be centered</li>
-	 *            <li>Has no effect with navigation display</li>
-	 *            </ul>
-	 */    
-    public void setAlignment(TextAlignment alignment) {
-		setParameters(KEY_ALIGNMENT, alignment);
+
+    /**
+     * Sets the alignment that Specifies how mainField1 and mainField2 text
+     * should be aligned on display
+     *
+     * @param alignment an Enumeration value
+     *                  <p></p>
+     *                  <b>Notes: </b>
+     *                  <ul>
+     *                  <li>Applies only to mainField1 and mainField2 provided on this
+     *                  call, not to what is already showing in display</li>
+     *                  <li>If this parameter is omitted, text in both mainField1 and
+     *                  mainField2 will be centered</li>
+     *                  <li>Has no effect with navigation display</li>
+     *                  </ul>
+     */
+    public Show setAlignment(TextAlignment alignment) {
+        setParameters(KEY_ALIGNMENT, alignment);
+        return this;
     }
-	/**
-	 * Gets text in the Status Bar
-	 * 
-	 * @return String -the value in the Status Bar
-	 */    
+
+    /**
+     * Gets text in the Status Bar
+     *
+     * @return String -the value in the Status Bar
+     */
     public String getStatusBar() {
         return getString(KEY_STATUS_BAR);
     }
-	/**
-	 * Sets text in the Status Bar
-	 * 
-	 * @param statusBar
-	 *            a String representing the text you want to add in the Status
-	 *            Bar
-	 *            <p></p>
-	 *            <b>Notes: </b><i>The status bar only exists on navigation
-	 *            displays</i>
-	 *            <ul>
-	 *            <li>If this parameter is omitted, the status bar text will
-	 *            remain unchanged</li>
-	 *            <li>If this parameter is an empty string, the field will be
-	 *            cleared</li>
-	 *            <li>If provided and the display has no status bar, this
-	 *            parameter is ignored</li>
-	 *            </ul>
-	 */    
-    public void setStatusBar(String statusBar) {
-		setParameters(KEY_STATUS_BAR, statusBar);
+
+    /**
+     * Sets text in the Status Bar
+     *
+     * @param statusBar a String representing the text you want to add in the Status
+     *                  Bar
+     *                  <p></p>
+     *                  <b>Notes: </b><i>The status bar only exists on navigation
+     *                  displays</i>
+     *                  <ul>
+     *                  <li>If this parameter is omitted, the status bar text will
+     *                  remain unchanged</li>
+     *                  <li>If this parameter is an empty string, the field will be
+     *                  cleared</li>
+     *                  <li>If provided and the display has no status bar, this
+     *                  parameter is ignored</li>
+     *                  </ul>
+     */
+    public Show setStatusBar(String statusBar) {
+        setParameters(KEY_STATUS_BAR, statusBar);
+        return this;
     }
-	/**
-	 * Gets the String value of the MediaClock
-	 * 
-	 * @return String -a String value of the MediaClock
-	 */ 
-	@Deprecated	 
+
+    /**
+     * Gets the String value of the MediaClock
+     *
+     * @return String -a String value of the MediaClock
+     */
+    @Deprecated
     public String getMediaClock() {
         return getString(KEY_MEDIA_CLOCK);
     }
-	/**
-	 * Sets the value for the MediaClock field using a format described in the
-	 * MediaClockFormat enumeration
-	 * 
-	 * @param mediaClock
-	 *            a String value for the MdaiaClock
-	 *            <p></p>
-	 *            <b>Notes: </b>
-	 *            <ul>
-	 *            <li>Must be properly formatted as described in the
-	 *            MediaClockFormat enumeration</li>
-	 *            <li>If a value of five spaces is provided, this will clear
-	 *            that field on the display (i.e. the media clock timer field
-	 *            will not display anything)</li>
-	 *            </ul>
-	 */
-	@Deprecated
-    public void setMediaClock(String mediaClock) {
-		setParameters(KEY_MEDIA_CLOCK, mediaClock);
+
+    /**
+     * Sets the value for the MediaClock field using a format described in the
+     * MediaClockFormat enumeration
+     *
+     * @param mediaClock a String value for the MediaClock
+     *                   <p></p>
+     *                   <b>Notes: </b>
+     *                   <ul>
+     *                   <li>Must be properly formatted as described in the
+     *                   MediaClockFormat enumeration</li>
+     *                   <li>If a value of five spaces is provided, this will clear
+     *                   that field on the display (i.e. the media clock timer field
+     *                   will not display anything)</li>
+     *                   </ul>
+     */
+    @Deprecated
+    public Show setMediaClock(String mediaClock) {
+        setParameters(KEY_MEDIA_CLOCK, mediaClock);
+        return this;
     }
-	/**
-	 * Gets the text in the track field
-	 * 
-	 * @return String -a String displayed in the track field
-	 */    
+
+    /**
+     * Gets the text in the track field
+     *
+     * @return String -a String displayed in the track field
+     */
     public String getMediaTrack() {
         return getString(KEY_MEDIA_TRACK);
     }
-	/**
-	 * Sets the text in the track field
-	 * 
-	 * @param mediaTrack
-	 *            a String value displayed in the track field
-	 *            <p></p>
-	 *            <b>Notes: </b>
-	 *            <ul>
-	 *            <li>If parameter is omitted, the track field remains unchanged</li>
-	 *            <li>If an empty string is provided, the field will be cleared</li>
-	 *            <li>This field is only valid for media applications on navigation displays</li>
-	 *            </ul>
-	 */    
-    public void setMediaTrack(String mediaTrack) {
-		setParameters(KEY_MEDIA_TRACK, mediaTrack);
+
+    /**
+     * Sets the text in the track field
+     *
+     * @param mediaTrack a String value displayed in the track field
+     *                   <p></p>
+     *                   <b>Notes: </b>
+     *                   <ul>
+     *                   <li>If parameter is omitted, the track field remains unchanged</li>
+     *                   <li>If an empty string is provided, the field will be cleared</li>
+     *                   <li>This field is only valid for media applications on navigation displays</li>
+     *                   </ul>
+     */
+    public Show setMediaTrack(String mediaTrack) {
+        setParameters(KEY_MEDIA_TRACK, mediaTrack);
+        return this;
     }
 
-	/**
-	 * Sets an image to be shown on supported displays
-	 * 
-	 * @param graphic
-	 *            the value representing the image shown on supported displays
-	 *            <p></p>
-	 *            <b>Notes: </b>If omitted on supported displays, the displayed
-	 *            graphic shall not change
-	 * @since SmartDeviceLink 2.0
-	 */
-    public void setGraphic(Image graphic) {
-		setParameters(KEY_GRAPHIC, graphic);
+    /**
+     * Sets an image to be shown on supported displays
+     *
+     * @param graphic the value representing the image shown on supported displays
+     *                <p></p>
+     *                <b>Notes: </b>If omitted on supported displays, the displayed
+     *                graphic shall not change
+     * @since SmartDeviceLink 2.0
+     */
+    public Show setGraphic(Image graphic) {
+        setParameters(KEY_GRAPHIC, graphic);
+        return this;
     }
 
-	/**
-	 * Gets an image to be shown on supported displays
-	 * 
-	 * @return Image -the value representing the image shown on supported
-	 *         displays
-	 * @since SmartDeviceLink 2.0
-	 */
-    @SuppressWarnings("unchecked")
+    /**
+     * Gets an image to be shown on supported displays
+     *
+     * @return Image -the value representing the image shown on supported
+     * displays
+     * @since SmartDeviceLink 2.0
+     */
     public Image getGraphic() {
-		return (Image) getObject(Image.class, KEY_GRAPHIC);
-    }
-
-    
-    public void setSecondaryGraphic(Image secondaryGraphic) {
-		setParameters(KEY_SECONDARY_GRAPHIC, secondaryGraphic);
+        return (Image) getObject(Image.class, KEY_GRAPHIC);
     }
 
 
-    @SuppressWarnings("unchecked")
+    public Show setSecondaryGraphic(Image secondaryGraphic) {
+        setParameters(KEY_SECONDARY_GRAPHIC, secondaryGraphic);
+        return this;
+    }
+
+
     public Image getSecondaryGraphic() {
-		return (Image) getObject(Image.class, KEY_SECONDARY_GRAPHIC);
-    }    
-    
-    
-	/**
-	 * Gets the Soft buttons defined by the App
-	 * 
-	 * @return List<SoftButton> -a List value representing the Soft buttons
-	 *         defined by the App
-	 * @since SmartDeviceLink 2.0
-	 */
+        return (Image) getObject(Image.class, KEY_SECONDARY_GRAPHIC);
+    }
+
+
+    /**
+     * Gets the Soft buttons defined by the App
+     *
+     * @return List<SoftButton> -a List value representing the Soft buttons
+     * defined by the App
+     * @since SmartDeviceLink 2.0
+     */
     @SuppressWarnings("unchecked")
     public List<SoftButton> getSoftButtons() {
-		return (List<SoftButton>) getObject(SoftButton.class, KEY_SOFT_BUTTONS);
+        return (List<SoftButton>) getObject(SoftButton.class, KEY_SOFT_BUTTONS);
     }
 
-	/**
-	 * Sets the the Soft buttons defined by the App
-	 * 
-	 * @param softButtons
-	 *            a List value represemting the Soft buttons defined by the
-	 *            App
-	 *            <p></p>
-	 *            <b>Notes: </b>
-	 *            <ul>
-	 *            <li>If omitted on supported displays, the currently displayed
-	 *            SoftButton values will not change</li>
-	 *            <li>Array Minsize: 0</li>
-	 *            <li>Array Maxsize: 8</li>
-	 *            </ul>
-	 * 
-	 * @since SmartDeviceLink 2.0
-	 */
-    public void setSoftButtons(List<SoftButton> softButtons) {
-		setParameters(KEY_SOFT_BUTTONS, softButtons);
+    /**
+     * Sets the the Soft buttons defined by the App
+     *
+     * @param softButtons a List value representing the Soft buttons defined by the
+     *                    App
+     *                    <p></p>
+     *                    <b>Notes: </b>
+     *                    <ul>
+     *                    <li>If omitted on supported displays, the currently displayed
+     *                    SoftButton values will not change</li>
+     *                    <li>Array Minsize: 0</li>
+     *                    <li>Array Maxsize: 8</li>
+     *                    </ul>
+     * @since SmartDeviceLink 2.0
+     */
+    public Show setSoftButtons(List<SoftButton> softButtons) {
+        setParameters(KEY_SOFT_BUTTONS, softButtons);
+        return this;
     }
 
-	/**
-	 * Gets the Custom Presets defined by the App
-	 * 
-	 * @return List<String> - a List value representing the Custom presets
-	 *         defined by the App
-	 * @since SmartDeviceLink 2.0
-	 */
+    /**
+     * Gets the Custom Presets defined by the App
+     *
+     * @return List<String> - a List value representing the Custom presets
+     * defined by the App
+     * @since SmartDeviceLink 2.0
+     */
     @SuppressWarnings("unchecked")
     public List<String> getCustomPresets() {
-		return (List<String>) getObject(String.class, KEY_CUSTOM_PRESETS);
+        return (List<String>) getObject(String.class, KEY_CUSTOM_PRESETS);
     }
 
-	/**
-	 * Sets the Custom Presets defined by the App
-	 * 
-	 * @param customPresets
-	 *            a List value representing the Custom Presets defined by the
-	 *            App
-	 *            <p></p>
-	 *            <ul>
-	 *            <li>If omitted on supported displays, the presets will be shown as not defined</li>
-	 *            <li>Array Minsize: 0</li>
-	 *            <li>Array Maxsize: 6</li>
-	 *            </ul>
-	 * @since SmartDeviceLink 2.0
-	 */
-    public void setCustomPresets(List<String> customPresets) {
-		setParameters(KEY_CUSTOM_PRESETS, customPresets);
+    /**
+     * Sets the Custom Presets defined by the App
+     *
+     * @param customPresets a List value representing the Custom Presets defined by the
+     *                      App
+     *                      <p></p>
+     *                      <ul>
+     *                      <li>If omitted on supported displays, the presets will be shown as not defined</li>
+     *                      <li>Array Minsize: 0</li>
+     *                      <li>Array Maxsize: 6</li>
+     *                      </ul>
+     * @since SmartDeviceLink 2.0
+     */
+    public Show setCustomPresets(List<String> customPresets) {
+        setParameters(KEY_CUSTOM_PRESETS, customPresets);
+        return this;
     }
 
-	/**
-	 * Sets text field metadata defined by the App
-	 *
-	 * @param metadataTags
-	 *            A Struct containing metadata pertaining to the main text fields
-	 *            <p></p>
-	 *            <ul>
-	 * @since SmartDeviceLink 4.5.0
-	 */
-    public void setMetadataTags(MetadataTags metadataTags){
-		setParameters(KEY_METADATA_TAGS, metadataTags);
-	}
+    /**
+     * Sets text field metadata defined by the App
+     *
+     * @param metadataTags A Struct containing metadata pertaining to the main text fields
+     *                     <p></p>
+     *                     <ul>
+     * @since SmartDeviceLink 4.5.0
+     */
+    public Show setMetadataTags(MetadataTags metadataTags) {
+        setParameters(KEY_METADATA_TAGS, metadataTags);
+        return this;
+    }
 
-	/**
-	 * Gets text field metadata defined by the App
-	 *
-	 * @return metadataTags - App defined metadata information. See MetadataTags. Uses mainField1, mainField2, mainField3, mainField4.
-	 *			If omitted on supported displays, the currently set metadata tags will not change.
-	 *          If any text field contains no tags or the none tag, the metadata tag for that textfield should be removed.
-	 * @since SmartDeviceLink 4.5.0
-	 */
-	public MetadataTags getMetadataTags() {
-		return (MetadataTags) getObject(MetadataTags.class, KEY_METADATA_TAGS);
-	}
+    /**
+     * Gets text field metadata defined by the App
+     *
+     * @return metadataTags - App defined metadata information. See MetadataTags. Uses mainField1, mainField2, mainField3, mainField4.
+     * If omitted on supported displays, the currently set metadata tags will not change.
+     * If any text field contains no tags or the none tag, the metadata tag for that textfield should be removed.
+     * @since SmartDeviceLink 4.5.0
+     */
+    public MetadataTags getMetadataTags() {
+        return (MetadataTags) getObject(MetadataTags.class, KEY_METADATA_TAGS);
+    }
 
-	/**
-	 * Sets the windowID. It's a unique ID to identify the window.
-	 * If this param is not included, it will be assumed that this request is specifically for the main window on the main display.
-	 * See PredefinedWindows enum.
-	 *
-	 * @param windowID A unique ID to identify the window. The value of '0' will always be the default main window on the main display and should not be used in this context as it will already be created for the app. See PredefinedWindows enum. Creating a window with an ID that is already in use will be rejected with `INVALID_ID`.
-	 *
-	 * @since 6.0
-	 */
-	public void setWindowID(Integer windowID) {
-		setParameters(KEY_WINDOW_ID, windowID);
-	}
+    /**
+     * Sets the windowID. It's a unique ID to identify the window.
+     * If this param is not included, it will be assumed that this request is specifically for the main window on the main display.
+     * See PredefinedWindows enum.
+     *
+     * @param windowID A unique ID to identify the window. The value of '0' will always be the default main window on the main display and should not be used in this context as it will already be created for the app. See PredefinedWindows enum. Creating a window with an ID that is already in use will be rejected with `INVALID_ID`.
+     * @since 6.0
+     */
+    public Show setWindowID(Integer windowID) {
+        setParameters(KEY_WINDOW_ID, windowID);
+        return this;
+    }
 
-	/**
-	 * Gets the windowID.
-	 *
-	 * @return int -an int value representing the windowID.
-	 */
-	public Integer getWindowID() {
-		return getInteger(KEY_WINDOW_ID);
-	}
+    /**
+     * Gets the windowID.
+     *
+     * @return int -an int value representing the windowID.
+     */
+    public Integer getWindowID() {
+        return getInteger(KEY_WINDOW_ID);
+    }
 
-	/**
-	 * Gets the templateConfiguration.
-	 *
-	 * @return TemplateConfiguration
-	 *
-	 * @since 6.0
-	 */
-	@SuppressWarnings("unchecked")
-	public TemplateConfiguration getTemplateConfiguration() {
-		return (TemplateConfiguration) getObject(TemplateConfiguration.class, KEY_TEMPLATE_CONFIGURATION);
-	}
+    /**
+     * Gets the templateConfiguration.
+     *
+     * @return TemplateConfiguration
+     * @since 6.0
+     */
+    public TemplateConfiguration getTemplateConfiguration() {
+        return (TemplateConfiguration) getObject(TemplateConfiguration.class, KEY_TEMPLATE_CONFIGURATION);
+    }
 
-	/**
-	 * Sets the templateConfiguration. It's used to set an alternate template layout to a window.
-	 * @param templateConfiguration
-	 */
-	public void setTemplateConfiguration(TemplateConfiguration templateConfiguration) {
-		setParameters(KEY_TEMPLATE_CONFIGURATION, templateConfiguration);
-	}
-	
-	/**
-	 * Sets the title of the new template that will be displayed.
-	 * How this will be displayed is dependent on the OEM design and implementation of the template.
-	 * @param templateTitle the title of the new template that will be displayed
-	 *            <p></p>
-	 *            <ul>
-	 *            <li>Minlength: 0</li>
-	 *            <li>Maxlength: 100</li>
-	 *            </ul>
-	 * @since SmartDeviceLink 6.0.0
-	 */
-	public void setTemplateTitle(String templateTitle){
-		setParameters(KEY_TEMPLATE_TITLE, templateTitle);
-	}
+    /**
+     * Sets the templateConfiguration. It's used to set an alternate template layout to a window.
+     *
+     * @param templateConfiguration
+     */
+    public Show setTemplateConfiguration(TemplateConfiguration templateConfiguration) {
+        setParameters(KEY_TEMPLATE_CONFIGURATION, templateConfiguration);
+        return this;
+    }
 
-	/**
-	 * Gets the title of the new template that will be displayed
-	 * How this will be displayed is dependent on the OEM design and implementation of the template.
-	 * @return templateTitle - String value that represents the title of the new template that will be displayed
-	 * @since SmartDeviceLink 6.0.0
-	 */
-	public String getTemplateTitle(){
-		return getString(KEY_TEMPLATE_TITLE);
-	}
+    /**
+     * Sets the title of the new template that will be displayed.
+     * How this will be displayed is dependent on the OEM design and implementation of the template.
+     *
+     * @param templateTitle the title of the new template that will be displayed
+     *                      <p></p>
+     *                      <ul>
+     *                      <li>Minlength: 0</li>
+     *                      <li>Maxlength: 100</li>
+     *                      </ul>
+     * @since SmartDeviceLink 6.0.0
+     */
+    public Show setTemplateTitle(String templateTitle) {
+        setParameters(KEY_TEMPLATE_TITLE, templateTitle);
+        return this;
+    }
+
+    /**
+     * Gets the title of the new template that will be displayed
+     * How this will be displayed is dependent on the OEM design and implementation of the template.
+     *
+     * @return templateTitle - String value that represents the title of the new template that will be displayed
+     * @since SmartDeviceLink 6.0.0
+     */
+    public String getTemplateTitle() {
+        return getString(KEY_TEMPLATE_TITLE);
+    }
 }

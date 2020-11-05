@@ -35,7 +35,7 @@
 
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -47,49 +47,53 @@ import java.util.Hashtable;
  */
 public class UnpublishAppService extends RPCRequest {
 
-	public static final String KEY_SERVICE_ID = "serviceID";
+    public static final String KEY_SERVICE_ID = "serviceID";
 
-	/**
-	 * Constructs a new UnpublishAppService object
-	 */
-	public UnpublishAppService() {
-		super(FunctionID.UNPUBLISH_APP_SERVICE.toString());
-	}
+    /**
+     * Constructs a new UnpublishAppService object
+     */
+    public UnpublishAppService() {
+        super(FunctionID.UNPUBLISH_APP_SERVICE.toString());
+    }
 
-	/**
-	 * Constructs a new UnpublishAppService object indicated by the Hashtable parameter
-	 *
-	 * @param hash The Hashtable to use
-	 */
-	public UnpublishAppService(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+    /**
+     * Constructs a new UnpublishAppService object indicated by the Hashtable parameter
+     *
+     * @param hash The Hashtable to use
+     */
+    public UnpublishAppService(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
-	/**
-	 * Constructs a new UnpublishAppService object with the required serviceID
-	 * @param serviceID - set the service ID for the service to be unpublished
-	 */
-	public UnpublishAppService(@NonNull String serviceID){
-		this();
-		setServiceID(serviceID);
-	}
+    /**
+     * Constructs a new UnpublishAppService object with the required serviceID
+     *
+     * @param serviceID - set the service ID for the service to be unpublished
+     */
+    public UnpublishAppService(@NonNull String serviceID) {
+        this();
+        setServiceID(serviceID);
+    }
 
-	// SETTERS AND GETTERS
+    // SETTERS AND GETTERS
 
-	/**
-	 * The ID of the service to be unpublished.
-	 * @param serviceID - set the service ID for the service to be unpublished
-	 */
-	public void setServiceID(String serviceID){
-		setParameters(KEY_SERVICE_ID, serviceID);
-	}
+    /**
+     * The ID of the service to be unpublished.
+     *
+     * @param serviceID - set the service ID for the service to be unpublished
+     */
+    public UnpublishAppService setServiceID(String serviceID) {
+        setParameters(KEY_SERVICE_ID, serviceID);
+        return this;
+    }
 
-	/**
-	 * The ID of the service to be unpublished.
-	 * @return - get the service ID for the service to be unpublished
-	 */
-	public String getServiceID(){
-		return getString(KEY_SERVICE_ID);
-	}
+    /**
+     * The ID of the service to be unpublished.
+     *
+     * @return - get the service ID for the service to be unpublished
+     */
+    public String getServiceID() {
+        return getString(KEY_SERVICE_ID);
+    }
 
 }

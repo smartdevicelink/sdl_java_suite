@@ -2,10 +2,12 @@ package com.smartdevicelink.test.rpc.datatypes;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
+import com.smartdevicelink.proxy.rpc.DynamicUpdateCapabilities;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
+import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.test.JsonUtils;
@@ -43,6 +45,7 @@ public class WindowCapabilityTests extends TestCase {
         msg.setButtonCapabilities(TestValues.GENERAL_BUTTONCAPABILITIES_LIST);
         msg.setSoftButtonCapabilities(TestValues.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
         msg.setMenuLayoutsAvailable(TestValues.GENERAL_MENU_LAYOUT_LIST);
+        msg.setDynamicUpdateCapabilities(TestValues.GENERAL_DYNAMICUPDATECAPABILITIES);
     }
 
     /**
@@ -59,6 +62,7 @@ public class WindowCapabilityTests extends TestCase {
         List<ButtonCapabilities> buttonCapabilities = msg.getButtonCapabilities();
         List<SoftButtonCapabilities> softButtonCapabilities = msg.getSoftButtonCapabilities();
         List<MenuLayout> menuLayouts = msg.getMenuLayoutsAvailable();
+        DynamicUpdateCapabilities dynamicUpdateCapabilities = msg.getDynamicUpdateCapabilities();
 
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, windowID);
@@ -70,6 +74,7 @@ public class WindowCapabilityTests extends TestCase {
         assertEquals(TestValues.MATCH, TestValues.GENERAL_BUTTONCAPABILITIES_LIST.size(), buttonCapabilities.size());
         assertEquals(TestValues.MATCH, TestValues.GENERAL_SOFTBUTTONCAPABILITIES_LIST.size(), softButtonCapabilities.size());
         assertEquals(TestValues.MATCH, TestValues.GENERAL_MENU_LAYOUT_LIST.size(), menuLayouts.size());
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_DYNAMICUPDATECAPABILITIES, dynamicUpdateCapabilities);
 
         for (int i = 0; i < TestValues.GENERAL_TEXTFIELD_LIST.size(); i++) {
             assertTrue(TestValues.TRUE, Validator.validateTextFields(TestValues.GENERAL_TEXTFIELD_LIST.get(i), textFields.get(i)));
@@ -87,7 +92,7 @@ public class WindowCapabilityTests extends TestCase {
             assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING_LIST.get(i), templatesAvailable.get(i));
         }
 
-        for(int i = 0; i < TestValues.GENERAL_MENU_LAYOUT_LIST.size(); i++){
+        for (int i = 0; i < TestValues.GENERAL_MENU_LAYOUT_LIST.size(); i++) {
             assertEquals(TestValues.MATCH, TestValues.GENERAL_MENU_LAYOUT_LIST.get(i), menuLayouts.get(i));
         }
 
@@ -107,6 +112,7 @@ public class WindowCapabilityTests extends TestCase {
         assertNull(TestValues.NULL, msg.getButtonCapabilities());
         assertNull(TestValues.NULL, msg.getSoftButtonCapabilities());
         assertNull(TestValues.NULL, msg.getMenuLayoutsAvailable());
+        assertNull(TestValues.NULL, msg.getDynamicUpdateCapabilities());
     }
 
     public void testJson() {
@@ -122,6 +128,7 @@ public class WindowCapabilityTests extends TestCase {
             reference.put(WindowCapability.KEY_BUTTON_CAPABILITIES, TestValues.JSON_BUTTONCAPABILITIES);
             reference.put(WindowCapability.KEY_SOFT_BUTTON_CAPABILITIES, TestValues.JSON_SOFTBUTTONCAPABILITIES);
             reference.put(WindowCapability.KEY_MENU_LAYOUTS_AVAILABLE, JsonUtils.createJsonArray(TestValues.GENERAL_MENU_LAYOUT_LIST));
+            reference.put(WindowCapability.KEY_DYNAMIC_UPDATE_CAPABILITIES, TestValues.JSON_DYNAMICUPDATECAPABILITIES);
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
@@ -191,6 +198,22 @@ public class WindowCapabilityTests extends TestCase {
                     for (int i = 0; i < referenceList.size(); i++) {
                         assertEquals(TestValues.MATCH, referenceList.get(i), underTestList.get(i));
                     }
+                } else if (key.equals(WindowCapability.KEY_DYNAMIC_UPDATE_CAPABILITIES)) {
+                    JSONArray referenceArray = JsonUtils.readJsonArrayFromJsonObject(reference.getJSONObject(key), DynamicUpdateCapabilities.KEY_SUPPORTED_DYNAMIC_IMAGE_FIELD_NAMES);
+                    JSONArray underTestArray = JsonUtils.readJsonArrayFromJsonObject(underTest.getJSONObject(key), DynamicUpdateCapabilities.KEY_SUPPORTED_DYNAMIC_IMAGE_FIELD_NAMES);
+                    List<ImageFieldName> imageFieldNameListReference = new ArrayList<>();
+                    List<ImageFieldName> imageFieldNameListTest = new ArrayList<>();
+                    boolean referenceBool = JsonUtils.readBooleanFromJsonObject(reference.getJSONObject(key), DynamicUpdateCapabilities.KEY_SUPPORTS_DYNAMIC_SUB_MENUS);
+                    boolean underTestBool = JsonUtils.readBooleanFromJsonObject(underTest.getJSONObject(key), DynamicUpdateCapabilities.KEY_SUPPORTS_DYNAMIC_SUB_MENUS);
+
+                    assertEquals(TestValues.MATCH, referenceBool, underTestBool);
+                    assertEquals(TestValues.MATCH, referenceArray.length(), underTestArray.length());
+
+                    for (int i = 0; i < referenceArray.length(); i++) {
+                        imageFieldNameListReference.add((ImageFieldName) referenceArray.get(i));
+                        imageFieldNameListTest.add((ImageFieldName) underTestArray.get(i));
+                    }
+                    assertTrue(TestValues.TRUE, imageFieldNameListReference.containsAll(imageFieldNameListTest) && imageFieldNameListTest.containsAll(imageFieldNameListReference));
                 } else {
                     assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
                 }

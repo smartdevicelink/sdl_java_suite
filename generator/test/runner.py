@@ -33,7 +33,8 @@ def main():
     suite.addTests(TestLoader().loadTestsFromTestCase(CodeFormatAndQuality))
 
     runner = TextTestRunner(verbosity=2)
-    runner.run(suite)
+    ret = not runner.run(suite).wasSuccessful()
+    sys.exit(ret)
 
 
 if __name__ == '__main__':

@@ -34,7 +34,7 @@
 
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -64,7 +64,8 @@ public class CloseApplicationResponse extends RPCResponse {
 
     /**
      * Constructs a new CloseApplicationResponse object
-     * @param success whether the request is successfully processed
+     *
+     * @param success    whether the request is successfully processed
      * @param resultCode whether the request is successfully processed
      */
     public CloseApplicationResponse(@NonNull Boolean success, @NonNull Result resultCode) {

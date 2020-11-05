@@ -1,14 +1,14 @@
 {
-  "request":{
-    "name":"CancelInteraction",
-    "correlationID":554,
-    "parameters":{
-      "cancelID":6052,
-      "functionID":12
+  "request": {
+    "name": "CancelInteraction",
+    "correlationID": 554,
+    "parameters": {
+      "cancelID": 6052,
+      "functionID": 12
     }
   },
-  "response":{
-    "name":"CancelInteractionResponse",
-    "correlationID":554
+  "response": {
+    "name": "CancelInteractionResponse",
+    "correlationID": 554
   }
 }

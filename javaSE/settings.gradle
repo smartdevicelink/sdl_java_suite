@@ -1,2 +1,1 @@
-rootProject.name = 'javaSE'
-
+include ':javaSE', ':hello_sdl_java'

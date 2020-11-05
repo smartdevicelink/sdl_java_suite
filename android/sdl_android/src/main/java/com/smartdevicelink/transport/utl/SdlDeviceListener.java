@@ -39,7 +39,8 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.transport.MultiplexBaseTransport;
 import com.smartdevicelink.transport.MultiplexBluetoothTransport;
@@ -84,9 +85,9 @@ public class SdlDeviceListener {
      * will listen for 30 seconds, if it is not, this will listen for 15 seconds instead.
      */
     public void start() {
-        if(connectedDevice == null) {
+        if (connectedDevice == null) {
             DebugTool.logInfo(TAG, ": No supplied bluetooth device");
-            if(callback != null){
+            if (callback != null) {
                 callback.onTransportError(null);
             }
             return;

@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -30,10 +30,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 package com.smartdevicelink.proxy.rpc.enums;
+
 /**
  * Contains a list of Pre-recorded speech items present on the platform.
- * 
- *
  */
 public enum PrerecordedSpeech {
     HELP_JINGLE,
@@ -41,16 +40,18 @@ public enum PrerecordedSpeech {
     LISTEN_JINGLE,
     POSITIVE_JINGLE,
     NEGATIVE_JINGLE;
+
     /**
      * Convert String to PrerecordedSpeech
+     *
      * @param value String
      * @return PrerecordedSpeech
      */
 
     public static PrerecordedSpeech valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

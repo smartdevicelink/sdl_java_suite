@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -30,25 +30,65 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 package com.smartdevicelink.proxy.rpc.enums;
+
 /**
  * Character sets supported by SDL.
+ *
  * @since SmartDeviceLink 1.0
  */
 public enum CharacterSet {
+    /**
+     * @deprecated in SmartDeviceLink 7.0.0
+     */
+    @Deprecated
     TYPE2SET,
+    /**
+     * @deprecated in SmartDeviceLink 7.0.0
+     */
+    @Deprecated
     TYPE5SET,
+    /**
+     * @deprecated in SmartDeviceLink 7.0.0
+     */
+    @Deprecated
     CID1SET,
-    CID2SET;
+    /**
+     * @deprecated in SmartDeviceLink 7.0.0
+     */
+    @Deprecated
+    CID2SET,
+    /**
+     * ASCII as defined in https://en.wikipedia.org/wiki/ASCII as defined in codes 0-127.
+     * Non-printable characters such as tabs and back spaces are ignored.
+     *
+     * @since SmartDeviceLink 7.0.0
+     */
+    ASCII,
+    /**
+     * Latin-1, as defined in https://en.wikipedia.org/wiki/ISO/IEC_8859-1
+     *
+     * @since SmartDeviceLink 7.0.0
+     */
+    ISO_8859_1,
+    /**
+     * The UTF-8 character set that uses variable bytes per code point.
+     * See https://en.wikipedia.org/wiki/UTF-8 for more details.
+     * This is the preferred character set.
+     *
+     * @since SmartDeviceLink 7.0.0
+     */
+    UTF_8;
 
     /**
      * Convert String to CharacterSet
+     *
      * @param value String
      * @return CharacterSet
      */
     public static CharacterSet valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

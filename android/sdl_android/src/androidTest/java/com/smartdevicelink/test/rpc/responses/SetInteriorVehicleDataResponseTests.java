@@ -17,21 +17,21 @@ import org.junit.Test;
 
 import java.util.Hashtable;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.fail;
-import static android.support.test.InstrumentationRegistry.getTargetContext;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link com.smartdevicelink.rpc.SetInteriorVehicleDataResponse}
+ * {@link com.smartdevicelink.proxy.rpc.SetInteriorVehicleDataResponse}
  */
 public class SetInteriorVehicleDataResponseTests extends BaseRpcTests {
 
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
 
         SetInteriorVehicleDataResponse msg = new SetInteriorVehicleDataResponse();
 
@@ -41,22 +41,22 @@ public class SetInteriorVehicleDataResponseTests extends BaseRpcTests {
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_RESPONSE;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.SET_INTERIOR_VEHICLE_DATA.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
+        try {
             result.put(SetInteriorVehicleDataResponse.KEY_MODULE_DATA, JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_MODULEDATA.getStore()));
-        }catch(JSONException e){
+        } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
 
@@ -67,9 +67,9 @@ public class SetInteriorVehicleDataResponseTests extends BaseRpcTests {
      * Tests the expected values of the RPC message.
      */
     @Test
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Test Values
-        ModuleData testModuleData = ( (SetInteriorVehicleDataResponse) msg ).getModuleData();
+        ModuleData testModuleData = ((SetInteriorVehicleDataResponse) msg).getModuleData();
 
         // Valid Tests
         assertTrue(TestValues.TRUE, Validator.validateModuleData(TestValues.GENERAL_MODULEDATA, testModuleData));
@@ -86,13 +86,13 @@ public class SetInteriorVehicleDataResponseTests extends BaseRpcTests {
      * Tests a valid JSON construction of this RPC message.
      */
     @Test
-    public void testJsonConstructor () {
-        JSONObject commandJson = JsonFileReader.readId(getTargetContext(), getCommandType(), getMessageType());
+    public void testJsonConstructor() {
+        JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
         assertNotNull(TestValues.NOT_NULL, commandJson);
 
         try {
             Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
-            SetInteriorVehicleDataResponse cmd = new SetInteriorVehicleDataResponse (hash);
+            SetInteriorVehicleDataResponse cmd = new SetInteriorVehicleDataResponse(hash);
 
             JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
             assertNotNull(TestValues.NOT_NULL, body);
@@ -106,7 +106,7 @@ public class SetInteriorVehicleDataResponseTests extends BaseRpcTests {
             ModuleData testModuleData = new ModuleData(JsonRPCMarshaller.deserializeJSONObject((JSONObject) JsonUtils.readObjectFromJsonObject(parameters, SetInteriorVehicleDataResponse.KEY_MODULE_DATA)));
             ModuleData cmdModuleData = cmd.getModuleData();
 
-            assertTrue(TestValues.TRUE, Validator.validateModuleData(testModuleData, cmdModuleData) );
+            assertTrue(TestValues.TRUE, Validator.validateModuleData(testModuleData, cmdModuleData));
         } catch (JSONException e) {
             e.printStackTrace();
         }

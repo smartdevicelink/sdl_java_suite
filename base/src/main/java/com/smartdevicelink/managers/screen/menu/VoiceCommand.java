@@ -32,89 +32,96 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.List;
 
 public class VoiceCommand {
 
-	/**
-	 * The strings the user can say to activate this voice command
-	 */
-	private List<String> voiceCommands;
+    /**
+     * The strings the user can say to activate this voice command
+     */
+    private List<String> voiceCommands;
 
-	/**
-	 * The listener that will be called when the command is activated
-	 */
-	private VoiceCommandSelectionListener voiceCommandSelectionListener;
+    /**
+     * The listener that will be called when the command is activated
+     */
+    private VoiceCommandSelectionListener voiceCommandSelectionListener;
 
-	/**
-	 * Used Internally to identify the command
-	 */
-	private int commandId;
+    /**
+     * Used Internally to identify the command
+     */
+    private int commandId;
 
-	// CONSTRUCTOR(S)
+    // CONSTRUCTOR(S)
 
-	/**
-	 * Constructor that sets all parameters for this class
-	 * <strong>NOTE: While it is possible to pass in null for the listener, It is the easiest way to know when it was triggered.</strong>
-	 * @param voiceCommands The strings the user can say to activate this voice command
-	 * @param voiceCommandSelectionListener The listener that will be called when the command is activated
-	 */
-	public VoiceCommand(@NonNull List<String> voiceCommands, @Nullable VoiceCommandSelectionListener voiceCommandSelectionListener){
-		setVoiceCommands(voiceCommands);
-		setVoiceCommandSelectionListener(voiceCommandSelectionListener);
-	}
+    /**
+     * Constructor that sets all parameters for this class
+     * <strong>NOTE: While it is possible to pass in null for the listener, It is the easiest way to know when it was triggered.</strong>
+     *
+     * @param voiceCommands                 The strings the user can say to activate this voice command
+     * @param voiceCommandSelectionListener The listener that will be called when the command is activated
+     */
+    public VoiceCommand(@NonNull List<String> voiceCommands, @Nullable VoiceCommandSelectionListener voiceCommandSelectionListener) {
+        setVoiceCommands(voiceCommands);
+        setVoiceCommandSelectionListener(voiceCommandSelectionListener);
+    }
 
-	// SETTERS / GETTERS
+    // SETTERS / GETTERS
 
-	/**
-	 * The strings the user can say to activate this voice command
-	 * @param voiceCommands - the list of commands to send to the head unit
-	 */
-	public void setVoiceCommands(@NonNull List<String> voiceCommands) {
-		this.voiceCommands = voiceCommands;
-	}
+    /**
+     * The strings the user can say to activate this voice command
+     *
+     * @param voiceCommands - the list of commands to send to the head unit
+     */
+    public void setVoiceCommands(@NonNull List<String> voiceCommands) {
+        this.voiceCommands = voiceCommands;
+    }
 
-	/**
-	 * The strings the user can say to activate this voice command
-	 * @return the List of voice commands
-	 */
-	public List<String> getVoiceCommands() {
-		return voiceCommands;
-	}
+    /**
+     * The strings the user can say to activate this voice command
+     *
+     * @return the List of voice commands
+     */
+    public List<String> getVoiceCommands() {
+        return voiceCommands;
+    }
 
-	/**
-	 * The listener that will be called when the command is activated
-	 * @param voiceCommandSelectionListener - the listener for this object
-	 */
-	public void setVoiceCommandSelectionListener(VoiceCommandSelectionListener voiceCommandSelectionListener) {
-		this.voiceCommandSelectionListener = voiceCommandSelectionListener;
-	}
+    /**
+     * The listener that will be called when the command is activated
+     *
+     * @param voiceCommandSelectionListener - the listener for this object
+     */
+    public void setVoiceCommandSelectionListener(VoiceCommandSelectionListener voiceCommandSelectionListener) {
+        this.voiceCommandSelectionListener = voiceCommandSelectionListener;
+    }
 
-	/**
-	 * The listener that will be called when the command is activated
-	 * @return voiceCommandSelectionListener - the listener for this object
-	 */
-	public VoiceCommandSelectionListener getVoiceCommandSelectionListener() {
-		return voiceCommandSelectionListener;
-	}
+    /**
+     * The listener that will be called when the command is activated
+     *
+     * @return voiceCommandSelectionListener - the listener for this object
+     */
+    public VoiceCommandSelectionListener getVoiceCommandSelectionListener() {
+        return voiceCommandSelectionListener;
+    }
 
-	/**
-	 * set the command' ID
-	 * <strong>NOTE: PLEASE DO NOT SET. This is used internally</strong>
-	 * @param commandId the id to identify the command
-	 */
-	void setCommandId(int commandId) {
-		this.commandId = commandId;
-	}
+    /**
+     * set the command' ID
+     * <strong>NOTE: PLEASE DO NOT SET. This is used internally</strong>
+     *
+     * @param commandId the id to identify the command
+     */
+    void setCommandId(int commandId) {
+        this.commandId = commandId;
+    }
 
-	/**
-	 * the id used to identify the command
-	 * @return the id
-	 */
-	int getCommandId() {
-		return commandId;
-	}
+    /**
+     * the id used to identify the command
+     *
+     * @return the id
+     */
+    int getCommandId() {
+        return commandId;
+    }
 }

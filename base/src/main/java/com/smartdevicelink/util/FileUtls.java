@@ -31,7 +31,8 @@
  */
 package com.smartdevicelink.util;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
+import com.smartdevicelink.BuildConfig;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -46,30 +47,32 @@ public class FileUtls {
 
     /**
      * When using on Android, this method should only be used for Android Oreo and newer
+     *
      * @param file the path to the file
      * @return a byte array representation of the file if one exists
      */
-    public static byte[] getFileData(String file){
-        return getFileData(file,null);
+    public static byte[] getFileData(String file) {
+        return getFileData(file, null);
     }
 
     /**
      * When using on Android, this method should only be used for Android Oreo and newer
+     *
      * @param filePath the path to the file
      * @param fileName the name of the file
      * @return a byte array representation of the file if one exists
      */
-    public static byte[] getFileData(String filePath, String fileName){
-        if(filePath != null && filePath.length() > 0) {
+    public static byte[] getFileData(String filePath, String fileName) {
+        if (filePath != null && filePath.length() > 0) {
             File file;
-            if(fileName != null && fileName.length() > 0 ){
+            if (fileName != null && fileName.length() > 0) {
                 file = new File(filePath, fileName);
-            }else{
+            } else {
                 file = new File(filePath);
             }
             if (file.exists() && file.isFile() && file.canRead()) {
                 try {
-                   return Files.readAllBytes(file.toPath());
+                    return Files.readAllBytes(file.toPath());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -79,10 +82,11 @@ public class FileUtls {
         return null;
     }
 
-    public static byte[] downloadFile(@NonNull String urlStr){
+    public static byte[] downloadFile(@NonNull String urlStr) {
         try {
             URL url = new URL(urlStr);
             URLConnection connection = url.openConnection();
+            connection.setRequestProperty("User-Agent", "SmartDeviceLink/" + BuildConfig.VERSION_NAME);
             InputStream inputStream = connection.getInputStream();
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
@@ -93,7 +97,7 @@ public class FileUtls {
                 buffer.write(data, 0, nRead);
             }
             return buffer.toByteArray();
-        }catch (Exception e){
+        } catch (Exception e) {
             DebugTool.logError(TAG, "Unable to download file - " + urlStr, e);
             return null;
         }

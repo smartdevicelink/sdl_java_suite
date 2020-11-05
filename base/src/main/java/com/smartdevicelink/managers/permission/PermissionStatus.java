@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.managers.permission;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 
@@ -47,11 +47,12 @@ public class PermissionStatus {
 
     /**
      * Creates a new PermissionStatus instance
+     *
      * @param rpcName
      * @param isRPCAllowed
      * @param allowedParameters
      */
-    public PermissionStatus(@NonNull FunctionID rpcName, @NonNull boolean isRPCAllowed, Map<String, Boolean> allowedParameters) {
+    public PermissionStatus(@NonNull FunctionID rpcName, boolean isRPCAllowed, Map<String, Boolean> allowedParameters) {
         this.rpcName = rpcName;
         this.isRPCAllowed = isRPCAllowed;
         this.allowedParameters = allowedParameters;
@@ -59,6 +60,7 @@ public class PermissionStatus {
 
     /**
      * Get the name of the RPC
+     *
      * @return FunctionID value represents the name of the RPC
      */
     public FunctionID getRPCName() {
@@ -67,6 +69,7 @@ public class PermissionStatus {
 
     /**
      * Get whether the RCP is allowed or not
+     *
      * @return boolean represents whether the RCP is allowed or not
      */
     public boolean getIsRPCAllowed() {
@@ -75,14 +78,16 @@ public class PermissionStatus {
 
     /**
      * Set whether the RPC is allowed or not
+     *
      * @param isRPCAllowed
      */
-    protected void setIsRPCAllowed(@NonNull boolean isRPCAllowed) {
+    protected void setIsRPCAllowed(boolean isRPCAllowed) {
         this.isRPCAllowed = isRPCAllowed;
     }
 
     /**
      * Get the status of the permission parameter for the RPC
+     *
      * @return Map<String, Boolean> object with keys that represent the permission parameter names and values that represent whether the parameters are allowed or not
      */
     public Map<String, Boolean> getAllowedParameters() {
@@ -91,6 +96,7 @@ public class PermissionStatus {
 
     /**
      * Set the status of the permission parameter for the RPC
+     *
      * @param allowedParameters
      */
     protected void setAllowedParameters(Map<String, Boolean> allowedParameters) {

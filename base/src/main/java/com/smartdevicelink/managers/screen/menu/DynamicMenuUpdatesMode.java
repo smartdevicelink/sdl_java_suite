@@ -34,33 +34,33 @@ package com.smartdevicelink.managers.screen.menu;
 
 public enum DynamicMenuUpdatesMode {
 
-	/**
-	 * FORCE_ON: This mode forces the menu manager to always dynamically update menu items for each menu
-	 * update. This will provide the best performance but may cause ordering issues on some SYNC Gen 3 head units.
-	 */
-	FORCE_ON,
+    /**
+     * FORCE_ON: This mode forces the menu manager to always dynamically update menu items for each menu
+     * update. This will provide the best performance but may cause ordering issues on some SYNC Gen 3 head units.
+     */
+    FORCE_ON,
 
-	/**
-	 * FORCE_OFF: Forces off compatibility mode. This will force the menu manager to delete and re-add
-	 * each menu item for every menu update. This mode is generally not advised due to performance issues.
-	 */
-	FORCE_OFF,
+    /**
+     * FORCE_OFF: Forces off compatibility mode. This will force the menu manager to delete and re-add
+     * each menu item for every menu update. This mode is generally not advised due to performance issues.
+     */
+    FORCE_OFF,
 
-	/**
-	 * ON_WITH_COMPAT_MODE: This mode checks whether the phone is connected to a SYNC Gen 3 head unit, which has known
-	 * menu ordering issues. If it is, it will always delete and re-add every menu item, if not, it will dynamically update
-	 * the menus.
-	 */
-	ON_WITH_COMPAT_MODE,
+    /**
+     * ON_WITH_COMPAT_MODE: This mode checks whether the phone is connected to a SYNC Gen 3 head unit, which has known
+     * menu ordering issues. If it is, it will always delete and re-add every menu item, if not, it will dynamically update
+     * the menus.
+     */
+    ON_WITH_COMPAT_MODE,
 
-	;
+    ;
 
-	public static DynamicMenuUpdatesMode valueForString(String value) {
-		try{
-			return valueOf(value);
-		}catch(Exception e){
-			return null;
-		}
-	}
+    public static DynamicMenuUpdatesMode valueForString(String value) {
+        try {
+            return valueOf(value);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
 }

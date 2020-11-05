@@ -46,7 +46,7 @@ class FunctionsProducer(InterfaceProducerCommon):
             if not class_name.endswith("Response"):
                 class_name += 'Response'
             imports.add('com.smartdevicelink.proxy.rpc.enums.Result')
-            imports.add('android.support.annotation.NonNull')
+            imports.add('androidx.annotation.NonNull')
         elif item.message_type.name == 'request':
             extends_class = self.request_class
         elif item.message_type.name == 'notification':
@@ -73,6 +73,7 @@ class FunctionsProducer(InterfaceProducerCommon):
         render['extends_class'] = extends_class
         render['since'] = item.since
         render['deprecated'] = item.deprecated
+        render['history'] = item.history
 
         description = self.extract_description(item.description)
         if description:
@@ -87,9 +88,9 @@ class FunctionsProducer(InterfaceProducerCommon):
 
     def sort_imports(self, imports: set):
         sorted_imports = []
-        if 'android.support.annotation.NonNull' in imports:
-            sorted_imports.append('android.support.annotation.NonNull')
-            imports.remove('android.support.annotation.NonNull')
+        if 'androidx.annotation.NonNull' in imports:
+            sorted_imports.append('androidx.annotation.NonNull')
+            imports.remove('androidx.annotation.NonNull')
             sorted_imports.append('')
         sorted_imports.append('com.smartdevicelink.protocol.enums.FunctionID')
         imports.remove('com.smartdevicelink.protocol.enums.FunctionID')
@@ -118,7 +119,9 @@ class FunctionsProducer(InterfaceProducerCommon):
         if param.since:
             p['since'] = param.since
         p['deprecated'] = param.deprecated
+        p['history'] = param.history
         p['origin'] = param.origin
+        p['values'] = self.extract_values(param)
         d = self.extract_description(param.description)
         if param.name == 'success':
             d = 'whether the request is successfully processed'
@@ -143,7 +146,7 @@ class FunctionsProducer(InterfaceProducerCommon):
         if tr in self.struct_names:
             imports.add('{}.{}'.format(self.structs_package, tr))
         if param.is_mandatory:
-            imports.add('android.support.annotation.NonNull')
+            imports.add('androidx.annotation.NonNull')
 
         Params = namedtuple('Params', sorted(p))
         return imports, Params(**p)

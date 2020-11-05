@@ -14,7 +14,8 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 import java.util.Hashtable;
-import static android.support.test.InstrumentationRegistry.getTargetContext;
+
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.fail;
@@ -48,7 +49,7 @@ public class UnsubscribeWayPointsTests extends BaseRpcTests {
      * Tests the expected values of the RPC message.
      */
     @Test
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Invalid/Null Tests
         UnsubscribeWayPoints msg = new UnsubscribeWayPoints();
         assertNotNull(TestValues.NOT_NULL, msg);
@@ -59,8 +60,8 @@ public class UnsubscribeWayPointsTests extends BaseRpcTests {
      * Tests a valid JSON construction of this RPC message.
      */
     @Test
-    public void testJsonConstructor () {
-        JSONObject commandJson = JsonFileReader.readId(getTargetContext(), getCommandType(), getMessageType());
+    public void testJsonConstructor() {
+        JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
         assertNotNull(TestValues.NOT_NULL, commandJson);
 
         try {

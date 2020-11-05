@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -30,6 +30,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 package com.smartdevicelink.marshal;
+
+import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCStruct;
@@ -50,109 +52,106 @@ import java.util.List;
  * Responsible for marshalling and unmarshing between RPC Objects and byte streams that are sent
  * over transmission
  */
-
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class JsonRPCMarshaller {
-	private static final String TAG = "JsonRPCMarshaller";
-	private static final String SDL_LIB_PRIVATE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
+    private static final String TAG = "JsonRPCMarshaller";
+    private static final String SDL_LIB_PRIVATE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
 
-	/**
-	 * @param msg RPC message to be marshaled
-	 * @param version protocol version
-	 * @return byte array of the marshalled message
-	 */
-	public static byte[] marshall(RPCMessage msg, byte version) {
-		byte[] jsonBytes = null;
-		try {
-			JSONObject jsonObject = msg.serializeJSON(version);
-			jsonBytes = jsonObject.toString().getBytes();
-			
-			SdlTrace.logMarshallingEvent(InterfaceActivityDirection.Transmit, jsonBytes, SDL_LIB_PRIVATE_KEY);
-		} catch (JSONException e) {
-			DebugTool.logError(TAG, "Failed to encode messages to JSON.", e);
-		}
-		return jsonBytes;
-	}
-	
-	public static Hashtable<String, Object> unmarshall(byte[] message) {
-		SdlTrace.logMarshallingEvent(InterfaceActivityDirection.Receive, message, SDL_LIB_PRIVATE_KEY);
-		Hashtable<String, Object> ret = null;
-		try {
-			String jsonString = new String(message);
-			JSONObject jsonObject = new JSONObject(jsonString);
-			ret = deserializeJSONObject(jsonObject);
-		} catch (JSONException e) {
-			DebugTool.logError(TAG, "Failed to parse JSON", e);
-		}
-		return ret;
-	}
-	
-	@SuppressWarnings("unchecked")
-    public static Hashtable<String, Object> deserializeJSONObject(JSONObject jsonObject) 
-			throws JSONException {
-		Hashtable<String, Object> ret = new Hashtable<String, Object>();
-		Iterator<String> it = jsonObject.keys();
-		String key = null;
-		while (it.hasNext()) {
-			key = it.next();
-			Object value = jsonObject.get(key);
-			if (value instanceof JSONObject) {
-				ret.put(key, deserializeJSONObject((JSONObject)value));
-			} else if (value instanceof JSONArray) {
-				JSONArray arrayValue = (JSONArray) value;
-				List<Object> putList = new ArrayList<Object>(arrayValue.length());
-				for (int i = 0; i < arrayValue.length(); i++) {
-					Object anObject = arrayValue.get(i); 
-					if (anObject instanceof JSONObject) {
-						Hashtable<String, Object> deserializedObject = deserializeJSONObject((JSONObject)anObject);
-						putList.add(deserializedObject);
-					} else {
-						putList.add(anObject);
-					}
-				}
-				ret.put(key, putList);
-			} else {
-				ret.put(key, value);
-			}
-		}
-		return ret;
-	}
+    /**
+     * @param msg     RPC message to be marshaled
+     * @param version protocol version
+     * @return byte array of the marshalled message
+     */
+    public static byte[] marshall(RPCMessage msg, byte version) {
+        byte[] jsonBytes = null;
+        try {
+            JSONObject jsonObject = msg.serializeJSON(version);
+            jsonBytes = jsonObject.toString().getBytes();
 
-	@SuppressWarnings("unchecked" )
-	private static JSONArray serializeList(List<?> list) throws JSONException{
-		JSONArray toPut = new JSONArray();
-		Iterator<Object> valueIterator = (Iterator<Object>) list.iterator();
-		while(valueIterator.hasNext()){
-			Object anObject = valueIterator.next();
-			if (anObject instanceof RPCStruct) {
-				RPCStruct toSerialize = (RPCStruct) anObject;
-				toPut.put(toSerialize.serializeJSON());
-			} else if(anObject instanceof Hashtable){
-				Hashtable<String, Object> toSerialize = (Hashtable<String, Object>)anObject;
-				toPut.put(serializeHashtable(toSerialize));
-			} else {
-				toPut.put(anObject);
-			}
-		}
-		return toPut;
-	}
+            SdlTrace.logMarshallingEvent(InterfaceActivityDirection.Transmit, jsonBytes, SDL_LIB_PRIVATE_KEY);
+        } catch (JSONException e) {
+            DebugTool.logError(TAG, "Failed to encode messages to JSON.", e);
+        }
+        return jsonBytes;
+    }
 
-	@SuppressWarnings({"unchecked" })
-    public static JSONObject serializeHashtable(Hashtable<String, Object> hash) throws JSONException{
-		JSONObject obj = new JSONObject();
-		Iterator<String> hashKeyIterator = hash.keySet().iterator();
-		while (hashKeyIterator.hasNext()){
-			String key = (String) hashKeyIterator.next();
-			Object value = hash.get(key);
-			if (value instanceof RPCStruct) {
-				obj.put(key, ((RPCStruct) value).serializeJSON());
-			} else if (value instanceof List<?>) {
-				obj.put(key, serializeList((List<?>) value));
-			} else if (value instanceof Hashtable) {
-				obj.put(key, serializeHashtable((Hashtable<String, Object>)value));
-			} else {
-				obj.put(key, value);
-			}
-		}
-		return obj;
-	}
+    public static Hashtable<String, Object> unmarshall(byte[] message) {
+        SdlTrace.logMarshallingEvent(InterfaceActivityDirection.Receive, message, SDL_LIB_PRIVATE_KEY);
+        Hashtable<String, Object> ret = null;
+        try {
+            String jsonString = new String(message);
+            JSONObject jsonObject = new JSONObject(jsonString);
+            ret = deserializeJSONObject(jsonObject);
+        } catch (JSONException e) {
+            DebugTool.logError(TAG, "Failed to parse JSON", e);
+        }
+        return ret;
+    }
+
+    public static Hashtable<String, Object> deserializeJSONObject(JSONObject jsonObject)
+            throws JSONException {
+        Hashtable<String, Object> ret = new Hashtable<>();
+        Iterator<String> it = jsonObject.keys();
+        String key;
+        while (it.hasNext()) {
+            key = it.next();
+            Object value = jsonObject.get(key);
+            if (value instanceof JSONObject) {
+                ret.put(key, deserializeJSONObject((JSONObject) value));
+            } else if (value instanceof JSONArray) {
+                JSONArray arrayValue = (JSONArray) value;
+                List<Object> putList = new ArrayList<>(arrayValue.length());
+                for (int i = 0; i < arrayValue.length(); i++) {
+                    Object anObject = arrayValue.get(i);
+                    if (anObject instanceof JSONObject) {
+                        Hashtable<String, Object> deserializedObject = deserializeJSONObject((JSONObject) anObject);
+                        putList.add(deserializedObject);
+                    } else {
+                        putList.add(anObject);
+                    }
+                }
+                ret.put(key, putList);
+            } else {
+                ret.put(key, value);
+            }
+        }
+        return ret;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static JSONArray serializeList(List<?> list) throws JSONException {
+        JSONArray toPut = new JSONArray();
+        Iterator<Object> valueIterator = (Iterator<Object>) list.iterator();
+        while (valueIterator.hasNext()) {
+            Object anObject = valueIterator.next();
+            if (anObject instanceof RPCStruct) {
+                RPCStruct toSerialize = (RPCStruct) anObject;
+                toPut.put(toSerialize.serializeJSON());
+            } else if (anObject instanceof Hashtable) {
+                Hashtable<String, Object> toSerialize = (Hashtable<String, Object>) anObject;
+                toPut.put(serializeHashtable(toSerialize));
+            } else {
+                toPut.put(anObject);
+            }
+        }
+        return toPut;
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public static JSONObject serializeHashtable(Hashtable<String, Object> hash) throws JSONException {
+        JSONObject obj = new JSONObject();
+        for (String key : hash.keySet()) {
+            Object value = hash.get(key);
+            if (value instanceof RPCStruct) {
+                obj.put(key, ((RPCStruct) value).serializeJSON());
+            } else if (value instanceof List<?>) {
+                obj.put(key, serializeList((List<?>) value));
+            } else if (value instanceof Hashtable) {
+                obj.put(key, serializeHashtable((Hashtable<String, Object>) value));
+            } else {
+                obj.put(key, value);
+            }
+        }
+        return obj;
+    }
 }

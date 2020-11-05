@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,152 +31,158 @@
  */
 package com.smartdevicelink.protocol;
 
+import androidx.annotation.RestrictTo;
+
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class ProtocolMessage {
-	private byte version = 1;
-	private SessionType _sessionType = SessionType.RPC;
-	private MessageType _messageType = MessageType.UNDEFINED;
-	private byte _sessionID = 0;
-	private byte _rpcType;
-	private int _functionID;
-	private int _correlationID;
-	private int _jsonSize;
-	private boolean payloadProtected = false;
-	
-	int priorityCoefficient = 0;
+    private byte version = 1;
+    private SessionType _sessionType = SessionType.RPC;
+    private MessageType _messageType = MessageType.UNDEFINED;
+    private byte _sessionID = 0;
+    private byte _rpcType;
+    private int _functionID;
+    private int _correlationID;
+    private int _jsonSize;
+    private boolean payloadProtected = false;
 
-	private byte[] _data = null;
-	private byte[] _bulkData = null;
-	
-	public ProtocolMessage() {}
+    int priorityCoefficient = 0;
 
-	public byte getVersion() {
-		return version;
-	}
+    private byte[] _data = null;
+    private byte[] _bulkData = null;
 
-	public void setVersion(byte version) {
-		this.version = version;
-	}
+    public ProtocolMessage() {
+    }
 
-	public byte getSessionID() {
-		return _sessionID;
-	}
+    public byte getVersion() {
+        return version;
+    }
 
-	public void setSessionID(byte sessionID) {
-		this._sessionID = sessionID;
-	}
+    public void setVersion(byte version) {
+        this.version = version;
+    }
 
-	public byte[] getData() {
-		return _data;
-	}
+    public byte getSessionID() {
+        return _sessionID;
+    }
 
-	public void setData(byte[] data) {
-		this._data = data;
-		this._jsonSize = data.length;
-	}
+    public void setSessionID(byte sessionID) {
+        this._sessionID = sessionID;
+    }
 
-	public void setData(byte[] data, int length) {
-		setData(data, 0, length);
-	}
+    public byte[] getData() {
+        return _data;
+    }
 
-	public void setData(byte[] data, int offset, int length) {
-		if (this._data != null)
-			this._data = null;
-		this._data = new byte[length];
-		System.arraycopy(data, offset, this._data, 0, length);
-		this._jsonSize = 0;
-	}	
+    public void setData(byte[] data) {
+        this._data = data;
+        this._jsonSize = data.length;
+    }
 
-	public byte[] getBulkData() {
-		return _bulkData;
-	}
+    public void setData(byte[] data, int length) {
+        setData(data, 0, length);
+    }
 
-	public void setBulkDataNoCopy(byte[] bulkData) {
-		this._bulkData = bulkData;
-	}
+    public void setData(byte[] data, int offset, int length) {
+        if (this._data != null)
+            this._data = null;
+        this._data = new byte[length];
+        System.arraycopy(data, offset, this._data, 0, length);
+        this._jsonSize = 0;
+    }
 
-	public void setBulkData(byte[] bulkData) {
-		if (this._bulkData != null)
-			this._bulkData = null;
-		this._bulkData = new byte[bulkData.length];
-		System.arraycopy(bulkData, 0, this._bulkData, 0, bulkData.length);
-		//this._bulkData = bulkData;
-	}
-	
-	public void setBulkData(byte[] bulkData, int length) {
-		if (this._bulkData != null)
-			this._bulkData = null;
-		this._bulkData = new byte[length];
-		System.arraycopy(bulkData, 0, this._bulkData, 0, length);
-		//this._bulkData = bulkData;
-	}
+    public byte[] getBulkData() {
+        return _bulkData;
+    }
 
-	public SessionType getSessionType() {
-		return _sessionType;
-	}
+    public void setBulkDataNoCopy(byte[] bulkData) {
+        this._bulkData = bulkData;
+    }
 
-	public void setSessionType(SessionType sessionType) {
-		this._sessionType = sessionType;
-	}
+    public void setBulkData(byte[] bulkData) {
+        if (this._bulkData != null)
+            this._bulkData = null;
+        this._bulkData = new byte[bulkData.length];
+        System.arraycopy(bulkData, 0, this._bulkData, 0, bulkData.length);
+        //this._bulkData = bulkData;
+    }
 
-	public MessageType getMessageType() {
-		return _messageType;
-	}
+    public void setBulkData(byte[] bulkData, int length) {
+        if (this._bulkData != null)
+            this._bulkData = null;
+        this._bulkData = new byte[length];
+        System.arraycopy(bulkData, 0, this._bulkData, 0, length);
+        //this._bulkData = bulkData;
+    }
 
-	public void setMessageType(MessageType messageType) {
-		this._messageType = messageType;
-	}
-	
-	public byte getRPCType() {
-		return _rpcType;
-	}
-	
-	public void setRPCType(byte _rpcType) {
-		this._rpcType = _rpcType;
-	}
-	
-	public int getFunctionID() {
-		return _functionID;
-	}
-	
-	public void setFunctionID(int _functionID) {
-		this._functionID = _functionID;
-	}
-	
-	public int getCorrID() {
-		return _correlationID;
-	}
-	
-	public void setCorrID(int _correlationID) {
-		this._correlationID = _correlationID;
-	}
+    public SessionType getSessionType() {
+        return _sessionType;
+    }
 
-	public int getJsonSize() {
-		return _jsonSize;
-	}
+    public void setSessionType(SessionType sessionType) {
+        this._sessionType = sessionType;
+    }
 
-	public void setJsonSize(int _jsonSize) {
-		this._jsonSize = _jsonSize;
-	}
-	
-	public void setPayloadProtected(boolean bVal) {
-		payloadProtected = bVal;
-	}
-	
-	public boolean getPayloadProtected() {
-		return payloadProtected;
-	}	
-	
-	/**
-	 * Set the priority for this packet. The lower the number the higher the priority. <br>0 is the highest priority and the default.
-	 * @param priority the priority of this message
-	 */
-	public void setPriorityCoefficient(int priority){
-		this.priorityCoefficient = priority;
-	}
-	public int getPrioirtyCoefficient(){
-		return this.priorityCoefficient;
-	}
+    public MessageType getMessageType() {
+        return _messageType;
+    }
+
+    public void setMessageType(MessageType messageType) {
+        this._messageType = messageType;
+    }
+
+    public byte getRPCType() {
+        return _rpcType;
+    }
+
+    public void setRPCType(byte _rpcType) {
+        this._rpcType = _rpcType;
+    }
+
+    public int getFunctionID() {
+        return _functionID;
+    }
+
+    public void setFunctionID(int _functionID) {
+        this._functionID = _functionID;
+    }
+
+    public int getCorrID() {
+        return _correlationID;
+    }
+
+    public void setCorrID(int _correlationID) {
+        this._correlationID = _correlationID;
+    }
+
+    public int getJsonSize() {
+        return _jsonSize;
+    }
+
+    public void setJsonSize(int _jsonSize) {
+        this._jsonSize = _jsonSize;
+    }
+
+    public void setPayloadProtected(boolean bVal) {
+        payloadProtected = bVal;
+    }
+
+    public boolean getPayloadProtected() {
+        return payloadProtected;
+    }
+
+    /**
+     * Set the priority for this packet. The lower the number the higher the priority. <br>0 is the highest priority and the default.
+     *
+     * @param priority the priority of this message
+     */
+    public void setPriorityCoefficient(int priority) {
+        this.priorityCoefficient = priority;
+    }
+
+    public int getPrioirtyCoefficient() {
+        return this.priorityCoefficient;
+    }
 } // end-class

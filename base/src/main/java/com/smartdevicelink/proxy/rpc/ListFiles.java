@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -39,7 +39,7 @@ import java.util.Hashtable;
 /**
  * Requests the current list of resident filenames for the registered app. Not
  * supported on First generation SDL vehicles.
- * 
+ *
  * <p><b>Request</b></p>
  * <p>No parameters.</p>
  * <p><b>Response:</b></p>
@@ -50,26 +50,26 @@ import java.util.Hashtable;
  * <p>OUT_OF_MEMORY</p>
  * <p>TOO_MANY_PENDING_REQUESTS</p>
  * <p>APPLICATION_NOT_REGISTERED</p>
- * <p>GENERIC_ERROR </p>   
+ * <p>GENERIC_ERROR </p>
  * <p>REJECTED</p>
+ *
  * @since SmartDeviceLink 2.0
  */
 public class ListFiles extends RPCRequest {
 
-	/**
-	 * Constructs a new ListFiles object
-	 */
+    /**
+     * Constructs a new ListFiles object
+     */
     public ListFiles() {
         super(FunctionID.LIST_FILES.toString());
     }
 
-	/**
-	 * <p>Constructs a new ListFiles object indicated by the Hashtable parameter
-	 * </p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
+    /**
+     * <p>Constructs a new ListFiles object indicated by the Hashtable parameter
+     * </p>
+     *
+     * @param hash The Hashtable to use
+     */
     public ListFiles(Hashtable<String, Object> hash) {
         super(hash);
     }

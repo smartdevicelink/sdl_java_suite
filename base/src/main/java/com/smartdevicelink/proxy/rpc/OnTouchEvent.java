@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
@@ -41,10 +41,9 @@ import java.util.Hashtable;
 import java.util.List;
 
 /**
- * 
  * Notifies about touch events on the screen's prescribed area.
  * <p><b>Parameter List</b></p>
- * 
+ *
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -70,59 +69,61 @@ import java.util.List;
  *                 <td>minsize:1; maxsize:10</td>
  * 			<td>SmartDeviceLink 3.0 </td>
  * 		</tr>
- *  </table> 
- *  
+ *  </table>
+ *
  * <p><b>Note:</b></p>
  * <p>SDL needs to be informed about every User`s touching the touch screen.</p>
- * 
  */
 public class OnTouchEvent extends RPCNotification {
-	public static final String KEY_EVENT = "event";
-	public static final String KEY_TYPE = "type";
-	/**
-	 * Constructs a new OnTouchEvent object
-	 */
+    public static final String KEY_EVENT = "event";
+    public static final String KEY_TYPE = "type";
 
-	public OnTouchEvent() {
-		super(FunctionID.ON_TOUCH_EVENT.toString());
-	}
-	/**
-	* <p>
-	* Constructs a new OnTouchEvent object indicated by the Hashtable
-	* parameter
-	* </p>
-	* 
-	* @param hash
-	*            The Hashtable to use
-	*/  
+    /**
+     * Constructs a new OnTouchEvent object
+     */
+
+    public OnTouchEvent() {
+        super(FunctionID.ON_TOUCH_EVENT.toString());
+    }
+
+    /**
+     * <p>
+     * Constructs a new OnTouchEvent object indicated by the Hashtable
+     * parameter
+     * </p>
+     *
+     * @param hash The Hashtable to use
+     */
 
     public OnTouchEvent(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-	/**
-	 * Constructs a new OnTouchEvent object
-	 */
-	public OnTouchEvent(@NonNull TouchType type, @NonNull List<TouchEvent> event) {
-		this();
-		setType(type);
-		setEvent(event);
-	}
-    
-    public void setType(@NonNull TouchType type) {
-		setParameters(KEY_TYPE, type);
+    /**
+     * Constructs a new OnTouchEvent object
+     */
+    public OnTouchEvent(@NonNull TouchType type, @NonNull List<TouchEvent> event) {
+        this();
+        setType(type);
+        setEvent(event);
     }
-    
+
+    public OnTouchEvent setType(@NonNull TouchType type) {
+        setParameters(KEY_TYPE, type);
+        return this;
+    }
+
     public TouchType getType() {
-		return (TouchType) getObject(TouchType.class, KEY_TYPE);
+        return (TouchType) getObject(TouchType.class, KEY_TYPE);
     }
-    
-    public void setEvent(@NonNull List<TouchEvent> event) {
-		setParameters(KEY_EVENT, event);
+
+    public OnTouchEvent setEvent(@NonNull List<TouchEvent> event) {
+        setParameters(KEY_EVENT, event);
+        return this;
     }
-    
+
     @SuppressWarnings("unchecked")
     public List<TouchEvent> getEvent() {
-		return (List<TouchEvent>) getObject(TouchEvent.class, KEY_EVENT);
+        return (List<TouchEvent>) getObject(TouchEvent.class, KEY_EVENT);
     }
 }

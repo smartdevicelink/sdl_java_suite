@@ -11,20 +11,20 @@ import junit.framework.TestCase;
  */
 public class MediaServiceManifestTests extends TestCase {
 
-	@Override
-	public void setUp(){
-		// nothing to setup yet, this class doesn't contain anything
-	}
+    @Override
+    public void setUp() {
+        // nothing to setup yet, this class doesn't contain anything
+    }
 
-	/**
-	 * Tests the expected values of the RPC message.
-	 */
-	public void testRpcValues () {
-		// Test Values
+    /**
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
 
-		// Invalid/Null Tests
-		MediaServiceManifest msg = new MediaServiceManifest();
-		assertNotNull(TestValues.NOT_NULL, msg);
-	}
+        // Invalid/Null Tests
+        MediaServiceManifest msg = new MediaServiceManifest();
+        assertNotNull(TestValues.NOT_NULL, msg);
+    }
 
 }

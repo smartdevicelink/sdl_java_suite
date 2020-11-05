@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -30,34 +30,35 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 package com.smartdevicelink.proxy.rpc.enums;
-/** The type of the display.
- * 
- * 
- * @since SmartDevcieLink 1.0 
- *
- */
 
+/**
+ * The type of the display.
+ *
+ * @since SmartDeviceLink 1.0
+ * @deprecated in SmartDeviceLink 5.0
+ */
+@Deprecated
 public enum DisplayType {
-	/**
-	* Center Information Display.
-	*This display type provides a 2-line x 20 character "dot matrix" display.
-	*
-	*/
+    /**
+     * Center Information Display.
+     * This display type provides a 2-line x 20 character "dot matrix" display.
+     */
 
     CID("CID"),
-    /** TYPE II display.
-    1 line older radio head unit. */
+    /**
+     * TYPE II display.
+     * 1 line older radio head unit.
+     */
 
     TYPE2("TYPE2"),
     /**
-    * TYPE V display
-    Old radio head unit.
-
-    */
+     * TYPE V display
+     * Old radio head unit.
+     */
 
     TYPE5("TYPE5"),
     /**
-     * Next Generation Navigation display.    
+     * Next Generation Navigation display.
      */
 
     NGN("NGN"),
@@ -72,31 +73,31 @@ public enum DisplayType {
 
     GEN2_6_DMA("GEN2_6_DMA"),
     /**
-     * 3 inch GEN1.1 display.    
+     * 3 inch GEN1.1 display.
      */
 
     MFD3("MFD3"),
     /**
-     * 4 inch GEN1.1 display    
+     * 4 inch GEN1.1 display
      */
 
     MFD4("MFD4"),
     /**
-     * 5 inch GEN1.1 display.    
+     * 5 inch GEN1.1 display.
      */
 
     MFD5("MFD5"),
     /**
-     * GEN-3, 8 inch display.    
+     * GEN-3, 8 inch display.
      */
 
     GEN3_8_INCH("GEN3_8-INCH"),
-    
+
     /**
      * SDL_GENERIC display type. Used for most SDL integrations.
      */
     SDL_GENERIC("SDL_GENERIC"),
-    
+
     ;
 
     private final String VALUE;
@@ -106,10 +107,10 @@ public enum DisplayType {
     }
 
     public static DisplayType valueForString(String value) {
-        if(value == null){
+        if (value == null) {
             return null;
         }
-        
+
         for (DisplayType type : DisplayType.values()) {
             if (type.toString().equals(value)) {
                 return type;

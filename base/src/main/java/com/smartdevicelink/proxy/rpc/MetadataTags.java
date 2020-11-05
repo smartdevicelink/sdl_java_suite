@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -40,108 +40,120 @@ import java.util.List;
 
 public class MetadataTags extends RPCStruct {
 
-	public static final String KEY_MAIN_FIELD_1_TYPE = "mainField1";
-	public static final String KEY_MAIN_FIELD_2_TYPE = "mainField2";
-	public static final String KEY_MAIN_FIELD_3_TYPE = "mainField3";
-	public static final String KEY_MAIN_FIELD_4_TYPE = "mainField4";
+    public static final String KEY_MAIN_FIELD_1_TYPE = "mainField1";
+    public static final String KEY_MAIN_FIELD_2_TYPE = "mainField2";
+    public static final String KEY_MAIN_FIELD_3_TYPE = "mainField3";
+    public static final String KEY_MAIN_FIELD_4_TYPE = "mainField4";
 
-	/**
-	 * Constructs a newly allocated MetadataTags object
-	 */
-	public MetadataTags(){}
+    /**
+     * Constructs a newly allocated MetadataTags object
+     */
+    public MetadataTags() {
+    }
 
-	/**
-	 * Constructs a newly allocated MetadataTags object indicated by the Hashtable parameter
-	 * @param hash The Hashtable to use
-	 */
-	public MetadataTags(Hashtable<String, Object> hash){super(hash);}
+    /**
+     * Constructs a newly allocated MetadataTags object indicated by the Hashtable parameter
+     *
+     * @param hash The Hashtable to use
+     */
+    public MetadataTags(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
-	/**
-	 * Set the metadata types of data contained in the "mainField1" text field
-	 */
-	public void setMainField1( List<MetadataType> metadataTypes ) {
-		setValue(KEY_MAIN_FIELD_1_TYPE, metadataTypes);
-	}
+    /**
+     * Set the metadata types of data contained in the "mainField1" text field
+     */
+    public MetadataTags setMainField1(List<MetadataType> metadataTypes) {
+        setValue(KEY_MAIN_FIELD_1_TYPE, metadataTypes);
+        return this;
+    }
 
-	/**
-	 * Set the metadata type of data contained in the "mainField1" text field
-	 */
-	public void setMainField1(MetadataType metadataType) {
-		setValue(KEY_MAIN_FIELD_1_TYPE, Collections.singletonList(metadataType));
-	}
+    /**
+     * Set the metadata type of data contained in the "mainField1" text field
+     */
+    public MetadataTags setMainField1(MetadataType metadataType) {
+        setValue(KEY_MAIN_FIELD_1_TYPE, Collections.singletonList(metadataType));
+        return this;
+    }
 
-	/**
-	 * @return   The type of data contained in the "mainField1" text field
-	 */
-	@SuppressWarnings("unchecked")
-	public List<MetadataType> getMainField1() {
-		return (List<MetadataType>) getObject(MetadataType.class, KEY_MAIN_FIELD_1_TYPE);
-	}
+    /**
+     * @return The type of data contained in the "mainField1" text field
+     */
+    @SuppressWarnings("unchecked")
+    public List<MetadataType> getMainField1() {
+        return (List<MetadataType>) getObject(MetadataType.class, KEY_MAIN_FIELD_1_TYPE);
+    }
 
-	/**
-	 * Set the metadata types of data contained in the "mainField2" text field
-	 */
-	public void setMainField2( List<MetadataType> metadataTypes ) {
-		setValue(KEY_MAIN_FIELD_2_TYPE, metadataTypes);
-	}
+    /**
+     * Set the metadata types of data contained in the "mainField2" text field
+     */
+    public MetadataTags setMainField2(List<MetadataType> metadataTypes) {
+        setValue(KEY_MAIN_FIELD_2_TYPE, metadataTypes);
+        return this;
+    }
 
-	/**
-	 * Set the metadata type of data contained in the "mainField2" text field
-	 */
-	public void setMainField2(MetadataType metadataType) {
-		setValue(KEY_MAIN_FIELD_2_TYPE, Collections.singletonList(metadataType));
-	}
+    /**
+     * Set the metadata type of data contained in the "mainField2" text field
+     */
+    public MetadataTags setMainField2(MetadataType metadataType) {
+        setValue(KEY_MAIN_FIELD_2_TYPE, Collections.singletonList(metadataType));
+        return this;
+    }
 
-	/**
-	 * @return   The type of data contained in the "mainField2" text field
-	 */
-	@SuppressWarnings("unchecked")
-	public List<MetadataType> getMainField2() {
-		return (List<MetadataType>) getObject(MetadataType.class, KEY_MAIN_FIELD_2_TYPE);
-	}
+    /**
+     * @return The type of data contained in the "mainField2" text field
+     */
+    @SuppressWarnings("unchecked")
+    public List<MetadataType> getMainField2() {
+        return (List<MetadataType>) getObject(MetadataType.class, KEY_MAIN_FIELD_2_TYPE);
+    }
 
-	/**
-	 * Set the metadata types of data contained in the "mainField3" text field
-	 */
-	public void setMainField3( List<MetadataType> metadataTypes ) {
-		setValue(KEY_MAIN_FIELD_3_TYPE, metadataTypes);
-	}
+    /**
+     * Set the metadata types of data contained in the "mainField3" text field
+     */
+    public MetadataTags setMainField3(List<MetadataType> metadataTypes) {
+        setValue(KEY_MAIN_FIELD_3_TYPE, metadataTypes);
+        return this;
+    }
 
-	/**
-	 * Set the metadata type of data contained in the "mainField3" text field
-	 */
-	public void setMainField3(MetadataType metadataType) {
-		setValue(KEY_MAIN_FIELD_3_TYPE, Collections.singletonList(metadataType));
-	}
+    /**
+     * Set the metadata type of data contained in the "mainField3" text field
+     */
+    public MetadataTags setMainField3(MetadataType metadataType) {
+        setValue(KEY_MAIN_FIELD_3_TYPE, Collections.singletonList(metadataType));
+        return this;
+    }
 
-	/**
-	 * @return   The type of data contained in the "mainField3" text field
-	 */
-	@SuppressWarnings("unchecked")
-	public List<MetadataType> getMainField3() {
-		return (List<MetadataType>) getObject(MetadataType.class, KEY_MAIN_FIELD_3_TYPE);
-	}
+    /**
+     * @return The type of data contained in the "mainField3" text field
+     */
+    @SuppressWarnings("unchecked")
+    public List<MetadataType> getMainField3() {
+        return (List<MetadataType>) getObject(MetadataType.class, KEY_MAIN_FIELD_3_TYPE);
+    }
 
-	/**
-	 * Set the metadata types of data contained in the "mainField4" text field
-	 */
-	public void setMainField4( List<MetadataType> metadataTypes ) {
-		setValue(KEY_MAIN_FIELD_4_TYPE, metadataTypes);
-	}
+    /**
+     * Set the metadata types of data contained in the "mainField4" text field
+     */
+    public MetadataTags setMainField4(List<MetadataType> metadataTypes) {
+        setValue(KEY_MAIN_FIELD_4_TYPE, metadataTypes);
+        return this;
+    }
 
-	/**
-	 * Set the metadata type of data contained in the "mainField4" text field
-	 */
-	public void setMainField4(MetadataType metadataType) {
-		setValue(KEY_MAIN_FIELD_4_TYPE, Collections.singletonList(metadataType));
-	}
+    /**
+     * Set the metadata type of data contained in the "mainField4" text field
+     */
+    public MetadataTags setMainField4(MetadataType metadataType) {
+        setValue(KEY_MAIN_FIELD_4_TYPE, Collections.singletonList(metadataType));
+        return this;
+    }
 
-	/**
-	 * @return   The type of data contained in the "mainField4" text field
-	 */
-	@SuppressWarnings("unchecked")
-	public List<MetadataType> getMainField4() {
-		return (List<MetadataType>) getObject(MetadataType.class, KEY_MAIN_FIELD_4_TYPE);
-	}
+    /**
+     * @return The type of data contained in the "mainField4" text field
+     */
+    @SuppressWarnings("unchecked")
+    public List<MetadataType> getMainField4() {
+        return (List<MetadataType>) getObject(MetadataType.class, KEY_MAIN_FIELD_4_TYPE);
+    }
 
 }

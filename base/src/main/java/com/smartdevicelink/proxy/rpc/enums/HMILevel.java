@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -35,13 +35,13 @@ import java.util.EnumSet;
 
 /**
  * Specifies current level of the HMI. An HMI level indicates the degree of user interaction possible through the HMI (e.g. TTS only, display only, VR, etc.). The HMI level varies for an application based on the type of display (i.e. Nav or non-Nav) and the user directing "focus" to other applications (e.g. phone, other mobile applications, etc.)
- * 
+ *
  * @since SmartDeviceLink 1.0
  */
 public enum HMILevel {
-	/**
-	 * The application has full use of the SDL HMI. The app may output via TTS, display, or streaming audio and may gather input via VR, Menu, and button presses
-	 */
+    /**
+     * The application has full use of the SDL HMI. The app may output via TTS, display, or streaming audio and may gather input via VR, Menu, and button presses
+     */
     HMI_FULL("FULL"),
     /**
      * This HMI Level is only defined for a media application using an HMI with an 8 inch touchscreen (Nav) system. The application's {@linkplain com.smartdevicelink.proxy.rpc.Show} text is displayed and it receives button presses from media-oriented buttons (SEEKRIGHT, SEEKLEFT, TUNEUP, TUNEDOWN, PRESET_0-9)
@@ -67,30 +67,31 @@ public enum HMILevel {
     HMI_BACKGROUND("BACKGROUND"),
     /**
      * Application has been discovered by SDL, but application cannot send any requests or receive any notifications
-     * An HMILevel of NONE can also mean that the user has exited the application by saying "exit appname" or selecting "exit" from the application's menu. When this happens, the application still has an active interface registration with SDL and all SDL resources the application has created (e.g. Choice Sets, subscriptions, etc.) still exist. But while the HMILevel is NONE, the application cannot send any messages to SDL, except <i>{@linkplain com.smartdevicelink.proxy.rpc.UnregisterAppInterface}</li>
+     * An HMILevel of NONE can also mean that the user has exited the application by saying "exit appName" or selecting "exit" from the application's menu. When this happens, the application still has an active interface registration with SDL and all SDL resources the application has created (e.g. Choice Sets, subscriptions, etc.) still exist. But while the HMILevel is NONE, the application cannot send any messages to SDL, except <i>{@linkplain com.smartdevicelink.proxy.rpc.UnregisterAppInterface}</li>
      */
     HMI_NONE("NONE");
 
     private final String VALUE;
-    
+
     private HMILevel(String value) {
         this.VALUE = value;
     }
-    
+
     public String toString() {
         return this.VALUE;
     }
-    
+
     /**
      * Returns a HMILevel Status (FULL, LIMITED, BACKGROUND or NONE)
+     *
      * @param value a String
      * @return HMILevel -a String value (FULL, LIMITED, BACKGROUND or NONE)
      */
     public static HMILevel valueForString(String value) {
-        if(value == null){
+        if (value == null) {
             return null;
         }
-        
+
         for (HMILevel anEnum : EnumSet.allOf(HMILevel.class)) {
             if (anEnum.toString().equals(value)) {
                 return anEnum;

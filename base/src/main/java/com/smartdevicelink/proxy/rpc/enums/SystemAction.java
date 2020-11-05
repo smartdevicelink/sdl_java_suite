@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -30,38 +30,41 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 package com.smartdevicelink.proxy.rpc.enums;
-/** Enumeration that describes system actions that can be triggered.
- * 
- * @since SmartDeviceLink 2.0
+
+/**
+ * Enumeration that describes system actions that can be triggered.
  *
+ * @since SmartDeviceLink 2.0
  */
 
 public enum SystemAction {
-	/** Default action occurs.  Standard behavior (e.g. SoftButton clears overlay).
-	 * 
-	 */
+    /**
+     * Default action occurs.  Standard behavior (e.g. SoftButton clears overlay).
+     */
 
-	DEFAULT_ACTION,
-	/** App is brought into HMI_FULL.
-	 * 
-	 */
+    DEFAULT_ACTION,
+    /**
+     * App is brought into HMI_FULL.
+     */
 
-	STEAL_FOCUS,
-	/** Current system context is maintained. An overlay is persisted even though a SoftButton has been pressed and the notification sent.
-	 * 
-	 */
+    STEAL_FOCUS,
+    /**
+     * Current system context is maintained. An overlay is persisted even though a SoftButton has been pressed and the notification sent.
+     */
 
-	KEEP_CONTEXT;
-	/**
+    KEEP_CONTEXT;
+
+    /**
      * Convert String to SystemAction
+     *
      * @param value String
      * @return SystemAction
-     */ 
+     */
 
     public static SystemAction valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.ServiceUpdateReason;
@@ -46,89 +46,95 @@ import java.util.List;
  */
 public class AppServicesCapabilities extends RPCStruct {
 
-	public static final String KEY_APP_SERVICES = "appServices";
+    public static final String KEY_APP_SERVICES = "appServices";
 
-	// Constructors
+    // Constructors
 
-	/**
-	 * Capabilities of app services including what service types are supported
-	 * and the current state of services.
-	 */
-	public AppServicesCapabilities(){}
+    /**
+     * Capabilities of app services including what service types are supported
+     * and the current state of services.
+     */
+    public AppServicesCapabilities() {
+    }
 
-	/**
-	 * Capabilities of app services including what service types are supported
-	 * and the current state of services.
-	 * @param hash of parameters
-	 */
-	public AppServicesCapabilities(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+    /**
+     * Capabilities of app services including what service types are supported
+     * and the current state of services.
+     *
+     * @param hash of parameters
+     */
+    public AppServicesCapabilities(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
-	// Setters and Getters
+    // Setters and Getters
 
-	/**
-	 * An array of currently available services. If this is an update to the
-	 * capability the affected services will include an update reason in that item
-	 * @param appServices -
-	 */
-	public void setAppServices(List<AppServiceCapability> appServices){
-		setValue(KEY_APP_SERVICES, appServices);
-	}
+    /**
+     * An array of currently available services. If this is an update to the
+     * capability the affected services will include an update reason in that item
+     *
+     * @param appServices -
+     */
+    public AppServicesCapabilities setAppServices(List<AppServiceCapability> appServices) {
+        setValue(KEY_APP_SERVICES, appServices);
+        return this;
+    }
 
-	/**
-	 * An array of currently available services. If this is an update to the
-	 * capability the affected services will include an update reason in that item
-	 * @return appServices
-	 */
-	@SuppressWarnings("unchecked")
-	public List<AppServiceCapability> getAppServices(){
-		return (List<AppServiceCapability>) getObject(AppServiceCapability.class,KEY_APP_SERVICES);
-	}
+    /**
+     * An array of currently available services. If this is an update to the
+     * capability the affected services will include an update reason in that item
+     *
+     * @return appServices
+     */
+    @SuppressWarnings("unchecked")
+    public List<AppServiceCapability> getAppServices() {
+        return (List<AppServiceCapability>) getObject(AppServiceCapability.class, KEY_APP_SERVICES);
+    }
 
-	/**
-	 * This method will update the current List<AppServiceCapability> with the updated items. If the
-	 * items don't exist in the original ist they will be added. If the original list is null or
-	 * empty, the new list will simply be set as the list.
-	 * @param updatedAppServiceCapabilities the List<AppServiceCapability> that have been updated
-	 * @return if the list was updated
-	 */
-	public boolean updateAppServices(@NonNull List<AppServiceCapability> updatedAppServiceCapabilities){
-		if(updatedAppServiceCapabilities == null){
-			return false;
-		}
+    /**
+     * This method will update the current List<AppServiceCapability> with the updated items. If the
+     * items don't exist in the original ist they will be added. If the original list is null or
+     * empty, the new list will simply be set as the list.
+     *
+     * @param updatedAppServiceCapabilities the List<AppServiceCapability> that have been updated
+     * @return if the list was updated
+     */
+    public boolean updateAppServices(@NonNull List<AppServiceCapability> updatedAppServiceCapabilities) {
+        if (updatedAppServiceCapabilities == null) {
+            return false;
+        }
 
-		List<AppServiceCapability> appServiceCapabilities = getAppServices();
+        List<AppServiceCapability> appServiceCapabilities = getAppServices();
 
-		if(appServiceCapabilities == null){
-			//If there are currently no app services, create one to iterate over with no entries
-			appServiceCapabilities = new ArrayList<>(0);
-		}
+        if (appServiceCapabilities == null) {
+            //If there are currently no app services, create one to iterate over with no entries
+            appServiceCapabilities = new ArrayList<>(0);
+        }
 
-		//Create a shallow copy for us to alter while iterating through the original list
-		List<AppServiceCapability> tempList = new ArrayList<>(appServiceCapabilities);
+        //Create a shallow copy for us to alter while iterating through the original list
+        List<AppServiceCapability> tempList = new ArrayList<>(appServiceCapabilities);
 
-		for(AppServiceCapability updatedAppServiceCapability: updatedAppServiceCapabilities){
-			if(updatedAppServiceCapability != null) {
-				//First search if the record exists in the current list and remove it if so
-				for (AppServiceCapability appServiceCapability : appServiceCapabilities) {
-					if (updatedAppServiceCapability.matchesAppService(appServiceCapability)) {
-						tempList.remove(appServiceCapability); //Remove the old entry
-						break;
-					}
-				}
+        for (AppServiceCapability updatedAppServiceCapability : updatedAppServiceCapabilities) {
+            if (updatedAppServiceCapability != null) {
+                //First search if the record exists in the current list and remove it if so
+                for (AppServiceCapability appServiceCapability : appServiceCapabilities) {
+                    if (updatedAppServiceCapability.matchesAppService(appServiceCapability)) {
+                        tempList.remove(appServiceCapability); //Remove the old entry
+                        break;
+                    }
+                }
 
-				if(!ServiceUpdateReason.REMOVED.equals(updatedAppServiceCapability.getUpdateReason())){
-					//If the app service was anything but removed, we can add the updated
-					//record back into the temp list. If it was REMOVED as the update reason
-					//it will not be added back.
-					tempList.add(updatedAppServiceCapability);
-				}
-			}
-		}
+                if (!ServiceUpdateReason.REMOVED.equals(updatedAppServiceCapability.getUpdateReason())) {
+                    //If the app service was anything but removed, we can add the updated
+                    //record back into the temp list. If it was REMOVED as the update reason
+                    //it will not be added back.
+                    tempList.add(updatedAppServiceCapability);
+                }
+            }
+        }
 
-		setAppServices(tempList);
-		return !tempList.equals(appServiceCapabilities); //Return if the list is not equal to the original
-	}
+        setAppServices(tempList);
+        return !tempList.equals(appServiceCapabilities); //Return if the list is not equal to the original
+    }
 
 }

@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
@@ -87,27 +87,31 @@ import java.util.Hashtable;
  * </tr>
  * </table>
  * </p>
- *
  */
 public class OnLanguageChange extends RPCNotification {
-	public static final String KEY_LANGUAGE = "language";
-	public static final String KEY_HMI_DISPLAY_LANGUAGE = "hmiDisplayLanguage";
-	/**
-	*Constructs a newly allocated OnCommand object
-	*/    
+    public static final String KEY_LANGUAGE = "language";
+    public static final String KEY_HMI_DISPLAY_LANGUAGE = "hmiDisplayLanguage";
+
+    /**
+     * Constructs a newly allocated OnCommand object
+     */
     public OnLanguageChange() {
         super(FunctionID.ON_LANGUAGE_CHANGE.toString());
     }
+
     /**
-     *<p>Constructs a newly allocated OnLanguageChange object indicated by the Hashtable parameter</p>
-     *@param hash The Hashtable to use
+     * <p>Constructs a newly allocated OnLanguageChange object indicated by the Hashtable parameter</p>
+     *
+     * @param hash The Hashtable to use
      */
     public OnLanguageChange(Hashtable<String, Object> hash) {
         super(hash);
     }
+
     /**
-     *Constructs a newly allocated OnCommand object
-     * @param language language that current SDL voice engine(VR+TTS) use
+     * Constructs a newly allocated OnCommand object
+     *
+     * @param language           language that current SDL voice engine(VR+TTS) use
      * @param hmiDisplayLanguage language that current SDL voice engine(VR+TTS) use
      */
     public OnLanguageChange(@NonNull Language language, @NonNull Language hmiDisplayLanguage) {
@@ -115,31 +119,41 @@ public class OnLanguageChange extends RPCNotification {
         setLanguage(language);
         setHmiDisplayLanguage(hmiDisplayLanguage);
     }
+
     /**
-     * <p>Sets language that current SDL voice engine(VR+TTS) use</p>    
+     * <p>Sets language that current SDL voice engine(VR+TTS) use</p>
+     *
      * @param language language that current SDL voice engine(VR+TTS) use
-     */  
-    public void setLanguage(@NonNull Language language) {
+     */
+    public OnLanguageChange setLanguage(@NonNull Language language) {
         setParameters(KEY_LANGUAGE, language);
+        return this;
     }
+
     /**
      * <p>Returns language that current SDL voice engine(VR+TTS) use</p>
+     *
      * @return {@linkplain Language} language that current SDL voice engine(VR+TTS) use
-     */  
+     */
     public Language getLanguage() {
-    	return (Language) getObject(Language.class, KEY_LANGUAGE);
+        return (Language) getObject(Language.class, KEY_LANGUAGE);
     }
+
     /**
-     * <p>Sets language that current display use</p>    
+     * <p>Sets language that current display use</p>
+     *
      * @param hmiDisplayLanguage language that current SDL voice engine(VR+TTS) use
-     */  
-    public void setHmiDisplayLanguage(@NonNull Language hmiDisplayLanguage) {
+     */
+    public OnLanguageChange setHmiDisplayLanguage(@NonNull Language hmiDisplayLanguage) {
         setParameters(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
+        return this;
     }
+
     /**
      * <p>Returns language that current  display use</p>
+     *
      * @return {@linkplain Language} language that current display use
-     */  
+     */
     public Language getHmiDisplayLanguage() {
         return (Language) getObject(Language.class, KEY_HMI_DISPLAY_LANGUAGE);
     }

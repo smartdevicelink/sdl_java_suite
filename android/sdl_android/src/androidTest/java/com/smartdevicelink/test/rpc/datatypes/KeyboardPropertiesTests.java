@@ -17,15 +17,15 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.KeyboardProperties}
  */
-public class KeyboardPropertiesTests extends TestCase{
+public class KeyboardPropertiesTests extends TestCase {
 
     private KeyboardProperties msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new KeyboardProperties();
 
         msg.setAutoCompleteText(TestValues.GENERAL_STRING);
@@ -37,17 +37,17 @@ public class KeyboardPropertiesTests extends TestCase{
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
-    	// Test Values
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
         String autoCompleteText = msg.getAutoCompleteText();
         List<String> autoCompleteList = msg.getAutoCompleteList();
         KeyboardLayout keyboardLayout = msg.getKeyboardLayout();
         KeypressMode keypressMode = msg.getKeypressMode();
         Language language = msg.getLanguage();
         List<String> limitedChars = msg.getLimitedCharacterList();
-        
+
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, autoCompleteText);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING_LIST.size(), autoCompleteList.size());
@@ -57,11 +57,11 @@ public class KeyboardPropertiesTests extends TestCase{
         assertEquals(TestValues.MATCH, TestValues.GENERAL_LANGUAGE, language);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING_LIST.size(), limitedChars.size());
         assertTrue(TestValues.TRUE, Validator.validateStringList(TestValues.GENERAL_STRING_LIST, limitedChars));
-        
+
         // Invalid/Null Tests
         KeyboardProperties msg = new KeyboardProperties();
         assertNotNull(TestValues.NOT_NULL, msg);
-        
+
         // Keypress mode is created in the object constructor
         assertNotNull(TestValues.NOT_NULL, msg.getKeypressMode());
         assertNull(TestValues.NULL, msg.getAutoCompleteText());
@@ -71,10 +71,10 @@ public class KeyboardPropertiesTests extends TestCase{
         assertNull(TestValues.NULL, msg.getLimitedCharacterList());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(KeyboardProperties.KEY_AUTO_COMPLETE_TEXT, TestValues.GENERAL_STRING);
             reference.put(KeyboardProperties.KEY_AUTO_COMPLETE_LIST, JsonUtils.createJsonArray(TestValues.GENERAL_STRING_LIST));
             reference.put(KeyboardProperties.KEY_KEYBOARD_LAYOUT, TestValues.GENERAL_KEYBOARDLAYOUT);
@@ -86,16 +86,16 @@ public class KeyboardPropertiesTests extends TestCase{
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
-                if(key.equals(KeyboardProperties.KEY_LIMITED_CHARACTER_LIST) || key.equals(KeyboardProperties.KEY_AUTO_COMPLETE_LIST)){
+                if (key.equals(KeyboardProperties.KEY_LIMITED_CHARACTER_LIST) || key.equals(KeyboardProperties.KEY_AUTO_COMPLETE_LIST)) {
                     assertTrue(TestValues.TRUE, Validator.validateStringList(JsonUtils.readStringListFromJsonObject(reference, key), JsonUtils.readStringListFromJsonObject(underTest, key)));
-                } else{
+                } else {
                     assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
                 }
             }
-        } catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

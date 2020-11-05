@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,14 +31,15 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
+
 /**
  * Types of screen touch events available in screen area.
- * 
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -74,51 +75,56 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 3.0 </td>
  * 		</tr>
  *  </table>
- *
  */
 public class TouchEventCapabilities extends RPCStruct {
     public static final String KEY_PRESS_AVAILABLE = "pressAvailable";
     public static final String KEY_MULTI_TOUCH_AVAILABLE = "multiTouchAvailable";
     public static final String KEY_DOUBLE_PRESS_AVAILABLE = "doublePressAvailable";
-    public TouchEventCapabilities() {}
-    
+
+    public TouchEventCapabilities() {
+    }
+
     public TouchEventCapabilities(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-	/**
-	 * Types of screen touch events available in screen area.
-	 * @param pressAvailable if press is available
-	 * @param multiTouchAvailable if multi touch is available
-	 * @param doublePressAvailable if double press is available
-	 */
-	public TouchEventCapabilities(@NonNull Boolean pressAvailable, @NonNull Boolean multiTouchAvailable, @NonNull Boolean doublePressAvailable){
-		this();
-		setPressAvailable(pressAvailable);
-		setMultiTouchAvailable(multiTouchAvailable);
-		setDoublePressAvailable(doublePressAvailable);
-	}
-    
-    public void setPressAvailable(@NonNull Boolean pressAvailable) {
-        setValue(KEY_PRESS_AVAILABLE, pressAvailable);
+    /**
+     * Types of screen touch events available in screen area.
+     *
+     * @param pressAvailable       if press is available
+     * @param multiTouchAvailable  if multi touch is available
+     * @param doublePressAvailable if double press is available
+     */
+    public TouchEventCapabilities(@NonNull Boolean pressAvailable, @NonNull Boolean multiTouchAvailable, @NonNull Boolean doublePressAvailable) {
+        this();
+        setPressAvailable(pressAvailable);
+        setMultiTouchAvailable(multiTouchAvailable);
+        setDoublePressAvailable(doublePressAvailable);
     }
-    
+
+    public TouchEventCapabilities setPressAvailable(@NonNull Boolean pressAvailable) {
+        setValue(KEY_PRESS_AVAILABLE, pressAvailable);
+        return this;
+    }
+
     public Boolean getPressAvailable() {
         return getBoolean(KEY_PRESS_AVAILABLE);
     }
-    
-    public void setMultiTouchAvailable(@NonNull Boolean multiTouchAvailable) {
+
+    public TouchEventCapabilities setMultiTouchAvailable(@NonNull Boolean multiTouchAvailable) {
         setValue(KEY_MULTI_TOUCH_AVAILABLE, multiTouchAvailable);
+        return this;
     }
-    
+
     public Boolean getMultiTouchAvailable() {
         return getBoolean(KEY_MULTI_TOUCH_AVAILABLE);
     }
-    
-    public void setDoublePressAvailable(@NonNull Boolean doublePressAvailable) {
+
+    public TouchEventCapabilities setDoublePressAvailable(@NonNull Boolean doublePressAvailable) {
         setValue(KEY_DOUBLE_PRESS_AVAILABLE, doublePressAvailable);
+        return this;
     }
-    
+
     public Boolean getDoublePressAvailable() {
         return getBoolean(KEY_DOUBLE_PRESS_AVAILABLE);
     }

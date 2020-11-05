@@ -15,15 +15,15 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.EmergencyEvent}
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.proxy.rpc.EmergencyEvent}
  */
-public class EmergencyEventTests extends TestCase{
+public class EmergencyEventTests extends TestCase {
 
     private EmergencyEvent msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new EmergencyEvent();
 
         msg.setEmergencyEventType(TestValues.GENERAL_EMERGENCYEVENTTYPE);
@@ -34,23 +34,23 @@ public class EmergencyEventTests extends TestCase{
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
-    	// Test Values
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
         EmergencyEventType type = msg.getEmergencyEventType();
         FuelCutoffStatus cutoffStatus = msg.getFuelCutoffStatus();
         VehicleDataEventStatus multipleEvents = msg.getMultipleEvents();
         int changeVelocity = msg.getMaximumChangeVelocity();
         VehicleDataEventStatus rollover = msg.getRolloverEvent();
-        
+
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_EMERGENCYEVENTTYPE, type);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_FUELCUTOFFSTATUS, cutoffStatus);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, changeVelocity);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS, multipleEvents);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS, rollover);
-        
+
         // Invalid/Null Tests
         EmergencyEvent msg = new EmergencyEvent();
         assertNotNull(TestValues.NOT_NULL, msg);
@@ -62,10 +62,10 @@ public class EmergencyEventTests extends TestCase{
         assertNull(TestValues.NULL, msg.getRolloverEvent());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(EmergencyEvent.KEY_FUEL_CUTOFF_STATUS, TestValues.GENERAL_FUELCUTOFFSTATUS);
             reference.put(EmergencyEvent.KEY_MULTIPLE_EVENTS, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
             reference.put(EmergencyEvent.KEY_ROLLOVER_EVENT, TestValues.GENERAL_VEHCILEDATAEVENTSTATUS);
@@ -76,12 +76,12 @@ public class EmergencyEventTests extends TestCase{
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
                 assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
-        }catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -49,7 +49,7 @@ import java.util.List;
 
 /**
  * An asynchronous request from the system for specific data from the device or the cloud or response to a request from the device or cloud. Binary data can be included in hybrid part of message for some requests (such as Authentication request responses)
- * 
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -82,7 +82,7 @@ import java.util.List;
  * 			<td>Array of Strings</td>
  * 			<td>Optional URL for HTTP requests.If blank, the binary data shall be forwarded to the app.If not blank, the binary data shall be forwarded to the url with a provided timeout in seconds.</td>
  *                 <td>N</td>
- *                 <td>maxlength: 1000; minsize:1;  maxsize: 100</td>
+ *                 <td>minsize:1;</td>
  * 			<td>SmartDeviceLink 2.3.2 </td>
  * 		</tr>
  * 		<tr>
@@ -118,29 +118,30 @@ import java.util.List;
  * 			<td>SmartDeviceLink 2.3.2 </td>
  * 		</tr>
  *  </table>
+ *
  * @since SmartDeviceLink 2.3.2
  */
 public class OnSystemRequest extends RPCNotification {
     private static final String TAG = "OnSystemRequest";
-	public static final String KEY_URL_V1 = "URL";
+    public static final String KEY_URL_V1 = "URL";
     public static final String KEY_URL = "url";
-	public static final String KEY_TIMEOUT_V1 = "Timeout";
+    public static final String KEY_TIMEOUT_V1 = "Timeout";
     public static final String KEY_TIMEOUT = "timeout";
-	public static final String KEY_HEADERS = "headers";
-	public static final String KEY_BODY = "body";
-	public static final String KEY_FILE_TYPE = "fileType";
-	public static final String KEY_REQUEST_TYPE = "requestType";
-	public static final String KEY_REQUEST_SUB_TYPE = "requestSubType";
-	public static final String KEY_DATA = "data";
-	public static final String KEY_OFFSET = "offset";
-	public static final String KEY_LENGTH = "length";
-	
-	private String body;
-	private Headers headers;
-	
-	/**
-	 * Constructs a new OnSystemsRequest object
-	 */
+    public static final String KEY_HEADERS = "headers";
+    public static final String KEY_BODY = "body";
+    public static final String KEY_FILE_TYPE = "fileType";
+    public static final String KEY_REQUEST_TYPE = "requestType";
+    public static final String KEY_REQUEST_SUB_TYPE = "requestSubType";
+    public static final String KEY_DATA = "data";
+    public static final String KEY_OFFSET = "offset";
+    public static final String KEY_LENGTH = "length";
+
+    private String body;
+    private Headers headers;
+
+    /**
+     * Constructs a new OnSystemsRequest object
+     */
     public OnSystemRequest() {
         super(FunctionID.ON_SYSTEM_REQUEST.toString());
     }
@@ -148,246 +149,247 @@ public class OnSystemRequest extends RPCNotification {
     public OnSystemRequest(Hashtable<String, Object> hash) {
         this(hash, (byte[]) hash.get(RPCStruct.KEY_BULK_DATA));
     }
-    
-    public OnSystemRequest(Hashtable<String, Object> hash, byte[] bulkData){
+
+    public OnSystemRequest(Hashtable<String, Object> hash, byte[] bulkData) {
         super(hash);
         setBulkData(bulkData);
     }
 
     /**
-	 * Constructs a new OnSystemsRequest object
+     * Constructs a new OnSystemsRequest object
      */
     public OnSystemRequest(@NonNull RequestType requestType) {
         this();
         setRequestType(requestType);
     }
-    
-    private void handleBulkData(byte[] bulkData){
-        if(bulkData == null){
+
+    private void handleBulkData(byte[] bulkData) {
+        if (bulkData == null) {
             return;
         }
-        
+
         JSONObject httpJson;
         String tempBody = null;
         Headers tempHeaders = null;
-        if(RequestType.PROPRIETARY.equals(this.getRequestType())){
-        	try{
-            	JSONObject bulkJson = new JSONObject(new String(bulkData));
-           
-            	httpJson = bulkJson.getJSONObject("HTTPRequest");
-            	tempBody = getBody(httpJson);
-            	tempHeaders = getHeaders(httpJson);
-        	}catch(JSONException e){
+        if (RequestType.PROPRIETARY.equals(this.getRequestType())) {
+            try {
+                JSONObject bulkJson = new JSONObject(new String(bulkData));
+
+                httpJson = bulkJson.getJSONObject("HTTPRequest");
+                tempBody = getBody(httpJson);
+                tempHeaders = getHeaders(httpJson);
+            } catch (JSONException e) {
                 DebugTool.logError(TAG, "HTTPRequest in bulk data was malformed.");
-            	e.printStackTrace();
-        	}catch(NullPointerException e){
+                e.printStackTrace();
+            } catch (NullPointerException e) {
                 DebugTool.logError(TAG, "Invalid HTTPRequest object in bulk data.");
-            	e.printStackTrace();
-        	}
-        }else if(RequestType.HTTP.equals(this.getRequestType())){
-        	tempHeaders = new Headers();
-        	tempHeaders.setContentType("application/json");
-        	tempHeaders.setConnectTimeout(7);
-        	tempHeaders.setDoOutput(true);
-        	tempHeaders.setDoInput(true);
-        	tempHeaders.setUseCaches(false);
-        	tempHeaders.setRequestMethod("POST");
-        	tempHeaders.setReadTimeout(7);
-        	tempHeaders.setInstanceFollowRedirects(false);
-        	tempHeaders.setCharset("utf-8");
-        	tempHeaders.setContentLength(bulkData.length); 
+                e.printStackTrace();
+            }
+        } else if (RequestType.HTTP.equals(this.getRequestType())) {
+            tempHeaders = new Headers();
+            tempHeaders.setContentType("application/json");
+            tempHeaders.setConnectTimeout(7);
+            tempHeaders.setDoOutput(true);
+            tempHeaders.setDoInput(true);
+            tempHeaders.setUseCaches(false);
+            tempHeaders.setRequestMethod("POST");
+            tempHeaders.setReadTimeout(7);
+            tempHeaders.setInstanceFollowRedirects(false);
+            tempHeaders.setCharset("utf-8");
+            tempHeaders.setContentLength(bulkData.length);
         }
-        
+
         this.body = tempBody;
         this.headers = tempHeaders;
     }
-    
-    private String getBody(JSONObject httpJson){
+
+    private String getBody(JSONObject httpJson) {
         String result = null;
-        
-        try{
-            result = httpJson.getString("body");
-        }catch(JSONException e){
-            DebugTool.logError(TAG, "\"body\" key doesn't exist in bulk data.");
+
+        try {
+            result = httpJson.getString(KEY_BODY);
+        } catch (JSONException e) {
+            DebugTool.logError(TAG, KEY_BODY + " key doesn't exist in bulk data.");
             e.printStackTrace();
         }
-        
+
         return result;
     }
-    
-    private Headers getHeaders(JSONObject httpJson){
+
+    private Headers getHeaders(JSONObject httpJson) {
         Headers result = null;
-        
-        try{
-            JSONObject httpHeadersJson = httpJson.getJSONObject("headers");
+
+        try {
+            JSONObject httpHeadersJson = httpJson.getJSONObject(KEY_HEADERS);
             Hashtable<String, Object> httpHeadersHash = JsonRPCMarshaller.deserializeJSONObject(httpHeadersJson);
             result = new Headers(httpHeadersHash);
-        }catch(JSONException e){
-            DebugTool.logError(TAG, "\"headers\" key doesn't exist in bulk data.");
+        } catch (JSONException e) {
+            DebugTool.logError(TAG, KEY_HEADERS + " key doesn't exist in bulk data.");
             e.printStackTrace();
         }
-        
+
         return result;
     }
-    
-    @Deprecated
-    public void setBinData(byte[] aptData) {
-        setBulkData(aptData);
-    }
-    
-    @Deprecated
-    public byte[] getBinData() {
-        return getBulkData();
-    }
-    
+
     @Override
-    public void setBulkData(byte[] bulkData){
+    public OnSystemRequest setBulkData(byte[] bulkData) {
         super.setBulkData(bulkData);
         handleBulkData(bulkData);
+        return this;
     }
-    
-    
+
+
     @SuppressWarnings("unchecked")
     public List<String> getLegacyData() {
         return (List<String>) getObject(String.class, KEY_DATA);
     }
 
-    public String getBody(){            	
+    public String getBody() {
         return this.body;
     }
-    
-    public void setBody(String body) {
+
+    public OnSystemRequest setBody(String body) {
         this.body = body;
+        return this;
     }
-    
-    public void setHeaders(Headers header) {
+
+    public OnSystemRequest setHeaders(Headers header) {
         this.headers = header;
+        return this;
     }
 
     public Headers getHeader() {
-    	return this.headers;
+        return this.headers;
     }
 
     public RequestType getRequestType() {
         return (RequestType) getObject(RequestType.class, KEY_REQUEST_TYPE);
     }
 
-    public void setRequestType(@NonNull RequestType requestType) {
+    public OnSystemRequest setRequestType(@NonNull RequestType requestType) {
         setParameters(KEY_REQUEST_TYPE, requestType);
+        return this;
     }
 
     public String getRequestSubType() {
         return getString(KEY_REQUEST_SUB_TYPE);
     }
 
-    public void setRequestSubType(String requestSubType) {
+    public OnSystemRequest setRequestSubType(String requestSubType) {
         setParameters(KEY_REQUEST_SUB_TYPE, requestSubType);
+        return this;
     }
 
     public String getUrl() {
         Object o = getParameters(KEY_URL);
-        if (o == null)
-        {
-        	//try again for gen 1.1
-        	o = getParameters(KEY_URL_V1);
+        if (o == null) {
+            //try again for gen 1.1
+            o = getParameters(KEY_URL_V1);
         }
         if (o == null)
-        	return null;
-        
+            return null;
+
         if (o instanceof String) {
             return (String) o;
         }
         return null;
     }
 
-    public void setUrl(String url) {
+    public OnSystemRequest setUrl(String url) {
         setParameters(KEY_URL, url);
+        return this;
     }
 
     public FileType getFileType() {
         return (FileType) getObject(FileType.class, KEY_FILE_TYPE);
     }
 
-    public void setFileType(FileType fileType) {
+    public OnSystemRequest setFileType(FileType fileType) {
         setParameters(KEY_FILE_TYPE, fileType);
+        return this;
     }
 
     /**
-     * @deprecated as of SmartDeviceLink 4.0
-     * @param offset  of the data attached
+     * @param offset of the data attached
+     * @deprecated as of SmartDeviceLink 4.0. Use {@link #setOffset(Long)} instead.
      */
-    public void setOffset(Integer offset) {
-    	if(offset == null){
-    		setOffset((Long)null);
-    	}else{
-    		setOffset(offset.longValue());
-    	}
+    public OnSystemRequest setOffset(Integer offset) {
+        if (offset == null) {
+            setOffset((Long) null);
+        } else {
+            setOffset(offset.longValue());
+        }
+        return this;
     }
-    
+
     public Long getOffset() {
         final Object o = getParameters(KEY_OFFSET);
-        
-        if (o == null){
-        	return null;
+
+        if (o == null) {
+            return null;
         }
-        
+
         if (o instanceof Integer) {
             return ((Integer) o).longValue();
-        }else if(o instanceof Long){
-        	return (Long) o;
+        } else if (o instanceof Long) {
+            return (Long) o;
         }
         return null;
     }
 
-    public void setOffset(Long offset) {
+    public OnSystemRequest setOffset(Long offset) {
         setParameters(KEY_OFFSET, offset);
+        return this;
     }
-    
+
     public Integer getTimeout() {
         Object o = getParameters(KEY_TIMEOUT);
-        
-        if (o == null){
-        	 o = getParameters(KEY_TIMEOUT_V1);
-        	 if (o == null) return null;
+
+        if (o == null) {
+            o = getParameters(KEY_TIMEOUT_V1);
+            if (o == null) return null;
         }
-        
+
         if (o instanceof Integer) {
             return (Integer) o;
         }
         return null;
     }
 
-    public void setTimeout(Integer timeout) {
+    public OnSystemRequest setTimeout(Integer timeout) {
         setParameters(KEY_TIMEOUT, timeout);
-    }    
-    
+        return this;
+    }
+
     public Long getLength() {
         final Object o = getParameters(KEY_LENGTH);
-        if (o == null){
-        	return null;
+        if (o == null) {
+            return null;
         }
-        		
+
         if (o instanceof Integer) {
             return ((Integer) o).longValue();
-        }else if(o instanceof Long){
-        	return (Long) o;
+        } else if (o instanceof Long) {
+            return (Long) o;
         }
         return null;
     }
 
     /**
-     * @deprecated as of SmartDeviceLink 4.0
      * @param length of the data attached
+     * @deprecated as of SmartDeviceLink 4.0. Use {@link #setLength(Long)} instead.
      */
-    public void setLength(Integer length) {
-    	if(length == null){
-    		setLength((Long)null);
-    	}else{
-    		setLength(length.longValue());
-    	}
+    public OnSystemRequest setLength(Integer length) {
+        if (length == null) {
+            setLength((Long) null);
+        } else {
+            setLength(length.longValue());
+        }
+        return this;
     }
-    
-    public void setLength(Long length) {
+
+    public OnSystemRequest setLength(Long length) {
         setParameters(KEY_LENGTH, length);
+        return this;
     }
 }

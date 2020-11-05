@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.EmergencyEventType;
@@ -40,8 +40,9 @@ import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 
 import java.util.Hashtable;
 
-/** Information related to an emergency event (and if it occurred).
- * 
+/**
+ * Information related to an emergency event (and if it occurred).
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -95,11 +96,10 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  *  </table>
- * 
+ *
  * @see Image
  * @see SubscribeVehicleData
  * @since SmartDeviceLink 2.0
- *
  */
 
 public class EmergencyEvent extends RPCStruct {
@@ -109,19 +109,24 @@ public class EmergencyEvent extends RPCStruct {
     public static final String KEY_MAXIMUM_CHANGE_VELOCITY = "maximumChangeVelocity";
     public static final String KEY_MULTIPLE_EVENTS = "multipleEvents";
 
-    /** Constructs a new EmergencyEvent object
-     *
+    /**
+     * Constructs a new EmergencyEvent object
      */
-    public EmergencyEvent() { }
-    /** Constructs a new EmergencyEvent object indicated by the Hashtable
+    public EmergencyEvent() {
+    }
+
+    /**
+     * Constructs a new EmergencyEvent object indicated by the Hashtable
      * parameter
+     *
      * @param hash <p>The hash table to use</p>
      */
     public EmergencyEvent(Hashtable<String, Object> hash) {
         super(hash);
     }
+
     /**
-	 * Constructs a new EmergencyEvent object
+     * Constructs a new EmergencyEvent object
      */
     public EmergencyEvent(@NonNull EmergencyEventType emergencyEventType, @NonNull FuelCutoffStatus fuelCutoffStatus, @NonNull VehicleDataEventStatus rolloverEvent, @NonNull Integer maximumChangeVelocity, @NonNull VehicleDataEventStatus multipleEvents) {
         this();
@@ -132,33 +137,47 @@ public class EmergencyEvent extends RPCStruct {
         setMultipleEvents(multipleEvents);
     }
 
-    public void setEmergencyEventType(@NonNull EmergencyEventType emergencyEventType) {
+    public EmergencyEvent setEmergencyEventType(@NonNull EmergencyEventType emergencyEventType) {
         setValue(KEY_EMERGENCY_EVENT_TYPE, emergencyEventType);
+        return this;
     }
+
     public EmergencyEventType getEmergencyEventType() {
         return (EmergencyEventType) getObject(EmergencyEventType.class, KEY_EMERGENCY_EVENT_TYPE);
     }
-    public void setFuelCutoffStatus(@NonNull FuelCutoffStatus fuelCutoffStatus) {
+
+    public EmergencyEvent setFuelCutoffStatus(@NonNull FuelCutoffStatus fuelCutoffStatus) {
         setValue(KEY_FUEL_CUTOFF_STATUS, fuelCutoffStatus);
+        return this;
     }
+
     public FuelCutoffStatus getFuelCutoffStatus() {
         return (FuelCutoffStatus) getObject(FuelCutoffStatus.class, KEY_FUEL_CUTOFF_STATUS);
     }
-    public void setRolloverEvent(@NonNull VehicleDataEventStatus rolloverEvent) {
+
+    public EmergencyEvent setRolloverEvent(@NonNull VehicleDataEventStatus rolloverEvent) {
         setValue(KEY_ROLLOVER_EVENT, rolloverEvent);
+        return this;
     }
+
     public VehicleDataEventStatus getRolloverEvent() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_ROLLOVER_EVENT);
     }
-    public void setMaximumChangeVelocity(@NonNull Integer maximumChangeVelocity) {
+
+    public EmergencyEvent setMaximumChangeVelocity(@NonNull Integer maximumChangeVelocity) {
         setValue(KEY_MAXIMUM_CHANGE_VELOCITY, maximumChangeVelocity);
+        return this;
     }
+
     public Integer getMaximumChangeVelocity() {
-    	return getInteger(KEY_MAXIMUM_CHANGE_VELOCITY);
+        return getInteger(KEY_MAXIMUM_CHANGE_VELOCITY);
     }
-    public void setMultipleEvents(@NonNull VehicleDataEventStatus multipleEvents) {
+
+    public EmergencyEvent setMultipleEvents(@NonNull VehicleDataEventStatus multipleEvents) {
         setValue(KEY_MULTIPLE_EVENTS, multipleEvents);
+        return this;
     }
+
     public VehicleDataEventStatus getMultipleEvents() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_MULTIPLE_EVENTS);
     }

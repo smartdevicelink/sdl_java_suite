@@ -1,6 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -10,6 +10,7 @@ import java.util.Hashtable;
 
 /**
  * This RCP creates a window, by default the main is 0.
+ *
  * @since 6.0
  */
 public class CreateWindowResponse extends RPCResponse {

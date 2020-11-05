@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,16 +31,17 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
+
 /**
  * <p>The x or y coordinate of the touch.</p>
- * 
- * 
- * 
+ *
+ *
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -68,53 +69,57 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 3.0 </td>
  * 		</tr>
  *  </table>
- *@see SoftButtonCapabilities
- *@see ButtonCapabilities
- *@see OnButtonPress
  *
- *@since SmartDeviceLink 3.0
+ * @see SoftButtonCapabilities
+ * @see ButtonCapabilities
+ * @see OnButtonPress
+ * @since SmartDeviceLink 3.0
  */
 
 public class TouchCoord extends RPCStruct {
     public static final String KEY_X = "x";
     public static final String KEY_Y = "y";
 
-    public TouchCoord() {}
+    public TouchCoord() {
+    }
 
-	 /**
-		 * <p>Constructs a new TouchCoord object indicated by the Hashtable parameter</p>
-		 *
-		 * @param hash The Hashtable to use
-		 */
+    /**
+     * <p>Constructs a new TouchCoord object indicated by the Hashtable parameter</p>
+     *
+     * @param hash The Hashtable to use
+     */
     public TouchCoord(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-	/**
-	 * Constructs a new TouchCoord object
-	 * @param x The x coordinate of the touch.
-	 * @param y The y coordinate of the touch.
-	 */
-	public TouchCoord(@NonNull Integer x, @NonNull Integer y){
-		this();
-		setX(x);
-		setY(y);
-	}
-    
-    public void setX(@NonNull Integer x) {
-        setValue(KEY_X, x);
+    /**
+     * Constructs a new TouchCoord object
+     *
+     * @param x The x coordinate of the touch.
+     * @param y The y coordinate of the touch.
+     */
+    public TouchCoord(@NonNull Integer x, @NonNull Integer y) {
+        this();
+        setX(x);
+        setY(y);
     }
-    
+
+    public TouchCoord setX(@NonNull Integer x) {
+        setValue(KEY_X, x);
+        return this;
+    }
+
     public Integer getX() {
         return getInteger(KEY_X);
     }
-    
-    public void setY(@NonNull Integer y) {
+
+    public TouchCoord setY(@NonNull Integer y) {
         setValue(KEY_Y, y);
+        return this;
     }
-    
+
     public Integer getY() {
         return getInteger(KEY_Y);
     }
-    
+
 }

@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -46,7 +46,7 @@ import java.util.Hashtable;
  * simulate a hardware button press event.
  */
 public class ButtonPress extends RPCRequest {
-	public static final String KEY_MODULE_TYPE = "moduleType";
+    public static final String KEY_MODULE_TYPE = "moduleType";
     public static final String KEY_BUTTON_NAME = "buttonName";
     public static final String KEY_BUTTON_PRESS_MODE = "buttonPressMode";
     public static final String KEY_MODULE_ID = "moduleId";
@@ -70,8 +70,9 @@ public class ButtonPress extends RPCRequest {
 
     /**
      * Constructs a new ButtonPress object
-     * @param moduleType Represents module where the button should be pressed
-     * @param buttonName Represents name of supported RC climate or radio button
+     *
+     * @param moduleType      Represents module where the button should be pressed
+     * @param buttonName      Represents name of supported RC climate or radio button
      * @param buttonPressMode Indicates whether this is a LONG or SHORT button press event.
      */
     public ButtonPress(@NonNull ModuleType moduleType, @NonNull ButtonName buttonName, @NonNull ButtonPressMode buttonPressMode) {
@@ -93,11 +94,11 @@ public class ButtonPress extends RPCRequest {
     /**
      * Sets a ModuleType
      *
-     * @param moduleType
-     * Represents module where the button should be pressed
+     * @param moduleType Represents module where the button should be pressed
      */
-    public void setModuleType(@NonNull ModuleType moduleType) {
+    public ButtonPress setModuleType(@NonNull ModuleType moduleType) {
         setParameters(KEY_MODULE_TYPE, moduleType);
+        return this;
     }
 
     /**
@@ -112,11 +113,11 @@ public class ButtonPress extends RPCRequest {
     /**
      * Sets a ButtonName
      *
-     * @param buttonName
-     * Represents name of supported RC climate or radio button
+     * @param buttonName Represents name of supported RC climate or radio button
      */
-    public void setButtonName(@NonNull ButtonName buttonName) {
+    public ButtonPress setButtonName(@NonNull ButtonName buttonName) {
         setParameters(KEY_BUTTON_NAME, buttonName);
+        return this;
     }
 
     /**
@@ -131,23 +132,26 @@ public class ButtonPress extends RPCRequest {
     /**
      * Sets a ButtonPressMode
      *
-     * @param buttonPressMode
-     * Indicates whether this is a LONG or SHORT button press event.
+     * @param buttonPressMode Indicates whether this is a LONG or SHORT button press event.
      */
-    public void setButtonPressMode(@NonNull ButtonPressMode buttonPressMode) {
+    public ButtonPress setButtonPressMode(@NonNull ButtonPressMode buttonPressMode) {
         setParameters(KEY_BUTTON_PRESS_MODE, buttonPressMode);
+        return this;
     }
 
     /**
      * Sets the module id for this object
+     *
      * @param id the id to be set
      */
-    public void setModuleId(String id) {
+    public ButtonPress setModuleId(String id) {
         setParameters(KEY_MODULE_ID, id);
+        return this;
     }
 
     /**
      * Gets the module id of this object
+     *
      * @return the module id of this object
      */
     public String getModuleId() {

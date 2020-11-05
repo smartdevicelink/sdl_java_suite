@@ -13,15 +13,15 @@ import java.util.Iterator;
 
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.ImageResolution}
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.proxy.rpc.ImageResolution}
  */
-public class ImageResolutionTests extends TestCase{
+public class ImageResolutionTests extends TestCase {
 
     private ImageResolution msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new ImageResolution();
 
         msg.setResolutionHeight(TestValues.GENERAL_INT);
@@ -29,17 +29,17 @@ public class ImageResolutionTests extends TestCase{
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
-    	// Test Values
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
         int height = msg.getResolutionHeight();
         int width = msg.getResolutionWidth();
-        
+
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, height);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, width);
-        
+
         // Invalid/Null Tests
         ImageResolution msg = new ImageResolution();
         assertNotNull(TestValues.NOT_NULL, msg);
@@ -48,10 +48,10 @@ public class ImageResolutionTests extends TestCase{
         assertNull(TestValues.NULL, msg.getResolutionWidth());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(ImageResolution.KEY_RESOLUTION_HEIGHT, TestValues.GENERAL_INT);
             reference.put(ImageResolution.KEY_RESOLUTION_WIDTH, TestValues.GENERAL_INT);
 
@@ -59,34 +59,34 @@ public class ImageResolutionTests extends TestCase{
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
                 assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
-        } catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 
-    public void testSetResolutionWidth_Odd() {
+    public void testSetResolutionWidthAsOdd() {
         msg.setResolutionWidth(175);
-        assertEquals(176, (int)msg.getResolutionWidth());
+        assertEquals(176, (int) msg.getResolutionWidth());
     }
 
-    public void testSetResolutionHeight_Odd() {
+    public void testSetResolutionHeightAsOdd() {
         msg.setResolutionHeight(175);
-        assertEquals(176, (int)msg.getResolutionHeight());
+        assertEquals(176, (int) msg.getResolutionHeight());
     }
 
-    public void testSetResolutionWidth_Pair() {
+    public void testSetResolutionWidth() {
         msg.setResolutionWidth(176);
-        assertEquals(176, (int)msg.getResolutionWidth());
+        assertEquals(176, (int) msg.getResolutionWidth());
 
     }
 
-    public void testSetResolutionHeight_Pair() {
+    public void testSetResolutionHeight() {
         msg.setResolutionHeight(176);
-        assertEquals(176, (int)msg.getResolutionHeight());
+        assertEquals(176, (int) msg.getResolutionHeight());
 
     }
 }

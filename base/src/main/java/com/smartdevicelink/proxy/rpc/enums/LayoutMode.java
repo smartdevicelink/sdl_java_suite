@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -30,15 +30,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 package com.smartdevicelink.proxy.rpc.enums;
+
 /**
  * For touchscreen interactions, the mode of how the choices are presented.
- * 
- *
  */
 public enum LayoutMode {
-	/**
-	 *  	This mode causes the interaction to display the previous set of choices as icons.
-	 */
+    /**
+     * This mode causes the interaction to display the previous set of choices as icons.
+     */
     ICON_ONLY,
     /**
      * This mode causes the interaction to display the previous set of choices as icons along with a search field in the HMI.
@@ -53,14 +52,14 @@ public enum LayoutMode {
      */
     LIST_WITH_SEARCH,
     /**
-     * 	This mode causes the interaction to immediately display a keyboard entry through the HMI.
+     * This mode causes the interaction to immediately display a keyboard entry through the HMI.
      */
     KEYBOARD;
 
     public static LayoutMode valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

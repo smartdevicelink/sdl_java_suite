@@ -32,7 +32,7 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.test.TestValues;
 
@@ -57,7 +57,7 @@ public class ChoiceSetTests {
     private Boolean canceledHandlerCalled;
 
     @Before
-    public void setUp() throws Exception{
+    public void setUp() throws Exception {
 
         listener = mock(ChoiceSetSelectionListener.class);
         layout = ChoiceSetLayout.CHOICE_SET_LAYOUT_LIST;
@@ -68,7 +68,7 @@ public class ChoiceSetTests {
 
 
     @Test
-    public void testSettersAndGetters(){
+    public void testSettersAndGetters() {
 
         // test small constructor
         ChoiceSet choiceSet = new ChoiceSet(TestValues.GENERAL_STRING, choices, listener);

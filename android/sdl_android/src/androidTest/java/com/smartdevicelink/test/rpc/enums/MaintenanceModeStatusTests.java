@@ -46,66 +46,64 @@ import java.util.List;
  */
 public class MaintenanceModeStatusTests extends TestCase {
 
-	/**
-	 * Verifies that the enum values are not null upon valid assignment.
-	 */
-	public void testValidEnums () {
-		String example = "NORMAL";
-		MaintenanceModeStatus enumNormal = MaintenanceModeStatus.valueForString(example);
-		example = "NEAR";
-		MaintenanceModeStatus enumNear = MaintenanceModeStatus.valueForString(example);
-		example = "ACTIVE";
-		MaintenanceModeStatus enumActive = MaintenanceModeStatus.valueForString(example);
-		example = "FEATURE_NOT_PRESENT";
-		MaintenanceModeStatus enumFeatureNotPResent = MaintenanceModeStatus.valueForString(example);
+    /**
+     * Verifies that the enum values are not null upon valid assignment.
+     */
+    public void testValidEnums() {
+        String example = "NORMAL";
+        MaintenanceModeStatus enumNormal = MaintenanceModeStatus.valueForString(example);
+        example = "NEAR";
+        MaintenanceModeStatus enumNear = MaintenanceModeStatus.valueForString(example);
+        example = "ACTIVE";
+        MaintenanceModeStatus enumActive = MaintenanceModeStatus.valueForString(example);
+        example = "FEATURE_NOT_PRESENT";
+        MaintenanceModeStatus enumFeatureNotPResent = MaintenanceModeStatus.valueForString(example);
 
-		assertNotNull("NORMAL returned null", enumNormal);
-		assertNotNull("NEAR returned null", enumNear);
-		assertNotNull("ACTIVE returned null", enumActive);
-		assertNotNull("FEATURE_NOT_PRESENT returned null", enumFeatureNotPResent);
-	}
+        assertNotNull("NORMAL returned null", enumNormal);
+        assertNotNull("NEAR returned null", enumNear);
+        assertNotNull("ACTIVE returned null", enumActive);
+        assertNotNull("FEATURE_NOT_PRESENT returned null", enumFeatureNotPResent);
+    }
 
-	/**
-	 * Verifies that an invalid assignment is null.
-	 */
-	public void testInvalidEnum () {
-		String example = "normAL";
-		try {
-			MaintenanceModeStatus temp = MaintenanceModeStatus.valueForString(example);
-			assertNull("Result of valueForString should be null.", temp);
-		}
-		catch (IllegalArgumentException exception) {
-			fail("Invalid enum throws IllegalArgumentException.");
-		}
-	}
+    /**
+     * Verifies that an invalid assignment is null.
+     */
+    public void testInvalidEnum() {
+        String example = "normAL";
+        try {
+            MaintenanceModeStatus temp = MaintenanceModeStatus.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
+        } catch (IllegalArgumentException exception) {
+            fail("Invalid enum throws IllegalArgumentException.");
+        }
+    }
 
-	/**
-	 * Verifies that a null assignment is invalid.
-	 */
-	public void testNullEnum () {
-		String example = null;
-		try {
-			MaintenanceModeStatus temp = MaintenanceModeStatus.valueForString(example);
-			assertNull("Result of valueForString should be null.", temp);
-		}
-		catch (NullPointerException exception) {
-			fail("Null string throws NullPointerException.");
-		}
-	}
+    /**
+     * Verifies that a null assignment is invalid.
+     */
+    public void testNullEnum() {
+        String example = null;
+        try {
+            MaintenanceModeStatus temp = MaintenanceModeStatus.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
+        } catch (NullPointerException exception) {
+            fail("Null string throws NullPointerException.");
+        }
+    }
 
-	/**
-	 * Verifies the possible enum values of MaintenanceModeStatus.
-	 */
-	public void testListEnum() {
-		List<MaintenanceModeStatus> enumValueList = Arrays.asList(MaintenanceModeStatus.values());
+    /**
+     * Verifies the possible enum values of MaintenanceModeStatus.
+     */
+    public void testListEnum() {
+        List<MaintenanceModeStatus> enumValueList = Arrays.asList(MaintenanceModeStatus.values());
 
-		List<MaintenanceModeStatus> enumTestList = new ArrayList<>();
-		enumTestList.add(MaintenanceModeStatus.NORMAL);
-		enumTestList.add(MaintenanceModeStatus.NEAR);
-		enumTestList.add(MaintenanceModeStatus.ACTIVE);
-		enumTestList.add(MaintenanceModeStatus.FEATURE_NOT_PRESENT);
+        List<MaintenanceModeStatus> enumTestList = new ArrayList<>();
+        enumTestList.add(MaintenanceModeStatus.NORMAL);
+        enumTestList.add(MaintenanceModeStatus.NEAR);
+        enumTestList.add(MaintenanceModeStatus.ACTIVE);
+        enumTestList.add(MaintenanceModeStatus.FEATURE_NOT_PRESENT);
 
-		assertTrue("Enum value list does not match enum class list",
-				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
+        assertTrue("Enum value list does not match enum class list",
+                enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
+    }
 }

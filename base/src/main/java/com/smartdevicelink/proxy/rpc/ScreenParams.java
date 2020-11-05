@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,13 +31,15 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
-/** The resolution of the prescribed screen area.
- * 
+
+/**
+ * The resolution of the prescribed screen area.
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -66,27 +68,29 @@ import java.util.Hashtable;
  * 		</tr>
  *
  *  </table>
- * @since SmartDeviceLink 2.3.2
  *
+ * @since SmartDeviceLink 2.3.2
  */
 
 public class ScreenParams extends RPCStruct {
     public static final String KEY_RESOLUTION = "resolution";
     public static final String KEY_TOUCH_EVENT_AVAILABLE = "touchEventAvailable";
-	/**
-	 * Constructs a new ScreenParams object
-	 */  
 
-	public ScreenParams() { }
-	/**
-	* <p>
-	* Constructs a new ScreenParamst object indicated by the Hashtable
-	* parameter
-	* </p>
-	* 
-	* @param hash
-	*            The Hashtable to use
-	*/  
+    /**
+     * Constructs a new ScreenParams object
+     */
+
+    public ScreenParams() {
+    }
+
+    /**
+     * <p>
+     * Constructs a new ScreenParams object indicated by the Hashtable
+     * parameter
+     * </p>
+     *
+     * @param hash The Hashtable to use
+     */
 
     public ScreenParams(Hashtable<String, Object> hash) {
         super(hash);
@@ -101,18 +105,21 @@ public class ScreenParams extends RPCStruct {
         setImageResolution(resolution);
     }
 
-    @SuppressWarnings("unchecked")
     public ImageResolution getImageResolution() {
         return (ImageResolution) getObject(ImageResolution.class, KEY_RESOLUTION);
-    } 
-    public void setImageResolution( @NonNull ImageResolution resolution ) {
-        setValue(KEY_RESOLUTION, resolution);
     }
-    @SuppressWarnings("unchecked")
+
+    public ScreenParams setImageResolution(@NonNull ImageResolution resolution) {
+        setValue(KEY_RESOLUTION, resolution);
+        return this;
+    }
+
     public TouchEventCapabilities getTouchEventAvailable() {
-    	return (TouchEventCapabilities) getObject(TouchEventCapabilities.class, KEY_TOUCH_EVENT_AVAILABLE);
-    } 
-    public void setTouchEventAvailable( TouchEventCapabilities touchEventAvailable ) {
-    	setValue(KEY_TOUCH_EVENT_AVAILABLE, touchEventAvailable);
-    }     
+        return (TouchEventCapabilities) getObject(TouchEventCapabilities.class, KEY_TOUCH_EVENT_AVAILABLE);
+    }
+
+    public ScreenParams setTouchEventAvailable(TouchEventCapabilities touchEventAvailable) {
+        setValue(KEY_TOUCH_EVENT_AVAILABLE, touchEventAvailable);
+        return this;
+    }
 }

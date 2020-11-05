@@ -49,11 +49,11 @@ import org.junit.Test;
 
 import java.util.Hashtable;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.fail;
-import static android.support.test.InstrumentationRegistry.getTargetContext;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
@@ -70,12 +70,12 @@ public class CancelInteractionTests extends BaseRpcTests {
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_REQUEST;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.CANCEL_INTERACTION.toString();
     }
 
@@ -97,10 +97,10 @@ public class CancelInteractionTests extends BaseRpcTests {
      * Tests the expected values of the RPC message.
      */
     @Test
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Test Values
-        Integer testFunctionID  = ((CancelInteraction) msg).getInteractionFunctionID();
-        Integer testCancelID    = ((CancelInteraction) msg).getCancelID();
+        Integer testFunctionID = ((CancelInteraction) msg).getInteractionFunctionID();
+        Integer testCancelID = ((CancelInteraction) msg).getCancelID();
 
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_INTEGER, testFunctionID);
@@ -119,8 +119,8 @@ public class CancelInteractionTests extends BaseRpcTests {
      * Tests a valid JSON construction of this RPC message.
      */
     @Test
-    public void testJsonConstructor () {
-        JSONObject commandJson = JsonFileReader.readId(getTargetContext(), getCommandType(), getMessageType());
+    public void testJsonConstructor() {
+        JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
         assertNotNull(TestValues.NOT_NULL, commandJson);
 
         try {
@@ -136,8 +136,7 @@ public class CancelInteractionTests extends BaseRpcTests {
 
             assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, CancelInteraction.KEY_FUNCTION_ID), cmd.getInteractionFunctionID());
             assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, CancelInteraction.KEY_CANCEL_ID), cmd.getCancelID());
-        }
-        catch (JSONException e) {
+        } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
     }

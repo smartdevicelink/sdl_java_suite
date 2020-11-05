@@ -1,6 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -23,21 +23,24 @@ public class ReleaseInteriorVehicleDataModule extends RPCRequest {
     /**
      * @param moduleType Sets the Module Type for this class
      */
-    public ReleaseInteriorVehicleDataModule(@NonNull ModuleType moduleType){
+    public ReleaseInteriorVehicleDataModule(@NonNull ModuleType moduleType) {
         this();
         setModuleType(moduleType);
     }
 
     /**
      * Sets the Module Type for this class
+     *
      * @param type the Module Type to be set
      */
-    public void setModuleType(@NonNull ModuleType type) {
+    public ReleaseInteriorVehicleDataModule setModuleType(@NonNull ModuleType type) {
         setParameters(KEY_MODULE_TYPE, type);
+        return this;
     }
 
     /**
      * Gets the Module Type of this class
+     *
      * @return the Module Type of this class
      */
     public ModuleType getModuleType() {
@@ -46,14 +49,17 @@ public class ReleaseInteriorVehicleDataModule extends RPCRequest {
 
     /**
      * Sets the Module Ids for this class
+     *
      * @param id the ids to be set
      */
-    public void setModuleId(String id) {
+    public ReleaseInteriorVehicleDataModule setModuleId(String id) {
         setParameters(KEY_MODULE_ID, id);
+        return this;
     }
 
     /**
      * Gets the Module Id of this class
+     *
      * @return the Module Ids
      */
     public String getModuleId() {

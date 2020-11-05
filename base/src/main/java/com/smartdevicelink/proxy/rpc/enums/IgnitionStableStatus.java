@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -33,28 +33,30 @@ package com.smartdevicelink.proxy.rpc.enums;
 
 /**
  * Reflects the ignition switch stability.
+ *
  * @since SmartDeviceLink 2.0
  */
 public enum IgnitionStableStatus {
-	/**
-	 * The current ignition switch status is considered not to be stable.
-	 */
-	IGNITION_SWITCH_NOT_STABLE,
-	/**
-	 * The current ignition switch status is considered to be stable.
-	 */
-	IGNITION_SWITCH_STABLE,
-	MISSING_FROM_TRANSMITTER;
+    /**
+     * The current ignition switch status is considered not to be stable.
+     */
+    IGNITION_SWITCH_NOT_STABLE,
+    /**
+     * The current ignition switch status is considered to be stable.
+     */
+    IGNITION_SWITCH_STABLE,
+    MISSING_FROM_TRANSMITTER;
 
     /**
      * Convert String to IgnitionStableStatus
+     *
      * @param value String
      * @return IgnitionStableStatus
-     */    	
+     */
     public static IgnitionStableStatus valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

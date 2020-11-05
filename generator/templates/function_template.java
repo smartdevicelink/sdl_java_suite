@@ -3,17 +3,8 @@
     {%- block params %}
     {%- if params is defined %}
     {%- for p in params %}
-    {%- if p.origin not in ('success', 'resultCode', 'info') or kind != "response" %}
-    {%- if p.see is defined or p.deprecated is not none %}
-    /**
-     {%- if p.deprecated is not none %}
-     * @deprecated
-     {%- endif %}
-     {%- if p.see is defined %}
-     * @see {{p.see}}
-     {%- endif %}
-     */
-    {%- endif %}
+    {%- if p.origin not in ('success', 'resultCode', 'info') or kind != "response" %}{% set see, deprecated, since, history, spacing, begin, end, prefix = p.see, p.deprecated, p.since, p.history, '    ', '/**', ' */', ' * ' %}
+    {%- include "javadoc_version_info.java" %}
     {%- if p.deprecated is not none %}
     @Deprecated
     {%- endif %}
@@ -37,8 +28,12 @@
      *
      {%- include "javadoc_template.java" %}
      */
-    public void set{{p.title}}({% if p.mandatory %}@NonNull {% endif %}{{p.return_type}} {{p.last}}) {
+    {%- if p.deprecated is defined and p.deprecated is not none %}
+    @Deprecated
+    {%- endif %}
+    public {{class_name}} set{{p.title}}({% if p.mandatory %}@NonNull {% endif %}{{p.return_type}} {{p.last}}) {
         setParameters({{p.key}}, {{p.last}});
+        return this;
     }
 
     /**
@@ -48,6 +43,9 @@
      */
     {%- if p.SuppressWarnings is defined %}
     @SuppressWarnings("{{p.SuppressWarnings}}")
+    {%- endif %}
+    {%- if p.deprecated is defined and p.deprecated is not none %}
+    @Deprecated
     {%- endif %}
     public {{p.return_type}} get{{p.title}}() {
         {%- if p.return_type in ['String', 'Boolean', 'Integer'] %}

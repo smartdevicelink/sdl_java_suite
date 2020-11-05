@@ -1,9 +1,9 @@
 {
-  "request":{
-    "name":"SetDisplayLayout",
-    "correlationID":149,
-    "parameters":{
-      "displayLayout":"someDisplayLayout",
+  "request": {
+    "name": "SetDisplayLayout",
+    "correlationID": 149,
+    "parameters": {
+      "displayLayout": "someDisplayLayout",
       "dayColorScheme": {
         "backgroundColor": {
           "blue": 9,
@@ -40,103 +40,103 @@
       }
     }
   },
-  "response":{
-    "name":"SetDisplayLayoutResponse",
-    "correlationID":150,
-    "parameters":{
-      "buttonCapabilities":[
+  "response": {
+    "name": "SetDisplayLayoutResponse",
+    "correlationID": 150,
+    "parameters": {
+      "buttonCapabilities": [
         {
-          "name":"SEEKRIGHT",
-          "shortPressAvailable":true,
-          "longPressAvailable":false,
-          "upDownAvailable":true
+          "name": "SEEKRIGHT",
+          "shortPressAvailable": true,
+          "longPressAvailable": false,
+          "upDownAvailable": true
         },
         {
-          "name":"TUNEDOWN",
-          "shortPressAvailable":false,
-          "longPressAvailable":true,
-          "upDownAvailable":false
+          "name": "TUNEDOWN",
+          "shortPressAvailable": false,
+          "longPressAvailable": true,
+          "upDownAvailable": false
         }
       ],
-      "displayCapabilities":{
-        "displayType":"TYPE2",
-        "mediaClockFormats":[
+      "displayCapabilities": {
+        "displayType": "TYPE2",
+        "mediaClockFormats": [
           "CLOCKTEXT3",
           "CLOCK1"
         ],
-        "textFields":[
+        "textFields": [
           {
-            "width":480,
-            "characterSet":"TYPE5SET",
-            "rows":360,
-            "name":"alertText2"
+            "width": 480,
+            "characterSet": "TYPE5SET",
+            "rows": 360,
+            "name": "alertText2"
           },
           {
-            "width":1980,
-            "characterSet":"CID2SET",
-            "rows":960,
-            "name":"scrollableMessageBody"
-          },
+            "width": 1980,
+            "characterSet": "UTF_8",
+            "rows": 960,
+            "name": "scrollableMessageBody"
+          }
         ],
-        "imageFields":[
+        "imageFields": [
           {
-            "imageTypeSupported":[
+            "imageTypeSupported": [
               "GRAPHIC_JPEG",
               "AUDIO_AAC"
             ],
-            "imageResolution":{
-              "resolutionWidth":640,
-              "resolutionHeight":480
+            "imageResolution": {
+              "resolutionWidth": 640,
+              "resolutionHeight": 480
             },
-            "name":"menuIcon"
+            "name": "menuIcon"
           },
           {
-            "imageTypeSupported":[
+            "imageTypeSupported": [
               "BINARY",
               "AUDIO_WAVE"
             ],
-            "imageResolution":{
-              "resolutionWidth":320,
-              "resolutionHeight":240
+            "imageResolution": {
+              "resolutionWidth": 320,
+              "resolutionHeight": 240
             },
-            "name":"graphic"
+            "name": "graphic"
           }
         ],
-        "graphicSupported":true,
-        "screenParams":{
-          "resolution":{
-            "resolutionWidth":1200,
-            "resolutionHeight":800
+        "graphicSupported": true,
+        "screenParams": {
+          "resolution": {
+            "resolutionWidth": 1200,
+            "resolutionHeight": 800
           },
-          "touchEventAvailable":{
-            "pressAvailable":true,
-            "multiTouchAvailable":false,
-            "doublePressAvailable":true
+          "touchEventAvailable": {
+            "pressAvailable": true,
+            "multiTouchAvailable": false,
+            "doublePressAvailable": true
           }
         },
-        "templatesAvailable":[
+        "templatesAvailable": [
           "Template 1",
           "Template 2",
           "Template 3"
         ],
-        "numCustomPresetsAvailable":5
+        "numCustomPresetsAvailable": 5
       },
-      "softButtonCapabilities":[
+      "softButtonCapabilities": [
         {
-          "imageSupported":false,
-          "shortPressAvailable":true,
-          "longPressAvailable":false,
-          "upDownAvailable":true
+          "imageSupported": false,
+          "shortPressAvailable": true,
+          "longPressAvailable": false,
+          "upDownAvailable": true
         },
         {
-          "imageSupported":true,
-          "shortPressAvailable":false,
-          "longPressAvailable":true,
-          "upDownAvailable":false
+          "imageSupported": true,
+          "shortPressAvailable": false,
+          "longPressAvailable": true,
+          "upDownAvailable": false
         }
       ],
-      "presetBankCapabilities":{
-        "OnScreenPresetsAvailable":false
+      "presetBankCapabilities": {
+        "OnScreenPresetsAvailable": false
       }
     }
   }

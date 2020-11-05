@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -44,51 +44,56 @@ import java.util.Hashtable;
  */
 public class PublishAppService extends RPCRequest {
 
-	public static final String KEY_APP_SERVICE_MANIFEST = "appServiceManifest";
+    public static final String KEY_APP_SERVICE_MANIFEST = "appServiceManifest";
 
-	// Constructors
-	/**
-	 * Constructs a new PublishAppService object
-	 */
-	public PublishAppService() {
-		super(FunctionID.PUBLISH_APP_SERVICE.toString());
-	}
+    // Constructors
 
-	/**
-	 * Constructs a new PublishAppService object indicated by the Hashtable parameter
-	 *
-	 * @param hash The Hashtable to use
-	 */
-	public PublishAppService(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+    /**
+     * Constructs a new PublishAppService object
+     */
+    public PublishAppService() {
+        super(FunctionID.PUBLISH_APP_SERVICE.toString());
+    }
 
-	/**
-	 * Constructs a new PublishAppService object
-	 * @param appServiceManifest - The appServiceManifest
-	 */
-	public PublishAppService(@NonNull AppServiceManifest appServiceManifest) {
-			this();
-			setAppServiceManifest(appServiceManifest);
-	}
+    /**
+     * Constructs a new PublishAppService object indicated by the Hashtable parameter
+     *
+     * @param hash The Hashtable to use
+     */
+    public PublishAppService(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
-	// Getters / Setters
+    /**
+     * Constructs a new PublishAppService object
+     *
+     * @param appServiceManifest - The appServiceManifest
+     */
+    public PublishAppService(@NonNull AppServiceManifest appServiceManifest) {
+        this();
+        setAppServiceManifest(appServiceManifest);
+    }
 
-	/**
-	 * The manifest of the service that wishes to be published.
-	 * If already published, the updated manifest for this service.
-	 * @param serviceManifest - the App Service Manifest
-	 */
-	public void setAppServiceManifest(@NonNull AppServiceManifest serviceManifest){
-		setParameters(KEY_APP_SERVICE_MANIFEST, serviceManifest);
-	}
+    // Getters / Setters
 
-	/**
-	 * The manifest of the service that wishes to be published.
-	 * If already published, the updated manifest for this service.
-	 * @return serviceManifest - the App Service Manifest
-	 */
-	public AppServiceManifest getAppServiceManifest(){
-		return (AppServiceManifest) getObject(AppServiceManifest.class,KEY_APP_SERVICE_MANIFEST);
-	}
+    /**
+     * The manifest of the service that wishes to be published.
+     * If already published, the updated manifest for this service.
+     *
+     * @param serviceManifest - the App Service Manifest
+     */
+    public PublishAppService setAppServiceManifest(@NonNull AppServiceManifest serviceManifest) {
+        setParameters(KEY_APP_SERVICE_MANIFEST, serviceManifest);
+        return this;
+    }
+
+    /**
+     * The manifest of the service that wishes to be published.
+     * If already published, the updated manifest for this service.
+     *
+     * @return serviceManifest - the App Service Manifest
+     */
+    public AppServiceManifest getAppServiceManifest() {
+        return (AppServiceManifest) getObject(AppServiceManifest.class, KEY_APP_SERVICE_MANIFEST);
+    }
 }

@@ -36,17 +36,10 @@ import java.util.List;
 
 public interface KeyboardAutocompleteCompletionListener {
 
-	/**
-	 * This listener is called when you wish to update your autocomplete text in response to the user's input
-	 * @param updatedAutoCompleteText - The new autocomplete text to use
-	 * @deprecated use {@link #onUpdatedAutoCompleteList(List<String>)} instead
-	 */
-	@Deprecated
-	void onUpdatedAutoCompleteText(String updatedAutoCompleteText);
-
-	/**
-	 * This listener is called when you wish to update your autocomplete suggestions list in response to the user's input
-	 * @param updatedAutoCompleteList - The new autocomplete suggestions list to use
-	 */
-	void onUpdatedAutoCompleteList(List<String> updatedAutoCompleteList);
+    /**
+     * This listener is called when you wish to update your autocomplete suggestions list in response to the user's input
+     *
+     * @param updatedAutoCompleteList - The new autocomplete suggestions list to use
+     */
+    void onUpdatedAutoCompleteList(List<String> updatedAutoCompleteList);
 }

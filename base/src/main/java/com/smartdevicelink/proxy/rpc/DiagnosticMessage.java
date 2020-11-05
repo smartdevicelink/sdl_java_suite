@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -39,8 +39,9 @@ import com.smartdevicelink.proxy.RPCRequest;
 import java.util.Hashtable;
 import java.util.List;
 
-/** Non periodic vehicle diagnostic request.
- * 
+/**
+ * Non periodic vehicle diagnostic request.
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -77,80 +78,84 @@ import java.util.List;
  * 		</tr>
  *  </table>
  * <p><b>HMI must:</b> </p>
- * 
+ *
  * <p>1.	Check the requested data using provided information of targetID (name of ECU),messageLength and messageData.</p>
  * <p> 2.	Respond with one of the appropriate result codes.And in case of SUCCESS return messageDataResult which is an array of bytes comprising CAN message result.</p>
- * @since SmartDeviceLink 3.0
  *
+ * @since SmartDeviceLink 3.0
  */
 
 public class DiagnosticMessage extends RPCRequest {
-	public static final String KEY_TARGET_ID = "targetID";
-	public static final String KEY_MESSAGE_LENGTH = "messageLength";
-	public static final String KEY_MESSAGE_DATA = "messageData";
+    public static final String KEY_TARGET_ID = "targetID";
+    public static final String KEY_MESSAGE_LENGTH = "messageLength";
+    public static final String KEY_MESSAGE_DATA = "messageData";
 
-	/**
-	 * Constructs a new DiagnosticMessage object
-	 */
+    /**
+     * Constructs a new DiagnosticMessage object
+     */
     public DiagnosticMessage() {
         super(FunctionID.DIAGNOSTIC_MESSAGE.toString());
     }
 
     /**
-	* <p>
-	* Constructs a new DiagnosticMessage object indicated by the Hashtable
-	* parameter
-	* </p>
-	* 
-	* @param hash The Hashtable to use to create this RPC
-	*
-	*/
+     * <p>
+     * Constructs a new DiagnosticMessage object indicated by the Hashtable
+     * parameter
+     * </p>
+     *
+     * @param hash The Hashtable to use to create this RPC
+     */
     public DiagnosticMessage(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-	/**
-	 * Constructs a new DiagnosticMessage object
-	 */
-	public DiagnosticMessage(@NonNull Integer targetID, @NonNull Integer messageLength, @NonNull List<Integer> messageData) {
-		this();
-		setTargetID(targetID);
-		setMessageLength(messageLength);
-		setMessageData(messageData);
-	}
-
-	/** Sets TargetID
-	 *
-	 * @param targetID the target for this Diagnostic Message
-	 */
-    public void setTargetID(@NonNull Integer targetID) {
-		setParameters(KEY_TARGET_ID, targetID);
+    /**
+     * Constructs a new DiagnosticMessage object
+     */
+    public DiagnosticMessage(@NonNull Integer targetID, @NonNull Integer messageLength, @NonNull List<Integer> messageData) {
+        this();
+        setTargetID(targetID);
+        setMessageLength(messageLength);
+        setMessageData(messageData);
     }
 
     /**
-	 * <p>
-	 * Returns an <i>Integer</i> object representing the Target ID that you want to add
-	 * </p>
-	 * 
-	 * @return Integer -an integer representation a Unique Target ID
-	 */
-    public Integer getTargetID() {
-    	return getInteger(KEY_TARGET_ID);
-    }    
-
-    public void setMessageLength(@NonNull Integer messageLength) {
-		setParameters(KEY_MESSAGE_LENGTH, messageLength);
+     * Sets TargetID
+     *
+     * @param targetID the target for this Diagnostic Message
+     */
+    public DiagnosticMessage setTargetID(@NonNull Integer targetID) {
+        setParameters(KEY_TARGET_ID, targetID);
+        return this;
     }
+
+    /**
+     * <p>
+     * Returns an <i>Integer</i> object representing the Target ID that you want to add
+     * </p>
+     *
+     * @return Integer -an integer representation a Unique Target ID
+     */
+    public Integer getTargetID() {
+        return getInteger(KEY_TARGET_ID);
+    }
+
+    public DiagnosticMessage setMessageLength(@NonNull Integer messageLength) {
+        setParameters(KEY_MESSAGE_LENGTH, messageLength);
+        return this;
+    }
+
     public Integer getMessageLength() {
-    	return getInteger(KEY_MESSAGE_LENGTH);
+        return getInteger(KEY_MESSAGE_LENGTH);
     }
 
     @SuppressWarnings("unchecked")
     public List<Integer> getMessageData() {
         return (List<Integer>) getObject(Integer.class, KEY_MESSAGE_DATA);
     }
-    
-    public void setMessageData(@NonNull List<Integer> messageData) {
-		setParameters(KEY_MESSAGE_DATA, messageData);
-    }    
+
+    public DiagnosticMessage setMessageData(@NonNull List<Integer> messageData) {
+        setParameters(KEY_MESSAGE_DATA, messageData);
+        return this;
+    }
 }

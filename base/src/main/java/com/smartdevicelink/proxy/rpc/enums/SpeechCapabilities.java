@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -30,31 +30,32 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 package com.smartdevicelink.proxy.rpc.enums;
+
 /**
  * Contains information about TTS capabilities on the SDL platform.
- * 
+ *
  * @since SmartDeviceLink 1.0
  */
 public enum SpeechCapabilities {
-	/**
-	 * The SDL platform can speak text phrases.
-	 * 
-	 * @since SmartDeviceLink 1.0
-	 */	
+    /**
+     * The SDL platform can speak text phrases.
+     *
+     * @since SmartDeviceLink 1.0
+     */
     TEXT,
     /**
      * The SDL platform can interpret and speak LHPLUS phonemes
      */
 
     SAPI_PHONEMES,
-    
+
     /**
      * The SDL platform can interpret and speak LHPLUS phonemes
      */
 
     LHPLUS_PHONEMES,
     /**
-     * The SDL platform can play pre-recorded sounds as part of a TTS operation.<p>(e.g. Speak, Alert, PerformInteraction, etc.).</p> 
+     * The SDL platform can play pre-recorded sounds as part of a TTS operation.<p>(e.g. Speak, Alert, PerformInteraction, etc.).</p>
      */
     PRE_RECORDED,
     /**
@@ -67,16 +68,18 @@ public enum SpeechCapabilities {
      * The SDL platform can play audio files in conjunction with/without TTS text.
      */
     FILE;
+
     /**
      * Convert String to SpeechCapabilities
-      * @param value String
-      * @return SpeechCapabilities
-      */
+     *
+     * @param value String
+     * @return SpeechCapabilities
+     */
 
     public static SpeechCapabilities valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

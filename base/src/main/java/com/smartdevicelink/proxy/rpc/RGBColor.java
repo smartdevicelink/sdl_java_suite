@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -36,7 +36,7 @@ import com.smartdevicelink.proxy.RPCStruct;
 import java.util.Hashtable;
 
 /**
- *  A color class that stores RGB values
+ * A color class that stores RGB values
  * <p><b> Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -68,9 +68,10 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 5.0</td>
  * 		</tr>
  * </table>
+ *
  * @since SmartDeviceLink 5.0
  */
-public class RGBColor extends RPCStruct{
+public class RGBColor extends RPCStruct {
     public static final String KEY_RED = "red";
     public static final String KEY_GREEN = "green";
     public static final String KEY_BLUE = "blue";
@@ -79,12 +80,13 @@ public class RGBColor extends RPCStruct{
     /**
      * Constructs a new RGBColor object
      */
-    public RGBColor(){
+    public RGBColor() {
         this(MIN_VALUE, MIN_VALUE, MIN_VALUE);
     }
 
     /**
      * Constructs a new RGBColor object indicated by the Hashtable parameter
+     *
      * @param hash The Hashtable to use
      */
     public RGBColor(Hashtable<String, Object> hash) {
@@ -93,9 +95,10 @@ public class RGBColor extends RPCStruct{
 
     /**
      * Constructs a new RGB object
-     * @param red red value - min: 0; max: 255
+     *
+     * @param red   red value - min: 0; max: 255
      * @param green green value - min: 0; max: 255
-     * @param blue blue value - min: 0; max: 255
+     * @param blue  blue value - min: 0; max: 255
      */
     public RGBColor(Integer red, Integer green, Integer blue) {
         Hashtable<String, Object> hash = new Hashtable<>();
@@ -119,16 +122,19 @@ public class RGBColor extends RPCStruct{
 
     /**
      * Sets the red value of the color object
+     *
      * @param color red value - min: 0; max: 255
      */
-    public void setRed(Integer color) {
+    public RGBColor setRed(Integer color) {
         if (color != null && color >= MIN_VALUE && color <= MAX_VALUE) {
             setValue(KEY_RED, color);
         }
+        return this;
     }
 
     /**
      * Gets the red value of the color
+     *
      * @return red value
      */
     public Integer getRed() {
@@ -137,16 +143,19 @@ public class RGBColor extends RPCStruct{
 
     /**
      * Sets the green value of the color object
+     *
      * @param color green value - min: 0; max: 255
      */
-    public void setGreen(Integer color) {
+    public RGBColor setGreen(Integer color) {
         if (color != null && color >= MIN_VALUE && color <= MAX_VALUE) {
             setValue(KEY_GREEN, color);
         }
+        return this;
     }
 
     /**
      * Gets the green value of the color
+     *
      * @return green value
      */
     public Integer getGreen() {
@@ -155,16 +164,19 @@ public class RGBColor extends RPCStruct{
 
     /**
      * Sets the blue value of the color object
+     *
      * @param color blue value - min: 0; max: 255
      */
-    public void setBlue(Integer color) {
+    public RGBColor setBlue(Integer color) {
         if (color != null && color >= MIN_VALUE && color <= MAX_VALUE) {
             setValue(KEY_BLUE, color);
         }
+        return this;
     }
 
     /**
      * Gets the green value of the color
+     *
      * @return green value
      */
     public Integer getBlue() {

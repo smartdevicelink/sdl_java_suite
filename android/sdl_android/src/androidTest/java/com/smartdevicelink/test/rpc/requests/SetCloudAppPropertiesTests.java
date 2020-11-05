@@ -14,7 +14,7 @@ import static junit.framework.TestCase.fail;
 public class SetCloudAppPropertiesTests extends BaseRpcTests {
 
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         SetCloudAppProperties msg = new SetCloudAppProperties();
 
         msg.setProperties(TestValues.GENERAL_CLOUDAPPPROPERTIES);
@@ -23,22 +23,22 @@ public class SetCloudAppPropertiesTests extends BaseRpcTests {
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_REQUEST;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.SET_CLOUD_APP_PROPERTIES.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
+        try {
             result.put(SetCloudAppProperties.KEY_PROPERTIES, TestValues.GENERAL_CLOUDAPPPROPERTIES.serializeJSON());
-        }catch(JSONException e){
+        } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
 

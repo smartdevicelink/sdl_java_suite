@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -39,15 +39,15 @@ import java.util.Hashtable;
  * Include the data defined in Radio Data System, which is a communications protocol standard
  * for embedding small amounts of digital information in conventional FM radio broadcasts.
  */
-public class RdsData extends RPCStruct{
-    public static final String KEY_PS= "PS";
-    public static final String KEY_RT= "RT";
-    public static final String KEY_CT= "CT";
-    public static final String KEY_PI= "PI";
-    public static final String KEY_PTY= "PTY";
-    public static final String KEY_TP= "TP";
-    public static final String KEY_TA= "TA";
-    public static final String KEY_REG= "REG";
+public class RdsData extends RPCStruct {
+    public static final String KEY_PS = "PS";
+    public static final String KEY_RT = "RT";
+    public static final String KEY_CT = "CT";
+    public static final String KEY_PI = "PI";
+    public static final String KEY_PTY = "PTY";
+    public static final String KEY_TP = "TP";
+    public static final String KEY_TA = "TA";
+    public static final String KEY_REG = "REG";
 
     public RdsData() {
     }
@@ -59,11 +59,11 @@ public class RdsData extends RPCStruct{
     /**
      * Sets the programService portion of the RdsData class
      *
-     * @param programService
-     * Program Service Name.
+     * @param programService Program Service Name.
      */
-    public void setProgramService(String programService) {
+    public RdsData setProgramService(String programService) {
         setValue(KEY_PS, programService);
+        return this;
     }
 
     /**
@@ -78,11 +78,11 @@ public class RdsData extends RPCStruct{
     /**
      * Sets the radioText portion of the RdsData class
      *
-     * @param radioText
-     * Radio Text.
+     * @param radioText Radio Text.
      */
-    public void setRadioText(String radioText) {
+    public RdsData setRadioText(String radioText) {
         setValue(KEY_RT, radioText);
+        return this;
     }
 
     /**
@@ -97,11 +97,11 @@ public class RdsData extends RPCStruct{
     /**
      * Sets the clockText portion of the RdsData class
      *
-     * @param clockText
-     * The clock text in UTC format as YYYY-MM-DDThh:mm:ss.sTZD.
+     * @param clockText The clock text in UTC format as YYYY-MM-DDThh:mm:ss.sTZD.
      */
-    public void setClockText(String clockText) {
+    public RdsData setClockText(String clockText) {
         setValue(KEY_CT, clockText);
+        return this;
     }
 
     /**
@@ -116,11 +116,11 @@ public class RdsData extends RPCStruct{
     /**
      * Sets the programIdentification portion of the RdsData class
      *
-     * @param programIdentification
-     * Program Identification - the call sign for the radio station.
+     * @param programIdentification Program Identification - the call sign for the radio station.
      */
-    public void setProgramIdentification(String programIdentification) {
+    public RdsData setProgramIdentification(String programIdentification) {
         setValue(KEY_PI, programIdentification);
+        return this;
     }
 
     /**
@@ -135,11 +135,11 @@ public class RdsData extends RPCStruct{
     /**
      * Sets the region portion of the RdsData class
      *
-     * @param region
-     * Region.
+     * @param region Region.
      */
-    public void setRegion(String region) {
+    public RdsData setRegion(String region) {
         setValue(KEY_REG, region);
+        return this;
     }
 
     /**
@@ -154,11 +154,11 @@ public class RdsData extends RPCStruct{
     /**
      * Sets the trafficProgram portion of the RdsData class
      *
-     * @param trafficProgram
-     * Traffic Program Identification - Identifies a station that offers traffic.
+     * @param trafficProgram Traffic Program Identification - Identifies a station that offers traffic.
      */
-    public void setTrafficProgram(Boolean trafficProgram) {
+    public RdsData setTrafficProgram(Boolean trafficProgram) {
         setValue(KEY_TP, trafficProgram);
+        return this;
     }
 
     /**
@@ -173,11 +173,11 @@ public class RdsData extends RPCStruct{
     /**
      * Sets the trafficAnnouncement portion of the RdsData class
      *
-     * @param trafficAnnouncement
-     * Traffic Announcement Identification - Indicates an ongoing traffic announcement.
+     * @param trafficAnnouncement Traffic Announcement Identification - Indicates an ongoing traffic announcement.
      */
-    public void setTrafficAnnouncement(Boolean trafficAnnouncement) {
+    public RdsData setTrafficAnnouncement(Boolean trafficAnnouncement) {
         setValue(KEY_TA, trafficAnnouncement);
+        return this;
     }
 
     /**
@@ -192,11 +192,11 @@ public class RdsData extends RPCStruct{
     /**
      * Sets the programType portion of the RdsData class
      *
-     * @param programType
-     * The program type - The region should be used to differentiate between EU and North America program types.
+     * @param programType The program type - The region should be used to differentiate between EU and North America program types.
      */
-    public void setProgramType(Integer programType) {
+    public RdsData setProgramType(Integer programType) {
         setValue(KEY_PTY, programType);
+        return this;
     }
 
     /**

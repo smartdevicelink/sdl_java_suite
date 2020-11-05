@@ -1,13 +1,13 @@
 {
- "request":{
-    "name":"DeleteInteractionChoiceSet",
-    "correlationID":119,
-    "parameters":{
-      "interactionChoiceSetID":56
+  "request": {
+    "name": "DeleteInteractionChoiceSet",
+    "correlationID": 119,
+    "parameters": {
+      "interactionChoiceSetID": 56
     }
   },
-  "response":{
-    "name":"DeleteInteractionChoiceSetResponse",
-    "correlationID":120
+  "response": {
+    "name": "DeleteInteractionChoiceSetResponse",
+    "correlationID": 120
   }
 }

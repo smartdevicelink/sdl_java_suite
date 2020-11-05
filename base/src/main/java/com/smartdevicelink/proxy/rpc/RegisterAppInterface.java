@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -41,6 +41,7 @@ import com.smartdevicelink.util.Version;
 
 import java.util.Hashtable;
 import java.util.List;
+
 /**
  * Registers the application's interface with SDL&reg;, declaring properties of
  * the registration, including the messaging interface version, the app name,
@@ -104,10 +105,10 @@ import java.util.List;
  * <p></p>
  * There is no time limit for how long the autoActivateID is "valid" (i.e. would
  * confer focus and opt-in)
- * 
- *<p> <b>HMILevel is not defined before registering</b></p>
- * 
- * 
+ *
+ * <p> <b>HMILevel is not defined before registering</b></p>
+ *
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -195,13 +196,13 @@ import java.util.List;
  * 			<td>String</td>
  * 			<td>ID used to uniquely identify current state of all app data that can persist through connection cycles (e.g. ignition cycles).This registered data (commands, submenus, choice sets, etc.) can be reestablished without needing to explicitly reregister each piece. If omitted, then the previous state of an app's commands, etc. will not be restored.When sending hashID, all RegisterAppInterface parameters should still be provided (e.g. ttsName, etc.). </td>
  *                 <td>N</td>
- *                 <td>maxlength:100</td>
+ *                 <td>maxLength:100</td>
  * 			<td>SmartDeviceLink 2.3.1 </td>
  * 		</tr>
  * 		<tr>
  * 			<td>deviceInfo</td>
  * 			<td>DeviceInfo</td>
- * 			<td>Various information abount connecting device.</td>
+ * 			<td>Various information about connecting device.</td>
  *                 <td>N</td>
  *                 <td></td>
  * 			<td>SmartDeviceLink 2.3.1 </td>
@@ -211,7 +212,7 @@ import java.util.List;
  * 			<td>String</td>
  * 			<td>ID used to validate app with policy table entries</td>
  *                 <td>Y</td>
- *                 <td>Maxlength: 100</td>
+ *                 <td>maxLength: 100</td>
  * 			<td>SmartDeviceLink 2.0 </td>
  * 		</tr>
  * 		<tr>
@@ -230,7 +231,7 @@ import java.util.List;
  *                 <td></td>
  * 			<td>SmartDeviceLink 2.3.2.2 </td>
  * 		</tr>
- * 
+ *
  * 		<tr>
  * 			<td>sdlVersion</td>
  * 			<td>String</td>
@@ -268,488 +269,506 @@ import java.util.List;
  * 		</tr>
  *  </table>
  *  <p></p>
- * @since SmartDeviceLink 1.0
+ *
  * @see UnregisterAppInterface
  * @see OnAppInterfaceUnregistered
+ * @since SmartDeviceLink 1.0
  */
 public class RegisterAppInterface extends RPCRequest {
-	public static final String KEY_TTS_NAME = "ttsName";
-	public static final String KEY_HMI_DISPLAY_LANGUAGE_DESIRED = "hmiDisplayLanguageDesired";
-	public static final String KEY_APP_HMI_TYPE = "appHMIType";
-	public static final String KEY_APP_ID = "appID";
-	public static final String KEY_FULL_APP_ID = "fullAppID";
-	public static final String KEY_LANGUAGE_DESIRED = "languageDesired";
-	public static final String KEY_DEVICE_INFO = "deviceInfo";
-	public static final String KEY_APP_NAME = "appName";
-	public static final String KEY_NGN_MEDIA_SCREEN_APP_NAME = "ngnMediaScreenAppName";
-	public static final String KEY_IS_MEDIA_APPLICATION = "isMediaApplication";
-	public static final String KEY_VR_SYNONYMS = "vrSynonyms";
-	public static final String KEY_SDL_MSG_VERSION = "syncMsgVersion";
-	public static final String KEY_HASH_ID = "hashID";
-	public static final String KEY_APP_INFO = "appInfo";
-	public static final String KEY_DAY_COLOR_SCHEME = "dayColorScheme";
-	public static final String KEY_NIGHT_COLOR_SCHEME = "nightColorScheme";
-	private static final int APP_ID_MAX_LENGTH = 10;
+    public static final String KEY_TTS_NAME = "ttsName";
+    public static final String KEY_HMI_DISPLAY_LANGUAGE_DESIRED = "hmiDisplayLanguageDesired";
+    public static final String KEY_APP_HMI_TYPE = "appHMIType";
+    public static final String KEY_APP_ID = "appID";
+    public static final String KEY_FULL_APP_ID = "fullAppID";
+    public static final String KEY_LANGUAGE_DESIRED = "languageDesired";
+    public static final String KEY_DEVICE_INFO = "deviceInfo";
+    public static final String KEY_APP_NAME = "appName";
+    public static final String KEY_NGN_MEDIA_SCREEN_APP_NAME = "ngnMediaScreenAppName";
+    public static final String KEY_IS_MEDIA_APPLICATION = "isMediaApplication";
+    public static final String KEY_VR_SYNONYMS = "vrSynonyms";
+    public static final String KEY_SDL_MSG_VERSION = "syncMsgVersion";
+    public static final String KEY_HASH_ID = "hashID";
+    public static final String KEY_APP_INFO = "appInfo";
+    public static final String KEY_DAY_COLOR_SCHEME = "dayColorScheme";
+    public static final String KEY_NIGHT_COLOR_SCHEME = "nightColorScheme";
+    private static final int APP_ID_MAX_LENGTH = 10;
 
-	/**
-	 * Constructs a new RegisterAppInterface object
-	 */
+    /**
+     * Constructs a new RegisterAppInterface object
+     */
     public RegisterAppInterface() {
         super(FunctionID.REGISTER_APP_INTERFACE.toString());
     }
-	/**
-	 * Constructs a new RegisterAppInterface object indicated by the Hashtable
-	 * parameter
-	 * <p></p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */    
+
+    /**
+     * Constructs a new RegisterAppInterface object indicated by the Hashtable
+     * parameter
+     * <p></p>
+     *
+     * @param hash The Hashtable to use
+     */
     public RegisterAppInterface(Hashtable<String, Object> hash) {
         super(hash);
     }
-	/**
-	 * Constructs a new RegisterAppInterface object
-	 * @param syncMsgVersion a SdlMsgVersion object representing version of the SDL&reg; SmartDeviceLink interface <br>
-	 *            <b>Notes: </b>To be compatible, app msg major version number
-	 *            must be less than or equal to SDL&reg; major version number.
-	 *            If msg versions are incompatible, app has 20 seconds to
-	 *            attempt successful RegisterAppInterface (w.r.t. msg version)
-	 *            on underlying protocol session, else will be terminated. Major
-	 *            version number is a compatibility declaration. Minor version
-	 *            number indicates minor functional variations (e.g. features,
-	 *            capabilities, bug fixes) when sent from SDL&reg; to app (in
-	 *            RegisterAppInterface response). However, the minor version
-	 *            number sent from the app to SDL&reg; (in RegisterAppInterface
-	 *            request) is ignored by SDL&reg;
-	 * @param appName a String value representing the Mobile Application's Name <br>
-	 *            <b>Notes: </b>
-	 *            <ul>
-	 *            <li>Must be 1-100 characters in length</li>
-	 *            <li>May not be the same (by case insensitive comparison) as
-	 *            the name or any synonym of any currently-registered
-	 *            application</li>
-	 *            </ul>
-	 * @param isMediaApplication a Boolean value
-	 * @param languageDesired a Language Enumeration
-	 * @param hmiDisplayLanguageDesired the requested language to be used on the HMI/Display
-	 * @param fullAppID a String value representing a unique ID, which an app will be given when approved <br>
-	 *            <b>Notes: </b>Maxlength = 100
-	 */
-	public RegisterAppInterface(@NonNull SdlMsgVersion syncMsgVersion, @NonNull String appName, @NonNull Boolean isMediaApplication,
-								@NonNull Language languageDesired, @NonNull Language hmiDisplayLanguageDesired, @NonNull String fullAppID) {
-		this();
-		setSdlMsgVersion(syncMsgVersion);
-		setAppName(appName);
-		setIsMediaApplication(isMediaApplication);
-		setLanguageDesired(languageDesired);
-		setHmiDisplayLanguageDesired(hmiDisplayLanguageDesired);
-		setFullAppID(fullAppID);
-	}
-	/**
-	 * Gets the version of the SDL&reg; SmartDeviceLink interface
-	 * 
-	 * @return SdlMsgVersion -a SdlMsgVersion object representing version of
-	 *         the SDL&reg; SmartDeviceLink interface
-	 */    
-    @SuppressWarnings("unchecked")
+
+    /**
+     * Constructs a new RegisterAppInterface object
+     *
+     * @param syncMsgVersion            a SdlMsgVersion object representing version of the SDL&reg; SmartDeviceLink interface <br>
+     *                                  <b>Notes: </b>To be compatible, app msg major version number
+     *                                  must be less than or equal to SDL&reg; major version number.
+     *                                  If msg versions are incompatible, app has 20 seconds to
+     *                                  attempt successful RegisterAppInterface (w.r.t. msg version)
+     *                                  on underlying protocol session, else will be terminated. Major
+     *                                  version number is a compatibility declaration. Minor version
+     *                                  number indicates minor functional variations (e.g. features,
+     *                                  capabilities, bug fixes) when sent from SDL&reg; to app (in
+     *                                  RegisterAppInterface response). However, the minor version
+     *                                  number sent from the app to SDL&reg; (in RegisterAppInterface
+     *                                  request) is ignored by SDL&reg;
+     * @param appName                   a String value representing the Mobile Application's Name <br>
+     *                                  <b>Notes: </b>
+     *                                  <ul>
+     *                                  <li>Must be 1-100 characters in length</li>
+     *                                  <li>May not be the same (by case insensitive comparison) as
+     *                                  the name or any synonym of any currently-registered
+     *                                  application</li>
+     *                                  </ul>
+     * @param isMediaApplication        a Boolean value
+     * @param languageDesired           a Language Enumeration
+     * @param hmiDisplayLanguageDesired the requested language to be used on the HMI/Display
+     * @param fullAppID                 a String value representing a unique ID, which an app will be given when approved <br>
+     *                                  <b>Notes: </b>maxLength = 100
+     */
+    public RegisterAppInterface(@NonNull SdlMsgVersion syncMsgVersion, @NonNull String appName, @NonNull Boolean isMediaApplication,
+                                @NonNull Language languageDesired, @NonNull Language hmiDisplayLanguageDesired, @NonNull String fullAppID) {
+        this();
+        setSdlMsgVersion(syncMsgVersion);
+        setAppName(appName);
+        setIsMediaApplication(isMediaApplication);
+        setLanguageDesired(languageDesired);
+        setHmiDisplayLanguageDesired(hmiDisplayLanguageDesired);
+        setFullAppID(fullAppID);
+    }
+
+    /**
+     * Gets the version of the SDL&reg; SmartDeviceLink interface
+     *
+     * @return SdlMsgVersion -a SdlMsgVersion object representing version of
+     * the SDL&reg; SmartDeviceLink interface
+     */
     public SdlMsgVersion getSdlMsgVersion() {
-		return (SdlMsgVersion) getObject(SdlMsgVersion.class, KEY_SDL_MSG_VERSION);
+        return (SdlMsgVersion) getObject(SdlMsgVersion.class, KEY_SDL_MSG_VERSION);
     }
-	/**
-	 * Sets the version of the SDL&reg; SmartDeviceLink interface
-	 * 
-	 * @param sdlMsgVersion
-	 *            a SdlMsgVersion object representing version of the SDL&reg;
-	 *            SmartDeviceLink interface
-	 *            <p></p>
-	 *            <b>Notes: </b>To be compatible, app msg major version number
-	 *            must be less than or equal to SDL&reg; major version number.
-	 *            If msg versions are incompatible, app has 20 seconds to
-	 *            attempt successful RegisterAppInterface (w.r.t. msg version)
-	 *            on underlying protocol session, else will be terminated. Major
-	 *            version number is a compatibility declaration. Minor version
-	 *            number indicates minor functional variations (e.g. features,
-	 *            capabilities, bug fixes) when sent from SDL&reg; to app (in
-	 *            RegisterAppInterface response). However, the minor version
-	 *            number sent from the app to SDL&reg; (in RegisterAppInterface
-	 *            request) is ignored by SDL&reg;
-	 *
-	 */    
-    public void setSdlMsgVersion(@NonNull SdlMsgVersion sdlMsgVersion) {
+
+    /**
+     * Sets the version of the SDL&reg; SmartDeviceLink interface
+     *
+     * @param sdlMsgVersion a SdlMsgVersion object representing version of the SDL&reg;
+     *                      SmartDeviceLink interface
+     *                      <p></p>
+     *                      <b>Notes: </b>To be compatible, app msg major version number
+     *                      must be less than or equal to SDL&reg; major version number.
+     *                      If msg versions are incompatible, app has 20 seconds to
+     *                      attempt successful RegisterAppInterface (w.r.t. msg version)
+     *                      on underlying protocol session, else will be terminated. Major
+     *                      version number is a compatibility declaration. Minor version
+     *                      number indicates minor functional variations (e.g. features,
+     *                      capabilities, bug fixes) when sent from SDL&reg; to app (in
+     *                      RegisterAppInterface response). However, the minor version
+     *                      number sent from the app to SDL&reg; (in RegisterAppInterface
+     *                      request) is ignored by SDL&reg;
+     */
+    public RegisterAppInterface setSdlMsgVersion(@NonNull SdlMsgVersion sdlMsgVersion) {
         setParameters(KEY_SDL_MSG_VERSION, sdlMsgVersion);
+        return this;
     }
-    
-    @SuppressWarnings("unchecked")
+
     public DeviceInfo getDeviceInfo() {
         return (DeviceInfo) getObject(DeviceInfo.class, KEY_DEVICE_INFO);
-    }    
-    
-    public void setDeviceInfo(DeviceInfo deviceInfo) {
-		setParameters(KEY_DEVICE_INFO, deviceInfo);
-    }    
-	/**
-	 * Gets Mobile Application's Name
-	 * 
-	 * @return String -a String representing the Mobile Application's Name
-	 */    
+    }
+
+    public RegisterAppInterface setDeviceInfo(DeviceInfo deviceInfo) {
+        setParameters(KEY_DEVICE_INFO, deviceInfo);
+        return this;
+    }
+
+    /**
+     * Gets Mobile Application's Name
+     *
+     * @return String -a String representing the Mobile Application's Name
+     */
     public String getAppName() {
         return getString(KEY_APP_NAME);
     }
-	/**
-	 * Sets Mobile Application's Name, This name is displayed in the SDL&reg;
-	 * Mobile Applications menu. It also serves as the unique identifier of the
-	 * application for SmartDeviceLink
-	 * 
-	 * @param appName
-	 *            a String value representing the Mobile Application's Name
-	 *            <p></p>
-	 *            <b>Notes: </b>
-	 *            <ul>
-	 *            <li>Must be 1-100 characters in length</li>
-	 *            <li>May not be the same (by case insensitive comparison) as
-	 *            the name or any synonym of any currently-registered
-	 *            application</li>
-	 *            </ul>
-	 */    
-    public void setAppName(@NonNull String appName) {
-		setParameters(KEY_APP_NAME, appName);
+
+    /**
+     * Sets Mobile Application's Name, This name is displayed in the SDL&reg;
+     * Mobile Applications menu. It also serves as the unique identifier of the
+     * application for SmartDeviceLink
+     *
+     * @param appName a String value representing the Mobile Application's Name
+     *                <p></p>
+     *                <b>Notes: </b>
+     *                <ul>
+     *                <li>Must be 1-100 characters in length</li>
+     *                <li>May not be the same (by case insensitive comparison) as
+     *                the name or any synonym of any currently-registered
+     *                application</li>
+     *                </ul>
+     */
+    public RegisterAppInterface setAppName(@NonNull String appName) {
+        setParameters(KEY_APP_NAME, appName);
+        return this;
     }
 
-	/**
-	 * Gets TTS string for VR recognition of the mobile application name
-	 * 
-	 * @return List<TTSChunk> -List value representing the TTS string
-	 * @since SmartDeviceLink 2.0
-	 */
+    /**
+     * Gets TTS string for VR recognition of the mobile application name
+     *
+     * @return List<TTSChunk> -List value representing the TTS string
+     * @since SmartDeviceLink 2.0
+     */
     @SuppressWarnings("unchecked")
     public List<TTSChunk> getTtsName() {
         return (List<TTSChunk>) getObject(TTSChunk.class, KEY_TTS_NAME);
     }
 
-	/**
-	 * 
-	 * @param ttsName
-	 *            a List<TTSChunk> value represeting the TTS Name
-	 *            <p></p>
-	 *            <b>Notes: </b>
-	 *            <ul>
-	 *            <li>Size must be 1-100</li>
-	 *            <li>Needs to be unique over all applications</li>
-	 *            <li>May not be empty</li>
-	 *            <li>May not start with a new line character</li>
-	 *            <li>May not interfere with any name or synonym of previously
-	 *            registered applications and the following list of words</li>
-	 *            <li>Needs to be unique over all applications. Applications
-	 *            with the same name will be rejected</li>
-	 *            </ul>
-	 * @since SmartDeviceLink 2.0
-	 */
-    public void setTtsName(List<TTSChunk> ttsName) {
-		setParameters(KEY_TTS_NAME, ttsName);
+    /**
+     * @param ttsName a List<TTSChunk> value representing the TTS Name
+     *                <p></p>
+     *                <b>Notes: </b>
+     *                <ul>
+     *                <li>Size must be 1-100</li>
+     *                <li>Needs to be unique over all applications</li>
+     *                <li>May not be empty</li>
+     *                <li>May not start with a new line character</li>
+     *                <li>May not interfere with any name or synonym of previously
+     *                registered applications and the following list of words</li>
+     *                <li>Needs to be unique over all applications. Applications
+     *                with the same name will be rejected</li>
+     *                </ul>
+     * @since SmartDeviceLink 2.0
+     */
+    public RegisterAppInterface setTtsName(List<TTSChunk> ttsName) {
+        setParameters(KEY_TTS_NAME, ttsName);
+        return this;
     }
-	/**
-	 * Gets a String representing an abbreviated version of the mobile
-	 * applincation's name (if necessary) that will be displayed on the NGN
-	 * media screen
-	 * 
-	 * @return String -a String value representing an abbreviated version of the
-	 *         mobile applincation's name
-	 */    
+
+    /**
+     * Gets a String representing an abbreviated version of the mobile
+     * application's name (if necessary) that will be displayed on the NGN
+     * media screen
+     *
+     * @return String -a String value representing an abbreviated version of the
+     * mobile application's name
+     */
     public String getNgnMediaScreenAppName() {
         return getString(KEY_NGN_MEDIA_SCREEN_APP_NAME);
     }
-	/**
-	 * Sets a String representing an abbreviated version of the mobile
-	 * applincation's name (if necessary) that will be displayed on the NGN
-	 * media screen
-	 * 
-	 * @param ngnMediaScreenAppName
-	 *            a String value representing an abbreviated version of the
-	 *            mobile applincation's name
-	 *            <p></p>
-	 *            <b>Notes: </b>
-	 *            <ul>
-	 *            <li>Must be 1-5 characters</li>
-	 *            <li>If not provided, value will be derived from appName
-	 *            truncated to 5 characters</li>
-	 *            </ul>
-	 */    
-    public void setNgnMediaScreenAppName(String ngnMediaScreenAppName) {
-		setParameters(KEY_NGN_MEDIA_SCREEN_APP_NAME, ngnMediaScreenAppName);
+
+    /**
+     * Sets a String representing an abbreviated version of the mobile
+     * application's name (if necessary) that will be displayed on the NGN
+     * media screen
+     *
+     * @param ngnMediaScreenAppName a String value representing an abbreviated version of the
+     *                              mobile application's name
+     *                              <p></p>
+     *                              <b>Notes: </b>
+     *                              <ul>
+     *                              <li>Must be 1-5 characters</li>
+     *                              <li>If not provided, value will be derived from appName
+     *                              truncated to 5 characters</li>
+     *                              </ul>
+     */
+    public RegisterAppInterface setNgnMediaScreenAppName(String ngnMediaScreenAppName) {
+        setParameters(KEY_NGN_MEDIA_SCREEN_APP_NAME, ngnMediaScreenAppName);
+        return this;
     }
-	/**
-	 * Gets the List<String> representing the an array of 1-100 elements, each
-	 * element containing a voice-recognition synonym
-	 * 
-	 * @return List<String> -a List value representing the an array of
-	 *         1-100 elements, each element containing a voice-recognition
-	 *         synonym
-	 */    
+
+    /**
+     * Gets the List<String> representing the an array of 1-100 elements, each
+     * element containing a voice-recognition synonym
+     *
+     * @return List<String> -a List value representing the an array of
+     * 1-100 elements, each element containing a voice-recognition
+     * synonym
+     */
     @SuppressWarnings("unchecked")
     public List<String> getVrSynonyms() {
         return (List<String>) getObject(String.class, KEY_VR_SYNONYMS);
     }
-	/**
-	 * Sets a vrSynonyms representing the an array of 1-100 elements, each
-	 * element containing a voice-recognition synonym
-	 * 
-	 * @param vrSynonyms
-	 *            a List<String> value representing the an array of 1-100
-	 *            elements
-	 *            <p></p>
-	 *            <b>Notes: </b>
-	 *            <ul>
-	 *            <li>Each vr synonym is limited to 40 characters, and there can
-	 *            be 1-100 synonyms in array</li>
-	 *            <li>May not be the same (by case insensitive comparison) as
-	 *            the name or any synonym of any currently-registered
-	 *            application</li>
-	 *            </ul>
-	 */    
-    public void setVrSynonyms(List<String> vrSynonyms) {
-		setParameters(KEY_VR_SYNONYMS, vrSynonyms);
+
+    /**
+     * Sets a vrSynonyms representing the an array of 1-100 elements, each
+     * element containing a voice-recognition synonym
+     *
+     * @param vrSynonyms a List<String> value representing the an array of 1-100
+     *                   elements
+     *                   <p></p>
+     *                   <b>Notes: </b>
+     *                   <ul>
+     *                   <li>Each vr synonym is limited to 40 characters, and there can
+     *                   be 1-100 synonyms in array</li>
+     *                   <li>May not be the same (by case insensitive comparison) as
+     *                   the name or any synonym of any currently-registered
+     *                   application</li>
+     *                   </ul>
+     */
+    public RegisterAppInterface setVrSynonyms(List<String> vrSynonyms) {
+        setParameters(KEY_VR_SYNONYMS, vrSynonyms);
+        return this;
     }
-	/**
-	 * Gets a Boolean representing MediaApplication
-	 * 
-	 * @return Boolean -a Boolean value representing a mobile application that is
-	 *         a media application or not
-	 */    
+
+    /**
+     * Gets a Boolean representing MediaApplication
+     *
+     * @return Boolean -a Boolean value representing a mobile application that is
+     * a media application or not
+     */
     public Boolean getIsMediaApplication() {
         return getBoolean(KEY_IS_MEDIA_APPLICATION);
     }
-	/**
-	 * Sets a Boolean to indicate a mobile application that is a media
-	 * application or not
-	 * 
-	 * @param isMediaApplication
-	 *            a Boolean value
-	 */    
-    public void setIsMediaApplication(@NonNull Boolean isMediaApplication) {
-		setParameters(KEY_IS_MEDIA_APPLICATION, isMediaApplication);
+
+    /**
+     * Sets a Boolean to indicate a mobile application that is a media
+     * application or not
+     *
+     * @param isMediaApplication a Boolean value
+     */
+    public RegisterAppInterface setIsMediaApplication(@NonNull Boolean isMediaApplication) {
+        setParameters(KEY_IS_MEDIA_APPLICATION, isMediaApplication);
+        return this;
     }
-	/**
-	 * Gets a Language enumeration indicating what language the application
-	 * intends to use for user interaction (Display, TTS and VR)
-	 * 
-	 * @return Enumeration -a language enumeration
-	 */    
+
+    /**
+     * Gets a Language enumeration indicating what language the application
+     * intends to use for user interaction (Display, TTS and VR)
+     *
+     * @return Enumeration -a language enumeration
+     */
     public Language getLanguageDesired() {
         return (Language) getObject(Language.class, KEY_LANGUAGE_DESIRED);
     }
-	/**
-	 * Sets an enumeration indicating what language the application intends to
-	 * use for user interaction (Display, TTS and VR)
-	 * 
-	 * @param languageDesired
-	 *            a Language Enumeration
-	 *            
-	 * 
-	 */    
-    public void setLanguageDesired(@NonNull Language languageDesired) {
-		setParameters(KEY_LANGUAGE_DESIRED, languageDesired);
+
+    /**
+     * Sets an enumeration indicating what language the application intends to
+     * use for user interaction (Display, TTS and VR)
+     *
+     * @param languageDesired a Language Enumeration
+     */
+    public RegisterAppInterface setLanguageDesired(@NonNull Language languageDesired) {
+        setParameters(KEY_LANGUAGE_DESIRED, languageDesired);
+        return this;
     }
 
-	/**
-	 * Gets an enumeration indicating what language the application intends to
-	 * use for user interaction ( Display)
-	 * 
-	 * @return Language - a Language value representing an enumeration
-	 *         indicating what language the application intends to use for user
-	 *         interaction ( Display)
-	 * @since SmartDeviceLink 2.0
-	 */
+    /**
+     * Gets an enumeration indicating what language the application intends to
+     * use for user interaction ( Display)
+     *
+     * @return Language - a Language value representing an enumeration
+     * indicating what language the application intends to use for user
+     * interaction ( Display)
+     * @since SmartDeviceLink 2.0
+     */
     public Language getHmiDisplayLanguageDesired() {
         return (Language) getObject(Language.class, KEY_HMI_DISPLAY_LANGUAGE_DESIRED);
     }
 
-	/**
-	 * Sets an enumeration indicating what language the application intends to
-	 * use for user interaction ( Display)
-	 * 
-	 * @param hmiDisplayLanguageDesired the requested language to be used on the HMI/Display
-	 * @since SmartDeviceLink 2.0
-	 */
-    public void setHmiDisplayLanguageDesired(@NonNull Language hmiDisplayLanguageDesired) {
-		setParameters(KEY_HMI_DISPLAY_LANGUAGE_DESIRED, hmiDisplayLanguageDesired);
+    /**
+     * Sets an enumeration indicating what language the application intends to
+     * use for user interaction ( Display)
+     *
+     * @param hmiDisplayLanguageDesired the requested language to be used on the HMI/Display
+     * @since SmartDeviceLink 2.0
+     */
+    public RegisterAppInterface setHmiDisplayLanguageDesired(@NonNull Language hmiDisplayLanguageDesired) {
+        setParameters(KEY_HMI_DISPLAY_LANGUAGE_DESIRED, hmiDisplayLanguageDesired);
+        return this;
     }
 
-	/**
-	 * Gets a list of all applicable app types stating which classifications to
-	 * be given to the app.e.g. for platforms , like GEN2, this will determine
-	 * which "corner(s)" the app can populate
-	 * 
-	 * @return List<AppHMIType> - a List value representing a list of all
-	 *         applicable app types stating which classifications to be given to
-	 *         the app
-	 * @since SmartDeviceLinke 2.0
-	 */
+    /**
+     * Gets a list of all applicable app types stating which classifications to
+     * be given to the app.e.g. for platforms , like GEN2, this will determine
+     * which "corner(s)" the app can populate
+     *
+     * @return List<AppHMIType> - a List value representing a list of all
+     * applicable app types stating which classifications to be given to
+     * the app
+     * @since SmartDeviceLink 2.0
+     */
     @SuppressWarnings("unchecked")
     public List<AppHMIType> getAppHMIType() {
         return (List<AppHMIType>) getObject(AppHMIType.class, KEY_APP_HMI_TYPE);
     }
 
-	/**
-	 * Sets a a list of all applicable app types stating which classifications
-	 * to be given to the app. e.g. for platforms , like GEN2, this will
-	 * determine which "corner(s)" the app can populate
-	 * 
-	 * @param appHMIType
-	 *            a List<AppHMIType>
-	 *            <p></p>
-	 *            <b>Notes: </b>
-	 *            <ul>
-	 *            <li>Array Minsize: = 1</li>
-	 *            <li>Array Maxsize = 100</li>
-	 *            </ul>
-	 * @since SmartDeviceLink 2.0
-	 */
-    public void setAppHMIType(List<AppHMIType> appHMIType) {
-		setParameters(KEY_APP_HMI_TYPE, appHMIType);
+    /**
+     * Sets a a list of all applicable app types stating which classifications
+     * to be given to the app. e.g. for platforms , like GEN2, this will
+     * determine which "corner(s)" the app can populate
+     *
+     * @param appHMIType a List<AppHMIType>
+     *                   <p></p>
+     *                   <b>Notes: </b>
+     *                   <ul>
+     *                   <li>Array Minsize: = 1</li>
+     *                   <li>Array Maxsize = 100</li>
+     *                   </ul>
+     * @since SmartDeviceLink 2.0
+     */
+    public RegisterAppInterface setAppHMIType(List<AppHMIType> appHMIType) {
+        setParameters(KEY_APP_HMI_TYPE, appHMIType);
+        return this;
     }
-    
+
     public String getHashID() {
         return getString(KEY_HASH_ID);
     }
-   
-    public void setHashID(String hashID) {
-		setParameters(KEY_HASH_ID, hashID);
+
+    public RegisterAppInterface setHashID(String hashID) {
+        setParameters(KEY_HASH_ID, hashID);
+        return this;
     }
 
-	/**
-	 * Gets the detailed information about the registered application
-	 * @return appInfo - detailed information about the registered application
-	 */
-	public AppInfo getAppInfo() {
-		return (AppInfo) getObject(AppInfo.class, KEY_APP_INFO);
-	}
+    /**
+     * Gets the detailed information about the registered application
+     *
+     * @return appInfo - detailed information about the registered application
+     */
+    public AppInfo getAppInfo() {
+        return (AppInfo) getObject(AppInfo.class, KEY_APP_INFO);
+    }
 
-	/**
-	 * Sets detailed information about the registered application
-	 * @param appInfo - detailed information about the registered application
-	 */
-	public void setAppInfo(AppInfo appInfo) {
-		setParameters(KEY_APP_INFO, appInfo);
-	}
+    /**
+     * Sets detailed information about the registered application
+     *
+     * @param appInfo - detailed information about the registered application
+     */
+    public RegisterAppInterface setAppInfo(AppInfo appInfo) {
+        setParameters(KEY_APP_INFO, appInfo);
+        return this;
+    }
 
-	/**
-	 * Gets the unique ID, which an app will be given when approved
-	 *
-	 * @return String - a String value representing the unique ID, which an app
-	 *         will be given when approved
-	 * @since SmartDeviceLink 2.0
-	 */
-	public String getAppID() {
-		return getString(KEY_APP_ID);
-	}
+    /**
+     * Gets the unique ID, which an app will be given when approved
+     *
+     * @return String - a String value representing the unique ID, which an app
+     * will be given when approved
+     * @since SmartDeviceLink 2.0
+     */
+    public String getAppID() {
+        return getString(KEY_APP_ID);
+    }
 
-	/**
-	 * Sets a unique ID, which an app will be given when approved
-	 *
-	 * @param appID
-	 *            a String value representing a unique ID, which an app will be
-	 *            given when approved
-	 *            <p></p>
-	 *            <b>Notes: </b>Maxlength = 100
-	 * @since SmartDeviceLink 2.0
-	 */
-	public void setAppID(@NonNull String appID) {
-		if (appID != null) {
-			setParameters(KEY_APP_ID, appID.toLowerCase());
-		} else {
-			setParameters(KEY_APP_ID, appID);
-		}
-	}
+    /**
+     * Sets a unique ID, which an app will be given when approved
+     *
+     * @param appID a String value representing a unique ID, which an app will be
+     *              given when approved
+     *              <p></p>
+     *              <b>Notes: </b>maxLength = 100
+     * @since SmartDeviceLink 2.0
+     */
+    public RegisterAppInterface setAppID(@NonNull String appID) {
+        if (appID != null) {
+            setParameters(KEY_APP_ID, appID.toLowerCase());
+        } else {
+            setParameters(KEY_APP_ID, appID);
+        }
+        return this;
+    }
 
-	/**
-	 * Gets the unique ID, which an app will be given when approved
-	 *
-	 * @return String - a String value representing the unique ID, which an app
-	 *         will be given when approved
-	 * @since SmartDeviceLink 5.0
-	 */
-	public String getFullAppID() {
-		return getString(KEY_FULL_APP_ID);
-	}
+    /**
+     * Gets the unique ID, which an app will be given when approved
+     *
+     * @return String - a String value representing the unique ID, which an app
+     * will be given when approved
+     * @since SmartDeviceLink 5.0
+     */
+    public String getFullAppID() {
+        return getString(KEY_FULL_APP_ID);
+    }
 
-	/**
-	 * Sets a unique ID, which an app will be given when approved <br>
-	 * Note: this will automatically parse the fullAppID into the smaller appId and set the appId value as well
-	 * @param fullAppID
-	 *            a String value representing a unique ID, which an app will be
-	 *            given when approved
-	 *            <p></p>
-	 *            <b>Notes: </b>Maxlength = 100
-	 * @since SmartDeviceLink 5.0
-	 */
-	public void setFullAppID(String fullAppID) {
-		if (fullAppID != null) {
-			fullAppID = fullAppID.toLowerCase();
-			setParameters(KEY_FULL_APP_ID, fullAppID);
-			String appID;
-			if (fullAppID.length() <= APP_ID_MAX_LENGTH) {
-				appID = fullAppID;
-			} else {
-				appID = fullAppID.replace("-", "").substring(0, APP_ID_MAX_LENGTH);
-			}
-			setAppID(appID);
-		} else {
-			setParameters(KEY_FULL_APP_ID, null);
-		}
-	}
+    /**
+     * Sets a unique ID, which an app will be given when approved <br>
+     * Note: this will automatically parse the fullAppID into the smaller appId and set the appId value as well
+     *
+     * @param fullAppID a String value representing a unique ID, which an app will be
+     *                  given when approved
+     *                  <p></p>
+     *                  <b>Notes: </b>maxLength = 100
+     * @since SmartDeviceLink 5.0
+     */
+    public RegisterAppInterface setFullAppID(String fullAppID) {
+        if (fullAppID != null) {
+            fullAppID = fullAppID.toLowerCase();
+            setParameters(KEY_FULL_APP_ID, fullAppID);
+            String appID;
+            if (fullAppID.length() <= APP_ID_MAX_LENGTH) {
+                appID = fullAppID;
+            } else {
+                appID = fullAppID.replace("-", "").substring(0, APP_ID_MAX_LENGTH);
+            }
+            setAppID(appID);
+        } else {
+            setParameters(KEY_FULL_APP_ID, null);
+        }
+        return this;
+    }
 
-	@Override
-	public void format(Version rpcVersion, boolean formatParams) {
-		if(rpcVersion == null || rpcVersion.getMajor() >= 5) {
-			if (getFullAppID() == null) {
-				setFullAppID(getAppID());
-			}
-		}
-		super.format(rpcVersion, formatParams);
-	}
+    @Override
+    public void format(Version rpcVersion, boolean formatParams) {
+        if (rpcVersion == null || rpcVersion.getMajor() >= 5) {
+            if (getFullAppID() == null) {
+                setFullAppID(getAppID());
+            }
+        }
+        super.format(rpcVersion, formatParams);
+    }
 
-	/**
-	 * Gets the color scheme that is currently used for day
-	 *
-	 * @return TemplateColorScheme - a TemplateColorScheme object representing the colors that are used
-	 * for day color scheme
-	 * @since SmartDeviceLink 5.0
-	 */
-    public TemplateColorScheme getDayColorScheme(){
-		return (TemplateColorScheme) getObject(TemplateColorScheme.class, KEY_DAY_COLOR_SCHEME);
-	}
+    /**
+     * Gets the color scheme that is currently used for day
+     *
+     * @return TemplateColorScheme - a TemplateColorScheme object representing the colors that are used
+     * for day color scheme
+     * @since SmartDeviceLink 5.0
+     */
+    public TemplateColorScheme getDayColorScheme() {
+        return (TemplateColorScheme) getObject(TemplateColorScheme.class, KEY_DAY_COLOR_SCHEME);
+    }
 
-	/**
-	 * Sets the color scheme that is intended to be used for day
-	 *
-	 * @param templateColorScheme a TemplateColorScheme object representing the colors that will be
-	 * used for day color scheme
-	 * @since SmartDeviceLink 5.0
-	 */
-    public void setDayColorScheme(TemplateColorScheme templateColorScheme){
-		setParameters(KEY_DAY_COLOR_SCHEME, templateColorScheme);
-	}
+    /**
+     * Sets the color scheme that is intended to be used for day
+     *
+     * @param templateColorScheme a TemplateColorScheme object representing the colors that will be
+     *                            used for day color scheme
+     * @since SmartDeviceLink 5.0
+     */
+    public RegisterAppInterface setDayColorScheme(TemplateColorScheme templateColorScheme) {
+        setParameters(KEY_DAY_COLOR_SCHEME, templateColorScheme);
+        return this;
+    }
 
-	/**
-	 * Gets the color scheme that is currently used for night
-	 *
-	 * @return TemplateColorScheme - a TemplateColorScheme object representing the colors that are used
-	 * for night color scheme
-	 * @since SmartDeviceLink 5.0
-	 */
-	public TemplateColorScheme getNightColorScheme(){
-		return (TemplateColorScheme) getObject(TemplateColorScheme.class, KEY_NIGHT_COLOR_SCHEME);
-	}
+    /**
+     * Gets the color scheme that is currently used for night
+     *
+     * @return TemplateColorScheme - a TemplateColorScheme object representing the colors that are used
+     * for night color scheme
+     * @since SmartDeviceLink 5.0
+     */
+    public TemplateColorScheme getNightColorScheme() {
+        return (TemplateColorScheme) getObject(TemplateColorScheme.class, KEY_NIGHT_COLOR_SCHEME);
+    }
 
-	/**
-	 * Sets the color scheme that is intended to be used for night
-	 *
-	 * @param templateColorScheme a TemplateColorScheme object representing the colors that will be
-	 * used for night color scheme
-	 * @since SmartDeviceLink 5.0
-	 */
-	public void setNightColorScheme(TemplateColorScheme templateColorScheme){
-		setParameters(KEY_NIGHT_COLOR_SCHEME, templateColorScheme);
-	}
+    /**
+     * Sets the color scheme that is intended to be used for night
+     *
+     * @param templateColorScheme a TemplateColorScheme object representing the colors that will be
+     *                            used for night color scheme
+     * @since SmartDeviceLink 5.0
+     */
+    public RegisterAppInterface setNightColorScheme(TemplateColorScheme templateColorScheme) {
+        setParameters(KEY_NIGHT_COLOR_SCHEME, templateColorScheme);
+        return this;
+    }
 }

@@ -1,19 +1,18 @@
 package com.smartdevicelink.managers.screen;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.SubscribeButton;
 import com.smartdevicelink.proxy.rpc.UnsubscribeButton;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
-import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.DebugTool;
@@ -29,7 +28,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 abstract class BaseSubscribeButtonManager extends BaseSubManager {
 
     private static final String TAG = "SubscribeButtonManager";
-    HashMap<ButtonName, CopyOnWriteArrayList<OnButtonListener>> onButtonListeners;
+    final HashMap<ButtonName, CopyOnWriteArrayList<OnButtonListener>> onButtonListeners;
     private OnRPCNotificationListener onButtonPressListener;
     private OnRPCNotificationListener onButtonEventListener;
 
@@ -117,19 +116,18 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
      * Send the UnsubscribeButton RPC
      *
      * @param buttonName - ButtonName - name of button
-     * @param listener - OnButtonListener - listener to get notified
+     * @param listener   - OnButtonListener - listener to get notified
      */
     private void unsubscribeButtonRequest(final ButtonName buttonName, final OnButtonListener listener) {
         UnsubscribeButton unsubscribeButtonRequest = new UnsubscribeButton(buttonName);
         unsubscribeButtonRequest.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
-                onButtonListeners.remove(buttonName);
-            }
-
-            @Override
-            public void onError(int correlationId, Result resultCode, String info) {
-                listener.onError("Attempt to unsubscribe to button named " + buttonName + " Failed. ResultCode: " + resultCode + " info: " + info);
+                if (response.getSuccess()) {
+                    onButtonListeners.remove(buttonName);
+                } else {
+                    listener.onError("Attempt to unsubscribe to button named " + buttonName + " Failed. ResultCode: " + response.getResultCode() + " info: " + response.getInfo());
+                }
             }
         });
         internalInterface.sendRPC(unsubscribeButtonRequest);
@@ -146,13 +144,12 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
         subscribeButtonRequest.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
-                onButtonListeners.put(buttonName, new CopyOnWriteArrayList<OnButtonListener>());
-                onButtonListeners.get(buttonName).add(listener);
-            }
-
-            @Override
-            public void onError(int correlationId, Result resultCode, String info) {
-                listener.onError("Attempt to subscribe to button named " + buttonName + " Failed . ResultCode: " + resultCode + " info: " + info);
+                if (response.getSuccess()) {
+                    onButtonListeners.put(buttonName, new CopyOnWriteArrayList<OnButtonListener>());
+                    onButtonListeners.get(buttonName).add(listener);
+                } else {
+                    listener.onError("Attempt to subscribe to button named " + buttonName + " Failed . ResultCode: " + response.getResultCode() + " info: " + response.getInfo());
+                }
             }
         });
         internalInterface.sendRPC(subscribeButtonRequest);

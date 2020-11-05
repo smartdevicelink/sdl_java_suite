@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
@@ -43,37 +43,38 @@ import java.util.Hashtable;
  */
 public class OnSystemCapabilityUpdated extends RPCNotification {
 
-	public static final String KEY_SYSTEM_CAPABILITY = "systemCapability";
+    public static final String KEY_SYSTEM_CAPABILITY = "systemCapability";
 
-	// Constructors
+    // Constructors
 
-	public OnSystemCapabilityUpdated() {
-		super(FunctionID.ON_SYSTEM_CAPABILITY_UPDATED.toString());
-	}
+    public OnSystemCapabilityUpdated() {
+        super(FunctionID.ON_SYSTEM_CAPABILITY_UPDATED.toString());
+    }
 
-	public OnSystemCapabilityUpdated(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+    public OnSystemCapabilityUpdated(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
-	public OnSystemCapabilityUpdated(@NonNull SystemCapability serviceData) {
-		this();
-		setSystemCapability(serviceData);
-	}
+    public OnSystemCapabilityUpdated(@NonNull SystemCapability serviceData) {
+        this();
+        setSystemCapability(serviceData);
+    }
 
-	// Setters and Getters
+    // Setters and Getters
 
-	/**
-	 * @param systemCapability - The system capability that has been updated
-	 */
-	public void setSystemCapability(@NonNull SystemCapability systemCapability){
-		setParameters(KEY_SYSTEM_CAPABILITY, systemCapability);
-	}
+    /**
+     * @param systemCapability - The system capability that has been updated
+     */
+    public OnSystemCapabilityUpdated setSystemCapability(@NonNull SystemCapability systemCapability) {
+        setParameters(KEY_SYSTEM_CAPABILITY, systemCapability);
+        return this;
+    }
 
-	/**
-	 * @return systemCapability - The system capability that has been updated
-	 */
-	public SystemCapability getSystemCapability(){
-		return (SystemCapability) getObject(SystemCapability.class, KEY_SYSTEM_CAPABILITY);
-	}
+    /**
+     * @return systemCapability - The system capability that has been updated
+     */
+    public SystemCapability getSystemCapability() {
+        return (SystemCapability) getObject(SystemCapability.class, KEY_SYSTEM_CAPABILITY);
+    }
 
 }

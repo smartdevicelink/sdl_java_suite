@@ -35,11 +35,11 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
@@ -68,125 +68,125 @@ import static org.mockito.Mockito.mock;
 @RunWith(AndroidJUnit4.class)
 public class PreloadChoicesOperationTests {
 
-	private PreloadChoicesOperation preloadChoicesOperation;
-	private PreloadChoicesOperation preloadChoicesOperationNullCapability;
-	private PreloadChoicesOperation preloadChoicesOperationEmptyCapability;
+    private PreloadChoicesOperation preloadChoicesOperation;
+    private PreloadChoicesOperation preloadChoicesOperationNullCapability;
+    private PreloadChoicesOperation preloadChoicesOperationEmptyCapability;
 
 
-	@Before
-	public void setUp() throws Exception{
+    @Before
+    public void setUp() throws Exception {
 
-		ChoiceCell cell1 = new ChoiceCell("cell 1");
-		ChoiceCell cell2 = new ChoiceCell("cell 2", null, TestValues.GENERAL_ARTWORK);
-		HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
-		cellsToPreload.add(cell1);
-		cellsToPreload.add(cell2);
+        ChoiceCell cell1 = new ChoiceCell("cell 1");
+        ChoiceCell cell2 = new ChoiceCell("cell 2", null, TestValues.GENERAL_ARTWORK);
+        HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
+        cellsToPreload.add(cell1);
+        cellsToPreload.add(cell2);
 
-		ImageField imageField = new ImageField(ImageFieldName.choiceImage, Arrays.asList(FileType.GRAPHIC_PNG, FileType.GRAPHIC_JPEG));
-		ImageField imageField2 = new ImageField();
-		imageField2.setName(ImageFieldName.choiceSecondaryImage);
-		TextField textField = new TextField(TextFieldName.menuName, CharacterSet.CID1SET, 2, 2);
+        ImageField imageField = new ImageField(ImageFieldName.choiceImage, Arrays.asList(FileType.GRAPHIC_PNG, FileType.GRAPHIC_JPEG));
+        ImageField imageField2 = new ImageField();
+        imageField2.setName(ImageFieldName.choiceSecondaryImage);
+        TextField textField = new TextField(TextFieldName.menuName, CharacterSet.CID1SET, 2, 2);
 
-		TextField textField2 = new TextField();
-		TextField textField3 = new TextField();
+        TextField textField2 = new TextField();
+        TextField textField3 = new TextField();
 
-		textField2.setName(TextFieldName.secondaryText);
-		textField3.setName(TextFieldName.tertiaryText);
-
-
-		WindowCapability windowCapability = new WindowCapability();
-		windowCapability.setImageFields(Arrays.asList(imageField, imageField2));
-		windowCapability.setImageTypeSupported(Arrays.asList(ImageType.STATIC, ImageType.DYNAMIC));
-		windowCapability.setTextFields(Arrays.asList(textField, textField2, textField3));
-
-		ISdl internalInterface = mock(ISdl.class);
-		FileManager fileManager = mock(FileManager.class);
-		preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager, null, windowCapability, true, cellsToPreload, null);
-	}
-
-	/**
-	 * Sets up PreloadChoicesOperation with WindowCapability being null
-	 */
-	public void setUpNullWindowCapability() {
-
-		ChoiceCell cell1 = new ChoiceCell("cell 1");
-		ChoiceCell cell2 = new ChoiceCell("cell 2", null, TestValues.GENERAL_ARTWORK);
-		HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
-		cellsToPreload.add(cell1);
-		cellsToPreload.add(cell2);
-
-		ISdl internalInterface = mock(ISdl.class);
-		FileManager fileManager = mock(FileManager.class);
-		preloadChoicesOperationNullCapability = new PreloadChoicesOperation(internalInterface, fileManager, null, null, true, cellsToPreload, null);
-	}
-
-	/**
-	 * Sets up PreloadChoicesOperation with an Capability not being set
-	 * certain imageFields and TextFields
-	 */
-	public void setUpEmptyWindowCapability() {
-
-		ChoiceCell cell1 = new ChoiceCell("cell 1");
-		ChoiceCell cell2 = new ChoiceCell("cell 2", null, TestValues.GENERAL_ARTWORK);
-		HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
-		cellsToPreload.add(cell1);
-		cellsToPreload.add(cell2);
-
-		ImageField imageField = new ImageField();
-		imageField.setName(ImageFieldName.alertIcon);
-
-		TextField textField = new TextField();
-		textField.setName(TextFieldName.mainField1);
-
-		WindowCapability windowCapability = new WindowCapability();
-		windowCapability.setImageFields(Collections.singletonList(imageField));
-		windowCapability.setTextFields(Collections.singletonList(textField));
-
-		ISdl internalInterface = mock(ISdl.class);
-		FileManager fileManager = mock(FileManager.class);
-		preloadChoicesOperationEmptyCapability = new PreloadChoicesOperation(internalInterface, fileManager, null, windowCapability, true, cellsToPreload, null);
-	}
+        textField2.setName(TextFieldName.secondaryText);
+        textField3.setName(TextFieldName.tertiaryText);
 
 
-	@Test
-	public void testArtworkNeedsUpload(){
-		boolean test = preloadChoicesOperation.artworkNeedsUpload(TestValues.GENERAL_ARTWORK);
-		assertTrue(test);
-	}
+        WindowCapability windowCapability = new WindowCapability();
+        windowCapability.setImageFields(Arrays.asList(imageField, imageField2));
+        windowCapability.setImageTypeSupported(Arrays.asList(ImageType.STATIC, ImageType.DYNAMIC));
+        windowCapability.setTextFields(Arrays.asList(textField, textField2, textField3));
 
-	@Test
-	public void testArtworksToUpload(){
-		List<SdlArtwork> artworksToUpload = preloadChoicesOperation.artworksToUpload();
-		assertNotNull(artworksToUpload);
-		assertEquals(artworksToUpload.size(), 1);
-	}
+        ISdl internalInterface = mock(ISdl.class);
+        FileManager fileManager = mock(FileManager.class);
+        preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager, null, windowCapability, true, cellsToPreload, null);
+    }
 
-	/**
-	 * Testing shouldSend method's with varying WindowCapability set.
-	 */
-	@Test
-	public void testShouldSendText() {
+    /**
+     * Sets up PreloadChoicesOperation with WindowCapability being null
+     */
+    public void setUpNullWindowCapability() {
 
-		setUpNullWindowCapability();
-		assertTrue(preloadChoicesOperationNullCapability.shouldSendChoicePrimaryImage());
-		assertTrue(preloadChoicesOperationNullCapability.shouldSendChoiceSecondaryImage());
-		assertTrue(preloadChoicesOperationNullCapability.shouldSendChoiceSecondaryText());
-		assertTrue(preloadChoicesOperationNullCapability.shouldSendChoiceTertiaryText());
-		assertTrue(preloadChoicesOperationNullCapability.shouldSendChoiceText());
+        ChoiceCell cell1 = new ChoiceCell("cell 1");
+        ChoiceCell cell2 = new ChoiceCell("cell 2", null, TestValues.GENERAL_ARTWORK);
+        HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
+        cellsToPreload.add(cell1);
+        cellsToPreload.add(cell2);
+
+        ISdl internalInterface = mock(ISdl.class);
+        FileManager fileManager = mock(FileManager.class);
+        preloadChoicesOperationNullCapability = new PreloadChoicesOperation(internalInterface, fileManager, null, null, true, cellsToPreload, null);
+    }
+
+    /**
+     * Sets up PreloadChoicesOperation with an Capability not being set
+     * certain imageFields and TextFields
+     */
+    public void setUpEmptyWindowCapability() {
+
+        ChoiceCell cell1 = new ChoiceCell("cell 1");
+        ChoiceCell cell2 = new ChoiceCell("cell 2", null, TestValues.GENERAL_ARTWORK);
+        HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
+        cellsToPreload.add(cell1);
+        cellsToPreload.add(cell2);
+
+        ImageField imageField = new ImageField();
+        imageField.setName(ImageFieldName.alertIcon);
+
+        TextField textField = new TextField();
+        textField.setName(TextFieldName.mainField1);
+
+        WindowCapability windowCapability = new WindowCapability();
+        windowCapability.setImageFields(Collections.singletonList(imageField));
+        windowCapability.setTextFields(Collections.singletonList(textField));
+
+        ISdl internalInterface = mock(ISdl.class);
+        FileManager fileManager = mock(FileManager.class);
+        preloadChoicesOperationEmptyCapability = new PreloadChoicesOperation(internalInterface, fileManager, null, windowCapability, true, cellsToPreload, null);
+    }
 
 
-		assertTrue(preloadChoicesOperation.shouldSendChoicePrimaryImage());
-		assertTrue(preloadChoicesOperation.shouldSendChoiceSecondaryImage());
-		assertTrue(preloadChoicesOperation.shouldSendChoiceSecondaryText());
-		assertTrue(preloadChoicesOperation.shouldSendChoiceTertiaryText());
-		assertTrue(preloadChoicesOperation.shouldSendChoiceText());
+    @Test
+    public void testArtworkNeedsUpload() {
+        boolean test = preloadChoicesOperation.artworkNeedsUpload(TestValues.GENERAL_ARTWORK);
+        assertTrue(test);
+    }
 
-		setUpEmptyWindowCapability();
-		assertFalse(preloadChoicesOperationEmptyCapability.shouldSendChoicePrimaryImage());
-		assertFalse(preloadChoicesOperationEmptyCapability.shouldSendChoiceSecondaryImage());
-		assertFalse(preloadChoicesOperationEmptyCapability.shouldSendChoiceSecondaryText());
-		assertFalse(preloadChoicesOperationEmptyCapability.shouldSendChoiceTertiaryText());
-		assertFalse(preloadChoicesOperationEmptyCapability.shouldSendChoiceText());
-	}
+    @Test
+    public void testArtworksToUpload() {
+        List<SdlArtwork> artworksToUpload = preloadChoicesOperation.artworksToUpload();
+        assertNotNull(artworksToUpload);
+        assertEquals(artworksToUpload.size(), 1);
+    }
+
+    /**
+     * Testing shouldSend method's with varying WindowCapability set.
+     */
+    @Test
+    public void testShouldSendText() {
+
+        setUpNullWindowCapability();
+        assertTrue(preloadChoicesOperationNullCapability.shouldSendChoicePrimaryImage());
+        assertTrue(preloadChoicesOperationNullCapability.shouldSendChoiceSecondaryImage());
+        assertTrue(preloadChoicesOperationNullCapability.shouldSendChoiceSecondaryText());
+        assertTrue(preloadChoicesOperationNullCapability.shouldSendChoiceTertiaryText());
+        assertTrue(preloadChoicesOperationNullCapability.shouldSendChoiceText());
+
+
+        assertTrue(preloadChoicesOperation.shouldSendChoicePrimaryImage());
+        assertTrue(preloadChoicesOperation.shouldSendChoiceSecondaryImage());
+        assertTrue(preloadChoicesOperation.shouldSendChoiceSecondaryText());
+        assertTrue(preloadChoicesOperation.shouldSendChoiceTertiaryText());
+        assertTrue(preloadChoicesOperation.shouldSendChoiceText());
+
+        setUpEmptyWindowCapability();
+        assertFalse(preloadChoicesOperationEmptyCapability.shouldSendChoicePrimaryImage());
+        assertFalse(preloadChoicesOperationEmptyCapability.shouldSendChoiceSecondaryImage());
+        assertFalse(preloadChoicesOperationEmptyCapability.shouldSendChoiceSecondaryText());
+        assertFalse(preloadChoicesOperationEmptyCapability.shouldSendChoiceTertiaryText());
+        assertFalse(preloadChoicesOperationEmptyCapability.shouldSendChoiceText());
+    }
 
 }

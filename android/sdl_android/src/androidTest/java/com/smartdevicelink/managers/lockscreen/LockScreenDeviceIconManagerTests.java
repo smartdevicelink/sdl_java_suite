@@ -3,7 +3,8 @@ package com.smartdevicelink.managers.lockscreen;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.support.test.runner.AndroidJUnit4;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -84,7 +85,7 @@ public class LockScreenDeviceIconManagerTests {
         lockScreenDeviceIconManager.retrieveIcon(ICON_URL, listener);
         verify(listener, times(1)).onImageRetrieved((Bitmap) any());
     }
-    
+
     private String daysToMillisecondsAsString(int days) {
         long milliSeconds = (long) days * 24 * 60 * 60 * 1000;
         long previousDay = System.currentTimeMillis() - milliSeconds;

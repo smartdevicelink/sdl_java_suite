@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -41,10 +41,10 @@ import java.util.Hashtable;
 
 /**
  * Update Turn List Response is sent, when UpdateTurnList has been called
- * 
+ *
  * @since SmartDeviceLink 2.0
  */
-public class UpdateTurnListResponse extends RPCResponse{
+public class UpdateTurnListResponse extends RPCResponse {
 
     /**
      * Constructs a new UpdateTurnListResponse object
@@ -52,20 +52,21 @@ public class UpdateTurnListResponse extends RPCResponse{
     public UpdateTurnListResponse() {
         super(FunctionID.UPDATE_TURN_LIST.toString());
     }
-    
+
     public UpdateTurnListResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-	/**
-	 * Constructs a new UpdateTurnListResponse object
-	 * @param success whether the request is successfully processed
-	 * @param resultCode whether the request is successfully processed
-	 */
-	public UpdateTurnListResponse(@NonNull Boolean success, @NonNull Result resultCode) {
-		this();
-		setSuccess(success);
-		setResultCode(resultCode);
-	}
+    /**
+     * Constructs a new UpdateTurnListResponse object
+     *
+     * @param success    whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     */
+    public UpdateTurnListResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
+    }
 
 }

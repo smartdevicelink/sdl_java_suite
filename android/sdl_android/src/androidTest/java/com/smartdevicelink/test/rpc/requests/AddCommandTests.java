@@ -18,7 +18,8 @@ import org.junit.Test;
 
 import java.util.Hashtable;
 import java.util.List;
-import static android.support.test.InstrumentationRegistry.getTargetContext;
+
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
@@ -26,13 +27,13 @@ import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertNull;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.AddCommand}
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.proxy.rpc.AddCommand}
  */
-public class AddCommandTests extends BaseRpcTests{
+public class AddCommandTests extends BaseRpcTests {
 
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         AddCommand msg = new AddCommand();
 
         msg.setCmdIcon(TestValues.GENERAL_IMAGE);
@@ -44,103 +45,103 @@ public class AddCommandTests extends BaseRpcTests{
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_REQUEST;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.ADD_COMMAND.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
+        try {
             result.put(AddCommand.KEY_CMD_ICON, TestValues.JSON_IMAGE);
             result.put(AddCommand.KEY_MENU_PARAMS, TestValues.JSON_MENUPARAMS);
             result.put(AddCommand.KEY_VR_COMMANDS, JsonUtils.createJsonArray(TestValues.GENERAL_STRING_LIST));
             result.put(AddCommand.KEY_CMD_ID, TestValues.GENERAL_INT);
-        }catch(JSONException e){
-        	fail(TestValues.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
 
         return result;
     }
-    
+
     /**
-	 * Tests the expected values of the RPC message.
-	 */
+     * Tests the expected values of the RPC message.
+     */
     @Test
-    public void testRpcValues () {       	
-    	// Test Values
-    	int          testCmdId      = ( (AddCommand) msg ).getCmdID();
-    	Image        testImage      = ( (AddCommand) msg ).getCmdIcon();
-    	MenuParams   testMenuParams = ( (AddCommand) msg ).getMenuParams();
-    	List<String> testVrCommands = ( (AddCommand) msg ).getVrCommands();
-    	
-    	// Valid Tests
-    	assertNotNull(TestValues.NOT_NULL, testMenuParams);
-    	assertNotNull(TestValues.NOT_NULL, testImage);
-    	assertNotNull(TestValues.NOT_NULL, testVrCommands);
-    	
-    	assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, testCmdId);
-    	assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING_LIST.size(), testVrCommands.size());
-    	
-    	assertTrue(TestValues.TRUE, Validator.validateMenuParams(TestValues.GENERAL_MENUPARAMS, testMenuParams));
-    	assertTrue(TestValues.TRUE, Validator.validateImage(TestValues.GENERAL_IMAGE, testImage));
-    	assertTrue(TestValues.TRUE, Validator.validateStringList(TestValues.GENERAL_STRING_LIST, testVrCommands));
-    	
-    	// Invalid/Null Tests
-    	AddCommand msg = new AddCommand();
-    	assertNotNull(TestValues.NULL, msg);
-    	testNullBase(msg);
-    	
-    	assertNull(TestValues.NULL, msg.getCmdIcon());
+    public void testRpcValues() {
+        // Test Values
+        int testCmdId = ((AddCommand) msg).getCmdID();
+        Image testImage = ((AddCommand) msg).getCmdIcon();
+        MenuParams testMenuParams = ((AddCommand) msg).getMenuParams();
+        List<String> testVrCommands = ((AddCommand) msg).getVrCommands();
+
+        // Valid Tests
+        assertNotNull(TestValues.NOT_NULL, testMenuParams);
+        assertNotNull(TestValues.NOT_NULL, testImage);
+        assertNotNull(TestValues.NOT_NULL, testVrCommands);
+
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, testCmdId);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING_LIST.size(), testVrCommands.size());
+
+        assertTrue(TestValues.TRUE, Validator.validateMenuParams(TestValues.GENERAL_MENUPARAMS, testMenuParams));
+        assertTrue(TestValues.TRUE, Validator.validateImage(TestValues.GENERAL_IMAGE, testImage));
+        assertTrue(TestValues.TRUE, Validator.validateStringList(TestValues.GENERAL_STRING_LIST, testVrCommands));
+
+        // Invalid/Null Tests
+        AddCommand msg = new AddCommand();
+        assertNotNull(TestValues.NULL, msg);
+        testNullBase(msg);
+
+        assertNull(TestValues.NULL, msg.getCmdIcon());
         assertNull(TestValues.NULL, msg.getCmdID());
         assertNull(TestValues.NULL, msg.getMenuParams());
         assertNull(TestValues.NULL, msg.getVrCommands());
     }
-    
+
     /**
      * Tests a valid JSON construction of this RPC message.
      */
     @Test
-    public void testJsonConstructor () {
-    	JSONObject commandJson = JsonFileReader.readId(getTargetContext(), getCommandType(), getMessageType());
-    	assertNotNull(TestValues.NOT_NULL, commandJson);
-    	
-		try {
-			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
-			AddCommand cmd = new AddCommand(hash);
-			
-			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(TestValues.NOT_NULL, body);
-			
-			// Test everything in the json body.
-			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+    public void testJsonConstructor() {
+        JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
+        assertNotNull(TestValues.NOT_NULL, commandJson);
 
-			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			
-			List<String> vrCommandsList = JsonUtils.readStringListFromJsonObject(parameters, AddCommand.KEY_VR_COMMANDS);
-			List<String> testCommandsList = cmd.getVrCommands();
-			assertEquals(TestValues.MATCH, vrCommandsList.size(), testCommandsList.size());
-			assertTrue(TestValues.TRUE, Validator.validateStringList(vrCommandsList, testCommandsList));
-			
-			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, AddCommand.KEY_CMD_ID), cmd.getCmdID());
-			
-			JSONObject menuParams = JsonUtils.readJsonObjectFromJsonObject(parameters, AddCommand.KEY_MENU_PARAMS);
-			MenuParams referenceMenuParams = new MenuParams(JsonRPCMarshaller.deserializeJSONObject(menuParams));
-			assertTrue(TestValues.TRUE, Validator.validateMenuParams(referenceMenuParams, cmd.getMenuParams()));
-			
-			JSONObject cmdIcon = JsonUtils.readJsonObjectFromJsonObject(parameters, AddCommand.KEY_CMD_ICON);
-			Image referenceCmdIcon = new Image(JsonRPCMarshaller.deserializeJSONObject(cmdIcon));
-			assertTrue(TestValues.TRUE, Validator.validateImage(referenceCmdIcon, cmd.getCmdIcon()));
-			
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}    	
+        try {
+            Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
+            AddCommand cmd = new AddCommand(hash);
+
+            JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
+            assertNotNull(TestValues.NOT_NULL, body);
+
+            // Test everything in the json body.
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+
+            JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
+
+            List<String> vrCommandsList = JsonUtils.readStringListFromJsonObject(parameters, AddCommand.KEY_VR_COMMANDS);
+            List<String> testCommandsList = cmd.getVrCommands();
+            assertEquals(TestValues.MATCH, vrCommandsList.size(), testCommandsList.size());
+            assertTrue(TestValues.TRUE, Validator.validateStringList(vrCommandsList, testCommandsList));
+
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, AddCommand.KEY_CMD_ID), cmd.getCmdID());
+
+            JSONObject menuParams = JsonUtils.readJsonObjectFromJsonObject(parameters, AddCommand.KEY_MENU_PARAMS);
+            MenuParams referenceMenuParams = new MenuParams(JsonRPCMarshaller.deserializeJSONObject(menuParams));
+            assertTrue(TestValues.TRUE, Validator.validateMenuParams(referenceMenuParams, cmd.getMenuParams()));
+
+            JSONObject cmdIcon = JsonUtils.readJsonObjectFromJsonObject(parameters, AddCommand.KEY_CMD_ICON);
+            Image referenceCmdIcon = new Image(JsonRPCMarshaller.deserializeJSONObject(cmdIcon));
+            assertTrue(TestValues.TRUE, Validator.validateImage(referenceCmdIcon, cmd.getCmdIcon()));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

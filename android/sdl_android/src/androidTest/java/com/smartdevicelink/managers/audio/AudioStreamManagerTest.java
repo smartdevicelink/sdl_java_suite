@@ -5,21 +5,24 @@ import android.media.AudioFormat;
 import android.media.MediaFormat;
 import android.media.MediaPlayer;
 import android.os.Build;
-import android.support.test.InstrumentationRegistry;
 import android.util.Log;
 
-import com.smartdevicelink.SdlConnection.SdlSession;
+import androidx.test.platform.app.InstrumentationRegistry;
+
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.audio.AudioStreamManager.SampleType;
+import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
+import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
+import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
-import com.smartdevicelink.proxy.interfaces.ISdl;
-import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
+import com.smartdevicelink.session.SdlSession;
+import com.smartdevicelink.streaming.audio.IAudioStreamListener;
 
 import junit.framework.TestCase;
 
@@ -38,7 +41,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -53,7 +58,7 @@ public class AudioStreamManagerTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        mContext = InstrumentationRegistry.getContext();
+        mContext = InstrumentationRegistry.getInstrumentation().getContext();
     }
 
     @Override
@@ -64,9 +69,11 @@ public class AudioStreamManagerTest extends TestCase {
 
     public void testCreatingAudioStreamManager() {
         ISdl internalInterface = mock(ISdl.class);
+        SystemCapabilityManager systemCapabilityManager = mock(SystemCapabilityManager.class);
+        doReturn(systemCapabilityManager).when(internalInterface).getSystemCapabilityManager();
         AudioPassThruCapabilities audioCapabilities = new AudioPassThruCapabilities(SamplingRate._16KHZ, BitsPerSample._16_BIT, AudioType.PCM);
         doReturn(true).when(internalInterface).isConnected();
-        doReturn(audioCapabilities).when(internalInterface).getCapability(SystemCapabilityType.PCM_STREAMING);
+        doReturn(audioCapabilities).when(systemCapabilityManager).getCapability(eq(SystemCapabilityType.PCM_STREAMING), (OnSystemCapabilityListener) isNull(), anyBoolean());
 
         new AudioStreamManager(internalInterface, mContext);
     }
@@ -76,6 +83,7 @@ public class AudioStreamManagerTest extends TestCase {
 
         Answer<Void> audioServiceAnswer = new Answer<Void>() {
             ISdlServiceListener serviceListener = null;
+
             @Override
             public Void answer(InvocationOnMock invocation) {
                 Method method = invocation.getMethod();
@@ -93,10 +101,6 @@ public class AudioStreamManagerTest extends TestCase {
                         Boolean encrypted = (Boolean) args[0];
                         serviceListener.onServiceStarted(mockSession, SessionType.PCM, encrypted);
                         break;
-                    case "stopAudioService":
-                        // parameters ()
-                        serviceListener.onServiceEnded(mockSession, SessionType.PCM);
-                        break;
                 }
 
                 return null;
@@ -104,12 +108,13 @@ public class AudioStreamManagerTest extends TestCase {
         };
 
         ISdl internalInterface = mock(ISdl.class);
+        SystemCapabilityManager systemCapabilityManager = mock(SystemCapabilityManager.class);
+        doReturn(systemCapabilityManager).when(internalInterface).getSystemCapabilityManager();
         AudioPassThruCapabilities audioCapabilities = new AudioPassThruCapabilities(SamplingRate._16KHZ, BitsPerSample._16_BIT, AudioType.PCM);
         doReturn(true).when(internalInterface).isConnected();
-        doReturn(audioCapabilities).when(internalInterface).getCapability(SystemCapabilityType.PCM_STREAMING);
+        doReturn(audioCapabilities).when(systemCapabilityManager).getCapability(eq(SystemCapabilityType.PCM_STREAMING), (OnSystemCapabilityListener) isNull(), anyBoolean());
         doAnswer(audioServiceAnswer).when(internalInterface).addServiceListener(any(SessionType.class), any(ISdlServiceListener.class));
         doAnswer(audioServiceAnswer).when(internalInterface).startAudioService(any(Boolean.class));
-        doAnswer(audioServiceAnswer).when(internalInterface).stopAudioService();
 
         CompletionListener completionListener = new CompletionListener() {
             @Override
@@ -224,20 +229,16 @@ public class AudioStreamManagerTest extends TestCase {
 
     private int testFullAudioManagerDecodeFlowCorrectCounter = 0;
     private int testFullAudioManagerDecodeFlowWrongCounter = 0;
+
     private void runFullAudioManagerDecodeFlowWithSquareSampleAudio(final int sampleRate, final @SampleType int sampleType, final AudioPassThruCapabilities audioCapabilities) {
         testFullAudioManagerDecodeFlowCorrectCounter = 0;
         testFullAudioManagerDecodeFlowWrongCounter = 0;
 
-        IAudioStreamListener audioStreamListener = new IAudioStreamListener() {
+        final IAudioStreamListener audioStreamListener = new IAudioStreamListener() {
             @Override
             public void sendAudio(byte[] data, int offset, int length, long presentationTimeUs) throws ArrayIndexOutOfBoundsException {
                 ByteBuffer buffer = ByteBuffer.wrap(data, offset, length);
                 this.sendAudio(buffer, presentationTimeUs, null);
-            }
-
-            @Override
-            public void sendAudio(ByteBuffer data, long presentationTimeUs) {
-                sendAudio(data, presentationTimeUs, null);
             }
 
             @Override
@@ -270,10 +271,10 @@ public class AudioStreamManagerTest extends TestCase {
         };
 
         final SdlSession mockSession = mock(SdlSession.class);
-        doReturn(audioStreamListener).when(mockSession).startAudioStream();
 
         Answer<Void> audioServiceAnswer = new Answer<Void>() {
             ISdlServiceListener serviceListener = null;
+
             @Override
             public Void answer(InvocationOnMock invocation) {
                 Method method = invocation.getMethod();
@@ -292,10 +293,6 @@ public class AudioStreamManagerTest extends TestCase {
                         Boolean encrypted = (Boolean) args[0];
                         serviceListener.onServiceStarted(mockSession, SessionType.PCM, encrypted);
                         break;
-                    case "stopAudioService":
-                        // parameters ()
-                        serviceListener.onServiceEnded(mockSession, SessionType.PCM);
-                        break;
                 }
 
                 return null;
@@ -303,11 +300,12 @@ public class AudioStreamManagerTest extends TestCase {
         };
 
         ISdl internalInterface = mock(ISdl.class);
+        SystemCapabilityManager systemCapabilityManager = mock(SystemCapabilityManager.class);
+        doReturn(systemCapabilityManager).when(internalInterface).getSystemCapabilityManager();
         doReturn(true).when(internalInterface).isConnected();
-        doReturn(audioCapabilities).when(internalInterface).getCapability(any(SystemCapabilityType.class));
+        doReturn(audioCapabilities).when(systemCapabilityManager).getCapability(any(SystemCapabilityType.class), (OnSystemCapabilityListener) isNull(), anyBoolean());
         doAnswer(audioServiceAnswer).when(internalInterface).addServiceListener(any(SessionType.class), any(ISdlServiceListener.class));
         doAnswer(audioServiceAnswer).when(internalInterface).startAudioService(any(Boolean.class));
-        doAnswer(audioServiceAnswer).when(internalInterface).stopAudioService();
 
         CompletionListener fileCompletionListener = new CompletionListener() {
             @Override
@@ -315,7 +313,7 @@ public class AudioStreamManagerTest extends TestCase {
                 assertEquals(true, success);
 
                 // not more than 2.5 percent samples must be wrong
-                double relation = 100.0 * (double)testFullAudioManagerDecodeFlowWrongCounter / (double)testFullAudioManagerDecodeFlowCorrectCounter;
+                double relation = 100.0 * (double) testFullAudioManagerDecodeFlowWrongCounter / (double) testFullAudioManagerDecodeFlowCorrectCounter;
                 Log.v(TAG, "Validating number of correct samples (" + Math.round(relation) + "%)");
                 if (relation > 2.5) {
                     fail("Validating raw audio failed. " + Math.round(relation) + " % wrong samples detected. Correct: " + testFullAudioManagerDecodeFlowCorrectCounter + ", Wrong: " + testFullAudioManagerDecodeFlowWrongCounter);
@@ -325,7 +323,12 @@ public class AudioStreamManagerTest extends TestCase {
 
         final CompletionListener mockFileListener = spy(fileCompletionListener);
 
-        final AudioStreamManager manager = new AudioStreamManager(internalInterface, mContext);
+        final AudioStreamManager manager = new AudioStreamManager(internalInterface, mContext) {
+            @Override
+            public IAudioStreamListener startAudioStream(SdlSession session) {
+                return audioStreamListener;
+            }
+        };
         manager.startAudioStream(false, new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
@@ -411,11 +414,11 @@ public class AudioStreamManagerTest extends TestCase {
 
             // channel count, sample rate, sample type
             int key_channel_count = 0, key_sample_rate = 1, key_sample_type = 2, key_sample_type_result = 3;
-            int[][] tests = new int[][] {
-                    { 47, 42000, AudioFormat.ENCODING_PCM_8BIT, SampleType.UNSIGNED_8_BIT },
-                    { 2, 16000, AudioFormat.ENCODING_PCM_16BIT, SampleType.SIGNED_16_BIT },
-                    { 1, 22050, AudioFormat.ENCODING_PCM_FLOAT, SampleType.FLOAT },
-                    { 3, 48000, AudioFormat.ENCODING_INVALID, SampleType.SIGNED_16_BIT },
+            int[][] tests = new int[][]{
+                    {47, 42000, AudioFormat.ENCODING_PCM_8BIT, SampleType.UNSIGNED_8_BIT},
+                    {2, 16000, AudioFormat.ENCODING_PCM_16BIT, SampleType.SIGNED_16_BIT},
+                    {1, 22050, AudioFormat.ENCODING_PCM_FLOAT, SampleType.FLOAT},
+                    {3, 48000, AudioFormat.ENCODING_INVALID, SampleType.SIGNED_16_BIT},
             };
 
             for (int[] test : tests) {
@@ -483,11 +486,6 @@ public class AudioStreamManagerTest extends TestCase {
             }
 
             @Override
-            public void sendAudio(ByteBuffer data, long presentationTimeUs) {
-                sendAudio(data, presentationTimeUs, null);
-            }
-
-            @Override
             public void sendAudio(ByteBuffer data, long presentationTimeUs, CompletionListener listener) {
                 try {
                     long length = data.limit();
@@ -504,10 +502,10 @@ public class AudioStreamManagerTest extends TestCase {
         };
 
         final SdlSession mockSession = mock(SdlSession.class);
-        doReturn(audioStreamListener).when(mockSession).startAudioStream();
 
         Answer<Void> audioServiceAnswer = new Answer<Void>() {
             ISdlServiceListener serviceListener = null;
+
             @Override
             public Void answer(InvocationOnMock invocation) {
                 Method method = invocation.getMethod();
@@ -526,10 +524,6 @@ public class AudioStreamManagerTest extends TestCase {
                         Boolean encrypted = (Boolean) args[0];
                         serviceListener.onServiceStarted(mockSession, SessionType.PCM, encrypted);
                         break;
-                    case "stopAudioService":
-                        // parameters ()
-                        serviceListener.onServiceEnded(mockSession, SessionType.PCM);
-                        break;
                 }
 
                 return null;
@@ -537,11 +531,12 @@ public class AudioStreamManagerTest extends TestCase {
         };
 
         ISdl internalInterface = mock(ISdl.class);
+        SystemCapabilityManager systemCapabilityManager = mock(SystemCapabilityManager.class);
+        doReturn(systemCapabilityManager).when(internalInterface).getSystemCapabilityManager();
         doReturn(true).when(internalInterface).isConnected();
-        doReturn(audioCapabilities).when(internalInterface).getCapability(any(SystemCapabilityType.class));
+        doReturn(audioCapabilities).when(systemCapabilityManager).getCapability(any(SystemCapabilityType.class), (OnSystemCapabilityListener) isNull(), anyBoolean());
         doAnswer(audioServiceAnswer).when(internalInterface).addServiceListener(any(SessionType.class), any(ISdlServiceListener.class));
         doAnswer(audioServiceAnswer).when(internalInterface).startAudioService(any(Boolean.class));
-        doAnswer(audioServiceAnswer).when(internalInterface).stopAudioService();
 
         final MediaPlayer.OnCompletionListener mockPlayerCompletionListener = mock(MediaPlayer.OnCompletionListener.class);
         final MediaPlayer player = new MediaPlayer();
@@ -583,14 +578,11 @@ public class AudioStreamManagerTest extends TestCase {
     public void testPlayRawAudio() {
         AudioPassThruCapabilities audioCapabilities = new AudioPassThruCapabilities(SamplingRate._16KHZ, BitsPerSample._16_BIT, AudioType.PCM);
 
-        IAudioStreamListener audioStreamListener = mock(IAudioStreamListener.class);
-
+        final IAudioStreamListener audioStreamListener = mock(IAudioStreamListener.class);
 
         final CompletionListener completionListener = mock(CompletionListener.class);
 
         final SdlSession mockSession = mock(SdlSession.class);
-        doReturn(audioStreamListener).when(mockSession).startAudioStream();
-
 
         Answer<Void> audioServiceAnswer = new Answer<Void>() {
             ISdlServiceListener serviceListener = null;
@@ -618,12 +610,20 @@ public class AudioStreamManagerTest extends TestCase {
         };
 
         ISdl internalInterface = mock(ISdl.class);
+        SystemCapabilityManager systemCapabilityManager = mock(SystemCapabilityManager.class);
+        doReturn(systemCapabilityManager).when(internalInterface).getSystemCapabilityManager();
         doReturn(true).when(internalInterface).isConnected();
-        doReturn(audioCapabilities).when(internalInterface).getCapability(any(SystemCapabilityType.class));
+        doReturn(audioCapabilities).when(systemCapabilityManager).getCapability(any(SystemCapabilityType.class), (OnSystemCapabilityListener) isNull(), anyBoolean());
         doAnswer(audioServiceAnswer).when(internalInterface).addServiceListener(any(SessionType.class), any(ISdlServiceListener.class));
         doAnswer(audioServiceAnswer).when(internalInterface).startAudioService(any(Boolean.class));
 
-        final AudioStreamManager manager = new AudioStreamManager(internalInterface, mContext);
+        final AudioStreamManager manager = new AudioStreamManager(internalInterface, mContext) {
+            @Override
+            public IAudioStreamListener startAudioStream(SdlSession session) {
+                return audioStreamListener;
+            }
+        };
+
         manager.startAudioStream(false, new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
@@ -633,7 +633,7 @@ public class AudioStreamManagerTest extends TestCase {
             }
         });
 
-        verify(audioStreamListener, timeout(10000)).sendAudio(any(ByteBuffer.class), any(Long.class),  eq(completionListener));
+        verify(audioStreamListener, timeout(10000)).sendAudio(any(ByteBuffer.class), any(Long.class), eq(completionListener));
     }
 
     private Method getSampleAtTargetMethod() {
@@ -670,10 +670,10 @@ public class AudioStreamManagerTest extends TestCase {
         header[2] = 'F';
         header[3] = 'F';
         // Total data length (UInt32).
-        header[4] = (byte)((datalength) & 0xff);
-        header[5] = (byte)((datalength >> 8) & 0xff);
-        header[6] = (byte)((datalength >> 16) & 0xff);
-        header[7] = (byte)((datalength >> 24) & 0xff);
+        header[4] = (byte) ((datalength) & 0xff);
+        header[5] = (byte) ((datalength >> 8) & 0xff);
+        header[6] = (byte) ((datalength >> 16) & 0xff);
+        header[7] = (byte) ((datalength >> 24) & 0xff);
         // WAVE header.
         header[8] = 'W';
         header[9] = 'A';
@@ -690,42 +690,44 @@ public class AudioStreamManagerTest extends TestCase {
         header[18] = 0;
         header[19] = 0;
         // Format type (UInt16). Set 1 for PCM.
-        header[20] = (byte)((format) & 0xff);
-        header[21] = (byte)((format >> 8) & 0xff);
+        header[20] = (byte) ((format) & 0xff);
+        header[21] = (byte) ((format >> 8) & 0xff);
         // Channels
-        header[22] = (byte)((channels) & 0xff);
-        header[23] = (byte)((channels >> 8) & 0xff);
+        header[22] = (byte) ((channels) & 0xff);
+        header[23] = (byte) ((channels >> 8) & 0xff);
         // Sample rate (UInt32).
-        header[24] = (byte)((samplerate) & 0xff);
-        header[25] = (byte)((samplerate >> 8) & 0xff);
-        header[26] = (byte)((samplerate >> 16) & 0xff);
-        header[27] = (byte)((samplerate >> 24) & 0xff);
+        header[24] = (byte) ((samplerate) & 0xff);
+        header[25] = (byte) ((samplerate >> 8) & 0xff);
+        header[26] = (byte) ((samplerate >> 16) & 0xff);
+        header[27] = (byte) ((samplerate >> 24) & 0xff);
         // Byte rate (UInt32).
-        header[28] = (byte)((byterate) & 0xff);
-        header[29] = (byte)((byterate >> 8) & 0xff);
-        header[30] = (byte)((byterate >> 16) & 0xff);
-        header[31] = (byte)((byterate >> 24) & 0xff);
+        header[28] = (byte) ((byterate) & 0xff);
+        header[29] = (byte) ((byterate >> 8) & 0xff);
+        header[30] = (byte) ((byterate >> 16) & 0xff);
+        header[31] = (byte) ((byterate >> 24) & 0xff);
         // Block alignment (UInt16).
-        header[32] = (byte)((blockalign) & 0xff);
-        header[33] = (byte)((blockalign >> 8) & 0xff);
+        header[32] = (byte) ((blockalign) & 0xff);
+        header[33] = (byte) ((blockalign >> 8) & 0xff);
         // Bits per sample (UInt16).
-        header[34] = (byte)((bitspersample) & 0xff);
-        header[35] = (byte)((bitspersample >> 8) & 0xff);
+        header[34] = (byte) ((bitspersample) & 0xff);
+        header[35] = (byte) ((bitspersample >> 8) & 0xff);
         // Data header
         header[36] = 'd';
         header[37] = 'a';
         header[38] = 't';
         header[39] = 'a';
         // Total audio length (UInt32).
-        header[40] = (byte)((audiolength) & 0xff);
-        header[41] = (byte)((audiolength >> 8) & 0xff);
-        header[42] = (byte)((audiolength >> 16) & 0xff);
-        header[43] = (byte)((audiolength >> 24) & 0xff);
+        header[40] = (byte) ((audiolength) & 0xff);
+        header[41] = (byte) ((audiolength >> 8) & 0xff);
+        header[42] = (byte) ((audiolength >> 16) & 0xff);
+        header[43] = (byte) ((audiolength >> 24) & 0xff);
 
         stream.write(header, 0, header.length);
     }
 
-    /** Updates the data length and audio length of an existing RIFF/WAVE header in the file pointed by the RandomAccessFile object. */
+    /**
+     * Updates the data length and audio length of an existing RIFF/WAVE header in the file pointed by the RandomAccessFile object.
+     */
     private void updateWaveHeaderLength(RandomAccessFile stream, long audiolength) throws IOException {
         // the data header is 36 bytes large
         long datalength = 36 + audiolength;
@@ -733,16 +735,16 @@ public class AudioStreamManagerTest extends TestCase {
         // Seek from the beginning to data length
         stream.seek(4);
         // Overwrite total data length
-        stream.write((int)((datalength) & 0xff));
-        stream.write((int)((datalength >> 8) & 0xff));
-        stream.write((int)((datalength >> 16) & 0xff));
-        stream.write((int)((datalength >> 24) & 0xff));
+        stream.write((int) ((datalength) & 0xff));
+        stream.write((int) ((datalength >> 8) & 0xff));
+        stream.write((int) ((datalength >> 16) & 0xff));
+        stream.write((int) ((datalength >> 24) & 0xff));
         // Seek from the end of data length to audio length
         stream.seek(40);
         // overwrite total audio length
-        stream.write((int)((audiolength) & 0xff));
-        stream.write((int)((audiolength >> 8) & 0xff));
-        stream.write((int)((audiolength >> 16) & 0xff));
-        stream.write((int)((audiolength >> 24) & 0xff));
+        stream.write((int) ((audiolength) & 0xff));
+        stream.write((int) ((audiolength >> 8) & 0xff));
+        stream.write((int) ((audiolength >> 16) & 0xff));
+        stream.write((int) ((audiolength >> 24) & 0xff));
     }
 }
