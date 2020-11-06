@@ -34,6 +34,8 @@ package com.smartdevicelink.managers.screen.menu;
 
 import androidx.annotation.NonNull;
 
+import com.livio.taskmaster.Queue;
+import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
@@ -69,12 +71,17 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
     OnRPCNotificationListener hmiListener;
     OnRPCNotificationListener commandListener;
 
+    private Queue transactionQueue;
+    private boolean batchUpdates;
+
     // CONSTRUCTORS
 
     BaseVoiceCommandManager(@NonNull ISdl internalInterface) {
         super(internalInterface);
 
-        currentHMILevel = HMILevel.HMI_NONE;
+        this.transactionQueue = newTransactionQueue();
+
+        currentHMILevel =  null;
         addListeners();
         lastVoiceCommandId = voiceCommandIdMin;
     }
@@ -97,11 +104,31 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
         inProgressUpdate = null;
         hasQueuedUpdate = false;
 
+        transactionQueue.close();
+        transactionQueue = null;
+
         // remove listeners
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_COMMAND, commandListener);
 
         super.dispose();
+    }
+
+    private Queue newTransactionQueue() {
+        Queue queue = internalInterface.getTaskmaster().createQueue("VoiceCommandManager", 4, false);
+        queue.pause();
+        return queue;
+    }
+
+    // If the HMI level is NONE since we want to delay sending RPCs until we're in non-NONE
+    private void updateTransactionQueueSuspended() {
+        if (HMILevel.HMI_NONE.equals(currentHMILevel)) {
+            DebugTool.logInfo(TAG, "Suspending the transaction queue. Current HMI level is NONE");
+            transactionQueue.pause();
+        } else {
+            DebugTool.logInfo(TAG, "Starting the transaction queue");
+            transactionQueue.resume();
+        }
     }
 
     // SETTERS
@@ -138,44 +165,69 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
         return voiceCommands;
     }
 
-    // UPDATING SYSTEM
-
     private void update() {
-
-        if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE)) {
-            waitingOnHMIUpdate = true;
-            return;
+        List<DeleteCommand> deleteVoiceCommands = new ArrayList<>();
+        if (oldVoiceCommands != null && !oldVoiceCommands.isEmpty()) {
+            deleteVoiceCommands = deleteCommandsForVoiceCommands(oldVoiceCommands);
+            oldVoiceCommands.clear();
         }
 
-        if (inProgressUpdate != null) {
-            // There's an in-progress update, put this on hold
-            hasQueuedUpdate = true;
-            return;
+        List<AddCommand> addVoiceCommands = new ArrayList<>();
+        if (voiceCommands != null && !voiceCommands.isEmpty()) {
+            addVoiceCommands = addCommandsForVoiceCommands(voiceCommands);
         }
 
-        sendDeleteCurrentVoiceCommands(new CompletionListener() {
+        VoiceCommandReplaceOperation operation = new VoiceCommandReplaceOperation(internalInterface, deleteVoiceCommands, addVoiceCommands, new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
-                // we don't care about errors from deleting, send new add commands
-                sendCurrentVoiceCommands(new CompletionListener() {
-                    @Override
-                    public void onComplete(boolean success2) {
-                        inProgressUpdate = null;
-
-                        if (hasQueuedUpdate) {
-                            update();
-                            hasQueuedUpdate = false;
-                        }
-
-                        if (!success2) {
-                            DebugTool.logError(TAG, "Error sending voice commands");
-                        }
-                    }
-                });
+                if (success) {
+                    oldVoiceCommands = voiceCommands;
+                } else {
+                    update();
+                }
             }
         });
-
+        transactionQueue.add(operation, false);
     }
+
+    // UPDATING SYSTEM
+
+//    private void update() {
+//
+//        if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE)) {
+//            waitingOnHMIUpdate = true;
+//            return;
+//        }
+//
+//        if (inProgressUpdate != null) {
+//            // There's an in-progress update, put this on hold
+//            hasQueuedUpdate = true;
+//            return;
+//        }
+//
+//        sendDeleteCurrentVoiceCommands(new CompletionListener() {
+//            @Override
+//            public void onComplete(boolean success) {
+//                // we don't care about errors from deleting, send new add commands
+//                sendCurrentVoiceCommands(new CompletionListener() {
+//                    @Override
+//                    public void onComplete(boolean success2) {
+//                        inProgressUpdate = null;
+//
+//                        if (hasQueuedUpdate) {
+//                            update();
+//                            hasQueuedUpdate = false;
+//                        }
+//
+//                        if (!success2) {
+//                            DebugTool.logError(TAG, "Error sending voice commands");
+//                        }
+//                    }
+//                });
+//            }
+//        });
+//
+//    }
 
     // DELETING OLD MENU ITEMS
 
@@ -294,6 +346,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
                 }
                 HMILevel oldHMILevel = currentHMILevel;
                 currentHMILevel = onHMIStatus.getHmiLevel();
+                updateTransactionQueueSuspended();
                 // Auto-send an update if we were in NONE and now we are not
                 if (oldHMILevel == HMILevel.HMI_NONE && currentHMILevel != HMILevel.HMI_NONE) {
                     if (waitingOnHMIUpdate) {

@@ -34,6 +34,7 @@ package com.smartdevicelink.managers.screen.menu;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
@@ -66,6 +67,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
 public class VoiceCommandManagerTests {
@@ -112,10 +114,13 @@ public class VoiceCommandManagerTests {
         };
         doAnswer(onCommandAnswer).when(internalInterface).addOnRPCNotificationListener(eq(FunctionID.ON_COMMAND), any(OnRPCNotificationListener.class));
 
+        Taskmaster taskmaster = new Taskmaster.Builder().build();
+        taskmaster.start();
+        when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
         voiceCommandManager = new VoiceCommandManager(internalInterface);
 
         // Check some stuff during setup
-        assertEquals(voiceCommandManager.currentHMILevel, HMILevel.HMI_NONE);
+        assertEquals(voiceCommandManager.currentHMILevel, null);
         assertEquals(voiceCommandManager.getState(), BaseSubManager.SETTING_UP);
         assertEquals(voiceCommandManager.lastVoiceCommandId, voiceCommandIdMin);
         assertFalse(voiceCommandManager.hasQueuedUpdate);
