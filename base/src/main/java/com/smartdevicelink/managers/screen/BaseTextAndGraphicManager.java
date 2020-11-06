@@ -628,6 +628,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		newShow.setMainField3(show.getMainField3());
 		newShow.setMainField4(show.getMainField4());
 		newShow.setTemplateTitle(show.getTemplateTitle());
+		newShow.setMediaTrack(show.getMediaTrack());
 
 		return newShow;
 	}
