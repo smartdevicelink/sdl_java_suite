@@ -138,9 +138,16 @@ public class RpcConverter {
         if(params != null && params.containsKey(RPCMessage.KEY_FUNCTION_NAME)){
             StringBuilder rpcClassName = new StringBuilder();
             String functionName = (String)params.get(RPCMessage.KEY_FUNCTION_NAME);
-            if(FunctionID.SHOW_CONSTANT_TBT.toString().equals(functionName)) {
-                    functionName = "ShowConstantTbt";
+            if (FunctionID.SHOW_CONSTANT_TBT.toString().equals(functionName)) {
+                functionName = "ShowConstantTbt";
+            } else if (FunctionID.ON_ENCODED_SYNC_P_DATA.toString().equals(functionName)
+                    || FunctionID.ON_SYNC_P_DATA.toString().equals(functionName)) {
+                //This will create an OnSystemRequest instance, but the function id in the RPC
+                //will remain FunctionID.ON_ENCODED_SYNC_P_DATA or FunctionID.ON_SYNC_P_DATA.
+                //This is desired behavior.
+                functionName = FunctionID.ON_SYSTEM_REQUEST.toString();
             }
+
             rpcClassName.append(RPC_PACKAGE);
             rpcClassName.append (functionName);
 
