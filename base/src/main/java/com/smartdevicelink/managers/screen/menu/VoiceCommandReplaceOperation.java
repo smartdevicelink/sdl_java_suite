@@ -186,7 +186,7 @@ public class VoiceCommandReplaceOperation extends Task {
                 if (!addResponse.getSuccess()) {
                     failedAddCommands.add(addCommands.get(currentAddCommand));
                 } else {
-                    successfulAddCommands.add(addCommands.get(currentDeleteCommand));
+                    successfulAddCommands.add(addCommands.get(currentAddCommand));
                 }
             }
         });
