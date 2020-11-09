@@ -24,7 +24,6 @@ public class VoiceCommandReplaceOperation extends Task {
     private List<AddCommand> addCommands;
     private CompletionListener completionListener;
     private VoiceCommandChangesListener voiceCommandListener;
-    private boolean isRetry = false;
     private int currentDeleteCommand;
     private int currentAddCommand;
     private List<DeleteCommand> failedDeleteCommands;
@@ -55,10 +54,6 @@ public class VoiceCommandReplaceOperation extends Task {
     }
 
     private void start() {
-        sendCommandRPCS();
-    }
-
-    private void sendCommandRPCS() {
         if (getState() == Task.CANCELED) {
             return;
         }
@@ -76,13 +71,8 @@ public class VoiceCommandReplaceOperation extends Task {
                         if (!success2) {
                             DebugTool.logError(TAG, "Error sending voice commands");
                             onError();
-                            if(!isRetry) {
-                                isRetry = true;
-                                sendCommandRPCS();
-                            } else {
-                                voiceCommandListener.onAddCommandsFailed(failedAddCommands);
-                                completionListener.onComplete(false);
-                            }
+                            voiceCommandListener.onAddCommandsFailed(failedAddCommands);
+                            completionListener.onComplete(false);
                         } else {
                             DebugTool.logInfo(TAG, "Successfully send voice commands");
                             onFinished();
