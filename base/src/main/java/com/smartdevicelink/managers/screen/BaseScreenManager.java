@@ -40,6 +40,8 @@ import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.screen.alert.AlertManager;
+import com.smartdevicelink.managers.screen.alert.AlertView;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceSet;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceSetManager;
@@ -77,6 +79,7 @@ abstract class BaseScreenManager extends BaseSubManager {
     private MenuManager menuManager;
     private ChoiceSetManager choiceSetManager;
     private SubscribeButtonManager subscribeButtonManager;
+    private AlertManager alertManager;
 
     // Sub manager listener
     private final CompletionListener subManagerListener = new CompletionListener() {
@@ -85,15 +88,15 @@ abstract class BaseScreenManager extends BaseSubManager {
         public synchronized void onComplete(boolean success) {
             if (softButtonManager != null && textAndGraphicManager != null && voiceCommandManager != null && menuManager != null && choiceSetManager != null && subscribeButtonManager != null) {
                 if (softButtonManager.getState() == BaseSubManager.READY && textAndGraphicManager.getState() == BaseSubManager.READY && voiceCommandManager.getState() == BaseSubManager.READY && menuManager.getState() == BaseSubManager.READY
-                        && subscribeButtonManager.getState() == BaseSubManager.READY) {
+                        && subscribeButtonManager.getState() == BaseSubManager.READY && alertManager.getState() == BaseSubManager.READY) {
                     DebugTool.logInfo(TAG, "Starting screen manager, all sub managers are in ready state");
                     transitionToState(READY);
                 } else if (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.ERROR && voiceCommandManager.getState() == BaseSubManager.ERROR && menuManager.getState() == BaseSubManager.ERROR
-                        && choiceSetManager.getState() == BaseSubManager.ERROR && subscribeButtonManager.getState() == BaseSubManager.ERROR) {
+                        && choiceSetManager.getState() == BaseSubManager.ERROR && subscribeButtonManager.getState() == BaseSubManager.ERROR && alertManager.getState() == BaseSubManager.ERROR) {
                     DebugTool.logError(TAG, "ERROR starting screen manager, all sub managers are in error state");
                     transitionToState(ERROR);
                 } else if (textAndGraphicManager.getState() == BaseSubManager.SETTING_UP || softButtonManager.getState() == BaseSubManager.SETTING_UP || voiceCommandManager.getState() == BaseSubManager.SETTING_UP || menuManager.getState() == BaseSubManager.SETTING_UP
-                        || choiceSetManager.getState() == BaseSubManager.SETTING_UP || subscribeButtonManager.getState() == BaseSubManager.SETTING_UP) {
+                        || choiceSetManager.getState() == BaseSubManager.SETTING_UP || subscribeButtonManager.getState() == BaseSubManager.SETTING_UP || alertManager.getState() == BaseSubManager.SETTING_UP) {
                     DebugTool.logInfo(TAG, "SETTING UP screen manager, at least one sub manager is still setting up");
                     transitionToState(SETTING_UP);
                 } else {
@@ -124,6 +127,7 @@ abstract class BaseScreenManager extends BaseSubManager {
         this.menuManager.start(subManagerListener);
         this.choiceSetManager.start(subManagerListener);
         this.subscribeButtonManager.start(subManagerListener);
+        this.alertManager.start(subManagerListener);
     }
 
     private void initialize() {
@@ -135,6 +139,7 @@ abstract class BaseScreenManager extends BaseSubManager {
         }
         this.subscribeButtonManager = new SubscribeButtonManager(internalInterface);
         this.voiceCommandManager = new VoiceCommandManager(internalInterface);
+        this.alertManager = new AlertManager(internalInterface);
     }
 
     /**
@@ -149,6 +154,7 @@ abstract class BaseScreenManager extends BaseSubManager {
         menuManager.dispose();
         choiceSetManager.dispose();
         subscribeButtonManager.dispose();
+        alertManager.dispose();
         super.dispose();
     }
 
@@ -702,5 +708,9 @@ abstract class BaseScreenManager extends BaseSubManager {
 
     public void removeButtonListener(@NonNull ButtonName buttonName, @NonNull OnButtonListener listener) {
         subscribeButtonManager.removeButtonListener(buttonName, listener);
+    }
+
+    public void presentAlert(AlertView alert, CompletionListener listener) {
+        alertManager.presentAlert(alert, listener);
     }
 }
