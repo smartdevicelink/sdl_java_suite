@@ -70,6 +70,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
     private Queue transactionQueue;
 
+
     // CONSTRUCTORS
 
     BaseVoiceCommandManager(@NonNull ISdl internalInterface) {
@@ -164,57 +165,31 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
     // UPDATING SYSTEM
 
     private void update() {
-        List<DeleteCommand> deleteVoiceCommands = new ArrayList<>();
-        if (oldVoiceCommands != null && !oldVoiceCommands.isEmpty()) {
-            deleteVoiceCommands = deleteCommandsForVoiceCommands(oldVoiceCommands);
-            oldVoiceCommands.clear();
-        }
-
-        List<AddCommand> addVoiceCommands = new ArrayList<>();
-        if (voiceCommands != null && !voiceCommands.isEmpty()) {
-            addVoiceCommands = addCommandsForVoiceCommands(voiceCommands);
-        }
-
-        VoiceCommandReplaceOperation operation = new VoiceCommandReplaceOperation(internalInterface, deleteVoiceCommands, addVoiceCommands, new CompletionListener() {
+        VoiceCommandReplaceOperation operation = new VoiceCommandReplaceOperation(internalInterface, oldVoiceCommands, voiceCommands, new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
                 if (success) {
                     oldVoiceCommands = voiceCommands;
-                } else {
-                    update();
                 }
+            }
+        }, new VoiceCommandReplaceOperation.VoiceCommandChangesListener() {
+
+            @Override
+            public void onDeleteCommandsFailed(List<DeleteCommand> deleteCommands) {
+                DebugTool.logInfo(TAG, "Failed to delete voice commands: " + deleteCommands);
+            }
+
+            @Override
+            public void onAddCommandsFailed(List<AddCommand> addCommands) {
+                DebugTool.logError(TAG, "Failed to add voice commands: " + addCommands);
+            }
+
+            @Override
+            public void updatedVoiceCommands(List<AddCommand> voiceCommands) {
+                DebugTool.logInfo(TAG, "The updated list of VoiceCommands: " + voiceCommands);
             }
         });
         transactionQueue.add(operation, false);
-    }
-
-    // Create DeleteCommand List
-
-    List<DeleteCommand> deleteCommandsForVoiceCommands(List<VoiceCommand> voiceCommands) {
-        List<DeleteCommand> deleteCommandList = new ArrayList<>();
-        for (VoiceCommand command : voiceCommands) {
-            DeleteCommand delete = new DeleteCommand(command.getCommandId());
-            deleteCommandList.add(delete);
-        }
-        return deleteCommandList;
-    }
-
-    // Create AddCommand List
-
-    List<AddCommand> addCommandsForVoiceCommands(List<VoiceCommand> voiceCommands) {
-        List<AddCommand> addCommandList = new ArrayList<>();
-        for (VoiceCommand command : voiceCommands) {
-            addCommandList.add(commandForVoiceCommand(command));
-        }
-        return addCommandList;
-    }
-
-    // Create AddCommand
-
-    private AddCommand commandForVoiceCommand(VoiceCommand voiceCommand) {
-        AddCommand command = new AddCommand(voiceCommand.getCommandId());
-        command.setVrCommands(voiceCommand.getVoiceCommands());
-        return command;
     }
 
     // HELPERS
