@@ -136,10 +136,10 @@ abstract class BaseScreenManager extends BaseSubManager {
             this.textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager.get(), softButtonManager);
             this.menuManager = new MenuManager(internalInterface, fileManager.get());
             this.choiceSetManager = new ChoiceSetManager(internalInterface, fileManager.get());
+            this.alertManager = new AlertManager(internalInterface, fileManager.get());
         }
         this.subscribeButtonManager = new SubscribeButtonManager(internalInterface);
         this.voiceCommandManager = new VoiceCommandManager(internalInterface);
-        this.alertManager = new AlertManager(internalInterface);
     }
 
     /**

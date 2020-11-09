@@ -8,6 +8,7 @@ import com.livio.taskmaster.Queue;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
+import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
 import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -22,6 +23,7 @@ import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 
@@ -33,11 +35,13 @@ public class BaseAlertManager extends BaseSubManager {
     WindowCapability defaultMainWindowCapability;
     HMILevel currentHMILevel;
     private OnSystemCapabilityListener onDisplaysCapabilityListener;
+    private final WeakReference<FileManager> fileManager;
 
-    public BaseAlertManager(@NonNull ISdl internalInterface) {
+    public BaseAlertManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface);
         addListeners();
         this.transactionQueue = newTransactionQueue();
+        this.fileManager = new WeakReference<>(fileManager);
     }
     private Queue newTransactionQueue() {
         Queue queue = internalInterface.getTaskmaster().createQueue("AlertManager", 4, false);

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.managers.ISdl;
+import com.smartdevicelink.managers.file.FileManager;
 
 /**
  * <strong>AlertManager</strong> <br>
@@ -13,7 +14,7 @@ import com.smartdevicelink.managers.ISdl;
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public class AlertManager extends BaseAlertManager {
 
-    public AlertManager(@NonNull ISdl internalInterface) {
-        super(internalInterface);
+    public AlertManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
+        super(internalInterface, fileManager);
     }
 }
