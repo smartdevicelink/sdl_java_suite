@@ -35,6 +35,7 @@ package com.smartdevicelink.managers.screen.menu;
 import androidx.annotation.NonNull;
 
 import com.livio.taskmaster.Queue;
+import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
@@ -166,21 +167,26 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
     // UPDATING SYSTEM
 
     private void update() {
-        VoiceCommandReplaceOperation operation = new VoiceCommandReplaceOperation(internalInterface, oldVoiceCommands, voiceCommands, new CompletionListener() {
-            @Override
-            public void onComplete(boolean success) {
-                if (success) {
-                    oldVoiceCommands = voiceCommands;
-                }
-            }
-        }, new VoiceCommandReplaceOperation.VoiceCommandChangesListener() {
+        VoiceCommandReplaceOperation operation = new VoiceCommandReplaceOperation(internalInterface, oldVoiceCommands, voiceCommands, new VoiceCommandReplaceOperation.VoiceCommandChangesListener() {
             @Override
             public void updatedVoiceCommands(List<VoiceCommand> voiceCommands, HashMap<Integer, String> errorObject) {
                 DebugTool.logInfo(TAG, "The updated list of VoiceCommands: " + voiceCommands);
                 DebugTool.logError(TAG, "The failed Add and Delete Commands: " + errorObject);
+                oldVoiceCommands = voiceCommands;
+                updatePendingOperations();
             }
         });
         transactionQueue.add(operation, false);
+    }
+
+    private void updatePendingOperations() {
+        for (Task operation : transactionQueue.getTasksAsList()) {
+            if (operation.getState() == Task.IN_PROGRESS) {
+                continue;
+            }
+            VoiceCommandReplaceOperation vcOperation = (VoiceCommandReplaceOperation) operation;
+            vcOperation.deleteVoiceCommands = oldVoiceCommands;
+        }
     }
 
     // HELPERS

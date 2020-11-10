@@ -19,11 +19,10 @@ import java.util.List;
 public class VoiceCommandReplaceOperation extends Task {
     private static final String TAG = "VoiceCommandReplaceOperation";
     private final WeakReference<ISdl> internalInterface;
-    private final List<VoiceCommand> deleteVoiceCommands;
-    private final List<VoiceCommand> addVoiceCommands;
+    List<VoiceCommand> deleteVoiceCommands;
+    private List<VoiceCommand> addVoiceCommands;
     private List<DeleteCommand> deleteCommands;
     private List<AddCommand> addCommands;
-    private CompletionListener completionListener;
     private VoiceCommandChangesListener voiceCommandListener;
     private List<VoiceCommand> updatedVoiceCommands;
     private HashMap<Integer, String> errorObject;
@@ -32,12 +31,11 @@ public class VoiceCommandReplaceOperation extends Task {
         void updatedVoiceCommands(List<VoiceCommand> voiceCommands, HashMap<Integer, String> errorObject);
     }
 
-    VoiceCommandReplaceOperation(ISdl internalInterface, List<VoiceCommand> deleteVoiceCommands, List<VoiceCommand> addVoiceCommands, CompletionListener completionListener, VoiceCommandChangesListener voiceCommandListener) {
+    VoiceCommandReplaceOperation(ISdl internalInterface, List<VoiceCommand> deleteVoiceCommands, List<VoiceCommand> addVoiceCommands, VoiceCommandChangesListener voiceCommandListener) {
         super("VoiceCommandReplaceOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.deleteVoiceCommands = deleteVoiceCommands;
         this.addVoiceCommands = addVoiceCommands;
-        this.completionListener = completionListener;
         this.voiceCommandListener = voiceCommandListener;
         this.updatedVoiceCommands = deleteVoiceCommands;
         this.errorObject = new HashMap<>();
@@ -63,11 +61,9 @@ public class VoiceCommandReplaceOperation extends Task {
                         if (!success2) {
                             DebugTool.logError(TAG, "Error sending voice commands");
                             onError();
-                            completionListener.onComplete(false);
                         } else {
                             DebugTool.logInfo(TAG, "Successfully send voice commands");
                             onFinished();
-                            completionListener.onComplete(true);
                         }
                         voiceCommandListener.updatedVoiceCommands(updatedVoiceCommands, errorObject);
                     }
