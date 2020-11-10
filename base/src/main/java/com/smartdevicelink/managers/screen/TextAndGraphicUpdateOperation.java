@@ -260,8 +260,8 @@ class TextAndGraphicUpdateOperation extends Task {
 
     Show createImageOnlyShowWithPrimaryArtwork(SdlArtwork primaryArtwork, SdlArtwork secondaryArtwork) {
         Show newShow = new Show();
-        newShow.setGraphic(sdlArtworkUploaded(primaryArtwork) ? primaryArtwork.getImageRPC() : null);
-        newShow.setSecondaryGraphic(sdlArtworkUploaded(secondaryArtwork) ? secondaryArtwork.getImageRPC() : null);
+        newShow.setGraphic(primaryArtwork != null && sdlArtworkUploaded(primaryArtwork) ? primaryArtwork.getImageRPC() : null);
+        newShow.setSecondaryGraphic(secondaryArtwork != null && sdlArtworkUploaded(secondaryArtwork) ? secondaryArtwork.getImageRPC() : null);
         if (newShow.getGraphic() == null && newShow.getSecondaryGraphic() == null) {
             DebugTool.logInfo(TAG, "No graphics to upload");
             return null;
