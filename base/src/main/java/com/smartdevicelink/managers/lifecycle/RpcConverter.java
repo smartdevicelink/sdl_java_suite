@@ -146,6 +146,12 @@ public class RpcConverter {
                 //will remain FunctionID.ON_ENCODED_SYNC_P_DATA or FunctionID.ON_SYNC_P_DATA.
                 //This is desired behavior.
                 functionName = FunctionID.ON_SYSTEM_REQUEST.toString();
+            } else if (FunctionID.ENCODED_SYNC_P_DATA.toString().equals(functionName)
+                    || FunctionID.SYNC_P_DATA.toString().equals(functionName)) {
+                //This will create an SystemRequest instance, but the function id in the RPC
+                //will remain FunctionID.ENCODED_SYNC_P_DATA or FunctionID.SYNC_P_DATA.
+                //This is desired behavior.
+                functionName = FunctionID.SYSTEM_REQUEST.toString();
             }
 
             rpcClassName.append(RPC_PACKAGE);
