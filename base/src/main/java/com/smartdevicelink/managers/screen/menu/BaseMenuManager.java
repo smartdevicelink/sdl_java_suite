@@ -770,16 +770,40 @@ abstract class BaseMenuManager extends BaseSubManager {
         return artworks;
     }
 
+    private boolean allArtworksUploaded(List<MenuCell> cells) {
+        for (MenuCell cell : cells) {
+            if (!artworkUploaded(cell.getIcon())) {
+                return false;
+            }
+            if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
+                return allArtworksUploaded(cell.getSubCells());
+            }
+        }
+
+        return true;
+    }
+
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean supportsImages() {
         return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.cmdIcon);
     }
 
     private boolean artworkNeedsUpload(SdlArtwork artwork) {
-        if (fileManager.get() != null) {
-            return (artwork != null && !fileManager.get().hasUploadedFile(artwork) && !artwork.isStaticIcon());
+        if (artwork != null) {
+            if (artwork.isStaticIcon()) {
+                return false;
+            } else {
+                return artwork.getOverwrite() || (fileManager.get() != null && !fileManager.get().hasUploadedFile(artwork));
+            }
         }
         return false;
+    }
+
+    private boolean artworkUploaded(SdlArtwork artwork) {
+        if (artwork != null) {
+            return artwork.isStaticIcon() || (fileManager.get() != null && fileManager.get().hasUploadedFile(artwork));
+        }
+        return true;
     }
 
     // IDs
@@ -1132,7 +1156,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         List<RPCRequest> mainMenuCommands;
         final List<RPCRequest> subMenuCommands;
 
-        if (findAllArtworksToBeUploadedFromCells(menu).size() > 0 || !supportsImages()) {
+        if (!allArtworksUploaded(menu) || !supportsImages()) {
             // Send artwork-less menu
             mainMenuCommands = mainMenuCommandsForCells(menu, false);
             subMenuCommands = subMenuCommandsForCells(menu, false);
@@ -1237,7 +1261,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
         List<RPCRequest> mainMenuCommands;
 
-        if (findAllArtworksToBeUploadedFromCells(adds).size() > 0 || !supportsImages()) {
+        if (!allArtworksUploaded(adds) || !supportsImages()) {
             // Send artwork-less menu
             mainMenuCommands = createCommandsForDynamicSubCells(newMenu, adds, false);
         } else {
