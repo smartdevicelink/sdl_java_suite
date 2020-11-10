@@ -13,6 +13,7 @@ import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class VoiceCommandReplaceOperation extends Task {
@@ -24,16 +25,11 @@ public class VoiceCommandReplaceOperation extends Task {
     private List<AddCommand> addCommands;
     private CompletionListener completionListener;
     private VoiceCommandChangesListener voiceCommandListener;
-    private int currentDeleteCommand;
-    private int currentAddCommand;
-    private List<DeleteCommand> failedDeleteCommands;
-    private List<AddCommand> failedAddCommands;
-    private List<AddCommand> successfulAddCommands;
+    private List<VoiceCommand> updatedVoiceCommands;
+    private HashMap<Integer, String> errorObject;
 
     interface VoiceCommandChangesListener {
-        void onDeleteCommandsFailed(List<DeleteCommand> deleteCommands);
-        void onAddCommandsFailed(List<AddCommand> addCommands);
-        void updatedVoiceCommands(List<AddCommand> voiceCommands);
+        void updatedVoiceCommands(List<VoiceCommand> voiceCommands, HashMap<Integer, String> errorObject);
     }
 
     VoiceCommandReplaceOperation(ISdl internalInterface, List<VoiceCommand> deleteVoiceCommands, List<VoiceCommand> addVoiceCommands, CompletionListener completionListener, VoiceCommandChangesListener voiceCommandListener) {
@@ -43,9 +39,8 @@ public class VoiceCommandReplaceOperation extends Task {
         this.addVoiceCommands = addVoiceCommands;
         this.completionListener = completionListener;
         this.voiceCommandListener = voiceCommandListener;
-        this.failedAddCommands = new ArrayList<>();
-        this.failedDeleteCommands = new ArrayList<>();
-        this.successfulAddCommands = new ArrayList<>();
+        this.updatedVoiceCommands = deleteVoiceCommands;
+        this.errorObject = new HashMap<>();
     }
 
     @Override
@@ -61,9 +56,6 @@ public class VoiceCommandReplaceOperation extends Task {
         sendDeleteCurrentVoiceCommands(new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
-                if (!success) {
-                    voiceCommandListener.onDeleteCommandsFailed(failedDeleteCommands);
-                }
                 // we don't care about errors from deleting, send new add commands
                 sendCurrentVoiceCommands(new CompletionListener() {
                     @Override
@@ -71,14 +63,13 @@ public class VoiceCommandReplaceOperation extends Task {
                         if (!success2) {
                             DebugTool.logError(TAG, "Error sending voice commands");
                             onError();
-                            voiceCommandListener.onAddCommandsFailed(failedAddCommands);
                             completionListener.onComplete(false);
                         } else {
                             DebugTool.logInfo(TAG, "Successfully send voice commands");
                             onFinished();
-                            voiceCommandListener.updatedVoiceCommands(successfulAddCommands);
                             completionListener.onComplete(true);
                         }
+                        voiceCommandListener.updatedVoiceCommands(updatedVoiceCommands, errorObject);
                     }
                 });
             }
@@ -101,14 +92,13 @@ public class VoiceCommandReplaceOperation extends Task {
         internalInterface.get().sendRPCs(deleteCommands, new OnMultipleRequestListener() {
             @Override
             public void onUpdate(int remainingRequests) {
-                currentDeleteCommand = deleteCommands.size() - remainingRequests - 1;
             }
 
             @Override
             public void onFinished() {
                 DebugTool.logInfo(TAG, "Successfully deleted old voice commands");
                 if (listener != null) {
-                    if (failedDeleteCommands.isEmpty()) {
+                    if (errorObject.isEmpty()) {
                         listener.onComplete(true);
                     } else {
                         listener.onComplete(false);
@@ -120,7 +110,12 @@ public class VoiceCommandReplaceOperation extends Task {
             public void onResponse(int correlationId, RPCResponse response) {
                 DeleteCommandResponse deleteResponse = (DeleteCommandResponse) response;
                 if (!deleteResponse.getSuccess()) {
-                    failedDeleteCommands.add(deleteCommands.get(currentDeleteCommand));
+                    errorObject.put(correlationId, response.getInfo());
+                } else {
+                    VoiceCommand foundCommand = getVoiceCommandFromDeleteCommandResponse(correlationId);
+                    if (foundCommand != null) {
+                        updatedVoiceCommands.remove(foundCommand);
+                    }
                 }
             }
         });
@@ -138,6 +133,18 @@ public class VoiceCommandReplaceOperation extends Task {
         return deleteCommandList;
     }
 
+    private VoiceCommand getVoiceCommandFromDeleteCommandResponse(int correlationId) {
+        for (DeleteCommand deleteCommand : deleteCommands) {
+            if (correlationId == deleteCommand.getCorrelationID()) {
+                for (VoiceCommand voiceCommand : deleteVoiceCommands) {
+                    if (deleteCommand.getCmdID() == voiceCommand.getCommandId()) {
+                        return voiceCommand;
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
     // SEND NEW MENU ITEMS
 
@@ -155,14 +162,13 @@ public class VoiceCommandReplaceOperation extends Task {
         internalInterface.get().sendRPCs(addCommands, new OnMultipleRequestListener() {
             @Override
             public void onUpdate(int remainingRequests) {
-                currentAddCommand = addCommands.size() - remainingRequests - 1;
             }
 
             @Override
             public void onFinished() {
                 DebugTool.logInfo(TAG, "Sending Voice Commands Complete");
                 if (listener != null) {
-                    if (failedAddCommands.isEmpty()) {
+                    if (errorObject.isEmpty()) {
                         listener.onComplete(true);
                     } else {
                         listener.onComplete(false);
@@ -174,9 +180,12 @@ public class VoiceCommandReplaceOperation extends Task {
             public void onResponse(int correlationId, RPCResponse response) {
                 AddCommandResponse addResponse = (AddCommandResponse) response;
                 if (!addResponse.getSuccess()) {
-                    failedAddCommands.add(addCommands.get(currentAddCommand));
+                    errorObject.put(correlationId, response.getInfo());
                 } else {
-                    successfulAddCommands.add(addCommands.get(currentAddCommand));
+                    VoiceCommand foundCommand = getVoiceCommandFromAddCommandResponse(correlationId);
+                    if (foundCommand != null) {
+                        updatedVoiceCommands.add(foundCommand);
+                    }
                 }
             }
         });
@@ -198,5 +207,18 @@ public class VoiceCommandReplaceOperation extends Task {
         AddCommand command = new AddCommand(voiceCommand.getCommandId());
         command.setVrCommands(voiceCommand.getVoiceCommands());
         return command;
+    }
+
+    private VoiceCommand getVoiceCommandFromAddCommandResponse(int correlationId) {
+        for (AddCommand addCommand : addCommands) {
+            if (correlationId == addCommand.getCorrelationID()) {
+                for (VoiceCommand voiceCommand : addVoiceCommands) {
+                    if (addCommand.getCmdID() == voiceCommand.getCommandId()) {
+                        return voiceCommand;
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

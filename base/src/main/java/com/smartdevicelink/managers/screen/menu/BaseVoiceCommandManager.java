@@ -50,6 +50,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 abstract class BaseVoiceCommandManager extends BaseSubManager {
@@ -173,20 +174,10 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
                 }
             }
         }, new VoiceCommandReplaceOperation.VoiceCommandChangesListener() {
-
             @Override
-            public void onDeleteCommandsFailed(List<DeleteCommand> deleteCommands) {
-                DebugTool.logInfo(TAG, "Failed to delete voice commands: " + deleteCommands);
-            }
-
-            @Override
-            public void onAddCommandsFailed(List<AddCommand> addCommands) {
-                DebugTool.logError(TAG, "Failed to add voice commands: " + addCommands);
-            }
-
-            @Override
-            public void updatedVoiceCommands(List<AddCommand> voiceCommands) {
+            public void updatedVoiceCommands(List<VoiceCommand> voiceCommands, HashMap<Integer, String> errorObject) {
                 DebugTool.logInfo(TAG, "The updated list of VoiceCommands: " + voiceCommands);
+                DebugTool.logError(TAG, "The failed Add and Delete Commands: " + errorObject);
             }
         });
         transactionQueue.add(operation, false);
