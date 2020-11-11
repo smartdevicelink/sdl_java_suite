@@ -1,6 +1,5 @@
 package com.smartdevicelink.test.rpc;
 
-
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
@@ -14,12 +13,16 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,14 +32,66 @@ import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.fail;
 
+/**
+ * This class tests the following
+ * Functions & Structs
+ *     - The classes exist in code and their names and deprecation status match the spec
+ *     - They have constructors with mandatory params and those constructors are setting the values correctly
+ *     - They have setter and getter for every param and their names and deprecations status match the spec
+ *     - The params setter return instance of class type (for chainable RPCs)
+ *
+ * Enums
+ *     - The enums exist in code and their names and deprecation status match the spec
+ *     - The enums have a value for every element in the spec and the names and deprecation status match the spec
+ */
 @RunWith(AndroidJUnit4.class)
 public class RPCGenericTests {
 
     private final String XML_FILE_NAME = "MOBILE_API.xml";
     private final String RPC_PACKAGE_PREFIX = "com.smartdevicelink.proxy.rpc.";
+    private final String ENUM_PACKAGE_PREFIX = "com.smartdevicelink.proxy.rpc.enums.";
     private final String TEST_VALUES_CLASS = "com.smartdevicelink.test.TestValues";
-    private Map<String, List<Parameter>> rpcMandatoryParamsMapFromXml;
-    private Map<String, List<Parameter>> rpcAllParamsMapFromXml;
+    private Map<String, RPC> rpcMandatoryParamsMapFromXml;
+    private Map<String, RPC> rpcAllParamsMapFromXml;
+
+    private class RPC {
+        private String rpcName;
+        private String type;
+        private boolean isDeprecated;
+        private boolean skip;
+        private List<Parameter> parameters; // For functions and structs
+        private List<Element> elements;  // For enums
+
+        public RPC setRPCName(String rpcName) {
+            this.rpcName = rpcName;
+            return this;
+        }
+
+        public RPC setType(String type) {
+            this.type = type;
+            return this;
+        }
+
+        public RPC setDeprecated(boolean deprecated) {
+            this.isDeprecated = deprecated;
+            return this;
+        }
+
+        public RPC setSkip(boolean skip) {
+            this.skip = skip;
+            return this;
+        }
+
+        public RPC setParameters(List<Parameter> parameters) {
+            this.parameters = parameters;
+            return this;
+        }
+
+        public RPC setElements(List<Element> elements) {
+            this.elements = elements;
+            return this;
+        }
+    }
 
     private class Parameter {
         private String rpcName;
@@ -45,12 +100,12 @@ public class RPCGenericTests {
         private Class<?> javaType;
         private boolean isArray;
         private boolean isMandatory;
+        private boolean isDeprecated;
         private String setterName;
         private String getterName1;
         private String getterName2;
         private Object value;
         private boolean skip;
-
 
         public Parameter setRPCName(String rpcName) {
             this.rpcName = rpcName;
@@ -82,6 +137,11 @@ public class RPCGenericTests {
             return this;
         }
 
+        public Parameter setDeprecated(boolean deprecated) {
+            isDeprecated = deprecated;
+            return this;
+        }
+
         public Parameter setSetterName(String setterName) {
             this.setterName = setterName;
             return this;
@@ -107,17 +167,44 @@ public class RPCGenericTests {
         }
     }
 
+    private class Element {
+        private String rpcName;
+        private String name;
+        private boolean isDeprecated;
+        private boolean skip;
+
+        public Element setRPCName(String rpcName) {
+            this.rpcName = rpcName;
+            return this;
+        }
+
+        public Element setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Element setDeprecated(boolean deprecated) {
+            isDeprecated = deprecated;
+            return this;
+        }
+
+        public Element setSkip(boolean skip) {
+            this.skip = skip;
+            return this;
+        }
+    }
+
     @Before
     public void setUp() {
-        // Map that has keys correspond to the RPC names and values correspond to the params for that RPC.
-        rpcMandatoryParamsMapFromXml = getRPCParamsMap(XML_FILE_NAME, true);
-        rpcAllParamsMapFromXml = getRPCParamsMap(XML_FILE_NAME, false);
+        // Map that has keys correspond to the RPCs names and values correspond to RPCs properties and their params
+        rpcMandatoryParamsMapFromXml = getRPCsMap(XML_FILE_NAME, true);
+        rpcAllParamsMapFromXml = getRPCsMap(XML_FILE_NAME, false);
     }
 
     // This method parses the RPC spec xml file and returns a map that has
-    // keys correspond to the RPC names and values correspond to the params for that RPC
-    private Map<String, List<Parameter>> getRPCParamsMap(String fileName, boolean includeMandatoryOnly) {
-        Map<String, List<Parameter>> rpcParamsMap = new HashMap<>();
+    // keys correspond to the RPCs names and values correspond to the RPCs properties and their params.
+    private Map<String, RPC> getRPCsMap(String fileName, boolean includeMandatoryParamsOnly) {
+        Map<String, RPC> rpcParamsMap = new HashMap<>();
         try {
             InputStream stream = getInstrumentation().getTargetContext().getAssets().open(fileName);
             XmlPullParserFactory xmlFactoryObject = XmlPullParserFactory.newInstance();
@@ -125,21 +212,24 @@ public class RPCGenericTests {
             myParser.setInput(stream, null);
             int event = myParser.getEventType();
             String rpcName = null;
-            boolean ignoreRPC = false;
+            boolean skipRPC = false;
             String setterMethodName;
             String getterMethodName1;
             String getterMethodName2;
             Class<?> javaParamType;
             boolean skipParam;
+            boolean skipElement;
             while (event != XmlPullParser.END_DOCUMENT) {
-                String name = myParser.getName();
+                String elementType = myParser.getName();
                 switch (event) {
                     case XmlPullParser.START_TAG:
+                        boolean isDeprecated = Boolean.valueOf(myParser.getAttributeValue(null, "deprecated"));
+
                         // Store the RPC name in the map
-                        if (name.equals("function") || name.equals("struct")) {
+                        if ((elementType.equals("function") || elementType.equals("struct") || elementType.equals("enum")) && myParser.getAttributeValue(null, "until") == null) {
                             rpcName = myParser.getAttributeValue(null, "name");
-                            ignoreRPC = false;
-                            if (name.equals("function") && myParser.getAttributeValue(null, "messagetype").equals("response") && !rpcName.contains("Response")) {
+                            skipRPC = false;
+                            if (elementType.equals("function") && myParser.getAttributeValue(null, "messagetype").equals("response") && !rpcName.contains("Response")) {
                                 rpcName += "Response";
                             }
 
@@ -152,24 +242,35 @@ public class RPCGenericTests {
                                 rpcName = "OasisAddress";
                             } else if (rpcName.equals("ShowConstantTBT")) {
                                 rpcName = "ShowConstantTbt";
-                            } else if (rpcName.equals("EncodedSyncPData") || rpcName.equals("OnEncodedSyncPData") || rpcName.equals("EncodedSyncPDataResponse")) {
-                                ignoreRPC = true;
+                            } else if (rpcName.equals("messageType")) {
+                                rpcName = "MessageType";
+                            } else if (rpcName.equals("DisplayCapabilities")) {
+                                isDeprecated = false;
+                            } else if (rpcName.equals("EncodedSyncPData") || rpcName.equals("OnEncodedSyncPData") || rpcName.equals("EncodedSyncPDataResponse") || rpcName.equals("FunctionID")) {
+                                skipRPC = true;
                             }
                             // -------------------------------------------------------------------------------------------------------------
 
-                            if (!ignoreRPC) {
-                                rpcParamsMap.put(rpcName, new ArrayList<Parameter>());
-                            }
+                            RPC rpc = new RPC()
+                                    .setRPCName(rpcName)
+                                    .setType(elementType)
+                                    .setDeprecated(isDeprecated)
+                                    .setSkip(skipRPC)
+                                    .setParameters(new ArrayList<Parameter>())
+                                    .setElements(new ArrayList<Element>());
+                            rpcParamsMap.put(rpcName, rpc);
+
                         }
+
                         // Store the params for the current RPC in the map
-                        if (name.equals("param") && myParser.getAttributeValue(null, "until") == null && !ignoreRPC) {
+                        if (elementType.equals("param") && myParser.getAttributeValue(null, "until") == null) {
                             setterMethodName = null;
                             getterMethodName1 = null;
                             getterMethodName2 = null;
                             javaParamType = null;
                             skipParam = false;
                             boolean isMandatory = Boolean.valueOf(myParser.getAttributeValue(null, "mandatory"));
-                            if (isMandatory || !includeMandatoryOnly) {
+                            if (isMandatory || !includeMandatoryParamsOnly) {
                                 String paramName = myParser.getAttributeValue(null, "name");
                                 String paramType = myParser.getAttributeValue(null, "type");
                                 boolean isArray = Boolean.valueOf(myParser.getAttributeValue(null, "array"));
@@ -191,8 +292,6 @@ public class RPCGenericTests {
                                     paramType = "SdlMsgVersion";
                                 } else if (paramType.equals("OASISAddress")) {
                                     paramType = "OasisAddress";
-                                } else if (rpcName.equals("TouchEvent") && paramType.equals("Integer") && isArray) {
-                                    paramType = "Long";
                                 } else if (Arrays.asList("GPSData", "VideoStreamingCapability").contains(rpcName) && paramType.equals("Float")) {
                                     paramType = "Double";
                                 } else if (Arrays.asList("GetVehicleDataResponse", "OnVehicleData").contains(rpcName) && Arrays.asList("setInstantFuelConsumption", "setFuelLevel", "setSpeed", "setExternalTemperature", "setEngineTorque", "setAccPedalPosition", "setSteeringWheelAngle").contains(setterMethodName)) {
@@ -209,6 +308,8 @@ public class RPCGenericTests {
                                     paramType = "boolean";
                                 } else if (rpcName.equals("SubscribeVehicleData") && Arrays.asList("setElectronicParkBrakeStatus", "setCloudAppVehicleID").contains(setterMethodName)) {
                                     paramType = "boolean";
+                                } else if (rpcName.equals("Show") && setterMethodName.equalsIgnoreCase("setMediaClock")) {
+                                    isDeprecated = true;
                                 } else if (rpcName.equals("CancelInteraction") && setterMethodName.equals("setFunctionID")) {
                                     setterMethodName = "setInteractionFunctionID";
                                 } else if (rpcName.equals("NavigationCapability") && setterMethodName.equals("setGetWayPointsEnabled")) {
@@ -288,6 +389,11 @@ public class RPCGenericTests {
                                     setterMethodName = "setOEMCustomVehicleDataType";
                                 } else if (rpcName.equals("HMICapabilities") && setterMethodName.equals("setDisplays")) {
                                     setterMethodName = "setDisplaysCapabilityAvailable";
+                                } else if (rpcName.equals("TouchEvent") && setterMethodName.equals("setC")) {
+                                    setterMethodName = "setTouchCoordinates";
+                                } else if (rpcName.equals("TouchEvent") && setterMethodName.equals("setTs")) {
+                                    paramType = "Long";
+                                    setterMethodName = "setTimestamps";
                                 } else if (rpcName.equals("HMICapabilities")) {
                                     setterMethodName += "Available";
                                 }
@@ -307,13 +413,34 @@ public class RPCGenericTests {
                                         .setJavaType(javaParamType)
                                         .setArray(isArray)
                                         .setMandatory(isMandatory)
+                                        .setDeprecated(isDeprecated)
                                         .setSkip(skipParam)
                                         .setSetterName(setterMethodName)
                                         .setGetterName1(getterMethodName1)
                                         .setGetterName2(getterMethodName2);
 
-                                rpcParamsMap.get(rpcName).add(param);
+                                rpcParamsMap.get(rpcName).parameters.add(param);
                             }
+                        }
+
+                        // Store the elements for the current RPC in the map
+                        if (elementType.equals("element") && myParser.getAttributeValue(null, "until") == null) {
+                            skipElement = false;
+                            String elementName = myParser.getAttributeValue(null, "name");
+
+                            // -------------- Exceptional cases because of mismatch between the RPC spec and the Android code --------------
+                            if (rpcName.equalsIgnoreCase("MessageType")) {
+                                elementName = elementName.toUpperCase();
+                            }
+                            // -------------------------------------------------------------------------------------------------------------
+
+                            Element element = new Element()
+                                    .setRPCName(rpcName)
+                                    .setName(elementName)
+                                    .setDeprecated(isDeprecated)
+                                    .setSkip(skipElement);
+
+                            rpcParamsMap.get(rpcName).elements.add(element);
                         }
                         break;
                 }
@@ -326,10 +453,10 @@ public class RPCGenericTests {
         return rpcParamsMap;
     }
 
-    // This method makes sure that for every RPC, there is a constructor that has all the mandatory params
-    // It also checks if there are RPC in the XML file that don't exist in the code
+    // This method makes sure that for every function and struct RPC, there is a constructor that has all the mandatory params
+    // It also checks if there are function and struct RPCs in the XML file that don't exist in the code
     @Test
-    public void testMandatoryParamsMatch() {
+    public void testConstructorWithMandatoryParamsExist() {
         // List of RPC names that don't have a constructor that has all mandatory params
         List<String> rpcsWithInvalidConstructor = new ArrayList<>();
 
@@ -340,6 +467,10 @@ public class RPCGenericTests {
         // Loop through all RPCs that were loaded from RPC spec XML file
         // and make sure that every RPC has a constructor that has all mandatory params
         for (String rpcName : rpcMandatoryParamsMapFromXml.keySet()) {
+            if (rpcMandatoryParamsMapFromXml.get(rpcName).skip || rpcMandatoryParamsMapFromXml.get(rpcName).type.equals("enum")) {
+                continue;
+            }
+
             Class aClass;
             try {
                 aClass = Class.forName(RPC_PACKAGE_PREFIX + rpcName);
@@ -349,7 +480,7 @@ public class RPCGenericTests {
                 continue;
             }
             List<String> mandatoryParamsListFromXML = new ArrayList<>();
-            for (Parameter param : rpcMandatoryParamsMapFromXml.get(rpcName)) {
+            for (Parameter param : rpcMandatoryParamsMapFromXml.get(rpcName).parameters) {
                 String type = param.type;
                 // If the param is a list of objects, the type should be like "List<Object>"
                 if (param.isArray) {
@@ -388,6 +519,35 @@ public class RPCGenericTests {
         }
         assertTrue("The following RPCs were not found in the code: " + rpcsFromXmlNotFoundInCode, rpcsFromXmlNotFoundInCode.isEmpty());
         assertTrue("The following RPCs don't have a constructor that has all the mandatory params: " + rpcsWithInvalidConstructor, rpcsWithInvalidConstructor.isEmpty());
+    }
+
+    private boolean annotationExists (AnnotatedElement element, String annotationName) {
+        for (Annotation annotation : element.getDeclaredAnnotations()) {
+            if (annotation.annotationType().getSimpleName().equalsIgnoreCase(annotationName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isDeprecated (AnnotatedElement element) {
+        return annotationExists(element, "Deprecated");
+    }
+
+    private Field getEnumField(Class aClass, String elementName) {
+        Field field = null;
+        for (Object anEnum : EnumSet.allOf(aClass)) {
+            if (anEnum.toString().equals(elementName)) {
+                try {
+                    String value = ((Enum)anEnum).name();
+                    field = aClass.getField(value);
+                    break;
+                } catch (NoSuchFieldException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return field;
     }
 
     // This method returns the correct java reflection method in a specific class
@@ -462,15 +622,19 @@ public class RPCGenericTests {
         return javaType;
     }
 
-    // This method makes sure that for every RPC, the constructor that has the mandatory params is setting the values correctly
+    // This method makes sure that for every function and struct RPC, the constructor that has the mandatory params is setting the values correctly
     @Test
-    public void testMandatoryParamsValues() {
+    public void testConstructorWithMandatoryParamsValues() {
         // List of RPC names that have a constructor which is not settings the values for the mandatory params correctly
         List<String> rpcsWithInvalidConstructor = new ArrayList<>();
 
         // Loop through all RPCs that were loaded from RPC spec XML file
         // and make sure that the constructor that has the mandatory params is setting the values correctly
         for (String rpcName : rpcMandatoryParamsMapFromXml.keySet()) {
+            if (rpcMandatoryParamsMapFromXml.get(rpcName).skip || rpcMandatoryParamsMapFromXml.get(rpcName).type.equals("enum")) {
+                continue;
+            }
+
             Class aClass;
             try {
                 aClass = Class.forName(RPC_PACKAGE_PREFIX + rpcName);
@@ -479,7 +643,7 @@ public class RPCGenericTests {
                 continue;
             }
 
-            List<Parameter> parameters = rpcMandatoryParamsMapFromXml.get(rpcName);
+            List<Parameter> parameters = rpcMandatoryParamsMapFromXml.get(rpcName).parameters;
             List<Class<?>> mandatoryParamsTypes = new ArrayList<>();
             List<Object> mandatoryParamsValues = new ArrayList<>();
 
@@ -550,17 +714,22 @@ public class RPCGenericTests {
     }
 
     /**
-     * This method makes sure that for every param in every RPC:
-     * - A setter exists and its name matches the RPC spec
+     * This method makes sure that for every function and struct RPC, the class exists in the code
+     * and its annotations match the RPC spec. And for every param in that RPC:
+     * - A setter exists and its name & annotations match the RPC spec
      * - The setter return type matches the RPC type (to make RPCs chainable)
-     * - A getter exists and its name matches the RPC spec
+     * - A getter exists and its name & annotations match the RPC spec
      */
     @Test
-    public void testParamsSettersAndGetters() {
+    public void testFunctionsAndStructs() {
         List<String> errors = new ArrayList<>();
 
         // Loop through all RPCs that were loaded from RPC spec XML file
         for (String rpcName : rpcAllParamsMapFromXml.keySet()) {
+            if (rpcAllParamsMapFromXml.get(rpcName).skip || rpcAllParamsMapFromXml.get(rpcName).type.equals("enum")) {
+                continue;
+            }
+
             Class aClass;
             try {
                 aClass = Class.forName(RPC_PACKAGE_PREFIX + rpcName);
@@ -570,8 +739,13 @@ public class RPCGenericTests {
                 continue;
             }
 
-            // Loop through all params for the current RPC and make sure everyone has a a setter and a getter
-            List<Parameter> parameters = rpcAllParamsMapFromXml.get(rpcName);
+            if (aClass != null && isDeprecated(aClass) != rpcAllParamsMapFromXml.get(rpcName).isDeprecated) {
+                String errMsg = rpcName + " deprecation status does not match RPC spec" + ". \n";
+                errors.add(errMsg);
+            }
+
+            // Loop through all params for the current RPC and make sure everyone has a setter and a getter
+            List<Parameter> parameters = rpcAllParamsMapFromXml.get(rpcName).parameters;
             for (int i = 0; i < parameters.size(); i++) {
                 Parameter parameter = parameters.get(i);
                 if (parameter.skip) {
@@ -579,8 +753,9 @@ public class RPCGenericTests {
                 }
 
                 // Confirm that the setter is correct
+                Method setterMethod = null;
                 try {
-                    Method setterMethod = getMethod(aClass, parameter, parameter.setterName, false);
+                    setterMethod = getMethod(aClass, parameter, parameter.setterName, false);
                     List<String> expectedReturnTypes = Arrays.asList(aClass.getName(), aClass.getSuperclass().getName());
                     String actualReturnType = setterMethod.getReturnType().getName();
                     if (!expectedReturnTypes.contains(actualReturnType)) {
@@ -589,6 +764,10 @@ public class RPCGenericTests {
                     }
                 } catch (NoSuchMethodException e) {
                     String errMsg = rpcName + "." + parameter.setterName + "(" + parameter.type + ")" + " cannot be found. Make sure that the method exists. \n";
+                    errors.add(errMsg);
+                }
+                if (setterMethod != null && isDeprecated(setterMethod) != parameter.isDeprecated) {
+                    String errMsg = rpcName + "." + parameter.setterName + "()" + " deprecation status does not match RPC spec" + ". \n";
                     errors.add(errMsg);
                 }
 
@@ -604,6 +783,64 @@ public class RPCGenericTests {
                         String errMsg = String.format(rpcName + "." + parameter.getterName1 + "()" + "%s" + " cannot be found. Make sure that the method exists. \n", parameter.type.equalsIgnoreCase("boolean") ? "/" + parameter.getterName2 + "()" : "");
                         errors.add(errMsg);
                     }
+                }
+                if (getterMethod != null && isDeprecated(getterMethod) != parameter.isDeprecated) {
+                    String errMsg = rpcName + "." + parameter.getterName1 + "()" + " deprecation status does not match RPC spec" + ". \n";
+                    errors.add(errMsg);
+                }
+            }
+        }
+
+        assertTrue("There are " + errors.size() + " errors: \n" + errors, errors.isEmpty());
+    }
+
+    /**
+     * This method makes sure that for every enum RPC, the class exists in the code
+     * and its annotations match the RPC spec. And for every element in that enum:
+     * - The element exists and its name & annotations match the RPC spec
+     */
+    @Test
+    public void testEnums() {
+        List<String> errors = new ArrayList<>();
+
+        // Loop through all RPCs that were loaded from RPC spec XML file
+        for (String rpcName : rpcAllParamsMapFromXml.keySet()) {
+            if (rpcAllParamsMapFromXml.get(rpcName).skip || rpcAllParamsMapFromXml.get(rpcName).type.equals("function") || rpcAllParamsMapFromXml.get(rpcName).type.equals("struct")) {
+                continue;
+            }
+
+            Class aClass;
+            try {
+                aClass = Class.forName(ENUM_PACKAGE_PREFIX + rpcName);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                errors.add("Class not found for rpc: " + rpcName + ". \n");
+                continue;
+            }
+
+            if (aClass != null && isDeprecated(aClass) != rpcAllParamsMapFromXml.get(rpcName).isDeprecated) {
+                String errMsg = rpcName + " deprecation status does not match RPC spec" + ". \n";
+                errors.add(errMsg);
+            }
+            
+            // Loop through all elements for the current RPC and make sure everyone matches the RPC spec
+            List<Element> elements = rpcAllParamsMapFromXml.get(rpcName).elements;
+            for (int i = 0; i < elements.size(); i++) {
+                Element element = elements.get(i);
+
+                if (element.skip) {
+                    continue;
+                }
+
+                Field field = getEnumField(aClass, element.name);
+                if (field != null) {
+                    if (isDeprecated(field) != element.isDeprecated) {
+                        String errMsg = rpcName + "." + element.name + " deprecation status does not match RPC spec" + ". \n";
+                        errors.add(errMsg);
+                    }
+                } else {
+                    String errMsg = rpcName + "." + element.name + " cannot be found in code" + ". \n";
+                    errors.add(errMsg);
                 }
             }
         }

@@ -162,6 +162,7 @@ abstract class BaseLifecycleManager {
         }
         if (taskmaster != null) {
             taskmaster.shutdown();
+            taskmaster = null;
         }
     }
 
@@ -1110,6 +1111,10 @@ abstract class BaseLifecycleManager {
         }
         if (encryptionLifecycleManager != null) {
             encryptionLifecycleManager.dispose();
+        }
+        if (taskmaster != null) {
+            taskmaster.shutdown();
+            taskmaster = null;
         }
     }
 
