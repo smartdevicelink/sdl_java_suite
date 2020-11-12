@@ -61,7 +61,6 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
     private static final int voiceCommandIdMin = 1900000000;
 
     boolean waitingOnHMIUpdate;
-    boolean hasQueuedUpdate;
 
     HMILevel currentHMILevel;
     OnRPCNotificationListener hmiListener;
@@ -97,7 +96,6 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
         waitingOnHMIUpdate = false;
         currentHMILevel = null;
-        hasQueuedUpdate = false;
 
         transactionQueue.close();
         transactionQueue = null;

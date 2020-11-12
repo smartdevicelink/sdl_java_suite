@@ -13,6 +13,7 @@ import com.smartdevicelink.util.DebugTool;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -140,7 +141,11 @@ public class VoiceCommandReplaceOperationTests {
             }
         };
 
-        voiceCommandReplaceOperation = new VoiceCommandReplaceOperation(internalInterface, Arrays.asList(voiceCommand1, voiceCommand2), Arrays.asList(voiceCommand3, voiceCommand4), voiceCommandChangesListener);
+        VoiceCommandReplaceOperation.VoiceCommandChangesListener listenerSpy = Mockito.spy(voiceCommandChangesListener);
+
+        voiceCommandReplaceOperation = new VoiceCommandReplaceOperation(internalInterface, Arrays.asList(voiceCommand1, voiceCommand2), Arrays.asList(voiceCommand3, voiceCommand4), listenerSpy);
         voiceCommandReplaceOperation.onExecute();
+
+        verify(listenerSpy, times(1)).updatedVoiceCommands(any(List.class), any(HashMap.class));
     }
 }

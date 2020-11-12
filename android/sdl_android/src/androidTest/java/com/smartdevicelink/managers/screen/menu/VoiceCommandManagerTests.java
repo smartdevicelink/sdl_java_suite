@@ -123,7 +123,6 @@ public class VoiceCommandManagerTests {
         assertEquals(voiceCommandManager.currentHMILevel, null);
         assertEquals(voiceCommandManager.getState(), BaseSubManager.SETTING_UP);
         assertEquals(voiceCommandManager.lastVoiceCommandId, voiceCommandIdMin);
-        assertFalse(voiceCommandManager.hasQueuedUpdate);
         assertFalse(voiceCommandManager.waitingOnHMIUpdate);
         assertNotNull(voiceCommandManager.commandListener);
         assertNotNull(voiceCommandManager.hmiListener);
@@ -140,7 +139,6 @@ public class VoiceCommandManagerTests {
         assertNull(voiceCommandManager.voiceCommands);
         assertNull(voiceCommandManager.oldVoiceCommands);
         assertNull(voiceCommandManager.currentHMILevel);
-        assertFalse(voiceCommandManager.hasQueuedUpdate);
         assertFalse(voiceCommandManager.waitingOnHMIUpdate);
         // after everything, make sure we are in the correct state
         assertEquals(voiceCommandManager.getState(), BaseSubManager.SHUTDOWN);
