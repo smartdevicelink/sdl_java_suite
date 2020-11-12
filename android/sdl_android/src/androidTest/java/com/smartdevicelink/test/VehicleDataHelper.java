@@ -3,6 +3,7 @@ package com.smartdevicelink.test;
 import com.smartdevicelink.proxy.rpc.AirbagStatus;
 import com.smartdevicelink.proxy.rpc.BeltStatus;
 import com.smartdevicelink.proxy.rpc.BodyInformation;
+import com.smartdevicelink.proxy.rpc.ClimateData;
 import com.smartdevicelink.proxy.rpc.ClusterModeStatus;
 import com.smartdevicelink.proxy.rpc.DeviceStatus;
 import com.smartdevicelink.proxy.rpc.ECallInfo;
@@ -17,6 +18,7 @@ import com.smartdevicelink.proxy.rpc.MyKey;
 import com.smartdevicelink.proxy.rpc.OnVehicleData;
 import com.smartdevicelink.proxy.rpc.SingleTireStatus;
 import com.smartdevicelink.proxy.rpc.StabilityControlsStatus;
+import com.smartdevicelink.proxy.rpc.Temperature;
 import com.smartdevicelink.proxy.rpc.TireStatus;
 import com.smartdevicelink.proxy.rpc.WindowState;
 import com.smartdevicelink.proxy.rpc.WindowStatus;
@@ -38,6 +40,7 @@ import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeQualificationStatus;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PrimaryAudioSource;
+import com.smartdevicelink.proxy.rpc.enums.TemperatureUnit;
 import com.smartdevicelink.proxy.rpc.enums.TransmissionType;
 import com.smartdevicelink.proxy.rpc.enums.TurnSignal;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
@@ -89,6 +92,12 @@ public class VehicleDataHelper {
     public static final StabilityControlsStatus STABILITY_CONTROLS_STATUS = new StabilityControlsStatus();
     public static final String OEM_CUSTOM_VEHICLE_DATA_STATE = "oemCustomVehicleDataState";
     public static final Boolean HANDS_OFF_STEERING = Boolean.TRUE;
+
+    // Climate Data
+    public static final ClimateData CLIMATE_DATA = new ClimateData();
+    public static final Float CLIMATE_DATA_ATM_PRESSURE = TestValues.GENERAL_FLOAT;
+    public static final Temperature CLIMATE_DATA_CABIN_TEMP = new Temperature(TemperatureUnit.CELSIUS, TestValues.GENERAL_FLOAT);
+    public static final Temperature CLIMATE_DATA_EXT_TEMP = new Temperature(TemperatureUnit.CELSIUS, TestValues.GENERAL_FLOAT);
 
     //other variables inside some of the above objects
     // tire status
@@ -335,6 +344,11 @@ public class VehicleDataHelper {
         EMERGENCY_EVENT.setMaximumChangeVelocity(EMERGENCY_EVENT_MAX_CHANGE_VELOCITY);
         EMERGENCY_EVENT.setMultipleEvents(EMERGENCY_EVENT_MULTIPLE_EVENTS);
 
+        // Climate Data
+        CLIMATE_DATA.setAtmosphericPressure(CLIMATE_DATA_ATM_PRESSURE);
+        CLIMATE_DATA.setCabinTemperature(CLIMATE_DATA_CABIN_TEMP);
+        CLIMATE_DATA.setExternalTemperature(CLIMATE_DATA_EXT_TEMP);
+
         //CLUSTER_MODE_STATUS set up
         CLUSTER_MODE_STATUS.setPowerModeActive(CLUSTER_MODE_STATUS_POWER_MODE_ACTIVE);
         CLUSTER_MODE_STATUS.setPowerModeQualificationStatus(CLUSTER_MODE_STATUS_POWER_MODE_QUALIFICATION_STATUS);
@@ -377,6 +391,7 @@ public class VehicleDataHelper {
         VEHICLE_DATA.setSpeed(SPEED);
         VEHICLE_DATA.setRpm(RPM);
         VEHICLE_DATA.setExternalTemperature(EXTERNAL_TEMPERATURE);
+        VEHICLE_DATA.setClimateData(CLIMATE_DATA);
         VEHICLE_DATA.setFuelLevel(FUEL_LEVEL);
         VEHICLE_DATA.setVin(VIN);
         VEHICLE_DATA.setPrndl(PRNDL_FINAL);
@@ -412,6 +427,7 @@ public class VehicleDataHelper {
         VEHICLE_DATA_RESPONSE.setSpeed(SPEED);
         VEHICLE_DATA_RESPONSE.setRpm(RPM);
         VEHICLE_DATA_RESPONSE.setExternalTemperature(EXTERNAL_TEMPERATURE);
+        VEHICLE_DATA_RESPONSE.setClimateData(CLIMATE_DATA);
         VEHICLE_DATA_RESPONSE.setFuelLevel(FUEL_LEVEL);
         VEHICLE_DATA_RESPONSE.setVin(VIN);
         VEHICLE_DATA_RESPONSE.setPrndl(PRNDL_FINAL);

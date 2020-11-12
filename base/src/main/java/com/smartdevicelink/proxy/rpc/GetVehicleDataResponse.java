@@ -225,7 +225,7 @@ public class GetVehicleDataResponse extends RPCResponse {
      * @deprecated in SmartDeviceLink 7.1.0
      */
     @Deprecated
-    public GetVehicleDataResponse setExternalTemperature(Float externalTemperature) {
+    public GetVehicleDataResponse setExternalTemperature(Double externalTemperature) {
         setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
         return this;
     }
@@ -240,9 +240,9 @@ public class GetVehicleDataResponse extends RPCResponse {
      * @deprecated in SmartDeviceLink 7.1.0
      */
     @Deprecated
-    public Float getExternalTemperature() {
+    public Double getExternalTemperature() {
         Object object = getParameters(KEY_EXTERNAL_TEMPERATURE);
-        return SdlDataTypeConverter.objectToFloat(object);
+        return SdlDataTypeConverter.objectToDouble(object);
     }
 
     public GetVehicleDataResponse setVin(String vin) {

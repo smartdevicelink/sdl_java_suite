@@ -3929,4 +3929,14 @@ public class Validator {
         }
         return status1.getDataType().equals(status2.getDataType()) && status1.getResultCode().equals(status2.getResultCode());
     }
+
+    public static boolean validateClimateData(ClimateData climateData1, ClimateData climateData2) {
+        if (climateData1 == null) {
+            return (climateData2 == null);
+        }
+        if (climateData2 == null) {
+            return (climateData1 == null);
+        }
+        return climateData1.getStore().equals(climateData2.getStore());
+    }
 }

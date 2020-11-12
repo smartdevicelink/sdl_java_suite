@@ -476,7 +476,7 @@ public class OnVehicleData extends RPCNotification {
      * @deprecated in SmartDeviceLink 7.1.0
      */
     @Deprecated
-    public OnVehicleData setExternalTemperature(Boolean externalTemperature) {
+    public OnVehicleData setExternalTemperature(Double externalTemperature) {
         setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
         return this;
     }
@@ -490,8 +490,9 @@ public class OnVehicleData extends RPCNotification {
      * @deprecated in SmartDeviceLink 7.1.0
      */
     @Deprecated
-    public Boolean getExternalTemperature() {
-        return getBoolean(KEY_EXTERNAL_TEMPERATURE);
+    public Double getExternalTemperature() {
+        Object object = getParameters(KEY_EXTERNAL_TEMPERATURE);
+        return SdlDataTypeConverter.objectToDouble(object);
     }
 
     public OnVehicleData setVin(String vin) {
@@ -883,7 +884,7 @@ public class OnVehicleData extends RPCNotification {
      * @param climateData See ClimateData
      * @since SmartDeviceLink 7.1.0
      */
-    public OnVehicleData setClimateData(Boolean climateData) {
+    public OnVehicleData setClimateData(ClimateData climateData) {
         setParameters(KEY_CLIMATE_DATA, climateData);
         return this;
     }
@@ -891,10 +892,10 @@ public class OnVehicleData extends RPCNotification {
     /**
      * Gets the climateData.
      *
-     * @return Boolean See ClimateData
+     * @return ClimateData See ClimateData
      * @since SmartDeviceLink 7.1.0
      */
-    public Boolean getClimateData() {
-        return getBoolean(KEY_CLIMATE_DATA);
+    public ClimateData getClimateData() {
+        return (ClimateData) getObject(ClimateData.class, KEY_CLIMATE_DATA);
     }
 }
