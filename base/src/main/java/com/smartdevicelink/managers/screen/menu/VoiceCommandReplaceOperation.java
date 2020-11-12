@@ -3,6 +3,7 @@ package com.smartdevicelink.managers.screen.menu;
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
+import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.AddCommand;
 import com.smartdevicelink.proxy.rpc.AddCommandResponse;
@@ -25,10 +26,10 @@ public class VoiceCommandReplaceOperation extends Task {
     private List<AddCommand> addCommands;
     private VoiceCommandChangesListener voiceCommandListener;
     private List<VoiceCommand> updatedVoiceCommands;
-    private HashMap<Integer, String> errorObject;
+    private HashMap<RPCRequest, String> errorObject;
 
     interface VoiceCommandChangesListener {
-        void updatedVoiceCommands(List<VoiceCommand> voiceCommands, HashMap<Integer, String> errorObject);
+        void updatedVoiceCommands(List<VoiceCommand> voiceCommands, HashMap<RPCRequest, String> errorObject);
     }
 
     VoiceCommandReplaceOperation(ISdl internalInterface, List<VoiceCommand> deleteVoiceCommands, List<VoiceCommand> addVoiceCommands, VoiceCommandChangesListener voiceCommandListener) {
@@ -106,7 +107,11 @@ public class VoiceCommandReplaceOperation extends Task {
             public void onResponse(int correlationId, RPCResponse response) {
                 DeleteCommandResponse deleteResponse = (DeleteCommandResponse) response;
                 if (!deleteResponse.getSuccess()) {
-                    errorObject.put(correlationId, response.getInfo());
+                    for (DeleteCommand deleteCommand : deleteCommands) {
+                        if (correlationId == deleteCommand.getCorrelationID()) {
+                            errorObject.put(deleteCommand, response.getInfo());
+                        }
+                    }
                 } else {
                     VoiceCommand foundCommand = getVoiceCommandFromDeleteCommandResponse(correlationId);
                     if (foundCommand != null) {
@@ -176,7 +181,11 @@ public class VoiceCommandReplaceOperation extends Task {
             public void onResponse(int correlationId, RPCResponse response) {
                 AddCommandResponse addResponse = (AddCommandResponse) response;
                 if (!addResponse.getSuccess()) {
-                    errorObject.put(correlationId, response.getInfo());
+                    for (AddCommand addCommand : addCommands) {
+                        if (correlationId == addCommand.getCorrelationID()) {
+                            errorObject.put(addCommand, response.getInfo());
+                        }
+                    }
                 } else {
                     VoiceCommand foundCommand = getVoiceCommandFromAddCommandResponse(correlationId);
                     if (foundCommand != null) {

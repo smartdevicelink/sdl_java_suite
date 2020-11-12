@@ -129,7 +129,6 @@ public class VoiceCommandManagerTests {
         assertNotNull(voiceCommandManager.hmiListener);
         assertNull(voiceCommandManager.voiceCommands);
         assertNull(voiceCommandManager.oldVoiceCommands);
-        assertNull(voiceCommandManager.inProgressUpdate);
     }
 
     @After
@@ -141,7 +140,6 @@ public class VoiceCommandManagerTests {
         assertNull(voiceCommandManager.voiceCommands);
         assertNull(voiceCommandManager.oldVoiceCommands);
         assertNull(voiceCommandManager.currentHMILevel);
-        assertNull(voiceCommandManager.inProgressUpdate);
         assertFalse(voiceCommandManager.hasQueuedUpdate);
         assertFalse(voiceCommandManager.waitingOnHMIUpdate);
         // after everything, make sure we are in the correct state
@@ -168,7 +166,6 @@ public class VoiceCommandManagerTests {
         voiceCommandManager.setVoiceCommands(commands);
 
         // updating voice commands before HMI is ready
-        assertNull(voiceCommandManager.inProgressUpdate);
         assertTrue(voiceCommandManager.waitingOnHMIUpdate);
         // these are the 2 commands we have waiting
         assertEquals(voiceCommandManager.voiceCommands.size(), 2);
@@ -184,14 +181,6 @@ public class VoiceCommandManagerTests {
 
     @Test
     public void testUpdatingCommands() {
-
-        // we have previously sent 2 VoiceCommand objects. we will now update it and have just one
-
-//        // make sure the system returns us 2 delete commands
-//        assertEquals(voiceCommandManager.deleteCommandsForVoiceCommands(commands).size(), 2);
-//        // when we only send one command to update, we should only be returned one add command
-//        assertEquals(voiceCommandManager.addCommandsForVoiceCommands(Collections.singletonList(command)).size(), 1);
-
         // Send a new single command, and test that its listener works, as it gets called from the VCM
         voiceCommandManager.setVoiceCommands(Collections.singletonList(command3));
 
