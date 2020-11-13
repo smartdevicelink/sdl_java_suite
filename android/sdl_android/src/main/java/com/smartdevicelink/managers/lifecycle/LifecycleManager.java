@@ -62,7 +62,6 @@ public class LifecycleManager extends BaseLifecycleManager {
     private ISdlServiceListener videoServiceListener;
     private boolean videoServiceStartResponseReceived = false;
     private boolean videoServiceStartResponse = false;
-    private boolean videoStreamEnded = false;
     private WeakReference<Context> contextWeakReference;
 
     public LifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener) {

@@ -143,33 +143,32 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                     hapticManager = new HapticInterfaceManager(internalInterface);
                 }
                 checkState();
-				startEncoder();
-				stateMachine.transitionToState(StreamingStateMachine.STARTED);
-				hasStarted = true;
-			}
-		}
+                startEncoder();
+                stateMachine.transitionToState(StreamingStateMachine.STARTED);
+                hasStarted = true;
+            }
+        }
 
         @Override
         public void onServiceEnded(SdlSession session, SessionType type) {
             if (SessionType.NAV.equals(type)) {
                 //stopVideoStream();
                 if (sdlRemoteDisplay !=null){
-				    // TODO set withPendingRestart to default in proper place
                     stopStreaming(withPendingRestart);
-				}
-				stateMachine.transitionToState(StreamingStateMachine.NONE);
-				transitionToState(SETTING_UP);
+                }
+                stateMachine.transitionToState(StreamingStateMachine.NONE);
+                transitionToState(SETTING_UP);
 
-				if (withPendingRestart){
-					VideoStreamManager manager = VideoStreamManager.this;
-					manager.internalInterface.startVideoService(
-							manager.getLastCachedStreamingParameters(),
-							manager.isEncrypted,
-							withPendingRestart
-					);
-				}
-			}
-		}
+                if (withPendingRestart){
+                    VideoStreamManager manager = VideoStreamManager.this;
+                    manager.internalInterface.startVideoService(
+                            manager.getLastCachedStreamingParameters(),
+                            manager.isEncrypted,
+                            withPendingRestart
+                    );
+                }
+            }
+        }
 
         @Override
         public void onServiceError(SdlSession session, SessionType type, String reason) {
@@ -180,16 +179,16 @@ public class VideoStreamManager extends BaseVideoStreamManager {
         }
     };
 
-	private final OnRPCNotificationListener hmiListener = new OnRPCNotificationListener() {
-		@Override
-		public void onNotified(RPCNotification notification) {
-			if(notification != null){
-				OnHMIStatus onHMIStatus = (OnHMIStatus) notification;
-				if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
-					return;
-				}
-				OnHMIStatus prevOnHMIStatus = currentOnHMIStatus;
-				currentOnHMIStatus = onHMIStatus;
+    private final OnRPCNotificationListener hmiListener = new OnRPCNotificationListener() {
+        @Override
+        public void onNotified(RPCNotification notification) {
+            if (notification != null) {
+                OnHMIStatus onHMIStatus = (OnHMIStatus) notification;
+                if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+                    return;
+                }
+                OnHMIStatus prevOnHMIStatus = currentOnHMIStatus;
+                currentOnHMIStatus = onHMIStatus;
                 if (!HMILevel.HMI_NONE.equals(currentOnHMIStatus.getHmiLevel()) && VideoStreamManager.this.parameters == null) {
                     getVideoStreamingParams();
                 }
@@ -209,40 +208,40 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                 if (motionEventList != null && !motionEventList.isEmpty()) {
                     for (MotionEvent motionEvent : motionEventList) {
                         sdlRemoteDisplay.handleMotionEvent(motionEvent);
-					}
-				}
-			}
-		}
-	};
+                    }
+                }
+            }
+        }
+    };
 
-	private final OnSystemCapabilityListener systemCapabilityListener = new OnSystemCapabilityListener() {
-		@Override
-		public void onCapabilityRetrieved(Object capability) {
-			VideoStreamingParameters params = new VideoStreamingParameters();
+    private final OnSystemCapabilityListener systemCapabilityListener = new OnSystemCapabilityListener() {
+        @Override
+        public void onCapabilityRetrieved(Object capability) {
+            VideoStreamingParameters params = new VideoStreamingParameters();
 
-			VideoStreamingCapability castedCapability = ((VideoStreamingCapability)capability);
+            VideoStreamingCapability castedCapability = ((VideoStreamingCapability)capability);
 
-			// means only scale received
-			if (castedCapability.getPreferredResolution() == null &&
-					castedCapability.getScale() != null &&
-					castedCapability.getScale() != 0 &&
-					VideoStreamManager.this.parameters != null
-					&& VideoStreamManager.this.parameters.getResolution() != null) {
-				// set cached resolution
-				castedCapability.setPreferredResolution(originalCapability.getPreferredResolution());
-			}
-			params.update(castedCapability, vehicleMake);	//Streaming parameters are ready time to stream
-			VideoStreamManager.this.parameters = params;
+            // means only scale received
+            if (castedCapability.getPreferredResolution() == null &&
+                    castedCapability.getScale() != null &&
+                    castedCapability.getScale() != 0 &&
+                    VideoStreamManager.this.parameters != null
+                    && VideoStreamManager.this.parameters.getResolution() != null) {
+                // set cached resolution
+                castedCapability.setPreferredResolution(originalCapability.getPreferredResolution());
+            }
+            params.update(castedCapability, vehicleMake);	//Streaming parameters are ready time to stream
+            VideoStreamManager.this.parameters = params;
 
-			VideoStreamManager.this.withPendingRestart = true;
+            VideoStreamManager.this.withPendingRestart = true;
 
-			virtualDisplayEncoder.setStreamingParams(params);
-			stopStreaming(true);
-		}
+            virtualDisplayEncoder.setStreamingParams(params);
+            stopStreaming(true);
+        }
 
-		@Override
-		public void onError(String info) { }
-	};
+        @Override
+        public void onError(String info) { }
+    };
 
     // MANAGER APIs
     @RestrictTo(RestrictTo.Scope.LIBRARY)
@@ -261,8 +260,8 @@ public class VideoStreamManager extends BaseVideoStreamManager {
         internalInterface.addOnRPCNotificationListener(FunctionID.ON_TOUCH_EVENT, touchListener);
         // Listen for HMILevel changes
         internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
-		// Listen for SystemCapabilityType VIDEO_STREAMING
-		internalInterface.getSystemCapabilityManager().addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, systemCapabilityListener);
+        // Listen for SystemCapabilityType VIDEO_STREAMING
+        internalInterface.getSystemCapabilityManager().addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, systemCapabilityListener);
         stateMachine = new StreamingStateMachine();
     }
 
@@ -297,12 +296,12 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                     public void onCapabilityRetrieved(Object capability) {
                         VideoStreamingParameters params = new VideoStreamingParameters();
                         VideoStreamingCapability castedCapability = ((VideoStreamingCapability)capability);
-					VideoStreamManager.this.originalCapability = castedCapability;
-					params.update(castedCapability, vehicleMake);	//Streaming parameters are ready time to stream
-					VideoStreamManager.this.parameters = params;
-					// castedCapability.setAdditionalVideoStreamingCapabilities(getMockedAdditionalCapabilities());
-					checkState();
-				}
+                        VideoStreamManager.this.originalCapability = castedCapability;
+                        params.update(castedCapability, vehicleMake);	//Streaming parameters are ready time to stream
+                        VideoStreamManager.this.parameters = params;
+                        // castedCapability.setAdditionalVideoStreamingCapabilities(getMockedAdditionalCapabilities());
+                        checkState();
+                        }
 
                     @Override
                     public void onError(String info) {
@@ -336,60 +335,60 @@ public class VideoStreamManager extends BaseVideoStreamManager {
      * @param parameters         streaming parameters to be used when streaming. If null is sent in, the default/optimized options will be used.
      *                           If you are unsure about what parameters to be used it is best to just send null and let the system determine what
      *                           works best for the currently connected module.
-	 * @param encrypted a flag of if the stream should be encrypted. Only set if you have a supplied encryption library that the module can understand.
-	 * @param landscapeRange constraints for vehicle display : aspect ratio, min/max resolutions, max diagonal size.
+     * @param encrypted a flag of if the stream should be encrypted. Only set if you have a supplied encryption library that the module can understand.
+     * @param landscapeRange constraints for vehicle display : aspect ratio, min/max resolutions, max diagonal size.
      * @param portraitRange constraints for vehicle display : aspect ratio, min/max resolutions, max diagonal size.
      */
     public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted, VideoStreamingRange landscapeRange, VideoStreamingRange portraitRange) {
         Collections.addAll(listOfStreamingRanges, portraitRange, landscapeRange);
-		configureGlobalParameters(context, remoteDisplayClass, isEncrypted, listOfStreamingRanges);
-		if(majorProtocolVersion >= 5 && !internalInterface.getSystemCapabilityManager().isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
-			stateMachine.transitionToState(StreamingStateMachine.ERROR);
-			return;
-		}
+        configureGlobalParameters(context, remoteDisplayClass, isEncrypted, listOfStreamingRanges);
+        if(majorProtocolVersion >= 5 && !internalInterface.getSystemCapabilityManager().isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
+            stateMachine.transitionToState(StreamingStateMachine.ERROR);
+            return;
+        }
         if (!HMILevel.HMI_NONE.equals(currentOnHMIStatus.getHmiLevel()) && VideoStreamManager.this.parameters == null) {
-			getVideoStreamingParams();
-		}
-		checkState();
-		processCapabilitiesWithPendingStart(encrypted, parameters);
-	}
-	/**
-	 * Starts streaming a remote display to the module if there is a connected session. This method of streaming requires the device to be on API level 19 or higher
-	 * @param context a context that can be used to create the remote display
-	 * @param remoteDisplayClass class object of the remote display. This class will be used to create an instance of the remote display and will be projected to the module
-	 * @param parameters streaming parameters to be used when streaming. If null is sent in, the default/optimized options will be used.
-	 *                   If you are unsure about what parameters to be used it is best to just send null and let the system determine what
-	 *                   works best for the currently connected module.
-	 *
-	 * @param encrypted a flag of if the stream should be encrypted. Only set if you have a supplied encryption library that the module can understand.
-	 */
-	@Deprecated
-	public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted){
+            getVideoStreamingParams();
+        }
+        checkState();
+        processCapabilitiesWithPendingStart(encrypted, parameters);
+    }
+    /**
+     * Starts streaming a remote display to the module if there is a connected session. This method of streaming requires the device to be on API level 19 or higher
+     * @param context a context that can be used to create the remote display
+     * @param remoteDisplayClass class object of the remote display. This class will be used to create an instance of the remote display and will be projected to the module
+     * @param parameters streaming parameters to be used when streaming. If null is sent in, the default/optimized options will be used.
+     *                   If you are unsure about what parameters to be used it is best to just send null and let the system determine what
+     *                   works best for the currently connected module.
+     *
+     * @param encrypted a flag of if the stream should be encrypted. Only set if you have a supplied encryption library that the module can understand.
+     */
+    @Deprecated
+    public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted){
         configureGlobalParameters(context, remoteDisplayClass, isEncrypted, null);
-		boolean isCapabilitySupported = internalInterface.getSystemCapabilityManager() != null && internalInterface.getSystemCapabilityManager().isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING);
-		if(majorProtocolVersion >= 5 && !isCapabilitySupported){
-			DebugTool.logError(TAG, "Video streaming not supported on this module");
-			stateMachine.transitionToState(StreamingStateMachine.ERROR);
-			return;
-		}
-		if (!HMILevel.HMI_NONE.equals(currentOnHMIStatus.getHmiLevel()) && VideoStreamManager.this.parameters == null) {
-			getVideoStreamingParams();
-		}
-		checkState();
-		processCapabilitiesWithPendingStart(encrypted, parameters);
-	}
+        boolean isCapabilitySupported = internalInterface.getSystemCapabilityManager() != null && internalInterface.getSystemCapabilityManager().isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING);
+        if(majorProtocolVersion >= 5 && !isCapabilitySupported){
+            DebugTool.logError(TAG, "Video streaming not supported on this module");
+            stateMachine.transitionToState(StreamingStateMachine.ERROR);
+            return;
+        }
+        if (!HMILevel.HMI_NONE.equals(currentOnHMIStatus.getHmiLevel()) && VideoStreamManager.this.parameters == null) {
+            getVideoStreamingParams();
+        }
+        checkState();
+        processCapabilitiesWithPendingStart(encrypted, parameters);
+    }
 
-	private void configureGlobalParameters(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, boolean encrypted, List<VideoStreamingRange> listOfStreamingRange) {
-		this.context = new WeakReference<>(context);
-		this.remoteDisplayClass = remoteDisplayClass;
-		this.isEncrypted = encrypted;
-		this.majorProtocolVersion = internalInterface.getProtocolVersion().getMajor();
-		if (listOfStreamingRange != null) {
-			this.listOfStreamingRanges = listOfStreamingRange;
-		}
-	}
+    private void configureGlobalParameters(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, boolean encrypted, List<VideoStreamingRange> listOfStreamingRange) {
+        this.context = new WeakReference<>(context);
+        this.remoteDisplayClass = remoteDisplayClass;
+        this.isEncrypted = encrypted;
+        this.majorProtocolVersion = internalInterface.getProtocolVersion().getMajor();
+        if (listOfStreamingRange != null) {
+            this.listOfStreamingRanges = listOfStreamingRange;
+        }
+    }
 
-	private void processCapabilitiesWithPendingStart(boolean encrypted, VideoStreamingParameters parameters){
+    private void processCapabilitiesWithPendingStart(boolean encrypted, VideoStreamingParameters parameters){
         if (parameters == null) {
             if (majorProtocolVersion >= 5) {
                 if (internalInterface.getSystemCapabilityManager() != null) {
@@ -398,28 +397,25 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                         public void onCapabilityRetrieved(Object capability) {
                             VideoStreamingParameters params = new VideoStreamingParameters();
                             VideoStreamingCapability castedCapability = ((VideoStreamingCapability)capability);
-						VideoStreamManager.this.originalCapability = castedCapability;
+                            VideoStreamManager.this.originalCapability = castedCapability;
 
-						// Mocks data here
-						// castedCapability.setAdditionalVideoStreamingCapabilities(getMockedAdditionalCapabilities());
-						params.update(castedCapability, vehicleMake);    //Streaming parameters are ready time to stream
+                            // Mocks data here
+                            // castedCapability.setAdditionalVideoStreamingCapabilities(getMockedAdditionalCapabilities());
+                            params.update(castedCapability, vehicleMake);    //Streaming parameters are ready time to stream
                             VideoStreamManager.this.parameters = params;
 
-						if (listOfStreamingRanges != null) {
-							// filtering
-							castedCapability.setAdditionalVideoStreamingCapabilities(
-									getSupportedCapabilities(
+                            if (listOfStreamingRanges != null) {
+                                // filtering
+                                castedCapability.setAdditionalVideoStreamingCapabilities(
+                                    getSupportedCapabilities(
                                             listOfStreamingRanges,
-											castedCapability.getAdditionalVideoStreamingCapabilities()
-									)
-							);
-						} else {
-							// TODO handle??
-						}
-
-						OnAppCapabilityUpdated onAppCapabilityUpdated = new OnAppCapabilityUpdated(new AppCapability(castedCapability, AppCapabilityType.VIDEO_STREAMING));
-						internalInterface.sendRPC(onAppCapabilityUpdated);
-						startStreaming(params, isEncrypted);
+                                            castedCapability.getAdditionalVideoStreamingCapabilities()
+                                    )
+                                );
+                            } else { }
+                            OnAppCapabilityUpdated onAppCapabilityUpdated = new OnAppCapabilityUpdated(new AppCapability(castedCapability, AppCapabilityType.VIDEO_STREAMING));
+                            internalInterface.sendRPC(onAppCapabilityUpdated);
+                            startStreaming(params, isEncrypted);
                         }
 
                         @Override
@@ -470,22 +466,22 @@ public class VideoStreamManager extends BaseVideoStreamManager {
     private void startEncoder() {
         try {
             if (sdlRemoteDisplay != null) {
-				sdlRemoteDisplay.resizeView(parameters.getResolution().getResolutionWidth(), parameters.getResolution().getResolutionHeight());
-			}
+                sdlRemoteDisplay.resizeView(parameters.getResolution().getResolutionWidth(), parameters.getResolution().getResolutionHeight());
+            }
 
-			virtualDisplayEncoder.init(this.context.get(), streamListener, parameters);
-			//We are all set so we can start streaming at at this point
-			virtualDisplayEncoder.start();
-			//Encoder should be up and running
-			createRemoteDisplay(virtualDisplayEncoder.getDisplay());
+            virtualDisplayEncoder.init(this.context.get(), streamListener, parameters);
+            //We are all set so we can start streaming at at this point
+            virtualDisplayEncoder.start();
+            //Encoder should be up and running
+            createRemoteDisplay(virtualDisplayEncoder.getDisplay());
 
-			stateMachine.transitionToState(StreamingStateMachine.STARTED);
-			hasStarted = true;
-		} catch (Exception e) {
-			stateMachine.transitionToState(StreamingStateMachine.ERROR);
-			e.printStackTrace();
-		}
-	}
+            stateMachine.transitionToState(StreamingStateMachine.STARTED);
+            hasStarted = true;
+        } catch (Exception e) {
+            stateMachine.transitionToState(StreamingStateMachine.ERROR);
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Stops streaming from the remote display. To restart, call
@@ -493,19 +489,17 @@ public class VideoStreamManager extends BaseVideoStreamManager {
      * @see #resumeStreaming()
      */
     public void stopStreaming(boolean withPendingRestart) {
-        if (sdlRemoteDisplay!=null && !withPendingRestart) {
+        if (sdlRemoteDisplay!= null && !withPendingRestart) {
             sdlRemoteDisplay.stop();
-			this.withPendingRestart = false;
-		}
-		if (this.isStreaming()) {
-			if(virtualDisplayEncoder!=null){
-				virtualDisplayEncoder.shutDown(withPendingRestart);
-			}
-			stateMachine.transitionToState(StreamingStateMachine.PAUSED);
-
-//			this.internalInterface.stopVideoService();
-			stopVideoStream();
-		}
+                this.withPendingRestart = false;
+        }
+        if (this.isStreaming()) {
+            if (virtualDisplayEncoder!=null){
+                virtualDisplayEncoder.shutDown(withPendingRestart);
+            }
+            stateMachine.transitionToState(StreamingStateMachine.PAUSED);
+            stopVideoStream();
+        }
     }
 
     /**
@@ -517,8 +511,8 @@ public class VideoStreamManager extends BaseVideoStreamManager {
      */
     public void resumeStreaming() {
         int currentState = stateMachine.getState();
-		if (currentState == StreamingStateMachine.STOPPED || currentState == StreamingStateMachine.PAUSED) {
-			startEncoder();
+        if (currentState == StreamingStateMachine.STOPPED || currentState == StreamingStateMachine.PAUSED) {
+            startEncoder();
         }
     }
 
@@ -554,13 +548,13 @@ public class VideoStreamManager extends BaseVideoStreamManager {
      * Check if a video service is currently active
      *
      * @return boolean (true = active, false = inactive)
-	 */
-	public boolean isServiceActive(){
-		return (stateMachine.getState() == StreamingStateMachine.READY) ||
-				(stateMachine.getState() == StreamingStateMachine.STARTED) ||
-				(stateMachine.getState() == StreamingStateMachine.STOPPED) ||
-				(stateMachine.getState() == StreamingStateMachine.PAUSED);
-	}
+     */
+    public boolean isServiceActive() {
+        return (stateMachine.getState() == StreamingStateMachine.READY) ||
+                (stateMachine.getState() == StreamingStateMachine.STARTED) ||
+                (stateMachine.getState() == StreamingStateMachine.STOPPED) ||
+                (stateMachine.getState() == StreamingStateMachine.PAUSED);
+        }
 
     /**
      * Check if video is currently streaming and visible
@@ -645,30 +639,30 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                         createTouchScalar(resolution, displayMetrics);
                     }
 
-					sdlRemoteDisplay.resizeView(parameters.getResolution().getResolutionWidth(), parameters.getResolution().getResolutionHeight());
-				}
+                sdlRemoteDisplay.resizeView(parameters.getResolution().getResolutionWidth(), parameters.getResolution().getResolutionHeight());
+                }
 
                 @Override
                 public void onInvalidated(final SdlRemoteDisplay remoteDisplay) {
                     //Our view has been invalidated
                     //A good time to refresh spatial data
                     DisplayMetrics displayMetrics = new DisplayMetrics();
-					sdlRemoteDisplay.getDisplay().getMetrics(displayMetrics);
-					displayMetrics.widthPixels =  (int) (parameters.getResolution().getResolutionWidth() * parameters.getScale());
-					displayMetrics.heightPixels =  (int) (parameters.getResolution().getResolutionHeight() * parameters.getScale());
-					createTouchScalar(parameters.getResolution(), displayMetrics);
-					if(hapticManager != null) {
-						remoteDisplay.getMainView().post(new Runnable() {
-							@Override
-							public void run() {
-								hapticManager.refreshHapticData(remoteDisplay.getMainView());
-							}
-						});
-					}
-				}
-			} ));
-			Thread showPresentation = new Thread(fTask);
-			showPresentation.setName("RmtDispThread");
+                    sdlRemoteDisplay.getDisplay().getMetrics(displayMetrics);
+                    displayMetrics.widthPixels =  (int) (parameters.getResolution().getResolutionWidth() * parameters.getScale());
+                    displayMetrics.heightPixels =  (int) (parameters.getResolution().getResolutionHeight() * parameters.getScale());
+                    createTouchScalar(parameters.getResolution(), displayMetrics);
+                    if (hapticManager != null) {
+                        remoteDisplay.getMainView().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                hapticManager.refreshHapticData(remoteDisplay.getMainView());
+                            }
+                        });
+                    }
+                }
+            }));
+            Thread showPresentation = new Thread(fTask);
+            showPresentation.setName("RmtDispThread");
 
             showPresentation.start();
         } catch (Exception ex) {
@@ -784,113 +778,106 @@ public class VideoStreamManager extends BaseVideoStreamManager {
     }
 
     public VideoStreamingParameters getLastCachedStreamingParameters() {
-		return parameters;
-	}
+        return parameters;
+    }
 
-	public boolean getLastCachedIsEncrypted() {
-		return isEncrypted;
-	}
+    private List<VideoStreamingCapability> getSupportedCapabilities(
+            List<VideoStreamingRange> ranges,
+            List<VideoStreamingCapability> originalAdditionalCapabilities
+    ){
 
-	private List<VideoStreamingCapability> getSupportedCapabilities(
-			List<VideoStreamingRange> ranges,
-			List<VideoStreamingCapability> originalAdditionalCapabilities
-	){
+        List<VideoStreamingCapability> validCapabilities = new ArrayList<>();
 
-		List<VideoStreamingCapability> validCapabilities = new ArrayList<>();
+        VideoStreamingCapability preferredCapability = new VideoStreamingCapability();
+        preferredCapability.setDiagonalScreenSize(parameters.getPreferredDiagonal());
+        preferredCapability.setPreferredResolution(new ImageResolution(
+                parameters.getResolution().getResolutionWidth(),
+                parameters.getResolution().getResolutionHeight())
+        );
 
-		VideoStreamingCapability preferredCapability = new VideoStreamingCapability();
-		preferredCapability.setDiagonalScreenSize(parameters.getPreferredDiagonal());
-		preferredCapability.setPreferredResolution(new ImageResolution(
-				parameters.getResolution().getResolutionWidth(),
-				parameters.getResolution().getResolutionHeight())
-		);
+        // get the first one - the Desired resolution to guarantee streaming will start
+        validCapabilities.add(preferredCapability);
+        for (VideoStreamingRange range: ranges) {
 
-		// get the first one - the Desired resolution to guarantee streaming will start
-		validCapabilities.add(preferredCapability);
-		for (VideoStreamingRange range: ranges) {
+            Integer constraintHeightMax = range.getMaxResolution().getResolutionHeight();
+            Integer constraintHeightMin = range.getMinResolution().getResolutionHeight();
 
-			Integer constraintHeightMax = range.getMaxResolution().getResolutionHeight();
-			Integer constraintHeightMin = range.getMinResolution().getResolutionHeight();
+            for (VideoStreamingCapability capability : originalAdditionalCapabilities) {
+                double diagonal;
+                if (capability.getPreferredResolution() == null
+                        || capability.getPreferredResolution().getResolutionHeight() == null
+                        || capability.getPreferredResolution().getResolutionWidth() == null) {
+                    continue;
+                }
+                if (capability.getDiagonalScreenSize() == null) {
+                    diagonal = parameters.getPreferredDiagonal();
+                } else {
+                    diagonal = capability.getDiagonalScreenSize();
+                }
 
-			for (VideoStreamingCapability capability : originalAdditionalCapabilities) {
-				double diagonal;
-				if (capability.getPreferredResolution() == null
-						|| capability.getPreferredResolution().getResolutionHeight() == null
-						|| capability.getPreferredResolution().getResolutionWidth() == null) {
-					continue;
-				}
-				if (capability.getDiagonalScreenSize() == null) {
-					diagonal = parameters.getPreferredDiagonal();
-				} else {
-					diagonal = capability.getDiagonalScreenSize();
-				}
+                if (range.getMinScreenDiagonal() > diagonal) {
+                    continue;
+                }
 
-				if (range.getMinScreenDiagonal() > diagonal) {
-					continue;
-				}
+                if (!isAspectRatioInRange(range.getAspectRatio(), capability.getPreferredResolution())) {
+                    if (constraintHeightMax == null && constraintHeightMin == null) {
+                        continue;
+                    }
+                }
 
-				if (!isAspectRatioInRange(range.getAspectRatio(), capability.getPreferredResolution())) {
-					if (constraintHeightMax == null && constraintHeightMin == null) {
-						continue;
-					}
-				}
+                if (!isImageResolutionInRange(range.getMinResolution(), range.getMaxResolution(), capability.getPreferredResolution())) {
+                    continue;
+                }
 
-				if (!isImageResolutionInRange(range.getMinResolution(), range.getMaxResolution(), capability.getPreferredResolution())) {
-					continue;
-				}
+                validCapabilities.add(capability);
+            }
+        }
 
-				validCapabilities.add(capability);
-			}
-		}
+        return validCapabilities;
+    }
 
-		return validCapabilities;
-	}
+    public Boolean isImageResolutionInRange(Resolution minResolution, Resolution maxResolution, ImageResolution currentResolution) {
 
-	public Boolean isImageResolutionInRange(Resolution minResolution, Resolution maxResolution, ImageResolution currentResolution) {
+        Integer constraintHeightMax = maxResolution.getResolutionHeight();
+        Integer constraintHeightMin = minResolution.getResolutionHeight();
+        Integer constraintWidthMax = maxResolution.getResolutionWidth();
+        Integer constraintWidthMin = minResolution.getResolutionWidth();
+        Integer resolutionHeight = currentResolution.getResolutionHeight();
+        Integer resolutionWidth = currentResolution.getResolutionWidth();
+        if (currentResolution.getResolutionHeight() > 0 && currentResolution.getResolutionWidth() > 0 && constraintHeightMax != null && constraintHeightMin != null) {
+            if (!(resolutionHeight >= constraintHeightMin && resolutionHeight <= constraintHeightMax)) {
+                return false;
+            }
 
-		Integer constraintHeightMax = maxResolution.getResolutionHeight();
-		Integer constraintHeightMin = minResolution.getResolutionHeight();
-		Integer constraintWidthMax = maxResolution.getResolutionWidth();
-		Integer constraintWidthMin = minResolution.getResolutionWidth();
-		Integer resolutionHeight = currentResolution.getResolutionHeight();
-		Integer resolutionWidth = currentResolution.getResolutionWidth();
-		if (currentResolution.getResolutionHeight() > 0 && currentResolution.getResolutionWidth() > 0 && constraintHeightMax != null && constraintHeightMin != null)
-		{
-			if (!(resolutionHeight >= constraintHeightMin && resolutionHeight <= constraintHeightMax)) {
-				return false;
-			}
+            if (!(resolutionWidth >= constraintWidthMin && resolutionWidth <= constraintWidthMax)) {
+                return false;
+            }
+        }
 
-			if (!(resolutionWidth >= constraintWidthMin && resolutionWidth <= constraintWidthMax)) {
-				return false;
-			}
-		}
+        // TODO check what if dev provided invalid constraints
+        return true;
+    }
 
-		// TODO check what if dev provided invalid constraints
-		return true;
-	}
+    public Boolean isAspectRatioInRange(AspectRatio aspectRatio, ImageResolution currentResolution) {
+        Double aspectRatioMin = aspectRatio.getMinAspectRatio();
+        Double aspectRatioMax = aspectRatio.getMaxAspectRatio();
 
-	public Boolean isAspectRatioInRange(AspectRatio aspectRatio, ImageResolution currentResolution) {
-		Double aspectRatioMin = aspectRatio.getMinAspectRatio();
-		Double aspectRatioMax = aspectRatio.getMaxAspectRatio();
+        Double currentAspectRatio = Double.valueOf(currentResolution.getResolutionWidth()) / Double.valueOf(currentResolution.getResolutionHeight());
 
-		Double currentAspectRatio = Double.valueOf(currentResolution.getResolutionWidth()) / Double.valueOf(currentResolution.getResolutionHeight());
+        if (!(aspectRatioMax > aspectRatioMin && aspectRatioMin > 0)) {
+            if (!(currentAspectRatio >= aspectRatioMin && currentAspectRatio <= aspectRatioMax)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-		if (!(aspectRatioMax > aspectRatioMin && aspectRatioMin > 0)) {
-			if (!(currentAspectRatio >= aspectRatioMin && currentAspectRatio <= aspectRatioMax)) {
-				return false;
-			}
-		}
-		// TODO check what if dev provided invalid constraints
-
-		return true;
-	}
-
-	/**
-	 * Keeps track of the current motion event for VPM
-	 */
-	private static class SdlMotionEvent {
-		class Pointer {
-			final int id;
+    /**
+     * Keeps track of the current motion event for VPM
+     */
+    private static class SdlMotionEvent {
+        class Pointer {
+            final int id;
             float x;
             float y;
 

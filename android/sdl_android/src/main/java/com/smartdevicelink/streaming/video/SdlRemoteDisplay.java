@@ -227,5 +227,6 @@ public abstract class SdlRemoteDisplay extends Presentation {
 
             return presentationShowError;
         }
+
     }
 }
