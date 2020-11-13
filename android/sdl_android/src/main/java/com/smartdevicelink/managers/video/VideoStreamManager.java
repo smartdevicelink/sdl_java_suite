@@ -152,7 +152,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
         @Override
         public void onServiceEnded(SdlSession session, SessionType type) {
             if (SessionType.NAV.equals(type)) {
-                //stopVideoStream();
                 if (sdlRemoteDisplay !=null){
                     stopStreaming(withPendingRestart);
                 }
@@ -299,7 +298,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                         VideoStreamManager.this.originalCapability = castedCapability;
                         params.update(castedCapability, vehicleMake);//Streaming parameters are ready time to stream
                         VideoStreamManager.this.parameters = params;
-                        // castedCapability.setAdditionalVideoStreamingCapabilities(getMockedAdditionalCapabilities());
                         checkState();
                         }
 
@@ -399,8 +397,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                             VideoStreamingCapability castedCapability = ((VideoStreamingCapability)capability);
                             VideoStreamManager.this.originalCapability = castedCapability;
 
-                            // Mocks data here
-                            // castedCapability.setAdditionalVideoStreamingCapabilities(getMockedAdditionalCapabilities());
                             params.update(castedCapability, vehicleMake);    //Streaming parameters are ready time to stream
                             VideoStreamManager.this.parameters = params;
 
