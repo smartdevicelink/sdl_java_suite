@@ -66,10 +66,10 @@ public class VideoStreamingParameters {
     private int bitrate;
     private int interval;
     private double preferredDiagonal;
-	private double scale = DEFAULT_SCALE;
-	private ImageResolution resolution;
+    private double scale = DEFAULT_SCALE;
+    private ImageResolution resolution;
     private VideoStreamingFormat format;
-	private List<VideoStreamingCapability> additionalCapabilities = new ArrayList<>(1);
+    private List<VideoStreamingCapability> additionalCapabilities = new ArrayList<>(1);
 
     public VideoStreamingParameters() {
         displayDensity = DEFAULT_DENSITY;

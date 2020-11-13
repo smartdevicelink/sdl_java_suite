@@ -70,7 +70,6 @@ public class VirtualDisplayEncoder {
 
     private int predefinedWidth = 1920;
     private int predefinedHeight = 1080;
-
     // Codec-specific data (SPS and PPS)
     private byte[] mH264CodecSpecificData = null;
 
@@ -103,11 +102,6 @@ public class VirtualDisplayEncoder {
         this.streamingParams.update(streamingParams);
 
         mOutputListener = outputListener;
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-        predefinedWidth = preferences.getInt("pre_def_w", predefinedWidth);
-        predefinedHeight = preferences.getInt("pre_def_h", predefinedHeight);
 
         initPassed = true;
     }
