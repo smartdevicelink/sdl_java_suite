@@ -962,7 +962,6 @@ public class SystemCapabilityManagerTests {
 
         @Override
         public void startVideoService(VideoStreamingParameters parameters, boolean encrypted, boolean withPendingRestart) {
-
         }
 
         @Override
