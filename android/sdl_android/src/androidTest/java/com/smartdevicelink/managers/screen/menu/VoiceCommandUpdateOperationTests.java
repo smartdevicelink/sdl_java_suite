@@ -31,12 +31,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(AndroidJUnit4.class)
-public class VoiceCommandReplaceOperationTests {
+public class VoiceCommandUpdateOperationTests {
 
     private static final String TAG = "VoiceCommandReplaceOperationTests";
-    VoiceCommandReplaceOperation voiceCommandReplaceOperation;
+    VoiceCommandUpdateOperation voiceCommandUpdateOperation;
     ISdl internalInterface;
-    VoiceCommandReplaceOperation.VoiceCommandChangesListener voiceCommandChangesListener;
+    VoiceCommandUpdateOperation.VoiceCommandChangesListener voiceCommandChangesListener;
     List<String> list1 = Collections.singletonList("Command one");
     List<String> list2 = Collections.singletonList("Command two");
     List<String> list3 = Collections.singletonList("Command three");
@@ -92,16 +92,16 @@ public class VoiceCommandReplaceOperationTests {
     public void verifyCanceledTaskDoesNotSendAnyRPCs() {
         internalInterface = mock(ISdl.class);
 
-        voiceCommandChangesListener = new VoiceCommandReplaceOperation.VoiceCommandChangesListener() {
+        voiceCommandChangesListener = new VoiceCommandUpdateOperation.VoiceCommandChangesListener() {
             @Override
-            public void updatedVoiceCommands(List<VoiceCommand> voiceCommands, HashMap<RPCRequest, String> errorObject) {
+            public void updateVoiceCommands(List<VoiceCommand> newCurrentVoiceCommands, HashMap<RPCRequest, String> errorObject) {
 
             }
         };
 
-        voiceCommandReplaceOperation = new VoiceCommandReplaceOperation(internalInterface, deleteList, addList, voiceCommandChangesListener);
-        voiceCommandReplaceOperation.cancelTask();
-        voiceCommandReplaceOperation.onExecute();
+        voiceCommandUpdateOperation = new VoiceCommandUpdateOperation(internalInterface, deleteList, addList, voiceCommandChangesListener);
+        voiceCommandUpdateOperation.cancelTask();
+        voiceCommandUpdateOperation.onExecute();
         verify(internalInterface, times(0)).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
     }
 
@@ -151,22 +151,22 @@ public class VoiceCommandReplaceOperationTests {
             }
         }).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
 
-        voiceCommandChangesListener = new VoiceCommandReplaceOperation.VoiceCommandChangesListener() {
+        voiceCommandChangesListener = new VoiceCommandUpdateOperation.VoiceCommandChangesListener() {
             @Override
-            public void updatedVoiceCommands(List<VoiceCommand> voiceCommands, HashMap<RPCRequest, String> errorObject) {
+            public void updateVoiceCommands(List<VoiceCommand> newCurrentVoiceCommands, HashMap<RPCRequest, String> errorObject) {
                 assertEquals(4, errorObject.size());
-                assertEquals(2, voiceCommands.size());
-                assertEquals(voiceCommands.get(0).getVoiceCommands().get(0), voiceCommand1.getVoiceCommands().get(0));
-                assertEquals(voiceCommands.get(1).getVoiceCommands().get(0), voiceCommand2.getVoiceCommands().get(0));
+                assertEquals(2, newCurrentVoiceCommands.size());
+                assertEquals(newCurrentVoiceCommands.get(0).getVoiceCommands().get(0), voiceCommand1.getVoiceCommands().get(0));
+                assertEquals(newCurrentVoiceCommands.get(1).getVoiceCommands().get(0), voiceCommand2.getVoiceCommands().get(0));
             }
         };
 
-        VoiceCommandReplaceOperation.VoiceCommandChangesListener listenerSpy = Mockito.spy(voiceCommandChangesListener);
+        VoiceCommandUpdateOperation.VoiceCommandChangesListener listenerSpy = Mockito.spy(voiceCommandChangesListener);
 
-        voiceCommandReplaceOperation = new VoiceCommandReplaceOperation(internalInterface, deleteList, addList, listenerSpy);
-        voiceCommandReplaceOperation.onExecute();
+        voiceCommandUpdateOperation = new VoiceCommandUpdateOperation(internalInterface, deleteList, addList, listenerSpy);
+        voiceCommandUpdateOperation.onExecute();
 
-        verify(listenerSpy, times(1)).updatedVoiceCommands(any(List.class), any(HashMap.class));
+        verify(listenerSpy, times(1)).updateVoiceCommands(any(List.class), any(HashMap.class));
     }
 
     @Test
@@ -215,21 +215,21 @@ public class VoiceCommandReplaceOperationTests {
             }
         }).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
 
-        voiceCommandChangesListener = new VoiceCommandReplaceOperation.VoiceCommandChangesListener() {
+        voiceCommandChangesListener = new VoiceCommandUpdateOperation.VoiceCommandChangesListener() {
             @Override
-            public void updatedVoiceCommands(List<VoiceCommand> voiceCommands, HashMap<RPCRequest, String> errorObject) {
+            public void updateVoiceCommands(List<VoiceCommand> newCurrentVoiceCommands, HashMap<RPCRequest, String> errorObject) {
                 assertEquals(0, errorObject.size());
-                assertEquals(2, voiceCommands.size());
-                assertEquals(voiceCommands.get(0).getVoiceCommands().get(0), voiceCommand3.getVoiceCommands().get(0));
-                assertEquals(voiceCommands.get(1).getVoiceCommands().get(0), voiceCommand4.getVoiceCommands().get(0));
+                assertEquals(2, newCurrentVoiceCommands.size());
+                assertEquals(newCurrentVoiceCommands.get(0).getVoiceCommands().get(0), voiceCommand3.getVoiceCommands().get(0));
+                assertEquals(newCurrentVoiceCommands.get(1).getVoiceCommands().get(0), voiceCommand4.getVoiceCommands().get(0));
             }
         };
 
-        VoiceCommandReplaceOperation.VoiceCommandChangesListener listenerSpy = Mockito.spy(voiceCommandChangesListener);
+        VoiceCommandUpdateOperation.VoiceCommandChangesListener listenerSpy = Mockito.spy(voiceCommandChangesListener);
 
-        voiceCommandReplaceOperation = new VoiceCommandReplaceOperation(internalInterface, deleteList, addList, listenerSpy);
-        voiceCommandReplaceOperation.onExecute();
+        voiceCommandUpdateOperation = new VoiceCommandUpdateOperation(internalInterface, deleteList, addList, listenerSpy);
+        voiceCommandUpdateOperation.onExecute();
 
-        verify(listenerSpy, times(1)).updatedVoiceCommands(any(List.class), any(HashMap.class));
+        verify(listenerSpy, times(1)).updateVoiceCommands(any(List.class), any(HashMap.class));
     }
 }

@@ -17,28 +17,28 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class VoiceCommandReplaceOperation extends Task {
+public class VoiceCommandUpdateOperation extends Task {
     private static final String TAG = "VoiceCommandReplaceOperation";
     private final WeakReference<ISdl> internalInterface;
-    List<VoiceCommand> deleteVoiceCommands;
-    private List<VoiceCommand> addVoiceCommands;
+    List<VoiceCommand> oldVoiceCommands;
+    private List<VoiceCommand> pendingVoiceCommands;
     private List<DeleteCommand> deleteCommands;
     private List<AddCommand> addCommands;
     private VoiceCommandChangesListener voiceCommandListener;
-    private List<VoiceCommand> updatedVoiceCommands;
+    private List<VoiceCommand> currentVoiceCommands;
     private HashMap<RPCRequest, String> errorObject;
 
     interface VoiceCommandChangesListener {
-        void updatedVoiceCommands(List<VoiceCommand> voiceCommands, HashMap<RPCRequest, String> errorObject);
+        void updateVoiceCommands(List<VoiceCommand> newCurrentVoiceCommands, HashMap<RPCRequest, String> errorObject);
     }
 
-    VoiceCommandReplaceOperation(ISdl internalInterface, List<VoiceCommand> deleteVoiceCommands, List<VoiceCommand> addVoiceCommands, VoiceCommandChangesListener voiceCommandListener) {
+    VoiceCommandUpdateOperation(ISdl internalInterface, List<VoiceCommand> oldVoiceCommands, List<VoiceCommand> pendingVoiceCommands, VoiceCommandChangesListener voiceCommandListener) {
         super("VoiceCommandReplaceOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
-        this.deleteVoiceCommands = deleteVoiceCommands;
-        this.addVoiceCommands = addVoiceCommands;
+        this.oldVoiceCommands = oldVoiceCommands;
+        this.pendingVoiceCommands = pendingVoiceCommands;
+        this.currentVoiceCommands = oldVoiceCommands;
         this.voiceCommandListener = voiceCommandListener;
-        this.updatedVoiceCommands = deleteVoiceCommands;
         this.errorObject = new HashMap<>();
     }
 
@@ -55,6 +55,9 @@ public class VoiceCommandReplaceOperation extends Task {
         sendDeleteCurrentVoiceCommands(new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
+                if (getState() == Task.CANCELED) {
+                    return;
+                }
                 // we don't care about errors from deleting, send new add commands
                 sendCurrentVoiceCommands(new CompletionListener() {
                     @Override
@@ -66,7 +69,7 @@ public class VoiceCommandReplaceOperation extends Task {
                             DebugTool.logInfo(TAG, "Successfully send voice commands");
                             onFinished();
                         }
-                        voiceCommandListener.updatedVoiceCommands(updatedVoiceCommands, errorObject);
+                        voiceCommandListener.updateVoiceCommands(currentVoiceCommands, errorObject);
                     }
                 });
             }
@@ -77,14 +80,14 @@ public class VoiceCommandReplaceOperation extends Task {
 
     private void sendDeleteCurrentVoiceCommands(final CompletionListener listener) {
 
-        if (deleteVoiceCommands == null || deleteVoiceCommands.isEmpty()) {
+        if (oldVoiceCommands == null || oldVoiceCommands.isEmpty()) {
             if (listener != null) {
                 listener.onComplete(true);
             }
             return;
         }
 
-        deleteCommands = deleteCommandsForVoiceCommands(deleteVoiceCommands);
+        deleteCommands = deleteCommandsForVoiceCommands(oldVoiceCommands);
 
         internalInterface.get().sendRPCs(deleteCommands, new OnMultipleRequestListener() {
             @Override
@@ -93,11 +96,12 @@ public class VoiceCommandReplaceOperation extends Task {
 
             @Override
             public void onFinished() {
-                DebugTool.logInfo(TAG, "Successfully deleted old voice commands");
                 if (listener != null) {
                     if (errorObject.isEmpty()) {
+                        DebugTool.logInfo(TAG, "Successfully deleted old voice commands");
                         listener.onComplete(true);
                     } else {
+                        DebugTool.logInfo(TAG, "Unable to deleted some old voice commands");
                         listener.onComplete(false);
                     }
                 }
@@ -115,7 +119,7 @@ public class VoiceCommandReplaceOperation extends Task {
                 } else {
                     VoiceCommand foundCommand = getVoiceCommandFromDeleteCommandResponse(correlationId);
                     if (foundCommand != null) {
-                        updatedVoiceCommands.remove(foundCommand);
+                        currentVoiceCommands.remove(foundCommand);
                     }
                 }
             }
@@ -137,7 +141,7 @@ public class VoiceCommandReplaceOperation extends Task {
     private VoiceCommand getVoiceCommandFromDeleteCommandResponse(int correlationId) {
         for (DeleteCommand deleteCommand : deleteCommands) {
             if (correlationId == deleteCommand.getCorrelationID()) {
-                for (VoiceCommand voiceCommand : deleteVoiceCommands) {
+                for (VoiceCommand voiceCommand : oldVoiceCommands) {
                     if (deleteCommand.getCmdID() == voiceCommand.getCommandId()) {
                         return voiceCommand;
                     }
@@ -151,14 +155,14 @@ public class VoiceCommandReplaceOperation extends Task {
 
     private void sendCurrentVoiceCommands(final CompletionListener listener) {
 
-        if (addVoiceCommands == null || addVoiceCommands.size() == 0) {
+        if (pendingVoiceCommands == null || pendingVoiceCommands.size() == 0) {
             if (listener != null) {
                 listener.onComplete(true); // no voice commands to send doesnt mean that its an error
             }
             return;
         }
 
-        addCommands = addCommandsForVoiceCommands(addVoiceCommands);
+        addCommands = addCommandsForVoiceCommands(pendingVoiceCommands);
 
         internalInterface.get().sendRPCs(addCommands, new OnMultipleRequestListener() {
             @Override
@@ -167,11 +171,12 @@ public class VoiceCommandReplaceOperation extends Task {
 
             @Override
             public void onFinished() {
-                DebugTool.logInfo(TAG, "Sending Voice Commands Complete");
                 if (listener != null) {
                     if (errorObject.isEmpty()) {
+                        DebugTool.logInfo(TAG, "Sending Voice Commands Complete");
                         listener.onComplete(true);
                     } else {
+                        DebugTool.logInfo(TAG, "Sending Voice Commands Complete with errors");
                         listener.onComplete(false);
                     }
                 }
@@ -189,7 +194,7 @@ public class VoiceCommandReplaceOperation extends Task {
                 } else {
                     VoiceCommand foundCommand = getVoiceCommandFromAddCommandResponse(correlationId);
                     if (foundCommand != null) {
-                        updatedVoiceCommands.add(foundCommand);
+                        currentVoiceCommands.add(foundCommand);
                     }
                 }
             }
@@ -201,23 +206,17 @@ public class VoiceCommandReplaceOperation extends Task {
     List<AddCommand> addCommandsForVoiceCommands(List<VoiceCommand> voiceCommands) {
         List<AddCommand> addCommandList = new ArrayList<>();
         for (VoiceCommand command : voiceCommands) {
-            addCommandList.add(commandForVoiceCommand(command));
+            AddCommand addCommand = new AddCommand(command.getCommandId());
+            addCommand.setVrCommands(command.getVoiceCommands());
+            addCommandList.add(addCommand);
         }
         return addCommandList;
-    }
-
-    // Create AddCommand
-
-    private AddCommand commandForVoiceCommand(VoiceCommand voiceCommand) {
-        AddCommand command = new AddCommand(voiceCommand.getCommandId());
-        command.setVrCommands(voiceCommand.getVoiceCommands());
-        return command;
     }
 
     private VoiceCommand getVoiceCommandFromAddCommandResponse(int correlationId) {
         for (AddCommand addCommand : addCommands) {
             if (correlationId == addCommand.getCorrelationID()) {
-                for (VoiceCommand voiceCommand : addVoiceCommands) {
+                for (VoiceCommand voiceCommand : pendingVoiceCommands) {
                     if (addCommand.getCmdID() == voiceCommand.getCommandId()) {
                         return voiceCommand;
                     }

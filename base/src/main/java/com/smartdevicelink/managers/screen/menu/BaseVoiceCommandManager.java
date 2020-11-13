@@ -55,7 +55,7 @@ import java.util.List;
 
 abstract class BaseVoiceCommandManager extends BaseSubManager {
     private static final String TAG = "BaseVoiceCommandManager";
-    List<VoiceCommand> voiceCommands, oldVoiceCommands;
+    List<VoiceCommand> voiceCommands, currentVoiceCommands;
 
     int lastVoiceCommandId;
     private static final int voiceCommandIdMin = 1900000000;
@@ -92,7 +92,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
         lastVoiceCommandId = voiceCommandIdMin;
         voiceCommands = null;
-        oldVoiceCommands = null;
+        currentVoiceCommands = null;
 
         waitingOnHMIUpdate = false;
         currentHMILevel = null;
@@ -145,9 +145,9 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
         waitingOnHMIUpdate = false;
         lastVoiceCommandId = voiceCommandIdMin;
         updateIdsOnVoiceCommands(voiceCommands);
-        this.oldVoiceCommands = new ArrayList<>();
+        this.currentVoiceCommands = new ArrayList<>();
         if (this.voiceCommands != null && !this.voiceCommands.isEmpty()) {
-            this.oldVoiceCommands.addAll(this.voiceCommands);
+            this.currentVoiceCommands.addAll(this.voiceCommands);
         }
         this.voiceCommands = new ArrayList<>(voiceCommands);
 
@@ -161,16 +161,26 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
     // UPDATING SYSTEM
 
     private void update() {
-        VoiceCommandReplaceOperation operation = new VoiceCommandReplaceOperation(internalInterface, oldVoiceCommands, voiceCommands, new VoiceCommandReplaceOperation.VoiceCommandChangesListener() {
+        VoiceCommandUpdateOperation operation = new VoiceCommandUpdateOperation(internalInterface, currentVoiceCommands, voiceCommands, new VoiceCommandUpdateOperation.VoiceCommandChangesListener() {
             @Override
-            public void updatedVoiceCommands(List<VoiceCommand> voiceCommands, HashMap<RPCRequest, String> errorObject) {
-                DebugTool.logInfo(TAG, "The updated list of VoiceCommands: " + voiceCommands);
+            public void updateVoiceCommands(List<VoiceCommand> newCurrentVoiceCommands, HashMap<RPCRequest, String> errorObject) {
+                DebugTool.logInfo(TAG, "The updated list of VoiceCommands: " + newCurrentVoiceCommands);
                 DebugTool.logError(TAG, "The failed Add and Delete Commands: " + errorObject);
-                oldVoiceCommands = voiceCommands;
+                currentVoiceCommands = newCurrentVoiceCommands;
                 updatePendingOperations();
             }
         });
+        cancelRunningAndReadyTasks();
+        transactionQueue.clear();
         transactionQueue.add(operation, false);
+    }
+    
+    private void cancelRunningAndReadyTasks() {
+        for (Task queuedOperation : transactionQueue.getTasksAsList()) {
+            if (queuedOperation.getState() == Task.IN_PROGRESS || queuedOperation.getState() == Task.READY) {
+                queuedOperation.cancelTask();
+            }
+        }
     }
 
     private void updatePendingOperations() {
@@ -178,8 +188,8 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
             if (operation.getState() == Task.IN_PROGRESS) {
                 continue;
             }
-            VoiceCommandReplaceOperation vcOperation = (VoiceCommandReplaceOperation) operation;
-            vcOperation.deleteVoiceCommands = oldVoiceCommands;
+            VoiceCommandUpdateOperation vcOperation = (VoiceCommandUpdateOperation) operation;
+            vcOperation.oldVoiceCommands = currentVoiceCommands;
         }
     }
 

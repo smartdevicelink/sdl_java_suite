@@ -127,7 +127,7 @@ public class VoiceCommandManagerTests {
         assertNotNull(voiceCommandManager.commandListener);
         assertNotNull(voiceCommandManager.hmiListener);
         assertNull(voiceCommandManager.voiceCommands);
-        assertNull(voiceCommandManager.oldVoiceCommands);
+        assertNull(voiceCommandManager.currentVoiceCommands);
     }
 
     @After
@@ -137,7 +137,7 @@ public class VoiceCommandManagerTests {
 
         assertEquals(voiceCommandManager.lastVoiceCommandId, voiceCommandIdMin);
         assertNull(voiceCommandManager.voiceCommands);
-        assertNull(voiceCommandManager.oldVoiceCommands);
+        assertNull(voiceCommandManager.currentVoiceCommands);
         assertNull(voiceCommandManager.currentHMILevel);
         assertFalse(voiceCommandManager.waitingOnHMIUpdate);
         // after everything, make sure we are in the correct state
