@@ -120,7 +120,7 @@ public class VoiceCommandManagerTests {
         voiceCommandManager = new VoiceCommandManager(internalInterface);
 
         // Check some stuff during setup
-        assertEquals(voiceCommandManager.currentHMILevel, null);
+        assertNull(voiceCommandManager.currentHMILevel);
         assertEquals(voiceCommandManager.getState(), BaseSubManager.SETTING_UP);
         assertEquals(voiceCommandManager.lastVoiceCommandId, voiceCommandIdMin);
         assertFalse(voiceCommandManager.waitingOnHMIUpdate);
@@ -168,6 +168,8 @@ public class VoiceCommandManagerTests {
         // these are the 2 commands we have waiting
         assertEquals(voiceCommandManager.voiceCommands.size(), 2);
         assertEquals(voiceCommandManager.currentHMILevel, HMILevel.HMI_NONE);
+        // operation not added to queue when hmi is none
+        assertEquals(voiceCommandManager.transactionQueue.getTasksAsList().size(), 0);
 
         // The VCM should send the pending voice commands once HMI full occurs
         sendFakeCoreOnHMIFullNotifications();
@@ -175,6 +177,8 @@ public class VoiceCommandManagerTests {
         assertEquals(voiceCommandManager.currentHMILevel, HMILevel.HMI_FULL);
         // This being false means it received the hmi notification and sent the pending commands
         assertFalse(voiceCommandManager.waitingOnHMIUpdate);
+        // operation is added to queue once hmi full
+        assertEquals(voiceCommandManager.transactionQueue.getTasksAsList().size(), 1);
     }
 
     @Test

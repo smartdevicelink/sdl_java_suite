@@ -66,7 +66,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
     OnRPCNotificationListener hmiListener;
     OnRPCNotificationListener commandListener;
 
-    private Queue transactionQueue;
+    Queue transactionQueue;
 
 
     // CONSTRUCTORS
