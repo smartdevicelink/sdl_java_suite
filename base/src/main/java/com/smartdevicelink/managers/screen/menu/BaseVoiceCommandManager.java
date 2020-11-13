@@ -67,6 +67,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
     OnRPCNotificationListener commandListener;
 
     Queue transactionQueue;
+    VoiceCommandUpdateOperation updateOperation;
 
 
     // CONSTRUCTORS
@@ -99,6 +100,8 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
         transactionQueue.close();
         transactionQueue = null;
+
+        updateOperation = null;
 
         // remove listeners
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
@@ -161,25 +164,29 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
     // UPDATING SYSTEM
 
     private void update() {
-        VoiceCommandUpdateOperation operation = new VoiceCommandUpdateOperation(internalInterface, currentVoiceCommands, voiceCommands, new VoiceCommandUpdateOperation.VoiceCommandChangesListener() {
+        cleanTransactionQueue();
+        updateOperation = new VoiceCommandUpdateOperation(internalInterface, currentVoiceCommands, voiceCommands, new VoiceCommandUpdateOperation.VoiceCommandChangesListener() {
             @Override
             public void updateVoiceCommands(List<VoiceCommand> newCurrentVoiceCommands, HashMap<RPCRequest, String> errorObject) {
                 DebugTool.logInfo(TAG, "The updated list of VoiceCommands: " + newCurrentVoiceCommands);
                 DebugTool.logError(TAG, "The failed Add and Delete Commands: " + errorObject);
                 currentVoiceCommands = newCurrentVoiceCommands;
                 updatePendingOperations();
+                updateOperation = null;
             }
         });
-        cancelRunningAndReadyTasks();
-        transactionQueue.clear();
-        transactionQueue.add(operation, false);
+        transactionQueue.add(updateOperation, false);
     }
-    
-    private void cancelRunningAndReadyTasks() {
-        for (Task queuedOperation : transactionQueue.getTasksAsList()) {
-            if (queuedOperation.getState() == Task.IN_PROGRESS || queuedOperation.getState() == Task.READY) {
-                queuedOperation.cancelTask();
-            }
+
+    private void cleanTransactionQueue() {
+        if (transactionQueue.getTasksAsList().size() > 0) {
+            updateOperation = null;
+            transactionQueue.clear();
+        }
+
+        if (updateOperation != null) {
+            updateOperation.cancelTask();
+            updateOperation = null;
         }
     }
 
