@@ -23,18 +23,18 @@ public class VideoStreamingCapabilityTests extends TestCase {
 
     private VideoStreamingCapability msg;
 
-	@Override
-	public void setUp() {
-		msg = new VideoStreamingCapability();
-		msg.setSupportedFormats(TestValues.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
-		msg.setPreferredResolution(TestValues.GENERAL_IMAGERESOLUTION);
-		msg.setMaxBitrate(TestValues.GENERAL_INT);
-		msg.setIsHapticSpatialDataSupported(TestValues.GENERAL_BOOLEAN);
-		msg.setDiagonalScreenSize(TestValues.GENERAL_DOUBLE);
-		msg.setPixelPerInch(TestValues.GENERAL_DOUBLE);
-		msg.setScale(TestValues.GENERAL_DOUBLE);
-		msg.setAdditionalVideoStreamingCapabilities(TestValues.GENERAL_ADDITIONAL_CAPABILITY_LIST);
-	}
+    @Override
+    public void setUp() {
+        msg = new VideoStreamingCapability();
+        msg.setSupportedFormats(TestValues.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
+        msg.setPreferredResolution(TestValues.GENERAL_IMAGERESOLUTION);
+        msg.setMaxBitrate(TestValues.GENERAL_INT);
+        msg.setIsHapticSpatialDataSupported(TestValues.GENERAL_BOOLEAN);
+        msg.setDiagonalScreenSize(TestValues.GENERAL_DOUBLE);
+        msg.setPixelPerInch(TestValues.GENERAL_DOUBLE);
+        msg.setScale(TestValues.GENERAL_DOUBLE);
+        msg.setAdditionalVideoStreamingCapabilities(TestValues.GENERAL_ADDITIONAL_CAPABILITY_LIST);
+    }
 
     /**
      * Tests the expected values of the RPC message.
@@ -48,7 +48,7 @@ public class VideoStreamingCapabilityTests extends TestCase {
         Double diagonalScreenSize = msg.getDiagonalScreenSize();
         Double pixelPerInch = msg.getPixelPerInch();
         Double scale = msg.getScale();
-		List<VideoStreamingCapability> additionalVideoStreamingCapabilities = msg.getAdditionalVideoStreamingCapabilities();
+        List<VideoStreamingCapability> additionalVideoStreamingCapabilities = msg.getAdditionalVideoStreamingCapabilities();
 
         // Valid Tests
         assertEquals(TestValues.MATCH, (List<VideoStreamingFormat>) TestValues.GENERAL_VIDEOSTREAMINGFORMAT_LIST, format);
@@ -58,36 +58,36 @@ public class VideoStreamingCapabilityTests extends TestCase {
         assertEquals(TestValues.MATCH, TestValues.GENERAL_DOUBLE, diagonalScreenSize);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_DOUBLE, pixelPerInch);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_DOUBLE, scale);
-		assertEquals(TestValues.MATCH, TestValues.GENERAL_ADDITIONAL_CAPABILITY_LIST, additionalVideoStreamingCapabilities);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_ADDITIONAL_CAPABILITY_LIST, additionalVideoStreamingCapabilities);
 
         // Invalid/Null Tests
         VideoStreamingCapability msg = new VideoStreamingCapability();
         assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(TestValues.NULL, msg.getMaxBitrate());
-		assertNull(TestValues.NULL, msg.getPreferredResolution());
-		assertNull(TestValues.NULL, msg.getSupportedFormats());
-		assertNull(TestValues.NULL, msg.getIsHapticSpatialDataSupported());
-		assertNull(TestValues.NULL, msg.getDiagonalScreenSize());
-		assertNull(TestValues.NULL, msg.getPixelPerInch());
-		assertNull(TestValues.NULL, msg.getScale());
-		assertNull(TestValues.NULL, msg.getAdditionalVideoStreamingCapabilities());
-	}
+        assertNull(TestValues.NULL, msg.getMaxBitrate());
+        assertNull(TestValues.NULL, msg.getPreferredResolution());
+        assertNull(TestValues.NULL, msg.getSupportedFormats());
+        assertNull(TestValues.NULL, msg.getIsHapticSpatialDataSupported());
+        assertNull(TestValues.NULL, msg.getDiagonalScreenSize());
+        assertNull(TestValues.NULL, msg.getPixelPerInch());
+        assertNull(TestValues.NULL, msg.getScale());
+        assertNull(TestValues.NULL, msg.getAdditionalVideoStreamingCapabilities());
+    }
 
     public void testJson() {
         JSONObject reference = new JSONObject();
 
         msg.setAdditionalVideoStreamingCapabilities(null);
-		assertNull(msg.getAdditionalVideoStreamingCapabilities());
+        assertNull(msg.getAdditionalVideoStreamingCapabilities());
 
-		try {
-			reference.put(VideoStreamingCapability.KEY_MAX_BITRATE, TestValues.GENERAL_INT);
-			reference.put(VideoStreamingCapability.KEY_PREFERRED_RESOLUTION, TestValues.GENERAL_IMAGERESOLUTION);
-			reference.put(VideoStreamingCapability.KEY_SUPPORTED_FORMATS, TestValues.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
-			reference.put(VideoStreamingCapability.KEY_HAPTIC_SPATIAL_DATA_SUPPORTED, TestValues.GENERAL_BOOLEAN);
-			reference.put(VideoStreamingCapability.KEY_DIAGONAL_SCREEN_SIZE, TestValues.GENERAL_DOUBLE);
-			reference.put(VideoStreamingCapability.KEY_PIXEL_PER_INCH, TestValues.GENERAL_DOUBLE);
-			reference.put(VideoStreamingCapability.KEY_SCALE, TestValues.GENERAL_DOUBLE);
+        try {
+            reference.put(VideoStreamingCapability.KEY_MAX_BITRATE, TestValues.GENERAL_INT);
+            reference.put(VideoStreamingCapability.KEY_PREFERRED_RESOLUTION, TestValues.GENERAL_IMAGERESOLUTION);
+            reference.put(VideoStreamingCapability.KEY_SUPPORTED_FORMATS, TestValues.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
+            reference.put(VideoStreamingCapability.KEY_HAPTIC_SPATIAL_DATA_SUPPORTED, TestValues.GENERAL_BOOLEAN);
+            reference.put(VideoStreamingCapability.KEY_DIAGONAL_SCREEN_SIZE, TestValues.GENERAL_DOUBLE);
+            reference.put(VideoStreamingCapability.KEY_PIXEL_PER_INCH, TestValues.GENERAL_DOUBLE);
+            reference.put(VideoStreamingCapability.KEY_SCALE, TestValues.GENERAL_DOUBLE);
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());

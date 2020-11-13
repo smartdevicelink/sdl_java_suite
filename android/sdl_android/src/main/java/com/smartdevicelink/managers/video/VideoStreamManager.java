@@ -108,15 +108,15 @@ public class VideoStreamManager extends BaseVideoStreamManager {
     private OnHMIStatus currentOnHMIStatus;
     private final StreamingStateMachine stateMachine;
     private VideoStreamingParameters parameters;
-	private VideoStreamingCapability originalCapability;
+    private VideoStreamingCapability originalCapability;
     private IVideoStreamListener streamListener;
     private boolean isTransportAvailable = false;
     private Integer majorProtocolVersion;
-	private List<VideoStreamingRange> listOfStreamingRanges;
-	private boolean hasStarted;
+    private List<VideoStreamingRange> listOfStreamingRanges;
+    private boolean hasStarted;
     private String vehicleMake = null;
-	private boolean isEncrypted = false;
-	private boolean withPendingRestart = false;
+    private boolean isEncrypted = false;
+    private boolean withPendingRestart = false;
     private AbstractPacketizer videoPacketizer;
 
     // INTERNAL INTERFACES
@@ -230,7 +230,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                 // set cached resolution
                 castedCapability.setPreferredResolution(originalCapability.getPreferredResolution());
             }
-            params.update(castedCapability, vehicleMake);	//Streaming parameters are ready time to stream
+            params.update(castedCapability, vehicleMake);//Streaming parameters are ready time to stream
             VideoStreamManager.this.parameters = params;
 
             VideoStreamManager.this.withPendingRestart = true;
@@ -297,7 +297,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                         VideoStreamingParameters params = new VideoStreamingParameters();
                         VideoStreamingCapability castedCapability = ((VideoStreamingCapability)capability);
                         VideoStreamManager.this.originalCapability = castedCapability;
-                        params.update(castedCapability, vehicleMake);	//Streaming parameters are ready time to stream
+                        params.update(castedCapability, vehicleMake);//Streaming parameters are ready time to stream
                         VideoStreamManager.this.parameters = params;
                         // castedCapability.setAdditionalVideoStreamingCapabilities(getMockedAdditionalCapabilities());
                         checkState();
@@ -354,13 +354,13 @@ public class VideoStreamManager extends BaseVideoStreamManager {
     }
     /**
      * Starts streaming a remote display to the module if there is a connected session. This method of streaming requires the device to be on API level 19 or higher
-     * @param context a context that can be used to create the remote display
-     * @param remoteDisplayClass class object of the remote display. This class will be used to create an instance of the remote display and will be projected to the module
-     * @param parameters streaming parameters to be used when streaming. If null is sent in, the default/optimized options will be used.
-     *                   If you are unsure about what parameters to be used it is best to just send null and let the system determine what
-     *                   works best for the currently connected module.
      *
-     * @param encrypted a flag of if the stream should be encrypted. Only set if you have a supplied encryption library that the module can understand.
+     * @param context            a context that can be used to create the remote display
+     * @param remoteDisplayClass class object of the remote display. This class will be used to create an instance of the remote display and will be projected to the module
+     * @param parameters         streaming parameters to be used when streaming. If null is sent in, the default/optimized options will be used.
+     *                           If you are unsure about what parameters to be used it is best to just send null and let the system determine what
+     *                           works best for the currently connected module.
+     * @param encrypted          a flag of if the stream should be encrypted. Only set if you have a supplied encryption library that the module can understand.
      */
     @Deprecated
     public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted){

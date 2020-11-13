@@ -39,10 +39,6 @@ public class RpcConverterTest {
                 case ON_SYNC_P_DATA:
                 case ENCODED_SYNC_P_DATA:
                 case ON_ENCODED_SYNC_P_DATA:
-                case ON_LOCK_SCREEN_STATUS:
-                case ON_SDL_CHOICE_CHOSEN:
-                case ON_STREAM_RPC:
-                case STREAM_RPC:
                 case GENERIC_RESPONSE:
                     continue;
                 default:
@@ -104,10 +100,6 @@ public class RpcConverterTest {
                 case ON_SYNC_P_DATA:
                 case ENCODED_SYNC_P_DATA:
                 case ON_ENCODED_SYNC_P_DATA:
-                case ON_LOCK_SCREEN_STATUS:
-                case ON_SDL_CHOICE_CHOSEN:
-                case ON_STREAM_RPC:
-                case STREAM_RPC:
                 case GENERIC_RESPONSE:
                     continue;
                 default:

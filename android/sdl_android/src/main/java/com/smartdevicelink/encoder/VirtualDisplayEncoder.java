@@ -34,14 +34,12 @@ package com.smartdevicelink.encoder;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.view.Display;
 import android.view.Surface;
 
@@ -147,7 +145,6 @@ public class VirtualDisplayEncoder {
                             predefinedWidth, predefinedHeight,
                             streamingParams.getDisplayDensity(), inputSurface, DisplayManager.VIRTUAL_DISPLAY_FLAG_PRESENTATION);
                 }
-
 
                 startEncoder();
 

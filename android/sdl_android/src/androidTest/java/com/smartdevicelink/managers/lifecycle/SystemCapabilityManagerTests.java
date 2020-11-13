@@ -99,8 +99,8 @@ public class SystemCapabilityManagerTests {
         videoStreamingCapability.setPreferredResolution(TestValues.GENERAL_IMAGERESOLUTION);
         videoStreamingCapability.setSupportedFormats(TestValues.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
         videoStreamingCapability.setAdditionalVideoStreamingCapabilities(TestValues.GENERAL_ADDITIONAL_CAPABILITY_LIST);
-		systemCapability.setCapabilityForType(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
-	}
+        systemCapability.setCapabilityForType(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
+    }
 
     public SystemCapabilityManager createSampleManager() {
         return createSampleManager(new InternalSDLInterface());
@@ -215,7 +215,7 @@ public class SystemCapabilityManagerTests {
         vsCapability.setMaxBitrate(TestValues.GENERAL_INT);
         vsCapability.setPreferredResolution(TestValues.GENERAL_IMAGERESOLUTION);
         vsCapability.setAdditionalVideoStreamingCapabilities(TestValues.GENERAL_ADDITIONAL_CAPABILITY_LIST);
-		vsCapability.setSupportedFormats(TestValues.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
+        vsCapability.setSupportedFormats(TestValues.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
 
         SystemCapability cap = new SystemCapability();
         cap.setSystemCapabilityType(SystemCapabilityType.VIDEO_STREAMING);
@@ -961,7 +961,9 @@ public class SystemCapabilityManagerTests {
         }
 
         @Override
-        public void startVideoService(VideoStreamingParameters parameters, boolean encrypted, boolean withPendingRestart) { }
+        public void startVideoService(VideoStreamingParameters parameters, boolean encrypted, boolean withPendingRestart) {
+
+        }
 
         @Override
         public void sendRPC(RPCMessage message) {

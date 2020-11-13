@@ -21,7 +21,6 @@ import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnTouchEvent;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
-import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
 import com.smartdevicelink.proxy.rpc.VehicleType;
@@ -72,7 +71,7 @@ public class VideoStreamManagerTests {
     public static final String TAG = "VideoStreamManagerTests";
     private Context mTestContext;
     private static boolean touchEventOccured = false;
-	private static boolean viewResizedCalled = false;
+    private static boolean viewResizedCalled = false;
 
     // SETUP / HELPERS
 
@@ -97,11 +96,11 @@ public class VideoStreamManagerTests {
         }
 
         @Override
-		public void onViewResized(int width, int height) {
-			viewResizedCalled = true;
-		}
+        public void onViewResized(int width, int height) {
+            viewResizedCalled = true;
+        }
 
-		@Override
+        @Override
         public boolean onTouchEvent(@NonNull MotionEvent event) {
             touchEventOccured = true;
             return super.onTouchEvent(event);
@@ -114,7 +113,7 @@ public class VideoStreamManagerTests {
     public void testInitialization() {
         ISdl internalInterface = mock(ISdl.class);
         when(internalInterface.getProtocolVersion()).thenReturn(new Version(5, 1, 0));
-		when(internalInterface.getSystemCapabilityManager()).thenReturn(mock(SystemCapabilityManager.class));
+        when(internalInterface.getSystemCapabilityManager()).thenReturn(mock(SystemCapabilityManager.class));
 
         RegisterAppInterfaceResponse mockRegisterAppInterfaceResponse = new RegisterAppInterfaceResponse();
         VehicleType mockVehicleType = new VehicleType();
@@ -177,7 +176,7 @@ public class VideoStreamManagerTests {
     @Test
     public void testRemoteDisplayStream() {
         ISdl internalInterface = mock(ISdl.class);
-		when(internalInterface.getSystemCapabilityManager()).thenReturn(mock(SystemCapabilityManager.class));
+        when(internalInterface.getSystemCapabilityManager()).thenReturn(mock(SystemCapabilityManager.class));
 
         RegisterAppInterfaceResponse mockRegisterAppInterfaceResponse = new RegisterAppInterfaceResponse();
         VehicleType mockVehicleType = new VehicleType();
@@ -278,65 +277,65 @@ public class VideoStreamManagerTests {
                 hmiListener[0].onNotified(fullNotification);
 
                 videoStreamManager.startRemoteDisplayStream(mTestContext, TestPresentation.class, null, false);
-				assertTrue(touchEventOccured);
+                assertTrue(touchEventOccured);
                 videoStreamManager.dispose();
                 assertTrue(listenerSet.isEmpty());
-			}
-		});
+            }
+        });
 
     }
 
     @Test
-	public void testOnViewResized() {
-		ISdl internalInterface = mock(ISdl.class);
-		when(internalInterface.getSystemCapabilityManager()).thenReturn(mock(SystemCapabilityManager.class));
+    public void testOnViewResized() {
+        ISdl internalInterface = mock(ISdl.class);
+        when(internalInterface.getSystemCapabilityManager()).thenReturn(mock(SystemCapabilityManager.class));
 
-		final OnRPCNotificationListener[] hmiListener = {null};
+        final OnRPCNotificationListener[] hmiListener = {null};
 
-		Answer<Void> onAddHMIListener = new Answer<Void>() {
-			@Override
-			public Void answer(InvocationOnMock invocation) {
-				Object[] args = invocation.getArguments();
-				hmiListener[0] = (OnRPCNotificationListener) args[1];
-				return null;
-			}
-		};
+        Answer<Void> onAddHMIListener = new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                hmiListener[0] = (OnRPCNotificationListener) args[1];
+                return null;
+            }
+        };
 
-		doAnswer(onAddHMIListener).when(internalInterface).addOnRPCNotificationListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCNotificationListener.class));
+        doAnswer(onAddHMIListener).when(internalInterface).addOnRPCNotificationListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCNotificationListener.class));
 
-		final VideoStreamManager videoStreamManager = new VideoStreamManager(internalInterface);
-		videoStreamManager.start(new CompletionListener() {
-			@Override
-			public void onComplete(boolean success) {
-				assertTrue(success);
-				OnHMIStatus fullNotification = new OnHMIStatus();
-				fullNotification.setHmiLevel(HMILevel.HMI_FULL);
-				hmiListener[0].onNotified(fullNotification);
+        final VideoStreamManager videoStreamManager = new VideoStreamManager(internalInterface);
+        videoStreamManager.start(new CompletionListener() {
+            @Override
+            public void onComplete(boolean success) {
+                assertTrue(success);
+                OnHMIStatus fullNotification = new OnHMIStatus();
+                fullNotification.setHmiLevel(HMILevel.HMI_FULL);
+                hmiListener[0].onNotified(fullNotification);
 
-				videoStreamManager.startRemoteDisplayStream(mTestContext, TestPresentation.class, null, false);
+                videoStreamManager.startRemoteDisplayStream(mTestContext, TestPresentation.class, null, false);
 
-				Field sdlRemoteDisplayField = null;
-				try {
-					sdlRemoteDisplayField = VideoStreamManager.class.
-							getDeclaredField("sdlRemoteDisplay");
-				} catch (NoSuchFieldException e) { e.printStackTrace(); }
-				sdlRemoteDisplayField.setAccessible(true);
+                Field sdlRemoteDisplayField = null;
+                try {
+                    sdlRemoteDisplayField =
+                            VideoStreamManager.class.getDeclaredField("sdlRemoteDisplay");
+                } catch (NoSuchFieldException e) { e.printStackTrace(); }
+                sdlRemoteDisplayField.setAccessible(true);
 
-				SdlRemoteDisplay display = null;
-				try {
-					display = (SdlRemoteDisplay) sdlRemoteDisplayField.get(videoStreamManager);
-				} catch (IllegalAccessException e) { e.printStackTrace(); }
-				display.onViewResized(100, 100);
+                SdlRemoteDisplay display = null;
+                try {
+                    display = (SdlRemoteDisplay) sdlRemoteDisplayField.get(videoStreamManager);
+                } catch (IllegalAccessException e) { e.printStackTrace(); }
+                display.onViewResized(100, 100);
 
-				assertTrue(viewResizedCalled);
-			}
-		});
-	}
+                assertTrue(viewResizedCalled);
+            }
+        });
+    }
 
-	@Test
+    @Test
     public void testConvertTouchEvent() {
         ISdl internalInterface = mock(ISdl.class);
-		when(internalInterface.getSystemCapabilityManager()).thenReturn(mock(SystemCapabilityManager.class));
+        when(internalInterface.getSystemCapabilityManager()).thenReturn(mock(SystemCapabilityManager.class));
 
         RegisterAppInterfaceResponse mockRegisterAppInterfaceResponse = new RegisterAppInterfaceResponse();
         VehicleType mockVehicleType = new VehicleType();
@@ -551,7 +550,7 @@ public class VideoStreamManagerTests {
 
     private void assertMotionEventWithScale(int width, int height, float scale) {
         ISdl internalInterface = mock(ISdl.class);
-		when(internalInterface.getSystemCapabilityManager()).thenReturn(mock(SystemCapabilityManager.class));
+        when(internalInterface.getSystemCapabilityManager()).thenReturn(mock(SystemCapabilityManager.class));
 
         RegisterAppInterfaceResponse mockRegisterAppInterfaceResponse = new RegisterAppInterfaceResponse();
         VehicleType mockVehicleType = new VehicleType();
@@ -592,9 +591,9 @@ public class VideoStreamManagerTests {
     @Test
     public void testIsHMIStateVideoStreamCapable() {
         ISdl internalInterface = mock(ISdl.class);
-		when(internalInterface.getSystemCapabilityManager()).thenReturn(mock(SystemCapabilityManager.class));
+        when(internalInterface.getSystemCapabilityManager()).thenReturn(mock(SystemCapabilityManager.class));
 
-		VideoStreamManager videoStreamManager = new VideoStreamManager(internalInterface);
+        VideoStreamManager videoStreamManager = new VideoStreamManager(internalInterface);
 
         // Case 1 (VideoStreamingState = STREAMABLE)
         assertTrue(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_FULL, VideoStreamingState.STREAMABLE)));
