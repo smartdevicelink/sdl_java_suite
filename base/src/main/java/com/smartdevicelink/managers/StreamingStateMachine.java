@@ -87,11 +87,11 @@ public class StreamingStateMachine {
                 break;
             case STARTED:
                 if ((next_state == STOPPED) || (next_state == ERROR) || (next_state == PAUSED)){
-					return true;
-				}
-				break;
-			case PAUSED:
-				if((next_state == STARTED) || (next_state == STOPPED) || (next_state == ERROR)) {
+                    return true;
+                }
+                break;
+            case PAUSED:
+                if((next_state == STARTED) || (next_state == STOPPED) || (next_state == ERROR)) {
                     return true;
                 }
                 break;

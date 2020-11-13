@@ -135,16 +135,6 @@ public enum FunctionID {
     ON_UPDATE_FILE(32789, "OnUpdateFile"),
     ON_UPDATE_SUB_MENU(32790, "OnUpdateSubMenu"),
     ON_APP_CAPABILITY_UPDATED(32791, "OnAppCapabilityUpdated"),
-
-    // MOCKED FUNCTIONS (NOT SENT FROM HEAD-UNIT)
-    @Deprecated
-    ON_LOCK_SCREEN_STATUS(-1, "OnLockScreenStatus"),
-    @Deprecated
-    ON_SDL_CHOICE_CHOSEN(-1, "OnSdlChoiceChosen"),
-    @Deprecated
-    ON_STREAM_RPC(-1, "OnStreamRPC"),
-    @Deprecated
-    STREAM_RPC(-1, "StreamRPC"),
     ;
 
     public static final int INVALID_ID = -1;

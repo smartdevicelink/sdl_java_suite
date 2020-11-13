@@ -7,20 +7,10 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.Display;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.VideoView;
 
-import com.jakewharton.rxrelay2.PublishRelay;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
@@ -28,576 +18,435 @@ import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
 import com.smartdevicelink.managers.screen.OnButtonListener;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
-import com.smartdevicelink.managers.video.resolution.AspectRatio;
-import com.smartdevicelink.managers.video.resolution.Resolution;
-import com.smartdevicelink.managers.video.resolution.VideoStreamingRange;
+import com.smartdevicelink.managers.screen.choiceset.ChoiceSet;
+import com.smartdevicelink.managers.screen.choiceset.ChoiceSetSelectionListener;
+import com.smartdevicelink.managers.screen.menu.MenuCell;
+import com.smartdevicelink.managers.screen.menu.MenuSelectionListener;
+import com.smartdevicelink.managers.screen.menu.VoiceCommand;
+import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
+import com.smartdevicelink.proxy.rpc.Alert;
+import com.smartdevicelink.proxy.rpc.OnButtonEvent;
+import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+import com.smartdevicelink.proxy.rpc.Speak;
+import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
+import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
+import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
+import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
+import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
-import com.smartdevicelink.streaming.video.SdlRemoteDisplay;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.util.DebugTool;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
-
-import io.reactivex.functions.Consumer;
 
 public class SdlService extends Service {
 
-	private static final String TAG 					= "SDL Service";
+    private static final String TAG = "SDL Service";
 
-	private static final String APP_NAME 				= "Hello Sdl";
-	private static final String APP_NAME_ES 			= "Hola Sdl";
-	private static final String APP_NAME_FR 			= "Bonjour Sdl";
-	private static final String APP_ID 					= "8678309";
+    private static final String APP_NAME = "Hello Sdl";
+    private static final String APP_NAME_ES = "Hola Sdl";
+    private static final String APP_NAME_FR = "Bonjour Sdl";
+    private static final String APP_ID = "8678309";
 
-	private static final String ICON_FILENAME 			= "hello_sdl_icon.png";
-	private static final String SDL_IMAGE_FILENAME  	= "sdl_full_image.png";
+    private static final String ICON_FILENAME = "hello_sdl_icon.png";
+    private static final String SDL_IMAGE_FILENAME = "sdl_full_image.png";
 
-	private static final String WELCOME_SHOW 			= "Welcome to HelloSDL";
-	private static final String WELCOME_SPEAK 			= "Welcome to Hello S D L";
+    private static final String WELCOME_SHOW = "Welcome to HelloSDL";
+    private static final String WELCOME_SPEAK = "Welcome to Hello S D L";
 
-	private static final String TEST_COMMAND_NAME 		= "Test Command";
+    private static final String TEST_COMMAND_NAME = "Test Command";
 
-	private static final int FOREGROUND_SERVICE_ID = 111;
+    private static final int FOREGROUND_SERVICE_ID = 111;
 
-	// TCP/IP transport config
-	// The default port is 12345
-	// The IP is of the machine that is running SDL Core
-	private static final int TCP_PORT = 12345;
-	private static final String DEV_MACHINE_IP_ADDRESS = "192.168.0.104";
+    // TCP/IP transport config
+    // The default port is 12345
+    // The IP is of the machine that is running SDL Core
+    private static final int TCP_PORT = 12247;
+    private static final String DEV_MACHINE_IP_ADDRESS = "m.sdl.tools";
 
-	// variable to create and call functions of the SyncProxy
-	private SdlManager sdlManager = null;
-	private List<ChoiceCell> choiceCellList;
-	Map<FunctionID, OnRPCNotificationListener> onRPCNotificationListenerMap = new HashMap<>();
-	public static final PublishRelay<MainActivity.STREAM_ENUM> relay = PublishRelay.create();
+    // variable to create and call functions of the SyncProxy
+    private SdlManager sdlManager = null;
+    private List<ChoiceCell> choiceCellList;
 
-	@Override
-	public IBinder onBind(Intent intent) {
-		return null;
-	}
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
 
-	@Override
-	public void onCreate() {
-		Log.d(TAG, "onCreate");
-		super.onCreate();
+    @Override
+    public void onCreate() {
+        Log.d(TAG, "onCreate");
+        super.onCreate();
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			enterForeground();
-		}
-	}
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            enterForeground();
+        }
+    }
 
-	// Helper method to let the service enter foreground mode
-	@SuppressLint("NewApi")
-	public void enterForeground() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			NotificationChannel channel = new NotificationChannel(APP_ID, "SdlService", NotificationManager.IMPORTANCE_DEFAULT);
-			NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-			if (notificationManager != null) {
-				notificationManager.createNotificationChannel(channel);
-				Notification serviceNotification = new Notification.Builder(this, channel.getId())
-						.setContentTitle("Connected through SDL")
-						.setSmallIcon(R.drawable.ic_sdl)
-						.build();
-				startForeground(FOREGROUND_SERVICE_ID, serviceNotification);
-			}
-		}
-	}
+    // Helper method to let the service enter foreground mode
+    @SuppressLint("NewApi")
+    public void enterForeground() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(APP_ID, "SdlService", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+                Notification serviceNotification = new Notification.Builder(this, channel.getId())
+                        .setContentTitle("Connected through SDL")
+                        .setSmallIcon(R.drawable.ic_sdl)
+                        .build();
+                startForeground(FOREGROUND_SERVICE_ID, serviceNotification);
+            }
+        }
+    }
 
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
-		String ip = intent.getStringExtra(MainActivity.IP);
-		int port = intent.getIntExtra(MainActivity.PORT, 12345);
-		startProxy(port, ip);
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        startProxy();
+        return START_STICKY;
+    }
 
-		relay.doOnNext(new Consumer<MainActivity.STREAM_ENUM>() {
-			@Override
-			public void accept(MainActivity.STREAM_ENUM stream_enum) throws Exception {
-				startStreaming(stream_enum);
-			}
-		}).subscribe();
-		return START_STICKY;
-	}
+    @Override
+    public void onDestroy() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            stopForeground(true);
+        }
 
-	@Override
-	public void onDestroy() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			stopForeground(true);
-		}
+        if (sdlManager != null) {
+            sdlManager.dispose();
+        }
 
-		if (sdlManager != null) {
-			sdlManager.dispose();
-		}
+        super.onDestroy();
+    }
 
-		super.onDestroy();
-	}
+    private void startProxy() {
+        // This logic is to select the correct transport and security levels defined in the selected build flavor
+        // Build flavors are selected by the "build variants" tab typically located in the bottom left of Android Studio
+        // Typically in your app, you will only set one of these.
+        if (sdlManager == null) {
+            Log.i(TAG, "Starting SDL Proxy");
+            // Enable DebugTool for debug build type
+            if (BuildConfig.DEBUG) {
+                DebugTool.enableDebugTool();
+            }
+            BaseTransportConfig transport = null;
+            if (BuildConfig.TRANSPORT.equals("MULTI")) {
+                int securityLevel;
+                if (BuildConfig.SECURITY.equals("HIGH")) {
+                    securityLevel = MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH;
+                } else if (BuildConfig.SECURITY.equals("MED")) {
+                    securityLevel = MultiplexTransportConfig.FLAG_MULTI_SECURITY_MED;
+                } else if (BuildConfig.SECURITY.equals("LOW")) {
+                    securityLevel = MultiplexTransportConfig.FLAG_MULTI_SECURITY_LOW;
+                } else {
+                    securityLevel = MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF;
+                }
+                transport = new MultiplexTransportConfig(this, APP_ID, securityLevel);
+            } else if (BuildConfig.TRANSPORT.equals("TCP")) {
+                transport = new TCPTransportConfig(TCP_PORT, DEV_MACHINE_IP_ADDRESS, true);
+            } else if (BuildConfig.TRANSPORT.equals("MULTI_HB")) {
+                MultiplexTransportConfig mtc = new MultiplexTransportConfig(this, APP_ID, MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
+                mtc.setRequiresHighBandwidth(true);
+                transport = mtc;
+            }
 
-	private void startStreaming(final MainActivity.STREAM_ENUM value) {
-		if (sdlManager.getVideoStreamManager() != null) {
-			sdlManager.getVideoStreamManager().start(new CompletionListener() {
-				@Override
-				public void onComplete(boolean success) {
-					if (success) {
-						Class myClass;
-						if (value.equals(MainActivity.STREAM_ENUM.START_STREAMING)) {
-							myClass = MyDisplay.class;
-						} else {
-							myClass = UIStreamingDisplay.class;
-						}
-						VideoStreamingRange.Builder landscapeBuilder = new VideoStreamingRange.Builder();
-						landscapeBuilder
-								.setMaxSupportedResolution(new Resolution(800, 480))
-								.setMinSupportedResolution(new Resolution(400, 200))
-								.setAspectRatio(new AspectRatio(1., 6.))
-								.setMinScreenDiagonal(1.);
-						VideoStreamingRange landscapeRange = landscapeBuilder.build();
+            // The app type to be used
+            Vector<AppHMIType> appType = new Vector<>();
+            appType.add(AppHMIType.DEFAULT);
 
-						VideoStreamingRange.Builder portraitBuilder = new VideoStreamingRange.Builder();
-						portraitBuilder
-								.setMaxSupportedResolution(new Resolution(480, 800))
-								.setMinSupportedResolution(new Resolution(200, 400))
-								.setAspectRatio(new AspectRatio(1., 6.))
-								.setMinScreenDiagonal(1.);
-						VideoStreamingRange portraitRange = portraitBuilder.build();
-						sdlManager.getVideoStreamManager().startRemoteDisplayStream(
-								getApplicationContext(),
-								myClass,
-								null,
-								false,
-								landscapeRange,
-								portraitRange
-						);
-					} else {
-						Log.e(TAG, "Failed to start video streaming manager");
-					}
-				}
-			});
-		}
-	}
-
-	private void startProxy(int port, String ip) {
-		// This logic is to select the correct transport and security levels defined in the selected build flavor
-		// Build flavors are selected by the "build variants" tab typically located in the bottom left of Android Studio
-		// Typically in your app, you will only set one of these.
-		if (sdlManager == null) {
-			Log.i(TAG, "Starting SDL Proxy");
-			// Enable DebugTool for debug build type
-			if (BuildConfig.DEBUG){
-				DebugTool.enableDebugTool();
-			}
-			BaseTransportConfig transport = null;
-			if (BuildConfig.TRANSPORT.equals("MULTI")) {
-				int securityLevel;
-				if (BuildConfig.SECURITY.equals("HIGH")) {
-					securityLevel = MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH;
-				} else if (BuildConfig.SECURITY.equals("MED")) {
-					securityLevel = MultiplexTransportConfig.FLAG_MULTI_SECURITY_MED;
-				} else if (BuildConfig.SECURITY.equals("LOW")) {
-					securityLevel = MultiplexTransportConfig.FLAG_MULTI_SECURITY_LOW;
-				} else {
-					securityLevel = MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF;
-				}
-				transport = new MultiplexTransportConfig(this, APP_ID, securityLevel);
-			} else if (BuildConfig.TRANSPORT.equals("TCP")) {
-				transport = new TCPTransportConfig(port, ip, true);
-			} else if (BuildConfig.TRANSPORT.equals("MULTI_HB")) {
-				MultiplexTransportConfig mtc = new MultiplexTransportConfig(this, APP_ID, MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
-				mtc.setRequiresHighBandwidth(true);
-				transport = mtc;
-			}
-
-			// The app type to be used
-			Vector<AppHMIType> appType = new Vector<>();
-			appType.add(AppHMIType.NAVIGATION);
-
-			// The manager listener helps you know when certain events that pertain to the SDL Manager happen
-			// Here we will listen for ON_HMI_STATUS and ON_COMMAND notifications
-			SdlManagerListener listener = new SdlManagerListener() {
-				@Override
-				public void onStart() {
-					// HMI Status Listener
-//					sdlManager.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, new OnRPCNotificationListener() {
-//						@Override
-//						public void onNotified(RPCNotification notification) {
-//							OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
-//							if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
-//								return;
-//							}
-//							if (onHMIStatus.getHmiLevel() == HMILevel.HMI_FULL && onHMIStatus.getFirstRun()) {
-//								setVoiceCommands();
-//								sendMenus();
-//								performWelcomeSpeak();
-//								performWelcomeShow();
-//								preloadChoices();
-//								subscribeToButtons();
-//							}
-//						}
-//					});
-				}
-
-				@Override
-				public void onDestroy() {
-					SdlService.this.stopSelf();
-				}
-
-				@Override
-				public void onError(String info, Exception e) {
-				}
-
-				@Override
-				public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language, Language hmiLanguage) {
-					boolean isNeedUpdate = false;
-					String appName = APP_NAME;
-					String ttsName = APP_NAME;
-					switch (language) {
-						case ES_MX:
-							isNeedUpdate = true;
-							ttsName = APP_NAME_ES;
-							break;
-						case FR_CA:
-							isNeedUpdate = true;
-							ttsName = APP_NAME_FR;
-							break;
-						default:
-							break;
-					}
-					switch (hmiLanguage) {
-						case ES_MX:
-							isNeedUpdate = true;
-							appName = APP_NAME_ES;
-							break;
-						case FR_CA:
-							isNeedUpdate = true;
-							appName = APP_NAME_FR;
-							break;
-						default:
-							break;
-					}
-					return null;
-				}
-			};
-
-			// Create App Icon, this is set in the SdlManager builder
-			SdlArtwork appIcon = new SdlArtwork(ICON_FILENAME, FileType.GRAPHIC_PNG, R.mipmap.ic_launcher, true);
-
-			onRPCNotificationListenerMap.put(FunctionID.ON_HMI_STATUS, new OnRPCNotificationListener() {
-				@Override
-				public void onNotified(RPCNotification notification) {
-					OnHMIStatus status = (OnHMIStatus) notification;
-					if (status != null && status.getHmiLevel() == HMILevel.HMI_NONE) {
-						//Stop the stream
-						if (sdlManager.getVideoStreamManager() != null && sdlManager.getVideoStreamManager().isStreaming()) {
-							Log.d("OnHmiStatus", "stop streaming");
-							sdlManager.getVideoStreamManager().stopStreaming(false);
-						}
-					}
-				}
-			});
-			// The manager builder sets options for your session
-			SdlManager.Builder builder = new SdlManager.Builder(this, APP_ID, APP_NAME, listener);
-			builder.setAppTypes(appType);
-			builder.setTransportType(transport);
-			builder.setAppIcon(appIcon);
-			builder.setRPCNotificationListeners(onRPCNotificationListenerMap);
-			sdlManager = builder.build();
-			sdlManager.start();
-		}
-	}
-
-	public static class UIStreamingDisplay extends SdlRemoteDisplay {
-		int clickCounter1 = 0;
-		int clickCounter2 = 0;
-		public UIStreamingDisplay(Context context, Display display) {
-			super(context, display);
-		}
-
-		@Override
-		protected void onCreate(Bundle savedInstanceState) {
-			super.onCreate(savedInstanceState);
-			setContentView(R.layout.ui_streaming_layout);
-
-
-			final Button buttonTopLeft = findViewById(R.id.button_top_left);
-			final Button buttonBottomRight = findViewById(R.id.button_bottom_right);
-			final TextView textViewTopLeftCounter = findViewById(R.id.text_view_top_left_counter);
-			final TextView textViewBottomRightCounter = findViewById(R.id.text_view_bottom_right_counter);
-            buttonTopLeft.setOnTouchListener(new View.OnTouchListener() {
-				@Override
-				public boolean onTouch(View view, MotionEvent motionEvent) {
-
-                    textViewTopLeftCounter.setText("Click!!! " + ++clickCounter1);
-					int location [] = new int[2];
-                    buttonTopLeft.getLocationInWindow(location);
-                    //counter1.append("\nButton size: " + button1.getWidth() + "x" + button1.getHeight());
-					//textView.append("\nButton location: " + location[0] + "," + location[1]);
-					return false;
-				}
-			});
-
-            buttonBottomRight.setOnTouchListener(new View.OnTouchListener() {
+            // The manager listener helps you know when certain events that pertain to the SDL Manager happen
+            // Here we will listen for ON_HMI_STATUS and ON_COMMAND notifications
+            SdlManagerListener listener = new SdlManagerListener() {
                 @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
+                public void onStart() {
+                    // HMI Status Listener
+                    sdlManager.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, new OnRPCNotificationListener() {
+                        @Override
+                        public void onNotified(RPCNotification notification) {
+                            OnHMIStatus onHMIStatus = (OnHMIStatus) notification;
+                            if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+                                return;
+                            }
+                            if (onHMIStatus.getHmiLevel() == HMILevel.HMI_FULL && onHMIStatus.getFirstRun()) {
+                                setVoiceCommands();
+                                sendMenus();
+                                performWelcomeSpeak();
+                                performWelcomeShow();
+                                preloadChoices();
+                                subscribeToButtons();
+                            }
+                        }
+                    });
+                }
 
-                    textViewBottomRightCounter.setText("Click!!! " + ++clickCounter2);
-                    int location [] = new int[2];
-                    buttonBottomRight.getLocationInWindow(location);
-                    //counter2.append("\nButton size: " + button.getWidth() + "x" + button.getHeight());
-                    //textView.append("\nButton location: " + location[0] + "," + location[1]);
-                    return false;
+                @Override
+                public void onDestroy() {
+                    SdlService.this.stopSelf();
+                }
+
+                @Override
+                public void onError(String info, Exception e) {
+                }
+
+                @Override
+                public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language, Language hmiLanguage) {
+                    boolean isNeedUpdate = false;
+                    String appName = APP_NAME;
+                    String ttsName = APP_NAME;
+                    switch (language) {
+                        case ES_MX:
+                            isNeedUpdate = true;
+                            ttsName = APP_NAME_ES;
+                            break;
+                        case FR_CA:
+                            isNeedUpdate = true;
+                            ttsName = APP_NAME_FR;
+                            break;
+                        default:
+                            break;
+                    }
+                    switch (hmiLanguage) {
+                        case ES_MX:
+                            isNeedUpdate = true;
+                            appName = APP_NAME_ES;
+                            break;
+                        case FR_CA:
+                            isNeedUpdate = true;
+                            appName = APP_NAME_FR;
+                            break;
+                        default:
+                            break;
+                    }
+                    if (isNeedUpdate) {
+                        Vector<TTSChunk> chunks = new Vector<>(Collections.singletonList(new TTSChunk(ttsName, SpeechCapabilities.TEXT)));
+                        return new LifecycleConfigurationUpdate(appName, null, chunks, null);
+                    } else {
+                        return null;
+                    }
+                }
+            };
+
+            // Create App Icon, this is set in the SdlManager builder
+            SdlArtwork appIcon = new SdlArtwork(ICON_FILENAME, FileType.GRAPHIC_PNG, R.mipmap.ic_launcher, true);
+
+            // The manager builder sets options for your session
+            SdlManager.Builder builder = new SdlManager.Builder(this, APP_ID, APP_NAME, listener);
+            builder.setAppTypes(appType);
+            builder.setTransportType(transport);
+            builder.setAppIcon(appIcon);
+            sdlManager = builder.build();
+            sdlManager.start();
+        }
+    }
+
+    /**
+     * Send some voice commands
+     */
+    private void setVoiceCommands() {
+
+        List<String> list1 = Collections.singletonList("Command One");
+        List<String> list2 = Collections.singletonList("Command two");
+
+        VoiceCommand voiceCommand1 = new VoiceCommand(list1, new VoiceCommandSelectionListener() {
+            @Override
+            public void onVoiceCommandSelected() {
+                Log.i(TAG, "Voice Command 1 triggered");
+            }
+        });
+
+        VoiceCommand voiceCommand2 = new VoiceCommand(list2, new VoiceCommandSelectionListener() {
+            @Override
+            public void onVoiceCommandSelected() {
+                Log.i(TAG, "Voice Command 2 triggered");
+            }
+        });
+
+        sdlManager.getScreenManager().setVoiceCommands(Arrays.asList(voiceCommand1, voiceCommand2));
+    }
+
+    /**
+     * Add menus for the app on SDL.
+     */
+    private void sendMenus() {
+
+        // some arts
+        SdlArtwork livio = new SdlArtwork("livio", FileType.GRAPHIC_PNG, R.drawable.sdl, false);
+
+        // some voice commands
+        List<String> voice2 = Collections.singletonList("Cell two");
+
+        MenuCell mainCell1 = new MenuCell("Test Cell 1 (speak)", livio, null, new MenuSelectionListener() {
+            @Override
+            public void onTriggered(TriggerSource trigger) {
+                Log.i(TAG, "Test cell 1 triggered. Source: " + trigger.toString());
+                showTest();
+            }
+        });
+
+        MenuCell mainCell2 = new MenuCell("Test Cell 2", null, voice2, new MenuSelectionListener() {
+            @Override
+            public void onTriggered(TriggerSource trigger) {
+                Log.i(TAG, "Test cell 2 triggered. Source: " + trigger.toString());
+            }
+        });
+
+        // SUB MENU
+
+        MenuCell subCell1 = new MenuCell("SubCell 1", null, null, new MenuSelectionListener() {
+            @Override
+            public void onTriggered(TriggerSource trigger) {
+                Log.i(TAG, "Sub cell 1 triggered. Source: " + trigger.toString());
+            }
+        });
+
+        MenuCell subCell2 = new MenuCell("SubCell 2", null, null, new MenuSelectionListener() {
+            @Override
+            public void onTriggered(TriggerSource trigger) {
+                Log.i(TAG, "Sub cell 2 triggered. Source: " + trigger.toString());
+            }
+        });
+
+        // sub menu parent cell
+        MenuCell mainCell3 = new MenuCell("Test Cell 3 (sub menu)", MenuLayout.LIST, null, Arrays.asList(subCell1, subCell2));
+
+        MenuCell mainCell4 = new MenuCell("Show Perform Interaction", null, null, new MenuSelectionListener() {
+            @Override
+            public void onTriggered(TriggerSource trigger) {
+                showPerformInteraction();
+            }
+        });
+
+        MenuCell mainCell5 = new MenuCell("Clear the menu", null, null, new MenuSelectionListener() {
+            @Override
+            public void onTriggered(TriggerSource trigger) {
+                Log.i(TAG, "Clearing Menu. Source: " + trigger.toString());
+                // Clear this thing
+                sdlManager.getScreenManager().setMenu(Collections.<MenuCell>emptyList());
+                showAlert("Menu Cleared");
+            }
+        });
+
+        // Send the entire menu off to be created
+        sdlManager.getScreenManager().setMenu(Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4, mainCell5));
+    }
+
+    /**
+     * Will speak a sample welcome message
+     */
+    private void performWelcomeSpeak() {
+        List<TTSChunk> chunks = Collections.singletonList(new TTSChunk(WELCOME_SPEAK, SpeechCapabilities.TEXT));
+        sdlManager.sendRPC(new Speak(chunks));
+    }
+
+    /**
+     * Use the Screen Manager to set the initial screen text and set the image.
+     * Because we are setting multiple items, we will call beginTransaction() first,
+     * and finish with commit() when we are done.
+     */
+    private void performWelcomeShow() {
+        sdlManager.getScreenManager().beginTransaction();
+        sdlManager.getScreenManager().setTextField1(APP_NAME);
+        sdlManager.getScreenManager().setTextField2(WELCOME_SHOW);
+        sdlManager.getScreenManager().setPrimaryGraphic(new SdlArtwork(SDL_IMAGE_FILENAME, FileType.GRAPHIC_PNG, R.drawable.sdl, true));
+        sdlManager.getScreenManager().commit(new CompletionListener() {
+            @Override
+            public void onComplete(boolean success) {
+                if (success) {
+                    Log.i(TAG, "welcome show successful");
+                }
+            }
+        });
+    }
+
+    /**
+     * Attempts to Subscribe to all preset buttons
+     */
+    private void subscribeToButtons() {
+        ButtonName[] buttonNames = {ButtonName.PLAY_PAUSE, ButtonName.SEEKLEFT, ButtonName.SEEKRIGHT, ButtonName.AC_MAX, ButtonName.AC, ButtonName.RECIRCULATE,
+                ButtonName.FAN_UP, ButtonName.FAN_DOWN, ButtonName.TEMP_UP, ButtonName.TEMP_DOWN, ButtonName.FAN_DOWN, ButtonName.DEFROST_MAX, ButtonName.DEFROST_REAR, ButtonName.DEFROST,
+                ButtonName.UPPER_VENT, ButtonName.LOWER_VENT, ButtonName.VOLUME_UP, ButtonName.VOLUME_DOWN, ButtonName.EJECT, ButtonName.SOURCE, ButtonName.SHUFFLE, ButtonName.REPEAT};
+
+        OnButtonListener onButtonListener = new OnButtonListener() {
+            @Override
+            public void onPress(ButtonName buttonName, OnButtonPress buttonPress) {
+                sdlManager.getScreenManager().setTextField1(buttonName + " pressed");
+            }
+
+            @Override
+            public void onEvent(ButtonName buttonName, OnButtonEvent buttonEvent) {
+                sdlManager.getScreenManager().setTextField2(buttonName + " " + buttonEvent.getButtonEventMode());
+            }
+
+            @Override
+            public void onError(String info) {
+                Log.i(TAG, "onError: " + info);
+            }
+        };
+
+        for (ButtonName buttonName : buttonNames) {
+            sdlManager.getScreenManager().addButtonListener(buttonName, onButtonListener);
+        }
+    }
+
+    /**
+     * Will show a sample test message on screen as well as speak a sample test message
+     */
+    private void showTest() {
+        sdlManager.getScreenManager().beginTransaction();
+        sdlManager.getScreenManager().setTextField1("Test Cell 1 has been selected");
+        sdlManager.getScreenManager().setTextField2("");
+        sdlManager.getScreenManager().commit(null);
+
+        List<TTSChunk> chunks = Collections.singletonList(new TTSChunk(TEST_COMMAND_NAME, SpeechCapabilities.TEXT));
+        sdlManager.sendRPC(new Speak(chunks));
+    }
+
+    private void showAlert(String text) {
+        Alert alert = new Alert();
+        alert.setAlertText1(text);
+        alert.setDuration(5000);
+        sdlManager.sendRPC(alert);
+    }
+
+    // Choice Set
+
+    private void preloadChoices() {
+        ChoiceCell cell1 = new ChoiceCell("Item 1");
+        ChoiceCell cell2 = new ChoiceCell("Item 2");
+        ChoiceCell cell3 = new ChoiceCell("Item 3");
+        choiceCellList = new ArrayList<>(Arrays.asList(cell1, cell2, cell3));
+        sdlManager.getScreenManager().preloadChoices(choiceCellList, null);
+    }
+
+    private void showPerformInteraction() {
+        if (choiceCellList != null) {
+            ChoiceSet choiceSet = new ChoiceSet("Choose an Item from the list", choiceCellList, new ChoiceSetSelectionListener() {
+                @Override
+                public void onChoiceSelected(ChoiceCell choiceCell, TriggerSource triggerSource, int rowIndex) {
+                    showAlert(choiceCell.getText() + " was selected");
+                }
+
+                @Override
+                public void onError(String error) {
+                    Log.e(TAG, "There was an error showing the perform interaction: " + error);
                 }
             });
-		}
-
-		@Override
-		public void onViewResized(int width, int height) {
-			Toast.makeText(getContext(),
-					String.format("Remote view new width and height (%s, %s)", width, height),
-					Toast.LENGTH_SHORT
-			).show();
-		}
-	}
-
-	public static class MyDisplay extends SdlRemoteDisplay {
-		public MyDisplay(Context context, Display display) {
-			super(context, display);
-		}
-
-		@Override
-		protected void onCreate(Bundle savedInstanceState) {
-			super.onCreate(savedInstanceState);
-			setContentView(R.layout.streaming_layout);
-
-
-			String videoUri = "android.resource://" + getContext().getPackageName() + "/" + R.raw.sdl;
-			final VideoView videoView = findViewById(R.id.videoView);
-			videoView.setOnTouchListener(new View.OnTouchListener() {
-				@Override
-				public boolean onTouch(View view, MotionEvent motionEvent) {
-					int[] location = new int[2];
-					videoView.getLocationInWindow(location);
-					Log.i("convertTouch", "View size " + videoView.getWidth() + "x" + videoView.getHeight());
-					Log.i("convertTouch", "Location " + location[0] + " " + location[1]);
-					Log.i("convertTouch", "Count: " + motionEvent.getPointerCount());
-					Log.i("convertTouch", "Click(" + motionEvent.getX() + " " + motionEvent.getY() + " Raw " + motionEvent.getRawX() + " " + motionEvent.getRawY());
-					return false;
-				}
-			});
-			videoView.setVideoURI(Uri.parse(videoUri));
-			videoView.start();
-		}
-
-		@Override
-		public void onViewResized(int width, int height) {
-			Toast.makeText(getContext(),
-					String.format("Remote view new width and height (%s, %s)", width, height),
-					Toast.LENGTH_SHORT
-			).show();
-		}
+            sdlManager.getScreenManager().presentChoiceSet(choiceSet, InteractionMode.MANUAL_ONLY);
+        }
     }
-//
-//	/**
-//	 * Send some voice commands
-//	 */
-//	private void setVoiceCommands(){
-//
-//		List<String> list1 = Collections.singletonList("Command One");
-//		List<String> list2 = Collections.singletonList("Command two");
-//
-//		VoiceCommand voiceCommand1 = new VoiceCommand(list1, new VoiceCommandSelectionListener() {
-//			@Override
-//			public void onVoiceCommandSelected() {
-//				Log.i(TAG, "Voice Command 1 triggered");
-//			}
-//		});
-//
-//		VoiceCommand voiceCommand2 = new VoiceCommand(list2, new VoiceCommandSelectionListener() {
-//			@Override
-//			public void onVoiceCommandSelected() {
-//				Log.i(TAG, "Voice Command 2 triggered");
-//			}
-//		});
-//
-//		sdlManager.getScreenManager().setVoiceCommands(Arrays.asList(voiceCommand1,voiceCommand2));
-//	}
-//
-//	/**
-//	 *  Add menus for the app on SDL.
-//	 */
-//	private void sendMenus(){
-//
-//		// some arts
-//		SdlArtwork livio = new SdlArtwork("livio", FileType.GRAPHIC_PNG, R.drawable.sdl, false);
-//
-//		// some voice commands
-//		List<String> voice2 = Collections.singletonList("Cell two");
-//
-//		MenuCell mainCell1 = new MenuCell("Test Cell 1 (speak)", livio, null, new MenuSelectionListener() {
-//			@Override
-//			public void onTriggered(TriggerSource trigger) {
-//				Log.i(TAG, "Test cell 1 triggered. Source: "+ trigger.toString());
-//				showTest();
-//			}
-//		});
-//
-//		MenuCell mainCell2 = new MenuCell("Test Cell 2", null, voice2, new MenuSelectionListener() {
-//			@Override
-//			public void onTriggered(TriggerSource trigger) {
-//				Log.i(TAG, "Test cell 2 triggered. Source: "+ trigger.toString());
-//			}
-//		});
-//
-//		// SUB MENU
-//
-//		MenuCell subCell1 = new MenuCell("SubCell 1",null, null, new MenuSelectionListener() {
-//			@Override
-//			public void onTriggered(TriggerSource trigger) {
-//				Log.i(TAG, "Sub cell 1 triggered. Source: "+ trigger.toString());
-//			}
-//		});
-//
-//		MenuCell subCell2 = new MenuCell("SubCell 2",null, null, new MenuSelectionListener() {
-//			@Override
-//			public void onTriggered(TriggerSource trigger) {
-//				Log.i(TAG, "Sub cell 2 triggered. Source: "+ trigger.toString());
-//			}
-//		});
-//
-//		// sub menu parent cell
-//		MenuCell mainCell3 = new MenuCell("Test Cell 3 (sub menu)", null, Arrays.asList(subCell1,subCell2));
-//
-//		MenuCell mainCell4 = new MenuCell("Show Perform Interaction", null, null, new MenuSelectionListener() {
-//			@Override
-//			public void onTriggered(TriggerSource trigger) {
-//				showPerformInteraction();
-//			}
-//		});
-//
-//		MenuCell mainCell5 = new MenuCell("Clear the menu",null, null, new MenuSelectionListener() {
-//			@Override
-//			public void onTriggered(TriggerSource trigger) {
-//				Log.i(TAG, "Clearing Menu. Source: "+ trigger.toString());
-//				// Clear this thing
-//				sdlManager.getScreenManager().setMenu(Collections.<MenuCell>emptyList());
-//				showAlert("Menu Cleared");
-//			}
-//		});
-//
-//		// Send the entire menu off to be created
-//		sdlManager.getScreenManager().setMenu(Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4, mainCell5));
-//	}
-//
-//	/**
-//	 * Will speak a sample welcome message
-//	 */
-//	private void performWelcomeSpeak(){
-//		sdlManager.sendRPC(new Speak(TTSChunkFactory.createSimpleTTSChunks(WELCOME_SPEAK)));
-//	}
-//
-//	/**
-//	 * Use the Screen Manager to set the initial screen text and set the image.
-//	 * Because we are setting multiple items, we will call beginTransaction() first,
-//	 * and finish with commit() when we are done.
-//	 */
-//	private void performWelcomeShow() {
-//		sdlManager.getScreenManager().beginTransaction();
-//		sdlManager.getScreenManager().setTextField1(APP_NAME);
-//		sdlManager.getScreenManager().setTextField2(WELCOME_SHOW);
-//		sdlManager.getScreenManager().setPrimaryGraphic(new SdlArtwork(SDL_IMAGE_FILENAME, FileType.GRAPHIC_PNG, R.drawable.sdl, true));
-//		sdlManager.getScreenManager().commit(new CompletionListener() {
-//			@Override
-//			public void onComplete(boolean success) {
-//				if (success){
-//					Log.i(TAG, "welcome show successful");
-//				}
-//			}
-//		});
-//	}
-//
-//	/**
-//	 * Attempts to Subscribe to all preset buttons
-//	 */
-//	private void subscribeToButtons() {
-//		ButtonName[] buttonNames = {ButtonName.PLAY_PAUSE, ButtonName.SEEKLEFT, ButtonName.SEEKRIGHT, ButtonName.AC_MAX, ButtonName.AC, ButtonName.RECIRCULATE,
-//				ButtonName.FAN_UP, ButtonName.FAN_DOWN, ButtonName.TEMP_UP, ButtonName.TEMP_DOWN, ButtonName.FAN_DOWN, ButtonName.DEFROST_MAX, ButtonName.DEFROST_REAR, ButtonName.DEFROST,
-//				ButtonName.UPPER_VENT, ButtonName.LOWER_VENT, ButtonName.VOLUME_UP, ButtonName.VOLUME_DOWN, ButtonName.EJECT, ButtonName.SOURCE, ButtonName.SHUFFLE, ButtonName.REPEAT};
-//
-//		OnButtonListener onButtonListener = new OnButtonListener() {
-//			@Override
-//			public void onPress(ButtonName buttonName, OnButtonPress buttonPress) {
-//				sdlManager.getScreenManager().setTextField1(buttonName + " pressed");
-//			}
-//
-//			@Override
-//			public void onEvent(ButtonName buttonName, OnButtonEvent buttonEvent) {
-//				sdlManager.getScreenManager().setTextField2(buttonName + " " + buttonEvent.getButtonEventMode());
-//			}
-//
-//			@Override
-//			public void onError(String info) {
-//				Log.i(TAG, "onError: " + info);
-//			}
-//		};
-//
-//		for (ButtonName buttonName : buttonNames) {
-//			sdlManager.getScreenManager().addButtonListener(buttonName, onButtonListener);
-//		}
-//	}
-//
-//	/**
-//	 * Will show a sample test message on screen as well as speak a sample test message
-//	 */
-//	private void showTest(){
-//		sdlManager.getScreenManager().beginTransaction();
-//		sdlManager.getScreenManager().setTextField1("Test Cell 1 has been selected");
-//		sdlManager.getScreenManager().setTextField2("");
-//		sdlManager.getScreenManager().commit(null);
-//
-//		sdlManager.sendRPC(new Speak(TTSChunkFactory.createSimpleTTSChunks(TEST_COMMAND_NAME)));
-//	}
-//
-//	private void showAlert(String text){
-//		Alert alert = new Alert();
-//		alert.setAlertText1(text);
-//		alert.setDuration(5000);
-//		sdlManager.sendRPC(alert);
-//	}
-//
-//	// Choice Set
-//
-//	private void preloadChoices(){
-//		ChoiceCell cell1 = new ChoiceCell("Item 1");
-//		ChoiceCell cell2 = new ChoiceCell("Item 2");
-//		ChoiceCell cell3 = new ChoiceCell("Item 3");
-//		choiceCellList = new ArrayList<>(Arrays.asList(cell1,cell2,cell3));
-//		sdlManager.getScreenManager().preloadChoices(choiceCellList, null);
-//	}
-//
-//	private void showPerformInteraction(){
-//		if (choiceCellList != null) {
-//			ChoiceSet choiceSet = new ChoiceSet("Choose an Item from the list", choiceCellList, new ChoiceSetSelectionListener() {
-//				@Override
-//				public void onChoiceSelected(ChoiceCell choiceCell, TriggerSource triggerSource, int rowIndex) {
-//					showAlert(choiceCell.getText() + " was selected");
-//				}
-//
-//				@Override
-//				public void onError(String error) {
-//					Log.e(TAG, "There was an error showing the perform interaction: "+ error);
-//				}
-//			});
-//			sdlManager.getScreenManager().presentChoiceSet(choiceSet, InteractionMode.MANUAL_ONLY);
-//		}
-//	}
-
 }
