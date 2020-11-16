@@ -446,7 +446,6 @@ abstract class BaseLifecycleManager {
                             }
                         }
 
-                        DebugTool.logWarning(TAG, "Unable to handle OnSystemRequest");
                         break;
                     case ON_APP_INTERFACE_UNREGISTERED:
 
