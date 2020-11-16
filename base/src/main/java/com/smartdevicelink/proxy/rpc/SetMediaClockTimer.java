@@ -117,6 +117,8 @@ public class SetMediaClockTimer extends RPCRequest {
     public static final String KEY_END_TIME = "endTime";
     public static final String KEY_UPDATE_MODE = "updateMode";
     public static final String KEY_AUDIO_STREAMING_INDICATOR = "audioStreamingIndicator";
+    public static final String KEY_FORWARD_SEEK_INDICATOR = "forwardSeekIndicator";
+    public static final String KEY_BACK_SEEK_INDICATOR = "backSeekIndicator";
 
     /**
      * Constructs a new SetMediaClockTimer object
@@ -348,6 +350,16 @@ public class SetMediaClockTimer extends RPCRequest {
      */
     public SetMediaClockTimer setAudioStreamingIndicator(AudioStreamingIndicator audioStreamingIndicator) {
         setParameters(KEY_AUDIO_STREAMING_INDICATOR, audioStreamingIndicator);
+        return this;
+    }
+
+    public SetMediaClockTimer setForwardSeekIndicator(SeekStreamingIndicator forwardSeekIndicator) {
+        setParameters(KEY_FORWARD_SEEK_INDICATOR, forwardSeekIndicator);
+        return this;
+    }
+
+    public SetMediaClockTimer setBackSeekIndicator(SeekStreamingIndicator backSeekIndicator) {
+        setParameters(KEY_BACK_SEEK_INDICATOR, backSeekIndicator);
         return this;
     }
 }
