@@ -18,8 +18,6 @@ import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
-import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
-import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
 
@@ -37,16 +35,23 @@ public class BaseAlertManager extends BaseSubManager {
     private OnSystemCapabilityListener onDisplaysCapabilityListener;
     private final WeakReference<FileManager> fileManager;
 
+
     public BaseAlertManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface);
         addListeners();
         this.transactionQueue = newTransactionQueue();
         this.fileManager = new WeakReference<>(fileManager);
     }
-    private Queue newTransactionQueue() {
-        Queue queue = internalInterface.getTaskmaster().createQueue("AlertManager", 4, false);
-        queue.pause();
-        return queue;
+
+    @Override
+    public void start(CompletionListener listener) {
+        transitionToState(READY);
+        super.start(listener);
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
     }
 
     public void presentAlert(AlertView alert, CompletionListener listener) {
@@ -55,9 +60,15 @@ public class BaseAlertManager extends BaseSubManager {
             return;
         }
         Log.i("Julian", "presentAlert: herere 1");
-        PresentAlertOperation operation = new PresentAlertOperation(internalInterface, alert, listener);
+        PresentAlertOperation operation = new PresentAlertOperation(internalInterface, alert, defaultMainWindowCapability, fileManager.get(), listener);
         transactionQueue.add(operation, false);
 
+    }
+
+    private Queue newTransactionQueue() {
+        Queue queue = internalInterface.getTaskmaster().createQueue("AlertManager", 4, false);
+        queue.pause();
+        return queue;
     }
 
     // Suspend the queue if the WindowCapabilities are null
@@ -71,25 +82,16 @@ public class BaseAlertManager extends BaseSubManager {
             transactionQueue.resume();
         }
     }
-    @Override
-    public void start(CompletionListener listener) {
-        transitionToState(READY);
-        super.start(listener);
-    }
 
-    @Override
-    public void dispose() {
-        super.dispose();
-    }
 
     private void addListeners() {
         hmiListener = new OnRPCNotificationListener() {
             @Override
             public void onNotified(RPCNotification notification) {
                 OnHMIStatus onHMIStatus = (OnHMIStatus) notification;
-/*                if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+               if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
                     return;
-                }*/
+                }
                 currentHMILevel = onHMIStatus.getHmiLevel();
                 updateTransactionQueueSuspended();
             }
@@ -98,32 +100,34 @@ public class BaseAlertManager extends BaseSubManager {
 
 
 
-/*        onDisplaysCapabilityListener = new OnSystemCapabilityListener() {
+        onDisplaysCapabilityListener = new OnSystemCapabilityListener() {
             @Override
             public void onCapabilityRetrieved(Object capability) {
                 // instead of using the parameter it's more safe to use the convenience method
                 List<DisplayCapability> capabilities = SystemCapabilityManager.convertToList(capability, DisplayCapability.class);
                 if (capabilities == null || capabilities.size() == 0) {
-                    DebugTool.logError(TAG, "TextAndGraphic Manager - Capabilities sent here are null or empty");
                     defaultMainWindowCapability = null;
                 } else {
                     DisplayCapability display = capabilities.get(0);
                     for (WindowCapability windowCapability : display.getWindowCapabilities()) {
                         int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
                         if (currentWindowID == PredefinedWindows.DEFAULT_WINDOW.getValue()) {
-                            // Check if the window capability is equal to the one we already have. If it is, abort.
-                            if (defaultMainWindowCapability != null && defaultMainWindowCapability.getStore().equals(windowCapability.getStore())) {
-                                return;
-                            }
                             defaultMainWindowCapability = windowCapability;
+                            continue;
                         }
                     }
                 }
                 // Update the queue's suspend state
-                updateTransactionQueueSuspended();
+               // updateTransactionQueueSuspended();
             }
-        };*/
 
+            @Override
+            public void onError(String info) {
+                DebugTool.logError(TAG, "Display Capability cannot be retrieved");
+                defaultMainWindowCapability = null;
+               // updateTransactionQueueSuspended();
+            }
+        };
 
     }
 }
