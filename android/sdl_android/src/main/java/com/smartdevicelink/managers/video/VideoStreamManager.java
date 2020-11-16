@@ -101,7 +101,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
     private WeakReference<Context> context;
     private volatile VirtualDisplayEncoder virtualDisplayEncoder;
     private Class<? extends SdlRemoteDisplay> remoteDisplayClass = null;
-    private SdlRemoteDisplay sdlRemoteDisplay;
+    private SdlRemoteDisplay remoteDisplay;
     private final float[] touchScalar = {1.0f, 1.0f}; //x, y
     private HapticInterfaceManager hapticManager;
     private SdlMotionEvent sdlMotionEvent = null;
@@ -152,7 +152,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
         @Override
         public void onServiceEnded(SdlSession session, SessionType type) {
             if (SessionType.NAV.equals(type)) {
-                if (sdlRemoteDisplay !=null){
+                if (remoteDisplay !=null){
                     stopStreaming(withPendingRestart);
                 }
                 stateMachine.transitionToState(StreamingStateMachine.NONE);
@@ -202,11 +202,11 @@ public class VideoStreamManager extends BaseVideoStreamManager {
     private final OnRPCNotificationListener touchListener = new OnRPCNotificationListener() {
         @Override
         public void onNotified(RPCNotification notification) {
-            if (notification != null && sdlRemoteDisplay != null) {
+            if (notification != null && remoteDisplay != null) {
                 List<MotionEvent> motionEventList = convertTouchEvent((OnTouchEvent) notification);
                 if (motionEventList != null && !motionEventList.isEmpty()) {
                     for (MotionEvent motionEvent : motionEventList) {
-                        sdlRemoteDisplay.handleMotionEvent(motionEvent);
+                        remoteDisplay.handleMotionEvent(motionEvent);
                     }
                 }
             }
@@ -461,15 +461,15 @@ public class VideoStreamManager extends BaseVideoStreamManager {
      */
     private void startEncoder() {
         try {
-            if (sdlRemoteDisplay != null) {
-                sdlRemoteDisplay.resizeView(parameters.getResolution().getResolutionWidth(), parameters.getResolution().getResolutionHeight());
+            if (remoteDisplay != null) {
+                remoteDisplay.resizeView(parameters.getResolution().getResolutionWidth(), parameters.getResolution().getResolutionHeight());
             }
 
             virtualDisplayEncoder.init(this.context.get(), streamListener, parameters);
             //We are all set so we can start streaming at at this point
             virtualDisplayEncoder.start();
             //Encoder should be up and running
-            createRemoteDisplay(virtualDisplayEncoder.getDisplay());
+            createRemoteDisplay(virtualDisplayEncoder.getVirtualDisplay());
 
             stateMachine.transitionToState(StreamingStateMachine.STARTED);
             hasStarted = true;
@@ -485,8 +485,8 @@ public class VideoStreamManager extends BaseVideoStreamManager {
      * @see #resumeStreaming()
      */
     public void stopStreaming(boolean withPendingRestart) {
-        if (sdlRemoteDisplay!= null && !withPendingRestart) {
-            sdlRemoteDisplay.stop();
+        if (remoteDisplay != null && !withPendingRestart) {
+            remoteDisplay.stop();
                 this.withPendingRestart = false;
         }
         if (this.isStreaming()) {
@@ -521,7 +521,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
         stopStreaming(false);
 
         hapticManager = null;
-        sdlRemoteDisplay = null;
+        remoteDisplay = null;
         parameters = null;
         virtualDisplayEncoder = null;
         if (internalInterface != null) {
@@ -589,16 +589,16 @@ public class VideoStreamManager extends BaseVideoStreamManager {
             }
 
             // Dismiss the current presentation if the display has changed.
-            if (sdlRemoteDisplay != null && sdlRemoteDisplay.getDisplay() != disp) {
-                sdlRemoteDisplay.dismissPresentation();
+            if (remoteDisplay != null && remoteDisplay.getDisplay() != disp) {
+                remoteDisplay.dismissPresentation();
             }
 
-            FutureTask<Boolean> fTask = new FutureTask<>(new SdlRemoteDisplay.Creator(context.get(), disp, sdlRemoteDisplay, remoteDisplayClass, new SdlRemoteDisplay.Callback() {
+            FutureTask<Boolean> fTask = new FutureTask<>(new SdlRemoteDisplay.Creator(context.get(), disp, remoteDisplay, remoteDisplayClass, new SdlRemoteDisplay.Callback() {
                 @Override
                 public void onCreated(final SdlRemoteDisplay remoteDisplay) {
                     //Remote display has been created.
                     //Now is a good time to do parsing for spatial data
-                    VideoStreamManager.this.sdlRemoteDisplay = remoteDisplay;
+                    VideoStreamManager.this.remoteDisplay = remoteDisplay;
                     if (hapticManager != null) {
                         remoteDisplay.getMainView().post(new Runnable() {
                             @Override
@@ -635,7 +635,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                         createTouchScalar(resolution, displayMetrics);
                     }
 
-                sdlRemoteDisplay.resizeView(parameters.getResolution().getResolutionWidth(), parameters.getResolution().getResolutionHeight());
+                VideoStreamManager.this.remoteDisplay.resizeView(parameters.getResolution().getResolutionWidth(), parameters.getResolution().getResolutionHeight());
                 }
 
                 @Override
@@ -643,7 +643,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                     //Our view has been invalidated
                     //A good time to refresh spatial data
                     DisplayMetrics displayMetrics = new DisplayMetrics();
-                    sdlRemoteDisplay.getDisplay().getMetrics(displayMetrics);
+                    VideoStreamManager.this.remoteDisplay.getDisplay().getMetrics(displayMetrics);
                     displayMetrics.widthPixels =  (int) (parameters.getResolution().getResolutionWidth() * parameters.getScale());
                     displayMetrics.heightPixels =  (int) (parameters.getResolution().getResolutionHeight() * parameters.getScale());
                     createTouchScalar(parameters.getResolution(), displayMetrics);

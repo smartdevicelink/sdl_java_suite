@@ -165,9 +165,7 @@ public class VideoStreamingParameters {
         if (resolution != null) {
 
             if (vehicleMake != null) {
-                if ((vehicleMake.contains("Ford") || vehicleMake.contains("Lincoln")) &&
-                        ((resolution.getResolutionHeight() != null && resolution.getResolutionHeight() > 800) ||
-                                (resolution.getResolutionWidth() != null && resolution.getResolutionWidth() > 800))) {
+                if ((vehicleMake.contains("Ford") || vehicleMake.contains("Lincoln")) && ((resolution.getResolutionHeight() != null && resolution.getResolutionHeight() > 800) || (resolution.getResolutionWidth() != null && resolution.getResolutionWidth() > 800))) {
                     scale = 1.0 / 0.75;
                 }
             }

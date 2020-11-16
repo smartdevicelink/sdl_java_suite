@@ -293,7 +293,7 @@ public class VirtualDisplayEncoder {
         }
     }
 
-    public Display getDisplay() {
+    public Display getVirtualDisplay() {
         return virtualDisplay.getDisplay();
     }
 
