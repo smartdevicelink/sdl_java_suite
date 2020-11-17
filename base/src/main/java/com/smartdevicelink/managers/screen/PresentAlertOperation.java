@@ -8,7 +8,6 @@ import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
-import com.smartdevicelink.managers.screen.SoftButtonObject;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.Alert;
 import com.smartdevicelink.proxy.rpc.SoftButton;
@@ -16,6 +15,7 @@ import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
+import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.DebugTool;
@@ -33,9 +33,10 @@ public class PresentAlertOperation extends Task {
     private final WeakReference<FileManager> fileManager;
     WindowCapability defaultMainWindowCapability;
     private int hasFinishedUploadTask;
+    private int cancelId;
 
 
-    public PresentAlertOperation(ISdl internalInterface, AlertView alertView, WindowCapability currentCapabilities, FileManager fileManager, CompletionListener listener) {
+    public PresentAlertOperation(ISdl internalInterface, AlertView alertView, WindowCapability currentCapabilities, FileManager fileManager, Integer cancelId, CompletionListener listener) {
         super("PresentAlertOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.defaultMainWindowCapability = currentCapabilities;
@@ -49,6 +50,7 @@ public class PresentAlertOperation extends Task {
             }
         };
         hasFinishedUploadTask = 0;
+        this.cancelId = cancelId;
     }
 
     @Override
@@ -208,7 +210,7 @@ public class PresentAlertOperation extends Task {
             alert.setAlertIcon(alertView.getIcon().getImageRPC());
         }
         alert.setProgressIndicator(alertView.isShowWaitIndicator());
-        //TODO FIGURE OUT WHAT TO DO HERE alert.setCancelID(alert.getCancelID());
+        alert.setCancelID(this.cancelId);
         ManagerUtility.SoftButtonUtility.checkAndAssignButtonIds(alertView.getSoftButtons(), ManagerUtility.SoftButtonUtility.SoftButtonLocation.ALERT_MANAGER);
 
         List<SoftButton> softButtons = new ArrayList<>();
@@ -225,9 +227,7 @@ public class PresentAlertOperation extends Task {
                     isPlayTone = true;
                 }
                 if (audioData.getAudioFile() != null) {
-                    //TODO
-   /*             ttsChunks.add(new TTSChunk(audioData.getAudioFile().getName()), audioData.getAudioFile().)
-                //ttsChunks.add(new TTSChunk(audioData.getAudioFile().getName()));*/
+                    ttsChunks.add(new TTSChunk(audioData.getAudioFile().getName(), SpeechCapabilities.FILE);
                 }
                 if (audioData.getPrompt() != null) {
                     ttsChunks.addAll(audioData.getPrompt());

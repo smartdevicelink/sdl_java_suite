@@ -34,6 +34,8 @@ public class BaseAlertManager extends BaseSubManager {
     HMILevel currentHMILevel;
     private OnSystemCapabilityListener onDisplaysCapabilityListener;
     private final WeakReference<FileManager> fileManager;
+    private int nextCancelId;
+    final int alertCancelIdMin = 1;
 
 
     public BaseAlertManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
@@ -41,6 +43,7 @@ public class BaseAlertManager extends BaseSubManager {
         addListeners();
         this.transactionQueue = newTransactionQueue();
         this.fileManager = new WeakReference<>(fileManager);
+        nextCancelId = alertCancelIdMin;
     }
 
     @Override
@@ -60,7 +63,7 @@ public class BaseAlertManager extends BaseSubManager {
             return;
         }
         Log.i("Julian", "presentAlert: herere 1");
-        PresentAlertOperation operation = new PresentAlertOperation(internalInterface, alert, defaultMainWindowCapability, fileManager.get(), listener);
+        PresentAlertOperation operation = new PresentAlertOperation(internalInterface, alert, defaultMainWindowCapability, fileManager.get(), nextCancelId++, listener);
         transactionQueue.add(operation, false);
 
     }
