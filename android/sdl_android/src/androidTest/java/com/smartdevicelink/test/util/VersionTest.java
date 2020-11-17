@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.fail;
 
 @RunWith(AndroidJUnit4.class)
 public class VersionTest {
@@ -27,10 +28,8 @@ public class VersionTest {
     public void testConstructorIncorrect() {
         try {
             Version version = new Version("1.2");
-        } catch (Exception e) {
-            assert true;
-        }
-        assert false;
+            fail();
+        } catch (Exception e) {}
     }
 
     @Test

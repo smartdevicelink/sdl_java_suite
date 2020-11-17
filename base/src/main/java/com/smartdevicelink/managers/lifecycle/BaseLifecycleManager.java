@@ -346,6 +346,10 @@ abstract class BaseLifecycleManager {
         addRpcListener(FunctionID.ON_SYSTEM_REQUEST, rpcListener);
         addRpcListener(FunctionID.ON_APP_INTERFACE_UNREGISTERED, rpcListener);
         addRpcListener(FunctionID.UNREGISTER_APP_INTERFACE, rpcListener);
+
+        /*  These are legacy and are necessary for older systems   */
+        addRpcListener(FunctionID.ON_SYNC_P_DATA, rpcListener);
+        addRpcListener(FunctionID.ON_ENCODED_SYNC_P_DATA, rpcListener);
     }
 
     private final OnRPCListener rpcListener = new OnRPCListener() {
@@ -387,42 +391,61 @@ abstract class BaseLifecycleManager {
                     case ON_HASH_CHANGE:
                         break;
                     case ON_SYSTEM_REQUEST:
-                        final OnSystemRequest onSystemRequest = (OnSystemRequest) message;
-                        if ((onSystemRequest.getUrl() != null) &&
-                                (((onSystemRequest.getRequestType() == RequestType.PROPRIETARY) && (onSystemRequest.getFileType() == FileType.JSON))
-                                        || ((onSystemRequest.getRequestType() == RequestType.HTTP) && (onSystemRequest.getFileType() == FileType.BINARY)))) {
-                            Thread handleOffboardTransmissionThread = new Thread() {
-                                @Override
-                                public void run() {
-                                    RPCRequest request = PoliciesFetcher.fetchPolicies(onSystemRequest);
-                                    if (request != null && isConnected()) {
-                                        sendRPCMessagePrivate(request, true);
-                                    }
-                                }
-                            };
-                            handleOffboardTransmissionThread.start();
-                        } else if (onSystemRequest.getRequestType() == RequestType.ICON_URL && onSystemRequest.getUrl() != null) {
-                            //Download the icon file and send SystemRequest RPC
-                            Thread handleOffBoardTransmissionThread = new Thread() {
-                                @Override
-                                public void run() {
-                                    final String urlHttps = onSystemRequest.getUrl().replaceFirst("http://", "https://");
-                                    byte[] file = FileUtls.downloadFile(urlHttps);
-                                    if (file != null) {
-                                        SystemRequest systemRequest = new SystemRequest();
-                                        systemRequest.setFileName(onSystemRequest.getUrl());
-                                        systemRequest.setBulkData(file);
-                                        systemRequest.setRequestType(RequestType.ICON_URL);
-                                        if (isConnected()) {
-                                            sendRPCMessagePrivate(systemRequest, true);
-                                        }
-                                    } else {
-                                        DebugTool.logError(TAG, "File was null at: " + urlHttps);
-                                    }
-                                }
-                            };
-                            handleOffBoardTransmissionThread.start();
+                    case ON_ENCODED_SYNC_P_DATA:
+                    case ON_SYNC_P_DATA:
+                        if (functionID.equals(FunctionID.ON_ENCODED_SYNC_P_DATA) || functionID.equals(FunctionID.ON_SYNC_P_DATA)) {
+                            DebugTool.logInfo(TAG, "Received legacy SYNC_P_DATA, handling it as OnSystemRequest");
+                        } else {
+                            DebugTool.logInfo(TAG, "Received OnSystemRequest");
                         }
+
+                        final OnSystemRequest onSystemRequest = (OnSystemRequest) message;
+                        RequestType requestType = onSystemRequest.getRequestType();
+                        FileType fileType = onSystemRequest.getFileType();
+
+                        if (onSystemRequest.getUrl() != null) {
+                            if ((requestType == RequestType.PROPRIETARY && fileType == FileType.JSON)
+                                    || (requestType == RequestType.HTTP && fileType == FileType.BINARY)
+                                    || functionID.equals(FunctionID.ON_ENCODED_SYNC_P_DATA)
+                                    || functionID.equals(FunctionID.ON_SYNC_P_DATA)) {
+                                DebugTool.logInfo(TAG, "List of conditionals has passed");
+                                Thread handleOffboardTransmissionThread = new Thread() {
+                                    @Override
+                                    public void run() {
+                                        DebugTool.logInfo(TAG, "Attempting to fetch policies");
+                                        RPCRequest request = PoliciesFetcher.fetchPolicies(onSystemRequest);
+                                        if (request != null && isConnected()) {
+                                            sendRPCMessagePrivate(request, true);
+                                        }
+                                    }
+                                };
+                                handleOffboardTransmissionThread.start();
+                                return;
+                            } else if (requestType == RequestType.ICON_URL) {
+                                //Download the icon file and send SystemRequest RPC
+                                Thread handleOffBoardTransmissionThread = new Thread() {
+                                    @Override
+                                    public void run() {
+                                        final String urlHttps = onSystemRequest.getUrl().replaceFirst("http://", "https://");
+                                        byte[] file = FileUtls.downloadFile(urlHttps);
+                                        if (file != null) {
+                                            SystemRequest systemRequest = new SystemRequest();
+                                            systemRequest.setFileName(onSystemRequest.getUrl());
+                                            systemRequest.setBulkData(file);
+                                            systemRequest.setRequestType(RequestType.ICON_URL);
+                                            if (isConnected()) {
+                                                sendRPCMessagePrivate(systemRequest, true);
+                                            }
+                                        } else {
+                                            DebugTool.logError(TAG, "File was null at: " + urlHttps);
+                                        }
+                                    }
+                                };
+                                handleOffBoardTransmissionThread.start();
+                                return;
+                            }
+                        }
+
                         break;
                     case ON_APP_INTERFACE_UNREGISTERED:
 
