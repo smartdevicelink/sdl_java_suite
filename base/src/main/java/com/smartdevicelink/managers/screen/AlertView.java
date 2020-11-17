@@ -1,4 +1,4 @@
-package com.smartdevicelink.managers.screen.alert;
+package com.smartdevicelink.managers.screen;
 
 import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
