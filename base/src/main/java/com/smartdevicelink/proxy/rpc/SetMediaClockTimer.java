@@ -94,6 +94,26 @@ import java.util.Hashtable;
  * 			<td></td>
  * 			<td>SmartDeviceLink 5.0</td>
  * 		</tr>
+ * 	<tr>
+ *      <td>forwardSeekIndicator</td>
+ *      <td>SeekStreamingIndicator</td>
+ *      <td>Used to control the forward seek button to either skip forward a set amount of time or tothe next track.</td>
+ *      <td>N</td>
+ *      <td></td>
+ *      <td>
+ *         @since SmartDeviceLink 7.1.0
+ *      </td>
+ *  </tr>
+ *  <tr>
+ *      <td>backSeekIndicator</td>
+ *      <td>SeekStreamingIndicator</td>
+ *      <td>Used to control the forward seek button to either skip back a set amount of time or to theprevious track.</td>
+ *      <td>N</td>
+ *      <td></td>
+ *      <td>
+ *         @since SmartDeviceLink 7.1.0
+ *      </td>
+ *  </tr>
  *
  *  </table>
  *
@@ -353,13 +373,49 @@ public class SetMediaClockTimer extends RPCRequest {
         return this;
     }
 
+    /**
+     * Sets the forwardSeekIndicator.
+     *
+     * @param forwardSeekIndicator Used to control the forward seek button to either skip forward a set amount of time or to
+     * the next track.
+     * @since SmartDeviceLink 7.1.0
+     */
     public SetMediaClockTimer setForwardSeekIndicator(SeekStreamingIndicator forwardSeekIndicator) {
         setParameters(KEY_FORWARD_SEEK_INDICATOR, forwardSeekIndicator);
         return this;
     }
 
+    /**
+     * Gets the forwardSeekIndicator.
+     *
+     * @return SeekStreamingIndicator Used to control the forward seek button to either skip forward a set amount of time or to
+     * the next track.
+     * @since SmartDeviceLink 7.1.0
+     */
+    public SeekStreamingIndicator getForwardSeekIndicator() {
+        return (SeekStreamingIndicator) getObject(SeekStreamingIndicator.class, KEY_FORWARD_SEEK_INDICATOR);
+    }
+
+    /**
+     * Sets the backSeekIndicator.
+     *
+     * @param backSeekIndicator Used to control the forward seek button to either skip back a set amount of time or to the
+     * previous track.
+     * @since SmartDeviceLink 7.1.0
+     */
     public SetMediaClockTimer setBackSeekIndicator(SeekStreamingIndicator backSeekIndicator) {
         setParameters(KEY_BACK_SEEK_INDICATOR, backSeekIndicator);
         return this;
+    }
+
+    /**
+     * Gets the backSeekIndicator.
+     *
+     * @return SeekStreamingIndicator Used to control the forward seek button to either skip back a set amount of time or to the
+     * previous track.
+     * @since SmartDeviceLink 7.1.0
+     */
+    public SeekStreamingIndicator getBackSeekIndicator() {
+        return (SeekStreamingIndicator) getObject(SeekStreamingIndicator.class, KEY_BACK_SEEK_INDICATOR);
     }
 }
