@@ -22,8 +22,8 @@ class VoiceCommandUpdateOperation extends Task {
     private final WeakReference<ISdl> internalInterface;
     List<VoiceCommand> oldVoiceCommands;
     private List<VoiceCommand> pendingVoiceCommands;
-    private List<DeleteCommand> deleteCommands;
-    private List<AddCommand> addCommands;
+    private List<DeleteCommand> deleteVoiceCommands;
+    private List<AddCommand> addCommandsToSend;
     private VoiceCommandChangesListener voiceCommandListener;
     private List<VoiceCommand> currentVoiceCommands;
     private HashMap<RPCRequest, String> errorObject;
@@ -49,6 +49,7 @@ class VoiceCommandUpdateOperation extends Task {
 
     private void start() {
         if (getState() == Task.CANCELED) {
+            onFinished();
             return;
         }
 
@@ -56,6 +57,7 @@ class VoiceCommandUpdateOperation extends Task {
             @Override
             public void onComplete(boolean success) {
                 if (getState() == Task.CANCELED) {
+                    onFinished();
                     return;
                 }
                 // we don't care about errors from deleting, send new add commands
@@ -87,9 +89,9 @@ class VoiceCommandUpdateOperation extends Task {
             return;
         }
 
-        deleteCommands = deleteCommandsForVoiceCommands(oldVoiceCommands);
+        deleteVoiceCommands = deleteCommandsForVoiceCommands(oldVoiceCommands);
 
-        internalInterface.get().sendRPCs(deleteCommands, new OnMultipleRequestListener() {
+        internalInterface.get().sendRPCs(deleteVoiceCommands, new OnMultipleRequestListener() {
             @Override
             public void onUpdate(int remainingRequests) {
             }
@@ -111,16 +113,13 @@ class VoiceCommandUpdateOperation extends Task {
             public void onResponse(int correlationId, RPCResponse response) {
                 DeleteCommandResponse deleteResponse = (DeleteCommandResponse) response;
                 if (!deleteResponse.getSuccess()) {
-                    for (DeleteCommand deleteCommand : deleteCommands) {
+                    for (DeleteCommand deleteCommand : deleteVoiceCommands) {
                         if (correlationId == deleteCommand.getCorrelationID()) {
                             errorObject.put(deleteCommand, response.getInfo());
                         }
                     }
                 } else {
-                    VoiceCommand foundCommand = getVoiceCommandFromDeleteCommandResponse(correlationId);
-                    if (foundCommand != null) {
-                        currentVoiceCommands.remove(foundCommand);
-                    }
+                    removeCurrentVoiceCommandWithCorrelationId(correlationId);
                 }
             }
         });
@@ -138,17 +137,17 @@ class VoiceCommandUpdateOperation extends Task {
         return deleteCommandList;
     }
 
-    private VoiceCommand getVoiceCommandFromDeleteCommandResponse(int correlationId) {
-        for (DeleteCommand deleteCommand : deleteCommands) {
+    private void removeCurrentVoiceCommandWithCorrelationId(int correlationId) {
+        for (DeleteCommand deleteCommand : deleteVoiceCommands) {
             if (correlationId == deleteCommand.getCorrelationID()) {
                 for (VoiceCommand voiceCommand : oldVoiceCommands) {
                     if (deleteCommand.getCmdID() == voiceCommand.getCommandId()) {
-                        return voiceCommand;
+                        currentVoiceCommands.remove(voiceCommand);
+                        return;
                     }
                 }
             }
         }
-        return null;
     }
 
     // SEND NEW MENU ITEMS
@@ -162,9 +161,9 @@ class VoiceCommandUpdateOperation extends Task {
             return;
         }
 
-        addCommands = addCommandsForVoiceCommands(pendingVoiceCommands);
+        addCommandsToSend = addCommandsForVoiceCommands(pendingVoiceCommands);
 
-        internalInterface.get().sendRPCs(addCommands, new OnMultipleRequestListener() {
+        internalInterface.get().sendRPCs(addCommandsToSend, new OnMultipleRequestListener() {
             @Override
             public void onUpdate(int remainingRequests) {
             }
@@ -186,13 +185,13 @@ class VoiceCommandUpdateOperation extends Task {
             public void onResponse(int correlationId, RPCResponse response) {
                 AddCommandResponse addResponse = (AddCommandResponse) response;
                 if (!addResponse.getSuccess()) {
-                    for (AddCommand addCommand : addCommands) {
+                    for (AddCommand addCommand : addCommandsToSend) {
                         if (correlationId == addCommand.getCorrelationID()) {
                             errorObject.put(addCommand, response.getInfo());
                         }
                     }
                 } else {
-                    VoiceCommand foundCommand = getVoiceCommandFromAddCommandResponse(correlationId);
+                    VoiceCommand foundCommand = pendingVoiceCommandWithCorrelationId(correlationId);
                     if (foundCommand != null) {
                         currentVoiceCommands.add(foundCommand);
                     }
@@ -213,8 +212,8 @@ class VoiceCommandUpdateOperation extends Task {
         return addCommandList;
     }
 
-    private VoiceCommand getVoiceCommandFromAddCommandResponse(int correlationId) {
-        for (AddCommand addCommand : addCommands) {
+    private VoiceCommand pendingVoiceCommandWithCorrelationId(int correlationId) {
+        for (AddCommand addCommand : addCommandsToSend) {
             if (correlationId == addCommand.getCorrelationID()) {
                 for (VoiceCommand voiceCommand : pendingVoiceCommands) {
                     if (addCommand.getCmdID() == voiceCommand.getCommandId()) {

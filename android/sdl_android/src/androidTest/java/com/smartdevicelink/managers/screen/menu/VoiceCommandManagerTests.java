@@ -123,7 +123,6 @@ public class VoiceCommandManagerTests {
         assertNull(voiceCommandManager.currentHMILevel);
         assertEquals(voiceCommandManager.getState(), BaseSubManager.SETTING_UP);
         assertEquals(voiceCommandManager.lastVoiceCommandId, voiceCommandIdMin);
-        assertFalse(voiceCommandManager.waitingOnHMIUpdate);
         assertNotNull(voiceCommandManager.commandListener);
         assertNotNull(voiceCommandManager.hmiListener);
         assertNull(voiceCommandManager.voiceCommands);
@@ -139,7 +138,6 @@ public class VoiceCommandManagerTests {
         assertNull(voiceCommandManager.voiceCommands);
         assertNull(voiceCommandManager.currentVoiceCommands);
         assertNull(voiceCommandManager.currentHMILevel);
-        assertFalse(voiceCommandManager.waitingOnHMIUpdate);
         // after everything, make sure we are in the correct state
         assertEquals(voiceCommandManager.getState(), BaseSubManager.SHUTDOWN);
     }
@@ -163,22 +161,14 @@ public class VoiceCommandManagerTests {
         voiceCommandManager.currentHMILevel = HMILevel.HMI_NONE;
         voiceCommandManager.setVoiceCommands(commands);
 
-        // updating voice commands before HMI is ready
-        assertTrue(voiceCommandManager.waitingOnHMIUpdate);
         // these are the 2 commands we have waiting
         assertEquals(voiceCommandManager.voiceCommands.size(), 2);
         assertEquals(voiceCommandManager.currentHMILevel, HMILevel.HMI_NONE);
-        // operation not added to queue when hmi is none
-        assertEquals(voiceCommandManager.transactionQueue.getTasksAsList().size(), 0);
 
         // The VCM should send the pending voice commands once HMI full occurs
         sendFakeCoreOnHMIFullNotifications();
         // Listener should be triggered - which sets new HMI level and should proceed to send our pending update
         assertEquals(voiceCommandManager.currentHMILevel, HMILevel.HMI_FULL);
-        // This being false means it received the hmi notification and sent the pending commands
-        assertFalse(voiceCommandManager.waitingOnHMIUpdate);
-        // operation is added to queue once hmi full
-        assertEquals(voiceCommandManager.transactionQueue.getTasksAsList().size(), 1);
     }
 
     @Test

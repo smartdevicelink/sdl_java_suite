@@ -60,8 +60,6 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
     int lastVoiceCommandId;
     private static final int voiceCommandIdMin = 1900000000;
 
-    boolean waitingOnHMIUpdate;
-
     HMILevel currentHMILevel;
     OnRPCNotificationListener hmiListener;
     OnRPCNotificationListener commandListener;
@@ -95,7 +93,6 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
         voiceCommands = null;
         currentVoiceCommands = null;
 
-        waitingOnHMIUpdate = false;
         currentHMILevel = null;
 
         if (transactionQueue != null) {
@@ -143,11 +140,9 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
         if (currentHMILevel == null || currentHMILevel == HMILevel.HMI_NONE) {
             // Trying to send on HMI_NONE, waiting for full
             this.voiceCommands = new ArrayList<>(voiceCommands);
-            waitingOnHMIUpdate = true;
             return;
         }
 
-        waitingOnHMIUpdate = false;
         lastVoiceCommandId = voiceCommandIdMin;
         updateIdsOnVoiceCommands(voiceCommands);
         this.currentVoiceCommands = new ArrayList<>();
@@ -224,15 +219,8 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
                 if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
                     return;
                 }
-                HMILevel oldHMILevel = currentHMILevel;
                 currentHMILevel = onHMIStatus.getHmiLevel();
                 updateTransactionQueueSuspended();
-                // Auto-send an update if we were in NONE and now we are not
-                if (oldHMILevel == HMILevel.HMI_NONE && currentHMILevel != HMILevel.HMI_NONE) {
-                    if (waitingOnHMIUpdate) {
-                        setVoiceCommands(voiceCommands);
-                    }
-                }
             }
         };
         internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
