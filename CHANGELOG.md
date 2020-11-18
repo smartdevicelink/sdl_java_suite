@@ -1,5 +1,5 @@
 
-# 4.12.1 Release Notes
+# 4.12.2 Release Notes
 
 ### Summary:
 ||Version|
@@ -9,6 +9,4 @@
 | **Tested Targeting** | Android 29
 
 ## Hotfix
-- [Fix Issue 1465 - NPE in ManagerUtility](https://github.com/smartdevicelink/sdl_java_suite/pull/1478)
-- [Add check to prevent NPE in ManagerUtility class](https://github.com/smartdevicelink/sdl_java_suite/pull/1498)
-- [Fix Issue 1473 - Null items as head or empty lists](https://github.com/smartdevicelink/sdl_java_suite/pull/1474)
+- [Supporting devices with SDL 2.0.0](https://github.com/smartdevicelink/sdl_java_suite/issues/1541)
