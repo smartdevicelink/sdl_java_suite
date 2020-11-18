@@ -98,7 +98,9 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
         waitingOnHMIUpdate = false;
         currentHMILevel = null;
 
-        transactionQueue.close();
+        if (transactionQueue != null) {
+            transactionQueue.close();
+        }
         transactionQueue = null;
 
         updateOperation = null;
@@ -132,8 +134,8 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
     public void setVoiceCommands(List<VoiceCommand> voiceCommands) {
 
         // we actually need voice commands to set.
-        if (voiceCommands == null || voiceCommands.size() == 0) {
-            DebugTool.logInfo(TAG, "Trying to set empty list of voice commands, returning");
+        if (voiceCommands == null) {
+            DebugTool.logInfo(TAG, "Voice commands list was null, returning");
             return;
         }
 
@@ -149,7 +151,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
         lastVoiceCommandId = voiceCommandIdMin;
         updateIdsOnVoiceCommands(voiceCommands);
         this.currentVoiceCommands = new ArrayList<>();
-        if (this.voiceCommands != null && !this.voiceCommands.isEmpty()) {
+        if (this.voiceCommands != null) {
             this.currentVoiceCommands.addAll(this.voiceCommands);
         }
         this.voiceCommands = new ArrayList<>(voiceCommands);
@@ -169,7 +171,9 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
             @Override
             public void updateVoiceCommands(List<VoiceCommand> newCurrentVoiceCommands, HashMap<RPCRequest, String> errorObject) {
                 DebugTool.logInfo(TAG, "The updated list of VoiceCommands: " + newCurrentVoiceCommands);
-                DebugTool.logError(TAG, "The failed Add and Delete Commands: " + errorObject);
+                if (!errorObject.isEmpty()) {
+                    DebugTool.logError(TAG, "The failed Add and Delete Commands: " + errorObject);
+                }
                 currentVoiceCommands = newCurrentVoiceCommands;
                 updatePendingOperations();
                 updateOperation = null;

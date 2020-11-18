@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class VoiceCommandUpdateOperation extends Task {
+class VoiceCommandUpdateOperation extends Task {
     private static final String TAG = "VoiceCommandReplaceOperation";
     private final WeakReference<ISdl> internalInterface;
     List<VoiceCommand> oldVoiceCommands;

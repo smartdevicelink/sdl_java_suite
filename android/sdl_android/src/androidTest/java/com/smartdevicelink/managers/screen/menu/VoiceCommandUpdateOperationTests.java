@@ -232,4 +232,66 @@ public class VoiceCommandUpdateOperationTests {
 
         verify(listenerSpy, times(1)).updateVoiceCommands(any(List.class), any(HashMap.class));
     }
+
+    @Test
+    public void verifySendingAnEmptyListWillClearVoiceCommands() {
+        internalInterface = mock(ISdl.class);
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                DeleteCommand deleteCommand = null;
+                AddCommand addCommand = null;
+
+                try {
+                    deleteCommand = (DeleteCommand) ((List<Object>)invocation.getArguments()[0]).get(0);
+                } catch (Exception e) {
+                    DebugTool.logInfo(TAG, "not DeleteCommands: " + e);
+                }
+
+                try {
+                    addCommand = (AddCommand) ((List<Object>)invocation.getArguments()[0]).get(0);
+                } catch (Exception e) {
+                    DebugTool.logInfo(TAG, "not AddCommands: " + e);
+                }
+
+                if (deleteCommand != null) {
+                    DeleteCommandResponse successResponse = new DeleteCommandResponse();
+                    successResponse.setSuccess(true);
+                    List<DeleteCommand> deleteCommands = ((List<DeleteCommand>)invocation.getArguments()[0]);
+                    for (DeleteCommand command : deleteCommands) {
+                        successResponse.setCorrelationID(command.getCorrelationID());
+                        ((OnMultipleRequestListener)invocation.getArguments()[1]).onResponse(command.getCorrelationID(), successResponse);
+                    }
+                } else if (addCommand != null) {
+                    AddCommandResponse successResponse = new AddCommandResponse();
+                    successResponse.setSuccess(true);
+                    List<AddCommand> addCommands = ((List<AddCommand>)invocation.getArguments()[0]);
+                    for (AddCommand command : addCommands) {
+                        successResponse.setCorrelationID(command.getCorrelationID());
+                        ((OnMultipleRequestListener)invocation.getArguments()[1]).onResponse(command.getCorrelationID(), successResponse);
+                    }
+                } else {
+                    DebugTool.logInfo(TAG, "CallBacks failed");
+                    return null;
+                }
+                ((OnMultipleRequestListener)invocation.getArguments()[1]).onFinished();
+                return null;
+            }
+        }).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
+
+        voiceCommandChangesListener = new VoiceCommandUpdateOperation.VoiceCommandChangesListener() {
+            @Override
+            public void updateVoiceCommands(List<VoiceCommand> newCurrentVoiceCommands, HashMap<RPCRequest, String> errorObject) {
+                assertEquals(0, errorObject.size());
+                assertEquals(0, newCurrentVoiceCommands.size());
+            }
+        };
+
+        VoiceCommandUpdateOperation.VoiceCommandChangesListener listenerSpy = Mockito.spy(voiceCommandChangesListener);
+
+        voiceCommandUpdateOperation = new VoiceCommandUpdateOperation(internalInterface, deleteList, new ArrayList<VoiceCommand>(), listenerSpy);
+        voiceCommandUpdateOperation.onExecute();
+
+        verify(listenerSpy, times(1)).updateVoiceCommands(any(List.class), any(HashMap.class));
+    }
 }
