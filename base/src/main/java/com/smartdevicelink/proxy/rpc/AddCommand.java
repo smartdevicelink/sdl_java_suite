@@ -107,6 +107,16 @@ import java.util.List;
  * 			<td></td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
+ *     	<tr>
+ *          <td>secondaryImage</td>
+ *          <td>Image</td>
+ *          <td>Optional secondary image struct for menu cell</td>
+ *          <td>N</td>
+ *          <td></td>
+ *          <td>
+ *             @since SmartDeviceLink 7.1.0
+ *          </td>
+ *      </tr>
  *  </table>
  * <p> <b>Response</b></p><p>Indicates that the corresponding request has failed or succeeded, if the response returns with a SUCCESS result code, this means a command was added to the Command Menu successfully.</p>
  *
@@ -123,6 +133,7 @@ public class AddCommand extends RPCRequest {
     public static final String KEY_MENU_PARAMS = "menuParams";
     public static final String KEY_CMD_ID = "cmdID";
     public static final String KEY_VR_COMMANDS = "vrCommands";
+    public static final String KEY_SECONDARY_IMAGE = "secondaryImage";
 
     /**
      * Constructs a new AddCommand object
@@ -262,5 +273,26 @@ public class AddCommand extends RPCRequest {
     public AddCommand setCmdIcon(Image cmdIcon) {
         setParameters(KEY_CMD_ICON, cmdIcon);
         return this;
+    }
+
+    /**
+     * Sets the secondaryImage.
+     *
+     * @param secondaryImage Optional secondary image struct for menu cell
+     * @since SmartDeviceLink 7.1.0
+     */
+    public AddCommand setSecondaryImage(Image secondaryImage) {
+        setParameters(KEY_SECONDARY_IMAGE, secondaryImage);
+        return this;
+    }
+
+    /**
+     * Gets the secondaryImage.
+     *
+     * @return Image Optional secondary image struct for menu cell
+     * @since SmartDeviceLink 7.1.0
+     */
+    public Image getSecondaryImage() {
+        return (Image) getObject(Image.class, KEY_SECONDARY_IMAGE);
     }
 }

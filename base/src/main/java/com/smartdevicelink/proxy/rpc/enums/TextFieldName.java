@@ -204,7 +204,31 @@ public enum TextFieldName {
      *
      * @since SmartDeviceLink 7.0.0
      */
-    subtleAlertSoftButtonText;
+    subtleAlertSoftButtonText,
+    /**
+     * Secondary text for AddCommand
+     *
+     * @since SmartDeviceLink 7.1.0
+     */
+    menuCommandSecondaryText,
+    /**
+     * Tertiary text for AddCommand
+     *
+     * @since SmartDeviceLink 7.1.0
+     */
+    menuCommandTertiaryText,
+    /**
+     * Secondary text for AddSubMenu
+     *
+     * @since SmartDeviceLink 7.1.0
+     */
+    menuSubMenuSecondaryText,
+    /**
+     * Tertiary text for AddSubMenu
+     *
+     * @since SmartDeviceLink 7.1.0
+     */
+    menuSubMenuTertiaryText;
 
     /**
      * Convert String to TextFieldName
