@@ -63,7 +63,12 @@ public class BaseAlertManager extends BaseSubManager {
             DebugTool.logWarning(TAG, "Alert Manager In Error State");
             return;
         }
-        Log.i("Julian", "presentAlert: herere 1");
+
+        if(!BaseScreenManager.checkAndAssignButtonIds(alert.getSoftButtons(), BaseScreenManager.SoftButtonLocation.ALERT_MANAGER)){
+            DebugTool.logError(TAG, "Attempted to set soft button objects for Alert, but multiple buttons had the same id.");
+            return;
+        }
+
         PresentAlertOperation operation = new PresentAlertOperation(internalInterface, alert, defaultMainWindowCapability, fileManager.get(), nextCancelId++, listener);
         transactionQueue.add(operation, false);
 

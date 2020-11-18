@@ -201,8 +201,6 @@ public class PresentAlertOperation extends Task {
         alert.setProgressIndicator(alertView.isShowWaitIndicator());
         alert.setCancelID(this.cancelId);
         if (alertView.getSoftButtons() != null) {
-            ManagerUtility.SoftButtonUtility.checkAndAssignButtonIds(alertView.getSoftButtons(), ManagerUtility.SoftButtonUtility.SoftButtonLocation.ALERT_MANAGER);
-
             List<SoftButton> softButtons = new ArrayList<>();
             for (SoftButtonObject button : alertView.getSoftButtons()) {
                 softButtons.add(button.getCurrentStateSoftButton());
@@ -249,7 +247,6 @@ public class PresentAlertOperation extends Task {
     }
 
     private boolean supportsAlertAudioFile() {
-        Log.i("julian", "supportsAlertAudioFile: " + internalInterface.get().getSdlMsgVersion().getMajorVersion());
         return (internalInterface.get() != null && internalInterface.get().getSdlMsgVersion().getMajorVersion() >= 5);
     }
 

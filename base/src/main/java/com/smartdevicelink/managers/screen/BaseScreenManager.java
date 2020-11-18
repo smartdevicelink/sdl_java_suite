@@ -31,6 +31,7 @@
  */
 package com.smartdevicelink.managers.screen;
 
+import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
@@ -58,6 +59,8 @@ import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.util.DebugTool;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.List;
@@ -78,6 +81,12 @@ abstract class BaseScreenManager extends BaseSubManager {
     private ChoiceSetManager choiceSetManager;
     private SubscribeButtonManager subscribeButtonManager;
     private AlertManager alertManager;
+
+    static final int SOFT_BUTTON_ID_NOT_SET_VALUE = -1;
+    static final int SOFT_BUTTON_ID_MIN_VALUE = 0;
+    static final int SOFT_BUTTON_ID_MAX_VALUE = 65535;
+    static HashSet<Integer> softButtonIDBySoftButtonManager = new HashSet<>();
+    static HashSet<Integer> softButtonIDByAlertManager = new HashSet<>();
 
     // Sub manager listener
     private final CompletionListener subManagerListener = new CompletionListener() {
@@ -153,6 +162,9 @@ abstract class BaseScreenManager extends BaseSubManager {
         choiceSetManager.dispose();
         subscribeButtonManager.dispose();
         alertManager.dispose();
+        softButtonIDByAlertManager = null;
+        softButtonIDBySoftButtonManager = null;
+
         super.dispose();
     }
 
@@ -710,5 +722,64 @@ abstract class BaseScreenManager extends BaseSubManager {
 
     public void presentAlert(AlertView alert, CompletionListener listener) {
         alertManager.presentAlert(alert, listener);
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({SoftButtonLocation.SOFTBUTTON_MANAGER, SoftButtonLocation.ALERT_MANAGER})
+    @interface SoftButtonLocation {
+        int SOFTBUTTON_MANAGER = 0;
+        int ALERT_MANAGER = 1;
+    }
+
+    static boolean checkAndAssignButtonIds(List<SoftButtonObject> softButtonObjects, @SoftButtonLocation int location) {
+        // Depending on location form which the softbuttons came from, we will clear out the id list so they can be reset
+        if(location == SoftButtonLocation.ALERT_MANAGER){
+            softButtonIDByAlertManager.clear();
+        } else if(location == SoftButtonLocation.SOFTBUTTON_MANAGER){
+            softButtonIDBySoftButtonManager.clear();
+        }
+        // Check if multiple soft button objects have the same id
+        HashSet<Integer> buttonIdsSetByDevHashSet = new HashSet<>();
+        int currentSoftButtonId, numberOfButtonIdsSetByDev = 0, maxButtonIdsSetByDev = SOFT_BUTTON_ID_MIN_VALUE;
+
+        for (SoftButtonObject softButtonObject : softButtonObjects) {
+            currentSoftButtonId = softButtonObject.getButtonId();
+            if(softButtonIDByAlertManager.contains(currentSoftButtonId) || softButtonIDBySoftButtonManager.contains(currentSoftButtonId)){
+                return false;
+            }
+            if (currentSoftButtonId != SOFT_BUTTON_ID_NOT_SET_VALUE) {
+                numberOfButtonIdsSetByDev++;
+                if (currentSoftButtonId > maxButtonIdsSetByDev) {
+                    maxButtonIdsSetByDev = currentSoftButtonId;
+                }
+                buttonIdsSetByDevHashSet.add(softButtonObject.getButtonId());
+            }
+        }
+        if (numberOfButtonIdsSetByDev != buttonIdsSetByDevHashSet.size()) {
+            return false;
+        }
+
+        // Set ids for soft button objects
+        int generatedSoftButtonId = maxButtonIdsSetByDev;
+        for (SoftButtonObject softButtonObject : softButtonObjects) {
+            // If the dev did not set the buttonId, the manager should set an id on the dev's behalf
+            currentSoftButtonId = softButtonObject.getButtonId();
+            if (currentSoftButtonId == SOFT_BUTTON_ID_NOT_SET_VALUE) {
+                do {
+                    if (generatedSoftButtonId >= SOFT_BUTTON_ID_MAX_VALUE) {
+                        generatedSoftButtonId = SOFT_BUTTON_ID_MIN_VALUE;
+                    }
+                    generatedSoftButtonId++;
+                } while (buttonIdsSetByDevHashSet.contains(generatedSoftButtonId));
+                softButtonObject.setButtonId(generatedSoftButtonId);
+                if(location == SoftButtonLocation.ALERT_MANAGER){
+                    softButtonIDByAlertManager.add(generatedSoftButtonId);
+
+                } else if(location == SoftButtonLocation.SOFTBUTTON_MANAGER){
+                    softButtonIDBySoftButtonManager.add(generatedSoftButtonId);
+                }
+            }
+        }
+        return true;
     }
 }
