@@ -136,13 +136,6 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
             return;
         }
 
-        // make sure hmi is not none
-        if (currentHMILevel == null || currentHMILevel == HMILevel.HMI_NONE) {
-            // Trying to send on HMI_NONE, waiting for full
-            this.voiceCommands = new ArrayList<>(voiceCommands);
-            return;
-        }
-
         lastVoiceCommandId = voiceCommandIdMin;
         updateIdsOnVoiceCommands(voiceCommands);
         this.currentVoiceCommands = new ArrayList<>();
