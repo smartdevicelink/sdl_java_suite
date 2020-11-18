@@ -18,6 +18,7 @@ import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
+import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
 
@@ -131,6 +132,9 @@ public class BaseAlertManager extends BaseSubManager {
                // updateTransactionQueueSuspended();
             }
         };
+        if (internalInterface.getSystemCapabilityManager() != null) {
+            this.internalInterface.getSystemCapabilityManager().addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplaysCapabilityListener);
+        }
 
     }
 }

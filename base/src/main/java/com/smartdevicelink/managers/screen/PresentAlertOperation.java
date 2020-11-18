@@ -1,5 +1,7 @@
 package com.smartdevicelink.managers.screen;
 
+import android.util.Log;
+
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
@@ -32,7 +34,6 @@ public class PresentAlertOperation extends Task {
     private final WeakReference<ISdl> internalInterface;
     private final WeakReference<FileManager> fileManager;
     WindowCapability defaultMainWindowCapability;
-    private int hasFinishedUploadTask;
     private int cancelId;
 
 
@@ -49,7 +50,6 @@ public class PresentAlertOperation extends Task {
                 cancelAlert();
             }
         };
-        hasFinishedUploadTask = 0;
         this.cancelId = cancelId;
     }
 
@@ -65,36 +65,19 @@ public class PresentAlertOperation extends Task {
             finishOperation(false);
             return;
         }
-        uploadAudioFilesAndImages(new CompletionListener() {
-            @Override
-            public void onComplete(boolean success) {
-                presentAlert();
-            }
-        });
-
-    }
-
-    private void uploadAudioFilesAndImages(final CompletionListener listener) {
         checkForImagesAndUpload(new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
-                hasFinishedUploadTask++;
-                if (hasFinishedUploadTask == 2) {
-                    listener.onComplete(success);
-                }
-            }
-        });
-
-        uploadAudioFiles(new CompletionListener() {
-            @Override
-            public void onComplete(boolean success) {
-                hasFinishedUploadTask++;
-                if (hasFinishedUploadTask == 2) {
-                    listener.onComplete(success);
-                }
+                uploadAudioFiles(new CompletionListener() {
+                    @Override
+                    public void onComplete(boolean success) {
+                        presentAlert();
+                    }
+                });
             }
         });
     }
+
 
     private void uploadAudioFiles(final CompletionListener listener) {
         if (!supportsAlertAudioFile()) {
@@ -202,41 +185,50 @@ public class PresentAlertOperation extends Task {
 
     private Alert createAlert() {
         Alert alert = new Alert();
-        alert.setAlertText1(alertView.getText());
-        alert.setAlertText2(alertView.getSecondaryText());
-        alert.setAlertText3(alertView.getTertiaryText());
+        if (alertView.getText() != null) {
+            alert.setAlertText1(alertView.getText());
+        }
+        if (alertView.getSecondaryText() != null) {
+            alert.setAlertText2(alertView.getSecondaryText());
+        }
+        if (alertView.getTertiaryText() != null) {
+            alert.setAlertText3(alertView.getTertiaryText());
+        }
         alert.setDuration(alertView.getTimeout() * 1000);
-        if(alertView.getIcon() != null){
+        if (alertView.getIcon() != null) {
             alert.setAlertIcon(alertView.getIcon().getImageRPC());
         }
         alert.setProgressIndicator(alertView.isShowWaitIndicator());
         alert.setCancelID(this.cancelId);
-        ManagerUtility.SoftButtonUtility.checkAndAssignButtonIds(alertView.getSoftButtons(), ManagerUtility.SoftButtonUtility.SoftButtonLocation.ALERT_MANAGER);
+        if (alertView.getSoftButtons() != null) {
+            ManagerUtility.SoftButtonUtility.checkAndAssignButtonIds(alertView.getSoftButtons(), ManagerUtility.SoftButtonUtility.SoftButtonLocation.ALERT_MANAGER);
 
-        List<SoftButton> softButtons = new ArrayList<>();
-        for (SoftButtonObject button : alertView.getSoftButtons()) {
-            softButtons.add(button.getCurrentStateSoftButton());
+            List<SoftButton> softButtons = new ArrayList<>();
+            for (SoftButtonObject button : alertView.getSoftButtons()) {
+                softButtons.add(button.getCurrentStateSoftButton());
+            }
+            alert.setSoftButtons(softButtons);
         }
-        alert.setSoftButtons(softButtons);
 
-        if(alertView.getAudio() != null){
+        if (alertView.getAudio() != null) {
             List<TTSChunk> ttsChunks = new ArrayList<>();
             boolean isPlayTone = false;
             for (AlertAudioData audioData : alertView.getAudio()) {
                 if (audioData.isPlayTone()) {
                     isPlayTone = true;
                 }
-                if (audioData.getAudioFile() != null) {
-                    ttsChunks.add(new TTSChunk(audioData.getAudioFile().getName(), SpeechCapabilities.FILE);
+                if (audioData.getAudioFile() != null && supportsAlertAudioFile()) {
+                    ttsChunks.add(new TTSChunk(audioData.getAudioFile().getName(), SpeechCapabilities.FILE));
                 }
                 if (audioData.getPrompt() != null) {
                     ttsChunks.addAll(audioData.getPrompt());
                 }
             }
             alert.setPlayTone(isPlayTone);
-            alert.setTtsChunks(ttsChunks);
+            if(ttsChunks.size() > 0){
+                alert.setTtsChunks(ttsChunks);
+            }
         }
-
         return alert;
     }
 
@@ -248,7 +240,7 @@ public class PresentAlertOperation extends Task {
     }
 
     private boolean supportsSoftButtonImages() {
-        if(defaultMainWindowCapability != null){
+        if (defaultMainWindowCapability != null) {
             SoftButtonCapabilities softButtonCapabilities = defaultMainWindowCapability.getSoftButtonCapabilities().get(0);
             return softButtonCapabilities.getImageSupported().booleanValue();
         }
@@ -256,9 +248,8 @@ public class PresentAlertOperation extends Task {
 
     }
 
-
-
     private boolean supportsAlertAudioFile() {
+        Log.i("julian", "supportsAlertAudioFile: " + internalInterface.get().getSdlMsgVersion().getMajorVersion());
         return (internalInterface.get() != null && internalInterface.get().getSdlMsgVersion().getMajorVersion() >= 5);
     }
 
