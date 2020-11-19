@@ -131,29 +131,14 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
     public void setVoiceCommands(List<VoiceCommand> voiceCommands) {
 
         // we actually need voice commands to set.
-        if (voiceCommands == null) {
+        if (voiceCommands == null || voiceCommands.equals(this.voiceCommands)) {
             DebugTool.logInfo(TAG, "Voice commands list was null, returning");
             return;
         }
 
-        lastVoiceCommandId = voiceCommandIdMin;
         updateIdsOnVoiceCommands(voiceCommands);
-        this.currentVoiceCommands = new ArrayList<>();
-        if (this.voiceCommands != null) {
-            this.currentVoiceCommands.addAll(this.voiceCommands);
-        }
         this.voiceCommands = new ArrayList<>(voiceCommands);
 
-        update();
-    }
-
-    public List<VoiceCommand> getVoiceCommands() {
-        return voiceCommands;
-    }
-
-    // UPDATING SYSTEM
-
-    private void update() {
         cleanTransactionQueue();
         updateOperation = new VoiceCommandUpdateOperation(internalInterface, currentVoiceCommands, voiceCommands, new VoiceCommandUpdateOperation.VoiceCommandChangesListener() {
             @Override
@@ -170,9 +155,12 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
         transactionQueue.add(updateOperation, false);
     }
 
+    public List<VoiceCommand> getVoiceCommands() {
+        return voiceCommands;
+    }
+
     private void cleanTransactionQueue() {
-        if (transactionQueue.getTasksAsList().size() > 0) {
-            updateOperation = null;
+        if (transactionQueue != null) {
             transactionQueue.clear();
         }
 
