@@ -12,11 +12,13 @@ import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.Alert;
+import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
+import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
@@ -185,15 +187,7 @@ public class PresentAlertOperation extends Task {
 
     private Alert createAlert() {
         Alert alert = new Alert();
-        if (alertView.getText() != null) {
-            alert.setAlertText1(alertView.getText());
-        }
-        if (alertView.getSecondaryText() != null) {
-            alert.setAlertText2(alertView.getSecondaryText());
-        }
-        if (alertView.getTertiaryText() != null) {
-            alert.setAlertText3(alertView.getTertiaryText());
-        }
+        alert = assembleAlertText(alert);
         alert.setDuration(alertView.getTimeout() * 1000);
         if (alertView.getIcon() != null) {
             alert.setAlertIcon(alertView.getIcon().getImageRPC());
@@ -227,6 +221,89 @@ public class PresentAlertOperation extends Task {
                 alert.setTtsChunks(ttsChunks);
             }
         }
+        return alert;
+    }
+
+    private Alert assembleAlertText(Alert alert){
+        List<String> nonNullFields = findValidMainTextFields();
+        if (nonNullFields.isEmpty()) {
+            return alert;
+        }
+        int numberOfLines = defaultMainWindowCapability == null ? 3 : ManagerUtility.WindowCapabilityUtility.getMaxNumberOfAlertFieldLines(defaultMainWindowCapability);
+        switch (numberOfLines) {
+            case 1:
+                alert = assembleOneLineAlertText(alert, nonNullFields);
+                break;
+            case 2:
+                alert = assembleTwoLineAlertText(alert);
+                break;
+            case 3:
+                alert = assembleThreeLineAlertText(alert);
+                break;
+        }
+        return alert;
+    }
+
+    private List<String> findValidMainTextFields() {
+        List<String> array = new ArrayList<>();
+
+        if (alertView.getText() != null && alertView.getText().length() > 0) {
+            array.add(alertView.getText());
+        }
+
+        if (alertView.getSecondaryText() != null && alertView.getSecondaryText().length() > 0) {
+            array.add(alertView.getSecondaryText());
+        }
+
+        if (alertView.getTertiaryText() != null && alertView.getTertiaryText().length() > 0) {
+            array.add(alertView.getTertiaryText());
+        }
+
+        return array;
+    }
+
+    private Alert assembleOneLineAlertText(Alert alert, List<String> alertFields){
+        StringBuilder alertString1 = new StringBuilder();
+        for (int i = 0; i < alertFields.size(); i++) {
+            if (i > 0) {
+                alertString1.append(" - ").append(alertFields.get(i));
+            } else {
+                alertString1.append(alertFields.get(i));
+            }
+        }
+        alert.setAlertText1(alertString1.toString());
+        return alert;
+    }
+
+    private Alert assembleTwoLineAlertText(Alert alert){
+        if (alertView.getText() != null && alertView.getText().length() > 0) {
+            alert.setAlertText1(alertView.getText());
+        }
+        if (alertView.getSecondaryText() != null && alertView.getSecondaryText().length() > 0) {
+            if ((alertView.getTertiaryText() == null || !(alertView.getTertiaryText() .length() > 0))) {
+                // TertiaryText does not exist
+                alert.setAlertText2(alertView.getSecondaryText());
+            } else {
+                // Text 3 exists, put secondaryText and TertiaryText in AlertText2
+                alert.setAlertText2(alertView.getSecondaryText() + " - " + alertView.getTertiaryText());
+            }
+        }
+        return alert;
+    }
+
+    private Alert assembleThreeLineAlertText(Alert alert){
+        if (alertView.getText() != null && alertView.getText().length() > 0) {
+            alert.setAlertText1(alertView.getText());
+        }
+
+        if (alertView.getSecondaryText() != null && alertView.getSecondaryText().length() > 0) {
+            alert.setAlertText2(alertView.getSecondaryText());
+        }
+
+        if (alertView.getTertiaryText() != null && alertView.getTertiaryText().length() > 0) {
+            alert.setAlertText3(alertView.getTertiaryText());
+        }
+
         return alert;
     }
 
