@@ -44,11 +44,11 @@ public class BaseAlertManager extends BaseSubManager {
 
     public BaseAlertManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager, @NonNull PermissionManager permissionManager) {
         super(internalInterface);
-        addListeners();
         this.transactionQueue = newTransactionQueue();
         this.fileManager = new WeakReference<>(fileManager);
         this.permissionManager = new WeakReference<>(permissionManager);
         nextCancelId = alertCancelIdMin;
+        addListeners();
     }
 
     @Override
