@@ -41,6 +41,7 @@ import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceSet;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceSetManager;
@@ -74,6 +75,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 
     private static final String TAG = "ScreenManager";
     private final WeakReference<FileManager> fileManager;
+    private final WeakReference<PermissionManager> permissionManager;
     private SoftButtonManager softButtonManager;
     private TextAndGraphicManager textAndGraphicManager;
     private VoiceCommandManager voiceCommandManager;
@@ -118,9 +120,11 @@ abstract class BaseScreenManager extends BaseSubManager {
         }
     };
 
-    BaseScreenManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
+    BaseScreenManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager, PermissionManager permissionManager) {
         super(internalInterface);
+        //FIXME: HAX
         this.fileManager = new WeakReference<>(fileManager);
+        this.permissionManager = new WeakReference<>(permissionManager);
         initialize();
     }
 

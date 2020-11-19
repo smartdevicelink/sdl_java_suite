@@ -128,7 +128,7 @@ public class SdlManager extends BaseSdlManager {
         if (lockScreenConfig.getDisplayMode() != LockScreenConfig.DISPLAY_MODE_NEVER) {
             this.lockScreenManager = new LockScreenManager(lockScreenConfig, context, _internalInterface);
         }
-        this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
+        this.screenManager = new ScreenManager(_internalInterface, this.fileManager, this.permissionManager);
         if (getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION)) {
             this.videoStreamManager = new VideoStreamManager(_internalInterface);
         } else {
