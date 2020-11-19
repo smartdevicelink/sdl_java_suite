@@ -67,7 +67,7 @@ class VoiceCommandUpdateOperation extends Task {
                     public void onComplete(boolean success2) {
                         if (!success2) {
                             DebugTool.logError(TAG, "Error sending voice commands");
-                            onError();
+                            onFinished();
                         } else {
                             DebugTool.logInfo(TAG, "Successfully send voice commands");
                             onFinished();
