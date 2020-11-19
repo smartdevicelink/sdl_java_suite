@@ -147,7 +147,7 @@ abstract class BaseScreenManager extends BaseSubManager {
             this.textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager.get(), softButtonManager);
             this.menuManager = new MenuManager(internalInterface, fileManager.get());
             this.choiceSetManager = new ChoiceSetManager(internalInterface, fileManager.get());
-            this.alertManager = new AlertManager(internalInterface, fileManager.get());
+            this.alertManager = new AlertManager(internalInterface, fileManager.get(), permissionManager.get());
         }
         this.subscribeButtonManager = new SubscribeButtonManager(internalInterface);
         this.voiceCommandManager = new VoiceCommandManager(internalInterface);
@@ -735,31 +735,43 @@ abstract class BaseScreenManager extends BaseSubManager {
         int ALERT_MANAGER = 1;
     }
 
-    static boolean checkAndAssignButtonIds(List<SoftButtonObject> softButtonObjects, @SoftButtonLocation int location) {
-        // Depending on location form which the softbuttons came from, we will clear out the id list so they can be reset
+    static boolean checkAndAssignButtonIds2(List<SoftButtonObject> softButtonObjects, @SoftButtonLocation int location){
         if(location == SoftButtonLocation.ALERT_MANAGER){
             softButtonIDByAlertManager.clear();
         } else if(location == SoftButtonLocation.SOFTBUTTON_MANAGER){
             softButtonIDBySoftButtonManager.clear();
         }
+
+
+
+        return false;
+    }
+
+    static boolean checkAndAssignButtonIds(List<SoftButtonObject> softButtonObjects, @SoftButtonLocation int location) {
+        // Depending on location form which the softButtons came from, we will clear out the id list so they can be reset
+        if (location == SoftButtonLocation.ALERT_MANAGER) {
+            softButtonIDByAlertManager.clear();
+        } else if (location == SoftButtonLocation.SOFTBUTTON_MANAGER) {
+            softButtonIDBySoftButtonManager.clear();
+        }
         // Check if multiple soft button objects have the same id
-        HashSet<Integer> buttonIdsSetByDevHashSet = new HashSet<>();
-        int currentSoftButtonId, numberOfButtonIdsSetByDev = 0, maxButtonIdsSetByDev = SOFT_BUTTON_ID_MIN_VALUE;
+        HashSet<Integer> buttonIdsSetHashSet = new HashSet<>();
+        int currentSoftButtonId, numberOfButtonIdsSet = 0, maxButtonIdsSetByDev = SOFT_BUTTON_ID_MIN_VALUE;
 
         for (SoftButtonObject softButtonObject : softButtonObjects) {
             currentSoftButtonId = softButtonObject.getButtonId();
-            if(softButtonIDByAlertManager.contains(currentSoftButtonId) || softButtonIDBySoftButtonManager.contains(currentSoftButtonId)){
-                return false;
-            }
             if (currentSoftButtonId != SOFT_BUTTON_ID_NOT_SET_VALUE) {
-                numberOfButtonIdsSetByDev++;
+                if (softButtonIDByAlertManager.contains(currentSoftButtonId) || softButtonIDBySoftButtonManager.contains(currentSoftButtonId)) {
+                    return false;
+                }
+                numberOfButtonIdsSet++;
                 if (currentSoftButtonId > maxButtonIdsSetByDev) {
                     maxButtonIdsSetByDev = currentSoftButtonId;
                 }
-                buttonIdsSetByDevHashSet.add(softButtonObject.getButtonId());
+                buttonIdsSetHashSet.add(softButtonObject.getButtonId());
             }
         }
-        if (numberOfButtonIdsSetByDev != buttonIdsSetByDevHashSet.size()) {
+        if (numberOfButtonIdsSet != buttonIdsSetHashSet.size()) {
             return false;
         }
 
@@ -774,12 +786,12 @@ abstract class BaseScreenManager extends BaseSubManager {
                         generatedSoftButtonId = SOFT_BUTTON_ID_MIN_VALUE;
                     }
                     generatedSoftButtonId++;
-                } while (buttonIdsSetByDevHashSet.contains(generatedSoftButtonId));
+                } while (buttonIdsSetHashSet.contains(generatedSoftButtonId));
                 softButtonObject.setButtonId(generatedSoftButtonId);
-                if(location == SoftButtonLocation.ALERT_MANAGER){
+                buttonIdsSetHashSet.add(generatedSoftButtonId);
+                if (location == SoftButtonLocation.ALERT_MANAGER) {
                     softButtonIDByAlertManager.add(generatedSoftButtonId);
-
-                } else if(location == SoftButtonLocation.SOFTBUTTON_MANAGER){
+                } else if (location == SoftButtonLocation.SOFTBUTTON_MANAGER) {
                     softButtonIDBySoftButtonManager.add(generatedSoftButtonId);
                 }
             }
