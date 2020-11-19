@@ -14,7 +14,7 @@ import com.smartdevicelink.managers.file.FileManager;
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public class AlertManager extends BaseAlertManager {
 
-    public AlertManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
-        super(internalInterface, fileManager);
+    public AlertManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager, @NonNull PermissionManager permissionManager) {
+        super(internalInterface, fileManager, permissionManager);
     }
 }
