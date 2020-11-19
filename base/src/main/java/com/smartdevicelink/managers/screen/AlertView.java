@@ -128,6 +128,10 @@ public class AlertView {
         return secondaryText;
     }
 
+    public void setSecondaryText(String secondaryText) {
+        this.secondaryText = secondaryText;
+    }
+
     public String getTertiaryText() {
         return tertiaryText;
     }
