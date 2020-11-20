@@ -69,7 +69,7 @@ public class BaseAlertManager extends BaseSubManager {
             return;
         }
 
-        if(!BaseScreenManager.checkAndAssignButtonIds(alert.getSoftButtons(), BaseScreenManager.SoftButtonLocation.ALERT_MANAGER)){
+        if(!BaseScreenManager.checkAndAssignButtonIds(alert.getSoftButtons(), BaseScreenManager.ManagerLocation.ALERT_MANAGER)){
             DebugTool.logError(TAG, "Attempted to set soft button objects for Alert, but multiple buttons had the same id.");
             return;
         }

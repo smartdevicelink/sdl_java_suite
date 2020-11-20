@@ -730,29 +730,17 @@ abstract class BaseScreenManager extends BaseSubManager {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({SoftButtonLocation.SOFTBUTTON_MANAGER, SoftButtonLocation.ALERT_MANAGER})
-    @interface SoftButtonLocation {
+    @IntDef({ManagerLocation.SOFTBUTTON_MANAGER, ManagerLocation.ALERT_MANAGER})
+    @interface ManagerLocation {
         int SOFTBUTTON_MANAGER = 0;
         int ALERT_MANAGER = 1;
     }
 
-    static boolean checkAndAssignButtonIds2(List<SoftButtonObject> softButtonObjects, @SoftButtonLocation int location){
-        if(location == SoftButtonLocation.ALERT_MANAGER){
-            softButtonIDByAlertManager.clear();
-        } else if(location == SoftButtonLocation.SOFTBUTTON_MANAGER){
-            softButtonIDBySoftButtonManager.clear();
-        }
-
-
-
-        return false;
-    }
-
-    static boolean checkAndAssignButtonIds(List<SoftButtonObject> softButtonObjects, @SoftButtonLocation int location) {
+    static boolean checkAndAssignButtonIds(List<SoftButtonObject> softButtonObjects, @ManagerLocation int location) {
         // Depending on location form which the softButtons came from, we will clear out the id list so they can be reset
-        if (location == SoftButtonLocation.ALERT_MANAGER) {
+        if (location == ManagerLocation.ALERT_MANAGER) {
             softButtonIDByAlertManager.clear();
-        } else if (location == SoftButtonLocation.SOFTBUTTON_MANAGER) {
+        } else if (location == ManagerLocation.SOFTBUTTON_MANAGER) {
             softButtonIDBySoftButtonManager.clear();
         }
         // Check if multiple soft button objects have the same id
@@ -790,9 +778,9 @@ abstract class BaseScreenManager extends BaseSubManager {
                 } while (buttonIdsSetHashSet.contains(generatedSoftButtonId));
                 softButtonObject.setButtonId(generatedSoftButtonId);
                 buttonIdsSetHashSet.add(generatedSoftButtonId);
-                if (location == SoftButtonLocation.ALERT_MANAGER) {
+                if (location == ManagerLocation.ALERT_MANAGER) {
                     softButtonIDByAlertManager.add(generatedSoftButtonId);
-                } else if (location == SoftButtonLocation.SOFTBUTTON_MANAGER) {
+                } else if (location == ManagerLocation.SOFTBUTTON_MANAGER) {
                     softButtonIDBySoftButtonManager.add(generatedSoftButtonId);
                 }
             }
