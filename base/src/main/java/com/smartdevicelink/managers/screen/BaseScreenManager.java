@@ -36,6 +36,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 
+import com.smartdevicelink.managers.AlertCompletionListener;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
@@ -724,7 +725,7 @@ abstract class BaseScreenManager extends BaseSubManager {
         subscribeButtonManager.removeButtonListener(buttonName, listener);
     }
 
-    public void presentAlert(AlertView alert, CompletionListener listener) {
+    public void presentAlert(AlertView alert, AlertCompletionListener listener) {
         alertManager.presentAlert(alert, listener);
     }
 

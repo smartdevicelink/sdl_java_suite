@@ -3,6 +3,7 @@ package com.smartdevicelink.managers.screen;
 import android.util.Log;
 
 import com.livio.taskmaster.Task;
+import com.smartdevicelink.managers.AlertCompletionListener;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.ManagerUtility;
@@ -12,6 +13,7 @@ import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.Alert;
+import com.smartdevicelink.proxy.rpc.AlertResponse;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
@@ -30,14 +32,14 @@ import java.util.Map;
 public class PresentAlertOperation extends Task {
     private static final String TAG = "PresentAlertOperation";
     private AlertView alertView;
-    private CompletionListener listener;
+    private AlertCompletionListener listener;
     private final WeakReference<ISdl> internalInterface;
     private final WeakReference<FileManager> fileManager;
     WindowCapability defaultMainWindowCapability;
     private int cancelId;
 
 
-    public PresentAlertOperation(ISdl internalInterface, AlertView alertView, WindowCapability currentCapabilities, FileManager fileManager, Integer cancelId, CompletionListener listener) {
+    public PresentAlertOperation(ISdl internalInterface, AlertView alertView, WindowCapability currentCapabilities, FileManager fileManager, Integer cancelId, AlertCompletionListener listener) {
         super("PresentAlertOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.defaultMainWindowCapability = currentCapabilities;
@@ -62,7 +64,7 @@ public class PresentAlertOperation extends Task {
 
     private void start() {
         if (getState() == Task.CANCELED) {
-            finishOperation(false);
+            finishOperation(false, null);
             return;
         }
         checkForImagesAndUpload(new CompletionListener() {
@@ -107,7 +109,7 @@ public class PresentAlertOperation extends Task {
                 @Override
                 public void onComplete(Map<String, String> errors) {
                     if (getState() == Task.CANCELED) {
-                        finishOperation(false);
+                        finishOperation(false, null);
                         return;
                     }
                     if (errors != null) {
@@ -149,7 +151,7 @@ public class PresentAlertOperation extends Task {
                 @Override
                 public void onComplete(Map<String, String> errors) {
                     if (getState() == Task.CANCELED) {
-                        finishOperation(false);
+                        finishOperation(false, null);
                         return;
                     }
                     if (errors != null) {
@@ -165,7 +167,7 @@ public class PresentAlertOperation extends Task {
 
     private void presentAlert() {
         if (getState() == Task.CANCELED) {
-            finishOperation(false);
+            finishOperation(false, null);
             return;
         }
 
@@ -174,7 +176,7 @@ public class PresentAlertOperation extends Task {
         alert.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
-                finishOperation(response.getSuccess());
+                finishOperation(response.getSuccess(), ((AlertResponse) response).getTryAgainTime());
             }
         });
         internalInterface.get().sendRPC(alert);
@@ -345,9 +347,9 @@ public class PresentAlertOperation extends Task {
 
     }
 
-    private void finishOperation(boolean success) {
+    private void finishOperation(boolean success, Integer tryAgainTime) {
         if (listener != null) {
-            listener.onComplete(success);
+            listener.onComplete(success, tryAgainTime);
         }
     }
 }

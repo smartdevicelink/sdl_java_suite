@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.livio.taskmaster.Queue;
+import com.smartdevicelink.managers.AlertCompletionListener;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
@@ -62,7 +63,7 @@ public class BaseAlertManager extends BaseSubManager {
         super.dispose();
     }
 
-    public void presentAlert(AlertView alert, CompletionListener listener) {
+    public void presentAlert(AlertView alert, AlertCompletionListener listener) {
         if (getState() == ERROR) {
             DebugTool.logWarning(TAG, "Alert Manager In Error State");
             return;
