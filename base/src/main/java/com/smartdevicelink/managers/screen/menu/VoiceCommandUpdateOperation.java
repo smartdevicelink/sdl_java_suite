@@ -67,11 +67,8 @@ class VoiceCommandUpdateOperation extends Task {
                     public void onComplete(boolean success2) {
                         if (!success2) {
                             DebugTool.logError(TAG, "Error sending voice commands");
-                            onFinished();
-                        } else {
-                            DebugTool.logInfo(TAG, "Successfully send voice commands");
-                            onFinished();
                         }
+                        onFinished();
                         if (voiceCommandListener != null) {
                             voiceCommandListener.updateVoiceCommands(currentVoiceCommands, errorObject);
                         }
@@ -118,6 +115,7 @@ class VoiceCommandUpdateOperation extends Task {
                 for (DeleteCommand deleteCommand : deleteVoiceCommands) {
                     if (correlationId == deleteCommand.getCorrelationID()) {
                         foundDeleteCommand = deleteCommand;
+                        break;
                     }
                 }
 
@@ -191,6 +189,7 @@ class VoiceCommandUpdateOperation extends Task {
                 for (AddCommand addCommand : addCommandsToSend) {
                     if (correlationId == addCommand.getCorrelationID()) {
                         foundAddCommand = addCommand;
+                        break;
                     }
                 }
                 if (!response.getSuccess()) {

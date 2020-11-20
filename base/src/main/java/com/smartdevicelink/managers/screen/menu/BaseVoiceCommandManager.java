@@ -132,7 +132,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
         // we actually need voice commands to set.
         if (voiceCommands == null || voiceCommands.equals(this.voiceCommands)) {
-            DebugTool.logInfo(TAG, "Voice commands list was null, returning");
+            DebugTool.logInfo(TAG, "Voice commands list was null or matches the current voice commands");
             return;
         }
 

@@ -35,6 +35,8 @@ package com.smartdevicelink.managers.screen.menu;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.smartdevicelink.managers.screen.SoftButtonObject;
+
 import java.util.List;
 
 public class VoiceCommand {
@@ -123,5 +125,38 @@ public class VoiceCommand {
      */
     int getCommandId() {
         return commandId;
+    }
+
+    /**
+     * Used to compile hashcode for VoiceCommand for use to compare in equals method
+     *
+     * @return Custom hashcode of VoiceCommand variables
+     */
+    @Override
+    public int hashCode() {
+        int result = 1;
+        result += ((getCommandId() == 0) ? 0 : Integer.rotateLeft(getCommandId(), 1));
+        result += ((getVoiceCommandSelectionListener() == null) ? 0 : Integer.rotateLeft(getVoiceCommandSelectionListener().hashCode(), 2));
+        for (int i = 0; i < this.getVoiceCommands().size(); i++) {
+            result += ((getVoiceCommands().get(i) == null) ? 0 : Integer.rotateLeft(getVoiceCommands().get(i).hashCode(), i + 3));
+        }
+        return result;
+    }
+
+    /**
+     * Uses our custom hashCode for VoiceCommand objects
+     *
+     * @param o - The object to compare
+     * @return boolean of whether the objects are the same or not
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) return false;
+        // if this is the same memory address, it's the same
+        if (this == o) return true;
+        // if this is not an instance of SoftButtonObject, not the same
+        if (!(o instanceof VoiceCommand)) return false;
+        // return comparison
+        return hashCode() == o.hashCode();
     }
 }
