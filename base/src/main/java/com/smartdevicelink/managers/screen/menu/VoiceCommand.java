@@ -35,7 +35,6 @@ package com.smartdevicelink.managers.screen.menu;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.smartdevicelink.managers.screen.SoftButtonObject;
 
 import java.util.List;
 
@@ -135,10 +134,9 @@ public class VoiceCommand {
     @Override
     public int hashCode() {
         int result = 1;
-        result += ((getCommandId() == 0) ? 0 : Integer.rotateLeft(getCommandId(), 1));
-        result += ((getVoiceCommandSelectionListener() == null) ? 0 : Integer.rotateLeft(getVoiceCommandSelectionListener().hashCode(), 2));
+        result += Integer.rotateLeft(getCommandId(), 1);
         for (int i = 0; i < this.getVoiceCommands().size(); i++) {
-            result += ((getVoiceCommands().get(i) == null) ? 0 : Integer.rotateLeft(getVoiceCommands().get(i).hashCode(), i + 3));
+            result += ((getVoiceCommands().get(i) == null) ? 0 : Integer.rotateLeft(getVoiceCommands().get(i).hashCode(), i + 2));
         }
         return result;
     }
