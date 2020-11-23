@@ -1,7 +1,5 @@
 package com.smartdevicelink.managers.screen;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.livio.taskmaster.Queue;
@@ -40,8 +38,8 @@ public class BaseAlertManager extends BaseSubManager {
     private boolean currentAlertPermissionStatus = false;
     private final WeakReference<FileManager> fileManager;
     private final WeakReference<PermissionManager> permissionManager;
-    private int nextCancelId;
-    final int alertCancelIdMin = 1;
+    int nextCancelId;
+    final int alertCancelIdMin = 20000;
 
     public BaseAlertManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager, @NonNull PermissionManager permissionManager) {
         super(internalInterface);
