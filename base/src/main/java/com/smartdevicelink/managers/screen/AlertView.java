@@ -1,9 +1,6 @@
 package com.smartdevicelink.managers.screen;
 
-import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
-import com.smartdevicelink.managers.screen.SoftButtonObject;
-import com.smartdevicelink.util.DebugTool;
 
 import java.util.List;
 
@@ -18,7 +15,7 @@ public class AlertView {
 
     private String text, secondaryText, tertiaryText;
     private Integer timeout;
-    private List<AlertAudioData> audio;
+    private AlertAudioData audio;
     private boolean showWaitIndicator;
     private List<SoftButtonObject> softButtons;
     private SdlArtwork icon;
@@ -66,7 +63,7 @@ public class AlertView {
             return this;
         }
 
-        public Builder setAudio(List<AlertAudioData> audio){
+        public Builder setAudio(AlertAudioData audio){
             alertView.audio = audio;
             return this;
         }
@@ -108,7 +105,7 @@ public class AlertView {
         return timeout;
     }
 
-    public List<AlertAudioData> getAudio() {
+    public AlertAudioData getAudio() {
         return audio;
     }
 

@@ -87,16 +87,8 @@ public class PresentAlertOperation extends Task {
             listener.onComplete(false);
             return;
         }
-        List<SdlFile> filesToBeUploaded = new ArrayList<>();
 
-        for (AlertAudioData audioData : alertView.getAudio()) {
-            if (audioData.getAudioFile() == null) {
-                continue;
-            }
-            filesToBeUploaded.add(audioData.getAudioFile());
-        }
-
-        if (filesToBeUploaded.size() == 0) {
+        if (alertView.getAudio().getAudioFiles().size() == 0) {
             DebugTool.logInfo(TAG, "No audio files to upload for alert");
             listener.onComplete(true);
             return;
@@ -105,7 +97,7 @@ public class PresentAlertOperation extends Task {
         DebugTool.logInfo(TAG, "Uploading audio files for alert");
 
         if (fileManager.get() != null) {
-            fileManager.get().uploadFiles(filesToBeUploaded, new MultipleFileCompletionListener() {
+            fileManager.get().uploadFiles(alertView.getAudio().getAudioFiles(), new MultipleFileCompletionListener() {
                 @Override
                 public void onComplete(Map<String, String> errors) {
                     if (getState() == Task.CANCELED) {
@@ -203,23 +195,21 @@ public class PresentAlertOperation extends Task {
         }
 
         if (alertView.getAudio() != null) {
+
+            AlertAudioData alertAudioData = alertView.getAudio();
+            alert.setPlayTone(alertAudioData.isPlayTone());
             List<TTSChunk> ttsChunks = new ArrayList<>();
-            boolean isPlayTone = false;
-            for (AlertAudioData audioData : alertView.getAudio()) {
-                if (audioData.isPlayTone()) {
-                    isPlayTone = true;
-                }
-                if (audioData.getAudioFile() != null && supportsAlertAudioFile()) {
-                    ttsChunks.add(new TTSChunk(audioData.getAudioFile().getName(), SpeechCapabilities.FILE));
-                }
-                if (audioData.getPrompt() != null) {
-                    ttsChunks.addAll(audioData.getPrompt());
+
+            if (supportsAlertAudioFile() && alertAudioData.getAudioFiles() != null && alertAudioData.getAudioFiles().size() > 0) {
+                for (int i = 0; i < alertAudioData.getAudioFiles().size(); i++) {
+                    ttsChunks.add(new TTSChunk(alertAudioData.getAudioFiles().get(i).getName(), SpeechCapabilities.FILE));
                 }
             }
-            alert.setPlayTone(isPlayTone);
-            if(ttsChunks.size() > 0){
-                alert.setTtsChunks(ttsChunks);
+
+            if (alertAudioData.getPrompts().size() > 0) {
+                ttsChunks.addAll(alertAudioData.getPrompts());
             }
+            alert.setTtsChunks(ttsChunks);
         }
         return alert;
     }

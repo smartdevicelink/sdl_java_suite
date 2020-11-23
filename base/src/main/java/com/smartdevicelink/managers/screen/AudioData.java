@@ -96,11 +96,11 @@ public class AudioData {
         prompts.addAll(newPrompts);
     }
 
-    public List<SdlFile> getAudioFile() {
+    public List<SdlFile> getAudioFiles() {
         return audioFiles;
     }
 
-    public List<TTSChunk> getPrompt() {
+    public List<TTSChunk> getPrompts() {
         return prompts;
     }
 }
