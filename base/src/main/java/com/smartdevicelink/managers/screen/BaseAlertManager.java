@@ -18,6 +18,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
+import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.util.DebugTool;
 
@@ -34,6 +35,8 @@ public class BaseAlertManager extends BaseSubManager {
     Queue transactionQueue;
     WindowCapability defaultMainWindowCapability;
     private OnSystemCapabilityListener onDisplaysCapabilityListener;
+    private OnSystemCapabilityListener onSpeechCapabilityListener;
+    List<SpeechCapabilities> speechCapabilities;
     private UUID permissionListener;
     private boolean currentAlertPermissionStatus = false;
     private final WeakReference<FileManager> fileManager;
@@ -72,7 +75,7 @@ public class BaseAlertManager extends BaseSubManager {
             return;
         }
 
-        PresentAlertOperation operation = new PresentAlertOperation(internalInterface, alert, defaultMainWindowCapability, fileManager.get(), nextCancelId++, listener);
+        PresentAlertOperation operation = new PresentAlertOperation(internalInterface, alert, defaultMainWindowCapability, speechCapabilities, fileManager.get(), nextCancelId++, listener);
         transactionQueue.add(operation, false);
 
     }
@@ -97,7 +100,21 @@ public class BaseAlertManager extends BaseSubManager {
 
 
     private void addListeners() {
-        onDisplaysCapabilityListener = new OnSystemCapabilityListener() {
+     onSpeechCapabilityListener = new OnSystemCapabilityListener() {
+            @Override
+            public void onCapabilityRetrieved(Object capability) {
+                speechCapabilities = (List<SpeechCapabilities>) capability;
+            }
+
+            @Override
+            public void onError(String info) {
+
+            }
+        };
+        if (internalInterface.getSystemCapabilityManager() != null) {
+            this.internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.SPEECH, onSpeechCapabilityListener,false);
+        }
+        OnSystemCapabilityListener onDisplaysCapabilityListener = new OnSystemCapabilityListener() {
             @Override
             public void onCapabilityRetrieved(Object capability) {
                 // instead of using the parameter it's more safe to use the convenience method

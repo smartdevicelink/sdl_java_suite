@@ -1,7 +1,5 @@
 package com.smartdevicelink.managers.screen;
 
-import android.util.Log;
-
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.AlertCompletionListener;
 import com.smartdevicelink.managers.CompletionListener;
@@ -10,7 +8,6 @@ import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
-import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.Alert;
 import com.smartdevicelink.proxy.rpc.AlertResponse;
@@ -20,7 +17,6 @@ import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
-import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.DebugTool;
 
@@ -37,12 +33,14 @@ public class PresentAlertOperation extends Task {
     private final WeakReference<FileManager> fileManager;
     WindowCapability defaultMainWindowCapability;
     private int cancelId;
+    private List<SpeechCapabilities> speechCapabilities;
 
 
-    public PresentAlertOperation(ISdl internalInterface, AlertView alertView, WindowCapability currentCapabilities, FileManager fileManager, Integer cancelId, AlertCompletionListener listener) {
+    public PresentAlertOperation(ISdl internalInterface, AlertView alertView, WindowCapability currentCapabilities, List<SpeechCapabilities> speechCapabilities, FileManager fileManager, Integer cancelId, AlertCompletionListener listener) {
         super("PresentAlertOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.defaultMainWindowCapability = currentCapabilities;
+        this.speechCapabilities = speechCapabilities;
         this.alertView = alertView;
         this.fileManager = new WeakReference<>(fileManager);
         this.listener = listener;
@@ -314,23 +312,11 @@ public class PresentAlertOperation extends Task {
     }
 
     private boolean supportsAlertAudioFile() {
-        return (internalInterface.get() != null && internalInterface.get().getSdlMsgVersion().getMajorVersion() >= 5);
+        return (internalInterface.get() != null && internalInterface.get().getSdlMsgVersion().getMajorVersion() >= 5 && speechCapabilities != null && speechCapabilities.contains(SpeechCapabilities.FILE));
     }
 
     private boolean supportsAlertIcon() {
         return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.alertIcon);
-    }
-
-    private boolean supportsAlertTextField1() {
-        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.alertText1);
-    }
-
-    private boolean supportsAlertTextField2() {
-        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.alertText2);
-    }
-
-    private boolean supportsAlertTextField13() {
-        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.alertText3);
     }
 
     private void cancelAlert() {
