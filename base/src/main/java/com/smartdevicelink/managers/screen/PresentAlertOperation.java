@@ -8,9 +8,11 @@ import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.Alert;
 import com.smartdevicelink.proxy.rpc.AlertResponse;
+import com.smartdevicelink.proxy.rpc.CancelInteraction;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
@@ -320,7 +322,19 @@ public class PresentAlertOperation extends Task {
     }
 
     private void cancelAlert() {
+            CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.ALERT.getId(), cancelId);
+            cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
+                @Override
+                public void onResponse(int correlationId, RPCResponse response) {
+                    if (response.getSuccess()) {
+                        DebugTool.logInfo(TAG, "Alert was dismissed successfully");
+                    } else {
+                        DebugTool.logInfo(TAG, "Alert was not dismissed successfully");
 
+                    }
+                }
+            });
+            internalInterface.get().sendRPC(cancelInteraction);
     }
 
     private void finishOperation(boolean success, Integer tryAgainTime) {
