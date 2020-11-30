@@ -759,7 +759,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
         List<SdlArtwork> artworks = new ArrayList<>();
         for (MenuCell cell : cells) {
-            if (artworkNeedsUpload(cell.getIcon())) {
+            if (fileManager.get() != null && fileManager.get().artworkNeedsUpload(cell.getIcon())) {
                 artworks.add(cell.getIcon());
             }
             if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
@@ -785,13 +785,6 @@ abstract class BaseMenuManager extends BaseSubManager {
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean supportsImages() {
         return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.cmdIcon);
-    }
-
-    private boolean artworkNeedsUpload(SdlArtwork artwork) {
-        if (artwork != null && !artwork.isStaticIcon()) {
-            return artwork.getOverwrite() || (fileManager.get() != null && !fileManager.get().hasUploadedFile(artwork));
-        }
-        return false;
     }
 
     private boolean isArtworkUploaded(SdlArtwork artwork) {

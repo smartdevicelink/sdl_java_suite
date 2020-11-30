@@ -116,7 +116,7 @@ class SoftButtonReplaceOperation extends Task {
         List<SdlArtwork> initialStatesToBeUploaded = new ArrayList<>();
         for (SoftButtonObject softButtonObject : softButtonObjects) {
             SoftButtonState softButtonState = softButtonObject.getCurrentState();
-            if (softButtonState != null && artworkNeedsUpload(softButtonState.getArtwork())) {
+            if (softButtonState != null && fileManager.get()!= null && fileManager.get().artworkNeedsUpload(softButtonState.getArtwork()) && supportsSoftButtonImages()) {
                 initialStatesToBeUploaded.add(softButtonState.getArtwork());
             }
         }
@@ -163,7 +163,7 @@ class SoftButtonReplaceOperation extends Task {
                 if (softButtonState.getName().equals(softButtonObject.getCurrentState().getName())) {
                     continue;
                 }
-                if (artworkNeedsUpload(softButtonState.getArtwork())) {
+                if (fileManager.get() != null && fileManager.get().artworkNeedsUpload(softButtonState.getArtwork()) && supportsSoftButtonImages()) {
                     otherStatesToBeUploaded.add(softButtonState.getArtwork());
                 }
             }
@@ -284,13 +284,6 @@ class SoftButtonReplaceOperation extends Task {
         }
     }
 
-    private boolean artworkNeedsUpload(SdlArtwork artwork) {
-        if (artwork != null && !artwork.isStaticIcon() && softButtonCapabilities.getImageSupported()) {
-            return artwork.getOverwrite() || (fileManager.get() != null && !fileManager.get().hasUploadedFile(artwork));
-        }
-        return false;
-    }
-
     private boolean currentStateHasImages() {
         for (SoftButtonObject softButtonObject : softButtonObjects) {
             if (softButtonObject.getCurrentState().getArtwork() != null) {
@@ -303,7 +296,7 @@ class SoftButtonReplaceOperation extends Task {
     private boolean allCurrentStateImagesAreUploaded() {
         for (SoftButtonObject softButtonObject : softButtonObjects) {
             SdlArtwork artwork = softButtonObject.getCurrentState().getArtwork();
-            if (artworkNeedsUpload(artwork)) {
+            if (fileManager.get() != null && fileManager.get().artworkNeedsUpload(artwork) && supportsSoftButtonImages()) {
                 return false;
             }
         }

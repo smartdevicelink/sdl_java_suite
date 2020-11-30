@@ -446,6 +446,18 @@ abstract class BaseFileManager extends BaseSubManager {
         return false;
     }
 
+    /**
+     *
+     * @param artwork
+     * @return
+     */
+    public boolean artworkNeedsUpload(@NonNull SdlArtwork artwork) {
+        if (artwork != null && !artwork.isStaticIcon()) {
+            return artwork.getOverwrite() || !hasUploadedFile(artwork);
+        }
+        return false;
+    }
+
     // HELPERS
 
     /**

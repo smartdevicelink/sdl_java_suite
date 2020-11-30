@@ -103,7 +103,7 @@ class TextAndGraphicUpdateOperation extends Task {
                 }
             });
 
-        } else if (!sdlArtworkNeedsUpload(updatedState.getPrimaryGraphic()) && !sdlArtworkNeedsUpload(updatedState.getSecondaryGraphic())) {
+        } else if (fileManager.get() != null && !fileManager.get().artworkNeedsUpload(updatedState.getPrimaryGraphic()) && !fileManager.get().artworkNeedsUpload(updatedState.getSecondaryGraphic())) {
             DebugTool.logInfo(TAG, "Images already uploaded, sending full update");
             // The files to be updated are already uploaded, send the full show immediately
             sendShow(show, new CompletionListener() {
@@ -643,13 +643,6 @@ class TextAndGraphicUpdateOperation extends Task {
         }
 
         return array;
-    }
-
-    private boolean sdlArtworkNeedsUpload(SdlArtwork artwork) {
-        if (artwork != null && !artwork.isStaticIcon()) {
-            return artwork.getOverwrite() || (fileManager.get() != null && !fileManager.get().hasUploadedFile(artwork));
-        }
-        return false;
     }
 
     private boolean isSdlArtworkUploaded(SdlArtwork artwork) {
