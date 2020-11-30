@@ -40,6 +40,7 @@ import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.ServiceEncryptionListener;
+import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -117,6 +118,7 @@ abstract class BaseLifecycleManager {
     HashMap<Integer, CopyOnWriteArrayList<OnRPCNotificationListener>> rpcNotificationListeners;
     HashMap<Integer, CopyOnWriteArrayList<OnRPCRequestListener>> rpcRequestListeners;
     SystemCapabilityManager systemCapabilityManager;
+    PermissionManager permissionManager;
     private EncryptionLifecycleManager encryptionLifecycleManager;
     RegisterAppInterfaceResponse raiResponse = null;
     private OnHMIStatus currentHMIStatus;
@@ -128,6 +130,7 @@ abstract class BaseLifecycleManager {
     final Version minimumRPCVersion;
     BaseTransportConfig _transportConfig;
     private Taskmaster taskmaster;
+
 
     BaseLifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener) {
         this.appConfig = appConfig;
@@ -290,6 +293,13 @@ abstract class BaseLifecycleManager {
         } else {
             return false;
         }
+    }
+
+    public PermissionManager getPermissionManager(SdlManager sdlManager) {
+        if (sdlManager != null) {
+            return permissionManager;
+        }
+        return null;
     }
 
     /**
@@ -1032,6 +1042,11 @@ abstract class BaseLifecycleManager {
         public SystemCapabilityManager getSystemCapabilityManager() {
             return BaseLifecycleManager.this.systemCapabilityManager;
         }
+
+        @Override
+        public PermissionManager getPermissionManager() {
+            return BaseLifecycleManager.this.permissionManager;
+        }
     };
 
     /* *******************************************************************************************************
@@ -1176,6 +1191,7 @@ abstract class BaseLifecycleManager {
         this.rpcNotificationListeners = new HashMap<>();
         this.rpcRequestListeners = new HashMap<>();
         this.systemCapabilityManager = new SystemCapabilityManager(internalInterface);
+        this.permissionManager = new PermissionManager(internalInterface);
         setupInternalRpcListeners();
     }
 
