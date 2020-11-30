@@ -78,6 +78,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * the Algorithm specific tests are defined based on: https://github.com/smartdevicelink/sdl_evolution/blob/master/proposals/0210-mobile-dynamic-menu-cell-updating.md
@@ -100,6 +101,9 @@ public class MenuManagerTests {
         final ISdl internalInterface = mock(ISdl.class);
         FileManager fileManager = mock(FileManager.class);
 
+        SdlMsgVersion version = new SdlMsgVersion();
+        version.setMajorVersion(7);
+        when(internalInterface.getSdlMsgVersion()).thenReturn(version);
         // When internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, OnRPCNotificationListener) is called
         // inside MenuManager's constructor, then keep a reference to the OnRPCNotificationListener so we can trigger it later
         // to emulate what Core does when it sends OnHMIStatus notification
