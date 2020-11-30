@@ -285,12 +285,8 @@ class SoftButtonReplaceOperation extends Task {
     }
 
     private boolean artworkNeedsUpload(SdlArtwork artwork) {
-        if (artwork != null && softButtonCapabilities.getImageSupported()) {
-            if (artwork.isStaticIcon()) {
-                return false;
-            } else {
-                return artwork.getOverwrite() || (fileManager.get() != null && !fileManager.get().hasUploadedFile(artwork));
-            }
+        if (artwork != null && !artwork.isStaticIcon() && softButtonCapabilities.getImageSupported()) {
+            return artwork.getOverwrite() || (fileManager.get() != null && !fileManager.get().hasUploadedFile(artwork));
         }
         return false;
     }

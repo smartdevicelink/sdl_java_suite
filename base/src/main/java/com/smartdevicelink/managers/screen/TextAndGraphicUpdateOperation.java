@@ -260,8 +260,8 @@ class TextAndGraphicUpdateOperation extends Task {
 
     Show createImageOnlyShowWithPrimaryArtwork(SdlArtwork primaryArtwork, SdlArtwork secondaryArtwork) {
         Show newShow = new Show();
-        newShow.setGraphic(primaryArtwork != null && sdlArtworkUploaded(primaryArtwork) ? primaryArtwork.getImageRPC() : null);
-        newShow.setSecondaryGraphic(secondaryArtwork != null && sdlArtworkUploaded(secondaryArtwork) ? secondaryArtwork.getImageRPC() : null);
+        newShow.setGraphic(primaryArtwork != null && isSdlArtworkUploaded(primaryArtwork) ? primaryArtwork.getImageRPC() : null);
+        newShow.setSecondaryGraphic(secondaryArtwork != null && isSdlArtworkUploaded(secondaryArtwork) ? secondaryArtwork.getImageRPC() : null);
         if (newShow.getGraphic() == null && newShow.getSecondaryGraphic() == null) {
             DebugTool.logInfo(TAG, "No graphics to upload");
             return null;
@@ -646,17 +646,13 @@ class TextAndGraphicUpdateOperation extends Task {
     }
 
     private boolean sdlArtworkNeedsUpload(SdlArtwork artwork) {
-        if (artwork != null) {
-            if (artwork.isStaticIcon()) {
-                return false;
-            } else {
-                return artwork.getOverwrite() || (fileManager.get() != null && !fileManager.get().hasUploadedFile(artwork));
-            }
+        if (artwork != null && !artwork.isStaticIcon()) {
+            return artwork.getOverwrite() || (fileManager.get() != null && !fileManager.get().hasUploadedFile(artwork));
         }
         return false;
     }
 
-    private boolean sdlArtworkUploaded(SdlArtwork artwork) {
+    private boolean isSdlArtworkUploaded(SdlArtwork artwork) {
         if (artwork != null) {
             return artwork.isStaticIcon() || (fileManager.get() != null && fileManager.get().hasUploadedFile(artwork));
         }

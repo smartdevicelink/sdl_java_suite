@@ -272,12 +272,8 @@ class PreloadChoicesOperation extends Task {
     }
 
     boolean artworkNeedsUpload(SdlArtwork artwork) {
-        if (artwork != null) {
-            if (artwork.isStaticIcon()) {
-                return false;
-            } else {
-                return artwork.getOverwrite() || (fileManager.get() != null && !fileManager.get().hasUploadedFile(artwork));
-            }
+        if (artwork != null && !artwork.isStaticIcon()) {
+            return artwork.getOverwrite() || (fileManager.get() != null && !fileManager.get().hasUploadedFile(artwork));
         }
         return false;
     }
