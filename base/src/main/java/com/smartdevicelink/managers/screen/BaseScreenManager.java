@@ -722,7 +722,8 @@ abstract class BaseScreenManager extends BaseSubManager {
     }
 
     public void presentAlert(AlertView alert, AlertCompletionListener listener) {
-        alertManager.presentAlert(alert, listener);
+        AlertView alertViewCopy = alert.clone();
+        alertManager.presentAlert(alertViewCopy, listener);
     }
 
     @Retention(RetentionPolicy.SOURCE)

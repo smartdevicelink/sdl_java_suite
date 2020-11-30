@@ -82,13 +82,18 @@ public class PresentAlertOperation extends Task {
 
 
     private void uploadAudioFiles(final CompletionListener listener) {
+        if(alertView.getAudio() == null){
+            DebugTool.logInfo(TAG, "No audio sent for alert");
+            listener.onComplete(true);
+            return;
+        }
         if (!supportsAlertAudioFile()) {
             DebugTool.logInfo(TAG, "Module does not support audio files for alerts");
             listener.onComplete(false);
             return;
         }
 
-        if (alertView.getAudio().getAudioFiles().size() == 0) {
+        if (alertView.getAudio().getAudioFiles() == null || alertView.getAudio().getAudioFiles().size() == 0) {
             DebugTool.logInfo(TAG, "No audio files to upload for alert");
             listener.onComplete(true);
             return;
@@ -206,7 +211,7 @@ public class PresentAlertOperation extends Task {
                 }
             }
 
-            if (alertAudioData.getPrompts().size() > 0) {
+            if (alertAudioData.getPrompts() != null && alertAudioData.getPrompts().size() > 0) {
                 ttsChunks.addAll(alertAudioData.getPrompts());
             }
             alert.setTtsChunks(ttsChunks);

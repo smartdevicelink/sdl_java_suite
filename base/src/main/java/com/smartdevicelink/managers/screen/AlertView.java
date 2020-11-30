@@ -1,10 +1,11 @@
 package com.smartdevicelink.managers.screen;
 
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.util.DebugTool;
 
 import java.util.List;
 
-public class AlertView {
+public class AlertView implements Cloneable{
 
     private static final String TAG = "AlertView";
     private static final int DEFAULT_TIMEOUT = 5;
@@ -23,6 +24,28 @@ public class AlertView {
 
 
     private AlertView(){
+    }
+
+
+    /**
+     * Creates a deep copy of the object
+     *
+     * @return deep copy of the object, null if an exception occurred
+     */
+    @Override
+    public AlertView clone() {
+        try {
+            AlertView alertView = (AlertView) super.clone();
+            if (alertView != null && alertView.getAudio() != null) {
+                alertView.audio = audio.clone();
+            }
+            return alertView;
+        } catch (CloneNotSupportedException e) {
+            if (DebugTool.isDebugEnabled()) {
+                throw new RuntimeException("Clone not supported by super class");
+            }
+        }
+        return null;
     }
 
     public static class Builder {
@@ -107,6 +130,10 @@ public class AlertView {
 
     public AlertAudioData getAudio() {
         return audio;
+    }
+
+    public void setAudio(AlertAudioData audio) {
+        this.audio = audio;
     }
 
     public String getText() {

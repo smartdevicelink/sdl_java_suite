@@ -27,7 +27,7 @@ public class AudioData {
     }
 
     public AudioData(@NonNull String spokenString) {
-        prompts = Collections.singletonList(new TTSChunk().setText(spokenString));
+        prompts = Collections.singletonList(new TTSChunk(spokenString, SpeechCapabilities.TEXT));
     }
 
     public AudioData(@NonNull String phoneticString, @NonNull SpeechCapabilities phoneticType) {
