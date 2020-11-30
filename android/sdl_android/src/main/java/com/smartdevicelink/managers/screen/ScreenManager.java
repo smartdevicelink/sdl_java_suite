@@ -37,7 +37,6 @@ import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
-import com.smartdevicelink.managers.permission.PermissionManager;
 
 /**
  * <strong>ScreenManager</strong> <br>
@@ -47,13 +46,7 @@ import com.smartdevicelink.managers.permission.PermissionManager;
 public class ScreenManager extends BaseScreenManager {
 
     @RestrictTo(RestrictTo.Scope.LIBRARY)
-    @Deprecated
     public ScreenManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
-        super(internalInterface, fileManager, null);
-    }
-
-    @RestrictTo(RestrictTo.Scope.LIBRARY)
-    public ScreenManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager, @NonNull PermissionManager permissionManager) {
-        super(internalInterface, fileManager, permissionManager);
+        super(internalInterface, fileManager);
     }
 }

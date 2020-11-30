@@ -12,7 +12,6 @@ import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
 import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.managers.permission.OnPermissionChangeListener;
 import com.smartdevicelink.managers.permission.PermissionElement;
-import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.managers.permission.PermissionStatus;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
@@ -40,15 +39,13 @@ public class BaseAlertManager extends BaseSubManager {
     private UUID permissionListener;
     private boolean currentAlertPermissionStatus = false;
     private final WeakReference<FileManager> fileManager;
-    private final WeakReference<PermissionManager> permissionManager;
     int nextCancelId;
     final int alertCancelIdMin = 20000;
 
-    public BaseAlertManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager, @NonNull PermissionManager permissionManager) {
+    public BaseAlertManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface);
         this.transactionQueue = newTransactionQueue();
         this.fileManager = new WeakReference<>(fileManager);
-        this.permissionManager = new WeakReference<>(permissionManager);
         nextCancelId = alertCancelIdMin;
         addListeners();
     }
@@ -146,8 +143,9 @@ public class BaseAlertManager extends BaseSubManager {
             this.internalInterface.getSystemCapabilityManager().addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplaysCapabilityListener);
         }
 
+
         PermissionElement alertPermissionElement = new PermissionElement(FunctionID.ALERT, null);
-        permissionListener = permissionManager.get().addListener(Collections.singletonList(alertPermissionElement), permissionManager.get().PERMISSION_GROUP_TYPE_ANY, new OnPermissionChangeListener() {
+        permissionListener = internalInterface.getPermissionManager().addListener(Collections.singletonList(alertPermissionElement), internalInterface.getPermissionManager().PERMISSION_GROUP_TYPE_ANY, new OnPermissionChangeListener() {
             @Override
             public void onPermissionsChange(@NonNull Map<FunctionID, PermissionStatus> allowedPermissions, int permissionGroupStatus) {
                 currentAlertPermissionStatus = allowedPermissions.get(FunctionID.ALERT).getIsRPCAllowed();
