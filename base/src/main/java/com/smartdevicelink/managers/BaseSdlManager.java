@@ -104,7 +104,6 @@ abstract class BaseSdlManager {
 
     // Managers
     LifecycleManager lifecycleManager;
-    PermissionManager permissionManager;
     FileManager fileManager;
     ScreenManager screenManager;
 
@@ -419,11 +418,11 @@ abstract class BaseSdlManager {
      * @return a PermissionManager object
      */
     public PermissionManager getPermissionManager() {
-        if (permissionManager.getState() != BaseSubManager.READY && permissionManager.getState() != BaseSubManager.LIMITED) {
+        if (lifecycleManager.getPermissionManager((SdlManager) this).getState() != BaseSubManager.READY && lifecycleManager.getPermissionManager((SdlManager) this).getState() != BaseSubManager.LIMITED) {
             DebugTool.logError(TAG, "PermissionManager should not be accessed because it is not in READY/LIMITED state");
         }
         checkSdlManagerState();
-        return permissionManager;
+        return lifecycleManager.getPermissionManager((SdlManager) this);
     }
 
     /**
