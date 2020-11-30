@@ -116,7 +116,7 @@ class SoftButtonReplaceOperation extends Task {
         List<SdlArtwork> initialStatesToBeUploaded = new ArrayList<>();
         for (SoftButtonObject softButtonObject : softButtonObjects) {
             SoftButtonState softButtonState = softButtonObject.getCurrentState();
-            if (softButtonState != null && fileManager.get()!= null && fileManager.get().artworkNeedsUpload(softButtonState.getArtwork()) && supportsSoftButtonImages()) {
+            if (softButtonState != null && fileManager.get()!= null && fileManager.get().fileNeedsUpload(softButtonState.getArtwork()) && supportsSoftButtonImages()) {
                 initialStatesToBeUploaded.add(softButtonState.getArtwork());
             }
         }
@@ -163,7 +163,7 @@ class SoftButtonReplaceOperation extends Task {
                 if (softButtonState.getName().equals(softButtonObject.getCurrentState().getName())) {
                     continue;
                 }
-                if (fileManager.get() != null && fileManager.get().artworkNeedsUpload(softButtonState.getArtwork()) && supportsSoftButtonImages()) {
+                if (fileManager.get() != null && fileManager.get().fileNeedsUpload(softButtonState.getArtwork()) && supportsSoftButtonImages()) {
                     otherStatesToBeUploaded.add(softButtonState.getArtwork());
                 }
             }
@@ -296,7 +296,7 @@ class SoftButtonReplaceOperation extends Task {
     private boolean allCurrentStateImagesAreUploaded() {
         for (SoftButtonObject softButtonObject : softButtonObjects) {
             SdlArtwork artwork = softButtonObject.getCurrentState().getArtwork();
-            if (fileManager.get() != null && fileManager.get().artworkNeedsUpload(artwork) && supportsSoftButtonImages()) {
+            if (fileManager.get() != null && fileManager.get().fileNeedsUpload(artwork) && supportsSoftButtonImages()) {
                 return false;
             }
         }

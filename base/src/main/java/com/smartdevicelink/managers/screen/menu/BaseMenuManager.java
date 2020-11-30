@@ -759,7 +759,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
         List<SdlArtwork> artworks = new ArrayList<>();
         for (MenuCell cell : cells) {
-            if (fileManager.get() != null && fileManager.get().artworkNeedsUpload(cell.getIcon())) {
+            if (fileManager.get() != null && fileManager.get().fileNeedsUpload(cell.getIcon())) {
                 artworks.add(cell.getIcon());
             }
             if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {

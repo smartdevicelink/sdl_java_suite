@@ -103,7 +103,7 @@ class TextAndGraphicUpdateOperation extends Task {
                 }
             });
 
-        } else if (fileManager.get() != null && !fileManager.get().artworkNeedsUpload(updatedState.getPrimaryGraphic()) && !fileManager.get().artworkNeedsUpload(updatedState.getSecondaryGraphic())) {
+        } else if (fileManager.get() != null && !fileManager.get().fileNeedsUpload(updatedState.getPrimaryGraphic()) && !fileManager.get().fileNeedsUpload(updatedState.getSecondaryGraphic())) {
             DebugTool.logInfo(TAG, "Images already uploaded, sending full update");
             // The files to be updated are already uploaded, send the full show immediately
             sendShow(show, new CompletionListener() {

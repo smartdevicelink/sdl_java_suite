@@ -447,13 +447,19 @@ abstract class BaseFileManager extends BaseSubManager {
     }
 
     /**
+     * Check if an SdlFile needs to be uploaded to Core or not.
+     * It is different from hasUploadedFile() because it takes isStaticIcon and overwrite properties into consideration.
+     * ie, if the file is static icon, the method always returns false.
+     * If the file is dynamic, it returns true in one of these situations:
+     * 1) the file has the overwrite property set to true
+     * 2) the file hasn't been uploaded to Core before.
      *
-     * @param artwork
-     * @return
+     * @param file the SdlFile that needs to be checked
+     * @return boolean that tells whether file needs to be uploaded to Core or not
      */
-    public boolean artworkNeedsUpload(@NonNull SdlArtwork artwork) {
-        if (artwork != null && !artwork.isStaticIcon()) {
-            return artwork.getOverwrite() || !hasUploadedFile(artwork);
+    public boolean fileNeedsUpload(@NonNull SdlFile file) {
+        if (file != null && !file.isStaticIcon()) {
+            return file.getOverwrite() || !hasUploadedFile(file);
         }
         return false;
     }
