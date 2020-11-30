@@ -649,7 +649,7 @@ class TextAndGraphicUpdateOperation extends Task {
         if (artwork != null) {
             return artwork.isStaticIcon() || (fileManager.get() != null && fileManager.get().hasUploadedFile(artwork));
         }
-        return true;
+        return false;
     }
 
     /**

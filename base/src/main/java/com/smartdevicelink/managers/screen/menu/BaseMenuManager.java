@@ -772,26 +772,19 @@ abstract class BaseMenuManager extends BaseSubManager {
 
     private boolean areAllCellArtworksUploaded(List<MenuCell> cells) {
         for (MenuCell cell : cells) {
-            if (!isArtworkUploaded(cell.getIcon())) {
+            SdlArtwork artwork = cell.getIcon();
+            if (artwork != null && !artwork.isStaticIcon() && fileManager.get() != null && !fileManager.get().hasUploadedFile(artwork)) {
                 return false;
             } else if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
                 return areAllCellArtworksUploaded(cell.getSubCells());
             }
         }
-
         return true;
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean supportsImages() {
         return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.cmdIcon);
-    }
-
-    private boolean isArtworkUploaded(SdlArtwork artwork) {
-        if (artwork != null) {
-            return artwork.isStaticIcon() || (fileManager.get() != null && fileManager.get().hasUploadedFile(artwork));
-        }
-        return true;
     }
 
     // IDs
