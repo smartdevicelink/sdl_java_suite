@@ -68,14 +68,14 @@ class PreloadChoicesOperation extends Task {
     private final WeakReference<FileManager> fileManager;
     private final WindowCapability defaultMainWindowCapability;
     private final String displayName;
-    private final HashSet<ChoiceCell> cellsToUpload;
+    private final ArrayList<ChoiceCell> cellsToUpload;
     private final CompletionListener completionListener;
     private boolean isRunning;
     private final boolean isVROptional;
     private boolean choiceError = false;
 
     PreloadChoicesOperation(ISdl internalInterface, FileManager fileManager, String displayName, WindowCapability defaultMainWindowCapability,
-                            Boolean isVROptional, HashSet<ChoiceCell> cellsToPreload, CompletionListener listener) {
+                            Boolean isVROptional, ArrayList<ChoiceCell> cellsToPreload, CompletionListener listener) {
         super("PreloadChoicesOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);

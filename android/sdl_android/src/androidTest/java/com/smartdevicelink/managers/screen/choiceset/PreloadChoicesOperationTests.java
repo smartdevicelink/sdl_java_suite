@@ -54,6 +54,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -78,7 +79,7 @@ public class PreloadChoicesOperationTests {
 
         ChoiceCell cell1 = new ChoiceCell("cell 1");
         ChoiceCell cell2 = new ChoiceCell("cell 2", null, TestValues.GENERAL_ARTWORK);
-        HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
+        ArrayList<ChoiceCell> cellsToPreload = new ArrayList<>();
         cellsToPreload.add(cell1);
         cellsToPreload.add(cell2);
 
@@ -111,7 +112,7 @@ public class PreloadChoicesOperationTests {
 
         ChoiceCell cell1 = new ChoiceCell("cell 1");
         ChoiceCell cell2 = new ChoiceCell("cell 2", null, TestValues.GENERAL_ARTWORK);
-        HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
+        ArrayList<ChoiceCell> cellsToPreload = new ArrayList<>();
         cellsToPreload.add(cell1);
         cellsToPreload.add(cell2);
 
@@ -128,7 +129,7 @@ public class PreloadChoicesOperationTests {
 
         ChoiceCell cell1 = new ChoiceCell("cell 1");
         ChoiceCell cell2 = new ChoiceCell("cell 2", null, TestValues.GENERAL_ARTWORK);
-        HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
+        ArrayList<ChoiceCell> cellsToPreload = new ArrayList<>();
         cellsToPreload.add(cell1);
         cellsToPreload.add(cell2);
 

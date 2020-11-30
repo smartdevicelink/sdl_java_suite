@@ -42,6 +42,7 @@ import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
@@ -86,6 +87,9 @@ public class ChoiceSetManagerTests {
         FileManager fileManager = mock(FileManager.class);
         taskmaster = new Taskmaster.Builder().build();
         when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
+        SdlMsgVersion version = new SdlMsgVersion();
+        version.setMajorVersion(7);
+        when(internalInterface.getSdlMsgVersion()).thenReturn(version);
         csm = new ChoiceSetManager(internalInterface, fileManager);
 
         assertEquals(csm.getState(), BaseSubManager.SETTING_UP);
@@ -193,7 +197,7 @@ public class ChoiceSetManagerTests {
         ChoiceCell cell1 = new ChoiceCell("test");
         ChoiceCell cell2 = new ChoiceCell("test2");
         ChoiceCell cell3 = new ChoiceCell("test3");
-        HashSet<ChoiceCell> cellSet = new HashSet<>();
+        ArrayList<ChoiceCell> cellSet = new ArrayList<>();
         cellSet.add(cell1);
         cellSet.add(cell2);
         cellSet.add(cell3);
@@ -206,6 +210,38 @@ public class ChoiceSetManagerTests {
         assertNotSame(cell1.getChoiceId(), 2000000000);
         assertNotSame(cell2.getChoiceId(), 2000000000);
         assertNotSame(cell3.getChoiceId(), 2000000000);
+    }
+
+    @Test
+    public void testUpdateNamesOnChoices() {
+        ChoiceCell cell1 = new ChoiceCell("test");
+        ChoiceCell cell2 = new ChoiceCell("name");
+        ChoiceCell cell3 = new ChoiceCell("test");
+        ChoiceCell cell4 = new ChoiceCell("name");
+        ChoiceCell cell5 = new ChoiceCell("test");
+        ChoiceCell cell6 = new ChoiceCell("name");
+        ArrayList<ChoiceCell> cellSet = new ArrayList<>();
+        cellSet.add(cell1);
+        cellSet.add(cell2);
+        cellSet.add(cell3);
+        cellSet.add(cell4);
+        cellSet.add(cell5);
+        cellSet.add(cell6);
+        // Cells are initially set to MAX_ID
+        assertEquals(cell1.getText(), "test");
+        assertEquals(cell2.getText(), "name");
+        assertEquals(cell3.getText(), "test");
+        assertEquals(cell4.getText(), "name");
+        assertEquals(cell5.getText(), "test");
+        assertEquals(cell6.getText(), "name");
+        csm.updateNamesOnChoices(cellSet);
+        // We are looking for unique IDs
+        assertEquals(cell1.getText(), "test(1)");
+        assertEquals(cell2.getText(), "name(1)");
+        assertEquals(cell3.getText(), "test(2)");
+        assertEquals(cell4.getText(), "name(2)");
+        assertEquals(cell5.getText(), "test(3)");
+        assertEquals(cell6.getText(), "name(3)");
     }
 
     @Test

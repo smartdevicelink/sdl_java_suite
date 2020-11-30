@@ -43,6 +43,7 @@ import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
 import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
+import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -421,6 +422,10 @@ abstract class BaseMenuManager extends BaseSubManager {
                 // send initial menu (score will return null)
                 // make a copy of our current cells
                 DebugTool.logInfo(TAG, "Creating initial Menu");
+                // Set the names to be unique if needed
+                if(internalInterface.getSdlMsgVersion().getMajorVersion() >= 7) {
+                    updateNamesOnChoices(menuCells);
+                }
                 // Set the IDs if needed
                 lastMenuId = menuCellIdMin;
                 updateIdsOnMenuCells(menuCells, parentIdNotFound);
@@ -438,7 +443,11 @@ abstract class BaseMenuManager extends BaseSubManager {
             }
         } else {
             // we are in compatibility mode
+            // Set the names to be unique if needed
             DebugTool.logInfo(TAG, "Updating menus in compatibility mode");
+            if(internalInterface.getSdlMsgVersion().getMajorVersion() >= 7) {
+                updateNamesOnChoices(menuCells);
+            }
             lastMenuId = menuCellIdMin;
             updateIdsOnMenuCells(menuCells, parentIdNotFound);
             // if the old cell array is not null, we want to delete the entire thing, else copy the new array
@@ -826,6 +835,23 @@ abstract class BaseMenuManager extends BaseSubManager {
             return dynamicCells;
         }
         return null;
+    }
+
+    void updateNamesOnChoices(List<MenuCell> cells) {
+        for (int i = 0; i < cells.size(); i ++) {
+            String testName = cells.get(i).getTitle();
+            int counter = 1;
+            for (int j = i+1; j < cells.size(); j++) {
+                if (testName.equals(cells.get(j).getTitle())) {
+                    if (counter == 1) {
+                        cells.get(i).setTitle(testName + "(1)");
+                    }
+                    counter++;
+                    cells.get(j).setTitle(testName + "(" + counter + ")");
+                }
+            }
+        }
+
     }
 
     private void updateIdsOnMenuCells(List<MenuCell> cells, int parentId) {

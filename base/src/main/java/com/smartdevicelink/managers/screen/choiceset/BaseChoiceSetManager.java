@@ -64,6 +64,8 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -193,7 +195,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             return;
         }
 
-        final HashSet<ChoiceCell> choicesToUpload = new HashSet<>(choices);
+        final ArrayList<ChoiceCell> choicesToUpload = new ArrayList<>(choices);
         choicesToUpload.removeAll(preloadedChoices);
         choicesToUpload.removeAll(pendingPreloadChoices);
 
@@ -204,6 +206,10 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             return;
         }
 
+        // Set the names to be unique if needed
+        if (internalInterface.getSdlMsgVersion().getMajorVersion() >= 7) {
+            updateNamesOnChoices(choicesToUpload);
+        }
         updateIdsOnChoices(choicesToUpload);
 
         // Add the preload cells to the pending preload choices
@@ -488,7 +494,24 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         return choicesSet;
     }
 
-    void updateIdsOnChoices(HashSet<ChoiceCell> choices) {
+    void updateNamesOnChoices(ArrayList<ChoiceCell> choices) {
+        for (int i = 0; i < choices.size(); i ++) {
+            String testName = choices.get(i).getText();
+            int counter = 1;
+            for (int j = i+1; j < choices.size(); j++) {
+                if (testName.equals(choices.get(j).getText())) {
+                    if (counter == 1) {
+                        choices.get(i).setText(testName + "(1)");
+                    }
+                    counter++;
+                    choices.get(j).setText(testName + "(" + counter + ")");
+                }
+            }
+        }
+        
+    }
+
+    void updateIdsOnChoices(ArrayList<ChoiceCell> choices) {
         for (ChoiceCell cell : choices) {
             cell.setChoiceId(this.nextChoiceId);
             this.nextChoiceId++;
