@@ -64,6 +64,7 @@ public class PresentAlertOperationTest {
     SoftButtonState alertSoftButtonState;
     SoftButtonObject alertSoftButtonObject;
     private List<SpeechCapabilities> speechCapabilities;
+    SdlFile testAudio;
 
     private Answer<Void> onArtworkUploadSuccess = new Answer<Void>() {
         @Override
@@ -97,9 +98,12 @@ public class PresentAlertOperationTest {
         // mock things
         internalInterface = mock(ISdl.class);
         fileManager = mock(FileManager.class);
+        Uri uri = Uri.parse("android.resource://" + mTestContext.getPackageName() + "/raw/test_audio_square_250hz_80amp_1s.mp3");
+        testAudio = new SdlFile("TestAudioFile", FileType.AUDIO_MP3, uri, false);
 
         alertAudioData = new AlertAudioData("Spoken Sting");
         alertAudioData.setPlayTone(true);
+        alertAudioData.addAudioFiles(Collections.singletonList(testAudio));
 
         testAlertArtwork = new SdlArtwork();
         testAlertArtwork.setName("testFile1");
@@ -149,7 +153,11 @@ public class PresentAlertOperationTest {
     @Test
     public void testPresentAlert() {
         doAnswer(onAlertSuccess).when(internalInterface).sendRPC(any(Alert.class));
+        // Same response works for uploading artworks as it does for files
         doAnswer(onArtworkUploadSuccess).when(fileManager).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
+        doAnswer(onArtworkUploadSuccess).when(fileManager).uploadFiles(any(List.class), any(MultipleFileCompletionListener.class));
+
+
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
 
         // Test Images need to be uploaded, sending text and uploading images
@@ -157,9 +165,9 @@ public class PresentAlertOperationTest {
 
         // Verifies that uploadArtworks gets called only with the fist presentAlertOperation.onExecute call
         verify(fileManager, times(1)).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
+        verify(fileManager, times(1)).uploadFiles(any(List.class), any(MultipleFileCompletionListener.class));
 
         verify(internalInterface, times(1)).sendRPC(any(Alert.class));
-
     }
 
     private WindowCapability getWindowCapability(int numberOfAlertFields) {
@@ -207,10 +215,5 @@ public class PresentAlertOperationTest {
 
         windowCapability.setSoftButtonCapabilities(Collections.singletonList(softButtonCapabilities));
         return windowCapability;
-    }
-
-    @Test
-    public void testCreateAlert() {
-        //PresentAlertOperation
     }
 }
