@@ -204,7 +204,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             }
             return;
         }
-        
         updateIdsOnChoices(choicesToUpload);
 
         // Add the preload cells to the pending preload choices
