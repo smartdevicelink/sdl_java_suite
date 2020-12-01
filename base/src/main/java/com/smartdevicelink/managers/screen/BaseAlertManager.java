@@ -67,7 +67,7 @@ public class BaseAlertManager extends BaseSubManager {
             return;
         }
 
-        if(!BaseScreenManager.checkAndAssignButtonIds(alert.getSoftButtons(), BaseScreenManager.ManagerLocation.ALERT_MANAGER)){
+        if (!BaseScreenManager.checkAndAssignButtonIds(alert.getSoftButtons(), BaseScreenManager.ManagerLocation.ALERT_MANAGER)) {
             DebugTool.logError(TAG, "Attempted to set soft button objects for Alert, but multiple buttons had the same id.");
             return;
         }
@@ -97,7 +97,7 @@ public class BaseAlertManager extends BaseSubManager {
 
 
     private void addListeners() {
-     onSpeechCapabilityListener = new OnSystemCapabilityListener() {
+        onSpeechCapabilityListener = new OnSystemCapabilityListener() {
             @Override
             public void onCapabilityRetrieved(Object capability) {
                 speechCapabilities = (List<SpeechCapabilities>) capability;
@@ -109,7 +109,7 @@ public class BaseAlertManager extends BaseSubManager {
             }
         };
         if (internalInterface.getSystemCapabilityManager() != null) {
-            this.internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.SPEECH, onSpeechCapabilityListener,false);
+            this.internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.SPEECH, onSpeechCapabilityListener, false);
         }
         OnSystemCapabilityListener onDisplaysCapabilityListener = new OnSystemCapabilityListener() {
             @Override

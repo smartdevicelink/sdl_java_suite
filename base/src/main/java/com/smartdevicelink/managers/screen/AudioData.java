@@ -32,7 +32,7 @@ public class AudioData {
 
     public AudioData(@NonNull String phoneticString, @NonNull SpeechCapabilities phoneticType) {
 
-        if (isValidPhoneticType(phoneticType)) {
+        if (!isValidPhoneticType(phoneticType)) {
             return;
         }
         prompts = Collections.singletonList(new TTSChunk(phoneticString, phoneticType));

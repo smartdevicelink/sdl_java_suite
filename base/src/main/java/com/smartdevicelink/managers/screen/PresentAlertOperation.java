@@ -82,7 +82,7 @@ public class PresentAlertOperation extends Task {
 
 
     private void uploadAudioFiles(final CompletionListener listener) {
-        if(alertView.getAudio() == null){
+        if (alertView.getAudio() == null) {
             DebugTool.logInfo(TAG, "No audio sent for alert");
             listener.onComplete(true);
             return;
@@ -214,12 +214,14 @@ public class PresentAlertOperation extends Task {
             if (alertAudioData.getPrompts() != null && alertAudioData.getPrompts().size() > 0) {
                 ttsChunks.addAll(alertAudioData.getPrompts());
             }
-            alert.setTtsChunks(ttsChunks);
+            if (ttsChunks.size() > 0) {
+                alert.setTtsChunks(ttsChunks);
+            }
         }
         return alert;
     }
 
-    private Alert assembleAlertText(Alert alert){
+    private Alert assembleAlertText(Alert alert) {
         List<String> nonNullFields = findValidMainTextFields();
         if (nonNullFields.isEmpty()) {
             return alert;
@@ -257,7 +259,7 @@ public class PresentAlertOperation extends Task {
         return array;
     }
 
-    private Alert assembleOneLineAlertText(Alert alert, List<String> alertFields){
+    private Alert assembleOneLineAlertText(Alert alert, List<String> alertFields) {
         StringBuilder alertString1 = new StringBuilder();
         for (int i = 0; i < alertFields.size(); i++) {
             if (i > 0) {
@@ -270,12 +272,12 @@ public class PresentAlertOperation extends Task {
         return alert;
     }
 
-    private Alert assembleTwoLineAlertText(Alert alert){
+    private Alert assembleTwoLineAlertText(Alert alert) {
         if (alertView.getText() != null && alertView.getText().length() > 0) {
             alert.setAlertText1(alertView.getText());
         }
         if (alertView.getSecondaryText() != null && alertView.getSecondaryText().length() > 0) {
-            if ((alertView.getTertiaryText() == null || !(alertView.getTertiaryText() .length() > 0))) {
+            if ((alertView.getTertiaryText() == null || !(alertView.getTertiaryText().length() > 0))) {
                 // TertiaryText does not exist
                 alert.setAlertText2(alertView.getSecondaryText());
             } else {
@@ -286,7 +288,7 @@ public class PresentAlertOperation extends Task {
         return alert;
     }
 
-    private Alert assembleThreeLineAlertText(Alert alert){
+    private Alert assembleThreeLineAlertText(Alert alert) {
         if (alertView.getText() != null && alertView.getText().length() > 0) {
             alert.setAlertText1(alertView.getText());
         }
@@ -327,19 +329,19 @@ public class PresentAlertOperation extends Task {
     }
 
     private void cancelAlert() {
-            CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.ALERT.getId(), cancelId);
-            cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
-                @Override
-                public void onResponse(int correlationId, RPCResponse response) {
-                    if (response.getSuccess()) {
-                        DebugTool.logInfo(TAG, "Alert was dismissed successfully");
-                    } else {
-                        DebugTool.logInfo(TAG, "Alert was not dismissed successfully");
+        CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.ALERT.getId(), cancelId);
+        cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
+            @Override
+            public void onResponse(int correlationId, RPCResponse response) {
+                if (response.getSuccess()) {
+                    DebugTool.logInfo(TAG, "Alert was dismissed successfully");
+                } else {
+                    DebugTool.logInfo(TAG, "Alert was not dismissed successfully");
 
-                    }
                 }
-            });
-            internalInterface.get().sendRPC(cancelInteraction);
+            }
+        });
+        internalInterface.get().sendRPC(cancelInteraction);
     }
 
     private void finishOperation(boolean success, Integer tryAgainTime) {
