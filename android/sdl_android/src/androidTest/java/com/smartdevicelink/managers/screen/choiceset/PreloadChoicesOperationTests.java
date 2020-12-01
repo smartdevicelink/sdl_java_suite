@@ -41,6 +41,7 @@ import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.rpc.ImageField;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.CharacterSet;
@@ -65,6 +66,7 @@ import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
 public class PreloadChoicesOperationTests {
@@ -101,6 +103,7 @@ public class PreloadChoicesOperationTests {
         windowCapability.setTextFields(Arrays.asList(textField, textField2, textField3));
 
         ISdl internalInterface = mock(ISdl.class);
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(7, 0));
         FileManager fileManager = mock(FileManager.class);
         preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager, null, windowCapability, true, cellsToPreload, null);
     }
@@ -117,6 +120,7 @@ public class PreloadChoicesOperationTests {
         cellsToPreload.add(cell2);
 
         ISdl internalInterface = mock(ISdl.class);
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(7, 0));
         FileManager fileManager = mock(FileManager.class);
         preloadChoicesOperationNullCapability = new PreloadChoicesOperation(internalInterface, fileManager, null, null, true, cellsToPreload, null);
     }
@@ -144,6 +148,7 @@ public class PreloadChoicesOperationTests {
         windowCapability.setTextFields(Collections.singletonList(textField));
 
         ISdl internalInterface = mock(ISdl.class);
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(7, 0));
         FileManager fileManager = mock(FileManager.class);
         preloadChoicesOperationEmptyCapability = new PreloadChoicesOperation(internalInterface, fileManager, null, windowCapability, true, cellsToPreload, null);
     }

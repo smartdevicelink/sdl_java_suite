@@ -70,6 +70,7 @@ class PreloadChoicesOperation extends Task {
     private final String displayName;
     private final ArrayList<ChoiceCell> cellsToUpload;
     private final CompletionListener completionListener;
+    private boolean cellsHaveUniqueNames = false;
     private boolean isRunning;
     private final boolean isVROptional;
     private boolean choiceError = false;
@@ -83,6 +84,10 @@ class PreloadChoicesOperation extends Task {
         this.defaultMainWindowCapability = defaultMainWindowCapability;
         this.isVROptional = isVROptional;
         this.cellsToUpload = cellsToPreload;
+        if (internalInterface.getSdlMsgVersion() != null && internalInterface.getSdlMsgVersion().getMajorVersion() < 7) {
+            cellsHaveUniqueNames = true;
+            updateCellsForUniqueNames();
+        }
         this.completionListener = listener;
     }
 
@@ -97,11 +102,22 @@ class PreloadChoicesOperation extends Task {
         });
     }
 
-    void removeChoicesFromUpload(HashSet<ChoiceCell> choices) {
+    void removeChoicesFromUpload(ArrayList<ChoiceCell> choices) {
         if (isRunning) {
             return;
         }
-        cellsToUpload.removeAll(choices);
+        if (cellsHaveUniqueNames) {
+            for (ChoiceCell choiceToRemove : choices) {
+                for (ChoiceCell cellToUpload : cellsToUpload) {
+                    if (cellToUpload.getChoiceId() == choiceToRemove.getChoiceId()) {
+                        cellsToUpload.remove(choiceToRemove);
+                        break;
+                    }
+                }
+            }
+        } else {
+            cellsToUpload.removeAll(choices);
+        }
     }
 
     private void preloadCellArtworks(@NonNull final CompletionListener listener) {
@@ -276,5 +292,21 @@ class PreloadChoicesOperation extends Task {
             return (artwork != null && !fileManager.get().hasUploadedFile(artwork) && !artwork.isStaticIcon());
         }
         return false;
+    }
+
+    void updateCellsForUniqueNames() {
+        for (int i = 0; i < cellsToUpload.size(); i ++) {
+            String testName = cellsToUpload.get(i).getText();
+            int counter = 1;
+            for (int j = i+1; j < cellsToUpload.size(); j++) {
+                if (testName.equals(cellsToUpload.get(j).getText())) {
+                    if (counter == 1) {
+                        cellsToUpload.get(i).setText(testName + "(1)");
+                    }
+                    counter++;
+                    cellsToUpload.get(j).setText(testName + "(" + counter + ")");
+                }
+            }
+        }
     }
 }

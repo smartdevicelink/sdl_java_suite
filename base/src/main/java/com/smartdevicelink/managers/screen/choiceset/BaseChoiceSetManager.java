@@ -65,7 +65,6 @@ import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -205,11 +204,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             }
             return;
         }
-
-        // Set the names to be unique if needed
-        if (internalInterface.getSdlMsgVersion().getMajorVersion() >= 7) {
-            updateNamesOnChoices(choicesToUpload);
-        }
+        
         updateIdsOnChoices(choicesToUpload);
 
         // Add the preload cells to the pending preload choices
@@ -254,7 +249,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         // Find cells to be deleted that are already uploaded or are pending upload
         final HashSet<ChoiceCell> cellsToBeDeleted = choicesToBeDeletedWithArray(choices);
-        HashSet<ChoiceCell> cellsToBeRemovedFromPending = choicesToBeRemovedFromPendingWithArray(choices);
+        ArrayList<ChoiceCell> cellsToBeRemovedFromPending = choicesToBeRemovedFromPendingWithArray(choices);
         // If choices are deleted that are already uploaded or pending and are used by a pending presentation, cancel it and send an error
         HashSet<ChoiceCell> pendingPresentationChoices = new HashSet<>();
         if (pendingPresentationSet != null && pendingPresentationSet.getChoices() != null) {
@@ -488,27 +483,10 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         return choicesSet;
     }
 
-    HashSet<ChoiceCell> choicesToBeRemovedFromPendingWithArray(List<ChoiceCell> choices) {
-        HashSet<ChoiceCell> choicesSet = new HashSet<>(choices);
+    ArrayList<ChoiceCell> choicesToBeRemovedFromPendingWithArray(List<ChoiceCell> choices) {
+        ArrayList<ChoiceCell> choicesSet = new ArrayList<>(choices);
         choicesSet.retainAll(this.pendingPreloadChoices);
         return choicesSet;
-    }
-
-    void updateNamesOnChoices(ArrayList<ChoiceCell> choices) {
-        for (int i = 0; i < choices.size(); i ++) {
-            String testName = choices.get(i).getText();
-            int counter = 1;
-            for (int j = i+1; j < choices.size(); j++) {
-                if (testName.equals(choices.get(j).getText())) {
-                    if (counter == 1) {
-                        choices.get(i).setText(testName + "(1)");
-                    }
-                    counter++;
-                    choices.get(j).setText(testName + "(" + counter + ")");
-                }
-            }
-        }
-        
     }
 
     void updateIdsOnChoices(ArrayList<ChoiceCell> choices) {
