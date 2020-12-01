@@ -321,7 +321,7 @@ public class PresentAlertOperation extends Task {
     }
 
     private boolean supportsAlertAudioFile() {
-        return (internalInterface.get() != null && internalInterface.get().getSdlMsgVersion().getMajorVersion() >= 5 && speechCapabilities != null && speechCapabilities.contains(SpeechCapabilities.FILE));
+        return (internalInterface.get() != null && internalInterface.get().getSdlMsgVersion() != null && internalInterface.get().getSdlMsgVersion().getMajorVersion() >= 5 && speechCapabilities != null && speechCapabilities.contains(SpeechCapabilities.FILE));
     }
 
     private boolean supportsAlertIcon() {

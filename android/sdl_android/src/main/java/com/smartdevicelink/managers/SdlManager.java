@@ -389,7 +389,7 @@ public class SdlManager extends BaseSdlManager {
         }
     }
 
-    private ISdl _internalInterface = new ISdl() {
+     ISdl _internalInterface = new ISdl() {
         @Override
         public void start() {
             lifecycleManager.getInternalInterface(SdlManager.this).start();
