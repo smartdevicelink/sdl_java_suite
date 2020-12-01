@@ -118,7 +118,6 @@ abstract class BaseLifecycleManager {
     HashMap<Integer, CopyOnWriteArrayList<OnRPCNotificationListener>> rpcNotificationListeners;
     HashMap<Integer, CopyOnWriteArrayList<OnRPCRequestListener>> rpcRequestListeners;
     SystemCapabilityManager systemCapabilityManager;
-    PermissionManager permissionManager;
     private EncryptionLifecycleManager encryptionLifecycleManager;
     RegisterAppInterfaceResponse raiResponse = null;
     private OnHMIStatus currentHMIStatus;
@@ -130,7 +129,6 @@ abstract class BaseLifecycleManager {
     final Version minimumRPCVersion;
     BaseTransportConfig _transportConfig;
     private Taskmaster taskmaster;
-
 
     BaseLifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener) {
         this.appConfig = appConfig;
@@ -293,13 +291,6 @@ abstract class BaseLifecycleManager {
         } else {
             return false;
         }
-    }
-
-    public PermissionManager getPermissionManager(SdlManager sdlManager) {
-        if (sdlManager != null) {
-            return permissionManager;
-        }
-        return null;
     }
 
     /**
@@ -1045,7 +1036,7 @@ abstract class BaseLifecycleManager {
 
         @Override
         public PermissionManager getPermissionManager() {
-            return BaseLifecycleManager.this.permissionManager;
+            return null;
         }
     };
 
@@ -1191,7 +1182,6 @@ abstract class BaseLifecycleManager {
         this.rpcNotificationListeners = new HashMap<>();
         this.rpcRequestListeners = new HashMap<>();
         this.systemCapabilityManager = new SystemCapabilityManager(internalInterface);
-        this.permissionManager = new PermissionManager(internalInterface);
         setupInternalRpcListeners();
     }
 
