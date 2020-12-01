@@ -8,10 +8,19 @@ import com.smartdevicelink.managers.AlertCompletionListener;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
+import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.file.filetypes.SdlFile;
+import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.Alert;
+import com.smartdevicelink.proxy.rpc.AlertResponse;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.Show;
+import com.smartdevicelink.proxy.rpc.ShowResponse;
+import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
@@ -19,17 +28,26 @@ import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
+import com.smartdevicelink.test.TestValues;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static junit.framework.TestCase.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
 public class PresentAlertOperationTest {
@@ -45,6 +63,33 @@ public class PresentAlertOperationTest {
     FileManager fileManager;
     SoftButtonState alertSoftButtonState;
     SoftButtonObject alertSoftButtonObject;
+    private List<SpeechCapabilities> speechCapabilities;
+
+    private Answer<Void> onArtworkUploadSuccess = new Answer<Void>() {
+        @Override
+        public Void answer(InvocationOnMock invocation) {
+            Object[] args = invocation.getArguments();
+            MultipleFileCompletionListener listener = (MultipleFileCompletionListener) args[1];
+            when(fileManager.hasUploadedFile(any(SdlFile.class))).thenReturn(true);
+            listener.onComplete(null);
+            return null;
+        }
+    };
+
+    private Answer<Void> onAlertSuccess = new Answer<Void>() {
+        @Override
+        public Void answer(InvocationOnMock invocation) {
+            Object[] args = invocation.getArguments();
+            RPCRequest message = (RPCRequest) args[0];
+            if (message instanceof Alert) {
+                int correlationId = message.getCorrelationID();
+                AlertResponse alertResponse = new AlertResponse();
+                alertResponse.setSuccess(true);
+                message.getOnRPCResponseListener().onResponse(correlationId, alertResponse);
+            }
+            return null;
+        }
+    };
 
     @Before
     public void setUp() throws Exception {
@@ -90,7 +135,8 @@ public class PresentAlertOperationTest {
         alertView = builder.build();
 
         defaultMainWindowCapability = getWindowCapability(3);
-        List<SpeechCapabilities> speechCapabilities = new ArrayList<SpeechCapabilities>();
+        speechCapabilities = new ArrayList<SpeechCapabilities>();
+        speechCapabilities.add(SpeechCapabilities.FILE);
         AlertCompletionListener alertCompletionListener = new AlertCompletionListener() {
             @Override
             public void onComplete(boolean success, Integer tryAgainTime) {
@@ -98,6 +144,22 @@ public class PresentAlertOperationTest {
             }
         };
         presentAlertOperation = new PresentAlertOperation(internalInterface, alertView, defaultMainWindowCapability, speechCapabilities, fileManager, 1, alertCompletionListener);
+    }
+
+    @Test
+    public void testPresentAlert() {
+        doAnswer(onAlertSuccess).when(internalInterface).sendRPC(any(Alert.class));
+        doAnswer(onArtworkUploadSuccess).when(fileManager).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
+
+        // Test Images need to be uploaded, sending text and uploading images
+        presentAlertOperation.onExecute();
+
+        // Verifies that uploadArtworks gets called only with the fist presentAlertOperation.onExecute call
+        verify(fileManager, times(1)).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
+
+        verify(internalInterface, times(1)).sendRPC(any(Alert.class));
+
     }
 
     private WindowCapability getWindowCapability(int numberOfAlertFields) {
@@ -136,6 +198,14 @@ public class PresentAlertOperationTest {
 
         windowCapability.setImageFields(imageFieldList);
 
+        SoftButtonCapabilities softButtonCapabilities = new SoftButtonCapabilities();
+        softButtonCapabilities.setImageSupported(TestValues.GENERAL_BOOLEAN);
+        softButtonCapabilities.setShortPressAvailable(TestValues.GENERAL_BOOLEAN);
+        softButtonCapabilities.setLongPressAvailable(TestValues.GENERAL_BOOLEAN);
+        softButtonCapabilities.setUpDownAvailable(TestValues.GENERAL_BOOLEAN);
+        softButtonCapabilities.setTextSupported(TestValues.GENERAL_BOOLEAN);
+
+        windowCapability.setSoftButtonCapabilities(Collections.singletonList(softButtonCapabilities));
         return windowCapability;
     }
 
