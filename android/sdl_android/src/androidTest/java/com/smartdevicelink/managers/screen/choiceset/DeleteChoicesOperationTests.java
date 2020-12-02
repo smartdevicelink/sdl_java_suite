@@ -44,6 +44,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -61,7 +62,7 @@ public class DeleteChoicesOperationTests {
 
         ChoiceCell cell1 = new ChoiceCell("cell 1");
         ChoiceCell cell2 = new ChoiceCell("cell 2");
-        HashSet<ChoiceCell> cellsToDelete = new HashSet<>();
+        ArrayList<ChoiceCell> cellsToDelete = new ArrayList<>();
         cellsToDelete.add(cell1);
         cellsToDelete.add(cell2);
 

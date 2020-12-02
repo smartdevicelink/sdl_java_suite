@@ -196,6 +196,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         }
         // copy new list
         menuCells = new ArrayList<>();
+        uniqueNamedMenuCells = new ArrayList<>();
         if (clonedCells != null && !clonedCells.isEmpty()) {
             menuCells.addAll(clonedCells);
             if (sdlMsgVersion.getMajorVersion() < 7) {

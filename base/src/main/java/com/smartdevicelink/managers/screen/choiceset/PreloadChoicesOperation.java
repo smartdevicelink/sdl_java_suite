@@ -68,23 +68,24 @@ class PreloadChoicesOperation extends Task {
     private final WeakReference<FileManager> fileManager;
     private final WindowCapability defaultMainWindowCapability;
     private final String displayName;
-    private final HashSet<ChoiceCell> cellsToUpload;
+    private final ArrayList<ChoiceCell> cellsToUpload;
     private final CompletionListener completionListener;
     private boolean isRunning;
     private final boolean isVROptional;
     private boolean choiceError = false;
 
     PreloadChoicesOperation(ISdl internalInterface, FileManager fileManager, String displayName, WindowCapability defaultMainWindowCapability,
-                            Boolean isVROptional, HashSet<ChoiceCell> cellsToPreload, CompletionListener listener) {
+                            Boolean isVROptional, ArrayList<ChoiceCell> cellsToPreload, CompletionListener listener) {
         super("PreloadChoicesOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
         this.displayName = displayName;
         this.defaultMainWindowCapability = defaultMainWindowCapability;
         this.isVROptional = isVROptional;
-        this.cellsToUpload = cellsToPreload;
         if (internalInterface.getSdlMsgVersion() != null && internalInterface.getSdlMsgVersion().getMajorVersion() < 7) {
-            updateCellsForUniqueNames();
+            this.cellsToUpload = updateCellsForUniqueNames(cellsToPreload);
+        } else {
+            this.cellsToUpload = cellsToPreload;
         }
         this.completionListener = listener;
     }
@@ -100,7 +101,7 @@ class PreloadChoicesOperation extends Task {
         });
     }
 
-    void removeChoicesFromUpload(HashSet<ChoiceCell> choices) {
+    void removeChoicesFromUpload(ArrayList<ChoiceCell> choices) {
         if (isRunning) {
             return;
         }
@@ -288,19 +289,20 @@ class PreloadChoicesOperation extends Task {
         return false;
     }
 
-    void updateCellsForUniqueNames() {
-        for (ChoiceCell cell : cellsToUpload) {
-            String testName = cell.getText();
+    ArrayList<ChoiceCell> updateCellsForUniqueNames(ArrayList<ChoiceCell> cells) {
+        for (int i = 0; i < cells.size(); i++) {
+            String testName = cells.get(i).getText();
             int counter = 1;
-            for (ChoiceCell cell2 : cellsToUpload) {
-                if (cell2.getText().equals(testName)) {
-                    if (cell2.getChoiceId() != cell.getChoiceId()) {
-                        counter++;
-                        cell.setText(testName + "(1)");
-                        cell2.setText(testName + "(" + counter + ")");
+            for (int j = i+1; j < cells.size(); j++) {
+                if (cells.get(j).getText().equals(testName)) {
+                    if (counter == 1) {
+                        cells.get(i).setText(testName + "(1)");
                     }
+                    counter++;
+                    cells.get(j).setText(testName + "(" + counter + ")");
                 }
             }
         }
+        return cells;
     }
 }

@@ -54,6 +54,7 @@ import com.smartdevicelink.test.TestValues;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Spy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,6 +67,7 @@ import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
@@ -81,7 +83,7 @@ public class PreloadChoicesOperationTests {
 
         ChoiceCell cell1 = new ChoiceCell("cell 1");
         ChoiceCell cell2 = new ChoiceCell("cell 2", null, TestValues.GENERAL_ARTWORK);
-        HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
+        ArrayList<ChoiceCell> cellsToPreload = new ArrayList<>();
         cellsToPreload.add(cell1);
         cellsToPreload.add(cell2);
 
@@ -115,7 +117,7 @@ public class PreloadChoicesOperationTests {
 
         ChoiceCell cell1 = new ChoiceCell("cell 1");
         ChoiceCell cell2 = new ChoiceCell("cell 2", null, TestValues.GENERAL_ARTWORK);
-        HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
+        ArrayList<ChoiceCell> cellsToPreload = new ArrayList<>();
         cellsToPreload.add(cell1);
         cellsToPreload.add(cell2);
 
@@ -133,7 +135,7 @@ public class PreloadChoicesOperationTests {
 
         ChoiceCell cell1 = new ChoiceCell("cell 1");
         ChoiceCell cell2 = new ChoiceCell("cell 2", null, TestValues.GENERAL_ARTWORK);
-        HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
+        ArrayList<ChoiceCell> cellsToPreload = new ArrayList<>();
         cellsToPreload.add(cell1);
         cellsToPreload.add(cell2);
 
@@ -193,6 +195,46 @@ public class PreloadChoicesOperationTests {
         assertFalse(preloadChoicesOperationEmptyCapability.shouldSendChoiceSecondaryText());
         assertFalse(preloadChoicesOperationEmptyCapability.shouldSendChoiceTertiaryText());
         assertFalse(preloadChoicesOperationEmptyCapability.shouldSendChoiceText());
+    }
+    
+    @Test
+    public void testShouldUpdateCellsForUniqueNames() {
+        ChoiceCell cell1 = new ChoiceCell("cellName");
+        cell1.setChoiceId(1);
+        ChoiceCell cell2 = new ChoiceCell("cellName 2");
+        cell2.setChoiceId(2);
+        ChoiceCell cell3 = new ChoiceCell("cellName");
+        cell3.setChoiceId(3);
+        ChoiceCell cell4 = new ChoiceCell("cellName");
+        cell4.setChoiceId(4);
+        ChoiceCell cell5 = new ChoiceCell("cellName");
+        cell5.setChoiceId(5);
+        ChoiceCell cell6 = new ChoiceCell("cellName 2");
+        cell6.setChoiceId(6);
+        ChoiceCell cell7 = new ChoiceCell("cellName 3");
+        cell7.setChoiceId(7);
+        ChoiceCell cell8 = new ChoiceCell("cellName 4");
+        cell8.setChoiceId(8);
+
+        ArrayList<ChoiceCell> cellsToPreload = new ArrayList<>();
+        cellsToPreload.add(cell1);
+        cellsToPreload.add(cell2);
+        cellsToPreload.add(cell3);
+        cellsToPreload.add(cell4);
+        cellsToPreload.add(cell5);
+        cellsToPreload.add(cell6);
+        cellsToPreload.add(cell7);
+        cellsToPreload.add(cell8);
+
+        ArrayList<ChoiceCell> test = preloadChoicesOperation.updateCellsForUniqueNames(cellsToPreload);
+        assertEquals(test.get(0).getText(), "cellName(1)");
+        assertEquals(test.get(1).getText(), "cellName 2(1)");
+        assertEquals(test.get(2).getText(), "cellName(2)");
+        assertEquals(test.get(3).getText(), "cellName(3)");
+        assertEquals(test.get(4).getText(), "cellName(4)");
+        assertEquals(test.get(5).getText(), "cellName 2(2)");
+        assertEquals(test.get(6).getText(), "cellName 3");
+        assertEquals(test.get(7).getText(), "cellName 4");
     }
 
 }

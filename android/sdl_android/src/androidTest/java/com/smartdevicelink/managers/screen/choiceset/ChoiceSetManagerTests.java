@@ -193,7 +193,7 @@ public class ChoiceSetManagerTests {
         ChoiceCell cell1 = new ChoiceCell("test");
         ChoiceCell cell2 = new ChoiceCell("test2");
         ChoiceCell cell3 = new ChoiceCell("test3");
-        HashSet<ChoiceCell> cellSet = new HashSet<>();
+        ArrayList<ChoiceCell> cellSet = new ArrayList<>();
         cellSet.add(cell1);
         cellSet.add(cell2);
         cellSet.add(cell3);
@@ -226,7 +226,7 @@ public class ChoiceSetManagerTests {
         List<ChoiceCell> choices = new ArrayList<>();
         choices.add(cell2);
 
-        HashSet<ChoiceCell> returnedChoices = csm.choicesToBeRemovedFromPendingWithArray(choices);
+        ArrayList<ChoiceCell> returnedChoices = csm.choicesToBeRemovedFromPendingWithArray(choices);
 
         assertEquals(returnedChoices.size(), 1);
         for (ChoiceCell cell : returnedChoices) {
@@ -252,7 +252,7 @@ public class ChoiceSetManagerTests {
         List<ChoiceCell> choices = new ArrayList<>();
         choices.add(cell2);
 
-        HashSet<ChoiceCell> returnedChoices = csm.choicesToBeDeletedWithArray(choices);
+        ArrayList<ChoiceCell> returnedChoices = csm.choicesToBeDeletedWithArray(choices);
 
         assertEquals(returnedChoices.size(), 1);
         for (ChoiceCell cell : returnedChoices) {

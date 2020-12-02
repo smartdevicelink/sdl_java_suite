@@ -51,10 +51,10 @@ import java.util.List;
 class DeleteChoicesOperation extends Task {
     private static final String TAG = "DeleteChoicesOperation";
     private final WeakReference<ISdl> internalInterface;
-    private final HashSet<ChoiceCell> cellsToDelete;
+    private final ArrayList<ChoiceCell> cellsToDelete;
     private final CompletionListener completionListener;
 
-    DeleteChoicesOperation(ISdl internalInterface, HashSet<ChoiceCell> cellsToDelete, CompletionListener completionListener) {
+    DeleteChoicesOperation(ISdl internalInterface, ArrayList<ChoiceCell> cellsToDelete, CompletionListener completionListener) {
         super("DeleteChoicesOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.cellsToDelete = cellsToDelete;
