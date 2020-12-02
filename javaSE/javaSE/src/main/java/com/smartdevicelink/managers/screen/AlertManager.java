@@ -1,11 +1,9 @@
 package com.smartdevicelink.managers.screen;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
-
 /**
  * <strong>AlertManager</strong> <br>
  * <p>
