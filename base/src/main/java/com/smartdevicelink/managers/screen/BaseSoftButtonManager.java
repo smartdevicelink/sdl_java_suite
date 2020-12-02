@@ -340,49 +340,6 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         return false;
     }
 
-    /**
-     * Check if there is a collision in the ids provided by the developer and assign ids to the SoftButtonObjects that do not have ids
-     *
-     * @param softButtonObjects the list of the SoftButtonObject values that should be displayed on the head unit
-     * @return boolean representing whether the ids are unique or not
-     */
-    boolean checkAndAssignButtonIds(List<SoftButtonObject> softButtonObjects) {
-        // Check if multiple soft button objects have the same id
-        HashSet<Integer> buttonIdsSetByDevHashSet = new HashSet<>();
-        int currentSoftButtonId, numberOfButtonIdsSetByDev = 0, maxButtonIdsSetByDev = SoftButtonObject.SOFT_BUTTON_ID_MIN_VALUE;
-        for (SoftButtonObject softButtonObject : softButtonObjects) {
-            currentSoftButtonId = softButtonObject.getButtonId();
-            if (currentSoftButtonId != SoftButtonObject.SOFT_BUTTON_ID_NOT_SET_VALUE) {
-                numberOfButtonIdsSetByDev++;
-                if (currentSoftButtonId > maxButtonIdsSetByDev) {
-                    maxButtonIdsSetByDev = currentSoftButtonId;
-                }
-                buttonIdsSetByDevHashSet.add(softButtonObject.getButtonId());
-            }
-        }
-        if (numberOfButtonIdsSetByDev != buttonIdsSetByDevHashSet.size()) {
-            return false;
-        }
-
-
-        // Set ids for soft button objects
-        int generatedSoftButtonId = maxButtonIdsSetByDev;
-        for (SoftButtonObject softButtonObject : softButtonObjects) {
-            // If the dev did not set the buttonId, the manager should set an id on the dev's behalf
-            currentSoftButtonId = softButtonObject.getButtonId();
-            if (currentSoftButtonId == SoftButtonObject.SOFT_BUTTON_ID_NOT_SET_VALUE) {
-                do {
-                    if (generatedSoftButtonId >= SoftButtonObject.SOFT_BUTTON_ID_MAX_VALUE) {
-                        generatedSoftButtonId = SoftButtonObject.SOFT_BUTTON_ID_MIN_VALUE;
-                    }
-                    generatedSoftButtonId++;
-                } while (buttonIdsSetByDevHashSet.contains(generatedSoftButtonId));
-                softButtonObject.setButtonId(generatedSoftButtonId);
-            }
-        }
-        return true;
-    }
-
     private void transitionSoftButton() {
         SoftButtonTransitionOperation operation = new SoftButtonTransitionOperation(internalInterface, softButtonObjects, currentMainField1);
 
