@@ -7,6 +7,7 @@ import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.managers.screen.menu.DynamicMenuUpdatesMode;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
@@ -41,6 +42,9 @@ public class ScreenManagerTests {
 
         ISdl internalInterface = mock(ISdl.class);
         when(internalInterface.getTaskmaster()).thenReturn(new Taskmaster.Builder().build());
+        PermissionManager permissionManager = mock(PermissionManager.class);
+
+        when(internalInterface.getPermissionManager()).thenReturn(permissionManager);
         FileManager fileManager = mock(FileManager.class);
         screenManager = new ScreenManager(internalInterface, fileManager);
         screenManager.start(null);

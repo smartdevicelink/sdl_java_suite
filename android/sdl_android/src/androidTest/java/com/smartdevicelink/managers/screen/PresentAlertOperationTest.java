@@ -58,13 +58,14 @@ public class PresentAlertOperationTest {
     private AlertView alertView;
     private CompletionListener listener;
     private AlertAudioData alertAudioData;
-    SdlArtwork testAlertArtwork;
+    SdlArtwork testAlertArtwork, testSoftButtonArtwork;
     ISdl internalInterface;
     FileManager fileManager;
     SoftButtonState alertSoftButtonState;
     SoftButtonObject alertSoftButtonObject;
     private List<SpeechCapabilities> speechCapabilities;
     SdlFile testAudio;
+    AlertCompletionListener alertCompletionListener;
 
     private Answer<Void> onArtworkUploadSuccess = new Answer<Void>() {
         @Override
@@ -98,19 +99,28 @@ public class PresentAlertOperationTest {
         // mock things
         internalInterface = mock(ISdl.class);
         fileManager = mock(FileManager.class);
-        Uri uri = Uri.parse("android.resource://" + mTestContext.getPackageName() + "/raw/test_audio_square_250hz_80amp_1s.mp3");
-        testAudio = new SdlFile("TestAudioFile", FileType.AUDIO_MP3, uri, false);
+
+        testAlertArtwork = new SdlArtwork();
+        testAlertArtwork.setName("testArtwork1");
+        Uri uri1 = Uri.parse("android.resource://" + mTestContext.getPackageName() + "/drawable/ic_sdl");
+        testAlertArtwork.setUri(uri1);
+        testAlertArtwork.setType(FileType.GRAPHIC_PNG);
+
+        testSoftButtonArtwork = new SdlArtwork();
+        Uri uri2 = Uri.parse("android.resource://" + mTestContext.getPackageName() + "drawable-hdpi/sdl_lockscreen_icon.png");
+        testSoftButtonArtwork.setName("testArtwork2");
+        testSoftButtonArtwork.setUri(uri2);
+        testSoftButtonArtwork.setType(FileType.GRAPHIC_PNG);
+
+        Uri uri3 = Uri.parse("android.resource://" + mTestContext.getPackageName() + "/raw/test_audio_square_250hz_80amp_1s.mp3");
+        testAudio = new SdlFile("TestAudioFile", FileType.AUDIO_MP3, uri3, false);
 
         alertAudioData = new AlertAudioData("Spoken Sting");
         alertAudioData.setPlayTone(true);
         alertAudioData.addAudioFiles(Collections.singletonList(testAudio));
 
-        testAlertArtwork = new SdlArtwork();
-        testAlertArtwork.setName("testFile1");
-        Uri uri1 = Uri.parse("android.resource://" + mTestContext.getPackageName() + "/drawable/ic_sdl");
-        testAlertArtwork.setUri(uri1);
-        testAlertArtwork.setType(FileType.GRAPHIC_PNG);
-        alertSoftButtonState = new SoftButtonState("state1", "State 1", null);
+
+        alertSoftButtonState = new SoftButtonState("state1", "State 1", testSoftButtonArtwork);
         SoftButtonObject.OnEventListener onEventListener = new SoftButtonObject.OnEventListener() {
             @Override
             public void onPress(SoftButtonObject softButtonObject, OnButtonPress onButtonPress) {
@@ -141,7 +151,7 @@ public class PresentAlertOperationTest {
         defaultMainWindowCapability = getWindowCapability(3);
         speechCapabilities = new ArrayList<SpeechCapabilities>();
         speechCapabilities.add(SpeechCapabilities.FILE);
-        AlertCompletionListener alertCompletionListener = new AlertCompletionListener() {
+        alertCompletionListener = new AlertCompletionListener() {
             @Override
             public void onComplete(boolean success, Integer tryAgainTime) {
 
@@ -151,7 +161,7 @@ public class PresentAlertOperationTest {
     }
 
     @Test
-    public void testPresentAlert() {
+    public void testPresentAlertHappyPath() {
         doAnswer(onAlertSuccess).when(internalInterface).sendRPC(any(Alert.class));
         // Same response works for uploading artworks as it does for files
         doAnswer(onArtworkUploadSuccess).when(fileManager).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
@@ -169,6 +179,49 @@ public class PresentAlertOperationTest {
 
         verify(internalInterface, times(1)).sendRPC(any(Alert.class));
     }
+
+    @Test
+    public void testPresentAlertNoAudioAndArtwork() {
+        doAnswer(onAlertSuccess).when(internalInterface).sendRPC(any(Alert.class));
+
+        AlertView.Builder builder = new AlertView.Builder();
+        builder.setText("Hi");
+        builder.build();
+        AlertView alertView1 = builder.build();
+
+        presentAlertOperation = new PresentAlertOperation(internalInterface, alertView1, defaultMainWindowCapability, speechCapabilities, fileManager, 2, alertCompletionListener);
+
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
+
+        // Test Images need to be uploaded, sending text and uploading images
+        presentAlertOperation.onExecute();
+
+        // Verifies that uploadArtworks gets called only with the fist presentAlertOperation.onExecute call
+        verify(fileManager, times(0)).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
+        verify(fileManager, times(0)).uploadFiles(any(List.class), any(MultipleFileCompletionListener.class));
+
+        verify(internalInterface, times(1)).sendRPC(any(Alert.class));
+    }
+
+    @Test
+    public void testPresentAlertNoImages() {
+        doAnswer(onAlertSuccess).when(internalInterface).sendRPC(any(Alert.class));
+        // Same response works for uploading artworks as it does for files
+        doAnswer(onArtworkUploadSuccess).when(fileManager).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
+        doAnswer(onArtworkUploadSuccess).when(fileManager).uploadFiles(any(List.class), any(MultipleFileCompletionListener.class));
+
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
+
+        // Test Images need to be uploaded, sending text and uploading images
+        presentAlertOperation.onExecute();
+
+        // Verifies that uploadArtworks gets called only with the fist presentAlertOperation.onExecute call
+        verify(fileManager, times(1)).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
+        verify(fileManager, times(1)).uploadFiles(any(List.class), any(MultipleFileCompletionListener.class));
+
+        verify(internalInterface, times(1)).sendRPC(any(Alert.class));
+    }
+
 
     private WindowCapability getWindowCapability(int numberOfAlertFields) {
 

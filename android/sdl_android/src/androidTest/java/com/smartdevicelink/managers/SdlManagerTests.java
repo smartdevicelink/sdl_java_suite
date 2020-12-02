@@ -7,6 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
+import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -134,6 +135,10 @@ public class SdlManagerTests {
 
         // mock internalInterface and set it manually
         internalInterface = mock(ISdl.class);
+        manager.set_internalInterface(internalInterface);
+        PermissionManager permissionManager = mock(PermissionManager.class);
+
+        when(internalInterface.getPermissionManager()).thenReturn(permissionManager);
         when(internalInterface.getTaskmaster()).thenReturn(new Taskmaster.Builder().build());
         manager._internalInterface = internalInterface;
 

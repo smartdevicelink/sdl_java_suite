@@ -86,8 +86,8 @@ abstract class BaseScreenManager extends BaseSubManager {
     static final int SOFT_BUTTON_ID_NOT_SET_VALUE = -1;
     static final int SOFT_BUTTON_ID_MIN_VALUE = 0;
     static final int SOFT_BUTTON_ID_MAX_VALUE = 65535;
-    static HashSet<Integer> softButtonIDBySoftButtonManager = new HashSet<>();
-    static HashSet<Integer> softButtonIDByAlertManager = new HashSet<>();
+    static HashSet<Integer> softButtonIDBySoftButtonManager;
+    static HashSet<Integer> softButtonIDByAlertManager;
 
     // Sub manager listener
     private final CompletionListener subManagerListener = new CompletionListener() {
@@ -122,6 +122,8 @@ abstract class BaseScreenManager extends BaseSubManager {
     BaseScreenManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
+        softButtonIDBySoftButtonManager = new HashSet<>();
+        softButtonIDByAlertManager = new HashSet<>();
         initialize();
     }
 
