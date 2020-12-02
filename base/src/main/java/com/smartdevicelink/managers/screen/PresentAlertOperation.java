@@ -340,8 +340,8 @@ public class PresentAlertOperation extends Task {
                     DebugTool.logInfo(TAG, "Alert was dismissed successfully");
                 } else {
                     DebugTool.logInfo(TAG, "Alert was not dismissed successfully");
-
                 }
+                finishOperation(response.getSuccess(), null);
             }
         });
         internalInterface.get().sendRPC(cancelInteraction);

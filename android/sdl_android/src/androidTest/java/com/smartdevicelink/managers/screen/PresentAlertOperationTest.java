@@ -14,6 +14,8 @@ import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.Alert;
 import com.smartdevicelink.proxy.rpc.AlertResponse;
+import com.smartdevicelink.proxy.rpc.CancelInteraction;
+import com.smartdevicelink.proxy.rpc.CancelInteractionResponse;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
@@ -42,6 +44,7 @@ import java.util.List;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -88,6 +91,21 @@ public class PresentAlertOperationTest {
                 AlertResponse alertResponse = new AlertResponse();
                 alertResponse.setSuccess(true);
                 message.getOnRPCResponseListener().onResponse(correlationId, alertResponse);
+            }
+            return null;
+        }
+    };
+
+    private Answer<Void> onCancelAlert = new Answer<Void>() {
+        @Override
+        public Void answer(InvocationOnMock invocation) {
+            Object[] args = invocation.getArguments();
+            RPCRequest message = (RPCRequest) args[0];
+            if (message instanceof CancelInteraction) {
+                int correlationId = message.getCorrelationID();
+                CancelInteractionResponse cancelInteraction = new CancelInteractionResponse();
+                cancelInteraction.setSuccess(true);
+                message.getOnRPCResponseListener().onResponse(correlationId, cancelInteraction);
             }
             return null;
         }
@@ -220,6 +238,19 @@ public class PresentAlertOperationTest {
         verify(fileManager, times(1)).uploadFiles(any(List.class), any(MultipleFileCompletionListener.class));
 
         verify(internalInterface, times(1)).sendRPC(any(Alert.class));
+    }
+
+    @Test
+    public void testCancel() {
+        doAnswer(onCancelAlert).when(internalInterface).sendRPC(any(CancelInteraction.class));
+        AlertCompletionListener alertCompletionListener1 = new AlertCompletionListener() {
+            @Override
+            public void onComplete(boolean success, Integer tryAgainTime) {
+                assertTrue(success);
+            }
+        };
+        presentAlertOperation = new PresentAlertOperation(internalInterface, alertView, defaultMainWindowCapability, speechCapabilities, fileManager, 2, alertCompletionListener1);
+        alertView.cancel();
     }
 
 
