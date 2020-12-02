@@ -33,7 +33,6 @@ public class BaseAlertManager extends BaseSubManager {
     private static final String TAG = "BaseAlertManager";
     Queue transactionQueue;
     WindowCapability defaultMainWindowCapability;
-    private OnSystemCapabilityListener onDisplaysCapabilityListener;
     private OnSystemCapabilityListener onSpeechCapabilityListener;
     List<SpeechCapabilities> speechCapabilities;
     private UUID permissionListener;
@@ -67,11 +66,12 @@ public class BaseAlertManager extends BaseSubManager {
             return;
         }
 
-        if (!BaseScreenManager.checkAndAssignButtonIds(alert.getSoftButtons(), BaseScreenManager.ManagerLocation.ALERT_MANAGER)) {
-            DebugTool.logError(TAG, "Attempted to set soft button objects for Alert, but multiple buttons had the same id.");
-            return;
+        if(alert.getSoftButtons() != null) {
+            if (!BaseScreenManager.checkAndAssignButtonIds(alert.getSoftButtons(), BaseScreenManager.ManagerLocation.ALERT_MANAGER)) {
+                DebugTool.logError(TAG, "Attempted to set soft button objects for Alert, but multiple buttons had the same id.");
+                return;
+            }
         }
-
         PresentAlertOperation operation = new PresentAlertOperation(internalInterface, alert, defaultMainWindowCapability, speechCapabilities, fileManager.get(), nextCancelId++, listener);
         transactionQueue.add(operation, false);
 
