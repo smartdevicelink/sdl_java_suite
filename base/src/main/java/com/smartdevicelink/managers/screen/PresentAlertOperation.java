@@ -127,11 +127,14 @@ public class PresentAlertOperation extends Task {
             artworksToBeUploaded.add(alertView.getIcon());
         }
 
-        for (SoftButtonObject object : alertView.getSoftButtons()) {
-            if (supportsSoftButtonImages() && artworkNeedsUploaded(object.getCurrentState().getArtwork())) {
-                artworksToBeUploaded.add(object.getCurrentState().getArtwork());
+        if(alertView.getSoftButtons() != null) {
+            for (SoftButtonObject object : alertView.getSoftButtons()) {
+                if (supportsSoftButtonImages() && artworkNeedsUploaded(object.getCurrentState().getArtwork())) {
+                    artworksToBeUploaded.add(object.getCurrentState().getArtwork());
+                }
             }
         }
+
         uploadImages(artworksToBeUploaded, listener);
     }
 
