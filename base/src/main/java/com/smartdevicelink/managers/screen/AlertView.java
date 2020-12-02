@@ -175,12 +175,15 @@ public class AlertView implements Cloneable{
     public SdlArtwork getIcon() {
         return icon;
     }
-
-    public static int getDefaultTimeout() {
-        return AlertView.defaultTimeout;
+    public void setIcon(SdlArtwork icon) {
+        this.icon = icon;
     }
 
-    public static void setDefaultTimeout(int defaultTimeout) {
+    public int getDefaultTimeout() {
+        return defaultTimeout;
+    }
+
+    public void setDefaultTimeout(int defaultTimeout) {
         if (defaultTimeout <= TIMEOUT_MIN) {
             AlertView.defaultTimeout = TIMEOUT_MIN;
             return;
@@ -189,5 +192,9 @@ public class AlertView implements Cloneable{
             return;
         }
         AlertView.defaultTimeout = defaultTimeout;
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
     }
 }
