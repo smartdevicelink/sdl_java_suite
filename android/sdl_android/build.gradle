@@ -7,8 +7,9 @@ android {
         targetSdkVersion 29
         versionCode 17
         versionName new File(projectDir.path, ('/../../VERSION')).text.trim()
-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        buildConfigField "String", "VERSION_NAME", '\"' + versionName + '\"'
         resValue "string", "SDL_LIB_VERSION", '\"' + versionName + '\"'
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
         release {
