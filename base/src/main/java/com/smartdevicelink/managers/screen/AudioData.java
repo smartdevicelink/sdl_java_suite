@@ -27,7 +27,8 @@ public class AudioData {
     }
 
     public AudioData(@NonNull String spokenString) {
-        prompts = Collections.singletonList(new TTSChunk(spokenString, SpeechCapabilities.TEXT));
+        this.prompts = new ArrayList<>();
+        prompts.add(new TTSChunk(spokenString, SpeechCapabilities.TEXT));
     }
 
     public AudioData(@NonNull String phoneticString, @NonNull SpeechCapabilities phoneticType) {
@@ -35,7 +36,8 @@ public class AudioData {
         if (!isValidPhoneticType(phoneticType)) {
             return;
         }
-        prompts = Collections.singletonList(new TTSChunk(phoneticString, phoneticType));
+        this.prompts = new ArrayList<>();
+        prompts.add(new TTSChunk(phoneticString, phoneticType));
     }
 
     boolean isValidPhoneticType(SpeechCapabilities phoneticType) {
@@ -48,13 +50,12 @@ public class AudioData {
 
     public void addAudioFiles(@NonNull List<SdlFile> audioFiles) {
         if (this.audioFiles == null) {
-            this.audioFiles = audioFiles;
-            return;
+            this.audioFiles = new ArrayList<>();
         }
         this.audioFiles.addAll(audioFiles);
     }
 
-    private void addSpeechSynthesizerStrings(@NonNull List<String> spokenString) {
+    public void addSpeechSynthesizerStrings(@NonNull List<String> spokenString) {
         if (spokenString.size() == 0) {
             return;
         }
@@ -75,7 +76,7 @@ public class AudioData {
         prompts.addAll(newPrompts);
     }
 
-    private void addPhoneticSpeechSynthesizerStrings(@NonNull List<String> phoneticString, @NonNull SpeechCapabilities phoneticType) {
+    public void addPhoneticSpeechSynthesizerStrings(@NonNull List<String> phoneticString, @NonNull SpeechCapabilities phoneticType) {
         if (!(isValidPhoneticType(phoneticType)) || phoneticString.size() == 0) {
             return;
         }
