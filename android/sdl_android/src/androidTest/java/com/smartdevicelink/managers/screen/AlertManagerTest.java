@@ -1,7 +1,6 @@
 package com.smartdevicelink.managers.screen;
 
 import android.content.Context;
-
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.livio.taskmaster.Taskmaster;
@@ -10,7 +9,10 @@ import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
 import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
+import com.smartdevicelink.managers.permission.OnPermissionChangeListener;
 import com.smartdevicelink.managers.permission.PermissionManager;
+import com.smartdevicelink.managers.permission.PermissionStatus;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
@@ -29,12 +31,16 @@ import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
@@ -59,6 +65,19 @@ public class AlertManagerTest {
         Taskmaster taskmaster = new Taskmaster.Builder().build();
         taskmaster.start();
         when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
+
+        Answer<Void> permissionAnswer = new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                OnPermissionChangeListener onPermissionChangeListener = (OnPermissionChangeListener) args[2];
+                Map<FunctionID, PermissionStatus > allowedPermissions = new HashMap<>();
+                int permissionGroupStatus = PermissionManager.PERMISSION_GROUP_STATUS_DISALLOWED;
+                onPermissionChangeListener.onPermissionsChange(allowedPermissions,permissionGroupStatus);
+                return null;
+            }
+        };
+        doAnswer(permissionAnswer).when(permissionManager).addListener(any(List.class), anyInt(), any(OnPermissionChangeListener.class));
 
         Answer<Void> onSystemCapabilityAnswer = new Answer<Void>() {
             @Override
@@ -85,6 +104,7 @@ public class AlertManagerTest {
     public void testInstantiation() {
         assertNotNull(alertManager.defaultMainWindowCapability);
         assertNotNull(alertManager.nextCancelId);
+        assertFalse(alertManager.currentAlertPermissionStatus);
     }
 
     @Test

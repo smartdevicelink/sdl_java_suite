@@ -36,7 +36,7 @@ public class BaseAlertManager extends BaseSubManager {
     private OnSystemCapabilityListener onSpeechCapabilityListener;
     List<SpeechCapabilities> speechCapabilities;
     private UUID permissionListener;
-    private boolean currentAlertPermissionStatus = false;
+    boolean currentAlertPermissionStatus = false;
     private final WeakReference<FileManager> fileManager;
     int nextCancelId;
     final int alertCancelIdMin = 20000;
@@ -148,7 +148,11 @@ public class BaseAlertManager extends BaseSubManager {
         permissionListener = internalInterface.getPermissionManager().addListener(Collections.singletonList(alertPermissionElement), internalInterface.getPermissionManager().PERMISSION_GROUP_TYPE_ANY, new OnPermissionChangeListener() {
             @Override
             public void onPermissionsChange(@NonNull Map<FunctionID, PermissionStatus> allowedPermissions, int permissionGroupStatus) {
-                currentAlertPermissionStatus = allowedPermissions.get(FunctionID.ALERT).getIsRPCAllowed();
+                if(allowedPermissions.get(FunctionID.ALERT) != null){
+                    currentAlertPermissionStatus = allowedPermissions.get(FunctionID.ALERT).getIsRPCAllowed();
+                } else {
+                    currentAlertPermissionStatus = false;
+                }
                 updateTransactionQueueSuspended();
             }
         });
