@@ -86,7 +86,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
     private final WeakReference<FileManager> fileManager;
 
-    List<MenuCell> menuCells, waitingUpdateMenuCells, oldMenuCells, keepsNew, keepsOld;
+    List<MenuCell> menuCells, waitingUpdateMenuCells, oldMenuCells, keepsNew, keepsOld, uniqueNamedMenuCells;
     List<RPCRequest> inProgressUpdate;
     DynamicMenuUpdatesMode dynamicMenuUpdatesMode;
     MenuConfiguration menuConfiguration;
@@ -145,6 +145,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         waitingUpdateMenuCells = null;
         keepsNew = null;
         keepsOld = null;
+        uniqueNamedMenuCells = null;
         menuConfiguration = null;
         sdlMsgVersion = null;
 
@@ -187,13 +188,20 @@ abstract class BaseMenuManager extends BaseSubManager {
 
         // Update our Lists
         // set old list
-        if (menuCells != null) {
+        if (sdlMsgVersion.getMajorVersion() < 7 && uniqueNamedMenuCells != null) {
+            oldMenuCells = new ArrayList<>(uniqueNamedMenuCells);
+        }
+        else if (menuCells != null) {
             oldMenuCells = new ArrayList<>(menuCells);
         }
         // copy new list
         menuCells = new ArrayList<>();
         if (clonedCells != null && !clonedCells.isEmpty()) {
             menuCells.addAll(clonedCells);
+            if (sdlMsgVersion.getMajorVersion() < 7) {
+                uniqueNamedMenuCells.addAll(clonedCells);
+                createUniqueNameMenuCells();
+            }
         }
 
         // HashSet order doesnt matter / does not allow duplicates
@@ -201,7 +209,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         HashSet<String> allMenuVoiceCommands = new HashSet<>();
         int voiceCommandCount = 0;
 
-        for (MenuCell cell : menuCells) {
+        for (MenuCell cell : menuCellListToBeUsed()) {
             titleCheckSet.add(cell.getTitle());
             if (cell.getVoiceCommands() != null) {
                 allMenuVoiceCommands.addAll(cell.getVoiceCommands());
@@ -209,7 +217,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             }
         }
         // Check for duplicate titles
-        if (titleCheckSet.size() != menuCells.size()) {
+        if (titleCheckSet.size() != menuCellListToBeUsed().size()) {
             DebugTool.logError(TAG, "Not all cell titles are unique. The menu will not be set");
             return;
         }
@@ -221,7 +229,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         }
 
         // Upload the Artworks
-        List<SdlArtwork> artworksToBeUploaded = findAllArtworksToBeUploadedFromCells(menuCells);
+        List<SdlArtwork> artworksToBeUploaded = findAllArtworksToBeUploadedFromCells(menuCellListToBeUsed());
         if (artworksToBeUploaded.size() > 0 && fileManager.get() != null) {
             fileManager.get().uploadArtworks(artworksToBeUploaded, new MultipleFileCompletionListener() {
                 @Override
@@ -400,7 +408,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             // We are in NONE or the menu is in use, bail out of here
             DebugTool.logInfo(TAG, "HMI in None or System Context Menu, returning");
             waitingOnHMIUpdate = true;
-            waitingUpdateMenuCells = menuCells;
+            waitingUpdateMenuCells = menuCellListToBeUsed();
             return;
         }
 
@@ -416,23 +424,23 @@ abstract class BaseMenuManager extends BaseSubManager {
         // a session.
         if (checkUpdateMode(dynamicMenuUpdatesMode, displayType)) {
             // run the lists through the new algorithm
-            RunScore rootScore = runMenuCompareAlgorithm(oldMenuCells, menuCells);
+            RunScore rootScore = runMenuCompareAlgorithm(oldMenuCells, menuCellListToBeUsed());
             if (rootScore == null) {
                 // send initial menu (score will return null)
                 // make a copy of our current cells
                 DebugTool.logInfo(TAG, "Creating initial Menu");
-                // Set the names to be unique if needed
-                if(internalInterface.getSdlMsgVersion().getMajorVersion() < 7) {
-                    updateNamesOnChoicesWithUniqueNames(menuCells);
-                }
                 // Set the IDs if needed
                 lastMenuId = menuCellIdMin;
                 updateIdsOnMenuCells(menuCells, parentIdNotFound);
-                this.oldMenuCells = new ArrayList<>(menuCells);
+                if (sdlMsgVersion.getMajorVersion() < 7) {
+                    lastMenuId = menuCellIdMin;
+                    updateIdsOnMenuCells(uniqueNamedMenuCells, parentIdNotFound);
+                }
+                this.oldMenuCells = new ArrayList<>(menuCellListToBeUsed());
                 createAndSendEntireMenu();
             } else {
                 DebugTool.logInfo(TAG, "Dynamically Updating Menu");
-                if (menuCells.size() == 0 && (oldMenuCells != null && oldMenuCells.size() > 0)) {
+                if (menuCellListToBeUsed().size() == 0 && (oldMenuCells != null && oldMenuCells.size() > 0)) {
                     // the dev wants to clear the menu. We have old cells and an empty array of new ones.
                     deleteMenuWhenNewCellsEmpty();
                 } else {
@@ -444,15 +452,16 @@ abstract class BaseMenuManager extends BaseSubManager {
             // we are in compatibility mode
             // Set the names to be unique if needed
             DebugTool.logInfo(TAG, "Updating menus in compatibility mode");
-            if(internalInterface.getSdlMsgVersion().getMajorVersion() >= 7) {
-                updateNamesOnChoicesWithUniqueNames(menuCells);
-            }
             lastMenuId = menuCellIdMin;
             updateIdsOnMenuCells(menuCells, parentIdNotFound);
-            // if the old cell array is not null, we want to delete the entire thing, else copy the new array
-            if (oldMenuCells == null) {
-                this.oldMenuCells = new ArrayList<>(menuCells);
+            if (sdlMsgVersion.getMajorVersion() < 7) {
+                lastMenuId = menuCellIdMin;
+                updateIdsOnMenuCells(uniqueNamedMenuCells, parentIdNotFound);
             }
+            if (oldMenuCells == null) {
+                this.oldMenuCells = new ArrayList<>(menuCellListToBeUsed());
+            }
+            // if the old cell array is not null, we want to delete the entire thing, else copy the new array
             createAndSendEntireMenu();
         }
     }
@@ -523,9 +532,9 @@ abstract class BaseMenuManager extends BaseSubManager {
             Integer newInt = newIntArray.get(x);
             if (newInt.equals(MARKED_FOR_ADDITION)) {
                 // grab cell to send to function to create add commands
-                adds.add(menuCells.get(x));
+                adds.add(menuCellListToBeUsed().get(x));
             } else if (newInt.equals(KEEP)) {
-                keepsNew.add(menuCells.get(x));
+                keepsNew.add(menuCellListToBeUsed().get(x));
             }
         }
         updateIdsOnDynamicCells(adds);
@@ -793,14 +802,14 @@ abstract class BaseMenuManager extends BaseSubManager {
     // IDs
 
     private void updateIdsOnDynamicCells(List<MenuCell> dynamicCells) {
-        if (menuCells != null && menuCells.size() > 0 && dynamicCells != null && dynamicCells.size() > 0) {
-            for (int z = 0; z < menuCells.size(); z++) {
-                MenuCell mainCell = menuCells.get(z);
+        if (menuCellListToBeUsed() != null && menuCellListToBeUsed().size() > 0 && dynamicCells != null && dynamicCells.size() > 0) {
+            for (int z = 0; z < menuCellListToBeUsed().size(); z++) {
+                MenuCell mainCell = menuCellListToBeUsed().get(z);
                 for (int i = 0; i < dynamicCells.size(); i++) {
                     MenuCell dynamicCell = dynamicCells.get(i);
                     if (mainCell.equals(dynamicCell)) {
                         int newId = ++lastMenuId;
-                        menuCells.get(z).setCellId(newId);
+                        menuCellListToBeUsed().get(z).setCellId(newId);
                         dynamicCells.get(i).setCellId(newId);
 
                         if (mainCell.getSubCells() != null && mainCell.getSubCells().size() > 0) {
@@ -836,17 +845,17 @@ abstract class BaseMenuManager extends BaseSubManager {
         return null;
     }
 
-    void updateNamesOnChoicesWithUniqueNames(List<MenuCell> cells) {
-        for (int i = 0; i < cells.size(); i ++) {
-            String testName = cells.get(i).getTitle();
+    void createUniqueNameMenuCells() {
+        for (int i = 0; i < uniqueNamedMenuCells.size(); i ++) {
+            String testName = uniqueNamedMenuCells.get(i).getTitle();
             int counter = 1;
-            for (int j = i+1; j < cells.size(); j++) {
-                if (testName.equals(cells.get(j).getTitle())) {
+            for (int j = i+1; j < uniqueNamedMenuCells.size(); j++) {
+                if (testName.equals(uniqueNamedMenuCells.get(j).getTitle())) {
                     if (counter == 1) {
-                        cells.get(i).setTitle(testName + "(1)");
+                        uniqueNamedMenuCells.get(i).setTitle(testName + "(1)");
                     }
                     counter++;
-                    cells.get(j).setTitle(testName + "(" + counter + ")");
+                    uniqueNamedMenuCells.get(j).setTitle(testName + "(" + counter + ")");
                 }
             }
         }
@@ -912,8 +921,8 @@ abstract class BaseMenuManager extends BaseSubManager {
         List<RPCRequest> builtCommands = new ArrayList<>();
 
         // We need the index so we will use this type of loop
-        for (int z = 0; z < menuCells.size(); z++) {
-            MenuCell mainCell = menuCells.get(z);
+        for (int z = 0; z < menuCellListToBeUsed().size(); z++) {
+            MenuCell mainCell = menuCellListToBeUsed().get(z);
             for (int i = 0; i < cellsToAdd.size(); i++) {
                 MenuCell addCell = cellsToAdd.get(i);
                 if (mainCell.equals(addCell)) {
@@ -1097,7 +1106,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             @Override
             public void onNotified(RPCNotification notification) {
                 OnCommand onCommand = (OnCommand) notification;
-                callListenerForCells(menuCells, onCommand);
+                callListenerForCells(menuCellListToBeUsed(), onCommand);
             }
         };
         internalInterface.addOnRPCNotificationListener(FunctionID.ON_COMMAND, commandListener);
@@ -1111,7 +1120,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             // We are in NONE or the menu is in use, bail out of here
             DebugTool.logInfo(TAG, "HMI in None or System Context Menu, returning");
             waitingOnHMIUpdate = true;
-            waitingUpdateMenuCells = menuCells;
+            waitingUpdateMenuCells = menuCellListToBeUsed();
             return;
         }
 
@@ -1125,7 +1134,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         deleteRootMenu(new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
-                createAndSendMenuCellRPCs(menuCells, new CompletionListener() {
+                createAndSendMenuCellRPCs(menuCellListToBeUsed(), new CompletionListener() {
                     @Override
                     public void onComplete(boolean success) {
                         inProgressUpdate = null;
@@ -1363,5 +1372,13 @@ abstract class BaseMenuManager extends BaseSubManager {
             clone.add(menuCell.clone());
         }
         return clone;
+    }
+
+    private List<MenuCell> menuCellListToBeUsed() {
+        if (sdlMsgVersion.getMajorVersion() < 7) {
+            return uniqueNamedMenuCells;
+        } else {
+            return menuCells;
+        }
     }
 }
