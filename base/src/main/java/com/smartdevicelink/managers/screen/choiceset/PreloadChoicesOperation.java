@@ -68,15 +68,14 @@ class PreloadChoicesOperation extends Task {
     private final WeakReference<FileManager> fileManager;
     private final WindowCapability defaultMainWindowCapability;
     private final String displayName;
-    private final ArrayList<ChoiceCell> cellsToUpload;
+    private final HashSet<ChoiceCell> cellsToUpload;
     private final CompletionListener completionListener;
-    private boolean cellsHaveUniqueNames = false;
     private boolean isRunning;
     private final boolean isVROptional;
     private boolean choiceError = false;
 
     PreloadChoicesOperation(ISdl internalInterface, FileManager fileManager, String displayName, WindowCapability defaultMainWindowCapability,
-                            Boolean isVROptional, ArrayList<ChoiceCell> cellsToPreload, CompletionListener listener) {
+                            Boolean isVROptional, HashSet<ChoiceCell> cellsToPreload, CompletionListener listener) {
         super("PreloadChoicesOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
@@ -85,7 +84,6 @@ class PreloadChoicesOperation extends Task {
         this.isVROptional = isVROptional;
         this.cellsToUpload = cellsToPreload;
         if (internalInterface.getSdlMsgVersion() != null && internalInterface.getSdlMsgVersion().getMajorVersion() < 7) {
-            cellsHaveUniqueNames = true;
             updateCellsForUniqueNames();
         }
         this.completionListener = listener;
@@ -102,21 +100,17 @@ class PreloadChoicesOperation extends Task {
         });
     }
 
-    void removeChoicesFromUpload(ArrayList<ChoiceCell> choices) {
+    void removeChoicesFromUpload(HashSet<ChoiceCell> choices) {
         if (isRunning) {
             return;
         }
-        if (cellsHaveUniqueNames) {
-            for (ChoiceCell choiceToRemove : choices) {
-                for (ChoiceCell cellToUpload : cellsToUpload) {
-                    if (cellToUpload.getChoiceId() == choiceToRemove.getChoiceId()) {
-                        cellsToUpload.remove(choiceToRemove);
-                        break;
-                    }
+        for (ChoiceCell choiceToRemove : choices) {
+            for (ChoiceCell cellToUpload : cellsToUpload) {
+                if (cellToUpload.getChoiceId() == choiceToRemove.getChoiceId()) {
+                    cellsToUpload.remove(choiceToRemove);
+                    break;
                 }
             }
-        } else {
-            cellsToUpload.removeAll(choices);
         }
     }
 
@@ -295,16 +289,16 @@ class PreloadChoicesOperation extends Task {
     }
 
     void updateCellsForUniqueNames() {
-        for (int i = 0; i < cellsToUpload.size(); i ++) {
-            String testName = cellsToUpload.get(i).getText();
+        for (ChoiceCell cell : cellsToUpload) {
+            String testName = cell.getText();
             int counter = 1;
-            for (int j = i+1; j < cellsToUpload.size(); j++) {
-                if (testName.equals(cellsToUpload.get(j).getText())) {
-                    if (counter == 1) {
-                        cellsToUpload.get(i).setText(testName + "(1)");
+            for (ChoiceCell cell2 : cellsToUpload) {
+                if (cell2.getText().equals(testName)) {
+                    if (cell2.getChoiceId() != cell.getChoiceId()) {
+                        counter++;
+                        cell.setText(testName + "(1)");
+                        cell2.setText(testName + "(" + counter + ")");
                     }
-                    counter++;
-                    cellsToUpload.get(j).setText(testName + "(" + counter + ")");
                 }
             }
         }

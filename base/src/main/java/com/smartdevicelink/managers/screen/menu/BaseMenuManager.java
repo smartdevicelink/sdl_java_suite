@@ -43,7 +43,6 @@ import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
 import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
-import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -423,8 +422,8 @@ abstract class BaseMenuManager extends BaseSubManager {
                 // make a copy of our current cells
                 DebugTool.logInfo(TAG, "Creating initial Menu");
                 // Set the names to be unique if needed
-                if(internalInterface.getSdlMsgVersion().getMajorVersion() >= 7) {
-                    updateNamesOnChoices(menuCells);
+                if(internalInterface.getSdlMsgVersion().getMajorVersion() < 7) {
+                    updateNamesOnChoicesWithUniqueNames(menuCells);
                 }
                 // Set the IDs if needed
                 lastMenuId = menuCellIdMin;
@@ -446,7 +445,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             // Set the names to be unique if needed
             DebugTool.logInfo(TAG, "Updating menus in compatibility mode");
             if(internalInterface.getSdlMsgVersion().getMajorVersion() >= 7) {
-                updateNamesOnChoices(menuCells);
+                updateNamesOnChoicesWithUniqueNames(menuCells);
             }
             lastMenuId = menuCellIdMin;
             updateIdsOnMenuCells(menuCells, parentIdNotFound);
@@ -837,7 +836,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         return null;
     }
 
-    void updateNamesOnChoices(List<MenuCell> cells) {
+    void updateNamesOnChoicesWithUniqueNames(List<MenuCell> cells) {
         for (int i = 0; i < cells.size(); i ++) {
             String testName = cells.get(i).getTitle();
             int counter = 1;

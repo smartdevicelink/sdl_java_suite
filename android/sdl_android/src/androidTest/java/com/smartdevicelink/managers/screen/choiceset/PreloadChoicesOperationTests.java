@@ -81,7 +81,7 @@ public class PreloadChoicesOperationTests {
 
         ChoiceCell cell1 = new ChoiceCell("cell 1");
         ChoiceCell cell2 = new ChoiceCell("cell 2", null, TestValues.GENERAL_ARTWORK);
-        ArrayList<ChoiceCell> cellsToPreload = new ArrayList<>();
+        HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
         cellsToPreload.add(cell1);
         cellsToPreload.add(cell2);
 
@@ -115,7 +115,7 @@ public class PreloadChoicesOperationTests {
 
         ChoiceCell cell1 = new ChoiceCell("cell 1");
         ChoiceCell cell2 = new ChoiceCell("cell 2", null, TestValues.GENERAL_ARTWORK);
-        ArrayList<ChoiceCell> cellsToPreload = new ArrayList<>();
+        HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
         cellsToPreload.add(cell1);
         cellsToPreload.add(cell2);
 
@@ -133,7 +133,7 @@ public class PreloadChoicesOperationTests {
 
         ChoiceCell cell1 = new ChoiceCell("cell 1");
         ChoiceCell cell2 = new ChoiceCell("cell 2", null, TestValues.GENERAL_ARTWORK);
-        ArrayList<ChoiceCell> cellsToPreload = new ArrayList<>();
+        HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
         cellsToPreload.add(cell1);
         cellsToPreload.add(cell2);
 

@@ -194,7 +194,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             return;
         }
 
-        final ArrayList<ChoiceCell> choicesToUpload = new ArrayList<>(choices);
+        final HashSet<ChoiceCell> choicesToUpload = new HashSet<>(choices);
         choicesToUpload.removeAll(preloadedChoices);
         choicesToUpload.removeAll(pendingPreloadChoices);
 
@@ -248,7 +248,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         // Find cells to be deleted that are already uploaded or are pending upload
         final HashSet<ChoiceCell> cellsToBeDeleted = choicesToBeDeletedWithArray(choices);
-        ArrayList<ChoiceCell> cellsToBeRemovedFromPending = choicesToBeRemovedFromPendingWithArray(choices);
+        HashSet<ChoiceCell> cellsToBeRemovedFromPending = choicesToBeRemovedFromPendingWithArray(choices);
         // If choices are deleted that are already uploaded or pending and are used by a pending presentation, cancel it and send an error
         HashSet<ChoiceCell> pendingPresentationChoices = new HashSet<>();
         if (pendingPresentationSet != null && pendingPresentationSet.getChoices() != null) {
@@ -482,13 +482,13 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         return choicesSet;
     }
 
-    ArrayList<ChoiceCell> choicesToBeRemovedFromPendingWithArray(List<ChoiceCell> choices) {
-        ArrayList<ChoiceCell> choicesSet = new ArrayList<>(choices);
+    HashSet<ChoiceCell> choicesToBeRemovedFromPendingWithArray(List<ChoiceCell> choices) {
+        HashSet<ChoiceCell> choicesSet = new HashSet<>(choices);
         choicesSet.retainAll(this.pendingPreloadChoices);
         return choicesSet;
     }
 
-    void updateIdsOnChoices(ArrayList<ChoiceCell> choices) {
+    void updateIdsOnChoices(HashSet<ChoiceCell> choices) {
         for (ChoiceCell cell : choices) {
             cell.setChoiceId(this.nextChoiceId);
             this.nextChoiceId++;
