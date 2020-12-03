@@ -20,8 +20,6 @@ import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
-import com.smartdevicelink.proxy.rpc.Show;
-import com.smartdevicelink.proxy.rpc.ShowResponse;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
@@ -166,6 +164,7 @@ public class PresentAlertOperationTest {
         builder.setShowWaitIndicator(true);
         alertView = builder.build();
 
+
         defaultMainWindowCapability = getWindowCapability(3);
         speechCapabilities = new ArrayList<SpeechCapabilities>();
         speechCapabilities.add(SpeechCapabilities.FILE);
@@ -193,7 +192,8 @@ public class PresentAlertOperationTest {
 
         // Verifies that uploadArtworks gets called only with the fist presentAlertOperation.onExecute call
         verify(fileManager, times(1)).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
-        verify(fileManager, times(1)).uploadFiles(any(List.class), any(MultipleFileCompletionListener.class));
+
+    //    verify(fileManager, times(1)).uploadFiles(any(List.class), any(MultipleFileCompletionListener.class));
 
         verify(internalInterface, times(1)).sendRPC(any(Alert.class));
     }
@@ -235,7 +235,7 @@ public class PresentAlertOperationTest {
 
         // Verifies that uploadArtworks gets called only with the fist presentAlertOperation.onExecute call
         verify(fileManager, times(1)).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
-        verify(fileManager, times(1)).uploadFiles(any(List.class), any(MultipleFileCompletionListener.class));
+//        verify(fileManager, times(1)).uploadFiles(any(List.class), any(MultipleFileCompletionListener.class));
 
         verify(internalInterface, times(1)).sendRPC(any(Alert.class));
     }
