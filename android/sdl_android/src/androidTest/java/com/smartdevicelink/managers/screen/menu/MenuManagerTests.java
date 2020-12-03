@@ -492,6 +492,31 @@ public class MenuManagerTests {
     }
 
     @Test
+    public void testSettingUniqueMenuCells() {
+        // call open Menu
+        List<MenuCell> testCells = createTestCellsWithMatchingNames();
+        menuManager.currentHMILevel = HMILevel.HMI_FULL;
+        menuManager.sdlMsgVersion = new SdlMsgVersion(6, 0);
+        // has to get success response to be true
+        menuManager.setMenuCells(testCells);
+        assertEquals(menuManager.uniqueNamedMenuCells.get(0).getTitle(), "testCell(1)");
+        assertEquals(menuManager.uniqueNamedMenuCells.get(1).getTitle(), "testCell2(1)");
+        assertEquals(menuManager.uniqueNamedMenuCells.get(2).getTitle(), "testCell(2)");
+        assertEquals(menuManager.uniqueNamedMenuCells.get(3).getTitle(), "testCell2(2)");
+        assertEquals(menuManager.uniqueNamedMenuCells.get(4).getTitle(), "testCell2(3)");
+        assertEquals(menuManager.uniqueNamedMenuCells.get(5).getTitle(), "testCell3");
+        assertEquals(menuManager.uniqueNamedMenuCells.get(6).getTitle(), "testCell4");
+
+        assertEquals(menuManager.menuCells.get(0).getTitle(), "testCell");
+        assertEquals(menuManager.menuCells.get(1).getTitle(), "testCell2");
+        assertEquals(menuManager.menuCells.get(2).getTitle(), "testCell");
+        assertEquals(menuManager.menuCells.get(3).getTitle(), "testCell2");
+        assertEquals(menuManager.menuCells.get(4).getTitle(), "testCell2");
+        assertEquals(menuManager.menuCells.get(5).getTitle(), "testCell3");
+        assertEquals(menuManager.menuCells.get(6).getTitle(), "testCell4");
+    }
+
+    @Test
     public void testOpeningMainMenu() {
         // call open Menu
         MenuManager mockMenuManager = mock(MenuManager.class);
@@ -758,4 +783,29 @@ public class MenuManagerTests {
 
     }
 
+    private List<MenuCell> createTestCellsWithMatchingNames() {
+
+        MenuSelectionListener menuSelectionListenerA = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerB = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerC = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerD = mock(MenuSelectionListener.class);
+
+        MenuCell A = new MenuCell("testCell", null, null, menuSelectionListenerA);
+
+        MenuCell B = new MenuCell("testCell2", null, null, menuSelectionListenerB);
+
+        MenuCell C = new MenuCell("testCell", null, null, menuSelectionListenerC);
+
+        MenuCell D = new MenuCell("testCell2", null, null, menuSelectionListenerD);
+
+        MenuCell E = new MenuCell("testCell2", null, null, menuSelectionListenerD);
+
+        MenuCell F = new MenuCell("testCell3", null, null, menuSelectionListenerD);
+
+        MenuCell G = new MenuCell("testCell4", null, null, menuSelectionListenerD);
+
+
+        return Arrays.asList(A, B, C, D, E, F, G);
+
+    }
 }

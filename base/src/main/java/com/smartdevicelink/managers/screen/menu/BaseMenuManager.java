@@ -200,7 +200,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         if (clonedCells != null && !clonedCells.isEmpty()) {
             menuCells.addAll(clonedCells);
             if (sdlMsgVersion.getMajorVersion() < 7) {
-                uniqueNamedMenuCells.addAll(clonedCells);
+                uniqueNamedMenuCells = cloneMenuCellsList(clonedCells);
                 createUniqueNameMenuCells();
             }
         }
