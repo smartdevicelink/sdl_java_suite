@@ -1,3 +1,35 @@
+/*
+ * Copyright (c) 2020 Livio, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the Livio Inc. nor the names of its contributors
+ * may be used to endorse or promote products derived from this software
+ * without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package com.smartdevicelink.managers.screen;
 
 import androidx.annotation.NonNull;
@@ -7,16 +39,15 @@ import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class AudioData {
 
-    private static final String TAG = "AudioData";
+    // The text-to-speech prompts that will used.
     private List<TTSChunk> prompts;
-    private List<SdlFile> audioFiles;
 
-    // All vars have getters as well but no setters
+    // The audio files that will be uploaded and used.
+    private List<SdlFile> audioFiles;
 
     public AudioData() {
     }
@@ -32,7 +63,6 @@ public class AudioData {
     }
 
     public AudioData(@NonNull String phoneticString, @NonNull SpeechCapabilities phoneticType) {
-
         if (!isValidPhoneticType(phoneticType)) {
             return;
         }
@@ -40,6 +70,12 @@ public class AudioData {
         prompts.add(new TTSChunk(phoneticString, phoneticType));
     }
 
+    /**
+     * Checks if the phonetic type can be used to create a text-to-speech string.
+     *
+     * @param phoneticType The phonetic type of the text-to-speech string
+     * @return True if the phoneticType is of type `SAPI_PHONEMES`, `LHPLUS_PHONEMES`, `TEXT`, or `PRE_RECORDED`; false if not.
+     */
     boolean isValidPhoneticType(SpeechCapabilities phoneticType) {
         if (!(phoneticType.equals(SpeechCapabilities.SAPI_PHONEMES) || phoneticType.equals(SpeechCapabilities.LHPLUS_PHONEMES)
                 || phoneticType.equals(SpeechCapabilities.TEXT) || phoneticType.equals(SpeechCapabilities.PRE_RECORDED))) {
@@ -48,6 +84,12 @@ public class AudioData {
         return true;
     }
 
+    /**
+     * Create additional SDLFiles holding data or pointing to a file on the file system. When this object is passed to an `Alert` or `Speak`,
+     * the file will be uploaded if it is not already, then played if the system supports that feature.
+     *
+     * @param audioFiles A list of audio file to be played by the system
+     */
     public void addAudioFiles(@NonNull List<SdlFile> audioFiles) {
         if (this.audioFiles == null) {
             this.audioFiles = new ArrayList<>();
@@ -55,6 +97,11 @@ public class AudioData {
         this.audioFiles.addAll(audioFiles);
     }
 
+    /**
+     * Create additional strings to be spoken by the system speech synthesizer.
+     *
+     * @param spokenString The strings to be spoken by the system speech synthesizer
+     */
     public void addSpeechSynthesizerStrings(@NonNull List<String> spokenString) {
         if (spokenString.size() == 0) {
             return;
@@ -76,6 +123,12 @@ public class AudioData {
         prompts.addAll(newPrompts);
     }
 
+    /**
+     * Create additional strings to be spoken by the system speech synthesizer using a phonetic string.
+     *
+     * @param phoneticString The strings to be spoken by the system speech synthesizer
+     * @param phoneticType   Must be one of `SAPI_PHONEMES`, `LHPLUS_PHONEMES`, `TEXT`, or `PRE_RECORDED` or no object will be created
+     */
     public void addPhoneticSpeechSynthesizerStrings(@NonNull List<String> phoneticString, @NonNull SpeechCapabilities phoneticType) {
         if (!(isValidPhoneticType(phoneticType)) || phoneticString.size() == 0) {
             return;
