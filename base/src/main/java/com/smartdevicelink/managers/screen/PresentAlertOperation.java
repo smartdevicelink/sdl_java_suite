@@ -1,3 +1,35 @@
+/*
+ * Copyright (c) 2020 Livio, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the Livio Inc. nor the names of its contributors
+ * may be used to endorse or promote products derived from this software
+ * without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package com.smartdevicelink.managers.screen;
 
 import com.livio.taskmaster.Task;
@@ -8,6 +40,7 @@ import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.Alert;
@@ -37,29 +70,28 @@ public class PresentAlertOperation extends Task {
     private int cancelId;
     private List<SpeechCapabilities> speechCapabilities;
 
-
     public PresentAlertOperation(ISdl internalInterface, AlertView alertView, WindowCapability currentCapabilities, List<SpeechCapabilities> speechCapabilities, FileManager fileManager, Integer cancelId, AlertCompletionListener listener) {
         super("PresentAlertOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
+        this.fileManager = new WeakReference<>(fileManager);
         this.defaultMainWindowCapability = currentCapabilities;
         this.speechCapabilities = speechCapabilities;
         this.alertView = alertView;
-        this.fileManager = new WeakReference<>(fileManager);
         this.listener = listener;
+        this.cancelId = cancelId;
+
         this.alertView.canceledListener = new AlertCanceledListener() {
             @Override
             public void onAlertCanceled() {
                 cancelAlert();
             }
         };
-        this.cancelId = cancelId;
     }
 
     @Override
     public void onExecute() {
         DebugTool.logInfo(TAG, "Alert Operation: Executing present Alert operation");
         start();
-
     }
 
     private void start() {
@@ -81,6 +113,11 @@ public class PresentAlertOperation extends Task {
     }
 
 
+    /**
+     * Uploads AudioFiles
+     *
+     * @param listener
+     */
     private void uploadAudioFiles(final CompletionListener listener) {
         if (alertView.getAudio() == null) {
             DebugTool.logInfo(TAG, "No audio sent for alert");
@@ -89,12 +126,26 @@ public class PresentAlertOperation extends Task {
         }
         if (!supportsAlertAudioFile()) {
             DebugTool.logInfo(TAG, "Module does not support audio files for alerts");
-            listener.onComplete(false);
+            listener.onComplete(true);
             return;
         }
 
         if (alertView.getAudio().getAudioFiles() == null || alertView.getAudio().getAudioFiles().size() == 0) {
             DebugTool.logInfo(TAG, "No audio files to upload for alert");
+            listener.onComplete(true);
+            return;
+        }
+
+        List<SdlFile> filesToBeUploaded = new ArrayList<>();
+        for (SdlFile file : alertView.getAudio().getAudioFiles()) {
+            if (!fileNeedsUpload(file)) {
+                continue;
+            }
+            filesToBeUploaded.add(file);
+        }
+
+        if (filesToBeUploaded.size() == 0) {
+            DebugTool.logInfo(TAG, "No audio files need to be uploaded for alert");
             listener.onComplete(true);
             return;
         }
@@ -110,16 +161,21 @@ public class PresentAlertOperation extends Task {
                         return;
                     }
                     if (errors != null) {
-                        DebugTool.logError(TAG, "AlertManager Audio files failed to upload with error: " + errors.toString());
-                        listener.onComplete(false);
+                        DebugTool.logError(TAG, "Error uploading alert audio files:" + errors.toString());
                     } else {
-                        listener.onComplete(true);
+                        DebugTool.logInfo(TAG, "All alert audio files uploaded");
                     }
+                    listener.onComplete(true);
                 }
             });
         }
     }
 
+    /**
+     * Check alertView  for an Icon and SoftButtonObject images and send them to upload method
+     *
+     * @param listener - CompletionListener used to signal that images in AlertView have uploaded if any
+     */
     private void checkForImagesAndUpload(CompletionListener listener) {
         List<SdlArtwork> artworksToBeUploaded = new ArrayList<>();
 
@@ -127,7 +183,7 @@ public class PresentAlertOperation extends Task {
             artworksToBeUploaded.add(alertView.getIcon());
         }
 
-        if(alertView.getSoftButtons() != null) {
+        if (alertView.getSoftButtons() != null) {
             for (SoftButtonObject object : alertView.getSoftButtons()) {
                 if (supportsSoftButtonImages() && artworkNeedsUploaded(object.getCurrentState().getArtwork())) {
                     artworksToBeUploaded.add(object.getCurrentState().getArtwork());
@@ -138,12 +194,19 @@ public class PresentAlertOperation extends Task {
         uploadImages(artworksToBeUploaded, listener);
     }
 
+    /**
+     * Uploads images using fileManager
+     *
+     * @param images   - List of SdlArtwork - Images that need to be uploaded
+     * @param listener - CompletionListener used to signal that images in AlertView have uploaded if any
+     */
     private void uploadImages(List<SdlArtwork> images, final CompletionListener listener) {
         if (images.size() == 0) {
-            DebugTool.logInfo(TAG, " No Images to upload for alert");
+            DebugTool.logInfo(TAG, "No Images to upload for alert");
             listener.onComplete(true);
             return;
         }
+
         DebugTool.logInfo(TAG, "Uploading images for alert");
 
         if (fileManager.get() != null) {
@@ -151,13 +214,17 @@ public class PresentAlertOperation extends Task {
                 @Override
                 public void onComplete(Map<String, String> errors) {
                     if (getState() == Task.CANCELED) {
+                        DebugTool.logInfo(TAG, "Operation canceled");
                         finishOperation(false, null);
                         return;
                     }
+
                     if (errors != null) {
                         DebugTool.logError(TAG, "AlertManager artwork failed to upload with error: " + errors.toString());
                         listener.onComplete(false);
+
                     } else {
+                        DebugTool.logInfo(TAG, "All alert images uploaded");
                         listener.onComplete(true);
                     }
                 }
@@ -165,22 +232,57 @@ public class PresentAlertOperation extends Task {
         }
     }
 
+    /**
+     * Sends the alert RPC to the module. The operation is finished once a response has been received from the module.
+     */
     private void presentAlert() {
-        if (getState() == Task.CANCELED) {
-            finishOperation(false, null);
-            return;
-        }
-
         Alert alert = createAlert();
 
         alert.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
+                if (getState() == Task.CANCELED) {
+                    finishOperation(false, null);
+                    return;
+                }
+                if (!response.getSuccess()) {
+                    DebugTool.logError(TAG, response.getInfo());
+                }
                 finishOperation(response.getSuccess(), ((AlertResponse) response).getTryAgainTime());
             }
         });
         internalInterface.get().sendRPC(alert);
+    }
 
+    private void cancelAlert() {
+        if (getState() == Task.FINISHED) {
+            DebugTool.logInfo(TAG, "This operation has already finished so it can not be canceled");
+            return;
+        } else if (getState() == Task.CANCELED) {
+            DebugTool.logInfo(TAG, "This operation has already been canceled. It will be finished at some point during the operation.");
+            return;
+        } else if (getState() == Task.IN_PROGRESS) {
+            if (internalInterface.get() != null && internalInterface.get().getSdlMsgVersion() != null && internalInterface.get().getSdlMsgVersion().getMajorVersion() < 6) {
+                DebugTool.logError(TAG, "Canceling an alert is not supported on this module");
+            }
+            DebugTool.logInfo(TAG, "Canceling the presented alert");
+
+            CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.ALERT.getId(), cancelId);
+            cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
+                @Override
+                public void onResponse(int correlationId, RPCResponse response) {
+                    if (!response.getSuccess()) {
+                        DebugTool.logInfo(TAG, "Error canceling the presented alert: " + response.getInfo());
+                        return;
+                    }
+                    DebugTool.logInfo(TAG, "The presented alert was canceled successfully");
+                }
+            });
+            internalInterface.get().sendRPC(cancelInteraction);
+        } else {
+            DebugTool.logInfo(TAG, "Canceling an alert that has not yet been sent to Core");
+            this.cancelTask();
+        }
     }
 
     // Private Getters / Setters
@@ -203,7 +305,6 @@ public class PresentAlertOperation extends Task {
         }
 
         if (alertView.getAudio() != null) {
-
             AlertAudioData alertAudioData = alertView.getAudio();
             alert.setPlayTone(alertAudioData.isPlayTone());
             List<TTSChunk> ttsChunks = new ArrayList<>();
@@ -223,6 +324,8 @@ public class PresentAlertOperation extends Task {
         }
         return alert;
     }
+
+    // Text Helpers
 
     private Alert assembleAlertText(Alert alert) {
         List<String> nonNullFields = findValidMainTextFields();
@@ -307,47 +410,73 @@ public class PresentAlertOperation extends Task {
         return alert;
     }
 
+    // Helper methods
+
+    /**
+     * Checks if an SdlArtwork needs to be uploaded to the module. An artwork only needs to be uploaded if it is a
+     * dynamic image and an artwork with the same name has not yet been uploaded to the module.
+     * If the artwork has already been uploaded to the module but the `overwrite` property has been set to true,
+     * then the artwork needs to be re-uploaded.
+     *
+     * @param artwork the SdlArtwork that needs to be checked
+     * @return True if SdlArtwork needs to be uploaded; false if not.
+     */
     private boolean artworkNeedsUploaded(SdlArtwork artwork) {
-        if (fileManager.get() != null) {
-            return artwork != null && !fileManager.get().hasUploadedFile(artwork) && !artwork.isStaticIcon();
+        if (artwork != null && !artwork.isStaticIcon()) {
+            return artwork.getOverwrite() || !fileManager.get().hasUploadedFile(artwork);
         }
         return false;
     }
 
+    /**
+     * Checks if a file needs to be uploaded to the module. If the file has already been uploaded
+     * to the module but the `overwrite` property has been set to true,
+     * then the file needs to be re-uploaded.
+     *
+     * @param file the SdlFile that needs to be checked
+     * @return True if SdlFile needs to be uploaded; false if not.
+     */
+    private boolean fileNeedsUpload(SdlFile file) {
+        if (file != null) {
+            return file.getOverwrite() || !fileManager.get().hasUploadedFile(file);
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the connected module or current template supports soft button images.
+     *
+     * @return True if soft button images are currently supported or windowCapability is null; false if not.
+     */
     private boolean supportsSoftButtonImages() {
         if (defaultMainWindowCapability != null) {
             SoftButtonCapabilities softButtonCapabilities = defaultMainWindowCapability.getSoftButtonCapabilities().get(0);
             return softButtonCapabilities.getImageSupported().booleanValue();
         }
         return true;
-
     }
 
+    /**
+     * Checks if the connected module supports audio files. Using an audio file in an alert will only work if connected to modules supporting RPC spec versions 5.0+.
+     * If the module does not return a speechCapabilities, assume that the module supports playing an audio file.
+     *
+     * @return True if the module supports playing audio files in an alert; false if not.
+     */
     private boolean supportsAlertAudioFile() {
         return (internalInterface.get() != null && internalInterface.get().getSdlMsgVersion() != null && internalInterface.get().getSdlMsgVersion().getMajorVersion() >= 5 && speechCapabilities != null && speechCapabilities.contains(SpeechCapabilities.FILE));
     }
 
+    /**
+     * Checks if the connected module or current template supports alert icons.
+     *
+     * @return True if alert icons are currently supported or if windowCapability is null; false if not.
+     */
     private boolean supportsAlertIcon() {
         return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.alertIcon);
     }
 
-    private void cancelAlert() {
-        CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.ALERT.getId(), cancelId);
-        cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
-            @Override
-            public void onResponse(int correlationId, RPCResponse response) {
-                if (response.getSuccess()) {
-                    DebugTool.logInfo(TAG, "Alert was dismissed successfully");
-                } else {
-                    DebugTool.logInfo(TAG, "Alert was not dismissed successfully");
-                }
-                finishOperation(response.getSuccess(), null);
-            }
-        });
-        internalInterface.get().sendRPC(cancelInteraction);
-    }
-
     private void finishOperation(boolean success, Integer tryAgainTime) {
+        DebugTool.logInfo(TAG, "Finishing present alert operation");
         if (listener != null) {
             listener.onComplete(success, tryAgainTime);
         }
