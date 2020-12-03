@@ -1,3 +1,35 @@
+/*
+ * Copyright (c) 2020 Livio, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the Livio Inc. nor the names of its contributors
+ * may be used to endorse or promote products derived from this software
+ * without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package com.smartdevicelink.managers.screen;
 
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
@@ -5,15 +37,11 @@ import com.smartdevicelink.util.DebugTool;
 
 import java.util.List;
 
-public class AlertView implements Cloneable{
+public class AlertView implements Cloneable {
 
-    private static final String TAG = "AlertView";
-    private static final int DEFAULT_TIMEOUT = 5;
-    private static int defaultTimeout = 5;
+    private static Integer defaultTimeout = 5;
     private static final int TIMEOUT_MIN = 3;
     private static final int TIMEOUT_MAX = 10;
-
-
     private String text, secondaryText, tertiaryText;
     private Integer timeout;
     private AlertAudioData audio;
@@ -23,7 +51,8 @@ public class AlertView implements Cloneable{
     AlertCanceledListener canceledListener;
 
 
-    private AlertView(){
+    private AlertView() {
+        this.timeout = defaultTimeout;
     }
 
 
@@ -52,63 +81,63 @@ public class AlertView implements Cloneable{
 
         AlertView alertView;
 
-        public Builder(){
+        public Builder() {
             alertView = new AlertView();
         }
 
-        public Builder setText(String text){
+        public Builder setText(String text) {
             this.alertView.text = text;
             return this;
         }
 
-        public Builder setSecondaryText(String secondaryText){
+        public Builder setSecondaryText(String secondaryText) {
             alertView.secondaryText = secondaryText;
             return this;
         }
 
-        public Builder setTertiaryText(String tertiaryText){
+        public Builder setTertiaryText(String tertiaryText) {
             alertView.tertiaryText = tertiaryText;
             return this;
         }
 
-        public Builder setTimeout(Integer timeout){
+        public Builder setTimeout(Integer timeout) {
             alertView.timeout = timeout;
             return this;
         }
 
-        public Builder setShowWaitIndicator(boolean showWaitIndicator){
+        public Builder setShowWaitIndicator(boolean showWaitIndicator) {
             alertView.showWaitIndicator = showWaitIndicator;
             return this;
         }
 
-        public Builder setSoftButtons(List<SoftButtonObject> softButtons){
+        public Builder setSoftButtons(List<SoftButtonObject> softButtons) {
             alertView.softButtons = softButtons;
             return this;
         }
 
-        public Builder setAudio(AlertAudioData audio){
+        public Builder setAudio(AlertAudioData audio) {
             alertView.audio = audio;
             return this;
         }
 
-        public Builder setIcon(SdlArtwork icon){
+        public Builder setIcon(SdlArtwork icon) {
             alertView.icon = icon;
             return this;
         }
 
         public Builder setDefaultTimeOut(int defaultTimeOut) {
-            alertView.defaultTimeout = defaultTimeOut;
+            alertView.setDefaultTimeout(defaultTimeOut);
             return this;
         }
 
-        public AlertView build(){
+        public AlertView build() {
             return alertView;
         }
     }
 
     // All vars have get / set as well to match iOS read / write
 
-    public void cancel(){
+    public void cancel() {
         if (canceledListener == null) {
             return;
         }
@@ -175,6 +204,7 @@ public class AlertView implements Cloneable{
     public SdlArtwork getIcon() {
         return icon;
     }
+
     public void setIcon(SdlArtwork icon) {
         this.icon = icon;
     }
