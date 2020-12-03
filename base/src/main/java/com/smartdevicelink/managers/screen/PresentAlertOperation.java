@@ -449,11 +449,8 @@ public class PresentAlertOperation extends Task {
      * @return True if soft button images are currently supported or windowCapability is null; false if not.
      */
     private boolean supportsSoftButtonImages() {
-        if (defaultMainWindowCapability != null) {
-            SoftButtonCapabilities softButtonCapabilities = defaultMainWindowCapability.getSoftButtonCapabilities().get(0);
-            return softButtonCapabilities.getImageSupported().booleanValue();
-        }
-        return true;
+        SoftButtonCapabilities softButtonCapabilities = defaultMainWindowCapability.getSoftButtonCapabilities().get(0);
+        return softButtonCapabilities.getImageSupported().booleanValue();
     }
 
     /**
@@ -472,7 +469,7 @@ public class PresentAlertOperation extends Task {
      * @return True if alert icons are currently supported or if windowCapability is null; false if not.
      */
     private boolean supportsAlertIcon() {
-        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.alertIcon);
+        return ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.alertIcon);
     }
 
     private void finishOperation(boolean success, Integer tryAgainTime) {
