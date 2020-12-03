@@ -108,10 +108,10 @@ public class ManagerUtility {
         }
 
         /**
-         * Method to get number of textFields allowed to be set according to WindowCapability
+         * Method to get number of alert textFields allowed to be set according to WindowCapability
          *
          * @param windowCapability WindowCapability representing the capabilities of the desired window
-         * @return linesFound Number of textFields found in WindowCapability
+         * @return linesFound Number of alert textFields found in WindowCapability
          */
         public static int getMaxNumberOfAlertFieldLines(final WindowCapability windowCapability) {
             int highestFound = 0;

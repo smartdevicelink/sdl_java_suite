@@ -295,12 +295,14 @@ public class SoftButtonObject {
     }
 
     /**
+     * DO NOT USE! let the managers assign ID's
      * Sets the id of the SoftButtonObject <br>
      * <strong>Note: If the developer did not set buttonId, the manager will automatically assign an id before the SoftButtons are sent to the head unit.
      * Please note that the manager may reuse ids from previous batch of SoftButtons that were already sent to the head unit</strong>
      *
      * @param buttonId an int value that represents the id of the SoftButtonObject
      */
+    @Deprecated
     public void setButtonId(int buttonId) {
         if (buttonId < SOFT_BUTTON_ID_MIN_VALUE) {
             DebugTool.logError(TAG, "buttonId has to be equal or more than " + SOFT_BUTTON_ID_MIN_VALUE);

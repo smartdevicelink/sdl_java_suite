@@ -735,6 +735,13 @@ abstract class BaseScreenManager extends BaseSubManager {
         int ALERT_MANAGER = 1;
     }
 
+    /**
+     * Used across managers to check and assign SoftButton ID's to prevent conflicts.
+     *
+     * @param softButtonObjects - list of SoftButtonObjects
+     * @param location - location from which the button came from, so if new buttons get set on screen, we can clear the old ID's out
+     * @return True if ButtonID's are good, False if not.
+     */
     static boolean checkAndAssignButtonIds(List<SoftButtonObject> softButtonObjects, @ManagerLocation int location) {
         // Depending on location form which the softButtons came from, we will clear out the id list so they can be reset
         if (location == ManagerLocation.ALERT_MANAGER) {
