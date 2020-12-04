@@ -4,6 +4,8 @@ import android.content.Context;
 import android.net.Uri;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.AlertCompletionListener;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
@@ -109,12 +111,14 @@ public class PresentAlertOperationTest {
         }
     };
 
+    Task task;
     @Before
     public void setUp() throws Exception {
         Context mTestContext = getInstrumentation().getContext();
         // mock things
         internalInterface = mock(ISdl.class);
         fileManager = mock(FileManager.class);
+        task = mock(Task.class);
 
         testAlertArtwork = new SdlArtwork();
         testAlertArtwork.setName("testArtwork1");
@@ -283,7 +287,10 @@ public class PresentAlertOperationTest {
             }
         };
         presentAlertOperation = new PresentAlertOperation(internalInterface, alertView, defaultMainWindowCapability, speechCapabilities, fileManager, 2, alertCompletionListener1);
-        alertView.cancel();
+        presentAlertOperation.cancelInteraction();
+
+        verify(internalInterface, times(1)).sendRPC(any(CancelInteraction.class));
+
     }
 
 

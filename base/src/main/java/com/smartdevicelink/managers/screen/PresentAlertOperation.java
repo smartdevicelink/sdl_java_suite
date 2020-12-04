@@ -86,6 +86,7 @@ public class PresentAlertOperation extends Task {
                 cancelAlert();
             }
         };
+        alertView.canceledListener = this.alertView.canceledListener;
     }
 
     @Override
@@ -262,27 +263,31 @@ public class PresentAlertOperation extends Task {
             DebugTool.logInfo(TAG, "This operation has already been canceled. It will be finished at some point during the operation.");
             return;
         } else if (getState() == Task.IN_PROGRESS) {
-            if (internalInterface.get() != null && internalInterface.get().getSdlMsgVersion() != null && internalInterface.get().getSdlMsgVersion().getMajorVersion() < 6) {
-                DebugTool.logError(TAG, "Canceling an alert is not supported on this module");
-            }
-            DebugTool.logInfo(TAG, "Canceling the presented alert");
-
-            CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.ALERT.getId(), cancelId);
-            cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
-                @Override
-                public void onResponse(int correlationId, RPCResponse response) {
-                    if (!response.getSuccess()) {
-                        DebugTool.logInfo(TAG, "Error canceling the presented alert: " + response.getInfo());
-                        return;
-                    }
-                    DebugTool.logInfo(TAG, "The presented alert was canceled successfully");
-                }
-            });
-            internalInterface.get().sendRPC(cancelInteraction);
+            cancelInteraction();
         } else {
             DebugTool.logInfo(TAG, "Canceling an alert that has not yet been sent to Core");
             this.cancelTask();
         }
+    }
+
+    void cancelInteraction() {
+        if (internalInterface.get() != null && internalInterface.get().getSdlMsgVersion() != null && internalInterface.get().getSdlMsgVersion().getMajorVersion() < 6) {
+            DebugTool.logError(TAG, "Canceling an alert is not supported on this module");
+        }
+        DebugTool.logInfo(TAG, "Canceling the presented alert");
+
+        CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.ALERT.getId(), cancelId);
+        cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
+            @Override
+            public void onResponse(int correlationId, RPCResponse response) {
+                if (!response.getSuccess()) {
+                    DebugTool.logInfo(TAG, "Error canceling the presented alert: " + response.getInfo());
+                    return;
+                }
+                DebugTool.logInfo(TAG, "The presented alert was canceled successfully");
+            }
+        });
+        internalInterface.get().sendRPC(cancelInteraction);
     }
 
     // Private Getters / Setters
