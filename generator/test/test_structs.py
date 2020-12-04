@@ -40,11 +40,12 @@ class TestStructsProducer(unittest.TestCase):
             'class_name': 'AudioPassThruCapabilities',
             'extends_class': 'RPCStruct',
             'package_name': 'com.smartdevicelink.proxy.rpc',
-            'imports': ['android.support.annotation.NonNull', '', 'com.smartdevicelink.proxy.RPCStruct',
+            'imports': ['androidx.annotation.NonNull', '', 'com.smartdevicelink.proxy.RPCStruct',
                         'com.smartdevicelink.proxy.rpc.enums.SamplingRate',
                         'com.smartdevicelink.util.SdlDataTypeConverter', '', 'java.util.Hashtable'],
             'deprecated': None,
             'since': None,
+            'history': None,
             'params': (self.producer.params(deprecated=None, key='KEY_RANGE',
                                             last='range', mandatory=True,
                                             origin='range', return_type='Float',
@@ -68,10 +69,11 @@ class TestStructsProducer(unittest.TestCase):
             'class_name': 'CloudAppProperties',
             'extends_class': 'RPCStruct',
             'package_name': 'com.smartdevicelink.proxy.rpc',
-            'imports': ['android.support.annotation.NonNull', '', 'com.smartdevicelink.proxy.RPCStruct', '',
+            'imports': ['androidx.annotation.NonNull', '', 'com.smartdevicelink.proxy.RPCStruct', '',
                         'java.util.Hashtable', 'java.util.List'],
             'deprecated': None,
             'since': None,
+            'history': None,
             'params': (self.producer.params(deprecated=None, key='KEY_NICKNAMES',
                                             last='nicknames', mandatory=True,
                                             origin='nicknames', return_type='List<String>', name=None,
@@ -86,11 +88,12 @@ class TestStructsProducer(unittest.TestCase):
         }, description=['\n            Describes different audio type configurations for PerformAudioPassThru.\n     '])
         expected = {
             'package_name': 'com.smartdevicelink.proxy.rpc',
-            'imports': ['android.support.annotation.NonNull', '', 'com.smartdevicelink.proxy.RPCStruct', '',
+            'imports': ['androidx.annotation.NonNull', '', 'com.smartdevicelink.proxy.RPCStruct', '',
                         'java.util.Hashtable'],
             'class_name': 'SoftButton',
             'extends_class': 'RPCStruct',
             'since': None,
+            'history': None,
             'deprecated': None,
             'description': ['Describes different audio type configurations for '
                             'PerformAudioPassThru.'],
@@ -107,11 +110,12 @@ class TestStructsProducer(unittest.TestCase):
         })
         expected = {
             'package_name': 'com.smartdevicelink.proxy.rpc',
-            'imports': ['android.support.annotation.NonNull', '', 'com.smartdevicelink.proxy.RPCStruct', '',
+            'imports': ['androidx.annotation.NonNull', '', 'com.smartdevicelink.proxy.RPCStruct', '',
                         'java.util.Hashtable'],
             'class_name': 'OASISAddress',
             'extends_class': 'RPCStruct',
             'since': None,
+            'history': None,
             'deprecated': None,
             'params': (
                 self.producer.params(deprecated=None, key='KEY_COUNTRY_NAME', last='countryName', mandatory=True,
@@ -127,11 +131,12 @@ class TestStructsProducer(unittest.TestCase):
         })
         expected = {
             'package_name': 'com.smartdevicelink.proxy.rpc',
-            'imports': ['android.support.annotation.NonNull', '', 'com.smartdevicelink.proxy.RPCStruct', '',
+            'imports': ['androidx.annotation.NonNull', '', 'com.smartdevicelink.proxy.RPCStruct', '',
                         'java.util.Hashtable'],
             'class_name': 'LocationDetails',
             'extends_class': 'RPCStruct',
             'since': None,
+            'history': None,
             'deprecated': None,
             'params': (
                 self.producer.params(deprecated=None, key='KEY_SEARCH_ADDRESS', last='searchAddress', mandatory=True,
@@ -147,11 +152,12 @@ class TestStructsProducer(unittest.TestCase):
         })
         expected = {
             'package_name': 'com.smartdevicelink.proxy.rpc',
-            'imports': ['android.support.annotation.NonNull', '', 'com.smartdevicelink.proxy.RPCStruct', '',
+            'imports': ['androidx.annotation.NonNull', '', 'com.smartdevicelink.proxy.RPCStruct', '',
                         'java.util.Hashtable'],
             'class_name': 'SingleTireStatus',
             'extends_class': 'RPCStruct',
             'since': None,
+            'history': None,
             'deprecated': None,
             'params': (
                 self.producer.params(deprecated=None, key='KEY_TPMS', last='tpms', mandatory=True, origin='tpms',

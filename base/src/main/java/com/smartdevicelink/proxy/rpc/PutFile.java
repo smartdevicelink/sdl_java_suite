@@ -268,7 +268,7 @@ public class PutFile extends RPCRequest {
 
     /**
      * @param offset Optional offset in bytes for resuming partial data chunks
-     * @deprecated as of SmartDeviceLink 4.0
+     * @deprecated as of SmartDeviceLink 4.0. Use {@link #setOffset(Long)} instead.
      */
     public PutFile setOffset(Integer offset) {
         if (offset == null) {
@@ -305,7 +305,7 @@ public class PutFile extends RPCRequest {
     /**
      * @param length Optional length in bytes for resuming partial data chunks. If offset is set to 0, then length is
      *               the total length of the file to be downloaded
-     * @deprecated as of SmartDeviceLink 4.0
+     * @deprecated as of SmartDeviceLink 4.0. Use {@link #setLength(Long)} instead.
      */
     public PutFile setLength(Integer length) {
         if (length == null) {

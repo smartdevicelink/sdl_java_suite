@@ -71,10 +71,13 @@ public enum GlobalProperty {
 
     KEYBOARDPROPERTIES,
 
+    @Deprecated
+    USERLOCATION,
+
     /**
      * The user seat location of setGlobalProperties
      */
-    USERLOCATION;
+    USER_LOCATION;
 
     /**
      * Convert String to GlobalProperty

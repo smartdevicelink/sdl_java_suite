@@ -50,14 +50,14 @@ public class Main {
         mainThread = Thread.currentThread();
         startSdlService();
 
-        while(!mainThread.isInterrupted()) {
+        while (!mainThread.isInterrupted()) {
             try {
                 synchronized (LOCK) {
                     LOCK.wait();
                 }
                 System.gc();
                 Thread.sleep(500);
-                DebugTool.logInfo(TAG,  "Attempting to start SDL Service again");
+                DebugTool.logInfo(TAG, "Attempting to start SDL Service again");
                 startSdlService();
                 DebugTool.logInfo(TAG, "SdlService started");
 
@@ -89,7 +89,7 @@ public class Main {
             @Override
             public void run() {
                 DebugTool.logInfo(TAG, "Starting SDL Service");
-                sdlService  = new SdlService(new WebSocketServerConfig(5432, -1), serviceCallback);
+                sdlService = new SdlService(new WebSocketServerConfig(5432, -1), serviceCallback);
                 sdlService.start();
 
                 System.gc();
