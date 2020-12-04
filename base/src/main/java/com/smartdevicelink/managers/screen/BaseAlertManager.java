@@ -46,11 +46,16 @@ import com.smartdevicelink.managers.permission.OnPermissionChangeListener;
 import com.smartdevicelink.managers.permission.PermissionElement;
 import com.smartdevicelink.managers.permission.PermissionStatus;
 import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
+import com.smartdevicelink.proxy.rpc.OnButtonEvent;
+import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
+import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
@@ -58,6 +63,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 abstract class BaseAlertManager extends BaseSubManager {
@@ -72,12 +78,16 @@ abstract class BaseAlertManager extends BaseSubManager {
     private final WeakReference<FileManager> fileManager;
     int nextCancelId;
     final int alertCancelIdMin = 20000;
+    private CopyOnWriteArrayList<SoftButtonObject> softButtonObjects;
+    OnRPCNotificationListener onButtonPressListener, onButtonEventListener;
+
 
     public BaseAlertManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface);
         this.transactionQueue = newTransactionQueue();
         this.fileManager = new WeakReference<>(fileManager);
         nextCancelId = alertCancelIdMin;
+        this.softButtonObjects = new CopyOnWriteArrayList<>();
         addListeners();
     }
 
@@ -92,6 +102,7 @@ abstract class BaseAlertManager extends BaseSubManager {
         defaultMainWindowCapability = null;
         speechCapabilities = null;
         currentAlertPermissionStatus = false;
+        softButtonObjects = null;
 
         if (transactionQueue != null) {
             transactionQueue.close();
@@ -106,6 +117,8 @@ abstract class BaseAlertManager extends BaseSubManager {
         if (internalInterface.getPermissionManager() != null) {
             internalInterface.getPermissionManager().removeListener(permissionListener);
         }
+        internalInterface.removeOnRPCNotificationListener(FunctionID.ON_BUTTON_PRESS, onButtonPressListener);
+        internalInterface.removeOnRPCNotificationListener(FunctionID.ON_BUTTON_EVENT, onButtonEventListener);
         super.dispose();
     }
 
@@ -129,7 +142,26 @@ abstract class BaseAlertManager extends BaseSubManager {
                 DebugTool.logError(TAG, "Attempted to set soft button objects for Alert, but multiple buttons had the same id.");
                 return;
             }
+
+            // Keep Track of SoftButtonObjects, to be able to Call their OnEventListeners
+            CopyOnWriteArrayList<SoftButtonObject> softButtonObjects;
+            if (alert.getSoftButtons() instanceof CopyOnWriteArrayList) {
+                softButtonObjects = (CopyOnWriteArrayList<SoftButtonObject>) alert.getSoftButtons();
+            } else {
+                softButtonObjects = new CopyOnWriteArrayList<>(alert.getSoftButtons());
+            }
+            if (this.softButtonObjects.size() > 0) {
+                for (SoftButtonObject object : softButtonObjects) {
+                    if (softButtonObjects.contains(object)) {
+                        continue;
+                    }
+                    this.softButtonObjects.add(object);
+                }
+            } else {
+                this.softButtonObjects = softButtonObjects;
+            }
         }
+
         PresentAlertOperation operation = new PresentAlertOperation(internalInterface, alert, defaultMainWindowCapability, speechCapabilities, fileManager.get(), nextCancelId++, listener);
         transactionQueue.add(operation, false);
 
@@ -139,6 +171,30 @@ abstract class BaseAlertManager extends BaseSubManager {
         Queue queue = internalInterface.getTaskmaster().createQueue("AlertManager", 4, false);
         queue.pause();
         return queue;
+    }
+
+    /**
+     * Get the soft button objects list
+     *
+     * @return a List<SoftButtonObject>
+     */
+    protected List<SoftButtonObject> getSoftButtonObjects() {
+        return softButtonObjects;
+    }
+
+    /**
+     * Get the SoftButtonObject that has the provided buttonId
+     *
+     * @param buttonId a int value that represents the id of the button
+     * @return a SoftButtonObject
+     */
+    protected SoftButtonObject getSoftButtonObjectById(int buttonId) {
+        for (SoftButtonObject softButtonObject : softButtonObjects) {
+            if (softButtonObject.getButtonId() == buttonId) {
+                return softButtonObject;
+            }
+        }
+        return null;
     }
 
     // Suspend the queue if the WindowCapabilities are null
@@ -217,5 +273,44 @@ abstract class BaseAlertManager extends BaseSubManager {
                 updateTransactionQueueSuspended();
             }
         });
+
+        this.onButtonPressListener = new OnRPCNotificationListener() {
+            @Override
+            public void onNotified(RPCNotification notification) {
+                OnButtonPress onButtonPress = (OnButtonPress) notification;
+                if (onButtonPress != null && onButtonPress.getButtonName() == ButtonName.CUSTOM_BUTTON) {
+                    Integer buttonId = onButtonPress.getCustomButtonID();
+                    if (getSoftButtonObjects() != null) {
+                        for (SoftButtonObject softButtonObject : getSoftButtonObjects()) {
+                            if (softButtonObject.getButtonId() == buttonId && softButtonObject.getOnEventListener() != null) {
+                                softButtonObject.getOnEventListener().onPress(getSoftButtonObjectById(buttonId), onButtonPress);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        this.internalInterface.addOnRPCNotificationListener(FunctionID.ON_BUTTON_PRESS, onButtonPressListener);
+
+        // Add OnButtonEventListener to notify SoftButtonObjects when there is a button event
+        this.onButtonEventListener = new OnRPCNotificationListener() {
+            @Override
+            public void onNotified(RPCNotification notification) {
+                OnButtonEvent onButtonEvent = (OnButtonEvent) notification;
+                if (onButtonEvent != null && onButtonEvent.getButtonName() == ButtonName.CUSTOM_BUTTON) {
+                    Integer buttonId = onButtonEvent.getCustomButtonID();
+                    if (getSoftButtonObjects() != null) {
+                        for (SoftButtonObject softButtonObject : getSoftButtonObjects()) {
+                            if (softButtonObject.getButtonId() == buttonId && softButtonObject.getOnEventListener() != null) {
+                                softButtonObject.getOnEventListener().onEvent(getSoftButtonObjectById(buttonId), onButtonEvent);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        this.internalInterface.addOnRPCNotificationListener(FunctionID.ON_BUTTON_EVENT, onButtonEventListener);
     }
 }

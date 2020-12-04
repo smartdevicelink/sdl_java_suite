@@ -50,7 +50,7 @@ import java.util.List;
  *
  * @see SoftButtonState
  */
-public class SoftButtonObject {
+public class SoftButtonObject implements Cloneable{
     private static final String TAG = "SoftButtonObject";
     static final int SOFT_BUTTON_ID_NOT_SET_VALUE = -1;
     static final int SOFT_BUTTON_ID_MIN_VALUE = 0;
@@ -376,5 +376,23 @@ public class SoftButtonObject {
         if (!(o instanceof SoftButtonObject)) return false;
         // return comparison
         return hashCode() == o.hashCode();
+    }
+
+    /**
+     * Creates a deep copy of the object
+     *
+     * @return deep copy of the object, null if an exception occurred
+     */
+    @Override
+    public SoftButtonObject clone() {
+        try {
+            SoftButtonObject softButtonObject = (SoftButtonObject) super.clone();
+            return softButtonObject;
+        } catch (CloneNotSupportedException e) {
+            if (DebugTool.isDebugEnabled()) {
+                throw new RuntimeException("Clone not supported by super class");
+            }
+        }
+        return null;
     }
 }

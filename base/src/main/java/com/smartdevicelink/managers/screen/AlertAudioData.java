@@ -39,49 +39,49 @@ import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.util.DebugTool;
 
 public class AlertAudioData extends AudioData implements Cloneable {
+    // Whether the alert tone should be played before the prompt (if any) is spoken. Defaults to false
+    private boolean playTone;
 
-        // Whether the alert tone should be played before the prompt (if any) is spoken. Defaults to false
-        private boolean playTone;
+    public AlertAudioData() {
+        super();
+    }
 
-        public AlertAudioData() {
-                super();
+    public AlertAudioData(@NonNull SdlFile audioFile) {
+        super(audioFile);
+    }
+
+    public AlertAudioData(@NonNull String spokenString) {
+        super(spokenString);
+    }
+
+    public AlertAudioData(@NonNull String phoneticString, @NonNull SpeechCapabilities phoneticType) {
+        super(phoneticString, phoneticType);
+    }
+
+    public boolean isPlayTone() {
+        return playTone;
+    }
+
+    public void setPlayTone(boolean playTone) {
+        this.playTone = playTone;
+    }
+
+    /**
+     * Creates a deep copy of the object
+     *
+     * @return deep copy of the object, null if an exception occurred
+     */
+    @Override
+    public AlertAudioData clone() {
+        System.out.println("HI");
+        try {
+            AlertAudioData alertAudioData = (AlertAudioData) super.clone();
+            return alertAudioData;
+        } catch (CloneNotSupportedException e) {
+            if (DebugTool.isDebugEnabled()) {
+                throw new RuntimeException("Clone not supported by super class");
+            }
         }
-
-        public AlertAudioData(@NonNull SdlFile audioFile) {
-                super(audioFile);
-        }
-
-        public AlertAudioData(@NonNull String spokenString) {
-                super(spokenString);
-        }
-
-        public AlertAudioData(@NonNull String phoneticString, @NonNull SpeechCapabilities phoneticType) {
-                super(phoneticString, phoneticType);
-        }
-
-        public boolean isPlayTone() {
-                return playTone;
-        }
-
-        public void setPlayTone(boolean playTone) {
-                this.playTone = playTone;
-        }
-
-        /**
-         * Creates a deep copy of the object
-         *
-         * @return deep copy of the object, null if an exception occurred
-         */
-        @Override
-        public AlertAudioData clone() {
-                try {
-                        AlertAudioData alertAudioData = (AlertAudioData) super.clone();
-                        return alertAudioData;
-                } catch (CloneNotSupportedException e) {
-                        if (DebugTool.isDebugEnabled()) {
-                                throw new RuntimeException("Clone not supported by super class");
-                        }
-                }
-                return null;
-        }
+        return null;
+    }
 }

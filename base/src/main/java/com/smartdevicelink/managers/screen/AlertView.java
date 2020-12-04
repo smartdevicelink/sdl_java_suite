@@ -35,6 +35,7 @@ package com.smartdevicelink.managers.screen;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.util.DebugTool;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AlertView implements Cloneable {
@@ -65,8 +66,21 @@ public class AlertView implements Cloneable {
     public AlertView clone() {
         try {
             AlertView alertView = (AlertView) super.clone();
-            if (alertView != null && alertView.getAudio() != null) {
-                alertView.audio = audio.clone();
+            if (alertView != null) {
+                if (alertView.getAudio() != null) {
+                    alertView.audio = audio.clone();
+                }
+                if (alertView.getSoftButtons() != null) {
+                    List<SoftButtonObject> softButtonObjectList = new ArrayList<>();
+                    for (int i = 0; i < alertView.softButtons.size(); i++) {
+                        SoftButtonObject cloneSoftButton = alertView.softButtons.get(i).clone();
+                        softButtonObjectList.add(cloneSoftButton);
+                    }
+                    alertView.softButtons = softButtonObjectList;
+                }
+                if (alertView.icon != null) {
+                    alertView.icon = icon.clone();
+                }
             }
             return alertView;
         } catch (CloneNotSupportedException e) {

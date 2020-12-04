@@ -76,7 +76,7 @@ public class PresentAlertOperation extends Task {
         this.fileManager = new WeakReference<>(fileManager);
         this.defaultMainWindowCapability = currentCapabilities;
         this.speechCapabilities = speechCapabilities;
-        this.alertView = alertView;
+        this.alertView = alertView.clone();
         this.listener = listener;
         this.cancelId = cancelId;
 
