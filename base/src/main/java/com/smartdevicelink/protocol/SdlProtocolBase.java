@@ -1196,13 +1196,13 @@ public class SdlProtocolBase {
             //a single transport record per transport.
             //TransportType type = disconnectedTransport.getType();
             if (getTransportForSession(SessionType.NAV) != null && disconnectedTransport.equals(getTransportForSession(SessionType.NAV))) {
-                if (serviceOnTransport.get(SessionType.NAV)) {
+                if (serviceOnTransport.get(SessionType.NAV) != null && serviceOnTransport.get(SessionType.NAV)) {
                     iSdlProtocol.onServiceError(null, SessionType.NAV, iSdlProtocol.getSessionId(), "Transport disconnected");
                     activeTransports.remove(SessionType.NAV);
                 }
             }
             if (getTransportForSession(SessionType.PCM) != null && disconnectedTransport.equals(getTransportForSession(SessionType.PCM))) {
-                if (serviceOnTransport.get(SessionType.PCM)) {
+                if (serviceOnTransport.get(SessionType.PCM) != null && serviceOnTransport.get(SessionType.PCM)) {
                     iSdlProtocol.onServiceError(null, SessionType.PCM, iSdlProtocol.getSessionId(), "Transport disconnected");
                     activeTransports.remove(SessionType.PCM);
                 }
