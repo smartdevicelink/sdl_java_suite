@@ -178,6 +178,39 @@ public class PresentAlertOperationTest {
     }
 
     @Test
+    public void testPresentAlertTruncatedText() {
+        doAnswer(onAlertSuccess).when(internalInterface).sendRPC(any(Alert.class));
+        // Same response works for uploading artworks as it does for files
+        doAnswer(onArtworkUploadSuccess).when(fileManager).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
+        doAnswer(onArtworkUploadSuccess).when(fileManager).uploadFiles(any(List.class), any(MultipleFileCompletionListener.class));
+
+
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
+        WindowCapability windowCapability = getWindowCapability(1);
+        PresentAlertOperation presentAlertOperation = new PresentAlertOperation(internalInterface, alertView, windowCapability, speechCapabilities, fileManager, 1, new AlertCompletionListener() {
+            @Override
+            public void onComplete(boolean success, Integer tryAgainTime) {
+
+            }
+        });
+        Alert alert = presentAlertOperation.createAlert();
+
+        assertEquals(alert.getAlertText1(), alertView.getText() + " - " + alertView.getSecondaryText() + " - " + alertView.getTertiaryText());
+
+        windowCapability = getWindowCapability(2);
+
+         presentAlertOperation = new PresentAlertOperation(internalInterface, alertView, windowCapability, speechCapabilities, fileManager, 1, new AlertCompletionListener() {
+            @Override
+            public void onComplete(boolean success, Integer tryAgainTime) {
+
+            }
+        });
+        alert = presentAlertOperation.createAlert();
+        assertEquals(alert.getAlertText1(), alertView.getText());
+        assertEquals(alert.getAlertText2(),alertView.getSecondaryText() + " - " + alertView.getTertiaryText());
+    }
+
+    @Test
     public void testPresentAlertHappyPath() {
         doAnswer(onAlertSuccess).when(internalInterface).sendRPC(any(Alert.class));
         // Same response works for uploading artworks as it does for files

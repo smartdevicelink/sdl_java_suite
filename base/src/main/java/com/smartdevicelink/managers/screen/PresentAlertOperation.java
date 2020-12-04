@@ -287,7 +287,7 @@ public class PresentAlertOperation extends Task {
 
     // Private Getters / Setters
 
-    private Alert createAlert() {
+    Alert createAlert() {
         Alert alert = new Alert();
         alert = assembleAlertText(alert);
         alert.setDuration(alertView.getTimeout() * 1000);
