@@ -213,6 +213,7 @@ public class SdlProtocolBase {
         messageID = 0;
         headerSize = V1_HEADER_SIZE;
         this.activeTransports.clear();
+        this.serviceOnTransport.clear();
         this.mtus.clear();
         mtus.put(SessionType.RPC, (long) (V1_V2_MTU_SIZE - headerSize));
         this.secondaryTransportParams = null;
@@ -1199,12 +1200,14 @@ public class SdlProtocolBase {
                 if (serviceOnTransport.get(SessionType.NAV) != null && serviceOnTransport.get(SessionType.NAV)) {
                     iSdlProtocol.onServiceError(null, SessionType.NAV, iSdlProtocol.getSessionId(), "Transport disconnected");
                     activeTransports.remove(SessionType.NAV);
+                    serviceOnTransport.remove(SessionType.NAV);
                 }
             }
             if (getTransportForSession(SessionType.PCM) != null && disconnectedTransport.equals(getTransportForSession(SessionType.PCM))) {
                 if (serviceOnTransport.get(SessionType.PCM) != null && serviceOnTransport.get(SessionType.PCM)) {
                     iSdlProtocol.onServiceError(null, SessionType.PCM, iSdlProtocol.getSessionId(), "Transport disconnected");
                     activeTransports.remove(SessionType.PCM);
+                    serviceOnTransport.remove(SessionType.PCM);
                 }
             }
 
@@ -1262,6 +1265,7 @@ public class SdlProtocolBase {
                 requestedSession = false;
 
                 activeTransports.clear();
+                serviceOnTransport.clear();
 
                 iSdlProtocol.onTransportDisconnected(info, primaryTransportAvailable, transportConfig);
 
