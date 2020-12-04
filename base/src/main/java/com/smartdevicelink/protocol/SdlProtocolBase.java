@@ -830,7 +830,6 @@ public class SdlProtocolBase {
     }
 
     public void endService(SessionType serviceType, byte sessionID) {
-        serviceOnTransport.put(serviceType, false);
         if (serviceType.equals(SessionType.RPC)) { //RPC session will close all other sessions so we want to make sure we use the correct EndProtocolSession method
             endSession(sessionID);
         } else {
