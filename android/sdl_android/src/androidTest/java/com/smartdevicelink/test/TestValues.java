@@ -16,104 +16,7 @@ import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
 import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.rpc.AppInfo;
-import com.smartdevicelink.proxy.rpc.AppServiceCapability;
-import com.smartdevicelink.proxy.rpc.AppServiceData;
-import com.smartdevicelink.proxy.rpc.AppServiceManifest;
-import com.smartdevicelink.proxy.rpc.AppServiceRecord;
-import com.smartdevicelink.proxy.rpc.AppServicesCapabilities;
-import com.smartdevicelink.proxy.rpc.AudioControlCapabilities;
-import com.smartdevicelink.proxy.rpc.AudioControlData;
-import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
-import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
-import com.smartdevicelink.proxy.rpc.Choice;
-import com.smartdevicelink.proxy.rpc.ClimateControlCapabilities;
-import com.smartdevicelink.proxy.rpc.ClimateControlData;
-import com.smartdevicelink.proxy.rpc.CloudAppProperties;
-import com.smartdevicelink.proxy.rpc.Coordinate;
-import com.smartdevicelink.proxy.rpc.DIDResult;
-import com.smartdevicelink.proxy.rpc.DateTime;
-import com.smartdevicelink.proxy.rpc.DeviceInfo;
-import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
-import com.smartdevicelink.proxy.rpc.DisplayCapability;
-import com.smartdevicelink.proxy.rpc.DriverDistractionCapability;
-import com.smartdevicelink.proxy.rpc.DynamicUpdateCapabilities;
-import com.smartdevicelink.proxy.rpc.EqualizerSettings;
-import com.smartdevicelink.proxy.rpc.GearStatus;
-import com.smartdevicelink.proxy.rpc.Grid;
-import com.smartdevicelink.proxy.rpc.HMICapabilities;
-import com.smartdevicelink.proxy.rpc.HMIPermissions;
-import com.smartdevicelink.proxy.rpc.HMISettingsControlCapabilities;
-import com.smartdevicelink.proxy.rpc.HMISettingsControlData;
-import com.smartdevicelink.proxy.rpc.HapticRect;
-import com.smartdevicelink.proxy.rpc.Image;
-import com.smartdevicelink.proxy.rpc.ImageField;
-import com.smartdevicelink.proxy.rpc.ImageResolution;
-import com.smartdevicelink.proxy.rpc.KeyboardProperties;
-import com.smartdevicelink.proxy.rpc.LightCapabilities;
-import com.smartdevicelink.proxy.rpc.LightControlCapabilities;
-import com.smartdevicelink.proxy.rpc.LightControlData;
-import com.smartdevicelink.proxy.rpc.LightState;
-import com.smartdevicelink.proxy.rpc.LocationDetails;
-import com.smartdevicelink.proxy.rpc.MassageCushionFirmness;
-import com.smartdevicelink.proxy.rpc.MassageModeData;
-import com.smartdevicelink.proxy.rpc.MediaServiceData;
-import com.smartdevicelink.proxy.rpc.MediaServiceManifest;
-import com.smartdevicelink.proxy.rpc.MenuParams;
-import com.smartdevicelink.proxy.rpc.MetadataTags;
-import com.smartdevicelink.proxy.rpc.ModuleData;
-import com.smartdevicelink.proxy.rpc.ModuleInfo;
-import com.smartdevicelink.proxy.rpc.NavigationCapability;
-import com.smartdevicelink.proxy.rpc.NavigationInstruction;
-import com.smartdevicelink.proxy.rpc.NavigationServiceData;
-import com.smartdevicelink.proxy.rpc.NavigationServiceManifest;
-import com.smartdevicelink.proxy.rpc.OasisAddress;
-import com.smartdevicelink.proxy.rpc.ParameterPermissions;
-import com.smartdevicelink.proxy.rpc.PermissionItem;
-import com.smartdevicelink.proxy.rpc.PhoneCapability;
-import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
-import com.smartdevicelink.proxy.rpc.RGBColor;
-import com.smartdevicelink.proxy.rpc.RadioControlCapabilities;
-import com.smartdevicelink.proxy.rpc.RadioControlData;
-import com.smartdevicelink.proxy.rpc.RdsData;
-import com.smartdevicelink.proxy.rpc.Rectangle;
-import com.smartdevicelink.proxy.rpc.RemoteControlCapabilities;
-import com.smartdevicelink.proxy.rpc.ScreenParams;
-import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
-import com.smartdevicelink.proxy.rpc.SeatControlCapabilities;
-import com.smartdevicelink.proxy.rpc.SeatControlData;
-import com.smartdevicelink.proxy.rpc.SeatLocation;
-import com.smartdevicelink.proxy.rpc.SeatMemoryAction;
-import com.smartdevicelink.proxy.rpc.SingleTireStatus;
-import com.smartdevicelink.proxy.rpc.SisData;
-import com.smartdevicelink.proxy.rpc.SoftButton;
-import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
-import com.smartdevicelink.proxy.rpc.StabilityControlsStatus;
-import com.smartdevicelink.proxy.rpc.StartTime;
-import com.smartdevicelink.proxy.rpc.StationIDNumber;
-import com.smartdevicelink.proxy.rpc.SystemCapability;
-import com.smartdevicelink.proxy.rpc.TTSChunk;
-import com.smartdevicelink.proxy.rpc.Temperature;
-import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
-import com.smartdevicelink.proxy.rpc.TemplateConfiguration;
-import com.smartdevicelink.proxy.rpc.TextField;
-import com.smartdevicelink.proxy.rpc.TouchCoord;
-import com.smartdevicelink.proxy.rpc.TouchEvent;
-import com.smartdevicelink.proxy.rpc.TouchEventCapabilities;
-import com.smartdevicelink.proxy.rpc.Turn;
-import com.smartdevicelink.proxy.rpc.VehicleDataResult;
-import com.smartdevicelink.proxy.rpc.VehicleType;
-import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
-import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
-import com.smartdevicelink.proxy.rpc.VrHelpItem;
-import com.smartdevicelink.proxy.rpc.WeatherAlert;
-import com.smartdevicelink.proxy.rpc.WeatherData;
-import com.smartdevicelink.proxy.rpc.WeatherServiceData;
-import com.smartdevicelink.proxy.rpc.WeatherServiceManifest;
-import com.smartdevicelink.proxy.rpc.WindowCapability;
-import com.smartdevicelink.proxy.rpc.WindowState;
-import com.smartdevicelink.proxy.rpc.WindowStatus;
-import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
+import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
@@ -427,6 +330,13 @@ public class TestValues {
     public static final DynamicUpdateCapabilities GENERAL_DYNAMICUPDATECAPABILITIES = new DynamicUpdateCapabilities();
     public static final WindowState GENERAL_WINDOWSTATE = new WindowState();
 
+    public static final SeatOccupancy GENERAL_SEAT_OCCUPANCY = new SeatOccupancy();
+    public static final List<SeatStatus> GENERAL_SEATS_OCCUPIED = new ArrayList<SeatStatus>(1);
+    public static final JSONArray JSON_GENERAL_SEATS_OCCUPIED = new JSONArray();
+    public static final List<SeatStatus> GENERAL_SEATS_BELTED = new ArrayList<SeatStatus>(1);
+    public static final JSONArray JSON_GENERAL_SEATS_BELTED = new JSONArray();
+    public static final SeatStatus GENERAL_SEAT_STATUS = new SeatStatus();
+    public static final SeatLocation GENERAL_SEAT_LOCATION = new SeatLocation();
 
     public static final VehicleDataResult GENERAL_OEM_CUSTOM_VEHICLE_DATA = new VehicleDataResult();
     public static final TemplateConfiguration GENERAL_TEMPLATE_CONFIGURATION = new TemplateConfiguration();
@@ -446,7 +356,6 @@ public class TestValues {
     public static final FuelType GENERAL_FUELTYPE = FuelType.GASOLINE;
     public static final LockScreenConfig GENERAL_LOCKSCREENCONFIG = new LockScreenConfig();
     public static final Grid GENERAL_GRID = new Grid();
-    public static final SeatLocation GENERAL_SEAT_LOCATION = new SeatLocation();
     public static final ModuleInfo GENERAL_MODULE_INFO = new ModuleInfo();
     public static final StabilityControlsStatus GENERAL_STABILITY_CONTROL_STATUS = new StabilityControlsStatus();
     public static final VehicleDataStatus GENERAL_ESC_SYSTEM = VehicleDataStatus.ON;
@@ -1154,7 +1063,30 @@ public class TestValues {
         GENERAL_STABILITY_CONTROL_STATUS.setEscSystem(GENERAL_ESC_SYSTEM);
         GENERAL_STABILITY_CONTROL_STATUS.setTrailerSwayControl(GENERAL_S_WAY_CONTROL);
 
+        // SEAT_OCCUPANCY
+        GENERAL_SEAT_LOCATION.setGrid(GENERAL_LOCATION_GRID);
+
+        GENERAL_SEAT_STATUS.setConditionActive(GENERAL_BOOLEAN);
+        GENERAL_SEAT_STATUS.setSeatLocation(GENERAL_SEAT_LOCATION);
+
+        GENERAL_SEATS_BELTED.add(GENERAL_SEAT_STATUS);
+        GENERAL_SEATS_OCCUPIED.add(GENERAL_SEAT_STATUS);
+
+        GENERAL_SEAT_OCCUPANCY.setSeatsBelted(GENERAL_SEATS_BELTED);
+        GENERAL_SEAT_OCCUPANCY.setSeatsOccupied(GENERAL_SEATS_OCCUPIED);
+
         try {
+            JSONArray convertedSeatsOccupied = JsonUtils.createJsonArrayOfJsonObjects(GENERAL_SEATS_OCCUPIED, 1);
+            JSONArray convertedSeatsBelted = JsonUtils.createJsonArrayOfJsonObjects(GENERAL_SEATS_BELTED, 1);
+
+            for (int i = 0; i < convertedSeatsOccupied.length(); i++) {
+                JSON_GENERAL_SEATS_OCCUPIED.put(convertedSeatsOccupied.get(i));
+            }
+
+            for (int i = 0; i < convertedSeatsBelted.length(); i++) {
+                JSON_GENERAL_SEATS_BELTED.put(convertedSeatsBelted.get(i));
+            }
+
             JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);
             JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_USER_DISALLOWED, GENERAL_HMILEVEL_LIST);
 

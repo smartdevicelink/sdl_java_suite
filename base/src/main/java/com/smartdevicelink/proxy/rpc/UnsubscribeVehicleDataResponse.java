@@ -88,7 +88,10 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     @Deprecated
     public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
     public static final String KEY_STABILITY_CONTROLS_STATUS = "stabilityControlsStatus";
-
+    /**
+     * @since SmartDeviceLink 7.1.0
+     */
+    public static final String KEY_SEAT_OCCUPANCY = "seatOccupancy";
     /**
      * Constructs a new UnsubscribeVehicleDataResponse object
      */
@@ -752,5 +755,26 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     public UnsubscribeVehicleDataResponse setStabilityControlsStatus(VehicleDataResult stabilityControlsStatus) {
         setParameters(KEY_STABILITY_CONTROLS_STATUS, stabilityControlsStatus);
         return this;
+    }
+
+    /**
+     * Sets the seatOccupancy.
+     *
+     * @param seatOccupancy See SeatOccupancy
+     * @since SmartDeviceLink 7.1.0
+     */
+    public UnsubscribeVehicleDataResponse setSeatOccupancy(VehicleDataResult seatOccupancy) {
+        setParameters(KEY_SEAT_OCCUPANCY, seatOccupancy);
+        return this;
+    }
+
+    /**
+     * Gets the seatOccupancy.
+     *
+     * @return VehicleDataResult See SeatOccupancy
+     * @since SmartDeviceLink 7.1.0
+     */
+    public VehicleDataResult getSeatOccupancy() {
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_SEAT_OCCUPANCY);
     }
 }

@@ -3910,6 +3910,49 @@ public class Validator {
         return approxPosition1.equals(approxPosition2) && deviation1.equals(deviation2);
     }
 
+    public static boolean validateSeatOccupancies(SeatOccupancy item1, SeatOccupancy item2) {
+        if (item1 == null) {
+            return (item2 == null);
+        }
+        if (item2 == null) {
+            return (item1 == null);
+        }
+
+        List<SeatStatus> seatStatuses1 = item1.getSeatsBelted();
+        List<SeatStatus> seatsOccupied1 = item1.getSeatsOccupied();
+
+        List<SeatStatus> seatStatuses2 = item2.getSeatsBelted();
+        List<SeatStatus> seatsOccupied2 = item2.getSeatsOccupied();
+
+        seatsOccupied1.toString();
+
+        for (SeatStatus seatStatusItem1: seatStatuses1) {
+            for (SeatStatus seatStatusItem2: seatStatuses2) {
+                if (seatStatusItem1.getConditionActive() != seatStatusItem2.getConditionActive()){
+                    return false;
+                }
+
+                if (!validateGrid(seatStatusItem1.getSeatLocation().getGrid(), seatStatusItem2.getSeatLocation().getGrid())){
+                    return false;
+                }
+            }
+        }
+
+        for (SeatStatus occupiedStatusItem1: seatsOccupied1) {
+            for (SeatStatus occupiedStatusItem2: seatsOccupied2) {
+                if (occupiedStatusItem1.getConditionActive() != occupiedStatusItem2.getConditionActive()){
+                    return false;
+                }
+
+                if (!validateGrid(occupiedStatusItem1.getSeatLocation().getGrid(), occupiedStatusItem2.getSeatLocation().getGrid())){
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     public static boolean validateStabilityControlStatus(StabilityControlsStatus status1, StabilityControlsStatus status2) {
         if (status1 == null) {
             return (status2 == null);
