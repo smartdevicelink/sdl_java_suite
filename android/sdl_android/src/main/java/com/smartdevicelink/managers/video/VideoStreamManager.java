@@ -294,37 +294,38 @@ public class VideoStreamManager extends BaseVideoStreamManager {
             stateMachine.transitionToState(StreamingStateMachine.ERROR);
             return;
         }
-        // regardless of VideoStreamingParameters are specified or not, we should refer to VideoStreamingCapability.
-        if (majorProtocolVersion >= 5) {
-            if (internalInterface.getSystemCapabilityManager() != null) {
-                final VideoStreamingParameters params = ( parameters == null) ? new VideoStreamingParameters() : new VideoStreamingParameters(parameters);
-                internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.VIDEO_STREAMING, new OnSystemCapabilityListener() {
-                    @Override
-                    public void onCapabilityRetrieved(Object capability) {
-                        params.update((VideoStreamingCapability) capability, vehicleMake);    //Streaming parameters are ready time to stream
-                        startStreaming(params, encrypted);
-                    }
+        if (parameters == null) {
+            if (majorProtocolVersion >= 5) {
+                if (internalInterface.getSystemCapabilityManager() != null) {
+                    internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.VIDEO_STREAMING, new OnSystemCapabilityListener() {
+                        @Override
+                        public void onCapabilityRetrieved(Object capability) {
+                            VideoStreamingParameters params = new VideoStreamingParameters();
+                            params.update((VideoStreamingCapability) capability, vehicleMake);    //Streaming parameters are ready time to stream
+                            startStreaming(params, encrypted);
+                        }
 
-                    @Override
-                    public void onError(String info) {
-                        stateMachine.transitionToState(StreamingStateMachine.ERROR);
-                        DebugTool.logError(TAG, "Error retrieving video streaming capability: " + info);
-                    }
-                }, false);
+                        @Override
+                        public void onError(String info) {
+                            stateMachine.transitionToState(StreamingStateMachine.ERROR);
+                            DebugTool.logError(TAG, "Error retrieving video streaming capability: " + info);
+                        }
+                    }, false);
+                }
             } else {
-                DebugTool.logError(TAG, "Cannot start video streaming because getSystemCapabilityManager is null.");
+                //We just use default video streaming params
+                VideoStreamingParameters params = new VideoStreamingParameters();
+                DisplayCapabilities dispCap = null;
+                if (internalInterface.getSystemCapabilityManager() != null) {
+                    dispCap = (DisplayCapabilities) internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.DISPLAY, null, false);
+                }
+                if (dispCap != null) {
+                    params.setResolution(dispCap.getScreenParams().getImageResolution());
+                }
+                startStreaming(params, encrypted);
             }
         } else {
-            //We just use default video streaming params
-            VideoStreamingParameters params = (parameters == null) ? new VideoStreamingParameters() : new VideoStreamingParameters(parameters);
-            DisplayCapabilities dispCap = null;
-            if (internalInterface.getSystemCapabilityManager() != null) {
-                dispCap = (DisplayCapabilities) internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.DISPLAY, null, false);
-            }
-            if (dispCap != null) {
-                params.setResolution(dispCap.getScreenParams().getImageResolution());
-            }
-            startStreaming(params, encrypted);
+            startStreaming(parameters, encrypted);
         }
     }
 
