@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -38,7 +38,7 @@ import java.util.Hashtable;
 
 /**
  * Non periodic vehicle data read request.
- * 
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -76,23 +76,31 @@ import java.util.Hashtable;
  * 		<tr>
  * 			<td>fuelLevel</td>
  * 			<td>Boolean</td>
- * 			<td>The fuel level in the tank (percentage)</td>
+ * 			<td>The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec7.0, please see fuelRange.</td>
  *                 <td>N</td>
  *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
+ * 			<td>SmartDeviceLink 7.0.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>fuelLevel_State</td>
  * 			<td>Boolean</td>
- * 			<td>The fuel level state</td>
+ * 			<td>The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please see fuelRange.</td>
  *                 <td>N</td>
  *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
+ * 			<td>SmartDeviceLink 7.0.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>fuelRange</td>
+ * 			<td>Boolean</td>
+ * 			<td>The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the vehicle. See struct FuelRange for details.</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 5.0.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>instantFuelConsumption</td>
  * 			<td>Boolean</td>
- * 			<td>The instantaneous fuel consumption in microlitres</td>
+ * 			<td>The instantaneous fuel consumption in micro litres</td>
  *                 <td>N</td>
  *                 <td>Subscribable</td>
  * 			<td>SmartDeviceLink 2.0</td>
@@ -114,13 +122,20 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>
- * 			<td>prndl</td>
- * 			<td>Boolean</td>
- * 			<td>Currently selected gear.</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
+ *      <tr>
+ *          <td>gearStatus</td>
+ *          <td>Boolean</td>
+ *          <td>See GearStatus</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
+ *      <tr>
+ *          <td>prndl</td>
+ *          <td>Boolean</td>
+ *          <td>See PRNDL. This parameter is deprecated and it is now covered in `gearStatus`</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
  * 		<tr>
  * 			<td>tirePressure</td>
  * 			<td>Boolean</td>
@@ -229,15 +244,36 @@ import java.util.Hashtable;
  * 			<td>cloudAppVehicleID</td>
  * 			<td>Boolean</td>
  * 			<td>ID for the vehicle when connecting to cloud applications</td>
- *				<td>N</td>
- *				<td>Subscribable</td>
+ * 				<td>N</td>
+ * 				<td>Subscribable</td>
  * 			<td>SmartDeviceLink 5.1 </td>
+ *      <tr>
+ *          <td>stabilityControlsStatus</td>
+ *          <td>Boolean</td>
+ *          <td>See StabilityControlsStatus</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
  * 		</tr>
+ *      <tr>
+ *          <td>handsOffSteering</td>
+ *          <td>Boolean</td>
+ *          <td>To indicate whether driver hands are off the steering wheel</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
+ *      <tr>
+ *          <td>windowStatus</td>
+ *          <td>Boolean</td>
+ *          <td>See WindowStatus</td>
+ *          <td>N</td>
+ *          <td>SmartDeviceLink 7.0.0</td>
+ *      </tr>
  * 		</table>
- *  
- *  
+ *
+ *
  *  <p><b>Response</b></p>
- *  
+ *
  * <p> <b>Non-default Result Codes:</b></p>
  * <p> SUCCESS</p>
  * <p> INVALID_DATA</p>
@@ -249,312 +285,509 @@ import java.util.Hashtable;
  * <p> VEHICLE_DATA_NOT_ALLOWED</p>
  *  <p>VEHICLE_DATA_NOT_AVAILABLE</p>
  * <p> USER_DISALLOWED</p>
- * 
+ *
  * @see SubscribeVehicleData
  * @see UnsubscribeVehicleData
  * @since SmartDeviceLink 2.0
- * 
- *
  */
 public class GetVehicleData extends RPCRequest {
-	public static final String KEY_SPEED = "speed";
-	public static final String KEY_RPM = "rpm";
-	public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
-	public static final String KEY_FUEL_LEVEL = "fuelLevel";
-	public static final String KEY_VIN = "vin";
-	public static final String KEY_PRNDL = "prndl";
-	public static final String KEY_TIRE_PRESSURE = "tirePressure";
-	public static final String KEY_ENGINE_TORQUE = "engineTorque";
-	public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
-	public static final String KEY_ODOMETER = "odometer";
-	public static final String KEY_GPS = "gps";
-	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
-	public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
-	public static final String KEY_BELT_STATUS = "beltStatus";
-	public static final String KEY_BODY_INFORMATION = "bodyInformation";
-	public static final String KEY_DEVICE_STATUS = "deviceStatus";
-	public static final String KEY_DRIVER_BRAKING = "driverBraking";
-	public static final String KEY_WIPER_STATUS = "wiperStatus";
-	public static final String KEY_HEAD_LAMP_STATUS = "headLampStatus";
-	public static final String KEY_ACC_PEDAL_POSITION = "accPedalPosition";
-	public static final String KEY_STEERING_WHEEL_ANGLE = "steeringWheelAngle";
-	public static final String KEY_E_CALL_INFO = "eCallInfo";
-	public static final String KEY_AIRBAG_STATUS = "airbagStatus";
-	public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
-	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
-	public static final String KEY_MY_KEY = "myKey";
-	public static final String KEY_FUEL_RANGE = "fuelRange";
-	public static final String KEY_TURN_SIGNAL = "turnSignal";
-	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
+    public static final String KEY_SPEED = "speed";
+    public static final String KEY_RPM = "rpm";
+    public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
+    public static final String KEY_VIN = "vin";
+    public static final String KEY_PRNDL = "prndl";
+    public static final String KEY_TIRE_PRESSURE = "tirePressure";
+    public static final String KEY_ENGINE_TORQUE = "engineTorque";
+    public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
+    public static final String KEY_ODOMETER = "odometer";
+    public static final String KEY_GPS = "gps";
+    public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
+    public static final String KEY_BELT_STATUS = "beltStatus";
+    public static final String KEY_BODY_INFORMATION = "bodyInformation";
+    public static final String KEY_DEVICE_STATUS = "deviceStatus";
+    public static final String KEY_DRIVER_BRAKING = "driverBraking";
+    public static final String KEY_WIPER_STATUS = "wiperStatus";
+    public static final String KEY_HEAD_LAMP_STATUS = "headLampStatus";
+    public static final String KEY_ACC_PEDAL_POSITION = "accPedalPosition";
+    public static final String KEY_STEERING_WHEEL_ANGLE = "steeringWheelAngle";
+    public static final String KEY_E_CALL_INFO = "eCallInfo";
+    public static final String KEY_AIRBAG_STATUS = "airbagStatus";
+    public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
+    public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
+    public static final String KEY_MY_KEY = "myKey";
+    public static final String KEY_FUEL_RANGE = "fuelRange";
+    public static final String KEY_TURN_SIGNAL = "turnSignal";
+    public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
+    public static final String KEY_WINDOW_STATUS = "windowStatus";
+    public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
+    public static final String KEY_GEAR_STATUS = "gearStatus";
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public static final String KEY_FUEL_LEVEL = "fuelLevel";
 
-	/**
-	 * Constructs a new GetVehicleData object
-	 */
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
+    public static final String KEY_STABILITY_CONTROLS_STATUS = "stabilityControlsStatus";
+
+    /**
+     * Constructs a new GetVehicleData object
+     */
 
     public GetVehicleData() {
         super(FunctionID.GET_VEHICLE_DATA.toString());
     }
+
     /**
-	* <p>
-	* Constructs a new GetVehicleDta object indicated by the Hashtable
-	* parameter
-	* </p>
-	* 
-	* @param hash
-	*            The Hashtable to use
-	*/
+     * <p>
+     * Constructs a new GetVehicleDta object indicated by the Hashtable
+     * parameter
+     * </p>
+     *
+     * @param hash The Hashtable to use
+     */
 
     public GetVehicleData(Hashtable<String, Object> hash) {
         super(hash);
     }
-    public void setGps(Boolean gps) {
+
+    public GetVehicleData setGps(Boolean gps) {
         setParameters(KEY_GPS, gps);
+        return this;
     }
+
     public Boolean getGps() {
         return getBoolean(KEY_GPS);
     }
-    public void setSpeed(Boolean speed) {
+
+    public GetVehicleData setSpeed(Boolean speed) {
         setParameters(KEY_SPEED, speed);
+        return this;
     }
+
     public Boolean getSpeed() {
         return getBoolean(KEY_SPEED);
     }
-    public void setRpm(Boolean rpm) {
+
+    public GetVehicleData setRpm(Boolean rpm) {
         setParameters(KEY_RPM, rpm);
+        return this;
     }
+
     public Boolean getRpm() {
         return getBoolean(KEY_RPM);
     }
-    public void setFuelLevel(Boolean fuelLevel) {
+
+    /**
+     * Sets the fuelLevel.
+     *
+     * @param fuelLevel The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
+     *                  7.0, please see fuelRange.
+     */
+    @Deprecated
+    public GetVehicleData setFuelLevel(Boolean fuelLevel) {
         setParameters(KEY_FUEL_LEVEL, fuelLevel);
+        return this;
     }
+
+    /**
+     * Gets the fuelLevel.
+     *
+     * @return Boolean The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec
+     * 7.0, please see fuelRange.
+     */
+    @Deprecated
     public Boolean getFuelLevel() {
         return getBoolean(KEY_FUEL_LEVEL);
     }
+
     @Deprecated
-    public void setFuelLevel_State(Boolean fuelLevel_State) {
-        setFuelLevelState(fuelLevel_State);
-    }
-    @Deprecated
-    public Boolean getFuelLevel_State() {
-        return getFuelLevelState();
-    }
-    public void setFuelLevelState(Boolean fuelLevelState) {
+    public GetVehicleData setFuelLevelState(Boolean fuelLevelState) {
         setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
+        return this;
     }
+
+    @Deprecated
     public Boolean getFuelLevelState() {
         return getBoolean(KEY_FUEL_LEVEL_STATE);
     }
-    public void setInstantFuelConsumption(Boolean instantFuelConsumption) {
+
+    public GetVehicleData setInstantFuelConsumption(Boolean instantFuelConsumption) {
         setParameters(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
+        return this;
     }
+
     public Boolean getInstantFuelConsumption() {
         return getBoolean(KEY_INSTANT_FUEL_CONSUMPTION);
     }
-    public void setExternalTemperature(Boolean externalTemperature) {
-        setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
+
+    public GetVehicleData setFuelRange(Boolean fuelRange) {
+        setParameters(KEY_FUEL_RANGE, fuelRange);
+        return this;
     }
+
+    public Boolean getFuelRange() {
+        return getBoolean(KEY_FUEL_RANGE);
+    }
+
+    public GetVehicleData setExternalTemperature(Boolean externalTemperature) {
+        setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
+        return this;
+    }
+
     public Boolean getExternalTemperature() {
         return getBoolean(KEY_EXTERNAL_TEMPERATURE);
     }
-    
-    public void setVin(Boolean vin) {
+
+    public GetVehicleData setVin(Boolean vin) {
         setParameters(KEY_VIN, vin);
+        return this;
     }
+
     public Boolean getVin() {
         return getBoolean(KEY_VIN);
     }
-    
-    public void setPrndl(Boolean prndl) {
+
+    /**
+     * Sets the prndl.
+     *
+     * @param prndl See PRNDL.
+     * @deprecated in SmartDeviceLink 7.0.0
+     */
+    @Deprecated
+    public GetVehicleData setPrndl(Boolean prndl) {
         setParameters(KEY_PRNDL, prndl);
+        return this;
     }
+
+    /**
+     * Gets the prndl.
+     *
+     * @return Boolean See PRNDL.
+     * @deprecated in SmartDeviceLink 7.0.0
+     */
+    @Deprecated
     public Boolean getPrndl() {
         return getBoolean(KEY_PRNDL);
     }
-    public void setTirePressure(Boolean tirePressure) {
+
+    public GetVehicleData setTirePressure(Boolean tirePressure) {
         setParameters(KEY_TIRE_PRESSURE, tirePressure);
+        return this;
     }
+
     public Boolean getTirePressure() {
         return getBoolean(KEY_TIRE_PRESSURE);
     }
-    public void setOdometer(Boolean odometer) {
+
+    public GetVehicleData setOdometer(Boolean odometer) {
         setParameters(KEY_ODOMETER, odometer);
+        return this;
     }
+
     public Boolean getOdometer() {
         return getBoolean(KEY_ODOMETER);
     }
-    public void setBeltStatus(Boolean beltStatus) {
+
+    public GetVehicleData setBeltStatus(Boolean beltStatus) {
         setParameters(KEY_BELT_STATUS, beltStatus);
+        return this;
     }
+
     public Boolean getBeltStatus() {
         return getBoolean(KEY_BELT_STATUS);
     }
-    public void setBodyInformation(Boolean bodyInformation) {
+
+    public GetVehicleData setBodyInformation(Boolean bodyInformation) {
         setParameters(KEY_BODY_INFORMATION, bodyInformation);
+        return this;
     }
+
     public Boolean getBodyInformation() {
         return getBoolean(KEY_BODY_INFORMATION);
     }
-    public void setDeviceStatus(Boolean deviceStatus) {
+
+    public GetVehicleData setDeviceStatus(Boolean deviceStatus) {
         setParameters(KEY_DEVICE_STATUS, deviceStatus);
+        return this;
     }
+
     public Boolean getDeviceStatus() {
         return getBoolean(KEY_DEVICE_STATUS);
     }
-    public void setDriverBraking(Boolean driverBraking) {
+
+    public GetVehicleData setDriverBraking(Boolean driverBraking) {
         setParameters(KEY_DRIVER_BRAKING, driverBraking);
+        return this;
     }
+
     public Boolean getDriverBraking() {
         return getBoolean(KEY_DRIVER_BRAKING);
     }
-    public void setWiperStatus(Boolean wiperStatus) {
+
+    public GetVehicleData setWiperStatus(Boolean wiperStatus) {
         setParameters(KEY_WIPER_STATUS, wiperStatus);
+        return this;
     }
+
     public Boolean getWiperStatus() {
         return getBoolean(KEY_WIPER_STATUS);
     }
-    public void setHeadLampStatus(Boolean headLampStatus) {
+
+    public GetVehicleData setHeadLampStatus(Boolean headLampStatus) {
         setParameters(KEY_HEAD_LAMP_STATUS, headLampStatus);
+        return this;
     }
+
     public Boolean getHeadLampStatus() {
         return getBoolean(KEY_HEAD_LAMP_STATUS);
     }
-    public void setEngineTorque(Boolean engineTorque) {
+
+    public GetVehicleData setEngineTorque(Boolean engineTorque) {
         setParameters(KEY_ENGINE_TORQUE, engineTorque);
+        return this;
     }
+
     public Boolean getEngineTorque() {
         return getBoolean(KEY_ENGINE_TORQUE);
     }
-    public void setEngineOilLife(Boolean engineOilLife) {
+
+    public GetVehicleData setEngineOilLife(Boolean engineOilLife) {
         setParameters(KEY_ENGINE_OIL_LIFE, engineOilLife);
+        return this;
     }
+
     public Boolean getEngineOilLife() {
         return getBoolean(KEY_ENGINE_OIL_LIFE);
     }
-    public void setAccPedalPosition(Boolean accPedalPosition) {
+
+    public GetVehicleData setAccPedalPosition(Boolean accPedalPosition) {
         setParameters(KEY_ACC_PEDAL_POSITION, accPedalPosition);
+        return this;
     }
+
     public Boolean getAccPedalPosition() {
         return getBoolean(KEY_ACC_PEDAL_POSITION);
     }
-        
-    public void setSteeringWheelAngle(Boolean steeringWheelAngle) {
+
+    public GetVehicleData setSteeringWheelAngle(Boolean steeringWheelAngle) {
         setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
+        return this;
     }
+
     public Boolean getSteeringWheelAngle() {
         return getBoolean(KEY_STEERING_WHEEL_ANGLE);
-    }                
-    public void setECallInfo(Boolean eCallInfo) {
-        setParameters(KEY_E_CALL_INFO, eCallInfo);
     }
+
+    public GetVehicleData setECallInfo(Boolean eCallInfo) {
+        setParameters(KEY_E_CALL_INFO, eCallInfo);
+        return this;
+    }
+
     public Boolean getECallInfo() {
         return getBoolean(KEY_E_CALL_INFO);
-    }    
-    
-    
-    public void setAirbagStatus(Boolean airbagStatus) {
-        setParameters(KEY_AIRBAG_STATUS, airbagStatus);
     }
+
+
+    public GetVehicleData setAirbagStatus(Boolean airbagStatus) {
+        setParameters(KEY_AIRBAG_STATUS, airbagStatus);
+        return this;
+    }
+
     public Boolean getAirbagStatus() {
         return getBoolean(KEY_AIRBAG_STATUS);
     }
-    public void setEmergencyEvent(Boolean emergencyEvent) {
+
+    public GetVehicleData setEmergencyEvent(Boolean emergencyEvent) {
         setParameters(KEY_EMERGENCY_EVENT, emergencyEvent);
+        return this;
     }
+
     public Boolean getEmergencyEvent() {
         return getBoolean(KEY_EMERGENCY_EVENT);
     }
-    public void setClusterModeStatus(Boolean clusterModeStatus) {
+
+    public GetVehicleData setClusterModeStatus(Boolean clusterModeStatus) {
         setParameters(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
+        return this;
     }
+
     public Boolean getClusterModeStatus() {
         return getBoolean(KEY_CLUSTER_MODE_STATUS);
     }
-    public void setMyKey(Boolean myKey) {
+
+    public GetVehicleData setMyKey(Boolean myKey) {
         setParameters(KEY_MY_KEY, myKey);
+        return this;
     }
+
     public Boolean getMyKey() {
         return getBoolean(KEY_MY_KEY);
     }
 
     /**
-     * Sets a boolean value. If true, gets fuelRange data
-     * @param fuelRange
-      *            a boolean value
-     */
-    public void setFuelRange(Boolean fuelRange) {
-        setParameters(KEY_FUEL_RANGE, fuelRange);
-    }
-
-    /**
-     * Gets a boolean value.
-     *
-     * @return Boolean -a Boolean value.
-     *
-     */
-    public Boolean getFuelRange() {
-        return getBoolean(KEY_FUEL_RANGE);
-    }
-
-    /**
      * Sets a boolean value. If true, subscribes turnSignal data
+     *
      * @param turnSignal a boolean value
      */
-    public void setTurnSignal(Boolean turnSignal) { setParameters(KEY_TURN_SIGNAL, turnSignal); }
+    public GetVehicleData setTurnSignal(Boolean turnSignal) {
+        setParameters(KEY_TURN_SIGNAL, turnSignal);
+        return this;
+    }
 
     /**
      * Gets a boolean value. If true, means the turnSignal data has been subscribed.
+     *
      * @return a Boolean value.
      */
-    public Boolean getTurnSignal() { return getBoolean(KEY_TURN_SIGNAL); }
+    public Boolean getTurnSignal() {
+        return getBoolean(KEY_TURN_SIGNAL);
+    }
 
     /**
      * Sets a boolean value. If true, subscribes electronicParkBrakeStatus data
+     *
      * @param electronicParkBrakeStatus a boolean value
      */
-    public void setElectronicParkBrakeStatus(Boolean electronicParkBrakeStatus){
+    public GetVehicleData setElectronicParkBrakeStatus(Boolean electronicParkBrakeStatus) {
         setParameters(KEY_ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
+        return this;
     }
 
     /**
      * Gets a boolean value. If true, means the electronicParkBrakeStatus data has been subscribed.
+     *
      * @return a Boolean value.
      */
-    public Boolean getElectronicParkBrakeStatus(){
+    public Boolean getElectronicParkBrakeStatus() {
         return getBoolean(KEY_ELECTRONIC_PARK_BRAKE_STATUS);
     }
 
     /**
      * Sets a boolean value. If true, gets the cloudAppVehicleID data
+     *
      * @param cloudAppVehicleID a boolean value
      */
-    public void setCloudAppVehicleID(boolean cloudAppVehicleID){
+    public GetVehicleData setCloudAppVehicleID(boolean cloudAppVehicleID) {
         setParameters(KEY_CLOUD_APP_VEHICLE_ID, cloudAppVehicleID);
+        return this;
     }
 
     /**
      * Gets a boolean value. If true, means the cloudAppVehicleDataID data has been set to retrieve.
+     *
      * @return a Boolean value.
      */
-    public Boolean getCloudAppVehicleID(){
+    public Boolean getCloudAppVehicleID() {
         return getBoolean(KEY_CLOUD_APP_VEHICLE_ID);
     }
 
     /**
      * Sets a boolean value for OEM Custom VehicleData.
-     * @param vehicleDataName a String value
+     *
+     * @param vehicleDataName  a String value
      * @param vehicleDataState a boolean value
      */
-    public void setOEMCustomVehicleData(String vehicleDataName, Boolean vehicleDataState){
+    public GetVehicleData setOEMCustomVehicleData(String vehicleDataName, Boolean vehicleDataState) {
         setParameters(vehicleDataName, vehicleDataState);
+        return this;
     }
 
     /**
      * Gets a boolean value for OEM Custom VehicleData.
+     *
      * @return a Boolean value.
      */
-    public Boolean getOEMCustomVehicleData(String vehicleDataName){
+    public Boolean getOEMCustomVehicleData(String vehicleDataName) {
         return getBoolean(vehicleDataName);
+    }
+
+    /**
+     * Sets the windowStatus.
+     *
+     * @param windowStatus See WindowStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public GetVehicleData setWindowStatus(Boolean windowStatus) {
+        setParameters(KEY_WINDOW_STATUS, windowStatus);
+        return this;
+    }
+
+    /**
+     * Gets the windowStatus.
+     *
+     * @return Boolean See WindowStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public Boolean getWindowStatus() {
+        return getBoolean(KEY_WINDOW_STATUS);
+    }
+
+    /**
+     * Sets the handsOffSteering.
+     *
+     * @param handsOffSteering To indicate whether driver hands are off the steering wheel
+     * @since SmartDeviceLink 7.0.0
+     */
+    public GetVehicleData setHandsOffSteering(Boolean handsOffSteering) {
+        setParameters(KEY_HANDS_OFF_STEERING, handsOffSteering);
+        return this;
+    }
+
+    /**
+     * Gets the handsOffSteering.
+     *
+     * @return Boolean To indicate whether driver hands are off the steering wheel
+     * @since SmartDeviceLink 7.0.0
+     */
+    public Boolean getHandsOffSteering() {
+        return getBoolean(KEY_HANDS_OFF_STEERING);
+    }
+
+    /**
+     * Sets the gearStatus.
+     *
+     * @param gearStatus See GearStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public GetVehicleData setGearStatus(Boolean gearStatus) {
+        setParameters(KEY_GEAR_STATUS, gearStatus);
+        return this;
+    }
+
+    /**
+     * Gets the gearStatus.
+     *
+     * @return GearStatus See GearStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public Boolean getGearStatus() {
+        return getBoolean(KEY_GEAR_STATUS);
+    }
+
+    /**
+     * Sets the stabilityControlsStatus.
+     *
+     * @param stabilityControlsStatus See StabilityControlsStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public GetVehicleData setStabilityControlsStatus(Boolean stabilityControlsStatus) {
+        setParameters(KEY_STABILITY_CONTROLS_STATUS, stabilityControlsStatus);
+        return this;
+    }
+
+    /**
+     * Gets the stabilityControlsStatus.
+     *
+     * @return Boolean See StabilityControlsStatus
+     * @since SmartDeviceLink 7.0.0
+     */
+    public Boolean getStabilityControlsStatus() {
+        return getBoolean(KEY_STABILITY_CONTROLS_STATUS);
     }
 }

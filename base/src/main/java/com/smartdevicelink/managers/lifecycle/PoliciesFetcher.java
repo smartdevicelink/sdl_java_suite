@@ -31,7 +31,6 @@
  */
 package com.smartdevicelink.managers.lifecycle;
 
-import android.util.Log;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.Headers;
 import com.smartdevicelink.proxy.rpc.OnSystemRequest;
@@ -40,11 +39,17 @@ import com.smartdevicelink.proxy.rpc.SystemRequest;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.util.DebugTool;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -55,7 +60,7 @@ import java.util.Vector;
 class PoliciesFetcher {
 
     private static final String TAG = PoliciesFetcher.class.getSimpleName();
-    private static final int POLICIES_CORRELATION_ID = 65535;
+    static final int POLICIES_CORRELATION_ID = 65535;
 
     private static HttpURLConnection getURLConnection(Headers myHeader, String sURLString, int Timeout, int iContentLen) {
         String sContentType = "application/json";
@@ -64,7 +69,7 @@ class PoliciesFetcher {
         boolean bDoOutput = true;
         boolean bDoInput = true;
         boolean bUsesCaches = false;
-        String sRequestMeth = "POST";
+        String sRequestMethod = "POST";
 
         boolean bInstFolRed = false;
         String sCharSet = "utf-8";
@@ -82,7 +87,7 @@ class PoliciesFetcher {
             bDoOutput = myHeader.getDoOutput();
             bDoInput = myHeader.getDoInput();
             bUsesCaches = myHeader.getUseCaches();
-            sRequestMeth = myHeader.getRequestMethod();
+            sRequestMethod = myHeader.getRequestMethod();
             iReadTimeout = myHeader.getReadTimeout();
             bInstFolRed = myHeader.getInstanceFollowRedirects();
             sCharSet = myHeader.getCharset();
@@ -97,12 +102,12 @@ class PoliciesFetcher {
             urlConnection.setConnectTimeout(CONNECTION_TIMEOUT);
             urlConnection.setDoOutput(bDoOutput);
             urlConnection.setDoInput(bDoInput);
-            urlConnection.setRequestMethod(sRequestMeth);
+            urlConnection.setRequestMethod(sRequestMethod);
             urlConnection.setReadTimeout(READ_TIMEOUT);
             urlConnection.setInstanceFollowRedirects(bInstFolRed);
             urlConnection.setRequestProperty("Content-Type", sContentType);
             urlConnection.setRequestProperty("charset", sCharSet);
-            urlConnection.setRequestProperty("Content-Length", "" + Integer.toString(iContentLength));
+            urlConnection.setRequestProperty("Content-Length", "" + iContentLength);
             urlConnection.setUseCaches(bUsesCaches);
             return urlConnection;
         } catch (Exception e) {
@@ -150,7 +155,7 @@ class PoliciesFetcher {
             urlConnection = getURLConnection(myHeader, sURLString, iTimeout, length);
 
             if (urlConnection == null) {
-                Log.i(TAG, "urlConnection is null, check RPC input parameters");
+                DebugTool.logInfo(TAG, "urlConnection is null, check RPC input parameters");
                 return null;
             }
 
@@ -167,12 +172,12 @@ class PoliciesFetcher {
 
             long BeforeTime = System.currentTimeMillis();
             long AfterTime = System.currentTimeMillis();
-            final long roundtriptime = AfterTime - BeforeTime;
+            final long roundTripTime = AfterTime - BeforeTime;
 
             int iResponseCode = urlConnection.getResponseCode();
 
             if (iResponseCode != HttpURLConnection.HTTP_OK) {
-                Log.i(TAG, "Response code not HTTP_OK, returning from sendOnSystemRequestToUrl.");
+                DebugTool.logInfo(TAG, "Response code not HTTP_OK, returning from sendOnSystemRequestToUrl.");
                 return null;
             }
 
@@ -196,7 +201,7 @@ class PoliciesFetcher {
                 putFile.setCRC(response.toString().getBytes());
                 return putFile;
             } else {
-                Vector<String> cloudDataReceived = new Vector<String>();
+                Vector<String> cloudDataReceived = new Vector<>();
                 final String dataKey = "data";
                 // Convert the response to JSON
                 JSONObject jsonResponse = new JSONObject(response.toString());
@@ -206,16 +211,16 @@ class PoliciesFetcher {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             if (jsonArray.get(i) instanceof String) {
                                 cloudDataReceived.add(jsonArray.getString(i));
-                                //Log.i("sendSystemRequestToUrl", "jsonArray.getString(i): " + jsonArray.getString(i));
+                                //DebugTool.logInfo(TAG, "sendSystemRequestToUrl", "jsonArray.getString(i): " + jsonArray.getString(i));
                             }
                         }
                     } else if (jsonResponse.get(dataKey) instanceof String) {
                         cloudDataReceived.add(jsonResponse.getString(dataKey));
-                        //Log.i("sendSystemRequestToUrl", "jsonResponse.getString(data): " + jsonResponse.getString("data"));
+                        //DebugTool.logInfo(TAG, "sendSystemRequestToUrl", "jsonResponse.getString(data): " + jsonResponse.getString("data"));
                     }
                 } else {
-                    DebugTool.logError("sendSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
-                    //Log.i("sendSystemRequestToUrl", "sendSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
+                    DebugTool.logError(TAG, "sendSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
+                    //DebugTool.logInfo(TAG, "sendSystemRequestToUrl", "sendSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
                     return null;
                 }
 
@@ -246,17 +251,17 @@ class PoliciesFetcher {
 
             }
         } catch (JSONException e) {
-            DebugTool.logError("sendSystemRequestToUrl: JSONException: ", e);
+            DebugTool.logError(TAG, "sendSystemRequestToUrl: JSONException: ", e);
         } catch (UnsupportedEncodingException e) {
-            DebugTool.logError("sendSystemRequestToUrl: Could not encode string.", e);
+            DebugTool.logError(TAG, "sendSystemRequestToUrl: Could not encode string.", e);
         } catch (ProtocolException e) {
-            DebugTool.logError("sendSystemRequestToUrl: Could not set request method to post.", e);
+            DebugTool.logError(TAG, "sendSystemRequestToUrl: Could not set request method to post.", e);
         } catch (MalformedURLException e) {
-            DebugTool.logError("sendSystemRequestToUrl: URL Exception when sending SystemRequest to an external server.", e);
+            DebugTool.logError(TAG, "sendSystemRequestToUrl: URL Exception when sending SystemRequest to an external server.", e);
         } catch (IOException e) {
-            DebugTool.logError("sendSystemRequestToUrl: IOException: ", e);
+            DebugTool.logError(TAG, "sendSystemRequestToUrl: IOException: ", e);
         } catch (Exception e) {
-            DebugTool.logError("sendSystemRequestToUrl: Unexpected Exception: ", e);
+            DebugTool.logError(TAG, "sendSystemRequestToUrl: Unexpected Exception: ", e);
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();

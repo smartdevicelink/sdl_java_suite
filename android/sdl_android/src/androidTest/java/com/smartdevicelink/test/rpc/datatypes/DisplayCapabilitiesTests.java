@@ -8,7 +8,7 @@ import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
@@ -22,33 +22,33 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.DisplayCapabilities}
  */
-public class DisplayCapabilitiesTests extends TestCase{
-	
+public class DisplayCapabilitiesTests extends TestCase {
+
     private DisplayCapabilities msg;
 
     @Override
-    public void setUp(){    	
-    	msg = new DisplayCapabilities();
+    public void setUp() {
+        msg = new DisplayCapabilities();
 
-        msg.setGraphicSupported(Test.GENERAL_BOOLEAN);
-        msg.setNumCustomPresetsAvailable(Test.GENERAL_INT);
-        msg.setDisplayType(Test.GENERAL_DISPLAYTYPE);
-        msg.setDisplayName(Test.GENERAL_STRING);
-        msg.setImageFields(Test.GENERAL_IMAGEFIELD_LIST);
-        msg.setTextFields(Test.GENERAL_TEXTFIELD_LIST);
-        msg.setMediaClockFormats(Test.GENERAL_MEDIACLOCKFORMAT_LIST);
-        msg.setScreenParams(Test.GENERAL_SCREENPARAMS);
-        msg.setTemplatesAvailable(Test.GENERAL_STRING_LIST);
+        msg.setGraphicSupported(TestValues.GENERAL_BOOLEAN);
+        msg.setNumCustomPresetsAvailable(TestValues.GENERAL_INT);
+        msg.setDisplayType(TestValues.GENERAL_DISPLAYTYPE);
+        msg.setDisplayName(TestValues.GENERAL_STRING);
+        msg.setImageFields(TestValues.GENERAL_IMAGEFIELD_LIST);
+        msg.setTextFields(TestValues.GENERAL_TEXTFIELD_LIST);
+        msg.setMediaClockFormats(TestValues.GENERAL_MEDIACLOCKFORMAT_LIST);
+        msg.setScreenParams(TestValues.GENERAL_SCREENPARAMS);
+        msg.setTemplatesAvailable(TestValues.GENERAL_STRING_LIST);
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
-    	// Test Values
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
         boolean graphicSupported = msg.getGraphicSupported();
         int numPresets = msg.getNumCustomPresetsAvailable();
         DisplayType displayType = msg.getDisplayType();
@@ -60,114 +60,114 @@ public class DisplayCapabilitiesTests extends TestCase{
         List<ImageField> imageFields = msg.getImageFields();
 
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, graphicSupported);
-        assertEquals(Test.MATCH, Test.GENERAL_INT, numPresets);
-        assertEquals(Test.MATCH, Test.GENERAL_DISPLAYTYPE, displayType);
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, displayName);
-        assertTrue(Test.TRUE, Validator.validateScreenParams(Test.GENERAL_SCREENPARAMS, screenParams));
-        assertEquals(Test.MATCH, Test.GENERAL_STRING_LIST.size(), templatesAvailable.size());
-		assertEquals(Test.MATCH, Test.GENERAL_MEDIACLOCKFORMAT_LIST.size(), mediaClock.size());
-		assertEquals(Test.MATCH, Test.GENERAL_TEXTFIELD_LIST.size(), textFields.size());
-		assertEquals(Test.MATCH, Test.GENERAL_IMAGEFIELD_LIST.size(), imageFields.size());
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, graphicSupported);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, numPresets);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_DISPLAYTYPE, displayType);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, displayName);
+        assertTrue(TestValues.TRUE, Validator.validateScreenParams(TestValues.GENERAL_SCREENPARAMS, screenParams));
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING_LIST.size(), templatesAvailable.size());
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_MEDIACLOCKFORMAT_LIST.size(), mediaClock.size());
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_TEXTFIELD_LIST.size(), textFields.size());
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_IMAGEFIELD_LIST.size(), imageFields.size());
 
-		for(int i = 0; i < Test.GENERAL_STRING_LIST.size(); i++){
-            assertEquals(Test.MATCH, Test.GENERAL_STRING_LIST.get(i), templatesAvailable.get(i));
-        }
-        
-        for(int i = 0; i < Test.GENERAL_MEDIACLOCKFORMAT_LIST.size(); i++){
-            assertEquals(Test.MATCH, Test.GENERAL_MEDIACLOCKFORMAT_LIST.get(i), mediaClock.get(i));
+        for (int i = 0; i < TestValues.GENERAL_STRING_LIST.size(); i++) {
+            assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING_LIST.get(i), templatesAvailable.get(i));
         }
 
-        for(int i = 0; i < Test.GENERAL_TEXTFIELD_LIST.size(); i++){
-            assertTrue(Test.TRUE, Validator.validateTextFields(Test.GENERAL_TEXTFIELD_LIST.get(i), textFields.get(i)));
+        for (int i = 0; i < TestValues.GENERAL_MEDIACLOCKFORMAT_LIST.size(); i++) {
+            assertEquals(TestValues.MATCH, TestValues.GENERAL_MEDIACLOCKFORMAT_LIST.get(i), mediaClock.get(i));
         }
 
-        for(int i = 0; i < Test.GENERAL_IMAGEFIELD_LIST.size(); i++){
-            assertTrue(Test.TRUE, Validator.validateImageFields(Test.GENERAL_IMAGEFIELD_LIST.get(i), imageFields.get(i)));
+        for (int i = 0; i < TestValues.GENERAL_TEXTFIELD_LIST.size(); i++) {
+            assertTrue(TestValues.TRUE, Validator.validateTextFields(TestValues.GENERAL_TEXTFIELD_LIST.get(i), textFields.get(i)));
         }
 
-        
+        for (int i = 0; i < TestValues.GENERAL_IMAGEFIELD_LIST.size(); i++) {
+            assertTrue(TestValues.TRUE, Validator.validateImageFields(TestValues.GENERAL_IMAGEFIELD_LIST.get(i), imageFields.get(i)));
+        }
+
+
         // Invalid/Null Tests
         DisplayCapabilities msg = new DisplayCapabilities();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
 
-        assertNull(Test.NULL, msg.getDisplayType());
-        assertNull(Test.NULL, msg.getDisplayName());
-        assertNull(Test.NULL, msg.getGraphicSupported());
-        assertNull(Test.NULL, msg.getImageFields());
-        assertNull(Test.NULL, msg.getMediaClockFormats());
-        assertNull(Test.NULL, msg.getNumCustomPresetsAvailable());
-        assertNull(Test.NULL, msg.getScreenParams());
-        assertNull(Test.NULL, msg.getTemplatesAvailable());
-        assertNull(Test.NULL, msg.getTextFields());
+        assertNull(TestValues.NULL, msg.getDisplayType());
+        assertNull(TestValues.NULL, msg.getDisplayName());
+        assertNull(TestValues.NULL, msg.getGraphicSupported());
+        assertNull(TestValues.NULL, msg.getImageFields());
+        assertNull(TestValues.NULL, msg.getMediaClockFormats());
+        assertNull(TestValues.NULL, msg.getNumCustomPresetsAvailable());
+        assertNull(TestValues.NULL, msg.getScreenParams());
+        assertNull(TestValues.NULL, msg.getTemplatesAvailable());
+        assertNull(TestValues.NULL, msg.getTextFields());
     }
-    
-    public void testJson(){
+
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
-            reference.put(DisplayCapabilities.KEY_NUM_CUSTOM_PRESETS_AVAILABLE, Test.GENERAL_INT);
-            reference.put(DisplayCapabilities.KEY_GRAPHIC_SUPPORTED, Test.GENERAL_BOOLEAN);
-            reference.put(DisplayCapabilities.KEY_DISPLAY_TYPE, Test.GENERAL_DISPLAYTYPE);
-            reference.put(DisplayCapabilities.KEY_DISPLAY_NAME, Test.GENERAL_STRING);
-            reference.put(DisplayCapabilities.KEY_TEMPLATES_AVAILABLE, JsonUtils.createJsonArray(Test.GENERAL_STRING_LIST));
-            reference.put(DisplayCapabilities.KEY_MEDIA_CLOCK_FORMATS, JsonUtils.createJsonArray(Test.GENERAL_MEDIACLOCKFORMAT_LIST));
-            reference.put(DisplayCapabilities.KEY_TEXT_FIELDS, Test.JSON_TEXTFIELDS);
-            reference.put(DisplayCapabilities.KEY_IMAGE_FIELDS, Test.JSON_IMAGEFIELDS);
-            reference.put(DisplayCapabilities.KEY_SCREEN_PARAMS, Test.JSON_SCREENPARAMS);
+        try {
+            reference.put(DisplayCapabilities.KEY_NUM_CUSTOM_PRESETS_AVAILABLE, TestValues.GENERAL_INT);
+            reference.put(DisplayCapabilities.KEY_GRAPHIC_SUPPORTED, TestValues.GENERAL_BOOLEAN);
+            reference.put(DisplayCapabilities.KEY_DISPLAY_TYPE, TestValues.GENERAL_DISPLAYTYPE);
+            reference.put(DisplayCapabilities.KEY_DISPLAY_NAME, TestValues.GENERAL_STRING);
+            reference.put(DisplayCapabilities.KEY_TEMPLATES_AVAILABLE, JsonUtils.createJsonArray(TestValues.GENERAL_STRING_LIST));
+            reference.put(DisplayCapabilities.KEY_MEDIA_CLOCK_FORMATS, JsonUtils.createJsonArray(TestValues.GENERAL_MEDIACLOCKFORMAT_LIST));
+            reference.put(DisplayCapabilities.KEY_TEXT_FIELDS, TestValues.JSON_TEXTFIELDS);
+            reference.put(DisplayCapabilities.KEY_IMAGE_FIELDS, TestValues.JSON_IMAGEFIELDS);
+            reference.put(DisplayCapabilities.KEY_SCREEN_PARAMS, TestValues.JSON_SCREENPARAMS);
 
             JSONObject underTest = msg.serializeJSON();
-            assertEquals(Test.MATCH, reference.length(), underTest.length());
-            
-            Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
-                String key = (String) iterator.next();
-                if(key.equals(DisplayCapabilities.KEY_IMAGE_FIELDS)){
-                    JSONArray referenceArray = JsonUtils.readJsonArrayFromJsonObject(reference, key);
-                    JSONArray underTestArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
-                    assertEquals(Test.MATCH, referenceArray.length(), underTestArray.length());
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
-                    for(int i = 0; i < referenceArray.length(); i++){
-                    	Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(referenceArray.getJSONObject(i));
-                    	Hashtable<String, Object> hashTest= JsonRPCMarshaller.deserializeJSONObject(underTestArray.getJSONObject(i));
-                    	assertTrue(Test.TRUE, Validator.validateImageFields(new ImageField(hashReference), new ImageField(hashTest)));
-                    }
-                } else if(key.equals(DisplayCapabilities.KEY_TEXT_FIELDS)){
-                	JSONArray referenceArray = JsonUtils.readJsonArrayFromJsonObject(reference, key);
-                    JSONArray underTestArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
-                    assertEquals(Test.MATCH, referenceArray.length(), underTestArray.length());
-                    
-                    for(int i = 0; i < referenceArray.length(); i++){
-                    	Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(referenceArray.getJSONObject(i));
-                    	Hashtable<String, Object> hashTest= JsonRPCMarshaller.deserializeJSONObject(underTestArray.getJSONObject(i));
-                    	assertTrue(Test.TRUE, Validator.validateTextFields(new TextField(hashReference), new TextField(hashTest)));
-                    }
-                } else if(key.equals(DisplayCapabilities.KEY_TEMPLATES_AVAILABLE)){
+            Iterator<?> iterator = reference.keys();
+            while (iterator.hasNext()) {
+                String key = (String) iterator.next();
+                if (key.equals(DisplayCapabilities.KEY_IMAGE_FIELDS)) {
                     JSONArray referenceArray = JsonUtils.readJsonArrayFromJsonObject(reference, key);
                     JSONArray underTestArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
-                    assertEquals(Test.MATCH, referenceArray.length(), underTestArray.length());
-                    assertTrue(Test.TRUE, Validator.validateStringList(JsonUtils.readStringListFromJsonObject(reference, key), JsonUtils.readStringListFromJsonObject(underTest, key)));
-                } else if(key.equals(DisplayCapabilities.KEY_SCREEN_PARAMS)){
+                    assertEquals(TestValues.MATCH, referenceArray.length(), underTestArray.length());
+
+                    for (int i = 0; i < referenceArray.length(); i++) {
+                        Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(referenceArray.getJSONObject(i));
+                        Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(underTestArray.getJSONObject(i));
+                        assertTrue(TestValues.TRUE, Validator.validateImageFields(new ImageField(hashReference), new ImageField(hashTest)));
+                    }
+                } else if (key.equals(DisplayCapabilities.KEY_TEXT_FIELDS)) {
+                    JSONArray referenceArray = JsonUtils.readJsonArrayFromJsonObject(reference, key);
+                    JSONArray underTestArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
+                    assertEquals(TestValues.MATCH, referenceArray.length(), underTestArray.length());
+
+                    for (int i = 0; i < referenceArray.length(); i++) {
+                        Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(referenceArray.getJSONObject(i));
+                        Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(underTestArray.getJSONObject(i));
+                        assertTrue(TestValues.TRUE, Validator.validateTextFields(new TextField(hashReference), new TextField(hashTest)));
+                    }
+                } else if (key.equals(DisplayCapabilities.KEY_TEMPLATES_AVAILABLE)) {
+                    JSONArray referenceArray = JsonUtils.readJsonArrayFromJsonObject(reference, key);
+                    JSONArray underTestArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
+                    assertEquals(TestValues.MATCH, referenceArray.length(), underTestArray.length());
+                    assertTrue(TestValues.TRUE, Validator.validateStringList(JsonUtils.readStringListFromJsonObject(reference, key), JsonUtils.readStringListFromJsonObject(underTest, key)));
+                } else if (key.equals(DisplayCapabilities.KEY_SCREEN_PARAMS)) {
                     JSONObject referenceArray = JsonUtils.readJsonObjectFromJsonObject(reference, key);
                     JSONObject underTestArray = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
-                	Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(referenceArray);
-                	Hashtable<String, Object> hashTest= JsonRPCMarshaller.deserializeJSONObject(underTestArray);
-                    
-                    assertTrue(Test.TRUE, Validator.validateScreenParams(new ScreenParams(hashReference), new ScreenParams(hashTest)));
-                } else if(key.equals(DisplayCapabilities.KEY_MEDIA_CLOCK_FORMATS)){
+                    Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(referenceArray);
+                    Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(underTestArray);
+
+                    assertTrue(TestValues.TRUE, Validator.validateScreenParams(new ScreenParams(hashReference), new ScreenParams(hashTest)));
+                } else if (key.equals(DisplayCapabilities.KEY_MEDIA_CLOCK_FORMATS)) {
                     JSONArray referenceArray = JsonUtils.readJsonArrayFromJsonObject(reference, key);
                     JSONArray underTestArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
-                    assertEquals(Test.MATCH, referenceArray.length(), underTestArray.length());
+                    assertEquals(TestValues.MATCH, referenceArray.length(), underTestArray.length());
 
-                    for(int i = 0; i < referenceArray.length(); i++){
-                        assertTrue(Test.TRUE, Validator.validateText(referenceArray.getString(i), underTestArray.getString(i)));// not a string?
+                    for (int i = 0; i < referenceArray.length(); i++) {
+                        assertTrue(TestValues.TRUE, Validator.validateText(referenceArray.getString(i), underTestArray.getString(i)));// not a string?
                     }
-                } else{
-                    assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+                } else {
+                    assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
                 }
             }
-        }catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

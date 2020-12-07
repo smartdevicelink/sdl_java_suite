@@ -32,16 +32,26 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
-import com.smartdevicelink.AndroidTestCase2;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ChoiceSetLayoutTests extends AndroidTestCase2 {
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
+
+@RunWith(AndroidJUnit4.class)
+public class ChoiceSetLayoutTests {
     /**
      * Verifies that the enum values are not null upon valid assignment.
      */
+    @Test
     public void testValidEnums() {
         ChoiceSetLayout choiceSetLayoutList = ChoiceSetLayout.valueForString("CHOICE_SET_LAYOUT_LIST");
         ChoiceSetLayout choiceSetLayoutTiles = ChoiceSetLayout.valueForString("CHOICE_SET_LAYOUT_TILES");
@@ -52,6 +62,7 @@ public class ChoiceSetLayoutTests extends AndroidTestCase2 {
     /**
      * Verifies that an invalid assignment is null.
      */
+    @Test
     public void testInvalidEnum() {
         String example = "deFaUlt";
         try {
@@ -65,6 +76,7 @@ public class ChoiceSetLayoutTests extends AndroidTestCase2 {
     /**
      * Verifies that a null assignment is invalid.
      */
+    @Test
     public void testNullEnum() {
         String example = null;
         try {
@@ -78,6 +90,7 @@ public class ChoiceSetLayoutTests extends AndroidTestCase2 {
     /**
      * Verifies the possible enum values of DynamicMenuUpdatesMode.
      */
+    @Test
     public void testListEnum() {
         List<ChoiceSetLayout> enumValueList = Arrays.asList(ChoiceSetLayout.values());
 

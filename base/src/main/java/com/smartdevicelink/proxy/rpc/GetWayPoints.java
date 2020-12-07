@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -40,7 +40,7 @@ import com.smartdevicelink.proxy.rpc.enums.WayPointType;
 import java.util.Hashtable;
 
 public class GetWayPoints extends RPCRequest {
-	public static final String KEY_WAY_POINT_TYPE = "wayPointType";
+    public static final String KEY_WAY_POINT_TYPE = "wayPointType";
 
     public GetWayPoints() {
         super(FunctionID.GET_WAY_POINTS.toString());
@@ -59,7 +59,8 @@ public class GetWayPoints extends RPCRequest {
         return (WayPointType) getObject(WayPointType.class, KEY_WAY_POINT_TYPE);
     }
 
-    public void setWayPointType(@NonNull WayPointType wayPointType) {
+    public GetWayPoints setWayPointType(@NonNull WayPointType wayPointType) {
         setParameters(KEY_WAY_POINT_TYPE, wayPointType);
+        return this;
     }
 }

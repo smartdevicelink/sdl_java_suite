@@ -46,62 +46,60 @@ import java.util.List;
  */
 public class TimerModeTests extends TestCase {
 
-	/**
-	 * Verifies that the enum values are not null upon valid assignment.
-	 */
-	public void testValidEnums () {
-		String example = "UP";
-		TimerMode enumUp = TimerMode.valueForString(example);
-		example = "DOWN";
-		TimerMode enumDown = TimerMode.valueForString(example);
-		example = "NONE";
-		TimerMode enumNone = TimerMode.valueForString(example);
+    /**
+     * Verifies that the enum values are not null upon valid assignment.
+     */
+    public void testValidEnums() {
+        String example = "UP";
+        TimerMode enumUp = TimerMode.valueForString(example);
+        example = "DOWN";
+        TimerMode enumDown = TimerMode.valueForString(example);
+        example = "NONE";
+        TimerMode enumNone = TimerMode.valueForString(example);
 
-		assertNotNull("UP returned null", enumUp);
-		assertNotNull("DOWN returned null", enumDown);
-		assertNotNull("NONE returned null", enumNone);
-	}
+        assertNotNull("UP returned null", enumUp);
+        assertNotNull("DOWN returned null", enumDown);
+        assertNotNull("NONE returned null", enumNone);
+    }
 
-	/**
-	 * Verifies that an invalid assignment is null.
-	 */
-	public void testInvalidEnum () {
-		String example = "NonE";
-		try {
-			TimerMode temp = TimerMode.valueForString(example);
-			assertNull("Result of valueForString should be null.", temp);
-		}
-		catch (IllegalArgumentException exception) {
-			fail("Invalid enum throws IllegalArgumentException.");
-		}
-	}
+    /**
+     * Verifies that an invalid assignment is null.
+     */
+    public void testInvalidEnum() {
+        String example = "NonE";
+        try {
+            TimerMode temp = TimerMode.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
+        } catch (IllegalArgumentException exception) {
+            fail("Invalid enum throws IllegalArgumentException.");
+        }
+    }
 
-	/**
-	 * Verifies that a null assignment is invalid.
-	 */
-	public void testNullEnum () {
-		String example = null;
-		try {
-			TimerMode temp = TimerMode.valueForString(example);
-			assertNull("Result of valueForString should be null.", temp);
-		}
-		catch (NullPointerException exception) {
-			fail("Null string throws NullPointerException.");
-		}
-	}
+    /**
+     * Verifies that a null assignment is invalid.
+     */
+    public void testNullEnum() {
+        String example = null;
+        try {
+            TimerMode temp = TimerMode.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
+        } catch (NullPointerException exception) {
+            fail("Null string throws NullPointerException.");
+        }
+    }
 
-	/**
-	 * Verifies the possible enum values of TimerMode.
-	 */
-	public void testListEnum() {
-		List<TimerMode> enumValueList = Arrays.asList(TimerMode.values());
+    /**
+     * Verifies the possible enum values of TimerMode.
+     */
+    public void testListEnum() {
+        List<TimerMode> enumValueList = Arrays.asList(TimerMode.values());
 
-		List<TimerMode> enumTestList = new ArrayList<>();
-		enumTestList.add(TimerMode.UP);
-		enumTestList.add(TimerMode.DOWN);
-		enumTestList.add(TimerMode.NONE);
+        List<TimerMode> enumTestList = new ArrayList<>();
+        enumTestList.add(TimerMode.UP);
+        enumTestList.add(TimerMode.DOWN);
+        enumTestList.add(TimerMode.NONE);
 
-		assertTrue("Enum value list does not match enum class list",
-				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
+        assertTrue("Enum value list does not match enum class list",
+                enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
+    }
 }

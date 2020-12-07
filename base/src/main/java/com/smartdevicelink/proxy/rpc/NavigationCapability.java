@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -38,29 +38,32 @@ import java.util.Hashtable;
 /*
  * Extended capabilities for an onboard navigation system
  */
-public class NavigationCapability extends RPCStruct{
-	public static final String KEY_LOCATION_ENABLED = "sendLocationEnabled";
-	public static final String KEY_GETWAYPOINTS_ENABLED = "getWayPointsEnabled";
+public class NavigationCapability extends RPCStruct {
+    public static final String KEY_LOCATION_ENABLED = "sendLocationEnabled";
+    public static final String KEY_GETWAYPOINTS_ENABLED = "getWayPointsEnabled";
 
-	public NavigationCapability(){}
+    public NavigationCapability() {
+    }
 
-	public NavigationCapability(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+    public NavigationCapability(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
-	public Boolean getSendLocationEnabled(){
-		return getBoolean(KEY_LOCATION_ENABLED);
-	}
+    public Boolean getSendLocationEnabled() {
+        return getBoolean(KEY_LOCATION_ENABLED);
+    }
 
-	public void setSendLocationEnabled(Boolean sendLocationEnabled){
-		setValue(KEY_LOCATION_ENABLED, sendLocationEnabled);
-	}
+    public NavigationCapability setSendLocationEnabled(Boolean sendLocationEnabled) {
+        setValue(KEY_LOCATION_ENABLED, sendLocationEnabled);
+        return this;
+    }
 
-	public Boolean getWayPointsEnabled(){
-		return getBoolean(KEY_GETWAYPOINTS_ENABLED);
-	}
+    public Boolean getWayPointsEnabled() {
+        return getBoolean(KEY_GETWAYPOINTS_ENABLED);
+    }
 
-	public void setWayPointsEnabled(Boolean getWayPointsEnabled){
-		setValue(KEY_GETWAYPOINTS_ENABLED, getWayPointsEnabled);
-	}
+    public NavigationCapability setWayPointsEnabled(Boolean getWayPointsEnabled) {
+        setValue(KEY_GETWAYPOINTS_ENABLED, getWayPointsEnabled);
+        return this;
+    }
 }

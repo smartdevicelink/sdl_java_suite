@@ -32,34 +32,32 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import com.smartdevicelink.AndroidTestCase2;
-import com.smartdevicelink.test.Test;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-public class SubCellCommandListTests extends AndroidTestCase2 {
+import com.smartdevicelink.test.TestValues;
 
-	@Override
-	public void setUp() throws Exception{
-		super.setUp();
-	}
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-	}
+import static junit.framework.TestCase.assertEquals;
 
-	public void testSettersAndGetters() {
+@RunWith(AndroidJUnit4.class)
+public class SubCellCommandListTests {
 
-		RunScore runScore = new RunScore(Test.GENERAL_INT, Test.GENERAL_INTEGER_LIST, Test.GENERAL_INTEGER_LIST);
+    @Test
+    public void testSettersAndGetters() {
 
-		// set everything
-		SubCellCommandList subCellCommandList = new SubCellCommandList(Test.GENERAL_STRING, Test.GENERAL_INTEGER, runScore, Test.GENERAL_MENUCELL_LIST, Test.GENERAL_MENUCELL_LIST);
+        RunScore runScore = new RunScore(TestValues.GENERAL_INT, TestValues.GENERAL_INTEGER_LIST, TestValues.GENERAL_INTEGER_LIST);
 
-		// use getters and assert equality
-		assertEquals(subCellCommandList.getMenuTitle(), Test.GENERAL_STRING);
-		assertEquals(subCellCommandList.getParentId(), Test.GENERAL_INTEGER);
-		assertEquals(runScore, runScore);
-		assertEquals(subCellCommandList.getNewList(), Test.GENERAL_MENUCELL_LIST);
-		assertEquals(subCellCommandList.getOldList(), Test.GENERAL_MENUCELL_LIST);
+        // set everything
+        SubCellCommandList subCellCommandList = new SubCellCommandList(TestValues.GENERAL_STRING, TestValues.GENERAL_INTEGER, runScore, TestValues.GENERAL_MENUCELL_LIST, TestValues.GENERAL_MENUCELL_LIST);
 
-	}
+        // use getters and assert equality
+        assertEquals(subCellCommandList.getMenuTitle(), TestValues.GENERAL_STRING);
+        assertEquals(subCellCommandList.getParentId(), TestValues.GENERAL_INTEGER);
+        assertEquals(runScore, runScore);
+        assertEquals(subCellCommandList.getNewList(), TestValues.GENERAL_MENUCELL_LIST);
+        assertEquals(subCellCommandList.getOldList(), TestValues.GENERAL_MENUCELL_LIST);
+
+    }
 }

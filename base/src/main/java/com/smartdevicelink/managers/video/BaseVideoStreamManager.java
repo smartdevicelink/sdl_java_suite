@@ -31,10 +31,10 @@
  */
 package com.smartdevicelink.managers.video;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.managers.BaseSubManager;
-import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.managers.ISdl;
 
 abstract class BaseVideoStreamManager extends BaseSubManager {
     BaseVideoStreamManager(@NonNull ISdl internalInterface) {

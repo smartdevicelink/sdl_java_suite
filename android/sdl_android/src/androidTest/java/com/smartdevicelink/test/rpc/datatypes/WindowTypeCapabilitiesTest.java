@@ -3,7 +3,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.WindowType;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -20,8 +20,8 @@ public class WindowTypeCapabilitiesTest extends TestCase {
     public void setUp() {
         msg = new WindowTypeCapabilities();
 
-        msg.setMaximumNumberOfWindows(Test.GENERAL_INT);
-        msg.setType(Test.GENERAL_WINDOWTYPE);
+        msg.setMaximumNumberOfWindows(TestValues.GENERAL_INT);
+        msg.setType(TestValues.GENERAL_WINDOWTYPE);
     }
 
     /**
@@ -33,34 +33,34 @@ public class WindowTypeCapabilitiesTest extends TestCase {
         WindowType type = msg.getType();
 
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_INT, maximumNumberOfWindows);
-        assertEquals(Test.MATCH, Test.GENERAL_WINDOWTYPE, type);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, maximumNumberOfWindows);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_WINDOWTYPE, type);
 
         // Invalid/Null Tests
         WindowTypeCapabilities msg = new WindowTypeCapabilities();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
 
-        assertNull(Test.NULL, msg.getMaximumNumberOfWindows());
-        assertNull(Test.NULL, msg.getType());
+        assertNull(TestValues.NULL, msg.getMaximumNumberOfWindows());
+        assertNull(TestValues.NULL, msg.getType());
     }
 
     public void testJson() {
         JSONObject reference = new JSONObject();
 
         try {
-            reference.put(WindowTypeCapabilities.KEY_MAXIMUM_NUMBER_OF_WINDOWS, Test.GENERAL_INT);
-            reference.put(WindowTypeCapabilities.KEY_TYPE, Test.GENERAL_WINDOWTYPE);
+            reference.put(WindowTypeCapabilities.KEY_MAXIMUM_NUMBER_OF_WINDOWS, TestValues.GENERAL_INT);
+            reference.put(WindowTypeCapabilities.KEY_TYPE, TestValues.GENERAL_WINDOWTYPE);
 
             JSONObject underTest = msg.serializeJSON();
-            assertEquals(Test.MATCH, reference.length(), underTest.length());
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while (iterator.hasNext()) {
                 String key = (String) iterator.next();
-                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
         } catch (JSONException e) {
-            fail(Test.JSON_FAIL);
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

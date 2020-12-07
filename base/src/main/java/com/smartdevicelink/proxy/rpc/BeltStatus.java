@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,17 +31,18 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 
 import java.util.Hashtable;
 
-/** The status of the seat belts.
+/**
+ * The status of the seat belts.
  *
  * <p><b>Parameter List</b></p>
- * 
+ *
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Param Name</th>
@@ -140,11 +141,12 @@ import java.util.Hashtable;
  * 			<td>The seat belt of the middle row is buckled.</td>
  * 		</tr>
  *  </table>
-* @since SmartDeviceLink 2.0
-* @see VehicleDataEventStatus
-* @see GetVehicleData 
-* @see OnVehicleData
+ *
+ * @see VehicleDataEventStatus
+ * @see GetVehicleData
+ * @see OnVehicleData
  * @see SubscribeVehicleData
+ * @since SmartDeviceLink 2.0
  */
 
 public class BeltStatus extends RPCStruct {
@@ -160,19 +162,21 @@ public class BeltStatus extends RPCStruct {
     public static final String KEY_LEFT_ROW_3_BUCKLE_BELTED = "leftRow3BuckleBelted";
 
     public static final String KEY_RIGHT_ROW_3_BUCKLE_BELTED = "rightRow3BuckleBelted";
-    @Deprecated public static final String KEY_REAR_INFLATABLE_BELTED = "rearInflatableBelted";
     public static final String KEY_LEFT_REAR_INFLATABLE_BELTED = "leftRearInflatableBelted";
     public static final String KEY_RIGHT_REAR_INFLATABLE_BELTED = "rightRearInflatableBelted";
     public static final String KEY_MIDDLE_ROW_1_BELT_DEPLOYED = "middleRow1BeltDeployed";
     public static final String KEY_MIDDLE_ROW_1_BUCKLE_BELTED = "middleRow1BuckleBelted";
 
-    public BeltStatus() { }
+    public BeltStatus() {
+    }
 
-    /** Constructs a new BeltStatus object indicated by the Hashtable
-	 * parameter
-	 * @param hash hashtable filled with params to create an instance of this RPC
-	 * The hash table to use
-	 */
+    /**
+     * Constructs a new BeltStatus object indicated by the Hashtable
+     * parameter
+     *
+     * @param hash hashtable filled with params to create an instance of this RPC
+     *             The hash table to use
+     */
     public BeltStatus(Hashtable<String, Object> hash) {
         super(hash);
     }
@@ -201,93 +205,137 @@ public class BeltStatus extends RPCStruct {
         setMiddleRow1BuckleBelted(middleRow1BuckleBelted);
     }
 
-    public void setDriverBeltDeployed(@NonNull VehicleDataEventStatus driverBeltDeployed) {
+    public BeltStatus setDriverBeltDeployed(@NonNull VehicleDataEventStatus driverBeltDeployed) {
         setValue(KEY_DRIVER_BELT_DEPLOYED, driverBeltDeployed);
+        return this;
     }
+
     public VehicleDataEventStatus getDriverBeltDeployed() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_DRIVER_BELT_DEPLOYED);
     }
-    public void setPassengerBeltDeployed(@NonNull VehicleDataEventStatus passengerBeltDeployed) {
+
+    public BeltStatus setPassengerBeltDeployed(@NonNull VehicleDataEventStatus passengerBeltDeployed) {
         setValue(KEY_PASSENGER_BELT_DEPLOYED, passengerBeltDeployed);
+        return this;
     }
+
     public VehicleDataEventStatus getPassengerBeltDeployed() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_PASSENGER_BELT_DEPLOYED);
     }
-    public void setPassengerBuckleBelted(@NonNull VehicleDataEventStatus passengerBuckleBelted) {
+
+    public BeltStatus setPassengerBuckleBelted(@NonNull VehicleDataEventStatus passengerBuckleBelted) {
         setValue(KEY_PASSENGER_BUCKLE_BELTED, passengerBuckleBelted);
+        return this;
     }
+
     public VehicleDataEventStatus getPassengerBuckleBelted() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_PASSENGER_BUCKLE_BELTED);
     }
-    public void setDriverBuckleBelted(VehicleDataEventStatus driverBuckleBelted) {
+
+    public BeltStatus setDriverBuckleBelted(VehicleDataEventStatus driverBuckleBelted) {
         setValue(KEY_DRIVER_BUCKLE_BELTED, driverBuckleBelted);
+        return this;
     }
+
     public VehicleDataEventStatus getDriverBuckleBelted() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_DRIVER_BUCKLE_BELTED);
     }
-    public void setLeftRow2BuckleBelted(VehicleDataEventStatus leftRow2BuckleBelted) {
+
+    public BeltStatus setLeftRow2BuckleBelted(VehicleDataEventStatus leftRow2BuckleBelted) {
         setValue(KEY_LEFT_ROW_2_BUCKLE_BELTED, leftRow2BuckleBelted);
+        return this;
     }
+
     public VehicleDataEventStatus getLeftRow2BuckleBelted() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_LEFT_ROW_2_BUCKLE_BELTED);
     }
-    public void setPassengerChildDetected(@NonNull VehicleDataEventStatus passengerChildDetected) {
+
+    public BeltStatus setPassengerChildDetected(@NonNull VehicleDataEventStatus passengerChildDetected) {
         setValue(KEY_PASSENGER_CHILD_DETECTED, passengerChildDetected);
+        return this;
     }
+
     public VehicleDataEventStatus getPassengerChildDetected() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_PASSENGER_CHILD_DETECTED);
     }
-    public void setRightRow2BuckleBelted(@NonNull VehicleDataEventStatus rightRow2BuckleBelted) {
+
+    public BeltStatus setRightRow2BuckleBelted(@NonNull VehicleDataEventStatus rightRow2BuckleBelted) {
         setValue(KEY_RIGHT_ROW_2_BUCKLE_BELTED, rightRow2BuckleBelted);
+        return this;
     }
+
     public VehicleDataEventStatus getRightRow2BuckleBelted() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_RIGHT_ROW_2_BUCKLE_BELTED);
     }
-    public void setMiddleRow2BuckleBelted(@NonNull VehicleDataEventStatus middleRow2BuckleBelted) {
+
+    public BeltStatus setMiddleRow2BuckleBelted(@NonNull VehicleDataEventStatus middleRow2BuckleBelted) {
         setValue(KEY_MIDDLE_ROW_2_BUCKLE_BELTED, middleRow2BuckleBelted);
+        return this;
     }
+
     public VehicleDataEventStatus getMiddleRow2BuckleBelted() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_MIDDLE_ROW_2_BUCKLE_BELTED);
     }
-    public void setMiddleRow3BuckleBelted(@NonNull VehicleDataEventStatus middleRow3BuckleBelted) {
+
+    public BeltStatus setMiddleRow3BuckleBelted(@NonNull VehicleDataEventStatus middleRow3BuckleBelted) {
         setValue(KEY_MIDDLE_ROW_3_BUCKLE_BELTED, middleRow3BuckleBelted);
+        return this;
     }
+
     public VehicleDataEventStatus getMiddleRow3BuckleBelted() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_MIDDLE_ROW_3_BUCKLE_BELTED);
     }
-    public void setLeftRow3BuckleBelted(@NonNull VehicleDataEventStatus leftRow3BuckleBelted) {
+
+    public BeltStatus setLeftRow3BuckleBelted(@NonNull VehicleDataEventStatus leftRow3BuckleBelted) {
         setValue(KEY_LEFT_ROW_3_BUCKLE_BELTED, leftRow3BuckleBelted);
+        return this;
     }
+
     public VehicleDataEventStatus getLeftRow3BuckleBelted() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_LEFT_ROW_3_BUCKLE_BELTED);
     }
-    public void setRightRow3BuckleBelted(@NonNull VehicleDataEventStatus rightRow3BuckleBelted) {
+
+    public BeltStatus setRightRow3BuckleBelted(@NonNull VehicleDataEventStatus rightRow3BuckleBelted) {
         setValue(KEY_RIGHT_ROW_3_BUCKLE_BELTED, rightRow3BuckleBelted);
+        return this;
     }
+
     public VehicleDataEventStatus getRightRow3BuckleBelted() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_RIGHT_ROW_3_BUCKLE_BELTED);
     }
-    public void setLeftRearInflatableBelted(@NonNull VehicleDataEventStatus rearInflatableBelted) {
+
+    public BeltStatus setLeftRearInflatableBelted(@NonNull VehicleDataEventStatus rearInflatableBelted) {
         setValue(KEY_LEFT_REAR_INFLATABLE_BELTED, rearInflatableBelted);
+        return this;
     }
+
     public VehicleDataEventStatus getLeftRearInflatableBelted() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_LEFT_REAR_INFLATABLE_BELTED);
     }
-    public void setRightRearInflatableBelted(@NonNull VehicleDataEventStatus rightRearInflatableBelted) {
+
+    public BeltStatus setRightRearInflatableBelted(@NonNull VehicleDataEventStatus rightRearInflatableBelted) {
         setValue(KEY_RIGHT_REAR_INFLATABLE_BELTED, rightRearInflatableBelted);
+        return this;
     }
+
     public VehicleDataEventStatus getRightRearInflatableBelted() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_RIGHT_REAR_INFLATABLE_BELTED);
     }
-    public void setMiddleRow1BeltDeployed(@NonNull VehicleDataEventStatus middleRow1BeltDeployed) {
+
+    public BeltStatus setMiddleRow1BeltDeployed(@NonNull VehicleDataEventStatus middleRow1BeltDeployed) {
         setValue(KEY_MIDDLE_ROW_1_BELT_DEPLOYED, middleRow1BeltDeployed);
+        return this;
     }
+
     public VehicleDataEventStatus getMiddleRow1BeltDeployed() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_MIDDLE_ROW_1_BELT_DEPLOYED);
     }
-    public void setMiddleRow1BuckleBelted(@NonNull VehicleDataEventStatus middleRow1BuckleBelted) {
+
+    public BeltStatus setMiddleRow1BuckleBelted(@NonNull VehicleDataEventStatus middleRow1BuckleBelted) {
         setValue(KEY_MIDDLE_ROW_1_BUCKLE_BELTED, middleRow1BuckleBelted);
+        return this;
     }
+
     public VehicleDataEventStatus getMiddleRow1BuckleBelted() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_MIDDLE_ROW_1_BUCKLE_BELTED);
     }

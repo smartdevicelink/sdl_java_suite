@@ -3,7 +3,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.Grid;
 import com.smartdevicelink.proxy.rpc.SeatLocation;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
@@ -13,36 +13,36 @@ import org.json.JSONObject;
 
 public class SeatLocationTests extends TestCase {
 
-	private SeatLocation msg;
+    private SeatLocation msg;
 
-	@Override
-	public void setUp() {
-		msg = new SeatLocation();
-		msg.setGrid(Test.GENERAL_GRID);
-	}
+    @Override
+    public void setUp() {
+        msg = new SeatLocation();
+        msg.setGrid(TestValues.GENERAL_GRID);
+    }
 
-	public void testRpcValues() {
-		Grid grid = msg.getGrid();
+    public void testRpcValues() {
+        Grid grid = msg.getGrid();
 
-		//valid test
-		assertTrue(Validator.validateGrid(Test.GENERAL_GRID, grid));
+        //valid test
+        assertTrue(Validator.validateGrid(TestValues.GENERAL_GRID, grid));
 
-		//null test
-		SeatLocation msg = new SeatLocation();
-		assertNull(Test.NULL, msg.getGrid());
-	}
+        //null test
+        SeatLocation msg = new SeatLocation();
+        assertNull(TestValues.NULL, msg.getGrid());
+    }
 
-	public void testJson() {
-		JSONObject original = new JSONObject();
-		try {
-			original.put(SeatLocation.KEY_GRID, Test.GENERAL_GRID);
+    public void testJson() {
+        JSONObject original = new JSONObject();
+        try {
+            original.put(SeatLocation.KEY_GRID, TestValues.GENERAL_GRID);
 
-			JSONObject serialized = msg.serializeJSON();
-			assertEquals(serialized.length(), original.length());
-			assertTrue(Test.TRUE, Validator.validateSeatLocation(new SeatLocation(JsonRPCMarshaller.deserializeJSONObject(original)),
-					new SeatLocation(JsonRPCMarshaller.deserializeJSONObject(serialized))));
-		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
-		}
-	}
+            JSONObject serialized = msg.serializeJSON();
+            assertEquals(serialized.length(), original.length());
+            assertTrue(TestValues.TRUE, Validator.validateSeatLocation(new SeatLocation(JsonRPCMarshaller.deserializeJSONObject(original)),
+                    new SeatLocation(JsonRPCMarshaller.deserializeJSONObject(serialized))));
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
+        }
+    }
 }

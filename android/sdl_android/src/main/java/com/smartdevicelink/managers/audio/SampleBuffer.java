@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,9 +31,8 @@
  */
 package com.smartdevicelink.managers.audio;
 
-import android.util.Log;
-
 import com.smartdevicelink.managers.audio.AudioStreamManager.SampleType;
+import com.smartdevicelink.util.DebugTool;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -45,16 +44,17 @@ import java.nio.ByteOrder;
 public class SampleBuffer {
     private static final String TAG = SampleBuffer.class.getSimpleName();
 
-    @SuppressWarnings({"unused", "FieldCanBeLocal"})
-    private @SampleType final int sampleType;
+    private @SampleType
+    final int sampleType;
     private final ByteBuffer byteBuffer;
     private final int channelCount;
     private final long presentationTimeUs;
 
     /**
      * Wraps a raw (mono) byte buffer to a new sample buffer.
-     * @param buffer The raw buffer to be wrapped.
-     * @param sampleType The sample type of the samples in the raw buffer.
+     *
+     * @param buffer             The raw buffer to be wrapped.
+     * @param sampleType         The sample type of the samples in the raw buffer.
      * @param presentationTimeUs The presentation time of the buffer.
      * @return A new sample buffer wrapping the specified raw buffer.
      */
@@ -64,9 +64,10 @@ public class SampleBuffer {
 
     /**
      * Wraps a raw byte buffer to a new sample buffer.
-     * @param buffer The raw buffer to be wrapped.
-     * @param sampleType The sample type of the samples in the raw buffer.
-     * @param channelCount The number of channels (1 = mono, 2 = stereo).
+     *
+     * @param buffer             The raw buffer to be wrapped.
+     * @param sampleType         The sample type of the samples in the raw buffer.
+     * @param channelCount       The number of channels (1 = mono, 2 = stereo).
      * @param presentationTimeUs The presentation time of the buffer.
      * @return A new sample buffer wrapping the specified raw buffer.
      */
@@ -76,9 +77,10 @@ public class SampleBuffer {
 
     /**
      * Allocates a new sample buffer.
-     * @param capacity The specified sample capacity of the sample buffer.
-     * @param sampleType The sample type of the samples the buffer should store.
-     * @param byteOrder The byte order for the samples (little or big endian).
+     *
+     * @param capacity           The specified sample capacity of the sample buffer.
+     * @param sampleType         The sample type of the samples the buffer should store.
+     * @param byteOrder          The byte order for the samples (little or big endian).
      * @param presentationTimeUs The presentation time for the buffer.
      * @return A new and empty sample buffer.
      */
@@ -88,14 +90,14 @@ public class SampleBuffer {
 
     /**
      * Allocates a new sample buffer.
-     * @param capacity The specified sample capacity of the sample buffer.
-     * @param sampleType The sample type of the samples the buffer should store.
-     * @param channelCount The number of channels (1 = mono, 2 = stereo).
-     * @param byteOrder The byte order for the samples (little or big endian).
+     *
+     * @param capacity           The specified sample capacity of the sample buffer.
+     * @param sampleType         The sample type of the samples the buffer should store.
+     * @param channelCount       The number of channels (1 = mono, 2 = stereo).
+     * @param byteOrder          The byte order for the samples (little or big endian).
      * @param presentationTimeUs The presentation time for the buffer.
      * @return A new and empty sample buffer.
      */
-    @SuppressWarnings("unused")
     public static SampleBuffer allocate(int capacity, @SampleType int sampleType, int channelCount, ByteOrder byteOrder, long presentationTimeUs) {
         return new SampleBuffer(capacity, sampleType, channelCount, byteOrder, presentationTimeUs);
     }
@@ -118,7 +120,6 @@ public class SampleBuffer {
     /**
      * Returns the capacity of the buffer per channel.
      */
-    @SuppressWarnings("unused")
     public int capacity() {
         return byteBuffer.capacity() / sampleType / channelCount;
     }
@@ -132,6 +133,7 @@ public class SampleBuffer {
 
     /**
      * Sets the number of samples in the buffer to the new limit.
+     *
      * @param newLimit The new limit of the sample buffer.
      */
     public void limit(int newLimit) {
@@ -140,6 +142,7 @@ public class SampleBuffer {
 
     /**
      * Returns the current position in the buffer per channel.
+     *
      * @return The position of the sample buffer.
      */
     public int position() {
@@ -147,7 +150,8 @@ public class SampleBuffer {
     }
 
     /**
-     *Sets the position of the sample buffer to the new index.
+     * Sets the position of the sample buffer to the new index.
+     *
      * @param newPosition The new position of the sample buffer.
      */
     public void position(int newPosition) {
@@ -157,6 +161,7 @@ public class SampleBuffer {
     /**
      * Returns the sample of the current position and then increments the position.
      * The sample returned is a mixed sample getting all samples from each channel.
+     *
      * @return The mixed sample.
      */
     public double get() {
@@ -168,6 +173,7 @@ public class SampleBuffer {
      * Returns the sample from the given index in the buffer.
      * If the buffer's channel count is > 1 the sample returned
      * is a mixed sample getting all samples from each channel.
+     *
      * @param index The index of the sample requested.
      * @return The sample requested.
      */
@@ -182,7 +188,7 @@ public class SampleBuffer {
                 for (int i = 0; i < channelCount; i++) {
                     byte b = index == -1 ? byteBuffer.get() : byteBuffer.get(internalIndex + i * sampleType);
                     int a = b & 0xff; // convert the 8 bits into int so we can calc > 127
-                    avg += a / (double)channelCount;
+                    avg += a / (double) channelCount;
                 }
 
                 return avg * 2.0 / 255.0 - 1.0; //magic? check out SampleType
@@ -193,7 +199,7 @@ public class SampleBuffer {
                 // get a sample mix to mono from the index
                 for (int i = 0; i < channelCount; i++) {
                     short a = index == -1 ? byteBuffer.getShort() : byteBuffer.getShort(internalIndex + i * sampleType);
-                    avg += a / (double)channelCount;
+                    avg += a / (double) channelCount;
                 }
 
                 return (avg + 32768.0) * 2.0 / 65535.0 - 1.0; //magic? check out SampleType
@@ -204,13 +210,13 @@ public class SampleBuffer {
                 // get a sample mix to mono from the index
                 for (int i = 0; i < channelCount; i++) {
                     double a = index == -1 ? byteBuffer.getFloat() : byteBuffer.getFloat(internalIndex + i * sampleType);
-                    avg += a / (double)channelCount;
+                    avg += a / (double) channelCount;
                 }
 
                 return avg;
             }
             default: {
-                Log.e(TAG, "SampleBuffer.get(int): The sample type is not known: " + sampleType);
+                DebugTool.logError(TAG, "SampleBuffer.get(int): The sample type is not known: " + sampleType);
                 return 0.0;
             }
         }
@@ -218,6 +224,7 @@ public class SampleBuffer {
 
     /**
      * Puts a sample to the current position and increments the position.
+     *
      * @param sample The sample to put into the buffer.
      */
     public void put(double sample) {
@@ -228,15 +235,16 @@ public class SampleBuffer {
      * Puts a sample to the given index in the buffer.
      * If the buffer's channel count is > 1 the sample
      * will be stored in each channel at the given index.
-     * @param index The index to put the sample.
+     *
+     * @param index  The index to put the sample.
      * @param sample The sample to store in the buffer.
      */
     public void put(int index, double sample) {
         int internalIndex = index * channelCount * sampleType;
         switch (sampleType) {
             case SampleType.UNSIGNED_8_BIT: {
-                int a = (int)Math.round((sample + 1.0) * 255.0 / 2.0); //magic? check out SampleType
-                byte b = (byte)a;
+                int a = (int) Math.round((sample + 1.0) * 255.0 / 2.0); //magic? check out SampleType
+                byte b = (byte) a;
                 if (index == -1) {
                     for (int i = 0; i < channelCount; i++) {
                         byteBuffer.put(b);
@@ -249,7 +257,7 @@ public class SampleBuffer {
                 break;
             }
             case SampleType.SIGNED_16_BIT: {
-                short a = (short)Math.round((sample + 1.0) * 65535 / 2.0 - 32767.0); //magic? check out SampleType
+                short a = (short) Math.round((sample + 1.0) * 65535 / 2.0 - 32767.0); //magic? check out SampleType
                 if (index == -1) {
                     for (int i = 0; i < channelCount; i++) {
                         byteBuffer.putShort(a);
@@ -274,13 +282,14 @@ public class SampleBuffer {
                 break;
             }
             default: {
-                Log.e(TAG, "SampleBuffer.set(int): The sample type is not known: " + sampleType);
+                DebugTool.logError(TAG, "SampleBuffer.set(int): The sample type is not known: " + sampleType);
             }
         }
     }
 
     /**
      * Returns the raw byte buffer managed by this sample buffer.
+     *
      * @return The raw byte buffer managed by this sample buffer.
      */
     public ByteBuffer getByteBuffer() {
@@ -289,6 +298,7 @@ public class SampleBuffer {
 
     /**
      * Returns a copy of the bytes from position 0 to the current limit.
+     *
      * @return A copy of the bytes.
      */
     public byte[] getBytes() {
@@ -304,6 +314,7 @@ public class SampleBuffer {
 
     /**
      * The presentation time of this sample buffer.
+     *
      * @return The presentation time of this sample buffer.
      */
     public long getPresentationTimeUs() {

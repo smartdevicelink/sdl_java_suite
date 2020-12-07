@@ -1,29 +1,40 @@
 package com.smartdevicelink.managers.screen;
 
 
-import com.smartdevicelink.AndroidTestCase2;
-import com.smartdevicelink.managers.CompletionListener;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.livio.taskmaster.Taskmaster;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
+import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.Show;
+import com.smartdevicelink.proxy.rpc.ShowResponse;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
+import com.smartdevicelink.proxy.rpc.enums.SystemAction;
+import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.test.Validator;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -32,29 +43,35 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * This is a unit test class for the SmartDeviceLink library manager class :
  * {@link SoftButtonManager}
  */
-public class SoftButtonManagerTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class SoftButtonManagerTests {
 
     private SoftButtonManager softButtonManager;
-    private boolean fileManagerUploadArtworksGotCalled;
-    private boolean internalInterfaceSendRPCGotCalled;
-    private boolean softButtonMangerUpdateCompleted;
+    private int fileManagerUploadArtworksListenerCalledCounter;
+    private int internalInterfaceSendRPCListenerCalledCounter;
     private int softButtonObject1Id = 1000, softButtonObject2Id = 2000;
     private SoftButtonObject softButtonObject1, softButtonObject2;
     private SoftButtonState softButtonState1, softButtonState2, softButtonState3, softButtonState4;
 
 
-    @Override
+    @Before
     public void setUp() throws Exception {
-        super.setUp();
 
         // When internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, OnRPCNotificationListener) is called
         // inside SoftButtonManager, respond with a fake HMILevel.HMI_FULL response to let the SoftButtonManager continue working.
@@ -73,13 +90,36 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         doAnswer(onHMIStatusAnswer).when(internalInterface).addOnRPCNotificationListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCNotificationListener.class));
 
 
+        // When internalInterface.getSystemCapabilityManager().addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onSystemCapabilityListener) is called
+        // inside SoftButtonManager, respond with a fake response to let the SoftButtonManager continue working.
+        Answer<Void> onSystemCapabilityAnswer = new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                OnSystemCapabilityListener onSystemCapabilityListener = (OnSystemCapabilityListener) args[1];
+                SoftButtonCapabilities softButtonCapabilities = new SoftButtonCapabilities();
+                softButtonCapabilities.setImageSupported(true);
+                softButtonCapabilities.setTextSupported(true);
+                WindowCapability windowCapability = new WindowCapability();
+                windowCapability.setSoftButtonCapabilities(Collections.singletonList(softButtonCapabilities));
+                DisplayCapability displayCapability = new DisplayCapability();
+                displayCapability.setWindowCapabilities(Collections.singletonList(windowCapability));
+                List<DisplayCapability> capabilities = Collections.singletonList(displayCapability);
+                onSystemCapabilityListener.onCapabilityRetrieved(capabilities);
+                return null;
+            }
+        };
+        SystemCapabilityManager systemCapabilityManager = mock(SystemCapabilityManager.class);
+        doAnswer(onSystemCapabilityAnswer).when(systemCapabilityManager).addOnSystemCapabilityListener(eq(SystemCapabilityType.DISPLAYS), any(OnSystemCapabilityListener.class));
+        doReturn(systemCapabilityManager).when(internalInterface).getSystemCapabilityManager();
+
         // When fileManager.uploadArtworks() is called inside the SoftButtonManager, respond with
         // a fake onComplete() callback to let the SoftButtonManager continue working.
         FileManager fileManager = mock(FileManager.class);
         Answer<Void> onFileManagerUploadAnswer = new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocation) {
-                fileManagerUploadArtworksGotCalled = true;
+                fileManagerUploadArtworksListenerCalledCounter++;
                 Object[] args = invocation.getArguments();
                 MultipleFileCompletionListener multipleFileCompletionListener = (MultipleFileCompletionListener) args[1];
                 multipleFileCompletionListener.onComplete(null);
@@ -90,6 +130,9 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
 
 
         // Create softButtonManager
+        Taskmaster taskmaster = new Taskmaster.Builder().build();
+        taskmaster.start();
+        when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
         softButtonManager = new SoftButtonManager(internalInterface, fileManager);
 
 
@@ -99,14 +142,14 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         Answer<Void> onSendShowRPCAnswer = new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocation) {
-                internalInterfaceSendRPCGotCalled = true;
+                internalInterfaceSendRPCListenerCalledCounter++;
                 Object[] args = invocation.getArguments();
                 Show show = (Show) args[0];
 
-                show.getOnRPCResponseListener().onResponse(0, null);
+                show.getOnRPCResponseListener().onResponse(0, new ShowResponse(true, Result.SUCCESS));
 
                 assertEquals(show.getMainField1(), softButtonManager.getCurrentMainField1());
-                assertEquals(show.getSoftButtons().size(), softButtonManager.createSoftButtonsForCurrentState().size());
+                assertEquals(show.getSoftButtons().size(), softButtonManager.getSoftButtonObjects().size());
 
                 return null;
             }
@@ -125,22 +168,20 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         softButtonObject2.setButtonId(softButtonObject2Id);
     }
 
-    @Override
-    public void tearDown() throws Exception {
-        super.tearDown();
+
+    private void sleep() {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
+    @Test
     public void testSoftButtonManagerUpdate() {
         // Reset the boolean variables
-        fileManagerUploadArtworksGotCalled = false;
-        internalInterfaceSendRPCGotCalled = false;
-        softButtonMangerUpdateCompleted = false;
-
-        SoftButtonCapabilities softCap = new SoftButtonCapabilities();
-        softCap.setImageSupported(true);
-        WindowCapability defaultCap = new WindowCapability();
-        defaultCap.setSoftButtonCapabilities(Collections.singletonList(softCap));
-        softButtonManager.defaultMainWindowCapability = defaultCap;
+        fileManagerUploadArtworksListenerCalledCounter = 0;
+        internalInterfaceSendRPCListenerCalledCounter = 0;
 
 
         // Test batch update
@@ -148,12 +189,6 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         List<SoftButtonObject> softButtonObjects = Arrays.asList(softButtonObject1, softButtonObject2);
         softButtonManager.setSoftButtonObjects(Arrays.asList(softButtonObject1, softButtonObject2));
         softButtonManager.setBatchUpdates(false);
-        softButtonManager.update(new CompletionListener() {
-            @Override
-            public void onComplete(boolean success) {
-                softButtonMangerUpdateCompleted = true;
-            }
-        });
 
 
         // Test single update, setCurrentMainField1, and transitionToNextState
@@ -161,17 +196,20 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         softButtonObject1.transitionToNextState();
 
 
-        // Check that everything got called as expected
+        // Sleep to give time to Taskmaster to run the operations
+        sleep();
 
-        assertTrue("FileManager.uploadArtworks() did get called", fileManagerUploadArtworksGotCalled);
-        assertTrue("InternalInterface.sendRPC() did not get called", internalInterfaceSendRPCGotCalled);
-        assertTrue("SoftButtonManger update onComplete() did not get called", softButtonMangerUpdateCompleted);
+
+        // Check that everything got called as expected
+        assertEquals("FileManager.uploadArtworks() did not get called correctly", 1, fileManagerUploadArtworksListenerCalledCounter);
+        assertEquals("InternalInterface.sendRPC() did not get called correctly", 2, internalInterfaceSendRPCListenerCalledCounter);
 
 
         // Test getSoftButtonObjects
         assertEquals("Returned softButtonObjects value doesn't match the expected value", softButtonObjects, softButtonManager.getSoftButtonObjects());
     }
 
+    @Test
     public void testSoftButtonManagerGetSoftButtonObject() {
         softButtonManager.setSoftButtonObjects(Arrays.asList(softButtonObject1, softButtonObject2));
 
@@ -192,7 +230,8 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         assertNull("Returned SoftButtonObject doesn't match the expected value", softButtonManager.getSoftButtonObjectById(5555));
     }
 
-    public void testSoftButtonState(){
+    @Test
+    public void testSoftButtonState() {
         // Test SoftButtonState.getName()
         String nameExpectedValue = "object1-state1";
         assertEquals("Returned state name doesn't match the expected value", nameExpectedValue, softButtonState1.getName());
@@ -209,11 +248,13 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         SoftButton softButtonExpectedValue = new SoftButton(SoftButtonType.SBT_BOTH, SoftButtonObject.SOFT_BUTTON_ID_NOT_SET_VALUE);
         softButtonExpectedValue.setText("o1s1");
         softButtonExpectedValue.setImage(new Image(artworkExpectedValue.getName(), ImageType.DYNAMIC));
+        softButtonExpectedValue.setSystemAction(SystemAction.DEFAULT_ACTION);
         SoftButton actual = softButtonState1.getSoftButton();
-        assertTrue("Returned SoftButton doesn't match the expected value", Validator.validateSoftButton(softButtonExpectedValue, softButtonState1.getSoftButton()));
+        assertTrue("Returned SoftButton doesn't match the expected value", Validator.validateSoftButton(softButtonExpectedValue, actual));
     }
 
-    public void testSoftButtonObject(){
+    @Test
+    public void testSoftButtonObject() {
         // Test SoftButtonObject.getName()
         assertEquals("Returned object name doesn't match the expected value", "object1", softButtonObject1.getName());
 
@@ -233,6 +274,7 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         // Test SoftButtonObject.getCurrentStateSoftButton()
         SoftButton softButtonExpectedValue = new SoftButton(SoftButtonType.SBT_TEXT, softButtonObject2Id);
         softButtonExpectedValue.setText("o2s1");
+        softButtonExpectedValue.setSystemAction(SystemAction.DEFAULT_ACTION);
         assertTrue("Returned current state SoftButton doesn't match the expected value", Validator.validateSoftButton(softButtonExpectedValue, softButtonObject2.getCurrentStateSoftButton()));
 
 
@@ -257,6 +299,7 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         assertEquals(softButtonState1, softButtonObject1.getCurrentState());
     }
 
+    @Test
     public void testAssigningIdsToSoftButtonObjects() {
         SoftButtonObject sbo1, sbo2, sbo3, sbo4, sbo5;
 
@@ -312,6 +355,7 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
     /**
      * Test custom overridden softButtonObject equals method
      */
+    @Test
     public void testSoftButtonObjectEquals() {
         SoftButtonObject softButtonObject1;
         SoftButtonObject softButtonObject2;
@@ -339,14 +383,14 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         // Case 1: object is null, assertFalse
         softButtonObject1 = new SoftButtonObject("test", softButtonState1, null);
         softButtonObject2 = null;
-        assertFalse(softButtonObject1.equals(softButtonObject2));
+        assertNotEquals(softButtonObject1, softButtonObject2);
 
         // Case 2 SoftButtonObjects are the same, assertTrue
-        assertTrue(softButtonObject1.equals(softButtonObject1));
+        assertEquals(softButtonObject1, softButtonObject1);
 
         // Case 3: object is not an instance of SoftButtonObject assertFalse
         SdlArtwork artwork = new SdlArtwork("image1", FileType.GRAPHIC_PNG, 1, true);
-        assertFalse(softButtonObject1.equals(artwork));
+        assertNotEquals(softButtonObject1, artwork);
 
         // Case 4: SoftButtonObjectState List are not same size, assertFalse
         List<SoftButtonState> softButtonStateList = new ArrayList<>();
@@ -356,53 +400,54 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         softButtonStateList2.add(softButtonState2);
         softButtonObject1 = new SoftButtonObject("hi", softButtonStateList, "Hi", null);
         softButtonObject2 = new SoftButtonObject("hi", softButtonStateList2, "Hi", null);
-        assertFalse(softButtonObject1.equals(softButtonObject2));
+        assertNotEquals(softButtonObject1, softButtonObject2);
 
         // Case 5: SoftButtonStates are not the same, assertFalse
         softButtonObject1 = new SoftButtonObject("test", softButtonState1, null);
         softButtonObject2 = new SoftButtonObject("test", softButtonState2, null);
-        assertFalse(softButtonObject1.equals(softButtonObject2));
+        assertNotEquals(softButtonObject1, softButtonObject2);
 
         // Case 6: SoftButtonObject names are not same, assertFalse
         softButtonObject1 = new SoftButtonObject("test", softButtonState1, null);
         softButtonObject2 = new SoftButtonObject("test23123", softButtonState1, null);
-        assertFalse(softButtonObject1.equals(softButtonObject2));
+        assertNotEquals(softButtonObject1, softButtonObject2);
 
         // Case 7: SoftButtonObject currentStateName not same, assertFalse
         softButtonObject1 = new SoftButtonObject("hi", softButtonStateList, "Hi", null);
         softButtonObject2 = new SoftButtonObject("hi", softButtonStateList, "Hi2", null);
-        assertFalse(softButtonObject1.equals(softButtonObject2));
+        assertNotEquals(softButtonObject1, softButtonObject2);
     }
 
     /**
      * Test custom overridden softButtonState equals method
      */
+    @Test
     public void testSoftButtonStateEquals() {
-        assertFalse(softButtonState1.equals(softButtonState2));
+        assertNotEquals(softButtonState1, softButtonState2);
         SdlArtwork artwork1 = new SdlArtwork("image1", FileType.GRAPHIC_PNG, 1, true);
         SdlArtwork artwork2 = new SdlArtwork("image2", FileType.GRAPHIC_PNG, 1, true);
 
         // Case 1: object is null, assertFalse
         softButtonState1 = new SoftButtonState("object1-state1", "o1s1", artwork1);
         softButtonState2 = null;
-        assertFalse(softButtonState1.equals(softButtonState2));
+        assertNotEquals(softButtonState1, softButtonState2);
 
         // Case 2 SoftButtonObjects are the same, assertTrue
-        assertTrue(softButtonState1.equals(softButtonState1));
+        assertEquals(softButtonState1, softButtonState1);
 
         // Case 3: object is not an instance of SoftButtonState, assertFalse
-        assertFalse(softButtonState1.equals(artwork1));
+        assertNotEquals(softButtonState1, artwork1);
 
         // Case 4: different artwork, assertFalse
         softButtonState2 = new SoftButtonState("object1-state1", "o1s1", artwork2);
-        assertFalse(softButtonState1.equals(softButtonState2));
+        assertNotEquals(softButtonState1, softButtonState2);
 
         // Case 5: different name, assertFalse
         softButtonState2 = new SoftButtonState("object1-state1 different name", "o1s1", artwork1);
-        assertFalse(softButtonState1.equals(softButtonState2));
+        assertNotEquals(softButtonState1, softButtonState2);
 
         // Case 6 they are equal, assertTrue
         softButtonState2 = new SoftButtonState("object1-state1", "o1s1", artwork1);
-        assertTrue(softButtonState1.equals(softButtonState2));
+        assertEquals(softButtonState1, softButtonState2);
     }
 }

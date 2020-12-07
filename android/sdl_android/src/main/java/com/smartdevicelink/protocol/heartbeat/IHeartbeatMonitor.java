@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,24 +31,26 @@
  */
 package com.smartdevicelink.protocol.heartbeat;
 
+import androidx.annotation.RestrictTo;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public interface IHeartbeatMonitor {
     /**
      * Starts the monitor. If the monitor is already started, nothing happens.
      */
-    public void start();
+    void start();
 
     /**
      * Stops the monitor. Does nothing if it is already stopped.
      */
-    public void stop();
+    void stop();
 
     /**
      * Returns the heartbeat messages interval.
      *
      * @return interval in milliseconds
      */
-    public int getInterval();
+    int getInterval();
 
     /**
      * Sets the interval for sending heartbeat messages if nothing is sent over
@@ -57,34 +59,34 @@ public interface IHeartbeatMonitor {
      * @param interval interval in milliseconds (min/max values depend on
      *                 concrete implementations)
      */
-    public void setInterval(int interval);
+    void setInterval(int interval);
 
     /**
      * Returns the listener.
      *
      * @return the listener
      */
-    public IHeartbeatMonitorListener getListener();
+    IHeartbeatMonitorListener getListener();
 
     /**
      * Sets the heartbeat's listener.
      *
      * @param listener the new listener
      */
-    public void setListener(IHeartbeatMonitorListener listener);
+    void setListener(IHeartbeatMonitorListener listener);
 
     /**
      * Notifies the monitor about sent/received messages.
      */
-    public void notifyTransportActivity();
+    void notifyTransportActivity();
 
     /**
      * Notifies the monitor about a received heartbeat ACK message.
      */
-    public void heartbeatACKReceived();
-    
+    void heartbeatACKReceived();
+
     /**
      * Notifies the monitor about a received heartbeat message.
      */
-    public void heartbeatReceived();
+    void heartbeatReceived();
 }

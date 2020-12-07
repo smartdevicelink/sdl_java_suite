@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -30,96 +30,109 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 package com.smartdevicelink.proxy.rpc.enums;
+
 /**
  * The name that identifies the field.
- * 
+ *
  * @since SmartDeviceLink 2.3.2
  */
 public enum ImageFieldName {
-	/** The image field for SoftButton
-	 * 
-	 */
+    /**
+     * The image field for SoftButton
+     */
 
-	softButtonImage,
-	/** The first image field for Choice.
-	 * 
-	 */
+    softButtonImage,
+    /**
+     * The first image field for Choice.
+     */
 
-	choiceImage,
-	/** The secondary image field for Choice.
-	 * 
-	 */
+    choiceImage,
+    /**
+     * The secondary image field for Choice.
+     */
 
-	choiceSecondaryImage,
-	/** The image field for vrHelpItem.
-	 * 
-	 */
+    choiceSecondaryImage,
+    /**
+     * The image field for vrHelpItem.
+     */
 
-	vrHelpItem,
-	/** The image field for Turn.
-	 * 
-	 */
+    vrHelpItem,
+    /**
+     * The image field for Turn.
+     */
 
-	turnIcon,
-	/** The image field for the menu icon in SetGlobalProperties.
-	 * 
-	 */
+    turnIcon,
+    /**
+     * The image field for the menu icon in SetGlobalProperties.
+     */
 
-	menuIcon,
-	/** The image filed for AddCommand.
-	 * 
-	 */
+    menuIcon,
+    /**
+     * The image filed for AddCommand.
+     */
 
-	cmdIcon,
-	/** The image field for the app icon ( set by setAppIcon).
-	 * 
-	 */
+    cmdIcon,
+    /**
+     * The image field for the app icon ( set by setAppIcon).
+     */
 
-	appIcon,
-	/** The image filed for Show.
-	 * 
-	 */
+    appIcon,
+    /**
+     * The image filed for Show.
+     */
 
-	graphic,
-	/** The primary image field for ShowConstant TBT.
-	 * 
-	 */
+    graphic,
+    /**
+     * The primary image field for ShowConstant TBT.
+     */
 
-	showConstantTBTIcon,
+    showConstantTBTIcon,
 
-	/** The secondary image field for ShowConstant TBT.
-	 * 
-	 */
-	showConstantTBTNextTurnIcon,
-	/**
+    /**
+     * The secondary image field for ShowConstant TBT.
+     */
+    showConstantTBTNextTurnIcon,
+    /**
      * The optional image of a destination / location
-     * 
+     *
      * @since SmartDeviceLink 4.0
      */
-	locationImage,
-	/**
-	 * The secondary graphic image field
-	 *
-	 * @since SmartDeviceLink 5.0
-	 */
-	secondaryGraphic,
-	/**
-	 * The image field for Alert
-	 *
-	 * @since SmartDeviceLink 6.0.0
-	 */
-	alertIcon,
-	;
-    
-	/**
+    locationImage,
+    /**
+     * The secondary graphic image field
+     *
+     * @since SmartDeviceLink 5.0
+     */
+    secondaryGraphic,
+    /**
+     * The image field for Alert
+     *
+     * @since SmartDeviceLink 6.0.0
+     */
+    alertIcon,
+    /**
+     * The image of the subtle alert; applies to `SubtleAlert` `alertIcon`
+     *
+     * @since SmartDeviceLink 7.0.0
+     */
+    subtleAlertIcon,
+    /**
+     * The image field for AddSubMenu.menuIcon
+     *
+     * @since SmartDeviceLink 7.0.0
+     */
+    subMenuIcon;
+
+    /**
      * Convert String to ImageFieldName
+     *
      * @param value String
      * @return ImageFieldName
-     */  
-	public static ImageFieldName valueForString(String value) {
-        try{
+     */
+    public static ImageFieldName valueForString(String value) {
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

@@ -2,7 +2,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -12,63 +12,63 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.SdlMsgVersion}
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.proxy.rpc.SdlMsgVersion}
  */
 public class SdlMsgVersionTest extends TestCase {
-	
-	private SdlMsgVersion msg;
 
-	@Override
-	public void setUp() {
-		msg = new SdlMsgVersion();
+    private SdlMsgVersion msg;
 
-		msg.setMajorVersion(Test.GENERAL_INT);
-		msg.setMinorVersion(Test.GENERAL_INT);
-		msg.setPatchVersion(Test.GENERAL_INT);
-	}
+    @Override
+    public void setUp() {
+        msg = new SdlMsgVersion();
+
+        msg.setMajorVersion(TestValues.GENERAL_INT);
+        msg.setMinorVersion(TestValues.GENERAL_INT);
+        msg.setPatchVersion(TestValues.GENERAL_INT);
+    }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
-    	// Test Values
-		Integer major = msg.getMajorVersion();
-		Integer minor = msg.getMinorVersion();
-		Integer patch = msg.getPatchVersion();
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
+        Integer major = msg.getMajorVersion();
+        Integer minor = msg.getMinorVersion();
+        Integer patch = msg.getPatchVersion();
 
-		// Valid Tests
-		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, major);
-		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, minor);
-		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, patch);
+        // Valid Tests
+        assertEquals(TestValues.MATCH, (Integer) TestValues.GENERAL_INT, major);
+        assertEquals(TestValues.MATCH, (Integer) TestValues.GENERAL_INT, minor);
+        assertEquals(TestValues.MATCH, (Integer) TestValues.GENERAL_INT, patch);
 
-		// Invalid/Null Tests
-		SdlMsgVersion msg = new SdlMsgVersion();
-		assertNotNull(Test.NOT_NULL, msg);
+        // Invalid/Null Tests
+        SdlMsgVersion msg = new SdlMsgVersion();
+        assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getMajorVersion());
-		assertNull(Test.NULL, msg.getMinorVersion());
-		assertNull(Test.NULL, msg.getPatchVersion());
-	}
+        assertNull(TestValues.NULL, msg.getMajorVersion());
+        assertNull(TestValues.NULL, msg.getMinorVersion());
+        assertNull(TestValues.NULL, msg.getPatchVersion());
+    }
 
-	public void testJson() {
-		JSONObject reference = new JSONObject();
+    public void testJson() {
+        JSONObject reference = new JSONObject();
 
-		try {
-			reference.put(SdlMsgVersion.KEY_MAJOR_VERSION, Test.GENERAL_INT);
-			reference.put(SdlMsgVersion.KEY_MINOR_VERSION, Test.GENERAL_INT);
-			reference.put(SdlMsgVersion.KEY_PATCH_VERSION, Test.GENERAL_INT);
+        try {
+            reference.put(SdlMsgVersion.KEY_MAJOR_VERSION, TestValues.GENERAL_INT);
+            reference.put(SdlMsgVersion.KEY_MINOR_VERSION, TestValues.GENERAL_INT);
+            reference.put(SdlMsgVersion.KEY_PATCH_VERSION, TestValues.GENERAL_INT);
 
-			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+            JSONObject underTest = msg.serializeJSON();
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
-			Iterator<?> iterator = reference.keys();
-			while (iterator.hasNext()) {
-				String key = (String) iterator.next();
-				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
-			}
-		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
-		}
-	}
+            Iterator<?> iterator = reference.keys();
+            while (iterator.hasNext()) {
+                String key = (String) iterator.next();
+                assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+            }
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
+        }
+    }
 }

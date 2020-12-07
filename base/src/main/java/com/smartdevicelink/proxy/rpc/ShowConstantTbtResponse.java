@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -41,22 +41,23 @@ import java.util.Hashtable;
 
 /**
  * Show Constant TBT Response is sent, when ShowConstantTBT has been called
- * 
+ *
  * @since SmartDeviceLink 2.0
  */
-public class ShowConstantTbtResponse extends RPCResponse{
+public class ShowConstantTbtResponse extends RPCResponse {
 
     public ShowConstantTbtResponse() {
         super(FunctionID.SHOW_CONSTANT_TBT.toString());
     }
-    
+
     public ShowConstantTbtResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 
     /**
      * Constructs a new ShowConstantTbtResponse object
-     * @param success whether the request is successfully processed
+     *
+     * @param success    whether the request is successfully processed
      * @param resultCode whether the request is successfully processed
      */
     public ShowConstantTbtResponse(@NonNull Boolean success, @NonNull Result resultCode) {

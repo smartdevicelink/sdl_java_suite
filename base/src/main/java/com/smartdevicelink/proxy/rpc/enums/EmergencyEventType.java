@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -30,42 +30,50 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 package com.smartdevicelink.proxy.rpc.enums;
+
 /**
- * 
  * Reflects the emergency event status of the vehicle.
- *
  */
 public enum EmergencyEventType {
-	/** No emergency event has happened.
-	 */
+    /**
+     * No emergency event has happened.
+     */
     NO_EVENT,
-    /** Frontal collision has happened.
+    /**
+     * Frontal collision has happened.
      */
     FRONTAL,
-    /** Side collision has happened.
+    /**
+     * Side collision has happened.
      */
     SIDE,
-    /**Rear collision has happened.
+    /**
+     * Rear collision has happened.
      */
     REAR,
-    /** A rollover event has happened.
+    /**
+     * A rollover event has happened.
      */
     ROLLOVER,
-    /** The signal is not supported
+    /**
+     * The signal is not supported
      */
     NOT_SUPPORTED,
-    /** Emergency status cannot be determined
+    /**
+     * Emergency status cannot be determined
      */
     FAULT;
+
     /**
      * Convert String to EmergencyEventType
+     *
      * @param value String
      * @return EmergencyEventTpe
      */
     public static EmergencyEventType valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

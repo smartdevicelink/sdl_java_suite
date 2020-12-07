@@ -1,11 +1,9 @@
 package com.smartdevicelink.test.streaming;
 
-import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.streaming.AbstractPacketizer;
 import com.smartdevicelink.streaming.IStreamListener;
-import com.smartdevicelink.util.Version;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,23 +13,39 @@ import java.io.InputStream;
  * {@link com.smartdevicelink.streaming.AbstractPacketizer}
  */
 public class MockPacketizer extends AbstractPacketizer {
-	public MockPacketizer (IStreamListener l, InputStream i, SessionType s, byte sid, SdlSession sdlsession) throws IOException { super (l, i, s, sid, sdlsession); }
-	public MockPacketizer (IStreamListener l, InputStream i, RPCRequest r, SessionType s, byte sid, Version protocolVersion,SdlSession sdlsession) throws IOException { super (l, i, r, s, sid, protocolVersion, sdlsession); }
-	public MockPacketizer (IStreamListener l, InputStream i, RPCRequest r, SessionType s, byte sid, byte w, SdlSession sdlsession) throws IOException { super (l, i, r, s, sid, w, sdlsession); }
+    public MockPacketizer(IStreamListener l, InputStream i, SessionType s, byte sid, SdlSession sdlsession) throws IOException {
+        super(l, i, s, sid, sdlsession);
+    }
 
-	@Override public void start() throws IOException { }
-	@Override public void stop() { }
+    @Override
+    public void start() throws IOException {
+    }
 
-	public IStreamListener getListener () { return _streamListener; }
-	public InputStream getInputStream  () { return is;              }
-	public SessionType getSessionType  () { return _serviceType;    }
-	public SdlSession getSdlSession    () { return _session;    	}
-	public byte getSessionId           () { return _rpcSessionID;   }
-	public RPCRequest getRPCRequest    () { return _request;        }
-	@Deprecated
-	public byte getWiproVersion        () { if(_wiproVersion != null){return (byte)_wiproVersion.getMajor(); }else{return 5;}}
-	public Version getProtocolVersion  () { return _wiproVersion;   }
+    @Override
+    public void stop() {
+    }
 
-	@Override public void pause() { }
-	@Override public void resume() { }
+    public IStreamListener getListener() {
+        return _streamListener;
+    }
+
+    public InputStream getInputStream() {
+        return is;
+    }
+
+    public SessionType getSessionType() {
+        return _serviceType;
+    }
+
+    public byte getSessionId() {
+        return _rpcSessionID;
+    }
+
+    @Override
+    public void pause() {
+    }
+
+    @Override
+    public void resume() {
+    }
 }

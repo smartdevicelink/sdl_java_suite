@@ -39,18 +39,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.smartdevicelink.util.DebugTool;
+
 import java.lang.reflect.Constructor;
 import java.util.concurrent.Callable;
 
 /**
- * SdlRemoteDisplay is an abstract class that should be extended by developers to creat their remote displays.
+ * SdlRemoteDisplay is an abstract class that should be extended by developers to create their remote displays.
  * All logic for UI events can be stored in their extension.
  *
  * <br><br> <b>NOTE:</b> When the UI changes (buttons appear, layouts change, etc) the developer should call {@link #invalidate()} to alert any
@@ -63,8 +64,8 @@ public abstract class SdlRemoteDisplay extends Presentation {
 
     protected Window w;
     protected View mainView;
-    protected Handler handler = new Handler();
-    protected Handler uiHandler = new Handler(Looper.getMainLooper());
+    protected final Handler handler = new Handler();
+    protected final Handler uiHandler = new Handler(Looper.getMainLooper());
     protected Callback callback;
 
     public SdlRemoteDisplay(Context context, Display display) {
@@ -77,7 +78,7 @@ public abstract class SdlRemoteDisplay extends Presentation {
         super.onCreate(savedInstanceState);
         setTitle(TAG);
 
-        w  = getWindow();
+        w = getWindow();
 
         startRefreshTask();
 
@@ -94,9 +95,9 @@ public abstract class SdlRemoteDisplay extends Presentation {
         handler.removeCallbacks(mStartRefreshTaskCallback);
     }
 
-    protected Runnable mStartRefreshTaskCallback = new Runnable() {
+    protected final Runnable mStartRefreshTaskCallback = new Runnable() {
         public void run() {
-            if(mainView == null){
+            if (mainView == null) {
                 mainView = w.getDecorView().findViewById(android.R.id.content);
             }
             if (mainView != null) {
@@ -107,23 +108,21 @@ public abstract class SdlRemoteDisplay extends Presentation {
         }
     };
 
-    @SuppressWarnings("unused")
-    public View getMainView(){
-        if(mainView == null){
+    public View getMainView() {
+        if (mainView == null) {
             mainView = w.getDecorView().findViewById(android.R.id.content);
         }
         return this.mainView;
     }
 
-    @SuppressWarnings("unused")
-    public void invalidate(){
+    public void invalidate() {
         // let listeners know the view has been invalidated
-        if(callback != null){
+        if (callback != null) {
             callback.onInvalidated(this);
         }
     }
 
-    public void handleMotionEvent(final MotionEvent motionEvent){
+    public void handleMotionEvent(final MotionEvent motionEvent) {
         uiHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -132,7 +131,7 @@ public abstract class SdlRemoteDisplay extends Presentation {
         });
     }
 
-    public void stop(){
+    public void stop() {
         stopRefreshTask();
         dismissPresentation();
     }
@@ -145,22 +144,24 @@ public abstract class SdlRemoteDisplay extends Presentation {
             }
         });
     }
-    public interface Callback{
+
+    public interface Callback {
         void onCreated(SdlRemoteDisplay remoteDisplay);
+
         void onInvalidated(SdlRemoteDisplay remoteDisplay);
     }
 
     public static class Creator implements Callable<Boolean> {
-        private Context context;
-        private Display mDisplay;
+        private final Context context;
+        private final Display mDisplay;
         boolean presentationShowError = false;
         SdlRemoteDisplay remoteDisplay;
-        Class<? extends SdlRemoteDisplay> remoteDisplayClass;
-        private Handler uiHandler = new Handler(Looper.getMainLooper());
-        private Callback callback;
+        final Class<? extends SdlRemoteDisplay> remoteDisplayClass;
+        private final Handler uiHandler = new Handler(Looper.getMainLooper());
+        private final Callback callback;
 
 
-        public Creator(Context context, Display display, SdlRemoteDisplay remoteDisplay, Class<? extends SdlRemoteDisplay> remoteDisplayClass, Callback callback){
+        public Creator(Context context, Display display, SdlRemoteDisplay remoteDisplay, Class<? extends SdlRemoteDisplay> remoteDisplayClass, Callback callback) {
             this.context = context;
             this.mDisplay = display;
             this.remoteDisplay = remoteDisplay;
@@ -176,14 +177,13 @@ public abstract class SdlRemoteDisplay extends Presentation {
                 public void run() {
                     // Want to create presentation on UI thread so it finds the right Looper
                     // when setting up the Dialog.
-                    if((mDisplay!=null) && (remoteDisplay == null || remoteDisplay.getDisplay() != mDisplay))
-                    {
+                    if ((mDisplay != null) && (remoteDisplay == null || remoteDisplay.getDisplay() != mDisplay)) {
                         try {
                             Constructor constructor = remoteDisplayClass.getConstructor(Context.class, Display.class);
                             remoteDisplay = (SdlRemoteDisplay) constructor.newInstance(context, mDisplay);
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Log.e(TAG, "Unable to create Presentation Class");
+                            DebugTool.logError(TAG, "Unable to create Presentation Class");
                             presentationShowError = true;
                             return;
                         }
@@ -191,12 +191,12 @@ public abstract class SdlRemoteDisplay extends Presentation {
                         try {
                             remoteDisplay.show();
                             remoteDisplay.callback = callback;
-                            if(callback!=null){
+                            if (callback != null) {
                                 callback.onCreated(remoteDisplay);
                             }
 
                         } catch (WindowManager.InvalidDisplayException ex) {
-                            Log.e(TAG, "Couldn't show presentation! Display was removed in the meantime.", ex);
+                            DebugTool.logError(TAG, "Couldn't show presentation! Display was removed in the meantime.", ex);
                             remoteDisplay = null;
                             presentationShowError = true;
                         }

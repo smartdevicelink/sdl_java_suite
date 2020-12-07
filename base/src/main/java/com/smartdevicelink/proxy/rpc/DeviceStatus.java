@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.DeviceLevelStatus;
@@ -80,7 +80,7 @@ import java.util.Hashtable;
  * 		<tr>
  * 			<td>textMsgAvailable</td>
  * 			<td>Boolean</td>
- * 			<td>A textmessage is available
+ * 			<td>A text message is available
  * 			</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
@@ -127,12 +127,11 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  *  </table>
- * @since SmartDeviceLink 2.0
- * 
+ *
  * @see DeviceLevelStatus
  * @see GetVehicleData
  * @see OnVehicleData
- * 
+ * @since SmartDeviceLink 2.0
  */
 public class DeviceStatus extends RPCStruct {
     public static final String KEY_VOICE_REC_ON = "voiceRecOn";
@@ -147,13 +146,15 @@ public class DeviceStatus extends RPCStruct {
     public static final String KEY_PRIMARY_AUDIO_SOURCE = "primaryAudioSource";
     public static final String KEY_E_CALL_EVENT_ACTIVE = "eCallEventActive";
 
-	/**
-	 * Constructs a newly allocated DeviceStatus object
-	 */
-    public DeviceStatus() {}
-    
+    /**
+     * Constructs a newly allocated DeviceStatus object
+     */
+    public DeviceStatus() {
+    }
+
     /**
      * Constructs a newly allocated DeviceStatus object indicated by the Hashtable parameter
+     *
      * @param hash The Hashtable to use
      */
     public DeviceStatus(Hashtable<String, Object> hash) {
@@ -162,16 +163,17 @@ public class DeviceStatus extends RPCStruct {
 
     /**
      * Constructs a newly allocated DeviceStatus object
+     *
      * @param voiceRecOn
-     * @param btIconOn the bluetooth connection established
-     * @param callActive a call is being active
-     * @param phoneRoaming  the phone is in roaming mode
-     * @param textMsgAvailable a textmessage is available
-     * @param battLevelStatus battery level status
+     * @param btIconOn               the bluetooth connection established
+     * @param callActive             a call is being active
+     * @param phoneRoaming           the phone is in roaming mode
+     * @param textMsgAvailable       a text message is available
+     * @param battLevelStatus        battery level status
      * @param stereoAudioOutputMuted the status of the stereo audio output channel
-     * @param monoAudioOutputMuted the status of the mono audio output channel
-     * @param signalLevelStatus signal level status
-     * @param primaryAudioSource the current primary audio source of SDL (if selected
+     * @param monoAudioOutputMuted   the status of the mono audio output channel
+     * @param signalLevelStatus      signal level status
+     * @param primaryAudioSource     the current primary audio source of SDL (if selected
      * @param eCallEventActive
      */
     public DeviceStatus(@NonNull Boolean voiceRecOn, @NonNull Boolean btIconOn, @NonNull Boolean callActive, @NonNull Boolean phoneRoaming, @NonNull Boolean textMsgAvailable, @NonNull DeviceLevelStatus battLevelStatus,
@@ -192,161 +194,194 @@ public class DeviceStatus extends RPCStruct {
 
     /**
      * set the voice recognition on or off
+     *
      * @param voiceRecOn
      */
-    public void setVoiceRecOn(@NonNull Boolean voiceRecOn) {
+    public DeviceStatus setVoiceRecOn(@NonNull Boolean voiceRecOn) {
         setValue(KEY_VOICE_REC_ON, voiceRecOn);
+        return this;
     }
-    
+
     /**
      * get whether the voice recognition is on
+     *
      * @return whether the voice recognition is on
      */
     public Boolean getVoiceRecOn() {
         return getBoolean(KEY_VOICE_REC_ON);
     }
-    
+
     /**
      * set the bluetooth connection established
+     *
      * @param btIconOn the bluetooth connection established
      */
-    public void setBtIconOn(@NonNull Boolean btIconOn) {
+    public DeviceStatus setBtIconOn(@NonNull Boolean btIconOn) {
         setValue(KEY_BT_ICON_ON, btIconOn);
+        return this;
     }
-    
+
     /**
      * get the bluetooth connection established
+     *
      * @return the bluetooth connection established
      */
     public Boolean getBtIconOn() {
         return getBoolean(KEY_BT_ICON_ON);
     }
-    
+
     /**
      * set a call is being active
+     *
      * @param callActive a call is being active
      */
-    public void setCallActive(@NonNull Boolean callActive) {
+    public DeviceStatus setCallActive(@NonNull Boolean callActive) {
         setValue(KEY_CALL_ACTIVE, callActive);
+        return this;
     }
-    
+
     /**
      * get  a call is being active
-     * @return  a call is being active
+     *
+     * @return a call is being active
      */
     public Boolean getCallActive() {
         return getBoolean(KEY_CALL_ACTIVE);
     }
-    
+
     /**
      * set the phone is in roaming mode
-     * @param phoneRoaming  the phone is in roaming mode
+     *
+     * @param phoneRoaming the phone is in roaming mode
      */
-    public void setPhoneRoaming(@NonNull Boolean phoneRoaming) {
+    public DeviceStatus setPhoneRoaming(@NonNull Boolean phoneRoaming) {
         setValue(KEY_PHONE_ROAMING, phoneRoaming);
+        return this;
     }
-    
+
     /**
      * get  the phone is in roaming mode
-     * @return  the phone is in roaming mode
+     *
+     * @return the phone is in roaming mode
      */
     public Boolean getPhoneRoaming() {
         return getBoolean(KEY_PHONE_ROAMING);
     }
-    public void setTextMsgAvailable(@NonNull Boolean textMsgAvailable) {
+
+    public DeviceStatus setTextMsgAvailable(@NonNull Boolean textMsgAvailable) {
         setValue(KEY_TEXT_MSG_AVAILABLE, textMsgAvailable);
+        return this;
     }
-    
+
     /**
-     * get a textmessage is available
-     * @return a textmessage is available
+     * get a text message is available
+     *
+     * @return a text message is available
      */
     public Boolean getTextMsgAvailable() {
         return getBoolean(KEY_TEXT_MSG_AVAILABLE);
     }
-    
+
     /**
      * set battery level status
+     *
      * @param battLevelStatus battery level status
      */
-    public void setBattLevelStatus(@NonNull DeviceLevelStatus battLevelStatus) {
+    public DeviceStatus setBattLevelStatus(@NonNull DeviceLevelStatus battLevelStatus) {
         setValue(KEY_BATT_LEVEL_STATUS, battLevelStatus);
+        return this;
     }
-    
+
     /**
      * get battery level status
+     *
      * @return battery level status
      */
     public DeviceLevelStatus getBattLevelStatus() {
         return (DeviceLevelStatus) getObject(DeviceLevelStatus.class, KEY_BATT_LEVEL_STATUS);
     }
-    
+
     /**
      * set the status of the stereo audio output channel
+     *
      * @param stereoAudioOutputMuted the status of the stereo audio output channel
      */
-    public void setStereoAudioOutputMuted(@NonNull Boolean stereoAudioOutputMuted) {
+    public DeviceStatus setStereoAudioOutputMuted(@NonNull Boolean stereoAudioOutputMuted) {
         setValue(KEY_STEREO_AUDIO_OUTPUT_MUTED, stereoAudioOutputMuted);
+        return this;
     }
-    
+
     /**
      * get the status of the stereo audio output channel
+     *
      * @return the status of the stereo audio output channel
      */
     public Boolean getStereoAudioOutputMuted() {
         return getBoolean(KEY_STEREO_AUDIO_OUTPUT_MUTED);
     }
-    
+
     /**
      * set the status of the mono audio output channel
+     *
      * @param monoAudioOutputMuted the status of the mono audio output channel
      */
-    public void setMonoAudioOutputMuted(@NonNull Boolean monoAudioOutputMuted) {
+    public DeviceStatus setMonoAudioOutputMuted(@NonNull Boolean monoAudioOutputMuted) {
         setValue(KEY_MONO_AUDIO_OUTPUT_MUTED, monoAudioOutputMuted);
+        return this;
     }
-    
+
     /**
      * get the status of the mono audio output channel
+     *
      * @return the status of the mono audio output channel
      */
     public Boolean getMonoAudioOutputMuted() {
         return getBoolean(KEY_MONO_AUDIO_OUTPUT_MUTED);
     }
-    
+
     /**
      * set signal level status
+     *
      * @param signalLevelStatus signal level status
      */
-    public void setSignalLevelStatus(@NonNull DeviceLevelStatus signalLevelStatus) {
+    public DeviceStatus setSignalLevelStatus(@NonNull DeviceLevelStatus signalLevelStatus) {
         setValue(KEY_SIGNAL_LEVEL_STATUS, signalLevelStatus);
+        return this;
     }
-    
+
     /**
      * get signal level status
+     *
      * @return signal level status
      */
     public DeviceLevelStatus getSignalLevelStatus() {
         return (DeviceLevelStatus) getObject(DeviceLevelStatus.class, KEY_SIGNAL_LEVEL_STATUS);
     }
-    
+
     /**
      * set the current primary audio source of SDL (if selected).
+     *
      * @param primaryAudioSource the current primary audio source of SDL (if selected).
      */
-    public void setPrimaryAudioSource(@NonNull PrimaryAudioSource primaryAudioSource) {
+    public DeviceStatus setPrimaryAudioSource(@NonNull PrimaryAudioSource primaryAudioSource) {
         setValue(KEY_PRIMARY_AUDIO_SOURCE, primaryAudioSource);
+        return this;
     }
-    
+
     /**
      * get  the current primary audio source of SDL (if selected).
-     * @return  the current primary audio source of SDL (if selected).
+     *
+     * @return the current primary audio source of SDL (if selected).
      */
     public PrimaryAudioSource getPrimaryAudioSource() {
         return (PrimaryAudioSource) getObject(PrimaryAudioSource.class, KEY_PRIMARY_AUDIO_SOURCE);
     }
-    public void setECallEventActive(@NonNull Boolean eCallEventActive) {
+
+    public DeviceStatus setECallEventActive(@NonNull Boolean eCallEventActive) {
         setValue(KEY_E_CALL_EVENT_ACTIVE, eCallEventActive);
+        return this;
     }
+
     public Boolean getECallEventActive() {
         return getBoolean(KEY_E_CALL_EVENT_ACTIVE);
     }

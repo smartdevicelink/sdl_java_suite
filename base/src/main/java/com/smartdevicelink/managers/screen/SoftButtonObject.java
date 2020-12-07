@@ -31,9 +31,9 @@
  */
 package com.smartdevicelink.managers.screen;
 
-import android.support.annotation.NonNull;
-import android.util.Log;
+import androidx.annotation.NonNull;
 
+import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.SoftButton;
@@ -44,17 +44,17 @@ import java.util.List;
 
 /**
  * <strong>SoftButtonObject</strong> <br>
- * SoftButtonObject define a button that can have multiple SoftButtonState values.<br>
+ * SoftButtonObject defines a button that can have multiple SoftButtonState values.<br>
  * The states of SoftButtonObject allow the developer to not have to manage multiple SoftButtons that have very similar functionality.<br>
  * For example, a repeat button in a music app can be thought of as one SoftButtonObject with three typical states: repeat off, repeat 1, and repeat on.<br>
+ *
  * @see SoftButtonState
  */
 public class SoftButtonObject {
-
     private static final String TAG = "SoftButtonObject";
-    static int SOFT_BUTTON_ID_NOT_SET_VALUE = -1;
-    static int SOFT_BUTTON_ID_MIN_VALUE = 0;
-    static int SOFT_BUTTON_ID_MAX_VALUE = 65535;
+    static final int SOFT_BUTTON_ID_NOT_SET_VALUE = -1;
+    static final int SOFT_BUTTON_ID_MIN_VALUE = 0;
+    static final int SOFT_BUTTON_ID_MAX_VALUE = 65535;
     private String name;
     private List<SoftButtonState> states;
     private String currentStateName;
@@ -64,31 +64,33 @@ public class SoftButtonObject {
 
     /**
      * Create a new instance of the SoftButtonObject with multiple states
-     * @param name a String value represents name of the object
-     * @param states a list of SoftButtonState represents the SoftButtonState values for the object. <strong>states should be unique for every SoftButtonObject. A SoftButtonState instance cannot be reused for multiple SoftButtonObjects.</strong>
+     *
+     * @param name             a String value represents name of the object
+     * @param states           a list of SoftButtonState represents the SoftButtonState values for the object. <strong>states should be unique for every SoftButtonObject. A SoftButtonState instance cannot be reused for multiple SoftButtonObjects.</strong>
      * @param initialStateName a String value represents the name for the initial state
-     * @param onEventListener a listener that has a callback that will be triggered when a button event happens
-     * Note: the initialStateName should match exactly the name of one of the states for the object. Otherwise an exception will be thrown.
+     * @param onEventListener  a listener that has a callback that will be triggered when a button event happens
+     *                         Note: the initialStateName should match exactly the name of one of the states for the object. Otherwise an exception will be thrown.
      */
     public SoftButtonObject(@NonNull String name, @NonNull List<SoftButtonState> states, @NonNull String initialStateName, OnEventListener onEventListener) {
 
         // Make sure there aren't two states with the same name
         if (hasTwoStatesOfSameName(states)) {
-            Log.e(TAG, "Two states have the same name in states list for soft button object");
+            DebugTool.logError(TAG, "Two states have the same name in states list for soft button object");
             return;
         }
 
         this.name = name;
         this.states = states;
-        currentStateName = initialStateName;
+        this.currentStateName = initialStateName;
         this.buttonId = SOFT_BUTTON_ID_NOT_SET_VALUE;
         this.onEventListener = onEventListener;
     }
 
     /**
      * Create a new instance of the SoftButtonObject with one state
-     * @param name a String value represents name of the object
-     * @param state a SoftButtonState represents state for the object
+     *
+     * @param name            a String value represents name of the object
+     * @param state           a SoftButtonState represents state for the object
      * @param onEventListener a listener that has a callback that will be triggered when a button event happens
      */
     public SoftButtonObject(@NonNull String name, @NonNull SoftButtonState state, OnEventListener onEventListener) {
@@ -96,24 +98,42 @@ public class SoftButtonObject {
     }
 
     /**
+     * Create a new instance of the SoftButtonObject with one state
+     *
+     * @param name            a String value represents name of the object
+     * @param artwork         a SdlArtwork to be displayed on the button
+     * @param onEventListener a listener that has a callback that will be triggered when a button event happens
+     */
+    public SoftButtonObject(@NonNull String name, @NonNull String text, SdlArtwork artwork, OnEventListener onEventListener) {
+        this(name, Collections.singletonList(new SoftButtonState(name, text, artwork)), name, onEventListener);
+    }
+
+    /**
      * Transition the SoftButtonObject to a specific state
+     *
      * @param newStateName a String value represents the name fo the state that we want to transition the SoftButtonObject to
      * @return a boolean value that represents whether the transition succeeded or failed
      */
     public boolean transitionToStateByName(@NonNull String newStateName) {
         SoftButtonState newState = getStateByName(newStateName);
         if (newState == null) {
-            Log.e(TAG, String.format("Attempted to transition to state: %s on soft button object: %s but no state with that name was found", newStateName, this.name));
+            DebugTool.logError(TAG, String.format("Attempted to transition to state: %s on soft button object: %s but no state with that name was found", newStateName, this.name));
             return false;
         }
-        DebugTool.logInfo(String.format("Transitioning soft button object %s to state %s", this.name, newStateName));
+
+        if (states.size() == 1) {
+            DebugTool.logWarning(TAG, "There's only one state, so no transitioning is possible!");
+            return false;
+        }
+
+        DebugTool.logInfo(TAG, String.format("Transitioning soft button object %s to state %s", this.name, newStateName));
         currentStateName = newStateName;
 
         // Send a new Show RPC because the state has changed which means the actual SoftButton has changed
         if (updateListener != null) {
             updateListener.onUpdate();
         } else {
-            Log.e(TAG, String.format("SoftButtonManager is not set for soft button object: %s. Update cannot be triggered", this.name));
+            DebugTool.logError(TAG, String.format("SoftButtonManager is not set for soft button object: %s. Update cannot be triggered", this.name));
         }
 
         return true;
@@ -126,16 +146,13 @@ public class SoftButtonObject {
         String nextStateName = null;
         for (int i = 0; i < states.size(); i++) {
             if (states.get(i).getName().equals(currentStateName)) {
-                if (i == (states.size() - 1)) {
-                    nextStateName = states.get(0).getName();
-                } else {
-                    nextStateName = states.get(i + 1).getName();
-                }
+                int nextStateNumber = (i == states.size() - 1) ? 0 : (i + 1);
+                nextStateName = states.get(nextStateNumber).getName();
                 break;
             }
         }
         if (nextStateName == null) {
-            Log.e(TAG, String.format("Current state name : %s cannot be found for soft button object %s", currentStateName, this.name));
+            DebugTool.logError(TAG, String.format("Current state name : %s cannot be found for soft button object %s", currentStateName, this.name));
             return;
         }
         transitionToStateByName(nextStateName);
@@ -143,18 +160,20 @@ public class SoftButtonObject {
 
     /**
      * Get the current state for the SoftButtonObject
+     *
      * @return a SoftButtonState represents the current state
      */
     public SoftButtonState getCurrentState() {
         SoftButtonState state = getStateByName(currentStateName);
         if (state == null) {
-            Log.e(TAG, String.format("Current state name : %s cannot be found for soft button object %s", currentStateName, this.name));
+            DebugTool.logError(TAG, String.format("Current state name : %s cannot be found for soft button object %s", currentStateName, this.name));
         }
         return state;
     }
 
     /**
      * Get the SoftButton object for the current state
+     *
      * @return a SoftButton object that is associated with the current state
      */
     public SoftButton getCurrentStateSoftButton() {
@@ -170,6 +189,7 @@ public class SoftButtonObject {
 
     /**
      * Find and get the SoftButtonState that has the provided name
+     *
      * @param stateName a String value that represents the name of the state
      * @return a SoftButtonState object that represents the state that has the provided name
      */
@@ -186,6 +206,7 @@ public class SoftButtonObject {
 
     /**
      * Check if two SoftButtonState have the same name
+     *
      * @param states a list of SoftButtonState
      * @return a boolean value that represents whether we have two states with the same name
      */
@@ -203,6 +224,7 @@ public class SoftButtonObject {
 
     /**
      * Set the SoftButtonManager's update listener
+     *
      * @param updateListener the SoftButtonManager.UpdateListener object
      */
     protected void setUpdateListener(UpdateListener updateListener) {
@@ -211,6 +233,7 @@ public class SoftButtonObject {
 
     /**
      * Get the name of the SoftButtonObject
+     *
      * @return a String that represents the name of the SoftButtonObject
      */
     public String getName() {
@@ -219,6 +242,7 @@ public class SoftButtonObject {
 
     /**
      * Set the name of the SoftButtonObject
+     *
      * @param name a String that represents the name of the SoftButtonObject
      */
     public void setName(@NonNull String name) {
@@ -227,6 +251,7 @@ public class SoftButtonObject {
 
     /**
      * Get the SoftButtonState list
+     *
      * @return a list of the object's soft button states
      */
     public List<SoftButtonState> getStates() {
@@ -235,6 +260,7 @@ public class SoftButtonObject {
 
     /**
      * Set the the SoftButtonState list
+     *
      * @param states a list of the object's soft button states. <strong>states should be unique for every SoftButtonObject. A SoftButtonState instance cannot be reused for multiple SoftButtonObjects.</strong>
      */
     public void setStates(@NonNull List<SoftButtonState> states) {
@@ -243,6 +269,7 @@ public class SoftButtonObject {
 
     /**
      * Get the name of the current state
+     *
      * @return a String that represents the name of the current state
      */
     public String getCurrentStateName() {
@@ -251,6 +278,7 @@ public class SoftButtonObject {
 
     /**
      * Set the name of the current state
+     *
      * @param currentStateName a String that represents the name of the current state
      */
     public void setCurrentStateName(@NonNull String currentStateName) {
@@ -259,6 +287,7 @@ public class SoftButtonObject {
 
     /**
      * Get the id of the SoftButtonObject
+     *
      * @return an int value that represents the id of the SoftButtonObject
      */
     public int getButtonId() {
@@ -269,11 +298,12 @@ public class SoftButtonObject {
      * Sets the id of the SoftButtonObject <br>
      * <strong>Note: If the developer did not set buttonId, the manager will automatically assign an id before the SoftButtons are sent to the head unit.
      * Please note that the manager may reuse ids from previous batch of SoftButtons that were already sent to the head unit</strong>
+     *
      * @param buttonId an int value that represents the id of the SoftButtonObject
      */
     public void setButtonId(int buttonId) {
-        if (buttonId < SOFT_BUTTON_ID_MIN_VALUE){
-            Log.e(TAG, "buttonId has to be equal or more than " + SOFT_BUTTON_ID_MIN_VALUE);
+        if (buttonId < SOFT_BUTTON_ID_MIN_VALUE) {
+            DebugTool.logError(TAG, "buttonId has to be equal or more than " + SOFT_BUTTON_ID_MIN_VALUE);
             return;
         }
         this.buttonId = buttonId;
@@ -281,6 +311,7 @@ public class SoftButtonObject {
 
     /**
      * Get the event listener for the SoftButtonObject
+     *
      * @return OnEventListener
      */
     public OnEventListener getOnEventListener() {
@@ -289,21 +320,23 @@ public class SoftButtonObject {
 
     /**
      * Set the event listener for the SoftButtonObject
+     *
      * @param onEventListener a listener that has a callback that will be triggered when a button event happens
      */
     public void setOnEventListener(OnEventListener onEventListener) {
         this.onEventListener = onEventListener;
     }
 
-    public interface OnEventListener{
+    public interface OnEventListener {
         void onPress(SoftButtonObject softButtonObject, OnButtonPress onButtonPress);
+
         void onEvent(SoftButtonObject softButtonObject, OnButtonEvent onButtonEvent);
     }
 
     /**
      * A listener interface that is used by SoftButtonObject to request an update from SoftButtonManager
      */
-    interface UpdateListener{
+    interface UpdateListener {
         /**
          * Requests an update from SoftButtonManager
          */
@@ -312,6 +345,7 @@ public class SoftButtonObject {
 
     /**
      * Used to compile hashcode for SoftButtonsObjects for use to compare in equals method
+     *
      * @return Custom hashcode of SoftButtonObjects variables
      */
     @Override
@@ -319,15 +353,15 @@ public class SoftButtonObject {
         int result = 1;
         result += ((getName() == null) ? 0 : Integer.rotateLeft(getName().hashCode(), 1));
         result += ((getCurrentStateName() == null) ? 0 : Integer.rotateLeft(getCurrentStateName().hashCode(), 2));
-        result += Integer.rotateLeft(Integer.valueOf(getButtonId()).hashCode(), 3);
         for (int i = 0; i < this.states.size(); i++) {
-            result += ((getStates().get(i) == null) ? 0 : Integer.rotateLeft(getStates().get(i).hashCode(), i + 4));
+            result += ((getStates().get(i) == null) ? 0 : Integer.rotateLeft(getStates().get(i).hashCode(), i + 3));
         }
         return result;
     }
 
     /**
      * Uses our custom hashCode for SoftButtonObject objects
+     *
      * @param o - The object to compare
      * @return boolean of whether the objects are the same or not
      */

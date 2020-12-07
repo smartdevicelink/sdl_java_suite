@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -36,7 +36,7 @@ import com.smartdevicelink.proxy.RPCStruct;
 import java.util.Hashtable;
 
 /**
- *  A color scheme for all display layout templates.
+ * A color scheme for all display layout templates.
  * <p><b> Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -68,6 +68,7 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 5.0</td>
  * 		</tr>
  * </table>
+ *
  * @since SmartDeviceLink 5.0
  */
 public class TemplateColorScheme extends RPCStruct {
@@ -79,11 +80,12 @@ public class TemplateColorScheme extends RPCStruct {
     /**
      * Constructs a new TemplateColorScheme object
      */
-    public TemplateColorScheme(){
+    public TemplateColorScheme() {
     }
 
     /**
      * Constructs a new TemplateColorScheme object indicated by the Hashtable parameter
+     *
      * @param hash The Hashtable to use
      */
     public TemplateColorScheme(Hashtable<String, Object> hash) {
@@ -92,14 +94,17 @@ public class TemplateColorScheme extends RPCStruct {
 
     /**
      * Sets the primaryColor of the scheme
+     *
      * @param color an RGBColor object representing the primaryColor
      */
-    public void setPrimaryColor(RGBColor color) {
+    public TemplateColorScheme setPrimaryColor(RGBColor color) {
         setValue(KEY_PRIMARY_COLOR, color);
+        return this;
     }
 
     /**
      * Gets the primaryColor of the scheme
+     *
      * @return an RGBColor object representing the primaryColor
      */
     public RGBColor getPrimaryColor() {
@@ -108,14 +113,17 @@ public class TemplateColorScheme extends RPCStruct {
 
     /**
      * Sets the secondaryColor of the scheme
+     *
      * @param color an RGBColor object representing the secondaryColor
      */
-    public void setSecondaryColor(RGBColor color) {
+    public TemplateColorScheme setSecondaryColor(RGBColor color) {
         setValue(KEY_SECONDARY_COLOR, color);
+        return this;
     }
 
     /**
      * Gets the secondaryColor of the scheme
+     *
      * @return an RGBColor object representing the secondaryColor
      */
     public RGBColor getSecondaryColor() {
@@ -124,14 +132,17 @@ public class TemplateColorScheme extends RPCStruct {
 
     /**
      * Sets the backgroundColor of the scheme
+     *
      * @param color an RGBColor object representing the backgroundColor
      */
-    public void setBackgroundColor(RGBColor color) {
+    public TemplateColorScheme setBackgroundColor(RGBColor color) {
         setValue(KEY_BACKGROUND_COLOR, color);
+        return this;
     }
 
     /**
      * Gets the backgroundColor of the scheme
+     *
      * @return an RGBColor object representing the backgroundColor
      */
     public RGBColor getBackgroundColor() {

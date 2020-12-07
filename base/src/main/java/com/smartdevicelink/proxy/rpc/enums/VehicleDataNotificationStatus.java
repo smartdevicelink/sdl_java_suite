@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -33,36 +33,37 @@ package com.smartdevicelink.proxy.rpc.enums;
 
 /**
  * Reflects the status of a vehicle data notification.
- * @since SmartDeviceLink 2.0
  *
+ * @since SmartDeviceLink 2.0
  */
 public enum VehicleDataNotificationStatus {
-	/**
-	 * VehicleDataNotificationStatus is not supported.
-	 */
-	NOT_SUPPORTED,
-	/**
-	 * VehicleDataNotificationStatus is normal.
-	 */
-	NORMAL,
-	/**
-	 * VehicleDataNotificationStatus is active.
-	 */
-	ACTIVE,
-	/**
-	 * VehicleDataNotificationStatus is not in use.
-	 */
-	NOT_USED;
+    /**
+     * VehicleDataNotificationStatus is not supported.
+     */
+    NOT_SUPPORTED,
+    /**
+     * VehicleDataNotificationStatus is normal.
+     */
+    NORMAL,
+    /**
+     * VehicleDataNotificationStatus is active.
+     */
+    ACTIVE,
+    /**
+     * VehicleDataNotificationStatus is not in use.
+     */
+    NOT_USED;
 
     /**
      * Convert String to VehicleDataNotificationStatus
+     *
      * @param value String
      * @return VehicleDataNotificationStatus
-     */    
+     */
     public static VehicleDataNotificationStatus valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

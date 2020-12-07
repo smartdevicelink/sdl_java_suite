@@ -32,7 +32,6 @@
 package com.smartdevicelink.proxy.rpc.listeners;
 
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.rpc.enums.Result;
 
 import java.util.Vector;
 
@@ -41,50 +40,40 @@ import java.util.Vector;
  */
 public abstract class OnMultipleRequestListener extends OnRPCResponseListener {
 
-	final Vector<Integer> correlationIds;
-	OnRPCResponseListener rpcResponseListener;
-	private static String TAG = "OnMultipleRequestListener";
+    final Vector<Integer> correlationIds;
+    final OnRPCResponseListener rpcResponseListener;
 
-	public OnMultipleRequestListener(){
-		setListenerType(UPDATE_LISTENER_TYPE_MULTIPLE_REQUESTS);
-		correlationIds = new Vector<>();
+    public OnMultipleRequestListener() {
+        setListenerType(UPDATE_LISTENER_TYPE_MULTIPLE_REQUESTS);
+        correlationIds = new Vector<>();
 
-		rpcResponseListener = new OnRPCResponseListener() {
-			@Override
-			public void onResponse(int correlationId, RPCResponse response) {
-				OnMultipleRequestListener.this.onResponse(correlationId, response);
-				update(correlationId);
-			}
+        rpcResponseListener = new OnRPCResponseListener() {
+            @Override
+            public void onResponse(int correlationId, RPCResponse response) {
+                OnMultipleRequestListener.this.onResponse(correlationId, response);
+                correlationIds.remove(Integer.valueOf(correlationId));
+                onUpdate(correlationIds.size());
+                if (correlationIds.size() == 0) {
+                    onFinished();
+                }
+            }
+        };
+    }
 
-			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-				super.onError(correlationId, resultCode, info);
-				OnMultipleRequestListener.this.onError(correlationId, resultCode, info);
-				update(correlationId);
-			}
+    public void addCorrelationId(int correlationId) {
+        correlationIds.add(correlationId);
+    }
 
-			private synchronized void update(int correlationId){
-				correlationIds.remove(Integer.valueOf(correlationId));
-				onUpdate(correlationIds.size());
-				if(correlationIds.size() == 0){
-					onFinished();
-				}
-			}
-		};
-	}
+    /**
+     * onUpdate is called during multiple stream request
+     *
+     * @param remainingRequests of the original request
+     */
+    public abstract void onUpdate(int remainingRequests);
 
-	public void addCorrelationId(int correlationid){
-		correlationIds.add(correlationid);
-	}
-	/**
-	 * onUpdate is called during multiple stream request
-	 * @param remainingRequests of the original request
-	 */
-	public abstract void onUpdate(int remainingRequests);
-	public abstract void onFinished();
-	public abstract void onError(int correlationId, Result resultCode, String info);
+    public abstract void onFinished();
 
-	public OnRPCResponseListener getSingleRpcResponseListener(){
-		return rpcResponseListener;
-	}
+    public OnRPCResponseListener getSingleRpcResponseListener() {
+        return rpcResponseListener;
+    }
 }

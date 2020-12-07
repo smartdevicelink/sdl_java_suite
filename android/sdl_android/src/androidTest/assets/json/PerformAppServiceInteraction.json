@@ -1,18 +1,18 @@
 {
-  "request":{
-    "name":"PerformAppServiceInteraction",
-    "correlationID":55,
-    "parameters":{
+  "request": {
+    "name": "PerformAppServiceInteraction",
+    "correlationID": 55,
+    "parameters": {
       "serviceUri": "test",
       "appServiceId": "test",
       "originApp": "test",
       "requestServiceActive": true
     }
   },
-  "response":{
-    "name":"PerformAppServiceInteractionResponse",
-    "correlationID":55,
-    "parameters":{
+  "response": {
+    "name": "PerformAppServiceInteractionResponse",
+    "correlationID": 55,
+    "parameters": {
       "serviceSpecificResult": "test"
     }
   }

@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -33,12 +33,13 @@ package com.smartdevicelink.proxy.rpc.enums;
 
 /**
  * Enumeration listing possible file types.
+ *
  * @since SmartDeviceLink 2.0
  */
 public enum FileType {
-	/**
-	 * BMP
-	 */
+    /**
+     * BMP
+     */
     GRAPHIC_BMP,
     /**
      * JPEG
@@ -62,13 +63,14 @@ public enum FileType {
 
     /**
      * Convert String to FileType
+     *
      * @param value String
      * @return FileType
-     */      
+     */
     public static FileType valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

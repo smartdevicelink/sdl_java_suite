@@ -37,10 +37,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ResolveInfo;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import com.smartdevicelink.transport.SdlRouterService;
 
@@ -93,16 +91,16 @@ public class ServiceFinder {
 
     }
 
-    BroadcastReceiver mainServiceReceiver = new BroadcastReceiver() {
+    final BroadcastReceiver mainServiceReceiver = new BroadcastReceiver() {
         private final Object LIST_LOCK = new Object();
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "Received intent " + intent);
+            DebugTool.logInfo(TAG, "Received intent " + intent);
             if (intent != null) {
                 String packageName = intent.getStringExtra(BIND_LOCATION_PACKAGE_NAME_EXTRA);
                 String className = intent.getStringExtra(BIND_LOCATION_CLASS_NAME_EXTRA);
-                Log.d(TAG, "Received intent from package: " + packageName + ". Classname: " + className);
+                DebugTool.logInfo(TAG, "Received intent from package: " + packageName + ". Classname: " + className);
                 synchronized (LIST_LOCK) {
                     //Add to running services
                     services.add(new ComponentName(packageName, className));
@@ -164,9 +162,7 @@ public class ServiceFinder {
         Intent intent = new Intent();
         intent.setAction(SdlRouterService.REGISTER_WITH_ROUTER_ACTION);
         intent.putExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME, receiverLocation);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            intent.setFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-        }
+        intent.setFlags(Intent.FLAG_RECEIVER_FOREGROUND);
         return intent;
     }
 

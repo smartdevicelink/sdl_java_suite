@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -30,33 +30,37 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 package com.smartdevicelink.proxy.rpc.enums;
-/** Reflects the status of the Restraints Control Module fuel pump cutoff.<br> The fuel pump is cut off typically after the vehicle has had a collision.
+
+/**
+ * Reflects the status of the Restraints Control Module fuel pump cutoff.<br> The fuel pump is cut off typically after the vehicle has had a collision.
  * <p>
- * 
- * @since SmartDeviceLink 2.0
  *
+ * @since SmartDeviceLink 2.0
  */
 public enum FuelCutoffStatus {
-	/** Fuel is cut off
-	 */
-	TERMINATE_FUEL,
-	/** Fuel is not cut off
-	 * 
-	 */
-	NORMAL_OPERATION,
-	/** Status of the fuel pump cannot be determined
-	 * 
-	 */
+    /**
+     * Fuel is cut off
+     */
+    TERMINATE_FUEL,
+    /**
+     * Fuel is not cut off
+     */
+    NORMAL_OPERATION,
+    /**
+     * Status of the fuel pump cannot be determined
+     */
     FAULT;
-	/**
+
+    /**
      * Convert String to FuelCutoffStatus
+     *
      * @param value String
      * @return FuelCuttoffStatus
      */
     public static FuelCutoffStatus valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

@@ -5,7 +5,7 @@ Common transformation
 import logging
 import re
 from abc import ABC
-from collections import namedtuple
+from collections import namedtuple, OrderedDict
 
 from model.array import Array
 from model.enum import Enum
@@ -72,11 +72,49 @@ class InterfaceProducerCommon(ABC):
     @staticmethod
     def extract_description(d):
         """
-        Evaluate, align and delete @TODO
+        Extract description
         :param d: list with description
         :return: evaluated string
         """
-        return re.sub(r'(\s{2,}|\n|\[@TODO.+)', ' ', ''.join(d)).strip() if d else ''
+        return re.sub(r'(\s{2,}|\n)', ' ', ''.join(d)).strip() if d else ''
+
+    @staticmethod
+    def extract_values(param):
+        p = OrderedDict()
+        if hasattr(param.param_type, 'min_size'):
+            p['array_min_size'] = param.param_type.min_size
+        if hasattr(param.param_type, 'max_size'):
+            p['array_max_size'] = param.param_type.max_size
+        if hasattr(param, 'default_value'):
+            if hasattr(param.default_value, 'name'):
+                p['default_value'] = param.default_value.name
+            else:
+                p['default_value'] = param.default_value
+        elif hasattr(param.param_type, 'default_value'):
+            if hasattr(param.param_type.default_value, 'name'):
+                p['default_value'] = param.param_type.default_value.name
+            else:
+                p['default_value'] = param.param_type.default_value
+        if hasattr(param.param_type, 'min_value'):
+            p['num_min_value'] = param.param_type.min_value
+        elif hasattr(param.param_type, 'element_type') and hasattr(param.param_type.element_type, 'min_value'):
+            p['num_min_value'] = param.param_type.element_type.min_value
+        if hasattr(param.param_type, 'max_value'):
+            p['num_max_value'] = param.param_type.max_value
+        elif hasattr(param.param_type, 'element_type') and hasattr(param.param_type.element_type, 'max_value'):
+            p['num_max_value'] = param.param_type.element_type.max_value
+        if hasattr(param.param_type, 'min_length'):
+            p['string_min_length'] = param.param_type.min_length
+        elif hasattr(param.param_type, 'element_type') and hasattr(param.param_type.element_type, 'min_length'):
+            p['string_min_length'] = param.param_type.element_type.min_length
+        if hasattr(param.param_type, 'max_length'):
+            p['string_max_length'] = param.param_type.max_length
+        elif hasattr(param.param_type, 'element_type') and hasattr(param.param_type.element_type, 'max_length'):
+            p['string_max_length'] = param.param_type.element_type.max_length
+
+        # Filter None values
+        filtered_values = {k: v for k, v in p.items() if v is not None}
+        return filtered_values
 
     @staticmethod
     def replace_sync(name):

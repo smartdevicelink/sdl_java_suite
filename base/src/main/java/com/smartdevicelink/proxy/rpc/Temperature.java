@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.TemperatureUnit;
@@ -39,34 +39,37 @@ import com.smartdevicelink.util.SdlDataTypeConverter;
 
 import java.util.Hashtable;
 
-public class Temperature extends RPCStruct{
+public class Temperature extends RPCStruct {
     public static final String KEY_UNIT = "unit";
     public static final String KEY_VALUE = "value";
 
-    public Temperature() { }
+    public Temperature() {
+    }
+
     public Temperature(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-	/**
-	 * Create the temperature object
-	 * @param unit Temperature Unit.
-	 * @param value Temperature Value in TemperatureUnit specified unit
-	 */
-	public Temperature(@NonNull TemperatureUnit unit, @NonNull Float value){
-		this();
-		setUnit(unit);
-		setValue(value);
-	}
+    /**
+     * Create the temperature object
+     *
+     * @param unit  Temperature Unit.
+     * @param value Temperature Value in TemperatureUnit specified unit
+     */
+    public Temperature(@NonNull TemperatureUnit unit, @NonNull Float value) {
+        this();
+        setUnit(unit);
+        setValue(value);
+    }
 
     /**
      * Sets the unit portion of the Temperature class
      *
-     * @param unit
-     * Temperature Unit.
+     * @param unit Temperature Unit.
      */
-    public void setUnit(@NonNull TemperatureUnit unit) {
+    public Temperature setUnit(@NonNull TemperatureUnit unit) {
         setValue(KEY_UNIT, unit);
+        return this;
     }
 
     /**
@@ -91,10 +94,10 @@ public class Temperature extends RPCStruct{
     /**
      * Sets the value portion of the Temperature class
      *
-     * @param value
-     * Temperature Value in TemperatureUnit specified unit. Range depends on OEM and is not checked by SDL.
+     * @param value Temperature Value in TemperatureUnit specified unit. Range depends on OEM and is not checked by SDL.
      */
-    public void setValue(@NonNull Float value) {
+    public Temperature setValue(@NonNull Float value) {
         setValue(KEY_VALUE, value);
+        return this;
     }
 }

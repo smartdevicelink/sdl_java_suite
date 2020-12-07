@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
@@ -40,7 +40,7 @@ import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
 import java.util.Hashtable;
 
 /**
- * On-screen keyboard event. Can be full string or individual keypresses depending on keyboard mode.
+ * On-screen keyboard event. Can be full string or individual key presses depending on keyboard mode.
  * <p></p>
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
@@ -68,33 +68,34 @@ import java.util.Hashtable;
  *                 <td>Maxlength: 500</td>
  * 			<td>SmartDeviceLink 3.0 </td>
  * 		</tr>
- * 		
- *  </table>
  *
+ *  </table>
  */
 
 public class OnKeyboardInput extends RPCNotification {
-	public static final String KEY_DATA = "data";
-	public static final String KEY_EVENT = "event";
-	/**
-	 * Constructs a new OnKeyboardInput object
-	 */
+    public static final String KEY_DATA = "data";
+    public static final String KEY_EVENT = "event";
+
+    /**
+     * Constructs a new OnKeyboardInput object
+     */
     public OnKeyboardInput() {
         super(FunctionID.ON_KEYBOARD_INPUT.toString());
     }
+
     /**
-	* <p>
-	* Constructs a new OnKeyboardInput object indicated by the Hashtable
-	* parameter
-	* </p>
-	* 
-	* @param hash
-	*            The Hashtable to use
-	*/
+     * <p>
+     * Constructs a new OnKeyboardInput object indicated by the Hashtable
+     * parameter
+     * </p>
+     *
+     * @param hash The Hashtable to use
+     */
 
     public OnKeyboardInput(Hashtable<String, Object> hash) {
         super(hash);
     }
+
     /**
      * Constructs a new OnKeyboardInput object
      */
@@ -107,13 +108,16 @@ public class OnKeyboardInput extends RPCNotification {
         return (KeyboardEvent) getObject(KeyboardEvent.class, KEY_EVENT);
     }
 
-    public void setEvent(@NonNull KeyboardEvent event) {
+    public OnKeyboardInput setEvent(@NonNull KeyboardEvent event) {
         setParameters(KEY_EVENT, event);
+        return this;
     }
 
-    public void setData(String data) {
+    public OnKeyboardInput setData(String data) {
         setParameters(KEY_DATA, data);
+        return this;
     }
+
     public String getData() {
         Object obj = getParameters(KEY_DATA);
         if (obj instanceof String) {
@@ -123,8 +127,8 @@ public class OnKeyboardInput extends RPCNotification {
     }
 
     @Override
-    public String toString(){
-        return this.getFunctionName() +": " + " data: " + this.getData() + " event:" + this.getEvent().toString();
+    public String toString() {
+        return this.getFunctionName() + ": " + " data: " + this.getData() + " event:" + this.getEvent().toString();
     }
 
 }

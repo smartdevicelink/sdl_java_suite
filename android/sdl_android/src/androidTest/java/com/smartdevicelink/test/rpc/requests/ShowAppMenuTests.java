@@ -41,13 +41,20 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.ShowAppMenu;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.Hashtable;
+
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.fail;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
@@ -55,79 +62,81 @@ import java.util.Hashtable;
  */
 public class ShowAppMenuTests extends BaseRpcTests {
 
-	@Override
-	protected RPCMessage createMessage() {
-		ShowAppMenu msg = new ShowAppMenu();
-		msg.setMenuID(Test.GENERAL_INTEGER);
-		return msg;
-	}
+    @Override
+    protected RPCMessage createMessage() {
+        ShowAppMenu msg = new ShowAppMenu();
+        msg.setMenuID(TestValues.GENERAL_INTEGER);
+        return msg;
+    }
 
-	@Override
-	protected String getMessageType() {
-		return RPCMessage.KEY_REQUEST;
-	}
+    @Override
+    protected String getMessageType() {
+        return RPCMessage.KEY_REQUEST;
+    }
 
-	@Override
-	protected String getCommandType() {
-		return FunctionID.SHOW_APP_MENU.toString();
-	}
+    @Override
+    protected String getCommandType() {
+        return FunctionID.SHOW_APP_MENU.toString();
+    }
 
-	@Override
-	protected JSONObject getExpectedParameters(int sdlVersion) {
-		JSONObject result = new JSONObject();
+    @Override
+    protected JSONObject getExpectedParameters(int sdlVersion) {
+        JSONObject result = new JSONObject();
 
-		try {
-			result.put(ShowAppMenu.KEY_MENU_ID, Test.GENERAL_INTEGER);
-		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
-		}
+        try {
+            result.put(ShowAppMenu.KEY_MENU_ID, TestValues.GENERAL_INTEGER);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * Tests the expected values of the RPC message.
-	 */
-	public void testRpcValues () {
-		// Test Values
-		Integer copy = ( (ShowAppMenu) msg ).getMenuID();
+    /**
+     * Tests the expected values of the RPC message.
+     */
+    @Test
+    public void testRpcValues() {
+        // Test Values
+        Integer copy = ((ShowAppMenu) msg).getMenuID();
 
-		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_INTEGER, copy);
+        // Valid Tests
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INTEGER, copy);
 
-		// Invalid/Null Tests
-		ShowAppMenu msg = new ShowAppMenu();
-		assertNotNull(Test.NOT_NULL, msg);
-		testNullBase(msg);
+        // Invalid/Null Tests
+        ShowAppMenu msg = new ShowAppMenu();
+        assertNotNull(TestValues.NOT_NULL, msg);
+        testNullBase(msg);
 
-		assertNull(Test.MATCH, msg.getMenuID());
-	}
+        assertNull(TestValues.MATCH, msg.getMenuID());
+    }
 
-	/**
-	 * Tests a valid JSON construction of this RPC message.
-	 */
-	public void testJsonConstructor () {
-		JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-		assertNotNull(Test.NOT_NULL, commandJson);
+    /**
+     * Tests a valid JSON construction of this RPC message.
+     */
+    @Test
+    public void testJsonConstructor() {
+        JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
+        assertNotNull(TestValues.NOT_NULL, commandJson);
 
-		try {
-			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
-			ShowAppMenu cmd = new ShowAppMenu(hash);
+        try {
+            Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
+            ShowAppMenu cmd = new ShowAppMenu(hash);
 
-			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(Test.NOT_NULL, body);
+            JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
+            assertNotNull(TestValues.NOT_NULL, body);
 
-			// Test everything in the json body.
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+            // Test everything in the json body.
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
-			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
+            JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
 
-			Integer serviceID = JsonUtils.readIntegerFromJsonObject(parameters, ShowAppMenu.KEY_MENU_ID);
-			assertEquals(Test.MATCH, Test.GENERAL_INTEGER, serviceID);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
+            Integer serviceID = JsonUtils.readIntegerFromJsonObject(parameters, ShowAppMenu.KEY_MENU_ID);
+            assertEquals(TestValues.MATCH, TestValues.GENERAL_INTEGER, serviceID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

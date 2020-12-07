@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@
  * disclaimer in the documentation and/or other materials provided with the
  * distribution.
  *
- * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
- * software without specific prior written permission.
+ * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -41,13 +41,13 @@ import java.util.Hashtable;
 
 /**
  * <p>Add a SubMenu to the Command Menu</p>
- * 
+ *
  * <p>A SubMenu can only be added to the Top Level Menu (i.e.a SubMenu cannot be
  * added to a SubMenu), and may only contain commands as children</p>
- * 
- * 
- * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUD</b></p>
- * 
+ *
+ *
+ * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -98,156 +98,199 @@ import java.util.Hashtable;
  * 			<td></td>
  * 			<td>SmartDeviceLink 6.0</td>
  * 		</tr>
+ * 		<tr>
+ * 			<td>parentID</td>
+ * 			<td>Integer</td>
+ * 			<td>unique ID of the sub menu, the command will be added to. If not provided or 0, it will be provided to the top level of the in application menu.</td>
+ * 			<td>N</td>
+ * 		    <td>Min Value: 0 <p>Max Value: 2000000000</p> </td>
+ * 			<td>SmartDeviceLink 7.0.0</td>
+ * 		</tr>
  *  </table>
  *  <b>Response</b>
  *  <p>Indicates that the corresponding request either failed or succeeded. If the response returns with a SUCCESS result code, this means the SubMenu was added to the Command Menu successfully</p>
- *  
+ *
  *  <p><b>Non-default Result Codes:</b></p>
  *  <p>INVALID_ID</p>
  *  <p>DUPLICATE NAME</p>
- * @since SmartDeviceLink 1.0
+ *
  * @see DeleteSubMenu
  * @see AddCommand
  * @see DeleteCommand
+ * @since SmartDeviceLink 1.0
  */
 public class AddSubMenu extends RPCRequest {
-	public static final String KEY_POSITION = "position";
-	public static final String KEY_MENU_NAME = "menuName";
-	public static final String KEY_MENU_ID = "menuID";
-	public static final String KEY_MENU_ICON = "menuIcon";
-	public static final String KEY_MENU_LAYOUT = "menuLayout";
+    public static final String KEY_POSITION = "position";
+    public static final String KEY_MENU_NAME = "menuName";
+    public static final String KEY_MENU_ID = "menuID";
+    public static final String KEY_MENU_ICON = "menuIcon";
+    public static final String KEY_MENU_LAYOUT = "menuLayout";
+    public static final String KEY_PARENT_ID = "parentID";
 
-	/**
-	 * Constructs a new AddSubMenu object
-	 */
-	public AddSubMenu() {
+    /**
+     * Constructs a new AddSubMenu object
+     */
+    public AddSubMenu() {
         super(FunctionID.ADD_SUB_MENU.toString());
     }
-	/**
-	 * Constructs a new AddSubMenu object indicated by the Hashtable parameter
-	 * 
-	 * 
-	 * @param hash The Hashtable to use
-	 */
+
+    /**
+     * Constructs a new AddSubMenu object indicated by the Hashtable parameter
+     *
+     * @param hash The Hashtable to use
+     */
     public AddSubMenu(Hashtable<String, Object> hash) {
         super(hash);
     }
-	/**
-	 * Constructs a new AddSubMenu object
-	 * @param menuID an integer object representing a Menu ID
-	 * <p><b>Notes:</b> Min Value: 0; Max Value: 2000000000</p>
-	 * @param menuName String which will be displayed representing this submenu item
-	 */
-	public AddSubMenu(@NonNull Integer menuID, @NonNull String menuName) {
-		this();
-		setMenuID(menuID);
-		setMenuName(menuName);
-	}
-	/**
-	 * Returns an <i>Integer</i> object representing the Menu ID that identifies
-	 * a sub menu
-	 *
-	 * @return Integer -an integer representing the Menu ID that identifies a sub
-	 *         menu
-	 */
+
+    /**
+     * Constructs a new AddSubMenu object
+     *
+     * @param menuID   an integer object representing a Menu ID
+     *                 <p><b>Notes:</b> Min Value: 0; Max Value: 2000000000</p>
+     * @param menuName String which will be displayed representing this submenu item
+     */
+    public AddSubMenu(@NonNull Integer menuID, @NonNull String menuName) {
+        this();
+        setMenuID(menuID);
+        setMenuName(menuName);
+    }
+
+    /**
+     * Returns an <i>Integer</i> object representing the Menu ID that identifies
+     * a sub menu
+     *
+     * @return Integer -an integer representing the Menu ID that identifies a sub
+     * menu
+     */
     public Integer getMenuID() {
-        return getInteger( KEY_MENU_ID );
+        return getInteger(KEY_MENU_ID);
     }
-	/**
-	 * <p>Sets a Menu ID that identifies a sub menu.</p><p> This value is used in
-	 * {@linkplain AddCommand} to which SubMenu is the parent of the command
-	 * being added</p>
-	 * 
-	 * 
-	 * @param menuID
-	 *            an integer object representing a Menu ID
-	 *            
-	 *           <p><b>Notes:</b> Min Value: 0; Max Value: 2000000000</p>
-	 */    
-    public void setMenuID( @NonNull Integer menuID ) {
-		setParameters(KEY_MENU_ID, menuID);
+
+    /**
+     * <p>Sets a Menu ID that identifies a sub menu.</p><p> This value is used in
+     * {@linkplain AddCommand} to which SubMenu is the parent of the command
+     * being added</p>
+     *
+     * @param menuID an integer object representing a Menu ID
+     *
+     *               <p><b>Notes:</b> Min Value: 0; Max Value: 2000000000</p>
+     */
+    public AddSubMenu setMenuID(@NonNull Integer menuID) {
+        setParameters(KEY_MENU_ID, menuID);
+        return this;
     }
-	/**
-	 * <p>Returns an <i>Integer</i> object representing the position of menu</p>
-	 * 
-	 * 
-	 * @return Integer -the value representing the relative position of menus
-	 */    
+
+    /**
+     * <p>Returns an <i>Integer</i> object representing the position of menu</p>
+     *
+     * @return Integer -the value representing the relative position of menus
+     */
     public Integer getPosition() {
-        return getInteger( KEY_POSITION );
+        return getInteger(KEY_POSITION);
     }
-	/**
-	 * Sets a position of menu
-	 * 
-	 * @param position
-	 *            <p>An Integer object representing the position within the items
-	 *            of the top level Command Menu. 0 will insert at the front, 1
-	 *            will insert after the first existing element, etc. Position of
-	 *            any submenu will always be located before the return and exit
-	 *            options
-	 *            </p>
-	 *            <b>Notes: </b>
-	 *            <ul>
-	 *            <li>
-	 *            Min Value: 0; Max Value: 1000</li>
-	 *            <li>If position is greater than or equal to the number of items
-	 *            on top level, the sub menu will be appended by the end</li>
-	 *            <li>If this parameter is omitted, the entry will be added at
-	 *            the end of the list</li>
-	 *            </ul>
-	 */    
-    public void setPosition( Integer position ) {
-		setParameters(KEY_POSITION, position);
+
+    /**
+     * Sets a position of menu
+     *
+     * @param position <p>An Integer object representing the position within the items
+     *                 of the top level Command Menu. 0 will insert at the front, 1
+     *                 will insert after the first existing element, etc. Position of
+     *                 any submenu will always be located before the return and exit
+     *                 options
+     *                 </p>
+     *                 <b>Notes: </b>
+     *                 <ul>
+     *                 <li>
+     *                 Min Value: 0; Max Value: 1000</li>
+     *                 <li>If position is greater than or equal to the number of items
+     *                 on top level, the sub menu will be appended by the end</li>
+     *                 <li>If this parameter is omitted, the entry will be added at
+     *                 the end of the list</li>
+     *                 </ul>
+     */
+    public AddSubMenu setPosition(Integer position) {
+        setParameters(KEY_POSITION, position);
+        return this;
     }
-	/**
-	 * Returns String which is displayed representing this submenu item
-	 * 
-	 * @return String -a Submenu item's name
-	 */
+
+    /**
+     * Returns String which is displayed representing this submenu item
+     *
+     * @return String -a Submenu item's name
+     */
     public String getMenuName() {
-        return getString( KEY_MENU_NAME );
+        return getString(KEY_MENU_NAME);
     }
-	/**
-	 * Sets a menuName which is displayed representing this submenu item
-	 * 
-	 * @param menuName
-	 *            String which will be displayed representing this submenu item
-	 */    
-    public void setMenuName( @NonNull String menuName ) {
-		setParameters(KEY_MENU_NAME, menuName);
+
+    /**
+     * Sets a menuName which is displayed representing this submenu item
+     *
+     * @param menuName String which will be displayed representing this submenu item
+     */
+    public AddSubMenu setMenuName(@NonNull String menuName) {
+        setParameters(KEY_MENU_NAME, menuName);
+        return this;
     }
-	/**
-	 * Returns Image to be be shown along with the submenu item
-	 *
-	 * @return Image - the submenu icon
-	 */
-	public Image getMenuIcon() {
-		return (Image) getObject(Image.class, KEY_MENU_ICON);
-	}
-	/**
-	 * Sets image to be be shown along with the submenu item
-	 *
-	 * @param menuIcon
-	 *            Image to be be shown along with the submenu item
-	 */
-	public void setMenuIcon(Image menuIcon) {
-		setParameters(KEY_MENU_ICON, menuIcon);
-	}
 
-	/**
-	 * Sets the layout of the submenu screen.
-	 * @param menuLayout - the menuLayout
-	 */
-	public void setMenuLayout(MenuLayout menuLayout) {
-		setParameters(KEY_MENU_LAYOUT, menuLayout);
-	}
+    /**
+     * Returns Image to be be shown along with the submenu item
+     *
+     * @return Image - the submenu icon
+     */
+    public Image getMenuIcon() {
+        return (Image) getObject(Image.class, KEY_MENU_ICON);
+    }
 
-	/**
-	 * Gets the layout of the submenu screen.
-	 * @return the MenuLayout
-	 */
-	@SuppressWarnings("unchecked")
-	public MenuLayout getMenuLayout() {
-		return (MenuLayout) getObject(MenuLayout.class, KEY_MENU_LAYOUT);
-	}
+    /**
+     * Sets image to be be shown along with the submenu item
+     *
+     * @param menuIcon Image to be be shown along with the submenu item
+     */
+    public AddSubMenu setMenuIcon(Image menuIcon) {
+        setParameters(KEY_MENU_ICON, menuIcon);
+        return this;
+    }
+
+    /**
+     * Sets the layout of the submenu screen.
+     *
+     * @param menuLayout - the menuLayout
+     */
+    public AddSubMenu setMenuLayout(MenuLayout menuLayout) {
+        setParameters(KEY_MENU_LAYOUT, menuLayout);
+        return this;
+    }
+
+    /**
+     * Gets the layout of the submenu screen.
+     *
+     * @return the MenuLayout
+     */
+    public MenuLayout getMenuLayout() {
+        return (MenuLayout) getObject(MenuLayout.class, KEY_MENU_LAYOUT);
+    }
+
+    /**
+     * Sets the parentID.
+     *
+     * @param parentID unique ID of the sub menu, the command will be added to. If not provided or 0, it will be
+     *                 provided to the top level of the in application menu.
+     * @since SmartDeviceLink 7.0.0
+     */
+    public AddSubMenu setParentID(Integer parentID) {
+        setParameters(KEY_PARENT_ID, parentID);
+        return this;
+    }
+
+    /**
+     * Gets the parentID.
+     *
+     * @return Integer unique ID of the sub menu, the command will be added to. If not provided or 0, it will be
+     * provided to the top level of the in application menu.
+     * @since SmartDeviceLink 7.0.0
+     */
+    public Integer getParentID() {
+        return getInteger(KEY_PARENT_ID);
+    }
 }

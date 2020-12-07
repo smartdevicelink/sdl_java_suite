@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -41,17 +41,20 @@ import java.util.Hashtable;
 import java.util.List;
 
 public class GetWayPointsResponse extends RPCResponse {
-	public static final String KEY_WAY_POINTS = "wayPoints";
+    public static final String KEY_WAY_POINTS = "wayPoints";
 
     public GetWayPointsResponse() {
         super(FunctionID.GET_WAY_POINTS.toString());
     }
+
     public GetWayPointsResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
+
     /**
      * Constructs a new GetWayPointsResponse object
-     * @param success whether the request is successfully processed
+     *
+     * @param success    whether the request is successfully processed
      * @param resultCode whether the request is successfully processed
      */
     public GetWayPointsResponse(@NonNull Boolean success, @NonNull Result resultCode) {
@@ -59,11 +62,14 @@ public class GetWayPointsResponse extends RPCResponse {
         setSuccess(success);
         setResultCode(resultCode);
     }
-    public void setWayPoints(List<LocationDetails> wayPoints) {
-		setParameters(KEY_WAY_POINTS, wayPoints);
+
+    public GetWayPointsResponse setWayPoints(List<LocationDetails> wayPoints) {
+        setParameters(KEY_WAY_POINTS, wayPoints);
+        return this;
     }
+
     @SuppressWarnings("unchecked")
     public List<LocationDetails> getWayPoints() {
-		return (List<LocationDetails>) getObject(LocationDetails.class, KEY_WAY_POINTS);
+        return (List<LocationDetails>) getObject(LocationDetails.class, KEY_WAY_POINTS);
     }
 }

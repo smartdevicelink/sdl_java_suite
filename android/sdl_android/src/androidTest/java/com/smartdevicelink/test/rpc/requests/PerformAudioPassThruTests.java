@@ -10,148 +10,158 @@ import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
+
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.PerformAudioPassThru}
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.proxy.rpc.PerformAudioPassThru}
  */
 public class PerformAudioPassThruTests extends BaseRpcTests {
 
-	@Override
-	protected RPCMessage createMessage() {
-		PerformAudioPassThru msg = new PerformAudioPassThru();
-				
-		msg.setInitialPrompt(Test.GENERAL_TTSCHUNK_LIST);
-		msg.setAudioPassThruDisplayText1(Test.GENERAL_STRING);
-		msg.setAudioPassThruDisplayText2(Test.GENERAL_STRING);
-		msg.setSamplingRate(Test.GENERAL_SAMPLINGRATE);
-		msg.setAudioType(Test.GENERAL_AUDIOTYPE);
-		msg.setBitsPerSample(Test.GENERAL_BITSPERSAMPLE);
-		msg.setMaxDuration(Test.GENERAL_INT);
-		msg.setMuteAudio(Test.GENERAL_BOOLEAN);
-		return msg;
-	}
+    @Override
+    protected RPCMessage createMessage() {
+        PerformAudioPassThru msg = new PerformAudioPassThru();
 
-	@Override
-	protected String getMessageType() {
-		return RPCMessage.KEY_REQUEST;
-	}
+        msg.setInitialPrompt(TestValues.GENERAL_TTSCHUNK_LIST);
+        msg.setAudioPassThruDisplayText1(TestValues.GENERAL_STRING);
+        msg.setAudioPassThruDisplayText2(TestValues.GENERAL_STRING);
+        msg.setSamplingRate(TestValues.GENERAL_SAMPLINGRATE);
+        msg.setAudioType(TestValues.GENERAL_AUDIOTYPE);
+        msg.setBitsPerSample(TestValues.GENERAL_BITSPERSAMPLE);
+        msg.setMaxDuration(TestValues.GENERAL_INT);
+        msg.setMuteAudio(TestValues.GENERAL_BOOLEAN);
+        return msg;
+    }
 
-	@Override
-	protected String getCommandType() {
-		return FunctionID.PERFORM_AUDIO_PASS_THRU.toString();
-	}
+    @Override
+    protected String getMessageType() {
+        return RPCMessage.KEY_REQUEST;
+    }
 
-	@Override
-	protected JSONObject getExpectedParameters(int sdlVersion) {
-		JSONObject result = new JSONObject();
+    @Override
+    protected String getCommandType() {
+        return FunctionID.PERFORM_AUDIO_PASS_THRU.toString();
+    }
 
-		try {
-			result.put(PerformAudioPassThru.KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_1, Test.GENERAL_STRING);
-			result.put(PerformAudioPassThru.KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_2, Test.GENERAL_STRING);			
-			result.put(PerformAudioPassThru.KEY_MUTE_AUDIO, Test.GENERAL_BOOLEAN);	
-			result.put(PerformAudioPassThru.KEY_MAX_DURATION, Test.GENERAL_INT);
-			result.put(PerformAudioPassThru.KEY_AUDIO_TYPE, Test.GENERAL_AUDIOTYPE);
-			result.put(PerformAudioPassThru.KEY_SAMPLING_RATE, Test.GENERAL_SAMPLINGRATE);
-			result.put(PerformAudioPassThru.KEY_BITS_PER_SAMPLE, Test.GENERAL_BITSPERSAMPLE);
-			result.put(PerformAudioPassThru.KEY_INITIAL_PROMPT,  Test.JSON_TTSCHUNKS);			
-		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
-		}
+    @Override
+    protected JSONObject getExpectedParameters(int sdlVersion) {
+        JSONObject result = new JSONObject();
 
-		return result;
-	}
+        try {
+            result.put(PerformAudioPassThru.KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_1, TestValues.GENERAL_STRING);
+            result.put(PerformAudioPassThru.KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_2, TestValues.GENERAL_STRING);
+            result.put(PerformAudioPassThru.KEY_MUTE_AUDIO, TestValues.GENERAL_BOOLEAN);
+            result.put(PerformAudioPassThru.KEY_MAX_DURATION, TestValues.GENERAL_INT);
+            result.put(PerformAudioPassThru.KEY_AUDIO_TYPE, TestValues.GENERAL_AUDIOTYPE);
+            result.put(PerformAudioPassThru.KEY_SAMPLING_RATE, TestValues.GENERAL_SAMPLINGRATE);
+            result.put(PerformAudioPassThru.KEY_BITS_PER_SAMPLE, TestValues.GENERAL_BITSPERSAMPLE);
+            result.put(PerformAudioPassThru.KEY_INITIAL_PROMPT, TestValues.JSON_TTSCHUNKS);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
+        }
 
-	/**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
-    	// Test Values
-    	boolean testMuteAudio = ( (PerformAudioPassThru) msg ).getMuteAudio();
-    	int testMaxDuration = ( (PerformAudioPassThru) msg ).getMaxDuration();
-    	String testText2 = ( (PerformAudioPassThru) msg ).getAudioPassThruDisplayText2();
-    	String testText1 = ( (PerformAudioPassThru) msg ).getAudioPassThruDisplayText1();
-    	SamplingRate testSamplingRate = ( (PerformAudioPassThru) msg ).getSamplingRate();
-    	AudioType testAudioType = ( (PerformAudioPassThru) msg ).getAudioType();
-    	BitsPerSample testBitsPerSample = ( (PerformAudioPassThru) msg ).getBitsPerSample();
-		List<TTSChunk> testInitialPrompt = ( (PerformAudioPassThru) msg ).getInitialPrompt();
-		
-		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_TTSCHUNK_LIST.size(), testInitialPrompt.size());
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, testText1);
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, testText2);
-		assertEquals(Test.MATCH, Test.GENERAL_SAMPLINGRATE, testSamplingRate);
-		assertEquals(Test.MATCH, Test.GENERAL_BITSPERSAMPLE, testBitsPerSample);
-		assertEquals(Test.MATCH, Test.GENERAL_AUDIOTYPE, testAudioType);
-		assertEquals(Test.MATCH, Test.GENERAL_INT, testMaxDuration);
-		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, testMuteAudio);
-		for (int i = 0; i < Test.GENERAL_TTSCHUNK_LIST.size(); i++) {
-			assertEquals(Test.MATCH, Test.GENERAL_TTSCHUNK_LIST.get(i), testInitialPrompt.get(i));
-		}
-	
-		// Invalid/Null Tests
-		PerformAudioPassThru msg = new PerformAudioPassThru();
-		assertNotNull(Test.NOT_NULL, msg);
-		testNullBase(msg);
+        return result;
+    }
 
-		assertNull(Test.NULL, msg.getInitialPrompt());
-		assertNull(Test.NULL, msg.getAudioPassThruDisplayText1());
-		assertNull(Test.NULL, msg.getAudioPassThruDisplayText2());
-		assertNull(Test.NULL, msg.getSamplingRate());
-		assertNull(Test.NULL, msg.getBitsPerSample());
-		assertNull(Test.NULL, msg.getAudioType());
-		assertNull(Test.NULL, msg.getMaxDuration());
-		assertNull(Test.NULL, msg.getMuteAudio());
-	}
+    /**
+     * Tests the expected values of the RPC message.
+     */
+    @Test
+    public void testRpcValues() {
+        // Test Values
+        boolean testMuteAudio = ((PerformAudioPassThru) msg).getMuteAudio();
+        int testMaxDuration = ((PerformAudioPassThru) msg).getMaxDuration();
+        String testText2 = ((PerformAudioPassThru) msg).getAudioPassThruDisplayText2();
+        String testText1 = ((PerformAudioPassThru) msg).getAudioPassThruDisplayText1();
+        SamplingRate testSamplingRate = ((PerformAudioPassThru) msg).getSamplingRate();
+        AudioType testAudioType = ((PerformAudioPassThru) msg).getAudioType();
+        BitsPerSample testBitsPerSample = ((PerformAudioPassThru) msg).getBitsPerSample();
+        List<TTSChunk> testInitialPrompt = ((PerformAudioPassThru) msg).getInitialPrompt();
+
+        // Valid Tests
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_TTSCHUNK_LIST.size(), testInitialPrompt.size());
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, testText1);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, testText2);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_SAMPLINGRATE, testSamplingRate);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_BITSPERSAMPLE, testBitsPerSample);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_AUDIOTYPE, testAudioType);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, testMaxDuration);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, testMuteAudio);
+        for (int i = 0; i < TestValues.GENERAL_TTSCHUNK_LIST.size(); i++) {
+            assertEquals(TestValues.MATCH, TestValues.GENERAL_TTSCHUNK_LIST.get(i), testInitialPrompt.get(i));
+        }
+
+        // Invalid/Null Tests
+        PerformAudioPassThru msg = new PerformAudioPassThru();
+        assertNotNull(TestValues.NOT_NULL, msg);
+        testNullBase(msg);
+
+        assertNull(TestValues.NULL, msg.getInitialPrompt());
+        assertNull(TestValues.NULL, msg.getAudioPassThruDisplayText1());
+        assertNull(TestValues.NULL, msg.getAudioPassThruDisplayText2());
+        assertNull(TestValues.NULL, msg.getSamplingRate());
+        assertNull(TestValues.NULL, msg.getBitsPerSample());
+        assertNull(TestValues.NULL, msg.getAudioType());
+        assertNull(TestValues.NULL, msg.getMaxDuration());
+        assertNull(TestValues.NULL, msg.getMuteAudio());
+    }
 
     /**
      * Tests a valid JSON construction of this RPC message.
      */
-    public void testJsonConstructor () {
-    	JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-    	assertNotNull(Test.NOT_NULL, commandJson);
-    	
-		try {
-			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
-			PerformAudioPassThru cmd = new PerformAudioPassThru(hash);
-			
-			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(Test.NOT_NULL, body);
-			
-			// Test everything in the json body.
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+    @Test
+    public void testJsonConstructor() {
+        JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
+        assertNotNull(TestValues.NOT_NULL, commandJson);
 
-			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, PerformAudioPassThru.KEY_MAX_DURATION), (Integer)cmd.getMaxDuration());
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformAudioPassThru.KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_1), cmd.getAudioPassThruDisplayText1());
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformAudioPassThru.KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_2), cmd.getAudioPassThruDisplayText2());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, PerformAudioPassThru.KEY_MUTE_AUDIO), cmd.getMuteAudio());
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformAudioPassThru.KEY_SAMPLING_RATE), cmd.getSamplingRate().toString());
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformAudioPassThru.KEY_AUDIO_TYPE), cmd.getAudioType().toString());
+        try {
+            Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
+            PerformAudioPassThru cmd = new PerformAudioPassThru(hash);
 
-			JSONArray ttsChunkArray = JsonUtils.readJsonArrayFromJsonObject(parameters, PerformAudioPassThru.KEY_INITIAL_PROMPT);
-			List<TTSChunk> ttsChunkList = new ArrayList<TTSChunk>();
-			for (int index = 0; index < ttsChunkArray.length(); index++) {
-	        	TTSChunk chunk = new TTSChunk(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)ttsChunkArray.get(index)) );
-	        	ttsChunkList.add(chunk);
-			}
-			assertTrue(Test.TRUE,  Validator.validateTtsChunks(ttsChunkList, cmd.getInitialPrompt()));
-			
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformAudioPassThru.KEY_BITS_PER_SAMPLE), cmd.getBitsPerSample().toString());
-		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
-		}    	
+            JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
+            assertNotNull(TestValues.NOT_NULL, body);
+
+            // Test everything in the json body.
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+
+            JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, PerformAudioPassThru.KEY_MAX_DURATION), (Integer) cmd.getMaxDuration());
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformAudioPassThru.KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_1), cmd.getAudioPassThruDisplayText1());
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformAudioPassThru.KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_2), cmd.getAudioPassThruDisplayText2());
+            assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, PerformAudioPassThru.KEY_MUTE_AUDIO), cmd.getMuteAudio());
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformAudioPassThru.KEY_SAMPLING_RATE), cmd.getSamplingRate().toString());
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformAudioPassThru.KEY_AUDIO_TYPE), cmd.getAudioType().toString());
+
+            JSONArray ttsChunkArray = JsonUtils.readJsonArrayFromJsonObject(parameters, PerformAudioPassThru.KEY_INITIAL_PROMPT);
+            List<TTSChunk> ttsChunkList = new ArrayList<TTSChunk>();
+            for (int index = 0; index < ttsChunkArray.length(); index++) {
+                TTSChunk chunk = new TTSChunk(JsonRPCMarshaller.deserializeJSONObject((JSONObject) ttsChunkArray.get(index)));
+                ttsChunkList.add(chunk);
+            }
+            assertTrue(TestValues.TRUE, Validator.validateTtsChunks(ttsChunkList, cmd.getInitialPrompt()));
+
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformAudioPassThru.KEY_BITS_PER_SAMPLE), cmd.getBitsPerSample().toString());
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
+        }
     }
 }

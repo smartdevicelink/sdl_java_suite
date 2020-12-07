@@ -7,125 +7,135 @@ import com.smartdevicelink.proxy.rpc.ScrollableMessage;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
+
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.ScrollableMessage}
  */
 public class ScrollableMessageTests extends BaseRpcTests {
-    
-	@Override
-	protected RPCMessage createMessage() {
-		ScrollableMessage msg = new ScrollableMessage();
-		
-		msg.setTimeout(Test.GENERAL_INT);
-		msg.setSoftButtons(Test.GENERAL_SOFTBUTTON_LIST);
-		msg.setScrollableMessageBody(Test.GENERAL_STRING);
-		msg.setCancelID(Test.GENERAL_INTEGER);
 
-		return msg;
-	}
+    @Override
+    protected RPCMessage createMessage() {
+        ScrollableMessage msg = new ScrollableMessage();
 
-	@Override
-	protected String getMessageType() {
-		return RPCMessage.KEY_REQUEST;
-	}
+        msg.setTimeout(TestValues.GENERAL_INT);
+        msg.setSoftButtons(TestValues.GENERAL_SOFTBUTTON_LIST);
+        msg.setScrollableMessageBody(TestValues.GENERAL_STRING);
+        msg.setCancelID(TestValues.GENERAL_INTEGER);
 
-	@Override
-	protected String getCommandType() {
-		return FunctionID.SCROLLABLE_MESSAGE.toString();
-	}
+        return msg;
+    }
 
-	@Override
-	protected JSONObject getExpectedParameters(int sdlVersion) {
-		JSONObject result = new JSONObject();
+    @Override
+    protected String getMessageType() {
+        return RPCMessage.KEY_REQUEST;
+    }
 
-		try {
-			result.put(ScrollableMessage.KEY_SCROLLABLE_MESSAGE_BODY, Test.GENERAL_STRING);
-			result.put(ScrollableMessage.KEY_TIMEOUT, Test.GENERAL_INT);			
-			result.put(ScrollableMessage.KEY_SOFT_BUTTONS, Test.JSON_SOFTBUTTONS);
-			result.put(ScrollableMessage.KEY_CANCEL_ID, Test.GENERAL_INTEGER);
-		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
-		}
+    @Override
+    protected String getCommandType() {
+        return FunctionID.SCROLLABLE_MESSAGE.toString();
+    }
 
-		return result;
-	}
+    @Override
+    protected JSONObject getExpectedParameters(int sdlVersion) {
+        JSONObject result = new JSONObject();
 
-	/**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {    	
-    	// Test Values
-		String  testBody    = ( (ScrollableMessage) msg ).getScrollableMessageBody();
-		Integer testTimeout = ( (ScrollableMessage) msg ).getTimeout();
-		List<SoftButton> testSoftButtons = ( (ScrollableMessage) msg ).getSoftButtons();
-		Integer testCancelID = ( (ScrollableMessage) msg ).getCancelID();
-		
-		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, testBody);
-		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, testTimeout);
-		assertEquals(Test.MATCH, Test.GENERAL_SOFTBUTTON_LIST.size(), testSoftButtons.size());
-		for (int i = 0; i < Test.GENERAL_SOFTBUTTON_LIST.size(); i++) {
-			assertEquals(Test.MATCH, Test.GENERAL_SOFTBUTTON_LIST.get(i), testSoftButtons.get(i));
-		}
-		assertEquals(Test.MATCH, Test.GENERAL_INTEGER, testCancelID);
+        try {
+            result.put(ScrollableMessage.KEY_SCROLLABLE_MESSAGE_BODY, TestValues.GENERAL_STRING);
+            result.put(ScrollableMessage.KEY_TIMEOUT, TestValues.GENERAL_INT);
+            result.put(ScrollableMessage.KEY_SOFT_BUTTONS, TestValues.JSON_SOFTBUTTONS);
+            result.put(ScrollableMessage.KEY_CANCEL_ID, TestValues.GENERAL_INTEGER);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
+        }
 
-		// Invalid/Null Tests
-		ScrollableMessage msg = new ScrollableMessage();
-		assertNotNull(Test.NOT_NULL, msg);
+        return result;
+    }
 
-		testNullBase(msg);
+    /**
+     * Tests the expected values of the RPC message.
+     */
+    @Test
+    public void testRpcValues() {
+        // Test Values
+        String testBody = ((ScrollableMessage) msg).getScrollableMessageBody();
+        Integer testTimeout = ((ScrollableMessage) msg).getTimeout();
+        List<SoftButton> testSoftButtons = ((ScrollableMessage) msg).getSoftButtons();
+        Integer testCancelID = ((ScrollableMessage) msg).getCancelID();
 
-		assertNull(Test.NULL, msg.getScrollableMessageBody());
-		assertNull(Test.NULL, msg.getTimeout());
-		assertNull(Test.NULL, msg.getSoftButtons());
-		assertNull(Test.NULL, msg.getCancelID());
-	}
+        // Valid Tests
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, testBody);
+        assertEquals(TestValues.MATCH, (Integer) TestValues.GENERAL_INT, testTimeout);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_SOFTBUTTON_LIST.size(), testSoftButtons.size());
+        for (int i = 0; i < TestValues.GENERAL_SOFTBUTTON_LIST.size(); i++) {
+            assertEquals(TestValues.MATCH, TestValues.GENERAL_SOFTBUTTON_LIST.get(i), testSoftButtons.get(i));
+        }
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INTEGER, testCancelID);
+
+        // Invalid/Null Tests
+        ScrollableMessage msg = new ScrollableMessage();
+        assertNotNull(TestValues.NOT_NULL, msg);
+
+        testNullBase(msg);
+
+        assertNull(TestValues.NULL, msg.getScrollableMessageBody());
+        assertNull(TestValues.NULL, msg.getTimeout());
+        assertNull(TestValues.NULL, msg.getSoftButtons());
+        assertNull(TestValues.NULL, msg.getCancelID());
+    }
 
     /**
      * Tests a valid JSON construction of this RPC message.
      */
-    public void testJsonConstructor () {
-    	JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-    	assertNotNull(Test.NOT_NULL, commandJson);
-    	
-		try {
-			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
-			ScrollableMessage cmd = new ScrollableMessage(hash);
-			
-			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(Test.NOT_NULL, body);
-			
-			// Test everything in the json body.
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+    @Test
+    public void testJsonConstructor() {
+        JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
+        assertNotNull(TestValues.NOT_NULL, commandJson);
 
-			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, ScrollableMessage.KEY_SCROLLABLE_MESSAGE_BODY), cmd.getScrollableMessageBody());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, ScrollableMessage.KEY_TIMEOUT), cmd.getTimeout());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, ScrollableMessage.KEY_CANCEL_ID), cmd.getCancelID());
+        try {
+            Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
+            ScrollableMessage cmd = new ScrollableMessage(hash);
 
-			JSONArray softButtonArray = JsonUtils.readJsonArrayFromJsonObject(parameters, ScrollableMessage.KEY_SOFT_BUTTONS);
-			List<SoftButton> softButtonList = new ArrayList<SoftButton>();
-			for (int index = 0; index < softButtonArray.length(); index++) {
-				SoftButton chunk = new SoftButton(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)softButtonArray.get(index)) );
-				softButtonList.add(chunk);
-			}
-			assertTrue(Test.TRUE,  Validator.validateSoftButtons(softButtonList, cmd.getSoftButtons()));
-		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
-		}    	
-    }	
+            JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
+            assertNotNull(TestValues.NOT_NULL, body);
+
+            // Test everything in the json body.
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+
+            JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, ScrollableMessage.KEY_SCROLLABLE_MESSAGE_BODY), cmd.getScrollableMessageBody());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, ScrollableMessage.KEY_TIMEOUT), cmd.getTimeout());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, ScrollableMessage.KEY_CANCEL_ID), cmd.getCancelID());
+
+            JSONArray softButtonArray = JsonUtils.readJsonArrayFromJsonObject(parameters, ScrollableMessage.KEY_SOFT_BUTTONS);
+            List<SoftButton> softButtonList = new ArrayList<SoftButton>();
+            for (int index = 0; index < softButtonArray.length(); index++) {
+                SoftButton chunk = new SoftButton(JsonRPCMarshaller.deserializeJSONObject((JSONObject) softButtonArray.get(index)));
+                softButtonList.add(chunk);
+            }
+            assertTrue(TestValues.TRUE, Validator.validateSoftButtons(softButtonList, cmd.getSoftButtons()));
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
+        }
+    }
 }

@@ -1,120 +1,141 @@
 package com.smartdevicelink.transport;
 
 import android.bluetooth.BluetoothAdapter;
+import android.content.ComponentName;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 
-import com.smartdevicelink.AndroidTestCase2;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import com.smartdevicelink.test.SdlUnitTestContants;
 import com.smartdevicelink.test.util.DeviceUtil;
 
-public class TransportBrokerTest extends AndroidTestCase2 {
-	RouterServiceValidator rsvp;
-	//		public TransportBrokerThread(Context context, String appId, ComponentName service){
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		rsvp = new RouterServiceValidator(this.mContext);
-		rsvp.validate();
-		
-	}
-	
-	private void sleep(){
-		try{
-			Thread.sleep(500);
-		}catch(Exception e){}
-	}
-	
-	public void testStart(){
-		if (Looper.myLooper() == null) {
-			Looper.prepare();
-		}
-		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
-		if(!DeviceUtil.isEmulator()){ // Cannot perform MBT operations in emulator
-			assertTrue(broker.start());
-		}
-		broker.stop();
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertTrue;
 
-	}
-	
-	public void testSendPacket(){
-		if (Looper.myLooper() == null) {
-			Looper.prepare();
-		}
+@RunWith(AndroidJUnit4.class)
+public class TransportBrokerTest { //FIXME this test class needs to be fixed. At this point these tests are not helpful
+    RouterServiceValidator rsvp;
+    //		public TransportBrokerThread(Context context, String appId, ComponentName service){
 
-		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
+    @Before
+    public void setUp() throws Exception {
+        rsvp = new RouterServiceValidator(getInstrumentation().getTargetContext());
+        rsvp.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
+            @Override
+            public void onFinishedValidation(boolean valid, ComponentName name) {
 
-		if(!DeviceUtil.isEmulator()){ // Cannot perform MBT operations in emulator
-			assertTrue(broker.start());
-		}
-		BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-		if(!DeviceUtil.isEmulator()){ // Cannot perform BT adapter operations in emulator
-			assertNotNull(adapter);
-			assertTrue(adapter.isEnabled());
-		}
-		//Not ideal, but not implementing callbacks just for unit tests
-		int count = 0;
-		while(broker.routerServiceMessenger == null && count<10){
-			sleep();
-			count++;
-		}
-		if(!DeviceUtil.isEmulator()){ // Cannot perform BT adapter operations in emulator
-			assertNotNull(broker.routerServiceMessenger);
-		}
+            }
+        });
 
-		//assertFalse(broker.sendPacketToRouterService(null, 0, 0));
-		//assertFalse(broker.sendPacketToRouterService(new byte[3], -1, 0));
-		//assertFalse(broker.sendPacketToRouterService(new byte[3], 0, 4));
-		//assertTrue(broker.sendPacketToRouterService(new byte[3],0, 3));
+    }
 
-		broker.stop();
+    private void sleep() {
+        try {
+            Thread.sleep(500);
+        } catch (Exception e) {
+        }
+    }
 
-	}
-	
-	public void testOnPacketReceived(){
-		if (Looper.myLooper() == null) {
-			Looper.prepare();
-		}
-		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
-		if(!DeviceUtil.isEmulator()){ // Cannot perform MBT operations in emulator
-			assertTrue(broker.start());
-		}
+    @Test
+    public void testStart() {
+        if (Looper.myLooper() == null) {
+            Looper.prepare();
+        }
+        TransportBroker broker = new TransportBroker(getInstrumentation().getTargetContext(), SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
+        if (!DeviceUtil.isEmulator()) { // Cannot perform MBT operations in emulator
+            assertTrue(broker.start());
+        }
+        broker.stop();
 
-	}
-	
-	public void testSendMessageToRouterService(){
-		if (Looper.myLooper() == null) {
-			Looper.prepare();
-		}
+    }
 
-		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
-		Handler handler = new Handler();
-		Message message = new Message();
-		broker.routerServiceMessenger = null;
-		broker.isBound = true;
+    @Test
+    public void testSendPacket() {
+        if (Looper.myLooper() == null) {
+            Looper.prepare();
+        }
 
-		assertFalse(broker.sendMessageToRouterService(message));
+        TransportBroker broker = new TransportBroker(getInstrumentation().getTargetContext(), SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
 
-		broker.routerServiceMessenger = new Messenger(handler); //So it's not ambiguous
+        if (!DeviceUtil.isEmulator()) { // Cannot perform MBT operations in emulator
+            assertTrue(broker.start());
+        }
+        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        if (!DeviceUtil.isEmulator()) { // Cannot perform BT adapter operations in emulator
+            assertNotNull(adapter);
+            assertTrue(adapter.isEnabled());
+        }
+        //Not ideal, but not implementing callbacks just for unit tests
+        int count = 0;
+        while (broker.routerServiceMessenger == null && count < 10) {
+            sleep();
+            count++;
+        }
+        if (!DeviceUtil.isEmulator()) { // Cannot perform BT adapter operations in emulator
+            assertNotNull(broker.routerServiceMessenger);
+        }
 
-		broker.isBound = false;
+        //assertFalse(broker.sendPacketToRouterService(null, 0, 0));
+        //assertFalse(broker.sendPacketToRouterService(new byte[3], -1, 0));
+        //assertFalse(broker.sendPacketToRouterService(new byte[3], 0, 4));
+        //assertTrue(broker.sendPacketToRouterService(new byte[3],0, 3));
 
-		assertFalse(broker.sendMessageToRouterService(message));
+        broker.stop();
 
-		broker.isBound = true;
-		broker.registeredWithRouterService = true;
+    }
 
-		message = null;
+    @Test
+    public void testOnPacketReceived() {
+        if (Looper.myLooper() == null) {
+            Looper.prepare();
+        }
+        TransportBroker broker = new TransportBroker(getInstrumentation().getTargetContext(), SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
+        if (!DeviceUtil.isEmulator()) { // Cannot perform MBT operations in emulator
+            assertTrue(broker.start());
+        }
 
-		assertFalse(broker.sendMessageToRouterService(message));
+    }
 
-		message = new Message();
+    @Test
+    public void testSendMessageToRouterService() {
+        if (Looper.myLooper() == null) {
+            Looper.prepare();
+        }
 
-		assertTrue(broker.sendMessageToRouterService(message));
+        TransportBroker broker = new TransportBroker(getInstrumentation().getTargetContext(), SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
+        Handler handler = new Handler();
+        Message message = new Message();
+        broker.routerServiceMessenger = null;
+        broker.isBound = true;
 
-	}
+        assertFalse(broker.sendMessageToRouterService(message));
+
+        broker.routerServiceMessenger = new Messenger(handler); //So it's not ambiguous
+
+        broker.isBound = false;
+
+        assertFalse(broker.sendMessageToRouterService(message));
+
+        broker.isBound = true;
+        broker.registeredWithRouterService = true;
+
+        message = null;
+
+        assertFalse(broker.sendMessageToRouterService(message));
+
+        message = new Message();
+
+        assertTrue(broker.sendMessageToRouterService(message));
+
+    }
 
 }

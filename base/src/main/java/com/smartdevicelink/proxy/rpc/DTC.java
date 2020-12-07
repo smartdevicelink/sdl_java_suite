@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -49,60 +49,70 @@ import java.util.Hashtable;
  * 			<td>statusByte</td>
  * 			<td>String</td>
  * 			<td>Hexadecimal byte string
- *				 <ul>
- *					<li>Maxlength = 500</li>
- *				 </ul> 
+ * 				 <ul>
+ * 					<li>Maxlength = 500</li>
+ * 				 </ul>
  * 			</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  *  </table>
+ *
  * @since SmartDeviceLink 2.0
  */
 public class DTC extends RPCStruct {
-	public static final String KEY_IDENTIFIER = "identifier";
-	public static final String KEY_STATUS_BYTE = "statusByte";
-	/**
-	 * Constructs a newly allocated DTC object
-	 */
-    public DTC() { }
-    
+    public static final String KEY_IDENTIFIER = "identifier";
+    public static final String KEY_STATUS_BYTE = "statusByte";
+
+    /**
+     * Constructs a newly allocated DTC object
+     */
+    public DTC() {
+    }
+
     /**
      * Constructs a newly allocated DTC object indicated by the Hashtable parameter
+     *
      * @param hash The Hashtable to use
      */
     public DTC(Hashtable<String, Object> hash) {
         super(hash);
     }
-    
+
     /**
      * set identifier
+     *
      * @param identifier the hexadecimal id of the DTC
      */
-    public void setIdentifier(String identifier) {
-    	setValue(KEY_IDENTIFIER, identifier);
+    public DTC setIdentifier(String identifier) {
+        setValue(KEY_IDENTIFIER, identifier);
+        return this;
     }
-    
+
     /**
      * get identifier
+     *
      * @return identifier
      */
     public String getIdentifier() {
-    	return getString(KEY_IDENTIFIER);
+        return getString(KEY_IDENTIFIER);
     }
-    
+
     /**
      * set Hexadecimal byte string
+     *
      * @param statusByte Hexadecimal byte string
      */
-    public void setStatusByte(String statusByte) {
-    	setValue(KEY_STATUS_BYTE, statusByte);
+    public DTC setStatusByte(String statusByte) {
+        setValue(KEY_STATUS_BYTE, statusByte);
+        return this;
     }
-    
+
     /**
      * get Hexadecimal byte string
+     *
      * @return Hexadecimal byte string
      */
     public String getStatusByte() {
-    	return getString(KEY_STATUS_BYTE);
+        return getString(KEY_STATUS_BYTE);
     }
 }

@@ -2,7 +2,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 
 import com.smartdevicelink.proxy.rpc.Headers;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -12,34 +12,34 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.Headers}
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.proxy.rpc.Headers}
  */
-public class HeadersTests extends TestCase{
+public class HeadersTests extends TestCase {
 
     private Headers msg;
 
     @Override
-    public void setUp(){
+    public void setUp() {
         msg = new Headers();
 
-        msg.setCharset(Test.GENERAL_STRING);
-        msg.setConnectTimeout(Test.GENERAL_INT);
-        msg.setContentLength(Test.GENERAL_INT);
-        msg.setContentType(Test.GENERAL_STRING);
-        msg.setDoInput(Test.GENERAL_BOOLEAN);
-        msg.setDoOutput(Test.GENERAL_BOOLEAN);
-        msg.setInstanceFollowRedirects(Test.GENERAL_BOOLEAN);
-        msg.setReadTimeout(Test.GENERAL_INT);
-        msg.setRequestMethod(Test.GENERAL_STRING);
-        msg.setUseCaches(Test.GENERAL_BOOLEAN);
+        msg.setCharset(TestValues.GENERAL_STRING);
+        msg.setConnectTimeout(TestValues.GENERAL_INT);
+        msg.setContentLength(TestValues.GENERAL_INT);
+        msg.setContentType(TestValues.GENERAL_STRING);
+        msg.setDoInput(TestValues.GENERAL_BOOLEAN);
+        msg.setDoOutput(TestValues.GENERAL_BOOLEAN);
+        msg.setInstanceFollowRedirects(TestValues.GENERAL_BOOLEAN);
+        msg.setReadTimeout(TestValues.GENERAL_INT);
+        msg.setRequestMethod(TestValues.GENERAL_STRING);
+        msg.setUseCaches(TestValues.GENERAL_BOOLEAN);
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
-    	// Test Values
+     * Tests the expected values of the RPC message.
+     */
+    public void testRpcValues() {
+        // Test Values
         String charset = msg.getCharset();
         String contentType = msg.getContentType();
         String requestMode = msg.getRequestMethod();
@@ -50,60 +50,60 @@ public class HeadersTests extends TestCase{
         boolean doInput = msg.getDoInput();
         boolean useCache = msg.getUseCaches();
         boolean instanceFollow = msg.getInstanceFollowRedirects();
-        
+
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, charset);
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, contentType);
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, requestMode);
-        assertEquals(Test.MATCH, Test.GENERAL_INT, connectTimeout);
-        assertEquals(Test.MATCH, Test.GENERAL_INT, readTimeout);
-        assertEquals(Test.MATCH, Test.GENERAL_INT, contentLength);
-        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, doOutput);
-        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, doInput);
-        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, useCache);
-        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, instanceFollow);
-        
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, charset);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, contentType);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, requestMode);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, connectTimeout);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, readTimeout);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, contentLength);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, doOutput);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, doInput);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, useCache);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, instanceFollow);
+
         // Invalid/Null Tests
         Headers msg = new Headers();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
 
-        assertNull(Test.NULL, msg.getCharset());
-        assertNull(Test.NULL, msg.getConnectTimeout());
-        assertNull(Test.NULL, msg.getContentLength());
-        assertNull(Test.NULL, msg.getContentType());
-        assertNull(Test.NULL, msg.getDoInput());
-        assertNull(Test.NULL, msg.getDoOutput());
-        assertNull(Test.NULL, msg.getInstanceFollowRedirects());
-        assertNull(Test.NULL, msg.getReadTimeout());
-        assertNull(Test.NULL, msg.getRequestMethod());
-        assertNull(Test.NULL, msg.getUseCaches());
+        assertNull(TestValues.NULL, msg.getCharset());
+        assertNull(TestValues.NULL, msg.getConnectTimeout());
+        assertNull(TestValues.NULL, msg.getContentLength());
+        assertNull(TestValues.NULL, msg.getContentType());
+        assertNull(TestValues.NULL, msg.getDoInput());
+        assertNull(TestValues.NULL, msg.getDoOutput());
+        assertNull(TestValues.NULL, msg.getInstanceFollowRedirects());
+        assertNull(TestValues.NULL, msg.getReadTimeout());
+        assertNull(TestValues.NULL, msg.getRequestMethod());
+        assertNull(TestValues.NULL, msg.getUseCaches());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
-            reference.put(Headers.KEY_CHARSET, Test.GENERAL_STRING);
-            reference.put(Headers.KEY_CONTENT_TYPE, Test.GENERAL_STRING);
-            reference.put(Headers.KEY_REQUEST_METHOD, Test.GENERAL_STRING);
-            reference.put(Headers.KEY_CONNECT_TIMEOUT, Test.GENERAL_INT);
-            reference.put(Headers.KEY_READ_TIMEOUT, Test.GENERAL_INT);
-            reference.put(Headers.KEY_CONTENT_LENGTH, Test.GENERAL_INT);
-            reference.put(Headers.KEY_DO_OUTPUT, Test.GENERAL_BOOLEAN);
-            reference.put(Headers.KEY_DO_INPUT, Test.GENERAL_BOOLEAN);
-            reference.put(Headers.KEY_USE_CACHES, Test.GENERAL_BOOLEAN);
-            reference.put(Headers.KEY_INSTANCE_FOLLOW_REDIRECTS, Test.GENERAL_BOOLEAN);
+        try {
+            reference.put(Headers.KEY_CHARSET, TestValues.GENERAL_STRING);
+            reference.put(Headers.KEY_CONTENT_TYPE, TestValues.GENERAL_STRING);
+            reference.put(Headers.KEY_REQUEST_METHOD, TestValues.GENERAL_STRING);
+            reference.put(Headers.KEY_CONNECT_TIMEOUT, TestValues.GENERAL_INT);
+            reference.put(Headers.KEY_READ_TIMEOUT, TestValues.GENERAL_INT);
+            reference.put(Headers.KEY_CONTENT_LENGTH, TestValues.GENERAL_INT);
+            reference.put(Headers.KEY_DO_OUTPUT, TestValues.GENERAL_BOOLEAN);
+            reference.put(Headers.KEY_DO_INPUT, TestValues.GENERAL_BOOLEAN);
+            reference.put(Headers.KEY_USE_CACHES, TestValues.GENERAL_BOOLEAN);
+            reference.put(Headers.KEY_INSTANCE_FOLLOW_REDIRECTS, TestValues.GENERAL_BOOLEAN);
 
             JSONObject underTest = msg.serializeJSON();
-            assertEquals(Test.MATCH, reference.length(), underTest.length());
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String key = (String) iterator.next();
-                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
-        }catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

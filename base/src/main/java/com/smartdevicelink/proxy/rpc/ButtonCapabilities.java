@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
@@ -74,47 +74,48 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * </table>
- * 
+ *
  * <p>Upon the request HMI must provide the list of the following information:</p>
  * 	<p>The names of all existing/supported hardware buttons.</p>
  * 		<p>The availability of LONG/SHORT press for each existing/supported hardware button correspondingly</p>
  * 		<p>The availability of UP/DOWN events for each existing/supported hardware button correspondingly.</p>
- * 
- * @since SmartDeviceLink 1.0
- * 
+ *
  * @see ButtonName
  * @see com.smartdevicelink.proxy.rpc.enums.ButtonEventMode
  * @see com.smartdevicelink.proxy.rpc.enums.ButtonPressMode
- * 
- * 
- *
  * @see OnButtonEvent
  * @see OnButtonPress
- * 
+ * @since SmartDeviceLink 1.0
  */
 public class ButtonCapabilities extends RPCStruct {
-	public static final String KEY_NAME = "name";
-	public static final String KEY_SHORT_PRESS_AVAILABLE = "shortPressAvailable";
-	public static final String KEY_LONG_PRESS_AVAILABLE = "longPressAvailable";
-	public static final String KEY_UP_DOWN_AVAILABLE = "upDownAvailable";
-	public static final String KEY_MODULE_INFO = "moduleInfo";
-	/**
-	 * Constructs a newly allocated ButtonCapabilities object
-	 */
-    public ButtonCapabilities() { }
+    public static final String KEY_NAME = "name";
+    public static final String KEY_SHORT_PRESS_AVAILABLE = "shortPressAvailable";
+    public static final String KEY_LONG_PRESS_AVAILABLE = "longPressAvailable";
+    public static final String KEY_UP_DOWN_AVAILABLE = "upDownAvailable";
+    public static final String KEY_MODULE_INFO = "moduleInfo";
+
+    /**
+     * Constructs a newly allocated ButtonCapabilities object
+     */
+    public ButtonCapabilities() {
+    }
+
     /**
      * Constructs a newly allocated ButtonCapabilities object indicated by the Hashtable parameter
+     *
      * @param hash The Hashtable to use
      */
     public ButtonCapabilities(Hashtable<String, Object> hash) {
         super(hash);
     }
+
     /**
      * Constructs a newly allocated ButtonCapabilities object
-     * @param name the name of button
+     *
+     * @param name                the name of button
      * @param shortPressAvailable True if support otherwise False.
-     * @param longPressAvailable True if support otherwise False.
-     * @param upDownAvailable True if support otherwise False.
+     * @param longPressAvailable  True if support otherwise False.
+     * @param upDownAvailable     True if support otherwise False.
      */
     public ButtonCapabilities(@NonNull ButtonName name, @NonNull Boolean shortPressAvailable, @NonNull Boolean longPressAvailable, @NonNull Boolean upDownAvailable) {
         this();
@@ -123,73 +124,96 @@ public class ButtonCapabilities extends RPCStruct {
         setLongPressAvailable(longPressAvailable);
         setUpDownAvailable(upDownAvailable);
     }
+
     /**
      * Get the name of theSDL HMI button.
+     *
      * @return ButtonName the name of the Button
-     */    
+     */
     public ButtonName getName() {
         return (ButtonName) getObject(ButtonName.class, KEY_NAME);
     }
+
     /**
      * Set the name of theSDL HMI button.
+     *
      * @param name the name of button
-     */    
-    public void setName( @NonNull  ButtonName name ) {
+     */
+    public ButtonCapabilities setName(@NonNull ButtonName name) {
         setValue(KEY_NAME, name);
+        return this;
     }
+
     /**
      * Whether the button supports a SHORT press. See <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonPressMode}</i> for more information.
+     *
      * @return True if support otherwise False.
-     */    
+     */
     public Boolean getShortPressAvailable() {
-        return getBoolean( KEY_SHORT_PRESS_AVAILABLE );
+        return getBoolean(KEY_SHORT_PRESS_AVAILABLE);
     }
+
     /**
      * Set the button supports a SHORT press. See <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonPressMode}</i> for more information.
+     *
      * @param shortPressAvailable True if support otherwise False.
-     */    
-    public void setShortPressAvailable( @NonNull Boolean shortPressAvailable ) {
+     */
+    public ButtonCapabilities setShortPressAvailable(@NonNull Boolean shortPressAvailable) {
         setValue(KEY_SHORT_PRESS_AVAILABLE, shortPressAvailable);
+        return this;
     }
+
     /**
      * Whether the button supports a LONG press. See <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonPressMode}</i> for more information.
+     *
      * @return True if support otherwise False.
      */
     public Boolean getLongPressAvailable() {
-        return getBoolean( KEY_LONG_PRESS_AVAILABLE );
+        return getBoolean(KEY_LONG_PRESS_AVAILABLE);
     }
+
     /**
      * Set the button supports a LONG press. See <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonPressMode}</i> for more information.
+     *
      * @param longPressAvailable True if support otherwise False.
-     */    
-    public void setLongPressAvailable( @NonNull Boolean longPressAvailable ) {
+     */
+    public ButtonCapabilities setLongPressAvailable(@NonNull Boolean longPressAvailable) {
         setValue(KEY_LONG_PRESS_AVAILABLE, longPressAvailable);
+        return this;
     }
+
     /**
      * Whether the button supports "button down" and "button up". When the button is depressed, the <i>{@linkplain OnButtonEvent}</i> notification will be invoked with a value of BUTTONDOWN.
+     *
      * @return True if support otherwise False.
-     */    
+     */
     public Boolean getUpDownAvailable() {
-        return getBoolean( KEY_UP_DOWN_AVAILABLE );
+        return getBoolean(KEY_UP_DOWN_AVAILABLE);
     }
+
     /**
      * Set the button supports "button down" and "button up". When the button is depressed, the <i>{@linkplain OnButtonEvent}</i> notification will be invoked with a value of BUTTONDOWN.
+     *
      * @param upDownAvailable True if support otherwise False.
-     */    
-    public void setUpDownAvailable( @NonNull Boolean upDownAvailable ) {
+     */
+    public ButtonCapabilities setUpDownAvailable(@NonNull Boolean upDownAvailable) {
         setValue(KEY_UP_DOWN_AVAILABLE, upDownAvailable);
+        return this;
     }
 
     /**
      * Sets ModuleInfo for this capability
+     *
      * @param info the ModuleInfo to be set
      */
-    public void setModuleInfo(ModuleInfo info) {
+    public ButtonCapabilities setModuleInfo(ModuleInfo info) {
         setValue(KEY_MODULE_INFO, info);
+        return this;
     }
 
     /**
      * Gets a ModuleInfo of this capability
+     *
      * @return module info of this capability
      */
     public ModuleInfo getModuleInfo() {

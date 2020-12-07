@@ -1,22 +1,23 @@
 {
-  "request":{
-    "name":"SendHapticData",
-    "correlationID":1234,
-    "parameters":{
-      "hapticRectData":[
-        {"id":123,
-          "rect":{
-            "height":1,
-            "width":1,
-            "x":1,
-            "y":1
+  "request": {
+    "name": "SendHapticData",
+    "correlationID": 1234,
+    "parameters": {
+      "hapticRectData": [
+        {
+          "id": 123,
+          "rect": {
+            "height": 1,
+            "width": 1,
+            "x": 1,
+            "y": 1
           }
         }
       ]
     }
   },
-  "response":{
-    "name":"SendHapticData",
-    "correlationID":1234
+  "response": {
+    "name": "SendHapticData",
+    "correlationID": 1234
   }
 }

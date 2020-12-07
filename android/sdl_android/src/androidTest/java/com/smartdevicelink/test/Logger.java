@@ -1,16 +1,16 @@
 package com.smartdevicelink.test;
 
 
+public class Logger {
 
-public class Logger{
+    private Logger() {
+    }
 
-    private Logger(){}
-    
-    public static void log(String tag, String msg){
-        if(Config.DEBUG){
+    public static void log(String tag, String msg) {
+        if (Config.DEBUG) {
             System.out.print(tag + ": ");
             System.out.println(msg);
         }
     }
-    
+
 }

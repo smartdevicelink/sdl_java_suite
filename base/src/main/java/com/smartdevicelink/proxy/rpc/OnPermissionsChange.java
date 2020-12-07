@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
@@ -81,58 +81,71 @@ import java.util.List;
  * </p>
  */
 public class OnPermissionsChange extends RPCNotification {
-	public static final String KEY_PERMISSION_ITEM = "permissionItem";
-	public static final String KEY_REQUIRE_ENCRYPTION = "requireEncryption";
-	/**
-	*Constructs a newly allocated OnCommand object
-	*/    
-	public OnPermissionsChange() {
-		super(FunctionID.ON_PERMISSIONS_CHANGE.toString());
-	}
-	/**
-     *<p>Constructs a newly allocated OnPermissionsChange object indicated by the Hashtable parameter</p>
-     *@param hash The Hashtable to use
-     */
-	public OnPermissionsChange(Hashtable<String, Object> hash) {
-		super(hash);
-	}
-	/**
-	 *Constructs a newly allocated OnCommand object
-	 * @param permissionItem an List of  PermissionItem describing change in permissions for a given set of RPCs
-	 */
-	public OnPermissionsChange(@NonNull List<PermissionItem> permissionItem) {
-		this();
-		setPermissionItem(permissionItem);
-	}
-	/**
-     * <p>Returns List<PermissionItem> object describing change in permissions for a given set of RPCs</p>
-     * @return List<{@linkplain PermissionItem}> an object describing describing change in permissions for a given set of RPCs
-     */   
-    @SuppressWarnings("unchecked")
-	public List<PermissionItem> getPermissionItem() {
-		return (List<PermissionItem>) getObject(PermissionItem.class, KEY_PERMISSION_ITEM);
-	}
+    public static final String KEY_PERMISSION_ITEM = "permissionItem";
+    public static final String KEY_REQUIRE_ENCRYPTION = "requireEncryption";
+
     /**
-     * <p>Sets PermissionItems describing change in permissions for a given set of RPCs</p>    
+     * Constructs a newly allocated OnCommand object
+     */
+    public OnPermissionsChange() {
+        super(FunctionID.ON_PERMISSIONS_CHANGE.toString());
+    }
+
+    /**
+     * <p>Constructs a newly allocated OnPermissionsChange object indicated by the Hashtable parameter</p>
+     *
+     * @param hash The Hashtable to use
+     */
+    public OnPermissionsChange(Hashtable<String, Object> hash) {
+        super(hash);
+    }
+
+    /**
+     * Constructs a newly allocated OnCommand object
+     *
      * @param permissionItem an List of  PermissionItem describing change in permissions for a given set of RPCs
-     */  
-	public void setPermissionItem(@NonNull List<PermissionItem> permissionItem) {
-		setParameters(KEY_PERMISSION_ITEM, permissionItem);
-	}
+     */
+    public OnPermissionsChange(@NonNull List<PermissionItem> permissionItem) {
+        this();
+        setPermissionItem(permissionItem);
+    }
 
-	/**
-	 * Returns the encryption requirement for this permission change
-	 * @return true if encryption is required, false otherwise
-	 */
-	public Boolean getRequireEncryption() {
-		return getBoolean(KEY_REQUIRE_ENCRYPTION);
-	}
+    /**
+     * <p>Returns List<PermissionItem> object describing change in permissions for a given set of RPCs</p>
+     *
+     * @return List<{ @ linkplain PermissionItem }> an object describing describing change in permissions for a given set of RPCs
+     */
+    @SuppressWarnings("unchecked")
+    public List<PermissionItem> getPermissionItem() {
+        return (List<PermissionItem>) getObject(PermissionItem.class, KEY_PERMISSION_ITEM);
+    }
 
-	/**
-	 * Sets the encryption requirement for this permission change
-	 * @param isRequired the boolean requirement to be set
-	 */
-	public void setRequireEncryption(Boolean isRequired) {
-		setParameters(KEY_REQUIRE_ENCRYPTION, isRequired);
-	}
+    /**
+     * <p>Sets PermissionItems describing change in permissions for a given set of RPCs</p>
+     *
+     * @param permissionItem an List of  PermissionItem describing change in permissions for a given set of RPCs
+     */
+    public OnPermissionsChange setPermissionItem(@NonNull List<PermissionItem> permissionItem) {
+        setParameters(KEY_PERMISSION_ITEM, permissionItem);
+        return this;
+    }
+
+    /**
+     * Returns the encryption requirement for this permission change
+     *
+     * @return true if encryption is required, false otherwise
+     */
+    public Boolean getRequireEncryption() {
+        return getBoolean(KEY_REQUIRE_ENCRYPTION);
+    }
+
+    /**
+     * Sets the encryption requirement for this permission change
+     *
+     * @param isRequired the boolean requirement to be set
+     */
+    public OnPermissionsChange setRequireEncryption(Boolean isRequired) {
+        setParameters(KEY_REQUIRE_ENCRYPTION, isRequired);
+        return this;
+    }
 }

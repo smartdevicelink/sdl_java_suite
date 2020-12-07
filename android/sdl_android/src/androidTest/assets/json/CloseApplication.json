@@ -1,11 +1,11 @@
 {
-  "request":{
-    "name":"CloseApplication",
-    "correlationID":131
+  "request": {
+    "name": "CloseApplication",
+    "correlationID": 131
   },
-  "response":{
-    "name":"CloseApplicationResponse",
-    "correlationID":131,
-    "parameters":{}
+  "response": {
+    "name": "CloseApplicationResponse",
+    "correlationID": 131,
+    "parameters": {}
   }
 }

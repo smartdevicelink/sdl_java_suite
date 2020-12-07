@@ -35,11 +35,11 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
+import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
-import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.util.DebugTool;
 
@@ -48,77 +48,73 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-class DeleteChoicesOperation extends AsynchronousOperation {
+class DeleteChoicesOperation extends Task {
+    private static final String TAG = "DeleteChoicesOperation";
+    private final WeakReference<ISdl> internalInterface;
+    private final HashSet<ChoiceCell> cellsToDelete;
+    private final CompletionListener completionListener;
 
-	private WeakReference<ISdl> internalInterface;
-	private HashSet<ChoiceCell> cellsToDelete;
-	private CompletionListener completionListener;
+    DeleteChoicesOperation(ISdl internalInterface, HashSet<ChoiceCell> cellsToDelete, CompletionListener completionListener) {
+        super("DeleteChoicesOperation");
+        this.internalInterface = new WeakReference<>(internalInterface);
+        this.cellsToDelete = cellsToDelete;
+        this.completionListener = completionListener;
+    }
 
-	DeleteChoicesOperation(ISdl internalInterface, HashSet<ChoiceCell> cellsToDelete, CompletionListener completionListener){
-		super();
-		this.internalInterface = new WeakReference<>(internalInterface);
-		this.cellsToDelete = cellsToDelete;
-		this.completionListener = completionListener;
-	}
+    @Override
+    public void onExecute() {
+        DebugTool.logInfo(TAG, "Choice Operation: Executing delete choices operation");
+        sendDeletions();
+    }
 
-	@Override
-	public void run() {
-		DeleteChoicesOperation.super.run();
-		DebugTool.logInfo("Choice Operation: Executing delete choices operation");
-		sendDeletions();
-		block();
-	}
+    private void sendDeletions() {
 
-	private void sendDeletions(){
+        List<DeleteInteractionChoiceSet> deleteChoices = createDeleteSets();
 
-		List<DeleteInteractionChoiceSet> deleteChoices = createDeleteSets();
+        if (deleteChoices.size() > 0) {
 
-		if (deleteChoices.size() > 0) {
+            if (internalInterface.get() != null) {
+                internalInterface.get().sendRPCs(deleteChoices, new OnMultipleRequestListener() {
+                    @Override
+                    public void onUpdate(int remainingRequests) {
+                    }
 
-			if (internalInterface.get() != null) {
-				internalInterface.get().sendRequests(deleteChoices, new OnMultipleRequestListener() {
-					@Override
-					public void onUpdate(int remainingRequests) {
-					}
+                    @Override
+                    public void onFinished() {
+                        if (completionListener != null) {
+                            completionListener.onComplete(true);
+                        }
+                        DebugTool.logInfo(TAG, "Successfully deleted choices");
 
-					@Override
-					public void onFinished() {
-						if (completionListener != null) {
-							completionListener.onComplete(true);
-						}
-						DebugTool.logInfo("Successfully deleted choices");
+                        DeleteChoicesOperation.super.onFinished();
+                    }
 
-						DeleteChoicesOperation.super.finishOperation();
-					}
+                    @Override
+                    public void onResponse(int correlationId, RPCResponse response) {
+                        if (!response.getSuccess()) {
+                            if (completionListener != null) {
+                                completionListener.onComplete(false);
+                            }
+                            DebugTool.logError(TAG, "Failed to delete choice: " + response.getInfo() + " | Corr ID: " + correlationId);
 
-					@Override
-					public void onError(int correlationId, Result resultCode, String info) {
-						if (completionListener != null) {
-							completionListener.onComplete(false);
-						}
-						DebugTool.logError("Failed to delete choice: " + info + " | Corr ID: " + correlationId);
+                            DeleteChoicesOperation.super.onFinished();
+                        }
+                    }
+                });
+            }
+        } else {
+            if (completionListener != null) {
+                completionListener.onComplete(true);
+            }
+            DebugTool.logInfo(TAG, "No Choices to delete, continue");
+        }
+    }
 
-						DeleteChoicesOperation.super.finishOperation();
-					}
-
-					@Override
-					public void onResponse(int correlationId, RPCResponse response) {
-					}
-				});
-			}
-		} else{
-			if (completionListener != null) {
-				completionListener.onComplete(true);
-			}
-			DebugTool.logInfo("No Choices to delete, continue");
-		}
-	}
-
-	List<DeleteInteractionChoiceSet> createDeleteSets(){
-		List<DeleteInteractionChoiceSet> deleteChoices = new ArrayList<>(cellsToDelete.size());
-		for (ChoiceCell cell : cellsToDelete){
-			deleteChoices.add(new DeleteInteractionChoiceSet(cell.getChoiceId()));
-		}
-		return deleteChoices;
-	}
+    List<DeleteInteractionChoiceSet> createDeleteSets() {
+        List<DeleteInteractionChoiceSet> deleteChoices = new ArrayList<>(cellsToDelete.size());
+        for (ChoiceCell cell : cellsToDelete) {
+            deleteChoices.add(new DeleteInteractionChoiceSet(cell.getChoiceId()));
+        }
+        return deleteChoices;
+    }
 }

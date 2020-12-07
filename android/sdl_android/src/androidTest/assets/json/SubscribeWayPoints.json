@@ -1,10 +1,10 @@
 {
-  "request":{
-    "name":"SubscribeWayPoints",
-    "correlationID":199
+  "request": {
+    "name": "SubscribeWayPoints",
+    "correlationID": 199
   },
-  "response":{
-    "name":"SubscribeWayPointsResponse",
-    "correlationID":200
+  "response": {
+    "name": "SubscribeWayPointsResponse",
+    "correlationID": 200
   }
 }

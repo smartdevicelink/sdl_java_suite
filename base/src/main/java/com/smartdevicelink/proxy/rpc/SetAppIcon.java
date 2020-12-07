@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -41,9 +41,9 @@ import java.util.Hashtable;
 /**
  * Used to set existing local file on SDL as the app's icon. Not supported on
  * first generation SDL vehicles
- * 
+ *
  * <p><b>Parameter List</b></p>
- * 
+ *
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Param Name</th>
@@ -63,66 +63,68 @@ import java.util.Hashtable;
  * 		</tr>
  *
  *  </table>
- *  
- *<p><b>Response </b></p>
- *<p><b> Non-default Result Codes: </b></p>
- *<p>SUCCESS</p>
- *	<p> INVALID_DATA</p>
- *	<p> OUT_OF_MEMORY</p>
+ *
+ * <p><b>Response </b></p>
+ * <p><b> Non-default Result Codes: </b></p>
+ * <p>SUCCESS</p>
+ * 	<p> INVALID_DATA</p>
+ * 	<p> OUT_OF_MEMORY</p>
  *   <p>  TOO_MANY_PENDING_REQUESTS</p>
  *   <p>  APPLICATION_NOT_REGISTERED</p>
  *   <p>  GENERIC_ERROR</p>
  *   <p>  REJECTED</p>
  *
- * @since SmartDeviceLink 2.0
  * @see Image
+ * @since SmartDeviceLink 2.0
  */
 public class SetAppIcon extends RPCRequest {
-	public static final String KEY_SDL_FILE_NAME = "syncFileName";
+    public static final String KEY_SDL_FILE_NAME = "syncFileName";
 
-	/**
-	 * Constructs a new SetAppIcon object
-	 */
+    /**
+     * Constructs a new SetAppIcon object
+     */
     public SetAppIcon() {
         super(FunctionID.SET_APP_ICON.toString());
     }
 
-	/**
-	 * Constructs a new SetAppIcon object indicated by the Hashtable parameter
-	 * <p></p>
-	 * 
-	 * @param hash The Hashtable to use
-	 */
+    /**
+     * Constructs a new SetAppIcon object indicated by the Hashtable parameter
+     * <p></p>
+     *
+     * @param hash The Hashtable to use
+     */
     public SetAppIcon(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-	/**
-	 * Constructs a new SetAppIcon object
-	 * @param sdlFileName a String value representing a file reference name <br>
-	 * <b>Notes: </b>Maxlength=500, however the max file name length may vary based on remote filesystem limitations
-	 */
-	public SetAppIcon(@NonNull String sdlFileName) {
-		this();
-		setSdlFileName(sdlFileName);
-	}
-
-	/**
-	 * Sets a file reference name
-	 * 
-	 * @param sdlFileName
-	 *            a String value representing a file reference name
-	 *            <p></p>
-	 *            <b>Notes: </b>Maxlength=500, however the max file name length may vary based on remote filesystem limitations
-	 */
-    public void setSdlFileName(@NonNull String sdlFileName) {
-		setParameters(KEY_SDL_FILE_NAME, sdlFileName);
+    /**
+     * Constructs a new SetAppIcon object
+     *
+     * @param sdlFileName a String value representing a file reference name <br>
+     *                    <b>Notes: </b>Maxlength=500, however the max file name length may vary based on remote filesystem limitations
+     */
+    public SetAppIcon(@NonNull String sdlFileName) {
+        this();
+        setSdlFileName(sdlFileName);
     }
 
-	/**
-	 * Gets a file reference name
-	 * @return String -a String value
-	 */
+    /**
+     * Sets a file reference name
+     *
+     * @param sdlFileName a String value representing a file reference name
+     *                    <p></p>
+     *                    <b>Notes: </b>Maxlength=500, however the max file name length may vary based on remote filesystem limitations
+     */
+    public SetAppIcon setSdlFileName(@NonNull String sdlFileName) {
+        setParameters(KEY_SDL_FILE_NAME, sdlFileName);
+        return this;
+    }
+
+    /**
+     * Gets a file reference name
+     *
+     * @return String -a String value
+     */
     public String getSdlFileName() {
         return getString(KEY_SDL_FILE_NAME);
     }

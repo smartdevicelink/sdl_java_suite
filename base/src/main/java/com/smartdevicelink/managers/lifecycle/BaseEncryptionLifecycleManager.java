@@ -32,19 +32,20 @@
 
 package com.smartdevicelink.managers.lifecycle;
 
-import android.support.annotation.NonNull;
-import com.smartdevicelink.SdlConnection.SdlSession;
+import androidx.annotation.NonNull;
+
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.ServiceEncryptionListener;
+import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.interfaces.ISdl;
-import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.util.DebugTool;
 
 import java.util.HashSet;
@@ -52,11 +53,13 @@ import java.util.List;
 import java.util.Set;
 
 abstract class BaseEncryptionLifecycleManager {
-    private ISdl internalInterface;
+    private static final String TAG = "BaseEncryptionLifecycleManager";
+    private final ISdl internalInterface;
     private ServiceEncryptionListener serviceEncryptionListener;
     private HMILevel currentHMILevel;
-    private Set<String> encryptionRequiredRPCs = new HashSet<>();
+    private final Set<String> encryptionRequiredRPCs = new HashSet<>();
     private boolean rpcSecuredServiceStarted;
+    final ISdlServiceListener securedServiceListener;
 
     BaseEncryptionLifecycleManager(@NonNull ISdl isdl, ServiceEncryptionListener listener) {
         internalInterface = isdl;
@@ -94,16 +97,16 @@ abstract class BaseEncryptionLifecycleManager {
             }
         };
 
-        ISdlServiceListener securedServiceListener = new ISdlServiceListener() {
+        securedServiceListener = new ISdlServiceListener() {
             @Override
             public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
-                if(SessionType.RPC.equals(type)){
+                if (SessionType.RPC.equals(type)) {
                     rpcSecuredServiceStarted = isEncrypted;
                 }
                 if (serviceEncryptionListener != null) {
                     serviceEncryptionListener.onEncryptionServiceUpdated(type, isEncrypted, null);
                 }
-                DebugTool.logInfo("onServiceStarted, session Type: " + type.getName() + ", isEncrypted: " + isEncrypted);
+                DebugTool.logInfo(TAG, "onServiceStarted, session Type: " + type.getName() + ", isEncrypted: " + isEncrypted);
             }
 
             @Override
@@ -114,7 +117,7 @@ abstract class BaseEncryptionLifecycleManager {
                 if (serviceEncryptionListener != null) {
                     serviceEncryptionListener.onEncryptionServiceUpdated(type, false, null);
                 }
-                DebugTool.logInfo("onServiceEnded, session Type: " + type.getName());
+                DebugTool.logInfo(TAG, "onServiceEnded, session Type: " + type.getName());
             }
 
             @Override
@@ -125,7 +128,7 @@ abstract class BaseEncryptionLifecycleManager {
                 if (serviceEncryptionListener != null) {
                     serviceEncryptionListener.onEncryptionServiceUpdated(type, false, "onServiceError: " + reason);
                 }
-                DebugTool.logError("onServiceError, session Type: " + type.getName() + ", reason: " + reason);
+                DebugTool.logError(TAG, "onServiceError, session Type: " + type.getName() + ", reason: " + reason);
             }
         };
 
@@ -157,7 +160,7 @@ abstract class BaseEncryptionLifecycleManager {
      * Checks the current state and make the call back to initiate secured service flow
      */
     private void checkStatusAndInitSecuredService() {
-        if ((currentHMILevel != null && currentHMILevel != HMILevel.HMI_NONE) && getRequiresEncryption() && !isEncryptionReady() ) {
+        if ((currentHMILevel != null && currentHMILevel != HMILevel.HMI_NONE) && getRequiresEncryption() && !isEncryptionReady()) {
             internalInterface.startRPCEncryption();
         }
     }

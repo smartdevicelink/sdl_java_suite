@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -41,11 +41,11 @@ import java.util.Hashtable;
 /**
  * This RPC allows to request diagnostic module trouble codes from a certain
  * vehicle module.
- * 
- *<p> Function Group: ProprietaryData</p>
- * 
- *<p> <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
- * 
+ *
+ * <p> Function Group: ProprietaryData</p>
+ *
+ * <p> <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -74,76 +74,81 @@ import java.util.Hashtable;
  * 		</tr>
  *  </table>
  * <p><b>Response</b></p>
- * 
- * <p><b>Non-default Result Codes:</b></p> 
- *<p> SUCCESS</p>
+ *
+ * <p><b>Non-default Result Codes:</b></p>
+ * <p> SUCCESS</p>
  * <p>INVALID_DATA</p>
- *<p> OUT_OF_MEMORY</p>
+ * <p> OUT_OF_MEMORY</p>
  * <p>TOO_MANY_PENDING_REQUESTS</p>
  * <p>APPLICATION_NOT_REGISTERED</p>
- *<p>GENERIC_ERROR</p>  
- * <p>REJECTED</p>  
- * <p>DISALLOWED </p> 
- * <p>USER_DISALLOWED</p>   
+ * <p>GENERIC_ERROR</p>
+ * <p>REJECTED</p>
+ * <p>DISALLOWED </p>
+ * <p>USER_DISALLOWED</p>
+ *
  * @since SmartDeviceLink 2.0
  */
 public class GetDTCs extends RPCRequest {
-	public static final String KEY_DTC_MASK = "dtcMask";
-	public static final String KEY_ECU_NAME = "ecuName";
+    public static final String KEY_DTC_MASK = "dtcMask";
+    public static final String KEY_ECU_NAME = "ecuName";
 
-	/**
-	 * Constructs a new GetDTCs object
-	 */
+    /**
+     * Constructs a new GetDTCs object
+     */
     public GetDTCs() {
         super(FunctionID.GET_DTCS.toString());
     }
 
-	/**
-	 * <p>Constructs a new GetDTCs object indicated by the Hashtable parameter
-	 * </p>
-	 * 
-	 * @param hash The Hashtable to use
-	 */
+    /**
+     * <p>Constructs a new GetDTCs object indicated by the Hashtable parameter
+     * </p>
+     *
+     * @param hash The Hashtable to use
+     */
     public GetDTCs(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-	/**
-	 * Constructs a new GetDTCs object
-	 * @param ecuName an Integer value representing a name of the module to receive the DTC form <br>
-	 * <b>Notes: </b>Minvalue:0; Maxvalue:65535
-	 */
-	public GetDTCs(@NonNull Integer ecuName) {
-		this();
-		setEcuName(ecuName);
-	}
-
-	/**
-	 * Sets a name of the module to receive the DTC form
-	 * 
-	 * @param ecuName
-	 *            an Integer value representing a name of the module to receive
-	 *            the DTC form
-	 *            <p>
-	 *            <b>Notes:</p> </b>Minvalue:0; Maxvalue:65535
-	 */
-    public void setEcuName(@NonNull Integer ecuName) {
-		setParameters(KEY_ECU_NAME, ecuName);
+    /**
+     * Constructs a new GetDTCs object
+     *
+     * @param ecuName an Integer value representing a name of the module to receive the DTC form <br>
+     *                <b>Notes: </b>Minvalue:0; Maxvalue:65535
+     */
+    public GetDTCs(@NonNull Integer ecuName) {
+        this();
+        setEcuName(ecuName);
     }
 
-	/**
-	 * Gets a name of the module to receive the DTC form
-	 * 
-	 * @return Integer -an Integer value representing a name of the module to
-	 *         receive the DTC form
-	 */
+    /**
+     * Sets a name of the module to receive the DTC form
+     *
+     * @param ecuName an Integer value representing a name of the module to receive
+     *                the DTC form
+     *                <p>
+     *                <b>Notes:</p> </b>Minvalue:0; Maxvalue:65535
+     */
+    public GetDTCs setEcuName(@NonNull Integer ecuName) {
+        setParameters(KEY_ECU_NAME, ecuName);
+        return this;
+    }
+
+    /**
+     * Gets a name of the module to receive the DTC form
+     *
+     * @return Integer -an Integer value representing a name of the module to
+     * receive the DTC form
+     */
     public Integer getEcuName() {
-    	return getInteger(KEY_ECU_NAME);
+        return getInteger(KEY_ECU_NAME);
     }
-    public void setDtcMask(Integer dtcMask) {
-		setParameters(KEY_DTC_MASK, dtcMask);
+
+    public GetDTCs setDtcMask(Integer dtcMask) {
+        setParameters(KEY_DTC_MASK, dtcMask);
+        return this;
     }
+
     public Integer getDtcMask() {
-    	return getInteger(KEY_DTC_MASK);
+        return getInteger(KEY_DTC_MASK);
     }
 }

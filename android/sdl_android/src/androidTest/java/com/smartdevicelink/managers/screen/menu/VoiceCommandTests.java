@@ -32,33 +32,31 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import com.smartdevicelink.AndroidTestCase2;
-import com.smartdevicelink.test.Test;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-public class VoiceCommandTests extends AndroidTestCase2 {
+import com.smartdevicelink.test.TestValues;
 
-	private VoiceCommandSelectionListener voiceCommandSelectionListener = new VoiceCommandSelectionListener() {
-		@Override
-		public void onVoiceCommandSelected() {
-			// Stuffs
-		}
-	};
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-	@Override
-	public void setUp() throws Exception{
-		super.setUp();
-	}
+import static junit.framework.TestCase.assertEquals;
 
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-	}
+@RunWith(AndroidJUnit4.class)
+public class VoiceCommandTests {
 
-	public void testSettersAndGetters(){
-		VoiceCommand voiceCommand = new VoiceCommand(Test.GENERAL_STRING_LIST, voiceCommandSelectionListener);
+    private VoiceCommandSelectionListener voiceCommandSelectionListener = new VoiceCommandSelectionListener() {
+        @Override
+        public void onVoiceCommandSelected() {
+            // Stuffs
+        }
+    };
 
-		assertEquals(voiceCommand.getVoiceCommands(), Test.GENERAL_STRING_LIST);
-		assertEquals(voiceCommand.getVoiceCommandSelectionListener(), voiceCommandSelectionListener);
-	}
+    @Test
+    public void testSettersAndGetters() {
+        VoiceCommand voiceCommand = new VoiceCommand(TestValues.GENERAL_STRING_LIST, voiceCommandSelectionListener);
+
+        assertEquals(voiceCommand.getVoiceCommands(), TestValues.GENERAL_STRING_LIST);
+        assertEquals(voiceCommand.getVoiceCommandSelectionListener(), voiceCommandSelectionListener);
+    }
 
 }

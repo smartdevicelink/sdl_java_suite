@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
@@ -44,51 +44,58 @@ import java.util.Hashtable;
  */
 
 public class VideoStreamingFormat extends RPCStruct {
-	public static final String KEY_PROTOCOL = "protocol";
-	public static final String KEY_CODEC = "codec";
+    public static final String KEY_PROTOCOL = "protocol";
+    public static final String KEY_CODEC = "codec";
 
-	public VideoStreamingFormat(){}
-	public VideoStreamingFormat(Hashtable<String, Object> hash){super(hash);}
+    public VideoStreamingFormat() {
+    }
 
-	/**
-	 * Create the VideoStreamingFormat object
-	 * @param protocol The protocol used
-	 * @param codec The codec used
-	 */
-	public VideoStreamingFormat(@NonNull VideoStreamingProtocol protocol, @NonNull VideoStreamingCodec codec){
-		this();
-		setProtocol(protocol);
-		setCodec(codec);
-	}
+    public VideoStreamingFormat(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
-	public void setProtocol(@NonNull VideoStreamingProtocol protocol){
-		setValue(KEY_PROTOCOL, protocol);
-	}
+    /**
+     * Create the VideoStreamingFormat object
+     *
+     * @param protocol The protocol used
+     * @param codec    The codec used
+     */
+    public VideoStreamingFormat(@NonNull VideoStreamingProtocol protocol, @NonNull VideoStreamingCodec codec) {
+        this();
+        setProtocol(protocol);
+        setCodec(codec);
+    }
 
-	public VideoStreamingProtocol getProtocol(){
-		return (VideoStreamingProtocol) getObject(VideoStreamingProtocol.class, KEY_PROTOCOL);
-	}
+    public VideoStreamingFormat setProtocol(@NonNull VideoStreamingProtocol protocol) {
+        setValue(KEY_PROTOCOL, protocol);
+        return this;
+    }
 
-	public void setCodec(@NonNull VideoStreamingCodec codec){
-		setValue(KEY_CODEC, codec);
-	}
+    public VideoStreamingProtocol getProtocol() {
+        return (VideoStreamingProtocol) getObject(VideoStreamingProtocol.class, KEY_PROTOCOL);
+    }
 
-	public VideoStreamingCodec getCodec(){
-		return (VideoStreamingCodec) getObject(VideoStreamingCodec.class, KEY_CODEC);
-	}
+    public VideoStreamingFormat setCodec(@NonNull VideoStreamingCodec codec) {
+        setValue(KEY_CODEC, codec);
+        return this;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if(obj != null && obj instanceof VideoStreamingFormat){
-			VideoStreamingFormat compareTo = (VideoStreamingFormat) obj;
-			return getCodec() == compareTo.getCodec() && getProtocol() == compareTo.getProtocol();
-		}
-		return false;
-	}
+    public VideoStreamingCodec getCodec() {
+        return (VideoStreamingCodec) getObject(VideoStreamingCodec.class, KEY_CODEC);
+    }
 
-	@Override
-	public String toString() {
-		return "codec=" + String.valueOf(getCodec()) +
-				", protocol=" + String.valueOf(getProtocol());
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof VideoStreamingFormat) {
+            VideoStreamingFormat compareTo = (VideoStreamingFormat) obj;
+            return getCodec() == compareTo.getCodec() && getProtocol() == compareTo.getProtocol();
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "codec=" + getCodec() +
+                ", protocol=" + getProtocol();
+    }
 }

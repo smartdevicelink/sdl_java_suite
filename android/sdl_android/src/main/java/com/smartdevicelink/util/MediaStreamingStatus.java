@@ -43,7 +43,8 @@ import android.content.IntentFilter;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
 import android.os.Build;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -52,21 +53,22 @@ import java.util.List;
 
 /**
  * Possible improvements
- *
+ * <p>
  * - Narrow down list of acceptable audio devices
  * - Add ability to listen for when audio devices become available, and then connect
  * - Improve redundant calls to create String arrays for action arrays
  */
 
 public class MediaStreamingStatus {
+    private static final String TAG = "MediaStreamingStatus";
     private static final Object BROADCAST_RECEIVER_LOCK = new Object();
 
     private boolean broadcastReceiverValid = true;
-    private WeakReference<Context> contextWeakReference;
+    private final WeakReference<Context> contextWeakReference;
     private Callback callback;
-    private List<String> intentList;
+    private final List<String> intentList;
 
-    public MediaStreamingStatus(@NonNull Context context, @NonNull Callback callback){
+    public MediaStreamingStatus(@NonNull Context context, @NonNull Callback callback) {
         contextWeakReference = new WeakReference<>(context);
         this.callback = callback;
         intentList = new ArrayList<>();
@@ -74,7 +76,7 @@ public class MediaStreamingStatus {
         intentList.add(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
     }
 
-    public void clear(){
+    public void clear() {
         callback = null;
         unregisterBroadcastReceiver();
         contextWeakReference.clear();
@@ -107,18 +109,22 @@ public class MediaStreamingStatus {
     @SuppressLint("MissingPermission")
     public synchronized boolean isAudioOutputAvailable() {
         Context context = contextWeakReference.get();
-        if(context == null){ return false;}
+        if (context == null) {
+            return false;
+        }
 
         AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
         // If API level 23+ audio manager can iterate over all current devices to see if a supported
         // device is present.
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            AudioDeviceInfo[] deviceInfos = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
-            if(deviceInfos != null) {
-                for (AudioDeviceInfo deviceInfo : deviceInfos) {
-                    if (deviceInfo != null && isSupportedAudioDevice(deviceInfo.getType())) {
-                        return true;
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (audioManager != null) {
+                AudioDeviceInfo[] deviceInfos = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
+                if (deviceInfos != null) {
+                    for (AudioDeviceInfo deviceInfo : deviceInfos) {
+                        if (deviceInfo != null && isSupportedAudioDevice(deviceInfo.getType())) {
+                            return true;
+                        }
                     }
                 }
             }
@@ -126,30 +132,35 @@ public class MediaStreamingStatus {
         }
 
         //This means the SDK version is < M, and our min is 8 so this API is always available
-        return audioManager.isBluetoothA2dpOn();
+        if (audioManager != null) {
+            return audioManager.isBluetoothA2dpOn();
+        }
+
+        return false;
     }
 
     /**
      * This method will check to ensure that the device is supported. If possible, it will also
      * check against known variables and flags to ensure that that device is connected. This is
      * required as the AudioManager tends to be untrustworthy.
+     *
      * @param audioDevice
      * @return
      */
-    boolean isSupportedAudioDevice(int audioDevice){
-        DebugTool.logInfo("Audio device connected: " + audioDevice);
-        switch (audioDevice){
+    boolean isSupportedAudioDevice(int audioDevice) {
+        DebugTool.logInfo(TAG, "Audio device connected: " + audioDevice);
+        switch (audioDevice) {
             case AudioDeviceInfo.TYPE_BLUETOOTH_A2DP:
-              if(isBluetoothActuallyAvailable()) {
-                  setupBluetoothBroadcastReceiver();
-                  return true; //Make sure this doesn't fall to any other logic after this point
-              }
-              return false;
+                if (isBluetoothActuallyAvailable()) {
+                    setupBluetoothBroadcastReceiver();
+                    return true; //Make sure this doesn't fall to any other logic after this point
+                }
+                return false;
             case AudioDeviceInfo.TYPE_DOCK:
             case AudioDeviceInfo.TYPE_USB_ACCESSORY:
             case AudioDeviceInfo.TYPE_USB_DEVICE:
             case AudioDeviceInfo.TYPE_USB_HEADSET:
-                if(isUsbActuallyConnected()) {
+                if (isUsbActuallyConnected()) {
                     setupUSBBroadcastReceiver();
                     return true;
                 }
@@ -166,40 +177,35 @@ public class MediaStreamingStatus {
     }
 
     @SuppressLint("MissingPermission")
-    boolean isBluetoothActuallyAvailable(){
+    boolean isBluetoothActuallyAvailable() {
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-        if(adapter == null || !adapter.isEnabled() ){
+        if (adapter == null || !adapter.isEnabled()) {
             //False positive
             return false;
         }
-        if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH ){
-            int state = adapter.getProfileConnectionState(BluetoothProfile.A2DP);
-            if(state != BluetoothAdapter.STATE_CONNECTING && state != BluetoothAdapter.STATE_CONNECTED){
-                //False positive
-                return false;
-            }
+
+        int state = adapter.getProfileConnectionState(BluetoothProfile.A2DP);
+        if (state != BluetoothAdapter.STATE_CONNECTING && state != BluetoothAdapter.STATE_CONNECTED) {
+            //False positive
+            return false;
         }
 
         return true;
     }
 
-    boolean isUsbActuallyConnected(){
+    boolean isUsbActuallyConnected() {
         Context context = contextWeakReference.get();
-        if(context != null){
-           return AndroidTools.isUSBCableConnected(context);
+        if (context != null) {
+            return AndroidTools.isUSBCableConnected(context);
         }
         //default to true
         return true;
     }
 
 
-    private void setupBluetoothBroadcastReceiver(){
+    private void setupBluetoothBroadcastReceiver() {
         String[] actions = new String[4];
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            actions[0] = BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED;
-        }else{
-            actions[0] = "android.bluetooth.adapter.action.CONNECTION_STATE_CHANGED";
-        }
+        actions[0] = BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED;
         actions[1] = BluetoothAdapter.ACTION_STATE_CHANGED;
         actions[2] = BluetoothDevice.ACTION_ACL_DISCONNECTED;
         actions[3] = BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED;
@@ -207,37 +213,37 @@ public class MediaStreamingStatus {
         listenForIntents(actions);
     }
 
-    private void setupHeadsetBroadcastReceiver(){
+    private void setupHeadsetBroadcastReceiver() {
         String[] actions = new String[1];
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             actions[0] = AudioManager.ACTION_HEADSET_PLUG;
-        }else{
-            actions[0] =  "android.intent.action.HEADSET_PLUG";
+        } else {
+            actions[0] = "android.intent.action.HEADSET_PLUG";
         }
 
         listenForIntents(actions);
     }
 
-    private void setupUSBBroadcastReceiver(){
+    private void setupUSBBroadcastReceiver() {
         String[] actions = new String[1];
         actions[0] = Intent.ACTION_BATTERY_CHANGED;
 
         listenForIntents(actions);
     }
 
-    private void listenForIntents(@NonNull String[] actions){
-        if(intentList != null){
+    private void listenForIntents(@NonNull String[] actions) {
+        if (intentList != null) {
             //Add each intent
             int preAddSize = intentList.size();
 
-            for(String action : actions){
-                if(action != null && action.length() > 0 && !intentList.contains(action)){
+            for (String action : actions) {
+                if (action != null && action.length() > 0 && !intentList.contains(action)) {
                     intentList.add(action);
                 }
             }
 
-            if(preAddSize != intentList.size()){
-                synchronized (BROADCAST_RECEIVER_LOCK){
+            if (preAddSize != intentList.size()) {
+                synchronized (BROADCAST_RECEIVER_LOCK) {
                     broadcastReceiverValid = true;
                 }
                 updateBroadcastReceiver();
@@ -261,18 +267,18 @@ public class MediaStreamingStatus {
 
     }
 
-    private void unregisterBroadcastReceiver(){
+    private void unregisterBroadcastReceiver() {
         Context context = contextWeakReference.get();
-        if(context != null) {
-            try{
+        if (context != null) {
+            try {
                 context.unregisterReceiver(broadcastReceiver);
-            }catch (Exception e){
+            } catch (Exception e) {
                 //Ignore the exception
             }
         }
     }
 
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             synchronized (BROADCAST_RECEIVER_LOCK) {
@@ -293,7 +299,7 @@ public class MediaStreamingStatus {
     };
 
 
-    public interface Callback{
+    public interface Callback {
         void onAudioNoLongerAvailable();
     }
 

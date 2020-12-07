@@ -4,38 +4,42 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.SetCloudAppPropertiesResponse;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import org.json.JSONObject;
+import org.junit.Test;
+
+import static junit.framework.TestCase.assertNotNull;
 
 public class SetCloudAppPropertiesResponseTests extends BaseRpcTests {
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         return new SetCloudAppPropertiesResponse();
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_RESPONSE;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.SET_CLOUD_APP_PROPERTIES.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         return new JSONObject();
     }
 
     /**
      * Tests the expected values of the RPC message.
      */
-    public void testRpcValues () {
+    @Test
+    public void testRpcValues() {
         // Invalid/Null Tests
         SetCloudAppPropertiesResponse msg = new SetCloudAppPropertiesResponse();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
     }
 

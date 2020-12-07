@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -36,91 +36,89 @@ import java.util.EnumSet;
 /**
  * Specifies the language to be used for TTS, VR, displayed messages/menus
  *
- * 
  * @since SmartDeviceLink 1.0
- *
  */
 public enum Language {
-	/**
-	 * English - SA
-	 */
+    /**
+     * English - SA
+     */
 
-	EN_SA("EN-SA"),
+    EN_SA("EN-SA"),
 
-	/**
-	 * Hebrew - IL
-	 */
+    /**
+     * Hebrew - IL
+     */
 
-	HE_IL("HE-IL"),
+    HE_IL("HE-IL"),
 
-	/**
-	 * Romanian - RO
-	 */
+    /**
+     * Romanian - RO
+     */
 
-	RO_RO("RO-RO"),
+    RO_RO("RO-RO"),
 
-	/**
-	 * Ukrainian - UA
-	 */
+    /**
+     * Ukrainian - UA
+     */
 
-	UK_UA("UK-UA"),
+    UK_UA("UK-UA"),
 
-	/**
-	 * Indonesian - ID
-	 */
+    /**
+     * Indonesian - ID
+     */
 
-	ID_ID("ID-ID"),
+    ID_ID("ID-ID"),
 
-	/**
-	 * Vietnamese - VN
-	 */
+    /**
+     * Vietnamese - VN
+     */
 
-	VI_VN("VI-VN"),
+    VI_VN("VI-VN"),
 
-	/**
-	 * Malay - MY
-	 */
+    /**
+     * Malay - MY
+     */
 
-	MS_MY("MS-MY"),
+    MS_MY("MS-MY"),
 
-	/**
-	 * Hindi - IN
-	 */
+    /**
+     * Hindi - IN
+     */
 
-	HI_IN("HI-IN"),
+    HI_IN("HI-IN"),
 
-	/**
-	 * Dutch - BE
-	 */
+    /**
+     * Dutch - BE
+     */
 
-	NL_BE("NL-BE"),
+    NL_BE("NL-BE"),
 
-	/**
-	 * Greek - GR
-	 */
+    /**
+     * Greek - GR
+     */
 
-	EL_GR("EL-GR"),
+    EL_GR("EL-GR"),
 
-	/**
-	 * Hungarian - HU
-	 */
+    /**
+     * Hungarian - HU
+     */
 
-	HU_HU("HU-HU"),
+    HU_HU("HU-HU"),
 
-	/**
-	 * Finnish - FI
-	 */
+    /**
+     * Finnish - FI
+     */
 
-	FI_FI("FI-FI"),
+    FI_FI("FI-FI"),
 
-	/**
-	 * Slovak - SK
-	 */
+    /**
+     * Slovak - SK
+     */
 
-	SK_SK("SK-SK"),
-	/**
-	 * English - US
-	 */
+    SK_SK("SK-SK"),
+    /**
+     * English - US
+     */
 
     EN_US("EN-US"),
     /**
@@ -250,28 +248,30 @@ public enum Language {
     TH_TH("TH-TH");
 
     private final String VALUE;
-    
+
     private Language(String value) {
         this.VALUE = value;
     }
+
     /**
      * Returns a String representing a kind of Language
      */
     public String toString() {
         return this.VALUE;
     }
-    
+
     /**
      * Returns a Language's name
+     *
      * @param value a String
      * @return Language -EN-US, ES-MX or FR-CA
      */
     public static Language valueForString(String value) {
-        if(value == null){
+        if (value == null) {
             return null;
         }
-        
-    	for (Language anEnum : EnumSet.allOf(Language.class)) {
+
+        for (Language anEnum : EnumSet.allOf(Language.class)) {
             if (anEnum.toString().equals(value)) {
                 return anEnum;
             }

@@ -6,50 +6,58 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.DiagnosticMessageResponse;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.Hashtable;
 import java.util.List;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
+
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.DiagnosticMessageResponse}
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.proxy.rpc.DiagnosticMessageResponse}
  */
-public class DiagnosticMessageResponseTests extends BaseRpcTests{
+public class DiagnosticMessageResponseTests extends BaseRpcTests {
 
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         DiagnosticMessageResponse msg = new DiagnosticMessageResponse();
 
-        msg.setMessageDataResult(Test.GENERAL_INTEGER_LIST);
+        msg.setMessageDataResult(TestValues.GENERAL_INTEGER_LIST);
 
         return msg;
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_RESPONSE;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.DIAGNOSTIC_MESSAGE.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
+        try {
             result.put(DiagnosticMessageResponse.KEY_MESSAGE_DATA_RESULT,
-                    JsonUtils.createJsonArray(Test.GENERAL_INTEGER_LIST));
-        }catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+                    JsonUtils.createJsonArray(TestValues.GENERAL_INTEGER_LIST));
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -57,54 +65,56 @@ public class DiagnosticMessageResponseTests extends BaseRpcTests{
 
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {   
-    	// Test Values
-        List<Integer> cmdId = ( (DiagnosticMessageResponse) msg ).getMessageDataResult();
+     * Tests the expected values of the RPC message.
+     */
+    @Test
+    public void testRpcValues() {
+        // Test Values
+        List<Integer> cmdId = ((DiagnosticMessageResponse) msg).getMessageDataResult();
 
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_INTEGER_LIST.size(), cmdId.size());
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INTEGER_LIST.size(), cmdId.size());
 
-        for(int i = 0; i < Test.GENERAL_INTEGER_LIST.size(); i++){
-            assertEquals(Test.MATCH, Test.GENERAL_INTEGER_LIST.get(i), cmdId.get(i));
+        for (int i = 0; i < TestValues.GENERAL_INTEGER_LIST.size(); i++) {
+            assertEquals(TestValues.MATCH, TestValues.GENERAL_INTEGER_LIST.get(i), cmdId.get(i));
         }
-        
+
         // Invalid/Null Tests
         DiagnosticMessageResponse msg = new DiagnosticMessageResponse();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getMessageDataResult());
+        assertNull(TestValues.NULL, msg.getMessageDataResult());
     }
 
     /**
      * Tests a valid JSON construction of this RPC message.
      */
-    public void testJsonConstructor () {
-    	JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-    	assertNotNull(Test.NOT_NULL, commandJson);
-    	
-		try {
-			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
-			DiagnosticMessageResponse cmd = new DiagnosticMessageResponse(hash);
-			
-			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(Test.NOT_NULL, body);
-			
-			// Test everything in the json body.
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+    @Test
+    public void testJsonConstructor() {
+        JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
+        assertNotNull(TestValues.NOT_NULL, commandJson);
 
-			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			
-			List<Integer> dataResultList = JsonUtils.readIntegerListFromJsonObject(parameters, DiagnosticMessageResponse.KEY_MESSAGE_DATA_RESULT);
-			List<Integer> testResultList = cmd.getMessageDataResult();
-			
-			assertEquals(Test.MATCH, dataResultList.size(), testResultList.size());
-			assertTrue(Test.TRUE, Validator.validateIntegerList(dataResultList, testResultList));
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}    	
+        try {
+            Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
+            DiagnosticMessageResponse cmd = new DiagnosticMessageResponse(hash);
+
+            JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
+            assertNotNull(TestValues.NOT_NULL, body);
+
+            // Test everything in the json body.
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+
+            JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
+
+            List<Integer> dataResultList = JsonUtils.readIntegerListFromJsonObject(parameters, DiagnosticMessageResponse.KEY_MESSAGE_DATA_RESULT);
+            List<Integer> testResultList = cmd.getMessageDataResult();
+
+            assertEquals(TestValues.MATCH, dataResultList.size(), testResultList.size());
+            assertTrue(TestValues.TRUE, Validator.validateIntegerList(dataResultList, testResultList));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

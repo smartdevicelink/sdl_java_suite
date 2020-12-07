@@ -3,7 +3,8 @@ package com.smartdevicelink.transport;
 import android.content.ComponentName;
 import android.os.Looper;
 
-import com.smartdevicelink.AndroidTestCase2;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlPacketFactory;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -11,34 +12,57 @@ import com.smartdevicelink.test.SdlUnitTestContants;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.TransportRecord;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.util.Collections;
 import java.util.List;
 
-public class TransportManagerTests extends AndroidTestCase2 {
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+
+@RunWith(AndroidJUnit4.class)
+public class TransportManagerTests {
 
     MultiplexTransportConfig config;
     final TransportRecord defaultBtRecord = new TransportRecord(TransportType.BLUETOOTH, "12:34:56:78:90");
-    final ComponentName routerServiceComponentName = new ComponentName("com.smartdevicelink.test","com.smartdevicelink.test.SdlRouterService");
-    final SdlPacket defaultPacket = SdlPacketFactory.createStartSessionACK(SessionType.RPC,(byte)1,100,(byte)5);
+    final ComponentName routerServiceComponentName = new ComponentName("com.smartdevicelink.test", "com.smartdevicelink.test.SdlRouterService");
+    final SdlPacket defaultPacket = SdlPacketFactory.createStartSessionACK(SessionType.RPC, (byte) 1, 100, (byte) 5);
 
 
     TransportManager.TransportEventListener defaultListener = new TransportManager.TransportEventListener() {
         @Override
-        public void onPacketReceived(SdlPacket packet) { assertEquals(defaultPacket,packet);}
+        public void onPacketReceived(SdlPacket packet) {
+            assertEquals(defaultPacket, packet);
+        }
+
         @Override
-        public void onTransportConnected(List<TransportRecord> transports) {}
+        public void onTransportConnected(List<TransportRecord> transports) {
+        }
+
         @Override
-        public void onTransportDisconnected(String info, TransportRecord type, List<TransportRecord> connectedTransports) {}
+        public void onTransportDisconnected(String info, TransportRecord type, List<TransportRecord> connectedTransports) {
+        }
+
         @Override
-        public void onError(String info) {}
+        public void onError(String info) {
+        }
+
         @Override
-        public boolean onLegacyModeEnabled(String info) {return false; }
+        public boolean onLegacyModeEnabled(String info) {
+            return false;
+        }
     };
 
 
-    @Override
-    protected void setUp() throws Exception {
-        config = new MultiplexTransportConfig(this.mContext, SdlUnitTestContants.TEST_APP_ID);
+    @Before
+    public void setUp() throws Exception {
+        config = new MultiplexTransportConfig(getInstrumentation().getContext(), SdlUnitTestContants.TEST_APP_ID);
         config.setService(routerServiceComponentName);
         if (Looper.myLooper() == null) {
             Looper.prepare();
@@ -47,27 +71,29 @@ public class TransportManagerTests extends AndroidTestCase2 {
 
     }
 
-    public TransportManager createTransportManager(){
-        TransportManager manager = new TransportManager(config,defaultListener);
+    public TransportManager createTransportManager() {
+        TransportManager manager = new TransportManager(config, defaultListener);
 
         //The default listener returns false as legacy is unacceptable
         assertNull(manager.legacyBluetoothHandler);
 
         manager.exitLegacyMode("Test");
-        manager.transport = manager.new TransportBrokerImpl(mContext, config.appId, routerServiceComponentName);
+        manager.transport = manager.new TransportBrokerImpl(getInstrumentation().getContext(), config.appId, routerServiceComponentName);
 
         manager.start();
         assert true;
         return manager;
     }
 
-    public void testBase(){
-        TransportManager manager = new TransportManager(config,defaultListener);
+    @Test
+    public void testBase() {
+        TransportManager manager = new TransportManager(config, defaultListener);
         assertNotNull(manager);
     }
 
-    public void testConnectionStatus(){
-        TransportManager manager = new TransportManager(config,defaultListener);
+    @Test
+    public void testConnectionStatus() {
+        TransportManager manager = new TransportManager(config, defaultListener);
 
         manager.transportStatus.clear();
         manager.transportStatus.add(defaultBtRecord);
@@ -85,13 +111,14 @@ public class TransportManagerTests extends AndroidTestCase2 {
 
         assertFalse(manager.isHighBandwidthAvailable());
 
-        manager.transportStatus.add(new TransportRecord(TransportType.USB,"test"));
+        manager.transportStatus.add(new TransportRecord(TransportType.USB, "test"));
         assertTrue(manager.isHighBandwidthAvailable());
         assertNotNull(manager.getTransportRecord(TransportType.USB, null));
 
     }
 
-    public void testOnTransportConnections(){
+    @Test
+    public void testOnTransportConnections() {
 
         TransportManager manager = createTransportManager();
 
@@ -112,14 +139,14 @@ public class TransportManagerTests extends AndroidTestCase2 {
 
     }
 
-    public void testOnPacket(){
+    @Test
+    public void testOnPacket() {
         TransportManager manager = createTransportManager();
         assertNotNull(manager.transportListener);
 
         manager.transport.onPacketReceived(defaultPacket);
 
     }
-
 
 
 }

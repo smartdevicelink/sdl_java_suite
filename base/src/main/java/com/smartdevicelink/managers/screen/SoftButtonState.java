@@ -31,23 +31,23 @@
  */
 package com.smartdevicelink.managers.screen;
 
-import android.support.annotation.NonNull;
-import android.util.Log;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.SystemAction;
+import com.smartdevicelink.util.DebugTool;
 
 /**
  * <strong>SoftButtonState</strong> <br>
  * Defines an individual state for SoftButtonObject.<br>
  * The states of SoftButtonObject allow the developer to not have to manage multiple SoftButtons that have very similar functionality.<br>
  * For example, a repeat button in a music app can be thought of as one SoftButtonObject with three typical states: repeat off, repeat 1, and repeat on.<br>
+ *
  * @see SoftButtonObject
  */
 public class SoftButtonState {
-
     private static final String TAG = "SoftButtonState";
     private String name;
     private SdlArtwork artwork;
@@ -56,13 +56,14 @@ public class SoftButtonState {
     /**
      * Creates a new instance of SoftButtonState
      * Note: state names should be different for each SoftButtonObject
-     * @param name a String value represents name of the state
-     * @param text a String represents the text for the state
+     *
+     * @param name    a String value represents name of the state
+     * @param text    a String represents the text for the state
      * @param artwork an SdlArtwork represents the artwork for the state
      */
     public SoftButtonState(@NonNull String name, String text, SdlArtwork artwork) {
         if (text == null && artwork == null) {
-            Log.e(TAG, "Attempted to create an invalid soft button state: text and artwork are both null");
+            DebugTool.logError(TAG, "Attempted to create an invalid soft button state: text and artwork are both null");
             softButton = null;
             return;
         }
@@ -84,17 +85,20 @@ public class SoftButtonState {
 
         // Set the SoftButton's image
         if (artwork != null) {
-            softButton.setImage(artwork.getImageRPC());
+            this.softButton.setImage(artwork.getImageRPC());
         }
 
         // Set the SoftButton's text
         if (text != null) {
-            softButton.setText(text);
+            this.softButton.setText(text);
         }
+
+        this.softButton.setSystemAction(SystemAction.DEFAULT_ACTION);
     }
 
     /**
      * Get the state name
+     *
      * @return a String value represents the name of the state
      */
     public String getName() {
@@ -103,6 +107,7 @@ public class SoftButtonState {
 
     /**
      * Set the state name
+     *
      * @param name a String value represents the name of the state
      */
     public void setName(@NonNull String name) {
@@ -111,40 +116,45 @@ public class SoftButtonState {
 
     /**
      * Get whether or not the button should be highlighted on the UI
+     *
      * @return boolean representing whether or not the button should be highlighted
      */
-    public boolean getHighlighted(){
+    public boolean getHighlighted() {
         return this.getSoftButton().getIsHighlighted();
     }
 
     /**
      * Set whether or not the button should be highlighted on the UI
+     *
      * @param highlighted boolean representing whether or not the button should be highlighted
      */
-    public void setHighlighted(boolean highlighted){
+    public void setHighlighted(boolean highlighted) {
         this.getSoftButton().setIsHighlighted(highlighted);
     }
 
     /**
      * Get whether selecting a SoftButton shall call a specific system action
      * See {@link SystemAction}
+     *
      * @return SystemAction value representing whether selecting a SoftButton shall call a specific action
      */
-    public SystemAction getSystemAction(){
+    public SystemAction getSystemAction() {
         return this.getSoftButton().getSystemAction();
     }
 
     /**
      * Set whether selecting a SoftButton shall call a specific system action
      * See {@link SystemAction}
+     *
      * @param systemAction SystemAction value representing whether selecting a SoftButton shall call a specific action
      */
-    public void setSystemAction(SystemAction systemAction){
+    public void setSystemAction(SystemAction systemAction) {
         this.getSoftButton().setSystemAction(systemAction);
     }
 
     /**
      * Get the SoftButton for the state
+     *
      * @return a SoftButton object represents the SoftButton for the state
      */
     public SoftButton getSoftButton() {
@@ -153,6 +163,7 @@ public class SoftButtonState {
 
     /**
      * Get the Artwork for the state
+     *
      * @return an SdlArtwork object represents the artwork for the state
      */
     public SdlArtwork getArtwork() {
@@ -161,18 +172,20 @@ public class SoftButtonState {
 
     /**
      * Used to compile hashcode for SoftButtonState for use to compare in equals method
+     *
      * @return Custom hashcode of SoftButtonState variables
      */
     @Override
     public int hashCode() {
         int result = 1;
         result += ((getName() == null) ? 0 : Integer.rotateLeft(getName().hashCode(), 1));
-        result += ((getArtwork() == null) ? 0 : Integer.rotateLeft(getArtwork().hashCode(),2));
+        result += ((getArtwork() == null) ? 0 : Integer.rotateLeft(getArtwork().hashCode(), 2));
         return result;
     }
 
     /**
      * Uses our custom hashCode for SoftButtonState objects
+     *
      * @param o - The object to compare
      * @return boolean of whether the objects are the same or not
      */

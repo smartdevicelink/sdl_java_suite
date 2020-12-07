@@ -32,20 +32,22 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
+import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.util.DebugTool;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
 public class ChoiceSet {
+    private static final String TAG = "ChoiceSet";
     private String title;
     private List<TTSChunk> initialPrompt, timeoutPrompt, helpPrompt;
     private ChoiceSetLayout layout;
@@ -57,16 +59,16 @@ public class ChoiceSet {
     ChoiceSetCanceledListener canceledListener;
 
     // defaults
-    private Integer defaultTimeout = 10;
-    private ChoiceSetLayout defaultLayout = ChoiceSetLayout.CHOICE_SET_LAYOUT_LIST;
+    private final Integer defaultTimeout = 10;
+    private final ChoiceSetLayout defaultLayout = ChoiceSetLayout.CHOICE_SET_LAYOUT_LIST;
 
     /**
      * Initialize with a title, listener, and choices. It will use the default timeout and layout,
      * all other properties (such as prompts) will be `null`.
      *
-     * @param title - The choice set's title
+     * @param title    - The choice set's title
      * @param listener - The choice set listener called after the user has interacted with your choice set
-     * @param choices - The choices to be displayed to the user for interaction
+     * @param choices  - The choices to be displayed to the user for interaction
      */
     public ChoiceSet(@NonNull String title, @NonNull List<ChoiceCell> choices, @NonNull ChoiceSetSelectionListener listener) {
 
@@ -85,15 +87,15 @@ public class ChoiceSet {
     /**
      * Constructor  with all possible properties.
      *
-     * @param title - The choice set's title
-     * @param listener - The choice set listener called after the user has interacted with your choice set
-     * @param layout - The layout of choice options (Manual/touch only)
-     * @param timeout - The timeout of a touch interaction (Manual/touch only). <strong>This is set to seconds if using the screen manager.</strong>
-     * @param initialPrompt - A voice prompt spoken to the user when this set is displayed
-     * @param timeoutPrompt - A voice prompt spoken to the user when the set times out (Voice only)
-     * @param helpPrompt - A voice prompt spoken to the user when the user asks for "help"
-     * @param helpList - A table list of text and images shown to the user during a voice recognition session for this choice set (Voice only)
-     * @param choices - The list of choices presented to the user either as a manual/touch interaction or via the user's voice
+     * @param title                       - The choice set's title
+     * @param listener                    - The choice set listener called after the user has interacted with your choice set
+     * @param layout                      - The layout of choice options (Manual/touch only)
+     * @param timeout                     - The timeout of a touch interaction (Manual/touch only). <strong>This is set to seconds if using the screen manager.</strong>
+     * @param initialPrompt               - A voice prompt spoken to the user when this set is displayed
+     * @param timeoutPrompt               - A voice prompt spoken to the user when the set times out (Voice only)
+     * @param helpPrompt                  - A voice prompt spoken to the user when the user asks for "help"
+     * @param helpList                    - A table list of text and images shown to the user during a voice recognition session for this choice set (Voice only)
+     * @param choices                     - The list of choices presented to the user either as a manual/touch interaction or via the user's voice
      * @param customKeyboardConfiguration - Implement this in order to provide a custom keyboard configuration to just this keyboard. To apply default settings to all keyboards, see ScreenManager.setKeyboardConfiguration
      */
     public ChoiceSet(@NonNull String title, @Nullable ChoiceSetLayout layout, @Nullable Integer timeout, @Nullable String initialPrompt, @Nullable String timeoutPrompt, @Nullable String helpPrompt, @Nullable List<VrHelpItem> helpList, @Nullable KeyboardProperties customKeyboardConfiguration, @NonNull List<ChoiceCell> choices, @NonNull ChoiceSetSelectionListener listener) {
@@ -106,16 +108,16 @@ public class ChoiceSet {
         setCustomKeyboardConfiguration(customKeyboardConfiguration);
 
         // Help the dev by creating TTS chunks for them
-        if (initialPrompt != null){
-            setInitialPrompt(TTSChunkFactory.createSimpleTTSChunks(initialPrompt));
+        if (initialPrompt != null) {
+            setInitialPrompt(Collections.singletonList(new TTSChunk(initialPrompt, SpeechCapabilities.TEXT)));
         }
 
-        if (timeoutPrompt != null){
-            setTimeoutPrompt(TTSChunkFactory.createSimpleTTSChunks(timeoutPrompt));
+        if (timeoutPrompt != null) {
+            setTimeoutPrompt(Collections.singletonList(new TTSChunk(timeoutPrompt, SpeechCapabilities.TEXT)));
         }
 
-        if (helpPrompt != null){
-            setHelpPrompt(TTSChunkFactory.createSimpleTTSChunks(helpPrompt));
+        if (helpPrompt != null) {
+            setHelpPrompt(Collections.singletonList(new TTSChunk(helpPrompt, SpeechCapabilities.TEXT)));
         }
 
         // things to do
@@ -126,15 +128,15 @@ public class ChoiceSet {
     /**
      * Constructor  with all possible properties.
      *
-     * @param title - The choice set's title
-     * @param listener - The choice set listener called after the user has interacted with your choice set
-     * @param layout - The layout of choice options (Manual/touch only)
-     * @param timeout - The timeout of a touch interaction (Manual/touch only). <strong>This is set to seconds if using the screen manager.</strong>
-     * @param initialPrompt - A voice prompt spoken to the user when this set is displayed
-     * @param timeoutPrompt - A voice prompt spoken to the user when the set times out (Voice only)
-     * @param helpPrompt - A voice prompt spoken to the user when the user asks for "help"
-     * @param helpList - A table list of text and images shown to the user during a voice recognition session for this choice set (Voice only)
-     * @param choices - The list of choices presented to the user either as a manual/touch interaction or via the user's voice
+     * @param title                       - The choice set's title
+     * @param listener                    - The choice set listener called after the user has interacted with your choice set
+     * @param layout                      - The layout of choice options (Manual/touch only)
+     * @param timeout                     - The timeout of a touch interaction (Manual/touch only). <strong>This is set to seconds if using the screen manager.</strong>
+     * @param initialPrompt               - A voice prompt spoken to the user when this set is displayed
+     * @param timeoutPrompt               - A voice prompt spoken to the user when the set times out (Voice only)
+     * @param helpPrompt                  - A voice prompt spoken to the user when the user asks for "help"
+     * @param helpList                    - A table list of text and images shown to the user during a voice recognition session for this choice set (Voice only)
+     * @param choices                     - The list of choices presented to the user either as a manual/touch interaction or via the user's voice
      * @param customKeyboardConfiguration - Implement this in order to provide a custom keyboard configuration to just this keyboard. To apply default settings to all keyboards, see ScreenManager.setKeyboardConfiguration
      */
     public ChoiceSet(@NonNull String title, @Nullable ChoiceSetLayout layout, @Nullable Integer timeout, @Nullable List<TTSChunk> initialPrompt, @Nullable List<TTSChunk> timeoutPrompt, @Nullable List<TTSChunk> helpPrompt, @Nullable List<VrHelpItem> helpList, @Nullable KeyboardProperties customKeyboardConfiguration, @NonNull List<ChoiceCell> choices, @NonNull ChoiceSetSelectionListener listener) {
@@ -166,6 +168,7 @@ public class ChoiceSet {
 
     /**
      * Maps to PerformInteraction.initialText. The title of the choice set, and/or the initial text on a keyboard prompt.
+     *
      * @return the title
      */
     public String getTitle() {
@@ -182,6 +185,7 @@ public class ChoiceSet {
 
     /**
      * Maps to PerformInteraction.initialPrompt. The initial prompt spoken to the user at the start of an interaction.
+     *
      * @return The list of TTSChunks
      */
     public List<TTSChunk> getInitialPrompt() {
@@ -198,6 +202,7 @@ public class ChoiceSet {
     /**
      * Maps to PerformInteraction.timeoutPrompt. This text is spoken when a VR interaction times out.
      * If this set is presented in a manual (non-voice) only interaction, this will be ignored.
+     *
      * @return - The list of TTS Chunks
      */
     public List<TTSChunk> getTimeoutPrompt() {
@@ -206,7 +211,7 @@ public class ChoiceSet {
 
     /**
      * @param timeoutPrompt - Maps to PerformInteraction.timeoutPrompt. This text is spoken when a
-     * VR interaction times out. If this set is presented in a manual (non-voice) only interaction, this will be ignored.
+     *                      VR interaction times out. If this set is presented in a manual (non-voice) only interaction, this will be ignored.
      */
     public void setTimeoutPrompt(List<TTSChunk> timeoutPrompt) {
         this.timeoutPrompt = timeoutPrompt;
@@ -214,6 +219,7 @@ public class ChoiceSet {
 
     /**
      * Maps to PerformInteraction.helpPrompt. This is the spoken string when a user speaks "help" when the interaction is occurring.
+     *
      * @return The List of TTS Chunks
      */
     public List<TTSChunk> getHelpPrompt() {
@@ -222,7 +228,7 @@ public class ChoiceSet {
 
     /**
      * @param helpPrompt - Maps to PerformInteraction.helpPrompt. This is the spoken string when a user
-     * speaks "help" when the interaction is occurring.
+     *                   speaks "help" when the interaction is occurring.
      */
     public void setHelpPrompt(List<TTSChunk> helpPrompt) {
         this.helpPrompt = helpPrompt;
@@ -232,7 +238,7 @@ public class ChoiceSet {
      * Maps to PerformInteraction.vrHelp. This is a list of help text presented to the user when
      * they are in a voice recognition interaction from your choice set of options. If this set is
      * presented in a touch only interaction, this will be ignored.
-     *
+     * <p>
      * Note: That while VRHelpItem's position will be automatically set based on position in the
      * array, the image will need to uploaded by you before use using the FileManager.
      *
@@ -244,11 +250,11 @@ public class ChoiceSet {
 
     /**
      * @param vrHelpList - Maps to PerformInteraction.vrHelp. This is a list of help text presented to the user when
-     * they are in a voice recognition interaction from your choice set of options. If this set is
-     * presented in a touch only interaction, this will be ignored.
-     *
-     * Note: That while SDLVRHelpItem's position will be automatically set based on position in the
-     * array, the image will need to uploaded by you before use using the FileManager.
+     *                   they are in a voice recognition interaction from your choice set of options. If this set is
+     *                   presented in a touch only interaction, this will be ignored.
+     *                   <p>
+     *                   Note: That while SDLVRHelpItem's position will be automatically set based on position in the
+     *                   array, the image will need to uploaded by you before use using the FileManager.
      */
     public void setVrHelpList(List<VrHelpItem> vrHelpList) {
         this.vrHelpList = setUpHelpItems(vrHelpList);
@@ -257,6 +263,7 @@ public class ChoiceSet {
     /**
      * Maps to PerformInteraction.interactionLayout. Whether the presented choices are arranged as
      * a set of tiles or a list.
+     *
      * @return The ChoiceSetLayout
      */
     public ChoiceSetLayout getLayout() {
@@ -265,10 +272,10 @@ public class ChoiceSet {
 
     /**
      * @param layout - Maps to PerformInteraction.interactionLayout. Whether the presented choices
-     * are arranged as a set of tiles or a list.
+     *               are arranged as a set of tiles or a list.
      */
     public void setLayout(ChoiceSetLayout layout) {
-        if (layout == null){
+        if (layout == null) {
             this.layout = defaultLayout;
         } else {
             this.layout = layout;
@@ -278,6 +285,7 @@ public class ChoiceSet {
     /**
      * Maps to PerformInteraction.timeout. This applies only to a manual selection (not a voice
      * selection, which has its timeout handled by the system). Defaults to `defaultTimeout`.
+     *
      * @return The Timeout
      */
     public Integer getTimeout() {
@@ -286,8 +294,8 @@ public class ChoiceSet {
 
     /**
      * @param timeout - Maps to PerformInteraction.timeout. This applies only to a manual selection
-     * (not a voice selection, which has its timeout handled by the system). Defaults to `defaultTimeout`.
-     * <strong>This is set to seconds if using the screen manager.</strong>
+     *                (not a voice selection, which has its timeout handled by the system). Defaults to `defaultTimeout`.
+     *                <strong>This is set to seconds if using the screen manager.</strong>
      */
     public void setTimeout(Integer timeout) {
         if (timeout == null) {
@@ -301,9 +309,10 @@ public class ChoiceSet {
     /**
      * The choices to be displayed to the user within this choice set. These choices could match
      * those already preloaded
-     *
+     * <p>
      * This is limited to 100 items. If you attempt to set more than 100 items, the set will not
      * have any items (this array will be empty).
+     *
      * @return The List of ChoiceCells
      */
     public List<ChoiceCell> getChoices() {
@@ -312,10 +321,10 @@ public class ChoiceSet {
 
     /**
      * @param choices - The choices to be displayed to the user within this choice set. These choices could match
-     * those already preloaded
-     *
-     * This is limited to 100 items. If you attempt to set more than 100 items, the set will not
-     * have any items (this array will be empty).
+     *                those already preloaded
+     *                <p>
+     *                This is limited to 100 items. If you attempt to set more than 100 items, the set will not
+     *                have any items (this array will be empty).
      */
     public void setChoices(List<ChoiceCell> choices) {
         this.choices = choices;
@@ -324,6 +333,7 @@ public class ChoiceSet {
 
     /**
      * The listener of this choice set, called when the user interacts with it.
+     *
      * @return The listener
      */
     public ChoiceSetSelectionListener getChoiceSetSelectionListener() {
@@ -340,6 +350,7 @@ public class ChoiceSet {
     /**
      * Implement this in order to provide a custom keyboard configuration to just this keyboard.
      * To apply default settings to all keyboards, see ScreenManager.setKeyboardConfiguration
+     *
      * @param customKeyboardConfiguration - the keyboard config used for this choice set
      */
     public void setCustomKeyboardConfiguration(KeyboardProperties customKeyboardConfiguration) {
@@ -349,6 +360,7 @@ public class ChoiceSet {
     /**
      * Implement this in order to provide a custom keyboard configuration to just this keyboard.
      * To apply default settings to all keyboards, see ScreenManager.setKeyboardConfiguration
+     *
      * @return the custom keyboard configuration
      */
     public KeyboardProperties getCustomKeyboardConfiguration() {
@@ -357,27 +369,27 @@ public class ChoiceSet {
 
     // HELPERS
 
-    private void checkChoiceSetParameters(){
+    private void checkChoiceSetParameters() {
         if (DebugTool.isDebugEnabled()) {
             if (getTitle() != null) {
                 if (getTitle().length() == 0 || getTitle().length() > 500) {
-                    DebugTool.logWarning("Attempted to create a choice set with a title of " + getTitle().length() + " length. Only 500 characters are supported.");
+                    DebugTool.logWarning(TAG, "Attempted to create a choice set with a title of " + getTitle().length() + " length. Only 500 characters are supported.");
                 }
             }
             if (getTimeout() != null) {
                 if (getTimeout() < 5 || getTimeout() > 100) {
-                    DebugTool.logWarning("Attempted to create a choice set with a " + getTimeout() + " second timeout; Only 5 - 100 seconds is valid");
+                    DebugTool.logWarning(TAG, "Attempted to create a choice set with a " + getTimeout() + " second timeout; Only 5 - 100 seconds is valid");
                 }
             }
             if (getChoices() != null) {
                 if (getChoices().size() == 0 || getChoices().size() > 100) {
-                    DebugTool.logWarning("Attempted to create a choice set with "+getChoices().size()+" choices; Only 1 - 100 choices are valid");
+                    DebugTool.logWarning(TAG, "Attempted to create a choice set with " + getChoices().size() + " choices; Only 1 - 100 choices are valid");
                 }
             }
         }
     }
 
-    private List<VrHelpItem> setUpHelpItems(List<VrHelpItem> helpItems){
+    private List<VrHelpItem> setUpHelpItems(List<VrHelpItem> helpItems) {
         List<VrHelpItem> clonedHelpItems = null;
         VrHelpItem clonedHelpItem;
         if (helpItems != null) {
@@ -396,5 +408,4 @@ public class ChoiceSet {
         }
         return clonedHelpItems;
     }
-
 }

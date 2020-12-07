@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -35,39 +35,40 @@ import java.util.EnumSet;
 
 /**
  * Describes different bit depth options for PerformAudioPassThru.
- *  @see com.smartdevicelink.proxy.rpc.PerformAudioPassThru
- *  @since SmartDeviceLink 2.0
+ *
+ * @see com.smartdevicelink.proxy.rpc.PerformAudioPassThru
+ * @since SmartDeviceLink 2.0
  */
 public enum BitsPerSample {
-	/**
-	 * 8 bits per sample
-	 * 
-	 * @since SmartDeviceLink 2.0
-	 */
-	_8_BIT("8_BIT"),
-	/**
-	 * 16 bits per sample
-	 * 
-	 * @since SmartDeviceLink 2.0
-	 */
-	_16_BIT("16_BIT");
+    /**
+     * 8 bits per sample
+     *
+     * @since SmartDeviceLink 2.0
+     */
+    _8_BIT("8_BIT"),
+    /**
+     * 16 bits per sample
+     *
+     * @since SmartDeviceLink 2.0
+     */
+    _16_BIT("16_BIT");
 
     private final String VALUE;
-    
+
     private BitsPerSample(String value) {
         this.VALUE = value;
     }
-    
+
     public String toString() {
         return this.VALUE;
     }
-    
+
     public static BitsPerSample valueForString(String value) {
-        if(value == null){
+        if (value == null) {
             return null;
         }
-        
-    	for (BitsPerSample anEnum : EnumSet.allOf(BitsPerSample.class)) {
+
+        for (BitsPerSample anEnum : EnumSet.allOf(BitsPerSample.class)) {
             if (anEnum.toString().equals(value)) {
                 return anEnum;
             }

@@ -58,6 +58,7 @@ class StructsProducer(InterfaceProducerCommon):
         render['imports'] = imports
         render['deprecated'] = item.deprecated
         render['since'] = item.since
+        render['history'] = item.history
 
         description = self.extract_description(item.description)
         if description:
@@ -76,9 +77,9 @@ class StructsProducer(InterfaceProducerCommon):
 
     def sort_imports(self, imports: set):
         sorted_imports = []
-        if 'android.support.annotation.NonNull' in imports:
-            sorted_imports.append('android.support.annotation.NonNull')
-            imports.remove('android.support.annotation.NonNull')
+        if 'androidx.annotation.NonNull' in imports:
+            sorted_imports.append('androidx.annotation.NonNull')
+            imports.remove('androidx.annotation.NonNull')
             sorted_imports.append('')
         tmp = []
         for i in imports:
@@ -104,8 +105,9 @@ class StructsProducer(InterfaceProducerCommon):
         if param.since:
             p['since'] = param.since
         p['deprecated'] = param.deprecated
+        p['history'] = param.history
         p['origin'] = param.origin
-
+        p['values'] = self.extract_values(param)
         d = self.extract_description(param.description)
         if d:
             p['description'] = textwrap.wrap(d, 90)
@@ -124,7 +126,7 @@ class StructsProducer(InterfaceProducerCommon):
         if tr in self.struct_names:
             imports.add('{}.{}'.format(self.structs_package, tr))
         if param.is_mandatory:
-            imports.add('android.support.annotation.NonNull')
+            imports.add('androidx.annotation.NonNull')
 
         Params = namedtuple('Params', sorted(p))
         return imports, Params(**p)

@@ -34,16 +34,16 @@ package com.smartdevicelink.streaming.audio;
  * Enum for each type of audio streaming codec.
  */
 public enum AudioStreamingCodec {
-	/**
-	 * Linear-PCM without any compression.
-	 */
-	LPCM;
+    /**
+     * Linear-PCM without any compression.
+     */
+    LPCM;
 
-	public static AudioStreamingCodec valueForString(String value) {
-		try {
-			return valueOf(value);
-		} catch (Exception e) {
-			return null;
-		}
-	}
+    public static AudioStreamingCodec valueForString(String value) {
+        try {
+            return valueOf(value);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

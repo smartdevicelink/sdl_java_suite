@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,22 +31,26 @@
  */
 package com.smartdevicelink.protocol.heartbeat;
 
+import androidx.annotation.RestrictTo;
+
 /**
  * Listener (aka delegate) that actually knows how to work with the outside
  * world.
  */
+
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public interface IHeartbeatMonitorListener {
     /**
      * The listener should create and send a heartbeat message.
      *
      * @param monitor the caller
      */
-    public void sendHeartbeat(IHeartbeatMonitor monitor);
+    void sendHeartbeat(IHeartbeatMonitor monitor);
 
     /**
      * Notifies the listener that the heartbeat timed out.
      *
      * @param monitor the caller
      */
-    public void heartbeatTimedOut(IHeartbeatMonitor monitor);
+    void heartbeatTimedOut(IHeartbeatMonitor monitor);
 }

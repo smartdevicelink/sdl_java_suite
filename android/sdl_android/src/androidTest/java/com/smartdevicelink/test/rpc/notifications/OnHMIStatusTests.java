@@ -8,89 +8,96 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingState;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.util.Version;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.fail;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.OnHMIStatus}
  */
-public class OnHMIStatusTests extends BaseRpcTests{
+public class OnHMIStatusTests extends BaseRpcTests {
 
-	@Override
-    protected RPCMessage createMessage(){
+    @Override
+    protected RPCMessage createMessage() {
         OnHMIStatus msg = new OnHMIStatus();
 
-        msg.setAudioStreamingState(Test.GENERAL_AUDIOSTREAMINGSTATE);
-        msg.setVideoStreamingState(Test.GENERAL_VIDEOSTREAMINGSTATE);
-        msg.setFirstRun(Test.GENERAL_BOOLEAN);
-        msg.setHmiLevel(Test.GENERAL_HMILEVEL);
-        msg.setSystemContext(Test.GENERAL_SYSTEMCONTEXT);
-        msg.setWindowID(Test.GENERAL_INT);
+        msg.setAudioStreamingState(TestValues.GENERAL_AUDIOSTREAMINGSTATE);
+        msg.setVideoStreamingState(TestValues.GENERAL_VIDEOSTREAMINGSTATE);
+        msg.setFirstRun(TestValues.GENERAL_BOOLEAN);
+        msg.setHmiLevel(TestValues.GENERAL_HMILEVEL);
+        msg.setSystemContext(TestValues.GENERAL_SYSTEMCONTEXT);
+        msg.setWindowID(TestValues.GENERAL_INT);
 
         return msg;
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_NOTIFICATION;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.ON_HMI_STATUS.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
-            result.put(OnHMIStatus.KEY_AUDIO_STREAMING_STATE, Test.GENERAL_AUDIOSTREAMINGSTATE);
-            result.put(OnHMIStatus.KEY_VIDEO_STREAMING_STATE, Test.GENERAL_VIDEOSTREAMINGSTATE);
-            result.put(OnHMIStatus.KEY_HMI_LEVEL, Test.GENERAL_HMILEVEL);
-            result.put(OnHMIStatus.KEY_SYSTEM_CONTEXT, Test.GENERAL_SYSTEMCONTEXT);
-            result.put(OnHMIStatus.KEY_WINDOW_ID, Test.GENERAL_INT);
-        }catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        try {
+            result.put(OnHMIStatus.KEY_AUDIO_STREAMING_STATE, TestValues.GENERAL_AUDIOSTREAMINGSTATE);
+            result.put(OnHMIStatus.KEY_VIDEO_STREAMING_STATE, TestValues.GENERAL_VIDEOSTREAMINGSTATE);
+            result.put(OnHMIStatus.KEY_HMI_LEVEL, TestValues.GENERAL_HMILEVEL);
+            result.put(OnHMIStatus.KEY_SYSTEM_CONTEXT, TestValues.GENERAL_SYSTEMCONTEXT);
+            result.put(OnHMIStatus.KEY_WINDOW_ID, TestValues.GENERAL_INT);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
 
         return result;
     }
 
     /**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {       	
-    	// Test Values
-        AudioStreamingState audioStreamingState = ( (OnHMIStatus) msg ).getAudioStreamingState();
-        VideoStreamingState videoStreamingState = ( (OnHMIStatus) msg ).getVideoStreamingState();
-        HMILevel hmiLevel = ( (OnHMIStatus) msg ).getHmiLevel();
-        SystemContext context = ( (OnHMIStatus) msg ).getSystemContext();
-        int testWindowID = ( (OnHMIStatus) msg ).getWindowID();
-        
+     * Tests the expected values of the RPC message.
+     */
+    @Test
+    public void testRpcValues() {
+        // Test Values
+        AudioStreamingState audioStreamingState = ((OnHMIStatus) msg).getAudioStreamingState();
+        VideoStreamingState videoStreamingState = ((OnHMIStatus) msg).getVideoStreamingState();
+        HMILevel hmiLevel = ((OnHMIStatus) msg).getHmiLevel();
+        SystemContext context = ((OnHMIStatus) msg).getSystemContext();
+        int testWindowID = ((OnHMIStatus) msg).getWindowID();
+
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_AUDIOSTREAMINGSTATE, audioStreamingState);
-        assertEquals(Test.MATCH, Test.GENERAL_VIDEOSTREAMINGSTATE, videoStreamingState);
-        assertEquals(Test.MATCH, Test.GENERAL_HMILEVEL, hmiLevel);
-        assertEquals(Test.MATCH, Test.GENERAL_SYSTEMCONTEXT, context);
-        assertEquals(Test.MATCH, Test.GENERAL_INT, testWindowID);
-   
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_AUDIOSTREAMINGSTATE, audioStreamingState);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_VIDEOSTREAMINGSTATE, videoStreamingState);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_HMILEVEL, hmiLevel);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_SYSTEMCONTEXT, context);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, testWindowID);
+
         // Invalid/Null Tests
         OnHMIStatus msg = new OnHMIStatus();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getAudioStreamingState());
+        assertNull(TestValues.NULL, msg.getAudioStreamingState());
 
-        assertNull(Test.NULL, msg.getVideoStreamingState());
-        msg.format(new Version(4,5,0),true);
-        assertEquals(Test.MATCH, VideoStreamingState.STREAMABLE, msg.getVideoStreamingState());
-        assertNull(Test.NULL, msg.getHmiLevel());
-        assertNull(Test.NULL, msg.getSystemContext());
-        assertNull(Test.NULL, msg.getWindowID());
+        assertNull(TestValues.NULL, msg.getVideoStreamingState());
+        msg.format(new Version(4, 5, 0), true);
+        assertEquals(TestValues.MATCH, VideoStreamingState.STREAMABLE, msg.getVideoStreamingState());
+        assertNull(TestValues.NULL, msg.getHmiLevel());
+        assertNull(TestValues.NULL, msg.getSystemContext());
+        assertNull(TestValues.NULL, msg.getWindowID());
     }
 }

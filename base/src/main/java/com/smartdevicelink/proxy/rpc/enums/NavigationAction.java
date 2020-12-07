@@ -33,30 +33,30 @@ package com.smartdevicelink.proxy.rpc.enums;
 
 public enum NavigationAction {
 
-	/**
-	 * Using this action plus a supplied direction can give the type of turn.
-	 */
-	TURN,
+    /**
+     * Using this action plus a supplied direction can give the type of turn.
+     */
+    TURN,
 
-	EXIT,
+    EXIT,
 
-	STAY,
+    STAY,
 
-	MERGE,
+    MERGE,
 
-	FERRY,
+    FERRY,
 
-	CAR_SHUTTLE_TRAIN,
+    CAR_SHUTTLE_TRAIN,
 
-	WAYPOINT,
+    WAYPOINT,
 
-	;
+    ;
 
-	public static NavigationAction valueForString(String value) {
-		try{
-			return valueOf(value);
-		}catch(Exception e){
-			return null;
-		}
-	}
+    public static NavigationAction valueForString(String value) {
+        try {
+            return valueOf(value);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

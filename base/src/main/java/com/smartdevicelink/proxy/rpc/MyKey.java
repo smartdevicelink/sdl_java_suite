@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,13 +31,15 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataStatus;
 
 import java.util.Hashtable;
-/** Information related to the MyKey feature.
+
+/**
+ * Information related to the MyKey feature.
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -50,33 +52,35 @@ import java.util.Hashtable;
  * 			<td>e911Override</td>
  * 			<td>VehicleDataStatus</td>
  * 			<td>true</td>
- *			<td>Indicates whether e911 override is on.</td>
+ * 			<td>Indicates whether e911 override is on.</td>
  * 		</tr>
  *  </table>
  *
- *@since SmartDeviceLink 2.0
- *
- *@see GetVehicleData
- *@see OnVehicleData
- *@see VehicleDataStatus
- * 
- *
+ * @see GetVehicleData
+ * @see OnVehicleData
+ * @see VehicleDataStatus
+ * @since SmartDeviceLink 2.0
  */
 
 public class MyKey extends RPCStruct {
     public static final String KEY_E_911_OVERRIDE = "e911Override";
-	/**
-	* Constructs a new MyKey object indicated
-	*/
-    public MyKey() { }
+
+    /**
+     * Constructs a new MyKey object indicated
+     */
+    public MyKey() {
+    }
+
     /**
      * <p>Constructs a new MyKey object indicated by the Hashtable
      * parameter</p>
+     *
      * @param hash The Hashtable to use
      */
     public MyKey(Hashtable<String, Object> hash) {
         super(hash);
     }
+
     /**
      * Constructs a new MyKey object indicated
      */
@@ -84,9 +88,12 @@ public class MyKey extends RPCStruct {
         this();
         setE911Override(e911Override);
     }
-    public void setE911Override(@NonNull VehicleDataStatus e911Override) {
+
+    public MyKey setE911Override(@NonNull VehicleDataStatus e911Override) {
         setValue(KEY_E_911_OVERRIDE, e911Override);
+        return this;
     }
+
     public VehicleDataStatus getE911Override() {
         return (VehicleDataStatus) getObject(VehicleDataStatus.class, KEY_E_911_OVERRIDE);
     }

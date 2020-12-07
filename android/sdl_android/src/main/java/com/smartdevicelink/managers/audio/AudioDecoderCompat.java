@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -35,12 +35,11 @@ import android.content.Context;
 import android.media.MediaCodec;
 import android.media.MediaFormat;
 import android.net.Uri;
-import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.managers.audio.AudioStreamManager.SampleType;
+import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
@@ -49,7 +48,6 @@ import java.nio.ByteBuffer;
  * The audio decoder to decode a single audio file to PCM.
  * This decoder supports phones with api < 21 but uses methods deprecated with api 21.
  */
-@RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
 public class AudioDecoderCompat extends BaseAudioDecoder {
     private static final String TAG = AudioDecoderCompat.class.getSimpleName();
     private static final int DEQUEUE_TIMEOUT = 3000;
@@ -58,11 +56,12 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
 
     /**
      * Creates a new object of AudioDecoder.
+     *
      * @param audioSource The audio source to decode.
-     * @param context The context object to use to open the audio source.
-     * @param sampleRate The desired sample rate for decoded audio data.
-     * @param sampleType The desired sample type (8bit, 16bit, float).
-     * @param listener A listener who receives the decoded audio.
+     * @param context     The context object to use to open the audio source.
+     * @param sampleRate  The desired sample rate for decoded audio data.
+     * @param sampleType  The desired sample type (8bit, 16bit, float).
+     * @param listener    A listener who receives the decoded audio.
      */
     AudioDecoderCompat(@NonNull Uri audioSource, @NonNull Context context, int sampleRate, @SampleType int sampleType, AudioDecoderListener listener) {
         super(audioSource, context, sampleRate, sampleType, listener);
@@ -80,7 +79,7 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
 
         } catch (Exception e) {
             e.printStackTrace();
-            if(this.listener != null) {
+            if (this.listener != null) {
                 this.listener.onDecoderError(e);
                 this.listener.onDecoderFinish(false);
             }
@@ -93,21 +92,23 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
      * Runnable to decode audio data
      */
     private static class DecoderRunnable implements Runnable {
-        WeakReference<AudioDecoderCompat> weakReference;
+        final WeakReference<AudioDecoderCompat> weakReference;
 
         /**
          * Decodes all audio data from source
+         *
          * @param audioDecoderCompat instance of this class
          */
-        DecoderRunnable(@NonNull AudioDecoderCompat audioDecoderCompat){
+        DecoderRunnable(@NonNull AudioDecoderCompat audioDecoderCompat) {
             weakReference = new WeakReference<>(audioDecoderCompat);
 
         }
+
         @Override
         public void run() {
             final AudioDecoderCompat reference = weakReference.get();
             if (reference == null) {
-                Log.w(TAG, "AudioDecoderCompat reference was null");
+                DebugTool.logWarning(TAG, "AudioDecoderCompat reference was null");
                 return;
             }
             final ByteBuffer[] inputBuffersArray = reference.decoder.getInputBuffers();
@@ -117,7 +118,7 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
             ByteBuffer inputBuffer, outputBuffer;
             SampleBuffer sampleBuffer;
 
-            while (reference!= null && !reference.mThread.isInterrupted()) {
+            while (reference != null && !reference.mThread.isInterrupted()) {
                 int inputBuffersArrayIndex = 0;
                 while (inputBuffersArrayIndex != MediaCodec.INFO_TRY_AGAIN_LATER) {
                     inputBuffersArrayIndex = reference.decoder.dequeueInputBuffer(DEQUEUE_TIMEOUT);
@@ -137,7 +138,7 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
                             reference.decoder.releaseOutputBuffer(outputBuffersArrayIndex, false);
                         } else if (outputBuffer.limit() > 0) {
                             sampleBuffer = reference.onOutputBufferAvailable(outputBuffer);
-                            if(reference.listener!=null){
+                            if (reference.listener != null) {
                                 reference.listener.onAudioDataAvailable(sampleBuffer);
                             }
                             reference.decoder.releaseOutputBuffer(outputBuffersArrayIndex, false);

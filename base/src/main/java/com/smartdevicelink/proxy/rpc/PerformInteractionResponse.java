@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -42,7 +42,7 @@ import java.util.Hashtable;
 
 /**
  * PerformInteraction Response is sent, when PerformInteraction has been called
- * 
+ *
  * @since SmartDeviceLink 1.0
  */
 public class PerformInteractionResponse extends RPCResponse {
@@ -50,27 +50,28 @@ public class PerformInteractionResponse extends RPCResponse {
     public static final String KEY_TRIGGER_SOURCE = "triggerSource";
     public static final String KEY_CHOICE_ID = "choiceID";
 
-	/**
-	 * Constructs a new PerformInteractionResponse object
-	 */
+    /**
+     * Constructs a new PerformInteractionResponse object
+     */
     public PerformInteractionResponse() {
         super(FunctionID.PERFORM_INTERACTION.toString());
     }
 
-	/**
-	 * Constructs a new PerformInteractionResponse object indicated by the Hashtable
-	 * parameter
-	 * <p></p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
+    /**
+     * Constructs a new PerformInteractionResponse object indicated by the Hashtable
+     * parameter
+     * <p></p>
+     *
+     * @param hash The Hashtable to use
+     */
     public PerformInteractionResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
+
     /**
      * Constructs a new PerformInteractionResponse object
-     * @param success whether the request is successfully processed
+     *
+     * @param success    whether the request is successfully processed
      * @param resultCode whether the request is successfully processed
      */
     public PerformInteractionResponse(@NonNull Boolean success, @NonNull Result resultCode) {
@@ -78,40 +79,52 @@ public class PerformInteractionResponse extends RPCResponse {
         setSuccess(success);
         setResultCode(resultCode);
     }
+
     /**
      * Gets the application-scoped identifier that uniquely identifies this choice.
+     *
      * @return choiceID Min: 0  Max: 65535
-     */   
+     */
     public Integer getChoiceID() {
-        return getInteger( KEY_CHOICE_ID );
+        return getInteger(KEY_CHOICE_ID);
     }
+
     /**
      * Sets the application-scoped identifier that uniquely identifies this choice.
+     *
      * @param choiceID Min: 0  Max: 65535
-     */ 
-    public void setChoiceID( Integer choiceID ) {
+     */
+    public PerformInteractionResponse setChoiceID(Integer choiceID) {
         setParameters(KEY_CHOICE_ID, choiceID);
+        return this;
     }
+
     /**
-     * <p>Returns a <I>TriggerSource</I> object which will be shown in the HMI</p>    
+     * <p>Returns a <I>TriggerSource</I> object which will be shown in the HMI</p>
+     *
      * @return TriggerSource a TriggerSource object
-     */    
+     */
     public TriggerSource getTriggerSource() {
         return (TriggerSource) getObject(TriggerSource.class, KEY_TRIGGER_SOURCE);
     }
+
     /**
      * <p>Sets TriggerSource
-     * Indicates whether command was selected via VR or via a menu selection (using the OK button).</p>    
+     * Indicates whether command was selected via VR or via a menu selection (using the OK button).</p>
+     *
      * @param triggerSource a TriggerSource object
-     */    
-    public void setTriggerSource( TriggerSource triggerSource ) {
+     */
+    public PerformInteractionResponse setTriggerSource(TriggerSource triggerSource) {
         setParameters(KEY_TRIGGER_SOURCE, triggerSource);
+        return this;
     }
-    
-    public void setManualTextEntry(String manualTextEntry) {
+
+    public PerformInteractionResponse setManualTextEntry(String manualTextEntry) {
         setParameters(KEY_MANUAL_TEXT_ENTRY, manualTextEntry);
+        return this;
     }
+
     public String getManualTextEntry() {
         return getString(KEY_MANUAL_TEXT_ENTRY);
-    }    
+    }
 }

@@ -35,10 +35,14 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
-import com.smartdevicelink.AndroidTestCase2;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.livio.taskmaster.Queue;
+import com.livio.taskmaster.Task;
+import com.livio.taskmaster.Taskmaster;
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.CancelInteraction;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.PerformInteraction;
@@ -48,16 +52,18 @@ import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import java.util.Collections;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -66,240 +72,224 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class PresentChoiceSetOperationTests {
 
-	private PresentChoiceSetOperation presentChoiceSetOperation;
-	private ChoiceSet choiceSet;
-	private ISdl internalInterface;
-	private KeyboardListener keyboardListener;
-	private ChoiceSetSelectionListener choiceSetSelectionListener;
+    private PresentChoiceSetOperation presentChoiceSetOperation;
+    private ChoiceSet choiceSet;
+    private ISdl internalInterface;
+    private KeyboardListener keyboardListener;
+    private ChoiceSetSelectionListener choiceSetSelectionListener;
 
-	private ExecutorService executor;
+    private Taskmaster taskmaster;
+    private Queue queue;
 
-	@Override
-	public void setUp() throws Exception{
-		super.setUp();
+    @Before
+    public void setUp() throws Exception {
 
-		internalInterface = mock(ISdl.class);
+        internalInterface = mock(ISdl.class);
 
-		keyboardListener = mock(KeyboardListener.class);
-		choiceSetSelectionListener = mock(ChoiceSetSelectionListener.class);
+        keyboardListener = mock(KeyboardListener.class);
+        choiceSetSelectionListener = mock(ChoiceSetSelectionListener.class);
 
-		ChoiceCell cell1 = new ChoiceCell("Cell1");
-		cell1.setChoiceId(0);
-		choiceSet = new ChoiceSet("Test", Collections.singletonList(cell1), choiceSetSelectionListener);
+        ChoiceCell cell1 = new ChoiceCell("Cell1");
+        cell1.setChoiceId(0);
+        choiceSet = new ChoiceSet("Test", Collections.singletonList(cell1), choiceSetSelectionListener);
 
-		executor = Executors.newCachedThreadPool();
-	}
+        taskmaster = new Taskmaster.Builder().build();
+        queue = taskmaster.createQueue("test", 100, false);
+        taskmaster.start();
+    }
 
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-	}
 
-	private KeyboardProperties getKeyBoardProperties(){
-		KeyboardProperties properties = new KeyboardProperties();
-		properties.setLanguage(Language.EN_US);
-		properties.setKeyboardLayout(KeyboardLayout.QWERTZ);
-		properties.setKeypressMode(KeypressMode.RESEND_CURRENT_ENTRY);
-		return properties;
-	}
+    private KeyboardProperties getKeyBoardProperties() {
+        KeyboardProperties properties = new KeyboardProperties();
+        properties.setLanguage(Language.EN_US);
+        properties.setKeyboardLayout(KeyboardLayout.QWERTZ);
+        properties.setKeypressMode(KeypressMode.RESEND_CURRENT_ENTRY);
+        return properties;
+    }
 
-    public void testGetLayoutMode(){
-		// First we will check knowing our keyboard listener is NOT NULL
-		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, getKeyBoardProperties(), keyboardListener, choiceSetSelectionListener, Test.GENERAL_INTEGER);
+    @Test
+    public void testGetLayoutMode() {
+        // First we will check knowing our keyboard listener is NOT NULL
+        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, getKeyBoardProperties(), keyboardListener, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
 
-		assertEquals(presentChoiceSetOperation.getLayoutMode(), LayoutMode.LIST_WITH_SEARCH);
-		presentChoiceSetOperation.keyboardListener = null;
-		assertEquals(presentChoiceSetOperation.getLayoutMode(), LayoutMode.LIST_ONLY);
-	}
+        assertEquals(presentChoiceSetOperation.getLayoutMode(), LayoutMode.LIST_WITH_SEARCH);
+        presentChoiceSetOperation.keyboardListener = null;
+        assertEquals(presentChoiceSetOperation.getLayoutMode(), LayoutMode.LIST_ONLY);
+    }
 
-	public void testGetPerformInteraction(){
-		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, getKeyBoardProperties(), keyboardListener, choiceSetSelectionListener, Test.GENERAL_INTEGER);
+    @Test
+    public void testGetPerformInteraction() {
+        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, getKeyBoardProperties(), keyboardListener, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
 
-		PerformInteraction pi = presentChoiceSetOperation.getPerformInteraction();
-		assertEquals(pi.getInitialText(), "Test");
-		assertNull(pi.getHelpPrompt());
-		assertNull(pi.getTimeoutPrompt());
-		assertNull(pi.getVrHelp());
-		assertEquals(pi.getTimeout(), Integer.valueOf(10000));
-		assertEquals(pi.getCancelID(), Test.GENERAL_INTEGER);
-		assertEquals(presentChoiceSetOperation.getLayoutMode(), LayoutMode.LIST_WITH_SEARCH);
-	}
+        PerformInteraction pi = presentChoiceSetOperation.getPerformInteraction();
+        assertEquals(pi.getInitialText(), "Test");
+        assertNull(pi.getHelpPrompt());
+        assertNull(pi.getTimeoutPrompt());
+        assertNull(pi.getVrHelp());
+        assertEquals(pi.getTimeout(), Integer.valueOf(10000));
+        assertEquals(pi.getCancelID(), TestValues.GENERAL_INTEGER);
+        assertEquals(presentChoiceSetOperation.getLayoutMode(), LayoutMode.LIST_WITH_SEARCH);
+    }
 
-	public void testSetSelectedCellWithId(){
-		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, getKeyBoardProperties(), keyboardListener, choiceSetSelectionListener, Test.GENERAL_INTEGER);
+    @Test
+    public void testSetSelectedCellWithId() {
+        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, getKeyBoardProperties(), keyboardListener, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
 
-		assertNull(presentChoiceSetOperation.selectedCellRow);
-		presentChoiceSetOperation.setSelectedCellWithId(0);
-		assertEquals(presentChoiceSetOperation.selectedCellRow, Integer.valueOf(0));
-	}
+        assertNull(presentChoiceSetOperation.selectedCellRow);
+        presentChoiceSetOperation.setSelectedCellWithId(0);
+        assertEquals(presentChoiceSetOperation.selectedCellRow, Integer.valueOf(0));
+    }
 
-	public void testCancelingChoiceSetSuccessfullyIfThreadIsRunning(){
-		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
-		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, Test.GENERAL_INTEGER);
-		executor.execute(presentChoiceSetOperation);
+    private void sleep() {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
-		try {
-			executor.awaitTermination(1, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {}
+    @Test
+    public void testCancelingChoiceSetSuccessfullyIfThreadIsRunning() {
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
+        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
+        queue.add(presentChoiceSetOperation, false);
 
-		assertTrue(presentChoiceSetOperation.isExecuting());
-		assertFalse(presentChoiceSetOperation.isFinished());
-		assertFalse(presentChoiceSetOperation.isCancelled());
+        sleep();
 
-		choiceSet.cancel();
-		Answer<Void> cancelInteractionAnswer = new Answer<Void>() {
-			@Override
-			public Void answer(InvocationOnMock invocation) {
-				Object[] args = invocation.getArguments();
-				CancelInteraction cancelInteraction = (CancelInteraction) args[0];
+        assertEquals(Task.IN_PROGRESS, presentChoiceSetOperation.getState());
 
-				assertEquals(cancelInteraction.getCancelID(), Test.GENERAL_INTEGER);
-				assertEquals(cancelInteraction.getInteractionFunctionID().intValue(), FunctionID.PERFORM_INTERACTION.getId());
+        choiceSet.cancel();
+        Answer<Void> cancelInteractionAnswer = new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                CancelInteraction cancelInteraction = (CancelInteraction) args[0];
 
-				RPCResponse response = new RPCResponse(FunctionID.CANCEL_INTERACTION.toString());
-				response.setSuccess(true);
-				cancelInteraction.getOnRPCResponseListener().onResponse(0, response);
+                assertEquals(cancelInteraction.getCancelID(), TestValues.GENERAL_INTEGER);
+                assertEquals(cancelInteraction.getInteractionFunctionID().intValue(), FunctionID.PERFORM_INTERACTION.getId());
 
-				return null;
-			}
-		};
-		doAnswer(cancelInteractionAnswer).when(internalInterface).sendRPC(any(CancelInteraction.class));
+                RPCResponse response = new RPCResponse(FunctionID.CANCEL_INTERACTION.toString());
+                response.setSuccess(true);
+                cancelInteraction.getOnRPCResponseListener().onResponse(0, response);
 
-		verify(internalInterface, times(1)).sendRPC(any(CancelInteraction.class));
+                return null;
+            }
+        };
+        doAnswer(cancelInteractionAnswer).when(internalInterface).sendRPC(any(CancelInteraction.class));
+
+        verify(internalInterface, times(1)).sendRPC(any(CancelInteraction.class));
         verify(internalInterface, times(1)).sendRPC(any(PerformInteraction.class));
 
-        assertTrue(presentChoiceSetOperation.isExecuting());
-		assertFalse(presentChoiceSetOperation.isFinished());
-		assertFalse(presentChoiceSetOperation.isCancelled());
-	}
+        assertEquals(Task.IN_PROGRESS, presentChoiceSetOperation.getState());
+    }
 
-	public void testCancelingChoiceSetUnsuccessfullyIfThreadIsRunning(){
-		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
-		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, Test.GENERAL_INTEGER);
-		executor.execute(presentChoiceSetOperation);
-		try {
-			executor.awaitTermination(1, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {}
+    @Test
+    public void testCancelingChoiceSetUnsuccessfullyIfThreadIsRunning() {
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
+        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
+        queue.add(presentChoiceSetOperation, false);
+        sleep();
 
-		assertTrue(presentChoiceSetOperation.isExecuting());
-		assertFalse(presentChoiceSetOperation.isFinished());
-		assertFalse(presentChoiceSetOperation.isCancelled());
+        assertEquals(Task.IN_PROGRESS, presentChoiceSetOperation.getState());
 
-		choiceSet.cancel();
-		Answer<Void> cancelInteractionAnswer = new Answer<Void>() {
-			@Override
-			public Void answer(InvocationOnMock invocation) {
-				Object[] args = invocation.getArguments();
-				CancelInteraction cancelInteraction = (CancelInteraction) args[0];
+        choiceSet.cancel();
+        Answer<Void> cancelInteractionAnswer = new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                CancelInteraction cancelInteraction = (CancelInteraction) args[0];
 
-				assertEquals(cancelInteraction.getCancelID(), Test.GENERAL_INTEGER);
-				assertEquals(cancelInteraction.getInteractionFunctionID().intValue(), FunctionID.PERFORM_INTERACTION.getId());
+                assertEquals(cancelInteraction.getCancelID(), TestValues.GENERAL_INTEGER);
+                assertEquals(cancelInteraction.getInteractionFunctionID().intValue(), FunctionID.PERFORM_INTERACTION.getId());
 
-				RPCResponse response = new RPCResponse(FunctionID.CANCEL_INTERACTION.toString());
-				response.setSuccess(false);
-				cancelInteraction.getOnRPCResponseListener().onResponse(0, response);
+                RPCResponse response = new RPCResponse(FunctionID.CANCEL_INTERACTION.toString());
+                response.setSuccess(false);
+                cancelInteraction.getOnRPCResponseListener().onResponse(0, response);
 
-				return null;
-			}
-		};
-		doAnswer(cancelInteractionAnswer).when(internalInterface).sendRPC(any(CancelInteraction.class));
+                return null;
+            }
+        };
+        doAnswer(cancelInteractionAnswer).when(internalInterface).sendRPC(any(CancelInteraction.class));
 
-		verify(internalInterface, times(1)).sendRPC(any(CancelInteraction.class));
-		verify(internalInterface, times(1)).sendRPC(any(PerformInteraction.class));
+        verify(internalInterface, times(1)).sendRPC(any(CancelInteraction.class));
+        verify(internalInterface, times(1)).sendRPC(any(PerformInteraction.class));
 
-		assertTrue(presentChoiceSetOperation.isExecuting());
-		assertFalse(presentChoiceSetOperation.isFinished());
-		assertFalse(presentChoiceSetOperation.isCancelled());
-	}
+        assertEquals(Task.IN_PROGRESS, presentChoiceSetOperation.getState());
+    }
 
-	public void testCancelingChoiceSetIfThreadHasFinished(){
-		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
-		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, Test.GENERAL_INTEGER);
-		presentChoiceSetOperation.finishOperation();
+    @Test
+    public void testCancelingChoiceSetIfThreadHasFinished() {
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
+        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
+        presentChoiceSetOperation.finishOperation();
 
-		assertFalse(presentChoiceSetOperation.isExecuting());
-		assertTrue(presentChoiceSetOperation.isFinished());
-		assertFalse(presentChoiceSetOperation.isCancelled());
+        assertEquals(Task.FINISHED, presentChoiceSetOperation.getState());
 
-		choiceSet.cancel();
-		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
+        choiceSet.cancel();
+        verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
 
-		assertFalse(presentChoiceSetOperation.isExecuting());
-		assertTrue(presentChoiceSetOperation.isFinished());
-		assertFalse(presentChoiceSetOperation.isCancelled());
-	}
+        assertEquals(Task.FINISHED, presentChoiceSetOperation.getState());
+    }
 
-	public void testCancelingChoiceSetIfThreadHasNotYetRun(){
-		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
-		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, Test.GENERAL_INTEGER);
+    @Test
+    public void testCancelingChoiceSetIfThreadHasNotYetRun() {
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
+        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
 
-		assertFalse(presentChoiceSetOperation.isExecuting());
-		assertFalse(presentChoiceSetOperation.isFinished());
-		assertFalse(presentChoiceSetOperation.isCancelled());
+        assertEquals(Task.BLOCKED, presentChoiceSetOperation.getState());
 
-		choiceSet.cancel();
+        choiceSet.cancel();
 
-		// Once the operation has started
-		executor.execute(presentChoiceSetOperation);
-		try {
-			executor.awaitTermination(1, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {}
+        // Once the operation has started
+        queue.add(presentChoiceSetOperation, false);
+        sleep();
 
-		assertFalse(presentChoiceSetOperation.isExecuting());
-		assertTrue(presentChoiceSetOperation.isFinished());
-		assertFalse(presentChoiceSetOperation.isCancelled());
+        assertEquals(Task.CANCELED, presentChoiceSetOperation.getState());
 
-		// Make sure neither a `CancelInteraction` or `PerformInteraction` RPC is ever sent
-		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
-		verify(internalInterface, never()).sendRPC(any(PerformInteraction.class));
-	}
+        // Make sure neither a `CancelInteraction` or `PerformInteraction` RPC is ever sent
+        verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
+        verify(internalInterface, never()).sendRPC(any(PerformInteraction.class));
+    }
 
-	public void testCancelingChoiceSetIfHeadUnitDoesNotSupportFeature(){
-		// Cancel Interaction is only supported on RPC specs v.6.0.0+
-		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(5, 3));
-		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, Test.GENERAL_INTEGER);
-		executor.execute(presentChoiceSetOperation);
-		try {
-			executor.awaitTermination(1, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {}
+    @Test
+    public void testCancelingChoiceSetIfHeadUnitDoesNotSupportFeature() {
+        // Cancel Interaction is only supported on RPC specs v.6.0.0+
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(5, 3));
+        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
+        queue.add(presentChoiceSetOperation, false);
+        sleep();
 
-		assertTrue(presentChoiceSetOperation.isExecuting());
-		assertFalse(presentChoiceSetOperation.isFinished());
-		assertFalse(presentChoiceSetOperation.isCancelled());
+        assertEquals(Task.IN_PROGRESS, presentChoiceSetOperation.getState());
 
-		choiceSet.cancel();
+        choiceSet.cancel();
 
-		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
-		verify(internalInterface, times(1)).sendRPC(any(PerformInteraction.class));
-	}
+        verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
+        verify(internalInterface, times(1)).sendRPC(any(PerformInteraction.class));
+    }
 
-	public void testCancelingChoiceSetIfHeadUnitDoesNotSupportFeatureButThreadIsNotRunning(){
-		// Cancel Interaction is only supported on RPC specs v.6.0.0+
-		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(5, 3));
-		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, Test.GENERAL_INTEGER);
+    @Test
+    public void testCancelingChoiceSetIfHeadUnitDoesNotSupportFeatureButThreadIsNotRunning() {
+        // Cancel Interaction is only supported on RPC specs v.6.0.0+
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(5, 3));
+        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
 
-		assertFalse(presentChoiceSetOperation.isExecuting());
-		assertFalse(presentChoiceSetOperation.isFinished());
-		assertFalse(presentChoiceSetOperation.isCancelled());
+        assertEquals(Task.BLOCKED, presentChoiceSetOperation.getState());
 
-		choiceSet.cancel();
+        choiceSet.cancel();
 
-		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
+        verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
 
-		// Once the operation has started
-		executor.execute(presentChoiceSetOperation);
-		try {
-			executor.awaitTermination(1, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {}
+        // Once the operation has started
+        queue.add(presentChoiceSetOperation, false);
+        sleep();
 
-		assertFalse(presentChoiceSetOperation.isExecuting());
-		assertTrue(presentChoiceSetOperation.isFinished());
-		assertFalse(presentChoiceSetOperation.isCancelled());
+        assertEquals(Task.CANCELED, presentChoiceSetOperation.getState());
 
-		// Make sure neither a `CancelInteraction` or `PerformInteraction` RPC is ever sent
-		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
-		verify(internalInterface, never()).sendRPC(any(PerformInteraction.class));
-	}
+        // Make sure neither a `CancelInteraction` or `PerformInteraction` RPC is ever sent
+        verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
+        verify(internalInterface, never()).sendRPC(any(PerformInteraction.class));
+    }
 }

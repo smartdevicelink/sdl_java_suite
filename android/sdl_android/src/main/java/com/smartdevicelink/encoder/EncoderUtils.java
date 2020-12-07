@@ -33,7 +33,8 @@ package com.smartdevicelink.encoder;
 import android.annotation.TargetApi;
 import android.media.MediaFormat;
 import android.os.Build;
-import android.util.Log;
+
+import com.smartdevicelink.util.DebugTool;
 
 import java.nio.ByteBuffer;
 
@@ -43,7 +44,7 @@ public final class EncoderUtils {
 
     /**
      * Extracts codec-specific data from MediaFormat instance
-     *
+     * <p>
      * Currently, only AVC is supported.
      *
      * @param format MediaFormat instance retrieved from MediaCodec
@@ -63,14 +64,14 @@ public final class EncoderUtils {
         if (name.equals("video/avc")) {
             return getAVCCodecSpecificData(format);
         } else {
-            Log.w(TAG, "Retrieving codec-specific data for " + name + " is not supported");
+            DebugTool.logWarning(TAG, "Retrieving codec-specific data for " + name + " is not supported");
             return null;
         }
     }
 
     /**
      * Extracts H.264 codec-specific data (SPS and PPS) from MediaFormat instance
-     *
+     * <p>
      * The codec-specific data is in byte-stream format; 4-byte start codes (0x00 0x00 0x00 0x01)
      * are added in front of SPS and PPS NAL units.
      *
@@ -81,27 +82,32 @@ public final class EncoderUtils {
         // For H.264, "csd-0" contains SPS and "csd-1" contains PPS. Refer to the documentation
         // of MediaCodec.
         if (!(format.containsKey("csd-0") && format.containsKey("csd-1"))) {
-            Log.w(TAG, "H264 codec specific data not found");
+            DebugTool.logWarning(TAG, "H264 codec specific data not found");
             return null;
         }
 
         ByteBuffer sps = format.getByteBuffer("csd-0");
-        int spsLen = sps.remaining();
+        int spsLen = sps != null ? sps.remaining() : 0;
         ByteBuffer pps = format.getByteBuffer("csd-1");
-        int ppsLen = pps.remaining();
+        int ppsLen = pps != null ? pps.remaining() : 0;
 
         byte[] output = new byte[spsLen + ppsLen];
         try {
-            sps.get(output, 0, spsLen);
-            pps.get(output, spsLen, ppsLen);
+            if (sps != null) {
+                sps.get(output, 0, spsLen);
+            }
+            if (pps != null) {
+                pps.get(output, spsLen, ppsLen);
+            }
         } catch (Exception e) {
             // should not happen
-            Log.w(TAG, "Error while copying H264 codec specific data: " + e);
+            DebugTool.logWarning(TAG, "Error while copying H264 codec specific data: " + e);
             return null;
         }
 
         return output;
     }
 
-    private EncoderUtils() {}
+    private EncoderUtils() {
+    }
 }

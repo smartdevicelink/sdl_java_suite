@@ -14,7 +14,7 @@
  * distribution.
  *
  * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
+ * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,7 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -43,11 +43,11 @@ import java.util.List;
  * <p>Non periodic vehicle data read request. This is an RPC to get diagnostics
  * data from certain vehicle modules. DIDs of a certain module might differ from
  * vehicle type to vehicle type</p>
- * 
+ *
  * <p>Function Group: ProprietaryData</p>
- * 
+ *
  * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
- * 
+ *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
@@ -83,9 +83,9 @@ import java.util.List;
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  *  </table>
- *  
+ *
  *  <p><b>Response</b></p>
- *   
+ *
  *  <p><b>Non-default Result Codes:</b></p>
  *  <p>SUCCESS</p>
  *  <p>INVALID_DATA</p>
@@ -97,93 +97,94 @@ import java.util.List;
  * <p> DISALLOWED</p>
  *  <p>USER_DISALLOWED </p>
  *  <p>TRUNCATED_DATA</p>
- * 
+ *
  * @since SmartDeviceLink 2.0
  */
 public class ReadDID extends RPCRequest {
-	public static final String KEY_ECU_NAME = "ecuName";
-	public static final String KEY_DID_LOCATION = "didLocation";
+    public static final String KEY_ECU_NAME = "ecuName";
+    public static final String KEY_DID_LOCATION = "didLocation";
 
-	/**
-	 * Constructs a new ReadDID object
-	 */
+    /**
+     * Constructs a new ReadDID object
+     */
     public ReadDID() {
         super(FunctionID.READ_DID.toString());
     }
 
-	/**
-	 * Constructs a new ReadDID object indicated by the Hashtable parameter
-	 * 
-	 * @param hash The Hashtable to use
-	 */
+    /**
+     * Constructs a new ReadDID object indicated by the Hashtable parameter
+     *
+     * @param hash The Hashtable to use
+     */
     public ReadDID(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-	/**
-	 * Constructs a new ReadDID object
-	 * @param ecuName an Integer value representing the ID of the vehicle module
-	 * <b>Notes: </b>Minvalue:0; Maxvalue:65535
-	 * @param didLocation a List<Integer> value representing raw data from vehicle data DID location(s) <br>
-	 * <b>Notes: </b>
-	 * <ul>
-	 * 		<li>Minvalue:0; Maxvalue:65535</li>
-	 * 		<li>ArrayMin:0; ArrayMax:1000</li>
-	 * </ul>
-	 */
-	public ReadDID(@NonNull Integer ecuName, @NonNull List<Integer> didLocation) {
-		this();
-		setEcuName(ecuName);
-		setDidLocation(didLocation);
-	}
-
-	/**
-	 * Sets an ID of the vehicle module
-	 * 
-	 * @param ecuName
-	 *            an Integer value representing the ID of the vehicle module
-	 *            <p></p>
-	 *            <b>Notes: </b>Minvalue:0; Maxvalue:65535
-	 */
-    public void setEcuName(@NonNull Integer ecuName) {
-		setParameters(KEY_ECU_NAME, ecuName);
+    /**
+     * Constructs a new ReadDID object
+     *
+     * @param ecuName     an Integer value representing the ID of the vehicle module
+     *                    <b>Notes: </b>Minvalue:0; Maxvalue:65535
+     * @param didLocation a List<Integer> value representing raw data from vehicle data DID location(s) <br>
+     *                    <b>Notes: </b>
+     *                    <ul>
+     *                    		<li>Minvalue:0; Maxvalue:65535</li>
+     *                    		<li>ArrayMin:0; ArrayMax:1000</li>
+     *                    </ul>
+     */
+    public ReadDID(@NonNull Integer ecuName, @NonNull List<Integer> didLocation) {
+        this();
+        setEcuName(ecuName);
+        setDidLocation(didLocation);
     }
 
-	/**
-	 * Gets the ID of the vehicle module
-	 * 
-	 * @return Integer -an Integer value representing the ID of the vehicle
-	 *         module
-	 */
+    /**
+     * Sets an ID of the vehicle module
+     *
+     * @param ecuName an Integer value representing the ID of the vehicle module
+     *                <p></p>
+     *                <b>Notes: </b>Minvalue:0; Maxvalue:65535
+     */
+    public ReadDID setEcuName(@NonNull Integer ecuName) {
+        setParameters(KEY_ECU_NAME, ecuName);
+        return this;
+    }
+
+    /**
+     * Gets the ID of the vehicle module
+     *
+     * @return Integer -an Integer value representing the ID of the vehicle
+     * module
+     */
     public Integer getEcuName() {
-    	return getInteger(KEY_ECU_NAME);
+        return getInteger(KEY_ECU_NAME);
     }
 
-	/**
-	 * Sets raw data from vehicle data DID location(s)
-	 * 
-	 * @param didLocation
-	 *            a List<Integer> value representing raw data from vehicle
-	 *            data DID location(s)
-	 *            <p></p>
-	 *            <b>Notes: </b>
-	 *            <ul>
-	 *            <li>Minvalue:0; Maxvalue:65535</li>
-	 *            <li>ArrayMin:0; ArrayMax:1000</li>
-	 *            </ul>
-	 */
-    public void setDidLocation(@NonNull List<Integer> didLocation) {
-		setParameters(KEY_DID_LOCATION, didLocation);
+    /**
+     * Sets raw data from vehicle data DID location(s)
+     *
+     * @param didLocation a List<Integer> value representing raw data from vehicle
+     *                    data DID location(s)
+     *                    <p></p>
+     *                    <b>Notes: </b>
+     *                    <ul>
+     *                    <li>Minvalue:0; Maxvalue:65535</li>
+     *                    <li>ArrayMin:0; ArrayMax:1000</li>
+     *                    </ul>
+     */
+    public ReadDID setDidLocation(@NonNull List<Integer> didLocation) {
+        setParameters(KEY_DID_LOCATION, didLocation);
+        return this;
     }
 
-	/**
-	 * Gets raw data from vehicle data DID location(s)
-	 * 
-	 * @return List<Integer> -a List<Integer> value representing raw data
-	 *         from vehicle data DID location(s)
-	 */
+    /**
+     * Gets raw data from vehicle data DID location(s)
+     *
+     * @return List<Integer> -a List<Integer> value representing raw data
+     * from vehicle data DID location(s)
+     */
     @SuppressWarnings("unchecked")
     public List<Integer> getDidLocation() {
-		return (List<Integer>) getObject(Integer.class, KEY_DID_LOCATION);
+        return (List<Integer>) getObject(Integer.class, KEY_DID_LOCATION);
     }
 }

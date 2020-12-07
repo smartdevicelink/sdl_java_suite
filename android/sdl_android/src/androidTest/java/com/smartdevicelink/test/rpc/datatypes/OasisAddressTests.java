@@ -1,7 +1,7 @@
 package com.smartdevicelink.test.rpc.datatypes;
 
 import com.smartdevicelink.proxy.rpc.OasisAddress;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -18,14 +18,14 @@ public class OasisAddressTests extends TestCase {
     private OasisAddress msg;
 
     @Override
-    public void setUp(){
-        msg = Test.GENERAL_OASISADDRESS;
+    public void setUp() {
+        msg = TestValues.GENERAL_OASISADDRESS;
     }
 
     /**
      * Tests the expected values of the RPC message.
      */
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Test Values
         String f1 = msg.getAdministrativeArea();
         String f2 = msg.getSubAdministrativeArea();
@@ -39,19 +39,19 @@ public class OasisAddressTests extends TestCase {
 
 
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, f1);
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, f2);
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, f3);
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, f4);
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, f5);
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, f6);
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, f7);
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, f8);
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, f9);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, f1);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, f2);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, f3);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, f4);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, f5);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, f6);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, f7);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, f8);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, f9);
 
         // Invalid/Null Tests
         OasisAddress msg = new OasisAddress();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
 
         assertNull(msg.getAdministrativeArea());
         assertNull(msg.getSubAdministrativeArea());
@@ -64,32 +64,32 @@ public class OasisAddressTests extends TestCase {
         assertNull(msg.getSubThoroughfare());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
-            reference.put(OasisAddress.KEY_ADMINISTRATIVE_AREA, Test.GENERAL_STRING);
-            reference.put(OasisAddress.KEY_SUB_ADMINISTRATIVE_AREA, Test.GENERAL_STRING);
-            reference.put(OasisAddress.KEY_COUNTRY_CODE, Test.GENERAL_STRING);
-            reference.put(OasisAddress.KEY_COUNTRY_NAME, Test.GENERAL_STRING);
-            reference.put(OasisAddress.KEY_LOCALITY, Test.GENERAL_STRING);
-            reference.put(OasisAddress.KEY_SUB_LOCALITY, Test.GENERAL_STRING);
-            reference.put(OasisAddress.KEY_POSTAL_CODE, Test.GENERAL_STRING);
-            reference.put(OasisAddress.KEY_THOROUGH_FARE, Test.GENERAL_STRING);
-            reference.put(OasisAddress.KEY_SUB_THOROUGH_FARE, Test.GENERAL_STRING);
+        try {
+            reference.put(OasisAddress.KEY_ADMINISTRATIVE_AREA, TestValues.GENERAL_STRING);
+            reference.put(OasisAddress.KEY_SUB_ADMINISTRATIVE_AREA, TestValues.GENERAL_STRING);
+            reference.put(OasisAddress.KEY_COUNTRY_CODE, TestValues.GENERAL_STRING);
+            reference.put(OasisAddress.KEY_COUNTRY_NAME, TestValues.GENERAL_STRING);
+            reference.put(OasisAddress.KEY_LOCALITY, TestValues.GENERAL_STRING);
+            reference.put(OasisAddress.KEY_SUB_LOCALITY, TestValues.GENERAL_STRING);
+            reference.put(OasisAddress.KEY_POSTAL_CODE, TestValues.GENERAL_STRING);
+            reference.put(OasisAddress.KEY_THOROUGH_FARE, TestValues.GENERAL_STRING);
+            reference.put(OasisAddress.KEY_SUB_THOROUGH_FARE, TestValues.GENERAL_STRING);
 
             JSONObject underTest = msg.serializeJSON();
-            assertEquals(Test.MATCH, reference.length(), underTest.length());
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while (iterator.hasNext()) {
                 String key = (String) iterator.next();
-                assertEquals(Test.MATCH, reference.get(key),
+                assertEquals(TestValues.MATCH, reference.get(key),
                         underTest.get(key));
             }
 
-        } catch(JSONException e){
-            fail(Test.JSON_FAIL);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

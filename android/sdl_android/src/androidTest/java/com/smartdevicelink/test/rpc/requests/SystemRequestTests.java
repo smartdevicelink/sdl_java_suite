@@ -7,117 +7,128 @@ import com.smartdevicelink.proxy.rpc.SystemRequest;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.Hashtable;
 import java.util.List;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
+
+
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.SystemRequest}
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.proxy.rpc.SystemRequest}
  */
 public class SystemRequestTests extends BaseRpcTests {
-    
-	@Override
-	protected RPCMessage createMessage() {
-		SystemRequest msg = new SystemRequest();
 
-		msg.setLegacyData(Test.GENERAL_STRING_LIST);
-		msg.setFileName(Test.GENERAL_STRING);
-		msg.setRequestType(Test.GENERAL_REQUESTTYPE);
-		msg.setRequestSubType(Test.GENERAL_STRING);
+    @Override
+    protected RPCMessage createMessage() {
+        SystemRequest msg = new SystemRequest();
 
-		return msg;
-	}
+        msg.setLegacyData(TestValues.GENERAL_STRING_LIST);
+        msg.setFileName(TestValues.GENERAL_STRING);
+        msg.setRequestType(TestValues.GENERAL_REQUESTTYPE);
+        msg.setRequestSubType(TestValues.GENERAL_STRING);
 
-	@Override
-	protected String getMessageType() {
-		return RPCMessage.KEY_REQUEST;
-	}
+        return msg;
+    }
 
-	@Override
-	protected String getCommandType() {
-		return FunctionID.SYSTEM_REQUEST.toString();
-	}
+    @Override
+    protected String getMessageType() {
+        return RPCMessage.KEY_REQUEST;
+    }
 
-	@Override
-	protected JSONObject getExpectedParameters(int sdlVersion) {
-		JSONObject result = new JSONObject();
+    @Override
+    protected String getCommandType() {
+        return FunctionID.SYSTEM_REQUEST.toString();
+    }
 
-		try {
-			result.put(SystemRequest.KEY_DATA, JsonUtils.createJsonArray(Test.GENERAL_STRING_LIST));
-			result.put(SystemRequest.KEY_FILE_NAME, Test.GENERAL_STRING);
-			result.put(SystemRequest.KEY_REQUEST_TYPE, Test.GENERAL_REQUESTTYPE);
-			result.put(SystemRequest.KEY_REQUEST_SUB_TYPE, Test.GENERAL_STRING);
-		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
-		}
+    @Override
+    protected JSONObject getExpectedParameters(int sdlVersion) {
+        JSONObject result = new JSONObject();
 
-		return result;
-	}
+        try {
+            result.put(SystemRequest.KEY_DATA, JsonUtils.createJsonArray(TestValues.GENERAL_STRING_LIST));
+            result.put(SystemRequest.KEY_FILE_NAME, TestValues.GENERAL_STRING);
+            result.put(SystemRequest.KEY_REQUEST_TYPE, TestValues.GENERAL_REQUESTTYPE);
+            result.put(SystemRequest.KEY_REQUEST_SUB_TYPE, TestValues.GENERAL_STRING);
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
+        }
 
-	/**
-	 * Tests the expected values of the RPC message.
-	 */
-    public void testRpcValues () {
-    	// Test Values
-    	RequestType  testRequestType = ( (SystemRequest) msg ).getRequestType();
-    	String  testRequestSubType   = ( (SystemRequest) msg ).getRequestSubType();
-    	String       testFileName    = ( (SystemRequest) msg ).getFileName();
-    	List<String> testLegacyData  = ( (SystemRequest) msg ).getLegacyData();
-    	
-    	// Valid Tests
-	    assertEquals(Test.MATCH, Test.GENERAL_REQUESTTYPE, testRequestType);
-	    assertEquals(Test.MATCH, Test.GENERAL_STRING, testRequestSubType);
-	    assertEquals(Test.MATCH, Test.GENERAL_STRING, testFileName);
-	    assertTrue(Test.TRUE, Validator.validateStringList(Test.GENERAL_STRING_LIST, testLegacyData));
-    	
-    	// Invalid/Null Tests
-		SystemRequest msg = new SystemRequest();
-		assertNotNull(Test.NOT_NULL, msg);
-		testNullBase(msg);
+        return result;
+    }
 
-		assertNull(Test.NULL, msg.getLegacyData());
-		assertNull(Test.NULL, msg.getFileName());
-		assertNull(Test.NULL, msg.getRequestType());
-		assertNull(Test.NULL, msg.getRequestSubType());
-		assertNull(Test.NULL, msg.getBulkData());
-	}
-	
-	/**
+    /**
+     * Tests the expected values of the RPC message.
+     */
+    @Test
+    public void testRpcValues() {
+        // Test Values
+        RequestType testRequestType = ((SystemRequest) msg).getRequestType();
+        String testRequestSubType = ((SystemRequest) msg).getRequestSubType();
+        String testFileName = ((SystemRequest) msg).getFileName();
+        List<String> testLegacyData = ((SystemRequest) msg).getLegacyData();
+
+        // Valid Tests
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_REQUESTTYPE, testRequestType);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, testRequestSubType);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, testFileName);
+        assertTrue(TestValues.TRUE, Validator.validateStringList(TestValues.GENERAL_STRING_LIST, testLegacyData));
+
+        // Invalid/Null Tests
+        SystemRequest msg = new SystemRequest();
+        assertNotNull(TestValues.NOT_NULL, msg);
+        testNullBase(msg);
+
+        assertNull(TestValues.NULL, msg.getLegacyData());
+        assertNull(TestValues.NULL, msg.getFileName());
+        assertNull(TestValues.NULL, msg.getRequestType());
+        assertNull(TestValues.NULL, msg.getRequestSubType());
+        assertNull(TestValues.NULL, msg.getBulkData());
+    }
+
+    /**
      * Tests a valid JSON construction of this RPC message.
      */
-    public void testJsonConstructor () {
-    	JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-    	assertNotNull(Test.NOT_NULL, commandJson);
-    	
-		try {
-			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
-			SystemRequest cmd = new SystemRequest(hash);
-			
-			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(Test.NOT_NULL, body);
-			
-			// Test everything in the json body.
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
-		
-			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, SystemRequest.KEY_FILE_NAME), cmd.getFileName());
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, SystemRequest.KEY_REQUEST_TYPE), cmd.getRequestType().toString());
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, SystemRequest.KEY_REQUEST_SUB_TYPE), cmd.getRequestSubType());
+    @Test
+    public void testJsonConstructor() {
+        JSONObject commandJson = JsonFileReader.readId(getInstrumentation().getTargetContext(), getCommandType(), getMessageType());
+        assertNotNull(TestValues.NOT_NULL, commandJson);
 
-			List<String> dataList = JsonUtils.readStringListFromJsonObject(parameters, SystemRequest.KEY_DATA);
-			List<String> testDataList = cmd.getLegacyData();
-			assertEquals(Test.MATCH, dataList.size(), testDataList.size());
-			assertTrue(Test.TRUE, Validator.validateStringList(dataList, testDataList));
-		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
-		}    	
-    }	
+        try {
+            Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
+            SystemRequest cmd = new SystemRequest(hash);
+
+            JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
+            assertNotNull(TestValues.NOT_NULL, body);
+
+            // Test everything in the json body.
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+
+            JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, SystemRequest.KEY_FILE_NAME), cmd.getFileName());
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, SystemRequest.KEY_REQUEST_TYPE), cmd.getRequestType().toString());
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, SystemRequest.KEY_REQUEST_SUB_TYPE), cmd.getRequestSubType());
+
+            List<String> dataList = JsonUtils.readStringListFromJsonObject(parameters, SystemRequest.KEY_DATA);
+            List<String> testDataList = cmd.getLegacyData();
+            assertEquals(TestValues.MATCH, dataList.size(), testDataList.size());
+            assertTrue(TestValues.TRUE, Validator.validateStringList(dataList, testDataList));
+        } catch (JSONException e) {
+            fail(TestValues.JSON_FAIL);
+        }
+    }
 }
