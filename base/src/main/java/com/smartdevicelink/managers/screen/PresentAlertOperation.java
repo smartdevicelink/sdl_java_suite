@@ -186,7 +186,7 @@ public class PresentAlertOperation extends Task {
 
         if (alertView.getSoftButtons() != null) {
             for (SoftButtonObject object : alertView.getSoftButtons()) {
-                if (supportsSoftButtonImages() && artworkNeedsUploaded(object.getCurrentState().getArtwork())) {
+                if (supportsSoftButtonImages() && object.getCurrentState() != null && artworkNeedsUploaded(object.getCurrentState().getArtwork())) {
                     artworksToBeUploaded.add(object.getCurrentState().getArtwork());
                 }
             }
@@ -265,7 +265,7 @@ public class PresentAlertOperation extends Task {
         } else if (getState() == Task.IN_PROGRESS) {
             cancelInteraction();
         } else {
-            DebugTool.logInfo(TAG, "Canceling an alert that has not yet been sent to Core");
+            DebugTool.logInfo(TAG, "Cancelling an alert that has not yet been sent to Core");
             this.cancelTask();
         }
     }
@@ -282,9 +282,11 @@ public class PresentAlertOperation extends Task {
             public void onResponse(int correlationId, RPCResponse response) {
                 if (!response.getSuccess()) {
                     DebugTool.logInfo(TAG, "Error canceling the presented alert: " + response.getInfo());
+                    onFinished();
                     return;
                 }
                 DebugTool.logInfo(TAG, "The presented alert was canceled successfully");
+                onFinished();
             }
         });
         internalInterface.get().sendRPC(cancelInteraction);
@@ -482,5 +484,6 @@ public class PresentAlertOperation extends Task {
         if (listener != null) {
             listener.onComplete(success, tryAgainTime);
         }
+        onFinished();
     }
 }
