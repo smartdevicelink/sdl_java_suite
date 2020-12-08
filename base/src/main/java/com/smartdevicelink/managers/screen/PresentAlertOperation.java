@@ -139,7 +139,7 @@ public class PresentAlertOperation extends Task {
             return;
         }
         if (!supportsAlertAudioFile()) {
-            DebugTool.logInfo(TAG, "Module does not support audio files for alerts");
+            DebugTool.logError(TAG, "Module does not support audio files for alerts");
             listener.onComplete(true);
             return;
         }

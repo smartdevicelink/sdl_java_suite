@@ -57,41 +57,6 @@ public class AlertView implements Cloneable {
         this.timeout = defaultTimeout;
     }
 
-
-    /**
-     * Creates a deep copy of the object
-     *
-     * @return deep copy of the object, null if an exception occurred
-     */
-    @Override
-    public AlertView clone() {
-        try {
-            AlertView alertView = (AlertView) super.clone();
-            if (alertView != null) {
-                if (alertView.getAudio() != null) {
-                    alertView.audio = audio.clone();
-                }
-                if (alertView.getSoftButtons() != null) {
-                    List<SoftButtonObject> softButtonObjectList = new ArrayList<>();
-                    for (int i = 0; i < alertView.softButtons.size(); i++) {
-                        SoftButtonObject cloneSoftButton = alertView.softButtons.get(i).clone();
-                        softButtonObjectList.add(cloneSoftButton);
-                    }
-                    alertView.softButtons = softButtonObjectList;
-                }
-                if (alertView.icon != null) {
-                    alertView.icon = icon.clone();
-                }
-            }
-            return alertView;
-        } catch (CloneNotSupportedException e) {
-            if (DebugTool.isDebugEnabled()) {
-                throw new RuntimeException("Clone not supported by super class");
-            }
-        }
-        return null;
-    }
-
     public static class Builder {
 
         AlertView alertView;
@@ -248,5 +213,39 @@ public class AlertView implements Cloneable {
 
     public void setTimeout(int timeout) {
         this.timeout = timeout;
+    }
+
+    /**
+     * Creates a deep copy of the object
+     *
+     * @return deep copy of the object, null if an exception occurred
+     */
+    @Override
+    public AlertView clone() {
+        try {
+            AlertView alertView = (AlertView) super.clone();
+            if (alertView != null) {
+                if (alertView.getAudio() != null) {
+                    alertView.audio = audio.clone();
+                }
+                if (alertView.getSoftButtons() != null) {
+                    List<SoftButtonObject> softButtonObjectList = new ArrayList<>();
+                    for (int i = 0; i < alertView.softButtons.size(); i++) {
+                        SoftButtonObject cloneSoftButton = alertView.softButtons.get(i).clone();
+                        softButtonObjectList.add(cloneSoftButton);
+                    }
+                    alertView.softButtons = softButtonObjectList;
+                }
+                if (alertView.icon != null) {
+                    alertView.icon = icon.clone();
+                }
+            }
+            return alertView;
+        } catch (CloneNotSupportedException e) {
+            if (DebugTool.isDebugEnabled()) {
+                throw new RuntimeException("Clone not supported by super class");
+            }
+        }
+        return null;
     }
 }

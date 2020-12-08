@@ -75,7 +75,6 @@ public class PresentAlertOperationTest {
         public Void answer(InvocationOnMock invocation) {
             Object[] args = invocation.getArguments();
             MultipleFileCompletionListener listener = (MultipleFileCompletionListener) args[1];
-            when(fileManager.hasUploadedFile(any(SdlFile.class))).thenReturn(true);
             listener.onComplete(null);
             return null;
         }
@@ -154,7 +153,6 @@ public class PresentAlertOperationTest {
         };
         alertSoftButtonObject = new SoftButtonObject("Soft button 1", alertSoftButtonState, onEventListener);
 
-
         textAlignment = TextAlignment.CENTERED;
         AlertView.Builder builder = new AlertView.Builder();
         builder.setText("test");
@@ -167,7 +165,6 @@ public class PresentAlertOperationTest {
         builder.setSoftButtons(Collections.singletonList(alertSoftButtonObject));
         builder.setShowWaitIndicator(true);
         alertView = builder.build();
-
 
         defaultMainWindowCapability = getWindowCapability(3);
         speechCapabilities = new ArrayList<SpeechCapabilities>();
@@ -185,9 +182,6 @@ public class PresentAlertOperationTest {
     public void testPresentAlertTruncatedText() {
         doAnswer(onAlertSuccess).when(internalInterface).sendRPC(any(Alert.class));
         // Same response works for uploading artworks as it does for files
-        doAnswer(onArtworkUploadSuccess).when(fileManager).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
-        doAnswer(onArtworkUploadSuccess).when(fileManager).uploadFiles(any(List.class), any(MultipleFileCompletionListener.class));
-
 
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
         WindowCapability windowCapability = getWindowCapability(1);
@@ -220,8 +214,6 @@ public class PresentAlertOperationTest {
         // Same response works for uploading artworks as it does for files
         doAnswer(onArtworkUploadSuccess).when(fileManager).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
         doAnswer(onArtworkUploadSuccess).when(fileManager).uploadFiles(any(List.class), any(MultipleFileCompletionListener.class));
-
-
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
 
         // Test Images need to be uploaded, sending text and uploading images
@@ -230,7 +222,7 @@ public class PresentAlertOperationTest {
         // Verifies that uploadArtworks gets called only with the fist presentAlertOperation.onExecute call
         verify(fileManager, times(1)).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
 
-    //    verify(fileManager, times(1)).uploadFiles(any(List.class), any(MultipleFileCompletionListener.class));
+        verify(fileManager, times(1)).uploadFiles(any(List.class), any(MultipleFileCompletionListener.class));
 
         verify(internalInterface, times(1)).sendRPC(any(Alert.class));
     }
@@ -272,8 +264,6 @@ public class PresentAlertOperationTest {
 
         // Verifies that uploadArtworks gets called only with the fist presentAlertOperation.onExecute call
         verify(fileManager, times(1)).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
-//        verify(fileManager, times(1)).uploadFiles(any(List.class), any(MultipleFileCompletionListener.class));
-
         verify(internalInterface, times(1)).sendRPC(any(Alert.class));
     }
 
@@ -290,12 +280,17 @@ public class PresentAlertOperationTest {
         presentAlertOperation.cancelInteraction();
 
         verify(internalInterface, times(1)).sendRPC(any(CancelInteraction.class));
-
     }
 
+    @Test
+    public void testCancelOperation() {
+        //Cancel right away
+        presentAlertOperation.cancelTask();
+        presentAlertOperation.onExecute();
+        verify(internalInterface, times(0)).sendRPC(any(Alert.class));
+    }
 
     private WindowCapability getWindowCapability(int numberOfAlertFields) {
-
         TextField alertText1 = new TextField();
         alertText1.setName(TextFieldName.alertText1);
         TextField alertText2 = new TextField();
