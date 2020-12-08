@@ -139,7 +139,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests {
         try {
             //set up the JSONObject to represent GetVehicleDataResponse
             //TIRE_PRESSURE
-            tireStatusObj.put(TireStatus.KEY_PRESSURE_TELL_TALE, VehicleDataHelper.TIRE_PRESSURE_TELL_TALE);
+            tireStatusObj.put(TireStatus.KEY_PRESSURE_TELLTALE, VehicleDataHelper.TIRE_PRESSURE_TELL_TALE);
             JSONObject tireLeftFront = new JSONObject();
             tireLeftFront.put(SingleTireStatus.KEY_STATUS, VehicleDataHelper.TIRE_PRESSURE_LEFT_FRONT);
             tireStatusObj.put(TireStatus.KEY_LEFT_FRONT, tireLeftFront);
