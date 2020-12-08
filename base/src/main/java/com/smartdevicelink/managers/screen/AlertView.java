@@ -40,6 +40,7 @@ import java.util.List;
 
 public class AlertView implements Cloneable {
 
+    private static final String TAG = "AlertView";
     private static Integer defaultTimeout = 5;
     private static final int TIMEOUT_MIN = 3;
     private static final int TIMEOUT_MAX = 10;
@@ -125,7 +126,7 @@ public class AlertView implements Cloneable {
         }
 
         public Builder setSoftButtons(List<SoftButtonObject> softButtons) {
-            alertView.softButtons = softButtons;
+            alertView.setSoftButtons(softButtons);
             return this;
         }
 
@@ -212,6 +213,13 @@ public class AlertView implements Cloneable {
     }
 
     public void setSoftButtons(List<SoftButtonObject> softButtons) {
+        for(SoftButtonObject softButtonObject : softButtons){
+            if(softButtonObject.getStates().size() != 1){
+                this.softButtons = null;
+                DebugTool.logError(TAG,"Attempting create a soft button for an Alert with more than one state. Alerts only support soft buttons with one state. Soft buttons set to null for AlertView");
+                return;
+            }
+        }
         this.softButtons = softButtons;
     }
 

@@ -100,6 +100,19 @@ public class PresentAlertOperation extends Task {
             finishOperation(false, null);
             return;
         }
+        if (!isValidAlertViewData(alertView)) {
+            if (alertView.getAudio() != null && alertView.getAudio().getAudioFiles() != null && alertView.getAudio().getAudioFiles().size() > 0) {
+                DebugTool.logError(TAG, "The module does not support the use of only audio file data in an alert. " +
+                        "The alert has no data and can not be sent to the module. " +
+                        "The use of audio file data in an alert is only supported on modules supporting RPC Spec v5.0 or newer");
+            } else {
+                DebugTool.logError(TAG, "The alert data is invalid." +
+                        " At least either text, secondaryText or audio needs to be provided. " +
+                        "Make sure to set at least the text, secondaryText or audio properties on the AlertView");
+            }
+            finishOperation(false, null);
+            return;
+        }
         checkForImagesAndUpload(new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
@@ -314,22 +327,28 @@ public class PresentAlertOperation extends Task {
         if (alertView.getAudio() != null) {
             AlertAudioData alertAudioData = alertView.getAudio();
             alert.setPlayTone(alertAudioData.isPlayTone());
-            List<TTSChunk> ttsChunks = new ArrayList<>();
+            List<TTSChunk> ttsChunks = getTTSChunksForAlert(alertAudioData);
 
-            if (supportsAlertAudioFile() && alertAudioData.getAudioFiles() != null && alertAudioData.getAudioFiles().size() > 0) {
-                for (int i = 0; i < alertAudioData.getAudioFiles().size(); i++) {
-                    ttsChunks.add(new TTSChunk(alertAudioData.getAudioFiles().get(i).getName(), SpeechCapabilities.FILE));
-                }
-            }
-
-            if (alertAudioData.getPrompts() != null && alertAudioData.getPrompts().size() > 0) {
-                ttsChunks.addAll(alertAudioData.getPrompts());
-            }
             if (ttsChunks.size() > 0) {
                 alert.setTtsChunks(ttsChunks);
             }
         }
         return alert;
+    }
+
+    List<TTSChunk> getTTSChunksForAlert(AlertAudioData alertAudioData) {
+        List<TTSChunk> ttsChunks = new ArrayList<>();
+
+        if (supportsAlertAudioFile() && alertAudioData.getAudioFiles() != null && alertAudioData.getAudioFiles().size() > 0) {
+            for (int i = 0; i < alertAudioData.getAudioFiles().size(); i++) {
+                ttsChunks.add(new TTSChunk(alertAudioData.getAudioFiles().get(i).getName(), SpeechCapabilities.FILE));
+            }
+        }
+
+        if (alertAudioData.getPrompts() != null && alertAudioData.getPrompts().size() > 0) {
+            ttsChunks.addAll(alertAudioData.getPrompts());
+        }
+        return ttsChunks;
     }
 
     // Text Helpers
@@ -477,6 +496,19 @@ public class PresentAlertOperation extends Task {
      */
     private boolean supportsAlertIcon() {
         return ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.alertIcon);
+    }
+
+    private boolean isValidAlertViewData(AlertView alertView) {
+        if (alertView.getText() != null && alertView.getText().length() > 0) {
+            return true;
+        }
+        if (alertView.getSecondaryText() != null && alertView.getText().length() > 0) {
+            return true;
+        }
+        if (alertView.getAudio() != null && getTTSChunksForAlert(alertView.getAudio()).size() > 0) {
+            return true;
+        }
+        return false;
     }
 
     private void finishOperation(boolean success, Integer tryAgainTime) {
