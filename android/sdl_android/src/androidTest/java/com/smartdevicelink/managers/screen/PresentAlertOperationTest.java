@@ -59,7 +59,6 @@ public class PresentAlertOperationTest {
     private TextAlignment textAlignment;
     private WindowCapability defaultMainWindowCapability;
     private AlertView alertView;
-    private CompletionListener listener;
     private AlertAudioData alertAudioData;
     SdlArtwork testAlertArtwork, testSoftButtonArtwork;
     ISdl internalInterface;
@@ -137,7 +136,6 @@ public class PresentAlertOperationTest {
         alertAudioData = new AlertAudioData("Spoken Sting");
         alertAudioData.setPlayTone(true);
         alertAudioData.addAudioFiles(Collections.singletonList(testAudio));
-
 
         alertSoftButtonState = new SoftButtonState("state1", "State 1", testSoftButtonArtwork);
         SoftButtonObject.OnEventListener onEventListener = new SoftButtonObject.OnEventListener() {
