@@ -50,15 +50,7 @@ import java.nio.file.Files;
  * <p>
  * Note: This class must be accessed through the SdlManager. Do not instantiate it by itself. <br>
  * <p>
- * The SDLFileManager uploads files and keeps track of all the uploaded files names during a session. <br>
- * <p>
- * We need to add the following struct: SDLFile<br>
- * <p>
- * It is broken down to these areas: <br>
- * <p>
- * 1. Getters <br>
- * 2. Deletion methods <br>
- * 3. Uploading Files / Artwork
+ * The FileManager uploads files and keeps track of all the uploaded files names during a session. <br>
  */
 public class FileManager extends BaseFileManager {
 
@@ -82,19 +74,18 @@ public class FileManager extends BaseFileManager {
             try {
                 inputStream = new FileInputStream(file.getFilePath());
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                DebugTool.logError(TAG, String.format("File at %s cannot be found.", file.getFilePath()));
             }
         } else if (file.getURI() != null) {
             try {
                 inputStream = file.getURI().toURL().openStream();
             } catch (IOException e) {
-                e.printStackTrace();
+                DebugTool.logError(TAG, String.format("File at %s cannot be found.", file.getURI()));
             }
         } else if (file.getFileData() != null) {
             inputStream = new ByteArrayInputStream(file.getFileData());
         } else {
-            throw new IllegalArgumentException("The SdlFile to upload does " +
-                    "not specify its resourceId, Uri, or file data");
+            throw new IllegalArgumentException("The SdlFile to upload does not specify its path, URI, or file data");
         }
 
         return inputStream;

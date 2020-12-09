@@ -39,6 +39,7 @@ import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
+import com.smartdevicelink.util.DebugTool;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
@@ -50,15 +51,7 @@ import java.lang.ref.WeakReference;
  * <p>
  * Note: This class must be accessed through the SdlManager. Do not instantiate it by itself. <br>
  * <p>
- * The SDLFileManager uploads files and keeps track of all the uploaded files names during a session. <br>
- * <p>
- * We need to add the following struct: SDLFile<br>
- * <p>
- * It is broken down to these areas: <br>
- * <p>
- * 1. Getters <br>
- * 2. Deletion methods <br>
- * 3. Uploading Files / Artwork
+ * The FileManager uploads files and keeps track of all the uploaded files names during a session. <br>
  */
 public class FileManager extends BaseFileManager {
 
@@ -82,19 +75,23 @@ public class FileManager extends BaseFileManager {
     InputStream openInputStreamWithFile(@NonNull SdlFile file) {
         InputStream inputStream = null;
 
+        if (context.get() == null) {
+            DebugTool.logError(TAG, "Context is null. Cannot open file input stream!");
+            return null;
+        }
+
         if (file.getResourceId() > 0) {
             inputStream = context.get().getResources().openRawResource(file.getResourceId());
         } else if (file.getUri() != null) {
             try {
                 inputStream = context.get().getContentResolver().openInputStream(file.getUri());
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                DebugTool.logError(TAG, String.format("File at %s cannot be found.", file.getUri()));
             }
         } else if (file.getFileData() != null) {
             inputStream = new ByteArrayInputStream(file.getFileData());
         } else {
-            throw new IllegalArgumentException("The SdlFile to upload does " +
-                    "not specify its resourceId, Uri, or file data");
+            throw new IllegalArgumentException("The SdlFile to upload does not specify its resourceId, Uri, or file data");
         }
 
         return inputStream;
