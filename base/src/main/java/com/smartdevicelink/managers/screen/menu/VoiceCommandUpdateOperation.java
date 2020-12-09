@@ -125,7 +125,7 @@ class VoiceCommandUpdateOperation extends Task {
                     if (foundDeleteCommand == null) {
                         return;
                     }
-                    removeCurrentVoiceCommandForCorrelatingDeleteCommand(foundDeleteCommand);
+                    removeCurrentVoiceCommand(foundDeleteCommand.getCmdID());
                 }
             }
         });
@@ -143,9 +143,9 @@ class VoiceCommandUpdateOperation extends Task {
         return deleteCommandList;
     }
 
-    private void removeCurrentVoiceCommandForCorrelatingDeleteCommand(DeleteCommand deleteCommand) {
+    private void removeCurrentVoiceCommand(Integer commandId) {
         for (VoiceCommand voiceCommand : oldVoiceCommands) {
-            if (deleteCommand.getCmdID() == voiceCommand.getCommandId()) {
+            if (commandId == voiceCommand.getCommandId()) {
                 currentVoiceCommands.remove(voiceCommand);
                 return;
             }
@@ -198,7 +198,7 @@ class VoiceCommandUpdateOperation extends Task {
                     if (foundAddCommand == null) {
                         return;
                     }
-                    VoiceCommand foundVoiceCommand = pendingVoiceCommandForCorrelatingAddCommand(foundAddCommand);
+                    VoiceCommand foundVoiceCommand = pendingVoiceCommand(foundAddCommand.getCmdID());
                     if (foundVoiceCommand != null) {
                         currentVoiceCommands.add(foundVoiceCommand);
                     }
@@ -219,9 +219,9 @@ class VoiceCommandUpdateOperation extends Task {
         return addCommandList;
     }
 
-    private VoiceCommand pendingVoiceCommandForCorrelatingAddCommand(AddCommand addCommand) {
+    private VoiceCommand pendingVoiceCommand(Integer commandId) {
         for (VoiceCommand voiceCommand : pendingVoiceCommands) {
-            if (addCommand.getCmdID() == voiceCommand.getCommandId()) {
+            if (commandId == voiceCommand.getCommandId()) {
                 return voiceCommand;
             }
         }

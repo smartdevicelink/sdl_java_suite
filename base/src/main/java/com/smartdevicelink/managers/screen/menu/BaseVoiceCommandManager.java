@@ -148,7 +148,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
                     DebugTool.logError(TAG, "The failed Add and Delete Commands: " + errorObject);
                 }
                 currentVoiceCommands = newCurrentVoiceCommands;
-                updatePendingOperations();
+                updatePendingOperations(newCurrentVoiceCommands);
                 updateOperation = null;
             }
         });
@@ -170,13 +170,13 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
         }
     }
 
-    private void updatePendingOperations() {
+    private void updatePendingOperations(List<VoiceCommand> newCurrentVoiceCommands) {
         for (Task operation : transactionQueue.getTasksAsList()) {
             if (operation.getState() == Task.IN_PROGRESS) {
                 continue;
             }
             VoiceCommandUpdateOperation vcOperation = (VoiceCommandUpdateOperation) operation;
-            vcOperation.oldVoiceCommands = currentVoiceCommands;
+            vcOperation.oldVoiceCommands = newCurrentVoiceCommands;
         }
     }
 
