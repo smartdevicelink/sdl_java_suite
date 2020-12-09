@@ -5,16 +5,19 @@ import com.smartdevicelink.proxy.rpc.BeltStatus;
 import com.smartdevicelink.proxy.rpc.BodyInformation;
 import com.smartdevicelink.proxy.rpc.ClusterModeStatus;
 import com.smartdevicelink.proxy.rpc.DeviceStatus;
+import com.smartdevicelink.proxy.rpc.DoorStatus;
 import com.smartdevicelink.proxy.rpc.ECallInfo;
 import com.smartdevicelink.proxy.rpc.EmergencyEvent;
 import com.smartdevicelink.proxy.rpc.FuelRange;
 import com.smartdevicelink.proxy.rpc.GPSData;
+import com.smartdevicelink.proxy.rpc.GateStatus;
 import com.smartdevicelink.proxy.rpc.GearStatus;
 import com.smartdevicelink.proxy.rpc.GetVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.Grid;
 import com.smartdevicelink.proxy.rpc.HeadLampStatus;
 import com.smartdevicelink.proxy.rpc.MyKey;
 import com.smartdevicelink.proxy.rpc.OnVehicleData;
+import com.smartdevicelink.proxy.rpc.RoofStatus;
 import com.smartdevicelink.proxy.rpc.SingleTireStatus;
 import com.smartdevicelink.proxy.rpc.StabilityControlsStatus;
 import com.smartdevicelink.proxy.rpc.TireStatus;
@@ -48,6 +51,7 @@ import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -146,6 +150,10 @@ public class VehicleDataHelper {
     public static final Boolean BODY_INFORMATION_PASSENGER_AJAR = true;
     public static final Boolean BODY_INFORMATION_REAR_LEFT_AJAR = false;
     public static final Boolean BODY_INFORMATION_REAR_RIGHT_AJAR = true;
+
+    public static final JSONArray ROOF_STATUES = TestValues.JSON_ROOF_STATUSES;
+    public static final JSONArray GATE_STATUES = TestValues.JSON_GATE_STATUSES;
+    public static final JSONArray DOOR_STATUES = TestValues.JSON_DOOR_STATUSES;
 
     // device status
     public static final Boolean DEVICE_STATUS_VOICE_REC = true;

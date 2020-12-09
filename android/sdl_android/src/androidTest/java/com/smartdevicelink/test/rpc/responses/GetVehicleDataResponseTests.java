@@ -202,6 +202,9 @@ public class GetVehicleDataResponseTests extends BaseRpcTests {
             bodyInformationObj.put(BodyInformation.KEY_IGNITION_STABLE_STATUS, VehicleDataHelper.BODY_INFORMATION_IGNITION_STATUS);
             bodyInformationObj.put(BodyInformation.KEY_IGNITION_STATUS, VehicleDataHelper.BODY_INFORMATION_IGNITION_STABLE_STATUS);
             bodyInformationObj.put(BodyInformation.KEY_DRIVER_DOOR_AJAR, VehicleDataHelper.BODY_INFORMATION_DRIVER_AJAR);
+            bodyInformationObj.put(BodyInformation.KEY_ROOF_STATUSES, VehicleDataHelper.ROOF_STATUES);
+            bodyInformationObj.put(BodyInformation.KEY_GATE_STATUSES, VehicleDataHelper.GATE_STATUES);
+            bodyInformationObj.put(BodyInformation.KEY_DOOR_STATUSES, VehicleDataHelper.DOOR_STATUES);
             bodyInformationObj.put(BodyInformation.KEY_PASSENGER_DOOR_AJAR, VehicleDataHelper.BODY_INFORMATION_PASSENGER_AJAR);
             bodyInformationObj.put(BodyInformation.KEY_REAR_LEFT_DOOR_AJAR, VehicleDataHelper.BODY_INFORMATION_REAR_LEFT_AJAR);
             bodyInformationObj.put(BodyInformation.KEY_REAR_RIGHT_DOOR_AJAR, VehicleDataHelper.BODY_INFORMATION_REAR_RIGHT_AJAR);

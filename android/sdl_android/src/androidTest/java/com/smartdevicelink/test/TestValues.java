@@ -16,104 +16,7 @@ import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
 import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.rpc.AppInfo;
-import com.smartdevicelink.proxy.rpc.AppServiceCapability;
-import com.smartdevicelink.proxy.rpc.AppServiceData;
-import com.smartdevicelink.proxy.rpc.AppServiceManifest;
-import com.smartdevicelink.proxy.rpc.AppServiceRecord;
-import com.smartdevicelink.proxy.rpc.AppServicesCapabilities;
-import com.smartdevicelink.proxy.rpc.AudioControlCapabilities;
-import com.smartdevicelink.proxy.rpc.AudioControlData;
-import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
-import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
-import com.smartdevicelink.proxy.rpc.Choice;
-import com.smartdevicelink.proxy.rpc.ClimateControlCapabilities;
-import com.smartdevicelink.proxy.rpc.ClimateControlData;
-import com.smartdevicelink.proxy.rpc.CloudAppProperties;
-import com.smartdevicelink.proxy.rpc.Coordinate;
-import com.smartdevicelink.proxy.rpc.DIDResult;
-import com.smartdevicelink.proxy.rpc.DateTime;
-import com.smartdevicelink.proxy.rpc.DeviceInfo;
-import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
-import com.smartdevicelink.proxy.rpc.DisplayCapability;
-import com.smartdevicelink.proxy.rpc.DriverDistractionCapability;
-import com.smartdevicelink.proxy.rpc.DynamicUpdateCapabilities;
-import com.smartdevicelink.proxy.rpc.EqualizerSettings;
-import com.smartdevicelink.proxy.rpc.GearStatus;
-import com.smartdevicelink.proxy.rpc.Grid;
-import com.smartdevicelink.proxy.rpc.HMICapabilities;
-import com.smartdevicelink.proxy.rpc.HMIPermissions;
-import com.smartdevicelink.proxy.rpc.HMISettingsControlCapabilities;
-import com.smartdevicelink.proxy.rpc.HMISettingsControlData;
-import com.smartdevicelink.proxy.rpc.HapticRect;
-import com.smartdevicelink.proxy.rpc.Image;
-import com.smartdevicelink.proxy.rpc.ImageField;
-import com.smartdevicelink.proxy.rpc.ImageResolution;
-import com.smartdevicelink.proxy.rpc.KeyboardProperties;
-import com.smartdevicelink.proxy.rpc.LightCapabilities;
-import com.smartdevicelink.proxy.rpc.LightControlCapabilities;
-import com.smartdevicelink.proxy.rpc.LightControlData;
-import com.smartdevicelink.proxy.rpc.LightState;
-import com.smartdevicelink.proxy.rpc.LocationDetails;
-import com.smartdevicelink.proxy.rpc.MassageCushionFirmness;
-import com.smartdevicelink.proxy.rpc.MassageModeData;
-import com.smartdevicelink.proxy.rpc.MediaServiceData;
-import com.smartdevicelink.proxy.rpc.MediaServiceManifest;
-import com.smartdevicelink.proxy.rpc.MenuParams;
-import com.smartdevicelink.proxy.rpc.MetadataTags;
-import com.smartdevicelink.proxy.rpc.ModuleData;
-import com.smartdevicelink.proxy.rpc.ModuleInfo;
-import com.smartdevicelink.proxy.rpc.NavigationCapability;
-import com.smartdevicelink.proxy.rpc.NavigationInstruction;
-import com.smartdevicelink.proxy.rpc.NavigationServiceData;
-import com.smartdevicelink.proxy.rpc.NavigationServiceManifest;
-import com.smartdevicelink.proxy.rpc.OasisAddress;
-import com.smartdevicelink.proxy.rpc.ParameterPermissions;
-import com.smartdevicelink.proxy.rpc.PermissionItem;
-import com.smartdevicelink.proxy.rpc.PhoneCapability;
-import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
-import com.smartdevicelink.proxy.rpc.RGBColor;
-import com.smartdevicelink.proxy.rpc.RadioControlCapabilities;
-import com.smartdevicelink.proxy.rpc.RadioControlData;
-import com.smartdevicelink.proxy.rpc.RdsData;
-import com.smartdevicelink.proxy.rpc.Rectangle;
-import com.smartdevicelink.proxy.rpc.RemoteControlCapabilities;
-import com.smartdevicelink.proxy.rpc.ScreenParams;
-import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
-import com.smartdevicelink.proxy.rpc.SeatControlCapabilities;
-import com.smartdevicelink.proxy.rpc.SeatControlData;
-import com.smartdevicelink.proxy.rpc.SeatLocation;
-import com.smartdevicelink.proxy.rpc.SeatMemoryAction;
-import com.smartdevicelink.proxy.rpc.SingleTireStatus;
-import com.smartdevicelink.proxy.rpc.SisData;
-import com.smartdevicelink.proxy.rpc.SoftButton;
-import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
-import com.smartdevicelink.proxy.rpc.StabilityControlsStatus;
-import com.smartdevicelink.proxy.rpc.StartTime;
-import com.smartdevicelink.proxy.rpc.StationIDNumber;
-import com.smartdevicelink.proxy.rpc.SystemCapability;
-import com.smartdevicelink.proxy.rpc.TTSChunk;
-import com.smartdevicelink.proxy.rpc.Temperature;
-import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
-import com.smartdevicelink.proxy.rpc.TemplateConfiguration;
-import com.smartdevicelink.proxy.rpc.TextField;
-import com.smartdevicelink.proxy.rpc.TouchCoord;
-import com.smartdevicelink.proxy.rpc.TouchEvent;
-import com.smartdevicelink.proxy.rpc.TouchEventCapabilities;
-import com.smartdevicelink.proxy.rpc.Turn;
-import com.smartdevicelink.proxy.rpc.VehicleDataResult;
-import com.smartdevicelink.proxy.rpc.VehicleType;
-import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
-import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
-import com.smartdevicelink.proxy.rpc.VrHelpItem;
-import com.smartdevicelink.proxy.rpc.WeatherAlert;
-import com.smartdevicelink.proxy.rpc.WeatherData;
-import com.smartdevicelink.proxy.rpc.WeatherServiceData;
-import com.smartdevicelink.proxy.rpc.WeatherServiceManifest;
-import com.smartdevicelink.proxy.rpc.WindowCapability;
-import com.smartdevicelink.proxy.rpc.WindowState;
-import com.smartdevicelink.proxy.rpc.WindowStatus;
-import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
+import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
@@ -137,6 +40,7 @@ import com.smartdevicelink.proxy.rpc.enums.Direction;
 import com.smartdevicelink.proxy.rpc.enums.DisplayMode;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.DistanceUnit;
+import com.smartdevicelink.proxy.rpc.enums.DoorStatusType;
 import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
 import com.smartdevicelink.proxy.rpc.enums.ECallConfirmationStatus;
 import com.smartdevicelink.proxy.rpc.enums.EmergencyEventType;
@@ -427,6 +331,15 @@ public class TestValues {
     public static final DynamicUpdateCapabilities GENERAL_DYNAMICUPDATECAPABILITIES = new DynamicUpdateCapabilities();
     public static final WindowState GENERAL_WINDOWSTATE = new WindowState();
 
+    public static final DoorStatusType GENERAL_DOOR_STATUS_TYPE = DoorStatusType.REMOVED;
+
+    public static final DoorStatus GENERAL_DOOR_STATUS = new DoorStatus();
+    public static final GateStatus GENERAL_GATE_STATUS = new GateStatus();
+    public static final RoofStatus GENERAL_ROOF_STATUS = new RoofStatus();
+
+    public static final ArrayList<DoorStatus> GENERAL_DOOR_STATUS_LIST = new ArrayList<>(1);
+    public static final ArrayList<GateStatus> GENERAL_GATE_STATUS_LIST = new ArrayList<>(1);
+    public static final ArrayList<RoofStatus> GENERAL_ROOF_STATUS_LIST = new ArrayList<>(1);
 
     public static final VehicleDataResult GENERAL_OEM_CUSTOM_VEHICLE_DATA = new VehicleDataResult();
     public static final TemplateConfiguration GENERAL_TEMPLATE_CONFIGURATION = new TemplateConfiguration();
@@ -591,6 +504,12 @@ public class TestValues {
     public static final JSONObject JSON_DISPLAYCAPABILITY = new JSONObject();
     public static final JSONArray JSON_DISPLAYCAPABILITY_LIST = new JSONArray();
     public static final JSONObject JSON_DYNAMICUPDATECAPABILITIES = new JSONObject();
+    public static final JSONArray JSON_ROOF_STATUSES = new JSONArray();
+    public static final JSONArray JSON_DOOR_STATUSES = new JSONArray();
+    public static final JSONArray JSON_GATE_STATUSES = new JSONArray();
+    public static final JSONObject JSON_ROOF_STATUS = new JSONObject();
+    public static final JSONObject JSON_DOOR_STATUS = new JSONObject();
+    public static final JSONObject JSON_GATE_STATUS = new JSONObject();
 
     static {
         GENERAL_TOUCHEVENTCAPABILITIES.setDoublePressAvailable(GENERAL_BOOLEAN);
@@ -1154,6 +1073,19 @@ public class TestValues {
         GENERAL_STABILITY_CONTROL_STATUS.setEscSystem(GENERAL_ESC_SYSTEM);
         GENERAL_STABILITY_CONTROL_STATUS.setTrailerSwayControl(GENERAL_S_WAY_CONTROL);
 
+        GENERAL_ROOF_STATUS.setLocation(GENERAL_GRID);
+        GENERAL_ROOF_STATUS.setState(GENERAL_WINDOW_STATE);
+        GENERAL_ROOF_STATUS.setStatus(GENERAL_DOOR_STATUS_TYPE);
+        GENERAL_ROOF_STATUS_LIST.add(GENERAL_ROOF_STATUS);
+
+        GENERAL_GATE_STATUS.setLocation(GENERAL_GRID);
+        GENERAL_GATE_STATUS.setStatus(GENERAL_DOOR_STATUS_TYPE);
+        GENERAL_GATE_STATUS_LIST.add(GENERAL_GATE_STATUS);
+
+        GENERAL_DOOR_STATUS.setLocation(GENERAL_GRID);
+        GENERAL_DOOR_STATUS.setStatus(GENERAL_DOOR_STATUS_TYPE);
+        GENERAL_DOOR_STATUS_LIST.add(GENERAL_DOOR_STATUS);
+
         try {
             JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);
             JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_USER_DISALLOWED, GENERAL_HMILEVEL_LIST);
@@ -1391,6 +1323,19 @@ public class TestValues {
             JSON_MODULE_INFO.put(ModuleInfo.KEY_MODULE_SERVICE_AREA, TestValues.JSON_GRID);
             JSON_MODULE_INFO.put(ModuleInfo.KEY_MULTIPLE_ACCESS_ALLOWED, TestValues.GENERAL_BOOLEAN);
 
+            JSON_ROOF_STATUS.put(RoofStatus.KEY_STATUS, GENERAL_DOOR_STATUS_TYPE);
+            JSON_ROOF_STATUS.put(RoofStatus.KEY_LOCATION, JSON_GRID);
+            JSON_ROOF_STATUS.put(RoofStatus.KEY_STATE, GENERAL_WINDOW_STATE.serializeJSON());
+
+            JSON_DOOR_STATUS.put(DoorStatus.KEY_STATUS, GENERAL_DOOR_STATUS_TYPE);
+            JSON_DOOR_STATUS.put(DoorStatus.KEY_LOCATION, JSON_GRID);
+
+            JSON_GATE_STATUS.put(GateStatus.KEY_STATUS, GENERAL_DOOR_STATUS_TYPE);
+            JSON_GATE_STATUS.put(GateStatus.KEY_LOCATION, JSON_GRID);
+
+            JSON_ROOF_STATUSES.put(JSON_ROOF_STATUS);
+            JSON_DOOR_STATUSES.put(JSON_DOOR_STATUS);
+            JSON_GATE_STATUSES.put(JSON_GATE_STATUS);
 
         } catch (JSONException e) {
             Log.e("Test", "Static Json Construction Failed.", e);
