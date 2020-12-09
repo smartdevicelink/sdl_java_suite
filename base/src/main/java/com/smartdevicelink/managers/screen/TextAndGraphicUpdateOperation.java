@@ -260,8 +260,8 @@ class TextAndGraphicUpdateOperation extends Task {
 
     Show createImageOnlyShowWithPrimaryArtwork(SdlArtwork primaryArtwork, SdlArtwork secondaryArtwork) {
         Show newShow = new Show();
-        newShow.setGraphic(primaryArtwork != null && isSdlArtworkUploaded(primaryArtwork) ? primaryArtwork.getImageRPC() : null);
-        newShow.setSecondaryGraphic(secondaryArtwork != null && isSdlArtworkUploaded(secondaryArtwork) ? secondaryArtwork.getImageRPC() : null);
+        newShow.setGraphic(shouldRPCIncludeImage(primaryArtwork) ? primaryArtwork.getImageRPC() : null);
+        newShow.setSecondaryGraphic(shouldRPCIncludeImage(secondaryArtwork) ? secondaryArtwork.getImageRPC() : null);
         if (newShow.getGraphic() == null && newShow.getSecondaryGraphic() == null) {
             DebugTool.logInfo(TAG, "No graphics to upload");
             return null;
@@ -645,7 +645,7 @@ class TextAndGraphicUpdateOperation extends Task {
         return array;
     }
 
-    private boolean isSdlArtworkUploaded(SdlArtwork artwork) {
+    private boolean shouldRPCIncludeImage(SdlArtwork artwork) {
         if (artwork != null) {
             return artwork.isStaticIcon() || (fileManager.get() != null && fileManager.get().hasUploadedFile(artwork));
         }
