@@ -36,32 +36,24 @@ package com.smartdevicelink.managers.file;
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 
+import com.livio.taskmaster.Queue;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
-import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.rpc.DeleteFile;
-import com.smartdevicelink.proxy.rpc.DeleteFileResponse;
-import com.smartdevicelink.proxy.rpc.ListFiles;
-import com.smartdevicelink.proxy.rpc.ListFilesResponse;
-import com.smartdevicelink.proxy.rpc.PutFile;
-import com.smartdevicelink.proxy.rpc.PutFileResponse;
-import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.Result;
-import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
-import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.Version;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * <strong>FileManager</strong> <br>
@@ -82,11 +74,16 @@ abstract class BaseFileManager extends BaseSubManager {
 
     final static String TAG = "FileManager";
     final static int SPACE_AVAILABLE_MAX_VALUE = 2000000000;
-    private List<String> remoteFiles;
-    private final List<String> uploadedEphemeralFileNames;
-    private int bytesAvailable = SPACE_AVAILABLE_MAX_VALUE;
-    private final FileManagerConfig fileManagerConfig;
-    private final HashMap<String, Integer> failedFileUploadsIndex;
+
+    private Set<String> mutableRemoteFileNames;
+    private int bytesAvailable;
+
+    private Queue transactionQueue;
+    private final Set<String> uploadedEphemeralFileNames;
+
+    private HashMap<String, Integer> failedFileUploadsCount;
+    private int maxFileUploadAttempts;
+    private int maxArtworkUploadAttempts;
 
     /**
      * Constructor for BaseFileManager
@@ -95,23 +92,51 @@ abstract class BaseFileManager extends BaseSubManager {
      * @param fileManagerConfig FileManagerConfig
      */
     BaseFileManager(ISdl internalInterface, FileManagerConfig fileManagerConfig) {
-
-        // setup
         super(internalInterface);
-        uploadedEphemeralFileNames = new ArrayList<>();
-        this.fileManagerConfig = fileManagerConfig;
-        failedFileUploadsIndex = new HashMap<>();
+        this.bytesAvailable = 0;
+
+        this.mutableRemoteFileNames = new HashSet<>();
+        this.transactionQueue = internalInterface.getTaskmaster().createQueue("FileManager", 5, false);
+        this.uploadedEphemeralFileNames = new HashSet<>();
+
+        this.failedFileUploadsCount = new HashMap<>();
+        this.maxFileUploadAttempts = fileManagerConfig.getFileRetryCount() + 1;
+        this.maxArtworkUploadAttempts = fileManagerConfig.getArtworkRetryCount() + 1;
     }
 
     @Override
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     public void start(CompletionListener listener) {
-        // prepare manager - don't set state to ready until we have list of files
+        // Prepare manager - don't set state to ready until we have list of files
         retrieveRemoteFiles();
         super.start(listener);
     }
 
-    // GETTERS
+    @Override
+    public void dispose() {
+        super.dispose();
+
+        // Cancel the operations
+        if (transactionQueue != null) {
+            transactionQueue.close();
+            transactionQueue = null;
+        }
+
+        if (mutableRemoteFileNames != null) {
+            mutableRemoteFileNames.clear();
+        }
+
+        bytesAvailable = 0;
+
+        // Clear the failed uploads tracking so failed files can be uploaded again when a new connection has been established with Core
+        if (failedFileUploadsCount != null) {
+            failedFileUploadsCount.clear();
+        }
+    }
+
+    private Set<String> remoteFileNames() {
+        return new HashSet<>(mutableRemoteFileNames);
+    }
 
     /**
      * Returns a list of file names currently residing on core
@@ -119,12 +144,7 @@ abstract class BaseFileManager extends BaseSubManager {
      * @return List<String> of remote file names
      */
     public List<String> getRemoteFileNames() {
-        if (getState() != BaseSubManager.READY) {
-            // error and don't return list
-            throw new IllegalArgumentException("FileManager is not READY");
-        }
-        // return list (this is synchronous at this point)
-        return remoteFiles;
+        return new ArrayList<>(mutableRemoteFileNames);
     }
 
     /**
@@ -133,37 +153,47 @@ abstract class BaseFileManager extends BaseSubManager {
      * @return int value representing The number of bytes still available
      */
     public int getBytesAvailable() {
-        return bytesAvailable;
+        return this.bytesAvailable;
     }
 
     private void retrieveRemoteFiles() {
-        remoteFiles = new ArrayList<>();
-        // hold list in remoteFiles class var
-        ListFiles listFiles = new ListFiles();
-        listFiles.setOnRPCResponseListener(new OnRPCResponseListener() {
+        listRemoteFilesWithCompletionListener(new FileManagerCompletionListener() {
             @Override
-            public void onResponse(int correlationId, RPCResponse response) {
-                ListFilesResponse listFilesResponse = (ListFilesResponse) response;
-                if (listFilesResponse.getSuccess()) {
-                    bytesAvailable = listFilesResponse.getSpaceAvailable() != null ? listFilesResponse.getSpaceAvailable() : SPACE_AVAILABLE_MAX_VALUE;
-
-                    if (listFilesResponse.getFilenames() != null) {
-                        remoteFiles.addAll(listFilesResponse.getFilenames());
-                    }
-                    // on callback set manager to ready state
-                    transitionToState(BaseSubManager.READY);
-                } else {
-                    // file list could not be received. assume that setting can work and allow SDLManager to start
-                    DebugTool.logError(TAG, "File Manager could not list files");
-                    bytesAvailable = SPACE_AVAILABLE_MAX_VALUE;
-                    transitionToState(BaseSubManager.READY);
+            public void onComplete(boolean success, int bytesAvailable, Collection<String> fileNames, String errorMessage) {
+                // If there was an error, we'll pass the error to the startup listener and cancel out
+                if (errorMessage != null) {
+                    // HAX: In the case we are DISALLOWED we still want to transition to a ready state.
+                    // Some head units return DISALLOWED for this RPC but otherwise work.
+                    DebugTool.logWarning(TAG, "ListFiles is disallowed. Certain file manager APIs may not work properly.");
+                    transitionToState(READY);
+                    return;
                 }
+
+                // If no error, make sure we're in the ready state
+                transitionToState(READY);
             }
         });
-        internalInterface.sendRPC(listFiles);
     }
 
-    // DELETION
+    private void listRemoteFilesWithCompletionListener(final FileManagerCompletionListener completionListener) {
+        ListFilesOperation operation = new ListFilesOperation(internalInterface, new FileManagerCompletionListener() {
+            @Override
+            public void onComplete(boolean success, int bytesAvailable, Collection<String> fileNames, String errorMessage) {
+                if (errorMessage != null || !success) {
+                    completionListener.onComplete(success, bytesAvailable, fileNames, errorMessage);
+                    return;
+                }
+
+                // If there was no error, set our properties and call back to the startup completion listener
+                BaseFileManager.this.mutableRemoteFileNames.addAll(fileNames);
+                BaseFileManager.this.bytesAvailable = bytesAvailable;
+
+                completionListener.onComplete(success, bytesAvailable, fileNames, errorMessage);
+            }
+        });
+
+        transactionQueue.add(operation, false);
+    }
 
     /**
      * Attempts to delete the desired file from core, calls listener with indication of success/failure
@@ -172,24 +202,39 @@ abstract class BaseFileManager extends BaseSubManager {
      * @param listener callback that is called on response from core
      */
     public void deleteRemoteFileWithName(@NonNull final String fileName, final CompletionListener listener) {
-        DeleteFile deleteFile = new DeleteFile();
-        deleteFile.setSdlFileName(fileName);
-        deleteFile.setOnRPCResponseListener(new OnRPCResponseListener() {
+        deleteRemoteFileWithNamePrivate(fileName, new FileManagerCompletionListener() {
             @Override
-            public void onResponse(int correlationId, RPCResponse response) {
-                DeleteFileResponse deleteFileResponse = (DeleteFileResponse) response;
-                if (deleteFileResponse.getSuccess()) {
-                    bytesAvailable = deleteFileResponse.getSpaceAvailable() != null ? deleteFileResponse.getSpaceAvailable() : SPACE_AVAILABLE_MAX_VALUE;
-
-                    remoteFiles.remove(fileName);
-                    uploadedEphemeralFileNames.remove(fileName);
-                }
+            public void onComplete(boolean success, int bytesAvailable, Collection<String> fileNames, String errorMessage) {
                 if (listener != null) {
-                    listener.onComplete(deleteFileResponse.getSuccess());
+                    listener.onComplete(success);
                 }
             }
         });
-        internalInterface.sendRPC(deleteFile);
+    }
+
+    private void deleteRemoteFileWithNamePrivate(@NonNull final String fileName, final FileManagerCompletionListener listener) {
+        if (!remoteFileNames().contains(fileName) && listener != null) {
+            String errorMessage = "No such remote file is currently known";
+            listener.onComplete(false, bytesAvailable, mutableRemoteFileNames, errorMessage);
+            return;
+        }
+
+
+        DeleteFileOperation operation = new DeleteFileOperation(internalInterface, fileName, new FileManagerCompletionListener() {
+            @Override
+            public void onComplete(boolean success, int bytesAvailable, Collection<String> fileNames, String errorMessage) {
+                // Mutate self based on the changes
+                if (success) {
+                    BaseFileManager.this.bytesAvailable = bytesAvailable;
+                    BaseFileManager.this.mutableRemoteFileNames.remove(fileName);
+                }
+
+                if (listener != null) {
+                    listener.onComplete(success, bytesAvailable, mutableRemoteFileNames, errorMessage);
+                }
+            }
+        });
+        transactionQueue.add(operation, false);
     }
 
     /**
@@ -200,180 +245,57 @@ abstract class BaseFileManager extends BaseSubManager {
      */
     public void deleteRemoteFilesWithNames(@NonNull List<String> fileNames, final MultipleFileCompletionListener listener) {
         if (fileNames.isEmpty()) {
-            return;
-        }
-        final List<DeleteFile> deleteFileRequests = new ArrayList<>();
-        for (String fileName : fileNames) {
-            DeleteFile deleteFile = new DeleteFile();
-            deleteFile.setSdlFileName(fileName);
-            deleteFileRequests.add(deleteFile);
-        }
-        final Map<String, String> errors = new HashMap<>();
-        sendMultipleFileOperations(deleteFileRequests, listener, errors);
-    }
-
-    // UPLOAD FILES / ARTWORK
-
-    /**
-     * Creates and returns a PutFile request that would upload a given SdlFile
-     *
-     * @param file SdlFile with fileName and one of A) fileData, B) Uri, or C) resourceID set
-     * @return a valid PutFile request if SdlFile contained a fileName and sufficient data
-     */
-    abstract PutFile createPutFile(@NonNull final SdlFile file);
-
-    /**
-     * Sends list of provided requests (strictly PutFile or DeleteFile) asynchronously through internalInterface,
-     * calls listener on conclusion of sending requests.
-     *
-     * @param requests Non-empty list of PutFile or DeleteFile requests
-     * @param listener MultipleFileCompletionListener that is called upon conclusion of sending requests
-     * @param errors   a hashMap that keeps track of RPCRequest that have failed to upload and returns to developer if listener is not null
-     */
-    private void sendMultipleFileOperations(final List<? extends RPCRequest> requests, final MultipleFileCompletionListener listener, final Map<String, String> errors) {
-        final HashMap<Integer, RPCRequest> requestMap = new HashMap<>();
-        final List<RPCRequest> requestsToResend = new ArrayList<>();
-        final boolean deletionOperation;
-        if (requests.get(0) instanceof PutFile) {
-            deletionOperation = false;
-        } else if (requests.get(0) instanceof DeleteFile) {
-            deletionOperation = true;
-        } else {
-            return;
+            throw new IllegalArgumentException("This request requires that the array of files not be empty");
         }
 
-        OnMultipleRequestListener onMultipleRequestListener = new OnMultipleRequestListener() {
-            int fileNum = 0;
+        final Map<String, String> failedDeletes = new HashMap<>();
 
-            @Override
-            public void addCorrelationId(int correlationId) {
-                super.addCorrelationId(correlationId);
-                requestMap.put(correlationId, requests.get(fileNum++));
-            }
-
-            @Override
-            public void onUpdate(int remainingRequests) {
-            }
-
-            @Override
-            public void onFinished() {
-                if (!deletionOperation) {
-                    if (!requestsToResend.isEmpty()) {
-                        sendMultipleFileOperations(requestsToResend, listener, errors);
-                    } else if (listener != null) {
-                        listener.onComplete(errors.isEmpty() ? null : errors);
+        final DispatchGroup deleteFilesTask = new DispatchGroup();
+        deleteFilesTask.enter();
+        for (final String name : fileNames) {
+            deleteFilesTask.enter();
+            deleteRemoteFileWithNamePrivate(name, new FileManagerCompletionListener() {
+                @Override
+                public void onComplete(boolean success, int bytesAvailable, Collection<String> fileNames, String errorMessage) {
+                    if (!success) {
+                        failedDeletes.put(name, errorMessage);
                     }
-                } else {
-                    if (listener != null) {
-                        listener.onComplete(errors.isEmpty() ? null : errors);
-                    }
+                    deleteFilesTask.leave();
                 }
-            }
-
-            @Override
-            public void onResponse(int correlationId, RPCResponse response) {
-                if (response.getSuccess()) {
-                    if (response instanceof PutFileResponse) {
-                        PutFileResponse putFileResponse = (PutFileResponse) response;
-                        bytesAvailable = putFileResponse.getSpaceAvailable() != null ? putFileResponse.getSpaceAvailable() : SPACE_AVAILABLE_MAX_VALUE;
-
-                        PutFile putFile = ((PutFile) requestMap.get(correlationId));
-                        if (putFile != null) {
-                            remoteFiles.add(putFile.getSdlFileName());
-                            uploadedEphemeralFileNames.add(putFile.getSdlFileName());
-                        }
-
-                    } else if (response instanceof DeleteFileResponse) {
-                        DeleteFileResponse deleteFileResponse = (DeleteFileResponse) response;
-                        bytesAvailable = deleteFileResponse.getSpaceAvailable() != null ? deleteFileResponse.getSpaceAvailable() : SPACE_AVAILABLE_MAX_VALUE;
-
-                        DeleteFile deleteFile = (DeleteFile) requestMap.get(correlationId);
-                        if (deleteFile != null) {
-                            remoteFiles.remove(deleteFile.getSdlFileName());
-                            uploadedEphemeralFileNames.remove(deleteFile.getSdlFileName());
-                        }
-                    }
-                } else {
-                    final RPCRequest request = requestMap.get(correlationId);
-                    if (request != null) {
-                        if (!deletionOperation) {
-                            if (shouldReUploadFile(((PutFile) request).getSdlFileName(), ((PutFile) request).getFileType())) {
-                                request.setOnRPCResponseListener(null);
-                                requestsToResend.add(request);
-                            } else {
-                                errors.put(((PutFile) request).getSdlFileName(), buildErrorString(response.getResultCode(), response.getInfo()));
-                            }
-                        } else {
-                            errors.put(((DeleteFile) request).getSdlFileName(), buildErrorString(response.getResultCode(), response.getInfo()));
-                        }
-                    }
-                }
-            }
-        };
-        internalInterface.sendRPCs(requests, onMultipleRequestListener);
-    }
-
-    /**
-     * Attempts to upload a SdlFile to core
-     *
-     * @param file     SdlFile with file name and one of A) fileData, B) Uri, or C) resourceID set
-     * @param listener called when core responds to the attempt to upload the file
-     */
-    public void uploadFile(@NonNull final SdlFile file, final CompletionListener listener) {
-        if (file.isStaticIcon()) {
-            DebugTool.logWarning(TAG, String.format("%s is a static icon and doesn't need to be uploaded", file.getName()));
-            listener.onComplete(true);
-            return;
+            });
         }
-        if (!file.getOverwrite() && hasUploadedFile(file)) {
-            DebugTool.logWarning(TAG, String.format("%s has already been uploaded and the overwrite property is set to false. It will not be uploaded again", file.getName()));
-            listener.onComplete(true);
-            return;
-        }
-        PutFile putFile = createPutFile(file);
-        putFile.setOnRPCResponseListener(new OnRPCResponseListener() {
+        deleteFilesTask.leave();
+
+        // Wait for all files to be deleted
+        deleteFilesTask.notify(new Runnable() {
             @Override
-            public void onResponse(int correlationId, RPCResponse response) {
-                PutFileResponse putFileResponse = (PutFileResponse) response;
-                if (putFileResponse.getSuccess()) {
-                    bytesAvailable = putFileResponse.getSpaceAvailable() != null ? putFileResponse.getSpaceAvailable() : SPACE_AVAILABLE_MAX_VALUE;
-                    remoteFiles.add(file.getName());
-                    uploadedEphemeralFileNames.add(file.getName());
-                    if (listener != null) {
-                        listener.onComplete(true);
-                    }
-                } else {
-                    if (shouldReUploadFile(file.getName(), file.getType())) {
-                        uploadFile(file, listener);
-                    } else if (listener != null) {
-                        listener.onComplete(false);
-                    }
+            public void run() {
+                if (listener == null) {
+                    return;
                 }
+                if (failedDeletes.size() > 0) {
+                    listener.onComplete(failedDeletes);
+                    return;
+                }
+                listener.onComplete(null);
             }
         });
-        internalInterface.sendRPC(putFile);
     }
 
     /**
-     * Check to see if file can be re-uploaded
+     * Check if an SdlFile has been uploaded to core
      *
-     * @param fileName a String that represents an SdlFile's name
-     * @param fileType an instances of FileType that represents a type of File
-     * @return true or false depending on if file with given type and name can be re-uploaded
+     * @param file SdlFile
+     * @return boolean that tells whether file has been uploaded to core (true) or not (false)
      */
-    private boolean shouldReUploadFile(String fileName, FileType fileType) {
-        if (!failedFileUploadsIndex.containsKey(fileName)) {
-            if (FileType.GRAPHIC_JPEG.equals(fileType) ||
-                    FileType.GRAPHIC_BMP.equals(fileType) ||
-                    FileType.GRAPHIC_PNG.equals(fileType)) {
-                failedFileUploadsIndex.put(fileName, fileManagerConfig.getArtworkRetryCount());
-            } else {
-                failedFileUploadsIndex.put(fileName, fileManagerConfig.getFileRetryCount());
-            }
-        }
-        Integer fileRetryValue = failedFileUploadsIndex.get(fileName);
-        if (fileRetryValue != null && fileRetryValue > 0) {
-            failedFileUploadsIndex.put(fileName, fileRetryValue - 1);
+    public boolean hasUploadedFile(@NonNull SdlFile file) {
+        Set<String> remoteFileName = remoteFileNames();
+        // HAX: [#827](https://github.com/smartdevicelink/sdl_ios/issues/827) Older versions of Core had a bug where list files would cache incorrectly.
+        if (file.isPersistent() && remoteFileName != null && remoteFileName.contains(file.getName())) {
+            // If it's a persistent file, the bug won't present itself; just check if it's on the remote system
+            return true;
+        } else if (!file.isPersistent() && remoteFileName != null && remoteFileName.contains(file.getName()) && uploadedEphemeralFileNames.contains(file.getName())) {
+            // If it's an ephemeral file, the bug will present itself; check that it's a remote file AND that we've uploaded it this session
             return true;
         }
         return false;
@@ -386,29 +308,142 @@ abstract class BaseFileManager extends BaseSubManager {
      * @param listener callback that is called once core responds to all upload requests
      */
     public void uploadFiles(@NonNull List<? extends SdlFile> files, final MultipleFileCompletionListener listener) {
-        if (files.isEmpty()) {
+        if (files.size() == 0) {
+            throw new IllegalArgumentException("This request requires that the array of files not be empty");
+        }
+
+        final Map<String, String> failedUploads = new HashMap<>();
+        final DispatchGroup uploadFilesTask = new DispatchGroup();
+        uploadFilesTask.enter();
+
+        // Wait for all files to be uploaded
+        uploadFilesTask.notify(new Runnable() {
+            @Override
+            public void run() {
+                if (listener == null) {
+                    return;
+                }
+
+                if (failedUploads.size() > 0) {
+                    listener.onComplete(failedUploads);
+                    return;
+                }
+
+                listener.onComplete(null);
+                return;
+            }
+        });
+
+        for (int i = 0; i < files.size(); i++) {
+            final SdlFile file = files.get(i);
+            uploadFilesTask.enter();
+
+            uploadFilePrivate(file, new FileManagerCompletionListener() {
+                @Override
+                public void onComplete(boolean success, int bytesAvailable, Collection<String> fileNames, String errorMessage) {
+                    if (!success) {
+                        failedUploads.put(file.getName(), errorMessage);
+                    }
+
+                    uploadFilesTask.leave();
+                }
+            });
+        }
+        uploadFilesTask.leave();
+    }
+
+    /**
+     * Attempts to upload a SdlFile to core
+     *
+     * @param file     SdlFile with file name and one of A) fileData, B) Uri, or C) resourceID set
+     * @param listener called when core responds to the attempt to upload the file
+     */
+    public void uploadFile(@NonNull final SdlFile file, final CompletionListener listener) {
+        uploadFilePrivate(file, new FileManagerCompletionListener() {
+            @Override
+            public void onComplete(boolean success, int bytesAvailable, Collection<String> fileNames, String errorMessage) {
+                if (listener != null) {
+                    listener.onComplete(success);
+                }
+            }
+        });
+    }
+
+
+    private void uploadFilePrivate(@NonNull final SdlFile file, final FileManagerCompletionListener listener) {
+        if (file == null) {
+            if (listener != null) {
+                listener.onComplete(false, bytesAvailable, null, "The file upload was canceled. The data for the file is missing.");
+            }
             return;
         }
-        final List<PutFile> putFileRequests = new ArrayList<>();
-        for (SdlFile file : files) {
-            if (file.isStaticIcon()) {
-                DebugTool.logWarning(TAG, String.format("%s is a static icon and doesn't need to be uploaded", file.getName()));
-                continue;
+
+        if (file.isStaticIcon()) {
+            if (listener != null) {
+                listener.onComplete(false, bytesAvailable, null, "The file upload was canceled. The file is a static icon, which cannot be uploaded.");
             }
-            if (!file.getOverwrite() && hasUploadedFile(file)) {
-                DebugTool.logWarning(TAG, String.format("%s has already been uploaded and the overwrite property is set to false. It will not be uploaded again", file.getName()));
-                continue;
+            return;
+        }
+
+        if (getState() != READY) {
+            if (listener != null) {
+                listener.onComplete(false, bytesAvailable, null, "The file manager was unable to send this file. This could be because the file manager has not started, or the head unit does not support files.");
             }
-            putFileRequests.add(createPutFile(file));
+            return;
         }
-        // if all files are static icons we complete listener with no errors
-        if (putFileRequests.isEmpty()) {
-            listener.onComplete(null);
-        } else {
-            final Map<String, String> errors = new HashMap<>();
-            sendMultipleFileOperations(putFileRequests, listener, errors);
+
+        // HAX: [#827](https://github.com/smartdevicelink/sdl_ios/issues/827) Older versions of Core
+        // had a bug where list files would cache incorrectly. This led to attempted uploads failing
+        // due to the system thinking they were already there when they were not. This is only needed
+        // if connecting to Core v4.3.1 or less which corresponds to RPC v4.3.1 or less
+        Version rpcVersion = new Version(internalInterface.getSdlMsgVersion());
+        if (!file.isPersistent() && !hasUploadedFile(file) && new Version(4, 4, 0).isNewerThan(rpcVersion) == 1) {
+            file.setOverwrite(true);
         }
+
+        // Check our overwrite settings and error out if it would overwrite
+        if (!file.getOverwrite() && remoteFileNames().contains(file.getName())) {
+            if (listener != null) {
+                DebugTool.logWarning(TAG, String.format("%s has already been uploaded and the overwrite property is set to false. It will not be uploaded again.", file.getName()));
+                listener.onComplete(true, bytesAvailable, null, "Cannot overwrite remote file. The remote file system already has a file of this name, and the file manager is set to not automatically overwrite files.");
+            }
+            return;
+        }
+
+        // If we didn't error out over the overwrite, then continue on
+        sdl_uploadFilePrivate(file, listener);
     }
+
+    private void sdl_uploadFilePrivate(@NonNull final SdlFile file, final FileManagerCompletionListener listener) {
+        final String fileName = file.getName();
+
+        SdlFileWrapper fileWrapper = new SdlFileWrapper(file, new FileManagerCompletionListener() {
+            @Override
+            public void onComplete(boolean success, int bytesAvailable, Collection<String> fileNames, String errorMessage) {
+                if (success) {
+                    BaseFileManager.this.bytesAvailable = bytesAvailable;
+                    BaseFileManager.this.mutableRemoteFileNames.add(fileName);
+                    BaseFileManager.this.uploadedEphemeralFileNames.add(fileName);
+                } else {
+                    BaseFileManager.this.failedFileUploadsCount = incrementFailedUploadCountForFileName(file.getName(), BaseFileManager.this.failedFileUploadsCount);
+
+                    int maxUploadCount = file instanceof SdlArtwork ? maxArtworkUploadAttempts : maxFileUploadAttempts;
+                    if (canFileBeUploadedAgain(file, maxUploadCount, failedFileUploadsCount)) {
+                        DebugTool.logInfo(TAG, String.format("Attempting to resend file with name %s after a failed upload attempt", file.getName()));
+                        sdl_uploadFilePrivate(file, listener);
+                    }
+                }
+
+                if (listener != null) {
+                    listener.onComplete(success, bytesAvailable, null, errorMessage);
+                }
+            }
+        });
+
+        UploadFileOperation operation = new UploadFileOperation(internalInterface, this, fileWrapper);
+        transactionQueue.add(operation, false);
+    }
+
 
     /**
      * Attempts to upload a SdlArtwork to core
@@ -431,22 +466,61 @@ abstract class BaseFileManager extends BaseSubManager {
     }
 
     /**
-     * Check if an SdlFile has been uploaded to core
+     * Checks if an artwork needs to be uploaded to Core. The artwork should not be sent to Core if
+     * the artwork is already on Core or if the artwork is not on Core after the maximum number of
+     * repeated upload attempts has been reached.
      *
-     * @param file SdlFile
-     * @return boolean that tells whether file has been uploaded to core (true) or not (false)
+     * @param file                   The file to be uploaded to Core
+     * @param maxUploadCount         The max number of times the file is allowed to be uploaded to Core
+     * @param failedFileUploadsCount
+     * @return True if the file still needs to be (re)sent to Core; false if not.
      */
-    public boolean hasUploadedFile(@NonNull SdlFile file) {
-        if (file.isPersistent() && remoteFiles != null && remoteFiles.contains(file.getName())) {
-            return true;
-        } else if (!file.isPersistent() && remoteFiles != null && remoteFiles.contains(file.getName())
-                && uploadedEphemeralFileNames.contains(file.getName())) {
-            return true;
+    private boolean canFileBeUploadedAgain(SdlFile file, int maxUploadCount, HashMap<String, Integer> failedFileUploadsCount) {
+        if (getState() != READY) {
+            DebugTool.logWarning(TAG, String.format("File named %s failed to upload. The file manager has shutdown so the file upload will not retry.", file.getName()));
+            return false;
         }
-        return false;
+
+        if (file == null) {
+            DebugTool.logError(TAG, "File can not be uploaded because it is not a valid file.");
+            return false;
+        }
+
+        if (hasUploadedFile(file)) {
+            DebugTool.logInfo(TAG, String.format("File named %s has already been uploaded.", file.getName()));
+            return false;
+        }
+
+        Integer failedUploadCount = failedFileUploadsCount.get(file.getName());
+        boolean canFileBeUploadedAgain = (failedUploadCount == null) ? true : (failedUploadCount < maxUploadCount);
+        if (!canFileBeUploadedAgain) {
+            DebugTool.logError(TAG, String.format("File named %s failed to upload. Max number of upload attempts reached.", file.getName()));
+        }
+
+        return canFileBeUploadedAgain;
     }
 
-    // HELPERS
+    /**
+     * Increments the number of upload attempts for a file name by 1.
+     *
+     * @param name                   The name used to upload the file to Core
+     * @param failedFileUploadsCount
+     * @return
+     */
+    private HashMap<String, Integer> incrementFailedUploadCountForFileName(String name, HashMap<String, Integer> failedFileUploadsCount) {
+        Integer currentFailedUploadCount = failedFileUploadsCount.get(name);
+        Integer newFailedUploadCount = (currentFailedUploadCount != null) ? (currentFailedUploadCount + 1) : 1;
+        failedFileUploadsCount.put(name, newFailedUploadCount);
+        DebugTool.logWarning(TAG, String.format("File with name %s failed to upload %s times", name, newFailedUploadCount));
+        return failedFileUploadsCount;
+    }
+
+    /**
+     * Opens a socket for reading data.
+     *
+     * @param file The file containing the data or the file url of the data
+     */
+    abstract InputStream openInputStreamWithFile(@NonNull SdlFile file);
 
     /**
      * Builds an error string for a given Result and info string
@@ -455,33 +529,8 @@ abstract class BaseFileManager extends BaseSubManager {
      * @param info       String returned from OnRPCRequestListener.onError()
      * @return Error string
      */
+    @Deprecated
     static public String buildErrorString(Result resultCode, String info) {
         return resultCode.toString() + " : " + info;
     }
-
-    /**
-     * Helper method to take InputStream and turn it into byte array
-     *
-     * @param is valid InputStream
-     * @return Resulting byte array
-     */
-    byte[] contentsOfInputStream(InputStream is) {
-        if (is == null) {
-            return null;
-        }
-        try {
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-            final int bufferSize = 4096;
-            final byte[] buffer = new byte[bufferSize];
-            int available;
-            while ((available = is.read(buffer)) >= 0) {
-                os.write(buffer, 0, available);
-            }
-            return os.toByteArray();
-        } catch (IOException e) {
-            DebugTool.logError(TAG, "Can't read from InputStream", e);
-            return null;
-        }
-    }
-
 }

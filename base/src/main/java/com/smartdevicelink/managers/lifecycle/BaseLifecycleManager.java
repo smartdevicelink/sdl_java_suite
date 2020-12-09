@@ -1042,6 +1042,11 @@ abstract class BaseLifecycleManager {
         }
 
         @Override
+        public long getMtu(SessionType serviceType) {
+            return BaseLifecycleManager.this.session.getMtu(serviceType);
+        }
+
+        @Override
         public void startRPCEncryption() {
             BaseLifecycleManager.this.startRPCEncryption();
         }
