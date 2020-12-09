@@ -47,9 +47,7 @@ import java.nio.file.Files;
 
 /**
  * <strong>FileManager</strong> <br>
- * <p>
  * Note: This class must be accessed through the SdlManager. Do not instantiate it by itself. <br>
- * <p>
  * The FileManager uploads files and keeps track of all the uploaded files names during a session. <br>
  */
 public class FileManager extends BaseFileManager {

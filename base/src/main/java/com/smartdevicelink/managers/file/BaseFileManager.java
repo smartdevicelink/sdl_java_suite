@@ -57,18 +57,8 @@ import java.util.Set;
 
 /**
  * <strong>FileManager</strong> <br>
- * <p>
  * Note: This class must be accessed through the SdlManager. Do not instantiate it by itself. <br>
- * <p>
- * The SDLFileManager uploads files and keeps track of all the uploaded files names during a session. <br>
- * <p>
- * We need to add the following struct: SDLFile<br>
- * <p>
- * It is broken down to these areas: <br>
- * <p>
- * 1. Getters <br>
- * 2. Deletion methods <br>
- * 3. Uploading Files / Artwork
+ * The FileManager uploads files and keeps track of all the uploaded files names during a session. <br>
  */
 abstract class BaseFileManager extends BaseSubManager {
 
