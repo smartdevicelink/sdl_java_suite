@@ -82,7 +82,7 @@ class DeleteFileOperation extends Task {
                 int bytesAvailable = deleteFileResponse.getSpaceAvailable() != null ? deleteFileResponse.getSpaceAvailable() : BaseFileManager.SPACE_AVAILABLE_MAX_VALUE;
 
                 if (completionListener != null) {
-                    String errorMessage = response.getInfo() + ": " + response.getResultCode();
+                    String errorMessage = success ? null : response.getInfo() + ": " + response.getResultCode();
                     completionListener.onComplete(success, bytesAvailable, null, errorMessage);
                 }
 
