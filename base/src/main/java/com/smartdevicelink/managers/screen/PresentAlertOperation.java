@@ -60,6 +60,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Created by Julian Kast on 12/10/20.
+ */
 public class PresentAlertOperation extends Task {
     private static final String TAG = "PresentAlertOperation";
     private AlertView alertView;
@@ -113,15 +116,29 @@ public class PresentAlertOperation extends Task {
             finishOperation(false, null);
             return;
         }
+        final DispatchGroup uploadFilesTask = new DispatchGroup();
+
+        uploadFilesTask.enter();
+        uploadFilesTask.enter();
+
+        uploadFilesTask.notify(new Runnable() {
+            @Override
+            public void run() {
+                presentAlert();
+            }
+        });
+
         checkForImagesAndUpload(new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
-                uploadAudioFiles(new CompletionListener() {
-                    @Override
-                    public void onComplete(boolean success) {
-                        presentAlert();
-                    }
-                });
+                uploadFilesTask.leave();
+            }
+        });
+
+        uploadAudioFiles(new CompletionListener() {
+            @Override
+            public void onComplete(boolean success) {
+                uploadFilesTask.leave();
             }
         });
     }
