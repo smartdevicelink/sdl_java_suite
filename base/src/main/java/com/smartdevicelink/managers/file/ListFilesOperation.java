@@ -90,12 +90,8 @@ class ListFilesOperation extends Task {
                 int bytesAvailable = listFilesResponse.getSpaceAvailable() != null ? listFilesResponse.getSpaceAvailable() : BaseFileManager.SPACE_AVAILABLE_MAX_VALUE;
 
                 if (completionListener != null) {
-                    if (!success) {
-                        String errorMessage = response.getInfo() + ": " + response.getResultCode();
-                        completionListener.onComplete(success, bytesAvailable, fileNames, errorMessage);
-                    } else {
-                        completionListener.onComplete(success, bytesAvailable, fileNames, null);
-                    }
+                    String errorMessage = success ? null : response.getInfo() + ": " + response.getResultCode();
+                    completionListener.onComplete(success, bytesAvailable, fileNames, errorMessage);
                 }
 
                 onFinished();
