@@ -48,7 +48,7 @@ import java.util.UUID;
  * Created by Bilal Alsharifi on 12/1/20.
  */
 class ListFilesOperation extends Task {
-    private static final String TAG = "FileManager.ListFilesOperation";
+    private static final String TAG = "ListFilesOperation";
     private UUID operationId;
     private final WeakReference<ISdl> internalInterface;
     private FileManagerCompletionListener completionListener;

@@ -49,7 +49,7 @@ import java.lang.ref.WeakReference;
  * Created by Bilal Alsharifi on 12/1/20.
  */
 class UploadFileOperation extends Task {
-    private static final String TAG = "FileManager.UploadFileOperation";
+    private static final String TAG = "UploadFileOperation";
     private final WeakReference<ISdl> internalInterface;
     private final WeakReference<BaseFileManager> fileManager;
     private SdlFileWrapper fileWrapper;

@@ -45,7 +45,7 @@ import java.lang.ref.WeakReference;
  * Created by Bilal Alsharifi on 12/1/20.
  */
 class DeleteFileOperation extends Task {
-    private static final String TAG = "FileManager.DeleteFileOperation";
+    private static final String TAG = "DeleteFileOperation";
     private final WeakReference<ISdl> internalInterface;
     private String fileName;
     private FileManagerCompletionListener completionListener;

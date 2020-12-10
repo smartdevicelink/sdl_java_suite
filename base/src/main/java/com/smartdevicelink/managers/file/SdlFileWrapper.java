@@ -46,11 +46,11 @@ class SdlFileWrapper {
         this.completionListener = completionListener;
     }
 
-    public SdlFile getFile() {
+    SdlFile getFile() {
         return file;
     }
 
-    public FileManagerCompletionListener getCompletionListener() {
+    FileManagerCompletionListener getCompletionListener() {
         return completionListener;
     }
 }
