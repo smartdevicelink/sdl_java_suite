@@ -29,9 +29,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.smartdevicelink.managers.file;
-
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
@@ -65,15 +63,13 @@ abstract class BaseFileManager extends BaseSubManager {
     final static String TAG = "FileManager";
     final static int SPACE_AVAILABLE_MAX_VALUE = 2000000000;
 
-    private Set<String> mutableRemoteFileNames;
-    private int bytesAvailable;
-
-    private Queue transactionQueue;
+    private final Set<String> mutableRemoteFileNames;
     private final Set<String> uploadedEphemeralFileNames;
-
+    private int bytesAvailable;
+    private Queue transactionQueue;
     private HashMap<String, Integer> failedFileUploadsCount;
-    private int maxFileUploadAttempts;
-    private int maxArtworkUploadAttempts;
+    private final int maxFileUploadAttempts;
+    private final int maxArtworkUploadAttempts;
 
     /**
      * Constructor for BaseFileManager
@@ -124,10 +120,6 @@ abstract class BaseFileManager extends BaseSubManager {
         }
     }
 
-    private Set<String> remoteFileNames() {
-        return new HashSet<>(mutableRemoteFileNames);
-    }
-
     /**
      * Returns a list of file names currently residing on core
      *
@@ -150,7 +142,6 @@ abstract class BaseFileManager extends BaseSubManager {
         listRemoteFilesWithCompletionListener(new FileManagerCompletionListener() {
             @Override
             public void onComplete(boolean success, int bytesAvailable, Collection<String> fileNames, String errorMessage) {
-                // If there was an error, we'll pass the error to the startup listener and cancel out
                 if (errorMessage != null) {
                     // HAX: In the case we are DISALLOWED we still want to transition to a ready state.
                     // Some head units return DISALLOWED for this RPC but otherwise work.
@@ -174,7 +165,7 @@ abstract class BaseFileManager extends BaseSubManager {
                     return;
                 }
 
-                // If there was no error, set our properties and call back to the startup completion listener
+                // If there was no error, set our properties and call back to the completion listener
                 BaseFileManager.this.mutableRemoteFileNames.addAll(fileNames);
                 BaseFileManager.this.bytesAvailable = bytesAvailable;
 
@@ -203,17 +194,15 @@ abstract class BaseFileManager extends BaseSubManager {
     }
 
     private void deleteRemoteFileWithNamePrivate(@NonNull final String fileName, final FileManagerCompletionListener listener) {
-        if (!remoteFileNames().contains(fileName) && listener != null) {
+        if (!mutableRemoteFileNames.contains(fileName) && listener != null) {
             String errorMessage = "No such remote file is currently known";
             listener.onComplete(false, bytesAvailable, mutableRemoteFileNames, errorMessage);
             return;
         }
 
-
         DeleteFileOperation operation = new DeleteFileOperation(internalInterface, fileName, new FileManagerCompletionListener() {
             @Override
             public void onComplete(boolean success, int bytesAvailable, Collection<String> fileNames, String errorMessage) {
-                // Mutate self based on the changes
                 if (success) {
                     BaseFileManager.this.bytesAvailable = bytesAvailable;
                     BaseFileManager.this.mutableRemoteFileNames.remove(fileName);
@@ -242,6 +231,7 @@ abstract class BaseFileManager extends BaseSubManager {
 
         final DispatchGroup deleteFilesTask = new DispatchGroup();
         deleteFilesTask.enter();
+
         for (final String name : fileNames) {
             deleteFilesTask.enter();
             deleteRemoteFileWithNamePrivate(name, new FileManagerCompletionListener() {
@@ -254,6 +244,7 @@ abstract class BaseFileManager extends BaseSubManager {
                 }
             });
         }
+
         deleteFilesTask.leave();
 
         // Wait for all files to be deleted
@@ -279,12 +270,11 @@ abstract class BaseFileManager extends BaseSubManager {
      * @return boolean that tells whether file has been uploaded to core (true) or not (false)
      */
     public boolean hasUploadedFile(@NonNull SdlFile file) {
-        Set<String> remoteFileName = remoteFileNames();
         // HAX: [#827](https://github.com/smartdevicelink/sdl_ios/issues/827) Older versions of Core had a bug where list files would cache incorrectly.
-        if (file.isPersistent() && remoteFileName != null && remoteFileName.contains(file.getName())) {
+        if (file.isPersistent() && mutableRemoteFileNames != null && mutableRemoteFileNames.contains(file.getName())) {
             // If it's a persistent file, the bug won't present itself; just check if it's on the remote system
             return true;
-        } else if (!file.isPersistent() && remoteFileName != null && remoteFileName.contains(file.getName()) && uploadedEphemeralFileNames.contains(file.getName())) {
+        } else if (!file.isPersistent() && mutableRemoteFileNames != null && mutableRemoteFileNames.contains(file.getName()) && uploadedEphemeralFileNames.contains(file.getName())) {
             // If it's an ephemeral file, the bug will present itself; check that it's a remote file AND that we've uploaded it this session
             return true;
         }
@@ -298,8 +288,8 @@ abstract class BaseFileManager extends BaseSubManager {
      * @param listener callback that is called once core responds to all upload requests
      */
     public void uploadFiles(@NonNull List<? extends SdlFile> files, final MultipleFileCompletionListener listener) {
-        if (files.size() == 0) {
-            throw new IllegalArgumentException("This request requires that the array of files not be empty");
+        if (files.isEmpty()) {
+            throw new IllegalArgumentException("This request requires that the array of files not be empty.");
         }
 
         final Map<String, String> failedUploads = new HashMap<>();
@@ -320,7 +310,6 @@ abstract class BaseFileManager extends BaseSubManager {
                 }
 
                 listener.onComplete(null);
-                return;
             }
         });
 
@@ -359,7 +348,6 @@ abstract class BaseFileManager extends BaseSubManager {
         });
     }
 
-
     private void uploadFilePrivate(@NonNull final SdlFile file, final FileManagerCompletionListener listener) {
         if (file == null) {
             if (listener != null) {
@@ -392,10 +380,11 @@ abstract class BaseFileManager extends BaseSubManager {
         }
 
         // Check our overwrite settings and error out if it would overwrite
-        if (!file.getOverwrite() && remoteFileNames().contains(file.getName())) {
+        if (!file.getOverwrite() && mutableRemoteFileNames.contains(file.getName())) {
+            String errorMessage = "Cannot overwrite remote file. The remote file system already has a file of this name, and the file manager is set to not automatically overwrite files.";
+            DebugTool.logWarning(TAG, errorMessage);
             if (listener != null) {
-                DebugTool.logWarning(TAG, String.format("%s has already been uploaded and the overwrite property is set to false. It will not be uploaded again.", file.getName()));
-                listener.onComplete(true, bytesAvailable, null, "Cannot overwrite remote file. The remote file system already has a file of this name, and the file manager is set to not automatically overwrite files.");
+                listener.onComplete(true, bytesAvailable, null, errorMessage);
             }
             return;
         }
@@ -415,12 +404,13 @@ abstract class BaseFileManager extends BaseSubManager {
                     BaseFileManager.this.mutableRemoteFileNames.add(fileName);
                     BaseFileManager.this.uploadedEphemeralFileNames.add(fileName);
                 } else {
-                    BaseFileManager.this.failedFileUploadsCount = incrementFailedUploadCountForFileName(file.getName(), BaseFileManager.this.failedFileUploadsCount);
+                    incrementFailedUploadCountForFileName(file.getName(), BaseFileManager.this.failedFileUploadsCount);
 
                     int maxUploadCount = file instanceof SdlArtwork ? maxArtworkUploadAttempts : maxFileUploadAttempts;
                     if (canFileBeUploadedAgain(file, maxUploadCount, failedFileUploadsCount)) {
                         DebugTool.logInfo(TAG, String.format("Attempting to resend file with name %s after a failed upload attempt", file.getName()));
                         sdl_uploadFilePrivate(file, listener);
+                        return;
                     }
                 }
 
@@ -433,7 +423,6 @@ abstract class BaseFileManager extends BaseSubManager {
         UploadFileOperation operation = new UploadFileOperation(internalInterface, this, fileWrapper);
         transactionQueue.add(operation, false);
     }
-
 
     /**
      * Attempts to upload a SdlArtwork to core
@@ -482,7 +471,7 @@ abstract class BaseFileManager extends BaseSubManager {
         }
 
         Integer failedUploadCount = failedFileUploadsCount.get(file.getName());
-        boolean canFileBeUploadedAgain = (failedUploadCount == null) ? true : (failedUploadCount < maxUploadCount);
+        boolean canFileBeUploadedAgain = (failedUploadCount == null) || (failedUploadCount < maxUploadCount);
         if (!canFileBeUploadedAgain) {
             DebugTool.logError(TAG, String.format("File named %s failed to upload. Max number of upload attempts reached.", file.getName()));
         }
@@ -493,16 +482,15 @@ abstract class BaseFileManager extends BaseSubManager {
     /**
      * Increments the number of upload attempts for a file name by 1.
      *
-     * @param name                   The name used to upload the file to Core
+     * @param name The name used to upload the file to Core
      * @param failedFileUploadsCount
      * @return
      */
-    private HashMap<String, Integer> incrementFailedUploadCountForFileName(String name, HashMap<String, Integer> failedFileUploadsCount) {
+    private void incrementFailedUploadCountForFileName(String name, HashMap<String, Integer> failedFileUploadsCount) {
         Integer currentFailedUploadCount = failedFileUploadsCount.get(name);
         Integer newFailedUploadCount = (currentFailedUploadCount != null) ? (currentFailedUploadCount + 1) : 1;
         failedFileUploadsCount.put(name, newFailedUploadCount);
         DebugTool.logWarning(TAG, String.format("File with name %s failed to upload %s times", name, newFailedUploadCount));
-        return failedFileUploadsCount;
     }
 
     /**
