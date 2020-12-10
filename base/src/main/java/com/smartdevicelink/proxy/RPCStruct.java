@@ -31,7 +31,10 @@
  */
 package com.smartdevicelink.proxy;
 
+import androidx.annotation.Nullable;
+
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
+import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.SdlDataTypeConverter;
 import com.smartdevicelink.util.Version;
 
@@ -46,7 +49,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 
-public class RPCStruct {
+public class RPCStruct implements Cloneable {
     public static final String KEY_BULK_DATA = "bulkData";
     public static final String KEY_PROTECTED = "protected";
 
@@ -374,5 +377,44 @@ public class RPCStruct {
             return (Long) result;
         }
         return null;
+    }
+
+    @Override
+    public RPCStruct clone() {
+        try {
+            RPCStruct clone = (RPCStruct) super.clone();
+            clone.setPayloadProtected(protectedPayload);
+            clone.setBulkData(_bulkData);
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            DebugTool.logError("RPCStruct", "Failed to clone: " + e);
+            return null;
+        }
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        // if this is the same memory address, its the same
+        if (this == obj) {
+            return true;
+        }
+        // if this is not an instance of the same class, not the same
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        // return comparison of store
+        return isEqualToRPC((RPCStruct) obj);
+    }
+
+    private boolean isEqualToRPC(RPCStruct rpc) {
+        return store.equals(rpc.store);
+    }
+
+    @Override
+    public int hashCode() {
+        return store.hashCode();
     }
 }

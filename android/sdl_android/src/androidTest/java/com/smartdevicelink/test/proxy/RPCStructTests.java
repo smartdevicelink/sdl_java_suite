@@ -1,5 +1,6 @@
 package com.smartdevicelink.test.proxy;
 
+import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.AirbagStatus;
 import com.smartdevicelink.proxy.rpc.Choice;
@@ -182,5 +183,62 @@ public class RPCStructTests extends TestCase {
         } catch (ClassCastException e) {
             fail(e.getMessage());
         }
+    }
+
+    public void testClone() {
+        Hashtable<String, Object> map = new Hashtable<>();
+        String key = "test";
+        Integer value = 42;
+        map.put(key, value);
+
+        RPCStruct rpcStruct = new RPCStruct(map);
+        rpcStruct.setPayloadProtected(true);
+        RPCStruct rpcClone = rpcStruct.clone();
+
+        assertEquals(rpcStruct.getStore().get("test"), rpcClone.getStore().get("test"));
+        assertTrue(rpcClone.isPayloadProtected());
+    }
+
+    public void testHashCode() {
+        Hashtable<String, Object> map = new Hashtable<>();
+        String key = "test";
+        Integer value = 42;
+        map.put(key, value);
+
+        RPCStruct rpcStruct = new RPCStruct(map);
+
+        Hashtable<String, Object> map2 = new Hashtable<>();
+        String key2 = "test2";
+        Integer value2 = 24;
+        map2.put(key2, value2);
+
+        RPCStruct rpcStruct2 = new RPCStruct(map2);
+
+        assertEquals(rpcStruct.hashCode(), 3556536);
+        assertNotSame(rpcStruct2.hashCode(), 3556536);
+    }
+
+    public void testEquals() {
+        Hashtable<String, Object> map = new Hashtable<>();
+        String key = "test";
+        Integer value = 42;
+        map.put(key, value);
+
+        RPCStruct rpcStruct = new RPCStruct(map);
+
+        RPCStruct rpcClone = rpcStruct.clone();
+
+        RPCStruct rpcNull = new RPCStruct(null);
+
+        RPCMessage nonStruct = new RPCMessage("TEST");
+
+        RPCStruct rpcStruct2 = new RPCStruct(map);
+
+        assertFalse(rpcStruct.equals(null));
+        assertTrue(rpcStruct.equals(rpcStruct));
+        assertFalse(rpcStruct.equals(nonStruct));
+        assertFalse(rpcStruct.equals(rpcNull));
+        assertTrue(rpcStruct.equals(rpcStruct2));
+        assertTrue(rpcStruct.equals(rpcClone));
     }
 }
