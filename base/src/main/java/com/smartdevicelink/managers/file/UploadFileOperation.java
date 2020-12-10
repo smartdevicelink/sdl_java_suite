@@ -55,21 +55,16 @@ class UploadFileOperation extends Task {
     private SdlFileWrapper fileWrapper;
     private InputStream inputStream;
     private int fileSize;
-    private boolean executing;
-    private boolean finished;
     private String streamError;
-    int bytesAvailable;
-    int highestCorrelationIDReceived;
+    private int bytesAvailable;
+    private int highestCorrelationIDReceived;
 
-    UploadFileOperation(ISdl internalInterface, BaseFileManager fileManager, SdlFileWrapper file) {
+    UploadFileOperation(ISdl internalInterface, BaseFileManager fileManager, SdlFileWrapper fileWrapper) {
         super("UploadFileOperation");
-
-        executing = false;
-        finished = false;
 
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
-        this.fileWrapper = file;
+        this.fileWrapper = fileWrapper;
     }
 
     @Override
@@ -91,8 +86,7 @@ class UploadFileOperation extends Task {
 
     /**
      * Sends data asynchronously to the SDL Core by breaking the data into smaller packets, each of which is
-     * sent via a PutFile. To prevent large files from eating up memory, the data packet is deleted once it
-     * is sent via a PutFile. If the SDL Core receives all the PutFile successfully, a success response with
+     * sent via a PutFile. If the SDL Core receives all the PutFile successfully, a success response with
      * the amount of free storage space left on the SDL Core is returned. Otherwise the error returned by
      * the SDL Core is passed along.
      *
@@ -106,14 +100,14 @@ class UploadFileOperation extends Task {
         highestCorrelationIDReceived = -1;
 
         if (getState() == Task.CANCELED) {
-            String errorMessage = "The file upload transaction was canceled before it could be completed";
+            String errorMessage = "The file upload transaction was canceled before it could be completed.";
             completionListener.onComplete(false, bytesAvailable, null, errorMessage);
             onFinished();
             return;
         }
 
         if (file == null) {
-            String errorMessage = "The file manager was unable to send the file. This could be because the file does not exist at the specified file path or that passed data is invalid";
+            String errorMessage = "The file manager was unable to send the file. This could be because the file does not exist at the specified file path or that passed data is invalid.";
             completionListener.onComplete(false, bytesAvailable, null, errorMessage);
             onFinished();
             return;
@@ -124,11 +118,11 @@ class UploadFileOperation extends Task {
             this.fileSize = getFileSizeFromInputStream(inputStream);
         }
 
+        // If the file does not exist or the passed data is null, return an error
         if (inputStream == null || fileSize == 0) {
-            // If the file does not exist or the passed data is null, return an error
             closeInputStream();
 
-            String errorMessage = "The file manager was unable to send the file. This could be because the file does not exist at the specified file path or that passed data is invalid";
+            String errorMessage = "The file manager was unable to send the file. This could be because the file does not exist at the specified file path or that passed data is invalid.";
             completionListener.onComplete(false, bytesAvailable, null, errorMessage);
             onFinished();
             return;
@@ -176,7 +170,6 @@ class UploadFileOperation extends Task {
                     PutFileResponse putFileResponse = (PutFileResponse) response;
 
                     // Check if the upload process has been cancelled by another packet. If so, stop the upload process.
-
                     if (getState() == Task.CANCELED) {
                         putFileGroup.leave();
                         return;
@@ -184,9 +177,9 @@ class UploadFileOperation extends Task {
 
                     // If the SDL Core returned an error, cancel the upload the process in the future
                     if (!response.getSuccess() || getState() == Task.CANCELED) {
-                        cancelTask();
                         streamError = response.getInfo() + ": " + response.getResultCode();
                         putFileGroup.leave();
+                        cancelTask();
                         return;
                     }
 
@@ -237,7 +230,7 @@ class UploadFileOperation extends Task {
      * @return The length of the data being sent in the PutFile
      */
     private int getPutFileLengthForOffset(int currentOffset, int fileSize, int mtuSize) {
-        int putFileLength = 0;
+        int putFileLength;
         if (currentOffset == 0) {
             // The first PutFile sends the full file size
             putFileLength = fileSize;
@@ -252,8 +245,8 @@ class UploadFileOperation extends Task {
     }
 
     /**
-     * Gets the size of the data to be sent in a packet. Packet size can not be greater than the max
-     * MTU size allowed by the SDL Core.
+     * Gets the size of the data to be sent in a packet.
+     * Packet size can not be greater than the max MTU size allowed by the SDL Core.
      *
      * @param currentOffset The position in the file where to start reading data
      * @param fileSize      he size of the file
@@ -261,7 +254,7 @@ class UploadFileOperation extends Task {
      * @return The size of the data to be sent in the packet.
      */
     private int getDataSizeForOffset(int currentOffset, int fileSize, int mtuSize) {
-        int dataSize = 0;
+        int dataSize;
         int fileSizeRemaining = fileSize - currentOffset;
         if (fileSizeRemaining < mtuSize) {
             dataSize = fileSizeRemaining;
@@ -272,10 +265,10 @@ class UploadFileOperation extends Task {
     }
 
     /**
-     * Reads a chunk of data from a socket.
+     * Reads a chunk of data from input stream.
      *
      * @param size        The amount of data to read from the input stream
-     * @param inputStream The socket from which to read the data
+     * @param inputStream The stream from which to read the data
      * @return The data read from the socket
      */
     private byte[] getDataChunkWithSize(int size, InputStream inputStream) {
@@ -309,11 +302,7 @@ class UploadFileOperation extends Task {
      * @return Whether or not the newest request contains the highest correlationId
      */
     private boolean newHighestCorrelationID(int correlationID, int highestCorrelationIDReceived) {
-        if (correlationID > highestCorrelationIDReceived) {
-            return true;
-        }
-
-        return false;
+        return correlationID > highestCorrelationIDReceived;
     }
 
     /**
