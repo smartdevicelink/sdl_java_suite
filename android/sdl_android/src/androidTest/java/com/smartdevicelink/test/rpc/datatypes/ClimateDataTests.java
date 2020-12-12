@@ -35,12 +35,12 @@ public class ClimateDataTests extends TestCase {
         // Test Values
         Temperature cabinTemperature = msg.getCabinTemperature();
         Temperature externalTemperature = msg.getExternalTemperature();
-        Float atmPressure = msg.getAtmosphericPressure();
+        Float atmosphericPressure = msg.getAtmosphericPressure();
 
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_TEMPERATURE, cabinTemperature);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_TEMPERATURE, externalTemperature);
-        assertEquals(TestValues.MATCH, TestValues.GENERAL_FLOAT, atmPressure);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_FLOAT, atmosphericPressure);
 
         // Invalid/Null Tests
         ClimateData msg = new ClimateData();
@@ -66,13 +66,7 @@ public class ClimateDataTests extends TestCase {
             while (iterator.hasNext()) {
                 String key = (String) iterator.next();
 
-                if (key.equals(ClimateData.KEY_CABIN_TEMPERATURE)) {
-                    JSONObject objectEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(reference, key);
-                    JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
-                    Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
-                    Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-                    assertTrue(TestValues.TRUE, Validator.validateTemperature(new Temperature(hashReference), new Temperature(hashTest)));
-                } else if (key.equals(ClimateData.KEY_EXTERNAL_TEMPERATURE)) {
+                if (key.equals(ClimateData.KEY_CABIN_TEMPERATURE) || key.equals(ClimateData.KEY_EXTERNAL_TEMPERATURE)) {
                     JSONObject objectEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(reference, key);
                     JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
                     Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);

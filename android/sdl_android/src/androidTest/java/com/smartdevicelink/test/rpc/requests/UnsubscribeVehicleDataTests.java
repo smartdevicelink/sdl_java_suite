@@ -266,7 +266,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
             assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_WINDOW_STATUS), cmd.getWindowStatus());
             assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_GEAR_STATUS), cmd.getGearStatus());
             assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_STABILITY_CONTROLS_STATUS), cmd.getStabilityControlsStatus());
-            assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_STABILITY_CONTROLS_STATUS), cmd.getClimateData());
+            assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_CLIMATE_DATA), cmd.getClimateData());
             assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME), cmd.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
 
         } catch (JSONException e) {

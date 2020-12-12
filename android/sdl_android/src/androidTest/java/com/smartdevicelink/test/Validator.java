@@ -3937,6 +3937,15 @@ public class Validator {
         if (climateData2 == null) {
             return (climateData1 == null);
         }
-        return climateData1.getStore().equals(climateData2.getStore());
+
+        if (!validateTemperature(climateData1.getExternalTemperature(), climateData2.getExternalTemperature())) {
+            return false;
+        }
+
+        if (!validateTemperature(climateData1.getCabinTemperature(), climateData2.getCabinTemperature())) {
+            return false;
+        }
+
+        return climateData1.getAtmosphericPressure().floatValue() == climateData2.getAtmosphericPressure().floatValue();
     }
 }

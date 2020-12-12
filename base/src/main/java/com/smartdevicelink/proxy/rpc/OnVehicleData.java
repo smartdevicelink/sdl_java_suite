@@ -320,6 +320,16 @@ import java.util.List;
  *          <td>SmartDeviceLink 7.0.0</td>
  *      </tr>
  *      <tr>
+ *          <td>climateData</td>
+ *          <td>ClimateData</td>
+ *          <td>See ClimateData</td>
+ *          <td>N</td>
+ *          <td></td>
+ *          <td>
+     *          @since SmartDeviceLink 7.1.0
+ *          </td>
+ *          </tr>
+ *      <tr>
  *          <td>stabilityControlsStatus</td>
  *          <td>StabilityControlsStatus</td>
  *          <td>See StabilityControlsStatus</td>
@@ -471,7 +481,8 @@ public class OnVehicleData extends RPCNotification {
      * Sets the externalTemperature.
      *
      * @param externalTemperature The external temperature in degrees celsius. This parameter is deprecated starting RPC
-     * Spec 7.1, please see climateData.
+     * Spec 7.1.0, please see climateData.
+     * {"num_min_value": -40.0, "num_max_value": 100.0}
      * @since SmartDeviceLink 2.0.0
      * @deprecated in SmartDeviceLink 7.1.0
      */
@@ -485,7 +496,8 @@ public class OnVehicleData extends RPCNotification {
      * Gets the externalTemperature.
      *
      * @return Boolean The external temperature in degrees celsius. This parameter is deprecated starting RPC
-     * Spec 7.1, please see climateData.
+     * Spec 7.1.0, please see climateData.
+     * {"num_min_value": -40.0, "num_max_value": 100.0}
      * @since SmartDeviceLink 2.0.0
      * @deprecated in SmartDeviceLink 7.1.0
      */
