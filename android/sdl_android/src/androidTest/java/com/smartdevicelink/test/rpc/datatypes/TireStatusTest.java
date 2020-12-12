@@ -23,7 +23,7 @@ public class TireStatusTest extends TestCase {
     @Override
     public void setUp() {
         msg = new TireStatus();
-        msg.setPressureTellTale(TestValues.GENERAL_WARNINGLIGHTSTATUS);
+        msg.setPressureTelltale(TestValues.GENERAL_WARNINGLIGHTSTATUS);
         SingleTireStatus tireLeftFront = new SingleTireStatus();
         tireLeftFront.setStatus(TestValues.GENERAL_COMPONENTVOLUMESTATUS);
         msg.setLeftFront(tireLeftFront);
@@ -49,7 +49,7 @@ public class TireStatusTest extends TestCase {
      */
     public void testRpcValues() {
         // Test Values
-        WarningLightStatus pressure = msg.getPressureTellTale();
+        WarningLightStatus pressure = msg.getPressureTelltale();
         SingleTireStatus leftFront = msg.getLeftFront();
         SingleTireStatus rightFront = msg.getRightFront();
         SingleTireStatus leftRear = msg.getLeftRear();
@@ -75,7 +75,7 @@ public class TireStatusTest extends TestCase {
         JSONObject reference = new JSONObject();
 
         try {
-            reference.put(TireStatus.KEY_PRESSURE_TELL_TALE, TestValues.GENERAL_WARNINGLIGHTSTATUS);
+            reference.put(TireStatus.KEY_PRESSURE_TELLTALE, TestValues.GENERAL_WARNINGLIGHTSTATUS);
             JSONObject tireLeftFront = new JSONObject();
             tireLeftFront.put(SingleTireStatus.KEY_STATUS, TestValues.GENERAL_COMPONENTVOLUMESTATUS);
             reference.put(TireStatus.KEY_LEFT_FRONT, tireLeftFront);
