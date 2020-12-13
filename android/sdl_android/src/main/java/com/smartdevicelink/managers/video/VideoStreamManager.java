@@ -36,6 +36,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.SystemClock;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.InputDevice;
 import android.view.MotionEvent;
@@ -239,7 +240,9 @@ public class VideoStreamManager extends BaseVideoStreamManager {
         }
 
         @Override
-        public void onError(String info) { }
+        public void onError(String info) {
+            Log.i(TAG, "onError: " + info);
+        }
     };
 
     // MANAGER APIs
@@ -333,9 +336,9 @@ public class VideoStreamManager extends BaseVideoStreamManager {
      * @param parameters         streaming parameters to be used when streaming. If null is sent in, the default/optimized options will be used.
      *                           If you are unsure about what parameters to be used it is best to just send null and let the system determine what
      *                           works best for the currently connected module.
-     * @param encrypted a flag of if the stream should be encrypted. Only set if you have a supplied encryption library that the module can understand.
-     * @param landscapeRange constraints for vehicle display : aspect ratio, min/max resolutions, max diagonal size.
-     * @param portraitRange constraints for vehicle display : aspect ratio, min/max resolutions, max diagonal size.
+     * @param encrypted         a flag of if the stream should be encrypted. Only set if you have a supplied encryption library that the module can understand.
+     * @param landscapeRange    constraints for vehicle display : aspect ratio, min/max resolutions, max diagonal size.
+     * @param portraitRange     constraints for vehicle display : aspect ratio, min/max resolutions, max diagonal size.
      */
     public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted, VideoStreamingRange landscapeRange, VideoStreamingRange portraitRange) {
         Collections.addAll(listOfStreamingRanges, portraitRange, landscapeRange);

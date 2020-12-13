@@ -136,7 +136,6 @@ public class VirtualDisplayEncoder {
 
                 // Create a virtual display that will output to our encoder.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && virtualDisplay != null) {
-                    virtualDisplay.setSurface(null);
                     virtualDisplay.setSurface(inputSurface);
                 }
                 else {
