@@ -21,6 +21,10 @@ public class WindowCapability extends RPCStruct {
     public static final String KEY_SOFT_BUTTON_CAPABILITIES = "softButtonCapabilities";
     public static final String KEY_MENU_LAYOUTS_AVAILABLE = "menuLayoutsAvailable";
     public static final String KEY_DYNAMIC_UPDATE_CAPABILITIES = "dynamicUpdateCapabilities";
+    /**
+     * @since SmartDeviceLink 7.1.0
+     */
+    public static final String KEY_KEYBOARD_CAPABILITIES = "keyboardCapabilities";
 
     public WindowCapability() {
     }
@@ -239,5 +243,26 @@ public class WindowCapability extends RPCStruct {
      */
     public DynamicUpdateCapabilities getDynamicUpdateCapabilities() {
         return (DynamicUpdateCapabilities) getObject(DynamicUpdateCapabilities.class, KEY_DYNAMIC_UPDATE_CAPABILITIES);
+    }
+
+    /**
+     * Sets the keyboardCapabilities.
+     *
+     * @param keyboardCapabilities See KeyboardCapabilities
+     * @since SmartDeviceLink 7.1.0
+     */
+    public WindowCapability setKeyboardCapabilities(KeyboardCapabilities keyboardCapabilities) {
+        setValue(KEY_KEYBOARD_CAPABILITIES, keyboardCapabilities);
+        return this;
+    }
+
+    /**
+     * Gets the keyboardCapabilities.
+     *
+     * @return KeyboardCapabilities See KeyboardCapabilities
+     * @since SmartDeviceLink 7.1.0
+     */
+    public KeyboardCapabilities getKeyboardCapabilities() {
+        return (KeyboardCapabilities) getObject(KeyboardCapabilities.class, KEY_KEYBOARD_CAPABILITIES);
     }
 }

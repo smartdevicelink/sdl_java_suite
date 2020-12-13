@@ -32,6 +32,7 @@
 package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.rpc.enums.KeyboardInputMask;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
@@ -101,18 +102,53 @@ import java.util.List;
  *                 <td>Array = true maxlength = 1000 minsize = 0 maxsize = 100</td>
  * 			<td>Allows an app to prepopulate the text field with a list of suggested or completed entry as the user types. Set to an empty array to remove the auto-complete list from the screen</td>
  * 		</tr>
+ * 		<tr>
+ *			<td>maskInputCharacters</td>
+ *			<td>KeyboardInputMask</td>
+ *			<td>Allows an app to mask entered characters on HMI</td>
+ *			<td>N</td>
+ *			<td></td>
+ *			<td>
+ *				@since SmartDeviceLink 7.1.0
+ *			</td>
+ *			</tr>
+ * 		<tr>
+ *			<td>customizeKeys</td>
+ *			<td>List<String></td>
+ *			<td>Array of special characters to show in customizable Keys.If omitted, keyboard will showdefault special characters</td>
+ *			<td>N</td>
+ *			<td>{"array_min_size": 1, "array_max_size": 10, "string_min_length": 1, "string_max_length": 1}</td>
+ *			<td>
+ *				@since SmartDeviceLink 7.1.0
+ *			</td>
+ * 		</tr>
  *  </table>
  *
- * @since SmartDeviceLink 3.0
+ * @since SmartDeviceLink 3.0.0
  */
 
 public class KeyboardProperties extends RPCStruct {
     public static final String KEY_KEYPRESS_MODE = "keypressMode";
     public static final String KEY_KEYBOARD_LAYOUT = "keyboardLayout";
     public static final String KEY_LIMITED_CHARACTER_LIST = "limitedCharacterList";
+    /**
+     * @since SmartDeviceLink 3.0.0
+     * @deprecated in SmartDeviceLink 6.0.0
+     */
     @Deprecated
     public static final String KEY_AUTO_COMPLETE_TEXT = "autoCompleteText";
+    /**
+     * @since SmartDeviceLink 6.0.0
+     */
     public static final String KEY_AUTO_COMPLETE_LIST = "autoCompleteList";
+    /**
+     * @since SmartDeviceLink 7.1.0
+     */
+    public static final String KEY_MASK_INPUT_CHARACTERS = "maskInputCharacters";
+    /**
+     * @since SmartDeviceLink 7.1.0
+     */
+    public static final String KEY_CUSTOMIZE_KEYS = "customizeKeys";
     public static final String KEY_LANGUAGE = "language";
 
     private static final KeypressMode KEYPRESS_MODE_DEFAULT = KeypressMode.RESEND_CURRENT_ENTRY;
@@ -121,6 +157,11 @@ public class KeyboardProperties extends RPCStruct {
         setValue(KEY_KEYPRESS_MODE, KEYPRESS_MODE_DEFAULT);
     }
 
+    /**
+     * Constructs a new KeyboardProperties object indicated by the Hashtable parameter
+     *
+     * @param hash The Hashtable to use
+     */
     public KeyboardProperties(Hashtable<String, Object> hash) {
         super(hash);
         if (!store.containsKey(KEY_KEYPRESS_MODE)) {
@@ -128,24 +169,48 @@ public class KeyboardProperties extends RPCStruct {
         }
     }
 
+    /**
+     * Gets the language.
+     *
+     * @return Language The keyboard language.
+     */
     public Language getLanguage() {
         return (Language) getObject(Language.class, KEY_LANGUAGE);
     }
-
+    /**
+     * Sets the language.
+     *
+     * @param language The keyboard language.
+     */
     public KeyboardProperties setLanguage(Language language) {
         setValue(KEY_LANGUAGE, language);
         return this;
     }
 
+    /**
+     * Gets the keyboardLayout.
+     *
+     * @return KeyboardLayout Desired keyboard layout.
+     */
     public KeyboardLayout getKeyboardLayout() {
         return (KeyboardLayout) getObject(KeyboardLayout.class, KEY_KEYBOARD_LAYOUT);
     }
 
+    /**
+     * Sets the keyboardLayout.
+     *
+     * @param keyboardLayout Desired keyboard layout.
+     */
     public KeyboardProperties setKeyboardLayout(KeyboardLayout keyboardLayout) {
         setValue(KEY_KEYBOARD_LAYOUT, keyboardLayout);
         return this;
     }
 
+    /**
+     * Gets the keypressMode.
+     *
+     * @return KeypressMode Desired keypress mode. If omitted, this value will be set to RESEND_CURRENT_ENTRY.
+     */
     public KeypressMode getKeypressMode() {
         KeypressMode kp = (KeypressMode) getObject(KeypressMode.class, KEY_KEYPRESS_MODE);
         if (kp == null) {
@@ -154,6 +219,11 @@ public class KeyboardProperties extends RPCStruct {
         return kp;
     }
 
+    /**
+     * Sets the keypressMode.
+     *
+     * @param keypressMode Desired keypress mode. If omitted, this value will be set to RESEND_CURRENT_ENTRY.
+     */
     public KeyboardProperties setKeypressMode(KeypressMode keypressMode) {
         if (keypressMode != null) {
             setValue(KEY_KEYPRESS_MODE, keypressMode);
@@ -163,31 +233,50 @@ public class KeyboardProperties extends RPCStruct {
         return this;
     }
 
+    /**
+     * Gets the limitedCharacterList.
+     *
+     * @return List<String> Array of keyboard characters to enable.All omitted characters will be greyed out
+     * (disabled) on the keyboard.If omitted, the entire keyboard will be enabled.
+     * {"array_min_size": 1, "array_max_size": 100, "string_min_length": 1, "string_max_length": 1}
+     */
     @SuppressWarnings("unchecked")
     public List<String> getLimitedCharacterList() {
         return (List<String>) getObject(String.class, KEY_LIMITED_CHARACTER_LIST);
     }
 
+    /**
+     * Sets the limitedCharacterList.
+     *
+     * @param limitedCharacterList Array of keyboard characters to enable.All omitted characters will be greyed out
+     * (disabled) on the keyboard.If omitted, the entire keyboard will be enabled.
+     * {"array_min_size": 1, "array_max_size": 100, "string_min_length": 1, "string_max_length": 1}
+     */
     public KeyboardProperties setLimitedCharacterList(List<String> limitedCharacterList) {
         setValue(KEY_LIMITED_CHARACTER_LIST, limitedCharacterList);
         return this;
     }
 
     /**
-     * Gets the text that allows an app to prepopulate the text field with a suggested entry as the user types
+     * Gets the autoCompleteText.
      *
-     * @return String representing the suggestions text
+     * @return String Deprecated, use autoCompleteList instead.
+     * {"string_min_length": 1, "string_max_length": 1000}
+     * @since SmartDeviceLink 3.0.0
+     * @deprecated in SmartDeviceLink 6.0.0
      */
     @Deprecated
     public String getAutoCompleteText() {
-        return (String) getObject(String.class, KEY_AUTO_COMPLETE_TEXT);
+        return getString(KEY_AUTO_COMPLETE_TEXT);
     }
 
     /**
-     * Sets the text that allows an app to prepopulate the text field with a suggested entry as the user types
+     * Sets the autoCompleteText.
      *
-     * @param autoCompleteText String representing the suggestions text
-     * @deprecated use {@link #setAutoCompleteList(List <String>)} instead
+     * @param autoCompleteText Deprecated, use autoCompleteList instead.
+     * {"string_min_length": 1, "string_max_length": 1000}
+     * @since SmartDeviceLink 3.0.0
+     * @deprecated in SmartDeviceLink 6.0.0
      */
     @Deprecated
     public KeyboardProperties setAutoCompleteText(String autoCompleteText) {
@@ -196,23 +285,76 @@ public class KeyboardProperties extends RPCStruct {
     }
 
     /**
-     * Gets the list that allows an app to prepopulate the text field with a list of suggested or
-     * completed entries as the user types.
+     * Gets the autoCompleteList.
      *
-     * @return List<String> representing the suggestions list
+     * @return List<String> Allows an app to pre-populate the text field with a list of suggested or completed entries
+     * as the user types. If empty, the auto-complete list will be removed from the screen.
+     * {"array_min_size": 0, "array_max_size": 100, "string_min_length": 1, "string_max_length": 1000}
+     * @since SmartDeviceLink 6.0.0
      */
+    @SuppressWarnings("unchecked")
     public List<String> getAutoCompleteList() {
         return (List<String>) getObject(String.class, KEY_AUTO_COMPLETE_LIST);
     }
 
     /**
-     * Sets the lists that allows an app to prepopulate the text field with a list of suggested or
-     * completed entries as the user types. Set to an empty array to remove the auto-complete list from the screen
+     * Sets the autoCompleteList.
      *
-     * @param autoCompleteList List<String> representing the suggestions list
+     * @param autoCompleteList Allows an app to pre-populate the text field with a list of suggested or completed entries
+     * as the user types. If empty, the auto-complete list will be removed from the screen.
+     * {"array_min_size": 0, "array_max_size": 100, "string_min_length": 1, "string_max_length": 1000}
+     * @since SmartDeviceLink 6.0.0
      */
     public KeyboardProperties setAutoCompleteList(List<String> autoCompleteList) {
         setValue(KEY_AUTO_COMPLETE_LIST, autoCompleteList);
         return this;
     }
+
+    /**
+     * Sets the maskInputCharacters.
+     *
+     * @param maskInputCharacters Allows an app to mask entered characters on HMI
+     * @since SmartDeviceLink 7.1.0
+     */
+    public KeyboardProperties setMaskInputCharacters(KeyboardInputMask maskInputCharacters) {
+        setValue(KEY_MASK_INPUT_CHARACTERS, maskInputCharacters);
+        return this;
+    }
+
+    /**
+     * Gets the maskInputCharacters.
+     *
+     * @return KeyboardInputMask Allows an app to mask entered characters on HMI
+     * @since SmartDeviceLink 7.1.0
+     */
+    public KeyboardInputMask getMaskInputCharacters() {
+        return (KeyboardInputMask) getObject(KeyboardInputMask.class, KEY_MASK_INPUT_CHARACTERS);
+    }
+
+    /**
+     * Sets the customizeKeys.
+     *
+     * @param customizeKeys Array of special characters to show in customizable Keys.If omitted, keyboard will show
+     * default special characters
+     * {"array_min_size": 1, "array_max_size": 10, "string_min_length": 1, "string_max_length": 1}
+     * @since SmartDeviceLink 7.1.0
+     */
+    public KeyboardProperties setCustomizeKeys(List<String> customizeKeys) {
+        setValue(KEY_CUSTOMIZE_KEYS, customizeKeys);
+        return this;
+    }
+
+    /**
+     * Gets the customizeKeys.
+     *
+     * @return List<String> Array of special characters to show in customizable Keys.If omitted, keyboard will show
+     * default special characters
+     * {"array_min_size": 1, "array_max_size": 10, "string_min_length": 1, "string_max_length": 1}
+     * @since SmartDeviceLink 7.1.0
+     */
+    @SuppressWarnings("unchecked")
+    public List<String> getCustomizeKeys() {
+        return (List<String>) getObject(String.class, KEY_CUSTOMIZE_KEYS);
+    }
+
 }

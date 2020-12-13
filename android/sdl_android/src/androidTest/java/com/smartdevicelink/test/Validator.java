@@ -10,6 +10,7 @@ import com.smartdevicelink.proxy.rpc.enums.DefrostZone;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
@@ -3928,5 +3929,57 @@ public class Validator {
             return (status2 == null);
         }
         return status1.getDataType().equals(status2.getDataType()) && status1.getResultCode().equals(status2.getResultCode());
+    }
+
+    public static boolean validateConfigurableKeyboards(ConfigurableKeyboards keyboard1, ConfigurableKeyboards keyboard2) {
+        if (keyboard1 == null) {
+            return (keyboard2 == null);
+        }
+        if (keyboard2 == null) {
+            return (keyboard1 == null);
+        }
+        return keyboard1.getKeyboardLayout().equals(keyboard2.getKeyboardLayout()) && keyboard1.getNumConfigurableKeys().equals(keyboard2.getNumConfigurableKeys());
+    }
+
+    public static boolean validateKeyboardCapability(KeyboardCapabilities keyboard1, KeyboardCapabilities keyboard2) {
+        if (keyboard1 == null) {
+            return (keyboard2 == null);
+        }
+        if (keyboard2 == null) {
+            return (keyboard1 == null);
+        }
+        boolean layoutsEqual = true;
+
+        if (keyboard1.getSupportedKeyboardLayouts() != null && keyboard2.getSupportedKeyboardLayouts() != null) {
+
+            for (KeyboardLayout layout1 : keyboard1.getSupportedKeyboardLayouts()) {
+                for (KeyboardLayout layout2 : keyboard2.getSupportedKeyboardLayouts()) {
+                    if (!layout1.equals(layout2)) {
+                        layoutsEqual = false;
+                        break;
+                    }
+                }
+                if (!layoutsEqual) {
+                    break;
+                }
+            }
+        }
+
+        boolean keyboardsEqual = true;
+        if (keyboard1.getConfigurableKeys() != null && keyboard2.getConfigurableKeys() != null) {
+
+            for (ConfigurableKeyboards configurableKeyboard1 : keyboard1.getConfigurableKeys()) {
+                for (ConfigurableKeyboards configurableKeyboard2 : keyboard2.getConfigurableKeys()) {
+                    if (!validateConfigurableKeyboards(configurableKeyboard1, configurableKeyboard2)) {
+                        keyboardsEqual = false;
+                        break;
+                    }
+                }
+                if (!keyboardsEqual) {
+                    break;
+                }
+            }
+        }
+        return keyboardsEqual && layoutsEqual && keyboard1.getMaskInputCharactersSupported().equals(keyboard2.getMaskInputCharactersSupported());
     }
 }

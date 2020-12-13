@@ -24,10 +24,13 @@ public class KeyboardLayoutTests extends TestCase {
         KeyboardLayout enumQwertz = KeyboardLayout.valueForString(example);
         example = "AZERTY";
         KeyboardLayout enumAzerty = KeyboardLayout.valueForString(example);
+        example = "NUMERIC";
+        KeyboardLayout enumNumeric = KeyboardLayout.valueForString(example);
 
         assertNotNull("QWERTY returned null", enumQwerty);
         assertNotNull("QWERTZ returned null", enumQwertz);
         assertNotNull("AZERTY returned null", enumAzerty);
+        assertNotNull("NUMERIC returned null", enumNumeric);
     }
 
     /**
@@ -66,6 +69,7 @@ public class KeyboardLayoutTests extends TestCase {
         enumTestList.add(KeyboardLayout.QWERTY);
         enumTestList.add(KeyboardLayout.QWERTZ);
         enumTestList.add(KeyboardLayout.AZERTY);
+        enumTestList.add(KeyboardLayout.NUMERIC);
 
         assertTrue("Enum value list does not match enum class list",
                 enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

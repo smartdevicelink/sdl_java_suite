@@ -16,104 +16,7 @@ import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
 import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.rpc.AppInfo;
-import com.smartdevicelink.proxy.rpc.AppServiceCapability;
-import com.smartdevicelink.proxy.rpc.AppServiceData;
-import com.smartdevicelink.proxy.rpc.AppServiceManifest;
-import com.smartdevicelink.proxy.rpc.AppServiceRecord;
-import com.smartdevicelink.proxy.rpc.AppServicesCapabilities;
-import com.smartdevicelink.proxy.rpc.AudioControlCapabilities;
-import com.smartdevicelink.proxy.rpc.AudioControlData;
-import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
-import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
-import com.smartdevicelink.proxy.rpc.Choice;
-import com.smartdevicelink.proxy.rpc.ClimateControlCapabilities;
-import com.smartdevicelink.proxy.rpc.ClimateControlData;
-import com.smartdevicelink.proxy.rpc.CloudAppProperties;
-import com.smartdevicelink.proxy.rpc.Coordinate;
-import com.smartdevicelink.proxy.rpc.DIDResult;
-import com.smartdevicelink.proxy.rpc.DateTime;
-import com.smartdevicelink.proxy.rpc.DeviceInfo;
-import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
-import com.smartdevicelink.proxy.rpc.DisplayCapability;
-import com.smartdevicelink.proxy.rpc.DriverDistractionCapability;
-import com.smartdevicelink.proxy.rpc.DynamicUpdateCapabilities;
-import com.smartdevicelink.proxy.rpc.EqualizerSettings;
-import com.smartdevicelink.proxy.rpc.GearStatus;
-import com.smartdevicelink.proxy.rpc.Grid;
-import com.smartdevicelink.proxy.rpc.HMICapabilities;
-import com.smartdevicelink.proxy.rpc.HMIPermissions;
-import com.smartdevicelink.proxy.rpc.HMISettingsControlCapabilities;
-import com.smartdevicelink.proxy.rpc.HMISettingsControlData;
-import com.smartdevicelink.proxy.rpc.HapticRect;
-import com.smartdevicelink.proxy.rpc.Image;
-import com.smartdevicelink.proxy.rpc.ImageField;
-import com.smartdevicelink.proxy.rpc.ImageResolution;
-import com.smartdevicelink.proxy.rpc.KeyboardProperties;
-import com.smartdevicelink.proxy.rpc.LightCapabilities;
-import com.smartdevicelink.proxy.rpc.LightControlCapabilities;
-import com.smartdevicelink.proxy.rpc.LightControlData;
-import com.smartdevicelink.proxy.rpc.LightState;
-import com.smartdevicelink.proxy.rpc.LocationDetails;
-import com.smartdevicelink.proxy.rpc.MassageCushionFirmness;
-import com.smartdevicelink.proxy.rpc.MassageModeData;
-import com.smartdevicelink.proxy.rpc.MediaServiceData;
-import com.smartdevicelink.proxy.rpc.MediaServiceManifest;
-import com.smartdevicelink.proxy.rpc.MenuParams;
-import com.smartdevicelink.proxy.rpc.MetadataTags;
-import com.smartdevicelink.proxy.rpc.ModuleData;
-import com.smartdevicelink.proxy.rpc.ModuleInfo;
-import com.smartdevicelink.proxy.rpc.NavigationCapability;
-import com.smartdevicelink.proxy.rpc.NavigationInstruction;
-import com.smartdevicelink.proxy.rpc.NavigationServiceData;
-import com.smartdevicelink.proxy.rpc.NavigationServiceManifest;
-import com.smartdevicelink.proxy.rpc.OasisAddress;
-import com.smartdevicelink.proxy.rpc.ParameterPermissions;
-import com.smartdevicelink.proxy.rpc.PermissionItem;
-import com.smartdevicelink.proxy.rpc.PhoneCapability;
-import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
-import com.smartdevicelink.proxy.rpc.RGBColor;
-import com.smartdevicelink.proxy.rpc.RadioControlCapabilities;
-import com.smartdevicelink.proxy.rpc.RadioControlData;
-import com.smartdevicelink.proxy.rpc.RdsData;
-import com.smartdevicelink.proxy.rpc.Rectangle;
-import com.smartdevicelink.proxy.rpc.RemoteControlCapabilities;
-import com.smartdevicelink.proxy.rpc.ScreenParams;
-import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
-import com.smartdevicelink.proxy.rpc.SeatControlCapabilities;
-import com.smartdevicelink.proxy.rpc.SeatControlData;
-import com.smartdevicelink.proxy.rpc.SeatLocation;
-import com.smartdevicelink.proxy.rpc.SeatMemoryAction;
-import com.smartdevicelink.proxy.rpc.SingleTireStatus;
-import com.smartdevicelink.proxy.rpc.SisData;
-import com.smartdevicelink.proxy.rpc.SoftButton;
-import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
-import com.smartdevicelink.proxy.rpc.StabilityControlsStatus;
-import com.smartdevicelink.proxy.rpc.StartTime;
-import com.smartdevicelink.proxy.rpc.StationIDNumber;
-import com.smartdevicelink.proxy.rpc.SystemCapability;
-import com.smartdevicelink.proxy.rpc.TTSChunk;
-import com.smartdevicelink.proxy.rpc.Temperature;
-import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
-import com.smartdevicelink.proxy.rpc.TemplateConfiguration;
-import com.smartdevicelink.proxy.rpc.TextField;
-import com.smartdevicelink.proxy.rpc.TouchCoord;
-import com.smartdevicelink.proxy.rpc.TouchEvent;
-import com.smartdevicelink.proxy.rpc.TouchEventCapabilities;
-import com.smartdevicelink.proxy.rpc.Turn;
-import com.smartdevicelink.proxy.rpc.VehicleDataResult;
-import com.smartdevicelink.proxy.rpc.VehicleType;
-import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
-import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
-import com.smartdevicelink.proxy.rpc.VrHelpItem;
-import com.smartdevicelink.proxy.rpc.WeatherAlert;
-import com.smartdevicelink.proxy.rpc.WeatherData;
-import com.smartdevicelink.proxy.rpc.WeatherServiceData;
-import com.smartdevicelink.proxy.rpc.WeatherServiceManifest;
-import com.smartdevicelink.proxy.rpc.WindowCapability;
-import com.smartdevicelink.proxy.rpc.WindowState;
-import com.smartdevicelink.proxy.rpc.WindowStatus;
-import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
+import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
@@ -153,6 +56,7 @@ import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
+import com.smartdevicelink.proxy.rpc.enums.KeyboardInputMask;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
@@ -425,6 +329,7 @@ public class TestValues {
     public static final LightControlData GENERAL_LIGHTCONTROLDATA = new LightControlData();
     public static final HMISettingsControlData GENERAL_HMISETTINGSCONTROLDATA = new HMISettingsControlData();
     public static final DynamicUpdateCapabilities GENERAL_DYNAMICUPDATECAPABILITIES = new DynamicUpdateCapabilities();
+    public static final KeyboardCapabilities GENERAL_KEYBOARD_CAPABILITIES = new KeyboardCapabilities();
     public static final WindowState GENERAL_WINDOWSTATE = new WindowState();
 
 
@@ -464,6 +369,10 @@ public class TestValues {
     public static final List<Turn> GENERAL_TURN_LIST = new ArrayList<Turn>();
     public static final List<Choice> GENERAL_CHOICE_LIST = new ArrayList<Choice>();
     public static final List<String> GENERAL_STRING_LIST = Arrays.asList(new String[]{"a", "b"});
+    public static final KeyboardInputMask GENERAL_MASK_CHARACTERS = KeyboardInputMask.ENABLE_INPUT_KEY_MASK;
+    public static final ConfigurableKeyboards GENERAL_CONFIGURABLE_KEYBOARDS = new ConfigurableKeyboards();
+    public static final List<KeyboardLayout> GENERAL_KEYBOARD_LAYOUT_LIST = Arrays.asList(GENERAL_KEYBOARDLAYOUT, GENERAL_KEYBOARDLAYOUT);
+    public static final List<ConfigurableKeyboards> GENERAL_CONFIGURABLE_KEYBOARDS_LIST = new ArrayList<ConfigurableKeyboards>();
     public static final List<Integer> GENERAL_INTEGER_LIST = Arrays.asList(new Integer[]{-1, -2});
     public static final List<TTSChunk> GENERAL_TTSCHUNK_LIST = new ArrayList<TTSChunk>(2);
     public static final List<HMILevel> GENERAL_HMILEVEL_LIST = Arrays.asList(new HMILevel[]{HMILevel.HMI_FULL, HMILevel.HMI_BACKGROUND});
@@ -590,7 +499,10 @@ public class TestValues {
     public static final JSONArray JSON_IMAGE_TYPES = new JSONArray();
     public static final JSONObject JSON_DISPLAYCAPABILITY = new JSONObject();
     public static final JSONArray JSON_DISPLAYCAPABILITY_LIST = new JSONArray();
+    public static final JSONArray JSON_CONFIGURABLE_KEYBOARDS_LIST = new JSONArray();
+    public static final JSONArray JSON_KEYBOARDS_LAYOUTS_LIST = new JSONArray();
     public static final JSONObject JSON_DYNAMICUPDATECAPABILITIES = new JSONObject();
+    public static final JSONObject JSON_KEYBOARD_CAPABILITY = new JSONObject();
 
     static {
         GENERAL_TOUCHEVENTCAPABILITIES.setDoublePressAvailable(GENERAL_BOOLEAN);
@@ -1154,7 +1066,28 @@ public class TestValues {
         GENERAL_STABILITY_CONTROL_STATUS.setEscSystem(GENERAL_ESC_SYSTEM);
         GENERAL_STABILITY_CONTROL_STATUS.setTrailerSwayControl(GENERAL_S_WAY_CONTROL);
 
+        GENERAL_CONFIGURABLE_KEYBOARDS.setKeyboardLayout(GENERAL_KEYBOARDLAYOUT);
+        GENERAL_CONFIGURABLE_KEYBOARDS.setNumConfigurableKeys(GENERAL_INT);
+
+        GENERAL_CONFIGURABLE_KEYBOARDS_LIST.add(GENERAL_CONFIGURABLE_KEYBOARDS);
+        GENERAL_CONFIGURABLE_KEYBOARDS_LIST.add(GENERAL_CONFIGURABLE_KEYBOARDS);
+        GENERAL_CONFIGURABLE_KEYBOARDS_LIST.add(GENERAL_CONFIGURABLE_KEYBOARDS);
+
+        GENERAL_KEYBOARD_CAPABILITIES.setMaskInputCharactersSupported(TestValues.GENERAL_BOOLEAN);
+        GENERAL_KEYBOARD_CAPABILITIES.setConfigurableKeys(GENERAL_CONFIGURABLE_KEYBOARDS_LIST);
         try {
+
+            for (ConfigurableKeyboards keyboard : GENERAL_CONFIGURABLE_KEYBOARDS_LIST){
+                JSON_CONFIGURABLE_KEYBOARDS_LIST.put(keyboard.serializeJSON());
+            }
+
+            for (KeyboardLayout layout: GENERAL_KEYBOARD_LAYOUT_LIST) {
+                JSON_KEYBOARDS_LAYOUTS_LIST.put(layout);
+            }
+
+            JSON_KEYBOARD_CAPABILITY.put(KeyboardCapabilities.KEY_MASK_INPUT_CHARACTERS_SUPPORTED, GENERAL_BOOLEAN);
+            JSON_KEYBOARD_CAPABILITY.put(KeyboardCapabilities.KEY_CONFIGURABLE_KEYS, JSON_CONFIGURABLE_KEYBOARDS_LIST);
+
             JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);
             JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_USER_DISALLOWED, GENERAL_HMILEVEL_LIST);
 

@@ -4,6 +4,7 @@ import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.DynamicUpdateCapabilities;
 import com.smartdevicelink.proxy.rpc.ImageField;
+import com.smartdevicelink.proxy.rpc.KeyboardCapabilities;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
@@ -46,6 +47,7 @@ public class WindowCapabilityTests extends TestCase {
         msg.setSoftButtonCapabilities(TestValues.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
         msg.setMenuLayoutsAvailable(TestValues.GENERAL_MENU_LAYOUT_LIST);
         msg.setDynamicUpdateCapabilities(TestValues.GENERAL_DYNAMICUPDATECAPABILITIES);
+        msg.setKeyboardCapabilities(TestValues.GENERAL_KEYBOARD_CAPABILITIES);
     }
 
     /**
@@ -63,6 +65,7 @@ public class WindowCapabilityTests extends TestCase {
         List<SoftButtonCapabilities> softButtonCapabilities = msg.getSoftButtonCapabilities();
         List<MenuLayout> menuLayouts = msg.getMenuLayoutsAvailable();
         DynamicUpdateCapabilities dynamicUpdateCapabilities = msg.getDynamicUpdateCapabilities();
+        KeyboardCapabilities keyboardCapabilities = msg.getKeyboardCapabilities();
 
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, windowID);
@@ -75,6 +78,7 @@ public class WindowCapabilityTests extends TestCase {
         assertEquals(TestValues.MATCH, TestValues.GENERAL_SOFTBUTTONCAPABILITIES_LIST.size(), softButtonCapabilities.size());
         assertEquals(TestValues.MATCH, TestValues.GENERAL_MENU_LAYOUT_LIST.size(), menuLayouts.size());
         assertEquals(TestValues.MATCH, TestValues.GENERAL_DYNAMICUPDATECAPABILITIES, dynamicUpdateCapabilities);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_KEYBOARD_CAPABILITIES, keyboardCapabilities);
 
         for (int i = 0; i < TestValues.GENERAL_TEXTFIELD_LIST.size(); i++) {
             assertTrue(TestValues.TRUE, Validator.validateTextFields(TestValues.GENERAL_TEXTFIELD_LIST.get(i), textFields.get(i)));
@@ -113,6 +117,7 @@ public class WindowCapabilityTests extends TestCase {
         assertNull(TestValues.NULL, msg.getSoftButtonCapabilities());
         assertNull(TestValues.NULL, msg.getMenuLayoutsAvailable());
         assertNull(TestValues.NULL, msg.getDynamicUpdateCapabilities());
+        assertNull(TestValues.NULL, msg.getKeyboardCapabilities());
     }
 
     public void testJson() {
@@ -129,6 +134,7 @@ public class WindowCapabilityTests extends TestCase {
             reference.put(WindowCapability.KEY_SOFT_BUTTON_CAPABILITIES, TestValues.JSON_SOFTBUTTONCAPABILITIES);
             reference.put(WindowCapability.KEY_MENU_LAYOUTS_AVAILABLE, JsonUtils.createJsonArray(TestValues.GENERAL_MENU_LAYOUT_LIST));
             reference.put(WindowCapability.KEY_DYNAMIC_UPDATE_CAPABILITIES, TestValues.JSON_DYNAMICUPDATECAPABILITIES);
+            reference.put(WindowCapability.KEY_KEYBOARD_CAPABILITIES, TestValues.JSON_KEYBOARD_CAPABILITY);
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
@@ -214,6 +220,13 @@ public class WindowCapabilityTests extends TestCase {
                         imageFieldNameListTest.add((ImageFieldName) underTestArray.get(i));
                     }
                     assertTrue(TestValues.TRUE, imageFieldNameListReference.containsAll(imageFieldNameListTest) && imageFieldNameListTest.containsAll(imageFieldNameListReference));
+                } else if (key.equals(WindowCapability.KEY_KEYBOARD_CAPABILITIES)){
+                    JSONObject jsonReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
+                    JSONObject jsonUnderTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
+
+                    Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(jsonReference);
+                    Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(jsonUnderTest);
+                    assertTrue(TestValues.TRUE, Validator.validateKeyboardCapability(new KeyboardCapabilities(hashReference), new KeyboardCapabilities(hashTest)));
                 } else {
                     assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
                 }
