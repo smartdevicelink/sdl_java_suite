@@ -7,7 +7,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.AlertCompletionListener;
-import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
@@ -56,7 +55,6 @@ import static org.mockito.Mockito.when;
 public class PresentAlertOperationTest {
 
     private PresentAlertOperation presentAlertOperation;
-    private TextAlignment textAlignment;
     private WindowCapability defaultMainWindowCapability;
     private AlertView alertView;
     private AlertAudioData alertAudioData;
@@ -151,7 +149,6 @@ public class PresentAlertOperationTest {
         };
         alertSoftButtonObject = new SoftButtonObject("Soft button 1", alertSoftButtonState, onEventListener);
 
-        textAlignment = TextAlignment.CENTERED;
         AlertView.Builder builder = new AlertView.Builder();
         builder.setText("test");
         builder.setSecondaryText("secondaryText");
@@ -174,6 +171,7 @@ public class PresentAlertOperationTest {
             }
         };
         presentAlertOperation = new PresentAlertOperation(internalInterface, alertView, defaultMainWindowCapability, speechCapabilities, fileManager, 1, alertCompletionListener);
+        when(fileManager.fileNeedsUpload(any(SdlFile.class))).thenReturn(true);
     }
 
     @Test

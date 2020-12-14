@@ -128,7 +128,7 @@ public class PresentAlertOperation extends Task {
             }
         });
 
-        checkForImagesAndUpload(new CompletionListener() {
+        uploadImages(new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
                 uploadFilesTask.leave();
@@ -207,7 +207,7 @@ public class PresentAlertOperation extends Task {
      *
      * @param listener - CompletionListener used to signal that images in AlertView have uploaded if any
      */
-    private void checkForImagesAndUpload(CompletionListener listener) {
+    private void uploadImages(CompletionListener listener) {
         List<SdlArtwork> artworksToBeUploaded = new ArrayList<>();
 
         if (supportsAlertIcon() && fileManager.get() != null && fileManager.get().fileNeedsUpload(alertView.getIcon())) {
@@ -222,7 +222,7 @@ public class PresentAlertOperation extends Task {
             }
         }
 
-        uploadImages(artworksToBeUploaded, listener);
+        sendImages(artworksToBeUploaded, listener);
     }
 
     /**
@@ -231,7 +231,7 @@ public class PresentAlertOperation extends Task {
      * @param images   - List of SdlArtwork - Images that need to be uploaded
      * @param listener - CompletionListener used to signal that images in AlertView have uploaded if any
      */
-    private void uploadImages(List<SdlArtwork> images, final CompletionListener listener) {
+    private void sendImages(List<SdlArtwork> images, final CompletionListener listener) {
         if (images.size() == 0) {
             DebugTool.logInfo(TAG, "No Images to upload for alert");
             listener.onComplete(true);
