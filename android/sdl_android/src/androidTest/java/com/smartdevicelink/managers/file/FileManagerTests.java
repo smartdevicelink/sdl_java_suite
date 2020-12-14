@@ -2,14 +2,17 @@ package com.smartdevicelink.managers.file;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Handler;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
+import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.DeleteFile;
@@ -18,11 +21,13 @@ import com.smartdevicelink.proxy.rpc.ListFiles;
 import com.smartdevicelink.proxy.rpc.ListFilesResponse;
 import com.smartdevicelink.proxy.rpc.PutFile;
 import com.smartdevicelink.proxy.rpc.PutFileResponse;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.test.TestValues;
+import com.smartdevicelink.util.Version;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -35,15 +40,16 @@ import java.util.List;
 import java.util.Map;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * This is a unit test class for the SmartDeviceLink library manager class :
@@ -54,16 +60,19 @@ public class FileManagerTests {
     public static final String TAG = "FileManagerTests";
     private Context mTestContext;
     private SdlFile validFile;
+    private Handler mainHandler;
+    private Version rpcVersion;
+    private long mtuSize;
 
     // SETUP / HELPERS
 
     @Before
     public void setUp() throws Exception {
         mTestContext = getInstrumentation().getTargetContext();
-        validFile = new SdlFile();
-        validFile.setName(TestValues.GENERAL_STRING);
-        validFile.setFileData(TestValues.GENERAL_BYTE_ARRAY);
-        validFile.setPersistent(false);
+        mainHandler = new Handler(mTestContext.getMainLooper());
+        rpcVersion = new Version(7, 0, 0);
+        mtuSize = 131072;
+        validFile = new SdlFile(TestValues.GENERAL_STRING, FileType.BINARY, TestValues.GENERAL_STRING.getBytes(), false);
     }
 
     private Answer<Void> onPutFileFailureOnError = new Answer<Void>() {
@@ -465,8 +474,7 @@ public class FileManagerTests {
      */
     @Test
     public void testFileUploadSuccess() {
-        ISdl internalInterface = mock(ISdl.class);
-
+        ISdl internalInterface = createISdlMock();
         doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
         doAnswer(onPutFileSuccess).when(internalInterface).sendRPC(any(PutFile.class));
 
@@ -475,19 +483,31 @@ public class FileManagerTests {
         final FileManager fileManager = new FileManager(internalInterface, mTestContext, fileManagerConfig);
         fileManager.start(new CompletionListener() {
             @Override
-            public void onComplete(boolean success) {
-                assertTrue(success);
+            public void onComplete(final boolean success1) {
+                assertOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        assertTrue(success1);
+                    }
+                });
+
                 fileManager.uploadFile(validFile, new CompletionListener() {
                     @Override
-                    public void onComplete(boolean success) {
-                        assertTrue(success);
+                    public void onComplete(final boolean success2) {
+                        assertOnMainThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                assertTrue(success2);
+                                assertTrue(fileManager.getRemoteFileNames().contains(validFile.getName()));
+                                assertTrue(fileManager.hasUploadedFile(validFile));
+                                assertEquals(TestValues.GENERAL_INT, fileManager.getBytesAvailable());
+                            }
+                        });
+
                     }
                 });
             }
         });
-        assertTrue(fileManager.getRemoteFileNames().contains(validFile.getName()));
-        assertTrue(fileManager.hasUploadedFile(validFile));
-        assertEquals(TestValues.GENERAL_INT, fileManager.getBytesAvailable());
     }
 
     /**
@@ -1004,5 +1024,21 @@ public class FileManagerTests {
         artwork1 = new SdlFile("image1", FileType.GRAPHIC_PNG, 1, false);
         artwork2 = new SdlFile("image1", FileType.GRAPHIC_PNG, 1, false);
         assertTrue(artwork1.equals(artwork2));
+    }
+
+    // Asserts on Taskmaster threads will fail silently so we need to do the assertions on main thread if the code is triggered from taskmaster
+    private void assertOnMainThread(Runnable runnable) {
+        mainHandler.post(runnable);
+    }
+
+    private ISdl createISdlMock() {
+        ISdl internalInterface = mock(ISdl.class);
+        Taskmaster taskmaster = new Taskmaster.Builder().build();
+        taskmaster.start();
+
+        when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(rpcVersion));
+        when(internalInterface.getMtu(any(SessionType.class))).thenReturn(mtuSize);
+        return internalInterface;
     }
 }
