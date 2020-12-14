@@ -169,7 +169,7 @@ public class PresentAlertOperation extends Task {
 
         List<SdlFile> filesToBeUploaded = new ArrayList<>();
         for (SdlFile file : alertView.getAudio().getAudioFiles()) {
-            if (!fileNeedsUpload(file)) {
+            if (fileManager.get() == null || !fileManager.get().fileNeedsUpload(file)) {
                 continue;
             }
             filesToBeUploaded.add(file);
@@ -210,13 +210,13 @@ public class PresentAlertOperation extends Task {
     private void checkForImagesAndUpload(CompletionListener listener) {
         List<SdlArtwork> artworksToBeUploaded = new ArrayList<>();
 
-        if (supportsAlertIcon() && artworkNeedsUploaded(alertView.getIcon())) {
+        if (supportsAlertIcon() && fileManager.get() != null && fileManager.get().fileNeedsUpload(alertView.getIcon())) {
             artworksToBeUploaded.add(alertView.getIcon());
         }
 
         if (alertView.getSoftButtons() != null) {
             for (SoftButtonObject object : alertView.getSoftButtons()) {
-                if (supportsSoftButtonImages() && object.getCurrentState() != null && artworkNeedsUploaded(object.getCurrentState().getArtwork())) {
+                if (supportsSoftButtonImages() && object.getCurrentState() != null && fileManager.get() != null && fileManager.get().fileNeedsUpload(object.getCurrentState().getArtwork())) {
                     artworksToBeUploaded.add(object.getCurrentState().getArtwork());
                 }
             }
@@ -454,37 +454,6 @@ public class PresentAlertOperation extends Task {
     }
 
     // Helper methods
-
-    /**
-     * Checks if an SdlArtwork needs to be uploaded to the module. An artwork only needs to be uploaded if it is a
-     * dynamic image and an artwork with the same name has not yet been uploaded to the module.
-     * If the artwork has already been uploaded to the module but the `overwrite` property has been set to true,
-     * then the artwork needs to be re-uploaded.
-     *
-     * @param artwork the SdlArtwork that needs to be checked
-     * @return True if SdlArtwork needs to be uploaded; false if not.
-     */
-    private boolean artworkNeedsUploaded(SdlArtwork artwork) {
-        if (artwork != null && !artwork.isStaticIcon()) {
-            return artwork.getOverwrite() || !fileManager.get().hasUploadedFile(artwork);
-        }
-        return false;
-    }
-
-    /**
-     * Checks if a file needs to be uploaded to the module. If the file has already been uploaded
-     * to the module but the `overwrite` property has been set to true,
-     * then the file needs to be re-uploaded.
-     *
-     * @param file the SdlFile that needs to be checked
-     * @return True if SdlFile needs to be uploaded; false if not.
-     */
-    private boolean fileNeedsUpload(SdlFile file) {
-        if (file != null) {
-            return file.getOverwrite() || !fileManager.get().hasUploadedFile(file);
-        }
-        return false;
-    }
 
     /**
      * Checks if the connected module or current template supports soft button images.
