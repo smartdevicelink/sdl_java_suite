@@ -500,7 +500,7 @@ abstract class BaseFileManager extends BaseSubManager {
     /**
      * Increments the number of upload attempts for a file name by 1.
      *
-     * @param name The name used to upload the file to Core
+     * @param name                   The name used to upload the file to Core
      * @param failedFileUploadsCount
      * @return
      */
