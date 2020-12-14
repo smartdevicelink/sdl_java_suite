@@ -97,7 +97,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     int nextChoiceId;
     int nextCancelId;
     final int choiceCellIdMin = 1;
-    final int choiceCellCancelIdMin = 10000;
+    final int choiceCellCancelIdMin = 1;
     boolean isVROptional;
 
     BaseChoiceSetManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {

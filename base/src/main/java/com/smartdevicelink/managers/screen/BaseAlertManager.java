@@ -77,7 +77,7 @@ abstract class BaseAlertManager extends BaseSubManager {
     boolean currentAlertPermissionStatus = false;
     private final WeakReference<FileManager> fileManager;
     int nextCancelId;
-    final int alertCancelIdMin = 20000;
+    final int alertCancelIdMin = 1;
     private CopyOnWriteArrayList<SoftButtonObject> softButtonObjects;
     OnRPCNotificationListener onButtonPressListener, onButtonEventListener;
 
