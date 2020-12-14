@@ -37,6 +37,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -179,41 +180,31 @@ public class FileManagerTests {
         }
     };
 
-    private Answer<Void> onListDeleteRequestSuccess = new Answer<Void>() {
+    private Answer<Void> onDeleteRequestSuccess = new Answer<Void>() {
         @Override
         public Void answer(InvocationOnMock invocation) {
             Object[] args = invocation.getArguments();
-            List<RPCRequest> rpcs = (List<RPCRequest>) args[0];
-            OnMultipleRequestListener listener = (OnMultipleRequestListener) args[1];
-            if (rpcs.get(0) instanceof DeleteFile) {
-                for (RPCRequest message : rpcs) {
-                    int correlationId = message.getCorrelationID();
-                    listener.addCorrelationId(correlationId);
-                    DeleteFileResponse deleteFileResponse = new DeleteFileResponse();
-                    deleteFileResponse.setSuccess(true);
-                    listener.onResponse(correlationId, deleteFileResponse);
-                }
-                listener.onFinished();
+            RPCRequest message = (RPCRequest) args[0];
+            if (message instanceof DeleteFile) {
+                int correlationId = message.getCorrelationID();
+                DeleteFileResponse deleteFileResponse = new DeleteFileResponse();
+                deleteFileResponse.setSuccess(true);
+                message.getOnRPCResponseListener().onResponse(correlationId, deleteFileResponse);
             }
             return null;
         }
     };
 
-    private Answer<Void> onListDeleteRequestFail = new Answer<Void>() {
+    private Answer<Void> onDeleteRequestFail = new Answer<Void>() {
         @Override
         public Void answer(InvocationOnMock invocation) {
             Object[] args = invocation.getArguments();
-            List<RPCRequest> rpcs = (List<RPCRequest>) args[0];
-            OnMultipleRequestListener listener = (OnMultipleRequestListener) args[1];
-            if (rpcs.get(0) instanceof DeleteFile) {
-                for (RPCRequest message : rpcs) {
-                    int correlationId = message.getCorrelationID();
-                    listener.addCorrelationId(correlationId);
-                    DeleteFileResponse deleteFileResponse = new DeleteFileResponse(false, Result.REJECTED);
-                    deleteFileResponse.setInfo("Binary data empty");
-                    listener.onResponse(correlationId, deleteFileResponse);
-                }
-                listener.onFinished();
+            RPCRequest message = (RPCRequest) args[0];
+            if (message instanceof DeleteFile) {
+                int correlationId = message.getCorrelationID();
+                DeleteFileResponse deleteFileResponse = new DeleteFileResponse(false, Result.REJECTED);
+                deleteFileResponse.setInfo("Binary data empty");
+                message.getOnRPCResponseListener().onResponse(correlationId, deleteFileResponse);
             }
             return null;
         }
@@ -254,29 +245,39 @@ public class FileManagerTests {
     /**
      * Test deleting list of files, success
      */
-    @Test @Ignore
+    @Test
     public void testDeleteRemoteFilesWithNamesSuccess() {
         final ISdl internalInterface = createISdlMock();
 
         doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
-        doAnswer(onListDeleteRequestSuccess).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
+        doAnswer(onDeleteRequestSuccess).when(internalInterface).sendRPC(any(DeleteFile.class));
 
-        final List<String> fileNames = new ArrayList<>();
-        fileNames.add("Julian");
-        fileNames.add("Jake");
+        final List<String> fileNames = Arrays.asList("Julian", "Jake");
 
         FileManagerConfig fileManagerConfig = new FileManagerConfig();
-        fileManagerConfig.setFileRetryCount(2);
 
         final FileManager fileManager = new FileManager(internalInterface, mTestContext, fileManagerConfig);
         fileManager.start(new CompletionListener() {
             @Override
-            public void onComplete(boolean success) {
-                assertTrue(success);
+            public void onComplete(final boolean success) {
+                assertOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        assertTrue(success);
+                    }
+                });
+
+                fileManager.mutableRemoteFileNames.addAll(fileNames);
+
                 fileManager.deleteRemoteFilesWithNames(fileNames, new MultipleFileCompletionListener() {
                     @Override
-                    public void onComplete(Map<String, String> errors) {
-                        assertTrue(errors == null);
+                    public void onComplete(final Map<String, String> errors) {
+                        assertOnMainThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                assertNull(errors);
+                            }
+                        });
                     }
                 });
             }
@@ -286,29 +287,38 @@ public class FileManagerTests {
     /**
      * Test deleting list of files, fail
      */
-    @Test @Ignore
+    @Test
     public void testDeleteRemoteFilesWithNamesFail() {
         final ISdl internalInterface = createISdlMock();
 
         doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
-        doAnswer(onListDeleteRequestFail).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
+        doAnswer(onDeleteRequestFail).when(internalInterface).sendRPC(any(DeleteFile.class));
 
-        final List<String> fileNames = new ArrayList<>();
-        fileNames.add("Julian");
-        fileNames.add("Jake");
+        final List<String> fileNames = Arrays.asList("Julian", "Jake");
 
         FileManagerConfig fileManagerConfig = new FileManagerConfig();
-        fileManagerConfig.setFileRetryCount(2);
 
         final FileManager fileManager = new FileManager(internalInterface, mTestContext, fileManagerConfig);
         fileManager.start(new CompletionListener() {
             @Override
-            public void onComplete(boolean success) {
-                assertTrue(success);
+            public void onComplete(final boolean success) {
+                assertOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        assertTrue(success);
+                    }
+                });
+
+                fileManager.mutableRemoteFileNames.addAll(fileNames);
                 fileManager.deleteRemoteFilesWithNames(fileNames, new MultipleFileCompletionListener() {
                     @Override
-                    public void onComplete(Map<String, String> errors) {
-                        assertTrue(errors.size() == 2);
+                    public void onComplete(final Map<String, String> errors) {
+                        assertOnMainThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                assertEquals(2, errors.size());
+                            }
+                        });
                     }
                 });
             }
@@ -720,12 +730,11 @@ public class FileManagerTests {
         });
     }
 
-
     /**
      * Test Invalid SdlArtWork FileTypes
      * SdlArtwork FileTypes can only be: GRAPHIC_BMP, GRAPHIC_PNG or GRAPHIC_JPEG
      */
-    @Test @Ignore
+    @Test
     public void testInvalidSdlArtworkInput() {
         SdlArtwork sdlArtwork = new SdlArtwork();
         // Set invalid type

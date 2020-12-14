@@ -63,7 +63,7 @@ abstract class BaseFileManager extends BaseSubManager {
     final static String TAG = "FileManager";
     final static int SPACE_AVAILABLE_MAX_VALUE = 2000000000;
 
-    private final Set<String> mutableRemoteFileNames;
+    final Set<String> mutableRemoteFileNames;
     private final Set<String> uploadedEphemeralFileNames;
     private int bytesAvailable;
     private Queue transactionQueue;
