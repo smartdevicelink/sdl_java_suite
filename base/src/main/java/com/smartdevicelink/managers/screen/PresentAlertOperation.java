@@ -371,7 +371,7 @@ public class PresentAlertOperation extends Task {
     // Text Helpers
 
     private Alert assembleAlertText(Alert alert) {
-        List<String> nonNullFields = findValidMainTextFields();
+        List<String> nonNullFields = findNonNullTextFields();
         if (nonNullFields.isEmpty()) {
             return alert;
         }
@@ -390,7 +390,7 @@ public class PresentAlertOperation extends Task {
         return alert;
     }
 
-    private List<String> findValidMainTextFields() {
+    private List<String> findNonNullTextFields() {
         List<String> array = new ArrayList<>();
 
         if (alertView.getText() != null && alertView.getText().length() > 0) {
