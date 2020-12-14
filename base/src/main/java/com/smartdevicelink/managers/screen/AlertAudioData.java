@@ -73,7 +73,6 @@ public class AlertAudioData extends AudioData implements Cloneable {
      */
     @Override
     public AlertAudioData clone() {
-        System.out.println("HI");
         try {
             AlertAudioData alertAudioData = (AlertAudioData) super.clone();
             return alertAudioData;

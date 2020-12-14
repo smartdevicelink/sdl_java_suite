@@ -198,7 +198,7 @@ abstract class BaseAlertManager extends BaseSubManager {
     }
 
     // Suspend the queue if the WindowCapabilities are null
-    // OR if the HMI level is NONE since we want to delay sending RPCs until we're in non-NONE
+    // OR if the currentAlertPermissionStatus is false
     private void updateTransactionQueueSuspended() {
         if (!currentAlertPermissionStatus || defaultMainWindowCapability == null) {
             DebugTool.logInfo(TAG, String.format("Suspending the transaction queue. Current permission status is false: %b, window capabilities are null: %b", currentAlertPermissionStatus, defaultMainWindowCapability == null));
@@ -260,7 +260,8 @@ abstract class BaseAlertManager extends BaseSubManager {
             this.internalInterface.getSystemCapabilityManager().addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplaysCapabilityListener);
         }
 
-        // Listener listening if RPC is allowed by system at any given point, will pause the queue if not allowed.
+        // Subscribes to permission updates for the `Alert` RPC. If the alert is not allowed at the current HMI level, the queue is suspended.
+        // Any `Alert` RPCs added while the queue is suspended will be sent when the `Alert` RPC is allowed at the current HMI level and the queue is unsuspended.
         PermissionElement alertPermissionElement = new PermissionElement(FunctionID.ALERT, null);
         permissionListener = internalInterface.getPermissionManager().addListener(Collections.singletonList(alertPermissionElement), internalInterface.getPermissionManager().PERMISSION_GROUP_TYPE_ANY, new OnPermissionChangeListener() {
             @Override
