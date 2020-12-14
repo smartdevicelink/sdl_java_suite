@@ -566,44 +566,54 @@ public class FileManagerTests {
     /**
      * Testing uploadFiles for staticIcons, verifying that it doesn't actually upload.
      */
-    @Test @Ignore
+    @Test
     public void testMultipleFileUploadsForStaticIcon() {
-        ISdl internalInterface = createISdlMock();
+        final ISdl internalInterface = createISdlMock();
 
         doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
-        doAnswer(onListFileUploadSuccess).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
+        doAnswer(onPutFileSuccess).when(internalInterface).sendRPC(any(PutFile.class));
 
         FileManagerConfig fileManagerConfig = new FileManagerConfig();
         final FileManager fileManager = new FileManager(internalInterface, mTestContext, fileManagerConfig);
         fileManager.start(new CompletionListener() {
             @Override
-            public void onComplete(boolean success) {
-                assertTrue(success);
-                SdlArtwork artwork = new SdlArtwork(StaticIconName.ALBUM);
+            public void onComplete(final boolean success1) {
+                assertOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        assertTrue(success1);
+                    }
+                });
+
+                SdlArtwork artwork1 = new SdlArtwork(StaticIconName.ALBUM);
                 SdlArtwork artwork2 = new SdlArtwork(StaticIconName.FILENAME);
-                List<SdlArtwork> testStaticIconUpload = new ArrayList<>();
-                testStaticIconUpload.add(artwork);
-                testStaticIconUpload.add(artwork2);
+                List<SdlArtwork> testStaticIconUpload = Arrays.asList(artwork1, artwork2);
+
                 fileManager.uploadFiles(testStaticIconUpload, new MultipleFileCompletionListener() {
                     @Override
-                    public void onComplete(Map<String, String> errors) {
-                        assertTrue(errors == null);
+                    public void onComplete(final Map<String, String> errors) {
+                        assertOnMainThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                assertEquals(2, errors.size());
+                                verify(internalInterface, times(0)).sendRPC(any(PutFile.class));
+                            }
+                        });
                     }
                 });
             }
         });
-        verify(internalInterface, times(0)).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
     }
 
     /**
      * Testing uploadFiles for static icons and nonStatic icons in the same list.
      */
-    @Test @Ignore
+    @Test
     public void testMultipleFileUploadsForPartialStaticIcon() {
-        ISdl internalInterface = createISdlMock();
+        final ISdl internalInterface = createISdlMock();
 
         doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
-        doAnswer(onListFileUploadSuccess).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
+        doAnswer(onPutFileSuccess).when(internalInterface).sendRPC(any(PutFile.class));
 
         FileManagerConfig fileManagerConfig = new FileManagerConfig();
         final FileManager fileManager = new FileManager(internalInterface, mTestContext, fileManagerConfig);
@@ -613,19 +623,21 @@ public class FileManagerTests {
                 assertTrue(success);
                 SdlArtwork artwork = new SdlArtwork(StaticIconName.ALBUM);
                 SdlArtwork artwork2 = new SdlArtwork(StaticIconName.FILENAME);
-                List<SdlFile> testFileuploads = new ArrayList<>();
-                testFileuploads.add(artwork);
-                testFileuploads.add(artwork2);
-                testFileuploads.add(validFile);
-                fileManager.uploadFiles(testFileuploads, new MultipleFileCompletionListener() {
+                List<SdlFile> testFileUploads = Arrays.asList(artwork, artwork2, validFile);
+                fileManager.uploadFiles(testFileUploads, new MultipleFileCompletionListener() {
                     @Override
-                    public void onComplete(Map<String, String> errors) {
-                        assertTrue(errors == null);
+                    public void onComplete(final Map<String, String> errors) {
+                        assertOnMainThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                assertEquals(2, errors.size());
+                                verify(internalInterface, times(1)).sendRPC(any(PutFile.class));
+                            }
+                        });
                     }
                 });
             }
         });
-        verify(internalInterface, times(1)).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
     }
 
     /**
@@ -707,8 +719,7 @@ public class FileManagerTests {
         // Set invalid type
         for (FileType fileType : FileType.values()) {
             boolean shouldError = true, didError = false;
-            if (fileType.equals(FileType.GRAPHIC_BMP) || fileType.equals(FileType.GRAPHIC_PNG)
-                    || fileType.equals(FileType.GRAPHIC_JPEG)) {
+            if (fileType.equals(FileType.GRAPHIC_BMP) || fileType.equals(FileType.GRAPHIC_PNG) || fileType.equals(FileType.GRAPHIC_JPEG)) {
                 shouldError = false;
             }
             try {
