@@ -255,7 +255,7 @@ public class FileManagerTests {
      */
     @Test
     public void testDeleteRemoteFilesWithNamesSuccess() {
-        final ISdl internalInterface = mock(ISdl.class);
+        final ISdl internalInterface = createISdlMock();
 
         doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
         doAnswer(onListDeleteRequestSuccess).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
@@ -287,7 +287,7 @@ public class FileManagerTests {
      */
     @Test
     public void testDeleteRemoteFilesWithNamesFail() {
-        final ISdl internalInterface = mock(ISdl.class);
+        final ISdl internalInterface = createISdlMock();
 
         doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
         doAnswer(onListDeleteRequestFail).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
@@ -319,7 +319,7 @@ public class FileManagerTests {
      */
     @Test
     public void testFileUploadRetry() {
-        final ISdl internalInterface = mock(ISdl.class);
+        final ISdl internalInterface = createISdlMock();
 
         doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
         doAnswer(onPutFileFailureOnError).when(internalInterface).sendRPC(any(PutFile.class));
@@ -351,7 +351,7 @@ public class FileManagerTests {
      */
     @Test
     public void testArtworkUploadRetry() {
-        final ISdl internalInterface = mock(ISdl.class);
+        final ISdl internalInterface = createISdlMock();
 
         doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
         doAnswer(onPutFileFailureOnError).when(internalInterface).sendRPC(any(PutFile.class));
@@ -410,7 +410,7 @@ public class FileManagerTests {
      */
     @Test
     public void testListFilesUploadRetry() {
-        final ISdl internalInterface = mock(ISdl.class);
+        final ISdl internalInterface = createISdlMock();
 
         doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
         doAnswer(onSendRequestsFailOnError).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
@@ -452,7 +452,7 @@ public class FileManagerTests {
      */
     @Test
     public void testInitializationSuccess() {
-        ISdl internalInterface = mock(ISdl.class);
+        ISdl internalInterface = createISdlMock();
 
         doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
 
@@ -515,7 +515,7 @@ public class FileManagerTests {
      */
     @Test
     public void testFileUploadFailure() {
-        ISdl internalInterface = mock(ISdl.class);
+        ISdl internalInterface = createISdlMock();
 
         doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
         doAnswer(onPutFileFailure).when(internalInterface).sendRPC(any(PutFile.class));
@@ -543,7 +543,7 @@ public class FileManagerTests {
      */
     @Test
     public void testFileUploadForStaticIcon() {
-        ISdl internalInterface = mock(ISdl.class);
+        ISdl internalInterface = createISdlMock();
 
         doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
 
@@ -570,7 +570,7 @@ public class FileManagerTests {
      */
     @Test
     public void testMultipleFileUploadsForStaticIcon() {
-        ISdl internalInterface = mock(ISdl.class);
+        ISdl internalInterface = createISdlMock();
 
         doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
         doAnswer(onListFileUploadSuccess).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
@@ -602,7 +602,7 @@ public class FileManagerTests {
      */
     @Test
     public void testMultipleFileUploadsForPartialStaticIcon() {
-        ISdl internalInterface = mock(ISdl.class);
+        ISdl internalInterface = createISdlMock();
 
         doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
         doAnswer(onListFileUploadSuccess).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
@@ -635,7 +635,7 @@ public class FileManagerTests {
      */
     @Test
     public void testInvalidSdlFileInput() {
-        ISdl internalInterface = mock(ISdl.class);
+        ISdl internalInterface = createISdlMock();
 
         doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
 
@@ -721,7 +721,7 @@ public class FileManagerTests {
      */
     @Test
     public void testMultipleFileUpload() {
-        ISdl internalInterface = mock(ISdl.class);
+        ISdl internalInterface = createISdlMock();
 
         doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
         doAnswer(onListFileUploadSuccess).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
@@ -758,7 +758,7 @@ public class FileManagerTests {
      */
     @Test
     public void testMultipleFileUploadPartialFailure() {
-        ISdl internalInterface = mock(ISdl.class);
+        ISdl internalInterface = createISdlMock();
 
         doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
         doAnswer(onSendRequestsFailPartialOnError).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
@@ -807,7 +807,7 @@ public class FileManagerTests {
      */
     @Test
     public void testMultipleArtworkUploadSuccess() {
-        ISdl internalInterface = mock(ISdl.class);
+        ISdl internalInterface = createISdlMock();
 
         doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
         doAnswer(onListFileUploadSuccess).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
@@ -854,7 +854,7 @@ public class FileManagerTests {
      */
     @Test
     public void testPersistentFileUploaded() {
-        ISdl internalInterface = mock(ISdl.class);
+        ISdl internalInterface = createISdlMock();
 
         doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
 
@@ -890,7 +890,7 @@ public class FileManagerTests {
      */
     @Test
     public void testOverwriteFileProperty() {
-        ISdl internalInterface = mock(ISdl.class);
+        ISdl internalInterface = createISdlMock();
 
         doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
         doAnswer(onPutFileSuccess).when(internalInterface).sendRPC(any(PutFile.class));
@@ -927,7 +927,7 @@ public class FileManagerTests {
      */
     @Test
     public void testOverWriteFilePropertyListFiles() {
-        final ISdl internalInterface = mock(ISdl.class);
+        final ISdl internalInterface = createISdlMock();
 
         doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
         doAnswer(onListFileUploadSuccess).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
