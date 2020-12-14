@@ -375,7 +375,7 @@ public class PresentAlertOperation extends Task {
         if (nonNullFields.isEmpty()) {
             return alert;
         }
-        int numberOfLines = defaultMainWindowCapability == null ? 3 : ManagerUtility.WindowCapabilityUtility.getMaxNumberOfAlertFieldLines(defaultMainWindowCapability);
+        int numberOfLines = ManagerUtility.WindowCapabilityUtility.getMaxNumberOfAlertFieldLines(defaultMainWindowCapability);
         switch (numberOfLines) {
             case 1:
                 alert = assembleOneLineAlertText(alert, nonNullFields);
@@ -458,7 +458,7 @@ public class PresentAlertOperation extends Task {
     /**
      * Checks if the connected module or current template supports soft button images.
      *
-     * @return True if soft button images are currently supported or windowCapability is null; false if not.
+     * @return True if soft button images are currently supported; false if not.
      */
     private boolean supportsSoftButtonImages() {
         SoftButtonCapabilities softButtonCapabilities = defaultMainWindowCapability.getSoftButtonCapabilities().get(0);
@@ -478,7 +478,7 @@ public class PresentAlertOperation extends Task {
     /**
      * Checks if the connected module or current template supports alert icons.
      *
-     * @return True if alert icons are currently supported or if windowCapability is null; false if not.
+     * @return True if alert icons are currently supported; false if not.
      */
     private boolean supportsAlertIcon() {
         return ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.alertIcon);
@@ -503,5 +503,10 @@ public class PresentAlertOperation extends Task {
             listener.onComplete(success, tryAgainTime);
         }
         onFinished();
+    }
+
+    // Updates WindowCapability if the operation is pending the in the Alert Manager.
+    void setWindowCapability(WindowCapability defaultMainWindowCapability) {
+        this.defaultMainWindowCapability = defaultMainWindowCapability;
     }
 }

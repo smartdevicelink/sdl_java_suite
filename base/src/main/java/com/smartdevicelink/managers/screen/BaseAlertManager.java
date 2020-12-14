@@ -35,6 +35,7 @@ package com.smartdevicelink.managers.screen;
 import androidx.annotation.NonNull;
 
 import com.livio.taskmaster.Queue;
+import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.AlertCompletionListener;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
@@ -242,6 +243,7 @@ abstract class BaseAlertManager extends BaseSubManager {
                             continue;
                         }
                         defaultMainWindowCapability = windowCapability;
+                        updatePendingOperationsWithNewDisplayCapability();
                         break;
                     }
                 }
@@ -313,5 +315,15 @@ abstract class BaseAlertManager extends BaseSubManager {
             }
         };
         this.internalInterface.addOnRPCNotificationListener(FunctionID.ON_BUTTON_EVENT, onButtonEventListener);
+    }
+
+    // Updates pending task with new DisplayCapabilities
+    void updatePendingOperationsWithNewDisplayCapability() {
+        for (Task task : transactionQueue.getTasksAsList()) {
+            if (!(task instanceof PresentAlertOperation)) {
+                continue;
+            }
+            ((PresentAlertOperation) task).setWindowCapability(defaultMainWindowCapability);
+        }
     }
 }
