@@ -83,7 +83,7 @@ public class FileManager extends BaseFileManager {
         } else if (file.getFileData() != null) {
             inputStream = new ByteArrayInputStream(file.getFileData());
         } else {
-            throw new IllegalArgumentException("The SdlFile to upload does not specify its path, URI, or file data");
+            DebugTool.logError(TAG, "The SdlFile to upload does not specify its path, URI, or file data");
         }
 
         return inputStream;

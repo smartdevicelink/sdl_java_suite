@@ -33,6 +33,7 @@
 package com.smartdevicelink.managers.file;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
@@ -79,7 +80,11 @@ public class FileManager extends BaseFileManager {
         }
 
         if (file.getResourceId() > 0) {
-            inputStream = context.get().getResources().openRawResource(file.getResourceId());
+            try {
+                inputStream = context.get().getResources().openRawResource(file.getResourceId());
+            } catch (Resources.NotFoundException e) {
+                DebugTool.logError(TAG, "File cannot be found.");
+            }
         } else if (file.getUri() != null) {
             try {
                 inputStream = context.get().getContentResolver().openInputStream(file.getUri());
@@ -89,7 +94,7 @@ public class FileManager extends BaseFileManager {
         } else if (file.getFileData() != null) {
             inputStream = new ByteArrayInputStream(file.getFileData());
         } else {
-            throw new IllegalArgumentException("The SdlFile to upload does not specify its resourceId, Uri, or file data");
+            DebugTool.logError(TAG, "The SdlFile to upload does not specify its resourceId, Uri, or file data");
         }
 
         return inputStream;
