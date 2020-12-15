@@ -71,14 +71,15 @@ abstract class BaseAlertManager extends BaseSubManager {
 
     private static final String TAG = "BaseAlertManager";
     Queue transactionQueue;
-    WindowCapability defaultMainWindowCapability;
+    WindowCapability currentWindowCapability;
     private OnSystemCapabilityListener onSpeechCapabilityListener, onDisplaysCapabilityListener;
     List<SpeechCapabilities> speechCapabilities;
     private UUID permissionListener;
-    boolean currentAlertPermissionStatus = false;
+    boolean isAlertRPCAllowed = false;
     private final WeakReference<FileManager> fileManager;
     int nextCancelId;
-    final int alertCancelIdMin = 1;
+    private final int alertCancelIdMin = 1;
+    private final int alertCancelIdMax = 1000;
     private CopyOnWriteArrayList<SoftButtonObject> softButtonObjects;
     OnRPCNotificationListener onButtonPressListener, onButtonEventListener;
 
@@ -87,7 +88,7 @@ abstract class BaseAlertManager extends BaseSubManager {
         super(internalInterface);
         this.transactionQueue = newTransactionQueue();
         this.fileManager = new WeakReference<>(fileManager);
-        nextCancelId = alertCancelIdMin;
+        nextCancelId = 0;
         this.softButtonObjects = new CopyOnWriteArrayList<>();
         addListeners();
     }
@@ -100,9 +101,9 @@ abstract class BaseAlertManager extends BaseSubManager {
 
     @Override
     public void dispose() {
-        defaultMainWindowCapability = null;
+        currentWindowCapability = null;
         speechCapabilities = null;
-        currentAlertPermissionStatus = false;
+        isAlertRPCAllowed = false;
         softButtonObjects = null;
 
         if (transactionQueue != null) {
@@ -163,7 +164,13 @@ abstract class BaseAlertManager extends BaseSubManager {
             }
         }
 
-        PresentAlertOperation operation = new PresentAlertOperation(internalInterface, alert, defaultMainWindowCapability, speechCapabilities, fileManager.get(), nextCancelId++, listener);
+        if (nextCancelId >= alertCancelIdMax) {
+            nextCancelId = alertCancelIdMin;
+        } else {
+            nextCancelId++;
+        }
+
+        PresentAlertOperation operation = new PresentAlertOperation(internalInterface, alert, currentWindowCapability, speechCapabilities, fileManager.get(), nextCancelId, listener);
         transactionQueue.add(operation, false);
 
     }
@@ -199,10 +206,10 @@ abstract class BaseAlertManager extends BaseSubManager {
     }
 
     // Suspend the queue if the WindowCapabilities are null
-    // OR if the currentAlertPermissionStatus is false
+    // OR if isAlertRPCAllowed is false
     private void updateTransactionQueueSuspended() {
-        if (!currentAlertPermissionStatus || defaultMainWindowCapability == null) {
-            DebugTool.logInfo(TAG, String.format("Suspending the transaction queue. Current permission status is false: %b, window capabilities are null: %b", currentAlertPermissionStatus, defaultMainWindowCapability == null));
+        if (!isAlertRPCAllowed || currentWindowCapability == null) {
+            DebugTool.logInfo(TAG, String.format("Suspending the transaction queue. Current permission status is false: %b, window capabilities are null: %b", isAlertRPCAllowed, currentWindowCapability == null));
             transactionQueue.pause();
         } else {
             DebugTool.logInfo(TAG, "Starting the transaction queue");
@@ -234,7 +241,7 @@ abstract class BaseAlertManager extends BaseSubManager {
                 // instead of using the parameter it's more safe to use the convenience method
                 List<DisplayCapability> capabilities = SystemCapabilityManager.convertToList(capability, DisplayCapability.class);
                 if (capabilities == null || capabilities.size() == 0) {
-                    defaultMainWindowCapability = null;
+                    currentWindowCapability = null;
                 } else {
                     DisplayCapability display = capabilities.get(0);
                     for (WindowCapability windowCapability : display.getWindowCapabilities()) {
@@ -242,8 +249,8 @@ abstract class BaseAlertManager extends BaseSubManager {
                         if (currentWindowID != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
                             continue;
                         }
-                        defaultMainWindowCapability = windowCapability;
-                        updatePendingOperationsWithNewDisplayCapability();
+                        currentWindowCapability = windowCapability;
+                        updatePendingOperationsWithNewWindowCapability();
                         break;
                     }
                 }
@@ -254,7 +261,7 @@ abstract class BaseAlertManager extends BaseSubManager {
             @Override
             public void onError(String info) {
                 DebugTool.logError(TAG, "Display Capability cannot be retrieved");
-                defaultMainWindowCapability = null;
+                currentWindowCapability = null;
                 updateTransactionQueueSuspended();
             }
         };
@@ -269,9 +276,9 @@ abstract class BaseAlertManager extends BaseSubManager {
             @Override
             public void onPermissionsChange(@NonNull Map<FunctionID, PermissionStatus> allowedPermissions, int permissionGroupStatus) {
                 if (allowedPermissions.get(FunctionID.ALERT) != null) {
-                    currentAlertPermissionStatus = allowedPermissions.get(FunctionID.ALERT).getIsRPCAllowed();
+                    isAlertRPCAllowed = allowedPermissions.get(FunctionID.ALERT).getIsRPCAllowed();
                 } else {
-                    currentAlertPermissionStatus = false;
+                    isAlertRPCAllowed = false;
                 }
                 updateTransactionQueueSuspended();
             }
@@ -318,12 +325,12 @@ abstract class BaseAlertManager extends BaseSubManager {
     }
 
     // Updates pending task with new DisplayCapabilities
-    void updatePendingOperationsWithNewDisplayCapability() {
+    void updatePendingOperationsWithNewWindowCapability() {
         for (Task task : transactionQueue.getTasksAsList()) {
             if (!(task instanceof PresentAlertOperation)) {
                 continue;
             }
-            ((PresentAlertOperation) task).setWindowCapability(defaultMainWindowCapability);
+            ((PresentAlertOperation) task).setWindowCapability(currentWindowCapability);
         }
     }
 }

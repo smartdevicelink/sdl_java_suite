@@ -69,7 +69,7 @@ public class PresentAlertOperation extends Task {
     private AlertCompletionListener listener;
     private final WeakReference<ISdl> internalInterface;
     private final WeakReference<FileManager> fileManager;
-    WindowCapability defaultMainWindowCapability;
+    WindowCapability currentWindowCapability;
     private int cancelId;
     private List<SpeechCapabilities> speechCapabilities;
 
@@ -77,7 +77,7 @@ public class PresentAlertOperation extends Task {
         super("PresentAlertOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
-        this.defaultMainWindowCapability = currentCapabilities;
+        this.currentWindowCapability = currentCapabilities;
         this.speechCapabilities = speechCapabilities;
         this.alertView = alertView.clone();
         this.listener = listener;
@@ -375,7 +375,7 @@ public class PresentAlertOperation extends Task {
         if (nonNullFields.isEmpty()) {
             return alert;
         }
-        int numberOfLines = ManagerUtility.WindowCapabilityUtility.getMaxNumberOfAlertFieldLines(defaultMainWindowCapability);
+        int numberOfLines = ManagerUtility.WindowCapabilityUtility.getMaxNumberOfAlertFieldLines(currentWindowCapability);
         switch (numberOfLines) {
             case 1:
                 alert = assembleOneLineAlertText(alert, nonNullFields);
@@ -461,7 +461,7 @@ public class PresentAlertOperation extends Task {
      * @return True if soft button images are currently supported; false if not.
      */
     private boolean supportsSoftButtonImages() {
-        SoftButtonCapabilities softButtonCapabilities = defaultMainWindowCapability.getSoftButtonCapabilities().get(0);
+        SoftButtonCapabilities softButtonCapabilities = currentWindowCapability.getSoftButtonCapabilities().get(0);
         return softButtonCapabilities.getImageSupported().booleanValue();
     }
 
@@ -481,7 +481,7 @@ public class PresentAlertOperation extends Task {
      * @return True if alert icons are currently supported; false if not.
      */
     private boolean supportsAlertIcon() {
-        return ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.alertIcon);
+        return ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(currentWindowCapability, ImageFieldName.alertIcon);
     }
 
     private boolean isValidAlertViewData(AlertView alertView) {
@@ -506,7 +506,7 @@ public class PresentAlertOperation extends Task {
     }
 
     // Updates WindowCapability if the operation is pending the in the Alert Manager.
-    void setWindowCapability(WindowCapability defaultMainWindowCapability) {
-        this.defaultMainWindowCapability = defaultMainWindowCapability;
+    void setWindowCapability(WindowCapability currentWindowCapability) {
+        this.currentWindowCapability = currentWindowCapability;
     }
 }
