@@ -187,7 +187,7 @@ class UploadFileOperation extends Task {
                     if (newHighestCorrelationID(correlationId, highestCorrelationIDReceived)) {
                         highestCorrelationIDReceived = correlationId;
 
-                        // If spaceAvailable is nil, set it to the max value
+                        // If spaceAvailable is null, set it to the max value
                         bytesAvailable = putFileResponse.getSpaceAvailable() != null ? putFileResponse.getSpaceAvailable() : BaseFileManager.SPACE_AVAILABLE_MAX_VALUE;
                     }
 
