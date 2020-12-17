@@ -663,8 +663,4 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         defaultProperties.setKeypressMode(KeypressMode.RESEND_CURRENT_ENTRY);
         return defaultProperties;
     }
-
-    private void getKeyboardPropertiesFromCapabilities(KeyboardCapabilities capabilities) {
-
-    }
 }
