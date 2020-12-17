@@ -194,12 +194,6 @@ public enum TextFieldName {
      */
     turnText,
     /**
-     * Navigation text for turnList parameter of UpdateTurnList
-     *
-     * @since SmartDeviceLink 7.1.0
-     */
-    navigationText,
-    /**
      * Optional title of the template that will be displayed
      *
      * @since SmartDeviceLink 6.0

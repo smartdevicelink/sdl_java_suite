@@ -174,7 +174,6 @@ public class TextFieldNameTests extends TestCase {
         enumTestList.add(TextFieldName.phoneNumber);
         enumTestList.add(TextFieldName.timeToDestination);
         enumTestList.add(TextFieldName.turnText);
-        enumTestList.add(TextFieldName.navigationText);
         enumTestList.add(TextFieldName.templateTitle);
         enumTestList.add(TextFieldName.subtleAlertText1);
         enumTestList.add(TextFieldName.subtleAlertText2);
