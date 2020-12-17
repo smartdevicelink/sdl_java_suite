@@ -102,9 +102,9 @@ public class AlertManagerTest {
 
     @Test
     public void testInstantiation() {
-        assertNotNull(alertManager.defaultMainWindowCapability);
+        assertNotNull(alertManager.currentWindowCapability);
         assertNotNull(alertManager.nextCancelId);
-        assertFalse(alertManager.currentAlertPermissionStatus);
+        assertFalse(alertManager.isAlertRPCAllowed);
     }
 
     @Test
