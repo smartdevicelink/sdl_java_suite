@@ -48,11 +48,13 @@ import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
+import com.smartdevicelink.proxy.rpc.KeyboardCapabilities;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
+import com.smartdevicelink.proxy.rpc.enums.KeyboardInputMask;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
@@ -64,6 +66,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
+import java.security.Key;
 import java.util.HashSet;
 import java.util.List;
 
@@ -110,6 +113,8 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         // capabilities
         currentSystemContext = SystemContext.SYSCTXT_MAIN;
         currentHMILevel = HMILevel.HMI_NONE;
+        // TODO remove, move to addListener
+        keyboardConfiguration = defaultKeyboardConfiguration();
         addListeners();
 
         // setting/instantiating class vars
@@ -119,7 +124,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         nextChoiceId = choiceCellIdMin;
         nextCancelId = choiceCellCancelIdMin;
         isVROptional = false;
-        keyboardConfiguration = defaultKeyboardConfiguration();
 
         currentlyPresentedKeyboardOperation = null;
     }
@@ -461,6 +465,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             properties.setKeypressMode((keyboardConfiguration.getKeypressMode() == null ? KeypressMode.RESEND_CURRENT_ENTRY : keyboardConfiguration.getKeypressMode()));
             properties.setLimitedCharacterList(keyboardConfiguration.getLimitedCharacterList());
             properties.setAutoCompleteText(keyboardConfiguration.getAutoCompleteText());
+            properties.setMaskInputCharacters(keyboardConfiguration.getMaskInputCharacters());
             this.keyboardConfiguration = properties;
         }
     }
@@ -541,6 +546,12 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                         int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
                         if (currentWindowID == PredefinedWindows.DEFAULT_WINDOW.getValue()) {
                             defaultMainWindowCapability = windowCapability;
+
+                            KeyboardCapabilities keyboardCapabilities = windowCapability.getKeyboardCapabilities();
+                            if (keyboardCapabilities.getMaskInputCharactersSupported() != null
+                                    && !keyboardCapabilities.getMaskInputCharactersSupported()) {
+                                keyboardConfiguration.setMaskInputCharacters(KeyboardInputMask.DISABLE_INPUT_KEY_MASK);
+                            }
                         }
                     }
                 }
@@ -651,5 +662,9 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         defaultProperties.setKeyboardLayout(KeyboardLayout.QWERTY);
         defaultProperties.setKeypressMode(KeypressMode.RESEND_CURRENT_ENTRY);
         return defaultProperties;
+    }
+
+    private void getKeyboardPropertiesFromCapabilities(KeyboardCapabilities capabilities) {
+
     }
 }
