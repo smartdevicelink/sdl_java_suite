@@ -32,9 +32,12 @@
 
 package com.smartdevicelink.managers.file;
 
+import androidx.annotation.NonNull;
+
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
+import com.smartdevicelink.protocol.SdlProtocolBase;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.PutFile;
@@ -118,6 +121,8 @@ class UploadFileOperation extends Task {
             this.fileSize = getFileSizeFromInputStream(inputStream);
         }
 
+        int maxBulkDataSize = getMaxBulkDataSize(mtuSize, file, fileSize);
+
         // If the file does not exist or the passed data is null, return an error
         if (inputStream == null || fileSize == 0) {
             closeInputStream();
@@ -149,13 +154,13 @@ class UploadFileOperation extends Task {
 
         // Break the data into small pieces, each of which will be sent in a separate PutFile
         int currentOffset = 0;
-        int numberOfPieces = ((fileSize - 1) / mtuSize) + 1;
+        int numberOfPieces = ((fileSize - 1) / maxBulkDataSize) + 1;
         for (int i = 0; i < numberOfPieces; i++) {
             putFileGroup.enter();
 
             // Get a chunk of data from the input stream
-            int putFileLength = getPutFileLengthForOffset(currentOffset, fileSize, mtuSize);
-            int putFileBulkDataSize = getDataSizeForOffset(currentOffset, fileSize, mtuSize);
+            int putFileLength = getPutFileLengthForOffset(currentOffset, fileSize, maxBulkDataSize);
+            int putFileBulkDataSize = getDataSizeForOffset(currentOffset, fileSize, maxBulkDataSize);
             byte[] putFileBulkData = getDataChunkWithSize(putFileBulkDataSize, this.inputStream);
 
             final PutFile putFile = new PutFile(file.getName(), file.getType())
@@ -220,26 +225,68 @@ class UploadFileOperation extends Task {
     }
 
     /**
+     * Returns the max possible size for the JSON data in each of the PutFile pieces.
+     *
+     * @param file     The file containing the data to be sent to the SDL Core
+     * @param fileSize The size of the file
+     * @return max possible size for the JSON data
+     */
+    private int getMaxJSONSize(@NonNull SdlFile file, int fileSize) {
+        int maxJSONSize = 0;
+
+        final PutFile putFile = new PutFile(file.getName(), file.getType())
+                .setPersistentFile(file.isPersistent())
+                .setSystemFile(false)
+                .setOffset(fileSize)
+                .setLength(fileSize);
+
+        if (putFile != null && putFile.getStore() != null) {
+            maxJSONSize = putFile.getStore().toString().getBytes().length;
+        }
+        return maxJSONSize;
+    }
+
+    /**
+     * Returns the max size of bulk data that we can load into each PutFile to guarantee that the
+     * packet size do not exceed the max MTU size allowed by the SDL Core.
+     *
+     * @param mtuSize  The maximum packet size allowed
+     * @param file     The file containing the data to be sent to the SDL Core
+     * @param fileSize The size of the file
+     * @return max size of bulk data that we can load into each PutFile
+     */
+    private int getMaxBulkDataSize(int mtuSize, @NonNull SdlFile file, int fileSize) {
+        // Each RPC packet contains : frame header + payload (binary header + JSON data + bulk data)
+        // To make sure that packets do not exceed MTU size, the bulk data size for each packet should not exceed:
+        // mtuSize - (frameHeaderSize + binaryHeaderSize + maxJSONSize)
+
+        int frameHeaderSize = SdlProtocolBase.V2_HEADER_SIZE;
+        int binaryHeaderSize = 12;
+        int maxJSONSize = getMaxJSONSize(file, fileSize);
+        return mtuSize - (frameHeaderSize + binaryHeaderSize + maxJSONSize);
+    }
+
+    /**
      * Returns the length of the data being sent in the PutFile. The first PutFile's length is unique in
      * that it sends the full size of the data. For the rest of the PutFiles, the length parameter is equal
      * to the size of the chunk of data being sent in the PutFile.
      *
-     * @param currentOffset The current position in the file
-     * @param fileSize      The size of the file
-     * @param mtuSize       The maximum packet size allowed
+     * @param currentOffset   The current position in the file
+     * @param fileSize        The size of the file
+     * @param maxBulkDataSize The max size of bulk data that we can load into each PutFile
      * @return The length of the data being sent in the PutFile
      */
-    private int getPutFileLengthForOffset(int currentOffset, int fileSize, int mtuSize) {
+    private int getPutFileLengthForOffset(int currentOffset, int fileSize, int maxBulkDataSize) {
         int putFileLength;
         if (currentOffset == 0) {
             // The first PutFile sends the full file size
             putFileLength = fileSize;
-        } else if ((fileSize - currentOffset) < mtuSize) {
+        } else if ((fileSize - currentOffset) < maxBulkDataSize) {
             // The last PutFile sends the size of the remaining data
             putFileLength = fileSize - currentOffset;
         } else {
-            // All other PutFiles send the maximum allowed packet size
-            putFileLength = mtuSize;
+            // All other PutFiles send the maximum bulk data size
+            putFileLength = maxBulkDataSize;
         }
         return putFileLength;
     }
@@ -248,18 +295,18 @@ class UploadFileOperation extends Task {
      * Gets the size of the data to be sent in a packet.
      * Packet size can not be greater than the max MTU size allowed by the SDL Core.
      *
-     * @param currentOffset The position in the file where to start reading data
-     * @param fileSize      he size of the file
-     * @param mtuSize       The maximum packet size allowed
+     * @param currentOffset   The position in the file where to start reading data
+     * @param fileSize        he size of the file
+     * @param maxBulkDataSize The max size of bulk data that we can load into each PutFile
      * @return The size of the data to be sent in the packet.
      */
-    private int getDataSizeForOffset(int currentOffset, int fileSize, int mtuSize) {
+    private int getDataSizeForOffset(int currentOffset, int fileSize, int maxBulkDataSize) {
         int dataSize;
         int fileSizeRemaining = fileSize - currentOffset;
-        if (fileSizeRemaining < mtuSize) {
+        if (fileSizeRemaining < maxBulkDataSize) {
             dataSize = fileSizeRemaining;
         } else {
-            dataSize = mtuSize;
+            dataSize = maxBulkDataSize;
         }
         return dataSize;
     }
