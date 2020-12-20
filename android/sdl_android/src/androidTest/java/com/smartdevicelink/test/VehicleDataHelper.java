@@ -228,7 +228,7 @@ public class VehicleDataHelper {
 
     static {
         //TIRE_PRESSURE set up
-        TIRE_PRESSURE.setPressureTelltale(TIRE_PRESSURE_TELL_TALE);
+        TIRE_PRESSURE.setPressureTellTale(TIRE_PRESSURE_TELL_TALE);
         SingleTireStatus tireLeftFront = new SingleTireStatus();
         tireLeftFront.setStatus(TIRE_PRESSURE_LEFT_FRONT);
         TIRE_PRESSURE.setLeftFront(tireLeftFront);

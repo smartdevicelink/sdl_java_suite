@@ -1985,7 +1985,7 @@ public class Validator {
             return (item1 == null);
         }
 
-        if (item1.getPressureTelltale() != item2.getPressureTelltale()) {
+        if (item1.getPressureTellTale() != item2.getPressureTellTale()) {
             return false;
         }
 
