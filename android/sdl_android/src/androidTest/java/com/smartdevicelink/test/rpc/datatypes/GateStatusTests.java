@@ -17,13 +17,12 @@ import org.json.JSONObject;
 import java.util.Hashtable;
 import java.util.Iterator;
 
-public class GateStatusTest extends TestCase {
+public class GateStatusTests extends TestCase {
     private GateStatus msg;
 
     @Override
     public void setUp() {
         msg = new GateStatus(TestValues.GENERAL_GRID, TestValues.GENERAL_DOOR_STATUS_TYPE);
-        msg.setStatus(TestValues.GENERAL_DOOR_STATUS_TYPE);
     }
 
     public void testRpcValues() {
@@ -32,7 +31,7 @@ public class GateStatusTest extends TestCase {
         DoorStatusType status = msg.getStatus();
 
         // Valid Tests
-        assertTrue(Validator.validateGrid(msg.getLocation(), location));
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_GRID, location);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_DOOR_STATUS_TYPE, status);
     }
 

@@ -2,7 +2,6 @@ package com.smartdevicelink.test.rpc.datatypes;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.DoorStatus;
-import com.smartdevicelink.proxy.rpc.GateStatus;
 import com.smartdevicelink.proxy.rpc.Grid;
 import com.smartdevicelink.proxy.rpc.RoofStatus;
 import com.smartdevicelink.proxy.rpc.enums.DoorStatusType;
@@ -24,7 +23,6 @@ public class DoorStatusTests extends TestCase {
     @Override
     public void setUp() {
         msg = new DoorStatus(TestValues.GENERAL_GRID, TestValues.GENERAL_DOOR_STATUS_TYPE);
-        msg.setStatus(TestValues.GENERAL_DOOR_STATUS_TYPE);
     }
 
     public void testRpcValues() {
@@ -34,7 +32,7 @@ public class DoorStatusTests extends TestCase {
 
         // Valid Tests
         assertTrue(Validator.validateGrid(msg.getLocation(), location));
-        assertEquals(TestValues.MATCH, TestValues.GENERAL_DOOR_STATUS_TYPE, status);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_GRID, location);
     }
 
     public void testJson() {

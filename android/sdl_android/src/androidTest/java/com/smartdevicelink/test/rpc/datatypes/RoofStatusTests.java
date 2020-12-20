@@ -31,10 +31,12 @@ public class RoofStatusTests extends TestCase {
         // Test Values
         Grid location = msg.getLocation();
         DoorStatusType status = msg.getStatus();
+        WindowState windowState = msg.getState();
 
         // Valid Tests
-        assertTrue(Validator.validateGrid(msg.getLocation(), location));
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_GRID, location);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_DOOR_STATUS_TYPE, status);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_WINDOW_STATE, windowState);
     }
 
     public void testJson() {
