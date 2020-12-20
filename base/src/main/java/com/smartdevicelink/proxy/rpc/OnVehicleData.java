@@ -495,7 +495,7 @@ public class OnVehicleData extends RPCNotification {
     /**
      * Gets the externalTemperature.
      *
-     * @return Boolean The external temperature in degrees celsius. This parameter is deprecated starting RPC
+     * @return Double The external temperature in degrees celsius. This parameter is deprecated starting RPC
      * Spec 7.1.0, please see climateData.
      * {"num_min_value": -40.0, "num_max_value": 100.0}
      * @since SmartDeviceLink 2.0.0
