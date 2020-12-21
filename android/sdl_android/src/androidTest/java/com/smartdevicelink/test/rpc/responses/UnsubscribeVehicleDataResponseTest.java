@@ -180,7 +180,7 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
         VehicleDataResult testWindowStatus = ((UnsubscribeVehicleDataResponse) msg).getWindowStatus();
         VehicleDataResult testStabilityControlStatus = ((UnsubscribeVehicleDataResponse) msg).getStabilityControlsStatus();
         VehicleDataResult testOemCustomData = ((UnsubscribeVehicleDataResponse) msg).getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME);
-        VehicleDataResult testKeySeatOccupancy = ((UnsubscribeVehicleDataResponse) msg).getSeatOccupancy();
+        VehicleDataResult testSeatOccupancy = ((UnsubscribeVehicleDataResponse) msg).getSeatOccupancy();
 
         // Valid Tests
         assertTrue(TestValues.TRUE, testResult.equals(TestValues.GENERAL_RESULT));
@@ -217,7 +217,7 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
         assertTrue(TestValues.TRUE, testStabilityControlStatus.getDataType().equals(VehicleDataType.VEHICLEDATA_STABILITYCONTROLSSTATUS));
         assertTrue(TestValues.TRUE, testOemCustomData.getOEMCustomVehicleDataType().equals(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
         assertTrue(TestValues.TRUE, testGearStatus.getDataType().equals(VehicleDataType.VEHICLEDATA_GEARSTATUS));
-        assertTrue(TestValues.TRUE, testKeySeatOccupancy.getDataType().equals(VehicleDataType.VEHICLEDATA_SEATOCCUPANCY));
+        assertTrue(TestValues.TRUE, testSeatOccupancy.getDataType().equals(VehicleDataType.VEHICLEDATA_SEATOCCUPANCY));
 
         // Invalid/Null Tests
         UnsubscribeVehicleDataResponse msg = new UnsubscribeVehicleDataResponse();

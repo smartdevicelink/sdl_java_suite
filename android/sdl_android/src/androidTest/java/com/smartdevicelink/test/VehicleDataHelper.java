@@ -93,6 +93,13 @@ public class VehicleDataHelper {
     public static final String OEM_CUSTOM_VEHICLE_DATA_STATE = "oemCustomVehicleDataState";
     public static final Boolean HANDS_OFF_STEERING = Boolean.TRUE;
 
+    // Seat Occupancy
+    public static final SeatOccupancy SEAT_OCCUPANCY = new SeatOccupancy();
+    public static final List<SeatStatus> SEATS_OCCUPIED = new ArrayList<SeatStatus>(1);
+    public static final List<SeatStatus> SEATS_BELTED = new ArrayList<SeatStatus>(1);
+    public static final SeatStatus SEAT_STATUS = new SeatStatus();
+    public static final SeatLocation SEAT_LOCATION = new SeatLocation();
+
     //other variables inside some of the above objects
     // tire status
     public static final WarningLightStatus TIRE_PRESSURE_TELL_TALE = WarningLightStatus.ON;
@@ -228,13 +235,6 @@ public class VehicleDataHelper {
     public static final OnVehicleData VEHICLE_DATA = new OnVehicleData();
     //GetVehicleDataResponse data which stores the same things
     public static final GetVehicleDataResponse VEHICLE_DATA_RESPONSE = new GetVehicleDataResponse();
-
-    // Seat Occupancy
-    public static final SeatOccupancy SEAT_OCCUPANCY = new SeatOccupancy();
-    public static final List<SeatStatus> SEATS_OCCUPIED = new ArrayList<SeatStatus>(1);
-    public static final List<SeatStatus> SEATS_BELTED = new ArrayList<SeatStatus>(1);
-    public static final SeatStatus SEAT_STATUS = new SeatStatus();
-    public static final SeatLocation SEAT_LOCATION = new SeatLocation();
 
     static {
         //TIRE_PRESSURE set up

@@ -3924,33 +3924,7 @@ public class Validator {
         List<SeatStatus> seatStatuses2 = item2.getSeatsBelted();
         List<SeatStatus> seatsOccupied2 = item2.getSeatsOccupied();
 
-        seatsOccupied1.toString();
-
-        for (SeatStatus seatStatusItem1: seatStatuses1) {
-            for (SeatStatus seatStatusItem2: seatStatuses2) {
-                if (seatStatusItem1.getConditionActive() != seatStatusItem2.getConditionActive()){
-                    return false;
-                }
-
-                if (!validateGrid(seatStatusItem1.getSeatLocation().getGrid(), seatStatusItem2.getSeatLocation().getGrid())){
-                    return false;
-                }
-            }
-        }
-
-        for (SeatStatus occupiedStatusItem1: seatsOccupied1) {
-            for (SeatStatus occupiedStatusItem2: seatsOccupied2) {
-                if (occupiedStatusItem1.getConditionActive() != occupiedStatusItem2.getConditionActive()){
-                    return false;
-                }
-
-                if (!validateGrid(occupiedStatusItem1.getSeatLocation().getGrid(), occupiedStatusItem2.getSeatLocation().getGrid())){
-                    return false;
-                }
-            }
-        }
-
-        return true;
+        return validateSeatStatuses(seatStatuses1, seatStatuses2) && validateSeatStatuses(seatsOccupied1, seatsOccupied2);
     }
 
     public static boolean validateStabilityControlStatus(StabilityControlsStatus status1, StabilityControlsStatus status2) {
@@ -3971,5 +3945,47 @@ public class Validator {
             return (status2 == null);
         }
         return status1.getDataType().equals(status2.getDataType()) && status1.getResultCode().equals(status2.getResultCode());
+    }
+
+    public static boolean validateSeatStatuses(List<SeatStatus> seatStatusesItem1, List<SeatStatus> seatStatusesItem2) {
+        if (seatStatusesItem1 == null) {
+            return (seatStatusesItem2 == null);
+        }
+        if (seatStatusesItem2 == null) {
+            return (seatStatusesItem1 == null);
+        }
+
+        if (seatStatusesItem1.size() != seatStatusesItem2.size()) {
+            return false;
+        }
+
+        Iterator<SeatStatus> iterator1 = seatStatusesItem1.iterator();
+        Iterator<SeatStatus> iterator2 = seatStatusesItem2.iterator();
+
+        while (iterator1.hasNext() && iterator2.hasNext()) {
+            SeatStatus seatStatus1 = iterator1.next();
+            SeatStatus seatStatus2 = iterator2.next();
+
+            if (!validateSeatStatus(seatStatus1, seatStatus2)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean validateSeatStatus(SeatStatus item1, SeatStatus item2) {
+        if (item1 == null) {
+            return (item2 == null);
+        }
+        if (item2 == null) {
+            return (item1 == null);
+        }
+
+        if (item1.getConditionActive() != item2.getConditionActive()) {
+            return false;
+        }
+
+        return validateSeatLocation(item1.getSeatLocation(), item2.getSeatLocation());
     }
 }

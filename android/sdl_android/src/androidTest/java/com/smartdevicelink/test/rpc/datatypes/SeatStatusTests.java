@@ -1,7 +1,6 @@
 package com.smartdevicelink.test.rpc.datatypes;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
-import com.smartdevicelink.proxy.rpc.Grid;
 import com.smartdevicelink.proxy.rpc.SeatLocation;
 import com.smartdevicelink.proxy.rpc.SeatStatus;
 import com.smartdevicelink.test.JsonUtils;
@@ -64,7 +63,7 @@ public class SeatStatusTests extends TestCase {
                 if (key.equals(SeatStatus.KEY_SEAT_LOCATION)) {
                     Hashtable<String, Object> locationOne = JsonRPCMarshaller.deserializeJSONObject(JsonUtils.readJsonObjectFromJsonObject(reference, key));
                     Hashtable<String, Object> locationTwo = JsonRPCMarshaller.deserializeJSONObject(JsonUtils.readJsonObjectFromJsonObject(underTest, key));
-                    assertTrue(TestValues.TRUE, Validator.validateGrid(new Grid(locationOne), new Grid(locationTwo)));
+                    assertTrue(TestValues.TRUE, Validator.validateSeatLocation(new SeatLocation(locationOne), new SeatLocation(locationTwo)));
                 } else {
                     assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 

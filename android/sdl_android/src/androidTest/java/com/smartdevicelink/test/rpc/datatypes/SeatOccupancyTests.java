@@ -1,10 +1,7 @@
 package com.smartdevicelink.test.rpc.datatypes;
 
-import android.util.Log;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
-import com.smartdevicelink.proxy.rpc.ImageField;
-import com.smartdevicelink.proxy.rpc.SeatLocation;
 import com.smartdevicelink.proxy.rpc.SeatOccupancy;
 import com.smartdevicelink.proxy.rpc.SeatStatus;
 import com.smartdevicelink.test.JsonUtils;
@@ -66,7 +63,7 @@ public class SeatOccupancyTests extends TestCase {
             Iterator<?> iterator = reference.keys();
             while (iterator.hasNext()) {
                 String key = (String) iterator.next();
-                if (key.equals(SeatOccupancy.KEY_SEATS_OCCUPIED)) {
+                if (key.equals(SeatOccupancy.KEY_SEATS_OCCUPIED) || key.equals(SeatOccupancy.KEY_SEATS_BELTED)) {
                     JSONArray referenceArray = JsonUtils.readJsonArrayFromJsonObject(reference, key);
                     JSONArray underTestArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
                     assertEquals(TestValues.MATCH, referenceArray.length(), underTestArray.length());
@@ -74,18 +71,7 @@ public class SeatOccupancyTests extends TestCase {
                     for (int i = 0; i < referenceArray.length(); i++) {
                         Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(referenceArray.getJSONObject(i));
                         Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(underTestArray.getJSONObject(i));
-                        assertTrue(TestValues.TRUE, Validator.validateImageFields(new ImageField(hashReference), new ImageField(hashTest)));
-                    }
-
-                } else if (key.equals(SeatOccupancy.KEY_SEATS_BELTED)) {
-                    JSONArray referenceArray = JsonUtils.readJsonArrayFromJsonObject(reference, key);
-                    JSONArray underTestArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
-                    assertEquals(TestValues.MATCH, referenceArray.length(), underTestArray.length());
-
-                    for (int i = 0; i < referenceArray.length(); i++) {
-                        Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(referenceArray.getJSONObject(i));
-                        Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(underTestArray.getJSONObject(i));
-                        assertTrue(TestValues.TRUE, Validator.validateImageFields(new ImageField(hashReference), new ImageField(hashTest)));
+                        assertTrue(TestValues.TRUE, Validator.validateSeatStatus(new SeatStatus(hashReference), new SeatStatus(hashTest)));
                     }
 
                 }

@@ -114,7 +114,6 @@ import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.WindowState;
 import com.smartdevicelink.proxy.rpc.WindowStatus;
 import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
-import com.smartdevicelink.proxy.rpc.SeatLocation;
 import com.smartdevicelink.proxy.rpc.SeatOccupancy;
 import com.smartdevicelink.proxy.rpc.SeatStatus;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
@@ -432,9 +431,7 @@ public class TestValues {
 
     public static final SeatOccupancy GENERAL_SEAT_OCCUPANCY = new SeatOccupancy();
     public static final List<SeatStatus> GENERAL_SEATS_OCCUPIED = new ArrayList<SeatStatus>(1);
-    public static final JSONArray JSON_GENERAL_SEATS_OCCUPIED = new JSONArray();
     public static final List<SeatStatus> GENERAL_SEATS_BELTED = new ArrayList<SeatStatus>(1);
-    public static final JSONArray JSON_GENERAL_SEATS_BELTED = new JSONArray();
     public static final SeatStatus GENERAL_SEAT_STATUS = new SeatStatus();
     public static final SeatLocation GENERAL_SEAT_LOCATION = new SeatLocation();
 
@@ -600,6 +597,10 @@ public class TestValues {
     public static final JSONObject JSON_DISPLAYCAPABILITY = new JSONObject();
     public static final JSONArray JSON_DISPLAYCAPABILITY_LIST = new JSONArray();
     public static final JSONObject JSON_DYNAMICUPDATECAPABILITIES = new JSONObject();
+    public static final JSONArray JSON_GENERAL_SEATS_OCCUPIED = new JSONArray();
+    public static final JSONArray JSON_GENERAL_SEATS_BELTED = new JSONArray();
+    public static final JSONObject JSON_OBJECT_GENERAL_SEATS_BELTED = new JSONObject();
+    public static final JSONObject JSON_OBJECT_GENERAL_SEATS_OCCUPIED = new JSONObject();
 
     static {
         GENERAL_TOUCHEVENTCAPABILITIES.setDoublePressAvailable(GENERAL_BOOLEAN);
@@ -1176,16 +1177,14 @@ public class TestValues {
         GENERAL_SEAT_OCCUPANCY.setSeatsOccupied(GENERAL_SEATS_OCCUPIED);
 
         try {
-            JSONArray convertedSeatsOccupied = JsonUtils.createJsonArrayOfJsonObjects(GENERAL_SEATS_OCCUPIED, 1);
-            JSONArray convertedSeatsBelted = JsonUtils.createJsonArrayOfJsonObjects(GENERAL_SEATS_BELTED, 1);
 
-            for (int i = 0; i < convertedSeatsOccupied.length(); i++) {
-                JSON_GENERAL_SEATS_OCCUPIED.put(convertedSeatsOccupied.get(i));
-            }
+            JSON_OBJECT_GENERAL_SEATS_OCCUPIED.put(SeatStatus.KEY_SEAT_LOCATION, GENERAL_SEAT_LOCATION.serializeJSON());
+            JSON_OBJECT_GENERAL_SEATS_OCCUPIED.put(SeatStatus.KEY_CONDITION_ACTIVE, GENERAL_BOOLEAN);
+            JSON_GENERAL_SEATS_OCCUPIED.put(JSON_OBJECT_GENERAL_SEATS_OCCUPIED);
 
-            for (int i = 0; i < convertedSeatsBelted.length(); i++) {
-                JSON_GENERAL_SEATS_BELTED.put(convertedSeatsBelted.get(i));
-            }
+            JSON_OBJECT_GENERAL_SEATS_BELTED.put(SeatStatus.KEY_SEAT_LOCATION, GENERAL_SEAT_LOCATION.serializeJSON());
+            JSON_OBJECT_GENERAL_SEATS_BELTED.put(SeatStatus.KEY_CONDITION_ACTIVE,GENERAL_BOOLEAN);
+            JSON_GENERAL_SEATS_BELTED.put(JSON_OBJECT_GENERAL_SEATS_BELTED);
 
             JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);
             JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_USER_DISALLOWED, GENERAL_HMILEVEL_LIST);

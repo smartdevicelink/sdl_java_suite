@@ -281,7 +281,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests {
             windowStatusObj.put(WindowStatus.KEY_STATE, VehicleDataHelper.WINDOW_STATE);
             windowStatusArrayObj.put(windowStatusObj);
 
-            // WINDOW_STATUS
+            // SEAT_OCCUPANCY
             seatOccupancyObj.put(SeatOccupancy.KEY_SEATS_BELTED, VehicleDataHelper.SEATS_BELTED);
             seatOccupancyObj.put(SeatOccupancy.KEY_SEATS_OCCUPIED, VehicleDataHelper.SEATS_OCCUPIED);
 
