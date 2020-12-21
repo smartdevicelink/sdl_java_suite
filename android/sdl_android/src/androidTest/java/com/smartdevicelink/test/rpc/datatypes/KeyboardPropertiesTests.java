@@ -36,7 +36,7 @@ public class KeyboardPropertiesTests extends TestCase {
         msg.setLanguage(TestValues.GENERAL_LANGUAGE);
         msg.setLimitedCharacterList(TestValues.GENERAL_STRING_LIST);
         msg.setCustomizeKeys(TestValues.GENERAL_STRING_LIST);
-        msg.setMaskInputCharacters(TestValues.GENERAL_MASK_CHARACTERS);
+        msg.setMaskInputCharacters(TestValues.GENERAL_KEYBOARD_INPUT_MASK);
     }
 
     /**
@@ -62,7 +62,7 @@ public class KeyboardPropertiesTests extends TestCase {
         assertEquals(TestValues.MATCH, TestValues.GENERAL_LANGUAGE, language);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING_LIST.size(), limitedChars.size());
         assertTrue(TestValues.TRUE, Validator.validateStringList(TestValues.GENERAL_STRING_LIST, limitedChars));
-        assertEquals(TestValues.MATCH, TestValues.GENERAL_MASK_CHARACTERS, keyInputMask);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_KEYBOARD_INPUT_MASK, keyInputMask);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING_LIST, customKeys);
 
         // Invalid/Null Tests
@@ -91,7 +91,7 @@ public class KeyboardPropertiesTests extends TestCase {
             reference.put(KeyboardProperties.KEY_LANGUAGE, TestValues.GENERAL_LANGUAGE);
             reference.put(KeyboardProperties.KEY_LIMITED_CHARACTER_LIST, JsonUtils.createJsonArray(TestValues.GENERAL_STRING_LIST));
             reference.put(KeyboardProperties.KEY_CUSTOMIZE_KEYS, JsonUtils.createJsonArray(TestValues.GENERAL_STRING_LIST));
-            reference.put(KeyboardProperties.KEY_MASK_INPUT_CHARACTERS, TestValues.GENERAL_MASK_CHARACTERS);
+            reference.put(KeyboardProperties.KEY_MASK_INPUT_CHARACTERS, TestValues.GENERAL_KEYBOARD_INPUT_MASK);
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
@@ -99,7 +99,7 @@ public class KeyboardPropertiesTests extends TestCase {
             Iterator<?> iterator = reference.keys();
             while (iterator.hasNext()) {
                 String key = (String) iterator.next();
-                if (key.equals(KeyboardProperties.KEY_LIMITED_CHARACTER_LIST) || key.equals(KeyboardProperties.KEY_AUTO_COMPLETE_LIST)) {
+                if (key.equals(KeyboardProperties.KEY_LIMITED_CHARACTER_LIST) || key.equals(KeyboardProperties.KEY_AUTO_COMPLETE_LIST) || key.equals(KeyboardProperties.KEY_CUSTOMIZE_KEYS)) {
                     assertTrue(TestValues.TRUE, Validator.validateStringList(JsonUtils.readStringListFromJsonObject(reference, key), JsonUtils.readStringListFromJsonObject(underTest, key)));
                 } else {
                     assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));

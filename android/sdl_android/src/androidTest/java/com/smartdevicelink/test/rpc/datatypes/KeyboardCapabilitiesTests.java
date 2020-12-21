@@ -48,7 +48,6 @@ public class KeyboardCapabilitiesTests extends TestCase {
         KeyboardCapabilities msg = new KeyboardCapabilities();
         assertNotNull(TestValues.NOT_NULL, msg);
 
-        // Keypress mode is created in the object constructor
         assertNull(TestValues.NULL, msg.getConfigurableKeys());
         assertNull(TestValues.NULL, msg.getMaskInputCharactersSupported());
         assertNull(TestValues.NULL, msg.getSupportedKeyboardLayouts());
@@ -78,17 +77,7 @@ public class KeyboardCapabilitiesTests extends TestCase {
                         Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(underTestArray.getJSONObject(i));
                         assertTrue(TestValues.TRUE, Validator.validateConfigurableKeyboards(new ConfigurableKeyboards(hashReference), new ConfigurableKeyboards(hashTest)));
                     }
-                }/* else if (key.equals(KeyboardCapabilities.KEY_SUPPORTED_KEYBOARD_LAYOUTS)) {
-                    JSONArray referenceArray = JsonUtils.readJsonArrayFromJsonObject(reference, key);
-                    JSONArray underTestArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
-                    assertEquals(TestValues.MATCH, referenceArray.length(), underTestArray.length());
-
-                    for (int i = 0; i < referenceArray.length(); i++) {
-                        Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(referenceArray.getJSONObject(i));
-                        Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(underTestArray.getJSONObject(i));
-                        assertTrue(TestValues.TRUE, Validator.validateKeyboardLayouts(new ConfigurableKeyboards(hashReference), new ConfigurableKeyboards(hashTest)));
-                    }
-                }*/ else {
+                } else {
                     assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
                 }
             }

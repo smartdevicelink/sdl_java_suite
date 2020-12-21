@@ -1,11 +1,7 @@
 package com.smartdevicelink.test.rpc.datatypes;
 
-import com.smartdevicelink.proxy.rpc.ClusterModeStatus;
 import com.smartdevicelink.proxy.rpc.ConfigurableKeyboards;
-import com.smartdevicelink.proxy.rpc.enums.CarModeStatus;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
-import com.smartdevicelink.proxy.rpc.enums.PowerModeQualificationStatus;
-import com.smartdevicelink.proxy.rpc.enums.PowerModeStatus;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.TestValues;
 

@@ -3941,19 +3941,19 @@ public class Validator {
         return keyboard1.getKeyboardLayout().equals(keyboard2.getKeyboardLayout()) && keyboard1.getNumConfigurableKeys().equals(keyboard2.getNumConfigurableKeys());
     }
 
-    public static boolean validateKeyboardCapability(KeyboardCapabilities keyboard1, KeyboardCapabilities keyboard2) {
-        if (keyboard1 == null) {
-            return (keyboard2 == null);
+    public static boolean validateKeyboardCapabilities(KeyboardCapabilities keyboardCapabilities1, KeyboardCapabilities keyboardCapabilities2) {
+        if (keyboardCapabilities1 == null) {
+            return (keyboardCapabilities2 == null);
         }
-        if (keyboard2 == null) {
-            return (keyboard1 == null);
+        if (keyboardCapabilities2 == null) {
+            return (keyboardCapabilities1 == null);
         }
         boolean layoutsEqual = true;
 
-        if (keyboard1.getSupportedKeyboardLayouts() != null && keyboard2.getSupportedKeyboardLayouts() != null) {
+        if (keyboardCapabilities1.getSupportedKeyboardLayouts() != null && keyboardCapabilities2.getSupportedKeyboardLayouts() != null) {
 
-            for (KeyboardLayout layout1 : keyboard1.getSupportedKeyboardLayouts()) {
-                for (KeyboardLayout layout2 : keyboard2.getSupportedKeyboardLayouts()) {
+            for (KeyboardLayout layout1 : keyboardCapabilities1.getSupportedKeyboardLayouts()) {
+                for (KeyboardLayout layout2 : keyboardCapabilities2.getSupportedKeyboardLayouts()) {
                     if (!layout1.equals(layout2)) {
                         layoutsEqual = false;
                         break;
@@ -3966,10 +3966,10 @@ public class Validator {
         }
 
         boolean keyboardsEqual = true;
-        if (keyboard1.getConfigurableKeys() != null && keyboard2.getConfigurableKeys() != null) {
+        if (keyboardCapabilities1.getConfigurableKeys() != null && keyboardCapabilities2.getConfigurableKeys() != null) {
 
-            for (ConfigurableKeyboards configurableKeyboard1 : keyboard1.getConfigurableKeys()) {
-                for (ConfigurableKeyboards configurableKeyboard2 : keyboard2.getConfigurableKeys()) {
+            for (ConfigurableKeyboards configurableKeyboard1 : keyboardCapabilities1.getConfigurableKeys()) {
+                for (ConfigurableKeyboards configurableKeyboard2 : keyboardCapabilities2.getConfigurableKeys()) {
                     if (!validateConfigurableKeyboards(configurableKeyboard1, configurableKeyboard2)) {
                         keyboardsEqual = false;
                         break;
@@ -3980,6 +3980,6 @@ public class Validator {
                 }
             }
         }
-        return keyboardsEqual && layoutsEqual && keyboard1.getMaskInputCharactersSupported().equals(keyboard2.getMaskInputCharactersSupported());
+        return keyboardsEqual && layoutsEqual && keyboardCapabilities1.getMaskInputCharactersSupported().equals(keyboardCapabilities2.getMaskInputCharactersSupported());
     }
 }

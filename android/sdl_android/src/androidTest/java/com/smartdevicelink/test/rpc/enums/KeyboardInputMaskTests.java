@@ -59,8 +59,8 @@ public class KeyboardInputMaskTests extends TestCase {
         List<KeyboardInputMask> enumValueList = Arrays.asList(KeyboardInputMask.values());
 
         List<KeyboardInputMask> enumTestList = new ArrayList<KeyboardInputMask>();
-        enumTestList.add(KeyboardInputMask.DISABLE_INPUT_KEY_MASK);
         enumTestList.add(KeyboardInputMask.ENABLE_INPUT_KEY_MASK);
+        enumTestList.add(KeyboardInputMask.DISABLE_INPUT_KEY_MASK);
         enumTestList.add(KeyboardInputMask.USER_CHOICE_INPUT_KEY_MASK);
 
         assertTrue("Enum value list does not match enum class list",

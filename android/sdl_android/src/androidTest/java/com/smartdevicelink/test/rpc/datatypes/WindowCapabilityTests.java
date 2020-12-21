@@ -226,7 +226,7 @@ public class WindowCapabilityTests extends TestCase {
 
                     Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(jsonReference);
                     Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(jsonUnderTest);
-                    assertTrue(TestValues.TRUE, Validator.validateKeyboardCapability(new KeyboardCapabilities(hashReference), new KeyboardCapabilities(hashTest)));
+                    assertTrue(TestValues.TRUE, Validator.validateKeyboardCapabilities(new KeyboardCapabilities(hashReference), new KeyboardCapabilities(hashTest)));
                 } else {
                     assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
                 }

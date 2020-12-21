@@ -468,7 +468,7 @@ public class TestValues {
     public static final List<Turn> GENERAL_TURN_LIST = new ArrayList<Turn>();
     public static final List<Choice> GENERAL_CHOICE_LIST = new ArrayList<Choice>();
     public static final List<String> GENERAL_STRING_LIST = Arrays.asList(new String[]{"a", "b"});
-    public static final KeyboardInputMask GENERAL_MASK_CHARACTERS = KeyboardInputMask.ENABLE_INPUT_KEY_MASK;
+    public static final KeyboardInputMask GENERAL_KEYBOARD_INPUT_MASK = KeyboardInputMask.ENABLE_INPUT_KEY_MASK;
     public static final ConfigurableKeyboards GENERAL_CONFIGURABLE_KEYBOARDS = new ConfigurableKeyboards();
     public static final List<KeyboardLayout> GENERAL_KEYBOARD_LAYOUT_LIST = Arrays.asList(GENERAL_KEYBOARDLAYOUT, GENERAL_KEYBOARDLAYOUT);
     public static final List<ConfigurableKeyboards> GENERAL_CONFIGURABLE_KEYBOARDS_LIST = new ArrayList<ConfigurableKeyboards>();
