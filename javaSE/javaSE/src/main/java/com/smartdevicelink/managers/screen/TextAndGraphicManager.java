@@ -54,10 +54,7 @@ class TextAndGraphicManager extends BaseTextAndGraphicManager {
     @Override
     SdlArtwork getBlankArtwork() {
         if (blankArtwork == null) {
-            blankArtwork = new SdlArtwork();
-            blankArtwork.setType(FileType.GRAPHIC_PNG);
-            blankArtwork.setName("blankArtwork");
-            blankArtwork.setFileData(new byte[50]);
+            blankArtwork = new SdlArtwork("blankArtwork", FileType.GRAPHIC_PNG, new byte[50], true);
         }
         return blankArtwork;
     }
