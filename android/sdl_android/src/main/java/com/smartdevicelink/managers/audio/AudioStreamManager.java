@@ -437,7 +437,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
             decoder = new AudioDecoder(audioSource, context.get(), sdlSampleRate, sdlSampleType, decoderListener);
         } else {
             // this BaseAudioDecoder subclass uses methods deprecated with api 21
-            decoder = new AudioDecoderCompat(audioSource, context.get(), sdlSampleRate, sdlSampleType, decoderListener);
+            decoder = new AudioDecoderCompat(internalInterface, audioSource, context.get(), sdlSampleRate, sdlSampleType, decoderListener);
         }
 
         synchronized (queue) {
