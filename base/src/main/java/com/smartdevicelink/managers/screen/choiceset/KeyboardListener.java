@@ -85,5 +85,5 @@ public interface KeyboardListener {
      */
     void onKeyboardDidSendEvent(KeyboardEvent event, String currentInputText);
 
-    void onMaskHasChanged(KeyboardEvent event);
+    void onKeyboardInputMaskHasChanged(KeyboardEvent event);
 }

@@ -338,8 +338,6 @@ class PresentChoiceSetOperation extends Task {
                 if (onKeyboard.getEvent().equals(KeyboardEvent.ENTRY_VOICE) || onKeyboard.getEvent().equals(KeyboardEvent.ENTRY_SUBMITTED)) {
                     // Submit Voice or Text
                     keyboardListener.onUserDidSubmitInput(onKeyboard.getData(), onKeyboard.getEvent());
-                } else if (onKeyboard.getEvent().equals(KeyboardEvent.INPUT_KEY_MASK_ENABLED) || onKeyboard.getEvent().equals(KeyboardEvent.INPUT_KEY_MASK_DISABLED)) {
-                    keyboardListener.onMaskHasChanged(onKeyboard.getEvent());
                 } else if (onKeyboard.getEvent().equals(KeyboardEvent.KEYPRESS)) {
                     // Notify of Keypress
                     keyboardListener.updateAutocompleteWithInput(onKeyboard.getData(), new KeyboardAutocompleteCompletionListener() {
@@ -360,6 +358,8 @@ class PresentChoiceSetOperation extends Task {
                 } else if (onKeyboard.getEvent().equals(KeyboardEvent.ENTRY_ABORTED) || onKeyboard.getEvent().equals(KeyboardEvent.ENTRY_CANCELLED)) {
                     // Notify of abort / Cancellation
                     keyboardListener.onKeyboardDidAbortWithReason(onKeyboard.getEvent());
+                } else if (onKeyboard.getEvent().equals(KeyboardEvent.INPUT_KEY_MASK_ENABLED) || onKeyboard.getEvent().equals(KeyboardEvent.INPUT_KEY_MASK_DISABLED)) {
+                    keyboardListener.onKeyboardInputMaskHasChanged(onKeyboard.getEvent());
                 }
             }
         };
