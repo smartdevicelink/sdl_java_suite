@@ -3918,13 +3918,13 @@ public class Validator {
             return (item1 == null);
         }
 
-        List<SeatStatus> seatStatuses1 = item1.getSeatsBelted();
+        List<SeatStatus> seatsBelted1 = item1.getSeatsBelted();
         List<SeatStatus> seatsOccupied1 = item1.getSeatsOccupied();
 
-        List<SeatStatus> seatStatuses2 = item2.getSeatsBelted();
+        List<SeatStatus> seatsBelted2 = item2.getSeatsBelted();
         List<SeatStatus> seatsOccupied2 = item2.getSeatsOccupied();
 
-        return validateSeatStatuses(seatStatuses1, seatStatuses2) && validateSeatStatuses(seatsOccupied1, seatsOccupied2);
+        return validateSeatStatuses(seatsBelted1, seatsBelted2) && validateSeatStatuses(seatsOccupied1, seatsOccupied2);
     }
 
     public static boolean validateStabilityControlStatus(StabilityControlsStatus status1, StabilityControlsStatus status2) {

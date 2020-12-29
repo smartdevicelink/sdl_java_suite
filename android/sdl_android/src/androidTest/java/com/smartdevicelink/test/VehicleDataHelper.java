@@ -95,10 +95,6 @@ public class VehicleDataHelper {
 
     // Seat Occupancy
     public static final SeatOccupancy SEAT_OCCUPANCY = new SeatOccupancy();
-    public static final List<SeatStatus> SEATS_OCCUPIED = new ArrayList<SeatStatus>(1);
-    public static final List<SeatStatus> SEATS_BELTED = new ArrayList<SeatStatus>(1);
-    public static final SeatStatus SEAT_STATUS = new SeatStatus();
-    public static final SeatLocation SEAT_LOCATION = new SeatLocation();
 
     //other variables inside some of the above objects
     // tire status
@@ -235,6 +231,11 @@ public class VehicleDataHelper {
     public static final OnVehicleData VEHICLE_DATA = new OnVehicleData();
     //GetVehicleDataResponse data which stores the same things
     public static final GetVehicleDataResponse VEHICLE_DATA_RESPONSE = new GetVehicleDataResponse();
+
+    public static final List<SeatStatus> SEATS_OCCUPIED = new ArrayList<SeatStatus>(1);
+    public static final List<SeatStatus> SEATS_BELTED = new ArrayList<SeatStatus>(1);
+    public static final SeatStatus SEAT_STATUS = new SeatStatus();
+    public static final SeatLocation SEAT_LOCATION = new SeatLocation();
 
     static {
         //TIRE_PRESSURE set up
