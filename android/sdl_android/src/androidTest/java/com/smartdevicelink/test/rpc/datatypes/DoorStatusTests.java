@@ -31,7 +31,6 @@ public class DoorStatusTests extends TestCase {
         DoorStatusType status = msg.getStatus();
 
         // Valid Tests
-        assertTrue(Validator.validateGrid(msg.getLocation(), location));
         assertEquals(TestValues.MATCH, TestValues.GENERAL_GRID, location);
     }
 
