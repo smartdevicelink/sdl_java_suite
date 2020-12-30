@@ -33,13 +33,18 @@
 package com.smartdevicelink.managers;
 
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.content.res.XmlResourceParser;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.managers.audio.AudioStreamManager;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
@@ -47,6 +52,7 @@ import com.smartdevicelink.managers.lockscreen.LockScreenManager;
 import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.managers.screen.ScreenManager;
 import com.smartdevicelink.managers.video.VideoStreamManager;
+import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
@@ -55,6 +61,7 @@ import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.DebugTool;
 
 import java.util.List;
+import static com.smartdevicelink.util.SdlAppInfo.deserializeVehicleMake;
 
 /**
  * <strong>SDLManager</strong> <br>
@@ -69,7 +76,7 @@ import java.util.List;
  * 4. Helper methods
  */
 public class SdlManager extends BaseSdlManager {
-    private Context context;
+    Context context;
     private LockScreenConfig lockScreenConfig;
 
     // Managers

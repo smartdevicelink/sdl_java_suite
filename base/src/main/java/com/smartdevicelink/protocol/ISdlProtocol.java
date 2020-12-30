@@ -36,6 +36,7 @@ package com.smartdevicelink.protocol;
 import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
@@ -151,4 +152,6 @@ public interface ISdlProtocol {
      * @param authToken
      */
     void onAuthTokenReceived(String authToken);
+
+    boolean onVehicleTypeReceived(VehicleType vehicleType, String systemSoftwareVersion, String systemHardwareVersion);
 }

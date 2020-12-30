@@ -256,6 +256,7 @@ public class SdlRouterService extends Service {
         registrationIntent.setAction(action);
         registrationIntent.putExtra(TransportConstants.BIND_LOCATION_PACKAGE_NAME_EXTRA, this.getPackageName());
         registrationIntent.putExtra(TransportConstants.BIND_LOCATION_CLASS_NAME_EXTRA, this.getClass().getName());
+//        registrationIntent.putExtra(TransportConstants.OEM_VEHICLE_TYPE_EXTRA, this.getClass().getName());
         registrationIntent.setFlags((Intent.FLAG_RECEIVER_FOREGROUND));
         return registrationIntent;
     }
@@ -1753,6 +1754,7 @@ public class SdlRouterService extends Service {
         startService.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
 
         startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA, true);
+//        startService.putExtra(TransportConstants.VEHICLE_INFO, vehicleType);
         startService.putExtra(TransportConstants.FORCE_TRANSPORT_CONNECTED, true);
         startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE, getBaseContext().getPackageName());
         startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME, new ComponentName(this, this.getClass()));

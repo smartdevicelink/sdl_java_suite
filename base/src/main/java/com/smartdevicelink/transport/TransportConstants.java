@@ -90,6 +90,8 @@ public class TransportConstants {
     public static final String BIND_REQUEST_TYPE_STATUS = "BIND_REQUEST_TYPE_STATUS";
     public static final String BIND_REQUEST_TYPE_USB_PROVIDER = "BIND_REQUEST_TYPE_USB_PROVIDER";
 
+    public static final String EXTRA_CONNECTED_VEHICLE_INFO = "extra_connected_vehicle_info";
+
 
     public static final String PING_ROUTER_SERVICE_EXTRA = "ping.router.service";
 

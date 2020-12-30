@@ -42,6 +42,7 @@ import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
+import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
@@ -958,6 +959,25 @@ public class SdlProtocolBase {
                 // This enables custom behavior based on protocol version specifics
                 if (protocolVersion.isNewerThan(new Version("5.1.0")) >= 0) {
 
+                    String make = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_MAKE);
+                    String model = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_MODEL);
+                    String modelYear = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_MODEL_YEAR);
+                    String vehicleTrim = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_TRIM);
+                    String hardwareVersion = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_SYSTEM_SOFTWARE_VERSION);
+                    String softwareVersion = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_SYSTEM_HARDWARE_VERSION);
+                    if (make != null) {
+                        // checking if tags have come from core
+                        VehicleType type = new VehicleType();
+                        type.setMake(make);
+                        type.setModel(model);
+                        type.setModelYear(modelYear);
+                        type.setTrim(vehicleTrim);
+                        if (!iSdlProtocol.onVehicleTypeReceived(type, softwareVersion, hardwareVersion)) {
+                            onTransportNotAccepted("Rejected by the vehicle type filter");
+                            return;
+                        }
+                    }
+
                     if (activeTransports.get(SessionType.RPC) == null) {    //Might be a better way to handle this
 
                         ArrayList<String> secondary = (ArrayList<String>) packet.getTag(ControlFrameTags.RPC.StartServiceACK.SECONDARY_TRANSPORTS);
@@ -1420,7 +1440,6 @@ public class SdlProtocolBase {
                 handleProtocolHeartbeatACK(packet);
 
             } else if (frameInfo == FrameDataControlFrameType.StartSessionACK.getValue()) {
-
                 handleStartServiceACK(packet, serviceType);
 
             } else if (frameInfo == FrameDataControlFrameType.StartSessionNACK.getValue()) {

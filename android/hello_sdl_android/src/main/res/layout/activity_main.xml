@@ -13,4 +13,17 @@
         android:layout_height="wrap_content"
         android:text="@string/hello_world" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:id="@+id/stop_service"
+        android:text="stop service"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:layout_below="@+id/stop_service"
+        android:layout_width="wrap_content"
+        android:id="@+id/start_service"
+        android:text="start service"
+        android:layout_height="wrap_content" />
+
 </RelativeLayout>

@@ -33,6 +33,7 @@
 package com.smartdevicelink.managers.lifecycle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 
 import com.livio.taskmaster.Taskmaster;
@@ -379,6 +380,12 @@ abstract class BaseLifecycleManager {
                         }
                         processRaiResponse(raiResponse);
                         systemCapabilityManager.parseRAIResponse(raiResponse);
+
+                        // TODO here the proposal starts
+                        // TODO call boolean onVehicleTypeReceived(VehicleType type);
+                        VehicleType type = raiResponse.getVehicleType();
+                        if (lifecycleListener.onVehicleTypeReceived(type, null, null))
+
                         break;
                     case ON_HMI_STATUS:
                         DebugTool.logInfo(TAG, "on hmi status");
@@ -923,6 +930,12 @@ abstract class BaseLifecycleManager {
         public void onAuthTokenReceived(String token, int sessionID) {
             BaseLifecycleManager.this.authToken = token;
         }
+
+        @Override
+        public boolean onVehicleTypeReceived(@Nullable VehicleType type, @Nullable String systemSoftwareVersion, @Nullable String systemHardwareVersion) {
+            return lifecycleListener.onVehicleTypeReceived(type, systemSoftwareVersion, systemHardwareVersion);
+        }
+
     };
 
     /* *******************************************************************************************************
@@ -1158,6 +1171,7 @@ abstract class BaseLifecycleManager {
         this.raiResponse = rai;
 
         VehicleType vt = rai.getVehicleType();
+        // TODO add checks and callbacks
         if (vt == null) return;
 
         String make = vt.getMake();
@@ -1235,6 +1249,8 @@ abstract class BaseLifecycleManager {
         void onServiceEnded(SessionType sessionType);
 
         void onError(LifecycleManager lifeCycleManager, String info, Exception e);
+
+        boolean onVehicleTypeReceived(VehicleType type, String systemSoftwareVersion, String systemHardwareVersion);
     }
 
     public static class AppConfig {
