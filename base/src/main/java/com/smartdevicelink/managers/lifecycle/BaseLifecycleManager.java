@@ -88,6 +88,7 @@ import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.FileUtls;
+import com.smartdevicelink.util.Log;
 import com.smartdevicelink.util.Version;
 
 import java.util.HashMap;
@@ -384,7 +385,10 @@ abstract class BaseLifecycleManager {
                         // TODO here the proposal starts
                         // TODO call boolean onVehicleTypeReceived(VehicleType type);
                         VehicleType type = raiResponse.getVehicleType();
-                        if (lifecycleListener.onVehicleTypeReceived(type, null, null))
+                        if (!lifecycleListener.onVehicleTypeReceived(type, null, null)){
+                            DebugTool.logInfo(TAG, "vehicle type is wrong");
+                            session.close();
+                        }
 
                         break;
                     case ON_HMI_STATUS:

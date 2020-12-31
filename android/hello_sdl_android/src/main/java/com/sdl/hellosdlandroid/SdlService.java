@@ -79,7 +79,7 @@ public class SdlService extends Service {
     // TCP/IP transport config
     // The default port is 12345
     // The IP is of the machine that is running SDL Core
-    private static final int TCP_PORT = 16030;
+    private static final int TCP_PORT = 15003;
     private static final String DEV_MACHINE_IP_ADDRESS = "m.sdl.tools";
 
     // variable to create and call functions of the SyncProxy
