@@ -206,16 +206,17 @@ public class RPCStructTests extends TestCase {
         map.put(key, value);
 
         RPCStruct rpcStruct = new RPCStruct(map);
+        RPCStruct rpcStruct2 = new RPCStruct(map);
 
         Hashtable<String, Object> map2 = new Hashtable<>();
         String key2 = "test2";
         Integer value2 = 24;
         map2.put(key2, value2);
 
-        RPCStruct rpcStruct2 = new RPCStruct(map2);
+        RPCStruct rpcStruct3 = new RPCStruct(map2);
 
-        assertEquals(rpcStruct.hashCode(), 3556536);
-        assertNotSame(rpcStruct2.hashCode(), 3556536);
+        assertEquals(rpcStruct.hashCode(), rpcStruct2.hashCode());
+        assertNotSame(rpcStruct2.hashCode(), rpcStruct3.hashCode());
     }
 
     public void testEquals() {

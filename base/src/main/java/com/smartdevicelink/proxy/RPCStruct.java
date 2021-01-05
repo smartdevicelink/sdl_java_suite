@@ -379,12 +379,18 @@ public class RPCStruct implements Cloneable {
         return null;
     }
 
+    /**
+     * Creates a deep copy of the object
+     *
+     * @return deep copy of the object, null if an exception occurred
+     */
     @Override
     public RPCStruct clone() {
         try {
             RPCStruct clone = (RPCStruct) super.clone();
             clone.setPayloadProtected(protectedPayload);
             clone.setBulkData(_bulkData);
+            clone.store = (Hashtable) store.clone();
             return clone;
         } catch (CloneNotSupportedException e) {
             DebugTool.logError("RPCStruct", "Failed to clone: " + e);
@@ -392,6 +398,12 @@ public class RPCStruct implements Cloneable {
         }
     }
 
+    /**
+     * Uses the RPCStruct store for RPCStruct objects
+     *
+     * @param obj - The object to compare
+     * @return boolean of whether the objects are the same or not
+     */
     @Override
     public boolean equals(@Nullable Object obj) {
         if (obj == null) {
@@ -413,6 +425,11 @@ public class RPCStruct implements Cloneable {
         return store.equals(rpc.store);
     }
 
+    /**
+     * Used to compile hashcode for RPCStruct
+     *
+     * @return Custom hashcode of RPCStruct
+     */
     @Override
     public int hashCode() {
         return store.hashCode();
