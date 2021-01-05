@@ -37,8 +37,6 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 
 import com.livio.taskmaster.Queue;
-import com.livio.taskmaster.Taskmaster;
-import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.audio.AudioStreamManager.SampleType;
 
 import java.lang.ref.WeakReference;
@@ -48,21 +46,21 @@ import java.lang.ref.WeakReference;
  * This decoder supports phones with api < 21 but uses methods deprecated with api 21.
  */
 public class AudioDecoderCompat extends BaseAudioDecoder {
-    private WeakReference<ISdl> internalInterface;
+    private WeakReference<Queue> transactionQueue;
 
     /**
      * Creates a new object of AudioDecoder.
      *
-     * @param internalInterface The internal interface to the connected device.
+     * @param transactionQueue  The operation queue that can be used to run operations in order.
      * @param audioSource       The audio source to decode.
      * @param context           The context object to use to open the audio source.
      * @param sampleRate        The desired sample rate for decoded audio data.
      * @param sampleType        The desired sample type (8bit, 16bit, float).
      * @param listener          A listener who receives the decoded audio.
      */
-    AudioDecoderCompat(@NonNull ISdl internalInterface, @NonNull Uri audioSource, @NonNull Context context, int sampleRate, @SampleType int sampleType, AudioDecoderListener listener) {
+    AudioDecoderCompat(@NonNull Queue transactionQueue, @NonNull Uri audioSource, @NonNull Context context, int sampleRate, @SampleType int sampleType, AudioDecoderListener listener) {
         super(audioSource, context, sampleRate, sampleType, listener);
-        this.internalInterface = new WeakReference<>(internalInterface);
+        this.transactionQueue = new WeakReference<>(transactionQueue);
     }
 
     /**
@@ -73,13 +71,9 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
             initMediaComponents();
             decoder.start();
 
-            if (internalInterface != null && internalInterface.get() != null) {
-                Taskmaster taskmaster = internalInterface.get().getTaskmaster();
-                if (taskmaster != null) {
-                    Queue transactionQueue = taskmaster.createQueue("AudioDecoderCompat", 6, false);
-                    AudioDecoderCompatOperation operation = new AudioDecoderCompatOperation(this);
-                    transactionQueue.add(operation, false);
-                }
+            if (transactionQueue != null && transactionQueue.get() != null) {
+                AudioDecoderCompatOperation operation = new AudioDecoderCompatOperation(this);
+                transactionQueue.get().add(operation, false);
             }
 
         } catch (Exception e) {
