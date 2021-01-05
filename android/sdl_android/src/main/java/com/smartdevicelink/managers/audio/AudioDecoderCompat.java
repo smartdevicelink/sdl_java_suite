@@ -53,20 +53,6 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
     /**
      * Creates a new object of AudioDecoder.
      *
-     * @param audioSource The audio source to decode.
-     * @param context     The context object to use to open the audio source.
-     * @param sampleRate  The desired sample rate for decoded audio data.
-     * @param sampleType  The desired sample type (8bit, 16bit, float).
-     * @param listener    A listener who receives the decoded audio.
-     */
-    @Deprecated
-    AudioDecoderCompat(@NonNull Uri audioSource, @NonNull Context context, int sampleRate, @SampleType int sampleType, AudioDecoderListener listener) {
-        super(audioSource, context, sampleRate, sampleType, listener);
-    }
-
-    /**
-     * Creates a new object of AudioDecoder.
-     *
      * @param internalInterface The internal interface to the connected device.
      * @param audioSource       The audio source to decode.
      * @param context           The context object to use to open the audio source.
