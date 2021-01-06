@@ -3,7 +3,7 @@ package com.smartdevicelink.test.rpc.responses;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
-import com.smartdevicelink.proxy.rpc.ShowConstantTBTResponse;
+import com.smartdevicelink.proxy.rpc.ShowConstantTbtResponse;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.TestValues;
@@ -21,13 +21,13 @@ import static junit.framework.TestCase.assertNotNull;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link com.smartdevicelink.proxy.rpc.ShowConstantTBTResponse}
+ * {@link ShowConstantTbtResponse}
  */
 public class ShowConstantTbtResponseTests extends BaseRpcTests {
 
     @Override
     protected RPCMessage createMessage() {
-        ShowConstantTBTResponse msg = new ShowConstantTBTResponse();
+        ShowConstantTbtResponse msg = new ShowConstantTbtResponse();
         return msg;
     }
 
@@ -52,7 +52,7 @@ public class ShowConstantTbtResponseTests extends BaseRpcTests {
     @Test
     public void testRpcValues() {
         // Invalid/Null Tests
-        ShowConstantTBTResponse msg = new ShowConstantTBTResponse();
+        ShowConstantTbtResponse msg = new ShowConstantTbtResponse();
         assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
     }
@@ -67,7 +67,7 @@ public class ShowConstantTbtResponseTests extends BaseRpcTests {
 
         try {
             Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
-            ShowConstantTBTResponse cmd = new ShowConstantTBTResponse(hash);
+            ShowConstantTbtResponse cmd = new ShowConstantTbtResponse(hash);
             JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
             assertNotNull(TestValues.NOT_NULL, body);
 

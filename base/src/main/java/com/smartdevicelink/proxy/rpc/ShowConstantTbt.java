@@ -50,7 +50,7 @@ import java.util.List;
  * @see UpdateTurnList
  * @since SmartDeviceLink 2.0
  */
-public class ShowConstantTBT extends RPCRequest {
+public class ShowConstantTbt extends RPCRequest {
 
     public static final String KEY_TEXT1 = "navigationText1";
     public static final String KEY_TEXT2 = "navigationText2";
@@ -65,18 +65,19 @@ public class ShowConstantTBT extends RPCRequest {
     public static final String KEY_TIME_TO_DESTINATION = "timeToDestination";
 
     /**
-     * Constructs a new ShowConstantTBT object
+     * Constructs a new ShowConstantTbt object
      */
-    public ShowConstantTBT() {
+    public ShowConstantTbt() {
         super(FunctionID.SHOW_CONSTANT_TBT.toString());
     }
 
     /**
-     * Constructs a new ShowConstantTBT object indicated by the Hashtable parameter
+     * Constructs a new ShowConstantTbt object indicated by the Hashtable parameter
+     * <p>
      *
      * @param hash The Hashtable to use
      */
-    public ShowConstantTBT(Hashtable<String, Object> hash) {
+    public ShowConstantTbt(Hashtable<String, Object> hash) {
         super(hash);
     }
 
@@ -87,7 +88,7 @@ public class ShowConstantTBT extends RPCRequest {
      *                        <p></p>
      *                        <b>Notes: </b>Maxlength=500
      */
-    public ShowConstantTBT setNavigationText1(String navigationText1) {
+    public ShowConstantTbt setNavigationText1(String navigationText1) {
         setParameters(KEY_TEXT1, navigationText1);
         return this;
     }
@@ -108,7 +109,7 @@ public class ShowConstantTBT extends RPCRequest {
      *                        <p></p>
      *                        <b>Notes: </b>Maxlength=500
      */
-    public ShowConstantTBT setNavigationText2(String navigationText2) {
+    public ShowConstantTbt setNavigationText2(String navigationText2) {
         setParameters(KEY_TEXT2, navigationText2);
         return this;
     }
@@ -129,7 +130,7 @@ public class ShowConstantTBT extends RPCRequest {
      *            <p></p>
      *            <b>Notes: </b>Maxlength=500
      */
-    public ShowConstantTBT setEta(String eta) {
+    public ShowConstantTbt setEta(String eta) {
         setParameters(KEY_ETA, eta);
         return this;
     }
@@ -150,7 +151,7 @@ public class ShowConstantTBT extends RPCRequest {
      *                      <p></p>
      *                      <b>Notes: </b>Maxlength=500
      */
-    public ShowConstantTBT setTotalDistance(String totalDistance) {
+    public ShowConstantTbt setTotalDistance(String totalDistance) {
         setParameters(KEY_TOTAL_DISTANCE, totalDistance);
         return this;
     }
@@ -169,7 +170,7 @@ public class ShowConstantTBT extends RPCRequest {
      *
      * @param turnIcon an Image value
      */
-    public ShowConstantTBT setTurnIcon(Image turnIcon) {
+    public ShowConstantTbt setTurnIcon(Image turnIcon) {
         setParameters(KEY_MANEUVER_IMAGE, turnIcon);
         return this;
     }
@@ -188,7 +189,7 @@ public class ShowConstantTBT extends RPCRequest {
      *
      * @param nextTurnIcon an Image value
      */
-    public ShowConstantTBT setNextTurnIcon(Image nextTurnIcon) {
+    public ShowConstantTbt setNextTurnIcon(Image nextTurnIcon) {
         setParameters(KEY_NEXT_MANEUVER_IMAGE, nextTurnIcon);
         return this;
     }
@@ -209,7 +210,7 @@ public class ShowConstantTBT extends RPCRequest {
      * {"num_min_value": 0.0, "num_max_value": 1000000000.0}
      * @since SmartDeviceLink 2.0.0
      */
-    public ShowConstantTBT setDistanceToManeuver(Double distanceToManeuver) {
+    public ShowConstantTbt setDistanceToManeuver(Double distanceToManeuver) {
         setParameters(KEY_DISTANCE_TO_MANEUVER, distanceToManeuver);
         return this;
     }
@@ -234,7 +235,7 @@ public class ShowConstantTBT extends RPCRequest {
      * {"num_min_value": 0.0, "num_max_value": 1000000000.0}
      * @since SmartDeviceLink 2.0.0
      */
-    public ShowConstantTBT setDistanceToManeuverScale(Double distanceToManeuverScale) {
+    public ShowConstantTbt setDistanceToManeuverScale(Double distanceToManeuverScale) {
         setParameters(KEY_DISTANCE_TO_MANEUVER_SCALE, distanceToManeuverScale);
         return this;
     }
@@ -259,7 +260,7 @@ public class ShowConstantTBT extends RPCRequest {
      *
      * @param maneuverComplete a Boolean value
      */
-    public ShowConstantTBT setManeuverComplete(Boolean maneuverComplete) {
+    public ShowConstantTbt setManeuverComplete(Boolean maneuverComplete) {
         setParameters(KEY_MANEUVER_COMPLETE, maneuverComplete);
         return this;
     }
@@ -281,7 +282,7 @@ public class ShowConstantTBT extends RPCRequest {
      *
      * @param softButtons a List<SoftButton> value
      */
-    public ShowConstantTBT setSoftButtons(List<SoftButton> softButtons) {
+    public ShowConstantTbt setSoftButtons(List<SoftButton> softButtons) {
         setParameters(KEY_SOFT_BUTTONS, softButtons);
         return this;
     }
@@ -297,7 +298,7 @@ public class ShowConstantTBT extends RPCRequest {
         return (List<SoftButton>) getObject(SoftButton.class, KEY_SOFT_BUTTONS);
     }
 
-    public ShowConstantTBT setTimeToDestination(String timeToDestination) {
+    public ShowConstantTbt setTimeToDestination(String timeToDestination) {
         setParameters(KEY_TIME_TO_DESTINATION, timeToDestination);
         return this;
     }

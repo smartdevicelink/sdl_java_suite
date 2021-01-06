@@ -4,7 +4,7 @@ import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.Image;
-import com.smartdevicelink.proxy.rpc.ShowConstantTBT;
+import com.smartdevicelink.proxy.rpc.ShowConstantTbt;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
@@ -30,13 +30,13 @@ import static junit.framework.TestCase.fail;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link com.smartdevicelink.proxy.rpc.ShowConstantTBT}
+ * {@link ShowConstantTbt}
  */
 public class ShowConstantTbtTests extends BaseRpcTests {
 
     @Override
     protected RPCMessage createMessage() {
-        ShowConstantTBT msg = new ShowConstantTBT();
+        ShowConstantTbt msg = new ShowConstantTbt();
 
         msg.setDistanceToManeuver(TestValues.GENERAL_DOUBLE);
         msg.setDistanceToManeuverScale(TestValues.GENERAL_DOUBLE);
@@ -68,17 +68,17 @@ public class ShowConstantTbtTests extends BaseRpcTests {
         JSONObject result = new JSONObject();
 
         try {
-            result.put(ShowConstantTBT.KEY_SOFT_BUTTONS, TestValues.JSON_SOFTBUTTONS);
-            result.put(ShowConstantTBT.KEY_ETA, TestValues.GENERAL_STRING);
-            result.put(ShowConstantTBT.KEY_MANEUVER_COMPLETE, true);
-            result.put(ShowConstantTBT.KEY_DISTANCE_TO_MANEUVER, TestValues.GENERAL_DOUBLE);
-            result.put(ShowConstantTBT.KEY_DISTANCE_TO_MANEUVER_SCALE, TestValues.GENERAL_DOUBLE);
-            result.put(ShowConstantTBT.KEY_TEXT1, TestValues.GENERAL_STRING);
-            result.put(ShowConstantTBT.KEY_TEXT2, TestValues.GENERAL_STRING);
-            result.put(ShowConstantTBT.KEY_TIME_TO_DESTINATION, TestValues.GENERAL_STRING);
-            result.put(ShowConstantTBT.KEY_TOTAL_DISTANCE, TestValues.GENERAL_STRING);
-            result.put(ShowConstantTBT.KEY_MANEUVER_IMAGE, TestValues.GENERAL_IMAGE.serializeJSON());
-            result.put(ShowConstantTBT.KEY_NEXT_MANEUVER_IMAGE, TestValues.GENERAL_IMAGE.serializeJSON());
+            result.put(ShowConstantTbt.KEY_SOFT_BUTTONS, TestValues.JSON_SOFTBUTTONS);
+            result.put(ShowConstantTbt.KEY_ETA, TestValues.GENERAL_STRING);
+            result.put(ShowConstantTbt.KEY_MANEUVER_COMPLETE, true);
+            result.put(ShowConstantTbt.KEY_DISTANCE_TO_MANEUVER, TestValues.GENERAL_DOUBLE);
+            result.put(ShowConstantTbt.KEY_DISTANCE_TO_MANEUVER_SCALE, TestValues.GENERAL_DOUBLE);
+            result.put(ShowConstantTbt.KEY_TEXT1, TestValues.GENERAL_STRING);
+            result.put(ShowConstantTbt.KEY_TEXT2, TestValues.GENERAL_STRING);
+            result.put(ShowConstantTbt.KEY_TIME_TO_DESTINATION, TestValues.GENERAL_STRING);
+            result.put(ShowConstantTbt.KEY_TOTAL_DISTANCE, TestValues.GENERAL_STRING);
+            result.put(ShowConstantTbt.KEY_MANEUVER_IMAGE, TestValues.GENERAL_IMAGE.serializeJSON());
+            result.put(ShowConstantTbt.KEY_NEXT_MANEUVER_IMAGE, TestValues.GENERAL_IMAGE.serializeJSON());
         } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
@@ -92,17 +92,17 @@ public class ShowConstantTbtTests extends BaseRpcTests {
     @Test
     public void testRpcValues() {
         // Test Values
-        Double testScale = ((ShowConstantTBT) msg).getDistanceToManeuverScale();
-        Double testDistance = ((ShowConstantTBT) msg).getDistanceToManeuver();
-        String testEta = ((ShowConstantTBT) msg).getEta();
-        String testTimeToDestination = ((ShowConstantTBT) msg).getTimeToDestination();
-        String testTotalDistance = ((ShowConstantTBT) msg).getTotalDistance();
-        String testNavText2 = ((ShowConstantTBT) msg).getNavigationText2();
-        String testNavText1 = ((ShowConstantTBT) msg).getNavigationText1();
-        Boolean testManeuverComplete = ((ShowConstantTBT) msg).getManeuverComplete();
-        Image testTurnIcon = ((ShowConstantTBT) msg).getTurnIcon();
-        Image testNextTurnIcon = ((ShowConstantTBT) msg).getNextTurnIcon();
-        List<SoftButton> testSoftButtons = ((ShowConstantTBT) msg).getSoftButtons();
+        Double testScale = ((ShowConstantTbt) msg).getDistanceToManeuverScale();
+        Double testDistance = ((ShowConstantTbt) msg).getDistanceToManeuver();
+        String testEta = ((ShowConstantTbt) msg).getEta();
+        String testTimeToDestination = ((ShowConstantTbt) msg).getTimeToDestination();
+        String testTotalDistance = ((ShowConstantTbt) msg).getTotalDistance();
+        String testNavText2 = ((ShowConstantTbt) msg).getNavigationText2();
+        String testNavText1 = ((ShowConstantTbt) msg).getNavigationText1();
+        Boolean testManeuverComplete = ((ShowConstantTbt) msg).getManeuverComplete();
+        Image testTurnIcon = ((ShowConstantTbt) msg).getTurnIcon();
+        Image testNextTurnIcon = ((ShowConstantTbt) msg).getNextTurnIcon();
+        List<SoftButton> testSoftButtons = ((ShowConstantTbt) msg).getSoftButtons();
 
         // Valid Test
         assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, testTimeToDestination);
@@ -118,7 +118,7 @@ public class ShowConstantTbtTests extends BaseRpcTests {
         assertTrue(TestValues.TRUE, Validator.validateImage(TestValues.GENERAL_IMAGE, testNextTurnIcon));
 
         // Invalid/Null Tests
-        ShowConstantTBT msg = new ShowConstantTBT();
+        ShowConstantTbt msg = new ShowConstantTbt();
         assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
@@ -145,7 +145,7 @@ public class ShowConstantTbtTests extends BaseRpcTests {
 
         try {
             Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
-            ShowConstantTBT cmd = new ShowConstantTBT(hash);
+            ShowConstantTbt cmd = new ShowConstantTbt(hash);
             JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
             assertNotNull(TestValues.NOT_NULL, body);
 
@@ -154,24 +154,24 @@ public class ShowConstantTbtTests extends BaseRpcTests {
             assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
             JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, ShowConstantTBT.KEY_ETA), cmd.getEta());
-            assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, ShowConstantTBT.KEY_MANEUVER_COMPLETE), cmd.getManeuverComplete());
-            assertEquals(TestValues.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, ShowConstantTBT.KEY_DISTANCE_TO_MANEUVER), cmd.getDistanceToManeuver());
-            assertEquals(TestValues.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, ShowConstantTBT.KEY_DISTANCE_TO_MANEUVER_SCALE), cmd.getDistanceToManeuverScale());
-            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, ShowConstantTBT.KEY_TEXT1), cmd.getNavigationText1());
-            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, ShowConstantTBT.KEY_TEXT2), cmd.getNavigationText2());
-            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, ShowConstantTBT.KEY_TIME_TO_DESTINATION), cmd.getTimeToDestination());
-            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, ShowConstantTBT.KEY_TOTAL_DISTANCE), cmd.getTotalDistance());
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, ShowConstantTbt.KEY_ETA), cmd.getEta());
+            assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, ShowConstantTbt.KEY_MANEUVER_COMPLETE), cmd.getManeuverComplete());
+            assertEquals(TestValues.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, ShowConstantTbt.KEY_DISTANCE_TO_MANEUVER), cmd.getDistanceToManeuver());
+            assertEquals(TestValues.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, ShowConstantTbt.KEY_DISTANCE_TO_MANEUVER_SCALE), cmd.getDistanceToManeuverScale());
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, ShowConstantTbt.KEY_TEXT1), cmd.getNavigationText1());
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, ShowConstantTbt.KEY_TEXT2), cmd.getNavigationText2());
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, ShowConstantTbt.KEY_TIME_TO_DESTINATION), cmd.getTimeToDestination());
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, ShowConstantTbt.KEY_TOTAL_DISTANCE), cmd.getTotalDistance());
 
-            JSONObject icon1 = JsonUtils.readJsonObjectFromJsonObject(parameters, ShowConstantTBT.KEY_MANEUVER_IMAGE);
+            JSONObject icon1 = JsonUtils.readJsonObjectFromJsonObject(parameters, ShowConstantTbt.KEY_MANEUVER_IMAGE);
             Image refIcon1 = new Image(JsonRPCMarshaller.deserializeJSONObject(icon1));
             assertTrue(TestValues.TRUE, Validator.validateImage(refIcon1, cmd.getTurnIcon()));
 
-            JSONObject icon2 = JsonUtils.readJsonObjectFromJsonObject(parameters, ShowConstantTBT.KEY_NEXT_MANEUVER_IMAGE);
+            JSONObject icon2 = JsonUtils.readJsonObjectFromJsonObject(parameters, ShowConstantTbt.KEY_NEXT_MANEUVER_IMAGE);
             Image refIcon2 = new Image(JsonRPCMarshaller.deserializeJSONObject(icon2));
             assertTrue(TestValues.TRUE, Validator.validateImage(refIcon2, cmd.getNextTurnIcon()));
 
-            JSONArray softButtonArray = JsonUtils.readJsonArrayFromJsonObject(parameters, ShowConstantTBT.KEY_SOFT_BUTTONS);
+            JSONArray softButtonArray = JsonUtils.readJsonArrayFromJsonObject(parameters, ShowConstantTbt.KEY_SOFT_BUTTONS);
             List<SoftButton> softButtonList = new ArrayList<SoftButton>();
             for (int index = 0; index < softButtonArray.length(); index++) {
                 SoftButton chunk = new SoftButton(JsonRPCMarshaller.deserializeJSONObject((JSONObject) softButtonArray.get(index)));

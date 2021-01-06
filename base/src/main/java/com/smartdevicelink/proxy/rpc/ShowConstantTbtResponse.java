@@ -44,12 +44,12 @@ import java.util.Hashtable;
  *
  * @since SmartDeviceLink 2.0
  */
-public class ShowConstantTBTResponse extends RPCResponse {
+public class ShowConstantTbtResponse extends RPCResponse {
 
     /**
      * Constructs a new ShowConstantTBTResponse object
      */
-    public ShowConstantTBTResponse() {
+    public ShowConstantTbtResponse() {
         super(FunctionID.SHOW_CONSTANT_TBT.toString());
     }
 
@@ -58,17 +58,17 @@ public class ShowConstantTBTResponse extends RPCResponse {
      *
      * @param hash The Hashtable to use
      */
-    public ShowConstantTBTResponse(Hashtable<String, Object> hash) {
+    public ShowConstantTbtResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 
     /**
-     * Constructs a new ShowConstantTBTResponse object
+     * Constructs a new ShowConstantTbtResponse object
      *
      * @param success whether the request is successfully processed
      * @param resultCode additional information about a response returning a failed outcome
      */
-    public ShowConstantTBTResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+    public ShowConstantTbtResponse(@NonNull Boolean success, @NonNull Result resultCode) {
         this();
         setSuccess(success);
         setResultCode(resultCode);
