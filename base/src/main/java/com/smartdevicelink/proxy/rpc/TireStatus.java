@@ -191,23 +191,37 @@ public class TireStatus extends RPCStruct {
     }
 
     /**
-     * Sets the pressureTelltale.
-     *
-     * @param pressureTelltale Status of the Tire Pressure Telltale. See WarningLightStatus.
-     * @since SmartDeviceLink 2.0.0
+     * @deprecated use {@link #setPressureTelltale(WarningLightStatus pressureTellTale)} instead.
      */
-    public TireStatus setPressureTellTale(WarningLightStatus pressureTelltale) {
-        setValue(KEY_PRESSURE_TELL_TALE, pressureTelltale);
+    @Deprecated
+    public TireStatus setPressureTellTale(@NonNull WarningLightStatus pressureTellTale) {
+        return setPressureTelltale(pressureTellTale);
+    }
+
+    /**
+     * @deprecated use {@link #getPressureTelltale()} instead.
+     */
+    @Deprecated
+    public WarningLightStatus getPressureTellTale() {
+        return getPressureTelltale();
+    }
+
+    /**
+     * Sets the status of the tire pressure Telltale.
+     *
+     * @param pressureTellTale the status of the tire pressure Telltale.
+     */
+    public TireStatus setPressureTelltale(@NonNull WarningLightStatus pressureTellTale) {
+        setValue(KEY_PRESSURE_TELL_TALE, pressureTellTale);
         return this;
     }
 
     /**
-     * Gets the pressureTelltale.
+     * Gets the status of the tire pressure Telltale.
      *
-     * @return WarningLightStatus Status of the Tire Pressure Telltale. See WarningLightStatus.
-     * @since SmartDeviceLink 2.0.0
+     * @return the status of the tire pressure Telltale.
      */
-    public WarningLightStatus getPressureTellTale() {
+    public WarningLightStatus getPressureTelltale() {
         return (WarningLightStatus) getObject(WarningLightStatus.class, KEY_PRESSURE_TELL_TALE);
     }
 
