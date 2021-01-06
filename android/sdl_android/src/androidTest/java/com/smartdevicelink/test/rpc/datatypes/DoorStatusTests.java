@@ -32,6 +32,7 @@ public class DoorStatusTests extends TestCase {
 
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_GRID, location);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_DOOR_STATUS_TYPE, status);
     }
 
     public void testJson() {
