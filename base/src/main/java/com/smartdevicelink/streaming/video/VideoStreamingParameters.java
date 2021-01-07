@@ -190,6 +190,9 @@ public class VideoStreamingParameters {
         // This should be the last call as it will return out once a suitable format is found
         final List<VideoStreamingFormat> formats = capability.getSupportedFormats();
         if (formats != null && formats.size() > 0) {
+            if (this.format != null && formats.contains(this.format)) {
+                return; // given format is supported, so no need to change.
+            }
             for (VideoStreamingFormat format : formats) {
                 for (VideoStreamingFormat currentlySupportedFormat : currentlySupportedFormats) {
                     if (currentlySupportedFormat.equals(format)) {
