@@ -311,8 +311,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                         DebugTool.logError(TAG, "Error retrieving video streaming capability: " + info);
                     }
                 }, false);
-            } else {
-                DebugTool.logError(TAG, "Cannot start video streaming because getSystemCapabilityManager is null.");
             }
         } else {
             //We just use default video streaming params

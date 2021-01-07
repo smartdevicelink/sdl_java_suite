@@ -79,18 +79,7 @@ public class VideoStreamingParameters {
         format = new VideoStreamingFormat();
         format.setProtocol(DEFAULT_PROTOCOL);
         format.setCodec(DEFAULT_CODEC);
-    }
-
-    @Deprecated
-    public VideoStreamingParameters(int displayDensity, int frameRate, int bitrate, int interval,
-                                    ImageResolution resolution, VideoStreamingFormat format) {
-        this.displayDensity = displayDensity;
-        this.frameRate = frameRate;
-        this.bitrate = bitrate;
-        this.interval = interval;
-        this.resolution = resolution;
-        this.format = format;
-        this.stableFrameRate = true;
+        stableFrameRate = true;
     }
 
     /**
@@ -174,6 +163,7 @@ public class VideoStreamingParameters {
             this.bitrate = Math.min(this.bitrate, capability.getMaxBitrate() * 1000);
         } // NOTE: the unit of maxBitrate in getSystemCapability is kbps.
         double scale = DEFAULT_SCALE;
+        // For resolution and scale, the capability values should be taken rather than parameters specified by developers.
         if (capability.getScale() != null) {
             scale = capability.getScale();
         }
