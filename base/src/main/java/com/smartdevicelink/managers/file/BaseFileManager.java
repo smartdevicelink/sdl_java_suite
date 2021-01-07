@@ -359,6 +359,10 @@ abstract class BaseFileManager extends BaseSubManager {
         uploadFilePrivate(file, new FileManagerCompletionListener() {
             @Override
             public void onComplete(boolean success, int bytesAvailable, Collection<String> fileNames, String errorMessage) {
+                if (!success && errorMessage != null) {
+                    DebugTool.logWarning(TAG, errorMessage);
+                }
+
                 if (listener != null) {
                     listener.onComplete(success);
                 }
