@@ -378,6 +378,13 @@ abstract class BaseFileManager extends BaseSubManager {
             return;
         }
 
+        if (file.getName() == null) {
+            if (listener != null) {
+                listener.onComplete(false, bytesAvailable, null, "You must specify an file name in the SdlFile.");
+            }
+            return;
+        }
+
         if (file.isStaticIcon()) {
             if (listener != null) {
                 listener.onComplete(false, bytesAvailable, null, "The file upload was canceled. The file is a static icon, which cannot be uploaded.");
