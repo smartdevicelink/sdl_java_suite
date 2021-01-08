@@ -98,7 +98,8 @@ import java.util.Hashtable;
  * 	    <tr>
  *          <td>countRate</td>
  *          <td>Float</td>
- *          <td>The value of this parameter is the amount that the media clock timer will advance per 1.0seconds of real time. Values less than 1.0 will therefore advance the timer slower thanreal-time, while values greater than 1.0 will advance the timer faster than real-time.e.g. If this parameter is set to `0.5`, the timer will advance one second per two secondsreal-time, or at 50% speed. If this parameter is set to `2.0`, the timer will advance twoseconds per one second real-time, or at 200% speed.</td>
+ *          <td>The value of this parameter is the amount that the media clock timer will advance per 1.0 seconds of real time. Values less than 1.0 will therefore advance the timer slower than real-time, while values greater than 1.0 will advance the timer faster than real-time.e.g. If this parameter is set to `0.5`, the timer will advance one second per two seconds real-time, or at 50% speed. If this parameter is set to `2.0`, the timer will advance two seconds per one second real-time, or at 200% speed.</td>
+
  *          <td>N</td>
  *          <td>{"num_min_value": 0.1, "num_max_value": 100.0}</td>
  *          <td>
