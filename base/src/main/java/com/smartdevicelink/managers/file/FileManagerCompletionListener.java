@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Livio, Inc.
+ * Copyright (c) 2020 Livio, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,33 +29,14 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.smartdevicelink.managers.screen;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RestrictTo;
+package com.smartdevicelink.managers.file;
 
-import com.smartdevicelink.managers.ISdl;
-import com.smartdevicelink.managers.file.FileManager;
-import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
-import com.smartdevicelink.proxy.rpc.enums.FileType;
+import java.util.Collection;
 
 /**
- * <strong>TextAndGraphicManager</strong> <br>
- * <p>
- * Note: This class must be accessed through the SdlManager. Do not instantiate it by itself. <br>
+ * Created by Bilal Alsharifi on 12/1/20.
  */
-@RestrictTo(RestrictTo.Scope.LIBRARY)
-class TextAndGraphicManager extends BaseTextAndGraphicManager {
-
-    TextAndGraphicManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager, @NonNull SoftButtonManager softButtonManager) {
-        super(internalInterface, fileManager, softButtonManager);
-    }
-
-    @Override
-    SdlArtwork getBlankArtwork() {
-        if (blankArtwork == null) {
-            blankArtwork = new SdlArtwork("blankArtwork", FileType.GRAPHIC_PNG, new byte[50], true);
-        }
-        return blankArtwork;
-    }
+interface FileManagerCompletionListener {
+    void onComplete(boolean success, int bytesAvailable, Collection<String> fileNames, String errorMessage);
 }

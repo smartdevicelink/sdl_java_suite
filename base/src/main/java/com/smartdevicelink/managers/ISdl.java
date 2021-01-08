@@ -214,6 +214,13 @@ public interface ISdl {
     Version getProtocolVersion();
 
     /**
+     * Get the max payload size for a packet to be sent to the module
+     *
+     * @return the max transfer unit
+     */
+    long getMtu(SessionType serviceType);
+
+    /**
      * Start encrypted RPC service
      */
     void startRPCEncryption();
