@@ -85,7 +85,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 
     static final int SOFT_BUTTON_ID_NOT_SET_VALUE = -1;
     static final int SOFT_BUTTON_ID_MIN_VALUE = 0;
-    static final int SOFT_BUTTON_ID_MAX_VALUE = 65535;
+    static final int SOFT_BUTTON_ID_MAX_VALUE = 10000;
     static HashSet<Integer> softButtonIDBySoftButtonManager;
     static HashSet<Integer> softButtonIDByAlertManager;
 
