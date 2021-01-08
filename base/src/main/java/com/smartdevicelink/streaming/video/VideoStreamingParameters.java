@@ -92,15 +92,16 @@ public class VideoStreamingParameters {
      * @param format
      * @param stableFrameRate
      */
+    @Deprecated
     public VideoStreamingParameters(int displayDensity, int frameRate, int bitrate, int interval,
-                                    ImageResolution resolution, VideoStreamingFormat format, boolean stableFrameRate){
+                                    ImageResolution resolution, VideoStreamingFormat format){
 	    this.displayDensity = displayDensity;
 	    this.frameRate = frameRate;
 	    this.bitrate = bitrate;
 	    this.interval = interval;
 	    this.resolution = resolution;
 	    this.format = format;
-	    this.stableFrameRate = stableFrameRate;
+	    this.stableFrameRate = true;
     }
 
     /**

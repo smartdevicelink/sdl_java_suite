@@ -131,11 +131,6 @@ public class VirtualDisplayEncoder {
     }
 
     @SuppressWarnings("unused")
-    public void setStreamingParams(int displayDensity, ImageResolution resolution, int frameRate, int bitrate, int interval, VideoStreamingFormat format, boolean stableFrameRate) {
-        this.streamingParams = new VideoStreamingParameters(displayDensity, frameRate, bitrate, interval, resolution, format, stableFrameRate);
-    }
-
-    @SuppressWarnings("unused")
     public void setStreamingParams(VideoStreamingParameters streamingParams) {
         this.streamingParams = streamingParams;
     }
