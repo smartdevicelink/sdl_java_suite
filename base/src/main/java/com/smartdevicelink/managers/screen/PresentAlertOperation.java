@@ -61,6 +61,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Operation that handles uploading images and audio data needed by the alert and, once the data uploads are complete, sending the alert.
+ * 
  * Created by Julian Kast on 12/10/20.
  */
 public class PresentAlertOperation extends Task {
