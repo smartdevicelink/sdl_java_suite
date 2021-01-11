@@ -412,7 +412,10 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                                     )
                                 );
                             } else { }
-                            OnAppCapabilityUpdated onAppCapabilityUpdated = new OnAppCapabilityUpdated(new AppCapability(castedCapability, AppCapabilityType.VIDEO_STREAMING));
+                            AppCapability appCapability = new AppCapability();
+                            appCapability.setVideoStreamingCapability(castedCapability);
+
+                            OnAppCapabilityUpdated onAppCapabilityUpdated = new OnAppCapabilityUpdated();
                             internalInterface.sendRPC(onAppCapabilityUpdated);
                             startStreaming(params, isEncrypted);
                         }
