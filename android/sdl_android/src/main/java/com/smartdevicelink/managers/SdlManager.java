@@ -492,6 +492,11 @@ public class SdlManager extends BaseSdlManager {
             return  lifecycleManager.getInternalInterface(SdlManager.this).getProtocolVersion();
         }
 
+         @Override
+         public long getMtu(SessionType serviceType) {
+             return lifecycleManager.getInternalInterface(SdlManager.this).getMtu(serviceType);
+         }
+
         @Override
         public void startRPCEncryption() {
             lifecycleManager.getInternalInterface(SdlManager.this).startRPCEncryption();
