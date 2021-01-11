@@ -93,12 +93,19 @@ abstract class BaseAlertManager extends BaseSubManager {
         addListeners();
     }
 
+    /**
+     * Starts the manager
+     * @param listener CompletionListener that is called once the BaseSubManager's state is READY, LIMITED, or ERROR
+     */
     @Override
     public void start(CompletionListener listener) {
         transitionToState(READY);
         super.start(listener);
     }
 
+    /**
+     * Disposes the AlertManager 
+     */
     @Override
     public void dispose() {
         currentWindowCapability = null;
