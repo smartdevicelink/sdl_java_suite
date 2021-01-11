@@ -46,18 +46,10 @@ import java.util.Hashtable;
  */
 public class ShowConstantTbtResponse extends RPCResponse {
 
-    /**
-     * Constructs a new ShowConstantTBTResponse object
-     */
     public ShowConstantTbtResponse() {
         super(FunctionID.SHOW_CONSTANT_TBT.toString());
     }
 
-    /**
-     * Constructs a new ShowConstantTBTResponse object indicated by the Hashtable parameter
-     *
-     * @param hash The Hashtable to use
-     */
     public ShowConstantTbtResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
@@ -65,8 +57,8 @@ public class ShowConstantTbtResponse extends RPCResponse {
     /**
      * Constructs a new ShowConstantTbtResponse object
      *
-     * @param success whether the request is successfully processed
-     * @param resultCode additional information about a response returning a failed outcome
+     * @param success    whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
      */
     public ShowConstantTbtResponse(@NonNull Boolean success, @NonNull Result resultCode) {
         this();
