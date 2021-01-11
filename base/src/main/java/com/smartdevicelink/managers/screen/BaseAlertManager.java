@@ -79,7 +79,7 @@ abstract class BaseAlertManager extends BaseSubManager {
     private final WeakReference<FileManager> fileManager;
     int nextCancelId;
     private final int alertCancelIdMin = 1;
-    private final int alertCancelIdMax = 1000;
+    private final int alertCancelIdMax = 10;
     private CopyOnWriteArrayList<SoftButtonObject> softButtonObjects;
     OnRPCNotificationListener onButtonPressListener, onButtonEventListener;
 
@@ -104,7 +104,7 @@ abstract class BaseAlertManager extends BaseSubManager {
     }
 
     /**
-     * Disposes the AlertManager 
+     * Clean up everything after the manager is no longer needed
      */
     @Override
     public void dispose() {
