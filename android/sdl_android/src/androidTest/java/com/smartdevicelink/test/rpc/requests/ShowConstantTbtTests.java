@@ -30,7 +30,7 @@ import static junit.framework.TestCase.fail;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link ShowConstantTbt}
+ * {@link com.smartdevicelink.proxy.rpc.ShowConstantTbt}
  */
 public class ShowConstantTbtTests extends BaseRpcTests {
 
@@ -71,8 +71,8 @@ public class ShowConstantTbtTests extends BaseRpcTests {
             result.put(ShowConstantTbt.KEY_SOFT_BUTTONS, TestValues.JSON_SOFTBUTTONS);
             result.put(ShowConstantTbt.KEY_ETA, TestValues.GENERAL_STRING);
             result.put(ShowConstantTbt.KEY_MANEUVER_COMPLETE, true);
-            result.put(ShowConstantTbt.KEY_DISTANCE_TO_MANEUVER, TestValues.GENERAL_DOUBLE);
-            result.put(ShowConstantTbt.KEY_DISTANCE_TO_MANEUVER_SCALE, TestValues.GENERAL_DOUBLE);
+            result.put(ShowConstantTbt.KEY_MANEUVER_DISTANCE, TestValues.GENERAL_DOUBLE);
+            result.put(ShowConstantTbt.KEY_MANEUVER_DISTANCE_SCALE, TestValues.GENERAL_DOUBLE);
             result.put(ShowConstantTbt.KEY_TEXT1, TestValues.GENERAL_STRING);
             result.put(ShowConstantTbt.KEY_TEXT2, TestValues.GENERAL_STRING);
             result.put(ShowConstantTbt.KEY_TIME_TO_DESTINATION, TestValues.GENERAL_STRING);
@@ -156,8 +156,8 @@ public class ShowConstantTbtTests extends BaseRpcTests {
             JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
             assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, ShowConstantTbt.KEY_ETA), cmd.getEta());
             assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, ShowConstantTbt.KEY_MANEUVER_COMPLETE), cmd.getManeuverComplete());
-            assertEquals(TestValues.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, ShowConstantTbt.KEY_DISTANCE_TO_MANEUVER), cmd.getDistanceToManeuver());
-            assertEquals(TestValues.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, ShowConstantTbt.KEY_DISTANCE_TO_MANEUVER_SCALE), cmd.getDistanceToManeuverScale());
+            assertEquals(TestValues.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, ShowConstantTbt.KEY_MANEUVER_DISTANCE), cmd.getDistanceToManeuver());
+            assertEquals(TestValues.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, ShowConstantTbt.KEY_MANEUVER_DISTANCE_SCALE), cmd.getDistanceToManeuverScale());
             assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, ShowConstantTbt.KEY_TEXT1), cmd.getNavigationText1());
             assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, ShowConstantTbt.KEY_TEXT2), cmd.getNavigationText2());
             assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, ShowConstantTbt.KEY_TIME_TO_DESTINATION), cmd.getTimeToDestination());

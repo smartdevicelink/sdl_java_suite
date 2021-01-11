@@ -33,7 +33,6 @@ package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.util.SdlDataTypeConverter;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -56,8 +55,8 @@ public class ShowConstantTbt extends RPCRequest {
     public static final String KEY_TEXT2 = "navigationText2";
     public static final String KEY_ETA = "eta";
     public static final String KEY_TOTAL_DISTANCE = "totalDistance";
-    public static final String KEY_DISTANCE_TO_MANEUVER = "distanceToManeuver";
-    public static final String KEY_DISTANCE_TO_MANEUVER_SCALE = "distanceToManeuverScale";
+    public static final String KEY_MANEUVER_DISTANCE = "distanceToManeuver";
+    public static final String KEY_MANEUVER_DISTANCE_SCALE = "distanceToManeuverScale";
     public static final String KEY_MANEUVER_IMAGE = "turnIcon";
     public static final String KEY_NEXT_MANEUVER_IMAGE = "nextTurnIcon";
     public static final String KEY_MANEUVER_COMPLETE = "maneuverComplete";
@@ -211,7 +210,7 @@ public class ShowConstantTbt extends RPCRequest {
      * @since SmartDeviceLink 2.0.0
      */
     public ShowConstantTbt setDistanceToManeuver(Double distanceToManeuver) {
-        setParameters(KEY_DISTANCE_TO_MANEUVER, distanceToManeuver);
+        setParameters(KEY_MANEUVER_DISTANCE, distanceToManeuver);
         return this;
     }
 
@@ -223,8 +222,7 @@ public class ShowConstantTbt extends RPCRequest {
      * @since SmartDeviceLink 2.0.0
      */
     public Double getDistanceToManeuver() {
-        Object object = getParameters(KEY_DISTANCE_TO_MANEUVER);
-        return SdlDataTypeConverter.objectToDouble(object);
+        return getDouble(KEY_MANEUVER_DISTANCE);
     }
 
     /**
@@ -236,7 +234,7 @@ public class ShowConstantTbt extends RPCRequest {
      * @since SmartDeviceLink 2.0.0
      */
     public ShowConstantTbt setDistanceToManeuverScale(Double distanceToManeuverScale) {
-        setParameters(KEY_DISTANCE_TO_MANEUVER_SCALE, distanceToManeuverScale);
+        setParameters(KEY_MANEUVER_DISTANCE_SCALE, distanceToManeuverScale);
         return this;
     }
 
@@ -249,8 +247,7 @@ public class ShowConstantTbt extends RPCRequest {
      * @since SmartDeviceLink 2.0.0
      */
     public Double getDistanceToManeuverScale() {
-        Object object = getParameters(KEY_DISTANCE_TO_MANEUVER_SCALE);
-        return SdlDataTypeConverter.objectToDouble(object);
+        return getDouble(KEY_MANEUVER_DISTANCE_SCALE);
     }
 
     /**
