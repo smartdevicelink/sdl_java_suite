@@ -223,15 +223,6 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
 
         Intent serviceIntent = new Intent();
         serviceIntent.setComponent(componentName);
-//        if(vehicleType != null){
-//            // if null legacy mode
-//            try {
-//                serviceIntent.putExtra(TransportConstants.EXTRA_CONNECTED_VEHICLE_INFO, vehicleType.serializeJSON().toString());
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        serviceIntent.setComponent(componentName);
 
         if (altTransportWake) {
             serviceIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT);

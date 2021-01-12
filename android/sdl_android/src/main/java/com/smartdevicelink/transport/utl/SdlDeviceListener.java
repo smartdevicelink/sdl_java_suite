@@ -180,48 +180,6 @@ public class SdlDeviceListener {
                     break;
             }
         }
-// TODO determine why do we need this
-//
-//        public void onPacketRead(SdlPacket packet){
-////            SdlDeviceListener sdlListener = provider.get();
-////            VehicleType vehicleType = null;
-////            if (packet.getVersion() >=  6 && packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_ACK) {
-////                //parse vehicle Type info from connected system
-////                vehicleType = getVehicleType(packet.getPayload());
-////                cachedVehicleType = vehicleType;
-////            }
-////
-////            byte[] stopService = SdlPacketFactory.createEndSession(SessionType.RPC, (byte)packet.getSessionId(), 0, (byte)packet.getVersion(), hashId).constructPacket();
-////            if(sdlListener.bluetoothTransport !=null && sdlListener.bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
-////                sdlListener.bluetoothTransport.write(stopService, 0, stopService.length);
-////            }
-////
-////            notifyConnection(vehicleType);
-//        }
-//
-//        private VehicleType getVehicleType(byte[] payload) {
-//            Hashtable<String, Object> objectHashtable = JsonRPCMarshaller.unmarshall(payload);
-//            return new VehicleType(objectHashtable);
-//        }
-//
-//        public void notifyConnection(VehicleType vehicleType){
-//            SdlDeviceListener sdlListener = provider.get();
-//            sdlListener.setSDLConnectedStatus(sdlListener.contextWeakReference.get(), sdlListener.connectedDevice.getAddress(), true);
-//            boolean keepConnectionOpen = sdlListener.callback.onTransportConnected(sdlListener.contextWeakReference.get(), sdlListener.connectedDevice, vehicleType);
-//            if (!keepConnectionOpen) {
-//                sdlListener.bluetoothTransport.stop();
-//                sdlListener.bluetoothTransport = null;
-//                sdlListener.timeoutHandler.removeCallbacks(sdlListener.timeoutRunner);
-//            }
-//        }
-//
-//        public void sendStartService(){
-//            SdlDeviceListener sdlListener = provider.get();
-//            byte[] serviceProbe = SdlPacketFactory.createStartSession(SessionType.RPC, 0x00, (byte)1, (byte)0x00, false).constructPacket();
-//            if(sdlListener.bluetoothTransport !=null && sdlListener.bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
-//                sdlListener.bluetoothTransport.write(serviceProbe, 0,serviceProbe.length);
-//            }
-//        }
     }
 
 
