@@ -13,18 +13,16 @@ public class SdlReceiver extends SdlBroadcastReceiver {
 
     @Override
     public void onSdlEnabled(Context context, Intent intent) {
-        if(isVehicleTypeSupported(intent)) {
-            DebugTool.logInfo(TAG, "SDL Enabled");
-            intent.setClass(context, SdlService.class);
+        DebugTool.logInfo(TAG, "SDL Enabled");
+        intent.setClass(context, SdlService.class);
 
-            // SdlService needs to be foregrounded in Android O and above
-            // This will prevent apps in the background from crashing when they try to start SdlService
-            // Because Android O doesn't allow background apps to start background services
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.startForegroundService(intent);
-            } else {
-                context.startService(intent);
-            }
+        // SdlService needs to be foregrounded in Android O and above
+        // This will prevent apps in the background from crashing when they try to start SdlService
+        // Because Android O doesn't allow background apps to start background services
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent);
+        } else {
+            context.startService(intent);
         }
     }
 
@@ -36,14 +34,5 @@ public class SdlReceiver extends SdlBroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent); // Required if overriding this method
-    }
-
-    private boolean isVehicleTypeSupported(Intent intent) {
-//        if(intent.hasExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CONNECTED_VEHICLE_INFO))
-//        {
-//            VehicleType vehicleType = intent.getParcelableExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CONNECTED_VEHICLE_INFO);
-//            /* Return true if vehicle is supported, else false*/
-//        }
-        return false;
     }
 }
