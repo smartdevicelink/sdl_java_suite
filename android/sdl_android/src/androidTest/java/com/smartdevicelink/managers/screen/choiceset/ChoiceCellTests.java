@@ -43,6 +43,7 @@ import org.junit.runner.RunWith;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
@@ -61,6 +62,7 @@ public class ChoiceCellTests {
         choiceCell.setVoiceCommands(TestValues.GENERAL_STRING_LIST);
         choiceCell.setArtwork(artwork);
         choiceCell.setSecondaryArtwork(artwork);
+        choiceCell.setUniqueText(TestValues.GENERAL_STRING);
 
         // use getters and assert equality
         assertEquals(choiceCell.getText(), TestValues.GENERAL_STRING);
@@ -70,6 +72,7 @@ public class ChoiceCellTests {
         assertEquals(choiceCell.getArtwork(), artwork);
         assertEquals(choiceCell.getSecondaryArtwork(), artwork);
         assertEquals(choiceCell.getChoiceId(), MAX_ID);
+        assertEquals(choiceCell.getUniqueText(), TestValues.GENERAL_STRING);
     }
 
     @Test
@@ -87,6 +90,7 @@ public class ChoiceCellTests {
         assertEquals(choiceCell.getArtwork(), artwork);
         assertEquals(choiceCell.getSecondaryArtwork(), artwork);
         assertEquals(choiceCell.getChoiceId(), MAX_ID);
+        assertNull(choiceCell.getUniqueText());
 
 
         choiceCell = new ChoiceCell(TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, TestValues.GENERAL_STRING_LIST, artwork, artwork);
@@ -97,6 +101,7 @@ public class ChoiceCellTests {
         assertEquals(choiceCell.getArtwork(), artwork);
         assertEquals(choiceCell.getSecondaryArtwork(), artwork);
         assertEquals(choiceCell.getChoiceId(), MAX_ID);
+        assertNull(choiceCell.getUniqueText());
     }
 
     @Test
@@ -115,6 +120,11 @@ public class ChoiceCellTests {
         ChoiceCell choiceCell3 = new ChoiceCell(TestValues.GENERAL_STRING, TestValues.GENERAL_STRING_LIST, artwork);
         choiceCell3.setSecondaryText(TestValues.GENERAL_STRING);
         choiceCell3.setTertiaryText(TestValues.GENERAL_STRING);
+
+        //UniqueText should not be taken into consideration when checking equality
+        choiceCell.setUniqueText(TestValues.GENERAL_STRING);
+        choiceCell2.setUniqueText(TestValues.GENERAL_STRING);
+        choiceCell3.setUniqueText(TestValues.GENERAL_STRING);
 
         // Make sure our overridden method works, even though these are different objects in memory
         assertTrue(choiceCell.equals(choiceCell2));
