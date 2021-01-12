@@ -211,6 +211,32 @@ public class ChoiceSetManagerTests {
     }
 
     @Test
+    public void testAddUniqueNamesToCells() {
+        ChoiceCell cell1 = new ChoiceCell("McDonalds", "1 mile away", null, null, null, null);
+        ChoiceCell cell2 = new ChoiceCell("McDonalds", "2 mile away", null, null, null, null);
+        ChoiceCell cell3 = new ChoiceCell("Starbucks", "3 mile away", null, null, null, null);
+        ChoiceCell cell4 = new ChoiceCell("McDonalds", "4 mile away", null, null, null, null);
+        ChoiceCell cell5 = new ChoiceCell("Starbucks", "5 mile away", null, null, null, null);
+        ChoiceCell cell6 = new ChoiceCell("Meijer", "6 mile away", null, null, null, null);
+        List<ChoiceCell> cellList = new ArrayList<>();
+        cellList.add(cell1);
+        cellList.add(cell2);
+        cellList.add(cell3);
+        cellList.add(cell4);
+        cellList.add(cell5);
+        cellList.add(cell6);
+
+        csm.addUniqueNamesToCells(cellList);
+
+        assertEquals(cell1.getUniqueText(), "McDonalds (1)");
+        assertEquals(cell2.getUniqueText(), "McDonalds (2)");
+        assertEquals(cell3.getUniqueText(), "Starbucks (1)");
+        assertEquals(cell4.getUniqueText(), "McDonalds (3)");
+        assertEquals(cell5.getUniqueText(), "Starbucks (2)");
+        assertEquals(cell6.getUniqueText(), "Meijer");
+    }
+
+    @Test
     public void testChoicesToBeRemovedFromPendingWithArray() {
 
         ChoiceCell cell1 = new ChoiceCell("test");
