@@ -49,7 +49,6 @@ import android.util.AndroidRuntimeException;
 
 import androidx.annotation.CallSuper;
 
-import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.transport.RouterServiceValidator.TrustedListCallback;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.SdlDeviceListener;
@@ -60,7 +59,6 @@ import com.smartdevicelink.util.Log;
 import com.smartdevicelink.util.SdlAppInfo;
 import com.smartdevicelink.util.ServiceFinder;
 
-import org.json.JSONException;
 
 import java.util.List;
 import java.util.Locale;
@@ -99,7 +97,6 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
     @Override
     @CallSuper
     public void onReceive(Context context, Intent intent) {
-        Log.i(TAG, "Sdl Receiver Activated");
         final String action = intent.getAction();
         if (action == null) {
             return;
@@ -216,7 +213,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
      * @param altTransportWake if the alt transport flag should be set. Only used in debug
      * @param device           the connected bluetooth device
      */
-    private static void startRouterService(Context context, ComponentName componentName, boolean altTransportWake, BluetoothDevice device, boolean confirmedDevice, VehicleType vehicleType) {
+    private static void startRouterService(Context context, ComponentName componentName, boolean altTransportWake, BluetoothDevice device, boolean confirmedDevice) {
         if (componentName == null) {
             return;
         }
@@ -291,7 +288,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                     }
 
                     if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty()) {
-                        startRouterService(context, sdlAppInfoList.get(0).getRouterServiceComponentName(), altTransportWake, device, false, null);
+                        startRouterService(context, sdlAppInfoList.get(0).getRouterServiceComponentName(), altTransportWake, device, false);
                     } else {
                         DebugTool.logInfo(TAG, "No SDL Router Services found");
                         DebugTool.logInfo(TAG, "WARNING: This application has not specified its SdlRouterService correctly in the manifest. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
@@ -442,7 +439,6 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
      */
     public static void queryForConnectedService(final Context context) {
         if (AndroidTools.isDebugMode(context)) {
-            Log.i("MyTagLog", "Is Debug Mode");
             int flag = 0;
             if (localRouterClass == null) {
                 flag = IntegrationValidator.FLAG_SKIP_ROUTER_SERVICE_CHECK;
@@ -565,7 +561,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                                 final List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(context, new SdlAppInfo.BestRouterComparator());
                                 if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty()) {
                                     ComponentName routerService = sdlAppInfoList.get(0).getRouterServiceComponentName();
-                                    startRouterService(context, routerService, false, bluetoothDevice, true, null);
+                                    startRouterService(context, routerService, false, bluetoothDevice, true);
                                 }
                             }
                         }

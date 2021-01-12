@@ -63,7 +63,6 @@ public class SdlDeviceListener {
     private final WeakReference<Context> contextWeakReference;
     private final Callback callback;
     private final BluetoothDevice connectedDevice;
-    private static VehicleType cachedVehicleType;
     private MultiplexBluetoothTransport bluetoothTransport;
     private TransportHandler bluetoothHandler;
     private Handler timeoutHandler;
@@ -158,7 +157,6 @@ public class SdlDeviceListener {
                     switch (msg.arg1) {
                         case MultiplexBaseTransport.STATE_CONNECTED:
                             sdlListener.setSDLConnectedStatus(sdlListener.contextWeakReference.get(), sdlListener.connectedDevice.getAddress(), true);
-                            //sendStartService();
                             boolean keepConnectionOpen = sdlListener.callback.onTransportConnected(sdlListener.contextWeakReference.get(), sdlListener.connectedDevice);
                             if (!keepConnectionOpen) {
                                 sdlListener.bluetoothTransport.stop();

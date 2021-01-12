@@ -1753,7 +1753,6 @@ public class SdlRouterService extends Service {
         startService.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
 
         startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA, true);
-//        startService.putExtra(TransportConstants.VEHICLE_INFO, vehicleType);
         startService.putExtra(TransportConstants.FORCE_TRANSPORT_CONNECTED, true);
         startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE, getBaseContext().getPackageName());
         startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME, new ComponentName(this, this.getClass()));
