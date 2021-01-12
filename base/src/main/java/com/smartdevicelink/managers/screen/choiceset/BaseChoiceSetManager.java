@@ -506,7 +506,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             String testName = choices.get(i).getText();
             int counter = 1;
             for (int j = i+1; j < choices.size(); j++) {
-                if (choices.get(j).getText().equals(testName) && !choices.get(i).equals(choices.get(j))) {
+                if (choices.get(j).getText().equals(testName)) {
                     if (counter == 1) {
                         choices.get(i).setUniqueText(testName + " (1)");
                     }
