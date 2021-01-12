@@ -274,12 +274,10 @@ public class PresentAlertOperation extends Task {
         alert.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
-                if (getState() == Task.CANCELED) {
-                    finishOperation(false, null);
-                    return;
-                }
                 if (!response.getSuccess()) {
-                    DebugTool.logError(TAG, response.getInfo());
+                    DebugTool.logError(TAG, "There was an error presenting the alert: " + response.getInfo());
+                }  else {
+                    DebugTool.logInfo(TAG, "Alert finished presenting");
                 }
                 finishOperation(response.getSuccess(), ((AlertResponse) response).getTryAgainTime());
             }
