@@ -269,7 +269,7 @@ public class PresentAlertOperation extends Task {
      * Sends the alert RPC to the module. The operation is finished once a response has been received from the module.
      */
     private void presentAlert() {
-        Alert alert = createAlert();
+        Alert alert = alertRpc();
 
         alert.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
@@ -326,7 +326,7 @@ public class PresentAlertOperation extends Task {
 
     // Private Getters / Setters
 
-    Alert createAlert() {
+    Alert alertRpc() {
         Alert alert = new Alert();
         alert = assembleAlertText(alert);
         alert.setDuration(alertView.getTimeout() * 1000);

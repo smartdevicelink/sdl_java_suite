@@ -186,7 +186,7 @@ public class PresentAlertOperationTest {
 
             }
         });
-        Alert alert = presentAlertOperation.createAlert();
+        Alert alert = presentAlertOperation.alertRpc();
 
         assertEquals(alert.getAlertText1(), alertView.getText() + " - " + alertView.getSecondaryText() + " - " + alertView.getTertiaryText());
 
@@ -198,7 +198,7 @@ public class PresentAlertOperationTest {
 
             }
         });
-        alert = presentAlertOperation.createAlert();
+        alert = presentAlertOperation.alertRpc();
         assertEquals(alert.getAlertText1(), alertView.getText());
         assertEquals(alert.getAlertText2(),alertView.getSecondaryText() + " - " + alertView.getTertiaryText());
     }
