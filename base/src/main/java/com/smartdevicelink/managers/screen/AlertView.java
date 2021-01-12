@@ -178,9 +178,9 @@ public class AlertView implements Cloneable {
     }
 
     public void setSoftButtons(List<SoftButtonObject> softButtons) {
-        for(SoftButtonObject softButtonObject : softButtons){
-            if(softButtonObject.getStates().size() != 1){
-                DebugTool.logError(TAG,"Attempting create a soft button for an Alert with more than one state. Only first state set will work");
+        for (SoftButtonObject softButtonObject : softButtons) {
+            if (softButtonObject.getStates().size() != 1) {
+                throw new IllegalArgumentException("Attempting create a soft button for an Alert with more than one state. Alerts only support soft buttons with one state");
             }
         }
         this.softButtons = softButtons;
