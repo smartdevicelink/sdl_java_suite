@@ -39,7 +39,7 @@ import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import java.util.List;
 
 public class ChoiceCell {
-    private String text, secondaryText, tertiaryText;
+    private String text, secondaryText, tertiaryText, uniqueText;
     private List<String> voiceCommands;
     private SdlArtwork artwork, secondaryArtwork;
     private Integer choiceId;
@@ -226,6 +226,26 @@ public class ChoiceCell {
         return choiceId;
     }
 
+    /**
+     * NOTE: USED INTERNALLY
+     * Set the uniqueText.
+     *
+     * @param uniqueText - the uniqueText to be used in place of primaryText when core does not support identical names for ChoiceSets
+     */
+    void setUniqueText(String uniqueText) {
+        this.uniqueText = uniqueText;
+    }
+
+    /**
+     * NOTE: USED INTERNALLY
+     * Get the uniqueText that was used in place of primaryText
+     *
+     * @return the uniqueText for this Choice Cell
+     */
+    String getUniqueText() {
+        return uniqueText;
+    }
+
     @Override
     public int hashCode() {
         int result = 1;
@@ -264,7 +284,7 @@ public class ChoiceCell {
     @NonNull
     public String toString() {
         return "ChoiceCell: ID: " + this.choiceId + " Text: " + text + " - Secondary Text: " + secondaryText + " - Tertiary Text: " + tertiaryText + " " +
-                "| Artwork Names: " + ((getArtwork() == null || getArtwork().getName() == null) ? "Primary Art null" : getArtwork().getName())
+                "| Unique Text: " + uniqueText + " | Artwork Names: " + ((getArtwork() == null || getArtwork().getName() == null) ? "Primary Art null" : getArtwork().getName())
                 + " Secondary Art - " + ((getSecondaryArtwork() == null || getSecondaryArtwork().getName() == null) ? "Secondary Art null" : getSecondaryArtwork().getName()) +
                 " | Voice Commands Size: " + ((getVoiceCommands() == null) ? 0 : getVoiceCommands().size());
     }

@@ -42,6 +42,7 @@ import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
@@ -86,6 +87,7 @@ public class ChoiceSetManagerTests {
         FileManager fileManager = mock(FileManager.class);
         taskmaster = new Taskmaster.Builder().build();
         when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(7, 0));
         csm = new ChoiceSetManager(internalInterface, fileManager);
 
         assertEquals(csm.getState(), BaseSubManager.SETTING_UP);
@@ -148,11 +150,11 @@ public class ChoiceSetManagerTests {
         ChoiceSet choiceSet1 = new ChoiceSet("test", Collections.<ChoiceCell>emptyList(), choiceSetSelectionListener);
         assertFalse(csm.setUpChoiceSet(choiceSet1));
 
-        // cells cant have duplicate text
+        // cells that have duplicate text will be allowed because a unique name will be assigned and used
         ChoiceCell cell1 = new ChoiceCell("test");
         ChoiceCell cell2 = new ChoiceCell("test");
         ChoiceSet choiceSet2 = new ChoiceSet("test", Arrays.asList(cell1, cell2), choiceSetSelectionListener);
-        assertFalse(csm.setUpChoiceSet(choiceSet2));
+        assertTrue(csm.setUpChoiceSet(choiceSet2));
 
         // cells cannot mix and match VR / non-VR
         ChoiceCell cell3 = new ChoiceCell("test", Collections.singletonList("Test"), null);

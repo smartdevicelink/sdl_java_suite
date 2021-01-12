@@ -64,6 +64,8 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -193,7 +195,14 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             return;
         }
 
-        final HashSet<ChoiceCell> choicesToUpload = new HashSet<>(choices);
+        final HashSet<ChoiceCell> choicesToUpload;
+        if (internalInterface.getSdlMsgVersion() != null
+                && (internalInterface.getSdlMsgVersion().getMajorVersion() < 7
+                || (internalInterface.getSdlMsgVersion().getMajorVersion() == 7 && internalInterface.getSdlMsgVersion().getMinorVersion() == 0))) {
+            choicesToUpload = addUniqueNamesToCells(choices);
+        } else {
+            choicesToUpload = new HashSet<>(choices);
+        }
         choicesToUpload.removeAll(preloadedChoices);
         choicesToUpload.removeAll(pendingPreloadChoices);
 
@@ -488,6 +497,31 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         return choicesSet;
     }
 
+    HashSet<ChoiceCell> addUniqueNamesToCells(List<ChoiceCell> choices) {
+        ArrayList<Integer> skipIndex = new ArrayList<>();
+        for (int i = 0; i < choices.size(); i++) {
+            if (skipIndex.contains(i)) {
+                continue;
+            }
+            String testName = choices.get(i).getText();
+            int counter = 1;
+            for (int j = i+1; j < choices.size(); j++) {
+                if (choices.get(j).getText().equals(testName) && !choices.get(i).equals(choices.get(j))) {
+                    if (counter == 1) {
+                        choices.get(i).setUniqueText(testName + " (1)");
+                    }
+                    counter++;
+                    choices.get(j).setUniqueText(testName + " (" + counter + ")");
+                    skipIndex.add(j);
+                }
+            }
+            if (counter == 1) {
+                choices.get(i).setUniqueText(choices.get(i).getText());
+            }
+        }
+        return new HashSet<>(choices);
+    }
+
     void updateIdsOnChoices(HashSet<ChoiceCell> choices) {
         for (ChoiceCell cell : choices) {
             cell.setChoiceId(this.nextChoiceId);
@@ -609,26 +643,17 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             }
         }
 
-        HashSet<String> choiceTextSet = new HashSet<>();
         HashSet<String> uniqueVoiceCommands = new HashSet<>();
         int allVoiceCommandsCount = 0;
         int choiceCellWithVoiceCommandCount = 0;
 
         for (ChoiceCell cell : choices) {
 
-            choiceTextSet.add(cell.getText());
-
             if (cell.getVoiceCommands() != null) {
                 uniqueVoiceCommands.addAll(cell.getVoiceCommands());
                 choiceCellWithVoiceCommandCount += 1;
                 allVoiceCommandsCount += cell.getVoiceCommands().size();
             }
-        }
-
-        // Cell text MUST be unique
-        if (choiceTextSet.size() < choices.size()) {
-            DebugTool.logError(TAG, "Attempted to create a choice set with duplicate cell text. Cell text must be unique. The choice set will not be set.");
-            return false;
         }
 
         // All or none of the choices MUST have VR Commands
