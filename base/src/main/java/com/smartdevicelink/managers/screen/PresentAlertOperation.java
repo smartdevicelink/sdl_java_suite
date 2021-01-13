@@ -296,6 +296,11 @@ public class PresentAlertOperation extends Task {
             DebugTool.logInfo(TAG, "This operation has already been canceled. It will be finished at some point during the operation.");
             return;
         } else if (getState() == Task.IN_PROGRESS) {
+            if (internalInterface.get() != null && internalInterface.get().getSdlMsgVersion() != null && internalInterface.get().getSdlMsgVersion().getMajorVersion() < 6) {
+                DebugTool.logError(TAG, "Canceling an alert is not supported on this module");
+                this.cancelTask();
+                return;
+            }
             cancelInteraction();
         } else {
             DebugTool.logInfo(TAG, "Cancelling an alert that has not yet been sent to Core");
@@ -304,9 +309,6 @@ public class PresentAlertOperation extends Task {
     }
 
     void cancelInteraction() {
-        if (internalInterface.get() != null && internalInterface.get().getSdlMsgVersion() != null && internalInterface.get().getSdlMsgVersion().getMajorVersion() < 6) {
-            DebugTool.logError(TAG, "Canceling an alert is not supported on this module");
-        }
         DebugTool.logInfo(TAG, "Canceling the presented alert");
 
         CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.ALERT.getId(), cancelId);

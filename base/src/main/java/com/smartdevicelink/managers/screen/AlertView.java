@@ -127,8 +127,6 @@ public class AlertView implements Cloneable {
     public Integer getTimeout() {
         if (timeout == null) {
             timeout = defaultTimeout;
-        } else if (timeout == defaultTimeout) {
-            return defaultTimeout;
         } else if (timeout < TIMEOUT_MIN) {
             return TIMEOUT_MIN;
         } else if (timeout > TIMEOUT_MAX) {
