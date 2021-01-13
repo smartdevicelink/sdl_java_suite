@@ -174,6 +174,12 @@ abstract class BaseMenuManager extends BaseSubManager {
         // Create a deep copy of the list so future changes by developers don't affect the algorithm logic
         List<MenuCell> clonedCells = cloneMenuCellsList(cells);
 
+        if (internalInterface.getSdlMsgVersion() != null
+                && (internalInterface.getSdlMsgVersion().getMajorVersion() < 7
+                || (internalInterface.getSdlMsgVersion().getMajorVersion() == 7 && internalInterface.getSdlMsgVersion().getMinorVersion() == 0))) {
+            addUniqueNamesToCells(clonedCells);
+        }
+
         if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE) || currentSystemContext.equals(SystemContext.SYSCTXT_MENU)) {
             // We are in NONE or the menu is in use, bail out of here
             waitingOnHMIUpdate = true;
@@ -197,21 +203,14 @@ abstract class BaseMenuManager extends BaseSubManager {
         }
 
         // HashSet order doesnt matter / does not allow duplicates
-        HashSet<String> titleCheckSet = new HashSet<>();
         HashSet<String> allMenuVoiceCommands = new HashSet<>();
         int voiceCommandCount = 0;
 
         for (MenuCell cell : menuCells) {
-            titleCheckSet.add(cell.getTitle());
             if (cell.getVoiceCommands() != null) {
                 allMenuVoiceCommands.addAll(cell.getVoiceCommands());
                 voiceCommandCount += cell.getVoiceCommands().size();
             }
-        }
-        // Check for duplicate titles
-        if (titleCheckSet.size() != menuCells.size()) {
-            DebugTool.logError(TAG, "Not all cell titles are unique. The menu will not be set");
-            return;
         }
 
         // Check for duplicate voice commands
@@ -970,7 +969,15 @@ abstract class BaseMenuManager extends BaseSubManager {
     }
 
     private AddSubMenu subMenuCommandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position) {
-        AddSubMenu subMenu = new AddSubMenu(cell.getCellId(), cell.getTitle());
+        String cellTitle;
+        if (internalInterface.getSdlMsgVersion() != null
+                && (internalInterface.getSdlMsgVersion().getMajorVersion() < 7
+                || (internalInterface.getSdlMsgVersion().getMajorVersion() == 7 && internalInterface.getSdlMsgVersion().getMinorVersion() == 0))) {
+            cellTitle = cell.getUniqueTitle();
+        } else {
+            cellTitle = cell.getTitle();
+        }
+        AddSubMenu subMenu = new AddSubMenu(cell.getCellId(), cellTitle);
         subMenu.setPosition(position);
         if (cell.getSubMenuLayout() != null) {
             subMenu.setMenuLayout(cell.getSubMenuLayout());
@@ -1343,5 +1350,29 @@ abstract class BaseMenuManager extends BaseSubManager {
             clone.add(menuCell.clone());
         }
         return clone;
+    }
+
+    private void addUniqueNamesToCells(List<MenuCell> cells) {
+        ArrayList<Integer> skipIndex = new ArrayList<>();
+        for (int i = 0; i < cells.size(); i++) {
+            if (skipIndex.contains(i)) {
+                continue;
+            }
+            String testName = cells.get(i).getTitle();
+            int counter = 1;
+            for (int j = i+1; j < cells.size(); j++) {
+                if (cells.get(j).getTitle().equals(testName)) {
+                    if (counter == 1) {
+                        cells.get(i).setUniqueTitle(testName + " (1)");
+                    }
+                    counter++;
+                    cells.get(j).setUniqueTitle(testName + " (" + counter + ")");
+                    skipIndex.add(j);
+                }
+            }
+            if (counter == 1) {
+                cells.get(i).setUniqueTitle(cells.get(i).getTitle());
+            }
+        }
     }
 }

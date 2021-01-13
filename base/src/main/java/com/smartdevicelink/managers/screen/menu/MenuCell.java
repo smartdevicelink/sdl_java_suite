@@ -90,6 +90,11 @@ public class MenuCell implements Cloneable {
      */
     private static final int MAX_ID = 2000000000;
 
+    /**
+     * The cell's text to be displayed if unique titles are created
+     */
+    private String uniqueTitle;
+
     // CONSTRUCTORS
 
     // SINGLE MENU ITEM CONSTRUCTORS
@@ -282,6 +287,26 @@ public class MenuCell implements Cloneable {
      */
     int getParentCellId() {
         return parentCellId;
+    }
+
+    /**
+     * NOTE: USED INTERNALLY
+     * Set the uniqueTitle.
+     *
+     * @param uniqueTitle - the uniqueTitle to be used in place of primary title when core does not support identical names for MenuCells
+     */
+    void setUniqueTitle(String uniqueTitle) {
+        this.uniqueTitle = uniqueTitle;
+    }
+
+    /**
+     * NOTE: USED INTERNALLY
+     * Get the uniqueTitle that was used in place of the primary title
+     *
+     * @return the uniqueTitle for this MenuCell
+     */
+    String getUniqueTitle() {
+        return uniqueTitle;
     }
 
     // HELPER
