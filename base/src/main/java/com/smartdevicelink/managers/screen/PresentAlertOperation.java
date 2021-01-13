@@ -145,7 +145,6 @@ public class PresentAlertOperation extends Task {
         });
     }
 
-
     /**
      * Uploads AudioFiles
      *
@@ -170,11 +169,15 @@ public class PresentAlertOperation extends Task {
         }
 
         List<SdlFile> filesToBeUploaded = new ArrayList<>();
-        for (SdlFile file : alertView.getAudio().getAudioFiles()) {
-            if (fileManager.get() == null || !fileManager.get().fileNeedsUpload(file)) {
+        for (TTSChunk ttsChunk : alertView.getAudio().getAudioData()) {
+            if(ttsChunk.getType() != SpeechCapabilities.FILE){
                 continue;
             }
-            filesToBeUploaded.add(file);
+            SdlFile audioFile = alertView.getAudio().getAudioFiles().get(ttsChunk.getText());
+            if (fileManager.get() == null || !fileManager.get().fileNeedsUpload(audioFile)) {
+                continue;
+            }
+            filesToBeUploaded.add(audioFile);
         }
 
         if (filesToBeUploaded.size() == 0) {
@@ -186,7 +189,7 @@ public class PresentAlertOperation extends Task {
         DebugTool.logInfo(TAG, "Uploading audio files for alert");
 
         if (fileManager.get() != null) {
-            fileManager.get().uploadFiles(alertView.getAudio().getAudioFiles(), new MultipleFileCompletionListener() {
+            fileManager.get().uploadFiles(filesToBeUploaded, new MultipleFileCompletionListener() {
                 @Override
                 public void onComplete(Map<String, String> errors) {
                     if (getState() == Task.CANCELED) {
@@ -344,30 +347,30 @@ public class PresentAlertOperation extends Task {
         if (alertView.getAudio() != null) {
             AlertAudioData alertAudioData = alertView.getAudio();
             alert.setPlayTone(alertAudioData.isPlayTone());
-            List<TTSChunk> ttsChunks = getTTSChunksForAlert(alertAudioData);
 
-            if (ttsChunks.size() > 0) {
-                alert.setTtsChunks(ttsChunks);
+            if (alertAudioData.getAudioData().size() > 0) {
+                alert.setTtsChunks(getTTSChunksForAlert(alertAudioData));
             }
         }
         return alert;
     }
 
+    /**
+     * Checks if AudioFiles are supported by module and removes them form audioData list if they are not
+     * @param alertAudioData
+     * @return List of ttsChunks
+     */
     List<TTSChunk> getTTSChunksForAlert(AlertAudioData alertAudioData) {
-        List<TTSChunk> ttsChunks = new ArrayList<>();
-
-        if (supportsAlertAudioFile() && alertAudioData.getAudioFiles() != null && alertAudioData.getAudioFiles().size() > 0) {
-            for (int i = 0; i < alertAudioData.getAudioFiles().size(); i++) {
-                ttsChunks.add(new TTSChunk(alertAudioData.getAudioFiles().get(i).getName(), SpeechCapabilities.FILE));
+        List<TTSChunk> ttsChunks = alertAudioData.getAudioData();
+        if (!supportsAlertAudioFile()) {
+            for (TTSChunk chunk : alertAudioData.getAudioData()) {
+                if (chunk.getType() == SpeechCapabilities.FILE) {
+                    ttsChunks.remove(chunk);
+                }
             }
-        }
-
-        if (alertAudioData.getPrompts() != null && alertAudioData.getPrompts().size() > 0) {
-            ttsChunks.addAll(alertAudioData.getPrompts());
         }
         return ttsChunks;
     }
-
     // Text Helpers
 
     private Alert assembleAlertText(Alert alert) {
@@ -491,7 +494,7 @@ public class PresentAlertOperation extends Task {
         if (alertView.getSecondaryText() != null && alertView.getSecondaryText().length() > 0) {
             return true;
         }
-        if (alertView.getAudio() != null && getTTSChunksForAlert(alertView.getAudio()).size() > 0) {
+        if (alertView.getAudio() != null && alertView.getAudio().getAudioData().size() > 0) {
             return true;
         }
         return false;

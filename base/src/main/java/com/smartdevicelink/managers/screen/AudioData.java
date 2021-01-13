@@ -39,35 +39,39 @@ import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class AudioData {
 
-    // The text-to-speech prompts that will used.
-    private List<TTSChunk> prompts;
+    // The text-to-speech audioData that will used.
+    private List<TTSChunk> audioData;
 
     // The audio files that will be uploaded and used.
-    private List<SdlFile> audioFiles;
+    private HashMap<String, SdlFile> audioFiles;
 
     public AudioData() {
     }
 
     public AudioData(@NonNull SdlFile audioFile) {
-        this.audioFiles = new ArrayList<>();
-        audioFiles.add(audioFile);
+        this.audioFiles = new HashMap<>();
+        this.audioData = new ArrayList<>();
+        audioFiles.put(audioFile.getName(), audioFile);
+        audioData.add(new TTSChunk(audioFile.getName(), SpeechCapabilities.FILE));
     }
 
     public AudioData(@NonNull String spokenString) {
-        this.prompts = new ArrayList<>();
-        prompts.add(new TTSChunk(spokenString, SpeechCapabilities.TEXT));
+        this.audioData = new ArrayList<>();
+        audioData.add(new TTSChunk(spokenString, SpeechCapabilities.TEXT));
     }
 
     public AudioData(@NonNull String phoneticString, @NonNull SpeechCapabilities phoneticType) {
         if (!isValidPhoneticType(phoneticType)) {
             return;
         }
-        this.prompts = new ArrayList<>();
-        prompts.add(new TTSChunk(phoneticString, phoneticType));
+        this.audioData = new ArrayList<>();
+        audioData.add(new TTSChunk(phoneticString, phoneticType));
     }
 
     /**
@@ -92,9 +96,15 @@ public class AudioData {
      */
     public void addAudioFiles(@NonNull List<SdlFile> audioFiles) {
         if (this.audioFiles == null) {
-            this.audioFiles = new ArrayList<>();
+            this.audioFiles = new HashMap<>();
         }
-        this.audioFiles.addAll(audioFiles);
+        if (this.audioData == null) {
+            this.audioData = new ArrayList<>();
+        }
+        for (SdlFile file : audioFiles) {
+            audioData.add(new TTSChunk(file.getName(), SpeechCapabilities.FILE));
+            this.audioFiles.put(file.getName(), file);
+        }
     }
 
     /**
@@ -111,16 +121,16 @@ public class AudioData {
             if (spoken.length() == 0) {
                 continue;
             }
-            newPrompts.add(new TTSChunk().setText(spoken));
+            newPrompts.add(new TTSChunk().setText(spoken).setType(SpeechCapabilities.TEXT));
         }
         if (newPrompts.size() == 0) {
             return;
         }
-        if (prompts == null) {
-            this.prompts = newPrompts;
+        if (audioData == null) {
+            this.audioData = newPrompts;
             return;
         }
-        prompts.addAll(newPrompts);
+        audioData.addAll(newPrompts);
     }
 
     /**
@@ -143,18 +153,18 @@ public class AudioData {
         if (newPrompts.size() == 0) {
             return;
         }
-        if (prompts == null) {
-            this.prompts = newPrompts;
+        if (audioData == null) {
+            this.audioData = newPrompts;
             return;
         }
-        prompts.addAll(newPrompts);
+        audioData.addAll(newPrompts);
     }
 
-    public List<SdlFile> getAudioFiles() {
+    HashMap<String, SdlFile> getAudioFiles() {
         return audioFiles;
     }
 
-    public List<TTSChunk> getPrompts() {
-        return prompts;
+    public List<TTSChunk> getAudioData() {
+        return audioData;
     }
 }
