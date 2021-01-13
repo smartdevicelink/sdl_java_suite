@@ -109,6 +109,7 @@ public class MenuCell implements Cloneable {
      */
     public MenuCell(@NonNull String title, @Nullable SdlArtwork icon, @Nullable List<String> voiceCommands, @Nullable MenuSelectionListener listener) {
         setTitle(title); // title is the only required param
+        setUniqueTitle(title);
         setIcon(icon);
         setVoiceCommands(voiceCommands);
         setMenuSelectionListener(listener);
@@ -130,6 +131,7 @@ public class MenuCell implements Cloneable {
      */
     public MenuCell(@NonNull String title, @Nullable MenuLayout subMenuLayout, @Nullable SdlArtwork icon, @Nullable List<MenuCell> subCells) {
         setTitle(title); // title is the only required param
+        setUniqueTitle(title);
         setSubMenuLayout(subMenuLayout);
         setIcon(icon);
         setSubCells(subCells);

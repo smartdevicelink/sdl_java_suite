@@ -65,6 +65,7 @@ import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -498,28 +499,23 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     }
 
     HashSet<ChoiceCell> addUniqueNamesToCells(List<ChoiceCell> choices) {
-        ArrayList<Integer> skipIndex = new ArrayList<>();
-        for (int i = 0; i < choices.size(); i++) {
-            if (skipIndex.contains(i)) {
-                continue;
-            }
-            String testName = choices.get(i).getText();
-            int counter = 1;
-            for (int j = i+1; j < choices.size(); j++) {
-                if (choices.get(j).getText().equals(testName)) {
-                    if (counter == 1) {
-                        choices.get(i).setUniqueText(testName + " (1)");
-                    }
-                    counter++;
-                    choices.get(j).setUniqueText(testName + " (" + counter + ")");
-                    skipIndex.add(j);
+        HashSet<ChoiceCell> choiceSet = new HashSet<>(choices);
+        HashMap<String, Integer> dictCounter = new HashMap<>();
+
+        for (ChoiceCell cell : choices) {
+            if (choiceSet.contains(cell)) {
+                String cellName = cell.getText();
+                if (!dictCounter.containsKey(cellName)) {
+                    dictCounter.put(cellName, 1);
+                } else {
+                    int counter = dictCounter.get(cellName);
+                    dictCounter.put(cellName, ++counter);
+                    cell.setUniqueText(cellName + " (" + counter + ")");
                 }
             }
-            if (counter == 1) {
-                choices.get(i).setUniqueText(choices.get(i).getText());
-            }
         }
-        return new HashSet<>(choices);
+
+        return choiceSet;
     }
 
     void updateIdsOnChoices(HashSet<ChoiceCell> choices) {

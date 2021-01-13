@@ -90,7 +90,7 @@ public class ChoiceCellTests {
         assertEquals(choiceCell.getArtwork(), artwork);
         assertEquals(choiceCell.getSecondaryArtwork(), artwork);
         assertEquals(choiceCell.getChoiceId(), MAX_ID);
-        assertNull(choiceCell.getUniqueText());
+        assertEquals(choiceCell.getUniqueText(), choiceCell.getText());
 
 
         choiceCell = new ChoiceCell(TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, TestValues.GENERAL_STRING_LIST, artwork, artwork);
@@ -101,7 +101,8 @@ public class ChoiceCellTests {
         assertEquals(choiceCell.getArtwork(), artwork);
         assertEquals(choiceCell.getSecondaryArtwork(), artwork);
         assertEquals(choiceCell.getChoiceId(), MAX_ID);
-        assertNull(choiceCell.getUniqueText());
+        assertEquals(choiceCell.getUniqueText(), choiceCell.getText());
+
     }
 
     @Test

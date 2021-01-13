@@ -43,6 +43,7 @@ import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
 import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
+import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -74,6 +75,7 @@ import org.json.JSONException;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -952,7 +954,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
     private AddCommand commandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position) {
 
-        MenuParams params = new MenuParams(cell.getTitle());
+        MenuParams params = new MenuParams(cell.getUniqueTitle());
         params.setParentID(cell.getParentCellId() != MAX_ID ? cell.getParentCellId() : null);
         params.setPosition(position);
 
@@ -969,15 +971,7 @@ abstract class BaseMenuManager extends BaseSubManager {
     }
 
     private AddSubMenu subMenuCommandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position) {
-        String cellTitle;
-        if (internalInterface.getSdlMsgVersion() != null
-                && (internalInterface.getSdlMsgVersion().getMajorVersion() < 7
-                || (internalInterface.getSdlMsgVersion().getMajorVersion() == 7 && internalInterface.getSdlMsgVersion().getMinorVersion() == 0))) {
-            cellTitle = cell.getUniqueTitle();
-        } else {
-            cellTitle = cell.getTitle();
-        }
-        AddSubMenu subMenu = new AddSubMenu(cell.getCellId(), cellTitle);
+        AddSubMenu subMenu = new AddSubMenu(cell.getCellId(), cell.getUniqueTitle());
         subMenu.setPosition(position);
         if (cell.getSubMenuLayout() != null) {
             subMenu.setMenuLayout(cell.getSubMenuLayout());
@@ -1353,25 +1347,16 @@ abstract class BaseMenuManager extends BaseSubManager {
     }
 
     private void addUniqueNamesToCells(List<MenuCell> cells) {
-        ArrayList<Integer> skipIndex = new ArrayList<>();
-        for (int i = 0; i < cells.size(); i++) {
-            if (skipIndex.contains(i)) {
-                continue;
-            }
-            String testName = cells.get(i).getTitle();
-            int counter = 1;
-            for (int j = i+1; j < cells.size(); j++) {
-                if (cells.get(j).getTitle().equals(testName)) {
-                    if (counter == 1) {
-                        cells.get(i).setUniqueTitle(testName + " (1)");
-                    }
-                    counter++;
-                    cells.get(j).setUniqueTitle(testName + " (" + counter + ")");
-                    skipIndex.add(j);
-                }
-            }
-            if (counter == 1) {
-                cells.get(i).setUniqueTitle(cells.get(i).getTitle());
+        HashMap<String, Integer> dictCounter = new HashMap<>();
+
+        for (MenuCell cell : cells) {
+            String cellTitle = cell.getTitle();
+            if (!dictCounter.containsKey(cellTitle)) {
+                dictCounter.put(cellTitle, 1);
+            } else {
+                int counter = dictCounter.get(cellTitle);
+                dictCounter.put(cellTitle, ++counter);
+                cell.setUniqueTitle(cellTitle + " (" + counter + ")");
             }
         }
     }

@@ -56,6 +56,7 @@ public class ChoiceCell {
      */
     public ChoiceCell(@NonNull String text) {
         setText(text);
+        setUniqueText(text);
         setChoiceId(MAX_ID);
     }
 
@@ -68,6 +69,7 @@ public class ChoiceCell {
      */
     public ChoiceCell(@NonNull String text, List<String> voiceCommands, SdlArtwork artwork) {
         setText(text);
+        setUniqueText(text);
         setVoiceCommands(voiceCommands);
         setArtwork(artwork);
         setChoiceId(MAX_ID);
@@ -87,6 +89,7 @@ public class ChoiceCell {
         setText(text);
         setSecondaryText(secondaryText);
         setTertiaryText(tertiaryText);
+        setUniqueText(text);
         setVoiceCommands(voiceCommands);
         setArtwork(artwork);
         setSecondaryArtwork(secondaryArtwork);

@@ -228,9 +228,9 @@ public class ChoiceSetManagerTests {
 
         csm.addUniqueNamesToCells(cellList);
 
-        assertEquals(cell1.getUniqueText(), "McDonalds (1)");
+        assertEquals(cell1.getUniqueText(), "McDonalds");
         assertEquals(cell2.getUniqueText(), "McDonalds (2)");
-        assertEquals(cell3.getUniqueText(), "Starbucks (1)");
+        assertEquals(cell3.getUniqueText(), "Starbucks");
         assertEquals(cell4.getUniqueText(), "McDonalds (3)");
         assertEquals(cell5.getUniqueText(), "Starbucks (2)");
         assertEquals(cell6.getUniqueText(), "Meijer");

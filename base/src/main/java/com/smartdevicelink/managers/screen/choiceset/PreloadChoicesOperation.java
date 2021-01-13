@@ -195,16 +195,7 @@ class PreloadChoicesOperation extends Task {
             vrCommands = cell.getVoiceCommands();
         }
 
-        String menuName = null;
-        if (shouldSendChoiceText()) {
-            if (internalInterface.get().getSdlMsgVersion() != null
-                    && (internalInterface.get().getSdlMsgVersion().getMajorVersion() < 7
-                    || (internalInterface.get().getSdlMsgVersion().getMajorVersion() == 7 && internalInterface.get().getSdlMsgVersion().getMinorVersion() == 0))) {
-                menuName = cell.getUniqueText();
-            } else {
-                menuName = cell.getText();
-            }
-        }
+        String menuName = shouldSendChoiceText() ? cell.getUniqueText() : null;
 
         if (menuName == null) {
             DebugTool.logError(TAG, "Could not convert Choice Cell to CreateInteractionChoiceSet. It will not be shown. Cell: " + cell.toString());
