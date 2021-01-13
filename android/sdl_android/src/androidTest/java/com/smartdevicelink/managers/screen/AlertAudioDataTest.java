@@ -51,7 +51,7 @@ public class AlertAudioDataTest {
         assertEquals("spokenString", alertAudioData2.getAudioData().get(0).getText());
 
         AlertAudioData alertAudioData3 = new AlertAudioData(testAudio);
-        assertEquals(alertAudioData3.getAudioFiles().get(0).getName(), testAudio.getName());
+        assertEquals(alertAudioData3.getAudioData().get(0).getText(), testAudio.getName());
     }
 
     @Test
@@ -62,9 +62,10 @@ public class AlertAudioDataTest {
         alertAudioData1.addSpeechSynthesizerStrings(Collections.singletonList("addition2"));
         alertAudioData1.addAudioFiles(Collections.singletonList(testAudio));
         assertEquals("phoneticString", alertAudioData1.getAudioData().get(0).getText());
-        assertEquals("addition", alertAudioData1.getAudioData().get(1).getText());
-        assertEquals("addition2", alertAudioData1.getAudioData().get(2).getText());
-        assertEquals(testAudio.getName(), alertAudioData1.getAudioFiles().get(0).getName());
+        assertEquals(testAudio.getName(), alertAudioData1.getAudioData().get(1).getText());
+        assertEquals("addition", alertAudioData1.getAudioData().get(2).getText());
+        assertEquals("addition2", alertAudioData1.getAudioData().get(3).getText());
+
 
     }
 }
