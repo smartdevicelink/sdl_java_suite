@@ -45,10 +45,10 @@ public class AlertAudioDataTest {
         assertTrue(alertAudioData.isPlayTone());
 
         AlertAudioData alertAudioData1 = new AlertAudioData("phoneticString", SpeechCapabilities.TEXT);
-        assertEquals("phoneticString", alertAudioData1.getPrompts().get(0).getText());
+        assertEquals("phoneticString", alertAudioData1.getAudioData().get(0).getText());
 
         AlertAudioData alertAudioData2 = new AlertAudioData("spokenString");
-        assertEquals("spokenString", alertAudioData2.getPrompts().get(0).getText());
+        assertEquals("spokenString", alertAudioData2.getAudioData().get(0).getText());
 
         AlertAudioData alertAudioData3 = new AlertAudioData(testAudio);
         assertEquals(alertAudioData3.getAudioFiles().get(0).getName(), testAudio.getName());
@@ -61,9 +61,9 @@ public class AlertAudioDataTest {
         alertAudioData1.addPhoneticSpeechSynthesizerStrings(Collections.singletonList("addition"), SpeechCapabilities.TEXT);
         alertAudioData1.addSpeechSynthesizerStrings(Collections.singletonList("addition2"));
         alertAudioData1.addAudioFiles(Collections.singletonList(testAudio));
-        assertEquals("phoneticString", alertAudioData1.getPrompts().get(0).getText());
-        assertEquals("addition", alertAudioData1.getPrompts().get(1).getText());
-        assertEquals("addition2", alertAudioData1.getPrompts().get(2).getText());
+        assertEquals("phoneticString", alertAudioData1.getAudioData().get(0).getText());
+        assertEquals("addition", alertAudioData1.getAudioData().get(1).getText());
+        assertEquals("addition2", alertAudioData1.getAudioData().get(2).getText());
         assertEquals(testAudio.getName(), alertAudioData1.getAudioFiles().get(0).getName());
 
     }

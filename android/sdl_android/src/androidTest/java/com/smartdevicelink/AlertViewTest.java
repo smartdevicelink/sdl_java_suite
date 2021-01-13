@@ -7,9 +7,7 @@ import com.smartdevicelink.managers.screen.AlertAudioData;
 import com.smartdevicelink.managers.screen.AlertView;
 import com.smartdevicelink.managers.screen.SoftButtonObject;
 import com.smartdevicelink.managers.screen.SoftButtonState;
-import com.smartdevicelink.proxy.rpc.Alert;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
-import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
@@ -19,13 +17,12 @@ import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
 public class AlertViewTest {
 
     @Test
-    public void testAlertView(){
+    public void testAlertView() {
         SdlArtwork artwork1 = new SdlArtwork("test1", FileType.GRAPHIC_PNG, 1, true);
         SdlArtwork artwork2 = new SdlArtwork("test2", FileType.GRAPHIC_PNG, 2, true);
 
@@ -50,7 +47,7 @@ public class AlertViewTest {
         assertEquals(alertView.getText(), "Test");
         assertEquals(alertView.getSecondaryText(), "Test");
         assertEquals(alertView.getTertiaryText(), "Test");
-        assertTrue(alertView.getAudio().getPrompts().size() >0);
+        assertTrue(alertView.getAudio().getAudioData().size() > 0);
         assertEquals(alertView.getIcon().getName(), "test1");
         assertEquals(alertView.getSoftButtons().get(0).getName(), "object1");
         assertEquals(alertView.getDefaultTimeout(), 3);
@@ -68,11 +65,10 @@ public class AlertViewTest {
         assertEquals(alertView.getText(), "Test2");
         assertEquals(alertView.getSecondaryText(), "Test2");
         assertEquals(alertView.getTertiaryText(), "Test2");
-        assertTrue(alertView.getAudio().getPrompts().size() >0);
+        assertTrue(alertView.getAudio().getAudioData().size() > 0);
         assertEquals(alertView.getIcon().getName(), "test2");
         assertEquals(alertView.getSoftButtons().get(0).getName(), "object2");
         assertEquals(alertView.getDefaultTimeout(), 6);
         assertEquals(alertView.getTimeout().intValue(), 6);
-
     }
 }
