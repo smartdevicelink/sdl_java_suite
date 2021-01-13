@@ -101,6 +101,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
     private StreamPacketizer audioPacketizer;
     private SdlSession sdlSession = null;
     private SessionType sessionType = null;
+    private com.livio.taskmaster.Queue transactionQueue;
 
     private final Runnable serviceCompletionTimeoutCallback = new Runnable() {
         @Override
@@ -437,7 +438,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
             decoder = new AudioDecoder(audioSource, context.get(), sdlSampleRate, sdlSampleType, decoderListener);
         } else {
             // this BaseAudioDecoder subclass uses methods deprecated with api 21
-            decoder = new AudioDecoderCompat(audioSource, context.get(), sdlSampleRate, sdlSampleType, decoderListener);
+            decoder = new AudioDecoderCompat(getTransactionQueue(), audioSource, context.get(), sdlSampleRate, sdlSampleType, decoderListener);
         }
 
         synchronized (queue) {
@@ -447,6 +448,13 @@ public class AudioStreamManager extends BaseAudioStreamManager {
                 decoder.start();
             }
         }
+    }
+
+    private com.livio.taskmaster.Queue getTransactionQueue() {
+        if (transactionQueue == null && internalInterface != null && internalInterface.getTaskmaster() != null) {
+            transactionQueue = internalInterface.getTaskmaster().createQueue("AudioDecoderCompat", 6, false);
+        }
+        return transactionQueue;
     }
 
     /**
