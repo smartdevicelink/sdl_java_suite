@@ -89,6 +89,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.rpc.UnregisterAppInterface;
+import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.ByteAraryMessageAssembler;
 import com.smartdevicelink.transport.utl.ByteArrayMessageSpliter;
@@ -107,6 +108,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -212,6 +214,7 @@ public class SdlRouterService extends Service {
     private static Messenger altTransportService = null;
 
     private boolean startSequenceComplete = false;
+    private VehicleType receivedVehicleType;
 
     private ExecutorService packetExecutor = null;
     ConcurrentHashMap<TransportType, PacketWriteTaskMaster> packetWriteTaskMasterMap = null;
@@ -1274,6 +1277,11 @@ public class SdlRouterService extends Service {
                 hasCalledStartForeground = true;
             }
 
+            if (intent.hasExtra(TransportConstants.CONNECT_VEHICLE_INFO)){
+                receivedVehicleType = new VehicleType(
+                        (Hashtable<String, Object>)intent.getSerializableExtra(TransportConstants.CONNECT_VEHICLE_INFO));
+            }
+
             if (intent.hasExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA)) {
                 //Make sure we are listening on RFCOMM
                 if (startSequenceComplete) { //We only check if we are sure we are already through the start up process
@@ -1756,6 +1764,7 @@ public class SdlRouterService extends Service {
         startService.putExtra(TransportConstants.FORCE_TRANSPORT_CONNECTED, true);
         startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE, getBaseContext().getPackageName());
         startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME, new ComponentName(this, this.getClass()));
+        startService.putExtra(TransportConstants.CONNECT_VEHICLE_INFO, receivedVehicleType.getStore());
 
         if (record != null && record.getType() != null) {
             startService.putExtra(TransportConstants.START_ROUTER_SERVICE_TRANSPORT_CONNECTED, record.getType().toString());

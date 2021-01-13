@@ -85,6 +85,13 @@ public class ControlFrameTags {
              * Auth token to be used for log in into services
              **/
             public static final String AUTH_TOKEN = "authToken";
+            /**
+             * Vehicle related info
+             */
+            public static final String VEHICLE_MAKE = "make";
+            public static final String VEHICLE_MODEL = "model";
+            public static final String VEHICLE_MODEL_YEAR = "model year";
+            public static final String VEHICLE_TRIM = "trim";
 
         }
 

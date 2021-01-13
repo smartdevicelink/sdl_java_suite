@@ -34,14 +34,25 @@
 package com.smartdevicelink.transport.utl;
 
 import android.bluetooth.BluetoothDevice;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.res.XmlResourceParser;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.smartdevicelink.R;
+import com.smartdevicelink.protocol.SdlPacket;
+import com.smartdevicelink.protocol.SdlPacketFactory;
+import com.smartdevicelink.protocol.enums.ControlFrameTags;
+import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.transport.MultiplexBaseTransport;
 import com.smartdevicelink.transport.MultiplexBluetoothTransport;
 import com.smartdevicelink.transport.SdlRouterService;
@@ -50,6 +61,8 @@ import com.smartdevicelink.util.SdlAppInfo;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+
+import static com.smartdevicelink.util.SdlAppInfo.deserializeVehicleMake;
 
 
 public class SdlDeviceListener {
@@ -64,6 +77,7 @@ public class SdlDeviceListener {
     private final BluetoothDevice connectedDevice;
     private MultiplexBluetoothTransport bluetoothTransport;
     private TransportHandler bluetoothHandler;
+    private VehicleType cachedVehicleType;
     private Handler timeoutHandler;
     private Runnable timeoutRunner;
     private boolean isRunning = false;
@@ -96,7 +110,7 @@ public class SdlDeviceListener {
         if (hasSDLConnected(contextWeakReference.get(), connectedDevice.getAddress())) {
             DebugTool.logInfo(TAG, ": Confirmed SDL device, should start router service");
             //This device has connected to SDL previously, it is ok to start the RS right now
-            callback.onTransportConnected(contextWeakReference.get(), connectedDevice);
+            callback.onTransportConnected(contextWeakReference.get(), connectedDevice, cachedVehicleType);
             return;
         }
         synchronized (RUNNING_LOCK) {
@@ -155,13 +169,7 @@ public class SdlDeviceListener {
                 case SdlRouterService.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case MultiplexBaseTransport.STATE_CONNECTED:
-                            sdlListener.setSDLConnectedStatus(sdlListener.contextWeakReference.get(), sdlListener.connectedDevice.getAddress(), true);
-                            boolean keepConnectionOpen = sdlListener.callback.onTransportConnected(sdlListener.contextWeakReference.get(), sdlListener.connectedDevice);
-                            if (!keepConnectionOpen) {
-                                sdlListener.bluetoothTransport.stop();
-                                sdlListener.bluetoothTransport = null;
-                                sdlListener.timeoutHandler.removeCallbacks(sdlListener.timeoutRunner);
-                            }
+                            sendStartService();
                             break;
                         case MultiplexBaseTransport.STATE_NONE:
                             // We've just lost the connection
@@ -174,7 +182,83 @@ public class SdlDeviceListener {
                     break;
 
                 case com.smartdevicelink.transport.SdlRouterService.MESSAGE_READ:
+                    onPacketRead((SdlPacket) msg.obj);
                     break;
+            }
+        }
+
+        public void sendStartService(){
+            SdlDeviceListener sdlListener = this.provider.get();
+            byte[] serviceProbe = SdlPacketFactory.createStartSession(SessionType.RPC, 0x00, (byte)1, (byte)0x00, false).constructPacket();
+            if(sdlListener.bluetoothTransport !=null && sdlListener.bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
+                sdlListener.bluetoothTransport.write(serviceProbe, 0,serviceProbe.length);
+            }
+        }
+
+        public void onPacketRead(SdlPacket packet){
+            SdlDeviceListener sdlListener = this.provider.get();
+            VehicleType vehicleType = null;
+            if (packet.getVersion() >=  6 && packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_ACK) {
+                //parse vehicle Type info from connected system
+                vehicleType = getVehicleType(packet);
+            }
+
+            byte[] stopService = SdlPacketFactory.createEndSession(SessionType.RPC, (byte)packet.getSessionId(), 0, (byte)packet.getVersion(), 0).constructPacket();
+            if(sdlListener.bluetoothTransport != null && sdlListener.bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
+                sdlListener.bluetoothTransport.write(stopService, 0,stopService.length);
+            }
+
+            notifyConnection(vehicleType);
+        }
+
+        private @Nullable VehicleType getVehicleType(SdlPacket packet) {
+            String make = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_MAKE);
+            String model = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_MODEL);
+            String modelYear = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_MODEL_YEAR);
+            String vehicleTrim = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_TRIM);
+            if (make != null) {
+                // checking if tags have come from core
+                VehicleType type = new VehicleType();
+                type.setMake(make);
+                type.setModel(model);
+                type.setModelYear(modelYear);
+                type.setTrim(vehicleTrim);
+                this.provider.get().cachedVehicleType = type;
+                return type;
+            } else {
+                return null;
+            }
+        }
+
+        public void notifyConnection(@Nullable VehicleType vehicleType){
+            if (vehicleType == null || checkVehicleTypeSupported(vehicleType)) {
+                SdlDeviceListener sdlListener = this.provider.get();
+                sdlListener.setSDLConnectedStatus(sdlListener.contextWeakReference.get(), sdlListener.connectedDevice.getAddress(), true);
+                boolean keepConnectionOpen = sdlListener.callback.onTransportConnected(sdlListener.contextWeakReference.get(), sdlListener.connectedDevice, vehicleType);
+                if (!keepConnectionOpen) {
+                    sdlListener.bluetoothTransport.stop();
+                    sdlListener.bluetoothTransport = null;
+                    sdlListener.timeoutHandler.removeCallbacks(sdlListener.timeoutRunner);
+                }
+            }
+        }
+
+        public boolean checkVehicleTypeSupported(@Nullable VehicleType type) {
+            try {
+                SdlDeviceListener sdlListener = this.provider.get();
+                Context context = sdlListener.contextWeakReference.get();
+                ComponentName myService = new ComponentName(context, this.getClass());
+                Bundle metaData = context.getPackageManager().getServiceInfo(myService, PackageManager.GET_META_DATA).metaData;
+                XmlResourceParser parser = context.getResources().getXml(metaData.getInt(context.getResources().getString(R.string.sdl_oem_vehicle_type_filter_name)));
+                List<VehicleType> vehicleMakes = deserializeVehicleMake(parser);
+
+                if (vehicleMakes.contains(type)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+                return false;
             }
         }
     }
@@ -270,7 +354,7 @@ public class SdlDeviceListener {
          * @param bluetoothDevice the BT device that successfully connected to SDL's UUID
          * @return if the RFCOMM connection should stay open. In most cases this should be false
          */
-        boolean onTransportConnected(Context context, BluetoothDevice bluetoothDevice);
+        boolean onTransportConnected(Context context, BluetoothDevice bluetoothDevice, VehicleType vehicleType);
 
         void onTransportDisconnected(BluetoothDevice bluetoothDevice);
 

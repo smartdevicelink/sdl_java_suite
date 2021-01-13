@@ -33,11 +33,21 @@
 package com.smartdevicelink.util;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.ResolveInfo;
+import android.content.res.XmlResourceParser;
 import android.os.Bundle;
 
+import com.smartdevicelink.proxy.rpc.VehicleType;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by Joey Grover on 2/2/18.
@@ -49,16 +59,18 @@ public class SdlAppInfo {
     //FIXME we shouldn't be duplicating constants, but this currently keeps us from needing a context instance.
     private static final String SDL_ROUTER_VERSION_METADATA = "sdl_router_version";
     private static final String SDL_CUSTOM_ROUTER_METADATA = "sdl_custom_router";
+    private static final String SDL_OEM_VEHICLE_TYPE_METADATA = "sdl_oem_vehicle_type";
 
 
     String packageName;
     ComponentName routerServiceComponentName;
     int routerServiceVersion = 4; //We use this as a default and assume if the number doesn't exist in meta data it is because the app hasn't updated.
     boolean isCustomRouterService = false;
+    List<VehicleType> vehicleMakesList = new ArrayList<>();
     long lastUpdateTime;
 
 
-    public SdlAppInfo(ResolveInfo resolveInfo, PackageInfo packageInfo) {
+    public SdlAppInfo(ResolveInfo resolveInfo, PackageInfo packageInfo, Context context) {
         if (resolveInfo.serviceInfo != null) {
 
             this.packageName = resolveInfo.serviceInfo.packageName;
@@ -73,6 +85,11 @@ public class SdlAppInfo {
 
                 if (metadata.containsKey(SDL_CUSTOM_ROUTER_METADATA)) {
                     this.isCustomRouterService = metadata.getBoolean(SDL_CUSTOM_ROUTER_METADATA);
+                }
+
+                if (metadata.containsKey(SDL_OEM_VEHICLE_TYPE_METADATA)) {
+                    XmlResourceParser parser = context.getResources().getXml(metadata.getInt(SDL_OEM_VEHICLE_TYPE_METADATA));
+                    this.vehicleMakesList = deserializeVehicleMake(parser);
                 }
             } else {
                 DebugTool.logWarning(TAG, packageName + " has not supplied metadata with their router service!");
@@ -122,11 +139,66 @@ public class SdlAppInfo {
         builder.append("\nLast updated: ");
         builder.append(this.lastUpdateTime);
 
+        builder.append("\nVehicle make list: ");
+        builder.append(this.vehicleMakesList.toString());
+
         builder.append("\n-------- Sdl App Info End------");
 
         return builder.toString();
     }
 
+    public static List<VehicleType> deserializeVehicleMake(XmlResourceParser parser) {
+        List<VehicleType> vehicleMakesList = new ArrayList<VehicleType>();
+
+        try {
+            int eventType = parser.getEventType();
+            VehicleType vehicleMake = null;
+            String data = null;
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                String tagname = parser.getName();
+                switch (eventType) {
+                    case XmlPullParser.START_TAG:
+                        if (tagname.equalsIgnoreCase("vehicle-type")) {
+                            // create a new instance of employee
+                            vehicleMake = new VehicleType();
+                        }
+                        break;
+
+                    case XmlPullParser.TEXT:
+                        data = parser.getText();
+                        break;
+
+                    case XmlPullParser.END_TAG:
+                        if (vehicleMake == null) {
+                            break;
+                        }
+                        if (tagname.equalsIgnoreCase("vehicle-type")) {
+                            // add employee object to list
+                            vehicleMakesList.add(vehicleMake);
+                        } else if (tagname.equalsIgnoreCase("make")) {
+                            vehicleMake.setMake(data == null ? "" : data);
+                        } else if (tagname.equalsIgnoreCase("model")) {
+                            vehicleMake.setModel(data);
+                        } else if (tagname.equalsIgnoreCase("modelYear")) {
+                            vehicleMake.setModelYear(data);
+                        } else if (tagname.equalsIgnoreCase("trim")){
+                            vehicleMake.setTrim(data);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                eventType = parser.next();
+            }
+
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return vehicleMakesList;
+    }
     /**
      * This comparator will sort a list to find the best router service to start out of the known SDL enabled apps
      */
