@@ -229,7 +229,7 @@ class SoftButtonReplaceOperation extends Task {
                 }
             }
         });
-        show.setMainField1(currentMainField1);
+        show.setMainField1((currentMainField1 == null ? "" : currentMainField1));
         show.setSoftButtons(softButtons);
         if (internalInterface.get() != null) {
             internalInterface.get().sendRPC(show);
@@ -277,7 +277,7 @@ class SoftButtonReplaceOperation extends Task {
                 }
             }
         });
-        show.setMainField1(currentMainField1);
+        show.setMainField1((currentMainField1 == null ? "" : currentMainField1));
         show.setSoftButtons(textButtons);
         if (internalInterface.get() != null) {
             internalInterface.get().sendRPC(show);
