@@ -45,7 +45,7 @@ import java.util.List;
 
 public class AudioData {
 
-    // The text-to-speech audioData that will used.
+    // All audio data
     private List<TTSChunk> audioData;
 
     // The audio files that will be uploaded and used.
