@@ -93,7 +93,7 @@ public abstract class SdlRemoteDisplay extends Presentation {
     }
 
     protected void startRefreshTask() {
-        refreshTaskScheduledFuture = executor.scheduleAtFixedRate(mStartRefreshTaskCallback, 0, REFRESH_RATE_MS, TimeUnit.MILLISECONDS);
+        refreshTaskScheduledFuture = executor.scheduleAtFixedRate(mStartRefreshTaskCallback, REFRESH_RATE_MS, REFRESH_RATE_MS, TimeUnit.MILLISECONDS);
     }
 
     protected void stopRefreshTask() {
