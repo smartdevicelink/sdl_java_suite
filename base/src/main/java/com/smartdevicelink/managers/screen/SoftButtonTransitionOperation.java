@@ -53,7 +53,7 @@ class SoftButtonTransitionOperation extends Task {
                 onFinished();
             }
         });
-        show.setMainField1(currentMainField1 == null ? "" : currentMainField1);
+        show.setMainField1(currentMainField1);
         show.setSoftButtons(currentStateSoftButtonsForObjects(softButtonObjects));
         if (internalInterface.get() != null) {
             internalInterface.get().sendRPC(show);
