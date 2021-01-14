@@ -103,6 +103,7 @@ public class SdlRemoteDisplayTest extends TestCase {
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(new RelativeLayout(getContext()));
+            
         }
 
 
