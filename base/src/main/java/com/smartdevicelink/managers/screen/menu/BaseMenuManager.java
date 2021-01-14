@@ -1358,6 +1358,9 @@ abstract class BaseMenuManager extends BaseSubManager {
                 dictCounter.put(cellTitle, ++counter);
                 cell.setUniqueTitle(cellTitle + " (" + counter + ")");
             }
+            if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
+                addUniqueNamesToCells(cell.getSubCells());
+            }
         }
     }
 }
