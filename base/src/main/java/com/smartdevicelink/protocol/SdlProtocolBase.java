@@ -940,8 +940,8 @@ public class SdlProtocolBase {
             String model = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_MODEL);
             String modelYear = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_MODEL_YEAR);
             String vehicleTrim = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_TRIM);
-            String hardwareVersion = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_SYSTEM_SOFTWARE_VERSION);
-            String softwareVersion = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_SYSTEM_HARDWARE_VERSION);
+            String softwareVersion = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_SYSTEM_SOFTWARE_VERSION);
+            String hardwareVersion = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_SYSTEM_HARDWARE_VERSION);
             if (make != null) {
                 // checking if tags have come from core
                 VehicleType type = new VehicleType();

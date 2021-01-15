@@ -90,7 +90,7 @@ public class ControlFrameTags {
              */
             public static final String VEHICLE_MAKE = "make";
             public static final String VEHICLE_MODEL = "model";
-            public static final String VEHICLE_MODEL_YEAR = "model_year";
+            public static final String VEHICLE_MODEL_YEAR = "modelYear";
             public static final String VEHICLE_TRIM = "trim";
             public static final String VEHICLE_SYSTEM_SOFTWARE_VERSION = "systemSoftwareVersion";
             public static final String VEHICLE_SYSTEM_HARDWARE_VERSION = "systemHardwareVersion";

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resource>
     <vehicle-type
-        make="Ford"
-        model="Mustang"
+        make="SDL"
+        model="Generic"
         modelYear="2019"
-        trim="GT"/>
+        trim="SE"/>
 </resource>
