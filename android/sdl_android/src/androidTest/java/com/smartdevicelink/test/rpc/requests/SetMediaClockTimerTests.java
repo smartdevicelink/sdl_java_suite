@@ -42,6 +42,7 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
         msg.setEndTime(TestValues.GENERAL_STARTTIME);
         msg.setUpdateMode(TestValues.GENERAL_UPDATEMODE);
         msg.setAudioStreamingIndicator(TestValues.GENERAL_AUDIO_STREAMING_INDICATOR);
+        msg.setCountRate(TestValues.GENERAL_FLOAT);
         msg.setForwardSeekIndicator(TestValues.GENERAL_SEEK_STREAMING_INDICATOR);
         msg.setBackSeekIndicator(TestValues.GENERAL_SEEK_STREAMING_INDICATOR);
 
@@ -67,6 +68,7 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
             result.put(SetMediaClockTimer.KEY_END_TIME, TestValues.JSON_STARTTIME);
             result.put(SetMediaClockTimer.KEY_UPDATE_MODE, TestValues.GENERAL_UPDATEMODE);
             result.put(SetMediaClockTimer.KEY_AUDIO_STREAMING_INDICATOR, TestValues.GENERAL_AUDIO_STREAMING_INDICATOR);
+            result.put(SetMediaClockTimer.KEY_COUNT_RATE, TestValues.GENERAL_FLOAT);
             result.put(SetMediaClockTimer.KEY_FORWARD_SEEK_INDICATOR, TestValues.JSON_SEEK_STREAMING_INDICATOR);
             result.put(SetMediaClockTimer.KEY_BACK_SEEK_INDICATOR, TestValues.JSON_SEEK_STREAMING_INDICATOR);
         } catch (JSONException e) {
@@ -86,6 +88,7 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
         StartTime testEndTime = ((SetMediaClockTimer) msg).getEndTime();
         UpdateMode testUpdateMode = ((SetMediaClockTimer) msg).getUpdateMode();
         AudioStreamingIndicator testAudioStreamingIndicator = ((SetMediaClockTimer) msg).getAudioStreamingIndicator();
+        Float testCountRate = ((SetMediaClockTimer) msg).getCountRate();
         SeekStreamingIndicator testForwardSeekStreamingIndicator = ((SetMediaClockTimer) msg).getForwardSeekIndicator();
         SeekStreamingIndicator testBackSeekStreamingIndicator = ((SetMediaClockTimer) msg).getBackSeekIndicator();
 
@@ -94,6 +97,7 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
         assertEquals(TestValues.MATCH, TestValues.GENERAL_AUDIO_STREAMING_INDICATOR, testAudioStreamingIndicator);
         assertTrue(TestValues.TRUE, Validator.validateStartTime(TestValues.GENERAL_STARTTIME, testStartTime));
         assertTrue(TestValues.TRUE, Validator.validateStartTime(TestValues.GENERAL_STARTTIME, testEndTime));
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_FLOAT, testCountRate);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_SEEK_STREAMING_INDICATOR, testForwardSeekStreamingIndicator);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_SEEK_STREAMING_INDICATOR, testBackSeekStreamingIndicator);
 
@@ -106,6 +110,7 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
         assertNull(TestValues.NULL, msg.getEndTime());
         assertNull(TestValues.NULL, msg.getUpdateMode());
         assertNull(TestValues.NULL, msg.getAudioStreamingIndicator());
+        assertNull(TestValues.NULL, msg.getCountRate());
         assertNull(TestValues.NULL, msg.getForwardSeekIndicator());
         assertNull(TestValues.NULL, msg.getBackSeekIndicator());
     }
@@ -178,6 +183,9 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
         assertNull(TestValues.NULL, msg.getStartTime());
         assertNull(TestValues.NULL, msg.getEndTime());
         assertEquals(TestValues.MATCH, TestValues.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
+
+        msg = new SetMediaClockTimer().setCountRate(TestValues.GENERAL_FLOAT);
+        assertEquals(TestValues.GENERAL_FLOAT, msg.getCountRate());
     }
 
     /**

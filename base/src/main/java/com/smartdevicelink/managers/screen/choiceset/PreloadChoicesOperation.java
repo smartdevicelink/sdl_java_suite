@@ -261,20 +261,13 @@ class PreloadChoicesOperation extends Task {
     List<SdlArtwork> artworksToUpload() {
         List<SdlArtwork> artworksToUpload = new ArrayList<>();
         for (ChoiceCell cell : cellsToUpload) {
-            if (shouldSendChoicePrimaryImage() && artworkNeedsUpload(cell.getArtwork())) {
+            if (shouldSendChoicePrimaryImage() && fileManager.get() != null && fileManager.get().fileNeedsUpload(cell.getArtwork())) {
                 artworksToUpload.add(cell.getArtwork());
             }
-            if (shouldSendChoiceSecondaryImage() && artworkNeedsUpload(cell.getSecondaryArtwork())) {
+            if (shouldSendChoiceSecondaryImage() && fileManager.get() != null && fileManager.get().fileNeedsUpload(cell.getSecondaryArtwork())) {
                 artworksToUpload.add(cell.getSecondaryArtwork());
             }
         }
         return artworksToUpload;
-    }
-
-    boolean artworkNeedsUpload(SdlArtwork artwork) {
-        if (fileManager.get() != null) {
-            return (artwork != null && !fileManager.get().hasUploadedFile(artwork) && !artwork.isStaticIcon());
-        }
-        return false;
     }
 }

@@ -56,10 +56,7 @@ class TextAndGraphicManager extends BaseTextAndGraphicManager {
     @Override
     SdlArtwork getBlankArtwork() {
         if (blankArtwork == null) {
-            blankArtwork = new SdlArtwork();
-            blankArtwork.setType(FileType.GRAPHIC_PNG);
-            blankArtwork.setName("blankArtwork");
-            blankArtwork.setResourceId(R.drawable.transparent);
+            blankArtwork = new SdlArtwork("blankArtwork", FileType.GRAPHIC_PNG, R.drawable.transparent, true);
         }
         return blankArtwork;
     }

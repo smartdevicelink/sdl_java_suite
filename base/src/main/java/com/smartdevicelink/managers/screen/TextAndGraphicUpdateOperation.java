@@ -103,7 +103,7 @@ class TextAndGraphicUpdateOperation extends Task {
                 }
             });
 
-        } else if (!sdlArtworkNeedsUpload(updatedState.getPrimaryGraphic()) && !sdlArtworkNeedsUpload(updatedState.getSecondaryGraphic())) {
+        } else if (fileManager.get() != null && !fileManager.get().fileNeedsUpload(updatedState.getPrimaryGraphic()) && !fileManager.get().fileNeedsUpload(updatedState.getSecondaryGraphic())) {
             DebugTool.logInfo(TAG, "Images already uploaded, sending full update");
             // The files to be updated are already uploaded, send the full show immediately
             sendShow(show, new CompletionListener() {
@@ -260,8 +260,8 @@ class TextAndGraphicUpdateOperation extends Task {
 
     Show createImageOnlyShowWithPrimaryArtwork(SdlArtwork primaryArtwork, SdlArtwork secondaryArtwork) {
         Show newShow = new Show();
-        newShow.setGraphic((primaryArtwork != null && !(sdlArtworkNeedsUpload(primaryArtwork))) ? primaryArtwork.getImageRPC() : null);
-        newShow.setSecondaryGraphic((secondaryArtwork != null && !(sdlArtworkNeedsUpload(secondaryArtwork))) ? secondaryArtwork.getImageRPC() : null);
+        newShow.setGraphic(shouldRPCIncludeImage(primaryArtwork) ? primaryArtwork.getImageRPC() : null);
+        newShow.setSecondaryGraphic(shouldRPCIncludeImage(secondaryArtwork) ? secondaryArtwork.getImageRPC() : null);
         if (newShow.getGraphic() == null && newShow.getSecondaryGraphic() == null) {
             DebugTool.logInfo(TAG, "No graphics to upload");
             return null;
@@ -645,10 +645,9 @@ class TextAndGraphicUpdateOperation extends Task {
         return array;
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private boolean sdlArtworkNeedsUpload(SdlArtwork artwork) {
-        if (fileManager.get() != null) {
-            return artwork != null && !fileManager.get().hasUploadedFile(artwork) && !artwork.isStaticIcon();
+    private boolean shouldRPCIncludeImage(SdlArtwork artwork) {
+        if (artwork != null) {
+            return artwork.isStaticIcon() || (fileManager.get() != null && fileManager.get().hasUploadedFile(artwork));
         }
         return false;
     }
@@ -664,9 +663,10 @@ class TextAndGraphicUpdateOperation extends Task {
         String currentScreenDataPrimaryGraphicName = (currentScreenData != null && currentScreenData.getPrimaryGraphic() != null) ? currentScreenData.getPrimaryGraphic().getName() : null;
         String primaryGraphicName = updatedState.getPrimaryGraphic() != null ? updatedState.getPrimaryGraphic().getName() : null;
 
-        boolean graphicMatchesExisting = CompareUtils.areStringsEqual(currentScreenDataPrimaryGraphicName, primaryGraphicName, true, true);
+        boolean graphicNameMatchesExisting = CompareUtils.areStringsEqual(currentScreenDataPrimaryGraphicName, primaryGraphicName, true, true);
+        boolean shouldOverwriteGraphic = updatedState.getPrimaryGraphic() != null && updatedState.getPrimaryGraphic().getOverwrite();
 
-        return templateSupportsPrimaryArtwork && !graphicMatchesExisting;
+        return templateSupportsPrimaryArtwork && (shouldOverwriteGraphic || !graphicNameMatchesExisting);
     }
 
     /**
@@ -680,13 +680,14 @@ class TextAndGraphicUpdateOperation extends Task {
         String currentScreenDataSecondaryGraphicName = (currentScreenData != null && currentScreenData.getSecondaryGraphic() != null) ? currentScreenData.getSecondaryGraphic().getName() : null;
         String secondaryGraphicName = updatedState.getSecondaryGraphic() != null ? updatedState.getSecondaryGraphic().getName() : null;
 
-        boolean graphicMatchesExisting = CompareUtils.areStringsEqual(currentScreenDataSecondaryGraphicName, secondaryGraphicName, true, true);
+        boolean graphicNameMatchesExisting = CompareUtils.areStringsEqual(currentScreenDataSecondaryGraphicName, secondaryGraphicName, true, true);
+        boolean shouldOverwriteGraphic = updatedState.getSecondaryGraphic() != null && updatedState.getSecondaryGraphic().getOverwrite();
 
         // Cannot detect if there is a secondary image below v5.0, so we'll just try to detect if the primary image is allowed and allow the secondary image if it is.
         if (internalInterface.get() != null && internalInterface.get().getSdlMsgVersion().getMajorVersion() >= 5) {
-            return templateSupportsSecondaryArtwork && !graphicMatchesExisting;
+            return templateSupportsSecondaryArtwork && (shouldOverwriteGraphic || !graphicNameMatchesExisting);
         } else {
-            return templateSupportsImageField(ImageFieldName.graphic) && !graphicMatchesExisting;
+            return templateSupportsImageField(ImageFieldName.graphic) && (shouldOverwriteGraphic || !graphicNameMatchesExisting);
         }
     }
 
