@@ -278,7 +278,7 @@ import java.util.Hashtable;
  *          <td>
  *          @since SmartDeviceLink 7.1.0
  *          </td>
- *  </tr>
+ *      </tr>
  * 		</table>
  *
  *
