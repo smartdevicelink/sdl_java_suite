@@ -94,26 +94,26 @@ import java.util.Hashtable;
  * 			<td></td>
  * 			<td>SmartDeviceLink 5.0</td>
  * 		</tr>
- * 	<tr>
- *      <td>forwardSeekIndicator</td>
- *      <td>SeekStreamingIndicator</td>
- *      <td>Used to control the forward seek button to either skip forward a set amount of time or tothe next track.</td>
- *      <td>N</td>
- *      <td></td>
- *      <td>
- *         @since SmartDeviceLink 7.1.0
- *      </td>
- *  </tr>
- *  <tr>
- *      <td>backSeekIndicator</td>
- *      <td>SeekStreamingIndicator</td>
- *      <td>Used to control the forward seek button to either skip back a set amount of time or to theprevious track.</td>
- *      <td>N</td>
- *      <td></td>
- *      <td>
- *         @since SmartDeviceLink 7.1.0
- *      </td>
- *  </tr>
+ * 	    <tr>
+ *          <td>forwardSeekIndicator</td>
+ *          <td>SeekStreamingIndicator</td>
+ *          <td>Used to control the forward seek button to either skip forward a set amount of time or tothe next track.</td>
+ *          <td>N</td>
+ *          <td></td>
+ *          <td>
+ *              @since SmartDeviceLink 7.1.0
+ *          </td>
+ *      </tr>
+ *      <tr>
+ *          <td>backSeekIndicator</td>
+ *          <td>SeekStreamingIndicator</td>
+ *          <td>Used to control the forward seek button to either skip back a set amount of time or to theprevious track.</td>
+ *          <td>N</td>
+ *          <td></td>
+ *          <td>
+ *              @since SmartDeviceLink 7.1.0
+ *          </td>
+ *      </tr>
  *
  *  </table>
  *
