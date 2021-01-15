@@ -41,84 +41,74 @@ import java.util.Hashtable;
 import java.util.List;
 
 /**
+ * The body information including power modes.
+ *
+ * <p><b>Note:</b> The structure defines the information about the park brake and ignition.</p>
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Param Name</th>
  * 			<th>Type</th>
+ * 			<th>Mandatory</th>
  * 			<th>Description</th>
- * 		<th>Required</th>
- * 		<th>Notes</th>
- * 			<th>Version Available</th>
+ * 			<th>Version</th>
  * 		</tr>
  * 		<tr>
  * 			<td>parkBrakeActive</td>
  * 			<td>Boolean</td>
- * 			<td>References signal "PrkBrkActv_B_Actl".</td>
- * 			<td>Y</td>
- * 			<td></td>
- * 		<td></td>
+ * 			<td>true</td>
+ * 			<td>Describes, if the park break is active. The information about the park brake: - true, if active - false if not.</td>
+ *  			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>ignitionStableStatus</td>
  * 			<td>IgnitionStableStatus</td>
- * 			<td>References signal "Ignition_Switch_Stable". See IgnitionStableStatus.</td>
- * 			<td>Y</td>
- * 			<td></td>
- * 			<td></td>
+ * 			<td>true</td>
+ * 			<td>Describes, if the ignition situation is considered stableThe information about stability of the ignition switch. See {@linkplain IgnitionStableStatus}</td>
+ * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>ignitionStatus</td>
  * 			<td>IgnitionStatus</td>
- * 			<td>References signal "Ignition_status". See IgnitionStatus.</td>
- * 			<td>Y</td>
- * 			<td></td>
- * 			<td></td>
+ * 			<td>true</td>
+ * 			<td>The information about ignition status. See {@linkplain  IgnitionStatus}</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>parkBrakeActive</td>
+ * 			<td>Boolean</td>
+ * 			<td>true</td>
+ * 			<td>The information about the park brake: - true, if active - false if not.</td>
+ * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>driverDoorAjar</td>
  * 			<td>Boolean</td>
- * 			<td>References signal "DrStatDrv_B_Actl". Deprecated starting with RPC Spec 7.1.0.</td>
- * 			<td>N</td>
- * 			<td></td>
- * 		<td>
- * 			@since SmartDeviceLink 2.0.0
- * 			@deprecated in SmartDeviceLink 7.1.0
- * 		</td>
+ * 			<td>true</td>
+ * 			<td>The information about the park brake: - true, if active - false if not.</td>
+ * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>passengerDoorAjar</td>
  * 			<td>Boolean</td>
- * 			<td>References signal "DrStatPsngr_B_Actl". Deprecated starting with RPC Spec 7.1.0.</td>
- * 			<td>N</td>
- * 			<td></td>
- * 			<td>
- * 				@since SmartDeviceLink 2.0.0
- * 				@deprecated in SmartDeviceLink 7.1.0
- * 			</td>
+ * 			<td>true</td>
+ * 			<td>The information about the park brake: - true, if active - false if not.</td>
+ * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>rearLeftDoorAjar</td>
  * 			<td>Boolean</td>
- * 			<td>References signal "DrStatRl_B_Actl". Deprecated starting with RPC Spec 7.1.0.</td>
- * 			<td>N</td>
- * 			<td></td>
- * 			<td>
- * 			   @since SmartDeviceLink 2.0.0
- * 			   @deprecated in SmartDeviceLink 7.1.0
- * 			</td>
+ * 			<td>true</td>
+ * 			<td>The information about the park brake: - true, if active - false if not.</td>
+ * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>rearRightDoorAjar</td>
  * 			<td>Boolean</td>
- * 			<td>References signal "DrStatRr_B_Actl". Deprecated starting with RPC Spec 7.1.0.</td>
- * 			<td>N</td>
- * 			<td></td>
- * 			<td>
- * 				@since SmartDeviceLink 2.0.0
- * 				@deprecated in SmartDeviceLink 7.1.0
- * 			</td>
+ * 			<td>true</td>
+ * 			<td>References signal "DrStatRr_B_Actl".</td>
+ * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>doorStatuses</td>
@@ -137,7 +127,7 @@ import java.util.List;
  * 			<td>N</td>
  * 			<td>{"array_min_size": 0, "array_max_size": 100}</td>
  * 			<td>
- * 			   @since SmartDeviceLink 7.1.0
+ * 				@since SmartDeviceLink 7.1.0
  * 			</td>
  * 		</tr>
  * 		<tr>
@@ -149,7 +139,7 @@ import java.util.List;
  * 			<td>
  * 				@since SmartDeviceLink 7.1.0
  * 			</td>
- *    </tr>
+ * 		</tr>
  *  </table>
  *
  * @see SubscribeVehicleData
