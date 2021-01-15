@@ -40,6 +40,7 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
         msg.setEndTime(TestValues.GENERAL_STARTTIME);
         msg.setUpdateMode(TestValues.GENERAL_UPDATEMODE);
         msg.setAudioStreamingIndicator(TestValues.GENERAL_AUDIO_STREAMING_INDICATOR);
+        msg.setCountRate(TestValues.GENERAL_FLOAT);
 
         return msg;
     }
@@ -63,6 +64,7 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
             result.put(SetMediaClockTimer.KEY_END_TIME, TestValues.JSON_STARTTIME);
             result.put(SetMediaClockTimer.KEY_UPDATE_MODE, TestValues.GENERAL_UPDATEMODE);
             result.put(SetMediaClockTimer.KEY_AUDIO_STREAMING_INDICATOR, TestValues.GENERAL_AUDIO_STREAMING_INDICATOR);
+            result.put(SetMediaClockTimer.KEY_COUNT_RATE, TestValues.GENERAL_FLOAT);
         } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
@@ -80,12 +82,14 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
         StartTime testEndTime = ((SetMediaClockTimer) msg).getEndTime();
         UpdateMode testUpdateMode = ((SetMediaClockTimer) msg).getUpdateMode();
         AudioStreamingIndicator testAudioStreamingIndicator = ((SetMediaClockTimer) msg).getAudioStreamingIndicator();
+        Float testCountRate = ((SetMediaClockTimer) msg).getCountRate();
 
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_UPDATEMODE, testUpdateMode);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_AUDIO_STREAMING_INDICATOR, testAudioStreamingIndicator);
         assertTrue(TestValues.TRUE, Validator.validateStartTime(TestValues.GENERAL_STARTTIME, testStartTime));
         assertTrue(TestValues.TRUE, Validator.validateStartTime(TestValues.GENERAL_STARTTIME, testEndTime));
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_FLOAT, testCountRate);
 
         // Invalid/Null Tests
         SetMediaClockTimer msg = new SetMediaClockTimer();
@@ -96,6 +100,7 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
         assertNull(TestValues.NULL, msg.getEndTime());
         assertNull(TestValues.NULL, msg.getUpdateMode());
         assertNull(TestValues.NULL, msg.getAudioStreamingIndicator());
+        assertNull(TestValues.NULL, msg.getCountRate());
     }
 
     /**
@@ -162,6 +167,9 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
         assertNull(TestValues.NULL, msg.getStartTime());
         assertNull(TestValues.NULL, msg.getEndTime());
         assertEquals(TestValues.MATCH, TestValues.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
+
+        msg = new SetMediaClockTimer().setCountRate(TestValues.GENERAL_FLOAT);
+        assertEquals(TestValues.GENERAL_FLOAT, msg.getCountRate());
     }
 
     /**

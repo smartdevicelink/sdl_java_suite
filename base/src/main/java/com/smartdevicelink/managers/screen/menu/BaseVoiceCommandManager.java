@@ -34,47 +34,48 @@ package com.smartdevicelink.managers.screen.menu;
 
 import androidx.annotation.NonNull;
 
+import com.livio.taskmaster.Queue;
+import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.rpc.AddCommand;
-import com.smartdevicelink.proxy.rpc.DeleteCommand;
+import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
-import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 abstract class BaseVoiceCommandManager extends BaseSubManager {
     private static final String TAG = "BaseVoiceCommandManager";
-    List<VoiceCommand> voiceCommands, oldVoiceCommands;
-
-    List<AddCommand> inProgressUpdate;
+    List<VoiceCommand> voiceCommands, currentVoiceCommands;
 
     int lastVoiceCommandId;
     private static final int voiceCommandIdMin = 1900000000;
 
-    boolean waitingOnHMIUpdate;
-    boolean hasQueuedUpdate;
-
     HMILevel currentHMILevel;
     OnRPCNotificationListener hmiListener;
     OnRPCNotificationListener commandListener;
+
+    Queue transactionQueue;
+    VoiceCommandUpdateOperation updateOperation;
+
 
     // CONSTRUCTORS
 
     BaseVoiceCommandManager(@NonNull ISdl internalInterface) {
         super(internalInterface);
 
-        currentHMILevel = HMILevel.HMI_NONE;
+        this.transactionQueue = newTransactionQueue();
+
+        currentHMILevel =  null;
         addListeners();
         lastVoiceCommandId = voiceCommandIdMin;
     }
@@ -90,12 +91,16 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
         lastVoiceCommandId = voiceCommandIdMin;
         voiceCommands = null;
-        oldVoiceCommands = null;
+        currentVoiceCommands = null;
 
-        waitingOnHMIUpdate = false;
         currentHMILevel = null;
-        inProgressUpdate = null;
-        hasQueuedUpdate = false;
+
+        if (transactionQueue != null) {
+            transactionQueue.close();
+        }
+        transactionQueue = null;
+
+        updateOperation = null;
 
         // remove listeners
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
@@ -104,172 +109,75 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
         super.dispose();
     }
 
+    private Queue newTransactionQueue() {
+        Queue queue = internalInterface.getTaskmaster().createQueue("VoiceCommandManager", 4, false);
+        queue.pause();
+        return queue;
+    }
+
+    // If the HMI level is NONE since we want to delay sending RPCs until we're in non-NONE
+    private void updateTransactionQueueSuspended() {
+        if (HMILevel.HMI_NONE.equals(currentHMILevel)) {
+            DebugTool.logInfo(TAG, "Suspending the transaction queue. Current HMI level is NONE");
+            transactionQueue.pause();
+        } else {
+            DebugTool.logInfo(TAG, "Starting the transaction queue");
+            transactionQueue.resume();
+        }
+    }
+
     // SETTERS
 
     public void setVoiceCommands(List<VoiceCommand> voiceCommands) {
 
         // we actually need voice commands to set.
-        if (voiceCommands == null || voiceCommands.size() == 0) {
-            DebugTool.logInfo(TAG, "Trying to set empty list of voice commands, returning");
+        if (voiceCommands == null || voiceCommands.equals(this.voiceCommands)) {
+            DebugTool.logInfo(TAG, "Voice commands list was null or matches the current voice commands");
             return;
         }
 
-        // make sure hmi is not none
-        if (currentHMILevel == null || currentHMILevel == HMILevel.HMI_NONE) {
-            // Trying to send on HMI_NONE, waiting for full
-            this.voiceCommands = new ArrayList<>(voiceCommands);
-            waitingOnHMIUpdate = true;
-            return;
-        }
-
-        waitingOnHMIUpdate = false;
-        lastVoiceCommandId = voiceCommandIdMin;
         updateIdsOnVoiceCommands(voiceCommands);
-        this.oldVoiceCommands = new ArrayList<>();
-        if (this.voiceCommands != null && !this.voiceCommands.isEmpty()) {
-            this.oldVoiceCommands.addAll(this.voiceCommands);
-        }
         this.voiceCommands = new ArrayList<>(voiceCommands);
 
-        update();
+        cleanTransactionQueue();
+        updateOperation = new VoiceCommandUpdateOperation(internalInterface, currentVoiceCommands, voiceCommands, new VoiceCommandUpdateOperation.VoiceCommandChangesListener() {
+            @Override
+            public void updateVoiceCommands(List<VoiceCommand> newCurrentVoiceCommands, HashMap<RPCRequest, String> errorObject) {
+                DebugTool.logInfo(TAG, "The updated list of VoiceCommands: " + newCurrentVoiceCommands);
+                if (!errorObject.isEmpty()) {
+                    DebugTool.logError(TAG, "The failed Add and Delete Commands: " + errorObject);
+                }
+                currentVoiceCommands = newCurrentVoiceCommands;
+                updatePendingOperations(newCurrentVoiceCommands);
+                updateOperation = null;
+            }
+        });
+        transactionQueue.add(updateOperation, false);
     }
 
     public List<VoiceCommand> getVoiceCommands() {
         return voiceCommands;
     }
 
-    // UPDATING SYSTEM
-
-    private void update() {
-
-        if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE)) {
-            waitingOnHMIUpdate = true;
-            return;
+    private void cleanTransactionQueue() {
+        if (transactionQueue != null) {
+            transactionQueue.clear();
         }
 
-        if (inProgressUpdate != null) {
-            // There's an in-progress update, put this on hold
-            hasQueuedUpdate = true;
-            return;
+        if (updateOperation != null) {
+            updateOperation.cancelTask();
+            updateOperation = null;
         }
-
-        sendDeleteCurrentVoiceCommands(new CompletionListener() {
-            @Override
-            public void onComplete(boolean success) {
-                // we don't care about errors from deleting, send new add commands
-                sendCurrentVoiceCommands(new CompletionListener() {
-                    @Override
-                    public void onComplete(boolean success2) {
-                        inProgressUpdate = null;
-
-                        if (hasQueuedUpdate) {
-                            update();
-                            hasQueuedUpdate = false;
-                        }
-
-                        if (!success2) {
-                            DebugTool.logError(TAG, "Error sending voice commands");
-                        }
-                    }
-                });
-            }
-        });
-
     }
 
-    // DELETING OLD MENU ITEMS
-
-    private void sendDeleteCurrentVoiceCommands(final CompletionListener listener) {
-
-        if (oldVoiceCommands == null || oldVoiceCommands.size() == 0) {
-            if (listener != null) {
-                listener.onComplete(true);
+    private void updatePendingOperations(List<VoiceCommand> newCurrentVoiceCommands) {
+        for (Task operation : transactionQueue.getTasksAsList()) {
+            if (operation.getState() == Task.IN_PROGRESS) {
+                continue;
             }
-            return;
+            VoiceCommandUpdateOperation vcOperation = (VoiceCommandUpdateOperation) operation;
+            vcOperation.oldVoiceCommands = newCurrentVoiceCommands;
         }
-
-        List<DeleteCommand> deleteVoiceCommands = deleteCommandsForVoiceCommands(oldVoiceCommands);
-        oldVoiceCommands.clear();
-        internalInterface.sendRPCs(deleteVoiceCommands, new OnMultipleRequestListener() {
-            @Override
-            public void onUpdate(int remainingRequests) {
-
-            }
-
-            @Override
-            public void onFinished() {
-                DebugTool.logInfo(TAG, "Successfully deleted old voice commands");
-                if (listener != null) {
-                    listener.onComplete(true);
-                }
-            }
-
-            @Override
-            public void onResponse(int correlationId, RPCResponse response) {
-            }
-        });
-
-    }
-
-    // SEND NEW MENU ITEMS
-
-    private void sendCurrentVoiceCommands(final CompletionListener listener) {
-
-        if (voiceCommands == null || voiceCommands.size() == 0) {
-            if (listener != null) {
-                listener.onComplete(true); // no voice commands to send doesnt mean that its an error
-            }
-            return;
-        }
-
-        inProgressUpdate = addCommandsForVoiceCommands(voiceCommands);
-
-        internalInterface.sendRPCs(inProgressUpdate, new OnMultipleRequestListener() {
-            @Override
-            public void onUpdate(int remainingRequests) {
-
-            }
-
-            @Override
-            public void onFinished() {
-                DebugTool.logInfo(TAG, "Sending Voice Commands Complete");
-                if (listener != null) {
-                    listener.onComplete(true);
-                }
-                oldVoiceCommands = voiceCommands;
-            }
-
-            @Override
-            public void onResponse(int correlationId, RPCResponse response) {
-            }
-        });
-    }
-
-    // DELETES
-
-    List<DeleteCommand> deleteCommandsForVoiceCommands(List<VoiceCommand> voiceCommands) {
-        List<DeleteCommand> deleteCommandList = new ArrayList<>();
-        for (VoiceCommand command : voiceCommands) {
-            DeleteCommand delete = new DeleteCommand(command.getCommandId());
-            deleteCommandList.add(delete);
-        }
-        return deleteCommandList;
-    }
-
-    // COMMANDS
-
-    List<AddCommand> addCommandsForVoiceCommands(List<VoiceCommand> voiceCommands) {
-        List<AddCommand> addCommandList = new ArrayList<>();
-        for (VoiceCommand command : voiceCommands) {
-            addCommandList.add(commandForVoiceCommand(command));
-        }
-        return addCommandList;
-    }
-
-    private AddCommand commandForVoiceCommand(VoiceCommand voiceCommand) {
-        AddCommand command = new AddCommand(voiceCommand.getCommandId());
-        command.setVrCommands(voiceCommand.getVoiceCommands());
-        return command;
     }
 
     // HELPERS
@@ -292,14 +200,8 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
                 if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
                     return;
                 }
-                HMILevel oldHMILevel = currentHMILevel;
                 currentHMILevel = onHMIStatus.getHmiLevel();
-                // Auto-send an update if we were in NONE and now we are not
-                if (oldHMILevel == HMILevel.HMI_NONE && currentHMILevel != HMILevel.HMI_NONE) {
-                    if (waitingOnHMIUpdate) {
-                        setVoiceCommands(voiceCommands);
-                    }
-                }
+                updateTransactionQueueSuspended();
             }
         };
         internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);

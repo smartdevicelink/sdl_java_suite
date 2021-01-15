@@ -344,6 +344,7 @@ class PresentChoiceSetOperation extends Task {
                         @Override
                         public void onUpdatedAutoCompleteList(List<String> updatedAutoCompleteList) {
                             keyboardProperties.setAutoCompleteList(updatedAutoCompleteList != null ? updatedAutoCompleteList : new ArrayList<String>());
+                            keyboardProperties.setAutoCompleteText(updatedAutoCompleteList != null && !updatedAutoCompleteList.isEmpty() ? updatedAutoCompleteList.get(0) : null);
                             updateKeyboardProperties(null);
                         }
                     });
