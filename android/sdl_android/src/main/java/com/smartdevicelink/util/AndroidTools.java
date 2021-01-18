@@ -46,6 +46,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.BatteryManager;
 
+import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.transport.TransportConstants;
 
 import java.io.BufferedInputStream;
@@ -105,7 +106,7 @@ public class AndroidTools {
      * @param comparator the Comparator to sort the resulting list. If null is supplied, they will be returned as they are from the system
      * @return the sorted list of SdlAppInfo objects that represent SDL apps
      */
-    public static List<SdlAppInfo> querySdlAppInfo(Context context, Comparator<SdlAppInfo> comparator) {
+    public static List<SdlAppInfo> querySdlAppInfo(Context context, Comparator<SdlAppInfo> comparator, VehicleType type) {
         List<SdlAppInfo> sdlAppInfoList = new ArrayList<>();
         Intent intent = new Intent(TransportConstants.ROUTER_SERVICE_ACTION);
         List<ResolveInfo> resolveInfoList = context.getPackageManager().queryIntentServices(intent, PackageManager.GET_META_DATA);
@@ -118,7 +119,10 @@ public class AndroidTools {
                     PackageInfo packageInfo;
                     try {
                         packageInfo = packageManager.getPackageInfo(info.serviceInfo.packageName, 0);
-                        sdlAppInfoList.add(new SdlAppInfo(info, packageInfo, context));
+                        SdlAppInfo appInformation = new SdlAppInfo(info, packageInfo, context);
+                        if (type == null || (appInformation.vehicleMakesList != null && appInformation.vehicleMakesList.contains(type))) {
+                            sdlAppInfoList.add(appInformation);
+                        }
                     } catch (NameNotFoundException e) {
                         //Package was not found, likely a sign the resolve info can't be trusted.
                     }

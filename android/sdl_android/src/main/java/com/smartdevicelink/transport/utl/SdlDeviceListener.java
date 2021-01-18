@@ -237,35 +237,14 @@ public class SdlDeviceListener {
             }
         }
 
-        public void notifyConnection(@Nullable VehicleType vehicleType){
-            if (vehicleType == null || checkVehicleTypeSupported(vehicleType)) {
-                SdlDeviceListener sdlListener = this.provider.get();
-                sdlListener.setSDLConnectedStatus(sdlListener.contextWeakReference.get(), sdlListener.connectedDevice.getAddress(), true);
-                boolean keepConnectionOpen = sdlListener.callback.onTransportConnected(sdlListener.contextWeakReference.get(), sdlListener.connectedDevice, vehicleType);
-                if (!keepConnectionOpen) {
-                    sdlListener.bluetoothTransport.stop();
-                    sdlListener.bluetoothTransport = null;
-                    sdlListener.timeoutHandler.removeCallbacks(sdlListener.timeoutRunner);
-                }
-            }
-        }
-
-        public boolean checkVehicleTypeSupported(@Nullable VehicleType type) {
-            try {
-                SdlDeviceListener sdlListener = this.provider.get();
-                Context context = sdlListener.contextWeakReference.get();
-                ComponentName myService = new ComponentName(context, this.getClass());
-                Bundle metaData = context.getPackageManager().getServiceInfo(myService, PackageManager.GET_META_DATA).metaData;
-                XmlResourceParser parser = context.getResources().getXml(metaData.getInt(context.getResources().getString(R.string.sdl_oem_vehicle_type_filter_name)));
-                List<VehicleType> vehicleMakes = deserializeVehicleMake(parser);
-
-                if (vehicleMakes.contains(type)) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } catch (PackageManager.NameNotFoundException e) {
-                return false;
+        public void notifyConnection(@Nullable VehicleType vehicleType) {
+            SdlDeviceListener sdlListener = this.provider.get();
+            sdlListener.setSDLConnectedStatus(sdlListener.contextWeakReference.get(), sdlListener.connectedDevice.getAddress(), true);
+            boolean keepConnectionOpen = sdlListener.callback.onTransportConnected(sdlListener.contextWeakReference.get(), sdlListener.connectedDevice, vehicleType);
+            if (!keepConnectionOpen) {
+                sdlListener.bluetoothTransport.stop();
+                sdlListener.bluetoothTransport = null;
+                sdlListener.timeoutHandler.removeCallbacks(sdlListener.timeoutRunner);
             }
         }
     }

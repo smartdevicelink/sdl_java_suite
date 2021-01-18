@@ -1124,7 +1124,7 @@ public class SdlRouterService extends Service {
 
 
         if (!initCheck()) { // Run checks on process and permissions
-            deployNextRouterService();
+            deployNextRouterService(receivedVehicleType);
             closeSelf();
             return;
         }
@@ -1150,8 +1150,8 @@ public class SdlRouterService extends Service {
     /**
      * The method will attempt to start up the next router service in line based on the sorting criteria of best router service.
      */
-    protected void deployNextRouterService() {
-        List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(getApplicationContext(), new SdlAppInfo.BestRouterComparator());
+    protected void deployNextRouterService(VehicleType vehicleType) {
+        List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(getApplicationContext(), new SdlAppInfo.BestRouterComparator(), vehicleType);
         if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty()) {
             ComponentName name = new ComponentName(this, this.getClass());
             SdlAppInfo info;
