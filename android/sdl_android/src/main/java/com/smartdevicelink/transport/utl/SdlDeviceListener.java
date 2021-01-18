@@ -43,6 +43,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -188,6 +189,7 @@ public class SdlDeviceListener {
         }
 
         public void sendStartService(){
+            Log.d("MyTagLog", "send start service");
             SdlDeviceListener sdlListener = this.provider.get();
             byte[] serviceProbe = SdlPacketFactory.createStartSession(SessionType.RPC, 0x00, (byte)1, (byte)0x00, false).constructPacket();
             if(sdlListener.bluetoothTransport !=null && sdlListener.bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
@@ -198,6 +200,7 @@ public class SdlDeviceListener {
         public void onPacketRead(SdlPacket packet){
             SdlDeviceListener sdlListener = this.provider.get();
             VehicleType vehicleType = null;
+            Log.d("MyTagLog", "packet read");
             if (packet.getVersion() >=  6 && packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_ACK) {
                 //parse vehicle Type info from connected system
                 vehicleType = getVehicleType(packet);
@@ -223,6 +226,10 @@ public class SdlDeviceListener {
                 type.setModel(model);
                 type.setModelYear(modelYear);
                 type.setTrim(vehicleTrim);
+                Log.d("MyTagLog", make == null ? "make was null" : make);
+                Log.d("MyTagLog", model == null ? "model was null" : model);
+                Log.d("MyTagLog", modelYear == null ? "modelYear was null" : modelYear);
+                Log.d("MyTagLog", vehicleTrim == null ? "vehicleTrim was null" : make);
                 this.provider.get().cachedVehicleType = type;
                 return type;
             } else {
