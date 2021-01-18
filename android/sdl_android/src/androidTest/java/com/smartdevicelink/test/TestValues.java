@@ -1416,6 +1416,7 @@ public class TestValues {
             JSON_TEXTFIELDTYPES.put(MetadataType.MEDIA_ALBUM);
             JSON_TEXTFIELDTYPES.put(MetadataType.MEDIA_ARTIST);
 
+            JSON_GRID.put(SeatLocation.KEY_GRID, GENERAL_LOCATION_GRID.serializeJSON());
             JSON_SEAT_LOCATIONS.put(JSON_GRID);
             JSON_MODULE_INFO.put(ModuleInfo.KEY_MODULE_ID, TestValues.GENERAL_STRING);
             JSON_MODULE_INFO.put(ModuleInfo.KEY_MODULE_LOCATION, TestValues.JSON_GRID);
