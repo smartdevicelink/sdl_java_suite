@@ -149,54 +149,36 @@ public class SdlAppInfo {
 
     public static List<VehicleType> deserializeVehicleMake(XmlResourceParser parser) {
         List<VehicleType> vehicleMakesList = new ArrayList<VehicleType>();
-
         try {
             int eventType = parser.getEventType();
-            VehicleType vehicleMake = null;
-            String data = null;
             while (eventType != XmlPullParser.END_DOCUMENT) {
-                String tagname = parser.getName();
-                switch (eventType) {
-                    case XmlPullParser.START_TAG:
-                        if (tagname.equalsIgnoreCase("vehicle-type")) {
-                            // create a new instance of employee
-                            vehicleMake = new VehicleType();
-                        }
-                        break;
-
-                    case XmlPullParser.TEXT:
-                        data = parser.getText();
-                        break;
-
-                    case XmlPullParser.END_TAG:
-                        if (vehicleMake == null) {
-                            break;
-                        }
-                        if (tagname.equalsIgnoreCase("vehicle-type")) {
-                            // add employee object to list
+                if (eventType == XmlPullParser.START_TAG) {
+                    String tagname = parser.getName();
+                    if (tagname.equalsIgnoreCase("vehicle-type")) {
+                        VehicleType vehicleMake = new VehicleType();
+                        String make = parser.getAttributeValue(null, "make");
+                        if (null != make) {
+                            vehicleMake.setMake(make);
+                            String model = parser.getAttributeValue(null, "model");
+                            if (null != model)
+                                vehicleMake.setModel(model);
+                            String modelYear = parser.getAttributeValue(null, "modelYear");
+                            if (null != modelYear)
+                                vehicleMake.setModelYear(modelYear);
+                            String trim = parser.getAttributeValue(null, "trim");
+                            if (null != trim)
+                                vehicleMake.setTrim(trim);
                             vehicleMakesList.add(vehicleMake);
-                        } else if (tagname.equalsIgnoreCase("make")) {
-                            vehicleMake.setMake(data == null ? "" : data);
-                        } else if (tagname.equalsIgnoreCase("model")) {
-                            vehicleMake.setModel(data);
-                        } else if (tagname.equalsIgnoreCase("modelYear")) {
-                            vehicleMake.setModelYear(data);
-                        } else if (tagname.equalsIgnoreCase("trim")){
-                            vehicleMake.setTrim(data);
                         }
-                        break;
-                    default:
-                        break;
+                    }
                 }
                 eventType = parser.next();
             }
-
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return vehicleMakesList;
     }
     /**
