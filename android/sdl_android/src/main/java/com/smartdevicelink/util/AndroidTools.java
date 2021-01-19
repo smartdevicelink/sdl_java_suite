@@ -120,7 +120,7 @@ public class AndroidTools {
                     try {
                         packageInfo = packageManager.getPackageInfo(info.serviceInfo.packageName, 0);
                         SdlAppInfo appInformation = new SdlAppInfo(info, packageInfo, context);
-                        if (type == null || (appInformation.vehicleMakesList != null && appInformation.vehicleMakesList.contains(type))) {
+                        if (type == null && appInformation.vehicleMakesList.contains(type)) {
                             sdlAppInfoList.add(appInformation);
                         }
                     } catch (NameNotFoundException e) {
