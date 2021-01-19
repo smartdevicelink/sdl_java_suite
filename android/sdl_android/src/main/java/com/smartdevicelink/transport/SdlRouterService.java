@@ -1764,7 +1764,9 @@ public class SdlRouterService extends Service {
         startService.putExtra(TransportConstants.FORCE_TRANSPORT_CONNECTED, true);
         startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE, getBaseContext().getPackageName());
         startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME, new ComponentName(this, this.getClass()));
-        startService.putExtra(TransportConstants.CONNECT_VEHICLE_INFO, receivedVehicleType.getStore());
+        if (receivedVehicleType != null) {
+            startService.putExtra(TransportConstants.CONNECT_VEHICLE_INFO, receivedVehicleType.getStore());
+        }
 
         if (record != null && record.getType() != null) {
             startService.putExtra(TransportConstants.START_ROUTER_SERVICE_TRANSPORT_CONNECTED, record.getType().toString());
