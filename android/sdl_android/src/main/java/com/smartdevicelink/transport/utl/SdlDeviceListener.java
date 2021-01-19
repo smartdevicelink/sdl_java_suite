@@ -215,10 +215,14 @@ public class SdlDeviceListener {
         }
 
         private @Nullable VehicleType getVehicleType(SdlPacket packet) {
-            String make = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_MAKE);
-            String model = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_MODEL);
-            String modelYear = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_MODEL_YEAR);
-            String vehicleTrim = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_TRIM);
+//            String make = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_MAKE);
+//            String model = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_MODEL);
+//            String modelYear = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_MODEL_YEAR);
+//            String vehicleTrim = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_TRIM);
+            String make = "Ford";
+            String model = "Mustang";
+            String modelYear = "2019";
+            String vehicleTrim = "GT";
             if (make != null) {
                 // checking if tags have come from core
                 VehicleType type = new VehicleType();
