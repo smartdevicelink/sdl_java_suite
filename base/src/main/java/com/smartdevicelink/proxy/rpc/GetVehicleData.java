@@ -114,7 +114,7 @@ import java.util.Hashtable;
  * 			<td>
  * 				@since SmartDeviceLink 2.0.0
  * 				@deprecated in SmartDeviceLink 7.1.0
- *          </td>
+ * 			</td>
  * 		</tr>
  * 		<tr>
  * 			<td>vin</td>
