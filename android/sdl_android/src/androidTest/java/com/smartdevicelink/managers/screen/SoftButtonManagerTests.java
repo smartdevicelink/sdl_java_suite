@@ -8,6 +8,7 @@ import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
 import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -127,6 +128,10 @@ public class SoftButtonManagerTests {
             }
         };
         doAnswer(onFileManagerUploadAnswer).when(fileManager).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
+
+
+        // We still want the mock fileManager to use the real implementation for fileNeedsUpload()
+        when(fileManager.fileNeedsUpload(any(SdlFile.class))).thenCallRealMethod();
 
 
         // Create softButtonManager

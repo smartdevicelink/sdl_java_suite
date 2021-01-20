@@ -34,31 +34,16 @@ package com.smartdevicelink.managers.file;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
-
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
-import com.smartdevicelink.proxy.rpc.PutFile;
 import com.smartdevicelink.util.DebugTool;
-import com.smartdevicelink.util.FileUtls;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
+import java.io.*;
 
 /**
  * <strong>FileManager</strong> <br>
- * <p>
  * Note: This class must be accessed through the SdlManager. Do not instantiate it by itself. <br>
- * <p>
- * The SDLFileManager uploads files and keeps track of all the uploaded files names during a session. <br>
- * <p>
- * We need to add the following struct: SDLFile<br>
- * <p>
- * It is broken down to these areas: <br>
- * <p>
- * 1. Getters <br>
- * 2. Deletion methods <br>
- * 3. Uploading Files / Artwork
+ * The FileManager uploads files and keeps track of all the uploaded files names during a session. <br>
  */
 public class FileManager extends BaseFileManager {
 
@@ -74,76 +59,28 @@ public class FileManager extends BaseFileManager {
         super(internalInterface, fileManagerConfig);
     }
 
-    /**
-     * Creates and returns a PutFile request that would upload a given SdlFile
-     *
-     * @param file SdlFile with fileName and one of A) fileData, B) Uri, or C) resourceID set
-     * @return a valid PutFile request if SdlFile contained a fileName and sufficient data
-     */
     @Override
-    PutFile createPutFile(@NonNull final SdlFile file) {
-        PutFile putFile = new PutFile();
-        if (file.getName() == null) {
-            throw new IllegalArgumentException("You must specify an file name in the SdlFile");
-        } else {
-            putFile.setSdlFileName(file.getName());
-        }
+    InputStream openInputStreamWithFile(@NonNull SdlFile file) {
+        InputStream inputStream = null;
 
         if (file.getFilePath() != null) {
-            //Attempt to access the file via a path
-            byte[] data = FileUtls.getFileData(file.getFilePath());
-            if (data != null) {
-                putFile.setFileData(data);
-            } else {
-                throw new IllegalArgumentException("File at path was empty");
+            try {
+                inputStream = new FileInputStream(file.getFilePath());
+            } catch (FileNotFoundException e) {
+                DebugTool.logError(TAG, String.format("File at %s cannot be found.", file.getFilePath()));
             }
         } else if (file.getURI() != null) {
-            // Use URI to upload file
-            byte[] data = contentsOfUri(file.getURI());
-            if (data != null) {
-                putFile.setFileData(data);
-            } else {
-                throw new IllegalArgumentException("Uri was empty");
+            try {
+                inputStream = file.getURI().toURL().openStream();
+            } catch (IOException e) {
+                DebugTool.logError(TAG, String.format("File at %s cannot be found.", file.getURI()));
             }
         } else if (file.getFileData() != null) {
-            // Use file data (raw bytes) to upload file
-            putFile.setFileData(file.getFileData());
+            inputStream = new ByteArrayInputStream(file.getFileData());
         } else {
-            throw new IllegalArgumentException("The SdlFile to upload does " +
-                    "not specify its resourceId, Uri, or file data");
+            DebugTool.logError(TAG, "The SdlFile to upload does not specify its path, URI, or file data");
         }
 
-        if (file.getType() != null) {
-            putFile.setFileType(file.getType());
-        }
-        putFile.setPersistentFile(file.isPersistent());
-
-        return putFile;
-    }
-
-
-    /**
-     * Helper method to take Uri and turn it into byte array
-     *
-     * @param uri Uri for desired file
-     * @return Resulting byte array
-     */
-    private byte[] contentsOfUri(URI uri) {
-        InputStream is = null;
-        try {
-            is = uri.toURL().openStream();
-            return contentsOfInputStream(is);
-        } catch (IOException e) {
-            DebugTool.logError(TAG, "Can't read from URI", e);
-            return null;
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        return inputStream;
     }
 }
