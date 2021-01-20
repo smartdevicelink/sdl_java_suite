@@ -39,8 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AlertView implements Cloneable {
-
-    private static final String TAG = "AlertView";
+    
     private static Integer defaultTimeout = 5;
     private static final int TIMEOUT_MIN = 3;
     private static final int TIMEOUT_MAX = 10;

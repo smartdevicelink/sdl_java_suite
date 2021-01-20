@@ -51,9 +51,6 @@ public class AudioData {
     // The audio files that will be uploaded and used.
     private HashMap<String, SdlFile> audioFiles;
 
-    public AudioData() {
-    }
-
     public AudioData(@NonNull SdlFile audioFile) {
         this.audioFiles = new HashMap<>();
         this.audioData = new ArrayList<>();

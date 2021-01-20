@@ -42,10 +42,6 @@ public class AlertAudioData extends AudioData implements Cloneable {
     // Whether the alert tone should be played before the prompt (if any) is spoken. Defaults to false
     private boolean playTone;
 
-    public AlertAudioData() {
-        super();
-    }
-
     public AlertAudioData(@NonNull SdlFile audioFile) {
         super(audioFile);
     }
