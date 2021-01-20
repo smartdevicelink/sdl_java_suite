@@ -1279,7 +1279,8 @@ public class SdlRouterService extends Service {
 
             if (intent.hasExtra(TransportConstants.CONNECT_VEHICLE_INFO)){
                 receivedVehicleType = new VehicleType(
-                        (Hashtable<String, Object>)intent.getSerializableExtra(TransportConstants.CONNECT_VEHICLE_INFO));
+                        (HashMap<String, Object>)intent.getSerializableExtra(TransportConstants.CONNECT_VEHICLE_INFO)
+                );
             }
 
             if (intent.hasExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA)) {

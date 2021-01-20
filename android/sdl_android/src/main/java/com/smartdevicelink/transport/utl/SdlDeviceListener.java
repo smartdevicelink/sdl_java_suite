@@ -34,12 +34,8 @@
 package com.smartdevicelink.transport.utl;
 
 import android.bluetooth.BluetoothDevice;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.res.XmlResourceParser;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -48,10 +44,9 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.smartdevicelink.R;
+import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlPacketFactory;
-import com.smartdevicelink.protocol.enums.ControlFrameTags;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.transport.MultiplexBaseTransport;
@@ -60,10 +55,13 @@ import com.smartdevicelink.transport.SdlRouterService;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.SdlAppInfo;
 
-import java.lang.ref.WeakReference;
-import java.util.List;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import static com.smartdevicelink.util.SdlAppInfo.deserializeVehicleMake;
+import java.lang.ref.WeakReference;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
 
 public class SdlDeviceListener {
@@ -71,6 +69,7 @@ public class SdlDeviceListener {
     private static final String TAG = "SdlListener";
     private static final int MIN_VERSION_REQUIRED = 13;
     private static final String SDL_DEVICE_STATUS_SHARED_PREFS = "sdl.device.status";
+    private static final String SDL_DEVICE_VEHICLES_PREFS = "sdl.device.vehicles";
     private static final Object LOCK = new Object(), RUNNING_LOCK = new Object();
 
     private final WeakReference<Context> contextWeakReference;
@@ -111,7 +110,7 @@ public class SdlDeviceListener {
         if (hasSDLConnected(contextWeakReference.get(), connectedDevice.getAddress())) {
             DebugTool.logInfo(TAG, ": Confirmed SDL device, should start router service");
             //This device has connected to SDL previously, it is ok to start the RS right now
-            callback.onTransportConnected(contextWeakReference.get(), connectedDevice, cachedVehicleType);
+            callback.onTransportConnected(contextWeakReference.get(), connectedDevice, new VehicleType(getVehicleTypeFromPrefs(contextWeakReference.get(), connectedDevice.getAddress())));
             return;
         }
         synchronized (RUNNING_LOCK) {
@@ -200,18 +199,20 @@ public class SdlDeviceListener {
         public void onPacketRead(SdlPacket packet){
             SdlDeviceListener sdlListener = this.provider.get();
             VehicleType vehicleType = null;
-            Log.d("MyTagLog", "packet read");
-            if (packet.getVersion() >=  6 && packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_ACK) {
+            if (packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_ACK) {
                 //parse vehicle Type info from connected system
-                vehicleType = getVehicleType(packet);
+                if (packet.getVersion() >=  6) {
+                    vehicleType = getVehicleType(packet);
+                }
+                notifyConnection(vehicleType);
             }
-
             byte[] stopService = SdlPacketFactory.createEndSession(SessionType.RPC, (byte)packet.getSessionId(), 0, (byte)packet.getVersion(), 0).constructPacket();
             if(sdlListener.bluetoothTransport != null && sdlListener.bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
                 sdlListener.bluetoothTransport.write(stopService, 0,stopService.length);
             }
-
-            notifyConnection(vehicleType);
+            sdlListener.bluetoothTransport.stop();
+            sdlListener.bluetoothTransport = null;
+            sdlListener.timeoutHandler.removeCallbacks(sdlListener.timeoutRunner);
         }
 
         private @Nullable VehicleType getVehicleType(SdlPacket packet) {
@@ -243,12 +244,46 @@ public class SdlDeviceListener {
 
         public void notifyConnection(@Nullable VehicleType vehicleType) {
             SdlDeviceListener sdlListener = this.provider.get();
+            saveVehicleType(sdlListener.contextWeakReference.get(), vehicleType, sdlListener.connectedDevice.getAddress());
             sdlListener.setSDLConnectedStatus(sdlListener.contextWeakReference.get(), sdlListener.connectedDevice.getAddress(), true);
-            boolean keepConnectionOpen = sdlListener.callback.onTransportConnected(sdlListener.contextWeakReference.get(), sdlListener.connectedDevice, vehicleType);
-            if (!keepConnectionOpen) {
-                sdlListener.bluetoothTransport.stop();
-                sdlListener.bluetoothTransport = null;
-                sdlListener.timeoutHandler.removeCallbacks(sdlListener.timeoutRunner);
+            sdlListener.callback.onTransportConnected(sdlListener.contextWeakReference.get(), sdlListener.connectedDevice, vehicleType);
+        }
+    }
+
+    private static void saveVehicleType(Context context, VehicleType vehicleType, String address) {
+        synchronized (LOCK) {
+
+            if (vehicleType == null || address == null) {
+                return;
+            }
+            try {
+                SharedPreferences preferences = context.getSharedPreferences(SDL_DEVICE_VEHICLES_PREFS, Context.MODE_PRIVATE);
+
+                String jsonString = vehicleType.serializeJSON().toString();
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString(address, jsonString);
+                editor.commit();
+            } catch (JSONException e) {
+                Log.e(TAG, e.getMessage());
+            }
+        }
+    }
+
+    public static Hashtable<String, Object> getVehicleTypeFromPrefs(Context context, String address) {
+        synchronized (LOCK) {
+            try {
+                SharedPreferences preferences = context.getSharedPreferences(SDL_DEVICE_VEHICLES_PREFS, Context.MODE_PRIVATE);
+                String storedVehicleTypeSerialized = preferences.getString(address, null);
+
+                if (storedVehicleTypeSerialized == null) {
+                    return null;
+                } else {
+                    JSONObject object = new JSONObject(storedVehicleTypeSerialized);
+                    return JsonRPCMarshaller.deserializeJSONObject(object);
+                }
+            } catch (JSONException e) {
+                Log.e(TAG, e.getMessage());
+                return null;
             }
         }
     }
