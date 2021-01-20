@@ -59,6 +59,7 @@ import com.smartdevicelink.util.IntegrationValidator;
 import com.smartdevicelink.util.SdlAppInfo;
 import com.smartdevicelink.util.ServiceFinder;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
@@ -147,7 +148,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
             DebugTool.logError(TAG, "You cannot use the default SdlRouterService class, it must be extended in your project. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
         }
 
-        Hashtable<String, Object> vehicleInfoStore = (Hashtable<String, Object>) intent.getSerializableExtra(TransportConstants.CONNECT_VEHICLE_INFO);
+        HashMap<String, Object> vehicleInfoStore = (HashMap<String, Object>) intent.getSerializableExtra(TransportConstants.CONNECT_VEHICLE_INFO);
 
         VehicleType vehicleType;
         if (vehicleInfoStore == null || vehicleInfoStore.isEmpty()){

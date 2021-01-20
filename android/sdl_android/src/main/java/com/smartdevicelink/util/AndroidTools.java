@@ -59,6 +59,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.smartdevicelink.util.SdlAppInfo.checkIfVehicleSupported;
+
 public class AndroidTools {
     /**
      * Check to see if a component is exported
@@ -120,7 +122,7 @@ public class AndroidTools {
                     try {
                         packageInfo = packageManager.getPackageInfo(info.serviceInfo.packageName, 0);
                         SdlAppInfo appInformation = new SdlAppInfo(info, packageInfo, context);
-                        if (type == null || appInformation.vehicleMakesList.isEmpty() || appInformation.vehicleMakesList.contains(type)) {
+                        if (type == null || appInformation.vehicleMakesList.isEmpty() || checkIfVehicleSupported(appInformation.vehicleMakesList,type)) {
                             sdlAppInfoList.add(appInformation);
                         }
                     } catch (NameNotFoundException e) {

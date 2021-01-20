@@ -181,6 +181,40 @@ public class SdlAppInfo {
         }
         return vehicleMakesList;
     }
+
+    static boolean checkIfVehicleSupported(List<VehicleType> supportedVehicleList, VehicleType connectedVehicle){
+        if (null == supportedVehicleList || null == connectedVehicle){
+            return false;
+        }
+        if (supportedVehicleList.contains(connectedVehicle)){
+            return true;
+        }
+        for (VehicleType supportedVehicle :supportedVehicleList) {
+            String svMake = supportedVehicle.getMake();
+            String cvMake = connectedVehicle.getMake();
+            if(svMake != null && cvMake != null && cvMake.equalsIgnoreCase(svMake)) {
+                String svModel = supportedVehicle.getModel();
+                String cvModel = connectedVehicle.getModel();
+                if (svModel != null && cvModel != null && cvModel.equalsIgnoreCase(svModel)) {
+                    boolean ret = true;
+                    String svMY = supportedVehicle.getModelYear();
+                    String cvMY = connectedVehicle.getModelYear();
+                    if (svMY != null && cvMY != null) {
+                        ret = cvMY.equalsIgnoreCase(svMY);
+                    }
+                    String svTrim = supportedVehicle.getTrim();
+                    String cvTrim = connectedVehicle.getTrim();
+                    if (svTrim != null && cvTrim != null) {
+                        ret &= cvTrim.equalsIgnoreCase(svTrim);
+                    }
+                    if (ret){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
     /**
      * This comparator will sort a list to find the best router service to start out of the known SDL enabled apps
      */
