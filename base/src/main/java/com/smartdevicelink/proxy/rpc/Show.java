@@ -117,11 +117,14 @@ import java.util.List;
  * 		<tr>
  * 			<td>mediaClock</td>
  * 			<td>String</td>
- * 			<td><p>Text value for MediaClock field.</p> <p>Has to be properly formatted by Mobile App according to SDL capabilities.</p>If this text is set, any automatic media clock updates previously set with SetMediaClockTimer will be stopped.</td>
+ * 			<td>Text value for MediaClock field. Has to be properly formatted by Mobile App according to the module's capabilities. If this text is set, any automatic media clock updates previously set with SetMediaClockTimer will be stopped.</td>
  *                 <td>N</td>
- * 			<td><p>Must be properly formatted as described in the MediaClockFormat enumeration. </p><p>If a value of five spaces is provided, this will clear that field on the display (i.e. the media clock timer field will not display anything) </p>Maxlength = 500</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
+ * 			<td>{"string_min_length": 0, "string_max_length": 500}</td>
+ * 			<td>
+ *             @since SmartDeviceLink 1.0.0
+ *             @deprecated in SmartDeviceLink 7.1.0
+ * 			</td>
+ *  </tr>
  * 		<tr>
  * 			<td>mediaTrack</td>
  * 			<td>String</td>
@@ -198,6 +201,10 @@ public class Show extends RPCRequest {
     public static final String KEY_MAIN_FIELD_3 = "mainField3";
     public static final String KEY_MAIN_FIELD_4 = "mainField4";
     public static final String KEY_STATUS_BAR = "statusBar";
+    /**
+     * @since SmartDeviceLink 1.0.0
+     * @deprecated in SmartDeviceLink 7.1.0
+     */
     @Deprecated
     public static final String KEY_MEDIA_CLOCK = "mediaClock";
     public static final String KEY_ALIGNMENT = "alignment";
@@ -421,9 +428,14 @@ public class Show extends RPCRequest {
     }
 
     /**
-     * Gets the String value of the MediaClock
+     * Gets the mediaClock.
      *
-     * @return String -a String value of the MediaClock
+     * @return String Text value for MediaClock field. Has to be properly formatted by Mobile App according to
+     * the module's capabilities. If this text is set, any automatic media clock updates
+     * previously set with SetMediaClockTimer will be stopped.
+     * {"string_min_length": 0, "string_max_length": 500}
+     * @since SmartDeviceLink 1.0.0
+     * @deprecated in SmartDeviceLink 7.1.0
      */
     @Deprecated
     public String getMediaClock() {
@@ -431,19 +443,14 @@ public class Show extends RPCRequest {
     }
 
     /**
-     * Sets the value for the MediaClock field using a format described in the
-     * MediaClockFormat enumeration
+     * Sets the mediaClock.
      *
-     * @param mediaClock a String value for the MediaClock
-     *                   <p></p>
-     *                   <b>Notes: </b>
-     *                   <ul>
-     *                   <li>Must be properly formatted as described in the
-     *                   MediaClockFormat enumeration</li>
-     *                   <li>If a value of five spaces is provided, this will clear
-     *                   that field on the display (i.e. the media clock timer field
-     *                   will not display anything)</li>
-     *                   </ul>
+     * @param mediaClock Text value for MediaClock field. Has to be properly formatted by Mobile App according to
+     * the module's capabilities. If this text is set, any automatic media clock updates
+     * previously set with SetMediaClockTimer will be stopped.
+     * {"string_min_length": 0, "string_max_length": 500}
+     * @since SmartDeviceLink 1.0.0
+     * @deprecated in SmartDeviceLink 7.1.0
      */
     @Deprecated
     public Show setMediaClock(String mediaClock) {
