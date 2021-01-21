@@ -37,21 +37,28 @@ import android.content.Context;
 import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.managers.lifecycle.RpcConverter;
 import com.smartdevicelink.protocol.ISdlServiceListener;
+import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.protocol.SdlProtocolBase;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.RPCMessage;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.SdlDeviceListener;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.MediaStreamingStatus;
 import com.smartdevicelink.util.Version;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import static com.smartdevicelink.protocol.enums.FunctionID.REGISTER_APP_INTERFACE;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public class SdlSession extends BaseSdlSession {
@@ -127,6 +134,20 @@ public class SdlSession extends BaseSdlSession {
         }
         super.shutdown(info);
 
+    }
+
+    @Override
+    public void onProtocolMessageReceived(ProtocolMessage msg) {
+        super.onProtocolMessageReceived(msg);
+
+        if (SessionType.RPC.equals(msg.getSessionType())) {
+            RPCMessage rpc = RpcConverter.extractRpc(msg, this.sdlProtocol.getProtocolVersion());
+
+            if (rpc != null && rpc.getFunctionID() != null && rpc.getFunctionID() == REGISTER_APP_INTERFACE) {
+                RegisterAppInterfaceResponse raiResponse = (RegisterAppInterfaceResponse) rpc;
+                SdlDeviceListener.saveVehicleType(contextWeakReference.get(), raiResponse.getVehicleType(), sdlProtocol.getTransportForSession(SessionType.RPC).getAddress());
+            }
+        }
     }
 
     /**

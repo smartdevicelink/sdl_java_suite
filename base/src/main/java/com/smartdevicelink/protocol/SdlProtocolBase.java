@@ -280,7 +280,7 @@ public class SdlProtocolBase {
     }
 
 
-    private TransportRecord getTransportForSession(SessionType type) {
+    public TransportRecord getTransportForSession(SessionType type) {
         return activeTransports.get(type);
     }
 
