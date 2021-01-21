@@ -110,7 +110,6 @@ import java.util.Hashtable;
  *          <td>forwardSeekIndicator</td>
  *          <td>SeekStreamingIndicator</td>
  *          <td>Used to control the forward seek button to either skip forward a set amount of time or to the next track.</td>
-
  *          <td>N</td>
  *          <td></td>
  *          <td>
@@ -121,7 +120,6 @@ import java.util.Hashtable;
  *          <td>backSeekIndicator</td>
  *          <td>SeekStreamingIndicator</td>
  *          <td>Used to control the forward seek button to either skip back a set amount of time or to the previous track.</td>
-
  *          <td>N</td>
  *          <td></td>
  *          <td>
