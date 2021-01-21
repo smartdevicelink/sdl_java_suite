@@ -195,21 +195,27 @@ public class SdlAppInfo {
             if(svMake != null && cvMake != null && cvMake.equalsIgnoreCase(svMake)) {
                 String svModel = supportedVehicle.getModel();
                 String cvModel = connectedVehicle.getModel();
-                if (svModel != null && cvModel != null && cvModel.equalsIgnoreCase(svModel)) {
-                    boolean ret = true;
-                    String svMY = supportedVehicle.getModelYear();
-                    String cvMY = connectedVehicle.getModelYear();
-                    if (svMY != null && cvMY != null) {
-                        ret = cvMY.equalsIgnoreCase(svMY);
+                if (svModel != null && cvModel != null) {
+                    if(cvModel.equalsIgnoreCase(svModel)) {
+                        boolean ret = true;
+                        String svMY = supportedVehicle.getModelYear();
+                        String cvMY = connectedVehicle.getModelYear();
+                        if (svMY != null && cvMY != null) {
+                            ret = cvMY.equalsIgnoreCase(svMY);
+                        }
+                        String svTrim = supportedVehicle.getTrim();
+                        String cvTrim = connectedVehicle.getTrim();
+                        if (svTrim != null && cvTrim != null) {
+                            ret &= cvTrim.equalsIgnoreCase(svTrim);
+                        }
+                        if (ret) {
+                            return true;
+                        }
                     }
-                    String svTrim = supportedVehicle.getTrim();
-                    String cvTrim = connectedVehicle.getTrim();
-                    if (svTrim != null && cvTrim != null) {
-                        ret &= cvTrim.equalsIgnoreCase(svTrim);
-                    }
-                    if (ret){
-                        return true;
-                    }
+                }
+                else{
+                    /* Return true if only make is defined and it matches*/
+                    return true;
                 }
             }
         }

@@ -110,7 +110,12 @@ public class SdlDeviceListener {
         if (hasSDLConnected(contextWeakReference.get(), connectedDevice.getAddress())) {
             DebugTool.logInfo(TAG, ": Confirmed SDL device, should start router service");
             //This device has connected to SDL previously, it is ok to start the RS right now
-            callback.onTransportConnected(contextWeakReference.get(), connectedDevice, new VehicleType(getVehicleTypeFromPrefs(contextWeakReference.get(), connectedDevice.getAddress())));
+            VehicleType vehicleType = null;
+            Hashtable<String, Object> store = getVehicleTypeFromPrefs(contextWeakReference.get(), connectedDevice.getAddress());
+            if(store != null){
+                vehicleType = new VehicleType(store);
+            }
+            callback.onTransportConnected(contextWeakReference.get(), connectedDevice,vehicleType);
             return;
         }
         synchronized (RUNNING_LOCK) {
@@ -250,7 +255,7 @@ public class SdlDeviceListener {
         }
     }
 
-    private static void saveVehicleType(Context context, VehicleType vehicleType, String address) {
+    public static void saveVehicleType(Context context, VehicleType vehicleType, String address) {
         synchronized (LOCK) {
 
             if (vehicleType == null || address == null) {
