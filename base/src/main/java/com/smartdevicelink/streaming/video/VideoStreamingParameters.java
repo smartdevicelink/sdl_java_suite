@@ -66,6 +66,7 @@ public class VideoStreamingParameters {
     private int interval;
     private ImageResolution resolution;
     private VideoStreamingFormat format;
+    private boolean stableFrameRate;
 
     public VideoStreamingParameters() {
         displayDensity = DEFAULT_DENSITY;
@@ -80,6 +81,7 @@ public class VideoStreamingParameters {
         format.setCodec(DEFAULT_CODEC);
     }
 
+    @Deprecated
     public VideoStreamingParameters(int displayDensity, int frameRate, int bitrate, int interval,
                                     ImageResolution resolution, VideoStreamingFormat format) {
         this.displayDensity = displayDensity;
@@ -88,6 +90,28 @@ public class VideoStreamingParameters {
         this.interval = interval;
         this.resolution = resolution;
         this.format = format;
+        this.stableFrameRate = true;
+    }
+
+    /**
+     * new constructor of VideoStreamingParameters, which now has stableFrameRate param.
+     * @param displayDensity
+     * @param frameRate
+     * @param bitrate
+     * @param interval
+     * @param resolution
+     * @param format
+     * @param stableFrameRate
+     */
+    public VideoStreamingParameters(int displayDensity, int frameRate, int bitrate, int interval,
+                                    ImageResolution resolution, VideoStreamingFormat format, boolean stableFrameRate){
+	    this.displayDensity = displayDensity;
+	    this.frameRate = frameRate;
+	    this.bitrate = bitrate;
+	    this.interval = interval;
+	    this.resolution = resolution;
+	    this.format = format;
+	    this.stableFrameRate = stableFrameRate;
     }
 
     /**
@@ -129,6 +153,7 @@ public class VideoStreamingParameters {
             if (params.format != null) {
                 this.format = params.format;
             }
+	        this.stableFrameRate = params.stableFrameRate;
         }
     }
 
@@ -164,6 +189,9 @@ public class VideoStreamingParameters {
             if (resolution.getResolutionWidth() != null && resolution.getResolutionWidth() > 0) {
                 this.resolution.setResolutionWidth((int) (resolution.getResolutionWidth() / scale));
             }
+        }
+        if (capability.getPreferredFPS() != null) {
+            this.frameRate = capability.getPreferredFPS();
         }
 
         // This should be the last call as it will return out once a suitable format is found
@@ -233,7 +261,15 @@ public class VideoStreamingParameters {
         return resolution;
     }
 
-    @Override
+	public boolean isStableFrameRate() {
+		return stableFrameRate;
+	}
+
+	public void setStableFrameRate(boolean isStable) {
+		stableFrameRate = isStable;
+	}
+
+	@Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("VideoStreamingParams - format: {");
@@ -250,6 +286,8 @@ public class VideoStreamingParameters {
         builder.append(bitrate);
         builder.append("}, IFrame interval{ ");
         builder.append(interval);
+        builder.append("}, stableFrameRate{");
+        builder.append(stableFrameRate);
         builder.append("}");
         return builder.toString();
     }
