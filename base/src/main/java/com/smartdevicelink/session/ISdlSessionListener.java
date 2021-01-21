@@ -84,5 +84,5 @@ public interface ISdlSessionListener {
      */
     void onAuthTokenReceived(String authToken, int sessionID);
 
-    boolean onVehicleTypeReceived(VehicleType type, String systemSoftwareVersion, String systemHardwareVersion);
+    boolean onVehicleTypeReceived(VehicleType type);
 }

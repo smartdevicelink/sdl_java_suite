@@ -162,8 +162,8 @@ abstract class BaseSdlManager {
         }
 
         @Override
-        public boolean onVehicleTypeReceived(VehicleType type, String systemSoftwareVersion, String systemHardwareVersion) {
-            return BaseSdlManager.this.onVehicleTypeReceived(type, systemSoftwareVersion, systemHardwareVersion);
+        public boolean onVehicleTypeReceived(VehicleType type) {
+            return BaseSdlManager.this.onVehicleTypeReceived(type);
         }
     };
 
@@ -878,7 +878,7 @@ abstract class BaseSdlManager {
         }
     }
 
-    public boolean onVehicleTypeReceived(@Nullable VehicleType type, @Nullable String systemSoftwareVersion, @Nullable String systemHardwareVersion) {
+    public boolean onVehicleTypeReceived(@Nullable VehicleType type) {
         try {
             Context context = ((SdlManager) BaseSdlManager.this).context;
             ComponentName myService = new ComponentName(context, this.getClass());
@@ -886,11 +886,7 @@ abstract class BaseSdlManager {
             XmlResourceParser parser = context.getResources().getXml(metaData.getInt(context.getResources().getString(R.string.sdl_oem_vehicle_type_filter_name)));
             List<VehicleType> vehicleMakes = deserializeVehicleMake(parser);
 
-            if (vehicleMakes.contains(type)) {
-                return true;
-            } else {
-                return false;
-            }
+            return vehicleMakes.contains(type);
         } catch (PackageManager.NameNotFoundException e) {
             return false;
         }

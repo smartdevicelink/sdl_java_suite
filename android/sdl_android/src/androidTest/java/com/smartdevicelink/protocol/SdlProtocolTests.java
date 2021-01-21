@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.test.SampleRpc;
@@ -111,6 +112,11 @@ public class SdlProtocolTests {
         @Override
         public void onAuthTokenReceived(String authToken) {
 
+        }
+
+        @Override
+        public boolean onVehicleTypeReceived(VehicleType vehicleType) {
+            return false;
         }
 
     }

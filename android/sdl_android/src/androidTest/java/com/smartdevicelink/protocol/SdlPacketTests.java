@@ -13,6 +13,10 @@ import org.junit.runner.RunWith;
 
 import java.util.HashMap;
 
+import static com.smartdevicelink.protocol.enums.ControlFrameTags.RPC.StartServiceACK.VEHICLE_MAKE;
+import static com.smartdevicelink.protocol.enums.ControlFrameTags.RPC.StartServiceACK.VEHICLE_MODEL;
+import static com.smartdevicelink.protocol.enums.ControlFrameTags.RPC.StartServiceACK.VEHICLE_MODEL_YEAR;
+import static com.smartdevicelink.protocol.enums.ControlFrameTags.RPC.StartServiceACK.VEHICLE_TRIM;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNull;
 
@@ -58,6 +62,30 @@ public class SdlPacketTests {
         sdlPacket.setTransportRecord(new TransportRecord(TransportType.TCP, TestValues.GENERAL_STRING));
         assertEquals(TransportType.TCP, sdlPacket.getTransportRecord().getType());
         assertEquals(TestValues.GENERAL_STRING, sdlPacket.getTransportRecord().getAddress());
+    }
+
+    @Test
+    public void testVehicleMake() {
+        HashMap<String, Object> testMap = new HashMap<>();
+        testMap.put(VEHICLE_MAKE, "sdl");
+        testMap.put(VEHICLE_MODEL, "sdl");
+        testMap.put(VEHICLE_TRIM, "sdl");
+        testMap.put(VEHICLE_MODEL_YEAR, "2019");
+
+        byte[] testPayload = BsonEncoder.encodeToBytes(testMap);
+
+
+        SdlPacket sdlPacket = new SdlPacket();
+
+        assertNull(sdlPacket.getTag(VEHICLE_MAKE));
+        assertNull(sdlPacket.getTag(VEHICLE_MODEL));
+        assertNull(sdlPacket.getTag(VEHICLE_MODEL_YEAR));
+        assertNull(sdlPacket.getTag(VEHICLE_TRIM));
+        sdlPacket.setPayload(testPayload);
+        assertEquals(sdlPacket.getTag(VEHICLE_MAKE), "sdl");
+        assertEquals(sdlPacket.getTag(VEHICLE_MODEL), "sdl");
+        assertEquals(sdlPacket.getTag(VEHICLE_TRIM), "sdl");
+        assertEquals(sdlPacket.getTag(VEHICLE_MODEL_YEAR), "2019");
     }
 
     @Test

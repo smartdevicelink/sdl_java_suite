@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,25 +13,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        findViewById(R.id.stop_service).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent proxyIntent = new Intent(MainActivity.this, SdlService.class);
-                stopService(proxyIntent);
-            }
-        });
-        findViewById(R.id.start_service).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //If we are connected to a module we want to start our SdlService
-                if (BuildConfig.TRANSPORT.equals("MULTI") || BuildConfig.TRANSPORT.equals("MULTI_HB")) {
-                    SdlReceiver.queryForConnectedService(MainActivity.this);
-                } else if (BuildConfig.TRANSPORT.equals("TCP")) {
-                    Intent proxyIntent = new Intent(MainActivity.this, SdlService.class);
-                    startService(proxyIntent);
-                }
-            }
-        });
+        //If we are connected to a module we want to start our SdlService
+        if (BuildConfig.TRANSPORT.equals("MULTI") || BuildConfig.TRANSPORT.equals("MULTI_HB")) {
+            SdlReceiver.queryForConnectedService(this);
+        } else if (BuildConfig.TRANSPORT.equals("TCP")) {
+            Intent proxyIntent = new Intent(this, SdlService.class);
+            startService(proxyIntent);
+        }
     }
 
     @Override

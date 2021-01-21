@@ -153,5 +153,5 @@ public interface ISdlProtocol {
      */
     void onAuthTokenReceived(String authToken);
 
-    boolean onVehicleTypeReceived(VehicleType vehicleType, String systemSoftwareVersion, String systemHardwareVersion);
+    boolean onVehicleTypeReceived(VehicleType vehicleType);
 }

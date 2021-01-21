@@ -1,6 +1,7 @@
 package com.smartdevicelink.test.streaming;
 
 import com.smartdevicelink.proxy.RPCMessage;
+import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.session.ISdlSessionListener;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.util.Version;
@@ -36,5 +37,10 @@ public class MockInterfaceBroker implements ISdlSessionListener {
     @Override
     public void onAuthTokenReceived(String authToken, int sessionID) {
 
+    }
+
+    @Override
+    public boolean onVehicleTypeReceived(VehicleType type) {
+        return false;
     }
 }

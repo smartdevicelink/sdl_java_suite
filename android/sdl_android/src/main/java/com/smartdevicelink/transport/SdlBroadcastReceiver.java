@@ -55,10 +55,8 @@ import com.smartdevicelink.transport.utl.SdlDeviceListener;
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.IntegrationValidator;
-import com.smartdevicelink.util.Log;
 import com.smartdevicelink.util.SdlAppInfo;
 import com.smartdevicelink.util.ServiceFinder;
-
 
 import java.util.List;
 import java.util.Locale;
@@ -97,6 +95,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
     @Override
     @CallSuper
     public void onReceive(Context context, Intent intent) {
+        //Log.i(TAG, "Sdl Receiver Activated");
         final String action = intent.getAction();
         if (action == null) {
             return;

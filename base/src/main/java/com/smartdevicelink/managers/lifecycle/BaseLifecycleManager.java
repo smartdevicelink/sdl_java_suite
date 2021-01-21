@@ -85,11 +85,9 @@ import com.smartdevicelink.session.ISdlSessionListener;
 import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
-import com.smartdevicelink.transport.utl.SdlDeviceListener;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.FileUtls;
-import com.smartdevicelink.util.Log;
 import com.smartdevicelink.util.Version;
 
 import java.util.HashMap;
@@ -383,10 +381,8 @@ abstract class BaseLifecycleManager {
                         processRaiResponse(raiResponse);
                         systemCapabilityManager.parseRAIResponse(raiResponse);
 
-                        // TODO here the proposal starts
-                        // TODO call boolean onVehicleTypeReceived(VehicleType type);
                         VehicleType type = raiResponse.getVehicleType();
-                        if (!lifecycleListener.onVehicleTypeReceived(type, null, null)){
+                        if (!lifecycleListener.onVehicleTypeReceived(type)){
                             DebugTool.logInfo(TAG, "vehicle type is wrong");
                             session.close();
                         }
@@ -937,8 +933,8 @@ abstract class BaseLifecycleManager {
         }
 
         @Override
-        public boolean onVehicleTypeReceived(@Nullable VehicleType type, @Nullable String systemSoftwareVersion, @Nullable String systemHardwareVersion) {
-            return lifecycleListener.onVehicleTypeReceived(type, systemSoftwareVersion, systemHardwareVersion);
+        public boolean onVehicleTypeReceived(@Nullable VehicleType type) {
+            return lifecycleListener.onVehicleTypeReceived(type);
         }
 
     };
@@ -1176,7 +1172,6 @@ abstract class BaseLifecycleManager {
         this.raiResponse = rai;
 
         VehicleType vt = rai.getVehicleType();
-        // TODO add checks and callbacks
         if (vt == null) return;
 
         String make = vt.getMake();
@@ -1255,7 +1250,7 @@ abstract class BaseLifecycleManager {
 
         void onError(LifecycleManager lifeCycleManager, String info, Exception e);
 
-        boolean onVehicleTypeReceived(VehicleType type, String systemSoftwareVersion, String systemHardwareVersion);
+        boolean onVehicleTypeReceived(VehicleType type);
     }
 
     public static class AppConfig {

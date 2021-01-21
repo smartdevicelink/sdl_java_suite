@@ -157,16 +157,16 @@ public class SdlAppInfo {
                     if (tagname.equalsIgnoreCase("vehicle-type")) {
                         VehicleType vehicleMake = new VehicleType();
                         String make = parser.getAttributeValue(null, "make");
-                        if (null != make) {
+                        if (make != null) {
                             vehicleMake.setMake(make);
                             String model = parser.getAttributeValue(null, "model");
-                            if (null != model)
+                            if (model != null)
                                 vehicleMake.setModel(model);
                             String modelYear = parser.getAttributeValue(null, "modelYear");
-                            if (null != modelYear)
+                            if (modelYear != null)
                                 vehicleMake.setModelYear(modelYear);
                             String trim = parser.getAttributeValue(null, "trim");
-                            if (null != trim)
+                            if (trim != null)
                                 vehicleMake.setTrim(trim);
                             vehicleMakesList.add(vehicleMake);
                         }

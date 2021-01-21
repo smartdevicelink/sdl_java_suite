@@ -218,8 +218,8 @@ public class SdlSession extends BaseSdlSession {
     public void onAuthTokenReceived(String authToken) {/* Do nothing */ }
 
     @Override
-    public boolean onVehicleTypeReceived(VehicleType vehicleType, String systemSoftwareVersion, String systemHardwareVersion) {
-        return sessionListener.onVehicleTypeReceived(vehicleType, systemSoftwareVersion, systemHardwareVersion);
+    public boolean onVehicleTypeReceived(VehicleType vehicleType) {
+        return sessionListener.onVehicleTypeReceived(vehicleType);
     }
 
 }

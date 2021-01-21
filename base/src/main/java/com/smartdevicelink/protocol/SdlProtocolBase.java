@@ -939,7 +939,7 @@ public class SdlProtocolBase {
             String make = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_MAKE);
             String model = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_MODEL);
             String modelYear = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_MODEL_YEAR);
-            String vehicleTrim = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_TRIM);
+            String trim = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_TRIM);
             String softwareVersion = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_SYSTEM_SOFTWARE_VERSION);
             String hardwareVersion = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_SYSTEM_HARDWARE_VERSION);
             if (make != null) {
@@ -948,8 +948,8 @@ public class SdlProtocolBase {
                 type.setMake(make);
                 type.setModel(model);
                 type.setModelYear(modelYear);
-                type.setTrim(vehicleTrim);
-                if (!iSdlProtocol.onVehicleTypeReceived(type, softwareVersion, hardwareVersion)) {
+                type.setTrim(trim);
+                if (!iSdlProtocol.onVehicleTypeReceived(type)) {
                     onTransportNotAccepted("Rejected by the vehicle type filter");
                     return;
                 }
