@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.MAX_ID;
 import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.menuCellIdMin;
 import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdNotFound;
 
@@ -150,7 +149,7 @@ class MenuReplaceOperation extends Task {
             createAndSendEntireMenu(listener);
         }
     }
-    
+
     private boolean checkUpdateMode(DynamicMenuUpdatesMode updateMode, String displayType) {
         if (updateMode.equals(DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE)) {
             if (displayType == null) {
@@ -282,21 +281,22 @@ class MenuReplaceOperation extends Task {
         internalInterface.get().sendSequentialRPCs(mainMenuCommands, new OnMultipleRequestListener() {
             @Override
             public void onUpdate(int remainingRequests) {
-                // nothing here
             }
 
             @Override
             public void onFinished() {
-
                 if (!subMenuCommands.isEmpty()) {
-                    sendSubMenuCommandRPCs(subMenuCommands, listener);
                     DebugTool.logInfo(TAG, "Finished sending main menu commands. Sending sub menu commands.");
+                    sendSubMenuCommandRPCs(subMenuCommands, listener);
                 } else {
-
                     if (keepsNew != null && !keepsNew.isEmpty()) {
-                        runSubMenuCompareAlgorithm();
+                        runSubMenuCompareAlgorithm(); // todo should we pass listener here?
                     } else {
                         DebugTool.logInfo(TAG, "Finished sending main menu commands.");
+
+                        if (listener != null) {
+                            listener.onComplete(true);
+                        }
                     }
                 }
             }
@@ -324,14 +324,12 @@ class MenuReplaceOperation extends Task {
         internalInterface.get().sendSequentialRPCs(commands, new OnMultipleRequestListener() {
             @Override
             public void onUpdate(int remainingRequests) {
-
             }
 
             @Override
             public void onFinished() {
-
                 if (keepsNew != null && !keepsNew.isEmpty()) {
-                    runSubMenuCompareAlgorithm();
+                    runSubMenuCompareAlgorithm();  // todo should we pass listener here?
                 } else {
                     DebugTool.logInfo(TAG, "Finished Updating Menu");
 
@@ -351,9 +349,6 @@ class MenuReplaceOperation extends Task {
                     }
                 } else {
                     DebugTool.logError(TAG, "Failed to send sub menu commands: " + response.getInfo());
-                    if (listener != null) {
-                        listener.onComplete(false);
-                    }
                 }
             }
         });
@@ -428,15 +423,6 @@ class MenuReplaceOperation extends Task {
             return;
         }
 
-        if (oldMenuCells != null && oldMenuCells.isEmpty()) {
-            if (listener != null) {
-                // technically this method is successful if there's nothing to delete
-                DebugTool.logInfo(TAG, "No old cells to delete, returning");
-                listener.onComplete(true);
-            }
-            return;
-        }
-
         if (deleteCommands == null || deleteCommands.isEmpty()) {
             // no dynamic deletes required. return
             if (listener != null) {
@@ -480,11 +466,11 @@ class MenuReplaceOperation extends Task {
     List<RPCRequest> allCommandsForCells(List<MenuCell> cells, boolean shouldHaveArtwork) {
         List<RPCRequest> builtCommands = new ArrayList<>();
 
-        // We need the index so we will use this type of loop
         for (int i = 0; i < cells.size(); i++) {
             MenuCell cell = cells.get(i);
             if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
                 builtCommands.add(subMenuCommandForMenuCell(cell, shouldHaveArtwork, i));
+
                 // recursively grab the commands for all the sub cells
                 builtCommands.addAll(allCommandsForCells(cell.getSubCells(), shouldHaveArtwork));
             } else {
@@ -510,9 +496,8 @@ class MenuReplaceOperation extends Task {
     }
 
     private AddCommand commandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position) {
-
         MenuParams params = new MenuParams(cell.getTitle());
-        params.setParentID(cell.getParentCellId() != MAX_ID ? cell.getParentCellId() : null);
+        params.setParentID(cell.getParentCellId() != parentIdNotFound ? cell.getParentCellId() : null);
         params.setPosition(position);
 
         AddCommand command = new AddCommand(cell.getCellId());
