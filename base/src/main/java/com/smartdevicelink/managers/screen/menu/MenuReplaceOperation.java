@@ -36,28 +36,27 @@ import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdN
  */
 class MenuReplaceOperation extends Task {
     private static final String TAG = "MenuReplaceOperation";
+    private static final int KEEP = 0;
+    private static final int MARKED_FOR_ADDITION = 1;
+    private static final int MARKED_FOR_DELETION = 2;
+
     private final WeakReference<ISdl> internalInterface;
     private final WeakReference<FileManager> fileManager;
     private final WindowCapability defaultMainWindowCapability;
-    private final List<MenuCell> menuCells;
     private List<MenuCell> oldMenuCells;
-    private List<MenuCell> keepsNew;
+    private final List<MenuCell> menuCells;
     private List<MenuCell> keepsOld;
+    private List<MenuCell> keepsNew;
     private final MenuManagerCompletionListener completionListener;
     private final String displayType;
     private final DynamicMenuUpdatesMode dynamicMenuUpdatesMode;
     private int lastMenuId;
     private MenuConfiguration menuConfiguration;
 
-    private static final int KEEP = 0;
-    private static final int MARKED_FOR_ADDITION = 1;
-    private static final int MARKED_FOR_DELETION = 2;
-
     // todo split to static and dynamic operations
     // todo call onFinish & listener when done
-    // todo add Task.CANCELED checks
 
-    MenuReplaceOperation(ISdl internalInterface, FileManager fileManager, String displayType, DynamicMenuUpdatesMode dynamicMenuUpdatesMode,MenuConfiguration menuConfiguration, WindowCapability defaultMainWindowCapability, List<MenuCell> oldMenuCells, List<MenuCell> menuCells, int lastMenuId, MenuManagerCompletionListener completionListener) {
+    MenuReplaceOperation(ISdl internalInterface, FileManager fileManager, String displayType, DynamicMenuUpdatesMode dynamicMenuUpdatesMode, MenuConfiguration menuConfiguration, WindowCapability defaultMainWindowCapability, List<MenuCell> oldMenuCells, List<MenuCell> menuCells, int lastMenuId, MenuManagerCompletionListener completionListener) {
         super(TAG);
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
@@ -83,12 +82,12 @@ class MenuReplaceOperation extends Task {
 
         // Upload the Artworks
         List<SdlArtwork> artworksToBeUploaded = findAllArtworksToBeUploadedFromCells(menuCells);
-        if (artworksToBeUploaded.size() > 0 && fileManager.get() != null) {
+        if (!artworksToBeUploaded.isEmpty() && fileManager.get() != null) {
             fileManager.get().uploadArtworks(artworksToBeUploaded, new MultipleFileCompletionListener() {
                 @Override
                 public void onComplete(Map<String, String> errors) {
 
-                    if (errors != null && errors.size() > 0) {
+                    if (errors != null && !errors.isEmpty()) {
                         DebugTool.logError(TAG, "Error uploading Menu Artworks: " + errors.toString());
                     } else {
                         DebugTool.logInfo(TAG, "Menu Artworks Uploaded");
@@ -104,6 +103,10 @@ class MenuReplaceOperation extends Task {
     }
 
     private void updateMenuAndDetermineBestUpdateMethod() {
+        if (getState() == Task.CANCELED) {
+            return;
+        }
+
         // Checks against what the developer set for update mode and against the display type
         // to determine how the menu will be updated. This has the ability to be changed during
         // a session.
@@ -121,7 +124,7 @@ class MenuReplaceOperation extends Task {
                 createAndSendEntireMenu();
             } else {
                 DebugTool.logInfo(TAG, "Dynamically Updating Menu");
-                if (menuCells.size() == 0 && (oldMenuCells != null && oldMenuCells.size() > 0)) {
+                if (menuCells.isEmpty() && (oldMenuCells != null && !oldMenuCells.isEmpty())) {
                     // the dev wants to clear the menu. We have old cells and an empty array of new ones.
                     deleteMenuWhenNewCellsEmpty();
                 } else {
@@ -161,6 +164,10 @@ class MenuReplaceOperation extends Task {
     }
 
     private void deleteMenuWhenNewCellsEmpty() {
+        if (getState() == Task.CANCELED) {
+            return;
+        }
+
         sendDeleteRPCs(createDeleteRPCsForCells(oldMenuCells), new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
@@ -212,7 +219,7 @@ class MenuReplaceOperation extends Task {
         // this is needed for the onCommands to still work
         transferIdsToKeptCells(keepsNew);
 
-        if (adds.size() > 0) {
+        if (!adds.isEmpty()) {
             DebugTool.logInfo(TAG, "Sending root menu updates");
             sendDynamicRootMenuRPCs(deleteCommands, adds);
         } else {
@@ -222,6 +229,10 @@ class MenuReplaceOperation extends Task {
     }
 
     private void createAndSendEntireMenu() {
+        if (getState() == Task.CANCELED) {
+            return;
+        }
+
         deleteRootMenu(new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
@@ -241,7 +252,11 @@ class MenuReplaceOperation extends Task {
     }
 
     private void createAndSendMenuCellRPCs(final List<MenuCell> menu, final CompletionListener listener) {
-        if (menu.size() == 0) {
+        if (getState() == Task.CANCELED) {
+            return;
+        }
+
+        if (menu.isEmpty()) {
             if (listener != null) {
                 // This can be considered a success if the user was clearing out their menu
                 listener.onComplete(true);
@@ -271,12 +286,12 @@ class MenuReplaceOperation extends Task {
             @Override
             public void onFinished() {
 
-                if (subMenuCommands.size() > 0) {
+                if (!subMenuCommands.isEmpty()) {
                     sendSubMenuCommandRPCs(subMenuCommands, listener);
                     DebugTool.logInfo(TAG, "Finished sending main menu commands. Sending sub menu commands.");
                 } else {
 
-                    if (keepsNew != null && keepsNew.size() > 0) {
+                    if (keepsNew != null && !keepsNew.isEmpty()) {
                         runSubMenuCompareAlgorithm();
                     } else {
                         DebugTool.logInfo(TAG, "Finished sending main menu commands.");
@@ -300,6 +315,9 @@ class MenuReplaceOperation extends Task {
     }
 
     private void sendSubMenuCommandRPCs(List<RPCRequest> commands, final CompletionListener listener) {
+        if (getState() == Task.CANCELED) {
+            return;
+        }
 
         internalInterface.get().sendSequentialRPCs(commands, new OnMultipleRequestListener() {
             @Override
@@ -310,7 +328,7 @@ class MenuReplaceOperation extends Task {
             @Override
             public void onFinished() {
 
-                if (keepsNew != null && keepsNew.size() > 0) {
+                if (keepsNew != null && !keepsNew.isEmpty()) {
                     runSubMenuCompareAlgorithm();
                 } else {
                     DebugTool.logInfo(TAG, "Finished Updating Menu");
@@ -340,8 +358,11 @@ class MenuReplaceOperation extends Task {
     }
 
     private void createAndSendDynamicSubMenuRPCs(List<MenuCell> newMenu, final List<MenuCell> adds, final CompletionListener listener) {
+        if (getState() == Task.CANCELED) {
+            return;
+        }
 
-        if (adds.size() == 0) {
+        if (adds.isEmpty()) {
             if (listener != null) {
                 // This can be considered a success if the user was clearing out their menu
                 DebugTool.logError(TAG, "Called createAndSendDynamicSubMenuRPCs with empty menu");
@@ -392,7 +413,7 @@ class MenuReplaceOperation extends Task {
 
     private void deleteRootMenu(final CompletionListener listener) {
 
-        if (oldMenuCells == null || oldMenuCells.size() == 0) {
+        if (oldMenuCells == null || oldMenuCells.isEmpty()) {
             if (listener != null) {
                 // technically this method is successful if there's nothing to delete
                 DebugTool.logInfo(TAG, "No old cells to delete, returning");
@@ -404,7 +425,11 @@ class MenuReplaceOperation extends Task {
     }
 
     private void sendDeleteRPCs(List<RPCRequest> deleteCommands, final CompletionListener listener) {
-        if (oldMenuCells != null && oldMenuCells.size() == 0) {
+        if (getState() == Task.CANCELED) {
+            return;
+        }
+
+        if (oldMenuCells != null && oldMenuCells.isEmpty()) {
             if (listener != null) {
                 // technically this method is successful if there's nothing to delete
                 DebugTool.logInfo(TAG, "No old cells to delete, returning");
@@ -413,7 +438,7 @@ class MenuReplaceOperation extends Task {
             return;
         }
 
-        if (deleteCommands == null || deleteCommands.size() == 0) {
+        if (deleteCommands == null || deleteCommands.isEmpty()) {
             // no dynamic deletes required. return
             if (listener != null) {
                 // technically this method is successful if there's nothing to delete
@@ -446,7 +471,7 @@ class MenuReplaceOperation extends Task {
     private List<RPCRequest> subMenuCommandsForCells(List<MenuCell> cells, boolean shouldHaveArtwork) {
         List<RPCRequest> builtCommands = new ArrayList<>();
         for (MenuCell cell : cells) {
-            if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
+            if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
                 builtCommands.addAll(allCommandsForCells(cell.getSubCells(), shouldHaveArtwork));
             }
         }
@@ -459,7 +484,7 @@ class MenuReplaceOperation extends Task {
         // We need the index so we will use this type of loop
         for (int i = 0; i < cells.size(); i++) {
             MenuCell cell = cells.get(i);
-            if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
+            if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
                 builtCommands.add(subMenuCommandForMenuCell(cell, shouldHaveArtwork, i));
                 // recursively grab the commands for all the sub cells
                 builtCommands.addAll(allCommandsForCells(cell.getSubCells(), shouldHaveArtwork));
@@ -516,6 +541,10 @@ class MenuReplaceOperation extends Task {
     }
 
     private void sendDynamicRootMenuRPCs(List<RPCRequest> deleteCommands, final List<MenuCell> updatedCells) {
+        if (getState() == Task.CANCELED) {
+            return;
+        }
+
         sendDeleteRPCs(deleteCommands, new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
@@ -538,7 +567,7 @@ class MenuReplaceOperation extends Task {
     private void runSubMenuCompareAlgorithm() {
         // any cells that were re-added have their sub-cells added with them
         // at this point all we care about are the cells that were deemed equal and kept.
-        if (keepsNew == null || keepsNew.size() == 0) {
+        if (keepsNew == null || keepsNew.isEmpty()) {
             return;
         }
 
@@ -549,7 +578,7 @@ class MenuReplaceOperation extends Task {
             MenuCell keptCell = keepsNew.get(i);
             MenuCell oldKeptCell = keepsOld.get(i);
 
-            if (oldKeptCell.getSubCells() != null && oldKeptCell.getSubCells().size() > 0 && keptCell.getSubCells() != null && keptCell.getSubCells().size() > 0) {
+            if (oldKeptCell.getSubCells() != null && !oldKeptCell.getSubCells().isEmpty() && keptCell.getSubCells() != null && !keptCell.getSubCells().isEmpty()) {
                 // ACTUAL LOGIC
                 RunScore subScore = compareOldAndNewLists(oldKeptCell.getSubCells(), keptCell.getSubCells());
 
@@ -564,9 +593,12 @@ class MenuReplaceOperation extends Task {
     }
 
     private void createSubMenuDynamicCommands(final List<SubCellCommandList> commandLists) {
+        if (getState() == Task.CANCELED) {
+            return;
+        }
 
         // break out
-        if (commandLists.size() == 0) {
+        if (commandLists.isEmpty()) {
 //            if (hasQueuedUpdate) {
 //                DebugTool.logInfo(TAG, "Menu Manager has waiting updates, sending now");
 //                setMenuCells(waitingUpdateMenuCells);
@@ -623,7 +655,7 @@ class MenuReplaceOperation extends Task {
         sendDeleteRPCs(deleteCommands, new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
-                if (addsWithNewIds != null && addsWithNewIds.size() > 0) {
+                if (addsWithNewIds != null && !addsWithNewIds.isEmpty()) {
                     createAndSendDynamicSubMenuRPCs(newCells, addsWithNewIds, new CompletionListener() {
                         @Override
                         public void onComplete(boolean success) {
@@ -647,7 +679,7 @@ class MenuReplaceOperation extends Task {
 
     RunScore runMenuCompareAlgorithm(List<MenuCell> oldCells, List<MenuCell> newCells) {
 
-        if (oldCells == null || oldCells.size() == 0) {
+        if (oldCells == null || oldCells.isEmpty()) {
             return null;
         }
 
@@ -723,7 +755,7 @@ class MenuReplaceOperation extends Task {
             SdlArtwork artwork = cell.getIcon();
             if (artwork != null && !artwork.isStaticIcon() && fileManager.get() != null && !fileManager.get().hasUploadedFile(artwork)) {
                 return false;
-            } else if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
+            } else if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
                 return shouldRPCsIncludeImages(cell.getSubCells());
             }
         }
@@ -733,7 +765,7 @@ class MenuReplaceOperation extends Task {
     // IDs
 
     private void updateIdsOnDynamicCells(List<MenuCell> dynamicCells) {
-        if (menuCells != null && menuCells.size() > 0 && dynamicCells != null && dynamicCells.size() > 0) {
+        if (menuCells != null && !menuCells.isEmpty() && dynamicCells != null && !dynamicCells.isEmpty()) {
             for (int z = 0; z < menuCells.size(); z++) {
                 MenuCell mainCell = menuCells.get(z);
                 for (int i = 0; i < dynamicCells.size(); i++) {
@@ -743,7 +775,7 @@ class MenuReplaceOperation extends Task {
                         menuCells.get(z).setCellId(newId);
                         dynamicCells.get(i).setCellId(newId);
 
-                        if (mainCell.getSubCells() != null && mainCell.getSubCells().size() > 0) {
+                        if (mainCell.getSubCells() != null && !mainCell.getSubCells().isEmpty()) {
                             updateIdsOnMenuCells(mainCell.getSubCells(), mainCell.getCellId());
                         }
                         break;
@@ -754,7 +786,7 @@ class MenuReplaceOperation extends Task {
     }
 
     private List<MenuCell> updateIdsOnDynamicSubCells(List<MenuCell> oldList, List<MenuCell> dynamicCells, Integer parentId) {
-        if (oldList != null && oldList.size() > 0 && dynamicCells != null && dynamicCells.size() > 0) {
+        if (oldList != null && !oldList.isEmpty() && dynamicCells != null && !dynamicCells.isEmpty()) {
             for (int z = 0; z < oldList.size(); z++) {
                 MenuCell mainCell = oldList.get(z);
                 for (int i = 0; i < dynamicCells.size(); i++) {
@@ -781,7 +813,7 @@ class MenuReplaceOperation extends Task {
             int newId = ++lastMenuId;
             cell.setCellId(newId);
             cell.setParentCellId(parentId);
-            if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
+            if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
                 updateIdsOnMenuCells(cell.getSubCells(), cell.getCellId());
             }
         }
@@ -840,7 +872,7 @@ class MenuReplaceOperation extends Task {
             for (int i = 0; i < cellsToAdd.size(); i++) {
                 MenuCell addCell = cellsToAdd.get(i);
                 if (mainCell.equals(addCell)) {
-                    if (addCell.getSubCells() != null && addCell.getSubCells().size() > 0) {
+                    if (addCell.getSubCells() != null && !addCell.getSubCells().isEmpty()) {
                         builtCommands.add(subMenuCommandForMenuCell(addCell, shouldHaveArtwork, z));
                     } else {
                         builtCommands.add(commandForMenuCell(addCell, shouldHaveArtwork, z));
@@ -851,7 +883,6 @@ class MenuReplaceOperation extends Task {
         }
         return builtCommands;
     }
-
 
 
     private List<SdlArtwork> findAllArtworksToBeUploadedFromCells(List<MenuCell> cells) {
@@ -865,7 +896,7 @@ class MenuReplaceOperation extends Task {
             if (fileManager.get() != null && fileManager.get().fileNeedsUpload(cell.getIcon())) {
                 artworks.add(cell.getIcon());
             }
-            if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
+            if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
                 artworks.addAll(findAllArtworksToBeUploadedFromCells(cell.getSubCells()));
             }
         }
@@ -878,7 +909,7 @@ class MenuReplaceOperation extends Task {
         return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.cmdIcon);
     }
 
-    void setMenuConfiguration (MenuConfiguration menuConfiguration) {
+    void setMenuConfiguration(MenuConfiguration menuConfiguration) {
         this.menuConfiguration = menuConfiguration;
     }
 
