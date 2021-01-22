@@ -104,6 +104,7 @@ public class SdlProtocolBase {
     private final Hashtable<Byte, Object> _messageLocks = new Hashtable<>();
     private final HashMap<SessionType, Long> mtus = new HashMap<>();
     private final HashMap<SessionType, TransportRecord> activeTransports = new HashMap<>();
+    private final HashMap<SessionType, Boolean> serviceStartedOnTransport = new HashMap<>();
     private final Map<TransportType, List<ISecondaryTransportListener>> secondaryTransportListeners = new HashMap<>();
 
 
@@ -213,6 +214,7 @@ public class SdlProtocolBase {
         messageID = 0;
         headerSize = V1_HEADER_SIZE;
         this.activeTransports.clear();
+        this.serviceStartedOnTransport.clear();
         this.mtus.clear();
         mtus.put(SessionType.RPC, (long) (V1_V2_MTU_SIZE - headerSize));
         this.secondaryTransportParams = null;
@@ -709,6 +711,7 @@ public class SdlProtocolBase {
 
     public void startService(SessionType serviceType, byte sessionID, boolean isEncrypted) {
         final SdlPacket header = SdlPacketFactory.createStartSession(serviceType, 0x00, (byte) protocolVersion.getMajor(), sessionID, isEncrypted);
+        serviceStartedOnTransport.put(serviceType, true);
         if (SessionType.RPC.equals(serviceType)) {
             if (connectedPrimaryTransport != null) {
                 header.setTransportRecord(connectedPrimaryTransport);
@@ -1212,12 +1215,18 @@ public class SdlProtocolBase {
             //a single transport record per transport.
             //TransportType type = disconnectedTransport.getType();
             if (getTransportForSession(SessionType.NAV) != null && disconnectedTransport.equals(getTransportForSession(SessionType.NAV))) {
-                iSdlProtocol.onServiceError(null, SessionType.NAV, iSdlProtocol.getSessionId(), "Transport disconnected");
-                activeTransports.remove(SessionType.NAV);
+                if (serviceStartedOnTransport.get(SessionType.NAV) != null && serviceStartedOnTransport.get(SessionType.NAV)) {
+                    iSdlProtocol.onServiceError(null, SessionType.NAV, iSdlProtocol.getSessionId(), "Transport disconnected");
+                    activeTransports.remove(SessionType.NAV);
+                    serviceStartedOnTransport.remove(SessionType.NAV);
+                }
             }
             if (getTransportForSession(SessionType.PCM) != null && disconnectedTransport.equals(getTransportForSession(SessionType.PCM))) {
-                iSdlProtocol.onServiceError(null, SessionType.PCM, iSdlProtocol.getSessionId(), "Transport disconnected");
-                activeTransports.remove(SessionType.PCM);
+                if (serviceStartedOnTransport.get(SessionType.PCM) != null && serviceStartedOnTransport.get(SessionType.PCM)) {
+                    iSdlProtocol.onServiceError(null, SessionType.PCM, iSdlProtocol.getSessionId(), "Transport disconnected");
+                    activeTransports.remove(SessionType.PCM);
+                    serviceStartedOnTransport.remove(SessionType.PCM);
+                }
             }
 
             if ((getTransportForSession(SessionType.RPC) != null && disconnectedTransport.equals(getTransportForSession(SessionType.RPC))) || disconnectedTransport.equals(connectedPrimaryTransport)) {
@@ -1274,6 +1283,7 @@ public class SdlProtocolBase {
                 requestedSession = false;
 
                 activeTransports.clear();
+                serviceStartedOnTransport.clear();
 
                 iSdlProtocol.onTransportDisconnected(info, primaryTransportAvailable, transportConfig);
 

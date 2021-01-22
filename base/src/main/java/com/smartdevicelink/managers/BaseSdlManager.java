@@ -88,7 +88,7 @@ import static com.smartdevicelink.util.SdlAppInfo.deserializeVehicleMake;
 
 abstract class BaseSdlManager {
 
-    static final String TAG = "BaseSubManager";
+    static final String TAG = "BaseSdlManager";
     final Object STATE_LOCK = new Object();
     int state = -1;
     String appId, appName, shortAppName, resumeHash;
