@@ -124,7 +124,7 @@ import java.util.List;
  * 			    @since SmartDeviceLink 1.0.0
  * 			    @deprecated in SmartDeviceLink 7.1.0
  * 			</td>
- *  </tr>
+ *      </tr>
  * 		<tr>
  * 			<td>mediaTrack</td>
  * 			<td>String</td>
