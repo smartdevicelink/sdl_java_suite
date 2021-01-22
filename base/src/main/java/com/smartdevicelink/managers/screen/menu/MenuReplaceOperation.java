@@ -56,7 +56,7 @@ class MenuReplaceOperation extends Task {
     // todo split to static and dynamic operations
     // todo call onFinish & listener when done
 
-    MenuReplaceOperation(ISdl internalInterface, FileManager fileManager, String displayType, DynamicMenuUpdatesMode dynamicMenuUpdatesMode, MenuConfiguration menuConfiguration, WindowCapability defaultMainWindowCapability, List<MenuCell> oldMenuCells, List<MenuCell> menuCells, int lastMenuId, MenuManagerCompletionListener completionListener) {
+    MenuReplaceOperation(ISdl internalInterface, FileManager fileManager, String displayType, DynamicMenuUpdatesMode dynamicMenuUpdatesMode, MenuConfiguration menuConfiguration, WindowCapability defaultMainWindowCapability, List<MenuCell> oldMenuCells, List<MenuCell> menuCells, MenuManagerCompletionListener completionListener) {
         super(TAG);
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
@@ -66,7 +66,6 @@ class MenuReplaceOperation extends Task {
         this.defaultMainWindowCapability = defaultMainWindowCapability;
         this.oldMenuCells = oldMenuCells;
         this.menuCells = menuCells;
-        this.lastMenuId = lastMenuId;
         this.completionListener = completionListener;
     }
 
@@ -86,7 +85,6 @@ class MenuReplaceOperation extends Task {
             fileManager.get().uploadArtworks(artworksToBeUploaded, new MultipleFileCompletionListener() {
                 @Override
                 public void onComplete(Map<String, String> errors) {
-
                     if (errors != null && !errors.isEmpty()) {
                         DebugTool.logError(TAG, "Error uploading Menu Artworks: " + errors.toString());
                     } else {
@@ -107,9 +105,8 @@ class MenuReplaceOperation extends Task {
             return;
         }
 
-        // Checks against what the developer set for update mode and against the display type
-        // to determine how the menu will be updated. This has the ability to be changed during
-        // a session.
+        // Checks against what the developer set for update mode and against the display type to
+        // determine how the menu will be updated. This has the ability to be changed during a session.
         if (checkUpdateMode(dynamicMenuUpdatesMode, displayType)) {
             // run the lists through the new algorithm
             RunScore rootScore = runMenuCompareAlgorithm(oldMenuCells, menuCells);
@@ -133,7 +130,7 @@ class MenuReplaceOperation extends Task {
                 }
             }
         } else {
-            // we are in compatibility mode
+            // We are in compatibility mode. No need to run the algorithm
             DebugTool.logInfo(TAG, "Updating menus in compatibility mode");
             lastMenuId = menuCellIdMin;
             updateIdsOnMenuCells(menuCells, parentIdNotFound);
@@ -915,7 +912,7 @@ class MenuReplaceOperation extends Task {
 
     private void finishOperation(boolean success) {
         if (completionListener != null) {
-            completionListener.onComplete(success, lastMenuId, oldMenuCells);
+            completionListener.onComplete(success, oldMenuCells);
         }
         onFinished();
     }

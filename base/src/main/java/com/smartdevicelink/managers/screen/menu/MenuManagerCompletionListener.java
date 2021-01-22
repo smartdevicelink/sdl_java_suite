@@ -38,5 +38,5 @@ import java.util.List;
  * Created by Bilal Alsharifi on 1/21/21.
  */
 interface MenuManagerCompletionListener {
-    void onComplete(boolean success, int lastMenuId, List<MenuCell> oldMenuCells);
+    void onComplete(boolean success, List<MenuCell> oldMenuCells);
 }

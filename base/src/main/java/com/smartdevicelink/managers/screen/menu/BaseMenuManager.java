@@ -83,7 +83,6 @@ abstract class BaseMenuManager extends BaseSubManager {
     private OnRPCNotificationListener commandListener;
     private OnSystemCapabilityListener onDisplaysCapabilityListener;
     private WindowCapability defaultMainWindowCapability;
-    private int lastMenuId;
     private Queue transactionQueue;
 
     BaseMenuManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
@@ -92,7 +91,6 @@ abstract class BaseMenuManager extends BaseSubManager {
         this.fileManager = new WeakReference<>(fileManager);
         this.currentSystemContext = SystemContext.SYSCTXT_MAIN;
         this.currentHMILevel = HMILevel.HMI_NONE;
-        this.lastMenuId = menuCellIdMin;
         this.dynamicMenuUpdatesMode = DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE;
         this.sdlMsgVersion = internalInterface.getSdlMsgVersion();
         this.transactionQueue = newTransactionQueue();
@@ -108,7 +106,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 
     @Override
     public void dispose() {
-        lastMenuId = menuCellIdMin;
         menuCells = null;
         oldMenuCells = null;
         currentHMILevel = HMILevel.HMI_NONE;
@@ -191,10 +188,9 @@ abstract class BaseMenuManager extends BaseSubManager {
 
         cancelPendingMenuReplaceOperations();
 
-        MenuReplaceOperation operation = new MenuReplaceOperation(internalInterface, fileManager.get(), displayType, dynamicMenuUpdatesMode, menuConfiguration, defaultMainWindowCapability, oldMenuCells, menuCells, lastMenuId, new MenuManagerCompletionListener() {
+        MenuReplaceOperation operation = new MenuReplaceOperation(internalInterface, fileManager.get(), displayType, dynamicMenuUpdatesMode, menuConfiguration, defaultMainWindowCapability, oldMenuCells, menuCells, new MenuManagerCompletionListener() {
             @Override
-            public void onComplete(boolean success, int lastMenuId, List<MenuCell> oldMenuCells) {
-                BaseMenuManager.this.lastMenuId = lastMenuId;
+            public void onComplete(boolean success, List<MenuCell> oldMenuCells) {
                 BaseMenuManager.this.oldMenuCells = oldMenuCells;
             }
         });
