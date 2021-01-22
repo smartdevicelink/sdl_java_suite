@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Livio, Inc.
+ * Copyright (c) 2020 Livio, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,33 +29,37 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.smartdevicelink.managers.screen;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RestrictTo;
-
-import com.smartdevicelink.managers.ISdl;
-import com.smartdevicelink.managers.file.FileManager;
-import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
-import com.smartdevicelink.proxy.rpc.enums.FileType;
+package com.smartdevicelink.managers.file;
 
 /**
- * <strong>TextAndGraphicManager</strong> <br>
- * <p>
- * Note: This class must be accessed through the SdlManager. Do not instantiate it by itself. <br>
+ * Created by Bilal Alsharifi on 12/2/20.
  */
-@RestrictTo(RestrictTo.Scope.LIBRARY)
-class TextAndGraphicManager extends BaseTextAndGraphicManager {
+class DispatchGroup {
+    private int count;
+    private Runnable runnable;
 
-    TextAndGraphicManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager, @NonNull SoftButtonManager softButtonManager) {
-        super(internalInterface, fileManager, softButtonManager);
+    DispatchGroup() {
+        count = 0;
     }
 
-    @Override
-    SdlArtwork getBlankArtwork() {
-        if (blankArtwork == null) {
-            blankArtwork = new SdlArtwork("blankArtwork", FileType.GRAPHIC_PNG, new byte[50], true);
+    synchronized void enter() {
+        count++;
+    }
+
+    synchronized void leave() {
+        count--;
+        run();
+    }
+
+    void notify(Runnable runnable) {
+        this.runnable = runnable;
+        run();
+    }
+
+    private void run() {
+        if (count <= 0 && runnable != null) {
+            runnable.run();
         }
-        return blankArtwork;
     }
 }

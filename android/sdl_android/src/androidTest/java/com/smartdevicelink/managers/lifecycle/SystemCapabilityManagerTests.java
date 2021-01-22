@@ -1040,6 +1040,11 @@ public class SystemCapabilityManagerTests {
         }
 
         @Override
+        public long getMtu(SessionType serviceType) {
+            return 0;
+        }
+
+        @Override
         public boolean isTransportForServiceAvailable(SessionType serviceType) {
             return false;
         }

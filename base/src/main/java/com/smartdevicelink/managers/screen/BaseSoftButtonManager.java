@@ -152,7 +152,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
                 // Auto-send an updated Show if we have new capabilities
                 if (softButtonObjects != null && !softButtonObjects.isEmpty() && softButtonCapabilities != null && !softButtonCapabilitiesEquals(oldSoftButtonCapabilities, softButtonCapabilities)) {
-                    SoftButtonReplaceOperation operation = new SoftButtonReplaceOperation(internalInterface, fileManager, softButtonCapabilities, softButtonObjects, currentMainField1);
+                    SoftButtonReplaceOperation operation = new SoftButtonReplaceOperation(internalInterface, fileManager, softButtonCapabilities, softButtonObjects, getCurrentMainField1());
                     transactionQueue.add(operation, false);
                 }
             }
@@ -311,7 +311,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         this.softButtonObjects = softButtonObjects;
 
         // We only need to pass the first softButtonCapabilities in the array due to the fact that all soft button capabilities are the same (i.e. there is no way to assign a softButtonCapabilities to a specific soft button).
-        SoftButtonReplaceOperation operation = new SoftButtonReplaceOperation(internalInterface, fileManager.get(), softButtonCapabilities, softButtonObjects, currentMainField1);
+        SoftButtonReplaceOperation operation = new SoftButtonReplaceOperation(internalInterface, fileManager.get(), softButtonCapabilities, softButtonObjects, getCurrentMainField1());
 
         if (batchUpdates) {
             batchQueue.clear();
@@ -384,7 +384,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
     }
 
     private void transitionSoftButton() {
-        SoftButtonTransitionOperation operation = new SoftButtonTransitionOperation(internalInterface, softButtonObjects, currentMainField1);
+        SoftButtonTransitionOperation operation = new SoftButtonTransitionOperation(internalInterface, softButtonObjects, getCurrentMainField1());
 
         if (batchUpdates) {
             for (Task task : batchQueue) {
@@ -467,10 +467,10 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         for (Task task : transactionQueue.getTasksAsList()) {
             if (task instanceof SoftButtonReplaceOperation) {
                 SoftButtonReplaceOperation operation = (SoftButtonReplaceOperation) task;
-                operation.setCurrentMainField1(currentMainField1);
+                operation.setCurrentMainField1(getCurrentMainField1());
             } else if (task instanceof SoftButtonTransitionOperation) {
                 SoftButtonTransitionOperation operation = (SoftButtonTransitionOperation) task;
-                operation.setCurrentMainField1(currentMainField1);
+                operation.setCurrentMainField1(getCurrentMainField1());
             }
         }
     }

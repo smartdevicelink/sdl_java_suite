@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Livio, Inc.
+ * Copyright (c) 2020 Livio, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,33 +29,28 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.smartdevicelink.managers.screen;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RestrictTo;
+package com.smartdevicelink.managers.file;
 
-import com.smartdevicelink.managers.ISdl;
-import com.smartdevicelink.managers.file.FileManager;
-import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
-import com.smartdevicelink.proxy.rpc.enums.FileType;
+import com.smartdevicelink.managers.file.filetypes.SdlFile;
 
 /**
- * <strong>TextAndGraphicManager</strong> <br>
- * <p>
- * Note: This class must be accessed through the SdlManager. Do not instantiate it by itself. <br>
+ * Created by Bilal Alsharifi on 12/1/20.
  */
-@RestrictTo(RestrictTo.Scope.LIBRARY)
-class TextAndGraphicManager extends BaseTextAndGraphicManager {
+class SdlFileWrapper {
+    private final SdlFile file;
+    private final FileManagerCompletionListener completionListener;
 
-    TextAndGraphicManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager, @NonNull SoftButtonManager softButtonManager) {
-        super(internalInterface, fileManager, softButtonManager);
+    SdlFileWrapper(SdlFile file, FileManagerCompletionListener completionListener) {
+        this.file = file;
+        this.completionListener = completionListener;
     }
 
-    @Override
-    SdlArtwork getBlankArtwork() {
-        if (blankArtwork == null) {
-            blankArtwork = new SdlArtwork("blankArtwork", FileType.GRAPHIC_PNG, new byte[50], true);
-        }
-        return blankArtwork;
+    SdlFile getFile() {
+        return file;
+    }
+
+    FileManagerCompletionListener getCompletionListener() {
+        return completionListener;
     }
 }

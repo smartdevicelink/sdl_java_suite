@@ -176,6 +176,10 @@ public class TextAndGraphicUpdateOperationTest {
         // mock things
         internalInterface = mock(ISdl.class);
         fileManager = mock(FileManager.class);
+
+        // We still want the mock fileManager to use the real implementation for fileNeedsUpload()
+        when(fileManager.fileNeedsUpload(any(SdlFile.class))).thenCallRealMethod();
+
         setUpCompletionListener();
         textField1 = "It is";
         textField2 = "Wednesday";
