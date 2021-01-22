@@ -44,7 +44,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlPacketFactory;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -55,21 +54,17 @@ import com.smartdevicelink.transport.SdlRouterService;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.SdlAppInfo;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.lang.ref.WeakReference;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 
+import static com.smartdevicelink.transport.utl.VehicleTypeHolder.saveVehicleType;
 
 public class SdlDeviceListener {
 
     private static final String TAG = "SdlListener";
     private static final int MIN_VERSION_REQUIRED = 13;
     private static final String SDL_DEVICE_STATUS_SHARED_PREFS = "sdl.device.status";
-    private static final String SDL_DEVICE_VEHICLES_PREFS = "sdl.device.vehicles";
     private static final Object LOCK = new Object(), RUNNING_LOCK = new Object();
 
     private final WeakReference<Context> contextWeakReference;
@@ -111,7 +106,7 @@ public class SdlDeviceListener {
             DebugTool.logInfo(TAG, ": Confirmed SDL device, should start router service");
             //This device has connected to SDL previously, it is ok to start the RS right now
             VehicleType vehicleType = null;
-            Hashtable<String, Object> store = getVehicleTypeFromPrefs(contextWeakReference.get(), connectedDevice.getAddress());
+            Hashtable<String, Object> store = VehicleTypeHolder.getVehicleTypeFromPrefs(contextWeakReference.get(), connectedDevice.getAddress());
             if(store != null){
                 vehicleType = new VehicleType(store);
             }
@@ -252,44 +247,6 @@ public class SdlDeviceListener {
             saveVehicleType(sdlListener.contextWeakReference.get(), vehicleType, sdlListener.connectedDevice.getAddress());
             sdlListener.setSDLConnectedStatus(sdlListener.contextWeakReference.get(), sdlListener.connectedDevice.getAddress(), true);
             sdlListener.callback.onTransportConnected(sdlListener.contextWeakReference.get(), sdlListener.connectedDevice, vehicleType);
-        }
-    }
-
-    public static void saveVehicleType(Context context, VehicleType vehicleType, String address) {
-        synchronized (LOCK) {
-
-            if (vehicleType == null || address == null) {
-                return;
-            }
-            try {
-                SharedPreferences preferences = context.getSharedPreferences(SDL_DEVICE_VEHICLES_PREFS, Context.MODE_PRIVATE);
-
-                String jsonString = vehicleType.serializeJSON().toString();
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString(address, jsonString);
-                editor.commit();
-            } catch (JSONException e) {
-                Log.e(TAG, e.getMessage());
-            }
-        }
-    }
-
-    public static Hashtable<String, Object> getVehicleTypeFromPrefs(Context context, String address) {
-        synchronized (LOCK) {
-            try {
-                SharedPreferences preferences = context.getSharedPreferences(SDL_DEVICE_VEHICLES_PREFS, Context.MODE_PRIVATE);
-                String storedVehicleTypeSerialized = preferences.getString(address, null);
-
-                if (storedVehicleTypeSerialized == null) {
-                    return null;
-                } else {
-                    JSONObject object = new JSONObject(storedVehicleTypeSerialized);
-                    return JsonRPCMarshaller.deserializeJSONObject(object);
-                }
-            } catch (JSONException e) {
-                Log.e(TAG, e.getMessage());
-                return null;
-            }
         }
     }
 
