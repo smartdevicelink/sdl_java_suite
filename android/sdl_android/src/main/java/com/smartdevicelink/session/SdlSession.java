@@ -50,7 +50,7 @@ import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
-import com.smartdevicelink.transport.utl.SdlDeviceListener;
+import com.smartdevicelink.transport.utl.VehicleTypeHolder;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.MediaStreamingStatus;
 import com.smartdevicelink.util.Version;
@@ -145,7 +145,7 @@ public class SdlSession extends BaseSdlSession {
 
             if (rpc != null && rpc.getFunctionID() != null && rpc.getFunctionID() == REGISTER_APP_INTERFACE) {
                 RegisterAppInterfaceResponse raiResponse = (RegisterAppInterfaceResponse) rpc;
-                SdlDeviceListener.saveVehicleType(contextWeakReference.get(), raiResponse.getVehicleType(), sdlProtocol.getTransportForSession(SessionType.RPC).getAddress());
+                VehicleTypeHolder.saveVehicleType(contextWeakReference.get(), raiResponse.getVehicleType(), sdlProtocol.getTransportForSession(SessionType.RPC).getAddress());
             }
         }
     }

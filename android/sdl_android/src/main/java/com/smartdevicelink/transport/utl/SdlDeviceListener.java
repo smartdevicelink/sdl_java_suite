@@ -63,7 +63,6 @@ public class SdlDeviceListener {
 
     private static final String TAG = "SdlListener";
     private static final int MIN_VERSION_REQUIRED = 13;
-    private static final String SDL_DEVICE_VEHICLES_PREFS = "sdl.device.vehicles";
     private static final String SDL_DEVICE_STATUS_SHARED_PREFS = "sdl.device.status";
     private static final Object LOCK = new Object(), RUNNING_LOCK = new Object();
 
@@ -266,44 +265,6 @@ public class SdlDeviceListener {
         }
 
         return true;
-    }
-
-    public static void saveVehicleType(Context context, VehicleType vehicleType, String address) {
-        synchronized (LOCK) {
-
-            if (vehicleType == null || address == null) {
-                return;
-            }
-            try {
-                SharedPreferences preferences = context.getSharedPreferences(SDL_DEVICE_VEHICLES_PREFS, Context.MODE_PRIVATE);
-
-                String jsonString = vehicleType.serializeJSON().toString();
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString(address, jsonString);
-                editor.commit();
-            } catch (JSONException e) {
-                Log.e(TAG, e.getMessage());
-            }
-        }
-    }
-
-    public static Hashtable<String, Object> getVehicleTypeFromPrefs(Context context, String address) {
-        synchronized (LOCK) {
-            try {
-                SharedPreferences preferences = context.getSharedPreferences(SDL_DEVICE_VEHICLES_PREFS, Context.MODE_PRIVATE);
-                String storedVehicleTypeSerialized = preferences.getString(address, null);
-
-                if (storedVehicleTypeSerialized == null) {
-                    return null;
-                } else {
-                    JSONObject object = new JSONObject(storedVehicleTypeSerialized);
-                    return JsonRPCMarshaller.deserializeJSONObject(object);
-                }
-            } catch (JSONException e) {
-                Log.e(TAG, e.getMessage());
-                return null;
-            }
-        }
     }
 
     /**
