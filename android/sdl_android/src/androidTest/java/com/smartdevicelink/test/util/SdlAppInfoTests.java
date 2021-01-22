@@ -85,7 +85,7 @@ public class SdlAppInfoTests {
     @Test
     public void testConstructorWithDefaultData() {
 
-        SdlAppInfo info = new SdlAppInfo(defaultResolveInfo, defaultPackageInfo);
+        SdlAppInfo info = new SdlAppInfo(defaultResolveInfo, defaultPackageInfo, context);
 
         assertNotNull(info);
 
@@ -105,10 +105,10 @@ public class SdlAppInfoTests {
      */
     @Test
     public void testCompareVersion() {
-        SdlAppInfo defaultInfo = new SdlAppInfo(defaultResolveInfo, defaultPackageInfo);
+        SdlAppInfo defaultInfo = new SdlAppInfo(defaultResolveInfo, defaultPackageInfo, context);
 
         int newVersion = context.getResources().getInteger(R.integer.sdl_router_service_version_value) + 1;
-        SdlAppInfo testInfo = new SdlAppInfo(createResolveInfo(newVersion, "com.smartdevicelink.test2", "com.smartdevicelink.test2.SdlRouterService", false), defaultPackageInfo);
+        SdlAppInfo testInfo = new SdlAppInfo(createResolveInfo(newVersion, "com.smartdevicelink.test2", "com.smartdevicelink.test2.SdlRouterService", false), defaultPackageInfo, context);
 
         List<SdlAppInfo> infos = new ArrayList<>();
         infos.add(defaultInfo);
@@ -126,10 +126,10 @@ public class SdlAppInfoTests {
      */
     @Test
     public void testCompareVersionAndCustom() {
-        SdlAppInfo defaultInfo = new SdlAppInfo(defaultResolveInfo, defaultPackageInfo);
+        SdlAppInfo defaultInfo = new SdlAppInfo(defaultResolveInfo, defaultPackageInfo, context);
 
         int newVersion = context.getResources().getInteger(R.integer.sdl_router_service_version_value) + 1;
-        SdlAppInfo testInfo = new SdlAppInfo(createResolveInfo(newVersion, "com.smartdevicelink.test2", "com.smartdevicelink.test2.SdlRouterService", true), defaultPackageInfo);
+        SdlAppInfo testInfo = new SdlAppInfo(createResolveInfo(newVersion, "com.smartdevicelink.test2", "com.smartdevicelink.test2.SdlRouterService", true), defaultPackageInfo, context);
 
         List<SdlAppInfo> infos = new ArrayList<>();
         infos.add(defaultInfo);
@@ -147,12 +147,12 @@ public class SdlAppInfoTests {
      */
     @Test
     public void testCompareUpdatedTime() {
-        SdlAppInfo defaultInfo = new SdlAppInfo(defaultResolveInfo, defaultPackageInfo);
+        SdlAppInfo defaultInfo = new SdlAppInfo(defaultResolveInfo, defaultPackageInfo, context);
 
         PackageInfo packageInfo = new PackageInfo();
         packageInfo.firstInstallTime = defaultPackageInfo.firstInstallTime;
         packageInfo.lastUpdateTime = defaultPackageInfo.lastUpdateTime + 500;
-        SdlAppInfo testInfo = new SdlAppInfo(defaultResolveInfo, packageInfo);
+        SdlAppInfo testInfo = new SdlAppInfo(defaultResolveInfo, packageInfo, context);
 
         List<SdlAppInfo> infos = new ArrayList<>();
         infos.add(defaultInfo);
