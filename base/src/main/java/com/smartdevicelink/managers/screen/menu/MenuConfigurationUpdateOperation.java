@@ -48,8 +48,8 @@ import java.lang.ref.WeakReference;
 class MenuConfigurationUpdateOperation extends Task {
     private static final String TAG = "MenuConfigurationUpdateOperation";
     private final WeakReference<ISdl> internalInterface;
-    private MenuConfiguration menuConfiguration;
-    private CompletionListener completionListener;
+    private final MenuConfiguration menuConfiguration;
+    private final CompletionListener completionListener;
 
     MenuConfigurationUpdateOperation(ISdl internalInterface, MenuConfiguration menuConfiguration, CompletionListener completionListener) {
         super(TAG);

@@ -64,21 +64,25 @@ import java.util.List;
 
 abstract class BaseMenuManager extends BaseSubManager {
     private static final String TAG = "BaseMenuManager";
+    static final int MAX_ID = 2000000000;
+    static final int menuCellIdMin = 1;
+    static final int parentIdNotFound = MAX_ID;
 
     private final WeakReference<FileManager> fileManager;
-    private List<MenuCell> menuCells, oldMenuCells;
+    private List<MenuCell> menuCells;
+    private List<MenuCell> oldMenuCells;
     private DynamicMenuUpdatesMode dynamicMenuUpdatesMode;
     private MenuConfiguration menuConfiguration;
     private SdlMsgVersion sdlMsgVersion;
     private String displayType;
-    private HMILevel currentHMILevel, oldHMILevel;
-    private SystemContext currentSystemContext, oldSystemContext;
-    private OnRPCNotificationListener hmiListener, commandListener;
+    private HMILevel oldHMILevel;
+    private HMILevel currentHMILevel;
+    private SystemContext oldSystemContext;
+    private SystemContext currentSystemContext;
+    private OnRPCNotificationListener hmiListener;
+    private OnRPCNotificationListener commandListener;
     private OnSystemCapabilityListener onDisplaysCapabilityListener;
     private WindowCapability defaultMainWindowCapability;
-    static final int MAX_ID = 2000000000;
-    static final int menuCellIdMin = 1;
-    static final int parentIdNotFound = MAX_ID;
     private int lastMenuId;
     private Queue transactionQueue;
 
@@ -160,7 +164,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             menuCells.addAll(clonedCells);
         }
 
-        // HashSet order doesn't matter / does not allow duplicates
+        // HashSet order doesn't matter / doesn't allow duplicates
         HashSet<String> titleCheckSet = new HashSet<>();
         HashSet<String> allMenuVoiceCommands = new HashSet<>();
         int voiceCommandCount = 0;

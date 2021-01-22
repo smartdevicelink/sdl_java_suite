@@ -47,7 +47,7 @@ import java.lang.ref.WeakReference;
 class MenuShowOperation extends Task {
     private static final String TAG = "MenuShowOperation";
     private final WeakReference<ISdl> internalInterface;
-    private Integer menuId;
+    private final Integer menuId;
 
     MenuShowOperation(ISdl internalInterface, Integer menuId) {
         super(TAG);

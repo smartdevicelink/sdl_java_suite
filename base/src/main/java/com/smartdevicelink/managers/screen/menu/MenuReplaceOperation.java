@@ -39,7 +39,10 @@ class MenuReplaceOperation extends Task {
     private final WeakReference<ISdl> internalInterface;
     private final WeakReference<FileManager> fileManager;
     private final WindowCapability defaultMainWindowCapability;
-    private List<MenuCell> menuCells, oldMenuCells, keepsNew, keepsOld;
+    private final List<MenuCell> menuCells;
+    private List<MenuCell> oldMenuCells;
+    private List<MenuCell> keepsNew;
+    private List<MenuCell> keepsOld;
     private final MenuManagerCompletionListener completionListener;
     private final String displayType;
     private final DynamicMenuUpdatesMode dynamicMenuUpdatesMode;
