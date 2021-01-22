@@ -233,8 +233,7 @@ class MenuReplaceOperation extends Task {
                             DebugTool.logError(TAG, "Error Sending Current Menu");
                         }
 
-                        MenuReplaceOperation.this.completionListener.onComplete(success, lastMenuId, oldMenuCells);
-                        onFinished();
+                        finishOperation(success);
                     }
                 });
             }
@@ -881,5 +880,12 @@ class MenuReplaceOperation extends Task {
 
     void setMenuConfiguration (MenuConfiguration menuConfiguration) {
         this.menuConfiguration = menuConfiguration;
+    }
+
+    private void finishOperation(boolean success) {
+        if (completionListener != null) {
+            completionListener.onComplete(success, lastMenuId, oldMenuCells);
+        }
+        onFinished();
     }
 }
