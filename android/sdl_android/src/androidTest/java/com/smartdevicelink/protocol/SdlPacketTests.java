@@ -67,9 +67,9 @@ public class SdlPacketTests {
     @Test
     public void testVehicleMake() {
         HashMap<String, Object> testMap = new HashMap<>();
-        testMap.put(VEHICLE_MAKE, "sdl");
-        testMap.put(VEHICLE_MODEL, "sdl");
-        testMap.put(VEHICLE_TRIM, "sdl");
+        testMap.put(VEHICLE_MAKE, "Ford");
+        testMap.put(VEHICLE_MODEL, "Mustang");
+        testMap.put(VEHICLE_TRIM, "GT");
         testMap.put(VEHICLE_MODEL_YEAR, "2019");
 
         byte[] testPayload = BsonEncoder.encodeToBytes(testMap);
@@ -79,12 +79,12 @@ public class SdlPacketTests {
 
         assertNull(sdlPacket.getTag(VEHICLE_MAKE));
         assertNull(sdlPacket.getTag(VEHICLE_MODEL));
-        assertNull(sdlPacket.getTag(VEHICLE_MODEL_YEAR));
         assertNull(sdlPacket.getTag(VEHICLE_TRIM));
+        assertNull(sdlPacket.getTag(VEHICLE_MODEL_YEAR));
         sdlPacket.setPayload(testPayload);
-        assertEquals(sdlPacket.getTag(VEHICLE_MAKE), "sdl");
-        assertEquals(sdlPacket.getTag(VEHICLE_MODEL), "sdl");
-        assertEquals(sdlPacket.getTag(VEHICLE_TRIM), "sdl");
+        assertEquals(sdlPacket.getTag(VEHICLE_MAKE), "Ford");
+        assertEquals(sdlPacket.getTag(VEHICLE_MODEL), "Mustang");
+        assertEquals(sdlPacket.getTag(VEHICLE_TRIM), "GT");
         assertEquals(sdlPacket.getTag(VEHICLE_MODEL_YEAR), "2019");
     }
 

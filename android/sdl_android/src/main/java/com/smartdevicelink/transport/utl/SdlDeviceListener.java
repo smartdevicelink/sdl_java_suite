@@ -39,23 +39,16 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.smartdevicelink.marshal.JsonRPCMarshaller;
-import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.transport.MultiplexBaseTransport;
 import com.smartdevicelink.transport.MultiplexBluetoothTransport;
 import com.smartdevicelink.transport.SdlRouterService;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.SdlAppInfo;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.lang.ref.WeakReference;
-import java.util.Hashtable;
 import java.util.List;
 
 

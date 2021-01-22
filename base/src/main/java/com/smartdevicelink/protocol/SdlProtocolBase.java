@@ -1439,6 +1439,7 @@ public class SdlProtocolBase {
                 handleProtocolHeartbeatACK(packet);
 
             } else if (frameInfo == FrameDataControlFrameType.StartSessionACK.getValue()) {
+
                 handleStartServiceACK(packet, serviceType);
 
             } else if (frameInfo == FrameDataControlFrameType.StartSessionNACK.getValue()) {
