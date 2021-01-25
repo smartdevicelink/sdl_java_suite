@@ -34,7 +34,7 @@ import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdN
  * Created by Bilal Alsharifi on 1/20/21.
  */
 class MenuReplaceStaticOperation extends Task {
-    private static final String TAG = "MenuReplaceOperation";
+    private static final String TAG = "MenuReplaceStaticOperation";
     private static final int KEEP = 0;
     private static final int MARKED_FOR_ADDITION = 1;
     private static final int MARKED_FOR_DELETION = 2;

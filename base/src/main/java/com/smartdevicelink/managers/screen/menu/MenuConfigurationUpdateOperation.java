@@ -37,10 +37,13 @@ import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.SetGlobalProperties;
+import com.smartdevicelink.proxy.rpc.WindowCapability;
+import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 /**
  * Created by Bilal Alsharifi on 1/21/21.
@@ -48,12 +51,14 @@ import java.lang.ref.WeakReference;
 class MenuConfigurationUpdateOperation extends Task {
     private static final String TAG = "MenuConfigurationUpdateOperation";
     private final WeakReference<ISdl> internalInterface;
+    private final List<MenuLayout> availableMenuLayouts;
     private final MenuConfiguration menuConfiguration;
     private final CompletionListener completionListener;
 
-    MenuConfigurationUpdateOperation(ISdl internalInterface, MenuConfiguration menuConfiguration, CompletionListener completionListener) {
+    MenuConfigurationUpdateOperation(ISdl internalInterface, WindowCapability defaultMainWindowCapability, MenuConfiguration menuConfiguration, CompletionListener completionListener) {
         super(TAG);
         this.internalInterface = new WeakReference<>(internalInterface);
+        this.availableMenuLayouts = defaultMainWindowCapability != null ? defaultMainWindowCapability.getMenuLayoutsAvailable() : null;
         this.menuConfiguration = menuConfiguration;
         this.completionListener = completionListener;
     }
@@ -66,6 +71,14 @@ class MenuConfigurationUpdateOperation extends Task {
     private void start() {
         if (getState() == Task.CANCELED) {
             return;
+        }
+
+        if (availableMenuLayouts == null) {
+            DebugTool.logWarning(TAG, "Could not set the main menu configuration. Which menu layouts can be used is not available");
+            finishOperation(false);
+        } else if (!availableMenuLayouts.contains(menuConfiguration.getMenuLayout()) || !availableMenuLayouts.contains(menuConfiguration.getSubMenuLayout())) {
+            DebugTool.logError(TAG, String.format("One or more of the set menu layouts are not available on this system. The menu configuration will not be set. Available menu layouts: %s, set menu layouts: %s", availableMenuLayouts, menuConfiguration));
+            finishOperation(false);
         }
 
         sendSetGlobalProperties();
@@ -82,12 +95,18 @@ class MenuConfigurationUpdateOperation extends Task {
                 } else {
                     DebugTool.logError(TAG, "onError: " + response.getResultCode() + " | Info: " + response.getInfo());
                 }
-                completionListener.onComplete(response.getSuccess());
-                onFinished();
+                finishOperation(response.getSuccess());
             }
         });
         if (internalInterface.get() != null) {
             internalInterface.get().sendRPC(setGlobalProperties);
         }
+    }
+
+    private void finishOperation(boolean success) {
+        if (completionListener != null) {
+            completionListener.onComplete(success);
+        }
+        onFinished();
     }
 }
