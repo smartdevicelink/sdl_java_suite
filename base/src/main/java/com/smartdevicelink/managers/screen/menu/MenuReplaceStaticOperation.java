@@ -35,9 +35,6 @@ import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdN
  */
 class MenuReplaceStaticOperation extends Task {
     private static final String TAG = "MenuReplaceStaticOperation";
-    private static final int KEEP = 0;
-    private static final int MARKED_FOR_ADDITION = 1;
-    private static final int MARKED_FOR_DELETION = 2;
 
     private final WeakReference<ISdl> internalInterface;
     private final WeakReference<FileManager> fileManager;
@@ -114,7 +111,7 @@ class MenuReplaceStaticOperation extends Task {
         // determine how the menu will be updated. This has the ability to be changed during a session.
         if (isDynamicMenuUpdateActive(dynamicMenuUpdatesMode, displayType)) {
             // Run the lists through the new algorithm
-            DynamicMenuUpdateRunScore rootScore = runMenuCompareAlgorithm(currentMenu, updatedMenu);
+            DynamicMenuUpdateRunScore rootScore = DynamicMenuUpdateAlgorithm.runMenuCompareAlgorithm(currentMenu, updatedMenu);
             if (rootScore == null) {
                 // Send initial menu without dynamic updates because oldMenuCells is null
                 DebugTool.logInfo(TAG, "Creating initial Menu");
@@ -186,10 +183,10 @@ class MenuReplaceStaticOperation extends Task {
         keepsOld = new ArrayList<>();
         for (int x = 0; x < oldIntArray.size(); x++) {
             Integer old = oldIntArray.get(x);
-            if (old.equals(MARKED_FOR_DELETION)) {
+            if (old.equals(DynamicMenuUpdateAlgorithm.MARKED_FOR_DELETION)) {
                 // grab cell to send to function to create delete commands
                 deletes.add(currentMenu.get(x));
-            } else if (old.equals(KEEP)) {
+            } else if (old.equals(DynamicMenuUpdateAlgorithm.KEEP)) {
                 keepsOld.add(currentMenu.get(x));
             }
         }
@@ -201,10 +198,10 @@ class MenuReplaceStaticOperation extends Task {
         keepsNew = new ArrayList<>();
         for (int x = 0; x < newIntArray.size(); x++) {
             Integer newInt = newIntArray.get(x);
-            if (newInt.equals(MARKED_FOR_ADDITION)) {
+            if (newInt.equals(DynamicMenuUpdateAlgorithm.MARKED_FOR_ADDITION)) {
                 // grab cell to send to function to create add commands
                 adds.add(updatedMenu.get(x));
-            } else if (newInt.equals(KEEP)) {
+            } else if (newInt.equals(DynamicMenuUpdateAlgorithm.KEEP)) {
                 keepsNew.add(updatedMenu.get(x));
             }
         }
@@ -550,7 +547,7 @@ class MenuReplaceStaticOperation extends Task {
             MenuCell oldKeptCell = keepsOld.get(i);
 
             if (oldKeptCell.getSubCells() != null && !oldKeptCell.getSubCells().isEmpty() && newKeptCell.getSubCells() != null && !newKeptCell.getSubCells().isEmpty()) {
-                DynamicMenuUpdateRunScore subScore = compareOldAndNewLists(oldKeptCell.getSubCells(), newKeptCell.getSubCells());
+                DynamicMenuUpdateRunScore subScore = DynamicMenuUpdateAlgorithm.compareOldAndNewLists(oldKeptCell.getSubCells(), newKeptCell.getSubCells());
 
                 if (subScore != null) {
                     DebugTool.logInfo(TAG, "Sub menu Run Score: " + oldKeptCell.getTitle() + " Score: " + subScore.getScore());
@@ -590,7 +587,7 @@ class MenuReplaceStaticOperation extends Task {
         List<MenuCell> deletes = new ArrayList<>();
         for (int x = 0; x < oldIntArray.size(); x++) {
             Integer old = oldIntArray.get(x);
-            if (old.equals(MARKED_FOR_DELETION)) {
+            if (old.equals(DynamicMenuUpdateAlgorithm.MARKED_FOR_DELETION)) {
                 // grab cell to send to function to create delete commands
                 deletes.add(oldCells.get(x));
             }
@@ -603,10 +600,10 @@ class MenuReplaceStaticOperation extends Task {
         List<MenuCell> subCellKeepsNew = new ArrayList<>();
         for (int x = 0; x < newIntArray.size(); x++) {
             Integer newInt = newIntArray.get(x);
-            if (newInt.equals(MARKED_FOR_ADDITION)) {
+            if (newInt.equals(DynamicMenuUpdateAlgorithm.MARKED_FOR_ADDITION)) {
                 // grab cell to send to function to create add commands
                 adds.add(newCells.get(x));
-            } else if (newInt.equals(KEEP)) {
+            } else if (newInt.equals(DynamicMenuUpdateAlgorithm.KEEP)) {
                 subCellKeepsNew.add(newCells.get(x));
             }
         }
@@ -635,66 +632,6 @@ class MenuReplaceStaticOperation extends Task {
         });
     }
 
-    DynamicMenuUpdateRunScore runMenuCompareAlgorithm(List<MenuCell> oldCells, List<MenuCell> newCells) {
-        if (oldCells == null || oldCells.isEmpty()) {
-            return null;
-        }
-
-        DynamicMenuUpdateRunScore bestScore = compareOldAndNewLists(oldCells, newCells);
-        DebugTool.logInfo(TAG, "Best menu run score: " + bestScore.getScore());
-
-        return bestScore;
-    }
-
-    private DynamicMenuUpdateRunScore compareOldAndNewLists(List<MenuCell> oldCells, List<MenuCell> newCells) {
-        DynamicMenuUpdateRunScore bestRunScore = null;
-
-        // This first loop is for each 'run'
-        for (int run = 0; run < oldCells.size(); run++) {
-            List<Integer> oldArray = new ArrayList<>(oldCells.size());
-            List<Integer> newArray = new ArrayList<>(newCells.size());
-
-            // Set the statuses
-            for (int i = 0; i < oldCells.size(); i++) {
-                oldArray.add(MARKED_FOR_DELETION);
-            }
-            for (int i = 0; i < newCells.size(); i++) {
-                newArray.add(MARKED_FOR_ADDITION);
-            }
-
-            int startIndex = 0;
-
-            // Keep items that appear in both lists
-            for (int oldItems = run; oldItems < oldCells.size(); oldItems++) {
-
-                for (int newItems = startIndex; newItems < newCells.size(); newItems++) {
-
-                    if (oldCells.get(oldItems).equals(newCells.get(newItems))) {
-                        oldArray.set(oldItems, KEEP);
-                        newArray.set(newItems, KEEP);
-                        // set the new start index
-                        startIndex = newItems + 1;
-                        break;
-                    }
-                }
-            }
-
-            // Calculate number of adds, or the 'score' for this run
-            int numberOfAdds = 0;
-            for (int x = 0; x < newArray.size(); x++) {
-                if (newArray.get(x).equals(MARKED_FOR_ADDITION)) {
-                    numberOfAdds++;
-                }
-            }
-
-            // see if we have a new best score and set it if we do
-            if (bestRunScore == null || numberOfAdds < bestRunScore.getScore()) {
-                bestRunScore = new DynamicMenuUpdateRunScore(numberOfAdds, oldArray, newArray);
-            }
-
-        }
-        return bestRunScore;
-    }
 
     private boolean shouldRPCsIncludeImages(List<MenuCell> cells) {
         for (MenuCell cell : cells) {
