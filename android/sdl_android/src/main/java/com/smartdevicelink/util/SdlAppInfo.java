@@ -182,7 +182,7 @@ public class SdlAppInfo {
         return vehicleMakesList;
     }
 
-    static boolean checkIfVehicleSupported(List<VehicleType> supportedVehicleList, VehicleType connectedVehicle){
+    public static boolean checkIfVehicleSupported(List<VehicleType> supportedVehicleList, VehicleType connectedVehicle){
         if (null == supportedVehicleList || null == connectedVehicle){
             return false;
         }
