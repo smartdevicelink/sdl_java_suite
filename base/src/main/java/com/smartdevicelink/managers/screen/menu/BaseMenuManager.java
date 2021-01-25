@@ -70,7 +70,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
     private final WeakReference<FileManager> fileManager;
     private List<MenuCell> currentMenuCells;
-    private List<MenuCell> oldMenuCells;
+    private List<MenuCell> menuCells;
     private DynamicMenuUpdatesMode dynamicMenuUpdatesMode;
     private MenuConfiguration menuConfiguration;
     private SdlMsgVersion sdlMsgVersion;
@@ -107,7 +107,7 @@ abstract class BaseMenuManager extends BaseSubManager {
     @Override
     public void dispose() {
         currentMenuCells = null;
-        oldMenuCells = null;
+        menuCells = null;
         currentHMILevel = HMILevel.HMI_NONE;
         currentSystemContext = SystemContext.SYSCTXT_MAIN;
         dynamicMenuUpdatesMode = DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE;
@@ -153,7 +153,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
         // Set old list
         if (currentMenuCells != null) {
-            oldMenuCells = new ArrayList<>(currentMenuCells);
+            menuCells = new ArrayList<>(currentMenuCells);
         }
         // Copy new list
         currentMenuCells = new ArrayList<>();
@@ -194,10 +194,10 @@ abstract class BaseMenuManager extends BaseSubManager {
             operation.cancelTask();
         }
 
-        MenuReplaceStaticOperation operation = new MenuReplaceStaticOperation(internalInterface, fileManager.get(), displayType, dynamicMenuUpdatesMode, menuConfiguration, defaultMainWindowCapability, oldMenuCells, currentMenuCells, new MenuManagerCompletionListener() {
+        MenuReplaceStaticOperation operation = new MenuReplaceStaticOperation(internalInterface, fileManager.get(), displayType, dynamicMenuUpdatesMode, menuConfiguration, defaultMainWindowCapability, menuCells, currentMenuCells, new MenuManagerCompletionListener() {
             @Override
             public void onComplete(boolean success, List<MenuCell> oldMenuCells) {
-                BaseMenuManager.this.oldMenuCells = oldMenuCells;
+                BaseMenuManager.this.menuCells = oldMenuCells;
             }
         });
         transactionQueue.add(operation, false);
