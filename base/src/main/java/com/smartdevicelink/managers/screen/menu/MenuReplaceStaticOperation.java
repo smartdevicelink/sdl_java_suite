@@ -3,20 +3,14 @@ package com.smartdevicelink.managers.screen.menu;
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
-import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.rpc.AddCommand;
-import com.smartdevicelink.proxy.rpc.AddSubMenu;
-import com.smartdevicelink.proxy.rpc.DeleteCommand;
-import com.smartdevicelink.proxy.rpc.DeleteSubMenu;
-import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
-import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
+import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.util.DebugTool;
 
@@ -29,6 +23,7 @@ import java.util.Map;
 
 import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.lastMenuId;
 import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdNotFound;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.*;
 
 /**
  * Created by Bilal Alsharifi on 1/20/21.
@@ -81,7 +76,7 @@ class MenuReplaceStaticOperation extends Task {
 
     private void updateMenuCells(final CompletionListener listener) {
         // Upload the Artworks
-        List<SdlArtwork> artworksToBeUploaded = findAllArtworksToBeUploadedFromCells(updatedMenu);
+        List<SdlArtwork> artworksToBeUploaded = findAllArtworksToBeUploadedFromCells(updatedMenu, fileManager.get(), defaultMainWindowCapability);
         if (!artworksToBeUploaded.isEmpty() && fileManager.get() != null) {
             fileManager.get().uploadArtworks(artworksToBeUploaded, new MultipleFileCompletionListener() {
                 @Override
@@ -155,7 +150,7 @@ class MenuReplaceStaticOperation extends Task {
             return;
         }
 
-        sendDeleteRPCs(createDeleteRPCsForCells(currentMenu), new CompletionListener() {
+        sendDeleteRPCs(deleteCommandsForCells(currentMenu), new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
                 if (!success) {
@@ -188,7 +183,7 @@ class MenuReplaceStaticOperation extends Task {
             }
         }
         // create the delete commands
-        deleteCommands = createDeleteRPCsForCells(deletes);
+        deleteCommands = deleteCommandsForCells(deletes);
 
         // Set up the adds
         List<MenuCell> adds = new ArrayList<>();
@@ -252,14 +247,16 @@ class MenuReplaceStaticOperation extends Task {
 
         List<RPCRequest> mainMenuCommands;
         final List<RPCRequest> subMenuCommands;
+        List<MenuLayout> availableMenuLayouts = defaultMainWindowCapability != null ? defaultMainWindowCapability.getMenuLayoutsAvailable() : null;
+        MenuLayout defaultSubmenuLayout = menuConfiguration != null ? menuConfiguration.getSubMenuLayout() : null;
 
-        if (!shouldRPCsIncludeImages(menu) || !supportsImages()) {
+        if (!shouldRPCsIncludeImages(menu, fileManager.get()) || !supportsImages(defaultMainWindowCapability)) {
             // Send artwork-less menu
-            mainMenuCommands = mainMenuCommandsForCells(menu, false);
-            subMenuCommands = subMenuCommandsForCells(menu, false);
+            mainMenuCommands = mainMenuCommandsForCells(menu, false, updatedMenu, availableMenuLayouts, defaultSubmenuLayout);
+            subMenuCommands = subMenuCommandsForCells(menu, false, availableMenuLayouts, defaultSubmenuLayout);
         } else {
-            mainMenuCommands = mainMenuCommandsForCells(menu, true);
-            subMenuCommands = subMenuCommandsForCells(menu, true);
+            mainMenuCommands = mainMenuCommandsForCells(menu, true, updatedMenu, availableMenuLayouts, defaultSubmenuLayout);
+            subMenuCommands = subMenuCommandsForCells(menu, true, availableMenuLayouts, defaultSubmenuLayout);
         }
 
         internalInterface.get().sendSequentialRPCs(mainMenuCommands, new OnMultipleRequestListener() {
@@ -354,7 +351,7 @@ class MenuReplaceStaticOperation extends Task {
 
         List<RPCRequest> mainMenuCommands;
 
-        if (!shouldRPCsIncludeImages(adds) || !supportsImages()) {
+        if (!shouldRPCsIncludeImages(adds, fileManager.get()) || !supportsImages(defaultMainWindowCapability)) {
             // Send artwork-less menu
             mainMenuCommands = createCommandsForDynamicSubCells(newMenu, adds, false);
         } else {
@@ -397,7 +394,7 @@ class MenuReplaceStaticOperation extends Task {
                 listener.onComplete(true);
             }
         } else {
-            sendDeleteRPCs(createDeleteRPCsForCells(currentMenu), listener);
+            sendDeleteRPCs(deleteCommandsForCells(currentMenu), listener);
         }
     }
 
@@ -436,33 +433,6 @@ class MenuReplaceStaticOperation extends Task {
         });
     }
 
-    private List<RPCRequest> subMenuCommandsForCells(List<MenuCell> cells, boolean shouldHaveArtwork) {
-        List<RPCRequest> builtCommands = new ArrayList<>();
-        for (MenuCell cell : cells) {
-            if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
-                builtCommands.addAll(allCommandsForCells(cell.getSubCells(), shouldHaveArtwork));
-            }
-        }
-        return builtCommands;
-    }
-
-    List<RPCRequest> allCommandsForCells(List<MenuCell> cells, boolean shouldHaveArtwork) {
-        List<RPCRequest> builtCommands = new ArrayList<>();
-
-        for (int i = 0; i < cells.size(); i++) {
-            MenuCell cell = cells.get(i);
-            if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
-                builtCommands.add(subMenuCommandForMenuCell(cell, shouldHaveArtwork, i));
-
-                // recursively grab the commands for all the sub cells
-                builtCommands.addAll(allCommandsForCells(cell.getSubCells(), shouldHaveArtwork));
-            } else {
-                builtCommands.add(commandForMenuCell(cell, shouldHaveArtwork, i));
-            }
-        }
-        return builtCommands;
-    }
-
     private List<RPCRequest> createCommandsForDynamicSubCells(List<MenuCell> oldMenuCells, List<MenuCell> cells, boolean shouldHaveArtwork) {
         List<RPCRequest> builtCommands = new ArrayList<>();
         for (int z = 0; z < oldMenuCells.size(); z++) {
@@ -476,35 +446,6 @@ class MenuReplaceStaticOperation extends Task {
             }
         }
         return builtCommands;
-    }
-
-    private AddCommand commandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position) {
-        MenuParams params = new MenuParams(cell.getTitle());
-        params.setParentID(cell.getParentCellId() != parentIdNotFound ? cell.getParentCellId() : null);
-        params.setPosition(position);
-
-        AddCommand command = new AddCommand(cell.getCellId());
-        command.setMenuParams(params);
-        if (cell.getVoiceCommands() != null && !cell.getVoiceCommands().isEmpty()) {
-            command.setVrCommands(cell.getVoiceCommands());
-        } else {
-            command.setVrCommands(null);
-        }
-        command.setCmdIcon((cell.getIcon() != null && shouldHaveArtwork) ? cell.getIcon().getImageRPC() : null);
-
-        return command;
-    }
-
-    private AddSubMenu subMenuCommandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position) {
-        AddSubMenu subMenu = new AddSubMenu(cell.getCellId(), cell.getTitle());
-        subMenu.setPosition(position);
-        if (cell.getSubMenuLayout() != null) {
-            subMenu.setMenuLayout(cell.getSubMenuLayout());
-        } else if (menuConfiguration != null && menuConfiguration.getSubMenuLayout() != null) {
-            subMenu.setMenuLayout(menuConfiguration.getSubMenuLayout());
-        }
-        subMenu.setMenuIcon((shouldHaveArtwork && (cell.getIcon() != null && cell.getIcon().getImageRPC() != null)) ? cell.getIcon().getImageRPC() : null);
-        return subMenu;
     }
 
     private void sendDynamicRootMenuRPCs(List<RPCRequest> deleteCommands, final List<MenuCell> updatedCells, final CompletionListener listener) {
@@ -590,7 +531,7 @@ class MenuReplaceStaticOperation extends Task {
             }
         }
         // create the delete commands
-        List<RPCRequest> deleteCommands = createDeleteRPCsForCells(deletes);
+        List<RPCRequest> deleteCommands = deleteCommandsForCells(deletes);
 
         // Set up the adds
         List<MenuCell> adds = new ArrayList<>();
@@ -627,19 +568,6 @@ class MenuReplaceStaticOperation extends Task {
                 }
             }
         });
-    }
-
-
-    private boolean shouldRPCsIncludeImages(List<MenuCell> cells) {
-        for (MenuCell cell : cells) {
-            SdlArtwork artwork = cell.getIcon();
-            if (artwork != null && !artwork.isStaticIcon() && fileManager.get() != null && !fileManager.get().hasUploadedFile(artwork)) {
-                return false;
-            } else if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
-                return shouldRPCsIncludeImages(cell.getSubCells());
-            }
-        }
-        return true;
     }
 
     private void updateIdsOnDynamicCells(List<MenuCell> dynamicCells) {
@@ -721,65 +649,6 @@ class MenuReplaceStaticOperation extends Task {
                 }
             }
         }
-    }
-
-    private List<RPCRequest> createDeleteRPCsForCells(List<MenuCell> cells) {
-        List<RPCRequest> deletes = new ArrayList<>();
-        for (MenuCell cell : cells) {
-            if (cell.getSubCells() == null) {
-                DeleteCommand delete = new DeleteCommand(cell.getCellId());
-                deletes.add(delete);
-            } else {
-                DeleteSubMenu delete = new DeleteSubMenu(cell.getCellId());
-                deletes.add(delete);
-            }
-        }
-        return deletes;
-    }
-
-    private List<RPCRequest> mainMenuCommandsForCells(List<MenuCell> cellsToAdd, boolean shouldHaveArtwork) {
-        List<RPCRequest> builtCommands = new ArrayList<>();
-
-        // We need the index so we will use this type of loop
-        for (int z = 0; z < updatedMenu.size(); z++) {
-            MenuCell mainCell = updatedMenu.get(z);
-            for (int i = 0; i < cellsToAdd.size(); i++) {
-                MenuCell addCell = cellsToAdd.get(i);
-                if (mainCell.equals(addCell)) {
-                    if (addCell.getSubCells() != null && !addCell.getSubCells().isEmpty()) {
-                        builtCommands.add(subMenuCommandForMenuCell(addCell, shouldHaveArtwork, z));
-                    } else {
-                        builtCommands.add(commandForMenuCell(addCell, shouldHaveArtwork, z));
-                    }
-                    break;
-                }
-            }
-        }
-        return builtCommands;
-    }
-
-    private List<SdlArtwork> findAllArtworksToBeUploadedFromCells(List<MenuCell> cells) {
-        // Make sure we can use images in the menus
-        if (!supportsImages()) {
-            return new ArrayList<>();
-        }
-
-        List<SdlArtwork> artworks = new ArrayList<>();
-        for (MenuCell cell : cells) {
-            if (fileManager.get() != null && fileManager.get().fileNeedsUpload(cell.getIcon())) {
-                artworks.add(cell.getIcon());
-            }
-            if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
-                artworks.addAll(findAllArtworksToBeUploadedFromCells(cell.getSubCells()));
-            }
-        }
-
-        return artworks;
-    }
-
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private boolean supportsImages() {
-        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.cmdIcon);
     }
 
     void setMenuConfiguration(MenuConfiguration menuConfiguration) {
