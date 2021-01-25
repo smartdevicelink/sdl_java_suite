@@ -47,7 +47,7 @@ class DynamicMenuUpdateAlgorithm {
                 oldArray.add(MenuCellState.DELETE);
             }
             for (int i = 0; i < updatedMenuCells.size(); i++) {
-                newArray.add(MenuCellState.KEEP);
+                newArray.add(MenuCellState.ADD);
             }
 
             int startIndex = 0;
