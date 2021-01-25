@@ -33,31 +33,32 @@
 package com.smartdevicelink.managers.screen.menu;
 
 import java.util.List;
+import com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.MenuCellState;
 
 class DynamicMenuUpdateRunScore {
-
     private int score;
-    private List<Integer> oldMenu, currentMenu;
+    private List<MenuCellState> oldMenu, currentMenu;
 
-    DynamicMenuUpdateRunScore(int score, List<Integer> oldMenu, List<Integer> currentMenu) {
+
+    DynamicMenuUpdateRunScore(int score, List<MenuCellState> oldMenu, List<MenuCellState> currentMenu) {
         setScore(score);
         setOldMenu(oldMenu);
         setCurrentMenu(currentMenu);
     }
 
-    private void setCurrentMenu(List<Integer> currentMenu) {
+    private void setCurrentMenu(List<MenuCellState>  currentMenu) {
         this.currentMenu = currentMenu;
     }
 
-    List<Integer> getCurrentMenu() {
+    List<MenuCellState> getCurrentMenu() {
         return currentMenu;
     }
 
-    private void setOldMenu(List<Integer> oldMenu) {
+    private void setOldMenu(List<MenuCellState>  oldMenu) {
         this.oldMenu = oldMenu;
     }
 
-    List<Integer> getOldMenu() {
+    List<MenuCellState> getOldMenu() {
         return oldMenu;
     }
 
@@ -68,5 +69,4 @@ class DynamicMenuUpdateRunScore {
     public int getScore() {
         return score;
     }
-
 }
