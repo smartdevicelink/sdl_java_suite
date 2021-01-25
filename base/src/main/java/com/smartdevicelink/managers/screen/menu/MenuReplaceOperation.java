@@ -120,7 +120,6 @@ class MenuReplaceOperation extends Task {
                 DebugTool.logInfo(TAG, "Creating initial Menu");
                 lastMenuId = menuCellIdMin;
                 updateIdsOnMenuCells(menuCells, parentIdNotFound);
-                this.oldMenuCells = new ArrayList<>(menuCells); // todo why?
                 createAndSendEntireMenu(listener);
             } else {
                 DebugTool.logInfo(TAG, "Dynamically Updating Menu");
@@ -137,10 +136,6 @@ class MenuReplaceOperation extends Task {
             DebugTool.logInfo(TAG, "Updating menus in compatibility mode");
             lastMenuId = menuCellIdMin;
             updateIdsOnMenuCells(menuCells, parentIdNotFound);
-            // if the old cell array is not null, we want to delete the entire thing, else copy the new array
-            if (oldMenuCells == null) {
-                this.oldMenuCells = new ArrayList<>(menuCells);  // todo why?
-            }
             createAndSendEntireMenu(listener);
         }
     }
