@@ -360,6 +360,8 @@ abstract class BaseMenuManager extends BaseSubManager {
             // We also don't want to encourage changing out the menu while the user is using it for usability reasons.
             DebugTool.logInfo(TAG, "We now have a proper system context, sending waiting update");
             transactionQueue.resume();
+        } else if (currentHMILevel == HMILevel.HMI_NONE || currentSystemContext == SystemContext.SYSCTXT_MENU){
+            transactionQueue.pause();
         }
     }
 
