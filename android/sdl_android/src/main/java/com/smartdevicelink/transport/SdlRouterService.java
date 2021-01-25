@@ -108,7 +108,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -1124,7 +1123,7 @@ public class SdlRouterService extends Service {
 
 
         if (!initCheck()) { // Run checks on process and permissions
-            deployNextRouterService(receivedVehicleType);
+            deployNextRouterService();
             closeSelf();
             return;
         }
@@ -1150,8 +1149,8 @@ public class SdlRouterService extends Service {
     /**
      * The method will attempt to start up the next router service in line based on the sorting criteria of best router service.
      */
-    protected void deployNextRouterService(VehicleType vehicleType) {
-        List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(getApplicationContext(), new SdlAppInfo.BestRouterComparator(), vehicleType);
+    protected void deployNextRouterService() {
+        List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(getApplicationContext(), new SdlAppInfo.BestRouterComparator(), receivedVehicleType);
         if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty()) {
             ComponentName name = new ComponentName(this, this.getClass());
             SdlAppInfo info;
@@ -1277,9 +1276,9 @@ public class SdlRouterService extends Service {
                 hasCalledStartForeground = true;
             }
 
-            if (intent.hasExtra(TransportConstants.CONNECT_VEHICLE_INFO)){
+            if (intent.hasExtra(TransportConstants.VEHICLE_INFO)){
                 receivedVehicleType = new VehicleType(
-                        (HashMap<String, Object>)intent.getSerializableExtra(TransportConstants.CONNECT_VEHICLE_INFO)
+                        (HashMap<String, Object>)intent.getSerializableExtra(TransportConstants.VEHICLE_INFO)
                 );
             }
 
@@ -1766,7 +1765,7 @@ public class SdlRouterService extends Service {
         startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE, getBaseContext().getPackageName());
         startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME, new ComponentName(this, this.getClass()));
         if (receivedVehicleType != null) {
-            startService.putExtra(TransportConstants.CONNECT_VEHICLE_INFO, receivedVehicleType.getStore());
+            startService.putExtra(TransportConstants.VEHICLE_INFO, receivedVehicleType.getStore());
         }
 
         if (record != null && record.getType() != null) {

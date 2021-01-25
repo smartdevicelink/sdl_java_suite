@@ -157,16 +157,16 @@ public class SdlAppInfo {
                     if (tagname.equalsIgnoreCase("vehicle-type")) {
                         VehicleType vehicleMake = new VehicleType();
                         String make = parser.getAttributeValue(null, "make");
-                        if (null != make) {
+                        if (make != null) {
                             vehicleMake.setMake(make);
                             String model = parser.getAttributeValue(null, "model");
-                            if (null != model)
+                            if (model != null)
                                 vehicleMake.setModel(model);
                             String modelYear = parser.getAttributeValue(null, "modelYear");
-                            if (null != modelYear)
+                            if (modelYear != null)
                                 vehicleMake.setModelYear(modelYear);
                             String trim = parser.getAttributeValue(null, "trim");
-                            if (null != trim)
+                            if (trim != null)
                                 vehicleMake.setTrim(trim);
                             vehicleMakesList.add(vehicleMake);
                         }
@@ -183,16 +183,16 @@ public class SdlAppInfo {
     }
 
     public static boolean checkIfVehicleSupported(List<VehicleType> supportedVehicleList, VehicleType connectedVehicle){
-        if (null == supportedVehicleList || null == connectedVehicle){
+        if (supportedVehicleList == null || connectedVehicle == null){
             return false;
         }
         if (supportedVehicleList.contains(connectedVehicle)){
             return true;
         }
         for (VehicleType supportedVehicle :supportedVehicleList) {
-            String svMake = supportedVehicle.getMake();
-            String cvMake = connectedVehicle.getMake();
-            if(svMake != null && cvMake != null && cvMake.equalsIgnoreCase(svMake)) {
+            String supportedVehicleMake = supportedVehicle.getMake();
+            String connectedVehicleMake = connectedVehicle.getMake();
+            if(supportedVehicleMake != null && connectedVehicleMake != null && connectedVehicleMake.equalsIgnoreCase(supportedVehicleMake)) {
                 String svModel = supportedVehicle.getModel();
                 String cvModel = connectedVehicle.getModel();
                 if (svModel != null && cvModel != null) {

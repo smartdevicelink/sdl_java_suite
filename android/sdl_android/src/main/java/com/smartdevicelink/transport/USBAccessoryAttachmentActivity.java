@@ -41,7 +41,6 @@ import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.util.Log;
 
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.DebugTool;
@@ -120,7 +119,6 @@ public class USBAccessoryAttachmentActivity extends Activity {
             usbAccessory = intent.getParcelableExtra(UsbManager.EXTRA_ACCESSORY);
             permissionGranted = intent.getParcelableExtra(UsbManager.EXTRA_PERMISSION_GRANTED);
 
-            Log.d("MyTagLog", "attached");
             wakeUpRouterService(getApplicationContext());
 
         } else {
@@ -140,17 +138,14 @@ public class USBAccessoryAttachmentActivity extends Activity {
         new ServiceFinder(context, context.getPackageName(), new ServiceFinder.ServiceFinderCallback() {
             @Override
             public void onComplete(Vector<ComponentName> routerServices) {
-                Log.d("MyTagLog", "wake up");
                 Vector<ComponentName> runningBluetoothServicePackage = new Vector<>(routerServices);
                 if (runningBluetoothServicePackage.isEmpty()) {
-                    Log.d("MyTagLog", "is empty");
                     //If there isn't a service running we should try to start one
                     //We will try to sort the SDL enabled apps and find the one that's been installed the longest
                     Intent serviceIntent;
                     List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(context, new SdlAppInfo.BestRouterComparator(), null);
 
                     if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty()) {
-                        Log.d("MyTagLog", "is empty 2");
                         SdlAppInfo optimalRouterService = sdlAppInfoList.get(0);
 
                         if (optimalRouterService.getRouterServiceVersion() < USB_SUPPORTED_ROUTER_SERVICE_VERSION) {
@@ -164,7 +159,6 @@ public class USBAccessoryAttachmentActivity extends Activity {
                         serviceIntent = new Intent();
                         serviceIntent.setComponent(optimalRouterService.getRouterServiceComponentName());
                     } else {
-                        Log.d("MyTagLog", "is empty 3");
                         DebugTool.logInfo(TAG, "No SDL Router Services found");
                         DebugTool.logInfo(TAG, "WARNING: This application has not specified its SdlRouterService correctly in the manifest. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
                         // At this point to ensure that USB connection is still possible it might be
@@ -176,12 +170,9 @@ public class USBAccessoryAttachmentActivity extends Activity {
 
                     ComponentName startedService;
                     try {
-                        Log.d("MyTagLog", "try block");
                         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                             startedService = context.startService(serviceIntent);
                         } else {
-                            Log.d("MyTagLog", "try block");
-                            Log.d("MyTagLog", serviceIntent.getComponent().getClassName().toString());
                             serviceIntent.putExtra(FOREGROUND_EXTRA, true);
                             startedService = context.startForegroundService(serviceIntent);
                         }

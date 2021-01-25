@@ -60,7 +60,6 @@ import com.smartdevicelink.util.SdlAppInfo;
 import com.smartdevicelink.util.ServiceFinder;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
@@ -148,7 +147,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
             DebugTool.logError(TAG, "You cannot use the default SdlRouterService class, it must be extended in your project. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
         }
 
-        HashMap<String, Object> vehicleInfoStore = (HashMap<String, Object>) intent.getSerializableExtra(TransportConstants.CONNECT_VEHICLE_INFO);
+        HashMap<String, Object> vehicleInfoStore = (HashMap<String, Object>) intent.getSerializableExtra(TransportConstants.VEHICLE_INFO);
 
         VehicleType vehicleType;
         if (vehicleInfoStore == null || vehicleInfoStore.isEmpty()){
@@ -223,6 +222,8 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
      * @param componentName    the router service that should be started
      * @param altTransportWake if the alt transport flag should be set. Only used in debug
      * @param device           the connected bluetooth device
+     * @param confirmedDevice  if the device is confirmed
+     * @param vehicleType      vehicle params retrieved from connected device
      */
     private static void startRouterService(Context context, ComponentName componentName, boolean altTransportWake, BluetoothDevice device, boolean confirmedDevice, VehicleType vehicleType) {
         if (componentName == null) {
@@ -245,7 +246,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
         }
 
         if (vehicleType != null) {
-            serviceIntent.putExtra(TransportConstants.CONNECT_VEHICLE_INFO, vehicleType.getStore());
+            serviceIntent.putExtra(TransportConstants.VEHICLE_INFO, vehicleType.getStore());
         }
 
         try {
@@ -291,7 +292,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                             DebugTool.logInfo(TAG, ": This app's package: " + myPackage);
                             DebugTool.logInfo(TAG, ": Router service app's package: " + routerServicePackage);
                             if (myPackage != null && myPackage.equalsIgnoreCase(routerServicePackage)) {
-                                SdlDeviceListener sdlDeviceListener = getSdlDeviceListener(context, device, vehicleType);
+                                SdlDeviceListener sdlDeviceListener = getSdlDeviceListener(context, device);
                                 if (!sdlDeviceListener.isRunning()) {
                                     sdlDeviceListener.start();
                                 }
@@ -562,7 +563,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
     }
 
 
-    private static SdlDeviceListener getSdlDeviceListener(Context context, BluetoothDevice bluetoothDevice, VehicleType vehicleType) {
+    private static SdlDeviceListener getSdlDeviceListener(Context context, BluetoothDevice bluetoothDevice) {
 
         synchronized (DEVICE_LISTENER_LOCK) {
             if (sdlDeviceListener == null) {

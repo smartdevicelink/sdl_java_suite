@@ -39,13 +39,13 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlPacketFactory;
+import com.smartdevicelink.protocol.enums.ControlFrameTags;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.transport.MultiplexBaseTransport;
@@ -188,7 +188,6 @@ public class SdlDeviceListener {
         }
 
         public void sendStartService(){
-            Log.d("MyTagLog", "send start service");
             SdlDeviceListener sdlListener = this.provider.get();
             byte[] serviceProbe = SdlPacketFactory.createStartSession(SessionType.RPC, 0x00, (byte)1, (byte)0x00, false).constructPacket();
             if(sdlListener.bluetoothTransport !=null && sdlListener.bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
@@ -216,14 +215,10 @@ public class SdlDeviceListener {
         }
 
         private @Nullable VehicleType getVehicleType(SdlPacket packet) {
-//            String make = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_MAKE);
-//            String model = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_MODEL);
-//            String modelYear = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_MODEL_YEAR);
-//            String vehicleTrim = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_TRIM);
-            String make = "Ford";
-            String model = "Mustang";
-            String modelYear = "2019";
-            String vehicleTrim = "GT";
+            String make = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_MAKE);
+            String model = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_MODEL);
+            String modelYear = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_MODEL_YEAR);
+            String vehicleTrim = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.VEHICLE_TRIM);
             if (make != null) {
                 // checking if tags have come from core
                 VehicleType type = new VehicleType();
@@ -231,10 +226,6 @@ public class SdlDeviceListener {
                 type.setModel(model);
                 type.setModelYear(modelYear);
                 type.setTrim(vehicleTrim);
-                Log.d("MyTagLog", make == null ? "make was null" : make);
-                Log.d("MyTagLog", model == null ? "model was null" : model);
-                Log.d("MyTagLog", modelYear == null ? "modelYear was null" : modelYear);
-                Log.d("MyTagLog", vehicleTrim == null ? "vehicleTrim was null" : make);
                 this.provider.get().cachedVehicleType = type;
                 return type;
             } else {

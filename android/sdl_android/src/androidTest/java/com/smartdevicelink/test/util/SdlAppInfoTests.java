@@ -38,7 +38,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -47,7 +46,6 @@ import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.util.SdlAppInfo;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

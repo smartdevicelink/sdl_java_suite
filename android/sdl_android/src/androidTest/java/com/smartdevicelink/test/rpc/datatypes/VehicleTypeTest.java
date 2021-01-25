@@ -78,8 +78,8 @@ public class VehicleTypeTest extends TestCase {
 
     public void testHashMapConstructor(){
         Hashtable<String, Object> store = msg.getStore();
-        HashMap<String, Object> ht = new HashMap(store);
-        VehicleType type = new VehicleType(ht);
+        HashMap<String, Object> hashMap = new HashMap(store);
+        VehicleType type = new VehicleType(hashMap);
 
         Assert.assertEquals(type.getMake(), msg.getMake());
         Assert.assertEquals(type.getModel(), msg.getModel());
