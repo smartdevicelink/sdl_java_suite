@@ -47,12 +47,12 @@ import java.lang.ref.WeakReference;
 class MenuShowOperation extends Task {
     private static final String TAG = "MenuShowOperation";
     private final WeakReference<ISdl> internalInterface;
-    private final Integer menuId;
+    private final MenuCell submenuCell;
 
-    MenuShowOperation(ISdl internalInterface, Integer menuId) {
+    MenuShowOperation(ISdl internalInterface, MenuCell menuCell) {
         super(TAG);
         this.internalInterface = new WeakReference<>(internalInterface);
-        this.menuId = menuId;
+        this.submenuCell = menuCell;
     }
 
     @Override
@@ -65,7 +65,8 @@ class MenuShowOperation extends Task {
             return;
         }
 
-        sendShowAppMenu(this.menuId);
+        Integer menuId = submenuCell != null ? submenuCell.getCellId() : null;
+        sendShowAppMenu(menuId);
     }
 
     private void sendShowAppMenu(Integer id) {

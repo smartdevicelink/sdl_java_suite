@@ -59,6 +59,7 @@ import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
@@ -94,7 +95,8 @@ abstract class BaseMenuManager extends BaseSubManager {
         this.dynamicMenuUpdatesMode = DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE;
         this.sdlMsgVersion = internalInterface.getSdlMsgVersion();
         this.transactionQueue = newTransactionQueue();
-
+        this.menuCells = new ArrayList<>();
+        this.currentMenuCells = new ArrayList<>();
         addListeners();
     }
 
@@ -106,8 +108,8 @@ abstract class BaseMenuManager extends BaseSubManager {
 
     @Override
     public void dispose() {
-        menuCells = null;
-        currentMenuCells = null;
+        menuCells = new ArrayList<>();
+        currentMenuCells = new ArrayList<>();
         currentHMILevel = HMILevel.HMI_NONE;
         currentSystemContext = SystemContext.SYSCTXT_MAIN;
         dynamicMenuUpdatesMode = DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE;
@@ -152,7 +154,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             DebugTool.logError(TAG, "cells list cannot be null!");
             return;
         }
-        
+
         // Create a deep copy of the list so future changes by developers don't affect the algorithm logic
         final List<MenuCell> clonedCells = cloneMenuCellsList(cells);
 
@@ -186,10 +188,9 @@ abstract class BaseMenuManager extends BaseSubManager {
 
         // Cancel pending MenuReplaceOperations
         for (Task operation : transactionQueue.getTasksAsList()) {
-            if (!(operation instanceof MenuReplaceStaticOperation)) {
-                continue;
+            if (operation instanceof MenuReplaceStaticOperation) {
+                operation.cancelTask();
             }
-            operation.cancelTask();
         }
 
         MenuReplaceStaticOperation operation = new MenuReplaceStaticOperation(internalInterface, fileManager.get(), displayType, dynamicMenuUpdatesMode, menuConfiguration, defaultMainWindowCapability, currentMenuCells, menuCells, new MenuManagerCompletionListener() {
@@ -210,19 +211,50 @@ abstract class BaseMenuManager extends BaseSubManager {
         return menuCells;
     }
 
+    private boolean openMenuPrivate(MenuCell cell){
+        MenuCell foundClonedCell = null;
+
+        if (cell != null) {
+            // We must see if we have a copy of this cell, since we clone the objects
+            for (MenuCell clonedCell : menuCells) {
+                if (clonedCell.equals(cell) && clonedCell.getCellId() != MAX_ID) {
+                    // We've found the correct sub menu cell
+                    foundClonedCell = clonedCell;
+                    break;
+                }
+            }
+        }
+
+        if (cell != null && (cell.getSubCells() == null || cell.getSubCells().isEmpty())) {
+           DebugTool.logError(DebugTool.TAG, String.format("The cell %s does not contain any sub cells, so no submenu can be opened", foundClonedCell.getTitle()));
+            return false;
+        } else if (cell != null && foundClonedCell == null) {
+            DebugTool.logError(DebugTool.TAG, "This cell has not been sent to the head unit, so no submenu can be opened. Make sure that the cell exists in the SDLManager.menu array");
+            return false;
+        } else if (sdlMsgVersion.getMajorVersion() < 6) {
+            DebugTool.logWarning(TAG, "The openSubmenu method is not supported on this head unit.");
+            return false;
+        }
+
+        // Create the operation
+        MenuShowOperation operation = new MenuShowOperation(internalInterface, foundClonedCell);
+
+        // Cancel previous open menu operations
+        for (Task task : transactionQueue.getTasksAsList()) {
+            if (task instanceof MenuShowOperation) {
+                task.cancelTask();
+            }
+        }
+
+        transactionQueue.add(operation, false);
+
+        return true;
+    }
     /**
      * Opens the Main Menu
      */
     public boolean openMenu() {
-        if (sdlMsgVersion.getMajorVersion() < 6) {
-            DebugTool.logWarning(TAG, "Menu opening is only supported on head units with RPC spec version 6.0.0 or later. Currently connected head unit RPC spec version is: " + sdlMsgVersion.getMajorVersion() + "." + sdlMsgVersion.getMinorVersion() + "." + sdlMsgVersion.getPatchVersion());
-            return false;
-        }
-
-        MenuShowOperation operation = new MenuShowOperation(internalInterface, null);
-        transactionQueue.add(operation, false);
-
-        return true;
+        return openMenuPrivate(null);
     }
 
     /**
@@ -231,27 +263,7 @@ abstract class BaseMenuManager extends BaseSubManager {
      * @param cell - A <Strong>SubMenu</Strong> cell whose sub menu you wish to open
      */
     public boolean openSubMenu(@NonNull MenuCell cell) {
-        if (sdlMsgVersion.getMajorVersion() < 6) {
-            DebugTool.logWarning(TAG, "Sub menu opening is only supported on head units with RPC spec version 6.0.0 or later. Currently connected head unit RPC spec version is: " + sdlMsgVersion.getMajorVersion() + "." + sdlMsgVersion.getMinorVersion() + "." + sdlMsgVersion.getPatchVersion());
-            return false;
-        }
-
-        if (menuCells == null) {
-            DebugTool.logError(TAG, "open sub menu called, but no Menu cells have been set");
-            return false;
-        }
-
-        // We must see if we have a copy of this cell, since we clone the objects
-        for (MenuCell clonedCell : menuCells) {
-            if (clonedCell.equals(cell) && clonedCell.getCellId() != MAX_ID) {
-                // We've found the correct sub menu cell
-                MenuShowOperation operation = new MenuShowOperation(internalInterface, clonedCell.getCellId());
-                transactionQueue.add(operation, false);
-                return true;
-            }
-        }
-
-        return false;
+        return openMenuPrivate(cell);
     }
 
 
@@ -284,20 +296,18 @@ abstract class BaseMenuManager extends BaseSubManager {
 
                 // Update pending operations with new menuConfiguration
                 for (Task task : transactionQueue.getTasksAsList()) {
-                    if (!(task instanceof MenuReplaceStaticOperation)) {
-                        continue;
+                    if (task instanceof MenuReplaceStaticOperation) {
+                        ((MenuReplaceStaticOperation) task).setMenuConfiguration(menuConfiguration);
                     }
-                    ((MenuReplaceStaticOperation) task).setMenuConfiguration(menuConfiguration);
                 }
             }
         });
 
         // Cancel previous menu configuration operations
         for (Task task : transactionQueue.getTasksAsList()) {
-            if (!(task instanceof MenuConfigurationUpdateOperation)) {
-                continue;
+            if (task instanceof MenuConfigurationUpdateOperation) {
+                task.cancelTask();
             }
-            task.cancelTask();
         }
 
         transactionQueue.add(operation, false);

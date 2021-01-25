@@ -112,7 +112,7 @@ class MenuReplaceStaticOperation extends Task {
 
         // Checks against what the developer set for update mode and against the display type to
         // determine how the menu will be updated. This has the ability to be changed during a session.
-        if (checkUpdateMode(dynamicMenuUpdatesMode, displayType)) {
+        if (isDynamicMenuUpdateActive(dynamicMenuUpdatesMode, displayType)) {
             // Run the lists through the new algorithm
             DynamicMenuUpdateRunScore rootScore = runMenuCompareAlgorithm(currentMenu, updatedMenu);
             if (rootScore == null) {
@@ -140,7 +140,7 @@ class MenuReplaceStaticOperation extends Task {
         }
     }
 
-    private boolean checkUpdateMode(DynamicMenuUpdatesMode updateMode, String displayType) {
+    private boolean isDynamicMenuUpdateActive(DynamicMenuUpdatesMode updateMode, String displayType) {
         if (updateMode.equals(DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE)) {
             if (displayType == null) {
                 return true;
