@@ -85,10 +85,12 @@ abstract class BaseMenuManager extends BaseSubManager {
     private OnSystemCapabilityListener onDisplaysCapabilityListener;
     private WindowCapability defaultMainWindowCapability;
     private Queue transactionQueue;
+    static int lastMenuId; // todo this shouldn't be static and should be fully managed in the manager
 
     BaseMenuManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface);
 
+        this.lastMenuId = menuCellIdMin;
         this.fileManager = new WeakReference<>(fileManager);
         this.currentSystemContext = SystemContext.SYSCTXT_MAIN;
         this.currentHMILevel = HMILevel.HMI_NONE;
@@ -108,6 +110,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
     @Override
     public void dispose() {
+        lastMenuId = menuCellIdMin;
         menuCells = new ArrayList<>();
         currentMenuCells = new ArrayList<>();
         currentHMILevel = HMILevel.HMI_NONE;

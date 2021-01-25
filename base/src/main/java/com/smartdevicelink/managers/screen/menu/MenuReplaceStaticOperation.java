@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.menuCellIdMin;
+import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.lastMenuId;
 import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdNotFound;
 
 /**
@@ -46,7 +46,6 @@ class MenuReplaceStaticOperation extends Task {
     private final MenuManagerCompletionListener operationCompletionListener;
     private final String displayType;
     private final DynamicMenuUpdatesMode dynamicMenuUpdatesMode;
-    private int lastMenuId;
     private MenuConfiguration menuConfiguration;
 
     MenuReplaceStaticOperation(ISdl internalInterface, FileManager fileManager, String displayType, DynamicMenuUpdatesMode dynamicMenuUpdatesMode, MenuConfiguration menuConfiguration, WindowCapability defaultMainWindowCapability, List<MenuCell> currentMenu, List<MenuCell> updatedMenu, MenuManagerCompletionListener operationCompletionListener) {
@@ -115,7 +114,6 @@ class MenuReplaceStaticOperation extends Task {
             if (rootScore == null) {
                 // Send initial menu without dynamic updates because oldMenuCells is null
                 DebugTool.logInfo(TAG, "Creating initial Menu");
-                lastMenuId = menuCellIdMin;
                 updateIdsOnMenuCells(updatedMenu, parentIdNotFound);
                 createAndSendEntireMenu(listener);
             } else {
@@ -131,7 +129,6 @@ class MenuReplaceStaticOperation extends Task {
         } else {
             // We are in compatibility mode. No need to run the algorithm
             DebugTool.logInfo(TAG, "Updating menus in compatibility mode");
-            lastMenuId = menuCellIdMin;
             updateIdsOnMenuCells(updatedMenu, parentIdNotFound);
             createAndSendEntireMenu(listener);
         }
@@ -652,7 +649,7 @@ class MenuReplaceStaticOperation extends Task {
                 for (int i = 0; i < dynamicCells.size(); i++) {
                     MenuCell dynamicCell = dynamicCells.get(i);
                     if (mainCell.equals(dynamicCell)) {
-                        int newId = ++lastMenuId; //todo won't the lastMenuId reset to 1 every time?
+                        int newId = ++lastMenuId;
                         updatedMenu.get(z).setCellId(newId);
                         dynamicCells.get(i).setCellId(newId);
 
