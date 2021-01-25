@@ -33,7 +33,7 @@ import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdN
 /**
  * Created by Bilal Alsharifi on 1/20/21.
  */
-class MenuReplaceOperation extends Task {
+class MenuReplaceStaticOperation extends Task {
     private static final String TAG = "MenuReplaceOperation";
     private static final int KEEP = 0;
     private static final int MARKED_FOR_ADDITION = 1;
@@ -52,7 +52,7 @@ class MenuReplaceOperation extends Task {
     private int lastMenuId;
     private MenuConfiguration menuConfiguration;
 
-    MenuReplaceOperation(ISdl internalInterface, FileManager fileManager, String displayType, DynamicMenuUpdatesMode dynamicMenuUpdatesMode, MenuConfiguration menuConfiguration, WindowCapability defaultMainWindowCapability, List<MenuCell> oldMenuCells, List<MenuCell> menuCells, MenuManagerCompletionListener operationCompletionListener) {
+    MenuReplaceStaticOperation(ISdl internalInterface, FileManager fileManager, String displayType, DynamicMenuUpdatesMode dynamicMenuUpdatesMode, MenuConfiguration menuConfiguration, WindowCapability defaultMainWindowCapability, List<MenuCell> oldMenuCells, List<MenuCell> menuCells, MenuManagerCompletionListener operationCompletionListener) {
         super(TAG);
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
@@ -114,7 +114,7 @@ class MenuReplaceOperation extends Task {
         // determine how the menu will be updated. This has the ability to be changed during a session.
         if (checkUpdateMode(dynamicMenuUpdatesMode, displayType)) {
             // Run the lists through the new algorithm
-            RunScore rootScore = runMenuCompareAlgorithm(oldMenuCells, menuCells);
+            DynamicMenuUpdateRunScore rootScore = runMenuCompareAlgorithm(oldMenuCells, menuCells);
             if (rootScore == null) {
                 // Send initial menu without dynamic updates because oldMenuCells is null
                 DebugTool.logInfo(TAG, "Creating initial Menu");
@@ -175,7 +175,7 @@ class MenuReplaceOperation extends Task {
         });
     }
 
-    private void dynamicallyUpdateRootMenu(RunScore bestRootScore, CompletionListener listener) {
+    private void dynamicallyUpdateRootMenu(DynamicMenuUpdateRunScore bestRootScore, CompletionListener listener) {
         // We need to run through the keeps and see if they have subCells, as they also need to be run through the compare function.
         List<Integer> newIntArray = bestRootScore.getCurrentMenu();
         List<Integer> oldIntArray = bestRootScore.getOldMenu();
@@ -550,7 +550,7 @@ class MenuReplaceOperation extends Task {
             MenuCell oldKeptCell = keepsOld.get(i);
 
             if (oldKeptCell.getSubCells() != null && !oldKeptCell.getSubCells().isEmpty() && newKeptCell.getSubCells() != null && !newKeptCell.getSubCells().isEmpty()) {
-                RunScore subScore = compareOldAndNewLists(oldKeptCell.getSubCells(), newKeptCell.getSubCells());
+                DynamicMenuUpdateRunScore subScore = compareOldAndNewLists(oldKeptCell.getSubCells(), newKeptCell.getSubCells());
 
                 if (subScore != null) {
                     DebugTool.logInfo(TAG, "Sub menu Run Score: " + oldKeptCell.getTitle() + " Score: " + subScore.getScore());
@@ -578,7 +578,7 @@ class MenuReplaceOperation extends Task {
         DebugTool.logInfo(TAG, "Creating and Sending Dynamic Sub Commands For Root Menu Cell: " + commandList.getMenuTitle());
 
         // grab the scores
-        RunScore score = commandList.getListsScore();
+        DynamicMenuUpdateRunScore score = commandList.getListsScore();
         List<Integer> newIntArray = score.getCurrentMenu();
         List<Integer> oldIntArray = score.getOldMenu();
 
@@ -635,19 +635,19 @@ class MenuReplaceOperation extends Task {
         });
     }
 
-    RunScore runMenuCompareAlgorithm(List<MenuCell> oldCells, List<MenuCell> newCells) {
+    DynamicMenuUpdateRunScore runMenuCompareAlgorithm(List<MenuCell> oldCells, List<MenuCell> newCells) {
         if (oldCells == null || oldCells.isEmpty()) {
             return null;
         }
 
-        RunScore bestScore = compareOldAndNewLists(oldCells, newCells);
+        DynamicMenuUpdateRunScore bestScore = compareOldAndNewLists(oldCells, newCells);
         DebugTool.logInfo(TAG, "Best menu run score: " + bestScore.getScore());
 
         return bestScore;
     }
 
-    private RunScore compareOldAndNewLists(List<MenuCell> oldCells, List<MenuCell> newCells) {
-        RunScore bestRunScore = null;
+    private DynamicMenuUpdateRunScore compareOldAndNewLists(List<MenuCell> oldCells, List<MenuCell> newCells) {
+        DynamicMenuUpdateRunScore bestRunScore = null;
 
         // This first loop is for each 'run'
         for (int run = 0; run < oldCells.size(); run++) {
@@ -689,7 +689,7 @@ class MenuReplaceOperation extends Task {
 
             // see if we have a new best score and set it if we do
             if (bestRunScore == null || numberOfAdds < bestRunScore.getScore()) {
-                bestRunScore = new RunScore(numberOfAdds, oldArray, newArray);
+                bestRunScore = new DynamicMenuUpdateRunScore(numberOfAdds, oldArray, newArray);
             }
 
         }

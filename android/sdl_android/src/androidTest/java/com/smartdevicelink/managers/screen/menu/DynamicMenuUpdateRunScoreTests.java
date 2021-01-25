@@ -32,41 +32,28 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import java.util.List;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-class RunScore {
+import com.smartdevicelink.test.TestValues;
 
-    private int score;
-    private List<Integer> oldMenu, currentMenu;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-    RunScore(int score, List<Integer> oldMenu, List<Integer> currentMenu) {
-        setScore(score);
-        setOldMenu(oldMenu);
-        setCurrentMenu(currentMenu);
-    }
+import static junit.framework.TestCase.assertEquals;
 
-    private void setCurrentMenu(List<Integer> currentMenu) {
-        this.currentMenu = currentMenu;
-    }
+@RunWith(AndroidJUnit4.class)
+public class DynamicMenuUpdateRunScoreTests {
 
-    List<Integer> getCurrentMenu() {
-        return currentMenu;
-    }
+    @Test
+    public void testSettersAndGetters() {
 
-    private void setOldMenu(List<Integer> oldMenu) {
-        this.oldMenu = oldMenu;
-    }
+        // set everything - we only use the constructor to set variables in the Menu Manager
+        DynamicMenuUpdateRunScore runScore = new DynamicMenuUpdateRunScore(TestValues.GENERAL_INT, TestValues.GENERAL_INTEGER_LIST, TestValues.GENERAL_INTEGER_LIST);
 
-    List<Integer> getOldMenu() {
-        return oldMenu;
-    }
-
-    private void setScore(int score) {
-        this.score = score;
-    }
-
-    public int getScore() {
-        return score;
+        // use getters and assert equality
+        assertEquals(runScore.getScore(), TestValues.GENERAL_INT);
+        assertEquals(runScore.getCurrentMenu(), TestValues.GENERAL_INTEGER_LIST);
+        assertEquals(runScore.getOldMenu(), TestValues.GENERAL_INTEGER_LIST);
     }
 
 }

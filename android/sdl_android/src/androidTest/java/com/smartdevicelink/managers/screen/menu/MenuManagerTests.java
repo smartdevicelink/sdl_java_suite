@@ -280,7 +280,7 @@ public class MenuManagerTests {
         assertEquals(menuManager.menuCells.size(), 4);
 
         // this happens in the menu manager but lets make sure its behaving
-        RunScore runScore = menuManager.runMenuCompareAlgorithm(oldMenu, newMenu);
+        DynamicMenuUpdateRunScore runScore = menuManager.runMenuCompareAlgorithm(oldMenu, newMenu);
 
         List<Integer> oldMenuScore = Arrays.asList(0, 0, 0, 0);
         List<Integer> newMenuScore = Arrays.asList(0, 0, 0, 0, 1);
@@ -317,7 +317,7 @@ public class MenuManagerTests {
         assertEquals(menuManager.menuCells.size(), 4);
 
         // this happens in the menu manager but lets make sure its behaving
-        RunScore runScore = menuManager.runMenuCompareAlgorithm(oldMenu, newMenu);
+        DynamicMenuUpdateRunScore runScore = menuManager.runMenuCompareAlgorithm(oldMenu, newMenu);
 
         List<Integer> oldMenuScore = Arrays.asList(0, 0, 0, 2);
         List<Integer> newMenuScore = Arrays.asList(0, 0, 0);
@@ -354,7 +354,7 @@ public class MenuManagerTests {
         assertEquals(menuManager.menuCells.size(), 3);
 
         // this happens in the menu manager but lets make sure its behaving
-        RunScore runScore = menuManager.runMenuCompareAlgorithm(oldMenu, newMenu);
+        DynamicMenuUpdateRunScore runScore = menuManager.runMenuCompareAlgorithm(oldMenu, newMenu);
 
         List<Integer> oldMenuScore = Arrays.asList(2, 2, 2);
         List<Integer> newMenuScore = Arrays.asList(1, 1, 1);
@@ -391,7 +391,7 @@ public class MenuManagerTests {
         assertEquals(menuManager.menuCells.size(), 4);
 
         // this happens in the menu manager but lets make sure its behaving
-        RunScore runScore = menuManager.runMenuCompareAlgorithm(oldMenu, newMenu);
+        DynamicMenuUpdateRunScore runScore = menuManager.runMenuCompareAlgorithm(oldMenu, newMenu);
 
         List<Integer> oldMenuScore = Arrays.asList(0, 2, 0, 2);
         List<Integer> newMenuScore = Arrays.asList(1, 0, 1, 0);
@@ -428,7 +428,7 @@ public class MenuManagerTests {
         assertEquals(menuManager.menuCells.size(), 4);
 
         // this happens in the menu manager but lets make sure its behaving
-        RunScore runScore = menuManager.runMenuCompareAlgorithm(oldMenu, newMenu);
+        DynamicMenuUpdateRunScore runScore = menuManager.runMenuCompareAlgorithm(oldMenu, newMenu);
 
         List<Integer> oldMenuScore = Arrays.asList(2, 0, 0, 0);
         List<Integer> newMenuScore = Arrays.asList(0, 0, 0, 1);

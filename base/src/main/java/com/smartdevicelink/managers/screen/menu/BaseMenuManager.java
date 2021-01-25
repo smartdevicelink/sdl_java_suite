@@ -188,7 +188,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
         cancelPendingMenuReplaceOperations();
 
-        MenuReplaceOperation operation = new MenuReplaceOperation(internalInterface, fileManager.get(), displayType, dynamicMenuUpdatesMode, menuConfiguration, defaultMainWindowCapability, oldMenuCells, menuCells, new MenuManagerCompletionListener() {
+        MenuReplaceStaticOperation operation = new MenuReplaceStaticOperation(internalInterface, fileManager.get(), displayType, dynamicMenuUpdatesMode, menuConfiguration, defaultMainWindowCapability, oldMenuCells, menuCells, new MenuManagerCompletionListener() {
             @Override
             public void onComplete(boolean success, List<MenuCell> oldMenuCells) {
                 BaseMenuManager.this.oldMenuCells = oldMenuCells;
@@ -398,16 +398,16 @@ abstract class BaseMenuManager extends BaseSubManager {
 
     private void updatePendingOperationsWithNewMenuConfiguration() {
         for (Task task : transactionQueue.getTasksAsList()) {
-            if (!(task instanceof MenuReplaceOperation)) {
+            if (!(task instanceof MenuReplaceStaticOperation)) {
                 continue;
             }
-            ((MenuReplaceOperation) task).setMenuConfiguration(menuConfiguration);
+            ((MenuReplaceStaticOperation) task).setMenuConfiguration(menuConfiguration);
         }
     }
 
     private void cancelPendingMenuReplaceOperations(){
         for (Task operation : transactionQueue.getTasksAsList()) {
-            if (!(operation instanceof MenuReplaceOperation)) {
+            if (!(operation instanceof MenuReplaceStaticOperation)) {
                 continue;
             }
             operation.cancelTask();

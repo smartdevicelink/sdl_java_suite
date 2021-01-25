@@ -47,7 +47,7 @@ public class SubCellCommandListTests {
     @Test
     public void testSettersAndGetters() {
 
-        RunScore runScore = new RunScore(TestValues.GENERAL_INT, TestValues.GENERAL_INTEGER_LIST, TestValues.GENERAL_INTEGER_LIST);
+        DynamicMenuUpdateRunScore runScore = new DynamicMenuUpdateRunScore(TestValues.GENERAL_INT, TestValues.GENERAL_INTEGER_LIST, TestValues.GENERAL_INTEGER_LIST);
 
         // set everything
         SubCellCommandList subCellCommandList = new SubCellCommandList(TestValues.GENERAL_STRING, TestValues.GENERAL_INTEGER, runScore, TestValues.GENERAL_MENUCELL_LIST, TestValues.GENERAL_MENUCELL_LIST);

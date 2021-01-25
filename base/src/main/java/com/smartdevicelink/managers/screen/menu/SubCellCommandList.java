@@ -36,12 +36,12 @@ import java.util.List;
 
 class SubCellCommandList {
 
-    private RunScore listsScore;
+    private DynamicMenuUpdateRunScore listsScore;
     private String menuTitle;
     private Integer parentId;
     private List<MenuCell> oldList, newList;
 
-    SubCellCommandList(String menuTitle, Integer parentId, RunScore listsScore, List<MenuCell> oldList, List<MenuCell> newList) {
+    SubCellCommandList(String menuTitle, Integer parentId, DynamicMenuUpdateRunScore listsScore, List<MenuCell> oldList, List<MenuCell> newList) {
         setMenuTitle(menuTitle);
         setParentId(parentId);
         setListsScore(listsScore);
@@ -65,11 +65,11 @@ class SubCellCommandList {
         return menuTitle;
     }
 
-    private void setListsScore(RunScore listsScore) {
+    private void setListsScore(DynamicMenuUpdateRunScore listsScore) {
         this.listsScore = listsScore;
     }
 
-    RunScore getListsScore() {
+    DynamicMenuUpdateRunScore getListsScore() {
         return listsScore;
     }
 
