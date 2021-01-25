@@ -106,8 +106,8 @@ abstract class BaseMenuManager extends BaseSubManager {
 
     @Override
     public void dispose() {
-        currentMenuCells = null;
         menuCells = null;
+        currentMenuCells = null;
         currentHMILevel = HMILevel.HMI_NONE;
         currentSystemContext = SystemContext.SYSCTXT_MAIN;
         dynamicMenuUpdatesMode = DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE;
@@ -148,25 +148,20 @@ abstract class BaseMenuManager extends BaseSubManager {
      * @param cells - the menu cells that are to be sent to the head unit, including their sub-cells.
      */
     public void setMenuCells(@NonNull List<MenuCell> cells) {
+        if (cells == null) {
+            DebugTool.logError(TAG, "cells list cannot be null!");
+            return;
+        }
+        
         // Create a deep copy of the list so future changes by developers don't affect the algorithm logic
         final List<MenuCell> clonedCells = cloneMenuCellsList(cells);
-
-        // Set old list
-        if (currentMenuCells != null) {
-            menuCells = new ArrayList<>(currentMenuCells);
-        }
-        // Copy new list
-        currentMenuCells = new ArrayList<>();
-        if (clonedCells != null && !clonedCells.isEmpty()) {
-            currentMenuCells.addAll(clonedCells);
-        }
 
         // HashSet order doesn't matter / doesn't allow duplicates
         HashSet<String> titleCheckSet = new HashSet<>();
         HashSet<String> allMenuVoiceCommands = new HashSet<>();
         int voiceCommandCount = 0;
 
-        for (MenuCell cell : currentMenuCells) {
+        for (MenuCell cell : clonedCells) {
             titleCheckSet.add(cell.getTitle());
             if (cell.getVoiceCommands() != null) {
                 allMenuVoiceCommands.addAll(cell.getVoiceCommands());
@@ -175,7 +170,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         }
 
         // Check for duplicate titles
-        if (titleCheckSet.size() != currentMenuCells.size()) {
+        if (titleCheckSet.size() != clonedCells.size()) {
             DebugTool.logError(TAG, "Not all cell titles are unique. The menu will not be set");
             return;
         }
@@ -186,6 +181,9 @@ abstract class BaseMenuManager extends BaseSubManager {
             return;
         }
 
+        currentMenuCells = new ArrayList<>(menuCells);
+        menuCells = new ArrayList<>(clonedCells);
+
         // Cancel pending MenuReplaceOperations
         for (Task operation : transactionQueue.getTasksAsList()) {
             if (!(operation instanceof MenuReplaceStaticOperation)) {
@@ -194,10 +192,10 @@ abstract class BaseMenuManager extends BaseSubManager {
             operation.cancelTask();
         }
 
-        MenuReplaceStaticOperation operation = new MenuReplaceStaticOperation(internalInterface, fileManager.get(), displayType, dynamicMenuUpdatesMode, menuConfiguration, defaultMainWindowCapability, menuCells, currentMenuCells, new MenuManagerCompletionListener() {
+        MenuReplaceStaticOperation operation = new MenuReplaceStaticOperation(internalInterface, fileManager.get(), displayType, dynamicMenuUpdatesMode, menuConfiguration, defaultMainWindowCapability, currentMenuCells, menuCells, new MenuManagerCompletionListener() {
             @Override
-            public void onComplete(boolean success, List<MenuCell> oldMenuCells) {
-                BaseMenuManager.this.menuCells = oldMenuCells;
+            public void onComplete(boolean success, List<MenuCell> currentMenuCells) {
+                BaseMenuManager.this.currentMenuCells = currentMenuCells;
             }
         });
         transactionQueue.add(operation, false);
@@ -209,7 +207,7 @@ abstract class BaseMenuManager extends BaseSubManager {
      * @return a List of Currently set menu cells
      */
     public List<MenuCell> getMenuCells() {
-        return currentMenuCells;
+        return menuCells;
     }
 
     /**
@@ -238,13 +236,13 @@ abstract class BaseMenuManager extends BaseSubManager {
             return false;
         }
 
-        if (currentMenuCells == null) {
+        if (menuCells == null) {
             DebugTool.logError(TAG, "open sub menu called, but no Menu cells have been set");
             return false;
         }
 
         // We must see if we have a copy of this cell, since we clone the objects
-        for (MenuCell clonedCell : currentMenuCells) {
+        for (MenuCell clonedCell : menuCells) {
             if (clonedCell.equals(cell) && clonedCell.getCellId() != MAX_ID) {
                 // We've found the correct sub menu cell
                 MenuShowOperation operation = new MenuShowOperation(internalInterface, clonedCell.getCellId());
@@ -359,7 +357,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             @Override
             public void onNotified(RPCNotification notification) {
                 OnCommand onCommand = (OnCommand) notification;
-                callListenerForCells(currentMenuCells, onCommand);
+                callListenerForCells(menuCells, onCommand);
             }
         };
         internalInterface.addOnRPCNotificationListener(FunctionID.ON_COMMAND, commandListener);
