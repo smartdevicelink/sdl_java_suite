@@ -47,12 +47,12 @@ class MenuReplaceDynamicOperation extends Task {
     private final MenuManagerCompletionListener operationCompletionListener;
     private MenuConfiguration menuConfiguration;
 
-    MenuReplaceDynamicOperation(ISdl internalInterface, FileManager fileManager, MenuConfiguration menuConfiguration, WindowCapability defaultMainWindowCapability, List<MenuCell> currentMenu, List<MenuCell> updatedMenu, MenuManagerCompletionListener operationCompletionListener) {
+    MenuReplaceDynamicOperation(ISdl internalInterface, FileManager fileManager, WindowCapability defaultMainWindowCapability, MenuConfiguration menuConfiguration, List<MenuCell> currentMenu, List<MenuCell> updatedMenu, MenuManagerCompletionListener operationCompletionListener) {
         super(TAG);
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
-        this.menuConfiguration = menuConfiguration;
         this.defaultMainWindowCapability = defaultMainWindowCapability;
+        this.menuConfiguration = menuConfiguration;
         this.currentMenu = currentMenu;
         this.updatedMenu = updatedMenu;
         this.operationCompletionListener = operationCompletionListener;

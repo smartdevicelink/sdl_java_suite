@@ -37,17 +37,17 @@ class MenuReplaceStaticOperation extends Task {
     private final WeakReference<ISdl> internalInterface;
     private final WeakReference<FileManager> fileManager;
     private final WindowCapability defaultMainWindowCapability;
-    private List<MenuCell> currentMenu;
+    private final List<MenuCell> currentMenu;
     private final List<MenuCell> updatedMenu;
     private final MenuManagerCompletionListener operationCompletionListener;
     private MenuConfiguration menuConfiguration;
 
-    MenuReplaceStaticOperation(ISdl internalInterface, FileManager fileManager, MenuConfiguration menuConfiguration, WindowCapability defaultMainWindowCapability, List<MenuCell> currentMenu, List<MenuCell> updatedMenu, MenuManagerCompletionListener operationCompletionListener) {
+    MenuReplaceStaticOperation(ISdl internalInterface, FileManager fileManager, WindowCapability defaultMainWindowCapability, MenuConfiguration menuConfiguration, List<MenuCell> currentMenu, List<MenuCell> updatedMenu, MenuManagerCompletionListener operationCompletionListener) {
         super(TAG);
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
-        this.menuConfiguration = menuConfiguration;
         this.defaultMainWindowCapability = defaultMainWindowCapability;
+        this.menuConfiguration = menuConfiguration;
         this.currentMenu = currentMenu;
         this.updatedMenu = updatedMenu;
         this.operationCompletionListener = operationCompletionListener;
@@ -78,6 +78,10 @@ class MenuReplaceStaticOperation extends Task {
             fileManager.get().uploadArtworks(artworksToBeUploaded, new MultipleFileCompletionListener() {
                 @Override
                 public void onComplete(Map<String, String> errors) {
+                    if (getState() == Task.CANCELED) {
+                        return;
+                    }
+                    
                     if (errors != null && !errors.isEmpty()) {
                         DebugTool.logError(TAG, "Error uploading Menu Artworks: " + errors.toString());
                     } else {

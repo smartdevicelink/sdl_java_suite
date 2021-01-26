@@ -208,9 +208,9 @@ abstract class BaseMenuManager extends BaseSubManager {
         };
 
         if (isDynamicMenuUpdateActive(dynamicMenuUpdatesMode, displayType)) {
-            operation = new MenuReplaceDynamicOperation(internalInterface, fileManager.get(), menuConfiguration, defaultMainWindowCapability, currentMenuCells, menuCells, menuManagerCompletionListener);
+            operation = new MenuReplaceDynamicOperation(internalInterface, fileManager.get(), defaultMainWindowCapability, menuConfiguration, currentMenuCells, menuCells, menuManagerCompletionListener);
         } else {
-            operation = new MenuReplaceStaticOperation(internalInterface, fileManager.get(), menuConfiguration, defaultMainWindowCapability, currentMenuCells, menuCells, menuManagerCompletionListener);
+            operation = new MenuReplaceStaticOperation(internalInterface, fileManager.get(), defaultMainWindowCapability, menuConfiguration, currentMenuCells, menuCells, menuManagerCompletionListener);
         }
 
         transactionQueue.add(operation, false);
