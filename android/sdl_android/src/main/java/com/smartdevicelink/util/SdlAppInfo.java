@@ -189,24 +189,24 @@ public class SdlAppInfo {
         if (supportedVehicleList.contains(connectedVehicle)){
             return true;
         }
-        for (VehicleType supportedVehicle :supportedVehicleList) {
+        for (VehicleType supportedVehicle: supportedVehicleList) {
             String supportedVehicleMake = supportedVehicle.getMake();
             String connectedVehicleMake = connectedVehicle.getMake();
             if(supportedVehicleMake != null && connectedVehicleMake != null && connectedVehicleMake.equalsIgnoreCase(supportedVehicleMake)) {
-                String svModel = supportedVehicle.getModel();
-                String cvModel = connectedVehicle.getModel();
-                if (svModel != null && cvModel != null) {
-                    if(cvModel.equalsIgnoreCase(svModel)) {
+                String supportedVehicleModel = supportedVehicle.getModel();
+                String connectedVehicleModel = connectedVehicle.getModel();
+                if (supportedVehicleModel != null && connectedVehicleModel != null) {
+                    if(connectedVehicleModel.equalsIgnoreCase(supportedVehicleModel)) {
                         boolean ret = true;
-                        String svMY = supportedVehicle.getModelYear();
-                        String cvMY = connectedVehicle.getModelYear();
-                        if (svMY != null && cvMY != null) {
-                            ret = cvMY.equalsIgnoreCase(svMY);
+                        String supportedVehicleModelYear = supportedVehicle.getModelYear();
+                        String connectedVehicleModelYear = connectedVehicle.getModelYear();
+                        if (supportedVehicleModelYear != null && connectedVehicleModelYear != null) {
+                            ret = connectedVehicleModelYear.equalsIgnoreCase(supportedVehicleModelYear);
                         }
-                        String svTrim = supportedVehicle.getTrim();
-                        String cvTrim = connectedVehicle.getTrim();
-                        if (svTrim != null && cvTrim != null) {
-                            ret &= cvTrim.equalsIgnoreCase(svTrim);
+                        String supportedVehicleTrim = supportedVehicle.getTrim();
+                        String connectedVehicleTrim = connectedVehicle.getTrim();
+                        if (supportedVehicleTrim != null && connectedVehicleTrim != null) {
+                            ret &= connectedVehicleTrim.equalsIgnoreCase(supportedVehicleTrim);
                         }
                         if (ret) {
                             return true;
