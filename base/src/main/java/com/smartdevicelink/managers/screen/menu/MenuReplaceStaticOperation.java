@@ -72,7 +72,6 @@ class MenuReplaceStaticOperation extends Task {
     }
 
     private void updateMenuCells(final CompletionListener listener) {
-        // Upload the Artworks
         List<SdlArtwork> artworksToBeUploaded = findAllArtworksToBeUploadedFromCells(updatedMenu, fileManager.get(), defaultMainWindowCapability);
         if (!artworksToBeUploaded.isEmpty() && fileManager.get() != null) {
             fileManager.get().uploadArtworks(artworksToBeUploaded, new MultipleFileCompletionListener() {
@@ -84,26 +83,26 @@ class MenuReplaceStaticOperation extends Task {
                         DebugTool.logInfo(TAG, "Menu Artworks Uploaded");
                     }
 
-                    createAndSendEntireMenu(listener);
+                    updateMenuWithCellsToDelete(currentMenu, updatedMenu, listener);
                 }
             });
         } else {
             // No Artworks to be uploaded, send off
-            createAndSendEntireMenu(listener);
+            updateMenuWithCellsToDelete(currentMenu, updatedMenu, listener);
         }
     }
 
-    private void createAndSendEntireMenu(final CompletionListener listener) {
+    private void updateMenuWithCellsToDelete(final List<MenuCell> deleteCells, final List<MenuCell> addCells, final CompletionListener listener) {
         if (getState() == Task.CANCELED) {
             return;
         }
 
-        updateIdsOnMenuCells(updatedMenu, parentIdNotFound);
+        updateIdsOnMenuCells(addCells, parentIdNotFound);
 
-        deleteRootMenu(new CompletionListener() {
+        sendDeleteCurrentMenu(deleteCells, new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
-                createAndSendMenuCellRPCs(updatedMenu, new CompletionListener() {
+                sendNewMenuCells(addCells, new CompletionListener() {
                     @Override
                     public void onComplete(boolean success) {
                         if (!success) {
@@ -117,31 +116,30 @@ class MenuReplaceStaticOperation extends Task {
         });
     }
 
-    private void createAndSendMenuCellRPCs(final List<MenuCell> menu, final CompletionListener listener) {
+    private void sendNewMenuCells(final List<MenuCell> newMenuCells, final CompletionListener listener) {
         if (getState() == Task.CANCELED) {
             return;
         }
 
-        if (menu == null || menu.isEmpty()) {
-            if (listener != null) {
-                // This can be considered a success if the user was clearing out their menu
-                listener.onComplete(true);
-            }
+        if (newMenuCells == null || newMenuCells.isEmpty()) {
+            // This can be considered a success if the user was clearing out their menu
+            DebugTool.logInfo(TAG, "There are no cells to update.");
+            listener.onComplete(true);
             return;
         }
-
-        List<RPCRequest> mainMenuCommands;
-        final List<RPCRequest> subMenuCommands;
+        
         List<MenuLayout> availableMenuLayouts = defaultMainWindowCapability != null ? defaultMainWindowCapability.getMenuLayoutsAvailable() : null;
         MenuLayout defaultSubmenuLayout = menuConfiguration != null ? menuConfiguration.getSubMenuLayout() : null;
+        List<RPCRequest> mainMenuCommands;
+        final List<RPCRequest> subMenuCommands;
 
-        if (!shouldRPCsIncludeImages(menu, fileManager.get()) || !supportsImages(defaultMainWindowCapability)) {
+        if (!shouldRPCsIncludeImages(newMenuCells, fileManager.get()) || !supportsImages(defaultMainWindowCapability)) {
             // Send artwork-less menu
-            mainMenuCommands = mainMenuCommandsForCells(menu, false, updatedMenu, availableMenuLayouts, defaultSubmenuLayout);
-            subMenuCommands = subMenuCommandsForCells(menu, false, availableMenuLayouts, defaultSubmenuLayout);
+            mainMenuCommands = mainMenuCommandsForCells(newMenuCells, false, newMenuCells, availableMenuLayouts, defaultSubmenuLayout);
+            subMenuCommands = subMenuCommandsForCells(newMenuCells, false, availableMenuLayouts, defaultSubmenuLayout);
         } else {
-            mainMenuCommands = mainMenuCommandsForCells(menu, true, updatedMenu, availableMenuLayouts, defaultSubmenuLayout);
-            subMenuCommands = subMenuCommandsForCells(menu, true, availableMenuLayouts, defaultSubmenuLayout);
+            mainMenuCommands = mainMenuCommandsForCells(newMenuCells, true, newMenuCells, availableMenuLayouts, defaultSubmenuLayout);
+            subMenuCommands = subMenuCommandsForCells(newMenuCells, true, availableMenuLayouts, defaultSubmenuLayout);
         }
 
         internalInterface.get().sendSequentialRPCs(mainMenuCommands, new OnMultipleRequestListener() {
@@ -212,29 +210,18 @@ class MenuReplaceStaticOperation extends Task {
         });
     }
 
-    private void deleteRootMenu(final CompletionListener listener) {
-        if (currentMenu == null || currentMenu.isEmpty()) {
-            if (listener != null) {
-                // technically this method is successful if there's nothing to delete
-                DebugTool.logInfo(TAG, "No old cells to delete, returning");
-                listener.onComplete(true);
-            }
-        } else {
-            sendDeleteRPCs(deleteCommandsForCells(currentMenu), listener);
-        }
-    }
-
-    private void sendDeleteRPCs(List<RPCRequest> deleteCommands, final CompletionListener listener) {
-        if (getState() == Task.CANCELED) {
+    private void sendDeleteCurrentMenu(List<MenuCell> deleteMenuCells, final CompletionListener listener) {
+        if (deleteMenuCells == null || deleteMenuCells.isEmpty()) {
+            // Technically this method is successful if there's nothing to delete
+            DebugTool.logInfo(TAG, "No old cells to delete, returning");
+            listener.onComplete(true);
             return;
         }
+        List<RPCRequest> deleteCommands = deleteCommandsForCells(deleteMenuCells);
 
-        if (deleteCommands == null || deleteCommands.isEmpty()) {
-            // no dynamic deletes required. return
-            if (listener != null) {
-                // technically this method is successful if there's nothing to delete
-                listener.onComplete(true);
-            }
+        if (deleteCommands.isEmpty()) {
+            // Technically this method is successful if there's nothing to delete
+            listener.onComplete(true);
             return;
         }
 
