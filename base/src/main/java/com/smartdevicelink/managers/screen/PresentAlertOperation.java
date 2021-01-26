@@ -333,7 +333,7 @@ public class PresentAlertOperation extends Task {
         Alert alert = new Alert();
         alert = assembleAlertText(alert);
         alert.setDuration(alertView.getTimeout() * 1000);
-        if (alertView.getIcon() != null && supportsAlertIcon()) {
+        if (alertView.getIcon() != null && supportsAlertIcon() && fileManager.get().hasUploadedFile(alertView.getIcon())) {
             alert.setAlertIcon(alertView.getIcon().getImageRPC());
         }
         alert.setProgressIndicator(alertView.isShowWaitIndicator());
