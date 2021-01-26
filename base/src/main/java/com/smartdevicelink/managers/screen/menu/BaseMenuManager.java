@@ -441,8 +441,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         return false;
     }
 
-    // todo change to private
-    static boolean isDynamicMenuUpdateActive(DynamicMenuUpdatesMode updateMode, String displayType) {
+    private boolean isDynamicMenuUpdateActive(DynamicMenuUpdatesMode updateMode, String displayType) {
         if (updateMode.equals(DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE)) {
             if (displayType == null) {
                 return true;
