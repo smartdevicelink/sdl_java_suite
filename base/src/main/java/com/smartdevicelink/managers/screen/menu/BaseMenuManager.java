@@ -50,6 +50,7 @@ import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
+import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
@@ -191,17 +192,27 @@ abstract class BaseMenuManager extends BaseSubManager {
 
         // Cancel pending MenuReplaceOperations
         for (Task operation : transactionQueue.getTasksAsList()) {
-            if (operation instanceof MenuReplaceStaticOperation) {
+            if (operation instanceof MenuReplaceStaticOperation || operation instanceof MenuReplaceDynamicOperation) {
                 operation.cancelTask();
             }
         }
 
-        MenuReplaceStaticOperation operation = new MenuReplaceStaticOperation(internalInterface, fileManager.get(), displayType, dynamicMenuUpdatesMode, menuConfiguration, defaultMainWindowCapability, currentMenuCells, menuCells, new MenuManagerCompletionListener() {
+        // Checks against what the developer set for update mode and against the display type to
+        // determine how the menu will be updated. This has the ability to be changed during a session.
+        Task operation = null;
+        MenuManagerCompletionListener menuManagerCompletionListener = new MenuManagerCompletionListener() {
             @Override
             public void onComplete(boolean success, List<MenuCell> currentMenuCells) {
                 BaseMenuManager.this.currentMenuCells = currentMenuCells;
             }
-        });
+        };
+
+        if (isDynamicMenuUpdateActive(dynamicMenuUpdatesMode, displayType)) {
+            operation = new MenuReplaceStaticOperation(internalInterface, fileManager.get(), displayType, dynamicMenuUpdatesMode, menuConfiguration, defaultMainWindowCapability, currentMenuCells, menuCells, menuManagerCompletionListener);
+        } else {
+            operation = new MenuReplaceStaticOperation(internalInterface, fileManager.get(), displayType, dynamicMenuUpdatesMode, menuConfiguration, defaultMainWindowCapability, currentMenuCells, menuCells, menuManagerCompletionListener);
+        }
+
         transactionQueue.add(operation, false);
     }
 
@@ -301,6 +312,8 @@ abstract class BaseMenuManager extends BaseSubManager {
                 for (Task task : transactionQueue.getTasksAsList()) {
                     if (task instanceof MenuReplaceStaticOperation) {
                         ((MenuReplaceStaticOperation) task).setMenuConfiguration(menuConfiguration);
+                    } else if (task instanceof MenuReplaceDynamicOperation) {
+                        ((MenuReplaceDynamicOperation) task).setMenuConfiguration(menuConfiguration);
                     }
                 }
             }
@@ -426,5 +439,22 @@ abstract class BaseMenuManager extends BaseSubManager {
         }
 
         return false;
+    }
+
+    // todo change to private
+    static boolean isDynamicMenuUpdateActive(DynamicMenuUpdatesMode updateMode, String displayType) {
+        if (updateMode.equals(DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE)) {
+            if (displayType == null) {
+                return true;
+            }
+            return (!displayType.equals(DisplayType.GEN3_8_INCH.toString()));
+
+        } else if (updateMode.equals(DynamicMenuUpdatesMode.FORCE_OFF)) {
+            return false;
+        } else if (updateMode.equals(DynamicMenuUpdatesMode.FORCE_ON)) {
+            return true;
+        }
+
+        return true;
     }
 }

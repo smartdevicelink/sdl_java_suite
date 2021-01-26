@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.isDynamicMenuUpdateActive;
 import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.lastMenuId;
 import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdNotFound;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.*;
@@ -128,22 +129,6 @@ class MenuReplaceStaticOperation extends Task {
             updateIdsOnMenuCells(updatedMenu, parentIdNotFound);
             createAndSendEntireMenu(listener);
         }
-    }
-
-    private boolean isDynamicMenuUpdateActive(DynamicMenuUpdatesMode updateMode, String displayType) {
-        if (updateMode.equals(DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE)) {
-            if (displayType == null) {
-                return true;
-            }
-            return (!displayType.equals(DisplayType.GEN3_8_INCH.toString()));
-
-        } else if (updateMode.equals(DynamicMenuUpdatesMode.FORCE_OFF)) {
-            return false;
-        } else if (updateMode.equals(DynamicMenuUpdatesMode.FORCE_ON)) {
-            return true;
-        }
-
-        return true;
     }
 
     private void deleteMenuWhenNewCellsEmpty(final CompletionListener listener) {

@@ -88,4 +88,7 @@ class MenuReplaceDynamicOperation extends Task {
         }
         onFinished();
     }
+
+    public void setMenuConfiguration(MenuConfiguration menuConfiguration) {
+    }
 }
