@@ -114,6 +114,9 @@ import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.WindowState;
 import com.smartdevicelink.proxy.rpc.WindowStatus;
 import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
+import com.smartdevicelink.proxy.rpc.DoorStatus;
+import com.smartdevicelink.proxy.rpc.GateStatus;
+import com.smartdevicelink.proxy.rpc.RoofStatus;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
@@ -137,6 +140,7 @@ import com.smartdevicelink.proxy.rpc.enums.Direction;
 import com.smartdevicelink.proxy.rpc.enums.DisplayMode;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.DistanceUnit;
+import com.smartdevicelink.proxy.rpc.enums.DoorStatusType;
 import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
 import com.smartdevicelink.proxy.rpc.enums.ECallConfirmationStatus;
 import com.smartdevicelink.proxy.rpc.enums.EmergencyEventType;
@@ -427,6 +431,15 @@ public class TestValues {
     public static final DynamicUpdateCapabilities GENERAL_DYNAMICUPDATECAPABILITIES = new DynamicUpdateCapabilities();
     public static final WindowState GENERAL_WINDOWSTATE = new WindowState();
 
+    public static final DoorStatusType GENERAL_DOOR_STATUS_TYPE = DoorStatusType.REMOVED;
+
+    public static final DoorStatus GENERAL_DOOR_STATUS = new DoorStatus();
+    public static final GateStatus GENERAL_GATE_STATUS = new GateStatus();
+    public static final RoofStatus GENERAL_ROOF_STATUS = new RoofStatus();
+
+    public static final ArrayList<DoorStatus> GENERAL_DOOR_STATUS_LIST = new ArrayList<>(1);
+    public static final ArrayList<GateStatus> GENERAL_GATE_STATUS_LIST = new ArrayList<>(1);
+    public static final ArrayList<RoofStatus> GENERAL_ROOF_STATUS_LIST = new ArrayList<>(1);
 
     public static final VehicleDataResult GENERAL_OEM_CUSTOM_VEHICLE_DATA = new VehicleDataResult();
     public static final TemplateConfiguration GENERAL_TEMPLATE_CONFIGURATION = new TemplateConfiguration();
@@ -591,6 +604,12 @@ public class TestValues {
     public static final JSONObject JSON_DISPLAYCAPABILITY = new JSONObject();
     public static final JSONArray JSON_DISPLAYCAPABILITY_LIST = new JSONArray();
     public static final JSONObject JSON_DYNAMICUPDATECAPABILITIES = new JSONObject();
+    public static final JSONArray JSON_ROOF_STATUSES = new JSONArray();
+    public static final JSONArray JSON_DOOR_STATUSES = new JSONArray();
+    public static final JSONArray JSON_GATE_STATUSES = new JSONArray();
+    public static final JSONObject JSON_ROOF_STATUS = new JSONObject();
+    public static final JSONObject JSON_DOOR_STATUS = new JSONObject();
+    public static final JSONObject JSON_GATE_STATUS = new JSONObject();
 
     static {
         GENERAL_TOUCHEVENTCAPABILITIES.setDoublePressAvailable(GENERAL_BOOLEAN);
@@ -1154,6 +1173,19 @@ public class TestValues {
         GENERAL_STABILITY_CONTROL_STATUS.setEscSystem(GENERAL_ESC_SYSTEM);
         GENERAL_STABILITY_CONTROL_STATUS.setTrailerSwayControl(GENERAL_S_WAY_CONTROL);
 
+        GENERAL_ROOF_STATUS.setLocation(GENERAL_GRID);
+        GENERAL_ROOF_STATUS.setState(GENERAL_WINDOW_STATE);
+        GENERAL_ROOF_STATUS.setStatus(GENERAL_DOOR_STATUS_TYPE);
+        GENERAL_ROOF_STATUS_LIST.add(GENERAL_ROOF_STATUS);
+
+        GENERAL_GATE_STATUS.setLocation(GENERAL_GRID);
+        GENERAL_GATE_STATUS.setStatus(GENERAL_DOOR_STATUS_TYPE);
+        GENERAL_GATE_STATUS_LIST.add(GENERAL_GATE_STATUS);
+
+        GENERAL_DOOR_STATUS.setLocation(GENERAL_GRID);
+        GENERAL_DOOR_STATUS.setStatus(GENERAL_DOOR_STATUS_TYPE);
+        GENERAL_DOOR_STATUS_LIST.add(GENERAL_DOOR_STATUS);
+
         try {
             JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);
             JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_USER_DISALLOWED, GENERAL_HMILEVEL_LIST);
@@ -1391,6 +1423,19 @@ public class TestValues {
             JSON_MODULE_INFO.put(ModuleInfo.KEY_MODULE_SERVICE_AREA, TestValues.JSON_GRID);
             JSON_MODULE_INFO.put(ModuleInfo.KEY_MULTIPLE_ACCESS_ALLOWED, TestValues.GENERAL_BOOLEAN);
 
+            JSON_ROOF_STATUS.put(RoofStatus.KEY_STATUS, GENERAL_DOOR_STATUS_TYPE);
+            JSON_ROOF_STATUS.put(RoofStatus.KEY_LOCATION, JSON_GRID);
+            JSON_ROOF_STATUS.put(RoofStatus.KEY_STATE, GENERAL_WINDOW_STATE.serializeJSON());
+
+            JSON_DOOR_STATUS.put(DoorStatus.KEY_STATUS, GENERAL_DOOR_STATUS_TYPE);
+            JSON_DOOR_STATUS.put(DoorStatus.KEY_LOCATION, JSON_GRID);
+
+            JSON_GATE_STATUS.put(GateStatus.KEY_STATUS, GENERAL_DOOR_STATUS_TYPE);
+            JSON_GATE_STATUS.put(GateStatus.KEY_LOCATION, JSON_GRID);
+
+            JSON_ROOF_STATUSES.put(JSON_ROOF_STATUS);
+            JSON_DOOR_STATUSES.put(JSON_DOOR_STATUS);
+            JSON_GATE_STATUSES.put(JSON_GATE_STATUS);
 
         } catch (JSONException e) {
             Log.e("Test", "Static Json Construction Failed.", e);
