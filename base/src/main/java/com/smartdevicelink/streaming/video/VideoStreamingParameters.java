@@ -120,9 +120,7 @@ public class VideoStreamingParameters {
             }
             if (params.resolution != null) {
                 if (this.resolution == null) {
-                    this.resolution = new ImageResolution();
-                    resolution.setResolutionWidth(DEFAULT_WIDTH);
-                    resolution.setResolutionHeight(DEFAULT_HEIGHT);
+                    this.resolution = new ImageResolution(DEFAULT_WIDTH, DEFAULT_HEIGHT);
                 }
                 if (params.resolution.getResolutionHeight() != null && params.resolution.getResolutionHeight() > 0) {
                     this.resolution.setResolutionHeight(params.resolution.getResolutionHeight());
@@ -158,9 +156,7 @@ public class VideoStreamingParameters {
         if (resolution != null) {
 
             if (this.resolution == null) {
-                this.resolution = new ImageResolution();
-                resolution.setResolutionWidth(DEFAULT_WIDTH);
-                resolution.setResolutionHeight(DEFAULT_HEIGHT);
+                this.resolution = new ImageResolution(DEFAULT_WIDTH, DEFAULT_HEIGHT);
             }
 
             if (vehicleMake != null) {
