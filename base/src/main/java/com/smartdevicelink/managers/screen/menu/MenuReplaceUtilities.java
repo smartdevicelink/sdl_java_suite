@@ -61,19 +61,17 @@ class MenuReplaceUtilities {
         return windowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(windowCapability, ImageFieldName.cmdIcon);
     }
 
-    static boolean shouldRPCsIncludeImages(List<MenuCell> cells, FileManager fileManager) {
-        for (MenuCell cell : cells) {
-            SdlArtwork artwork = cell.getIcon();
-            if (artwork != null && !artwork.isStaticIcon() && fileManager != null && !fileManager.hasUploadedFile(artwork)) {
-                return false;
-            } else if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
-                return shouldRPCsIncludeImages(cell.getSubCells(), fileManager);
-            }
+    static boolean shouldCellIncludeImage(MenuCell cell, FileManager fileManager) {
+        // todo should check if images are supported?
+        SdlArtwork artwork = cell.getIcon();
+        if (artwork == null) {
+            return false;
         }
-        return true;
+        // If there is an icon and the icon has been uploaded, or if the icon is a static icon, it should include the image
+        return (fileManager.hasUploadedFile(artwork) || artwork.isStaticIcon());
     }
 
-    static List<RPCRequest> mainMenuCommandsForCells(List<MenuCell> cellsToAdd, boolean shouldHaveArtwork, List<MenuCell> updatedMenu, List<MenuLayout> availableMenuLayouts, MenuLayout defaultSubmenuLayout) {
+    static List<RPCRequest> mainMenuCommandsForCells(List<MenuCell> cellsToAdd, FileManager fileManager, List<MenuCell> updatedMenu, List<MenuLayout> availableMenuLayouts, MenuLayout defaultSubmenuLayout) {
         List<RPCRequest> builtCommands = new ArrayList<>();
 
         // We need the index so we will use this type of loop
@@ -83,9 +81,9 @@ class MenuReplaceUtilities {
                 MenuCell addCell = cellsToAdd.get(i);
                 if (mainCell.equals(addCell)) {
                     if (addCell.getSubCells() != null && !addCell.getSubCells().isEmpty()) {
-                        builtCommands.add(subMenuCommandForMenuCell(addCell, shouldHaveArtwork, z, availableMenuLayouts, defaultSubmenuLayout));
+                        builtCommands.add(subMenuCommandForMenuCell(addCell, fileManager, z, availableMenuLayouts, defaultSubmenuLayout));
                     } else {
-                        builtCommands.add(commandForMenuCell(addCell, shouldHaveArtwork, z));
+                        builtCommands.add(commandForMenuCell(addCell, fileManager, z));
                     }
                     break;
                 }
@@ -94,52 +92,55 @@ class MenuReplaceUtilities {
         return builtCommands;
     }
 
-    static List<RPCRequest> subMenuCommandsForCells(List<MenuCell> cells, boolean shouldHaveArtwork, List<MenuLayout> availableMenuLayouts, MenuLayout defaultSubmenuLayout) {
+    static List<RPCRequest> subMenuCommandsForCells(List<MenuCell> cells, FileManager fileManager, List<MenuLayout> availableMenuLayouts, MenuLayout defaultSubmenuLayout) {
         List<RPCRequest> builtCommands = new ArrayList<>();
         for (MenuCell cell : cells) {
             if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
-                builtCommands.addAll(allCommandsForCells(cell.getSubCells(), shouldHaveArtwork, availableMenuLayouts, defaultSubmenuLayout));
+                builtCommands.addAll(allCommandsForCells(cell.getSubCells(), fileManager, availableMenuLayouts, defaultSubmenuLayout));
             }
         }
         return builtCommands;
     }
 
-    static List<RPCRequest> allCommandsForCells(List<MenuCell> cells, boolean shouldHaveArtwork, List<MenuLayout> availableMenuLayouts, MenuLayout defaultSubmenuLayout) {
+    static List<RPCRequest> allCommandsForCells(List<MenuCell> cells, FileManager fileManager, List<MenuLayout> availableMenuLayouts, MenuLayout defaultSubmenuLayout) {
         List<RPCRequest> builtCommands = new ArrayList<>();
 
         for (int i = 0; i < cells.size(); i++) {
             MenuCell cell = cells.get(i);
             if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
-                builtCommands.add(subMenuCommandForMenuCell(cell, shouldHaveArtwork, i, availableMenuLayouts, defaultSubmenuLayout));
+                builtCommands.add(subMenuCommandForMenuCell(cell, fileManager, i, availableMenuLayouts, defaultSubmenuLayout));
 
                 // recursively grab the commands for all the sub cells
-                builtCommands.addAll(allCommandsForCells(cell.getSubCells(), shouldHaveArtwork, availableMenuLayouts, defaultSubmenuLayout));
+                builtCommands.addAll(allCommandsForCells(cell.getSubCells(), fileManager, availableMenuLayouts, defaultSubmenuLayout));
             } else {
-                builtCommands.add(commandForMenuCell(cell, shouldHaveArtwork, i));
+                builtCommands.add(commandForMenuCell(cell, fileManager, i));
             }
         }
         return builtCommands;
     }
 
-    static AddCommand commandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position) {
+    static AddCommand commandForMenuCell(MenuCell cell, FileManager fileManager, int position) {
+        AddCommand command = new AddCommand(cell.getCellId());
+
         MenuParams params = new MenuParams(cell.getTitle());
         params.setParentID(cell.getParentCellId() != parentIdNotFound ? cell.getParentCellId() : null);
         params.setPosition(position);
 
-        AddCommand command = new AddCommand(cell.getCellId());
         command.setMenuParams(params);
         if (cell.getVoiceCommands() != null && !cell.getVoiceCommands().isEmpty()) {
             command.setVrCommands(cell.getVoiceCommands());
         } else {
             command.setVrCommands(null);
         }
-        command.setCmdIcon((cell.getIcon() != null && shouldHaveArtwork) ? cell.getIcon().getImageRPC() : null);
+        boolean shouldCellIncludeImage = cell.getIcon() != null && shouldCellIncludeImage(cell, fileManager);
+        command.setCmdIcon(shouldCellIncludeImage ? cell.getIcon().getImageRPC() : null);
 
         return command;
     }
 
-    static AddSubMenu subMenuCommandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position, List<MenuLayout> availableMenuLayouts, MenuLayout defaultSubmenuLayout) {
-        Image icon = (shouldHaveArtwork && (cell.getIcon() != null && cell.getIcon().getImageRPC() != null)) ? cell.getIcon().getImageRPC() : null;
+    static AddSubMenu subMenuCommandForMenuCell(MenuCell cell, FileManager fileManager, int position, List<MenuLayout> availableMenuLayouts, MenuLayout defaultSubmenuLayout) {
+        boolean shouldCellIncludeImage = cell.getIcon() != null && cell.getIcon().getImageRPC() != null && shouldCellIncludeImage(cell, fileManager);
+        Image icon = (shouldCellIncludeImage ? cell.getIcon().getImageRPC() : null);
 
         MenuLayout submenuLayout;
         if (cell.getSubMenuLayout() != null && availableMenuLayouts != null && availableMenuLayouts.contains(cell.getSubMenuLayout())) {

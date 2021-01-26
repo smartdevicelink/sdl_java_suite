@@ -27,7 +27,6 @@ import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.comm
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.deleteCommandsForCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.findAllArtworksToBeUploadedFromCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.mainMenuCommandsForCells;
-import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.shouldRPCsIncludeImages;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.subMenuCommandsForCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.supportsImages;
 
@@ -222,19 +221,12 @@ class MenuReplaceDynamicOperation extends Task {
             return;
         }
 
-        List<RPCRequest> mainMenuCommands;
-        final List<RPCRequest> subMenuCommands;
         List<MenuLayout> availableMenuLayouts = defaultMainWindowCapability != null ? defaultMainWindowCapability.getMenuLayoutsAvailable() : null;
         MenuLayout defaultSubmenuLayout = menuConfiguration != null ? menuConfiguration.getSubMenuLayout() : null;
 
-        if (!shouldRPCsIncludeImages(menu, fileManager.get()) || !supportsImages(defaultMainWindowCapability)) {
-            // Send artwork-less menu
-            mainMenuCommands = mainMenuCommandsForCells(menu, false, updatedMenu, availableMenuLayouts, defaultSubmenuLayout);
-            subMenuCommands = subMenuCommandsForCells(menu, false, availableMenuLayouts, defaultSubmenuLayout);
-        } else {
-            mainMenuCommands = mainMenuCommandsForCells(menu, true, updatedMenu, availableMenuLayouts, defaultSubmenuLayout);
-            subMenuCommands = subMenuCommandsForCells(menu, true, availableMenuLayouts, defaultSubmenuLayout);
-        }
+        List<RPCRequest> mainMenuCommands = mainMenuCommandsForCells(menu, fileManager.get(), updatedMenu, availableMenuLayouts, defaultSubmenuLayout);
+        final List<RPCRequest> subMenuCommands = subMenuCommandsForCells(menu, fileManager.get(), availableMenuLayouts, defaultSubmenuLayout);
+
 
         internalInterface.get().sendSequentialRPCs(mainMenuCommands, new OnMultipleRequestListener() {
             @Override
@@ -417,7 +409,7 @@ class MenuReplaceDynamicOperation extends Task {
             for (int i = 0; i < cells.size(); i++) {
                 MenuCell cell = cells.get(i);
                 if (cell.equals(oldCell)) {
-                    builtCommands.add(commandForMenuCell(cell, shouldHaveArtwork, z));
+                    builtCommands.add(commandForMenuCell(cell, fileManager.get(), z));
                     break;
                 }
             }
@@ -626,6 +618,18 @@ class MenuReplaceDynamicOperation extends Task {
                 }
             }
         }
+    }
+
+    private boolean shouldRPCsIncludeImages(List<MenuCell> cells, FileManager fileManager) {
+        for (MenuCell cell : cells) {
+            SdlArtwork artwork = cell.getIcon();
+            if (artwork != null && !artwork.isStaticIcon() && fileManager != null && !fileManager.hasUploadedFile(artwork)) {
+                return false;
+            } else if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
+                return shouldRPCsIncludeImages(cell.getSubCells(), fileManager);
+            }
+        }
+        return true;
     }
 
     void setMenuConfiguration(MenuConfiguration menuConfiguration) {

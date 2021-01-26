@@ -24,9 +24,7 @@ import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdN
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.deleteCommandsForCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.findAllArtworksToBeUploadedFromCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.mainMenuCommandsForCells;
-import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.shouldRPCsIncludeImages;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.subMenuCommandsForCells;
-import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.supportsImages;
 
 /**
  * Created by Bilal Alsharifi on 1/20/21.
@@ -130,17 +128,9 @@ class MenuReplaceStaticOperation extends Task {
         
         List<MenuLayout> availableMenuLayouts = defaultMainWindowCapability != null ? defaultMainWindowCapability.getMenuLayoutsAvailable() : null;
         MenuLayout defaultSubmenuLayout = menuConfiguration != null ? menuConfiguration.getSubMenuLayout() : null;
-        List<RPCRequest> mainMenuCommands;
-        final List<RPCRequest> subMenuCommands;
 
-        if (!shouldRPCsIncludeImages(newMenuCells, fileManager.get()) || !supportsImages(defaultMainWindowCapability)) {
-            // Send artwork-less menu
-            mainMenuCommands = mainMenuCommandsForCells(newMenuCells, false, newMenuCells, availableMenuLayouts, defaultSubmenuLayout);
-            subMenuCommands = subMenuCommandsForCells(newMenuCells, false, availableMenuLayouts, defaultSubmenuLayout);
-        } else {
-            mainMenuCommands = mainMenuCommandsForCells(newMenuCells, true, newMenuCells, availableMenuLayouts, defaultSubmenuLayout);
-            subMenuCommands = subMenuCommandsForCells(newMenuCells, true, availableMenuLayouts, defaultSubmenuLayout);
-        }
+        List<RPCRequest> mainMenuCommands = mainMenuCommandsForCells(newMenuCells, fileManager.get(), updatedMenu, availableMenuLayouts, defaultSubmenuLayout);
+        final List<RPCRequest> subMenuCommands = subMenuCommandsForCells(newMenuCells, fileManager.get(), availableMenuLayouts, defaultSubmenuLayout);
 
         internalInterface.get().sendSequentialRPCs(mainMenuCommands, new OnMultipleRequestListener() {
             @Override
