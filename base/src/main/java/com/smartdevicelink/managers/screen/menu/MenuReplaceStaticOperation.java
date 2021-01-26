@@ -75,31 +75,33 @@ class MenuReplaceStaticOperation extends Task {
             fileManager.get().uploadArtworks(artworksToBeUploaded, new MultipleFileCompletionListener() {
                 @Override
                 public void onComplete(Map<String, String> errors) {
+                    if (getState() == Task.CANCELED) {
+                        return;
+                    }
+
                     if (errors != null && !errors.isEmpty()) {
-                        DebugTool.logError(TAG, "Error uploading Menu Artworks: " + errors.toString());
+                        DebugTool.logError(TAG, "Error uploading menu artworks: " + errors.toString());
                     } else {
-                        DebugTool.logInfo(TAG, "Menu Artworks Uploaded");
+                        DebugTool.logInfo(TAG, "All menu artworks uploaded");
                     }
 
                     updateMenuWithCellsToDelete(currentMenu, updatedMenu, listener);
                 }
             });
         } else {
-            // No Artworks to be uploaded, send off
+            // Cells have no artwork to load
             updateMenuWithCellsToDelete(currentMenu, updatedMenu, listener);
         }
     }
 
     private void updateMenuWithCellsToDelete(final List<MenuCell> deleteCells, final List<MenuCell> addCells, final CompletionListener listener) {
-        if (getState() == Task.CANCELED) {
-            return;
-        }
-
-        updateIdsOnMenuCells(addCells, parentIdNotFound);
-
         sendDeleteCurrentMenu(deleteCells, new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
+                if (getState() == Task.CANCELED) {
+                    return;
+                }
+
                 sendNewMenuCells(addCells, new CompletionListener() {
                     @Override
                     public void onComplete(boolean success) {
@@ -115,24 +117,22 @@ class MenuReplaceStaticOperation extends Task {
     }
 
     private void sendNewMenuCells(final List<MenuCell> newMenuCells, final CompletionListener listener) {
-        if (getState() == Task.CANCELED) {
-            return;
-        }
-
         if (newMenuCells == null || newMenuCells.isEmpty()) {
             // This can be considered a success if the user was clearing out their menu
             DebugTool.logInfo(TAG, "There are no cells to update.");
             listener.onComplete(true);
             return;
         }
-        
+
+        updateIdsOnMenuCells(newMenuCells, parentIdNotFound);
+
         List<MenuLayout> availableMenuLayouts = defaultMainWindowCapability != null ? defaultMainWindowCapability.getMenuLayoutsAvailable() : null;
         MenuLayout defaultSubmenuLayout = menuConfiguration != null ? menuConfiguration.getSubMenuLayout() : null;
 
         List<RPCRequest> mainMenuCommands = mainMenuCommandsForCells(newMenuCells, fileManager.get(), updatedMenu, availableMenuLayouts, defaultSubmenuLayout);
         final List<RPCRequest> subMenuCommands = subMenuCommandsForCells(newMenuCells, fileManager.get(), availableMenuLayouts, defaultSubmenuLayout);
 
-        internalInterface.get().sendSequentialRPCs(mainMenuCommands, new OnMultipleRequestListener() {
+        internalInterface.get().sendRPCs(mainMenuCommands, new OnMultipleRequestListener() {
             @Override
             public void onUpdate(int remainingRequests) {
             }
@@ -141,7 +141,7 @@ class MenuReplaceStaticOperation extends Task {
             public void onFinished() {
                 if (!subMenuCommands.isEmpty()) {
                     DebugTool.logInfo(TAG, "Finished sending main menu commands. Sending sub menu commands.");
-                    sendSubMenuCommandRPCs(subMenuCommands, listener);
+                    sendNewSubMenuCells(subMenuCommands, listener);
                 } else {
                     DebugTool.logInfo(TAG, "Finished sending main menu commands.");
 
@@ -166,12 +166,12 @@ class MenuReplaceStaticOperation extends Task {
         });
     }
 
-    private void sendSubMenuCommandRPCs(List<RPCRequest> commands, final CompletionListener listener) {
+    private void sendNewSubMenuCells(List<RPCRequest> commands, final CompletionListener listener) {
         if (getState() == Task.CANCELED) {
             return;
         }
 
-        internalInterface.get().sendSequentialRPCs(commands, new OnMultipleRequestListener() {
+        internalInterface.get().sendRPCs(commands, new OnMultipleRequestListener() {
             @Override
             public void onUpdate(int remainingRequests) {
             }

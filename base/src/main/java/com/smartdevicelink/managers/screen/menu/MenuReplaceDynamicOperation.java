@@ -228,7 +228,7 @@ class MenuReplaceDynamicOperation extends Task {
         final List<RPCRequest> subMenuCommands = subMenuCommandsForCells(menu, fileManager.get(), availableMenuLayouts, defaultSubmenuLayout);
 
 
-        internalInterface.get().sendSequentialRPCs(mainMenuCommands, new OnMultipleRequestListener() {
+        internalInterface.get().sendRPCs(mainMenuCommands, new OnMultipleRequestListener() {
             @Override
             public void onUpdate(int remainingRequests) {
             }
@@ -271,7 +271,7 @@ class MenuReplaceDynamicOperation extends Task {
             return;
         }
 
-        internalInterface.get().sendSequentialRPCs(commands, new OnMultipleRequestListener() {
+        internalInterface.get().sendRPCs(commands, new OnMultipleRequestListener() {
             @Override
             public void onUpdate(int remainingRequests) {
             }
@@ -327,7 +327,7 @@ class MenuReplaceDynamicOperation extends Task {
             mainMenuCommands = createCommandsForDynamicSubCells(newMenu, adds, true);
         }
 
-        internalInterface.get().sendSequentialRPCs(mainMenuCommands, new OnMultipleRequestListener() {
+        internalInterface.get().sendRPCs(mainMenuCommands, new OnMultipleRequestListener() {
             @Override
             public void onUpdate(int remainingRequests) {
                 // nothing here
