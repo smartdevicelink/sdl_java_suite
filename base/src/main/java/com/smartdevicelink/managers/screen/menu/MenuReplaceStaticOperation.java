@@ -78,38 +78,27 @@ class MenuReplaceStaticOperation extends Task {
             fileManager.get().uploadArtworks(artworksToBeUploaded, new MultipleFileCompletionListener() {
                 @Override
                 public void onComplete(Map<String, String> errors) {
-                    if (getState() == Task.CANCELED) {
-                        return;
-                    }
-                    
                     if (errors != null && !errors.isEmpty()) {
                         DebugTool.logError(TAG, "Error uploading Menu Artworks: " + errors.toString());
                     } else {
                         DebugTool.logInfo(TAG, "Menu Artworks Uploaded");
                     }
-                    // proceed
-                    updateMenuAndDetermineBestUpdateMethod(listener);
+
+                    createAndSendEntireMenu(listener);
                 }
             });
         } else {
             // No Artworks to be uploaded, send off
-            updateMenuAndDetermineBestUpdateMethod(listener);
+            createAndSendEntireMenu(listener);
         }
-    }
-
-    private void updateMenuAndDetermineBestUpdateMethod(CompletionListener listener) {
-        if (getState() == Task.CANCELED) {
-            return;
-        }
-
-        updateIdsOnMenuCells(updatedMenu, parentIdNotFound);
-        createAndSendEntireMenu(listener);
     }
 
     private void createAndSendEntireMenu(final CompletionListener listener) {
         if (getState() == Task.CANCELED) {
             return;
         }
+
+        updateIdsOnMenuCells(updatedMenu, parentIdNotFound);
 
         deleteRootMenu(new CompletionListener() {
             @Override
