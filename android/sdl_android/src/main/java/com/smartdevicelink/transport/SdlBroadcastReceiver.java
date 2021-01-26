@@ -97,11 +97,11 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
 
     private static Context mContext = null;
     @SuppressLint("MissingPermission")
-    private static BluetoothProfile.ServiceListener btProfileProxyListener = new BluetoothProfile.ServiceListener() {
+    private static final BluetoothProfile.ServiceListener btProfileProxyListener = new BluetoothProfile.ServiceListener() {
         @Override
         public void onServiceConnected(int profile, BluetoothProfile proxy) {
             BluetoothDevice device = proxy.getConnectedDevices().get(0);
-            if(null != mContext) {
+            if(mContext != null) {
                 DebugTool.logInfo(TAG, "Bluetooth is connected. Attempting to ping Router Service");
                 Intent serviceIntent = new Intent();
                 serviceIntent.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
