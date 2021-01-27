@@ -3,6 +3,7 @@ package com.smartdevicelink.managers.screen.menu;
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
+import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
@@ -10,6 +11,7 @@ import com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.MenuC
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
+import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.util.DebugTool;
@@ -23,12 +25,7 @@ import java.util.Map;
 
 import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.lastMenuId;
 import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdNotFound;
-import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.commandForMenuCell;
-import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.deleteCommandsForCells;
-import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.findAllArtworksToBeUploadedFromCells;
-import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.mainMenuCommandsForCells;
-import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.subMenuCommandsForCells;
-import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.supportsImages;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.*;
 
 /**
  * Created by Bilal Alsharifi on 1/20/21.
@@ -221,11 +218,10 @@ class MenuReplaceDynamicOperation extends Task {
             return;
         }
 
-        List<MenuLayout> availableMenuLayouts = defaultMainWindowCapability != null ? defaultMainWindowCapability.getMenuLayoutsAvailable() : null;
         MenuLayout defaultSubmenuLayout = menuConfiguration != null ? menuConfiguration.getSubMenuLayout() : null;
 
-        List<RPCRequest> mainMenuCommands = mainMenuCommandsForCells(menu, fileManager.get(), updatedMenu, availableMenuLayouts, defaultSubmenuLayout);
-        final List<RPCRequest> subMenuCommands = subMenuCommandsForCells(menu, fileManager.get(), availableMenuLayouts, defaultSubmenuLayout);
+        List<RPCRequest> mainMenuCommands = mainMenuCommandsForCells(menu, fileManager.get(), defaultMainWindowCapability, updatedMenu, defaultSubmenuLayout);
+        final List<RPCRequest> subMenuCommands = subMenuCommandsForCells(menu, fileManager.get(), defaultMainWindowCapability, defaultSubmenuLayout);
 
 
         internalInterface.get().sendRPCs(mainMenuCommands, new OnMultipleRequestListener() {
@@ -409,7 +405,7 @@ class MenuReplaceDynamicOperation extends Task {
             for (int i = 0; i < cells.size(); i++) {
                 MenuCell cell = cells.get(i);
                 if (cell.equals(oldCell)) {
-                    builtCommands.add(commandForMenuCell(cell, fileManager.get(), z));
+                    builtCommands.add(commandForMenuCell(cell, fileManager.get(), defaultMainWindowCapability, z));
                     break;
                 }
             }
@@ -630,6 +626,10 @@ class MenuReplaceDynamicOperation extends Task {
             }
         }
         return true;
+    }
+
+    private static boolean supportsImages(WindowCapability windowCapability) {
+        return windowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(windowCapability, ImageFieldName.cmdIcon);
     }
 
     void setMenuConfiguration(MenuConfiguration menuConfiguration) {

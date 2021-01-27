@@ -21,10 +21,7 @@ import java.util.Map;
 
 import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.lastMenuId;
 import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdNotFound;
-import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.deleteCommandsForCells;
-import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.findAllArtworksToBeUploadedFromCells;
-import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.mainMenuCommandsForCells;
-import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.subMenuCommandsForCells;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.*;
 
 /**
  * Created by Bilal Alsharifi on 1/20/21.
@@ -126,11 +123,10 @@ class MenuReplaceStaticOperation extends Task {
 
         updateIdsOnMenuCells(newMenuCells, parentIdNotFound);
 
-        List<MenuLayout> availableMenuLayouts = defaultMainWindowCapability != null ? defaultMainWindowCapability.getMenuLayoutsAvailable() : null;
         MenuLayout defaultSubmenuLayout = menuConfiguration != null ? menuConfiguration.getSubMenuLayout() : null;
 
-        List<RPCRequest> mainMenuCommands = mainMenuCommandsForCells(newMenuCells, fileManager.get(), updatedMenu, availableMenuLayouts, defaultSubmenuLayout);
-        final List<RPCRequest> subMenuCommands = subMenuCommandsForCells(newMenuCells, fileManager.get(), availableMenuLayouts, defaultSubmenuLayout);
+        List<RPCRequest> mainMenuCommands = mainMenuCommandsForCells(newMenuCells, fileManager.get(), defaultMainWindowCapability, updatedMenu, defaultSubmenuLayout);
+        final List<RPCRequest> subMenuCommands = subMenuCommandsForCells(newMenuCells, fileManager.get(), defaultMainWindowCapability, defaultSubmenuLayout);
 
         internalInterface.get().sendRPCs(mainMenuCommands, new OnMultipleRequestListener() {
             @Override
