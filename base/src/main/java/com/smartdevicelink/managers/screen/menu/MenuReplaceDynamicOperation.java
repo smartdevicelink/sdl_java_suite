@@ -525,16 +525,12 @@ class MenuReplaceDynamicOperation extends Task {
                 MenuCell mainCell = oldList.get(z);
                 for (int i = 0; i < dynamicCells.size(); i++) {
                     MenuCell dynamicCell = dynamicCells.get(i);
+                    int newId = ++lastMenuId;
                     if (mainCell.equals(dynamicCell)) {
-                        int newId = ++lastMenuId;
                         oldList.get(z).setCellId(newId);
-                        dynamicCells.get(i).setParentCellId(parentId);
-                        dynamicCells.get(i).setCellId(newId);
-                    } else {
-                        int newId = ++lastMenuId;
-                        dynamicCells.get(i).setParentCellId(parentId);
-                        dynamicCells.get(i).setCellId(newId);
                     }
+                    dynamicCells.get(i).setParentCellId(parentId);
+                    dynamicCells.get(i).setCellId(newId);
                 }
             }
             return dynamicCells;
