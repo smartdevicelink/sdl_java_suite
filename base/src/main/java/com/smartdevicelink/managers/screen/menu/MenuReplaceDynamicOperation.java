@@ -220,7 +220,7 @@ class MenuReplaceDynamicOperation extends Task {
         deleteRootMenu(new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
-                createAndSendMenuCellRPCs(updatedMenu, new CompletionListener() {
+                sendNewMenuCells(updatedMenu, new CompletionListener() {
                     @Override
                     public void onComplete(boolean success) {
                         if (!success) {
@@ -234,24 +234,21 @@ class MenuReplaceDynamicOperation extends Task {
         });
     }
 
-    private void createAndSendMenuCellRPCs(final List<MenuCell> menu, final CompletionListener listener) {
+    private void sendNewMenuCells(final List<MenuCell> newMenuCells, final CompletionListener listener) {
         if (getState() == Task.CANCELED) {
             return;
         }
 
-        if (menu == null || menu.isEmpty()) {
-            if (listener != null) {
-                // This can be considered a success if the user was clearing out their menu
-                listener.onComplete(true);
-            }
+        if (newMenuCells == null || newMenuCells.isEmpty()) {
+            // This can be considered a success if the user was clearing out their menu
+            listener.onComplete(true);
             return;
         }
 
         MenuLayout defaultSubmenuLayout = menuConfiguration != null ? menuConfiguration.getSubMenuLayout() : null;
 
-        List<RPCRequest> mainMenuCommands = mainMenuCommandsForCells(menu, fileManager.get(), windowCapability, updatedMenu, defaultSubmenuLayout);
-        final List<RPCRequest> subMenuCommands = subMenuCommandsForCells(menu, fileManager.get(), windowCapability, defaultSubmenuLayout);
-
+        List<RPCRequest> mainMenuCommands = mainMenuCommandsForCells(newMenuCells, fileManager.get(), windowCapability, updatedMenu, defaultSubmenuLayout);
+        final List<RPCRequest> subMenuCommands = subMenuCommandsForCells(newMenuCells, fileManager.get(), windowCapability, defaultSubmenuLayout);
 
         internalInterface.get().sendRPCs(mainMenuCommands, new OnMultipleRequestListener() {
             @Override
@@ -262,7 +259,7 @@ class MenuReplaceDynamicOperation extends Task {
             public void onFinished() {
                 if (!subMenuCommands.isEmpty()) {
                     DebugTool.logInfo(TAG, "Finished sending main menu commands. Sending sub menu commands.");
-                    sendSubMenuCommandRPCs(subMenuCommands, listener);
+                    sendNewSubMenuCells(subMenuCommands, listener);
                 } else {
                     if (newKeeps != null && !newKeeps.isEmpty()) {
                         runSubMenuCompareAlgorithm(listener);
@@ -291,7 +288,7 @@ class MenuReplaceDynamicOperation extends Task {
         });
     }
 
-    private void sendSubMenuCommandRPCs(List<RPCRequest> commands, final CompletionListener listener) {
+    private void sendNewSubMenuCells(List<RPCRequest> commands, final CompletionListener listener) {
         if (getState() == Task.CANCELED) {
             return;
         }
@@ -448,7 +445,7 @@ class MenuReplaceDynamicOperation extends Task {
         sendDeleteCurrentMenu(deleteMenuCells, new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
-                createAndSendMenuCellRPCs(updatedCells, new CompletionListener() {
+                sendNewMenuCells(updatedCells, new CompletionListener() {
                     @Override
                     public void onComplete(boolean success) {
                         if (!success) {
