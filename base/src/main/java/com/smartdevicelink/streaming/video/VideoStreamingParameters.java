@@ -178,7 +178,9 @@ public class VideoStreamingParameters {
      */
     public void update(VideoStreamingCapability capability, String vehicleMake) {
         if (capability.getMaxBitrate() != null) {
-            this.bitrate = capability.getMaxBitrate() * 1000;
+            // Taking lower value as per SDL 0323 :
+            // https://github.com/smartdevicelink/sdl_evolution/blob/master/proposals/0323-align-VideoStreamingParameter-with-capability.md
+            this.bitrate = Math.min(this.bitrate, capability.getMaxBitrate() * 1000);
         } // NOTE: the unit of maxBitrate in getSystemCapability is kbps.
         double scale = DEFAULT_SCALE;
         // For resolution and scale, the capability values should be taken rather than parameters specified by developers.
@@ -202,7 +204,8 @@ public class VideoStreamingParameters {
             }
         }
         if (capability.getPreferredFPS() != null) {
-            this.frameRate = capability.getPreferredFPS();
+            // Taking lower value as per SDL 0323
+            this.frameRate = Math.min(this.frameRate, capability.getPreferredFPS());
         }
 
         // This should be the last call as it will return out once a suitable format is found
