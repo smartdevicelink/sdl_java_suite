@@ -199,11 +199,12 @@ abstract class BaseMenuManager extends BaseSubManager {
 
         // Checks against what the developer set for update mode and against the display type to
         // determine how the menu will be updated. This has the ability to be changed during a session.
-        Task operation = null;
+        Task operation;
         MenuManagerCompletionListener menuManagerCompletionListener = new MenuManagerCompletionListener() {
             @Override
             public void onComplete(boolean success, List<MenuCell> currentMenuCells) {
                 BaseMenuManager.this.currentMenuCells = currentMenuCells;
+                updateMenuReplaceOperationsWithNewCurrentMenu();
             }
         };
 
@@ -439,6 +440,16 @@ abstract class BaseMenuManager extends BaseSubManager {
         }
 
         return false;
+    }
+
+    private void updateMenuReplaceOperationsWithNewCurrentMenu () {
+        for (Task task : transactionQueue.getTasksAsList()) {
+            if (task instanceof MenuReplaceStaticOperation) {
+                ((MenuReplaceStaticOperation) task).setCurrentMenu(this.currentMenuCells);
+            } else if (task instanceof MenuReplaceDynamicOperation) {
+                ((MenuReplaceDynamicOperation) task).setCurrentMenu(this.currentMenuCells);
+            }
+        }
     }
 
     private boolean isDynamicMenuUpdateActive(DynamicMenuUpdatesMode updateMode, String displayType) {

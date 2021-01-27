@@ -636,6 +636,10 @@ class MenuReplaceDynamicOperation extends Task {
         this.menuConfiguration = menuConfiguration;
     }
 
+    public void setCurrentMenu(List<MenuCell> currentMenuCells) {
+        this.currentMenu = currentMenuCells;
+    }
+
     private void finishOperation(boolean success) {
         if (operationCompletionListener != null) {
             operationCompletionListener.onComplete(success, currentMenu);

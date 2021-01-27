@@ -32,7 +32,7 @@ class MenuReplaceStaticOperation extends Task {
     private final WeakReference<ISdl> internalInterface;
     private final WeakReference<FileManager> fileManager;
     private final WindowCapability defaultMainWindowCapability;
-    private final List<MenuCell> currentMenu;
+    private List<MenuCell> currentMenu;
     private final List<MenuCell> updatedMenu;
     private final MenuManagerCompletionListener operationCompletionListener;
     private MenuConfiguration menuConfiguration;
@@ -245,6 +245,10 @@ class MenuReplaceStaticOperation extends Task {
 
     void setMenuConfiguration(MenuConfiguration menuConfiguration) {
         this.menuConfiguration = menuConfiguration;
+    }
+
+    public void setCurrentMenu(List<MenuCell> currentMenuCells) {
+        this.currentMenu = currentMenuCells;
     }
 
     private void finishOperation(boolean success) {
