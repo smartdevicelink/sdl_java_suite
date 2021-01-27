@@ -3,7 +3,6 @@ package com.smartdevicelink.managers.screen.menu;
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
-import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
@@ -11,7 +10,6 @@ import com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.MenuC
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
-import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.util.DebugTool;
@@ -141,48 +139,14 @@ class MenuReplaceDynamicOperation extends Task {
         });
     }
 
-    private List<MenuCell> filterDeleteMenuItemsWithOldMenuItems(List<MenuCell> oldMenuCells, List<MenuCellState> oldStatusList){
-        List<MenuCell> deleteCells = new ArrayList<>();
-        // The index of the status should correlate 1-1 with the number of items in the menu
-        // [KEEP,DELETE,KEEP,DELETE] => [A,B,C,D] = [B,D]
-        for (int index = 0; index < oldStatusList.size(); index++) {
-            if (oldStatusList.get(index).equals(MenuCellState.DELETE)) {
-                deleteCells.add(oldMenuCells.get(index));
+    private List<MenuCell> filterMenuCellsWithStatusList(List<MenuCell> menuCells, List<MenuCellState> statusList, MenuCellState menuCellState){
+        List<MenuCell> filteredCells = new ArrayList<>();
+        for (int index = 0; index < statusList.size(); index++) {
+            if (statusList.get(index).equals(menuCellState)) {
+                filteredCells.add(menuCells.get(index));
             }
         }
-        return deleteCells;
-    }
-
-    private List<MenuCell> filterAddMenuItemsWithNewMenuItems(List<MenuCell> newMenuCells, List<MenuCellState> newStatusList){
-        List<MenuCell> addCells = new ArrayList<>();
-        // The index of the status should correlate 1-1 with the number of items in the menu
-        // [KEEP,ADD,KEEP,ADD] => [A,B,C,D] = [B,D]
-        for (int index = 0; index < newStatusList.size(); index++) {
-            if (newStatusList.get(index).equals(MenuCellState.ADD)) {
-                addCells.add(newMenuCells.get(index));
-            }
-        }
-        return addCells;
-    }
-
-    private List<MenuCell> filterKeepMenuItemsWithOldMenuItems(List<MenuCell> oldMenuCells, List<MenuCellState> keepStatusList){
-        List<MenuCell> keepMenuCells = new ArrayList<>();
-        for (int index = 0; index < keepStatusList.size(); index++) {
-            if (keepStatusList.get(index).equals(MenuCellState.KEEP)) {
-                keepMenuCells.add(oldMenuCells.get(index));
-            }
-        }
-        return keepMenuCells;
-    }
-
-    private List<MenuCell> filterKeepMenuItemsWithNewMenuItems(List<MenuCell> newMenuCells, List<MenuCellState> keepStatusList){
-        List<MenuCell> keepMenuCells = new ArrayList<>();
-        for (int index = 0; index < keepStatusList.size(); index++) {
-            if (keepStatusList.get(index).equals(MenuCellState.KEEP)) {
-                keepMenuCells.add(newMenuCells.get(index));
-            }
-        }
-        return keepMenuCells;
+        return filteredCells;
     }
 
     private void dynamicallyUpdateRootMenu(DynamicMenuUpdateRunScore bestRootScore, CompletionListener listener) {
@@ -190,12 +154,12 @@ class MenuReplaceDynamicOperation extends Task {
         List<MenuCellState> deleteMenuStatus = bestRootScore.getOldStatus();
         List<MenuCellState> addMenuStatus = bestRootScore.getUpdatedStatus();
 
-        List<MenuCell> cellsToDelete = filterDeleteMenuItemsWithOldMenuItems(currentMenu, deleteMenuStatus);
-        List<MenuCell> cellsToAdd = filterAddMenuItemsWithNewMenuItems(updatedMenu, addMenuStatus);
+        List<MenuCell> cellsToDelete = filterMenuCellsWithStatusList(currentMenu, deleteMenuStatus, MenuCellState.DELETE);
+        List<MenuCell> cellsToAdd = filterMenuCellsWithStatusList(updatedMenu, addMenuStatus, MenuCellState.ADD);
 
         // These arrays should ONLY contain KEEPS. These will be used for SubMenu compares
-        oldKeeps = filterKeepMenuItemsWithOldMenuItems(currentMenu, deleteMenuStatus);
-        newKeeps = filterKeepMenuItemsWithNewMenuItems(updatedMenu, addMenuStatus);
+        oldKeeps = filterMenuCellsWithStatusList(currentMenu, deleteMenuStatus, MenuCellState.KEEP);
+        newKeeps = filterMenuCellsWithStatusList(updatedMenu, addMenuStatus, MenuCellState.KEEP);
 
         updateIdsOnDynamicCells(cellsToAdd);
         
@@ -503,11 +467,11 @@ class MenuReplaceDynamicOperation extends Task {
         final List<MenuCell> oldCells = commandList.getOldList();
         final List<MenuCell> newCells = commandList.getNewList();
 
-        List<MenuCell> cellsToDelete = filterDeleteMenuItemsWithOldMenuItems(currentMenu, oldStates);
+        List<MenuCell> cellsToDelete = filterMenuCellsWithStatusList(currentMenu, oldStates, MenuCellState.DELETE);
 
         // Set up the adds
-        List<MenuCell> cellsToAdd = filterAddMenuItemsWithNewMenuItems(updatedMenu, newStates);
-        List<MenuCell> subCellKeepsNew = filterKeepMenuItemsWithNewMenuItems(updatedMenu, newStates);
+        List<MenuCell> cellsToAdd = filterMenuCellsWithStatusList(updatedMenu, newStates, MenuCellState.ADD);
+        List<MenuCell> subCellKeepsNew = filterMenuCellsWithStatusList(updatedMenu, newStates, MenuCellState.KEEP);
 
         final List<MenuCell> addsWithNewIds = updateIdsOnDynamicSubCells(oldCells, cellsToAdd, commandList.getParentId());
         // this is needed for the onCommands to still work
