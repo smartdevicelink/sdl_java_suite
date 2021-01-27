@@ -185,24 +185,23 @@ class MenuReplaceDynamicOperation extends Task {
         // We need to run through the keeps and see if they have subCells, as they also need to be run through the compare function.
         List<MenuCellState> deleteMenuStatus = bestRootScore.getOldStatus();
         List<MenuCellState> addMenuStatus = bestRootScore.getUpdatedStatus();
-        List<RPCRequest> deleteCommands;
 
-        // Set up deletes
         List<MenuCell> cellsToDelete = filterDeleteMenuItemsWithOldMenuItems(currentMenu, deleteMenuStatus);
-        oldKeeps = filterKeepMenuItemsWithOldMenuItems(currentMenu, deleteMenuStatus);
-
-        // create the delete commands
-        deleteCommands = deleteCommandsForCells(cellsToDelete);
-
-        // Set up the adds
         List<MenuCell> cellsToAdd = filterAddMenuItemsWithNewMenuItems(updatedMenu, addMenuStatus);
+
+        // These arrays should ONLY contain KEEPS. These will be used for SubMenu compares
+        oldKeeps = filterKeepMenuItemsWithOldMenuItems(currentMenu, deleteMenuStatus);
         newKeeps = filterKeepMenuItemsWithNewMenuItems(updatedMenu, addMenuStatus);
 
+        List<RPCRequest> deleteCommands = deleteCommandsForCells(cellsToDelete);
+
         updateIdsOnDynamicCells(cellsToAdd);
+        
+        // Since we are creating a new Menu but keeping old cells we must first transfer the old cellIDs to the new menus kept cells.
         // this is needed for the onCommands to still work
         transferIdsToKeptCells(newKeeps);
 
-        if (!cellsToAdd.isEmpty()) { // todo what if adds was empty but deletes was not?
+        if (!cellsToAdd.isEmpty()) {
             DebugTool.logInfo(TAG, "Sending root menu updates");
             sendDynamicRootMenuRPCs(deleteCommands, cellsToAdd, listener);
         } else {
