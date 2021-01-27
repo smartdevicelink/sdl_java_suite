@@ -77,7 +77,7 @@ class DynamicMenuUpdateAlgorithm {
 
             // see if we have a new best score and set it if we do
             if (bestRunScore == null || numberOfAdds < bestRunScore.getScore()) {
-                bestRunScore = new DynamicMenuUpdateRunScore(numberOfAdds, oldArray, newArray);
+                bestRunScore = new DynamicMenuUpdateRunScore(oldArray, newArray, numberOfAdds);
             }
 
         }

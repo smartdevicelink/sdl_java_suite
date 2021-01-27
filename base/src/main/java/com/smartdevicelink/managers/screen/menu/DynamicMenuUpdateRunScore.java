@@ -36,30 +36,31 @@ import java.util.List;
 import com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.MenuCellState;
 
 class DynamicMenuUpdateRunScore {
-    private int score;
-    private List<MenuCellState> oldMenu, currentMenu;
+    private List<MenuCellState> oldStatus; // Will contain all the Deletes and Keeps
+    private List<MenuCellState>  updatedStatus; // Will contain all the Adds and Keeps
+    private int score; // Will contain the score, number of total Adds that will need to be created
 
-
-    DynamicMenuUpdateRunScore(int score, List<MenuCellState> oldMenu, List<MenuCellState> currentMenu) {
+    DynamicMenuUpdateRunScore(List<MenuCellState> oldStatus, List<MenuCellState> updatedStatus, int score) {
+        setOldStatus(oldStatus);
+        setUpdatedStatus(updatedStatus);
         setScore(score);
-        setOldMenu(oldMenu);
-        setCurrentMenu(currentMenu);
+
     }
 
-    private void setCurrentMenu(List<MenuCellState>  currentMenu) {
-        this.currentMenu = currentMenu;
+    private void setUpdatedStatus(List<MenuCellState> updatedStatus) {
+        this.updatedStatus = updatedStatus;
     }
 
-    List<MenuCellState> getCurrentMenu() {
-        return currentMenu;
+    List<MenuCellState> getUpdatedStatus() {
+        return updatedStatus;
     }
 
-    private void setOldMenu(List<MenuCellState>  oldMenu) {
-        this.oldMenu = oldMenu;
+    private void setOldStatus(List<MenuCellState> oldStatus) {
+        this.oldStatus = oldStatus;
     }
 
-    List<MenuCellState> getOldMenu() {
-        return oldMenu;
+    List<MenuCellState> getOldStatus() {
+        return oldStatus;
     }
 
     private void setScore(int score) {

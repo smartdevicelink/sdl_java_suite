@@ -139,8 +139,8 @@ class MenuReplaceDynamicOperation extends Task {
 
     private void dynamicallyUpdateRootMenu(DynamicMenuUpdateRunScore bestRootScore, CompletionListener listener) {
         // We need to run through the keeps and see if they have subCells, as they also need to be run through the compare function.
-        List<MenuCellState> newStatesArray = bestRootScore.getCurrentMenu();
-        List<MenuCellState> oldStatesArray = bestRootScore.getOldMenu();
+        List<MenuCellState> newStatesArray = bestRootScore.getUpdatedStatus();
+        List<MenuCellState> oldStatesArray = bestRootScore.getOldStatus();
         List<RPCRequest> deleteCommands;
 
         // Set up deletes
@@ -479,8 +479,8 @@ class MenuReplaceDynamicOperation extends Task {
 
         // grab the scores
         DynamicMenuUpdateRunScore score = commandList.getListsScore();
-        List<MenuCellState> newStates = score.getCurrentMenu();
-        List<MenuCellState> oldStates = score.getOldMenu();
+        List<MenuCellState> newStates = score.getUpdatedStatus();
+        List<MenuCellState> oldStates = score.getOldStatus();
 
         // Grab the sub-menus from the parent cell
         final List<MenuCell> oldCells = commandList.getOldList();
