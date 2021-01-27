@@ -340,14 +340,7 @@ class MenuReplaceDynamicOperation extends Task {
             return;
         }
 
-        List<RPCRequest> mainMenuCommands;
-
-        if (!shouldRPCsIncludeImages(adds, fileManager.get()) || !supportsImages(windowCapability)) {
-            // Send artwork-less menu
-            mainMenuCommands = createCommandsForDynamicSubCells(newMenu, adds, false);
-        } else {
-            mainMenuCommands = createCommandsForDynamicSubCells(newMenu, adds, true);
-        }
+        List<RPCRequest> mainMenuCommands = createCommandsForDynamicSubCells(newMenu, adds);
 
         internalInterface.get().sendRPCs(mainMenuCommands, new OnMultipleRequestListener() {
             @Override
@@ -422,7 +415,7 @@ class MenuReplaceDynamicOperation extends Task {
         });
     }
 
-    private List<RPCRequest> createCommandsForDynamicSubCells(List<MenuCell> oldMenuCells, List<MenuCell> cells, boolean shouldHaveArtwork) {
+    private List<RPCRequest> createCommandsForDynamicSubCells(List<MenuCell> oldMenuCells, List<MenuCell> cells) {
         List<RPCRequest> builtCommands = new ArrayList<>();
         for (int z = 0; z < oldMenuCells.size(); z++) {
             MenuCell oldCell = oldMenuCells.get(z);
@@ -620,22 +613,6 @@ class MenuReplaceDynamicOperation extends Task {
                 }
             }
         }
-    }
-
-    private boolean shouldRPCsIncludeImages(List<MenuCell> cells, FileManager fileManager) {
-        for (MenuCell cell : cells) {
-            SdlArtwork artwork = cell.getIcon();
-            if (artwork != null && !artwork.isStaticIcon() && fileManager != null && !fileManager.hasUploadedFile(artwork)) {
-                return false;
-            } else if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
-                return shouldRPCsIncludeImages(cell.getSubCells(), fileManager);
-            }
-        }
-        return true;
-    }
-
-    private boolean supportsImages(WindowCapability windowCapability) {
-        return windowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(windowCapability, ImageFieldName.cmdIcon);
     }
 
     void setMenuConfiguration(MenuConfiguration menuConfiguration) {
