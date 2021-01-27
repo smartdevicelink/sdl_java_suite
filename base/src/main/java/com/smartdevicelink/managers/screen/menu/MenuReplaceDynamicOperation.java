@@ -25,7 +25,11 @@ import java.util.Map;
 
 import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.lastMenuId;
 import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdNotFound;
-import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.*;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.commandForMenuCell;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.deleteCommandsForCells;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.findAllArtworksToBeUploadedFromCells;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.mainMenuCommandsForCells;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.subMenuCommandsForCells;
 
 /**
  * Created by Bilal Alsharifi on 1/20/21.
@@ -123,7 +127,7 @@ class MenuReplaceDynamicOperation extends Task {
             return;
         }
 
-        sendDeleteRPCs(deleteCommandsForCells(currentMenu), new CompletionListener() {
+        sendDeleteCurrentMenu(currentMenu, new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
                 if (!success) {
@@ -193,8 +197,6 @@ class MenuReplaceDynamicOperation extends Task {
         oldKeeps = filterKeepMenuItemsWithOldMenuItems(currentMenu, deleteMenuStatus);
         newKeeps = filterKeepMenuItemsWithNewMenuItems(updatedMenu, addMenuStatus);
 
-        List<RPCRequest> deleteCommands = deleteCommandsForCells(cellsToDelete);
-
         updateIdsOnDynamicCells(cellsToAdd);
         
         // Since we are creating a new Menu but keeping old cells we must first transfer the old cellIDs to the new menus kept cells.
@@ -203,7 +205,7 @@ class MenuReplaceDynamicOperation extends Task {
 
         if (!cellsToAdd.isEmpty()) {
             DebugTool.logInfo(TAG, "Sending root menu updates");
-            sendDynamicRootMenuRPCs(deleteCommands, cellsToAdd, listener);
+            sendDynamicRootMenuRPCs(cellsToDelete, cellsToAdd, listener);
         } else {
             DebugTool.logInfo(TAG, "All root menu items are kept. Check the sub menus");
             runSubMenuCompareAlgorithm(listener);
@@ -386,25 +388,23 @@ class MenuReplaceDynamicOperation extends Task {
                 listener.onComplete(true);
             }
         } else {
-            sendDeleteRPCs(deleteCommandsForCells(currentMenu), listener);
+            sendDeleteCurrentMenu(currentMenu, listener);
         }
     }
 
-    private void sendDeleteRPCs(List<RPCRequest> deleteCommands, final CompletionListener listener) {
+    private void sendDeleteCurrentMenu(List<MenuCell> deleteMenuCells, final CompletionListener listener) {
         if (getState() == Task.CANCELED) {
             return;
         }
 
-        if (deleteCommands == null || deleteCommands.isEmpty()) {
-            // no dynamic deletes required. return
-            if (listener != null) {
-                // technically this method is successful if there's nothing to delete
-                listener.onComplete(true);
-            }
+        if (deleteMenuCells.isEmpty()) {
+            listener.onComplete(true);
             return;
         }
 
-        internalInterface.get().sendRPCs(deleteCommands, new OnMultipleRequestListener() {
+        List<RPCRequest> deleteMenuCommands = deleteCommandsForCells(deleteMenuCells);
+
+        internalInterface.get().sendRPCs(deleteMenuCommands, new OnMultipleRequestListener() {
             @Override
             public void onUpdate(int remainingRequests) {
 
@@ -440,12 +440,12 @@ class MenuReplaceDynamicOperation extends Task {
         return builtCommands;
     }
 
-    private void sendDynamicRootMenuRPCs(List<RPCRequest> deleteCommands, final List<MenuCell> updatedCells, final CompletionListener listener) {
+    private void sendDynamicRootMenuRPCs(List<MenuCell> deleteMenuCells, final List<MenuCell> updatedCells, final CompletionListener listener) {
         if (getState() == Task.CANCELED) {
             return;
         }
 
-        sendDeleteRPCs(deleteCommands, new CompletionListener() {
+        sendDeleteCurrentMenu(deleteMenuCells, new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
                 createAndSendMenuCellRPCs(updatedCells, new CompletionListener() {
@@ -515,9 +515,6 @@ class MenuReplaceDynamicOperation extends Task {
 
         List<MenuCell> cellsToDelete = filterDeleteMenuItemsWithOldMenuItems(currentMenu, oldStates);
 
-        // create the delete commands
-        List<RPCRequest> deleteCommands = deleteCommandsForCells(cellsToDelete);
-
         // Set up the adds
         List<MenuCell> cellsToAdd = filterAddMenuItemsWithNewMenuItems(updatedMenu, newStates);
         List<MenuCell> subCellKeepsNew = filterKeepMenuItemsWithNewMenuItems(updatedMenu, newStates);
@@ -526,7 +523,7 @@ class MenuReplaceDynamicOperation extends Task {
         // this is needed for the onCommands to still work
         transferIdsToKeptSubCells(oldCells, subCellKeepsNew);
 
-        sendDeleteRPCs(deleteCommands, new CompletionListener() {
+        sendDeleteCurrentMenu(cellsToDelete, new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
                 if (addsWithNewIds != null && !addsWithNewIds.isEmpty()) {
