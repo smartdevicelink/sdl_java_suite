@@ -55,10 +55,10 @@ class MenuConfigurationUpdateOperation extends Task {
     private final MenuConfiguration menuConfiguration;
     private final CompletionListener completionListener;
 
-    MenuConfigurationUpdateOperation(ISdl internalInterface, WindowCapability defaultMainWindowCapability, MenuConfiguration menuConfiguration, CompletionListener completionListener) {
+    MenuConfigurationUpdateOperation(ISdl internalInterface, WindowCapability windowCapability, MenuConfiguration menuConfiguration, CompletionListener completionListener) {
         super(TAG);
         this.internalInterface = new WeakReference<>(internalInterface);
-        this.availableMenuLayouts = defaultMainWindowCapability != null ? defaultMainWindowCapability.getMenuLayoutsAvailable() : null;
+        this.availableMenuLayouts = windowCapability != null ? windowCapability.getMenuLayoutsAvailable() : null;
         this.menuConfiguration = menuConfiguration;
         this.completionListener = completionListener;
     }

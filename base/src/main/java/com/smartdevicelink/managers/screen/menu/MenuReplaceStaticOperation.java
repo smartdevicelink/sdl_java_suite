@@ -31,17 +31,17 @@ class MenuReplaceStaticOperation extends Task {
 
     private final WeakReference<ISdl> internalInterface;
     private final WeakReference<FileManager> fileManager;
-    private final WindowCapability defaultMainWindowCapability;
+    private final WindowCapability windowCapability;
     private List<MenuCell> currentMenu;
     private final List<MenuCell> updatedMenu;
     private final MenuManagerCompletionListener operationCompletionListener;
     private MenuConfiguration menuConfiguration;
 
-    MenuReplaceStaticOperation(ISdl internalInterface, FileManager fileManager, WindowCapability defaultMainWindowCapability, MenuConfiguration menuConfiguration, List<MenuCell> currentMenu, List<MenuCell> updatedMenu, MenuManagerCompletionListener operationCompletionListener) {
+    MenuReplaceStaticOperation(ISdl internalInterface, FileManager fileManager, WindowCapability windowCapability, MenuConfiguration menuConfiguration, List<MenuCell> currentMenu, List<MenuCell> updatedMenu, MenuManagerCompletionListener operationCompletionListener) {
         super(TAG);
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
-        this.defaultMainWindowCapability = defaultMainWindowCapability;
+        this.windowCapability = windowCapability;
         this.menuConfiguration = menuConfiguration;
         this.currentMenu = currentMenu;
         this.updatedMenu = updatedMenu;
@@ -67,7 +67,7 @@ class MenuReplaceStaticOperation extends Task {
     }
 
     private void updateMenuCells(final CompletionListener listener) {
-        List<SdlArtwork> artworksToBeUploaded = findAllArtworksToBeUploadedFromCells(updatedMenu, fileManager.get(), defaultMainWindowCapability);
+        List<SdlArtwork> artworksToBeUploaded = findAllArtworksToBeUploadedFromCells(updatedMenu, fileManager.get(), windowCapability);
         if (!artworksToBeUploaded.isEmpty() && fileManager.get() != null) {
             fileManager.get().uploadArtworks(artworksToBeUploaded, new MultipleFileCompletionListener() {
                 @Override
@@ -125,8 +125,8 @@ class MenuReplaceStaticOperation extends Task {
 
         MenuLayout defaultSubmenuLayout = menuConfiguration != null ? menuConfiguration.getSubMenuLayout() : null;
 
-        List<RPCRequest> mainMenuCommands = mainMenuCommandsForCells(newMenuCells, fileManager.get(), defaultMainWindowCapability, updatedMenu, defaultSubmenuLayout);
-        final List<RPCRequest> subMenuCommands = subMenuCommandsForCells(newMenuCells, fileManager.get(), defaultMainWindowCapability, defaultSubmenuLayout);
+        List<RPCRequest> mainMenuCommands = mainMenuCommandsForCells(newMenuCells, fileManager.get(), windowCapability, updatedMenu, defaultSubmenuLayout);
+        final List<RPCRequest> subMenuCommands = subMenuCommandsForCells(newMenuCells, fileManager.get(), windowCapability, defaultSubmenuLayout);
 
         internalInterface.get().sendRPCs(mainMenuCommands, new OnMultipleRequestListener() {
             @Override

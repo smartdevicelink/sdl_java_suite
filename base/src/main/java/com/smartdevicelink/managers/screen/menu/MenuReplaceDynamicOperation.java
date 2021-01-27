@@ -35,7 +35,7 @@ class MenuReplaceDynamicOperation extends Task {
 
     private final WeakReference<ISdl> internalInterface;
     private final WeakReference<FileManager> fileManager;
-    private final WindowCapability defaultMainWindowCapability;
+    private final WindowCapability windowCapability;
     private List<MenuCell> currentMenu;
     private final List<MenuCell> updatedMenu;
     private List<MenuCell> keepsOld;
@@ -43,11 +43,11 @@ class MenuReplaceDynamicOperation extends Task {
     private final MenuManagerCompletionListener operationCompletionListener;
     private MenuConfiguration menuConfiguration;
 
-    MenuReplaceDynamicOperation(ISdl internalInterface, FileManager fileManager, WindowCapability defaultMainWindowCapability, MenuConfiguration menuConfiguration, List<MenuCell> currentMenu, List<MenuCell> updatedMenu, MenuManagerCompletionListener operationCompletionListener) {
+    MenuReplaceDynamicOperation(ISdl internalInterface, FileManager fileManager, WindowCapability windowCapability, MenuConfiguration menuConfiguration, List<MenuCell> currentMenu, List<MenuCell> updatedMenu, MenuManagerCompletionListener operationCompletionListener) {
         super(TAG);
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
-        this.defaultMainWindowCapability = defaultMainWindowCapability;
+        this.windowCapability = windowCapability;
         this.menuConfiguration = menuConfiguration;
         this.currentMenu = currentMenu;
         this.updatedMenu = updatedMenu;
@@ -74,7 +74,7 @@ class MenuReplaceDynamicOperation extends Task {
 
     private void updateMenuCells(final CompletionListener listener) {
         // Upload the Artworks
-        List<SdlArtwork> artworksToBeUploaded = findAllArtworksToBeUploadedFromCells(updatedMenu, fileManager.get(), defaultMainWindowCapability);
+        List<SdlArtwork> artworksToBeUploaded = findAllArtworksToBeUploadedFromCells(updatedMenu, fileManager.get(), windowCapability);
         if (!artworksToBeUploaded.isEmpty() && fileManager.get() != null) {
             fileManager.get().uploadArtworks(artworksToBeUploaded, new MultipleFileCompletionListener() {
                 @Override
@@ -220,8 +220,8 @@ class MenuReplaceDynamicOperation extends Task {
 
         MenuLayout defaultSubmenuLayout = menuConfiguration != null ? menuConfiguration.getSubMenuLayout() : null;
 
-        List<RPCRequest> mainMenuCommands = mainMenuCommandsForCells(menu, fileManager.get(), defaultMainWindowCapability, updatedMenu, defaultSubmenuLayout);
-        final List<RPCRequest> subMenuCommands = subMenuCommandsForCells(menu, fileManager.get(), defaultMainWindowCapability, defaultSubmenuLayout);
+        List<RPCRequest> mainMenuCommands = mainMenuCommandsForCells(menu, fileManager.get(), windowCapability, updatedMenu, defaultSubmenuLayout);
+        final List<RPCRequest> subMenuCommands = subMenuCommandsForCells(menu, fileManager.get(), windowCapability, defaultSubmenuLayout);
 
 
         internalInterface.get().sendRPCs(mainMenuCommands, new OnMultipleRequestListener() {
@@ -316,7 +316,7 @@ class MenuReplaceDynamicOperation extends Task {
 
         List<RPCRequest> mainMenuCommands;
 
-        if (!shouldRPCsIncludeImages(adds, fileManager.get()) || !supportsImages(defaultMainWindowCapability)) {
+        if (!shouldRPCsIncludeImages(adds, fileManager.get()) || !supportsImages(windowCapability)) {
             // Send artwork-less menu
             mainMenuCommands = createCommandsForDynamicSubCells(newMenu, adds, false);
         } else {
@@ -405,7 +405,7 @@ class MenuReplaceDynamicOperation extends Task {
             for (int i = 0; i < cells.size(); i++) {
                 MenuCell cell = cells.get(i);
                 if (cell.equals(oldCell)) {
-                    builtCommands.add(commandForMenuCell(cell, fileManager.get(), defaultMainWindowCapability, z));
+                    builtCommands.add(commandForMenuCell(cell, fileManager.get(), windowCapability, z));
                     break;
                 }
             }
@@ -628,7 +628,7 @@ class MenuReplaceDynamicOperation extends Task {
         return true;
     }
 
-    private static boolean supportsImages(WindowCapability windowCapability) {
+    private boolean supportsImages(WindowCapability windowCapability) {
         return windowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(windowCapability, ImageFieldName.cmdIcon);
     }
 

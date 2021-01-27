@@ -60,7 +60,6 @@ import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
@@ -84,7 +83,7 @@ abstract class BaseMenuManager extends BaseSubManager {
     private OnRPCNotificationListener hmiListener;
     private OnRPCNotificationListener commandListener;
     private OnSystemCapabilityListener onDisplaysCapabilityListener;
-    private WindowCapability defaultMainWindowCapability;
+    private WindowCapability windowCapability;
     private Queue transactionQueue;
     static int lastMenuId; // todo this shouldn't be static and should be fully managed in the manager
 
@@ -117,7 +116,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         currentHMILevel = HMILevel.HMI_NONE;
         currentSystemContext = SystemContext.SYSCTXT_MAIN;
         dynamicMenuUpdatesMode = DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE;
-        defaultMainWindowCapability = null;
+        windowCapability = null;
         menuConfiguration = null;
         sdlMsgVersion = null;
 
@@ -209,9 +208,9 @@ abstract class BaseMenuManager extends BaseSubManager {
         };
 
         if (isDynamicMenuUpdateActive(dynamicMenuUpdatesMode, displayType)) {
-            operation = new MenuReplaceDynamicOperation(internalInterface, fileManager.get(), defaultMainWindowCapability, menuConfiguration, currentMenuCells, menuCells, menuManagerCompletionListener);
+            operation = new MenuReplaceDynamicOperation(internalInterface, fileManager.get(), windowCapability, menuConfiguration, currentMenuCells, menuCells, menuManagerCompletionListener);
         } else {
-            operation = new MenuReplaceStaticOperation(internalInterface, fileManager.get(), defaultMainWindowCapability, menuConfiguration, currentMenuCells, menuCells, menuManagerCompletionListener);
+            operation = new MenuReplaceStaticOperation(internalInterface, fileManager.get(), windowCapability, menuConfiguration, currentMenuCells, menuCells, menuManagerCompletionListener);
         }
 
         transactionQueue.add(operation, false);
@@ -304,7 +303,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             return;
         }
 
-        MenuConfigurationUpdateOperation operation = new MenuConfigurationUpdateOperation(internalInterface, defaultMainWindowCapability, menuConfiguration, new CompletionListener() {
+        MenuConfigurationUpdateOperation operation = new MenuConfigurationUpdateOperation(internalInterface, windowCapability, menuConfiguration, new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
                 BaseMenuManager.this.menuConfiguration = menuConfiguration;
@@ -348,7 +347,7 @@ abstract class BaseMenuManager extends BaseSubManager {
                     for (WindowCapability windowCapability : display.getWindowCapabilities()) {
                         int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
                         if (currentWindowID == PredefinedWindows.DEFAULT_WINDOW.getValue()) {
-                            defaultMainWindowCapability = windowCapability;
+                            BaseMenuManager.this.windowCapability = windowCapability;
                         }
                     }
                 }
@@ -357,7 +356,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             @Override
             public void onError(String info) {
                 DebugTool.logError(TAG, "Display Capability cannot be retrieved");
-                defaultMainWindowCapability = null;
+                windowCapability = null;
             }
         };
         if (internalInterface.getSystemCapabilityManager() != null) {
