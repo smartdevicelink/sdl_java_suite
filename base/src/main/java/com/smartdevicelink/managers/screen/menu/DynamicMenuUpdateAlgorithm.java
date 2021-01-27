@@ -1,7 +1,5 @@
 package com.smartdevicelink.managers.screen.menu;
 
-import com.smartdevicelink.util.DebugTool;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,8 +7,6 @@ import java.util.List;
  * Created by Bilal Alsharifi on 1/25/21.
  */
 class DynamicMenuUpdateAlgorithm {
-    private static final String TAG = "DynamicMenuUpdateAlgorithm";
-
     // Cell state that tells the menu manager what it should do with a given SDLMenuCell
     enum MenuCellState {
         DELETE, // Marks the cell to be deleted
