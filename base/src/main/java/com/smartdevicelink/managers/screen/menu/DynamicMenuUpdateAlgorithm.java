@@ -13,14 +13,9 @@ class DynamicMenuUpdateAlgorithm {
 
     // Cell state that tells the menu manager what it should do with a given SDLMenuCell
     enum MenuCellState {
-        // Marks the cell to be deleted
-        DELETE,
-
-        // Marks the cell to be added
-        ADD,
-
-        // Marks the cell to be kept
-        KEEP
+        DELETE, // Marks the cell to be deleted
+        ADD, // Marks the cell to be added
+        KEEP // Marks the cell to be kept
     }
 
     static DynamicMenuUpdateRunScore compareOldMenuCells(List<MenuCell> oldMenuCells, List<MenuCell> updatedMenuCells) {
@@ -28,59 +23,80 @@ class DynamicMenuUpdateAlgorithm {
             return null;
         }
 
-        DynamicMenuUpdateRunScore bestScore = startCompareAtRun(oldMenuCells, updatedMenuCells);
+        DynamicMenuUpdateRunScore bestScore = startCompareAtRun(0, oldMenuCells, updatedMenuCells);
         DebugTool.logInfo(TAG, "Best menu run score: " + bestScore.getScore());
 
         return bestScore;
     }
 
-    static DynamicMenuUpdateRunScore startCompareAtRun(List<MenuCell> oldMenuCells, List<MenuCell> updatedMenuCells) {
-        DynamicMenuUpdateRunScore bestRunScore = null;
+    static DynamicMenuUpdateRunScore startCompareAtRun(int startRun, List<MenuCell> oldMenuCells, List<MenuCell> updatedMenuCells) {
+        DynamicMenuUpdateRunScore bestScore = null;
 
-        // This first loop is for each 'run'
-        for (int run = 0; run < oldMenuCells.size(); run++) {
-            List<MenuCellState> oldArray = new ArrayList<>(oldMenuCells.size());
-            List<MenuCellState> newArray = new ArrayList<>(updatedMenuCells.size());
-
-            // Set the statuses
-            for (int i = 0; i < oldMenuCells.size(); i++) {
-                oldArray.add(MenuCellState.DELETE);
-            }
-            for (int i = 0; i < updatedMenuCells.size(); i++) {
-                newArray.add(MenuCellState.ADD);
-            }
+        for (int run = startRun; run < oldMenuCells.size(); run++) {
+            // Set the menu status as a 1-1 array, start off will oldMenus = all Deletes, newMenu = all Adds
+            List<MenuCellState> oldMenuStatus = buildAllDeleteStatusesForMenu(oldMenuCells);
+            List<MenuCellState> newMenuStatus = buildAllAddStatusesForMenu(updatedMenuCells);
 
             int startIndex = 0;
-
-            // Keep items that appear in both lists
-            for (int oldItems = run; oldItems < oldMenuCells.size(); oldItems++) {
-
-                for (int newItems = startIndex; newItems < updatedMenuCells.size(); newItems++) {
-
-                    if (oldMenuCells.get(oldItems).equals(updatedMenuCells.get(newItems))) {
-                        oldArray.set(oldItems, MenuCellState.KEEP);
-                        newArray.set(newItems, MenuCellState.KEEP);
-                        // set the new start index
-                        startIndex = newItems + 1;
+            for (int oldCellIndex = run; oldCellIndex < oldMenuCells.size(); oldCellIndex++) {
+                // For each old item, create inner loop to compare old cells to new cells to find a match
+                // if a match if found we mark the index at match for both the old and the new status to
+                // keep since we do not want to send RPCs for those cases
+                for (int newCellIndex = startIndex; newCellIndex < updatedMenuCells.size(); newCellIndex++) {
+                    if (oldMenuCells.get(oldCellIndex).equals(updatedMenuCells.get(newCellIndex))) {
+                        oldMenuStatus.set(oldCellIndex, MenuCellState.KEEP);
+                        newMenuStatus.set(newCellIndex, MenuCellState.KEEP);
+                        startIndex = newCellIndex + 1;
                         break;
                     }
                 }
             }
 
-            // Calculate number of adds, or the 'score' for this run
+            // // Add RPC are the biggest operation so we need to find the run with the least amount of Adds.
+            // We will reset the run we use each time a runScore is less than the current score.
             int numberOfAdds = 0;
-            for (int x = 0; x < newArray.size(); x++) {
-                if (newArray.get(x).equals(MenuCellState.ADD)) {
+            for (int status = 0; status < newMenuStatus.size(); status++) {
+                if (newMenuStatus.get(status).equals(MenuCellState.ADD)) {
                     numberOfAdds++;
                 }
             }
 
-            // see if we have a new best score and set it if we do
-            if (bestRunScore == null || numberOfAdds < bestRunScore.getScore()) {
-                bestRunScore = new DynamicMenuUpdateRunScore(oldArray, newArray, numberOfAdds);
+            // As soon as we a run that requires 0 Adds we will use it since we cant do better then 0
+            if (numberOfAdds == 0) {
+                bestScore = new DynamicMenuUpdateRunScore(oldMenuStatus, newMenuStatus, numberOfAdds);
+                return bestScore;
+            }
+
+            // if we haven't create the bestScore object or if the current score beats the old score then we will create a new bestScore
+            if (bestScore == null || numberOfAdds < bestScore.getScore()) {
+                bestScore = new DynamicMenuUpdateRunScore(oldMenuStatus, newMenuStatus, numberOfAdds);
             }
 
         }
-        return bestRunScore;
+        return bestScore;
+    }
+
+    /**
+     * Builds a 1-1 array of Deletes for every element in the array
+     * @param oldMenu The old menu array
+     */
+    private static List<MenuCellState> buildAllDeleteStatusesForMenu (List<MenuCell> oldMenu){
+        List<MenuCellState> oldMenuStatus = new ArrayList<>(oldMenu.size());
+        for (int index = 0; index < oldMenu.size(); index++) {
+            oldMenuStatus.add(MenuCellState.DELETE);
+        }
+        return oldMenuStatus;
+    }
+
+    /**
+     * Builds a 1-1 array of Adds for every element in the array
+     * @param newMenu The new menu array
+     */
+    private static List<MenuCellState> buildAllAddStatusesForMenu (List<MenuCell> newMenu){
+        List<MenuCellState> newMenuStatus = new ArrayList<>(newMenu.size());
+        for (int index = 0; index < newMenu.size(); index++) {
+            newMenuStatus.add(MenuCellState.ADD);
+        }
+        return newMenuStatus;
     }
 }

@@ -467,7 +467,7 @@ class MenuReplaceDynamicOperation extends Task {
             MenuCell oldKeptCell = oldKeeps.get(i);
 
             if (oldKeptCell.getSubCells() != null && !oldKeptCell.getSubCells().isEmpty() && newKeptCell.getSubCells() != null && !newKeptCell.getSubCells().isEmpty()) {
-                DynamicMenuUpdateRunScore subScore = DynamicMenuUpdateAlgorithm.startCompareAtRun(oldKeptCell.getSubCells(), newKeptCell.getSubCells());
+                DynamicMenuUpdateRunScore subScore = DynamicMenuUpdateAlgorithm.startCompareAtRun(0, oldKeptCell.getSubCells(), newKeptCell.getSubCells());
 
                 if (subScore != null) {
                     DebugTool.logInfo(TAG, "Sub menu Run Score: " + oldKeptCell.getTitle() + " Score: " + subScore.getScore());
