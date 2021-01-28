@@ -65,9 +65,8 @@ import java.util.List;
 
 abstract class BaseMenuManager extends BaseSubManager {
     private static final String TAG = "BaseMenuManager";
-    private static final int MAX_ID = Integer.MAX_VALUE;
     static final int menuCellIdMin = 1;
-    static final int parentIdNotFound = MAX_ID;
+    static final int parentIdNotFound = 2000000000;
 
     private final WeakReference<FileManager> fileManager;
     private List<MenuCell> currentMenuCells;
@@ -231,7 +230,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         if (cell != null) {
             // We must see if we have a copy of this cell, since we clone the objects
             for (MenuCell clonedCell : menuCells) {
-                if (clonedCell.equals(cell) && clonedCell.getCellId() != MAX_ID) {
+                if (clonedCell.equals(cell) && clonedCell.getCellId() != parentIdNotFound) {
                     // We've found the correct sub menu cell
                     foundClonedCell = clonedCell;
                     break;
