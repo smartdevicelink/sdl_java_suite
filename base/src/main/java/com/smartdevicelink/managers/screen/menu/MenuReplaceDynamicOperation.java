@@ -70,8 +70,37 @@ class MenuReplaceDynamicOperation extends Task {
             }
         });
     }
-    
+
     private void updateMenuCells(final CompletionListener listener) {
+        if (getState() == Task.CANCELED) {
+            return;
+        }
+
+        // Run the lists through the new algorithm
+        DynamicMenuUpdateRunScore runScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(currentMenu, updatedMenu);
+        if (runScore == null) {
+            // Both old and new menu cells are empty. Nothing needs to be done.
+            finishOperation(true);
+            return;
+        }
+
+        // We need to run through the keeps and see if they have subCells, as they also need to be run through the compare function.
+        List<MenuCellState> deleteMenuStatus = runScore.getOldStatus();
+        List<MenuCellState> addMenuStatus = runScore.getUpdatedStatus();
+
+        final List<MenuCell> cellsToDelete = filterMenuCellsWithStatusList(currentMenu, deleteMenuStatus, MenuCellState.DELETE);
+        final List<MenuCell> cellsToAdd = filterMenuCellsWithStatusList(updatedMenu, addMenuStatus, MenuCellState.ADD);
+
+        // These arrays should ONLY contain KEEPS. These will be used for SubMenu compares
+        final List<MenuCell> oldKeeps = filterMenuCellsWithStatusList(currentMenu, deleteMenuStatus, MenuCellState.KEEP);
+        final List<MenuCell> newKeeps = filterMenuCellsWithStatusList(updatedMenu, addMenuStatus, MenuCellState.KEEP);
+
+        updateIdsOnDynamicCells(cellsToAdd);
+        
+        // Since we are creating a new Menu but keeping old cells we must first transfer the old cellIDs to the new menus kept cells.
+        // this is needed for the onCommands to still work
+        transferIdsToKeptCells(newKeeps);
+
         // Upload the Artworks
         List<SdlArtwork> artworksToBeUploaded = findAllArtworksToBeUploadedFromCells(updatedMenu, fileManager.get(), windowCapability);
         if (!artworksToBeUploaded.isEmpty() && fileManager.get() != null) {
@@ -83,56 +112,13 @@ class MenuReplaceDynamicOperation extends Task {
                     } else {
                         DebugTool.logInfo(TAG, "Menu Artworks Uploaded");
                     }
-                    dynamicallyUpdateRootMenu(listener);
+                    sendDynamicRootMenuRPCs(cellsToDelete, cellsToAdd, oldKeeps, newKeeps, listener);
                 }
             });
         } else {
             // No Artworks to be uploaded, send off
-            dynamicallyUpdateRootMenu(listener);
+            sendDynamicRootMenuRPCs(cellsToDelete, cellsToAdd, oldKeeps, newKeeps, listener);
         }
-    }
-
-    private List<MenuCell> filterMenuCellsWithStatusList(List<MenuCell> menuCells, List<MenuCellState> statusList, MenuCellState menuCellState){
-        List<MenuCell> filteredCells = new ArrayList<>();
-        for (int index = 0; index < statusList.size(); index++) {
-            if (statusList.get(index).equals(menuCellState)) {
-                filteredCells.add(menuCells.get(index));
-            }
-        }
-        return filteredCells;
-    }
-
-    private void dynamicallyUpdateRootMenu(CompletionListener listener) {
-        if (getState() == Task.CANCELED) {
-            return;
-        }
-
-        // Run the lists through the new algorithm
-        DynamicMenuUpdateRunScore rootScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(currentMenu, updatedMenu);
-        if (rootScore == null) {
-            // Both old and new menu cells are empty. Nothing needs to be done.
-            finishOperation(true);
-            return;
-        }
-
-        // We need to run through the keeps and see if they have subCells, as they also need to be run through the compare function.
-        List<MenuCellState> deleteMenuStatus = rootScore.getOldStatus();
-        List<MenuCellState> addMenuStatus = rootScore.getUpdatedStatus();
-
-        List<MenuCell> cellsToDelete = filterMenuCellsWithStatusList(currentMenu, deleteMenuStatus, MenuCellState.DELETE);
-        List<MenuCell> cellsToAdd = filterMenuCellsWithStatusList(updatedMenu, addMenuStatus, MenuCellState.ADD);
-
-        // These arrays should ONLY contain KEEPS. These will be used for SubMenu compares
-        List<MenuCell> oldKeeps = filterMenuCellsWithStatusList(currentMenu, deleteMenuStatus, MenuCellState.KEEP);
-        List<MenuCell> newKeeps = filterMenuCellsWithStatusList(updatedMenu, addMenuStatus, MenuCellState.KEEP);
-
-        updateIdsOnDynamicCells(cellsToAdd);
-        
-        // Since we are creating a new Menu but keeping old cells we must first transfer the old cellIDs to the new menus kept cells.
-        // this is needed for the onCommands to still work
-        transferIdsToKeptCells(newKeeps);
-
-        sendDynamicRootMenuRPCs(cellsToDelete, cellsToAdd, oldKeeps, newKeeps, listener);
     }
 
     private void sendNewMenuCells(final List<MenuCell> newMenuCells, final List<MenuCell> oldKeeps, final List<MenuCell> newKeeps, final CompletionListener listener) {
@@ -498,6 +484,16 @@ class MenuReplaceDynamicOperation extends Task {
                 }
             }
         }
+    }
+
+    private List<MenuCell> filterMenuCellsWithStatusList(List<MenuCell> menuCells, List<MenuCellState> statusList, MenuCellState menuCellState){
+        List<MenuCell> filteredCells = new ArrayList<>();
+        for (int index = 0; index < statusList.size(); index++) {
+            if (statusList.get(index).equals(menuCellState)) {
+                filteredCells.add(menuCells.get(index));
+            }
+        }
+        return filteredCells;
     }
 
     void setMenuConfiguration(MenuConfiguration menuConfiguration) {
