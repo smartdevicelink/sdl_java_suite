@@ -180,9 +180,8 @@ public class VideoStreamingParameters {
         if (capability.getMaxBitrate() != null) {
             // Taking lower value as per SDL 0323 :
             // https://github.com/smartdevicelink/sdl_evolution/blob/master/proposals/0323-align-VideoStreamingParameter-with-capability.md
-            if (capability.getMaxBitrate() * 1000 >= 0) {
-                this.bitrate = Math.min(this.bitrate, capability.getMaxBitrate() * 1000);
-            }
+            int capableBitrateInKb = Math.min(Integer.MAX_VALUE / 1000, capability.getMaxBitrate());
+            this.bitrate = Math.min(this.bitrate, capableBitrateInKb * 1000);
         } // NOTE: the unit of maxBitrate in getSystemCapability is kbps.
         double scale = DEFAULT_SCALE;
         // For resolution and scale, the capability values should be taken rather than parameters specified by developers.
