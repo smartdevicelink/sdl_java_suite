@@ -949,6 +949,8 @@ abstract class BaseMenuManager extends BaseSubManager {
     private AddCommand commandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position) {
 
         MenuParams params = new MenuParams(cell.getTitle());
+        params.setSecondaryText(cell.getSecondaryText());
+        params.setTertiaryText(cell.getTertiaryText());
         params.setParentID(cell.getParentCellId() != MAX_ID ? cell.getParentCellId() : null);
         params.setPosition(position);
 
@@ -960,12 +962,15 @@ abstract class BaseMenuManager extends BaseSubManager {
             command.setVrCommands(null);
         }
         command.setCmdIcon((cell.getIcon() != null && shouldHaveArtwork) ? cell.getIcon().getImageRPC() : null);
+        command.setSecondaryImage((cell.getSecondaryArtwork() != null && shouldHaveArtwork ? cell.getSecondaryArtwork().getImageRPC() : null));
 
         return command;
     }
 
     private AddSubMenu subMenuCommandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position) {
         AddSubMenu subMenu = new AddSubMenu(cell.getCellId(), cell.getTitle());
+        subMenu.setSecondaryText(cell.getSecondaryText());
+        subMenu.setTertiaryText(cell.getTertiaryText());
         subMenu.setPosition(position);
         if (cell.getSubMenuLayout() != null) {
             subMenu.setMenuLayout(cell.getSubMenuLayout());
@@ -973,6 +978,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             subMenu.setMenuLayout(menuConfiguration.getSubMenuLayout());
         }
         subMenu.setMenuIcon((shouldHaveArtwork && (cell.getIcon() != null && cell.getIcon().getImageRPC() != null)) ? cell.getIcon().getImageRPC() : null);
+        subMenu.setSecondaryImage((shouldHaveArtwork && (cell.getSecondaryArtwork() != null && cell.getSecondaryArtwork().getImageRPC() != null)) ? cell.getSecondaryArtwork().getImageRPC() : null);
         return subMenu;
     }
 

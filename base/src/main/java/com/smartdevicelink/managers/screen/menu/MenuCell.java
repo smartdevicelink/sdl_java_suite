@@ -90,6 +90,16 @@ public class MenuCell implements Cloneable {
      */
     private static final int MAX_ID = 2000000000;
 
+    /**
+     * secondaryText and tertiaryText - additional text to be displayed
+     */
+    private String secondaryText, tertiaryText;
+
+    /**
+     * secondaryArtwork - a secondary icon to be displayed
+     */
+    private SdlArtwork secondaryArtwork;
+
     // CONSTRUCTORS
 
     // SINGLE MENU ITEM CONSTRUCTORS
@@ -105,6 +115,29 @@ public class MenuCell implements Cloneable {
     public MenuCell(@NonNull String title, @Nullable SdlArtwork icon, @Nullable List<String> voiceCommands, @Nullable MenuSelectionListener listener) {
         setTitle(title); // title is the only required param
         setIcon(icon);
+        setVoiceCommands(voiceCommands);
+        setMenuSelectionListener(listener);
+        setCellId(MAX_ID);
+        setParentCellId(MAX_ID);
+    }
+
+    /**
+     * Creates a new MenuCell Object with multiple parameters and optional fields set
+     *
+     * @param title             The cell's primary text
+     * @param icon              The cell's image
+     * @param secondaryText     The cell's secondary text
+     * @param tertiaryText      The cell's tertiary text
+     * @param secondaryArtwork  The cell's secondary image
+     * @param voiceCommands     Voice commands that will activate the menu cell
+     * @param listener          Calls the code that will be run when the menu cell is selected
+     */
+    public MenuCell(@NonNull String title, @Nullable SdlArtwork icon, String secondaryText, String tertiaryText, SdlArtwork secondaryArtwork, @Nullable List<String> voiceCommands, @Nullable MenuSelectionListener listener) {
+        setTitle(title); // title is the only required param
+        setIcon(icon);
+        setSecondaryText(secondaryText);
+        setTertiaryText(tertiaryText);
+        setSecondaryArtwork(secondaryArtwork);
         setVoiceCommands(voiceCommands);
         setMenuSelectionListener(listener);
         setCellId(MAX_ID);
@@ -127,6 +160,31 @@ public class MenuCell implements Cloneable {
         setTitle(title); // title is the only required param
         setSubMenuLayout(subMenuLayout);
         setIcon(icon);
+        setSubCells(subCells);
+        setCellId(MAX_ID);
+        setParentCellId(MAX_ID);
+    }
+
+    /**
+     * Creates a new MenuCell Object with multiple parameters and optional fields set
+     * <strong>NOTE: because this has sub-cells, there does not need to be a listener</strong>
+     *
+     * @param title         The cell's primary text
+     * @param subMenuLayout The submenu's layout that the subCells will be shown in. If `null`, the
+     *                      default submenu layout in the screen manager's `MenuConfiguration` will be used.
+     * @param icon          The cell's image
+     * @param secondaryText     The cell's secondary text
+     * @param tertiaryText      The cell's tertiary text
+     * @param secondaryArtwork  The cell's secondary image
+     * @param subCells      The sub-cells for the sub menu that will appear when the cell is selected
+     */
+    public MenuCell(@NonNull String title, @Nullable MenuLayout subMenuLayout, @Nullable SdlArtwork icon, String secondaryText, String tertiaryText, SdlArtwork secondaryArtwork, @Nullable List<MenuCell> subCells) {
+        setTitle(title); // title is the only required param
+        setSubMenuLayout(subMenuLayout);
+        setIcon(icon);
+        setSecondaryText(secondaryText);
+        setTertiaryText(tertiaryText);
+        setSecondaryArtwork(secondaryArtwork);
         setSubCells(subCells);
         setCellId(MAX_ID);
         setParentCellId(MAX_ID);
@@ -284,6 +342,61 @@ public class MenuCell implements Cloneable {
         return parentCellId;
     }
 
+    /**
+     * Sets the secondaryText
+     *
+     * @param secondaryText the cell's secondaryText
+     */
+    void setSecondaryText(String secondaryText) {
+        this.secondaryText = secondaryText;
+    }
+
+    /**
+     * Get the cell's secondaryText
+     *
+     * @return the cell's secondaryText
+     */
+    String getSecondaryText() {
+        return secondaryText;
+    }
+
+    /**
+     * Sets the tertiaryText
+     *
+     * @param tertiaryText the cell's tertiaryText
+     */
+    void setTertiaryText(String tertiaryText) {
+        this.tertiaryText = tertiaryText;
+    }
+
+
+    /**
+     * Get the cell's tertiaryText
+     *
+     * @return the cell's tertiaryText
+     */
+    String getTertiaryText(){
+        return tertiaryText;
+    }
+
+    /**
+     * Sets the secondaryArtwork
+     *
+     * @param secondaryArtwork the cell's secondaryArtwork
+     */
+    void setSecondaryArtwork(SdlArtwork secondaryArtwork) {
+        this.secondaryArtwork = secondaryArtwork;
+    }
+
+    /**
+     * Get the cell's secondaryArtwork
+     *
+     * @return the cell's secondaryArtwork
+     */
+    SdlArtwork getSecondaryArtwork(){
+        return secondaryArtwork;
+    }
+
     // HELPER
 
     /**
@@ -303,6 +416,9 @@ public class MenuCell implements Cloneable {
         result += ((getIcon() == null) ? 0 : Integer.rotateLeft(getIcon().hashCode(), 2));
         result += ((getVoiceCommands() == null) ? 0 : Integer.rotateLeft(getVoiceCommands().hashCode(), 3));
         result += ((getSubCells() == null) ? 0 : Integer.rotateLeft(1, 4));
+        result += ((getSecondaryText() == null) ? 0 : Integer.rotateLeft(getSecondaryText().hashCode(), 1));
+        result += ((getTertiaryText() == null) ? 0 : Integer.rotateLeft(getTertiaryText().hashCode(), 1));
+        result += ((getSecondaryArtwork() == null) ? 0 : Integer.rotateLeft(getSecondaryArtwork().hashCode(), 2));
         return result;
     }
 
@@ -336,6 +452,9 @@ public class MenuCell implements Cloneable {
             MenuCell clone = (MenuCell) super.clone();
             if (this.icon != null) {
                 clone.icon = this.icon.clone();
+            }
+            if (this.secondaryArtwork != null) {
+                clone.secondaryArtwork = this.secondaryArtwork.clone();
             }
             if (this.subCells != null) {
                 ArrayList<MenuCell> cloneSubCells = new ArrayList<>();
