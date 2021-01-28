@@ -101,38 +101,12 @@ class MenuReplaceDynamicOperation extends Task {
         // Run the lists through the new algorithm
         DynamicMenuUpdateRunScore rootScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(currentMenu, updatedMenu);
         if (rootScore == null) {
-            // both new and menu cells are empty. Nothing needs to be done
+            // Both old and new menu cells are empty. Nothing needs to be done.
             finishOperation(true);
             return;
         }
 
-        DebugTool.logInfo(TAG, "Dynamically Updating Menu");
-        if (updatedMenu.isEmpty() && (currentMenu != null && !currentMenu.isEmpty())) {
-            // the dev wants to clear the menu. We have old cells and an empty array of new ones.
-            deleteMenuWhenNewCellsEmpty(listener);
-        } else {
-            // lets dynamically update the root menu
-            dynamicallyUpdateRootMenu(rootScore, listener);
-        }
-    }
-
-    private void deleteMenuWhenNewCellsEmpty(final CompletionListener listener) {
-        if (getState() == Task.CANCELED) {
-            return;
-        }
-
-        sendDeleteCurrentMenu(currentMenu, new CompletionListener() {
-            @Override
-            public void onComplete(boolean success) {
-                if (!success) {
-                    DebugTool.logError(TAG, "Error Sending Current Menu");
-                } else {
-                    DebugTool.logInfo(TAG, "Successfully Cleared Menu");
-                }
-                currentMenu = null;
-                listener.onComplete(success);
-            }
-        });
+        dynamicallyUpdateRootMenu(rootScore, listener);
     }
 
     private List<MenuCell> filterMenuCellsWithStatusList(List<MenuCell> menuCells, List<MenuCellState> statusList, MenuCellState menuCellState){
@@ -163,13 +137,7 @@ class MenuReplaceDynamicOperation extends Task {
         // this is needed for the onCommands to still work
         transferIdsToKeptCells(newKeeps);
 
-        if (!cellsToAdd.isEmpty()) {
-            DebugTool.logInfo(TAG, "Sending root menu updates");
-            sendDynamicRootMenuRPCs(cellsToDelete, cellsToAdd, oldKeeps, newKeeps, listener);
-        } else {
-            DebugTool.logInfo(TAG, "All root menu items are kept. Check the sub menus");
-            runSubMenuCompareAlgorithm(oldKeeps, newKeeps, listener);
-        }
+        sendDynamicRootMenuRPCs(cellsToDelete, cellsToAdd, oldKeeps, newKeeps, listener);
     }
 
     private void sendNewMenuCells(final List<MenuCell> newMenuCells, final List<MenuCell> oldKeeps, final List<MenuCell> newKeeps, final CompletionListener listener) {
