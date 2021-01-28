@@ -8,13 +8,9 @@ import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.MenuCellState;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
-import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.util.DebugTool;
-
-import org.json.JSONException;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -26,6 +22,7 @@ import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.comm
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.deleteCommandsForCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.findAllArtworksToBeUploadedFromCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.mainMenuCommandsForCells;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.sendRPCs;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.subMenuCommandsForCells;
 
 /**
@@ -164,23 +161,11 @@ class MenuReplaceDynamicOperation extends Task {
 
         List<RPCRequest> deleteMenuCommands = deleteCommandsForCells(deleteMenuCells);
 
-        internalInterface.get().sendRPCs(deleteMenuCommands, new OnMultipleRequestListener() {
+        sendRPCs(deleteMenuCommands, internalInterface.get(), new CompletionListener() {
             @Override
-            public void onUpdate(int remainingRequests) {
-
-            }
-
-            @Override
-            public void onFinished() {
+            public void onComplete(boolean success) {
                 DebugTool.logInfo(TAG, "Successfully deleted cells");
-                if (listener != null) {
-                    listener.onComplete(true);
-                }
-            }
-
-            @Override
-            public void onResponse(int correlationId, RPCResponse response) {
-
+                listener.onComplete(success);
             }
         });
     }
@@ -201,31 +186,16 @@ class MenuReplaceDynamicOperation extends Task {
         List<RPCRequest> mainMenuCommands = mainMenuCommandsForCells(newMenuCells, fileManager.get(), windowCapability, updatedMenu, defaultSubmenuLayout);
         final List<RPCRequest> subMenuCommands = subMenuCommandsForCells(newMenuCells, fileManager.get(), windowCapability, defaultSubmenuLayout);
 
-        internalInterface.get().sendRPCs(mainMenuCommands, new OnMultipleRequestListener() {
+        sendRPCs(mainMenuCommands, internalInterface.get(), new CompletionListener() {
             @Override
-            public void onUpdate(int remainingRequests) {
-            }
-
-            @Override
-            public void onFinished() {
-                if (subMenuCommands.isEmpty()) {
-                    listener.onComplete(true);
-                } else {
-                    sendNewSubMenuCells(subMenuCommands, oldKeeps, newKeeps, listener);
-                }
-            }
-
-            @Override
-            public void onResponse(int correlationId, RPCResponse response) {
-                if (response.getSuccess()) {
-                    try {
-                        DebugTool.logInfo(TAG, "Main Menu response: " + response.serializeJSON().toString());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+            public void onComplete(boolean success) {
+                sendRPCs(subMenuCommands, internalInterface.get(), new CompletionListener() {
+                    @Override
+                    public void onComplete(boolean success) {
+                        DebugTool.logInfo(TAG, "Finished Updating Menu");
+                        listener.onComplete(success);
                     }
-                } else {
-                    DebugTool.logError(TAG, "Result: " + response.getResultCode() + " Info: " + response.getInfo());
-                }
+                });
             }
         });
     }
@@ -240,37 +210,6 @@ class MenuReplaceDynamicOperation extends Task {
                 listener.onComplete(true);
             }
         }
-    }
-
-    private void sendNewSubMenuCells(List<RPCRequest> commands, final List<MenuCell> oldKeeps, final List<MenuCell> newKeeps, final CompletionListener listener) {
-        if (getState() == Task.CANCELED) {
-            return;
-        }
-
-        internalInterface.get().sendRPCs(commands, new OnMultipleRequestListener() {
-            @Override
-            public void onUpdate(int remainingRequests) {
-            }
-
-            @Override
-            public void onFinished() {
-                DebugTool.logInfo(TAG, "Finished Updating Menu");
-                listener.onComplete(true);
-            }
-
-            @Override
-            public void onResponse(int correlationId, RPCResponse response) {
-                if (response.getSuccess()) {
-                    try {
-                        DebugTool.logInfo(TAG, "Sub Menu response: " + response.serializeJSON().toString());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    DebugTool.logError(TAG, "Failed to send sub menu commands: " + response.getInfo());
-                }
-            }
-        });
     }
 
     private void createAndSendDynamicSubMenuRPCs(List<MenuCell> newMenu, final List<MenuCell> adds, final CompletionListener listener) {
@@ -289,30 +228,10 @@ class MenuReplaceDynamicOperation extends Task {
 
         List<RPCRequest> mainMenuCommands = createCommandsForDynamicSubCells(newMenu, adds);
 
-        internalInterface.get().sendRPCs(mainMenuCommands, new OnMultipleRequestListener() {
+        sendRPCs(mainMenuCommands, internalInterface.get(), new CompletionListener() {
             @Override
-            public void onUpdate(int remainingRequests) {
-                // nothing here
-            }
-
-            @Override
-            public void onFinished() {
-                if (listener != null) {
-                    listener.onComplete(true);
-                }
-            }
-
-            @Override
-            public void onResponse(int correlationId, RPCResponse response) {
-                if (response.getSuccess()) {
-                    try {
-                        DebugTool.logInfo(TAG, "Dynamic Sub Menu response: " + response.serializeJSON().toString());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    DebugTool.logError(TAG, "Result: " + response.getResultCode() + " Info: " + response.getInfo());
-                }
+            public void onComplete(boolean success) {
+                listener.onComplete(success);
             }
         });
     }

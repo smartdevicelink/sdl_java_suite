@@ -7,13 +7,9 @@ import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
-import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.util.DebugTool;
-
-import org.json.JSONException;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -21,7 +17,11 @@ import java.util.Map;
 
 import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.lastMenuId;
 import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdNotFound;
-import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.*;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.deleteCommandsForCells;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.findAllArtworksToBeUploadedFromCells;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.mainMenuCommandsForCells;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.sendRPCs;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.subMenuCommandsForCells;
 
 /**
  * Created by Bilal Alsharifi on 1/20/21.
@@ -128,23 +128,11 @@ class MenuReplaceStaticOperation extends Task {
             return;
         }
 
-        internalInterface.get().sendRPCs(deleteMenuCommands, new OnMultipleRequestListener() {
+        sendRPCs(deleteMenuCommands, internalInterface.get(), new CompletionListener() {
             @Override
-            public void onUpdate(int remainingRequests) {
-
-            }
-
-            @Override
-            public void onFinished() {
+            public void onComplete(boolean success) {
                 DebugTool.logInfo(TAG, "Successfully deleted cells");
-                if (listener != null) {
-                    listener.onComplete(true);
-                }
-            }
-
-            @Override
-            public void onResponse(int correlationId, RPCResponse response) {
-
+                listener.onComplete(success);
             }
         });
     }
@@ -164,70 +152,18 @@ class MenuReplaceStaticOperation extends Task {
         List<RPCRequest> mainMenuCommands = mainMenuCommandsForCells(newMenuCells, fileManager.get(), windowCapability, updatedMenu, defaultSubmenuLayout);
         final List<RPCRequest> subMenuCommands = subMenuCommandsForCells(newMenuCells, fileManager.get(), windowCapability, defaultSubmenuLayout);
 
-        internalInterface.get().sendRPCs(mainMenuCommands, new OnMultipleRequestListener() {
+        sendRPCs(mainMenuCommands, internalInterface.get(), new CompletionListener() {
             @Override
-            public void onUpdate(int remainingRequests) {
-            }
+            public void onComplete(boolean success) {
+                DebugTool.logInfo(TAG, "Finished sending main menu commands. Sending sub menu commands.");
 
-            @Override
-            public void onFinished() {
-                if (!subMenuCommands.isEmpty()) {
-                    DebugTool.logInfo(TAG, "Finished sending main menu commands. Sending sub menu commands.");
-                    sendNewSubMenuCells(subMenuCommands, listener);
-                } else {
-                    DebugTool.logInfo(TAG, "Finished sending main menu commands.");
-
-                    if (listener != null) {
-                        listener.onComplete(true);
+                sendRPCs(subMenuCommands, internalInterface.get(), new CompletionListener() {
+                    @Override
+                    public void onComplete(boolean success) {
+                        DebugTool.logInfo(TAG, "Finished Updating Menu");
+                        listener.onComplete(success);
                     }
-                }
-            }
-
-            @Override
-            public void onResponse(int correlationId, RPCResponse response) {
-                if (response.getSuccess()) {
-                    try {
-                        DebugTool.logInfo(TAG, "Main Menu response: " + response.serializeJSON().toString());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    DebugTool.logError(TAG, "Result: " + response.getResultCode() + " Info: " + response.getInfo());
-                }
-            }
-        });
-    }
-
-    private void sendNewSubMenuCells(List<RPCRequest> commands, final CompletionListener listener) {
-        if (getState() == Task.CANCELED) {
-            return;
-        }
-
-        internalInterface.get().sendRPCs(commands, new OnMultipleRequestListener() {
-            @Override
-            public void onUpdate(int remainingRequests) {
-            }
-
-            @Override
-            public void onFinished() {
-                DebugTool.logInfo(TAG, "Finished Updating Menu");
-
-                if (listener != null) {
-                    listener.onComplete(true);
-                }
-            }
-
-            @Override
-            public void onResponse(int correlationId, RPCResponse response) {
-                if (response.getSuccess()) {
-                    try {
-                        DebugTool.logInfo(TAG, "Sub Menu response: " + response.serializeJSON().toString());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    DebugTool.logError(TAG, "Failed to send sub menu commands: " + response.getInfo());
-                }
+                });
             }
         });
     }
