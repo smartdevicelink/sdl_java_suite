@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Livio, Inc.
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@
  * disclaimer in the documentation and/or other materials provided with the
  * distribution.
  *
- * Neither the name of the Livio Inc. nor the names of its contributors
- * may be used to endorse or promote products derived from this software
- * without specific prior written permission.
+ * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -29,33 +29,28 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.smartdevicelink.managers.screen;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RestrictTo;
-
-import com.smartdevicelink.managers.ISdl;
-import com.smartdevicelink.managers.file.FileManager;
-import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
-import com.smartdevicelink.proxy.rpc.enums.FileType;
+package com.smartdevicelink.proxy.rpc.enums;
 
 /**
- * <strong>TextAndGraphicManager</strong> <br>
- * <p>
- * Note: This class must be accessed through the SdlManager. Do not instantiate it by itself. <br>
+ * @since SmartDeviceLink 7.1.0
  */
-@RestrictTo(RestrictTo.Scope.LIBRARY)
-class TextAndGraphicManager extends BaseTextAndGraphicManager {
+public enum DoorStatusType {
+    CLOSED,
+    LOCKED,
+    AJAR,
+    REMOVED;
 
-    TextAndGraphicManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager, @NonNull SoftButtonManager softButtonManager) {
-        super(internalInterface, fileManager, softButtonManager);
-    }
-
-    @Override
-    SdlArtwork getBlankArtwork() {
-        if (blankArtwork == null) {
-            blankArtwork = new SdlArtwork("blankArtwork", FileType.GRAPHIC_PNG, new byte[50], true);
+    /**
+     * Convert String to DoorStatusType
+     *
+     * @param value String
+     * @return DoorStatusType
+     */
+    public static DoorStatusType valueForString(String value) {
+        try {
+            return valueOf(value);
+        } catch (Exception e) {
+            return null;
         }
-        return blankArtwork;
     }
 }

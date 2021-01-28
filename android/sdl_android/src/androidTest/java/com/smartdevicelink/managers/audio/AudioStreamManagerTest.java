@@ -9,6 +9,7 @@ import android.util.Log;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.audio.AudioStreamManager.SampleType;
@@ -50,6 +51,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class AudioStreamManagerTest extends TestCase {
     public static final String TAG = AudioStreamManagerTest.class.getSimpleName();
@@ -107,7 +109,7 @@ public class AudioStreamManagerTest extends TestCase {
             }
         };
 
-        ISdl internalInterface = mock(ISdl.class);
+        ISdl internalInterface = createISdlMock();
         SystemCapabilityManager systemCapabilityManager = mock(SystemCapabilityManager.class);
         doReturn(systemCapabilityManager).when(internalInterface).getSystemCapabilityManager();
         AudioPassThruCapabilities audioCapabilities = new AudioPassThruCapabilities(SamplingRate._16KHZ, BitsPerSample._16_BIT, AudioType.PCM);
@@ -299,7 +301,7 @@ public class AudioStreamManagerTest extends TestCase {
             }
         };
 
-        ISdl internalInterface = mock(ISdl.class);
+        ISdl internalInterface = createISdlMock();
         SystemCapabilityManager systemCapabilityManager = mock(SystemCapabilityManager.class);
         doReturn(systemCapabilityManager).when(internalInterface).getSystemCapabilityManager();
         doReturn(true).when(internalInterface).isConnected();
@@ -530,7 +532,7 @@ public class AudioStreamManagerTest extends TestCase {
             }
         };
 
-        ISdl internalInterface = mock(ISdl.class);
+        ISdl internalInterface = createISdlMock();
         SystemCapabilityManager systemCapabilityManager = mock(SystemCapabilityManager.class);
         doReturn(systemCapabilityManager).when(internalInterface).getSystemCapabilityManager();
         doReturn(true).when(internalInterface).isConnected();
@@ -609,7 +611,7 @@ public class AudioStreamManagerTest extends TestCase {
             }
         };
 
-        ISdl internalInterface = mock(ISdl.class);
+        ISdl internalInterface = createISdlMock();
         SystemCapabilityManager systemCapabilityManager = mock(SystemCapabilityManager.class);
         doReturn(systemCapabilityManager).when(internalInterface).getSystemCapabilityManager();
         doReturn(true).when(internalInterface).isConnected();
@@ -746,5 +748,14 @@ public class AudioStreamManagerTest extends TestCase {
         stream.write((int) ((audiolength >> 8) & 0xff));
         stream.write((int) ((audiolength >> 16) & 0xff));
         stream.write((int) ((audiolength >> 24) & 0xff));
+    }
+
+    private ISdl createISdlMock() {
+        ISdl internalInterface = mock(ISdl.class);
+        Taskmaster taskmaster = new Taskmaster.Builder().build();
+        taskmaster.start();
+
+        when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
+        return internalInterface;
     }
 }

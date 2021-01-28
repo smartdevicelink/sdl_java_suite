@@ -123,6 +123,9 @@ public class VideoStreamingParameters {
                 this.interval = params.interval;
             }
             if (params.resolution != null) {
+                if (this.resolution == null) {
+                    this.resolution = new ImageResolution(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+                }
                 if (params.resolution.getResolutionHeight() != null && params.resolution.getResolutionHeight() > 0) {
                     this.resolution.setResolutionHeight(params.resolution.getResolutionHeight());
                 }
@@ -163,6 +166,10 @@ public class VideoStreamingParameters {
             this.additionalCapabilities = capability.getAdditionalVideoStreamingCapabilities();
         }
         if (resolution != null) {
+
+            if (this.resolution == null) {
+                this.resolution = new ImageResolution(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+            }
 
             if (vehicleMake != null) {
                 if ((vehicleMake.contains("Ford") || vehicleMake.contains("Lincoln")) && ((resolution.getResolutionHeight() != null && resolution.getResolutionHeight() > 800) || (resolution.getResolutionWidth() != null && resolution.getResolutionWidth() > 800))) {

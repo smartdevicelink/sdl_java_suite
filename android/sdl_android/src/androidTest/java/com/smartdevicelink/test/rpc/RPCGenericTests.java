@@ -5,6 +5,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.xmlpull.v1.XmlPullParser;
@@ -45,6 +46,7 @@ import static junit.framework.TestCase.fail;
  *     - The enums have a value for every element in the spec and the names and deprecation status match the spec
  */
 @RunWith(AndroidJUnit4.class)
+@Ignore //Remove this annotation before running these tests
 public class RPCGenericTests {
 
     private final String XML_FILE_NAME = "MOBILE_API.xml";
