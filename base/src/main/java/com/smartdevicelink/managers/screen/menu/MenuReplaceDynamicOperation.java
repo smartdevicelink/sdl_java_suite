@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.lastMenuId;
-import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdNotFound;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.commandForMenuCell;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.deleteCommandsForCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.findAllArtworksToBeUploadedFromCells;
@@ -102,19 +101,18 @@ class MenuReplaceDynamicOperation extends Task {
         // Run the lists through the new algorithm
         DynamicMenuUpdateRunScore rootScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(currentMenu, updatedMenu);
         if (rootScore == null) {
-            // Send initial menu without dynamic updates because oldMenuCells is null
-            DebugTool.logInfo(TAG, "Creating initial Menu");
-            updateIdsOnMenuCells(updatedMenu, parentIdNotFound);
-            createAndSendEntireMenu(listener);
+            // both new and menu cells are empty. Nothing needs to be done
+            finishOperation(true);
+            return;
+        }
+
+        DebugTool.logInfo(TAG, "Dynamically Updating Menu");
+        if (updatedMenu.isEmpty() && (currentMenu != null && !currentMenu.isEmpty())) {
+            // the dev wants to clear the menu. We have old cells and an empty array of new ones.
+            deleteMenuWhenNewCellsEmpty(listener);
         } else {
-            DebugTool.logInfo(TAG, "Dynamically Updating Menu");
-            if (updatedMenu.isEmpty() && (currentMenu != null && !currentMenu.isEmpty())) {
-                // the dev wants to clear the menu. We have old cells and an empty array of new ones.
-                deleteMenuWhenNewCellsEmpty(listener);
-            } else {
-                // lets dynamically update the root menu
-                dynamicallyUpdateRootMenu(rootScore, listener);
-            }
+            // lets dynamically update the root menu
+            dynamicallyUpdateRootMenu(rootScore, listener);
         }
     }
 
@@ -172,28 +170,6 @@ class MenuReplaceDynamicOperation extends Task {
             DebugTool.logInfo(TAG, "All root menu items are kept. Check the sub menus");
             runSubMenuCompareAlgorithm(oldKeeps, newKeeps, listener);
         }
-    }
-
-    private void createAndSendEntireMenu(final CompletionListener listener) {
-        if (getState() == Task.CANCELED) {
-            return;
-        }
-
-        deleteRootMenu(new CompletionListener() {
-            @Override
-            public void onComplete(boolean success) {
-                sendNewMenuCells(updatedMenu, null, null, new CompletionListener() {
-                    @Override
-                    public void onComplete(boolean success) {
-                        if (!success) {
-                            DebugTool.logError(TAG, "Error Sending Current Menu");
-                        }
-
-                        listener.onComplete(success);
-                    }
-                });
-            }
-        });
     }
 
     private void sendNewMenuCells(final List<MenuCell> newMenuCells, final List<MenuCell> oldKeeps, final List<MenuCell> newKeeps, final CompletionListener listener) {
@@ -330,18 +306,6 @@ class MenuReplaceDynamicOperation extends Task {
                 }
             }
         });
-    }
-
-    private void deleteRootMenu(final CompletionListener listener) {
-        if (currentMenu == null || currentMenu.isEmpty()) {
-            if (listener != null) {
-                // technically this method is successful if there's nothing to delete
-                DebugTool.logInfo(TAG, "No old cells to delete, returning");
-                listener.onComplete(true);
-            }
-        } else {
-            sendDeleteCurrentMenu(currentMenu, listener);
-        }
     }
 
     private void sendDeleteCurrentMenu(List<MenuCell> deleteMenuCells, final CompletionListener listener) {
