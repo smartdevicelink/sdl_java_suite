@@ -111,12 +111,22 @@ class MenuReplaceDynamicOperation extends Task {
                     } else {
                         DebugTool.logInfo(TAG, "Menu Artworks Uploaded");
                     }
-                    updateMenuWithCellsToDelete(cellsToDelete, cellsToAdd, oldKeeps, newKeeps, listener);
+                    updateMenuWithCellsToDelete(cellsToDelete, cellsToAdd, oldKeeps, newKeeps, new CompletionListener() {
+                        @Override
+                        public void onComplete(boolean success) {
+                            startSubMenuUpdatesWithOldKeptCells(oldKeeps, newKeeps, 0, listener);
+                        }
+                    });
                 }
             });
         } else {
             // Cells have no artwork to load
-            updateMenuWithCellsToDelete(cellsToDelete, cellsToAdd, oldKeeps, newKeeps, listener);
+            updateMenuWithCellsToDelete(cellsToDelete, cellsToAdd, oldKeeps, newKeeps, new CompletionListener() {
+                @Override
+                public void onComplete(boolean success) {
+                    startSubMenuUpdatesWithOldKeptCells(oldKeeps, newKeeps, 0, listener);
+                }
+            });
         }
     }
 
@@ -198,19 +208,10 @@ class MenuReplaceDynamicOperation extends Task {
 
             @Override
             public void onFinished() {
-                if (!subMenuCommands.isEmpty()) {
-                    DebugTool.logInfo(TAG, "Finished sending main menu commands. Sending sub menu commands.");
-                    sendNewSubMenuCells(subMenuCommands, oldKeeps, newKeeps, listener);
+                if (subMenuCommands.isEmpty()) {
+                    listener.onComplete(true);
                 } else {
-                    if (newKeeps != null && !newKeeps.isEmpty()) {
-                        runSubMenuCompareAlgorithm(oldKeeps, newKeeps, listener);
-                    } else {
-                        DebugTool.logInfo(TAG, "Finished sending main menu commands.");
-
-                        if (listener != null) {
-                            listener.onComplete(true);
-                        }
-                    }
+                    sendNewSubMenuCells(subMenuCommands, oldKeeps, newKeeps, listener);
                 }
             }
 
@@ -227,6 +228,18 @@ class MenuReplaceDynamicOperation extends Task {
                 }
             }
         });
+    }
+
+    private void startSubMenuUpdatesWithOldKeptCells (List<MenuCell> oldKeeps, List<MenuCell> newKeeps, int startIndex, CompletionListener listener){
+        if (newKeeps != null && !newKeeps.isEmpty()) {
+            runSubMenuCompareAlgorithm(oldKeeps, newKeeps, listener);
+        } else {
+            DebugTool.logInfo(TAG, "Finished sending main menu commands.");
+
+            if (listener != null) {
+                listener.onComplete(true);
+            }
+        }
     }
 
     private void sendNewSubMenuCells(List<RPCRequest> commands, final List<MenuCell> oldKeeps, final List<MenuCell> newKeeps, final CompletionListener listener) {
