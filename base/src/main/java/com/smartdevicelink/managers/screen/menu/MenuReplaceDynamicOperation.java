@@ -40,8 +40,6 @@ class MenuReplaceDynamicOperation extends Task {
     private final WindowCapability windowCapability;
     private List<MenuCell> currentMenu;
     private final List<MenuCell> updatedMenu;
-    private List<MenuCell> oldKeeps;
-    private List<MenuCell> newKeeps;
     private final MenuManagerCompletionListener operationCompletionListener;
     private MenuConfiguration menuConfiguration;
 
@@ -158,8 +156,8 @@ class MenuReplaceDynamicOperation extends Task {
         List<MenuCell> cellsToAdd = filterMenuCellsWithStatusList(updatedMenu, addMenuStatus, MenuCellState.ADD);
 
         // These arrays should ONLY contain KEEPS. These will be used for SubMenu compares
-        oldKeeps = filterMenuCellsWithStatusList(currentMenu, deleteMenuStatus, MenuCellState.KEEP);
-        newKeeps = filterMenuCellsWithStatusList(updatedMenu, addMenuStatus, MenuCellState.KEEP);
+        List<MenuCell> oldKeeps = filterMenuCellsWithStatusList(currentMenu, deleteMenuStatus, MenuCellState.KEEP);
+        List<MenuCell> newKeeps = filterMenuCellsWithStatusList(updatedMenu, addMenuStatus, MenuCellState.KEEP);
 
         updateIdsOnDynamicCells(cellsToAdd);
         
@@ -169,10 +167,10 @@ class MenuReplaceDynamicOperation extends Task {
 
         if (!cellsToAdd.isEmpty()) {
             DebugTool.logInfo(TAG, "Sending root menu updates");
-            sendDynamicRootMenuRPCs(cellsToDelete, cellsToAdd, listener);
+            sendDynamicRootMenuRPCs(cellsToDelete, cellsToAdd, oldKeeps, newKeeps, listener);
         } else {
             DebugTool.logInfo(TAG, "All root menu items are kept. Check the sub menus");
-            runSubMenuCompareAlgorithm(listener);
+            runSubMenuCompareAlgorithm(oldKeeps, newKeeps, listener);
         }
     }
 
@@ -184,7 +182,7 @@ class MenuReplaceDynamicOperation extends Task {
         deleteRootMenu(new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
-                sendNewMenuCells(updatedMenu, new CompletionListener() {
+                sendNewMenuCells(updatedMenu, null, null, new CompletionListener() {
                     @Override
                     public void onComplete(boolean success) {
                         if (!success) {
@@ -198,7 +196,7 @@ class MenuReplaceDynamicOperation extends Task {
         });
     }
 
-    private void sendNewMenuCells(final List<MenuCell> newMenuCells, final CompletionListener listener) {
+    private void sendNewMenuCells(final List<MenuCell> newMenuCells, final List<MenuCell> oldKeeps, final List<MenuCell> newKeeps, final CompletionListener listener) {
         if (getState() == Task.CANCELED) {
             return;
         }
@@ -223,10 +221,10 @@ class MenuReplaceDynamicOperation extends Task {
             public void onFinished() {
                 if (!subMenuCommands.isEmpty()) {
                     DebugTool.logInfo(TAG, "Finished sending main menu commands. Sending sub menu commands.");
-                    sendNewSubMenuCells(subMenuCommands, listener);
+                    sendNewSubMenuCells(subMenuCommands, oldKeeps, newKeeps, listener);
                 } else {
                     if (newKeeps != null && !newKeeps.isEmpty()) {
-                        runSubMenuCompareAlgorithm(listener);
+                        runSubMenuCompareAlgorithm(oldKeeps, newKeeps, listener);
                     } else {
                         DebugTool.logInfo(TAG, "Finished sending main menu commands.");
 
@@ -252,7 +250,7 @@ class MenuReplaceDynamicOperation extends Task {
         });
     }
 
-    private void sendNewSubMenuCells(List<RPCRequest> commands, final CompletionListener listener) {
+    private void sendNewSubMenuCells(List<RPCRequest> commands, final List<MenuCell> oldKeeps, final List<MenuCell> newKeeps, final CompletionListener listener) {
         if (getState() == Task.CANCELED) {
             return;
         }
@@ -265,7 +263,7 @@ class MenuReplaceDynamicOperation extends Task {
             @Override
             public void onFinished() {
                 if (newKeeps != null && !newKeeps.isEmpty()) {
-                    runSubMenuCompareAlgorithm(listener);
+                    runSubMenuCompareAlgorithm(oldKeeps, newKeeps, listener);
                 } else {
                     DebugTool.logInfo(TAG, "Finished Updating Menu");
 
@@ -394,7 +392,7 @@ class MenuReplaceDynamicOperation extends Task {
         return builtCommands;
     }
 
-    private void sendDynamicRootMenuRPCs(List<MenuCell> deleteMenuCells, final List<MenuCell> updatedCells, final CompletionListener listener) {
+    private void sendDynamicRootMenuRPCs(List<MenuCell> deleteMenuCells, final List<MenuCell> updatedCells, final List<MenuCell> oldKeeps, final List<MenuCell> newKeeps, final CompletionListener listener) {
         if (getState() == Task.CANCELED) {
             return;
         }
@@ -402,7 +400,7 @@ class MenuReplaceDynamicOperation extends Task {
         sendDeleteCurrentMenu(deleteMenuCells, new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
-                sendNewMenuCells(updatedCells, new CompletionListener() {
+                sendNewMenuCells(updatedCells, oldKeeps, newKeeps, new CompletionListener() {
                     @Override
                     public void onComplete(boolean success) {
                         if (!success) {
@@ -416,7 +414,7 @@ class MenuReplaceDynamicOperation extends Task {
         });
     }
 
-    private void runSubMenuCompareAlgorithm(CompletionListener listener) {
+    private void runSubMenuCompareAlgorithm(List<MenuCell> oldKeeps, List<MenuCell> newKeeps, CompletionListener listener) {
         // any cells that were re-added have their sub-cells added with them
         // at this point all we care about are the cells that were deemed equal and kept.
         if (newKeeps == null || newKeeps.isEmpty()) {
