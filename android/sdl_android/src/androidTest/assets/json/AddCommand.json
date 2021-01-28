@@ -17,6 +17,10 @@
         "parentID": 194,
         "position": 1,
         "menuName": "My Command"
+      },
+      "secondaryImage": {
+        "value": "cmdImage1.png",
+        "imageType": "DYNAMIC"
       }
     }
   },
