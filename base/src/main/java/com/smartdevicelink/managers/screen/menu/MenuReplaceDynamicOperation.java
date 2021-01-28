@@ -254,15 +254,8 @@ class MenuReplaceDynamicOperation extends Task {
 
             @Override
             public void onFinished() {
-                if (newKeeps != null && !newKeeps.isEmpty()) {
-                    runSubMenuCompareAlgorithm(oldKeeps, newKeeps, listener);
-                } else {
-                    DebugTool.logInfo(TAG, "Finished Updating Menu");
-
-                    if (listener != null) {
-                        listener.onComplete(true);
-                    }
-                }
+                DebugTool.logInfo(TAG, "Finished Updating Menu");
+                listener.onComplete(true);
             }
 
             @Override
