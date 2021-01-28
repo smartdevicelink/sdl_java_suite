@@ -76,15 +76,14 @@ class MenuReplaceDynamicOperation extends Task {
             return;
         }
 
-        // Run the lists through the new algorithm
         DynamicMenuUpdateRunScore runScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(currentMenu, updatedMenu);
+
+        // If both old and new menu cells are empty. Then nothing needs to be done.
         if (runScore == null) {
-            // Both old and new menu cells are empty. Nothing needs to be done.
             finishOperation(true);
             return;
         }
 
-        // We need to run through the keeps and see if they have subCells, as they also need to be run through the compare function.
         List<MenuCellState> deleteMenuStatus = runScore.getOldStatus();
         List<MenuCellState> addMenuStatus = runScore.getUpdatedStatus();
 
@@ -112,13 +111,68 @@ class MenuReplaceDynamicOperation extends Task {
                     } else {
                         DebugTool.logInfo(TAG, "Menu Artworks Uploaded");
                     }
-                    sendDynamicRootMenuRPCs(cellsToDelete, cellsToAdd, oldKeeps, newKeeps, listener);
+                    updateMenuWithCellsToDelete(cellsToDelete, cellsToAdd, oldKeeps, newKeeps, listener);
                 }
             });
         } else {
-            // No Artworks to be uploaded, send off
-            sendDynamicRootMenuRPCs(cellsToDelete, cellsToAdd, oldKeeps, newKeeps, listener);
+            // Cells have no artwork to load
+            updateMenuWithCellsToDelete(cellsToDelete, cellsToAdd, oldKeeps, newKeeps, listener);
         }
+    }
+
+    private void updateMenuWithCellsToDelete(List<MenuCell> deleteMenuCells, final List<MenuCell> updatedCells, final List<MenuCell> oldKeeps, final List<MenuCell> newKeeps, final CompletionListener listener) {
+        if (getState() == Task.CANCELED) {
+            return;
+        }
+
+        sendDeleteCurrentMenu(deleteMenuCells, new CompletionListener() {
+            @Override
+            public void onComplete(boolean success) {
+                sendNewMenuCells(updatedCells, oldKeeps, newKeeps, new CompletionListener() {
+                    @Override
+                    public void onComplete(boolean success) {
+                        if (!success) {
+                            DebugTool.logError(TAG, "Error Sending Current Menu");
+                        }
+
+                        listener.onComplete(success);
+                    }
+                });
+            }
+        });
+    }
+
+    private void sendDeleteCurrentMenu(List<MenuCell> deleteMenuCells, final CompletionListener listener) {
+        if (getState() == Task.CANCELED) {
+            return;
+        }
+
+        if (deleteMenuCells.isEmpty()) {
+            listener.onComplete(true);
+            return;
+        }
+
+        List<RPCRequest> deleteMenuCommands = deleteCommandsForCells(deleteMenuCells);
+
+        internalInterface.get().sendRPCs(deleteMenuCommands, new OnMultipleRequestListener() {
+            @Override
+            public void onUpdate(int remainingRequests) {
+
+            }
+
+            @Override
+            public void onFinished() {
+                DebugTool.logInfo(TAG, "Successfully deleted cells");
+                if (listener != null) {
+                    listener.onComplete(true);
+                }
+            }
+
+            @Override
+            public void onResponse(int correlationId, RPCResponse response) {
+
+            }
+        });
     }
 
     private void sendNewMenuCells(final List<MenuCell> newMenuCells, final List<MenuCell> oldKeeps, final List<MenuCell> newKeeps, final CompletionListener listener) {
@@ -257,39 +311,6 @@ class MenuReplaceDynamicOperation extends Task {
         });
     }
 
-    private void sendDeleteCurrentMenu(List<MenuCell> deleteMenuCells, final CompletionListener listener) {
-        if (getState() == Task.CANCELED) {
-            return;
-        }
-
-        if (deleteMenuCells.isEmpty()) {
-            listener.onComplete(true);
-            return;
-        }
-
-        List<RPCRequest> deleteMenuCommands = deleteCommandsForCells(deleteMenuCells);
-
-        internalInterface.get().sendRPCs(deleteMenuCommands, new OnMultipleRequestListener() {
-            @Override
-            public void onUpdate(int remainingRequests) {
-
-            }
-
-            @Override
-            public void onFinished() {
-                DebugTool.logInfo(TAG, "Successfully deleted cells");
-                if (listener != null) {
-                    listener.onComplete(true);
-                }
-            }
-
-            @Override
-            public void onResponse(int correlationId, RPCResponse response) {
-
-            }
-        });
-    }
-
     private List<RPCRequest> createCommandsForDynamicSubCells(List<MenuCell> oldMenuCells, List<MenuCell> cells) {
         List<RPCRequest> builtCommands = new ArrayList<>();
         for (int z = 0; z < oldMenuCells.size(); z++) {
@@ -303,28 +324,6 @@ class MenuReplaceDynamicOperation extends Task {
             }
         }
         return builtCommands;
-    }
-
-    private void sendDynamicRootMenuRPCs(List<MenuCell> deleteMenuCells, final List<MenuCell> updatedCells, final List<MenuCell> oldKeeps, final List<MenuCell> newKeeps, final CompletionListener listener) {
-        if (getState() == Task.CANCELED) {
-            return;
-        }
-
-        sendDeleteCurrentMenu(deleteMenuCells, new CompletionListener() {
-            @Override
-            public void onComplete(boolean success) {
-                sendNewMenuCells(updatedCells, oldKeeps, newKeeps, new CompletionListener() {
-                    @Override
-                    public void onComplete(boolean success) {
-                        if (!success) {
-                            DebugTool.logError(TAG, "Error Sending Current Menu");
-                        }
-
-                        listener.onComplete(success);
-                    }
-                });
-            }
-        });
     }
 
     private void runSubMenuCompareAlgorithm(List<MenuCell> oldKeeps, List<MenuCell> newKeeps, CompletionListener listener) {
