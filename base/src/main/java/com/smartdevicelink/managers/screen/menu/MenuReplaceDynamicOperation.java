@@ -83,30 +83,13 @@ class MenuReplaceDynamicOperation extends Task {
                     } else {
                         DebugTool.logInfo(TAG, "Menu Artworks Uploaded");
                     }
-                    // proceed
-                    updateMenuAndDetermineBestUpdateMethod(listener);
+                    dynamicallyUpdateRootMenu(listener);
                 }
             });
         } else {
             // No Artworks to be uploaded, send off
-            updateMenuAndDetermineBestUpdateMethod(listener);
+            dynamicallyUpdateRootMenu(listener);
         }
-    }
-
-    private void updateMenuAndDetermineBestUpdateMethod(CompletionListener listener) {
-        if (getState() == Task.CANCELED) {
-            return;
-        }
-
-        // Run the lists through the new algorithm
-        DynamicMenuUpdateRunScore rootScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(currentMenu, updatedMenu);
-        if (rootScore == null) {
-            // Both old and new menu cells are empty. Nothing needs to be done.
-            finishOperation(true);
-            return;
-        }
-
-        dynamicallyUpdateRootMenu(rootScore, listener);
     }
 
     private List<MenuCell> filterMenuCellsWithStatusList(List<MenuCell> menuCells, List<MenuCellState> statusList, MenuCellState menuCellState){
@@ -119,10 +102,22 @@ class MenuReplaceDynamicOperation extends Task {
         return filteredCells;
     }
 
-    private void dynamicallyUpdateRootMenu(DynamicMenuUpdateRunScore bestRootScore, CompletionListener listener) {
+    private void dynamicallyUpdateRootMenu(CompletionListener listener) {
+        if (getState() == Task.CANCELED) {
+            return;
+        }
+
+        // Run the lists through the new algorithm
+        DynamicMenuUpdateRunScore rootScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(currentMenu, updatedMenu);
+        if (rootScore == null) {
+            // Both old and new menu cells are empty. Nothing needs to be done.
+            finishOperation(true);
+            return;
+        }
+
         // We need to run through the keeps and see if they have subCells, as they also need to be run through the compare function.
-        List<MenuCellState> deleteMenuStatus = bestRootScore.getOldStatus();
-        List<MenuCellState> addMenuStatus = bestRootScore.getUpdatedStatus();
+        List<MenuCellState> deleteMenuStatus = rootScore.getOldStatus();
+        List<MenuCellState> addMenuStatus = rootScore.getUpdatedStatus();
 
         List<MenuCell> cellsToDelete = filterMenuCellsWithStatusList(currentMenu, deleteMenuStatus, MenuCellState.DELETE);
         List<MenuCell> cellsToAdd = filterMenuCellsWithStatusList(updatedMenu, addMenuStatus, MenuCellState.ADD);
