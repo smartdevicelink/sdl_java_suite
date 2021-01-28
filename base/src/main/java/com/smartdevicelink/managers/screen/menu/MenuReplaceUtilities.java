@@ -23,6 +23,20 @@ import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdN
  * Created by Bilal Alsharifi on 1/25/21.
  */
 class MenuReplaceUtilities {
+    static int commandIdForRPCRequest(RPCRequest request) {
+        int commandId = 0;
+        if (request instanceof AddCommand) {
+            commandId = ((AddCommand) request).getCmdID();
+        } else if (request instanceof AddSubMenu) {
+            commandId = ((AddSubMenu) request).getMenuID();
+        } else if (request instanceof DeleteCommand) {
+            commandId = ((DeleteCommand) request).getCmdID();
+        } else if (request instanceof DeleteSubMenu) {
+            commandId = ((DeleteSubMenu) request).getMenuID();
+        }
+        return commandId;
+    }
+
     static List<RPCRequest> deleteCommandsForCells(List<MenuCell> cells) {
         List<RPCRequest> deletes = new ArrayList<>();
         for (MenuCell cell : cells) {
@@ -148,5 +162,20 @@ class MenuReplaceUtilities {
                 .setPosition(position)
                 .setMenuLayout(submenuLayout)
                 .setMenuIcon(icon);
+    }
+
+    static List<MenuCell> removeMenuCellFromCurrentMainMenuList(List<MenuCell> menuCellList, int commandId) {
+        for (MenuCell menuCell : menuCellList) {
+            if (menuCell.getCellId() == commandId) {
+                menuCellList.remove(menuCell);
+                return menuCellList;
+            } else if (menuCell.getSubCells() != null && !menuCell.getSubCells().isEmpty()) {
+                List<MenuCell> newList = removeMenuCellFromCurrentMainMenuList(menuCell.getSubCells(), commandId);
+                if (newList != null) {
+                    menuCell.setSubCells(newList);
+                }
+            }
+        }
+        return null;
     }
 }

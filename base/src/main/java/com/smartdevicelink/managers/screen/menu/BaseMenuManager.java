@@ -65,7 +65,7 @@ import java.util.List;
 
 abstract class BaseMenuManager extends BaseSubManager {
     private static final String TAG = "BaseMenuManager";
-    private static final int MAX_ID = 2000000000;
+    private static final int MAX_ID = Integer.MAX_VALUE;
     static final int menuCellIdMin = 1;
     static final int parentIdNotFound = MAX_ID;
 

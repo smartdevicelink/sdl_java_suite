@@ -113,6 +113,42 @@ class MenuReplaceStaticOperation extends Task {
         });
     }
 
+    private void sendDeleteCurrentMenu(List<MenuCell> deleteMenuCells, final CompletionListener listener) {
+        if (deleteMenuCells == null || deleteMenuCells.isEmpty()) {
+            // Technically this method is successful if there's nothing to delete
+            DebugTool.logInfo(TAG, "No old cells to delete, returning");
+            listener.onComplete(true);
+            return;
+        }
+        List<RPCRequest> deleteMenuCommands = deleteCommandsForCells(deleteMenuCells);
+
+        if (deleteMenuCommands.isEmpty()) {
+            // Technically this method is successful if there's nothing to delete
+            listener.onComplete(true);
+            return;
+        }
+
+        internalInterface.get().sendRPCs(deleteMenuCommands, new OnMultipleRequestListener() {
+            @Override
+            public void onUpdate(int remainingRequests) {
+
+            }
+
+            @Override
+            public void onFinished() {
+                DebugTool.logInfo(TAG, "Successfully deleted cells");
+                if (listener != null) {
+                    listener.onComplete(true);
+                }
+            }
+
+            @Override
+            public void onResponse(int correlationId, RPCResponse response) {
+
+            }
+        });
+    }
+
     private void sendNewMenuCells(final List<MenuCell> newMenuCells, final CompletionListener listener) {
         if (newMenuCells == null || newMenuCells.isEmpty()) {
             // This can be considered a success if the user was clearing out their menu
@@ -192,42 +228,6 @@ class MenuReplaceStaticOperation extends Task {
                 } else {
                     DebugTool.logError(TAG, "Failed to send sub menu commands: " + response.getInfo());
                 }
-            }
-        });
-    }
-
-    private void sendDeleteCurrentMenu(List<MenuCell> deleteMenuCells, final CompletionListener listener) {
-        if (deleteMenuCells == null || deleteMenuCells.isEmpty()) {
-            // Technically this method is successful if there's nothing to delete
-            DebugTool.logInfo(TAG, "No old cells to delete, returning");
-            listener.onComplete(true);
-            return;
-        }
-        List<RPCRequest> deleteCommands = deleteCommandsForCells(deleteMenuCells);
-
-        if (deleteCommands.isEmpty()) {
-            // Technically this method is successful if there's nothing to delete
-            listener.onComplete(true);
-            return;
-        }
-
-        internalInterface.get().sendRPCs(deleteCommands, new OnMultipleRequestListener() {
-            @Override
-            public void onUpdate(int remainingRequests) {
-
-            }
-
-            @Override
-            public void onFinished() {
-                DebugTool.logInfo(TAG, "Successfully deleted cells");
-                if (listener != null) {
-                    listener.onComplete(true);
-                }
-            }
-
-            @Override
-            public void onResponse(int correlationId, RPCResponse response) {
-
             }
         });
     }
