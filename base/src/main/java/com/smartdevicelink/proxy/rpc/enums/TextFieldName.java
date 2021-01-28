@@ -65,8 +65,11 @@ public enum TextFieldName {
     statusBar,
     /**
      * Text value for MediaClock field; applies to "Show"
+     *
+     * @since SmartDeviceLink 1.0.0
+     * @deprecated in SmartDeviceLink 7.1.0
      */
-
+    @Deprecated
     mediaClock,
     /**
      * The track field of NGN and GEN1.1 MFD displays. This field is only available for media applications; applies to "Show"
