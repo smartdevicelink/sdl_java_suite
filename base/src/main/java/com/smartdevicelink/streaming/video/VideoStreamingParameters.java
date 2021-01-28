@@ -79,18 +79,28 @@ public class VideoStreamingParameters {
         format = new VideoStreamingFormat();
         format.setProtocol(DEFAULT_PROTOCOL);
         format.setCodec(DEFAULT_CODEC);
+        stableFrameRate = true;
     }
 
+    /**
+     * deprecated constructor of VideoStreamingParameters. This constructor will be removed in the future version.
+     * @param displayDensity
+     * @param frameRate
+     * @param bitrate
+     * @param interval
+     * @param resolution
+     * @param format
+     */
     @Deprecated
     public VideoStreamingParameters(int displayDensity, int frameRate, int bitrate, int interval,
                                     ImageResolution resolution, VideoStreamingFormat format) {
-        this.displayDensity = displayDensity;
-        this.frameRate = frameRate;
-        this.bitrate = bitrate;
-        this.interval = interval;
-        this.resolution = resolution;
-        this.format = format;
-        this.stableFrameRate = true;
+	    this.displayDensity = displayDensity;
+	    this.frameRate = frameRate;
+	    this.bitrate = bitrate;
+	    this.interval = interval;
+	    this.resolution = resolution;
+	    this.format = format;
+	    this.stableFrameRate = true;
     }
 
     /**
@@ -104,14 +114,14 @@ public class VideoStreamingParameters {
      * @param stableFrameRate
      */
     public VideoStreamingParameters(int displayDensity, int frameRate, int bitrate, int interval,
-                                    ImageResolution resolution, VideoStreamingFormat format, boolean stableFrameRate){
-	    this.displayDensity = displayDensity;
-	    this.frameRate = frameRate;
-	    this.bitrate = bitrate;
-	    this.interval = interval;
-	    this.resolution = resolution;
-	    this.format = format;
-	    this.stableFrameRate = stableFrameRate;
+                                    ImageResolution resolution, VideoStreamingFormat format, boolean stableFrameRate) {
+        this.displayDensity = displayDensity;
+        this.frameRate = frameRate;
+        this.bitrate = bitrate;
+        this.interval = interval;
+        this.resolution = resolution;
+        this.format = format;
+        this.stableFrameRate = stableFrameRate;
     }
 
     /**
@@ -171,9 +181,13 @@ public class VideoStreamingParameters {
      */
     public void update(VideoStreamingCapability capability, String vehicleMake) {
         if (capability.getMaxBitrate() != null) {
-            this.bitrate = capability.getMaxBitrate() * 1000;
+            // Taking lower value as per SDL 0323 :
+            // https://github.com/smartdevicelink/sdl_evolution/blob/master/proposals/0323-align-VideoStreamingParameter-with-capability.md
+            int capableBitrateInKb = Math.min(Integer.MAX_VALUE / 1000, capability.getMaxBitrate());
+            this.bitrate = Math.min(this.bitrate, capableBitrateInKb * 1000);
         } // NOTE: the unit of maxBitrate in getSystemCapability is kbps.
         double scale = DEFAULT_SCALE;
+        // For resolution and scale, the capability values should be taken rather than parameters specified by developers.
         if (capability.getScale() != null) {
             scale = capability.getScale();
         }
@@ -198,12 +212,16 @@ public class VideoStreamingParameters {
             }
         }
         if (capability.getPreferredFPS() != null) {
-            this.frameRate = capability.getPreferredFPS();
+            // Taking lower value as per SDL 0323
+            this.frameRate = Math.min(this.frameRate, capability.getPreferredFPS());
         }
 
         // This should be the last call as it will return out once a suitable format is found
         final List<VideoStreamingFormat> formats = capability.getSupportedFormats();
         if (formats != null && formats.size() > 0) {
+            if (this.format != null && formats.contains(this.format)) {
+                return; // given format is supported, so no need to change.
+            }
             for (VideoStreamingFormat format : formats) {
                 for (VideoStreamingFormat currentlySupportedFormat : currentlySupportedFormats) {
                     if (currentlySupportedFormat.equals(format)) {

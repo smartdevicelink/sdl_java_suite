@@ -125,14 +125,26 @@ public class VirtualDisplayEncoder {
         return this.streamingParams;
     }
 
+    /**
+     * This method is deprecated; setStreamingParams with having stableFrameRate should be used.
+     */
     @Deprecated
     public void setStreamingParams(int displayDensity, ImageResolution resolution, int frameRate, int bitrate, int interval, VideoStreamingFormat format) {
         this.streamingParams = new VideoStreamingParameters(displayDensity, frameRate, bitrate, interval, resolution, format);
     }
 
-    @SuppressWarnings("unused")
-    public void setStreamingParams(int displayDensity, ImageResolution resolution, int frameRate, int bitrate, int interval, VideoStreamingFormat format, boolean stableFrameRate) {
-        this.streamingParams = new VideoStreamingParameters(displayDensity, frameRate, bitrate, interval, resolution, format, stableFrameRate);
+    /**
+     * setter of every parameter in streamingParams.
+     * @param displayDensity
+     * @param resolution
+     * @param frameRate
+     * @param bitrate
+     * @param interval
+     * @param format
+     * @param stableFramerate
+     */
+    public void setStreamingParams(int displayDensity, ImageResolution resolution, int frameRate, int bitrate, int interval, VideoStreamingFormat format, boolean stableFramerate) {
+        this.streamingParams = new VideoStreamingParameters(displayDensity, frameRate, bitrate, interval, resolution, format, stableFramerate);
     }
 
     @SuppressWarnings("unused")
