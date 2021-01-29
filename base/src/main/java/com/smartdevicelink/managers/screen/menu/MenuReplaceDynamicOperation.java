@@ -135,7 +135,7 @@ class MenuReplaceDynamicOperation extends Task {
         sendDeleteCurrentMenu(deleteCells, new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
-                sendNewMenuCells(addCells, new CompletionListener() {
+                sendNewMenuCells(addCells, currentMenu, new CompletionListener() {
                     @Override
                     public void onComplete(boolean success) {
                         if (!success) {
@@ -173,7 +173,7 @@ class MenuReplaceDynamicOperation extends Task {
         });
     }
 
-    private void sendNewMenuCells(final List<MenuCell> newMenuCells, final CompletionListener listener) {
+    private void sendNewMenuCells(final List<MenuCell> newMenuCells, final List<MenuCell> oldMenu, final CompletionListener listener) {
         if (getState() == Task.CANCELED) {
             return;
         }
