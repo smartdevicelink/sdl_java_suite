@@ -84,7 +84,7 @@ abstract class BaseMenuManager extends BaseSubManager {
     private OnSystemCapabilityListener onDisplaysCapabilityListener;
     private WindowCapability windowCapability;
     private Queue transactionQueue;
-    static int lastMenuId; // todo this shouldn't be static and should be fully managed in the manager
+    private int lastMenuId;
 
     BaseMenuManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface);
@@ -184,6 +184,8 @@ abstract class BaseMenuManager extends BaseSubManager {
             DebugTool.logError(TAG, "Attempted to create a menu with duplicate voice commands. Voice commands must be unique. The menu will not be set");
             return;
         }
+
+        updateIdsOnMenuCells(clonedCells, parentIdNotFound);
 
         currentMenuCells = new ArrayList<>(menuCells);
         menuCells = new ArrayList<>(clonedCells);
@@ -464,5 +466,17 @@ abstract class BaseMenuManager extends BaseSubManager {
         }
 
         return true;
+    }
+
+    private void updateIdsOnMenuCells(List<MenuCell> menuCells, int parentId) {
+        for (MenuCell cell : menuCells) {
+            cell.setCellId(lastMenuId++);
+            if (parentId != parentIdNotFound) {
+                cell.setParentCellId(parentId);
+            }
+            if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
+                updateIdsOnMenuCells(cell.getSubCells(), cell.getCellId());
+            }
+        }
     }
 }

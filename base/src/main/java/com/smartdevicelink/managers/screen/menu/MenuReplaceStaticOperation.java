@@ -15,8 +15,6 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Map;
 
-import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.lastMenuId;
-import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdNotFound;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.deleteCommandsForCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.findAllArtworksToBeUploadedFromCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.mainMenuCommandsForCells;
@@ -145,8 +143,6 @@ class MenuReplaceStaticOperation extends Task {
             return;
         }
 
-        updateIdsOnMenuCells(newMenuCells, parentIdNotFound);
-
         MenuLayout defaultSubmenuLayout = menuConfiguration != null ? menuConfiguration.getSubMenuLayout() : null;
 
         List<RPCRequest> mainMenuCommands = mainMenuCommandsForCells(newMenuCells, fileManager.get(), windowCapability, updatedMenu, defaultSubmenuLayout);
@@ -166,17 +162,6 @@ class MenuReplaceStaticOperation extends Task {
                 });
             }
         });
-    }
-
-    private void updateIdsOnMenuCells(List<MenuCell> cells, int parentId) {
-        for (MenuCell cell : cells) {
-            int newId = ++lastMenuId;
-            cell.setCellId(newId);
-            cell.setParentCellId(parentId);
-            if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
-                updateIdsOnMenuCells(cell.getSubCells(), cell.getCellId());
-            }
-        }
     }
 
     void setMenuConfiguration(MenuConfiguration menuConfiguration) {

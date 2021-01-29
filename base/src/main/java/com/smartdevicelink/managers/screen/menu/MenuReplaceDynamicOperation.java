@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.lastMenuId;
-import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.commandForMenuCell;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.deleteCommandsForCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.findAllArtworksToBeUploadedFromCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.mainMenuCommandsForCells;
@@ -91,11 +89,9 @@ class MenuReplaceDynamicOperation extends Task {
         final List<MenuCell> oldKeeps = filterMenuCellsWithStatusList(currentMenu, deleteMenuStatus, MenuCellState.KEEP);
         final List<MenuCell> newKeeps = filterMenuCellsWithStatusList(updatedMenu, addMenuStatus, MenuCellState.KEEP);
 
-        updateIdsOnDynamicCells(cellsToAdd);
-        
         // Since we are creating a new Menu but keeping old cells we must first transfer the old cellIDs to the new menus kept cells.
         // this is needed for the onCommands to still work
-        transferIdsToKeptCells(newKeeps);
+        transferCellIDFromOldCells(oldKeeps, newKeeps);
 
         // Upload the Artworks
         List<SdlArtwork> artworksToBeUploaded = findAllArtworksToBeUploadedFromCells(updatedMenu, fileManager.get(), windowCapability);
@@ -263,51 +259,6 @@ class MenuReplaceDynamicOperation extends Task {
         }
         for (int i = 0; i < newCells.size(); i++) {
             newCells.get(i).setCellId(oldCells.get(i).getCellId());
-        }
-    }
-
-    private void updateIdsOnDynamicCells(List<MenuCell> dynamicCells) {
-        if (updatedMenu != null && !updatedMenu.isEmpty() && dynamicCells != null && !dynamicCells.isEmpty()) {
-            for (int z = 0; z < updatedMenu.size(); z++) {
-                MenuCell mainCell = updatedMenu.get(z);
-                for (int i = 0; i < dynamicCells.size(); i++) {
-                    MenuCell dynamicCell = dynamicCells.get(i);
-                    if (mainCell.equals(dynamicCell)) {
-                        int newId = ++lastMenuId;
-                        updatedMenu.get(z).setCellId(newId);
-                        dynamicCells.get(i).setCellId(newId);
-
-                        if (mainCell.getSubCells() != null && !mainCell.getSubCells().isEmpty()) {
-                            updateIdsOnMenuCells(mainCell.getSubCells(), mainCell.getCellId());
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    private void updateIdsOnMenuCells(List<MenuCell> cells, int parentId) {
-        for (MenuCell cell : cells) {
-            int newId = ++lastMenuId;
-            cell.setCellId(newId);
-            cell.setParentCellId(parentId);
-            if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
-                updateIdsOnMenuCells(cell.getSubCells(), cell.getCellId());
-            }
-        }
-    }
-
-    private void transferIdsToKeptCells(List<MenuCell> keeps) {
-        for (int z = 0; z < currentMenu.size(); z++) {
-            MenuCell oldCell = currentMenu.get(z);
-            for (int i = 0; i < keeps.size(); i++) {
-                MenuCell keptCell = keeps.get(i);
-                if (oldCell.equals(keptCell)) {
-                    keptCell.setCellId(oldCell.getCellId());
-                    break;
-                }
-            }
         }
     }
 
