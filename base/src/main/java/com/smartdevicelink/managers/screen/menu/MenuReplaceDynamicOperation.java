@@ -213,9 +213,9 @@ class MenuReplaceDynamicOperation extends Task {
         });
     }
 
-    private void startSubMenuUpdatesWithOldKeptCells (List<MenuCell> oldKeeps, List<MenuCell> newKeeps, int startIndex, CompletionListener listener){
-        if (newKeeps != null && !newKeeps.isEmpty()) {
-            runSubMenuCompareAlgorithm(oldKeeps, newKeeps, listener);
+    private void startSubMenuUpdatesWithOldKeptCells(List<MenuCell> oldKeptCells, List<MenuCell> newKeptCells, int startIndex, CompletionListener listener) {
+        if (newKeptCells != null && !newKeptCells.isEmpty()) {
+            runSubMenuCompareAlgorithm(oldKeptCells, newKeptCells, listener);
         } else {
             DebugTool.logInfo(TAG, "Finished sending main menu commands.");
 
@@ -223,45 +223,6 @@ class MenuReplaceDynamicOperation extends Task {
                 listener.onComplete(true);
             }
         }
-    }
-
-    private void createAndSendDynamicSubMenuRPCs(List<MenuCell> newMenu, final List<MenuCell> adds, final CompletionListener listener) {
-        if (getState() == Task.CANCELED) {
-            return;
-        }
-
-        if (adds.isEmpty()) {
-            if (listener != null) {
-                // This can be considered a success if the user was clearing out their menu
-                DebugTool.logError(TAG, "Called createAndSendDynamicSubMenuRPCs with empty menu");
-                listener.onComplete(true);
-            }
-            return;
-        }
-
-        List<RPCRequest> mainMenuCommands = createCommandsForDynamicSubCells(newMenu, adds);
-
-        sendRPCs(mainMenuCommands, internalInterface.get(), new CompletionListener() {
-            @Override
-            public void onComplete(boolean success) {
-                listener.onComplete(success);
-            }
-        });
-    }
-
-    private List<RPCRequest> createCommandsForDynamicSubCells(List<MenuCell> oldMenuCells, List<MenuCell> cells) {
-        List<RPCRequest> builtCommands = new ArrayList<>();
-        for (int z = 0; z < oldMenuCells.size(); z++) {
-            MenuCell oldCell = oldMenuCells.get(z);
-            for (int i = 0; i < cells.size(); i++) {
-                MenuCell cell = cells.get(i);
-                if (cell.equals(oldCell)) {
-                    builtCommands.add(commandForMenuCell(cell, fileManager.get(), windowCapability, z));
-                    break;
-                }
-            }
-        }
-        return builtCommands;
     }
 
     private void runSubMenuCompareAlgorithm(List<MenuCell> oldKeeps, List<MenuCell> newKeeps, CompletionListener listener) {
@@ -344,6 +305,45 @@ class MenuReplaceDynamicOperation extends Task {
                 }
             }
         });
+    }
+
+    private void createAndSendDynamicSubMenuRPCs(List<MenuCell> newMenu, final List<MenuCell> adds, final CompletionListener listener) {
+        if (getState() == Task.CANCELED) {
+            return;
+        }
+
+        if (adds.isEmpty()) {
+            if (listener != null) {
+                // This can be considered a success if the user was clearing out their menu
+                DebugTool.logError(TAG, "Called createAndSendDynamicSubMenuRPCs with empty menu");
+                listener.onComplete(true);
+            }
+            return;
+        }
+
+        List<RPCRequest> mainMenuCommands = createCommandsForDynamicSubCells(newMenu, adds);
+
+        sendRPCs(mainMenuCommands, internalInterface.get(), new CompletionListener() {
+            @Override
+            public void onComplete(boolean success) {
+                listener.onComplete(success);
+            }
+        });
+    }
+
+    private List<RPCRequest> createCommandsForDynamicSubCells(List<MenuCell> oldMenuCells, List<MenuCell> cells) {
+        List<RPCRequest> builtCommands = new ArrayList<>();
+        for (int z = 0; z < oldMenuCells.size(); z++) {
+            MenuCell oldCell = oldMenuCells.get(z);
+            for (int i = 0; i < cells.size(); i++) {
+                MenuCell cell = cells.get(i);
+                if (cell.equals(oldCell)) {
+                    builtCommands.add(commandForMenuCell(cell, fileManager.get(), windowCapability, z));
+                    break;
+                }
+            }
+        }
+        return builtCommands;
     }
 
     private void updateIdsOnDynamicCells(List<MenuCell> dynamicCells) {
