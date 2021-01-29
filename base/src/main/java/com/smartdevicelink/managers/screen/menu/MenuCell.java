@@ -347,7 +347,7 @@ public class MenuCell implements Cloneable {
      *
      * @param secondaryText the cell's secondaryText
      */
-    void setSecondaryText(String secondaryText) {
+    public void setSecondaryText(String secondaryText) {
         this.secondaryText = secondaryText;
     }
 
@@ -356,7 +356,7 @@ public class MenuCell implements Cloneable {
      *
      * @return the cell's secondaryText
      */
-    String getSecondaryText() {
+    public String getSecondaryText() {
         return secondaryText;
     }
 
@@ -365,7 +365,7 @@ public class MenuCell implements Cloneable {
      *
      * @param tertiaryText the cell's tertiaryText
      */
-    void setTertiaryText(String tertiaryText) {
+    public void setTertiaryText(String tertiaryText) {
         this.tertiaryText = tertiaryText;
     }
 
@@ -375,7 +375,7 @@ public class MenuCell implements Cloneable {
      *
      * @return the cell's tertiaryText
      */
-    String getTertiaryText(){
+    public String getTertiaryText(){
         return tertiaryText;
     }
 
@@ -384,7 +384,7 @@ public class MenuCell implements Cloneable {
      *
      * @param secondaryArtwork the cell's secondaryArtwork
      */
-    void setSecondaryArtwork(SdlArtwork secondaryArtwork) {
+    public void setSecondaryArtwork(SdlArtwork secondaryArtwork) {
         this.secondaryArtwork = secondaryArtwork;
     }
 
@@ -393,7 +393,7 @@ public class MenuCell implements Cloneable {
      *
      * @return the cell's secondaryArtwork
      */
-    SdlArtwork getSecondaryArtwork(){
+    public SdlArtwork getSecondaryArtwork(){
         return secondaryArtwork;
     }
 
