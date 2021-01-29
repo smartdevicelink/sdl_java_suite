@@ -382,9 +382,10 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 
     /**
      * Gets getVehicleType set when application interface is registered.
-     *
+     * @deprecated in SmartDeviceLink 7.1.0
      * @return vehicleType
      */
+    @Deprecated
     public VehicleType getVehicleType() {
         return (VehicleType) getObject(VehicleType.class, KEY_VEHICLE_TYPE);
     }
@@ -394,6 +395,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      *
      * @param vehicleType
      */
+    @Deprecated
     public RegisterAppInterfaceResponse setVehicleType(VehicleType vehicleType) {
         setParameters(KEY_VEHICLE_TYPE, vehicleType);
         return this;
@@ -466,11 +468,23 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
         return getString(KEY_SDL_VERSION);
     }
 
+    /**
+     * The software version of the system that implements the SmartDeviceLink core.
+     * @param systemSoftwareVersion
+     * @return RegisterAppInterface
+     * @deprecated in SmartDeviceLink 7.1.0
+     */
+    @Deprecated
     public RegisterAppInterfaceResponse setSystemSoftwareVersion(String systemSoftwareVersion) {
         setParameters(KEY_SYSTEM_SOFTWARE_VERSION, systemSoftwareVersion);
         return this;
     }
 
+    /**
+     * The software version of the system that implements the SmartDeviceLink core.
+     * @deprecated in SmartDeviceLink 7.1.0
+     */
+    @Deprecated
     public String getSystemSoftwareVersion() {
         return getString(KEY_SYSTEM_SOFTWARE_VERSION);
     }
