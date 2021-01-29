@@ -213,7 +213,60 @@ class MenuReplaceDynamicOperation extends Task {
         });
     }
 
-    private void startSubMenuUpdatesWithOldKeptCells(List<MenuCell> oldKeptCells, List<MenuCell> newKeptCells, int startIndex, CompletionListener listener) {
+    private void startSubMenuUpdatesWithOldKeptCells(final List<MenuCell> oldKeptCells, final List<MenuCell> newKeptCells, final int startIndex, final CompletionListener listener) {
+        if (oldKeptCells.isEmpty() || startIndex >= oldKeptCells.size()) {
+            listener.onComplete(true);
+            return;
+        }
+
+        if (oldKeptCells.get(startIndex) != null && oldKeptCells.get(startIndex).getSubCells() != null && !oldKeptCells.get(startIndex).getSubCells().isEmpty()){
+            DynamicMenuUpdateRunScore tempScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(oldKeptCells.get(startIndex).getSubCells(), newKeptCells.get(startIndex).getSubCells());
+
+            // If both old and new menu cells are empty. Then nothing needs to be done.
+            if (tempScore == null) {
+                finishOperation(true);
+                return;
+            }
+
+            List<MenuCellState> deleteMenuStatus = tempScore.getOldStatus();
+            List<MenuCellState> addMenuStatus = tempScore.getUpdatedStatus();
+
+            final List<MenuCell> cellsToDelete = filterMenuCellsWithStatusList(oldKeptCells.get(startIndex).getSubCells(), deleteMenuStatus, MenuCellState.DELETE);
+            final List<MenuCell> cellsToAdd = filterMenuCellsWithStatusList(newKeptCells.get(startIndex).getSubCells(), addMenuStatus, MenuCellState.ADD);
+
+            final List<MenuCell> oldKeeps = filterMenuCellsWithStatusList(oldKeptCells.get(startIndex).getSubCells(), deleteMenuStatus, MenuCellState.KEEP);
+            final List<MenuCell> newKeeps = filterMenuCellsWithStatusList(newKeptCells.get(startIndex).getSubCells(), addMenuStatus, MenuCellState.KEEP);
+
+            transferCellIDFromOldCells(oldKeeps, newKeeps);
+
+            sendDeleteCurrentMenu(cellsToDelete, new CompletionListener() {
+                @Override
+                public void onComplete(boolean success) {
+                    sendNewMenuCells(cellsToAdd, currentMenu.get(startIndex).getSubCells(), new CompletionListener() {
+                        @Override
+                        public void onComplete(boolean success) {
+                            // After the first set of submenu cells were added and deleted we must find the next set of sub cells until we loop through all the elements
+                            startSubMenuUpdatesWithOldKeptCells(oldKeptCells, newKeptCells, startIndex + 1, listener);
+                        }
+                    });
+                }
+            });
+        } else {
+            // After the first set of submenu cells were added and deleted we must find the next set of sub cells until we loop through all the elements
+            startSubMenuUpdatesWithOldKeptCells(oldKeptCells, newKeptCells, startIndex + 1, listener);
+        }
+    }
+
+    private void transferCellIDFromOldCells(List<MenuCell> oldCells, List<MenuCell> newCells) {
+        if (oldCells.isEmpty()) {
+            return;
+        }
+        for (int i = 0; i < newCells.size(); i++) {
+            newCells.get(i).setCellId(oldCells.get(i).getCellId());
+        }
+    }
+
+    private void startSubMenuUpdatesWithOldKeptCells2(List<MenuCell> oldKeptCells, List<MenuCell> newKeptCells, int startIndex, CompletionListener listener) {
         if (newKeptCells != null && !newKeptCells.isEmpty()) {
             runSubMenuCompareAlgorithm(oldKeptCells, newKeptCells, listener);
         } else {
