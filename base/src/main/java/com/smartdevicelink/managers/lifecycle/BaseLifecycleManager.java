@@ -387,7 +387,7 @@ abstract class BaseLifecycleManager {
                         systemCapabilityManager.parseRAIResponse(raiResponse);
 
                         VehicleType type = raiResponse.getVehicleType();
-                        if (!lifecycleListener.onVehicleTypeReceived(type)){
+                        if (!lifecycleListener.onSystemInfoReceived(new com.smartdevicelink.session.SystemInfo(type, null, null))){
                             DebugTool.logInfo(TAG, "vehicle type is wrong");
                             session.close();
                         }
@@ -938,8 +938,8 @@ abstract class BaseLifecycleManager {
         }
 
         @Override
-        public boolean onVehicleTypeReceived(@Nullable VehicleType type) {
-            return lifecycleListener.onVehicleTypeReceived(type);
+        public boolean onSystemInfoReceived(@Nullable com.smartdevicelink.session.SystemInfo systemInfo) {
+            return lifecycleListener.onSystemInfoReceived(systemInfo);
         }
 
     };
@@ -1260,7 +1260,7 @@ abstract class BaseLifecycleManager {
 
         void onError(LifecycleManager lifeCycleManager, String info, Exception e);
 
-        boolean onVehicleTypeReceived(VehicleType type);
+        boolean onSystemInfoReceived(com.smartdevicelink.session.SystemInfo systemInfo);
     }
 
     public static class AppConfig {

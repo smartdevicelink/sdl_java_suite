@@ -46,7 +46,6 @@ import com.smartdevicelink.protocol.SdlProtocolBase;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
-import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
@@ -218,8 +217,8 @@ public class SdlSession extends BaseSdlSession {
     public void onAuthTokenReceived(String authToken) {/* Do nothing */ }
 
     @Override
-    public boolean onVehicleTypeReceived(VehicleType vehicleType) {
-        return sessionListener.onVehicleTypeReceived(vehicleType);
+    public boolean onSystemInfoReceived(SystemInfo systemInfo) {
+        return sessionListener.onSystemInfoReceived(systemInfo);
     }
 
 }

@@ -47,6 +47,7 @@ import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.security.SdlSecurityBase;
+import com.smartdevicelink.session.SystemInfo;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.TransportConstants;
@@ -952,7 +953,8 @@ public class SdlProtocolBase {
                 type.setModel(model);
                 type.setModelYear(modelYear);
                 type.setTrim(trim);
-                if (!iSdlProtocol.onVehicleTypeReceived(type)) {
+                SystemInfo systemInfo = new com.smartdevicelink.session.SystemInfo(type, softwareVersion, hardwareVersion);
+                if (!iSdlProtocol.onSystemInfoReceived(systemInfo)) {
                     onTransportNotAccepted("Rejected by the vehicle type filter");
                     return;
                 }

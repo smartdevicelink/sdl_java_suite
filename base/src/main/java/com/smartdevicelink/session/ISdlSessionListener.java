@@ -34,7 +34,6 @@ package com.smartdevicelink.session;
 import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.proxy.RPCMessage;
-import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.util.Version;
 
@@ -84,5 +83,5 @@ public interface ISdlSessionListener {
      */
     void onAuthTokenReceived(String authToken, int sessionID);
 
-    boolean onVehicleTypeReceived(VehicleType type);
+    boolean onSystemInfoReceived(SystemInfo systemInfo);
 }

@@ -5,8 +5,8 @@ import android.util.Log;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.security.SdlSecurityBase;
+import com.smartdevicelink.session.SystemInfo;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.test.SampleRpc;
 import com.smartdevicelink.test.SdlUnitTestContants;
@@ -115,7 +115,7 @@ public class SdlProtocolTests {
         }
 
         @Override
-        public boolean onVehicleTypeReceived(VehicleType vehicleType) {
+        public boolean onSystemInfoReceived(SystemInfo systemInfo) {
             return false;
         }
 

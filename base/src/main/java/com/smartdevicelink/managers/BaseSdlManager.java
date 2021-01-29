@@ -70,6 +70,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.security.SdlSecurityBase;
+import com.smartdevicelink.session.SystemInfo;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
@@ -162,8 +163,8 @@ abstract class BaseSdlManager {
         }
 
         @Override
-        public boolean onVehicleTypeReceived(VehicleType type) {
-            return BaseSdlManager.this.onVehicleTypeReceived(type);
+        public boolean onSystemInfoReceived(SystemInfo systemInfo) {
+            return BaseSdlManager.this.onSystemInfoReceived(systemInfo);
         }
     };
 
@@ -878,7 +879,7 @@ abstract class BaseSdlManager {
         }
     }
 
-    public boolean onVehicleTypeReceived(@Nullable VehicleType type) {
+    public boolean onSystemInfoReceived(@Nullable SystemInfo systemInfo) {
         try {
             Context context = ((SdlManager) BaseSdlManager.this).context;
             ComponentName myService = new ComponentName(context, this.getClass());
@@ -886,7 +887,7 @@ abstract class BaseSdlManager {
             XmlResourceParser parser = context.getResources().getXml(metaData.getInt(context.getResources().getString(R.string.sdl_oem_vehicle_type_filter_name)));
             List<VehicleType> vehicleMakes = deserializeVehicleMake(parser);
 
-            return vehicleMakes.contains(type);
+            if (systemInfo == null) return false; else return vehicleMakes.contains(systemInfo.getVehicleType());
         } catch (PackageManager.NameNotFoundException e) {
             return false;
         }
