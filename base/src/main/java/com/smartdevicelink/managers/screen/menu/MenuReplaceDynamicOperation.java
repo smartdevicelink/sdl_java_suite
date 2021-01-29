@@ -266,139 +266,6 @@ class MenuReplaceDynamicOperation extends Task {
         }
     }
 
-    private void startSubMenuUpdatesWithOldKeptCells2(List<MenuCell> oldKeptCells, List<MenuCell> newKeptCells, int startIndex, CompletionListener listener) {
-        if (newKeptCells != null && !newKeptCells.isEmpty()) {
-            runSubMenuCompareAlgorithm(oldKeptCells, newKeptCells, listener);
-        } else {
-            DebugTool.logInfo(TAG, "Finished sending main menu commands.");
-
-            if (listener != null) {
-                listener.onComplete(true);
-            }
-        }
-    }
-
-    private void runSubMenuCompareAlgorithm(List<MenuCell> oldKeeps, List<MenuCell> newKeeps, CompletionListener listener) {
-        // any cells that were re-added have their sub-cells added with them
-        // at this point all we care about are the cells that were deemed equal and kept.
-        if (newKeeps == null || newKeeps.isEmpty()) {
-            listener.onComplete(true);
-            return;
-        }
-
-        List<SubCellCommandList> commandLists = new ArrayList<>();
-
-        for (int i = 0; i < newKeeps.size(); i++) {
-            MenuCell newKeptCell = newKeeps.get(i);
-            MenuCell oldKeptCell = oldKeeps.get(i);
-
-            if (oldKeptCell.getSubCells() != null && !oldKeptCell.getSubCells().isEmpty() && newKeptCell.getSubCells() != null && !newKeptCell.getSubCells().isEmpty()) {
-                DynamicMenuUpdateRunScore subScore = DynamicMenuUpdateAlgorithm.startCompareAtRun(0, oldKeptCell.getSubCells(), newKeptCell.getSubCells());
-
-                if (subScore != null) {
-                    DebugTool.logInfo(TAG, "Sub menu Run Score: " + oldKeptCell.getTitle() + " Score: " + subScore.getScore());
-                    SubCellCommandList commandList = new SubCellCommandList(oldKeptCell.getTitle(), oldKeptCell.getCellId(), subScore, oldKeptCell.getSubCells(), newKeptCell.getSubCells());
-                    commandLists.add(commandList);
-                }
-            }
-        }
-        createSubMenuDynamicCommands(commandLists, listener);
-    }
-
-    private void createSubMenuDynamicCommands(final List<SubCellCommandList> commandLists, final CompletionListener listener) {
-        if (getState() == Task.CANCELED) {
-            return;
-        }
-
-        if (commandLists.isEmpty()) {
-            DebugTool.logInfo(TAG, "All menu updates, including sub menus - done.");
-            listener.onComplete(true);
-            return;
-        }
-
-        final SubCellCommandList commandList = commandLists.remove(0);
-
-        DebugTool.logInfo(TAG, "Creating and Sending Dynamic Sub Commands For Root Menu Cell: " + commandList.getMenuTitle());
-
-        // grab the scores
-        DynamicMenuUpdateRunScore score = commandList.getListsScore();
-        List<MenuCellState> newStates = score.getUpdatedStatus();
-        List<MenuCellState> oldStates = score.getOldStatus();
-
-        // Grab the sub-menus from the parent cell
-        final List<MenuCell> oldCells = commandList.getOldList();
-        final List<MenuCell> newCells = commandList.getNewList();
-
-        List<MenuCell> cellsToDelete = filterMenuCellsWithStatusList(currentMenu, oldStates, MenuCellState.DELETE);
-
-        // Set up the adds
-        List<MenuCell> cellsToAdd = filterMenuCellsWithStatusList(updatedMenu, newStates, MenuCellState.ADD);
-        List<MenuCell> subCellKeepsNew = filterMenuCellsWithStatusList(updatedMenu, newStates, MenuCellState.KEEP);
-
-        final List<MenuCell> addsWithNewIds = updateIdsOnDynamicSubCells(oldCells, cellsToAdd, commandList.getParentId());
-        // this is needed for the onCommands to still work
-        transferIdsToKeptSubCells(oldCells, subCellKeepsNew);
-
-        sendDeleteCurrentMenu(cellsToDelete, new CompletionListener() {
-            @Override
-            public void onComplete(boolean success) {
-                if (addsWithNewIds != null && !addsWithNewIds.isEmpty()) {
-                    createAndSendDynamicSubMenuRPCs(newCells, addsWithNewIds, new CompletionListener() {
-                        @Override
-                        public void onComplete(boolean success) {
-                            // recurse through next sub list
-                            DebugTool.logInfo(TAG, "Finished Sending Dynamic Sub Commands For Root Menu Cell: " + commandList.getMenuTitle());
-                            createSubMenuDynamicCommands(commandLists, listener);
-                        }
-                    });
-                } else {
-                    // no add commands to send, recurse through next sub list
-                    DebugTool.logInfo(TAG, "Finished Sending Dynamic Sub Commands For Root Menu Cell: " + commandList.getMenuTitle());
-                    createSubMenuDynamicCommands(commandLists, listener);
-                }
-            }
-        });
-    }
-
-    private void createAndSendDynamicSubMenuRPCs(List<MenuCell> newMenu, final List<MenuCell> adds, final CompletionListener listener) {
-        if (getState() == Task.CANCELED) {
-            return;
-        }
-
-        if (adds.isEmpty()) {
-            if (listener != null) {
-                // This can be considered a success if the user was clearing out their menu
-                DebugTool.logError(TAG, "Called createAndSendDynamicSubMenuRPCs with empty menu");
-                listener.onComplete(true);
-            }
-            return;
-        }
-
-        List<RPCRequest> mainMenuCommands = createCommandsForDynamicSubCells(newMenu, adds);
-
-        sendRPCs(mainMenuCommands, internalInterface.get(), new CompletionListener() {
-            @Override
-            public void onComplete(boolean success) {
-                listener.onComplete(success);
-            }
-        });
-    }
-
-    private List<RPCRequest> createCommandsForDynamicSubCells(List<MenuCell> oldMenuCells, List<MenuCell> cells) {
-        List<RPCRequest> builtCommands = new ArrayList<>();
-        for (int z = 0; z < oldMenuCells.size(); z++) {
-            MenuCell oldCell = oldMenuCells.get(z);
-            for (int i = 0; i < cells.size(); i++) {
-                MenuCell cell = cells.get(i);
-                if (cell.equals(oldCell)) {
-                    builtCommands.add(commandForMenuCell(cell, fileManager.get(), windowCapability, z));
-                    break;
-                }
-            }
-        }
-        return builtCommands;
-    }
-
     private void updateIdsOnDynamicCells(List<MenuCell> dynamicCells) {
         if (updatedMenu != null && !updatedMenu.isEmpty() && dynamicCells != null && !dynamicCells.isEmpty()) {
             for (int z = 0; z < updatedMenu.size(); z++) {
@@ -420,25 +287,6 @@ class MenuReplaceDynamicOperation extends Task {
         }
     }
 
-    private List<MenuCell> updateIdsOnDynamicSubCells(List<MenuCell> oldList, List<MenuCell> dynamicCells, Integer parentId) {
-        if (oldList != null && !oldList.isEmpty() && dynamicCells != null && !dynamicCells.isEmpty()) {
-            for (int z = 0; z < oldList.size(); z++) {
-                MenuCell mainCell = oldList.get(z);
-                for (int i = 0; i < dynamicCells.size(); i++) {
-                    MenuCell dynamicCell = dynamicCells.get(i);
-                    int newId = ++lastMenuId;
-                    if (mainCell.equals(dynamicCell)) {
-                        oldList.get(z).setCellId(newId);
-                    }
-                    dynamicCells.get(i).setParentCellId(parentId);
-                    dynamicCells.get(i).setCellId(newId);
-                }
-            }
-            return dynamicCells;
-        }
-        return null;
-    }
-
     private void updateIdsOnMenuCells(List<MenuCell> cells, int parentId) {
         for (MenuCell cell : cells) {
             int newId = ++lastMenuId;
@@ -453,19 +301,6 @@ class MenuReplaceDynamicOperation extends Task {
     private void transferIdsToKeptCells(List<MenuCell> keeps) {
         for (int z = 0; z < currentMenu.size(); z++) {
             MenuCell oldCell = currentMenu.get(z);
-            for (int i = 0; i < keeps.size(); i++) {
-                MenuCell keptCell = keeps.get(i);
-                if (oldCell.equals(keptCell)) {
-                    keptCell.setCellId(oldCell.getCellId());
-                    break;
-                }
-            }
-        }
-    }
-
-    private void transferIdsToKeptSubCells(List<MenuCell> old, List<MenuCell> keeps) {
-        for (int z = 0; z < old.size(); z++) {
-            MenuCell oldCell = old.get(z);
             for (int i = 0; i < keeps.size(); i++) {
                 MenuCell keptCell = keeps.get(i);
                 if (oldCell.equals(keptCell)) {
