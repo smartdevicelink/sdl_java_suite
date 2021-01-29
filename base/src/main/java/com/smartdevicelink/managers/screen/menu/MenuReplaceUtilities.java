@@ -171,21 +171,6 @@ class MenuReplaceUtilities {
                 .setMenuIcon(icon);
     }
 
-    static List<MenuCell> removeMenuCellFromCurrentMainMenuList(List<MenuCell> menuCellList, int commandId) {
-        for (MenuCell menuCell : menuCellList) {
-            if (menuCell.getCellId() == commandId) {
-                menuCellList.remove(menuCell);
-                return menuCellList;
-            } else if (menuCell.getSubCells() != null && !menuCell.getSubCells().isEmpty()) {
-                List<MenuCell> newList = removeMenuCellFromCurrentMainMenuList(menuCell.getSubCells(), commandId);
-                if (newList != null) {
-                    menuCell.setSubCells(newList);
-                }
-            }
-        }
-        return null;
-    }
-
     static void sendRPCs(List<RPCRequest> requests, ISdl internalInterface, final CompletionListener listener) {
         if (requests == null || requests.isEmpty()) {
             listener.onComplete(true);
