@@ -7,6 +7,7 @@ import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.util.DebugTool;
@@ -126,11 +127,16 @@ class MenuReplaceStaticOperation extends Task {
             return;
         }
 
-        sendRPCs(deleteMenuCommands, internalInterface.get(), new CompletionListener() {
+        sendRPCs(deleteMenuCommands, internalInterface.get(), new SendingRPCsCompletionListener() {
             @Override
-            public void onComplete(boolean success) {
+            public void onComplete(boolean success, Map<RPCRequest, String> errors) {
                 DebugTool.logInfo(TAG, "Successfully deleted cells");
                 listener.onComplete(success);
+            }
+
+            @Override
+            public void onResponse(RPCRequest request, RPCResponse response, int commandId) {
+
             }
         });
     }
@@ -148,18 +154,28 @@ class MenuReplaceStaticOperation extends Task {
         List<RPCRequest> mainMenuCommands = mainMenuCommandsForCells(newMenuCells, fileManager.get(), windowCapability, updatedMenu, defaultSubmenuLayout);
         final List<RPCRequest> subMenuCommands = subMenuCommandsForCells(newMenuCells, fileManager.get(), windowCapability, defaultSubmenuLayout);
 
-        sendRPCs(mainMenuCommands, internalInterface.get(), new CompletionListener() {
+        sendRPCs(mainMenuCommands, internalInterface.get(), new SendingRPCsCompletionListener() {
             @Override
-            public void onComplete(boolean success) {
+            public void onComplete(boolean success, Map<RPCRequest, String> errors) {
                 DebugTool.logInfo(TAG, "Finished sending main menu commands. Sending sub menu commands.");
 
-                sendRPCs(subMenuCommands, internalInterface.get(), new CompletionListener() {
+                sendRPCs(subMenuCommands, internalInterface.get(), new SendingRPCsCompletionListener() {
                     @Override
-                    public void onComplete(boolean success) {
+                    public void onComplete(boolean success, Map<RPCRequest, String> errors) {
                         DebugTool.logInfo(TAG, "Finished Updating Menu");
                         listener.onComplete(success);
                     }
+
+                    @Override
+                    public void onResponse(RPCRequest request, RPCResponse response, int commandId) {
+
+                    }
                 });
+            }
+
+            @Override
+            public void onResponse(RPCRequest request, RPCResponse response, int commandId) {
+
             }
         });
     }

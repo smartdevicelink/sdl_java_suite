@@ -1,6 +1,5 @@
 package com.smartdevicelink.managers.screen.menu;
 
-import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
@@ -17,10 +16,11 @@ import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
-import com.smartdevicelink.util.DebugTool;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdNotFound;
 
@@ -28,8 +28,6 @@ import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdN
  * Created by Bilal Alsharifi on 1/25/21.
  */
 class MenuReplaceUtilities {
-    private static final String TAG = "MenuReplaceUtilities";
-
     static int commandIdForRPCRequest(RPCRequest request) {
         int commandId = 0;
         if (request instanceof AddCommand) {
@@ -171,9 +169,10 @@ class MenuReplaceUtilities {
                 .setMenuIcon(icon);
     }
 
-    static void sendRPCs(List<RPCRequest> requests, ISdl internalInterface, final CompletionListener listener) {
+    static void sendRPCs(final List<RPCRequest> requests, ISdl internalInterface, final SendingRPCsCompletionListener listener) {
+        final Map<RPCRequest, String> errors = new HashMap<>();
         if (requests == null || requests.isEmpty()) {
-            listener.onComplete(true);
+            listener.onComplete(true, errors);
         }
 
         internalInterface.sendRPCs(requests, new OnMultipleRequestListener() {
@@ -183,15 +182,22 @@ class MenuReplaceUtilities {
 
             @Override
             public void onFinished() {
-                // todo should we pass false if one failed?
-                listener.onComplete(true);
+                listener.onComplete(errors.isEmpty(), errors);
             }
 
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
-                if (!response.getSuccess()) {
-                    DebugTool.logError(TAG, "Failed to send RPC. Result: " + response.getResultCode() + " Info: " + response.getInfo());
+                RPCRequest request = null;
+                for (RPCRequest r : requests) {
+                    if (response.getCorrelationID().equals(r.getCorrelationID())) {
+                        request = r;
+                        break;
+                    }
                 }
+                if (!response.getSuccess()) {
+                    errors.put(request, "Failed to send RPC. Result: " + response.getResultCode() + " Info: " + response.getInfo());
+                }
+                listener.onResponse(request, response, commandIdForRPCRequest(request));
             }
         });
     }
