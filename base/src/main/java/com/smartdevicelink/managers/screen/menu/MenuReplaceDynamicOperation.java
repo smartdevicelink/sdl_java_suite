@@ -108,7 +108,7 @@ class MenuReplaceDynamicOperation extends Task {
                     } else {
                         DebugTool.logInfo(TAG, "Menu Artworks Uploaded");
                     }
-                    updateMenuWithCellsToDelete(cellsToDelete, cellsToAdd, oldKeeps, newKeeps, new CompletionListener() {
+                    updateMenuWithCellsToDelete(cellsToDelete, cellsToAdd, new CompletionListener() {
                         @Override
                         public void onComplete(boolean success) {
                             startSubMenuUpdatesWithOldKeptCells(oldKeeps, newKeeps, 0, listener);
@@ -118,7 +118,7 @@ class MenuReplaceDynamicOperation extends Task {
             });
         } else {
             // Cells have no artwork to load
-            updateMenuWithCellsToDelete(cellsToDelete, cellsToAdd, oldKeeps, newKeeps, new CompletionListener() {
+            updateMenuWithCellsToDelete(cellsToDelete, cellsToAdd, new CompletionListener() {
                 @Override
                 public void onComplete(boolean success) {
                     startSubMenuUpdatesWithOldKeptCells(oldKeeps, newKeeps, 0, listener);
@@ -127,15 +127,15 @@ class MenuReplaceDynamicOperation extends Task {
         }
     }
 
-    private void updateMenuWithCellsToDelete(List<MenuCell> deleteMenuCells, final List<MenuCell> updatedCells, final List<MenuCell> oldKeeps, final List<MenuCell> newKeeps, final CompletionListener listener) {
+    private void updateMenuWithCellsToDelete(List<MenuCell> deleteCells, final List<MenuCell> addCells, final CompletionListener listener) {
         if (getState() == Task.CANCELED) {
             return;
         }
 
-        sendDeleteCurrentMenu(deleteMenuCells, new CompletionListener() {
+        sendDeleteCurrentMenu(deleteCells, new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
-                sendNewMenuCells(updatedCells, oldKeeps, newKeeps, new CompletionListener() {
+                sendNewMenuCells(addCells, new CompletionListener() {
                     @Override
                     public void onComplete(boolean success) {
                         if (!success) {
@@ -160,39 +160,52 @@ class MenuReplaceDynamicOperation extends Task {
         }
 
         List<RPCRequest> deleteMenuCommands = deleteCommandsForCells(deleteMenuCells);
-
         sendRPCs(deleteMenuCommands, internalInterface.get(), new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
-                DebugTool.logInfo(TAG, "Successfully deleted cells");
+                if (!success) {
+                    DebugTool.logWarning(TAG, "Unable to delete all old menu commands");
+                } else {
+                    DebugTool.logInfo(TAG, "Finished deleting old menu");
+                }
                 listener.onComplete(success);
             }
         });
     }
 
-    private void sendNewMenuCells(final List<MenuCell> newMenuCells, final List<MenuCell> oldKeeps, final List<MenuCell> newKeeps, final CompletionListener listener) {
+    private void sendNewMenuCells(final List<MenuCell> newMenuCells, final CompletionListener listener) {
         if (getState() == Task.CANCELED) {
             return;
         }
 
         if (newMenuCells == null || newMenuCells.isEmpty()) {
             // This can be considered a success if the user was clearing out their menu
+            DebugTool.logInfo(TAG, "There are no cells to update.");
             listener.onComplete(true);
             return;
         }
 
         MenuLayout defaultSubmenuLayout = menuConfiguration != null ? menuConfiguration.getSubMenuLayout() : null;
 
-        List<RPCRequest> mainMenuCommands = mainMenuCommandsForCells(newMenuCells, fileManager.get(), windowCapability, updatedMenu, defaultSubmenuLayout);
+        final List<RPCRequest> mainMenuCommands = mainMenuCommandsForCells(newMenuCells, fileManager.get(), windowCapability, updatedMenu, defaultSubmenuLayout);
         final List<RPCRequest> subMenuCommands = subMenuCommandsForCells(newMenuCells, fileManager.get(), windowCapability, defaultSubmenuLayout);
 
         sendRPCs(mainMenuCommands, internalInterface.get(), new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
+                if (!success) {
+                    DebugTool.logError(TAG, "Failed to send main menu commands");
+                    listener.onComplete(false);
+                    return;
+                }
                 sendRPCs(subMenuCommands, internalInterface.get(), new CompletionListener() {
                     @Override
                     public void onComplete(boolean success) {
-                        DebugTool.logInfo(TAG, "Finished Updating Menu");
+                        if (!success) {
+                            DebugTool.logError(TAG, "Failed to send sub menu commands");
+                        } else {
+                            DebugTool.logInfo(TAG, "Finished updating menu");
+                        }
                         listener.onComplete(success);
                     }
                 });
