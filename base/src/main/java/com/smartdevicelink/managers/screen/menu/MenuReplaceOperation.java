@@ -29,8 +29,8 @@ import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.subM
 /**
  * Created by Bilal Alsharifi on 1/20/21.
  */
-class MenuReplaceDynamicOperation extends Task {
-    private static final String TAG = "MenuReplaceDynamicOperation";
+class MenuReplaceOperation extends Task {
+    private static final String TAG = "MenuReplaceOperation";
 
     private final WeakReference<ISdl> internalInterface;
     private final WeakReference<FileManager> fileManager;
@@ -41,7 +41,7 @@ class MenuReplaceDynamicOperation extends Task {
     private final MenuManagerCompletionListener operationCompletionListener;
     private MenuConfiguration menuConfiguration;
 
-    MenuReplaceDynamicOperation(ISdl internalInterface, FileManager fileManager, WindowCapability windowCapability, MenuConfiguration menuConfiguration, List<MenuCell> currentMenu, List<MenuCell> updatedMenu, boolean isDynamicMenuUpdateActive, MenuManagerCompletionListener operationCompletionListener) {
+    MenuReplaceOperation(ISdl internalInterface, FileManager fileManager, WindowCapability windowCapability, MenuConfiguration menuConfiguration, List<MenuCell> currentMenu, List<MenuCell> updatedMenu, boolean isDynamicMenuUpdateActive, MenuManagerCompletionListener operationCompletionListener) {
         super(TAG);
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);

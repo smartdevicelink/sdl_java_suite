@@ -192,7 +192,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
         // Cancel pending MenuReplaceOperations
         for (Task operation : transactionQueue.getTasksAsList()) {
-            if (operation instanceof MenuReplaceStaticOperation || operation instanceof MenuReplaceDynamicOperation) {
+            if (operation instanceof MenuReplaceOperation) {
                 operation.cancelTask();
             }
         }
@@ -209,7 +209,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         };
 
         boolean isDynamicMenuUpdateActive = isDynamicMenuUpdateActive(dynamicMenuUpdatesMode, displayType);
-        operation = new MenuReplaceDynamicOperation(internalInterface, fileManager.get(), windowCapability, menuConfiguration, currentMenuCells, menuCells, isDynamicMenuUpdateActive, menuManagerCompletionListener);
+        operation = new MenuReplaceOperation(internalInterface, fileManager.get(), windowCapability, menuConfiguration, currentMenuCells, menuCells, isDynamicMenuUpdateActive, menuManagerCompletionListener);
 
         transactionQueue.add(operation, false);
     }
@@ -308,10 +308,8 @@ abstract class BaseMenuManager extends BaseSubManager {
 
                 // Update pending operations with new menuConfiguration
                 for (Task task : transactionQueue.getTasksAsList()) {
-                    if (task instanceof MenuReplaceStaticOperation) {
-                        ((MenuReplaceStaticOperation) task).setMenuConfiguration(menuConfiguration);
-                    } else if (task instanceof MenuReplaceDynamicOperation) {
-                        ((MenuReplaceDynamicOperation) task).setMenuConfiguration(menuConfiguration);
+                    if (task instanceof MenuReplaceOperation) {
+                        ((MenuReplaceOperation) task).setMenuConfiguration(menuConfiguration);
                     }
                 }
             }
@@ -441,10 +439,8 @@ abstract class BaseMenuManager extends BaseSubManager {
 
     private void updateMenuReplaceOperationsWithNewCurrentMenu () {
         for (Task task : transactionQueue.getTasksAsList()) {
-            if (task instanceof MenuReplaceStaticOperation) {
-                ((MenuReplaceStaticOperation) task).setCurrentMenu(this.currentMenuCells);
-            } else if (task instanceof MenuReplaceDynamicOperation) {
-                ((MenuReplaceDynamicOperation) task).setCurrentMenu(this.currentMenuCells);
+            if (task instanceof MenuReplaceOperation) {
+                ((MenuReplaceOperation) task).setCurrentMenu(this.currentMenuCells);
             }
         }
     }
