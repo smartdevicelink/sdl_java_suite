@@ -76,10 +76,6 @@ class MenuReplaceOperation extends Task {
     }
 
     private void updateMenuCells(final CompletionListener listener) {
-        if (getState() == Task.CANCELED) {
-            return;
-        }
-
         DynamicMenuUpdateRunScore runScore;
 
         if (isDynamicMenuUpdateActive) {
@@ -142,10 +138,6 @@ class MenuReplaceOperation extends Task {
     }
 
     private void updateMenuWithCellsToDelete(List<MenuCell> deleteCells, final List<MenuCell> addCells, final CompletionListener listener) {
-        if (getState() == Task.CANCELED) {
-            return;
-        }
-
         sendDeleteCurrentMenu(deleteCells, new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
@@ -168,7 +160,7 @@ class MenuReplaceOperation extends Task {
             return;
         }
 
-        if (deleteMenuCells.isEmpty()) {
+        if (deleteMenuCells == null || deleteMenuCells.isEmpty()) {
             listener.onComplete(true);
             return;
         }
@@ -218,6 +210,11 @@ class MenuReplaceOperation extends Task {
                     listener.onComplete(false);
                     return;
                 }
+
+                if (getState() == Task.CANCELED) {
+                    return;
+                }
+
                 sendRPCs(subMenuCommands, internalInterface.get(), new SendingRPCsCompletionListener() {
                     @Override
                     public void onComplete(boolean success, Map<RPCRequest, String> errors) {
@@ -250,6 +247,10 @@ class MenuReplaceOperation extends Task {
     }
 
     private void startSubMenuUpdatesWithOldKeptCells(final List<MenuCell> oldKeptCells, final List<MenuCell> newKeptCells, final int startIndex, final CompletionListener listener) {
+        if (getState() == Task.CANCELED) {
+            return;
+        }
+
         if (oldKeptCells.isEmpty() || startIndex >= oldKeptCells.size()) {
             listener.onComplete(true);
             return;
@@ -294,15 +295,6 @@ class MenuReplaceOperation extends Task {
         }
     }
 
-    private void transferCellIDFromOldCells(List<MenuCell> oldCells, List<MenuCell> newCells) {
-        if (oldCells == null || oldCells.isEmpty()) {
-            return;
-        }
-        for (int i = 0; i < newCells.size(); i++) {
-            newCells.get(i).setCellId(oldCells.get(i).getCellId());
-        }
-    }
-
     private List<MenuCell> filterMenuCellsWithStatusList(List<MenuCell> menuCells, List<MenuCellState> statusList, MenuCellState menuCellState) {
         List<MenuCell> filteredCells = new ArrayList<>();
         for (int index = 0; index < statusList.size(); index++) {
@@ -311,6 +303,15 @@ class MenuReplaceOperation extends Task {
             }
         }
         return filteredCells;
+    }
+
+    private void transferCellIDFromOldCells(List<MenuCell> oldCells, List<MenuCell> newCells) {
+        if (oldCells == null || oldCells.isEmpty()) {
+            return;
+        }
+        for (int i = 0; i < newCells.size(); i++) {
+            newCells.get(i).setCellId(oldCells.get(i).getCellId());
+        }
     }
 
     void setMenuConfiguration(MenuConfiguration menuConfiguration) {
