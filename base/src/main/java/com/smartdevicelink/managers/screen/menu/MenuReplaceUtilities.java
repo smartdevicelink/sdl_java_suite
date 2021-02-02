@@ -28,34 +28,6 @@ import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdN
  * Created by Bilal Alsharifi on 1/25/21.
  */
 class MenuReplaceUtilities {
-    static int commandIdForRPCRequest(RPCRequest request) {
-        int commandId = 0;
-        if (request instanceof AddCommand) {
-            commandId = ((AddCommand) request).getCmdID();
-        } else if (request instanceof AddSubMenu) {
-            commandId = ((AddSubMenu) request).getMenuID();
-        } else if (request instanceof DeleteCommand) {
-            commandId = ((DeleteCommand) request).getCmdID();
-        } else if (request instanceof DeleteSubMenu) {
-            commandId = ((DeleteSubMenu) request).getMenuID();
-        }
-        return commandId;
-    }
-
-    static List<RPCRequest> deleteCommandsForCells(List<MenuCell> cells) {
-        List<RPCRequest> deletes = new ArrayList<>();
-        for (MenuCell cell : cells) {
-            if (cell.getSubCells() == null) {
-                DeleteCommand delete = new DeleteCommand(cell.getCellId());
-                deletes.add(delete);
-            } else {
-                DeleteSubMenu delete = new DeleteSubMenu(cell.getCellId());
-                deletes.add(delete);
-            }
-        }
-        return deletes;
-    }
-
     static List<SdlArtwork> findAllArtworksToBeUploadedFromCells(List<MenuCell> cells, FileManager fileManager, WindowCapability windowCapability) {
         // Make sure we can use images in the menus
         if (!ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(windowCapability, ImageFieldName.cmdIcon)) {
@@ -82,6 +54,34 @@ class MenuReplaceUtilities {
             return false;
         }
         return (fileManager.hasUploadedFile(cell.getIcon()) || cell.getIcon().isStaticIcon());
+    }
+
+    static int commandIdForRPCRequest(RPCRequest request) {
+        int commandId = 0;
+        if (request instanceof AddCommand) {
+            commandId = ((AddCommand) request).getCmdID();
+        } else if (request instanceof AddSubMenu) {
+            commandId = ((AddSubMenu) request).getMenuID();
+        } else if (request instanceof DeleteCommand) {
+            commandId = ((DeleteCommand) request).getCmdID();
+        } else if (request instanceof DeleteSubMenu) {
+            commandId = ((DeleteSubMenu) request).getMenuID();
+        }
+        return commandId;
+    }
+
+    static List<RPCRequest> deleteCommandsForCells(List<MenuCell> cells) {
+        List<RPCRequest> deletes = new ArrayList<>();
+        for (MenuCell cell : cells) {
+            if (cell.getSubCells() == null) {
+                DeleteCommand delete = new DeleteCommand(cell.getCellId());
+                deletes.add(delete);
+            } else {
+                DeleteSubMenu delete = new DeleteSubMenu(cell.getCellId());
+                deletes.add(delete);
+            }
+        }
+        return deletes;
     }
 
     static List<RPCRequest> mainMenuCommandsForCells(List<MenuCell> cellsToAdd, FileManager fileManager, WindowCapability windowCapability, List<MenuCell> updatedMenu, MenuLayout defaultSubmenuLayout) {
