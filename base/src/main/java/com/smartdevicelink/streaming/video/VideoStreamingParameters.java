@@ -344,7 +344,6 @@ public class VideoStreamingParameters {
 		stableFrameRate = isStable;
 	}
 
-	@Override
     public double getScale() { return scale; }
 
     public double getPreferredDiagonal() { return preferredDiagonal; }
