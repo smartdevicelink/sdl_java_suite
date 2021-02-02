@@ -243,7 +243,7 @@ class MenuReplaceOperation extends Task {
             return;
         }
 
-        if (oldKeptCells.get(startIndex) != null && oldKeptCells.get(startIndex).getSubCells() != null && !oldKeptCells.get(startIndex).getSubCells().isEmpty()){
+        if (oldKeptCells.get(startIndex) != null && oldKeptCells.get(startIndex).getSubCells() != null && !oldKeptCells.get(startIndex).getSubCells().isEmpty()) {
             DynamicMenuUpdateRunScore tempScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(oldKeptCells.get(startIndex).getSubCells(), newKeptCells.get(startIndex).getSubCells());
 
             // If both old and new menu cells are empty. Then nothing needs to be done.
@@ -291,7 +291,7 @@ class MenuReplaceOperation extends Task {
         }
     }
 
-    private List<MenuCell> filterMenuCellsWithStatusList(List<MenuCell> menuCells, List<MenuCellState> statusList, MenuCellState menuCellState){
+    private List<MenuCell> filterMenuCellsWithStatusList(List<MenuCell> menuCells, List<MenuCellState> statusList, MenuCellState menuCellState) {
         List<MenuCell> filteredCells = new ArrayList<>();
         for (int index = 0; index < statusList.size(); index++) {
             if (statusList.get(index).equals(menuCellState)) {
