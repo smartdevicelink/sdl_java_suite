@@ -388,6 +388,17 @@ public class VideoStreamManager extends BaseVideoStreamManager {
             this.listOfStreamingRanges = listOfStreamingRange;
         }
     }
+//
+//    // regardless of VideoStreamingParameters are specified or not, we should refer to VideoStreamingCapability.
+//        if (majorProtocolVersion >= 5) {
+//        if (internalInterface.getSystemCapabilityManager() != null) {
+//            final VideoStreamingParameters params = ( parameters == null) ? new VideoStreamingParameters() : new VideoStreamingParameters(parameters);
+//            internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.VIDEO_STREAMING, new OnSystemCapabilityListener() {
+//                @Override
+//                public void onCapabilityRetrieved(Object capability) {
+//                    params.update((VideoStreamingCapability) capability, vehicleMake);    //Streaming parameters are ready time to stream
+//                    startStreaming(params, encrypted);
+//                }
 
     private void processCapabilitiesWithPendingStart(boolean encrypted, VideoStreamingParameters parameters){
         if (parameters == null) {
@@ -406,10 +417,10 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                             if (listOfStreamingRanges != null) {
                                 // filtering
                                 castedCapability.setAdditionalVideoStreamingCapabilities(
-                                    getSupportedCapabilities(
-                                            listOfStreamingRanges,
-                                            castedCapability.getAdditionalVideoStreamingCapabilities()
-                                    )
+                                        getSupportedCapabilities(
+                                                listOfStreamingRanges,
+                                                castedCapability.getAdditionalVideoStreamingCapabilities()
+                                        )
                                 );
                             } else { }
                             AppCapability appCapability = new AppCapability();
