@@ -292,22 +292,6 @@ abstract class BaseMenuManager extends BaseSubManager {
      * @param menuConfiguration - The default menuConfiguration
      */
     public void setMenuConfiguration(@NonNull final MenuConfiguration menuConfiguration) {
-        SdlMsgVersion sdlMsgVersion = internalInterface.getSdlMsgVersion();
-        if (sdlMsgVersion == null) {
-            DebugTool.logError(TAG, "SDL Message Version is null. Cannot set Menu Configuration");
-            return;
-        }
-
-        if (sdlMsgVersion.getMajorVersion() < 6) {
-            DebugTool.logWarning(TAG, "Menu configurations is only supported on head units with RPC spec version 6.0.0 or later. Currently connected head unit RPC spec version is: " + sdlMsgVersion.getMajorVersion() + "." + sdlMsgVersion.getMinorVersion() + "." + sdlMsgVersion.getPatchVersion());
-            return;
-        }
-
-        if (menuConfiguration.getMenuLayout() == null) {
-            DebugTool.logInfo(TAG, "Menu Layout is null, not sending setGlobalProperties");
-            return;
-        }
-
         if (menuConfiguration.equals(this.menuConfiguration)) {
             DebugTool.logInfo(TAG, "New menu configuration is equal to existing one, will not set new configuration");
             return;

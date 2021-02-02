@@ -36,6 +36,7 @@ import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SetGlobalProperties;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
@@ -52,14 +53,14 @@ class MenuConfigurationUpdateOperation extends Task {
     private static final String TAG = "MenuConfigurationUpdateOperation";
     private final WeakReference<ISdl> internalInterface;
     private final List<MenuLayout> availableMenuLayouts;
-    private final MenuConfiguration menuConfiguration;
+    private final MenuConfiguration updatedMenuConfiguration;
     private final CompletionListener completionListener;
 
     MenuConfigurationUpdateOperation(ISdl internalInterface, WindowCapability windowCapability, MenuConfiguration menuConfiguration, CompletionListener completionListener) {
         super(TAG);
         this.internalInterface = new WeakReference<>(internalInterface);
         this.availableMenuLayouts = windowCapability != null ? windowCapability.getMenuLayoutsAvailable() : null;
-        this.menuConfiguration = menuConfiguration;
+        this.updatedMenuConfiguration = menuConfiguration;
         this.completionListener = completionListener;
     }
 
@@ -73,29 +74,58 @@ class MenuConfigurationUpdateOperation extends Task {
             return;
         }
 
-        if (availableMenuLayouts == null) {
-            DebugTool.logWarning(TAG, "Could not set the main menu configuration. Which menu layouts can be used is not available");
-            finishOperation(false);
-        } else if (!availableMenuLayouts.contains(menuConfiguration.getMenuLayout()) || !availableMenuLayouts.contains(menuConfiguration.getSubMenuLayout())) {
-            DebugTool.logError(TAG, String.format("One or more of the set menu layouts are not available on this system. The menu configuration will not be set. Available menu layouts: %s, set menu layouts: %s", availableMenuLayouts, menuConfiguration));
-            finishOperation(false);
-        }
-
-        sendSetGlobalProperties();
+        sendSetGlobalProperties(new CompletionListener() {
+            @Override
+            public void onComplete(boolean success) {
+                finishOperation(success);
+            }
+        });
     }
 
-    private void sendSetGlobalProperties() {
+    private void sendSetGlobalProperties(final CompletionListener listener) {
+        if (internalInterface.get() == null) {
+            listener.onComplete(false);
+            return;
+        }
+
+        SdlMsgVersion sdlMsgVersion = internalInterface.get().getSdlMsgVersion();
+        if (sdlMsgVersion == null) {
+            DebugTool.logError(TAG, "SDL Message Version is null. Cannot set Menu Configuration");
+            listener.onComplete(false);
+            return;
+        }
+
+        if (sdlMsgVersion.getMajorVersion() < 6) {
+            DebugTool.logWarning(TAG, "Menu configurations is only supported on head units with RPC spec version 6.0.0 or later. Currently connected head unit RPC spec version is: " + sdlMsgVersion.getMajorVersion() + "." + sdlMsgVersion.getMinorVersion() + "." + sdlMsgVersion.getPatchVersion());
+            listener.onComplete(false);
+            return;
+        }
+
+        if (updatedMenuConfiguration.getMenuLayout() == null) {
+            DebugTool.logInfo(TAG, "Menu Layout is null, not sending setGlobalProperties");
+            listener.onComplete(false);
+            return;
+        }
+
+        if (availableMenuLayouts == null) {
+            DebugTool.logWarning(TAG, "Could not set the main menu configuration. Which menu layouts can be used is not available");
+            listener.onComplete(false);
+        } else if (!availableMenuLayouts.contains(updatedMenuConfiguration.getMenuLayout()) || !availableMenuLayouts.contains(updatedMenuConfiguration.getSubMenuLayout())) {
+            DebugTool.logError(TAG, String.format("One or more of the set menu layouts are not available on this system. The menu configuration will not be set. Available menu layouts: %s, set menu layouts: %s", availableMenuLayouts, updatedMenuConfiguration));
+            listener.onComplete(false);
+        }
+
         SetGlobalProperties setGlobalProperties = new SetGlobalProperties();
-        setGlobalProperties.setMenuLayout(menuConfiguration.getMenuLayout());
+        setGlobalProperties.setMenuLayout(updatedMenuConfiguration.getMenuLayout());
         setGlobalProperties.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
                 if (response.getSuccess()) {
-                    DebugTool.logInfo(TAG, "Menu Configuration successfully set: " + menuConfiguration.toString());
+                    DebugTool.logInfo(TAG, "Menu Configuration successfully set: " + updatedMenuConfiguration.toString());
                 } else {
                     DebugTool.logError(TAG, "onError: " + response.getResultCode() + " | Info: " + response.getInfo());
                 }
-                finishOperation(response.getSuccess());
+                listener.onComplete(response.getSuccess());
             }
         });
         if (internalInterface.get() != null) {
