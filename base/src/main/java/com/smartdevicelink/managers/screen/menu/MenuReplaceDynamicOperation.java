@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.buildAllAddStatusesForMenu;
+import static com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.buildAllDeleteStatusesForMenu;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.deleteCommandsForCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.findAllArtworksToBeUploadedFromCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.mainMenuCommandsForCells;
@@ -35,10 +37,11 @@ class MenuReplaceDynamicOperation extends Task {
     private final WindowCapability windowCapability;
     private List<MenuCell> currentMenu;
     private final List<MenuCell> updatedMenu;
+    private final boolean isDynamicMenuUpdateActive;
     private final MenuManagerCompletionListener operationCompletionListener;
     private MenuConfiguration menuConfiguration;
 
-    MenuReplaceDynamicOperation(ISdl internalInterface, FileManager fileManager, WindowCapability windowCapability, MenuConfiguration menuConfiguration, List<MenuCell> currentMenu, List<MenuCell> updatedMenu, MenuManagerCompletionListener operationCompletionListener) {
+    MenuReplaceDynamicOperation(ISdl internalInterface, FileManager fileManager, WindowCapability windowCapability, MenuConfiguration menuConfiguration, List<MenuCell> currentMenu, List<MenuCell> updatedMenu, boolean isDynamicMenuUpdateActive, MenuManagerCompletionListener operationCompletionListener) {
         super(TAG);
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
@@ -46,6 +49,7 @@ class MenuReplaceDynamicOperation extends Task {
         this.menuConfiguration = menuConfiguration;
         this.currentMenu = currentMenu;
         this.updatedMenu = updatedMenu;
+        this.isDynamicMenuUpdateActive = isDynamicMenuUpdateActive;
         this.operationCompletionListener = operationCompletionListener;
     }
 
@@ -72,11 +76,19 @@ class MenuReplaceDynamicOperation extends Task {
             return;
         }
 
-        DynamicMenuUpdateRunScore runScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(currentMenu, updatedMenu);
+        DynamicMenuUpdateRunScore runScore = null;
+
+        if (isDynamicMenuUpdateActive) {
+            DebugTool.logInfo(TAG, "Dynamic menu update is active. Running the algorithm to find the best run score");
+            runScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(currentMenu, updatedMenu);
+        } else {
+            DebugTool.logInfo(TAG, "Dynamic menu update is not active. Forcing the deletion of all old cells and adding new ones");
+            runScore = new DynamicMenuUpdateRunScore(buildAllDeleteStatusesForMenu(currentMenu), buildAllAddStatusesForMenu(updatedMenu), updatedMenu.size());
+        }
 
         // If both old and new menu cells are empty. Then nothing needs to be done.
         if (runScore == null) {
-            finishOperation(true);
+            listener.onComplete(true);
             return;
         }
 
