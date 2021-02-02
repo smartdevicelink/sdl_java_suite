@@ -76,7 +76,7 @@ class MenuReplaceOperation extends Task {
             return;
         }
 
-        DynamicMenuUpdateRunScore runScore = null;
+        DynamicMenuUpdateRunScore runScore;
 
         if (isDynamicMenuUpdateActive) {
             DebugTool.logInfo(TAG, "Dynamic menu update is active. Running the algorithm to find the best run score");
@@ -103,7 +103,8 @@ class MenuReplaceOperation extends Task {
         final List<MenuCell> newKeeps = filterMenuCellsWithStatusList(updatedMenu, addMenuStatus, MenuCellState.KEEP);
 
         // Since we are creating a new Menu but keeping old cells we must first transfer the old cellIDs to the new menus kept cells.
-        // this is needed for the onCommands to still work
+        // This is needed for the onCommands to still work
+        // We will transfer the ids for subCells later
         transferCellIDFromOldCells(oldKeeps, newKeeps);
 
         // Upload the Artworks
@@ -144,7 +145,7 @@ class MenuReplaceOperation extends Task {
         sendDeleteCurrentMenu(deleteCells, new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
-                sendNewMenuCells(addCells, currentMenu, new CompletionListener() {
+                sendNewMenuCells(addCells, new CompletionListener() {
                     @Override
                     public void onComplete(boolean success) {
                         if (!success) {
@@ -187,13 +188,12 @@ class MenuReplaceOperation extends Task {
         });
     }
 
-    private void sendNewMenuCells(final List<MenuCell> newMenuCells, final List<MenuCell> oldMenu, final CompletionListener listener) {
+    private void sendNewMenuCells(final List<MenuCell> newMenuCells, final CompletionListener listener) {
         if (getState() == Task.CANCELED) {
             return;
         }
 
         if (newMenuCells == null || newMenuCells.isEmpty()) {
-            // This can be considered a success if the user was clearing out their menu
             DebugTool.logInfo(TAG, "There are no cells to update.");
             listener.onComplete(true);
             return;
@@ -248,7 +248,8 @@ class MenuReplaceOperation extends Task {
 
             // If both old and new menu cells are empty. Then nothing needs to be done.
             if (tempScore == null) {
-                finishOperation(true);
+                // After the first set of submenu cells were added and deleted we must find the next set of sub cells until we loop through all the elements
+                startSubMenuUpdatesWithOldKeptCells(oldKeptCells, newKeptCells, startIndex + 1, listener);
                 return;
             }
 
@@ -266,7 +267,7 @@ class MenuReplaceOperation extends Task {
             sendDeleteCurrentMenu(cellsToDelete, new CompletionListener() {
                 @Override
                 public void onComplete(boolean success) {
-                    sendNewMenuCells(cellsToAdd, currentMenu.get(startIndex).getSubCells(), new CompletionListener() {
+                    sendNewMenuCells(cellsToAdd, new CompletionListener() {
                         @Override
                         public void onComplete(boolean success) {
                             // After the first set of submenu cells were added and deleted we must find the next set of sub cells until we loop through all the elements
@@ -282,7 +283,7 @@ class MenuReplaceOperation extends Task {
     }
 
     private void transferCellIDFromOldCells(List<MenuCell> oldCells, List<MenuCell> newCells) {
-        if (oldCells.isEmpty()) {
+        if (oldCells == null || oldCells.isEmpty()) {
             return;
         }
         for (int i = 0; i < newCells.size(); i++) {
