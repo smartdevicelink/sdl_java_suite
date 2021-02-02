@@ -73,7 +73,6 @@ abstract class BaseMenuManager extends BaseSubManager {
     private List<MenuCell> menuCells;
     private DynamicMenuUpdatesMode dynamicMenuUpdatesMode;
     private MenuConfiguration menuConfiguration;
-    private SdlMsgVersion sdlMsgVersion;
     private String displayType;
     private HMILevel oldHMILevel;
     private HMILevel currentHMILevel;
@@ -90,14 +89,14 @@ abstract class BaseMenuManager extends BaseSubManager {
         super(internalInterface);
 
         this.lastMenuId = menuCellIdMin;
+        this.menuConfiguration = new MenuConfiguration(null, null);
+        this.menuCells = new ArrayList<>();
+        this.currentMenuCells = new ArrayList<>();
+        this.dynamicMenuUpdatesMode = DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE;
+        this.transactionQueue = newTransactionQueue();
         this.fileManager = new WeakReference<>(fileManager);
         this.currentSystemContext = SystemContext.SYSCTXT_MAIN;
         this.currentHMILevel = HMILevel.HMI_NONE;
-        this.dynamicMenuUpdatesMode = DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE;
-        this.sdlMsgVersion = internalInterface.getSdlMsgVersion();
-        this.transactionQueue = newTransactionQueue();
-        this.menuCells = new ArrayList<>();
-        this.currentMenuCells = new ArrayList<>();
         addListeners();
     }
 
@@ -117,7 +116,6 @@ abstract class BaseMenuManager extends BaseSubManager {
         dynamicMenuUpdatesMode = DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE;
         windowCapability = null;
         menuConfiguration = null;
-        sdlMsgVersion = null;
 
         // Cancel the operations
         if (transactionQueue != null) {
@@ -133,6 +131,23 @@ abstract class BaseMenuManager extends BaseSubManager {
         }
 
         super.dispose();
+    }
+
+    private Queue newTransactionQueue() {
+        Queue queue = internalInterface.getTaskmaster().createQueue("MenuManager", 7, false);
+        queue.pause();
+        return queue;
+    }
+
+    // Suspend the queue if the HMI level is NONE since we want to delay sending RPCs until we're in non-NONE
+    private void updateTransactionQueueSuspended() {
+        if (currentHMILevel == HMILevel.HMI_NONE || currentSystemContext == SystemContext.SYSCTXT_MENU) {
+            DebugTool.logInfo(TAG, String.format("Suspending the transaction queue. Current HMI level is: %s, current system context is: %s", currentHMILevel, currentSystemContext));
+            transactionQueue.pause();
+        } else {
+            DebugTool.logInfo(TAG, "Starting the transaction queue");
+            transactionQueue.resume();
+        }
     }
 
     public void setDynamicUpdatesMode(@NonNull DynamicMenuUpdatesMode value) {
@@ -243,7 +258,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         } else if (cell != null && foundClonedCell == null) {
             DebugTool.logError(DebugTool.TAG, "This cell has not been sent to the head unit, so no submenu can be opened. Make sure that the cell exists in the SDLManager.menu array");
             return false;
-        } else if (sdlMsgVersion.getMajorVersion() < 6) {
+        } else if (internalInterface.getSdlMsgVersion().getMajorVersion() < 6) {
             DebugTool.logWarning(TAG, "The openSubmenu method is not supported on this head unit.");
             return false;
         }
@@ -286,6 +301,7 @@ abstract class BaseMenuManager extends BaseSubManager {
      * @param menuConfiguration - The default menuConfiguration
      */
     public void setMenuConfiguration(@NonNull final MenuConfiguration menuConfiguration) {
+        SdlMsgVersion sdlMsgVersion = internalInterface.getSdlMsgVersion();
         if (sdlMsgVersion == null) {
             DebugTool.logError(TAG, "SDL Message Version is null. Cannot set Menu Configuration");
             return;
@@ -383,27 +399,6 @@ abstract class BaseMenuManager extends BaseSubManager {
             }
         };
         internalInterface.addOnRPCNotificationListener(FunctionID.ON_COMMAND, commandListener);
-    }
-
-    private Queue newTransactionQueue() {
-        Queue queue = internalInterface.getTaskmaster().createQueue("MenuManager", 7, false);
-        queue.pause();
-        return queue;
-    }
-
-    private void updateTransactionQueueSuspended() {
-        if (oldHMILevel == HMILevel.HMI_NONE && currentHMILevel != HMILevel.HMI_NONE && currentSystemContext != SystemContext.SYSCTXT_MENU) {
-            // Resume queue if we were in NONE and now we are not
-            DebugTool.logInfo(TAG, "We now have proper HMI, sending waiting update");
-            transactionQueue.resume();
-        } else if (oldSystemContext == SystemContext.SYSCTXT_MENU && currentSystemContext != SystemContext.SYSCTXT_MENU && currentHMILevel != HMILevel.HMI_NONE) {
-            // If we don't check for this and only update when not in the menu, there can be IN_USE errors, especially with submenus.
-            // We also don't want to encourage changing out the menu while the user is using it for usability reasons.
-            DebugTool.logInfo(TAG, "We now have a proper system context, sending waiting update");
-            transactionQueue.resume();
-        } else if (currentHMILevel == HMILevel.HMI_NONE || currentSystemContext == SystemContext.SYSCTXT_MENU){
-            transactionQueue.pause();
-        }
     }
 
     private List<MenuCell> cloneMenuCellsList(List<MenuCell> originalList) {
