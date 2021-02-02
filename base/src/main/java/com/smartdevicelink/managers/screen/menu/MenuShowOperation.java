@@ -76,9 +76,9 @@ class MenuShowOperation extends Task {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
                 if (response.getSuccess()) {
-                    DebugTool.logInfo(TAG, "Open Menu Request Successful");
+                    DebugTool.logInfo(TAG, "Successfully opened application menu");
                 } else {
-                    DebugTool.logError(TAG, "Open Menu Request Failed");
+                    DebugTool.logError(TAG, "Open Menu Request Failed. Result code: " + response.getResultCode()  + ". Info: "+ response.getInfo());
                 }
                 onFinished();
             }
