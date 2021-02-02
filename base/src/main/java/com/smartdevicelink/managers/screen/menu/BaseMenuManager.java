@@ -74,9 +74,7 @@ abstract class BaseMenuManager extends BaseSubManager {
     private DynamicMenuUpdatesMode dynamicMenuUpdatesMode;
     private MenuConfiguration menuConfiguration;
     private String displayType;
-    private HMILevel oldHMILevel;
     private HMILevel currentHMILevel;
-    private SystemContext oldSystemContext;
     private SystemContext currentSystemContext;
     private OnRPCNotificationListener hmiListener;
     private OnRPCNotificationListener commandListener;
@@ -179,7 +177,6 @@ abstract class BaseMenuManager extends BaseSubManager {
         HashSet<String> titleCheckSet = new HashSet<>();
         HashSet<String> allMenuVoiceCommands = new HashSet<>();
         int voiceCommandCount = 0;
-
         for (MenuCell cell : clonedCells) {
             titleCheckSet.add(cell.getTitle());
             if (cell.getVoiceCommands() != null) {
@@ -202,29 +199,23 @@ abstract class BaseMenuManager extends BaseSubManager {
 
         updateIdsOnMenuCells(clonedCells, parentIdNotFound);
 
-        currentMenuCells = new ArrayList<>(menuCells);
         menuCells = new ArrayList<>(clonedCells);
 
-        // Cancel pending MenuReplaceOperations
-        for (Task operation : transactionQueue.getTasksAsList()) {
-            if (operation instanceof MenuReplaceOperation) {
-                operation.cancelTask();
-            }
-        }
-
-        // Checks against what the developer set for update mode and against the display type to
-        // determine how the menu will be updated. This has the ability to be changed during a session.
-        Task operation;
-        MenuManagerCompletionListener menuManagerCompletionListener = new MenuManagerCompletionListener() {
+        boolean isDynamicMenuUpdateActive = isDynamicMenuUpdateActive(dynamicMenuUpdatesMode, displayType);
+        Task operation = new MenuReplaceOperation(internalInterface, fileManager.get(), windowCapability, menuConfiguration, currentMenuCells, menuCells, isDynamicMenuUpdateActive, new MenuManagerCompletionListener() {
             @Override
             public void onComplete(boolean success, List<MenuCell> currentMenuCells) {
                 BaseMenuManager.this.currentMenuCells = currentMenuCells;
                 updateMenuReplaceOperationsWithNewCurrentMenu();
             }
-        };
+        });
 
-        boolean isDynamicMenuUpdateActive = isDynamicMenuUpdateActive(dynamicMenuUpdatesMode, displayType);
-        operation = new MenuReplaceOperation(internalInterface, fileManager.get(), windowCapability, menuConfiguration, currentMenuCells, menuCells, isDynamicMenuUpdateActive, menuManagerCompletionListener);
+        // Cancel previous MenuReplaceOperations
+        for (Task task : transactionQueue.getTasksAsList()) {
+            if (task instanceof MenuReplaceOperation) {
+                task.cancelTask();
+            }
+        }
 
         transactionQueue.add(operation, false);
     }
@@ -317,15 +308,24 @@ abstract class BaseMenuManager extends BaseSubManager {
             return;
         }
 
+        if (menuConfiguration.equals(this.menuConfiguration)) {
+            DebugTool.logInfo(TAG, "New menu configuration is equal to existing one, will not set new configuration");
+            return;
+        }
+
         MenuConfigurationUpdateOperation operation = new MenuConfigurationUpdateOperation(internalInterface, windowCapability, menuConfiguration, new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
-                BaseMenuManager.this.menuConfiguration = menuConfiguration;
+                if (!success) {
+                    DebugTool.logError(TAG, "Error setting new menu configuration. Will revert to old menu configuration.");
+                } else {
+                    BaseMenuManager.this.menuConfiguration = menuConfiguration;
 
-                // Update pending operations with new menuConfiguration
-                for (Task task : transactionQueue.getTasksAsList()) {
-                    if (task instanceof MenuReplaceOperation) {
-                        ((MenuReplaceOperation) task).setMenuConfiguration(menuConfiguration);
+                    // Update pending operations with new menuConfiguration
+                    for (Task task : transactionQueue.getTasksAsList()) {
+                        if (task instanceof MenuReplaceOperation) {
+                            ((MenuReplaceOperation) task).setMenuConfiguration(menuConfiguration);
+                        }
                     }
                 }
             }
@@ -382,9 +382,7 @@ abstract class BaseMenuManager extends BaseSubManager {
                 if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
                     return;
                 }
-                oldHMILevel = currentHMILevel;
                 currentHMILevel = onHMIStatus.getHmiLevel();
-                oldSystemContext = currentSystemContext;
                 currentSystemContext = onHMIStatus.getSystemContext();
                 updateTransactionQueueSuspended();
             }
