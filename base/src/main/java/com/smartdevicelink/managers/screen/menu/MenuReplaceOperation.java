@@ -20,9 +20,13 @@ import java.util.Map;
 
 import static com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.buildAllAddStatusesForMenu;
 import static com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.buildAllDeleteStatusesForMenu;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.addMenuRequestWithCommandId;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.commandIdForRPCRequest;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.deleteCommandsForCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.findAllArtworksToBeUploadedFromCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.mainMenuCommandsForCells;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.positionForRPCRequest;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.removeMenuCellFromList;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.sendRPCs;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.subMenuCommandsForCells;
 
@@ -182,8 +186,10 @@ class MenuReplaceOperation extends Task {
             }
 
             @Override
-            public void onResponse(RPCRequest request, RPCResponse response, int commandId) {
-
+            public void onResponse(RPCRequest request, RPCResponse response) {
+                // Find the id of the successful request and remove it from the current menu list wherever it may have been
+                int commandId = commandIdForRPCRequest(request);
+                removeMenuCellFromList(currentMenu, commandId);
             }
         });
     }
@@ -224,15 +230,21 @@ class MenuReplaceOperation extends Task {
                     }
 
                     @Override
-                    public void onResponse(RPCRequest request, RPCResponse response, int commandId) {
-
+                    public void onResponse(RPCRequest request, RPCResponse response) {
+                        // Find the id of the successful request and add it from the current menu list wherever it needs to be
+                        int commandId = commandIdForRPCRequest(request);
+                        int position = positionForRPCRequest(request);
+                        addMenuRequestWithCommandId(commandId, position, newMenuCells, currentMenu);
                     }
                 });
             }
 
             @Override
-            public void onResponse(RPCRequest request, RPCResponse response, int commandId) {
-
+            public void onResponse(RPCRequest request, RPCResponse response) {
+                // Find the id of the successful request and add it from the current menu list wherever it needs to be
+                int commandId = commandIdForRPCRequest(request);
+                int position = positionForRPCRequest(request);
+                addMenuRequestWithCommandId(commandId, position, newMenuCells, currentMenu);
             }
         });
     }

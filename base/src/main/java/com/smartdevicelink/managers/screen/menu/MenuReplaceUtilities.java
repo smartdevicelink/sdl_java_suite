@@ -70,10 +70,20 @@ class MenuReplaceUtilities {
         return commandId;
     }
 
+    static int positionForRPCRequest(RPCRequest request) {
+        int position = 0;
+        if (request instanceof AddCommand) {
+            position = ((AddCommand) request).getMenuParams().getPosition();
+        } else if (request instanceof AddSubMenu) {
+            position = ((AddSubMenu) request).getPosition();
+        }
+        return position;
+    }
+
     static List<RPCRequest> deleteCommandsForCells(List<MenuCell> cells) {
         List<RPCRequest> deletes = new ArrayList<>();
         for (MenuCell cell : cells) {
-            if (cell.getSubCells() == null) {
+            if (cell.getSubCells() == null || cell.getSubCells().isEmpty()) {
                 DeleteCommand delete = new DeleteCommand(cell.getCellId());
                 deletes.add(delete);
             } else {
@@ -84,52 +94,52 @@ class MenuReplaceUtilities {
         return deletes;
     }
 
-    static List<RPCRequest> mainMenuCommandsForCells(List<MenuCell> cellsToAdd, FileManager fileManager, WindowCapability windowCapability, List<MenuCell> updatedMenu, MenuLayout defaultSubmenuLayout) {
-        List<RPCRequest> builtCommands = new ArrayList<>();
+    static List<RPCRequest> mainMenuCommandsForCells(List<MenuCell> cells, FileManager fileManager, WindowCapability windowCapability, List<MenuCell> menu, MenuLayout defaultSubmenuLayout) {
+        List<RPCRequest> commands = new ArrayList<>();
 
         // We need the index so we will use this type of loop
-        for (int z = 0; z < updatedMenu.size(); z++) {
-            MenuCell mainCell = updatedMenu.get(z);
-            for (int i = 0; i < cellsToAdd.size(); i++) {
-                MenuCell addCell = cellsToAdd.get(i);
+        for (int menuInteger = 0; menuInteger < menu.size(); menuInteger++) {
+            MenuCell mainCell = menu.get(menuInteger);
+            for (int updateCellsIndex = 0; updateCellsIndex < cells.size(); updateCellsIndex++) {
+                MenuCell addCell = cells.get(updateCellsIndex);
                 if (mainCell.equals(addCell)) {
                     if (addCell.getSubCells() != null && !addCell.getSubCells().isEmpty()) {
-                        builtCommands.add(subMenuCommandForMenuCell(addCell, fileManager, windowCapability, z, defaultSubmenuLayout));
+                        commands.add(subMenuCommandForMenuCell(addCell, fileManager, windowCapability, menuInteger, defaultSubmenuLayout));
                     } else {
-                        builtCommands.add(commandForMenuCell(addCell, fileManager, windowCapability, z));
+                        commands.add(commandForMenuCell(addCell, fileManager, windowCapability, menuInteger));
                     }
                     break;
                 }
             }
         }
-        return builtCommands;
+        return commands;
     }
 
     static List<RPCRequest> subMenuCommandsForCells(List<MenuCell> cells, FileManager fileManager, WindowCapability windowCapability, MenuLayout defaultSubmenuLayout) {
-        List<RPCRequest> builtCommands = new ArrayList<>();
+        List<RPCRequest> commands = new ArrayList<>();
         for (MenuCell cell : cells) {
             if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
-                builtCommands.addAll(allCommandsForCells(cell.getSubCells(), fileManager, windowCapability, defaultSubmenuLayout));
+                commands.addAll(allCommandsForCells(cell.getSubCells(), fileManager, windowCapability, defaultSubmenuLayout));
             }
         }
-        return builtCommands;
+        return commands;
     }
 
     static List<RPCRequest> allCommandsForCells(List<MenuCell> cells, FileManager fileManager, WindowCapability windowCapability, MenuLayout defaultSubmenuLayout) {
-        List<RPCRequest> builtCommands = new ArrayList<>();
+        List<RPCRequest> commands = new ArrayList<>();
 
-        for (int i = 0; i < cells.size(); i++) {
-            MenuCell cell = cells.get(i);
+        for (int cellIndex = 0; cellIndex < cells.size(); cellIndex++) {
+            MenuCell cell = cells.get(cellIndex);
             if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
-                builtCommands.add(subMenuCommandForMenuCell(cell, fileManager, windowCapability, i, defaultSubmenuLayout));
+                commands.add(subMenuCommandForMenuCell(cell, fileManager, windowCapability, cellIndex, defaultSubmenuLayout));
 
                 // recursively grab the commands for all the sub cells
-                builtCommands.addAll(allCommandsForCells(cell.getSubCells(), fileManager, windowCapability, defaultSubmenuLayout));
+                commands.addAll(allCommandsForCells(cell.getSubCells(), fileManager, windowCapability, defaultSubmenuLayout));
             } else {
-                builtCommands.add(commandForMenuCell(cell, fileManager, windowCapability, i));
+                commands.add(commandForMenuCell(cell, fileManager, windowCapability, cellIndex));
             }
         }
-        return builtCommands;
+        return commands;
     }
 
     static AddCommand commandForMenuCell(MenuCell cell, FileManager fileManager, WindowCapability windowCapability, int position) {
@@ -169,6 +179,76 @@ class MenuReplaceUtilities {
                 .setMenuIcon(icon);
     }
 
+    static boolean removeMenuCellFromList(List<MenuCell> menuCellList, int commandId) {
+        for (MenuCell menuCell : menuCellList) {
+            if (menuCell.getCellId() == commandId) {
+                // If the cell id matches the command id, remove it from the list and return
+                menuCellList.remove(menuCell);
+                return true;
+            } else if (menuCell.getSubCells() != null && !menuCell.getSubCells().isEmpty()) {
+                // If the menu cell has sub cells, we need to recurse and check the sub cells
+                List<MenuCell> newList = menuCell.getSubCells();
+                boolean foundAndRemovedItem = removeMenuCellFromList(newList, commandId);
+                if (foundAndRemovedItem) {
+                    menuCell.setSubCells(newList);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    static boolean addMenuRequestWithCommandId(int commandId, int position, List<MenuCell> newMenuList, List<MenuCell> mainMenuList) {
+        MenuCell addedCell = null;
+        for (MenuCell cell : newMenuList) {
+            if (cell.getCellId() == commandId) {
+                addedCell = cell;
+                break;
+            } else if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
+                return addMenuRequestWithCommandId(commandId, position, cell.getSubCells(), mainMenuList);
+            }
+        }
+        if (addedCell != null) {
+            addMenuCell(addedCell, mainMenuList, position);
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean addMenuCell(MenuCell cell, List<MenuCell> menuCellList, int position) {
+        if (cell.getParentCellId() != parentIdNotFound) {
+            // If the cell has a parent id, we need to find the cell with a matching cell id and insert it into its submenu
+            for (MenuCell menuCell : menuCellList) {
+                if (menuCell.getCellId() == cell.getParentCellId()) {
+                    // If we found the correct submenu, insert it into that submenu
+                    insertMenuCell(cell, menuCell.getSubCells(), position);
+                    return true;
+                } else if (menuCell.getSubCells() != null && !menuCell.getSubCells().isEmpty()) {
+                    // Check the sub cells of this cell to see if any of those have cell ids that match the parent cell id
+                    List<MenuCell> newList = menuCell.getSubCells();
+                    boolean foundAndAddedItem = addMenuCell(cell, newList, position);
+                    if (foundAndAddedItem) {
+                        menuCell.setSubCells(newList);
+                        return true;
+                    }
+                }
+            }
+        } else {
+            // The cell does not have a parent id, just insert it into the main menu
+            insertMenuCell(cell, menuCellList, position);
+            return true;
+        }
+        return false;
+    }
+
+    private static void insertMenuCell(MenuCell cell, List<MenuCell> cellList, int position) {
+        if (position > cellList.size()) {
+            cellList.add(cell);
+        } else {
+            cellList.add(position, cell);
+        }
+    }
+
     static void sendRPCs(final List<RPCRequest> requests, ISdl internalInterface, final SendingRPCsCompletionListener listener) {
         final Map<RPCRequest, String> errors = new HashMap<>();
         if (requests == null || requests.isEmpty()) {
@@ -197,8 +277,9 @@ class MenuReplaceUtilities {
                 if (!response.getSuccess()) {
                     errors.put(request, "Failed to send RPC. Result: " + response.getResultCode() + " Info: " + response.getInfo());
                 }
-                listener.onResponse(request, response, commandIdForRPCRequest(request));
+                listener.onResponse(request, response);
             }
         });
     }
+
 }
