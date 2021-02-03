@@ -66,11 +66,14 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.menuCellIdMin;
+import static com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.MenuCellState.ADD;
+import static com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.MenuCellState.KEEP;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
@@ -254,42 +257,49 @@ public class MenuManagerTests {
         }
     }
 
-//    @Test
-//    public void testAlgorithmTest1() {
-//
-//        // Force Menu Manager to use the new way
-//        menuManager.setDynamicUpdatesMode(DynamicMenuUpdatesMode.FORCE_ON);
-//        assertEquals(menuManager.dynamicMenuUpdatesMode, DynamicMenuUpdatesMode.FORCE_ON);
-//
-//        // start fresh
-//        menuManager.oldMenuCells = null;
-//        menuManager.menuCells = null;
-//        menuManager.inProgressUpdate = null;
-//        menuManager.waitingUpdateMenuCells = null;
-//        menuManager.waitingOnHMIUpdate = false;
-//
-//        menuManager.currentHMILevel = HMILevel.HMI_FULL;
-//        // send new cells. They should set the old way
-//        List<MenuCell> oldMenu = createDynamicMenu1();
-//        List<MenuCell> newMenu = createDynamicMenu1New();
-//        menuManager.setMenuCells(oldMenu);
-//        assertEquals(menuManager.menuCells.size(), 4);
-//
-//        // this happens in the menu manager but lets make sure its behaving
-//        DynamicMenuUpdateRunScore runScore = menuManager.runMenuCompareAlgorithm(oldMenu, newMenu);
-//
-//        List<Integer> oldMenuScore = Arrays.asList(0, 0, 0, 0);
-//        List<Integer> newMenuScore = Arrays.asList(0, 0, 0, 0, 1);
-//
-//        assertEquals(runScore.getScore(), 1);
-//        assertEquals(runScore.getOldMenu(), oldMenuScore);
-//        assertEquals(runScore.getCurrentMenu(), newMenuScore);
-//
-//        menuManager.setMenuCells(newMenu);
-//        assertEquals(menuManager.menuCells.size(), 5);
-//        assertEquals(menuManager.keepsNew.size(), 4);
-//        assertEquals(menuManager.keepsOld.size(), 4);
-//    }
+    @Test
+    public void testAlgorithmTest1() {
+        // Force Menu Manager to use the new way
+        menuManager.setDynamicUpdatesMode(DynamicMenuUpdatesMode.FORCE_ON);
+        assertEquals(menuManager.dynamicMenuUpdatesMode, DynamicMenuUpdatesMode.FORCE_ON);
+
+        // start fresh
+        menuManager.currentMenuCells = new ArrayList<>();
+        menuManager.menuCells = new ArrayList<>();
+
+        sendFakeCoreOnHMIFullNotifications();
+
+        // send new cells. They should set the old way
+        List<MenuCell> oldMenu = createDynamicMenu1();
+        List<MenuCell> newMenu = createDynamicMenu1New();
+        menuManager.setMenuCells(oldMenu);
+
+        // Sleep to give time to Taskmaster to run the operations
+        sleep();
+
+        assertEquals(menuManager.currentMenuCells.size(), 4);
+
+        // this happens in the menu manager but lets make sure its behaving
+        DynamicMenuUpdateRunScore runScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(oldMenu, newMenu);
+
+        List<DynamicMenuUpdateAlgorithm.MenuCellState> oldMenuStatus = Arrays.asList(KEEP, KEEP, KEEP, KEEP);
+        List<DynamicMenuUpdateAlgorithm.MenuCellState> newMenuStatus = Arrays.asList(KEEP, KEEP, KEEP, KEEP, ADD);
+
+        assertEquals(1, runScore.getScore());
+        assertEquals(runScore.getOldStatus(), oldMenuStatus);
+        assertEquals(runScore.getUpdatedStatus(), newMenuStatus);
+
+        menuManager.setMenuCells(newMenu);
+
+        // Sleep to give time to Taskmaster to run the operations
+        sleep();
+
+        assertEquals(5, menuManager.currentMenuCells.size());
+        List<MenuCell> oldKeeps = filterMenuCellsWithStatusList(menuManager.currentMenuCells, runScore.getOldStatus(), KEEP);
+        List<MenuCell> newKeeps = filterMenuCellsWithStatusList(menuManager.currentMenuCells, runScore.getUpdatedStatus(), KEEP);
+        assertEquals(oldKeeps.size(), 4);
+        assertEquals(newKeeps.size(), 4);
+    }
 
 //    @Test
 //    public void testAlgorithmTest2() {
@@ -566,190 +576,200 @@ public class MenuManagerTests {
 
         return Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4);
     }
-//
-//    private List<MenuCell> createDynamicMenu1() {
-//
-//        MenuSelectionListener menuSelectionListenerA = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerB = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerC = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerD = mock(MenuSelectionListener.class);
-//
-//        MenuCell A = new MenuCell("A", null, null, menuSelectionListenerA);
-//
-//        MenuCell B = new MenuCell("B", null, null, menuSelectionListenerB);
-//
-//        MenuCell C = new MenuCell("C", null, null, menuSelectionListenerC);
-//
-//        MenuCell D = new MenuCell("D", null, null, menuSelectionListenerD);
-//
-//        return Arrays.asList(A, B, C, D);
-//
-//    }
-//
-//    private List<MenuCell> createDynamicMenu1New() {
-//
-//        MenuSelectionListener menuSelectionListenerA = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerB = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerC = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerD = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerE = mock(MenuSelectionListener.class);
-//
-//        MenuCell A = new MenuCell("A", null, null, menuSelectionListenerA);
-//
-//        MenuCell B = new MenuCell("B", null, null, menuSelectionListenerB);
-//
-//        MenuCell C = new MenuCell("C", null, null, menuSelectionListenerC);
-//
-//        MenuCell D = new MenuCell("D", null, null, menuSelectionListenerD);
-//
-//        MenuCell E = new MenuCell("E", null, null, menuSelectionListenerE);
-//
-//        return Arrays.asList(A, B, C, D, E);
-//
-//    }
-//
-//    private List<MenuCell> createDynamicMenu2() {
-//
-//        MenuSelectionListener menuSelectionListenerA = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerB = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerC = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerD = mock(MenuSelectionListener.class);
-//
-//        MenuCell A = new MenuCell("A", null, null, menuSelectionListenerA);
-//
-//        MenuCell B = new MenuCell("B", null, null, menuSelectionListenerB);
-//
-//        MenuCell C = new MenuCell("C", null, null, menuSelectionListenerC);
-//
-//        MenuCell D = new MenuCell("D", null, null, menuSelectionListenerD);
-//
-//        return Arrays.asList(A, B, C, D);
-//
-//    }
-//
-//    private List<MenuCell> createDynamicMenu2New() {
-//
-//        MenuSelectionListener menuSelectionListenerA = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerB = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerC = mock(MenuSelectionListener.class);
-//
-//        MenuCell A = new MenuCell("A", null, null, menuSelectionListenerA);
-//
-//        MenuCell B = new MenuCell("B", null, null, menuSelectionListenerB);
-//
-//        MenuCell C = new MenuCell("C", null, null, menuSelectionListenerC);
-//
-//        return Arrays.asList(A, B, C);
-//
-//    }
-//
-//    private List<MenuCell> createDynamicMenu3() {
-//
-//        MenuSelectionListener menuSelectionListenerA = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerB = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerC = mock(MenuSelectionListener.class);
-//
-//        MenuCell A = new MenuCell("A", null, null, menuSelectionListenerA);
-//
-//        MenuCell B = new MenuCell("B", null, null, menuSelectionListenerB);
-//
-//        MenuCell C = new MenuCell("C", null, null, menuSelectionListenerC);
-//
-//        return Arrays.asList(A, B, C);
-//
-//    }
-//
-//    private List<MenuCell> createDynamicMenu3New() {
-//
-//        MenuSelectionListener menuSelectionListenerD = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerE = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerF = mock(MenuSelectionListener.class);
-//
-//        MenuCell D = new MenuCell("D", null, null, menuSelectionListenerD);
-//
-//        MenuCell E = new MenuCell("E", null, null, menuSelectionListenerE);
-//
-//        MenuCell F = new MenuCell("F", null, null, menuSelectionListenerF);
-//
-//        return Arrays.asList(D, E, F);
-//
-//    }
-//
-//    private List<MenuCell> createDynamicMenu4() {
-//
-//        MenuSelectionListener menuSelectionListenerA = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerB = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerC = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerD = mock(MenuSelectionListener.class);
-//
-//        MenuCell A = new MenuCell("A", null, null, menuSelectionListenerA);
-//
-//        MenuCell B = new MenuCell("B", null, null, menuSelectionListenerB);
-//
-//        MenuCell C = new MenuCell("C", null, null, menuSelectionListenerC);
-//
-//        MenuCell D = new MenuCell("D", null, null, menuSelectionListenerD);
-//
-//        return Arrays.asList(A, B, C, D);
-//
-//    }
-//
-//    private List<MenuCell> createDynamicMenu4New() {
-//
-//        MenuSelectionListener menuSelectionListenerA = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerB = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerC = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerD = mock(MenuSelectionListener.class);
-//
-//        MenuCell A = new MenuCell("A", null, null, menuSelectionListenerA);
-//
-//        MenuCell B = new MenuCell("B", null, null, menuSelectionListenerB);
-//
-//        MenuCell C = new MenuCell("C", null, null, menuSelectionListenerC);
-//
-//        MenuCell D = new MenuCell("D", null, null, menuSelectionListenerD);
-//
-//        return Arrays.asList(B, A, D, C);
-//
-//    }
-//
-//    private List<MenuCell> createDynamicMenu5() {
-//
-//        MenuSelectionListener menuSelectionListenerA = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerB = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerC = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerD = mock(MenuSelectionListener.class);
-//
-//        MenuCell A = new MenuCell("A", null, null, menuSelectionListenerA);
-//
-//        MenuCell B = new MenuCell("B", null, null, menuSelectionListenerB);
-//
-//        MenuCell C = new MenuCell("C", null, null, menuSelectionListenerC);
-//
-//        MenuCell D = new MenuCell("D", null, null, menuSelectionListenerD);
-//
-//        return Arrays.asList(A, B, C, D);
-//
-//    }
-//
-//    private List<MenuCell> createDynamicMenu5New() {
-//
-//        MenuSelectionListener menuSelectionListenerA = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerB = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerC = mock(MenuSelectionListener.class);
-//        MenuSelectionListener menuSelectionListenerD = mock(MenuSelectionListener.class);
-//
-//        MenuCell A = new MenuCell("A", null, null, menuSelectionListenerA);
-//
-//        MenuCell B = new MenuCell("B", null, null, menuSelectionListenerB);
-//
-//        MenuCell C = new MenuCell("C", null, null, menuSelectionListenerC);
-//
-//        MenuCell D = new MenuCell("D", null, null, menuSelectionListenerD);
-//
-//        return Arrays.asList(B, C, D, A);
-//
-//    }
+
+    private List<MenuCell> createDynamicMenu1() {
+
+        MenuSelectionListener menuSelectionListenerA = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerB = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerC = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerD = mock(MenuSelectionListener.class);
+
+        MenuCell A = new MenuCell("A", null, null, menuSelectionListenerA);
+
+        MenuCell B = new MenuCell("B", null, null, menuSelectionListenerB);
+
+        MenuCell C = new MenuCell("C", null, null, menuSelectionListenerC);
+
+        MenuCell D = new MenuCell("D", null, null, menuSelectionListenerD);
+
+        return Arrays.asList(A, B, C, D);
+
+    }
+
+    private List<MenuCell> createDynamicMenu1New() {
+
+        MenuSelectionListener menuSelectionListenerA = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerB = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerC = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerD = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerE = mock(MenuSelectionListener.class);
+
+        MenuCell A = new MenuCell("A", null, null, menuSelectionListenerA);
+
+        MenuCell B = new MenuCell("B", null, null, menuSelectionListenerB);
+
+        MenuCell C = new MenuCell("C", null, null, menuSelectionListenerC);
+
+        MenuCell D = new MenuCell("D", null, null, menuSelectionListenerD);
+
+        MenuCell E = new MenuCell("E", null, null, menuSelectionListenerE);
+
+        return Arrays.asList(A, B, C, D, E);
+
+    }
+
+    private List<MenuCell> createDynamicMenu2() {
+
+        MenuSelectionListener menuSelectionListenerA = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerB = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerC = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerD = mock(MenuSelectionListener.class);
+
+        MenuCell A = new MenuCell("A", null, null, menuSelectionListenerA);
+
+        MenuCell B = new MenuCell("B", null, null, menuSelectionListenerB);
+
+        MenuCell C = new MenuCell("C", null, null, menuSelectionListenerC);
+
+        MenuCell D = new MenuCell("D", null, null, menuSelectionListenerD);
+
+        return Arrays.asList(A, B, C, D);
+
+    }
+
+    private List<MenuCell> createDynamicMenu2New() {
+
+        MenuSelectionListener menuSelectionListenerA = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerB = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerC = mock(MenuSelectionListener.class);
+
+        MenuCell A = new MenuCell("A", null, null, menuSelectionListenerA);
+
+        MenuCell B = new MenuCell("B", null, null, menuSelectionListenerB);
+
+        MenuCell C = new MenuCell("C", null, null, menuSelectionListenerC);
+
+        return Arrays.asList(A, B, C);
+
+    }
+
+    private List<MenuCell> createDynamicMenu3() {
+
+        MenuSelectionListener menuSelectionListenerA = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerB = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerC = mock(MenuSelectionListener.class);
+
+        MenuCell A = new MenuCell("A", null, null, menuSelectionListenerA);
+
+        MenuCell B = new MenuCell("B", null, null, menuSelectionListenerB);
+
+        MenuCell C = new MenuCell("C", null, null, menuSelectionListenerC);
+
+        return Arrays.asList(A, B, C);
+
+    }
+
+    private List<MenuCell> createDynamicMenu3New() {
+
+        MenuSelectionListener menuSelectionListenerD = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerE = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerF = mock(MenuSelectionListener.class);
+
+        MenuCell D = new MenuCell("D", null, null, menuSelectionListenerD);
+
+        MenuCell E = new MenuCell("E", null, null, menuSelectionListenerE);
+
+        MenuCell F = new MenuCell("F", null, null, menuSelectionListenerF);
+
+        return Arrays.asList(D, E, F);
+
+    }
+
+    private List<MenuCell> createDynamicMenu4() {
+
+        MenuSelectionListener menuSelectionListenerA = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerB = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerC = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerD = mock(MenuSelectionListener.class);
+
+        MenuCell A = new MenuCell("A", null, null, menuSelectionListenerA);
+
+        MenuCell B = new MenuCell("B", null, null, menuSelectionListenerB);
+
+        MenuCell C = new MenuCell("C", null, null, menuSelectionListenerC);
+
+        MenuCell D = new MenuCell("D", null, null, menuSelectionListenerD);
+
+        return Arrays.asList(A, B, C, D);
+
+    }
+
+    private List<MenuCell> createDynamicMenu4New() {
+
+        MenuSelectionListener menuSelectionListenerA = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerB = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerC = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerD = mock(MenuSelectionListener.class);
+
+        MenuCell A = new MenuCell("A", null, null, menuSelectionListenerA);
+
+        MenuCell B = new MenuCell("B", null, null, menuSelectionListenerB);
+
+        MenuCell C = new MenuCell("C", null, null, menuSelectionListenerC);
+
+        MenuCell D = new MenuCell("D", null, null, menuSelectionListenerD);
+
+        return Arrays.asList(B, A, D, C);
+
+    }
+
+    private List<MenuCell> createDynamicMenu5() {
+
+        MenuSelectionListener menuSelectionListenerA = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerB = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerC = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerD = mock(MenuSelectionListener.class);
+
+        MenuCell A = new MenuCell("A", null, null, menuSelectionListenerA);
+
+        MenuCell B = new MenuCell("B", null, null, menuSelectionListenerB);
+
+        MenuCell C = new MenuCell("C", null, null, menuSelectionListenerC);
+
+        MenuCell D = new MenuCell("D", null, null, menuSelectionListenerD);
+
+        return Arrays.asList(A, B, C, D);
+
+    }
+
+    private List<MenuCell> createDynamicMenu5New() {
+
+        MenuSelectionListener menuSelectionListenerA = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerB = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerC = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerD = mock(MenuSelectionListener.class);
+
+        MenuCell A = new MenuCell("A", null, null, menuSelectionListenerA);
+
+        MenuCell B = new MenuCell("B", null, null, menuSelectionListenerB);
+
+        MenuCell C = new MenuCell("C", null, null, menuSelectionListenerC);
+
+        MenuCell D = new MenuCell("D", null, null, menuSelectionListenerD);
+
+        return Arrays.asList(B, C, D, A);
+
+    }
+
+    private List<MenuCell> filterMenuCellsWithStatusList(List<MenuCell> menuCells, List<DynamicMenuUpdateAlgorithm.MenuCellState> statusList, DynamicMenuUpdateAlgorithm.MenuCellState menuCellState) {
+        List<MenuCell> filteredCells = new ArrayList<>();
+        for (int index = 0; index < statusList.size(); index++) {
+            if (statusList.get(index).equals(menuCellState)) {
+                filteredCells.add(menuCells.get(index));
+            }
+        }
+        return filteredCells;
+    }
 
     private void sleep() {
         try {
