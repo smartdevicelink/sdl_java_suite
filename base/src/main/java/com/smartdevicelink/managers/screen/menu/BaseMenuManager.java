@@ -1350,14 +1350,16 @@ abstract class BaseMenuManager extends BaseSubManager {
         HashMap<String, Integer> dictCounter = new HashMap<>();
 
         for (MenuCell cell : cells) {
-            String cellTitle = cell.getTitle();
-            if (!dictCounter.containsKey(cellTitle)) {
-                dictCounter.put(cellTitle, 1);
+            String cellName = cell.getTitle();
+            Integer counter = dictCounter.get(cellName);
+
+            if (counter == null) {
+                dictCounter.put(cellName, 1);
             } else {
-                int counter = dictCounter.get(cellTitle);
-                dictCounter.put(cellTitle, ++counter);
-                cell.setUniqueTitle(cellTitle + " (" + counter + ")");
+                dictCounter.put(cellName, ++counter);
+                cell.setUniqueTitle(cellName + " (" + counter + ")");
             }
+
             if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
                 addUniqueNamesToCells(cell.getSubCells());
             }

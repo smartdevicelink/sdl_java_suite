@@ -70,6 +70,7 @@ public class MenuCellTests {
         menuCell.setVoiceCommands(TestValues.GENERAL_STRING_LIST);
         menuCell.setMenuSelectionListener(menuSelectionListener);
         menuCell.setSubMenuLayout(TestValues.GENERAL_MENU_LAYOUT);
+        menuCell.setUniqueTitle(TestValues.GENERAL_STRING);
 
         // use getters and assert equality
         assertEquals(menuCell.getTitle(), TestValues.GENERAL_STRING);
@@ -79,6 +80,7 @@ public class MenuCellTests {
         assertEquals(menuCell.getCellId(), TestValues.GENERAL_MENU_MAX_ID);
         assertEquals(menuCell.getParentCellId(), TestValues.GENERAL_MENU_MAX_ID);
         assertEquals(menuCell.getSubMenuLayout(), TestValues.GENERAL_MENU_LAYOUT);
+        assertEquals(menuCell.getUniqueTitle(), TestValues.GENERAL_STRING);
     }
 
     @Test
@@ -91,16 +93,20 @@ public class MenuCellTests {
         assertEquals(menuCell3.getIcon(), TestValues.GENERAL_ARTWORK);
         assertEquals(menuCell3.getVoiceCommands(), TestValues.GENERAL_STRING_LIST);
         assertEquals(menuCell3.getMenuSelectionListener(), menuSelectionListener);
+        assertEquals(menuCell3.getUniqueTitle(), TestValues.GENERAL_STRING);
 
         MenuCell menuCell4 = new MenuCell(TestValues.GENERAL_STRING, null, null, menuSelectionListener);
         assertEquals(menuCell4.getTitle(), TestValues.GENERAL_STRING);
         assertEquals(menuCell4.getMenuSelectionListener(), menuSelectionListener);
+        assertEquals(menuCell4.getUniqueTitle(), TestValues.GENERAL_STRING);
 
         MenuCell menuCell5 = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_MENU_LAYOUT, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_MENUCELL_LIST);
         assertEquals(menuCell5.getTitle(), TestValues.GENERAL_STRING);
         assertEquals(menuCell5.getIcon(), TestValues.GENERAL_ARTWORK);
         assertEquals(menuCell5.getSubMenuLayout(), TestValues.GENERAL_MENU_LAYOUT);
         assertEquals(menuCell5.getSubCells(), TestValues.GENERAL_MENUCELL_LIST);
+        assertEquals(menuCell5.getUniqueTitle(), TestValues.GENERAL_STRING);
+
     }
 
     @Test
@@ -134,6 +140,7 @@ public class MenuCellTests {
         assertEquals(original.getTitle(), clone.getTitle());
         assertEquals(original.getCellId(), clone.getCellId());
         assertEquals(original.getParentCellId(), clone.getParentCellId());
+        assertEquals(original.getUniqueTitle(), clone.getUniqueTitle());
 
         SdlArtworkTests.equalTest(original.getIcon(), clone.getIcon());
 

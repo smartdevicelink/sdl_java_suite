@@ -200,10 +200,9 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         if (internalInterface.getSdlMsgVersion() != null
                 && (internalInterface.getSdlMsgVersion().getMajorVersion() < 7
                 || (internalInterface.getSdlMsgVersion().getMajorVersion() == 7 && internalInterface.getSdlMsgVersion().getMinorVersion() == 0))) {
-            choicesToUpload = addUniqueNamesToCells(choices);
-        } else {
-            choicesToUpload = new HashSet<>(choices);
+            addUniqueNamesToCells(choices);
         }
+        choicesToUpload = new HashSet<>(choices);
         choicesToUpload.removeAll(preloadedChoices);
         choicesToUpload.removeAll(pendingPreloadChoices);
 
@@ -498,24 +497,25 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         return choicesSet;
     }
 
-    HashSet<ChoiceCell> addUniqueNamesToCells(List<ChoiceCell> choices) {
-        HashSet<ChoiceCell> choiceSet = new HashSet<>(choices);
+    /**
+     * Checks if 2 or more cells have the same text/title. In case this condition is true, this function will handle the presented issue by adding "(count)".
+     * E.g. Choices param contains 2 cells with text/title "Address" will be handled by updating the uniqueText/uniqueTitle of the second cell to "Address (2)".
+     * @param choices The list of choiceCells to be uploaded.
+     */
+    void addUniqueNamesToCells(List<ChoiceCell> choices) {
         HashMap<String, Integer> dictCounter = new HashMap<>();
 
         for (ChoiceCell cell : choices) {
-            if (choiceSet.contains(cell)) {
-                String cellName = cell.getText();
-                if (!dictCounter.containsKey(cellName)) {
-                    dictCounter.put(cellName, 1);
-                } else {
-                    int counter = dictCounter.get(cellName);
-                    dictCounter.put(cellName, ++counter);
-                    cell.setUniqueText(cellName + " (" + counter + ")");
-                }
+            String cellName = cell.getText();
+            Integer counter = dictCounter.get(cellName);
+
+            if (counter == null) {
+                dictCounter.put(cellName, 1);
+            } else {
+                dictCounter.put(cellName, ++counter);
+                cell.setUniqueText(cellName + " (" + counter + ")");
             }
         }
-
-        return choiceSet;
     }
 
     void updateIdsOnChoices(HashSet<ChoiceCell> choices) {
