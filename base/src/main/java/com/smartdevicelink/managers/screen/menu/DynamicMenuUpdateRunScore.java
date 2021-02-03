@@ -44,7 +44,6 @@ class DynamicMenuUpdateRunScore {
         setOldStatus(oldStatus);
         setUpdatedStatus(updatedStatus);
         setScore(score);
-
     }
 
     private void setUpdatedStatus(List<MenuCellState> updatedStatus) {
