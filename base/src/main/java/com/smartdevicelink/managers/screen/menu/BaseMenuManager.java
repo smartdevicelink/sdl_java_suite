@@ -68,7 +68,7 @@ abstract class BaseMenuManager extends BaseSubManager {
     static final int menuCellIdMin = 1;
     static final int parentIdNotFound = 2000000000;
 
-    private final WeakReference<FileManager> fileManager;
+    final WeakReference<FileManager> fileManager;
     List<MenuCell> currentMenuCells;
     List<MenuCell> menuCells;
     DynamicMenuUpdatesMode dynamicMenuUpdatesMode;
