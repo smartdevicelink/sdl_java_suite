@@ -72,7 +72,9 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.menuCellIdMin;
+import static com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.MenuCellState;
 import static com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.MenuCellState.ADD;
+import static com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.MenuCellState.DELETE;
 import static com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.MenuCellState.KEEP;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
@@ -282,8 +284,8 @@ public class MenuManagerTests {
         // this happens in the menu manager but lets make sure its behaving
         DynamicMenuUpdateRunScore runScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(oldMenu, newMenu);
 
-        List<DynamicMenuUpdateAlgorithm.MenuCellState> oldMenuStatus = Arrays.asList(KEEP, KEEP, KEEP, KEEP);
-        List<DynamicMenuUpdateAlgorithm.MenuCellState> newMenuStatus = Arrays.asList(KEEP, KEEP, KEEP, KEEP, ADD);
+        List<MenuCellState> oldMenuStatus = Arrays.asList(KEEP, KEEP, KEEP, KEEP);
+        List<MenuCellState> newMenuStatus = Arrays.asList(KEEP, KEEP, KEEP, KEEP, ADD);
 
         assertEquals(1, runScore.getScore());
         assertEquals(runScore.getOldStatus(), oldMenuStatus);
@@ -297,158 +299,190 @@ public class MenuManagerTests {
         assertEquals(5, menuManager.currentMenuCells.size());
         List<MenuCell> oldKeeps = filterMenuCellsWithStatusList(menuManager.currentMenuCells, runScore.getOldStatus(), KEEP);
         List<MenuCell> newKeeps = filterMenuCellsWithStatusList(menuManager.currentMenuCells, runScore.getUpdatedStatus(), KEEP);
-        assertEquals(oldKeeps.size(), 4);
-        assertEquals(newKeeps.size(), 4);
+        assertEquals(4, oldKeeps.size());
+        assertEquals(4, newKeeps.size());
     }
 
-//    @Test
-//    public void testAlgorithmTest2() {
-//
-//        // Force Menu Manager to use the new way
-//        menuManager.setDynamicUpdatesMode(DynamicMenuUpdatesMode.FORCE_ON);
-//        assertEquals(menuManager.dynamicMenuUpdatesMode, DynamicMenuUpdatesMode.FORCE_ON);
-//
-//        // start fresh
-//        menuManager.oldMenuCells = null;
-//        menuManager.menuCells = null;
-//        menuManager.inProgressUpdate = null;
-//        menuManager.waitingUpdateMenuCells = null;
-//        menuManager.waitingOnHMIUpdate = false;
-//
-//        menuManager.currentHMILevel = HMILevel.HMI_FULL;
-//        // send new cells. They should set the old way
-//        List<MenuCell> oldMenu = createDynamicMenu2();
-//        List<MenuCell> newMenu = createDynamicMenu2New();
-//        menuManager.setMenuCells(oldMenu);
-//        assertEquals(menuManager.menuCells.size(), 4);
-//
-//        // this happens in the menu manager but lets make sure its behaving
-//        DynamicMenuUpdateRunScore runScore = menuManager.runMenuCompareAlgorithm(oldMenu, newMenu);
-//
-//        List<Integer> oldMenuScore = Arrays.asList(0, 0, 0, 2);
-//        List<Integer> newMenuScore = Arrays.asList(0, 0, 0);
-//
-//        assertEquals(runScore.getScore(), 0);
-//        assertEquals(runScore.getOldMenu(), oldMenuScore);
-//        assertEquals(runScore.getCurrentMenu(), newMenuScore);
-//
-//        menuManager.setMenuCells(newMenu);
-//        assertEquals(menuManager.menuCells.size(), 3);
-//        assertEquals(menuManager.keepsNew.size(), 3);
-//        assertEquals(menuManager.keepsOld.size(), 3);
-//    }
-//
-//    @Test
-//    public void testAlgorithmTest3() {
-//
-//        // Force Menu Manager to use the new way
-//        menuManager.setDynamicUpdatesMode(DynamicMenuUpdatesMode.FORCE_ON);
-//        assertEquals(menuManager.dynamicMenuUpdatesMode, DynamicMenuUpdatesMode.FORCE_ON);
-//
-//        // start fresh
-//        menuManager.oldMenuCells = null;
-//        menuManager.menuCells = null;
-//        menuManager.inProgressUpdate = null;
-//        menuManager.waitingUpdateMenuCells = null;
-//        menuManager.waitingOnHMIUpdate = false;
-//
-//        menuManager.currentHMILevel = HMILevel.HMI_FULL;
-//        // send new cells. They should set the old way
-//        List<MenuCell> oldMenu = createDynamicMenu3();
-//        List<MenuCell> newMenu = createDynamicMenu3New();
-//        menuManager.setMenuCells(oldMenu);
-//        assertEquals(menuManager.menuCells.size(), 3);
-//
-//        // this happens in the menu manager but lets make sure its behaving
-//        DynamicMenuUpdateRunScore runScore = menuManager.runMenuCompareAlgorithm(oldMenu, newMenu);
-//
-//        List<Integer> oldMenuScore = Arrays.asList(2, 2, 2);
-//        List<Integer> newMenuScore = Arrays.asList(1, 1, 1);
-//
-//        assertEquals(runScore.getScore(), 3);
-//        assertEquals(runScore.getOldMenu(), oldMenuScore);
-//        assertEquals(runScore.getCurrentMenu(), newMenuScore);
-//
-//        menuManager.setMenuCells(newMenu);
-//        assertEquals(menuManager.menuCells.size(), 3);
-//        assertEquals(menuManager.keepsNew.size(), 0);
-//        assertEquals(menuManager.keepsOld.size(), 0);
-//    }
-//
-//    @Test
-//    public void testAlgorithmTest4() {
-//
-//        // Force Menu Manager to use the new way
-//        menuManager.setDynamicUpdatesMode(DynamicMenuUpdatesMode.FORCE_ON);
-//        assertEquals(menuManager.dynamicMenuUpdatesMode, DynamicMenuUpdatesMode.FORCE_ON);
-//
-//        // start fresh
-//        menuManager.oldMenuCells = null;
-//        menuManager.menuCells = null;
-//        menuManager.inProgressUpdate = null;
-//        menuManager.waitingUpdateMenuCells = null;
-//        menuManager.waitingOnHMIUpdate = false;
-//
-//        menuManager.currentHMILevel = HMILevel.HMI_FULL;
-//        // send new cells. They should set the old way
-//        List<MenuCell> oldMenu = createDynamicMenu4();
-//        List<MenuCell> newMenu = createDynamicMenu4New();
-//        menuManager.setMenuCells(oldMenu);
-//        assertEquals(menuManager.menuCells.size(), 4);
-//
-//        // this happens in the menu manager but lets make sure its behaving
-//        DynamicMenuUpdateRunScore runScore = menuManager.runMenuCompareAlgorithm(oldMenu, newMenu);
-//
-//        List<Integer> oldMenuScore = Arrays.asList(0, 2, 0, 2);
-//        List<Integer> newMenuScore = Arrays.asList(1, 0, 1, 0);
-//
-//        assertEquals(runScore.getScore(), 2);
-//        assertEquals(runScore.getOldMenu(), oldMenuScore);
-//        assertEquals(runScore.getCurrentMenu(), newMenuScore);
-//
-//        menuManager.setMenuCells(newMenu);
-//        assertEquals(menuManager.menuCells.size(), 4);
-//        assertEquals(menuManager.keepsNew.size(), 2);
-//        assertEquals(menuManager.keepsOld.size(), 2);
-//    }
-//
-//    @Test
-//    public void testAlgorithmTest5() {
-//
-//        // Force Menu Manager to use the new way
-//        menuManager.setDynamicUpdatesMode(DynamicMenuUpdatesMode.FORCE_ON);
-//        assertEquals(menuManager.dynamicMenuUpdatesMode, DynamicMenuUpdatesMode.FORCE_ON);
-//
-//        // start fresh
-//        menuManager.oldMenuCells = null;
-//        menuManager.menuCells = null;
-//        menuManager.inProgressUpdate = null;
-//        menuManager.waitingUpdateMenuCells = null;
-//        menuManager.waitingOnHMIUpdate = false;
-//
-//        menuManager.currentHMILevel = HMILevel.HMI_FULL;
-//        // send new cells. They should set the old way
-//        List<MenuCell> oldMenu = createDynamicMenu5();
-//        List<MenuCell> newMenu = createDynamicMenu5New();
-//        menuManager.setMenuCells(oldMenu);
-//        assertEquals(menuManager.menuCells.size(), 4);
-//
-//        // this happens in the menu manager but lets make sure its behaving
-//        DynamicMenuUpdateRunScore runScore = menuManager.runMenuCompareAlgorithm(oldMenu, newMenu);
-//
-//        List<Integer> oldMenuScore = Arrays.asList(2, 0, 0, 0);
-//        List<Integer> newMenuScore = Arrays.asList(0, 0, 0, 1);
-//
-//        assertEquals(runScore.getScore(), 1);
-//        assertEquals(runScore.getOldMenu(), oldMenuScore);
-//        assertEquals(runScore.getCurrentMenu(), newMenuScore);
-//
-//        menuManager.setMenuCells(newMenu);
-//        assertEquals(menuManager.menuCells.size(), 4);
-//        assertEquals(menuManager.keepsNew.size(), 3);
-//        assertEquals(menuManager.keepsOld.size(), 3);
-//    }
-//
+    @Test
+    public void testAlgorithmTest2() {
+
+        // Force Menu Manager to use the new way
+        menuManager.setDynamicUpdatesMode(DynamicMenuUpdatesMode.FORCE_ON);
+        assertEquals(menuManager.dynamicMenuUpdatesMode, DynamicMenuUpdatesMode.FORCE_ON);
+
+        // start fresh
+        menuManager.currentMenuCells = new ArrayList<>();
+        menuManager.menuCells = new ArrayList<>();
+
+        sendFakeCoreOnHMIFullNotifications();
+
+        // send new cells. They should set the old way
+        List<MenuCell> oldMenu = createDynamicMenu2();
+        List<MenuCell> newMenu = createDynamicMenu2New();
+        menuManager.setMenuCells(oldMenu);
+
+        // Sleep to give time to Taskmaster to run the operations
+        sleep();
+
+        assertEquals(4, menuManager.currentMenuCells.size());
+
+        // this happens in the menu manager but lets make sure its behaving
+        DynamicMenuUpdateRunScore runScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(oldMenu, newMenu);
+
+        List<MenuCellState> oldMenuScore = Arrays.asList(KEEP, KEEP, KEEP, DELETE);
+        List<MenuCellState> newMenuScore = Arrays.asList(KEEP, KEEP, KEEP);
+
+        assertEquals(runScore.getScore(), 0);
+        assertEquals(runScore.getOldStatus(), oldMenuScore);
+        assertEquals(runScore.getUpdatedStatus(), newMenuScore);
+
+        menuManager.setMenuCells(newMenu);
+
+        // Sleep to give time to Taskmaster to run the operations
+        sleep();
+
+        assertEquals(3, menuManager.currentMenuCells.size());
+        List<MenuCell> oldKeeps = filterMenuCellsWithStatusList(menuManager.currentMenuCells, runScore.getOldStatus(), KEEP);
+        List<MenuCell> newKeeps = filterMenuCellsWithStatusList(menuManager.currentMenuCells, runScore.getUpdatedStatus(), KEEP);
+        assertEquals(3, oldKeeps.size());
+        assertEquals(3, newKeeps.size());
+    }
+
+    @Test
+    public void testAlgorithmTest3() {
+
+        // Force Menu Manager to use the new way
+        menuManager.setDynamicUpdatesMode(DynamicMenuUpdatesMode.FORCE_ON);
+        assertEquals(menuManager.dynamicMenuUpdatesMode, DynamicMenuUpdatesMode.FORCE_ON);
+
+        // start fresh
+        menuManager.currentMenuCells = new ArrayList<>();
+        menuManager.menuCells = new ArrayList<>();
+
+        sendFakeCoreOnHMIFullNotifications();
+
+        // send new cells. They should set the old way
+        List<MenuCell> oldMenu = createDynamicMenu3();
+        List<MenuCell> newMenu = createDynamicMenu3New();
+        menuManager.setMenuCells(oldMenu);
+
+        // Sleep to give time to Taskmaster to run the operations
+        sleep();
+
+        assertEquals(menuManager.currentMenuCells.size(), 3);
+
+        // this happens in the menu manager but lets make sure its behaving
+        DynamicMenuUpdateRunScore runScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(oldMenu, newMenu);
+
+        List<MenuCellState> oldMenuStatus = Arrays.asList(DELETE, DELETE, DELETE);
+        List<MenuCellState> newMenuStatus = Arrays.asList(ADD, ADD, ADD);
+
+        assertEquals(runScore.getScore(), 3);
+        assertEquals(runScore.getOldStatus(), oldMenuStatus);
+        assertEquals(runScore.getUpdatedStatus(), newMenuStatus);
+
+        menuManager.setMenuCells(newMenu);
+
+        // Sleep to give time to Taskmaster to run the operations
+        sleep();
+
+        assertEquals(menuManager.currentMenuCells.size(), 3);
+        List<MenuCell> oldKeeps = filterMenuCellsWithStatusList(menuManager.currentMenuCells, runScore.getOldStatus(), KEEP);
+        List<MenuCell> newKeeps = filterMenuCellsWithStatusList(menuManager.currentMenuCells, runScore.getUpdatedStatus(), KEEP);
+        assertEquals(0, newKeeps.size());
+        assertEquals(0, oldKeeps.size());
+    }
+
+    @Test
+    public void testAlgorithmTest4() {
+
+        // Force Menu Manager to use the new way
+        menuManager.setDynamicUpdatesMode(DynamicMenuUpdatesMode.FORCE_ON);
+        assertEquals(menuManager.dynamicMenuUpdatesMode, DynamicMenuUpdatesMode.FORCE_ON);
+
+        // start fresh
+        menuManager.currentMenuCells = new ArrayList<>();
+        menuManager.menuCells = new ArrayList<>();
+
+        sendFakeCoreOnHMIFullNotifications();
+
+        // send new cells. They should set the old way
+        List<MenuCell> oldMenu = createDynamicMenu4();
+        List<MenuCell> newMenu = createDynamicMenu4New();
+        menuManager.setMenuCells(oldMenu);
+
+        // Sleep to give time to Taskmaster to run the operations
+        sleep();
+
+        assertEquals(menuManager.currentMenuCells.size(), 4);
+
+        // this happens in the menu manager but lets make sure its behaving
+        DynamicMenuUpdateRunScore runScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(oldMenu, newMenu);
+
+        List<MenuCellState> oldMenuStatus = Arrays.asList(KEEP, DELETE, KEEP, DELETE);
+        List<MenuCellState> newMenuStatus = Arrays.asList(ADD, KEEP, ADD, KEEP);
+
+        assertEquals(runScore.getScore(), 2);
+        assertEquals(runScore.getOldStatus(), oldMenuStatus);
+        assertEquals(runScore.getUpdatedStatus(), newMenuStatus);
+
+        menuManager.setMenuCells(newMenu);
+
+        // Sleep to give time to Taskmaster to run the operations
+        sleep();
+
+        assertEquals(menuManager.currentMenuCells.size(), 4);
+        List<MenuCell> oldKeeps = filterMenuCellsWithStatusList(menuManager.currentMenuCells, runScore.getOldStatus(), KEEP);
+        List<MenuCell> newKeeps = filterMenuCellsWithStatusList(menuManager.currentMenuCells, runScore.getUpdatedStatus(), KEEP);
+        assertEquals(2, newKeeps.size());
+        assertEquals(2, oldKeeps.size());
+    }
+
+    @Test
+    public void testAlgorithmTest5() {
+
+        // Force Menu Manager to use the new way
+        menuManager.setDynamicUpdatesMode(DynamicMenuUpdatesMode.FORCE_ON);
+        assertEquals(menuManager.dynamicMenuUpdatesMode, DynamicMenuUpdatesMode.FORCE_ON);
+
+        // start fresh
+        menuManager.currentMenuCells = new ArrayList<>();
+        menuManager.menuCells = new ArrayList<>();
+
+        sendFakeCoreOnHMIFullNotifications();
+
+        // send new cells. They should set the old way
+        List<MenuCell> oldMenu = createDynamicMenu5();
+        List<MenuCell> newMenu = createDynamicMenu5New();
+        menuManager.setMenuCells(oldMenu);
+
+        // Sleep to give time to Taskmaster to run the operations
+        sleep();
+
+        assertEquals(menuManager.currentMenuCells.size(), 4);
+
+        // this happens in the menu manager but lets make sure its behaving
+        DynamicMenuUpdateRunScore runScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(oldMenu, newMenu);
+
+        List<MenuCellState> oldMenuStatus = Arrays.asList(DELETE, KEEP, KEEP, KEEP);
+        List<MenuCellState> newMenuStatus = Arrays.asList(KEEP, KEEP, KEEP, ADD);
+
+        assertEquals(runScore.getScore(), 1);
+        assertEquals(runScore.getOldStatus(), oldMenuStatus);
+        assertEquals(runScore.getUpdatedStatus(), newMenuStatus);
+
+        menuManager.setMenuCells(newMenu);
+
+        // Sleep to give time to Taskmaster to run the operations
+        sleep();
+
+        assertEquals(menuManager.currentMenuCells.size(), 4);
+        List<MenuCell> oldKeeps = filterMenuCellsWithStatusList(menuManager.currentMenuCells, runScore.getOldStatus(), KEEP);
+        List<MenuCell> newKeeps = filterMenuCellsWithStatusList(menuManager.currentMenuCells, runScore.getUpdatedStatus(), KEEP);
+        assertEquals(3, newKeeps.size());
+        assertEquals(3, oldKeeps.size());
+    }
+
 //    @Test
 //    public void testSettingNullMenu() {
 //
