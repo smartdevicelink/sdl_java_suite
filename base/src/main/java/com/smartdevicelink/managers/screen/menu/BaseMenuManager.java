@@ -165,11 +165,6 @@ abstract class BaseMenuManager extends BaseSubManager {
      * @param cells - the menu cells that are to be sent to the head unit, including their sub-cells.
      */
     public void setMenuCells(@NonNull List<MenuCell> cells) {
-        if (cells == null) {
-            DebugTool.logError(TAG, "cells list cannot be null!");
-            return;
-        }
-
         // Create a deep copy of the list so future changes by developers don't affect the algorithm logic
         final List<MenuCell> clonedCells = cloneMenuCellsList(cells);
 
@@ -234,7 +229,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
         if (cell != null) {
             // We must see if we have a copy of this cell, since we clone the objects
-            for (MenuCell clonedCell : menuCells) {
+            for (MenuCell clonedCell : currentMenuCells) {
                 if (clonedCell.equals(cell) && clonedCell.getCellId() != parentIdNotFound) {
                     // We've found the correct sub menu cell
                     foundClonedCell = clonedCell;
@@ -377,7 +372,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             @Override
             public void onNotified(RPCNotification notification) {
                 OnCommand onCommand = (OnCommand) notification;
-                callListenerForCells(menuCells, onCommand);
+                callListenerForCells(currentMenuCells, onCommand);
             }
         };
         internalInterface.addOnRPCNotificationListener(FunctionID.ON_COMMAND, commandListener);
@@ -385,7 +380,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
     private List<MenuCell> cloneMenuCellsList(List<MenuCell> originalList) {
         if (originalList == null) {
-            return null;
+            return new ArrayList<>();
         }
 
         List<MenuCell> clone = new ArrayList<>();
