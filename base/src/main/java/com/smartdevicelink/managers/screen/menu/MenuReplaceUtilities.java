@@ -242,10 +242,16 @@ class MenuReplaceUtilities {
     }
 
     private static void insertMenuCell(MenuCell cell, List<MenuCell> cellList, int position) {
+        MenuCell cellToInsert = cell;
+        if (cellToInsert.getSubCells() != null) {
+            // We should not add the subCells automatically when adding a parent cell
+            cellToInsert = cell.clone();
+            cellToInsert.getSubCells().clear();
+        }
         if (position > cellList.size()) {
-            cellList.add(cell);
+            cellList.add(cellToInsert);
         } else {
-            cellList.add(position, cell);
+            cellList.add(position, cellToInsert);
         }
     }
 
