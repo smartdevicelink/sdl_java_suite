@@ -121,7 +121,7 @@ class MenuReplaceOperation extends Task {
                     updateMenuWithCellsToDelete(cellsToDelete, cellsToAdd, new CompletionListener() {
                         @Override
                         public void onComplete(boolean success) {
-                            startSubMenuUpdatesWithOldKeptCells(oldKeeps, newKeeps, 0, listener);
+                            updateSubMenuWithOldKeptCells(oldKeeps, newKeeps, 0, listener);
                         }
                     });
                 }
@@ -131,12 +131,18 @@ class MenuReplaceOperation extends Task {
             updateMenuWithCellsToDelete(cellsToDelete, cellsToAdd, new CompletionListener() {
                 @Override
                 public void onComplete(boolean success) {
-                    startSubMenuUpdatesWithOldKeptCells(oldKeeps, newKeeps, 0, listener);
+                    updateSubMenuWithOldKeptCells(oldKeeps, newKeeps, 0, listener);
                 }
             });
         }
     }
 
+    /**
+     * Takes the main menu cells to delete and add, and deletes the current menu cells, then adds the new menu cells in the correct locations
+     * @param deleteCells The cells that need to be deleted
+     * @param addCells The cells that need to be added
+     * @param listener A CompletionListener called when complete
+     */
     private void updateMenuWithCellsToDelete(List<MenuCell> deleteCells, final List<MenuCell> addCells, final CompletionListener listener) {
         sendDeleteCurrentMenu(deleteCells, new CompletionListener() {
             @Override
@@ -155,6 +161,11 @@ class MenuReplaceOperation extends Task {
         });
     }
 
+    /**
+     * Send Delete RPCs for given menu cells
+     * @param deleteMenuCells The menu cells to be deleted
+     * @param listener A CompletionListener called when the RPCs are finished with an error if any failed
+     */
     private void sendDeleteCurrentMenu(List<MenuCell> deleteMenuCells, final CompletionListener listener) {
         if (getState() == Task.CANCELED) {
             return;
@@ -186,6 +197,11 @@ class MenuReplaceOperation extends Task {
         });
     }
 
+    /**
+     * Send Add RPCs for given new menu cells compared to old menu cells
+     * @param newMenuCells The new menu cells we want displayed
+     * @param listener A CompletionListener called when the RPCs are finished with an error if any failed
+     */
     private void sendNewMenuCells(final List<MenuCell> newMenuCells, final CompletionListener listener) {
         if (getState() == Task.CANCELED) {
             return;
@@ -246,7 +262,14 @@ class MenuReplaceOperation extends Task {
         });
     }
 
-    private void startSubMenuUpdatesWithOldKeptCells(final List<MenuCell> oldKeptCells, final List<MenuCell> newKeptCells, final int startIndex, final CompletionListener listener) {
+    /**
+     * Takes the submenu cells that are old keeps and new keeps and determines which cells need to be deleted or added
+     * @param oldKeptCells The old kept cells
+     * @param newKeptCells The new kept cells
+     * @param startIndex The index of the main menu to use
+     * @param listener A CompletionListener called when complete
+     */
+    private void updateSubMenuWithOldKeptCells(final List<MenuCell> oldKeptCells, final List<MenuCell> newKeptCells, final int startIndex, final CompletionListener listener) {
         if (getState() == Task.CANCELED) {
             return;
         }
@@ -262,7 +285,7 @@ class MenuReplaceOperation extends Task {
             // If both old and new menu cells are empty. Then nothing needs to be done.
             if (tempScore == null) {
                 // After the first set of submenu cells were added and deleted we must find the next set of sub cells until we loop through all the elements
-                startSubMenuUpdatesWithOldKeptCells(oldKeptCells, newKeptCells, startIndex + 1, listener);
+                updateSubMenuWithOldKeptCells(oldKeptCells, newKeptCells, startIndex + 1, listener);
                 return;
             }
 
@@ -284,14 +307,14 @@ class MenuReplaceOperation extends Task {
                         @Override
                         public void onComplete(boolean success) {
                             // After the first set of submenu cells were added and deleted we must find the next set of sub cells until we loop through all the elements
-                            startSubMenuUpdatesWithOldKeptCells(oldKeptCells, newKeptCells, startIndex + 1, listener);
+                            updateSubMenuWithOldKeptCells(oldKeptCells, newKeptCells, startIndex + 1, listener);
                         }
                     });
                 }
             });
         } else {
             // After the first set of submenu cells were added and deleted we must find the next set of sub cells until we loop through all the elements
-            startSubMenuUpdatesWithOldKeptCells(oldKeptCells, newKeptCells, startIndex + 1, listener);
+            updateSubMenuWithOldKeptCells(oldKeptCells, newKeptCells, startIndex + 1, listener);
         }
     }
 
