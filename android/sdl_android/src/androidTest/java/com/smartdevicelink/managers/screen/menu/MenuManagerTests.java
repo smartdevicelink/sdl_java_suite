@@ -57,6 +57,7 @@ import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.util.Version;
 
 import org.junit.After;
 import org.junit.Before;
@@ -109,6 +110,9 @@ public class MenuManagerTests {
 
         final ISdl internalInterface = mock(ISdl.class);
         FileManager fileManager = mock(FileManager.class);
+
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(6, 0, 0)));
+
 
         // When internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, OnRPCNotificationListener) is called
         // inside MenuManager's constructor, then keep a reference to the OnRPCNotificationListener so we can trigger it later
@@ -483,92 +487,107 @@ public class MenuManagerTests {
         assertEquals(3, oldKeeps.size());
     }
 
-//    @Test
-//    public void testSettingNullMenu() {
-//
-//        // Make sure we can send an empty menu with no issues
-//        // start fresh
-//        menuManager.oldMenuCells = null;
-//        menuManager.menuCells = null;
-//        menuManager.inProgressUpdate = null;
-//        menuManager.waitingUpdateMenuCells = null;
-//        menuManager.waitingOnHMIUpdate = false;
-//
-//        menuManager.currentHMILevel = HMILevel.HMI_FULL;
-//        // send new cells. They should set the old way
-//        List<MenuCell> oldMenu = createDynamicMenu1();
-//        List<MenuCell> newMenu = null;
-//        menuManager.setMenuCells(oldMenu);
-//        assertEquals(menuManager.menuCells.size(), 4);
-//
-//        menuManager.setMenuCells(newMenu);
-//        assertEquals(menuManager.menuCells.size(), 0);
-//    }
-//
-//    @Test
-//    public void testClearingMenu() {
-//
-//        // Make sure we can send an empty menu with no issues
-//        // start fresh
-//        menuManager.oldMenuCells = null;
-//        menuManager.menuCells = null;
-//        menuManager.inProgressUpdate = null;
-//        menuManager.waitingUpdateMenuCells = null;
-//        menuManager.waitingOnHMIUpdate = false;
-//
-//        menuManager.currentHMILevel = HMILevel.HMI_FULL;
-//        // send new cells. They should set the old way
-//        List<MenuCell> oldMenu = createDynamicMenu1();
-//        List<MenuCell> newMenu = Collections.emptyList();
-//        menuManager.setMenuCells(oldMenu);
-//        assertEquals(menuManager.menuCells.size(), 4);
-//
-//        menuManager.setMenuCells(newMenu);
-//        assertEquals(menuManager.menuCells.size(), 0);
-//    }
-//
-//    @Test
-//    public void testOpeningMainMenu() {
-//        // call open Menu
-//        MenuManager mockMenuManager = mock(MenuManager.class);
-//        mockMenuManager.openMenu();
-//        verify(mockMenuManager, Mockito.times(1)).openMenu();
-//    }
-//
-//    @Test
-//    public void testOpeningSubMenuNullCells() {
-//        // call open Menu
-//        MenuManager mockMenuManager = mock(MenuManager.class);
-//        MenuCell cell = mock(MenuCell.class);
-//        mockMenuManager.oldMenuCells = null;
-//        assertFalse(mockMenuManager.openSubMenu(cell));
-//    }
-//
-//    @Test
-//    public void testOpeningSubMenu() {
-//        // call open Menu
-//        List<MenuCell> testCells = createTestCells();
-//        menuManager.oldMenuCells = testCells;
-//        menuManager.sdlMsgVersion = new SdlMsgVersion(6, 0);
-//        // has to get success response to be true
-//        assertTrue(menuManager.openSubMenu(testCells.get(3)));
-//    }
-//
-//    @Test
-//    public void testSetMenuConfiguration() {
-//        menuManager.currentHMILevel = HMILevel.HMI_FULL;
-//        menuManager.currentSystemContext = SystemContext.SYSCTXT_MAIN;
-//        menuManager.sdlMsgVersion = new SdlMsgVersion(6, 0);
-//        menuManager.defaultMainWindowCapability = new WindowCapability();
-//
-//        List<MenuLayout> menuLayouts = Arrays.asList(MenuLayout.LIST, MenuLayout.TILES);
-//        menuManager.defaultMainWindowCapability.setMenuLayoutsAvailable(menuLayouts);
-//
-//        MenuConfiguration menuConfigurationTest = new MenuConfiguration(MenuLayout.LIST, MenuLayout.LIST);
-//        menuManager.setMenuConfiguration(menuConfigurationTest);
-//        assertEquals(menuManager.menuConfiguration, menuConfigurationTest);
-//
-//    }
+    @Test
+    public void testSettingNullMenu() {
+        // Make sure we can send an empty menu with no issues
+        // start fresh
+        menuManager.currentMenuCells = new ArrayList<>();
+        menuManager.menuCells = new ArrayList<>();
+
+       sendFakeCoreOnHMIFullNotifications();
+
+        // send new cells. They should set the old way
+        List<MenuCell> oldMenu = createDynamicMenu1();
+        List<MenuCell> newMenu = null;
+        menuManager.setMenuCells(oldMenu);
+
+        // Sleep to give time to Taskmaster to run the operations
+        sleep();
+
+        assertEquals(4, menuManager.currentMenuCells.size());
+
+        menuManager.setMenuCells(newMenu);
+
+        // Sleep to give time to Taskmaster to run the operations
+        sleep();
+
+        assertEquals(0, menuManager.currentMenuCells.size());
+    }
+
+    @Test
+    public void testClearingMenu() {
+        // Make sure we can send an empty menu with no issues
+        // start fresh
+        menuManager.currentMenuCells = new ArrayList<>();
+        menuManager.menuCells = new ArrayList<>();
+
+        sendFakeCoreOnHMIFullNotifications();
+
+        // send new cells. They should set the old way
+        List<MenuCell> oldMenu = createDynamicMenu1();
+        List<MenuCell> newMenu = Collections.emptyList();
+        menuManager.setMenuCells(oldMenu);
+
+        // Sleep to give time to Taskmaster to run the operations
+        sleep();
+
+        assertEquals(4, menuManager.currentMenuCells.size());
+
+        menuManager.setMenuCells(newMenu);
+
+        // Sleep to give time to Taskmaster to run the operations
+        sleep();
+
+        assertEquals(0 , menuManager.currentMenuCells.size());
+    }
+
+    @Test
+    public void testOpeningMainMenu() {
+        // call open Menu
+        MenuManager mockMenuManager = mock(MenuManager.class);
+        mockMenuManager.openMenu();
+        verify(mockMenuManager, Mockito.times(1)).openMenu();
+    }
+
+    @Test
+    public void testOpeningSubMenuNullCells() {
+        // call open Menu
+        MenuManager mockMenuManager = mock(MenuManager.class);
+        MenuCell cell = mock(MenuCell.class);
+        mockMenuManager.currentMenuCells = null;
+        assertFalse(mockMenuManager.openSubMenu(cell));
+    }
+
+    @Test
+    public void testOpeningSubMenu() {
+        // call open Menu
+        List<MenuCell> testCells = createTestCells();
+        menuManager.setMenuCells(testCells);
+
+        sendFakeCoreOnHMIFullNotifications();
+
+        // Sleep to give time to Taskmaster to run the operations
+        sleep();
+
+        // Has to get success response to be true
+        MenuCell submenu = testCells.get(3);
+        assertTrue(menuManager.openSubMenu(submenu));
+    }
+
+    @Test
+    public void testSetMenuConfiguration() {
+        sendFakeCoreOnHMIFullNotifications();
+        menuManager.windowCapability = new WindowCapability();
+        menuManager.windowCapability.setMenuLayoutsAvailable(Arrays.asList(MenuLayout.LIST, MenuLayout.TILES));
+
+        MenuConfiguration menuConfigurationTest = new MenuConfiguration(MenuLayout.LIST, MenuLayout.LIST);
+        menuManager.setMenuConfiguration(menuConfigurationTest);
+
+        // Sleep to give time to Taskmaster to run the operations
+        sleep();
+
+        assertEquals(menuManager.menuConfiguration, menuConfigurationTest);
+    }
 
     // HELPERS
 
