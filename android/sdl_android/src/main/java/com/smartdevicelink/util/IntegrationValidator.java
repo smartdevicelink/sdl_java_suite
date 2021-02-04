@@ -62,7 +62,8 @@ public class IntegrationValidator {
         builder.append("-----------------------------------\n");
         List<ValidationResult> results = new ArrayList<>();
 
-        results.add(checkPermissions(context));
+        ValidationResult permissionResults = checkPermissions(context);
+        results.add(permissionResults);
 
         if ((flags & FLAG_SKIP_ROUTER_SERVICE_CHECK) == FLAG_SKIP_ROUTER_SERVICE_CHECK) {
             results.add(new ValidationResult(true, "SdlRouterService checks were not performed yet due to supplied flags"));
@@ -75,7 +76,13 @@ public class IntegrationValidator {
             }
         }
 
-        results.add(checkBroadcastReceiver(context));
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R || permissionResults.successful) {
+            //This is done so that we don't provide incorrect information regarding Android 11
+            //and the required new permission that causes the broadcast receiver check to fail.
+            results.add(checkBroadcastReceiver(context));
+        } else {
+            results.add(new ValidationResult(false, "SdlBroadcastReceiver checks were not performed yet due to failing permission check"));
+        }
 
         boolean success = true;
         for (ValidationResult result : results) {
@@ -106,6 +113,9 @@ public class IntegrationValidator {
         permissionList.add(Manifest.permission.ACCESS_NETWORK_STATE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             permissionList.add(Manifest.permission.FOREGROUND_SERVICE);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            permissionList.add(Manifest.permission.QUERY_ALL_PACKAGES);
         }
         try {
             PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getApplicationContext().getPackageName(), PackageManager.GET_PERMISSIONS);
