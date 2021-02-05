@@ -953,9 +953,10 @@ public class SdlProtocolBase {
                 type.setModel(model);
                 type.setModelYear(modelYear);
                 type.setTrim(trim);
-                SystemInfo systemInfo = new com.smartdevicelink.session.SystemInfo(type, softwareVersion, hardwareVersion);
+                SystemInfo systemInfo = new SystemInfo(type, softwareVersion, hardwareVersion);
                 if (!iSdlProtocol.onSystemInfoReceived(systemInfo)) {
-                    onTransportNotAccepted("Rejected by the vehicle type filter");
+                    DebugTool.logInfo(TAG, "Rejected by the vehicle type filter");
+                    endService(serviceType, (byte) iSdlProtocol.getSessionId());
                     return;
                 }
             }

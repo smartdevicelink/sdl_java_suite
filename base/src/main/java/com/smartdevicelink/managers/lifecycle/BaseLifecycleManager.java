@@ -83,6 +83,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.session.ISdlSessionListener;
 import com.smartdevicelink.session.SdlSession;
+import com.smartdevicelink.session.SystemInfo;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.util.CorrelationIdGenerator;
@@ -129,6 +130,7 @@ abstract class BaseLifecycleManager {
     final Version minimumRPCVersion;
     BaseTransportConfig _transportConfig;
     private Taskmaster taskmaster;
+    private boolean didReceiveSystemInfo = false;
 
     BaseLifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener) {
         this.appConfig = appConfig;
@@ -386,10 +388,15 @@ abstract class BaseLifecycleManager {
                         processRaiResponse(raiResponse);
                         systemCapabilityManager.parseRAIResponse(raiResponse);
 
-                        VehicleType type = raiResponse.getVehicleType();
-                        if (!lifecycleListener.onSystemInfoReceived(new com.smartdevicelink.session.SystemInfo(type, null, null))){
-                            DebugTool.logInfo(TAG, "vehicle type is wrong");
-                            session.close();
+                        if (!didReceiveSystemInfo) {
+                            if (!lifecycleListener.onSystemInfoReceived(new SystemInfo(raiResponse.getVehicleType(), raiResponse.getSystemSoftwareVersion(), null))){
+                                DebugTool.logInfo(TAG, "vehicle type is wrong");
+                                UnregisterAppInterface msg = new UnregisterAppInterface();
+                                msg.setCorrelationID(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
+                                sendRPCMessagePrivate(msg, true);
+                                clean();
+                                return;
+                            }
                         }
 
                         break;
@@ -938,7 +945,8 @@ abstract class BaseLifecycleManager {
         }
 
         @Override
-        public boolean onSystemInfoReceived(@Nullable com.smartdevicelink.session.SystemInfo systemInfo) {
+        public boolean onSystemInfoReceived(@Nullable SystemInfo systemInfo) {
+            didReceiveSystemInfo = true;
             return lifecycleListener.onSystemInfoReceived(systemInfo);
         }
 
@@ -1260,7 +1268,7 @@ abstract class BaseLifecycleManager {
 
         void onError(LifecycleManager lifeCycleManager, String info, Exception e);
 
-        boolean onSystemInfoReceived(com.smartdevicelink.session.SystemInfo systemInfo);
+        boolean onSystemInfoReceived(SystemInfo systemInfo);
     }
 
     public static class AppConfig {

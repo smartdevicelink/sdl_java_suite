@@ -20,6 +20,7 @@ import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
+import com.smartdevicelink.session.SystemInfo;
 import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
@@ -113,6 +114,11 @@ public class SdlManagerTests {
             @Override
             public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language, Language hmiLanguage) {
                 return null;
+            }
+
+            @Override
+            public boolean onSystemInfoReceived(SystemInfo systemInfo) {
+                return false;
             }
         };
 

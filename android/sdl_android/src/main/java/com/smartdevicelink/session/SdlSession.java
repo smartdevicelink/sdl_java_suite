@@ -138,10 +138,8 @@ public class SdlSession extends BaseSdlSession {
     @Override
     public void onProtocolMessageReceived(ProtocolMessage msg) {
         super.onProtocolMessageReceived(msg);
-
         if (SessionType.RPC.equals(msg.getSessionType())) {
             RPCMessage rpc = RpcConverter.extractRpc(msg, this.sdlProtocol.getProtocolVersion());
-
             if (rpc != null && rpc.getFunctionID() != null && rpc.getFunctionID() == REGISTER_APP_INTERFACE) {
                 RegisterAppInterfaceResponse raiResponse = (RegisterAppInterfaceResponse) rpc;
                 VehicleTypeHolder.saveVehicleType(contextWeakReference.get(), raiResponse.getVehicleType(), sdlProtocol.getTransportForSession(SessionType.RPC).getAddress());
@@ -215,10 +213,5 @@ public class SdlSession extends BaseSdlSession {
 
     @Override
     public void onAuthTokenReceived(String authToken) {/* Do nothing */ }
-
-    @Override
-    public boolean onSystemInfoReceived(SystemInfo systemInfo) {
-        return sessionListener.onSystemInfoReceived(systemInfo);
-    }
 
 }

@@ -239,6 +239,11 @@ public class SdlService extends Service {
                         return null;
                     }
                 }
+
+                @Override
+                public boolean onSystemInfoReceived(SystemInfo systemInfo) {
+                    return true;
+                }
             };
 
             // Create App Icon, this is set in the SdlManager builder

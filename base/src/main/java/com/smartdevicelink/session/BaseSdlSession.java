@@ -279,6 +279,11 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
 
     }
 
+    @Override
+    public boolean onSystemInfoReceived(SystemInfo systemInfo) {
+        return sessionListener.onSystemInfoReceived(systemInfo);
+    }
+
     //To be implemented by child class
     @Override
     public abstract void onServiceStarted(SdlPacket packet, SessionType sessionType, int sessionID, Version version, boolean isEncrypted);

@@ -31,16 +31,8 @@
  */
 package com.smartdevicelink.managers;
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.content.res.XmlResourceParser;
-import android.os.Bundle;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
-import com.smartdevicelink.R;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.FileManagerConfig;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
@@ -61,7 +53,6 @@ import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.SetAppIcon;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
-import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
@@ -85,7 +76,6 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import static com.smartdevicelink.util.SdlAppInfo.deserializeVehicleMake;
 
 abstract class BaseSdlManager {
 
@@ -164,7 +154,7 @@ abstract class BaseSdlManager {
 
         @Override
         public boolean onSystemInfoReceived(SystemInfo systemInfo) {
-            return BaseSdlManager.this.onSystemInfoReceived(systemInfo);
+            return managerListener.onSystemInfoReceived(systemInfo);
         }
     };
 
@@ -876,20 +866,6 @@ abstract class BaseSdlManager {
     public void startRPCEncryption() {
         if (lifecycleManager != null) {
             lifecycleManager.startRPCEncryption();
-        }
-    }
-
-    public boolean onSystemInfoReceived(@Nullable SystemInfo systemInfo) {
-        try {
-            Context context = ((SdlManager) BaseSdlManager.this).context;
-            ComponentName myService = new ComponentName(context, this.getClass());
-            Bundle metaData = context.getPackageManager().getServiceInfo(myService, PackageManager.GET_META_DATA).metaData;
-            XmlResourceParser parser = context.getResources().getXml(metaData.getInt(context.getResources().getString(R.string.sdl_oem_vehicle_type_filter_name)));
-            List<VehicleType> vehicleMakes = deserializeVehicleMake(parser);
-
-            if (systemInfo == null) return false; else return vehicleMakes.contains(systemInfo.getVehicleType());
-        } catch (PackageManager.NameNotFoundException e) {
-            return false;
         }
     }
 }

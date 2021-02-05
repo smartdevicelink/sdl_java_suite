@@ -34,6 +34,7 @@ package com.smartdevicelink.managers;
 
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
 import com.smartdevicelink.proxy.rpc.enums.Language;
+import com.smartdevicelink.session.SystemInfo;
 
 public interface SdlManagerListener extends BaseSdlManagerListener {
 
@@ -68,4 +69,6 @@ public interface SdlManagerListener extends BaseSdlManagerListener {
      * otherwise null to indicate that the language is not supported.
      */
     LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language, Language hmiLanguage);
+
+    boolean onSystemInfoReceived(SystemInfo systemInfo);
 }
