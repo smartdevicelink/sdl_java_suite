@@ -190,9 +190,11 @@ class MenuReplaceOperation extends Task {
 
             @Override
             public void onResponse(RPCRequest request, RPCResponse response) {
-                // Find the id of the successful request and remove it from the current menu list wherever it may have been
-                int commandId = commandIdForRPCRequest(request);
-                removeMenuCellFromList(currentMenu, commandId);
+                if (response.getSuccess()) {
+                    // Find the id of the successful request and remove it from the current menu list wherever it may have been
+                    int commandId = commandIdForRPCRequest(request);
+                    removeMenuCellFromList(currentMenu, commandId);
+                }
             }
         });
     }
@@ -244,20 +246,24 @@ class MenuReplaceOperation extends Task {
 
                     @Override
                     public void onResponse(RPCRequest request, RPCResponse response) {
-                        // Find the id of the successful request and add it from the current menu list wherever it needs to be
-                        int commandId = commandIdForRPCRequest(request);
-                        int position = positionForRPCRequest(request);
-                        addMenuRequestWithCommandId(commandId, position, newMenuCells, currentMenu);
+                        if (response.getSuccess()) {
+                            // Find the id of the successful request and add it from the current menu list wherever it needs to be
+                            int commandId = commandIdForRPCRequest(request);
+                            int position = positionForRPCRequest(request);
+                            addMenuRequestWithCommandId(commandId, position, newMenuCells, currentMenu);
+                        }
                     }
                 });
             }
 
             @Override
             public void onResponse(RPCRequest request, RPCResponse response) {
-                // Find the id of the successful request and add it from the current menu list wherever it needs to be
-                int commandId = commandIdForRPCRequest(request);
-                int position = positionForRPCRequest(request);
-                addMenuRequestWithCommandId(commandId, position, newMenuCells, currentMenu);
+                if (response.getSuccess()) {
+                    // Find the id of the successful request and add it from the current menu list wherever it needs to be
+                    int commandId = commandIdForRPCRequest(request);
+                    int position = positionForRPCRequest(request);
+                    addMenuRequestWithCommandId(commandId, position, newMenuCells, currentMenu);
+                }
             }
         });
     }
