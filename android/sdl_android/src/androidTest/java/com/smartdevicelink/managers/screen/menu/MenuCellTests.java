@@ -43,13 +43,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNotSame;
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertNotEquals;
 
 @RunWith(AndroidJUnit4.class)
 public class MenuCellTests {
@@ -63,7 +63,6 @@ public class MenuCellTests {
 
     @Test
     public void testSettersAndGetters() {
-
         // set everything
         MenuCell menuCell = new MenuCell(TestValues.GENERAL_STRING, null, null, menuSelectionListener);
         menuCell.setIcon(TestValues.GENERAL_ARTWORK);
@@ -83,7 +82,6 @@ public class MenuCellTests {
 
     @Test
     public void testConstructors() {
-
         // first constructor was tested in previous method, use the last two here
 
         MenuCell menuCell3 = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
@@ -105,22 +103,29 @@ public class MenuCellTests {
 
     @Test
     public void testEquality() {
+        MenuCell menuCell1 = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
+        MenuCell menuCell1_1 = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
+        menuCell1.setSubCells(Collections.singletonList(menuCell1_1));
 
-        //We should use assertTrue (or assertFalse) because we want to use the overridden equals() method
-
-        MenuCell menuCell = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
         MenuCell menuCell2 = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
+        MenuCell menuCell2_1 = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
+        menuCell2.setSubCells(Collections.singletonList(menuCell2_1));
 
         // these are the same object, should be equal.
-        assertTrue(menuCell.equals(menuCell));
+        assertEquals(menuCell1, menuCell1);
 
         // Make sure these are marked as equals, even though they are different objects
-        assertTrue(menuCell.equals(menuCell2));
+        assertEquals(menuCell1, menuCell2);
 
         MenuCell menuCell3 = new MenuCell(TestValues.GENERAL_STRING, null, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
 
         // these should be different
-        assertFalse(menuCell.equals(menuCell3));
+        assertNotEquals(menuCell1, menuCell3);
+
+        menuCell1_1.setTitle("new title");
+
+        // Make sure sub cells are compared
+        assertNotEquals(menuCell1, menuCell2);
     }
 
     @Test
@@ -161,8 +166,5 @@ public class MenuCellTests {
 
             assertNotSame(originalSubCells.get(i), cloneSubCells.get(i));
         }
-
-
     }
-
 }
