@@ -34,8 +34,13 @@ package com.smartdevicelink.managers.screen.menu;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.proxy.rpc.ImageField;
+import com.smartdevicelink.proxy.rpc.WindowCapability;
+import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
+import com.smartdevicelink.test.TestValues;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -50,6 +55,9 @@ import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdN
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Bilal Alsharifi on 2/4/21.
@@ -189,6 +197,62 @@ public class MenuReplaceUtilitiesTests {
         assertEquals(5, actualMenuCellList.size());
         assertEquals(2, actualMenuCellList.get(4).getSubCells().size());
         assertEquals(1, actualMenuCellList.get(4).getSubCells().get(1).getSubCells().size());
+    }
+
+    @Test
+    public void testShouldCellIncludeImage() {
+        MenuCell menuCell;
+        WindowCapability windowCapability;
+        FileManager fileManager;
+        List<String> voiceCommands = null;
+
+        // Case 1
+        menuCell = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, voiceCommands, null);
+        windowCapability = createWindowCapability(true, true);
+        fileManager = createMockFileManager(true);
+        assertTrue(MenuReplaceUtilities.shouldCellIncludeImage(menuCell, fileManager, windowCapability));
+
+        // Case 2 - Image are not supported
+        menuCell = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, voiceCommands, null);
+        windowCapability = createWindowCapability(false, false);
+        fileManager = createMockFileManager(true);
+        assertFalse(MenuReplaceUtilities.shouldCellIncludeImage(menuCell, fileManager, windowCapability));
+
+        // Case 3 - Artwork is null
+        menuCell = new MenuCell(TestValues.GENERAL_STRING, null, voiceCommands, null);
+        windowCapability = createWindowCapability(true, true);
+        fileManager = createMockFileManager(true);
+        assertFalse(MenuReplaceUtilities.shouldCellIncludeImage(menuCell, fileManager, windowCapability));
+
+        // Case 4 - Artwork has not been uploaded
+        menuCell = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, voiceCommands, null);
+        windowCapability = createWindowCapability(true, true);
+        fileManager = createMockFileManager(false);
+        assertFalse(MenuReplaceUtilities.shouldCellIncludeImage(menuCell, fileManager, windowCapability));
+
+        // Case 5 - Artwork is static icon
+        menuCell = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK_STATIC, voiceCommands, null);
+        windowCapability = createWindowCapability(true, true);
+        fileManager = createMockFileManager(false);
+        assertTrue(MenuReplaceUtilities.shouldCellIncludeImage(menuCell, fileManager, windowCapability));
+    }
+
+    private WindowCapability createWindowCapability (boolean supportsCmdIcon, boolean supportsSubMenuIcon) {
+        WindowCapability windowCapability = new WindowCapability();
+        windowCapability.setImageFields(new ArrayList<ImageField>());
+        if (supportsCmdIcon) {
+            windowCapability.getImageFields().add(new ImageField(ImageFieldName.cmdIcon, null));
+        }
+        if (supportsSubMenuIcon) {
+            windowCapability.getImageFields().add(new ImageField(ImageFieldName.subMenuIcon, null));
+        }
+        return windowCapability;
+    }
+
+    private FileManager createMockFileManager (boolean hasUploadedFile) {
+        FileManager fileManager = mock(FileManager.class);
+        when(fileManager.hasUploadedFile(any(SdlArtwork.class))).thenReturn(hasUploadedFile);
+        return fileManager;
     }
 
     private MenuCell cloneMenuCellAndRemoveSubCells(MenuCell menuCell) {
