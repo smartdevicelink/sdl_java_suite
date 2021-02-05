@@ -174,6 +174,7 @@ class MenuReplaceUtilities {
         }
 
         return new AddSubMenu(cell.getCellId(), cell.getTitle())
+                .setParentID(cell.getParentCellId() != parentIdNotFound ? cell.getParentCellId() : null)
                 .setPosition(position)
                 .setMenuLayout(submenuLayout)
                 .setMenuIcon(icon);
