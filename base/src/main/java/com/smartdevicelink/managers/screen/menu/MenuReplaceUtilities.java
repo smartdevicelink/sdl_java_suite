@@ -97,7 +97,7 @@ class MenuReplaceUtilities {
     static List<RPCRequest> mainMenuCommandsForCells(List<MenuCell> cells, FileManager fileManager, WindowCapability windowCapability, List<MenuCell> menu, MenuLayout defaultSubmenuLayout) {
         List<RPCRequest> commands = new ArrayList<>();
 
-        // We need the index so we will use this type of loop
+        // We need the index to use it as position so we will use this type of loop
         for (int menuInteger = 0; menuInteger < menu.size(); menuInteger++) {
             MenuCell mainCell = menu.get(menuInteger);
             for (int updateCellsIndex = 0; updateCellsIndex < cells.size(); updateCellsIndex++) {
