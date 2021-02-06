@@ -40,6 +40,7 @@ import com.smartdevicelink.proxy.rpc.enums.Direction;
 import com.smartdevicelink.proxy.rpc.enums.DisplayMode;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.DistanceUnit;
+import com.smartdevicelink.proxy.rpc.enums.DoorStatusType;
 import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
 import com.smartdevicelink.proxy.rpc.enums.ECallConfirmationStatus;
 import com.smartdevicelink.proxy.rpc.enums.EmergencyEventType;
@@ -85,6 +86,7 @@ import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 import com.smartdevicelink.proxy.rpc.enums.SeatMemoryActionType;
+import com.smartdevicelink.proxy.rpc.enums.SeekIndicatorType;
 import com.smartdevicelink.proxy.rpc.enums.ServiceUpdateReason;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
@@ -270,6 +272,7 @@ public class TestValues {
     public static final DriverDistractionState GENERAL_DRIVERDISTRACTIONSTATE = DriverDistractionState.DD_ON;
     public static final List<LocationDetails> GENERAL_LOCATIONDETAILS_LIST = Arrays.asList(new LocationDetails[]{TestValues.GENERAL_LOCATIONDETAILS, TestValues.GENERAL_LOCATIONDETAILS});
     public static final AudioStreamingIndicator GENERAL_AUDIO_STREAMING_INDICATOR = AudioStreamingIndicator.PLAY;
+    public static final SeekStreamingIndicator GENERAL_SEEK_STREAMING_INDICATOR = new SeekStreamingIndicator(SeekIndicatorType.TRACK);
     public static final String GENERAL_APP_ID = "123e4567e8";
     public static final String GENERAL_FULL_APP_ID = "123e4567-e89b-12d3-a456-426655440000";
     public static final String GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME = "oemCustomVehicleDataName";
@@ -332,6 +335,15 @@ public class TestValues {
     public static final KeyboardCapabilities GENERAL_KEYBOARD_CAPABILITIES = new KeyboardCapabilities();
     public static final WindowState GENERAL_WINDOWSTATE = new WindowState();
 
+    public static final DoorStatusType GENERAL_DOOR_STATUS_TYPE = DoorStatusType.REMOVED;
+
+    public static final DoorStatus GENERAL_DOOR_STATUS = new DoorStatus();
+    public static final GateStatus GENERAL_GATE_STATUS = new GateStatus();
+    public static final RoofStatus GENERAL_ROOF_STATUS = new RoofStatus();
+
+    public static final ArrayList<DoorStatus> GENERAL_DOOR_STATUS_LIST = new ArrayList<>(1);
+    public static final ArrayList<GateStatus> GENERAL_GATE_STATUS_LIST = new ArrayList<>(1);
+    public static final ArrayList<RoofStatus> GENERAL_ROOF_STATUS_LIST = new ArrayList<>(1);
 
     public static final VehicleDataResult GENERAL_OEM_CUSTOM_VEHICLE_DATA = new VehicleDataResult();
     public static final TemplateConfiguration GENERAL_TEMPLATE_CONFIGURATION = new TemplateConfiguration();
@@ -501,6 +513,13 @@ public class TestValues {
     public static final JSONArray JSON_SUPPORTED_KEYBOARDS_LIST = new JSONArray();
     public static final JSONObject JSON_DYNAMICUPDATECAPABILITIES = new JSONObject();
     public static final JSONObject JSON_KEYBOARD_CAPABILITY = new JSONObject();
+    public static final JSONArray JSON_ROOF_STATUSES = new JSONArray();
+    public static final JSONArray JSON_DOOR_STATUSES = new JSONArray();
+    public static final JSONArray JSON_GATE_STATUSES = new JSONArray();
+    public static final JSONObject JSON_ROOF_STATUS = new JSONObject();
+    public static final JSONObject JSON_DOOR_STATUS = new JSONObject();
+    public static final JSONObject JSON_GATE_STATUS = new JSONObject();
+    public static final JSONObject JSON_SEEK_STREAMING_INDICATOR = new JSONObject();
 
     static {
         GENERAL_TOUCHEVENTCAPABILITIES.setDoublePressAvailable(GENERAL_BOOLEAN);
@@ -1068,6 +1087,19 @@ public class TestValues {
 
         GENERAL_KEYBOARD_CAPABILITIES.setMaskInputCharactersSupported(TestValues.GENERAL_BOOLEAN);
         GENERAL_KEYBOARD_CAPABILITIES.setSupportedKeyboards(GENERAL_SUPPORTED_KEYBOARDS_LIST);
+        GENERAL_ROOF_STATUS.setLocation(GENERAL_GRID);
+        GENERAL_ROOF_STATUS.setState(GENERAL_WINDOW_STATE);
+        GENERAL_ROOF_STATUS.setStatus(GENERAL_DOOR_STATUS_TYPE);
+        GENERAL_ROOF_STATUS_LIST.add(GENERAL_ROOF_STATUS);
+
+        GENERAL_GATE_STATUS.setLocation(GENERAL_GRID);
+        GENERAL_GATE_STATUS.setStatus(GENERAL_DOOR_STATUS_TYPE);
+        GENERAL_GATE_STATUS_LIST.add(GENERAL_GATE_STATUS);
+
+        GENERAL_DOOR_STATUS.setLocation(GENERAL_GRID);
+        GENERAL_DOOR_STATUS.setStatus(GENERAL_DOOR_STATUS_TYPE);
+        GENERAL_DOOR_STATUS_LIST.add(GENERAL_DOOR_STATUS);
+
         try {
 
             for (KeyboardLayoutCapability keyboard : GENERAL_SUPPORTED_KEYBOARDS_LIST) {
@@ -1313,6 +1345,20 @@ public class TestValues {
             JSON_MODULE_INFO.put(ModuleInfo.KEY_MODULE_SERVICE_AREA, TestValues.JSON_GRID);
             JSON_MODULE_INFO.put(ModuleInfo.KEY_MULTIPLE_ACCESS_ALLOWED, TestValues.GENERAL_BOOLEAN);
 
+            JSON_ROOF_STATUS.put(RoofStatus.KEY_STATUS, GENERAL_DOOR_STATUS_TYPE);
+            JSON_ROOF_STATUS.put(RoofStatus.KEY_LOCATION, JSON_GRID);
+            JSON_ROOF_STATUS.put(RoofStatus.KEY_STATE, GENERAL_WINDOW_STATE.serializeJSON());
+
+            JSON_DOOR_STATUS.put(DoorStatus.KEY_STATUS, GENERAL_DOOR_STATUS_TYPE);
+            JSON_DOOR_STATUS.put(DoorStatus.KEY_LOCATION, JSON_GRID);
+
+            JSON_GATE_STATUS.put(GateStatus.KEY_STATUS, GENERAL_DOOR_STATUS_TYPE);
+            JSON_GATE_STATUS.put(GateStatus.KEY_LOCATION, JSON_GRID);
+
+            JSON_ROOF_STATUSES.put(JSON_ROOF_STATUS);
+            JSON_DOOR_STATUSES.put(JSON_DOOR_STATUS);
+            JSON_GATE_STATUSES.put(JSON_GATE_STATUS);
+            JSON_SEEK_STREAMING_INDICATOR.put(SeekStreamingIndicator.KEY_TYPE, SeekIndicatorType.TRACK);
 
         } catch (JSONException e) {
             Log.e("Test", "Static Json Construction Failed.", e);
