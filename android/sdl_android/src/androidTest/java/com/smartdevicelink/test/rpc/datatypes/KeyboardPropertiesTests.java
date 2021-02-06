@@ -35,9 +35,10 @@ public class KeyboardPropertiesTests extends TestCase {
         msg.setKeypressMode(TestValues.GENERAL_KEYPRESSMODE);
         msg.setLanguage(TestValues.GENERAL_LANGUAGE);
         msg.setLimitedCharacterList(TestValues.GENERAL_STRING_LIST);
-        msg.setCustomizeKeys(TestValues.GENERAL_STRING_LIST);
+        msg.setCustomKeys(TestValues.GENERAL_STRING_LIST);
         msg.setMaskInputCharacters(TestValues.GENERAL_KEYBOARD_INPUT_MASK);
     }
+
 
     /**
      * Tests the expected values of the RPC message.
@@ -51,7 +52,7 @@ public class KeyboardPropertiesTests extends TestCase {
         Language language = msg.getLanguage();
         List<String> limitedChars = msg.getLimitedCharacterList();
         KeyboardInputMask keyInputMask = msg.getMaskInputCharacters();
-        List<String> customKeys = msg.getCustomizeKeys();
+        List<String> customKeys = msg.getCustomKeys();
 
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, autoCompleteText);
@@ -69,15 +70,14 @@ public class KeyboardPropertiesTests extends TestCase {
         KeyboardProperties msg = new KeyboardProperties();
         assertNotNull(TestValues.NOT_NULL, msg);
 
-        // Keypress mode is created in the object constructor
-        assertNotNull(TestValues.NOT_NULL, msg.getKeypressMode());
+        assertNull(TestValues.NULL, msg.getKeypressMode());
         assertNull(TestValues.NULL, msg.getAutoCompleteText());
         assertNull(TestValues.NULL, msg.getAutoCompleteList());
         assertNull(TestValues.NULL, msg.getLanguage());
         assertNull(TestValues.NULL, msg.getKeyboardLayout());
         assertNull(TestValues.NULL, msg.getLimitedCharacterList());
         assertNull(TestValues.NULL, msg.getMaskInputCharacters());
-        assertNull(TestValues.NULL, msg.getCustomizeKeys());
+        assertNull(TestValues.NULL, msg.getCustomKeys());
     }
 
     public void testJson() {
@@ -90,7 +90,7 @@ public class KeyboardPropertiesTests extends TestCase {
             reference.put(KeyboardProperties.KEY_KEYPRESS_MODE, TestValues.GENERAL_KEYPRESSMODE);
             reference.put(KeyboardProperties.KEY_LANGUAGE, TestValues.GENERAL_LANGUAGE);
             reference.put(KeyboardProperties.KEY_LIMITED_CHARACTER_LIST, JsonUtils.createJsonArray(TestValues.GENERAL_STRING_LIST));
-            reference.put(KeyboardProperties.KEY_CUSTOMIZE_KEYS, JsonUtils.createJsonArray(TestValues.GENERAL_STRING_LIST));
+            reference.put(KeyboardProperties.KEY_CUSTOM_KEYS, JsonUtils.createJsonArray(TestValues.GENERAL_STRING_LIST));
             reference.put(KeyboardProperties.KEY_MASK_INPUT_CHARACTERS, TestValues.GENERAL_KEYBOARD_INPUT_MASK);
 
             JSONObject underTest = msg.serializeJSON();
@@ -99,7 +99,7 @@ public class KeyboardPropertiesTests extends TestCase {
             Iterator<?> iterator = reference.keys();
             while (iterator.hasNext()) {
                 String key = (String) iterator.next();
-                if (key.equals(KeyboardProperties.KEY_LIMITED_CHARACTER_LIST) || key.equals(KeyboardProperties.KEY_AUTO_COMPLETE_LIST) || key.equals(KeyboardProperties.KEY_CUSTOMIZE_KEYS)) {
+                if (key.equals(KeyboardProperties.KEY_LIMITED_CHARACTER_LIST) || key.equals(KeyboardProperties.KEY_AUTO_COMPLETE_LIST) || key.equals(KeyboardProperties.KEY_CUSTOM_KEYS)) {
                     assertTrue(TestValues.TRUE, Validator.validateStringList(JsonUtils.readStringListFromJsonObject(reference, key), JsonUtils.readStringListFromJsonObject(underTest, key)));
                 } else {
                     assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));

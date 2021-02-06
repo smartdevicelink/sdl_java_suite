@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
+ * Copyright (c) 2017 - 2021, SmartDeviceLink Consortium, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@ import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import java.util.Hashtable;
 
 /**
- * Describes number of cofigurable Keys for Special characters.
+ * Describes the capabilities of a single keyboard layout.
  *
  * <p><b>Parameter List</b></p>
  *
@@ -63,40 +63,41 @@ import java.util.Hashtable;
  *  <tr>
  *      <td>numConfigurableKeys</td>
  *      <td>Integer</td>
- *      <td></td>
+ *      <td>Number of keys available for special characters, App can customize as per their needs.</td>
  *      <td>Y</td>
- *      <td></td>
+ *      <td>{"num_max_value": 10, "num_min_value": 0}</td>
  *      <td></td>
  *  </tr>
  * </table>
  *
  * @since SmartDeviceLink 7.1.0
  */
-public class ConfigurableKeyboards extends RPCStruct {
+public class KeyboardLayoutCapability extends RPCStruct {
     public static final String KEY_KEYBOARD_LAYOUT = "keyboardLayout";
     public static final String KEY_NUM_CONFIGURABLE_KEYS = "numConfigurableKeys";
 
     /**
-     * Constructs a new ConfigurableKeyboards object
+     * Constructs a new KeyboardLayoutCapability object
      */
-    public ConfigurableKeyboards() { }
+    public KeyboardLayoutCapability() { }
 
     /**
-     * Constructs a new ConfigurableKeyboards object indicated by the Hashtable parameter
+     * Constructs a new KeyboardLayoutCapability object indicated by the Hashtable parameter
      *
      * @param hash The Hashtable to use
      */
-    public ConfigurableKeyboards(Hashtable<String, Object> hash) {
+    public KeyboardLayoutCapability(Hashtable<String, Object> hash) {
         super(hash);
     }
 
     /**
-     * Constructs a new ConfigurableKeyboards object
+     * Constructs a new KeyboardLayoutCapability object
      *
      * @param keyboardLayout
-     * @param numConfigurableKeys
+     * @param numConfigurableKeys Number of keys available for special characters, App can customize as per their needs.
+     * {"num_max_value": 10, "num_min_value": 0}
      */
-    public ConfigurableKeyboards(@NonNull KeyboardLayout keyboardLayout, @NonNull Integer numConfigurableKeys) {
+    public KeyboardLayoutCapability(@NonNull KeyboardLayout keyboardLayout, @NonNull Integer numConfigurableKeys) {
         this();
         setKeyboardLayout(keyboardLayout);
         setNumConfigurableKeys(numConfigurableKeys);
@@ -107,7 +108,7 @@ public class ConfigurableKeyboards extends RPCStruct {
      *
      * @param keyboardLayout
      */
-    public ConfigurableKeyboards setKeyboardLayout(@NonNull KeyboardLayout keyboardLayout) {
+    public KeyboardLayoutCapability setKeyboardLayout(@NonNull KeyboardLayout keyboardLayout) {
         setValue(KEY_KEYBOARD_LAYOUT, keyboardLayout);
         return this;
     }
@@ -124,9 +125,10 @@ public class ConfigurableKeyboards extends RPCStruct {
     /**
      * Sets the numConfigurableKeys.
      *
-     * @param numConfigurableKeys
+     * @param numConfigurableKeys Number of keys available for special characters, App can customize as per their needs.
+     * {"num_max_value": 10, "num_min_value": 0}
      */
-    public ConfigurableKeyboards setNumConfigurableKeys(@NonNull Integer numConfigurableKeys) {
+    public KeyboardLayoutCapability setNumConfigurableKeys(@NonNull Integer numConfigurableKeys) {
         setValue(KEY_NUM_CONFIGURABLE_KEYS, numConfigurableKeys);
         return this;
     }
@@ -134,7 +136,8 @@ public class ConfigurableKeyboards extends RPCStruct {
     /**
      * Gets the numConfigurableKeys.
      *
-     * @return Integer
+     * @return Integer Number of keys available for special characters, App can customize as per their needs.
+     * {"num_max_value": 10, "num_min_value": 0}
      */
     public Integer getNumConfigurableKeys() {
         return getInteger(KEY_NUM_CONFIGURABLE_KEYS);
