@@ -176,6 +176,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         // Create a deep copy of the list so future changes by developers don't affect the algorithm logic
         List<MenuCell> clonedCells = cloneMenuCellsList(cells);
 
+        // If we're running on a connection < RPC 7.1, we need to de-duplicate cells because presenting them will fail if we have the same cell primary text.
         if (internalInterface.getSdlMsgVersion() != null
                 && (internalInterface.getSdlMsgVersion().getMajorVersion() < 7
                 || (internalInterface.getSdlMsgVersion().getMajorVersion() == 7 && internalInterface.getSdlMsgVersion().getMinorVersion() == 0))) {
