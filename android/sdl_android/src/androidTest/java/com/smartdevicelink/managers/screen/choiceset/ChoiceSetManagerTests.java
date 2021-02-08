@@ -150,29 +150,37 @@ public class ChoiceSetManagerTests {
         ChoiceSet choiceSet1 = new ChoiceSet("test", Collections.<ChoiceCell>emptyList(), choiceSetSelectionListener);
         assertFalse(csm.setUpChoiceSet(choiceSet1));
 
-        // cells that have duplicate text will be allowed because a unique name will be assigned and used
+        // Identical cells will not be allowed
         ChoiceCell cell1 = new ChoiceCell("test");
         ChoiceCell cell2 = new ChoiceCell("test");
         ChoiceSet choiceSet2 = new ChoiceSet("test", Arrays.asList(cell1, cell2), choiceSetSelectionListener);
-        assertTrue(csm.setUpChoiceSet(choiceSet2));
+        assertFalse(csm.setUpChoiceSet(choiceSet2));
+
+        // cells that have duplicate text will be allowed if there is another property to make them unique because a unique name will be assigned and used
+        ChoiceCell cell3 = new ChoiceCell("test");
+        cell3.setSecondaryText("text 1");
+        ChoiceCell cell4 = new ChoiceCell("test");
+        cell4.setSecondaryText("text 2");
+        ChoiceSet choiceSet3 = new ChoiceSet("test", Arrays.asList(cell3, cell4), choiceSetSelectionListener);
+        assertTrue(csm.setUpChoiceSet(choiceSet3));
 
         // cells cannot mix and match VR / non-VR
-        ChoiceCell cell3 = new ChoiceCell("test", Collections.singletonList("Test"), null);
-        ChoiceCell cell4 = new ChoiceCell("test2");
-        ChoiceSet choiceSet3 = new ChoiceSet("test", Arrays.asList(cell3, cell4), choiceSetSelectionListener);
-        assertFalse(csm.setUpChoiceSet(choiceSet3));
-
-        // VR Commands must be unique
         ChoiceCell cell5 = new ChoiceCell("test", Collections.singletonList("Test"), null);
-        ChoiceCell cell6 = new ChoiceCell("test2", Collections.singletonList("Test"), null);
+        ChoiceCell cell6 = new ChoiceCell("test2");
         ChoiceSet choiceSet4 = new ChoiceSet("test", Arrays.asList(cell5, cell6), choiceSetSelectionListener);
         assertFalse(csm.setUpChoiceSet(choiceSet4));
 
-        // Passing Case
+        // VR Commands must be unique
         ChoiceCell cell7 = new ChoiceCell("test", Collections.singletonList("Test"), null);
-        ChoiceCell cell8 = new ChoiceCell("test2", Collections.singletonList("Test2"), null);
+        ChoiceCell cell8 = new ChoiceCell("test2", Collections.singletonList("Test"), null);
         ChoiceSet choiceSet5 = new ChoiceSet("test", Arrays.asList(cell7, cell8), choiceSetSelectionListener);
-        assertTrue(csm.setUpChoiceSet(choiceSet5));
+        assertFalse(csm.setUpChoiceSet(choiceSet5));
+
+        // Passing Case
+        ChoiceCell cell9 = new ChoiceCell("test", Collections.singletonList("Test"), null);
+        ChoiceCell cell10 = new ChoiceCell("test2", Collections.singletonList("Test2"), null);
+        ChoiceSet choiceSet6 = new ChoiceSet("test", Arrays.asList(cell9, cell10), choiceSetSelectionListener);
+        assertTrue(csm.setUpChoiceSet(choiceSet6));
     }
 
     @Test

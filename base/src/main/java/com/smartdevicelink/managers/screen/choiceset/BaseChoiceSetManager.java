@@ -197,6 +197,8 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         }
 
         final HashSet<ChoiceCell> choicesToUpload;
+
+        // If we're running on a connection < RPC 7.1, we need to de-duplicate cells because presenting them will fail if we have the same cell primary text.
         if (internalInterface.getSdlMsgVersion() != null
                 && (internalInterface.getSdlMsgVersion().getMajorVersion() < 7
                 || (internalInterface.getSdlMsgVersion().getMajorVersion() == 7 && internalInterface.getSdlMsgVersion().getMinorVersion() == 0))) {
@@ -639,17 +641,25 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             }
         }
 
+        HashSet<ChoiceCell> uniqueChoiceCells = new HashSet<>();
         HashSet<String> uniqueVoiceCommands = new HashSet<>();
         int allVoiceCommandsCount = 0;
         int choiceCellWithVoiceCommandCount = 0;
 
         for (ChoiceCell cell : choices) {
 
+            uniqueChoiceCells.add(cell);
+
             if (cell.getVoiceCommands() != null) {
                 uniqueVoiceCommands.addAll(cell.getVoiceCommands());
                 choiceCellWithVoiceCommandCount += 1;
                 allVoiceCommandsCount += cell.getVoiceCommands().size();
             }
+        }
+
+        if (uniqueChoiceCells.size() < choices.size()) {
+            DebugTool.logError(TAG, "Attempted to create a choice set with a duplicate cell. Cell must have a unique value other than its primary text. The choice set will not be set.");
+            return false;
         }
 
         // All or none of the choices MUST have VR Commands
