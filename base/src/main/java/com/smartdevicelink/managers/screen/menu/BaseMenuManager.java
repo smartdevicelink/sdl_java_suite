@@ -339,6 +339,7 @@ abstract class BaseMenuManager extends BaseSubManager {
                         int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
                         if (currentWindowID == PredefinedWindows.DEFAULT_WINDOW.getValue()) {
                             BaseMenuManager.this.windowCapability = windowCapability;
+                            updateMenuReplaceOperationsWithNewWindowCapability();
                         }
                     }
                 }
@@ -413,6 +414,14 @@ abstract class BaseMenuManager extends BaseSubManager {
         for (Task task : transactionQueue.getTasksAsList()) {
             if (task instanceof MenuReplaceOperation) {
                 ((MenuReplaceOperation) task).setCurrentMenu(this.currentMenuCells);
+            }
+        }
+    }
+
+    private void updateMenuReplaceOperationsWithNewWindowCapability() {
+        for (Task task : transactionQueue.getTasksAsList()) {
+            if (task instanceof MenuReplaceOperation) {
+                ((MenuReplaceOperation) task).setWindowCapability(this.windowCapability);
             }
         }
     }

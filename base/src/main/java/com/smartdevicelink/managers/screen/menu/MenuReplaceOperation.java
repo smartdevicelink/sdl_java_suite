@@ -38,7 +38,7 @@ class MenuReplaceOperation extends Task {
 
     private final WeakReference<ISdl> internalInterface;
     private final WeakReference<FileManager> fileManager;
-    private final WindowCapability windowCapability;
+    private WindowCapability windowCapability;
     private List<MenuCell> currentMenu;
     private final List<MenuCell> updatedMenu;
     private final boolean isDynamicMenuUpdateActive;
@@ -139,9 +139,10 @@ class MenuReplaceOperation extends Task {
 
     /**
      * Takes the main menu cells to delete and add, and deletes the current menu cells, then adds the new menu cells in the correct locations
+     *
      * @param deleteCells The cells that need to be deleted
-     * @param addCells The cells that need to be added
-     * @param listener A CompletionListener called when complete
+     * @param addCells    The cells that need to be added
+     * @param listener    A CompletionListener called when complete
      */
     private void updateMenuWithCellsToDelete(List<MenuCell> deleteCells, final List<MenuCell> addCells, final CompletionListener listener) {
         sendDeleteCurrentMenu(deleteCells, new CompletionListener() {
@@ -163,8 +164,9 @@ class MenuReplaceOperation extends Task {
 
     /**
      * Send Delete RPCs for given menu cells
+     *
      * @param deleteMenuCells The menu cells to be deleted
-     * @param listener A CompletionListener called when the RPCs are finished with an error if any failed
+     * @param listener        A CompletionListener called when the RPCs are finished with an error if any failed
      */
     private void sendDeleteCurrentMenu(List<MenuCell> deleteMenuCells, final CompletionListener listener) {
         if (getState() == Task.CANCELED) {
@@ -201,8 +203,9 @@ class MenuReplaceOperation extends Task {
 
     /**
      * Send Add RPCs for given new menu cells compared to old menu cells
+     *
      * @param newMenuCells The new menu cells we want displayed
-     * @param listener A CompletionListener called when the RPCs are finished with an error if any failed
+     * @param listener     A CompletionListener called when the RPCs are finished with an error if any failed
      */
     private void sendNewMenuCells(final List<MenuCell> newMenuCells, final CompletionListener listener) {
         if (getState() == Task.CANCELED) {
@@ -270,10 +273,11 @@ class MenuReplaceOperation extends Task {
 
     /**
      * Takes the submenu cells that are old keeps and new keeps and determines which cells need to be deleted or added
+     *
      * @param oldKeptCells The old kept cells
      * @param newKeptCells The new kept cells
-     * @param startIndex The index of the main menu to use
-     * @param listener A CompletionListener called when complete
+     * @param startIndex   The index of the main menu to use
+     * @param listener     A CompletionListener called when complete
      */
     private void updateSubMenuWithOldKeptCells(final List<MenuCell> oldKeptCells, final List<MenuCell> newKeptCells, final int startIndex, final CompletionListener listener) {
         if (getState() == Task.CANCELED) {
@@ -347,8 +351,12 @@ class MenuReplaceOperation extends Task {
         this.menuConfiguration = menuConfiguration;
     }
 
-    public void setCurrentMenu(List<MenuCell> currentMenuCells) {
+    void setCurrentMenu(List<MenuCell> currentMenuCells) {
         this.currentMenu = currentMenuCells;
+    }
+
+    void setWindowCapability(WindowCapability windowCapability) {
+        this.windowCapability = windowCapability;
     }
 
     private void finishOperation(boolean success) {
