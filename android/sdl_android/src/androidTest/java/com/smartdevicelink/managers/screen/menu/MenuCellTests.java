@@ -110,7 +110,7 @@ public class MenuCellTests {
         assertEquals(menuCell5.getSubMenuLayout(), TestValues.GENERAL_MENU_LAYOUT);
         assertEquals(menuCell5.getSubCells(), TestValues.GENERAL_MENUCELL_LIST);
 
-        MenuCell menuCell6 = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
+        MenuCell menuCell6 = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
         assertEquals(menuCell6.getTitle(), TestValues.GENERAL_STRING);
         assertEquals(menuCell6.getIcon(), TestValues.GENERAL_ARTWORK);
         assertEquals(menuCell6.getSecondaryText(), TestValues.GENERAL_STRING);
@@ -123,7 +123,7 @@ public class MenuCellTests {
         assertEquals(menuCell7.getTitle(), TestValues.GENERAL_STRING);
         assertEquals(menuCell7.getMenuSelectionListener(), menuSelectionListener);
 
-        MenuCell menuCell8 = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_MENU_LAYOUT, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_MENUCELL_LIST);
+        MenuCell menuCell8 = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, TestValues.GENERAL_MENU_LAYOUT, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_MENUCELL_LIST);
         assertEquals(menuCell8.getTitle(), TestValues.GENERAL_STRING);
         assertEquals(menuCell8.getIcon(), TestValues.GENERAL_ARTWORK);
         assertEquals(menuCell8.getSecondaryText(), TestValues.GENERAL_STRING);

@@ -962,7 +962,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             command.setVrCommands(null);
         }
         command.setCmdIcon((cell.getIcon() != null && shouldHaveArtwork) ? cell.getIcon().getImageRPC() : null);
-        command.setSecondaryImage((cell.getSecondaryArtwork() != null && shouldHaveArtwork ? cell.getSecondaryArtwork().getImageRPC() : null));
+        command.setSecondaryImage((cell.getSecondaryArtwork() != null && shouldHaveArtwork) ? cell.getSecondaryArtwork().getImageRPC() : null);
 
         return command;
     }
