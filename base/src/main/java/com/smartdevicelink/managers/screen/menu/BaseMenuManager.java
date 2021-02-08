@@ -299,13 +299,7 @@ abstract class BaseMenuManager extends BaseSubManager {
                     DebugTool.logError(TAG, "Error setting new menu configuration. Will revert to old menu configuration.");
                 } else {
                     BaseMenuManager.this.menuConfiguration = menuConfiguration;
-
-                    // Update pending operations with new menuConfiguration
-                    for (Task task : transactionQueue.getTasksAsList()) {
-                        if (task instanceof MenuReplaceOperation) {
-                            ((MenuReplaceOperation) task).setMenuConfiguration(menuConfiguration);
-                        }
-                    }
+                    updateMenuReplaceOperationsWithNewMenuConfiguration();
                 }
             }
         });
@@ -422,6 +416,14 @@ abstract class BaseMenuManager extends BaseSubManager {
         for (Task task : transactionQueue.getTasksAsList()) {
             if (task instanceof MenuReplaceOperation) {
                 ((MenuReplaceOperation) task).setWindowCapability(this.windowCapability);
+            }
+        }
+    }
+
+    private void updateMenuReplaceOperationsWithNewMenuConfiguration(){
+        for (Task task : transactionQueue.getTasksAsList()) {
+            if (task instanceof MenuReplaceOperation) {
+                ((MenuReplaceOperation) task).setMenuConfiguration(menuConfiguration);
             }
         }
     }
