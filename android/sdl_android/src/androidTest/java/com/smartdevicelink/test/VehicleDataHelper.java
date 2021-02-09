@@ -15,6 +15,9 @@ import com.smartdevicelink.proxy.rpc.Grid;
 import com.smartdevicelink.proxy.rpc.HeadLampStatus;
 import com.smartdevicelink.proxy.rpc.MyKey;
 import com.smartdevicelink.proxy.rpc.OnVehicleData;
+import com.smartdevicelink.proxy.rpc.SeatLocation;
+import com.smartdevicelink.proxy.rpc.SeatOccupancy;
+import com.smartdevicelink.proxy.rpc.SeatStatus;
 import com.smartdevicelink.proxy.rpc.SingleTireStatus;
 import com.smartdevicelink.proxy.rpc.StabilityControlsStatus;
 import com.smartdevicelink.proxy.rpc.TireStatus;
@@ -89,6 +92,9 @@ public class VehicleDataHelper {
     public static final StabilityControlsStatus STABILITY_CONTROLS_STATUS = new StabilityControlsStatus();
     public static final String OEM_CUSTOM_VEHICLE_DATA_STATE = "oemCustomVehicleDataState";
     public static final Boolean HANDS_OFF_STEERING = Boolean.TRUE;
+
+    // Seat Occupancy
+    public static final SeatOccupancy SEAT_OCCUPANCY = new SeatOccupancy();
 
     //other variables inside some of the above objects
     // tire status
@@ -225,6 +231,11 @@ public class VehicleDataHelper {
     public static final OnVehicleData VEHICLE_DATA = new OnVehicleData();
     //GetVehicleDataResponse data which stores the same things
     public static final GetVehicleDataResponse VEHICLE_DATA_RESPONSE = new GetVehicleDataResponse();
+
+    public static final List<SeatStatus> SEATS_OCCUPIED = new ArrayList<SeatStatus>(1);
+    public static final List<SeatStatus> SEATS_BELTED = new ArrayList<SeatStatus>(1);
+    public static final SeatStatus SEAT_STATUS = new SeatStatus();
+    public static final SeatLocation SEAT_LOCATION = new SeatLocation();
 
     static {
         //TIRE_PRESSURE set up
@@ -373,6 +384,18 @@ public class VehicleDataHelper {
         GEAR_STATUS.setUserSelectedGear(USER_SELECTED_GEAR);
         GEAR_STATUS.setActualGear(ACTUAL_GEAR);
 
+        // SEAT_OCCUPANCY
+        SEAT_LOCATION.setGrid(LOCATION_GRID);
+
+        SEAT_STATUS.setConditionActive(true);
+        SEAT_STATUS.setSeatLocation(SEAT_LOCATION);
+
+        SEATS_BELTED.add(SEAT_STATUS);
+        SEATS_OCCUPIED.add(SEAT_STATUS);
+
+        SEAT_OCCUPANCY.setSeatsBelted(SEATS_BELTED);
+        SEAT_OCCUPANCY.setSeatsOccupied(SEATS_OCCUPIED);
+
         //set up the OnVehicleData object
         VEHICLE_DATA.setSpeed(SPEED);
         VEHICLE_DATA.setRpm(RPM);
@@ -408,6 +431,7 @@ public class VehicleDataHelper {
         VEHICLE_DATA.setStabilityControlsStatus(STABILITY_CONTROLS_STATUS);
         VEHICLE_DATA.setOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, OEM_CUSTOM_VEHICLE_DATA_STATE);
         VEHICLE_DATA.setHandsOffSteering(HANDS_OFF_STEERING);
+        VEHICLE_DATA.setSeatOccupancy(SEAT_OCCUPANCY);
         //set up the GetVehicleDataResponse object
         VEHICLE_DATA_RESPONSE.setSpeed(SPEED);
         VEHICLE_DATA_RESPONSE.setRpm(RPM);
@@ -443,6 +467,7 @@ public class VehicleDataHelper {
         VEHICLE_DATA_RESPONSE.setStabilityControlsStatus(STABILITY_CONTROLS_STATUS);
         VEHICLE_DATA_RESPONSE.setOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, OEM_CUSTOM_VEHICLE_DATA_STATE);
         VEHICLE_DATA_RESPONSE.setHandsOffSteering(HANDS_OFF_STEERING);
+        VEHICLE_DATA_RESPONSE.setSeatOccupancy(SEAT_OCCUPANCY);
     }
 
     private VehicleDataHelper() {

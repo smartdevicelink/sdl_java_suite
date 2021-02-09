@@ -269,6 +269,16 @@ import java.util.Hashtable;
  *          <td>N</td>
  *          <td>SmartDeviceLink 7.0.0</td>
  *      </tr>
+ *      <tr>
+ *          <td>seatOccupancy</td>
+ *          <td>Boolean</td>
+ *          <td>See SeatOccupancy</td>
+ *          <td>N</td>
+ *          <td></td>
+ *          <td>
+ *          @since SmartDeviceLink 7.1.0
+ *          </td>
+ *      </tr>
  * 		</table>
  *
  *
@@ -335,6 +345,10 @@ public class GetVehicleData extends RPCRequest {
     public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
     public static final String KEY_STABILITY_CONTROLS_STATUS = "stabilityControlsStatus";
 
+    /**
+     * @since SmartDeviceLink 7.1.0
+     */
+    public static final String KEY_SEAT_OCCUPANCY = "seatOccupancy";
     /**
      * Constructs a new GetVehicleData object
      */
@@ -789,5 +803,26 @@ public class GetVehicleData extends RPCRequest {
      */
     public Boolean getStabilityControlsStatus() {
         return getBoolean(KEY_STABILITY_CONTROLS_STATUS);
+    }
+
+    /**
+     * Sets the seatOccupancy.
+     *
+     * @param seatOccupancy See SeatOccupancy
+     * @since SmartDeviceLink 7.1.0
+     */
+    public GetVehicleData setSeatOccupancy(Boolean seatOccupancy) {
+        setParameters(KEY_SEAT_OCCUPANCY, seatOccupancy);
+        return this;
+    }
+
+    /**
+     * Gets the seatOccupancy.
+     *
+     * @return Boolean See SeatOccupancy
+     * @since SmartDeviceLink 7.1.0
+     */
+    public Boolean getSeatOccupancy() {
+        return getBoolean(KEY_SEAT_OCCUPANCY);
     }
 }
