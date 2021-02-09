@@ -42,6 +42,7 @@ import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.opengl.GLES20;
 import android.os.Build;
+import android.os.Build.VERSION_CODES;
 import android.os.ConditionVariable;
 import android.os.Handler;
 import android.os.Looper;
@@ -104,7 +105,7 @@ public class VirtualDisplayEncoder {
      * @throws Exception if the API level is <19 or supplied parameters were null
      */
     public void init(Context context, IVideoStreamListener outputListener, VideoStreamingParameters streamingParams) throws Exception {
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+        if (android.os.Build.VERSION.SDK_INT < VERSION_CODES.KITKAT) {
             DebugTool.logError(TAG, "API level of 19 required for VirtualDisplayEncoder");
             throw new Exception("API level of 19 required");
         }
@@ -196,7 +197,7 @@ public class VirtualDisplayEncoder {
                     cond.block(); // make sure Capture thread exists.
 
                     // setup listener prior to the surface is attached to VirtualDisplay.
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    if (Build.VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
                         mInterSurfaceTexture.setOnFrameAvailableListener(mCaptureThread, mCaptureThread.getHandler());
                     } else {
                         mInterSurfaceTexture.setOnFrameAvailableListener(mCaptureThread);
@@ -205,9 +206,9 @@ public class VirtualDisplayEncoder {
                     inputSurface = prepareVideoEncoder();
 
                     // Create a virtual display that will output to our encoder.
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && virtualDisplay != null) {
-                    virtualDisplay.setSurface(inputSurface);
-                }
+                    if (Build.VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP && virtualDisplay != null) {
+                        virtualDisplay.setSurface(inputSurface);
+                    }
                 else {
                     // recreate after stop in most of cases
                     virtualDisplay = mDisplayManager.createVirtualDisplay(TAG,
@@ -407,7 +408,7 @@ public class VirtualDisplayEncoder {
 
         @Override
         public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
                 // With API level 21 and higher, setOnFrameAvailableListener(listener, handler) is used
                 // so this method is called on the CaptureThread. We can call updateTexImage() directly.
                 updateSurface();
@@ -493,14 +494,14 @@ public class VirtualDisplayEncoder {
             mVideoEncoder.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
             Surface surface = mVideoEncoder.createInputSurface(); //prepared
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
                 mVideoEncoder.setCallback(new MediaCodec.Callback() {
                     @Override
                     public void onInputBufferAvailable(MediaCodec codec, int index) {
                         // nothing to do here
                     }
 
-                    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+                    @TargetApi(VERSION_CODES.LOLLIPOP)
                     @Override
                     public void onOutputBufferAvailable(MediaCodec codec, int index, MediaCodec.BufferInfo info) {
                         try {
@@ -548,7 +549,7 @@ public class VirtualDisplayEncoder {
                         mH264CodecSpecificData = EncoderUtils.getCodecSpecificData(format);
                     }
                 });
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            } else if (Build.VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
                 //Implied from previous if check that this has to be older than Build.VERSION_CODES.LOLLIPOP
                 encoderThread = new Thread(new EncoderCompat());
 

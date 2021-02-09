@@ -36,7 +36,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.SystemClock;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.InputDevice;
 import android.view.MotionEvent;
@@ -49,10 +48,10 @@ import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.StreamingStateMachine;
 import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
-import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.managers.video.resolution.AspectRatio;
 import com.smartdevicelink.managers.video.resolution.Resolution;
 import com.smartdevicelink.managers.video.resolution.VideoStreamingRange;
+import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -67,7 +66,6 @@ import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
-import com.smartdevicelink.proxy.rpc.enums.AppCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
@@ -241,7 +239,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
         @Override
         public void onError(String info) {
-            Log.i(TAG, "onError: " + info);
+            DebugTool.logInfo(TAG, "onError: " + info);
         }
     };
 
@@ -367,7 +365,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
     public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted){
         configureGlobalParameters(context, remoteDisplayClass, isEncrypted, null);
         boolean isCapabilitySupported = internalInterface.getSystemCapabilityManager() != null && internalInterface.getSystemCapabilityManager().isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING);
-        if(majorProtocolVersion >= 5 && !isCapabilitySupported){
+        if (majorProtocolVersion >= 5 && !isCapabilitySupported) {
             DebugTool.logError(TAG, "Video streaming not supported on this module");
             stateMachine.transitionToState(StreamingStateMachine.ERROR);
             return;
@@ -388,70 +386,56 @@ public class VideoStreamManager extends BaseVideoStreamManager {
             this.listOfStreamingRanges = listOfStreamingRange;
         }
     }
-//
-//    // regardless of VideoStreamingParameters are specified or not, we should refer to VideoStreamingCapability.
-//        if (majorProtocolVersion >= 5) {
-//        if (internalInterface.getSystemCapabilityManager() != null) {
-//            final VideoStreamingParameters params = ( parameters == null) ? new VideoStreamingParameters() : new VideoStreamingParameters(parameters);
-//            internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.VIDEO_STREAMING, new OnSystemCapabilityListener() {
-//                @Override
-//                public void onCapabilityRetrieved(Object capability) {
-//                    params.update((VideoStreamingCapability) capability, vehicleMake);    //Streaming parameters are ready time to stream
-//                    startStreaming(params, encrypted);
-//                }
 
-    private void processCapabilitiesWithPendingStart(boolean encrypted, VideoStreamingParameters parameters){
-        if (parameters == null) {
-            if (majorProtocolVersion >= 5) {
-                if (internalInterface.getSystemCapabilityManager() != null) {
-                    internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.VIDEO_STREAMING, new OnSystemCapabilityListener() {
-                        @Override
-                        public void onCapabilityRetrieved(Object capability) {
-                            VideoStreamingParameters params = new VideoStreamingParameters();
-                            VideoStreamingCapability castedCapability = ((VideoStreamingCapability)capability);
-                            VideoStreamManager.this.originalCapability = castedCapability;
 
-                            params.update(castedCapability, vehicleMake);    //Streaming parameters are ready time to stream
-                            VideoStreamManager.this.parameters = params;
+    private void processCapabilitiesWithPendingStart(boolean encrypted, VideoStreamingParameters parameters) {
+        final VideoStreamingParameters params = (parameters == null) ? new VideoStreamingParameters() : new VideoStreamingParameters(parameters);
+        if (majorProtocolVersion >= 5) {
+            if (internalInterface.getSystemCapabilityManager() != null) {
+                internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.VIDEO_STREAMING, new OnSystemCapabilityListener() {
+                    @Override
+                    public void onCapabilityRetrieved(Object capability) {
+                        VideoStreamingParameters params = new VideoStreamingParameters();
+                        VideoStreamingCapability castedCapability = ((VideoStreamingCapability) capability);
+                        VideoStreamManager.this.originalCapability = castedCapability;
 
-                            if (listOfStreamingRanges != null) {
-                                // filtering
-                                castedCapability.setAdditionalVideoStreamingCapabilities(
-                                        getSupportedCapabilities(
-                                                listOfStreamingRanges,
-                                                castedCapability.getAdditionalVideoStreamingCapabilities()
-                                        )
-                                );
-                            } else { }
-                            AppCapability appCapability = new AppCapability();
-                            appCapability.setVideoStreamingCapability(castedCapability);
+                        params.update(castedCapability, vehicleMake);    //Streaming parameters are ready time to stream
+                        VideoStreamManager.this.parameters = params;
 
-                            OnAppCapabilityUpdated onAppCapabilityUpdated = new OnAppCapabilityUpdated();
-                            internalInterface.sendRPC(onAppCapabilityUpdated);
-                            startStreaming(params, isEncrypted);
+                        if (listOfStreamingRanges != null) {
+                            // filtering
+                            castedCapability.setAdditionalVideoStreamingCapabilities(
+                                    getSupportedCapabilities(
+                                            listOfStreamingRanges,
+                                            castedCapability.getAdditionalVideoStreamingCapabilities()
+                                    )
+                            );
                         }
+                        AppCapability appCapability = new AppCapability();
+                        appCapability.setVideoStreamingCapability(castedCapability);
 
-                        @Override
-                        public void onError(String info) {
-                            stateMachine.transitionToState(StreamingStateMachine.ERROR);
-                            DebugTool.logError(TAG, "Error retrieving video streaming capability: " + info);
-                        }
-                    }, false);
-                }
-            } else {
-                //We just use default video streaming params
-                VideoStreamingParameters params = new VideoStreamingParameters();
-                DisplayCapabilities dispCap = null;
-                if (internalInterface.getSystemCapabilityManager() != null) {
-                    dispCap = (DisplayCapabilities) internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.DISPLAY, null, false);
-                }
-                if (dispCap != null) {
-                    params.setResolution(dispCap.getScreenParams().getImageResolution());
-                }
-                startStreaming(params, encrypted);
+                        OnAppCapabilityUpdated onAppCapabilityUpdated = new OnAppCapabilityUpdated();
+                        internalInterface.sendRPC(onAppCapabilityUpdated);
+                        startStreaming(params, isEncrypted);
+                    }
+
+                    @Override
+                    public void onError(String info) {
+                        stateMachine.transitionToState(StreamingStateMachine.ERROR);
+                        DebugTool.logError(TAG, "Error retrieving video streaming capability: " + info);
+                    }
+                }, false);
             }
         } else {
-            startStreaming(parameters, encrypted);
+            //We just use default video streaming params
+            DisplayCapabilities dispCap = null;
+            if (internalInterface.getSystemCapabilityManager() != null) {
+                dispCap = (DisplayCapabilities) internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.DISPLAY, null, false);
+            }
+            if (dispCap != null) {
+                params.setResolution(dispCap.getScreenParams().getImageResolution());
+            }
+            startStreaming(params, encrypted);
         }
     }
 
@@ -504,10 +488,10 @@ public class VideoStreamManager extends BaseVideoStreamManager {
     public void stopStreaming(boolean withPendingRestart) {
         if (remoteDisplay != null && !withPendingRestart) {
             remoteDisplay.stop();
-                this.withPendingRestart = false;
+            this.withPendingRestart = false;
         }
         if (this.isStreaming()) {
-            if (virtualDisplayEncoder!=null){
+            if (virtualDisplayEncoder != null) {
                 virtualDisplayEncoder.shutDown(withPendingRestart);
             }
             stateMachine.transitionToState(StreamingStateMachine.PAUSED);

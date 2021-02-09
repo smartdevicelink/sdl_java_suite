@@ -197,7 +197,9 @@ public class VideoStreamingParameters {
         if (capability.getScale() != null) {
             scale = capability.getScale();
         }
-        if (capability.getDiagonalScreenSize() != null) { preferredDiagonal = capability.getDiagonalScreenSize(); }
+        if (capability.getDiagonalScreenSize() != null) {
+            preferredDiagonal = capability.getDiagonalScreenSize();
+        }
         ImageResolution resolution = capability.getPreferredResolution();
         if (capability.getAdditionalVideoStreamingCapabilities() != null &&
                 !capability.getAdditionalVideoStreamingCapabilities().isEmpty()) {

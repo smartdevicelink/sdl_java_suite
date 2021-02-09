@@ -54,7 +54,7 @@ import java.util.Hashtable;
  *  <tr>
  *      <td>appCapabilityType</td>
  *      <td>AppCapabilityType</td>
- *      <td>Used as a descriptor of what data to expect in this struct. The corresponding param tothis enum should be included and the only other param included.</td>
+ *      <td>Used as a descriptor of what data to expect in this struct. The corresponding param to this enum should be included and the only other param included.</td>
  *      <td>Y</td>
  *      <td></td>
  *      <td></td>

@@ -51,7 +51,7 @@ public class VideoStreamingCapability extends RPCStruct {
     public static final String KEY_SCALE = "scale";
     public static final String KEY_PREFERRED_FPS = "preferredFPS";
     /**
-     * @since SmartDeviceLink 7.0.0
+     * @since SmartDeviceLink 7.1.0
      */
     public static final String KEY_ADDITIONAL_VIDEO_STREAMING_CAPABILITIES = "additionalVideoStreamingCapabilities";
 
@@ -186,14 +186,15 @@ public class VideoStreamingCapability extends RPCStruct {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
+
     /**
      * Gets the additionalVideoStreamingCapabilities.
      *
      * @return List
      * {"array_min_size": 1, "array_max_size": 100}
-     * @since SmartDeviceLink 7.0.0
+     * @since SmartDeviceLink 7.1.0
      */
+    @SuppressWarnings("unchecked")
     public List<VideoStreamingCapability> getAdditionalVideoStreamingCapabilities(){
         return (List<VideoStreamingCapability>) getObject(VideoStreamingCapability.class, KEY_ADDITIONAL_VIDEO_STREAMING_CAPABILITIES);
     }
@@ -203,7 +204,7 @@ public class VideoStreamingCapability extends RPCStruct {
      *
      * @param additionalVideoStreamingCapabilities
      * {"array_min_size": 1, "array_max_size": 100}
-     * @since SmartDeviceLink 7.0.0
+     * @since SmartDeviceLink 7.1.0
      */
     public VideoStreamingCapability setAdditionalVideoStreamingCapabilities(List<VideoStreamingCapability> additionalVideoStreamingCapabilities) {
         setValue(KEY_ADDITIONAL_VIDEO_STREAMING_CAPABILITIES, additionalVideoStreamingCapabilities);
