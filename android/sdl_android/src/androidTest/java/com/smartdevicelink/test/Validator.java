@@ -3988,4 +3988,37 @@ public class Validator {
 
         return validateSeatLocation(item1.getSeatLocation(), item2.getSeatLocation());
     }
+
+    public static boolean validateDoorStatus(DoorStatus status1, DoorStatus status2) {
+        if (status1 == null) {
+            return (status2 == null);
+        }
+        if (status2 == null) {
+            return (status2 == null);
+        }
+        boolean gridValidated = validateGrid(status1.getLocation(), status2.getLocation());
+        return gridValidated && status1.getStatus().equals(status2.getStatus());
+    }
+
+    public static boolean validateGateStatus(GateStatus status1, GateStatus status2) {
+        if (status1 == null) {
+            return (status2 == null);
+        }
+        if (status2 == null) {
+            return (status2 == null);
+        }
+        boolean gridValidated = validateGrid(status1.getLocation(), status2.getLocation());
+        return gridValidated && status1.getStatus().equals(status2.getStatus());
+    }
+
+    public static boolean validateRoofStatus(RoofStatus status1, RoofStatus status2) {
+        if (status1 == null) {
+            return (status2 == null);
+        }
+        if (status2 == null) {
+            return (status2 == null);
+        }
+        boolean gridValidated = validateGrid(status1.getLocation(), status2.getLocation());
+        return gridValidated && status1.getStatus().equals(status2.getStatus()) && validateWindowStates(status1.getState(), status2.getState());
+    }
 }

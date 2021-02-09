@@ -37,8 +37,57 @@ import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
 
+/**
+ * Contains detailed information about the registered application.
+ *
+ * <p><b>Parameter List</b></p>
+ *
+ * <table border="1" rules="all">
+ *  <tr>
+ *      <th>Param Name</th>
+ *      <th>Type</th>
+ *      <th>Description</th>
+ *      <th>Required</th>
+ *      <th>Notes</th>
+ *      <th>Version Available</th>
+ *  </tr>
+ *  <tr>
+ *      <td>appDisplayName</td>
+ *      <td>String</td>
+ *      <td>The name displayed for the mobile application on the mobile device (can differ from the app name set in the initial RAI request).</td>
+ *      <td>Y</td>
+ *      <td>{"string_min_length": 1, "string_max_length": 100}</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>appBundleID</td>
+ *      <td>String</td>
+ *      <td>The AppBundleID of an iOS application or package name of the Android application. This supports App Launch strategies for each platform.</td>
+ *      <td>Y</td>
+ *      <td>{"string_min_length": 1, "string_max_length": 256}</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>appVersion</td>
+ *      <td>String</td>
+ *      <td>Represents the build version number of this particular mobile app.</td>
+ *      <td>Y</td>
+ *      <td>{"string_min_length": 1, "string_max_length": 256}</td>
+ *      <td></td>
+ *  </tr>
+ *  <tr>
+ *      <td>appIcon</td>
+ *      <td>String</td>
+ *      <td>A file reference to the icon utilized by this app (simplifies the process of setting an app icon during app registration).</td>
+ *      <td>N</td>
+ *      <td>{"string_min_length": 1, "string_max_length": 500}</td>
+ *      <td></td>
+ *  </tr>
+ * </table>
+ *
+ * @since SmartDeviceLink 4.2.0
+ */
 public class AppInfo extends RPCStruct {
-
     public static final String KEY_APP_DISPLAY_NAME = "appDisplayName";
     public static final String KEY_APP_BUNDLE_ID = "appBundleID";
     public static final String KEY_APP_VERSION = "appVersion";

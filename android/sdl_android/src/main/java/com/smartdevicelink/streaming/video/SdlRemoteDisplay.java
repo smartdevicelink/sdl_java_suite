@@ -49,6 +49,10 @@ import com.smartdevicelink.util.DebugTool;
 
 import java.lang.reflect.Constructor;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * SdlRemoteDisplay is an abstract class that should be extended by developers to create their remote displays.
@@ -64,7 +68,8 @@ public abstract class SdlRemoteDisplay extends Presentation {
 
     protected Window w;
     protected View mainView;
-    protected final Handler handler = new Handler();
+    protected final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+    protected ScheduledFuture<?> refreshTaskScheduledFuture;
     protected final Handler uiHandler = new Handler(Looper.getMainLooper());
     protected Callback callback;
 
@@ -88,11 +93,13 @@ public abstract class SdlRemoteDisplay extends Presentation {
     }
 
     protected void startRefreshTask() {
-        handler.postDelayed(mStartRefreshTaskCallback, REFRESH_RATE_MS);
+        refreshTaskScheduledFuture = executor.scheduleAtFixedRate(mStartRefreshTaskCallback, REFRESH_RATE_MS, REFRESH_RATE_MS, TimeUnit.MILLISECONDS);
     }
 
     protected void stopRefreshTask() {
-        handler.removeCallbacks(mStartRefreshTaskCallback);
+        if (refreshTaskScheduledFuture != null) {
+            refreshTaskScheduledFuture.cancel(false);
+        }
     }
 
     protected final Runnable mStartRefreshTaskCallback = new Runnable() {
@@ -103,8 +110,6 @@ public abstract class SdlRemoteDisplay extends Presentation {
             if (mainView != null) {
                 mainView.invalidate();
             }
-
-            handler.postDelayed(this, REFRESH_RATE_MS);
         }
     };
 
