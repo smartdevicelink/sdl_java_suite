@@ -51,6 +51,7 @@ public class SystemInfo {
         this.systemHardwareVersion = systemHardwareVersion;
     }
 
+    @Nullable
     public VehicleType getVehicleType() {
         return vehicleType;
     }
