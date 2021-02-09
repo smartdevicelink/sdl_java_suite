@@ -35,7 +35,8 @@
       "gearStatus": true,
       "oemCustomVehicleDataName": true,
       "windowStatus": true,
-      "handsOffSteering": true
+      "handsOffSteering": true,
+      "seatOccupancy": true
     }
   },
   "response": {
@@ -172,6 +173,10 @@
       },
       "windowStatus": {
         "dataType": "VEHICLEDATA_WINDOWSTATUS",
+        "resultCode": "SUCCESS"
+      },
+      "seatOccupancy": {
+        "dataType": "VEHICLEDATA_SEATOCCUPANCY",
         "resultCode": "SUCCESS"
       }
     }
