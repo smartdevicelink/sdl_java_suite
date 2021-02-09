@@ -38,6 +38,7 @@ import com.smartdevicelink.proxy.rpc.VehicleType;
 
 public class SystemInfo {
 
+    @Nullable
     private VehicleType vehicleType;
     @Nullable
     private String systemSoftwareVersion;
