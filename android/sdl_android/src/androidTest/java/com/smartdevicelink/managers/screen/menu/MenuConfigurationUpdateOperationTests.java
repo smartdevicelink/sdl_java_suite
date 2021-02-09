@@ -79,7 +79,7 @@ public class MenuConfigurationUpdateOperationTests {
         mainHandler = new Handler(getInstrumentation().getTargetContext().getMainLooper());
         taskmaster = new Taskmaster.Builder().build();
         taskmaster.start();
-        transactionQueue= taskmaster.createQueue("MenuManager", new Random().nextInt(), false);
+        transactionQueue = taskmaster.createQueue("MenuManager", new Random().nextInt(), false);
     }
 
     @Test
