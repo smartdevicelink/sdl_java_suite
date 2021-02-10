@@ -657,7 +657,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             }
         }
 
-        if (uniqueChoiceCells.size() < choices.size()) {
+        if (uniqueChoiceCells.size() != choices.size()) {
             DebugTool.logError(TAG, "Attempted to create a choice set with a duplicate cell. Cell must have a unique value other than its primary text. The choice set will not be set.");
             return false;
         }

@@ -206,16 +206,40 @@ abstract class BaseMenuManager extends BaseSubManager {
         }
 
         // HashSet order doesnt matter / does not allow duplicates
+        HashSet<MenuCell> uniqueMenuCell = new HashSet<>();
         HashSet<String> allMenuVoiceCommands = new HashSet<>();
         int voiceCommandCount = 0;
 
         for (MenuCell cell : menuCells) {
+            uniqueMenuCell.add(cell);
+
+            if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
+                HashSet<MenuCell> uniqueSubCells = new HashSet<>();
+                for (MenuCell subCell : cell.getSubCells()) {
+                    uniqueSubCells.add(subCell);
+                    if (subCell.getVoiceCommands() != null) {
+                        allMenuVoiceCommands.addAll(subCell.getVoiceCommands());
+                        voiceCommandCount += subCell.getVoiceCommands().size();
+                    }
+                }
+
+                if (uniqueSubCells.size() != cell.getSubCells().size()) {
+                    DebugTool.logError(TAG, "Not all subCells are unique. The menu will not be set.");
+                    return;
+                }
+            }
+
             if (cell.getVoiceCommands() != null) {
                 allMenuVoiceCommands.addAll(cell.getVoiceCommands());
                 voiceCommandCount += cell.getVoiceCommands().size();
             }
         }
 
+        //Check for duplicate cells
+        if (uniqueMenuCell.size() != menuCells.size()) {
+            DebugTool.logError(TAG, "Not all cells are unique. The menu will not be set.");
+            return;
+        }
         // Check for duplicate voice commands
         if (allMenuVoiceCommands.size() != voiceCommandCount) {
             DebugTool.logError(TAG, "Attempted to create a menu with duplicate voice commands. Voice commands must be unique. The menu will not be set");
