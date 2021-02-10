@@ -185,6 +185,18 @@ public enum TextFieldName {
      */
     phoneNumber,
     /**
+     * Optional time to destination field for ShowConstantTBT
+     *
+     * @since SmartDeviceLink 7.1.0
+     */
+    timeToDestination,
+    /**
+     * Turn text for turnList parameter of UpdateTurnList
+     *
+     * @since SmartDeviceLink 7.1.0
+     */
+    turnText,
+    /**
      * Optional title of the template that will be displayed
      *
      * @since SmartDeviceLink 6.0
