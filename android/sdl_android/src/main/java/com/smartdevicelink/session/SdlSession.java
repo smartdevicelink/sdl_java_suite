@@ -156,7 +156,7 @@ public class SdlSession extends BaseSdlSession {
         if (serviceType != null && serviceType.eq(SessionType.RPC) && this.sessionId == -1) {
             this.sessionId = sessionID;
             SystemInfo systemInfo = null;
-            if(version != null && version.isNewerThan(new Version(5,4,0)) >= 0) {
+            if (version != null && version.isNewerThan(new Version(5, 4, 0)) >= 0) {
                 systemInfo = extractSystemInfo(packet);
             }
             this.sessionListener.onSessionStarted(sessionID, version, systemInfo);
