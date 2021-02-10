@@ -36,7 +36,8 @@
       "oemCustomVehicleDataName": true,
       "windowStatus": true,
       "stabilityControlsStatus": true,
-      "climateData": true
+      "climateData": true,
+      "seatOccupancy": true
     }
   },
   "response": {
@@ -206,7 +207,31 @@
             "deviation": 3
           }
         }
-      ]
+      ],
+      "seatOccupancy": {
+        "seatsOccupied": [
+          {
+            "seatLocation": {
+              "grid": {
+                "row": 2,
+                "col": 3
+              }
+            },
+            "conditionActive": true
+          }
+        ],
+        "seatsBelted": [
+          {
+            "seatLocation": {
+              "grid": {
+                "row": 2,
+                "col": 3
+              }
+            },
+            "conditionActive": true
+          }
+        ]
+      }
     }
   }
 }

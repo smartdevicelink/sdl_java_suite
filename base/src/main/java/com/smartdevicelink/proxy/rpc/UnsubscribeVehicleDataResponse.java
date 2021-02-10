@@ -99,6 +99,10 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     public static final String KEY_CLIMATE_DATA = "climateData";
 
     /**
+     * @since SmartDeviceLink 7.1.0
+     */
+    public static final String KEY_SEAT_OCCUPANCY = "seatOccupancy";
+    /**
      * Constructs a new UnsubscribeVehicleDataResponse object
      */
     public UnsubscribeVehicleDataResponse() {
@@ -790,5 +794,26 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      */
     public VehicleDataResult getClimateData() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_CLIMATE_DATA);
+    }
+
+    /**
+     * Sets the seatOccupancy.
+     *
+     * @param seatOccupancy See SeatOccupancy
+     * @since SmartDeviceLink 7.1.0
+     */
+    public UnsubscribeVehicleDataResponse setSeatOccupancy(VehicleDataResult seatOccupancy) {
+        setParameters(KEY_SEAT_OCCUPANCY, seatOccupancy);
+        return this;
+    }
+
+    /**
+     * Gets the seatOccupancy.
+     *
+     * @return VehicleDataResult See SeatOccupancy
+     * @since SmartDeviceLink 7.1.0
+     */
+    public VehicleDataResult getSeatOccupancy() {
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_SEAT_OCCUPANCY);
     }
 }

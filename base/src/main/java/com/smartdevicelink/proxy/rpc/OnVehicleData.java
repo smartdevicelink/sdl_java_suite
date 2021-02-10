@@ -336,6 +336,15 @@ import java.util.List;
  *          <td>N</td>
  *          <td>SmartDeviceLink 7.0.0</td>
  *  </tr>
+ *  <tr>
+ *          <td>seatOccupancy</td>
+ *          <td>SeatOccupancy</td>
+ *          <td>See SeatOccupancy</td>
+ *          <td>N</td>
+ *          <td></td>
+ *          <td>
+ *          @since SmartDeviceLink 7.1.0
+ *          </td>
  *  </table>
  *
  * @see SubscribeVehicleData
@@ -396,6 +405,10 @@ public class OnVehicleData extends RPCNotification {
 
     public static final String KEY_STABILITY_CONTROLS_STATUS = "stabilityControlsStatus";
 
+    /**
+     * @since SmartDeviceLink 7.1.0
+     */
+    public static final String KEY_SEAT_OCCUPANCY = "seatOccupancy";
     public OnVehicleData() {
         super(FunctionID.ON_VEHICLE_DATA.toString());
     }
@@ -909,5 +922,25 @@ public class OnVehicleData extends RPCNotification {
      */
     public ClimateData getClimateData() {
         return (ClimateData) getObject(ClimateData.class, KEY_CLIMATE_DATA);
+    }
+    /**
+     * Sets the seatOccupancy.
+     *
+     * @param seatOccupancy See SeatOccupancy
+     * @since SmartDeviceLink 7.1.0
+     */
+    public OnVehicleData setSeatOccupancy(SeatOccupancy seatOccupancy) {
+        setParameters(KEY_SEAT_OCCUPANCY, seatOccupancy);
+        return this;
+    }
+
+    /**
+     * Gets the seatOccupancy.
+     *
+     * @return SeatOccupancy See SeatOccupancy
+     * @since SmartDeviceLink 7.1.0
+     */
+    public SeatOccupancy getSeatOccupancy() {
+        return (SeatOccupancy) getObject(SeatOccupancy.class, KEY_SEAT_OCCUPANCY);
     }
 }

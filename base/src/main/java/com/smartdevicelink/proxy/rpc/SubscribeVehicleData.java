@@ -321,6 +321,16 @@ import java.util.Hashtable;
  *              @since SmartDeviceLink 7.1.0
  *          </td>
  *      </tr>
+ * 		<tr>
+ * 		    <td>seatOccupancy</td>
+ * 		    <td>Boolean</td>
+ * 		    <td>See SeatOccupancy</td>
+ * 		    <td>N</td>
+ * 		    <td></td>
+ * 		    <td>
+ * 		    @since SmartDeviceLink 7.1.0
+ * 		    </td>
+ * 		</tr>
  *   </table>
  *
  * <p> <b>Response</b></p>
@@ -391,6 +401,10 @@ public class SubscribeVehicleData extends RPCRequest {
      * @since SmartDeviceLink 7.1.0
      */
     public static final String KEY_CLIMATE_DATA = "climateData";
+    /**
+     * @since SmartDeviceLink 7.1.0
+     */
+    public static final String KEY_SEAT_OCCUPANCY = "seatOccupancy";
 
     /**
      * Constructs a new SubscribeVehicleData object
@@ -1074,5 +1088,26 @@ public class SubscribeVehicleData extends RPCRequest {
      */
     public Boolean getClimateData() {
         return getBoolean(KEY_CLIMATE_DATA);
+    }
+
+    /**
+     * Sets the seatOccupancy.
+     *
+     * @param seatOccupancy See SeatOccupancy
+     * @since SmartDeviceLink 7.1.0
+     */
+    public SubscribeVehicleData setSeatOccupancy(Boolean seatOccupancy) {
+        setParameters(KEY_SEAT_OCCUPANCY, seatOccupancy);
+        return this;
+    }
+
+    /**
+     * Gets the seatOccupancy.
+     *
+     * @return Boolean See SeatOccupancy
+     * @since SmartDeviceLink 7.1.0
+     */
+    public Boolean getSeatOccupancy() {
+        return getBoolean(KEY_SEAT_OCCUPANCY);
     }
 }

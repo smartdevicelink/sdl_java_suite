@@ -70,6 +70,7 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
         msg.setWindowStatus(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_WINDOWSTATUS.ordinal()));
         msg.setStabilityControlsStatus(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_STABILITYCONTROLSSTATUS.ordinal()));
         msg.setOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA);
+        msg.setSeatOccupancy(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_SEATOCCUPANCY.ordinal()));
         msg.setClimateData(TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_CLIMATEDATA.ordinal()));
 
         return msg;
@@ -130,6 +131,7 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
             result.put(SubscribeVehicleDataResponse.KEY_HANDS_OFF_STEERING, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_HANDSOFFSTEERING.ordinal()).serializeJSON());
             result.put(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA.serializeJSON());
             result.put(SubscribeVehicleDataResponse.KEY_CLIMATE_DATA, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_CLIMATEDATA.ordinal()).serializeJSON());
+            result.put(SubscribeVehicleDataResponse.KEY_SEAT_OCCUPANCY, TestValues.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_SEATOCCUPANCY.ordinal()).serializeJSON());
 
         } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
@@ -179,6 +181,7 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
         VehicleDataResult testStabilityControlStatus = ((SubscribeVehicleDataResponse) msg).getStabilityControlsStatus();
         VehicleDataResult testClimateData = ((SubscribeVehicleDataResponse) msg).getClimateData();
         VehicleDataResult testOEMCustomVehicleData = ((SubscribeVehicleDataResponse) msg).getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME);
+        VehicleDataResult testSeatOccupancy = ((SubscribeVehicleDataResponse) msg).getSeatOccupancy();
 
         // Valid Tests
         assertTrue(TestValues.TRUE, testResult.equals(TestValues.GENERAL_RESULT));
@@ -216,6 +219,7 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
         assertTrue(TestValues.TRUE, testStabilityControlStatus.getDataType().equals(VehicleDataType.VEHICLEDATA_STABILITYCONTROLSSTATUS));
         assertTrue(TestValues.TRUE, testOEMCustomVehicleData.getOEMCustomVehicleDataType().equals(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
         assertTrue(TestValues.TRUE, testClimateData.getDataType().equals(VehicleDataType.VEHICLEDATA_CLIMATEDATA));
+        assertTrue(TestValues.TRUE, testSeatOccupancy.getDataType().equals(VehicleDataType.VEHICLEDATA_SEATOCCUPANCY));
 
         // Invalid/Null Tests
         SubscribeVehicleDataResponse msg = new SubscribeVehicleDataResponse();
@@ -256,6 +260,7 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
         assertNull(TestValues.NULL, msg.getGearStatus());
         assertNull(TestValues.NULL, msg.getStabilityControlsStatus());
         assertNull(TestValues.NULL, msg.getClimateData());
+        assertNull(TestValues.NULL, msg.getSeatOccupancy());
         assertNull(TestValues.NULL, msg.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
     }
 
@@ -415,6 +420,10 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
             JSONObject oemCustomVehicleDataName = JsonUtils.readJsonObjectFromJsonObject(parameters, TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME);
             VehicleDataResult referenceOemCustomData = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(oemCustomVehicleDataName));
             assertTrue(TestValues.TRUE, Validator.validateVehicleDataResult(referenceOemCustomData, cmd.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME)));
+
+            JSONObject seatOccupancy = JsonUtils.readJsonObjectFromJsonObject(parameters, SubscribeVehicleDataResponse.KEY_SEAT_OCCUPANCY);
+            VehicleDataResult referenceSeatOccupancy = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(seatOccupancy));
+            assertTrue(TestValues.TRUE, Validator.validateVehicleDataResult(referenceSeatOccupancy, cmd.getSeatOccupancy()));
         } catch (JSONException e) {
             e.printStackTrace();
         }

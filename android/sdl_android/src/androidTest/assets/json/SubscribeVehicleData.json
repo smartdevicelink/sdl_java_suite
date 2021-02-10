@@ -36,7 +36,8 @@
       "oemCustomVehicleDataName": true,
       "windowStatus": true,
       "handsOffSteering": true,
-      "climateData": true
+      "climateData": true,
+      "seatOccupancy": true
     }
   },
   "response": {
@@ -177,6 +178,10 @@
       },
       "climateData": {
         "dataType": "VEHICLEDATA_CLIMATEDATA",
+        "resultCode": "SUCCESS"
+      },
+      "seatOccupancy": {
+        "dataType": "VEHICLEDATA_SEATOCCUPANCY",
         "resultCode": "SUCCESS"
       }
     }
