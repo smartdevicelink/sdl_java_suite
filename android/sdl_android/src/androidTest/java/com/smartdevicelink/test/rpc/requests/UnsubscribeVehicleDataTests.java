@@ -68,6 +68,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
         msg.setWindowStatus(TestValues.GENERAL_BOOLEAN);
         msg.setStabilityControlsStatus(TestValues.GENERAL_BOOLEAN);
         msg.setSeatOccupancy(TestValues.GENERAL_BOOLEAN);
+        msg.setClimateData(TestValues.GENERAL_BOOLEAN);
         msg.setOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_BOOLEAN);
 
         return msg;
@@ -122,6 +123,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
             result.put(UnsubscribeVehicleData.KEY_GEAR_STATUS, TestValues.GENERAL_BOOLEAN);
             result.put(UnsubscribeVehicleData.KEY_STABILITY_CONTROLS_STATUS, TestValues.GENERAL_BOOLEAN);
             result.put(UnsubscribeVehicleData.KEY_SEAT_OCCUPANCY, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_CLIMATE_DATA, TestValues.GENERAL_BOOLEAN);
             result.put(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_BOOLEAN);
         } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
@@ -169,6 +171,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
         assertTrue(TestValues.TRUE, ((UnsubscribeVehicleData) msg).getWindowStatus());
         assertTrue(TestValues.TRUE, ((UnsubscribeVehicleData) msg).getGearStatus());
         assertTrue(TestValues.TRUE, ((UnsubscribeVehicleData) msg).getStabilityControlsStatus());
+        assertTrue(TestValues.TRUE, ((UnsubscribeVehicleData) msg).getClimateData());
         assertTrue(TestValues.TRUE, ((UnsubscribeVehicleData) msg).getSeatOccupancy());
         assertTrue(TestValues.TRUE, ((UnsubscribeVehicleData) msg).getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
         // Invalid/Null Tests
@@ -210,6 +213,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
         assertNull(TestValues.NULL, msg.getGearStatus());
         assertNull(TestValues.NULL, msg.getStabilityControlsStatus());
         assertNull(TestValues.NULL, msg.getSeatOccupancy());
+        assertNull(TestValues.NULL, msg.getClimateData());
         assertNull(TestValues.NULL, msg.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
     }
 
@@ -266,6 +270,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
             assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_WINDOW_STATUS), cmd.getWindowStatus());
             assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_GEAR_STATUS), cmd.getGearStatus());
             assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_STABILITY_CONTROLS_STATUS), cmd.getStabilityControlsStatus());
+            assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_CLIMATE_DATA), cmd.getClimateData());
             assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_SEAT_OCCUPANCY), cmd.getSeatOccupancy());
             assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME), cmd.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
 
