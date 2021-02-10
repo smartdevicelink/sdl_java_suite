@@ -62,7 +62,12 @@ public enum VehicleDataType {
      */
     VEHICLEDATA_FUELCONSUMPTION,
     /**
+     * @since SmartDeviceLink 7.1.0
+     */
+    VEHICLEDATA_CLIMATEDATA,
+    /**
      * Notifies EXTERNTEMPData may be subscribed
+     * @deprecated since SmartDeviceLink 7.1.0
      */
     VEHICLEDATA_EXTERNTEMP,
     /**

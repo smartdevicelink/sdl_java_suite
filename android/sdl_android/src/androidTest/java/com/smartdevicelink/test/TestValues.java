@@ -311,6 +311,7 @@ public class TestValues {
     public static final LightStatus GENERAL_LIGHTSTATUS = LightStatus.OFF;
     public static final RadioBand GENERAL_RADIOBAND = RadioBand.AM;
     public static final ClimateControlData GENERAL_CLIMATECONTROLDATA = new ClimateControlData();
+    public static final ClimateData GENERAL_CLIMATEDATA = new ClimateData();
     public static final SeatControlData GENERAL_SEATCONTROLDATA = new SeatControlData();
     public static final RdsData GENERAL_RDSDATA = new RdsData();
     public static final StationIDNumber GENERAL_STATIONIDNUMBER = new StationIDNumber();
@@ -1108,6 +1109,11 @@ public class TestValues {
         GENERAL_DOOR_STATUS.setLocation(GENERAL_GRID);
         GENERAL_DOOR_STATUS.setStatus(GENERAL_DOOR_STATUS_TYPE);
         GENERAL_DOOR_STATUS_LIST.add(GENERAL_DOOR_STATUS);
+
+        // Climate Data
+        GENERAL_CLIMATEDATA.setAtmosphericPressure(GENERAL_FLOAT);
+        GENERAL_CLIMATEDATA.setCabinTemperature(GENERAL_TEMPERATURE);
+        GENERAL_CLIMATEDATA.setExternalTemperature(GENERAL_TEMPERATURE);
 
         try {
 

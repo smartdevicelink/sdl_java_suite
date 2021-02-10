@@ -4021,4 +4021,23 @@ public class Validator {
         boolean gridValidated = validateGrid(status1.getLocation(), status2.getLocation());
         return gridValidated && status1.getStatus().equals(status2.getStatus()) && validateWindowStates(status1.getState(), status2.getState());
     }
+
+    public static boolean validateClimateData(ClimateData climateData1, ClimateData climateData2) {
+        if (climateData1 == null) {
+            return (climateData2 == null);
+        }
+        if (climateData2 == null) {
+            return (climateData1 == null);
+        }
+
+        if (!validateTemperature(climateData1.getExternalTemperature(), climateData2.getExternalTemperature())) {
+            return false;
+        }
+
+        if (!validateTemperature(climateData1.getCabinTemperature(), climateData2.getCabinTemperature())) {
+            return false;
+        }
+
+        return climateData1.getAtmosphericPressure().floatValue() == climateData2.getAtmosphericPressure().floatValue();
+    }
 }
