@@ -210,8 +210,7 @@ class MenuReplaceUtilities {
             }
         }
         if (addedCell != null) {
-            addMenuCell(addedCell, mainMenuList, position);
-            return true;
+            return addMenuCell(addedCell, mainMenuList, position);
         }
         return false;
     }
@@ -234,12 +233,13 @@ class MenuReplaceUtilities {
                     }
                 }
             }
+            return false;
         } else {
             // The cell does not have a parent id, just insert it into the main menu
             insertMenuCell(cell, menuCellList, position);
             return true;
         }
-        return false;
+
     }
 
     private static void insertMenuCell(MenuCell cell, List<MenuCell> cellList, int position) {
