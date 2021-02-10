@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Livio, Inc.
+ * Copyright (c) 2021 Livio, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,6 +42,8 @@ import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.ShowAppMenu;
+import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
+import com.smartdevicelink.test.TestValues;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -74,9 +76,26 @@ public class MenuShowOperationTests {
     }
 
     @Test
-    public void testSuccess() {
+    public void testOpenMainMenu() {
         final ISdl internalInterface = mock(ISdl.class);
         MenuCell menuCell = null;
+        Integer menuIdToAssert = menuCell != null ? menuCell.getCellId() : null;
+        Answer<Void> showAppMenuAnswer = createShowAppMenuAnswer(true, menuIdToAssert);
+        doAnswer(showAppMenuAnswer).when(internalInterface).sendRPC(any(ShowAppMenu.class));
+        MenuShowOperation operation = new MenuShowOperation(internalInterface, menuCell);
+        transactionQueue.add(operation, false);
+
+        // Sleep to give time to Taskmaster to run the operations
+        sleep();
+
+        verify(internalInterface, Mockito.times(1)).sendRPC(any(ShowAppMenu.class));
+    }
+
+    @Test
+    public void testOpenSubMenu() {
+        final ISdl internalInterface = mock(ISdl.class);
+        MenuCell menuCell = new MenuCell(TestValues.GENERAL_STRING, MenuLayout.TILES, null, null);
+        menuCell.setCellId(TestValues.GENERAL_INT);
         Integer menuIdToAssert = menuCell != null ? menuCell.getCellId() : null;
         Answer<Void> showAppMenuAnswer = createShowAppMenuAnswer(true, menuIdToAssert);
         doAnswer(showAppMenuAnswer).when(internalInterface).sendRPC(any(ShowAppMenu.class));
