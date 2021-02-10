@@ -54,6 +54,7 @@ import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.util.Version;
 
 import org.junit.After;
 import org.junit.Before;
@@ -75,6 +76,7 @@ import static junit.framework.TestCase.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -89,6 +91,7 @@ public class MenuManagerTests {
     private MenuManager menuManager;
     private List<MenuCell> cells;
     private MenuCell mainCell1, mainCell4;
+    final ISdl internalInterface = mock(ISdl.class);
 
     // SETUP / HELPERS
 
@@ -97,7 +100,6 @@ public class MenuManagerTests {
 
         cells = createTestCells();
 
-        final ISdl internalInterface = mock(ISdl.class);
         FileManager fileManager = mock(FileManager.class);
 
         // When internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, OnRPCNotificationListener) is called
@@ -135,6 +137,11 @@ public class MenuManagerTests {
             }
         };
         doAnswer(answer).when(internalInterface).sendRPC(any(SetGlobalProperties.class));
+
+        SdlMsgVersion version = new SdlMsgVersion();
+        version.setMajorVersion(7);
+        version.setMinorVersion(0);
+        doReturn(version).when(internalInterface).getSdlMsgVersion();
 
         menuManager = new MenuManager(internalInterface, fileManager);
 
@@ -530,6 +537,68 @@ public class MenuManagerTests {
 
     }
 
+    @Test
+    public void testSettingUniqueMenuNames() {
+        //Testing using SDLMsgVersion 7.0, at this version uniqueTitles will be set
+
+        // Make sure we can send an empty menu with no issues
+        // start fresh
+        menuManager.oldMenuCells = null;
+        menuManager.menuCells = null;
+        menuManager.inProgressUpdate = null;
+        menuManager.waitingUpdateMenuCells = null;
+        menuManager.waitingOnHMIUpdate = false;
+
+        menuManager.currentHMILevel = HMILevel.HMI_FULL;
+        // send new cells. They should set the old way
+        List<MenuCell> oldMenu = createDynamicMenu6_forUniqueNamesTest();
+        menuManager.setMenuCells(oldMenu);
+        assertEquals(menuManager.menuCells.size(), 4);
+        assertEquals(menuManager.menuCells.get(0).getUniqueTitle(), "A");
+        assertEquals(menuManager.menuCells.get(1).getUniqueTitle(), "A (2)");
+        assertEquals(menuManager.menuCells.get(2).getUniqueTitle(), "A (3)");
+        assertEquals(menuManager.menuCells.get(3).getUniqueTitle(), "A (4)");
+
+        assertEquals((menuManager.menuCells.get(3).getSubCells().size()), 4);
+        assertEquals(menuManager.menuCells.get(3).getSubCells().get(0).getUniqueTitle(), "A");
+        assertEquals(menuManager.menuCells.get(3).getSubCells().get(1).getUniqueTitle(), "A (2)");
+        assertEquals(menuManager.menuCells.get(3).getSubCells().get(2).getUniqueTitle(), "A (3)");
+        assertEquals(menuManager.menuCells.get(3).getSubCells().get(3).getUniqueTitle(), "A (4)");
+    }
+
+    @Test
+    public void testAllowingNonUniqueTitles() {
+        //Testing using SDLMsgVersion 7.1, at this version uniqueTitles will be set
+        SdlMsgVersion version = new SdlMsgVersion();
+        version.setMajorVersion(7);
+        version.setMinorVersion(1);
+        doReturn(version).when(internalInterface).getSdlMsgVersion();
+
+        // Make sure we can send an empty menu with no issues
+        // start fresh
+        menuManager.oldMenuCells = null;
+        menuManager.menuCells = null;
+        menuManager.inProgressUpdate = null;
+        menuManager.waitingUpdateMenuCells = null;
+        menuManager.waitingOnHMIUpdate = false;
+
+        menuManager.currentHMILevel = HMILevel.HMI_FULL;
+        // send new cells. They should set the old way
+        List<MenuCell> oldMenu = createDynamicMenu6_forUniqueNamesTest();
+        menuManager.setMenuCells(oldMenu);
+        assertEquals(menuManager.menuCells.size(), 4);
+        assertEquals(menuManager.menuCells.get(0).getUniqueTitle(), "A");
+        assertEquals(menuManager.menuCells.get(1).getUniqueTitle(), "A");
+        assertEquals(menuManager.menuCells.get(2).getUniqueTitle(), "A");
+        assertEquals(menuManager.menuCells.get(3).getUniqueTitle(), "A");
+
+        assertEquals((menuManager.menuCells.get(3).getSubCells().size()), 4);
+        assertEquals(menuManager.menuCells.get(3).getSubCells().get(0).getUniqueTitle(), "A");
+        assertEquals(menuManager.menuCells.get(3).getSubCells().get(1).getUniqueTitle(), "A");
+        assertEquals(menuManager.menuCells.get(3).getSubCells().get(2).getUniqueTitle(), "A");
+        assertEquals(menuManager.menuCells.get(3).getSubCells().get(3).getUniqueTitle(), "A");
+    }
+
     // HELPERS
 
     // Emulate what happens when Core sends OnHMIStatus notification
@@ -752,6 +821,33 @@ public class MenuManagerTests {
 
         return Arrays.asList(B, C, D, A);
 
+    }
+
+    private List<MenuCell> createDynamicMenu6_forUniqueNamesTest() {
+        MenuSelectionListener menuSelectionListenerA = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerB = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerC = mock(MenuSelectionListener.class);
+        MenuSelectionListener menuSelectionListenerD = mock(MenuSelectionListener.class);
+
+        SdlArtwork icon1 = new SdlArtwork("livio", FileType.GRAPHIC_PNG, R.drawable.sdl_lockscreen_icon, false);
+        SdlArtwork icon2 = new SdlArtwork("livio2", FileType.GRAPHIC_PNG, R.drawable.ic_sdl, false);
+        SdlArtwork icon3 = new SdlArtwork("livio3", FileType.GRAPHIC_PNG, R.drawable.sdl_tray_icon, false);
+        SdlArtwork icon4 = new SdlArtwork("livio4", FileType.GRAPHIC_PNG, R.drawable.spp_error, false);
+
+        MenuCell A = new MenuCell("A", icon1, null, menuSelectionListenerA);
+
+        MenuCell B = new MenuCell("A", icon2, null, menuSelectionListenerB);
+
+        MenuCell C = new MenuCell("A", icon3, null, menuSelectionListenerC);
+
+        MenuCell subA = new MenuCell("A", icon1, null, menuSelectionListenerA);
+        MenuCell subB = new MenuCell("A", icon2, null, menuSelectionListenerB);
+        MenuCell subC = new MenuCell("A", icon3, null, menuSelectionListenerC);
+        MenuCell subD = new MenuCell("A", icon4, null, menuSelectionListenerD);
+
+        MenuCell D = new MenuCell("A", MenuLayout.LIST, icon4, Arrays.asList(subA, subB, subC, subD));
+
+        return Arrays.asList(A, B, C, D);
     }
 
 }

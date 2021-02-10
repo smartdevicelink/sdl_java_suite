@@ -199,7 +199,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         final HashSet<ChoiceCell> choicesToUpload;
 
         // If we're running on a connection < RPC 7.1, we need to de-duplicate cells because presenting them will fail if we have the same cell primary text.
-        if (internalInterface.getSdlMsgVersion() != null
+        if (choices != null && internalInterface.getSdlMsgVersion() != null
                 && (internalInterface.getSdlMsgVersion().getMajorVersion() < 7
                 || (internalInterface.getSdlMsgVersion().getMajorVersion() == 7 && internalInterface.getSdlMsgVersion().getMinorVersion() == 0))) {
             addUniqueNamesToCells(choices);
