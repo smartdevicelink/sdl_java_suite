@@ -485,6 +485,22 @@ public class VideoStreamManager extends BaseVideoStreamManager {
      *
      * @see #resumeStreaming()
      */
+    @Deprecated
+    public void stopStreaming() {
+        if (remoteDisplay != null) {
+            remoteDisplay.stop();
+        }
+        if (virtualDisplayEncoder != null) {
+            virtualDisplayEncoder.shutDown();
+        }
+        stateMachine.transitionToState(StreamingStateMachine.STOPPED);
+    }
+
+    /**
+     * Stops streaming from the remote display. To restart, call
+     *
+     * @see #resumeStreaming()
+     */
     public void stopStreaming(boolean withPendingRestart) {
         if (remoteDisplay != null && !withPendingRestart) {
             remoteDisplay.stop();
@@ -737,7 +753,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
             long eventTime = sdlMotionEvent.eventTime;
             pointer = sdlMotionEvent.getPointerById(touchEvent.getId());
             if (pointer != null) {
-                pointer.setCoords(touchCoord.getX() / touchScalar[0], touchCoord.getY() / touchScalar[1]);
+                pointer.setCoords(touchCoord.getX() * touchScalar[0], touchCoord.getY() * touchScalar[1]);
             }
 
             MotionEvent.PointerProperties[] pointerProperties = new MotionEvent.PointerProperties[sdlMotionEvent.pointers.size()];
@@ -849,10 +865,10 @@ public class VideoStreamManager extends BaseVideoStreamManager {
             if (!(resolutionWidth >= constraintWidthMin && resolutionWidth <= constraintWidthMax)) {
                 return false;
             }
+            return true;
+        } else {
+            return false;
         }
-
-        // TODO check what if dev provided invalid constraints
-        return true;
     }
 
     public Boolean isAspectRatioInRange(AspectRatio aspectRatio, ImageResolution currentResolution) {
@@ -861,12 +877,12 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
         Double currentAspectRatio = Double.valueOf(currentResolution.getResolutionWidth()) / Double.valueOf(currentResolution.getResolutionHeight());
 
-        if (!(aspectRatioMax > aspectRatioMin && aspectRatioMin > 0)) {
-            if (!(currentAspectRatio >= aspectRatioMin && currentAspectRatio <= aspectRatioMax)) {
-                return false;
-            }
+        if (aspectRatioMax > aspectRatioMin && aspectRatioMin > 0) {
+            return currentAspectRatio >= aspectRatioMin && currentAspectRatio <= aspectRatioMax;
         }
-        return true;
+        else {
+            return false;
+        }
     }
 
     /**

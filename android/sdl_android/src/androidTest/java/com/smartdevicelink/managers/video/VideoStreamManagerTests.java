@@ -584,8 +584,8 @@ public class VideoStreamManagerTests {
 
         motionEvent = motionEventList.get(0);
         assertEquals(1, motionEvent.getPointerCount());
-        assertEquals(Math.round(e1x * scale), Math.round(motionEvent.getX(0)));
-        assertEquals(Math.round(e1y * scale), Math.round(motionEvent.getY(0)));
+        assertEquals(Math.round(e1x / scale), Math.round(motionEvent.getX(0)));
+        assertEquals(Math.round(e1y / scale), Math.round(motionEvent.getY(0)));
     }
 
     @Test

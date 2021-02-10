@@ -90,7 +90,6 @@ abstract class BaseSystemCapabilityManager {
         this.cachedSystemCapabilities = new HashMap<>();
         this.systemCapabilitiesSubscriptionStatus = new HashMap<>();
         this.systemCapabilitiesSubscriptionStatus.put(SystemCapabilityType.DISPLAYS, true);
-        this.systemCapabilitiesSubscriptionStatus.put(SystemCapabilityType.VIDEO_STREAMING, true);
         this.shouldConvertDeprecatedDisplayCapabilities = true;
         this.currentHMILevel = HMILevel.HMI_NONE;
 
