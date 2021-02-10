@@ -344,10 +344,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
             stateMachine.transitionToState(StreamingStateMachine.ERROR);
             return;
         }
-        if (!HMILevel.HMI_NONE.equals(currentOnHMIStatus.getHmiLevel()) && VideoStreamManager.this.parameters == null) {
-            getVideoStreamingParams();
-        }
-        checkState();
         processCapabilitiesWithPendingStart(encrypted, parameters);
     }
     /**
@@ -369,10 +365,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
             stateMachine.transitionToState(StreamingStateMachine.ERROR);
             return;
         }
-        if (!HMILevel.HMI_NONE.equals(currentOnHMIStatus.getHmiLevel()) && VideoStreamManager.this.parameters == null) {
-            getVideoStreamingParams();
-        }
-        checkState();
         processCapabilitiesWithPendingStart(encrypted, parameters);
     }
 
@@ -394,7 +386,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                 internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.VIDEO_STREAMING, new OnSystemCapabilityListener() {
                     @Override
                     public void onCapabilityRetrieved(Object capability) {
-                        VideoStreamingParameters params = new VideoStreamingParameters();
                         VideoStreamingCapability castedCapability = ((VideoStreamingCapability) capability);
                         VideoStreamManager.this.originalCapability = castedCapability;
 

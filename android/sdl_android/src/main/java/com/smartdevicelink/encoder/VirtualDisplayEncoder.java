@@ -206,13 +206,12 @@ public class VirtualDisplayEncoder {
                     // Create a virtual display that will output to our encoder.
                     if (Build.VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP && virtualDisplay != null) {
                         virtualDisplay.setSurface(inputSurface);
+                    } else {
+                        // recreate after stop in most of cases
+                        virtualDisplay = mDisplayManager.createVirtualDisplay(TAG,
+                                streamingParams.getResolution().getResolutionWidth(), streamingParams.getResolution().getResolutionHeight(),
+                                streamingParams.getDisplayDensity(), inputSurface, DisplayManager.VIRTUAL_DISPLAY_FLAG_PRESENTATION);
                     }
-                else {
-                    // recreate after stop in most of cases
-                    virtualDisplay = mDisplayManager.createVirtualDisplay(TAG,
-                            streamingParams.getResolution().getResolutionWidth(), streamingParams.getResolution().getResolutionHeight(),
-                            streamingParams.getDisplayDensity(), inputSurface, DisplayManager.VIRTUAL_DISPLAY_FLAG_PRESENTATION);
-                }
 
                     startEncoder();
                 }

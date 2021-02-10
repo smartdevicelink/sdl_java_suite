@@ -171,6 +171,10 @@ public class VideoStreamingParameters {
                 this.format = params.format;
             }
 
+            if (params.preferredDiagonal != 0.0) {
+                this.preferredDiagonal = params.preferredDiagonal;
+            }
+
             if (!params.additionalCapabilities.isEmpty()) {
                 this.additionalCapabilities = params.additionalCapabilities;
             }
@@ -231,6 +235,13 @@ public class VideoStreamingParameters {
 
         // This should be the last call as it will return out once a suitable format is found
         final List<VideoStreamingFormat> formats = capability.getSupportedFormats();
+
+        if (formats != null && formats.size() > 0) {
+            if (this.format != null && formats.contains(this.format)) {
+                return; // given format is supported, so no need to change.
+            }
+        }
+
         if(formats != null && formats.size()>0){
             for(VideoStreamingFormat format : formats){
                 for(int i = 0; i < currentlySupportedFormats.length; i ++){
