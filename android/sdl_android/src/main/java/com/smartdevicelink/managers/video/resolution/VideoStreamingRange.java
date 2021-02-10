@@ -4,21 +4,25 @@ public class VideoStreamingRange {
     private Resolution minResolution;
     private Resolution maxResolution;
     private Double minScreenDiagonal;
-    private AspectRatio aspectRatio;
+    private Double minAspectRatio;
+    private Double maxAspectRatio;
 
     public VideoStreamingRange(
             Resolution minResolution,
             Resolution maxResolution,
             Double minScreenDiagonal,
-            AspectRatio aspectRatio
+            Double minAspectRatio,
+            Double maxAspectRatio
     ) {
         this.minResolution = minResolution;
         this.maxResolution = maxResolution;
         this.minScreenDiagonal = minScreenDiagonal;
-        this.aspectRatio = aspectRatio;
+        this.minAspectRatio = minAspectRatio;
+        this.maxAspectRatio = maxAspectRatio;
     }
 
-    private VideoStreamingRange() { }
+    private VideoStreamingRange() {
+    }
 
     public Resolution getMinResolution() {
         return minResolution;
@@ -32,10 +36,17 @@ public class VideoStreamingRange {
         return minScreenDiagonal;
     }
 
-    public AspectRatio getAspectRatio(){ return aspectRatio; }
+    public Double getMinAspectRatio() {
+        return minAspectRatio;
+    }
+
+    public Double getMaxAspectRatio() {
+        return maxAspectRatio;
+    }
 
     public static class Builder {
         private VideoStreamingRange range = new VideoStreamingRange();
+        private Double maxAspectRatio;
 
         public Builder setMinSupportedResolution(Resolution minSupportedResolution) {
             range.minResolution = minSupportedResolution;
@@ -51,9 +62,9 @@ public class VideoStreamingRange {
             range.minScreenDiagonal = minScreenDiagonal;
             return this;
         }
-
-        public Builder setAspectRatio(AspectRatio aspectRatio) {
-            range.aspectRatio = aspectRatio;
+        public Builder setAspectRatio(Double minAspectRatio, Double maxAspectRatio) {
+            range.minAspectRatio = minAspectRatio;
+            range.maxAspectRatio = maxAspectRatio;
             return this;
         }
 

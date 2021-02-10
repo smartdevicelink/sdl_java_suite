@@ -48,7 +48,6 @@ import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.StreamingStateMachine;
 import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
-import com.smartdevicelink.managers.video.resolution.AspectRatio;
 import com.smartdevicelink.managers.video.resolution.Resolution;
 import com.smartdevicelink.managers.video.resolution.VideoStreamingRange;
 import com.smartdevicelink.protocol.ISdlServiceListener;
@@ -832,7 +831,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                     continue;
                 }
 
-                if (!isAspectRatioInRange(range.getAspectRatio(), capability.getPreferredResolution())) {
+                if (!isAspectRatioInRange(range.getMinAspectRatio(), range.getMaxAspectRatio(), capability.getPreferredResolution())) {
                     if (constraintHeightMax == null && constraintHeightMin == null) {
                         continue;
                     }
@@ -871,9 +870,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
         }
     }
 
-    public Boolean isAspectRatioInRange(AspectRatio aspectRatio, ImageResolution currentResolution) {
-        Double aspectRatioMin = aspectRatio.getMinAspectRatio();
-        Double aspectRatioMax = aspectRatio.getMaxAspectRatio();
+    public Boolean isAspectRatioInRange(Double aspectRatioMin, Double aspectRatioMax, ImageResolution currentResolution) {
 
         Double currentAspectRatio = Double.valueOf(currentResolution.getResolutionWidth()) / Double.valueOf(currentResolution.getResolutionHeight());
 
