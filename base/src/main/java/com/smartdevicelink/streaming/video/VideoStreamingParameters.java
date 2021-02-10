@@ -240,12 +240,9 @@ public class VideoStreamingParameters {
             if (this.format != null && formats.contains(this.format)) {
                 return; // given format is supported, so no need to change.
             }
-        }
-
-        if(formats != null && formats.size()>0){
-            for(VideoStreamingFormat format : formats){
-                for(int i = 0; i < currentlySupportedFormats.length; i ++){
-                    if(currentlySupportedFormats[i].equals(format) ){
+            for (VideoStreamingFormat format : formats) {
+                for (VideoStreamingFormat currentlySupportedFormat : currentlySupportedFormats) {
+                    if (currentlySupportedFormat.equals(format)) {
                         this.format = format;
                         return;
                     }
