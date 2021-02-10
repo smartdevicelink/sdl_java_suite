@@ -182,7 +182,7 @@ public enum TextFieldName {
      */
     phoneNumber,
     /**
-     * Optional time to destination field for navigationTexts parameter in ShowConstantTB
+     * Optional time to destination field for ShowConstantTBT
      *
      * @since SmartDeviceLink 7.1.0
      */
