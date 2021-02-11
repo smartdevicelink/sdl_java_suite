@@ -155,19 +155,14 @@ public class PresentAlertOperation extends Task {
      * @param listener
      */
     private void uploadAudioFiles(final CompletionListener listener) {
-        if (alertView.getAudio() == null) {
-            DebugTool.logInfo(TAG, "No audio sent for alert");
-            listener.onComplete(true);
-            return;
-        }
         if (!supportsAlertAudioFile()) {
-            DebugTool.logError(TAG, "Module does not support audio files for alerts, skipping upload of audio files");
+            DebugTool.logInfo(TAG, "Module does not support audio files for alerts, skipping upload of audio files");
             listener.onComplete(true);
             return;
         }
 
-        if (alertView.getAudio().getAudioFiles() == null || alertView.getAudio().getAudioFiles().size() == 0) {
-            DebugTool.logInfo(TAG, "No audio files to upload for alert");
+        if (alertView.getAudio() == null || alertView.getAudio().getAudioData() == null || alertView.getAudio().getAudioData().size() == 0) {
+            DebugTool.logInfo(TAG, "No audio files need to be uploaded for alert");
             listener.onComplete(true);
             return;
         }
@@ -351,31 +346,27 @@ public class PresentAlertOperation extends Task {
         }
 
         if (alertView.getAudio() != null) {
-            AlertAudioData alertAudioData = alertView.getAudio();
-            alert.setPlayTone(alertAudioData.isPlayTone());
-
-            if (alertAudioData.getAudioData().size() > 0) {
-                alert.setTtsChunks(getTTSChunksForAlert(alertAudioData));
-            }
+            alert.setPlayTone(alertView.getAudio().isPlayTone());
+            alert.setTtsChunks(getTTSChunksForAlert(alertView));
         }
         return alert;
     }
 
     /**
      * Checks if AudioFiles are supported by module and removes them form audioData list if they are not
-     * @param alertAudioData
+     * @param alertView
      * @return List of ttsChunks
      */
-    List<TTSChunk> getTTSChunksForAlert(AlertAudioData alertAudioData) {
-        List<TTSChunk> ttsChunks = alertAudioData.getAudioData();
-        if (!supportsAlertAudioFile()) {
+    List<TTSChunk> getTTSChunksForAlert(AlertView alertView) {
+        AlertAudioData alertAudioData = alertView.getAudio();
+        List<TTSChunk> ttsChunks = new ArrayList<>();
             for (TTSChunk chunk : alertAudioData.getAudioData()) {
-                if (chunk.getType() == SpeechCapabilities.FILE) {
-                    ttsChunks.remove(chunk);
+                if (chunk.getType() == SpeechCapabilities.FILE && !supportsAlertAudioFile()) {
+                    continue;
                 }
+                ttsChunks.add(chunk);
             }
-        }
-        return ttsChunks;
+        return ttsChunks.size() > 0 ? ttsChunks : null;
     }
     // Text Helpers
 
