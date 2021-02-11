@@ -120,9 +120,11 @@ public class PresentAlertOperation extends Task {
         }
         final DispatchGroup uploadFilesTask = new DispatchGroup();
 
+        // Enter DispatchGroup twice for two tasks needing to be completed, One for uploading images and one for uploading audio files
         uploadFilesTask.enter();
         uploadFilesTask.enter();
 
+        // DispatchGroup notify when all tasks are done
         uploadFilesTask.notify(new Runnable() {
             @Override
             public void run() {
@@ -130,6 +132,7 @@ public class PresentAlertOperation extends Task {
             }
         });
 
+        // DispatchGroup Task 1: uploading images
         uploadImages(new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
@@ -137,6 +140,7 @@ public class PresentAlertOperation extends Task {
             }
         });
 
+        // DispatchGroup Task 2: uploading audio files
         uploadAudioFiles(new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
@@ -475,6 +479,11 @@ public class PresentAlertOperation extends Task {
         return ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(currentWindowCapability, ImageFieldName.alertIcon);
     }
 
+    /**
+     * Checks the `AlertView` data to make sure it conforms to the RPC Spec, which says that at least either `alertText1`, `alertText2` or `TTSChunks` need to be provided.
+     * @param alertView - Alert data that needs to be presented
+     * @return true if AlertView data conforms to RPC Spec
+     */
     private boolean isValidAlertViewData(AlertView alertView) {
         if (alertView.getText() != null && alertView.getText().length() > 0) {
             return true;
