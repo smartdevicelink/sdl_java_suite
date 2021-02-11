@@ -110,7 +110,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
     private IVideoStreamListener streamListener;
     private boolean isTransportAvailable = false;
     private Integer majorProtocolVersion;
-    private List<VideoStreamingRange> listOfStreamingRanges;
+    private List<VideoStreamingRange> listOfStreamingRanges = new ArrayList(1);
     private boolean hasStarted;
     private String vehicleMake = null;
     private boolean isEncrypted = false;
@@ -186,8 +186,11 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                 }
                 OnHMIStatus prevOnHMIStatus = currentOnHMIStatus;
                 currentOnHMIStatus = onHMIStatus;
-                if (!HMILevel.HMI_NONE.equals(currentOnHMIStatus.getHmiLevel()) && VideoStreamManager.this.parameters == null) {
-                    getVideoStreamingParams();
+                if (!HMILevel.HMI_NONE.equals(currentOnHMIStatus.getHmiLevel())) {
+                    if (VideoStreamManager.this.parameters == null) {
+                        getVideoStreamingParams();
+                    }
+                    internalInterface.getSystemCapabilityManager().addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, systemCapabilityListener);
                 }
                 checkState();
                 if (hasStarted && (isHMIStateVideoStreamCapable(prevOnHMIStatus)) && (!isHMIStateVideoStreamCapable(currentOnHMIStatus))) {
@@ -259,8 +262,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
         internalInterface.addOnRPCNotificationListener(FunctionID.ON_TOUCH_EVENT, touchListener);
         // Listen for HMILevel changes
         internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
-        // Listen for SystemCapabilityType VIDEO_STREAMING
-        internalInterface.getSystemCapabilityManager().addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, systemCapabilityListener);
         stateMachine = new StreamingStateMachine();
     }
 
