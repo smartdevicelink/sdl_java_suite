@@ -217,7 +217,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
     private final OnSystemCapabilityListener systemCapabilityListener = new OnSystemCapabilityListener() {
         @Override
         public void onCapabilityRetrieved(Object capability) {
-            VideoStreamingParameters params = new VideoStreamingParameters();
+           VideoStreamingParameters params = (parameters == null) ? new VideoStreamingParameters() : new VideoStreamingParameters(parameters);
 
             VideoStreamingCapability castedCapability = ((VideoStreamingCapability)capability);
 
