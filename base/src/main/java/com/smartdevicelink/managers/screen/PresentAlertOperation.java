@@ -507,9 +507,4 @@ public class PresentAlertOperation extends Task {
         }
         onFinished();
     }
-
-    // Updates WindowCapability if the operation is pending the in the Alert Manager.
-    void setWindowCapability(WindowCapability currentWindowCapability) {
-        this.currentWindowCapability = currentWindowCapability;
-    }
 }

@@ -337,7 +337,7 @@ abstract class BaseAlertManager extends BaseSubManager {
             if (!(task instanceof PresentAlertOperation)) {
                 continue;
             }
-            ((PresentAlertOperation) task).setWindowCapability(currentWindowCapability);
+            ((PresentAlertOperation) task).currentWindowCapability = currentWindowCapability;
         }
     }
 }
