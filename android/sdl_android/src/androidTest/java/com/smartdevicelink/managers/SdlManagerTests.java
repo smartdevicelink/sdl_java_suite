@@ -23,6 +23,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
+import com.smartdevicelink.util.SystemInfo;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -113,6 +114,11 @@ public class SdlManagerTests {
             @Override
             public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language, Language hmiLanguage) {
                 return null;
+            }
+
+            @Override
+            public boolean onSystemInfoReceived(SystemInfo systemInfo) {
+                return true;
             }
         };
 

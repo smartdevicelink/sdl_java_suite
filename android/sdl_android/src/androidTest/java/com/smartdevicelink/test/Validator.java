@@ -3911,6 +3911,23 @@ public class Validator {
         return approxPosition1.equals(approxPosition2) && deviation1.equals(deviation2);
     }
 
+    public static boolean validateSeatOccupancies(SeatOccupancy item1, SeatOccupancy item2) {
+        if (item1 == null) {
+            return (item2 == null);
+        }
+        if (item2 == null) {
+            return (item1 == null);
+        }
+
+        List<SeatStatus> seatsBelted1 = item1.getSeatsBelted();
+        List<SeatStatus> seatsOccupied1 = item1.getSeatsOccupied();
+
+        List<SeatStatus> seatsBelted2 = item2.getSeatsBelted();
+        List<SeatStatus> seatsOccupied2 = item2.getSeatsOccupied();
+
+        return validateSeatStatuses(seatsBelted1, seatsBelted2) && validateSeatStatuses(seatsOccupied1, seatsOccupied2);
+    }
+
     public static boolean validateStabilityControlStatus(StabilityControlsStatus status1, StabilityControlsStatus status2) {
         if (status1 == null) {
             return (status2 == null);
@@ -3968,6 +3985,48 @@ public class Validator {
         return keyboardsEqual && keyboardCapabilities1.getMaskInputCharactersSupported().equals(keyboardCapabilities2.getMaskInputCharactersSupported());
     }
 
+    public static boolean validateSeatStatuses(List<SeatStatus> seatStatusesItem1, List<SeatStatus> seatStatusesItem2) {
+        if (seatStatusesItem1 == null) {
+            return (seatStatusesItem2 == null);
+        }
+        if (seatStatusesItem2 == null) {
+            return (seatStatusesItem1 == null);
+        }
+
+        if (seatStatusesItem1.size() != seatStatusesItem2.size()) {
+            return false;
+        }
+
+        Iterator<SeatStatus> iterator1 = seatStatusesItem1.iterator();
+        Iterator<SeatStatus> iterator2 = seatStatusesItem2.iterator();
+
+        while (iterator1.hasNext() && iterator2.hasNext()) {
+            SeatStatus seatStatus1 = iterator1.next();
+            SeatStatus seatStatus2 = iterator2.next();
+
+            if (!validateSeatStatus(seatStatus1, seatStatus2)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean validateSeatStatus(SeatStatus item1, SeatStatus item2) {
+        if (item1 == null) {
+            return (item2 == null);
+        }
+        if (item2 == null) {
+            return (item1 == null);
+        }
+
+        if (item1.getConditionActive() != item2.getConditionActive()) {
+            return false;
+        }
+
+        return validateSeatLocation(item1.getSeatLocation(), item2.getSeatLocation());
+    }
+
     public static boolean validateDoorStatus(DoorStatus status1, DoorStatus status2) {
         if (status1 == null) {
             return (status2 == null);
@@ -3999,5 +4058,24 @@ public class Validator {
         }
         boolean gridValidated = validateGrid(status1.getLocation(), status2.getLocation());
         return gridValidated && status1.getStatus().equals(status2.getStatus()) && validateWindowStates(status1.getState(), status2.getState());
+    }
+
+    public static boolean validateClimateData(ClimateData climateData1, ClimateData climateData2) {
+        if (climateData1 == null) {
+            return (climateData2 == null);
+        }
+        if (climateData2 == null) {
+            return (climateData1 == null);
+        }
+
+        if (!validateTemperature(climateData1.getExternalTemperature(), climateData2.getExternalTemperature())) {
+            return false;
+        }
+
+        if (!validateTemperature(climateData1.getCabinTemperature(), climateData2.getCabinTemperature())) {
+            return false;
+        }
+
+        return climateData1.getAtmosphericPressure().floatValue() == climateData2.getAtmosphericPressure().floatValue();
     }
 }

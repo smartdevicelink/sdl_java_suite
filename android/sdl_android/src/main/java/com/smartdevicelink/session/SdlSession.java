@@ -41,12 +41,15 @@ import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.protocol.SdlProtocolBase;
+import com.smartdevicelink.protocol.enums.ControlFrameTags;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.MediaStreamingStatus;
+import com.smartdevicelink.util.SystemInfo;
 import com.smartdevicelink.util.Version;
 
 import java.lang.ref.WeakReference;
@@ -152,7 +155,11 @@ public class SdlSession extends BaseSdlSession {
 
         if (serviceType != null && serviceType.eq(SessionType.RPC) && this.sessionId == -1) {
             this.sessionId = sessionID;
-            this.sessionListener.onSessionStarted(sessionID, version);
+            SystemInfo systemInfo = null;
+            if (version != null && version.isNewerThan(new Version(5, 4, 0)) >= 0) {
+                systemInfo = extractSystemInfo(packet);
+            }
+            this.sessionListener.onSessionStarted(sessionID, version, systemInfo);
         }
 
         if (isEncrypted) {

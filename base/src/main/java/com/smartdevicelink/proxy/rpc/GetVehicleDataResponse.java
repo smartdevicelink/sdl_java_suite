@@ -69,6 +69,11 @@ public class GetVehicleDataResponse extends RPCResponse {
     public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
     public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
     public static final String KEY_FUEL_RANGE = "fuelRange";
+    /**
+     * @since SmartDeviceLink 2.0.0
+     * @deprecated in SmartDeviceLink 7.1.0
+     */
+    @Deprecated
     public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
     public static final String KEY_TURN_SIGNAL = "turnSignal";
     public static final String KEY_VIN = "vin";
@@ -96,7 +101,15 @@ public class GetVehicleDataResponse extends RPCResponse {
     public static final String KEY_GEAR_STATUS = "gearStatus";
     public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
     public static final String KEY_STABILITY_CONTROLS_STATUS = "stabilityControlsStatus";
+    /**
+     * @since SmartDeviceLink 7.1.0
+     */
+    public static final String KEY_CLIMATE_DATA = "climateData";
 
+    /**
+     * @since SmartDeviceLink 7.1.0
+     */
+    public static final String KEY_SEAT_OCCUPANCY = "seatOccupancy";
     /**
      * Constructs a new GetVehicleDataResponse object
      */
@@ -206,11 +219,31 @@ public class GetVehicleDataResponse extends RPCResponse {
         return SdlDataTypeConverter.objectToDouble(object);
     }
 
+    /**
+     * Sets the externalTemperature.
+     *
+     * @param externalTemperature The external temperature in degrees celsius. This parameter is deprecated starting RPC
+     * Spec 7.1.0, please see climateData.
+     * {"num_min_value": -40.0, "num_max_value": 100.0}
+     * @since SmartDeviceLink 2.0.0
+     * @deprecated in SmartDeviceLink 7.1.0
+     */
+    @Deprecated
     public GetVehicleDataResponse setExternalTemperature(Double externalTemperature) {
         setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
         return this;
     }
 
+    /**
+     * Gets the externalTemperature.
+     *
+     * @return Double The external temperature in degrees celsius. This parameter is deprecated starting RPC
+     * Spec 7.1.0, please see climateData.
+     * {"num_min_value": -40.0, "num_max_value": 100.0}
+     * @since SmartDeviceLink 2.0.0
+     * @deprecated in SmartDeviceLink 7.1.0
+     */
+    @Deprecated
     public Double getExternalTemperature() {
         Object object = getParameters(KEY_EXTERNAL_TEMPERATURE);
         return SdlDataTypeConverter.objectToDouble(object);
@@ -593,5 +626,46 @@ public class GetVehicleDataResponse extends RPCResponse {
     public GetVehicleDataResponse setStabilityControlsStatus(StabilityControlsStatus stabilityControlsStatus) {
         setParameters(KEY_STABILITY_CONTROLS_STATUS, stabilityControlsStatus);
         return this;
+    }
+
+    /**
+     * Sets the climateData.
+     *
+     * @param climateData See ClimateData
+     * @since SmartDeviceLink 7.1.0
+     */
+    public GetVehicleDataResponse setClimateData(ClimateData climateData) {
+        setParameters(KEY_CLIMATE_DATA, climateData);
+        return this;
+    }
+
+    /**
+     * Gets the climateData.
+     *
+     * @return ClimateData See ClimateData
+     * @since SmartDeviceLink 7.1.0
+     */
+    public ClimateData getClimateData() {
+        return (ClimateData) getObject(ClimateData.class, KEY_CLIMATE_DATA);
+    }
+    /**
+     * Sets the seatOccupancy.
+     *
+     * @param seatOccupancy See SeatOccupancy
+     * @since SmartDeviceLink 7.1.0
+     */
+    public GetVehicleDataResponse setSeatOccupancy(SeatOccupancy seatOccupancy) {
+        setParameters(KEY_SEAT_OCCUPANCY, seatOccupancy);
+        return this;
+    }
+
+    /**
+     * Gets the seatOccupancy.
+     *
+     * @return SeatOccupancy See SeatOccupancy
+     * @since SmartDeviceLink 7.1.0
+     */
+    public SeatOccupancy getSeatOccupancy() {
+        return (SeatOccupancy) getObject(SeatOccupancy.class, KEY_SEAT_OCCUPANCY);
     }
 }
