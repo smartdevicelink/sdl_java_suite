@@ -380,37 +380,37 @@ public class PresentAlertOperation extends Task {
         if (nonNullFields.isEmpty()) {
             return alert;
         }
-        int numberOfLines = ManagerUtility.WindowCapabilityUtility.getMaxNumberOfAlertFieldLines(currentWindowCapability);
+        int numberOfLines = currentWindowCapability!= null ? ManagerUtility.WindowCapabilityUtility.getMaxNumberOfAlertFieldLines(currentWindowCapability) : 3;
         switch (numberOfLines) {
             case 1:
                 alert = assembleOneLineAlertText(alert, nonNullFields);
                 break;
             case 2:
-                alert = assembleTwoLineAlertText(alert);
+                alert = assembleTwoLineAlertText(alert, nonNullFields);
                 break;
             case 3:
-                alert = assembleThreeLineAlertText(alert);
+                alert = assembleThreeLineAlertText(alert, nonNullFields);
                 break;
         }
         return alert;
     }
 
     private List<String> findNonNullTextFields() {
-        List<String> array = new ArrayList<>();
+        List<String> list = new ArrayList<>();
 
         if (alertView.getText() != null && alertView.getText().length() > 0) {
-            array.add(alertView.getText());
+            list.add(alertView.getText());
         }
 
         if (alertView.getSecondaryText() != null && alertView.getSecondaryText().length() > 0) {
-            array.add(alertView.getSecondaryText());
+            list.add(alertView.getSecondaryText());
         }
 
         if (alertView.getTertiaryText() != null && alertView.getTertiaryText().length() > 0) {
-            array.add(alertView.getTertiaryText());
+            list.add(alertView.getTertiaryText());
         }
 
-        return array;
+        return list;
     }
 
     private Alert assembleOneLineAlertText(Alert alert, List<String> alertFields) {
@@ -426,35 +426,21 @@ public class PresentAlertOperation extends Task {
         return alert;
     }
 
-    private Alert assembleTwoLineAlertText(Alert alert) {
-        if (alertView.getText() != null && alertView.getText().length() > 0) {
-            alert.setAlertText1(alertView.getText());
-        }
-        if (alertView.getSecondaryText() != null && alertView.getSecondaryText().length() > 0) {
-            if ((alertView.getTertiaryText() == null || !(alertView.getTertiaryText().length() > 0))) {
-                // TertiaryText does not exist
-                alert.setAlertText2(alertView.getSecondaryText());
-            } else {
-                // Text 3 exists, put secondaryText and TertiaryText in AlertText2
-                alert.setAlertText2(alertView.getSecondaryText() + " - " + alertView.getTertiaryText());
-            }
+    private Alert assembleTwoLineAlertText(Alert alert, List<String> alertFields) {
+        if (alertFields.size() <= 2) {
+            alert.setAlertText1(alertFields.size() > 0 ? alertFields.get(0) : null);
+            alert.setAlertText2(alertFields.size() > 1 ? alertFields.get(1) : null);
+        } else {
+            alert.setAlertText1(alertFields.size() > 0 ? alertFields.get(0) : null);
+            alert.setAlertText2(alertFields.get(1) + " - " + alertFields.get(2));
         }
         return alert;
     }
 
-    private Alert assembleThreeLineAlertText(Alert alert) {
-        if (alertView.getText() != null && alertView.getText().length() > 0) {
-            alert.setAlertText1(alertView.getText());
-        }
-
-        if (alertView.getSecondaryText() != null && alertView.getSecondaryText().length() > 0) {
-            alert.setAlertText2(alertView.getSecondaryText());
-        }
-
-        if (alertView.getTertiaryText() != null && alertView.getTertiaryText().length() > 0) {
-            alert.setAlertText3(alertView.getTertiaryText());
-        }
-
+    private Alert assembleThreeLineAlertText(Alert alert, List<String> alertFields) {
+        alert.setAlertText1(alertFields.size() > 0 ? alertFields.get(0) : null);
+        alert.setAlertText2(alertFields.size() > 1 ? alertFields.get(1) : null);
+        alert.setAlertText3(alertFields.size() > 2 ? alertFields.get(2) : null);
         return alert;
     }
 
