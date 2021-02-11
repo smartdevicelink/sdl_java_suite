@@ -67,7 +67,7 @@ public class VideoStreamingRange {
             return this;
         }
 
-        public Builder setMaxAspectRation(Double maxAspectRatio) {
+        public Builder setMaxAspectRatio(Double maxAspectRatio) {
             range.maxAspectRatio = maxAspectRatio;
             return this;
         }
