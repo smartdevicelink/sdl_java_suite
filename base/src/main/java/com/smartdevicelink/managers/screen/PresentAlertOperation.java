@@ -74,6 +74,7 @@ public class PresentAlertOperation extends Task {
     WindowCapability currentWindowCapability;
     private int cancelId;
     private List<SpeechCapabilities> speechCapabilities;
+    boolean isAlertPresented;
     static int SOFTBUTTON_COUNT = 4;
 
     public PresentAlertOperation(ISdl internalInterface, AlertView alertView, WindowCapability currentCapabilities, List<SpeechCapabilities> speechCapabilities, FileManager fileManager, Integer cancelId, AlertCompletionListener listener) {
@@ -85,6 +86,7 @@ public class PresentAlertOperation extends Task {
         this.alertView = alertView.clone();
         this.listener = listener;
         this.cancelId = cancelId;
+        this.isAlertPresented = false;
 
         this.alertView.canceledListener = new AlertCanceledListener() {
             @Override
@@ -261,6 +263,14 @@ public class PresentAlertOperation extends Task {
      * Sends the alert RPC to the module. The operation is finished once a response has been received from the module.
      */
     private void presentAlert() {
+        if (getState() == Task.CANCELED) {
+            DebugTool.logInfo(TAG, "Operation canceled");
+            finishOperation(false, null);
+            return;
+        }
+
+        isAlertPresented = true;
+
         Alert alert = alertRpc();
 
         alert.setOnRPCResponseListener(new OnRPCResponseListener() {
@@ -286,34 +296,35 @@ public class PresentAlertOperation extends Task {
             return;
         } else if (getState() == Task.IN_PROGRESS) {
             if (internalInterface.get() != null && internalInterface.get().getSdlMsgVersion() != null && internalInterface.get().getSdlMsgVersion().getMajorVersion() < 6) {
-                DebugTool.logError(TAG, "Canceling an alert is not supported on this module");
+                DebugTool.logError(TAG, "Attempting to cancel this operation in-progress; if the alert is already presented on the module, it cannot be dismissed.");
+                this.cancelTask();
+                return;
+            } else if (!isAlertPresented) {
+                DebugTool.logError(TAG, "Alert has not yet been sent to the module. Alert will not be shown..");
                 this.cancelTask();
                 return;
             }
-            cancelInteraction();
+
+            DebugTool.logInfo(TAG, "Canceling the presented alert");
+
+            CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.ALERT.getId(), cancelId);
+            cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
+                @Override
+                public void onResponse(int correlationId, RPCResponse response) {
+                    if (!response.getSuccess()) {
+                        DebugTool.logInfo(TAG, "Error canceling the presented alert: " + response.getInfo());
+                        onFinished();
+                        return;
+                    }
+                    DebugTool.logInfo(TAG, "The presented alert was canceled successfully");
+                    onFinished();
+                }
+            });
+            internalInterface.get().sendRPC(cancelInteraction);
         } else {
-            DebugTool.logInfo(TAG, "Cancelling an alert that has not yet been sent to Core");
+            DebugTool.logInfo(TAG, "Cancelling an alert that has not yet started");
             this.cancelTask();
         }
-    }
-
-    void cancelInteraction() {
-        DebugTool.logInfo(TAG, "Canceling the presented alert");
-
-        CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.ALERT.getId(), cancelId);
-        cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
-            @Override
-            public void onResponse(int correlationId, RPCResponse response) {
-                if (!response.getSuccess()) {
-                    DebugTool.logInfo(TAG, "Error canceling the presented alert: " + response.getInfo());
-                    onFinished();
-                    return;
-                }
-                DebugTool.logInfo(TAG, "The presented alert was canceled successfully");
-                onFinished();
-            }
-        });
-        internalInterface.get().sendRPC(cancelInteraction);
     }
 
     // Private Getters / Setters
