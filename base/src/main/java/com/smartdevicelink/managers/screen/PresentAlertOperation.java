@@ -433,6 +433,14 @@ public class PresentAlertOperation extends Task {
     }
 
     // Helper methods
+    /**
+     * Limits the number of SoftButtons that can be set in the AlertRPC to 4
+     *
+     * @return The maximum number of soft buttons that can be sent to the module
+     */
+    private int getSoftButtonCount() {
+        return alertView.getSoftButtons().size() <= 4 ? alertView.getSoftButtons().size() : SOFTBUTTON_COUNT;
+    }
 
     /**
      * Checks if the connected module or current template supports soft button images.
