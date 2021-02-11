@@ -85,6 +85,19 @@ public class ControlFrameTags {
              * Auth token to be used for log in into services
              **/
             public static final String AUTH_TOKEN = "authToken";
+            /**
+             * Vehicle info to describe connected device
+             */
+            public static final String MAKE = "make";
+            public static final String MODEL = "model";
+            public static final String MODEL_YEAR = "modelYear";
+            public static final String TRIM = "trim";
+
+            /**
+             * System specifics for hardware and software versions of connected device
+             */
+            public static final String SYSTEM_SOFTWARE_VERSION = "systemSoftwareVersion";
+            public static final String SYSTEM_HARDWARE_VERSION = "systemHardwareVersion";
 
         }
 
