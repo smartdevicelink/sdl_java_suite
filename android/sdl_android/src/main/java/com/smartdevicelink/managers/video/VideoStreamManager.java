@@ -804,35 +804,37 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
             Integer constraintHeightMax = range.getMaxResolution().getResolutionHeight();
             Integer constraintHeightMin = range.getMinResolution().getResolutionHeight();
+            if (originalAdditionalCapabilities != null && !originalAdditionalCapabilities.isEmpty()) {
 
-            for (VideoStreamingCapability capability : originalAdditionalCapabilities) {
-                double diagonal;
-                if (capability.getPreferredResolution() == null
-                        || capability.getPreferredResolution().getResolutionHeight() == null
-                        || capability.getPreferredResolution().getResolutionWidth() == null) {
-                    continue;
-                }
-                if (capability.getDiagonalScreenSize() == null) {
-                    diagonal = parameters.getPreferredDiagonal();
-                } else {
-                    diagonal = capability.getDiagonalScreenSize();
-                }
-
-                if (range.getMinScreenDiagonal() > diagonal) {
-                    continue;
-                }
-
-                if (!isAspectRatioInRange(range.getMinAspectRatio(), range.getMaxAspectRatio(), capability.getPreferredResolution())) {
-                    if (constraintHeightMax == null && constraintHeightMin == null) {
+                for (VideoStreamingCapability capability : originalAdditionalCapabilities) {
+                    double diagonal;
+                    if (capability.getPreferredResolution() == null
+                            || capability.getPreferredResolution().getResolutionHeight() == null
+                            || capability.getPreferredResolution().getResolutionWidth() == null) {
                         continue;
                     }
-                }
+                    if (capability.getDiagonalScreenSize() == null) {
+                        diagonal = parameters.getPreferredDiagonal();
+                    } else {
+                        diagonal = capability.getDiagonalScreenSize();
+                    }
 
-                if (!isImageResolutionInRange(range.getMinResolution(), range.getMaxResolution(), capability.getPreferredResolution())) {
-                    continue;
-                }
+                    if (range.getMinScreenDiagonal() > diagonal) {
+                        continue;
+                    }
 
-                validCapabilities.add(capability);
+                    if (!isAspectRatioInRange(range.getMinAspectRatio(), range.getMaxAspectRatio(), capability.getPreferredResolution())) {
+                        if (constraintHeightMax == null && constraintHeightMin == null) {
+                            continue;
+                        }
+                    }
+
+                    if (!isImageResolutionInRange(range.getMinResolution(), range.getMaxResolution(), capability.getPreferredResolution())) {
+                        continue;
+                    }
+
+                    validCapabilities.add(capability);
+                }
             }
         }
 
