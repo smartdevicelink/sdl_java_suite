@@ -40,12 +40,10 @@ public class AlertAudioDataTest {
 
     @Test
     public void testConstructors() {
-        AlertAudioData alertAudioData = new AlertAudioData();
-        alertAudioData.setPlayTone(true);
-        assertTrue(alertAudioData.isPlayTone());
-
         AlertAudioData alertAudioData1 = new AlertAudioData("phoneticString", SpeechCapabilities.TEXT);
+        alertAudioData1.setPlayTone(true);
         assertEquals("phoneticString", alertAudioData1.getAudioData().get(0).getText());
+        assertTrue(alertAudioData1.isPlayTone());
 
         AlertAudioData alertAudioData2 = new AlertAudioData("spokenString");
         assertEquals("spokenString", alertAudioData2.getAudioData().get(0).getText());

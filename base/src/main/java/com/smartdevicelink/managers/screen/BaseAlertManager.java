@@ -77,7 +77,7 @@ abstract class BaseAlertManager extends BaseSubManager {
     private UUID permissionListener;
     boolean isAlertRPCAllowed = false;
     private final WeakReference<FileManager> fileManager;
-    private int nextCancelId;
+    int nextCancelId;
     private final int alertCancelIdMin = 1;
     private final int alertCancelIdMax = 100;
     private CopyOnWriteArrayList<SoftButtonObject> softButtonObjects;
