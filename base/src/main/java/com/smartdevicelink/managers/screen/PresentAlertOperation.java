@@ -74,6 +74,7 @@ public class PresentAlertOperation extends Task {
     WindowCapability currentWindowCapability;
     private int cancelId;
     private List<SpeechCapabilities> speechCapabilities;
+    static int SOFTBUTTON_COUNT = 4;
 
     public PresentAlertOperation(ISdl internalInterface, AlertView alertView, WindowCapability currentCapabilities, List<SpeechCapabilities> speechCapabilities, FileManager fileManager, Integer cancelId, AlertCompletionListener listener) {
         super("PresentAlertOperation");
@@ -207,11 +208,11 @@ public class PresentAlertOperation extends Task {
     }
 
     /**
-     * Check alertView  for an Icon and SoftButtonObject images and send them to upload method
+     * Upload the alert icon and soft button images.
      *
-     * @param listener - CompletionListener used to signal that images in AlertView have uploaded if any
+     * @param listener - CompletionListener called when all images have been uploaded.
      */
-    private void uploadImages(CompletionListener listener) {
+    private void uploadImages(final CompletionListener listener) {
         List<SdlArtwork> artworksToBeUploaded = new ArrayList<>();
 
         if (supportsAlertIcon() && fileManager.get() != null && fileManager.get().fileNeedsUpload(alertView.getIcon())) {
@@ -219,24 +220,15 @@ public class PresentAlertOperation extends Task {
         }
 
         if (alertView.getSoftButtons() != null) {
-            for (SoftButtonObject object : alertView.getSoftButtons()) {
+            for (int i = 0; i < getSoftButtonCount(); i++) {
+                SoftButtonObject object = alertView.getSoftButtons().get(i);
                 if (supportsSoftButtonImages() && object.getCurrentState() != null && fileManager.get() != null && fileManager.get().fileNeedsUpload(object.getCurrentState().getArtwork())) {
                     artworksToBeUploaded.add(object.getCurrentState().getArtwork());
                 }
             }
         }
 
-        sendImages(artworksToBeUploaded, listener);
-    }
-
-    /**
-     * Uploads images using fileManager
-     *
-     * @param images   - List of SdlArtwork - Images that need to be uploaded
-     * @param listener - CompletionListener used to signal that images in AlertView have uploaded if any
-     */
-    private void sendImages(List<SdlArtwork> images, final CompletionListener listener) {
-        if (images.size() == 0) {
+        if (artworksToBeUploaded.size() == 0) {
             DebugTool.logInfo(TAG, "No Images to upload for alert");
             listener.onComplete(true);
             return;
@@ -245,7 +237,7 @@ public class PresentAlertOperation extends Task {
         DebugTool.logInfo(TAG, "Uploading images for alert");
 
         if (fileManager.get() != null) {
-            fileManager.get().uploadArtworks(images, new MultipleFileCompletionListener() {
+            fileManager.get().uploadArtworks(artworksToBeUploaded, new MultipleFileCompletionListener() {
                 @Override
                 public void onComplete(Map<String, String> errors) {
                     if (getState() == Task.CANCELED) {
@@ -256,12 +248,10 @@ public class PresentAlertOperation extends Task {
 
                     if (errors != null) {
                         DebugTool.logError(TAG, "AlertManager artwork failed to upload with error: " + errors.toString());
-                        listener.onComplete(false);
-
                     } else {
                         DebugTool.logInfo(TAG, "All alert images uploaded");
-                        listener.onComplete(true);
                     }
+                    listener.onComplete(true);
                 }
             });
         }
@@ -332,15 +322,18 @@ public class PresentAlertOperation extends Task {
         Alert alert = new Alert();
         alert = assembleAlertText(alert);
         alert.setDuration(alertView.getTimeout() * 1000);
-        if (alertView.getIcon() != null && supportsAlertIcon() && fileManager.get().hasUploadedFile(alertView.getIcon())) {
+
+        if (alertView.getIcon() != null && supportsAlertIcon() && !(fileManager.get().hasUploadedFile(alertView.getIcon()))) {
             alert.setAlertIcon(alertView.getIcon().getImageRPC());
         }
+
         alert.setProgressIndicator(alertView.isShowWaitIndicator());
         alert.setCancelID(this.cancelId);
+
         if (alertView.getSoftButtons() != null) {
             List<SoftButton> softButtons = new ArrayList<>();
-            for (SoftButtonObject button : alertView.getSoftButtons()) {
-                softButtons.add(button.getCurrentStateSoftButton());
+            for (int i = 0; i < getSoftButtonCount(); i++) {
+                softButtons.add(alertView.getSoftButtons().get(i).getCurrentStateSoftButton());
             }
             alert.setSoftButtons(softButtons);
         }
