@@ -62,8 +62,12 @@ public class VideoStreamingRange {
             range.minScreenDiagonal = minScreenDiagonal;
             return this;
         }
-        public Builder setAspectRatio(Double minAspectRatio, Double maxAspectRatio) {
+        public Builder setMinAspectRatio(Double minAspectRatio) {
             range.minAspectRatio = minAspectRatio;
+            return this;
+        }
+
+        public Builder setMaxAspectRation(Double maxAspectRatio) {
             range.maxAspectRatio = maxAspectRatio;
             return this;
         }

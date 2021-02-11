@@ -223,7 +223,6 @@ public class VirtualDisplayEncoder {
         }
     }
 
-    @Deprecated
     public void shutDown() {
         if (!initPassed) {
             DebugTool.logError(TAG, "VirtualDisplayEncoder was not properly initialized with the init() method.");
@@ -252,47 +251,6 @@ public class VirtualDisplayEncoder {
             }
 
             if (virtualDisplay != null) {
-                virtualDisplay.release();
-                virtualDisplay = null;
-            }
-
-            if (inputSurface != null) {
-                inputSurface.release();
-                inputSurface = null;
-            }
-        } catch (Exception ex) {
-            DebugTool.logError(TAG, "shutDown() failed");
-        }
-    }
-
-    public void shutDown(boolean withPendingRestart) {
-        if (!initPassed) {
-            DebugTool.logError(TAG, "VirtualDisplayEncoder was not properly initialized with the init() method.");
-            return;
-        }
-        try {
-            // cleanup GLES stuff
-            if (mCaptureThread != null) {
-                mCaptureThread.stopAsync();
-                try {
-                    mCaptureThread.join();
-                } catch(InterruptedException e) {
-
-                }
-                mCaptureThread = null;
-            }
-            if (encoderThread != null) {
-                encoderThread.interrupt();
-                encoderThread = null;
-            }
-
-            if (mVideoEncoder != null) {
-                mVideoEncoder.stop();
-                mVideoEncoder.release();
-                mVideoEncoder = null;
-            }
-
-            if (virtualDisplay != null && !withPendingRestart) {
                 virtualDisplay.release();
                 virtualDisplay = null;
             }

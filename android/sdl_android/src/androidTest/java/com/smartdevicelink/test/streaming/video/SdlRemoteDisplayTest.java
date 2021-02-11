@@ -52,7 +52,7 @@ public class SdlRemoteDisplayTest extends TestCase {
         MockRemoteDisplay remoteDisplay = new MockRemoteDisplay(InstrumentationRegistry.getInstrumentation().getContext(), encoder.getVirtualDisplay());
         assertNotNull(remoteDisplay);
 
-        encoder.shutDown(false);
+        encoder.shutDown();
     }
 
 
@@ -73,7 +73,7 @@ public class SdlRemoteDisplayTest extends TestCase {
         }
 
         remoteDisplay.dismiss();
-        encoder.shutDown(false);
+        encoder.shutDown();
     }
 
 

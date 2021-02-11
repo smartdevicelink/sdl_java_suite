@@ -499,7 +499,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
         }
         if (this.isStreaming()) {
             if (virtualDisplayEncoder != null) {
-                virtualDisplayEncoder.shutDown(withPendingRestart);
+                virtualDisplayEncoder.shutDown();
             }
             stateMachine.transitionToState(StreamingStateMachine.STOPPED);
             stopVideoStream();
@@ -865,10 +865,12 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
         Double currentAspectRatio = Double.valueOf(currentResolution.getResolutionWidth()) / Double.valueOf(currentResolution.getResolutionHeight());
 
-        if (aspectRatioMax > aspectRatioMin && aspectRatioMin > 0) {
+        if (aspectRatioMax != null &&
+                aspectRatioMin != null &&
+                aspectRatioMax > aspectRatioMin &&
+                aspectRatioMin > 0) {
             return currentAspectRatio >= aspectRatioMin && currentAspectRatio <= aspectRatioMax;
-        }
-        else {
+        } else {
             return false;
         }
     }
