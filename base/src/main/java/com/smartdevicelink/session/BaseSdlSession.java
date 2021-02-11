@@ -41,8 +41,10 @@ import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlProtocolBase;
+import com.smartdevicelink.protocol.enums.ControlFrameTags;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
+import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.security.ISecurityInitializedListener;
@@ -51,6 +53,7 @@ import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.SystemInfo;
 import com.smartdevicelink.util.Version;
 
 import java.util.HashMap;
@@ -209,6 +212,38 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
         sendMessage(protocolMessage);
     }
 
+    /**
+     * Extracts the SystemInfo out of a packet
+     * @param packet should be a StartServiceACK for the RPC service
+     * @return an instance of SystemInfo if the information is available, null otherwise
+     */
+    protected SystemInfo extractSystemInfo(SdlPacket packet) {
+        SystemInfo systemInfo = null;
+        if (packet != null && packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_ACK) {
+            VehicleType vehicleType = null;
+
+            String make = (String) packet.getTag(ControlFrameTags.RPC.StartServiceACK.MAKE);
+            String model = (String) packet.getTag(ControlFrameTags.RPC.StartServiceACK.MODEL);
+            String modelYear = (String) packet.getTag(ControlFrameTags.RPC.StartServiceACK.MODEL_YEAR);
+            String trim = (String) packet.getTag(ControlFrameTags.RPC.StartServiceACK.TRIM);
+            String softwareVersion = (String) packet.getTag(ControlFrameTags.RPC.StartServiceACK.SYSTEM_SOFTWARE_VERSION);
+            String hardwareVersion = (String) packet.getTag(ControlFrameTags.RPC.StartServiceACK.SYSTEM_HARDWARE_VERSION);
+
+            if (make != null || model != null || modelYear != null || trim != null) {
+                vehicleType = new VehicleType()
+                        .setMake(make)
+                        .setModel(model)
+                        .setModelYear(modelYear)
+                        .setTrim(trim);
+            }
+
+            if (vehicleType != null || softwareVersion != null || hardwareVersion != null) {
+                systemInfo = new SystemInfo(vehicleType, softwareVersion, hardwareVersion);
+            }
+        }
+
+        return systemInfo;
+    }
 
     public boolean isServiceProtected(SessionType sType) {
         return encryptedServices.contains(sType);
