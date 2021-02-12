@@ -47,6 +47,7 @@ import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.SystemInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -238,6 +239,12 @@ public class SdlService extends Service {
                     } else {
                         return null;
                     }
+                }
+
+                @Override
+                public boolean onSystemInfoReceived(SystemInfo systemInfo) {
+                    //Check the SystemInfo object to ensure that the connection to the device should continue
+                    return true;
                 }
             };
 
