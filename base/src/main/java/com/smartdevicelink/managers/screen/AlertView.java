@@ -64,46 +64,88 @@ public class AlertView implements Cloneable {
             alertView = new AlertView();
         }
 
+        /**
+         * The primary line of text for display on the alert. If fewer than three alert lines are available
+         * on the head unit, the screen manager will automatically concatenate some of the lines together.
+         */
         public Builder setText(String text) {
             this.alertView.text = text;
             return this;
         }
 
+        /**
+         * The secondary line of text for display on the alert. If fewer than three alert lines are available
+         * on the head unit, the screen manager will automatically concatenate some of the lines together.
+         */
         public Builder setSecondaryText(String secondaryText) {
             alertView.secondaryText = secondaryText;
             return this;
         }
 
+        /**
+         * The tertiary line of text for display on the alert. If fewer than three alert lines are available
+         * on the head unit, the screen manager will automatically concatenate some of the lines together.
+         */
         public Builder setTertiaryText(String tertiaryText) {
             alertView.tertiaryText = tertiaryText;
             return this;
         }
 
+        /**
+         * Timeout in seconds. Defaults to 0, which will use `defaultTimeout`. If this is set below the
+         * minimum, it will be capped at 3 seconds. Minimum 3 seconds, maximum 10 seconds. If this is
+         * set above the maximum, it will be capped at 10 seconds. Defaults to 0.
+         *
+         * Please note that if a button is added to the alert, the defaultTimeout and timeout values will be ignored.
+         */
         public Builder setTimeout(Integer timeout) {
             alertView.timeout = timeout;
             return this;
         }
 
+        /**
+         * If supported, the alert GUI will display some sort of indefinite waiting / refresh / loading
+         * indicator animation. Defaults to NO.
+         */
         public Builder setShowWaitIndicator(boolean showWaitIndicator) {
             alertView.showWaitIndicator = showWaitIndicator;
             return this;
         }
 
+        /**
+         * Soft buttons the user may select to perform actions. Only one `SoftButtonState` per object
+         * is supported; if any soft button object contains multiple states, an exception will be thrown.
+         */
         public Builder setSoftButtons(List<SoftButtonObject> softButtons) {
             alertView.setSoftButtons(softButtons);
             return this;
         }
 
+        /**
+         * Text spoken, file(s) played, and/or tone played when the alert appears
+         */
         public Builder setAudio(AlertAudioData audio) {
             alertView.audio = audio;
             return this;
         }
 
+        /**
+         * An artwork that will be displayed when the icon appears. This will be uploaded prior to the
+         * appearance of the alert if necessary. This will not be uploaded if the head unit does not
+         * declare support for alertIcon.
+         */
         public Builder setIcon(SdlArtwork icon) {
             alertView.icon = icon;
             return this;
         }
 
+        /**
+         * Set this to change the default timeout for all alerts. If a timeout is not set on an individual
+         * alert object (or if it is set to 0.0), then it will use this timeout instead. See `timeout`
+         * for more details. If this is not set by you, it will default to 5 seconds. The minimum is
+         * 3 seconds, the maximum is 10 seconds. If this is set below the minimum, it will be capped
+         * at 3 seconds. If this is set above the maximum, it will be capped at 10 seconds.
+         */
         public Builder setDefaultTimeOut(int defaultTimeOut) {
             alertView.setDefaultTimeout(defaultTimeOut);
             return this;
@@ -114,8 +156,7 @@ public class AlertView implements Cloneable {
         }
     }
 
-    // All vars have get / set as well to match iOS read / write
-
+    // Notifies the subscriber that the alert should be cancelled.
     public void cancel() {
         if (canceledListener == null) {
             return;

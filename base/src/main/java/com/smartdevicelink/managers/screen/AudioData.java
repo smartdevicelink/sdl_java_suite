@@ -48,7 +48,7 @@ public class AudioData {
     // All audio data
     private List<TTSChunk> audioData;
 
-    // The audio files that will be uploaded and used.
+    // The audio files that will be uploaded.
     private HashMap<String, SdlFile> audioFiles;
 
     public AudioData(@NonNull SdlFile audioFile) {
@@ -86,8 +86,9 @@ public class AudioData {
     }
 
     /**
-     * Create additional SDLFiles holding data or pointing to a file on the file system. When this object is passed to an `Alert` or `Speak`,
-     * the file will be uploaded if it is not already, then played if the system supports that feature.
+     * Add additional SDLFiles holding data or pointing to a file on the file system. When this object
+     * is passed to an `Alert` or `Speak`, the file will be uploaded if it is not already, then played
+     * if the system supports that feature.
      *
      * @param audioFiles A list of audio file to be played by the system
      */
