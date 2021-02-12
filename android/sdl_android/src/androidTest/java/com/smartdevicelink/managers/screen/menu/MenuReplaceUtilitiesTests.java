@@ -188,7 +188,6 @@ public class MenuReplaceUtilitiesTests {
         assertEquals(1, actualMenuCellList.get(4).getSubCells().size());
         assertEquals(1, actualMenuCellList.get(4).getSubCells().get(0).getSubCells().size());
 
-
         // Add cell c5-2
         menuCellToAdd = newMenuList.get(0).getSubCells().get(1);
         cellAdded = MenuReplaceUtilities.addMenuRequestWithCommandId(menuCellToAdd.getCellId(), 1, newMenuList, actualMenuCellList);
