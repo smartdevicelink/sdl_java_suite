@@ -31,7 +31,7 @@ public class AlertViewTest {
         SoftButtonObject softButtonObject2 = new SoftButtonObject("object2", Arrays.asList(softButtonState1), softButtonState1.getName(), null);
 
         AlertAudioData alertAudioData = new AlertAudioData("hi");
-        
+
         AlertView.Builder builder = new AlertView.Builder();
         builder.setText("Test");
         builder.setTertiaryText("Test");

@@ -1,6 +1,5 @@
 package com.smartdevicelink.managers.screen;
 
-import android.content.Context;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.livio.taskmaster.Taskmaster;
@@ -53,8 +52,6 @@ public class AlertManagerTest {
 
     @Before
     public void setUp() throws Exception {
-        Context mTestContext = getInstrumentation().getContext();
-
         // mock things
         ISdl internalInterface = mock(ISdl.class);
         FileManager fileManager = mock(FileManager.class);
@@ -121,7 +118,6 @@ public class AlertManagerTest {
     }
 
     private WindowCapability getWindowCapability(int numberOfAlertFields) {
-
         TextField alertText1 = new TextField();
         alertText1.setName(TextFieldName.alertText1);
         TextField alertText2 = new TextField();
