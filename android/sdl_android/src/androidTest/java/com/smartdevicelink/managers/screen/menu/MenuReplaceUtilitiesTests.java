@@ -178,6 +178,17 @@ public class MenuReplaceUtilitiesTests {
         assertEquals(5, actualMenuCellList.size());
         assertEquals(1, actualMenuCellList.get(4).getSubCells().size());
 
+        // Add cell c5-1-1
+        menuCellToAdd = newMenuList.get(0).getSubCells().get(0).getSubCells().get(0);
+        cellAdded = MenuReplaceUtilities.addMenuRequestWithCommandId(menuCellToAdd.getCellId(), 0, newMenuList, actualMenuCellList);
+        assertTrue(cellAdded);
+        expectedMenuCellList.get(4).getSubCells().get(0).getSubCells().add(0, cloneMenuCellAndRemoveSubCells(menuCellToAdd));
+        assertEquals(expectedMenuCellList, actualMenuCellList);
+        assertEquals(5, actualMenuCellList.size());
+        assertEquals(1, actualMenuCellList.get(4).getSubCells().size());
+        assertEquals(1, actualMenuCellList.get(4).getSubCells().get(0).getSubCells().size());
+
+
         // Add cell c5-2
         menuCellToAdd = newMenuList.get(0).getSubCells().get(1);
         cellAdded = MenuReplaceUtilities.addMenuRequestWithCommandId(menuCellToAdd.getCellId(), 1, newMenuList, actualMenuCellList);
@@ -186,9 +197,10 @@ public class MenuReplaceUtilitiesTests {
         assertEquals(expectedMenuCellList, actualMenuCellList);
         assertEquals(5, actualMenuCellList.size());
         assertEquals(2, actualMenuCellList.get(4).getSubCells().size());
+        assertEquals(1, actualMenuCellList.get(4).getSubCells().get(0).getSubCells().size());
         assertEquals(0, actualMenuCellList.get(4).getSubCells().get(1).getSubCells().size());
         
-        // Add cell c5-2-2
+        // Add cell c5-2-1
         menuCellToAdd = newMenuList.get(0).getSubCells().get(1).getSubCells().get(0);
         cellAdded = MenuReplaceUtilities.addMenuRequestWithCommandId(menuCellToAdd.getCellId(), 0, newMenuList, actualMenuCellList);
         assertTrue(cellAdded);
@@ -196,6 +208,7 @@ public class MenuReplaceUtilitiesTests {
         assertEquals(expectedMenuCellList, actualMenuCellList);
         assertEquals(5, actualMenuCellList.size());
         assertEquals(2, actualMenuCellList.get(4).getSubCells().size());
+        assertEquals(1, actualMenuCellList.get(4).getSubCells().get(0).getSubCells().size());
         assertEquals(1, actualMenuCellList.get(4).getSubCells().get(1).getSubCells().size());
     }
 
@@ -308,9 +321,9 @@ public class MenuReplaceUtilitiesTests {
                 / \
                /   \
             c5-1   c5-2
-                   /
-                  /
-               c5-2-1
+            /       /
+           /       /
+       c5-1-1   c5-2-1
 
          */
 
@@ -319,7 +332,8 @@ public class MenuReplaceUtilitiesTests {
         MenuSelectionListener listener = null;
         MenuLayout subMenuLayout = null;
 
-        MenuCell menuCell5_1 = new MenuCell("c5_1", sdlArtwork, voiceCommands, listener);
+        MenuCell menuCell5_1_1 = new MenuCell("c5_1_1", sdlArtwork, voiceCommands, listener);
+        MenuCell menuCell5_1 = new MenuCell("c5_1", subMenuLayout, sdlArtwork, new ArrayList<>(Arrays.asList(menuCell5_1_1)));
         MenuCell menuCell5_2_1 = new MenuCell("c5_2_1", sdlArtwork, voiceCommands, listener);
         MenuCell menuCell5_2 = new MenuCell("c5_2", subMenuLayout, sdlArtwork, new ArrayList<>(Arrays.asList(menuCell5_2_1)));
         MenuCell menuCell5 = new MenuCell("c5", subMenuLayout, sdlArtwork, new ArrayList<>(Arrays.asList(menuCell5_1, menuCell5_2)));

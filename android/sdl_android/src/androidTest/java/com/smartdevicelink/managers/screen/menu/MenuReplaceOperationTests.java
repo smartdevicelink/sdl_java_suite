@@ -92,13 +92,12 @@ public class MenuReplaceOperationTests {
     @Test
     public void testSuccess() {
         final ISdl internalInterface = createISdlMock();
-
         FileManager fileManager = createFileManagerMock();
-
         WindowCapability windowCapability = createWindowCapability(true, true);
         MenuConfiguration menuConfiguration = new MenuConfiguration(MenuLayout.LIST, MenuLayout.LIST);
         List<MenuCell> currentMenu = new ArrayList<>();
-        MenuCell menuCell1 = new MenuCell("cell 1", TestValues.GENERAL_ARTWORK, null, null);
+        MenuCell menuCell1_1 = new MenuCell("cell 1_1", TestValues.GENERAL_ARTWORK, null, null);
+        MenuCell menuCell1 = new MenuCell("cell 1", null, TestValues.GENERAL_ARTWORK, Arrays.asList(menuCell1_1));
         MenuCell menuCell2 = new MenuCell("cell 2", TestValues.GENERAL_ARTWORK, null, null);
 
         final List<MenuCell> updatedMenu = Arrays.asList(menuCell1, menuCell2);
@@ -111,6 +110,7 @@ public class MenuReplaceOperationTests {
                     public void run() {
                         assertTrue(success);
                         assertEquals(currentMenuCells, updatedMenu);
+                        verify(internalInterface, Mockito.times(2)).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
                     }
                 });
             }
@@ -118,7 +118,7 @@ public class MenuReplaceOperationTests {
         transactionQueue.add(operation, false);
     }
 
-    private  ISdl createISdlMock(){
+    private ISdl createISdlMock() {
         final ISdl internalInterface = mock(ISdl.class);
 
         // When internalInterface.sendRPCs() is called, call listener.onFinished() to fake the response
@@ -126,7 +126,7 @@ public class MenuReplaceOperationTests {
             @Override
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
-                List<RPCMessage> rpcs  = (List<RPCMessage>) args[0];
+                List<RPCMessage> rpcs = (List<RPCMessage>) args[0];
                 OnMultipleRequestListener listener = (OnMultipleRequestListener) args[1];
 
                 for (RPCMessage rpcMessage : rpcs) {
@@ -145,6 +145,7 @@ public class MenuReplaceOperationTests {
 
         return internalInterface;
     }
+
     private FileManager createFileManagerMock() {
         FileManager fileManager = mock(FileManager.class);
 
@@ -163,7 +164,7 @@ public class MenuReplaceOperationTests {
         return fileManager;
     }
 
-    private WindowCapability createWindowCapability (boolean supportsList, boolean supportsTile) {
+    private WindowCapability createWindowCapability(boolean supportsList, boolean supportsTile) {
         WindowCapability windowCapability = new WindowCapability();
         windowCapability.setMenuLayoutsAvailable(new ArrayList<MenuLayout>());
         if (supportsList) {
@@ -175,7 +176,7 @@ public class MenuReplaceOperationTests {
         return windowCapability;
     }
 
-    private  void updateIdsOnMenuCells(List<MenuCell> menuCells, int parentId) {
+    private void updateIdsOnMenuCells(List<MenuCell> menuCells, int parentId) {
         for (MenuCell cell : menuCells) {
             cell.setCellId(lastMenuId++);
             if (parentId != parentIdNotFound) {
