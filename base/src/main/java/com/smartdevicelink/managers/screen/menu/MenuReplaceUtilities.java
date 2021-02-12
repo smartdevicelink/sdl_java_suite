@@ -260,6 +260,7 @@ class MenuReplaceUtilities {
         final Map<RPCRequest, String> errors = new HashMap<>();
         if (requests == null || requests.isEmpty()) {
             listener.onComplete(true, errors);
+            return;
         }
 
         internalInterface.sendRPCs(requests, new OnMultipleRequestListener() {
