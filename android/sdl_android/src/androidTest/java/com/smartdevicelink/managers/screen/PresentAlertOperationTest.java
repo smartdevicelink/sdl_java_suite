@@ -263,21 +263,6 @@ public class PresentAlertOperationTest {
     }
 
     @Test
-    public void testCancel() {
-        doAnswer(onCancelAlert).when(internalInterface).sendRPC(any(CancelInteraction.class));
-        AlertCompletionListener alertCompletionListener1 = new AlertCompletionListener() {
-            @Override
-            public void onComplete(boolean success, Integer tryAgainTime) {
-                assertTrue(success);
-            }
-        };
-        presentAlertOperation = new PresentAlertOperation(internalInterface, alertView, defaultMainWindowCapability, speechCapabilities, fileManager, 2, alertCompletionListener1);
-      //  presentAlertOperation.cancel;
-
-       // verify(internalInterface, times(1)).sendRPC(any(CancelInteraction.class));
-    }
-
-    @Test
     public void testCancelOperation() {
         //Cancel right away
         presentAlertOperation.cancelTask();
