@@ -65,6 +65,7 @@ import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
+import com.smartdevicelink.proxy.rpc.enums.AppCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
@@ -402,7 +403,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                                     )
                             );
                         }
-                        AppCapability appCapability = new AppCapability();
+                        AppCapability appCapability = new AppCapability(AppCapabilityType.VIDEO_STREAMING);
                         appCapability.setVideoStreamingCapability(castedCapability);
 
                         OnAppCapabilityUpdated onAppCapabilityUpdated = new OnAppCapabilityUpdated(appCapability);
