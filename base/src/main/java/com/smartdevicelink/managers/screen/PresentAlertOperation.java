@@ -153,9 +153,29 @@ public class PresentAlertOperation extends Task {
     }
 
     /**
-     * Uploads AudioFiles
+     * Checks the `AlertView` data to make sure it conforms to the RPC Spec, which says that at least either `alertText1`, `alertText2` or `TTSChunks` need to be provided.
+     * @param alertView - Alert data that needs to be presented
+     * @return true if AlertView data conforms to RPC Spec
+     */
+    private boolean isValidAlertViewData(AlertView alertView) {
+        if (alertView.getText() != null && alertView.getText().length() > 0) {
+            return true;
+        }
+        if (alertView.getSecondaryText() != null && alertView.getSecondaryText().length() > 0) {
+            return true;
+        }
+        if (alertView.getAudio() != null && alertView.getAudio().getAudioData().size() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    // Upload methods
+
+    /**
+     * Upload the alert audio files.
      *
-     * @param listener
+     * @param listener - CompletionListener called when all audio files have been uploaded
      */
     private void uploadAudioFiles(final CompletionListener listener) {
         if (!supportsAlertAudioFile()) {
@@ -287,6 +307,12 @@ public class PresentAlertOperation extends Task {
         internalInterface.get().sendRPC(alert);
     }
 
+    /**
+     * Cancels the alert. If the alert has not yet been sent to the module, it will not be sent.
+     * If the alert is already presented on the module, the alert will be immediately dismissed.
+     * Canceling an already presented alert will only work if connected to modules supporting RPC spec versions 6.0+.
+     * On older versions alert will not be dismissed.
+     */
     private void cancelAlert() {
         if (getState() == Task.FINISHED) {
             DebugTool.logInfo(TAG, "This operation has already finished so it can not be canceled");
@@ -327,7 +353,7 @@ public class PresentAlertOperation extends Task {
         }
     }
 
-    // Private Getters / Setters
+    //  Getters / Setters
 
     Alert alertRpc() {
         Alert alert = new Alert();
@@ -357,11 +383,20 @@ public class PresentAlertOperation extends Task {
     }
 
     /**
+     * Limits the number of SoftButtons that can be set in the AlertRPC to 4
+     *
+     * @return The maximum number of soft buttons that can be sent to the module
+     */
+    private int getSoftButtonCount() {
+        return alertView.getSoftButtons().size() <= 4 ? alertView.getSoftButtons().size() : SOFTBUTTON_COUNT;
+    }
+
+    /**
      * Checks if AudioFiles are supported by module and removes them form audioData list if they are not
      * @param alertView
      * @return List of ttsChunks
      */
-    List<TTSChunk> getTTSChunksForAlert(AlertView alertView) {
+    private List<TTSChunk> getTTSChunksForAlert(AlertView alertView) {
         AlertAudioData alertAudioData = alertView.getAudio();
         List<TTSChunk> ttsChunks = new ArrayList<>();
             for (TTSChunk chunk : alertAudioData.getAudioData()) {
@@ -372,6 +407,36 @@ public class PresentAlertOperation extends Task {
             }
         return ttsChunks.size() > 0 ? ttsChunks : null;
     }
+
+    /**
+     * Checks if the connected module or current template supports soft button images.
+     *
+     * @return True if soft button images are currently supported; false if not.
+     */
+    private boolean supportsSoftButtonImages() {
+        SoftButtonCapabilities softButtonCapabilities = currentWindowCapability.getSoftButtonCapabilities().get(0);
+        return softButtonCapabilities.getImageSupported().booleanValue();
+    }
+
+    /**
+     * Checks if the connected module supports audio files. Using an audio file in an alert will only work if connected to modules supporting RPC spec versions 5.0+.
+     * If the module does not return a speechCapabilities, assume that the module supports playing an audio file.
+     *
+     * @return True if the module supports playing audio files in an alert; false if not.
+     */
+    private boolean supportsAlertAudioFile() {
+        return (internalInterface.get() != null && internalInterface.get().getSdlMsgVersion() != null && internalInterface.get().getSdlMsgVersion().getMajorVersion() >= 5 && speechCapabilities != null && speechCapabilities.contains(SpeechCapabilities.FILE));
+    }
+
+    /**
+     * Checks if the connected module or current template supports alert icons.
+     *
+     * @return True if alert icons are currently supported; false if not.
+     */
+    private boolean supportsAlertIcon() {
+        return ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(currentWindowCapability, ImageFieldName.alertIcon);
+    }
+
     // Text Helpers
 
     private Alert assembleAlertText(Alert alert) {
@@ -441,63 +506,6 @@ public class PresentAlertOperation extends Task {
         alert.setAlertText2(alertFields.size() > 1 ? alertFields.get(1) : null);
         alert.setAlertText3(alertFields.size() > 2 ? alertFields.get(2) : null);
         return alert;
-    }
-
-    // Helper methods
-    /**
-     * Limits the number of SoftButtons that can be set in the AlertRPC to 4
-     *
-     * @return The maximum number of soft buttons that can be sent to the module
-     */
-    private int getSoftButtonCount() {
-        return alertView.getSoftButtons().size() <= 4 ? alertView.getSoftButtons().size() : SOFTBUTTON_COUNT;
-    }
-
-    /**
-     * Checks if the connected module or current template supports soft button images.
-     *
-     * @return True if soft button images are currently supported; false if not.
-     */
-    private boolean supportsSoftButtonImages() {
-        SoftButtonCapabilities softButtonCapabilities = currentWindowCapability.getSoftButtonCapabilities().get(0);
-        return softButtonCapabilities.getImageSupported().booleanValue();
-    }
-
-    /**
-     * Checks if the connected module supports audio files. Using an audio file in an alert will only work if connected to modules supporting RPC spec versions 5.0+.
-     * If the module does not return a speechCapabilities, assume that the module supports playing an audio file.
-     *
-     * @return True if the module supports playing audio files in an alert; false if not.
-     */
-    private boolean supportsAlertAudioFile() {
-        return (internalInterface.get() != null && internalInterface.get().getSdlMsgVersion() != null && internalInterface.get().getSdlMsgVersion().getMajorVersion() >= 5 && speechCapabilities != null && speechCapabilities.contains(SpeechCapabilities.FILE));
-    }
-
-    /**
-     * Checks if the connected module or current template supports alert icons.
-     *
-     * @return True if alert icons are currently supported; false if not.
-     */
-    private boolean supportsAlertIcon() {
-        return ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(currentWindowCapability, ImageFieldName.alertIcon);
-    }
-
-    /**
-     * Checks the `AlertView` data to make sure it conforms to the RPC Spec, which says that at least either `alertText1`, `alertText2` or `TTSChunks` need to be provided.
-     * @param alertView - Alert data that needs to be presented
-     * @return true if AlertView data conforms to RPC Spec
-     */
-    private boolean isValidAlertViewData(AlertView alertView) {
-        if (alertView.getText() != null && alertView.getText().length() > 0) {
-            return true;
-        }
-        if (alertView.getSecondaryText() != null && alertView.getSecondaryText().length() > 0) {
-            return true;
-        }
-        if (alertView.getAudio() != null && alertView.getAudio().getAudioData().size() > 0) {
-            return true;
-        }
-        return false;
     }
 
     private void finishOperation(boolean success, Integer tryAgainTime) {
