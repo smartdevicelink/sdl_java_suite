@@ -109,7 +109,7 @@ public class PresentAlertOperation extends Task {
             return;
         }
         if (!isValidAlertViewData(alertView)) {
-            if (alertView.getAudio() != null && alertView.getAudio().getAudioFiles() != null && alertView.getAudio().getAudioFiles().size() > 0) {
+            if (alertView.getAudio() != null && alertView.getAudio().getAudioData().size() > 0) {
                 DebugTool.logError(TAG, "The module does not support the use of only audio file data in an alert. " +
                         "The alert has no data and can not be sent to the module. " +
                         "The use of audio file data in an alert is only supported on modules supporting RPC Spec v5.0 or newer");
