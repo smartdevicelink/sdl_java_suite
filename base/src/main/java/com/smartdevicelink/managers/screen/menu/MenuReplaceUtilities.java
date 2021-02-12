@@ -206,7 +206,10 @@ class MenuReplaceUtilities {
                 addedCell = cell;
                 break;
             } else if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
-                return addMenuRequestWithCommandId(commandId, position, cell.getSubCells(), mainMenuList);
+                boolean success = addMenuRequestWithCommandId(commandId, position, cell.getSubCells(), mainMenuList);
+                if (success) {
+                    return true;
+                }
             }
         }
         if (addedCell != null) {
