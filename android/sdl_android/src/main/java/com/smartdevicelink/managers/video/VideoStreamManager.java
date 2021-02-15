@@ -477,7 +477,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
      *
      * @see #resumeStreaming()
      */
-    @Deprecated
     public void stopStreaming() {
         if (remoteDisplay != null) {
             remoteDisplay.stop();
@@ -493,7 +492,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
      *
      * @see #resumeStreaming()
      */
-    public void stopStreaming(boolean withPendingRestart) {
+    private void stopStreaming(boolean withPendingRestart) {
         if (remoteDisplay != null && !withPendingRestart) {
             remoteDisplay.stop();
             this.withPendingRestart = false;
@@ -527,7 +526,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
     @Override
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     public void dispose() {
-        stopStreaming(false);
+        stopStreaming();
 
         hapticManager = null;
         remoteDisplay = null;
@@ -834,7 +833,9 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                         continue;
                     }
 
-                    validCapabilities.add(capability);
+                    if (!validCapabilities.contains(capability)) {
+                        validCapabilities.add(capability);
+                    }
                 }
             }
         }
