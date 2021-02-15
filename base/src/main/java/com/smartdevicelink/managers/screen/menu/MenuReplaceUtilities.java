@@ -223,6 +223,9 @@ class MenuReplaceUtilities {
             // If the cell has a parent id, we need to find the cell with a matching cell id and insert it into its submenu
             for (MenuCell menuCell : menuCellList) {
                 if (menuCell.getCellId() == cell.getParentCellId()) {
+                    if (menuCell.getSubCells() == null) {
+                        menuCell.setSubCells(new ArrayList<MenuCell>());
+                    }
                     // If we found the correct submenu, insert it into that submenu
                     insertMenuCell(cell, menuCell.getSubCells(), position);
                     return true;
