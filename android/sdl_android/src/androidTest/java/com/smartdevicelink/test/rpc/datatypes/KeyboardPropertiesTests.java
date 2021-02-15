@@ -70,7 +70,8 @@ public class KeyboardPropertiesTests extends TestCase {
         KeyboardProperties msg = new KeyboardProperties();
         assertNotNull(TestValues.NOT_NULL, msg);
 
-        assertNull(TestValues.NULL, msg.getKeypressMode());
+        // Keypress mode is created in the object constructor
+        assertNotNull(TestValues.NOT_NULL, msg.getKeypressMode());
         assertNull(TestValues.NULL, msg.getAutoCompleteText());
         assertNull(TestValues.NULL, msg.getAutoCompleteList());
         assertNull(TestValues.NULL, msg.getLanguage());
