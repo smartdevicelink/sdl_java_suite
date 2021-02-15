@@ -753,7 +753,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
     private List<SdlArtwork> findAllArtworksToBeUploadedFromCells(List<MenuCell> cells) {
         // Make sure we can use images in the menus
-        if (!supportsImages()) {
+        if (!hasImageFieldOfName(ImageFieldName.cmdIcon)) {
             return new ArrayList<>();
         }
 
@@ -762,6 +762,17 @@ abstract class BaseMenuManager extends BaseSubManager {
             if (fileManager.get() != null && fileManager.get().fileNeedsUpload(cell.getIcon())) {
                 artworks.add(cell.getIcon());
             }
+
+            if (cell.getSubCells() != null && cell.getSubCells().size() > 0 && hasImageFieldOfName(ImageFieldName.menuSubMenuSecondaryImage)) {
+                if (fileManager.get() != null && fileManager.get().fileNeedsUpload(cell.getSecondaryArtwork())) {
+                    artworks.add(cell.getSecondaryArtwork());
+                }
+            } else if ((cell.getSubCells() == null || cell.getSubCells().isEmpty()) && hasImageFieldOfName(ImageFieldName.menuCommandSecondaryImage)) {
+                if (fileManager.get() != null && fileManager.get().fileNeedsUpload(cell.getSecondaryArtwork())) {
+                    artworks.add(cell.getSecondaryArtwork());
+                }
+            }
+
             if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
                 artworks.addAll(findAllArtworksToBeUploadedFromCells(cell.getSubCells()));
             }
@@ -773,8 +784,17 @@ abstract class BaseMenuManager extends BaseSubManager {
     private boolean shouldRPCsIncludeImages(List<MenuCell> cells) {
         for (MenuCell cell : cells) {
             SdlArtwork artwork = cell.getIcon();
+            SdlArtwork secondaryArtwork = cell.getSecondaryArtwork();
             if (artwork != null && !artwork.isStaticIcon() && fileManager.get() != null && !fileManager.get().hasUploadedFile(artwork)) {
                 return false;
+            } else if (cell.getSubCells() != null && cell.getSubCells().size() > 0 && hasImageFieldOfName(ImageFieldName.menuSubMenuSecondaryImage)) {
+                if (secondaryArtwork != null && !secondaryArtwork.isStaticIcon() && fileManager.get() != null && !fileManager.get().hasUploadedFile(secondaryArtwork)) {
+                    return false;
+                }
+            } else if ((cell.getSubCells() == null || cell.getSubCells().isEmpty()) && hasImageFieldOfName(ImageFieldName.menuCommandSecondaryImage)) {
+                if (secondaryArtwork != null && !secondaryArtwork.isStaticIcon() && fileManager.get() != null && !fileManager.get().hasUploadedFile(secondaryArtwork)) {
+                    return false;
+                }
             } else if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
                 return shouldRPCsIncludeImages(cell.getSubCells());
             }
@@ -782,9 +802,8 @@ abstract class BaseMenuManager extends BaseSubManager {
         return true;
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private boolean supportsImages() {
-        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.cmdIcon);
+    private boolean hasImageFieldOfName(ImageFieldName imageFieldName) {
+        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, imageFieldName);
     }
 
     // IDs
@@ -967,7 +986,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             command.setVrCommands(null);
         }
         command.setCmdIcon((cell.getIcon() != null && shouldHaveArtwork) ? cell.getIcon().getImageRPC() : null);
-        command.setSecondaryImage((cell.getSecondaryArtwork() != null && shouldHaveArtwork) ? cell.getSecondaryArtwork().getImageRPC() : null);
+        command.setSecondaryImage((cell.getSecondaryArtwork() != null && shouldHaveArtwork && fileManager.get() != null && fileManager.get().fileNeedsUpload(cell.getSecondaryArtwork())) ? cell.getSecondaryArtwork().getImageRPC() : null);
 
         return command;
     }
@@ -983,7 +1002,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             subMenu.setMenuLayout(menuConfiguration.getSubMenuLayout());
         }
         subMenu.setMenuIcon((shouldHaveArtwork && (cell.getIcon() != null && cell.getIcon().getImageRPC() != null)) ? cell.getIcon().getImageRPC() : null);
-        subMenu.setSecondaryImage((shouldHaveArtwork && (cell.getSecondaryArtwork() != null && cell.getSecondaryArtwork().getImageRPC() != null)) ? cell.getSecondaryArtwork().getImageRPC() : null);
+        subMenu.setSecondaryImage((shouldHaveArtwork && fileManager.get() != null && fileManager.get().fileNeedsUpload(cell.getSecondaryArtwork()) && (cell.getSecondaryArtwork() != null && cell.getSecondaryArtwork().getImageRPC() != null)) ? cell.getSecondaryArtwork().getImageRPC() : null);
         return subMenu;
     }
 
@@ -1143,7 +1162,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         List<RPCRequest> mainMenuCommands;
         final List<RPCRequest> subMenuCommands;
 
-        if (!shouldRPCsIncludeImages(menu) || !supportsImages()) {
+        if (!shouldRPCsIncludeImages(menu) || !hasImageFieldOfName(ImageFieldName.cmdIcon)) {
             // Send artwork-less menu
             mainMenuCommands = mainMenuCommandsForCells(menu, false);
             subMenuCommands = subMenuCommandsForCells(menu, false);
@@ -1248,7 +1267,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
         List<RPCRequest> mainMenuCommands;
 
-        if (!shouldRPCsIncludeImages(adds) || !supportsImages()) {
+        if (!shouldRPCsIncludeImages(adds) || !hasImageFieldOfName(ImageFieldName.cmdIcon)) {
             // Send artwork-less menu
             mainMenuCommands = createCommandsForDynamicSubCells(newMenu, adds, false);
         } else {

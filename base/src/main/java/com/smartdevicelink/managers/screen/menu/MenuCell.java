@@ -112,6 +112,7 @@ public class MenuCell implements Cloneable {
      * @param voiceCommands Voice commands that will activate the menu cell
      * @param listener      Calls the code that will be run when the menu cell is selected
      */
+    @Deprecated
     public MenuCell(@NonNull String title, @Nullable SdlArtwork icon, @Nullable List<String> voiceCommands, @Nullable MenuSelectionListener listener) {
         setTitle(title); // title is the only required param
         setIcon(icon);
@@ -156,6 +157,7 @@ public class MenuCell implements Cloneable {
      * @param icon          The cell's image
      * @param subCells      The sub-cells for the sub menu that will appear when the cell is selected
      */
+    @Deprecated
     public MenuCell(@NonNull String title, @Nullable MenuLayout subMenuLayout, @Nullable SdlArtwork icon, @Nullable List<MenuCell> subCells) {
         setTitle(title); // title is the only required param
         setSubMenuLayout(subMenuLayout);
