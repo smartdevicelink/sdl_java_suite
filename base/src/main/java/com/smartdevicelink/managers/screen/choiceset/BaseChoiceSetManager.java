@@ -66,7 +66,6 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
-import java.security.Key;
 import java.util.HashSet;
 import java.util.List;
 
@@ -113,7 +112,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         // capabilities
         currentSystemContext = SystemContext.SYSCTXT_MAIN;
         currentHMILevel = HMILevel.HMI_NONE;
-        // TODO remove, move to addListener
         keyboardConfiguration = defaultKeyboardConfiguration();
         addListeners();
 
@@ -465,6 +463,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             properties.setKeypressMode((keyboardConfiguration.getKeypressMode() == null ? KeypressMode.RESEND_CURRENT_ENTRY : keyboardConfiguration.getKeypressMode()));
             properties.setLimitedCharacterList(keyboardConfiguration.getLimitedCharacterList());
             properties.setAutoCompleteText(keyboardConfiguration.getAutoCompleteText());
+            properties.setAutoCompleteList(keyboardConfiguration.getAutoCompleteList());
             properties.setMaskInputCharacters(keyboardConfiguration.getMaskInputCharacters());
             this.keyboardConfiguration = properties;
         }

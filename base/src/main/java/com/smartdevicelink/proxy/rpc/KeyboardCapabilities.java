@@ -55,9 +55,7 @@ import java.util.List;
  *      <td>Availability of capability to mask input characters using keyboard. True: Available,False: Not Available</td>
  *      <td>N</td>
  *      <td></td>
- *      <td>
- *         @since SmartDeviceLink 7.1.0
- *      </td>
+ *      <td></td>
  *  </tr>
  *  <tr>
  *      <td>supportedKeyboards</td>
@@ -71,9 +69,7 @@ import java.util.List;
  * @since SmartDeviceLink 7.1.0
  */
 public class KeyboardCapabilities extends RPCStruct {
-    /**
-     * @since SmartDeviceLink 7.1.0
-     */
+
     public static final String KEY_MASK_INPUT_CHARACTERS_SUPPORTED = "maskInputCharactersSupported";
     public static final String KEY_SUPPORTED_KEYBOARDS = "supportedKeyboards";
 
@@ -96,7 +92,6 @@ public class KeyboardCapabilities extends RPCStruct {
      *
      * @param maskInputCharactersSupported Availability of capability to mask input characters using keyboard. True: Available,
      * False: Not Available
-     * @since SmartDeviceLink 7.1.0
      */
     public KeyboardCapabilities setMaskInputCharactersSupported(Boolean maskInputCharactersSupported) {
         setValue(KEY_MASK_INPUT_CHARACTERS_SUPPORTED, maskInputCharactersSupported);
@@ -108,7 +103,6 @@ public class KeyboardCapabilities extends RPCStruct {
      *
      * @return Boolean Availability of capability to mask input characters using keyboard. True: Available,
      * False: Not Available
-     * @since SmartDeviceLink 7.1.0
      */
     public Boolean getMaskInputCharactersSupported() {
         return getBoolean(KEY_MASK_INPUT_CHARACTERS_SUPPORTED);
