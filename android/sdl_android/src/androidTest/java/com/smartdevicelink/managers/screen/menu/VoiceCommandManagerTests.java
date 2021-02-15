@@ -34,6 +34,7 @@ package com.smartdevicelink.managers.screen.menu;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
@@ -56,7 +57,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
@@ -66,6 +66,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
 public class VoiceCommandManagerTests {
@@ -112,19 +113,19 @@ public class VoiceCommandManagerTests {
         };
         doAnswer(onCommandAnswer).when(internalInterface).addOnRPCNotificationListener(eq(FunctionID.ON_COMMAND), any(OnRPCNotificationListener.class));
 
+        Taskmaster taskmaster = new Taskmaster.Builder().build();
+        taskmaster.start();
+        when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
         voiceCommandManager = new VoiceCommandManager(internalInterface);
 
         // Check some stuff during setup
-        assertEquals(voiceCommandManager.currentHMILevel, HMILevel.HMI_NONE);
+        assertNull(voiceCommandManager.currentHMILevel);
         assertEquals(voiceCommandManager.getState(), BaseSubManager.SETTING_UP);
         assertEquals(voiceCommandManager.lastVoiceCommandId, voiceCommandIdMin);
-        assertFalse(voiceCommandManager.hasQueuedUpdate);
-        assertFalse(voiceCommandManager.waitingOnHMIUpdate);
         assertNotNull(voiceCommandManager.commandListener);
         assertNotNull(voiceCommandManager.hmiListener);
         assertNull(voiceCommandManager.voiceCommands);
-        assertNull(voiceCommandManager.oldVoiceCommands);
-        assertNull(voiceCommandManager.inProgressUpdate);
+        assertNull(voiceCommandManager.currentVoiceCommands);
     }
 
     @After
@@ -134,11 +135,8 @@ public class VoiceCommandManagerTests {
 
         assertEquals(voiceCommandManager.lastVoiceCommandId, voiceCommandIdMin);
         assertNull(voiceCommandManager.voiceCommands);
-        assertNull(voiceCommandManager.oldVoiceCommands);
+        assertNull(voiceCommandManager.currentVoiceCommands);
         assertNull(voiceCommandManager.currentHMILevel);
-        assertNull(voiceCommandManager.inProgressUpdate);
-        assertFalse(voiceCommandManager.hasQueuedUpdate);
-        assertFalse(voiceCommandManager.waitingOnHMIUpdate);
         // after everything, make sure we are in the correct state
         assertEquals(voiceCommandManager.getState(), BaseSubManager.SHUTDOWN);
     }
@@ -162,9 +160,6 @@ public class VoiceCommandManagerTests {
         voiceCommandManager.currentHMILevel = HMILevel.HMI_NONE;
         voiceCommandManager.setVoiceCommands(commands);
 
-        // updating voice commands before HMI is ready
-        assertNull(voiceCommandManager.inProgressUpdate);
-        assertTrue(voiceCommandManager.waitingOnHMIUpdate);
         // these are the 2 commands we have waiting
         assertEquals(voiceCommandManager.voiceCommands.size(), 2);
         assertEquals(voiceCommandManager.currentHMILevel, HMILevel.HMI_NONE);
@@ -173,20 +168,10 @@ public class VoiceCommandManagerTests {
         sendFakeCoreOnHMIFullNotifications();
         // Listener should be triggered - which sets new HMI level and should proceed to send our pending update
         assertEquals(voiceCommandManager.currentHMILevel, HMILevel.HMI_FULL);
-        // This being false means it received the hmi notification and sent the pending commands
-        assertFalse(voiceCommandManager.waitingOnHMIUpdate);
     }
 
     @Test
     public void testUpdatingCommands() {
-
-        // we have previously sent 2 VoiceCommand objects. we will now update it and have just one
-
-        // make sure the system returns us 2 delete commands
-        assertEquals(voiceCommandManager.deleteCommandsForVoiceCommands(commands).size(), 2);
-        // when we only send one command to update, we should only be returned one add command
-        assertEquals(voiceCommandManager.addCommandsForVoiceCommands(Collections.singletonList(command)).size(), 1);
-
         // Send a new single command, and test that its listener works, as it gets called from the VCM
         voiceCommandManager.setVoiceCommands(Collections.singletonList(command3));
 

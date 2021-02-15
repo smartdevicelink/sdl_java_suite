@@ -320,12 +320,31 @@ import java.util.List;
  *          <td>SmartDeviceLink 7.0.0</td>
  *      </tr>
  *      <tr>
+ *          <td>climateData</td>
+ *          <td>ClimateData</td>
+ *          <td>See ClimateData</td>
+ *          <td>N</td>
+ *          <td></td>
+ *          <td>
+     *          @since SmartDeviceLink 7.1.0
+ *          </td>
+ *          </tr>
+ *      <tr>
  *          <td>stabilityControlsStatus</td>
  *          <td>StabilityControlsStatus</td>
  *          <td>See StabilityControlsStatus</td>
  *          <td>N</td>
  *          <td>SmartDeviceLink 7.0.0</td>
  *  </tr>
+ *  <tr>
+ *          <td>seatOccupancy</td>
+ *          <td>SeatOccupancy</td>
+ *          <td>See SeatOccupancy</td>
+ *          <td>N</td>
+ *          <td></td>
+ *          <td>
+ *          @since SmartDeviceLink 7.1.0
+ *          </td>
  *  </table>
  *
  * @see SubscribeVehicleData
@@ -335,6 +354,11 @@ import java.util.List;
 public class OnVehicleData extends RPCNotification {
     public static final String KEY_SPEED = "speed";
     public static final String KEY_RPM = "rpm";
+    /**
+     * @since SmartDeviceLink 2.0.0
+     * @deprecated in SmartDeviceLink 7.1.0
+     */
+    @Deprecated
     public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
     public static final String KEY_VIN = "vin";
     public static final String KEY_PRNDL = "prndl";
@@ -365,6 +389,10 @@ public class OnVehicleData extends RPCNotification {
     public static final String KEY_WINDOW_STATUS = "windowStatus";
     public static final String KEY_GEAR_STATUS = "gearStatus";
     /**
+     * @since SmartDeviceLink 7.1.0
+     */
+    public static final String KEY_CLIMATE_DATA = "climateData";
+    /**
      * @deprecated
      */
     @Deprecated
@@ -377,6 +405,10 @@ public class OnVehicleData extends RPCNotification {
 
     public static final String KEY_STABILITY_CONTROLS_STATUS = "stabilityControlsStatus";
 
+    /**
+     * @since SmartDeviceLink 7.1.0
+     */
+    public static final String KEY_SEAT_OCCUPANCY = "seatOccupancy";
     public OnVehicleData() {
         super(FunctionID.ON_VEHICLE_DATA.toString());
     }
@@ -458,11 +490,31 @@ public class OnVehicleData extends RPCNotification {
         return SdlDataTypeConverter.objectToDouble(object);
     }
 
+    /**
+     * Sets the externalTemperature.
+     *
+     * @param externalTemperature The external temperature in degrees celsius. This parameter is deprecated starting RPC
+     * Spec 7.1.0, please see climateData.
+     * {"num_min_value": -40.0, "num_max_value": 100.0}
+     * @since SmartDeviceLink 2.0.0
+     * @deprecated in SmartDeviceLink 7.1.0
+     */
+    @Deprecated
     public OnVehicleData setExternalTemperature(Double externalTemperature) {
         setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
         return this;
     }
 
+    /**
+     * Gets the externalTemperature.
+     *
+     * @return Double The external temperature in degrees celsius. This parameter is deprecated starting RPC
+     * Spec 7.1.0, please see climateData.
+     * {"num_min_value": -40.0, "num_max_value": 100.0}
+     * @since SmartDeviceLink 2.0.0
+     * @deprecated in SmartDeviceLink 7.1.0
+     */
+    @Deprecated
     public Double getExternalTemperature() {
         Object object = getParameters(KEY_EXTERNAL_TEMPERATURE);
         return SdlDataTypeConverter.objectToDouble(object);
@@ -848,5 +900,47 @@ public class OnVehicleData extends RPCNotification {
      */
     public GearStatus getGearStatus() {
         return (GearStatus) getObject(GearStatus.class, KEY_GEAR_STATUS);
+    }
+
+
+    /**
+     * Sets the climateData.
+     *
+     * @param climateData See ClimateData
+     * @since SmartDeviceLink 7.1.0
+     */
+    public OnVehicleData setClimateData(ClimateData climateData) {
+        setParameters(KEY_CLIMATE_DATA, climateData);
+        return this;
+    }
+
+    /**
+     * Gets the climateData.
+     *
+     * @return ClimateData See ClimateData
+     * @since SmartDeviceLink 7.1.0
+     */
+    public ClimateData getClimateData() {
+        return (ClimateData) getObject(ClimateData.class, KEY_CLIMATE_DATA);
+    }
+    /**
+     * Sets the seatOccupancy.
+     *
+     * @param seatOccupancy See SeatOccupancy
+     * @since SmartDeviceLink 7.1.0
+     */
+    public OnVehicleData setSeatOccupancy(SeatOccupancy seatOccupancy) {
+        setParameters(KEY_SEAT_OCCUPANCY, seatOccupancy);
+        return this;
+    }
+
+    /**
+     * Gets the seatOccupancy.
+     *
+     * @return SeatOccupancy See SeatOccupancy
+     * @since SmartDeviceLink 7.1.0
+     */
+    public SeatOccupancy getSeatOccupancy() {
+        return (SeatOccupancy) getObject(SeatOccupancy.class, KEY_SEAT_OCCUPANCY);
     }
 }

@@ -116,10 +116,13 @@ import java.util.Hashtable;
  * 		<tr>
  * 			<td>externalTemperature</td>
  * 			<td>Boolean</td>
- * 			<td>The external temperature in degrees celsius</td>
+ * 			<td>The external temperature in degrees celsius. This parameter is deprecated starting RPCSpec 7.1.0, please see climateData.</td>
  *                 <td>N</td>
  *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
+ * 			<td>
+ * 				@since SmartDeviceLink 2.0.0
+ * 				@deprecated in SmartDeviceLink 7.1.0
+ * 			</td>
  * 		</tr>
  *  	<tr>
  *      	<td>gearStatus</td>
@@ -308,6 +311,26 @@ import java.util.Hashtable;
  * 		    <td>N</td>
  * 		    <td>SmartDeviceLink 7.0.0</td>
  * 		</tr>
+ *      <tr>
+ *          <td>climateData</td>
+ *          <td>Boolean</td>
+ *          <td>See ClimateData</td>
+ *          <td>N</td>
+ *          <td></td>
+ *          <td>
+ *              @since SmartDeviceLink 7.1.0
+ *          </td>
+ *      </tr>
+ * 		<tr>
+ * 		    <td>seatOccupancy</td>
+ * 		    <td>Boolean</td>
+ * 		    <td>See SeatOccupancy</td>
+ * 		    <td>N</td>
+ * 		    <td></td>
+ * 		    <td>
+ * 		    @since SmartDeviceLink 7.1.0
+ * 		    </td>
+ * 		</tr>
  *   </table>
  *
  * <p> <b>Response</b></p>
@@ -329,6 +352,11 @@ import java.util.Hashtable;
  */
 public class SubscribeVehicleData extends RPCRequest {
     public static final String KEY_RPM = "rpm";
+    /**
+     * @since SmartDeviceLink 2.0.0
+     * @deprecated in SmartDeviceLink 7.1.0
+     */
+    @Deprecated
     public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
     public static final String KEY_PRNDL = "prndl";
     public static final String KEY_TIRE_PRESSURE = "tirePressure";
@@ -369,6 +397,14 @@ public class SubscribeVehicleData extends RPCRequest {
     @Deprecated
     public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
     public static final String KEY_STABILITY_CONTROLS_STATUS = "stabilityControlsStatus";
+    /**
+     * @since SmartDeviceLink 7.1.0
+     */
+    public static final String KEY_CLIMATE_DATA = "climateData";
+    /**
+     * @since SmartDeviceLink 7.1.0
+     */
+    public static final String KEY_SEAT_OCCUPANCY = "seatOccupancy";
 
     /**
      * Constructs a new SubscribeVehicleData object
@@ -515,22 +551,28 @@ public class SubscribeVehicleData extends RPCRequest {
     }
 
     /**
-     * Sets a boolean value. If true, subscribes externalTemperature data
+     * Sets the externalTemperature.
      *
-     * @param externalTemperature a boolean value
+     * @param externalTemperature The external temperature in degrees celsius. This parameter is deprecated starting RPC
+     * Spec 7.1.0, please see climateData.
+     * @since SmartDeviceLink 2.0.0
+     * @deprecated in SmartDeviceLink 7.1.0
      */
+    @Deprecated
     public SubscribeVehicleData setExternalTemperature(Boolean externalTemperature) {
         setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
         return this;
     }
 
     /**
-     * Gets a boolean value. If true, means the externalTemperature data has been
-     * subscribed.
+     * Gets the externalTemperature.
      *
-     * @return Boolean -a Boolean value. If true, means the externalTemperature data
-     * has been subscribed.
+     * @return Boolean The external temperature in degrees celsius. This parameter is deprecated starting RPC
+     * Spec 7.1.0, please see climateData.
+     * @since SmartDeviceLink 2.0.0
+     * @deprecated in SmartDeviceLink 7.1.0
      */
+    @Deprecated
     public Boolean getExternalTemperature() {
         return getBoolean(KEY_EXTERNAL_TEMPERATURE);
     }
@@ -1025,5 +1067,47 @@ public class SubscribeVehicleData extends RPCRequest {
     public SubscribeVehicleData setStabilityControlsStatus(Boolean stabilityControlsStatus) {
         setParameters(KEY_STABILITY_CONTROLS_STATUS, stabilityControlsStatus);
         return this;
+    }
+
+    /**
+     * Sets the climateData.
+     *
+     * @param climateData See ClimateData
+     * @since SmartDeviceLink 7.1.0
+     */
+    public SubscribeVehicleData setClimateData(Boolean climateData) {
+        setParameters(KEY_CLIMATE_DATA, climateData);
+        return this;
+    }
+
+    /**
+     * Gets the climateData.
+     *
+     * @return Boolean See ClimateData
+     * @since SmartDeviceLink 7.1.0
+     */
+    public Boolean getClimateData() {
+        return getBoolean(KEY_CLIMATE_DATA);
+    }
+
+    /**
+     * Sets the seatOccupancy.
+     *
+     * @param seatOccupancy See SeatOccupancy
+     * @since SmartDeviceLink 7.1.0
+     */
+    public SubscribeVehicleData setSeatOccupancy(Boolean seatOccupancy) {
+        setParameters(KEY_SEAT_OCCUPANCY, seatOccupancy);
+        return this;
+    }
+
+    /**
+     * Gets the seatOccupancy.
+     *
+     * @return Boolean See SeatOccupancy
+     * @since SmartDeviceLink 7.1.0
+     */
+    public Boolean getSeatOccupancy() {
+        return getBoolean(KEY_SEAT_OCCUPANCY);
     }
 }

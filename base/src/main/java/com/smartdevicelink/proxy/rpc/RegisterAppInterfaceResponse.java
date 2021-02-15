@@ -53,6 +53,7 @@ import java.util.List;
  * @since SmartDeviceLink 1.0
  */
 public class RegisterAppInterfaceResponse extends RPCResponse {
+    @Deprecated
     public static final String KEY_VEHICLE_TYPE = "vehicleType";
     public static final String KEY_SPEECH_CAPABILITIES = "speechCapabilities";
     public static final String KEY_VR_CAPABILITIES = "vrCapabilities";
@@ -73,6 +74,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     public static final String KEY_PRESET_BANK_CAPABILITIES = "presetBankCapabilities";
     public static final String KEY_HMI_CAPABILITIES = "hmiCapabilities"; //As of v4.0
     public static final String KEY_SDL_VERSION = "sdlVersion"; //As of v4.0
+    @Deprecated
     public static final String KEY_SYSTEM_SOFTWARE_VERSION = "systemSoftwareVersion"; //As of v4.0
     public static final String KEY_ICON_RESUMED = "iconResumed";
     public static final String KEY_PCM_STREAM_CAPABILITIES = "pcmStreamCapabilities";
@@ -382,18 +384,20 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 
     /**
      * Gets getVehicleType set when application interface is registered.
-     *
+     * @deprecated in SmartDeviceLink 7.1.0
      * @return vehicleType
      */
+    @Deprecated
     public VehicleType getVehicleType() {
         return (VehicleType) getObject(VehicleType.class, KEY_VEHICLE_TYPE);
     }
 
     /**
      * Sets vehicleType
-     *
+     * @deprecated in SmartDeviceLink 7.1.0
      * @param vehicleType
      */
+    @Deprecated
     public RegisterAppInterfaceResponse setVehicleType(VehicleType vehicleType) {
         setParameters(KEY_VEHICLE_TYPE, vehicleType);
         return this;
@@ -466,11 +470,24 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
         return getString(KEY_SDL_VERSION);
     }
 
+    /**
+     * The software version of the connected device.
+     * @param systemSoftwareVersion the version of software on the connected device
+     * @return RegisterAppInterface
+     * @deprecated in SmartDeviceLink 7.1.0
+     */
+    @Deprecated
     public RegisterAppInterfaceResponse setSystemSoftwareVersion(String systemSoftwareVersion) {
         setParameters(KEY_SYSTEM_SOFTWARE_VERSION, systemSoftwareVersion);
         return this;
     }
 
+    /**
+     * The software version of the connected device.
+     * @return String the version of software on the connected device
+     * @deprecated in SmartDeviceLink 7.1.0
+     */
+    @Deprecated
     public String getSystemSoftwareVersion() {
         return getString(KEY_SYSTEM_SOFTWARE_VERSION);
     }

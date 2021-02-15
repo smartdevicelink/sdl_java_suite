@@ -40,6 +40,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
@@ -63,7 +64,9 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
 public class PreloadChoicesOperationTests {
@@ -101,6 +104,10 @@ public class PreloadChoicesOperationTests {
 
         ISdl internalInterface = mock(ISdl.class);
         FileManager fileManager = mock(FileManager.class);
+
+        // We still want the mock fileManager to use the real implementation for fileNeedsUpload()
+        when(fileManager.fileNeedsUpload(any(SdlFile.class))).thenCallRealMethod();
+
         preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager, null, windowCapability, true, cellsToPreload, null);
     }
 
@@ -145,13 +152,6 @@ public class PreloadChoicesOperationTests {
         ISdl internalInterface = mock(ISdl.class);
         FileManager fileManager = mock(FileManager.class);
         preloadChoicesOperationEmptyCapability = new PreloadChoicesOperation(internalInterface, fileManager, null, windowCapability, true, cellsToPreload, null);
-    }
-
-
-    @Test
-    public void testArtworkNeedsUpload() {
-        boolean test = preloadChoicesOperation.artworkNeedsUpload(TestValues.GENERAL_ARTWORK);
-        assertTrue(test);
     }
 
     @Test

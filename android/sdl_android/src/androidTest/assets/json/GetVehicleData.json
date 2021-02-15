@@ -35,7 +35,9 @@
       "gearStatus": true,
       "oemCustomVehicleDataName": true,
       "windowStatus": true,
-      "stabilityControlsStatus": true
+      "stabilityControlsStatus": true,
+      "climateData": true,
+      "seatOccupancy": true
     }
   },
   "response": {
@@ -183,6 +185,17 @@
         "transmissionType": "ELECTRIC_VARIABLE",
         "actualGear": "PARK"
       },
+      "climateData": {
+        "atmosphericPressure": 100.0,
+        "externalTemperature": {
+          "unit": "CELSIUS",
+          "value": 100.0
+        },
+        "cabinTemperature": {
+          "unit": "CELSIUS",
+          "value": 100.0
+        }
+      },
       "windowStatus": [
         {
           "location": {
@@ -194,7 +207,31 @@
             "deviation": 3
           }
         }
-      ]
+      ],
+      "seatOccupancy": {
+        "seatsOccupied": [
+          {
+            "seatLocation": {
+              "grid": {
+                "row": 2,
+                "col": 3
+              }
+            },
+            "conditionActive": true
+          }
+        ],
+        "seatsBelted": [
+          {
+            "seatLocation": {
+              "grid": {
+                "row": 2,
+                "col": 3
+              }
+            },
+            "conditionActive": true
+          }
+        ]
+      }
     }
   }
 }

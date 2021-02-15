@@ -34,6 +34,7 @@ package com.smartdevicelink.managers;
 
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
 import com.smartdevicelink.proxy.rpc.enums.Language;
+import com.smartdevicelink.util.SystemInfo;
 
 public interface SdlManagerListener extends BaseSdlManagerListener {
 
@@ -68,4 +69,12 @@ public interface SdlManagerListener extends BaseSdlManagerListener {
      * otherwise null to indicate that the language is not supported.
      */
     LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language, Language hmiLanguage);
+
+    /**
+     * A way to determine if this SDL session should continue to be active while
+     * connected to the determined system information of the vehicle.
+     * @param systemInfo systemInfo - the system information of the vehicle that this session is currently active on.
+     * @return Return true if this session should continue, false if the session should end
+     */
+    boolean onSystemInfoReceived(SystemInfo systemInfo);
 }

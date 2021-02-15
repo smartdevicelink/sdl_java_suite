@@ -66,6 +66,7 @@ public class VideoStreamingParameters {
     private int interval;
     private ImageResolution resolution;
     private VideoStreamingFormat format;
+    private boolean stableFrameRate;
 
     public VideoStreamingParameters() {
         displayDensity = DEFAULT_DENSITY;
@@ -78,16 +79,49 @@ public class VideoStreamingParameters {
         format = new VideoStreamingFormat();
         format.setProtocol(DEFAULT_PROTOCOL);
         format.setCodec(DEFAULT_CODEC);
+        stableFrameRate = true;
     }
 
+    /**
+     * deprecated constructor of VideoStreamingParameters. This constructor will be removed in the future version.
+     * @param displayDensity
+     * @param frameRate
+     * @param bitrate
+     * @param interval
+     * @param resolution
+     * @param format
+     */
+    @Deprecated
     public VideoStreamingParameters(int displayDensity, int frameRate, int bitrate, int interval,
                                     ImageResolution resolution, VideoStreamingFormat format) {
+	    this.displayDensity = displayDensity;
+	    this.frameRate = frameRate;
+	    this.bitrate = bitrate;
+	    this.interval = interval;
+	    this.resolution = resolution;
+	    this.format = format;
+	    this.stableFrameRate = true;
+    }
+
+    /**
+     * new constructor of VideoStreamingParameters, which now has stableFrameRate param.
+     * @param displayDensity
+     * @param frameRate
+     * @param bitrate
+     * @param interval
+     * @param resolution
+     * @param format
+     * @param stableFrameRate
+     */
+    public VideoStreamingParameters(int displayDensity, int frameRate, int bitrate, int interval,
+                                    ImageResolution resolution, VideoStreamingFormat format, boolean stableFrameRate) {
         this.displayDensity = displayDensity;
         this.frameRate = frameRate;
         this.bitrate = bitrate;
         this.interval = interval;
         this.resolution = resolution;
         this.format = format;
+        this.stableFrameRate = stableFrameRate;
     }
 
     /**
@@ -119,6 +153,9 @@ public class VideoStreamingParameters {
                 this.interval = params.interval;
             }
             if (params.resolution != null) {
+                if (this.resolution == null) {
+                    this.resolution = new ImageResolution(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+                }
                 if (params.resolution.getResolutionHeight() != null && params.resolution.getResolutionHeight() > 0) {
                     this.resolution.setResolutionHeight(params.resolution.getResolutionHeight());
                 }
@@ -129,6 +166,7 @@ public class VideoStreamingParameters {
             if (params.format != null) {
                 this.format = params.format;
             }
+	        this.stableFrameRate = params.stableFrameRate;
         }
     }
 
@@ -143,14 +181,22 @@ public class VideoStreamingParameters {
      */
     public void update(VideoStreamingCapability capability, String vehicleMake) {
         if (capability.getMaxBitrate() != null) {
-            this.bitrate = capability.getMaxBitrate() * 1000;
+            // Taking lower value as per SDL 0323 :
+            // https://github.com/smartdevicelink/sdl_evolution/blob/master/proposals/0323-align-VideoStreamingParameter-with-capability.md
+            int capableBitrateInKb = Math.min(Integer.MAX_VALUE / 1000, capability.getMaxBitrate());
+            this.bitrate = Math.min(this.bitrate, capableBitrateInKb * 1000);
         } // NOTE: the unit of maxBitrate in getSystemCapability is kbps.
         double scale = DEFAULT_SCALE;
+        // For resolution and scale, the capability values should be taken rather than parameters specified by developers.
         if (capability.getScale() != null) {
             scale = capability.getScale();
         }
         ImageResolution resolution = capability.getPreferredResolution();
         if (resolution != null) {
+
+            if (this.resolution == null) {
+                this.resolution = new ImageResolution(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+            }
 
             if (vehicleMake != null) {
                 if ((vehicleMake.contains("Ford") || vehicleMake.contains("Lincoln")) && ((resolution.getResolutionHeight() != null && resolution.getResolutionHeight() > 800) || (resolution.getResolutionWidth() != null && resolution.getResolutionWidth() > 800))) {
@@ -165,10 +211,17 @@ public class VideoStreamingParameters {
                 this.resolution.setResolutionWidth((int) (resolution.getResolutionWidth() / scale));
             }
         }
+        if (capability.getPreferredFPS() != null) {
+            // Taking lower value as per SDL 0323
+            this.frameRate = Math.min(this.frameRate, capability.getPreferredFPS());
+        }
 
         // This should be the last call as it will return out once a suitable format is found
         final List<VideoStreamingFormat> formats = capability.getSupportedFormats();
         if (formats != null && formats.size() > 0) {
+            if (this.format != null && formats.contains(this.format)) {
+                return; // given format is supported, so no need to change.
+            }
             for (VideoStreamingFormat format : formats) {
                 for (VideoStreamingFormat currentlySupportedFormat : currentlySupportedFormats) {
                     if (currentlySupportedFormat.equals(format)) {
@@ -233,7 +286,15 @@ public class VideoStreamingParameters {
         return resolution;
     }
 
-    @Override
+	public boolean isStableFrameRate() {
+		return stableFrameRate;
+	}
+
+	public void setStableFrameRate(boolean isStable) {
+		stableFrameRate = isStable;
+	}
+
+	@Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("VideoStreamingParams - format: {");
@@ -250,6 +311,8 @@ public class VideoStreamingParameters {
         builder.append(bitrate);
         builder.append("}, IFrame interval{ ");
         builder.append(interval);
+        builder.append("}, stableFrameRate{");
+        builder.append(stableFrameRate);
         builder.append("}");
         return builder.toString();
     }

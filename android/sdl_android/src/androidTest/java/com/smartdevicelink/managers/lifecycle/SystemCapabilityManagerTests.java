@@ -98,6 +98,7 @@ public class SystemCapabilityManagerTests {
         videoStreamingCapability.setMaxBitrate(TestValues.GENERAL_INT);
         videoStreamingCapability.setPreferredResolution(TestValues.GENERAL_IMAGERESOLUTION);
         videoStreamingCapability.setSupportedFormats(TestValues.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
+        videoStreamingCapability.setPreferredFPS(TestValues.GENERAL_INTEGER);
         systemCapability.setCapabilityForType(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
     }
 
@@ -204,7 +205,7 @@ public class SystemCapabilityManagerTests {
     @Test
     public void testNullDisplayCapabilitiesEnablesAllTextAndImageFields() {
         List<DisplayCapability> displayCapabilityList = createDisplayCapabilityList(null, TestValues.GENERAL_BUTTONCAPABILITIES_LIST, TestValues.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
-        assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getTextFields().size(), 36);
+        assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getTextFields().size(), 38);
         assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getImageFields().size(), 18);
     }
 
@@ -214,6 +215,7 @@ public class SystemCapabilityManagerTests {
         vsCapability.setMaxBitrate(TestValues.GENERAL_INT);
         vsCapability.setPreferredResolution(TestValues.GENERAL_IMAGERESOLUTION);
         vsCapability.setSupportedFormats(TestValues.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
+        vsCapability.setPreferredFPS(TestValues.GENERAL_INTEGER);
 
         SystemCapability cap = new SystemCapability();
         cap.setSystemCapabilityType(SystemCapabilityType.VIDEO_STREAMING);
@@ -1035,6 +1037,11 @@ public class SystemCapabilityManagerTests {
         @Override
         public Version getProtocolVersion() {
             return new Version(1, 0, 0);
+        }
+
+        @Override
+        public long getMtu(SessionType serviceType) {
+            return 0;
         }
 
         @Override

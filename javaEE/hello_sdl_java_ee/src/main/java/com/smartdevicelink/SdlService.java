@@ -55,6 +55,8 @@ import com.smartdevicelink.proxy.rpc.enums.*;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.SystemInfo;
+
 
 import java.util.*;
 
@@ -153,6 +155,12 @@ public class SdlService {
                     }
 
                     return new LifecycleConfigurationUpdate(appName, null, TTSChunkFactory.createSimpleTTSChunks(appName), null);
+                }
+
+                @Override
+                public boolean onSystemInfoReceived(SystemInfo systemInfo) {
+                    //Check the SystemInfo object to ensure that the connection to the device should continue
+                    return true;
                 }
             };
 
