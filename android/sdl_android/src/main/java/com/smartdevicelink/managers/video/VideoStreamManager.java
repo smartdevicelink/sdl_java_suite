@@ -394,17 +394,16 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                         params.update(castedCapability, vehicleMake);    //Streaming parameters are ready time to stream
                         VideoStreamManager.this.parameters = params;
 
+                        VideoStreamingCapability capabilityToSend = new VideoStreamingCapability();
                         if (listOfStreamingRanges != null) {
                             // filtering
-                            castedCapability.setAdditionalVideoStreamingCapabilities(
-                                    getSupportedCapabilities(
-                                            listOfStreamingRanges,
-                                            castedCapability.getAdditionalVideoStreamingCapabilities()
-                                    )
-                            );
+                            capabilityToSend.setAdditionalVideoStreamingCapabilities(getSupportedCapabilities(
+                                    listOfStreamingRanges,
+                                    castedCapability.getAdditionalVideoStreamingCapabilities()
+                            ));
                         }
                         AppCapability appCapability = new AppCapability(AppCapabilityType.VIDEO_STREAMING);
-                        appCapability.setVideoStreamingCapability(castedCapability);
+                        appCapability.setVideoStreamingCapability(capabilityToSend);
 
                         OnAppCapabilityUpdated onAppCapabilityUpdated = new OnAppCapabilityUpdated(appCapability);
                         internalInterface.sendRPC(onAppCapabilityUpdated);
@@ -511,7 +510,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
      *
      * @see #startRemoteDisplayStream(android.content.Context, Class, com.smartdevicelink.streaming.video.VideoStreamingParameters, boolean)
      * followed by a call to
-     * @see #stopStreaming(boolean withPendingRestart)
+     * @see #stopStreaming()
      */
     public void resumeStreaming() {
         int currentState = stateMachine.getState();
