@@ -986,7 +986,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             command.setVrCommands(null);
         }
         command.setCmdIcon((cell.getIcon() != null && shouldHaveArtwork) ? cell.getIcon().getImageRPC() : null);
-        command.setSecondaryImage((cell.getSecondaryArtwork() != null && shouldHaveArtwork) ? cell.getSecondaryArtwork().getImageRPC() : null);
+        command.setSecondaryImage((cell.getSecondaryArtwork() != null && shouldHaveArtwork && !(fileManager.get() != null && fileManager.get().fileNeedsUpload(cell.getSecondaryArtwork()))) ? cell.getSecondaryArtwork().getImageRPC() : null);
 
         return command;
     }
@@ -1002,7 +1002,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             subMenu.setMenuLayout(menuConfiguration.getSubMenuLayout());
         }
         subMenu.setMenuIcon((shouldHaveArtwork && (cell.getIcon() != null && cell.getIcon().getImageRPC() != null)) ? cell.getIcon().getImageRPC() : null);
-        subMenu.setSecondaryImage((shouldHaveArtwork && (cell.getSecondaryArtwork() != null && cell.getSecondaryArtwork().getImageRPC() != null)) ? cell.getSecondaryArtwork().getImageRPC() : null);
+        subMenu.setSecondaryImage((shouldHaveArtwork && !(fileManager.get() != null && fileManager.get().fileNeedsUpload(cell.getSecondaryArtwork())) && (cell.getSecondaryArtwork() != null && cell.getSecondaryArtwork().getImageRPC() != null)) ? cell.getSecondaryArtwork().getImageRPC() : null);
         return subMenu;
     }
 
