@@ -230,7 +230,7 @@ abstract class BaseAlertManager extends BaseSubManager {
         onSpeechCapabilityListener = new OnSystemCapabilityListener() {
             @Override
             public void onCapabilityRetrieved(Object capability) {
-                speechCapabilities = (List<SpeechCapabilities>) capability;
+                speechCapabilities = SystemCapabilityManager.convertToList(capability, SpeechCapabilities.class);
             }
 
             @Override
