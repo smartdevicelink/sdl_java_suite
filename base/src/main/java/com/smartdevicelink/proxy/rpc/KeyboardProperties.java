@@ -116,6 +116,7 @@ import java.util.List;
  * 		<tr>
  * 			<td>customKeys</td>
  * 			<td>List<String></td>
+ * 		    <td>false</td>
  * 			<td>Array of special characters to show in customizable keys. If omitted, keyboard will showdefault special characters</td>
  * 			<td>N</td>
  * 			<td>{"string_max_length": 1, "string_min_length": 1, "array_max_size": 10, "array_min_size": 1}</td>
