@@ -399,7 +399,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                             // filtering
                             capabilityToSend.setAdditionalVideoStreamingCapabilities(getSupportedCapabilities(
                                     listOfStreamingRanges,
-                                    castedCapability.getAdditionalVideoStreamingCapabilities()
+                                    castedCapability
                             ));
                         }
                         AppCapability appCapability = new AppCapability(AppCapabilityType.VIDEO_STREAMING);
@@ -785,27 +785,20 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
     private List<VideoStreamingCapability> getSupportedCapabilities(
             List<VideoStreamingRange> ranges,
-            List<VideoStreamingCapability> originalAdditionalCapabilities
+            VideoStreamingCapability rootCapability
     ){
 
         List<VideoStreamingCapability> validCapabilities = new ArrayList<>();
+        List<VideoStreamingCapability> allCapabilities = rootCapability.getAdditionalVideoStreamingCapabilities();
+        allCapabilities.add(rootCapability);
 
-        VideoStreamingCapability preferredCapability = new VideoStreamingCapability();
-        preferredCapability.setDiagonalScreenSize(parameters.getPreferredDiagonal());
-        preferredCapability.setPreferredResolution(new ImageResolution(
-                parameters.getResolution().getResolutionWidth(),
-                parameters.getResolution().getResolutionHeight())
-        );
-
-        // get the first one - the Desired resolution to guarantee streaming will start
-        validCapabilities.add(preferredCapability);
         for (VideoStreamingRange range: ranges) {
 
             Integer constraintHeightMax = range.getMaxResolution().getResolutionHeight();
             Integer constraintHeightMin = range.getMinResolution().getResolutionHeight();
-            if (originalAdditionalCapabilities != null && !originalAdditionalCapabilities.isEmpty()) {
+            if (allCapabilities != null && !allCapabilities.isEmpty()) {
 
-                for (VideoStreamingCapability capability : originalAdditionalCapabilities) {
+                for (VideoStreamingCapability capability : allCapabilities) {
                     double diagonal;
                     if (capability.getPreferredResolution() == null
                             || capability.getPreferredResolution().getResolutionHeight() == null
