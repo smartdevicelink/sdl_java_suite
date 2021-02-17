@@ -195,6 +195,10 @@ public class AlertView implements Cloneable {
         return showWaitIndicator;
     }
 
+    public void setShowWaitIndicator(boolean showWaitIndicator) {
+        this.showWaitIndicator = showWaitIndicator;
+    }
+
     public String getSecondaryText() {
         return secondaryText;
     }

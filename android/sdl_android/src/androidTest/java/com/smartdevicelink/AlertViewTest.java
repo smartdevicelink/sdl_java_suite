@@ -41,6 +41,7 @@ public class AlertViewTest {
         builder.setSoftButtons(Collections.singletonList(softButtonObject1));
         builder.setDefaultTimeOut(3);
         builder.setAudio(alertAudioData);
+        builder.setShowWaitIndicator(true);
         AlertView alertView = builder.build();
 
         assertEquals(alertView.getText(), "Test");
@@ -51,6 +52,7 @@ public class AlertViewTest {
         assertEquals(alertView.getSoftButtons().get(0).getName(), "object1");
         assertEquals(alertView.getDefaultTimeout(), 3);
         assertEquals(alertView.getTimeout().intValue(), 3);
+        assertEquals(alertView.isShowWaitIndicator(), true);
 
         alertView.setText("Test2");
         alertView.setTertiaryText("Test2");
@@ -60,6 +62,7 @@ public class AlertViewTest {
         alertView.setAudio(alertAudioData);
         alertView.setIcon(artwork2);
         alertView.setSoftButtons(Collections.singletonList(softButtonObject2));
+        alertView.setShowWaitIndicator(false);
 
         assertEquals(alertView.getText(), "Test2");
         assertEquals(alertView.getSecondaryText(), "Test2");
@@ -69,5 +72,7 @@ public class AlertViewTest {
         assertEquals(alertView.getSoftButtons().get(0).getName(), "object2");
         assertEquals(alertView.getDefaultTimeout(), 6);
         assertEquals(alertView.getTimeout().intValue(), 6);
+        assertEquals(alertView.isShowWaitIndicator(), false);
+
     }
 }
