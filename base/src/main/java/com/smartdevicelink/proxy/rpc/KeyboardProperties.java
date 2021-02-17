@@ -105,11 +105,12 @@ import java.util.List;
  * 		<tr>
  * 			<td>maskInputCharacters</td>
  * 			<td>KeyboardInputMask</td>
+ * 		    <td>false</td>
  * 			<td>Allows an app to mask entered characters on HMI</td>
  * 			<td>N</td>
  * 			<td></td>
  * 			<td>
- *         @since SmartDeviceLink 7.1.0
+ *                 @since SmartDeviceLink 7.1.0
  * 			</td>
  * 		</tr>
  * 		<tr>
@@ -119,7 +120,7 @@ import java.util.List;
  * 			<td>N</td>
  * 			<td>{"string_max_length": 1, "string_min_length": 1, "array_max_size": 10, "array_min_size": 1}</td>
  * 			<td>
- *         @since SmartDeviceLink 7.1.0
+ *                 @since SmartDeviceLink 7.1.0
  * 			</td>
  * 		</tr>
  *  </table>
