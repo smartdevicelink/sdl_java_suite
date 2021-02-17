@@ -183,7 +183,7 @@ abstract class BaseAlertManager extends BaseSubManager {
     }
 
     private Queue newTransactionQueue() {
-        Queue queue = internalInterface.getTaskmaster().createQueue("AlertManager", 4, false);
+        Queue queue = internalInterface.getTaskmaster().createQueue("AlertManager", 6, false);
         queue.pause();
         return queue;
     }
