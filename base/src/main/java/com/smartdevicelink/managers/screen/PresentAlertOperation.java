@@ -164,7 +164,7 @@ public class PresentAlertOperation extends Task {
         if (alertView.getSecondaryText() != null && alertView.getSecondaryText().length() > 0) {
             return true;
         }
-        if (alertView.getAudio() != null && alertView.getAudio().getAudioData().size() > 0) {
+        if (alertView.getAudio() != null && getTTSChunksForAlert(alertView) != null) {
             return true;
         }
         return false;
