@@ -295,7 +295,7 @@ public class SoftButtonObject implements Cloneable{
     }
 
     /**
-     * DO NOT USE! let the managers assign ID's
+     * DO NOT USE! let the managers assign ID's. In next major version change this will be restricted to the library
      * Sets the id of the SoftButtonObject <br>
      * <strong>Note: If the developer did not set buttonId, the manager will automatically assign an id before the SoftButtons are sent to the head unit.
      * Please note that the manager may reuse ids from previous batch of SoftButtons that were already sent to the head unit</strong>
