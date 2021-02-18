@@ -453,7 +453,11 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
      * @param keyboardConfiguration - the custom keyboard configuration to be used when the keyboard is displayed
      */
     public void setKeyboardConfiguration(@Nullable KeyboardProperties keyboardConfiguration) {
-        processKeyboardConfiguration(keyboardConfiguration);
+     if (keyboardConfiguration == null) {
+            this.keyboardConfiguration = defaultKeyboardConfiguration();
+        } else {
+            this.keyboardConfiguration = createValidKeyboardConfigurationBasedOnKeyboardCapabilitiesFromConfiguration(keyboardConfiguration);
+        }
     }
 
     private KeyboardProperties processKeyboardConfiguration(@Nullable KeyboardProperties keyboardConfiguration) {
