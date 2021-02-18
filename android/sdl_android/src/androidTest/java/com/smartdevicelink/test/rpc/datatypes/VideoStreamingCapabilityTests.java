@@ -4,7 +4,6 @@ import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
-import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
@@ -14,6 +13,7 @@ import junit.framework.TestCase;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -80,7 +80,6 @@ public class VideoStreamingCapabilityTests extends TestCase {
 
     public void testJson() {
         JSONObject reference = new JSONObject();
-        msg.setAdditionalVideoStreamingCapabilities(null);
 
         try {
             reference.put(VideoStreamingCapability.KEY_MAX_BITRATE, TestValues.GENERAL_INT);
@@ -120,5 +119,20 @@ public class VideoStreamingCapabilityTests extends TestCase {
         } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
+    }
+
+    @Test
+    public void testFormatMethod(){
+        List<VideoStreamingCapability> additionalCapabilities = msg.getAdditionalVideoStreamingCapabilities();
+        msg.format(null, false);
+        assertEquals(additionalCapabilities, msg.getAdditionalVideoStreamingCapabilities());
+    }
+
+    @Test
+    public void testFormatWillRemoveSelf(){
+        List<VideoStreamingCapability> additionalCapabilities = msg.getAdditionalVideoStreamingCapabilities();
+        additionalCapabilities.add(msg);
+        msg.format(null, false);
+        assertEquals(additionalCapabilities.size(), msg.getAdditionalVideoStreamingCapabilities().size());
     }
 }

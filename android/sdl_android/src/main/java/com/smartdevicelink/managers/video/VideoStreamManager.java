@@ -790,7 +790,9 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
         List<VideoStreamingCapability> validCapabilities = new ArrayList<>();
         List<VideoStreamingCapability> allCapabilities = rootCapability.getAdditionalVideoStreamingCapabilities();
-        allCapabilities.add(rootCapability);
+        if (allCapabilities != null){
+            allCapabilities.add(rootCapability);
+        }
 
         for (VideoStreamingRange range: ranges) {
 
@@ -825,6 +827,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                         continue;
                     }
 
+                    capability.setAdditionalVideoStreamingCapabilities(null);
                     if (!validCapabilities.contains(capability)) {
                         validCapabilities.add(capability);
                     }
