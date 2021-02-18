@@ -33,7 +33,9 @@ package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.util.SdlDataTypeConverter;
+import com.smartdevicelink.util.Version;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -225,5 +227,31 @@ public class VideoStreamingCapability extends RPCStruct {
     public VideoStreamingCapability setPreferredFPS(Integer preferredFPS) {
         setValue(KEY_PREFERRED_FPS, preferredFPS);
         return this;
+    }
+
+    @Override
+    public void format(Version rpcVersion, boolean formatParams) {
+        if (getAdditionalVideoStreamingCapabilities() != null && getAdditionalVideoStreamingCapabilities().contains(this)) {
+            List<VideoStreamingCapability> copyList = new ArrayList<>(getAdditionalVideoStreamingCapabilities());
+
+            while (copyList.contains(this)) {
+                copyList.remove(this);
+            }
+
+            VideoStreamingCapability copyRootVideoStreamCapability = new VideoStreamingCapability();
+            copyRootVideoStreamCapability.setPreferredResolution(this.getPreferredResolution());
+            copyRootVideoStreamCapability.setMaxBitrate(this.getMaxBitrate());
+            copyRootVideoStreamCapability.setSupportedFormats(this.getSupportedFormats());
+            copyRootVideoStreamCapability.setHapticSpatialDataSupported(this.isHapticSpatialDataSupported());
+            copyRootVideoStreamCapability.setDiagonalScreenSize(this.getDiagonalScreenSize());
+            copyRootVideoStreamCapability.setPixelPerInch(this.getPixelPerInch());
+            copyRootVideoStreamCapability.setScale(this.getScale());
+            copyRootVideoStreamCapability.setPreferredFPS(this.getPreferredFPS());
+
+            copyList.add(copyRootVideoStreamCapability);
+            this.setAdditionalVideoStreamingCapabilities(copyList);
+        }
+
+        super.format(rpcVersion, formatParams);
     }
 }
