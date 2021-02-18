@@ -80,6 +80,7 @@ public class VideoStreamingCapabilityTests extends TestCase {
 
     public void testJson() {
         JSONObject reference = new JSONObject();
+        msg.setAdditionalVideoStreamingCapabilities(null);
 
         try {
             reference.put(VideoStreamingCapability.KEY_MAX_BITRATE, TestValues.GENERAL_INT);
