@@ -105,23 +105,22 @@ import java.util.List;
  * 		<tr>
  * 			<td>maskInputCharacters</td>
  * 			<td>KeyboardInputMask</td>
- * 		    <td>false</td>
- * 			<td>Allows an app to mask entered characters on HMI</td>
- * 			<td>N</td>
- * 			<td></td>
+ * 			<td>false</td>
  * 			<td>
- *                 @since SmartDeviceLink 7.1.0
+ * 				@since SmartDeviceLink 7.1.0
  * 			</td>
+ * 			<td>Allows an app to mask entered characters on HMI</td>
  * 		</tr>
  * 		<tr>
  * 			<td>customKeys</td>
  * 			<td>List<String></td>
- * 		    <td>false</td>
- * 			<td>Array of special characters to show in customizable keys. If omitted, keyboard will showdefault special characters</td>
- * 			<td>N</td>
- * 			<td>{"string_max_length": 1, "string_min_length": 1, "array_max_size": 10, "array_min_size": 1}</td>
+ * 			<td>false</td>
  * 			<td>
- *                 @since SmartDeviceLink 7.1.0
+ * 				@since SmartDeviceLink 7.1.0
+ * 			</td>
+ * 			<td>
+ * 				Array of special characters to show in customizable keys. If omitted, keyboard will show default special characters 
+ * 				{"string_max_length": 1, "string_min_length": 1, "array_max_size": 10, "array_min_size": 1}
  * 			</td>
  * 		</tr>
  *  </table>
