@@ -68,6 +68,7 @@ import com.smartdevicelink.util.DebugTool;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * <strong>ChoiceSetManager</strong> <br>
@@ -395,11 +396,13 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             DebugTool.logWarning(TAG, "There is a current or pending choice set, cancelling and continuing.");
         }
 
-        KeyboardProperties keyboardProperties = processKeyboardConfiguration(customKeyboardConfig);
-        if (keyboardProperties != null) {
-            customKeyboardConfig = this.keyboardConfiguration;
-        } else {
-            return null;
+        customKeyboardConfig = createValidKeyboardConfigurationBasedOnKeyboardCapabilitiesFromConfiguration(customKeyboardConfig);
+        if (customKeyboardConfig == null) {
+            if (this.keyboardConfiguration != null) {
+                customKeyboardConfig = this.keyboardConfiguration;
+            } else {
+                customKeyboardConfig = defaultKeyboardConfiguration();
+            }
         }
 
         // Present a keyboard with the choice set that we used to test VR's optional state
@@ -453,70 +456,51 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
      * @param keyboardConfiguration - the custom keyboard configuration to be used when the keyboard is displayed
      */
     public void setKeyboardConfiguration(@Nullable KeyboardProperties keyboardConfiguration) {
-        processKeyboardConfiguration(keyboardConfiguration);
+        createValidKeyboardConfigurationBasedOnKeyboardCapabilitiesFromConfiguration(keyboardConfiguration);
     }
 
-    private KeyboardProperties processKeyboardConfiguration(@Nullable KeyboardProperties keyboardConfiguration) {
-        if (keyboardConfiguration == null) {
-            this.keyboardConfiguration = defaultKeyboardConfiguration();
-        } else if (defaultMainWindowCapability == null || defaultMainWindowCapability.getKeyboardCapabilities() == null) {
-            this.keyboardConfiguration = keyboardConfiguration;
-            this.keyboardConfiguration.setMaskInputCharacters(null);
-            this.keyboardConfiguration.setCustomKeys(null);
-        } else {
+    // Takes a keyboard configuration (SDLKeyboardProperties) and creates a valid version of it, if possible, based on this object's internal keyboardCapabilities
+    private KeyboardProperties createValidKeyboardConfigurationBasedOnKeyboardCapabilitiesFromConfiguration(@Nullable KeyboardProperties keyboardConfiguration) {
+        KeyboardCapabilities keyboardCapabilities = defaultMainWindowCapability != null ? defaultMainWindowCapability.getKeyboardCapabilities() : null;
 
-            KeyboardCapabilities keyboardCapabilities = defaultMainWindowCapability.getKeyboardCapabilities();
-            KeyboardProperties properties = new KeyboardProperties();
-
-            properties.setLanguage((keyboardConfiguration.getLanguage() == null ? Language.EN_US : keyboardConfiguration.getLanguage()));
-            properties.setKeypressMode((keyboardConfiguration.getKeypressMode() == null ? KeypressMode.RESEND_CURRENT_ENTRY : keyboardConfiguration.getKeypressMode()));
-            properties.setLimitedCharacterList(keyboardConfiguration.getLimitedCharacterList());
-            properties.setAutoCompleteText(keyboardConfiguration.getAutoCompleteText());
-            properties.setAutoCompleteList(keyboardConfiguration.getAutoCompleteList());
-
-            if (keyboardConfiguration.getMaskInputCharacters() != null && keyboardCapabilities.getMaskInputCharactersSupported()) {
-                properties.setMaskInputCharacters(keyboardConfiguration.getMaskInputCharacters());
-            }
-
-            List<String> customKeys = keyboardConfiguration.getCustomKeys();
-
-            boolean containsRightKeyboard = false;
-
-            for (KeyboardLayoutCapability keyboardLayoutCapability : keyboardCapabilities.getSupportedKeyboards()) {
-                if (keyboardLayoutCapability.getKeyboardLayout().equals(keyboardConfiguration.getKeyboardLayout())) {
-                    containsRightKeyboard = true;
-
-                    properties.setKeyboardLayout(keyboardConfiguration.getKeyboardLayout());
-
-                    if (!keyboardCapabilities.getMaskInputCharactersSupported() && keyboardConfiguration.getMaskInputCharacters() != null) {
-                        DebugTool.logWarning(TAG, "mask input character is not supported, property is set to null");
-                    }
-                    if (customKeys != null && !customKeys.isEmpty()) {
-                        int customKeysSize = customKeys.size();
-                        if (keyboardLayoutCapability.getNumConfigurableKeys() > customKeysSize) {
-                            int sizeDiff = keyboardConfiguration.getCustomKeys().size() - keyboardLayoutCapability.getNumConfigurableKeys();
-
-                            for (int i = 0; i < sizeDiff; i++) {
-                                customKeys.remove(customKeysSize - 1);
-                            }
-
-                            properties.setCustomKeys(keyboardConfiguration.getCustomKeys());
-                            DebugTool.logWarning(TAG, String.format("the maximum amount of custom keys supported is %d", customKeysSize));
-                        }
-                    }
-                    break;
-                }
-            }
-
-            if (!containsRightKeyboard) {
-                DebugTool.logError(TAG, "attempting to use unsupported keyboard layout");
-                return null;
-            }
-            this.keyboardConfiguration = properties;
+        // If there are no keyboard capabilities, if there is no passed keyboard configuration, or if there is no layout to the passed keyboard configuration, just pass back the passed in configuration
+        if (keyboardCapabilities == null || keyboardConfiguration == null || keyboardConfiguration.getKeyboardLayout() == null) {
+            return keyboardConfiguration;
         }
-        return this.keyboardConfiguration;
-    }
 
+        KeyboardLayoutCapability selectedLayoutCapability = null;
+        for (KeyboardLayoutCapability layoutCapability : keyboardCapabilities.getSupportedKeyboards()) {
+            if (layoutCapability.getKeyboardLayout().equals(keyboardConfiguration.getKeyboardLayout())) {
+                selectedLayoutCapability = layoutCapability;
+                break;
+            }
+        }
+
+        if (selectedLayoutCapability == null) {
+            DebugTool.logError(TAG, String.format("Configured keyboard layout is not supported: %s", keyboardConfiguration.getKeyboardLayout()));
+            return null;
+        }
+
+        KeyboardProperties modifiedKeyboardConfiguration = (KeyboardProperties) keyboardConfiguration.clone();
+
+        if (keyboardConfiguration.getCustomKeys() == null || keyboardConfiguration.getCustomKeys().isEmpty()) {
+            modifiedKeyboardConfiguration.setCustomKeys(null);
+        } else {
+            // If there are more custom keys than are allowed for the selected keyboard layout, we need to trim the number of keys to only use the first n number of custom keys, where n is the number of allowed custom keys for that layout.
+            int numConfigurableKeys = selectedLayoutCapability.getNumConfigurableKeys();
+            if (keyboardConfiguration.getCustomKeys().size() > numConfigurableKeys) {
+                modifiedKeyboardConfiguration.setCustomKeys(keyboardConfiguration.getCustomKeys().subList(0, numConfigurableKeys));
+                DebugTool.logWarning(TAG, String.format(Locale.US, "%d custom keys set, but the selected layout: %s only supports %d. Dropping the rest.", keyboardConfiguration.getCustomKeys().size(), keyboardConfiguration.getKeyboardLayout(), numConfigurableKeys));
+            }
+        }
+
+        // If the keyboard does not support masking input characters, we will remove it from the keyboard configuration
+        if (!keyboardCapabilities.getMaskInputCharactersSupported()) {
+            modifiedKeyboardConfiguration.setMaskInputCharacters(null);
+        }
+
+        return modifiedKeyboardConfiguration;
+    }
     // GETTERS
 
     /**
@@ -698,31 +682,9 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     }
 
     KeyboardProperties defaultKeyboardConfiguration() {
-        KeyboardLayout layout = KeyboardLayout.QWERTY;
-
-        if (defaultMainWindowCapability != null){
-            KeyboardCapabilities keyboardCapabilities = defaultMainWindowCapability.getKeyboardCapabilities();
-            boolean containsDefaultKeyboard = false;
-            if (keyboardCapabilities != null
-                    && keyboardCapabilities.getSupportedKeyboards() != null
-                    && !keyboardCapabilities.getSupportedKeyboards().isEmpty()
-            ) {
-                for (KeyboardLayoutCapability capability : defaultMainWindowCapability.getKeyboardCapabilities().getSupportedKeyboards()) {
-                    if (capability.getKeyboardLayout().equals(layout)) {
-                        containsDefaultKeyboard = true;
-                        break;
-                    }
-                }
-
-                if (!containsDefaultKeyboard) {
-                    layout = defaultMainWindowCapability.getKeyboardCapabilities().getSupportedKeyboards().get(0).getKeyboardLayout();
-                }
-            }
-        }
-
         KeyboardProperties defaultProperties = new KeyboardProperties();
         defaultProperties.setLanguage(Language.EN_US);
-        defaultProperties.setKeyboardLayout(layout);
+        defaultProperties.setKeyboardLayout(KeyboardLayout.QWERTY);
         defaultProperties.setKeypressMode(KeypressMode.RESEND_CURRENT_ENTRY);
         return defaultProperties;
     }
