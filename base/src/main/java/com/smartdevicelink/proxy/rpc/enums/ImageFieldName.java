@@ -121,7 +121,19 @@ public enum ImageFieldName {
      *
      * @since SmartDeviceLink 7.0.0
      */
-    subMenuIcon;
+    subMenuIcon,
+    /**
+     * The secondary image field for AddCommand
+     *
+     * @since SmartDeviceLink 7.1.0
+     */
+    menuCommandSecondaryImage,
+    /**
+     * The secondary image field for AddSubMenu
+     *
+     * @since SmartDeviceLink 7.1.0
+     */
+    menuSubMenuSecondaryImage;
 
     /**
      * Convert String to ImageFieldName
