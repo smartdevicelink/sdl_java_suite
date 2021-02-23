@@ -77,6 +77,14 @@ public class TextFieldNameTests extends TestCase {
         TextFieldName enumPhone = TextFieldName.valueForString(example);
         example = "templateTitle";
         TextFieldName templateTitle = TextFieldName.valueForString(example);
+        example = "menuCommandSecondaryText";
+        TextFieldName menuCommandSecondaryText = TextFieldName.valueForString(example);
+        example = "menuCommandTertiaryText";
+        TextFieldName menuCommandTertiaryText = TextFieldName.valueForString(example);
+        example = "menuSubMenuSecondaryText";
+        TextFieldName menuSubMenuSecondaryText = TextFieldName.valueForString(example);
+        example = "menuSubMenuTertiaryText";
+        TextFieldName menuSubMenuTertiaryText = TextFieldName.valueForString(example);
 
         assertNotNull("mainField1 returned null", enumMainField1);
         assertNotNull("mainField2 returned null", enumMainField2);
@@ -103,6 +111,10 @@ public class TextFieldNameTests extends TestCase {
         assertNotNull("tertiaryText returned null", enumTertiaryText);
         assertNotNull("menuTitle returned null", enumMenuTitle);
         assertNotNull("templateTitle returned null", templateTitle);
+        assertNotNull("menuCommandSecondaryText returned null", menuCommandSecondaryText);
+        assertNotNull("menuCommandTertiaryText returned null", menuCommandTertiaryText);
+        assertNotNull("menuSubMenuSecondaryText returned null", menuSubMenuSecondaryText);
+        assertNotNull("menuSubMenuTertiaryText returned null", menuSubMenuTertiaryText);
 
 
         assertNotNull(TestValues.NOT_NULL, enumLocName);
@@ -172,10 +184,16 @@ public class TextFieldNameTests extends TestCase {
         enumTestList.add(TextFieldName.locationDescription);
         enumTestList.add(TextFieldName.addressLines);
         enumTestList.add(TextFieldName.phoneNumber);
+        enumTestList.add(TextFieldName.timeToDestination);
+        enumTestList.add(TextFieldName.turnText);
         enumTestList.add(TextFieldName.templateTitle);
         enumTestList.add(TextFieldName.subtleAlertText1);
         enumTestList.add(TextFieldName.subtleAlertText2);
         enumTestList.add(TextFieldName.subtleAlertSoftButtonText);
+        enumTestList.add(TextFieldName.menuCommandSecondaryText);
+        enumTestList.add(TextFieldName.menuCommandTertiaryText);
+        enumTestList.add(TextFieldName.menuSubMenuSecondaryText);
+        enumTestList.add(TextFieldName.menuSubMenuTertiaryText);
 
         assertTrue("Enum value list does not match enum class list",
                 enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

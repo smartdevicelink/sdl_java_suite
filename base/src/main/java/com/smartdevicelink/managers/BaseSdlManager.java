@@ -63,6 +63,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.SystemInfo;
 import com.smartdevicelink.util.Version;
 
 import org.json.JSONException;
@@ -148,6 +149,15 @@ abstract class BaseSdlManager {
         @Override
         public void onError(LifecycleManager lifeCycleManager, String info, Exception e) {
 
+        }
+
+        @Override
+        public boolean onSystemInfoReceived(SystemInfo systemInfo) {
+            if (managerListener != null) {
+                return managerListener.onSystemInfoReceived(systemInfo);
+            } else {
+                return true;
+            }
         }
     };
 

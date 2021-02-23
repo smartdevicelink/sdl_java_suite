@@ -87,6 +87,7 @@ import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.FileUtls;
+import com.smartdevicelink.util.SystemInfo;
 import com.smartdevicelink.util.Version;
 
 import java.util.HashMap;
@@ -128,6 +129,7 @@ abstract class BaseLifecycleManager {
     final Version minimumRPCVersion;
     BaseTransportConfig _transportConfig;
     private Taskmaster taskmaster;
+    private boolean didCheckSystemInfo = false;
 
     BaseLifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener) {
         this.appConfig = appConfig;
@@ -169,7 +171,12 @@ abstract class BaseLifecycleManager {
     Taskmaster getTaskmaster() {
         if (taskmaster == null) {
             Taskmaster.Builder builder = new Taskmaster.Builder();
-            builder.setThreadCount(2);
+            int threadCount = 2;
+            // Give NAVIGATION & PROJECTION apps an extra thread to handle audio/video streaming operations
+            if (appConfig != null && appConfig.appType != null && (appConfig.appType.contains(AppHMIType.NAVIGATION) || appConfig.appType.contains(AppHMIType.PROJECTION))) {
+                threadCount = 3;
+            }
+            builder.setThreadCount(threadCount);
             builder.shouldBeDaemon(true);
             taskmaster = builder.build();
             taskmaster.start();
@@ -376,6 +383,23 @@ abstract class BaseLifecycleManager {
                             sendRPCMessagePrivate(msg, true);
                             clean();
                             return;
+                        }
+                        if (!didCheckSystemInfo && lifecycleListener != null) {
+                            didCheckSystemInfo = true;
+                            VehicleType vehicleType = raiResponse.getVehicleType();
+                            String systemSoftwareVersion = raiResponse.getSystemSoftwareVersion();
+                            if (vehicleType != null || systemSoftwareVersion != null) {
+                                SystemInfo systemInfo = new SystemInfo(vehicleType, systemSoftwareVersion, null);
+                                boolean validSystemInfo = lifecycleListener.onSystemInfoReceived(systemInfo);
+                                if (!validSystemInfo) {
+                                    DebugTool.logWarning(TAG, "Disconnecting from head unit, the system info was not accepted.");
+                                    UnregisterAppInterface msg = new UnregisterAppInterface();
+                                    msg.setCorrelationID(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
+                                    sendRPCMessagePrivate(msg, true);
+                                    clean();
+                                    return;
+                                }
+                            }
                         }
                         processRaiResponse(raiResponse);
                         systemCapabilityManager.parseRAIResponse(raiResponse);
@@ -877,7 +901,7 @@ abstract class BaseLifecycleManager {
 
 
         @Override
-        public void onSessionStarted(int sessionID, Version version) {
+        public void onSessionStarted(int sessionID, Version version, SystemInfo systemInfo) {
             DebugTool.logInfo(TAG, "on protocol session started");
             if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(version) == 1) {
                 DebugTool.logWarning(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
@@ -885,6 +909,18 @@ abstract class BaseLifecycleManager {
                 clean();
                 return;
             }
+
+            if (systemInfo != null && lifecycleListener != null) {
+                didCheckSystemInfo = true;
+                boolean validSystemInfo = lifecycleListener.onSystemInfoReceived(systemInfo);
+                if (!validSystemInfo) {
+                    DebugTool.logWarning(TAG, "Disconnecting from head unit, the system info was not accepted.");
+                    session.endService(SessionType.RPC);
+                    clean();
+                    return;
+                }
+            }
+
             if (appConfig != null) {
                 appConfig.prepare();
 
@@ -1240,6 +1276,8 @@ abstract class BaseLifecycleManager {
         void onServiceEnded(SessionType sessionType);
 
         void onError(LifecycleManager lifeCycleManager, String info, Exception e);
+
+        boolean onSystemInfoReceived(SystemInfo systemInfo);
     }
 
     public static class AppConfig {

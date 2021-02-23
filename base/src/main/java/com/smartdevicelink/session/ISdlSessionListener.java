@@ -35,6 +35,7 @@ import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.util.SystemInfo;
 import com.smartdevicelink.util.Version;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY)
@@ -63,8 +64,9 @@ public interface ISdlSessionListener {
      *
      * @param sessionID session ID associated with the session that was established
      * @param version   the protocol version that has been negotiated for this session
+     * @param systemInfo info about the device that this service is started
      */
-    void onSessionStarted(int sessionID, Version version);
+    void onSessionStarted(int sessionID, Version version, SystemInfo systemInfo);
 
     /**
      * Called to indicate that the session that was previously established has now ended. This means

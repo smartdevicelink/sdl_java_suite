@@ -3,6 +3,7 @@ package com.smartdevicelink.test.streaming;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.session.ISdlSessionListener;
 import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.util.SystemInfo;
 import com.smartdevicelink.util.Version;
 
 /**
@@ -24,7 +25,7 @@ public class MockInterfaceBroker implements ISdlSessionListener {
     }
 
     @Override
-    public void onSessionStarted(int sessionID, Version version) {
+    public void onSessionStarted(int sessionID, Version version, SystemInfo systemInfo) {
 
     }
 
