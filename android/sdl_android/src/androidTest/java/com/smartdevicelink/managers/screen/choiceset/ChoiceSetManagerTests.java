@@ -59,6 +59,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
@@ -203,7 +204,7 @@ public class ChoiceSetManagerTests {
         ChoiceCell cell1 = new ChoiceCell("test");
         ChoiceCell cell2 = new ChoiceCell("test2");
         ChoiceCell cell3 = new ChoiceCell("test3");
-        HashSet<ChoiceCell> cellSet = new HashSet<>();
+        LinkedHashSet<ChoiceCell> cellSet = new LinkedHashSet<>();
         cellSet.add(cell1);
         cellSet.add(cell2);
         cellSet.add(cell3);
@@ -226,7 +227,7 @@ public class ChoiceSetManagerTests {
         ChoiceCell cell4 = new ChoiceCell("McDonalds", "4 mile away", null, null, null, null);
         ChoiceCell cell5 = new ChoiceCell("Starbucks", "5 mile away", null, null, null, null);
         ChoiceCell cell6 = new ChoiceCell("Meijer", "6 mile away", null, null, null, null);
-        List<ChoiceCell> cellList = new ArrayList<>();
+        LinkedHashSet<ChoiceCell> cellList = new LinkedHashSet<>();
         cellList.add(cell1);
         cellList.add(cell2);
         cellList.add(cell3);

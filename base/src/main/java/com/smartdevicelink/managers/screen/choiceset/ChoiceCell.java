@@ -35,10 +35,14 @@ package com.smartdevicelink.managers.screen.choiceset;
 import androidx.annotation.NonNull;
 
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.screen.menu.MenuCell;
+import com.smartdevicelink.util.DebugTool;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class ChoiceCell {
+public class ChoiceCell implements Cloneable{
     private String text, secondaryText, tertiaryText, uniqueText;
     private List<String> voiceCommands;
     private SdlArtwork artwork, secondaryArtwork;
@@ -295,4 +299,32 @@ public class ChoiceCell {
                 " | Voice Commands Size: " + ((getVoiceCommands() == null) ? 0 : getVoiceCommands().size());
     }
 
+    /**
+     * Creates a deep copy of the object
+     *
+     * @return deep copy of the object, null if an exception occurred
+     */
+    @Override
+    public ChoiceCell clone() {
+        try {
+            ChoiceCell clone = (ChoiceCell) super.clone();
+            if (this.artwork != null) {
+                clone.artwork = this.artwork.clone();
+            }
+            if (this.secondaryArtwork != null) {
+                clone.secondaryArtwork = this.secondaryArtwork.clone();
+            }
+            if (this.voiceCommands != null) {
+                clone.voiceCommands = new ArrayList<>(voiceCommands);
+            }
+
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            if (DebugTool.isDebugEnabled()) {
+                throw new RuntimeException("Clone not supported by super class");
+            }
+        }
+
+        return null;
+    }
 }

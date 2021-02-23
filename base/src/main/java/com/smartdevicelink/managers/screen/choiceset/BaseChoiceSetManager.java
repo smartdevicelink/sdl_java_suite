@@ -68,6 +68,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -196,17 +197,12 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             return;
         }
 
-        final HashSet<ChoiceCell> choicesToUpload;
+        LinkedHashSet<ChoiceCell> mutableChoicesToUpload = getChoicesToBeUploadedWithArray(choices);
 
-        // If we're running on a connection < RPC 7.1, we need to de-duplicate cells because presenting them will fail if we have the same cell primary text.
-        if (choices != null && internalInterface.getSdlMsgVersion() != null
-                && (internalInterface.getSdlMsgVersion().getMajorVersion() < 7
-                || (internalInterface.getSdlMsgVersion().getMajorVersion() == 7 && internalInterface.getSdlMsgVersion().getMinorVersion() == 0))) {
-            addUniqueNamesToCells(choices);
-        }
-        choicesToUpload = new HashSet<>(choices);
-        choicesToUpload.removeAll(preloadedChoices);
-        choicesToUpload.removeAll(pendingPreloadChoices);
+        mutableChoicesToUpload.removeAll(preloadedChoices);
+        mutableChoicesToUpload.removeAll(pendingPreloadChoices);
+
+        final LinkedHashSet<ChoiceCell> choicesToUpload = (LinkedHashSet<ChoiceCell>) mutableChoicesToUpload.clone();
 
         if (choicesToUpload.size() == 0) {
             if (listener != null) {
@@ -504,23 +500,35 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
      * E.g. Choices param contains 2 cells with text/title "Address" will be handled by updating the uniqueText/uniqueTitle of the second cell to "Address (2)".
      * @param choices The list of choiceCells to be uploaded.
      */
-    void addUniqueNamesToCells(List<ChoiceCell> choices) {
+    void addUniqueNamesToCells(LinkedHashSet<ChoiceCell> choices) {
         HashMap<String, Integer> dictCounter = new HashMap<>();
 
         for (ChoiceCell cell : choices) {
             String cellName = cell.getText();
             Integer counter = dictCounter.get(cellName);
 
-            if (counter == null) {
-                dictCounter.put(cellName, 1);
-            } else {
+            if (counter != null) {
                 dictCounter.put(cellName, ++counter);
-                cell.setUniqueText(cellName + " (" + counter + ")");
+                cell.setUniqueText(cell.getText() + " (" + counter + ")");
+            } else {
+                dictCounter.put(cellName, 1);
             }
         }
     }
 
-    void updateIdsOnChoices(HashSet<ChoiceCell> choices) {
+    private LinkedHashSet<ChoiceCell> getChoicesToBeUploadedWithArray(List<ChoiceCell> choices) {
+        LinkedHashSet<ChoiceCell> choiceSet = new LinkedHashSet<>(choices);
+        // If we're running on a connection < RPC 7.1, we need to de-duplicate cells because presenting them will fail if we have the same cell primary text.
+        if (choices != null && internalInterface.getSdlMsgVersion() != null
+                && (internalInterface.getSdlMsgVersion().getMajorVersion() < 7
+                || (internalInterface.getSdlMsgVersion().getMajorVersion() == 7 && internalInterface.getSdlMsgVersion().getMinorVersion() == 0))) {
+            addUniqueNamesToCells(choiceSet);
+        }
+        choiceSet.removeAll(preloadedChoices);
+        return choiceSet;
+    }
+
+    void updateIdsOnChoices(LinkedHashSet<ChoiceCell> choices) {
         for (ChoiceCell cell : choices) {
             cell.setChoiceId(this.nextChoiceId);
             this.nextChoiceId++;
