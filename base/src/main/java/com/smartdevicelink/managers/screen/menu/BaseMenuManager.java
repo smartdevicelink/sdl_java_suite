@@ -71,6 +71,7 @@ abstract class BaseMenuManager extends BaseSubManager {
     List<MenuCell> currentMenuCells;
     List<MenuCell> menuCells;
     DynamicMenuUpdatesMode dynamicMenuUpdatesMode;
+    MenuConfiguration currentMenuConfiguration;
     MenuConfiguration menuConfiguration;
     private String displayType;
     HMILevel currentHMILevel;
@@ -113,6 +114,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         dynamicMenuUpdatesMode = DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE;
         windowCapability = null;
         menuConfiguration = null;
+        currentMenuConfiguration = null;
 
         // Cancel the operations
         if (transactionQueue != null) {
@@ -291,13 +293,15 @@ abstract class BaseMenuManager extends BaseSubManager {
             return;
         }
 
+        this.menuConfiguration = menuConfiguration;
+
         MenuConfigurationUpdateOperation operation = new MenuConfigurationUpdateOperation(internalInterface, windowCapability, menuConfiguration, new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
                 if (!success) {
                     DebugTool.logError(TAG, "Error setting new menu configuration. Will revert to old menu configuration.");
                 } else {
-                    BaseMenuManager.this.menuConfiguration = menuConfiguration;
+                    BaseMenuManager.this.currentMenuConfiguration = menuConfiguration;
                     updateMenuReplaceOperationsWithNewMenuConfiguration();
                 }
             }
@@ -422,7 +426,7 @@ abstract class BaseMenuManager extends BaseSubManager {
     private void updateMenuReplaceOperationsWithNewMenuConfiguration(){
         for (Task task : transactionQueue.getTasksAsList()) {
             if (task instanceof MenuReplaceOperation) {
-                ((MenuReplaceOperation) task).setMenuConfiguration(menuConfiguration);
+                ((MenuReplaceOperation) task).setMenuConfiguration(currentMenuConfiguration);
             }
         }
     }

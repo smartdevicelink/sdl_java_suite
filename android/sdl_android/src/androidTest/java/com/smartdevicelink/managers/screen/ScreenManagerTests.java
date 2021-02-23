@@ -144,9 +144,7 @@ public class ScreenManagerTests {
 
         assertEquals(screenManager.getDynamicMenuUpdatesMode(), DynamicMenuUpdatesMode.FORCE_ON);
         assertEquals(screenManager.getMenu(), TestValues.GENERAL_MENUCELL_LIST);
-        // Should not set because of improper RAI response and improper HMI states
-        assertNull(screenManager.getMenuConfiguration().getMenuLayout());
-        assertNull(screenManager.getMenuConfiguration().getSubMenuLayout());
+        assertEquals(screenManager.getMenuConfiguration(), TestValues.GENERAL_MENU_CONFIGURATION);
     }
 
     @Test
