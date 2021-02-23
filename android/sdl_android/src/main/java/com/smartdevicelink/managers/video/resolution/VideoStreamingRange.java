@@ -7,13 +7,7 @@ public class VideoStreamingRange {
     private Double minAspectRatio;
     private Double maxAspectRatio;
 
-    public VideoStreamingRange(
-            Resolution minResolution,
-            Resolution maxResolution,
-            Double minScreenDiagonal,
-            Double minAspectRatio,
-            Double maxAspectRatio
-    ) {
+    public VideoStreamingRange(Resolution minResolution, Resolution maxResolution, Double minScreenDiagonal, Double minAspectRatio, Double maxAspectRatio) {
         this.minResolution = minResolution;
         this.maxResolution = maxResolution;
         this.minScreenDiagonal = minScreenDiagonal;
@@ -44,36 +38,28 @@ public class VideoStreamingRange {
         return maxAspectRatio;
     }
 
-    public static class Builder {
-        private VideoStreamingRange range = new VideoStreamingRange();
-        private Double maxAspectRatio;
+    public VideoStreamingRange setMinSupportedResolution(Resolution minSupportedResolution) {
+        this.minResolution = minSupportedResolution;
+        return this;
+    }
 
-        public Builder setMinSupportedResolution(Resolution minSupportedResolution) {
-            range.minResolution = minSupportedResolution;
-            return this;
-        }
+    public VideoStreamingRange setMaxSupportedResolution(Resolution maxSupportedResolution) {
+        this.maxResolution = maxSupportedResolution;
+        return this;
+    }
 
-        public Builder setMaxSupportedResolution(Resolution maxSupportedResolution) {
-            range.maxResolution = maxSupportedResolution;
-            return this;
-        }
+    public VideoStreamingRange setMinScreenDiagonal(Double minScreenDiagonal) {
+        this.minScreenDiagonal = minScreenDiagonal;
+        return this;
+    }
 
-        public Builder setMinScreenDiagonal(Double minScreenDiagonal) {
-            range.minScreenDiagonal = minScreenDiagonal;
-            return this;
-        }
-        public Builder setMinAspectRatio(Double minAspectRatio) {
-            range.minAspectRatio = minAspectRatio;
-            return this;
-        }
+    public VideoStreamingRange setMinAspectRatio(Double minAspectRatio) {
+        this.minAspectRatio = minAspectRatio;
+        return this;
+    }
 
-        public Builder setMaxAspectRatio(Double maxAspectRatio) {
-            range.maxAspectRatio = maxAspectRatio;
-            return this;
-        }
-
-        public VideoStreamingRange build() {
-            return range;
-        }
+    public VideoStreamingRange setMaxAspectRatio(Double maxAspectRatio) {
+        this.maxAspectRatio = maxAspectRatio;
+        return this;
     }
 }
