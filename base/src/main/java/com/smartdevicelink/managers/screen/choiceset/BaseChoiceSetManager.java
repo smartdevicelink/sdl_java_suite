@@ -661,7 +661,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
      */
     private int getNextCancelId() {
         if (nextCancelId >= choiceCellCancelIdMax) {
-            nextCancelId = choiceCellCancelIdMax;
+            nextCancelId = choiceCellCancelIdMin;
         } else {
             nextCancelId++;
         }
