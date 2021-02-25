@@ -60,11 +60,11 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 
 abstract class BaseAlertManager extends BaseSubManager {
@@ -80,7 +80,7 @@ abstract class BaseAlertManager extends BaseSubManager {
     int nextCancelId;
     private final int alertCancelIdMin = 1;
     private final int alertCancelIdMax = 100;
-    private CopyOnWriteArrayList<SoftButtonObject> softButtonObjects;
+    private List<SoftButtonObject> softButtonObjects;
     OnRPCNotificationListener onButtonPressListener, onButtonEventListener;
 
 
@@ -89,7 +89,7 @@ abstract class BaseAlertManager extends BaseSubManager {
         this.transactionQueue = newTransactionQueue();
         this.fileManager = new WeakReference<>(fileManager);
         nextCancelId = 0;
-        this.softButtonObjects = new CopyOnWriteArrayList<>();
+        this.softButtonObjects = new ArrayList<>();
         addListeners();
     }
 
@@ -151,24 +151,7 @@ abstract class BaseAlertManager extends BaseSubManager {
                 DebugTool.logError(TAG, "Attempted to set soft button objects for Alert, but multiple buttons had the same id.");
                 return;
             }
-
-            // Keep Track of SoftButtonObjects, to be able to Call their OnEventListeners
-            CopyOnWriteArrayList<SoftButtonObject> softButtonObjects;
-            if (alert.getSoftButtons() instanceof CopyOnWriteArrayList) {
-                softButtonObjects = (CopyOnWriteArrayList<SoftButtonObject>) alert.getSoftButtons();
-            } else {
-                softButtonObjects = new CopyOnWriteArrayList<>(alert.getSoftButtons());
-            }
-            if (this.softButtonObjects.size() > 0) {
-                for (SoftButtonObject object : softButtonObjects) {
-                    if (softButtonObjects.contains(object)) {
-                        continue;
-                    }
-                    this.softButtonObjects.add(object);
-                }
-            } else {
-                this.softButtonObjects = softButtonObjects;
-            }
+            softButtonObjects.addAll(alert.getSoftButtons());
         }
 
         if (nextCancelId >= alertCancelIdMax) {
@@ -177,10 +160,29 @@ abstract class BaseAlertManager extends BaseSubManager {
             nextCancelId++;
         }
 
-        PresentAlertOperation operation = new PresentAlertOperation(internalInterface, alert, currentWindowCapability, speechCapabilities, fileManager.get(), nextCancelId, listener);
+        PresentAlertOperation operation = new PresentAlertOperation(internalInterface, alert, currentWindowCapability, speechCapabilities, fileManager.get(), nextCancelId, listener, new AlertSoftButtonClearListener() {
+            @Override
+            public void onButtonClear(List<SoftButtonObject> softButtonObjectList) {
+                // Stop keeping track of SoftButtonObject listeners as operation has finished
+                for (SoftButtonObject object : softButtonObjectList) {
+                    if (softButtonObjects.contains(object)) {
+                        softButtonObjects.remove(object);
+                    }
+                }
+            }
+        });
         transactionQueue.add(operation, false);
 
     }
+
+    /**
+     * Interface that sends a list of SoftButtonObjects back from PresentAlertOperation, to allow BaseAlertManager
+     * to stop keeping track of them for their onButtonEventListener
+     */
+    interface AlertSoftButtonClearListener {
+        void onButtonClear(List<SoftButtonObject> softButtonObjects);
+    }
+
 
     private Queue newTransactionQueue() {
         Queue queue = internalInterface.getTaskmaster().createQueue("AlertManager", 6, false);

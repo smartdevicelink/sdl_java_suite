@@ -76,8 +76,9 @@ public class PresentAlertOperation extends Task {
     private List<SpeechCapabilities> speechCapabilities;
     boolean isAlertPresented;
     static int SOFTBUTTON_COUNT = 4;
+    private BaseAlertManager.AlertSoftButtonClearListener alertSoftButtonClearListener;
 
-    public PresentAlertOperation(ISdl internalInterface, AlertView alertView, WindowCapability currentCapabilities, List<SpeechCapabilities> speechCapabilities, FileManager fileManager, Integer cancelId, AlertCompletionListener listener) {
+    public PresentAlertOperation(ISdl internalInterface, AlertView alertView, WindowCapability currentCapabilities, List<SpeechCapabilities> speechCapabilities, FileManager fileManager, Integer cancelId, AlertCompletionListener listener, BaseAlertManager.AlertSoftButtonClearListener alertSoftButtonClearListener) {
         super("PresentAlertOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
@@ -87,6 +88,7 @@ public class PresentAlertOperation extends Task {
         this.listener = listener;
         this.cancelId = cancelId;
         this.isAlertPresented = false;
+        this.alertSoftButtonClearListener = alertSoftButtonClearListener;
 
         this.alertView.canceledListener = new AlertCanceledListener() {
             @Override
@@ -512,6 +514,10 @@ public class PresentAlertOperation extends Task {
         DebugTool.logInfo(TAG, "Finishing present alert operation");
         if (listener != null) {
             listener.onComplete(success, tryAgainTime);
+        }
+        // If alertView has SoftButtons, we need to clear out their references in BaseAlertManager
+        if (alertView.getSoftButtons() != null) {
+            alertSoftButtonClearListener.onButtonClear(alertView.getSoftButtons());
         }
         onFinished();
     }
