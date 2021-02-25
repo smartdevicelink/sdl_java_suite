@@ -36,6 +36,7 @@
       "gearStatus": true,
       "oemCustomVehicleDataName": true,
       "windowStatus": true,
+      "climateData": true,
       "seatOccupancy": true
     }
   },
@@ -177,6 +178,10 @@
       },
       "seatOccupancy": {
         "dataType": "VEHICLEDATA_SEATOCCUPANCY",
+        "resultCode": "SUCCESS"
+      },
+      "climateData": {
+        "dataType": "VEHICLEDATA_CLIMATEDATA",
         "resultCode": "SUCCESS"
       }
     }

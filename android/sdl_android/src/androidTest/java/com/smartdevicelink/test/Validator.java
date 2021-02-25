@@ -10,6 +10,7 @@ import com.smartdevicelink.proxy.rpc.enums.DefrostZone;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
@@ -3947,6 +3948,43 @@ public class Validator {
         return status1.getDataType().equals(status2.getDataType()) && status1.getResultCode().equals(status2.getResultCode());
     }
 
+    public static boolean validateKeyboardLayoutCapability(KeyboardLayoutCapability keyboard1, KeyboardLayoutCapability keyboard2) {
+        if (keyboard1 == null) {
+            return (keyboard2 == null);
+        }
+        if (keyboard2 == null) {
+            return (keyboard1 == null);
+        }
+        return keyboard1.getKeyboardLayout().equals(keyboard2.getKeyboardLayout()) && keyboard1.getNumConfigurableKeys().equals(keyboard2.getNumConfigurableKeys());
+    }
+
+    public static boolean validateKeyboardCapabilities(KeyboardCapabilities keyboardCapabilities1, KeyboardCapabilities keyboardCapabilities2) {
+        if (keyboardCapabilities1 == null) {
+            return (keyboardCapabilities2 == null);
+        }
+        if (keyboardCapabilities2 == null) {
+            return (keyboardCapabilities1 == null);
+        }
+
+        boolean keyboardsEqual = true;
+        if (keyboardCapabilities1.getSupportedKeyboards() != null && keyboardCapabilities2.getSupportedKeyboards() != null) {
+
+            for (KeyboardLayoutCapability keyboardLayoutCapability1 : keyboardCapabilities1.getSupportedKeyboards()) {
+                for (KeyboardLayoutCapability keyboardLayoutCapability2 : keyboardCapabilities2.getSupportedKeyboards()) {
+                    if (!validateKeyboardLayoutCapability(keyboardLayoutCapability1, keyboardLayoutCapability2)) {
+                        keyboardsEqual = false;
+                        break;
+                    }
+                }
+                if (!keyboardsEqual) {
+                    break;
+                }
+            }
+        }
+
+        return keyboardsEqual && keyboardCapabilities1.getMaskInputCharactersSupported().equals(keyboardCapabilities2.getMaskInputCharactersSupported());
+    }
+
     public static boolean validateSeatStatuses(List<SeatStatus> seatStatusesItem1, List<SeatStatus> seatStatusesItem2) {
         if (seatStatusesItem1 == null) {
             return (seatStatusesItem2 == null);
@@ -4020,5 +4058,24 @@ public class Validator {
         }
         boolean gridValidated = validateGrid(status1.getLocation(), status2.getLocation());
         return gridValidated && status1.getStatus().equals(status2.getStatus()) && validateWindowStates(status1.getState(), status2.getState());
+    }
+
+    public static boolean validateClimateData(ClimateData climateData1, ClimateData climateData2) {
+        if (climateData1 == null) {
+            return (climateData2 == null);
+        }
+        if (climateData2 == null) {
+            return (climateData1 == null);
+        }
+
+        if (!validateTemperature(climateData1.getExternalTemperature(), climateData2.getExternalTemperature())) {
+            return false;
+        }
+
+        if (!validateTemperature(climateData1.getCabinTemperature(), climateData2.getCabinTemperature())) {
+            return false;
+        }
+
+        return climateData1.getAtmosphericPressure().floatValue() == climateData2.getAtmosphericPressure().floatValue();
     }
 }

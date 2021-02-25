@@ -59,6 +59,7 @@ import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
+import com.smartdevicelink.proxy.rpc.enums.KeyboardInputMask;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
@@ -317,6 +318,7 @@ public class TestValues {
     public static final AppCapabilityType GENERAL_APP_CAPABILITY_TYPE = AppCapabilityType.VIDEO_STREAMING;
     public static final AppCapability GENERAL_APP_CAPABILITY = new AppCapability();
     public static final ClimateControlData GENERAL_CLIMATECONTROLDATA = new ClimateControlData();
+    public static final ClimateData GENERAL_CLIMATEDATA = new ClimateData();
     public static final SeatControlData GENERAL_SEATCONTROLDATA = new SeatControlData();
     public static final RdsData GENERAL_RDSDATA = new RdsData();
     public static final StationIDNumber GENERAL_STATIONIDNUMBER = new StationIDNumber();
@@ -337,6 +339,7 @@ public class TestValues {
     public static final LightControlData GENERAL_LIGHTCONTROLDATA = new LightControlData();
     public static final HMISettingsControlData GENERAL_HMISETTINGSCONTROLDATA = new HMISettingsControlData();
     public static final DynamicUpdateCapabilities GENERAL_DYNAMICUPDATECAPABILITIES = new DynamicUpdateCapabilities();
+    public static final KeyboardCapabilities GENERAL_KEYBOARD_CAPABILITIES = new KeyboardCapabilities();
     public static final WindowState GENERAL_WINDOWSTATE = new WindowState();
 
     public static final SeatOccupancy GENERAL_SEAT_OCCUPANCY = new SeatOccupancy();
@@ -389,6 +392,9 @@ public class TestValues {
     public static final List<Turn> GENERAL_TURN_LIST = new ArrayList<Turn>();
     public static final List<Choice> GENERAL_CHOICE_LIST = new ArrayList<Choice>();
     public static final List<String> GENERAL_STRING_LIST = Arrays.asList(new String[]{"a", "b"});
+    public static final KeyboardInputMask GENERAL_KEYBOARD_INPUT_MASK = KeyboardInputMask.ENABLE_INPUT_KEY_MASK;
+    public static final KeyboardLayoutCapability GENERAL_KEYBOARD_LAYOUT_CAPABILITY = new KeyboardLayoutCapability(GENERAL_KEYBOARDLAYOUT, 1);
+    public static final List<KeyboardLayoutCapability> GENERAL_SUPPORTED_KEYBOARDS_LIST = new ArrayList<KeyboardLayoutCapability>();
     public static final List<Integer> GENERAL_INTEGER_LIST = Arrays.asList(new Integer[]{-1, -2});
     public static final List<TTSChunk> GENERAL_TTSCHUNK_LIST = new ArrayList<TTSChunk>(2);
     public static final List<HMILevel> GENERAL_HMILEVEL_LIST = Arrays.asList(new HMILevel[]{HMILevel.HMI_FULL, HMILevel.HMI_BACKGROUND});
@@ -515,7 +521,9 @@ public class TestValues {
     public static final JSONArray JSON_IMAGE_TYPES = new JSONArray();
     public static final JSONObject JSON_DISPLAYCAPABILITY = new JSONObject();
     public static final JSONArray JSON_DISPLAYCAPABILITY_LIST = new JSONArray();
+    public static final JSONArray JSON_SUPPORTED_KEYBOARDS_LIST = new JSONArray();
     public static final JSONObject JSON_DYNAMICUPDATECAPABILITIES = new JSONObject();
+    public static final JSONObject JSON_KEYBOARD_CAPABILITY = new JSONObject();
     public static final JSONArray JSON_ROOF_STATUSES = new JSONArray();
     public static final JSONArray JSON_DOOR_STATUSES = new JSONArray();
     public static final JSONArray JSON_GATE_STATUSES = new JSONArray();
@@ -1100,6 +1108,11 @@ public class TestValues {
         GENERAL_STABILITY_CONTROL_STATUS.setEscSystem(GENERAL_ESC_SYSTEM);
         GENERAL_STABILITY_CONTROL_STATUS.setTrailerSwayControl(GENERAL_S_WAY_CONTROL);
 
+        GENERAL_SUPPORTED_KEYBOARDS_LIST.add(GENERAL_KEYBOARD_LAYOUT_CAPABILITY);
+
+        GENERAL_KEYBOARD_CAPABILITIES.setMaskInputCharactersSupported(TestValues.GENERAL_BOOLEAN);
+        GENERAL_KEYBOARD_CAPABILITIES.setSupportedKeyboards(GENERAL_SUPPORTED_KEYBOARDS_LIST);
+
         GENERAL_APP_CAPABILITY.setVideoStreamingCapability(GENERAL_VIDEOSTREAMINGCAPABILITY);
         GENERAL_APP_CAPABILITY.setAppCapabilityType(GENERAL_APP_CAPABILITY_TYPE);
 
@@ -1128,7 +1141,20 @@ public class TestValues {
         GENERAL_DOOR_STATUS.setStatus(GENERAL_DOOR_STATUS_TYPE);
         GENERAL_DOOR_STATUS_LIST.add(GENERAL_DOOR_STATUS);
 
+        // Climate Data
+        GENERAL_CLIMATEDATA.setAtmosphericPressure(GENERAL_FLOAT);
+        GENERAL_CLIMATEDATA.setCabinTemperature(GENERAL_TEMPERATURE);
+        GENERAL_CLIMATEDATA.setExternalTemperature(GENERAL_TEMPERATURE);
+
         try {
+
+            for (KeyboardLayoutCapability keyboard : GENERAL_SUPPORTED_KEYBOARDS_LIST) {
+                JSON_SUPPORTED_KEYBOARDS_LIST.put(keyboard.serializeJSON());
+            }
+
+            JSON_KEYBOARD_CAPABILITY.put(KeyboardCapabilities.KEY_MASK_INPUT_CHARACTERS_SUPPORTED, GENERAL_BOOLEAN);
+            JSON_KEYBOARD_CAPABILITY.put(KeyboardCapabilities.KEY_SUPPORTED_KEYBOARDS, JSON_SUPPORTED_KEYBOARDS_LIST);
+
 
             JSON_OBJECT_GENERAL_SEATS_OCCUPIED.put(SeatStatus.KEY_SEAT_LOCATION, GENERAL_SEAT_LOCATION.serializeJSON());
             JSON_OBJECT_GENERAL_SEATS_OCCUPIED.put(SeatStatus.KEY_CONDITION_ACTIVE, GENERAL_BOOLEAN);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@
  * disclaimer in the documentation and/or other materials provided with the
  * distribution.
  *
- * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this
- * software without specific prior written permission.
+ * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -32,20 +32,22 @@
 package com.smartdevicelink.proxy.rpc.enums;
 
 /**
- * Enumeration listing possible keyboard layouts.
+ * Enumeration listing possible input character masking.
  *
- * @since SmartDeviceLink 2.3.2
+ * @since SmartDeviceLink 7.1.0
  */
-public enum KeyboardLayout {
-    QWERTY,
-    QWERTZ,
-    AZERTY,
-    /**
-     * @since SmartDeviceLink 7.1.0
-     */
-    NUMERIC;
+public enum KeyboardInputMask {
+    ENABLE_INPUT_KEY_MASK,
+    DISABLE_INPUT_KEY_MASK,
+    USER_CHOICE_INPUT_KEY_MASK;
 
-    public static KeyboardLayout valueForString(String value) {
+    /**
+     * Convert String to KeyboardInputMask
+     *
+     * @param value String
+     * @return KeyboardInputMask
+     */
+    public static KeyboardInputMask valueForString(String value) {
         try {
             return valueOf(value);
         } catch (Exception e) {

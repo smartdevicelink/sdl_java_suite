@@ -32,6 +32,8 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.managers.file.filetypes.SdlArtworkTests;
@@ -70,6 +72,9 @@ public class MenuCellTests {
         menuCell.setVoiceCommands(TestValues.GENERAL_STRING_LIST);
         menuCell.setMenuSelectionListener(menuSelectionListener);
         menuCell.setSubMenuLayout(TestValues.GENERAL_MENU_LAYOUT);
+        menuCell.setSecondaryText(TestValues.GENERAL_STRING);
+        menuCell.setTertiaryText(TestValues.GENERAL_STRING);
+        menuCell.setSecondaryArtwork(TestValues.GENERAL_ARTWORK);
 
         // use getters and assert equality
         assertEquals(menuCell.getTitle(), TestValues.GENERAL_STRING);
@@ -79,6 +84,9 @@ public class MenuCellTests {
         assertEquals(menuCell.getCellId(), TestValues.GENERAL_MENU_MAX_ID);
         assertEquals(menuCell.getParentCellId(), TestValues.GENERAL_MENU_MAX_ID);
         assertEquals(menuCell.getSubMenuLayout(), TestValues.GENERAL_MENU_LAYOUT);
+        assertEquals(menuCell.getSecondaryText(), TestValues.GENERAL_STRING);
+        assertEquals(menuCell.getTertiaryText(), TestValues.GENERAL_STRING);
+        assertEquals(menuCell.getSecondaryArtwork(), TestValues.GENERAL_ARTWORK);
     }
 
     @Test
@@ -101,6 +109,28 @@ public class MenuCellTests {
         assertEquals(menuCell5.getIcon(), TestValues.GENERAL_ARTWORK);
         assertEquals(menuCell5.getSubMenuLayout(), TestValues.GENERAL_MENU_LAYOUT);
         assertEquals(menuCell5.getSubCells(), TestValues.GENERAL_MENUCELL_LIST);
+
+        MenuCell menuCell6 = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
+        assertEquals(menuCell6.getTitle(), TestValues.GENERAL_STRING);
+        assertEquals(menuCell6.getIcon(), TestValues.GENERAL_ARTWORK);
+        assertEquals(menuCell6.getSecondaryText(), TestValues.GENERAL_STRING);
+        assertEquals(menuCell6.getTertiaryText(), TestValues.GENERAL_STRING);
+        assertEquals(menuCell6.getSecondaryArtwork(), TestValues.GENERAL_ARTWORK);
+        assertEquals(menuCell6.getVoiceCommands(), TestValues.GENERAL_STRING_LIST);
+        assertEquals(menuCell6.getMenuSelectionListener(), menuSelectionListener);
+
+        MenuCell menuCell7 = new MenuCell(TestValues.GENERAL_STRING, null, null, null, null, null, menuSelectionListener);
+        assertEquals(menuCell7.getTitle(), TestValues.GENERAL_STRING);
+        assertEquals(menuCell7.getMenuSelectionListener(), menuSelectionListener);
+
+        MenuCell menuCell8 = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, TestValues.GENERAL_MENU_LAYOUT, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_MENUCELL_LIST);
+        assertEquals(menuCell8.getTitle(), TestValues.GENERAL_STRING);
+        assertEquals(menuCell8.getIcon(), TestValues.GENERAL_ARTWORK);
+        assertEquals(menuCell8.getSecondaryText(), TestValues.GENERAL_STRING);
+        assertEquals(menuCell8.getTertiaryText(), TestValues.GENERAL_STRING);
+        assertEquals(menuCell8.getSecondaryArtwork(), TestValues.GENERAL_ARTWORK);
+        assertEquals(menuCell8.getSubMenuLayout(), TestValues.GENERAL_MENU_LAYOUT);
+        assertEquals(menuCell8.getSubCells(), TestValues.GENERAL_MENUCELL_LIST);
     }
 
     @Test
@@ -109,7 +139,13 @@ public class MenuCellTests {
         //We should use assertTrue (or assertFalse) because we want to use the overridden equals() method
 
         MenuCell menuCell = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
+        menuCell.setSecondaryText(TestValues.GENERAL_STRING);
+        menuCell.setTertiaryText(TestValues.GENERAL_STRING);
+        menuCell.setSecondaryArtwork(TestValues.GENERAL_ARTWORK);
         MenuCell menuCell2 = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
+        menuCell2.setSecondaryText(TestValues.GENERAL_STRING);
+        menuCell2.setTertiaryText(TestValues.GENERAL_STRING);
+        menuCell2.setSecondaryArtwork(TestValues.GENERAL_ARTWORK);
 
         // these are the same object, should be equal.
         assertTrue(menuCell.equals(menuCell));
@@ -126,6 +162,9 @@ public class MenuCellTests {
     @Test
     public void testClone() {
         MenuCell original = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
+        original.setSecondaryText(TestValues.GENERAL_STRING);
+        original.setTertiaryText(TestValues.GENERAL_STRING);
+        original.setSecondaryArtwork(TestValues.GENERAL_ARTWORK);
         MenuCell clone = original.clone();
 
         assertNotNull(clone);
@@ -134,8 +173,11 @@ public class MenuCellTests {
         assertEquals(original.getTitle(), clone.getTitle());
         assertEquals(original.getCellId(), clone.getCellId());
         assertEquals(original.getParentCellId(), clone.getParentCellId());
+        assertEquals(original.getSecondaryText(), clone.getSecondaryText());
+        assertEquals(original.getTertiaryText(), clone.getTertiaryText());
 
         SdlArtworkTests.equalTest(original.getIcon(), clone.getIcon());
+        SdlArtworkTests.equalTest(original.getSecondaryArtwork(), clone.getSecondaryArtwork());
 
         //Test subcells
         List<MenuCell> subcells = new ArrayList<>();
