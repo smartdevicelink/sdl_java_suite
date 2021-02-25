@@ -165,14 +165,11 @@ abstract class BaseAlertManager extends BaseSubManager {
             public void onButtonClear(List<SoftButtonObject> softButtonObjectList) {
                 // Stop keeping track of SoftButtonObject listeners as operation has finished
                 for (SoftButtonObject object : softButtonObjectList) {
-                    if (softButtonObjects.contains(object)) {
-                        softButtonObjects.remove(object);
-                    }
+                    softButtonObjects.remove(object);
                 }
             }
         });
         transactionQueue.add(operation, false);
-
     }
 
     /**
