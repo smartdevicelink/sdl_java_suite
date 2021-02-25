@@ -392,14 +392,16 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                         VideoStreamingCapability capabilityToSend = new VideoStreamingCapability();
                         capabilityToSend.setAdditionalVideoStreamingCapabilities(getSupportedCapabilities(castedCapability));
 
+                        if (capabilityToSend.getAdditionalVideoStreamingCapabilities() == null) {
+                            stateMachine.transitionToState(StreamingStateMachine.STOPPED);
+                            return;
+                        }
                         AppCapability appCapability = new AppCapability(AppCapabilityType.VIDEO_STREAMING);
                         appCapability.setVideoStreamingCapability(capabilityToSend);
 
                         OnAppCapabilityUpdated onAppCapabilityUpdated = new OnAppCapabilityUpdated(appCapability);
                         internalInterface.sendRPC(onAppCapabilityUpdated);
-                        if (capabilityToSend.getAdditionalVideoStreamingCapabilities() != null) {
-                            startStreaming(params, isEncrypted);
-                        }
+                        startStreaming(params, isEncrypted);
                     }
 
                     @Override
@@ -825,7 +827,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
             return false;
         }
         if (range == null) {
-            return false;
+            return true;
         }
 
         if (isZeroRange(range)){
