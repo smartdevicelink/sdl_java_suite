@@ -32,6 +32,7 @@
 package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.rpc.enums.KeyboardInputMask;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
@@ -101,6 +102,27 @@ import java.util.List;
  *                 <td>Array = true maxlength = 1000 minsize = 0 maxsize = 100</td>
  * 			<td>Allows an app to prepopulate the text field with a list of suggested or completed entry as the user types. Set to an empty array to remove the auto-complete list from the screen</td>
  * 		</tr>
+ * 		<tr>
+ * 			<td>maskInputCharacters</td>
+ * 			<td>KeyboardInputMask</td>
+ * 			<td>false</td>
+ * 			<td>
+ * 				@since SmartDeviceLink 7.1.0
+ * 			</td>
+ * 			<td>Allows an app to mask entered characters on HMI</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>customKeys</td>
+ * 			<td>List<String></td>
+ * 			<td>false</td>
+ * 			<td>
+ * 				@since SmartDeviceLink 7.1.0
+ * 			</td>
+ * 			<td>
+ * 				Array of special characters to show in customizable keys. If omitted, keyboard will show default special characters 
+ * 				{"string_max_length": 1, "string_min_length": 1, "array_max_size": 10, "array_min_size": 1}
+ * 			</td>
+ * 		</tr>
  *  </table>
  *
  * @since SmartDeviceLink 3.0
@@ -113,6 +135,8 @@ public class KeyboardProperties extends RPCStruct {
     @Deprecated
     public static final String KEY_AUTO_COMPLETE_TEXT = "autoCompleteText";
     public static final String KEY_AUTO_COMPLETE_LIST = "autoCompleteList";
+    public static final String KEY_MASK_INPUT_CHARACTERS = "maskInputCharacters";
+    public static final String KEY_CUSTOM_KEYS = "customKeys";
     public static final String KEY_LANGUAGE = "language";
 
     private static final KeypressMode KEYPRESS_MODE_DEFAULT = KeypressMode.RESEND_CURRENT_ENTRY;
@@ -201,6 +225,7 @@ public class KeyboardProperties extends RPCStruct {
      *
      * @return List<String> representing the suggestions list
      */
+    @SuppressWarnings("unchecked")
     public List<String> getAutoCompleteList() {
         return (List<String>) getObject(String.class, KEY_AUTO_COMPLETE_LIST);
     }
@@ -214,5 +239,52 @@ public class KeyboardProperties extends RPCStruct {
     public KeyboardProperties setAutoCompleteList(List<String> autoCompleteList) {
         setValue(KEY_AUTO_COMPLETE_LIST, autoCompleteList);
         return this;
+    }
+
+    /**
+     * Sets the maskInputCharacters.
+     *
+     * @param maskInputCharacters Allows an app to mask entered characters on HMI
+     * @since SmartDeviceLink 7.1.0
+     */
+    public KeyboardProperties setMaskInputCharacters(KeyboardInputMask maskInputCharacters) {
+        setValue(KEY_MASK_INPUT_CHARACTERS, maskInputCharacters);
+        return this;
+    }
+
+    /**
+     * Gets the maskInputCharacters.
+     *
+     * @return KeyboardInputMask Allows an app to mask entered characters on HMI
+     * @since SmartDeviceLink 7.1.0
+     */
+    public KeyboardInputMask getMaskInputCharacters() {
+        return (KeyboardInputMask) getObject(KeyboardInputMask.class, KEY_MASK_INPUT_CHARACTERS);
+    }
+
+    /**
+     * Sets the customKeys.
+     *
+     * @param customKeys Array of special characters to show in customizable keys. If omitted, keyboard will show
+     * default special characters
+     * {"string_max_length": 1, "string_min_length": 1, "array_max_size": 10, "array_min_size": 1}
+     * @since SmartDeviceLink 7.1.0
+     */
+    public KeyboardProperties setCustomKeys(List<String> customKeys) {
+        setValue(KEY_CUSTOM_KEYS, customKeys);
+        return this;
+    }
+
+    /**
+     * Gets the customKeys.
+     *
+     * @return List<String> Array of special characters to show in customizable keys. If omitted, keyboard will show
+     * default special characters
+     * {"string_max_length": 1, "string_min_length": 1, "array_max_size": 10, "array_min_size": 1}
+     * @since SmartDeviceLink 7.1.0
+     */
+    @SuppressWarnings("unchecked")
+    public List<String> getCustomKeys() {
+        return (List<String>) getObject(String.class, KEY_CUSTOM_KEYS);
     }
 }
