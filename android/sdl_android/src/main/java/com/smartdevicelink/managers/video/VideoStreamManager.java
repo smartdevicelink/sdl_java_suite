@@ -89,7 +89,6 @@ import com.smartdevicelink.util.Version;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.FutureTask;
@@ -793,52 +792,27 @@ public class VideoStreamManager extends BaseVideoStreamManager {
             allCapabilities.add(rootCapability);
         }
 
-        if (this.supportedLandscapeStreamingRange == null && this.supportedPortraitStreamingRange == null){
-            for (VideoStreamingCapability capability: allCapabilities) {
+        for (VideoStreamingCapability capability : allCapabilities) {
+            ImageResolution imageResolution = capability.getPreferredResolution();
+            boolean matches = false;
+            switch (determineResolutionType(imageResolution)) {
+                case SQUARE:
+                    matches = inRange(capability, this.supportedLandscapeStreamingRange) || inRange(capability, this.supportedPortraitStreamingRange);
+                    break;
+                case PORTRAIT:
+                    matches = inRange(capability, this.supportedPortraitStreamingRange);
+                    break;
+                case LANDSCAPE:
+                    matches = inRange(capability, this.supportedLandscapeStreamingRange);
+                    break;
+                default:
+                    break;
+            }
+
+            if (matches) {
                 capability.setAdditionalVideoStreamingCapabilities(null);
-            }
-
-            validCapabilities.addAll(allCapabilities);
-            return validCapabilities;
-        } else if (supportedPortraitStreamingRange == null) {
-            for (VideoStreamingCapability capability : allCapabilities) {
-                if (determineResolutionType(capability.getPreferredResolution()) == ImageResolutionKind.PORTRAIT){
-                    capability.setAdditionalVideoStreamingCapabilities(null);
+                if (!validCapabilities.contains(capability)) {
                     validCapabilities.add(capability);
-                }
-            }
-        } else if (supportedLandscapeStreamingRange == null) {
-            for (VideoStreamingCapability capability : allCapabilities) {
-                if (determineResolutionType(capability.getPreferredResolution()) == ImageResolutionKind.LANDSCAPE) {
-                    capability.setAdditionalVideoStreamingCapabilities(null);
-                    validCapabilities.add(capability);
-                }
-            }
-        } else if (isZeroRange(supportedPortraitStreamingRange) && isZeroRange(supportedLandscapeStreamingRange)) {
-            return null;
-        } else {
-            for (VideoStreamingCapability capability : allCapabilities) {
-                ImageResolution imageResolution = capability.getPreferredResolution();
-                boolean matches = false;
-                switch (determineResolutionType(imageResolution)) {
-                    case SQUARE:
-                        matches = inRange(capability, this.supportedLandscapeStreamingRange) || inRange(capability, this.supportedPortraitStreamingRange);
-                        break;
-                    case PORTRAIT:
-                        matches = inRange(capability, this.supportedPortraitStreamingRange);
-                        break;
-                    case LANDSCAPE:
-                        matches = inRange(capability, this.supportedLandscapeStreamingRange);
-                        break;
-                    default:
-                        break;
-                }
-
-                if (matches) {
-                    capability.setAdditionalVideoStreamingCapabilities(null);
-                    if (!validCapabilities.contains(capability)) {
-                        validCapabilities.add(capability);
-                    }
                 }
             }
         }
@@ -851,6 +825,10 @@ public class VideoStreamManager extends BaseVideoStreamManager {
             return false;
         }
         if (range == null) {
+            return false;
+        }
+
+        if (isZeroRange(range)){
             return false;
         }
 
