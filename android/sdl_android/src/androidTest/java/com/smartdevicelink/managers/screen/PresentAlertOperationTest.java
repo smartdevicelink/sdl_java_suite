@@ -65,6 +65,7 @@ public class PresentAlertOperationTest {
     private List<SpeechCapabilities> speechCapabilities;
     SdlFile testAudio;
     AlertCompletionListener alertCompletionListener;
+    BaseAlertManager.AlertSoftButtonClearListener alertSoftButtonClearListener;
 
     private Answer<Void> onArtworkUploadSuccess = new Answer<Void>() {
         @Override
@@ -115,6 +116,12 @@ public class PresentAlertOperationTest {
         fileManager = mock(FileManager.class);
         task = mock(Task.class);
 
+        alertSoftButtonClearListener = new BaseAlertManager.AlertSoftButtonClearListener() {
+            @Override
+            public void onButtonClear(List<SoftButtonObject> softButtonObjects) {
+
+            }
+        };
         testAlertArtwork = new SdlArtwork();
         testAlertArtwork.setName("testArtwork1");
         Uri uri1 = Uri.parse("android.resource://" + mTestContext.getPackageName() + "/drawable/ic_sdl");
@@ -169,7 +176,7 @@ public class PresentAlertOperationTest {
 
             }
         };
-        presentAlertOperation = new PresentAlertOperation(internalInterface, alertView, defaultMainWindowCapability, speechCapabilities, fileManager, 1, alertCompletionListener);
+        presentAlertOperation = new PresentAlertOperation(internalInterface, alertView, defaultMainWindowCapability, speechCapabilities, fileManager, 1, alertCompletionListener, alertSoftButtonClearListener);
         when(fileManager.fileNeedsUpload(any(SdlFile.class))).thenReturn(true);
     }
 
@@ -180,24 +187,14 @@ public class PresentAlertOperationTest {
 
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
         WindowCapability windowCapability = getWindowCapability(1);
-        PresentAlertOperation presentAlertOperation = new PresentAlertOperation(internalInterface, alertView, windowCapability, speechCapabilities, fileManager, 1, new AlertCompletionListener() {
-            @Override
-            public void onComplete(boolean success, Integer tryAgainTime) {
-
-            }
-        });
+        PresentAlertOperation presentAlertOperation = new PresentAlertOperation(internalInterface, alertView, windowCapability, speechCapabilities, fileManager, 1, alertCompletionListener, alertSoftButtonClearListener);
         Alert alert = presentAlertOperation.alertRpc();
 
         assertEquals(alert.getAlertText1(), alertView.getText() + " - " + alertView.getSecondaryText() + " - " + alertView.getTertiaryText());
 
         windowCapability = getWindowCapability(2);
 
-         presentAlertOperation = new PresentAlertOperation(internalInterface, alertView, windowCapability, speechCapabilities, fileManager, 1, new AlertCompletionListener() {
-            @Override
-            public void onComplete(boolean success, Integer tryAgainTime) {
-
-            }
-        });
+         presentAlertOperation = new PresentAlertOperation(internalInterface, alertView, windowCapability, speechCapabilities, fileManager, 1, alertCompletionListener, alertSoftButtonClearListener);
         alert = presentAlertOperation.alertRpc();
         assertEquals(alert.getAlertText1(), alertView.getText());
         assertEquals(alert.getAlertText2(),alertView.getSecondaryText() + " - " + alertView.getTertiaryText());
@@ -231,7 +228,7 @@ public class PresentAlertOperationTest {
         builder.build();
         AlertView alertView1 = builder.build();
 
-        presentAlertOperation = new PresentAlertOperation(internalInterface, alertView1, defaultMainWindowCapability, speechCapabilities, fileManager, 2, alertCompletionListener);
+        presentAlertOperation = new PresentAlertOperation(internalInterface, alertView1, defaultMainWindowCapability, speechCapabilities, fileManager, 2, alertCompletionListener, alertSoftButtonClearListener);
 
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
 
