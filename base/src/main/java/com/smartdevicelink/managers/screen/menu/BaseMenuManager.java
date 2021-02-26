@@ -212,7 +212,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         // Check for cell lists with completely duplicate information, or any duplicate voiceCommands and return if it fails (logs are in the called method).
         outNumVoiceCommands = null;
         retNumVoiceCommands = 0;
-        if (!menuCellsAreUnique(menuCells, new HashSet<String>())) {
+        if (!menuCellsAreUnique(menuCells, new ArrayList<String>())) {
             return;
         }
 
@@ -1392,9 +1392,8 @@ abstract class BaseMenuManager extends BaseSubManager {
      @param cells The cells you will be adding
      @return Boolean that indicates whether menuCells are unique or not
      */
-    private boolean menuCellsAreUnique(List<MenuCell> cells, HashSet<String> voiceCommandsCheckSet) {
+    private boolean menuCellsAreUnique(List<MenuCell> cells, ArrayList<String> allVoiceCommands) {
         //Check all voice commands for identical items and check each list of cells for identical cells
-        int numVoiceCommands = 0;
         HashSet<MenuCell> identicalCellsCheckSet = new HashSet<>();
 
         for (MenuCell cell : cells) {
@@ -1402,12 +1401,8 @@ abstract class BaseMenuManager extends BaseSubManager {
 
             // Recursively check the subcell lists to see if they are all unique as well. If anything is not, this will chain back up the list to return false.
             if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
-                boolean subCellsAreUnique = menuCellsAreUnique(cell.getSubCells(), voiceCommandsCheckSet);
-                numVoiceCommands += this.retNumVoiceCommands;
+                boolean subCellsAreUnique = menuCellsAreUnique(cell.getSubCells(), allVoiceCommands);
 
-                if (outNumVoiceCommands != null) {
-                    outNumVoiceCommands = numVoiceCommands;
-                }
                 if (!subCellsAreUnique) {
                     DebugTool.logError(TAG, "Not all subCells are unique. The menu will not be set.");
                     return false;
@@ -1418,14 +1413,9 @@ abstract class BaseMenuManager extends BaseSubManager {
             if (cell.getVoiceCommands() == null) {
                 continue;
             }
-            voiceCommandsCheckSet.addAll(cell.getVoiceCommands());
-            numVoiceCommands += cell.getVoiceCommands().size();
+            allVoiceCommands.addAll(cell.getVoiceCommands());
         }
 
-        // Pass back the number of voice commands (the unique list is a mutable list pointer that stays the same) before returning
-        if (outNumVoiceCommands != null) {
-            outNumVoiceCommands = numVoiceCommands;
-        }
 
         // Check for duplicate cells
         if (identicalCellsCheckSet.size() != cells.size()) {
@@ -1434,7 +1424,8 @@ abstract class BaseMenuManager extends BaseSubManager {
         }
 
         // All the VR commands must be unique
-        if (voiceCommandsCheckSet.size() != numVoiceCommands) {
+        HashSet<String> voiceCommandsSet = new HashSet<>(allVoiceCommands);
+        if (allVoiceCommands.size() != voiceCommandsSet.size()) {
             DebugTool.logError(TAG, "Attempted to create a menu with duplicate voice commands. Voice commands must be unique. The menu will not be set");
             return false;
         }
