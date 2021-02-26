@@ -34,16 +34,19 @@
  */
 
 package com.smartdevicelink.managers.screen.choiceset;
-
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
+import com.smartdevicelink.proxy.rpc.KeyboardCapabilities;
+import com.smartdevicelink.proxy.rpc.KeyboardLayoutCapability;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.KeyboardInputMask;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
@@ -55,6 +58,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -323,6 +327,116 @@ public class ChoiceSetManagerTests {
 
         Integer cancelId = partialMockCSM.presentKeyboard("initial text", mock(KeyboardProperties.class), mock(KeyboardListener.class));
         assertNull(cancelId);
+    }
+
+    @Test
+    public void testDefaultWindowCapabilityNotSet() throws NoSuchFieldException, IllegalAccessException {
+        ISdl internalInterface = mock(ISdl.class);
+        when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
+        FileManager fileManager = mock(FileManager.class);
+
+        // Test direct set
+        ChoiceSetManager newCSM = new ChoiceSetManager(internalInterface, fileManager);
+        newCSM.setKeyboardConfiguration(newCSM.defaultKeyboardConfiguration());
+        Field field = BaseChoiceSetManager.class.getDeclaredField("keyboardConfiguration");
+        field.setAccessible(true);
+        KeyboardProperties properties = (KeyboardProperties)field.get(newCSM);
+        assertEquals(properties, csm.defaultKeyboardConfiguration());
+
+        // Test presentKeyboard
+        newCSM = new ChoiceSetManager(internalInterface, fileManager);
+        newCSM.presentKeyboard("qwerty", newCSM.defaultKeyboardConfiguration(), null);
+        field = BaseChoiceSetManager.class.getDeclaredField("keyboardConfiguration");
+        field.setAccessible(true);
+        properties = (KeyboardProperties)field.get(newCSM);
+        assertEquals(properties, csm.defaultKeyboardConfiguration());
+    }
+
+    @Test
+    public void testDefaultWindowCapabilityTooManyKeys() throws NoSuchFieldException, IllegalAccessException {
+        ISdl internalInterface = mock(ISdl.class);
+        when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
+        FileManager fileManager = mock(FileManager.class);
+
+        ChoiceSetManager newCSM = new ChoiceSetManager(internalInterface, fileManager);
+        WindowCapability smallKeysAmountCapability = new WindowCapability();
+        KeyboardCapabilities capabilities = new KeyboardCapabilities();
+        capabilities.setMaskInputCharactersSupported(true);
+        KeyboardLayout layout = KeyboardLayout.QWERTY;
+        capabilities.setSupportedKeyboards(Collections.singletonList(new KeyboardLayoutCapability(layout, 1)));
+        smallKeysAmountCapability.setKeyboardCapabilities(capabilities);
+        newCSM.defaultMainWindowCapability = smallKeysAmountCapability;
+
+        KeyboardProperties setProperties = new KeyboardProperties();
+        setProperties.setKeyboardLayout(layout);
+        setProperties.setCustomKeys(Arrays.asList("1", "2"));
+
+        newCSM.setKeyboardConfiguration(setProperties);
+        Field field = BaseChoiceSetManager.class.getDeclaredField("keyboardConfiguration");
+        field.setAccessible(true);
+
+        KeyboardProperties getProperties = (KeyboardProperties)field.get(newCSM);
+
+        assertEquals(getProperties.getCustomKeys().size(), 1);
+    }
+
+    @Test
+    public void testCustomKeysNull() throws NoSuchFieldException, IllegalAccessException {
+        ISdl internalInterface = mock(ISdl.class);
+        when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
+        FileManager fileManager = mock(FileManager.class);
+
+        ChoiceSetManager newCSM = new ChoiceSetManager(internalInterface, fileManager);
+        WindowCapability smallKeysAmountCapability = new WindowCapability();
+        KeyboardCapabilities capabilities = new KeyboardCapabilities();
+        capabilities.setMaskInputCharactersSupported(true);
+        KeyboardLayout layout = KeyboardLayout.QWERTY;
+        capabilities.setSupportedKeyboards(Collections.singletonList(new KeyboardLayoutCapability(layout, 0)));
+        smallKeysAmountCapability.setKeyboardCapabilities(capabilities);
+        newCSM.defaultMainWindowCapability = smallKeysAmountCapability;
+
+        KeyboardProperties setProperties = new KeyboardProperties();
+        setProperties.setKeyboardLayout(layout);
+        setProperties.setCustomKeys(new ArrayList<String>());
+
+        newCSM.setKeyboardConfiguration(setProperties);
+        Field field = BaseChoiceSetManager.class.getDeclaredField("keyboardConfiguration");
+        field.setAccessible(true);
+
+        KeyboardProperties getProperties = (KeyboardProperties)field.get(newCSM);
+
+        assertNull(getProperties.getCustomKeys());
+    }
+
+    @Test
+    public void testMaskInputCharactersNotSupported() throws NoSuchFieldException, IllegalAccessException {
+        ISdl internalInterface = mock(ISdl.class);
+        when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
+        FileManager fileManager = mock(FileManager.class);
+
+        ChoiceSetManager newCSM = new ChoiceSetManager(internalInterface, fileManager);
+        WindowCapability maskInputNotSupportedCapability = new WindowCapability();
+        KeyboardCapabilities capabilities = new KeyboardCapabilities();
+
+        capabilities.setMaskInputCharactersSupported(false);
+        KeyboardLayout layout = KeyboardLayout.QWERTY;
+        capabilities.setSupportedKeyboards(Collections.singletonList(new KeyboardLayoutCapability(layout, 0)));
+
+        maskInputNotSupportedCapability.setKeyboardCapabilities(capabilities);
+
+        newCSM.defaultMainWindowCapability = maskInputNotSupportedCapability;
+
+        KeyboardProperties setProperties = new KeyboardProperties();
+        setProperties.setKeyboardLayout(layout);
+        setProperties.setMaskInputCharacters(KeyboardInputMask.DISABLE_INPUT_KEY_MASK);
+
+        newCSM.setKeyboardConfiguration(setProperties);
+        Field field = BaseChoiceSetManager.class.getDeclaredField("keyboardConfiguration");
+        field.setAccessible(true);
+
+        KeyboardProperties getProperties = (KeyboardProperties)field.get(newCSM);
+
+        assertNull(getProperties.getMaskInputCharacters());
     }
 
     @Test
