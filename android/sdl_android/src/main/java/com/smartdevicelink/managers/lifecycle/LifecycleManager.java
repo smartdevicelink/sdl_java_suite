@@ -131,6 +131,7 @@ public class LifecycleManager extends BaseLifecycleManager {
      * When it returns it will attempt to store the accepted parameters if available.
      *
      * @param isEncrypted if the service should be encrypted
+     * @param afterPendingRestart specify true when the videoService is starting again after the display has been resized
      * @param parameters  the desired video streaming parameters
      */
     @Override
@@ -153,6 +154,7 @@ public class LifecycleManager extends BaseLifecycleManager {
      * Only information from codecs, width and height are used during video format negotiation.
      *
      * @param isEncrypted Specify true if packets on this service have to be encrypted
+     * @param afterPendingRestart specify true when the videoService is starting again after the display has been resized
      * @param parameters  VideoStreamingParameters that are desired. Does not guarantee this is what will be accepted.
      */
     private void tryStartVideoStream(boolean isEncrypted, VideoStreamingParameters parameters, boolean afterPendingRestart) {

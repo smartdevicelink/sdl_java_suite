@@ -326,6 +326,15 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
     /**
      * Starts streaming a remote display to the module if there is a connected session. This method of streaming requires the device to be on API level 19 or higher
+     * Two ranges (supportedLandscapeStreamingRange and supportedLandscapeStreamingRange) can be provided with image dimension ranges and aspect ratio ranges that your remoteDisplay class supports.
+     * If the module's screen size for your app changes during streaming (i.e. to a collapsed view, split screen, preview mode, or picture-in-picture), your remoteDisplay will be resized to the new screen size.
+     * If either range is `null`, the default is to support all streaming ranges of that format (landscape or portrait).
+     * If you wish to disable support for streaming in a given format (landscape or portrait), set a VideoStreamingRange with all `0` values.
+     *
+     * NOTE If both supportedLandscapeStreamingRange and supportedLandscapeStreamingRange are disabled then the video will not stream.
+     *
+     * Any changes to screen size will notify the onViewResized method you have implemented in your remoteDisplay class.
+     *
      *
      * @param context            a context that can be used to create the remote display
      * @param remoteDisplayClass class object of the remote display. This class will be used to create an instance of the remote display and will be projected to the module
@@ -333,11 +342,11 @@ public class VideoStreamManager extends BaseVideoStreamManager {
      *                           If you are unsure about what parameters to be used it is best to just send null and let the system determine what
      *                           works best for the currently connected module.
      * @param encrypted         a flag of if the stream should be encrypted. Only set if you have a supplied encryption library that the module can understand.
-     * @param landscapeRange    constraints for vehicle display : aspect ratio, min/max resolutions, max diagonal size.
-     * @param portraitRange     constraints for vehicle display : aspect ratio, min/max resolutions, max diagonal size.
+     * @param supportedLandscapeStreamingRange      constraints for vehicle display : min/max aspect ratio, min/max resolutions, max diagonal size.
+     * @param supportedPortraitStreamingRange      constraints for vehicle display : min/max aspect ratio, min/max resolutions, max diagonal size.
      */
-    public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted, VideoStreamingRange landscapeRange, VideoStreamingRange portraitRange) {
-        configureGlobalParameters(context, remoteDisplayClass, isEncrypted, portraitRange, landscapeRange);
+    public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted, VideoStreamingRange supportedLandscapeStreamingRange, VideoStreamingRange supportedPortraitStreamingRange) {
+        configureGlobalParameters(context, remoteDisplayClass, isEncrypted, supportedPortraitStreamingRange, supportedLandscapeStreamingRange);
         if(majorProtocolVersion >= 5 && !internalInterface.getSystemCapabilityManager().isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
             stateMachine.transitionToState(StreamingStateMachine.ERROR);
             return;
@@ -834,11 +843,11 @@ public class VideoStreamManager extends BaseVideoStreamManager {
             return false;
         }
 
-        if (!isImageResolutionInRange(range.getMinResolution(), range.getMaxResolution(), capability.getPreferredResolution())){
+        if (!range.isImageResolutionInRange(capability.getPreferredResolution())){
             return false;
         }
 
-        if (!isAspectRatioInRange(range.getMinAspectRatio(), range.getMaxAspectRatio(), capability.getPreferredResolution())){
+        if (!range.isAspectRatioInRange(capability.getPreferredResolution())){
             return false;
         }
 
@@ -849,7 +858,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
             diagonal = capability.getDiagonalScreenSize();
         }
 
-        if (range.getMinScreenDiagonal() > diagonal) {
+        if (range.getMinimumDiagonal() > diagonal) {
             return false;
         }
 
@@ -857,10 +866,10 @@ public class VideoStreamManager extends BaseVideoStreamManager {
     }
 
     private Boolean isZeroRange(VideoStreamingRange range){
-        if (range == null || range.getMaxResolution() == null || range.getMinResolution() == null){
+        if (range == null || range.getMaximumResolution() == null || range.getMinimumResolution() == null){
             return true;
         }
-        return isZeroResolution(range.getMaxResolution()) && isZeroResolution(range.getMinResolution());
+        return isZeroResolution(range.getMaximumResolution()) && isZeroResolution(range.getMinimumResolution());
     }
 
     private boolean isZeroResolution(Resolution resolution){
@@ -868,39 +877,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
             return true;
         }
         return resolution.getResolutionHeight() != null && resolution.getResolutionWidth() != null && resolution.getResolutionHeight() <= 0 && resolution.getResolutionWidth() <= 0;
-    }
-
-    private Boolean isImageResolutionInRange(Resolution minResolution, Resolution maxResolution, ImageResolution currentResolution) {
-
-        Integer constraintHeightMax = maxResolution.getResolutionHeight();
-        Integer constraintHeightMin = minResolution.getResolutionHeight();
-        Integer constraintWidthMax = maxResolution.getResolutionWidth();
-        Integer constraintWidthMin = minResolution.getResolutionWidth();
-        Integer resolutionHeight = currentResolution.getResolutionHeight();
-        Integer resolutionWidth = currentResolution.getResolutionWidth();
-        if (currentResolution.getResolutionHeight() > 0 && currentResolution.getResolutionWidth() > 0 && constraintHeightMax != null && constraintHeightMin != null) {
-            if (!(resolutionHeight >= constraintHeightMin && resolutionHeight <= constraintHeightMax)) {
-                return false;
-            }
-
-            if (!(resolutionWidth >= constraintWidthMin && resolutionWidth <= constraintWidthMax)) {
-                return false;
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public Boolean isAspectRatioInRange(Double aspectRatioMin, Double aspectRatioMax, ImageResolution currentResolution) {
-
-        Double currentAspectRatio = Double.valueOf(currentResolution.getResolutionWidth()) / Double.valueOf(currentResolution.getResolutionHeight());
-
-        if (aspectRatioMax != null && aspectRatioMin != null && aspectRatioMax > aspectRatioMin && aspectRatioMin > 0) {
-            return currentAspectRatio >= aspectRatioMin && currentAspectRatio <= aspectRatioMax;
-        } else {
-            return false;
-        }
     }
 
     private ImageResolutionKind determineResolutionType(ImageResolution resolution) {
