@@ -32,8 +32,6 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.managers.file.filetypes.SdlArtworkTests;

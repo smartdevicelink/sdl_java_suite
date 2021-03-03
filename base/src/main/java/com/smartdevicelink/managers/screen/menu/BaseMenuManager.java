@@ -107,9 +107,6 @@ abstract class BaseMenuManager extends BaseSubManager {
     private static final int menuCellIdMin = 1;
     int lastMenuId;
 
-    private Integer outNumVoiceCommands;
-    private Integer retNumVoiceCommands;
-
     SystemContext currentSystemContext;
 
     BaseMenuManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
@@ -151,8 +148,6 @@ abstract class BaseMenuManager extends BaseSubManager {
         keepsOld = null;
         menuConfiguration = null;
         sdlMsgVersion = null;
-        outNumVoiceCommands = null;
-        retNumVoiceCommands = 0;
 
         // remove listeners
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
@@ -210,8 +205,6 @@ abstract class BaseMenuManager extends BaseSubManager {
         }
 
         // Check for cell lists with completely duplicate information, or any duplicate voiceCommands and return if it fails (logs are in the called method).
-        outNumVoiceCommands = null;
-        retNumVoiceCommands = 0;
         if (!menuCellsAreUnique(menuCells, new ArrayList<String>())) {
             return;
         }

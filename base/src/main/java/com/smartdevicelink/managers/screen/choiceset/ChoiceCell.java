@@ -35,11 +35,9 @@ package com.smartdevicelink.managers.screen.choiceset;
 import androidx.annotation.NonNull;
 
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
-import com.smartdevicelink.managers.screen.menu.MenuCell;
 import com.smartdevicelink.util.DebugTool;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class ChoiceCell implements Cloneable{
