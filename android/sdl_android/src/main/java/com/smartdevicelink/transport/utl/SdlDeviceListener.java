@@ -107,10 +107,10 @@ public class SdlDeviceListener {
             //This device has connected to SDL previously, it is ok to start the RS right now
             VehicleType vehicleType = null;
             Hashtable<String, Object> store = VehicleTypeHolder.getVehicleTypeFromPrefs(contextWeakReference.get(), connectedDevice.getAddress());
-            if(store != null){
+            if (store != null) {
                 vehicleType = new VehicleType(store);
             }
-            callback.onTransportConnected(contextWeakReference.get(), connectedDevice,vehicleType);
+            callback.onTransportConnected(contextWeakReference.get(), connectedDevice, vehicleType);
             return;
         }
         synchronized (RUNNING_LOCK) {
@@ -187,15 +187,15 @@ public class SdlDeviceListener {
             }
         }
 
-        public void sendStartService(){
+        public void sendStartService() {
             SdlDeviceListener sdlListener = this.provider.get();
             byte[] serviceProbe = SdlPacketFactory.createStartSession(SessionType.RPC, 0x00, (byte)1, (byte)0x00, false).constructPacket();
-            if(sdlListener.bluetoothTransport !=null && sdlListener.bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
-                sdlListener.bluetoothTransport.write(serviceProbe, 0,serviceProbe.length);
+            if (sdlListener.bluetoothTransport != null && sdlListener.bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
+                sdlListener.bluetoothTransport.write(serviceProbe, 0, serviceProbe.length);
             }
         }
 
-        public void onPacketRead(SdlPacket packet){
+        public void onPacketRead(SdlPacket packet) {
             SdlDeviceListener sdlListener = this.provider.get();
             VehicleType vehicleType = null;
             if (packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_ACK) {
@@ -205,20 +205,21 @@ public class SdlDeviceListener {
                 }
                 notifyConnection(vehicleType);
             }
-            byte[] stopService = SdlPacketFactory.createEndSession(SessionType.RPC, (byte)packet.getSessionId(), 0, (byte)packet.getVersion(), 0).constructPacket();
-            if(sdlListener.bluetoothTransport != null && sdlListener.bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
-                sdlListener.bluetoothTransport.write(stopService, 0,stopService.length);
+            int hashID = BitConverter.intFromByteArray(packet.getPayload(), 0);
+            byte[] stopService = SdlPacketFactory.createEndSession(SessionType.RPC, (byte)packet.getSessionId(), 0, (byte)packet.getVersion(), hashID).constructPacket();
+            if (sdlListener.bluetoothTransport != null && sdlListener.bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
+                sdlListener.bluetoothTransport.write(stopService, 0, stopService.length);
             }
             sdlListener.bluetoothTransport.stop();
             sdlListener.bluetoothTransport = null;
             sdlListener.timeoutHandler.removeCallbacks(sdlListener.timeoutRunner);
         }
 
-        private @Nullable VehicleType getVehicleType(SdlPacket packet) {
-            String make = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.MAKE);
-            String model = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.MODEL);
-            String modelYear = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.MODEL_YEAR);
-            String vehicleTrim = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.TRIM);
+        private VehicleType getVehicleType(SdlPacket packet) {
+            String make = (String) packet.getTag(ControlFrameTags.RPC.StartServiceACK.MAKE);
+            String model = (String) packet.getTag(ControlFrameTags.RPC.StartServiceACK.MODEL);
+            String modelYear = (String) packet.getTag(ControlFrameTags.RPC.StartServiceACK.MODEL_YEAR);
+            String vehicleTrim = (String) packet.getTag(ControlFrameTags.RPC.StartServiceACK.TRIM);
             if (make != null) {
                 // checking if tags have come from core
                 VehicleType type = new VehicleType();

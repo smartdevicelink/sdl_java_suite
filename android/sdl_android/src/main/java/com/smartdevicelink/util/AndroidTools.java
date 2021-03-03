@@ -59,7 +59,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.smartdevicelink.util.SdlAppInfo.checkIfVehicleSupported;
 
 public class AndroidTools {
     /**

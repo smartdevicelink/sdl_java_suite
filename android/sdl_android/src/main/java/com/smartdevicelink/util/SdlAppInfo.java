@@ -88,8 +88,19 @@ public class SdlAppInfo {
                 }
 
                 if (metadata.containsKey(SDL_OEM_VEHICLE_TYPE_METADATA)) {
-                    XmlResourceParser parser = context.getResources().getXml(metadata.getInt(SDL_OEM_VEHICLE_TYPE_METADATA));
-                    this.vehicleMakesList = deserializeVehicleMake(parser);
+                    try {
+                        XmlResourceParser parser;
+                        if (!context.getPackageName().equals(packageName)) {
+                            Context appContext = context.createPackageContext(packageName, 0);
+                            parser = appContext.getResources().getXml(metadata.getInt(SDL_OEM_VEHICLE_TYPE_METADATA));
+                        } else {
+                            parser = context.getResources().getXml(metadata.getInt(SDL_OEM_VEHICLE_TYPE_METADATA));
+                        }
+
+                        this.vehicleMakesList = deserializeVehicleMake(parser);
+                    } catch (PackageManager.NameNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 }
             } else {
                 DebugTool.logWarning(TAG, packageName + " has not supplied metadata with their router service!");
@@ -182,7 +193,7 @@ public class SdlAppInfo {
         return vehicleMakesList;
     }
 
-    public static boolean checkIfVehicleSupported(List<VehicleType> supportedVehicleList, VehicleType connectedVehicle){
+    boolean checkIfVehicleSupported(List<VehicleType> supportedVehicleList, VehicleType connectedVehicle) {
         if (supportedVehicleList == null || connectedVehicle == null){
             return false;
         }
@@ -192,11 +203,11 @@ public class SdlAppInfo {
         for (VehicleType supportedVehicle: supportedVehicleList) {
             String supportedVehicleMake = supportedVehicle.getMake();
             String connectedVehicleMake = connectedVehicle.getMake();
-            if(supportedVehicleMake != null && connectedVehicleMake != null && connectedVehicleMake.equalsIgnoreCase(supportedVehicleMake)) {
+            if (supportedVehicleMake != null && connectedVehicleMake != null && connectedVehicleMake.equalsIgnoreCase(supportedVehicleMake)) {
                 String supportedVehicleModel = supportedVehicle.getModel();
                 String connectedVehicleModel = connectedVehicle.getModel();
                 if (supportedVehicleModel != null && connectedVehicleModel != null) {
-                    if(connectedVehicleModel.equalsIgnoreCase(supportedVehicleModel)) {
+                    if (connectedVehicleModel.equalsIgnoreCase(supportedVehicleModel)) {
                         boolean ret = true;
                         String supportedVehicleModelYear = supportedVehicle.getModelYear();
                         String connectedVehicleModelYear = connectedVehicle.getModelYear();
