@@ -142,7 +142,7 @@ public class SdlRouterService extends Service {
     /**
      * <b> NOTE: DO NOT MODIFY THIS UNLESS YOU KNOW WHAT YOU'RE DOING.</b>
      */
-    protected static final int ROUTER_SERVICE_VERSION_NUMBER = 13;
+    protected static final int ROUTER_SERVICE_VERSION_NUMBER = 14;
 
     private static final String ROUTER_SERVICE_PROCESS = "com.smartdevicelink.router";
 
@@ -202,6 +202,7 @@ public class SdlRouterService extends Service {
     private boolean wrongProcess = false;
     private boolean initPassed = false;
     private boolean hasCalledStartForeground = false;
+    boolean firstStart = true;
 
     public static HashMap<String, RegisteredApp> registeredApps;
     private SparseArray<String> bluetoothSessionMap, usbSessionMap, tcpSessionMap;
@@ -1098,6 +1099,20 @@ public class SdlRouterService extends Service {
             DebugTool.logError(TAG, "Service isn't exported. Shutting down");
             return false;
         }
+
+        ComponentName name = new ComponentName(this, this.getClass());
+        SdlAppInfo currentAppInfo = null;
+
+        List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(getApplicationContext(), new SdlAppInfo.BestRouterComparator(), receivedVehicleType);
+        for (SdlAppInfo appInfo : sdlAppInfoList) {
+            if (appInfo.getRouterServiceComponentName().equals(name)) {
+                currentAppInfo = appInfo;
+                break;
+            }
+        }
+        if (!currentAppInfo.checkIfVehicleSupported(currentAppInfo.getVehicleMakesList(), receivedVehicleType)) {
+            return false;
+        }
         return true;
     }
 
@@ -1252,6 +1267,35 @@ public class SdlRouterService extends Service {
     @SuppressLint({"NewApi", "MissingPermission"})
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null && intent.hasExtra(TransportConstants.VEHICLE_INFO)) {
+            receivedVehicleType = new VehicleType(
+                    (HashMap<String, Object>) intent.getSerializableExtra(TransportConstants.VEHICLE_INFO)
+            );
+        }
+        if (firstStart) { // So we only run logic from this classes onCreate once
+            firstStart = false;
+            if (!initCheck()) { // Run checks on process and permissions
+                deployNextRouterService();
+                closeSelf();
+            }
+            initPassed = true;
+
+
+            synchronized (REGISTERED_APPS_LOCK) {
+                registeredApps = new HashMap<String, RegisteredApp>();
+            }
+            closing = false;
+
+            synchronized (SESSION_LOCK) {
+                this.bluetoothSessionMap = new SparseArray<String>();
+                this.sessionHashIdMap = new SparseIntArray();
+                this.cleanedSessionMap = new SparseIntArray();
+            }
+
+            packetExecutor = Executors.newSingleThreadExecutor();
+
+            startUpSequence();
+        }
         if (intent != null) {
             if (intent.getBooleanExtra(FOREGROUND_EXTRA, false)) {
                 hasCalledStartForeground = false;
@@ -1274,12 +1318,6 @@ public class SdlRouterService extends Service {
                 }
 
                 hasCalledStartForeground = true;
-            }
-
-            if (intent.hasExtra(TransportConstants.VEHICLE_INFO)){
-                receivedVehicleType = new VehicleType(
-                        (HashMap<String, Object>)intent.getSerializableExtra(TransportConstants.VEHICLE_INFO)
-                );
             }
 
             if (intent.hasExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA)) {

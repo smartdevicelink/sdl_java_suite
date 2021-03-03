@@ -35,6 +35,7 @@ package com.smartdevicelink.util;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.XmlResourceParser;
 import android.os.Bundle;
@@ -69,6 +70,37 @@ public class SdlAppInfo {
     List<VehicleType> vehicleMakesList = new ArrayList<>();
     long lastUpdateTime;
 
+    @Deprecated
+    public SdlAppInfo(ResolveInfo resolveInfo, PackageInfo packageInfo) {
+        if (resolveInfo.serviceInfo != null) {
+
+            this.packageName = resolveInfo.serviceInfo.packageName;
+            this.routerServiceComponentName = new ComponentName(resolveInfo.serviceInfo.packageName, resolveInfo.serviceInfo.name);
+
+            Bundle metadata = resolveInfo.serviceInfo.metaData;
+            if (metadata != null) {
+
+                if (metadata.containsKey(SDL_ROUTER_VERSION_METADATA)) {
+                    this.routerServiceVersion = metadata.getInt(SDL_ROUTER_VERSION_METADATA);
+                }
+
+                if (metadata.containsKey(SDL_CUSTOM_ROUTER_METADATA)) {
+                    this.isCustomRouterService = metadata.getBoolean(SDL_CUSTOM_ROUTER_METADATA);
+                }
+            } else {
+                DebugTool.logWarning(TAG, packageName + " has not supplied metadata with their router service!");
+            }
+        }
+
+        if (packageInfo != null) {
+            this.lastUpdateTime = packageInfo.lastUpdateTime;
+            if (this.lastUpdateTime <= 0) {
+                this.lastUpdateTime = packageInfo.firstInstallTime;
+            }
+        } else {
+            this.lastUpdateTime = 0;
+        }
+    }
 
     public SdlAppInfo(ResolveInfo resolveInfo, PackageInfo packageInfo, Context context) {
         if (resolveInfo.serviceInfo != null) {
@@ -193,7 +225,7 @@ public class SdlAppInfo {
         return vehicleMakesList;
     }
 
-    boolean checkIfVehicleSupported(List<VehicleType> supportedVehicleList, VehicleType connectedVehicle) {
+    public boolean checkIfVehicleSupported(List<VehicleType> supportedVehicleList, VehicleType connectedVehicle) {
         if (supportedVehicleList == null || connectedVehicle == null){
             return false;
         }
@@ -232,6 +264,11 @@ public class SdlAppInfo {
         }
         return false;
     }
+
+    public List<VehicleType> getVehicleMakesList() {
+        return vehicleMakesList;
+    }
+
     /**
      * This comparator will sort a list to find the best router service to start out of the known SDL enabled apps
      */

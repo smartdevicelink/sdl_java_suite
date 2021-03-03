@@ -36,6 +36,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -45,9 +46,14 @@ import android.content.pm.ServiceInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.BatteryManager;
+import android.util.Log;
 
+import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.transport.TransportConstants;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -57,10 +63,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 
 
 public class AndroidTools {
+
+    private static final String SDL_DEVICE_VEHICLES_PREFS = "sdl.device.vehicles";
+    private static final String TAG = "VehicleTypeHolder";
+    private static final Object LOCK = new Object();
+
     /**
      * Check to see if a component is exported
      *
@@ -99,7 +111,6 @@ public class AndroidTools {
         return sdlMultiList;
     }
 
-
     /**
      * Finds all SDL apps via their SdlRouterService manifest entry. It will return the metadata associated with that router service.
      *
@@ -107,7 +118,8 @@ public class AndroidTools {
      * @param comparator the Comparator to sort the resulting list. If null is supplied, they will be returned as they are from the system
      * @return the sorted list of SdlAppInfo objects that represent SDL apps
      */
-    public static List<SdlAppInfo> querySdlAppInfo(Context context, Comparator<SdlAppInfo> comparator, VehicleType type) {
+    @Deprecated
+    public static List<SdlAppInfo> querySdlAppInfo(Context context, Comparator<SdlAppInfo> comparator) {
         List<SdlAppInfo> sdlAppInfoList = new ArrayList<>();
         Intent intent = new Intent(TransportConstants.ROUTER_SERVICE_ACTION);
         List<ResolveInfo> resolveInfoList = context.getPackageManager().queryIntentServices(intent, PackageManager.GET_META_DATA);
@@ -120,10 +132,7 @@ public class AndroidTools {
                     PackageInfo packageInfo;
                     try {
                         packageInfo = packageManager.getPackageInfo(info.serviceInfo.packageName, 0);
-                        SdlAppInfo appInformation = new SdlAppInfo(info, packageInfo, context);
-                        if (type == null || appInformation.vehicleMakesList.isEmpty() || checkIfVehicleSupported(appInformation.vehicleMakesList,type)) {
-                            sdlAppInfoList.add(appInformation);
-                        }
+                        sdlAppInfoList.add(new SdlAppInfo(info, packageInfo, context));
                     } catch (NameNotFoundException e) {
                         //Package was not found, likely a sign the resolve info can't be trusted.
                     }
@@ -136,6 +145,58 @@ public class AndroidTools {
             }
         }
 
+        return sdlAppInfoList;
+    }
+
+    /**
+     * Finds all SDL apps via their SdlRouterService manifest entry. It will return the metadata associated with that router service.
+     *
+     * @param context    a context instance to obtain the package manager
+     * @param comparator the Comparator to sort the resulting list. If null is supplied, they will be returned as they are from the system
+     * @return the sorted list of SdlAppInfo objects that represent SDL apps
+     */
+    public static List<SdlAppInfo> querySdlAppInfo(Context context, Comparator<SdlAppInfo> comparator, VehicleType type) {
+        List<SdlAppInfo> sdlAppInfoList = new ArrayList<>();
+        Intent intent = new Intent(TransportConstants.ROUTER_SERVICE_ACTION);
+        List<ResolveInfo> resolveInfoList = context.getPackageManager().queryIntentServices(intent, PackageManager.GET_META_DATA);
+        boolean oldRouterService = false;
+
+        if (resolveInfoList != null && resolveInfoList.size() > 0) {
+            PackageManager packageManager = context.getPackageManager();
+            if (packageManager != null) {
+
+                for (ResolveInfo info : resolveInfoList) {
+                    PackageInfo packageInfo;
+                    try {
+                        packageInfo = packageManager.getPackageInfo(info.serviceInfo.packageName, 0);
+                        SdlAppInfo appInformation = new SdlAppInfo(info, packageInfo, context);
+                        if (appInformation.routerServiceVersion < 14) {
+                            oldRouterService = true;
+                        }
+                        sdlAppInfoList.add(appInformation);
+
+                    } catch (NameNotFoundException e) {
+                        //Package was not found, likely a sign the resolve info can't be trusted.
+                    }
+
+                }
+            }
+
+            List<SdlAppInfo> sdlAppInfoListVehicleType = new ArrayList<>();
+
+            if (!oldRouterService) {
+                for (SdlAppInfo appInformation : sdlAppInfoList) {
+                    if (type == null || appInformation.vehicleMakesList.isEmpty() || appInformation.checkIfVehicleSupported(appInformation.vehicleMakesList, type)) {
+                        sdlAppInfoListVehicleType.add(appInformation);
+                    }
+                }
+                sdlAppInfoList = sdlAppInfoListVehicleType;
+            }
+
+            if (comparator != null) {
+                Collections.sort(sdlAppInfoList, comparator);
+            }
+        }
         return sdlAppInfoList;
     }
 
@@ -208,5 +269,43 @@ public class AndroidTools {
             return 0 != (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE);
         }
         return false;
+    }
+
+    public static void saveVehicleType(Context context, VehicleType vehicleType, String address) {
+        synchronized (LOCK) {
+
+            if (vehicleType == null || address == null) {
+                return;
+            }
+            try {
+                SharedPreferences preferences = context.getSharedPreferences(SDL_DEVICE_VEHICLES_PREFS, Context.MODE_PRIVATE);
+
+                String jsonString = vehicleType.serializeJSON().toString();
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString(address, jsonString);
+                editor.commit();
+            } catch (JSONException e) {
+                android.util.Log.e(TAG, e.getMessage());
+            }
+        }
+    }
+
+    public static Hashtable<String, Object> getVehicleTypeFromPrefs(Context context, String address) {
+        synchronized (LOCK) {
+            try {
+                SharedPreferences preferences = context.getSharedPreferences(SDL_DEVICE_VEHICLES_PREFS, Context.MODE_PRIVATE);
+                String storedVehicleTypeSerialized = preferences.getString(address, null);
+
+                if (storedVehicleTypeSerialized == null) {
+                    return null;
+                } else {
+                    JSONObject object = new JSONObject(storedVehicleTypeSerialized);
+                    return JsonRPCMarshaller.deserializeJSONObject(object);
+                }
+            } catch (JSONException e) {
+                Log.e(TAG, e.getMessage());
+                return null;
+            }
+        }
     }
 }

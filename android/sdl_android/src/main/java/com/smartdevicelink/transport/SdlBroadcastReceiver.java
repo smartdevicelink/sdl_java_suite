@@ -60,6 +60,7 @@ import com.smartdevicelink.util.SdlAppInfo;
 import com.smartdevicelink.util.ServiceFinder;
 
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
@@ -245,6 +246,12 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
             serviceIntent.putExtra(TransportConstants.CONFIRMED_SDL_DEVICE, confirmedDevice);
         }
 
+        if (vehicleType == null) {
+            Hashtable<String, Object> store = AndroidTools.getVehicleTypeFromPrefs(context, device.getAddress());
+            if (store != null) {
+                vehicleType = new VehicleType(store);
+            }
+        }
         if (vehicleType != null) {
             serviceIntent.putExtra(TransportConstants.VEHICLE_INFO, vehicleType.getStore());
         }
