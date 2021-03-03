@@ -847,7 +847,9 @@ public class VideoStreamManager extends BaseVideoStreamManager {
             return false;
         }
 
-        if (!range.isAspectRatioInRange(capability.getPreferredResolution())){
+        ImageResolution resolution = capability.getPreferredResolution();
+        Double currentAspectRatio = Double.valueOf(resolution.getResolutionWidth()) / Double.valueOf(resolution.getResolutionHeight());
+        if (!range.isAspectRatioInRange(currentAspectRatio)){
             return false;
         }
 

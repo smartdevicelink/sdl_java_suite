@@ -87,12 +87,9 @@ public class VideoStreamingRange {
         }
     }
 
-    public Boolean isAspectRatioInRange(ImageResolution currentResolution) {
-
-        Double currentAspectRatio = Double.valueOf(currentResolution.getResolutionWidth()) / Double.valueOf(currentResolution.getResolutionHeight());
-
+    public Boolean isAspectRatioInRange(Double aspectRatio) {
         if (maximumAspectRatio != null && minimumAspectRatio != null && maximumAspectRatio > minimumAspectRatio && minimumAspectRatio > 0) {
-            return currentAspectRatio >= minimumAspectRatio && currentAspectRatio <= maximumAspectRatio;
+            return aspectRatio >= minimumAspectRatio && aspectRatio <= maximumAspectRatio;
         } else {
             return false;
         }
