@@ -227,7 +227,7 @@ public class SdlAppInfo {
 
     public boolean checkIfVehicleSupported(List<VehicleType> supportedVehicleList, VehicleType connectedVehicle) {
         if (supportedVehicleList == null || connectedVehicle == null){
-            return false;
+            return true;
         }
         if (supportedVehicleList.contains(connectedVehicle)){
             return true;

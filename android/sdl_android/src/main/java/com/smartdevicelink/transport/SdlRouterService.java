@@ -1140,7 +1140,6 @@ public class SdlRouterService extends Service {
         if (!initCheck()) { // Run checks on process and permissions
             deployNextRouterService();
             closeSelf();
-            return;
         }
         initPassed = true;
 
