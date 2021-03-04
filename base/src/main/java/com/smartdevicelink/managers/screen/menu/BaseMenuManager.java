@@ -962,8 +962,8 @@ abstract class BaseMenuManager extends BaseSubManager {
     private AddCommand commandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position) {
 
         MenuParams params = new MenuParams(cell.getUniqueTitle());
-        params.setSecondaryText(cell.getSecondaryText());
-        params.setTertiaryText(cell.getTertiaryText());
+        params.setSecondaryText((cell.getSecondaryText() != null && cell.getSecondaryText().length() == 0) ? null : cell.getSecondaryText());
+        params.setTertiaryText((cell.getTertiaryText() != null && cell.getTertiaryText().length() == 0) ? null : cell.getTertiaryText());
         params.setParentID(cell.getParentCellId() != MAX_ID ? cell.getParentCellId() : null);
         params.setPosition(position);
 
@@ -982,8 +982,8 @@ abstract class BaseMenuManager extends BaseSubManager {
 
     private AddSubMenu subMenuCommandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position) {
         AddSubMenu subMenu = new AddSubMenu(cell.getCellId(), cell.getUniqueTitle());
-        subMenu.setSecondaryText(cell.getSecondaryText());
-        subMenu.setTertiaryText(cell.getTertiaryText());
+        subMenu.setSecondaryText((cell.getSecondaryText() != null && cell.getSecondaryText().length() == 0) ? null : cell.getSecondaryText());
+        subMenu.setTertiaryText((cell.getTertiaryText() != null && cell.getTertiaryText().length() == 0) ? null : cell.getTertiaryText());
         subMenu.setPosition(position);
         if (cell.getSubMenuLayout() != null) {
             subMenu.setMenuLayout(cell.getSubMenuLayout());
