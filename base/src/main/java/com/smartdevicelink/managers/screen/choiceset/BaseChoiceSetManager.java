@@ -66,7 +66,9 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -196,9 +198,12 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             return;
         }
 
-        final HashSet<ChoiceCell> choicesToUpload = new HashSet<>(choices);
-        choicesToUpload.removeAll(preloadedChoices);
-        choicesToUpload.removeAll(pendingPreloadChoices);
+        LinkedHashSet<ChoiceCell> mutableChoicesToUpload = getChoicesToBeUploadedWithArray(choices);
+
+        mutableChoicesToUpload.removeAll(preloadedChoices);
+        mutableChoicesToUpload.removeAll(pendingPreloadChoices);
+
+        final LinkedHashSet<ChoiceCell> choicesToUpload = (LinkedHashSet<ChoiceCell>) mutableChoicesToUpload.clone();
 
         if (choicesToUpload.size() == 0) {
             if (listener != null) {
@@ -529,7 +534,40 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         return choicesSet;
     }
 
-    void updateIdsOnChoices(HashSet<ChoiceCell> choices) {
+    /**
+     * Checks if 2 or more cells have the same text/title. In case this condition is true, this function will handle the presented issue by adding "(count)".
+     * E.g. Choices param contains 2 cells with text/title "Address" will be handled by updating the uniqueText/uniqueTitle of the second cell to "Address (2)".
+     * @param choices The list of choiceCells to be uploaded.
+     */
+    void addUniqueNamesToCells(LinkedHashSet<ChoiceCell> choices) {
+        HashMap<String, Integer> dictCounter = new HashMap<>();
+
+        for (ChoiceCell cell : choices) {
+            String cellName = cell.getText();
+            Integer counter = dictCounter.get(cellName);
+
+            if (counter != null) {
+                dictCounter.put(cellName, ++counter);
+                cell.setUniqueText(cell.getText() + " (" + counter + ")");
+            } else {
+                dictCounter.put(cellName, 1);
+            }
+        }
+    }
+
+    private LinkedHashSet<ChoiceCell> getChoicesToBeUploadedWithArray(List<ChoiceCell> choices) {
+        LinkedHashSet<ChoiceCell> choiceSet = new LinkedHashSet<>(choices);
+        // If we're running on a connection < RPC 7.1, we need to de-duplicate cells because presenting them will fail if we have the same cell primary text.
+        if (choices != null && internalInterface.getSdlMsgVersion() != null
+                && (internalInterface.getSdlMsgVersion().getMajorVersion() < 7
+                || (internalInterface.getSdlMsgVersion().getMajorVersion() == 7 && internalInterface.getSdlMsgVersion().getMinorVersion() == 0))) {
+            addUniqueNamesToCells(choiceSet);
+        }
+        choiceSet.removeAll(preloadedChoices);
+        return choiceSet;
+    }
+
+    void updateIdsOnChoices(LinkedHashSet<ChoiceCell> choices) {
         for (ChoiceCell cell : choices) {
             cell.setChoiceId(this.nextChoiceId);
             this.nextChoiceId++;
@@ -650,14 +688,14 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             }
         }
 
-        HashSet<String> choiceTextSet = new HashSet<>();
+        HashSet<ChoiceCell> uniqueChoiceCells = new HashSet<>();
         HashSet<String> uniqueVoiceCommands = new HashSet<>();
         int allVoiceCommandsCount = 0;
         int choiceCellWithVoiceCommandCount = 0;
 
         for (ChoiceCell cell : choices) {
 
-            choiceTextSet.add(cell.getText());
+            uniqueChoiceCells.add(cell);
 
             if (cell.getVoiceCommands() != null) {
                 uniqueVoiceCommands.addAll(cell.getVoiceCommands());
@@ -666,9 +704,8 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             }
         }
 
-        // Cell text MUST be unique
-        if (choiceTextSet.size() < choices.size()) {
-            DebugTool.logError(TAG, "Attempted to create a choice set with duplicate cell text. Cell text must be unique. The choice set will not be set.");
+        if (uniqueChoiceCells.size() != choices.size()) {
+            DebugTool.logError(TAG, "Attempted to create a choice set with a duplicate cell. Cell must have a unique value other than its primary text. The choice set will not be set.");
             return false;
         }
 

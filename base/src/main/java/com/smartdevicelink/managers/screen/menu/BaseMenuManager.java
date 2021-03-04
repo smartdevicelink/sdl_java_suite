@@ -74,6 +74,7 @@ import org.json.JSONException;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -174,6 +175,13 @@ abstract class BaseMenuManager extends BaseSubManager {
         // Create a deep copy of the list so future changes by developers don't affect the algorithm logic
         List<MenuCell> clonedCells = cloneMenuCellsList(cells);
 
+        // If we're running on a connection < RPC 7.1, we need to de-duplicate cells because presenting them will fail if we have the same cell primary text.
+        if (clonedCells != null && internalInterface.getSdlMsgVersion() != null
+                && (internalInterface.getSdlMsgVersion().getMajorVersion() < 7
+                || (internalInterface.getSdlMsgVersion().getMajorVersion() == 7 && internalInterface.getSdlMsgVersion().getMinorVersion() == 0))) {
+            addUniqueNamesToCells(clonedCells);
+        }
+
         if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE) || currentSystemContext.equals(SystemContext.SYSCTXT_MENU)) {
             // We are in NONE or the menu is in use, bail out of here
             waitingOnHMIUpdate = true;
@@ -196,27 +204,8 @@ abstract class BaseMenuManager extends BaseSubManager {
             menuCells.addAll(clonedCells);
         }
 
-        // HashSet order doesnt matter / does not allow duplicates
-        HashSet<String> titleCheckSet = new HashSet<>();
-        HashSet<String> allMenuVoiceCommands = new HashSet<>();
-        int voiceCommandCount = 0;
-
-        for (MenuCell cell : menuCells) {
-            titleCheckSet.add(cell.getTitle());
-            if (cell.getVoiceCommands() != null) {
-                allMenuVoiceCommands.addAll(cell.getVoiceCommands());
-                voiceCommandCount += cell.getVoiceCommands().size();
-            }
-        }
-        // Check for duplicate titles
-        if (titleCheckSet.size() != menuCells.size()) {
-            DebugTool.logError(TAG, "Not all cell titles are unique. The menu will not be set");
-            return;
-        }
-
-        // Check for duplicate voice commands
-        if (allMenuVoiceCommands.size() != voiceCommandCount) {
-            DebugTool.logError(TAG, "Attempted to create a menu with duplicate voice commands. Voice commands must be unique. The menu will not be set");
+        // Check for cell lists with completely duplicate information, or any duplicate voiceCommands and return if it fails (logs are in the called method).
+        if (!menuCellsAreUnique(menuCells, new ArrayList<String>())) {
             return;
         }
 
@@ -972,7 +961,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
     private AddCommand commandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position) {
 
-        MenuParams params = new MenuParams(cell.getTitle());
+        MenuParams params = new MenuParams(cell.getUniqueTitle());
         params.setSecondaryText(cell.getSecondaryText());
         params.setTertiaryText(cell.getTertiaryText());
         params.setParentID(cell.getParentCellId() != MAX_ID ? cell.getParentCellId() : null);
@@ -992,7 +981,7 @@ abstract class BaseMenuManager extends BaseSubManager {
     }
 
     private AddSubMenu subMenuCommandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position) {
-        AddSubMenu subMenu = new AddSubMenu(cell.getCellId(), cell.getTitle());
+        AddSubMenu subMenu = new AddSubMenu(cell.getCellId(), cell.getUniqueTitle());
         subMenu.setSecondaryText(cell.getSecondaryText());
         subMenu.setTertiaryText(cell.getTertiaryText());
         subMenu.setPosition(position);
@@ -1368,5 +1357,72 @@ abstract class BaseMenuManager extends BaseSubManager {
             clone.add(menuCell.clone());
         }
         return clone;
+    }
+
+    private void addUniqueNamesToCells(List<MenuCell> cells) {
+        HashMap<String, Integer> dictCounter = new HashMap<>();
+
+        for (MenuCell cell : cells) {
+            String cellName = cell.getTitle();
+            Integer counter = dictCounter.get(cellName);
+
+            if (counter != null) {
+                dictCounter.put(cellName, ++counter);
+                cell.setUniqueTitle(cellName + " (" + counter + ")");
+            } else {
+                dictCounter.put(cellName, 1);
+            }
+
+            if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
+                addUniqueNamesToCells(cell.getSubCells());
+            }
+        }
+    }
+
+    /**
+     Check for cell lists with completely duplicate information, or any duplicate voiceCommands
+
+     @param cells The cells you will be adding
+     @return Boolean that indicates whether menuCells are unique or not
+     */
+    private boolean menuCellsAreUnique(List<MenuCell> cells, ArrayList<String> allVoiceCommands) {
+        //Check all voice commands for identical items and check each list of cells for identical cells
+        HashSet<MenuCell> identicalCellsCheckSet = new HashSet<>();
+
+        for (MenuCell cell : cells) {
+            identicalCellsCheckSet.add(cell);
+
+            // Recursively check the subcell lists to see if they are all unique as well. If anything is not, this will chain back up the list to return false.
+            if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
+                boolean subCellsAreUnique = menuCellsAreUnique(cell.getSubCells(), allVoiceCommands);
+
+                if (!subCellsAreUnique) {
+                    DebugTool.logError(TAG, "Not all subCells are unique. The menu will not be set.");
+                    return false;
+                }
+            }
+
+            // Voice commands have to be identical across all lists
+            if (cell.getVoiceCommands() == null) {
+                continue;
+            }
+            allVoiceCommands.addAll(cell.getVoiceCommands());
+        }
+
+
+        // Check for duplicate cells
+        if (identicalCellsCheckSet.size() != cells.size()) {
+            DebugTool.logError(TAG, "Not all cells are unique. The menu will not be set.");
+            return false;
+        }
+
+        // All the VR commands must be unique
+        HashSet<String> voiceCommandsSet = new HashSet<>(allVoiceCommands);
+        if (allVoiceCommands.size() != voiceCommandsSet.size()) {
+            DebugTool.logError(TAG, "Attempted to create a menu with duplicate voice commands. Voice commands must be unique. The menu will not be set");
+            return false;
+        }
+
+        return true;
     }
 }
