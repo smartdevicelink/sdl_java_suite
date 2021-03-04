@@ -167,7 +167,8 @@ class UploadFileOperation extends Task {
                     .setPersistentFile(file.isPersistent())
                     .setSystemFile(false)
                     .setOffset(currentOffset)
-                    .setLength(putFileLength);
+                    .setLength(putFileLength)
+                    .setCRC(file.getFileData());
             putFile.setBulkData(putFileBulkData);
             putFile.setOnRPCResponseListener(new OnRPCResponseListener() {
                 @Override
@@ -238,7 +239,8 @@ class UploadFileOperation extends Task {
                 .setPersistentFile(file.isPersistent())
                 .setSystemFile(false)
                 .setOffset(fileSize)
-                .setLength(fileSize);
+                .setLength(fileSize)
+                .setCRC(file.getFileData());
 
         if (putFile != null && putFile.getStore() != null) {
             maxJSONSize = putFile.getStore().toString().getBytes().length;
