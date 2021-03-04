@@ -401,7 +401,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                         VideoStreamingCapability capabilityToSend = new VideoStreamingCapability();
                         capabilityToSend.setAdditionalVideoStreamingCapabilities(getSupportedCapabilities(castedCapability));
 
-                        if (capabilityToSend.getAdditionalVideoStreamingCapabilities() == null) {
+                        if (capabilityToSend.getAdditionalVideoStreamingCapabilities() == null || capabilityToSend.getAdditionalVideoStreamingCapabilities().isEmpty()) {
                             stateMachine.transitionToState(StreamingStateMachine.STOPPED);
                             return;
                         }
@@ -843,8 +843,10 @@ public class VideoStreamManager extends BaseVideoStreamManager {
             return false;
         }
 
-        if (!range.isImageResolutionInRange(capability.getPreferredResolution())){
-            return false;
+        if (range.getMinimumResolution() != null || range.getMaximumResolution() != null) {
+            if (!range.isImageResolutionInRange(capability.getPreferredResolution())) {
+                return false;
+            }
         }
 
         ImageResolution resolution = capability.getPreferredResolution();
@@ -860,7 +862,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
             diagonal = capability.getDiagonalScreenSize();
         }
 
-        if (range.getMinimumDiagonal() > diagonal) {
+        if (range.getMinimumDiagonal() != null && range.getMinimumDiagonal() > diagonal) {
             return false;
         }
 
@@ -869,14 +871,14 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
     private Boolean isZeroRange(VideoStreamingRange range){
         if (range == null || range.getMaximumResolution() == null || range.getMinimumResolution() == null){
-            return true;
+            return false;
         }
         return isZeroResolution(range.getMaximumResolution()) && isZeroResolution(range.getMinimumResolution());
     }
 
     private boolean isZeroResolution(Resolution resolution){
         if (resolution == null) {
-            return true;
+            return false;
         }
         return resolution.getResolutionHeight() != null && resolution.getResolutionWidth() != null && resolution.getResolutionHeight() <= 0 && resolution.getResolutionWidth() <= 0;
     }

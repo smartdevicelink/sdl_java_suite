@@ -73,6 +73,23 @@ public class VideoStreamingRange {
         Integer constraintWidthMin = minimumResolution.getResolutionWidth();
         Integer resolutionHeight = currentResolution.getResolutionHeight();
         Integer resolutionWidth = currentResolution.getResolutionWidth();
+
+        if (currentResolution == null) {
+            return false;
+        }
+
+        if (minimumResolution == null && maximumResolution == null) {
+            return true;
+        }
+
+        if (minimumResolution == null || (minimumResolution.getResolutionWidth() == 0 && minimumResolution.getResolutionHeight() == 0)) {
+            return false;
+        }
+
+        if (maximumResolution != null || (maximumResolution.getResolutionWidth() == 0 && maximumResolution.getResolutionHeight() == 0)) {
+            return false;
+        }
+
         if (currentResolution.getResolutionHeight() > 0 && currentResolution.getResolutionWidth() > 0 && constraintHeightMax != null && constraintHeightMin != null) {
             if (!(resolutionHeight >= constraintHeightMin && resolutionHeight <= constraintHeightMax)) {
                 return false;
@@ -88,11 +105,18 @@ public class VideoStreamingRange {
     }
 
     public Boolean isAspectRatioInRange(Double aspectRatio) {
-        if (maximumAspectRatio != null && minimumAspectRatio != null && maximumAspectRatio > minimumAspectRatio && minimumAspectRatio > 0) {
-            return aspectRatio >= minimumAspectRatio && aspectRatio <= maximumAspectRatio;
-        } else {
-            return false;
+        if (maximumAspectRatio == null && minimumAspectRatio == null) {
+            return true;
         }
+
+        boolean isInRange = true;
+        if (minimumAspectRatio != null) {
+            isInRange = aspectRatio >= minimumAspectRatio;
+        }
+        if (isInRange && maximumAspectRatio != null) {
+            isInRange = aspectRatio <= maximumAspectRatio;
+        }
+        return isInRange;
     }
 
 }
