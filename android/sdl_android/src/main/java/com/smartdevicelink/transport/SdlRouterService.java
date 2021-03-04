@@ -1135,29 +1135,6 @@ public class SdlRouterService extends Service {
             hasCalledStartForeground = true;
             resetForegroundTimeOut(FOREGROUND_TIMEOUT / 1000);
         }
-
-
-        if (!initCheck()) { // Run checks on process and permissions
-            deployNextRouterService();
-            closeSelf();
-        }
-        initPassed = true;
-
-
-        synchronized (REGISTERED_APPS_LOCK) {
-            registeredApps = new HashMap<String, RegisteredApp>();
-        }
-        closing = false;
-
-        synchronized (SESSION_LOCK) {
-            this.bluetoothSessionMap = new SparseArray<String>();
-            this.sessionHashIdMap = new SparseIntArray();
-            this.cleanedSessionMap = new SparseIntArray();
-        }
-
-        packetExecutor = Executors.newSingleThreadExecutor();
-
-        startUpSequence();
     }
 
     /**
