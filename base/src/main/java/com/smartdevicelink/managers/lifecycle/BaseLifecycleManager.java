@@ -40,6 +40,7 @@ import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.ServiceEncryptionListener;
+import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -1098,6 +1099,11 @@ abstract class BaseLifecycleManager {
         @Override
         public SystemCapabilityManager getSystemCapabilityManager() {
             return BaseLifecycleManager.this.systemCapabilityManager;
+        }
+
+        @Override
+        public PermissionManager getPermissionManager() {
+            return null;
         }
     };
 

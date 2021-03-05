@@ -102,7 +102,8 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     int nextChoiceId;
     int nextCancelId;
     final int choiceCellIdMin = 1;
-    final int choiceCellCancelIdMin = 1;
+    private final int choiceCellCancelIdMin = 101;
+    private final int choiceCellCancelIdMax = 200;
     boolean isVROptional;
 
     BaseChoiceSetManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
@@ -365,11 +366,11 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         if (keyboardListener == null) {
             // Non-searchable choice set
             DebugTool.logInfo(TAG, "Creating non-searchable choice set");
-            presentOp = new PresentChoiceSetOperation(internalInterface, pendingPresentationSet, mode, null, null, privateChoiceListener, nextCancelId++);
+            presentOp = new PresentChoiceSetOperation(internalInterface, pendingPresentationSet, mode, null, null, privateChoiceListener, getNextCancelId());
         } else {
             // Searchable choice set
             DebugTool.logInfo(TAG, "Creating searchable choice set");
-            presentOp = new PresentChoiceSetOperation(internalInterface, pendingPresentationSet, mode, keyboardConfiguration, keyboardListener, privateChoiceListener, nextCancelId++);
+            presentOp = new PresentChoiceSetOperation(internalInterface, pendingPresentationSet, mode, keyboardConfiguration, keyboardListener, privateChoiceListener, getNextCancelId());
         }
 
         transactionQueue.add(presentOp, false);
@@ -412,7 +413,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         // Present a keyboard with the choice set that we used to test VR's optional state
         DebugTool.logInfo(TAG, "Presenting Keyboard - Choice Set Manager");
-        Integer keyboardCancelID = nextCancelId++;
+        Integer keyboardCancelID = getNextCancelId();
         PresentKeyboardOperation keyboardOp = new PresentKeyboardOperation(internalInterface, keyboardConfiguration, initialText, customKeyboardConfig, listener, keyboardCancelID);
         currentlyPresentedKeyboardOperation = keyboardOp;
         transactionQueue.add(keyboardOp, false);
@@ -729,5 +730,19 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         defaultProperties.setKeyboardLayout(KeyboardLayout.QWERTY);
         defaultProperties.setKeypressMode(KeypressMode.RESEND_CURRENT_ENTRY);
         return defaultProperties;
+    }
+
+    /**
+     * Checks and increments the cancelID to keep in in a defined range
+     *
+     * @return an integer for cancelId to be sent to operations.
+     */
+    private int getNextCancelId() {
+        if (nextCancelId >= choiceCellCancelIdMax) {
+            nextCancelId = choiceCellCancelIdMin;
+        } else {
+            nextCancelId++;
+        }
+        return nextCancelId;
     }
 }

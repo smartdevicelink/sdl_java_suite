@@ -108,6 +108,41 @@ public class ManagerUtility {
         }
 
         /**
+         * Method to get number of alert textFields allowed to be set according to WindowCapability
+         *
+         * @param windowCapability WindowCapability representing the capabilities of the desired window
+         * @return linesFound Number of alert textFields found in WindowCapability
+         */
+        public static int getMaxNumberOfAlertFieldLines(final WindowCapability windowCapability) {
+            int highestFound = 0;
+            if (windowCapability != null && windowCapability.getTextFields() != null) {
+                for (TextField field : windowCapability.getTextFields()) {
+                    int fieldNumber = 0;
+                    if (field != null && field.getName() != null) {
+                        switch (field.getName()) {
+                            case alertText1:
+                                fieldNumber = 1;
+                                break;
+                            case alertText2:
+                                fieldNumber = 2;
+                                break;
+                            case alertText3:
+                                fieldNumber = 3;
+                                break;
+                        }
+                    }
+                    if (fieldNumber > 0) {
+                        highestFound = Math.max(highestFound, fieldNumber);
+                        if (highestFound == 3) {
+                            break;
+                        }
+                    }
+                }
+            }
+            return highestFound;
+        }
+
+        /**
          * Method to get a list of all available text fields
          *
          * @return list of all available text fields with CID1SET Character Set

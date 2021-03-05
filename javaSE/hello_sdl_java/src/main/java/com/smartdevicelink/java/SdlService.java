@@ -32,11 +32,13 @@
 
 package com.smartdevicelink.java;
 
+import com.smartdevicelink.managers.AlertCompletionListener;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
+import com.smartdevicelink.managers.screen.AlertView;
 import com.smartdevicelink.managers.screen.OnButtonListener;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceSet;
@@ -373,10 +375,16 @@ public class SdlService {
     }
 
     private void showAlert(String text) {
-        Alert alert = new Alert();
-        alert.setAlertText1(text);
-        alert.setDuration(5000);
-        sdlManager.sendRPC(alert);
+        AlertView.Builder builder = new AlertView.Builder();
+        builder.setText(text);
+        builder.setTimeout(5);
+        AlertView alertView = builder.build();
+        sdlManager.getScreenManager().presentAlert(alertView, new AlertCompletionListener() {
+            @Override
+            public void onComplete(boolean success, Integer tryAgainTime) {
+                DebugTool.logInfo(TAG, "Alert presented: "+ success);
+            }
+        });
     }
 
     public interface SdlServiceCallback {
