@@ -86,7 +86,7 @@ public class VideoStreamingRange {
             return false;
         }
 
-        if (maximumResolution != null || (maximumResolution.getResolutionWidth() == 0 && maximumResolution.getResolutionHeight() == 0)) {
+        if (maximumResolution == null || (maximumResolution.getResolutionWidth() == 0 && maximumResolution.getResolutionHeight() == 0)) {
             return false;
         }
 

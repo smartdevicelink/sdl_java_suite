@@ -403,6 +403,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
                         if (capabilityToSend.getAdditionalVideoStreamingCapabilities() == null || capabilityToSend.getAdditionalVideoStreamingCapabilities().isEmpty()) {
                             stateMachine.transitionToState(StreamingStateMachine.STOPPED);
+                            DebugTool.logError(TAG, "The Video stream was not started because there were no supported video streaming capabilities, please double check that the VideoStreamRanges provided are not disabled ranges");
                             return;
                         }
                         AppCapability appCapability = new AppCapability(AppCapabilityType.VIDEO_STREAMING);
@@ -844,15 +845,17 @@ public class VideoStreamManager extends BaseVideoStreamManager {
         }
 
         if (range.getMinimumResolution() != null || range.getMaximumResolution() != null) {
-            if (!range.isImageResolutionInRange(capability.getPreferredResolution())) {
+            if (!range.isImageResolutionInRange(makeScaledImageResolution(capability))) {
                 return false;
             }
         }
 
         ImageResolution resolution = capability.getPreferredResolution();
-        Double currentAspectRatio = Double.valueOf(resolution.getResolutionWidth()) / Double.valueOf(resolution.getResolutionHeight());
-        if (!range.isAspectRatioInRange(currentAspectRatio)){
-            return false;
+        if (resolution != null) {
+            Double currentAspectRatio = normalizeAspectRatio(resolution);
+            if (!range.isAspectRatioInRange(currentAspectRatio)){
+                return false;
+            }
         }
 
         double diagonal;
@@ -867,6 +870,31 @@ public class VideoStreamManager extends BaseVideoStreamManager {
         }
 
         return true;
+    }
+
+    private Double normalizeAspectRatio(ImageResolution resolution) {
+        double width = resolution.getResolutionWidth();
+        double height = resolution.getResolutionHeight();
+
+        if (width <= 0.0 || height <= 0.0) {
+            return 0.0;
+        } else if (width < height) {
+            return height/width;
+        } else if (width > height) {
+            return width/height;
+        } else {
+            return 1.0;
+        }
+    }
+
+    private ImageResolution makeScaledImageResolution(VideoStreamingCapability capability) {
+        if (capability.getScale() == null) {
+            return capability.getPreferredResolution();
+        } else {
+            double scaledWidth = (double) capability.getPreferredResolution().getResolutionWidth() / capability.getScale();
+            double scaledHeight = (double) capability.getPreferredResolution().getResolutionHeight() / capability.getScale();
+            return new ImageResolution((int) scaledWidth, (int) scaledHeight);
+        }
     }
 
     private Boolean isZeroRange(VideoStreamingRange range){
