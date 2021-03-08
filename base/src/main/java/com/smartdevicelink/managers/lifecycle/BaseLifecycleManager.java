@@ -40,6 +40,7 @@ import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.ServiceEncryptionListener;
+import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -371,7 +372,7 @@ abstract class BaseLifecycleManager {
                     case REGISTER_APP_INTERFACE:
                         //We have begun
                         DebugTool.logInfo(TAG, "RAI Response");
-                        raiResponse = (RegisterAppInterfaceResponse) message;
+                        BaseLifecycleManager.this.raiResponse = (RegisterAppInterfaceResponse) message;
                         SdlMsgVersion rpcVersion = ((RegisterAppInterfaceResponse) message).getSdlMsgVersion();
                         if (rpcVersion != null) {
                             BaseLifecycleManager.this.rpcSpecVersion = new Version(rpcVersion.getMajorVersion(), rpcVersion.getMinorVersion(), rpcVersion.getPatchVersion());
@@ -407,8 +408,9 @@ abstract class BaseLifecycleManager {
                                     return;
                                 }
                             }
+                            //If the vehicle is acceptable and this is the first check, init security lib
+                            setSecurityLibraryIfAvailable(vehicleType);
                         }
-                        processRaiResponse(raiResponse);
                         systemCapabilityManager.parseRAIResponse(raiResponse);
                         break;
                     case ON_HMI_STATUS:
@@ -926,6 +928,8 @@ abstract class BaseLifecycleManager {
                     clean();
                     return;
                 }
+                //If the vehicle is acceptable, init security lib
+                setSecurityLibraryIfAvailable(systemInfo.getVehicleType());
             }
 
             if (appConfig != null) {
@@ -1103,6 +1107,11 @@ abstract class BaseLifecycleManager {
         public SystemCapabilityManager getSystemCapabilityManager() {
             return BaseLifecycleManager.this.systemCapabilityManager;
         }
+
+        @Override
+        public PermissionManager getPermissionManager() {
+            return null;
+        }
     };
 
     /* *******************************************************************************************************
@@ -1200,18 +1209,24 @@ abstract class BaseLifecycleManager {
         this.encryptionLifecycleManager = new EncryptionLifecycleManager(internalInterface, listener);
     }
 
-    private void processRaiResponse(RegisterAppInterfaceResponse rai) {
-        if (rai == null) return;
+    /**
+     * Using the vehicle type information, specifically the make, the library will attempt to init
+     * the security library that is associated with that OEM.
+     * @param vehicleType type of vehicle that is currently connected
+     */
+    private void setSecurityLibraryIfAvailable(VehicleType vehicleType) {
+        if (_secList == null) {
+            return;
+        }
 
-        this.raiResponse = rai;
+        if (vehicleType == null) {
+            return;
+        }
 
-        VehicleType vt = rai.getVehicleType();
-        if (vt == null) return;
-
-        String make = vt.getMake();
-        if (make == null) return;
-
-        if (_secList == null) return;
+        String make = vehicleType.getMake();
+        if (make == null) {
+            return;
+        }
 
         setSdlSecurityStaticVars();
 

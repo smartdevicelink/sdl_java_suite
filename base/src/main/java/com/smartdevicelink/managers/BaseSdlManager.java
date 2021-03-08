@@ -32,6 +32,7 @@
 package com.smartdevicelink.managers;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.FileManagerConfig;
@@ -870,5 +871,10 @@ abstract class BaseSdlManager {
         if (lifecycleManager != null) {
             lifecycleManager.startRPCEncryption();
         }
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    void set_internalInterface(ISdl _internalInterface) {
+        this._internalInterface = _internalInterface;
     }
 }

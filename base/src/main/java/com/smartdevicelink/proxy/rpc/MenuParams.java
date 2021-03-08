@@ -84,6 +84,26 @@ import java.util.Hashtable;
  * 			</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
+ *      <tr>
+ *          <td>secondaryText</td>
+ *          <td>String</td>
+ *          <td>Optional secondary text to display</td>
+ *          <td>N</td>
+ *          <td>{"string_min_length": 1, "string_max_length": 500}</td>
+ *          <td>
+ *              @since SmartDeviceLink 7.1.0
+ *          </td>
+ *      </tr>
+ *      <tr>
+ *          <td>tertiaryText</td>
+ *          <td>String</td>
+ *          <td>Optional tertiary text to display</td>
+ *          <td>N</td>
+ *          <td>{"string_min_length": 1, "string_max_length": 500}</td>
+ *          <td>
+ *              @since SmartDeviceLink 7.1.0
+ *          </td>
+ *      </tr>
  * </table>
  *
  * @see AddCommand
@@ -94,6 +114,14 @@ public class MenuParams extends RPCStruct {
     public static final String KEY_PARENT_ID = "parentID";
     public static final String KEY_POSITION = "position";
     public static final String KEY_MENU_NAME = "menuName";
+    /**
+     * @since SmartDeviceLink 7.1.0
+     */
+    public static final String KEY_SECONDARY_TEXT = "secondaryText";
+    /**
+     * @since SmartDeviceLink 7.1.0
+     */
+    public static final String KEY_TERTIARY_TEXT = "tertiaryText";
 
     /**
      * Constructs a newly allocated MenuParams object
@@ -201,5 +229,52 @@ public class MenuParams extends RPCStruct {
     public MenuParams setMenuName(@NonNull String menuName) {
         setValue(KEY_MENU_NAME, menuName);
         return this;
+    }
+
+
+    /**
+     * Sets the secondaryText.
+     *
+     * @param secondaryText Optional secondary text to display
+     * {"string_min_length": 1, "string_max_length": 500}
+     * @since SmartDeviceLink 7.1.0
+     */
+    public MenuParams setSecondaryText(String secondaryText) {
+        setValue(KEY_SECONDARY_TEXT, secondaryText);
+        return this;
+    }
+
+    /**
+     * Gets the secondaryText.
+     *
+     * @return String Optional secondary text to display
+     * {"string_min_length": 1, "string_max_length": 500}
+     * @since SmartDeviceLink 7.1.0
+     */
+    public String getSecondaryText() {
+        return getString(KEY_SECONDARY_TEXT);
+    }
+
+    /**
+     * Sets the tertiaryText.
+     *
+     * @param tertiaryText Optional tertiary text to display
+     * {"string_min_length": 1, "string_max_length": 500}
+     * @since SmartDeviceLink 7.1.0
+     */
+    public MenuParams setTertiaryText(String tertiaryText) {
+        setValue(KEY_TERTIARY_TEXT, tertiaryText);
+        return this;
+    }
+
+    /**
+     * Gets the tertiaryText.
+     *
+     * @return String Optional tertiary text to display
+     * {"string_min_length": 1, "string_max_length": 500}
+     * @since SmartDeviceLink 7.1.0
+     */
+    public String getTertiaryText() {
+        return getString(KEY_TERTIARY_TEXT);
     }
 }

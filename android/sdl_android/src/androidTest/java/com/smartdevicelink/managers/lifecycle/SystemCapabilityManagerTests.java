@@ -7,6 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.ManagerUtility;
+import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -205,8 +206,8 @@ public class SystemCapabilityManagerTests {
     @Test
     public void testNullDisplayCapabilitiesEnablesAllTextAndImageFields() {
         List<DisplayCapability> displayCapabilityList = createDisplayCapabilityList(null, TestValues.GENERAL_BUTTONCAPABILITIES_LIST, TestValues.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
-        assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getTextFields().size(), 34);
-        assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getImageFields().size(), 16);
+        assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getTextFields().size(), 38);
+        assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getImageFields().size(), 18);
     }
 
     @Test
@@ -1064,6 +1065,11 @@ public class SystemCapabilityManagerTests {
 
         @Override
         public SystemCapabilityManager getSystemCapabilityManager() {
+            return null;
+        }
+
+        @Override
+        public PermissionManager getPermissionManager() {
             return null;
         }
     }

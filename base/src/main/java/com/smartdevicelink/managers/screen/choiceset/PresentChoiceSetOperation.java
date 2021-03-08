@@ -359,6 +359,8 @@ class PresentChoiceSetOperation extends Task {
                 } else if (onKeyboard.getEvent().equals(KeyboardEvent.ENTRY_ABORTED) || onKeyboard.getEvent().equals(KeyboardEvent.ENTRY_CANCELLED)) {
                     // Notify of abort / Cancellation
                     keyboardListener.onKeyboardDidAbortWithReason(onKeyboard.getEvent());
+                } else if (onKeyboard.getEvent().equals(KeyboardEvent.INPUT_KEY_MASK_ENABLED) || onKeyboard.getEvent().equals(KeyboardEvent.INPUT_KEY_MASK_DISABLED)) {
+                    keyboardListener.onKeyboardDidUpdateInputMask(onKeyboard.getEvent());
                 }
             }
         };

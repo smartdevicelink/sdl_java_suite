@@ -40,6 +40,7 @@ public class AddCommandTests extends BaseRpcTests {
         msg.setMenuParams(TestValues.GENERAL_MENUPARAMS);
         msg.setVrCommands(TestValues.GENERAL_STRING_LIST);
         msg.setCmdID(TestValues.GENERAL_INT);
+        msg.setSecondaryImage(TestValues.GENERAL_IMAGE);
 
         return msg;
     }
@@ -63,6 +64,7 @@ public class AddCommandTests extends BaseRpcTests {
             result.put(AddCommand.KEY_MENU_PARAMS, TestValues.JSON_MENUPARAMS);
             result.put(AddCommand.KEY_VR_COMMANDS, JsonUtils.createJsonArray(TestValues.GENERAL_STRING_LIST));
             result.put(AddCommand.KEY_CMD_ID, TestValues.GENERAL_INT);
+            result.put(AddCommand.KEY_SECONDARY_IMAGE, TestValues.JSON_IMAGE);
         } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
@@ -80,11 +82,13 @@ public class AddCommandTests extends BaseRpcTests {
         Image testImage = ((AddCommand) msg).getCmdIcon();
         MenuParams testMenuParams = ((AddCommand) msg).getMenuParams();
         List<String> testVrCommands = ((AddCommand) msg).getVrCommands();
+        Image testSecondaryImage = ((AddCommand) msg).getSecondaryImage();
 
         // Valid Tests
         assertNotNull(TestValues.NOT_NULL, testMenuParams);
         assertNotNull(TestValues.NOT_NULL, testImage);
         assertNotNull(TestValues.NOT_NULL, testVrCommands);
+        assertNotNull(TestValues.NOT_NULL, testSecondaryImage);
 
         assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, testCmdId);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING_LIST.size(), testVrCommands.size());
@@ -92,6 +96,7 @@ public class AddCommandTests extends BaseRpcTests {
         assertTrue(TestValues.TRUE, Validator.validateMenuParams(TestValues.GENERAL_MENUPARAMS, testMenuParams));
         assertTrue(TestValues.TRUE, Validator.validateImage(TestValues.GENERAL_IMAGE, testImage));
         assertTrue(TestValues.TRUE, Validator.validateStringList(TestValues.GENERAL_STRING_LIST, testVrCommands));
+        assertTrue(TestValues.TRUE, Validator.validateImage(TestValues.GENERAL_IMAGE, testSecondaryImage));
 
         // Invalid/Null Tests
         AddCommand msg = new AddCommand();
@@ -102,6 +107,7 @@ public class AddCommandTests extends BaseRpcTests {
         assertNull(TestValues.NULL, msg.getCmdID());
         assertNull(TestValues.NULL, msg.getMenuParams());
         assertNull(TestValues.NULL, msg.getVrCommands());
+        assertNull(TestValues.NULL, msg.getSecondaryImage());
     }
 
     /**
@@ -139,6 +145,10 @@ public class AddCommandTests extends BaseRpcTests {
             JSONObject cmdIcon = JsonUtils.readJsonObjectFromJsonObject(parameters, AddCommand.KEY_CMD_ICON);
             Image referenceCmdIcon = new Image(JsonRPCMarshaller.deserializeJSONObject(cmdIcon));
             assertTrue(TestValues.TRUE, Validator.validateImage(referenceCmdIcon, cmd.getCmdIcon()));
+
+            JSONObject secondaryIcon = JsonUtils.readJsonObjectFromJsonObject(parameters, AddCommand.KEY_SECONDARY_IMAGE);
+            Image referenceSecondaryIcon = new Image(JsonRPCMarshaller.deserializeJSONObject(secondaryIcon));
+            assertTrue(TestValues.TRUE, Validator.validateImage(referenceSecondaryIcon, cmd.getSecondaryImage()));
 
         } catch (JSONException e) {
             e.printStackTrace();

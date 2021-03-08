@@ -9,6 +9,12 @@
       "menuIcon": {
         "value": "cmdImage1.png",
         "imageType": "DYNAMIC"
+      },
+      "secondaryText": "Secondary Text",
+      "tertiaryText": "Tertiary Text",
+      "secondaryImage": {
+        "value": "cmdImage1.png",
+        "imageType": "DYNAMIC"
       }
     }
   },

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
+ * Copyright (c) 2020 Livio, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@
  * disclaimer in the documentation and/or other materials provided with the
  * distribution.
  *
- * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this
- * software without specific prior written permission.
+ * Neither the name of the Livio Inc. nor the names of its contributors
+ * may be used to endorse or promote products derived from this software
+ * without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -29,27 +29,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.smartdevicelink.proxy.rpc.enums;
 
-/**
- * Enumeration listing possible keyboard layouts.
- *
- * @since SmartDeviceLink 2.3.2
- */
-public enum KeyboardLayout {
-    QWERTY,
-    QWERTZ,
-    AZERTY,
+package com.smartdevicelink.managers.screen;
+
+public interface AlertCanceledListener {
     /**
-     * @since SmartDeviceLink 7.1.0
+     * Notifies the subscriber that the Alert should be cancelled.
      */
-    NUMERIC;
-
-    public static KeyboardLayout valueForString(String value) {
-        try {
-            return valueOf(value);
-        } catch (Exception e) {
-            return null;
-        }
-    }
+    void onAlertCanceled();
 }
