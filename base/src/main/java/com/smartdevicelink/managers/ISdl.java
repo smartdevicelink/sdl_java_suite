@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
+import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -228,4 +229,6 @@ public interface ISdl {
     Taskmaster getTaskmaster();
 
     SystemCapabilityManager getSystemCapabilityManager();
+
+    PermissionManager getPermissionManager();
 }

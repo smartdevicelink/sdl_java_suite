@@ -58,6 +58,7 @@ import org.junit.runner.RunWith;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
@@ -81,7 +82,7 @@ public class PreloadChoicesOperationTests {
 
         ChoiceCell cell1 = new ChoiceCell("cell 1");
         ChoiceCell cell2 = new ChoiceCell("cell 2", null, TestValues.GENERAL_ARTWORK);
-        HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
+        LinkedHashSet<ChoiceCell> cellsToPreload = new LinkedHashSet<>();
         cellsToPreload.add(cell1);
         cellsToPreload.add(cell2);
 
@@ -118,7 +119,7 @@ public class PreloadChoicesOperationTests {
 
         ChoiceCell cell1 = new ChoiceCell("cell 1");
         ChoiceCell cell2 = new ChoiceCell("cell 2", null, TestValues.GENERAL_ARTWORK);
-        HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
+        LinkedHashSet<ChoiceCell> cellsToPreload = new LinkedHashSet<>();
         cellsToPreload.add(cell1);
         cellsToPreload.add(cell2);
 
@@ -135,7 +136,7 @@ public class PreloadChoicesOperationTests {
 
         ChoiceCell cell1 = new ChoiceCell("cell 1");
         ChoiceCell cell2 = new ChoiceCell("cell 2", null, TestValues.GENERAL_ARTWORK);
-        HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
+        LinkedHashSet<ChoiceCell> cellsToPreload = new LinkedHashSet<>();
         cellsToPreload.add(cell1);
         cellsToPreload.add(cell2);
 
