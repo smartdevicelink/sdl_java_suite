@@ -67,14 +67,7 @@ public class VideoStreamingRange {
 
     public Boolean isImageResolutionInRange(ImageResolution currentResolution) {
 
-        Integer constraintHeightMax = maximumResolution.getResolutionHeight();
-        Integer constraintHeightMin = minimumResolution.getResolutionHeight();
-        Integer constraintWidthMax = maximumResolution.getResolutionWidth();
-        Integer constraintWidthMin = minimumResolution.getResolutionWidth();
-        Integer resolutionHeight = currentResolution.getResolutionHeight();
-        Integer resolutionWidth = currentResolution.getResolutionWidth();
-
-        if (currentResolution == null) {
+        if (currentResolution == null || (currentResolution.getResolutionHeight() == null && currentResolution.getResolutionWidth() == null)) {
             return false;
         }
 
@@ -89,6 +82,13 @@ public class VideoStreamingRange {
         if (maximumResolution == null || (maximumResolution.getResolutionWidth() == 0 && maximumResolution.getResolutionHeight() == 0)) {
             return false;
         }
+
+        Integer constraintHeightMax = maximumResolution.getResolutionHeight();
+        Integer constraintHeightMin = minimumResolution.getResolutionHeight();
+        Integer constraintWidthMax = maximumResolution.getResolutionWidth();
+        Integer constraintWidthMin = minimumResolution.getResolutionWidth();
+        Integer resolutionHeight = currentResolution.getResolutionHeight();
+        Integer resolutionWidth = currentResolution.getResolutionWidth();
 
         if (currentResolution.getResolutionHeight() > 0 && currentResolution.getResolutionWidth() > 0 && constraintHeightMax != null && constraintHeightMin != null) {
             if (!(resolutionHeight >= constraintHeightMin && resolutionHeight <= constraintHeightMax)) {
@@ -107,6 +107,9 @@ public class VideoStreamingRange {
     public Boolean isAspectRatioInRange(Double aspectRatio) {
         if (maximumAspectRatio == null && minimumAspectRatio == null) {
             return true;
+        }
+        if (aspectRatio == null){
+            return false;
         }
 
         boolean isInRange = true;

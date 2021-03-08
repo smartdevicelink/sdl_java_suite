@@ -12,6 +12,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Random;
+
 @RunWith(AndroidJUnit4.class)
 public class VideoStreamingRangeTests extends TestCase {
 
@@ -39,8 +41,49 @@ public class VideoStreamingRangeTests extends TestCase {
     }
 
     @Test
+    public void testResolutionOutRange() {
+        ImageResolution outOfRangeResolution = new ImageResolution(600, 800);
+        assertFalse(testRange.isImageResolutionInRange(outOfRangeResolution));
+    }
+
+    @Test
+    public void testResolutionWithNullResolutionRange() {
+        testRange.setMinSupportedResolution(null);
+        testRange.setMaxSupportedResolution(null);
+        Integer randomResolutionParameter = new Random().nextInt(3);
+        ImageResolution randomResolution = new ImageResolution(randomResolutionParameter, randomResolutionParameter);
+        assertTrue(testRange.isImageResolutionInRange(randomResolution));
+    }
+
+    @Test
+    public void testResolutionWithDisabledResolutionRange() {
+        ImageResolution resolution = new ImageResolution(0, 0);
+        assertFalse(testRange.isImageResolutionInRange(resolution));
+    }
+
+    @Test
     public void testAspectRatioInRange() {
         Double inRangeAspectRatio = 1.5;
         assertTrue(testRange.isAspectRatioInRange(inRangeAspectRatio));
+    }
+
+    @Test
+    public void testAspectRatioOutRange() {
+        Double outOfRangeAspectRatio = 0.9;
+        assertFalse(testRange.isAspectRatioInRange(outOfRangeAspectRatio));
+    }
+
+    @Test
+    public void testAspectRatioWithNullAspectRatioRange() {
+        testRange.setMaximumAspectRatio(null);
+        testRange.setMinimumAspectRatio(null);
+        Double randomAspectRatioParameter = new Random().nextDouble();
+        assertTrue(testRange.isAspectRatioInRange(randomAspectRatioParameter));
+    }
+
+    @Test
+    public void testAspectRatioWithDisabledAspectRatioRange() {
+        Double aspectRatio = 0.;
+        assertFalse(testRange.isAspectRatioInRange(aspectRatio));
     }
 }
