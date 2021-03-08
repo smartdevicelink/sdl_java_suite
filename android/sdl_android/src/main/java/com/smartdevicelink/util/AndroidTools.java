@@ -186,7 +186,7 @@ public class AndroidTools {
 
             if (!oldRouterService) {
                 for (SdlAppInfo appInformation : sdlAppInfoList) {
-                    if (type == null || appInformation.vehicleMakesList.isEmpty() || appInformation.checkIfVehicleSupported(appInformation.vehicleMakesList, type)) {
+                    if (appInformation.checkIfVehicleSupported(appInformation.vehicleMakesList, type)) {
                         sdlAppInfoListVehicleType.add(appInformation);
                     }
                 }

@@ -84,9 +84,11 @@ import com.smartdevicelink.session.ISdlSessionListener;
 import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.FileUtls;
+import com.smartdevicelink.util.SdlAppInfo;
 import com.smartdevicelink.util.SystemInfo;
 import com.smartdevicelink.util.Version;
 
@@ -389,6 +391,11 @@ abstract class BaseLifecycleManager {
                             VehicleType vehicleType = raiResponse.getVehicleType();
                             String systemSoftwareVersion = raiResponse.getSystemSoftwareVersion();
                             if (vehicleType != null || systemSoftwareVersion != null) {
+                                String address = session.getBluetoothMacAddress();
+                                if (address != null && !address.isEmpty()) {
+                                    saveVehicleType(address, vehicleType);
+                                }
+
                                 SystemInfo systemInfo = new SystemInfo(vehicleType, systemSoftwareVersion, null);
                                 boolean validSystemInfo = lifecycleListener.onSystemInfoReceived(systemInfo);
                                 if (!validSystemInfo) {
@@ -1245,6 +1252,8 @@ abstract class BaseLifecycleManager {
 
 
     abstract void cycle(SdlDisconnectedReason disconnectedReason);
+
+    abstract void saveVehicleType(String address, VehicleType type);
 
     void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
     }

@@ -1532,5 +1532,14 @@ public class SdlProtocolBase {
         } // end-method
     } // end-class
 
+    public String getBluetoothMacAddress() {
+        for(TransportRecord record : activeTransports.values()) {
+            if(record.getType() == TransportType.BLUETOOTH){
+                return record.getAddress();
+            }
+        }
+
+        return null;
+    }
 
 }
