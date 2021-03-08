@@ -35,6 +35,7 @@ package com.smartdevicelink.managers.lifecycle;
 import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.transport.BaseTransportConfig;
@@ -65,6 +66,11 @@ public class LifecycleManager extends BaseLifecycleManager {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    void saveVehicleType(String address, VehicleType type) {
+
     }
 
     @Override
