@@ -41,6 +41,7 @@ import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.util.DebugTool;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("FieldCanBeLocal")
@@ -64,8 +65,11 @@ public class VideoStreamingParameters {
     private int frameRate;
     private int bitrate;
     private int interval;
+    private double preferredDiagonal;
+    private double scale = DEFAULT_SCALE;
     private ImageResolution resolution;
     private VideoStreamingFormat format;
+    private List<VideoStreamingCapability> additionalCapabilities = new ArrayList<>(1);
     private boolean stableFrameRate;
 
     public VideoStreamingParameters() {
@@ -166,6 +170,14 @@ public class VideoStreamingParameters {
             if (params.format != null) {
                 this.format = params.format;
             }
+
+            if (params.preferredDiagonal != 0.0) {
+                this.preferredDiagonal = params.preferredDiagonal;
+            }
+
+            if (!params.additionalCapabilities.isEmpty()) {
+                this.additionalCapabilities = params.additionalCapabilities;
+            }
 	        this.stableFrameRate = params.stableFrameRate;
         }
     }
@@ -186,12 +198,17 @@ public class VideoStreamingParameters {
             int capableBitrateInKb = Math.min(Integer.MAX_VALUE / 1000, capability.getMaxBitrate());
             this.bitrate = Math.min(this.bitrate, capableBitrateInKb * 1000);
         } // NOTE: the unit of maxBitrate in getSystemCapability is kbps.
-        double scale = DEFAULT_SCALE;
-        // For resolution and scale, the capability values should be taken rather than parameters specified by developers.
         if (capability.getScale() != null) {
             scale = capability.getScale();
         }
+        if (capability.getDiagonalScreenSize() != null) {
+            preferredDiagonal = capability.getDiagonalScreenSize();
+        }
         ImageResolution resolution = capability.getPreferredResolution();
+        if (capability.getAdditionalVideoStreamingCapabilities() != null &&
+                !capability.getAdditionalVideoStreamingCapabilities().isEmpty()) {
+            this.additionalCapabilities = capability.getAdditionalVideoStreamingCapabilities();
+        }
         if (resolution != null) {
 
             if (this.resolution == null) {
@@ -218,6 +235,7 @@ public class VideoStreamingParameters {
 
         // This should be the last call as it will return out once a suitable format is found
         final List<VideoStreamingFormat> formats = capability.getSupportedFormats();
+
         if (formats != null && formats.size() > 0) {
             if (this.format != null && formats.contains(this.format)) {
                 return; // given format is supported, so no need to change.
@@ -294,7 +312,11 @@ public class VideoStreamingParameters {
 		stableFrameRate = isStable;
 	}
 
-	@Override
+    public double getScale() { return scale; }
+
+    public double getPreferredDiagonal() { return preferredDiagonal; }
+
+    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("VideoStreamingParams - format: {");
