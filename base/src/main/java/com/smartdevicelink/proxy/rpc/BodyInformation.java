@@ -89,7 +89,7 @@ import java.util.List;
  * 			<td>The information about the park brake: - true, if active - false if not.</td>
  * 			<td>
  * 				@since SmartDeviceLink 2.0.0
- * 				@deprecated  in SmartDeviceLink 7.1.0
+ * 				@property-deprecated in SmartDeviceLink 7.1.0
  * 			</td>
  * 		</tr>
  * 		<tr>
@@ -99,7 +99,7 @@ import java.util.List;
  * 			<td>The information about the park brake: - true, if active - false if not.</td>
  * 			<td>
  * 				@since SmartDeviceLink 2.0.0
- * 				@deprecated  in SmartDeviceLink 7.1.0
+ * 				@property-deprecated in SmartDeviceLink 7.1.0
  * 			</td>
  * 		</tr>
  * 		<tr>
@@ -109,7 +109,7 @@ import java.util.List;
  * 			<td>The information about the park brake: - true, if active - false if not.</td>
  * 			<td>
  * 				@since SmartDeviceLink 2.0.0
- * 				@deprecated  in SmartDeviceLink 7.1.0
+ * 				@property-deprecated in SmartDeviceLink 7.1.0
  * 			</td>
  * 		</tr>
  * 		<tr>
@@ -119,7 +119,7 @@ import java.util.List;
  * 			<td>References signal "DrStatRr_B_Actl".</td>
  * 			<td>
  * 				@since SmartDeviceLink 2.0.0
- * 				@deprecated  in SmartDeviceLink 7.1.0
+ * 				@property-deprecated in SmartDeviceLink 7.1.0
  * 			</td>
  * 		</tr>
  * 		<tr>
