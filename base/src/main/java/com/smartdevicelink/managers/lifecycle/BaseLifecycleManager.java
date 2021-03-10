@@ -1266,7 +1266,9 @@ abstract class BaseLifecycleManager {
 
     abstract void cycle(SdlDisconnectedReason disconnectedReason);
 
-    abstract void saveVehicleType(String address, VehicleType type);
+    void saveVehicleType(String address, VehicleType type){
+
+    }
 
     void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
     }

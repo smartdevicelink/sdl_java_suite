@@ -69,11 +69,6 @@ public class LifecycleManager extends BaseLifecycleManager {
     }
 
     @Override
-    void saveVehicleType(String address, VehicleType type) {
-
-    }
-
-    @Override
     void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
         super.onTransportDisconnected(info, availablePrimary, transportConfig);
         if (!availablePrimary) {
