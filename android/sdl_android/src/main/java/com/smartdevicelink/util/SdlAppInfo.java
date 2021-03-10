@@ -226,10 +226,10 @@ public class SdlAppInfo {
     }
 
     public boolean checkIfVehicleSupported(List<VehicleType> supportedVehicleList, VehicleType connectedVehicle) {
-        if (supportedVehicleList == null || connectedVehicle == null){
+        if (supportedVehicleList == null || supportedVehicleList.isEmpty() || connectedVehicle == null) {
             return true;
         }
-        if (supportedVehicleList.contains(connectedVehicle)){
+        if (supportedVehicleList.contains(connectedVehicle)) {
             return true;
         }
         for (VehicleType supportedVehicle: supportedVehicleList) {
@@ -256,7 +256,7 @@ public class SdlAppInfo {
                         }
                     }
                 }
-                else{
+                else {
                     /* Return true if only make is defined and it matches*/
                     return true;
                 }
