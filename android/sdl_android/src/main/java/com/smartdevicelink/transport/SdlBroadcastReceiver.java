@@ -151,7 +151,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
         HashMap<String, Object> vehicleInfoStore = (HashMap<String, Object>) intent.getSerializableExtra(TransportConstants.VEHICLE_INFO);
 
         VehicleType vehicleType;
-        if (vehicleInfoStore == null || vehicleInfoStore.isEmpty()){
+        if (vehicleInfoStore == null || vehicleInfoStore.isEmpty()) {
             vehicleType = null;
         } else {
             vehicleType = new VehicleType(vehicleInfoStore);
