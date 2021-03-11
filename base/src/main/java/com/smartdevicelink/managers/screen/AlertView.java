@@ -237,18 +237,16 @@ public class AlertView implements Cloneable {
     }
 
     public int getDefaultTimeout() {
+        if (defaultTimeout < TIMEOUT_MIN) {
+            return TIMEOUT_MIN;
+        } else if (defaultTimeout > TIMEOUT_MAX) {
+            return TIMEOUT_MAX;
+        }
         return defaultTimeout;
     }
 
     public void setDefaultTimeout(int defaultTimeout) {
-        if (defaultTimeout <= TIMEOUT_MIN) {
-            AlertView.defaultTimeout = TIMEOUT_MIN;
-            return;
-        } else if (defaultTimeout >= TIMEOUT_MAX) {
-            AlertView.defaultTimeout = TIMEOUT_MAX;
-            return;
-        }
-        AlertView.defaultTimeout = defaultTimeout;
+        this.defaultTimeout = defaultTimeout;
     }
 
     public void setTimeout(int timeout) {

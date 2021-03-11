@@ -322,6 +322,11 @@ public class ChoiceSet {
     }
 
     public int getDefaultTimeout() {
+        if (defaultTimeout < TIMEOUT_MIN) {
+            this.defaultTimeout = TIMEOUT_MIN;
+        } else if (defaultTimeout > TIMEOUT_MAX) {
+            this.defaultTimeout = TIMEOUT_MAX;
+        }
         return defaultTimeout;
     }
 
@@ -333,13 +338,6 @@ public class ChoiceSet {
      * at 3 seconds. If this is set above the maximum, it will be capped at 10 seconds.
      */
     public void setDefaultTimeout(int defaultTimeout) {
-        if (defaultTimeout <= TIMEOUT_MIN) {
-            this.defaultTimeout = TIMEOUT_MIN;
-            return;
-        } else if (defaultTimeout >= TIMEOUT_MAX) {
-            this.defaultTimeout = TIMEOUT_MAX;
-            return;
-        }
         this.defaultTimeout = defaultTimeout;
     }
 
