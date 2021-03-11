@@ -86,6 +86,7 @@ public class ChoiceSetTests {
 
         // first constructor was tested in previous method, use the rest here
         ChoiceSet choiceSet = new ChoiceSet(TestValues.GENERAL_STRING, layout, TestValues.GENERAL_INTEGER, TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, TestValues.GENERAL_VRHELPITEM_LIST, TestValues.GENERAL_KEYBOARDPROPERTIES, choices, listener);
+        choiceSet.setDefaultTimeout(5);
         assertEquals(choiceSet.getTitle(), TestValues.GENERAL_STRING);
         assertEquals(choiceSet.getInitialPrompt().get(0).getText(), TestValues.GENERAL_STRING);
         assertEquals(choiceSet.getHelpPrompt().get(0).getText(), TestValues.GENERAL_STRING);
@@ -94,6 +95,7 @@ public class ChoiceSetTests {
         assertEquals(choiceSet.getTimeout(), TestValues.GENERAL_INTEGER);
         assertEquals(choiceSet.getChoices(), choices);
         assertEquals(choiceSet.getChoiceSetSelectionListener(), listener);
+        assertEquals(choiceSet.getDefaultTimeout(), 5);
 
         ChoiceSet choiceSet2 = new ChoiceSet(TestValues.GENERAL_STRING, layout, TestValues.GENERAL_INTEGER, TestValues.GENERAL_TTSCHUNK_LIST, TestValues.GENERAL_TTSCHUNK_LIST, TestValues.GENERAL_TTSCHUNK_LIST, TestValues.GENERAL_VRHELPITEM_LIST, TestValues.GENERAL_KEYBOARDPROPERTIES, choices, listener);
         assertEquals(choiceSet2.getTitle(), TestValues.GENERAL_STRING);

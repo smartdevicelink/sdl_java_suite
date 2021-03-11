@@ -59,7 +59,9 @@ public class ChoiceSet {
     ChoiceSetCanceledListener canceledListener;
 
     // defaults
-    private final Integer defaultTimeout = 10;
+    private static Integer defaultTimeout = 10;
+    private static final int TIMEOUT_MIN = 5;
+    private static final int TIMEOUT_MAX = 100;
     private final ChoiceSetLayout defaultLayout = ChoiceSetLayout.CHOICE_SET_LAYOUT_LIST;
 
     /**
@@ -82,7 +84,6 @@ public class ChoiceSet {
 
         // defaults
         setLayout(defaultLayout);
-        setTimeout(defaultTimeout);
 
         // things to do
         checkChoiceSetParameters();
@@ -301,21 +302,45 @@ public class ChoiceSet {
      * @return The Timeout
      */
     public Integer getTimeout() {
+        if (timeout == null) {
+            timeout = defaultTimeout;
+        } else if (timeout < TIMEOUT_MIN) {
+            return TIMEOUT_MIN;
+        } else if (timeout > TIMEOUT_MAX) {
+            return TIMEOUT_MAX;
+        }
         return timeout;
     }
 
     /**
-     * @param timeout - Maps to PerformInteraction.timeout. This applies only to a manual selection
-     *                (not a voice selection, which has its timeout handled by the system). Defaults to `defaultTimeout`.
-     *                <strong>This is set to seconds if using the screen manager.</strong>
+     * Maps to PerformInteraction.timeout. Timeout in seconds. Defaults to 0, which will use `defaultTimeout`.
+     * If this is set below the minimum, it will be capped at 5 seconds. Minimum 5 seconds, maximum 100 seconds.
+     * If this is set above the maximum, it will be capped at 100 seconds.
      */
     public void setTimeout(Integer timeout) {
-        if (timeout == null) {
-            this.timeout = defaultTimeout;
-        } else {
             this.timeout = timeout;
+    }
+
+    public int getDefaultTimeout() {
+        return defaultTimeout;
+    }
+
+    /**
+     * Set this to change the default timeout for all ChoiceSets. If a timeout is not set on an individual
+     * ChoiceSet object (or if it is set to 0), then it will use this timeout instead. See `timeout`
+     * for more details. If this is not set by you, it will default to 10 seconds. The minimum is
+     * 5 seconds, the maximum is 100 seconds. If this is set below the minimum, it will be capped
+     * at 3 seconds. If this is set above the maximum, it will be capped at 10 seconds.
+     */
+    public void setDefaultTimeout(int defaultTimeout) {
+        if (defaultTimeout <= TIMEOUT_MIN) {
+            this.defaultTimeout = TIMEOUT_MIN;
+            return;
+        } else if (defaultTimeout >= TIMEOUT_MAX) {
+            this.defaultTimeout = TIMEOUT_MAX;
+            return;
         }
-        checkChoiceSetParameters();
+        this.defaultTimeout = defaultTimeout;
     }
 
     /**
@@ -386,11 +411,6 @@ public class ChoiceSet {
             if (getTitle() != null) {
                 if (getTitle().length() == 0 || getTitle().length() > 500) {
                     DebugTool.logWarning(TAG, "Attempted to create a choice set with a title of " + getTitle().length() + " length. Only 500 characters are supported.");
-                }
-            }
-            if (getTimeout() != null) {
-                if (getTimeout() < 5 || getTimeout() > 100) {
-                    DebugTool.logWarning(TAG, "Attempted to create a choice set with a " + getTimeout() + " second timeout; Only 5 - 100 seconds is valid");
                 }
             }
             if (getChoices() != null) {
