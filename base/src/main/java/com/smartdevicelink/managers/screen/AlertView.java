@@ -53,7 +53,6 @@ public class AlertView implements Cloneable {
 
 
     private AlertView() {
-        this.timeout = defaultTimeout;
     }
 
     public static class Builder {
@@ -166,7 +165,7 @@ public class AlertView implements Cloneable {
 
     public Integer getTimeout() {
         if (timeout == null) {
-            timeout = defaultTimeout;
+            timeout = getDefaultTimeout();
         } else if (timeout < TIMEOUT_MIN) {
             return TIMEOUT_MIN;
         } else if (timeout > TIMEOUT_MAX) {
@@ -246,7 +245,7 @@ public class AlertView implements Cloneable {
     }
 
     public void setDefaultTimeout(int defaultTimeout) {
-        this.defaultTimeout = defaultTimeout;
+        AlertView.defaultTimeout = defaultTimeout;
     }
 
     public void setTimeout(int timeout) {
