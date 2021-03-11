@@ -303,7 +303,7 @@ public class ChoiceSet {
      */
     public Integer getTimeout() {
         if (timeout == null) {
-            timeout = defaultTimeout;
+            timeout = getDefaultTimeout();
         } else if (timeout < TIMEOUT_MIN) {
             return TIMEOUT_MIN;
         } else if (timeout > TIMEOUT_MAX) {
@@ -323,9 +323,9 @@ public class ChoiceSet {
 
     public int getDefaultTimeout() {
         if (defaultTimeout < TIMEOUT_MIN) {
-            this.defaultTimeout = TIMEOUT_MIN;
+            return TIMEOUT_MIN;
         } else if (defaultTimeout > TIMEOUT_MAX) {
-            this.defaultTimeout = TIMEOUT_MAX;
+            return TIMEOUT_MAX;
         }
         return defaultTimeout;
     }
