@@ -94,6 +94,8 @@ public class ChoiceSetTests {
         assertEquals(choiceSet.getTimeout().intValue(), 5);
         choiceSet.setTimeout(101);
         assertEquals(choiceSet.getTimeout().intValue(), 100);
+        // Reset default value for other unit test
+        choiceSet.setDefaultTimeout(10);
     }
 
     @Test
