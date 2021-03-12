@@ -59,9 +59,10 @@ public class ChoiceSet {
     ChoiceSetCanceledListener canceledListener;
 
     // defaults
-    private static Integer defaultTimeout = 10;
+    private static final int TIMEOUT_DEFAULT = 0;
     private static final int TIMEOUT_MIN = 5;
     private static final int TIMEOUT_MAX = 100;
+    private static Integer defaultTimeout = 10;
     private final ChoiceSetLayout defaultLayout = ChoiceSetLayout.CHOICE_SET_LAYOUT_LIST;
 
     /**
@@ -81,6 +82,7 @@ public class ChoiceSet {
         setTitle(title);
         setChoiceSetSelectionListener(listener);
         setChoices(choices);
+        setTimeout(TIMEOUT_DEFAULT);
 
         // defaults
         setLayout(defaultLayout);
@@ -302,7 +304,7 @@ public class ChoiceSet {
      * @return The Timeout
      */
     public Integer getTimeout() {
-        if (timeout == null) {
+        if (timeout == TIMEOUT_DEFAULT) {
             timeout = getDefaultTimeout();
         } else if (timeout < TIMEOUT_MIN) {
             return TIMEOUT_MIN;
