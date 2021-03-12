@@ -39,10 +39,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AlertView implements Cloneable {
-    
-    private static Integer defaultTimeout = 5;
+
+    private static final int TIMEOUT_DEFAULT = 0;
     private static final int TIMEOUT_MIN = 3;
     private static final int TIMEOUT_MAX = 10;
+    private static Integer defaultTimeout = 5;
     private String text, secondaryText, tertiaryText;
     private Integer timeout;
     private AlertAudioData audio;
@@ -53,7 +54,6 @@ public class AlertView implements Cloneable {
 
 
     private AlertView() {
-        this.timeout = defaultTimeout;
     }
 
     public static class Builder {
@@ -62,6 +62,9 @@ public class AlertView implements Cloneable {
 
         public Builder() {
             alertView = new AlertView();
+            if (alertView.timeout == null) {
+                alertView.timeout = TIMEOUT_DEFAULT;
+            }
         }
 
         /**
@@ -69,7 +72,7 @@ public class AlertView implements Cloneable {
          * on the head unit, the screen manager will automatically concatenate some of the lines together.
          */
         public Builder setText(String text) {
-            this.alertView.text = text;
+            alertView.text = text;
             return this;
         }
 
@@ -165,8 +168,8 @@ public class AlertView implements Cloneable {
     }
 
     public Integer getTimeout() {
-        if (timeout == null) {
-            timeout = defaultTimeout;
+        if (timeout == TIMEOUT_DEFAULT) {
+            timeout = getDefaultTimeout();
         } else if (timeout < TIMEOUT_MIN) {
             return TIMEOUT_MIN;
         } else if (timeout > TIMEOUT_MAX) {
@@ -237,17 +240,15 @@ public class AlertView implements Cloneable {
     }
 
     public int getDefaultTimeout() {
+        if (defaultTimeout < TIMEOUT_MIN) {
+            return TIMEOUT_MIN;
+        } else if (defaultTimeout > TIMEOUT_MAX) {
+            return TIMEOUT_MAX;
+        }
         return defaultTimeout;
     }
 
     public void setDefaultTimeout(int defaultTimeout) {
-        if (defaultTimeout <= TIMEOUT_MIN) {
-            AlertView.defaultTimeout = TIMEOUT_MIN;
-            return;
-        } else if (defaultTimeout >= TIMEOUT_MAX) {
-            AlertView.defaultTimeout = TIMEOUT_MAX;
-            return;
-        }
         AlertView.defaultTimeout = defaultTimeout;
     }
 
