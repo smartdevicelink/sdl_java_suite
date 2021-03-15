@@ -26,7 +26,7 @@ public class AppCapabilityTests extends TestCase {
     public void setUp() {
 
         msg = new AppCapability();
-        msg.setAppCapabilityType(TestValues.GENERAL_APP_CAPABILITY_TYPE);
+        msg.setAppCapabilityType(TestValues.GENERAL_APPCAPABILITYTYPE);
         msg.setVideoStreamingCapability(TestValues.GENERAL_VIDEOSTREAMINGCAPABILITY);
     }
 
@@ -40,7 +40,7 @@ public class AppCapabilityTests extends TestCase {
 
         // Valid Tests
         assertEquals(TestValues.GENERAL_VIDEOSTREAMINGCAPABILITY, videoStreamingCapability);
-        assertEquals(TestValues.GENERAL_APP_CAPABILITY_TYPE, videoStreamingCapabilityType);
+        assertEquals(TestValues.GENERAL_APPCAPABILITYTYPE, videoStreamingCapabilityType);
 
         // Invalid/Null Tests
         AppCapability msg = new AppCapability();
@@ -54,7 +54,7 @@ public class AppCapabilityTests extends TestCase {
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(KEY_APP_CAPABILITY_TYPE, TestValues.GENERAL_APP_CAPABILITY_TYPE);
+            reference.put(KEY_APP_CAPABILITY_TYPE, TestValues.GENERAL_APPCAPABILITYTYPE);
             reference.put(KEY_VIDEO_STREAMING_CAPABILITY, TestValues.GENERAL_VIDEOSTREAMINGCAPABILITY);
 
             JSONObject underTest = msg.serializeJSON();

@@ -69,6 +69,7 @@ public enum VehicleDataType {
      * Notifies EXTERNTEMPData may be subscribed
      * @deprecated since SmartDeviceLink 7.1.0
      */
+    @Deprecated
     VEHICLEDATA_EXTERNTEMP,
     /**
      * Notifies VINData may be subscribed
