@@ -89,6 +89,7 @@ import com.smartdevicelink.util.Version;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.FutureTask;
@@ -429,6 +430,19 @@ public class VideoStreamManager extends BaseVideoStreamManager {
             }
             if (dispCap != null) {
                 params.setResolution(dispCap.getScreenParams().getImageResolution());
+            }
+
+            VideoStreamingCapability videoStreamingCapability = new VideoStreamingCapability();
+            videoStreamingCapability.setScale(params.getScale())
+                    .setPreferredResolution(params.getResolution())
+                    .setAdditionalVideoStreamingCapabilities(new ArrayList<VideoStreamingCapability>());
+            //Compare the default params to the ranges set by the developer
+            List<VideoStreamingCapability> vscList = getSupportedCapabilities(videoStreamingCapability);
+            //If default params not within range the video will not stream
+            if (vscList == null || vscList.isEmpty()) {
+                stateMachine.transitionToState(StreamingStateMachine.STOPPED);
+                DebugTool.logError(TAG, "The Video stream was not started because there were no supported video streaming capabilities, please double check that the VideoStreamRanges provided are not disabled ranges");
+                return;
             }
             startStreaming(params, encrypted);
         }
@@ -858,15 +872,13 @@ public class VideoStreamManager extends BaseVideoStreamManager {
             }
         }
 
-        double diagonal;
-        if (capability.getDiagonalScreenSize() == null) {
-            diagonal = parameters.getPreferredDiagonal();
-        } else {
-            diagonal = capability.getDiagonalScreenSize();
-        }
-
-        if (range.getMinimumDiagonal() != null && range.getMinimumDiagonal() > diagonal) {
-            return false;
+        if (capability.getDiagonalScreenSize() != null) {
+            double diagonal = capability.getDiagonalScreenSize();
+            if (range.getMinimumDiagonal() != null) {
+                if (range.getMinimumDiagonal() <= 0.0 || range.getMinimumDiagonal() > diagonal) {
+                    return false;
+                }
+            }
         }
 
         return true;
