@@ -807,15 +807,13 @@ public class VideoStreamManager extends BaseVideoStreamManager {
             return null;
         }
 
-        List<VideoStreamingCapability> allCapabilities = rootCapability.getAdditionalVideoStreamingCapabilities();
-        if (allCapabilities == null){
-            return null;
+        List<VideoStreamingCapability> allCapabilities = new ArrayList<>();
+        List<VideoStreamingCapability> additionalCapabilities = rootCapability.getAdditionalVideoStreamingCapabilities();
+        if (additionalCapabilities != null){
+            allCapabilities.addAll(additionalCapabilities);
         }
-
-        if (allCapabilities != null){
-            rootCapability.setAdditionalVideoStreamingCapabilities(null);
-            allCapabilities.add(rootCapability);
-        }
+        rootCapability.setAdditionalVideoStreamingCapabilities(null);
+        allCapabilities.add(rootCapability);
 
         for (VideoStreamingCapability capability : allCapabilities) {
             ImageResolution imageResolution = capability.getPreferredResolution();
