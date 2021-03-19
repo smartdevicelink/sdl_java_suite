@@ -346,7 +346,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
      * @param supportedPortraitStreamingRange      constraints for vehicle display : min/max aspect ratio, min/max resolutions, max diagonal size.
      */
     public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted, VideoStreamingRange supportedLandscapeStreamingRange, VideoStreamingRange supportedPortraitStreamingRange) {
-        configureGlobalParameters(context, remoteDisplayClass, isEncrypted, supportedPortraitStreamingRange, supportedLandscapeStreamingRange);
+        configureGlobalParameters(context, remoteDisplayClass, encrypted, supportedPortraitStreamingRange, supportedLandscapeStreamingRange);
         if(majorProtocolVersion >= 5 && !internalInterface.getSystemCapabilityManager().isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
             stateMachine.transitionToState(StreamingStateMachine.ERROR);
             return;
