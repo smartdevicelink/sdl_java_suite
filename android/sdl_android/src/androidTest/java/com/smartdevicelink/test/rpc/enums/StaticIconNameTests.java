@@ -48,8 +48,8 @@ public class StaticIconNameTests extends TestCase {
         assertNotNull("AUDIOBOOK_NARRATOR returned null", AUDIOBOOK_NARRATOR);
 
         example = "0x45";
-        StaticIconName AUXILLARY_AUDIO = StaticIconName.valueForString(example);
-        assertNotNull("AUXILLARY_AUDIO returned null", AUXILLARY_AUDIO);
+        StaticIconName AUXILIARY_AUDIO = StaticIconName.valueForString(example);
+        assertNotNull("AUXILIARY_AUDIO returned null", AUXILIARY_AUDIO);
 
         example = "0x86";
         StaticIconName BACK = StaticIconName.valueForString(example);
@@ -755,6 +755,7 @@ public class StaticIconNameTests extends TestCase {
         enumTestList.add(StaticIconName.AUDIOBOOK_EPISODE);
         enumTestList.add(StaticIconName.AUDIOBOOK_NARRATOR);
         enumTestList.add(StaticIconName.AUXILLARY_AUDIO);
+        enumTestList.add(StaticIconName.AUXILIARY_AUDIO);
         enumTestList.add(StaticIconName.BACK);
         enumTestList.add(StaticIconName.BATTERY_CAPACITY_0_OF_5);
         enumTestList.add(StaticIconName.BATTERY_CAPACITY_1_OF_5);

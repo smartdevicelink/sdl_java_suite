@@ -16,8 +16,10 @@ import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
 import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.rpc.AppCapability;
 import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
+import com.smartdevicelink.proxy.rpc.enums.AppCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
 import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
@@ -262,6 +264,8 @@ public class TestValues {
     public static final VideoStreamingProtocol GENERAL_VIDEOSTREAMINGPROTOCOL = VideoStreamingProtocol.RAW;
     public static final VideoStreamingCodec GENERAL_VIDEOSTREAMINGCODEC = VideoStreamingCodec.H264;
     public static final VideoStreamingCapability GENERAL_VIDEOSTREAMINGCAPABILITY = new VideoStreamingCapability();
+    public static final VideoStreamingCapability GENERAL_ADDITIONAL_CAPABILITY = new VideoStreamingCapability();
+    public static final List<VideoStreamingCapability> GENERAL_ADDITIONAL_CAPABILITY_LIST = new ArrayList<>();
     public static final VideoStreamingFormat GENERAL_VIDEOSTREAMINGFORMAT = new VideoStreamingFormat();
     public static final RGBColor GENERAL_RGBCOLOR = new RGBColor();
     public static final TemplateColorScheme GENERAL_DAYCOLORSCHEME = new TemplateColorScheme();
@@ -311,6 +315,8 @@ public class TestValues {
     public static final DistanceUnit GENERAL_DISTANCEUNIT = DistanceUnit.KILOMETERS;
     public static final LightStatus GENERAL_LIGHTSTATUS = LightStatus.OFF;
     public static final RadioBand GENERAL_RADIOBAND = RadioBand.AM;
+    public static final AppCapabilityType GENERAL_APP_CAPABILITY_TYPE = AppCapabilityType.VIDEO_STREAMING;
+    public static final AppCapability GENERAL_APP_CAPABILITY = new AppCapability();
     public static final ClimateControlData GENERAL_CLIMATECONTROLDATA = new ClimateControlData();
     public static final ClimateData GENERAL_CLIMATEDATA = new ClimateData();
     public static final SeatControlData GENERAL_SEATCONTROLDATA = new SeatControlData();
@@ -850,10 +856,20 @@ public class TestValues {
         GENERAL_VIDEOSTREAMINGFORMAT_LIST.add(GENERAL_VIDEOSTREAMINGFORMAT);
         GENERAL_VIDEOSTREAMINGFORMAT_LIST.add(GENERAL_VIDEOSTREAMINGFORMAT);
 
+        GENERAL_ADDITIONAL_CAPABILITY.setPreferredResolution(GENERAL_IMAGERESOLUTION);
+        GENERAL_ADDITIONAL_CAPABILITY.setDiagonalScreenSize(GENERAL_DOUBLE);
+        GENERAL_ADDITIONAL_CAPABILITY.setScale(GENERAL_DOUBLE);
+
+        GENERAL_ADDITIONAL_CAPABILITY_LIST.add(GENERAL_ADDITIONAL_CAPABILITY);
+        GENERAL_ADDITIONAL_CAPABILITY.setAdditionalVideoStreamingCapabilities(GENERAL_ADDITIONAL_CAPABILITY_LIST);
+
         GENERAL_VIDEOSTREAMINGCAPABILITY.setMaxBitrate(GENERAL_INT);
         GENERAL_VIDEOSTREAMINGCAPABILITY.setPreferredResolution(GENERAL_IMAGERESOLUTION);
         GENERAL_VIDEOSTREAMINGCAPABILITY.setSupportedFormats(GENERAL_VIDEOSTREAMINGFORMAT_LIST);
         GENERAL_VIDEOSTREAMINGCAPABILITY.setIsHapticSpatialDataSupported(GENERAL_BOOLEAN);
+        GENERAL_VIDEOSTREAMINGCAPABILITY.setDiagonalScreenSize(GENERAL_DOUBLE);
+        GENERAL_VIDEOSTREAMINGCAPABILITY.setPixelPerInch(GENERAL_DOUBLE);
+        GENERAL_VIDEOSTREAMINGCAPABILITY.setScale(GENERAL_DOUBLE);
 
         GENERAL_CLIMATECONTROLCAPABILITIES.setModuleName(GENERAL_STRING);
         GENERAL_CLIMATECONTROLCAPABILITIES.setFanSpeedAvailable(GENERAL_BOOLEAN);
@@ -1096,6 +1112,10 @@ public class TestValues {
 
         GENERAL_KEYBOARD_CAPABILITIES.setMaskInputCharactersSupported(TestValues.GENERAL_BOOLEAN);
         GENERAL_KEYBOARD_CAPABILITIES.setSupportedKeyboards(GENERAL_SUPPORTED_KEYBOARDS_LIST);
+
+        GENERAL_APP_CAPABILITY.setVideoStreamingCapability(GENERAL_VIDEOSTREAMINGCAPABILITY);
+        GENERAL_APP_CAPABILITY.setAppCapabilityType(GENERAL_APP_CAPABILITY_TYPE);
+
         // SEAT_OCCUPANCY
         GENERAL_SEAT_LOCATION.setGrid(GENERAL_LOCATION_GRID);
 

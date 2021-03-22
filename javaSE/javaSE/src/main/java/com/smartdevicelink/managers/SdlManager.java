@@ -221,8 +221,8 @@ public class SdlManager extends BaseSdlManager {
         }
 
         @Override
-        public void startVideoService(VideoStreamingParameters parameters, boolean encrypted) {
-            lifecycleManager.getInternalInterface(SdlManager.this).startVideoService(parameters,encrypted);
+        public void startVideoService(VideoStreamingParameters parameters, boolean encrypted, boolean withPendingRestart) {
+            lifecycleManager.getInternalInterface(SdlManager.this).startVideoService(parameters, encrypted, withPendingRestart);
         }
 
         @Override

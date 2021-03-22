@@ -121,7 +121,7 @@ import java.util.Hashtable;
  *                 <td>Subscribable</td>
  * 			<td>
  * 				@since SmartDeviceLink 2.0.0
- * 				@deprecated in SmartDeviceLink 7.1.0
+ * 				@property-deprecated in SmartDeviceLink 7.1.0
  * 			</td>
  * 		</tr>
  *  	<tr>

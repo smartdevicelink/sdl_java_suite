@@ -247,7 +247,7 @@ public class SdlService {
         // some voice commands
         List<String> voice2 = Collections.singletonList("Cell two");
 
-        MenuCell mainCell1 = new MenuCell("Test Cell 1 (speak)", livio, null, new MenuSelectionListener() {
+        MenuCell mainCell1 = new MenuCell("Test Cell 1 (speak)", "Secondary Text", "Tertiary Text", livio, livio, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
                 DebugTool.logInfo(TAG, "Test cell 1 triggered. Source: " + trigger.toString());
@@ -255,7 +255,7 @@ public class SdlService {
             }
         });
 
-        MenuCell mainCell2 = new MenuCell("Test Cell 2", null, voice2, new MenuSelectionListener() {
+        MenuCell mainCell2 = new MenuCell("Test Cell 2", "Secondary Text", null, null, null, voice2, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
                 DebugTool.logInfo(TAG, "Test cell 2 triggered. Source: " + trigger.toString());
@@ -264,14 +264,14 @@ public class SdlService {
 
         // SUB MENU
 
-        MenuCell subCell1 = new MenuCell("SubCell 1", null, null, new MenuSelectionListener() {
+        MenuCell subCell1 = new MenuCell("SubCell 1", null, null, null, null, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
                 DebugTool.logInfo(TAG, "Sub cell 1 triggered. Source: " + trigger.toString());
             }
         });
 
-        MenuCell subCell2 = new MenuCell("SubCell 2", null, null, new MenuSelectionListener() {
+        MenuCell subCell2 = new MenuCell("SubCell 2", null, null, null, null, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
                 DebugTool.logInfo(TAG, "Sub cell 2 triggered. Source: " + trigger.toString());
@@ -279,16 +279,16 @@ public class SdlService {
         });
 
         // sub menu parent cell
-        MenuCell mainCell3 = new MenuCell("Test Cell 3 (sub menu)", MenuLayout.LIST, null, Arrays.asList(subCell1, subCell2));
+        MenuCell mainCell3 = new MenuCell("Test Cell 3 (sub menu)", null, null, MenuLayout.LIST, null, null, Arrays.asList(subCell1, subCell2));
 
-        MenuCell mainCell4 = new MenuCell("Show Perform Interaction", null, null, new MenuSelectionListener() {
+        MenuCell mainCell4 = new MenuCell("Show Perform Interaction", null, null, null, null, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
                 showPerformInteraction();
             }
         });
 
-        MenuCell mainCell5 = new MenuCell("Clear the menu", null, null, new MenuSelectionListener() {
+        MenuCell mainCell5 = new MenuCell("Clear the menu", null, null, null,null, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
                 DebugTool.logInfo(TAG, "Clearing Menu. Source: " + trigger.toString());

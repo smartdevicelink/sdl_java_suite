@@ -76,10 +76,13 @@ public enum StaticIconName {
      */
     AUDIOBOOK_NARRATOR("0x82"),
 
-    /**
-     * Icon Name auxillary audio
-     */
+    @Deprecated
     AUXILLARY_AUDIO("0x45"),
+
+    /**
+     * Icon Name auxiliary audio
+     */
+    AUXILIARY_AUDIO("0x45"),
 
     /**
      * Icon Name back / return

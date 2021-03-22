@@ -106,6 +106,11 @@ public class SdlRemoteDisplayTest extends TestCase {
 
         }
 
+        @Override
+        public void onViewResized(int width, int height) {
+
+        }
+
 
     }
 

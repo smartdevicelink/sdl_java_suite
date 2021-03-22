@@ -4,7 +4,11 @@
 {%- endif %}
 {%- if deprecated is defined and deprecated is not none %}
 {{spacing}}{{prefix}}@since SmartDeviceLink {{history[0].since}}
+{%- if headerParam is defined and headerParam is not none %}
+{{spacing}}{{prefix}}@property-deprecated in SmartDeviceLink {{since}}
+{%- else %}
 {{spacing}}{{prefix}}@deprecated in SmartDeviceLink {{since}}
+{%- endif %}
 {%- elif history is defined and history is not none %}
 {{spacing}}{{prefix}}@since SmartDeviceLink {{history[0].since}}
 {%- else %}

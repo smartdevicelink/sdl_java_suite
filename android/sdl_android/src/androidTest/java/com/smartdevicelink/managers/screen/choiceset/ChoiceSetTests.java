@@ -79,6 +79,23 @@ public class ChoiceSetTests {
         assertEquals(choiceSet.getTimeout(), defaultTimeout);
         assertEquals(choiceSet.getChoices(), choices);
         assertEquals(choiceSet.getChoiceSetSelectionListener(), listener);
+
+        // Test timeout and default timeout
+        choiceSet.setDefaultTimeout(20);
+        assertEquals(choiceSet.getDefaultTimeout(), 20);
+        choiceSet.setDefaultTimeout(1);
+        assertEquals(choiceSet.getDefaultTimeout(), 5);
+        choiceSet.setDefaultTimeout(101);
+        assertEquals(choiceSet.getDefaultTimeout(), 100);
+
+        choiceSet.setTimeout(20);
+        assertEquals(choiceSet.getTimeout().intValue(), 20);
+        choiceSet.setTimeout(1);
+        assertEquals(choiceSet.getTimeout().intValue(), 5);
+        choiceSet.setTimeout(101);
+        assertEquals(choiceSet.getTimeout().intValue(), 100);
+        // Reset default value for other unit test
+        choiceSet.setDefaultTimeout(10);
     }
 
     @Test
@@ -86,6 +103,7 @@ public class ChoiceSetTests {
 
         // first constructor was tested in previous method, use the rest here
         ChoiceSet choiceSet = new ChoiceSet(TestValues.GENERAL_STRING, layout, TestValues.GENERAL_INTEGER, TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, TestValues.GENERAL_VRHELPITEM_LIST, TestValues.GENERAL_KEYBOARDPROPERTIES, choices, listener);
+
         assertEquals(choiceSet.getTitle(), TestValues.GENERAL_STRING);
         assertEquals(choiceSet.getInitialPrompt().get(0).getText(), TestValues.GENERAL_STRING);
         assertEquals(choiceSet.getHelpPrompt().get(0).getText(), TestValues.GENERAL_STRING);
@@ -94,6 +112,7 @@ public class ChoiceSetTests {
         assertEquals(choiceSet.getTimeout(), TestValues.GENERAL_INTEGER);
         assertEquals(choiceSet.getChoices(), choices);
         assertEquals(choiceSet.getChoiceSetSelectionListener(), listener);
+
 
         ChoiceSet choiceSet2 = new ChoiceSet(TestValues.GENERAL_STRING, layout, TestValues.GENERAL_INTEGER, TestValues.GENERAL_TTSCHUNK_LIST, TestValues.GENERAL_TTSCHUNK_LIST, TestValues.GENERAL_TTSCHUNK_LIST, TestValues.GENERAL_VRHELPITEM_LIST, TestValues.GENERAL_KEYBOARDPROPERTIES, choices, listener);
         assertEquals(choiceSet2.getTitle(), TestValues.GENERAL_STRING);
