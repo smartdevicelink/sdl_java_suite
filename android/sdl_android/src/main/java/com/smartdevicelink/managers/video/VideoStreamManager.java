@@ -346,7 +346,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
      * @param supportedPortraitStreamingRange      constraints for vehicle display : min/max aspect ratio, min/max resolutions, max diagonal size.
      */
     public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted, VideoStreamingRange supportedLandscapeStreamingRange, VideoStreamingRange supportedPortraitStreamingRange) {
-        configureGlobalParameters(context, remoteDisplayClass, isEncrypted, supportedPortraitStreamingRange, supportedLandscapeStreamingRange);
+        configureGlobalParameters(context, remoteDisplayClass, encrypted, supportedPortraitStreamingRange, supportedLandscapeStreamingRange);
         if(majorProtocolVersion >= 5 && !internalInterface.getSystemCapabilityManager().isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
             stateMachine.transitionToState(StreamingStateMachine.ERROR);
             return;
@@ -365,7 +365,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
      */
     @Deprecated
     public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted){
-        configureGlobalParameters(context, remoteDisplayClass, isEncrypted, null, null);
+        configureGlobalParameters(context, remoteDisplayClass, encrypted, null, null);
         boolean isCapabilitySupported = internalInterface.getSystemCapabilityManager() != null && internalInterface.getSystemCapabilityManager().isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING);
         if (majorProtocolVersion >= 5 && !isCapabilitySupported) {
             DebugTool.logError(TAG, "Video streaming not supported on this module");
@@ -385,7 +385,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
     }
 
 
-    private void processCapabilitiesWithPendingStart(boolean encrypted, VideoStreamingParameters parameters) {
+    private void processCapabilitiesWithPendingStart(final boolean encrypted, VideoStreamingParameters parameters) {
         final VideoStreamingParameters params = (parameters == null) ? new VideoStreamingParameters() : new VideoStreamingParameters(parameters);
         if (majorProtocolVersion >= 5) {
             if (internalInterface.getSystemCapabilityManager() != null) {
@@ -411,7 +411,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
                         OnAppCapabilityUpdated onAppCapabilityUpdated = new OnAppCapabilityUpdated(appCapability);
                         internalInterface.sendRPC(onAppCapabilityUpdated);
-                        startStreaming(params, isEncrypted);
+                        startStreaming(params, encrypted);
                     }
 
                     @Override
