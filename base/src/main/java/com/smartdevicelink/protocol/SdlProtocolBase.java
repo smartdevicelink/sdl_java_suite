@@ -1399,16 +1399,17 @@ public class SdlProtocolBase {
             if (packet.getPayload() != null && packet.getDataSize() > 0 && packet.isEncrypted()) {
 
                 SdlSecurityBase sdlSec = iSdlProtocol.getSdlSecurity();
-                byte[] dataToRead = new byte[4096];
+                byte[] dataToRead = new byte[TLS_MAX_RECORD_SIZE];
 
-                Integer iNumBytes = sdlSec.decryptData(packet.getPayload(), dataToRead);
-                if ((iNumBytes == null) || (iNumBytes <= 0)) {
+                Integer numberOfDecryptedBytes = sdlSec.decryptData(packet.getPayload(), dataToRead);
+                if ((numberOfDecryptedBytes == null) || (numberOfDecryptedBytes <= 0)) {
                     return;
                 }
 
-                byte[] decryptedData = new byte[iNumBytes];
-                System.arraycopy(dataToRead, 0, decryptedData, 0, iNumBytes);
+                byte[] decryptedData = new byte[numberOfDecryptedBytes];
+                System.arraycopy(dataToRead, 0, decryptedData, 0, numberOfDecryptedBytes);
                 packet.payload = decryptedData;
+                packet.dataSize = numberOfDecryptedBytes;
             }
 
             if (packet.getFrameType().equals(FrameType.Control)) {
