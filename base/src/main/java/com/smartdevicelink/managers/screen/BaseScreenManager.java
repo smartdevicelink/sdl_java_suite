@@ -742,15 +742,17 @@ abstract class BaseScreenManager extends BaseSubManager {
      * @return True if ButtonID's are good, False if not.
      */
     static boolean checkAndAssignButtonIds(List<SoftButtonObject> softButtonObjects, @ManagerLocation int location) {
+        HashSet<Integer> buttonIdsSetHashSet = new HashSet<>();
         // Depending on location form which the softButtons came from, we will clear out the id list so they can be reset
         if (location == ManagerLocation.ALERT_MANAGER) {
             softButtonIDByAlertManager.clear();
+            buttonIdsSetHashSet = (HashSet) softButtonIDBySoftButtonManager.clone();
         } else if (location == ManagerLocation.SOFTBUTTON_MANAGER) {
             softButtonIDBySoftButtonManager.clear();
+            buttonIdsSetHashSet = (HashSet) softButtonIDByAlertManager.clone();
         }
         // Check if multiple soft button objects have the same id
-        HashSet<Integer> buttonIdsSetHashSet = new HashSet<>();
-        int currentSoftButtonId, numberOfButtonIdsSet = 0, maxButtonIdsSetByDev = SOFT_BUTTON_ID_MIN_VALUE;
+        int currentSoftButtonId, numberOfButtonIdsSet = buttonIdsSetHashSet.size(), maxButtonIdsSetByDev = SOFT_BUTTON_ID_MIN_VALUE;
 
         for (SoftButtonObject softButtonObject : softButtonObjects) {
             currentSoftButtonId = softButtonObject.getButtonId();
