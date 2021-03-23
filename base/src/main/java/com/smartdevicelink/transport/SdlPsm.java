@@ -61,14 +61,14 @@ public class SdlPsm {
     private static final byte FIRST_FRAME_DATA_SIZE = 0x08;
 
     private static final int VERSION_MASK = 0xF0; //4 highest bits
-    private static final int COMPRESSION_MASK = 0x08; //4th lowest bit
+    private static final int ENCRYPTION_MASK = 0x08; //4th lowest bit
     private static final int FRAME_TYPE_MASK = 0x07; //3 lowest bits
 
 
     int state;
 
     int version;
-    boolean compression;
+    boolean encrypted;
     int frameType;
     int serviceType;
     int controlFrameInfo;
@@ -97,7 +97,7 @@ public class SdlPsm {
                 if (version == 0) { //It should never be 0
                     return ERROR_STATE;
                 }
-                compression = (1 == ((rawByte & (byte) COMPRESSION_MASK) >> 3));
+                encrypted = (1 == ((rawByte & (byte) ENCRYPTION_MASK) >> 3));
 
 
                 frameType = rawByte & (byte) FRAME_TYPE_MASK;
@@ -194,7 +194,10 @@ public class SdlPsm {
                         break;
 
                     case SdlPacket.FRAME_TYPE_FIRST:
-                        if (dataLength == FIRST_FRAME_DATA_SIZE) {
+                        if (dataLength == FIRST_FRAME_DATA_SIZE || this.encrypted) {
+                            //In a few production releases of core the first frame could be
+                            //encrypted. Therefore it is not an error state if the first frame data
+                            //length is greater than 8 in that case alone.
                             break;
                         }
                     default:
@@ -263,7 +266,7 @@ public class SdlPsm {
     public SdlPacket getFormedPacket() {
         if (state == FINISHED_STATE) {
             //Log.trace(TAG, "Finished packet.");
-            return new SdlPacket(version, compression, frameType,
+            return new SdlPacket(version, encrypted, frameType,
                     serviceType, controlFrameInfo, sessionId,
                     dataLength, messageId, payload);
         } else {
