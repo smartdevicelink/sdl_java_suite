@@ -872,7 +872,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
         if (capability.getDiagonalScreenSize() != null) {
             double diagonal = capability.getDiagonalScreenSize();
             if (range.getMinimumDiagonal() != null) {
-                if (range.getMinimumDiagonal() <= 0.0 || range.getMinimumDiagonal() > diagonal) {
+                if (range.getMinimumDiagonal() < 0.0 || range.getMinimumDiagonal() > diagonal) {
                     return false;
                 }
             }
