@@ -646,6 +646,13 @@ public class SdlProtocolBase {
                 for (int i = 0; i < frameCount; i++) {
 
                     frameSequenceNumber++;
+
+                    if (frameSequenceNumber == SdlPacket.FRAME_INFO_FINAL_CONNESCUTIVE_FRAME) {
+                        //If sequence numbers roll over to 0, increment again to avoid
+                        //using the reserved sequence value for the final frame
+                        ++frameSequenceNumber;
+                    }
+
                     if (i == frameCount - 1) {
                         frameSequenceNumber = SdlPacket.FRAME_INFO_FINAL_CONNESCUTIVE_FRAME;
                     }
