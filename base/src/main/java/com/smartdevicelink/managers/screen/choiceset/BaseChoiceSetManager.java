@@ -348,14 +348,14 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         ChoiceSetSelectionListener privateChoiceListener = new ChoiceSetSelectionListener() {
             @Override
             public void onChoiceSelected(ChoiceCell choiceCell, TriggerSource triggerSource, int rowIndex) {
-                if (pendingPresentationSet.getChoiceSetSelectionListener() != null) {
+                if (pendingPresentationSet != null && pendingPresentationSet.getChoiceSetSelectionListener() != null) {
                     pendingPresentationSet.getChoiceSetSelectionListener().onChoiceSelected(choiceCell, triggerSource, rowIndex);
                 }
             }
 
             @Override
             public void onError(String error) {
-                if (pendingPresentationSet.getChoiceSetSelectionListener() != null) {
+                if (pendingPresentationSet != null && pendingPresentationSet.getChoiceSetSelectionListener() != null) {
                     pendingPresentationSet.getChoiceSetSelectionListener().onError(error);
                 }
             }
