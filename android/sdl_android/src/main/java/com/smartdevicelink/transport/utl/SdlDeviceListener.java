@@ -200,7 +200,7 @@ public class SdlDeviceListener {
             VehicleType vehicleType = null;
             if (packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_ACK) {
                 //parse vehicle Type info from connected system
-                if (packet.getVersion() >=  6) {
+                if (packet.getVersion() >= 5) {
                     vehicleType = getVehicleType(packet);
                 }
                 notifyConnection(vehicleType);
