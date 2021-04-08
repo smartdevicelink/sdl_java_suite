@@ -615,8 +615,9 @@ public class SdlProtocolBase {
             return;
         }
 
-        //Set the MTU according to session MTU provided by the IVI or the max data size for encryption if required
-        final Long mtu = requiresEncryption ? TLS_MAX_DATA_TO_ENCRYPT_SIZE : getMtu(sessionType);
+        //Set the MTU according to service MTU provided by the IVI .
+        //If encryption is required the MTU will be set to lowest value between the max data size for encryption or service MTU
+        final Long mtu = requiresEncryption ? Math.min(TLS_MAX_DATA_TO_ENCRYPT_SIZE, getMtu(sessionType)) : getMtu(sessionType);
 
         synchronized (messageLock) {
             if (data != null && data.length > mtu) {
