@@ -12,6 +12,16 @@
     <!-- Required to use the USB Accessory mode -->
     <uses-feature android:name="android.hardware.usb.accessory" />
 
+    <!-- Required when targeting Android API 30+ -->
+    <queries>
+        <intent>
+            <action android:name="com.smartdevicelink.router.service" />
+        </intent>
+        <intent>
+            <action android:name="sdl.router.startservice" />
+        </intent>
+    </queries>
+
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
