@@ -39,10 +39,10 @@ To compile with the latest release of SDL Android, include the following in your
 
 ```sh
 repositories {
-    jcenter()
+    mavenCentral()
 }
 dependencies {
-    implementation 'com.smartdevicelink:sdl_android:4.+'
+    implementation 'com.smartdevicelink:sdl_android:5.1.0'
 }
 ```
 
@@ -77,10 +77,10 @@ To compile with the latest release of SDL JavaSE, include the following in your 
 
 ```sh
 repositories {
-    jcenter()
+    mavenCentral()
 }
 dependencies {
-    implementation 'com.smartdevicelink:sdl_java_se:4.+'
+    implementation 'com.smartdevicelink:sdl_java_se:5.1.0'
 }
 ```
 
@@ -96,10 +96,10 @@ To compile with the latest release of SDL JavaEE, include the following in your 
 
 ```sh
 repositories {
-    jcenter()
+    mavenCentral()
 }
 dependencies {
-    implementation 'com.smartdevicelink:sdl_java_ee:4.+'
+    implementation 'com.smartdevicelink:sdl_java_ee:5.1.0'
 }
 ```
 
