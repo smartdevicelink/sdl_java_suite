@@ -46,7 +46,7 @@ dependencies {
 }
 ```
 
-For Maven or Ivy snippets please look at [Bintray](https://bintray.com/smartdevicelink/sdl_android/sdl_android)
+For Maven or Ivy snippets please look at [Maven Central](https://search.maven.org/artifact/com.smartdevicelink/sdl_android)
 
 #### Manually
 
