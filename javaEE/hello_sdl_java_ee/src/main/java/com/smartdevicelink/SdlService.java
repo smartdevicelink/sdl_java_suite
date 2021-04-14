@@ -32,12 +32,13 @@
 
 package com.smartdevicelink;
 
-import android.util.Log;
+import com.smartdevicelink.managers.AlertCompletionListener;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
+import com.smartdevicelink.managers.screen.AlertView;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceSet;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceSetSelectionListener;
@@ -47,14 +48,15 @@ import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.TTSChunkFactory;
-import com.smartdevicelink.proxy.rpc.Alert;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.Speak;
+import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.enums.*;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.SystemInfo;
+
 
 import java.util.*;
 
@@ -92,7 +94,7 @@ public class SdlService {
     }
 
     public void start() {
-        DebugTool.logInfo("SdlService start() ");
+        DebugTool.logInfo(TAG, "SdlService start() ");
         if (sdlManager != null) {
             sdlManager.start();
         }
@@ -110,7 +112,7 @@ public class SdlService {
         // Build flavors are selected by the "build variants" tab typically located in the bottom left of Android Studio
         // Typically in your app, you will only set one of these.
         if (sdlManager == null) {
-            DebugTool.logInfo("Creating SDL Manager");
+            DebugTool.logInfo(TAG, "Creating SDL Manager");
 
             //FIXME add the transport type
             // The app type to be used
@@ -122,12 +124,12 @@ public class SdlService {
             SdlManagerListener listener = new SdlManagerListener() {
                 @Override
                 public void onStart(SdlManager sdlManager) {
-                    DebugTool.logInfo("SdlManager onStart");
+                    DebugTool.logInfo(TAG, "SdlManager onStart");
                 }
 
                 @Override
                 public void onDestroy(SdlManager sdlManager) {
-                    DebugTool.logInfo("SdlManager onDestroy ");
+                    DebugTool.logInfo(TAG, "SdlManager onDestroy ");
                     SdlService.this.sdlManager = null;
                     if (SdlService.this.callback != null) {
                         SdlService.this.callback.onEnd();
@@ -139,20 +141,46 @@ public class SdlService {
                 }
 
                 @Override
-                public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language) {
-                    String appName;
+                public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language, Language hmiLanguage) {
+                    boolean isNeedUpdate = false;
+                    String appName = APP_NAME;
+                    String ttsName = APP_NAME;
                     switch (language) {
                         case ES_MX:
+                            isNeedUpdate = true;
+                            ttsName = APP_NAME_ES;
+                            break;
+                        case FR_CA:
+                            isNeedUpdate = true;
+                            ttsName = APP_NAME_FR;
+                            break;
+                        default:
+                            break;
+                    }
+                    switch (hmiLanguage) {
+                        case ES_MX:
+                            isNeedUpdate = true;
                             appName = APP_NAME_ES;
                             break;
                         case FR_CA:
+                            isNeedUpdate = true;
                             appName = APP_NAME_FR;
                             break;
                         default:
-                            return null;
+                            break;
                     }
+                    if (isNeedUpdate) {
+                        Vector<TTSChunk> chunks = new Vector<>(Collections.singletonList(new TTSChunk(ttsName, SpeechCapabilities.TEXT)));
+                        return new LifecycleConfigurationUpdate(appName, null, chunks, null);
+                    } else {
+                        return null;
+                    }
+                }
 
-                    return new LifecycleConfigurationUpdate(appName, null, TTSChunkFactory.createSimpleTTSChunks(appName), null);
+                @Override
+                public boolean onSystemInfoReceived(SystemInfo systemInfo) {
+                    //Check the SystemInfo object to ensure that the connection to the device should continue
+                    return true;
                 }
             };
 
@@ -196,14 +224,14 @@ public class SdlService {
         VoiceCommand voiceCommand1 = new VoiceCommand(list1, new VoiceCommandSelectionListener() {
             @Override
             public void onVoiceCommandSelected() {
-                Log.i(TAG, "Voice Command 1 triggered");
+                DebugTool.logInfo(TAG, "Voice Command 1 triggered");
             }
         });
 
         VoiceCommand voiceCommand2 = new VoiceCommand(list2, new VoiceCommandSelectionListener() {
             @Override
             public void onVoiceCommandSelected() {
-                Log.i(TAG, "Voice Command 2 triggered");
+                DebugTool.logInfo(TAG, "Voice Command 2 triggered");
             }
         });
 
@@ -221,51 +249,51 @@ public class SdlService {
         // some voice commands
         List<String> voice2 = Collections.singletonList("Cell two");
 
-        MenuCell mainCell1 = new MenuCell("Test Cell 1 (speak)", livio, null, new MenuSelectionListener() {
+        MenuCell mainCell1 = new MenuCell("Test Cell 1 (speak)", "Secondary Text", "Tertiary Text", livio, livio, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
-                Log.i(TAG, "Test cell 1 triggered. Source: " + trigger.toString());
+                DebugTool.logInfo(TAG, "Test cell 1 triggered. Source: " + trigger.toString());
                 showTest();
             }
         });
 
-        MenuCell mainCell2 = new MenuCell("Test Cell 2", null, voice2, new MenuSelectionListener() {
+        MenuCell mainCell2 = new MenuCell("Test Cell 2", "Secondary Text", null, null, null, voice2, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
-                Log.i(TAG, "Test cell 2 triggered. Source: " + trigger.toString());
+                DebugTool.logInfo(TAG, "Test cell 2 triggered. Source: " + trigger.toString());
             }
         });
 
         // SUB MENU
 
-        MenuCell subCell1 = new MenuCell("SubCell 1", null, null, new MenuSelectionListener() {
+        MenuCell subCell1 = new MenuCell("SubCell 1", null, null, null, null, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
-                Log.i(TAG, "Sub cell 1 triggered. Source: " + trigger.toString());
+                DebugTool.logInfo(TAG, "Sub cell 1 triggered. Source: " + trigger.toString());
             }
         });
 
-        MenuCell subCell2 = new MenuCell("SubCell 2", null, null, new MenuSelectionListener() {
+        MenuCell subCell2 = new MenuCell("SubCell 2", null, null, null, null, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
-                Log.i(TAG, "Sub cell 2 triggered. Source: " + trigger.toString());
+                DebugTool.logInfo(TAG, "Sub cell 2 triggered. Source: " + trigger.toString());
             }
         });
 
         // sub menu parent cell
-        MenuCell mainCell3 = new MenuCell("Test Cell 3 (sub menu)", null, Arrays.asList(subCell1, subCell2));
+        MenuCell mainCell3 = new MenuCell("Test Cell 3 (sub menu)", null, null, MenuLayout.LIST, null, null, Arrays.asList(subCell1, subCell2));
 
-        MenuCell mainCell4 = new MenuCell("Show Perform Interaction", null, null, new MenuSelectionListener() {
+        MenuCell mainCell4 = new MenuCell("Show Perform Interaction", null, null, null, null, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
                 showPerformInteraction();
             }
         });
 
-        MenuCell mainCell5 = new MenuCell("Clear the menu", null, null, new MenuSelectionListener() {
+        MenuCell mainCell5 = new MenuCell("Clear the menu", null, null, null,null, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
-                Log.i(TAG, "Clearing Menu. Source: " + trigger.toString());
+                DebugTool.logInfo(TAG, "Clearing Menu. Source: " + trigger.toString());
                 // Clear this thing
                 sdlManager.getScreenManager().setMenu(Collections.<MenuCell>emptyList());
                 showAlert("Menu Cleared");
@@ -280,7 +308,8 @@ public class SdlService {
      * Will speak a sample welcome message
      */
     private void performWelcomeSpeak() {
-        sdlManager.sendRPC(new Speak(TTSChunkFactory.createSimpleTTSChunks(WELCOME_SPEAK)));
+        List<TTSChunk> chunks = Collections.singletonList(new TTSChunk(WELCOME_SPEAK, SpeechCapabilities.TEXT));
+        sdlManager.sendRPC(new Speak(chunks));
     }
 
     /**
@@ -297,7 +326,7 @@ public class SdlService {
             @Override
             public void onComplete(boolean success) {
                 if (success) {
-                    Log.i(TAG, "welcome show successful");
+                    DebugTool.logInfo(TAG, "welcome show successful");
                 }
             }
         });
@@ -312,14 +341,21 @@ public class SdlService {
         sdlManager.getScreenManager().setTextField2("");
         sdlManager.getScreenManager().commit(null);
 
-        sdlManager.sendRPC(new Speak(TTSChunkFactory.createSimpleTTSChunks(TEST_COMMAND_NAME)));
+        List<TTSChunk> chunks = Collections.singletonList(new TTSChunk(TEST_COMMAND_NAME, SpeechCapabilities.TEXT));
+        sdlManager.sendRPC(new Speak(chunks));
     }
 
     private void showAlert(String text) {
-        Alert alert = new Alert();
-        alert.setAlertText1(text);
-        alert.setDuration(5000);
-        sdlManager.sendRPC(alert);
+        AlertView.Builder builder = new AlertView.Builder();
+        builder.setText(text);
+        builder.setTimeout(5);
+        AlertView alertView = builder.build();
+        sdlManager.getScreenManager().presentAlert(alertView, new AlertCompletionListener() {
+            @Override
+            public void onComplete(boolean success, Integer tryAgainTime) {
+                DebugTool.logInfo(TAG, "Alert presented: "+ success);
+            }
+        });
     }
 
     public interface SdlServiceCallback {
@@ -346,7 +382,7 @@ public class SdlService {
 
                 @Override
                 public void onError(String error) {
-                    Log.e(TAG, "There was an error showing the perform interaction: " + error);
+                    DebugTool.logError(TAG, "There was an error showing the perform interaction: " + error);
                 }
             });
             sdlManager.getScreenManager().presentChoiceSet(choiceSet, InteractionMode.MANUAL_ONLY);

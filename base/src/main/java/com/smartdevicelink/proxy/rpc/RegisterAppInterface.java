@@ -200,6 +200,14 @@ import java.util.List;
  * 			<td>SmartDeviceLink 2.3.1 </td>
  * 		</tr>
  * 		<tr>
+ * 			<td>appInfo</td>
+ * 			<td>AppInfo</td>
+ * 			<td>See AppInfo.</td>
+ *                 <td>N</td>
+ *                 <td></td>
+ * 			<td>@since SmartDeviceLink 4.2.0 </td>
+ * 		</tr>
+ * 		<tr>
  * 			<td>deviceInfo</td>
  * 			<td>DeviceInfo</td>
  * 			<td>Various information about connecting device.</td>
@@ -288,6 +296,9 @@ public class RegisterAppInterface extends RPCRequest {
     public static final String KEY_VR_SYNONYMS = "vrSynonyms";
     public static final String KEY_SDL_MSG_VERSION = "syncMsgVersion";
     public static final String KEY_HASH_ID = "hashID";
+    /**
+     * @since SmartDeviceLink 4.2.0
+     */
     public static final String KEY_APP_INFO = "appInfo";
     public static final String KEY_DAY_COLOR_SCHEME = "dayColorScheme";
     public static final String KEY_NIGHT_COLOR_SCHEME = "nightColorScheme";
@@ -631,18 +642,20 @@ public class RegisterAppInterface extends RPCRequest {
     }
 
     /**
-     * Gets the detailed information about the registered application
+     * Gets the appInfo.
      *
-     * @return appInfo - detailed information about the registered application
+     * @return AppInfo See AppInfo.
+     * @since SmartDeviceLink 4.2.0
      */
     public AppInfo getAppInfo() {
         return (AppInfo) getObject(AppInfo.class, KEY_APP_INFO);
     }
 
     /**
-     * Sets detailed information about the registered application
+     * Sets the appInfo.
      *
-     * @param appInfo - detailed information about the registered application
+     * @param appInfo See AppInfo.
+     * @since SmartDeviceLink 4.2.0
      */
     public RegisterAppInterface setAppInfo(AppInfo appInfo) {
         setParameters(KEY_APP_INFO, appInfo);

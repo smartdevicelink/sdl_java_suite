@@ -1,1 +1,2 @@
+include ':bson_java_port-release'
 include ':sdl_android', ':hello_sdl_android'

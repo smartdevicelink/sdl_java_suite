@@ -106,6 +106,36 @@ import java.util.Hashtable;
  * 		    <td>Min Value: 0 <p>Max Value: 2000000000</p> </td>
  * 			<td>SmartDeviceLink 7.0.0</td>
  * 		</tr>
+ *      <tr>
+ *          <td>secondaryText</td>
+ *          <td>String</td>
+ *          <td>Optional secondary text to display</td>
+ *          <td>N</td>
+ *          <td>{"string_min_length": 1, "string_max_length": 500}</td>
+ *          <td>
+ *             @since SmartDeviceLink 7.1.0
+ *          </td>
+ *      </tr>
+ *      <tr>
+ *          <td>tertiaryText</td>
+ *          <td>String</td>
+ *          <td>Optional tertiary text to display</td>
+ *          <td>N</td>
+ *          <td>{"string_min_length": 1, "string_max_length": 500}</td>
+ *          <td>
+ *             @since SmartDeviceLink 7.1.0
+ *          </td>
+ *      </tr>
+ *      <tr>
+ *          <td>secondaryImage</td>
+ *          <td>Image</td>
+ *          <td>Optional secondary image struct for sub-menu cell</td>
+ *          <td>N</td>
+ *          <td></td>
+ *          <td>
+ *             @since SmartDeviceLink 7.1.0
+ *          </td>
+ *      </tr>
  *  </table>
  *  <b>Response</b>
  *  <p>Indicates that the corresponding request either failed or succeeded. If the response returns with a SUCCESS result code, this means the SubMenu was added to the Command Menu successfully</p>
@@ -126,6 +156,10 @@ public class AddSubMenu extends RPCRequest {
     public static final String KEY_MENU_ICON = "menuIcon";
     public static final String KEY_MENU_LAYOUT = "menuLayout";
     public static final String KEY_PARENT_ID = "parentID";
+    public static final String KEY_SECONDARY_TEXT = "secondaryText";
+    public static final String KEY_TERTIARY_TEXT = "tertiaryText";
+    public static final String KEY_SECONDARY_IMAGE = "secondaryImage";
+
 
     /**
      * Constructs a new AddSubMenu object
@@ -292,5 +326,72 @@ public class AddSubMenu extends RPCRequest {
      */
     public Integer getParentID() {
         return getInteger(KEY_PARENT_ID);
+    }
+
+    /**
+     * Sets the secondaryText.
+     *
+     * @param secondaryText Optional secondary text to display
+     * {"string_min_length": 1, "string_max_length": 500}
+     * @since SmartDeviceLink 7.1.0
+     */
+    public AddSubMenu setSecondaryText(String secondaryText) {
+        setParameters(KEY_SECONDARY_TEXT, secondaryText);
+        return this;
+    }
+
+    /**
+     * Gets the secondaryText.
+     *
+     * @return String Optional secondary text to display
+     * {"string_min_length": 1, "string_max_length": 500}
+     * @since SmartDeviceLink 7.1.0
+     */
+    public String getSecondaryText() {
+        return getString(KEY_SECONDARY_TEXT);
+    }
+
+    /**
+     * Sets the tertiaryText.
+     *
+     * @param tertiaryText Optional tertiary text to display
+     * {"string_min_length": 1, "string_max_length": 500}
+     * @since SmartDeviceLink 7.1.0
+     */
+    public AddSubMenu setTertiaryText(String tertiaryText) {
+        setParameters(KEY_TERTIARY_TEXT, tertiaryText);
+        return this;
+    }
+
+    /**
+     * Gets the tertiaryText.
+     *
+     * @return String Optional tertiary text to display
+     * {"string_min_length": 1, "string_max_length": 500}
+     * @since SmartDeviceLink 7.1.0
+     */
+    public String getTertiaryText() {
+        return getString(KEY_TERTIARY_TEXT);
+    }
+
+    /**
+     * Sets the secondaryImage.
+     *
+     * @param secondaryImage Optional secondary image struct for sub-menu cell
+     * @since SmartDeviceLink 7.1.0
+     */
+    public AddSubMenu setSecondaryImage(Image secondaryImage) {
+        setParameters(KEY_SECONDARY_IMAGE, secondaryImage);
+        return this;
+    }
+
+    /**
+     * Gets the secondaryImage.
+     *
+     * @return Image Optional secondary image struct for sub-menu cell
+     * @since SmartDeviceLink 7.1.0
+     */
+    public Image getSecondaryImage() {
+        return (Image) getObject(Image.class, KEY_SECONDARY_IMAGE);
     }
 }

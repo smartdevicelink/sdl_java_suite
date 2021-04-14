@@ -31,7 +31,7 @@ dependencies {
     extraLibs 'org.mongodb:bson:4.0.5'
     extraLibs 'androidx.annotation:annotation:1.1.0'
     extraLibs 'org.java-websocket:Java-WebSocket:1.3.9'
-    extraLibs 'com.livio.taskmaster:taskmaster:0.3.0'
+    //extraLibs 'com.livio.taskmaster:taskmaster:0.4.0'
     configurations.api.extendsFrom(configurations.extraLibs)
 }
 

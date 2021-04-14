@@ -39,7 +39,11 @@ package com.smartdevicelink.proxy.rpc.enums;
 public enum KeyboardLayout {
     QWERTY,
     QWERTZ,
-    AZERTY;
+    AZERTY,
+    /**
+     * @since SmartDeviceLink 7.1.0
+     */
+    NUMERIC;
 
     public static KeyboardLayout valueForString(String value) {
         try {

@@ -59,12 +59,19 @@ public class ChoiceSet {
     ChoiceSetCanceledListener canceledListener;
 
     // defaults
-    private final Integer defaultTimeout = 10;
+    private static final int TIMEOUT_DEFAULT = 0;
+    private static final int TIMEOUT_MIN = 5;
+    private static final int TIMEOUT_MAX = 100;
+    private static Integer defaultTimeout = 10;
     private final ChoiceSetLayout defaultLayout = ChoiceSetLayout.CHOICE_SET_LAYOUT_LIST;
 
     /**
      * Initialize with a title, listener, and choices. It will use the default timeout and layout,
      * all other properties (such as prompts) will be `null`.
+     *
+     *  NOTE: If you display multiple cells with the same `text` with the only uniquing property between cells being different `vrCommands` or a feature that is not displayed on the head unit (e.g. if the head unit doesn't display `secondaryArtwork` and that's the only uniquing property between two cells) then the cells may appear to be the same to the user in `Manual` mode. This only applies to RPC connections >= 7.1.0.
+     *
+     *  NOTE: On < 7.1.0 connections, the `text` cell will be automatically modified among cells that have the same `text` when they are preloaded, so they will always appear differently on-screen when they are displayed. `choiceCell.uniqueText` will be created by appending ` (2)`, ` (3)`, etc.
      *
      * @param title    - The choice set's title
      * @param listener - The choice set listener called after the user has interacted with your choice set
@@ -75,10 +82,10 @@ public class ChoiceSet {
         setTitle(title);
         setChoiceSetSelectionListener(listener);
         setChoices(choices);
+        setTimeout(TIMEOUT_DEFAULT);
 
         // defaults
         setLayout(defaultLayout);
-        setTimeout(defaultTimeout);
 
         // things to do
         checkChoiceSetParameters();
@@ -86,6 +93,10 @@ public class ChoiceSet {
 
     /**
      * Constructor  with all possible properties.
+     *
+     *  NOTE: If you display multiple cells with the same `text` with the only uniquing property between cells being different `vrCommands` or a feature that is not displayed on the head unit (e.g. if the head unit doesn't display `secondaryArtwork` and that's the only uniquing property between two cells) then the cells may appear to be the same to the user in `Manual` mode. This only applies to RPC connections >= 7.1.0.
+     *
+     *  NOTE: On < 7.1.0 connections, the `text` cell will be automatically modified among cells that have the same `text` when they are preloaded, so they will always appear differently on-screen when they are displayed. `choiceCell.uniqueText` will be created by appending ` (2)`, ` (3)`, etc.
      *
      * @param title                       - The choice set's title
      * @param listener                    - The choice set listener called after the user has interacted with your choice set
@@ -127,6 +138,10 @@ public class ChoiceSet {
 
     /**
      * Constructor  with all possible properties.
+     *
+     *  NOTE: If you display multiple cells with the same `text` with the only uniquing property between cells being different `vrCommands` or a feature that is not displayed on the head unit (e.g. if the head unit doesn't display `secondaryArtwork` and that's the only uniquing property between two cells) then the cells may appear to be the same to the user in `Manual` mode. This only applies to RPC connections >= 7.1.0.
+     *
+     *  NOTE: On < 7.1.0 connections, the `text` cell will be automatically modified among cells that have the same `text` when they are preloaded, so they will always appear differently on-screen when they are displayed. `choiceCell.uniqueText` will be created by appending ` (2)`, ` (3)`, etc.
      *
      * @param title                       - The choice set's title
      * @param listener                    - The choice set listener called after the user has interacted with your choice set
@@ -289,21 +304,43 @@ public class ChoiceSet {
      * @return The Timeout
      */
     public Integer getTimeout() {
+        if (timeout == TIMEOUT_DEFAULT) {
+            timeout = getDefaultTimeout();
+        } else if (timeout < TIMEOUT_MIN) {
+            return TIMEOUT_MIN;
+        } else if (timeout > TIMEOUT_MAX) {
+            return TIMEOUT_MAX;
+        }
         return timeout;
     }
 
     /**
-     * @param timeout - Maps to PerformInteraction.timeout. This applies only to a manual selection
-     *                (not a voice selection, which has its timeout handled by the system). Defaults to `defaultTimeout`.
-     *                <strong>This is set to seconds if using the screen manager.</strong>
+     * Maps to PerformInteraction.timeout. Timeout in seconds. Defaults to 0, which will use `defaultTimeout`.
+     * If this is set below the minimum, it will be capped at 5 seconds. Minimum 5 seconds, maximum 100 seconds.
+     * If this is set above the maximum, it will be capped at 100 seconds.
      */
     public void setTimeout(Integer timeout) {
-        if (timeout == null) {
-            this.timeout = defaultTimeout;
-        } else {
             this.timeout = timeout;
+    }
+
+    public int getDefaultTimeout() {
+        if (defaultTimeout < TIMEOUT_MIN) {
+            return TIMEOUT_MIN;
+        } else if (defaultTimeout > TIMEOUT_MAX) {
+            return TIMEOUT_MAX;
         }
-        checkChoiceSetParameters();
+        return defaultTimeout;
+    }
+
+    /**
+     * Set this to change the default timeout for all ChoiceSets. If a timeout is not set on an individual
+     * ChoiceSet object (or if it is set to 0), then it will use this timeout instead. See `timeout`
+     * for more details. If this is not set by you, it will default to 10 seconds. The minimum is
+     * 5 seconds, the maximum is 100 seconds. If this is set below the minimum, it will be capped
+     * at 3 seconds. If this is set above the maximum, it will be capped at 10 seconds.
+     */
+    public void setDefaultTimeout(int defaultTimeout) {
+        this.defaultTimeout = defaultTimeout;
     }
 
     /**
@@ -374,11 +411,6 @@ public class ChoiceSet {
             if (getTitle() != null) {
                 if (getTitle().length() == 0 || getTitle().length() > 500) {
                     DebugTool.logWarning(TAG, "Attempted to create a choice set with a title of " + getTitle().length() + " length. Only 500 characters are supported.");
-                }
-            }
-            if (getTimeout() != null) {
-                if (getTimeout() < 5 || getTimeout() > 100) {
-                    DebugTool.logWarning(TAG, "Attempted to create a choice set with a " + getTimeout() + " second timeout; Only 5 - 100 seconds is valid");
                 }
             }
             if (getChoices() != null) {

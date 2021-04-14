@@ -344,6 +344,7 @@ class PresentChoiceSetOperation extends Task {
                         @Override
                         public void onUpdatedAutoCompleteList(List<String> updatedAutoCompleteList) {
                             keyboardProperties.setAutoCompleteList(updatedAutoCompleteList != null ? updatedAutoCompleteList : new ArrayList<String>());
+                            keyboardProperties.setAutoCompleteText(updatedAutoCompleteList != null && !updatedAutoCompleteList.isEmpty() ? updatedAutoCompleteList.get(0) : null);
                             updateKeyboardProperties(null);
                         }
                     });
@@ -358,6 +359,8 @@ class PresentChoiceSetOperation extends Task {
                 } else if (onKeyboard.getEvent().equals(KeyboardEvent.ENTRY_ABORTED) || onKeyboard.getEvent().equals(KeyboardEvent.ENTRY_CANCELLED)) {
                     // Notify of abort / Cancellation
                     keyboardListener.onKeyboardDidAbortWithReason(onKeyboard.getEvent());
+                } else if (onKeyboard.getEvent().equals(KeyboardEvent.INPUT_KEY_MASK_ENABLED) || onKeyboard.getEvent().equals(KeyboardEvent.INPUT_KEY_MASK_DISABLED)) {
+                    keyboardListener.onKeyboardDidUpdateInputMask(onKeyboard.getEvent());
                 }
             }
         };

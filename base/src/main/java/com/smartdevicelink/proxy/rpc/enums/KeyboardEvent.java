@@ -58,7 +58,14 @@ public enum KeyboardEvent {
      * @since SmartDeviceLink 4.0
      */
     ENTRY_VOICE,
-    ;
+    /**
+     * @since SmartDeviceLink 7.1.0
+     */
+    INPUT_KEY_MASK_ENABLED,
+    /**
+     * @since SmartDeviceLink 7.1.0
+     */
+    INPUT_KEY_MASK_DISABLED;
 
     /**
      * Convert String to KeyboardEvent

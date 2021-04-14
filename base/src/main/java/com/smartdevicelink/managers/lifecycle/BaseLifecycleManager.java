@@ -40,6 +40,7 @@ import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.ServiceEncryptionListener;
+import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -87,6 +88,7 @@ import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.FileUtls;
+import com.smartdevicelink.util.SystemInfo;
 import com.smartdevicelink.util.Version;
 
 import java.util.HashMap;
@@ -97,7 +99,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 abstract class BaseLifecycleManager {
 
     static final String TAG = "Lifecycle Manager";
-    public static final Version MAX_SUPPORTED_RPC_VERSION = new Version(7, 0, 0);
+    public static final Version MAX_SUPPORTED_RPC_VERSION = new Version(7, 1, 0);
 
     // Protected Correlation IDs
     private final int REGISTER_APP_INTERFACE_CORRELATION_ID = 65529,
@@ -128,6 +130,7 @@ abstract class BaseLifecycleManager {
     final Version minimumRPCVersion;
     BaseTransportConfig _transportConfig;
     private Taskmaster taskmaster;
+    private boolean didCheckSystemInfo = false;
 
     BaseLifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener) {
         this.appConfig = appConfig;
@@ -169,7 +172,12 @@ abstract class BaseLifecycleManager {
     Taskmaster getTaskmaster() {
         if (taskmaster == null) {
             Taskmaster.Builder builder = new Taskmaster.Builder();
-            builder.setThreadCount(2);
+            int threadCount = 2;
+            // Give NAVIGATION & PROJECTION apps an extra thread to handle audio/video streaming operations
+            if (appConfig != null && appConfig.appType != null && (appConfig.appType.contains(AppHMIType.NAVIGATION) || appConfig.appType.contains(AppHMIType.PROJECTION))) {
+                threadCount = 3;
+            }
+            builder.setThreadCount(threadCount);
             builder.shouldBeDaemon(true);
             taskmaster = builder.build();
             taskmaster.start();
@@ -346,6 +354,10 @@ abstract class BaseLifecycleManager {
         addRpcListener(FunctionID.ON_SYSTEM_REQUEST, rpcListener);
         addRpcListener(FunctionID.ON_APP_INTERFACE_UNREGISTERED, rpcListener);
         addRpcListener(FunctionID.UNREGISTER_APP_INTERFACE, rpcListener);
+
+        /*  These are legacy and are necessary for older systems   */
+        addRpcListener(FunctionID.ON_SYNC_P_DATA, rpcListener);
+        addRpcListener(FunctionID.ON_ENCODED_SYNC_P_DATA, rpcListener);
     }
 
     private final OnRPCListener rpcListener = new OnRPCListener() {
@@ -358,7 +370,7 @@ abstract class BaseLifecycleManager {
                     case REGISTER_APP_INTERFACE:
                         //We have begun
                         DebugTool.logInfo(TAG, "RAI Response");
-                        raiResponse = (RegisterAppInterfaceResponse) message;
+                        BaseLifecycleManager.this.raiResponse = (RegisterAppInterfaceResponse) message;
                         SdlMsgVersion rpcVersion = ((RegisterAppInterfaceResponse) message).getSdlMsgVersion();
                         if (rpcVersion != null) {
                             BaseLifecycleManager.this.rpcSpecVersion = new Version(rpcVersion.getMajorVersion(), rpcVersion.getMinorVersion(), rpcVersion.getPatchVersion());
@@ -373,7 +385,25 @@ abstract class BaseLifecycleManager {
                             clean();
                             return;
                         }
-                        processRaiResponse(raiResponse);
+                        if (!didCheckSystemInfo && lifecycleListener != null) {
+                            didCheckSystemInfo = true;
+                            VehicleType vehicleType = raiResponse.getVehicleType();
+                            String systemSoftwareVersion = raiResponse.getSystemSoftwareVersion();
+                            if (vehicleType != null || systemSoftwareVersion != null) {
+                                SystemInfo systemInfo = new SystemInfo(vehicleType, systemSoftwareVersion, null);
+                                boolean validSystemInfo = lifecycleListener.onSystemInfoReceived(systemInfo);
+                                if (!validSystemInfo) {
+                                    DebugTool.logWarning(TAG, "Disconnecting from head unit, the system info was not accepted.");
+                                    UnregisterAppInterface msg = new UnregisterAppInterface();
+                                    msg.setCorrelationID(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
+                                    sendRPCMessagePrivate(msg, true);
+                                    clean();
+                                    return;
+                                }
+                            }
+                            //If the vehicle is acceptable and this is the first check, init security lib
+                            setSecurityLibraryIfAvailable(vehicleType);
+                        }
                         systemCapabilityManager.parseRAIResponse(raiResponse);
                         break;
                     case ON_HMI_STATUS:
@@ -387,42 +417,61 @@ abstract class BaseLifecycleManager {
                     case ON_HASH_CHANGE:
                         break;
                     case ON_SYSTEM_REQUEST:
-                        final OnSystemRequest onSystemRequest = (OnSystemRequest) message;
-                        if ((onSystemRequest.getUrl() != null) &&
-                                (((onSystemRequest.getRequestType() == RequestType.PROPRIETARY) && (onSystemRequest.getFileType() == FileType.JSON))
-                                        || ((onSystemRequest.getRequestType() == RequestType.HTTP) && (onSystemRequest.getFileType() == FileType.BINARY)))) {
-                            Thread handleOffboardTransmissionThread = new Thread() {
-                                @Override
-                                public void run() {
-                                    RPCRequest request = PoliciesFetcher.fetchPolicies(onSystemRequest);
-                                    if (request != null && isConnected()) {
-                                        sendRPCMessagePrivate(request, true);
-                                    }
-                                }
-                            };
-                            handleOffboardTransmissionThread.start();
-                        } else if (onSystemRequest.getRequestType() == RequestType.ICON_URL && onSystemRequest.getUrl() != null) {
-                            //Download the icon file and send SystemRequest RPC
-                            Thread handleOffBoardTransmissionThread = new Thread() {
-                                @Override
-                                public void run() {
-                                    final String urlHttps = onSystemRequest.getUrl().replaceFirst("http://", "https://");
-                                    byte[] file = FileUtls.downloadFile(urlHttps);
-                                    if (file != null) {
-                                        SystemRequest systemRequest = new SystemRequest();
-                                        systemRequest.setFileName(onSystemRequest.getUrl());
-                                        systemRequest.setBulkData(file);
-                                        systemRequest.setRequestType(RequestType.ICON_URL);
-                                        if (isConnected()) {
-                                            sendRPCMessagePrivate(systemRequest, true);
-                                        }
-                                    } else {
-                                        DebugTool.logError(TAG, "File was null at: " + urlHttps);
-                                    }
-                                }
-                            };
-                            handleOffBoardTransmissionThread.start();
+                    case ON_ENCODED_SYNC_P_DATA:
+                    case ON_SYNC_P_DATA:
+                        if (functionID.equals(FunctionID.ON_ENCODED_SYNC_P_DATA) || functionID.equals(FunctionID.ON_SYNC_P_DATA)) {
+                            DebugTool.logInfo(TAG, "Received legacy SYNC_P_DATA, handling it as OnSystemRequest");
+                        } else {
+                            DebugTool.logInfo(TAG, "Received OnSystemRequest");
                         }
+
+                        final OnSystemRequest onSystemRequest = (OnSystemRequest) message;
+                        RequestType requestType = onSystemRequest.getRequestType();
+                        FileType fileType = onSystemRequest.getFileType();
+
+                        if (onSystemRequest.getUrl() != null) {
+                            if ((requestType == RequestType.PROPRIETARY && fileType == FileType.JSON)
+                                    || (requestType == RequestType.HTTP && fileType == FileType.BINARY)
+                                    || functionID.equals(FunctionID.ON_ENCODED_SYNC_P_DATA)
+                                    || functionID.equals(FunctionID.ON_SYNC_P_DATA)) {
+                                DebugTool.logInfo(TAG, "List of conditionals has passed");
+                                Thread handleOffboardTransmissionThread = new Thread() {
+                                    @Override
+                                    public void run() {
+                                        DebugTool.logInfo(TAG, "Attempting to fetch policies");
+                                        RPCRequest request = PoliciesFetcher.fetchPolicies(onSystemRequest);
+                                        if (request != null && isConnected()) {
+                                            sendRPCMessagePrivate(request, true);
+                                        }
+                                    }
+                                };
+                                handleOffboardTransmissionThread.start();
+                                return;
+                            } else if (requestType == RequestType.ICON_URL) {
+                                //Download the icon file and send SystemRequest RPC
+                                Thread handleOffBoardTransmissionThread = new Thread() {
+                                    @Override
+                                    public void run() {
+                                        final String urlHttps = onSystemRequest.getUrl().replaceFirst("http://", "https://");
+                                        byte[] file = FileUtls.downloadFile(urlHttps);
+                                        if (file != null) {
+                                            SystemRequest systemRequest = new SystemRequest();
+                                            systemRequest.setFileName(onSystemRequest.getUrl());
+                                            systemRequest.setBulkData(file);
+                                            systemRequest.setRequestType(RequestType.ICON_URL);
+                                            if (isConnected()) {
+                                                sendRPCMessagePrivate(systemRequest, true);
+                                            }
+                                        } else {
+                                            DebugTool.logError(TAG, "File was null at: " + urlHttps);
+                                        }
+                                    }
+                                };
+                                handleOffBoardTransmissionThread.start();
+                                return;
+                            }
+                        }
+
                         break;
                     case ON_APP_INTERFACE_UNREGISTERED:
 
@@ -854,7 +903,7 @@ abstract class BaseLifecycleManager {
 
 
         @Override
-        public void onSessionStarted(int sessionID, Version version) {
+        public void onSessionStarted(int sessionID, Version version, SystemInfo systemInfo) {
             DebugTool.logInfo(TAG, "on protocol session started");
             if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(version) == 1) {
                 DebugTool.logWarning(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
@@ -862,6 +911,20 @@ abstract class BaseLifecycleManager {
                 clean();
                 return;
             }
+
+            if (systemInfo != null && lifecycleListener != null) {
+                didCheckSystemInfo = true;
+                boolean validSystemInfo = lifecycleListener.onSystemInfoReceived(systemInfo);
+                if (!validSystemInfo) {
+                    DebugTool.logWarning(TAG, "Disconnecting from head unit, the system info was not accepted.");
+                    session.endService(SessionType.RPC);
+                    clean();
+                    return;
+                }
+                //If the vehicle is acceptable, init security lib
+                setSecurityLibraryIfAvailable(systemInfo.getVehicleType());
+            }
+
             if (appConfig != null) {
                 appConfig.prepare();
 
@@ -938,8 +1001,8 @@ abstract class BaseLifecycleManager {
         }
 
         @Override
-        public void startVideoService(VideoStreamingParameters parameters, boolean encrypted) {
-            BaseLifecycleManager.this.startVideoService(encrypted, parameters);
+        public void startVideoService(VideoStreamingParameters parameters, boolean encrypted, boolean afterPendingRestart) {
+            BaseLifecycleManager.this.startVideoService(encrypted, parameters, afterPendingRestart);
         }
 
         @Override
@@ -1019,6 +1082,11 @@ abstract class BaseLifecycleManager {
         }
 
         @Override
+        public long getMtu(SessionType serviceType) {
+            return BaseLifecycleManager.this.session.getMtu(serviceType);
+        }
+
+        @Override
         public void startRPCEncryption() {
             BaseLifecycleManager.this.startRPCEncryption();
         }
@@ -1031,6 +1099,11 @@ abstract class BaseLifecycleManager {
         @Override
         public SystemCapabilityManager getSystemCapabilityManager() {
             return BaseLifecycleManager.this.systemCapabilityManager;
+        }
+
+        @Override
+        public PermissionManager getPermissionManager() {
+            return null;
         }
     };
 
@@ -1129,18 +1202,24 @@ abstract class BaseLifecycleManager {
         this.encryptionLifecycleManager = new EncryptionLifecycleManager(internalInterface, listener);
     }
 
-    private void processRaiResponse(RegisterAppInterfaceResponse rai) {
-        if (rai == null) return;
+    /**
+     * Using the vehicle type information, specifically the make, the library will attempt to init
+     * the security library that is associated with that OEM.
+     * @param vehicleType type of vehicle that is currently connected
+     */
+    private void setSecurityLibraryIfAvailable(VehicleType vehicleType) {
+        if (_secList == null) {
+            return;
+        }
 
-        this.raiResponse = rai;
+        if (vehicleType == null) {
+            return;
+        }
 
-        VehicleType vt = rai.getVehicleType();
-        if (vt == null) return;
-
-        String make = vt.getMake();
-        if (make == null) return;
-
-        if (_secList == null) return;
+        String make = vehicleType.getMake();
+        if (make == null) {
+            return;
+        }
 
         setSdlSecurityStaticVars();
 
@@ -1185,7 +1264,7 @@ abstract class BaseLifecycleManager {
     void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
     }
 
-    void startVideoService(boolean encrypted, VideoStreamingParameters parameters) {
+    void startVideoService(boolean encrypted, VideoStreamingParameters parameters, boolean afterPendingRestart) {
     }
 
     void startAudioService(boolean encrypted) {
@@ -1212,6 +1291,8 @@ abstract class BaseLifecycleManager {
         void onServiceEnded(SessionType sessionType);
 
         void onError(LifecycleManager lifeCycleManager, String info, Exception e);
+
+        boolean onSystemInfoReceived(SystemInfo systemInfo);
     }
 
     public static class AppConfig {

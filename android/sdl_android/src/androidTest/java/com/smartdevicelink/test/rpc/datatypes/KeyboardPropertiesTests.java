@@ -1,6 +1,7 @@
 package com.smartdevicelink.test.rpc.datatypes;
 
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
+import com.smartdevicelink.proxy.rpc.enums.KeyboardInputMask;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
@@ -34,7 +35,10 @@ public class KeyboardPropertiesTests extends TestCase {
         msg.setKeypressMode(TestValues.GENERAL_KEYPRESSMODE);
         msg.setLanguage(TestValues.GENERAL_LANGUAGE);
         msg.setLimitedCharacterList(TestValues.GENERAL_STRING_LIST);
+        msg.setCustomKeys(TestValues.GENERAL_STRING_LIST);
+        msg.setMaskInputCharacters(TestValues.GENERAL_KEYBOARD_INPUT_MASK);
     }
+
 
     /**
      * Tests the expected values of the RPC message.
@@ -47,6 +51,8 @@ public class KeyboardPropertiesTests extends TestCase {
         KeypressMode keypressMode = msg.getKeypressMode();
         Language language = msg.getLanguage();
         List<String> limitedChars = msg.getLimitedCharacterList();
+        KeyboardInputMask keyInputMask = msg.getMaskInputCharacters();
+        List<String> customKeys = msg.getCustomKeys();
 
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, autoCompleteText);
@@ -57,6 +63,8 @@ public class KeyboardPropertiesTests extends TestCase {
         assertEquals(TestValues.MATCH, TestValues.GENERAL_LANGUAGE, language);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING_LIST.size(), limitedChars.size());
         assertTrue(TestValues.TRUE, Validator.validateStringList(TestValues.GENERAL_STRING_LIST, limitedChars));
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_KEYBOARD_INPUT_MASK, keyInputMask);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING_LIST, customKeys);
 
         // Invalid/Null Tests
         KeyboardProperties msg = new KeyboardProperties();
@@ -69,6 +77,8 @@ public class KeyboardPropertiesTests extends TestCase {
         assertNull(TestValues.NULL, msg.getLanguage());
         assertNull(TestValues.NULL, msg.getKeyboardLayout());
         assertNull(TestValues.NULL, msg.getLimitedCharacterList());
+        assertNull(TestValues.NULL, msg.getMaskInputCharacters());
+        assertNull(TestValues.NULL, msg.getCustomKeys());
     }
 
     public void testJson() {
@@ -81,6 +91,8 @@ public class KeyboardPropertiesTests extends TestCase {
             reference.put(KeyboardProperties.KEY_KEYPRESS_MODE, TestValues.GENERAL_KEYPRESSMODE);
             reference.put(KeyboardProperties.KEY_LANGUAGE, TestValues.GENERAL_LANGUAGE);
             reference.put(KeyboardProperties.KEY_LIMITED_CHARACTER_LIST, JsonUtils.createJsonArray(TestValues.GENERAL_STRING_LIST));
+            reference.put(KeyboardProperties.KEY_CUSTOM_KEYS, JsonUtils.createJsonArray(TestValues.GENERAL_STRING_LIST));
+            reference.put(KeyboardProperties.KEY_MASK_INPUT_CHARACTERS, TestValues.GENERAL_KEYBOARD_INPUT_MASK);
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
@@ -88,7 +100,7 @@ public class KeyboardPropertiesTests extends TestCase {
             Iterator<?> iterator = reference.keys();
             while (iterator.hasNext()) {
                 String key = (String) iterator.next();
-                if (key.equals(KeyboardProperties.KEY_LIMITED_CHARACTER_LIST) || key.equals(KeyboardProperties.KEY_AUTO_COMPLETE_LIST)) {
+                if (key.equals(KeyboardProperties.KEY_LIMITED_CHARACTER_LIST) || key.equals(KeyboardProperties.KEY_AUTO_COMPLETE_LIST) || key.equals(KeyboardProperties.KEY_CUSTOM_KEYS)) {
                     assertTrue(TestValues.TRUE, Validator.validateStringList(JsonUtils.readStringListFromJsonObject(reference, key), JsonUtils.readStringListFromJsonObject(underTest, key)));
                 } else {
                     assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));

@@ -13,6 +13,7 @@ import junit.framework.TestCase;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -33,6 +34,8 @@ public class VideoStreamingCapabilityTests extends TestCase {
         msg.setDiagonalScreenSize(TestValues.GENERAL_DOUBLE);
         msg.setPixelPerInch(TestValues.GENERAL_DOUBLE);
         msg.setScale(TestValues.GENERAL_DOUBLE);
+        msg.setAdditionalVideoStreamingCapabilities(TestValues.GENERAL_ADDITIONAL_CAPABILITY_LIST);
+	    msg.setPreferredFPS(TestValues.GENERAL_INTEGER);
     }
 
     /**
@@ -47,6 +50,8 @@ public class VideoStreamingCapabilityTests extends TestCase {
         Double diagonalScreenSize = msg.getDiagonalScreenSize();
         Double pixelPerInch = msg.getPixelPerInch();
         Double scale = msg.getScale();
+        List<VideoStreamingCapability> additionalVideoStreamingCapabilities = msg.getAdditionalVideoStreamingCapabilities();
+	    Integer preferredFPS = msg.getPreferredFPS();
 
         // Valid Tests
         assertEquals(TestValues.MATCH, (List<VideoStreamingFormat>) TestValues.GENERAL_VIDEOSTREAMINGFORMAT_LIST, format);
@@ -56,6 +61,7 @@ public class VideoStreamingCapabilityTests extends TestCase {
         assertEquals(TestValues.MATCH, TestValues.GENERAL_DOUBLE, diagonalScreenSize);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_DOUBLE, pixelPerInch);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_DOUBLE, scale);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_ADDITIONAL_CAPABILITY_LIST, additionalVideoStreamingCapabilities);
 
         // Invalid/Null Tests
         VideoStreamingCapability msg = new VideoStreamingCapability();
@@ -68,10 +74,13 @@ public class VideoStreamingCapabilityTests extends TestCase {
         assertNull(TestValues.NULL, msg.getDiagonalScreenSize());
         assertNull(TestValues.NULL, msg.getPixelPerInch());
         assertNull(TestValues.NULL, msg.getScale());
+        assertNull(TestValues.NULL, msg.getAdditionalVideoStreamingCapabilities());
+	    assertNull(TestValues.NULL, msg.getPreferredFPS());
     }
 
     public void testJson() {
         JSONObject reference = new JSONObject();
+        msg.setAdditionalVideoStreamingCapabilities(null);
 
         try {
             reference.put(VideoStreamingCapability.KEY_MAX_BITRATE, TestValues.GENERAL_INT);
@@ -81,6 +90,7 @@ public class VideoStreamingCapabilityTests extends TestCase {
             reference.put(VideoStreamingCapability.KEY_DIAGONAL_SCREEN_SIZE, TestValues.GENERAL_DOUBLE);
             reference.put(VideoStreamingCapability.KEY_PIXEL_PER_INCH, TestValues.GENERAL_DOUBLE);
             reference.put(VideoStreamingCapability.KEY_SCALE, TestValues.GENERAL_DOUBLE);
+	        reference.put(VideoStreamingCapability.KEY_PREFERRED_FPS, TestValues.GENERAL_INTEGER);
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
@@ -89,7 +99,7 @@ public class VideoStreamingCapabilityTests extends TestCase {
             while (iterator.hasNext()) {
                 String key = (String) iterator.next();
 
-                if (key.equals(VideoStreamingCapability.KEY_MAX_BITRATE) || key.equals(VideoStreamingCapability.KEY_HAPTIC_SPATIAL_DATA_SUPPORTED)) {
+                if (key.equals(VideoStreamingCapability.KEY_MAX_BITRATE) || key.equals(VideoStreamingCapability.KEY_HAPTIC_SPATIAL_DATA_SUPPORTED) || key.equals(VideoStreamingCapability.KEY_PREFERRED_FPS)) {
                     assertTrue(TestValues.TRUE, JsonUtils.readIntegerFromJsonObject(reference, key) == JsonUtils.readIntegerFromJsonObject(underTest, key));
                 } else if (key.equals(VideoStreamingCapability.KEY_PREFERRED_RESOLUTION)) {
                     ImageResolution irReference = (ImageResolution) JsonUtils.readObjectFromJsonObject(reference, key);
@@ -110,5 +120,20 @@ public class VideoStreamingCapabilityTests extends TestCase {
         } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
+    }
+
+    @Test
+    public void testFormatMethod(){
+        List<VideoStreamingCapability> additionalCapabilities = msg.getAdditionalVideoStreamingCapabilities();
+        msg.format(null, false);
+        assertEquals(additionalCapabilities, msg.getAdditionalVideoStreamingCapabilities());
+    }
+
+    @Test
+    public void testFormatWillRemoveSelf(){
+        List<VideoStreamingCapability> additionalCapabilities = msg.getAdditionalVideoStreamingCapabilities();
+        additionalCapabilities.add(msg);
+        msg.format(null, false);
+        assertEquals(additionalCapabilities.size(), msg.getAdditionalVideoStreamingCapabilities().size());
     }
 }

@@ -40,6 +40,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
@@ -57,13 +58,16 @@ import org.junit.runner.RunWith;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
 public class PreloadChoicesOperationTests {
@@ -78,7 +82,7 @@ public class PreloadChoicesOperationTests {
 
         ChoiceCell cell1 = new ChoiceCell("cell 1");
         ChoiceCell cell2 = new ChoiceCell("cell 2", null, TestValues.GENERAL_ARTWORK);
-        HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
+        LinkedHashSet<ChoiceCell> cellsToPreload = new LinkedHashSet<>();
         cellsToPreload.add(cell1);
         cellsToPreload.add(cell2);
 
@@ -101,6 +105,10 @@ public class PreloadChoicesOperationTests {
 
         ISdl internalInterface = mock(ISdl.class);
         FileManager fileManager = mock(FileManager.class);
+
+        // We still want the mock fileManager to use the real implementation for fileNeedsUpload()
+        when(fileManager.fileNeedsUpload(any(SdlFile.class))).thenCallRealMethod();
+
         preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager, null, windowCapability, true, cellsToPreload, null);
     }
 
@@ -111,7 +119,7 @@ public class PreloadChoicesOperationTests {
 
         ChoiceCell cell1 = new ChoiceCell("cell 1");
         ChoiceCell cell2 = new ChoiceCell("cell 2", null, TestValues.GENERAL_ARTWORK);
-        HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
+        LinkedHashSet<ChoiceCell> cellsToPreload = new LinkedHashSet<>();
         cellsToPreload.add(cell1);
         cellsToPreload.add(cell2);
 
@@ -128,7 +136,7 @@ public class PreloadChoicesOperationTests {
 
         ChoiceCell cell1 = new ChoiceCell("cell 1");
         ChoiceCell cell2 = new ChoiceCell("cell 2", null, TestValues.GENERAL_ARTWORK);
-        HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
+        LinkedHashSet<ChoiceCell> cellsToPreload = new LinkedHashSet<>();
         cellsToPreload.add(cell1);
         cellsToPreload.add(cell2);
 
@@ -145,13 +153,6 @@ public class PreloadChoicesOperationTests {
         ISdl internalInterface = mock(ISdl.class);
         FileManager fileManager = mock(FileManager.class);
         preloadChoicesOperationEmptyCapability = new PreloadChoicesOperation(internalInterface, fileManager, null, windowCapability, true, cellsToPreload, null);
-    }
-
-
-    @Test
-    public void testArtworkNeedsUpload() {
-        boolean test = preloadChoicesOperation.artworkNeedsUpload(TestValues.GENERAL_ARTWORK);
-        assertTrue(test);
     }
 
     @Test

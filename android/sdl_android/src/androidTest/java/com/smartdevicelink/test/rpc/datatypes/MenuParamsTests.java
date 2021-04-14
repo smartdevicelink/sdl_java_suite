@@ -26,6 +26,8 @@ public class MenuParamsTests extends TestCase {
         msg.setMenuName(TestValues.GENERAL_STRING);
         msg.setParentID(TestValues.GENERAL_INT);
         msg.setPosition(TestValues.GENERAL_INT);
+        msg.setSecondaryText(TestValues.GENERAL_STRING);
+        msg.setTertiaryText(TestValues.GENERAL_STRING);
     }
 
     /**
@@ -36,11 +38,15 @@ public class MenuParamsTests extends TestCase {
         String menuName = msg.getMenuName();
         int parentId = msg.getParentID();
         int position = msg.getPosition();
+        String secondaryText = msg.getSecondaryText();
+        String tertiaryText = msg.getTertiaryText();
 
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, menuName);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, parentId);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, position);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, secondaryText);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, tertiaryText);
 
         // Invalid/Null Tests
         MenuParams msg = new MenuParams();
@@ -49,6 +55,8 @@ public class MenuParamsTests extends TestCase {
         assertNull(TestValues.NULL, msg.getMenuName());
         assertNull(TestValues.NULL, msg.getParentID());
         assertNull(TestValues.NULL, msg.getPosition());
+        assertNull(TestValues.NULL, msg.getSecondaryText());
+        assertNull(TestValues.NULL, msg.getTertiaryText());
     }
 
     public void testJson() {
@@ -58,6 +66,8 @@ public class MenuParamsTests extends TestCase {
             reference.put(MenuParams.KEY_MENU_NAME, TestValues.GENERAL_STRING);
             reference.put(MenuParams.KEY_PARENT_ID, TestValues.GENERAL_INT);
             reference.put(MenuParams.KEY_POSITION, TestValues.GENERAL_INT);
+            reference.put(MenuParams.KEY_SECONDARY_TEXT, TestValues.GENERAL_STRING);
+            reference.put(MenuParams.KEY_TERTIARY_TEXT, TestValues.GENERAL_STRING);
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());

@@ -48,6 +48,8 @@ import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
+import com.smartdevicelink.proxy.rpc.KeyboardCapabilities;
+import com.smartdevicelink.proxy.rpc.KeyboardLayoutCapability;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
@@ -64,8 +66,11 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * <strong>ChoiceSetManager</strong> <br>
@@ -97,7 +102,8 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     int nextChoiceId;
     int nextCancelId;
     final int choiceCellIdMin = 1;
-    final int choiceCellCancelIdMin = 1;
+    private final int choiceCellCancelIdMin = 101;
+    private final int choiceCellCancelIdMax = 200;
     boolean isVROptional;
 
     BaseChoiceSetManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
@@ -110,6 +116,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         // capabilities
         currentSystemContext = SystemContext.SYSCTXT_MAIN;
         currentHMILevel = HMILevel.HMI_NONE;
+        keyboardConfiguration = defaultKeyboardConfiguration();
         addListeners();
 
         // setting/instantiating class vars
@@ -119,7 +126,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         nextChoiceId = choiceCellIdMin;
         nextCancelId = choiceCellCancelIdMin;
         isVROptional = false;
-        keyboardConfiguration = defaultKeyboardConfiguration();
 
         currentlyPresentedKeyboardOperation = null;
     }
@@ -193,9 +199,12 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             return;
         }
 
-        final HashSet<ChoiceCell> choicesToUpload = new HashSet<>(choices);
-        choicesToUpload.removeAll(preloadedChoices);
-        choicesToUpload.removeAll(pendingPreloadChoices);
+        LinkedHashSet<ChoiceCell> mutableChoicesToUpload = getChoicesToBeUploadedWithArray(choices);
+
+        mutableChoicesToUpload.removeAll(preloadedChoices);
+        mutableChoicesToUpload.removeAll(pendingPreloadChoices);
+
+        final LinkedHashSet<ChoiceCell> choicesToUpload = (LinkedHashSet<ChoiceCell>) mutableChoicesToUpload.clone();
 
         if (choicesToUpload.size() == 0) {
             if (listener != null) {
@@ -357,11 +366,11 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         if (keyboardListener == null) {
             // Non-searchable choice set
             DebugTool.logInfo(TAG, "Creating non-searchable choice set");
-            presentOp = new PresentChoiceSetOperation(internalInterface, pendingPresentationSet, mode, null, null, privateChoiceListener, nextCancelId++);
+            presentOp = new PresentChoiceSetOperation(internalInterface, pendingPresentationSet, mode, null, null, privateChoiceListener, getNextCancelId());
         } else {
             // Searchable choice set
             DebugTool.logInfo(TAG, "Creating searchable choice set");
-            presentOp = new PresentChoiceSetOperation(internalInterface, pendingPresentationSet, mode, keyboardConfiguration, keyboardListener, privateChoiceListener, nextCancelId++);
+            presentOp = new PresentChoiceSetOperation(internalInterface, pendingPresentationSet, mode, keyboardConfiguration, keyboardListener, privateChoiceListener, getNextCancelId());
         }
 
         transactionQueue.add(presentOp, false);
@@ -393,6 +402,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             DebugTool.logWarning(TAG, "There is a current or pending choice set, cancelling and continuing.");
         }
 
+        customKeyboardConfig = createValidKeyboardConfigurationBasedOnKeyboardCapabilitiesFromConfiguration(customKeyboardConfig);
         if (customKeyboardConfig == null) {
             if (this.keyboardConfiguration != null) {
                 customKeyboardConfig = this.keyboardConfiguration;
@@ -403,7 +413,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         // Present a keyboard with the choice set that we used to test VR's optional state
         DebugTool.logInfo(TAG, "Presenting Keyboard - Choice Set Manager");
-        Integer keyboardCancelID = nextCancelId++;
+        Integer keyboardCancelID = getNextCancelId();
         PresentKeyboardOperation keyboardOp = new PresentKeyboardOperation(internalInterface, keyboardConfiguration, initialText, customKeyboardConfig, listener, keyboardCancelID);
         currentlyPresentedKeyboardOperation = keyboardOp;
         transactionQueue.add(keyboardOp, false);
@@ -452,19 +462,56 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
      * @param keyboardConfiguration - the custom keyboard configuration to be used when the keyboard is displayed
      */
     public void setKeyboardConfiguration(@Nullable KeyboardProperties keyboardConfiguration) {
-        if (keyboardConfiguration == null) {
+        KeyboardProperties properties = createValidKeyboardConfigurationBasedOnKeyboardCapabilitiesFromConfiguration(keyboardConfiguration);
+        if (properties == null) {
             this.keyboardConfiguration = defaultKeyboardConfiguration();
         } else {
-            KeyboardProperties properties = new KeyboardProperties();
-            properties.setLanguage((keyboardConfiguration.getLanguage() == null ? Language.EN_US : keyboardConfiguration.getLanguage()));
-            properties.setKeyboardLayout((keyboardConfiguration.getKeyboardLayout() == null ? KeyboardLayout.QWERTZ : keyboardConfiguration.getKeyboardLayout()));
-            properties.setKeypressMode((keyboardConfiguration.getKeypressMode() == null ? KeypressMode.RESEND_CURRENT_ENTRY : keyboardConfiguration.getKeypressMode()));
-            properties.setLimitedCharacterList(keyboardConfiguration.getLimitedCharacterList());
-            properties.setAutoCompleteText(keyboardConfiguration.getAutoCompleteText());
             this.keyboardConfiguration = properties;
         }
     }
 
+    // Takes a keyboard configuration (SDLKeyboardProperties) and creates a valid version of it, if possible, based on this object's internal keyboardCapabilities
+    private KeyboardProperties createValidKeyboardConfigurationBasedOnKeyboardCapabilitiesFromConfiguration(@Nullable KeyboardProperties keyboardConfiguration) {
+        KeyboardCapabilities keyboardCapabilities = defaultMainWindowCapability != null ? defaultMainWindowCapability.getKeyboardCapabilities() : null;
+
+        // If there are no keyboard capabilities, if there is no passed keyboard configuration, or if there is no layout to the passed keyboard configuration, just pass back the passed in configuration
+        if (keyboardCapabilities == null || keyboardConfiguration == null || keyboardConfiguration.getKeyboardLayout() == null) {
+            return keyboardConfiguration;
+        }
+
+        KeyboardLayoutCapability selectedLayoutCapability = null;
+        for (KeyboardLayoutCapability layoutCapability : keyboardCapabilities.getSupportedKeyboards()) {
+            if (layoutCapability.getKeyboardLayout().equals(keyboardConfiguration.getKeyboardLayout())) {
+                selectedLayoutCapability = layoutCapability;
+                break;
+            }
+        }
+
+        if (selectedLayoutCapability == null) {
+            DebugTool.logError(TAG, String.format("Configured keyboard layout is not supported: %s", keyboardConfiguration.getKeyboardLayout()));
+            return null;
+        }
+
+        KeyboardProperties modifiedKeyboardConfiguration = (KeyboardProperties) keyboardConfiguration.clone();
+
+        if (keyboardConfiguration.getCustomKeys() == null || keyboardConfiguration.getCustomKeys().isEmpty()) {
+            modifiedKeyboardConfiguration.setCustomKeys(null);
+        } else {
+            // If there are more custom keys than are allowed for the selected keyboard layout, we need to trim the number of keys to only use the first n number of custom keys, where n is the number of allowed custom keys for that layout.
+            int numConfigurableKeys = selectedLayoutCapability.getNumConfigurableKeys();
+            if (keyboardConfiguration.getCustomKeys().size() > numConfigurableKeys) {
+                modifiedKeyboardConfiguration.setCustomKeys(keyboardConfiguration.getCustomKeys().subList(0, numConfigurableKeys));
+                DebugTool.logWarning(TAG, String.format(Locale.US, "%d custom keys set, but the selected layout: %s only supports %d. Dropping the rest.", keyboardConfiguration.getCustomKeys().size(), keyboardConfiguration.getKeyboardLayout(), numConfigurableKeys));
+            }
+        }
+
+        // If the keyboard does not support masking input characters, we will remove it from the keyboard configuration
+        if (!keyboardCapabilities.getMaskInputCharactersSupported()) {
+            modifiedKeyboardConfiguration.setMaskInputCharacters(null);
+        }
+
+        return modifiedKeyboardConfiguration;
+    }
     // GETTERS
 
     /**
@@ -488,7 +535,40 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         return choicesSet;
     }
 
-    void updateIdsOnChoices(HashSet<ChoiceCell> choices) {
+    /**
+     * Checks if 2 or more cells have the same text/title. In case this condition is true, this function will handle the presented issue by adding "(count)".
+     * E.g. Choices param contains 2 cells with text/title "Address" will be handled by updating the uniqueText/uniqueTitle of the second cell to "Address (2)".
+     * @param choices The list of choiceCells to be uploaded.
+     */
+    void addUniqueNamesToCells(LinkedHashSet<ChoiceCell> choices) {
+        HashMap<String, Integer> dictCounter = new HashMap<>();
+
+        for (ChoiceCell cell : choices) {
+            String cellName = cell.getText();
+            Integer counter = dictCounter.get(cellName);
+
+            if (counter != null) {
+                dictCounter.put(cellName, ++counter);
+                cell.setUniqueText(cell.getText() + " (" + counter + ")");
+            } else {
+                dictCounter.put(cellName, 1);
+            }
+        }
+    }
+
+    private LinkedHashSet<ChoiceCell> getChoicesToBeUploadedWithArray(List<ChoiceCell> choices) {
+        LinkedHashSet<ChoiceCell> choiceSet = new LinkedHashSet<>(choices);
+        // If we're running on a connection < RPC 7.1, we need to de-duplicate cells because presenting them will fail if we have the same cell primary text.
+        if (choices != null && internalInterface.getSdlMsgVersion() != null
+                && (internalInterface.getSdlMsgVersion().getMajorVersion() < 7
+                || (internalInterface.getSdlMsgVersion().getMajorVersion() == 7 && internalInterface.getSdlMsgVersion().getMinorVersion() == 0))) {
+            addUniqueNamesToCells(choiceSet);
+        }
+        choiceSet.removeAll(preloadedChoices);
+        return choiceSet;
+    }
+
+    void updateIdsOnChoices(LinkedHashSet<ChoiceCell> choices) {
         for (ChoiceCell cell : choices) {
             cell.setChoiceId(this.nextChoiceId);
             this.nextChoiceId++;
@@ -609,14 +689,14 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             }
         }
 
-        HashSet<String> choiceTextSet = new HashSet<>();
+        HashSet<ChoiceCell> uniqueChoiceCells = new HashSet<>();
         HashSet<String> uniqueVoiceCommands = new HashSet<>();
         int allVoiceCommandsCount = 0;
         int choiceCellWithVoiceCommandCount = 0;
 
         for (ChoiceCell cell : choices) {
 
-            choiceTextSet.add(cell.getText());
+            uniqueChoiceCells.add(cell);
 
             if (cell.getVoiceCommands() != null) {
                 uniqueVoiceCommands.addAll(cell.getVoiceCommands());
@@ -625,9 +705,8 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             }
         }
 
-        // Cell text MUST be unique
-        if (choiceTextSet.size() < choices.size()) {
-            DebugTool.logError(TAG, "Attempted to create a choice set with duplicate cell text. Cell text must be unique. The choice set will not be set.");
+        if (uniqueChoiceCells.size() != choices.size()) {
+            DebugTool.logError(TAG, "Attempted to create a choice set with a duplicate cell. Cell must have a unique value other than its primary text. The choice set will not be set.");
             return false;
         }
 
@@ -651,5 +730,19 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         defaultProperties.setKeyboardLayout(KeyboardLayout.QWERTY);
         defaultProperties.setKeypressMode(KeypressMode.RESEND_CURRENT_ENTRY);
         return defaultProperties;
+    }
+
+    /**
+     * Checks and increments the cancelID to keep in in a defined range
+     *
+     * @return an integer for cancelId to be sent to operations.
+     */
+    private int getNextCancelId() {
+        if (nextCancelId >= choiceCellCancelIdMax) {
+            nextCancelId = choiceCellCancelIdMin;
+        } else {
+            nextCancelId++;
+        }
+        return nextCancelId;
     }
 }

@@ -84,4 +84,6 @@ public interface KeyboardListener {
      * @param currentInputText - The user's full current input text
      */
     void onKeyboardDidSendEvent(KeyboardEvent event, String currentInputText);
+
+    void onKeyboardDidUpdateInputMask(KeyboardEvent event);
 }

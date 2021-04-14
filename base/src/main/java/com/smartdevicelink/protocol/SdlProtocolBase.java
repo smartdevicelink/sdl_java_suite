@@ -71,6 +71,10 @@ public class SdlProtocolBase {
     private final static String FailurePropagating_Msg = "Failure propagating ";
 
     private static final int TLS_MAX_RECORD_SIZE = 16384;
+    private final static int TLS_RECORD_HEADER_SIZE = 5;
+    private final static int TLS_RECORD_MES_AUTH_CDE_SIZE = 32;
+    private final static int TLS_MAX_RECORD_PADDING_SIZE = 256;
+    private final static int TLS_MAX_DATA_TO_ENCRYPT_SIZE = TLS_MAX_RECORD_SIZE - TLS_RECORD_HEADER_SIZE - TLS_RECORD_MES_AUTH_CDE_SIZE - TLS_MAX_RECORD_PADDING_SIZE;
 
     private static final int PRIMARY_TRANSPORT_ID = 1;
     private static final int SECONDARY_TRANSPORT_ID = 2;
@@ -85,7 +89,7 @@ public class SdlProtocolBase {
     public static final int V2_HEADER_SIZE = 12;
 
     //If increasing MAX PROTOCOL VERSION major version, make sure to alter it in SdlPsm
-    private static final Version MAX_PROTOCOL_VERSION = new Version(5, 3, 0);
+    private static final Version MAX_PROTOCOL_VERSION = new Version(5, 4, 0);
 
     public static final int V1_V2_MTU_SIZE = 1500;
     public static final int V3_V4_MTU_SIZE = 131072;
@@ -103,6 +107,7 @@ public class SdlProtocolBase {
     private final Hashtable<Byte, Object> _messageLocks = new Hashtable<>();
     private final HashMap<SessionType, Long> mtus = new HashMap<>();
     private final HashMap<SessionType, TransportRecord> activeTransports = new HashMap<>();
+    private final HashMap<SessionType, Boolean> serviceStartedOnTransport = new HashMap<>();
     private final Map<TransportType, List<ISecondaryTransportListener>> secondaryTransportListeners = new HashMap<>();
 
 
@@ -212,6 +217,7 @@ public class SdlProtocolBase {
         messageID = 0;
         headerSize = V1_HEADER_SIZE;
         this.activeTransports.clear();
+        this.serviceStartedOnTransport.clear();
         this.mtus.clear();
         mtus.put(SessionType.RPC, (long) (V1_V2_MTU_SIZE - headerSize));
         this.secondaryTransportParams = null;
@@ -559,7 +565,8 @@ public class SdlProtocolBase {
     public void sendMessage(ProtocolMessage protocolMsg) {
         SessionType sessionType = protocolMsg.getSessionType();
         byte sessionID = protocolMsg.getSessionID();
-
+        boolean requiresEncryption = protocolMsg.getPayloadProtected();
+        SdlSecurityBase sdlSec = null;
         byte[] data;
         if (protocolVersion.getMajor() > 1 && sessionType != SessionType.NAV && sessionType != SessionType.PCM) {
             if (sessionType.eq(SessionType.CONTROL)) {
@@ -588,21 +595,15 @@ public class SdlProtocolBase {
             data = protocolMsg.getData();
         }
 
-        if (iSdlProtocol != null && protocolMsg.getPayloadProtected()) {
-
-            if (data != null && data.length > 0) {
-                byte[] dataToRead = new byte[TLS_MAX_RECORD_SIZE];
-                SdlSecurityBase sdlSec = iSdlProtocol.getSdlSecurity();
-                if (sdlSec == null)
-                    return;
-
-                Integer iNumBytes = sdlSec.encryptData(data, dataToRead);
-                if ((iNumBytes == null) || (iNumBytes <= 0))
-                    return;
-
-                byte[] encryptedData = new byte[iNumBytes];
-                System.arraycopy(dataToRead, 0, encryptedData, 0, iNumBytes);
-                data = encryptedData;
+        if (requiresEncryption) {
+            if (iSdlProtocol == null) {
+                DebugTool.logError(TAG, "Unable to encrypt packet, protocol callback was null");
+                return;
+            }
+            sdlSec = iSdlProtocol.getSdlSecurity();
+            if (sdlSec == null) {
+                DebugTool.logError(TAG, "Unable to encrypt packet, security library not found");
+                return;
             }
         }
 
@@ -614,24 +615,26 @@ public class SdlProtocolBase {
             return;
         }
 
-        synchronized (messageLock) {
-            if (data != null && data.length > getMtu(sessionType)) {
+        //Set the MTU according to service MTU provided by the IVI .
+        //If encryption is required the MTU will be set to lowest value between the max data size for encryption or service MTU
+        final Long mtu = requiresEncryption ? Math.min(TLS_MAX_DATA_TO_ENCRYPT_SIZE, getMtu(sessionType)) : getMtu(sessionType);
 
+        synchronized (messageLock) {
+            if (data != null && data.length > mtu) {
+                //Since the packet is larger than the mtu size, it will be sent as a multi-frame packet
                 messageID++;
 
                 // Assemble first frame.
-                Long mtu = getMtu(sessionType);
-                int frameCount = Long.valueOf(data.length / mtu).intValue();
-                if (data.length % mtu > 0) {
-                    frameCount++;
-                }
+                int frameCount = (int) Math.ceil(data.length / (double) mtu);
+
                 byte[] firstFrameData = new byte[8];
                 // First four bytes are data size.
                 System.arraycopy(BitConverter.intToByteArray(data.length), 0, firstFrameData, 0, 4);
                 // Second four bytes are frame count.
                 System.arraycopy(BitConverter.intToByteArray(frameCount), 0, firstFrameData, 4, 4);
 
-                SdlPacket firstHeader = SdlPacketFactory.createMultiSendDataFirst(sessionType, sessionID, messageID, (byte) protocolVersion.getMajor(), firstFrameData, protocolMsg.getPayloadProtected());
+                //NOTE: First frames cannot be encrypted because their payloads need to be exactly 8 bytes
+                SdlPacket firstHeader = SdlPacketFactory.createMultiSendDataFirst(sessionType, sessionID, messageID, (byte) protocolVersion.getMajor(), firstFrameData, false);
                 firstHeader.setPriorityCoefficient(1 + protocolMsg.priorityCoefficient);
                 firstHeader.setTransportRecord(activeTransports.get(sessionType));
                 //Send the first frame
@@ -640,33 +643,65 @@ public class SdlProtocolBase {
                 int currentOffset = 0;
                 byte frameSequenceNumber = 0;
 
+                byte[] dataBuffer, encryptedData;
                 for (int i = 0; i < frameCount; i++) {
-                    if (i < (frameCount - 1)) {
+
+                    frameSequenceNumber++;
+
+                    if (frameSequenceNumber == SdlPacket.FRAME_INFO_FINAL_CONNESCUTIVE_FRAME) {
+                        //If sequence numbers roll over to 0, increment again to avoid
+                        //using the reserved sequence value for the final frame
                         ++frameSequenceNumber;
-                        if (frameSequenceNumber ==
-                                SdlPacket.FRAME_INFO_FINAL_CONNESCUTIVE_FRAME) {
-                            // we can't use 0x00 as frameSequenceNumber, because
-                            // it's reserved for the last frame
-                            ++frameSequenceNumber;
-                        }
-                    } else {
+                    }
+
+                    if (i == frameCount - 1) {
                         frameSequenceNumber = SdlPacket.FRAME_INFO_FINAL_CONNESCUTIVE_FRAME;
-                    } // end-if
+                    }
 
                     int bytesToWrite = data.length - currentOffset;
                     if (bytesToWrite > mtu) {
                         bytesToWrite = mtu.intValue();
                     }
-                    SdlPacket consecHeader = SdlPacketFactory.createMultiSendDataRest(sessionType, sessionID, bytesToWrite, frameSequenceNumber, messageID, (byte) protocolVersion.getMajor(), data, currentOffset, bytesToWrite, protocolMsg.getPayloadProtected());
-                    consecHeader.setTransportRecord(activeTransports.get(sessionType));
-                    consecHeader.setPriorityCoefficient(i + 2 + protocolMsg.priorityCoefficient);
-                    handlePacketToSend(consecHeader);
+
+                    SdlPacket consecutiveFrame;
+                    if (requiresEncryption) {
+                        //Retrieve a chunk of the data into a temporary buffer to be encrypted
+                        dataBuffer = new byte[bytesToWrite];
+                        System.arraycopy(data, currentOffset, dataBuffer, 0, bytesToWrite);
+
+                        encryptedData = new byte[TLS_MAX_RECORD_SIZE];
+                        Integer numberOfBytesEncrypted = sdlSec.encryptData(dataBuffer, encryptedData);
+                        if (numberOfBytesEncrypted == null || (numberOfBytesEncrypted <= 0)) {
+                            DebugTool.logError(TAG, "Unable to encrypt data");
+                            return;
+                        }
+
+                        consecutiveFrame = SdlPacketFactory.createMultiSendDataRest(sessionType, sessionID, numberOfBytesEncrypted, frameSequenceNumber, messageID, (byte) protocolVersion.getMajor(), encryptedData, 0, numberOfBytesEncrypted, true);
+                    } else {
+                        consecutiveFrame = SdlPacketFactory.createMultiSendDataRest(sessionType, sessionID, bytesToWrite, frameSequenceNumber, messageID, (byte) protocolVersion.getMajor(), data, currentOffset, bytesToWrite, false);
+                    }
+
+                    consecutiveFrame.setTransportRecord(activeTransports.get(sessionType));
+                    consecutiveFrame.setPriorityCoefficient(i + 2 + protocolMsg.priorityCoefficient);
+                    handlePacketToSend(consecutiveFrame);
                     currentOffset += bytesToWrite;
                 }
             } else {
                 messageID++;
+                if (requiresEncryption && data != null && data.length > 0) {
+                    //Encrypt the data before sending
+                    byte[] encryptedData = new byte[TLS_MAX_RECORD_SIZE];
+                    Integer numberOfBytesEncrypted = sdlSec.encryptData(data, encryptedData);
+                    if (numberOfBytesEncrypted == null || (numberOfBytesEncrypted <= 0)) {
+                        DebugTool.logError(TAG, "Unable to encrypt data");
+                        return;
+                    }
+                    //Put the encrypted bytes back into the data array
+                    data = new byte[numberOfBytesEncrypted];
+                    System.arraycopy(encryptedData, 0, data, 0, numberOfBytesEncrypted);
+                }
                 int dataLength = data != null ? data.length : 0;
-                SdlPacket header = SdlPacketFactory.createSingleSendData(sessionType, sessionID, dataLength, messageID, (byte) protocolVersion.getMajor(), data, protocolMsg.getPayloadProtected());
+                SdlPacket header = SdlPacketFactory.createSingleSendData(sessionType, sessionID, dataLength, messageID, (byte) protocolVersion.getMajor(), data, requiresEncryption);
                 header.setPriorityCoefficient(protocolMsg.priorityCoefficient);
                 header.setTransportRecord(activeTransports.get(sessionType));
                 handlePacketToSend(header);
@@ -708,6 +743,7 @@ public class SdlProtocolBase {
 
     public void startService(SessionType serviceType, byte sessionID, boolean isEncrypted) {
         final SdlPacket header = SdlPacketFactory.createStartSession(serviceType, 0x00, (byte) protocolVersion.getMajor(), sessionID, isEncrypted);
+        serviceStartedOnTransport.put(serviceType, true);
         if (SessionType.RPC.equals(serviceType)) {
             if (connectedPrimaryTransport != null) {
                 header.setTransportRecord(connectedPrimaryTransport);
@@ -1193,12 +1229,18 @@ public class SdlProtocolBase {
             //a single transport record per transport.
             //TransportType type = disconnectedTransport.getType();
             if (getTransportForSession(SessionType.NAV) != null && disconnectedTransport.equals(getTransportForSession(SessionType.NAV))) {
-                iSdlProtocol.onServiceError(null, SessionType.NAV, iSdlProtocol.getSessionId(), "Transport disconnected");
-                activeTransports.remove(SessionType.NAV);
+                if (serviceStartedOnTransport.get(SessionType.NAV) != null && serviceStartedOnTransport.get(SessionType.NAV)) {
+                    iSdlProtocol.onServiceError(null, SessionType.NAV, iSdlProtocol.getSessionId(), "Transport disconnected");
+                    activeTransports.remove(SessionType.NAV);
+                    serviceStartedOnTransport.remove(SessionType.NAV);
+                }
             }
             if (getTransportForSession(SessionType.PCM) != null && disconnectedTransport.equals(getTransportForSession(SessionType.PCM))) {
-                iSdlProtocol.onServiceError(null, SessionType.PCM, iSdlProtocol.getSessionId(), "Transport disconnected");
-                activeTransports.remove(SessionType.PCM);
+                if (serviceStartedOnTransport.get(SessionType.PCM) != null && serviceStartedOnTransport.get(SessionType.PCM)) {
+                    iSdlProtocol.onServiceError(null, SessionType.PCM, iSdlProtocol.getSessionId(), "Transport disconnected");
+                    activeTransports.remove(SessionType.PCM);
+                    serviceStartedOnTransport.remove(SessionType.PCM);
+                }
             }
 
             if ((getTransportForSession(SessionType.RPC) != null && disconnectedTransport.equals(getTransportForSession(SessionType.RPC))) || disconnectedTransport.equals(connectedPrimaryTransport)) {
@@ -1255,6 +1297,7 @@ public class SdlProtocolBase {
                 requestedSession = false;
 
                 activeTransports.clear();
+                serviceStartedOnTransport.clear();
 
                 iSdlProtocol.onTransportDisconnected(info, primaryTransportAvailable, transportConfig);
 
@@ -1364,16 +1407,17 @@ public class SdlProtocolBase {
             if (packet.getPayload() != null && packet.getDataSize() > 0 && packet.isEncrypted()) {
 
                 SdlSecurityBase sdlSec = iSdlProtocol.getSdlSecurity();
-                byte[] dataToRead = new byte[4096];
+                byte[] dataToRead = new byte[TLS_MAX_RECORD_SIZE];
 
-                Integer iNumBytes = sdlSec.decryptData(packet.getPayload(), dataToRead);
-                if ((iNumBytes == null) || (iNumBytes <= 0)) {
+                Integer numberOfDecryptedBytes = sdlSec.decryptData(packet.getPayload(), dataToRead);
+                if ((numberOfDecryptedBytes == null) || (numberOfDecryptedBytes <= 0)) {
                     return;
                 }
 
-                byte[] decryptedData = new byte[iNumBytes];
-                System.arraycopy(dataToRead, 0, decryptedData, 0, iNumBytes);
+                byte[] decryptedData = new byte[numberOfDecryptedBytes];
+                System.arraycopy(dataToRead, 0, decryptedData, 0, numberOfDecryptedBytes);
                 packet.payload = decryptedData;
+                packet.dataSize = numberOfDecryptedBytes;
             }
 
             if (packet.getFrameType().equals(FrameType.Control)) {

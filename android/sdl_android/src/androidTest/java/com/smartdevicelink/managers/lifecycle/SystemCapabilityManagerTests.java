@@ -7,6 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.ManagerUtility;
+import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -98,6 +99,8 @@ public class SystemCapabilityManagerTests {
         videoStreamingCapability.setMaxBitrate(TestValues.GENERAL_INT);
         videoStreamingCapability.setPreferredResolution(TestValues.GENERAL_IMAGERESOLUTION);
         videoStreamingCapability.setSupportedFormats(TestValues.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
+        videoStreamingCapability.setPreferredFPS(TestValues.GENERAL_INTEGER);
+        videoStreamingCapability.setAdditionalVideoStreamingCapabilities(TestValues.GENERAL_ADDITIONAL_CAPABILITY_LIST);
         systemCapability.setCapabilityForType(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
     }
 
@@ -204,8 +207,8 @@ public class SystemCapabilityManagerTests {
     @Test
     public void testNullDisplayCapabilitiesEnablesAllTextAndImageFields() {
         List<DisplayCapability> displayCapabilityList = createDisplayCapabilityList(null, TestValues.GENERAL_BUTTONCAPABILITIES_LIST, TestValues.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
-        assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getTextFields().size(), 32);
-        assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getImageFields().size(), 16);
+        assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getTextFields().size(), 38);
+        assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getImageFields().size(), 18);
     }
 
     @Test
@@ -213,7 +216,9 @@ public class SystemCapabilityManagerTests {
         VideoStreamingCapability vsCapability = new VideoStreamingCapability();
         vsCapability.setMaxBitrate(TestValues.GENERAL_INT);
         vsCapability.setPreferredResolution(TestValues.GENERAL_IMAGERESOLUTION);
+        vsCapability.setAdditionalVideoStreamingCapabilities(TestValues.GENERAL_ADDITIONAL_CAPABILITY_LIST);
         vsCapability.setSupportedFormats(TestValues.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
+        vsCapability.setPreferredFPS(TestValues.GENERAL_INTEGER);
 
         SystemCapability cap = new SystemCapability();
         cap.setSystemCapabilityType(SystemCapabilityType.VIDEO_STREAMING);
@@ -959,7 +964,7 @@ public class SystemCapabilityManagerTests {
         }
 
         @Override
-        public void startVideoService(VideoStreamingParameters parameters, boolean encrypted) {
+        public void startVideoService(VideoStreamingParameters parameters, boolean encrypted, boolean withPendingRestart) {
         }
 
         @Override
@@ -1038,6 +1043,11 @@ public class SystemCapabilityManagerTests {
         }
 
         @Override
+        public long getMtu(SessionType serviceType) {
+            return 0;
+        }
+
+        @Override
         public boolean isTransportForServiceAvailable(SessionType serviceType) {
             return false;
         }
@@ -1057,6 +1067,11 @@ public class SystemCapabilityManagerTests {
 
         @Override
         public SystemCapabilityManager getSystemCapabilityManager() {
+            return null;
+        }
+
+        @Override
+        public PermissionManager getPermissionManager() {
             return null;
         }
     }

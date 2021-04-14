@@ -1,127 +1,100 @@
-# 5.0.0 Release Notes
+# 5.1.0 Release Notes
 
 ## Summary:
 ||Version|
 |--|--|
-| **Protocol** | 5.3.0
-| **RPC** | 7.0.0
-| **Tested Targeting** | Android 29
+| **Protocol** | 5.4.0
+| **RPC** | 7.1.0
+| **Tested Targeting** | Android 30
 
 ## Features:
 
-- [[SDL 0242] Subtle Alert Style](https://github.com/smartdevicelink/sdl_java_suite/issues/1120)
+- [[SDL 0296] Possibility to update video streaming capabilities during ignition cycle](https://github.com/smartdevicelink/sdl_java_suite/issues/1410)
 
-- [[SDL 0278] Screen Manager Template Management](https://github.com/smartdevicelink/sdl_java_suite/issues/1327)
+- [[SDL 0282] Screen Manager Alert Manager](https://github.com/smartdevicelink/sdl_java_suite/issues/1304)
 
-- [[SDL 0148] Template Improvements: Additional SubMenus](https://github.com/smartdevicelink/sdl_java_suite/issues/716)
+- [[SDL 0269] New vehicle data ClimateData ](https://github.com/smartdevicelink/sdl_java_suite/issues/1247)
 
-- [[SDL 0268] Main Menu Updating and Pagination](https://github.com/smartdevicelink/sdl_java_suite/issues/1254)
+- [[SDL 0262] New vehicle data SeatOccupancy](https://github.com/smartdevicelink/sdl_java_suite/issues/1240)
 
-- [[SDL 0152] Driver Distraction Improvements: Command List Limitations](https://github.com/smartdevicelink/sdl_java_suite/issues/729)
+- [[SDL 0198] - Media Skip Indicators](https://github.com/smartdevicelink/sdl_java_suite/issues/871)
 
-- [[SDL 0311] Make RPC Setters Chainable](https://github.com/smartdevicelink/sdl_java_suite/issues/1421)
-
-- [[SDL 0308] Add a Reason Parameter to All Protocol NAKs](https://github.com/smartdevicelink/sdl_java_suite/issues/1379)
-
-- [[SDL 0253] New vehicle data StabilityControlsStatus](https://github.com/smartdevicelink/sdl_java_suite/issues/1204)
-
-- [[SDL 0266] New vehicle data GearStatus](https://github.com/smartdevicelink/sdl_java_suite/issues/1256)
-
-- [[SDL 0261] New vehicle data WindowStatus](https://github.com/smartdevicelink/sdl_java_suite/issues/1243)
-
-- [[SDL 0257] New vehicle data HandsOffSteering](https://github.com/smartdevicelink/sdl_java_suite/issues/1224)
-
-- [[SDL 0256] Refactor Fuel Information Related Vehicle Data](https://github.com/smartdevicelink/sdl_java_suite/issues/1223)
-
-- [[SDL 0273] WebEngine Projection mode](https://github.com/smartdevicelink/sdl_java_suite/issues/1375)
-
-- [[SDL 0202] Supported Character Sets](https://github.com/smartdevicelink/sdl_java_suite/issues/950)
 
 ## Enhancements:
 
-- [[SDL 0286] Java Suite Cleanup](https://github.com/smartdevicelink/sdl_java_suite/issues/1306)
+- [[SDL 0180] Broaden Choice Uniqueness](https://github.com/smartdevicelink/sdl_java_suite/issues/811)
 
-- [Android X support](https://github.com/smartdevicelink/sdl_java_suite/issues/1094)
+- [[SDL 0305] Homogenize TextFieldName](https://github.com/smartdevicelink/sdl_java_suite/issues/1367)
 
-- [RPC Generator should use @deprecated annotation in JavaDocs when applicable](https://github.com/smartdevicelink/sdl_java_suite/issues/1448)
+- [[SDL 0238] Keyboard Enhancements](https://github.com/smartdevicelink/sdl_java_suite/issues/1121)
 
-- [RPC Generator needs to be updated to generate correct Android X imports](https://github.com/smartdevicelink/sdl_java_suite/issues/1444)
+- [[SDL 0267] Main Menu UI Updates](https://github.com/smartdevicelink/sdl_java_suite/issues/1246)
 
-- [onError should be removed from OnRPCResponseListener](https://github.com/smartdevicelink/sdl_java_suite/issues/1455)
+- [[SDL 0274] Add preferred FPS to VideoStreamingCapability](https://github.com/smartdevicelink/sdl_java_suite/issues/1268)
 
-- [SystemCapabilityManager & HapticInterfaceManager should be moved to the managers package](https://github.com/smartdevicelink/sdl_java_suite/issues/1432)
+- [[SDL 0292] Improve VirtualDisplayEncoder for stable frame rate](https://github.com/smartdevicelink/sdl_java_suite/issues/1361)
 
-- [[SDL 0193] Update SDL-Android minimum SDK](https://github.com/smartdevicelink/sdl_java_suite/issues/835)
+- [[SDL 0255] Enhance BodyInformation vehicle data ](https://github.com/smartdevicelink/sdl_java_suite/issues/1234)
 
-- [Refactor Text & Graphic Manager](https://github.com/smartdevicelink/sdl_java_suite/issues/1464)
+- [[SDL 0244] Custom Playback Rates for SetMediaClockTimer](https://github.com/smartdevicelink/sdl_java_suite/issues/1147)
 
-- [Refactor session and protocol interfaces](https://github.com/smartdevicelink/sdl_java_suite/pull/1430)
+- [Refactor FileManager to use queues ](https://github.com/smartdevicelink/sdl_java_suite/issues/1572)
 
-- [Remove SdlProxy classes](https://github.com/smartdevicelink/sdl_java_suite/pull/1471)
+- [Taskmaster should be updated to the latest version](https://github.com/smartdevicelink/sdl_java_suite/issues/1589)
 
-- [Remove FrameData Class](https://github.com/smartdevicelink/sdl_java_suite/pull/1466)
+- [Refactor VoiceCommandManager to use queues](https://github.com/smartdevicelink/sdl_java_suite/issues/1549)
 
-- [Two StreamPacketizer classes](https://github.com/smartdevicelink/sdl_java_suite/issues/1272)
+- [[SDL 0323] - Align video streaming parameters with VideoStreamingCapability](https://github.com/smartdevicelink/sdl_java_suite/issues/1569)
 
-- [SdlFile in javaSE should have a constructor that takes URI as file source](https://github.com/smartdevicelink/sdl_java_suite/issues/1469)
+- [[SDL 0285] ShowConstantTBT Description Update](https://github.com/smartdevicelink/sdl_java_suite/issues/1573)
 
-- [The default value for overwrite property in SdlFile should be false to align with iOS ](https://github.com/smartdevicelink/sdl_java_suite/issues/1451)
-
-- [Deprecated RPC APIs that don't exist in the spec should be removed ](https://github.com/smartdevicelink/sdl_java_suite/issues/1446)
-
-- [[SDL 0200] - Removing URL Parameter Max Length](https://github.com/smartdevicelink/sdl_java_suite/issues/906)
-
-- [Integration validator](https://github.com/smartdevicelink/sdl_java_suite/pull/1436)
-
-- [Gradle dependencies needs to be updates](https://github.com/smartdevicelink/sdl_java_suite/issues/1459)
-
-- [BSON library should be updated to the latest version (1.2.2)](https://github.com/smartdevicelink/sdl_java_suite/issues/1542)
-
-- [Update Project Documentation in README](https://github.com/smartdevicelink/sdl_java_suite/issues/1534)
-
-- [Feature/lockscreen ui testing](https://github.com/smartdevicelink/sdl_java_suite/pull/1527)
 
 ## Bug Fixes:
 
-- [LockScreen behavior is incorrect for Display Always and Dismissible](https://github.com/smartdevicelink/sdl_java_suite/issues/1515)
+- [Multiframe encryption is not implemented correctly](https://github.com/smartdevicelink/sdl_java_suite/issues/1642)
 
-- [NPE with SoftButtonCapabilities using Core](https://github.com/smartdevicelink/sdl_java_suite/issues/1499)
+- [Empty string bug with Menu Cell](https://github.com/smartdevicelink/sdl_java_suite/issues/1623)
 
-- [NPE Enum doesn't exist](https://github.com/smartdevicelink/sdl_java_suite/issues/1495)
+- [CRC is not set for PutFile in FileManager](https://github.com/smartdevicelink/sdl_java_suite/issues/1622)
 
-- [NullPointerException While updating Image/Text after layout Change.](https://github.com/smartdevicelink/sdl_java_suite/issues/1465)
+- [Fix spelling of "auxillary" in StaticIconName.java](https://github.com/smartdevicelink/sdl_java_suite/issues/1632)
 
-- [javaSE and javaEE links in the readme file don't reference the latest version of the library ](https://github.com/smartdevicelink/sdl_java_suite/issues/1449)
+- [Main Menu UI Updates Don't Take TextFieldName / ImageFieldName into account](https://github.com/smartdevicelink/sdl_java_suite/issues/1628)
 
-- [ScreenManager doesn't work when app register on backup transport](https://github.com/smartdevicelink/sdl_java_suite/issues/1518)
+- [Choice set default timeout needs to have the same behavior as the AlertManager and needs to be aligned with iOS](https://github.com/smartdevicelink/sdl_java_suite/issues/1630)
 
-- [Difficult to import sdl_android as source library](https://github.com/smartdevicelink/sdl_java_suite/issues/1048)
+- [@deprecated annotation in class Javadoc makes the whole class marked as deprecated ](https://github.com/smartdevicelink/sdl_java_suite/issues/1626)
 
-- [Some cloud apps fail to download icons ](https://github.com/smartdevicelink/sdl_java_suite/issues/1513)
+- [SDL failed to start video streaming if users enable WiFi on the head unit after the NaviAPP is activated](https://github.com/smartdevicelink/sdl_java_suite/issues/1235)
 
-- [ANRs (Application Not Responding) occur when switching from App1 to App2 on HU.](https://github.com/smartdevicelink/sdl_java_suite/issues/1398)
+- [SDL failed to start video streaming if users enable WiFi on the phone later 150s after the NaviAPP is activated](https://github.com/smartdevicelink/sdl_java_suite/issues/1236)
 
-- [Lists with initial values of null are not returned properly in RPCs](https://github.com/smartdevicelink/sdl_java_suite/issues/1473)
+- [Missing permission check in IntegrationValidator](https://github.com/smartdevicelink/sdl_java_suite/issues/1615)
 
-- [ClassCastException when calling RPC getter method returning Float type](https://github.com/smartdevicelink/sdl_java_suite/issues/1407)
+- [OnRPCNotificationListener for ON_Button_Press JavaSE ](https://github.com/smartdevicelink/sdl_java_suite/issues/1397)
 
-- [TransportManager.exitLegacyMode () : NullPointerException ](https://github.com/smartdevicelink/sdl_java_suite/issues/1412)
+- [Remove Refresh Handler from SdlRemoteDisplay](https://github.com/smartdevicelink/sdl_java_suite/issues/858)
 
-- [RPC Generator is not generating the corresponding Javadoc for min & max attributes ](https://github.com/smartdevicelink/sdl_java_suite/issues/1438)
+- [New thread is started for every decode operation in AudioDecoderCompat](https://github.com/smartdevicelink/sdl_java_suite/issues/1596)
 
-- [RPC Generator is generating enum values with wrong capitalization](https://github.com/smartdevicelink/sdl_java_suite/issues/1425)
+- [Tests fail because current code state doesn't match MOBILE_API](https://github.com/smartdevicelink/sdl_java_suite/issues/1597)
 
-- [RPC generator strips text after @TODO](https://github.com/smartdevicelink/sdl_java_suite/issues/1506)
+- [Only auto-overwrite non-persistent files on RPC v4.3 and below](https://github.com/smartdevicelink/sdl_java_suite/issues/1580)
 
-- [Some RPCs in the code do not exactly match the spec](https://github.com/smartdevicelink/sdl_java_suite/issues/1545)
+- [Avoid re-uploading blank artwork](https://github.com/smartdevicelink/sdl_java_suite/issues/1579)
 
-- [Fix issue in setting MediaTrack in the T&G manager](https://github.com/smartdevicelink/sdl_java_suite/pull/1544)
+- [OnServiceError for Nav and PCM is called even if no service from that type is started](https://github.com/smartdevicelink/sdl_java_suite/issues/1574)
 
-- [There are a few deprecated functions that don't link to the correct function](https://github.com/smartdevicelink/sdl_java_suite/issues/1536)
+- [Setting a `SDLArtwork`'s `overwrite` property to true does not work with screen manager](https://github.com/smartdevicelink/sdl_java_suite/issues/1346)
 
-- [Some cloud apps fail to download icons](https://github.com/smartdevicelink/sdl_java_suite/issues/1513)
- 
-- [Fix inconsistency with HMICapabilities API names](https://github.com/smartdevicelink/sdl_java_suite/pull/1508)
+- [Supporting devices with SDL 2.0.0](https://github.com/smartdevicelink/sdl_java_suite/issues/1541)
 
-- [LockScreen behavior is incorrect for Display Always and Dismissible](https://github.com/smartdevicelink/sdl_java_suite/issues/1515)
+- [Gradle 4.1 compatibility issues ](https://github.com/smartdevicelink/sdl_java_suite/issues/1551)
+
+- [BitConverter NullPointerExeptions](https://github.com/smartdevicelink/sdl_java_suite/issues/193)
+
+- [HelloSDL JavaEE 5.1 updates](https://github.com/smartdevicelink/sdl_java_suite/issues/1639)
+
+
+
 

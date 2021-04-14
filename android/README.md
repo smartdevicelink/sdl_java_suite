@@ -10,10 +10,10 @@ To compile with the latest release of SDL Android, include the following in your
 
 ```
 repositories {
-    jcenter()
+    mavenCentral()
 }
 dependencies {
-    implementation 'com.smartdevicelink:sdl_android:4.+'
+    implementation 'com.smartdevicelink:sdl_android:5.1.0'
 }
 ```
 

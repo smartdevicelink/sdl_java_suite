@@ -38,6 +38,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingIndicator;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
+import com.smartdevicelink.util.SdlDataTypeConverter;
 
 import java.util.Hashtable;
 
@@ -94,6 +95,37 @@ import java.util.Hashtable;
  * 			<td></td>
  * 			<td>SmartDeviceLink 5.0</td>
  * 		</tr>
+ * 	    <tr>
+ *          <td>countRate</td>
+ *          <td>Float</td>
+ *          <td>The value of this parameter is the amount that the media clock timer will advance per 1.0 seconds of real time. Values less than 1.0 will therefore advance the timer slower than real-time, while values greater than 1.0 will advance the timer faster than real-time.e.g. If this parameter is set to `0.5`, the timer will advance one second per two seconds real-time, or at 50% speed. If this parameter is set to `2.0`, the timer will advance two seconds per one second real-time, or at 200% speed.</td>
+
+ *          <td>N</td>
+ *          <td>{"num_min_value": 0.1, "num_max_value": 100.0}</td>
+ *          <td>
+ *             @since SmartDeviceLink 7.1.0
+ *          </td>
+ *      </tr>
+ * 	    <tr>
+ *          <td>forwardSeekIndicator</td>
+ *          <td>SeekStreamingIndicator</td>
+ *          <td>Used to control the forward seek button to either skip forward a set amount of time or to the next track.</td>
+ *          <td>N</td>
+ *          <td></td>
+ *          <td>
+ *              @since SmartDeviceLink 7.1.0
+ *          </td>
+ *      </tr>
+ *      <tr>
+ *          <td>backSeekIndicator</td>
+ *          <td>SeekStreamingIndicator</td>
+ *          <td>Used to control the forward seek button to either skip back a set amount of time or to the previous track.</td>
+ *          <td>N</td>
+ *          <td></td>
+ *          <td>
+ *              @since SmartDeviceLink 7.1.0
+ *          </td>
+ *      </tr>
  *
  *  </table>
  *
@@ -117,6 +149,9 @@ public class SetMediaClockTimer extends RPCRequest {
     public static final String KEY_END_TIME = "endTime";
     public static final String KEY_UPDATE_MODE = "updateMode";
     public static final String KEY_AUDIO_STREAMING_INDICATOR = "audioStreamingIndicator";
+    public static final String KEY_COUNT_RATE = "countRate";
+    public static final String KEY_FORWARD_SEEK_INDICATOR = "forwardSeekIndicator";
+    public static final String KEY_BACK_SEEK_INDICATOR = "backSeekIndicator";
 
     /**
      * Constructs a new SetMediaClockTimer object
@@ -349,5 +384,85 @@ public class SetMediaClockTimer extends RPCRequest {
     public SetMediaClockTimer setAudioStreamingIndicator(AudioStreamingIndicator audioStreamingIndicator) {
         setParameters(KEY_AUDIO_STREAMING_INDICATOR, audioStreamingIndicator);
         return this;
+    }
+
+    /**
+     * Sets the countRate.
+     *
+     * @param countRate The value of this parameter is the amount that the media clock timer will advance per 1.0
+     * seconds of real time. Values less than 1.0 will therefore advance the timer slower than
+     * real-time, while values greater than 1.0 will advance the timer faster than real-time.
+     * e.g. If this parameter is set to `0.5`, the timer will advance one second per two seconds
+     * real-time, or at 50% speed. If this parameter is set to `2.0`, the timer will advance two
+     * seconds per one second real-time, or at 200% speed.
+     * {"num_min_value": 0.1, "num_max_value": 100.0}
+     * @since SmartDeviceLink 7.1.0
+     */
+    public SetMediaClockTimer setCountRate(Float countRate) {
+        setParameters(KEY_COUNT_RATE, countRate);
+        return this;
+    }
+
+    /**
+     * Gets the countRate.
+     *
+     * @return Float The value of this parameter is the amount that the media clock timer will advance per 1.0
+     * seconds of real time. Values less than 1.0 will therefore advance the timer slower than
+     * real-time, while values greater than 1.0 will advance the timer faster than real-time.
+     * e.g. If this parameter is set to `0.5`, the timer will advance one second per two seconds
+     * real-time, or at 50% speed. If this parameter is set to `2.0`, the timer will advance two
+     * seconds per one second real-time, or at 200% speed.
+     * {"num_min_value": 0.1, "num_max_value": 100.0}
+     * @since SmartDeviceLink 7.1.0
+     */
+    public Float getCountRate() {
+        Object object = getParameters(KEY_COUNT_RATE);
+        return SdlDataTypeConverter.objectToFloat(object);
+    }
+
+    /**
+     * Sets the forwardSeekIndicator.
+     *
+     * @param forwardSeekIndicator Used to control the forward seek button to either skip forward a set amount of time or to
+     * the next track.
+     * @since SmartDeviceLink 7.1.0
+     */
+    public SetMediaClockTimer setForwardSeekIndicator(SeekStreamingIndicator forwardSeekIndicator) {
+        setParameters(KEY_FORWARD_SEEK_INDICATOR, forwardSeekIndicator);
+        return this;
+    }
+
+    /**
+     * Gets the forwardSeekIndicator.
+     *
+     * @return SeekStreamingIndicator Used to control the forward seek button to either skip forward a set amount of time or to
+     * the next track.
+     * @since SmartDeviceLink 7.1.0
+     */
+    public SeekStreamingIndicator getForwardSeekIndicator() {
+        return (SeekStreamingIndicator) getObject(SeekStreamingIndicator.class, KEY_FORWARD_SEEK_INDICATOR);
+    }
+
+    /**
+     * Sets the backSeekIndicator.
+     *
+     * @param backSeekIndicator Used to control the forward seek button to either skip back a set amount of time or to the
+     * previous track.
+     * @since SmartDeviceLink 7.1.0
+     */
+    public SetMediaClockTimer setBackSeekIndicator(SeekStreamingIndicator backSeekIndicator) {
+        setParameters(KEY_BACK_SEEK_INDICATOR, backSeekIndicator);
+        return this;
+    }
+
+    /**
+     * Gets the backSeekIndicator.
+     *
+     * @return SeekStreamingIndicator Used to control the forward seek button to either skip back a set amount of time or to the
+     * previous track.
+     * @since SmartDeviceLink 7.1.0
+     */
+    public SeekStreamingIndicator getBackSeekIndicator() {
+        return (SeekStreamingIndicator) getObject(SeekStreamingIndicator.class, KEY_BACK_SEEK_INDICATOR);
     }
 }
