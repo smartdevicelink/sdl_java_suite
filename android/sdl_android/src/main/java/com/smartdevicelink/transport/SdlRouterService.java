@@ -3124,7 +3124,9 @@ public class SdlRouterService extends Service {
             int location = sessionIds.indexOf(sessionId);
             if (location >= 0) {
                 Long removedSessionId = sessionIds.remove(location);
-                registeredTransports.remove(sessionId.intValue());
+                synchronized (TRANSPORT_LOCK) {
+                    registeredTransports.remove(sessionId.intValue());
+                }
                 return removedSessionId != null;
             } else {
                 return false;
