@@ -3266,10 +3266,18 @@ public class SdlRouterService extends Service {
         private TransportType getCompatPrimaryTransport() {
             synchronized (TRANSPORT_LOCK) {
                 if (this.registeredTransports != null && this.registeredTransports.size() > 0) {
-                    List<TransportType> transportTypes = this.registeredTransports.valueAt(0);
-                    if (transportTypes != null) {
-                        if (transportTypes.get(0) != null) {
-                            return transportTypes.get(0);
+                    Object obj = this.registeredTransports.valueAt(0);
+                    //Lint shows to ignore this call, but there are crash logs that show otherwise
+                    if (obj != null && obj instanceof List) {
+                        try {
+                            List<TransportType> transportTypes = (List<TransportType>) obj;
+                            if (transportTypes != null) {
+                                if (transportTypes.get(0) != null) {
+                                    return transportTypes.get(0);
+                                }
+                            }
+                        } catch (ClassCastException e) {
+                            DebugTool.logError(TAG, "Unable to cast transport list", e);
                         }
                     }
                 }
