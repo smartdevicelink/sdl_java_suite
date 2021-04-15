@@ -3262,11 +3262,13 @@ public class SdlRouterService extends Service {
          * @return
          */
         private TransportType getCompatPrimaryTransport() {
-            if (this.registeredTransports != null && this.registeredTransports.size() > 0) {
-                List<TransportType> transportTypes = this.registeredTransports.valueAt(0);
-                if (transportTypes != null) {
-                    if (transportTypes.get(0) != null) {
-                        return transportTypes.get(0);
+            synchronized (TRANSPORT_LOCK) {
+                if (this.registeredTransports != null && this.registeredTransports.size() > 0) {
+                    List<TransportType> transportTypes = this.registeredTransports.valueAt(0);
+                    if (transportTypes != null) {
+                        if (transportTypes.get(0) != null) {
+                            return transportTypes.get(0);
+                        }
                     }
                 }
             }
