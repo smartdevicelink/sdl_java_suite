@@ -51,6 +51,8 @@
 
 ## Bug Fixes:
 
+- [Multiframe encryption is not implemented correctly](https://github.com/smartdevicelink/sdl_java_suite/issues/1642)
+
 - [Empty string bug with Menu Cell](https://github.com/smartdevicelink/sdl_java_suite/issues/1623)
 
 - [CRC is not set for PutFile in FileManager](https://github.com/smartdevicelink/sdl_java_suite/issues/1622)
@@ -90,6 +92,9 @@
 - [Gradle 4.1 compatibility issues ](https://github.com/smartdevicelink/sdl_java_suite/issues/1551)
 
 - [BitConverter NullPointerExeptions](https://github.com/smartdevicelink/sdl_java_suite/issues/193)
+
+- [HelloSDL JavaEE 5.1 updates](https://github.com/smartdevicelink/sdl_java_suite/issues/1639)
+
 
 
 

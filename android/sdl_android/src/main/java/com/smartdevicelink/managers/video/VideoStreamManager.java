@@ -117,6 +117,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
     private String vehicleMake = null;
     private boolean isEncrypted = false;
     private boolean withPendingRestart = false;
+    private boolean wasCapabilityListenerAdded = false;
     private AbstractPacketizer videoPacketizer;
 
     // INTERNAL INTERFACES
@@ -188,7 +189,10 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                     if (VideoStreamManager.this.parameters == null) {
                         getVideoStreamingParams();
                     }
-                    internalInterface.getSystemCapabilityManager().addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, systemCapabilityListener);
+                    if (!wasCapabilityListenerAdded) {
+                        wasCapabilityListenerAdded = true;
+                        internalInterface.getSystemCapabilityManager().addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, systemCapabilityListener);
+                    }
                 }
                 checkState();
                 if (hasStarted && (isHMIStateVideoStreamCapable(prevOnHMIStatus)) && (!isHMIStateVideoStreamCapable(currentOnHMIStatus))) {
@@ -872,7 +876,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
         if (capability.getDiagonalScreenSize() != null) {
             double diagonal = capability.getDiagonalScreenSize();
             if (range.getMinimumDiagonal() != null) {
-                if (range.getMinimumDiagonal() <= 0.0 || range.getMinimumDiagonal() > diagonal) {
+                if (range.getMinimumDiagonal() < 0.0 || range.getMinimumDiagonal() > diagonal) {
                     return false;
                 }
             }

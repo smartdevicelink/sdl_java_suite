@@ -133,14 +133,16 @@ public abstract class SdlRemoteDisplay extends Presentation {
             @Override
             public void run() {
                 try {
-                    Constructor<? extends ViewGroup.LayoutParams> ctor =
-                            mainView.getLayoutParams().getClass().getDeclaredConstructor(int.class, int.class);
-                    mainView.setLayoutParams(ctor.newInstance(newWidth, newHeight));
-                    mainView.requestLayout();
-                    invalidate();
-                    onViewResized(newWidth, newHeight);
+                    if (mainView != null) {
+                        Constructor<? extends ViewGroup.LayoutParams> ctor =
+                                mainView.getLayoutParams().getClass().getDeclaredConstructor(int.class, int.class);
+                        mainView.setLayoutParams(ctor.newInstance(newWidth, newHeight));
+                        mainView.requestLayout();
+                        invalidate();
+                        onViewResized(newWidth, newHeight);
+                    }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    DebugTool.logError(TAG, "Exception thrown during view resize", e);
                 }
             }
         });
