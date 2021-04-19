@@ -55,6 +55,7 @@ import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.SdlAppInfo;
+import com.smartdevicelink.util.Version;
 
 import java.lang.ref.WeakReference;
 import java.util.Hashtable;
@@ -189,9 +190,12 @@ public class SdlDeviceListener {
 
         public void sendStartService() {
             SdlDeviceListener sdlListener = this.provider.get();
-            byte[] serviceProbe = SdlPacketFactory.createStartSession(SessionType.RPC, 0x00, (byte)1, (byte)0x00, false).constructPacket();
+            Version v = new Version(5, 4, 0);
+            SdlPacket serviceProbe = SdlPacketFactory.createStartSession(SessionType.RPC, 0x00, (byte)v.getMajor(), (byte)0x00, false);
+            serviceProbe.putTag(ControlFrameTags.RPC.StartService.PROTOCOL_VERSION, v.toString());
+            byte[] constructed = serviceProbe.constructPacket();
             if (sdlListener.bluetoothTransport != null && sdlListener.bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
-                sdlListener.bluetoothTransport.write(serviceProbe, 0, serviceProbe.length);
+                sdlListener.bluetoothTransport.write(constructed, 0, constructed.length);
             }
         }
 
