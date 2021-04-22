@@ -9,9 +9,10 @@ sourceCompatibility = 1.7
 buildscript {
     repositories {
         jcenter()
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.13.0'
     }
 }
 
@@ -78,4 +79,4 @@ public final class BuildConfig {
     }
 }
 
-apply from: 'bintray.gradle'
+apply plugin: "com.vanniktech.maven.publish"
