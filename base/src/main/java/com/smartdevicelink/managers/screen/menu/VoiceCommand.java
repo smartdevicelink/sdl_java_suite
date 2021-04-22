@@ -36,6 +36,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class VoiceCommand {
@@ -77,7 +79,7 @@ public class VoiceCommand {
      * @param voiceCommands - the list of commands to send to the head unit
      */
     public void setVoiceCommands(@NonNull List<String> voiceCommands) {
-        this.voiceCommands = voiceCommands;
+        this.voiceCommands = new ArrayList<>(removeDuplicateStrings(voiceCommands));
     }
 
     /**
@@ -124,6 +126,10 @@ public class VoiceCommand {
      */
     int getCommandId() {
         return commandId;
+    }
+
+    private HashSet<String> removeDuplicateStrings(List<String> voiceCommands) {
+        return new HashSet<>(voiceCommands);
     }
 
     /**
