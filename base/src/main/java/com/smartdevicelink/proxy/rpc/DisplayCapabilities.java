@@ -52,7 +52,7 @@ import java.util.List;
  * 			<th>SmartDeviceLink Ver. Available</th>
  * 		</tr>
  * 		<tr>
- * 			<td>@Deprecated <s>displayType</s></td>
+ * 			<td>@property-deprecated <s>displayType</s></td>
  * 			<td><s>DisplayType</s></td>
  * 			<td><s>The type of display</s>
  * 			</td>

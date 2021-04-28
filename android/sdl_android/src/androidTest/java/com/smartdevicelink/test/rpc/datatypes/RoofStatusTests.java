@@ -23,7 +23,7 @@ public class RoofStatusTests extends TestCase {
 
     @Override
     public void setUp() {
-        msg = new RoofStatus(TestValues.GENERAL_GRID, TestValues.GENERAL_DOOR_STATUS_TYPE);
+        msg = new RoofStatus(TestValues.GENERAL_GRID, TestValues.GENERAL_DOORSTATUSTYPE);
         msg.setState(TestValues.GENERAL_WINDOW_STATE);
     }
 
@@ -35,7 +35,7 @@ public class RoofStatusTests extends TestCase {
 
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_GRID, location);
-        assertEquals(TestValues.MATCH, TestValues.GENERAL_DOOR_STATUS_TYPE, status);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_DOORSTATUSTYPE, status);
         assertEquals(TestValues.MATCH, TestValues.GENERAL_WINDOW_STATE, windowState);
     }
 
@@ -43,7 +43,7 @@ public class RoofStatusTests extends TestCase {
         JSONObject reference = new JSONObject();
 
         try {
-            reference.put(RoofStatus.KEY_STATUS, TestValues.GENERAL_DOOR_STATUS_TYPE);
+            reference.put(RoofStatus.KEY_STATUS, TestValues.GENERAL_DOORSTATUSTYPE);
             reference.put(RoofStatus.KEY_STATE, TestValues.GENERAL_WINDOW_STATE.serializeJSON());
             reference.put(RoofStatus.KEY_LOCATION, TestValues.JSON_GRID);
 

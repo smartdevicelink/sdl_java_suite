@@ -11,11 +11,13 @@ import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.smartdevicelink.managers.AlertCompletionListener;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
+import com.smartdevicelink.managers.screen.AlertView;
 import com.smartdevicelink.managers.screen.OnButtonListener;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceSet;
@@ -26,7 +28,6 @@ import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.rpc.Alert;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
@@ -297,7 +298,7 @@ public class SdlService extends Service {
         // some voice commands
         List<String> voice2 = Collections.singletonList("Cell two");
 
-        MenuCell mainCell1 = new MenuCell("Test Cell 1 (speak)", livio, null, new MenuSelectionListener() {
+        MenuCell mainCell1 = new MenuCell("Test Cell 1 (speak)", "Secondary Text", "Tertiary Text", livio, livio, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
                 Log.i(TAG, "Test cell 1 triggered. Source: " + trigger.toString());
@@ -305,7 +306,7 @@ public class SdlService extends Service {
             }
         });
 
-        MenuCell mainCell2 = new MenuCell("Test Cell 2", null, voice2, new MenuSelectionListener() {
+        MenuCell mainCell2 = new MenuCell("Test Cell 2", "Secondary Text", null, null, null, voice2, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
                 Log.i(TAG, "Test cell 2 triggered. Source: " + trigger.toString());
@@ -314,14 +315,14 @@ public class SdlService extends Service {
 
         // SUB MENU
 
-        MenuCell subCell1 = new MenuCell("SubCell 1", null, null, new MenuSelectionListener() {
+        MenuCell subCell1 = new MenuCell("SubCell 1", null, null, null, null, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
                 Log.i(TAG, "Sub cell 1 triggered. Source: " + trigger.toString());
             }
         });
 
-        MenuCell subCell2 = new MenuCell("SubCell 2", null, null, new MenuSelectionListener() {
+        MenuCell subCell2 = new MenuCell("SubCell 2", null, null, null, null, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
                 Log.i(TAG, "Sub cell 2 triggered. Source: " + trigger.toString());
@@ -329,16 +330,16 @@ public class SdlService extends Service {
         });
 
         // sub menu parent cell
-        MenuCell mainCell3 = new MenuCell("Test Cell 3 (sub menu)", MenuLayout.LIST, null, Arrays.asList(subCell1, subCell2));
+        MenuCell mainCell3 = new MenuCell("Test Cell 3 (sub menu)", null, null, MenuLayout.LIST, null, null, Arrays.asList(subCell1, subCell2));
 
-        MenuCell mainCell4 = new MenuCell("Show Perform Interaction", null, null, new MenuSelectionListener() {
+        MenuCell mainCell4 = new MenuCell("Show Perform Interaction", null, null, null, null, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
                 showPerformInteraction();
             }
         });
 
-        MenuCell mainCell5 = new MenuCell("Clear the menu", null, null, new MenuSelectionListener() {
+        MenuCell mainCell5 = new MenuCell("Clear the menu", null, null, null,null, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
                 Log.i(TAG, "Clearing Menu. Source: " + trigger.toString());
@@ -424,10 +425,16 @@ public class SdlService extends Service {
     }
 
     private void showAlert(String text) {
-        Alert alert = new Alert();
-        alert.setAlertText1(text);
-        alert.setDuration(5000);
-        sdlManager.sendRPC(alert);
+        AlertView.Builder builder = new AlertView.Builder();
+        builder.setText(text);
+        builder.setTimeout(5);
+        AlertView alertView = builder.build();
+        sdlManager.getScreenManager().presentAlert(alertView, new AlertCompletionListener() {
+            @Override
+            public void onComplete(boolean success, Integer tryAgainTime) {
+                Log.i(TAG, "Alert presented: "+ success);
+            }
+        });
     }
 
     // Choice Set

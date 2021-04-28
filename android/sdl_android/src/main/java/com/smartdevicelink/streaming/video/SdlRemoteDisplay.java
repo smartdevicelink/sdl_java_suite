@@ -42,6 +42,7 @@ import android.os.Looper;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -126,6 +127,28 @@ public abstract class SdlRemoteDisplay extends Presentation {
             callback.onInvalidated(this);
         }
     }
+
+    public void resizeView(final int newWidth, final int newHeight) {
+        uiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (mainView != null) {
+                        Constructor<? extends ViewGroup.LayoutParams> ctor =
+                                mainView.getLayoutParams().getClass().getDeclaredConstructor(int.class, int.class);
+                        mainView.setLayoutParams(ctor.newInstance(newWidth, newHeight));
+                        mainView.requestLayout();
+                        invalidate();
+                        onViewResized(newWidth, newHeight);
+                    }
+                } catch (Exception e) {
+                    DebugTool.logError(TAG, "Exception thrown during view resize", e);
+                }
+            }
+        });
+    }
+
+    public abstract void onViewResized(int width, int height);
 
     public void handleMotionEvent(final MotionEvent motionEvent) {
         uiHandler.post(new Runnable() {

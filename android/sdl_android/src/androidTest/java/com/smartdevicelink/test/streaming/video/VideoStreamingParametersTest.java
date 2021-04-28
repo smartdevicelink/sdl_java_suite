@@ -8,6 +8,7 @@ import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
+import com.smartdevicelink.test.TestValues;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -195,5 +196,14 @@ public class VideoStreamingParametersTest {
         params.update(capability, vehicleMake);
         assertFalse(params.getFormat().equals(format));
 
+    }
+
+    @Test
+    public void testAdditionalCapabilities() {
+        capability.setAdditionalVideoStreamingCapabilities(TestValues.GENERAL_ADDITIONAL_CAPABILITY_LIST);
+        assertEquals(TestValues.GENERAL_ADDITIONAL_CAPABILITY_LIST, capability.getAdditionalVideoStreamingCapabilities());
+
+        capability.setAdditionalVideoStreamingCapabilities(null);
+        assertNull(capability.getAdditionalVideoStreamingCapabilities());
     }
 }

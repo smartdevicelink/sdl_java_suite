@@ -23,7 +23,7 @@ public class SeatStatusTests extends TestCase {
     public void setUp() {
         msg = new SeatStatus();
 
-        msg.setSeatLocation(TestValues.GENERAL_SEAT_LOCATION);
+        msg.setSeatLocation(TestValues.GENERAL_SEATLOCATION);
         msg.setConditionActive(TestValues.GENERAL_BOOLEAN);
     }
 
@@ -36,7 +36,7 @@ public class SeatStatusTests extends TestCase {
         Boolean conditionActive = msg.getConditionActive();
 
         // Valid Tests
-        assertEquals(TestValues.MATCH, TestValues.GENERAL_SEAT_LOCATION, location);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_SEATLOCATION, location);
         assertEquals(TestValues.GENERAL_BOOLEAN, (boolean) conditionActive);
 
         // Invalid/Null Tests
@@ -52,7 +52,7 @@ public class SeatStatusTests extends TestCase {
 
         try {
             reference.put(SeatStatus.KEY_CONDITION_ACTIVE, TestValues.GENERAL_BOOLEAN);
-            reference.put(SeatStatus.KEY_SEAT_LOCATION, TestValues.GENERAL_SEAT_LOCATION.serializeJSON());
+            reference.put(SeatStatus.KEY_SEAT_LOCATION, TestValues.GENERAL_SEATLOCATION.serializeJSON());
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());

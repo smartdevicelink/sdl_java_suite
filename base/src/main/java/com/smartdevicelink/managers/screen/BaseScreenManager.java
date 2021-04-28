@@ -31,10 +31,12 @@
  */
 package com.smartdevicelink.managers.screen;
 
+import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 
+import com.smartdevicelink.managers.AlertCompletionListener;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
@@ -58,6 +60,8 @@ import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.util.DebugTool;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.List;
@@ -77,6 +81,13 @@ abstract class BaseScreenManager extends BaseSubManager {
     private MenuManager menuManager;
     private ChoiceSetManager choiceSetManager;
     private SubscribeButtonManager subscribeButtonManager;
+    private AlertManager alertManager;
+
+    static final int SOFT_BUTTON_ID_NOT_SET_VALUE = -1;
+    static final int SOFT_BUTTON_ID_MIN_VALUE = 0;
+    static final int SOFT_BUTTON_ID_MAX_VALUE = 10000;
+    static HashSet<Integer> softButtonIDBySoftButtonManager;
+    static HashSet<Integer> softButtonIDByAlertManager;
 
     // Sub manager listener
     private final CompletionListener subManagerListener = new CompletionListener() {
@@ -85,15 +96,15 @@ abstract class BaseScreenManager extends BaseSubManager {
         public synchronized void onComplete(boolean success) {
             if (softButtonManager != null && textAndGraphicManager != null && voiceCommandManager != null && menuManager != null && choiceSetManager != null && subscribeButtonManager != null) {
                 if (softButtonManager.getState() == BaseSubManager.READY && textAndGraphicManager.getState() == BaseSubManager.READY && voiceCommandManager.getState() == BaseSubManager.READY && menuManager.getState() == BaseSubManager.READY
-                        && subscribeButtonManager.getState() == BaseSubManager.READY) {
+                        && subscribeButtonManager.getState() == BaseSubManager.READY && alertManager.getState() == BaseSubManager.READY) {
                     DebugTool.logInfo(TAG, "Starting screen manager, all sub managers are in ready state");
                     transitionToState(READY);
                 } else if (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.ERROR && voiceCommandManager.getState() == BaseSubManager.ERROR && menuManager.getState() == BaseSubManager.ERROR
-                        && choiceSetManager.getState() == BaseSubManager.ERROR && subscribeButtonManager.getState() == BaseSubManager.ERROR) {
+                        && choiceSetManager.getState() == BaseSubManager.ERROR && subscribeButtonManager.getState() == BaseSubManager.ERROR && alertManager.getState() == BaseSubManager.ERROR) {
                     DebugTool.logError(TAG, "ERROR starting screen manager, all sub managers are in error state");
                     transitionToState(ERROR);
                 } else if (textAndGraphicManager.getState() == BaseSubManager.SETTING_UP || softButtonManager.getState() == BaseSubManager.SETTING_UP || voiceCommandManager.getState() == BaseSubManager.SETTING_UP || menuManager.getState() == BaseSubManager.SETTING_UP
-                        || choiceSetManager.getState() == BaseSubManager.SETTING_UP || subscribeButtonManager.getState() == BaseSubManager.SETTING_UP) {
+                        || choiceSetManager.getState() == BaseSubManager.SETTING_UP || subscribeButtonManager.getState() == BaseSubManager.SETTING_UP || alertManager.getState() == BaseSubManager.SETTING_UP) {
                     DebugTool.logInfo(TAG, "SETTING UP screen manager, at least one sub manager is still setting up");
                     transitionToState(SETTING_UP);
                 } else {
@@ -111,6 +122,8 @@ abstract class BaseScreenManager extends BaseSubManager {
     BaseScreenManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
+        softButtonIDBySoftButtonManager = new HashSet<>();
+        softButtonIDByAlertManager = new HashSet<>();
         initialize();
     }
 
@@ -124,6 +137,7 @@ abstract class BaseScreenManager extends BaseSubManager {
         this.menuManager.start(subManagerListener);
         this.choiceSetManager.start(subManagerListener);
         this.subscribeButtonManager.start(subManagerListener);
+        this.alertManager.start(subManagerListener);
     }
 
     private void initialize() {
@@ -132,6 +146,7 @@ abstract class BaseScreenManager extends BaseSubManager {
             this.textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager.get(), softButtonManager);
             this.menuManager = new MenuManager(internalInterface, fileManager.get());
             this.choiceSetManager = new ChoiceSetManager(internalInterface, fileManager.get());
+            this.alertManager = new AlertManager(internalInterface, fileManager.get());
         }
         this.subscribeButtonManager = new SubscribeButtonManager(internalInterface);
         this.voiceCommandManager = new VoiceCommandManager(internalInterface);
@@ -149,6 +164,10 @@ abstract class BaseScreenManager extends BaseSubManager {
         menuManager.dispose();
         choiceSetManager.dispose();
         subscribeButtonManager.dispose();
+        alertManager.dispose();
+        softButtonIDByAlertManager = null;
+        softButtonIDBySoftButtonManager = null;
+
         super.dispose();
     }
 
@@ -702,5 +721,77 @@ abstract class BaseScreenManager extends BaseSubManager {
 
     public void removeButtonListener(@NonNull ButtonName buttonName, @NonNull OnButtonListener listener) {
         subscribeButtonManager.removeButtonListener(buttonName, listener);
+    }
+
+    public void presentAlert(AlertView alert, AlertCompletionListener listener) {
+        alertManager.presentAlert(alert, listener);
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({ManagerLocation.SOFTBUTTON_MANAGER, ManagerLocation.ALERT_MANAGER})
+    @interface ManagerLocation {
+        int SOFTBUTTON_MANAGER = 0;
+        int ALERT_MANAGER = 1;
+    }
+
+    /**
+     * Used across managers to check and assign SoftButton ID's to prevent conflicts.
+     *
+     * @param softButtonObjects - list of SoftButtonObjects
+     * @param location - location from which the button came from, so if new buttons get set on screen, we can clear the old ID's out
+     * @return True if ButtonID's are good, False if not.
+     */
+    static boolean checkAndAssignButtonIds(List<SoftButtonObject> softButtonObjects, @ManagerLocation int location) {
+        HashSet<Integer> buttonIdsSetHashSet = new HashSet<>();
+        // Depending on location form which the softButtons came from, we will clear out the id list so they can be reset
+        if (location == ManagerLocation.ALERT_MANAGER) {
+            softButtonIDByAlertManager.clear();
+            buttonIdsSetHashSet = (HashSet) softButtonIDBySoftButtonManager.clone();
+        } else if (location == ManagerLocation.SOFTBUTTON_MANAGER) {
+            softButtonIDBySoftButtonManager.clear();
+            buttonIdsSetHashSet = (HashSet) softButtonIDByAlertManager.clone();
+        }
+        // Check if multiple soft button objects have the same id
+        int currentSoftButtonId, numberOfButtonIdsSet = buttonIdsSetHashSet.size(), maxButtonIdsSetByDev = SOFT_BUTTON_ID_MIN_VALUE;
+
+        for (SoftButtonObject softButtonObject : softButtonObjects) {
+            currentSoftButtonId = softButtonObject.getButtonId();
+            if (currentSoftButtonId != SOFT_BUTTON_ID_NOT_SET_VALUE) {
+                if (softButtonIDByAlertManager.contains(currentSoftButtonId) || softButtonIDBySoftButtonManager.contains(currentSoftButtonId)) {
+                    return false;
+                }
+                numberOfButtonIdsSet++;
+                if (currentSoftButtonId > maxButtonIdsSetByDev) {
+                    maxButtonIdsSetByDev = currentSoftButtonId;
+                }
+                buttonIdsSetHashSet.add(softButtonObject.getButtonId());
+            }
+        }
+        if (numberOfButtonIdsSet != buttonIdsSetHashSet.size()) {
+            return false;
+        }
+
+        // Set ids for soft button objects
+        int generatedSoftButtonId = maxButtonIdsSetByDev;
+        for (SoftButtonObject softButtonObject : softButtonObjects) {
+            // If the dev did not set the buttonId, the manager should set an id on the dev's behalf
+            currentSoftButtonId = softButtonObject.getButtonId();
+            if (currentSoftButtonId == SOFT_BUTTON_ID_NOT_SET_VALUE) {
+                do {
+                    if (generatedSoftButtonId >= SOFT_BUTTON_ID_MAX_VALUE) {
+                        generatedSoftButtonId = SOFT_BUTTON_ID_MIN_VALUE;
+                    }
+                    generatedSoftButtonId++;
+                } while (buttonIdsSetHashSet.contains(generatedSoftButtonId));
+                softButtonObject.setButtonId(generatedSoftButtonId);
+                buttonIdsSetHashSet.add(generatedSoftButtonId);
+                if (location == ManagerLocation.ALERT_MANAGER) {
+                    softButtonIDByAlertManager.add(generatedSoftButtonId);
+                } else if (location == ManagerLocation.SOFTBUTTON_MANAGER) {
+                    softButtonIDBySoftButtonManager.add(generatedSoftButtonId);
+                }
+            }
+        }
+        return true;
     }
 }

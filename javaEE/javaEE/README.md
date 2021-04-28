@@ -8,10 +8,10 @@ To compile with the latest release of SDL JavaSE, include the following in your 
 
 ```sh
 repositories {
-    jcenter()
+    mavenCentral()
 }
 dependencies {
-    implementation 'com.smartdevicelink:sdl_java_se:4.+'
+    implementation 'com.smartdevicelink:sdl_java_se:5.1.0'
 }
 ```
 

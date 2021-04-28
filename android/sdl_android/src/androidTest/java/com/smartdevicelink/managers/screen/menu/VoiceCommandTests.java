@@ -39,6 +39,9 @@ import com.smartdevicelink.test.TestValues;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static junit.framework.TestCase.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
@@ -59,4 +62,25 @@ public class VoiceCommandTests {
         assertEquals(voiceCommand.getVoiceCommandSelectionListener(), voiceCommandSelectionListener);
     }
 
+    @Test
+    public void testDuplicateStrings() {
+        List<String> voiceCommandsList = new ArrayList<>();
+        voiceCommandsList.add("Test1");
+        voiceCommandsList.add("Test1");
+        voiceCommandsList.add("Test1");
+        VoiceCommand voiceCommand = new VoiceCommand(voiceCommandsList, voiceCommandSelectionListener);
+
+        assertEquals(1, voiceCommand.getVoiceCommands().size());
+        assertEquals("Test1", voiceCommand.getVoiceCommands().get(0));
+
+        voiceCommandsList = new ArrayList<>();
+        voiceCommandsList.add("Test1");
+        voiceCommandsList.add("Test2");
+        voiceCommandsList.add("Test1");
+        VoiceCommand voiceCommand2 = new VoiceCommand(voiceCommandsList, voiceCommandSelectionListener);
+
+        assertEquals(2, voiceCommand2.getVoiceCommands().size());
+        assertEquals("Test1", voiceCommand2.getVoiceCommands().get(0));
+        assertEquals("Test2", voiceCommand2.getVoiceCommands().get(1));
+    }
 }

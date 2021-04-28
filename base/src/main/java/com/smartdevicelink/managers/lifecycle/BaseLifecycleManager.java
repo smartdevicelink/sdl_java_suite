@@ -40,6 +40,7 @@ import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.ServiceEncryptionListener;
+import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -369,7 +370,7 @@ abstract class BaseLifecycleManager {
                     case REGISTER_APP_INTERFACE:
                         //We have begun
                         DebugTool.logInfo(TAG, "RAI Response");
-                        raiResponse = (RegisterAppInterfaceResponse) message;
+                        BaseLifecycleManager.this.raiResponse = (RegisterAppInterfaceResponse) message;
                         SdlMsgVersion rpcVersion = ((RegisterAppInterfaceResponse) message).getSdlMsgVersion();
                         if (rpcVersion != null) {
                             BaseLifecycleManager.this.rpcSpecVersion = new Version(rpcVersion.getMajorVersion(), rpcVersion.getMinorVersion(), rpcVersion.getPatchVersion());
@@ -400,8 +401,9 @@ abstract class BaseLifecycleManager {
                                     return;
                                 }
                             }
+                            //If the vehicle is acceptable and this is the first check, init security lib
+                            setSecurityLibraryIfAvailable(vehicleType);
                         }
-                        processRaiResponse(raiResponse);
                         systemCapabilityManager.parseRAIResponse(raiResponse);
                         break;
                     case ON_HMI_STATUS:
@@ -919,6 +921,8 @@ abstract class BaseLifecycleManager {
                     clean();
                     return;
                 }
+                //If the vehicle is acceptable, init security lib
+                setSecurityLibraryIfAvailable(systemInfo.getVehicleType());
             }
 
             if (appConfig != null) {
@@ -997,8 +1001,8 @@ abstract class BaseLifecycleManager {
         }
 
         @Override
-        public void startVideoService(VideoStreamingParameters parameters, boolean encrypted) {
-            BaseLifecycleManager.this.startVideoService(encrypted, parameters);
+        public void startVideoService(VideoStreamingParameters parameters, boolean encrypted, boolean afterPendingRestart) {
+            BaseLifecycleManager.this.startVideoService(encrypted, parameters, afterPendingRestart);
         }
 
         @Override
@@ -1095,6 +1099,11 @@ abstract class BaseLifecycleManager {
         @Override
         public SystemCapabilityManager getSystemCapabilityManager() {
             return BaseLifecycleManager.this.systemCapabilityManager;
+        }
+
+        @Override
+        public PermissionManager getPermissionManager() {
+            return null;
         }
     };
 
@@ -1193,18 +1202,24 @@ abstract class BaseLifecycleManager {
         this.encryptionLifecycleManager = new EncryptionLifecycleManager(internalInterface, listener);
     }
 
-    private void processRaiResponse(RegisterAppInterfaceResponse rai) {
-        if (rai == null) return;
+    /**
+     * Using the vehicle type information, specifically the make, the library will attempt to init
+     * the security library that is associated with that OEM.
+     * @param vehicleType type of vehicle that is currently connected
+     */
+    private void setSecurityLibraryIfAvailable(VehicleType vehicleType) {
+        if (_secList == null) {
+            return;
+        }
 
-        this.raiResponse = rai;
+        if (vehicleType == null) {
+            return;
+        }
 
-        VehicleType vt = rai.getVehicleType();
-        if (vt == null) return;
-
-        String make = vt.getMake();
-        if (make == null) return;
-
-        if (_secList == null) return;
+        String make = vehicleType.getMake();
+        if (make == null) {
+            return;
+        }
 
         setSdlSecurityStaticVars();
 
@@ -1249,7 +1264,7 @@ abstract class BaseLifecycleManager {
     void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
     }
 
-    void startVideoService(boolean encrypted, VideoStreamingParameters parameters) {
+    void startVideoService(boolean encrypted, VideoStreamingParameters parameters, boolean afterPendingRestart) {
     }
 
     void startAudioService(boolean encrypted) {
