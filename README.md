@@ -42,7 +42,7 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    implementation 'com.smartdevicelink:sdl_android:5.1.1'
+    implementation 'com.smartdevicelink:sdl_android:5.+'
 }
 ```
 
@@ -80,7 +80,7 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    implementation 'com.smartdevicelink:sdl_java_se:5.1.1'
+    implementation 'com.smartdevicelink:sdl_java_se:5.+'
 }
 ```
 
@@ -99,7 +99,7 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    implementation 'com.smartdevicelink:sdl_java_ee:5.1.1'
+    implementation 'com.smartdevicelink:sdl_java_ee:5.+'
 }
 ```
 
