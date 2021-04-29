@@ -17,15 +17,15 @@ class DynamicMenuUpdateAlgorithm {
     static DynamicMenuUpdateRunScore compareOldMenuCells(List<MenuCell> oldMenuCells, List<MenuCell> updatedMenuCells) {
         if (!oldMenuCells.isEmpty() && updatedMenuCells.isEmpty()) {
             return new DynamicMenuUpdateRunScore(buildAllDeleteStatusesForMenu(oldMenuCells), new ArrayList<MenuCellState>(), 0);
-        } else if (oldMenuCells.isEmpty() && !updatedMenuCells.isEmpty()){
+        } else if (oldMenuCells.isEmpty() && !updatedMenuCells.isEmpty()) {
             return new DynamicMenuUpdateRunScore(new ArrayList<MenuCellState>(), buildAllAddStatusesForMenu(updatedMenuCells), updatedMenuCells.size());
-        } else if (oldMenuCells.isEmpty()){
+        } else if (oldMenuCells.isEmpty()) {
             return null;
         }
         return startCompareAtRun(0, oldMenuCells, updatedMenuCells);
     }
 
-    static DynamicMenuUpdateRunScore startCompareAtRun(int startRun, List<MenuCell> oldMenuCells, List<MenuCell> updatedMenuCells) {
+    private static DynamicMenuUpdateRunScore startCompareAtRun(int startRun, List<MenuCell> oldMenuCells, List<MenuCell> updatedMenuCells) {
         DynamicMenuUpdateRunScore bestScore = null;
 
         for (int run = startRun; run < oldMenuCells.size(); run++) {

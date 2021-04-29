@@ -32,12 +32,13 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import java.util.List;
 import com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.MenuCellState;
+
+import java.util.List;
 
 class DynamicMenuUpdateRunScore {
     private List<MenuCellState> oldStatus; // Will contain all the Deletes and Keeps
-    private List<MenuCellState>  updatedStatus; // Will contain all the Adds and Keeps
+    private List<MenuCellState> updatedStatus; // Will contain all the Adds and Keeps
     private int score; // Will contain the score, number of total Adds that will need to be created
 
     DynamicMenuUpdateRunScore(List<MenuCellState> oldStatus, List<MenuCellState> updatedStatus, int score) {
