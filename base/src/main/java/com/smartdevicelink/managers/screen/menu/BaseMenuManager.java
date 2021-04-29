@@ -225,7 +225,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         return menuCells;
     }
 
-    private boolean openMenuPrivate(MenuCell cell){
+    private boolean openMenuPrivate(MenuCell cell) {
         MenuCell foundClonedCell = null;
 
         if (cell != null) {
@@ -240,7 +240,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         }
 
         if (cell != null && (cell.getSubCells() == null || cell.getSubCells().isEmpty())) {
-           DebugTool.logError(DebugTool.TAG, String.format("The cell %s does not contain any sub cells, so no submenu can be opened", cell.getTitle()));
+            DebugTool.logError(DebugTool.TAG, String.format("The cell %s does not contain any sub cells, so no submenu can be opened", cell.getTitle()));
             return false;
         } else if (cell != null && foundClonedCell == null) {
             DebugTool.logError(DebugTool.TAG, "This cell has not been sent to the head unit, so no submenu can be opened. Make sure that the cell exists in the SDLManager.menu array");
@@ -264,6 +264,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
         return true;
     }
+
     /**
      * Opens the Main Menu
      */
@@ -407,7 +408,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         return false;
     }
 
-    private void updateMenuReplaceOperationsWithNewCurrentMenu () {
+    private void updateMenuReplaceOperationsWithNewCurrentMenu() {
         for (Task task : transactionQueue.getTasksAsList()) {
             if (task instanceof MenuReplaceOperation) {
                 ((MenuReplaceOperation) task).setCurrentMenu(this.currentMenuCells);
@@ -423,7 +424,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         }
     }
 
-    private void updateMenuReplaceOperationsWithNewMenuConfiguration(){
+    private void updateMenuReplaceOperationsWithNewMenuConfiguration() {
         for (Task task : transactionQueue.getTasksAsList()) {
             if (task instanceof MenuReplaceOperation) {
                 ((MenuReplaceOperation) task).setMenuConfiguration(currentMenuConfiguration);
