@@ -102,7 +102,7 @@ class MenuReplaceOperation extends Task {
         final List<MenuCell> oldKeeps = filterMenuCellsWithStatusList(currentMenu, deleteMenuStatus, MenuCellState.KEEP);
         final List<MenuCell> newKeeps = filterMenuCellsWithStatusList(updatedMenu, addMenuStatus, MenuCellState.KEEP);
 
-        // Since we are creating a new Menu but keeping old cells we must first transfer the old cellIDs to the new menus kept cells.
+        // Since we are creating a new menu but keeping old cells, we must first transfer the old cellIDs to the new menu kept cells.
         // This is needed for the onCommands to still work
         // We will transfer the ids for subCells later
         transferCellIDFromOldCells(oldKeeps, newKeeps);

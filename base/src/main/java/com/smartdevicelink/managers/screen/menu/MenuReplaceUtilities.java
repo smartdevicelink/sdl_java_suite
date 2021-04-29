@@ -141,7 +141,7 @@ class MenuReplaceUtilities {
             if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
                 commands.add(subMenuCommandForMenuCell(cell, fileManager, windowCapability, cellIndex, defaultSubmenuLayout));
 
-                // recursively grab the commands for all the sub cells
+                // Recursively grab the commands for all the sub cells
                 commands.addAll(allCommandsForCells(cell.getSubCells(), fileManager, windowCapability, defaultSubmenuLayout));
             } else {
                 commands.add(commandForMenuCell(cell, fileManager, windowCapability, cellIndex));
@@ -154,8 +154,8 @@ class MenuReplaceUtilities {
         AddCommand command = new AddCommand(cell.getCellId());
 
         MenuParams params = new MenuParams(cell.getTitle());
-        params.setSecondaryText(cell.getSecondaryText());
-        params.setTertiaryText(cell.getTertiaryText());
+        params.setSecondaryText(cell.getSecondaryText() != null && cell.getSecondaryText().isEmpty() ? null : cell.getSecondaryText());
+        params.setTertiaryText(cell.getTertiaryText() != null && cell.getTertiaryText().isEmpty() ? null : cell.getTertiaryText());
         params.setParentID(cell.getParentCellId() != parentIdNotFound ? cell.getParentCellId() : null);
         params.setPosition(position);
 
@@ -190,8 +190,8 @@ class MenuReplaceUtilities {
 
         return new AddSubMenu(cell.getCellId(), cell.getTitle())
                 .setParentID(cell.getParentCellId() != parentIdNotFound ? cell.getParentCellId() : null)
-                .setSecondaryText(cell.getSecondaryText())
-                .setTertiaryText(cell.getTertiaryText())
+                .setSecondaryText(cell.getSecondaryText() != null && cell.getSecondaryText().isEmpty() ? null : cell.getSecondaryText())
+                .setTertiaryText(cell.getTertiaryText() != null && cell.getTertiaryText().isEmpty() ? null : cell.getTertiaryText())
                 .setPosition(position)
                 .setMenuLayout(submenuLayout)
                 .setMenuIcon(icon)
