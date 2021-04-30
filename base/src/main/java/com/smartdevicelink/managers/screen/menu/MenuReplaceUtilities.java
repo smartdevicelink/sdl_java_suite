@@ -1,7 +1,6 @@
 package com.smartdevicelink.managers.screen.menu;
 
 import com.smartdevicelink.managers.ISdl;
-import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -15,6 +14,7 @@ import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
+import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 
 import java.util.ArrayList;
@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.smartdevicelink.managers.ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName;
+import static com.smartdevicelink.managers.ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName;
 import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdNotFound;
 
 /**
@@ -30,7 +32,7 @@ import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdN
 class MenuReplaceUtilities {
     static List<SdlArtwork> findAllArtworksToBeUploadedFromCells(List<MenuCell> cells, FileManager fileManager, WindowCapability windowCapability) {
         // Make sure we can use images in the menus
-        if (!ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(windowCapability, ImageFieldName.cmdIcon)) {
+        if (!hasImageFieldOfName(windowCapability, ImageFieldName.cmdIcon)) {
             return new ArrayList<>();
         }
 
@@ -40,7 +42,7 @@ class MenuReplaceUtilities {
                 if (fileManager.fileNeedsUpload(cell.getIcon())) {
                     artworks.add(cell.getIcon());
                 }
-                if (fileManager.fileNeedsUpload(cell.getSecondaryArtwork())) {
+                if (hasImageFieldOfName(windowCapability, ImageFieldName.menuCommandSecondaryImage) && fileManager.fileNeedsUpload(cell.getSecondaryArtwork())) {
                     artworks.add(cell.getSecondaryArtwork());
                 }
             }
@@ -57,7 +59,7 @@ class MenuReplaceUtilities {
         SdlArtwork artwork = isSecondaryImage ? cell.getSecondaryArtwork() : cell.getIcon();
         ImageFieldName mainMenuImageFieldName = isSecondaryImage ? ImageFieldName.menuCommandSecondaryImage : ImageFieldName.cmdIcon;
         ImageFieldName subMenuImageFieldName = isSecondaryImage ? ImageFieldName.menuSubMenuSecondaryImage : ImageFieldName.subMenuIcon;
-        boolean supportsImage = cell.getSubCells() != null && !cell.getSubCells().isEmpty() ? ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(windowCapability, subMenuImageFieldName) : ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(windowCapability, mainMenuImageFieldName);
+        boolean supportsImage = cell.getSubCells() != null && !cell.getSubCells().isEmpty() ? hasImageFieldOfName(windowCapability, subMenuImageFieldName) : hasImageFieldOfName(windowCapability, mainMenuImageFieldName);
         if (artwork == null || !supportsImage) {
             return false;
         }
@@ -154,8 +156,8 @@ class MenuReplaceUtilities {
         AddCommand command = new AddCommand(cell.getCellId());
 
         MenuParams params = new MenuParams(cell.getTitle());
-        params.setSecondaryText(cell.getSecondaryText() != null && cell.getSecondaryText().isEmpty() ? null : cell.getSecondaryText());
-        params.setTertiaryText(cell.getTertiaryText() != null && cell.getTertiaryText().isEmpty() ? null : cell.getTertiaryText());
+        params.setSecondaryText((cell.getSecondaryText() != null && !cell.getSecondaryText().isEmpty() && hasTextFieldOfName(windowCapability, TextFieldName.menuCommandSecondaryText)) ? cell.getSecondaryText() : null);
+        params.setTertiaryText((cell.getTertiaryText() != null && !cell.getTertiaryText().isEmpty() && hasTextFieldOfName(windowCapability, TextFieldName.menuCommandTertiaryText)) ? cell.getTertiaryText() : null);
         params.setParentID(cell.getParentCellId() != parentIdNotFound ? cell.getParentCellId() : null);
         params.setPosition(position);
 
@@ -190,8 +192,8 @@ class MenuReplaceUtilities {
 
         return new AddSubMenu(cell.getCellId(), cell.getTitle())
                 .setParentID(cell.getParentCellId() != parentIdNotFound ? cell.getParentCellId() : null)
-                .setSecondaryText(cell.getSecondaryText() != null && cell.getSecondaryText().isEmpty() ? null : cell.getSecondaryText())
-                .setTertiaryText(cell.getTertiaryText() != null && cell.getTertiaryText().isEmpty() ? null : cell.getTertiaryText())
+                .setSecondaryText((cell.getSecondaryText() != null && !cell.getSecondaryText().isEmpty() && hasTextFieldOfName(windowCapability, TextFieldName.menuSubMenuSecondaryText)) ? cell.getSecondaryText() : null)
+                .setTertiaryText((cell.getTertiaryText() != null && !cell.getTertiaryText().isEmpty() && hasTextFieldOfName(windowCapability, TextFieldName.menuSubMenuTertiaryText)) ? cell.getTertiaryText() : null)
                 .setPosition(position)
                 .setMenuLayout(submenuLayout)
                 .setMenuIcon(icon)
