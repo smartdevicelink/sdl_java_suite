@@ -44,6 +44,7 @@ import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
+import com.smartdevicelink.protocol.SdlProtocolBase;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -987,17 +988,30 @@ abstract class BaseLifecycleManager {
 
         @Override
         public boolean isConnected() {
-            return BaseLifecycleManager.this.session.getIsConnected();
+            synchronized (BaseLifecycleManager.this) {
+                if (BaseLifecycleManager.this.session != null) {
+                    return BaseLifecycleManager.this.session.getIsConnected();
+                }
+            }
+            return false;
         }
 
         @Override
         public void addServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {
-            BaseLifecycleManager.this.session.addServiceListener(serviceType, sdlServiceListener);
+            synchronized (BaseLifecycleManager.this) {
+                if(BaseLifecycleManager.this.session != null ){
+                    BaseLifecycleManager.this.session.addServiceListener(serviceType, sdlServiceListener);
+                }
+            }
         }
 
         @Override
         public void removeServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {
-            BaseLifecycleManager.this.session.removeServiceListener(serviceType, sdlServiceListener);
+            synchronized (BaseLifecycleManager.this) {
+                if (BaseLifecycleManager.this.session != null) {
+                    BaseLifecycleManager.this.session.removeServiceListener(serviceType, sdlServiceListener);
+                }
+            }
         }
 
         @Override
@@ -1064,14 +1078,25 @@ abstract class BaseLifecycleManager {
 
         @Override
         public boolean isTransportForServiceAvailable(SessionType serviceType) {
-            return BaseLifecycleManager.this.session.isTransportForServiceAvailable(serviceType);
+            synchronized (BaseLifecycleManager.this) {
+                if (BaseLifecycleManager.this.session != null) {
+                    return BaseLifecycleManager.this.session.isTransportForServiceAvailable(serviceType);
+                }
+            }
+            return false;
         }
 
         @NonNull
         @Override
         public SdlMsgVersion getSdlMsgVersion() {
-            SdlMsgVersion msgVersion = new SdlMsgVersion(rpcSpecVersion.getMajor(), rpcSpecVersion.getMinor());
-            msgVersion.setPatchVersion(rpcSpecVersion.getPatch());
+            SdlMsgVersion msgVersion;
+            if(rpcSpecVersion != null) {
+                msgVersion = new SdlMsgVersion(rpcSpecVersion.getMajor(), rpcSpecVersion.getMinor());
+                msgVersion.setPatchVersion(rpcSpecVersion.getPatch());
+            } else {
+                msgVersion = new SdlMsgVersion(1,0);
+            }
+
             return msgVersion;
         }
 
@@ -1083,7 +1108,12 @@ abstract class BaseLifecycleManager {
 
         @Override
         public long getMtu(SessionType serviceType) {
-            return BaseLifecycleManager.this.session.getMtu(serviceType);
+            synchronized (BaseLifecycleManager.this) {
+                if (BaseLifecycleManager.this.session != null) {
+                    return BaseLifecycleManager.this.session.getMtu(serviceType);
+                }
+            }
+            return SdlProtocolBase.V1_V2_MTU_SIZE;
         }
 
         @Override

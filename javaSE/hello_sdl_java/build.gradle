@@ -10,7 +10,6 @@ repositories {
     mavenCentral()
     mavenLocal()
     google()
-    jcenter()
 }
 // This extraLibs solution is explained here: https://discuss.gradle.org/t/how-to-include-dependencies-in-jar/19571/5
 configurations {
