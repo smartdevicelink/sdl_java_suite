@@ -86,7 +86,7 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
             bufferSize = BUFF_READ_SIZE;
             buffer = new byte[bufferSize];
         }
-        mOutputQueue = new LinkedBlockingQueue<>(MAX_QUEUE_SIZE / bufferSize);
+        mOutputQueue = new LinkedBlockingQueue<>(Math.max(MAX_QUEUE_SIZE / bufferSize, 1));
     }
 
     public void start() throws IOException {
