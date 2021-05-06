@@ -22,7 +22,7 @@ public class DoorStatusTests extends TestCase {
 
     @Override
     public void setUp() {
-        msg = new DoorStatus(TestValues.GENERAL_GRID, TestValues.GENERAL_DOOR_STATUS_TYPE);
+        msg = new DoorStatus(TestValues.GENERAL_GRID, TestValues.GENERAL_DOORSTATUSTYPE);
     }
 
     public void testRpcValues() {
@@ -32,14 +32,14 @@ public class DoorStatusTests extends TestCase {
 
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_GRID, location);
-        assertEquals(TestValues.MATCH, TestValues.GENERAL_DOOR_STATUS_TYPE, status);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_DOORSTATUSTYPE, status);
     }
 
     public void testJson() {
         JSONObject reference = new JSONObject();
 
         try {
-            reference.put(RoofStatus.KEY_STATUS, TestValues.GENERAL_DOOR_STATUS_TYPE);
+            reference.put(RoofStatus.KEY_STATUS, TestValues.GENERAL_DOORSTATUSTYPE);
             reference.put(RoofStatus.KEY_LOCATION, TestValues.JSON_GRID);
 
             JSONObject underTest = msg.serializeJSON();

@@ -21,7 +21,7 @@ public class OnAppCapabilityUpdatedTests extends BaseRpcTests {
     @Override
     protected RPCMessage createMessage(){
         OnAppCapabilityUpdated msg = new OnAppCapabilityUpdated();
-        msg.setAppCapability(TestValues.GENERAL_APP_CAPABILITY);
+        msg.setAppCapability(TestValues.GENERAL_APPCAPABILITY);
 
         return msg;
     }
@@ -41,7 +41,7 @@ public class OnAppCapabilityUpdatedTests extends BaseRpcTests {
         JSONObject result = new JSONObject();
 
         try{
-            result.put(OnAppCapabilityUpdated.KEY_APP_CAPABILITY, TestValues.GENERAL_APP_CAPABILITY.serializeJSON());
+            result.put(OnAppCapabilityUpdated.KEY_APP_CAPABILITY, TestValues.GENERAL_APPCAPABILITY.serializeJSON());
         }catch(JSONException e){
             fail(TestValues.JSON_FAIL);
         }
@@ -58,7 +58,7 @@ public class OnAppCapabilityUpdatedTests extends BaseRpcTests {
         AppCapability appCapability = ( (OnAppCapabilityUpdated) msg ).getAppCapability();
 
         // Valid Tests
-        assertEquals(TestValues.MATCH, TestValues.GENERAL_APP_CAPABILITY, appCapability);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_APPCAPABILITY, appCapability);
 
         // Invalid/Null Tests
         OnAppCapabilityUpdated msg = new OnAppCapabilityUpdated();
@@ -68,8 +68,8 @@ public class OnAppCapabilityUpdatedTests extends BaseRpcTests {
         assertNull(TestValues.NULL, msg.getAppCapability());
 
         // test constructor with param
-        msg = new OnAppCapabilityUpdated(TestValues.GENERAL_APP_CAPABILITY);
+        msg = new OnAppCapabilityUpdated(TestValues.GENERAL_APPCAPABILITY);
         AppCapability generalAppCapability = msg.getAppCapability();
-        assertEquals(generalAppCapability, TestValues.GENERAL_APP_CAPABILITY);
+        assertEquals(generalAppCapability, TestValues.GENERAL_APPCAPABILITY);
     }
 }

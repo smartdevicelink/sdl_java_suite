@@ -52,9 +52,6 @@ public class IntegrationValidator {
     private static final char CHECK_MARK = 0x2713;
     private static final char FAIL_MARK = 0x2715;
 
-    //FIXME When the CI is stable with API 30 use Manifest.permission.QUERY_ALL_PACKAGES instead
-    private static final String QUERY_ALL_PACKAGES = "android.permission.QUERY_ALL_PACKAGES";
-
     public static final int FLAG_SKIP_ROUTER_SERVICE_CHECK = 0x01;
 
 
@@ -116,9 +113,6 @@ public class IntegrationValidator {
         permissionList.add(Manifest.permission.ACCESS_NETWORK_STATE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             permissionList.add(Manifest.permission.FOREGROUND_SERVICE);
-        }
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-            permissionList.add(QUERY_ALL_PACKAGES);
         }
         try {
             PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getApplicationContext().getPackageName(), PackageManager.GET_PERMISSIONS);

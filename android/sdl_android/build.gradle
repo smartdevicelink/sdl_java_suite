@@ -1,11 +1,11 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 29
-        versionCode 17
+        targetSdkVersion 30
+        versionCode 19
         versionName new File(projectDir.path, ('/../../VERSION')).text.trim()
         buildConfigField "String", "VERSION_NAME", '\"' + versionName + '\"'
         resValue "string", "SDL_LIB_VERSION", '\"' + versionName + '\"'
@@ -42,8 +42,8 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-    api 'com.smartdevicelink:bson_java_port:1.2.2'
-    api 'com.livio.taskmaster:taskmaster:0.4.0'
+    //api 'com.livio.taskmaster:taskmaster:0.4.0'
+    api 'com.smartdevicelink:bson_java_port:1.2.4'
     api 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     api 'androidx.annotation:annotation:1.1.0'
     annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.2.0'
@@ -59,13 +59,12 @@ dependencies {
 
 buildscript {
     repositories {
-        jcenter()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.13.0'
     }
 }
 
-apply from: 'bintray.gradle'
+apply plugin: "com.vanniktech.maven.publish"

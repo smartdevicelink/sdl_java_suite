@@ -277,6 +277,7 @@ public class TestValues {
     public static final List<LocationDetails> GENERAL_LOCATIONDETAILS_LIST = Arrays.asList(new LocationDetails[]{TestValues.GENERAL_LOCATIONDETAILS, TestValues.GENERAL_LOCATIONDETAILS});
     public static final AudioStreamingIndicator GENERAL_AUDIO_STREAMING_INDICATOR = AudioStreamingIndicator.PLAY;
     public static final SeekStreamingIndicator GENERAL_SEEK_STREAMING_INDICATOR = new SeekStreamingIndicator(SeekIndicatorType.TRACK);
+    public static final SeekIndicatorType GENERAL_SEEKINDICATORTYPE = SeekIndicatorType.TRACK;
     public static final String GENERAL_APP_ID = "123e4567e8";
     public static final String GENERAL_FULL_APP_ID = "123e4567-e89b-12d3-a456-426655440000";
     public static final String GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME = "oemCustomVehicleDataName";
@@ -315,8 +316,8 @@ public class TestValues {
     public static final DistanceUnit GENERAL_DISTANCEUNIT = DistanceUnit.KILOMETERS;
     public static final LightStatus GENERAL_LIGHTSTATUS = LightStatus.OFF;
     public static final RadioBand GENERAL_RADIOBAND = RadioBand.AM;
-    public static final AppCapabilityType GENERAL_APP_CAPABILITY_TYPE = AppCapabilityType.VIDEO_STREAMING;
-    public static final AppCapability GENERAL_APP_CAPABILITY = new AppCapability();
+    public static final AppCapabilityType GENERAL_APPCAPABILITYTYPE = AppCapabilityType.VIDEO_STREAMING;
+    public static final AppCapability GENERAL_APPCAPABILITY = new AppCapability();
     public static final ClimateControlData GENERAL_CLIMATECONTROLDATA = new ClimateControlData();
     public static final ClimateData GENERAL_CLIMATEDATA = new ClimateData();
     public static final SeatControlData GENERAL_SEATCONTROLDATA = new SeatControlData();
@@ -346,8 +347,8 @@ public class TestValues {
     public static final List<SeatStatus> GENERAL_SEATS_OCCUPIED = new ArrayList<SeatStatus>(1);
     public static final List<SeatStatus> GENERAL_SEATS_BELTED = new ArrayList<SeatStatus>(1);
     public static final SeatStatus GENERAL_SEAT_STATUS = new SeatStatus();
-    public static final SeatLocation GENERAL_SEAT_LOCATION = new SeatLocation();
-    public static final DoorStatusType GENERAL_DOOR_STATUS_TYPE = DoorStatusType.REMOVED;
+    public static final SeatLocation GENERAL_SEATLOCATION = new SeatLocation();
+    public static final DoorStatusType GENERAL_DOORSTATUSTYPE = DoorStatusType.REMOVED;
 
     public static final DoorStatus GENERAL_DOOR_STATUS = new DoorStatus();
     public static final GateStatus GENERAL_GATE_STATUS = new GateStatus();
@@ -709,7 +710,7 @@ public class TestValues {
 
         GENERAL_MEDIACLOCKFORMAT_LIST.add(MediaClockFormat.CLOCK1);
         GENERAL_MEDIACLOCKFORMAT_LIST.add(MediaClockFormat.CLOCK2);
-        GENERAL_SEAT_LIST.add(GENERAL_SEAT_LOCATION);
+        GENERAL_SEAT_LIST.add(GENERAL_SEATLOCATION);
 
         GENERAL_IMAGE.setValue(GENERAL_STRING);
         GENERAL_IMAGE.setImageType(GENERAL_IMAGETYPE);
@@ -1113,14 +1114,14 @@ public class TestValues {
         GENERAL_KEYBOARD_CAPABILITIES.setMaskInputCharactersSupported(TestValues.GENERAL_BOOLEAN);
         GENERAL_KEYBOARD_CAPABILITIES.setSupportedKeyboards(GENERAL_SUPPORTED_KEYBOARDS_LIST);
 
-        GENERAL_APP_CAPABILITY.setVideoStreamingCapability(GENERAL_VIDEOSTREAMINGCAPABILITY);
-        GENERAL_APP_CAPABILITY.setAppCapabilityType(GENERAL_APP_CAPABILITY_TYPE);
+        GENERAL_APPCAPABILITY.setVideoStreamingCapability(GENERAL_VIDEOSTREAMINGCAPABILITY);
+        GENERAL_APPCAPABILITY.setAppCapabilityType(GENERAL_APPCAPABILITYTYPE);
 
         // SEAT_OCCUPANCY
-        GENERAL_SEAT_LOCATION.setGrid(GENERAL_LOCATION_GRID);
+        GENERAL_SEATLOCATION.setGrid(GENERAL_LOCATION_GRID);
 
         GENERAL_SEAT_STATUS.setConditionActive(GENERAL_BOOLEAN);
-        GENERAL_SEAT_STATUS.setSeatLocation(GENERAL_SEAT_LOCATION);
+        GENERAL_SEAT_STATUS.setSeatLocation(GENERAL_SEATLOCATION);
 
         GENERAL_SEATS_BELTED.add(GENERAL_SEAT_STATUS);
         GENERAL_SEATS_OCCUPIED.add(GENERAL_SEAT_STATUS);
@@ -1130,15 +1131,15 @@ public class TestValues {
 
         GENERAL_ROOF_STATUS.setLocation(GENERAL_GRID);
         GENERAL_ROOF_STATUS.setState(GENERAL_WINDOW_STATE);
-        GENERAL_ROOF_STATUS.setStatus(GENERAL_DOOR_STATUS_TYPE);
+        GENERAL_ROOF_STATUS.setStatus(GENERAL_DOORSTATUSTYPE);
         GENERAL_ROOF_STATUS_LIST.add(GENERAL_ROOF_STATUS);
 
         GENERAL_GATE_STATUS.setLocation(GENERAL_GRID);
-        GENERAL_GATE_STATUS.setStatus(GENERAL_DOOR_STATUS_TYPE);
+        GENERAL_GATE_STATUS.setStatus(GENERAL_DOORSTATUSTYPE);
         GENERAL_GATE_STATUS_LIST.add(GENERAL_GATE_STATUS);
 
         GENERAL_DOOR_STATUS.setLocation(GENERAL_GRID);
-        GENERAL_DOOR_STATUS.setStatus(GENERAL_DOOR_STATUS_TYPE);
+        GENERAL_DOOR_STATUS.setStatus(GENERAL_DOORSTATUSTYPE);
         GENERAL_DOOR_STATUS_LIST.add(GENERAL_DOOR_STATUS);
 
         // Climate Data
@@ -1156,11 +1157,11 @@ public class TestValues {
             JSON_KEYBOARD_CAPABILITY.put(KeyboardCapabilities.KEY_SUPPORTED_KEYBOARDS, JSON_SUPPORTED_KEYBOARDS_LIST);
 
 
-            JSON_OBJECT_GENERAL_SEATS_OCCUPIED.put(SeatStatus.KEY_SEAT_LOCATION, GENERAL_SEAT_LOCATION.serializeJSON());
+            JSON_OBJECT_GENERAL_SEATS_OCCUPIED.put(SeatStatus.KEY_SEAT_LOCATION, GENERAL_SEATLOCATION.serializeJSON());
             JSON_OBJECT_GENERAL_SEATS_OCCUPIED.put(SeatStatus.KEY_CONDITION_ACTIVE, GENERAL_BOOLEAN);
             JSON_GENERAL_SEATS_OCCUPIED.put(JSON_OBJECT_GENERAL_SEATS_OCCUPIED);
 
-            JSON_OBJECT_GENERAL_SEATS_BELTED.put(SeatStatus.KEY_SEAT_LOCATION, GENERAL_SEAT_LOCATION.serializeJSON());
+            JSON_OBJECT_GENERAL_SEATS_BELTED.put(SeatStatus.KEY_SEAT_LOCATION, GENERAL_SEATLOCATION.serializeJSON());
             JSON_OBJECT_GENERAL_SEATS_BELTED.put(SeatStatus.KEY_CONDITION_ACTIVE,GENERAL_BOOLEAN);
             JSON_GENERAL_SEATS_BELTED.put(JSON_OBJECT_GENERAL_SEATS_BELTED);
 
@@ -1401,14 +1402,14 @@ public class TestValues {
             JSON_MODULE_INFO.put(ModuleInfo.KEY_MODULE_SERVICE_AREA, TestValues.JSON_GRID);
             JSON_MODULE_INFO.put(ModuleInfo.KEY_MULTIPLE_ACCESS_ALLOWED, TestValues.GENERAL_BOOLEAN);
 
-            JSON_ROOF_STATUS.put(RoofStatus.KEY_STATUS, GENERAL_DOOR_STATUS_TYPE);
+            JSON_ROOF_STATUS.put(RoofStatus.KEY_STATUS, GENERAL_DOORSTATUSTYPE);
             JSON_ROOF_STATUS.put(RoofStatus.KEY_LOCATION, JSON_GRID);
             JSON_ROOF_STATUS.put(RoofStatus.KEY_STATE, GENERAL_WINDOW_STATE.serializeJSON());
 
-            JSON_DOOR_STATUS.put(DoorStatus.KEY_STATUS, GENERAL_DOOR_STATUS_TYPE);
+            JSON_DOOR_STATUS.put(DoorStatus.KEY_STATUS, GENERAL_DOORSTATUSTYPE);
             JSON_DOOR_STATUS.put(DoorStatus.KEY_LOCATION, JSON_GRID);
 
-            JSON_GATE_STATUS.put(GateStatus.KEY_STATUS, GENERAL_DOOR_STATUS_TYPE);
+            JSON_GATE_STATUS.put(GateStatus.KEY_STATUS, GENERAL_DOORSTATUSTYPE);
             JSON_GATE_STATUS.put(GateStatus.KEY_LOCATION, JSON_GRID);
 
             JSON_ROOF_STATUSES.put(JSON_ROOF_STATUS);
