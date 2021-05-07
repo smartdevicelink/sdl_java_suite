@@ -247,7 +247,8 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
         }
 
         if (vehicleType == null) {
-            Hashtable<String, Object> store = AndroidTools.getVehicleTypeFromPrefs(context, device.getAddress());
+            final String address = device != null ? device.getAddress() : null;
+            Hashtable<String, Object> store = AndroidTools.getVehicleTypeFromPrefs(context, address);
             if (store != null) {
                 vehicleType = new VehicleType(store);
             }
