@@ -32,15 +32,19 @@
 package com.smartdevicelink.transport;
 
 import com.smartdevicelink.protocol.SdlPacket;
+import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.util.DebugTool;
 
 import static com.smartdevicelink.protocol.SdlProtocol.V1_HEADER_SIZE;
 import static com.smartdevicelink.protocol.SdlProtocol.V1_V2_MTU_SIZE;
+import static com.smartdevicelink.protocol.SdlProtocol.V2_HEADER_SIZE;
+import static com.smartdevicelink.protocol.SdlProtocol.V3_V4_MTU_SIZE;
 
 
 public class SdlPsm {
-    //private static final String TAG = "Sdl PSM";
-    //Each state represents the byte that should be incoming
+    private static final String TAG = "Sdl PSM";
 
+    //Each state represents the byte that should be incoming
     public static final int START_STATE = 0x0;
     public static final int SERVICE_TYPE_STATE = 0x02;
     public static final int CONTROL_FRAME_INFO_STATE = 0x03;
@@ -83,8 +87,13 @@ public class SdlPsm {
     }
 
     public boolean handleByte(byte data) {
-        //Log.trace(TAG, data + " = incoming");
-        state = transitionOnInput(data, state);
+        try {
+            state = transitionOnInput(data, state);
+        } catch (Exception e) {
+            DebugTool.logError(TAG, "Exception thrown while parsing byte - " + data, e);
+            state = ERROR_STATE;
+            return false;
+        }
 
         return state != ERROR_STATE;
     }
@@ -93,18 +102,11 @@ public class SdlPsm {
         switch (state) {
             case START_STATE:
                 version = (rawByte & (byte) VERSION_MASK) >> 4;
-                //Log.trace(TAG, "Version: " + version);
-                if (version == 0) { //It should never be 0
-                    return ERROR_STATE;
-                }
                 encrypted = (1 == ((rawByte & (byte) ENCRYPTION_MASK) >> 3));
-
-
                 frameType = rawByte & (byte) FRAME_TYPE_MASK;
-                //Log.trace(TAG, rawByte + " = Frame Type: " + frameType);
 
-                if ((version < 1 || version > 5) //These are known versions supported by this library.
-                        && frameType != SdlPacket.FRAME_TYPE_CONTROL) {
+                if ((version < 1 || version > 5)) {
+                    //These are known versions supported by this library.
                     return ERROR_STATE;
                 }
 
@@ -116,7 +118,16 @@ public class SdlPsm {
 
             case SERVICE_TYPE_STATE:
                 serviceType = (int) (rawByte & 0xFF);
-                return CONTROL_FRAME_INFO_STATE;
+                switch (serviceType) {
+                    case 0x00: //SessionType.CONTROL:
+                    case 0x07: //SessionType.RPC:
+                    case 0x0A: //SessionType.PCM (Audio):
+                    case 0x0B: //SessionType.NAV (Video):
+                    case 0x0F: //SessionType.BULK (Hybrid):
+                        return CONTROL_FRAME_INFO_STATE;
+                    default:
+                        return ERROR_STATE;
+                }
 
             case CONTROL_FRAME_INFO_STATE:
                 controlFrameInfo = (int) (rawByte & 0xFF);
@@ -203,19 +214,34 @@ public class SdlPsm {
                     default:
                         return ERROR_STATE;
                 }
-                if (version == 1) { //Version 1 packets will not have message id's
-                    if (dataLength == 0) {
-                        return FINISHED_STATE; //We are done if we don't have any payload
-                    }
-                    if (dataLength <= V1_V2_MTU_SIZE - V1_HEADER_SIZE) { // sizes from protocol/WiProProtocol.java
-                        payload = new byte[dataLength];
-                    } else {
-                        return ERROR_STATE;
-                    }
-                    dumpSize = dataLength;
-                    return DATA_PUMP_STATE;
-                } else {
-                    return MESSAGE_1_STATE;
+                switch (version) {
+                    case 1:
+                        //Version 1 packets will not have message id's
+                        if (dataLength == 0) {
+                            return FINISHED_STATE; //We are done if we don't have any payload
+                        }
+                        if (dataLength <= V1_V2_MTU_SIZE - V1_HEADER_SIZE) { // sizes from SDL protocol
+                            payload = new byte[dataLength];
+                        } else {
+                            return ERROR_STATE;
+                        }
+                        dumpSize = dataLength;
+                        return DATA_PUMP_STATE;
+                    case 2:
+                        if (dataLength <= V1_V2_MTU_SIZE - V2_HEADER_SIZE) {
+                            return MESSAGE_1_STATE;
+                        } else {
+                            return ERROR_STATE;
+                        }
+                    case 3:
+                    case 4:
+                        if (dataLength <= V3_V4_MTU_SIZE - V2_HEADER_SIZE) {
+                            return MESSAGE_1_STATE;
+                        } else {
+                            return ERROR_STATE;
+                        }
+                    default:
+                        return MESSAGE_1_STATE;
                 }
 
             case MESSAGE_1_STATE:
