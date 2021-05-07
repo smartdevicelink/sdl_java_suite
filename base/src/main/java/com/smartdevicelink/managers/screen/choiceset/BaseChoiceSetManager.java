@@ -42,7 +42,6 @@ import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
-import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
 import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
@@ -62,7 +61,6 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
-import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
@@ -674,18 +672,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
     // ADDITIONAL HELPERS
 
-    boolean shouldSendChoiceSecondaryText() {
-        return templateSupportsTextField(TextFieldName.secondaryText);
-    }
-
-    boolean shouldSendChoiceTertiaryText() {
-        return templateSupportsTextField(TextFieldName.tertiaryText);
-    }
-
-    boolean templateSupportsTextField(TextFieldName name) {
-        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, name);
-    }
-
     boolean setUpChoiceSet(ChoiceSet choiceSet) {
 
         List<ChoiceCell> choices = choiceSet.getChoices();
@@ -709,13 +695,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         int choiceCellWithVoiceCommandCount = 0;
 
         for (ChoiceCell cell : choices) {
-            if (!shouldSendChoiceSecondaryText() && cell.getSecondaryText() != null) {
-                cell.setSecondaryText(null);
-            }
-
-            if (!shouldSendChoiceTertiaryText() && cell.getTertiaryText() != null) {
-                cell.setSecondaryText(null);
-            }
 
             uniqueChoiceCells.add(cell);
 
