@@ -1474,6 +1474,26 @@ abstract class BaseMenuManager extends BaseSubManager {
         HashSet<MenuCell> identicalCellsCheckSet = new HashSet<>();
 
         for (MenuCell cell : cells) {
+            if (cell.getSecondaryText() != null && !hasTextFieldOfName(TextFieldName.menuCommandSecondaryText)) {
+                cell.setSecondaryText(null);
+            }
+            if (cell.getTertiaryText() != null && !hasTextFieldOfName(TextFieldName.menuCommandTertiaryText)) {
+                cell.setTertiaryText(null);
+            }
+            if(cell.getIcon() != null && !hasImageFieldOfName(ImageFieldName.cmdIcon)) {
+                cell.setIcon(null);
+            }
+
+            if (cell.getSecondaryArtwork() != null) {
+                if (cell.getParentCellId() == parentIdNotFound) { //cell is not a subcell
+                    if (!hasImageFieldOfName(ImageFieldName.menuCommandSecondaryImage)) {
+                        cell.setSecondaryArtwork(null);
+                    }
+                } else if (!hasImageFieldOfName(ImageFieldName.menuSubMenuSecondaryImage)) { // Cell is a subcell
+                    cell.setSecondaryArtwork(null);
+                }
+            }
+
             identicalCellsCheckSet.add(cell);
 
             // Recursively check the subcell lists to see if they are all unique as well. If anything is not, this will chain back up the list to return false.
