@@ -52,6 +52,7 @@ import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -190,6 +191,23 @@ public class VoiceCommandManagerTests {
         OnHMIStatus onHMIStatusFakeNotification = new OnHMIStatus();
         onHMIStatusFakeNotification.setHmiLevel(HMILevel.HMI_FULL);
         onHMIStatusListener.onNotified(onHMIStatusFakeNotification);
+    }
+
+    /**
+     * Test If voice commands do not have unique strings, they will not be uploaded
+     */
+    @Test
+    public void testUniqueStrings() {
+        List<VoiceCommand> voiceCommandList = new ArrayList<>();
+        VoiceCommand command1 = new VoiceCommand(Arrays.asList("Command one", "Command two"), null);
+        VoiceCommand command2 = new VoiceCommand(Arrays.asList("Command one", "Command two"), null);
+
+        voiceCommandList.add(command1);
+        voiceCommandList.add(command2);
+        voiceCommandManager.currentHMILevel = HMILevel.HMI_NONE;
+        voiceCommandManager.setVoiceCommands(voiceCommandList);
+
+        assertNull(voiceCommandManager.voiceCommands);
     }
 
 }
