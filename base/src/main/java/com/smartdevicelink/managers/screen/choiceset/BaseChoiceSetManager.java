@@ -55,6 +55,7 @@ import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
@@ -674,16 +675,12 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
     // ADDITIONAL HELPERS
 
-    boolean shouldSendChoiceSecondaryText() {
-        return templateSupportsTextField(TextFieldName.secondaryText);
+    private boolean hasImageFieldOfName(ImageFieldName imageFieldName) {
+        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, imageFieldName);
     }
 
-    boolean shouldSendChoiceTertiaryText() {
-        return templateSupportsTextField(TextFieldName.tertiaryText);
-    }
-
-    boolean templateSupportsTextField(TextFieldName name) {
-        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, name);
+    private boolean hasTextFieldOfName(TextFieldName textFieldName) {
+        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, textFieldName);
     }
 
     boolean setUpChoiceSet(ChoiceSet choiceSet) {
@@ -709,12 +706,18 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         int choiceCellWithVoiceCommandCount = 0;
 
         for (ChoiceCell cell : choices) {
-            if (!shouldSendChoiceSecondaryText() && cell.getSecondaryText() != null) {
+            // Strip cell parameters that are not supported on head unit to support uniqueness.
+            if (cell.getSecondaryText() != null && !hasTextFieldOfName(TextFieldName.secondaryText)) {
                 cell.setSecondaryText(null);
             }
-
-            if (!shouldSendChoiceTertiaryText() && cell.getTertiaryText() != null) {
+            if (cell.getTertiaryText() != null && !hasTextFieldOfName(TextFieldName.tertiaryText)) {
                 cell.setSecondaryText(null);
+            }
+            if (cell.getArtwork() != null && hasImageFieldOfName(ImageFieldName.choiceImage)) {
+                cell.setArtwork(null);
+            }
+            if (cell.getSecondaryArtwork() != null && hasImageFieldOfName(ImageFieldName.choiceSecondaryImage)) {
+                cell.setSecondaryArtwork(null);
             }
 
             uniqueChoiceCells.add(cell);
