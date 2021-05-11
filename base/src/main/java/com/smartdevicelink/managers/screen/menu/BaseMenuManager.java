@@ -206,7 +206,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         }
 
         // Check for cell lists with completely duplicate information, or any duplicate voiceCommands and return if it fails (logs are in the called method).
-        if (!menuCellsAreUnique(menuCells, new ArrayList<String>())) {
+        if (!menuCellsAreUnique(menuCells, new ArrayList<String>(), false)) {
             return;
         }
 
@@ -1469,7 +1469,7 @@ abstract class BaseMenuManager extends BaseSubManager {
      * @param allVoiceCommands List of String's for VoiceCommands (Used for recursive calls to check voiceCommands of the cells)
      * @return Boolean that indicates whether menuCells are unique or not
      */
-    private boolean menuCellsAreUnique(List<MenuCell> cells, ArrayList<String> allVoiceCommands) {
+    private boolean menuCellsAreUnique(List<MenuCell> cells, ArrayList<String> allVoiceCommands, boolean isSubCell) {
         //Check all voice commands for identical items and check each list of cells for identical cells
         HashSet<MenuCell> identicalCellsCheckSet = new HashSet<>();
 
@@ -1485,11 +1485,11 @@ abstract class BaseMenuManager extends BaseSubManager {
             }
 
             if (cell.getSecondaryArtwork() != null) {
-                if (cell.getParentCellId() == parentIdNotFound) { //cell is not a subcell
-                    if (!hasImageFieldOfName(ImageFieldName.menuCommandSecondaryImage)) {
+                if (isSubCell) {
+                    if (!hasImageFieldOfName(ImageFieldName.menuSubMenuSecondaryImage)) {
                         cell.setSecondaryArtwork(null);
                     }
-                } else if (!hasImageFieldOfName(ImageFieldName.menuSubMenuSecondaryImage)) { // Cell is a subcell
+                } else if (!hasImageFieldOfName(ImageFieldName.menuCommandSecondaryImage)) {
                     cell.setSecondaryArtwork(null);
                 }
             }
@@ -1498,7 +1498,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
             // Recursively check the subcell lists to see if they are all unique as well. If anything is not, this will chain back up the list to return false.
             if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
-                boolean subCellsAreUnique = menuCellsAreUnique(cell.getSubCells(), allVoiceCommands);
+                boolean subCellsAreUnique = menuCellsAreUnique(cell.getSubCells(), allVoiceCommands, true);
 
                 if (!subCellsAreUnique) {
                     DebugTool.logError(TAG, "Not all subCells are unique. The menu will not be set.");
