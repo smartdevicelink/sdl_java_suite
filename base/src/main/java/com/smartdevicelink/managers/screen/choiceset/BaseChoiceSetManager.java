@@ -713,10 +713,10 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             if (cell.getTertiaryText() != null && !hasTextFieldOfName(TextFieldName.tertiaryText)) {
                 cell.setSecondaryText(null);
             }
-            if (cell.getArtwork() != null && hasImageFieldOfName(ImageFieldName.choiceImage)) {
+            if (cell.getArtwork() != null && !hasImageFieldOfName(ImageFieldName.choiceImage)) {
                 cell.setArtwork(null);
             }
-            if (cell.getSecondaryArtwork() != null && hasImageFieldOfName(ImageFieldName.choiceSecondaryImage)) {
+            if (cell.getSecondaryArtwork() != null && !hasImageFieldOfName(ImageFieldName.choiceSecondaryImage)) {
                 cell.setSecondaryArtwork(null);
             }
 
