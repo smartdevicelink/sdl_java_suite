@@ -33,6 +33,7 @@ import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.Speak;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
@@ -47,7 +48,9 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
+import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.SdlAppInfo;
 import com.smartdevicelink.util.SystemInfo;
 
 import java.util.ArrayList;
@@ -245,7 +248,26 @@ public class SdlService extends Service {
                 @Override
                 public boolean onSystemInfoReceived(SystemInfo systemInfo) {
                     //Check the SystemInfo object to ensure that the connection to the device should continue
-                    return true;
+                    VehicleType type = systemInfo.getVehicleType();
+                    if (type == null) {
+                        DebugTool.logInfo(TAG, "No vehicle data to check");
+                        return true;
+                    }
+
+                    final List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(getBaseContext(), new SdlAppInfo.BestRouterComparator(), type);
+                    for (SdlAppInfo info : sdlAppInfoList) {
+                        final String packageName = info.getRouterServiceComponentName().getPackageName();
+                        if (packageName.equals(getPackageName())) {
+                            DebugTool.logInfo(TAG, "Vehicle type is supportable by current package");
+                            return true;
+                        }
+
+                        DebugTool.logInfo(TAG, "Not a current package info - " + packageName);
+                    }
+
+
+                    DebugTool.logError(TAG, "Vehicle type is NOT supportable by current package");
+                    return false;
                 }
             };
 
