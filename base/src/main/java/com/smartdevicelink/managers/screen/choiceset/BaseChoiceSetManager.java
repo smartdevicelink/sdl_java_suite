@@ -706,22 +706,26 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         int choiceCellWithVoiceCommandCount = 0;
 
         for (ChoiceCell cell : choices) {
+            ChoiceCell cellClone = cell.clone();
             // Strip cell parameters that are not supported on head unit to support uniqueness.
-            if (cell.getSecondaryText() != null && !hasTextFieldOfName(TextFieldName.secondaryText)) {
-                cell.setSecondaryText(null);
+            if (cellClone.getVoiceCommands() != null) {
+                cellClone.setVoiceCommands(null);
             }
-            if (cell.getTertiaryText() != null && !hasTextFieldOfName(TextFieldName.tertiaryText)) {
-                cell.setTertiaryText(null);
+            if (cellClone.getSecondaryText() != null && !hasTextFieldOfName(TextFieldName.secondaryText)) {
+                cellClone.setSecondaryText(null);
             }
-            if (cell.getArtwork() != null && !hasImageFieldOfName(ImageFieldName.choiceImage)) {
-                cell.setArtwork(null);
+            if (cellClone.getTertiaryText() != null && !hasTextFieldOfName(TextFieldName.tertiaryText)) {
+                cellClone.setTertiaryText(null);
             }
-            if (cell.getSecondaryArtwork() != null && !hasImageFieldOfName(ImageFieldName.choiceSecondaryImage)) {
-                cell.setSecondaryArtwork(null);
+            if (cellClone.getArtwork() != null && !hasImageFieldOfName(ImageFieldName.choiceImage)) {
+                cellClone.setArtwork(null);
+            }
+            if (cellClone.getSecondaryArtwork() != null && !hasImageFieldOfName(ImageFieldName.choiceSecondaryImage)) {
+                cellClone.setSecondaryArtwork(null);
             }
 
-            uniqueChoiceCells.add(cell);
-
+            uniqueChoiceCells.add(cellClone);
+            // Not using cloned cell here because we set the clone's VoiceCommands to null for visual check only
             if (cell.getVoiceCommands() != null) {
                 uniqueVoiceCommands.addAll(cell.getVoiceCommands());
                 choiceCellWithVoiceCommandCount += 1;
