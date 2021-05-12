@@ -206,7 +206,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         }
 
         // Check for cell lists with completely duplicate information, or any duplicate voiceCommands and return if it fails (logs are in the called method).
-        if (!menuCellsAreUnique(menuCells, new ArrayList<String>(), false)) {
+        if (!menuCellsAreUnique(menuCells, new ArrayList<String>())) {
             return;
         }
 
@@ -1469,51 +1469,45 @@ abstract class BaseMenuManager extends BaseSubManager {
      * @param allVoiceCommands List of String's for VoiceCommands (Used for recursive calls to check voiceCommands of the cells)
      * @return Boolean that indicates whether menuCells are unique or not
      */
-    private boolean menuCellsAreUnique(List<MenuCell> cells, ArrayList<String> allVoiceCommands, boolean isSubCell) {
+    private boolean menuCellsAreUnique(List<MenuCell> cells, ArrayList<String> allVoiceCommands) {
         //Check all voice commands for identical items and check each list of cells for identical cells
         HashSet<MenuCell> identicalCellsCheckSet = new HashSet<>();
 
         for (MenuCell cell : cells) {
             // Strip away fields that cannot be used to determine uniqueness visually including fields not supported by hmi
             MenuCell cellClone = cell.clone();
-            if (cellClone.getVoiceCommands() != null) {
-                cellClone.setVoiceCommands(null);
-            }
-
-            if (cellClone.getSecondaryText() != null) {
-                if (isSubCell && !hasTextFieldOfName(TextFieldName.menuSubMenuSecondaryText)) {
-                    cellClone.setSecondaryText(null);
-                } else if (!hasTextFieldOfName(TextFieldName.menuCommandSecondaryText)) {
-                    cellClone.setSecondaryText(null);
-                }
-            }
-
-            if (cellClone.getTertiaryText() != null) {
-                if (isSubCell && !hasTextFieldOfName(TextFieldName.menuSubMenuTertiaryText)) {
-                    cellClone.setTertiaryText(null);
-                } else if (!hasTextFieldOfName(TextFieldName.menuCommandTertiaryText)) {
-                    cellClone.setTertiaryText(null);
-                }
-            }
-            if (cellClone.getIcon() != null && !hasImageFieldOfName(ImageFieldName.cmdIcon)) {
+            cellClone.setVoiceCommands(null);
+            // Check for menuCells and subMenu icon
+            if (!hasImageFieldOfName(ImageFieldName.cmdIcon)) {
                 cellClone.setIcon(null);
             }
-
-            if (cellClone.getSecondaryArtwork() != null) {
-                if (isSubCell) {
-                    if (!hasImageFieldOfName(ImageFieldName.menuSubMenuSecondaryImage)) {
-                        cellClone.setSecondaryArtwork(null);
-                    }
-                } else if (!hasImageFieldOfName(ImageFieldName.menuCommandSecondaryImage)) {
+            // Check for subMenu fields supported
+            if (cellClone.getSubCells() != null) {
+                if (!hasTextFieldOfName(TextFieldName.menuSubMenuSecondaryText)) {
+                    cellClone.setSecondaryText(null);
+                }
+                if (!hasTextFieldOfName(TextFieldName.menuSubMenuTertiaryText)) {
+                    cellClone.setTertiaryText(null);
+                }
+                if (!hasImageFieldOfName(ImageFieldName.menuSubMenuSecondaryImage)) {
+                    cellClone.setSecondaryArtwork(null);
+                }
+            } else {
+                if (!hasTextFieldOfName(TextFieldName.menuCommandSecondaryText)) {
+                    cellClone.setSecondaryText(null);
+                }
+                if (!hasTextFieldOfName(TextFieldName.menuCommandTertiaryText)) {
+                    cellClone.setTertiaryText(null);
+                }
+                if (!hasImageFieldOfName(ImageFieldName.menuCommandSecondaryImage)) {
                     cellClone.setSecondaryArtwork(null);
                 }
             }
-
             identicalCellsCheckSet.add(cellClone);
 
             // Recursively check the subcell lists to see if they are all unique as well. If anything is not, this will chain back up the list to return false.
             if (cellClone.getSubCells() != null && cellClone.getSubCells().size() > 0) {
-                boolean subCellsAreUnique = menuCellsAreUnique(cellClone.getSubCells(), allVoiceCommands, true);
+                boolean subCellsAreUnique = menuCellsAreUnique(cellClone.getSubCells(), allVoiceCommands);
 
                 if (!subCellsAreUnique) {
                     DebugTool.logError(TAG, "Not all subCells are unique. The menu will not be set.");
