@@ -1511,7 +1511,7 @@ abstract class BaseMenuManager extends BaseSubManager {
                 }
             }
 
-            // Voice commands have to be identical across all lists
+            // Voice commands have to be identical across all lists, Not using cloned cell here because we set the clone's VoiceCommands to null for visual check only
             if (cell.getVoiceCommands() == null) {
                 continue;
             }
