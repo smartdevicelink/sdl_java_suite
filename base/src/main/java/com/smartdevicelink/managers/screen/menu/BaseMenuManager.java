@@ -1479,11 +1479,21 @@ abstract class BaseMenuManager extends BaseSubManager {
             if (cellClone.getVoiceCommands() != null) {
                 cellClone.setVoiceCommands(null);
             }
-            if (cellClone.getSecondaryText() != null && !hasTextFieldOfName(TextFieldName.menuCommandSecondaryText)) {
-                cellClone.setSecondaryText(null);
+
+            if (cellClone.getSecondaryText() != null) {
+                if (isSubCell && !hasTextFieldOfName(TextFieldName.menuSubMenuSecondaryText)) {
+                    cellClone.setSecondaryText(null);
+                } else if (!hasTextFieldOfName(TextFieldName.menuCommandSecondaryText)) {
+                    cellClone.setSecondaryText(null);
+                }
             }
-            if (cellClone.getTertiaryText() != null && !hasTextFieldOfName(TextFieldName.menuCommandTertiaryText)) {
-                cellClone.setTertiaryText(null);
+
+            if (cellClone.getTertiaryText() != null) {
+                if (isSubCell && !hasTextFieldOfName(TextFieldName.menuSubMenuTertiaryText)) {
+                    cellClone.setTertiaryText(null);
+                } else if (!hasTextFieldOfName(TextFieldName.menuCommandTertiaryText)) {
+                    cellClone.setTertiaryText(null);
+                }
             }
             if (cellClone.getIcon() != null && !hasImageFieldOfName(ImageFieldName.cmdIcon)) {
                 cellClone.setIcon(null);
