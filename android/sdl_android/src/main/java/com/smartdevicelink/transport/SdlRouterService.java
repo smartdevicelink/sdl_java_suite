@@ -1110,9 +1110,17 @@ public class SdlRouterService extends Service {
                 break;
             }
         }
-        if (!currentAppInfo.checkIfVehicleSupported(currentAppInfo.getVehicleMakesList(), receivedVehicleType)) {
+
+        if (currentAppInfo == null) {
+            DebugTool.logError(TAG, "AppInfo for current package is not available. Shutting down");
             return false;
         }
+
+        if (!SdlAppInfo.checkIfVehicleSupported(currentAppInfo.getVehicleMakesList(), receivedVehicleType)) {
+            DebugTool.logError(TAG, "Received VD is not supported. Shutting down");
+            return false;
+        }
+
         return true;
     }
 

@@ -225,8 +225,8 @@ public class SdlAppInfo {
         return vehicleMakesList;
     }
 
-    public boolean checkIfVehicleSupported(List<VehicleType> supportedVehicleList, VehicleType connectedVehicle) {
-        if (supportedVehicleList == null || supportedVehicleList.isEmpty() || connectedVehicle == null) {
+    public static boolean checkIfVehicleSupported(List<VehicleType> supportedVehicleList, VehicleType connectedVehicle) {
+        if (supportedVehicleList == null || supportedVehicleList.isEmpty() || connectedVehicle == null || connectedVehicle.getStore().isEmpty()) {
             return true;
         }
         if (supportedVehicleList.contains(connectedVehicle)) {
