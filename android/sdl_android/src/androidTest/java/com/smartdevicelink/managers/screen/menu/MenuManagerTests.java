@@ -625,7 +625,6 @@ public class MenuManagerTests {
 
         windowCapability.setTextFields(textFields);
 
-
         ImageField cmdIcon = new ImageField();
         cmdIcon.setName(ImageFieldName.cmdIcon);
         ImageField menuSubMenuSecondaryImage = new ImageField();
@@ -724,6 +723,8 @@ public class MenuManagerTests {
         mainCell2.setSecondaryArtwork(null);
         assertTrue(menuManager.menuCellsAreUnique(menuCellSubMenuList, new ArrayList<String>()));
         imageFieldList.remove(menuSubMenuSecondaryImage);
+        assertFalse(menuManager.menuCellsAreUnique(menuCellSubMenuList, new ArrayList<String>()));
+
     }
 
 

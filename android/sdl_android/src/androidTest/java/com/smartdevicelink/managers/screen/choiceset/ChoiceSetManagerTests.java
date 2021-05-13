@@ -40,18 +40,23 @@ import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
+import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.KeyboardCapabilities;
 import com.smartdevicelink.proxy.rpc.KeyboardLayoutCapability;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardInputMask;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
+import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
+import com.smartdevicelink.test.TestValues;
 
 import org.junit.After;
 import org.junit.Before;
@@ -467,5 +472,63 @@ public class ChoiceSetManagerTests {
         csm.dismissKeyboard(testCancelID);
         verify(testKeyboardOp, times(0)).dismissKeyboard();
         verify(testKeyboardOp2, times(1)).dismissKeyboard();
+    }
+
+    @Test
+    public void testUniquenessForAvailableFields() {
+        WindowCapability windowCapability = new WindowCapability();
+        TextField secondaryText = new TextField();
+        secondaryText.setName(TextFieldName.secondaryText);
+        TextField tertiaryText = new TextField();
+        tertiaryText.setName(TextFieldName.tertiaryText);
+
+        List<TextField> textFields = new ArrayList<>();
+        textFields.add(secondaryText);
+        textFields.add(tertiaryText);
+
+        windowCapability.setTextFields(textFields);
+
+        ImageField choiceImage = new ImageField();
+        choiceImage.setName(ImageFieldName.choiceImage);
+        ImageField choiceSecondaryImage = new ImageField();
+        choiceSecondaryImage.setName(ImageFieldName.choiceSecondaryImage);
+
+        List<ImageField> imageFieldList = new ArrayList<>();
+        imageFieldList.add(choiceImage);
+        imageFieldList.add(choiceSecondaryImage);
+        windowCapability.setImageFields(imageFieldList);
+
+        csm.defaultMainWindowCapability = windowCapability;
+
+        ChoiceCell cell1 = new ChoiceCell("Item 1", "null" , "tertiaryText", null, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_ARTWORK );
+        ChoiceCell cell2 = new ChoiceCell("Item 2", "null" , "tertiaryText", null, TestValues.GENERAL_ARTWORK ,TestValues.GENERAL_ARTWORK );
+        List<ChoiceCell> choiceCellList = new ArrayList<>();
+        choiceCellList.add(cell1);
+        choiceCellList.add(cell2);
+        ChoiceSet choiceSet = new ChoiceSet("choicSet" , choiceCellList, null);
+
+        assertTrue(csm.setUpChoiceSet(choiceSet));
+
+        cell2.setText("Item 1");
+        assertFalse(csm.setUpChoiceSet(choiceSet));
+        cell2.setSecondaryText("changed text");
+        assertTrue(csm.setUpChoiceSet(choiceSet));
+        textFields.remove(secondaryText);
+        assertFalse(csm.setUpChoiceSet(choiceSet));
+        cell2.setTertiaryText("changed text");
+        assertTrue(csm.setUpChoiceSet(choiceSet));
+        textFields.remove(tertiaryText);
+        assertFalse(csm.setUpChoiceSet(choiceSet));
+        cell2.setArtwork(null);
+        assertTrue(csm.setUpChoiceSet(choiceSet));
+        imageFieldList.remove(choiceImage);
+        assertFalse(csm.setUpChoiceSet(choiceSet));
+        cell2.setSecondaryArtwork(null);
+        assertTrue(csm.setUpChoiceSet(choiceSet));
+        imageFieldList.remove(choiceSecondaryImage);
+        assertFalse(csm.setUpChoiceSet(choiceSet));
+
+
+
     }
 }
