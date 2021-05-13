@@ -725,6 +725,9 @@ public class MenuManagerTests {
         imageFieldList.remove(menuSubMenuSecondaryImage);
         assertFalse(menuManager.menuCellsAreUnique(menuCellSubMenuList, new ArrayList<String>()));
 
+        mainCell2.setSubCells(Collections.<MenuCell>emptyList());
+        assertFalse(menuManager.menuCellsAreUnique(menuCellSubMenuList, new ArrayList<String>()));
+
     }
 
 
