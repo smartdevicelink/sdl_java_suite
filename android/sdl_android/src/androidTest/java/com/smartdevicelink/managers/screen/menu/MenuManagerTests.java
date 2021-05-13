@@ -38,7 +38,6 @@ import com.smartdevicelink.R;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
-import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -616,6 +615,7 @@ public class MenuManagerTests {
         menuCommandSecondaryText.setName(TextFieldName.menuCommandSecondaryText);
         TextField menuCommandTertiaryText = new TextField();
         menuCommandTertiaryText.setName(TextFieldName.menuCommandTertiaryText);
+
         List<TextField> textFields = new ArrayList<>();
         textFields.add(menuSubMenuSecondaryText);
         textFields.add(menuSubMenuTertiaryText);
@@ -638,12 +638,48 @@ public class MenuManagerTests {
         imageFieldList.add(menuCommandSecondaryImage);
         windowCapability.setImageFields(imageFieldList);
 
-
         menuManager.defaultMainWindowCapability = windowCapability;
         menuManager.currentHMILevel = HMILevel.HMI_FULL;
         // send new cells. They should set the old way
         List<MenuCell> oldMenu = createDynamicMenu6_forUniqueNamesTest();
-        assertTrue(menuManager.menuCellsAreUnique(oldMenu, new ArrayList<String>()));
+
+
+        MenuCell cell1 = new MenuCell("Text1", "SecondaryText", "TText", TestValues.GENERAL_ARTWORK, TestValues.GENERAL_ARTWORK, null, new MenuSelectionListener() {
+            @Override
+            public void onTriggered(TriggerSource trigger) {
+
+            }
+        });
+
+        MenuCell cell2 = new MenuCell("Text2", "SecondaryText", "TText",TestValues.GENERAL_ARTWORK , TestValues.GENERAL_ARTWORK, null, new MenuSelectionListener() {
+            @Override
+            public void onTriggered(TriggerSource trigger) {
+
+            }
+        });
+
+        List<MenuCell> menuCellList = new ArrayList<>();
+        menuCellList.add(cell1);
+        menuCellList.add(cell2);
+
+        assertTrue(menuManager.menuCellsAreUnique(menuCellList, new ArrayList<String>()));
+
+        cell2.setTitle("Text1");
+
+        assertFalse(menuManager.menuCellsAreUnique(menuCellList, new ArrayList<String>()));
+
+        cell2.setSecondaryText("text2");
+        assertTrue(menuManager.menuCellsAreUnique(menuCellList, new ArrayList<String>()));
+        textFields.remove(menuCommandSecondaryText);
+        assertFalse(menuManager.menuCellsAreUnique(menuCellList, new ArrayList<String>()));
+
+        cell2.setTertiaryText("text3");
+
+        assertTrue(menuManager.menuCellsAreUnique(menuCellList, new ArrayList<String>()));
+
+        textFields.remove(menuCommandTertiaryText);
+        assertFalse(menuManager.menuCellsAreUnique(menuCellList, new ArrayList<String>()));
+
     }
 
 
