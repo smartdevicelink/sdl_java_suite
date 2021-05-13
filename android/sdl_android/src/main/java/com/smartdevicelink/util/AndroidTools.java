@@ -159,7 +159,6 @@ public class AndroidTools {
         List<SdlAppInfo> sdlAppInfoList = new ArrayList<>();
         Intent intent = new Intent(TransportConstants.ROUTER_SERVICE_ACTION);
         List<ResolveInfo> resolveInfoList = context.getPackageManager().queryIntentServices(intent, PackageManager.GET_META_DATA);
-        boolean oldRouterService = false;
 
         if (resolveInfoList != null && resolveInfoList.size() > 0) {
             PackageManager packageManager = context.getPackageManager();
@@ -170,9 +169,6 @@ public class AndroidTools {
                     try {
                         packageInfo = packageManager.getPackageInfo(info.serviceInfo.packageName, 0);
                         SdlAppInfo appInformation = new SdlAppInfo(info, packageInfo, context);
-                        if (appInformation.routerServiceVersion < 14) {
-                            oldRouterService = true;
-                        }
                         sdlAppInfoList.add(appInformation);
 
                     } catch (NameNotFoundException e) {
@@ -184,14 +180,14 @@ public class AndroidTools {
 
             List<SdlAppInfo> sdlAppInfoListVehicleType = new ArrayList<>();
 
-            if (!oldRouterService) {
-                for (SdlAppInfo appInformation : sdlAppInfoList) {
-                    if (SdlAppInfo.checkIfVehicleSupported(appInformation.vehicleMakesList, type)) {
-                        sdlAppInfoListVehicleType.add(appInformation);
-                    }
+            for (SdlAppInfo appInformation : sdlAppInfoList) {
+                if (appInformation.routerServiceVersion < 14) {
+                    sdlAppInfoListVehicleType.add(appInformation);
+                } else if (SdlAppInfo.checkIfVehicleSupported(appInformation.vehicleMakesList, type)) {
+                    sdlAppInfoListVehicleType.add(appInformation);
                 }
-                sdlAppInfoList = sdlAppInfoListVehicleType;
             }
+            sdlAppInfoList = sdlAppInfoListVehicleType;
 
             if (comparator != null) {
                 Collections.sort(sdlAppInfoList, comparator);
