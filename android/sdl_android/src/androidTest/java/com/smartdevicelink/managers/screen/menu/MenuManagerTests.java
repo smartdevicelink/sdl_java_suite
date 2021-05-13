@@ -603,6 +603,7 @@ public class MenuManagerTests {
         assertEquals(menuManager.menuCells.get(3).getSubCells().get(2).getUniqueTitle(), "A");
         assertEquals(menuManager.menuCells.get(3).getSubCells().get(3).getUniqueTitle(), "A");
     }
+
     @Test
     public void testUniquenessForAvailableFields() {
 
@@ -651,12 +652,31 @@ public class MenuManagerTests {
             }
         });
 
-        MenuCell cell2 = new MenuCell("Text2", "SecondaryText", "TText",TestValues.GENERAL_ARTWORK , TestValues.GENERAL_ARTWORK, null, new MenuSelectionListener() {
+        MenuCell cell2 = new MenuCell("Text2", "SecondaryText", "TText", TestValues.GENERAL_ARTWORK, TestValues.GENERAL_ARTWORK, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
 
             }
         });
+
+
+        MenuCell subCell1 = new MenuCell("SubCell 1", "Secondary Text", "Tertiary Text", TestValues.GENERAL_ARTWORK, TestValues.GENERAL_ARTWORK, null, new MenuSelectionListener() {
+            @Override
+            public void onTriggered(TriggerSource trigger) {
+            }
+        });
+
+        MenuCell subCell2 = new MenuCell("SubCell 2", "Secondary Text", "Tertiary Text", TestValues.GENERAL_ARTWORK, TestValues.GENERAL_ARTWORK, null, new MenuSelectionListener() {
+            @Override
+            public void onTriggered(TriggerSource trigger) {
+            }
+        });
+        MenuCell mainCell1 = new MenuCell("Test Cell 1", "null", "null", MenuLayout.LIST, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_ARTWORK, Arrays.asList(subCell1, subCell2));
+        MenuCell mainCell2 = new MenuCell("Test Cell 2", "null", "null", MenuLayout.LIST, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_ARTWORK, Arrays.asList(subCell1, subCell2));
+
+        List<MenuCell> menuCellSubMenuList = new ArrayList<>();
+        menuCellSubMenuList.add(mainCell1);
+        menuCellSubMenuList.add(mainCell2);
 
         List<MenuCell> menuCellList = new ArrayList<>();
         menuCellList.add(cell1);
@@ -680,6 +700,30 @@ public class MenuManagerTests {
         textFields.remove(menuCommandTertiaryText);
         assertFalse(menuManager.menuCellsAreUnique(menuCellList, new ArrayList<String>()));
 
+        cell2.setIcon(null);
+        imageFieldList.remove(cmdIcon);
+        assertFalse(menuManager.menuCellsAreUnique(menuCellList, new ArrayList<String>()));
+
+        cell2.setSecondaryArtwork(null);
+        imageFieldList.remove(menuCommandSecondaryImage);
+        assertFalse(menuManager.menuCellsAreUnique(menuCellList, new ArrayList<String>()));
+
+        assertTrue(menuManager.menuCellsAreUnique(menuCellSubMenuList, new ArrayList<String>()));
+        mainCell2.setTitle("Test Cell 1");
+        assertFalse(menuManager.menuCellsAreUnique(menuCellSubMenuList, new ArrayList<String>()));
+
+        mainCell2.setSecondaryText("changed text");
+        assertTrue(menuManager.menuCellsAreUnique(menuCellSubMenuList, new ArrayList<String>()));
+        textFields.remove(menuSubMenuSecondaryText);
+        assertFalse(menuManager.menuCellsAreUnique(menuCellSubMenuList, new ArrayList<String>()));
+
+        mainCell2.setTertiaryText("changed text");
+        textFields.remove(menuSubMenuTertiaryText);
+        assertFalse(menuManager.menuCellsAreUnique(menuCellSubMenuList, new ArrayList<String>()));
+
+        mainCell2.setSecondaryArtwork(null);
+        assertTrue(menuManager.menuCellsAreUnique(menuCellSubMenuList, new ArrayList<String>()));
+        imageFieldList.remove(menuSubMenuSecondaryImage);
     }
 
 
