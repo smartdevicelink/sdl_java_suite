@@ -38,6 +38,7 @@ import com.smartdevicelink.R;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
+import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -54,6 +55,7 @@ import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.test.TestValues;
 
 import org.junit.After;
 import org.junit.Before;
@@ -160,6 +162,21 @@ public class MenuManagerTests {
         assertNotNull(menuManager.hmiListener);
         assertNotNull(menuManager.commandListener);
         assertNotNull(menuManager.onDisplaysCapabilityListener);
+        WindowCapability windowCapability = new WindowCapability();
+        windowCapability = new WindowCapability();
+        windowCapability.setWindowID(TestValues.GENERAL_INT);
+        windowCapability.setTextFields(TestValues.GENERAL_TEXTFIELD_LIST);
+        windowCapability.setImageFields(TestValues.GENERAL_IMAGEFIELD_LIST);
+        windowCapability.setImageTypeSupported(TestValues.GENERAL_IMAGE_TYPE_LIST);
+        windowCapability.setTemplatesAvailable(TestValues.GENERAL_STRING_LIST);
+        windowCapability.setNumCustomPresetsAvailable(TestValues.GENERAL_INT);
+        windowCapability.setButtonCapabilities(TestValues.GENERAL_BUTTONCAPABILITIES_LIST);
+        windowCapability.setSoftButtonCapabilities(TestValues.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
+        windowCapability.setMenuLayoutsAvailable(TestValues.GENERAL_MENU_LAYOUT_LIST);
+        windowCapability.setDynamicUpdateCapabilities(TestValues.GENERAL_DYNAMICUPDATECAPABILITIES);
+        windowCapability.setKeyboardCapabilities(TestValues.GENERAL_KEYBOARD_CAPABILITIES);
+
+        menuManager.defaultMainWindowCapability = windowCapability;
 
     }
 
