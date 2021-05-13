@@ -1469,7 +1469,7 @@ abstract class BaseMenuManager extends BaseSubManager {
      * @param allVoiceCommands List of String's for VoiceCommands (Used for recursive calls to check voiceCommands of the cells)
      * @return Boolean that indicates whether menuCells are unique or not
      */
-    private boolean menuCellsAreUnique(List<MenuCell> cells, ArrayList<String> allVoiceCommands) {
+    boolean menuCellsAreUnique(List<MenuCell> cells, ArrayList<String> allVoiceCommands) {
         //Check all voice commands for identical items and check each list of cells for identical cells
         HashSet<MenuCell> identicalCellsCheckSet = new HashSet<>();
 

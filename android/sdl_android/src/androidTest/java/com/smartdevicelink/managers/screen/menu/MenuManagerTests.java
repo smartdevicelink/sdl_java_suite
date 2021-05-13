@@ -44,15 +44,19 @@ import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SetGlobalProperties;
+import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
+import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.test.TestValues;
@@ -65,6 +69,7 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -162,21 +167,6 @@ public class MenuManagerTests {
         assertNotNull(menuManager.hmiListener);
         assertNotNull(menuManager.commandListener);
         assertNotNull(menuManager.onDisplaysCapabilityListener);
-        WindowCapability windowCapability = new WindowCapability();
-        windowCapability = new WindowCapability();
-        windowCapability.setWindowID(TestValues.GENERAL_INT);
-        windowCapability.setTextFields(TestValues.GENERAL_TEXTFIELD_LIST);
-        windowCapability.setImageFields(TestValues.GENERAL_IMAGEFIELD_LIST);
-        windowCapability.setImageTypeSupported(TestValues.GENERAL_IMAGE_TYPE_LIST);
-        windowCapability.setTemplatesAvailable(TestValues.GENERAL_STRING_LIST);
-        windowCapability.setNumCustomPresetsAvailable(TestValues.GENERAL_INT);
-        windowCapability.setButtonCapabilities(TestValues.GENERAL_BUTTONCAPABILITIES_LIST);
-        windowCapability.setSoftButtonCapabilities(TestValues.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
-        windowCapability.setMenuLayoutsAvailable(TestValues.GENERAL_MENU_LAYOUT_LIST);
-        windowCapability.setDynamicUpdateCapabilities(TestValues.GENERAL_DYNAMICUPDATECAPABILITIES);
-        windowCapability.setKeyboardCapabilities(TestValues.GENERAL_KEYBOARD_CAPABILITIES);
-
-        menuManager.defaultMainWindowCapability = windowCapability;
 
     }
 
@@ -614,6 +604,48 @@ public class MenuManagerTests {
         assertEquals(menuManager.menuCells.get(3).getSubCells().get(2).getUniqueTitle(), "A");
         assertEquals(menuManager.menuCells.get(3).getSubCells().get(3).getUniqueTitle(), "A");
     }
+    @Test
+    public void testUniquenessForAvailableFields() {
+
+        WindowCapability windowCapability = new WindowCapability();
+        TextField menuSubMenuSecondaryText = new TextField();
+        menuSubMenuSecondaryText.setName(TextFieldName.menuSubMenuSecondaryText);
+        TextField menuSubMenuTertiaryText = new TextField();
+        menuSubMenuTertiaryText.setName(TextFieldName.menuSubMenuTertiaryText);
+        TextField menuCommandSecondaryText = new TextField();
+        menuCommandSecondaryText.setName(TextFieldName.menuCommandSecondaryText);
+        TextField menuCommandTertiaryText = new TextField();
+        menuCommandTertiaryText.setName(TextFieldName.menuCommandTertiaryText);
+        List<TextField> textFields = new ArrayList<>();
+        textFields.add(menuSubMenuSecondaryText);
+        textFields.add(menuSubMenuTertiaryText);
+        textFields.add(menuCommandSecondaryText);
+        textFields.add(menuCommandTertiaryText);
+
+        windowCapability.setTextFields(textFields);
+
+
+        ImageField cmdIcon = new ImageField();
+        cmdIcon.setName(ImageFieldName.cmdIcon);
+        ImageField menuSubMenuSecondaryImage = new ImageField();
+        menuSubMenuSecondaryImage.setName(ImageFieldName.menuSubMenuSecondaryImage);
+        ImageField menuCommandSecondaryImage = new ImageField();
+        menuCommandSecondaryImage.setName(ImageFieldName.menuCommandSecondaryImage);
+
+        List<ImageField> imageFieldList = new ArrayList<>();
+        imageFieldList.add(cmdIcon);
+        imageFieldList.add(menuSubMenuSecondaryImage);
+        imageFieldList.add(menuCommandSecondaryImage);
+        windowCapability.setImageFields(imageFieldList);
+
+
+        menuManager.defaultMainWindowCapability = windowCapability;
+        menuManager.currentHMILevel = HMILevel.HMI_FULL;
+        // send new cells. They should set the old way
+        List<MenuCell> oldMenu = createDynamicMenu6_forUniqueNamesTest();
+        assertTrue(menuManager.menuCellsAreUnique(oldMenu, new ArrayList<String>()));
+    }
+
 
     // HELPERS
 
