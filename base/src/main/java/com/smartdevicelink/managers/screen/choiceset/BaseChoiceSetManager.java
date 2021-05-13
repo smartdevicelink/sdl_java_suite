@@ -708,19 +708,18 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         for (ChoiceCell cell : choices) {
             ChoiceCell cellClone = cell.clone();
             // Strip cell parameters that are not supported on head unit to support uniqueness.
-            if (cellClone.getVoiceCommands() != null) {
-                cellClone.setVoiceCommands(null);
-            }
-            if (cellClone.getSecondaryText() != null && !hasTextFieldOfName(TextFieldName.secondaryText)) {
+            cellClone.setVoiceCommands(null);
+
+            if (!hasTextFieldOfName(TextFieldName.secondaryText)) {
                 cellClone.setSecondaryText(null);
             }
-            if (cellClone.getTertiaryText() != null && !hasTextFieldOfName(TextFieldName.tertiaryText)) {
+            if (!hasTextFieldOfName(TextFieldName.tertiaryText)) {
                 cellClone.setTertiaryText(null);
             }
-            if (cellClone.getArtwork() != null && !hasImageFieldOfName(ImageFieldName.choiceImage)) {
+            if (!hasImageFieldOfName(ImageFieldName.choiceImage)) {
                 cellClone.setArtwork(null);
             }
-            if (cellClone.getSecondaryArtwork() != null && !hasImageFieldOfName(ImageFieldName.choiceSecondaryImage)) {
+            if (!hasImageFieldOfName(ImageFieldName.choiceSecondaryImage)) {
                 cellClone.setSecondaryArtwork(null);
             }
 
