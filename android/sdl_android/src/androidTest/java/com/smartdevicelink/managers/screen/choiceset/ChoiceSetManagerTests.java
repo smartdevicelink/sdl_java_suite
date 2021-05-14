@@ -485,14 +485,12 @@ public class ChoiceSetManagerTests {
         List<TextField> textFields = new ArrayList<>();
         textFields.add(secondaryText);
         textFields.add(tertiaryText);
-
         windowCapability.setTextFields(textFields);
 
         ImageField choiceImage = new ImageField();
         choiceImage.setName(ImageFieldName.choiceImage);
         ImageField choiceSecondaryImage = new ImageField();
         choiceSecondaryImage.setName(ImageFieldName.choiceSecondaryImage);
-
         List<ImageField> imageFieldList = new ArrayList<>();
         imageFieldList.add(choiceImage);
         imageFieldList.add(choiceSecondaryImage);
@@ -500,21 +498,25 @@ public class ChoiceSetManagerTests {
 
         csm.defaultMainWindowCapability = windowCapability;
 
-        ChoiceCell cell1 = new ChoiceCell("Item 1", "null" , "tertiaryText", null, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_ARTWORK );
-        ChoiceCell cell2 = new ChoiceCell("Item 2", "null" , "tertiaryText", null, TestValues.GENERAL_ARTWORK ,TestValues.GENERAL_ARTWORK );
+        ChoiceCell cell1 = new ChoiceCell("Item 1", "null", "tertiaryText", null, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_ARTWORK);
+        ChoiceCell cell2 = new ChoiceCell("Item 2", "null", "tertiaryText", null, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_ARTWORK);
         List<ChoiceCell> choiceCellList = new ArrayList<>();
         choiceCellList.add(cell1);
         choiceCellList.add(cell2);
-        ChoiceSet choiceSet = new ChoiceSet("choicSet" , choiceCellList, null);
+        ChoiceSet choiceSet = new ChoiceSet("choiceSet", choiceCellList, null);
 
         assertTrue(csm.setUpChoiceSet(choiceSet));
-
+        // Identical cells
         cell2.setText("Item 1");
         assertFalse(csm.setUpChoiceSet(choiceSet));
+        // Changing secondary text on cell 2 to be different
         cell2.setSecondaryText("changed text");
         assertTrue(csm.setUpChoiceSet(choiceSet));
+        // Removing secondaryText as a supported TextField in the WindowCapability
         textFields.remove(secondaryText);
+        // Test that it does not take into account secondaryText as a unique factor
         assertFalse(csm.setUpChoiceSet(choiceSet));
+
         cell2.setTertiaryText("changed text");
         assertTrue(csm.setUpChoiceSet(choiceSet));
         textFields.remove(tertiaryText);
@@ -527,8 +529,5 @@ public class ChoiceSetManagerTests {
         assertTrue(csm.setUpChoiceSet(choiceSet));
         imageFieldList.remove(choiceSecondaryImage);
         assertFalse(csm.setUpChoiceSet(choiceSet));
-
-
-
     }
 }

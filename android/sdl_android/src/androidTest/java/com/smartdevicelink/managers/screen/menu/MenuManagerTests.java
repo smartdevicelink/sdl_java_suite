@@ -606,7 +606,6 @@ public class MenuManagerTests {
 
     @Test
     public void testUniquenessForAvailableFields() {
-
         WindowCapability windowCapability = new WindowCapability();
         TextField menuSubMenuSecondaryText = new TextField();
         menuSubMenuSecondaryText.setName(TextFieldName.menuSubMenuSecondaryText);
@@ -616,13 +615,11 @@ public class MenuManagerTests {
         menuCommandSecondaryText.setName(TextFieldName.menuCommandSecondaryText);
         TextField menuCommandTertiaryText = new TextField();
         menuCommandTertiaryText.setName(TextFieldName.menuCommandTertiaryText);
-
         List<TextField> textFields = new ArrayList<>();
         textFields.add(menuSubMenuSecondaryText);
         textFields.add(menuSubMenuTertiaryText);
         textFields.add(menuCommandSecondaryText);
         textFields.add(menuCommandTertiaryText);
-
         windowCapability.setTextFields(textFields);
 
         ImageField cmdIcon = new ImageField();
@@ -631,18 +628,12 @@ public class MenuManagerTests {
         menuSubMenuSecondaryImage.setName(ImageFieldName.menuSubMenuSecondaryImage);
         ImageField menuCommandSecondaryImage = new ImageField();
         menuCommandSecondaryImage.setName(ImageFieldName.menuCommandSecondaryImage);
-
         List<ImageField> imageFieldList = new ArrayList<>();
         imageFieldList.add(cmdIcon);
         imageFieldList.add(menuSubMenuSecondaryImage);
         imageFieldList.add(menuCommandSecondaryImage);
         windowCapability.setImageFields(imageFieldList);
-
         menuManager.defaultMainWindowCapability = windowCapability;
-        menuManager.currentHMILevel = HMILevel.HMI_FULL;
-        // send new cells. They should set the old way
-        List<MenuCell> oldMenu = createDynamicMenu6_forUniqueNamesTest();
-
 
         MenuCell cell1 = new MenuCell("Text1", "SecondaryText", "TText", TestValues.GENERAL_ARTWORK, TestValues.GENERAL_ARTWORK, null, new MenuSelectionListener() {
             @Override
@@ -680,22 +671,20 @@ public class MenuManagerTests {
         List<MenuCell> menuCellList = new ArrayList<>();
         menuCellList.add(cell1);
         menuCellList.add(cell2);
-
+        // Test that menu Cells are unique
         assertTrue(menuManager.menuCellsAreUnique(menuCellList, new ArrayList<String>()));
-
+        // Set the menu cells to not be unique and test
         cell2.setTitle("Text1");
-
         assertFalse(menuManager.menuCellsAreUnique(menuCellList, new ArrayList<String>()));
-
+        // Change secondary text to make cells unique and test
         cell2.setSecondaryText("text2");
         assertTrue(menuManager.menuCellsAreUnique(menuCellList, new ArrayList<String>()));
+        // Remove menuCommandSecondaryText as a supported TextField and test that cells are not unique now
         textFields.remove(menuCommandSecondaryText);
         assertFalse(menuManager.menuCellsAreUnique(menuCellList, new ArrayList<String>()));
 
         cell2.setTertiaryText("text3");
-
         assertTrue(menuManager.menuCellsAreUnique(menuCellList, new ArrayList<String>()));
-
         textFields.remove(menuCommandTertiaryText);
         assertFalse(menuManager.menuCellsAreUnique(menuCellList, new ArrayList<String>()));
 
@@ -727,7 +716,6 @@ public class MenuManagerTests {
 
         mainCell2.setSubCells(Collections.<MenuCell>emptyList());
         assertFalse(menuManager.menuCellsAreUnique(menuCellSubMenuList, new ArrayList<String>()));
-
     }
 
 
