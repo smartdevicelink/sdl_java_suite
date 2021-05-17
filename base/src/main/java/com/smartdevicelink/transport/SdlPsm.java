@@ -32,7 +32,6 @@
 package com.smartdevicelink.transport;
 
 import com.smartdevicelink.protocol.SdlPacket;
-import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.util.DebugTool;
 
 import static com.smartdevicelink.protocol.SdlProtocol.V1_HEADER_SIZE;
