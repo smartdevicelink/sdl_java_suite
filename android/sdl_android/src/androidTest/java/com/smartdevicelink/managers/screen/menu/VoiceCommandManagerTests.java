@@ -235,6 +235,10 @@ public class VoiceCommandManagerTests {
         voiceCommandList.add(command2);
         voiceCommandManager.setVoiceCommands(voiceCommandList);
         assertEquals(voiceCommandManager.voiceCommands.size(), 1);
+
+        voiceCommandManager.setVoiceCommands(voiceCommandList);
+        assertEquals(voiceCommandManager.voiceCommands.size(), 1);
+
     }
 
 
