@@ -151,7 +151,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
         this.originalVoiceCommands = new ArrayList<>(voiceCommands);
         this.voiceCommands = validatedVoiceCommands;
-        updateIdsOnVoiceCommands(voiceCommands);
+        updateIdsOnVoiceCommands(this.voiceCommands);
 
         cleanTransactionQueue();
         updateOperation = new VoiceCommandUpdateOperation(internalInterface, currentVoiceCommands, this.voiceCommands, new VoiceCommandUpdateOperation.VoiceCommandChangesListener() {
