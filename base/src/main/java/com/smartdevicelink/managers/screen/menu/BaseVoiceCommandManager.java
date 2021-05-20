@@ -205,9 +205,6 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
     List<VoiceCommand> removeEmptyVoiceCommands(List<VoiceCommand> voiceCommands) {
         List<VoiceCommand> validatedVoiceCommands = new ArrayList<>();
         for (VoiceCommand voiceCommand : voiceCommands) {
-            if (voiceCommand == null) {
-                continue;
-            }
             List<String> voiceCommandStrings = new ArrayList<>();
             for (String voiceCommandString : voiceCommand.getVoiceCommands()) {
                 if (voiceCommandString == null) {
@@ -275,6 +272,10 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
         int voiceCommandCount = 0;
 
         for (VoiceCommand voiceCommand : voiceCommands) {
+            if (voiceCommand == null) {
+                voiceCommands.remove(voiceCommand);
+                continue;
+            }
             voiceCommandHashSet.addAll(voiceCommand.getVoiceCommands());
             voiceCommandCount += voiceCommand.getVoiceCommands().size();
         }

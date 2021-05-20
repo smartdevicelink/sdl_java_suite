@@ -243,6 +243,13 @@ public class VoiceCommandManagerTests {
         voiceCommandManager.setVoiceCommands(null);
         assertNull(voiceCommandManager.voiceCommands);
 
+        voiceCommandList = new ArrayList<>();
+        VoiceCommand command3 = new VoiceCommand(Arrays.asList("Command three", null, " "), null);
+        voiceCommandList.add(command3);
+        voiceCommandList.add(null);
+        voiceCommandManager.setVoiceCommands(voiceCommandList);
+        assertEquals(voiceCommandManager.voiceCommands.size(), 1);
+
     }
 
 
