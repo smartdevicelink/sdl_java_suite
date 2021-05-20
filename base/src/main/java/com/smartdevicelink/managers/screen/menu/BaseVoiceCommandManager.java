@@ -144,7 +144,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
         List<VoiceCommand> validatedVoiceCommands = removeEmptyVoiceCommands(voiceCommands);
 
-        if (validatedVoiceCommands.size() == 0 && voiceCommands.size() > 0) {
+        if (validatedVoiceCommands.size() == 0) {
             DebugTool.logError(TAG, "New voice commands are invalid, skipping...");
             return;
         }
@@ -205,8 +205,14 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
     List<VoiceCommand> removeEmptyVoiceCommands(List<VoiceCommand> voiceCommands) {
         List<VoiceCommand> validatedVoiceCommands = new ArrayList<>();
         for (VoiceCommand voiceCommand : voiceCommands) {
+            if (voiceCommand == null) {
+                continue;
+            }
             List<String> voiceCommandStrings = new ArrayList<>();
             for (String voiceCommandString : voiceCommand.getVoiceCommands()) {
+                if (voiceCommandString == null) {
+                    continue;
+                }
                 String trimmedString = voiceCommandString.trim();
                 if (trimmedString.length() > 0) {
                     voiceCommandStrings.add(trimmedString);
