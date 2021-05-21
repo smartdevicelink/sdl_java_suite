@@ -140,9 +140,8 @@ public class VoiceCommand {
     @Override
     public int hashCode() {
         int result = 1;
-        result += Integer.rotateLeft(getCommandId(), 1);
         for (int i = 0; i < this.getVoiceCommands().size(); i++) {
-            result += ((getVoiceCommands().get(i) == null) ? 0 : Integer.rotateLeft(getVoiceCommands().get(i).hashCode(), i + 2));
+            result += ((getVoiceCommands().get(i) == null) ? 0 : Integer.rotateLeft(getVoiceCommands().get(i).hashCode(), i + 1));
         }
         return result;
     }
@@ -158,7 +157,7 @@ public class VoiceCommand {
         if (o == null) return false;
         // if this is the same memory address, it's the same
         if (this == o) return true;
-        // if this is not an instance of SoftButtonObject, not the same
+        // if this is not an instance of VoiceCommand, not the same
         if (!(o instanceof VoiceCommand)) return false;
         // return comparison
         return hashCode() == o.hashCode();
