@@ -294,4 +294,29 @@ public class VoiceCommandUpdateOperationTests {
 
         verify(listenerSpy, times(1)).updateVoiceCommands(any(List.class), any(HashMap.class));
     }
+
+
+
+    @Test
+    public void testVoiceCommandsInListNotInSecondList() {
+        VoiceCommand command1 = new VoiceCommand(Collections.singletonList("Command 1"), null);
+        VoiceCommand command2 = new VoiceCommand(Collections.singletonList("Command 2"), null);
+        VoiceCommand command3 = new VoiceCommand(Collections.singletonList("Command 3"), null);
+
+        VoiceCommand command1Clone = new VoiceCommand(Collections.singletonList("Command 1"), null);
+
+        List<VoiceCommand> voiceCommandList = new ArrayList<>();
+        voiceCommandList.add(command1);
+        voiceCommandList.add(command2);
+
+        List<VoiceCommand> voiceCommandList2 = new ArrayList<>();
+        voiceCommandList2.add(command1Clone);
+        voiceCommandList2.add(command3);
+        VoiceCommandUpdateOperation voiceCommandUpdateOperation = new VoiceCommandUpdateOperation(internalInterface,null,null,null);
+
+        List<VoiceCommand> differencesList = voiceCommandUpdateOperation.voiceCommandsInListNotInSecondList(voiceCommandList, voiceCommandList2);
+        assertEquals(differencesList.size(), 1);
+
+    }
+
 }
