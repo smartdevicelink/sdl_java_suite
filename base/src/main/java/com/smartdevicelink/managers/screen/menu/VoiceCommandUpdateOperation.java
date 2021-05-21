@@ -22,7 +22,7 @@ class VoiceCommandUpdateOperation extends Task {
     private List<VoiceCommand> pendingVoiceCommands;
     private List<DeleteCommand> deleteVoiceCommands;
     private List<AddCommand> addCommandsToSend;
-    private VoiceCommandChangesListener voiceCommandListener;
+    VoiceCommandChangesListener voiceCommandListener;
     private List<VoiceCommand> currentVoiceCommands;
     private HashMap<RPCRequest, String> errorObject;
 

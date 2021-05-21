@@ -39,6 +39,7 @@ import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
@@ -55,6 +56,7 @@ import org.mockito.stubbing.Answer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
@@ -175,6 +177,8 @@ public class VoiceCommandManagerTests {
     public void testUpdatingCommands() {
         // Send a new single command, and test that its listener works, as it gets called from the VCM
         voiceCommandManager.setVoiceCommands(Collections.singletonList(command3));
+        HashMap<RPCRequest, String> errorObject = new HashMap<>();
+        voiceCommandManager.updateOperation.voiceCommandListener.updateVoiceCommands(voiceCommandManager.voiceCommands, errorObject);
 
         // Fake onCommand - we want to make sure that we can pass back onCommand events to our VoiceCommand Objects
         OnCommand onCommand = new OnCommand();
