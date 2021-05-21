@@ -182,7 +182,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
                 continue;
             }
             VoiceCommandUpdateOperation vcOperation = (VoiceCommandUpdateOperation) operation;
-            vcOperation.oldVoiceCommands = newCurrentVoiceCommands;
+            vcOperation.setOldVoiceCommands(newCurrentVoiceCommands);
         }
     }
 
@@ -217,8 +217,8 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
             @Override
             public void onNotified(RPCNotification notification) {
                 OnCommand onCommand = (OnCommand) notification;
-                if (voiceCommands != null && voiceCommands.size() > 0) {
-                    for (VoiceCommand command : voiceCommands) {
+                if (currentVoiceCommands != null && currentVoiceCommands.size() > 0) {
+                    for (VoiceCommand command : currentVoiceCommands) {
                         if (onCommand.getCmdID() == command.getCommandId()) {
                             if (command.getVoiceCommandSelectionListener() != null) {
                                 command.getVoiceCommandSelectionListener().onVoiceCommandSelected();
