@@ -184,10 +184,12 @@ public class TransportBroker {
     static class ClientHandler extends Handler {
         final ClassLoader loader;
         final WeakReference<TransportBroker> provider;
+        final Context mContext;
 
-        public ClientHandler(TransportBroker provider) {
+        public ClientHandler(TransportBroker provider, Context context) {
             this.provider = new WeakReference<>(provider);
             loader = getClass().getClassLoader();
+            mContext = context;
         }
 
         @Override
@@ -231,6 +233,16 @@ public class TransportBroker {
                                 }
 
                             }
+
+                            if (mContext != null) {
+                                DebugTool.logInfo(TAG, "Sending broadcast event to listeners");
+                                // Send broadcast for a current context so other components will take care of this event if required
+                                Intent registerClientIntent = new Intent(TransportConstants.ROUTER_ACTION_REGISTER_CLIENT);
+                                registerClientIntent.putExtra(TransportConstants.EXTRA_RESULT_CODE, msg.arg1);
+                                registerClientIntent.putExtra(TransportConstants.APP_ID_EXTRA_STRING, provider.get().getAppId());
+                                mContext.sendBroadcast(registerClientIntent);
+                            }
+
                             break;
                         case TransportConstants.REGISTRATION_RESPONSE_DENIED_LEGACY_MODE_ENABLED:
                             DebugTool.logInfo(TAG, "Denied registration because router is in legacy mode");
@@ -249,11 +261,18 @@ public class TransportBroker {
                     break;
                 case TransportConstants.ROUTER_UNREGISTER_CLIENT_RESPONSE:
                     if (msg.arg1 == TransportConstants.UNREGISTRATION_RESPONSE_SUCESS) {
-                        // We've been unregistered. Now what?
-
+                        DebugTool.logInfo(TAG, "Client has been unregistered from RS");
                     } else { //We were denied our unregister request to the router service, let's see why
                         DebugTool.logWarning(TAG, "Unregister request denied from router service. Reason - " + msg.arg1);
-                        //Do we care?
+                    }
+
+                    if (mContext != null) {
+                        DebugTool.logInfo(TAG, "Sending broadcast event to listeners");
+                        // Send broadcast for a current context so other components will take care of this event if required
+                        Intent unregisterClientIntent = new Intent(TransportConstants.ROUTER_ACTION_UNREGISTER_CLIENT);
+                        unregisterClientIntent.putExtra(TransportConstants.EXTRA_RESULT_CODE, msg.arg1);
+                        unregisterClientIntent.putExtra(TransportConstants.APP_ID_EXTRA_STRING, provider.get().getAppId());
+                        mContext.sendBroadcast(unregisterClientIntent);
                     }
 
                     break;
@@ -397,7 +416,7 @@ public class TransportBroker {
             currentContext = context;
             this.routerService = service;
 
-            clientMessenger = new Messenger(new ClientHandler(this));
+            clientMessenger = new Messenger(new ClientHandler(this, currentContext));
             initRouterConnection();
 
             //So the user should have set the AppId, lets define where the messages need to be sent
@@ -492,6 +511,8 @@ public class TransportBroker {
     public void onLegacyModeEnabled() {
 
     }
+
+    public String getAppId() { return appId; }
 
     protected int getRouterServiceVersion() {
         return routerServiceVersion;
@@ -646,7 +667,6 @@ public class TransportBroker {
     private Context getContext() {
         return currentContext;
     }
-
 
     public static Long convertAppId(String appId) {
         if (appId == null) {

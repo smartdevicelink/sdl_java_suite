@@ -170,6 +170,11 @@ public class TransportConstants {
      */
     public static final int ROUTER_UNREGISTER_CLIENT = 0x03;
     public static final int ROUTER_UNREGISTER_CLIENT_RESPONSE = 0x04;
+
+    public static final String ROUTER_ACTION_REGISTER_CLIENT = "router.register.client";
+    public static final String ROUTER_ACTION_UNREGISTER_CLIENT = "router.unregister.client";
+    public static final String EXTRA_RESULT_CODE = "router.result.code";
+
     //Response arguments
     public static final int UNREGISTRATION_RESPONSE_SUCESS = 0x00;
     public static final int UNREGISTRATION_RESPONSE_FAILED_APP_ID_NOT_FOUND = 0x01;
