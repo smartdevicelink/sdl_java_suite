@@ -8,12 +8,14 @@ import com.smartdevicelink.proxy.rpc.AddCommand;
 import com.smartdevicelink.proxy.rpc.AddCommandResponse;
 import com.smartdevicelink.proxy.rpc.DeleteCommand;
 import com.smartdevicelink.proxy.rpc.DeleteCommandResponse;
+import com.smartdevicelink.proxy.rpc.ListFiles;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.util.DebugTool;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -73,6 +75,21 @@ public class VoiceCommandUpdateOperationTests {
 
     List<VoiceCommand> deleteList = new ArrayList<>();
     List<VoiceCommand> addList = new ArrayList<>();
+
+    private Answer<Void> onListFilesSuccess = new Answer<Void>() {
+        @Override
+        public Void answer(InvocationOnMock invocation) {
+            Object[] args = invocation.getArguments();
+            RPCRequest message = (RPCRequest) args[0];
+            if (message instanceof ListFiles) {
+                int correlationId = message.getCorrelationID();
+                DeleteCommandResponse deleteCommandResponse = new DeleteCommandResponse();
+                deleteCommandResponse.setSuccess(true);
+                message.getOnRPCResponseListener().onResponse(correlationId, deleteCommandResponse);
+            }
+            return null;
+        }
+    };
 
     @Before
     public void setup() {
@@ -316,7 +333,28 @@ public class VoiceCommandUpdateOperationTests {
 
         List<VoiceCommand> differencesList = voiceCommandUpdateOperation.voiceCommandsInListNotInSecondList(voiceCommandList, voiceCommandList2);
         assertEquals(differencesList.size(), 1);
+    }
 
+    @Test
+    public void testDelete() {
+        internalInterface = mock(ISdl.class);
+
+        VoiceCommand command1 = new VoiceCommand(Collections.singletonList("Command 1"), null);
+        VoiceCommand command2 = new VoiceCommand(Collections.singletonList("Command 2"), null);
+
+        VoiceCommand command1Clone = new VoiceCommand(Collections.singletonList("Command 1"), null);
+        VoiceCommand command3 = new VoiceCommand(Collections.singletonList("Command 3"), null);
+
+        List<VoiceCommand> voiceCommandList = new ArrayList<>();
+        voiceCommandList.add(command1);
+        voiceCommandList.add(command2);
+
+        List<VoiceCommand> voiceCommandList2 = new ArrayList<>();
+        voiceCommandList2.add(command1Clone);
+        voiceCommandList2.add(command3);
+        VoiceCommandUpdateOperation voiceCommandUpdateOperation = new VoiceCommandUpdateOperation(internalInterface, voiceCommandList, voiceCommandList2, null);
+        voiceCommandUpdateOperation.onExecute();
+        verify(internalInterface, times(1)).sendRPCs(ArgumentMatchers.<DeleteCommand>anyList(), any(OnMultipleRequestListener.class));
     }
 
 }
