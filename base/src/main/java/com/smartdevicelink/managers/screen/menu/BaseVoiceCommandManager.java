@@ -137,15 +137,15 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
             return;
         }
 
-        if (!isVoiceCommandsUnique(voiceCommands)) {
-            DebugTool.logError(TAG, "Not all voice command strings are unique across all voice commands. Voice commands will not be set.");
-            return;
-        }
-
         List<VoiceCommand> validatedVoiceCommands = removeEmptyVoiceCommands(voiceCommands);
 
         if (validatedVoiceCommands.size() == 0) {
             DebugTool.logError(TAG, "New voice commands are invalid, skipping...");
+            return;
+        }
+
+        if (!isVoiceCommandsUnique(validatedVoiceCommands)) {
+            DebugTool.logError(TAG, "Not all voice command strings are unique across all voice commands. Voice commands will not be set.");
             return;
         }
 
