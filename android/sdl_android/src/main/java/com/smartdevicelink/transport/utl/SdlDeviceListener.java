@@ -71,7 +71,7 @@ public class SdlDeviceListener {
 
     private final WeakReference<Context> contextWeakReference;
     private final Callback callback;
-    private final BluetoothDevice connectedDevice;
+    private BluetoothDevice connectedDevice;
     private MultiplexBluetoothTransport bluetoothTransport;
     private TransportHandler bluetoothHandler;
     private Handler timeoutHandler;
@@ -97,13 +97,7 @@ public class SdlDeviceListener {
     public void start() {
         if (connectedDevice == null) {
             DebugTool.logInfo(TAG, ": No supplied bluetooth device");
-            if (callback != null) {
-                callback.onTransportError(null);
-            }
-            return;
-        }
-
-        if (hasSDLConnected(contextWeakReference.get(), connectedDevice.getAddress())) {
+        } else if (hasSDLConnected(contextWeakReference.get(), connectedDevice.getAddress())) {
             DebugTool.logInfo(TAG, ": Confirmed SDL device, should start router service");
             //This device has connected to SDL previously, it is ok to start the RS right now
             VehicleType vehicleType = null;
@@ -114,12 +108,15 @@ public class SdlDeviceListener {
             callback.onTransportConnected(contextWeakReference.get(), connectedDevice, vehicleType);
             return;
         }
+
         synchronized (RUNNING_LOCK) {
             isRunning = true;
             // set timeout = if first time seeing BT device, 30s, if not 15s
-            int timeout = isFirstStatusCheck(connectedDevice.getAddress()) ? 30000 : 15000;
+            int timeout = connectedDevice != null && isFirstStatusCheck(connectedDevice.getAddress()) ? 30000 : 15000;
             //Set our preference as false for this device for now
-            setSDLConnectedStatus(contextWeakReference.get(), connectedDevice.getAddress(), false);
+            if(connectedDevice != null) {
+                setSDLConnectedStatus(contextWeakReference.get(), connectedDevice.getAddress(), false);
+            }
             bluetoothHandler = new TransportHandler(this);
             bluetoothTransport = new MultiplexBluetoothTransport(bluetoothHandler);
             bluetoothTransport.start();
@@ -170,6 +167,9 @@ public class SdlDeviceListener {
                 case SdlRouterService.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case MultiplexBaseTransport.STATE_CONNECTED:
+                            if (sdlListener.connectedDevice == null) {
+                                sdlListener.connectedDevice = sdlListener.bluetoothTransport.getConnectedDevice();
+                            }
                             sendStartService();
                             break;
                         case MultiplexBaseTransport.STATE_NONE:

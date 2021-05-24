@@ -300,9 +300,16 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                             DebugTool.logInfo(TAG, ": This app's package: " + myPackage);
                             DebugTool.logInfo(TAG, ": Router service app's package: " + routerServicePackage);
                             if (myPackage != null && myPackage.equalsIgnoreCase(routerServicePackage)) {
-                                SdlDeviceListener sdlDeviceListener = getSdlDeviceListener(context, device);
-                                if (!sdlDeviceListener.isRunning()) {
-                                    sdlDeviceListener.start();
+                                //If the device is not null the listener should start as well as the
+                                //case where this app was installed after BT connected and is the
+                                //only SDL app installed on the device. (Rare corner case)
+                                if(device != null || sdlAppInfoList.size() == 1) {
+                                    SdlDeviceListener sdlDeviceListener = getSdlDeviceListener(context, device);
+                                    if (!sdlDeviceListener.isRunning()) {
+                                        sdlDeviceListener.start();
+                                    }
+                                } else {
+                                    DebugTool.logInfo(TAG, "Not starting device listener, bluetooth device is null and other SDL apps installed.");
                                 }
                             } else {
                                 DebugTool.logInfo(TAG, ": Not the app to start the router service nor device listener");

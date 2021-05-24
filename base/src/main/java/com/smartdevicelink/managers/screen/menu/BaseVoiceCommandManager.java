@@ -51,6 +51,7 @@ import com.smartdevicelink.util.DebugTool;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 abstract class BaseVoiceCommandManager extends BaseSubManager {
@@ -133,6 +134,11 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
         // we actually need voice commands to set.
         if (voiceCommands == null || voiceCommands.equals(this.voiceCommands)) {
             DebugTool.logInfo(TAG, "Voice commands list was null or matches the current voice commands");
+            return;
+        }
+
+        if (!isVoiceCommandsUnique(voiceCommands)) {
+            DebugTool.logError(TAG, "Not all voice command strings are unique across all voice commands. Voice commands will not be set.");
             return;
         }
 
@@ -224,5 +230,22 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
             }
         };
         internalInterface.addOnRPCNotificationListener(FunctionID.ON_COMMAND, commandListener);
+    }
+
+    /**
+     * Boolean method that checks to see if all VoiceCommands in a given list are unique
+     *
+     * @param voiceCommands - list of VoiceCommands
+     * @return - true if VoiceCommands are unique, false if not
+     */
+    private boolean isVoiceCommandsUnique(List<VoiceCommand> voiceCommands) {
+        HashSet<String> voiceCommandHashSet = new HashSet<>();
+        int voiceCommandCount = 0;
+
+        for (VoiceCommand voiceCommand : voiceCommands) {
+            voiceCommandHashSet.addAll(voiceCommand.getVoiceCommands());
+            voiceCommandCount += voiceCommand.getVoiceCommands().size();
+        }
+        return (voiceCommandHashSet.size() == voiceCommandCount);
     }
 }
