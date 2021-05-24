@@ -74,7 +74,7 @@ public class FileUtls {
                 try {
                     return Files.readAllBytes(file.toPath());
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    DebugTool.logError(TAG,"Error trying to get file data", e);
                 }
             }
         }

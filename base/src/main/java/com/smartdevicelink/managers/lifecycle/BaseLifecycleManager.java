@@ -146,7 +146,7 @@ abstract class BaseLifecycleManager {
         try {
             session.startSession();
         } catch (SdlException e) {
-            e.printStackTrace();
+            DebugTool.logError(TAG,"Error attempting to start session", e);
         }
     }
 
@@ -851,7 +851,7 @@ abstract class BaseLifecycleManager {
             session.sendMessage(pm);
 
         } catch (OutOfMemoryError e) {
-            e.printStackTrace();
+            DebugTool.logError(TAG,"Error attempting to send RPC message.", e);
         }
     }
 
