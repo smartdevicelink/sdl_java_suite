@@ -53,6 +53,15 @@ class VoiceCommandUpdateOperation extends Task {
             onFinished();
             return;
         }
+        // Check if a voiceCommand has already been uploaded and update its VoiceCommandSelectionListener to
+        // prevent calling the wrong listener in a case where a voice command was uploaded and then its voiceCommandSelectionListener was updated in another upload.
+        if (pendingVoiceCommands != null && pendingVoiceCommands.size() > 0) {
+            for (VoiceCommand voiceCommand : pendingVoiceCommands) {
+                if (currentVoiceCommands.contains(voiceCommand)) {
+                    currentVoiceCommands.get(currentVoiceCommands.indexOf(voiceCommand)).setVoiceCommandSelectionListener(voiceCommand.getVoiceCommandSelectionListener());
+                }
+            }
+        }
 
         sendDeleteCurrentVoiceCommands(new CompletionListener() {
             @Override
@@ -169,7 +178,7 @@ class VoiceCommandUpdateOperation extends Task {
 
         if (voiceCommandsToAdd.size() == 0) {
             if (listener != null) {
-                listener.onComplete(true); // no voice commands to send doesnt mean that its an error
+                listener.onComplete(true); // no voice commands to send doesn't mean that its an error
             }
             return;
         }
