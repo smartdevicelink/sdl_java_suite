@@ -6,14 +6,10 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.content.res.XmlResourceParser;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -55,8 +51,8 @@ import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.transport.TransportConstants;
+import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.DebugTool;
-import com.smartdevicelink.util.SdlAppInfo;
 import com.smartdevicelink.util.SystemInfo;
 
 import java.util.ArrayList;
@@ -295,34 +291,8 @@ public class SdlService extends Service {
                         return true;
                     }
 
-                    XmlResourceParser parser;
-                    try {
-                        ComponentName myService = new ComponentName(getBaseContext(), SdlRouterService.class);
-                        Bundle metaData = getPackageManager().getServiceInfo(myService, PackageManager.GET_META_DATA).metaData;
-                        parser = getResources().getXml(metaData.getInt(getResources().getString(R.string.sdl_oem_vehicle_type_filter_name)));
-                    } catch (PackageManager.NameNotFoundException e) {
-                        DebugTool.logError(TAG, "Failed to get OEM vehicle data filter: " + e.getMessage()+ " - assume vehicle data is supported");
-                        return true;
-                    }
-
-                    List<VehicleType> vehicleTypes = SdlAppInfo.deserializeVehicleMake(parser);
-                    if (!SdlAppInfo.checkIfVehicleSupported(vehicleTypes, type)) {
-                        DebugTool.logError(TAG, "Vehicle type is NOT supportable by current package");
-                        DebugTool.logError(TAG, "Received VD: " + type.getStore().toString());
-
-                        StringBuilder builder = new StringBuilder();
-                        builder.append("Supportable VD: ");
-                        for (VehicleType vtype : vehicleTypes) {
-                            builder.append(vtype.getStore().toString());
-                            builder.append("; ");
-                        }
-
-                        DebugTool.logError(TAG, builder.toString());
-                        return false;
-                    }
-
-                    DebugTool.logInfo(TAG, "Vehicle type is supportable by current package");
-                    return true;
+                    List<VehicleType> vehicleTypes = AndroidTools.getVehicleTypesFromManifest(getBaseContext(), SdlRouterService.class, R.string.sdl_oem_vehicle_type_filter_name);
+                    return AndroidTools.isSupportableVehicleType(vehicleTypes, type);
                 }
             };
 

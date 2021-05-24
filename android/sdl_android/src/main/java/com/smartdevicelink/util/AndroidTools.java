@@ -43,9 +43,11 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
+import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.BatteryManager;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
@@ -303,5 +305,39 @@ public class AndroidTools {
                 return null;
             }
         }
+    }
+
+    public static List<VehicleType> getVehicleTypesFromManifest(Context context, Class<?> className, int manifestFieldId) {
+        XmlResourceParser parser;
+        try {
+            ComponentName myService = new ComponentName(context, className);
+            Bundle metaData = context.getPackageManager().getServiceInfo(myService, PackageManager.GET_META_DATA).metaData;
+            parser = context.getResources().getXml(metaData.getInt(context.getResources().getString(manifestFieldId)));
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, "Failed to get OEM vehicle data filter: " + e.getMessage()+ " - assume vehicle data is supported");
+            return null;
+        }
+
+        return SdlAppInfo.deserializeVehicleMake(parser);
+    }
+
+    public static boolean isSupportableVehicleType(List<VehicleType> supportedList, VehicleType typeToCheck) {
+        if (!SdlAppInfo.checkIfVehicleSupported(supportedList, typeToCheck)) {
+            DebugTool.logError(TAG, "Vehicle type is NOT supportable by current package");
+            DebugTool.logError(TAG, "Received VD: " + typeToCheck.getStore().toString());
+
+            StringBuilder builder = new StringBuilder();
+            builder.append("Supportable VD: ");
+            for (VehicleType vtype : supportedList) {
+                builder.append(vtype.getStore().toString());
+                builder.append("; ");
+            }
+
+            DebugTool.logError(TAG, builder.toString());
+            return false;
+        }
+
+        DebugTool.logInfo(TAG, "Vehicle type is supportable by current package");
+        return true;
     }
 }
