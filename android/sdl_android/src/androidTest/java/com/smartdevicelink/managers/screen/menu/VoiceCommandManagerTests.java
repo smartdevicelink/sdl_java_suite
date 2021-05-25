@@ -182,7 +182,7 @@ public class VoiceCommandManagerTests {
 
         // Fake onCommand - we want to make sure that we can pass back onCommand events to our VoiceCommand Objects
         OnCommand onCommand = new OnCommand();
-        onCommand.setCmdID(command3.getCommandId());
+        onCommand.setCmdID(voiceCommandManager.getVoiceCommands().get(voiceCommandManager.getVoiceCommands().indexOf(command3)).getCommandId());
         onCommand.setTriggerSource(TriggerSource.TS_VR); // these are voice commands
         commandListener.onNotified(onCommand); // send off the notification
 

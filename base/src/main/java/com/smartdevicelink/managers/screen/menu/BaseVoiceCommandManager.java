@@ -140,6 +140,9 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
         // Clone voice commands
         this.voiceCommands = new ArrayList<>();
         for (VoiceCommand voiceCommand : voiceCommands) {
+            if (voiceCommand == null) {
+                continue;
+            }
             this.voiceCommands.add(voiceCommand.clone());
         }
 
@@ -147,13 +150,17 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
         if (validatedVoiceCommands.size() == 0 && voiceCommands.size() > 0) {
             DebugTool.logError(TAG, "New voice commands are invalid, skipping...");
+            this.voiceCommands = null;
             return;
         }
 
         if (!isVoiceCommandsUnique(validatedVoiceCommands)) {
             DebugTool.logError(TAG, "Not all voice command strings are unique across all voice commands. Voice commands will not be set.");
+            this.voiceCommands = null;
             return;
         }
+
+        this.voiceCommands = validatedVoiceCommands;
 
         updateIdsOnVoiceCommands(this.voiceCommands);
 
