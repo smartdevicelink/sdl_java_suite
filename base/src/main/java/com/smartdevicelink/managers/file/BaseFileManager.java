@@ -271,11 +271,17 @@ abstract class BaseFileManager extends BaseSubManager {
      */
     public boolean hasUploadedFile(@NonNull SdlFile file) {
         // HAX: [#827](https://github.com/smartdevicelink/sdl_ios/issues/827) Older versions of Core had a bug where list files would cache incorrectly.
-        if (file.isPersistent() && mutableRemoteFileNames != null && mutableRemoteFileNames.contains(file.getName())) {
-            // If it's a persistent file, the bug won't present itself; just check if it's on the remote system
-            return true;
-        } else if (!file.isPersistent() && mutableRemoteFileNames != null && mutableRemoteFileNames.contains(file.getName()) && uploadedEphemeralFileNames.contains(file.getName())) {
-            // If it's an ephemeral file, the bug will present itself; check that it's a remote file AND that we've uploaded it this session
+        Version rpcVersion = new Version(internalInterface.getSdlMsgVersion());
+        if (new Version(4, 4, 0).isNewerThan(rpcVersion) == 1) {
+            if (file.isPersistent() && mutableRemoteFileNames != null && mutableRemoteFileNames.contains(file.getName())) {
+                // HAX: If it's a persistent file, the bug won't present itself; just check if it's on the remote system
+                return true;
+            } else if (!file.isPersistent() && mutableRemoteFileNames != null && mutableRemoteFileNames.contains(file.getName()) && uploadedEphemeralFileNames.contains(file.getName())) {
+                // HAX: If it's an ephemeral file, the bug will present itself; check that it's a remote file AND that we've uploaded it this session
+                return true;
+            }
+        } else if (mutableRemoteFileNames != null && mutableRemoteFileNames.contains(file.getName())) {
+            // If not connected to a system where the bug presents itself, we can trust the `remoteFileNames`
             return true;
         }
         return false;
