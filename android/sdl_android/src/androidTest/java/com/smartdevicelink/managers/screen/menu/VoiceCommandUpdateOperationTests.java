@@ -8,7 +8,6 @@ import com.smartdevicelink.proxy.rpc.AddCommand;
 import com.smartdevicelink.proxy.rpc.AddCommandResponse;
 import com.smartdevicelink.proxy.rpc.DeleteCommand;
 import com.smartdevicelink.proxy.rpc.DeleteCommandResponse;
-import com.smartdevicelink.proxy.rpc.ListFiles;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.util.DebugTool;
 
@@ -76,20 +75,6 @@ public class VoiceCommandUpdateOperationTests {
     List<VoiceCommand> deleteList = new ArrayList<>();
     List<VoiceCommand> addList = new ArrayList<>();
 
-    private Answer<Void> onListFilesSuccess = new Answer<Void>() {
-        @Override
-        public Void answer(InvocationOnMock invocation) {
-            Object[] args = invocation.getArguments();
-            RPCRequest message = (RPCRequest) args[0];
-            if (message instanceof ListFiles) {
-                int correlationId = message.getCorrelationID();
-                DeleteCommandResponse deleteCommandResponse = new DeleteCommandResponse();
-                deleteCommandResponse.setSuccess(true);
-                message.getOnRPCResponseListener().onResponse(correlationId, deleteCommandResponse);
-            }
-            return null;
-        }
-    };
 
     @Before
     public void setup() {
