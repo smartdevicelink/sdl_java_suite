@@ -145,7 +145,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
         List<VoiceCommand> validatedVoiceCommands = removeEmptyVoiceCommands(this.voiceCommands);
 
-        if (validatedVoiceCommands.size() == 0) {
+        if (validatedVoiceCommands.size() == 0 && voiceCommands.size() > 0) {
             DebugTool.logError(TAG, "New voice commands are invalid, skipping...");
             return;
         }
@@ -153,7 +153,6 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
         if (!isVoiceCommandsUnique(validatedVoiceCommands)) {
             DebugTool.logError(TAG, "Not all voice command strings are unique across all voice commands. Voice commands will not be set.");
             return;
-
         }
 
         updateIdsOnVoiceCommands(this.voiceCommands);
