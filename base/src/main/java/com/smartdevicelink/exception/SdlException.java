@@ -71,7 +71,6 @@ public class SdlException extends Exception {
         }
         if (detail != null) {
             ret += "\nnested: " + detail.toString();
-            detail.printStackTrace();
         }
         return ret;
     }

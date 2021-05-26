@@ -1275,7 +1275,7 @@ abstract class BaseMenuManager extends BaseSubManager {
                     try {
                         DebugTool.logInfo(TAG, "Main Menu response: " + response.serializeJSON().toString());
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        DebugTool.logError(TAG,"Error attempting to serialize JSON of RPC response", e);
                     }
                 } else {
                     DebugTool.logError(TAG, "Result: " + response.getResultCode() + " Info: " + response.getInfo());
@@ -1313,7 +1313,7 @@ abstract class BaseMenuManager extends BaseSubManager {
                     try {
                         DebugTool.logInfo(TAG, "Sub Menu response: " + response.serializeJSON().toString());
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        DebugTool.logError(TAG,"Error attempting to serialize JSON of RPC response", e);
                     }
                 } else {
                     DebugTool.logError(TAG, "Failed to send sub menu commands: " + response.getInfo());
@@ -1365,7 +1365,7 @@ abstract class BaseMenuManager extends BaseSubManager {
                     try {
                         DebugTool.logInfo(TAG, "Dynamic Sub Menu response: " + response.serializeJSON().toString());
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        DebugTool.logError(TAG,"Error attempting to serialize JSON of RPC response", e);
                     }
                 } else {
                     DebugTool.logError(TAG, "Result: " + response.getResultCode() + " Info: " + response.getInfo());

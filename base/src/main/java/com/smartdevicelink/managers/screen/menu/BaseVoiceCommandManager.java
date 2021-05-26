@@ -51,11 +51,12 @@ import com.smartdevicelink.util.DebugTool;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 abstract class BaseVoiceCommandManager extends BaseSubManager {
     private static final String TAG = "BaseVoiceCommandManager";
-    List<VoiceCommand> voiceCommands, currentVoiceCommands;
+    List<VoiceCommand> voiceCommands, currentVoiceCommands, originalVoiceCommands;
 
     int lastVoiceCommandId;
     private static final int voiceCommandIdMin = 1900000000;
@@ -131,16 +132,29 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
     public void setVoiceCommands(List<VoiceCommand> voiceCommands) {
 
         // we actually need voice commands to set.
-        if (voiceCommands == null || voiceCommands.equals(this.voiceCommands)) {
+        if (voiceCommands == null || voiceCommands.equals(this.originalVoiceCommands)) {
             DebugTool.logInfo(TAG, "Voice commands list was null or matches the current voice commands");
             return;
         }
 
-        updateIdsOnVoiceCommands(voiceCommands);
-        this.voiceCommands = new ArrayList<>(voiceCommands);
+        List<VoiceCommand> validatedVoiceCommands = removeEmptyVoiceCommands(voiceCommands);
+
+        if (validatedVoiceCommands.size() == 0) {
+            DebugTool.logError(TAG, "New voice commands are invalid, skipping...");
+            return;
+        }
+
+        if (!isVoiceCommandsUnique(validatedVoiceCommands)) {
+            DebugTool.logError(TAG, "Not all voice command strings are unique across all voice commands. Voice commands will not be set.");
+            return;
+        }
+
+        this.originalVoiceCommands = new ArrayList<>(voiceCommands);
+        this.voiceCommands = validatedVoiceCommands;
+        updateIdsOnVoiceCommands(this.voiceCommands);
 
         cleanTransactionQueue();
-        updateOperation = new VoiceCommandUpdateOperation(internalInterface, currentVoiceCommands, voiceCommands, new VoiceCommandUpdateOperation.VoiceCommandChangesListener() {
+        updateOperation = new VoiceCommandUpdateOperation(internalInterface, currentVoiceCommands, this.voiceCommands, new VoiceCommandUpdateOperation.VoiceCommandChangesListener() {
             @Override
             public void updateVoiceCommands(List<VoiceCommand> newCurrentVoiceCommands, HashMap<RPCRequest, String> errorObject) {
                 DebugTool.logInfo(TAG, "The updated list of VoiceCommands: " + newCurrentVoiceCommands);
@@ -188,6 +202,30 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
         }
     }
 
+    List<VoiceCommand> removeEmptyVoiceCommands(List<VoiceCommand> voiceCommands) {
+        List<VoiceCommand> validatedVoiceCommands = new ArrayList<>();
+        for (VoiceCommand voiceCommand : voiceCommands) {
+            if (voiceCommand == null) {
+                continue;
+            }
+            List<String> voiceCommandStrings = new ArrayList<>();
+            for (String voiceCommandString : voiceCommand.getVoiceCommands()) {
+                if (voiceCommandString == null) {
+                    continue;
+                }
+                String trimmedString = voiceCommandString.trim();
+                if (trimmedString.length() > 0) {
+                    voiceCommandStrings.add(trimmedString);
+                }
+            }
+            if (voiceCommandStrings.size() > 0) {
+                voiceCommand.setVoiceCommands(voiceCommandStrings);
+                validatedVoiceCommands.add(voiceCommand);
+            }
+        }
+        return validatedVoiceCommands;
+    }
+
     // LISTENERS
 
     private void addListeners() {
@@ -224,5 +262,25 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
             }
         };
         internalInterface.addOnRPCNotificationListener(FunctionID.ON_COMMAND, commandListener);
+    }
+
+    /**
+     * Boolean method that checks to see if all VoiceCommands in a given list are unique
+     *
+     * @param voiceCommands - list of VoiceCommands
+     * @return - true if VoiceCommands are unique, false if not
+     */
+    private boolean isVoiceCommandsUnique(List<VoiceCommand> voiceCommands) {
+        HashSet<String> voiceCommandHashSet = new HashSet<>();
+        int voiceCommandCount = 0;
+
+        for (VoiceCommand voiceCommand : voiceCommands) {
+            if (voiceCommand == null) {
+                continue;
+            }
+            voiceCommandHashSet.addAll(voiceCommand.getVoiceCommands());
+            voiceCommandCount += voiceCommand.getVoiceCommands().size();
+        }
+        return (voiceCommandHashSet.size() == voiceCommandCount);
     }
 }
