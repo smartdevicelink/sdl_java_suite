@@ -308,11 +308,18 @@ public class AndroidTools {
     }
 
     public static List<VehicleType> getVehicleTypesFromManifest(Context context, Class<?> className, int manifestFieldId) {
-        XmlResourceParser parser;
+        XmlResourceParser parser = null;
         try {
             ComponentName myService = new ComponentName(context, className);
             Bundle metaData = context.getPackageManager().getServiceInfo(myService, PackageManager.GET_META_DATA).metaData;
-            parser = context.getResources().getXml(metaData.getInt(context.getResources().getString(manifestFieldId)));
+            int xmlFieldId = metaData.getInt(context.getResources().getString(manifestFieldId));
+
+            if (xmlFieldId == 0) {
+                Log.e(TAG, "Field with id " + manifestFieldId + " was not found in manifest");
+                return null;
+            }
+
+            parser = context.getResources().getXml(xmlFieldId);
         } catch (PackageManager.NameNotFoundException e) {
             Log.e(TAG, "Failed to get OEM vehicle data filter: " + e.getMessage()+ " - assume vehicle data is supported");
             return null;
