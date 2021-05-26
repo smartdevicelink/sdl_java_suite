@@ -390,6 +390,7 @@ abstract class BaseLifecycleManager {
                             msg.setCorrelationID(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
                             sendRPCMessagePrivate(msg, true);
                             clean();
+                            onClose("RPC spec version not supported: " + rpcSpecVersion.toString(), null, SdlDisconnectedReason.MINIMUM_RPC_VERSION_HIGHER_THAN_SUPPORTED);
                             return;
                         }
                         if (!didCheckSystemInfo && lifecycleListener != null) {
@@ -405,6 +406,7 @@ abstract class BaseLifecycleManager {
                                     msg.setCorrelationID(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
                                     sendRPCMessagePrivate(msg, true);
                                     clean();
+                                    onClose("System not supported", null, SdlDisconnectedReason.DEFAULT);
                                     return;
                                 }
                             }
@@ -491,6 +493,7 @@ abstract class BaseLifecycleManager {
                         if (!onAppInterfaceUnregistered.getReason().equals(AppInterfaceUnregisteredReason.LANGUAGE_CHANGE)) {
                             DebugTool.logInfo(TAG, "on app interface unregistered");
                             clean();
+                            onClose("OnAppInterfaceUnregistered received from head unit", null, SdlDisconnectedReason.APP_INTERFACE_UNREG);
                         } else {
                             DebugTool.logInfo(TAG, "re-registering for language change");
                             cycle(SdlDisconnectedReason.LANGUAGE_CHANGE);
@@ -499,6 +502,7 @@ abstract class BaseLifecycleManager {
                     case UNREGISTER_APP_INTERFACE:
                         DebugTool.logInfo(TAG, "unregister app interface");
                         clean();
+                        onClose("UnregisterAppInterface response received from head unit", null, SdlDisconnectedReason.APP_INTERFACE_UNREG);
                         break;
                 }
             }
@@ -936,6 +940,7 @@ abstract class BaseLifecycleManager {
                 DebugTool.logWarning(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
                 session.endService(SessionType.RPC);
                 clean();
+                onClose("Protocol version not supported: " + version, null, SdlDisconnectedReason.MINIMUM_PROTOCOL_VERSION_HIGHER_THAN_SUPPORTED);
                 return;
             }
 
@@ -946,6 +951,7 @@ abstract class BaseLifecycleManager {
                     DebugTool.logWarning(TAG, "Disconnecting from head unit, the system info was not accepted.");
                     session.endService(SessionType.RPC);
                     clean();
+                    onClose("System not supported", null, SdlDisconnectedReason.DEFAULT);
                     return;
                 }
                 //If the vehicle is acceptable, init security lib
