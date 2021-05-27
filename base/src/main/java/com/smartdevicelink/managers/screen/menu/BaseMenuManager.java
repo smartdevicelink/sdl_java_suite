@@ -826,9 +826,6 @@ abstract class BaseMenuManager extends BaseSubManager {
     }
 
     private boolean hasTextFieldOfName(TextFieldName textFieldName) {
-        if(textFieldName == TextFieldName.menuCommandSecondaryText) {
-            return false;
-        }
         return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, textFieldName);
     }
 
