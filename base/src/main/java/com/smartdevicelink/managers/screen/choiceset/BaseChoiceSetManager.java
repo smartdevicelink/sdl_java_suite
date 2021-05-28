@@ -39,6 +39,7 @@ import androidx.annotation.Nullable;
 
 import com.livio.taskmaster.Queue;
 import com.livio.taskmaster.Task;
+import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
@@ -69,6 +70,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -543,7 +545,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
      * E.g. Choices param contains 2 cells with text/title "Address" will be handled by updating the uniqueText/uniqueTitle of the second cell to "Address (2)".
      * @param choices The list of choiceCells to be uploaded.
      */
-    void addUniqueNamesToCells(LinkedHashSet<ChoiceCell> choices) {
+    void addUniqueNamesToCells(List<ChoiceCell> choices) {
         HashMap<String, Integer> dictCounter = new HashMap<>();
 
         for (ChoiceCell cell : choices) {
@@ -559,16 +561,80 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         }
     }
 
+    void addUniqueNamesBasedOnStrippedCells(List<ChoiceCell> strippedCells, List<ChoiceCell> unstrippedCells) {
+        if (strippedCells == null || unstrippedCells == null || strippedCells.size() != unstrippedCells.size()) {
+          //  throw SdlException
+        }
+        // Tracks how many of each cell primary text there are so that we can append numbers to make each unique as necessary
+        HashMap<ChoiceCell, Integer> dictCounter = new HashMap<>();
+        for (int i = 0; i < strippedCells.size(); i++) {
+            ChoiceCell cell = strippedCells.get(i);
+            Integer counter = dictCounter.get(cell);
+            if (counter != null) {
+                counter++;
+                dictCounter.put(cell, counter);
+            } else {
+                dictCounter.put(cell, 1);
+            }
+
+            counter = dictCounter.get(cell);
+
+            if (counter > 1) {
+                unstrippedCells.get(i).setUniqueText(unstrippedCells.get(i).getText() + " (" + counter + ")");
+            }
+        }
+    }
+
+    private List<ChoiceCell> cloneChoiceCellList(List<ChoiceCell> originalList) {
+        if (originalList == null) {
+            return null;
+        }
+
+        List<ChoiceCell> clone = new ArrayList<>();
+        for (ChoiceCell choiceCell : originalList) {
+            clone.add(choiceCell.clone());
+        }
+        return clone;
+    }
+
     private LinkedHashSet<ChoiceCell> getChoicesToBeUploadedWithArray(List<ChoiceCell> choices) {
-        LinkedHashSet<ChoiceCell> choiceSet = new LinkedHashSet<>(choices);
-        // If we're running on a connection < RPC 7.1, we need to de-duplicate cells because presenting them will fail if we have the same cell primary text.
+        // Clone choices
+        List<ChoiceCell> choicesClone = cloneChoiceCellList(choices);
         if (choices != null && internalInterface.getSdlMsgVersion() != null
                 && (internalInterface.getSdlMsgVersion().getMajorVersion() < 7
                 || (internalInterface.getSdlMsgVersion().getMajorVersion() == 7 && internalInterface.getSdlMsgVersion().getMinorVersion() == 0))) {
-            addUniqueNamesToCells(choiceSet);
+            // If we're on < RPC 7.1, all primary texts need to be unique, so we don't need to check removed properties and duplicate cells
+            addUniqueNamesToCells(choicesClone);
+        } else {
+            List<ChoiceCell> strippedCellsClone = removeUnusedProperties(choicesClone);
+            addUniqueNamesBasedOnStrippedCells(strippedCellsClone, choicesClone);
         }
-        choiceSet.removeAll(preloadedChoices);
-        return choiceSet;
+        LinkedHashSet<ChoiceCell> choiceCloneLinkedHash = new LinkedHashSet<>(choicesClone);
+        choiceCloneLinkedHash.removeAll(preloadedChoices);
+        return choiceCloneLinkedHash;
+    }
+
+    List<ChoiceCell> removeUnusedProperties(List<ChoiceCell> choiceCells) {
+        List<ChoiceCell> strippedCellsClone = cloneChoiceCellList(choiceCells);
+        //Clone Cells
+        for (ChoiceCell cell : strippedCellsClone) {
+            // Strip away fields that cannot be used to determine uniqueness visually including fields not supported by the HMI
+            cell.setVoiceCommands(null);
+
+            if (!hasImageFieldOfName(ImageFieldName.choiceImage)) {
+                cell.setArtwork(null);
+            }
+            if (!hasTextFieldOfName(TextFieldName.secondaryText)) {
+                cell.setSecondaryText(null);
+            }
+            if (!hasTextFieldOfName(TextFieldName.tertiaryText)) {
+                cell.setTertiaryText(null);
+            }
+            if (!hasImageFieldOfName(ImageFieldName.choiceSecondaryImage)) {
+                cell.setSecondaryArtwork(null);
+            }
+        }
+        return strippedCellsClone;
     }
 
     void updateIdsOnChoices(LinkedHashSet<ChoiceCell> choices) {
@@ -680,6 +746,9 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     }
 
     private boolean hasTextFieldOfName(TextFieldName textFieldName) {
+        if (textFieldName == TextFieldName.secondaryText) {
+            return false;
+        }
         return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, textFieldName);
     }
 
@@ -706,24 +775,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         int choiceCellWithVoiceCommandCount = 0;
 
         for (ChoiceCell cell : choices) {
-            ChoiceCell cellClone = cell.clone();
-            // Strip cell parameters that are not supported on head unit to support uniqueness.
-            cellClone.setVoiceCommands(null);
-
-            if (!hasTextFieldOfName(TextFieldName.secondaryText)) {
-                cellClone.setSecondaryText(null);
-            }
-            if (!hasTextFieldOfName(TextFieldName.tertiaryText)) {
-                cellClone.setTertiaryText(null);
-            }
-            if (!hasImageFieldOfName(ImageFieldName.choiceImage)) {
-                cellClone.setArtwork(null);
-            }
-            if (!hasImageFieldOfName(ImageFieldName.choiceSecondaryImage)) {
-                cellClone.setSecondaryArtwork(null);
-            }
-
-            uniqueChoiceCells.add(cellClone);
+            uniqueChoiceCells.add(cell);
             // Not using cloned cell here because we set the clone's VoiceCommands to null for visual check only
             if (cell.getVoiceCommands() != null) {
                 uniqueVoiceCommands.addAll(cell.getVoiceCommands());

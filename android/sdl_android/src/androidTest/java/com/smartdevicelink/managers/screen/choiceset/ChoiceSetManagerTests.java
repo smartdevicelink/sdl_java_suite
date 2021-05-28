@@ -236,7 +236,8 @@ public class ChoiceSetManagerTests {
         ChoiceCell cell4 = new ChoiceCell("McDonalds", "4 mile away", null, null, null, null);
         ChoiceCell cell5 = new ChoiceCell("Starbucks", "5 mile away", null, null, null, null);
         ChoiceCell cell6 = new ChoiceCell("Meijer", "6 mile away", null, null, null, null);
-        LinkedHashSet<ChoiceCell> cellList = new LinkedHashSet<>();
+        List<ChoiceCell> cellList = new ArrayList<>();
+
         cellList.add(cell1);
         cellList.add(cell2);
         cellList.add(cell3);
