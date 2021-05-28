@@ -5,10 +5,8 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
@@ -90,37 +88,6 @@ public class SdlService extends Service {
     private SdlManager sdlManager = null;
     private List<ChoiceCell> choiceCellList;
 
-    private BroadcastReceiver mSdlServiceReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            String appId = intent.getStringExtra(TransportConstants.APP_ID_EXTRA_STRING);
-
-            DebugTool.logInfo(TAG, "Received intent " + action + " for client " + appId);
-            if (!APP_ID.equals(appId)) {
-                DebugTool.logInfo(TAG, "This intent is not for current client. Ignored");
-                return;
-            }
-
-            if (action.equals(TransportConstants.ROUTER_ACTION_REGISTER_CLIENT)) {
-                DebugTool.logInfo(TAG, "Client is connected to RS. Enter foreground");
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    enterForeground();
-                }
-
-                return;
-            }
-
-            if (action.equals(TransportConstants.ROUTER_ACTION_UNREGISTER_CLIENT)) {
-                DebugTool.logInfo(TAG, "Client is disconnected from RS. Exit from foreground");
-                stopProxy();
-                return;
-            }
-
-            DebugTool.logInfo(TAG, "Ignore unknown intent");
-        }
-    };
-
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -129,13 +96,11 @@ public class SdlService extends Service {
     @Override
     public void onCreate() {
         Log.d(TAG, "onCreate");
-
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(TransportConstants.ROUTER_ACTION_REGISTER_CLIENT);
-        filter.addAction(TransportConstants.ROUTER_ACTION_UNREGISTER_CLIENT);
-        registerReceiver(mSdlServiceReceiver, filter);
-
         super.onCreate();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            enterForeground();
+        }
     }
 
     // Helper method to let the service enter foreground mode
@@ -170,8 +135,6 @@ public class SdlService extends Service {
         if (sdlManager != null) {
             sdlManager.dispose();
         }
-
-        unregisterReceiver(mSdlServiceReceiver);
 
         super.onDestroy();
     }
@@ -242,7 +205,11 @@ public class SdlService extends Service {
                 }
 
                 @Override
-                public void onError(String info, Exception e) {
+                public void onError(SdlManager manager, String info, Exception e) {
+                    if (info.equals(TransportConstants.UNSUPPORTED_VEHICLE_INFO_REASON)) {
+                        DebugTool.logError(TAG, "Vehicle is not supported. Stopping OEM app " + APP_ID);
+                        stopProxy();
+                    }
                 }
 
                 @Override
