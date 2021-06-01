@@ -118,6 +118,8 @@ public class SdlService extends Service {
                     DebugTool.logError(TAG, "Issue when removing notification and channel", e);
                 }
             }
+
+            SdlService.this.stopSelf();
         }
     };
 
