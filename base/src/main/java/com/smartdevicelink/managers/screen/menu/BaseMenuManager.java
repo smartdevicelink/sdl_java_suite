@@ -1503,6 +1503,9 @@ abstract class BaseMenuManager extends BaseSubManager {
     }
 
     List<MenuCell> removeUnusedProperties(List<MenuCell> menuCells) {
+        if (menuCells == null) {
+            return null;
+        }
         List<MenuCell> removePropertiesClone = cloneMenuCellsList(menuCells);
         for (MenuCell cell : removePropertiesClone) {
             cell.setVoiceCommands(null);

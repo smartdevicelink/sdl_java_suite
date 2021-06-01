@@ -563,7 +563,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
     void addUniqueNamesBasedOnStrippedCells(List<ChoiceCell> strippedCells, List<ChoiceCell> unstrippedCells) {
         if (strippedCells == null || unstrippedCells == null || strippedCells.size() != unstrippedCells.size()) {
-          //  throw SdlException
+          return;
         }
         // Tracks how many of each cell primary text there are so that we can append numbers to make each unique as necessary
         HashMap<ChoiceCell, Integer> dictCounter = new HashMap<>();
