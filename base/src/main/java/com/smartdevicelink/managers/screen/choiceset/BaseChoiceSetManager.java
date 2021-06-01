@@ -746,9 +746,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     }
 
     private boolean hasTextFieldOfName(TextFieldName textFieldName) {
-        if (textFieldName == TextFieldName.secondaryText) {
-            return false;
-        }
         return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, textFieldName);
     }
 

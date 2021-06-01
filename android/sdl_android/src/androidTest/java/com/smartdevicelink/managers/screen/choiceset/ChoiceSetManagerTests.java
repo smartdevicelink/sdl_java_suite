@@ -474,4 +474,51 @@ public class ChoiceSetManagerTests {
         verify(testKeyboardOp, times(0)).dismissKeyboard();
         verify(testKeyboardOp2, times(1)).dismissKeyboard();
     }
+
+    @Test
+    public void testUniquenessForAvailableFields() {
+        WindowCapability windowCapability = new WindowCapability();
+        TextField secondaryText = new TextField();
+        secondaryText.setName(TextFieldName.secondaryText);
+        TextField tertiaryText = new TextField();
+        tertiaryText.setName(TextFieldName.tertiaryText);
+
+        List<TextField> textFields = new ArrayList<>();
+        textFields.add(secondaryText);
+        textFields.add(tertiaryText);
+        windowCapability.setTextFields(textFields);
+
+        ImageField choiceImage = new ImageField();
+        choiceImage.setName(ImageFieldName.choiceImage);
+        ImageField choiceSecondaryImage = new ImageField();
+        choiceSecondaryImage.setName(ImageFieldName.choiceSecondaryImage);
+        List<ImageField> imageFieldList = new ArrayList<>();
+        imageFieldList.add(choiceImage);
+        imageFieldList.add(choiceSecondaryImage);
+        windowCapability.setImageFields(imageFieldList);
+
+        csm.defaultMainWindowCapability = windowCapability;
+
+        ChoiceCell cell1 = new ChoiceCell("Item 1", "null", "tertiaryText", null, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_ARTWORK);
+        ChoiceCell cell2 = new ChoiceCell("Item 1", "null2", "tertiaryText2", null, null, null);
+        List<ChoiceCell> choiceCellList = new ArrayList<>();
+        choiceCellList.add(cell1);
+        choiceCellList.add(cell2);
+
+        List<ChoiceCell> removedProperties = csm.removeUnusedProperties(choiceCellList);
+        assertNotNull(removedProperties.get(0).getSecondaryText());
+
+        textFields.remove(secondaryText);
+        textFields.remove(tertiaryText);
+        imageFieldList.remove(choiceImage);
+        imageFieldList.remove(choiceSecondaryImage);
+
+        removedProperties = csm.removeUnusedProperties(choiceCellList);
+        csm.addUniqueNamesBasedOnStrippedCells(removedProperties, choiceCellList);
+        assertEquals(choiceCellList.get(1).getUniqueText(), "Item 1 (2)");
+
+
+    }
+
+
 }

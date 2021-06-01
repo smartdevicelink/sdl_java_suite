@@ -696,7 +696,7 @@ public class MenuManagerTests {
         removedProperties = menuManager.removeUnusedProperties(menuCellList);
         assertNull(removedProperties.get(0).getSecondaryText());
         assertNull(removedProperties.get(0).getTertiaryText());
-        
+
         menuManager.addUniqueNamesBasedOnStrippedCells(removedProperties, menuCellList);
         assertEquals(menuCellList.get(1).getUniqueTitle(), "Text1 (2)");
 
@@ -959,5 +959,6 @@ public class MenuManagerTests {
 
         return Arrays.asList(A, B, C, D);
     }
+
 
 }
