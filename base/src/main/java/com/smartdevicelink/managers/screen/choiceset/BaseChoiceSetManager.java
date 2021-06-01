@@ -39,7 +39,6 @@ import androidx.annotation.Nullable;
 
 import com.livio.taskmaster.Queue;
 import com.livio.taskmaster.Task;
-import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
