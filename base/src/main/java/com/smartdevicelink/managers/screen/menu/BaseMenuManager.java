@@ -177,7 +177,6 @@ abstract class BaseMenuManager extends BaseSubManager {
         List<MenuCell> clonedCells = cloneMenuCellsList(cells);
 
         // Check for cell lists with completely duplicate information, or any duplicate voiceCommands and return if it fails (logs are in the called method).
-        //TODO test what happens when we send a null list to menuCellsAreUnique
         if (clonedCells != null && !menuCellsAreUnique(clonedCells, new ArrayList<String>())) {
             return;
         }
@@ -205,8 +204,8 @@ abstract class BaseMenuManager extends BaseSubManager {
             // (we probably don't need to consider them changing between now and when they're actually sent to the HU unless the menu layout changes)
             // and check for uniqueness again. Then we'll add unique identifiers to primary text if there are duplicates.
             // Then we transfer the primary text identifiers back to the main cells and add those to an operation to be sent.
-            List<MenuCell> cellsWithRemovedProperties = removeUnusedProperties(clonedCells);
-            addUniqueNamesBasedOnStrippedCells(cellsWithRemovedProperties, clonedCells);
+            List<MenuCell> strippedCellsClone = removeUnusedProperties(clonedCells);
+            addUniqueNamesBasedOnStrippedCells(strippedCellsClone, clonedCells);
 
         }
 
@@ -1476,9 +1475,8 @@ abstract class BaseMenuManager extends BaseSubManager {
         if (strippedCells == null || unstrippedCells == null || strippedCells.size() != unstrippedCells.size()) {
             return;
         }
-
+        // Tracks how many of each cell primary text there are so that we can append numbers to make each unique as necessary
         HashMap<MenuCell, Integer> dictCounter = new HashMap<>();
-
         for (int i = 0; i < strippedCells.size(); i++) {
             MenuCell cell = strippedCells.get(i);
             Integer counter = dictCounter.get(cell);
@@ -1508,6 +1506,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         }
         List<MenuCell> removePropertiesClone = cloneMenuCellsList(menuCells);
         for (MenuCell cell : removePropertiesClone) {
+            // Strip away fields that cannot be used to determine uniqueness visually including fields not supported by the HMI
             cell.setVoiceCommands(null);
 
             // Don't check ImageFieldName.subMenuIcon because it was added in 7.0 when the feature was added in 5.0.
@@ -1549,7 +1548,7 @@ abstract class BaseMenuManager extends BaseSubManager {
      * @param allVoiceCommands List of String's for VoiceCommands (Used for recursive calls to check voiceCommands of the cells)
      * @return Boolean that indicates whether menuCells are unique or not
      */
-    boolean menuCellsAreUnique(List<MenuCell> cells, ArrayList<String> allVoiceCommands) {
+    private boolean menuCellsAreUnique(List<MenuCell> cells, ArrayList<String> allVoiceCommands) {
         //Check all voice commands for identical items and check each list of cells for identical cells
         HashSet<MenuCell> identicalCellsCheckSet = new HashSet<>();
 
@@ -1566,7 +1565,7 @@ abstract class BaseMenuManager extends BaseSubManager {
                 }
             }
 
-            // Voice commands have to be identical across all lists, Not using cloned cell here because we set the clone's VoiceCommands to null for visual check only
+            // Voice commands have to be identical across all lists
             if (cell.getVoiceCommands() == null) {
                 continue;
             }
