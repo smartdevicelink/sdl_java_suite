@@ -16,7 +16,9 @@ import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.lifecycle.ISessionListener;
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
+import com.smartdevicelink.managers.lifecycle.LifecycleManager;
 import com.smartdevicelink.managers.screen.AlertView;
 import com.smartdevicelink.managers.screen.OnButtonListener;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
@@ -102,6 +104,24 @@ public class SdlService extends Service {
             enterForeground();
         }
     }
+
+    final ISessionListener sessionListener = new ISessionListener() {
+        @Override
+        public void onSessionEnd()
+        {
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            if (notificationManager != null) {
+                try {
+                    notificationManager.cancel(FOREGROUND_SERVICE_ID);
+                    notificationManager.deleteNotificationChannel(APP_ID);
+                } catch (Exception e) {
+                    DebugTool.logError(TAG, "Issue when removing notification and channel", e);
+                }
+            }
+
+            SdlService.this.stopSelf();
+        }
+    };
 
     // Helper method to let the service enter foreground mode
     @SuppressLint("NewApi")
@@ -274,6 +294,7 @@ public class SdlService extends Service {
 
             sdlManager = builder.build();
             sdlManager.start();
+            sdlManager.setSessionListener(sessionListener);
         }
     }
 

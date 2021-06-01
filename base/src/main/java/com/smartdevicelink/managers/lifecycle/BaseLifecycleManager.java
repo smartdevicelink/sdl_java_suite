@@ -133,6 +133,7 @@ abstract class BaseLifecycleManager {
     BaseTransportConfig _transportConfig;
     private Taskmaster taskmaster;
     private boolean didCheckSystemInfo = false;
+    protected ISessionListener sessionListener;
 
     BaseLifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener) {
         this.appConfig = appConfig;
@@ -966,6 +967,10 @@ abstract class BaseLifecycleManager {
         @Override
         public void onSessionEnded(int sessionID) {
             DebugTool.logInfo(TAG, "on protocol session ended");
+
+            if(sessionListener != null) {
+                sessionListener.onSessionEnd();
+            }
         }
 
         @Override
