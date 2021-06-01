@@ -1494,7 +1494,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             }
 
             if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
-                addUniqueNamesToCellsWithDuplicatePrimaryText(cell.getSubCells());
+                addUniqueNamesBasedOnStrippedCells(cell.getSubCells(), unstrippedCells.get(i).getSubCells());
             }
 
         }
@@ -1526,6 +1526,7 @@ abstract class BaseMenuManager extends BaseSubManager {
                 if (!hasImageFieldOfName(ImageFieldName.menuSubMenuSecondaryImage)) {
                     cell.setSecondaryArtwork(null);
                 }
+                cell.setSubCells(removeUnusedProperties(cell.getSubCells()));
             } else {
                 if (!hasTextFieldOfName(TextFieldName.menuCommandSecondaryText)) {
                     cell.setSecondaryText(null);
