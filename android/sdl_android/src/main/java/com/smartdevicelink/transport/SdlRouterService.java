@@ -1110,9 +1110,17 @@ public class SdlRouterService extends Service {
                 break;
             }
         }
-        if (!currentAppInfo.checkIfVehicleSupported(currentAppInfo.getVehicleMakesList(), receivedVehicleType)) {
+
+        if (currentAppInfo == null) {
+            DebugTool.logError(TAG, "AppInfo for current package is not available. Shutting down");
             return false;
         }
+
+        if (!SdlAppInfo.checkIfVehicleSupported(currentAppInfo.getVehicleMakesList(), receivedVehicleType)) {
+            DebugTool.logError(TAG, "Received VD is not supported. Shutting down");
+            return false;
+        }
+
         return true;
     }
 
@@ -2858,6 +2866,9 @@ public class SdlRouterService extends Service {
         pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE, getBaseContext().getPackageName());
         pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME, new ComponentName(SdlRouterService.this, SdlRouterService.this.getClass()));
         pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_PING, true);
+        if (receivedVehicleType != null) {
+            pingIntent.putExtra(TransportConstants.VEHICLE_INFO, receivedVehicleType.getStore());
+        }
     }
 
     private void startClientPings() {

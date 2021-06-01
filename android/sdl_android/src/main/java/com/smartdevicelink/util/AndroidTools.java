@@ -43,9 +43,11 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
+import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.BatteryManager;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
@@ -159,7 +161,6 @@ public class AndroidTools {
         List<SdlAppInfo> sdlAppInfoList = new ArrayList<>();
         Intent intent = new Intent(TransportConstants.ROUTER_SERVICE_ACTION);
         List<ResolveInfo> resolveInfoList = context.getPackageManager().queryIntentServices(intent, PackageManager.GET_META_DATA);
-        boolean oldRouterService = false;
 
         if (resolveInfoList != null && resolveInfoList.size() > 0) {
             PackageManager packageManager = context.getPackageManager();
@@ -170,9 +171,6 @@ public class AndroidTools {
                     try {
                         packageInfo = packageManager.getPackageInfo(info.serviceInfo.packageName, 0);
                         SdlAppInfo appInformation = new SdlAppInfo(info, packageInfo, context);
-                        if (appInformation.routerServiceVersion < 14) {
-                            oldRouterService = true;
-                        }
                         sdlAppInfoList.add(appInformation);
 
                     } catch (NameNotFoundException e) {
@@ -184,14 +182,14 @@ public class AndroidTools {
 
             List<SdlAppInfo> sdlAppInfoListVehicleType = new ArrayList<>();
 
-            if (!oldRouterService) {
-                for (SdlAppInfo appInformation : sdlAppInfoList) {
-                    if (appInformation.checkIfVehicleSupported(appInformation.vehicleMakesList, type)) {
-                        sdlAppInfoListVehicleType.add(appInformation);
-                    }
+            for (SdlAppInfo appInformation : sdlAppInfoList) {
+                if (appInformation.routerServiceVersion < 14) {
+                    sdlAppInfoListVehicleType.add(appInformation);
+                } else if (SdlAppInfo.checkIfVehicleSupported(appInformation.vehicleMakesList, type)) {
+                    sdlAppInfoListVehicleType.add(appInformation);
                 }
-                sdlAppInfoList = sdlAppInfoListVehicleType;
             }
+            sdlAppInfoList = sdlAppInfoListVehicleType;
 
             if (comparator != null) {
                 Collections.sort(sdlAppInfoList, comparator);
@@ -307,5 +305,46 @@ public class AndroidTools {
                 return null;
             }
         }
+    }
+
+    public static List<VehicleType> getVehicleTypesFromManifest(Context context, Class<?> className, int manifestFieldId) {
+        XmlResourceParser parser = null;
+        try {
+            ComponentName myService = new ComponentName(context, className);
+            Bundle metaData = context.getPackageManager().getServiceInfo(myService, PackageManager.GET_META_DATA).metaData;
+            int xmlFieldId = metaData.getInt(context.getResources().getString(manifestFieldId));
+
+            if (xmlFieldId == 0) {
+                Log.e(TAG, "Field with id " + manifestFieldId + " was not found in manifest");
+                return null;
+            }
+
+            parser = context.getResources().getXml(xmlFieldId);
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, "Failed to get OEM vehicle data filter: " + e.getMessage()+ " - assume vehicle data is supported");
+            return null;
+        }
+
+        return SdlAppInfo.deserializeVehicleMake(parser);
+    }
+
+    public static boolean isSupportableVehicleType(List<VehicleType> supportedList, VehicleType typeToCheck) {
+        if (!SdlAppInfo.checkIfVehicleSupported(supportedList, typeToCheck)) {
+            DebugTool.logError(TAG, "Vehicle type is NOT supportable by current package");
+            DebugTool.logError(TAG, "Received VD: " + typeToCheck.getStore().toString());
+
+            StringBuilder builder = new StringBuilder();
+            builder.append("Supportable VD: ");
+            for (VehicleType vtype : supportedList) {
+                builder.append(vtype.getStore().toString());
+                builder.append("; ");
+            }
+
+            DebugTool.logError(TAG, builder.toString());
+            return false;
+        }
+
+        DebugTool.logInfo(TAG, "Vehicle type is supportable by current package");
+        return true;
     }
 }

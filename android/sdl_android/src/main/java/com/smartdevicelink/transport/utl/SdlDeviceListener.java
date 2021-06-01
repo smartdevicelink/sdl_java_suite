@@ -190,8 +190,8 @@ public class SdlDeviceListener {
 
         public void sendStartService() {
             SdlDeviceListener sdlListener = this.provider.get();
+            SdlPacket serviceProbe = SdlPacketFactory.createStartSession(SessionType.RPC, 0x00, (byte)0x01, (byte)0x00, false);
             Version v = new Version(5, 4, 0);
-            SdlPacket serviceProbe = SdlPacketFactory.createStartSession(SessionType.RPC, 0x00, (byte)v.getMajor(), (byte)0x00, false);
             serviceProbe.putTag(ControlFrameTags.RPC.StartService.PROTOCOL_VERSION, v.toString());
             byte[] constructed = serviceProbe.constructPacket();
             if (sdlListener.bluetoothTransport != null && sdlListener.bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {

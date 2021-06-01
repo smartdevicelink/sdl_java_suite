@@ -98,6 +98,7 @@ public class TransportConstants {
     public static final String SDL_ERROR_NOTIFICATION_CHANNEL_ID = "sdl_error_notification_channel";
     public static final int SDL_ERROR_NOTIFICATION_CHANNEL_ID_INT = 99;
     public static final String VEHICLE_INFO = "vehicle_info";
+    public static final String UNSUPPORTED_VEHICLE_INFO_REASON = "Vehicle Info is not supported";
 
 
     /**

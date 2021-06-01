@@ -32,13 +32,11 @@
 
 package com.smartdevicelink.test.util;
 
-import android.app.Instrumentation;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
-import android.content.res.Resources;
 import android.os.Bundle;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -62,9 +60,6 @@ import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by Joey Grover on 2/20/18.
@@ -215,9 +210,7 @@ public class SdlAppInfoTests {
         type2.setTrim(TestValues.GENERAL_STRING);
         type2.setModelYear(TestValues.GENERAL_INTEGER.toString());
 
-        SdlAppInfo defaultInfo = new SdlAppInfo(defaultResolveInfo, defaultPackageInfo, context);
-
-        assertTrue(defaultInfo.checkIfVehicleSupported(Arrays.asList(type1, type2), type1));
+        assertTrue(SdlAppInfo.checkIfVehicleSupported(Arrays.asList(type1, type2), type1));
     }
 
     @Test
@@ -243,9 +236,7 @@ public class SdlAppInfoTests {
         type3.setTrim(TestValues.GENERAL_STRING);
         type3.setModelYear(TestValues.GENERAL_INTEGER.toString());
 
-        SdlAppInfo defaultInfo = new SdlAppInfo(defaultResolveInfo, defaultPackageInfo, context);
-
-        assertFalse(defaultInfo.checkIfVehicleSupported(Arrays.asList(type1, type2), type3));
+        assertFalse(SdlAppInfo.checkIfVehicleSupported(Arrays.asList(type1, type2), type3));
     }
 
 }
