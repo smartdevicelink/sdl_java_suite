@@ -22,6 +22,7 @@ import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.GetSystemCapability;
 import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
+import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnSystemCapabilityUpdated;
 import com.smartdevicelink.proxy.rpc.PhoneCapability;
@@ -37,10 +38,13 @@ import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
+import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
+import com.smartdevicelink.proxy.rpc.enums.PredefinedLayout;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.Result;
@@ -1074,5 +1078,34 @@ public class SystemCapabilityManagerTests {
         public PermissionManager getPermissionManager() {
             return null;
         }
+    }
+
+    @Test
+    public void testFixingIncorrectCapabilities() {
+        SetDisplayLayoutResponse setDisplayLayoutResponse;
+
+        DisplayCapabilities RegisterAppInterFaceCapabilities = new DisplayCapabilities()
+                .setImageFields(Collections.singletonList(new ImageField(ImageFieldName.graphic, Collections.singletonList(FileType.GRAPHIC_PNG))));
+
+        DisplayCapabilities setDisplayLayoutCapabilities = new DisplayCapabilities()
+                .setImageFields(new ArrayList<ImageField>());
+
+        LifecycleManager lcm = new LifecycleManager(new BaseLifecycleManager.AppConfig(), null, null);
+        lcm.initialMediaCapabilities = RegisterAppInterFaceCapabilities;
+
+
+        // Test switching to MEDIA template - Capabilities in setDisplayLayoutResponse should be replaced with the ones from RAIR
+        lcm.lastDisplayLayoutRequestTemplate = PredefinedLayout.MEDIA.toString();
+        setDisplayLayoutResponse = new SetDisplayLayoutResponse()
+                .setDisplayCapabilities(setDisplayLayoutCapabilities);
+        lcm.fixIncorrectDisplayCapabilities(setDisplayLayoutResponse);
+        assertEquals(RegisterAppInterFaceCapabilities, setDisplayLayoutResponse.getDisplayCapabilities());
+
+        // Test switching to non-MEDIA template - Capabilities in setDisplayLayoutResponse should not be altered
+        lcm.lastDisplayLayoutRequestTemplate = PredefinedLayout.TEXT_WITH_GRAPHIC.toString();
+        setDisplayLayoutResponse = new SetDisplayLayoutResponse()
+                .setDisplayCapabilities(setDisplayLayoutCapabilities);
+        lcm.fixIncorrectDisplayCapabilities(setDisplayLayoutResponse);
+        assertEquals(setDisplayLayoutCapabilities, setDisplayLayoutResponse.getDisplayCapabilities());
     }
 }
