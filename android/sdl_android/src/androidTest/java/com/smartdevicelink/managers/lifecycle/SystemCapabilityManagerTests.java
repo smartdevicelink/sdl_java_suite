@@ -942,6 +942,31 @@ public class SystemCapabilityManagerTests {
         assertNull(systemCapabilityManager.getWindowCapability(PredefinedWindows.PRIMARY_WIDGET.getValue()));
     }
 
+    /**
+     * Test that when we receive template "NON_MEDIA" it gets converted to "NON-MEDIA"
+     */
+    @Test
+    public void testSyncNonMediaBug() {
+        InternalSDLInterface iSDL = new InternalSDLInterface();
+        SystemCapabilityManager systemCapabilityManager = createSampleManager(iSDL);
+        OnRPCListener dlRpcListener = iSDL.rpcListeners.get(FunctionID.SET_DISPLAY_LAYOUT.getId()).get(0);
+
+        DisplayCapabilities displayCapabilities = new DisplayCapabilities();
+        displayCapabilities.setGraphicSupported(true);
+        List<String> templatesAvailable = new ArrayList<>();
+        templatesAvailable.add("NON_MEDIA");
+        templatesAvailable.add("MEDIA");
+        displayCapabilities.setTemplatesAvailable(templatesAvailable);
+
+        SetDisplayLayoutResponse newLayout = new SetDisplayLayoutResponse();
+        newLayout.setDisplayCapabilities(displayCapabilities);
+        newLayout.setSuccess(true);
+        newLayout.setResultCode(Result.SUCCESS);
+        dlRpcListener.onReceived(newLayout);
+
+        assertTrue(systemCapabilityManager.getDefaultMainWindowCapability().getTemplatesAvailable().contains("NON-MEDIA"));
+    }
+
     private class InternalSDLInterface implements ISdl {
         private final Object RPC_LISTENER_LOCK = new Object();
         SparseArray<CopyOnWriteArrayList<OnRPCListener>> rpcListeners = new SparseArray<>();
