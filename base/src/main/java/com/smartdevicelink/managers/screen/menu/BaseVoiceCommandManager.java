@@ -56,7 +56,7 @@ import java.util.List;
 
 abstract class BaseVoiceCommandManager extends BaseSubManager {
     private static final String TAG = "BaseVoiceCommandManager";
-    List<VoiceCommand> voiceCommands, currentVoiceCommands, originalVoiceCommands;
+    List<VoiceCommand> voiceCommands, currentVoiceCommands;
 
     int lastVoiceCommandId;
     private static final int voiceCommandIdMin = 1900000000;
@@ -132,25 +132,36 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
     public void setVoiceCommands(List<VoiceCommand> voiceCommands) {
 
         // we actually need voice commands to set.
-        if (voiceCommands == null || voiceCommands.equals(this.originalVoiceCommands)) {
-            DebugTool.logInfo(TAG, "Voice commands list was null or matches the current voice commands");
+        if (voiceCommands == null) {
+            DebugTool.logInfo(TAG, "Voice commands list was null");
             return;
         }
 
-        List<VoiceCommand> validatedVoiceCommands = removeEmptyVoiceCommands(voiceCommands);
+        // Clone voice commands
+        this.voiceCommands = new ArrayList<>();
+        for (VoiceCommand voiceCommand : voiceCommands) {
+            if (voiceCommand == null) {
+                continue;
+            }
+            this.voiceCommands.add(voiceCommand.clone());
+        }
 
-        if (validatedVoiceCommands.size() == 0) {
+        List<VoiceCommand> validatedVoiceCommands = removeEmptyVoiceCommands(this.voiceCommands);
+
+        if (validatedVoiceCommands.size() == 0 && voiceCommands.size() > 0) {
             DebugTool.logError(TAG, "New voice commands are invalid, skipping...");
+            this.voiceCommands = null;
             return;
         }
 
         if (!isVoiceCommandsUnique(validatedVoiceCommands)) {
             DebugTool.logError(TAG, "Not all voice command strings are unique across all voice commands. Voice commands will not be set.");
+            this.voiceCommands = null;
             return;
         }
 
-        this.originalVoiceCommands = new ArrayList<>(voiceCommands);
         this.voiceCommands = validatedVoiceCommands;
+
         updateIdsOnVoiceCommands(this.voiceCommands);
 
         cleanTransactionQueue();
@@ -190,7 +201,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
                 continue;
             }
             VoiceCommandUpdateOperation vcOperation = (VoiceCommandUpdateOperation) operation;
-            vcOperation.oldVoiceCommands = newCurrentVoiceCommands;
+            vcOperation.setOldVoiceCommands(newCurrentVoiceCommands);
         }
     }
 
@@ -249,8 +260,8 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
             @Override
             public void onNotified(RPCNotification notification) {
                 OnCommand onCommand = (OnCommand) notification;
-                if (voiceCommands != null && voiceCommands.size() > 0) {
-                    for (VoiceCommand command : voiceCommands) {
+                if (currentVoiceCommands != null && currentVoiceCommands.size() > 0) {
+                    for (VoiceCommand command : currentVoiceCommands) {
                         if (onCommand.getCmdID() == command.getCommandId()) {
                             if (command.getVoiceCommandSelectionListener() != null) {
                                 command.getVoiceCommandSelectionListener().onVoiceCommandSelected();

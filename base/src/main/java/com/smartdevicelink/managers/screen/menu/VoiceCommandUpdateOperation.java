@@ -22,7 +22,7 @@ class VoiceCommandUpdateOperation extends Task {
     private List<VoiceCommand> pendingVoiceCommands;
     private List<DeleteCommand> deleteVoiceCommands;
     private List<AddCommand> addCommandsToSend;
-    private VoiceCommandChangesListener voiceCommandListener;
+    VoiceCommandChangesListener voiceCommandListener;
     private List<VoiceCommand> currentVoiceCommands;
     private HashMap<RPCRequest, String> errorObject;
 
@@ -53,6 +53,15 @@ class VoiceCommandUpdateOperation extends Task {
             onFinished();
             return;
         }
+        // Check if a voiceCommand has already been uploaded and update its VoiceCommandSelectionListener to
+        // prevent calling the wrong listener in a case where a voice command was uploaded and then its voiceCommandSelectionListener was updated in another upload.
+        if (pendingVoiceCommands != null && pendingVoiceCommands.size() > 0) {
+            for (VoiceCommand voiceCommand : pendingVoiceCommands) {
+                if (currentVoiceCommands.contains(voiceCommand)) {
+                    currentVoiceCommands.get(currentVoiceCommands.indexOf(voiceCommand)).setVoiceCommandSelectionListener(voiceCommand.getVoiceCommandSelectionListener());
+                }
+            }
+        }
 
         sendDeleteCurrentVoiceCommands(new CompletionListener() {
             @Override
@@ -82,14 +91,23 @@ class VoiceCommandUpdateOperation extends Task {
 
     private void sendDeleteCurrentVoiceCommands(final CompletionListener listener) {
 
-        if (oldVoiceCommands == null || oldVoiceCommands.isEmpty()) {
+        if (oldVoiceCommands == null || oldVoiceCommands.size() == 0) {
             if (listener != null) {
                 listener.onComplete(true);
             }
             return;
         }
 
-        deleteVoiceCommands = deleteCommandsForVoiceCommands(oldVoiceCommands);
+        List<VoiceCommand> voiceCommandsToDelete = voiceCommandsInListNotInSecondList(oldVoiceCommands, pendingVoiceCommands);
+
+        if (voiceCommandsToDelete.size() == 0) {
+            if (listener != null) {
+                listener.onComplete(true);
+            }
+            return;
+        }
+
+        deleteVoiceCommands = deleteCommandsForVoiceCommands(voiceCommandsToDelete);
 
         internalInterface.get().sendRPCs(deleteVoiceCommands, new OnMultipleRequestListener() {
             @Override
@@ -156,14 +174,16 @@ class VoiceCommandUpdateOperation extends Task {
 
     private void sendCurrentVoiceCommands(final CompletionListener listener) {
 
-        if (pendingVoiceCommands == null || pendingVoiceCommands.size() == 0) {
+        List<VoiceCommand> voiceCommandsToAdd  = voiceCommandsInListNotInSecondList(pendingVoiceCommands, oldVoiceCommands);
+
+        if (voiceCommandsToAdd.size() == 0) {
             if (listener != null) {
-                listener.onComplete(true); // no voice commands to send doesnt mean that its an error
+                listener.onComplete(true); // no voice commands to send doesn't mean that its an error
             }
             return;
         }
 
-        addCommandsToSend = addCommandsForVoiceCommands(pendingVoiceCommands);
+        addCommandsToSend = addCommandsForVoiceCommands(voiceCommandsToAdd);
 
         internalInterface.get().sendRPCs(addCommandsToSend, new OnMultipleRequestListener() {
             @Override
@@ -205,6 +225,20 @@ class VoiceCommandUpdateOperation extends Task {
                 }
             }
         });
+    }
+
+    List<VoiceCommand> voiceCommandsInListNotInSecondList(List<VoiceCommand> firstList, List<VoiceCommand> secondList) {
+        if (secondList == null || secondList.size() == 0) {
+            return firstList;
+        }
+        List<VoiceCommand> differencesList = new ArrayList<>(firstList);
+        differencesList.removeAll(secondList);
+        return differencesList;
+    }
+
+    public void setOldVoiceCommands(List<VoiceCommand> oldVoiceCommands) {
+        this.oldVoiceCommands = oldVoiceCommands;
+        this.currentVoiceCommands = new ArrayList<>(oldVoiceCommands);
     }
 
     // Create AddCommand List
