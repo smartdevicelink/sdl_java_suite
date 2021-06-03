@@ -77,7 +77,8 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport {
     Handler timeOutHandler;
     Runnable socketRunnable;
     boolean keepSocketAlive = true;
-
+    BluetoothDevice connectedDevice;
+    
     /**
      * Constructor. Prepares a new BluetoothChat session.
      *
@@ -110,6 +111,14 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport {
 
     public void setKeepSocketAlive(boolean keepSocketAlive) {
         this.keepSocketAlive = keepSocketAlive;
+    }
+
+    /**
+     * A method to retrieve the currently connected bluetooth device
+     * @return the connected bluetooth device if connected, null otherwise.
+     */
+    public BluetoothDevice getConnectedDevice(){
+        return connectedDevice;
     }
 
     /**
@@ -225,6 +234,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport {
 
         //Store a static name of the device that is connected.
         if (device != null) {
+            connectedDevice = device;
             connectedDeviceName = device.getName();
             connectedDeviceAddress = device.getAddress();
             if (connectedDeviceAddress != null) {

@@ -34,11 +34,27 @@ package com.smartdevicelink.managers;
 
 import androidx.annotation.NonNull;
 
+import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.file.FileManager;
+import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.managers.screen.ScreenManager;
+import com.smartdevicelink.protocol.ISdlServiceListener;
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.RPCMessage;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCRequestListener;
+import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.Version;
+
+import java.util.List;
 
 /**
  * <strong>SDLManager</strong> <br>
@@ -178,4 +194,132 @@ public class SdlManager extends BaseSdlManager {
             super(appId, appName, listener);
         }
     }
+    private ISdl _internalInterface = new ISdl() {
+        @Override
+        public void start() {
+            lifecycleManager.getInternalInterface(SdlManager.this).start();
+        }
+
+        @Override
+        public void stop() {
+            lifecycleManager.getInternalInterface(SdlManager.this).start();
+        }
+
+        @Override
+        public boolean isConnected() {
+            return lifecycleManager.getInternalInterface(SdlManager.this).isConnected();
+        }
+
+        @Override
+        public void addServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {
+            lifecycleManager.getInternalInterface(SdlManager.this).addServiceListener(serviceType, sdlServiceListener);
+        }
+
+        @Override
+        public void removeServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {
+            lifecycleManager.getInternalInterface(SdlManager.this).removeServiceListener(serviceType, sdlServiceListener);
+        }
+
+        @Override
+        public void startVideoService(VideoStreamingParameters parameters, boolean encrypted, boolean withPendingRestart) {
+            lifecycleManager.getInternalInterface(SdlManager.this).startVideoService(parameters, encrypted, withPendingRestart);
+        }
+
+        @Override
+        public void startAudioService(boolean encrypted) {
+            lifecycleManager.getInternalInterface(SdlManager.this).startAudioService(encrypted);
+        }
+
+        @Override
+        public void sendRPC(RPCMessage message) {
+            lifecycleManager.getInternalInterface(SdlManager.this).sendRPC(message);
+        }
+
+        @Override
+        public void sendRPCs(List<? extends RPCMessage> rpcs, OnMultipleRequestListener listener) {
+            lifecycleManager.getInternalInterface(SdlManager.this).sendRPCs(rpcs, listener);
+        }
+
+        @Override
+        public void sendSequentialRPCs(List<? extends RPCMessage> rpcs, OnMultipleRequestListener listener) {
+            lifecycleManager.getInternalInterface(SdlManager.this).sendSequentialRPCs(rpcs, listener);
+        }
+
+        @Override
+        public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
+            lifecycleManager.getInternalInterface(SdlManager.this).addOnRPCNotificationListener(notificationId, listener);
+        }
+
+        @Override
+        public boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
+            return  lifecycleManager.getInternalInterface(SdlManager.this).removeOnRPCNotificationListener(notificationId, listener);
+        }
+
+        @Override
+        public void addOnRPCRequestListener(FunctionID functionID, OnRPCRequestListener listener) {
+            lifecycleManager.getInternalInterface(SdlManager.this).addOnRPCRequestListener(functionID, listener);
+        }
+
+        @Override
+        public boolean removeOnRPCRequestListener(FunctionID functionID, OnRPCRequestListener listener) {
+            return  lifecycleManager.getInternalInterface(SdlManager.this).removeOnRPCRequestListener(functionID, listener);
+        }
+
+        @Override
+        public void addOnRPCListener(FunctionID responseId, OnRPCListener listener) {
+            lifecycleManager.getInternalInterface(SdlManager.this).addOnRPCListener(responseId, listener);
+        }
+
+        @Override
+        public boolean removeOnRPCListener(FunctionID responseId, OnRPCListener listener) {
+            return  lifecycleManager.getInternalInterface(SdlManager.this).removeOnRPCListener(responseId, listener);
+        }
+
+        @Override
+        public RegisterAppInterfaceResponse getRegisterAppInterfaceResponse() {
+            return  lifecycleManager.getInternalInterface(SdlManager.this).getRegisterAppInterfaceResponse();
+        }
+
+        @Override
+        public boolean isTransportForServiceAvailable(SessionType serviceType) {
+            return  lifecycleManager.getInternalInterface(SdlManager.this).isTransportForServiceAvailable(serviceType);
+        }
+
+        @NonNull
+        @Override
+        public SdlMsgVersion getSdlMsgVersion() {
+            return  lifecycleManager.getInternalInterface(SdlManager.this).getSdlMsgVersion();
+        }
+
+        @NonNull
+        @Override
+        public Version getProtocolVersion() {
+            return  lifecycleManager.getInternalInterface(SdlManager.this).getProtocolVersion();
+        }
+
+        @Override
+        public long getMtu(SessionType serviceType) {
+            return lifecycleManager.getInternalInterface(SdlManager.this).getMtu(serviceType);
+        }
+
+        @Override
+        public void startRPCEncryption() {
+            lifecycleManager.getInternalInterface(SdlManager.this).startRPCEncryption();
+        }
+
+        @Override
+        public Taskmaster getTaskmaster() {
+            return  lifecycleManager.getInternalInterface(SdlManager.this).getTaskmaster();
+        }
+
+        @Override
+        public SystemCapabilityManager getSystemCapabilityManager() {
+            return  lifecycleManager.getInternalInterface(SdlManager.this).getSystemCapabilityManager();
+        }
+
+        @Override
+        public PermissionManager getPermissionManager() {
+            return permissionManager;
+        }
+    };
 }

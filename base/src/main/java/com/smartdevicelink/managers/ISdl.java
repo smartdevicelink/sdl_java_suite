@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
+import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -90,8 +91,9 @@ public interface ISdl {
      *
      * @param parameters desired video streaming params for this service to be started with
      * @param encrypted  flag to start this service with encryption or not
+     * @param withPendingRestart flag to start this service right after OnSystemCapabilityUpdated
      */
-    void startVideoService(VideoStreamingParameters parameters, boolean encrypted);
+    void startVideoService(VideoStreamingParameters parameters, boolean encrypted, boolean withPendingRestart);
 
     /**
      * Starts the Audio streaming service
@@ -213,6 +215,13 @@ public interface ISdl {
     Version getProtocolVersion();
 
     /**
+     * Get the max payload size for a packet to be sent to the module
+     *
+     * @return the max transfer unit
+     */
+    long getMtu(SessionType serviceType);
+
+    /**
      * Start encrypted RPC service
      */
     void startRPCEncryption();
@@ -220,4 +229,6 @@ public interface ISdl {
     Taskmaster getTaskmaster();
 
     SystemCapabilityManager getSystemCapabilityManager();
+
+    PermissionManager getPermissionManager();
 }

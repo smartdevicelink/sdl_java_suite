@@ -59,6 +59,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -75,7 +76,7 @@ class PreloadChoicesOperation extends Task {
     private boolean choiceError = false;
 
     PreloadChoicesOperation(ISdl internalInterface, FileManager fileManager, String displayName, WindowCapability defaultMainWindowCapability,
-                            Boolean isVROptional, HashSet<ChoiceCell> cellsToPreload, CompletionListener listener) {
+                            Boolean isVROptional, LinkedHashSet<ChoiceCell> cellsToPreload, CompletionListener listener) {
         super("PreloadChoicesOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
@@ -195,7 +196,7 @@ class PreloadChoicesOperation extends Task {
             vrCommands = cell.getVoiceCommands();
         }
 
-        String menuName = shouldSendChoiceText() ? cell.getText() : null;
+        String menuName = shouldSendChoiceText() ? cell.getUniqueText() : null;
 
         if (menuName == null) {
             DebugTool.logError(TAG, "Could not convert Choice Cell to CreateInteractionChoiceSet. It will not be shown. Cell: " + cell.toString());
@@ -261,20 +262,13 @@ class PreloadChoicesOperation extends Task {
     List<SdlArtwork> artworksToUpload() {
         List<SdlArtwork> artworksToUpload = new ArrayList<>();
         for (ChoiceCell cell : cellsToUpload) {
-            if (shouldSendChoicePrimaryImage() && artworkNeedsUpload(cell.getArtwork())) {
+            if (shouldSendChoicePrimaryImage() && fileManager.get() != null && fileManager.get().fileNeedsUpload(cell.getArtwork())) {
                 artworksToUpload.add(cell.getArtwork());
             }
-            if (shouldSendChoiceSecondaryImage() && artworkNeedsUpload(cell.getSecondaryArtwork())) {
+            if (shouldSendChoiceSecondaryImage() && fileManager.get() != null && fileManager.get().fileNeedsUpload(cell.getSecondaryArtwork())) {
                 artworksToUpload.add(cell.getSecondaryArtwork());
             }
         }
         return artworksToUpload;
-    }
-
-    boolean artworkNeedsUpload(SdlArtwork artwork) {
-        if (fileManager.get() != null) {
-            return (artwork != null && !fileManager.get().hasUploadedFile(artwork) && !artwork.isStaticIcon());
-        }
-        return false;
     }
 }

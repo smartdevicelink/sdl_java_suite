@@ -50,7 +50,7 @@ import java.util.List;
  *
  * @see SoftButtonState
  */
-public class SoftButtonObject {
+public class SoftButtonObject implements Cloneable{
     private static final String TAG = "SoftButtonObject";
     static final int SOFT_BUTTON_ID_NOT_SET_VALUE = -1;
     static final int SOFT_BUTTON_ID_MIN_VALUE = 0;
@@ -295,12 +295,14 @@ public class SoftButtonObject {
     }
 
     /**
+     * DO NOT USE! let the managers assign ID's. In next major version change this will be restricted to the library
      * Sets the id of the SoftButtonObject <br>
      * <strong>Note: If the developer did not set buttonId, the manager will automatically assign an id before the SoftButtons are sent to the head unit.
      * Please note that the manager may reuse ids from previous batch of SoftButtons that were already sent to the head unit</strong>
      *
      * @param buttonId an int value that represents the id of the SoftButtonObject
      */
+    @Deprecated
     public void setButtonId(int buttonId) {
         if (buttonId < SOFT_BUTTON_ID_MIN_VALUE) {
             DebugTool.logError(TAG, "buttonId has to be equal or more than " + SOFT_BUTTON_ID_MIN_VALUE);
@@ -374,5 +376,23 @@ public class SoftButtonObject {
         if (!(o instanceof SoftButtonObject)) return false;
         // return comparison
         return hashCode() == o.hashCode();
+    }
+
+    /**
+     * Creates a deep copy of the object
+     *
+     * @return deep copy of the object, null if an exception occurred
+     */
+    @Override
+    public SoftButtonObject clone() {
+        try {
+            SoftButtonObject softButtonObject = (SoftButtonObject) super.clone();
+            return softButtonObject;
+        } catch (CloneNotSupportedException e) {
+            if (DebugTool.isDebugEnabled()) {
+                throw new RuntimeException("Clone not supported by super class");
+            }
+        }
+        return null;
     }
 }

@@ -35,9 +35,14 @@ package com.smartdevicelink.managers.screen.menu;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+
+import com.smartdevicelink.util.DebugTool;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
-public class VoiceCommand {
+public class VoiceCommand implements Cloneable {
 
     /**
      * The strings the user can say to activate this voice command
@@ -76,7 +81,7 @@ public class VoiceCommand {
      * @param voiceCommands - the list of commands to send to the head unit
      */
     public void setVoiceCommands(@NonNull List<String> voiceCommands) {
-        this.voiceCommands = voiceCommands;
+        this.voiceCommands = new ArrayList<>(removeDuplicateStrings(voiceCommands));
     }
 
     /**
@@ -123,5 +128,58 @@ public class VoiceCommand {
      */
     int getCommandId() {
         return commandId;
+    }
+
+    private HashSet<String> removeDuplicateStrings(List<String> voiceCommands) {
+        return new HashSet<>(voiceCommands);
+    }
+
+    /**
+     * Used to compile hashcode for VoiceCommand for use to compare in equals method
+     *
+     * @return Custom hashcode of VoiceCommand variables
+     */
+    @Override
+    public int hashCode() {
+        int result = 1;
+        for (int i = 0; i < this.getVoiceCommands().size(); i++) {
+            result += ((getVoiceCommands().get(i) == null) ? 0 : Integer.rotateLeft(getVoiceCommands().get(i).hashCode(), i + 1));
+        }
+        return result;
+    }
+
+    /**
+     * Uses our custom hashCode for VoiceCommand objects
+     *
+     * @param o - The object to compare
+     * @return boolean of whether the objects are the same or not
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) return false;
+        // if this is the same memory address, it's the same
+        if (this == o) return true;
+        // if this is not an instance of VoiceCommand, not the same
+        if (!(o instanceof VoiceCommand)) return false;
+        // return comparison
+        return hashCode() == o.hashCode();
+    }
+
+    /**
+     * Creates a deep copy of the object
+     *
+     * @return deep copy of the object, null if an exception occurred
+     */
+    @Override
+    public VoiceCommand clone() {
+        try {
+            VoiceCommand clone = (VoiceCommand) super.clone();
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            if (DebugTool.isDebugEnabled()) {
+                throw new RuntimeException("Clone not supported by super class");
+            }
+        }
+        return null;
     }
 }

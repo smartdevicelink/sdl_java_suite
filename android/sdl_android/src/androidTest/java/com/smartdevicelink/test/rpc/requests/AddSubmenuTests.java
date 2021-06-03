@@ -41,6 +41,9 @@ public class AddSubmenuTests extends BaseRpcTests {
         msg.setMenuIcon(TestValues.GENERAL_IMAGE);
         msg.setMenuLayout(TestValues.GENERAL_MENU_LAYOUT);
         msg.setParentID(TestValues.GENERAL_MENU_MAX_ID);
+        msg.setSecondaryText(TestValues.GENERAL_STRING);
+        msg.setTertiaryText(TestValues.GENERAL_STRING);
+        msg.setSecondaryImage(TestValues.GENERAL_IMAGE);
 
         return msg;
     }
@@ -66,6 +69,9 @@ public class AddSubmenuTests extends BaseRpcTests {
             result.put(AddSubMenu.KEY_MENU_ICON, TestValues.JSON_IMAGE);
             result.put(AddSubMenu.KEY_MENU_LAYOUT, TestValues.GENERAL_MENU_LAYOUT);
             result.put(AddSubMenu.KEY_PARENT_ID, TestValues.GENERAL_MENU_MAX_ID);
+            result.put(AddSubMenu.KEY_SECONDARY_TEXT, TestValues.GENERAL_STRING);
+            result.put(AddSubMenu.KEY_TERTIARY_TEXT, TestValues.GENERAL_STRING);
+            result.put(AddSubMenu.KEY_SECONDARY_IMAGE, TestValues.JSON_IMAGE);
         } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
@@ -85,6 +91,9 @@ public class AddSubmenuTests extends BaseRpcTests {
         Image testMenuIcon = ((AddSubMenu) msg).getMenuIcon();
         MenuLayout testMenuLayout = ((AddSubMenu) msg).getMenuLayout();
         int testParentID = ((AddSubMenu) msg).getParentID();
+        String testSecondaryText = ((AddSubMenu) msg).getSecondaryText();
+        String testTertiaryText = ((AddSubMenu) msg).getTertiaryText();
+        Image testSecondaryImage = ((AddSubMenu) msg).getSecondaryImage();
 
         // Valid Tests
         assertEquals("Menu ID didn't match input menu ID.", TestValues.GENERAL_INT, testMenuId);
@@ -93,6 +102,9 @@ public class AddSubmenuTests extends BaseRpcTests {
         assertTrue("Menu icon didn't match input icon.", Validator.validateImage(TestValues.GENERAL_IMAGE, testMenuIcon));
         assertEquals("Menu layout didn't match input menu layout.", TestValues.GENERAL_MENU_LAYOUT, testMenuLayout);
         assertEquals("Parent ID didn't match input Parent ID.", TestValues.GENERAL_MENU_MAX_ID, testParentID);
+        assertEquals("Secondary Text didn't match input Secondary Text.", TestValues.GENERAL_STRING, testSecondaryText);
+        assertEquals("Tertiary Text didn't match input Tertiary Text.", TestValues.GENERAL_STRING, testTertiaryText);
+        assertTrue("Secondary Image didn't match input Secondary Image.", Validator.validateImage(TestValues.GENERAL_IMAGE, testSecondaryImage));
 
 
         // Invalid/Null Tests
@@ -106,6 +118,9 @@ public class AddSubmenuTests extends BaseRpcTests {
         assertNull(TestValues.NULL, msg.getMenuIcon());
         assertNull(TestValues.NULL, msg.getMenuLayout());
         assertNull(TestValues.NULL, msg.getParentID());
+        assertNull(TestValues.NULL, msg.getSecondaryText());
+        assertNull(TestValues.NULL, msg.getTertiaryText());
+        assertNull(TestValues.NULL, msg.getSecondaryImage());
     }
 
     /**
@@ -134,10 +149,15 @@ public class AddSubmenuTests extends BaseRpcTests {
             assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, AddSubMenu.KEY_MENU_NAME), cmd.getMenuName());
             assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(parameters, AddSubMenu.KEY_MENU_LAYOUT), cmd.getMenuLayout());
             assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, AddSubMenu.KEY_PARENT_ID), cmd.getParentID());
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, AddSubMenu.KEY_SECONDARY_TEXT), cmd.getSecondaryText());
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, AddSubMenu.KEY_TERTIARY_TEXT), cmd.getTertiaryText());
 
             JSONObject menuIcon = JsonUtils.readJsonObjectFromJsonObject(parameters, AddSubMenu.KEY_MENU_ICON);
             Image referenceMenuIcon = new Image(JsonRPCMarshaller.deserializeJSONObject(menuIcon));
             assertTrue(TestValues.TRUE, Validator.validateImage(referenceMenuIcon, cmd.getMenuIcon()));
+            JSONObject secondaryIcon = JsonUtils.readJsonObjectFromJsonObject(parameters, AddSubMenu.KEY_SECONDARY_IMAGE);
+            Image referenceSecondaryIcon = new Image(JsonRPCMarshaller.deserializeJSONObject(secondaryIcon));
+            assertTrue(TestValues.TRUE, Validator.validateImage(referenceSecondaryIcon, cmd.getSecondaryImage()));
         } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }

@@ -8,6 +8,7 @@ import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
 import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -127,6 +128,10 @@ public class SoftButtonManagerTests {
             }
         };
         doAnswer(onFileManagerUploadAnswer).when(fileManager).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
+
+
+        // We still want the mock fileManager to use the real implementation for fileNeedsUpload()
+        when(fileManager.fileNeedsUpload(any(SdlFile.class))).thenCallRealMethod();
 
 
         // Create softButtonManager
@@ -297,59 +302,6 @@ public class SoftButtonManagerTests {
         success = softButtonObject1.transitionToStateByName("object1-state1");
         assertTrue(success);
         assertEquals(softButtonState1, softButtonObject1.getCurrentState());
-    }
-
-    @Test
-    public void testAssigningIdsToSoftButtonObjects() {
-        SoftButtonObject sbo1, sbo2, sbo3, sbo4, sbo5;
-
-        // Case 1 - don't set id for any button (Manager should set ids automatically starting from 1 and up)
-        sbo1 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
-        sbo2 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
-        sbo3 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
-        sbo4 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
-        sbo5 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
-        softButtonManager.checkAndAssignButtonIds(Arrays.asList(sbo1, sbo2, sbo3, sbo4, sbo5));
-        assertEquals("SoftButtonObject id doesn't match the expected value", 1, sbo1.getButtonId());
-        assertEquals("SoftButtonObject id doesn't match the expected value", 2, sbo2.getButtonId());
-        assertEquals("SoftButtonObject id doesn't match the expected value", 3, sbo3.getButtonId());
-        assertEquals("SoftButtonObject id doesn't match the expected value", 4, sbo4.getButtonId());
-        assertEquals("SoftButtonObject id doesn't match the expected value", 5, sbo5.getButtonId());
-
-
-        // Case 2 - Set ids for all buttons (Manager shouldn't alter the ids set by developer)
-        sbo1 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
-        sbo1.setButtonId(100);
-        sbo2 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
-        sbo2.setButtonId(200);
-        sbo3 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
-        sbo3.setButtonId(300);
-        sbo4 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
-        sbo4.setButtonId(400);
-        sbo5 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
-        sbo5.setButtonId(500);
-        softButtonManager.checkAndAssignButtonIds(Arrays.asList(sbo1, sbo2, sbo3, sbo4, sbo5));
-        assertEquals("SoftButtonObject id doesn't match the expected value", 100, sbo1.getButtonId());
-        assertEquals("SoftButtonObject id doesn't match the expected value", 200, sbo2.getButtonId());
-        assertEquals("SoftButtonObject id doesn't match the expected value", 300, sbo3.getButtonId());
-        assertEquals("SoftButtonObject id doesn't match the expected value", 400, sbo4.getButtonId());
-        assertEquals("SoftButtonObject id doesn't match the expected value", 500, sbo5.getButtonId());
-
-
-        // Case 3 - Set ids for some buttons (Manager shouldn't alter the ids set by developer. And it should assign ids for the ones that don't have id)
-        sbo1 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
-        sbo1.setButtonId(50);
-        sbo2 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
-        sbo3 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
-        sbo4 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
-        sbo4.setButtonId(100);
-        sbo5 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
-        softButtonManager.checkAndAssignButtonIds(Arrays.asList(sbo1, sbo2, sbo3, sbo4, sbo5));
-        assertEquals("SoftButtonObject id doesn't match the expected value", 50, sbo1.getButtonId());
-        assertEquals("SoftButtonObject id doesn't match the expected value", 101, sbo2.getButtonId());
-        assertEquals("SoftButtonObject id doesn't match the expected value", 102, sbo3.getButtonId());
-        assertEquals("SoftButtonObject id doesn't match the expected value", 100, sbo4.getButtonId());
-        assertEquals("SoftButtonObject id doesn't match the expected value", 103, sbo5.getButtonId());
     }
 
     /**

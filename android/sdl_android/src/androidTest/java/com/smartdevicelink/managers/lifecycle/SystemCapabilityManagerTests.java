@@ -7,6 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.ManagerUtility;
+import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -21,6 +22,7 @@ import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.GetSystemCapability;
 import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
+import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnSystemCapabilityUpdated;
 import com.smartdevicelink.proxy.rpc.PhoneCapability;
@@ -36,10 +38,13 @@ import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
+import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
+import com.smartdevicelink.proxy.rpc.enums.PredefinedLayout;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.Result;
@@ -98,6 +103,8 @@ public class SystemCapabilityManagerTests {
         videoStreamingCapability.setMaxBitrate(TestValues.GENERAL_INT);
         videoStreamingCapability.setPreferredResolution(TestValues.GENERAL_IMAGERESOLUTION);
         videoStreamingCapability.setSupportedFormats(TestValues.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
+        videoStreamingCapability.setPreferredFPS(TestValues.GENERAL_INTEGER);
+        videoStreamingCapability.setAdditionalVideoStreamingCapabilities(TestValues.GENERAL_ADDITIONAL_CAPABILITY_LIST);
         systemCapability.setCapabilityForType(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
     }
 
@@ -204,8 +211,8 @@ public class SystemCapabilityManagerTests {
     @Test
     public void testNullDisplayCapabilitiesEnablesAllTextAndImageFields() {
         List<DisplayCapability> displayCapabilityList = createDisplayCapabilityList(null, TestValues.GENERAL_BUTTONCAPABILITIES_LIST, TestValues.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
-        assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getTextFields().size(), 32);
-        assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getImageFields().size(), 16);
+        assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getTextFields().size(), 38);
+        assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getImageFields().size(), 18);
     }
 
     @Test
@@ -213,7 +220,9 @@ public class SystemCapabilityManagerTests {
         VideoStreamingCapability vsCapability = new VideoStreamingCapability();
         vsCapability.setMaxBitrate(TestValues.GENERAL_INT);
         vsCapability.setPreferredResolution(TestValues.GENERAL_IMAGERESOLUTION);
+        vsCapability.setAdditionalVideoStreamingCapabilities(TestValues.GENERAL_ADDITIONAL_CAPABILITY_LIST);
         vsCapability.setSupportedFormats(TestValues.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
+        vsCapability.setPreferredFPS(TestValues.GENERAL_INTEGER);
 
         SystemCapability cap = new SystemCapability();
         cap.setSystemCapabilityType(SystemCapabilityType.VIDEO_STREAMING);
@@ -959,7 +968,7 @@ public class SystemCapabilityManagerTests {
         }
 
         @Override
-        public void startVideoService(VideoStreamingParameters parameters, boolean encrypted) {
+        public void startVideoService(VideoStreamingParameters parameters, boolean encrypted, boolean withPendingRestart) {
         }
 
         @Override
@@ -1038,6 +1047,11 @@ public class SystemCapabilityManagerTests {
         }
 
         @Override
+        public long getMtu(SessionType serviceType) {
+            return 0;
+        }
+
+        @Override
         public boolean isTransportForServiceAvailable(SessionType serviceType) {
             return false;
         }
@@ -1059,5 +1073,39 @@ public class SystemCapabilityManagerTests {
         public SystemCapabilityManager getSystemCapabilityManager() {
             return null;
         }
+
+        @Override
+        public PermissionManager getPermissionManager() {
+            return null;
+        }
+    }
+
+    @Test
+    public void testFixingIncorrectCapabilities() {
+        SetDisplayLayoutResponse setDisplayLayoutResponse;
+
+        DisplayCapabilities RegisterAppInterFaceCapabilities = new DisplayCapabilities()
+                .setImageFields(Collections.singletonList(new ImageField(ImageFieldName.graphic, Collections.singletonList(FileType.GRAPHIC_PNG))));
+
+        DisplayCapabilities setDisplayLayoutCapabilities = new DisplayCapabilities()
+                .setImageFields(new ArrayList<ImageField>());
+
+        LifecycleManager lcm = new LifecycleManager(new BaseLifecycleManager.AppConfig(), null, null);
+        lcm.initialMediaCapabilities = RegisterAppInterFaceCapabilities;
+
+
+        // Test switching to MEDIA template - Capabilities in setDisplayLayoutResponse should be replaced with the ones from RAIR
+        lcm.lastDisplayLayoutRequestTemplate = PredefinedLayout.MEDIA.toString();
+        setDisplayLayoutResponse = new SetDisplayLayoutResponse()
+                .setDisplayCapabilities(setDisplayLayoutCapabilities);
+        lcm.fixIncorrectDisplayCapabilities(setDisplayLayoutResponse);
+        assertEquals(RegisterAppInterFaceCapabilities, setDisplayLayoutResponse.getDisplayCapabilities());
+
+        // Test switching to non-MEDIA template - Capabilities in setDisplayLayoutResponse should not be altered
+        lcm.lastDisplayLayoutRequestTemplate = PredefinedLayout.TEXT_WITH_GRAPHIC.toString();
+        setDisplayLayoutResponse = new SetDisplayLayoutResponse()
+                .setDisplayCapabilities(setDisplayLayoutCapabilities);
+        lcm.fixIncorrectDisplayCapabilities(setDisplayLayoutResponse);
+        assertEquals(setDisplayLayoutCapabilities, setDisplayLayoutResponse.getDisplayCapabilities());
     }
 }

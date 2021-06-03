@@ -32,6 +32,7 @@
 package com.smartdevicelink.managers;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.FileManagerConfig;
@@ -63,6 +64,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.SystemInfo;
 import com.smartdevicelink.util.Version;
 
 import org.json.JSONException;
@@ -77,7 +79,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 abstract class BaseSdlManager {
 
-    static final String TAG = "BaseSubManager";
+    static final String TAG = "BaseSdlManager";
     final Object STATE_LOCK = new Object();
     int state = -1;
     String appId, appName, shortAppName, resumeHash;
@@ -149,6 +151,15 @@ abstract class BaseSdlManager {
         public void onError(LifecycleManager lifeCycleManager, String info, Exception e) {
 
         }
+
+        @Override
+        public boolean onSystemInfoReceived(SystemInfo systemInfo) {
+            if (managerListener != null) {
+                return managerListener.onSystemInfoReceived(systemInfo);
+            } else {
+                return true;
+            }
+        }
     };
 
     // Sub manager listener
@@ -194,7 +205,7 @@ abstract class BaseSdlManager {
                             try {
                                 DebugTool.logInfo(TAG, response.serializeJSON().toString());
                             } catch (JSONException e) {
-                                e.printStackTrace();
+                                DebugTool.logError(TAG, "Error attempting to serialize ChangeRegistrationResponse", e);
                             }
 
                             // go through and change sdlManager properties that were changed via the LCU update
@@ -860,5 +871,10 @@ abstract class BaseSdlManager {
         if (lifecycleManager != null) {
             lifecycleManager.startRPCEncryption();
         }
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    void set_internalInterface(ISdl _internalInterface) {
+        this._internalInterface = _internalInterface;
     }
 }

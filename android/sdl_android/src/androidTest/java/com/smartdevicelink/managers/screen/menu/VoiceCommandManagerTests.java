@@ -34,10 +34,12 @@ package com.smartdevicelink.managers.screen.menu;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
@@ -51,12 +53,13 @@ import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
@@ -66,6 +69,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
 public class VoiceCommandManagerTests {
@@ -112,19 +116,19 @@ public class VoiceCommandManagerTests {
         };
         doAnswer(onCommandAnswer).when(internalInterface).addOnRPCNotificationListener(eq(FunctionID.ON_COMMAND), any(OnRPCNotificationListener.class));
 
+        Taskmaster taskmaster = new Taskmaster.Builder().build();
+        taskmaster.start();
+        when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
         voiceCommandManager = new VoiceCommandManager(internalInterface);
 
         // Check some stuff during setup
-        assertEquals(voiceCommandManager.currentHMILevel, HMILevel.HMI_NONE);
+        assertNull(voiceCommandManager.currentHMILevel);
         assertEquals(voiceCommandManager.getState(), BaseSubManager.SETTING_UP);
         assertEquals(voiceCommandManager.lastVoiceCommandId, voiceCommandIdMin);
-        assertFalse(voiceCommandManager.hasQueuedUpdate);
-        assertFalse(voiceCommandManager.waitingOnHMIUpdate);
         assertNotNull(voiceCommandManager.commandListener);
         assertNotNull(voiceCommandManager.hmiListener);
         assertNull(voiceCommandManager.voiceCommands);
-        assertNull(voiceCommandManager.oldVoiceCommands);
-        assertNull(voiceCommandManager.inProgressUpdate);
+        assertNull(voiceCommandManager.currentVoiceCommands);
     }
 
     @After
@@ -134,11 +138,8 @@ public class VoiceCommandManagerTests {
 
         assertEquals(voiceCommandManager.lastVoiceCommandId, voiceCommandIdMin);
         assertNull(voiceCommandManager.voiceCommands);
-        assertNull(voiceCommandManager.oldVoiceCommands);
+        assertNull(voiceCommandManager.currentVoiceCommands);
         assertNull(voiceCommandManager.currentHMILevel);
-        assertNull(voiceCommandManager.inProgressUpdate);
-        assertFalse(voiceCommandManager.hasQueuedUpdate);
-        assertFalse(voiceCommandManager.waitingOnHMIUpdate);
         // after everything, make sure we are in the correct state
         assertEquals(voiceCommandManager.getState(), BaseSubManager.SHUTDOWN);
     }
@@ -162,9 +163,6 @@ public class VoiceCommandManagerTests {
         voiceCommandManager.currentHMILevel = HMILevel.HMI_NONE;
         voiceCommandManager.setVoiceCommands(commands);
 
-        // updating voice commands before HMI is ready
-        assertNull(voiceCommandManager.inProgressUpdate);
-        assertTrue(voiceCommandManager.waitingOnHMIUpdate);
         // these are the 2 commands we have waiting
         assertEquals(voiceCommandManager.voiceCommands.size(), 2);
         assertEquals(voiceCommandManager.currentHMILevel, HMILevel.HMI_NONE);
@@ -173,26 +171,18 @@ public class VoiceCommandManagerTests {
         sendFakeCoreOnHMIFullNotifications();
         // Listener should be triggered - which sets new HMI level and should proceed to send our pending update
         assertEquals(voiceCommandManager.currentHMILevel, HMILevel.HMI_FULL);
-        // This being false means it received the hmi notification and sent the pending commands
-        assertFalse(voiceCommandManager.waitingOnHMIUpdate);
     }
 
     @Test
     public void testUpdatingCommands() {
-
-        // we have previously sent 2 VoiceCommand objects. we will now update it and have just one
-
-        // make sure the system returns us 2 delete commands
-        assertEquals(voiceCommandManager.deleteCommandsForVoiceCommands(commands).size(), 2);
-        // when we only send one command to update, we should only be returned one add command
-        assertEquals(voiceCommandManager.addCommandsForVoiceCommands(Collections.singletonList(command)).size(), 1);
-
         // Send a new single command, and test that its listener works, as it gets called from the VCM
         voiceCommandManager.setVoiceCommands(Collections.singletonList(command3));
+        HashMap<RPCRequest, String> errorObject = new HashMap<>();
+        voiceCommandManager.updateOperation.voiceCommandListener.updateVoiceCommands(voiceCommandManager.voiceCommands, errorObject);
 
         // Fake onCommand - we want to make sure that we can pass back onCommand events to our VoiceCommand Objects
         OnCommand onCommand = new OnCommand();
-        onCommand.setCmdID(command3.getCommandId());
+        onCommand.setCmdID(voiceCommandManager.getVoiceCommands().get(voiceCommandManager.getVoiceCommands().indexOf(command3)).getCommandId());
         onCommand.setTriggerSource(TriggerSource.TS_VR); // these are voice commands
         commandListener.onNotified(onCommand); // send off the notification
 
@@ -206,5 +196,65 @@ public class VoiceCommandManagerTests {
         onHMIStatusFakeNotification.setHmiLevel(HMILevel.HMI_FULL);
         onHMIStatusListener.onNotified(onHMIStatusFakeNotification);
     }
+
+    /**
+     * Test If voice commands do not have unique strings, they will not be uploaded
+     */
+    @Test
+    public void testUniqueStrings() {
+        List<VoiceCommand> voiceCommandList = new ArrayList<>();
+        VoiceCommand command1 = new VoiceCommand(Arrays.asList("Command one", "Command two"), null);
+        VoiceCommand command2 = new VoiceCommand(Arrays.asList("Command one", "Command two"), null);
+
+        voiceCommandList.add(command1);
+        voiceCommandList.add(command2);
+        voiceCommandManager.currentHMILevel = HMILevel.HMI_NONE;
+        voiceCommandManager.setVoiceCommands(voiceCommandList);
+
+        assertNull(voiceCommandManager.voiceCommands);
+    }
+
+    /**
+     * Test trim whitespace from voice commands and not uploading empty strings.
+     */
+    @Test
+    public void testEmptyStringsAndWhiteSpaceRemoval() {
+        List<VoiceCommand> voiceCommandList = new ArrayList<>();
+        VoiceCommand command1 = new VoiceCommand(Arrays.asList("   Command one "), null);
+
+        voiceCommandList.add(command1);
+        voiceCommandManager.currentHMILevel = HMILevel.HMI_NONE;
+        voiceCommandManager.setVoiceCommands(voiceCommandList);
+        assertEquals(voiceCommandManager.voiceCommands.get(0).getVoiceCommands().get(0), "Command one");
+
+        voiceCommandManager.voiceCommands = null;
+        voiceCommandList = new ArrayList<>();
+        command1 = new VoiceCommand(Arrays.asList(" "), null);
+
+        voiceCommandList.add(command1);
+        voiceCommandManager.setVoiceCommands(voiceCommandList);
+        assertNull(voiceCommandManager.voiceCommands);
+
+        VoiceCommand command2 = new VoiceCommand(Arrays.asList("Command two"), null);
+        voiceCommandList.add(command2);
+        voiceCommandManager.setVoiceCommands(voiceCommandList);
+        assertEquals(voiceCommandManager.voiceCommands.size(), 1);
+
+        voiceCommandManager.setVoiceCommands(voiceCommandList);
+        assertEquals(voiceCommandManager.voiceCommands.size(), 1);
+
+        voiceCommandManager.voiceCommands = null;
+        voiceCommandManager.setVoiceCommands(null);
+        assertNull(voiceCommandManager.voiceCommands);
+
+        voiceCommandList = new ArrayList<>();
+        VoiceCommand command3 = new VoiceCommand(Arrays.asList("Command three", null, " "), null);
+        voiceCommandList.add(command3);
+        voiceCommandList.add(null);
+        voiceCommandManager.setVoiceCommands(voiceCommandList);
+        assertEquals(voiceCommandManager.voiceCommands.size(), 1);
+
+    }
+
 
 }

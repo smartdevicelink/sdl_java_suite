@@ -65,6 +65,7 @@ import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
+import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
@@ -74,6 +75,7 @@ import org.json.JSONException;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -174,6 +176,13 @@ abstract class BaseMenuManager extends BaseSubManager {
         // Create a deep copy of the list so future changes by developers don't affect the algorithm logic
         List<MenuCell> clonedCells = cloneMenuCellsList(cells);
 
+        // If we're running on a connection < RPC 7.1, we need to de-duplicate cells because presenting them will fail if we have the same cell primary text.
+        if (clonedCells != null && internalInterface.getSdlMsgVersion() != null
+                && (internalInterface.getSdlMsgVersion().getMajorVersion() < 7
+                || (internalInterface.getSdlMsgVersion().getMajorVersion() == 7 && internalInterface.getSdlMsgVersion().getMinorVersion() == 0))) {
+            addUniqueNamesToCells(clonedCells);
+        }
+
         if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE) || currentSystemContext.equals(SystemContext.SYSCTXT_MENU)) {
             // We are in NONE or the menu is in use, bail out of here
             waitingOnHMIUpdate = true;
@@ -196,27 +205,8 @@ abstract class BaseMenuManager extends BaseSubManager {
             menuCells.addAll(clonedCells);
         }
 
-        // HashSet order doesnt matter / does not allow duplicates
-        HashSet<String> titleCheckSet = new HashSet<>();
-        HashSet<String> allMenuVoiceCommands = new HashSet<>();
-        int voiceCommandCount = 0;
-
-        for (MenuCell cell : menuCells) {
-            titleCheckSet.add(cell.getTitle());
-            if (cell.getVoiceCommands() != null) {
-                allMenuVoiceCommands.addAll(cell.getVoiceCommands());
-                voiceCommandCount += cell.getVoiceCommands().size();
-            }
-        }
-        // Check for duplicate titles
-        if (titleCheckSet.size() != menuCells.size()) {
-            DebugTool.logError(TAG, "Not all cell titles are unique. The menu will not be set");
-            return;
-        }
-
-        // Check for duplicate voice commands
-        if (allMenuVoiceCommands.size() != voiceCommandCount) {
-            DebugTool.logError(TAG, "Attempted to create a menu with duplicate voice commands. Voice commands must be unique. The menu will not be set");
+        // Check for cell lists with completely duplicate information, or any duplicate voiceCommands and return if it fails (logs are in the called method).
+        if (!menuCellsAreUnique(menuCells, new ArrayList<String>())) {
             return;
         }
 
@@ -751,17 +741,34 @@ abstract class BaseMenuManager extends BaseSubManager {
 
     // ARTWORKS
 
+    /**
+     * Get an array of artwork that needs to be uploaded from a list of menu cells
+     *
+     * @param cells List of MenuCell's to check
+     * @return List of artwork that needs to be uploaded
+     */
     private List<SdlArtwork> findAllArtworksToBeUploadedFromCells(List<MenuCell> cells) {
         // Make sure we can use images in the menus
-        if (!supportsImages()) {
+        if (!hasImageFieldOfName(ImageFieldName.cmdIcon)) {
             return new ArrayList<>();
         }
 
         List<SdlArtwork> artworks = new ArrayList<>();
         for (MenuCell cell : cells) {
-            if (artworkNeedsUpload(cell.getIcon())) {
+            if (fileManager.get() != null && fileManager.get().fileNeedsUpload(cell.getIcon())) {
                 artworks.add(cell.getIcon());
             }
+
+            if (cell.getSubCells() != null && cell.getSubCells().size() > 0 && hasImageFieldOfName(ImageFieldName.menuSubMenuSecondaryImage)) {
+                if (fileManager.get() != null && fileManager.get().fileNeedsUpload(cell.getSecondaryArtwork())) {
+                    artworks.add(cell.getSecondaryArtwork());
+                }
+            } else if ((cell.getSubCells() == null || cell.getSubCells().isEmpty()) && hasImageFieldOfName(ImageFieldName.menuCommandSecondaryImage)) {
+                if (fileManager.get() != null && fileManager.get().fileNeedsUpload(cell.getSecondaryArtwork())) {
+                    artworks.add(cell.getSecondaryArtwork());
+                }
+            }
+
             if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
                 artworks.addAll(findAllArtworksToBeUploadedFromCells(cell.getSubCells()));
             }
@@ -770,16 +777,45 @@ abstract class BaseMenuManager extends BaseSubManager {
         return artworks;
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private boolean supportsImages() {
-        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.cmdIcon);
+    /**
+     * Determine if cells should or should not be uploaded to the head unit with artworks.
+     *
+     * No artworks will be uploaded if:
+     *
+     * 1. If any cell has a dynamic artwork that is not uploaded
+     * 2. If any cell contains a secondary artwork may be used on the head unit, and the cell has a dynamic secondary artwork that is not uploaded
+     * 3. If any cell's subcells fail check (1) or (2)
+     *
+     * @param cells List of MenuCell's to check
+     * @return True if the cells should be uploaded with artwork, false if they should not
+     */
+    private boolean shouldRPCsIncludeImages(List<MenuCell> cells) {
+        for (MenuCell cell : cells) {
+            SdlArtwork artwork = cell.getIcon();
+            SdlArtwork secondaryArtwork = cell.getSecondaryArtwork();
+            if (artwork != null && !artwork.isStaticIcon() && fileManager.get() != null && !fileManager.get().hasUploadedFile(artwork)) {
+                return false;
+            } else if (cell.getSubCells() != null && cell.getSubCells().size() > 0 && hasImageFieldOfName(ImageFieldName.menuSubMenuSecondaryImage)) {
+                if (secondaryArtwork != null && !secondaryArtwork.isStaticIcon() && fileManager.get() != null && !fileManager.get().hasUploadedFile(secondaryArtwork)) {
+                    return false;
+                }
+            } else if ((cell.getSubCells() == null || cell.getSubCells().isEmpty()) && hasImageFieldOfName(ImageFieldName.menuCommandSecondaryImage)) {
+                if (secondaryArtwork != null && !secondaryArtwork.isStaticIcon() && fileManager.get() != null && !fileManager.get().hasUploadedFile(secondaryArtwork)) {
+                    return false;
+                }
+            } else if (cell.getSubCells() != null && cell.getSubCells().size() > 0 && !shouldRPCsIncludeImages(cell.getSubCells())) {
+                return false;
+            }
+        }
+        return true;
     }
 
-    private boolean artworkNeedsUpload(SdlArtwork artwork) {
-        if (fileManager.get() != null) {
-            return (artwork != null && !fileManager.get().hasUploadedFile(artwork) && !artwork.isStaticIcon());
-        }
-        return false;
+    private boolean hasImageFieldOfName(ImageFieldName imageFieldName) {
+        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, imageFieldName);
+    }
+
+    private boolean hasTextFieldOfName(TextFieldName textFieldName) {
+        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, textFieldName);
     }
 
     // IDs
@@ -828,6 +864,13 @@ abstract class BaseMenuManager extends BaseSubManager {
         return null;
     }
 
+
+    /**
+     * Assign cell ids on an array of menu cells given a parent id (or no parent id)
+     *
+     * @param cells    List of menu cells to update
+     * @param parentId The parent id to assign if needed
+     */
     private void updateIdsOnMenuCells(List<MenuCell> cells, int parentId) {
         for (MenuCell cell : cells) {
             int newId = ++lastMenuId;
@@ -867,6 +910,12 @@ abstract class BaseMenuManager extends BaseSubManager {
 
     // DELETES
 
+    /**
+     * Create an array of DeleteCommand and DeleteSubMenu RPCs from an ArrayList of menu cells
+     *
+     * @param cells List of menu cells to use
+     * @return List of DeleteCommand and DeletedSubmenu RPCs
+     */
     private List<RPCRequest> createDeleteRPCsForCells(List<MenuCell> cells) {
         List<RPCRequest> deletes = new ArrayList<>();
         for (MenuCell cell : cells) {
@@ -883,6 +932,14 @@ abstract class BaseMenuManager extends BaseSubManager {
 
     // COMMANDS / SUBMENU RPCs
 
+    /**
+     * This method will receive the cells to be added. It will then build an array of add commands using the correct index to position the new items in the correct location.
+     * e.g. If the new menu array is [A, B, C, D] but only [C, D] are new we need to pass [A, B , C , D] so C and D can be added to index 2 and 3 respectively.
+     *
+     * @param cellsToAdd        List of MenuCell's that will be added to the menu, this array must contain only cells that are not already in the menu.
+     * @param shouldHaveArtwork Boolean that indicates whether artwork should be applied to the RPC or not
+     * @return List of RPCRequest addCommands
+     */
     private List<RPCRequest> mainMenuCommandsForCells(List<MenuCell> cellsToAdd, boolean shouldHaveArtwork) {
         List<RPCRequest> builtCommands = new ArrayList<>();
 
@@ -904,6 +961,13 @@ abstract class BaseMenuManager extends BaseSubManager {
         return builtCommands;
     }
 
+    /**
+     * Creates AddSubMenu RPCs for the passed array of menu cells, AND all of those cells' subcell RPCs, both AddCommands and AddSubMenus
+     *
+     * @param cells             List of MenuCell's to create RPCs for
+     * @param shouldHaveArtwork Boolean that indicates whether artwork should be applied to the RPC or not
+     * @return An List of RPCs of AddSubMenus and their associated subcell RPCs
+     */
     private List<RPCRequest> subMenuCommandsForCells(List<MenuCell> cells, boolean shouldHaveArtwork) {
         List<RPCRequest> builtCommands = new ArrayList<>();
         for (MenuCell cell : cells) {
@@ -914,6 +978,13 @@ abstract class BaseMenuManager extends BaseSubManager {
         return builtCommands;
     }
 
+    /**
+     * Creates AddCommand and AddSubMenu RPCs for a passed array of cells, AND all of those cells' subcell RPCs, both AddCommands and AddSubmenus
+     *
+     * @param cells             List of MenuCell's to create RPCs for
+     * @param shouldHaveArtwork Boolean that indicates whether artwork should be applied to the RPC or not
+     * @return An List of RPCs of AddCommand and AddSubMenus for the array of menu cells and their subcells, recursively
+     */
     List<RPCRequest> allCommandsForCells(List<MenuCell> cells, boolean shouldHaveArtwork) {
         List<RPCRequest> builtCommands = new ArrayList<>();
 
@@ -946,9 +1017,19 @@ abstract class BaseMenuManager extends BaseSubManager {
         return builtCommands;
     }
 
+    /**
+     * An individual AddCommand RPC for a given MenuCell
+     *
+     * @param cell              MenuCell to create RPCs for
+     * @param shouldHaveArtwork Boolean that indicates whether artwork should be applied to the RPC or not
+     * @param position          The position the AddCommand RPC should be given
+     * @return The AddCommand RPC
+     */
     private AddCommand commandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position) {
 
-        MenuParams params = new MenuParams(cell.getTitle());
+        MenuParams params = new MenuParams(cell.getUniqueTitle());
+        params.setSecondaryText((cell.getSecondaryText() != null && cell.getSecondaryText().length() > 0 && hasTextFieldOfName(TextFieldName.menuCommandSecondaryText)) ? cell.getSecondaryText() : null);
+        params.setTertiaryText((cell.getTertiaryText() != null && cell.getTertiaryText().length() > 0 && hasTextFieldOfName(TextFieldName.menuCommandTertiaryText)) ? cell.getTertiaryText() : null);
         params.setParentID(cell.getParentCellId() != MAX_ID ? cell.getParentCellId() : null);
         params.setPosition(position);
 
@@ -960,12 +1041,23 @@ abstract class BaseMenuManager extends BaseSubManager {
             command.setVrCommands(null);
         }
         command.setCmdIcon((cell.getIcon() != null && shouldHaveArtwork) ? cell.getIcon().getImageRPC() : null);
+        command.setSecondaryImage((cell.getSecondaryArtwork() != null && shouldHaveArtwork && !(fileManager.get() != null && fileManager.get().fileNeedsUpload(cell.getSecondaryArtwork()))) ? cell.getSecondaryArtwork().getImageRPC() : null);
 
         return command;
     }
 
+    /**
+     * An individual AddSubMenu RPC for a given MenuCell
+     *
+     * @param cell              The cell to create the RPC for
+     * @param shouldHaveArtwork Whether artwork should be applied to the RPC
+     * @param position          The position the AddSubMenu RPC should be given
+     * @return The AddSubMenu RPC
+     */
     private AddSubMenu subMenuCommandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position) {
-        AddSubMenu subMenu = new AddSubMenu(cell.getCellId(), cell.getTitle());
+        AddSubMenu subMenu = new AddSubMenu(cell.getCellId(), cell.getUniqueTitle());
+        subMenu.setSecondaryText((cell.getSecondaryText() != null && cell.getSecondaryText().length() > 0 && hasTextFieldOfName(TextFieldName.menuSubMenuSecondaryText)) ? cell.getSecondaryText() : null);
+        subMenu.setTertiaryText((cell.getTertiaryText() != null && cell.getTertiaryText().length() > 0 && hasTextFieldOfName(TextFieldName.menuSubMenuTertiaryText)) ? cell.getTertiaryText() : null);
         subMenu.setPosition(position);
         if (cell.getSubMenuLayout() != null) {
             subMenu.setMenuLayout(cell.getSubMenuLayout());
@@ -973,11 +1065,20 @@ abstract class BaseMenuManager extends BaseSubManager {
             subMenu.setMenuLayout(menuConfiguration.getSubMenuLayout());
         }
         subMenu.setMenuIcon((shouldHaveArtwork && (cell.getIcon() != null && cell.getIcon().getImageRPC() != null)) ? cell.getIcon().getImageRPC() : null);
+        subMenu.setSecondaryImage((shouldHaveArtwork && !(fileManager.get() != null && fileManager.get().fileNeedsUpload(cell.getSecondaryArtwork())) && (cell.getSecondaryArtwork() != null && cell.getSecondaryArtwork().getImageRPC() != null)) ? cell.getSecondaryArtwork().getImageRPC() : null);
         return subMenu;
     }
 
     // CELL COMMAND HANDLING
 
+
+    /**
+     * Call a listener for a currently displayed MenuCell based on the incoming OnCommand notification
+     *
+     * @param cells   List of MenuCell's to check (including their subcells)
+     * @param command OnCommand notification retrieved
+     * @return True if the handler was found, false if it was not found
+     */
     private boolean callListenerForCells(List<MenuCell> cells, OnCommand command) {
         if (cells != null && cells.size() > 0 && command != null) {
             for (MenuCell cell : cells) {
@@ -1132,7 +1233,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         List<RPCRequest> mainMenuCommands;
         final List<RPCRequest> subMenuCommands;
 
-        if (findAllArtworksToBeUploadedFromCells(menu).size() > 0 || !supportsImages()) {
+        if (!shouldRPCsIncludeImages(menu) || !hasImageFieldOfName(ImageFieldName.cmdIcon)) {
             // Send artwork-less menu
             mainMenuCommands = mainMenuCommandsForCells(menu, false);
             subMenuCommands = subMenuCommandsForCells(menu, false);
@@ -1174,7 +1275,7 @@ abstract class BaseMenuManager extends BaseSubManager {
                     try {
                         DebugTool.logInfo(TAG, "Main Menu response: " + response.serializeJSON().toString());
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        DebugTool.logError(TAG,"Error attempting to serialize JSON of RPC response", e);
                     }
                 } else {
                     DebugTool.logError(TAG, "Result: " + response.getResultCode() + " Info: " + response.getInfo());
@@ -1212,7 +1313,7 @@ abstract class BaseMenuManager extends BaseSubManager {
                     try {
                         DebugTool.logInfo(TAG, "Sub Menu response: " + response.serializeJSON().toString());
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        DebugTool.logError(TAG,"Error attempting to serialize JSON of RPC response", e);
                     }
                 } else {
                     DebugTool.logError(TAG, "Failed to send sub menu commands: " + response.getInfo());
@@ -1237,7 +1338,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
         List<RPCRequest> mainMenuCommands;
 
-        if (findAllArtworksToBeUploadedFromCells(adds).size() > 0 || !supportsImages()) {
+        if (!shouldRPCsIncludeImages(adds) || !hasImageFieldOfName(ImageFieldName.cmdIcon)) {
             // Send artwork-less menu
             mainMenuCommands = createCommandsForDynamicSubCells(newMenu, adds, false);
         } else {
@@ -1264,7 +1365,7 @@ abstract class BaseMenuManager extends BaseSubManager {
                     try {
                         DebugTool.logInfo(TAG, "Dynamic Sub Menu response: " + response.serializeJSON().toString());
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        DebugTool.logError(TAG,"Error attempting to serialize JSON of RPC response", e);
                     }
                 } else {
                     DebugTool.logError(TAG, "Result: " + response.getResultCode() + " Info: " + response.getInfo());
@@ -1338,5 +1439,74 @@ abstract class BaseMenuManager extends BaseSubManager {
             clone.add(menuCell.clone());
         }
         return clone;
+    }
+
+    private void addUniqueNamesToCells(List<MenuCell> cells) {
+        HashMap<String, Integer> dictCounter = new HashMap<>();
+
+        for (MenuCell cell : cells) {
+            String cellName = cell.getTitle();
+            Integer counter = dictCounter.get(cellName);
+
+            if (counter != null) {
+                dictCounter.put(cellName, ++counter);
+                cell.setUniqueTitle(cellName + " (" + counter + ")");
+            } else {
+                dictCounter.put(cellName, 1);
+            }
+
+            if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
+                addUniqueNamesToCells(cell.getSubCells());
+            }
+        }
+    }
+
+
+    /**
+     * Check for cell lists with completely duplicate information, or any duplicate voiceCommands
+     *
+     * @param cells            List of MenuCell's you will be adding
+     * @param allVoiceCommands List of String's for VoiceCommands (Used for recursive calls to check voiceCommands of the cells)
+     * @return Boolean that indicates whether menuCells are unique or not
+     */
+    private boolean menuCellsAreUnique(List<MenuCell> cells, ArrayList<String> allVoiceCommands) {
+        //Check all voice commands for identical items and check each list of cells for identical cells
+        HashSet<MenuCell> identicalCellsCheckSet = new HashSet<>();
+
+        for (MenuCell cell : cells) {
+            identicalCellsCheckSet.add(cell);
+
+            // Recursively check the subcell lists to see if they are all unique as well. If anything is not, this will chain back up the list to return false.
+            if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
+                boolean subCellsAreUnique = menuCellsAreUnique(cell.getSubCells(), allVoiceCommands);
+
+                if (!subCellsAreUnique) {
+                    DebugTool.logError(TAG, "Not all subCells are unique. The menu will not be set.");
+                    return false;
+                }
+            }
+
+            // Voice commands have to be identical across all lists
+            if (cell.getVoiceCommands() == null) {
+                continue;
+            }
+            allVoiceCommands.addAll(cell.getVoiceCommands());
+        }
+
+
+        // Check for duplicate cells
+        if (identicalCellsCheckSet.size() != cells.size()) {
+            DebugTool.logError(TAG, "Not all cells are unique. The menu will not be set.");
+            return false;
+        }
+
+        // All the VR commands must be unique
+        HashSet<String> voiceCommandsSet = new HashSet<>(allVoiceCommands);
+        if (allVoiceCommands.size() != voiceCommandsSet.size()) {
+            DebugTool.logError(TAG, "Attempted to create a menu with duplicate voice commands. Voice commands must be unique. The menu will not be set");
+            return false;
+        }
+
+        return true;
     }
 }
