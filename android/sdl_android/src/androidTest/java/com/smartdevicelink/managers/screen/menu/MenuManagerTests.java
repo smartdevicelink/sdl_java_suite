@@ -43,7 +43,6 @@ import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
@@ -51,7 +50,6 @@ import com.smartdevicelink.proxy.rpc.SetGlobalProperties;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
-import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
@@ -65,7 +63,6 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -163,21 +160,6 @@ public class MenuManagerTests {
         assertNotNull(menuManager.hmiListener);
         assertNotNull(menuManager.commandListener);
         assertNotNull(menuManager.onDisplaysCapabilityListener);
-
-        menuManager.defaultMainWindowCapability = new WindowCapability();
-
-        List<MenuLayout> menuLayouts = Arrays.asList(MenuLayout.LIST, MenuLayout.TILES);
-        menuManager.defaultMainWindowCapability.setMenuLayoutsAvailable(menuLayouts);
-        List<ImageField> imageFields = new ArrayList<>();
-        ImageField menuCommandSecondaryImage = new ImageField();
-        menuCommandSecondaryImage.setName(ImageFieldName.menuCommandSecondaryImage);
-        ImageField menuSubMenuSecondaryImage = new ImageField();
-        menuSubMenuSecondaryImage.setName(ImageFieldName.menuSubMenuSecondaryImage);
-        imageFields.add(menuCommandSecondaryImage);
-        imageFields.add(menuSubMenuSecondaryImage);
-        menuManager.defaultMainWindowCapability.setImageFields(imageFields);
-
-
 
     }
 
@@ -543,6 +525,10 @@ public class MenuManagerTests {
         menuManager.currentHMILevel = HMILevel.HMI_FULL;
         menuManager.currentSystemContext = SystemContext.SYSCTXT_MAIN;
         menuManager.sdlMsgVersion = new SdlMsgVersion(6, 0);
+        menuManager.defaultMainWindowCapability = new WindowCapability();
+
+        List<MenuLayout> menuLayouts = Arrays.asList(MenuLayout.LIST, MenuLayout.TILES);
+        menuManager.defaultMainWindowCapability.setMenuLayoutsAvailable(menuLayouts);
 
         MenuConfiguration menuConfigurationTest = new MenuConfiguration(MenuLayout.LIST, MenuLayout.LIST);
         menuManager.setMenuConfiguration(menuConfigurationTest);
