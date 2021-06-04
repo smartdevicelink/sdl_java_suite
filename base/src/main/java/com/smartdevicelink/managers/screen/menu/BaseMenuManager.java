@@ -176,11 +176,9 @@ abstract class BaseMenuManager extends BaseSubManager {
         // Create a deep copy of the list so future changes by developers don't affect the algorithm logic
         List<MenuCell> clonedCells = cloneMenuCellsList(cells);
 
-        // If we're running on a connection < RPC 7.1, we need to de-duplicate cells because presenting them will fail if we have the same cell primary text.
-        if (clonedCells != null && internalInterface.getSdlMsgVersion() != null
-                && (internalInterface.getSdlMsgVersion().getMajorVersion() < 7
-                || (internalInterface.getSdlMsgVersion().getMajorVersion() == 7 && internalInterface.getSdlMsgVersion().getMinorVersion() == 0))) {
-            addUniqueNamesToCells(clonedCells);
+        // Check for cell lists with completely duplicate information, or any duplicate voiceCommands and return if it fails (logs are in the called method).
+        if (clonedCells != null && !menuCellsAreUnique(clonedCells, new ArrayList<String>())) {
+            return;
         }
 
         if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE) || currentSystemContext.equals(SystemContext.SYSCTXT_MENU)) {
@@ -194,6 +192,23 @@ abstract class BaseMenuManager extends BaseSubManager {
         }
         waitingOnHMIUpdate = false;
 
+        // If we're running on a connection < RPC 7.1, we need to de-duplicate cells because presenting them will fail if we have the same cell primary text.
+        if (clonedCells != null && internalInterface.getSdlMsgVersion() != null
+                && (internalInterface.getSdlMsgVersion().getMajorVersion() < 7
+                || (internalInterface.getSdlMsgVersion().getMajorVersion() == 7 && internalInterface.getSdlMsgVersion().getMinorVersion() == 0))) {
+            addUniqueNamesToCellsWithDuplicatePrimaryText(clonedCells);
+        } else {
+            // On > RPC 7.1, at this point all cells are unique when considering all properties,
+            // but we also need to check if any cells will _appear_ as duplicates when displayed on the screen.
+            // To check that, we'll remove properties from the set cells based on the system capabilities
+            // (we probably don't need to consider them changing between now and when they're actually sent to the HU unless the menu layout changes)
+            // and check for uniqueness again. Then we'll add unique identifiers to primary text if there are duplicates.
+            // Then we transfer the primary text identifiers back to the main cells and add those to an operation to be sent.
+            List<MenuCell> strippedCellsClone = removeUnusedProperties(clonedCells);
+            addUniqueNamesBasedOnStrippedCells(strippedCellsClone, clonedCells);
+
+        }
+
         // Update our Lists
         // set old list
         if (menuCells != null) {
@@ -203,11 +218,6 @@ abstract class BaseMenuManager extends BaseSubManager {
         menuCells = new ArrayList<>();
         if (clonedCells != null && !clonedCells.isEmpty()) {
             menuCells.addAll(clonedCells);
-        }
-
-        // Check for cell lists with completely duplicate information, or any duplicate voiceCommands and return if it fails (logs are in the called method).
-        if (!menuCellsAreUnique(menuCells, new ArrayList<String>())) {
-            return;
         }
 
         // Upload the Artworks
@@ -1441,7 +1451,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         return clone;
     }
 
-    private void addUniqueNamesToCells(List<MenuCell> cells) {
+    private void addUniqueNamesToCellsWithDuplicatePrimaryText(List<MenuCell> cells) {
         HashMap<String, Integer> dictCounter = new HashMap<>();
 
         for (MenuCell cell : cells) {
@@ -1456,11 +1466,80 @@ abstract class BaseMenuManager extends BaseSubManager {
             }
 
             if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
-                addUniqueNamesToCells(cell.getSubCells());
+                addUniqueNamesToCellsWithDuplicatePrimaryText(cell.getSubCells());
             }
         }
     }
 
+    void addUniqueNamesBasedOnStrippedCells(List<MenuCell> strippedCells, List<MenuCell> unstrippedCells) {
+        if (strippedCells == null || unstrippedCells == null || strippedCells.size() != unstrippedCells.size()) {
+            return;
+        }
+        // Tracks how many of each cell primary text there are so that we can append numbers to make each unique as necessary
+        HashMap<MenuCell, Integer> dictCounter = new HashMap<>();
+        for (int i = 0; i < strippedCells.size(); i++) {
+            MenuCell cell = strippedCells.get(i);
+            Integer counter = dictCounter.get(cell);
+            if (counter != null) {
+                counter = counter + 1;
+                dictCounter.put(cell, counter);
+            } else {
+                dictCounter.put(cell, 1);
+            }
+            counter = dictCounter.get(cell);
+            if (counter > 1) {
+                unstrippedCells.get(i).setUniqueTitle(unstrippedCells.get(i).getTitle() + " (" + counter + ")");
+            }
+
+            if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
+                addUniqueNamesBasedOnStrippedCells(cell.getSubCells(), unstrippedCells.get(i).getSubCells());
+            }
+
+        }
+
+
+    }
+
+    List<MenuCell> removeUnusedProperties(List<MenuCell> menuCells) {
+        if (menuCells == null) {
+            return null;
+        }
+        List<MenuCell> removePropertiesClone = cloneMenuCellsList(menuCells);
+        for (MenuCell cell : removePropertiesClone) {
+            // Strip away fields that cannot be used to determine uniqueness visually including fields not supported by the HMI
+            cell.setVoiceCommands(null);
+
+            // Don't check ImageFieldName.subMenuIcon because it was added in 7.0 when the feature was added in 5.0.
+            // Just assume that if cmdIcon is not available, the submenu icon is not either.
+            if (!hasImageFieldOfName(ImageFieldName.cmdIcon)) {
+                cell.setIcon(null);
+            }
+            // Check for subMenu fields supported
+            if (cell.getSubCells() != null) {
+                if (!hasTextFieldOfName(TextFieldName.menuSubMenuSecondaryText)) {
+                    cell.setSecondaryText(null);
+                }
+                if (!hasTextFieldOfName(TextFieldName.menuSubMenuTertiaryText)) {
+                    cell.setTertiaryText(null);
+                }
+                if (!hasImageFieldOfName(ImageFieldName.menuSubMenuSecondaryImage)) {
+                    cell.setSecondaryArtwork(null);
+                }
+                cell.setSubCells(removeUnusedProperties(cell.getSubCells()));
+            } else {
+                if (!hasTextFieldOfName(TextFieldName.menuCommandSecondaryText)) {
+                    cell.setSecondaryText(null);
+                }
+                if (!hasTextFieldOfName(TextFieldName.menuCommandTertiaryText)) {
+                    cell.setTertiaryText(null);
+                }
+                if (!hasImageFieldOfName(ImageFieldName.menuCommandSecondaryImage)) {
+                    cell.setSecondaryArtwork(null);
+                }
+            }
+        }
+        return removePropertiesClone;
+    }
 
     /**
      * Check for cell lists with completely duplicate information, or any duplicate voiceCommands
