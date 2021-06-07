@@ -1,6 +1,8 @@
 package com.smartdevicelink.managers.lockscreen;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Looper;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -168,6 +170,36 @@ public class LockScreenManagerTests {
         onDDListener.onNotified(onDriverDistraction);
         assertFalse(lockScreenManager.enableDismissGesture);
         assertTrue(lockScreenManager.isLockscreenDismissible);
+    }
+
+    @Test
+    public void testShowingLockscreenAfterDismissibleFalse() {
+        if (Looper.myLooper() == null) {
+            Looper.prepare();
+        }
+        lockScreenManager.enableDismissGesture = true;
+        lockScreenManager.displayMode = LockScreenConfig.DISPLAY_MODE_ALWAYS;
+
+        // Send first notification (DD=OFF, Dismissible=true)
+        OnDriverDistraction onDriverDistraction = new OnDriverDistraction();
+        onDriverDistraction.setLockscreenDismissibility(true);
+        onDriverDistraction.setState(DriverDistractionState.DD_OFF);
+        onDDListener.onNotified(onDriverDistraction);
+
+        // Dismiss lock screen activity
+        lockScreenManager.mLockscreenDismissedReceiver.onReceive(null, new Intent(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED, null));
+
+        // Lock screen should be set to auto dismiss in future
+        assertTrue(lockScreenManager.mLockScreenShouldBeAutoDismissed);
+
+        // Send second notification (DD=On, Dismissible=false)
+        onDriverDistraction = new OnDriverDistraction();
+        onDriverDistraction.setLockscreenDismissibility(false);
+        onDriverDistraction.setState(DriverDistractionState.DD_ON);
+        onDDListener.onNotified(onDriverDistraction);
+
+        // Lock screen should be set to NOT auto dismiss in future
+        assertFalse(lockScreenManager.mLockScreenShouldBeAutoDismissed);
     }
 
 }
