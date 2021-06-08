@@ -133,8 +133,16 @@ abstract class BaseSystemCapabilityManager {
             return Collections.singletonList(displayCapability);
         }
 
+        // HAX: Issue #1705, Ford Sync bug returning incorrect template name for "NON-MEDIA" (https://github.com/smartdevicelink/sdl_java_suite/issues/1705).
+        List<String> templatesAvailable = display.getTemplatesAvailable();
+        for (int i = 0; i < templatesAvailable.size(); i++) {
+            if (templatesAvailable.get(i).equals("NON_MEDIA")) {
+                templatesAvailable.set(i, "NON-MEDIA");
+                break;
+            }
+        }
         // copy all available display capabilities
-        defaultWindowCapability.setTemplatesAvailable(display.getTemplatesAvailable());
+        defaultWindowCapability.setTemplatesAvailable(templatesAvailable);
         defaultWindowCapability.setNumCustomPresetsAvailable(display.getNumCustomPresetsAvailable());
         defaultWindowCapability.setTextFields(display.getTextFields());
         defaultWindowCapability.setImageFields(display.getImageFields());

@@ -42,6 +42,7 @@ import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
+import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
 import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
@@ -54,6 +55,7 @@ import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
@@ -61,11 +63,13 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
+import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -540,7 +544,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
      * E.g. Choices param contains 2 cells with text/title "Address" will be handled by updating the uniqueText/uniqueTitle of the second cell to "Address (2)".
      * @param choices The list of choiceCells to be uploaded.
      */
-    void addUniqueNamesToCells(LinkedHashSet<ChoiceCell> choices) {
+    void addUniqueNamesToCells(List<ChoiceCell> choices) {
         HashMap<String, Integer> dictCounter = new HashMap<>();
 
         for (ChoiceCell cell : choices) {
@@ -556,16 +560,80 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         }
     }
 
+    void addUniqueNamesBasedOnStrippedCells(List<ChoiceCell> strippedCells, List<ChoiceCell> unstrippedCells) {
+        if (strippedCells == null || unstrippedCells == null || strippedCells.size() != unstrippedCells.size()) {
+          return;
+        }
+        // Tracks how many of each cell primary text there are so that we can append numbers to make each unique as necessary
+        HashMap<ChoiceCell, Integer> dictCounter = new HashMap<>();
+        for (int i = 0; i < strippedCells.size(); i++) {
+            ChoiceCell cell = strippedCells.get(i);
+            Integer counter = dictCounter.get(cell);
+            if (counter != null) {
+                counter++;
+                dictCounter.put(cell, counter);
+            } else {
+                dictCounter.put(cell, 1);
+            }
+
+            counter = dictCounter.get(cell);
+
+            if (counter > 1) {
+                unstrippedCells.get(i).setUniqueText(unstrippedCells.get(i).getText() + " (" + counter + ")");
+            }
+        }
+    }
+
+    private List<ChoiceCell> cloneChoiceCellList(List<ChoiceCell> originalList) {
+        if (originalList == null) {
+            return null;
+        }
+
+        List<ChoiceCell> clone = new ArrayList<>();
+        for (ChoiceCell choiceCell : originalList) {
+            clone.add(choiceCell.clone());
+        }
+        return clone;
+    }
+
     private LinkedHashSet<ChoiceCell> getChoicesToBeUploadedWithArray(List<ChoiceCell> choices) {
-        LinkedHashSet<ChoiceCell> choiceSet = new LinkedHashSet<>(choices);
-        // If we're running on a connection < RPC 7.1, we need to de-duplicate cells because presenting them will fail if we have the same cell primary text.
+        // Clone choices
+        List<ChoiceCell> choicesClone = cloneChoiceCellList(choices);
         if (choices != null && internalInterface.getSdlMsgVersion() != null
                 && (internalInterface.getSdlMsgVersion().getMajorVersion() < 7
                 || (internalInterface.getSdlMsgVersion().getMajorVersion() == 7 && internalInterface.getSdlMsgVersion().getMinorVersion() == 0))) {
-            addUniqueNamesToCells(choiceSet);
+            // If we're on < RPC 7.1, all primary texts need to be unique, so we don't need to check removed properties and duplicate cells
+            addUniqueNamesToCells(choicesClone);
+        } else {
+            List<ChoiceCell> strippedCellsClone = removeUnusedProperties(choicesClone);
+            addUniqueNamesBasedOnStrippedCells(strippedCellsClone, choicesClone);
         }
-        choiceSet.removeAll(preloadedChoices);
-        return choiceSet;
+        LinkedHashSet<ChoiceCell> choiceCloneLinkedHash = new LinkedHashSet<>(choicesClone);
+        choiceCloneLinkedHash.removeAll(preloadedChoices);
+        return choiceCloneLinkedHash;
+    }
+
+    List<ChoiceCell> removeUnusedProperties(List<ChoiceCell> choiceCells) {
+        List<ChoiceCell> strippedCellsClone = cloneChoiceCellList(choiceCells);
+        //Clone Cells
+        for (ChoiceCell cell : strippedCellsClone) {
+            // Strip away fields that cannot be used to determine uniqueness visually including fields not supported by the HMI
+            cell.setVoiceCommands(null);
+
+            if (!hasImageFieldOfName(ImageFieldName.choiceImage)) {
+                cell.setArtwork(null);
+            }
+            if (!hasTextFieldOfName(TextFieldName.secondaryText)) {
+                cell.setSecondaryText(null);
+            }
+            if (!hasTextFieldOfName(TextFieldName.tertiaryText)) {
+                cell.setTertiaryText(null);
+            }
+            if (!hasImageFieldOfName(ImageFieldName.choiceSecondaryImage)) {
+                cell.setSecondaryArtwork(null);
+            }
+        }
+        return strippedCellsClone;
     }
 
     void updateIdsOnChoices(LinkedHashSet<ChoiceCell> choices) {
@@ -672,6 +740,14 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
     // ADDITIONAL HELPERS
 
+    private boolean hasImageFieldOfName(ImageFieldName imageFieldName) {
+        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, imageFieldName);
+    }
+
+    private boolean hasTextFieldOfName(TextFieldName textFieldName) {
+        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, textFieldName);
+    }
+
     boolean setUpChoiceSet(ChoiceSet choiceSet) {
 
         List<ChoiceCell> choices = choiceSet.getChoices();
@@ -695,9 +771,8 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         int choiceCellWithVoiceCommandCount = 0;
 
         for (ChoiceCell cell : choices) {
-
             uniqueChoiceCells.add(cell);
-
+            // Not using cloned cell here because we set the clone's VoiceCommands to null for visual check only
             if (cell.getVoiceCommands() != null) {
                 uniqueVoiceCommands.addAll(cell.getVoiceCommands());
                 choiceCellWithVoiceCommandCount += 1;
