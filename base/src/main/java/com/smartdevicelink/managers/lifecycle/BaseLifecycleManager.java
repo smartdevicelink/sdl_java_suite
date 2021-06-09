@@ -876,7 +876,7 @@ abstract class BaseLifecycleManager {
     // HAX: Issue #1690, Ford Sync bug returning incorrect display capabilities (https://github.com/smartdevicelink/sdl_java_suite/issues/1690). Use the initial capabilities from RAIR instead of the incorrect ones that are included in SetDisplayLayoutResponse.
     void fixIncorrectDisplayCapabilities(RPCMessage rpc) {
         if (RPCMessage.KEY_RESPONSE.equals(rpc.getMessageType()) && rpc.getFunctionName().equals(FunctionID.SET_DISPLAY_LAYOUT.toString()) &&
-                initialMediaCapabilities != null && lastDisplayLayoutRequestTemplate.equals(PredefinedLayout.MEDIA.toString())) {
+                initialMediaCapabilities != null && PredefinedLayout.MEDIA.toString().equals(lastDisplayLayoutRequestTemplate)) {
 
             SetDisplayLayoutResponse setDisplayLayoutResponse = (SetDisplayLayoutResponse) rpc;
             setDisplayLayoutResponse.setDisplayCapabilities(initialMediaCapabilities);
