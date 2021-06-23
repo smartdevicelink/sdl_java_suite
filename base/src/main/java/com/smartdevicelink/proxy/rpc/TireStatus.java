@@ -31,6 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
@@ -179,7 +180,7 @@ public class TireStatus extends RPCStruct {
      * @param innerLeftRear    The status of the inner left rear tire.
      * @param innerRightRear   The status of the inner right rear tire.
      */
-    public TireStatus(@NonNull WarningLightStatus pressureTellTale, @NonNull SingleTireStatus leftFront, @NonNull SingleTireStatus rightFront, @NonNull SingleTireStatus leftRear, @NonNull SingleTireStatus rightRear, @NonNull SingleTireStatus innerLeftRear, @NonNull SingleTireStatus innerRightRear) {
+    public TireStatus(@NonNull WarningLightStatus pressureTellTale, @Nullable SingleTireStatus leftFront, @Nullable SingleTireStatus rightFront, @Nullable SingleTireStatus leftRear, @Nullable SingleTireStatus rightRear, @Nullable SingleTireStatus innerLeftRear, @Nullable SingleTireStatus innerRightRear) {
         this();
         setPressureTellTale(pressureTellTale);
         setLeftFront(leftFront);
@@ -229,9 +230,9 @@ public class TireStatus extends RPCStruct {
      * Sets the leftFront.
      *
      * @param leftFront The status of the left front tire.
-     * @since SmartDeviceLink 2.0.0
+     * @since SmartDeviceLink 2.0.0 Optional since SmartDeviceLink 8.0.0
      */
-    public TireStatus setLeftFront(SingleTireStatus leftFront) {
+    public TireStatus setLeftFront(@Nullable SingleTireStatus leftFront) {
         setValue(KEY_LEFT_FRONT, leftFront);
         return this;
     }
@@ -240,9 +241,9 @@ public class TireStatus extends RPCStruct {
      * Gets the leftFront.
      *
      * @return SingleTireStatus The status of the left front tire.
-     * @since SmartDeviceLink 2.0.0
+     * @since SmartDeviceLink 2.0.0 Optional since SmartDeviceLink 8.0.0
      */
-    public SingleTireStatus getLeftFront() {
+    public @Nullable SingleTireStatus getLeftFront() {
         return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_LEFT_FRONT);
     }
 
@@ -250,9 +251,9 @@ public class TireStatus extends RPCStruct {
      * Sets the rightFront.
      *
      * @param rightFront The status of the right front tire.
-     * @since SmartDeviceLink 2.0.0
+     * @since SmartDeviceLink 2.0.0 Optional since SmartDeviceLink 8.0.0
      */
-    public TireStatus setRightFront(SingleTireStatus rightFront) {
+    public TireStatus setRightFront(@Nullable SingleTireStatus rightFront) {
         setValue(KEY_RIGHT_FRONT, rightFront);
         return this;
     }
@@ -261,9 +262,9 @@ public class TireStatus extends RPCStruct {
      * Gets the rightFront.
      *
      * @return SingleTireStatus The status of the right front tire.
-     * @since SmartDeviceLink 2.0.0
+     * @since SmartDeviceLink 2.0.0 Optional since SmartDeviceLink 8.0.0
      */
-    public SingleTireStatus getRightFront() {
+    public @Nullable SingleTireStatus getRightFront() {
         return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_RIGHT_FRONT);
     }
 
@@ -271,9 +272,9 @@ public class TireStatus extends RPCStruct {
      * Sets the leftRear.
      *
      * @param leftRear The status of the left rear tire.
-     * @since SmartDeviceLink 2.0.0
+     * @since SmartDeviceLink 2.0.0 Optional since SmartDeviceLink 8.0.0
      */
-    public TireStatus setLeftRear(SingleTireStatus leftRear) {
+    public TireStatus setLeftRear(@Nullable SingleTireStatus leftRear) {
         setValue(KEY_LEFT_REAR, leftRear);
         return this;
     }
@@ -282,9 +283,9 @@ public class TireStatus extends RPCStruct {
      * Gets the leftRear.
      *
      * @return SingleTireStatus The status of the left rear tire.
-     * @since SmartDeviceLink 2.0.0
+     * @since SmartDeviceLink 2.0.0 Optional since SmartDeviceLink 8.0.0
      */
-    public SingleTireStatus getLeftRear() {
+    public @Nullable SingleTireStatus getLeftRear() {
         return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_LEFT_REAR);
     }
 
@@ -292,9 +293,9 @@ public class TireStatus extends RPCStruct {
      * Sets the rightRear.
      *
      * @param rightRear The status of the right rear tire.
-     * @since SmartDeviceLink 2.0.0
+     * @since SmartDeviceLink 2.0.0 Optional since SmartDeviceLink 8.0.0
      */
-    public TireStatus setRightRear(SingleTireStatus rightRear) {
+    public TireStatus setRightRear(@Nullable SingleTireStatus rightRear) {
         setValue(KEY_RIGHT_REAR, rightRear);
         return this;
     }
@@ -303,9 +304,9 @@ public class TireStatus extends RPCStruct {
      * Gets the rightRear.
      *
      * @return SingleTireStatus The status of the right rear tire.
-     * @since SmartDeviceLink 2.0.0
+     * @since SmartDeviceLink 2.0.0 Optional since SmartDeviceLink 8.0.0
      */
-    public SingleTireStatus getRightRear() {
+    public @Nullable SingleTireStatus getRightRear() {
         return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_RIGHT_REAR);
     }
 
@@ -313,9 +314,9 @@ public class TireStatus extends RPCStruct {
      * Sets the innerLeftRear.
      *
      * @param innerLeftRear The status of the inner left rear.
-     * @since SmartDeviceLink 2.0.0
+     * @since SmartDeviceLink 2.0.0 Optional since SmartDeviceLink 8.0.0
      */
-    public TireStatus setInnerLeftRear(SingleTireStatus innerLeftRear) {
+    public TireStatus setInnerLeftRear(@Nullable SingleTireStatus innerLeftRear) {
         setValue(KEY_INNER_LEFT_REAR, innerLeftRear);
         return this;
     }
@@ -324,9 +325,9 @@ public class TireStatus extends RPCStruct {
      * Gets the innerLeftRear.
      *
      * @return SingleTireStatus The status of the inner left rear.
-     * @since SmartDeviceLink 2.0.0
+     * @since SmartDeviceLink 2.0.0 Optional since SmartDeviceLink 8.0.0
      */
-    public SingleTireStatus getInnerLeftRear() {
+    public @Nullable SingleTireStatus getInnerLeftRear() {
         return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_INNER_LEFT_REAR);
     }
 
@@ -334,9 +335,9 @@ public class TireStatus extends RPCStruct {
      * Sets the innerRightRear.
      *
      * @param innerRightRear The status of the inner right rear.
-     * @since SmartDeviceLink 2.0.0
+     * @since SmartDeviceLink 2.0.0 Optional since SmartDeviceLink 8.0.0
      */
-    public TireStatus setInnerRightRear(SingleTireStatus innerRightRear) {
+    public TireStatus setInnerRightRear(@Nullable SingleTireStatus innerRightRear) {
         setValue(KEY_INNER_RIGHT_REAR, innerRightRear);
         return this;
     }
@@ -345,9 +346,9 @@ public class TireStatus extends RPCStruct {
      * Gets the innerRightRear.
      *
      * @return SingleTireStatus The status of the inner right rear.
-     * @since SmartDeviceLink 2.0.0
+     * @since SmartDeviceLink 2.0.0 Optional since SmartDeviceLink 8.0.0
      */
-    public SingleTireStatus getInnerRightRear() {
+    public @Nullable SingleTireStatus getInnerRightRear() {
         return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_INNER_RIGHT_REAR);
     }
 }
