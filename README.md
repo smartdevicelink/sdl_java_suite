@@ -29,7 +29,7 @@ Contents and timing for SDL Java Suite releases can be tracked on the [GitHub Pr
 Additional information about recent and upcoming SDL Releases can be found in the [SDL Evolution README](https://github.com/smartdevicelink/sdl_evolution#recent-and-upcoming-releases).
 
 ## SmartDeviceLink Android
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.smartdevicelink/sdl_android/badge.png)](https://maven-badges.herokuapp.com/maven-central/com.smartdevicelink/sdl_android/)
+[![Maven Central](https://img.shields.io/maven-central/v/com.smartdevicelink/sdl_android.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.smartdevicelink%22%20AND%20a:%22sdl_android%22)
 
 ### Installation
 
@@ -67,7 +67,7 @@ Developers using Proguard to shrink and obfuscate their code should be sure to i
 
 ### JavaSE
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.smartdevicelink/sdl_java_se/badge.png)](https://maven-badges.herokuapp.com/maven-central/com.smartdevicelink/sdl_java_se/)
+[![Maven Central](https://img.shields.io/maven-central/v/com.smartdevicelink/sdl_java_se.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.smartdevicelink%22%20AND%20a:%22sdl_java_se%22)
 
 The JavaSE project is meant to allow SDL compatibility for embedded applications. 
 
@@ -86,7 +86,7 @@ dependencies {
 
 ### JavaEE
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.smartdevicelink/sdl_java_ee/badge.png)](https://maven-badges.herokuapp.com/maven-central/com.smartdevicelink/sdl_java_ee/)
+[![Maven Central](https://img.shields.io/maven-central/v/com.smartdevicelink/sdl_java_ee.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.smartdevicelink%22%20AND%20a:%22sdl_java_ee%22)
 
 The JavaEE project is meant to allow SDL compatibility for web applications. 
 
