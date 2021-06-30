@@ -43,6 +43,7 @@ import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.PutFile;
 import com.smartdevicelink.proxy.rpc.PutFileResponse;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
+import com.smartdevicelink.util.DebugTool;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -221,7 +222,7 @@ class UploadFileOperation extends Task {
         try {
             this.inputStream.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            DebugTool.logError(TAG,"Error attempting to close input stream", e);
         }
     }
 
@@ -330,7 +331,7 @@ class UploadFileOperation extends Task {
         try {
             bytesRead = inputStream.read(buffer, 0, size);
         } catch (IOException e) {
-            e.printStackTrace();
+            DebugTool.logError(TAG,"Error attempting to read from input stream", e);
         }
 
         if (bytesRead > 0) {
@@ -365,7 +366,7 @@ class UploadFileOperation extends Task {
             try {
                 size = inputStream.available();
             } catch (IOException e) {
-                e.printStackTrace();
+                DebugTool.logError(TAG,"Error trying to get input stream size", e);
             }
         }
         return size;

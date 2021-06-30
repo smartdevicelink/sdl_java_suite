@@ -43,17 +43,22 @@ import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SetGlobalProperties;
+import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
+import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.test.TestValues;
 
 import org.junit.After;
 import org.junit.Before;
@@ -63,6 +68,7 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -598,6 +604,111 @@ public class MenuManagerTests {
         assertEquals(menuManager.menuCells.get(3).getSubCells().get(3).getUniqueTitle(), "A");
     }
 
+    @Test
+    public void testUniquenessForAvailableFields() {
+        WindowCapability windowCapability = new WindowCapability();
+        TextField menuSubMenuSecondaryText = new TextField();
+        menuSubMenuSecondaryText.setName(TextFieldName.menuSubMenuSecondaryText);
+        TextField menuSubMenuTertiaryText = new TextField();
+        menuSubMenuTertiaryText.setName(TextFieldName.menuSubMenuTertiaryText);
+        TextField menuCommandSecondaryText = new TextField();
+        menuCommandSecondaryText.setName(TextFieldName.menuCommandSecondaryText);
+        TextField menuCommandTertiaryText = new TextField();
+        menuCommandTertiaryText.setName(TextFieldName.menuCommandTertiaryText);
+        List<TextField> textFields = new ArrayList<>();
+        textFields.add(menuSubMenuSecondaryText);
+        textFields.add(menuSubMenuTertiaryText);
+        textFields.add(menuCommandSecondaryText);
+        textFields.add(menuCommandTertiaryText);
+        windowCapability.setTextFields(textFields);
+
+        ImageField cmdIcon = new ImageField();
+        cmdIcon.setName(ImageFieldName.cmdIcon);
+        ImageField menuSubMenuSecondaryImage = new ImageField();
+        menuSubMenuSecondaryImage.setName(ImageFieldName.menuSubMenuSecondaryImage);
+        ImageField menuCommandSecondaryImage = new ImageField();
+        menuCommandSecondaryImage.setName(ImageFieldName.menuCommandSecondaryImage);
+        List<ImageField> imageFieldList = new ArrayList<>();
+        imageFieldList.add(cmdIcon);
+        imageFieldList.add(menuSubMenuSecondaryImage);
+        imageFieldList.add(menuCommandSecondaryImage);
+        windowCapability.setImageFields(imageFieldList);
+        menuManager.defaultMainWindowCapability = windowCapability;
+
+        assertNull(menuManager.removeUnusedProperties(null));
+
+        MenuCell cell1 = new MenuCell("Text1", "SecondaryText", "TText", TestValues.GENERAL_ARTWORK, TestValues.GENERAL_ARTWORK, null, new MenuSelectionListener() {
+            @Override
+            public void onTriggered(TriggerSource trigger) {
+
+            }
+        });
+
+        MenuCell cell2 = new MenuCell("Text1", "SecondaryText2", "TText2", null, null, null, new MenuSelectionListener() {
+            @Override
+            public void onTriggered(TriggerSource trigger) {
+
+            }
+        });
+
+        MenuCell subCell1 = new MenuCell("SubCell1", "Secondary Text", "TText", TestValues.GENERAL_ARTWORK, TestValues.GENERAL_ARTWORK, null, new MenuSelectionListener() {
+            @Override
+            public void onTriggered(TriggerSource trigger) {
+            }
+        });
+
+        MenuCell subCell2 = new MenuCell("SubCell1", "Secondary Text2", "TText2", null, null, null, new MenuSelectionListener() {
+            @Override
+            public void onTriggered(TriggerSource trigger) {
+            }
+        });
+
+        List<MenuCell> subCellList = new ArrayList<>();
+        subCellList.add(subCell1);
+        subCellList.add(subCell2);
+
+
+        MenuCell cell3 = new MenuCell("Test Cell 3 (sub menu)", "SecondaryText", "TText", MenuLayout.LIST, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_ARTWORK, subCellList);
+        MenuCell cell4 = new MenuCell("Test Cell 3 (sub menu)", null, null, MenuLayout.LIST, null, null, subCellList);
+
+        List<MenuCell> menuCellList = new ArrayList<>();
+        menuCellList.add(cell1);
+        menuCellList.add(cell2);
+        menuCellList.add(cell3);
+        menuCellList.add(cell4);
+
+        List<MenuCell> removedProperties = menuManager.removeUnusedProperties(menuCellList);
+        assertNotNull(removedProperties.get(0).getSecondaryText());
+        menuManager.addUniqueNamesBasedOnStrippedCells(removedProperties, menuCellList);
+        assertEquals(menuCellList.get(1).getUniqueTitle(), "Text1");
+
+        // Remove menuCommandSecondaryText as a supported TextField
+        textFields.remove(menuCommandSecondaryText);
+        textFields.remove(menuCommandTertiaryText);
+        imageFieldList.remove(cmdIcon);
+        imageFieldList.remove(menuCommandSecondaryImage);
+        imageFieldList.remove(menuSubMenuSecondaryImage);
+        textFields.remove(menuSubMenuSecondaryText);
+        textFields.remove(menuSubMenuTertiaryText);
+        textFields.remove(menuSubMenuSecondaryImage);
+
+        // Test removeUnusedProperties
+        removedProperties = menuManager.removeUnusedProperties(menuCellList);
+        assertNull(removedProperties.get(0).getSecondaryText());
+        assertNull(removedProperties.get(0).getTertiaryText());
+
+        menuManager.addUniqueNamesBasedOnStrippedCells(removedProperties, menuCellList);
+        assertEquals(menuCellList.get(1).getUniqueTitle(), "Text1 (2)");
+
+        // SubCell test
+        assertEquals(menuCellList.get(3).getUniqueTitle(), "Test Cell 3 (sub menu) (2)");
+        assertEquals(menuCellList.get(2).getSubCells().get(1).getUniqueTitle(), "SubCell1 (2)");
+
+
+    }
+
+
+
     // HELPERS
 
     // Emulate what happens when Core sends OnHMIStatus notification
@@ -848,5 +959,6 @@ public class MenuManagerTests {
 
         return Arrays.asList(A, B, C, D);
     }
+
 
 }

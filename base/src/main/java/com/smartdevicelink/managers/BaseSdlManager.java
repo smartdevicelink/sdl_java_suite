@@ -205,7 +205,7 @@ abstract class BaseSdlManager {
                             try {
                                 DebugTool.logInfo(TAG, response.serializeJSON().toString());
                             } catch (JSONException e) {
-                                e.printStackTrace();
+                                DebugTool.logError(TAG, "Error attempting to serialize ChangeRegistrationResponse", e);
                             }
 
                             // go through and change sdlManager properties that were changed via the LCU update
