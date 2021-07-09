@@ -95,7 +95,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     String displayName;
     SystemContext currentSystemContext;
     HashSet<ChoiceCell> preloadedChoices, pendingPreloadChoices;
-    ChoiceSet pendingPresentationSet;
 
     // We will pass operations into this to be completed
     final Queue transactionQueue;
@@ -151,7 +150,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         currentSystemContext = null;
         defaultMainWindowCapability = null;
 
-        pendingPresentationSet = null;
         pendingPresentOperation = null;
         isVROptional = false;
         nextChoiceId = choiceCellIdMin;
@@ -263,19 +261,20 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         final HashSet<ChoiceCell> cellsToBeDeleted = choicesToBeDeletedWithArray(choices);
         HashSet<ChoiceCell> cellsToBeRemovedFromPending = choicesToBeRemovedFromPendingWithArray(choices);
         // If choices are deleted that are already uploaded or pending and are used by a pending presentation, cancel it and send an error
-        HashSet<ChoiceCell> pendingPresentationChoices = new HashSet<>();
-        if (pendingPresentationSet != null && pendingPresentationSet.getChoices() != null) {
-            pendingPresentationChoices.addAll(pendingPresentationSet.getChoices());
+        for (Task task: transactionQueue.getTasksAsList()) {
+            if (task instanceof PresentChoiceSetOperation && task.getState() != Task.CANCELED && task.getState()!= Task.FINISHED) {
+                PresentChoiceSetOperation presentOperation = (PresentChoiceSetOperation) task;
+                HashSet<ChoiceCell> presentOpChoicesSet = new HashSet<>(presentOperation.getChoiceSet().getChoices());
+                if (presentOpChoicesSet.equals(cellsToBeDeleted) || presentOpChoicesSet.equals(cellsToBeRemovedFromPending)) {
+                    presentOperation.cancelTask();
+                    if (presentOperation.getChoiceSet().canceledListener != null) {
+                        presentOperation.getChoiceSet().canceledListener.onChoiceSetCanceled();
+                    }
+                }
+            }
+
         }
 
-        if (pendingPresentOperation != null && pendingPresentOperation.getState() != Task.CANCELED && pendingPresentOperation.getState() != Task.FINISHED && (cellsToBeDeleted.retainAll(pendingPresentationChoices) || cellsToBeRemovedFromPending.retainAll(pendingPresentationChoices))) {
-            pendingPresentOperation.cancelTask();
-            DebugTool.logWarning(TAG, "Attempting to delete choice cells while there is a pending presentation operation. Pending presentation cancelled.");
-            pendingPresentOperation = null;
-        }
-
-        // Remove cells from pending and delete choices
-        pendingPresentationChoices.removeAll(cellsToBeRemovedFromPending);
         for (Task operation : transactionQueue.getTasksAsList()) {
             if (!(operation instanceof PreloadChoicesOperation)) {
                 continue;
@@ -322,45 +321,39 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             return;
         }
 
-        if (this.pendingPresentationSet != null && pendingPresentOperation != null) {
-            pendingPresentOperation.cancelTask();
-            DebugTool.logWarning(TAG, "Presenting a choice set while one is currently presented. Cancelling previous and continuing");
-        }
-
-        this.pendingPresentationSet = choiceSet;
-        preloadChoices(this.pendingPresentationSet.getChoices(), new CompletionListener() {
+        preloadChoices(choiceSet.getChoices(), new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
                 if (!success) {
                     choiceSet.getChoiceSetSelectionListener().onError("There was an error pre-loading choice set choices");
                 } else {
-                    sendPresentOperation(keyboardListener, mode);
+                    sendPresentOperation(choiceSet, keyboardListener, mode);
                 }
             }
         });
     }
 
-    private void sendPresentOperation(KeyboardListener keyboardListener, InteractionMode mode) {
+    private void sendPresentOperation(final ChoiceSet choiceSet, KeyboardListener keyboardListener, InteractionMode mode) {
 
         if (mode == null) {
             mode = InteractionMode.MANUAL_ONLY;
         }
 
-        findIdsOnChoiceSet(pendingPresentationSet);
+        findIdsOnChoiceSet(choiceSet);
 
         // Pass back the information to the developer
         ChoiceSetSelectionListener privateChoiceListener = new ChoiceSetSelectionListener() {
             @Override
             public void onChoiceSelected(ChoiceCell choiceCell, TriggerSource triggerSource, int rowIndex) {
-                if (pendingPresentationSet != null && pendingPresentationSet.getChoiceSetSelectionListener() != null) {
-                    pendingPresentationSet.getChoiceSetSelectionListener().onChoiceSelected(choiceCell, triggerSource, rowIndex);
+                if (choiceSet != null && choiceSet.getChoiceSetSelectionListener() != null) {
+                    choiceSet.getChoiceSetSelectionListener().onChoiceSelected(choiceCell, triggerSource, rowIndex);
                 }
             }
 
             @Override
             public void onError(String error) {
-                if (pendingPresentationSet != null && pendingPresentationSet.getChoiceSetSelectionListener() != null) {
-                    pendingPresentationSet.getChoiceSetSelectionListener().onError(error);
+                if (choiceSet != null && choiceSet.getChoiceSetSelectionListener() != null) {
+                    choiceSet.getChoiceSetSelectionListener().onError(error);
                 }
             }
         };
@@ -370,11 +363,11 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         if (keyboardListener == null) {
             // Non-searchable choice set
             DebugTool.logInfo(TAG, "Creating non-searchable choice set");
-            presentOp = new PresentChoiceSetOperation(internalInterface, pendingPresentationSet, mode, null, null, privateChoiceListener, getNextCancelId());
+            presentOp = new PresentChoiceSetOperation(internalInterface, choiceSet, mode, null, null, privateChoiceListener, getNextCancelId());
         } else {
             // Searchable choice set
             DebugTool.logInfo(TAG, "Creating searchable choice set");
-            presentOp = new PresentChoiceSetOperation(internalInterface, pendingPresentationSet, mode, keyboardConfiguration, keyboardListener, privateChoiceListener, getNextCancelId());
+            presentOp = new PresentChoiceSetOperation(internalInterface, choiceSet, mode, keyboardConfiguration, keyboardListener, privateChoiceListener, getNextCancelId());
         }
 
         transactionQueue.add(presentOp, false);
@@ -400,9 +393,8 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             return null;
         }
 
-        if (pendingPresentationSet != null && pendingPresentOperation != null) {
+        if (pendingPresentOperation != null) {
             pendingPresentOperation.cancelTask();
-            pendingPresentationSet = null;
             DebugTool.logWarning(TAG, "There is a current or pending choice set, cancelling and continuing.");
         }
 

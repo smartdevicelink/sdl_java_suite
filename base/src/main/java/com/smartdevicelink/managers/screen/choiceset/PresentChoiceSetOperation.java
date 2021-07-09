@@ -300,6 +300,10 @@ class PresentChoiceSetOperation extends Task {
         return choiceIds;
     }
 
+    public ChoiceSet getChoiceSet() {
+        return this.choiceSet;
+    }
+
     // HELPERS
 
     void setSelectedCellWithId(Integer cellId) {

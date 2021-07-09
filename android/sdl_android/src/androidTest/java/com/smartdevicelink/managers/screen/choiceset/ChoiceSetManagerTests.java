@@ -123,7 +123,6 @@ public class ChoiceSetManagerTests {
         assertNull(csm.currentHMILevel);
         assertNull(csm.currentSystemContext);
         assertNull(csm.defaultMainWindowCapability);
-        assertNull(csm.pendingPresentationSet);
         assertNull(csm.pendingPresentOperation);
 
         assertEquals(csm.transactionQueue.getTasksAsList().size(), 0);
