@@ -273,7 +273,7 @@ abstract class BaseMenuManager extends BaseSubManager {
     }
 
     /**
-     * Opens a subMenu. The cell you pass in must be constructed with {@link MenuCell(String,SdlArtwork,List)}
+     * Opens a subMenu.
      *
      * @param cell - A <Strong>SubMenu</Strong> cell whose sub menu you wish to open
      */
