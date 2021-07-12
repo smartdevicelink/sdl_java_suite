@@ -110,9 +110,11 @@ class MenuConfigurationUpdateOperation extends Task {
         if (availableMenuLayouts == null) {
             DebugTool.logWarning(TAG, "Could not set the main menu configuration. Which menu layouts can be used is not available");
             listener.onComplete(false);
+            return;
         } else if (!availableMenuLayouts.contains(updatedMenuConfiguration.getMenuLayout()) || !availableMenuLayouts.contains(updatedMenuConfiguration.getSubMenuLayout())) {
             DebugTool.logError(TAG, String.format("One or more of the set menu layouts are not available on this system. The menu configuration will not be set. Available menu layouts: %s, set menu layouts: %s", availableMenuLayouts, updatedMenuConfiguration));
             listener.onComplete(false);
+            return;
         }
 
         SetGlobalProperties setGlobalProperties = new SetGlobalProperties();
