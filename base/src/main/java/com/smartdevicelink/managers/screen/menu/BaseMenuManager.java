@@ -284,7 +284,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
     /**
      * This method is called via the screen manager to set the menuConfiguration.
-     * This will be used when a menuCell with sub-cells has a null value for SubMenuLayout
+     * The menuConfiguration.SubMenuLayout value will be used when a menuCell with sub-cells has a null value for SubMenuLayout
      *
      * @param menuConfiguration - The default menuConfiguration
      */
@@ -438,7 +438,6 @@ abstract class BaseMenuManager extends BaseSubManager {
                 return true;
             }
             return (!displayType.equals(DisplayType.GEN3_8_INCH.toString()));
-
         } else if (updateMode.equals(DynamicMenuUpdatesMode.FORCE_OFF)) {
             return false;
         } else if (updateMode.equals(DynamicMenuUpdatesMode.FORCE_ON)) {
