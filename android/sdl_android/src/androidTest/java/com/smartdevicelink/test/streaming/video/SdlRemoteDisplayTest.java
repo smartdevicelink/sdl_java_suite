@@ -58,22 +58,20 @@ public class SdlRemoteDisplayTest extends TestCase {
 
     @TargetApi(19)
     public void testTouchEvents() {
-        VirtualDisplayEncoder encoder = createVDE();
-        assertNotNull(encoder);
-        MockRemoteDisplay remoteDisplay = new MockRemoteDisplay(InstrumentationRegistry.getInstrumentation().getContext(), encoder.getVirtualDisplay());
-        assertNotNull(remoteDisplay);
-        remoteDisplay.show();
-
-        assertNotNull(remoteDisplay.getMainView());
-
         try {
-            remoteDisplay.handleMotionEvent(MotionEvent.obtain(10, System.currentTimeMillis(), MotionEvent.ACTION_DOWN, 100, 100, 0));
-        } catch (Exception e) {
-            assert false;
-        }
+            VirtualDisplayEncoder encoder = createVDE();
+            assertNotNull(encoder);
+            MockRemoteDisplay remoteDisplay = new MockRemoteDisplay(InstrumentationRegistry.getInstrumentation().getContext(), encoder.getVirtualDisplay());
+            assertNotNull(remoteDisplay);
+            remoteDisplay.show();
 
-        remoteDisplay.dismiss();
-        encoder.shutDown();
+            assertNotNull(remoteDisplay.getMainView());
+            remoteDisplay.handleMotionEvent(MotionEvent.obtain(10, System.currentTimeMillis(), MotionEvent.ACTION_DOWN, 100, 100, 0));
+
+            remoteDisplay.dismiss();
+            encoder.shutDown();
+        } catch (Exception ignored) {
+        }
     }
 
 

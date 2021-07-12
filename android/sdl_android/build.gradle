@@ -5,7 +5,7 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 30
-        versionCode 19
+        versionCode 20
         versionName new File(projectDir.path, ('/../../VERSION')).text.trim()
         buildConfigField "String", "VERSION_NAME", '\"' + versionName + '\"'
         resValue "string", "SDL_LIB_VERSION", '\"' + versionName + '\"'
@@ -43,7 +43,7 @@ android {
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     //api 'com.livio.taskmaster:taskmaster:0.4.0'
-    api 'com.smartdevicelink:bson_java_port:1.2.4'
+    api 'com.smartdevicelink:bson_java_port:1.2.5'
     api 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     api 'androidx.annotation:annotation:1.1.0'
     annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.2.0'
