@@ -55,14 +55,19 @@ class MenuReplaceUtilities {
     }
 
     static boolean shouldCellIncludeImage(MenuCell cell, FileManager fileManager, WindowCapability windowCapability, boolean isSecondaryImage) {
-        // If there is an icon and the icon has been uploaded, or if the icon is a static icon, it should include the image
         SdlArtwork artwork = isSecondaryImage ? cell.getSecondaryArtwork() : cell.getIcon();
+        if (artwork == null) {
+            return false;
+        }
+
         ImageFieldName mainMenuImageFieldName = isSecondaryImage ? ImageFieldName.menuCommandSecondaryImage : ImageFieldName.cmdIcon;
         ImageFieldName subMenuImageFieldName = isSecondaryImage ? ImageFieldName.menuSubMenuSecondaryImage : ImageFieldName.subMenuIcon;
         boolean supportsImage = cell.getSubCells() != null && !cell.getSubCells().isEmpty() ? hasImageFieldOfName(windowCapability, subMenuImageFieldName) : hasImageFieldOfName(windowCapability, mainMenuImageFieldName);
-        if (artwork == null || !supportsImage) {
+        if (!supportsImage) {
             return false;
         }
+
+        // If the icon has been uploaded, or if the icon is a static icon, the cell should include the image
         return (fileManager.hasUploadedFile(artwork) || artwork.isStaticIcon());
     }
 
