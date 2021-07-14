@@ -257,46 +257,14 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             return;
         }
 
-        // Find cells to be deleted that are already uploaded or are pending upload
-        final HashSet<ChoiceCell> cellsToBeDeleted = choicesToBeDeletedWithArray(choices);
-        HashSet<ChoiceCell> cellsToBeRemovedFromPending = choicesToBeRemovedFromPendingWithArray(choices);
-        // If choices are deleted that are already uploaded or pending and are used by a pending presentation, cancel it and send an error
-        for (Task task: transactionQueue.getTasksAsList()) {
-            if (task instanceof PresentChoiceSetOperation && task.getState() != Task.CANCELED && task.getState()!= Task.FINISHED) {
-                PresentChoiceSetOperation presentOperation = (PresentChoiceSetOperation) task;
-                HashSet<ChoiceCell> presentOpChoicesSet = new HashSet<>(presentOperation.getChoiceSet().getChoices());
-                if (presentOpChoicesSet.equals(cellsToBeDeleted) || presentOpChoicesSet.equals(cellsToBeRemovedFromPending)) {
-                    presentOperation.cancelTask();
-                    if (presentOperation.getChoiceSet().canceledListener != null) {
-                        presentOperation.getChoiceSet().canceledListener.onChoiceSetCanceled();
-                    }
-                }
-            }
-
-        }
-
-        for (Task operation : transactionQueue.getTasksAsList()) {
-            if (!(operation instanceof PreloadChoicesOperation)) {
-                continue;
-            }
-            ((PreloadChoicesOperation) operation).removeChoicesFromUpload(cellsToBeRemovedFromPending);
-        }
-
-        // Find Choices to delete
-        if (cellsToBeDeleted.size() == 0) {
-            DebugTool.logInfo(TAG, "Cells to be deleted size == 0");
-            return;
-        }
-        findIdsOnChoices(cellsToBeDeleted);
-
-        DeleteChoicesOperation deleteChoicesOperation = new DeleteChoicesOperation(internalInterface, cellsToBeDeleted, new CompletionListener() {
+        DeleteChoicesOperation deleteChoicesOperation = new DeleteChoicesOperation(internalInterface, new HashSet<>(preloadedChoices), preloadedChoices, new DeleteChoicesCompletionListener() {
             @Override
-            public void onComplete(boolean success) {
+            public void onComplete(boolean success, HashSet<ChoiceCell> updatedLoadedChoiceCells) {
                 if (!success) {
                     DebugTool.logError(TAG, "Failed to delete choices");
                     return;
                 }
-                preloadedChoices.removeAll(cellsToBeDeleted);
+                preloadedChoices = updatedLoadedChoiceCells;
             }
         });
         transactionQueue.add(deleteChoicesOperation, false);

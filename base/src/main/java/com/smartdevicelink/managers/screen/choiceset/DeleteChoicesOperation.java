@@ -51,19 +51,26 @@ import java.util.List;
 class DeleteChoicesOperation extends Task {
     private static final String TAG = "DeleteChoicesOperation";
     private final WeakReference<ISdl> internalInterface;
-    private final HashSet<ChoiceCell> cellsToDelete;
-    private final CompletionListener completionListener;
+    private HashSet<ChoiceCell> cellsToDelete;
+    private final DeleteChoicesCompletionListener completionListener;
+    private HashSet<ChoiceCell> loadedCells;
+    private boolean completionSuccess = false;
 
-    DeleteChoicesOperation(ISdl internalInterface, HashSet<ChoiceCell> cellsToDelete, CompletionListener completionListener) {
+    DeleteChoicesOperation(ISdl internalInterface, HashSet<ChoiceCell> cellsToDelete, HashSet<ChoiceCell> loadedCells, DeleteChoicesCompletionListener completionListener) {
         super("DeleteChoicesOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.cellsToDelete = cellsToDelete;
         this.completionListener = completionListener;
+        this.loadedCells = loadedCells == null ? new HashSet<ChoiceCell>() : new HashSet<>(loadedCells);
     }
 
     @Override
     public void onExecute() {
         DebugTool.logInfo(TAG, "Choice Operation: Executing delete choices operation");
+        updateCellsToDelete();
+        if (this.cellsToDelete == null || this.cellsToDelete.isEmpty()) {
+            DeleteChoicesOperation.super.onFinished();
+        }
         sendDeletions();
     }
 
@@ -82,7 +89,7 @@ class DeleteChoicesOperation extends Task {
                     @Override
                     public void onFinished() {
                         if (completionListener != null) {
-                            completionListener.onComplete(true);
+                            completionSuccess = true;
                         }
                         DebugTool.logInfo(TAG, "Successfully deleted choices");
 
@@ -93,21 +100,56 @@ class DeleteChoicesOperation extends Task {
                     public void onResponse(int correlationId, RPCResponse response) {
                         if (!response.getSuccess()) {
                             if (completionListener != null) {
-                                completionListener.onComplete(false);
+                                completionSuccess = false;
                             }
                             DebugTool.logError(TAG, "Failed to delete choice: " + response.getInfo() + " | Corr ID: " + correlationId);
 
                             DeleteChoicesOperation.super.onFinished();
+                        } else {
+                            if (loadedCells != null) {
+                                loadedCells.remove(cellFromChoiceId(correlationId));
+                            }
                         }
                     }
                 });
             }
         } else {
             if (completionListener != null) {
-                completionListener.onComplete(true);
+                completionListener.onComplete(true, this.loadedCells);
             }
             DebugTool.logInfo(TAG, "No Choices to delete, continue");
         }
+    }
+
+    public void setLoadedCells(HashSet<ChoiceCell> loadedCells) {
+        this.loadedCells = new HashSet<>(loadedCells);
+    }
+
+    public HashSet<ChoiceCell> getLoadedCells() {
+        return new HashSet<>(this.loadedCells);
+    }
+
+    private void updateCellsToDelete() {
+        HashSet<ChoiceCell> updatedCellsToDelete = new HashSet<>(this.cellsToDelete);
+        updatedCellsToDelete.retainAll(loadedCells);
+
+        this.cellsToDelete = updatedCellsToDelete;
+    }
+
+    private ChoiceCell cellFromChoiceId(int choiceId) {
+        for (ChoiceCell cell : this.loadedCells) {
+            if (cell.getChoiceId() == choiceId) {
+                return cell;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    protected void onFinished() {
+        this.completionListener.onComplete(completionSuccess, this.loadedCells);
+        super.onFinished();
     }
 
     List<DeleteInteractionChoiceSet> createDeleteSets() {
