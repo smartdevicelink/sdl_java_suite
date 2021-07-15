@@ -113,7 +113,7 @@ public class PresentChoiceSetOperationTests {
     @Test
     public void testGetLayoutMode() {
         // First we will check knowing our keyboard listener is NOT NULL
-        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, getKeyBoardProperties(), keyboardListener, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
+        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, getKeyBoardProperties(), keyboardListener, choiceSetSelectionListener, TestValues.GENERAL_INTEGER, null);
 
         assertEquals(presentChoiceSetOperation.getLayoutMode(), LayoutMode.LIST_WITH_SEARCH);
         presentChoiceSetOperation.keyboardListener = null;
@@ -122,7 +122,7 @@ public class PresentChoiceSetOperationTests {
 
     @Test
     public void testGetPerformInteraction() {
-        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, getKeyBoardProperties(), keyboardListener, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
+        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, getKeyBoardProperties(), keyboardListener, choiceSetSelectionListener, TestValues.GENERAL_INTEGER, null);
 
         PerformInteraction pi = presentChoiceSetOperation.getPerformInteraction();
         assertEquals(pi.getInitialText(), "Test");
@@ -136,7 +136,7 @@ public class PresentChoiceSetOperationTests {
 
     @Test
     public void testSetSelectedCellWithId() {
-        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, getKeyBoardProperties(), keyboardListener, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
+        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, getKeyBoardProperties(), keyboardListener, choiceSetSelectionListener, TestValues.GENERAL_INTEGER, null);
 
         assertNull(presentChoiceSetOperation.selectedCellRow);
         presentChoiceSetOperation.setSelectedCellWithId(0);
@@ -154,7 +154,7 @@ public class PresentChoiceSetOperationTests {
     @Test
     public void testCancelingChoiceSetSuccessfullyIfThreadIsRunning() {
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
-        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
+        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER, null);
         queue.add(presentChoiceSetOperation, false);
 
         sleep();
@@ -189,7 +189,7 @@ public class PresentChoiceSetOperationTests {
     @Test
     public void testCancelingChoiceSetUnsuccessfullyIfThreadIsRunning() {
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
-        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
+        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER, null);
         queue.add(presentChoiceSetOperation, false);
         sleep();
 
@@ -223,7 +223,7 @@ public class PresentChoiceSetOperationTests {
     @Test
     public void testCancelingChoiceSetIfThreadHasFinished() {
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
-        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
+        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER,null);
         presentChoiceSetOperation.finishOperation();
 
         assertEquals(Task.FINISHED, presentChoiceSetOperation.getState());
@@ -237,7 +237,7 @@ public class PresentChoiceSetOperationTests {
     @Test
     public void testCancelingChoiceSetIfThreadHasNotYetRun() {
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
-        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
+        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER, null);
 
         assertEquals(Task.BLOCKED, presentChoiceSetOperation.getState());
 
@@ -258,7 +258,7 @@ public class PresentChoiceSetOperationTests {
     public void testCancelingChoiceSetIfHeadUnitDoesNotSupportFeature() {
         // Cancel Interaction is only supported on RPC specs v.6.0.0+
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(5, 3));
-        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
+        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER, null);
         queue.add(presentChoiceSetOperation, false);
         sleep();
 
@@ -274,7 +274,7 @@ public class PresentChoiceSetOperationTests {
     public void testCancelingChoiceSetIfHeadUnitDoesNotSupportFeatureButThreadIsNotRunning() {
         // Cancel Interaction is only supported on RPC specs v.6.0.0+
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(5, 3));
-        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
+        presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER, null);
 
         assertEquals(Task.BLOCKED, presentChoiceSetOperation.getState());
 

@@ -133,6 +133,14 @@ class DeleteChoicesOperation extends Task {
         HashSet<ChoiceCell> updatedCellsToDelete = new HashSet<>(this.cellsToDelete);
         updatedCellsToDelete.retainAll(loadedCells);
 
+        for (ChoiceCell cell : updatedCellsToDelete) {
+            for (ChoiceCell loadedCell : this.loadedCells) {
+                if (loadedCell.equals(cell)) {
+                    cell.setChoiceId(loadedCell.getChoiceId());
+                }
+            }
+        }
+
         this.cellsToDelete = updatedCellsToDelete;
     }
 

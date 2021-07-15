@@ -59,6 +59,7 @@ import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 class PresentChoiceSetOperation extends Task {
@@ -77,9 +78,10 @@ class PresentChoiceSetOperation extends Task {
     Integer selectedCellRow;
     KeyboardListener keyboardListener;
     final SdlMsgVersion sdlMsgVersion;
+    private HashSet<ChoiceCell> loadedCells;
 
     PresentChoiceSetOperation(ISdl internalInterface, ChoiceSet choiceSet, InteractionMode mode,
-                              KeyboardProperties originalKeyboardProperties, KeyboardListener keyboardListener, ChoiceSetSelectionListener choiceSetSelectionListener, Integer cancelID) {
+                              KeyboardProperties originalKeyboardProperties, KeyboardListener keyboardListener, ChoiceSetSelectionListener choiceSetSelectionListener, Integer cancelID, HashSet<ChoiceCell> loadedCells) {
         super("PresentChoiceSetOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.keyboardListener = keyboardListener;
@@ -97,6 +99,7 @@ class PresentChoiceSetOperation extends Task {
         this.selectedCellRow = null;
         this.choiceSetSelectionListener = choiceSetSelectionListener;
         this.sdlMsgVersion = internalInterface.getSdlMsgVersion();
+        this.loadedCells = loadedCells;
     }
 
     @Override
@@ -111,6 +114,15 @@ class PresentChoiceSetOperation extends Task {
             finishOperation();
             return;
         }
+
+        HashSet<ChoiceCell> choiceSetCells = new HashSet<>(this.choiceSet.getChoices());
+        if (!choiceSetCells.containsAll(this.loadedCells)) {
+            this.choiceSetSelectionListener.onError("Choices not available for presentation");
+            finishOperation();
+            return;
+        }
+
+        updateChoiceSetChoicesId();
 
         // Check if we're using a keyboard (searchable) choice set and setup keyboard properties if we need to
         if (keyboardListener != null && choiceSet.getCustomKeyboardConfiguration() != null) {
@@ -305,6 +317,16 @@ class PresentChoiceSetOperation extends Task {
     }
 
     // HELPERS
+
+    void updateChoiceSetChoicesId() {
+        for (ChoiceCell cell : this.choiceSet.getChoices()) {
+            for (ChoiceCell loadedCell : this.loadedCells) {
+                if (loadedCell.equals(cell)) {
+                    cell.setChoiceId(loadedCell.getChoiceId());
+                }
+            }
+        }
+    }
 
     void setSelectedCellWithId(Integer cellId) {
         if (choiceSet.getChoices() != null && cellId != null) {

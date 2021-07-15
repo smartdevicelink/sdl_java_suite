@@ -331,11 +331,11 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         if (keyboardListener == null) {
             // Non-searchable choice set
             DebugTool.logInfo(TAG, "Creating non-searchable choice set");
-            presentOp = new PresentChoiceSetOperation(internalInterface, choiceSet, mode, null, null, privateChoiceListener, getNextCancelId());
+            presentOp = new PresentChoiceSetOperation(internalInterface, choiceSet, mode, null, null, privateChoiceListener, getNextCancelId(), this.preloadedChoices);
         } else {
             // Searchable choice set
             DebugTool.logInfo(TAG, "Creating searchable choice set");
-            presentOp = new PresentChoiceSetOperation(internalInterface, choiceSet, mode, keyboardConfiguration, keyboardListener, privateChoiceListener, getNextCancelId());
+            presentOp = new PresentChoiceSetOperation(internalInterface, choiceSet, mode, keyboardConfiguration, keyboardListener, privateChoiceListener, getNextCancelId(), this.preloadedChoices);
         }
 
         transactionQueue.add(presentOp, false);
