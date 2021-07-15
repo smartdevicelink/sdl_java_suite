@@ -70,13 +70,13 @@ class PreloadChoicesOperation extends Task {
     private final WindowCapability defaultMainWindowCapability;
     private final String displayName;
     private final HashSet<ChoiceCell> cellsToUpload;
-    private final CompletionListener completionListener;
+    private final BaseChoiceSetManager.ChoiceSetCompletionListener completionListener;
     private boolean isRunning;
     private final boolean isVROptional;
     private boolean choiceError = false;
 
     PreloadChoicesOperation(ISdl internalInterface, FileManager fileManager, String displayName, WindowCapability defaultMainWindowCapability,
-                            Boolean isVROptional, LinkedHashSet<ChoiceCell> cellsToPreload, CompletionListener listener) {
+                            Boolean isVROptional, LinkedHashSet<ChoiceCell> cellsToPreload, BaseChoiceSetManager.ChoiceSetCompletionListener listener) {
         super("PreloadChoicesOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
@@ -141,7 +141,7 @@ class PreloadChoicesOperation extends Task {
 
     private void preloadCells() {
         isRunning = true;
-        List<CreateInteractionChoiceSet> choiceRPCs = new ArrayList<>(cellsToUpload.size());
+        final List<CreateInteractionChoiceSet> choiceRPCs = new ArrayList<>(cellsToUpload.size());
         for (ChoiceCell cell : cellsToUpload) {
             CreateInteractionChoiceSet csCell = choiceFromCell(cell);
             if (csCell != null) {
@@ -151,13 +151,15 @@ class PreloadChoicesOperation extends Task {
 
         if (choiceRPCs.size() == 0) {
             DebugTool.logError(TAG, " All Choice cells to send are null, so the choice set will not be shown");
-            completionListener.onComplete(true);
+            completionListener.onComplete(true, null);
             isRunning = false;
             return;
         }
 
         if (internalInterface.get() != null) {
             internalInterface.get().sendRPCs(choiceRPCs, new OnMultipleRequestListener() {
+                final HashSet<ChoiceCell> failedChoiceCells = new HashSet<>();
+
                 @Override
                 public void onUpdate(int remainingRequests) {
 
@@ -167,7 +169,7 @@ class PreloadChoicesOperation extends Task {
                 public void onFinished() {
                     isRunning = false;
                     DebugTool.logInfo(TAG, "Finished pre loading choice cells");
-                    completionListener.onComplete(!choiceError);
+                    completionListener.onComplete(!choiceError, !choiceError ? null : failedChoiceCells);
                     choiceError = false;
                     PreloadChoicesOperation.super.onFinished();
                 }
@@ -177,13 +179,23 @@ class PreloadChoicesOperation extends Task {
                     if (!response.getSuccess()) {
                         DebugTool.logError(TAG, "There was an error uploading a choice cell: " + response.getInfo() + " resultCode: " + response.getResultCode());
                         choiceError = true;
+                        for (CreateInteractionChoiceSet choiceSet : choiceRPCs) {
+                            if (choiceSet.getCorrelationID() == correlationId) {
+                                int choiceId = choiceSet.getChoiceSet().get(0).getChoiceID();
+                                for (ChoiceCell cell : cellsToUpload) {
+                                    if (cell.getChoiceId() == choiceId) {
+                                        failedChoiceCells.add(cell);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             });
         } else {
             DebugTool.logError(TAG, "Internal Interface null in preload choice operation");
             isRunning = false;
-            completionListener.onComplete(false);
+            completionListener.onComplete(false, cellsToUpload);
         }
     }
 
