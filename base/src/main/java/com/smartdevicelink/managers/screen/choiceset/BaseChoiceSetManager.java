@@ -40,7 +40,6 @@ import androidx.annotation.Nullable;
 import com.livio.taskmaster.Queue;
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.BaseSubManager;
-import com.smartdevicelink.managers.ChoiceSetCompletionListener;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.ManagerUtility;
@@ -224,7 +223,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         pendingPreloadChoices.addAll(choicesToUpload);
 
         if (fileManager.get() != null) {
-            PreloadChoicesOperation preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager.get(), displayName, defaultMainWindowCapability, isVROptional, choicesToUpload, new ChoiceSetCompletionListener() {
+            PreloadChoicesOperation preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager.get(), displayName, defaultMainWindowCapability, isVROptional, choicesToUpload, new BaseChoiceSetManager.ChoiceSetCompletionListener() {
                 @Override
                 public void onComplete(boolean success, HashSet<ChoiceCell> failedChoiceCells) {
                     if (success) {
@@ -673,6 +672,14 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             }
         }
         return null;
+    }
+
+    /**
+     * Interface that sends a list of ChoiceCells that failed to preload, to allow BaseChoioceSetManager
+     * to stop keeping track of them for their onButtonEventListener
+     */
+    interface ChoiceSetCompletionListener {
+        void onComplete(boolean success, HashSet<ChoiceCell> failedChoiceCells);
     }
 
     // LISTENERS

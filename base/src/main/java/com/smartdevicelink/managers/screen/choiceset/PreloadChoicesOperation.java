@@ -38,7 +38,6 @@ package com.smartdevicelink.managers.screen.choiceset;
 import androidx.annotation.NonNull;
 
 import com.livio.taskmaster.Task;
-import com.smartdevicelink.managers.ChoiceSetCompletionListener;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.ManagerUtility;
@@ -71,13 +70,13 @@ class PreloadChoicesOperation extends Task {
     private final WindowCapability defaultMainWindowCapability;
     private final String displayName;
     private final HashSet<ChoiceCell> cellsToUpload;
-    private final ChoiceSetCompletionListener completionListener;
+    private final BaseChoiceSetManager.ChoiceSetCompletionListener completionListener;
     private boolean isRunning;
     private final boolean isVROptional;
     private boolean choiceError = false;
 
     PreloadChoicesOperation(ISdl internalInterface, FileManager fileManager, String displayName, WindowCapability defaultMainWindowCapability,
-                            Boolean isVROptional, LinkedHashSet<ChoiceCell> cellsToPreload, ChoiceSetCompletionListener listener) {
+                            Boolean isVROptional, LinkedHashSet<ChoiceCell> cellsToPreload, BaseChoiceSetManager.ChoiceSetCompletionListener listener) {
         super("PreloadChoicesOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
