@@ -5,4 +5,8 @@
         model="Mustang"
         modelYear="2019"
         trim="GT" />
+
+    <vehicle-type
+        make="Ford"
+        trim="GT" />
 </resource>
