@@ -7,6 +7,6 @@
         trim="GT" />
 
     <vehicle-type
-        make="Ford"
-        trim="GT" />
+        make="Nissan"
+        trim="GT-R" />
 </resource>
