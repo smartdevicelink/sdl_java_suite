@@ -36,7 +36,6 @@
 package com.smartdevicelink.managers.screen.choiceset;
 
 import com.livio.taskmaster.Task;
-import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
@@ -107,7 +106,7 @@ class DeleteChoicesOperation extends Task {
                             DeleteChoicesOperation.super.onFinished();
                         } else {
                             if (loadedCells != null) {
-                                loadedCells.remove(cellFromChoiceId(correlationId));
+                                loadedCells.remove(loadedCellFromChoiceId(correlationId));
                             }
                         }
                     }
@@ -144,7 +143,7 @@ class DeleteChoicesOperation extends Task {
         this.cellsToDelete = updatedCellsToDelete;
     }
 
-    private ChoiceCell cellFromChoiceId(int choiceId) {
+    private ChoiceCell loadedCellFromChoiceId(int choiceId) {
         for (ChoiceCell cell : this.loadedCells) {
             if (cell.getChoiceId() == choiceId) {
                 return cell;
