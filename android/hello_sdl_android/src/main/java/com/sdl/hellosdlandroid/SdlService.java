@@ -225,7 +225,7 @@ public class SdlService extends Service {
                 }
 
                 @Override
-                public void onError(SdlManager manager, String info, Exception e) {
+                public void onError(String info, Exception e) {
                     if (info.equals(TransportConstants.UNSUPPORTED_VEHICLE_INFO_REASON)) {
                         DebugTool.logError(TAG, "Vehicle is not supported. Stopping OEM app " + APP_ID);
                         stopProxy();
