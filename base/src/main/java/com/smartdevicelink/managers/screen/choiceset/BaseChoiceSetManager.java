@@ -94,11 +94,10 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     WindowCapability defaultMainWindowCapability;
     String displayName;
     SystemContext currentSystemContext;
-    HashSet<ChoiceCell> preloadedChoices, pendingPreloadChoices;
+    HashSet<ChoiceCell> preloadedChoices;
 
     // We will pass operations into this to be completed
     final Queue transactionQueue;
-    Task pendingPresentOperation;
 
     PresentKeyboardOperation currentlyPresentedKeyboardOperation;
 
@@ -125,7 +124,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         // setting/instantiating class vars
         this.fileManager = new WeakReference<>(fileManager);
         preloadedChoices = new HashSet<>();
-        pendingPreloadChoices = new HashSet<>();
         nextChoiceId = choiceCellIdMin;
         nextCancelId = choiceCellCancelIdMin;
         isVROptional = false;
@@ -150,7 +148,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         currentSystemContext = null;
         defaultMainWindowCapability = null;
 
-        pendingPresentOperation = null;
+        preloadedChoices = null;
         isVROptional = false;
         nextChoiceId = choiceCellIdMin;
         nextCancelId = choiceCellCancelIdMin;
@@ -201,12 +199,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             return;
         }
 
-        LinkedHashSet<ChoiceCell> mutableChoicesToUpload = getChoicesToBeUploadedWithArray(choices);
-
-        mutableChoicesToUpload.removeAll(preloadedChoices);
-        mutableChoicesToUpload.removeAll(pendingPreloadChoices);
-
-        final LinkedHashSet<ChoiceCell> choicesToUpload = (LinkedHashSet<ChoiceCell>) mutableChoicesToUpload.clone();
+        final LinkedHashSet<ChoiceCell> choicesToUpload = (LinkedHashSet<ChoiceCell>) choices;
 
         if (choicesToUpload.size() == 0) {
             if (listener != null) {
@@ -217,27 +210,20 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         updateIdsOnChoices(choicesToUpload);
 
-        // Add the preload cells to the pending preload choices
-        pendingPreloadChoices.addAll(choicesToUpload);
-
         if (fileManager.get() != null) {
-            PreloadChoicesOperation preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager.get(), displayName, defaultMainWindowCapability, isVROptional, choicesToUpload, new CompletionListener() {
+            PreloadChoicesOperation preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager.get(), displayName, defaultMainWindowCapability, isVROptional, choicesToUpload, new PreloadChoicesCompletionListener() {
                 @Override
-                public void onComplete(boolean success) {
-                    if (success) {
-                        preloadedChoices.addAll(choicesToUpload);
-                        pendingPreloadChoices.removeAll(choicesToUpload);
-                        if (listener != null) {
-                            listener.onComplete(true);
+                public void onComplete(boolean success, HashSet<ChoiceCell> loadedCells) {
+                    preloadedChoices = loadedCells;
+                    updatePendingTasksWithCurrentPreloads();
+                    if (listener != null) {
+                        if (!success) {
+                            DebugTool.logError(TAG, "There was an error pre loading choice cells");
                         }
-                    } else {
-                        DebugTool.logError(TAG, "There was an error pre loading choice cells");
-                        if (listener != null) {
-                            listener.onComplete(false);
-                        }
+                        listener.onComplete(success);
                     }
                 }
-            });
+            }, this.preloadedChoices);
 
             transactionQueue.add(preloadChoicesOperation, false);
         } else {
@@ -265,6 +251,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                     return;
                 }
                 preloadedChoices = updatedLoadedChoiceCells;
+                updatePendingTasksWithCurrentPreloads();
             }
         });
         transactionQueue.add(deleteChoicesOperation, false);
@@ -289,6 +276,8 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             return;
         }
 
+        preloadChoices(choiceSet.getChoices(), null);
+
         preloadChoices(choiceSet.getChoices(), new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
@@ -307,8 +296,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             mode = InteractionMode.MANUAL_ONLY;
         }
 
-        findIdsOnChoiceSet(choiceSet);
-
         // Pass back the information to the developer
         ChoiceSetSelectionListener privateChoiceListener = new ChoiceSetSelectionListener() {
             @Override
@@ -321,6 +308,13 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             @Override
             public void onError(String error) {
                 if (choiceSet != null && choiceSet.getChoiceSetSelectionListener() != null) {
+                    if (error != null) {
+                        choiceSet.getChoiceSetSelectionListener().onError(error);
+                    } else if (getState() == SHUTDOWN) {
+                        choiceSet.getChoiceSetSelectionListener().onError("Incorrect State");
+                    } else {
+                        DebugTool.logError(TAG, "Present finished but an unhandled state occurred and callback failed");
+                    }
                     choiceSet.getChoiceSetSelectionListener().onError(error);
                 }
             }
@@ -339,7 +333,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         }
 
         transactionQueue.add(presentOp, false);
-        pendingPresentOperation = presentOp;
     }
 
     /**
@@ -361,11 +354,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             return null;
         }
 
-        if (pendingPresentOperation != null) {
-            pendingPresentOperation.cancelTask();
-            DebugTool.logWarning(TAG, "There is a current or pending choice set, cancelling and continuing.");
-        }
-
         customKeyboardConfig = createValidKeyboardConfigurationBasedOnKeyboardCapabilitiesFromConfiguration(customKeyboardConfig);
         if (customKeyboardConfig == null) {
             if (this.keyboardConfiguration != null) {
@@ -381,7 +369,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         PresentKeyboardOperation keyboardOp = new PresentKeyboardOperation(internalInterface, keyboardConfiguration, initialText, customKeyboardConfig, listener, keyboardCancelID);
         currentlyPresentedKeyboardOperation = keyboardOp;
         transactionQueue.add(keyboardOp, false);
-        pendingPresentOperation = keyboardOp;
         return keyboardCancelID;
     }
 
@@ -487,63 +474,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
     // CHOICE SET MANAGEMENT HELPERS
 
-    HashSet<ChoiceCell> choicesToBeDeletedWithArray(List<ChoiceCell> choices) {
-        HashSet<ChoiceCell> choicesSet = new HashSet<>(choices);
-        choicesSet.retainAll(this.preloadedChoices);
-        return choicesSet;
-    }
-
-    HashSet<ChoiceCell> choicesToBeRemovedFromPendingWithArray(List<ChoiceCell> choices) {
-        HashSet<ChoiceCell> choicesSet = new HashSet<>(choices);
-        choicesSet.retainAll(this.pendingPreloadChoices);
-        return choicesSet;
-    }
-
-    /**
-     * Checks if 2 or more cells have the same text/title. In case this condition is true, this function will handle the presented issue by adding "(count)".
-     * E.g. Choices param contains 2 cells with text/title "Address" will be handled by updating the uniqueText/uniqueTitle of the second cell to "Address (2)".
-     * @param choices The list of choiceCells to be uploaded.
-     */
-    void addUniqueNamesToCells(List<ChoiceCell> choices) {
-        HashMap<String, Integer> dictCounter = new HashMap<>();
-
-        for (ChoiceCell cell : choices) {
-            String cellName = cell.getText();
-            Integer counter = dictCounter.get(cellName);
-
-            if (counter != null) {
-                dictCounter.put(cellName, ++counter);
-                cell.setUniqueText(cell.getText() + " (" + counter + ")");
-            } else {
-                dictCounter.put(cellName, 1);
-            }
-        }
-    }
-
-    void addUniqueNamesBasedOnStrippedCells(List<ChoiceCell> strippedCells, List<ChoiceCell> unstrippedCells) {
-        if (strippedCells == null || unstrippedCells == null || strippedCells.size() != unstrippedCells.size()) {
-          return;
-        }
-        // Tracks how many of each cell primary text there are so that we can append numbers to make each unique as necessary
-        HashMap<ChoiceCell, Integer> dictCounter = new HashMap<>();
-        for (int i = 0; i < strippedCells.size(); i++) {
-            ChoiceCell cell = strippedCells.get(i);
-            Integer counter = dictCounter.get(cell);
-            if (counter != null) {
-                counter++;
-                dictCounter.put(cell, counter);
-            } else {
-                dictCounter.put(cell, 1);
-            }
-
-            counter = dictCounter.get(cell);
-
-            if (counter > 1) {
-                unstrippedCells.get(i).setUniqueText(unstrippedCells.get(i).getText() + " (" + counter + ")");
-            }
-        }
-    }
-
     private List<ChoiceCell> cloneChoiceCellList(List<ChoiceCell> originalList) {
         if (originalList == null) {
             return null;
@@ -556,68 +486,10 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         return clone;
     }
 
-    private LinkedHashSet<ChoiceCell> getChoicesToBeUploadedWithArray(List<ChoiceCell> choices) {
-        // Clone choices
-        List<ChoiceCell> choicesClone = cloneChoiceCellList(choices);
-        if (choices != null && internalInterface.getSdlMsgVersion() != null
-                && (internalInterface.getSdlMsgVersion().getMajorVersion() < 7
-                || (internalInterface.getSdlMsgVersion().getMajorVersion() == 7 && internalInterface.getSdlMsgVersion().getMinorVersion() == 0))) {
-            // If we're on < RPC 7.1, all primary texts need to be unique, so we don't need to check removed properties and duplicate cells
-            addUniqueNamesToCells(choicesClone);
-        } else {
-            List<ChoiceCell> strippedCellsClone = removeUnusedProperties(choicesClone);
-            addUniqueNamesBasedOnStrippedCells(strippedCellsClone, choicesClone);
-        }
-        LinkedHashSet<ChoiceCell> choiceCloneLinkedHash = new LinkedHashSet<>(choicesClone);
-        choiceCloneLinkedHash.removeAll(preloadedChoices);
-        return choiceCloneLinkedHash;
-    }
-
-    List<ChoiceCell> removeUnusedProperties(List<ChoiceCell> choiceCells) {
-        List<ChoiceCell> strippedCellsClone = cloneChoiceCellList(choiceCells);
-        //Clone Cells
-        for (ChoiceCell cell : strippedCellsClone) {
-            // Strip away fields that cannot be used to determine uniqueness visually including fields not supported by the HMI
-            cell.setVoiceCommands(null);
-
-            if (!hasImageFieldOfName(ImageFieldName.choiceImage)) {
-                cell.setArtwork(null);
-            }
-            if (!hasTextFieldOfName(TextFieldName.secondaryText)) {
-                cell.setSecondaryText(null);
-            }
-            if (!hasTextFieldOfName(TextFieldName.tertiaryText)) {
-                cell.setTertiaryText(null);
-            }
-            if (!hasImageFieldOfName(ImageFieldName.choiceSecondaryImage)) {
-                cell.setSecondaryArtwork(null);
-            }
-        }
-        return strippedCellsClone;
-    }
-
     void updateIdsOnChoices(LinkedHashSet<ChoiceCell> choices) {
         for (ChoiceCell cell : choices) {
             cell.setChoiceId(this.nextChoiceId);
             this.nextChoiceId++;
-        }
-    }
-
-    private void findIdsOnChoiceSet(ChoiceSet choiceSet) {
-        findIdsOnChoices(new HashSet<>(choiceSet.getChoices()));
-    }
-
-    private void findIdsOnChoices(HashSet<ChoiceCell> choices) {
-        for (ChoiceCell cell : choices) {
-            ChoiceCell uploadCell = null;
-            if (pendingPreloadChoices.contains(cell)) {
-                uploadCell = findIfPresent(cell, pendingPreloadChoices);
-            } else if (preloadedChoices.contains(cell)) {
-                uploadCell = findIfPresent(cell, preloadedChoices);
-            }
-            if (uploadCell != null) {
-                cell.setChoiceId(uploadCell.getChoiceId());
-            }
         }
     }
 
@@ -629,6 +501,25 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             }
         }
         return null;
+    }
+
+    private void updatePendingTasksWithCurrentPreloads() {
+        for (Task task : this.transactionQueue.getTasksAsList()) {
+            if (task.getState() == Task.IN_PROGRESS || task.getState() == Task.CANCELED) {
+                continue;
+            }
+
+            if (task instanceof PreloadChoicesOperation) {
+                PreloadChoicesOperation preloadOp = (PreloadChoicesOperation) task;
+                preloadOp.setLoadedCells(this.preloadedChoices);
+            } else if (task instanceof PresentChoiceSetOperation) {
+                PresentChoiceSetOperation presentOp = (PresentChoiceSetOperation) task;
+                presentOp.setLoadedCells(this.preloadedChoices);
+            } else if (task instanceof DeleteChoicesOperation) {
+                DeleteChoicesOperation deleteOp = (DeleteChoicesOperation) task;
+                deleteOp.setLoadedCells(this.preloadedChoices);
+            }
+        }
     }
 
     // LISTENERS

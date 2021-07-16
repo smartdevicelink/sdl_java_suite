@@ -316,6 +316,14 @@ class PresentChoiceSetOperation extends Task {
         return this.choiceSet;
     }
 
+    public void setLoadedCells(HashSet<ChoiceCell> loadedCells) {
+        this.loadedCells = loadedCells;
+    }
+
+    public HashSet<ChoiceCell> getLoadedCells() {
+        return this.loadedCells;
+    }
+
     // HELPERS
 
     void updateChoiceSetChoicesId() {

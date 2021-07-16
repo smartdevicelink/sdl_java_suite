@@ -70,13 +70,14 @@ class PreloadChoicesOperation extends Task {
     private final WindowCapability defaultMainWindowCapability;
     private final String displayName;
     private final HashSet<ChoiceCell> cellsToUpload;
-    private final CompletionListener completionListener;
+    private final PreloadChoicesCompletionListener completionListener;
     private boolean isRunning;
     private final boolean isVROptional;
     private boolean choiceError = false;
+    private HashSet<ChoiceCell> loadedCells;
 
     PreloadChoicesOperation(ISdl internalInterface, FileManager fileManager, String displayName, WindowCapability defaultMainWindowCapability,
-                            Boolean isVROptional, LinkedHashSet<ChoiceCell> cellsToPreload, CompletionListener listener) {
+                            Boolean isVROptional, LinkedHashSet<ChoiceCell> cellsToPreload, PreloadChoicesCompletionListener listener, HashSet<ChoiceCell> loadedCells) {
         super("PreloadChoicesOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
@@ -85,11 +86,13 @@ class PreloadChoicesOperation extends Task {
         this.isVROptional = isVROptional;
         this.cellsToUpload = cellsToPreload;
         this.completionListener = listener;
+        this.loadedCells = loadedCells;
     }
 
     @Override
     public void onExecute() {
         DebugTool.logInfo(TAG, "Choice Operation: Executing preload choices operation");
+        this.cellsToUpload.removeAll(this.loadedCells);
         preloadCellArtworks(new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
@@ -151,7 +154,7 @@ class PreloadChoicesOperation extends Task {
 
         if (choiceRPCs.size() == 0) {
             DebugTool.logError(TAG, " All Choice cells to send are null, so the choice set will not be shown");
-            completionListener.onComplete(true);
+            completionListener.onComplete(true, loadedCells);
             isRunning = false;
             return;
         }
@@ -167,7 +170,7 @@ class PreloadChoicesOperation extends Task {
                 public void onFinished() {
                     isRunning = false;
                     DebugTool.logInfo(TAG, "Finished pre loading choice cells");
-                    completionListener.onComplete(!choiceError);
+                    completionListener.onComplete(!choiceError, loadedCells);
                     choiceError = false;
                     PreloadChoicesOperation.super.onFinished();
                 }
@@ -177,14 +180,25 @@ class PreloadChoicesOperation extends Task {
                     if (!response.getSuccess()) {
                         DebugTool.logError(TAG, "There was an error uploading a choice cell: " + response.getInfo() + " resultCode: " + response.getResultCode());
                         choiceError = true;
+                    } else {
+                        loadedCells.add(cellFromChoiceId(correlationId));
                     }
                 }
             });
         } else {
             DebugTool.logError(TAG, "Internal Interface null in preload choice operation");
             isRunning = false;
-            completionListener.onComplete(false);
+            completionListener.onComplete(false, loadedCells);
         }
+    }
+
+    private ChoiceCell cellFromChoiceId(int choiceId) {
+        for (ChoiceCell cell : this.cellsToUpload) {
+            if (cell.getChoiceId() == choiceId) {
+                return cell;
+            }
+        }
+        return null;
     }
 
     private CreateInteractionChoiceSet choiceFromCell(ChoiceCell cell) {
@@ -257,6 +271,14 @@ class PreloadChoicesOperation extends Task {
 
     boolean templateSupportsImageField(ImageFieldName name) {
         return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, name);
+    }
+
+    public void setLoadedCells(HashSet<ChoiceCell> loadedCells) {
+        this.loadedCells = loadedCells;
+    }
+
+    public HashSet<ChoiceCell> getLoadedCells() {
+        return this.loadedCells;
     }
 
     List<SdlArtwork> artworksToUpload() {

@@ -109,7 +109,7 @@ public class PreloadChoicesOperationTests {
         // We still want the mock fileManager to use the real implementation for fileNeedsUpload()
         when(fileManager.fileNeedsUpload(any(SdlFile.class))).thenCallRealMethod();
 
-        preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager, null, windowCapability, true, cellsToPreload, null);
+        preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager, null, windowCapability, true, cellsToPreload, null, null);
     }
 
     /**
@@ -125,7 +125,7 @@ public class PreloadChoicesOperationTests {
 
         ISdl internalInterface = mock(ISdl.class);
         FileManager fileManager = mock(FileManager.class);
-        preloadChoicesOperationNullCapability = new PreloadChoicesOperation(internalInterface, fileManager, null, null, true, cellsToPreload, null);
+        preloadChoicesOperationNullCapability = new PreloadChoicesOperation(internalInterface, fileManager, null, null, true, cellsToPreload, null, null);
     }
 
     /**
@@ -152,7 +152,7 @@ public class PreloadChoicesOperationTests {
 
         ISdl internalInterface = mock(ISdl.class);
         FileManager fileManager = mock(FileManager.class);
-        preloadChoicesOperationEmptyCapability = new PreloadChoicesOperation(internalInterface, fileManager, null, windowCapability, true, cellsToPreload, null);
+        preloadChoicesOperationEmptyCapability = new PreloadChoicesOperation(internalInterface, fileManager, null, windowCapability, true, cellsToPreload, null, null);
     }
 
     @Test

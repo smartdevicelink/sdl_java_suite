@@ -108,11 +108,9 @@ public class ChoiceSetManagerTests {
         assertFalse(csm.isVROptional);
         assertNotNull(csm.fileManager);
         assertNotNull(csm.preloadedChoices);
-        assertNotNull(csm.pendingPreloadChoices);
         assertNotNull(csm.transactionQueue);
         assertNotNull(csm.hmiListener);
         assertNotNull(csm.onDisplayCapabilityListener);
-        assertNull(csm.pendingPresentOperation);
     }
 
     @After
@@ -123,7 +121,6 @@ public class ChoiceSetManagerTests {
         assertNull(csm.currentHMILevel);
         assertNull(csm.currentSystemContext);
         assertNull(csm.defaultMainWindowCapability);
-        assertNull(csm.pendingPresentOperation);
 
         assertEquals(csm.transactionQueue.getTasksAsList().size(), 0);
         assertEquals(csm.nextChoiceId, 1);
@@ -225,85 +222,6 @@ public class ChoiceSetManagerTests {
         assertNotSame(cell1.getChoiceId(), 2000000000);
         assertNotSame(cell2.getChoiceId(), 2000000000);
         assertNotSame(cell3.getChoiceId(), 2000000000);
-    }
-
-    @Test
-    public void testAddUniqueNamesToCells() {
-        ChoiceCell cell1 = new ChoiceCell("McDonalds", "1 mile away", null, null, null, null);
-        ChoiceCell cell2 = new ChoiceCell("McDonalds", "2 mile away", null, null, null, null);
-        ChoiceCell cell3 = new ChoiceCell("Starbucks", "3 mile away", null, null, null, null);
-        ChoiceCell cell4 = new ChoiceCell("McDonalds", "4 mile away", null, null, null, null);
-        ChoiceCell cell5 = new ChoiceCell("Starbucks", "5 mile away", null, null, null, null);
-        ChoiceCell cell6 = new ChoiceCell("Meijer", "6 mile away", null, null, null, null);
-        List<ChoiceCell> cellList = new ArrayList<>();
-
-        cellList.add(cell1);
-        cellList.add(cell2);
-        cellList.add(cell3);
-        cellList.add(cell4);
-        cellList.add(cell5);
-        cellList.add(cell6);
-
-        csm.addUniqueNamesToCells(cellList);
-
-        assertEquals(cell1.getUniqueText(), "McDonalds");
-        assertEquals(cell2.getUniqueText(), "McDonalds (2)");
-        assertEquals(cell3.getUniqueText(), "Starbucks");
-        assertEquals(cell4.getUniqueText(), "McDonalds (3)");
-        assertEquals(cell5.getUniqueText(), "Starbucks (2)");
-        assertEquals(cell6.getUniqueText(), "Meijer");
-    }
-
-    @Test
-    public void testChoicesToBeRemovedFromPendingWithArray() {
-
-        ChoiceCell cell1 = new ChoiceCell("test");
-        ChoiceCell cell2 = new ChoiceCell("test2");
-        ChoiceCell cell3 = new ChoiceCell("test3");
-
-        HashSet<ChoiceCell> pendingPreloadSet = new HashSet<>();
-        pendingPreloadSet.add(cell1);
-        pendingPreloadSet.add(cell2);
-        pendingPreloadSet.add(cell3);
-
-        csm.pendingPreloadChoices.clear();
-        csm.pendingPreloadChoices = pendingPreloadSet;
-
-        List<ChoiceCell> choices = new ArrayList<>();
-        choices.add(cell2);
-
-        HashSet<ChoiceCell> returnedChoices = csm.choicesToBeRemovedFromPendingWithArray(choices);
-
-        assertEquals(returnedChoices.size(), 1);
-        for (ChoiceCell cell : returnedChoices) {
-            assertEquals(cell.getText(), "test2");
-        }
-    }
-
-    @Test
-    public void testChoicesToBeUploadedWithArray() {
-
-        ChoiceCell cell1 = new ChoiceCell("test");
-        ChoiceCell cell2 = new ChoiceCell("test2");
-        ChoiceCell cell3 = new ChoiceCell("test3");
-
-        HashSet<ChoiceCell> pendingDeleteSet = new HashSet<>();
-        pendingDeleteSet.add(cell1);
-        pendingDeleteSet.add(cell2);
-        pendingDeleteSet.add(cell3);
-
-        csm.preloadedChoices.clear();
-        csm.preloadedChoices = pendingDeleteSet;
-
-        List<ChoiceCell> choices = new ArrayList<>();
-        choices.add(cell2);
-
-        HashSet<ChoiceCell> returnedChoices = csm.choicesToBeDeletedWithArray(choices);
-
-        assertEquals(returnedChoices.size(), 1);
-        for (ChoiceCell cell : returnedChoices) {
-            assertEquals(cell.getText(), "test2");
-        }
     }
 
     @Test
@@ -473,51 +391,4 @@ public class ChoiceSetManagerTests {
         verify(testKeyboardOp, times(0)).dismissKeyboard();
         verify(testKeyboardOp2, times(1)).dismissKeyboard();
     }
-
-    @Test
-    public void testUniquenessForAvailableFields() {
-        WindowCapability windowCapability = new WindowCapability();
-        TextField secondaryText = new TextField();
-        secondaryText.setName(TextFieldName.secondaryText);
-        TextField tertiaryText = new TextField();
-        tertiaryText.setName(TextFieldName.tertiaryText);
-
-        List<TextField> textFields = new ArrayList<>();
-        textFields.add(secondaryText);
-        textFields.add(tertiaryText);
-        windowCapability.setTextFields(textFields);
-
-        ImageField choiceImage = new ImageField();
-        choiceImage.setName(ImageFieldName.choiceImage);
-        ImageField choiceSecondaryImage = new ImageField();
-        choiceSecondaryImage.setName(ImageFieldName.choiceSecondaryImage);
-        List<ImageField> imageFieldList = new ArrayList<>();
-        imageFieldList.add(choiceImage);
-        imageFieldList.add(choiceSecondaryImage);
-        windowCapability.setImageFields(imageFieldList);
-
-        csm.defaultMainWindowCapability = windowCapability;
-
-        ChoiceCell cell1 = new ChoiceCell("Item 1", "null", "tertiaryText", null, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_ARTWORK);
-        ChoiceCell cell2 = new ChoiceCell("Item 1", "null2", "tertiaryText2", null, null, null);
-        List<ChoiceCell> choiceCellList = new ArrayList<>();
-        choiceCellList.add(cell1);
-        choiceCellList.add(cell2);
-
-        List<ChoiceCell> removedProperties = csm.removeUnusedProperties(choiceCellList);
-        assertNotNull(removedProperties.get(0).getSecondaryText());
-
-        textFields.remove(secondaryText);
-        textFields.remove(tertiaryText);
-        imageFieldList.remove(choiceImage);
-        imageFieldList.remove(choiceSecondaryImage);
-
-        removedProperties = csm.removeUnusedProperties(choiceCellList);
-        csm.addUniqueNamesBasedOnStrippedCells(removedProperties, choiceCellList);
-        assertEquals(choiceCellList.get(1).getUniqueText(), "Item 1 (2)");
-
-
-    }
-
-
 }
