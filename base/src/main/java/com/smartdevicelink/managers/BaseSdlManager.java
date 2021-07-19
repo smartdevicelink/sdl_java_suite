@@ -158,7 +158,7 @@ abstract class BaseSdlManager {
             }
             
             if (managerListener != null) {
-                managerListener.onError(null, info, e);
+                managerListener.onError(info, e);
             }
         }
 

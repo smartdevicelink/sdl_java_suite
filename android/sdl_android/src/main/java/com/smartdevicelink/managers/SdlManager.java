@@ -201,7 +201,7 @@ public class SdlManager extends BaseSdlManager {
     private void notifyDevListener(String info) {
         if (managerListener != null) {
             if (getState() == BaseSubManager.ERROR) {
-                managerListener.onError(null, info, null);
+                managerListener.onError(info, null);
             } else {
                 managerListener.onStart();
             }

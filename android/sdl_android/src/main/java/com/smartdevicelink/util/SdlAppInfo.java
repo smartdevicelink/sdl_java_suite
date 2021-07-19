@@ -203,15 +203,19 @@ public class SdlAppInfo {
                         if (make != null) {
                             vehicleMake.setMake(make);
                             String model = parser.getAttributeValue(null, "model");
-                            if (model != null)
-                                vehicleMake.setModel(model);
                             String modelYear = parser.getAttributeValue(null, "modelYear");
-                            if (modelYear != null)
-                                vehicleMake.setModelYear(modelYear);
                             String trim = parser.getAttributeValue(null, "trim");
-                            if (trim != null)
-                                vehicleMake.setTrim(trim);
-                            vehicleMakesList.add(vehicleMake);
+
+                            if (model == null && modelYear == null && trim == null) {
+                                vehicleMakesList.add(vehicleMake);
+                            } else if (model != null){
+                                vehicleMake.setModel(model);
+                                if (modelYear != null)
+                                    vehicleMake.setModelYear(modelYear);
+                                if (trim != null)
+                                    vehicleMake.setTrim(trim);
+                                vehicleMakesList.add(vehicleMake);
+                            }
                         }
                     }
                 }
