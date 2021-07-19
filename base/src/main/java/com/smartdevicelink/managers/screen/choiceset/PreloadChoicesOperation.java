@@ -54,10 +54,12 @@ import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.Version;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -69,7 +71,7 @@ class PreloadChoicesOperation extends Task {
     private final WeakReference<FileManager> fileManager;
     private final WindowCapability defaultMainWindowCapability;
     private final String displayName;
-    private final HashSet<ChoiceCell> cellsToUpload;
+    private final ArrayList<ChoiceCell> cellsToUpload;
     private final PreloadChoicesCompletionListener completionListener;
     private boolean isRunning;
     private final boolean isVROptional;
@@ -84,7 +86,7 @@ class PreloadChoicesOperation extends Task {
         this.displayName = displayName;
         this.defaultMainWindowCapability = defaultMainWindowCapability;
         this.isVROptional = isVROptional;
-        this.cellsToUpload = cellsToPreload;
+        this.cellsToUpload = new ArrayList<>(cellsToPreload);
         this.completionListener = listener;
         this.loadedCells = loadedCells;
     }
@@ -92,7 +94,7 @@ class PreloadChoicesOperation extends Task {
     @Override
     public void onExecute() {
         DebugTool.logInfo(TAG, "Choice Operation: Executing preload choices operation");
-        this.cellsToUpload.removeAll(this.loadedCells);
+        updateCellsBasedOnLoadedChoices();
         preloadCellArtworks(new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
@@ -293,4 +295,102 @@ class PreloadChoicesOperation extends Task {
         }
         return artworksToUpload;
     }
+
+    void updateCellsBasedOnLoadedChoices() {
+        if (internalInterface.get().getProtocolVersion().getMajor() >= 7 && internalInterface.get().getProtocolVersion().getMinor() >= 1) {
+            addUniqueNamesToCells(cellsToUpload);
+        } else {
+            ArrayList<ChoiceCell> strippedCellsCopy = (ArrayList<ChoiceCell>) removeUnusedProperties(cellsToUpload);
+            addUniqueNamesBasedOnStrippedCells(strippedCellsCopy, cellsToUpload);
+        }
+        cellsToUpload.removeAll(loadedCells);
+    }
+
+    List<ChoiceCell> removeUnusedProperties(List<ChoiceCell> choiceCells) {
+        List<ChoiceCell> strippedCellsClone = cloneChoiceCellList(choiceCells);
+        //Clone Cells
+        for (ChoiceCell cell : strippedCellsClone) {
+            // Strip away fields that cannot be used to determine uniqueness visually including fields not supported by the HMI
+            cell.setVoiceCommands(null);
+
+            if (!hasImageFieldOfName(ImageFieldName.choiceImage)) {
+                cell.setArtwork(null);
+            }
+            if (!hasTextFieldOfName(TextFieldName.secondaryText)) {
+                cell.setSecondaryText(null);
+            }
+            if (!hasTextFieldOfName(TextFieldName.tertiaryText)) {
+                cell.setTertiaryText(null);
+            }
+            if (!hasImageFieldOfName(ImageFieldName.choiceSecondaryImage)) {
+                cell.setSecondaryArtwork(null);
+            }
+        }
+        return strippedCellsClone;
+    }
+
+    private List<ChoiceCell> cloneChoiceCellList(List<ChoiceCell> originalList) {
+        if (originalList == null) {
+            return null;
+        }
+        List<ChoiceCell> clone = new ArrayList<>();
+        for (ChoiceCell choiceCell : originalList) {
+            clone.add(choiceCell.clone());
+        }
+        return clone;
+    }
+
+    private boolean hasImageFieldOfName(ImageFieldName imageFieldName) {
+        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, imageFieldName);
+    }
+
+    private boolean hasTextFieldOfName(TextFieldName textFieldName) {
+        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, textFieldName);
+    }
+
+    /**
+     * Checks if 2 or more cells have the same text/title. In case this condition is true, this function will handle the presented issue by adding "(count)".
+     * E.g. Choices param contains 2 cells with text/title "Address" will be handled by updating the uniqueText/uniqueTitle of the second cell to "Address (2)".
+     * @param choices The list of choiceCells to be uploaded.
+     */
+    void addUniqueNamesToCells(List<ChoiceCell> choices) {
+        HashMap<String, Integer> dictCounter = new HashMap<>();
+
+        for (ChoiceCell cell : choices) {
+            String cellName = cell.getText();
+            Integer counter = dictCounter.get(cellName);
+
+            if (counter != null) {
+                dictCounter.put(cellName, ++counter);
+                cell.setUniqueText(cell.getText() + " (" + counter + ")");
+            } else {
+                dictCounter.put(cellName, 1);
+            }
+        }
+    }
+
+    void addUniqueNamesBasedOnStrippedCells(List<ChoiceCell> strippedCells, List<ChoiceCell> unstrippedCells) {
+        if (strippedCells == null || unstrippedCells == null || strippedCells.size() != unstrippedCells.size()) {
+            return;
+        }
+        // Tracks how many of each cell primary text there are so that we can append numbers to make each unique as necessary
+        HashMap<ChoiceCell, Integer> dictCounter = new HashMap<>();
+        for (int i = 0; i < strippedCells.size(); i++) {
+            ChoiceCell cell = strippedCells.get(i);
+            Integer counter = dictCounter.get(cell);
+            if (counter != null) {
+                counter++;
+                dictCounter.put(cell, counter);
+            } else {
+                dictCounter.put(cell, 1);
+            }
+
+            counter = dictCounter.get(cell);
+
+            if (counter > 1) {
+                unstrippedCells.get(i).setUniqueText(unstrippedCells.get(i).getText() + " (" + counter + ")");
+            }
+        }
+    }
+
 }
