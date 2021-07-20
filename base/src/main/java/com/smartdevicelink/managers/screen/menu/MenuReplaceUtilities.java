@@ -118,7 +118,7 @@ class MenuReplaceUtilities {
             for (int updateCellsIndex = 0; updateCellsIndex < cells.size(); updateCellsIndex++) {
                 MenuCell addCell = cells.get(updateCellsIndex);
                 if (mainCell.equals(addCell)) {
-                    if (addCell.getSubCells() != null && !addCell.getSubCells().isEmpty()) {
+                    if (isSubMenuCell(addCell)) {
                         commands.add(subMenuCommandForMenuCell(addCell, fileManager, windowCapability, menuInteger, defaultSubmenuLayout));
                     } else {
                         commands.add(commandForMenuCell(addCell, fileManager, windowCapability, menuInteger));
@@ -133,7 +133,7 @@ class MenuReplaceUtilities {
     static List<RPCRequest> subMenuCommandsForCells(List<MenuCell> cells, FileManager fileManager, WindowCapability windowCapability, MenuLayout defaultSubmenuLayout) {
         List<RPCRequest> commands = new ArrayList<>();
         for (MenuCell cell : cells) {
-            if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
+            if (isSubMenuCell(cell) && !cell.getSubCells().isEmpty()) {
                 commands.addAll(allCommandsForCells(cell.getSubCells(), fileManager, windowCapability, defaultSubmenuLayout));
             }
         }
@@ -145,11 +145,13 @@ class MenuReplaceUtilities {
 
         for (int cellIndex = 0; cellIndex < cells.size(); cellIndex++) {
             MenuCell cell = cells.get(cellIndex);
-            if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
+            if (isSubMenuCell(cell)) {
                 commands.add(subMenuCommandForMenuCell(cell, fileManager, windowCapability, cellIndex, defaultSubmenuLayout));
 
                 // Recursively grab the commands for all the sub cells
-                commands.addAll(allCommandsForCells(cell.getSubCells(), fileManager, windowCapability, defaultSubmenuLayout));
+                if (!cell.getSubCells().isEmpty()) {
+                    commands.addAll(allCommandsForCells(cell.getSubCells(), fileManager, windowCapability, defaultSubmenuLayout));
+                }
             } else {
                 commands.add(commandForMenuCell(cell, fileManager, windowCapability, cellIndex));
             }
@@ -287,6 +289,10 @@ class MenuReplaceUtilities {
         }
     }
 
+    private static boolean isSubMenuCell(MenuCell menuCell) {
+        return menuCell.getSubCells() != null;
+    }
+
     static void sendRPCs(final List<RPCRequest> requests, ISdl internalInterface, final SendingRPCsCompletionListener listener) {
         final Map<RPCRequest, String> errors = new HashMap<>();
         if (requests == null || requests.isEmpty()) {
@@ -320,5 +326,4 @@ class MenuReplaceUtilities {
             }
         });
     }
-
 }
