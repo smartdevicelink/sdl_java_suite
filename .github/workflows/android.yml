@@ -22,6 +22,7 @@ jobs:
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 29
+        log_buffer: 16M
         script: ./android/gradlew -p ./android :sdl_android:connectedCheck
         
     - name: Hello Sdl Android Tests
