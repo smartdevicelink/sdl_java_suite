@@ -19,9 +19,12 @@ jobs:
         
     - name: Sdl Android Tests
       # For more info, please check out: https://github.com/marketplace/actions/android-emulator-runner
-      uses: reactivecircus/android-emulator-runner@v2
+      uses: reactivecircus/android-emulator-runner@v2.6.1
       with:
-        api-level: 29
+        api-level: 23
+        target: default
+        arch: x86
+        profile: Nexus 6
         script: ./android/gradlew -p ./android :sdl_android:connectedCheck
         
     - name: Hello Sdl Android Tests
