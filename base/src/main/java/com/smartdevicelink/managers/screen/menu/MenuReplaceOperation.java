@@ -220,7 +220,10 @@ class MenuReplaceOperation extends Task {
 
         MenuLayout defaultSubmenuLayout = menuConfiguration != null ? menuConfiguration.getSubMenuLayout() : null;
 
+        // RPCs for cells on the main menu level. They could be AddCommands or AddSubMenus depending on whether the cell has child cells or not.
         final List<RPCRequest> mainMenuCommands = mainMenuCommandsForCells(newMenuCells, fileManager.get(), windowCapability, updatedMenu, defaultSubmenuLayout);
+
+        // RPCs for cells on the second menu level (one level deep). They could be AddCommands or AddSubMenus.
         final List<RPCRequest> subMenuCommands = subMenuCommandsForCells(newMenuCells, fileManager.get(), windowCapability, defaultSubmenuLayout);
 
         sendRPCs(mainMenuCommands, internalInterface.get(), new SendingRPCsCompletionListener() {
