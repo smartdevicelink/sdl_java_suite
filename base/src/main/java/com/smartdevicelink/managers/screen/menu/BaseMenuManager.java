@@ -62,6 +62,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.isSubMenuCell;
+
 abstract class BaseMenuManager extends BaseSubManager {
     private static final String TAG = "BaseMenuManager";
     static final int menuCellIdMin = 1;
@@ -239,7 +241,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             }
         }
 
-        if (cell != null && (cell.getSubCells() == null || cell.getSubCells().isEmpty())) {
+        if (cell != null && (!isSubMenuCell(cell))) {
             DebugTool.logError(DebugTool.TAG, String.format("The cell %s does not contain any sub cells, so no submenu can be opened", cell.getTitle()));
             return false;
         } else if (cell != null && foundClonedCell == null) {
@@ -399,7 +401,7 @@ abstract class BaseMenuManager extends BaseSubManager {
                 cell.getMenuSelectionListener().onTriggered(command.getTriggerSource());
                 return true;
             }
-            if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
+            if (isSubMenuCell(cell) && !cell.getSubCells().isEmpty()) {
                 // for each cell, if it has sub cells, recursively loop through those as well
                 return callListenerForCells(cell.getSubCells(), command);
             }
@@ -453,7 +455,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             if (parentId != parentIdNotFound) {
                 cell.setParentCellId(parentId);
             }
-            if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
+            if (isSubMenuCell(cell) && !cell.getSubCells().isEmpty()) {
                 updateIdsOnMenuCells(cell.getSubCells(), cell.getCellId());
             }
         }

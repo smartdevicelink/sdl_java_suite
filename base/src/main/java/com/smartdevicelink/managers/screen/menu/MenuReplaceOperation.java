@@ -24,6 +24,7 @@ import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.addM
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.commandIdForRPCRequest;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.deleteCommandsForCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.findAllArtworksToBeUploadedFromCells;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.isSubMenuCell;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.mainMenuCommandsForCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.positionForRPCRequest;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.removeMenuCellFromList;
@@ -292,7 +293,7 @@ class MenuReplaceOperation extends Task {
             return;
         }
 
-        if (oldKeptCells.get(startIndex) != null && oldKeptCells.get(startIndex).getSubCells() != null && !oldKeptCells.get(startIndex).getSubCells().isEmpty()) {
+        if (oldKeptCells.get(startIndex) != null && isSubMenuCell(oldKeptCells.get(startIndex)) && !oldKeptCells.get(startIndex).getSubCells().isEmpty()) {
             DynamicMenuUpdateRunScore tempScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(oldKeptCells.get(startIndex).getSubCells(), newKeptCells.get(startIndex).getSubCells());
 
             // If both old and new menu cells are empty. Then nothing needs to be done.

@@ -46,7 +46,7 @@ class MenuReplaceUtilities {
                     artworks.add(cell.getSecondaryArtwork());
                 }
             }
-            if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
+            if (isSubMenuCell(cell) && !cell.getSubCells().isEmpty()) {
                 artworks.addAll(findAllArtworksToBeUploadedFromCells(cell.getSubCells(), fileManager, windowCapability));
             }
         }
@@ -62,7 +62,7 @@ class MenuReplaceUtilities {
 
         ImageFieldName mainMenuImageFieldName = isSecondaryImage ? ImageFieldName.menuCommandSecondaryImage : ImageFieldName.cmdIcon;
         ImageFieldName subMenuImageFieldName = isSecondaryImage ? ImageFieldName.menuSubMenuSecondaryImage : ImageFieldName.subMenuIcon;
-        boolean supportsImage = cell.getSubCells() != null && !cell.getSubCells().isEmpty() ? hasImageFieldOfName(windowCapability, subMenuImageFieldName) : hasImageFieldOfName(windowCapability, mainMenuImageFieldName);
+        boolean supportsImage = isSubMenuCell(cell) ? hasImageFieldOfName(windowCapability, subMenuImageFieldName) : hasImageFieldOfName(windowCapability, mainMenuImageFieldName);
         if (!supportsImage) {
             return false;
         }
@@ -98,7 +98,7 @@ class MenuReplaceUtilities {
     static List<RPCRequest> deleteCommandsForCells(List<MenuCell> cells) {
         List<RPCRequest> deletes = new ArrayList<>();
         for (MenuCell cell : cells) {
-            if (cell.getSubCells() == null || cell.getSubCells().isEmpty()) {
+            if (!isSubMenuCell(cell)) {
                 DeleteCommand delete = new DeleteCommand(cell.getCellId());
                 deletes.add(delete);
             } else {
@@ -213,7 +213,7 @@ class MenuReplaceUtilities {
                 // If the cell id matches the command id, remove it from the list and return
                 menuCellList.remove(menuCell);
                 return true;
-            } else if (menuCell.getSubCells() != null && !menuCell.getSubCells().isEmpty()) {
+            } else if (isSubMenuCell(menuCell) && !menuCell.getSubCells().isEmpty()) {
                 // If the menu cell has sub cells, we need to recurse and check the sub cells
                 List<MenuCell> newList = menuCell.getSubCells();
                 boolean foundAndRemovedItem = removeMenuCellFromList(newList, commandId);
@@ -232,7 +232,7 @@ class MenuReplaceUtilities {
             if (cell.getCellId() == commandId) {
                 addedCell = cell;
                 break;
-            } else if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
+            } else if (isSubMenuCell(cell) && !cell.getSubCells().isEmpty()) {
                 boolean success = addMenuRequestWithCommandId(commandId, position, cell.getSubCells(), mainMenuList);
                 if (success) {
                     return true;
@@ -256,7 +256,7 @@ class MenuReplaceUtilities {
                     // If we found the correct submenu, insert it into that submenu
                     insertMenuCell(cell, menuCell.getSubCells(), position);
                     return true;
-                } else if (menuCell.getSubCells() != null && !menuCell.getSubCells().isEmpty()) {
+                } else if (isSubMenuCell(menuCell) && !menuCell.getSubCells().isEmpty()) {
                     // Check the sub cells of this cell to see if any of those have cell ids that match the parent cell id
                     List<MenuCell> newList = menuCell.getSubCells();
                     boolean foundAndAddedItem = addMenuCell(cell, newList, position);
@@ -277,7 +277,7 @@ class MenuReplaceUtilities {
 
     private static void insertMenuCell(MenuCell cell, List<MenuCell> cellList, int position) {
         MenuCell cellToInsert = cell;
-        if (cellToInsert.getSubCells() != null) {
+        if (isSubMenuCell(cellToInsert)) {
             // We should not add the subCells automatically when adding a parent cell
             cellToInsert = cell.clone();
             cellToInsert.getSubCells().clear();
@@ -289,7 +289,7 @@ class MenuReplaceUtilities {
         }
     }
 
-    private static boolean isSubMenuCell(MenuCell menuCell) {
+    static boolean isSubMenuCell(MenuCell menuCell) {
         return menuCell.getSubCells() != null;
     }
 
