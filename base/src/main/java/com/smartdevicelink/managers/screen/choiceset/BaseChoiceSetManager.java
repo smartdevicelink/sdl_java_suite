@@ -211,7 +211,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         updateIdsOnChoices(choicesToUpload);
 
         if (fileManager.get() != null) {
-            PreloadChoicesOperation preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager.get(), displayName, defaultMainWindowCapability, isVROptional, choicesToUpload, new PreloadChoicesCompletionListener() {
+            PreloadPresentChoicesOperation preloadChoicesOperation = new PreloadPresentChoicesOperation(internalInterface, fileManager.get(), displayName, defaultMainWindowCapability, isVROptional, choicesToUpload, new PreloadChoicesCompletionListener() {
                 @Override
                 public void onComplete(boolean success, HashSet<ChoiceCell> loadedCells) {
                     preloadedChoices = loadedCells;
@@ -320,16 +320,16 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             }
         };
 
-        PresentChoiceSetOperation presentOp;
+        PreloadPresentChoicesOperation presentOp;
 
         if (keyboardListener == null) {
             // Non-searchable choice set
             DebugTool.logInfo(TAG, "Creating non-searchable choice set");
-            presentOp = new PresentChoiceSetOperation(internalInterface, choiceSet, mode, null, null, privateChoiceListener, getNextCancelId(), this.preloadedChoices);
+            presentOp = new PreloadPresentChoicesOperation(internalInterface, choiceSet, mode, null, null, privateChoiceListener, getNextCancelId(), this.preloadedChoices);
         } else {
             // Searchable choice set
             DebugTool.logInfo(TAG, "Creating searchable choice set");
-            presentOp = new PresentChoiceSetOperation(internalInterface, choiceSet, mode, keyboardConfiguration, keyboardListener, privateChoiceListener, getNextCancelId(), this.preloadedChoices);
+            presentOp = new PreloadPresentChoicesOperation(internalInterface, choiceSet, mode, keyboardConfiguration, keyboardListener, privateChoiceListener, getNextCancelId(), this.preloadedChoices);
         }
 
         transactionQueue.add(presentOp, false);
@@ -509,12 +509,9 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                 continue;
             }
 
-            if (task instanceof PreloadChoicesOperation) {
-                PreloadChoicesOperation preloadOp = (PreloadChoicesOperation) task;
+            if (task instanceof PreloadPresentChoicesOperation) {
+                PreloadPresentChoicesOperation preloadOp = (PreloadPresentChoicesOperation) task;
                 preloadOp.setLoadedCells(this.preloadedChoices);
-            } else if (task instanceof PresentChoiceSetOperation) {
-                PresentChoiceSetOperation presentOp = (PresentChoiceSetOperation) task;
-                presentOp.setLoadedCells(this.preloadedChoices);
             } else if (task instanceof DeleteChoicesOperation) {
                 DeleteChoicesOperation deleteOp = (DeleteChoicesOperation) task;
                 deleteOp.setLoadedCells(this.preloadedChoices);
@@ -590,14 +587,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     }
 
     // ADDITIONAL HELPERS
-
-    private boolean hasImageFieldOfName(ImageFieldName imageFieldName) {
-        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, imageFieldName);
-    }
-
-    private boolean hasTextFieldOfName(TextFieldName textFieldName) {
-        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, textFieldName);
-    }
 
     boolean setUpChoiceSet(ChoiceSet choiceSet) {
 
