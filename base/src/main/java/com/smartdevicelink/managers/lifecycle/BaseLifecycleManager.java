@@ -137,7 +137,6 @@ abstract class BaseLifecycleManager {
     BaseTransportConfig _transportConfig;
     private Taskmaster taskmaster;
     private boolean didCheckSystemInfo = false;
-    protected ISessionListener sessionListener;
     String lastDisplayLayoutRequestTemplate;
     DisplayCapabilities initialMediaCapabilities;
 
@@ -413,7 +412,6 @@ abstract class BaseLifecycleManager {
                                     msg.setCorrelationID(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
                                     sendRPCMessagePrivate(msg, true);
                                     clean();
-                                    lifecycleListener.onError(null, TransportConstants.UNSUPPORTED_VEHICLE_INFO_REASON, null);
                                     onClose("System not supported", null, SdlDisconnectedReason.DEFAULT);
                                     return;
                                 }
@@ -959,7 +957,6 @@ abstract class BaseLifecycleManager {
                     DebugTool.logWarning(TAG, "Disconnecting from head unit, the system info was not accepted.");
                     session.endService(SessionType.RPC);
                     clean();
-                    lifecycleListener.onError(null, TransportConstants.UNSUPPORTED_VEHICLE_INFO_REASON, null);
                     onClose("System not supported", null, SdlDisconnectedReason.DEFAULT);
                     return;
                 }
@@ -999,10 +996,6 @@ abstract class BaseLifecycleManager {
         @Override
         public void onSessionEnded(int sessionID) {
             DebugTool.logInfo(TAG, "on protocol session ended");
-
-            if(sessionListener != null) {
-                sessionListener.onSessionEnd();
-            }
         }
 
         @Override
