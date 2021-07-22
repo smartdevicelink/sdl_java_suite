@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resource>
     <vehicle-type
-        make="Ford"
-        model="Mustang"
+        make="SDL"
+        model="Car"
         modelYear="2019"
         trim="GT" />
 
     <vehicle-type
-        make="Toyota"
+        make="SDL2"
         modelYear="2019" />
 </resource>

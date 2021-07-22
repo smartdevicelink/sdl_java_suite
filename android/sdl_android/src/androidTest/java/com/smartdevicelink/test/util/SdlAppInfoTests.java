@@ -186,8 +186,8 @@ public class SdlAppInfoTests {
     @Test
     public void testDeserializeVehicleInfo(){
         VehicleType type = new VehicleType();
-        type.setMake("Ford");
-        type.setModel("Mustang");
+        type.setMake("SDL");
+        type.setModel("Car");
         type.setModelYear("2019");
         type.setTrim("GT");
         List<VehicleType> deserializedList = SdlAppInfo.deserializeVehicleMake(getInstrumentation().getContext().getResources().getXml(com.smartdevicelink.test.R.xml.supported_vehicle_type));
