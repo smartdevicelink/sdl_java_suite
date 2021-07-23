@@ -43,7 +43,6 @@ import androidx.annotation.Nullable;
 import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.audio.AudioStreamManager;
 import com.smartdevicelink.managers.file.FileManager;
-import com.smartdevicelink.managers.lifecycle.ISessionListener;
 import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
 import com.smartdevicelink.managers.lockscreen.LockScreenManager;
@@ -311,11 +310,6 @@ public class SdlManager extends BaseSdlManager {
         }
         checkSdlManagerState();
         return lockScreenManager;
-    }
-
-    public void setSessionListener(ISessionListener sessionListener)
-    {
-        lifecycleManager.setSessionListener(sessionListener);
     }
 
     // PROTECTED GETTERS

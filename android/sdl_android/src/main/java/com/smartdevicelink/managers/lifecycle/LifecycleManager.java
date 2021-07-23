@@ -233,8 +233,4 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
         session.startService(SessionType.PCM, isEncrypted);
     }
-
-    public void setSessionListener(ISessionListener sessionListener) {
-        this.sessionListener = sessionListener;
-    }
 }
