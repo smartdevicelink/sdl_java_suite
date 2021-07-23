@@ -39,6 +39,7 @@ import org.mockito.stubbing.Answer;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -251,6 +252,7 @@ public class PreloadPresentChoicesOperationTests {
     public void testCancelingChoiceSetSuccessfullyIfThreadIsRunning() {
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
         presentChoicesOperation = new PreloadPresentChoicesOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER, null);
+        presentChoicesOperation.setLoadedCells(new HashSet<ChoiceCell>());
         queue.add(presentChoicesOperation, false);
 
         sleep();
@@ -286,6 +288,7 @@ public class PreloadPresentChoicesOperationTests {
     public void testCancelingChoiceSetUnsuccessfullyIfThreadIsRunning() {
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
         presentChoicesOperation = new PreloadPresentChoicesOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER, null);
+        presentChoicesOperation.setLoadedCells(new HashSet<ChoiceCell>());
         queue.add(presentChoicesOperation, false);
         sleep();
 
@@ -355,6 +358,7 @@ public class PreloadPresentChoicesOperationTests {
         // Cancel Interaction is only supported on RPC specs v.6.0.0+
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(5, 3));
         presentChoicesOperation = new PreloadPresentChoicesOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER, null);
+        presentChoicesOperation.setLoadedCells(new HashSet<ChoiceCell>());
         queue.add(presentChoicesOperation, false);
         sleep();
 

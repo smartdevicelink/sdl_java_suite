@@ -202,8 +202,6 @@ public class PreloadPresentChoicesOperation extends Task {
 
         if (internalInterface.get() != null) {
             internalInterface.get().sendRPCs(choiceRPCs, new OnMultipleRequestListener() {
-                final HashSet<ChoiceCell> failedChoiceCells = new HashSet<>();
-
                 @Override
                 public void onUpdate(int remainingRequests) {
 
