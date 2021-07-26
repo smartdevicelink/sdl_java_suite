@@ -122,7 +122,6 @@ public class MenuCell implements Cloneable {
     @Deprecated
     public MenuCell(@NonNull String title, @Nullable SdlArtwork icon, @Nullable List<String> voiceCommands, @Nullable MenuSelectionListener listener) {
         setTitle(title); // title is the only required param
-        setUniqueTitle(title);
         setIcon(icon);
         setVoiceCommands(voiceCommands);
         setMenuSelectionListener(listener);
@@ -143,7 +142,6 @@ public class MenuCell implements Cloneable {
      */
     public MenuCell(@NonNull String title, @Nullable String secondaryText, @Nullable String tertiaryText, @Nullable SdlArtwork icon, @Nullable SdlArtwork secondaryArtwork, @Nullable List<String> voiceCommands, @Nullable MenuSelectionListener listener) {
         setTitle(title); // title is the only required param
-        setUniqueTitle(title);
         setSecondaryText(secondaryText);
         setTertiaryText(tertiaryText);
         setIcon(icon);
@@ -169,7 +167,6 @@ public class MenuCell implements Cloneable {
     @Deprecated
     public MenuCell(@NonNull String title, @Nullable MenuLayout subMenuLayout, @Nullable SdlArtwork icon, @Nullable List<MenuCell> subCells) {
         setTitle(title); // title is the only required param
-        setUniqueTitle(title);
         setSubMenuLayout(subMenuLayout);
         setIcon(icon);
         setSubCells(subCells);
@@ -192,7 +189,6 @@ public class MenuCell implements Cloneable {
      */
     public MenuCell(@NonNull String title, @Nullable String secondaryText, @Nullable String tertiaryText, @Nullable MenuLayout subMenuLayout, @Nullable SdlArtwork icon, @Nullable SdlArtwork secondaryArtwork, @Nullable List<MenuCell> subCells) {
         setTitle(title); // title is the only required param
-        setUniqueTitle(title);
         setSecondaryText(secondaryText);
         setTertiaryText(tertiaryText);
         setSubMenuLayout(subMenuLayout);
@@ -446,13 +442,14 @@ public class MenuCell implements Cloneable {
     public int hashCode() {
         int result = 1;
         result += ((getTitle() == null) ? 0 : Integer.rotateLeft(getTitle().hashCode(), 1));
-        result += ((getIcon() == null) ? 0 : Integer.rotateLeft(getIcon().hashCode(), 2));
-        result += ((getVoiceCommands() == null || getVoiceCommands().isEmpty()) ? 0 : Integer.rotateLeft(getVoiceCommands().hashCode(), 3));
-        result += ((getSubCells() == null) ? 0 : Integer.rotateLeft(getSubCells().hashCode(), 4));
-        result += ((getSecondaryText() == null) ? 0 : Integer.rotateLeft(getSecondaryText().hashCode(), 5));
-        result += ((getTertiaryText() == null) ? 0 : Integer.rotateLeft(getTertiaryText().hashCode(), 6));
-        result += ((getSecondaryArtwork() == null) ? 0 : Integer.rotateLeft(getSecondaryArtwork().hashCode(), 7));
-        result += ((getMenuSelectionListener() == null) ? 0 : Integer.rotateLeft(getMenuSelectionListener().hashCode(), 8));
+        result += ((getUniqueTitle() == null) ? 0 : Integer.rotateLeft(getUniqueTitle().hashCode(), 2));
+        result += ((getIcon() == null) ? 0 : Integer.rotateLeft(getIcon().hashCode(), 3));
+        result += ((getVoiceCommands() == null || getVoiceCommands().isEmpty()) ? 0 : Integer.rotateLeft(getVoiceCommands().hashCode(), 4));
+        result += ((getSubCells() == null) ? 0 : Integer.rotateLeft(getSubCells().hashCode(), 5));
+        result += ((getSecondaryText() == null) ? 0 : Integer.rotateLeft(getSecondaryText().hashCode(), 6));
+        result += ((getTertiaryText() == null) ? 0 : Integer.rotateLeft(getTertiaryText().hashCode(), 7));
+        result += ((getSecondaryArtwork() == null) ? 0 : Integer.rotateLeft(getSecondaryArtwork().hashCode(), 9));
+        result += ((getMenuSelectionListener() == null) ? 0 : Integer.rotateLeft(getMenuSelectionListener().hashCode(), 9));
         return result;
     }
 

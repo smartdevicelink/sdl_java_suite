@@ -162,7 +162,7 @@ class MenuReplaceUtilities {
     static AddCommand commandForMenuCell(MenuCell cell, FileManager fileManager, WindowCapability windowCapability, int position) {
         AddCommand command = new AddCommand(cell.getCellId());
 
-        MenuParams params = new MenuParams(cell.getTitle());
+        MenuParams params = new MenuParams(cell.getUniqueTitle());
         params.setSecondaryText((cell.getSecondaryText() != null && !cell.getSecondaryText().isEmpty() && hasTextFieldOfName(windowCapability, TextFieldName.menuCommandSecondaryText)) ? cell.getSecondaryText() : null);
         params.setTertiaryText((cell.getTertiaryText() != null && !cell.getTertiaryText().isEmpty() && hasTextFieldOfName(windowCapability, TextFieldName.menuCommandTertiaryText)) ? cell.getTertiaryText() : null);
         params.setParentID(cell.getParentCellId() != parentIdNotFound ? cell.getParentCellId() : null);
@@ -197,7 +197,7 @@ class MenuReplaceUtilities {
             submenuLayout = defaultSubmenuLayout;
         }
 
-        return new AddSubMenu(cell.getCellId(), cell.getTitle())
+        return new AddSubMenu(cell.getCellId(), cell.getUniqueTitle())
                 .setParentID(cell.getParentCellId() != parentIdNotFound ? cell.getParentCellId() : null)
                 .setSecondaryText((cell.getSecondaryText() != null && !cell.getSecondaryText().isEmpty() && hasTextFieldOfName(windowCapability, TextFieldName.menuSubMenuSecondaryText)) ? cell.getSecondaryText() : null)
                 .setTertiaryText((cell.getTertiaryText() != null && !cell.getTertiaryText().isEmpty() && hasTextFieldOfName(windowCapability, TextFieldName.menuSubMenuTertiaryText)) ? cell.getTertiaryText() : null)
