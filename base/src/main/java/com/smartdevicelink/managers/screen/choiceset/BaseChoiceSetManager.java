@@ -276,7 +276,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             return;
         }
 
-        preloadChoices(choiceSet.getChoices(), null);
+        updateIdsOnChoiceSet(choiceSet);
 
         preloadChoices(choiceSet.getChoices(), new CompletionListener() {
             @Override
@@ -488,6 +488,13 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
     void updateIdsOnChoices(LinkedHashSet<ChoiceCell> choices) {
         for (ChoiceCell cell : choices) {
+            cell.setChoiceId(this.nextChoiceId);
+            this.nextChoiceId++;
+        }
+    }
+
+    void updateIdsOnChoiceSet(ChoiceSet choiceSet) {
+        for (ChoiceCell cell : choiceSet.getChoices()) {
             cell.setChoiceId(this.nextChoiceId);
             this.nextChoiceId++;
         }
