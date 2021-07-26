@@ -41,7 +41,6 @@ import android.os.Looper;
 import android.os.Message;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlPacketFactory;
@@ -68,6 +67,9 @@ public class SdlDeviceListener {
     private static final int MIN_VERSION_REQUIRED = 13;
     private static final String SDL_DEVICE_STATUS_SHARED_PREFS = "sdl.device.status";
     private static final Object LOCK = new Object(), RUNNING_LOCK = new Object();
+
+    // If increasing MAX PROTOCOL VERSION major version, make sure to alter it in SdlPsm and SdlProtocolBase
+    private static final Version MAX_PROTOCOL_VERSION = new Version(5, 4, 0);
 
     private final WeakReference<Context> contextWeakReference;
     private final Callback callback;
@@ -191,8 +193,7 @@ public class SdlDeviceListener {
         public void sendStartService() {
             SdlDeviceListener sdlListener = this.provider.get();
             SdlPacket serviceProbe = SdlPacketFactory.createStartSession(SessionType.RPC, 0x00, (byte)0x01, (byte)0x00, false);
-            Version v = new Version(5, 4, 0);
-            serviceProbe.putTag(ControlFrameTags.RPC.StartService.PROTOCOL_VERSION, v.toString());
+            serviceProbe.putTag(ControlFrameTags.RPC.StartService.PROTOCOL_VERSION, MAX_PROTOCOL_VERSION.toString());
             byte[] constructed = serviceProbe.constructPacket();
             if (sdlListener.bluetoothTransport != null && sdlListener.bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
                 sdlListener.bluetoothTransport.write(constructed, 0, constructed.length);
@@ -207,12 +208,12 @@ public class SdlDeviceListener {
                 if (packet.getVersion() >= 5) {
                     vehicleType = getVehicleType(packet);
                 }
+                int hashID = BitConverter.intFromByteArray(packet.getPayload(), 0);
+                byte[] stopService = SdlPacketFactory.createEndSession(SessionType.RPC, (byte)packet.getSessionId(), 0, (byte)packet.getVersion(), hashID).constructPacket();
+                if (sdlListener.bluetoothTransport != null && sdlListener.bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
+                    sdlListener.bluetoothTransport.write(stopService, 0, stopService.length);
+                }
                 notifyConnection(vehicleType);
-            }
-            int hashID = BitConverter.intFromByteArray(packet.getPayload(), 0);
-            byte[] stopService = SdlPacketFactory.createEndSession(SessionType.RPC, (byte)packet.getSessionId(), 0, (byte)packet.getVersion(), hashID).constructPacket();
-            if (sdlListener.bluetoothTransport != null && sdlListener.bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
-                sdlListener.bluetoothTransport.write(stopService, 0, stopService.length);
             }
         }
 
