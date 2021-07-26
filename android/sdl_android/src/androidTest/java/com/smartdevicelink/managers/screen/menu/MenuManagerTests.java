@@ -289,6 +289,11 @@ public class MenuManagerTests {
 
         assertEquals(menuManager.currentMenuCells.size(), 4);
 
+        menuManager.setMenuCells(newMenu);
+
+        // Sleep to give time to Taskmaster to run the operations
+        sleep();
+
         // this happens in the menu manager but lets make sure its behaving
         DynamicMenuUpdateRunScore runScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(oldMenu, newMenu);
 
@@ -298,11 +303,6 @@ public class MenuManagerTests {
         assertEquals(1, runScore.getScore());
         assertEquals(runScore.getOldStatus(), oldMenuStatus);
         assertEquals(runScore.getUpdatedStatus(), newMenuStatus);
-
-        menuManager.setMenuCells(newMenu);
-
-        // Sleep to give time to Taskmaster to run the operations
-        sleep();
 
         assertEquals(5, menuManager.currentMenuCells.size());
         List<MenuCell> oldKeeps = filterMenuCellsWithStatusList(menuManager.currentMenuCells, runScore.getOldStatus(), KEEP);
@@ -334,6 +334,11 @@ public class MenuManagerTests {
 
         assertEquals(4, menuManager.currentMenuCells.size());
 
+        menuManager.setMenuCells(newMenu);
+
+        // Sleep to give time to Taskmaster to run the operations
+        sleep();
+
         // this happens in the menu manager but lets make sure its behaving
         DynamicMenuUpdateRunScore runScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(oldMenu, newMenu);
 
@@ -343,11 +348,6 @@ public class MenuManagerTests {
         assertEquals(runScore.getScore(), 0);
         assertEquals(runScore.getOldStatus(), oldMenuScore);
         assertEquals(runScore.getUpdatedStatus(), newMenuScore);
-
-        menuManager.setMenuCells(newMenu);
-
-        // Sleep to give time to Taskmaster to run the operations
-        sleep();
 
         assertEquals(3, menuManager.currentMenuCells.size());
         List<MenuCell> oldKeeps = filterMenuCellsWithStatusList(menuManager.currentMenuCells, runScore.getOldStatus(), KEEP);
@@ -379,6 +379,11 @@ public class MenuManagerTests {
 
         assertEquals(menuManager.currentMenuCells.size(), 3);
 
+        menuManager.setMenuCells(newMenu);
+
+        // Sleep to give time to Taskmaster to run the operations
+        sleep();
+
         // this happens in the menu manager but lets make sure its behaving
         DynamicMenuUpdateRunScore runScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(oldMenu, newMenu);
 
@@ -388,11 +393,6 @@ public class MenuManagerTests {
         assertEquals(runScore.getScore(), 3);
         assertEquals(runScore.getOldStatus(), oldMenuStatus);
         assertEquals(runScore.getUpdatedStatus(), newMenuStatus);
-
-        menuManager.setMenuCells(newMenu);
-
-        // Sleep to give time to Taskmaster to run the operations
-        sleep();
 
         assertEquals(menuManager.currentMenuCells.size(), 3);
         List<MenuCell> oldKeeps = filterMenuCellsWithStatusList(menuManager.currentMenuCells, runScore.getOldStatus(), KEEP);
@@ -424,6 +424,11 @@ public class MenuManagerTests {
 
         assertEquals(menuManager.currentMenuCells.size(), 4);
 
+        menuManager.setMenuCells(newMenu);
+
+        // Sleep to give time to Taskmaster to run the operations
+        sleep();
+
         // this happens in the menu manager but lets make sure its behaving
         DynamicMenuUpdateRunScore runScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(oldMenu, newMenu);
 
@@ -433,11 +438,6 @@ public class MenuManagerTests {
         assertEquals(runScore.getScore(), 2);
         assertEquals(runScore.getOldStatus(), oldMenuStatus);
         assertEquals(runScore.getUpdatedStatus(), newMenuStatus);
-
-        menuManager.setMenuCells(newMenu);
-
-        // Sleep to give time to Taskmaster to run the operations
-        sleep();
 
         assertEquals(menuManager.currentMenuCells.size(), 4);
         List<MenuCell> oldKeeps = filterMenuCellsWithStatusList(menuManager.currentMenuCells, runScore.getOldStatus(), KEEP);
@@ -469,6 +469,11 @@ public class MenuManagerTests {
 
         assertEquals(menuManager.currentMenuCells.size(), 4);
 
+        menuManager.setMenuCells(newMenu);
+
+        // Sleep to give time to Taskmaster to run the operations
+        sleep();
+
         // this happens in the menu manager but lets make sure its behaving
         DynamicMenuUpdateRunScore runScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(oldMenu, newMenu);
 
@@ -478,11 +483,6 @@ public class MenuManagerTests {
         assertEquals(runScore.getScore(), 1);
         assertEquals(runScore.getOldStatus(), oldMenuStatus);
         assertEquals(runScore.getUpdatedStatus(), newMenuStatus);
-
-        menuManager.setMenuCells(newMenu);
-
-        // Sleep to give time to Taskmaster to run the operations
-        sleep();
 
         assertEquals(menuManager.currentMenuCells.size(), 4);
         List<MenuCell> oldKeeps = filterMenuCellsWithStatusList(menuManager.currentMenuCells, runScore.getOldStatus(), KEEP);
