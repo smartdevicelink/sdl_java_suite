@@ -13,6 +13,8 @@ import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.util.DebugTool;
 
+import org.json.JSONException;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -184,7 +186,7 @@ class MenuReplaceOperation extends Task {
             @Override
             public void onComplete(boolean success, Map<RPCRequest, String> errors) {
                 if (!success) {
-                    DebugTool.logWarning(TAG, "Unable to delete all old menu commands" + errors);
+                    DebugTool.logWarning(TAG, "Unable to delete all old menu commands. " + convertErrorsMapToString(errors));
                 } else {
                     DebugTool.logInfo(TAG, "Finished deleting old menu");
                 }
@@ -231,7 +233,7 @@ class MenuReplaceOperation extends Task {
             @Override
             public void onComplete(boolean success, Map<RPCRequest, String> errors) {
                 if (!success) {
-                    DebugTool.logError(TAG, "Failed to send main menu commands" + errors);
+                    DebugTool.logError(TAG, "Failed to send main menu commands. " + convertErrorsMapToString(errors));
                     listener.onComplete(false);
                     return;
                 }
@@ -244,7 +246,7 @@ class MenuReplaceOperation extends Task {
                     @Override
                     public void onComplete(boolean success, Map<RPCRequest, String> errors) {
                         if (!success) {
-                            DebugTool.logError(TAG, "Failed to send sub menu commands" + errors);
+                            DebugTool.logError(TAG, "Failed to send sub menu commands. " + convertErrorsMapToString(errors));
                         } else {
                             DebugTool.logInfo(TAG, "Finished updating menu");
                         }
@@ -349,6 +351,22 @@ class MenuReplaceOperation extends Task {
         for (int i = 0; i < newCells.size(); i++) {
             newCells.get(i).setCellId(oldCells.get(i).getCellId());
         }
+    }
+
+    private String convertErrorsMapToString(Map<RPCRequest, String> errors) {
+        if (errors == null) {
+            return null;
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        for (RPCRequest request : errors.keySet()) {
+            stringBuilder.append(errors.get(request));
+            try {
+                stringBuilder.append(request.serializeJSON().toString(4));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return stringBuilder.toString();
     }
 
     void setMenuConfiguration(MenuConfiguration menuConfiguration) {
