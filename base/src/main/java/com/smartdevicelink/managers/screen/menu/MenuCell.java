@@ -122,6 +122,7 @@ public class MenuCell implements Cloneable {
     @Deprecated
     public MenuCell(@NonNull String title, @Nullable SdlArtwork icon, @Nullable List<String> voiceCommands, @Nullable MenuSelectionListener listener) {
         setTitle(title); // title is the only required param
+        setUniqueTitle(title);
         setIcon(icon);
         setVoiceCommands(voiceCommands);
         setMenuSelectionListener(listener);
@@ -142,6 +143,7 @@ public class MenuCell implements Cloneable {
      */
     public MenuCell(@NonNull String title, @Nullable String secondaryText, @Nullable String tertiaryText, @Nullable SdlArtwork icon, @Nullable SdlArtwork secondaryArtwork, @Nullable List<String> voiceCommands, @Nullable MenuSelectionListener listener) {
         setTitle(title); // title is the only required param
+        setUniqueTitle(title);
         setSecondaryText(secondaryText);
         setTertiaryText(tertiaryText);
         setIcon(icon);
@@ -167,6 +169,7 @@ public class MenuCell implements Cloneable {
     @Deprecated
     public MenuCell(@NonNull String title, @Nullable MenuLayout subMenuLayout, @Nullable SdlArtwork icon, @Nullable List<MenuCell> subCells) {
         setTitle(title); // title is the only required param
+        setUniqueTitle(title);
         setSubMenuLayout(subMenuLayout);
         setIcon(icon);
         setSubCells(subCells);
@@ -189,6 +192,7 @@ public class MenuCell implements Cloneable {
      */
     public MenuCell(@NonNull String title, @Nullable String secondaryText, @Nullable String tertiaryText, @Nullable MenuLayout subMenuLayout, @Nullable SdlArtwork icon, @Nullable SdlArtwork secondaryArtwork, @Nullable List<MenuCell> subCells) {
         setTitle(title); // title is the only required param
+        setUniqueTitle(title);
         setSecondaryText(secondaryText);
         setTertiaryText(tertiaryText);
         setSubMenuLayout(subMenuLayout);
