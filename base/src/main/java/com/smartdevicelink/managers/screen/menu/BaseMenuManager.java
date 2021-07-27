@@ -473,8 +473,9 @@ abstract class BaseMenuManager extends BaseSubManager {
         HashSet<MenuCell> identicalCellsCheckSet = new HashSet<>();
 
         for (MenuCell cell : cells) {
-            // We don't want the UniqueTitle to be considered in uniqueness check
+            // We don't want the UniqueTitle & listener to be considered in uniqueness check
             cell.setUniqueTitle(null);
+            cell.setMenuSelectionListener(null);
 
             identicalCellsCheckSet.add(cell);
 
@@ -562,6 +563,8 @@ abstract class BaseMenuManager extends BaseSubManager {
         for (MenuCell cell : removePropertiesClone) {
             // Strip away fields that cannot be used to determine uniqueness visually including fields not supported by the HMI
             cell.setVoiceCommands(null);
+            cell.setUniqueTitle(null);
+            cell.setMenuSelectionListener(null);
 
             // Don't check ImageFieldName.subMenuIcon because it was added in 7.0 when the feature was added in 5.0.
             // Just assume that if cmdIcon is not available, the submenu icon is not either.
