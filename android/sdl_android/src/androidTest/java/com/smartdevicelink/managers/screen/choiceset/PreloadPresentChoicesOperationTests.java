@@ -357,6 +357,22 @@ public class PreloadPresentChoicesOperationTests {
     }
 
     @Test
+    public void testCancelingChoiceSetIfThreadHasCanceled() {
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
+        WindowCapability windowCapability = new WindowCapability();
+        HashSet<ChoiceCell> loadedCells = new HashSet<>();
+        presentChoicesOperation = new PreloadPresentChoicesOperation(internalInterface, fileManager, choiceSet, InteractionMode.MANUAL_ONLY, null, null, TestValues.GENERAL_INTEGER,null, windowCapability, true, loadedCells, null);
+        presentChoicesOperation.cancelTask();
+
+        assertEquals(Task.CANCELED, presentChoicesOperation.getState());
+
+        choiceSet.cancel();
+        verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
+
+        assertEquals(Task.CANCELED, presentChoicesOperation.getState());
+    }
+
+    @Test
     public void testCancelingChoiceSetIfThreadHasNotYetRun() {
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
         WindowCapability windowCapability = new WindowCapability();
