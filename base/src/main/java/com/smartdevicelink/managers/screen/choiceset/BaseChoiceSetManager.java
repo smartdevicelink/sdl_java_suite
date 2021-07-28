@@ -278,16 +278,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         updateIdsOnChoiceSet(choiceSet);
 
-        preloadChoices(choiceSet.getChoices(), new CompletionListener() {
-            @Override
-            public void onComplete(boolean success) {
-                if (!success) {
-                    choiceSet.getChoiceSetSelectionListener().onError("There was an error pre-loading choice set choices");
-                } else {
-                    sendPresentOperation(choiceSet, keyboardListener, mode);
-                }
-            }
-        });
+        sendPresentOperation(choiceSet, keyboardListener, mode);
     }
 
     private void sendPresentOperation(final ChoiceSet choiceSet, KeyboardListener keyboardListener, InteractionMode mode) {

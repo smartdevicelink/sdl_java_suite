@@ -47,12 +47,6 @@ import java.util.Map;
 
 public class PreloadPresentChoicesOperation extends Task {
 
-    private enum OperationType{
-        PRELOAD,
-        PRESENT
-    }
-
-    private final OperationType opType;
     private static final String TAG = "PreloadPresentChoicesOperation";
     private final WeakReference<ISdl> internalInterface;
     private final WeakReference<FileManager> fileManager;
@@ -91,7 +85,6 @@ public class PreloadPresentChoicesOperation extends Task {
     public PreloadPresentChoicesOperation(ISdl internalInterface, FileManager fileManager, String displayName, WindowCapability defaultWindowCapability,
                                           Boolean isVROptional, LinkedHashSet<ChoiceCell> cellsToPreload, HashSet<ChoiceCell> loadedCells, PreloadChoicesCompletionListener listener) {
         super("PreloadPresentChoiceOperation");
-        this.opType = OperationType.PRELOAD;
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
         this.displayName = displayName;
@@ -116,7 +109,6 @@ public class PreloadPresentChoicesOperation extends Task {
                                           KeyboardProperties originalKeyboardProperties, KeyboardListener keyboardListener, Integer cancelID, String displayName, WindowCapability windowCapability,
                                           Boolean isVROptional, HashSet<ChoiceCell> loadedCells, PreloadChoicesCompletionListener preloadListener, ChoiceSetSelectionListener listener) {
         super("PreloadPresentChoiceOperation");
-        this.opType = OperationType.PRESENT;
         this.internalInterface = new WeakReference<>(internalInterface);
         this.keyboardListener = keyboardListener;
         this.choiceSet = choiceSet;
@@ -136,7 +128,7 @@ public class PreloadPresentChoicesOperation extends Task {
         this.displayName = displayName;
         this.defaultMainWindowCapability = windowCapability;
         this.isVROptional = isVROptional;
-        this.cellsToUpload = null;
+        this.cellsToUpload = new ArrayList<>(choiceSet.getChoices());
         this.completionListener = preloadListener;
         this.selectionListener = listener;
         this.loadedCells = loadedCells;
@@ -158,16 +150,19 @@ public class PreloadPresentChoicesOperation extends Task {
                 // If some artworks failed to upload, we are still going to try to load the cells
                 if (getState()==CANCELED || !success) {
                     finishOperation();
+                    return;
                 }
                 preloadCells(new CompletionListener() {
                     @Override
                     public void onComplete(boolean success) {
                         if (getState()==CANCELED || !success) {
                             finishOperation();
+                            return;
                         }
 
                         if (choiceSet == null) {
                             finishOperation();
+                            return;
                         }
                         DebugTool.logInfo(TAG, "Choice Operation: Executing present choice set operation");
                         updateKeyboardProperties(new CompletionListener() {
@@ -175,6 +170,7 @@ public class PreloadPresentChoicesOperation extends Task {
                             public void onComplete(boolean success) {
                                 if (getState()==CANCELED || !success) {
                                     finishOperation();
+                                    return;
                                 }
                                 presentChoiceSet(new CompletionListener() {
                                     @Override
@@ -184,6 +180,7 @@ public class PreloadPresentChoicesOperation extends Task {
                                             public void onComplete(boolean success) {
                                                 if (!success) {
                                                     finishOperation();
+                                                    return;
                                                 }
                                             }
                                         });
