@@ -199,7 +199,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             return;
         }
 
-        final LinkedHashSet<ChoiceCell> choicesToUpload = (LinkedHashSet<ChoiceCell>) choices;
+        final LinkedHashSet<ChoiceCell> choicesToUpload = new LinkedHashSet<>(choices);
 
         if (choicesToUpload.size() == 0) {
             if (listener != null) {

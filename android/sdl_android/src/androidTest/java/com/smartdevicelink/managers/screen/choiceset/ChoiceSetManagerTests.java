@@ -38,6 +38,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.BaseSubManager;
+import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.proxy.rpc.ImageField;
@@ -222,6 +223,59 @@ public class ChoiceSetManagerTests {
         assertNotSame(cell1.getChoiceId(), 2000000000);
         assertNotSame(cell2.getChoiceId(), 2000000000);
         assertNotSame(cell3.getChoiceId(), 2000000000);
+    }
+
+    @Test
+    public void preloadChoicesAddsToQueue() {
+        ChoiceCell cell1 = new ChoiceCell("test");
+        ChoiceCell cell2 = new ChoiceCell("test2");
+        ChoiceCell cell3 = new ChoiceCell("test3");
+        ArrayList<ChoiceCell> cellSet = new ArrayList<>();
+        cellSet.add(cell1);
+        cellSet.add(cell2);
+        cellSet.add(cell3);
+        csm.preloadChoices(cellSet, new CompletionListener() {
+            @Override
+            public void onComplete(boolean success) {
+
+            }
+        });
+        assertEquals(csm.transactionQueue.getTasksAsList().size(), 1);
+    }
+
+    @Test
+    public void preloadChoicesQueueEmptyWhenNoChoiceCells() {
+        ArrayList<ChoiceCell> cellSet = new ArrayList<>();
+        csm.preloadChoices(cellSet, new CompletionListener() {
+            @Override
+            public void onComplete(boolean success) {
+
+            }
+        });
+        assertEquals(csm.transactionQueue.getTasksAsList().size(), 0);
+    }
+
+    @Test
+    public void testPreloadChoicesQueueEmptyIfFileManagerNull() {
+        ChoiceCell cell1 = new ChoiceCell("test");
+        ChoiceCell cell2 = new ChoiceCell("test2");
+        ChoiceCell cell3 = new ChoiceCell("test3");
+        ArrayList<ChoiceCell> cellSet = new ArrayList<>();
+        cellSet.add(cell1);
+        cellSet.add(cell2);
+        cellSet.add(cell3);
+
+        ISdl internalInterface = mock(ISdl.class);
+        when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
+        FileManager fileManager = null;
+        ChoiceSetManager newCSM = new ChoiceSetManager(internalInterface, fileManager);
+        newCSM.preloadChoices(cellSet, new CompletionListener() {
+            @Override
+            public void onComplete(boolean success) {
+
+            }
+        });
+        assertEquals(csm.transactionQueue.getTasksAsList().size(), 0);
     }
 
     @Test
