@@ -60,7 +60,6 @@ public class PreloadPresentChoicesOperation extends Task {
     private final String displayName;
     private final ArrayList<ChoiceCell> cellsToUpload;
     private final PreloadChoicesCompletionListener completionListener;
-    private boolean isRunning;
     private final boolean isVROptional;
     private boolean choiceError = false;
     private HashSet<ChoiceCell> loadedCells;
@@ -73,13 +72,23 @@ public class PreloadPresentChoicesOperation extends Task {
     private TriggerSource selectedTriggerSource;
     private boolean updatedKeyboardProperties;
     private OnRPCNotificationListener keyboardRPCListener;
-    private final ChoiceSetSelectionListener choiceSetSelectionListener;
     Integer selectedCellRow;
     KeyboardListener keyboardListener;
     final SdlMsgVersion sdlMsgVersion;
+    private enum SDLPreloadPresentChoicesOperationState {
+        NOT_STARTED,
+        UPLOADING_IMAGES,
+        UPLOADING_CHOICES,
+        UPDATING_KEYBOARD_PROPERTIES,
+        PRESENTING_CHOICES,
+        CANCELLING_PRESENT_CHOICES,
+        RESETTING_KEYBOARD_PROPERTIES,
+        FINISHING
+    }
+    private SDLPreloadPresentChoicesOperationState currentState;
 
     public PreloadPresentChoicesOperation(ISdl internalInterface, FileManager fileManager, String displayName, WindowCapability defaultWindowCapability,
-                                          Boolean isVROptional, LinkedHashSet<ChoiceCell> cellsToPreload, PreloadChoicesCompletionListener listener, HashSet<ChoiceCell> loadedCells) {
+                                          Boolean isVROptional, LinkedHashSet<ChoiceCell> cellsToPreload, HashSet<ChoiceCell> loadedCells, PreloadChoicesCompletionListener listener) {
         super("PreloadPresentChoiceOperation");
         this.opType = OperationType.PRELOAD;
         this.internalInterface = new WeakReference<>(internalInterface);
@@ -96,13 +105,14 @@ public class PreloadPresentChoicesOperation extends Task {
         this.originalKeyboardProperties = null;
         this.keyboardProperties = null;
         this.selectedCellRow = null;
-        this.choiceSetSelectionListener = null;
         this.sdlMsgVersion = internalInterface.getSdlMsgVersion();
         this.loadedCells = loadedCells;
+        this.currentState = SDLPreloadPresentChoicesOperationState.NOT_STARTED;
     }
 
-    public PreloadPresentChoicesOperation(ISdl internalInterface, ChoiceSet choiceSet, InteractionMode mode,
-                                          KeyboardProperties originalKeyboardProperties, KeyboardListener keyboardListener, ChoiceSetSelectionListener choiceSetSelectionListener, Integer cancelID, HashSet<ChoiceCell> loadedCells) {
+    public PreloadPresentChoicesOperation(ISdl internalInterface, FileManager fileManager, ChoiceSet choiceSet, InteractionMode mode,
+                                          KeyboardProperties originalKeyboardProperties, KeyboardListener keyboardListener, Integer cancelID, String displayName, WindowCapability windowCapability,
+                                          Boolean isVROptional, HashSet<ChoiceCell> loadedCells, PreloadChoicesCompletionListener listener) {
         super("PreloadPresentChoiceOperation");
         this.opType = OperationType.PRESENT;
         this.internalInterface = new WeakReference<>(internalInterface);
@@ -119,45 +129,80 @@ public class PreloadPresentChoicesOperation extends Task {
         this.originalKeyboardProperties = originalKeyboardProperties;
         this.keyboardProperties = originalKeyboardProperties;
         this.selectedCellRow = null;
-        this.choiceSetSelectionListener = choiceSetSelectionListener;
         this.sdlMsgVersion = internalInterface.getSdlMsgVersion();
-        this.fileManager = null;
-        this.displayName = null;
-        this.defaultMainWindowCapability = null;
-        this.isVROptional = true;
+        this.fileManager = new WeakReference<>(fileManager);
+        this.displayName = displayName;
+        this.defaultMainWindowCapability = windowCapability;
+        this.isVROptional = isVROptional;
         this.cellsToUpload = null;
-        this.completionListener = null;
+        this.completionListener = listener;
         this.loadedCells = loadedCells;
+        this.currentState = SDLPreloadPresentChoicesOperationState.NOT_STARTED;
     }
 
     @Override
     public void onExecute() {
-        if (this.opType == OperationType.PRELOAD) {
-            DebugTool.logInfo(TAG, "Choice Operation: Executing preload choices operation");
-            updateCellsBasedOnLoadedChoices();
-            preloadCellArtworks(new CompletionListener() {
-                @Override
-                public void onComplete(boolean success) {
-                    preloadCells();
-                }
-            });
-        } else if(this.opType == OperationType.PRESENT) {
-            DebugTool.logInfo(TAG, "Choice Operation: Executing present choice set operation");
-            addListeners();
-            start();
+        if (this.getState() == CANCELED) {
+            return;
         }
+        DebugTool.logInfo(TAG, "Choice Operation: Executing preload choices operation");
+        // Enforce unique cells and remove cells that are already loaded
+        updateCellsBasedOnLoadedChoices();
+        // Start uploading cell artworks, then cells themselves, then determine if we want to present, then update keyboard properties if necessary, then present the choice set, then revert keyboard properties if necessary
+        preloadCellArtworks(new CompletionListener() {
+            @Override
+            public void onComplete(boolean success) {
+                // If some artworks failed to upload, we are still going to try to load the cells
+                if (getState()==CANCELED || !success) {
+                    finishOperation();
+                }
+                preloadCells(new CompletionListener() {
+                    @Override
+                    public void onComplete(boolean success) {
+                        if (getState()==CANCELED || !success) {
+                            finishOperation();
+                        }
+
+                        if (choiceSet == null) {
+                            finishOperation();
+                        }
+                        DebugTool.logInfo(TAG, "Choice Operation: Executing present choice set operation");
+                        updateKeyboardProperties(new CompletionListener() {
+                            @Override
+                            public void onComplete(boolean success) {
+                                if (getState()==CANCELED || !success) {
+                                    finishOperation();
+                                }
+                                presentChoiceSet(new CompletionListener() {
+                                    @Override
+                                    public void onComplete(boolean success) {
+                                        resetKeyboardProperties(new CompletionListener() {
+                                            @Override
+                                            public void onComplete(boolean success) {
+                                                if (!success) {
+                                                    finishOperation();
+                                                }
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
     }
 
     //PRELOAD OPERATION METHODS
     private void preloadCellArtworks(@NonNull final CompletionListener listener) {
-        isRunning = true;
+        this.currentState = SDLPreloadPresentChoicesOperationState.UPLOADING_IMAGES;
 
         List<SdlArtwork> artworksToUpload = artworksToUpload();
 
         if (artworksToUpload.size() == 0) {
             DebugTool.logInfo(TAG, "Choice Preload: No Choice Artworks to upload");
             listener.onComplete(true);
-            isRunning = false;
             return;
         }
 
@@ -168,23 +213,21 @@ public class PreloadPresentChoicesOperation extends Task {
                     if (errors != null && errors.size() > 0) {
                         DebugTool.logError(TAG, "Error uploading choice cell Artworks: " + errors.toString());
                         listener.onComplete(false);
-                        isRunning = false;
                     } else {
                         DebugTool.logInfo(TAG, "Choice Artworks Uploaded");
                         listener.onComplete(true);
-                        isRunning = false;
                     }
                 }
             });
         } else {
             DebugTool.logError(TAG, "File manager is null in choice preload operation");
             listener.onComplete(false);
-            isRunning = false;
         }
     }
 
-    private void preloadCells() {
-        isRunning = true;
+    private void preloadCells(@NonNull final CompletionListener listener) {
+        this.currentState = SDLPreloadPresentChoicesOperationState.UPLOADING_CHOICES;
+
         List<CreateInteractionChoiceSet> choiceRPCs = new ArrayList<>(cellsToUpload.size());
         for (ChoiceCell cell : cellsToUpload) {
             CreateInteractionChoiceSet csCell = choiceFromCell(cell);
@@ -195,8 +238,7 @@ public class PreloadPresentChoicesOperation extends Task {
 
         if (choiceRPCs.size() == 0) {
             DebugTool.logError(TAG, " All Choice cells to send are null, so the choice set will not be shown");
-            completionListener.onComplete(true, loadedCells);
-            isRunning = false;
+            listener.onComplete(false);
             return;
         }
 
@@ -209,11 +251,9 @@ public class PreloadPresentChoicesOperation extends Task {
 
                 @Override
                 public void onFinished() {
-                    isRunning = false;
                     DebugTool.logInfo(TAG, "Finished pre loading choice cells");
-                    completionListener.onComplete(!choiceError, loadedCells);
+                    listener.onComplete(!choiceError);
                     choiceError = false;
-                    PreloadPresentChoicesOperation.super.onFinished();
                 }
 
                 @Override
@@ -228,63 +268,196 @@ public class PreloadPresentChoicesOperation extends Task {
             });
         } else {
             DebugTool.logError(TAG, "Internal Interface null in preload choice operation");
-            isRunning = false;
-            completionListener.onComplete(false, loadedCells);
+            listener.onComplete(!choiceError);
         }
     }
 
-    boolean shouldSendChoiceText() {
-        if (this.displayName != null && this.displayName.equals(DisplayType.GEN3_8_INCH.toString())) {
-            return true;
-        }
-        return templateSupportsTextField(TextFieldName.menuName);
-    }
-
-    boolean shouldSendChoiceSecondaryText() {
-        return templateSupportsTextField(TextFieldName.secondaryText);
-    }
-
-    boolean shouldSendChoiceTertiaryText() {
-        return templateSupportsTextField(TextFieldName.tertiaryText);
-    }
-
-    boolean shouldSendChoicePrimaryImage() {
-        return templateSupportsImageField(ImageFieldName.choiceImage);
-    }
-
-    boolean shouldSendChoiceSecondaryImage() {
-        return templateSupportsImageField(ImageFieldName.choiceSecondaryImage);
-    }
-
-    boolean templateSupportsTextField(TextFieldName name) {
-        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, name);
-    }
-
-    boolean templateSupportsImageField(ImageFieldName name) {
-        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, name);
-    }
-
-    public void setLoadedCells(HashSet<ChoiceCell> loadedCells) {
-        this.loadedCells = loadedCells;
-    }
-
-    public HashSet<ChoiceCell> getLoadedCells() {
-        return this.loadedCells;
-    }
-
-    List<SdlArtwork> artworksToUpload() {
-        List<SdlArtwork> artworksToUpload = new ArrayList<>();
-        for (ChoiceCell cell : cellsToUpload) {
-            if (shouldSendChoicePrimaryImage() && fileManager.get() != null && fileManager.get().fileNeedsUpload(cell.getArtwork())) {
-                artworksToUpload.add(cell.getArtwork());
+    private void updateKeyboardProperties(final CompletionListener listener) {
+        this.currentState = SDLPreloadPresentChoicesOperationState.UPDATING_KEYBOARD_PROPERTIES;
+        if (keyboardListener == null) {
+            if (listener != null) {
+                listener.onComplete(false);
             }
-            if (shouldSendChoiceSecondaryImage() && fileManager.get() != null && fileManager.get().fileNeedsUpload(cell.getSecondaryArtwork())) {
-                artworksToUpload.add(cell.getSecondaryArtwork());
-            }
+            return;
         }
-        return artworksToUpload;
+
+        addListeners();
+
+        if (keyboardListener != null && choiceSet.getCustomKeyboardConfiguration() != null) {
+            keyboardProperties = choiceSet.getCustomKeyboardConfiguration();
+            updatedKeyboardProperties = true;
+        }
+
+        SetGlobalProperties setGlobalProperties = new SetGlobalProperties();
+        setGlobalProperties.setKeyboardProperties(keyboardProperties);
+        setGlobalProperties.setOnRPCResponseListener(new OnRPCResponseListener() {
+            @Override
+            public void onResponse(int correlationId, RPCResponse response) {
+
+                if (!response.getSuccess()) {
+                    if (listener != null) {
+                        listener.onComplete(false);
+                    }
+                    DebugTool.logError(TAG, "Error Setting keyboard properties in present choice set operation");
+                    return;
+                }
+
+                updatedKeyboardProperties = true;
+
+                if (listener != null) {
+                    listener.onComplete(true);
+                }
+                DebugTool.logInfo(TAG, "Success Setting keyboard properties in present choice set operation");
+            }
+        });
+        if (internalInterface.get() != null) {
+            internalInterface.get().sendRPC(setGlobalProperties);
+        } else {
+            DebugTool.logError(TAG, "Internal interface null - present choice set op - choice");
+            listener.onComplete(false);
+        }
     }
 
+    void resetKeyboardProperties(final CompletionListener listener) {
+        this.currentState = SDLPreloadPresentChoicesOperationState.RESETTING_KEYBOARD_PROPERTIES;
+        if (this.keyboardListener == null || this.originalKeyboardProperties == null) {
+            if(listener != null) {
+                listener.onComplete(false);
+                return;
+            }
+        }
+        SetGlobalProperties setProperties = new SetGlobalProperties();
+        setProperties.setKeyboardProperties(this.originalKeyboardProperties);
+        setProperties.setOnRPCResponseListener(new OnRPCResponseListener() {
+            @Override
+            public void onResponse(int correlationId, RPCResponse response) {
+                if (response.getSuccess()) {
+                    updatedKeyboardProperties = false;
+                    DebugTool.logInfo(TAG, "Successfully reset choice keyboard properties to original config");
+                } else {
+                    DebugTool.logError(TAG, "Failed to reset choice keyboard properties to original config " + response.getResultCode() + ", " + response.getInfo());
+                }
+                if (listener != null) {
+                    listener.onComplete(response.getSuccess());
+                }
+            }
+        });
+
+        if (internalInterface.get() != null) {
+            internalInterface.get().sendRPC(setProperties);
+            internalInterface.get().removeOnRPCNotificationListener(FunctionID.ON_KEYBOARD_INPUT, keyboardRPCListener);
+        } else {
+            DebugTool.logError(TAG, "Internal Interface null when finishing choice keyboard reset");
+            listener.onComplete(false);
+        }
+    }
+
+    private void presentChoiceSet(final CompletionListener listener) {
+        this.currentState = SDLPreloadPresentChoicesOperationState.PRESENTING_CHOICES;
+        PerformInteraction pi = getPerformInteraction();
+        pi.setOnRPCResponseListener(new OnRPCResponseListener() {
+            @Override
+            public void onResponse(int correlationId, RPCResponse response) {
+                if (!response.getSuccess()) {
+                    DebugTool.logError(TAG, "Presenting Choice set failed: " + response.getInfo());
+
+                    if (listener != null) {
+                        listener.onComplete(false);
+                    }
+                    finishOperation();
+                    return;
+                }
+
+                PerformInteractionResponse performInteractionResponse = (PerformInteractionResponse) response;
+                setSelectedCellWithId(performInteractionResponse.getChoiceID());
+                selectedTriggerSource = performInteractionResponse.getTriggerSource();
+
+                if (listener != null && selectedCell != null && selectedTriggerSource != null && selectedCellRow != null) {
+                    listener.onComplete(true);
+                }
+            }
+        });
+        if (internalInterface.get() != null) {
+            internalInterface.get().sendRPC(pi);
+        } else {
+            DebugTool.logError(TAG, "Internal Interface null when presenting choice set in operation");
+            listener.onComplete(false);
+        }
+    }
+
+    private void cancelInteraction() {
+        if ((getState() == Task.FINISHED)) {
+            DebugTool.logInfo(TAG, "This operation has already finished so it can not be canceled.");
+            return;
+        } else if (getState() == Task.CANCELED) {
+            DebugTool.logInfo(TAG, "This operation has already been canceled. It will be finished at some point during the operation.");
+            return;
+        } else if ((getState() == Task.IN_PROGRESS)) {
+            if (this.currentState != SDLPreloadPresentChoicesOperationState.PRESENTING_CHOICES) {
+                DebugTool.logInfo(TAG, "Canceling the operation before a present.");
+                this.cancelTask();
+                return;
+            }else if (sdlMsgVersion.getMajorVersion() < 6) {
+                DebugTool.logWarning(TAG, "Canceling a presented choice set is not supported on this head unit");
+                this.cancelTask();
+                return;
+            }
+
+            DebugTool.logInfo(TAG, "Canceling the presented choice set interaction.");
+
+            CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.PERFORM_INTERACTION.getId(), cancelID);
+            cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
+                @Override
+                public void onResponse(int correlationId, RPCResponse response) {
+                    if (response.getSuccess()) {
+                        DebugTool.logInfo(TAG, "Canceled the presented choice set " + ((response.getResultCode() == Result.SUCCESS) ? "successfully" : "unsuccessfully"));
+                    } else {
+                        DebugTool.logError(TAG, "Error canceling the presented choice set: " + correlationId + " with error: " + response.getInfo());
+                    }
+                }
+            });
+
+            if (internalInterface.get() != null) {
+                internalInterface.get().sendRPC(cancelInteraction);
+            } else {
+                DebugTool.logError(TAG, "Internal interface null - could not send cancel interaction for choice set");
+            }
+        } else {
+            DebugTool.logInfo(TAG, "Canceling a choice set that has not yet been sent to Core");
+            this.cancelTask();
+        }
+    }
+
+    //Present Helpers
+    void setSelectedCellWithId(Integer cellId) {
+        if (choiceSet.getChoices() != null && cellId != null) {
+            List<ChoiceCell> cells = choiceSet.getChoices();
+            for (int i = 0; i < cells.size(); i++) {
+                if (cells.get(i).getChoiceId() == cellId) {
+                    selectedCell = cells.get(i);
+                    selectedCellRow = i;
+                    return;
+                }
+            }
+        }
+    }
+
+    PerformInteraction getPerformInteraction() {
+        if (this.choiceSet == null) {
+            return new PerformInteraction();
+        }
+        PerformInteraction pi = new PerformInteraction(choiceSet.getTitle(), presentationMode, getChoiceIds());
+        pi.setInitialPrompt(choiceSet.getInitialPrompt());
+        pi.setHelpPrompt(choiceSet.getHelpPrompt());
+        pi.setTimeoutPrompt(choiceSet.getTimeoutPrompt());
+        pi.setVrHelp(choiceSet.getVrHelpList());
+        pi.setTimeout(choiceSet.getTimeout() * 1000);
+        pi.setInteractionLayout(getLayoutMode());
+        pi.setCancelID(cancelID);
+        return pi;
+    }
+
+    //Choice Uniqueness
     void updateCellsBasedOnLoadedChoices() {
         if (internalInterface.get().getProtocolVersion().getMajor() >= 7 && internalInterface.get().getProtocolVersion().getMinor() >= 1) {
             addUniqueNamesToCells(cellsToUpload);
@@ -382,6 +555,17 @@ public class PreloadPresentChoicesOperation extends Task {
         }
     }
 
+    //Finding Cells
+    private ChoiceCell cellFromChoiceId(int choiceId) {
+        for (ChoiceCell cell : this.cellsToUpload) {
+            if (cell.getChoiceId() == choiceId) {
+                return cell;
+            }
+        }
+        return null;
+    }
+
+    //Assembling Choice RPCs
     private CreateInteractionChoiceSet choiceFromCell(ChoiceCell cell) {
 
         List<String> vrCommands;
@@ -422,49 +606,30 @@ public class PreloadPresentChoicesOperation extends Task {
         return new CreateInteractionChoiceSet(choice.getChoiceID(), Collections.singletonList(choice));
     }
 
-    private ChoiceCell cellFromChoiceId(int choiceId) {
-        for (ChoiceCell cell : this.cellsToUpload) {
-            if (cell.getChoiceId() == choiceId) {
-                return cell;
-            }
+    boolean shouldSendChoiceText() {
+        if (this.displayName != null && this.displayName.equals(DisplayType.GEN3_8_INCH.toString())) {
+            return true;
         }
-        return null;
+        return templateSupportsTextField(TextFieldName.menuName);
     }
 
-    //PRESENT OPERATION METHODS
-    private void start() {
-        if (getState() == Task.CANCELED) {
-            finishOperation();
-            return;
-        }
-
-        HashSet<ChoiceCell> choiceSetCells = new HashSet<>(this.choiceSet.getChoices());
-        if (!choiceSetCells.containsAll(this.loadedCells)) {
-            this.choiceSetSelectionListener.onError("Choices not available for presentation");
-            finishOperation();
-            return;
-        }
-
-        updateChoiceSetChoicesId();
-
-        // Check if we're using a keyboard (searchable) choice set and setup keyboard properties if we need to
-        if (keyboardListener != null && choiceSet.getCustomKeyboardConfiguration() != null) {
-            keyboardProperties = choiceSet.getCustomKeyboardConfiguration();
-            updatedKeyboardProperties = true;
-        }
-
-        updateKeyboardProperties(new CompletionListener() {
-            @Override
-            public void onComplete(boolean success) {
-                if (getState() == Task.CANCELED) {
-                    finishOperation();
-                    return;
-                }
-                presentChoiceSet();
-            }
-        });
+    boolean shouldSendChoiceSecondaryText() {
+        return templateSupportsTextField(TextFieldName.secondaryText);
     }
 
+    boolean shouldSendChoiceTertiaryText() {
+        return templateSupportsTextField(TextFieldName.tertiaryText);
+    }
+
+    boolean shouldSendChoicePrimaryImage() {
+        return templateSupportsImageField(ImageFieldName.choiceImage);
+    }
+
+    boolean shouldSendChoiceSecondaryImage() {
+        return templateSupportsImageField(ImageFieldName.choiceSecondaryImage);
+    }
+
+    //SDL Notifications
     private void addListeners() {
 
         keyboardRPCListener = new OnRPCNotificationListener() {
@@ -520,59 +685,33 @@ public class PreloadPresentChoicesOperation extends Task {
         }
     }
 
-    void updateChoiceSetChoicesId() {
-        for (ChoiceCell cell : this.choiceSet.getChoices()) {
-            for (ChoiceCell loadedCell : this.loadedCells) {
-                if (loadedCell.equals(cell)) {
-                    cell.setChoiceId(loadedCell.getChoiceId());
-                }
-            }
-        }
+    boolean templateSupportsTextField(TextFieldName name) {
+        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, name);
     }
 
-    private void presentChoiceSet() {
-        PerformInteraction pi = getPerformInteraction();
-        pi.setOnRPCResponseListener(new OnRPCResponseListener() {
-            @Override
-            public void onResponse(int correlationId, RPCResponse response) {
-                if (!response.getSuccess()) {
-                    DebugTool.logError(TAG, "Presenting Choice set failed: " + response.getInfo());
-
-                    if (choiceSetSelectionListener != null) {
-                        choiceSetSelectionListener.onError(response.getInfo());
-                    }
-                    finishOperation();
-                    return;
-                }
-
-                PerformInteractionResponse performInteractionResponse = (PerformInteractionResponse) response;
-                setSelectedCellWithId(performInteractionResponse.getChoiceID());
-                selectedTriggerSource = performInteractionResponse.getTriggerSource();
-
-                if (choiceSetSelectionListener != null && selectedCell != null && selectedTriggerSource != null && selectedCellRow != null) {
-                    choiceSetSelectionListener.onChoiceSelected(selectedCell, selectedTriggerSource, selectedCellRow);
-                }
-
-                finishOperation();
-            }
-        });
-        if (internalInterface.get() != null) {
-            internalInterface.get().sendRPC(pi);
-        } else {
-            DebugTool.logError(TAG, "Internal Interface null when presenting choice set in operation");
-        }
+    boolean templateSupportsImageField(ImageFieldName name) {
+        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, name);
     }
 
-    PerformInteraction getPerformInteraction() {
-        PerformInteraction pi = new PerformInteraction(choiceSet.getTitle(), presentationMode, getChoiceIds());
-        pi.setInitialPrompt(choiceSet.getInitialPrompt());
-        pi.setHelpPrompt(choiceSet.getHelpPrompt());
-        pi.setTimeoutPrompt(choiceSet.getTimeoutPrompt());
-        pi.setVrHelp(choiceSet.getVrHelpList());
-        pi.setTimeout(choiceSet.getTimeout() * 1000);
-        pi.setInteractionLayout(getLayoutMode());
-        pi.setCancelID(cancelID);
-        return pi;
+    public void setLoadedCells(HashSet<ChoiceCell> loadedCells) {
+        this.loadedCells = loadedCells;
+    }
+
+    public HashSet<ChoiceCell> getLoadedCells() {
+        return this.loadedCells;
+    }
+
+    List<SdlArtwork> artworksToUpload() {
+        List<SdlArtwork> artworksToUpload = new ArrayList<>();
+        for (ChoiceCell cell : cellsToUpload) {
+            if (shouldSendChoicePrimaryImage() && fileManager.get() != null && fileManager.get().fileNeedsUpload(cell.getArtwork())) {
+                artworksToUpload.add(cell.getArtwork());
+            }
+            if (shouldSendChoiceSecondaryImage() && fileManager.get() != null && fileManager.get().fileNeedsUpload(cell.getSecondaryArtwork())) {
+                artworksToUpload.add(cell.getSecondaryArtwork());
+            }
+        }
+        return artworksToUpload;
     }
 
     LayoutMode getLayoutMode() {
@@ -594,90 +733,18 @@ public class PreloadPresentChoicesOperation extends Task {
         return choiceIds;
     }
 
-    void setSelectedCellWithId(Integer cellId) {
-        if (choiceSet.getChoices() != null && cellId != null) {
-            List<ChoiceCell> cells = choiceSet.getChoices();
-            for (int i = 0; i < cells.size(); i++) {
-                if (cells.get(i).getChoiceId() == cellId) {
-                    selectedCell = cells.get(i);
-                    selectedCellRow = i;
-                    return;
-                }
-            }
-        }
-    }
-
-    private void updateKeyboardProperties(final CompletionListener listener) {
-        if (keyboardProperties == null) {
-            if (listener != null) {
-                listener.onComplete(false);
-            }
-            return;
-        }
-        SetGlobalProperties setGlobalProperties = new SetGlobalProperties();
-        setGlobalProperties.setKeyboardProperties(keyboardProperties);
-        setGlobalProperties.setOnRPCResponseListener(new OnRPCResponseListener() {
-            @Override
-            public void onResponse(int correlationId, RPCResponse response) {
-
-                if (!response.getSuccess()) {
-                    if (listener != null) {
-                        listener.onComplete(false);
-                    }
-                    DebugTool.logError(TAG, "Error Setting keyboard properties in present choice set operation");
-                    return;
-                }
-
-                updatedKeyboardProperties = true;
-
-                if (listener != null) {
-                    listener.onComplete(true);
-                }
-                DebugTool.logInfo(TAG, "Success Setting keyboard properties in present choice set operation");
-            }
-        });
-        if (internalInterface.get() != null) {
-            internalInterface.get().sendRPC(setGlobalProperties);
-        } else {
-            DebugTool.logError(TAG, "Internal interface null - present choice set op - choice");
-        }
-    }
-
-    private void cancelInteraction() {
-        if ((getState() == Task.FINISHED)) {
-            DebugTool.logInfo(TAG, "This operation has already finished so it can not be canceled.");
-            return;
-        } else if (getState() == Task.CANCELED) {
-            DebugTool.logInfo(TAG, "This operation has already been canceled. It will be finished at some point during the operation.");
-            return;
-        } else if ((getState() == Task.IN_PROGRESS)) {
-            if (sdlMsgVersion.getMajorVersion() < 6) {
-                DebugTool.logWarning(TAG, "Canceling a presented choice set is not supported on this head unit");
-                return;
-            }
-
-            DebugTool.logInfo(TAG, "Canceling the presented choice set interaction.");
-
-            CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.PERFORM_INTERACTION.getId(), cancelID);
-            cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
-                @Override
-                public void onResponse(int correlationId, RPCResponse response) {
-                    DebugTool.logInfo(TAG, "Canceled the presented choice set " + ((response.getResultCode() == Result.SUCCESS) ? "successfully" : "unsuccessfully"));
-                }
-            });
-
-            if (internalInterface.get() != null) {
-                internalInterface.get().sendRPC(cancelInteraction);
-            } else {
-                DebugTool.logError(TAG, "Internal interface null - could not send cancel interaction for choice set");
-            }
-        } else {
-            DebugTool.logInfo(TAG, "Canceling a choice set that has not yet been sent to Core");
-            this.cancelTask();
-        }
-    }
-
     void finishOperation() {
+        this.currentState = SDLPreloadPresentChoicesOperationState.FINISHING;
+
+        if (this.completionListener != null) {
+            this.completionListener.onComplete(false, loadedCells);
+        }
+
+        if (this.choiceSet == null || this.choiceSet.getChoiceSetSelectionListener() == null) {
+            DebugTool.logWarning(TAG, "");
+        }
+
+
         if (updatedKeyboardProperties) {
             // We need to reset the keyboard properties
             SetGlobalProperties setGlobalProperties = new SetGlobalProperties();

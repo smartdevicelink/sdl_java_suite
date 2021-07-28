@@ -211,7 +211,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         updateIdsOnChoices(choicesToUpload);
 
         if (fileManager.get() != null) {
-            PreloadPresentChoicesOperation preloadChoicesOperation = new PreloadPresentChoicesOperation(internalInterface, fileManager.get(), displayName, defaultMainWindowCapability, isVROptional, choicesToUpload, new PreloadChoicesCompletionListener() {
+            PreloadPresentChoicesOperation preloadChoicesOperation = new PreloadPresentChoicesOperation(internalInterface, fileManager.get(), displayName, defaultMainWindowCapability, isVROptional, choicesToUpload, this.preloadedChoices, new PreloadChoicesCompletionListener() {
                 @Override
                 public void onComplete(boolean success, HashSet<ChoiceCell> loadedCells) {
                     preloadedChoices = loadedCells;
@@ -223,7 +223,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                         listener.onComplete(success);
                     }
                 }
-            }, this.preloadedChoices);
+            });
 
             transactionQueue.add(preloadChoicesOperation, false);
         } else {
@@ -322,17 +322,31 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         PreloadPresentChoicesOperation presentOp;
 
-        if (keyboardListener == null) {
-            // Non-searchable choice set
-            DebugTool.logInfo(TAG, "Creating non-searchable choice set");
-            presentOp = new PreloadPresentChoicesOperation(internalInterface, choiceSet, mode, null, null, privateChoiceListener, getNextCancelId(), this.preloadedChoices);
-        } else {
-            // Searchable choice set
-            DebugTool.logInfo(TAG, "Creating searchable choice set");
-            presentOp = new PreloadPresentChoicesOperation(internalInterface, choiceSet, mode, keyboardConfiguration, keyboardListener, privateChoiceListener, getNextCancelId(), this.preloadedChoices);
-        }
+        PreloadChoicesCompletionListener listener = new PreloadChoicesCompletionListener() {
+            @Override
+            public void onComplete(boolean success, HashSet<ChoiceCell> loadedChoiceCells) {
 
-        transactionQueue.add(presentOp, false);
+            }
+        };
+
+        if (fileManager.get() != null) {
+            if (keyboardListener == null) {
+                // Non-searchable choice set
+                DebugTool.logInfo(TAG, "Creating non-searchable choice set");
+                // public PreloadPresentChoicesOperation(ISdl internalInterface, FileManager fileManager, ChoiceSet choiceSet, InteractionMode mode,
+                //                                          KeyboardProperties originalKeyboardProperties, KeyboardListener keyboardListener, Integer cancelID, String displayName, WindowCapability windowCapability,
+                //                                          Boolean isVROptional, HashSet<ChoiceCell> loadedCells, PreloadChoicesCompletionListener listener) {
+                presentOp = new PreloadPresentChoicesOperation(internalInterface, fileManager.get(), choiceSet, mode, null, null, getNextCancelId(), displayName, defaultMainWindowCapability, isVROptional, this.preloadedChoices, listener);
+            } else {
+                // Searchable choice set
+                DebugTool.logInfo(TAG, "Creating searchable choice set");
+                presentOp = new PreloadPresentChoicesOperation(internalInterface, this.fileManager.get(), choiceSet, mode, keyboardConfiguration, keyboardListener, getNextCancelId(), displayName, defaultMainWindowCapability, isVROptional, this.preloadedChoices, listener);
+            }
+
+            transactionQueue.add(presentOp, false);
+        } else {
+            DebugTool.logError(TAG, "File Manager was null in preload choice operation");
+        }
     }
 
     /**
