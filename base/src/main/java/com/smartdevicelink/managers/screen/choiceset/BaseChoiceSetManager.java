@@ -297,7 +297,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         }
 
         // Pass back the information to the developer
-        ChoiceSetSelectionListener privateChoiceListener = new ChoiceSetSelectionListener() {
+        ChoiceSetSelectionListener listener = new ChoiceSetSelectionListener() {
             @Override
             public void onChoiceSelected(ChoiceCell choiceCell, TriggerSource triggerSource, int rowIndex) {
                 if (choiceSet != null && choiceSet.getChoiceSetSelectionListener() != null) {
@@ -322,13 +322,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         PreloadPresentChoicesOperation presentOp;
 
-        PreloadChoicesCompletionListener listener = new PreloadChoicesCompletionListener() {
-            @Override
-            public void onComplete(boolean success, HashSet<ChoiceCell> loadedChoiceCells) {
-
-            }
-        };
-
         if (fileManager.get() != null) {
             if (keyboardListener == null) {
                 // Non-searchable choice set
@@ -336,11 +329,11 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                 // public PreloadPresentChoicesOperation(ISdl internalInterface, FileManager fileManager, ChoiceSet choiceSet, InteractionMode mode,
                 //                                          KeyboardProperties originalKeyboardProperties, KeyboardListener keyboardListener, Integer cancelID, String displayName, WindowCapability windowCapability,
                 //                                          Boolean isVROptional, HashSet<ChoiceCell> loadedCells, PreloadChoicesCompletionListener listener) {
-                presentOp = new PreloadPresentChoicesOperation(internalInterface, fileManager.get(), choiceSet, mode, null, null, getNextCancelId(), displayName, defaultMainWindowCapability, isVROptional, this.preloadedChoices, listener);
+                presentOp = new PreloadPresentChoicesOperation(internalInterface, fileManager.get(), choiceSet, mode, null, null, getNextCancelId(), displayName, defaultMainWindowCapability, isVROptional, this.preloadedChoices, null, listener);
             } else {
                 // Searchable choice set
                 DebugTool.logInfo(TAG, "Creating searchable choice set");
-                presentOp = new PreloadPresentChoicesOperation(internalInterface, this.fileManager.get(), choiceSet, mode, keyboardConfiguration, keyboardListener, getNextCancelId(), displayName, defaultMainWindowCapability, isVROptional, this.preloadedChoices, listener);
+                presentOp = new PreloadPresentChoicesOperation(internalInterface, this.fileManager.get(), choiceSet, mode, keyboardConfiguration, keyboardListener, getNextCancelId(), displayName, defaultMainWindowCapability, isVROptional, this.preloadedChoices, null, listener);
             }
 
             transactionQueue.add(presentOp, false);

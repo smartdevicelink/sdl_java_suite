@@ -60,6 +60,7 @@ public class PreloadPresentChoicesOperation extends Task {
     private final String displayName;
     private final ArrayList<ChoiceCell> cellsToUpload;
     private final PreloadChoicesCompletionListener completionListener;
+    private final ChoiceSetSelectionListener selectionListener;
     private final boolean isVROptional;
     private boolean choiceError = false;
     private HashSet<ChoiceCell> loadedCells;
@@ -108,11 +109,12 @@ public class PreloadPresentChoicesOperation extends Task {
         this.sdlMsgVersion = internalInterface.getSdlMsgVersion();
         this.loadedCells = loadedCells;
         this.currentState = SDLPreloadPresentChoicesOperationState.NOT_STARTED;
+        this.selectionListener = null;
     }
 
     public PreloadPresentChoicesOperation(ISdl internalInterface, FileManager fileManager, ChoiceSet choiceSet, InteractionMode mode,
                                           KeyboardProperties originalKeyboardProperties, KeyboardListener keyboardListener, Integer cancelID, String displayName, WindowCapability windowCapability,
-                                          Boolean isVROptional, HashSet<ChoiceCell> loadedCells, PreloadChoicesCompletionListener listener) {
+                                          Boolean isVROptional, HashSet<ChoiceCell> loadedCells, PreloadChoicesCompletionListener preloadListener, ChoiceSetSelectionListener listener) {
         super("PreloadPresentChoiceOperation");
         this.opType = OperationType.PRESENT;
         this.internalInterface = new WeakReference<>(internalInterface);
@@ -135,7 +137,8 @@ public class PreloadPresentChoicesOperation extends Task {
         this.defaultMainWindowCapability = windowCapability;
         this.isVROptional = isVROptional;
         this.cellsToUpload = null;
-        this.completionListener = listener;
+        this.completionListener = preloadListener;
+        this.selectionListener = listener;
         this.loadedCells = loadedCells;
         this.currentState = SDLPreloadPresentChoicesOperationState.NOT_STARTED;
     }
@@ -361,6 +364,9 @@ public class PreloadPresentChoicesOperation extends Task {
                 if (!response.getSuccess()) {
                     DebugTool.logError(TAG, "Presenting Choice set failed: " + response.getInfo());
 
+                    if (selectionListener != null) {
+                        selectionListener.onError(response.getInfo());
+                    }
                     if (listener != null) {
                         listener.onComplete(false);
                     }
@@ -372,8 +378,11 @@ public class PreloadPresentChoicesOperation extends Task {
                 setSelectedCellWithId(performInteractionResponse.getChoiceID());
                 selectedTriggerSource = performInteractionResponse.getTriggerSource();
 
-                if (listener != null && selectedCell != null && selectedTriggerSource != null && selectedCellRow != null) {
-                    listener.onComplete(true);
+                if (selectionListener != null && selectedCell != null && selectedTriggerSource != null && selectedCellRow != null) {
+                    selectionListener.onChoiceSelected(selectedCell, selectedTriggerSource, selectedCellRow);
+                    if (listener != null) {
+                        listener.onComplete(true);
+                    }
                 }
             }
         });
@@ -381,7 +390,12 @@ public class PreloadPresentChoicesOperation extends Task {
             internalInterface.get().sendRPC(pi);
         } else {
             DebugTool.logError(TAG, "Internal Interface null when presenting choice set in operation");
-            listener.onComplete(false);
+            if (selectionListener != null) {
+                selectionListener.onError("Internal Interface null");
+            }
+            if (listener != null) {
+                listener.onComplete(false);
+            }
         }
     }
 
