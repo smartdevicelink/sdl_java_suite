@@ -165,6 +165,7 @@ public class PreloadPresentChoicesOperation extends Task {
                             return;
                         }
                         DebugTool.logInfo(TAG, "Choice Operation: Executing present choice set operation");
+
                         updateKeyboardProperties(new CompletionListener() {
                             @Override
                             public void onComplete(boolean success) {
@@ -276,7 +277,7 @@ public class PreloadPresentChoicesOperation extends Task {
         this.currentState = SDLPreloadPresentChoicesOperationState.UPDATING_KEYBOARD_PROPERTIES;
         if (keyboardListener == null) {
             if (listener != null) {
-                listener.onComplete(false);
+                listener.onComplete(true);
             }
             return;
         }

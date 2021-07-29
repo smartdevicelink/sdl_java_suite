@@ -317,9 +317,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             if (keyboardListener == null) {
                 // Non-searchable choice set
                 DebugTool.logInfo(TAG, "Creating non-searchable choice set");
-                // public PreloadPresentChoicesOperation(ISdl internalInterface, FileManager fileManager, ChoiceSet choiceSet, InteractionMode mode,
-                //                                          KeyboardProperties originalKeyboardProperties, KeyboardListener keyboardListener, Integer cancelID, String displayName, WindowCapability windowCapability,
-                //                                          Boolean isVROptional, HashSet<ChoiceCell> loadedCells, PreloadChoicesCompletionListener listener) {
                 presentOp = new PreloadPresentChoicesOperation(internalInterface, fileManager.get(), choiceSet, mode, null, null, getNextCancelId(), displayName, defaultMainWindowCapability, isVROptional, this.preloadedChoices, null, listener);
             } else {
                 // Searchable choice set
