@@ -239,7 +239,7 @@ public class PreloadPresentChoicesOperation extends Task {
 
         if (choiceRPCs.size() == 0) {
             DebugTool.logError(TAG, " All Choice cells to send are null, so the choice set will not be shown");
-            listener.onComplete(false);
+            listener.onComplete(true);
             return;
         }
 
@@ -323,7 +323,7 @@ public class PreloadPresentChoicesOperation extends Task {
         this.currentState = SDLPreloadPresentChoicesOperationState.RESETTING_KEYBOARD_PROPERTIES;
         if (this.keyboardListener == null || this.originalKeyboardProperties == null) {
             if(listener != null) {
-                listener.onComplete(false);
+                listener.onComplete(true);
                 return;
             }
         }
