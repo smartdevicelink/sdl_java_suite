@@ -204,11 +204,13 @@ public class SdlDeviceListener {
             SdlDeviceListener sdlListener = this.provider.get();
             VehicleType vehicleType = null;
             if (packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_ACK) {
-                //parse vehicle Type info from connected system
+                int hashID;
                 if (packet.getVersion() >= 5) {
                     vehicleType = getVehicleType(packet);
+                    hashID = (Integer) packet.getTag(ControlFrameTags.RPC.StartServiceACK.HASH_ID);
+                } else {
+                    hashID = BitConverter.intFromByteArray(packet.getPayload(), 0);
                 }
-                int hashID = BitConverter.intFromByteArray(packet.getPayload(), 0);
                 byte[] stopService = SdlPacketFactory.createEndSession(SessionType.RPC, (byte)packet.getSessionId(), 0, (byte)packet.getVersion(), hashID).constructPacket();
                 if (sdlListener.bluetoothTransport != null && sdlListener.bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
                     sdlListener.bluetoothTransport.write(stopService, 0, stopService.length);
