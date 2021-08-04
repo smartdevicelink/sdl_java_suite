@@ -81,31 +81,6 @@ public class BinaryQueryHeaderTests {
     }
 
     @Test
-    public void testErrorCodeAssemble() {
-        BinaryQueryHeader bqh = new BinaryQueryHeader();
-        bqh.setCorrelationID(123);
-        bqh.setQueryID(QueryID.SEND_INTERNAL_ERROR.getValue());
-        bqh.setQueryType(QUERY_TYPE_NOTIFICATION);
-        bqh.setBulkData(null);
-        bqh.setErrorCode(2);
-        bqh.setJsonSize(0);
-
-        byte[] bqhBytes = bqh.assembleHeaderBytes();
-        assertNotNull(bqhBytes);
-
-        BinaryQueryHeader parsedBqh = BinaryQueryHeader.parseBinaryQueryHeader(bqhBytes);
-        assertNotNull(parsedBqh);
-
-        assertEquals(bqh.getCorrelationID(), parsedBqh.getCorrelationID());
-        assertEquals(bqh.getQueryID(), parsedBqh.getQueryID());
-        assertEquals(bqh.getQueryType(), parsedBqh.getQueryType());
-        assertEquals(bqh.getBulkData(), parsedBqh.getBulkData());
-        assertEquals(bqh.getJsonData(), parsedBqh.getJsonData());
-        assertEquals(bqh.getJsonSize(), parsedBqh.getJsonSize());
-        assertEquals(bqh.getErrorCode(), parsedBqh.getErrorCode());
-    }
-
-    @Test
     public void testJsonSetException() {
         try {
             BinaryQueryHeader bqh = createDummyBqh();
