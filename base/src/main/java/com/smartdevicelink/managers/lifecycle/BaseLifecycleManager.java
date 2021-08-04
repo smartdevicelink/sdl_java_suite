@@ -952,6 +952,10 @@ abstract class BaseLifecycleManager {
 
             if (systemInfo != null && lifecycleListener != null) {
                 didCheckSystemInfo = true;
+                String address = session.getBluetoothMacAddress();
+                if (address != null && !address.isEmpty()) {
+                    saveVehicleType(address, systemInfo.getVehicleType());
+                }
                 boolean validSystemInfo = lifecycleListener.onSystemInfoReceived(systemInfo);
                 if (!validSystemInfo) {
                     DebugTool.logWarning(TAG, "Disconnecting from head unit, the system info was not accepted.");
@@ -959,10 +963,6 @@ abstract class BaseLifecycleManager {
                     clean();
                     onClose("System not supported", null, SdlDisconnectedReason.DEFAULT);
                     return;
-                }
-                String address = session.getBluetoothMacAddress();
-                if (address != null && !address.isEmpty()) {
-                    saveVehicleType(address, systemInfo.getVehicleType());
                 }
                 //If the vehicle is acceptable, init security lib
                 setSecurityLibraryIfAvailable(systemInfo.getVehicleType());
