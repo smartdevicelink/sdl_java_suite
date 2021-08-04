@@ -416,6 +416,11 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
         return sdlProtocol != null && sdlProtocol.isTransportForServiceAvailable(sessionType);
     }
 
+    /**
+     * This method will retrieve the Bluetooth Mac address from the transport record.
+     *
+     * @return a string containing the Bluetooth Mac address of the connected vehicle
+     */
     public String getBluetoothMacAddress() {
         if (this.sdlProtocol != null) {
             return this.sdlProtocol.getBluetoothMacAddress();

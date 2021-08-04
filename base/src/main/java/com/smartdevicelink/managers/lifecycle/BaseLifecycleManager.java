@@ -960,6 +960,10 @@ abstract class BaseLifecycleManager {
                     onClose("System not supported", null, SdlDisconnectedReason.DEFAULT);
                     return;
                 }
+                String address = session.getBluetoothMacAddress();
+                if (address != null && !address.isEmpty()) {
+                    saveVehicleType(address, systemInfo.getVehicleType());
+                }
                 //If the vehicle is acceptable, init security lib
                 setSecurityLibraryIfAvailable(systemInfo.getVehicleType());
             }
@@ -1331,8 +1335,15 @@ abstract class BaseLifecycleManager {
 
     abstract void cycle(SdlDisconnectedReason disconnectedReason);
 
+    /**
+     * Base implementation does nothing and assumes it is not necessary. This method should be
+     * overridden in children classes that need to save this information.
+     *
+     * @param address   a string containing the Bluetooth Mac address of the connected vehicle.
+     * @param type      a RPCStruct that describes the type of vehicle the mobile phone is connected with.
+     */
     void saveVehicleType(String address, VehicleType type){
-
+        //Base implementation does nothing
     }
 
     void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {

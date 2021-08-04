@@ -190,6 +190,9 @@ public class SdlDeviceListener {
             }
         }
 
+        /**
+         * This method will send Start Service for RPC, to know vehicle type info by connected bluetooth transport.
+         */
         public void sendStartService() {
             SdlDeviceListener sdlListener = this.provider.get();
             SdlPacket serviceProbe = SdlPacketFactory.createStartSession(SessionType.RPC, 0x00, (byte)0x01, (byte)0x00, false);
@@ -200,6 +203,11 @@ public class SdlDeviceListener {
             }
         }
 
+        /**
+         * This method will read available info in StartServiceACK and then end the RPC session.
+         *
+         * @param packet an info available in StartServiceACK
+         */
         public void onPacketRead(SdlPacket packet) {
             SdlDeviceListener sdlListener = this.provider.get();
             VehicleType vehicleType = null;
@@ -219,6 +227,12 @@ public class SdlDeviceListener {
             }
         }
 
+        /**
+         * This method will retrieve vehicle type from the StartServiceACK.
+         *
+         * @param packet an info available in StartServiceACK
+         * @return vehicle type if info available in StartServiceACK or null
+         */
         private VehicleType getVehicleType(SdlPacket packet) {
             String make = (String) packet.getTag(ControlFrameTags.RPC.StartServiceACK.MAKE);
             String model = (String) packet.getTag(ControlFrameTags.RPC.StartServiceACK.MODEL);
@@ -237,6 +251,11 @@ public class SdlDeviceListener {
             }
         }
 
+        /**
+         * Notify connection about vehicle type.
+         *
+         * @param vehicleType the information about the type of vehicle
+         */
         public void notifyConnection(VehicleType vehicleType) {
             SdlDeviceListener sdlListener = this.provider.get();
             sdlListener.setSDLConnectedStatus(sdlListener.contextWeakReference.get(), sdlListener.connectedDevice.getAddress(), true);

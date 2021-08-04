@@ -190,6 +190,12 @@ public class SdlAppInfo {
         return builder.toString();
     }
 
+    /**
+     * Retrieves the list of vehicle types that are set in the xml file.
+     *
+     * @param parser The xml parsing interface for the vehicle types xml file.
+     * @return The list of vehicle types.
+     */
     public static List<VehicleType> deserializeVehicleMake(XmlResourceParser parser) {
         List<VehicleType> vehicleMakesList = new ArrayList<VehicleType>();
         try {
@@ -229,6 +235,13 @@ public class SdlAppInfo {
         return vehicleMakesList;
     }
 
+    /**
+     * Check to see if a vehicle type is supported.
+     *
+     * @param supportedVehicleList the list of supported vehicle types.
+     * @param connectedVehicle the vehicle type to check.
+     * @return true if vehicle type is supported.
+     */
     public static boolean checkIfVehicleSupported(List<VehicleType> supportedVehicleList, VehicleType connectedVehicle) {
         if (supportedVehicleList == null || supportedVehicleList.isEmpty() || connectedVehicle == null || connectedVehicle.getStore().isEmpty()) {
             return true;
@@ -269,6 +282,11 @@ public class SdlAppInfo {
         return false;
     }
 
+    /**
+     * Gets app's supported vehicle types.
+     *
+     * @return List<VehicleType> a list representing the array of supported vehicle types.
+     */
     public List<VehicleType> getVehicleMakesList() {
         return vehicleMakesList;
     }

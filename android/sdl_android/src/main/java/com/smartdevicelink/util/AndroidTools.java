@@ -72,7 +72,7 @@ import java.util.List;
 public class AndroidTools {
 
     private static final String SDL_DEVICE_VEHICLES_PREFS = "sdl.device.vehicles";
-    private static final String TAG = "VehicleTypeHolder";
+    private static final String TAG = "AndroidTools";
     private static final Object LOCK = new Object();
 
     /**
@@ -183,7 +183,7 @@ public class AndroidTools {
             List<SdlAppInfo> sdlAppInfoListVehicleType = new ArrayList<>();
 
             for (SdlAppInfo appInformation : sdlAppInfoList) {
-                if (appInformation.routerServiceVersion < 14) {
+                if (appInformation.routerServiceVersion < 15) {
                     sdlAppInfoListVehicleType.add(appInformation);
                 } else if (SdlAppInfo.checkIfVehicleSupported(appInformation.vehicleMakesList, type)) {
                     sdlAppInfoListVehicleType.add(appInformation);
@@ -269,6 +269,13 @@ public class AndroidTools {
         return false;
     }
 
+    /**
+     * Saves the mac address along with vehicle details into user's shared prefs.
+     *
+     * @param context a context instance to obtain the shared preferences.
+     * @param vehicleType a RPCStruct that describes the type of vehicle the mobile phone is connected with.
+     * @param address a string containing the Bluetooth Mac address of the connected vehicle.
+     */
     public static void saveVehicleType(Context context, VehicleType vehicleType, String address) {
         synchronized (LOCK) {
 
@@ -288,6 +295,13 @@ public class AndroidTools {
         }
     }
 
+    /**
+     * Retrieves the vehicle details by the mac address of the connected vehicle.
+     *
+     * @param context a context instance to obtain the shared preferences.
+     * @param address a string containing the Bluetooth Mac address of the connected vehicle.
+     * @return The Hashtable to be used to construct VehicleType.
+     */
     public static Hashtable<String, Object> getVehicleTypeFromPrefs(Context context, String address) {
         synchronized (LOCK) {
             try {
@@ -307,6 +321,14 @@ public class AndroidTools {
         }
     }
 
+    /**
+     * Retrieves the list of vehicle types that are set in the manifest.
+     *
+     * @param context a context to access Android system services through.
+     * @param className a class object that indicates service for the vehicle data in the manifest.
+     * @param manifestFieldId a string resources id that indicates an unique name for the vehicle data in the manifest.
+     * @return The list of vehicle types, or null if an error occurred or field was not found.
+     */
     public static List<VehicleType> getVehicleTypesFromManifest(Context context, Class<?> className, int manifestFieldId) {
         XmlResourceParser parser = null;
         try {
@@ -328,7 +350,14 @@ public class AndroidTools {
         return SdlAppInfo.deserializeVehicleMake(parser);
     }
 
-    public static boolean isSupportableVehicleType(List<VehicleType> supportedList, VehicleType typeToCheck) {
+    /**
+     * Check to see if a vehicle type is supported.
+     *
+     * @param supportedList the list of supported vehicle types.
+     * @param typeToCheck the vehicle type to check.
+     * @return true if vehicle type is supported.
+     */
+    public static boolean isSupportedVehicleType(List<VehicleType> supportedList, VehicleType typeToCheck) {
         if (!SdlAppInfo.checkIfVehicleSupported(supportedList, typeToCheck)) {
             DebugTool.logError(TAG, "Vehicle type is NOT supportable by current package");
             DebugTool.logError(TAG, "Received VD: " + typeToCheck.getStore().toString());

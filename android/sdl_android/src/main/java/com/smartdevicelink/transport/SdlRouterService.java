@@ -1103,7 +1103,7 @@ public class SdlRouterService extends Service {
         ComponentName name = new ComponentName(this, this.getClass());
         SdlAppInfo currentAppInfo = null;
 
-        List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(getApplicationContext(), new SdlAppInfo.BestRouterComparator(), receivedVehicleType);
+        List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(getApplicationContext(), new SdlAppInfo.BestRouterComparator(), null);
         for (SdlAppInfo appInfo : sdlAppInfoList) {
             if (appInfo.getRouterServiceComponentName().equals(name)) {
                 currentAppInfo = appInfo;
@@ -1149,7 +1149,7 @@ public class SdlRouterService extends Service {
      * The method will attempt to start up the next router service in line based on the sorting criteria of best router service.
      */
     protected void deployNextRouterService() {
-        List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(getApplicationContext(), new SdlAppInfo.BestRouterComparator(), receivedVehicleType);
+        List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(getApplicationContext(), new SdlAppInfo.BestRouterComparator(), null);
         if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty()) {
             ComponentName name = new ComponentName(this, this.getClass());
             SdlAppInfo info;
@@ -1256,7 +1256,8 @@ public class SdlRouterService extends Service {
                     (HashMap<String, Object>) intent.getSerializableExtra(TransportConstants.VEHICLE_INFO)
             );
         }
-        if (firstStart) { // So we only run logic from this classes onCreate once
+        // Only trusting the first intent received to start the RouterService and run initial checks to avoid a case where an app could send incorrect data after the spp connection has started.
+        if (firstStart) {
             firstStart = false;
             if (!initCheck()) { // Run checks on process and permissions
                 deployNextRouterService();
