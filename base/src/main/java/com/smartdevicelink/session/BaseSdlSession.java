@@ -41,7 +41,10 @@ import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlProtocolBase;
+import com.smartdevicelink.protocol.SecurityQuery;
 import com.smartdevicelink.protocol.enums.ControlFrameTags;
+import com.smartdevicelink.protocol.enums.QueryID;
+import com.smartdevicelink.protocol.enums.QueryType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.VehicleType;
@@ -147,11 +150,11 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
     }
 
 
-    public void sendMessage(ProtocolMessage msg) {
+    public void sendMessage(ProtocolMessage msg, SecurityQuery securityQuery) {
         if (sdlProtocol == null) {
             return;
         }
-        sdlProtocol.sendMessage(msg);
+        sdlProtocol.sendMessage(msg, securityQuery);
     }
 
     public TransportType getCurrentTransportType() {
@@ -193,13 +196,18 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
 
         byte[] dataToRead = new byte[4096];
 
-        Integer iNumBytes = sdlSecurity.runHandshake(data, dataToRead);
+        Integer iNumBytes = null;
+
+        if (data[3] == QueryID.SEND_HANDSHAKE_DATA.getValue()) {
+            iNumBytes = sdlSecurity.runHandshake(data, dataToRead);
+        }
 
         if (iNumBytes == null || iNumBytes <= 0)
             return;
 
         byte[] returnBytes = new byte[iNumBytes];
         System.arraycopy(dataToRead, 0, returnBytes, 0, iNumBytes);
+
         ProtocolMessage protocolMessage = new ProtocolMessage();
         protocolMessage.setSessionType(SessionType.CONTROL);
         protocolMessage.setData(returnBytes);
@@ -207,9 +215,16 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
         protocolMessage.setVersion((byte) sdlProtocol.getProtocolVersion().getMajor());
         protocolMessage.setSessionID((byte) this.sessionId);
 
+        SecurityQuery securityQuery = new SecurityQuery();
+        securityQuery.setQueryID(QueryID.SEND_HANDSHAKE_DATA);
+        securityQuery.setQueryType(QueryType.REQUEST);
+        securityQuery.setCorrelationId(msg.getCorrID());
+        securityQuery.setJsonSize(msg.getJsonSize());
+        securityQuery.setData(returnBytes);
+
         //sdlSecurity.hs();
 
-        sendMessage(protocolMessage);
+        sendMessage(msg, securityQuery);
     }
 
     /**

@@ -562,7 +562,7 @@ public class SdlProtocolBase {
         }
     } // end-method
 
-    public void sendMessage(ProtocolMessage protocolMsg) {
+    public void sendMessage(ProtocolMessage protocolMsg, SecurityQuery securityQuery) {
         SessionType sessionType = protocolMsg.getSessionType();
         byte sessionID = protocolMsg.getSessionID();
         boolean requiresEncryption = protocolMsg.getPayloadProtected();
@@ -571,12 +571,19 @@ public class SdlProtocolBase {
         if (protocolVersion.getMajor() > 1 && sessionType != SessionType.NAV && sessionType != SessionType.PCM) {
             if (sessionType.eq(SessionType.CONTROL)) {
                 final byte[] secureData = protocolMsg.getData().clone();
-                data = new byte[headerSize + secureData.length];
 
-                final BinaryFrameHeader binFrameHeader =
-                        SdlPacketFactory.createBinaryFrameHeader(protocolMsg.getRPCType(), protocolMsg.getFunctionID(), protocolMsg.getCorrID(), 0);
-                System.arraycopy(binFrameHeader.assembleHeaderBytes(), 0, data, 0, headerSize);
-                System.arraycopy(secureData, 0, data, headerSize, secureData.length);
+                if (securityQuery != null) {
+                    data = new byte[12 + secureData.length];
+                    final BinaryQueryHeader binQueryHeader = SdlPacketFactory.createBinaryQueryHeader(securityQuery.getQueryType().getValue(), securityQuery.getQueryType().getValue(), securityQuery.getCorrelationId(), securityQuery.getJsonSize());
+                    System.arraycopy(binQueryHeader.assembleHeaderBytes(), 0, data, 0, 12);
+                    System.arraycopy(secureData, 0, data, 12, secureData.length);
+                } else {
+                    data = new byte[headerSize + secureData.length];
+                    final BinaryFrameHeader binFrameHeader =
+                            SdlPacketFactory.createBinaryFrameHeader(protocolMsg.getRPCType(), protocolMsg.getFunctionID(), protocolMsg.getCorrID(), 0);
+                    System.arraycopy(binFrameHeader.assembleHeaderBytes(), 0, data, 0, headerSize);
+                    System.arraycopy(secureData, 0, data, headerSize, secureData.length);
+                }
             } else if (protocolMsg.getBulkData() != null) {
                 data = new byte[12 + protocolMsg.getJsonSize() + protocolMsg.getBulkData().length];
                 sessionType = SessionType.BULK_DATA;

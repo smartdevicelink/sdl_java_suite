@@ -1065,7 +1065,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
         IStreamListener iStreamListener = new IStreamListener() {
             @Override
             public void sendStreamPacket(ProtocolMessage pm) {
-                session.sendMessage(pm);
+                session.sendMessage(pm, null);
             }
         };
 

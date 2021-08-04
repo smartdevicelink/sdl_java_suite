@@ -144,4 +144,14 @@ public class SdlPacketFactory {
         return msg;
     }
 
+    public static BinaryQueryHeader createBinaryQueryHeader(byte queryType, int queryId, int corrID, int jsonSize) {
+        BinaryQueryHeader msg = new BinaryQueryHeader();
+        msg.setQueryType(queryType);
+        msg.setQueryID(queryId);
+        msg.setCorrelationID(corrID);
+        msg.setJsonSize(jsonSize);
+
+        return msg;
+    }
+
 }
