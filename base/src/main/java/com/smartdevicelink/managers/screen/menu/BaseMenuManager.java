@@ -172,32 +172,23 @@ abstract class BaseMenuManager extends BaseSubManager {
      * @param cells - the menu cells that are to be sent to the head unit, including their sub-cells.
      */
     public void setMenuCells(@NonNull List<MenuCell> cells) {
-        // Check for cell lists with completely duplicate information, or any duplicate voiceCommands and return if it fails (logs are in the called method).
-        if (cells != null && !menuCellsAreUnique(cloneMenuCellsList(cells), new ArrayList<String>())) {
+        if (cells == null) {
+            DebugTool.logError(TAG, "Cells list is null. Skipping...");
             return;
         }
 
-        // If we're running on a connection < RPC 7.1, we need to de-duplicate cells because presenting them will fail if we have the same cell primary text.
-        boolean duplicateTitlesNotSupported = cells != null && internalInterface.getSdlMsgVersion() != null && (internalInterface.getSdlMsgVersion().getMajorVersion() < 7 || (internalInterface.getSdlMsgVersion().getMajorVersion() == 7 && internalInterface.getSdlMsgVersion().getMinorVersion() == 0));
-        if (duplicateTitlesNotSupported) {
-            addUniqueNamesToCellsWithDuplicatePrimaryText(cells);
-        } else {
-            // On > RPC 7.1, at this point all cells are unique when considering all properties,
-            // but we also need to check if any cells will _appear_ as duplicates when displayed on the screen.
-            // To check that, we'll remove properties from the set cells based on the system capabilities
-            // (we probably don't need to consider them changing between now and when they're actually sent to the HU unless the menu layout changes)
-            // and check for uniqueness again. Then we'll add unique identifiers to primary text if there are duplicates.
-            // Then we transfer the primary text identifiers back to the main cells and add those to an operation to be sent.
-            List<MenuCell> strippedCellsClone = removeUnusedProperties(cells);
-            addUniqueNamesBasedOnStrippedCells(strippedCellsClone, cells);
+        if (this.menuCells.equals(cells)) {
+            DebugTool.logError(TAG, "The set menu cells are identical to previously set menu cells. Skipping...");
+            return;
+        } else if (!menuCellsAreUnique(cells, new ArrayList<String>())) {
+            DebugTool.logError(TAG, "Not all set menu cells are unique, but that is required");
+            return;
         }
 
         // Create a deep copy of the list so future changes by developers don't affect the algorithm logic
-        final List<MenuCell> clonedCells = cloneMenuCellsList(cells);
+        this.menuCells = cloneMenuCellsList(cells);
 
-        updateIdsOnMenuCells(clonedCells, parentIdNotFound);
-
-        menuCells = new ArrayList<>(clonedCells);
+        updateIdsOnMenuCells(menuCells, parentIdNotFound);
 
         boolean isDynamicMenuUpdateActive = isDynamicMenuUpdateActive(dynamicMenuUpdatesMode, displayType);
         Task operation = new MenuReplaceOperation(internalInterface, fileManager.get(), windowCapability, menuConfiguration, currentMenuCells, menuCells, isDynamicMenuUpdateActive, new MenuManagerCompletionListener() {
