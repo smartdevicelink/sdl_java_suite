@@ -172,11 +172,6 @@ abstract class BaseMenuManager extends BaseSubManager {
      * @param cells - the menu cells that are to be sent to the head unit, including their sub-cells.
      */
     public void setMenuCells(@NonNull List<MenuCell> cells) {
-        if (this.menuCells.equals(cells)) {
-            DebugTool.logError("The set menu cells are identical to previously set menu cells. Skipping...");
-        } else {
-
-        }
         // Check for cell lists with completely duplicate information, or any duplicate voiceCommands and return if it fails (logs are in the called method).
         if (cells != null && !menuCellsAreUnique(cloneMenuCellsList(cells), new ArrayList<String>())) {
             return;
