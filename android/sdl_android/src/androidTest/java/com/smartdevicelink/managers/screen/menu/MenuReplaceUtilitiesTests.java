@@ -222,31 +222,31 @@ public class MenuReplaceUtilitiesTests {
         menuCell = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, voiceCommands, null);
         windowCapability = createWindowCapability(true, true);
         fileManager = createMockFileManager(true);
-        assertTrue(MenuReplaceUtilities.shouldCellIncludeImage(menuCell, fileManager, windowCapability, false));
+        assertTrue(MenuReplaceUtilities.shouldCellIncludeImageFromCell(menuCell, fileManager, windowCapability));
 
         // Case 2 - Image are not supported
         menuCell = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, voiceCommands, null);
         windowCapability = createWindowCapability(false, false);
         fileManager = createMockFileManager(true);
-        assertFalse(MenuReplaceUtilities.shouldCellIncludeImage(menuCell, fileManager, windowCapability, false));
+        assertFalse(MenuReplaceUtilities.shouldCellIncludeImageFromCell(menuCell, fileManager, windowCapability));
 
         // Case 3 - Artwork is null
         menuCell = new MenuCell(TestValues.GENERAL_STRING, null, voiceCommands, null);
         windowCapability = createWindowCapability(true, true);
         fileManager = createMockFileManager(true);
-        assertFalse(MenuReplaceUtilities.shouldCellIncludeImage(menuCell, fileManager, windowCapability, false));
+        assertFalse(MenuReplaceUtilities.shouldCellIncludeImageFromCell(menuCell, fileManager, windowCapability));
 
         // Case 4 - Artwork has not been uploaded
         menuCell = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, voiceCommands, null);
         windowCapability = createWindowCapability(true, true);
         fileManager = createMockFileManager(false);
-        assertFalse(MenuReplaceUtilities.shouldCellIncludeImage(menuCell, fileManager, windowCapability, false));
+        assertFalse(MenuReplaceUtilities.shouldCellIncludeImageFromCell(menuCell, fileManager, windowCapability));
 
         // Case 5 - Artwork is static icon
         menuCell = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK_STATIC, voiceCommands, null);
         windowCapability = createWindowCapability(true, true);
         fileManager = createMockFileManager(false);
-        assertTrue(MenuReplaceUtilities.shouldCellIncludeImage(menuCell, fileManager, windowCapability, false));
+        assertTrue(MenuReplaceUtilities.shouldCellIncludeImageFromCell(menuCell, fileManager, windowCapability));
     }
 
     private WindowCapability createWindowCapability (boolean supportsCmdIcon, boolean supportsSubMenuIcon) {
