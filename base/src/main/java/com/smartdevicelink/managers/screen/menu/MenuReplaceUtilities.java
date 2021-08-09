@@ -54,21 +54,16 @@ class MenuReplaceUtilities {
         return artworks;
     }
 
-    static boolean shouldCellIncludeImage(MenuCell cell, FileManager fileManager, WindowCapability windowCapability, boolean isSecondaryImage) {
-        SdlArtwork artwork = isSecondaryImage ? cell.getSecondaryArtwork() : cell.getIcon();
-        if (artwork == null) {
-            return false;
-        }
+    // If there is an icon and the icon has been uploaded, or if the icon is a static icon, it should include the image
+    static boolean shouldCellIncludeImageFromCell(MenuCell cell, FileManager fileManager, WindowCapability windowCapability) {
+        boolean supportsImage = isSubMenuCell(cell) ? hasImageFieldOfName(windowCapability, ImageFieldName.subMenuIcon) : hasImageFieldOfName(windowCapability, ImageFieldName.cmdIcon);
+        return cell.getIcon() != null && supportsImage && (fileManager.hasUploadedFile(cell.getIcon()) || cell.getIcon().isStaticIcon());
+    }
 
-        ImageFieldName mainMenuImageFieldName = isSecondaryImage ? ImageFieldName.menuCommandSecondaryImage : ImageFieldName.cmdIcon;
-        ImageFieldName subMenuImageFieldName = isSecondaryImage ? ImageFieldName.menuSubMenuSecondaryImage : ImageFieldName.subMenuIcon;
-        boolean supportsImage = isSubMenuCell(cell) ? hasImageFieldOfName(windowCapability, subMenuImageFieldName) : hasImageFieldOfName(windowCapability, mainMenuImageFieldName);
-        if (!supportsImage) {
-            return false;
-        }
-
-        // If the icon has been uploaded, or if the icon is a static icon, the cell should include the image
-        return (fileManager.hasUploadedFile(artwork) || artwork.isStaticIcon());
+    // If there is an icon and the icon has been uploaded, or if the icon is a static icon, it should include the image
+    static boolean shouldCellIncludeSecondaryImageFromCell(MenuCell cell, FileManager fileManager, WindowCapability windowCapability) {
+        boolean supportsImage = isSubMenuCell(cell) ? hasImageFieldOfName(windowCapability, ImageFieldName.menuSubMenuSecondaryImage) : hasImageFieldOfName(windowCapability, ImageFieldName.menuCommandSecondaryImage);
+        return cell.getSecondaryArtwork() != null && supportsImage && (fileManager.hasUploadedFile(cell.getSecondaryArtwork()) || cell.getSecondaryArtwork().isStaticIcon());
     }
 
     static int commandIdForRPCRequest(RPCRequest request) {
@@ -174,19 +169,19 @@ class MenuReplaceUtilities {
         } else {
             command.setVrCommands(null);
         }
-        boolean shouldCellIncludePrimaryImage = cell.getIcon() != null && shouldCellIncludeImage(cell, fileManager, windowCapability, false);
+        boolean shouldCellIncludePrimaryImage = cell.getIcon() != null && shouldCellIncludeImageFromCell(cell, fileManager, windowCapability);
         command.setCmdIcon(shouldCellIncludePrimaryImage ? cell.getIcon().getImageRPC() : null);
 
-        boolean shouldCellIncludeSecondaryImage = cell.getSecondaryArtwork() != null && shouldCellIncludeImage(cell, fileManager, windowCapability, true);
+        boolean shouldCellIncludeSecondaryImage = cell.getSecondaryArtwork() != null && shouldCellIncludeSecondaryImageFromCell(cell, fileManager, windowCapability);
         command.setSecondaryImage(shouldCellIncludeSecondaryImage ? cell.getSecondaryArtwork().getImageRPC() : null);
 
         return command;
     }
 
     static AddSubMenu subMenuCommandForMenuCell(MenuCell cell, FileManager fileManager, WindowCapability windowCapability, int position, MenuLayout defaultSubmenuLayout) {
-        boolean shouldCellIncludePrimaryImage = cell.getIcon() != null && cell.getIcon().getImageRPC() != null && shouldCellIncludeImage(cell, fileManager, windowCapability, false);
+        boolean shouldCellIncludePrimaryImage = cell.getIcon() != null && cell.getIcon().getImageRPC() != null && shouldCellIncludeImageFromCell(cell, fileManager, windowCapability);
         Image icon = (shouldCellIncludePrimaryImage ? cell.getIcon().getImageRPC() : null);
-        boolean shouldCellIncludeSecondaryImage = cell.getSecondaryArtwork() != null && cell.getSecondaryArtwork().getImageRPC() != null && shouldCellIncludeImage(cell, fileManager, windowCapability, true);
+        boolean shouldCellIncludeSecondaryImage = cell.getSecondaryArtwork() != null && cell.getSecondaryArtwork().getImageRPC() != null && shouldCellIncludeSecondaryImageFromCell(cell, fileManager, windowCapability);
         Image secondaryIcon = (shouldCellIncludeSecondaryImage ? cell.getSecondaryArtwork().getImageRPC() : null);
 
         MenuLayout submenuLayout;
