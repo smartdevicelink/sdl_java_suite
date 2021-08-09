@@ -10,16 +10,21 @@ import com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.MenuC
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
+import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
+import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.util.DebugTool;
 
 import org.json.JSONException;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.smartdevicelink.managers.ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName;
+import static com.smartdevicelink.managers.ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName;
 import static com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.buildAllAddStatusesForMenu;
 import static com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.buildAllDeleteStatusesForMenu;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.addMenuRequestWithCommandId;
@@ -367,6 +372,105 @@ class MenuReplaceOperation extends Task {
             }
         }
         return stringBuilder.toString();
+    }
+
+    private List<MenuCell> cloneMenuCellsList(List<MenuCell> originalList) {
+        if (originalList == null) {
+            return new ArrayList<>();
+        }
+
+        List<MenuCell> clone = new ArrayList<>();
+        for (MenuCell menuCell : originalList) {
+            clone.add(menuCell.clone());
+        }
+        return clone;
+    }
+
+    private void addUniqueNamesToCellsWithDuplicatePrimaryText(List<MenuCell> cells) {
+        HashMap<String, Integer> countsMap = new HashMap<>();
+
+        for (MenuCell cell : cells) {
+            String cellTitle = cell.getTitle();
+            Integer counter = countsMap.get(cellTitle);
+
+            if (counter != null) {
+                countsMap.put(cellTitle, ++counter);
+                cell.setUniqueTitle(cellTitle + " (" + counter + ")");
+            } else {
+                countsMap.put(cellTitle, 1);
+                cell.setUniqueTitle(cellTitle);
+            }
+
+            if (isSubMenuCell(cell) && !cell.getSubCells().isEmpty()) {
+                addUniqueNamesToCellsWithDuplicatePrimaryText(cell.getSubCells());
+            }
+        }
+    }
+
+    void addUniqueNamesBasedOnStrippedCells(List<MenuCell> strippedCells, List<MenuCell> originalCells) {
+        if (strippedCells == null || originalCells == null || strippedCells.size() != originalCells.size()) {
+            return;
+        }
+        // Tracks how many of each cell primary text there are so that we can append numbers to make each unique as necessary
+        HashMap<MenuCell, Integer> countsMap = new HashMap<>();
+        for (int i = 0; i < strippedCells.size(); i++) {
+            MenuCell cell = strippedCells.get(i);
+            Integer counter = countsMap.get(cell);
+            if (counter != null) {
+                countsMap.put(cell, ++counter);
+                originalCells.get(i).setUniqueTitle(originalCells.get(i).getTitle() + " (" + counter + ")");
+            } else {
+                countsMap.put(cell, 1);
+                originalCells.get(i).setUniqueTitle(originalCells.get(i).getTitle());
+            }
+
+            if (isSubMenuCell(cell) && !cell.getSubCells().isEmpty()) {
+                addUniqueNamesBasedOnStrippedCells(cell.getSubCells(), originalCells.get(i).getSubCells());
+            }
+        }
+    }
+
+    List<MenuCell> removeUnusedProperties(List<MenuCell> cells) {
+        if (cells == null) {
+            return null;
+        }
+        List<MenuCell> removePropertiesClone = cloneMenuCellsList(cells);
+        for (MenuCell cell : removePropertiesClone) {
+            // Strip away fields that cannot be used to determine uniqueness visually including fields not supported by the HMI
+            cell.setVoiceCommands(null);
+            cell.setUniqueTitle(null);
+            cell.setMenuSelectionListener(null);
+
+            // Don't check ImageFieldName.subMenuIcon because it was added in 7.0 when the feature was added in 5.0.
+            // Just assume that if cmdIcon is not available, the submenu icon is not either.
+            if (!hasImageFieldOfName(windowCapability, ImageFieldName.cmdIcon)) {
+                cell.setIcon(null);
+            }
+            // Check for subMenu fields supported
+            if (isSubMenuCell(cell)) {
+                if (!hasTextFieldOfName(windowCapability, TextFieldName.menuSubMenuSecondaryText)) {
+                    cell.setSecondaryText(null);
+                }
+                if (!hasTextFieldOfName(windowCapability, TextFieldName.menuSubMenuTertiaryText)) {
+                    cell.setTertiaryText(null);
+                }
+                if (!hasImageFieldOfName(windowCapability, ImageFieldName.menuSubMenuSecondaryImage)) {
+                    cell.setSecondaryArtwork(null);
+                }
+                cell.setSubCells(removeUnusedProperties(cell.getSubCells()));
+            } else {
+                if (!hasTextFieldOfName(windowCapability, TextFieldName.menuCommandSecondaryText)) {
+                    cell.setSecondaryText(null);
+                }
+                if (!hasTextFieldOfName(windowCapability, TextFieldName.menuCommandTertiaryText)) {
+                    cell.setTertiaryText(null);
+                }
+                if (!hasImageFieldOfName(windowCapability, ImageFieldName.menuCommandSecondaryImage)) {
+                    cell.setSecondaryArtwork(null);
+                }
+            }
+        }
+        return removePropertiesClone;
     }
 
     void setMenuConfiguration(MenuConfiguration menuConfiguration) {
