@@ -124,10 +124,6 @@ class DeleteChoicesOperation extends Task {
         this.loadedCells = new HashSet<>(loadedCells);
     }
 
-    public HashSet<ChoiceCell> getLoadedCells() {
-        return new HashSet<>(this.loadedCells);
-    }
-
     private void updateCellsToDelete() {
         HashSet<ChoiceCell> updatedCellsToDelete = new HashSet<>(this.cellsToDelete);
         updatedCellsToDelete.retainAll(loadedCells);

@@ -211,7 +211,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         updateIdsOnChoices(choicesToUpload);
 
         if (fileManager.get() != null) {
-            PreloadPresentChoicesOperation preloadChoicesOperation = new PreloadPresentChoicesOperation(internalInterface, fileManager.get(), displayName, defaultMainWindowCapability, isVROptional, choicesToUpload, this.preloadedChoices, new PreloadChoicesCompletionListener() {
+            PreloadPresentChoicesOperation preloadChoicesOperation = new PreloadPresentChoicesOperation(internalInterface, fileManager.get(), displayName, defaultMainWindowCapability, isVROptional, choicesToUpload, this.preloadedChoices, new PreloadPresentChoicesOperation.PreloadChoicesCompletionListener() {
                 @Override
                 public void onComplete(boolean success, HashSet<ChoiceCell> loadedCells) {
                     preloadedChoices = loadedCells;

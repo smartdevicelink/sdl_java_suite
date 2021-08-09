@@ -45,7 +45,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
-public class PreloadPresentChoicesOperation extends Task {
+class PreloadPresentChoicesOperation extends Task {
 
     private static final String TAG = "PreloadPresentChoicesOperation";
     private final WeakReference<ISdl> internalInterface;
@@ -82,7 +82,7 @@ public class PreloadPresentChoicesOperation extends Task {
     }
     private SDLPreloadPresentChoicesOperationState currentState;
 
-    public PreloadPresentChoicesOperation(ISdl internalInterface, FileManager fileManager, String displayName, WindowCapability defaultWindowCapability,
+    PreloadPresentChoicesOperation(ISdl internalInterface, FileManager fileManager, String displayName, WindowCapability defaultWindowCapability,
                                           Boolean isVROptional, LinkedHashSet<ChoiceCell> cellsToPreload, HashSet<ChoiceCell> loadedCells, PreloadChoicesCompletionListener listener) {
         super("PreloadPresentChoiceOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
@@ -105,7 +105,7 @@ public class PreloadPresentChoicesOperation extends Task {
         this.selectionListener = null;
     }
 
-    public PreloadPresentChoicesOperation(ISdl internalInterface, FileManager fileManager, ChoiceSet choiceSet, InteractionMode mode,
+    PreloadPresentChoicesOperation(ISdl internalInterface, FileManager fileManager, ChoiceSet choiceSet, InteractionMode mode,
                                           KeyboardProperties originalKeyboardProperties, KeyboardListener keyboardListener, Integer cancelID, String displayName, WindowCapability windowCapability,
                                           Boolean isVROptional, HashSet<ChoiceCell> loadedCells, PreloadChoicesCompletionListener preloadListener, ChoiceSetSelectionListener listener) {
         super("PreloadPresentChoiceOperation");
@@ -195,7 +195,7 @@ public class PreloadPresentChoicesOperation extends Task {
         });
     }
 
-    //PRELOAD OPERATION METHODS
+    // Preload operation methods
     private void preloadCellArtworks(@NonNull final CompletionListener listener) {
         this.currentState = SDLPreloadPresentChoicesOperationState.UPLOADING_IMAGES;
 
@@ -440,7 +440,11 @@ public class PreloadPresentChoicesOperation extends Task {
         }
     }
 
-    //Present Helpers
+    interface PreloadChoicesCompletionListener {
+        void onComplete(boolean success, HashSet<ChoiceCell> loadedChoiceCells);
+    }
+
+    // Present Helpers
     void setSelectedCellWithId(Integer cellId) {
         if (choiceSet.getChoices() != null && cellId != null) {
             List<ChoiceCell> cells = choiceSet.getChoices();
@@ -469,7 +473,7 @@ public class PreloadPresentChoicesOperation extends Task {
         return pi;
     }
 
-    //Choice Uniqueness
+    // Choice Uniqueness
     void updateCellsBasedOnLoadedChoices() {
         if (internalInterface.get().getProtocolVersion().getMajor() >= 7 && internalInterface.get().getProtocolVersion().getMinor() >= 1) {
             addUniqueNamesToCells(cellsToUpload);
@@ -482,7 +486,7 @@ public class PreloadPresentChoicesOperation extends Task {
 
     List<ChoiceCell> removeUnusedProperties(List<ChoiceCell> choiceCells) {
         List<ChoiceCell> strippedCellsClone = cloneChoiceCellList(choiceCells);
-        //Clone Cells
+        // Clone Cells
         for (ChoiceCell cell : strippedCellsClone) {
             // Strip away fields that cannot be used to determine uniqueness visually including fields not supported by the HMI
             cell.setVoiceCommands(null);
@@ -567,7 +571,7 @@ public class PreloadPresentChoicesOperation extends Task {
         }
     }
 
-    //Finding Cells
+    // Finding Cells
     private ChoiceCell cellFromChoiceId(int choiceId) {
         for (ChoiceCell cell : this.cellsToUpload) {
             if (cell.getChoiceId() == choiceId) {
@@ -577,7 +581,7 @@ public class PreloadPresentChoicesOperation extends Task {
         return null;
     }
 
-    //Assembling Choice RPCs
+    // Assembling Choice RPCs
     private CreateInteractionChoiceSet choiceFromCell(ChoiceCell cell) {
 
         List<String> vrCommands;
@@ -641,7 +645,7 @@ public class PreloadPresentChoicesOperation extends Task {
         return templateSupportsImageField(ImageFieldName.choiceSecondaryImage);
     }
 
-    //SDL Notifications
+    // SDL Notifications
     private void addListeners() {
 
         keyboardRPCListener = new OnRPCNotificationListener() {
@@ -707,10 +711,6 @@ public class PreloadPresentChoicesOperation extends Task {
 
     public void setLoadedCells(HashSet<ChoiceCell> loadedCells) {
         this.loadedCells = loadedCells;
-    }
-
-    public HashSet<ChoiceCell> getLoadedCells() {
-        return this.loadedCells;
     }
 
     List<SdlArtwork> artworksToUpload() {
