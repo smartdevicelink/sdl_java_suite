@@ -81,12 +81,12 @@ class MenuReplaceOperation extends Task {
     private void updateMenuCells(final CompletionListener listener) {
         DynamicMenuUpdateRunScore runScore;
 
-        if (isDynamicMenuUpdateActive) {
-            DebugTool.logInfo(TAG, "Dynamic menu update is active. Running the algorithm to find the best run score");
-            runScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(currentMenu, updatedMenu);
+        if (!isDynamicMenuUpdateActive) {
+            DebugTool.logInfo(TAG, "Dynamic menu update inactive. Forcing the deletion of all old cells and adding all new ones, even if they're the same.");
+            runScore = DynamicMenuUpdateAlgorithm.compatibilityRunScoreWithOldMenuCells(currentMenu, updatedMenu);
         } else {
-            DebugTool.logInfo(TAG, "Dynamic menu update is not active. Forcing the deletion of all old cells and adding new ones");
-            runScore = new DynamicMenuUpdateRunScore(buildAllDeleteStatusesForMenu(currentMenu), buildAllAddStatusesForMenu(updatedMenu), updatedMenu.size());
+            DebugTool.logInfo(TAG, "Dynamic menu update active. Running the algorithm to find the best way to delete / add cells.");
+            runScore = DynamicMenuUpdateAlgorithm.dynamicRunScoreOldMenuCells(currentMenu, updatedMenu);
         }
 
         // If both old and new menu cells are empty. Then nothing needs to be done.
@@ -296,7 +296,7 @@ class MenuReplaceOperation extends Task {
         }
 
         if (oldKeptCells.get(startIndex) != null && isSubMenuCell(oldKeptCells.get(startIndex)) && !oldKeptCells.get(startIndex).getSubCells().isEmpty()) {
-            DynamicMenuUpdateRunScore tempScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(oldKeptCells.get(startIndex).getSubCells(), newKeptCells.get(startIndex).getSubCells());
+            DynamicMenuUpdateRunScore tempScore = DynamicMenuUpdateAlgorithm.dynamicRunScoreOldMenuCells(oldKeptCells.get(startIndex).getSubCells(), newKeptCells.get(startIndex).getSubCells());
 
             // If both old and new menu cells are empty. Then nothing needs to be done.
             if (tempScore == null) {

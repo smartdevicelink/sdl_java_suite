@@ -14,7 +14,11 @@ class DynamicMenuUpdateAlgorithm {
         KEEP // Marks the cell to be kept
     }
 
-    static DynamicMenuUpdateRunScore compareOldMenuCells(List<MenuCell> oldMenuCells, List<MenuCell> updatedMenuCells) {
+    static DynamicMenuUpdateRunScore compatibilityRunScoreWithOldMenuCells(List<MenuCell> oldMenuCells, List<MenuCell> updatedMenuCells) {
+        return new DynamicMenuUpdateRunScore(buildAllDeleteStatusesForMenu(oldMenuCells), buildAllAddStatusesForMenu(updatedMenuCells), updatedMenuCells.size());
+    }
+
+    static DynamicMenuUpdateRunScore dynamicRunScoreOldMenuCells(List<MenuCell> oldMenuCells, List<MenuCell> updatedMenuCells) {
         if (!oldMenuCells.isEmpty() && updatedMenuCells.isEmpty()) {
             return new DynamicMenuUpdateRunScore(buildAllDeleteStatusesForMenu(oldMenuCells), new ArrayList<MenuCellState>(), 0);
         } else if (oldMenuCells.isEmpty() && !updatedMenuCells.isEmpty()) {

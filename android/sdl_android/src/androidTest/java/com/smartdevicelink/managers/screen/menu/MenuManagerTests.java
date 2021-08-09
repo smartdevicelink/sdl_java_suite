@@ -295,7 +295,7 @@ public class MenuManagerTests {
         sleep();
 
         // this happens in the menu manager but lets make sure its behaving
-        DynamicMenuUpdateRunScore runScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(oldMenu, newMenu);
+        DynamicMenuUpdateRunScore runScore = DynamicMenuUpdateAlgorithm.dynamicRunScoreOldMenuCells(oldMenu, newMenu);
 
         List<MenuCellState> oldMenuStatus = Arrays.asList(KEEP, KEEP, KEEP, KEEP);
         List<MenuCellState> newMenuStatus = Arrays.asList(KEEP, KEEP, KEEP, KEEP, ADD);
@@ -340,7 +340,7 @@ public class MenuManagerTests {
         sleep();
 
         // this happens in the menu manager but lets make sure its behaving
-        DynamicMenuUpdateRunScore runScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(oldMenu, newMenu);
+        DynamicMenuUpdateRunScore runScore = DynamicMenuUpdateAlgorithm.dynamicRunScoreOldMenuCells(oldMenu, newMenu);
 
         List<MenuCellState> oldMenuScore = Arrays.asList(KEEP, KEEP, KEEP, DELETE);
         List<MenuCellState> newMenuScore = Arrays.asList(KEEP, KEEP, KEEP);
@@ -385,7 +385,7 @@ public class MenuManagerTests {
         sleep();
 
         // this happens in the menu manager but lets make sure its behaving
-        DynamicMenuUpdateRunScore runScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(oldMenu, newMenu);
+        DynamicMenuUpdateRunScore runScore = DynamicMenuUpdateAlgorithm.dynamicRunScoreOldMenuCells(oldMenu, newMenu);
 
         List<MenuCellState> oldMenuStatus = Arrays.asList(DELETE, DELETE, DELETE);
         List<MenuCellState> newMenuStatus = Arrays.asList(ADD, ADD, ADD);
@@ -430,7 +430,7 @@ public class MenuManagerTests {
         sleep();
 
         // this happens in the menu manager but lets make sure its behaving
-        DynamicMenuUpdateRunScore runScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(oldMenu, newMenu);
+        DynamicMenuUpdateRunScore runScore = DynamicMenuUpdateAlgorithm.dynamicRunScoreOldMenuCells(oldMenu, newMenu);
 
         List<MenuCellState> oldMenuStatus = Arrays.asList(KEEP, DELETE, KEEP, DELETE);
         List<MenuCellState> newMenuStatus = Arrays.asList(ADD, KEEP, ADD, KEEP);
@@ -475,7 +475,7 @@ public class MenuManagerTests {
         sleep();
 
         // this happens in the menu manager but lets make sure its behaving
-        DynamicMenuUpdateRunScore runScore = DynamicMenuUpdateAlgorithm.compareOldMenuCells(oldMenu, newMenu);
+        DynamicMenuUpdateRunScore runScore = DynamicMenuUpdateAlgorithm.dynamicRunScoreOldMenuCells(oldMenu, newMenu);
 
         List<MenuCellState> oldMenuStatus = Arrays.asList(DELETE, KEEP, KEEP, KEEP);
         List<MenuCellState> newMenuStatus = Arrays.asList(KEEP, KEEP, KEEP, ADD);
