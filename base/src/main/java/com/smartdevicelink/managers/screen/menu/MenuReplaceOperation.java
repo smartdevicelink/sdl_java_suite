@@ -90,7 +90,7 @@ class MenuReplaceOperation extends Task {
         }
 
         // If both old and new menu cells are empty. Then nothing needs to be done.
-        if (runScore == null) {
+        if (runScore.getScore() == 0) {
             listener.onComplete(true);
             return;
         }
@@ -299,7 +299,7 @@ class MenuReplaceOperation extends Task {
             DynamicMenuUpdateRunScore tempScore = DynamicMenuUpdateAlgorithm.dynamicRunScoreOldMenuCells(oldKeptCells.get(startIndex).getSubCells(), newKeptCells.get(startIndex).getSubCells());
 
             // If both old and new menu cells are empty. Then nothing needs to be done.
-            if (tempScore == null) {
+            if (tempScore.getScore() == 0) {
                 // After the first set of submenu cells were added and deleted we must find the next set of sub cells until we loop through all the elements
                 updateSubMenuWithOldKeptCells(oldKeptCells, newKeptCells, startIndex + 1, listener);
                 return;

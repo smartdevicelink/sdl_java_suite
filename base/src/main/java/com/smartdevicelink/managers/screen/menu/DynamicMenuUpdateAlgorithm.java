@@ -20,17 +20,20 @@ class DynamicMenuUpdateAlgorithm {
 
     static DynamicMenuUpdateRunScore dynamicRunScoreOldMenuCells(List<MenuCell> oldMenuCells, List<MenuCell> updatedMenuCells) {
         if (!oldMenuCells.isEmpty() && updatedMenuCells.isEmpty()) {
+            // Deleting all cells
             return new DynamicMenuUpdateRunScore(buildAllDeleteStatusesForMenu(oldMenuCells), new ArrayList<MenuCellState>(), 0);
         } else if (oldMenuCells.isEmpty() && !updatedMenuCells.isEmpty()) {
+            // No cells to delete
             return new DynamicMenuUpdateRunScore(new ArrayList<MenuCellState>(), buildAllAddStatusesForMenu(updatedMenuCells), updatedMenuCells.size());
-        } else if (oldMenuCells.isEmpty()) {
-            return null;
+        } else if (oldMenuCells.isEmpty() && updatedMenuCells.isEmpty()) {
+            // Empty menu to empty menu
+            return new DynamicMenuUpdateRunScore(new ArrayList<MenuCellState>(), new ArrayList<MenuCellState>(), 0);
         }
         return startCompareAtRun(0, oldMenuCells, updatedMenuCells);
     }
 
     private static DynamicMenuUpdateRunScore startCompareAtRun(int startRun, List<MenuCell> oldMenuCells, List<MenuCell> updatedMenuCells) {
-        DynamicMenuUpdateRunScore bestScore = null;
+        DynamicMenuUpdateRunScore bestScore = new DynamicMenuUpdateRunScore(new ArrayList<MenuCellState>(), new ArrayList<MenuCellState>(), 0);
 
         for (int run = startRun; run < oldMenuCells.size(); run++) {
             // Set the menu status as a 1-1 array, start off will oldMenus = all Deletes, newMenu = all Adds
@@ -43,7 +46,7 @@ class DynamicMenuUpdateAlgorithm {
                 // if a match if found we mark the index at match for both the old and the new status to
                 // keep since we do not want to send RPCs for those cases
                 for (int newCellIndex = startIndex; newCellIndex < updatedMenuCells.size(); newCellIndex++) {
-                    if (oldMenuCells.get(oldCellIndex).equals(updatedMenuCells.get(newCellIndex))) {
+                    if (oldMenuCells.get(oldCellIndex).equalsWithUniqueTitle(updatedMenuCells.get(newCellIndex))) {
                         oldMenuStatus.set(oldCellIndex, MenuCellState.KEEP);
                         newMenuStatus.set(newCellIndex, MenuCellState.KEEP);
                         startIndex = newCellIndex + 1;
@@ -68,7 +71,7 @@ class DynamicMenuUpdateAlgorithm {
             }
 
             // if we haven't create the bestScore object or if the current score beats the old score then we will create a new bestScore
-            if (bestScore == null || numberOfAdds < bestScore.getScore()) {
+            if (bestScore.getScore() == 0 || numberOfAdds < bestScore.getScore()) {
                 bestScore = new DynamicMenuUpdateRunScore(oldMenuStatus, newMenuStatus, numberOfAdds);
             }
 

@@ -477,6 +477,25 @@ public class MenuCell implements Cloneable {
     }
 
     /**
+     * Uses our custom hashCode for MenuCell objects
+     *
+     * @param o - The object to compare
+     * @return boolean of whether the objects are the same or not
+     */
+    public boolean equalsWithUniqueTitle(Object o) {
+        // @todo fix later
+        if (o == null) {
+            return false;
+        }
+        // if this is the same memory address, its the same
+        if (this == o) return true;
+        // if this is not an instance of this class, not the same
+        if (!(o instanceof MenuCell)) return false;
+        // if we get to this point, create the hashes and compare them
+        return hashCode() == o.hashCode();
+    }
+
+    /**
      * Creates a deep copy of the object
      *
      * @return deep copy of the object, null if an exception occurred
