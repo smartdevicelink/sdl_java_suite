@@ -492,33 +492,6 @@ public class MenuManagerTests {
     }
 
     @Test
-    public void testSettingNullMenu() {
-        // Make sure we can send an empty menu with no issues
-        // start fresh
-        menuManager.currentMenuCells = new ArrayList<>();
-        menuManager.menuCells = new ArrayList<>();
-
-       sendFakeCoreOnHMIFullNotifications();
-
-        // send new cells. They should set the old way
-        List<MenuCell> oldMenu = createDynamicMenu1();
-        List<MenuCell> newMenu = null;
-        menuManager.setMenuCells(oldMenu);
-
-        // Sleep to give time to Taskmaster to run the operations
-        sleep();
-
-        assertEquals(4, menuManager.currentMenuCells.size());
-
-        menuManager.setMenuCells(newMenu);
-
-        // Sleep to give time to Taskmaster to run the operations
-        sleep();
-
-        assertEquals(0, menuManager.currentMenuCells.size());
-    }
-
-    @Test
     public void testClearingMenu() {
         // Make sure we can send an empty menu with no issues
         // start fresh
