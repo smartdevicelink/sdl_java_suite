@@ -93,11 +93,11 @@ class MenuReplaceUtilities {
     static List<RPCRequest> deleteCommandsForCells(List<MenuCell> cells) {
         List<RPCRequest> deletes = new ArrayList<>();
         for (MenuCell cell : cells) {
-            if (!isSubMenuCell(cell)) {
-                DeleteCommand delete = new DeleteCommand(cell.getCellId());
+            if (isSubMenuCell(cell)) {
+                DeleteSubMenu delete = new DeleteSubMenu(cell.getCellId());
                 deletes.add(delete);
             } else {
-                DeleteSubMenu delete = new DeleteSubMenu(cell.getCellId());
+                DeleteCommand delete = new DeleteCommand(cell.getCellId());
                 deletes.add(delete);
             }
         }

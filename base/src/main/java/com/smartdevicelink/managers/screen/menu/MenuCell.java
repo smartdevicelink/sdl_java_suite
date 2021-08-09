@@ -452,12 +452,13 @@ public class MenuCell implements Cloneable {
         result += ((getSecondaryText() == null) ? 0 : Integer.rotateLeft(getSecondaryText().hashCode(), 5));
         result += ((getTertiaryText() == null) ? 0 : Integer.rotateLeft(getTertiaryText().hashCode(), 6));
         result += ((getSecondaryArtwork() == null) ? 0 : Integer.rotateLeft(getSecondaryArtwork().hashCode(), 7));
+        result += ((getSubMenuLayout() == null) ? 0 : Integer.rotateLeft(getSubMenuLayout().hashCode(), 8));
         return result;
     }
 
     private int hashCodeWithUniqueTitle() {
         int result = hashCode();
-        result += ((getUniqueTitle() == null) ? 0 : Integer.rotateLeft(getUniqueTitle().hashCode(), 8));
+        result += ((getUniqueTitle() == null) ? 0 : Integer.rotateLeft(getUniqueTitle().hashCode(), 9));
         return result;
     }
 
