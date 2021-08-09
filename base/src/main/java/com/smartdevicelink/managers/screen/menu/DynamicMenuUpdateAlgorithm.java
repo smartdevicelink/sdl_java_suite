@@ -71,7 +71,7 @@ class DynamicMenuUpdateAlgorithm {
             }
 
             // if we haven't create the bestScore object or if the current score beats the old score then we will create a new bestScore
-            if (bestScore.getScore() == 0 || numberOfAdds < bestScore.getScore()) {
+            if (bestScore.isEmpty() || numberOfAdds < bestScore.getScore()) {
                 bestScore = new DynamicMenuUpdateRunScore(oldMenuStatus, newMenuStatus, numberOfAdds);
             }
 

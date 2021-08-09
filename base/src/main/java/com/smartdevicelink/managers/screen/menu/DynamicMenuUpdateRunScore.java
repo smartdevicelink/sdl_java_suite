@@ -70,4 +70,8 @@ class DynamicMenuUpdateRunScore {
     public int getScore() {
         return score;
     }
+
+    boolean isEmpty() {
+        return oldStatus.size() == 0 && updatedStatus.size() == 0 && score == 0;
+    }
 }
