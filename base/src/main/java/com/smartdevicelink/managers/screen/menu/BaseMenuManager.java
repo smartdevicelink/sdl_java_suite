@@ -172,6 +172,11 @@ abstract class BaseMenuManager extends BaseSubManager {
      * @param cells - the menu cells that are to be sent to the head unit, including their sub-cells.
      */
     public void setMenuCells(@NonNull List<MenuCell> cells) {
+        if (this.menuCells.equals(cells)) {
+            DebugTool.logError("The set menu cells are identical to previously set menu cells. Skipping...");
+        } else {
+
+        }
         // Check for cell lists with completely duplicate information, or any duplicate voiceCommands and return if it fails (logs are in the called method).
         if (cells != null && !menuCellsAreUnique(cloneMenuCellsList(cells), new ArrayList<String>())) {
             return;
@@ -242,10 +247,10 @@ abstract class BaseMenuManager extends BaseSubManager {
         }
 
         if (cell != null && (!isSubMenuCell(cell))) {
-            DebugTool.logError(DebugTool.TAG, String.format("The cell %s does not contain any sub cells, so no submenu can be opened", cell.getTitle()));
+            DebugTool.logError(TAG, String.format("The cell %s does not contain any sub cells, so no submenu can be opened", cell.getTitle()));
             return false;
         } else if (cell != null && foundClonedCell == null) {
-            DebugTool.logError(DebugTool.TAG, "This cell has not been sent to the head unit, so no submenu can be opened. Make sure that the cell exists in the SDLManager.menu array");
+            DebugTool.logError(TAG, "This cell has not been sent to the head unit, so no submenu can be opened. Make sure that the cell exists in the SDLManager.menu array");
             return false;
         } else if (internalInterface.getSdlMsgVersion().getMajorVersion() < 6) {
             DebugTool.logWarning(TAG, "The openSubmenu method is not supported on this head unit.");
