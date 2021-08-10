@@ -79,21 +79,21 @@ public class MenuReplaceUtilitiesTests {
 
         // Delete cell c4
         menuCellToDelete = actualMenuCellList.get(3);
-        cellRemoved = MenuReplaceUtilities.removeMenuCellFromList(actualMenuCellList, menuCellToDelete.getCellId());
+        cellRemoved = MenuReplaceUtilities.removeCellFromList(actualMenuCellList, menuCellToDelete.getCellId());
         assertTrue(cellRemoved);
         expectedMenuCellList.remove(3);
         assertEquals(expectedMenuCellList, actualMenuCellList);
         assertEquals(3, actualMenuCellList.size());
 
         // Delete cell c4 again - removal should fail and list should not change
-        cellRemoved = MenuReplaceUtilities.removeMenuCellFromList(actualMenuCellList, menuCellToDelete.getCellId());
+        cellRemoved = MenuReplaceUtilities.removeCellFromList(actualMenuCellList, menuCellToDelete.getCellId());
         assertFalse(cellRemoved);
         assertEquals(expectedMenuCellList, actualMenuCellList);
         assertEquals(3, actualMenuCellList.size());
 
         // Delete cell c3
         menuCellToDelete = actualMenuCellList.get(2);
-        cellRemoved = MenuReplaceUtilities.removeMenuCellFromList(actualMenuCellList, menuCellToDelete.getCellId());
+        cellRemoved = MenuReplaceUtilities.removeCellFromList(actualMenuCellList, menuCellToDelete.getCellId());
         assertTrue(cellRemoved);
         expectedMenuCellList.remove(2);
         assertEquals(expectedMenuCellList, actualMenuCellList);
@@ -101,7 +101,7 @@ public class MenuReplaceUtilitiesTests {
 
         // Delete cell c2-2-2
         menuCellToDelete = actualMenuCellList.get(1).getSubCells().get(1).getSubCells().get(1);
-        cellRemoved = MenuReplaceUtilities.removeMenuCellFromList(actualMenuCellList, menuCellToDelete.getCellId());
+        cellRemoved = MenuReplaceUtilities.removeCellFromList(actualMenuCellList, menuCellToDelete.getCellId());
         assertTrue(cellRemoved);
         expectedMenuCellList.get(1).getSubCells().get(1).getSubCells().remove(1);
         assertEquals(expectedMenuCellList, actualMenuCellList);
@@ -110,7 +110,7 @@ public class MenuReplaceUtilitiesTests {
 
         // Delete cell c2-2-1
         menuCellToDelete = actualMenuCellList.get(1).getSubCells().get(1).getSubCells().get(0);
-        cellRemoved = MenuReplaceUtilities.removeMenuCellFromList(actualMenuCellList, menuCellToDelete.getCellId());
+        cellRemoved = MenuReplaceUtilities.removeCellFromList(actualMenuCellList, menuCellToDelete.getCellId());
         assertTrue(cellRemoved);
         expectedMenuCellList.get(1).getSubCells().get(1).getSubCells().remove(0);
         assertEquals(expectedMenuCellList, actualMenuCellList);
@@ -119,7 +119,7 @@ public class MenuReplaceUtilitiesTests {
 
         // Delete cell c2-2
         menuCellToDelete = actualMenuCellList.get(1).getSubCells().get(1);
-        cellRemoved = MenuReplaceUtilities.removeMenuCellFromList(actualMenuCellList, menuCellToDelete.getCellId());
+        cellRemoved = MenuReplaceUtilities.removeCellFromList(actualMenuCellList, menuCellToDelete.getCellId());
         assertTrue(cellRemoved);
         expectedMenuCellList.get(1).getSubCells().remove(1);
         assertEquals(expectedMenuCellList, actualMenuCellList);
@@ -128,7 +128,7 @@ public class MenuReplaceUtilitiesTests {
 
         // Delete cell c2-1
         menuCellToDelete = actualMenuCellList.get(1).getSubCells().get(0);
-        cellRemoved = MenuReplaceUtilities.removeMenuCellFromList(actualMenuCellList, menuCellToDelete.getCellId());
+        cellRemoved = MenuReplaceUtilities.removeCellFromList(actualMenuCellList, menuCellToDelete.getCellId());
         assertTrue(cellRemoved);
         expectedMenuCellList.get(1).getSubCells().remove(0);
         assertEquals(expectedMenuCellList, actualMenuCellList);
@@ -137,7 +137,7 @@ public class MenuReplaceUtilitiesTests {
 
         // Delete cell c2
         menuCellToDelete = actualMenuCellList.get(1);
-        cellRemoved = MenuReplaceUtilities.removeMenuCellFromList(actualMenuCellList, menuCellToDelete.getCellId());
+        cellRemoved = MenuReplaceUtilities.removeCellFromList(actualMenuCellList, menuCellToDelete.getCellId());
         assertTrue(cellRemoved);
         expectedMenuCellList.remove(1);
         assertEquals(expectedMenuCellList, actualMenuCellList);
@@ -145,7 +145,7 @@ public class MenuReplaceUtilitiesTests {
 
         // Delete cell c1
         menuCellToDelete = actualMenuCellList.get(0);
-        cellRemoved = MenuReplaceUtilities.removeMenuCellFromList(actualMenuCellList, menuCellToDelete.getCellId());
+        cellRemoved = MenuReplaceUtilities.removeCellFromList(actualMenuCellList, menuCellToDelete.getCellId());
         assertTrue(cellRemoved);
         expectedMenuCellList.remove(0);
         assertEquals(expectedMenuCellList, actualMenuCellList);
@@ -162,7 +162,7 @@ public class MenuReplaceUtilitiesTests {
 
         // Add cell c5
         menuCellToAdd = newMenuList.get(0);
-        cellAdded = MenuReplaceUtilities.addMenuRequestWithCommandId(menuCellToAdd.getCellId(), 4, newMenuList, actualMenuCellList);
+        cellAdded = MenuReplaceUtilities.addCellWithCellId(menuCellToAdd.getCellId(), 4, newMenuList, actualMenuCellList);
         assertTrue(cellAdded);
         expectedMenuCellList.add(4, cloneMenuCellAndRemoveSubCells(menuCellToAdd));
         assertEquals(expectedMenuCellList, actualMenuCellList);
@@ -171,7 +171,7 @@ public class MenuReplaceUtilitiesTests {
 
         // Add cell c5-1
         menuCellToAdd = newMenuList.get(0).getSubCells().get(0);
-        cellAdded = MenuReplaceUtilities.addMenuRequestWithCommandId(menuCellToAdd.getCellId(), 0, newMenuList, actualMenuCellList);
+        cellAdded = MenuReplaceUtilities.addCellWithCellId(menuCellToAdd.getCellId(), 0, newMenuList, actualMenuCellList);
         assertTrue(cellAdded);
         expectedMenuCellList.get(4).getSubCells().add(0, cloneMenuCellAndRemoveSubCells(menuCellToAdd));
         assertEquals(expectedMenuCellList, actualMenuCellList);
@@ -180,7 +180,7 @@ public class MenuReplaceUtilitiesTests {
 
         // Add cell c5-1-1
         menuCellToAdd = newMenuList.get(0).getSubCells().get(0).getSubCells().get(0);
-        cellAdded = MenuReplaceUtilities.addMenuRequestWithCommandId(menuCellToAdd.getCellId(), 0, newMenuList, actualMenuCellList);
+        cellAdded = MenuReplaceUtilities.addCellWithCellId(menuCellToAdd.getCellId(), 0, newMenuList, actualMenuCellList);
         assertTrue(cellAdded);
         expectedMenuCellList.get(4).getSubCells().get(0).getSubCells().add(0, cloneMenuCellAndRemoveSubCells(menuCellToAdd));
         assertEquals(expectedMenuCellList, actualMenuCellList);
@@ -190,7 +190,7 @@ public class MenuReplaceUtilitiesTests {
 
         // Add cell c5-2
         menuCellToAdd = newMenuList.get(0).getSubCells().get(1);
-        cellAdded = MenuReplaceUtilities.addMenuRequestWithCommandId(menuCellToAdd.getCellId(), 1, newMenuList, actualMenuCellList);
+        cellAdded = MenuReplaceUtilities.addCellWithCellId(menuCellToAdd.getCellId(), 1, newMenuList, actualMenuCellList);
         assertTrue(cellAdded);
         expectedMenuCellList.get(4).getSubCells().add(1, cloneMenuCellAndRemoveSubCells(menuCellToAdd));
         assertEquals(expectedMenuCellList, actualMenuCellList);
@@ -201,7 +201,7 @@ public class MenuReplaceUtilitiesTests {
         
         // Add cell c5-2-1
         menuCellToAdd = newMenuList.get(0).getSubCells().get(1).getSubCells().get(0);
-        cellAdded = MenuReplaceUtilities.addMenuRequestWithCommandId(menuCellToAdd.getCellId(), 0, newMenuList, actualMenuCellList);
+        cellAdded = MenuReplaceUtilities.addCellWithCellId(menuCellToAdd.getCellId(), 0, newMenuList, actualMenuCellList);
         assertTrue(cellAdded);
         expectedMenuCellList.get(4).getSubCells().get(1).getSubCells().add(0, cloneMenuCellAndRemoveSubCells(menuCellToAdd));
         assertEquals(expectedMenuCellList, actualMenuCellList);

@@ -202,7 +202,7 @@ class MenuReplaceUtilities {
                 .setSecondaryImage(secondaryIcon);
     }
 
-    static boolean removeMenuCellFromList(List<MenuCell> menuCellList, int commandId) {
+    static boolean removeCellFromList(List<MenuCell> menuCellList, int commandId) {
         for (MenuCell menuCell : menuCellList) {
             if (menuCell.getCellId() == commandId) {
                 // If the cell id matches the command id, remove it from the list and return
@@ -211,7 +211,7 @@ class MenuReplaceUtilities {
             } else if (isSubMenuCell(menuCell) && !menuCell.getSubCells().isEmpty()) {
                 // If the menu cell has sub cells, we need to recurse and check the sub cells
                 List<MenuCell> newList = menuCell.getSubCells();
-                boolean foundAndRemovedItem = removeMenuCellFromList(newList, commandId);
+                boolean foundAndRemovedItem = removeCellFromList(newList, commandId);
                 if (foundAndRemovedItem) {
                     menuCell.setSubCells(newList);
                     return true;
@@ -221,14 +221,14 @@ class MenuReplaceUtilities {
         return false;
     }
 
-    static boolean addMenuRequestWithCommandId(int commandId, int position, List<MenuCell> newMenuList, List<MenuCell> mainMenuList) {
+    static boolean addCellWithCellId(int cellId, int position, List<MenuCell> newMenuList, List<MenuCell> mainMenuList) {
         MenuCell addedCell = null;
         for (MenuCell cell : newMenuList) {
-            if (cell.getCellId() == commandId) {
+            if (cell.getCellId() == cellId) {
                 addedCell = cell;
                 break;
             } else if (isSubMenuCell(cell) && !cell.getSubCells().isEmpty()) {
-                boolean success = addMenuRequestWithCommandId(commandId, position, cell.getSubCells(), mainMenuList);
+                boolean success = addCellWithCellId(cellId, position, cell.getSubCells(), mainMenuList);
                 if (success) {
                     return true;
                 }

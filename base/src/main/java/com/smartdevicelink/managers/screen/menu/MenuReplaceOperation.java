@@ -2,7 +2,7 @@ package com.smartdevicelink.managers.screen.menu;
 
 import static com.smartdevicelink.managers.ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName;
 import static com.smartdevicelink.managers.ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName;
-import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.addMenuRequestWithCommandId;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.addCellWithCellId;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.cloneMenuCellsList;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.commandIdForRPCRequest;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.deleteCommandsForCells;
@@ -10,7 +10,7 @@ import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.find
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.isSubMenuCell;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.mainMenuCommandsForCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.positionForRPCRequest;
-import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.removeMenuCellFromList;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.removeCellFromList;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.sendRPCs;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.subMenuCommandsForCells;
 
@@ -312,7 +312,7 @@ class MenuReplaceOperation extends Task {
                 if (response.getSuccess()) {
                     // Find the id of the successful request and remove it from the current menu list wherever it may have been
                     int commandId = commandIdForRPCRequest(request);
-                    removeMenuCellFromList(currentMenu, commandId);
+                    removeCellFromList(currentMenu, commandId);
                 }
             }
         });
@@ -365,7 +365,7 @@ class MenuReplaceOperation extends Task {
                             // Find the id of the successful request and add it from the current menu list wherever it needs to be
                             int commandId = commandIdForRPCRequest(request);
                             int position = positionForRPCRequest(request);
-                            addMenuRequestWithCommandId(commandId, position, newMenuCells, currentMenu);
+                            addCellWithCellId(commandId, position, newMenuCells, currentMenu);
                         }
                     }
                 });
@@ -377,7 +377,7 @@ class MenuReplaceOperation extends Task {
                     // Find the id of the successful request and add it from the current menu list wherever it needs to be
                     int commandId = commandIdForRPCRequest(request);
                     int position = positionForRPCRequest(request);
-                    addMenuRequestWithCommandId(commandId, position, newMenuCells, currentMenu);
+                    addCellWithCellId(commandId, position, newMenuCells, currentMenu);
                 }
             }
         });
