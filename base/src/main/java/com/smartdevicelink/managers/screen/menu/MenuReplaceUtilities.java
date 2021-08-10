@@ -327,7 +327,7 @@ class MenuReplaceUtilities {
                     }
                 }
                 if (!response.getSuccess()) {
-                    errors.put(request, "Failed to send RPC. Result: " + response.getResultCode() + " Info: " + response.getInfo());
+                    errors.put(request, "Failed to send RPC. Result: " + response.getResultCode() + ". Info: " + response.getInfo());
                 }
                 listener.onResponse(request, response);
             }

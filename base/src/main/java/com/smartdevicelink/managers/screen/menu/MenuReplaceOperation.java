@@ -409,11 +409,13 @@ class MenuReplaceOperation extends Task {
         StringBuilder stringBuilder = new StringBuilder();
         for (RPCRequest request : errors.keySet()) {
             stringBuilder.append(errors.get(request));
+            stringBuilder.append(System.getProperty("line.separator"));
             try {
                 stringBuilder.append(request.serializeJSON().toString(4));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            stringBuilder.append(System.getProperty("line.separator"));
         }
         return stringBuilder.toString();
     }
