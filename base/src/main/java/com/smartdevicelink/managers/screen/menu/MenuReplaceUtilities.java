@@ -288,6 +288,18 @@ class MenuReplaceUtilities {
         return menuCell.getSubCells() != null;
     }
 
+    static List<MenuCell> cloneMenuCellsList(List<MenuCell> originalList) {
+        if (originalList == null) {
+            return new ArrayList<>();
+        }
+
+        List<MenuCell> clone = new ArrayList<>();
+        for (MenuCell menuCell : originalList) {
+            clone.add(menuCell.clone());
+        }
+        return clone;
+    }
+
     static void sendRPCs(final List<RPCRequest> requests, ISdl internalInterface, final SendingRPCsCompletionListener listener) {
         final Map<RPCRequest, String> errors = new HashMap<>();
         if (requests == null || requests.isEmpty()) {

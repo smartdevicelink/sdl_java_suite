@@ -32,6 +32,7 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.cloneMenuCellsList;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.isSubMenuCell;
 
 import androidx.annotation.NonNull;
@@ -363,18 +364,6 @@ abstract class BaseMenuManager extends BaseSubManager {
             }
         };
         internalInterface.addOnRPCNotificationListener(FunctionID.ON_COMMAND, commandListener);
-    }
-
-    private List<MenuCell> cloneMenuCellsList(List<MenuCell> originalList) {
-        if (originalList == null) {
-            return new ArrayList<>();
-        }
-
-        List<MenuCell> clone = new ArrayList<>();
-        for (MenuCell menuCell : originalList) {
-            clone.add(menuCell.clone());
-        }
-        return clone;
     }
 
     private boolean callListenerForCells(List<MenuCell> cells, OnCommand command) {
