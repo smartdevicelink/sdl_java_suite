@@ -23,6 +23,7 @@ import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.MenuCellState;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
@@ -85,17 +86,26 @@ class MenuReplaceOperation extends Task {
     }
 
     private void updateMenuCells(final CompletionListener listener) {
-        DynamicMenuUpdateRunScore runScore;
+        this.updatedStrippedMenu = cellsWithRemovedPropertiesFromCells(updatedMenu, windowCapability);
+        this.currentStrippedMenu = cellsWithRemovedPropertiesFromCells(currentMenu, windowCapability);
 
+        // Check if head unit supports cells with duplicate titles
+        SdlMsgVersion rpcVersion = internalInterface.get().getSdlMsgVersion();
+        boolean supportsMenuUniqueness = rpcVersion.getMajorVersion() > 7 || (rpcVersion.getMajorVersion() == 7 && rpcVersion.getMinorVersion() > 0);
+
+        addUniqueNamesToCells(updatedStrippedMenu, supportsMenuUniqueness);
+        applyUniqueNamesOnCells(updatedStrippedMenu, updatedMenu);
+
+        DynamicMenuUpdateRunScore runScore;
         if (!isDynamicMenuUpdateActive) {
             DebugTool.logInfo(TAG, "Dynamic menu update inactive. Forcing the deletion of all old cells and adding all new ones, even if they're the same.");
             runScore = DynamicMenuUpdateAlgorithm.compatibilityRunScoreWithOldMenuCells(currentMenu, updatedMenu);
         } else {
             DebugTool.logInfo(TAG, "Dynamic menu update active. Running the algorithm to find the best way to delete / add cells.");
-            runScore = DynamicMenuUpdateAlgorithm.dynamicRunScoreOldMenuCells(currentMenu, updatedMenu);
+            runScore = DynamicMenuUpdateAlgorithm.dynamicRunScoreOldMenuCells(currentMenu, updatedStrippedMenu);
         }
 
-        // If both old and new menu cells are empty. Then nothing needs to be done.
+        // If both old and new menu cells are empty, nothing needs to be done.
         if (runScore.isEmpty()) {
             listener.onComplete(true);
             return;
@@ -104,6 +114,7 @@ class MenuReplaceOperation extends Task {
         List<MenuCellState> deleteMenuStatus = runScore.getOldStatus();
         List<MenuCellState> addMenuStatus = runScore.getUpdatedStatus();
 
+        // Drop the cells into buckets based on the run score
         final List<MenuCell> cellsToDelete = filterMenuCellsWithStatusList(currentMenu, deleteMenuStatus, MenuCellState.DELETE);
         final List<MenuCell> cellsToAdd = filterMenuCellsWithStatusList(updatedMenu, addMenuStatus, MenuCellState.ADD);
 
@@ -116,36 +127,64 @@ class MenuReplaceOperation extends Task {
         // We will transfer the ids for subCells later
         transferCellIDFromOldCells(oldKeeps, newKeeps);
 
-        // Upload the Artworks
-        List<SdlArtwork> artworksToBeUploaded = findAllArtworksToBeUploadedFromCells(updatedMenu, fileManager.get(), windowCapability);
-        if (!artworksToBeUploaded.isEmpty() && fileManager.get() != null) {
-            fileManager.get().uploadArtworks(artworksToBeUploaded, new MultipleFileCompletionListener() {
-                @Override
-                public void onComplete(Map<String, String> errors) {
-                    if (errors != null && !errors.isEmpty()) {
-                        DebugTool.logError(TAG, "Error uploading Menu Artworks: " + errors.toString());
-                    } else {
-                        DebugTool.logInfo(TAG, "Menu Artworks Uploaded");
-                    }
-                    updateMenuWithCellsToDelete(cellsToDelete, cellsToAdd, new CompletionListener() {
-                        @Override
-                        public void onComplete(boolean success) {
-                            updateSubMenuWithOldKeptCells(oldKeeps, newKeeps, 0, listener);
+        // Upload the Artworks, then we will start updating the main menu
+        uploadMenuArtworks(new CompletionListener() {
+            @Override
+            public void onComplete(boolean success) {
+                if (getState() == Task.CANCELED) {
+                    return;
+                }
+
+                if (!success) {
+                    listener.onComplete(false);
+                    return;
+                }
+
+                updateMenuWithCellsToDelete(cellsToDelete, cellsToAdd, new CompletionListener() {
+                    @Override
+                    public void onComplete(boolean success) {
+                        if (getState() == Task.CANCELED) {
+                            return;
                         }
-                    });
-                }
-            });
-        } else {
-            // Cells have no artwork to load
-            updateMenuWithCellsToDelete(cellsToDelete, cellsToAdd, new CompletionListener() {
-                @Override
-                public void onComplete(boolean success) {
-                    updateSubMenuWithOldKeptCells(oldKeeps, newKeeps, 0, listener);
-                }
-            });
-        }
+
+                        if (!success) {
+                            listener.onComplete(false);
+                            return;
+                        }
+
+                        updateSubMenuWithOldKeptCells(oldKeeps, newKeeps, 0, listener);
+                    }
+                });
+            }
+        });
     }
 
+    private void uploadMenuArtworks(final CompletionListener listener) {
+        List<SdlArtwork> artworksToBeUploaded = findAllArtworksToBeUploadedFromCells(updatedMenu, fileManager.get(), windowCapability);
+        if (artworksToBeUploaded.isEmpty()) {
+            listener.onComplete(true);
+            return;
+        }
+
+        if (fileManager.get() == null) {
+            listener.onComplete(false);
+            return;
+        }
+
+        fileManager.get().uploadArtworks(artworksToBeUploaded, new MultipleFileCompletionListener() {
+            @Override
+            public void onComplete(Map<String, String> errors) {
+                if (errors != null && !errors.isEmpty()) {
+                    DebugTool.logError(TAG, "Error uploading Menu Artworks: " + errors.toString());
+                    listener.onComplete(false);
+                } else {
+                    DebugTool.logInfo(TAG, "Menu artwork upload completed, beginning upload of main menu");
+                    listener.onComplete(true);
+                }
+            }
+        });
+    }
+    
     /**
      * Takes the main menu cells to delete and add, and deletes the current menu cells, then adds the new menu cells in the correct locations
      *
