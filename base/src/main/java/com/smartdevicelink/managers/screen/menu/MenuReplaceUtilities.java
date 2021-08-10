@@ -1,5 +1,9 @@
 package com.smartdevicelink.managers.screen.menu;
 
+import static com.smartdevicelink.managers.ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName;
+import static com.smartdevicelink.managers.ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName;
+import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdNotFound;
+
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
@@ -21,10 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.smartdevicelink.managers.ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName;
-import static com.smartdevicelink.managers.ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName;
-import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdNotFound;
 
 /**
  * Created by Bilal Alsharifi on 1/25/21.
