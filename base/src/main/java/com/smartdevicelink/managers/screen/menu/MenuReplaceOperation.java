@@ -125,7 +125,7 @@ class MenuReplaceOperation extends Task {
         // Since we are creating a new menu but keeping old cells, we must first transfer the old cellIDs to the new menu kept cells.
         // This is needed for the onCommands to still work
         // We will transfer the ids for subCells later
-        transferCellIDFromOldCells(oldKeeps, newKeeps);
+        transferCellIDsFromOldCells(oldKeeps, newKeeps);
 
         // Upload the Artworks, then we will start updating the main menu
         uploadMenuArtworks(new CompletionListener() {
@@ -223,10 +223,6 @@ class MenuReplaceOperation extends Task {
      * @param listener     A CompletionListener called when complete
      */
     private void updateSubMenuWithOldKeptCells(final List<MenuCell> oldKeptCells, final List<MenuCell> newKeptCells, final int startIndex, final CompletionListener listener) {
-        if (getState() == Task.CANCELED) {
-            return;
-        }
-
         if (oldKeptCells.isEmpty() || startIndex >= oldKeptCells.size()) {
             listener.onComplete(true);
             return;
@@ -251,14 +247,30 @@ class MenuReplaceOperation extends Task {
             final List<MenuCell> oldKeeps = filterMenuCellsWithStatusList(oldKeptCells.get(startIndex).getSubCells(), deleteMenuStatus, MenuCellState.KEEP);
             final List<MenuCell> newKeeps = filterMenuCellsWithStatusList(newKeptCells.get(startIndex).getSubCells(), addMenuStatus, MenuCellState.KEEP);
 
-            transferCellIDFromOldCells(oldKeeps, newKeeps);
+            transferCellIDsFromOldCells(oldKeeps, newKeeps);
 
             sendDeleteCurrentMenu(cellsToDelete, new CompletionListener() {
                 @Override
                 public void onComplete(boolean success) {
+                    if (getState() == Task.CANCELED) {
+                        return;
+                    }
+
+                    if (!success) {
+                        listener.onComplete(false);
+                    }
+
                     sendNewMenuCells(cellsToAdd, new CompletionListener() {
                         @Override
                         public void onComplete(boolean success) {
+                            if (getState() == Task.CANCELED) {
+                                return;
+                            }
+
+                            if (!success) {
+                                listener.onComplete(false);
+                            }
+
                             // After the first set of submenu cells were added and deleted we must find the next set of sub cells until we loop through all the elements
                             updateSubMenuWithOldKeptCells(oldKeptCells, newKeptCells, startIndex + 1, listener);
                         }
@@ -266,7 +278,7 @@ class MenuReplaceOperation extends Task {
                 }
             });
         } else {
-            // After the first set of submenu cells were added and deleted we must find the next set of sub cells until we loop through all the elements
+            // There are no sub cells, we can skip to the next index.
             updateSubMenuWithOldKeptCells(oldKeptCells, newKeptCells, startIndex + 1, listener);
         }
     }
@@ -336,10 +348,6 @@ class MenuReplaceOperation extends Task {
                     return;
                 }
 
-                if (getState() == Task.CANCELED) {
-                    return;
-                }
-
                 sendRPCs(subMenuCommands, internalInterface.get(), new SendingRPCsCompletionListener() {
                     @Override
                     public void onComplete(boolean success, Map<RPCRequest, String> errors) {
@@ -385,7 +393,7 @@ class MenuReplaceOperation extends Task {
         return filteredCells;
     }
 
-    private void transferCellIDFromOldCells(List<MenuCell> oldCells, List<MenuCell> newCells) {
+    private void transferCellIDsFromOldCells(List<MenuCell> oldCells, List<MenuCell> newCells) {
         if (oldCells == null || oldCells.isEmpty()) {
             return;
         }
