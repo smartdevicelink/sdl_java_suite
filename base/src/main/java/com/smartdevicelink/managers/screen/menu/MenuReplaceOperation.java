@@ -478,13 +478,10 @@ class MenuReplaceOperation extends Task {
 
             if (counter != null) {
                 dictCounter.put(key, ++counter);
+                cell.setUniqueTitle(cell.getTitle() + " (" + counter + ")");
             } else {
                 dictCounter.put(key, 1);
-            }
-
-            counter = dictCounter.get(key);
-            if (counter != null && counter > 1) {
-                cell.setUniqueTitle(cell.getTitle()  + " (" + counter + ")");
+                cell.setUniqueTitle(cell.getTitle());
             }
 
             if (isSubMenuCell(cell) && !cell.getSubCells().isEmpty()) {
