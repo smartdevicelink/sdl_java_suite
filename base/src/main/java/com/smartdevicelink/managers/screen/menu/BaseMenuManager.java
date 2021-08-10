@@ -448,10 +448,6 @@ abstract class BaseMenuManager extends BaseSubManager {
         HashSet<MenuCell> identicalCellsCheckSet = new HashSet<>();
 
         for (MenuCell cell : cells) {
-            // We don't want the UniqueTitle & listener to be considered in uniqueness check
-            cell.setUniqueTitle(null);
-            cell.setMenuSelectionListener(null);
-
             identicalCellsCheckSet.add(cell);
 
             // Recursively check the sub-cell lists to see if they are all unique as well. If anything is not, this will chain back up the list to return false.
@@ -472,7 +468,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
         // Check for duplicate cells
         if (identicalCellsCheckSet.size() != cells.size()) {
-            DebugTool.logError(TAG, "Not all cells are unique. The menu will not be set.");
+            DebugTool.logError(TAG, "Not all cells are unique. Cells in each list (such as main menu or sub cell list) must have some differentiating property other than the sub cells within a cell. The menu will not be set.");
             return false;
         }
 
