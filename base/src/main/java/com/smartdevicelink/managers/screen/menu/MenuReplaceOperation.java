@@ -49,8 +49,6 @@ class MenuReplaceOperation extends Task {
     private WindowCapability windowCapability;
     private List<MenuCell> currentMenu;
     private final List<MenuCell> updatedMenu;
-    private List<MenuCell> currentStrippedMenu;
-    private List<MenuCell> updatedStrippedMenu;
     private final boolean isDynamicMenuUpdateActive;
     private final MenuManagerCompletionListener operationCompletionListener;
     private MenuConfiguration menuConfiguration;
@@ -86,23 +84,27 @@ class MenuReplaceOperation extends Task {
     }
 
     private void updateMenuCells(final CompletionListener listener) {
-        this.updatedStrippedMenu = cellsWithRemovedPropertiesFromCells(updatedMenu, windowCapability);
-        this.currentStrippedMenu = cellsWithRemovedPropertiesFromCells(currentMenu, windowCapability);
-
-        // Check if head unit supports cells with duplicate titles
-        SdlMsgVersion rpcVersion = internalInterface.get().getSdlMsgVersion();
-        boolean supportsMenuUniqueness = rpcVersion.getMajorVersion() > 7 || (rpcVersion.getMajorVersion() == 7 && rpcVersion.getMinorVersion() > 0);
-
-        addUniqueNamesToCells(updatedStrippedMenu, supportsMenuUniqueness);
-        applyUniqueNamesOnCells(updatedStrippedMenu, updatedMenu);
-
         DynamicMenuUpdateRunScore runScore;
         if (!isDynamicMenuUpdateActive) {
             DebugTool.logInfo(TAG, "Dynamic menu update inactive. Forcing the deletion of all old cells and adding all new ones, even if they're the same.");
             runScore = DynamicMenuUpdateAlgorithm.compatibilityRunScoreWithOldMenuCells(currentMenu, updatedMenu);
         } else {
             DebugTool.logInfo(TAG, "Dynamic menu update active. Running the algorithm to find the best way to delete / add cells.");
-            runScore = DynamicMenuUpdateAlgorithm.dynamicRunScoreOldMenuCells(currentMenu, updatedStrippedMenu);
+
+            // Strip the "current menu" and the new menu of properties that are not displayed on the head unit
+            List<MenuCell> updatedStrippedMenu = cellsWithRemovedPropertiesFromCells(updatedMenu, windowCapability);
+            List<MenuCell> currentStrippedMenu = cellsWithRemovedPropertiesFromCells(currentMenu, windowCapability);
+
+            // Check if head unit supports cells with duplicate titles
+            SdlMsgVersion rpcVersion = internalInterface.get().getSdlMsgVersion();
+            boolean supportsMenuUniqueness = rpcVersion.getMajorVersion() > 7 || (rpcVersion.getMajorVersion() == 7 && rpcVersion.getMinorVersion() > 0);
+
+            // Generate unique names and ensure that all menus we are tracking have them so that we can properly compare when using the dynamic algorithm
+            generateUniqueNamesForCells(updatedStrippedMenu, supportsMenuUniqueness);
+            applyUniqueNamesOnCells(updatedStrippedMenu, updatedMenu);
+            applyUniqueNamesOnCells(currentMenu, currentStrippedMenu);
+
+            runScore = DynamicMenuUpdateAlgorithm.dynamicRunScoreOldMenuCells(currentStrippedMenu, updatedStrippedMenu);
         }
 
         // If both old and new menu cells are empty, nothing needs to be done.
@@ -464,7 +466,7 @@ class MenuReplaceOperation extends Task {
         return removePropertiesClone;
     }
 
-    private void addUniqueNamesToCells(List<MenuCell> menuCells, boolean supportsMenuUniqueness) {
+    private void generateUniqueNamesForCells(List<MenuCell> menuCells, boolean supportsMenuUniqueness) {
         if (menuCells == null) {
             return;
         }
@@ -485,7 +487,7 @@ class MenuReplaceOperation extends Task {
             }
 
             if (isSubMenuCell(cell) && !cell.getSubCells().isEmpty()) {
-                addUniqueNamesToCells(cell.getSubCells(), supportsMenuUniqueness);
+                generateUniqueNamesForCells(cell.getSubCells(), supportsMenuUniqueness);
             }
         }
     }
