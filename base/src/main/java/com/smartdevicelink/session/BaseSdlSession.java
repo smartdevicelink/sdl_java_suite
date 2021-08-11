@@ -190,6 +190,10 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
     protected void processControlService(ProtocolMessage msg) {
         if (sdlSecurity == null)
             return;
+
+        byte[] securityQueryHeader = new byte[12];
+        System.arraycopy(msg.getData(), 0, securityQueryHeader, 0, 12);
+
         int iLen = msg.getData().length - 12;
         byte[] data = new byte[iLen];
         System.arraycopy(msg.getData(), 12, data, 0, iLen);
@@ -198,8 +202,12 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
 
         Integer iNumBytes = null;
 
-        if (data[3] == QueryID.SEND_HANDSHAKE_DATA.getValue()) {
+        byte[] queryID = new byte[3];
+        System.arraycopy(securityQueryHeader, 1, queryID, 0, 3);
+        if (queryID == QueryID.SEND_HANDSHAKE_DATA.getValue() && securityQueryHeader[0] == QueryType.REQUEST.value()) {
             iNumBytes = sdlSecurity.runHandshake(data, dataToRead);
+        } else if (queryID == QueryID.SEND_INTERNAL_ERROR.value()) {
+            DebugTool.logError(TAG, "Internal Error processing control service");
         }
 
         if (iNumBytes == null || iNumBytes <= 0)
@@ -217,7 +225,7 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
 
         SecurityQuery securityQuery = new SecurityQuery();
         securityQuery.setQueryID(QueryID.SEND_HANDSHAKE_DATA);
-        securityQuery.setQueryType(QueryType.REQUEST);
+        securityQuery.setQueryType(QueryType.RESPONSE);
         securityQuery.setCorrelationId(msg.getCorrID());
         securityQuery.setJsonSize(msg.getJsonSize());
         securityQuery.setData(returnBytes);

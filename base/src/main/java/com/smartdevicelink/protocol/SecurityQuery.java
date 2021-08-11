@@ -9,8 +9,8 @@ import com.smartdevicelink.protocol.enums.QueryType;
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public class SecurityQuery {
 
-    private QueryType _queryType = QueryType.INVALID_QUERY_TYPE;
-    private QueryID _queryID = QueryID.INVALID_QUERY_ID;
+    private QueryType _queryType;
+    private QueryID _queryID;
     private int _correlationId;
     private int _jsonSize;
     private QueryErrorCode _queryErrorCode = QueryErrorCode.ERROR_SUCCESS;
