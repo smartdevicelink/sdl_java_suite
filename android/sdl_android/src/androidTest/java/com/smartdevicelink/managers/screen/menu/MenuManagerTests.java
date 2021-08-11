@@ -71,7 +71,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.menuCellIdMin;
 import static com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.MenuCellState;
 import static com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.MenuCellState.ADD;
 import static com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.MenuCellState.DELETE;
@@ -187,7 +186,6 @@ public class MenuManagerTests {
         assertEquals(BaseSubManager.SETTING_UP, menuManager.getState());
         assertEquals(SystemContext.SYSCTXT_MAIN, menuManager.currentSystemContext);
         assertEquals(DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE, menuManager.dynamicMenuUpdatesMode);
-        assertEquals(menuCellIdMin, menuManager.lastMenuId);
         assertTrue(menuManager.menuCells.isEmpty());
         assertTrue(menuManager.currentMenuCells.isEmpty());
         assertNull(menuManager.menuConfiguration.getMenuLayout());

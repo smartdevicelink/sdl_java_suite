@@ -63,8 +63,8 @@ import java.util.List;
 import java.util.Random;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
-import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.menuCellIdMin;
 import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdNotFound;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.updateIdsOnMenuCells;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -75,8 +75,6 @@ import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
 public class MenuReplaceOperationTests {
-    static int lastMenuId = menuCellIdMin;
-
     private Handler mainHandler;
     private Taskmaster taskmaster;
     private Queue transactionQueue;
@@ -174,18 +172,6 @@ public class MenuReplaceOperationTests {
             windowCapability.getMenuLayoutsAvailable().add(MenuLayout.TILES);
         }
         return windowCapability;
-    }
-
-    private void updateIdsOnMenuCells(List<MenuCell> menuCells, int parentId) {
-        for (MenuCell cell : menuCells) {
-            cell.setCellId(lastMenuId++);
-            if (parentId != parentIdNotFound) {
-                cell.setParentCellId(parentId);
-            }
-            if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
-                updateIdsOnMenuCells(cell.getSubCells(), cell.getCellId());
-            }
-        }
     }
 
     // Asserts on Taskmaster threads will fail silently so we need to do the assertions on main thread if the code is triggered from Taskmaster

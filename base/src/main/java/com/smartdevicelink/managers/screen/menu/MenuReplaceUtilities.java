@@ -31,11 +31,6 @@ import java.util.Map;
  */
 class MenuReplaceUtilities {
     private static int menuId = 0;
-
-    static void setNextMenuId(int nextMenuId) {
-        menuId = nextMenuId;
-    }
-
     static int getNextMenuId() {
         return ++menuId;
     }

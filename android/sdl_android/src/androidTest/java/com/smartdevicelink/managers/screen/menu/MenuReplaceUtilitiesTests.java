@@ -50,8 +50,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.menuCellIdMin;
 import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdNotFound;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.updateIdsOnMenuCells;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
@@ -64,8 +64,6 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(AndroidJUnit4.class)
 public class MenuReplaceUtilitiesTests {
-    static int lastMenuId = menuCellIdMin;
-
     @Before
     public void setUp() throws Exception {
     }
@@ -341,17 +339,5 @@ public class MenuReplaceUtilitiesTests {
         updateIdsOnMenuCells(newMenuList, parentIdNotFound);
 
         return newMenuList ;
-    }
-
-    private  void updateIdsOnMenuCells(List<MenuCell> menuCells, int parentId) {
-        for (MenuCell cell : menuCells) {
-            cell.setCellId(lastMenuId++);
-            if (parentId != parentIdNotFound) {
-                cell.setParentCellId(parentId);
-            }
-            if (cell.getSubCells() != null && !cell.getSubCells().isEmpty()) {
-                updateIdsOnMenuCells(cell.getSubCells(), cell.getCellId());
-            }
-        }
     }
 }
