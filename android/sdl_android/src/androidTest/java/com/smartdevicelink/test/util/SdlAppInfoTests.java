@@ -184,7 +184,7 @@ public class SdlAppInfoTests {
     }
 
     @Test
-    public void testDeserializeVehicleInfo(){
+    public void testDeserializeVehicleInfo() {
         VehicleType type = new VehicleType();
         type.setMake("SDL");
         type.setModel("Car");
@@ -196,7 +196,7 @@ public class SdlAppInfoTests {
     }
 
     @Test
-    public void testVehicleTypeSupported(){
+    public void testVehicleTypeSupported() {
         VehicleType type1 = new VehicleType();
 
         type1.setModel(TestValues.GENERAL_STRING);
@@ -215,7 +215,7 @@ public class SdlAppInfoTests {
     }
 
     @Test
-    public void testVehicleTypeNotSupported(){
+    public void testVehicleTypeNotSupported() {
         VehicleType type1 = new VehicleType();
 
         type1.setModel(TestValues.GENERAL_STRING);

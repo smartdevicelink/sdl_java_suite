@@ -76,7 +76,7 @@ public class VehicleTypeTest extends TestCase {
         }
     }
 
-    public void testHashMapConstructor(){
+    public void testHashMapConstructor() {
         Hashtable<String, Object> store = msg.getStore();
         HashMap<String, Object> hashMap = new HashMap(store);
         VehicleType type = new VehicleType(hashMap);

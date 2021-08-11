@@ -1117,7 +1117,7 @@ public class SdlRouterService extends Service {
         }
 
         if (!SdlAppInfo.checkIfVehicleSupported(currentAppInfo.getVehicleMakesList(), receivedVehicleType)) {
-            DebugTool.logError(TAG, "Received VD is not supported. Shutting down");
+            DebugTool.logError(TAG, "Received vehicle data is not supported. Shutting down");
             return false;
         }
 

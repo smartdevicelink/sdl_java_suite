@@ -359,11 +359,11 @@ public class AndroidTools {
      */
     public static boolean isSupportedVehicleType(List<VehicleType> supportedList, VehicleType typeToCheck) {
         if (!SdlAppInfo.checkIfVehicleSupported(supportedList, typeToCheck)) {
-            DebugTool.logError(TAG, "Vehicle type is NOT supportable by current package");
-            DebugTool.logError(TAG, "Received VD: " + typeToCheck.getStore().toString());
+            DebugTool.logError(TAG, "Vehicle type is NOT supported by current package");
+            DebugTool.logError(TAG, "Received Vehicle Data: " + typeToCheck.getStore().toString());
 
             StringBuilder builder = new StringBuilder();
-            builder.append("Supportable VD: ");
+            builder.append("Supported vehicle data: ");
             for (VehicleType vtype : supportedList) {
                 builder.append(vtype.getStore().toString());
                 builder.append("; ");
@@ -373,7 +373,7 @@ public class AndroidTools {
             return false;
         }
 
-        DebugTool.logInfo(TAG, "Vehicle type is supportable by current package");
+        DebugTool.logInfo(TAG, "Vehicle type is supported by current package");
         return true;
     }
 }

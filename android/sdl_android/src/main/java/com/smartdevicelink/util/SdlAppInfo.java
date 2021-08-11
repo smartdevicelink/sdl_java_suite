@@ -274,7 +274,7 @@ public class SdlAppInfo {
                     }
                 }
                 else {
-                    /* Return true if only make is defined and it matches*/
+                    // Return true if only make is defined and it matches
                     return true;
                 }
             }
@@ -285,7 +285,7 @@ public class SdlAppInfo {
     /**
      * Gets app's supported vehicle types.
      *
-     * @return List<VehicleType> a list representing the array of supported vehicle types.
+     * @return List<VehicleType> a list representing the list of supported vehicle types.
      */
     public List<VehicleType> getVehicleMakesList() {
         return vehicleMakesList;

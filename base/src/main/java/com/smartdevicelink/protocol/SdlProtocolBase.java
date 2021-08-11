@@ -1572,7 +1572,6 @@ public class SdlProtocolBase {
                 return record.getAddress();
             }
         }
-
         return null;
     }
 

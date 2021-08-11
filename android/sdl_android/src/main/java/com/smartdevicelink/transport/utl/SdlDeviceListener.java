@@ -68,7 +68,7 @@ public class SdlDeviceListener {
     private static final String SDL_DEVICE_STATUS_SHARED_PREFS = "sdl.device.status";
     private static final Object LOCK = new Object(), RUNNING_LOCK = new Object();
 
-    // If increasing MAX PROTOCOL VERSION major version, make sure to alter it in SdlPsm and SdlProtocolBase
+    // If increasing MAX PROTOCOL VERSION major version, make sure to alter it in SdlProtocolBase
     private static final Version MAX_PROTOCOL_VERSION = new Version(5, 4, 0);
 
     private final WeakReference<Context> contextWeakReference;
@@ -191,7 +191,7 @@ public class SdlDeviceListener {
         }
 
         /**
-         * This method will send Start Service for RPC, to know vehicle type info by connected bluetooth transport.
+         * This method will start the RPC service so that we can retrieve vehicle info
          */
         public void sendStartService() {
             SdlDeviceListener sdlListener = this.provider.get();
@@ -204,9 +204,9 @@ public class SdlDeviceListener {
         }
 
         /**
-         * This method will read available info in StartServiceACK and then end the RPC session.
+         * This method will pull vehicle data out of a StartServiceACK and then end the RPC session
          *
-         * @param packet an info available in StartServiceACK
+         * @param packet - info received from connected module
          */
         public void onPacketRead(SdlPacket packet) {
             SdlDeviceListener sdlListener = this.provider.get();
@@ -228,10 +228,10 @@ public class SdlDeviceListener {
         }
 
         /**
-         * This method will retrieve vehicle type from the StartServiceACK.
+         * Retrieves vehicle type from the StartServiceACK
          *
-         * @param packet an info available in StartServiceACK
-         * @return vehicle type if info available in StartServiceACK or null
+         * @param packet - info received from connected module
+         * @return vehicle type of connected module
          */
         private VehicleType getVehicleType(SdlPacket packet) {
             String make = (String) packet.getTag(ControlFrameTags.RPC.StartServiceACK.MAKE);
