@@ -66,7 +66,6 @@ import java.util.List;
 
 abstract class BaseMenuManager extends BaseSubManager {
     private static final String TAG = "BaseMenuManager";
-    static final int menuCellIdMin = 1;
     static final int parentIdNotFound = 2000000000;
 
     final WeakReference<FileManager> fileManager;
@@ -83,12 +82,10 @@ abstract class BaseMenuManager extends BaseSubManager {
     OnSystemCapabilityListener onDisplaysCapabilityListener;
     WindowCapability windowCapability;
     private Queue transactionQueue;
-    int lastMenuId;
 
     BaseMenuManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface);
 
-        this.lastMenuId = menuCellIdMin;
         this.menuConfiguration = new MenuConfiguration(null, null);
         this.menuCells = new ArrayList<>();
         this.currentMenuCells = new ArrayList<>();
@@ -108,7 +105,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 
     @Override
     public void dispose() {
-        lastMenuId = menuCellIdMin;
         menuCells = new ArrayList<>();
         currentMenuCells = new ArrayList<>();
         currentHMILevel = HMILevel.HMI_NONE;
@@ -183,8 +179,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 
         // Create a deep copy of the list so future changes by developers don't affect the algorithm logic
         this.menuCells = cloneMenuCellsList(cells);
-
-        updateIdsOnMenuCells(menuCells, parentIdNotFound);
 
         boolean isDynamicMenuUpdateActive = isDynamicMenuUpdateActive(dynamicMenuUpdatesMode, displayType);
         Task operation = new MenuReplaceOperation(internalInterface, fileManager.get(), windowCapability, menuConfiguration, currentMenuCells, menuCells, isDynamicMenuUpdateActive, new MenuManagerCompletionListener() {
@@ -422,18 +416,6 @@ abstract class BaseMenuManager extends BaseSubManager {
         }
 
         return true;
-    }
-
-    private void updateIdsOnMenuCells(List<MenuCell> menuCells, int parentId) {
-        for (MenuCell cell : menuCells) {
-            cell.setCellId(lastMenuId++);
-            if (parentId != parentIdNotFound) {
-                cell.setParentCellId(parentId);
-            }
-            if (isSubMenuCell(cell) && !cell.getSubCells().isEmpty()) {
-                updateIdsOnMenuCells(cell.getSubCells(), cell.getCellId());
-            }
-        }
     }
 
     /**

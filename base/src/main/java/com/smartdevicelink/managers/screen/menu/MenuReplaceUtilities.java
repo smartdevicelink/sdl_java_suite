@@ -30,6 +30,33 @@ import java.util.Map;
  * Created by Bilal Alsharifi on 1/25/21.
  */
 class MenuReplaceUtilities {
+    private static int menuId = 0;
+
+    static void setNextMenuId(int nextMenuId) {
+        menuId = nextMenuId;
+    }
+
+    static int getNextMenuId() {
+        return ++menuId;
+    }
+
+    /**
+     * Assign cell ids on an array of menu cells given a parent id (or no parent id)
+     * @param menuCells The array of menu cells to update
+     * @param parentId The parent id to assign if needed
+     */
+    static void updateIdsOnMenuCells(List<MenuCell> menuCells, int parentId) {
+        for (MenuCell cell : menuCells) {
+            cell.setCellId(getNextMenuId());
+            if (parentId != parentIdNotFound) {
+                cell.setParentCellId(parentId);
+            }
+            if (isSubMenuCell(cell) && !cell.getSubCells().isEmpty()) {
+                updateIdsOnMenuCells(cell.getSubCells(), cell.getCellId());
+            }
+        }
+    }
+
     static List<SdlArtwork> findAllArtworksToBeUploadedFromCells(List<MenuCell> cells, FileManager fileManager, WindowCapability windowCapability) {
         // Make sure we can use images in the menus
         if (!hasImageFieldOfName(windowCapability, ImageFieldName.cmdIcon)) {
@@ -267,7 +294,6 @@ class MenuReplaceUtilities {
             insertMenuCell(cell, menuCellList, position);
             return true;
         }
-
     }
 
     private static void insertMenuCell(MenuCell cell, List<MenuCell> cellList, int position) {

@@ -2,6 +2,7 @@ package com.smartdevicelink.managers.screen.menu;
 
 import static com.smartdevicelink.managers.ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName;
 import static com.smartdevicelink.managers.ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName;
+import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdNotFound;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.addCellWithCellId;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.cloneMenuCellsList;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.commandIdForRPCRequest;
@@ -13,6 +14,7 @@ import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.posi
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.removeCellFromList;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.sendRPCs;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.subMenuCommandsForCells;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.updateIdsOnMenuCells;
 
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
@@ -84,6 +86,8 @@ class MenuReplaceOperation extends Task {
     }
 
     private void updateMenuCells(final CompletionListener listener) {
+        updateIdsOnMenuCells(updatedMenu, parentIdNotFound);
+
         DynamicMenuUpdateRunScore runScore;
         if (!isDynamicMenuUpdateActive) {
             DebugTool.logInfo(TAG, "Dynamic menu update inactive. Forcing the deletion of all old cells and adding all new ones, even if they're the same.");
