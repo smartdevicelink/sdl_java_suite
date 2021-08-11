@@ -268,32 +268,32 @@ class MenuReplaceUtilities {
     }
 
     private static boolean addMenuCell(MenuCell cell, List<MenuCell> menuCellList, int position) {
-        if (cell.getParentCellId() != parentIdNotFound) {
-            // If the cell has a parent id, we need to find the cell with a matching cell id and insert it into its submenu
-            for (MenuCell menuCell : menuCellList) {
-                if (menuCell.getCellId() == cell.getParentCellId()) {
-                    if (menuCell.getSubCells() == null) {
-                        menuCell.setSubCells(new ArrayList<MenuCell>());
-                    }
-                    // If we found the correct submenu, insert it into that submenu
-                    insertMenuCell(cell, menuCell.getSubCells(), position);
-                    return true;
-                } else if (isSubMenuCell(menuCell) && !menuCell.getSubCells().isEmpty()) {
-                    // Check the sub cells of this cell to see if any of those have cell ids that match the parent cell id
-                    List<MenuCell> newList = menuCell.getSubCells();
-                    boolean foundAndAddedItem = addMenuCell(cell, newList, position);
-                    if (foundAndAddedItem) {
-                        menuCell.setSubCells(newList);
-                        return true;
-                    }
-                }
-            }
-            return false;
-        } else {
+        if (cell.getParentCellId() == parentIdNotFound) {
             // The cell does not have a parent id, just insert it into the main menu
             insertMenuCell(cell, menuCellList, position);
             return true;
         }
+
+        // If the cell has a parent id, we need to find the cell with a matching cell id and insert it into its submenu
+        for (MenuCell menuCell : menuCellList) {
+            if (menuCell.getCellId() == cell.getParentCellId()) {
+                if (menuCell.getSubCells() == null) {
+                    menuCell.setSubCells(new ArrayList<MenuCell>());
+                }
+                // If we found the correct submenu, insert it into that submenu
+                insertMenuCell(cell, menuCell.getSubCells(), position);
+                return true;
+            } else if (isSubMenuCell(menuCell) && !menuCell.getSubCells().isEmpty()) {
+                // Check the sub cells of this cell to see if any of those have cell ids that match the parent cell id
+                List<MenuCell> newList = menuCell.getSubCells();
+                boolean foundAndAddedItem = addMenuCell(cell, newList, position);
+                if (foundAndAddedItem) {
+                    menuCell.setSubCells(newList);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private static void insertMenuCell(MenuCell cell, List<MenuCell> cellList, int position) {
