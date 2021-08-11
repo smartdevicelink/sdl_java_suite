@@ -4,6 +4,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.protocol.BinaryQueryHeader;
 import com.smartdevicelink.protocol.enums.QueryID;
+import com.smartdevicelink.util.BitConverter;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,6 +38,44 @@ public class BinaryQueryHeaderTests {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    @Test
+    public void testCorrectParsing() {
+        byte[] array = new byte[12];
+        array[0] = 1;
+        array[1] = 0;
+        array[2] = 0;
+        array[3] = 2;
+        array[4] = 0;
+        array[5] = 0;
+        array[6] = 0;
+        array[7] = 3;
+        array[8] = 0;
+        array[9] = 0;
+        array[10] = 0;
+        array[11] = 0;
+
+        BinaryQueryHeader parsedBqh = BinaryQueryHeader.parseBinaryQueryHeader(array);
+        assertEquals(parsedBqh.getQueryType(), 0x1);
+        assertEquals(parsedBqh.getQueryID(), 2);
+        assertEquals(parsedBqh.getCorrelationID(), 3);
+        assertEquals(parsedBqh.getJsonSize(), 0);
+    }
+
+    @Test
+    public void testCorrectHeaderAssembly() {
+        BinaryQueryHeader dummyBqh = new BinaryQueryHeader();
+        dummyBqh.setQueryType((byte) 1);
+        dummyBqh.setQueryID(2);
+        dummyBqh.setCorrelationID(3);
+        dummyBqh.setJsonSize(0);
+
+        byte[] assembledHeader = dummyBqh.assembleHeaderBytes();
+        assertEquals(dummyBqh.getQueryType(), assembledHeader[0]);
+        assertEquals(dummyBqh.getQueryID(), BitConverter.intFromByteArray(assembledHeader, 0) & 0x00FFFFFF);
+        assertEquals(dummyBqh.getCorrelationID(), BitConverter.intFromByteArray(assembledHeader, 4));
+        assertEquals(dummyBqh.getJsonSize(), BitConverter.intFromByteArray(assembledHeader, 8));
     }
 
     @Test

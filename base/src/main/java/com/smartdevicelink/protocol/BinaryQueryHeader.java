@@ -24,10 +24,10 @@ public class BinaryQueryHeader {
     public static BinaryQueryHeader parseBinaryQueryHeader(byte[] binHeader) {
         BinaryQueryHeader msg = new BinaryQueryHeader();
 
-        byte QUERY_Type = (byte) (binHeader[0] >>> 4);
+        byte QUERY_Type = (byte) (binHeader[0]);
         msg.setQueryType(QUERY_Type);
 
-        int _queryID = (BitConverter.intFromByteArray(binHeader, 0) & 0x0FFFFFFF);
+        int _queryID = (BitConverter.intFromByteArray(binHeader, 0) & 0x00FFFFFF);
         msg.setQueryID(_queryID);
 
         int corrID = BitConverter.intFromByteArray(binHeader, 4);
@@ -69,12 +69,9 @@ public class BinaryQueryHeader {
     }
 
     public byte[] assembleHeaderBytes() {
-        int binHeader = _queryID;
-        binHeader &= 0xFFFFFFFF >>> 4;
-        binHeader |= (_queryType << 28);
-
         byte[] ret = new byte[12];
-        System.arraycopy(BitConverter.intToByteArray(binHeader), 0, ret, 0, 4);
+        ret[0] = _queryType;
+        System.arraycopy(BitConverter.intToByteArray(_queryID), 1, ret, 1, 3);
         System.arraycopy(BitConverter.intToByteArray(_correlationID), 0, ret, 4, 4);
         System.arraycopy(BitConverter.intToByteArray(_jsonSize), 0, ret, 8, 4);
         return ret;
