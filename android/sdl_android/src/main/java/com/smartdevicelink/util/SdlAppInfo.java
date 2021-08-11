@@ -285,7 +285,7 @@ public class SdlAppInfo {
     /**
      * Gets app's supported vehicle types.
      *
-     * @return List<VehicleType> a list representing the list of supported vehicle types.
+     * @return List<VehicleType> a list of supported vehicle types.
      */
     public List<VehicleType> getVehicleMakesList() {
         return vehicleMakesList;
