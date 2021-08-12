@@ -99,7 +99,6 @@ class MenuReplaceOperation extends Task {
         // Generate unique names and ensure that all menus we are tracking have them so that we can properly compare when using the dynamic algorithm
         generateUniqueNamesForCells(updatedStrippedMenu, supportsMenuUniqueness);
         applyUniqueNamesOnCells(updatedStrippedMenu, updatedMenu);
-        applyUniqueNamesOnCells(currentMenu, currentStrippedMenu);
 
         DynamicMenuUpdateRunScore runScore;
         if (!isDynamicMenuUpdateActive) {
