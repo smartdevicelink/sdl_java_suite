@@ -36,14 +36,13 @@ import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.lifecycle.RpcConverter;
-import com.smartdevicelink.protocol.BinaryQueryHeader;
+import com.smartdevicelink.protocol.SecurityQueryPayload;
 import com.smartdevicelink.protocol.ISdlProtocol;
 import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlProtocolBase;
 import com.smartdevicelink.protocol.enums.ControlFrameTags;
-import com.smartdevicelink.protocol.enums.QueryErrorCode;
 import com.smartdevicelink.protocol.enums.QueryID;
 import com.smartdevicelink.protocol.enums.QueryType;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -56,12 +55,10 @@ import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
-import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.SystemInfo;
 import com.smartdevicelink.util.Version;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -194,7 +191,7 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
         if (sdlSecurity == null)
             return;
 
-        BinaryQueryHeader receivedHeader = BinaryQueryHeader.parseBinaryQueryHeader(msg.getData().clone());
+        SecurityQueryPayload receivedHeader = SecurityQueryPayload.parseBinaryQueryHeader(msg.getData().clone());
 
         int iLen = msg.getData().length - 12;
         byte[] data = new byte[iLen];
@@ -220,7 +217,7 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
         }
 
         iNumBytes = sdlSecurity.runHandshake(data, dataToRead);
-        BinaryQueryHeader responseHeader = new BinaryQueryHeader();
+        SecurityQueryPayload responseHeader = new SecurityQueryPayload();
 
         if (iNumBytes == null || iNumBytes <= 0) {
             DebugTool.logError(TAG, "Internal Error processing control service");

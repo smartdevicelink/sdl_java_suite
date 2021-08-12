@@ -2,7 +2,7 @@ package com.smartdevicelink.test.protocol;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.smartdevicelink.protocol.BinaryQueryHeader;
+import com.smartdevicelink.protocol.SecurityQueryPayload;
 import com.smartdevicelink.protocol.enums.QueryID;
 import com.smartdevicelink.protocol.enums.QueryType;
 import com.smartdevicelink.util.BitConverter;
@@ -17,10 +17,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 @RunWith(AndroidJUnit4.class)
-public class BinaryQueryHeaderTests {
+public class SecurityQueryPayloadTests {
 
-    public static BinaryQueryHeader createDummyBqh() {
-        BinaryQueryHeader bqh = new BinaryQueryHeader();
+    public static SecurityQueryPayload createDummyBqh() {
+        SecurityQueryPayload bqh = new SecurityQueryPayload();
         bqh.setCorrelationID(123);
         bqh.setQueryID(QueryID.SEND_HANDSHAKE_DATA);
         bqh.setQueryType(QueryType.REQUEST);
@@ -29,9 +29,9 @@ public class BinaryQueryHeaderTests {
         return bqh;
     }
 
-    public BinaryQueryHeader safeParse(byte[] array) {
+    public SecurityQueryPayload safeParse(byte[] array) {
         try {
-            return BinaryQueryHeader.parseBinaryQueryHeader(array);
+            return SecurityQueryPayload.parseBinaryQueryHeader(array);
         } catch (Exception e) {
             return null;
         }
@@ -53,7 +53,7 @@ public class BinaryQueryHeaderTests {
         array[10] = 0;
         array[11] = 0;
 
-        BinaryQueryHeader parsedBqh = BinaryQueryHeader.parseBinaryQueryHeader(array);
+        SecurityQueryPayload parsedBqh = SecurityQueryPayload.parseBinaryQueryHeader(array);
         assertEquals(parsedBqh.getQueryType(), QueryType.REQUEST);
         assertEquals(parsedBqh.getQueryID(), QueryID.SEND_INTERNAL_ERROR);
         assertEquals(parsedBqh.getCorrelationID(), 3);
@@ -62,7 +62,7 @@ public class BinaryQueryHeaderTests {
 
     @Test
     public void testCorrectHeaderAssembly() {
-        BinaryQueryHeader dummyBqh = new BinaryQueryHeader();
+        SecurityQueryPayload dummyBqh = new SecurityQueryPayload();
         dummyBqh.setQueryType(QueryType.REQUEST);
         dummyBqh.setQueryID(QueryID.SEND_HANDSHAKE_DATA);
         dummyBqh.setCorrelationID(3);
@@ -79,12 +79,12 @@ public class BinaryQueryHeaderTests {
 
     @Test
     public void testAssemblyAndParse() {
-        BinaryQueryHeader bqh = createDummyBqh();
+        SecurityQueryPayload bqh = createDummyBqh();
 
         byte[] bqhBytes = bqh.assembleHeaderBytes();
         assertNotNull(bqhBytes);
 
-        BinaryQueryHeader parsedBqh = BinaryQueryHeader.parseBinaryQueryHeader(bqhBytes);
+        SecurityQueryPayload parsedBqh = SecurityQueryPayload.parseBinaryQueryHeader(bqhBytes);
         assertNotNull(parsedBqh);
 
         assertEquals(bqh.getCorrelationID(), parsedBqh.getCorrelationID());
@@ -97,7 +97,7 @@ public class BinaryQueryHeaderTests {
 
     @Test
     public void testCorruptHeader() {
-        BinaryQueryHeader bqh = createDummyBqh();
+        SecurityQueryPayload bqh = createDummyBqh();
         bqh.setJsonSize(5);
         bqh.setJsonData(new byte[5]);
         bqh.setJsonSize(Integer.MAX_VALUE);
@@ -114,14 +114,14 @@ public class BinaryQueryHeaderTests {
         }
 
         assertNull(safeParse(bqhBytes));
-        BinaryQueryHeader head = BinaryQueryHeader.parseBinaryQueryHeader(bqhBytes);
+        SecurityQueryPayload head = SecurityQueryPayload.parseBinaryQueryHeader(bqhBytes);
         assertNull(head);
     }
 
     @Test
     public void testJsonSetException() {
         try {
-            BinaryQueryHeader bqh = createDummyBqh();
+            SecurityQueryPayload bqh = createDummyBqh();
             bqh.setJsonData(null);
             fail("Setting JSON data to null should have thrown an exception");
         } catch (Exception e) {

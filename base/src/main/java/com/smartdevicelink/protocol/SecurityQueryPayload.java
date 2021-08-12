@@ -9,7 +9,7 @@ import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.DebugTool;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY)
-public class BinaryQueryHeader {
+public class SecurityQueryPayload {
     private static final String TAG = "BinaryQueryHeader";
 
     private QueryType _queryType;
@@ -21,11 +21,11 @@ public class BinaryQueryHeader {
     private byte[] _jsonData = null;
     private byte[] _bulkData = null;
 
-    public BinaryQueryHeader() {
+    public SecurityQueryPayload() {
     }
 
-    public static BinaryQueryHeader parseBinaryQueryHeader(byte[] binHeader) {
-        BinaryQueryHeader msg = new BinaryQueryHeader();
+    public static SecurityQueryPayload parseBinaryQueryHeader(byte[] binHeader) {
+        SecurityQueryPayload msg = new SecurityQueryPayload();
 
         byte QUERY_Type = (byte) (binHeader[0]);
         msg.setQueryType(QueryType.valueOf(QUERY_Type));
@@ -41,8 +41,7 @@ public class BinaryQueryHeader {
         msg.setJsonSize(_jsonSize);
 
         if (msg.getQueryType() == QueryType.NOTIFICATION && msg.getQueryID() == QueryID.SEND_INTERNAL_ERROR) {
-            int _errorCode = BitConverter.intFromByteArray(binHeader, binHeader.length-1);
-            msg.setErrorCode(QueryErrorCode.valueOf((byte) _errorCode));
+            msg.setErrorCode(QueryErrorCode.valueOf(binHeader[binHeader.length - 1]));
         }
 
         try {
