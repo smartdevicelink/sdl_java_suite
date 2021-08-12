@@ -35,6 +35,8 @@ import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.protocol.enums.ControlFrameTags;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
+import com.smartdevicelink.protocol.enums.QueryID;
+import com.smartdevicelink.protocol.enums.QueryType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.util.BitConverter;
 
@@ -144,7 +146,7 @@ public class SdlPacketFactory {
         return msg;
     }
 
-    public static BinaryQueryHeader createBinaryQueryHeader(byte queryType, int queryId, int corrID, int jsonSize) {
+    public static BinaryQueryHeader createBinaryQueryHeader(QueryType queryType, QueryID queryId, int corrID, int jsonSize) {
         BinaryQueryHeader msg = new BinaryQueryHeader();
         msg.setQueryType(queryType);
         msg.setQueryID(queryId);

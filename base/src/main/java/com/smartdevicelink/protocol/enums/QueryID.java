@@ -2,6 +2,7 @@ package com.smartdevicelink.protocol.enums;
 
 import com.smartdevicelink.util.BitConverter;
 
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Objects;
 import java.util.Vector;
@@ -66,7 +67,7 @@ public class QueryID {
         while (enumer.hasMoreElements()) {
             try {
                 QueryID current = (QueryID) enumer.nextElement();
-                if (current.getValue() == value) {
+                if (Arrays.equals(current.getValue(), value)) {
                     return current;
                 }
             } catch (ClassCastException e) {

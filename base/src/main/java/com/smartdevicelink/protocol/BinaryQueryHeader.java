@@ -2,6 +2,9 @@ package com.smartdevicelink.protocol;
 
 import androidx.annotation.RestrictTo;
 
+import com.smartdevicelink.protocol.enums.QueryErrorCode;
+import com.smartdevicelink.protocol.enums.QueryID;
+import com.smartdevicelink.protocol.enums.QueryType;
 import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.DebugTool;
 
@@ -9,14 +12,14 @@ import com.smartdevicelink.util.DebugTool;
 public class BinaryQueryHeader {
     private static final String TAG = "BinaryQueryHeader";
 
-    private byte _queryType;
-    private int _queryID;
+    private QueryType _queryType;
+    private QueryID _queryID;
     private int _correlationID;
     private int _jsonSize;
-    private int _errorCode;
+    private QueryErrorCode _errorCode;
 
-    private byte[] _jsonData;
-    private byte[] _bulkData;
+    private byte[] _jsonData = null;
+    private byte[] _bulkData = null;
 
     public BinaryQueryHeader() {
     }
@@ -25,10 +28,11 @@ public class BinaryQueryHeader {
         BinaryQueryHeader msg = new BinaryQueryHeader();
 
         byte QUERY_Type = (byte) (binHeader[0]);
-        msg.setQueryType(QUERY_Type);
+        msg.setQueryType(QueryType.valueOf(QUERY_Type));
 
-        int _queryID = (BitConverter.intFromByteArray(binHeader, 0) & 0x00FFFFFF);
-        msg.setQueryID(_queryID);
+        byte[] _queryID = new byte[3];
+        System.arraycopy(binHeader, 1, _queryID, 0, 3);
+        msg.setQueryID(QueryID.valueOf(_queryID));
 
         int corrID = BitConverter.intFromByteArray(binHeader, 4);
         msg.setCorrelationID(corrID);
@@ -36,9 +40,9 @@ public class BinaryQueryHeader {
         int _jsonSize = BitConverter.intFromByteArray(binHeader, 8);
         msg.setJsonSize(_jsonSize);
 
-        if (msg.getQueryType() == 0x20 && msg.getQueryID() == 0x02) {
+        if (msg.getQueryType() == QueryType.NOTIFICATION && msg.getQueryID() == QueryID.SEND_INTERNAL_ERROR) {
             int _errorCode = BitConverter.intFromByteArray(binHeader, binHeader.length-1);
-            msg.setErrorCode(_errorCode);
+            msg.setErrorCode(QueryErrorCode.valueOf((byte) _errorCode));
         }
 
         try {
@@ -50,7 +54,7 @@ public class BinaryQueryHeader {
 
             if (binHeader.length - _jsonSize - 12 > 0) {
                 byte[] _bulkData;
-                if (msg.getQueryType() == 0x20 && msg.getQueryID() == 0x02) {
+                if (msg.getQueryType() == QueryType.NOTIFICATION && msg.getQueryID() == QueryID.SEND_INTERNAL_ERROR) {
                     _bulkData = new byte[binHeader.length - _jsonSize - 12 - 1];
                     System.arraycopy(binHeader, 12 + _jsonSize, _bulkData, 0, _bulkData.length - 1);
                 } else {
@@ -70,26 +74,26 @@ public class BinaryQueryHeader {
 
     public byte[] assembleHeaderBytes() {
         byte[] ret = new byte[12];
-        ret[0] = _queryType;
-        System.arraycopy(BitConverter.intToByteArray(_queryID), 1, ret, 1, 3);
+        ret[0] = _queryType.getValue();
+        System.arraycopy(_queryID.getValue(), 0, ret, 1, 3);
         System.arraycopy(BitConverter.intToByteArray(_correlationID), 0, ret, 4, 4);
         System.arraycopy(BitConverter.intToByteArray(_jsonSize), 0, ret, 8, 4);
         return ret;
     }
 
-    public byte getQueryType() {
+    public QueryType getQueryType() {
         return _queryType;
     }
 
-    public void setQueryType(byte _queryType) {
+    public void setQueryType(QueryType _queryType) {
         this._queryType = _queryType;
     }
 
-    public int getQueryID() {
+    public QueryID getQueryID() {
         return _queryID;
     }
 
-    public void setQueryID(int _queryID) {
+    public void setQueryID(QueryID _queryID) {
         this._queryID = _queryID;
     }
 
@@ -109,11 +113,11 @@ public class BinaryQueryHeader {
         this._jsonSize = _jsonSize;
     }
 
-    public int getErrorCode() {
+    public QueryErrorCode getErrorCode() {
         return _errorCode;
     }
 
-    public void setErrorCode(int _errorCode) {
+    public void setErrorCode(QueryErrorCode _errorCode) {
         this._errorCode = _errorCode;
     }
 

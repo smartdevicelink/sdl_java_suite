@@ -41,10 +41,9 @@ import com.smartdevicelink.protocol.ISdlProtocol;
 import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.SdlPacket;
-import com.smartdevicelink.protocol.SdlPacketFactory;
 import com.smartdevicelink.protocol.SdlProtocolBase;
-import com.smartdevicelink.protocol.SecurityQuery;
 import com.smartdevicelink.protocol.enums.ControlFrameTags;
+import com.smartdevicelink.protocol.enums.QueryErrorCode;
 import com.smartdevicelink.protocol.enums.QueryID;
 import com.smartdevicelink.protocol.enums.QueryType;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -195,8 +194,7 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
         if (sdlSecurity == null)
             return;
 
-        byte[] securityQueryHeader = new byte[12];
-        System.arraycopy(msg.getData(), 0, securityQueryHeader, 0, 12);
+        BinaryQueryHeader receivedHeader = BinaryQueryHeader.parseBinaryQueryHeader(msg.getData().clone());
 
         int iLen = msg.getData().length - 12;
         byte[] data = new byte[iLen];
@@ -206,34 +204,40 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
 
         Integer iNumBytes = null;
 
-        byte[] queryID = new byte[3];
-        System.arraycopy(securityQueryHeader, 1, queryID, 0, 3);
+        if (receivedHeader.getQueryID() == QueryID.SEND_INTERNAL_ERROR
+                && receivedHeader.getQueryType() == QueryType.NOTIFICATION) {
+            if (receivedHeader.getErrorCode() != null) {
+                DebugTool.logError(TAG, "Client internal error: " + receivedHeader.getErrorCode().getName());
+            } else {
+                DebugTool.logError(TAG, "Client internal error: No information provided");
+            }
+            return;
+        }
 
-        if (!Arrays.equals(queryID, QueryID.SEND_HANDSHAKE_DATA.getValue())
-                || (securityQueryHeader[0] != QueryType.NOTIFICATION.value() && securityQueryHeader[0] != QueryType.REQUEST.value())) {
+        if (receivedHeader.getQueryID() != QueryID.SEND_HANDSHAKE_DATA
+                && (receivedHeader.getQueryType() != QueryType.NOTIFICATION || receivedHeader.getQueryType() != QueryType.REQUEST)) {
             return;
         }
 
         iNumBytes = sdlSecurity.runHandshake(data, dataToRead);
-        SecurityQuery securityQuery = new SecurityQuery();
+        BinaryQueryHeader responseHeader = new BinaryQueryHeader();
 
         if (iNumBytes == null || iNumBytes <= 0) {
             DebugTool.logError(TAG, "Internal Error processing control service");
 
-            securityQuery.setQueryID(QueryID.SEND_INTERNAL_ERROR);
-            securityQuery.setQueryType(QueryType.NOTIFICATION);
-            securityQuery.setCorrelationId(msg.getCorrID());
-            securityQuery.setJsonSize(0);
+            responseHeader.setQueryID(QueryID.SEND_INTERNAL_ERROR);
+            responseHeader.setQueryType(QueryType.NOTIFICATION);
+            responseHeader.setCorrelationID(msg.getCorrID());
+            responseHeader.setJsonSize(0);
         } else {
-            securityQuery.setQueryID(QueryID.SEND_HANDSHAKE_DATA);
-            securityQuery.setQueryType(QueryType.RESPONSE);
-            securityQuery.setCorrelationId(msg.getCorrID());
-            securityQuery.setJsonSize(0);
+            responseHeader.setQueryID(QueryID.SEND_HANDSHAKE_DATA);
+            responseHeader.setQueryType(QueryType.RESPONSE);
+            responseHeader.setCorrelationID(msg.getCorrID());
+            responseHeader.setJsonSize(0);
         }
 
         byte[] returnBytes = new byte[iNumBytes + 12];
-        BinaryQueryHeader binaryQueryHeader = SdlPacketFactory.createBinaryQueryHeader(securityQuery.getQueryType().getValue(), securityQuery.getQueryID().getIntValue(), securityQuery.getCorrelationId(), securityQuery.getJsonSize());
-        System.arraycopy(binaryQueryHeader.assembleHeaderBytes(), 0, returnBytes, 0, 12);
+        System.arraycopy(responseHeader.assembleHeaderBytes(), 0, returnBytes, 0, 12);
         System.arraycopy(dataToRead, 0, returnBytes, 12, iNumBytes);
 
         ProtocolMessage protocolMessage = new ProtocolMessage();

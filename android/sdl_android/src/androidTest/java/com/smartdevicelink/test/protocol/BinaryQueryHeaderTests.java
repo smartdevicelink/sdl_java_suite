@@ -4,6 +4,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.protocol.BinaryQueryHeader;
 import com.smartdevicelink.protocol.enums.QueryID;
+import com.smartdevicelink.protocol.enums.QueryType;
 import com.smartdevicelink.util.BitConverter;
 
 import org.junit.Test;
@@ -18,15 +19,11 @@ import static org.junit.Assert.fail;
 @RunWith(AndroidJUnit4.class)
 public class BinaryQueryHeaderTests {
 
-    public static final byte QUERY_TYPE_REQUEST = 0x00;
-    public static final byte QUERY_TYPE_RESPONSE = 0x01;
-    public static final byte QUERY_TYPE_NOTIFICATION = 0x02;
-
     public static BinaryQueryHeader createDummyBqh() {
         BinaryQueryHeader bqh = new BinaryQueryHeader();
         bqh.setCorrelationID(123);
-        bqh.setQueryID(QueryID.SEND_HANDSHAKE_DATA.getIntValue());
-        bqh.setQueryType(QUERY_TYPE_REQUEST);
+        bqh.setQueryID(QueryID.SEND_HANDSHAKE_DATA);
+        bqh.setQueryType(QueryType.REQUEST);
         bqh.setBulkData(null);
         bqh.setJsonSize(0);
         return bqh;
@@ -43,7 +40,7 @@ public class BinaryQueryHeaderTests {
     @Test
     public void testCorrectParsing() {
         byte[] array = new byte[12];
-        array[0] = 1;
+        array[0] = 0;
         array[1] = 0;
         array[2] = 0;
         array[3] = 2;
@@ -57,8 +54,8 @@ public class BinaryQueryHeaderTests {
         array[11] = 0;
 
         BinaryQueryHeader parsedBqh = BinaryQueryHeader.parseBinaryQueryHeader(array);
-        assertEquals(parsedBqh.getQueryType(), 0x1);
-        assertEquals(parsedBqh.getQueryID(), 2);
+        assertEquals(parsedBqh.getQueryType(), QueryType.REQUEST);
+        assertEquals(parsedBqh.getQueryID(), QueryID.SEND_INTERNAL_ERROR);
         assertEquals(parsedBqh.getCorrelationID(), 3);
         assertEquals(parsedBqh.getJsonSize(), 0);
     }
@@ -66,14 +63,16 @@ public class BinaryQueryHeaderTests {
     @Test
     public void testCorrectHeaderAssembly() {
         BinaryQueryHeader dummyBqh = new BinaryQueryHeader();
-        dummyBqh.setQueryType((byte) 1);
-        dummyBqh.setQueryID(2);
+        dummyBqh.setQueryType(QueryType.REQUEST);
+        dummyBqh.setQueryID(QueryID.SEND_HANDSHAKE_DATA);
         dummyBqh.setCorrelationID(3);
         dummyBqh.setJsonSize(0);
 
         byte[] assembledHeader = dummyBqh.assembleHeaderBytes();
-        assertEquals(dummyBqh.getQueryType(), assembledHeader[0]);
-        assertEquals(dummyBqh.getQueryID(), BitConverter.intFromByteArray(assembledHeader, 0) & 0x00FFFFFF);
+        assertEquals(dummyBqh.getQueryType(), QueryType.valueOf(assembledHeader[0]));
+        byte[] queryIDFromHeader = new byte[3];
+        System.arraycopy(assembledHeader, 1, queryIDFromHeader, 0, 3);
+        assertEquals(dummyBqh.getQueryID(), QueryID.valueOf(queryIDFromHeader));
         assertEquals(dummyBqh.getCorrelationID(), BitConverter.intFromByteArray(assembledHeader, 4));
         assertEquals(dummyBqh.getJsonSize(), BitConverter.intFromByteArray(assembledHeader, 8));
     }
