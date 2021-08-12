@@ -88,26 +88,25 @@ class MenuReplaceOperation extends Task {
     private void updateMenuCells(final CompletionListener listener) {
         updateIdsOnMenuCells(updatedMenu, parentIdNotFound);
 
+        // Strip the "current menu" and the new menu of properties that are not displayed on the head unit
+        List<MenuCell> updatedStrippedMenu = cellsWithRemovedPropertiesFromCells(updatedMenu, windowCapability);
+        List<MenuCell> currentStrippedMenu = cellsWithRemovedPropertiesFromCells(currentMenu, windowCapability);
+
+        // Check if head unit supports cells with duplicate titles
+        SdlMsgVersion rpcVersion = internalInterface.get().getSdlMsgVersion();
+        boolean supportsMenuUniqueness = rpcVersion.getMajorVersion() > 7 || (rpcVersion.getMajorVersion() == 7 && rpcVersion.getMinorVersion() > 0);
+
+        // Generate unique names and ensure that all menus we are tracking have them so that we can properly compare when using the dynamic algorithm
+        generateUniqueNamesForCells(updatedStrippedMenu, supportsMenuUniqueness);
+        applyUniqueNamesOnCells(updatedStrippedMenu, updatedMenu);
+        applyUniqueNamesOnCells(currentMenu, currentStrippedMenu);
+
         DynamicMenuUpdateRunScore runScore;
         if (!isDynamicMenuUpdateActive) {
             DebugTool.logInfo(TAG, "Dynamic menu update inactive. Forcing the deletion of all old cells and adding all new ones, even if they're the same.");
-            runScore = DynamicMenuUpdateAlgorithm.compatibilityRunScoreWithOldMenuCells(currentMenu, updatedMenu);
+            runScore = DynamicMenuUpdateAlgorithm.compatibilityRunScoreWithOldMenuCells(currentStrippedMenu, updatedStrippedMenu);
         } else {
             DebugTool.logInfo(TAG, "Dynamic menu update active. Running the algorithm to find the best way to delete / add cells.");
-
-            // Strip the "current menu" and the new menu of properties that are not displayed on the head unit
-            List<MenuCell> updatedStrippedMenu = cellsWithRemovedPropertiesFromCells(updatedMenu, windowCapability);
-            List<MenuCell> currentStrippedMenu = cellsWithRemovedPropertiesFromCells(currentMenu, windowCapability);
-
-            // Check if head unit supports cells with duplicate titles
-            SdlMsgVersion rpcVersion = internalInterface.get().getSdlMsgVersion();
-            boolean supportsMenuUniqueness = rpcVersion.getMajorVersion() > 7 || (rpcVersion.getMajorVersion() == 7 && rpcVersion.getMinorVersion() > 0);
-
-            // Generate unique names and ensure that all menus we are tracking have them so that we can properly compare when using the dynamic algorithm
-            generateUniqueNamesForCells(updatedStrippedMenu, supportsMenuUniqueness);
-            applyUniqueNamesOnCells(updatedStrippedMenu, updatedMenu);
-            applyUniqueNamesOnCells(currentMenu, currentStrippedMenu);
-
             runScore = DynamicMenuUpdateAlgorithm.dynamicRunScoreOldMenuCells(currentStrippedMenu, updatedStrippedMenu);
         }
 
