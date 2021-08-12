@@ -3,6 +3,7 @@ package com.smartdevicelink.test;
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
+import com.smartdevicelink.protocol.enums.QueryType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
@@ -104,6 +105,29 @@ public class Validator {
     }
 
     public static boolean validateSessionTypeArray(SessionType[] array1, SessionType[] array2) {
+
+        if (array1 == null) {
+            return (array2 == null);
+        }
+
+        if (array2 == null) {
+            return (array1 == null);
+        }
+
+        if (array1.length != array2.length) {
+            return false;
+        }
+
+        for (int i = 0; i < array1.length; i++) {
+            if (array1[i] != array2[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean validateQueryTypeArray(QueryType[] array1, QueryType[] array2) {
 
         if (array1 == null) {
             return (array2 == null);
