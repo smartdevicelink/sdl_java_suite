@@ -866,7 +866,7 @@ abstract class BaseLifecycleManager {
                 pm.setPriorityCoefficient(1);
             }
 
-            session.sendMessage(pm, null);
+            session.sendMessage(pm);
 
         } catch (OutOfMemoryError e) {
             DebugTool.logError(TAG,"Error attempting to send RPC message.", e);

@@ -36,10 +36,12 @@ import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.lifecycle.RpcConverter;
+import com.smartdevicelink.protocol.BinaryQueryHeader;
 import com.smartdevicelink.protocol.ISdlProtocol;
 import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.SdlPacket;
+import com.smartdevicelink.protocol.SdlPacketFactory;
 import com.smartdevicelink.protocol.SdlProtocolBase;
 import com.smartdevicelink.protocol.SecurityQuery;
 import com.smartdevicelink.protocol.enums.ControlFrameTags;
@@ -55,10 +57,12 @@ import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.SystemInfo;
 import com.smartdevicelink.util.Version;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -150,11 +154,11 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
     }
 
 
-    public void sendMessage(ProtocolMessage msg, SecurityQuery securityQuery) {
+    public void sendMessage(ProtocolMessage msg) {
         if (sdlProtocol == null) {
             return;
         }
-        sdlProtocol.sendMessage(msg, securityQuery);
+        sdlProtocol.sendMessage(msg);
     }
 
     public TransportType getCurrentTransportType() {
@@ -204,17 +208,33 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
 
         byte[] queryID = new byte[3];
         System.arraycopy(securityQueryHeader, 1, queryID, 0, 3);
-        if (queryID == QueryID.SEND_HANDSHAKE_DATA.getValue() && securityQueryHeader[0] == QueryType.REQUEST.value()) {
-            iNumBytes = sdlSecurity.runHandshake(data, dataToRead);
-        } else if (queryID == QueryID.SEND_INTERNAL_ERROR.value()) {
-            DebugTool.logError(TAG, "Internal Error processing control service");
+
+        if (!Arrays.equals(queryID, QueryID.SEND_HANDSHAKE_DATA.getValue())
+                || (securityQueryHeader[0] != QueryType.NOTIFICATION.value() && securityQueryHeader[0] != QueryType.REQUEST.value())) {
+            return;
         }
 
-        if (iNumBytes == null || iNumBytes <= 0)
-            return;
+        iNumBytes = sdlSecurity.runHandshake(data, dataToRead);
+        SecurityQuery securityQuery = new SecurityQuery();
 
-        byte[] returnBytes = new byte[iNumBytes];
-        System.arraycopy(dataToRead, 0, returnBytes, 0, iNumBytes);
+        if (iNumBytes == null || iNumBytes <= 0) {
+            DebugTool.logError(TAG, "Internal Error processing control service");
+
+            securityQuery.setQueryID(QueryID.SEND_INTERNAL_ERROR);
+            securityQuery.setQueryType(QueryType.NOTIFICATION);
+            securityQuery.setCorrelationId(msg.getCorrID());
+            securityQuery.setJsonSize(0);
+        } else {
+            securityQuery.setQueryID(QueryID.SEND_HANDSHAKE_DATA);
+            securityQuery.setQueryType(QueryType.RESPONSE);
+            securityQuery.setCorrelationId(msg.getCorrID());
+            securityQuery.setJsonSize(0);
+        }
+
+        byte[] returnBytes = new byte[iNumBytes + 12];
+        BinaryQueryHeader binaryQueryHeader = SdlPacketFactory.createBinaryQueryHeader(securityQuery.getQueryType().getValue(), securityQuery.getQueryID().getIntValue(), securityQuery.getCorrelationId(), securityQuery.getJsonSize());
+        System.arraycopy(binaryQueryHeader.assembleHeaderBytes(), 0, returnBytes, 0, 12);
+        System.arraycopy(dataToRead, 0, returnBytes, 12, iNumBytes);
 
         ProtocolMessage protocolMessage = new ProtocolMessage();
         protocolMessage.setSessionType(SessionType.CONTROL);
@@ -223,16 +243,9 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
         protocolMessage.setVersion((byte) sdlProtocol.getProtocolVersion().getMajor());
         protocolMessage.setSessionID((byte) this.sessionId);
 
-        SecurityQuery securityQuery = new SecurityQuery();
-        securityQuery.setQueryID(QueryID.SEND_HANDSHAKE_DATA);
-        securityQuery.setQueryType(QueryType.RESPONSE);
-        securityQuery.setCorrelationId(msg.getCorrID());
-        securityQuery.setJsonSize(msg.getJsonSize());
-        securityQuery.setData(returnBytes);
-
         //sdlSecurity.hs();
 
-        sendMessage(msg, securityQuery);
+        sendMessage(protocolMessage);
     }
 
     /**

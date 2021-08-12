@@ -530,7 +530,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
         IStreamListener streamListener = new IStreamListener() {
             @Override
             public void sendStreamPacket(ProtocolMessage pm) {
-                session.sendMessage(pm, null);
+                session.sendMessage(pm);
             }
         };
 

@@ -25,7 +25,7 @@ public class BinaryQueryHeaderTests {
     public static BinaryQueryHeader createDummyBqh() {
         BinaryQueryHeader bqh = new BinaryQueryHeader();
         bqh.setCorrelationID(123);
-        bqh.setQueryID(BitConverter.intFromByteArray(QueryID.SEND_HANDSHAKE_DATA.getValue(), 0));
+        bqh.setQueryID(QueryID.SEND_HANDSHAKE_DATA.getIntValue());
         bqh.setQueryType(QUERY_TYPE_REQUEST);
         bqh.setBulkData(null);
         bqh.setJsonSize(0);
