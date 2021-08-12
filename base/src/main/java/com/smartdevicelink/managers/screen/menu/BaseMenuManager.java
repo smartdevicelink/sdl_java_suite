@@ -169,7 +169,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             return;
         }
 
-        if (this.menuCells.equals(cells)) {
+        if (cells.equals(this.menuCells)) {
             DebugTool.logError(TAG, "The set menu cells are identical to previously set menu cells. Skipping...");
             return;
         } else if (!menuCellsAreUnique(cells, new ArrayList<String>())) {
