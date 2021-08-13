@@ -131,6 +131,8 @@ class MenuReplaceOperation extends Task {
         // We will transfer the ids for subCells later
         transferCellIDsFromOldCells(oldKeeps, newKeeps);
 
+        transferListenersFromNewCells(newKeeps, oldKeeps);
+
         // Upload the Artworks, then we will start updating the main menu
         uploadMenuArtworks(new CompletionListener() {
             @Override
@@ -252,6 +254,8 @@ class MenuReplaceOperation extends Task {
             final List<MenuCell> newKeeps = filterMenuCellsWithStatusList(newKeptCells.get(startIndex).getSubCells(), addMenuStatus, MenuCellState.KEEP);
 
             transferCellIDsFromOldCells(oldKeeps, newKeeps);
+
+            transferListenersFromNewCells(newKeeps, oldKeeps);
 
             sendDeleteCurrentMenu(cellsToDelete, new CompletionListener() {
                 @Override
@@ -403,6 +407,15 @@ class MenuReplaceOperation extends Task {
         }
         for (int i = 0; i < newCells.size(); i++) {
             newCells.get(i).setCellId(oldCells.get(i).getCellId());
+        }
+    }
+
+    private void transferListenersFromNewCells(List<MenuCell> newCells, List<MenuCell> oldCells) {
+        if (oldCells == null || oldCells.isEmpty()) {
+            return;
+        }
+        for (int i = 0; i < newCells.size(); i++) {
+            oldCells.get(i).setMenuSelectionListener(newCells.get(i).getMenuSelectionListener());
         }
     }
 

@@ -169,10 +169,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             return;
         }
 
-        if (cells.equals(this.menuCells)) {
-            DebugTool.logError(TAG, "The set menu cells are identical to previously set menu cells. Skipping...");
-            return;
-        } else if (!menuCellsAreUnique(cells, new ArrayList<String>())) {
+        if (!menuCellsAreUnique(cells, new ArrayList<String>())) {
             DebugTool.logError(TAG, "Not all set menu cells are unique, but that is required");
             return;
         }
