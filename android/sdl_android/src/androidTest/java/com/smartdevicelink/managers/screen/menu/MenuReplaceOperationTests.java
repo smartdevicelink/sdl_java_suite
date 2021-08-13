@@ -55,6 +55,7 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
@@ -91,7 +92,7 @@ public class MenuReplaceOperationTests {
     public void testSuccess() {
         final ISdl internalInterface = createISdlMock();
         FileManager fileManager = createFileManagerMock();
-        WindowCapability windowCapability = createWindowCapability(true, true);
+        WindowCapability windowCapability = createWindowCapability(true, true, new ArrayList<TextField>());
         MenuConfiguration menuConfiguration = new MenuConfiguration(MenuLayout.LIST, MenuLayout.LIST);
 
         MenuCell menuCell1_1 = new MenuCell("cell 1_1", TestValues.GENERAL_ARTWORK, null, null);
@@ -109,6 +110,51 @@ public class MenuReplaceOperationTests {
                         assertTrue(success);
                         assertEquals(currentMenuCells, updatedMenu);
                         verify(internalInterface, Mockito.times(2)).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
+                    }
+                });
+            }
+        });
+        transactionQueue.add(operation, false);
+    }
+
+    @Test
+    public void testSwitchingCellsOrder() {
+        // This unit test is for this bug https://github.com/smartdevicelink/sdl_java_suite/issues/1723
+        final ISdl internalInterface = createISdlMock();
+        final FileManager fileManager = createFileManagerMock();
+        final WindowCapability windowCapability = createWindowCapability(true, true, new ArrayList<TextField>());
+        final MenuConfiguration menuConfiguration = new MenuConfiguration(MenuLayout.LIST, MenuLayout.LIST);
+
+        MenuSelectionListener listener = null;
+        final MenuCell menuCell1 = new MenuCell("A", "SecondaryText", null, null, null, null, listener);
+        final MenuCell menuCell2 = new MenuCell("A", null, null, null, null, null, listener);
+        final MenuCell menuCell3 = new MenuCell("C", null, null, null, null, null, listener);
+
+        MenuReplaceOperation operation = new MenuReplaceOperation(internalInterface, fileManager, windowCapability, menuConfiguration, new ArrayList<MenuCell>(), Arrays.asList(menuCell1, menuCell2, menuCell3), true, new MenuManagerCompletionListener() {
+            @Override
+            public void onComplete(final boolean success, final List<MenuCell> currentMenuCells1) {
+                assertOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        assertTrue(success);
+                        verify(internalInterface, Mockito.times(1)).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
+
+                        MenuReplaceOperation operation = new MenuReplaceOperation(internalInterface, fileManager, windowCapability, menuConfiguration, new ArrayList<MenuCell>(), Arrays.asList(menuCell2, menuCell1), true, new MenuManagerCompletionListener() {
+                            @Override
+                            public void onComplete(final boolean success, final List<MenuCell> currentMenuCells2) {
+                                assertOnMainThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        assertTrue(success);
+                                        assertEquals(2, currentMenuCells2.size());
+                                        assertEquals("A", currentMenuCells2.get(0).getUniqueTitle());
+                                        assertEquals("A (2)", currentMenuCells2.get(1).getUniqueTitle());
+                                        verify(internalInterface, Mockito.times(2)).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
+                                    }
+                                });
+                            }
+                        });
+                        transactionQueue.add(operation, false);
                     }
                 });
             }
@@ -163,8 +209,9 @@ public class MenuReplaceOperationTests {
         return fileManager;
     }
 
-    private WindowCapability createWindowCapability(boolean supportsList, boolean supportsTile) {
+    private WindowCapability createWindowCapability(boolean supportsList, boolean supportsTile, ArrayList<TextField> supportedTextFields) {
         WindowCapability windowCapability = new WindowCapability();
+        windowCapability.setTextFields(supportedTextFields);
         windowCapability.setMenuLayoutsAvailable(new ArrayList<MenuLayout>());
         if (supportsList) {
             windowCapability.getMenuLayoutsAvailable().add(MenuLayout.LIST);
