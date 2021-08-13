@@ -214,10 +214,8 @@ class PreloadPresentChoicesOperation extends Task {
                                         resetKeyboardProperties(new CompletionListener() {
                                             @Override
                                             public void onComplete(boolean success) {
-                                                if (!success) {
-                                                    finishOperation(false);
-                                                    return;
-                                                }
+                                                finishOperation(success);
+                                                return;
                                             }
                                         });
                                     }
