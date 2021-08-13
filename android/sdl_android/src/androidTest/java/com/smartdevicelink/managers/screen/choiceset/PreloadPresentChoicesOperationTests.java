@@ -258,7 +258,7 @@ public class PreloadPresentChoicesOperationTests {
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
         WindowCapability windowCapability = new WindowCapability();
         HashSet<ChoiceCell> loadedCells = new HashSet<>();
-        PreloadPresentChoicesOperation.PreloadChoicesCompletionListener listener = new PreloadPresentChoicesOperation.PreloadChoicesCompletionListener() {
+        BaseChoiceSetManager.ChoicesOperationCompletionListener listener = new BaseChoiceSetManager.ChoicesOperationCompletionListener() {
             @Override
             public void onComplete(boolean success, HashSet<ChoiceCell> loadedChoiceCells) {
                 choiceSet.cancel();
@@ -302,7 +302,7 @@ public class PreloadPresentChoicesOperationTests {
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
         WindowCapability windowCapability = new WindowCapability();
         HashSet<ChoiceCell> loadedCells = new HashSet<>();
-        PreloadPresentChoicesOperation.PreloadChoicesCompletionListener listener = new PreloadPresentChoicesOperation.PreloadChoicesCompletionListener() {
+        BaseChoiceSetManager.ChoicesOperationCompletionListener listener = new BaseChoiceSetManager.ChoicesOperationCompletionListener() {
             @Override
             public void onComplete(boolean success, HashSet<ChoiceCell> loadedChoiceCells) {
                 choiceSet.cancel();
@@ -400,7 +400,7 @@ public class PreloadPresentChoicesOperationTests {
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(5, 3));
         WindowCapability windowCapability = new WindowCapability();
         HashSet<ChoiceCell> loadedCells = new HashSet<>();
-        PreloadPresentChoicesOperation.PreloadChoicesCompletionListener listener = new PreloadPresentChoicesOperation.PreloadChoicesCompletionListener() {
+        BaseChoiceSetManager.ChoicesOperationCompletionListener listener = new BaseChoiceSetManager.ChoicesOperationCompletionListener() {
             @Override
             public void onComplete(boolean success, HashSet<ChoiceCell> loadedChoiceCells) {
                 choiceSet.cancel();

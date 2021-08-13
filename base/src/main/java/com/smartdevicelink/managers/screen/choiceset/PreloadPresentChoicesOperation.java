@@ -88,7 +88,7 @@ class PreloadPresentChoicesOperation extends Task {
     private final WindowCapability defaultMainWindowCapability;
     private final String displayName;
     private final ArrayList<ChoiceCell> cellsToUpload;
-    private final PreloadChoicesCompletionListener completionListener;
+    private final BaseChoiceSetManager.ChoicesOperationCompletionListener completionListener;
     private final ChoiceSetSelectionListener selectionListener;
     private final boolean isVROptional;
     private boolean choiceError = false;
@@ -118,7 +118,7 @@ class PreloadPresentChoicesOperation extends Task {
     private SDLPreloadPresentChoicesOperationState currentState;
 
     PreloadPresentChoicesOperation(ISdl internalInterface, FileManager fileManager, String displayName, WindowCapability defaultWindowCapability,
-                                          Boolean isVROptional, LinkedHashSet<ChoiceCell> cellsToPreload, HashSet<ChoiceCell> loadedCells, PreloadChoicesCompletionListener listener) {
+                                          Boolean isVROptional, LinkedHashSet<ChoiceCell> cellsToPreload, HashSet<ChoiceCell> loadedCells, BaseChoiceSetManager.ChoicesOperationCompletionListener listener) {
         super("PreloadPresentChoiceOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
@@ -141,8 +141,8 @@ class PreloadPresentChoicesOperation extends Task {
     }
 
     PreloadPresentChoicesOperation(ISdl internalInterface, FileManager fileManager, ChoiceSet choiceSet, InteractionMode mode,
-                                          KeyboardProperties originalKeyboardProperties, KeyboardListener keyboardListener, Integer cancelID, String displayName, WindowCapability windowCapability,
-                                          Boolean isVROptional, HashSet<ChoiceCell> loadedCells, PreloadChoicesCompletionListener preloadListener, ChoiceSetSelectionListener listener) {
+                                   KeyboardProperties originalKeyboardProperties, KeyboardListener keyboardListener, Integer cancelID, String displayName, WindowCapability windowCapability,
+                                   Boolean isVROptional, HashSet<ChoiceCell> loadedCells, BaseChoiceSetManager.ChoicesOperationCompletionListener preloadListener, ChoiceSetSelectionListener listener) {
         super("PreloadPresentChoiceOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.keyboardListener = keyboardListener;
@@ -359,6 +359,7 @@ class PreloadPresentChoicesOperation extends Task {
         if (this.keyboardListener == null || this.originalKeyboardProperties == null) {
             if(listener != null) {
                 listener.onComplete(true);
+                finishOperation();
                 return;
             }
         }
@@ -375,6 +376,9 @@ class PreloadPresentChoicesOperation extends Task {
                 }
                 if (listener != null) {
                     listener.onComplete(response.getSuccess());
+                    if (response.getSuccess()) {
+                        onFinished();
+                    }
                 }
             }
         });
@@ -473,10 +477,6 @@ class PreloadPresentChoicesOperation extends Task {
             DebugTool.logInfo(TAG, "Canceling a choice set that has not yet been sent to Core");
             this.cancelTask();
         }
-    }
-
-    interface PreloadChoicesCompletionListener {
-        void onComplete(boolean success, HashSet<ChoiceCell> loadedChoiceCells);
     }
 
     // Present Helpers
@@ -805,7 +805,7 @@ class PreloadPresentChoicesOperation extends Task {
                     } else {
                         DebugTool.logError(TAG, "Failed to reset choice keyboard properties to original config " + response.getResultCode() + ", " + response.getInfo());
                     }
-                    PreloadPresentChoicesOperation.super.onFinished();
+                    onFinished();
                 }
             });
 
@@ -816,7 +816,7 @@ class PreloadPresentChoicesOperation extends Task {
                 DebugTool.logError(TAG, "Internal Interface null when finishing choice keyboard reset");
             }
         } else {
-            PreloadPresentChoicesOperation.super.onFinished();
+            onFinished();
         }
     }
 }

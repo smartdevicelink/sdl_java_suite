@@ -187,6 +187,10 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         transactionQueue.add(checkChoiceVR, false);
     }
 
+    interface ChoicesOperationCompletionListener {
+        void onComplete(boolean success, HashSet<ChoiceCell> loadedChoiceCells);
+    }
+
     /**
      * Preload choices to improve performance while presenting a choice set at a later time
      *
@@ -211,7 +215,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         updateIdsOnChoices(choicesToUpload);
 
         if (fileManager.get() != null) {
-            PreloadPresentChoicesOperation preloadChoicesOperation = new PreloadPresentChoicesOperation(internalInterface, fileManager.get(), displayName, defaultMainWindowCapability, isVROptional, choicesToUpload, this.preloadedChoices, new PreloadPresentChoicesOperation.PreloadChoicesCompletionListener() {
+            PreloadPresentChoicesOperation preloadChoicesOperation = new PreloadPresentChoicesOperation(internalInterface, fileManager.get(), displayName, defaultMainWindowCapability, isVROptional, choicesToUpload, this.preloadedChoices, new ChoicesOperationCompletionListener() {
                 @Override
                 public void onComplete(boolean success, HashSet<ChoiceCell> loadedCells) {
                     preloadedChoices = loadedCells;
@@ -243,7 +247,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             return;
         }
 
-        DeleteChoicesOperation deleteChoicesOperation = new DeleteChoicesOperation(internalInterface, new HashSet<>(preloadedChoices), preloadedChoices, new DeleteChoicesCompletionListener() {
+        DeleteChoicesOperation deleteChoicesOperation = new DeleteChoicesOperation(internalInterface, new HashSet<>(preloadedChoices), preloadedChoices, new ChoicesOperationCompletionListener() {
             @Override
             public void onComplete(boolean success, HashSet<ChoiceCell> updatedLoadedChoiceCells) {
                 if (!success) {

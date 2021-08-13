@@ -51,11 +51,11 @@ class DeleteChoicesOperation extends Task {
     private static final String TAG = "DeleteChoicesOperation";
     private final WeakReference<ISdl> internalInterface;
     private HashSet<ChoiceCell> cellsToDelete;
-    private final DeleteChoicesCompletionListener completionListener;
+    private final BaseChoiceSetManager.ChoicesOperationCompletionListener completionListener;
     private HashSet<ChoiceCell> loadedCells;
     private boolean completionSuccess = false;
 
-    DeleteChoicesOperation(ISdl internalInterface, HashSet<ChoiceCell> cellsToDelete, HashSet<ChoiceCell> loadedCells, DeleteChoicesCompletionListener completionListener) {
+    DeleteChoicesOperation(ISdl internalInterface, HashSet<ChoiceCell> cellsToDelete, HashSet<ChoiceCell> loadedCells, BaseChoiceSetManager.ChoicesOperationCompletionListener completionListener) {
         super("DeleteChoicesOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.cellsToDelete = cellsToDelete;
