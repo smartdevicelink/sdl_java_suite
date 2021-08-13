@@ -93,11 +93,12 @@ public class MenuReplaceOperationTests {
         FileManager fileManager = createFileManagerMock();
         WindowCapability windowCapability = createWindowCapability(true, true);
         MenuConfiguration menuConfiguration = new MenuConfiguration(MenuLayout.LIST, MenuLayout.LIST);
-        List<MenuCell> currentMenu = new ArrayList<>();
+
         MenuCell menuCell1_1 = new MenuCell("cell 1_1", TestValues.GENERAL_ARTWORK, null, null);
         MenuCell menuCell1 = new MenuCell("cell 1", null, TestValues.GENERAL_ARTWORK, Arrays.asList(menuCell1_1));
         MenuCell menuCell2 = new MenuCell("cell 2", TestValues.GENERAL_ARTWORK, null, null);
 
+        final List<MenuCell> currentMenu = new ArrayList<>();
         final List<MenuCell> updatedMenu = Arrays.asList(menuCell1, menuCell2);
         MenuReplaceOperation operation = new MenuReplaceOperation(internalInterface, fileManager, windowCapability, menuConfiguration, currentMenu, updatedMenu, true, new MenuManagerCompletionListener() {
             @Override
