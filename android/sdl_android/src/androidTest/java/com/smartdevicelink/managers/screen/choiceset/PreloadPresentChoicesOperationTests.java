@@ -346,7 +346,7 @@ public class PreloadPresentChoicesOperationTests {
         WindowCapability windowCapability = new WindowCapability();
         HashSet<ChoiceCell> loadedCells = new HashSet<>();
         presentChoicesOperation = new PreloadPresentChoicesOperation(internalInterface, fileManager, choiceSet, InteractionMode.MANUAL_ONLY, null, null, TestValues.GENERAL_INTEGER,null, windowCapability, true, loadedCells, null, null);
-        presentChoicesOperation.finishOperation();
+        presentChoicesOperation.finishOperation(false);
 
         assertEquals(Task.FINISHED, presentChoicesOperation.getState());
 
