@@ -32,6 +32,15 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import android.os.Handler;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -45,10 +54,12 @@ import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.test.TestValues;
+import com.smartdevicelink.util.Version;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -61,17 +72,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-
-import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
-import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdNotFound;
-import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.updateIdsOnMenuCells;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
 public class MenuReplaceOperationTests {
@@ -99,7 +99,6 @@ public class MenuReplaceOperationTests {
         MenuCell menuCell2 = new MenuCell("cell 2", TestValues.GENERAL_ARTWORK, null, null);
 
         final List<MenuCell> updatedMenu = Arrays.asList(menuCell1, menuCell2);
-        updateIdsOnMenuCells(updatedMenu, parentIdNotFound);
         MenuReplaceOperation operation = new MenuReplaceOperation(internalInterface, fileManager, windowCapability, menuConfiguration, currentMenu, updatedMenu, true, new MenuManagerCompletionListener() {
             @Override
             public void onComplete(final boolean success, final List<MenuCell> currentMenuCells) {
@@ -140,6 +139,7 @@ public class MenuReplaceOperationTests {
             }
         };
         doAnswer(answer).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(7, 1, 0)));
 
         return internalInterface;
     }
