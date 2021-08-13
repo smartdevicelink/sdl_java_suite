@@ -184,19 +184,19 @@ class PreloadPresentChoicesOperation extends Task {
             public void onComplete(boolean success) {
                 // If some artworks failed to upload, we are still going to try to load the cells
                 if (getState()==CANCELED || !success) {
-                    finishOperation();
+                    finishOperation(false);
                     return;
                 }
                 preloadCells(new CompletionListener() {
                     @Override
                     public void onComplete(boolean success) {
                         if (getState()==CANCELED || !success) {
-                            finishOperation();
+                            finishOperation(false);
                             return;
                         }
 
                         if (choiceSet == null) {
-                            finishOperation();
+                            finishOperation(false);
                             return;
                         }
                         DebugTool.logInfo(TAG, "Choice Operation: Executing present choice set operation");
@@ -205,7 +205,7 @@ class PreloadPresentChoicesOperation extends Task {
                             @Override
                             public void onComplete(boolean success) {
                                 if (getState()==CANCELED || !success) {
-                                    finishOperation();
+                                    finishOperation(false);
                                     return;
                                 }
                                 presentChoiceSet(new CompletionListener() {
@@ -215,7 +215,7 @@ class PreloadPresentChoicesOperation extends Task {
                                             @Override
                                             public void onComplete(boolean success) {
                                                 if (!success) {
-                                                    finishOperation();
+                                                    finishOperation(false);
                                                     return;
                                                 }
                                             }
@@ -359,7 +359,7 @@ class PreloadPresentChoicesOperation extends Task {
         if (this.keyboardListener == null || this.originalKeyboardProperties == null) {
             if(listener != null) {
                 listener.onComplete(true);
-                finishOperation();
+                finishOperation(true);
                 return;
             }
         }
@@ -377,7 +377,7 @@ class PreloadPresentChoicesOperation extends Task {
                 if (listener != null) {
                     listener.onComplete(response.getSuccess());
                     if (response.getSuccess()) {
-                        onFinished();
+                        finishOperation(true);
                     }
                 }
             }
@@ -407,7 +407,7 @@ class PreloadPresentChoicesOperation extends Task {
                     if (listener != null) {
                         listener.onComplete(false);
                     }
-                    finishOperation();
+                    finishOperation(false);
                     return;
                 }
 
@@ -687,7 +687,7 @@ class PreloadPresentChoicesOperation extends Task {
             @Override
             public void onNotified(RPCNotification notification) {
                 if (getState() == Task.CANCELED) {
-                    finishOperation();
+                    finishOperation(false);
                     return;
                 }
 
@@ -780,11 +780,11 @@ class PreloadPresentChoicesOperation extends Task {
         return choiceIds;
     }
 
-    void finishOperation() {
+    void finishOperation(boolean success) {
         this.currentState = SDLPreloadPresentChoicesOperationState.FINISHING;
 
         if (this.completionListener != null) {
-            this.completionListener.onComplete(false, loadedCells);
+            this.completionListener.onComplete(success, loadedCells);
         }
 
         if (this.choiceSet == null || this.choiceSet.getChoiceSetSelectionListener() == null) {
