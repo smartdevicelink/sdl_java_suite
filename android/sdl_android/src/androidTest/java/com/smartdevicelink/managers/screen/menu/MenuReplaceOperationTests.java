@@ -33,6 +33,7 @@
 package com.smartdevicelink.managers.screen.menu;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.cloneMenuCellsList;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -101,7 +102,7 @@ public class MenuReplaceOperationTests {
         MenuCell menuCell2 = new MenuCell("cell 2", TestValues.GENERAL_ARTWORK, null, null);
 
         final List<MenuCell> currentMenu = new ArrayList<>();
-        final List<MenuCell> updatedMenu = Arrays.asList(menuCell1, menuCell2);
+        final List<MenuCell> updatedMenu = cloneMenuCellsList(Arrays.asList(menuCell1, menuCell2));
         MenuReplaceOperation operation = new MenuReplaceOperation(internalInterface, fileManager, windowCapability, menuConfiguration, currentMenu, updatedMenu, true, new MenuManagerCompletionListener() {
             @Override
             public void onComplete(final boolean success, final List<MenuCell> currentMenuCells) {
@@ -131,16 +132,21 @@ public class MenuReplaceOperationTests {
         final MenuCell menuCell2 = new MenuCell("A", null, null, null, null, null, listener);
         final MenuCell menuCell3 = new MenuCell("C", null, null, null, null, null, listener);
 
-        MenuReplaceOperation operation = new MenuReplaceOperation(internalInterface, fileManager, windowCapability, menuConfiguration, new ArrayList<MenuCell>(), Arrays.asList(menuCell1, menuCell2, menuCell3), true, new MenuManagerCompletionListener() {
+        MenuReplaceOperation operation = new MenuReplaceOperation(internalInterface, fileManager, windowCapability, menuConfiguration, new ArrayList<MenuCell>(), cloneMenuCellsList(Arrays.asList(menuCell1, menuCell2, menuCell3)), true, new MenuManagerCompletionListener() {
             @Override
             public void onComplete(final boolean success, final List<MenuCell> currentMenuCells1) {
                 assertOnMainThread(new Runnable() {
                     @Override
                     public void run() {
                         assertTrue(success);
+                        assertEquals(3, currentMenuCells1.size());
+                        assertEquals("A", currentMenuCells1.get(0).getUniqueTitle());
+                        assertEquals("A (2)", currentMenuCells1.get(1).getUniqueTitle());
+                        assertEquals("C", currentMenuCells1.get(2).getUniqueTitle());
+
                         verify(internalInterface, Mockito.times(1)).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
 
-                        MenuReplaceOperation operation = new MenuReplaceOperation(internalInterface, fileManager, windowCapability, menuConfiguration, new ArrayList<MenuCell>(), Arrays.asList(menuCell2, menuCell1), true, new MenuManagerCompletionListener() {
+                        MenuReplaceOperation operation = new MenuReplaceOperation(internalInterface, fileManager, windowCapability, menuConfiguration, currentMenuCells1, cloneMenuCellsList(Arrays.asList(menuCell2, menuCell1)), true, new MenuManagerCompletionListener() {
                             @Override
                             public void onComplete(final boolean success, final List<MenuCell> currentMenuCells2) {
                                 assertOnMainThread(new Runnable() {
@@ -181,7 +187,7 @@ public class MenuReplaceOperationTests {
         final MenuCell menuCell1 = new MenuCell("A", null, null, null, null, null, listener1);
         final MenuCell menuCell2 = new MenuCell("A", null, null, null, null, null, listener2);
 
-        MenuReplaceOperation operation = new MenuReplaceOperation(internalInterface, fileManager, windowCapability, menuConfiguration, new ArrayList<MenuCell>(), Arrays.asList(menuCell1), true, new MenuManagerCompletionListener() {
+        MenuReplaceOperation operation = new MenuReplaceOperation(internalInterface, fileManager, windowCapability, menuConfiguration, new ArrayList<MenuCell>(), cloneMenuCellsList(Arrays.asList(menuCell1)), true, new MenuManagerCompletionListener() {
             @Override
             public void onComplete(final boolean success, final List<MenuCell> currentMenuCells1) {
                 assertOnMainThread(new Runnable() {
@@ -192,7 +198,7 @@ public class MenuReplaceOperationTests {
                         assertEquals(listener1, currentMenuCells1.get(0).getMenuSelectionListener());
                         verify(internalInterface, Mockito.times(1)).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
 
-                        MenuReplaceOperation operation = new MenuReplaceOperation(internalInterface, fileManager, windowCapability, menuConfiguration, currentMenuCells1, Arrays.asList(menuCell2), true, new MenuManagerCompletionListener() {
+                        MenuReplaceOperation operation = new MenuReplaceOperation(internalInterface, fileManager, windowCapability, menuConfiguration, currentMenuCells1, cloneMenuCellsList(Arrays.asList(menuCell2)), true, new MenuManagerCompletionListener() {
                             @Override
                             public void onComplete(final boolean success, final List<MenuCell> currentMenuCells2) {
                                 assertOnMainThread(new Runnable() {
