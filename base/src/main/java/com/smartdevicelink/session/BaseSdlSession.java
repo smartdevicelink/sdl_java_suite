@@ -192,6 +192,10 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
             return;
 
         SecurityQueryPayload receivedHeader = SecurityQueryPayload.parseBinaryQueryHeader(msg.getData().clone());
+        if (receivedHeader == null) {
+            DebugTool.logError(TAG, "Malformed Security Query Header");
+            return;
+        }
 
         int iLen = msg.getData().length - 12;
         byte[] data = new byte[iLen];

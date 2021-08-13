@@ -55,11 +55,10 @@ public class SecurityQueryPayload {
                 byte[] _bulkData;
                 if (msg.getQueryType() == QueryType.NOTIFICATION && msg.getQueryID() == QueryID.SEND_INTERNAL_ERROR) {
                     _bulkData = new byte[binHeader.length - _jsonSize - 12 - 1];
-                    System.arraycopy(binHeader, 12 + _jsonSize, _bulkData, 0, _bulkData.length - 1);
                 } else {
                     _bulkData = new byte[binHeader.length - _jsonSize - 12];
-                    System.arraycopy(binHeader, 12 + _jsonSize, _bulkData, 0, _bulkData.length);
                 }
+                System.arraycopy(binHeader, 12 + _jsonSize, _bulkData, 0, _bulkData.length);
                 msg.setBulkData(_bulkData);
             }
 
