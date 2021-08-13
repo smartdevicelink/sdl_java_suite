@@ -58,6 +58,7 @@ import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
+import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.util.Version;
@@ -150,6 +151,57 @@ public class MenuReplaceOperationTests {
                                         assertEquals("A", currentMenuCells2.get(0).getUniqueTitle());
                                         assertEquals("A (2)", currentMenuCells2.get(1).getUniqueTitle());
                                         verify(internalInterface, Mockito.times(2)).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
+                                    }
+                                });
+                            }
+                        });
+                        transactionQueue.add(operation, false);
+                    }
+                });
+            }
+        });
+        transactionQueue.add(operation, false);
+    }
+
+    @Test
+    public void testResendingSameCellWithDifferentListener() {
+        final ISdl internalInterface = createISdlMock();
+        final FileManager fileManager = createFileManagerMock();
+        final WindowCapability windowCapability = createWindowCapability(true, true, new ArrayList<TextField>());
+        final MenuConfiguration menuConfiguration = new MenuConfiguration(MenuLayout.LIST, MenuLayout.LIST);
+
+        final MenuSelectionListener listener1 = new MenuSelectionListener() {
+            @Override
+            public void onTriggered(TriggerSource trigger) {}
+        };
+        final MenuSelectionListener listener2 = new MenuSelectionListener() {
+            @Override
+            public void onTriggered(TriggerSource trigger) {}
+        };
+        final MenuCell menuCell1 = new MenuCell("A", null, null, null, null, null, listener1);
+        final MenuCell menuCell2 = new MenuCell("A", null, null, null, null, null, listener2);
+
+        MenuReplaceOperation operation = new MenuReplaceOperation(internalInterface, fileManager, windowCapability, menuConfiguration, new ArrayList<MenuCell>(), Arrays.asList(menuCell1), true, new MenuManagerCompletionListener() {
+            @Override
+            public void onComplete(final boolean success, final List<MenuCell> currentMenuCells1) {
+                assertOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        assertTrue(success);
+                        assertEquals(1, currentMenuCells1.size());
+                        assertEquals(listener1, currentMenuCells1.get(0).getMenuSelectionListener());
+                        verify(internalInterface, Mockito.times(1)).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
+
+                        MenuReplaceOperation operation = new MenuReplaceOperation(internalInterface, fileManager, windowCapability, menuConfiguration, currentMenuCells1, Arrays.asList(menuCell2), true, new MenuManagerCompletionListener() {
+                            @Override
+                            public void onComplete(final boolean success, final List<MenuCell> currentMenuCells2) {
+                                assertOnMainThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        assertTrue(success);
+                                        assertEquals(1, currentMenuCells2.size());
+                                        assertEquals(listener2, currentMenuCells2.get(0).getMenuSelectionListener());
+                                        verify(internalInterface, Mockito.times(1)).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
                                     }
                                 });
                             }
