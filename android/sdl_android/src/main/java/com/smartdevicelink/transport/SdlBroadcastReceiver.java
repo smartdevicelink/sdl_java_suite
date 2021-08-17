@@ -148,7 +148,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
             DebugTool.logError(TAG, "You cannot use the default SdlRouterService class, it must be extended in your project. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
         }
 
-        HashMap<String, Object> vehicleInfoStore = (HashMap<String, Object>) intent.getSerializableExtra(TransportConstants.VEHICLE_INFO);
+        HashMap<String, Object> vehicleInfoStore = (HashMap<String, Object>) intent.getSerializableExtra(TransportConstants.VEHICLE_INFO_EXTRA);
 
         VehicleType vehicleType;
         if (vehicleInfoStore == null || vehicleInfoStore.isEmpty()) {
@@ -254,7 +254,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
             }
         }
         if (vehicleType != null) {
-            serviceIntent.putExtra(TransportConstants.VEHICLE_INFO, vehicleType.getStore());
+            serviceIntent.putExtra(TransportConstants.VEHICLE_INFO_EXTRA, vehicleType.getStore());
         }
 
         try {
