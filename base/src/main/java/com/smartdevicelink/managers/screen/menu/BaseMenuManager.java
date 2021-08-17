@@ -33,7 +33,6 @@
 package com.smartdevicelink.managers.screen.menu;
 
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.cloneMenuCellsList;
-import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.isSubMenuCell;
 
 import androidx.annotation.NonNull;
 
@@ -219,7 +218,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             }
         }
 
-        if (cell != null && (!isSubMenuCell(cell))) {
+        if (cell != null && (!cell.isSubMenuCell())) {
             DebugTool.logError(TAG, String.format("The cell %s does not contain any sub cells, so no submenu can be opened", cell.getTitle()));
             return false;
         } else if (cell != null && foundClonedCell == null) {
@@ -367,7 +366,7 @@ abstract class BaseMenuManager extends BaseSubManager {
                 cell.getMenuSelectionListener().onTriggered(command.getTriggerSource());
                 return true;
             }
-            if (isSubMenuCell(cell) && !cell.getSubCells().isEmpty()) {
+            if (cell.isSubMenuCell() && !cell.getSubCells().isEmpty()) {
                 // for each cell, if it has sub cells, recursively loop through those as well
                 return callListenerForCells(cell.getSubCells(), command);
             }
@@ -430,7 +429,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             identicalCellsCheckSet.add(cell);
 
             // Recursively check the sub-cell lists to see if they are all unique as well. If anything is not, this will chain back up the list to return false.
-            if (isSubMenuCell(cell) && cell.getSubCells().size() > 0) {
+            if (cell.isSubMenuCell() && cell.getSubCells().size() > 0) {
                 boolean subCellsAreUnique = menuCellsAreUnique(cell.getSubCells(), allVoiceCommands);
 
                 if (!subCellsAreUnique) {

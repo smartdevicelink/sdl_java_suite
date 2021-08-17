@@ -8,7 +8,6 @@ import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.clon
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.commandIdForRPCRequest;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.deleteCommandsForCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.findAllArtworksToBeUploadedFromCells;
-import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.isSubMenuCell;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.mainMenuCommandsForCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.positionForRPCRequest;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.removeCellFromList;
@@ -234,7 +233,7 @@ class MenuReplaceOperation extends Task {
             return;
         }
 
-        if (oldKeptCells.get(startIndex) != null && isSubMenuCell(oldKeptCells.get(startIndex)) && !oldKeptCells.get(startIndex).getSubCells().isEmpty()) {
+        if (oldKeptCells.get(startIndex) != null && oldKeptCells.get(startIndex).isSubMenuCell() && !oldKeptCells.get(startIndex).getSubCells().isEmpty()) {
             DynamicMenuUpdateRunScore tempScore = DynamicMenuUpdateAlgorithm.dynamicRunScoreOldMenuCells(oldKeptCells.get(startIndex).getSubCells(), newKeptCells.get(startIndex).getSubCells());
 
             // If both old and new menu cells are empty. Then nothing needs to be done.
@@ -455,7 +454,7 @@ class MenuReplaceOperation extends Task {
             }
 
             // Check for subMenu fields supported
-            if (isSubMenuCell(cell)) {
+            if (cell.isSubMenuCell()) {
                 if (!hasTextFieldOfName(windowCapability, TextFieldName.menuSubMenuSecondaryText)) {
                     cell.setSecondaryText(null);
                 }
@@ -501,7 +500,7 @@ class MenuReplaceOperation extends Task {
                 cell.setUniqueTitle(cell.getTitle());
             }
 
-            if (isSubMenuCell(cell) && !cell.getSubCells().isEmpty()) {
+            if (cell.isSubMenuCell() && !cell.getSubCells().isEmpty()) {
                 generateUniqueNamesForCells(cell.getSubCells(), supportsMenuUniqueness);
             }
         }
@@ -514,7 +513,7 @@ class MenuReplaceOperation extends Task {
 
         for (int i = 0; i < fromMenuCells.size(); i++) {
             toMenuCells.get(i).setUniqueTitle(fromMenuCells.get(i).getUniqueTitle());
-            if (isSubMenuCell(fromMenuCells.get(i)) && !fromMenuCells.get(i).getSubCells().isEmpty()) {
+            if (fromMenuCells.get(i).isSubMenuCell() && !fromMenuCells.get(i).getSubCells().isEmpty()) {
                 applyUniqueNamesOnCells(fromMenuCells.get(i).getSubCells(), toMenuCells.get(i).getSubCells());
             }
         }

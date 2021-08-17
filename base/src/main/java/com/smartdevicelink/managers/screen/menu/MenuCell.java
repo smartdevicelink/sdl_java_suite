@@ -432,6 +432,10 @@ public class MenuCell implements Cloneable {
 
     // HELPER
 
+    boolean isSubMenuCell() {
+        return getSubCells() != null;
+    }
+
     /**
      * Note: You should compare using the {@link #equals(Object)} method. <br>
      * Hash the parameters of the object and return the result for comparison

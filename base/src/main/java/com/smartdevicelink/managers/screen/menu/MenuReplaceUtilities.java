@@ -46,7 +46,7 @@ class MenuReplaceUtilities {
             if (parentId != parentIdNotFound) {
                 cell.setParentCellId(parentId);
             }
-            if (isSubMenuCell(cell) && !cell.getSubCells().isEmpty()) {
+            if (cell.isSubMenuCell() && !cell.getSubCells().isEmpty()) {
                 updateIdsOnMenuCells(cell.getSubCells(), cell.getCellId());
             }
         }
@@ -68,7 +68,7 @@ class MenuReplaceUtilities {
                     artworks.add(cell.getSecondaryArtwork());
                 }
             }
-            if (isSubMenuCell(cell) && !cell.getSubCells().isEmpty()) {
+            if (cell.isSubMenuCell() && !cell.getSubCells().isEmpty()) {
                 artworks.addAll(findAllArtworksToBeUploadedFromCells(cell.getSubCells(), fileManager, windowCapability));
             }
         }
@@ -78,13 +78,13 @@ class MenuReplaceUtilities {
 
     // If there is an icon and the icon has been uploaded, or if the icon is a static icon, it should include the image
     static boolean shouldCellIncludePrimaryImageFromCell(MenuCell cell, FileManager fileManager, WindowCapability windowCapability) {
-        boolean supportsImage = isSubMenuCell(cell) ? hasImageFieldOfName(windowCapability, ImageFieldName.subMenuIcon) : hasImageFieldOfName(windowCapability, ImageFieldName.cmdIcon);
+        boolean supportsImage = cell.isSubMenuCell() ? hasImageFieldOfName(windowCapability, ImageFieldName.subMenuIcon) : hasImageFieldOfName(windowCapability, ImageFieldName.cmdIcon);
         return cell.getIcon() != null && supportsImage && (fileManager.hasUploadedFile(cell.getIcon()) || cell.getIcon().isStaticIcon());
     }
 
     // If there is an icon and the icon has been uploaded, or if the icon is a static icon, it should include the image
     static boolean shouldCellIncludeSecondaryImageFromCell(MenuCell cell, FileManager fileManager, WindowCapability windowCapability) {
-        boolean supportsImage = isSubMenuCell(cell) ? hasImageFieldOfName(windowCapability, ImageFieldName.menuSubMenuSecondaryImage) : hasImageFieldOfName(windowCapability, ImageFieldName.menuCommandSecondaryImage);
+        boolean supportsImage = cell.isSubMenuCell() ? hasImageFieldOfName(windowCapability, ImageFieldName.menuSubMenuSecondaryImage) : hasImageFieldOfName(windowCapability, ImageFieldName.menuCommandSecondaryImage);
         return cell.getSecondaryArtwork() != null && supportsImage && (fileManager.hasUploadedFile(cell.getSecondaryArtwork()) || cell.getSecondaryArtwork().isStaticIcon());
     }
 
@@ -115,7 +115,7 @@ class MenuReplaceUtilities {
     static List<RPCRequest> deleteCommandsForCells(List<MenuCell> cells) {
         List<RPCRequest> deletes = new ArrayList<>();
         for (MenuCell cell : cells) {
-            if (isSubMenuCell(cell)) {
+            if (cell.isSubMenuCell()) {
                 DeleteSubMenu delete = new DeleteSubMenu(cell.getCellId());
                 deletes.add(delete);
             } else {
@@ -135,7 +135,7 @@ class MenuReplaceUtilities {
             for (int updateCellsIndex = 0; updateCellsIndex < cells.size(); updateCellsIndex++) {
                 MenuCell addCell = cells.get(updateCellsIndex);
                 if (mainCell.equals(addCell)) {
-                    if (isSubMenuCell(addCell)) {
+                    if (addCell.isSubMenuCell()) {
                         commands.add(subMenuCommandForMenuCell(addCell, fileManager, windowCapability, menuInteger, defaultSubmenuLayout));
                     } else {
                         commands.add(commandForMenuCell(addCell, fileManager, windowCapability, menuInteger));
@@ -150,7 +150,7 @@ class MenuReplaceUtilities {
     static List<RPCRequest> subMenuCommandsForCells(List<MenuCell> cells, FileManager fileManager, WindowCapability windowCapability, MenuLayout defaultSubmenuLayout) {
         List<RPCRequest> commands = new ArrayList<>();
         for (MenuCell cell : cells) {
-            if (isSubMenuCell(cell) && !cell.getSubCells().isEmpty()) {
+            if (cell.isSubMenuCell() && !cell.getSubCells().isEmpty()) {
                 commands.addAll(allCommandsForCells(cell.getSubCells(), fileManager, windowCapability, defaultSubmenuLayout));
             }
         }
@@ -162,7 +162,7 @@ class MenuReplaceUtilities {
 
         for (int cellIndex = 0; cellIndex < cells.size(); cellIndex++) {
             MenuCell cell = cells.get(cellIndex);
-            if (isSubMenuCell(cell)) {
+            if (cell.isSubMenuCell()) {
                 commands.add(subMenuCommandForMenuCell(cell, fileManager, windowCapability, cellIndex, defaultSubmenuLayout));
 
                 // Recursively grab the commands for all the sub cells
@@ -230,7 +230,7 @@ class MenuReplaceUtilities {
                 // If the cell id matches the command id, remove it from the list and return
                 menuCellList.remove(menuCell);
                 return true;
-            } else if (isSubMenuCell(menuCell) && !menuCell.getSubCells().isEmpty()) {
+            } else if (menuCell.isSubMenuCell() && !menuCell.getSubCells().isEmpty()) {
                 // If the menu cell has sub cells, we need to recurse and check the sub cells
                 List<MenuCell> newList = menuCell.getSubCells();
                 boolean foundAndRemovedItem = removeCellFromList(newList, commandId);
@@ -249,7 +249,7 @@ class MenuReplaceUtilities {
             if (cell.getCellId() == cellId) {
                 addedCell = cell;
                 break;
-            } else if (isSubMenuCell(cell) && !cell.getSubCells().isEmpty()) {
+            } else if (cell.isSubMenuCell() && !cell.getSubCells().isEmpty()) {
                 boolean success = addCellWithCellId(cellId, position, cell.getSubCells(), mainMenuList);
                 if (success) {
                     return true;
@@ -278,7 +278,7 @@ class MenuReplaceUtilities {
                 // If we found the correct submenu, insert it into that submenu
                 insertMenuCell(cell, menuCell.getSubCells(), position);
                 return true;
-            } else if (isSubMenuCell(menuCell) && !menuCell.getSubCells().isEmpty()) {
+            } else if (menuCell.isSubMenuCell() && !menuCell.getSubCells().isEmpty()) {
                 // Check the sub cells of this cell to see if any of those have cell ids that match the parent cell id
                 List<MenuCell> newList = menuCell.getSubCells();
                 boolean foundAndAddedItem = addMenuCell(cell, newList, position);
@@ -293,7 +293,7 @@ class MenuReplaceUtilities {
 
     private static void insertMenuCell(MenuCell cell, List<MenuCell> cellList, int position) {
         MenuCell cellToInsert = cell;
-        if (isSubMenuCell(cellToInsert)) {
+        if (cellToInsert.isSubMenuCell()) {
             // We should not add the subCells automatically when adding a parent cell
             cellToInsert = cell.clone();
             cellToInsert.getSubCells().clear();
@@ -303,10 +303,6 @@ class MenuReplaceUtilities {
         } else {
             cellList.add(position, cellToInsert);
         }
-    }
-
-    static boolean isSubMenuCell(MenuCell menuCell) {
-        return menuCell.getSubCells() != null;
     }
 
     static List<MenuCell> cloneMenuCellsList(List<MenuCell> originalList) {
