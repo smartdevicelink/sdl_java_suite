@@ -190,7 +190,7 @@ public class SdlAppInfoTests {
         type.setModel("Car");
         type.setModelYear("2019");
         type.setTrim("GT");
-        List<VehicleType> deserializedList = SdlAppInfo.deserializeVehicleMake(getInstrumentation().getContext().getResources().getXml(com.smartdevicelink.test.R.xml.supported_vehicle_type));
+        List<VehicleType> deserializedList = SdlAppInfo.deserializeSupportedVehicles(getInstrumentation().getContext().getResources().getXml(com.smartdevicelink.test.R.xml.supported_vehicle_type));
         assertTrue(deserializedList.contains(type));
         assertEquals(1, deserializedList.size());
     }

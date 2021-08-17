@@ -67,7 +67,7 @@ public class SdlAppInfo {
     ComponentName routerServiceComponentName;
     int routerServiceVersion = 4; //We use this as a default and assume if the number doesn't exist in meta data it is because the app hasn't updated.
     boolean isCustomRouterService = false;
-    List<VehicleType> vehicleMakesList = new ArrayList<>();
+    List<VehicleType> supportedVehicles = new ArrayList<>();
     long lastUpdateTime;
 
     @Deprecated
@@ -129,7 +129,7 @@ public class SdlAppInfo {
                             parser = context.getResources().getXml(metadata.getInt(SDL_OEM_VEHICLE_TYPE_METADATA));
                         }
 
-                        this.vehicleMakesList = deserializeVehicleMake(parser);
+                        this.supportedVehicles = deserializeSupportedVehicles(parser);
                     } catch (PackageManager.NameNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -183,7 +183,7 @@ public class SdlAppInfo {
         builder.append(this.lastUpdateTime);
 
         builder.append("\nVehicle make list: ");
-        builder.append(this.vehicleMakesList.toString());
+        builder.append(this.supportedVehicles.toString());
 
         builder.append("\n-------- Sdl App Info End------");
 
@@ -196,14 +196,17 @@ public class SdlAppInfo {
      * @param parser The xml parsing interface for the vehicle types xml file.
      * @return The list of vehicle types.
      */
-    public static List<VehicleType> deserializeVehicleMake(XmlResourceParser parser) {
+    public static List<VehicleType> deserializeSupportedVehicles(XmlResourceParser parser) {
         List<VehicleType> vehicleMakesList = new ArrayList<VehicleType>();
+        if (parser == null) {
+            return vehicleMakesList;
+        }
         try {
             int eventType = parser.getEventType();
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 if (eventType == XmlPullParser.START_TAG) {
-                    String tagname = parser.getName();
-                    if (tagname.equalsIgnoreCase("vehicle-type")) {
+                    String tagName = parser.getName();
+                    if (tagName != null && tagName.equalsIgnoreCase("vehicle-type")) {
                         VehicleType vehicleMake = new VehicleType();
                         String make = parser.getAttributeValue(null, "make");
                         if (make != null) {
@@ -216,10 +219,12 @@ public class SdlAppInfo {
                                 vehicleMakesList.add(vehicleMake);
                             } else if (model != null){
                                 vehicleMake.setModel(model);
-                                if (modelYear != null)
+                                if (modelYear != null) {
                                     vehicleMake.setModelYear(modelYear);
-                                if (trim != null)
+                                }
+                                if (trim != null) {
                                     vehicleMake.setTrim(trim);
+                                }
                                 vehicleMakesList.add(vehicleMake);
                             }
                         }
@@ -228,9 +233,9 @@ public class SdlAppInfo {
                 eventType = parser.next();
             }
         } catch (XmlPullParserException e) {
-            e.printStackTrace();
+            DebugTool.logError(TAG, "Failed to parse xml file", e);
         } catch (IOException e) {
-            e.printStackTrace();
+            DebugTool.logError(TAG, "Failed to parse xml file", e);
         }
         return vehicleMakesList;
     }
@@ -243,39 +248,20 @@ public class SdlAppInfo {
      * @return true if vehicle type is supported.
      */
     public static boolean checkIfVehicleSupported(List<VehicleType> supportedVehicleList, VehicleType connectedVehicle) {
-        if (supportedVehicleList == null || supportedVehicleList.isEmpty() || connectedVehicle == null || connectedVehicle.getStore().isEmpty()) {
+        if (supportedVehicleList == null || supportedVehicleList.isEmpty() || connectedVehicle == null || connectedVehicle.getStore() == null|| connectedVehicle.getStore().isEmpty()) {
             return true;
         }
         if (supportedVehicleList.contains(connectedVehicle)) {
             return true;
         }
         for (VehicleType supportedVehicle: supportedVehicleList) {
-            String supportedVehicleMake = supportedVehicle.getMake();
-            String connectedVehicleMake = connectedVehicle.getMake();
-            if (supportedVehicleMake != null && connectedVehicleMake != null && connectedVehicleMake.equalsIgnoreCase(supportedVehicleMake)) {
-                String supportedVehicleModel = supportedVehicle.getModel();
-                String connectedVehicleModel = connectedVehicle.getModel();
-                if (supportedVehicleModel != null && connectedVehicleModel != null) {
-                    if (connectedVehicleModel.equalsIgnoreCase(supportedVehicleModel)) {
-                        boolean ret = true;
-                        String supportedVehicleModelYear = supportedVehicle.getModelYear();
-                        String connectedVehicleModelYear = connectedVehicle.getModelYear();
-                        if (supportedVehicleModelYear != null && connectedVehicleModelYear != null) {
-                            ret = connectedVehicleModelYear.equalsIgnoreCase(supportedVehicleModelYear);
-                        }
-                        String supportedVehicleTrim = supportedVehicle.getTrim();
-                        String connectedVehicleTrim = connectedVehicle.getTrim();
-                        if (supportedVehicleTrim != null && connectedVehicleTrim != null) {
-                            ret &= connectedVehicleTrim.equalsIgnoreCase(supportedVehicleTrim);
-                        }
-                        if (ret) {
-                            return true;
-                        }
-                    }
-                }
-                else {
-                    // Return true if only make is defined and it matches
-                    return true;
+            boolean areVehicleMakesEqual = CompareUtils.areStringsEqual(supportedVehicle.getMake(), connectedVehicle.getMake(), true, false);
+            if (areVehicleMakesEqual) {
+                boolean areVehicleModelsEqual = CompareUtils.areStringsEqual(supportedVehicle.getModel(), connectedVehicle.getModel(), true, true);
+                if (areVehicleModelsEqual) {
+                    boolean areVehicleYearsEqual = CompareUtils.areStringsEqual(supportedVehicle.getModelYear(), connectedVehicle.getModelYear(), true, true);
+                    boolean areVehicleTrimsEqual = CompareUtils.areStringsEqual(supportedVehicle.getTrim(), connectedVehicle.getTrim(), true, true);
+                    return areVehicleYearsEqual && areVehicleTrimsEqual;
                 }
             }
         }
@@ -287,8 +273,8 @@ public class SdlAppInfo {
      *
      * @return List<VehicleType> a list of supported vehicle types.
      */
-    public List<VehicleType> getVehicleMakesList() {
-        return vehicleMakesList;
+    public List<VehicleType> getSupportedVehicles() {
+        return supportedVehicles;
     }
 
     /**

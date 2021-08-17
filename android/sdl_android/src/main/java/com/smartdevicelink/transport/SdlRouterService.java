@@ -1116,7 +1116,7 @@ public class SdlRouterService extends Service {
             return false;
         }
 
-        if (!SdlAppInfo.checkIfVehicleSupported(currentAppInfo.getVehicleMakesList(), receivedVehicleType)) {
+        if (!SdlAppInfo.checkIfVehicleSupported(currentAppInfo.getSupportedVehicles(), receivedVehicleType)) {
             DebugTool.logError(TAG, "Received vehicle data is not supported. Shutting down");
             return false;
         }
