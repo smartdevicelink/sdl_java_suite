@@ -90,6 +90,8 @@ import com.smartdevicelink.session.ISdlSessionListener;
 import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.FileUtls;
@@ -398,9 +400,17 @@ abstract class BaseLifecycleManager {
                             VehicleType vehicleType = raiResponse.getVehicleType();
                             String systemSoftwareVersion = raiResponse.getSystemSoftwareVersion();
                             if (vehicleType != null || systemSoftwareVersion != null) {
-                                String address = session.getBluetoothMacAddress();
-                                if (address != null && !address.isEmpty()) {
-                                    saveVehicleType(address, vehicleType);
+                                List<TransportRecord> activeTransports = session.getActiveTransports();
+                                if (activeTransports != null) {
+                                    for (TransportRecord record: activeTransports) {
+                                        if (record.getType() == TransportType.BLUETOOTH) {
+                                            String address = record.getAddress();
+                                            if (address != null && !address.isEmpty()) {
+                                                saveVehicleType(address, vehicleType);
+                                            }
+                                            break;
+                                        }
+                                    }
                                 }
 
                                 SystemInfo systemInfo = new SystemInfo(vehicleType, systemSoftwareVersion, null);
@@ -951,9 +961,17 @@ abstract class BaseLifecycleManager {
 
             if (systemInfo != null && lifecycleListener != null) {
                 didCheckSystemInfo = true;
-                String address = session.getBluetoothMacAddress();
-                if (address != null && !address.isEmpty()) {
-                    saveVehicleType(address, systemInfo.getVehicleType());
+                List<TransportRecord> activeTransports = session.getActiveTransports();
+                if (activeTransports != null) {
+                    for (TransportRecord record: activeTransports) {
+                        if (record.getType() == TransportType.BLUETOOTH) {
+                            String address = record.getAddress();
+                            if (address != null && !address.isEmpty()) {
+                                saveVehicleType(address, systemInfo.getVehicleType());
+                            }
+                            break;
+                        }
+                    }
                 }
                 boolean validSystemInfo = lifecycleListener.onSystemInfoReceived(systemInfo);
                 if (!validSystemInfo) {
