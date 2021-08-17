@@ -304,7 +304,7 @@ public class AndroidTools {
      */
     public static @Nullable Hashtable<String, Object> getVehicleTypeFromPrefs(Context context, String address) {
         synchronized (VEHICLE_PREF_LOCK) {
-            if (context == null) {
+            if (context == null || address == null) {
                 return null;
             }
             try {
