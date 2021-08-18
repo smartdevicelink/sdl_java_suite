@@ -1,5 +1,7 @@
 package com.smartdevicelink.protocol.enums;
 
+import androidx.annotation.RestrictTo;
+
 import com.smartdevicelink.util.BitConverter;
 
 import java.util.Arrays;
@@ -7,6 +9,7 @@ import java.util.Enumeration;
 import java.util.Objects;
 import java.util.Vector;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class QueryID {
 
     private static final Vector<QueryID> theList = new Vector<>();
@@ -15,9 +18,9 @@ public class QueryID {
         return theList;
     }
 
-    private static final byte[] sendHandshakeDataByteArray= {(byte) 0x00, (byte) 0x00, (byte) 0x01};
-    private static final byte[] sendInternalErrorByteArray= {(byte) 0x00, (byte) 0x00, (byte) 0x02};
-    private static final byte[] invalidQueryIdByteArray= {(byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
+    private static final byte[] sendHandshakeDataByteArray = {(byte) 0x00, (byte) 0x00, (byte) 0x01};
+    private static final byte[] sendInternalErrorByteArray = {(byte) 0x00, (byte) 0x00, (byte) 0x02};
+    private static final byte[] invalidQueryIdByteArray = {(byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
     public final static QueryID SEND_HANDSHAKE_DATA = new QueryID(sendHandshakeDataByteArray, "SEND_HANDSHAKE_DATA");
     public final static QueryID SEND_INTERNAL_ERROR = new QueryID(sendInternalErrorByteArray, "SEND_INTERNAL_ERROR");
     public final static QueryID INVALID_QUERY_ID = new QueryID(invalidQueryIdByteArray, "INVALID_QUERY_ID");

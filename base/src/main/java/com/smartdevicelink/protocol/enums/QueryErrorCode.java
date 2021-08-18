@@ -1,9 +1,12 @@
 package com.smartdevicelink.protocol.enums;
 
+import androidx.annotation.RestrictTo;
+
 import com.smartdevicelink.util.ByteEnumer;
 
 import java.util.Vector;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class QueryErrorCode extends ByteEnumer {
 
     private static final Vector<QueryErrorCode> theList = new Vector<>();

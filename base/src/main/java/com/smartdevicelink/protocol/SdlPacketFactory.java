@@ -35,8 +35,6 @@ import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.protocol.enums.ControlFrameTags;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
-import com.smartdevicelink.protocol.enums.QueryID;
-import com.smartdevicelink.protocol.enums.QueryType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.util.BitConverter;
 
