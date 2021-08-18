@@ -235,7 +235,7 @@ public class SdlAppInfo {
         } catch (XmlPullParserException e) {
             DebugTool.logError(TAG, "Failed to parse xml file", e);
         } catch (IOException e) {
-            DebugTool.logError(TAG, "Failed to parse xml file", e);
+            DebugTool.logError(TAG, "Failed to find next element in the xml file", e);
         }
         return vehicleMakesList;
     }

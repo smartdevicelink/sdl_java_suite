@@ -400,19 +400,7 @@ abstract class BaseLifecycleManager {
                             VehicleType vehicleType = raiResponse.getVehicleType();
                             String systemSoftwareVersion = raiResponse.getSystemSoftwareVersion();
                             if (vehicleType != null || systemSoftwareVersion != null) {
-                                List<TransportRecord> activeTransports = session.getActiveTransports();
-                                if (activeTransports != null) {
-                                    for (TransportRecord record: activeTransports) {
-                                        if (record.getType() == TransportType.BLUETOOTH) {
-                                            String address = record.getAddress();
-                                            if (address != null && !address.isEmpty()) {
-                                                saveVehicleType(address, vehicleType);
-                                            }
-                                            break;
-                                        }
-                                    }
-                                }
-
+                                saveVehicleType(session.getActiveTransports(), vehicleType);
                                 SystemInfo systemInfo = new SystemInfo(vehicleType, systemSoftwareVersion, null);
                                 boolean validSystemInfo = lifecycleListener.onSystemInfoReceived(systemInfo);
                                 if (!validSystemInfo) {
@@ -961,18 +949,7 @@ abstract class BaseLifecycleManager {
 
             if (systemInfo != null && lifecycleListener != null) {
                 didCheckSystemInfo = true;
-                List<TransportRecord> activeTransports = session.getActiveTransports();
-                if (activeTransports != null) {
-                    for (TransportRecord record: activeTransports) {
-                        if (record.getType() == TransportType.BLUETOOTH) {
-                            String address = record.getAddress();
-                            if (address != null && !address.isEmpty()) {
-                                saveVehicleType(address, systemInfo.getVehicleType());
-                            }
-                            break;
-                        }
-                    }
-                }
+                saveVehicleType(session.getActiveTransports(), systemInfo.getVehicleType());
                 boolean validSystemInfo = lifecycleListener.onSystemInfoReceived(systemInfo);
                 if (!validSystemInfo) {
                     DebugTool.logWarning(TAG, "Disconnecting from head unit, the system info was not accepted.");
@@ -1353,6 +1330,23 @@ abstract class BaseLifecycleManager {
     abstract void cycle(SdlDisconnectedReason disconnectedReason);
 
     void saveVehicleType(String address, VehicleType type){
+    }
+
+    private void saveVehicleType(List<TransportRecord> activeTransports, VehicleType type) {
+        if (activeTransports == null || activeTransports.isEmpty() || type == null) {
+            DebugTool.logWarning(TAG, "Unable to save vehicle type");
+            return;
+        }
+
+        for (TransportRecord record: activeTransports) {
+            if (record.getType() == TransportType.BLUETOOTH) {
+                String address = record.getAddress();
+                if (address != null && !address.isEmpty()) {
+                    saveVehicleType(address, type);
+                }
+                break;
+            }
+        }
     }
 
     void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {

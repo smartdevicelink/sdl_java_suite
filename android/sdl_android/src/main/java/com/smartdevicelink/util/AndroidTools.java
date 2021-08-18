@@ -280,6 +280,7 @@ public class AndroidTools {
     public static void saveVehicleType(Context context, VehicleType vehicleType, String address) {
         synchronized (VEHICLE_PREF_LOCK) {
             if (vehicleType == null || address == null || context == null) {
+                DebugTool.logWarning(TAG, "Unable save vehicle type. Context is available: " + (context != null) + " address is available: " + (address != null) + " vehicleType is available:" + (vehicleType != null));
                 return;
             }
             try {
@@ -305,6 +306,7 @@ public class AndroidTools {
     public static @Nullable Hashtable<String, Object> getVehicleTypeFromPrefs(Context context, String address) {
         synchronized (VEHICLE_PREF_LOCK) {
             if (context == null || address == null) {
+                DebugTool.logWarning(TAG, "Unable get vehicle type from prefs. Context is available: " + (context != null) + " address is available: " + (address != null));
                 return null;
             }
             try {
@@ -334,6 +336,7 @@ public class AndroidTools {
      */
     public static @Nullable List<VehicleType> getVehicleTypesFromManifest(Context context, ComponentName component, int manifestFieldId) {
         if (context == null || component == null) {
+            DebugTool.logWarning(TAG, "Unable get vehicle type from manifest. Context is available: " + (context != null) + " component is available: " + (component != null));
             return null;
         }
         try {
