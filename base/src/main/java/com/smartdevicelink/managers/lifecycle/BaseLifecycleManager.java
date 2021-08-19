@@ -90,7 +90,6 @@ import com.smartdevicelink.session.ISdlSessionListener;
 import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
-import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
@@ -1332,21 +1331,7 @@ abstract class BaseLifecycleManager {
     void saveVehicleType(String address, VehicleType type){
     }
 
-    private void saveVehicleType(List<TransportRecord> activeTransports, VehicleType type) {
-        if (activeTransports == null || activeTransports.isEmpty() || type == null) {
-            DebugTool.logWarning(TAG, "Unable to save vehicle type");
-            return;
-        }
-
-        for (TransportRecord record: activeTransports) {
-            if (record.getType() == TransportType.BLUETOOTH) {
-                String address = record.getAddress();
-                if (address != null && !address.isEmpty()) {
-                    saveVehicleType(address, type);
-                }
-                break;
-            }
-        }
+    void saveVehicleType(List<TransportRecord> activeTransports, VehicleType type) {
     }
 
     void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {

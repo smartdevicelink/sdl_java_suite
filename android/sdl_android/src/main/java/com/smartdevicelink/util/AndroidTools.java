@@ -280,7 +280,7 @@ public class AndroidTools {
     public static void saveVehicleType(Context context, VehicleType vehicleType, String address) {
         synchronized (VEHICLE_PREF_LOCK) {
             if (vehicleType == null || address == null || context == null) {
-                DebugTool.logWarning(TAG, "Unable save vehicle type. Context is available: " + (context != null) + " address is available: " + (address != null) + " vehicleType is available:" + (vehicleType != null));
+                DebugTool.logWarning(TAG, String.format("Unable to save vehicle type. Context is %1$s, Address is %2$s and VehicleType is %3$s", context, address, vehicleType));
                 return;
             }
             try {
@@ -306,7 +306,7 @@ public class AndroidTools {
     public static @Nullable Hashtable<String, Object> getVehicleTypeFromPrefs(Context context, String address) {
         synchronized (VEHICLE_PREF_LOCK) {
             if (context == null || address == null) {
-                DebugTool.logWarning(TAG, "Unable get vehicle type from prefs. Context is available: " + (context != null) + " address is available: " + (address != null));
+                DebugTool.logWarning(TAG, String.format("Unable to get vehicle type from prefs. Context is %1$s and Address is %2$s", context, address));
                 return null;
             }
             try {
@@ -336,14 +336,14 @@ public class AndroidTools {
      */
     public static @Nullable List<VehicleType> getVehicleTypesFromManifest(Context context, ComponentName component, int manifestFieldId) {
         if (context == null || component == null) {
-            DebugTool.logWarning(TAG, "Unable get vehicle type from manifest. Context is available: " + (context != null) + " component is available: " + (component != null));
+            DebugTool.logWarning(TAG, String.format("Unable to get vehicle type from manifest. Context is %1$s and Component is %2$s", context, component));
             return null;
         }
         try {
             PackageManager pm = context.getPackageManager();
             Resources resources = context.getResources();
             if (pm == null || resources == null) {
-                DebugTool.logError(TAG, "PackageManager is available: " + (pm != null) + " Resources is available: " + (resources != null));
+                DebugTool.logWarning(TAG, String.format("Unable to get vehicle type from manifest. PackageManager is %1$s and Resources is %2$s", pm, resources));
                 return null;
             }
 
