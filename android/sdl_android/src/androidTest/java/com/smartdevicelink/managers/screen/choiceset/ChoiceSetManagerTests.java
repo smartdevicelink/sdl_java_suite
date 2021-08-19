@@ -104,8 +104,6 @@ public class ChoiceSetManagerTests {
         assertEquals(csm.getState(), BaseSubManager.SETTING_UP);
         assertEquals(csm.currentSystemContext, SystemContext.SYSCTXT_MAIN);
         assertEquals(csm.currentHMILevel, HMILevel.HMI_NONE);
-        assertEquals(csm.choiceCellIdMin, 1);
-        assertEquals(csm.nextChoiceId, 1);
         assertFalse(csm.isVROptional);
         assertNotNull(csm.fileManager);
         assertNotNull(csm.preloadedChoices);
@@ -124,7 +122,6 @@ public class ChoiceSetManagerTests {
         assertNull(csm.defaultMainWindowCapability);
 
         assertEquals(csm.transactionQueue.getTasksAsList().size(), 0);
-        assertEquals(csm.nextChoiceId, 1);
 
         assertFalse(csm.isVROptional);
 
@@ -218,7 +215,6 @@ public class ChoiceSetManagerTests {
         assertEquals(cell1.getChoiceId(), 2000000000);
         assertEquals(cell2.getChoiceId(), 2000000000);
         assertEquals(cell3.getChoiceId(), 2000000000);
-        csm.updateIdsOnChoices(cellSet);
         // We are looking for unique IDs
         assertNotSame(cell1.getChoiceId(), 2000000000);
         assertNotSame(cell2.getChoiceId(), 2000000000);

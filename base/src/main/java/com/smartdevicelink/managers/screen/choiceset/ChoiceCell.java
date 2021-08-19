@@ -41,10 +41,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChoiceCell implements Cloneable{
-    private String text, secondaryText, tertiaryText, uniqueText;
+    private String text, secondaryText, tertiaryText;
     private List<String> voiceCommands;
     private SdlArtwork artwork, secondaryArtwork;
-    private Integer choiceId;
+    private Integer choiceId, uniqueTextId;
 
     /**
      * MAX ID for cells - Cannot use Integer.MAX_INT as the value is too high.
@@ -58,7 +58,7 @@ public class ChoiceCell implements Cloneable{
      */
     public ChoiceCell(@NonNull String text) {
         setText(text);
-        setUniqueText(text);
+        setUniqueTextId(1);
         setChoiceId(MAX_ID);
     }
 
@@ -71,7 +71,7 @@ public class ChoiceCell implements Cloneable{
      */
     public ChoiceCell(@NonNull String text, List<String> voiceCommands, SdlArtwork artwork) {
         setText(text);
-        setUniqueText(text);
+        setUniqueTextId(1);
         setVoiceCommands(voiceCommands);
         setArtwork(artwork);
         setChoiceId(MAX_ID);
@@ -91,7 +91,7 @@ public class ChoiceCell implements Cloneable{
         setText(text);
         setSecondaryText(secondaryText);
         setTertiaryText(tertiaryText);
-        setUniqueText(text);
+        setUniqueTextId(1);
         setVoiceCommands(voiceCommands);
         setArtwork(artwork);
         setSecondaryArtwork(secondaryArtwork);
@@ -238,20 +238,28 @@ public class ChoiceCell implements Cloneable{
      * Attempting to use cells that are exactly the same (all text and artwork fields are the same)
      * will not cause this to be used. This will not be used when connected to modules supporting RPC 7.1+.
      *
-     * @param uniqueText - the uniqueText to be used in place of primaryText when core does not support identical names for ChoiceSets
+     * @param uniqueTextId - the uniqueTextId to be appended to primaryText when core does not support identical names for ChoiceSets
      */
-    void setUniqueText(String uniqueText) {
-        this.uniqueText = uniqueText;
+    void setUniqueTextId(Integer uniqueTextId) {
+        this.uniqueTextId = uniqueTextId;
     }
 
     /**
      * NOTE: USED INTERNALLY
-     * Get the uniqueText that was used in place of primaryText
+     * Get the uniqueTextId that was used to append to primaryText
      *
-     * @return the uniqueText for this Choice Cell
+     * @return the uniqueTextId for this Choice Cell
      */
+    Integer getUniqueTextId() {
+        return uniqueTextId;
+    }
+
     String getUniqueText() {
-        return uniqueText;
+        if (this.uniqueTextId != 1) {
+            return this.text + " (" + this.uniqueTextId + ")";
+        } else {
+            return this.text;
+        }
     }
 
     @Override
@@ -292,7 +300,7 @@ public class ChoiceCell implements Cloneable{
     @NonNull
     public String toString() {
         return "ChoiceCell: ID: " + this.choiceId + " Text: " + text + " - Secondary Text: " + secondaryText + " - Tertiary Text: " + tertiaryText + " " +
-                (text.equals(uniqueText) ? "" : "| Unique Text: " + uniqueText) + " | Artwork Names: " + ((getArtwork() == null || getArtwork().getName() == null) ? "Primary Art null" : getArtwork().getName())
+                (uniqueTextId == 1 ? "" : "| Unique Text: " + uniqueTextId) + " | Artwork Names: " + ((getArtwork() == null || getArtwork().getName() == null) ? "Primary Art null" : getArtwork().getName())
                 + " Secondary Art - " + ((getSecondaryArtwork() == null || getSecondaryArtwork().getName() == null) ? "Secondary Art null" : getSecondaryArtwork().getName()) +
                 " | Voice Commands Size: " + ((getVoiceCommands() == null) ? 0 : getVoiceCommands().size());
     }
@@ -314,6 +322,9 @@ public class ChoiceCell implements Cloneable{
             }
             if (this.voiceCommands != null) {
                 clone.voiceCommands = new ArrayList<>(voiceCommands);
+            }
+            if (this.uniqueTextId != null) {
+                clone.uniqueTextId = this.uniqueTextId;
             }
 
             return clone;

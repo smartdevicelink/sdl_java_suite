@@ -74,6 +74,7 @@ import com.smartdevicelink.util.DebugTool;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -94,6 +95,7 @@ class PreloadPresentChoicesOperation extends Task {
     private boolean choiceError = false;
     private HashSet<ChoiceCell> loadedCells;
     private final ChoiceSet choiceSet;
+    private static Integer choiceId = 0;
     private final Integer cancelID;
     private final InteractionMode presentationMode;
     private final KeyboardProperties originalKeyboardProperties;
@@ -177,7 +179,13 @@ class PreloadPresentChoicesOperation extends Task {
         }
         DebugTool.logInfo(TAG, "Choice Operation: Executing preload choices operation");
         // Enforce unique cells and remove cells that are already loaded
-        updateCellsBasedOnLoadedChoices();
+        this.cellsToUpload.removeAll(loadedCells);
+        this.assignIdsToCells(this.cellsToUpload);
+        makeCellsToUploadUnique(this.cellsToUpload, this.choiceSet, this.loadedCells, this.defaultMainWindowCapability);
+
+        if (this.choiceSet != null) {
+            updateChoiceSet(this.choiceSet, this.loadedCells, new HashSet<>(this.cellsToUpload));
+        }
         // Start uploading cell artworks, then cells themselves, then determine if we want to present, then update keyboard properties if necessary, then present the choice set, then revert keyboard properties if necessary
         preloadCellArtworks(new CompletionListener() {
             @Override
@@ -262,7 +270,7 @@ class PreloadPresentChoicesOperation extends Task {
     private void preloadCells(@NonNull final CompletionListener listener) {
         this.currentState = SDLPreloadPresentChoicesOperationState.UPLOADING_CHOICES;
 
-        List<CreateInteractionChoiceSet> choiceRPCs = new ArrayList<>(cellsToUpload.size());
+        final List<CreateInteractionChoiceSet> choiceRPCs = new ArrayList<>(cellsToUpload.size());
         for (ChoiceCell cell : cellsToUpload) {
             CreateInteractionChoiceSet csCell = choiceFromCell(cell);
             if (csCell != null) {
@@ -296,7 +304,11 @@ class PreloadPresentChoicesOperation extends Task {
                         DebugTool.logError(TAG, "There was an error uploading a choice cell: " + response.getInfo() + " resultCode: " + response.getResultCode());
                         choiceError = true;
                     } else {
-                        loadedCells.add(cellFromChoiceId(correlationId));
+                        for (CreateInteractionChoiceSet rpc : choiceRPCs) {
+                            if (correlationId == rpc.getCorrelationID()) {
+                                loadedCells.add(cellFromChoiceId(rpc.getChoiceSet().get(0).getChoiceID()));
+                            }
+                        }
                     }
                 }
             });
@@ -506,15 +518,52 @@ class PreloadPresentChoicesOperation extends Task {
         return pi;
     }
 
-    // Choice Uniqueness
-    void updateCellsBasedOnLoadedChoices() {
-        if (internalInterface.get().getProtocolVersion().getMajor() >= 7 && internalInterface.get().getProtocolVersion().getMinor() >= 1) {
-            addUniqueNamesToCells(cellsToUpload);
-        } else {
-            ArrayList<ChoiceCell> strippedCellsCopy = (ArrayList<ChoiceCell>) removeUnusedProperties(cellsToUpload);
-            addUniqueNamesBasedOnStrippedCells(strippedCellsCopy, cellsToUpload);
+    private void assignIdsToCells(ArrayList<ChoiceCell> cells) {
+        for (ChoiceCell cell : cells) {
+            cell.setChoiceId(this.nextChoiceId());
         }
-        cellsToUpload.removeAll(loadedCells);
+    }
+
+    private void setNextChoiceId(int nextChoiceId) {
+        choiceId = nextChoiceId;
+    }
+
+    private int nextChoiceId() {
+        return ++choiceId;
+    }
+
+    // Choice Uniqueness
+    void makeCellsToUploadUnique(ArrayList<ChoiceCell> cellsToUpload, ChoiceSet choiceSet, HashSet<ChoiceCell> loadedCells, WindowCapability windowCapability) {
+        if (cellsToUpload.size() == 0) {
+            return;
+        }
+
+        ArrayList<ChoiceCell> strippedCellsToUpload = (ArrayList<ChoiceCell>) cellsToUpload.clone();
+        ArrayList<ChoiceCell> strippedLoadedCells = (ArrayList<ChoiceCell>) loadedCells.clone();
+        boolean supportsChoiceUniqueness = (internalInterface.get().getProtocolVersion().getMajor() >= 7 && internalInterface.get().getProtocolVersion().getMinor() >= 1);
+        if (supportsChoiceUniqueness) {
+            removeUnusedProperties(strippedCellsToUpload);
+            removeUnusedProperties(strippedLoadedCells);
+        }
+
+        addUniqueNamesToCells(strippedCellsToUpload, strippedLoadedCells, supportsChoiceUniqueness);
+        transferUniqueNamesFromCells(strippedCellsToUpload, cellsToUpload);
+    }
+
+    private void updateChoiceSet(ChoiceSet choiceSet, HashSet<ChoiceCell> loadedCells, HashSet<ChoiceCell> cellsToUpload) {
+        ArrayList<ChoiceCell> choiceSetCells = new ArrayList<>();
+        for (ChoiceCell cell : choiceSet.getChoices()) {
+            if (loadedCells.contains(cell) || cellsToUpload.contains(cell)) {
+                choiceSetCells.add(cell);
+            }
+        }
+        this.choiceSet.setChoices((List<ChoiceCell>) choiceSetCells.clone());
+    }
+
+    private void transferUniqueNamesFromCells(ArrayList<ChoiceCell> fromCells, ArrayList<ChoiceCell> toCells) {
+        for (int i = 0; i< fromCells.size(); i++) {
+            toCells.get(i).setUniqueTextId(fromCells.get(i).getUniqueTextId());
+        }
     }
 
     List<ChoiceCell> removeUnusedProperties(List<ChoiceCell> choiceCells) {
@@ -562,44 +611,46 @@ class PreloadPresentChoicesOperation extends Task {
     /**
      * Checks if 2 or more cells have the same text/title. In case this condition is true, this function will handle the presented issue by adding "(count)".
      * E.g. Choices param contains 2 cells with text/title "Address" will be handled by updating the uniqueText/uniqueTitle of the second cell to "Address (2)".
-     * @param choices The list of choiceCells to be uploaded.
      */
-    void addUniqueNamesToCells(List<ChoiceCell> choices) {
-        HashMap<String, Integer> dictCounter = new HashMap<>();
+    void addUniqueNamesToCells(List<ChoiceCell> cellsToUpload, List<ChoiceCell> loadedCells, boolean supportsChoiceUniqueness) {
+        HashMap<Object, ArrayList<Integer>> dictCounter = new HashMap<>();
 
-        for (ChoiceCell cell : choices) {
-            String cellName = cell.getText();
-            Integer counter = dictCounter.get(cellName);
-
-            if (counter != null) {
-                dictCounter.put(cellName, ++counter);
-                cell.setUniqueText(cell.getText() + " (" + counter + ")");
+        for (ChoiceCell loadedCell : loadedCells) {
+            Object cellKey = supportsChoiceUniqueness ? loadedCell : loadedCell.getText();
+            int cellUniqueId = loadedCell.getUniqueTextId();
+            if (dictCounter.get(cellKey) == null) {
+                ArrayList<Integer> uniqueIds = new ArrayList<>();
+                uniqueIds.add(cellUniqueId);
+                dictCounter.put(cellKey, uniqueIds);
             } else {
-                dictCounter.put(cellName, 1);
+                dictCounter.get(cellKey).add(cellUniqueId);
             }
         }
-    }
 
-    void addUniqueNamesBasedOnStrippedCells(List<ChoiceCell> strippedCells, List<ChoiceCell> unstrippedCells) {
-        if (strippedCells == null || unstrippedCells == null || strippedCells.size() != unstrippedCells.size()) {
-            return;
-        }
-        // Tracks how many of each cell primary text there are so that we can append numbers to make each unique as necessary
-        HashMap<ChoiceCell, Integer> dictCounter = new HashMap<>();
-        for (int i = 0; i < strippedCells.size(); i++) {
-            ChoiceCell cell = strippedCells.get(i);
-            Integer counter = dictCounter.get(cell);
-            if (counter != null) {
-                counter++;
-                dictCounter.put(cell, counter);
-            } else {
-                dictCounter.put(cell, 1);
+        for (Object cellKey : dictCounter.keySet()) {
+            if (dictCounter.get(cellKey) != null) {
+                Collections.sort(dictCounter.get(cellKey));
             }
+        }
 
-            counter = dictCounter.get(cell);
+        for (ChoiceCell cell : cellsToUpload) {
+            Object cellKey = supportsChoiceUniqueness ? cell : cell.getText();
+            if (dictCounter.get(cellKey) == null) {
+                ArrayList<Integer> uniqueTextIds = new ArrayList<>();
+                uniqueTextIds.add(cell.getUniqueTextId());
+                dictCounter.put(cellKey, uniqueTextIds);
+            } else {
+                ArrayList<Integer> uniqueIds = dictCounter.get(cellKey);
+                Integer lowestMissingUniqueId = uniqueIds.get(uniqueIds.size() - 1);
+                for (int i = 1; i < dictCounter.get(cellKey).size() + 1; i ++) {
+                    if (i != dictCounter.get(cellKey).get(i -1)) {
+                        lowestMissingUniqueId = i;
+                        break;
+                    }
+                }
 
-            if (counter > 1) {
-                unstrippedCells.get(i).setUniqueText(unstrippedCells.get(i).getText() + " (" + counter + ")");
+                cell.setUniqueTextId(lowestMissingUniqueId);
+                dictCounter.get(cellKey).add(cell.getUniqueTextId() - 1, cell.getUniqueTextId());
             }
         }
     }

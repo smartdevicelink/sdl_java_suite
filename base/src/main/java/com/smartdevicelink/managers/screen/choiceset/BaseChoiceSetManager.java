@@ -101,9 +101,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
     PresentKeyboardOperation currentlyPresentedKeyboardOperation;
 
-    int nextChoiceId;
     int nextCancelId;
-    final int choiceCellIdMin = 1;
     private final int choiceCellCancelIdMin = 101;
     private final int choiceCellCancelIdMax = 200;
     boolean isVROptional;
@@ -124,7 +122,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         // setting/instantiating class vars
         this.fileManager = new WeakReference<>(fileManager);
         preloadedChoices = new HashSet<>();
-        nextChoiceId = choiceCellIdMin;
         nextCancelId = choiceCellCancelIdMin;
         isVROptional = false;
 
@@ -150,7 +147,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         preloadedChoices = null;
         isVROptional = false;
-        nextChoiceId = choiceCellIdMin;
         nextCancelId = choiceCellCancelIdMin;
 
         // remove listeners
@@ -211,8 +207,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             }
             return;
         }
-
-        updateIdsOnChoices(choicesToUpload);
 
         if (fileManager.get() != null) {
             PreloadPresentChoicesOperation preloadChoicesOperation = new PreloadPresentChoicesOperation(internalInterface, fileManager.get(), displayName, defaultMainWindowCapability, isVROptional, choicesToUpload, this.preloadedChoices, new ChoicesOperationCompletionListener() {
@@ -279,8 +273,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         if (!setUpChoiceSet(choiceSet)) {
             return;
         }
-
-        updateIdsOnChoiceSet(choiceSet);
 
         sendPresentOperation(choiceSet, keyboardListener, mode);
     }
@@ -483,20 +475,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             clone.add(choiceCell.clone());
         }
         return clone;
-    }
-
-    void updateIdsOnChoices(LinkedHashSet<ChoiceCell> choices) {
-        for (ChoiceCell cell : choices) {
-            cell.setChoiceId(this.nextChoiceId);
-            this.nextChoiceId++;
-        }
-    }
-
-    void updateIdsOnChoiceSet(ChoiceSet choiceSet) {
-        for (ChoiceCell cell : choiceSet.getChoices()) {
-            cell.setChoiceId(this.nextChoiceId);
-            this.nextChoiceId++;
-        }
     }
 
     ChoiceCell findIfPresent(ChoiceCell cell, HashSet<ChoiceCell> set) {
