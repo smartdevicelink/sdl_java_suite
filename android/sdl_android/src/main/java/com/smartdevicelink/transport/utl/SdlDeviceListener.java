@@ -102,12 +102,7 @@ public class SdlDeviceListener {
         } else if (hasSDLConnected(contextWeakReference.get(), connectedDevice.getAddress())) {
             DebugTool.logInfo(TAG, ": Confirmed SDL device, should start router service");
             //This device has connected to SDL previously, it is ok to start the RS right now
-            VehicleType vehicleType = null;
-            Hashtable<String, Object> store = AndroidTools.getVehicleTypeFromPrefs(contextWeakReference.get(), connectedDevice.getAddress());
-            if (store != null) {
-                vehicleType = new VehicleType(store);
-            }
-            callback.onTransportConnected(contextWeakReference.get(), connectedDevice, vehicleType);
+            callback.onTransportConnected(contextWeakReference.get(), connectedDevice);
             return;
         }
 
@@ -200,6 +195,8 @@ public class SdlDeviceListener {
             byte[] constructed = serviceProbe.constructPacket();
             if (sdlListener.bluetoothTransport != null && sdlListener.bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
                 sdlListener.bluetoothTransport.write(constructed, 0, constructed.length);
+            } else {
+                sdlListener.callback.onTransportError(sdlListener.connectedDevice);
             }
         }
 
@@ -260,7 +257,7 @@ public class SdlDeviceListener {
             SdlDeviceListener sdlListener = this.provider.get();
             sdlListener.setSDLConnectedStatus(sdlListener.contextWeakReference.get(), sdlListener.connectedDevice.getAddress(), true);
             AndroidTools.saveVehicleType(sdlListener.contextWeakReference.get(), vehicleType, sdlListener.connectedDevice.getAddress());
-            boolean keepConnectionOpen = sdlListener.callback.onTransportConnected(sdlListener.contextWeakReference.get(), sdlListener.connectedDevice, vehicleType);
+            boolean keepConnectionOpen = sdlListener.callback.onTransportConnected(sdlListener.contextWeakReference.get(), sdlListener.connectedDevice);
             if (!keepConnectionOpen) {
                 sdlListener.bluetoothTransport.stop();
                 sdlListener.bluetoothTransport = null;
@@ -360,7 +357,7 @@ public class SdlDeviceListener {
          * @param bluetoothDevice the BT device that successfully connected to SDL's UUID
          * @return if the RFCOMM connection should stay open. In most cases this should be false
          */
-        boolean onTransportConnected(Context context, BluetoothDevice bluetoothDevice, VehicleType vehicleType);
+        boolean onTransportConnected(Context context, BluetoothDevice bluetoothDevice);
 
         void onTransportDisconnected(BluetoothDevice bluetoothDevice);
 

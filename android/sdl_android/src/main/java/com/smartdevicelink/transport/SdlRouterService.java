@@ -1116,7 +1116,7 @@ public class SdlRouterService extends Service {
             return false;
         }
 
-        if (!SdlAppInfo.checkIfVehicleSupported(currentAppInfo.getVehicleMakesList(), receivedVehicleType)) {
+        if (!SdlAppInfo.checkIfVehicleSupported(currentAppInfo.getSupportedVehicles(), receivedVehicleType)) {
             DebugTool.logError(TAG, "Received vehicle data is not supported. Shutting down");
             return false;
         }
@@ -1251,9 +1251,9 @@ public class SdlRouterService extends Service {
     @SuppressLint({"NewApi", "MissingPermission"})
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent != null && intent.hasExtra(TransportConstants.VEHICLE_INFO)) {
+        if (intent != null && intent.hasExtra(TransportConstants.VEHICLE_INFO_EXTRA)) {
             receivedVehicleType = new VehicleType(
-                    (HashMap<String, Object>) intent.getSerializableExtra(TransportConstants.VEHICLE_INFO)
+                    (HashMap<String, Object>) intent.getSerializableExtra(TransportConstants.VEHICLE_INFO_EXTRA)
             );
         }
         // Only trusting the first intent received to start the RouterService and run initial checks to avoid a case where an app could send incorrect data after the spp connection has started.
@@ -1262,6 +1262,7 @@ public class SdlRouterService extends Service {
             if (!initCheck()) { // Run checks on process and permissions
                 deployNextRouterService();
                 closeSelf();
+                return START_REDELIVER_INTENT;
             }
             initPassed = true;
 
@@ -1788,7 +1789,7 @@ public class SdlRouterService extends Service {
         startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE, getBaseContext().getPackageName());
         startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME, new ComponentName(this, this.getClass()));
         if (receivedVehicleType != null) {
-            startService.putExtra(TransportConstants.VEHICLE_INFO, receivedVehicleType.getStore());
+            startService.putExtra(TransportConstants.VEHICLE_INFO_EXTRA, receivedVehicleType.getStore());
         }
 
         if (record != null && record.getType() != null) {
@@ -2868,7 +2869,7 @@ public class SdlRouterService extends Service {
         pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME, new ComponentName(SdlRouterService.this, SdlRouterService.this.getClass()));
         pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_PING, true);
         if (receivedVehicleType != null) {
-            pingIntent.putExtra(TransportConstants.VEHICLE_INFO, receivedVehicleType.getStore());
+            pingIntent.putExtra(TransportConstants.VEHICLE_INFO_EXTRA, receivedVehicleType.getStore());
         }
     }
 

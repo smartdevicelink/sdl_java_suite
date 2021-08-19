@@ -90,6 +90,7 @@ import com.smartdevicelink.session.ISdlSessionListener;
 import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.FileUtls;
@@ -398,11 +399,7 @@ abstract class BaseLifecycleManager {
                             VehicleType vehicleType = raiResponse.getVehicleType();
                             String systemSoftwareVersion = raiResponse.getSystemSoftwareVersion();
                             if (vehicleType != null || systemSoftwareVersion != null) {
-                                String address = session.getBluetoothMacAddress();
-                                if (address != null && !address.isEmpty()) {
-                                    saveVehicleType(address, vehicleType);
-                                }
-
+                                saveVehicleType(session.getActiveTransports(), vehicleType);
                                 SystemInfo systemInfo = new SystemInfo(vehicleType, systemSoftwareVersion, null);
                                 boolean validSystemInfo = lifecycleListener.onSystemInfoReceived(systemInfo);
                                 if (!validSystemInfo) {
@@ -951,10 +948,7 @@ abstract class BaseLifecycleManager {
 
             if (systemInfo != null && lifecycleListener != null) {
                 didCheckSystemInfo = true;
-                String address = session.getBluetoothMacAddress();
-                if (address != null && !address.isEmpty()) {
-                    saveVehicleType(address, systemInfo.getVehicleType());
-                }
+                saveVehicleType(session.getActiveTransports(), systemInfo.getVehicleType());
                 boolean validSystemInfo = lifecycleListener.onSystemInfoReceived(systemInfo);
                 if (!validSystemInfo) {
                     DebugTool.logWarning(TAG, "Disconnecting from head unit, the system info was not accepted.");
@@ -1335,6 +1329,9 @@ abstract class BaseLifecycleManager {
     abstract void cycle(SdlDisconnectedReason disconnectedReason);
 
     void saveVehicleType(String address, VehicleType type){
+    }
+
+    void saveVehicleType(List<TransportRecord> activeTransports, VehicleType type) {
     }
 
     void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {

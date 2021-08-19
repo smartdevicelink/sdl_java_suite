@@ -43,12 +43,13 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
+import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.BatteryManager;
 import android.os.Bundle;
-import android.util.Log;
+import androidx.annotation.Nullable;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.VehicleType;
@@ -71,9 +72,9 @@ import java.util.List;
 
 public class AndroidTools {
 
-    private static final String SDL_DEVICE_VEHICLES_PREFS = "sdl.device.vehicles";
     private static final String TAG = "AndroidTools";
-    private static final Object LOCK = new Object();
+    private static final String SDL_DEVICE_VEHICLES_PREFS = "sdl.device.vehicles";
+    private static final Object VEHICLE_PREF_LOCK = new Object();
 
     /**
      * Check to see if a component is exported
@@ -185,7 +186,7 @@ public class AndroidTools {
             for (SdlAppInfo appInformation : sdlAppInfoList) {
                 if (appInformation.routerServiceVersion < 15) {
                     sdlAppInfoListVehicleType.add(appInformation);
-                } else if (SdlAppInfo.checkIfVehicleSupported(appInformation.vehicleMakesList, type)) {
+                } else if (SdlAppInfo.checkIfVehicleSupported(appInformation.supportedVehicles, type)) {
                     sdlAppInfoListVehicleType.add(appInformation);
                 }
             }
@@ -277,9 +278,9 @@ public class AndroidTools {
      * @param address a string containing the Bluetooth Mac address of the connected vehicle.
      */
     public static void saveVehicleType(Context context, VehicleType vehicleType, String address) {
-        synchronized (LOCK) {
-
-            if (vehicleType == null || address == null) {
+        synchronized (VEHICLE_PREF_LOCK) {
+            if (vehicleType == null || address == null || context == null) {
+                DebugTool.logWarning(TAG, String.format("Unable to save vehicle type. Context is %1$s, Address is %2$s and VehicleType is %3$s", context, address, vehicleType));
                 return;
             }
             try {
@@ -290,7 +291,7 @@ public class AndroidTools {
                 editor.putString(address, jsonString);
                 editor.commit();
             } catch (JSONException e) {
-                android.util.Log.e(TAG, e.getMessage());
+                DebugTool.logError(TAG, "Unable to serialize vehicle type to JSON.", e);
             }
         }
     }
@@ -300,10 +301,14 @@ public class AndroidTools {
      *
      * @param context a context instance to obtain the shared preferences.
      * @param address a string containing the Bluetooth Mac address of the connected vehicle.
-     * @return The Hashtable to be used to construct VehicleType.
+     * @return The Hashtable to be used to construct VehicleTyp
      */
-    public static Hashtable<String, Object> getVehicleTypeFromPrefs(Context context, String address) {
-        synchronized (LOCK) {
+    public static @Nullable Hashtable<String, Object> getVehicleTypeFromPrefs(Context context, String address) {
+        synchronized (VEHICLE_PREF_LOCK) {
+            if (context == null || address == null) {
+                DebugTool.logWarning(TAG, String.format("Unable to get vehicle type from prefs. Context is %1$s and Address is %2$s", context, address));
+                return null;
+            }
             try {
                 SharedPreferences preferences = context.getSharedPreferences(SDL_DEVICE_VEHICLES_PREFS, Context.MODE_PRIVATE);
                 String storedVehicleTypeSerialized = preferences.getString(address, null);
@@ -315,7 +320,7 @@ public class AndroidTools {
                     return JsonRPCMarshaller.deserializeJSONObject(object);
                 }
             } catch (JSONException e) {
-                Log.e(TAG, e.getMessage());
+                DebugTool.logError(TAG, "Unable to deserialize stored vehicle type.", e);
                 return null;
             }
         }
@@ -325,55 +330,43 @@ public class AndroidTools {
      * Retrieves the list of vehicle types that are set in the manifest.
      *
      * @param context a context to access Android system services through.
-     * @param className a class object that indicates service for the vehicle data in the manifest.
+     * @param component a component name of a LocalRouterService.
      * @param manifestFieldId a string resources id that indicates an unique name for the vehicle data in the manifest.
      * @return The list of vehicle types, or null if an error occurred or field was not found.
      */
-    public static List<VehicleType> getVehicleTypesFromManifest(Context context, Class<?> className, int manifestFieldId) {
-        XmlResourceParser parser = null;
+    public static @Nullable List<VehicleType> getVehicleTypesFromManifest(Context context, ComponentName component, int manifestFieldId) {
+        if (context == null || component == null) {
+            DebugTool.logWarning(TAG, String.format("Unable to get vehicle type from manifest. Context is %1$s and Component is %2$s", context, component));
+            return null;
+        }
         try {
-            ComponentName myService = new ComponentName(context, className);
-            Bundle metaData = context.getPackageManager().getServiceInfo(myService, PackageManager.GET_META_DATA).metaData;
-            int xmlFieldId = metaData.getInt(context.getResources().getString(manifestFieldId));
-
-            if (xmlFieldId == 0) {
-                Log.e(TAG, "Field with id " + manifestFieldId + " was not found in manifest");
+            PackageManager pm = context.getPackageManager();
+            Resources resources = context.getResources();
+            if (pm == null || resources == null) {
+                DebugTool.logWarning(TAG, String.format("Unable to get vehicle type from manifest. PackageManager is %1$s and Resources is %2$s", pm, resources));
                 return null;
             }
 
-            parser = context.getResources().getXml(xmlFieldId);
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, "Failed to get OEM vehicle data filter: " + e.getMessage()+ " - assume vehicle data is supported");
-            return null;
-        }
-
-        return SdlAppInfo.deserializeVehicleMake(parser);
-    }
-
-    /**
-     * Check to see if a vehicle type is supported.
-     *
-     * @param supportedList the list of supported vehicle types.
-     * @param typeToCheck the vehicle type to check.
-     * @return true if vehicle type is supported.
-     */
-    public static boolean isSupportedVehicleType(List<VehicleType> supportedList, VehicleType typeToCheck) {
-        if (!SdlAppInfo.checkIfVehicleSupported(supportedList, typeToCheck)) {
-            DebugTool.logError(TAG, "Vehicle type is NOT supported by current package");
-            DebugTool.logError(TAG, "Received Vehicle Data: " + typeToCheck.getStore().toString());
-
-            StringBuilder builder = new StringBuilder();
-            builder.append("Supported vehicle data: ");
-            for (VehicleType vtype : supportedList) {
-                builder.append(vtype.getStore().toString());
-                builder.append("; ");
+            Bundle metaData = pm.getServiceInfo(component, PackageManager.GET_META_DATA).metaData;
+            if (metaData == null) {
+                DebugTool.logError(TAG, "metaData isn't available.");
+                return null;
             }
 
-            DebugTool.logError(TAG, builder.toString());
-            return false;
-        }
+            int xmlFieldId = metaData.getInt(resources.getString(manifestFieldId));
+            if (xmlFieldId == 0) {
+                DebugTool.logError(TAG, "Field with id " + manifestFieldId + " was not found in manifest");
+                return null;
+            }
 
-        DebugTool.logInfo(TAG, "Vehicle type is supported by current package");
-        return true;
+            XmlResourceParser parser = resources.getXml(xmlFieldId);
+            return SdlAppInfo.deserializeSupportedVehicles(parser);
+        } catch (PackageManager.NameNotFoundException e) {
+            DebugTool.logError(TAG, "Failed to get OEM vehicle data filter: " + e.getMessage()+ " - assume vehicle data is supported");
+            return null;
+        } catch (Resources.NotFoundException ex) {
+            DebugTool.logError(TAG, "Failed to find resource: " + ex.getMessage()+ " - assume vehicle data is supported");
+            return null;
+        }
     }
 }

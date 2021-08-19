@@ -50,10 +50,12 @@ import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 /**
  * The lifecycle manager creates a central point for all SDL session logic to converge. It should only be used by
@@ -103,6 +105,24 @@ public class LifecycleManager extends BaseLifecycleManager {
     @Override
     void saveVehicleType(String address, VehicleType type) {
         AndroidTools.saveVehicleType(contextWeakReference.get(), type, address);
+    }
+
+    @Override
+    void saveVehicleType(List<TransportRecord> activeTransports, VehicleType type) {
+        if (activeTransports == null || activeTransports.isEmpty() || type == null) {
+            DebugTool.logWarning(TAG, "Unable to save vehicle type");
+            return;
+        }
+
+        for (TransportRecord record: activeTransports) {
+            if (record.getType() == TransportType.BLUETOOTH) {
+                String address = record.getAddress();
+                if (address != null && !address.isEmpty()) {
+                    saveVehicleType(address, type);
+                }
+                break;
+            }
+        }
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY)

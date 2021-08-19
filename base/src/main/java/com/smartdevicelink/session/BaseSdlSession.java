@@ -32,6 +32,7 @@
 
 package com.smartdevicelink.session;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.exception.SdlException;
@@ -52,10 +53,12 @@ import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.SystemInfo;
 import com.smartdevicelink.util.Version;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -417,13 +420,14 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
     }
 
     /**
-     * This method will retrieve the Bluetooth Mac address from the transport record.
+     * Retrieves list of the active transports
      *
-     * @return a string containing the Bluetooth Mac address of the connected vehicle
-     */
-    public String getBluetoothMacAddress() {
+     * @return a list of active transports
+     * */
+    @Nullable
+    public List<TransportRecord> getActiveTransports() {
         if (this.sdlProtocol != null) {
-            return this.sdlProtocol.getBluetoothMacAddress();
+            return this.sdlProtocol.getActiveTransports();
         } else {
             return null;
         }

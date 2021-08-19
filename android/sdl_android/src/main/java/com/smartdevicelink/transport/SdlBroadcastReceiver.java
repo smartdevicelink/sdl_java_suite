@@ -148,7 +148,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
             DebugTool.logError(TAG, "You cannot use the default SdlRouterService class, it must be extended in your project. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
         }
 
-        HashMap<String, Object> vehicleInfoStore = (HashMap<String, Object>) intent.getSerializableExtra(TransportConstants.VEHICLE_INFO);
+        HashMap<String, Object> vehicleInfoStore = (HashMap<String, Object>) intent.getSerializableExtra(TransportConstants.VEHICLE_INFO_EXTRA);
 
         VehicleType vehicleType;
         if (vehicleInfoStore == null || vehicleInfoStore.isEmpty()) {
@@ -254,7 +254,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
             }
         }
         if (vehicleType != null) {
-            serviceIntent.putExtra(TransportConstants.VEHICLE_INFO, vehicleType.getStore());
+            serviceIntent.putExtra(TransportConstants.VEHICLE_INFO_EXTRA, vehicleType.getStore());
         }
 
         try {
@@ -584,11 +584,17 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
             if (sdlDeviceListener == null) {
                 sdlDeviceListener = new SdlDeviceListener(context, bluetoothDevice, new SdlDeviceListener.Callback() {
                     @Override
-                    public boolean onTransportConnected(Context context, BluetoothDevice bluetoothDevice, VehicleType vehicleType) {
+                    public boolean onTransportConnected(Context context, BluetoothDevice bluetoothDevice) {
 
                         synchronized (DEVICE_LISTENER_LOCK) {
                             sdlDeviceListener = null;
                             if (context != null) {
+                                VehicleType vehicleType = null;
+                                final String address = bluetoothDevice != null ? bluetoothDevice.getAddress() : null;
+                                Hashtable<String, Object> store = AndroidTools.getVehicleTypeFromPrefs(context, address);
+                                if (store != null) {
+                                    vehicleType = new VehicleType(store);
+                                }
                                 final List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(context, new SdlAppInfo.BestRouterComparator(), vehicleType);
                                 if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty()) {
                                     ComponentName routerService = sdlAppInfoList.get(0).getRouterServiceComponentName();

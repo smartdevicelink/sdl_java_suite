@@ -111,6 +111,14 @@ public class VehicleType extends RPCStruct {
         super(hash);
     }
 
+    /**
+     * <p>
+     * Constructs a new VehicleType object indicated by the Hashtable
+     * parameter
+     * </p>
+     *
+     * @param hash The Hashtable to use
+     */
     public VehicleType(HashMap<String, Object> hash) {
         super(new Hashtable<>(hash));
     }

@@ -1566,13 +1566,17 @@ public class SdlProtocolBase {
         } // end-method
     } // end-class
 
-    public String getBluetoothMacAddress() {
+    /**
+     * This method will return copy of active transports
+     *
+     * @return a list of active transports
+     * */
+    public List<TransportRecord> getActiveTransports() {
+        List<TransportRecord> records = new ArrayList<>();
         for (TransportRecord record : activeTransports.values()) {
-            if (record.getType() == TransportType.BLUETOOTH) {
-                return record.getAddress();
-            }
+            records.add(new TransportRecord(record.getType(), record.getAddress()));
         }
-        return null;
+        return records;
     }
 
 }
