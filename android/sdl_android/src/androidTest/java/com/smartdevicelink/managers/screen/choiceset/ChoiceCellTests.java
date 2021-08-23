@@ -61,6 +61,7 @@ public class ChoiceCellTests {
         choiceCell.setVoiceCommands(TestValues.GENERAL_STRING_LIST);
         choiceCell.setArtwork(artwork);
         choiceCell.setSecondaryArtwork(artwork);
+        choiceCell.setUniqueTextId(TestValues.GENERAL_INT);
 
         // use getters and assert equality
         assertEquals(choiceCell.getText(), TestValues.GENERAL_STRING);
@@ -70,7 +71,7 @@ public class ChoiceCellTests {
         assertEquals(choiceCell.getArtwork(), artwork);
         assertEquals(choiceCell.getSecondaryArtwork(), artwork);
         assertEquals(choiceCell.getChoiceId(), MAX_ID);
-        assertEquals(choiceCell.getUniqueText(), TestValues.GENERAL_STRING);
+        assertEquals(choiceCell.getUniqueTextId(), TestValues.GENERAL_INTEGER);
     }
 
     @Test
@@ -124,5 +125,23 @@ public class ChoiceCellTests {
         assertTrue(choiceCell.equals(choiceCell2));
         assertFalse(choiceCell.equals(choiceCell3));
 
+    }
+
+    @Test
+    public void testGetUniqueCellText() {
+        ChoiceCell choiceCell = new ChoiceCell("Test");
+        ChoiceCell choiceCell2 = new ChoiceCell("Test");
+        choiceCell2.setUniqueTextId(2);
+        ChoiceCell choiceCell3 = new ChoiceCell("Test");
+        choiceCell3.setUniqueTextId(3);
+
+        assertEquals((int) choiceCell.getUniqueTextId(), 1);
+        assertEquals(choiceCell.getUniqueText(), "Test");
+
+        assertEquals((int) choiceCell2.getUniqueTextId(), 2);
+        assertEquals(choiceCell2.getUniqueText(), "Test (2)");
+
+        assertEquals((int) choiceCell3.getUniqueTextId(), 3);
+        assertEquals(choiceCell3.getUniqueText(), "Test (3)");
     }
 }

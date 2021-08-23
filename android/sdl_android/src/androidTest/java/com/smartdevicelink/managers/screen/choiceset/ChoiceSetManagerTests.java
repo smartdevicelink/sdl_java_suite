@@ -202,26 +202,6 @@ public class ChoiceSetManagerTests {
     }
 
     @Test
-    public void testUpdateIdsOnChoices() {
-
-        ChoiceCell cell1 = new ChoiceCell("test");
-        ChoiceCell cell2 = new ChoiceCell("test2");
-        ChoiceCell cell3 = new ChoiceCell("test3");
-        LinkedHashSet<ChoiceCell> cellSet = new LinkedHashSet<>();
-        cellSet.add(cell1);
-        cellSet.add(cell2);
-        cellSet.add(cell3);
-        // Cells are initially set to MAX_ID
-        assertEquals(cell1.getChoiceId(), 2000000000);
-        assertEquals(cell2.getChoiceId(), 2000000000);
-        assertEquals(cell3.getChoiceId(), 2000000000);
-        // We are looking for unique IDs
-        assertNotSame(cell1.getChoiceId(), 2000000000);
-        assertNotSame(cell2.getChoiceId(), 2000000000);
-        assertNotSame(cell3.getChoiceId(), 2000000000);
-    }
-
-    @Test
     public void preloadChoicesAddsToQueue() {
         ChoiceCell cell1 = new ChoiceCell("test");
         ChoiceCell cell2 = new ChoiceCell("test2");
