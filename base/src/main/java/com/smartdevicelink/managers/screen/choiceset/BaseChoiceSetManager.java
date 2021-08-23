@@ -241,7 +241,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             return;
         }
 
-        DeleteChoicesOperation deleteChoicesOperation = new DeleteChoicesOperation(internalInterface, new HashSet<>(preloadedChoices), preloadedChoices, new ChoicesOperationCompletionListener() {
+        DeleteChoicesOperation deleteChoicesOperation = new DeleteChoicesOperation(internalInterface, new HashSet<>(choices), preloadedChoices, new ChoicesOperationCompletionListener() {
             @Override
             public void onComplete(boolean success, HashSet<ChoiceCell> updatedLoadedChoiceCells) {
                 if (!success) {

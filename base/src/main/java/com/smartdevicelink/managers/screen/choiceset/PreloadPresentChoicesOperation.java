@@ -539,7 +539,7 @@ class PreloadPresentChoicesOperation extends Task {
         }
 
         ArrayList<ChoiceCell> strippedCellsToUpload = (ArrayList<ChoiceCell>) cellsToUpload.clone();
-        ArrayList<ChoiceCell> strippedLoadedCells = (ArrayList<ChoiceCell>) loadedCells.clone();
+        ArrayList<ChoiceCell> strippedLoadedCells = new ArrayList<>((HashSet<ChoiceCell>) loadedCells.clone());
         boolean supportsChoiceUniqueness = (internalInterface.get().getProtocolVersion().getMajor() >= 7 && internalInterface.get().getProtocolVersion().getMinor() >= 1);
         if (supportsChoiceUniqueness) {
             removeUnusedProperties(strippedCellsToUpload);
@@ -627,12 +627,6 @@ class PreloadPresentChoicesOperation extends Task {
             }
         }
 
-        for (Object cellKey : dictCounter.keySet()) {
-            if (dictCounter.get(cellKey) != null) {
-                Collections.sort(dictCounter.get(cellKey));
-            }
-        }
-
         for (ChoiceCell cell : cellsToUpload) {
             Object cellKey = supportsChoiceUniqueness ? cell : cell.getText();
             if (dictCounter.get(cellKey) == null) {
@@ -641,8 +635,8 @@ class PreloadPresentChoicesOperation extends Task {
                 dictCounter.put(cellKey, uniqueTextIds);
             } else {
                 ArrayList<Integer> uniqueIds = dictCounter.get(cellKey);
-                Integer lowestMissingUniqueId = uniqueIds.get(uniqueIds.size() - 1);
-                for (int i = 1; i < dictCounter.get(cellKey).size() + 1; i ++) {
+                Integer lowestMissingUniqueId = uniqueIds.get(uniqueIds.size() - 1) + 1;
+                for (int i = 1; i < dictCounter.get(cellKey).size() + 1; i++) {
                     if (i != dictCounter.get(cellKey).get(i -1)) {
                         lowestMissingUniqueId = i;
                         break;
