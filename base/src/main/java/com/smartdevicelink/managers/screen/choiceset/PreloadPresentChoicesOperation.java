@@ -181,7 +181,7 @@ class PreloadPresentChoicesOperation extends Task {
         // Enforce unique cells and remove cells that are already loaded
         this.cellsToUpload.removeAll(loadedCells);
         this.assignIdsToCells(this.cellsToUpload);
-        makeCellsToUploadUnique(this.cellsToUpload, this.choiceSet, this.loadedCells, this.defaultMainWindowCapability);
+        makeCellsToUploadUnique(this.cellsToUpload);
 
         if (this.choiceSet != null) {
             updateChoiceSet(this.choiceSet, this.loadedCells, new HashSet<>(this.cellsToUpload));
@@ -533,7 +533,7 @@ class PreloadPresentChoicesOperation extends Task {
     }
 
     // Choice Uniqueness
-    void makeCellsToUploadUnique(ArrayList<ChoiceCell> cellsToUpload, ChoiceSet choiceSet, HashSet<ChoiceCell> loadedCells, WindowCapability windowCapability) {
+    void makeCellsToUploadUnique(ArrayList<ChoiceCell> cellsToUpload) {
         if (cellsToUpload.size() == 0) {
             return;
         }
