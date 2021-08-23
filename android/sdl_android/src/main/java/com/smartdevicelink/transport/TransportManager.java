@@ -415,6 +415,9 @@ public class TransportManager extends TransportManagerBase {
                 contextWeakReference.get().registerReceiver(legacyDisconnectReceiver, intentFilter);
             }
         } else {
+            if (Looper.myLooper() == null) {
+                Looper.prepare();
+            }
             new Handler(Looper.myLooper()).postDelayed(new Runnable() {
                 @Override
                 public void run() {

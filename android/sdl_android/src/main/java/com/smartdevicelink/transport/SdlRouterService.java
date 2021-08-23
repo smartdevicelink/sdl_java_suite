@@ -1410,7 +1410,10 @@ public class SdlRouterService extends Service {
     public void resetForegroundTimeOut(long delay) {
         synchronized (FOREGROUND_NOTIFICATION_LOCK) {
             if (foregroundTimeoutHandler == null) {
-                foregroundTimeoutHandler = new Handler(Looper.getMainLooper());
+                if (Looper.myLooper() == null) {
+                    Looper.prepare();
+                }
+                foregroundTimeoutHandler = new Handler(Looper.myLooper());
             }
             if (foregroundTimeoutRunnable == null) {
                 foregroundTimeoutRunnable = new Runnable() {
