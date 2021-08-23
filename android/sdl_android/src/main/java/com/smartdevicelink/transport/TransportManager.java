@@ -402,10 +402,10 @@ public class TransportManager extends TransportManagerBase {
             return; //Already in legacy mode
         }
 
+        if (Looper.myLooper() == null) {
+            Looper.prepare();
+        }
         if (transportListener.onLegacyModeEnabled(info)) {
-            if (Looper.myLooper() == null) {
-                Looper.prepare();
-            }
             legacyBluetoothHandler = new LegacyBluetoothHandler(this);
             legacyBluetoothTransport = new MultiplexBluetoothTransport(legacyBluetoothHandler);
             if (contextWeakReference.get() != null) {
@@ -415,9 +415,6 @@ public class TransportManager extends TransportManagerBase {
                 contextWeakReference.get().registerReceiver(legacyDisconnectReceiver, intentFilter);
             }
         } else {
-            if (Looper.myLooper() == null) {
-                Looper.prepare();
-            }
             new Handler(Looper.myLooper()).postDelayed(new Runnable() {
                 @Override
                 public void run() {
