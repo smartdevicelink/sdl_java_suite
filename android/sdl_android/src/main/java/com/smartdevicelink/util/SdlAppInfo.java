@@ -37,6 +37,7 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.os.Bundle;
 
@@ -120,18 +121,40 @@ public class SdlAppInfo {
                 }
 
                 if (metadata.containsKey(SDL_OEM_VEHICLE_TYPE_METADATA)) {
-                    try {
-                        XmlResourceParser parser;
-                        if (!context.getPackageName().equals(packageName)) {
-                            Context appContext = context.createPackageContext(packageName, 0);
-                            parser = appContext.getResources().getXml(metadata.getInt(SDL_OEM_VEHICLE_TYPE_METADATA));
-                        } else {
-                            parser = context.getResources().getXml(metadata.getInt(SDL_OEM_VEHICLE_TYPE_METADATA));
-                        }
+                    if (context == null) {
+                        DebugTool.logWarning(TAG, "Unable to deserialize supported vehicles: supplied Context is null");
+                        return;
+                    }
 
-                        this.supportedVehicles = deserializeSupportedVehicles(parser);
-                    } catch (PackageManager.NameNotFoundException e) {
-                        e.printStackTrace();
+                    String contextPackageName = context.getPackageName();
+                    if (contextPackageName == null || packageName == null) {
+                        DebugTool.logWarning(TAG, String.format("Unable to deserialize supported vehicles. ContextPackageName: %1$s and PackageName: %2$s", contextPackageName, packageName));
+                        return;
+                    }
+
+                    Resources resources = null;
+                    if (!contextPackageName.equals(packageName)) {
+                        try {
+                            Context appContext = context.createPackageContext(packageName, 0);
+                            if (appContext == null){
+                                DebugTool.logError(TAG, "Failed to create context with the given package name");
+                                return;
+                            }
+                            resources = appContext.getResources();
+                        } catch (PackageManager.NameNotFoundException e) {
+                            DebugTool.logError(TAG, "Failed to create context with the given package name: " + e.getMessage());
+                        }
+                    } else {
+                        resources = context.getResources();
+                    }
+
+                    if (resources != null) {
+                        try {
+                            XmlResourceParser parser = resources.getXml(metadata.getInt(SDL_OEM_VEHICLE_TYPE_METADATA));
+                            this.supportedVehicles = deserializeSupportedVehicles(parser);
+                        } catch (Resources.NotFoundException ex) {
+                            DebugTool.logError(TAG, "Failed to find resource: " + ex.getMessage());
+                        }
                     }
                 }
             } else {
@@ -183,7 +206,7 @@ public class SdlAppInfo {
         builder.append(this.lastUpdateTime);
 
         builder.append("\nVehicle make list: ");
-        builder.append(this.supportedVehicles.toString());
+        builder.append(this.supportedVehicles);
 
         builder.append("\n-------- Sdl App Info End------");
 
