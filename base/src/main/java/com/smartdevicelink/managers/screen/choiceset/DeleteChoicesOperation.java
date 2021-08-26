@@ -68,6 +68,10 @@ class DeleteChoicesOperation extends Task {
         DebugTool.logInfo(TAG, "Choice Operation: Executing delete choices operation");
         updateCellsToDelete();
         if (this.cellsToDelete == null || this.cellsToDelete.isEmpty()) {
+            if (completionListener != null) {
+                completionListener.onComplete(true, loadedCells);
+                DebugTool.logInfo(TAG, "No cells were provided to delete");
+            }
             DeleteChoicesOperation.super.onFinished();
         }
         sendDeletions();
@@ -88,7 +92,7 @@ class DeleteChoicesOperation extends Task {
                     @Override
                     public void onFinished() {
                         if (completionListener != null) {
-                            completionSuccess = true;
+                            completionListener.onComplete(true, loadedCells);
                         }
                         DebugTool.logInfo(TAG, "Successfully deleted choices");
 
@@ -99,7 +103,7 @@ class DeleteChoicesOperation extends Task {
                     public void onResponse(int correlationId, RPCResponse response) {
                         if (!response.getSuccess()) {
                             if (completionListener != null) {
-                                completionSuccess = false;
+                                completionListener.onComplete(false, loadedCells);
                             }
                             DebugTool.logError(TAG, "Failed to delete choice: " + response.getInfo() + " | Corr ID: " + correlationId);
 
@@ -117,6 +121,7 @@ class DeleteChoicesOperation extends Task {
                 completionListener.onComplete(true, this.loadedCells);
             }
             DebugTool.logInfo(TAG, "No Choices to delete, continue");
+            DeleteChoicesOperation.super.onFinished();
         }
     }
 
@@ -147,12 +152,6 @@ class DeleteChoicesOperation extends Task {
         }
 
         return null;
-    }
-
-    @Override
-    protected void onFinished() {
-        this.completionListener.onComplete(completionSuccess, this.loadedCells);
-        super.onFinished();
     }
 
     List<DeleteInteractionChoiceSet> createDeleteSets() {

@@ -80,6 +80,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 class PreloadPresentChoicesOperation extends Task {
 
@@ -279,7 +280,9 @@ class PreloadPresentChoicesOperation extends Task {
         }
 
         if (choiceRPCs.size() == 0) {
-            DebugTool.logError(TAG, " All Choice cells to send are null, so the choice set will not be shown");
+            if (keyboardListener != null) {
+                DebugTool.logError(TAG, " All Choice cells to send are null, so the choice set will not be shown");
+            }
             listener.onComplete(true);
             return;
         }
@@ -529,6 +532,20 @@ class PreloadPresentChoicesOperation extends Task {
     }
 
     private int nextChoiceId() {
+        boolean maxIds = false;
+        if (choiceId == 65535) {
+            choiceId = 0;
+            maxIds = true;
+        }
+        if (maxIds) {
+            ArrayList<Integer> usedIds = new ArrayList<>();
+            for (ChoiceCell cell : loadedCells) {
+                usedIds.add(cell.getChoiceId());
+            }
+            while (usedIds.contains(choiceId + 1)) {
+                ++choiceId;
+            }
+        }
         return ++choiceId;
     }
 
