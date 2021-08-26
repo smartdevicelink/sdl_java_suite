@@ -540,7 +540,7 @@ class PreloadPresentChoicesOperation extends Task {
 
         ArrayList<ChoiceCell> strippedCellsToUpload = (ArrayList<ChoiceCell>) cellsToUpload.clone();
         ArrayList<ChoiceCell> strippedLoadedCells = new ArrayList<>((HashSet<ChoiceCell>) loadedCells.clone());
-        boolean supportsChoiceUniqueness = (internalInterface.get().getProtocolVersion().getMajor() >= 7 && internalInterface.get().getProtocolVersion().getMinor() >= 1);
+        boolean supportsChoiceUniqueness = (sdlMsgVersion.getMajorVersion() >= 7 && sdlMsgVersion.getMinorVersion() >= 1);
         if (supportsChoiceUniqueness) {
             removeUnusedProperties(strippedCellsToUpload);
             removeUnusedProperties(strippedLoadedCells);
@@ -573,16 +573,16 @@ class PreloadPresentChoicesOperation extends Task {
             // Strip away fields that cannot be used to determine uniqueness visually including fields not supported by the HMI
             cell.setVoiceCommands(null);
 
-            if (!hasImageFieldOfName(ImageFieldName.choiceImage)) {
+            if (!shouldSendChoicePrimaryImage()) {
                 cell.setArtwork(null);
             }
-            if (!hasTextFieldOfName(TextFieldName.secondaryText)) {
+            if (!shouldSendChoiceSecondaryText()) {
                 cell.setSecondaryText(null);
             }
-            if (!hasTextFieldOfName(TextFieldName.tertiaryText)) {
+            if (!shouldSendChoiceTertiaryText()) {
                 cell.setTertiaryText(null);
             }
-            if (!hasImageFieldOfName(ImageFieldName.choiceSecondaryImage)) {
+            if (!shouldSendChoiceSecondaryImage()) {
                 cell.setSecondaryArtwork(null);
             }
         }
@@ -704,23 +704,23 @@ class PreloadPresentChoicesOperation extends Task {
         if (this.displayName != null && this.displayName.equals(DisplayType.GEN3_8_INCH.toString())) {
             return true;
         }
-        return templateSupportsTextField(TextFieldName.menuName);
+        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.menuName);
     }
 
     boolean shouldSendChoiceSecondaryText() {
-        return templateSupportsTextField(TextFieldName.secondaryText);
+        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.secondaryText);
     }
 
     boolean shouldSendChoiceTertiaryText() {
-        return templateSupportsTextField(TextFieldName.tertiaryText);
+        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.tertiaryText);
     }
 
     boolean shouldSendChoicePrimaryImage() {
-        return templateSupportsImageField(ImageFieldName.choiceImage);
+        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.choiceImage);
     }
 
     boolean shouldSendChoiceSecondaryImage() {
-        return templateSupportsImageField(ImageFieldName.choiceSecondaryImage);
+        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.choiceSecondaryImage);
     }
 
     // SDL Notifications
@@ -777,14 +777,6 @@ class PreloadPresentChoicesOperation extends Task {
         } else {
             DebugTool.logError(TAG, "Present Choice Set Keyboard Listener Not Added");
         }
-    }
-
-    boolean templateSupportsTextField(TextFieldName name) {
-        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, name);
-    }
-
-    boolean templateSupportsImageField(ImageFieldName name) {
-        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, name);
     }
 
     public void setLoadedCells(HashSet<ChoiceCell> loadedCells) {
