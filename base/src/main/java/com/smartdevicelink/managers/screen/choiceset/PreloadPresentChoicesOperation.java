@@ -97,6 +97,7 @@ class PreloadPresentChoicesOperation extends Task {
     private HashSet<ChoiceCell> loadedCells;
     private final ChoiceSet choiceSet;
     private static Integer choiceId = 0;
+    private static Boolean reachedMaxIds = false;
     private final Integer cancelID;
     private final InteractionMode presentationMode;
     private final KeyboardProperties originalKeyboardProperties;
@@ -205,11 +206,10 @@ class PreloadPresentChoicesOperation extends Task {
                         }
 
                         if (choiceSet == null) {
-                            finishOperation(false);
+                            finishOperation(true);
                             return;
                         }
                         DebugTool.logInfo(TAG, "Choice Operation: Executing present choice set operation");
-
                         updateKeyboardProperties(new CompletionListener() {
                             @Override
                             public void onComplete(boolean success) {
@@ -532,12 +532,11 @@ class PreloadPresentChoicesOperation extends Task {
     }
 
     private int nextChoiceId() {
-        boolean maxIds = false;
         if (choiceId == 65535) {
             choiceId = 0;
-            maxIds = true;
+            reachedMaxIds = true;
         }
-        if (maxIds) {
+        if (reachedMaxIds) {
             ArrayList<Integer> usedIds = new ArrayList<>();
             for (ChoiceCell cell : loadedCells) {
                 usedIds.add(cell.getChoiceId());
