@@ -280,7 +280,7 @@ class PreloadPresentChoicesOperation extends Task {
         }
 
         if (choiceRPCs.size() == 0) {
-            if (keyboardListener != null) {
+            if (choiceSet == null) {
                 DebugTool.logError(TAG, " All Choice cells to send are null, so the choice set will not be shown");
             }
             listener.onComplete(true);
