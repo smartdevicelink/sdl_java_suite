@@ -220,7 +220,7 @@ public class SdlAppInfo {
      * @return The list of vehicle types.
      */
     public static List<VehicleType> deserializeSupportedVehicles(XmlResourceParser parser) {
-        List<VehicleType> vehicleMakesList = new ArrayList<VehicleType>();
+        List<VehicleType> vehicleMakesList = new ArrayList<>();
         if (parser == null) {
             return vehicleMakesList;
         }
@@ -280,11 +280,29 @@ public class SdlAppInfo {
         for (VehicleType supportedVehicle: supportedVehicleList) {
             boolean areVehicleMakesEqual = CompareUtils.areStringsEqual(supportedVehicle.getMake(), connectedVehicle.getMake(), true, false);
             if (areVehicleMakesEqual) {
-                boolean areVehicleModelsEqual = CompareUtils.areStringsEqual(supportedVehicle.getModel(), connectedVehicle.getModel(), true, true);
-                if (areVehicleModelsEqual) {
-                    boolean areVehicleYearsEqual = CompareUtils.areStringsEqual(supportedVehicle.getModelYear(), connectedVehicle.getModelYear(), true, true);
-                    boolean areVehicleTrimsEqual = CompareUtils.areStringsEqual(supportedVehicle.getTrim(), connectedVehicle.getTrim(), true, true);
-                    return areVehicleYearsEqual && areVehicleTrimsEqual;
+                String supportedVehicleModel = supportedVehicle.getModel();
+                String connectedVehicleModel = connectedVehicle.getModel();
+                if (supportedVehicleModel != null && connectedVehicleModel != null) {
+                    if (connectedVehicleModel.equalsIgnoreCase(supportedVehicleModel)) {
+                        boolean ret = true;
+                        String supportedVehicleModelYear = supportedVehicle.getModelYear();
+                        String connectedVehicleModelYear = connectedVehicle.getModelYear();
+                        if (supportedVehicleModelYear != null && connectedVehicleModelYear != null) {
+                            ret = connectedVehicleModelYear.equalsIgnoreCase(supportedVehicleModelYear);
+                        }
+                        String supportedVehicleTrim = supportedVehicle.getTrim();
+                        String connectedVehicleTrim = connectedVehicle.getTrim();
+                        if (supportedVehicleTrim != null && connectedVehicleTrim != null) {
+                            ret &= connectedVehicleTrim.equalsIgnoreCase(supportedVehicleTrim);
+                        }
+                        if (ret) {
+                            // We found matches and return or continue iteration otherwise
+                            return true;
+                        }
+                    }
+                } else {
+                    // Return true if only make is defined and it matches
+                    return true;
                 }
             }
         }

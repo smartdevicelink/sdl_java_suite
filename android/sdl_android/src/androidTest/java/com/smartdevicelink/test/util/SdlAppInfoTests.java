@@ -197,21 +197,66 @@ public class SdlAppInfoTests {
 
     @Test
     public void testVehicleTypeSupported() {
+        // tests check with all params
         VehicleType type1 = new VehicleType();
-
+        type1.setMake(TestValues.GENERAL_STRING);
         type1.setModel(TestValues.GENERAL_STRING);
         type1.setMake(TestValues.GENERAL_STRING);
         type1.setTrim(TestValues.GENERAL_STRING);
-        type1.setModelYear(TestValues.GENERAL_STRING);
 
         VehicleType type2 = new VehicleType();
-
-        type2.setModel(TestValues.GENERAL_STRING);
         type2.setMake(TestValues.GENERAL_STRING);
-        type2.setTrim(TestValues.GENERAL_STRING);
+        type2.setModel(TestValues.GENERAL_STRING);
         type2.setModelYear(TestValues.GENERAL_INTEGER.toString());
+        type2.setTrim(TestValues.GENERAL_STRING);
 
-        assertTrue(SdlAppInfo.checkIfVehicleSupported(Arrays.asList(type1, type2), type1));
+        List<VehicleType> supportedVehicleList = Arrays.asList(type1, type2);
+        assertTrue(SdlAppInfo.checkIfVehicleSupported(supportedVehicleList, type2));
+
+        // tests check with not all params in connectedVehicle
+        VehicleType connectedVehicle = new VehicleType();
+
+        // make only param
+        connectedVehicle.setMake(TestValues.GENERAL_STRING);
+        assertTrue(SdlAppInfo.checkIfVehicleSupported(supportedVehicleList, connectedVehicle));
+
+        // make and model params
+        connectedVehicle.setModel(TestValues.GENERAL_STRING);
+        assertTrue(SdlAppInfo.checkIfVehicleSupported(supportedVehicleList, connectedVehicle));
+
+        // make, model and year params
+        connectedVehicle.setModelYear(TestValues.GENERAL_STRING);
+        assertTrue(SdlAppInfo.checkIfVehicleSupported(supportedVehicleList, connectedVehicle));
+
+        // make, model and trim params
+        connectedVehicle.setModelYear(null);
+        connectedVehicle.setTrim(TestValues.GENERAL_STRING);
+        assertTrue(SdlAppInfo.checkIfVehicleSupported(supportedVehicleList, connectedVehicle));
+
+        // tests check with not all params in supportedVehicle
+        VehicleType supportedVehicle = new VehicleType();
+        supportedVehicle.setMake(TestValues.GENERAL_STRING);
+
+        // make param only
+        assertTrue(SdlAppInfo.checkIfVehicleSupported(Collections.singletonList(supportedVehicle), connectedVehicle));
+
+        // make and model params
+        supportedVehicle.setModel(TestValues.GENERAL_STRING);
+        assertTrue(SdlAppInfo.checkIfVehicleSupported(Collections.singletonList(supportedVehicle), connectedVehicle));
+
+        // make, model and trim params
+        supportedVehicle.setTrim(TestValues.GENERAL_STRING);
+        assertTrue(SdlAppInfo.checkIfVehicleSupported(Collections.singletonList(supportedVehicle), connectedVehicle));
+
+        // make, model and trim params
+        supportedVehicle.setTrim(TestValues.GENERAL_STRING);
+        assertTrue(SdlAppInfo.checkIfVehicleSupported(Collections.singletonList(supportedVehicle), connectedVehicle));
+
+        // make, model and trim params
+        connectedVehicle.setTrim(null);
+        connectedVehicle.setModelYear(TestValues.GENERAL_INTEGER.toString());
+        supportedVehicle.setModelYear(TestValues.GENERAL_INTEGER.toString());
+        assertTrue(SdlAppInfo.checkIfVehicleSupported(Collections.singletonList(supportedVehicle), connectedVehicle));
     }
 
     @Test
