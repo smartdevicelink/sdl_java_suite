@@ -154,8 +154,8 @@ public class MenuCellTests {
 
         menuCell1_1.setTitle("new title");
 
-        // Make sure sub cells are compared
-        assertNotEquals(menuCell1, menuCell2);
+        // Make sure sub cells are not compared
+        assertEquals(menuCell1, menuCell2);
     }
 
     @Test
