@@ -78,7 +78,7 @@ class MenuShowOperation extends Task {
                 if (response.getSuccess()) {
                     DebugTool.logInfo(TAG, "Successfully opened application menu");
                 } else {
-                    DebugTool.logError(TAG, "Open Menu Request Failed. Result code: " + response.getResultCode()  + ". Info: "+ response.getInfo());
+                    DebugTool.logError(TAG, "Open Menu Request Failed. Result code: " + response.getResultCode() + ". Info: " + response.getInfo());
                 }
                 onFinished();
             }

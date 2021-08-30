@@ -4,6 +4,7 @@ import static com.smartdevicelink.managers.ManagerUtility.WindowCapabilityUtilit
 import static com.smartdevicelink.managers.ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName;
 import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdNotFound;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.addCellWithCellId;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.addIdsToMenuCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.cloneMenuCellsList;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.commandIdForRPCRequest;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.deleteCommandsForCells;
@@ -13,7 +14,6 @@ import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.posi
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.removeCellFromList;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.sendRPCs;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.subMenuCommandsForCells;
-import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.addIdsToMenuCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.transferCellIDsFromCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.transferCellListenersFromCells;
 

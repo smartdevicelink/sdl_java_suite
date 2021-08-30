@@ -31,14 +31,16 @@ import java.util.Map;
  */
 class MenuReplaceUtilities {
     private static int menuId = 0;
+
     static int getNextMenuId() {
         return ++menuId;
     }
 
     /**
      * Assign cell ids on an array of menu cells given a parent id (or no parent id)
+     *
      * @param menuCells The array of menu cells to update
-     * @param parentId The parent id to assign if needed
+     * @param parentId  The parent id to assign if needed
      */
     static void addIdsToMenuCells(List<MenuCell> menuCells, int parentId) {
         for (MenuCell cell : menuCells) {
