@@ -254,7 +254,7 @@ class MenuReplaceOperation extends Task {
             final List<MenuCell> oldSubcellKeeps = filterMenuCellsWithStatusList(oldKeptCells.get(index).getSubCells(), deleteMenuStatus, MenuCellState.KEEP);
             final List<MenuCell> newSubcellKeeps = filterMenuCellsWithStatusList(newKeptCells.get(index).getSubCells(), addMenuStatus, MenuCellState.KEEP);
 
-            //transferCellIDsFromCells(oldSubcellKeeps, newSubcellKeeps); @todo
+            transferCellIDsFromCells(oldSubcellKeeps, newSubcellKeeps);
 
             transferCellListenersFromCells(newSubcellKeeps, oldSubcellKeeps);
 
