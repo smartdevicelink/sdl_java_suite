@@ -155,7 +155,7 @@ class MenuReplaceUtilities {
         return deletes;
     }
 
-    static List<RPCRequest> mainMenuCommandsForCells(List<MenuCell> cells, FileManager fileManager, WindowCapability windowCapability, List<MenuCell> menu, MenuLayout defaultSubmenuLayout) {
+    static List<RPCRequest> mainMenuCommandsForCells(List<MenuCell> cells, FileManager fileManager, List<MenuCell> menu, WindowCapability windowCapability, MenuLayout defaultSubmenuLayout) {
         List<RPCRequest> commands = new ArrayList<>();
 
         // We need the index to use it as position so we will use this type of loop
