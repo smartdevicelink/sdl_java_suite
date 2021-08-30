@@ -182,6 +182,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             public void onComplete(boolean success, List<MenuCell> currentMenuCells) {
                 BaseMenuManager.this.currentMenuCells = currentMenuCells;
                 updateMenuReplaceOperationsWithNewCurrentMenu();
+                DebugTool.logInfo(TAG, "Finished updating menu");
             }
         });
 

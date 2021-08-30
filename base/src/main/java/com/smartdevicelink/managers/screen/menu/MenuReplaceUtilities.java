@@ -40,15 +40,44 @@ class MenuReplaceUtilities {
      * @param menuCells The array of menu cells to update
      * @param parentId The parent id to assign if needed
      */
-    static void updateIdsOnMenuCells(List<MenuCell> menuCells, int parentId) {
+    static void addIdsToMenuCells(List<MenuCell> menuCells, int parentId) {
         for (MenuCell cell : menuCells) {
             cell.setCellId(getNextMenuId());
             if (parentId != parentIdNotFound) {
                 cell.setParentCellId(parentId);
             }
             if (cell.isSubMenuCell() && !cell.getSubCells().isEmpty()) {
-                updateIdsOnMenuCells(cell.getSubCells(), cell.getCellId());
+                addIdsToMenuCells(cell.getSubCells(), cell.getCellId());
             }
+        }
+    }
+
+    static void transferCellIDsFromCells(List<MenuCell> fromCells, List<MenuCell> toCells) {
+        if (fromCells == null || toCells == null || fromCells.isEmpty() || fromCells.size() != toCells.size()) {
+            return;
+        }
+        for (int i = 0; i < toCells.size(); i++) {
+            toCells.get(i).setCellId(fromCells.get(i).getCellId());
+        }
+
+        // Update parent ids
+        for (MenuCell cell : toCells) {
+            if (!cell.isSubMenuCell()) {
+                continue;
+            }
+
+            for (MenuCell subCell : cell.getSubCells()) {
+                subCell.setParentCellId(cell.getCellId());
+            }
+        }
+    }
+
+    static void transferCellListenersFromCells(List<MenuCell> fromCells, List<MenuCell> toCells) {
+        if (fromCells == null || toCells == null || fromCells.isEmpty() || fromCells.size() != toCells.size()) {
+            return;
+        }
+        for (int i = 0; i < fromCells.size(); i++) {
+            toCells.get(i).setMenuSelectionListener(fromCells.get(i).getMenuSelectionListener());
         }
     }
 

@@ -51,7 +51,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.smartdevicelink.managers.screen.menu.BaseMenuManager.parentIdNotFound;
-import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.updateIdsOnMenuCells;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.addIdsToMenuCells;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
@@ -306,7 +306,7 @@ public class MenuReplaceUtilitiesTests {
         MenuCell menuCell4 = new MenuCell("c4", subMenuLayout, sdlArtwork, new ArrayList<>(Arrays.asList(menuCell4_1, menuCell4_2)));
 
         List<MenuCell> menuCellList = new ArrayList<>(Arrays.asList(menuCell1, menuCell2, menuCell3, menuCell4));
-        updateIdsOnMenuCells(menuCellList, parentIdNotFound);
+        addIdsToMenuCells(menuCellList, parentIdNotFound);
 
         return menuCellList ;
     }
@@ -336,7 +336,7 @@ public class MenuReplaceUtilitiesTests {
         MenuCell menuCell5 = new MenuCell("c5", subMenuLayout, sdlArtwork, new ArrayList<>(Arrays.asList(menuCell5_1, menuCell5_2)));
 
         List<MenuCell> newMenuList = new ArrayList<>(Arrays.asList(menuCell5));
-        updateIdsOnMenuCells(newMenuList, parentIdNotFound);
+        addIdsToMenuCells(newMenuList, parentIdNotFound);
 
         return newMenuList ;
     }

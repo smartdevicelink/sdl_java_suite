@@ -13,7 +13,9 @@ import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.posi
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.removeCellFromList;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.sendRPCs;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.subMenuCommandsForCells;
-import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.updateIdsOnMenuCells;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.addIdsToMenuCells;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.transferCellIDsFromCells;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.transferCellListenersFromCells;
 
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
@@ -85,7 +87,7 @@ class MenuReplaceOperation extends Task {
     }
 
     private void updateMenuCells(final CompletionListener listener) {
-        updateIdsOnMenuCells(updatedMenu, parentIdNotFound);
+        addIdsToMenuCells(updatedMenu, parentIdNotFound);
 
         // Strip the "current menu" and the new menu of properties that are not displayed on the head unit
         List<MenuCell> updatedStrippedMenu = cellsWithRemovedPropertiesFromCells(updatedMenu, windowCapability);
@@ -125,12 +127,12 @@ class MenuReplaceOperation extends Task {
         final List<MenuCell> oldKeeps = filterMenuCellsWithStatusList(currentMenu, deleteMenuStatus, MenuCellState.KEEP);
         final List<MenuCell> newKeeps = filterMenuCellsWithStatusList(updatedMenu, addMenuStatus, MenuCellState.KEEP);
 
-        // Since we are creating a new menu but keeping old cells, we must first transfer the old cellIDs to the new menu kept cells.
-        // This is needed for the onCommands to still work
+        // Old kept cells ids need to be moved to the new kept cells so that submenu changes have correct parent ids
         // We will transfer the ids for subCells later
-        transferCellIDsFromOldCells(oldKeeps, newKeeps);
+        transferCellIDsFromCells(oldKeeps, newKeeps);
 
-        transferListenersFromNewCells(newKeeps, oldKeeps);
+        // Transfer new cells' listeners to the old cells, which are stored in the current menu
+        transferCellListenersFromCells(newKeeps, oldKeeps);
 
         // Upload the Artworks, then we will start updating the main menu
         uploadMenuArtworks(new CompletionListener() {
@@ -249,12 +251,12 @@ class MenuReplaceOperation extends Task {
             final List<MenuCell> cellsToDelete = filterMenuCellsWithStatusList(oldKeptCells.get(startIndex).getSubCells(), deleteMenuStatus, MenuCellState.DELETE);
             final List<MenuCell> cellsToAdd = filterMenuCellsWithStatusList(newKeptCells.get(startIndex).getSubCells(), addMenuStatus, MenuCellState.ADD);
 
-            final List<MenuCell> oldKeeps = filterMenuCellsWithStatusList(oldKeptCells.get(startIndex).getSubCells(), deleteMenuStatus, MenuCellState.KEEP);
-            final List<MenuCell> newKeeps = filterMenuCellsWithStatusList(newKeptCells.get(startIndex).getSubCells(), addMenuStatus, MenuCellState.KEEP);
+            final List<MenuCell> oldSubcellKeeps = filterMenuCellsWithStatusList(oldKeptCells.get(startIndex).getSubCells(), deleteMenuStatus, MenuCellState.KEEP);
+            final List<MenuCell> newSubcellKeeps = filterMenuCellsWithStatusList(newKeptCells.get(startIndex).getSubCells(), addMenuStatus, MenuCellState.KEEP);
 
-            transferCellIDsFromOldCells(oldKeeps, newKeeps);
+            transferCellIDsFromCells(oldSubcellKeeps, newSubcellKeeps);
 
-            transferListenersFromNewCells(newKeeps, oldKeeps);
+            transferCellListenersFromCells(newSubcellKeeps, oldSubcellKeeps);
 
             sendDeleteCurrentMenu(cellsToDelete, new CompletionListener() {
                 @Override
@@ -398,24 +400,6 @@ class MenuReplaceOperation extends Task {
             }
         }
         return filteredCells;
-    }
-
-    private void transferCellIDsFromOldCells(List<MenuCell> oldCells, List<MenuCell> newCells) {
-        if (oldCells == null || oldCells.isEmpty()) {
-            return;
-        }
-        for (int i = 0; i < newCells.size(); i++) {
-            newCells.get(i).setCellId(oldCells.get(i).getCellId());
-        }
-    }
-
-    private void transferListenersFromNewCells(List<MenuCell> newCells, List<MenuCell> oldCells) {
-        if (oldCells == null || oldCells.isEmpty()) {
-            return;
-        }
-        for (int i = 0; i < newCells.size(); i++) {
-            oldCells.get(i).setMenuSelectionListener(newCells.get(i).getMenuSelectionListener());
-        }
     }
 
     private String convertErrorsMapToString(Map<RPCRequest, String> errors) {
