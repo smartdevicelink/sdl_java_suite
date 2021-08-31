@@ -80,7 +80,7 @@ abstract class BaseMenuManager extends BaseSubManager {
     OnRPCNotificationListener commandListener;
     OnSystemCapabilityListener onDisplaysCapabilityListener;
     WindowCapability windowCapability;
-    private Queue transactionQueue;
+    Queue transactionQueue;
 
     BaseMenuManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface);

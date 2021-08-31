@@ -226,6 +226,40 @@ public class MenuManagerTests {
     }
 
     @Test
+    public void testSettingNullMenu() {
+        menuManager.setMenuCells(null);
+        assertEquals(HMILevel.HMI_NONE, menuManager.currentHMILevel);
+        assertTrue(menuManager.currentMenuCells.isEmpty());
+
+        // The Menu Manager should send new menu once HMI full occurs
+        sendFakeCoreOnHMIFullNotifications();
+
+        // Listener should be triggered - which sets new HMI level and should proceed to send our pending update
+        assertEquals(HMILevel.HMI_FULL, menuManager.currentHMILevel);
+
+        assertTrue(menuManager.currentMenuCells.isEmpty());
+    }
+
+    @Test
+    public void testSettingNonUniqueCells() {
+        MenuSelectionListener listener = null;
+        MenuCell cell1 = new MenuCell("cell", null, null, listener);
+        MenuCell cell2 = new MenuCell("cell", null, null, listener);
+
+        menuManager.setMenuCells(Arrays.asList(cell1, cell2));
+        assertEquals(HMILevel.HMI_NONE, menuManager.currentHMILevel);
+        assertTrue(menuManager.currentMenuCells.isEmpty());
+
+        // The Menu Manager should send new menu once HMI full occurs
+        sendFakeCoreOnHMIFullNotifications();
+
+        // Listener should be triggered - which sets new HMI level and should proceed to send our pending update
+        assertEquals(HMILevel.HMI_FULL, menuManager.currentHMILevel);
+
+        assertTrue(menuManager.transactionQueue.getTasksAsList().isEmpty());
+    }
+
+    @Test
     public void testUpdatingOldWay() {
         // Force Menu Manager to use the old way of deleting / sending all
         menuManager.setDynamicUpdatesMode(DynamicMenuUpdatesMode.FORCE_OFF);
