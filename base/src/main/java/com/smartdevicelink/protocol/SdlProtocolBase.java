@@ -1566,5 +1566,17 @@ public class SdlProtocolBase {
         } // end-method
     } // end-class
 
+    /**
+     * This method will return copy of active transports
+     *
+     * @return a list of active transports
+     * */
+    public List<TransportRecord> getActiveTransports() {
+        List<TransportRecord> records = new ArrayList<>();
+        for (TransportRecord record : activeTransports.values()) {
+            records.add(new TransportRecord(record.getType(), record.getAddress()));
+        }
+        return records;
+    }
 
 }
