@@ -43,8 +43,8 @@ import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlProtocolBase;
 import com.smartdevicelink.protocol.enums.ControlFrameTags;
-import com.smartdevicelink.protocol.enums.QueryID;
-import com.smartdevicelink.protocol.enums.QueryType;
+import com.smartdevicelink.protocol.enums.SecurityQueryID;
+import com.smartdevicelink.protocol.enums.SecurityQueryType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.VehicleType;
@@ -188,12 +188,18 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
 
 
     protected void processControlService(ProtocolMessage msg) {
-        if (sdlSecurity == null)
+        if (sdlSecurity == null || msg.getData() == null)
             return;
 
+
+        if (msg.getData().length < 12) {
+            DebugTool.logError(TAG, "Security message is malformed, less than 12 bytes. It does not have a security payload header.");
+        }
+        // Check the client's message header for any internal errors
+        // NOTE: Before Core v8.0.0, all these messages will be notifications. In Core v8.0.0 and later, received messages will have the proper query type. Therefore, we cannot do things based only on the query type being request or response.
         SecurityQueryPayload receivedHeader = SecurityQueryPayload.parseBinaryQueryHeader(msg.getData().clone());
         if (receivedHeader == null) {
-            DebugTool.logError(TAG, "Malformed Security Query Header");
+            DebugTool.logError(TAG, "Module Security Query could not convert to object.");
             return;
         }
 
@@ -205,34 +211,32 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
 
         Integer iNumBytes = null;
 
-        if (receivedHeader.getQueryID() == QueryID.SEND_INTERNAL_ERROR
-                && receivedHeader.getQueryType() == QueryType.NOTIFICATION) {
+        // If the query is of type `Notification` and the id represents a client internal error, we abort the response message and the encryptionManager will not be in state ready.
+        if (receivedHeader.getQueryID() == SecurityQueryID.SEND_INTERNAL_ERROR
+                && receivedHeader.getQueryType() == SecurityQueryType.NOTIFICATION) {
             if (receivedHeader.getErrorCode() != null) {
-                DebugTool.logError(TAG, "Client internal error: " + receivedHeader.getErrorCode().getName());
+                DebugTool.logError(TAG, "Security Query module internal error:" + receivedHeader.getErrorCode().getName());
             } else {
-                DebugTool.logError(TAG, "Client internal error: No information provided");
+                DebugTool.logError(TAG, "Security Query module error: No information provided");
             }
             return;
         }
 
-        if (receivedHeader.getQueryID() != QueryID.SEND_HANDSHAKE_DATA
-                && (receivedHeader.getQueryType() != QueryType.NOTIFICATION || receivedHeader.getQueryType() != QueryType.REQUEST)) {
-            return;
-        }
-
         iNumBytes = sdlSecurity.runHandshake(data, dataToRead);
+
+        // Assemble a security query payload header for our response
         SecurityQueryPayload responseHeader = new SecurityQueryPayload();
 
         if (iNumBytes == null || iNumBytes <= 0) {
             DebugTool.logError(TAG, "Internal Error processing control service");
 
-            responseHeader.setQueryID(QueryID.SEND_INTERNAL_ERROR);
-            responseHeader.setQueryType(QueryType.NOTIFICATION);
+            responseHeader.setQueryID(SecurityQueryID.SEND_INTERNAL_ERROR);
+            responseHeader.setQueryType(SecurityQueryType.NOTIFICATION);
             responseHeader.setCorrelationID(msg.getCorrID());
             responseHeader.setJsonSize(0);
         } else {
-            responseHeader.setQueryID(QueryID.SEND_HANDSHAKE_DATA);
-            responseHeader.setQueryType(QueryType.RESPONSE);
+            responseHeader.setQueryID(SecurityQueryID.SEND_HANDSHAKE_DATA);
+            responseHeader.setQueryType(SecurityQueryType.RESPONSE);
             responseHeader.setCorrelationID(msg.getCorrID());
             responseHeader.setJsonSize(0);
         }

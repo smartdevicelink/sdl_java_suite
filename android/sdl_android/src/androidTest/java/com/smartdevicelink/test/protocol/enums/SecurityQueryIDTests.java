@@ -1,15 +1,15 @@
 package com.smartdevicelink.test.protocol.enums;
 
-import com.smartdevicelink.protocol.enums.QueryID;
+import com.smartdevicelink.protocol.enums.SecurityQueryID;
 import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
 
 import java.util.Vector;
 
-public class QueryIDTests extends TestCase {
+public class SecurityQueryIDTests extends TestCase {
 
-    private Vector<QueryID> list = QueryID.getList();
+    private Vector<SecurityQueryID> list = SecurityQueryID.getList();
 
     public void testValidEnums() {
         final byte[] SEND_HANDSHAKE_DATA_BYTES = {(byte) 0x00, (byte) 0x00, (byte) 0x01};
@@ -24,21 +24,21 @@ public class QueryIDTests extends TestCase {
         try {
             assertNotNull("QueryID list returned null", list);
 
-            QueryID enumHandshakeData = (QueryID) QueryID.get(list, SEND_HANDSHAKE_DATA_BYTES);
-            QueryID enumInternalError = (QueryID) QueryID.get(list, SEND_INTERNAL_ERROR_BYTES);
-            QueryID enumInvalidQueryId = (QueryID) QueryID.get(list, INVALID_QUERY_ID_BYTES);
+            SecurityQueryID enumHandshakeData = (SecurityQueryID) SecurityQueryID.get(list, SEND_HANDSHAKE_DATA_BYTES);
+            SecurityQueryID enumInternalError = (SecurityQueryID) SecurityQueryID.get(list, SEND_INTERNAL_ERROR_BYTES);
+            SecurityQueryID enumInvalidSecurityQueryId = (SecurityQueryID) SecurityQueryID.get(list, INVALID_QUERY_ID_BYTES);
 
             assertNotNull("Send Handshake Data byte match returned null", enumHandshakeData);
             assertNotNull("Send Internal Error byte match returned null", enumInternalError);
-            assertNotNull("Send Invalid QueryID byte match returned null", enumInvalidQueryId);
+            assertNotNull("Send Invalid QueryID byte match returned null", enumInvalidSecurityQueryId);
 
-            enumHandshakeData = (QueryID) QueryID.get(list, SEND_HANDSHAKE_DATA_STRING);
-            enumInternalError = (QueryID) QueryID.get(list, SEND_INTERNAL_ERROR_STRING);
-            enumInvalidQueryId = (QueryID) QueryID.get(list, INVALID_QUERY_ID_STRING);
+            enumHandshakeData = (SecurityQueryID) SecurityQueryID.get(list, SEND_HANDSHAKE_DATA_STRING);
+            enumInternalError = (SecurityQueryID) SecurityQueryID.get(list, SEND_INTERNAL_ERROR_STRING);
+            enumInvalidSecurityQueryId = (SecurityQueryID) SecurityQueryID.get(list, INVALID_QUERY_ID_STRING);
 
             assertNotNull("Send Handshake Data string match returned null", enumHandshakeData);
             assertNotNull("Send Internal Error string match returned null", enumInternalError);
-            assertNotNull("Send Invalid QueryID string match returned null", enumInvalidQueryId);
+            assertNotNull("Send Invalid QueryID string match returned null", enumInvalidSecurityQueryId);
         } catch(NullPointerException exception) {
             fail("Null enum list throws NullPointerException.");
         }
@@ -50,10 +50,10 @@ public class QueryIDTests extends TestCase {
         final String INVALID_STRING = "Invalid";
 
         try {
-            QueryID enumInvalid = (QueryID) QueryID.get(list, INVALID_BYTE_ARRAY);
+            SecurityQueryID enumInvalid = (SecurityQueryID) SecurityQueryID.get(list, INVALID_BYTE_ARRAY);
             assertNull("Invalid byte[] match didn't return null", enumInvalid);
 
-            enumInvalid = (QueryID) QueryID.get(list, INVALID_STRING);
+            enumInvalid = (SecurityQueryID) SecurityQueryID.get(list, INVALID_STRING);
             assertNull("Invalid string match didn't return null", enumInvalid);
         } catch (IllegalArgumentException exception) {
             fail("Invalid enum throws IllegalArgumentException.");
@@ -62,10 +62,10 @@ public class QueryIDTests extends TestCase {
 
     public void testNullEnum() {
         try {
-            QueryID enumNull = (QueryID) QueryID.get(list, (String) null);
+            SecurityQueryID enumNull = (SecurityQueryID) SecurityQueryID.get(list, (String) null);
             assertNull("Null lookup returns a null string value", enumNull);
 
-            enumNull = (QueryID) QueryID.get(list, (byte[]) null);
+            enumNull = (SecurityQueryID) SecurityQueryID.get(list, (byte[]) null);
             assertNull("Null lookup returns a null byte[] value", enumNull);
         }catch (NullPointerException exception) {
             fail("Null string throws NullPointerException.");
@@ -73,17 +73,17 @@ public class QueryIDTests extends TestCase {
     }
 
     public void testListEnum() {
-        Vector<QueryID> enumTestList = new Vector<>();
-        enumTestList.add(QueryID.SEND_HANDSHAKE_DATA);
-        enumTestList.add(QueryID.SEND_INTERNAL_ERROR);
-        enumTestList.add(QueryID.INVALID_QUERY_ID);
+        Vector<SecurityQueryID> enumTestList = new Vector<>();
+        enumTestList.add(SecurityQueryID.SEND_HANDSHAKE_DATA);
+        enumTestList.add(SecurityQueryID.SEND_INTERNAL_ERROR);
+        enumTestList.add(SecurityQueryID.INVALID_QUERY_ID);
 
         assertTrue("List does not match enum test list.",
                 list.containsAll(enumTestList) &&
                 enumTestList.containsAll(list));
 
-        QueryID[] enumValueArray = QueryID.values();
-        QueryID[] enumTestArray = {QueryID.SEND_HANDSHAKE_DATA, QueryID.SEND_INTERNAL_ERROR, QueryID.INVALID_QUERY_ID};
+        SecurityQueryID[] enumValueArray = SecurityQueryID.values();
+        SecurityQueryID[] enumTestArray = {SecurityQueryID.SEND_HANDSHAKE_DATA, SecurityQueryID.SEND_INTERNAL_ERROR, SecurityQueryID.INVALID_QUERY_ID};
         assertTrue("Array does not match enum values array.",
                 Validator.validateQueryIDArray(enumValueArray, enumTestArray));
     }

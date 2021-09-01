@@ -3,8 +3,8 @@ package com.smartdevicelink.test.protocol;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.protocol.SecurityQueryPayload;
-import com.smartdevicelink.protocol.enums.QueryID;
-import com.smartdevicelink.protocol.enums.QueryType;
+import com.smartdevicelink.protocol.enums.SecurityQueryID;
+import com.smartdevicelink.protocol.enums.SecurityQueryType;
 import com.smartdevicelink.util.BitConverter;
 
 import org.junit.Test;
@@ -22,8 +22,8 @@ public class SecurityQueryPayloadTests {
     public static SecurityQueryPayload createDummyBqh() {
         SecurityQueryPayload bqh = new SecurityQueryPayload();
         bqh.setCorrelationID(123);
-        bqh.setQueryID(QueryID.SEND_HANDSHAKE_DATA);
-        bqh.setQueryType(QueryType.REQUEST);
+        bqh.setQueryID(SecurityQueryID.SEND_HANDSHAKE_DATA);
+        bqh.setQueryType(SecurityQueryType.REQUEST);
         bqh.setBulkData(null);
         bqh.setJsonSize(0);
         return bqh;
@@ -54,8 +54,8 @@ public class SecurityQueryPayloadTests {
         array[11] = 0;
 
         SecurityQueryPayload parsedBqh = SecurityQueryPayload.parseBinaryQueryHeader(array);
-        assertEquals(parsedBqh.getQueryType(), QueryType.REQUEST);
-        assertEquals(parsedBqh.getQueryID(), QueryID.SEND_INTERNAL_ERROR);
+        assertEquals(parsedBqh.getQueryType(), SecurityQueryType.REQUEST);
+        assertEquals(parsedBqh.getQueryID(), SecurityQueryID.SEND_INTERNAL_ERROR);
         assertEquals(parsedBqh.getCorrelationID(), 3);
         assertEquals(parsedBqh.getJsonSize(), 0);
     }
@@ -63,16 +63,16 @@ public class SecurityQueryPayloadTests {
     @Test
     public void testCorrectHeaderAssembly() {
         SecurityQueryPayload dummyBqh = new SecurityQueryPayload();
-        dummyBqh.setQueryType(QueryType.REQUEST);
-        dummyBqh.setQueryID(QueryID.SEND_HANDSHAKE_DATA);
+        dummyBqh.setQueryType(SecurityQueryType.REQUEST);
+        dummyBqh.setQueryID(SecurityQueryID.SEND_HANDSHAKE_DATA);
         dummyBqh.setCorrelationID(3);
         dummyBqh.setJsonSize(0);
 
         byte[] assembledHeader = dummyBqh.assembleHeaderBytes();
-        assertEquals(dummyBqh.getQueryType(), QueryType.valueOf(assembledHeader[0]));
+        assertEquals(dummyBqh.getQueryType(), SecurityQueryType.valueOf(assembledHeader[0]));
         byte[] queryIDFromHeader = new byte[3];
         System.arraycopy(assembledHeader, 1, queryIDFromHeader, 0, 3);
-        assertEquals(dummyBqh.getQueryID(), QueryID.valueOf(queryIDFromHeader));
+        assertEquals(dummyBqh.getQueryID(), SecurityQueryID.valueOf(queryIDFromHeader));
         assertEquals(dummyBqh.getCorrelationID(), BitConverter.intFromByteArray(assembledHeader, 4));
         assertEquals(dummyBqh.getJsonSize(), BitConverter.intFromByteArray(assembledHeader, 8));
     }
@@ -98,15 +98,10 @@ public class SecurityQueryPayloadTests {
     @Test
     public void testCorruptHeader() {
         SecurityQueryPayload bqh = createDummyBqh();
-        bqh.setJsonSize(5);
-        bqh.setJsonData(new byte[5]);
-        bqh.setJsonSize(Integer.MAX_VALUE);
-
-        assertNotEquals(bqh.getJsonData().length, bqh.getJsonSize());
 
         byte[] bqhBytes = bqh.assembleHeaderBytes();
 
-        assertNull(safeParse(bqhBytes));
+        assertNotNull(safeParse(bqhBytes));
 
         int size = bqhBytes.length;
         for (int i = 0; i < size; i++) {

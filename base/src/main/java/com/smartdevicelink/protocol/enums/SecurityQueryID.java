@@ -10,20 +10,20 @@ import java.util.Objects;
 import java.util.Vector;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY)
-public class QueryID {
+public class SecurityQueryID {
 
-    private static final Vector<QueryID> theList = new Vector<>();
+    private static final Vector<SecurityQueryID> theList = new Vector<>();
 
-    public static Vector<QueryID> getList() {
+    public static Vector<SecurityQueryID> getList() {
         return theList;
     }
 
     private static final byte[] sendHandshakeDataByteArray = {(byte) 0x00, (byte) 0x00, (byte) 0x01};
     private static final byte[] sendInternalErrorByteArray = {(byte) 0x00, (byte) 0x00, (byte) 0x02};
     private static final byte[] invalidQueryIdByteArray = {(byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
-    public final static QueryID SEND_HANDSHAKE_DATA = new QueryID(sendHandshakeDataByteArray, "SEND_HANDSHAKE_DATA");
-    public final static QueryID SEND_INTERNAL_ERROR = new QueryID(sendInternalErrorByteArray, "SEND_INTERNAL_ERROR");
-    public final static QueryID INVALID_QUERY_ID = new QueryID(invalidQueryIdByteArray, "INVALID_QUERY_ID");
+    public final static SecurityQueryID SEND_HANDSHAKE_DATA = new SecurityQueryID(sendHandshakeDataByteArray, "SEND_HANDSHAKE_DATA");
+    public final static SecurityQueryID SEND_INTERNAL_ERROR = new SecurityQueryID(sendInternalErrorByteArray, "SEND_INTERNAL_ERROR");
+    public final static SecurityQueryID INVALID_QUERY_ID = new SecurityQueryID(invalidQueryIdByteArray, "INVALID_QUERY_ID");
 
     static {
         theList.addElement(SEND_HANDSHAKE_DATA);
@@ -31,7 +31,7 @@ public class QueryID {
         theList.addElement(INVALID_QUERY_ID);
     }
 
-    protected QueryID(byte[] value, String name) {
+    protected SecurityQueryID(byte[] value, String name) {
         this.value = value;
         this.name = name;
     }
@@ -53,11 +53,11 @@ public class QueryID {
         return name;
     }
 
-    public boolean equals(QueryID other) {
+    public boolean equals(SecurityQueryID other) {
         return Objects.equals(name, other.getName());
     }
 
-    public boolean eq(QueryID other) {
+    public boolean eq(SecurityQueryID other) {
         return equals(other);
     }
 
@@ -65,11 +65,11 @@ public class QueryID {
         return value;
     }
 
-    public static QueryID get(Vector<?> theList, byte[] value) {
+    public static SecurityQueryID get(Vector<?> theList, byte[] value) {
         Enumeration<?> enumer = theList.elements();
         while (enumer.hasMoreElements()) {
             try {
-                QueryID current = (QueryID) enumer.nextElement();
+                SecurityQueryID current = (SecurityQueryID) enumer.nextElement();
                 if (Arrays.equals(current.getValue(), value)) {
                     return current;
                 }
@@ -80,11 +80,11 @@ public class QueryID {
         return null;
     }
 
-    public static QueryID get(Vector<?> theList, String name) {
+    public static SecurityQueryID get(Vector<?> theList, String name) {
         Enumeration<?> enumer = theList.elements();
         while (enumer.hasMoreElements()) {
             try {
-                QueryID current = (QueryID) enumer.nextElement();
+                SecurityQueryID current = (SecurityQueryID) enumer.nextElement();
                 if (current.getName().equals(name)) {
                     return current;
                 }
@@ -95,11 +95,11 @@ public class QueryID {
         return null;
     }
 
-    public static QueryID valueOf(byte[] passedByteArray) {
-        return (QueryID) get(theList, passedByteArray);
+    public static SecurityQueryID valueOf(byte[] passedByteArray) {
+        return (SecurityQueryID) get(theList, passedByteArray);
     }
 
-    public static QueryID[] values() {
-        return theList.toArray(new QueryID[theList.size()]);
+    public static SecurityQueryID[] values() {
+        return theList.toArray(new SecurityQueryID[theList.size()]);
     }
 }
