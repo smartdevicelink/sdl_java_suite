@@ -337,7 +337,7 @@ public class VirtualDisplayEncoder {
             Looper.prepare();
 
             // create a Handler for this thread
-            mHandler = new Handler() {
+            mHandler = new Handler(Looper.myLooper()) {
                 public void handleMessage(Message msg) {
                     switch (msg.what) {
                         case MSG_TICK: {

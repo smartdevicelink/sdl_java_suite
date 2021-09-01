@@ -155,7 +155,7 @@ public class HeartbeatMonitor implements IHeartbeatMonitor {
                         Looper.prepare();
                         mHeartbeatThreadLooper = Looper.myLooper();
 
-                        mHeartbeatThreadHandler = new Handler();
+                        mHeartbeatThreadHandler = new Handler(mHeartbeatThreadLooper);
                         mIsAckReceived = true;
                         isHeartbeatReceived = true;
 

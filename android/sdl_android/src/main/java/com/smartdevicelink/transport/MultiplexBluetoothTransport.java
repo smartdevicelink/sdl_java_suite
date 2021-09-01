@@ -348,7 +348,10 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport {
     }
 
     private void timerDelayRemoveDialog(final BluetoothSocket sock) {
-        timeOutHandler = new Handler();
+        if (Looper.myLooper() == null) {
+            Looper.prepare();
+        }
+        timeOutHandler = new Handler(Looper.myLooper());
         socketRunnable = new Runnable() {
             public void run() {
                 //Log.e(TAG, "BLUETOOTH SOCKET CONNECT TIMEOUT - ATTEMPT TO CLOSE SOCKET");

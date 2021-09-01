@@ -1442,7 +1442,10 @@ public class SdlRouterService extends Service {
     public void resetForegroundTimeOut(long delay) {
         synchronized (FOREGROUND_NOTIFICATION_LOCK) {
             if (foregroundTimeoutHandler == null) {
-                foregroundTimeoutHandler = new Handler();
+                if (Looper.myLooper() == null) {
+                    Looper.prepare();
+                }
+                foregroundTimeoutHandler = new Handler(Looper.myLooper());
             }
             if (foregroundTimeoutRunnable == null) {
                 foregroundTimeoutRunnable = new Runnable() {
@@ -2536,7 +2539,10 @@ public class SdlRouterService extends Service {
      * This method is used to check for the newest version of this class to make sure the latest and greatest is up and running.
      */
     private void startAltTransportTimer() {
-        altTransportTimerHandler = new Handler();
+        if (Looper.myLooper() == null) {
+            Looper.prepare();
+        }
+        altTransportTimerHandler = new Handler(Looper.myLooper());
         altTransportTimerRunnable = new Runnable() {
             public void run() {
                 altTransportTimerHandler = null;
@@ -3095,7 +3101,10 @@ public class SdlRouterService extends Service {
             this.messenger = messenger;
             this.sessionIds = new Vector<Long>();
             this.queues = new ConcurrentHashMap<>();
-            queueWaitHandler = new Handler();
+            if (Looper.myLooper() == null) {
+                Looper.prepare();
+            }
+            queueWaitHandler = new Handler(Looper.myLooper());
             registeredTransports = new SparseArray<ArrayList<TransportType>>();
             awaitingSession = new Vector<>();
             setDeathNote(); //messaging Version
