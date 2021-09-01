@@ -2504,7 +2504,10 @@ public class SdlRouterService extends Service {
      * This method is used to check for the newest version of this class to make sure the latest and greatest is up and running.
      */
     private void startAltTransportTimer() {
-        altTransportTimerHandler = new Handler(Looper.getMainLooper());
+        if (Looper.myLooper() == null) {
+            Looper.prepare();
+        }
+        altTransportTimerHandler = new Handler(Looper.myLooper());
         altTransportTimerRunnable = new Runnable() {
             public void run() {
                 altTransportTimerHandler = null;
@@ -3060,7 +3063,10 @@ public class SdlRouterService extends Service {
             this.messenger = messenger;
             this.sessionIds = new Vector<Long>();
             this.queues = new ConcurrentHashMap<>();
-            queueWaitHandler = new Handler(Looper.getMainLooper());
+            if (Looper.myLooper() == null) {
+                Looper.prepare();
+            }
+            queueWaitHandler = new Handler(Looper.myLooper());
             registeredTransports = new SparseArray<ArrayList<TransportType>>();
             awaitingSession = new Vector<>();
             setDeathNote(); //messaging Version
