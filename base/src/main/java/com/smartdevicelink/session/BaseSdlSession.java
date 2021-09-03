@@ -215,7 +215,7 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
         if (receivedHeader.getQueryID() == SecurityQueryID.SEND_INTERNAL_ERROR
                 && receivedHeader.getQueryType() == SecurityQueryType.NOTIFICATION) {
             if (receivedHeader.getErrorCode() != null) {
-                DebugTool.logError(TAG, "Security Query module internal error:" + receivedHeader.getErrorCode().getName());
+                DebugTool.logError(TAG, "Security Query module internal error: " + receivedHeader.getErrorCode().getName());
             } else {
                 DebugTool.logError(TAG, "Security Query module error: No information provided");
             }
