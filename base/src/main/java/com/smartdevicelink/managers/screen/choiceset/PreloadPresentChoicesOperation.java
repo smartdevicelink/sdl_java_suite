@@ -98,6 +98,7 @@ class PreloadPresentChoicesOperation extends Task {
     private final ChoiceSet choiceSet;
     private static Integer choiceId = 0;
     private static Boolean reachedMaxIds = false;
+    private static final int MAX_CHOICE_ID = 65535;
     private final Integer cancelID;
     private final InteractionMode presentationMode;
     private final KeyboardProperties originalKeyboardProperties;
@@ -179,9 +180,21 @@ class PreloadPresentChoicesOperation extends Task {
         if (this.getState() == CANCELED) {
             return;
         }
+
+        if (this.loadedCells == null || this.loadedCells.isEmpty()) {
+            choiceId = 0;
+            reachedMaxIds = false;
+        }
+
         DebugTool.logInfo(TAG, "Choice Operation: Executing preload choices operation");
         // Enforce unique cells and remove cells that are already loaded
         this.cellsToUpload.removeAll(loadedCells);
+
+        if ((this.loadedCells.size() == MAX_CHOICE_ID) && this.cellsToUpload.size() > 0) {
+            DebugTool.logError(TAG, "Choice Cells to upload exceed maximum");
+            finishOperation(false);
+        }
+
         this.assignIdsToCells(this.cellsToUpload);
         makeCellsToUploadUnique(this.cellsToUpload);
 
@@ -522,30 +535,74 @@ class PreloadPresentChoicesOperation extends Task {
     }
 
     private void assignIdsToCells(ArrayList<ChoiceCell> cells) {
-        for (ChoiceCell cell : cells) {
-            cell.setChoiceId(this.nextChoiceId());
+        ArrayList<Integer> usedIds = new ArrayList<>();
+        for (ChoiceCell cell : loadedCells) {
+            usedIds.add(cell.getChoiceId());
+        }
+        Collections.sort(usedIds);
+        ArrayList<Integer> sortedUsedIds = new ArrayList<>(usedIds);
+
+        //Loop through the cells we need ids for. Get and assign those ids
+        for (int i = 0; i < cells.size(); i++) {
+            int cellId = nextChoiceIdBasedOnUsedIds(sortedUsedIds);
+            cells.get(i).setChoiceId(cellId);
+
+            //Insert the ids into the usedIds sorted arrat in the correct position
+            for (int j = 0; j < sortedUsedIds.size(); j++) {
+                if (sortedUsedIds.get(j) > cellId) {
+                    sortedUsedIds.add(j, cellId);
+                    break;
+                } else if (j == (sortedUsedIds.size() - 1)) {
+                    sortedUsedIds.add(cellId);
+                    break;
+                }
+            }
         }
     }
 
-    private void setNextChoiceId(int nextChoiceId) {
-        choiceId = nextChoiceId;
-    }
-
-    private int nextChoiceId() {
-        if (choiceId == 65535) {
+    //Find the next available choice is. Takes into account the loaded cells to ensure there are not duplicates
+    // @param usedIds The already loaded cell ids
+    // @return The choice id between 0 - 65535, or Not Found if no cell ids were available
+    private int nextChoiceIdBasedOnUsedIds(ArrayList<Integer> usedIds) {
+        //Check if we are entirely full, or if we've advanced beyond the max value, loop back
+        if (choiceId == MAX_CHOICE_ID) {
             choiceId = 0;
             reachedMaxIds = true;
         }
+
         if (reachedMaxIds) {
-            ArrayList<Integer> usedIds = new ArrayList<>();
-            for (ChoiceCell cell : loadedCells) {
-                usedIds.add(cell.getChoiceId());
+            // We've looped all the way around, so we need to check loaded cells
+            // Sort the set of cells by the choice id so that we can more easily check which slots are available
+            if (usedIds.size() >= (MAX_CHOICE_ID + 1)) {
+                //If we've maxed out our slots, return the max value
+                choiceId = MAX_CHOICE_ID;
+                return choiceId;
             }
-            while (usedIds.contains(choiceId + 1)) {
-                ++choiceId;
+
+            //If the last value isn't the max value, just keep grabbing towards the max value
+            int lastUsedId = usedIds.get(usedIds.size() - 1);
+            if (lastUsedId < MAX_CHOICE_ID) {
+                choiceId = lastUsedId + 1;
+                return  choiceId;
             }
+
+            //All our easy options are gone. Find and grab an empty slot from within the sorted list
+            for (int i = 0; i < usedIds.size(); i++) {
+                int loopId = usedIds.get(i);
+                if (i != loopId) {
+                    //This slot is open because the cell id does not match an open sorted slot
+                    choiceId = i;
+                    return choiceId;
+                }
+            }
+
+            //This *shouldn't* be possible
+            choiceId = MAX_CHOICE_ID;
+            return choiceId;
+        } else {
+            //We haven't looped all the way around yet, so we'll just take the current number, then advance the item
+            return choiceId++;
         }
-        return ++choiceId;
     }
 
     // Choice Uniqueness
