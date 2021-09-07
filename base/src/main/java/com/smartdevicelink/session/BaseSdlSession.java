@@ -222,9 +222,13 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
             return;
         }
 
-        if (receivedHeader.getQueryID() != SecurityQueryID.SEND_HANDSHAKE_DATA
-                || !(receivedHeader.getQueryType() == SecurityQueryType.REQUEST || receivedHeader.getQueryType() == SecurityQueryType.NOTIFICATION)) {
+        if (receivedHeader.getQueryID() != SecurityQueryID.SEND_HANDSHAKE_DATA) {
             DebugTool.logError(TAG, "Security Query module error: Message is not a SEND_HANDSHAKE_DATA REQUEST");
+            return;
+        }
+
+        if (receivedHeader.getQueryType() == SecurityQueryType.RESPONSE) {
+            DebugTool.logError(TAG, "Security Query module error: Message is a response, which is not supported");
             return;
         }
 
