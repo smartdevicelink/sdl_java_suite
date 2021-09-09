@@ -195,8 +195,8 @@ class PreloadPresentChoicesOperation extends Task {
             finishOperation(false);
         }
 
-        this.assignIdsToCells(this.cellsToUpload);
-        makeCellsToUploadUnique(this.cellsToUpload);
+        assignIdsToCells();
+        makeCellsToUploadUnique();
 
         if (this.choiceSet != null) {
             updateChoiceSet(this.choiceSet, this.loadedCells, new HashSet<>(this.cellsToUpload));
@@ -534,20 +534,20 @@ class PreloadPresentChoicesOperation extends Task {
         return pi;
     }
 
-    private void assignIdsToCells(ArrayList<ChoiceCell> cells) {
+    private void assignIdsToCells() {
         ArrayList<Integer> usedIds = new ArrayList<>();
         for (ChoiceCell cell : loadedCells) {
             usedIds.add(cell.getChoiceId());
         }
         Collections.sort(usedIds);
-        ArrayList<Integer> sortedUsedIds = new ArrayList<>(usedIds);
+        ArrayList<Integer> sortedUsedIds = (ArrayList<Integer>) usedIds.clone();
 
         //Loop through the cells we need ids for. Get and assign those ids
-        for (int i = 0; i < cells.size(); i++) {
+        for (int i = 0; i < this.cellsToUpload.size(); i++) {
             int cellId = nextChoiceIdBasedOnUsedIds(sortedUsedIds);
-            cells.get(i).setChoiceId(cellId);
+            this.cellsToUpload.get(i).setChoiceId(cellId);
 
-            //Insert the ids into the usedIds sorted arrat in the correct position
+            //Insert the ids into the usedIds sorted array in the correct position
             for (int j = 0; j < sortedUsedIds.size(); j++) {
                 if (sortedUsedIds.get(j) > cellId) {
                     sortedUsedIds.add(j, cellId);
@@ -606,12 +606,12 @@ class PreloadPresentChoicesOperation extends Task {
     }
 
     // Choice Uniqueness
-    void makeCellsToUploadUnique(ArrayList<ChoiceCell> cellsToUpload) {
-        if (cellsToUpload.size() == 0) {
+    void makeCellsToUploadUnique() {
+        if (this.cellsToUpload.size() == 0) {
             return;
         }
 
-        ArrayList<ChoiceCell> strippedCellsToUpload = cloneChoiceCellList(cellsToUpload);
+        ArrayList<ChoiceCell> strippedCellsToUpload = cloneChoiceCellList(this.cellsToUpload);
         ArrayList<ChoiceCell> strippedLoadedCells = cloneChoiceCellList(new ArrayList<>(loadedCells));
         boolean supportsChoiceUniqueness = !(sdlMsgVersion.getMinorVersion() < 7 || (sdlMsgVersion.getMajorVersion() == 7 && sdlMsgVersion.getMinorVersion() == 0));
         if (supportsChoiceUniqueness) {
@@ -620,7 +620,7 @@ class PreloadPresentChoicesOperation extends Task {
         }
 
         addUniqueNamesToCells(strippedCellsToUpload, strippedLoadedCells, supportsChoiceUniqueness);
-        transferUniqueNamesFromCells(strippedCellsToUpload, cellsToUpload);
+        transferUniqueNamesFromCells(strippedCellsToUpload, this.cellsToUpload);
     }
 
     private void updateChoiceSet(ChoiceSet choiceSet, HashSet<ChoiceCell> loadedCells, HashSet<ChoiceCell> cellsToUpload) {
