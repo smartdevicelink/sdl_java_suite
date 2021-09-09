@@ -611,8 +611,8 @@ class PreloadPresentChoicesOperation extends Task {
             return;
         }
 
-        ArrayList<ChoiceCell> strippedCellsToUpload = (ArrayList<ChoiceCell>) cellsToUpload.clone();
-        ArrayList<ChoiceCell> strippedLoadedCells = new ArrayList<>((HashSet<ChoiceCell>) loadedCells.clone());
+        ArrayList<ChoiceCell> strippedCellsToUpload = cloneChoiceCellList(cellsToUpload);
+        ArrayList<ChoiceCell> strippedLoadedCells = cloneChoiceCellList(new ArrayList<>(loadedCells));
         boolean supportsChoiceUniqueness = !(sdlMsgVersion.getMinorVersion() < 7 || (sdlMsgVersion.getMajorVersion() == 7 && sdlMsgVersion.getMinorVersion() == 0));
         if (supportsChoiceUniqueness) {
             removeUnusedProperties(strippedCellsToUpload);
@@ -640,9 +640,7 @@ class PreloadPresentChoicesOperation extends Task {
     }
 
     void removeUnusedProperties(List<ChoiceCell> choiceCells) {
-        List<ChoiceCell> strippedCellsClone = cloneChoiceCellList(choiceCells);
-        // Clone Cells
-        for (ChoiceCell cell : strippedCellsClone) {
+        for (ChoiceCell cell : choiceCells) {
             // Strip away fields that cannot be used to determine uniqueness visually including fields not supported by the HMI
             cell.setVoiceCommands(null);
 
@@ -661,11 +659,11 @@ class PreloadPresentChoicesOperation extends Task {
         }
     }
 
-    private List<ChoiceCell> cloneChoiceCellList(List<ChoiceCell> originalList) {
+    private ArrayList<ChoiceCell> cloneChoiceCellList(List<ChoiceCell> originalList) {
         if (originalList == null) {
             return null;
         }
-        List<ChoiceCell> clone = new ArrayList<>();
+        ArrayList<ChoiceCell> clone = new ArrayList<>();
         for (ChoiceCell choiceCell : originalList) {
             clone.add(choiceCell.clone());
         }
