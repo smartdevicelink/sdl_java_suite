@@ -613,7 +613,7 @@ class PreloadPresentChoicesOperation extends Task {
 
         ArrayList<ChoiceCell> strippedCellsToUpload = (ArrayList<ChoiceCell>) cellsToUpload.clone();
         ArrayList<ChoiceCell> strippedLoadedCells = new ArrayList<>((HashSet<ChoiceCell>) loadedCells.clone());
-        boolean supportsChoiceUniqueness = (sdlMsgVersion.getMajorVersion() >= 7 && sdlMsgVersion.getMinorVersion() >= 1);
+        boolean supportsChoiceUniqueness = !(sdlMsgVersion.getMinorVersion() < 7 || (sdlMsgVersion.getMajorVersion() == 7 && sdlMsgVersion.getMinorVersion() == 0));
         if (supportsChoiceUniqueness) {
             removeUnusedProperties(strippedCellsToUpload);
             removeUnusedProperties(strippedLoadedCells);
@@ -639,7 +639,7 @@ class PreloadPresentChoicesOperation extends Task {
         }
     }
 
-    List<ChoiceCell> removeUnusedProperties(List<ChoiceCell> choiceCells) {
+    void removeUnusedProperties(List<ChoiceCell> choiceCells) {
         List<ChoiceCell> strippedCellsClone = cloneChoiceCellList(choiceCells);
         // Clone Cells
         for (ChoiceCell cell : strippedCellsClone) {
@@ -659,7 +659,6 @@ class PreloadPresentChoicesOperation extends Task {
                 cell.setSecondaryArtwork(null);
             }
         }
-        return strippedCellsClone;
     }
 
     private List<ChoiceCell> cloneChoiceCellList(List<ChoiceCell> originalList) {
