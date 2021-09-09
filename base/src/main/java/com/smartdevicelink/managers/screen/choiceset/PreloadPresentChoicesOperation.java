@@ -670,14 +670,6 @@ class PreloadPresentChoicesOperation extends Task {
         return clone;
     }
 
-    private boolean hasImageFieldOfName(ImageFieldName imageFieldName) {
-        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, imageFieldName);
-    }
-
-    private boolean hasTextFieldOfName(TextFieldName textFieldName) {
-        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, textFieldName);
-    }
-
     /**
      * Checks if 2 or more cells have the same text/title. In case this condition is true, this function will handle the presented issue by adding "(count)".
      * E.g. Choices param contains 2 cells with text/title "Address" will be handled by updating the uniqueText/uniqueTitle of the second cell to "Address (2)".
