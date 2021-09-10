@@ -617,7 +617,7 @@ class PreloadPresentChoicesOperation extends Task {
 
         ArrayList<ChoiceCell> strippedCellsToUpload = cloneChoiceCellList(this.cellsToUpload);
         ArrayList<ChoiceCell> strippedLoadedCells = cloneChoiceCellList(new ArrayList<>(loadedCells));
-        boolean supportsChoiceUniqueness = !(sdlMsgVersion.getMinorVersion() < 7 || (sdlMsgVersion.getMajorVersion() == 7 && sdlMsgVersion.getMinorVersion() == 0));
+        boolean supportsChoiceUniqueness = !(sdlMsgVersion.getMajorVersion() < 7 || (sdlMsgVersion.getMajorVersion() == 7 && sdlMsgVersion.getMinorVersion() == 0));
         if (supportsChoiceUniqueness) {
             removeUnusedProperties(strippedCellsToUpload);
             removeUnusedProperties(strippedLoadedCells);

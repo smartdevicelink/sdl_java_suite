@@ -154,12 +154,6 @@ public class ChoiceSetManagerTests {
         ChoiceSet choiceSet1 = new ChoiceSet("test", Collections.<ChoiceCell>emptyList(), choiceSetSelectionListener);
         assertFalse(csm.setUpChoiceSet(choiceSet1));
 
-        // Identical cells will not be allowed
-        ChoiceCell cell1 = new ChoiceCell("test");
-        ChoiceCell cell2 = new ChoiceCell("test");
-        ChoiceSet choiceSet2 = new ChoiceSet("test", Arrays.asList(cell1, cell2), choiceSetSelectionListener);
-        assertFalse(csm.setUpChoiceSet(choiceSet2));
-
         // cells that have duplicate text will be allowed if there is another property to make them unique because a unique name will be assigned and used
         ChoiceCell cell3 = new ChoiceCell("test");
         cell3.setSecondaryText("text 1");
