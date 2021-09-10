@@ -96,7 +96,7 @@ class PreloadPresentChoicesOperation extends Task {
     private boolean choiceError = false;
     private HashSet<ChoiceCell> loadedCells;
     private final ChoiceSet choiceSet;
-    private static Integer choiceId = 1;
+    private static Integer choiceId = 0;
     private static Boolean reachedMaxIds = false;
     private static final int MAX_CHOICE_ID = 65535;
     private final Integer cancelID;
@@ -182,7 +182,7 @@ class PreloadPresentChoicesOperation extends Task {
         }
 
         if (this.loadedCells == null || this.loadedCells.isEmpty()) {
-            choiceId = 1;
+            choiceId = 0;
             reachedMaxIds = false;
         }
 
@@ -570,7 +570,7 @@ class PreloadPresentChoicesOperation extends Task {
     private int nextChoiceIdBasedOnUsedIds(ArrayList<Integer> usedIds) {
         //Check if we are entirely full, or if we've advanced beyond the max value, loop back
         if (choiceId == MAX_CHOICE_ID) {
-            choiceId = 1;
+            choiceId = 0;
             reachedMaxIds = true;
         }
 
