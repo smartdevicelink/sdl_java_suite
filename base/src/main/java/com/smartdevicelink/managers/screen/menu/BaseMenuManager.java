@@ -369,7 +369,10 @@ abstract class BaseMenuManager extends BaseSubManager {
             }
             if (cell.isSubMenuCell() && !cell.getSubCells().isEmpty()) {
                 // for each cell, if it has sub cells, recursively loop through those as well
-                return callListenerForCells(cell.getSubCells(), command);
+                boolean success = callListenerForCells(cell.getSubCells(), command);
+                if (success) {
+                    return true;
+                }
             }
         }
 
