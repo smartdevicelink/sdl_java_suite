@@ -128,7 +128,6 @@ class MenuReplaceOperation extends Task {
         final List<MenuCell> newKeeps = filterMenuCellsWithStatusList(updatedMenu, addMenuStatus, MenuCellState.KEEP);
 
         // Old kept cells ids need to be moved to the new kept cells so that submenu changes have correct parent ids
-        // We will transfer the ids for subCells later
         transferCellIDsFromCells(oldKeeps, newKeeps);
 
         // Transfer new cells' listeners to the old cells, which are stored in the current menu
@@ -253,8 +252,6 @@ class MenuReplaceOperation extends Task {
 
             final List<MenuCell> oldSubcellKeeps = filterMenuCellsWithStatusList(oldKeptCells.get(index).getSubCells(), deleteMenuStatus, MenuCellState.KEEP);
             final List<MenuCell> newSubcellKeeps = filterMenuCellsWithStatusList(newKeptCells.get(index).getSubCells(), addMenuStatus, MenuCellState.KEEP);
-
-            transferCellIDsFromCells(oldSubcellKeeps, newSubcellKeeps);
 
             transferCellListenersFromCells(newSubcellKeeps, oldSubcellKeeps);
 
