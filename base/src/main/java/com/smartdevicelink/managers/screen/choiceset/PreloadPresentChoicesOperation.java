@@ -96,7 +96,8 @@ class PreloadPresentChoicesOperation extends Task {
     private boolean choiceError = false;
     private HashSet<ChoiceCell> loadedCells;
     private final ChoiceSet choiceSet;
-    private static Integer choiceId = 0;
+    //Start choiceId at 1 to ensure all HMIs handle it https://github.com/smartdevicelink/generic_hmi/commit/b292fbbec095b9ce11b520d47ec95b6fcff8e247
+    private static Integer choiceId = 1;
     private static Boolean reachedMaxIds = false;
     private static final int MAX_CHOICE_ID = 65535;
     private final Integer cancelID;
@@ -182,7 +183,7 @@ class PreloadPresentChoicesOperation extends Task {
         }
 
         if (this.loadedCells == null || this.loadedCells.isEmpty()) {
-            choiceId = 0;
+            choiceId = 1;
             reachedMaxIds = false;
         }
 
@@ -570,7 +571,7 @@ class PreloadPresentChoicesOperation extends Task {
     private int nextChoiceIdBasedOnUsedIds(ArrayList<Integer> usedIds) {
         //Check if we are entirely full, or if we've advanced beyond the max value, loop back
         if (choiceId == MAX_CHOICE_ID) {
-            choiceId = 0;
+            choiceId = 1;
             reachedMaxIds = true;
         }
 
