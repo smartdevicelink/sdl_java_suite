@@ -280,11 +280,11 @@ abstract class BaseMenuManager extends BaseSubManager {
             @Override
             public void onComplete(boolean success) {
                 if (!success) {
-                    DebugTool.logError(TAG, "Error setting new menu configuration. Will revert to old menu configuration.");
-                } else {
-                    BaseMenuManager.this.currentMenuConfiguration = menuConfiguration;
-                    updateMenuReplaceOperationsWithNewMenuConfiguration();
+                    DebugTool.logError(TAG, "Error updating menu configuration.");
+                    return;
                 }
+                BaseMenuManager.this.currentMenuConfiguration = menuConfiguration;
+                updateMenuReplaceOperationsWithNewMenuConfiguration();
             }
         });
 
