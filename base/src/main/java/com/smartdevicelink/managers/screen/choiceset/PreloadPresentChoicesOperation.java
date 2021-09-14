@@ -255,7 +255,7 @@ class PreloadPresentChoicesOperation extends Task {
     private void preloadCellArtworks(@NonNull final CompletionListener listener) {
         this.currentState = SDLPreloadPresentChoicesOperationState.UPLOADING_IMAGES;
 
-        List<SdlArtwork> artworksToUpload = artworksToUpload();
+        List<SdlArtwork> artworksToUpload = new ArrayList<>(artworksToUpload());
 
         if (artworksToUpload.size() == 0) {
             DebugTool.logInfo(TAG, "Choice Preload: No Choice Artworks to upload");
@@ -850,8 +850,8 @@ class PreloadPresentChoicesOperation extends Task {
         this.loadedCells = loadedCells;
     }
 
-    List<SdlArtwork> artworksToUpload() {
-        List<SdlArtwork> artworksToUpload = new ArrayList<>();
+    HashSet<SdlArtwork> artworksToUpload() {
+        HashSet<SdlArtwork> artworksToUpload = new HashSet<>();
         for (ChoiceCell cell : cellsToUpload) {
             if (shouldSendChoicePrimaryImage() && fileManager.get() != null && fileManager.get().fileNeedsUpload(cell.getArtwork())) {
                 artworksToUpload.add(cell.getArtwork());

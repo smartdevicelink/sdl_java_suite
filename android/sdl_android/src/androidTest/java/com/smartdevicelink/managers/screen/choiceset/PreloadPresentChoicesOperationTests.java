@@ -169,7 +169,7 @@ public class PreloadPresentChoicesOperationTests {
 
     @Test
     public void testArtworksToUpload() {
-        List<SdlArtwork> artworksToUpload = preloadChoicesOperation.artworksToUpload();
+        HashSet<SdlArtwork> artworksToUpload = preloadChoicesOperation.artworksToUpload();
         assertNotNull(artworksToUpload);
         assertEquals(artworksToUpload.size(), 1);
     }
