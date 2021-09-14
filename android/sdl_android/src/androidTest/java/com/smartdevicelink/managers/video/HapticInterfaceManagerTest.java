@@ -223,7 +223,7 @@ public class HapticInterfaceManagerTest extends TestCase {
     private View createViews() {
         Context context = InstrumentationRegistry.getInstrumentation().getContext();
 
-        View view = new View(context) {
+        final View view = new View(context) {
             private int count = 0;
 
             @Override
@@ -233,7 +233,7 @@ public class HapticInterfaceManagerTest extends TestCase {
             }
         };
 
-        ViewGroup parent1 = new ViewGroup(context) {
+        final ViewGroup parent1 = new ViewGroup(context) {
             @Override
             protected void onLayout(boolean b, int i, int i1, int i2, int i3) {}
 
@@ -248,7 +248,7 @@ public class HapticInterfaceManagerTest extends TestCase {
             }
         };
 
-        ViewGroup parent2 = new ViewGroup(context) {
+        final ViewGroup parent2 = new ViewGroup(context) {
             @Override
             protected void onLayout(boolean b, int i, int i1, int i2, int i3) {}
 
