@@ -301,8 +301,8 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                         choiceSet.getChoiceSetSelectionListener().onError("Incorrect State");
                     } else {
                         DebugTool.logError(TAG, "Present finished but an unhandled state occurred and callback failed");
+                        choiceSet.getChoiceSetSelectionListener().onError("callback failed");
                     }
-                    choiceSet.getChoiceSetSelectionListener().onError(error);
                 }
             }
         };

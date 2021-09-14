@@ -53,6 +53,7 @@ class DeleteChoicesOperation extends Task {
     private HashSet<ChoiceCell> cellsToDelete;
     private final BaseChoiceSetManager.ChoicesOperationCompletionListener completionListener;
     private HashSet<ChoiceCell> loadedCells;
+    private List<DeleteInteractionChoiceSet> deleteChoices;
     private boolean completionSuccess = false;
 
     DeleteChoicesOperation(ISdl internalInterface, HashSet<ChoiceCell> cellsToDelete, HashSet<ChoiceCell> loadedCells, BaseChoiceSetManager.ChoicesOperationCompletionListener completionListener) {
@@ -79,7 +80,7 @@ class DeleteChoicesOperation extends Task {
 
     private void sendDeletions() {
 
-        List<DeleteInteractionChoiceSet> deleteChoices = createDeleteSets();
+        deleteChoices = createDeleteSets();
 
         if (deleteChoices.size() > 0) {
 
@@ -110,7 +111,7 @@ class DeleteChoicesOperation extends Task {
                             DeleteChoicesOperation.super.onFinished();
                         } else {
                             if (loadedCells != null) {
-                                loadedCells.remove(loadedCellFromChoiceId(correlationId));
+                                loadedCells.remove(loadedCellFromCorrelationId(deleteChoices, correlationId));
                             }
                         }
                     }
@@ -144,7 +145,20 @@ class DeleteChoicesOperation extends Task {
         this.cellsToDelete = updatedCellsToDelete;
     }
 
-    private ChoiceCell loadedCellFromChoiceId(int choiceId) {
+    private ChoiceCell loadedCellFromCorrelationId(List<DeleteInteractionChoiceSet> deleteRpcs, int correlationId) {
+
+        Integer choiceId = null;
+
+        for (DeleteInteractionChoiceSet rpc : deleteRpcs) {
+            if (rpc.getCorrelationID() == correlationId) {
+                choiceId = rpc.getInteractionChoiceSetID();
+            }
+        }
+
+        if (choiceId == null) {
+            return null;
+        }
+
         for (ChoiceCell cell : this.loadedCells) {
             if (cell.getChoiceId() == choiceId) {
                 return cell;
