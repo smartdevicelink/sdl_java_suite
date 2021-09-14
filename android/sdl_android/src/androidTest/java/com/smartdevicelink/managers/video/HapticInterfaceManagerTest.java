@@ -21,6 +21,7 @@
  **************************************************************************************************/
 package com.smartdevicelink.managers.video;
 
+import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -45,9 +46,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -222,36 +221,53 @@ public class HapticInterfaceManagerTest extends TestCase {
     }
 
     private View createViews() {
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
 
-        View view = mock(View.class);
-
-        ViewGroup parent1 = mock(ViewGroup.class);
-        ViewGroup parent2 = mock(ViewGroup.class);
-
-        when(parent1.getChildCount()).thenReturn(5);
-
-        when(parent1.getChildAt(0)).thenReturn(view);
-        when(parent1.getChildAt(1)).thenReturn(view);
-        when(parent1.getChildAt(2)).thenReturn(view);
-        when(parent1.getChildAt(3)).thenReturn(parent2);
-        when(parent1.getChildAt(4)).thenReturn(view);
-
-        when(parent2.getChildCount()).thenReturn(2);
-        when(parent2.getChildAt(0)).thenReturn(view);
-        when(parent2.getChildAt(1)).thenReturn(view);
-
-
-        doAnswer(new Answer<Boolean>() {
+        View view = new View(context) {
             private int count = 0;
 
             @Override
-            public Boolean answer(InvocationOnMock invocation) throws Throwable {
+            public boolean isClickable() {
                 int curCount = count++;
                 return (curCount >= 1) && (curCount <= 4);
             }
-        }).when(view).isClickable();
+        };
 
-        return parent1;
+        ViewGroup parent1 = new ViewGroup(context) {
+            @Override
+            protected void onLayout(boolean b, int i, int i1, int i2, int i3) {}
+
+            @Override
+            public View getChildAt(int index) {
+                return view;
+            }
+
+            @Override
+            public int getChildCount() {
+                return 2;
+            }
+        };
+
+        ViewGroup parent2 = new ViewGroup(context) {
+            @Override
+            protected void onLayout(boolean b, int i, int i1, int i2, int i3) {}
+
+            @Override
+            public View getChildAt(int index) {
+                if (index == 3) {
+                    return parent1;
+                } else {
+                    return view;
+                }
+            }
+
+            @Override
+            public int getChildCount() {
+                return 5;
+            }
+        };
+
+        return parent2;
     }
 
 
