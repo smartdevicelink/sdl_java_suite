@@ -223,9 +223,9 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         pendingPreloadChoices.addAll(choicesToUpload);
 
         if (fileManager.get() != null) {
-            PreloadChoicesOperation preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager.get(), displayName, defaultMainWindowCapability, isVROptional, choicesToUpload, new CompletionListener() {
+            PreloadChoicesOperation preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager.get(), displayName, defaultMainWindowCapability, isVROptional, choicesToUpload, new BaseChoiceSetManager.ChoiceSetCompletionListener() {
                 @Override
-                public void onComplete(boolean success) {
+                public void onComplete(boolean success, HashSet<ChoiceCell> failedChoiceCells) {
                     if (success) {
                         preloadedChoices.addAll(choicesToUpload);
                         pendingPreloadChoices.removeAll(choicesToUpload);
@@ -234,6 +234,9 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                         }
                     } else {
                         DebugTool.logError(TAG, "There was an error pre loading choice cells");
+                        choicesToUpload.removeAll(failedChoiceCells);
+                        preloadedChoices.addAll(choicesToUpload);
+                        pendingPreloadChoices.removeAll(choicesToUpload);
                         if (listener != null) {
                             listener.onComplete(false);
                         }
@@ -669,6 +672,14 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             }
         }
         return null;
+    }
+
+    /**
+     * Interface that sends a list of ChoiceCells that failed to preload, to allow BaseChoioceSetManager
+     * to stop keeping track of them for their onButtonEventListener
+     */
+    interface ChoiceSetCompletionListener {
+        void onComplete(boolean success, HashSet<ChoiceCell> failedChoiceCells);
     }
 
     // LISTENERS
