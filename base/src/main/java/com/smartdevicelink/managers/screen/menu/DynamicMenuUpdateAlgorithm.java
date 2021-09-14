@@ -3,9 +3,6 @@ package com.smartdevicelink.managers.screen.menu;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Bilal Alsharifi on 1/25/21.
- */
 class DynamicMenuUpdateAlgorithm {
     // Cell state that tells the menu manager what it should do with a given SDLMenuCell
     enum MenuCellState {
