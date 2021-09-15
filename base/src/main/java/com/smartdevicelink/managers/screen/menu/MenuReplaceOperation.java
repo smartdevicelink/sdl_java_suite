@@ -155,7 +155,7 @@ class MenuReplaceOperation extends Task {
         final List<MenuCell> cellsToDelete = filterMenuCellsWithStatusList(currentMenu, deleteMenuStatus, MenuCellState.DELETE);
         final List<MenuCell> cellsToAdd = filterMenuCellsWithStatusList(updatedMenu, addMenuStatus, MenuCellState.ADD);
 
-        // These arrays should ONLY contain KEEPS. These will be used for SubMenu compares
+        // These lists should ONLY contain KEEPS. These will be used for SubMenu compares
         final List<MenuCell> oldKeeps = filterMenuCellsWithStatusList(currentMenu, deleteMenuStatus, MenuCellState.KEEP);
         final List<MenuCell> newKeeps = filterMenuCellsWithStatusList(updatedMenu, addMenuStatus, MenuCellState.KEEP);
 

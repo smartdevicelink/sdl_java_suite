@@ -69,9 +69,9 @@ class MenuReplaceUtilities {
     }
 
     /**
-     * Assign cell ids on an array of menu cells given a parent id (or no parent id)
+     * Assign cell ids on a list of menu cells given a parent id (or no parent id)
      *
-     * @param menuCells The array of menu cells to update
+     * @param menuCells The list of menu cells to update
      * @param parentId  The parent id to assign if needed
      */
     static void addIdsToMenuCells(List<MenuCell> menuCells, int parentId) {

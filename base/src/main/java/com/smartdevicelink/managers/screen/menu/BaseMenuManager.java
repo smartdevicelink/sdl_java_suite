@@ -223,7 +223,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             DebugTool.logError(TAG, String.format("The cell %s does not contain any sub cells, so no submenu can be opened", cell.getTitle()));
             return false;
         } else if (cell != null && foundClonedCell == null) {
-            DebugTool.logError(TAG, "This cell has not been sent to the head unit, so no submenu can be opened. Make sure that the cell exists in the SDLManager.menu array");
+            DebugTool.logError(TAG, "This cell has not been sent to the head unit, so no submenu can be opened. Make sure that the cell exists in the SDLManager.menu list");
             return false;
         } else if (internalInterface.getSdlMsgVersion().getMajorVersion() < 6) {
             DebugTool.logWarning(TAG, "The openSubmenu method is not supported on this head unit.");
