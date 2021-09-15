@@ -1464,6 +1464,10 @@ public class SdlRouterService extends Service {
             builder = new Notification.Builder(this, SDL_NOTIFICATION_CHANNEL_ID);
         }
 
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            builder.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE);
+        }
+
         if (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)) { //If we are in debug mode, include what app has the router service open
             ComponentName name = new ComponentName(this, this.getClass());
             builder.setContentTitle("SDL: " + name.getPackageName());
@@ -1534,12 +1538,22 @@ public class SdlRouterService extends Service {
     private void safeStartForeground(int id, Notification notification) {
         try {
             if (notification == null) {
-                //Try the NotificationCompat this time in case there was a previous error
-                NotificationCompat.Builder builder =
-                        new NotificationCompat.Builder(this, SDL_NOTIFICATION_CHANNEL_ID)
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                    Notification.Builder builder =
+                            new Notification.Builder(this, SDL_NOTIFICATION_CHANNEL_ID)
                                 .setContentTitle("SmartDeviceLink")
-                                .setContentText("Service Running");
-                notification = builder.build();
+                                .setContentText("Service Running")
+                                .setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE);
+                    notification = builder.build();
+                } else {
+                    //Try the NotificationCompat this time in case there was a previous error
+                    NotificationCompat.Builder builder =
+                            new NotificationCompat.Builder(this, SDL_NOTIFICATION_CHANNEL_ID)
+                                    .setContentTitle("SmartDeviceLink")
+                                    .setContentText("Service Running");
+
+                    notification = builder.build();
+                }
             }
             startForeground(id, notification);
             DebugTool.logInfo(TAG, "Entered the foreground - " + System.currentTimeMillis());
@@ -3757,6 +3771,10 @@ public class SdlRouterService extends Service {
             builder = new Notification.Builder(getApplicationContext());
         } else {
             builder = new Notification.Builder(getApplicationContext(), TransportConstants.SDL_ERROR_NOTIFICATION_CHANNEL_ID);
+        }
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            builder.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE);
         }
         ComponentName name = new ComponentName(this, this.getClass());
         if (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)) { //If we are in debug mode, include what app has the router service open
