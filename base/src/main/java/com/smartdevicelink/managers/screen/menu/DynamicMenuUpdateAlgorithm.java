@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 class DynamicMenuUpdateAlgorithm {
-    // Cell state that tells the menu manager what it should do with a given SDLMenuCell
+    // Cell state that tells the menu manager what it should do with a given MenuCell
     enum MenuCellState {
         DELETE, // Marks the cell to be deleted
         ADD, // Marks the cell to be added
@@ -33,7 +33,7 @@ class DynamicMenuUpdateAlgorithm {
         DynamicMenuUpdateRunScore bestScore = new DynamicMenuUpdateRunScore(new ArrayList<MenuCellState>(), new ArrayList<MenuCellState>(), 0);
 
         for (int run = startRun; run < oldMenuCells.size(); run++) {
-            // Set the menu status as a 1-1 array, start off will oldMenus = all Deletes, newMenu = all Adds
+            // Set the menu status as a 1-1 list, start off will oldMenus = all Deletes, newMenu = all Adds
             List<MenuCellState> oldMenuStatus = buildAllDeleteStatusesForMenu(oldMenuCells);
             List<MenuCellState> newMenuStatus = buildAllAddStatusesForMenu(updatedMenuCells);
 
@@ -52,7 +52,7 @@ class DynamicMenuUpdateAlgorithm {
                 }
             }
 
-            // // Add RPC are the biggest operation so we need to find the run with the least amount of Adds.
+            // Add RPC are the biggest operation so we need to find the run with the least amount of Adds.
             // We will reset the run we use each time a runScore is less than the current score.
             int numberOfAdds = 0;
             for (int status = 0; status < newMenuStatus.size(); status++) {
@@ -77,8 +77,8 @@ class DynamicMenuUpdateAlgorithm {
     }
 
     /**
-     * Builds a 1-1 array of Deletes for every element in the array
-     * @param oldMenu The old menu array
+     * Builds a 1-1 list of Deletes for every element in the array
+     * @param oldMenu The old menu list
      */
     static List<MenuCellState> buildAllDeleteStatusesForMenu (List<MenuCell> oldMenu){
         List<MenuCellState> oldMenuStatus = new ArrayList<>(oldMenu.size());
@@ -89,8 +89,8 @@ class DynamicMenuUpdateAlgorithm {
     }
 
     /**
-     * Builds a 1-1 array of Adds for every element in the array
-     * @param newMenu The new menu array
+     * Builds a 1-1 list of Adds for every element in the list
+     * @param newMenu The new menu list
      */
     static List<MenuCellState> buildAllAddStatusesForMenu (List<MenuCell> newMenu){
         List<MenuCellState> newMenuStatus = new ArrayList<>(newMenu.size());
