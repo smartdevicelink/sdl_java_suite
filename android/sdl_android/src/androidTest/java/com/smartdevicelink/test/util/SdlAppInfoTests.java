@@ -42,6 +42,8 @@ import android.os.Bundle;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.R;
+import com.smartdevicelink.proxy.rpc.VehicleType;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.util.SdlAppInfo;
 
 import org.junit.Before;
@@ -49,10 +51,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
@@ -85,7 +89,7 @@ public class SdlAppInfoTests {
     @Test
     public void testConstructorWithDefaultData() {
 
-        SdlAppInfo info = new SdlAppInfo(defaultResolveInfo, defaultPackageInfo);
+        SdlAppInfo info = new SdlAppInfo(defaultResolveInfo, defaultPackageInfo, context);
 
         assertNotNull(info);
 
@@ -105,10 +109,10 @@ public class SdlAppInfoTests {
      */
     @Test
     public void testCompareVersion() {
-        SdlAppInfo defaultInfo = new SdlAppInfo(defaultResolveInfo, defaultPackageInfo);
+        SdlAppInfo defaultInfo = new SdlAppInfo(defaultResolveInfo, defaultPackageInfo, context);
 
         int newVersion = context.getResources().getInteger(R.integer.sdl_router_service_version_value) + 1;
-        SdlAppInfo testInfo = new SdlAppInfo(createResolveInfo(newVersion, "com.smartdevicelink.test2", "com.smartdevicelink.test2.SdlRouterService", false), defaultPackageInfo);
+        SdlAppInfo testInfo = new SdlAppInfo(createResolveInfo(newVersion, "com.smartdevicelink.test2", "com.smartdevicelink.test2.SdlRouterService", false), defaultPackageInfo, context);
 
         List<SdlAppInfo> infos = new ArrayList<>();
         infos.add(defaultInfo);
@@ -126,10 +130,10 @@ public class SdlAppInfoTests {
      */
     @Test
     public void testCompareVersionAndCustom() {
-        SdlAppInfo defaultInfo = new SdlAppInfo(defaultResolveInfo, defaultPackageInfo);
+        SdlAppInfo defaultInfo = new SdlAppInfo(defaultResolveInfo, defaultPackageInfo, context);
 
         int newVersion = context.getResources().getInteger(R.integer.sdl_router_service_version_value) + 1;
-        SdlAppInfo testInfo = new SdlAppInfo(createResolveInfo(newVersion, "com.smartdevicelink.test2", "com.smartdevicelink.test2.SdlRouterService", true), defaultPackageInfo);
+        SdlAppInfo testInfo = new SdlAppInfo(createResolveInfo(newVersion, "com.smartdevicelink.test2", "com.smartdevicelink.test2.SdlRouterService", true), defaultPackageInfo, context);
 
         List<SdlAppInfo> infos = new ArrayList<>();
         infos.add(defaultInfo);
@@ -147,12 +151,12 @@ public class SdlAppInfoTests {
      */
     @Test
     public void testCompareUpdatedTime() {
-        SdlAppInfo defaultInfo = new SdlAppInfo(defaultResolveInfo, defaultPackageInfo);
+        SdlAppInfo defaultInfo = new SdlAppInfo(defaultResolveInfo, defaultPackageInfo, context);
 
         PackageInfo packageInfo = new PackageInfo();
         packageInfo.firstInstallTime = defaultPackageInfo.firstInstallTime;
         packageInfo.lastUpdateTime = defaultPackageInfo.lastUpdateTime + 500;
-        SdlAppInfo testInfo = new SdlAppInfo(defaultResolveInfo, packageInfo);
+        SdlAppInfo testInfo = new SdlAppInfo(defaultResolveInfo, packageInfo, context);
 
         List<SdlAppInfo> infos = new ArrayList<>();
         infos.add(defaultInfo);
@@ -179,5 +183,106 @@ public class SdlAppInfoTests {
         return info;
     }
 
+    @Test
+    public void testDeserializeVehicleInfo() {
+        VehicleType type = new VehicleType();
+        type.setMake("SDL");
+        type.setModel("Car");
+        type.setModelYear("2019");
+        type.setTrim("GT");
+        List<VehicleType> deserializedList = SdlAppInfo.deserializeSupportedVehicles(getInstrumentation().getContext().getResources().getXml(com.smartdevicelink.test.R.xml.supported_vehicle_type));
+        assertTrue(deserializedList.contains(type));
+        assertEquals(1, deserializedList.size());
+    }
+
+    @Test
+    public void testVehicleTypeSupported() {
+        // tests check with all params
+        VehicleType type1 = new VehicleType();
+        type1.setMake(TestValues.GENERAL_STRING);
+        type1.setModel(TestValues.GENERAL_STRING);
+        type1.setMake(TestValues.GENERAL_STRING);
+        type1.setTrim(TestValues.GENERAL_STRING);
+
+        VehicleType type2 = new VehicleType();
+        type2.setMake(TestValues.GENERAL_STRING);
+        type2.setModel(TestValues.GENERAL_STRING);
+        type2.setModelYear(TestValues.GENERAL_INTEGER.toString());
+        type2.setTrim(TestValues.GENERAL_STRING);
+
+        List<VehicleType> supportedVehicleList = Arrays.asList(type1, type2);
+        assertTrue(SdlAppInfo.checkIfVehicleSupported(supportedVehicleList, type2));
+
+        // tests check with not all params in connectedVehicle
+        VehicleType connectedVehicle = new VehicleType();
+
+        // make only param
+        connectedVehicle.setMake(TestValues.GENERAL_STRING);
+        assertTrue(SdlAppInfo.checkIfVehicleSupported(supportedVehicleList, connectedVehicle));
+
+        // make and model params
+        connectedVehicle.setModel(TestValues.GENERAL_STRING);
+        assertTrue(SdlAppInfo.checkIfVehicleSupported(supportedVehicleList, connectedVehicle));
+
+        // make, model and year params
+        connectedVehicle.setModelYear(TestValues.GENERAL_STRING);
+        assertTrue(SdlAppInfo.checkIfVehicleSupported(supportedVehicleList, connectedVehicle));
+
+        // make, model and trim params
+        connectedVehicle.setModelYear(null);
+        connectedVehicle.setTrim(TestValues.GENERAL_STRING);
+        assertTrue(SdlAppInfo.checkIfVehicleSupported(supportedVehicleList, connectedVehicle));
+
+        // tests check with not all params in supportedVehicle
+        VehicleType supportedVehicle = new VehicleType();
+        supportedVehicle.setMake(TestValues.GENERAL_STRING);
+
+        // make param only
+        assertTrue(SdlAppInfo.checkIfVehicleSupported(Collections.singletonList(supportedVehicle), connectedVehicle));
+
+        // make and model params
+        supportedVehicle.setModel(TestValues.GENERAL_STRING);
+        assertTrue(SdlAppInfo.checkIfVehicleSupported(Collections.singletonList(supportedVehicle), connectedVehicle));
+
+        // make, model and trim params
+        supportedVehicle.setTrim(TestValues.GENERAL_STRING);
+        assertTrue(SdlAppInfo.checkIfVehicleSupported(Collections.singletonList(supportedVehicle), connectedVehicle));
+
+        // make, model and trim params
+        supportedVehicle.setTrim(TestValues.GENERAL_STRING);
+        assertTrue(SdlAppInfo.checkIfVehicleSupported(Collections.singletonList(supportedVehicle), connectedVehicle));
+
+        // make, model and trim params
+        connectedVehicle.setTrim(null);
+        connectedVehicle.setModelYear(TestValues.GENERAL_INTEGER.toString());
+        supportedVehicle.setModelYear(TestValues.GENERAL_INTEGER.toString());
+        assertTrue(SdlAppInfo.checkIfVehicleSupported(Collections.singletonList(supportedVehicle), connectedVehicle));
+    }
+
+    @Test
+    public void testVehicleTypeNotSupported() {
+        VehicleType type1 = new VehicleType();
+
+        type1.setModel(TestValues.GENERAL_STRING);
+        type1.setMake(TestValues.GENERAL_INTEGER.toString());
+        type1.setTrim(TestValues.GENERAL_STRING);
+        type1.setModelYear(TestValues.GENERAL_STRING);
+
+        VehicleType type2 = new VehicleType();
+
+        type2.setModel(TestValues.GENERAL_STRING);
+        type2.setMake(TestValues.GENERAL_INTEGER.toString());
+        type2.setTrim(TestValues.GENERAL_STRING);
+        type2.setModelYear(TestValues.GENERAL_STRING);
+
+        VehicleType type3 = new VehicleType();
+
+        type3.setModel(TestValues.GENERAL_STRING);
+        type3.setMake(TestValues.GENERAL_STRING);
+        type3.setTrim(TestValues.GENERAL_STRING);
+        type3.setModelYear(TestValues.GENERAL_INTEGER.toString());
+
+        assertFalse(SdlAppInfo.checkIfVehicleSupported(Arrays.asList(type1, type2), type3));
+    }
 
 }
