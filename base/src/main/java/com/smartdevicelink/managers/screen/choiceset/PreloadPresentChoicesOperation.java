@@ -605,7 +605,7 @@ class PreloadPresentChoicesOperation extends Task {
             choiceId = MAX_CHOICE_ID;
             return choiceId;
         } else {
-            //We haven't looped all the way around yet, so we'll just take the current number, then advance the item
+            // We haven't looped all the way around yet, so we'll just take the current number, then advance the item
             return choiceId++;
         }
     }
