@@ -601,7 +601,7 @@ class PreloadPresentChoicesOperation extends Task {
                 }
             }
 
-            //This *shouldn't* be possible
+            // This *shouldn't* be possible
             choiceId = MAX_CHOICE_ID;
             return choiceId;
         } else {
