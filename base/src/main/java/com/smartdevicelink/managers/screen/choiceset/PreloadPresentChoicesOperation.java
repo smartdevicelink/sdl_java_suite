@@ -41,6 +41,8 @@ import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.ManagerUtility;
+import static com.smartdevicelink.managers.ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName;
+import static com.smartdevicelink.managers.ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
@@ -74,13 +76,11 @@ import com.smartdevicelink.util.DebugTool;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 class PreloadPresentChoicesOperation extends Task {
 
@@ -771,23 +771,23 @@ class PreloadPresentChoicesOperation extends Task {
         if (this.displayName != null && this.displayName.equals(DisplayType.GEN3_8_INCH.toString())) {
             return true;
         }
-        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.menuName);
+        return defaultMainWindowCapability == null || hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.menuName);
     }
 
     boolean shouldSendChoiceSecondaryText() {
-        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.secondaryText);
+        return defaultMainWindowCapability == null || hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.secondaryText);
     }
 
     boolean shouldSendChoiceTertiaryText() {
-        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.tertiaryText);
+        return defaultMainWindowCapability == null || hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.tertiaryText);
     }
 
     boolean shouldSendChoicePrimaryImage() {
-        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.choiceImage);
+        return defaultMainWindowCapability == null || hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.choiceImage);
     }
 
     boolean shouldSendChoiceSecondaryImage() {
-        return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.choiceSecondaryImage);
+        return defaultMainWindowCapability == null || hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.choiceSecondaryImage);
     }
 
     // SDL Notifications
