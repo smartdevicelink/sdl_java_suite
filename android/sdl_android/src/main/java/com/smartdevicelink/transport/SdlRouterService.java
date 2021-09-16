@@ -202,6 +202,7 @@ public class SdlRouterService extends Service {
     private boolean wrongProcess = false;
     private boolean initPassed = false;
     private boolean hasCalledStartForeground = false;
+    private boolean hasConnectedBefore = false;
     boolean firstStart = true;
 
     public static HashMap<String, RegisteredApp> registeredApps;
@@ -1284,6 +1285,7 @@ public class SdlRouterService extends Service {
         }
         if (intent != null) {
             if (intent.getBooleanExtra(FOREGROUND_EXTRA, false)) {
+                hasConnectedBefore = false;
                 hasCalledStartForeground = false;
 
                 if (!this.isPrimaryTransportConnected()) {    //If there is no transport connected we need to ensure the service is moved to the foreground
@@ -1296,6 +1298,7 @@ public class SdlRouterService extends Service {
                     }
                     boolean confirmedDevice = intent.getBooleanExtra(TransportConstants.CONFIRMED_SDL_DEVICE, false);
                     int timeout = getNotificationTimeout(address, confirmedDevice);
+                    hasConnectedBefore = hasSDLConnected(address);
 
                     enterForeground("Waiting for connection...", timeout, false);
                     resetForegroundTimeOut(timeout);
@@ -1499,7 +1502,7 @@ public class SdlRouterService extends Service {
             builder = new Notification.Builder(this, SDL_NOTIFICATION_CHANNEL_ID);
         }
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        if (hasConnectedBefore && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             builder.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE);
         }
 
@@ -1573,7 +1576,7 @@ public class SdlRouterService extends Service {
     private void safeStartForeground(int id, Notification notification) {
         try {
             if (notification == null) {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                if (hasConnectedBefore && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                     Notification.Builder builder =
                             new Notification.Builder(this, SDL_NOTIFICATION_CHANNEL_ID)
                                 .setContentTitle("SmartDeviceLink")
@@ -3820,7 +3823,7 @@ public class SdlRouterService extends Service {
             builder = new Notification.Builder(getApplicationContext(), TransportConstants.SDL_ERROR_NOTIFICATION_CHANNEL_ID);
         }
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        if (hasConnectedBefore && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             builder.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE);
         }
         ComponentName name = new ComponentName(this, this.getClass());
