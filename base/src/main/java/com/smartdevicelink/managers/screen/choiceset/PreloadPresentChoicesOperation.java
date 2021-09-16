@@ -40,7 +40,6 @@ import androidx.annotation.NonNull;
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
-import com.smartdevicelink.managers.ManagerUtility;
 import static com.smartdevicelink.managers.ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName;
 import static com.smartdevicelink.managers.ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName;
 import com.smartdevicelink.managers.file.FileManager;
@@ -96,7 +95,7 @@ class PreloadPresentChoicesOperation extends Task {
     private boolean choiceError = false;
     private HashSet<ChoiceCell> loadedCells;
     private final ChoiceSet choiceSet;
-    //Start choiceId at 1 to ensure all HMIs handle it https://github.com/smartdevicelink/generic_hmi/commit/b292fbbec095b9ce11b520d47ec95b6fcff8e247
+    // Start choiceId at 1 to ensure all HMIs handle it https://github.com/smartdevicelink/generic_hmi/commit/b292fbbec095b9ce11b520d47ec95b6fcff8e247
     private static Integer choiceId = 1;
     private static Boolean reachedMaxIds = false;
     private static final int MAX_CHOICE_ID = 65535;
@@ -547,12 +546,12 @@ class PreloadPresentChoicesOperation extends Task {
         Collections.sort(usedIds);
         ArrayList<Integer> sortedUsedIds = (ArrayList<Integer>) usedIds.clone();
 
-        //Loop through the cells we need ids for. Get and assign those ids
+        // Loop through the cells we need ids for. Get and assign those ids
         for (int i = 0; i < cells.size(); i++) {
             int cellId = nextChoiceIdBasedOnUsedIds(sortedUsedIds);
             cells.get(i).setChoiceId(cellId);
 
-            //Insert the ids into the usedIds sorted array in the correct position
+            // Insert the ids into the usedIds sorted array in the correct position
             for (int j = 0; j < sortedUsedIds.size(); j++) {
                 if (sortedUsedIds.get(j) > cellId) {
                     sortedUsedIds.add(j, cellId);
@@ -565,11 +564,11 @@ class PreloadPresentChoicesOperation extends Task {
         }
     }
 
-    //Find the next available choice is. Takes into account the loaded cells to ensure there are not duplicates
+    // Find the next available choice is. Takes into account the loaded cells to ensure there are not duplicates
     // @param usedIds The already loaded cell ids
     // @return The choice id between 0 - 65535, or Not Found if no cell ids were available
     private int nextChoiceIdBasedOnUsedIds(ArrayList<Integer> usedIds) {
-        //Check if we are entirely full, or if we've advanced beyond the max value, loop back
+        // Check if we are entirely full, or if we've advanced beyond the max value, loop back
         if (choiceId == MAX_CHOICE_ID) {
             choiceId = 1;
             reachedMaxIds = true;
@@ -584,18 +583,18 @@ class PreloadPresentChoicesOperation extends Task {
                 return choiceId;
             }
 
-            //If the last value isn't the max value, just keep grabbing towards the max value
+            // If the last value isn't the max value, just keep grabbing towards the max value
             int lastUsedId = usedIds.get(usedIds.size() - 1);
             if (lastUsedId < MAX_CHOICE_ID) {
                 choiceId = lastUsedId + 1;
                 return  choiceId;
             }
 
-            //All our easy options are gone. Find and grab an empty slot from within the sorted list
+            // All our easy options are gone. Find and grab an empty slot from within the sorted list
             for (int i = 0; i < usedIds.size(); i++) {
                 int loopId = usedIds.get(i);
                 if (i != loopId) {
-                    //This slot is open because the cell id does not match an open sorted slot
+                    // This slot is open because the cell id does not match an open sorted slot
                     choiceId = i;
                     return choiceId;
                 }
