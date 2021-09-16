@@ -590,16 +590,24 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         }
 
         HashSet<String> uniqueVoiceCommands = new HashSet<>();
+        HashSet<ChoiceCell> uniqueChoiceCells = new HashSet<>();
+
         int allVoiceCommandsCount = 0;
         int choiceCellWithVoiceCommandCount = 0;
 
         for (ChoiceCell cell : choices) {
+            uniqueChoiceCells.add(cell);
             // Not using cloned cell here because we set the clone's VoiceCommands to null for visual check only
             if (cell.getVoiceCommands() != null) {
                 uniqueVoiceCommands.addAll(cell.getVoiceCommands());
                 choiceCellWithVoiceCommandCount += 1;
                 allVoiceCommandsCount += cell.getVoiceCommands().size();
             }
+        }
+
+        if (uniqueChoiceCells.size() != choices.size()) {
+            DebugTool.logError(TAG, "Attempted to create a choice set with a duplicate cell. Cell must have a unique value other than its primary text. The choice set will not be set.");
+            return false;
         }
 
         // All or none of the choices MUST have VR Commands
