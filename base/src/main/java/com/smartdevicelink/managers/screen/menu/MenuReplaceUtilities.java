@@ -55,8 +55,10 @@ import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Bilal Alsharifi on 1/25/21.
@@ -115,13 +117,13 @@ class MenuReplaceUtilities {
         }
     }
 
-    static List<SdlArtwork> findAllArtworksToBeUploadedFromCells(List<MenuCell> cells, FileManager fileManager, WindowCapability windowCapability) {
+    static Set<SdlArtwork> findAllArtworksToBeUploadedFromCells(List<MenuCell> cells, FileManager fileManager, WindowCapability windowCapability) {
         // Make sure we can use images in the menus
         if (!hasImageFieldOfName(windowCapability, ImageFieldName.cmdIcon)) {
-            return new ArrayList<>();
+            return new HashSet<>();
         }
 
-        List<SdlArtwork> artworks = new ArrayList<>();
+        Set<SdlArtwork> artworks = new HashSet<>();
         for (MenuCell cell : cells) {
             if (fileManager != null) {
                 if (fileManager.fileNeedsUpload(cell.getIcon())) {
