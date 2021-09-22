@@ -36,7 +36,6 @@
 package com.smartdevicelink.managers.screen.choiceset;
 
 import com.livio.taskmaster.Task;
-import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
@@ -51,25 +50,37 @@ import java.util.List;
 class DeleteChoicesOperation extends Task {
     private static final String TAG = "DeleteChoicesOperation";
     private final WeakReference<ISdl> internalInterface;
-    private final HashSet<ChoiceCell> cellsToDelete;
-    private final CompletionListener completionListener;
+    private HashSet<ChoiceCell> cellsToDelete;
+    private final BaseChoiceSetManager.ChoicesOperationCompletionListener completionListener;
+    private HashSet<ChoiceCell> loadedCells;
+    private List<DeleteInteractionChoiceSet> deleteChoices;
+    private boolean completionSuccess = false;
 
-    DeleteChoicesOperation(ISdl internalInterface, HashSet<ChoiceCell> cellsToDelete, CompletionListener completionListener) {
+    DeleteChoicesOperation(ISdl internalInterface, HashSet<ChoiceCell> cellsToDelete, HashSet<ChoiceCell> loadedCells, BaseChoiceSetManager.ChoicesOperationCompletionListener completionListener) {
         super("DeleteChoicesOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.cellsToDelete = cellsToDelete;
         this.completionListener = completionListener;
+        this.loadedCells = loadedCells == null ? new HashSet<ChoiceCell>() : new HashSet<>(loadedCells);
     }
 
     @Override
     public void onExecute() {
         DebugTool.logInfo(TAG, "Choice Operation: Executing delete choices operation");
+        updateCellsToDelete();
+        if (this.cellsToDelete == null || this.cellsToDelete.isEmpty()) {
+            if (completionListener != null) {
+                completionListener.onComplete(true, loadedCells);
+                DebugTool.logInfo(TAG, "No cells were provided to delete");
+            }
+            DeleteChoicesOperation.super.onFinished();
+        }
         sendDeletions();
     }
 
     private void sendDeletions() {
 
-        List<DeleteInteractionChoiceSet> deleteChoices = createDeleteSets();
+        deleteChoices = createDeleteSets();
 
         if (deleteChoices.size() > 0) {
 
@@ -82,7 +93,7 @@ class DeleteChoicesOperation extends Task {
                     @Override
                     public void onFinished() {
                         if (completionListener != null) {
-                            completionListener.onComplete(true);
+                            completionListener.onComplete(true, loadedCells);
                         }
                         DebugTool.logInfo(TAG, "Successfully deleted choices");
 
@@ -93,21 +104,68 @@ class DeleteChoicesOperation extends Task {
                     public void onResponse(int correlationId, RPCResponse response) {
                         if (!response.getSuccess()) {
                             if (completionListener != null) {
-                                completionListener.onComplete(false);
+                                completionListener.onComplete(false, loadedCells);
                             }
                             DebugTool.logError(TAG, "Failed to delete choice: " + response.getInfo() + " | Corr ID: " + correlationId);
 
                             DeleteChoicesOperation.super.onFinished();
+                        } else {
+                            if (loadedCells != null) {
+                                loadedCells.remove(loadedCellFromCorrelationId(deleteChoices, correlationId));
+                            }
                         }
                     }
                 });
             }
         } else {
             if (completionListener != null) {
-                completionListener.onComplete(true);
+                completionListener.onComplete(true, this.loadedCells);
             }
             DebugTool.logInfo(TAG, "No Choices to delete, continue");
+            DeleteChoicesOperation.super.onFinished();
         }
+    }
+
+    public void setLoadedCells(HashSet<ChoiceCell> loadedCells) {
+        this.loadedCells = new HashSet<>(loadedCells);
+    }
+
+    private void updateCellsToDelete() {
+        HashSet<ChoiceCell> updatedCellsToDelete = new HashSet<>(this.cellsToDelete);
+        updatedCellsToDelete.retainAll(loadedCells);
+
+        for (ChoiceCell cell : updatedCellsToDelete) {
+            for (ChoiceCell loadedCell : this.loadedCells) {
+                if (loadedCell.equals(cell)) {
+                    cell.setChoiceId(loadedCell.getChoiceId());
+                }
+            }
+        }
+
+        this.cellsToDelete = updatedCellsToDelete;
+    }
+
+    private ChoiceCell loadedCellFromCorrelationId(List<DeleteInteractionChoiceSet> deleteRpcs, int correlationId) {
+
+        Integer choiceId = null;
+
+        for (DeleteInteractionChoiceSet rpc : deleteRpcs) {
+            if (rpc.getCorrelationID() == correlationId) {
+                choiceId = rpc.getInteractionChoiceSetID();
+            }
+        }
+
+        if (choiceId == null) {
+            return null;
+        }
+
+        for (ChoiceCell cell : this.loadedCells) {
+            if (cell.getChoiceId() == choiceId) {
+                return cell;
+            }
+        }
+
+        return null;
     }
 
     List<DeleteInteractionChoiceSet> createDeleteSets() {
