@@ -177,7 +177,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         this.menuCells = cloneMenuCellsList(cells);
 
         boolean isDynamicMenuUpdateActive = isDynamicMenuUpdateActive(dynamicMenuUpdatesMode, displayType);
-        Task operation = new MenuReplaceOperation(internalInterface, fileManager.get(), windowCapability, menuConfiguration, currentMenuCells, menuCells, isDynamicMenuUpdateActive, new MenuManagerCompletionListener() {
+        Task operation = new MenuReplaceOperation(internalInterface, fileManager.get(), windowCapability, currentMenuConfiguration, currentMenuCells, menuCells, isDynamicMenuUpdateActive, new MenuManagerCompletionListener() {
             @Override
             public void onComplete(boolean success, List<MenuCell> currentMenuCells) {
                 BaseMenuManager.this.currentMenuCells = currentMenuCells;
