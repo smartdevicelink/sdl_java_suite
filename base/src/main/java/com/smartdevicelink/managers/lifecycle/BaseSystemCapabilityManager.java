@@ -137,7 +137,7 @@ abstract class BaseSystemCapabilityManager {
         List<String> templatesAvailable = display.getTemplatesAvailable();
         if (templatesAvailable != null) {
             for (int i = 0; i < templatesAvailable.size(); i++) {
-                if (templatesAvailable.get(i).equals("NON_MEDIA")) {
+                if ("NON_MEDIA".equals(templatesAvailable.get(i))) {
                     templatesAvailable.set(i, "NON-MEDIA");
                     break;
                 }
