@@ -38,6 +38,7 @@ import androidx.annotation.NonNull;
 
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
+import com.smartdevicelink.util.DebugTool;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -367,5 +368,23 @@ public class SdlFile {
         if (!(o instanceof SdlFile)) return false;
         // return comparison
         return hashCode() == o.hashCode();
+    }
+
+    /**
+     * Creates a deep copy of the object
+     *
+     * @return deep copy of the object, null if an exception occurred
+     */
+    @Override
+    public SdlFile clone() {
+        try {
+            SdlFile fileClone = (SdlFile) super.clone();
+            return fileClone;
+        } catch (CloneNotSupportedException e) {
+            if (DebugTool.isDebugEnabled()) {
+                throw new RuntimeException("Clone not supported by super class");
+            }
+        }
+        return null;
     }
 }
