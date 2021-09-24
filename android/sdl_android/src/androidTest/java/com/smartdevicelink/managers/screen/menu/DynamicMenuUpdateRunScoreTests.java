@@ -32,41 +32,36 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.smartdevicelink.test.TestValues;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.Arrays;
 import java.util.List;
 
-class RunScore {
+import static com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.MenuCellState.ADD;
+import static com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.MenuCellState.DELETE;
+import static com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.MenuCellState.KEEP;
+import static junit.framework.TestCase.assertEquals;
 
-    private int score;
-    private List<Integer> oldMenu, currentMenu;
+@RunWith(AndroidJUnit4.class)
+public class DynamicMenuUpdateRunScoreTests {
 
-    RunScore(int score, List<Integer> oldMenu, List<Integer> currentMenu) {
-        setScore(score);
-        setOldMenu(oldMenu);
-        setCurrentMenu(currentMenu);
-    }
+    @Test
+    public void testSettersAndGetters() {
 
-    private void setCurrentMenu(List<Integer> currentMenu) {
-        this.currentMenu = currentMenu;
-    }
+        // set everything - we only use the constructor to set variables in the Menu Manager
+        List<DynamicMenuUpdateAlgorithm.MenuCellState> oldStatus = Arrays.asList(KEEP, DELETE);
+        List<DynamicMenuUpdateAlgorithm.MenuCellState> updatedStatus = Arrays.asList(KEEP, ADD);
+        DynamicMenuUpdateRunScore runScore = new DynamicMenuUpdateRunScore(oldStatus, updatedStatus, TestValues.GENERAL_INT);
 
-    List<Integer> getCurrentMenu() {
-        return currentMenu;
-    }
-
-    private void setOldMenu(List<Integer> oldMenu) {
-        this.oldMenu = oldMenu;
-    }
-
-    List<Integer> getOldMenu() {
-        return oldMenu;
-    }
-
-    private void setScore(int score) {
-        this.score = score;
-    }
-
-    public int getScore() {
-        return score;
+        // use getters and assert equality
+        assertEquals(runScore.getScore(), TestValues.GENERAL_INT);
+        assertEquals(runScore.getOldStatus(), oldStatus);
+        assertEquals(runScore.getUpdatedStatus(), updatedStatus);
     }
 
 }

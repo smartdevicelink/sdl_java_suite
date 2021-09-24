@@ -32,28 +32,46 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
+import com.smartdevicelink.managers.screen.menu.DynamicMenuUpdateAlgorithm.MenuCellState;
 
-import com.smartdevicelink.test.TestValues;
+import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+class DynamicMenuUpdateRunScore {
+    private List<MenuCellState> oldStatus; // Will contain all the Deletes and Keeps
+    private List<MenuCellState> updatedStatus; // Will contain all the Adds and Keeps
+    private int score; // Will contain the score, number of total Adds that will need to be created
 
-import static junit.framework.TestCase.assertEquals;
-
-@RunWith(AndroidJUnit4.class)
-public class RunScoreTests {
-
-    @Test
-    public void testSettersAndGetters() {
-
-        // set everything - we only use the constructor to set variables in the Menu Manager
-        RunScore runScore = new RunScore(TestValues.GENERAL_INT, TestValues.GENERAL_INTEGER_LIST, TestValues.GENERAL_INTEGER_LIST);
-
-        // use getters and assert equality
-        assertEquals(runScore.getScore(), TestValues.GENERAL_INT);
-        assertEquals(runScore.getCurrentMenu(), TestValues.GENERAL_INTEGER_LIST);
-        assertEquals(runScore.getOldMenu(), TestValues.GENERAL_INTEGER_LIST);
+    DynamicMenuUpdateRunScore(List<MenuCellState> oldStatus, List<MenuCellState> updatedStatus, int score) {
+        setOldStatus(oldStatus);
+        setUpdatedStatus(updatedStatus);
+        setScore(score);
     }
 
+    private void setUpdatedStatus(List<MenuCellState> updatedStatus) {
+        this.updatedStatus = updatedStatus;
+    }
+
+    List<MenuCellState> getUpdatedStatus() {
+        return updatedStatus;
+    }
+
+    private void setOldStatus(List<MenuCellState> oldStatus) {
+        this.oldStatus = oldStatus;
+    }
+
+    List<MenuCellState> getOldStatus() {
+        return oldStatus;
+    }
+
+    private void setScore(int score) {
+        this.score = score;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    boolean isEmpty() {
+        return oldStatus.size() == 0 && updatedStatus.size() == 0 && score == 0;
+    }
 }
