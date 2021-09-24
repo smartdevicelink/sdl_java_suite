@@ -38,8 +38,10 @@ import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.DeleteFile;
 import com.smartdevicelink.proxy.rpc.DeleteFileResponse;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
+import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
+import java.util.Set;
 
 /**
  * Created by Bilal Alsharifi on 12/1/20.
@@ -49,12 +51,14 @@ class DeleteFileOperation extends Task {
     private final WeakReference<ISdl> internalInterface;
     private String fileName;
     private FileManagerCompletionListener completionListener;
+    private Set<String> mutableRemoteFileNames;
 
-    DeleteFileOperation(ISdl internalInterface, String fileName, FileManagerCompletionListener completionListener) {
+    DeleteFileOperation(ISdl internalInterface, String fileName, Set<String> mutableRemoteFileNames, FileManagerCompletionListener completionListener) {
         super("DeleteFileOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileName = fileName;
         this.completionListener = completionListener;
+        this.mutableRemoteFileNames = mutableRemoteFileNames;
     }
 
     @Override
@@ -64,6 +68,13 @@ class DeleteFileOperation extends Task {
 
     private void start() {
         if (getState() == Task.CANCELED) {
+            return;
+        }
+        if (!mutableRemoteFileNames.contains(fileName) && completionListener != null) {
+            String errorMessage = "File to delete is no longer on the head unit, aborting operation";
+            // Returning BaseFileManager.SPACE_AVAILABLE_MAX_VALUE for bytesAvaialble as a placeHolder, it will not get updated in BaseFileManager as long as success returned is false.
+            completionListener.onComplete(false, BaseFileManager.SPACE_AVAILABLE_MAX_VALUE, mutableRemoteFileNames, errorMessage);
+            onFinished();
             return;
         }
 
@@ -77,12 +88,15 @@ class DeleteFileOperation extends Task {
             public void onResponse(int correlationId, RPCResponse response) {
                 DeleteFileResponse deleteFileResponse = (DeleteFileResponse) response;
                 boolean success = deleteFileResponse.getSuccess();
+                String errorMessage = success ? null : response.getInfo() + ": " + response.getResultCode();
+                if (errorMessage != null) {
+                    DebugTool.logInfo(TAG, "Error deleting file: " + errorMessage);
+                }
 
                 // If spaceAvailable is null, set it to the max value
                 int bytesAvailable = deleteFileResponse.getSpaceAvailable() != null ? deleteFileResponse.getSpaceAvailable() : BaseFileManager.SPACE_AVAILABLE_MAX_VALUE;
 
                 if (completionListener != null) {
-                    String errorMessage = success ? null : response.getInfo() + ": " + response.getResultCode();
                     completionListener.onComplete(success, bytesAvailable, null, errorMessage);
                 }
 

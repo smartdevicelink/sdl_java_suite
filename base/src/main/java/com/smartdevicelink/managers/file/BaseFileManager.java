@@ -70,7 +70,7 @@ abstract class BaseFileManager extends BaseSubManager {
     private HashMap<String, Integer> failedFileUploadsCount;
     private final int maxFileUploadAttempts;
     private final int maxArtworkUploadAttempts;
-    String fileManagerCannotOverwriteError = "Cannot overwrite remote file. The remote file system already has a file of this name, and the file manager is set to not automatically overwrite files.";
+    final String fileManagerCannotOverwriteError = "Cannot overwrite remote file. The remote file system already has a file of this name, and the file manager is set to not automatically overwrite files.";
 
 
     /**
@@ -196,13 +196,7 @@ abstract class BaseFileManager extends BaseSubManager {
     }
 
     private void deleteRemoteFileWithNamePrivate(@NonNull final String fileName, final FileManagerCompletionListener listener) {
-        if (!mutableRemoteFileNames.contains(fileName) && listener != null) {
-            String errorMessage = "No such remote file is currently known";
-            listener.onComplete(false, bytesAvailable, mutableRemoteFileNames, errorMessage);
-            return;
-        }
-
-        DeleteFileOperation operation = new DeleteFileOperation(internalInterface, fileName, new FileManagerCompletionListener() {
+        DeleteFileOperation operation = new DeleteFileOperation(internalInterface, fileName, mutableRemoteFileNames, new FileManagerCompletionListener() {
             @Override
             public void onComplete(boolean success, int bytesAvailable, Collection<String> fileNames, String errorMessage) {
                 if (success) {
