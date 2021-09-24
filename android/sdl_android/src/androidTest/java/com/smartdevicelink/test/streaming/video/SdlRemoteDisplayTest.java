@@ -17,7 +17,6 @@ import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 
 import junit.framework.TestCase;
 
-import org.junit.Ignore;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.FutureTask;
@@ -58,7 +57,6 @@ public class SdlRemoteDisplayTest extends TestCase {
     }
 
 
-    @Ignore
     @TargetApi(19)
     public void testTouchEvents() {
         try {
