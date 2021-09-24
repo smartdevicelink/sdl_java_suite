@@ -17,7 +17,6 @@ import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 
 import junit.framework.TestCase;
 
-
 import java.nio.ByteBuffer;
 import java.util.concurrent.FutureTask;
 
