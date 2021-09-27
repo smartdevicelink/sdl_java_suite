@@ -45,7 +45,7 @@ import java.util.Arrays;
 /**
  * A class representing data to be uploaded to core
  */
-public class SdlFile {
+public class SdlFile implements Cloneable {
     private String fileName;
     private String filePath;
     private URI uri;
