@@ -417,7 +417,7 @@ abstract class BaseFileManager extends BaseSubManager {
                     if (!file.isPersistent()) {
                         BaseFileManager.this.uploadedEphemeralFileNames.add(fileClone.getName());
                     }
-                } else if (!fileManagerCannotOverwriteError.equals(errorMessage)) {
+                } else {
                     incrementFailedUploadCountForFileName(fileClone.getName(), BaseFileManager.this.failedFileUploadsCount);
 
                     int maxUploadCount = fileClone instanceof SdlArtwork ? maxArtworkUploadAttempts : maxFileUploadAttempts;

@@ -876,8 +876,7 @@ public class FileManagerTests {
                         assertOnMainThread(new Runnable() {
                             @Override
                             public void run() {
-                                assertTrue(errors != null);
-                                assertTrue(errors.containsValue(fileManager.fileManagerCannotOverwriteError));
+                                verify(internalInterface, times(1)).sendRPC(any(PutFile.class));
                             }
                         });
                     }

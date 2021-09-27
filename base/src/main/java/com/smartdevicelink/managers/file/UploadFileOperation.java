@@ -96,7 +96,7 @@ class UploadFileOperation extends Task {
             if (!file.getOverwrite() && fileManager.get().mutableRemoteFileNames.contains(file.getName())) {
                 DebugTool.logWarning(TAG, fileManager.get().fileManagerCannotOverwriteError);
                 if (this.fileWrapper.getCompletionListener() != null) {
-                    this.fileWrapper.getCompletionListener().onComplete(false, bytesAvailable, null, fileManager.get().fileManagerCannotOverwriteError);
+                    this.fileWrapper.getCompletionListener().onComplete(true, bytesAvailable, null, fileManager.get().fileManagerCannotOverwriteError);
                 }
                 onFinished();
                 return;
