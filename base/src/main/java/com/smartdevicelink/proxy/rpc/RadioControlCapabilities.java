@@ -79,7 +79,7 @@ public class RadioControlCapabilities extends RPCStruct {
     /**
      * Sets the moduleName portion of the RadioControlCapabilities class
      *
-     * @param moduleName The short friendly name of the climate control module.
+     * @param moduleName The short friendly name of the radio control module.
      *                   It should not be used to identify a module by mobile application.
      */
     public RadioControlCapabilities setModuleName(@NonNull String moduleName) {
