@@ -264,7 +264,12 @@ class BaseSdlPacket {
         this.priorityCoefficient = priority;
     }
 
+    @Deprecated
     public int getPrioirtyCoefficient() {
+        return this.priorityCoefficient;
+    }
+
+    public int getPriorityCoefficient() {
         return this.priorityCoefficient;
     }
 

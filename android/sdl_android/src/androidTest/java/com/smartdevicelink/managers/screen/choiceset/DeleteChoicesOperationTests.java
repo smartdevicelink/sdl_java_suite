@@ -66,7 +66,7 @@ public class DeleteChoicesOperationTests {
         cellsToDelete.add(cell2);
 
         ISdl internalInterface = mock(ISdl.class);
-        deleteChoicesOperation = new DeleteChoicesOperation(internalInterface, cellsToDelete, null);
+        deleteChoicesOperation = new DeleteChoicesOperation(internalInterface, cellsToDelete, null, null);
     }
 
 

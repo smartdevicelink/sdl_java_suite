@@ -572,11 +572,7 @@ public class SdlProtocolBase {
             if (sessionType.eq(SessionType.CONTROL)) {
                 final byte[] secureData = protocolMsg.getData().clone();
                 data = new byte[headerSize + secureData.length];
-
-                final BinaryFrameHeader binFrameHeader =
-                        SdlPacketFactory.createBinaryFrameHeader(protocolMsg.getRPCType(), protocolMsg.getFunctionID(), protocolMsg.getCorrID(), 0);
-                System.arraycopy(binFrameHeader.assembleHeaderBytes(), 0, data, 0, headerSize);
-                System.arraycopy(secureData, 0, data, headerSize, secureData.length);
+                System.arraycopy(secureData, 0, data, 0, secureData.length);
             } else if (protocolMsg.getBulkData() != null) {
                 data = new byte[12 + protocolMsg.getJsonSize() + protocolMsg.getBulkData().length];
                 sessionType = SessionType.BULK_DATA;
