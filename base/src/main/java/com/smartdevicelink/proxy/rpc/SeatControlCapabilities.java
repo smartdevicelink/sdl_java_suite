@@ -75,7 +75,7 @@ public class SeatControlCapabilities extends RPCStruct {
     /**
      * Constructs a newly allocated SeatControlCapabilities object
      *
-     * @param moduleName short friendly name of the light control module.
+     * @param moduleName short friendly name of the seat control module.
      */
     public SeatControlCapabilities(@NonNull String moduleName) {
         this();
@@ -94,7 +94,7 @@ public class SeatControlCapabilities extends RPCStruct {
     /**
      * Sets the moduleName portion of the SeatControlCapabilities class
      *
-     * @param moduleName -  The short friendly name of the light control module. It should not be used to identify a module by mobile application.
+     * @param moduleName -  The short friendly name of the seat control module. It should not be used to identify a module by mobile application.
      */
     public SeatControlCapabilities setModuleName(@NonNull String moduleName) {
         setValue(KEY_MODULE_NAME, moduleName);
