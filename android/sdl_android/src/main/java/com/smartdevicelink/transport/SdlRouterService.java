@@ -3319,7 +3319,7 @@ public class SdlRouterService extends Service {
                         try {
                             List<TransportType> transportTypes = (List<TransportType>) obj;
                             if (transportTypes != null) {
-                                if (transportTypes.get(0) != null) {
+                                if (transportTypes.size() > 0 && transportTypes.get(0) != null) {
                                     return transportTypes.get(0);
                                 }
                             }
