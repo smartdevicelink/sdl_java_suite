@@ -275,6 +275,7 @@ public class TextAndGraphicManagerTests {
 
     @Test
     public void testOperationManagement() {
+        textAndGraphicManager.transactionQueue.pause();
         textAndGraphicManager.isDirty = true;
         textAndGraphicManager.updateOperation = null;
         textAndGraphicManager.update(null);

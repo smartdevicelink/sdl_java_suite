@@ -44,6 +44,7 @@ import com.smartdevicelink.proxy.rpc.PutFile;
 import com.smartdevicelink.proxy.rpc.PutFileResponse;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.Version;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -79,6 +80,27 @@ class UploadFileOperation extends Task {
     private void start() {
         if (getState() == Task.CANCELED) {
             return;
+        }
+
+        SdlFile file = fileWrapper.getFile();
+        // HAX: [#827](https://github.com/smartdevicelink/sdl_ios/issues/827) Older versions of Core
+        // had a bug where list files would cache incorrectly. This led to attempted uploads failing
+        // due to the system thinking they were already there when they were not. This is only needed
+        // if connecting to Core v4.3.1 or less which corresponds to RPC v4.3.1 or less
+        if (internalInterface.get() != null && fileManager.get() != null) {
+            Version rpcVersion = new Version(internalInterface.get().getSdlMsgVersion());
+            if (!file.isPersistent() && !fileManager.get().hasUploadedFile(file) && new Version(4, 4, 0).isNewerThan(rpcVersion) == 1) {
+                file.setOverwrite(true);
+            }
+            // Check our overwrite settings and error out if it would overwrite
+            if (!file.getOverwrite() && fileManager.get().mutableRemoteFileNames.contains(file.getName())) {
+                DebugTool.logWarning(TAG, fileManager.get().fileManagerCannotOverwriteError);
+                if (this.fileWrapper.getCompletionListener() != null) {
+                    this.fileWrapper.getCompletionListener().onComplete(true, bytesAvailable, null, fileManager.get().fileManagerCannotOverwriteError);
+                }
+                onFinished();
+                return;
+            }
         }
 
         int mtuSize = 0;
