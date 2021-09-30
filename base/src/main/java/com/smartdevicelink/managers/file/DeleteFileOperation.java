@@ -70,10 +70,12 @@ class DeleteFileOperation extends Task {
         if (getState() == Task.CANCELED) {
             return;
         }
-        if (!mutableRemoteFileNames.contains(fileName) && completionListener != null) {
-            String errorMessage = "File to delete is no longer on the head unit, aborting operation";
-            // Returning BaseFileManager.SPACE_AVAILABLE_MAX_VALUE for bytesAvaialble as a placeHolder, it will not get updated in BaseFileManager as long as success returned is false.
-            completionListener.onComplete(false, BaseFileManager.SPACE_AVAILABLE_MAX_VALUE, mutableRemoteFileNames, errorMessage);
+        if (!mutableRemoteFileNames.contains(fileName)) {
+            if (completionListener != null) {
+                String errorMessage = "File to delete is no longer on the head unit, aborting operation";
+                // Returning BaseFileManager.SPACE_AVAILABLE_MAX_VALUE for bytesAvaialble as a placeHolder, it will not get updated in BaseFileManager as long as success returned is false.
+                completionListener.onComplete(false, BaseFileManager.SPACE_AVAILABLE_MAX_VALUE, mutableRemoteFileNames, errorMessage);
+            }
             onFinished();
             return;
         }
