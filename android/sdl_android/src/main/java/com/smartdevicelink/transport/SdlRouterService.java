@@ -1521,7 +1521,8 @@ public class SdlRouterService extends Service {
 
         // Create an intent that will be fired when the user clicks the notification.
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(SDL_NOTIFICATION_FAQS_PAGE));
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        int flag = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)? PendingIntent.FLAG_IMMUTABLE : 0;
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, flag);
         builder.setContentIntent(pendingIntent);
 
         if (chronometerLength > (FOREGROUND_TIMEOUT / 1000) && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
