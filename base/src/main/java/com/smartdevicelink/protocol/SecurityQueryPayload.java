@@ -84,7 +84,20 @@ public class SecurityQueryPayload {
         return msg;
     }
 
-    public byte[] assembleHeaderBytes() {
+    public byte[] assembleSecurityQueryPayload(int payloadSize) {
+        byte[] payLoad = new byte[SECURITY_QUERY_HEADER_SIZE + payloadSize];
+        System.arraycopy(assembleHeaderBytes(), 0, payLoad, 0, SECURITY_QUERY_HEADER_SIZE);
+
+        if (_securityQueryID == SecurityQueryID.SEND_INTERNAL_ERROR && _securityQueryType == SecurityQueryType.NOTIFICATION) {
+            System.arraycopy(_jsonData, 0, payLoad, SECURITY_QUERY_HEADER_SIZE, _jsonSize);
+        } else if (_securityQueryID == SecurityQueryID.SEND_HANDSHAKE_DATA && _securityQueryType == SecurityQueryType.RESPONSE) {
+            System.arraycopy(_bulkData, 0, payLoad, SECURITY_QUERY_HEADER_SIZE, payloadSize);
+        }
+
+        return payLoad;
+    }
+
+    private byte[] assembleHeaderBytes() {
         // From the properties, create a data buffer
         // Query Type - first 8 bits
         // Query ID - next 24 bits
@@ -126,7 +139,7 @@ public class SecurityQueryPayload {
         return _jsonSize;
     }
 
-    public void setJsonSize(int _jsonSize) {
+    private void setJsonSize(int _jsonSize) {
         this._jsonSize = _jsonSize;
     }
 
@@ -143,6 +156,12 @@ public class SecurityQueryPayload {
     }
 
     public void setJsonData(byte[] _jsonData) {
+        if (_jsonData == null) {
+            this._jsonSize = 0;
+            this._jsonData = null;
+            return;
+        }
+        this._jsonSize = _jsonData.length;
         this._jsonData = new byte[this._jsonSize];
         System.arraycopy(_jsonData, 0, this._jsonData, 0, _jsonSize);
     }

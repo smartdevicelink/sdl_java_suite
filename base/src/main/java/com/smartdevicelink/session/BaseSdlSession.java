@@ -44,6 +44,7 @@ import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlProtocolBase;
 import com.smartdevicelink.protocol.enums.ControlFrameTags;
+import com.smartdevicelink.protocol.enums.SecurityQueryErrorCode;
 import com.smartdevicelink.protocol.enums.SecurityQueryID;
 import com.smartdevicelink.protocol.enums.SecurityQueryType;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -60,6 +61,9 @@ import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.SystemInfo;
 import com.smartdevicelink.util.Version;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -240,23 +244,36 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
         // Assemble a security query payload header for our response
         SecurityQueryPayload responseHeader = new SecurityQueryPayload();
 
+        byte[] returnBytes;
         if (iNumBytes == null || iNumBytes <= 0) {
             DebugTool.logError(TAG, "Internal Error processing control service");
 
             responseHeader.setQueryID(SecurityQueryID.SEND_INTERNAL_ERROR);
             responseHeader.setQueryType(SecurityQueryType.NOTIFICATION);
             responseHeader.setCorrelationID(msg.getCorrID());
-            responseHeader.setJsonSize(0);
+            byte[] jsonData;
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("id", 254);
+                jsonObject.put("text", "Error value for testing");
+                jsonData = jsonObject.toString().getBytes();
+            } catch (JSONException e) {
+                DebugTool.logError(TAG, "JSON exception when constructing handshake error Notification");
+                e.printStackTrace();
+                jsonData = new byte[0];
+            }
+            responseHeader.setJsonData(jsonData);
+            responseHeader.setBulkData(null);
+            responseHeader.setErrorCode(SecurityQueryErrorCode.ERROR_UNKNOWN_INTERNAL_ERROR);
+            returnBytes = responseHeader.assembleSecurityQueryPayload(responseHeader.getJsonSize());
         } else {
             responseHeader.setQueryID(SecurityQueryID.SEND_HANDSHAKE_DATA);
             responseHeader.setQueryType(SecurityQueryType.RESPONSE);
             responseHeader.setCorrelationID(msg.getCorrID());
-            responseHeader.setJsonSize(0);
+            responseHeader.setBulkData(dataToRead);
+            responseHeader.setJsonData(null);
+            returnBytes = responseHeader.assembleSecurityQueryPayload(iNumBytes);
         }
-
-        byte[] returnBytes = new byte[iNumBytes + 12];
-        System.arraycopy(responseHeader.assembleHeaderBytes(), 0, returnBytes, 0, 12);
-        System.arraycopy(dataToRead, 0, returnBytes, 12, iNumBytes);
 
         ProtocolMessage protocolMessage = new ProtocolMessage();
         protocolMessage.setSessionType(SessionType.CONTROL);
