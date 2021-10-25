@@ -52,6 +52,7 @@ import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
+import com.smartdevicelink.util.Version;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -141,15 +142,37 @@ class MenuReplaceUtilities {
         return artworks;
     }
 
-    // If there is an icon and the icon has been uploaded, or if the icon is a static icon, it should include the image
-    static boolean shouldCellIncludePrimaryImageFromCell(MenuCell cell, FileManager fileManager, WindowCapability windowCapability) {
-        boolean supportsImage = cell.isSubMenuCell() ? hasImageFieldOfName(windowCapability, ImageFieldName.subMenuIcon) : hasImageFieldOfName(windowCapability, ImageFieldName.cmdIcon);
+    static boolean windowCapabilitySupportsPrimaryImage(ISdl internalInterface, WindowCapability windowCapability, MenuCell cell) {
+        boolean supportsImage;
+        if (cell.isSubMenuCell() && internalInterface != null && internalInterface.getSdlMsgVersion() != null) {
+            Version headUnitRPCVersion = new Version(internalInterface.getSdlMsgVersion());
+            Version minRPCVersion = new Version(5, 0, 0);
+            Version maxRPCVersion = new Version(7, 1, 0);
+            // If RPC version is >= 5.0 && < 7.1
+            if (headUnitRPCVersion.isNewerThan(minRPCVersion) == 0 || headUnitRPCVersion.isBetween(minRPCVersion, maxRPCVersion) == 1) {
+                supportsImage = true;
+            } else {
+                supportsImage = hasImageFieldOfName(windowCapability, ImageFieldName.subMenuIcon);
+            }
+        } else {
+            supportsImage = hasImageFieldOfName(windowCapability, ImageFieldName.cmdIcon);
+        }
+        return supportsImage;
+    }
+
+    static boolean windowCapabilitySupportsSecondaryImage(WindowCapability windowCapability, MenuCell cell) {
+        return cell.isSubMenuCell() ? hasImageFieldOfName(windowCapability, ImageFieldName.menuSubMenuSecondaryImage) : hasImageFieldOfName(windowCapability, ImageFieldName.menuCommandSecondaryImage);
+    }
+
+        // If there is an icon and the icon has been uploaded, or if the icon is a static icon, it should include the image
+    static boolean shouldCellIncludePrimaryImageFromCell(ISdl internalInterface, MenuCell cell, FileManager fileManager, WindowCapability windowCapability) {
+        boolean supportsImage = windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, cell);
         return cell.getIcon() != null && supportsImage && (fileManager.hasUploadedFile(cell.getIcon()) || cell.getIcon().isStaticIcon());
     }
 
     // If there is an icon and the icon has been uploaded, or if the icon is a static icon, it should include the image
     static boolean shouldCellIncludeSecondaryImageFromCell(MenuCell cell, FileManager fileManager, WindowCapability windowCapability) {
-        boolean supportsImage = cell.isSubMenuCell() ? hasImageFieldOfName(windowCapability, ImageFieldName.menuSubMenuSecondaryImage) : hasImageFieldOfName(windowCapability, ImageFieldName.menuCommandSecondaryImage);
+        boolean supportsImage = windowCapabilitySupportsSecondaryImage(windowCapability, cell);
         return cell.getSecondaryArtwork() != null && supportsImage && (fileManager.hasUploadedFile(cell.getSecondaryArtwork()) || cell.getSecondaryArtwork().isStaticIcon());
     }
 
@@ -191,7 +214,7 @@ class MenuReplaceUtilities {
         return deletes;
     }
 
-    static List<RPCRequest> mainMenuCommandsForCells(List<MenuCell> cells, FileManager fileManager, List<MenuCell> menu, WindowCapability windowCapability, MenuLayout defaultSubmenuLayout) {
+    static List<RPCRequest> mainMenuCommandsForCells(ISdl internalInterface, List<MenuCell> cells, FileManager fileManager, List<MenuCell> menu, WindowCapability windowCapability, MenuLayout defaultSubmenuLayout) {
         List<RPCRequest> commands = new ArrayList<>();
 
         // We need the index to use it as position so we will use this type of loop
@@ -201,9 +224,9 @@ class MenuReplaceUtilities {
                 MenuCell addCell = cells.get(updateCellsIndex);
                 if (mainCell.equals(addCell)) {
                     if (addCell.isSubMenuCell()) {
-                        commands.add(subMenuCommandForMenuCell(addCell, fileManager, windowCapability, menuInteger, defaultSubmenuLayout));
+                        commands.add(subMenuCommandForMenuCell(internalInterface, addCell, fileManager, windowCapability, menuInteger, defaultSubmenuLayout));
                     } else {
-                        commands.add(commandForMenuCell(addCell, fileManager, windowCapability, menuInteger));
+                        commands.add(commandForMenuCell(internalInterface, addCell, fileManager, windowCapability, menuInteger));
                     }
                     break;
                 }
@@ -212,36 +235,36 @@ class MenuReplaceUtilities {
         return commands;
     }
 
-    static List<RPCRequest> subMenuCommandsForCells(List<MenuCell> cells, FileManager fileManager, WindowCapability windowCapability, MenuLayout defaultSubmenuLayout) {
+    static List<RPCRequest> subMenuCommandsForCells(ISdl internalInterface, List<MenuCell> cells, FileManager fileManager, WindowCapability windowCapability, MenuLayout defaultSubmenuLayout) {
         List<RPCRequest> commands = new ArrayList<>();
         for (MenuCell cell : cells) {
             if (cell.isSubMenuCell() && !cell.getSubCells().isEmpty()) {
-                commands.addAll(allCommandsForCells(cell.getSubCells(), fileManager, windowCapability, defaultSubmenuLayout));
+                commands.addAll(allCommandsForCells(internalInterface, cell.getSubCells(), fileManager, windowCapability, defaultSubmenuLayout));
             }
         }
         return commands;
     }
 
-    static List<RPCRequest> allCommandsForCells(List<MenuCell> cells, FileManager fileManager, WindowCapability windowCapability, MenuLayout defaultSubmenuLayout) {
+    static List<RPCRequest> allCommandsForCells(ISdl internalInterface, List<MenuCell> cells, FileManager fileManager, WindowCapability windowCapability, MenuLayout defaultSubmenuLayout) {
         List<RPCRequest> commands = new ArrayList<>();
 
         for (int cellIndex = 0; cellIndex < cells.size(); cellIndex++) {
             MenuCell cell = cells.get(cellIndex);
             if (cell.isSubMenuCell()) {
-                commands.add(subMenuCommandForMenuCell(cell, fileManager, windowCapability, cellIndex, defaultSubmenuLayout));
+                commands.add(subMenuCommandForMenuCell(internalInterface, cell, fileManager, windowCapability, cellIndex, defaultSubmenuLayout));
 
                 // Recursively grab the commands for all the sub cells
                 if (!cell.getSubCells().isEmpty()) {
-                    commands.addAll(allCommandsForCells(cell.getSubCells(), fileManager, windowCapability, defaultSubmenuLayout));
+                    commands.addAll(allCommandsForCells(internalInterface, cell.getSubCells(), fileManager, windowCapability, defaultSubmenuLayout));
                 }
             } else {
-                commands.add(commandForMenuCell(cell, fileManager, windowCapability, cellIndex));
+                commands.add(commandForMenuCell(internalInterface, cell, fileManager, windowCapability, cellIndex));
             }
         }
         return commands;
     }
 
-    static AddCommand commandForMenuCell(MenuCell cell, FileManager fileManager, WindowCapability windowCapability, int position) {
+    static AddCommand commandForMenuCell(ISdl internalInterface, MenuCell cell, FileManager fileManager, WindowCapability windowCapability, int position) {
         AddCommand command = new AddCommand(cell.getCellId());
 
         MenuParams params = new MenuParams(cell.getUniqueTitle());
@@ -256,7 +279,7 @@ class MenuReplaceUtilities {
         } else {
             command.setVrCommands(null);
         }
-        boolean shouldCellIncludePrimaryImage = cell.getIcon() != null && shouldCellIncludePrimaryImageFromCell(cell, fileManager, windowCapability);
+        boolean shouldCellIncludePrimaryImage = cell.getIcon() != null && shouldCellIncludePrimaryImageFromCell(internalInterface, cell, fileManager, windowCapability);
         command.setCmdIcon(shouldCellIncludePrimaryImage ? cell.getIcon().getImageRPC() : null);
 
         boolean shouldCellIncludeSecondaryImage = cell.getSecondaryArtwork() != null && shouldCellIncludeSecondaryImageFromCell(cell, fileManager, windowCapability);
@@ -265,8 +288,8 @@ class MenuReplaceUtilities {
         return command;
     }
 
-    static AddSubMenu subMenuCommandForMenuCell(MenuCell cell, FileManager fileManager, WindowCapability windowCapability, int position, MenuLayout defaultSubmenuLayout) {
-        boolean shouldCellIncludePrimaryImage = cell.getIcon() != null && cell.getIcon().getImageRPC() != null && shouldCellIncludePrimaryImageFromCell(cell, fileManager, windowCapability);
+    static AddSubMenu subMenuCommandForMenuCell(ISdl internalInterface, MenuCell cell, FileManager fileManager, WindowCapability windowCapability, int position, MenuLayout defaultSubmenuLayout) {
+        boolean shouldCellIncludePrimaryImage = cell.getIcon() != null && cell.getIcon().getImageRPC() != null && shouldCellIncludePrimaryImageFromCell(internalInterface, cell, fileManager, windowCapability);
         Image icon = (shouldCellIncludePrimaryImage ? cell.getIcon().getImageRPC() : null);
         boolean shouldCellIncludeSecondaryImage = cell.getSecondaryArtwork() != null && cell.getSecondaryArtwork().getImageRPC() != null && shouldCellIncludeSecondaryImageFromCell(cell, fileManager, windowCapability);
         Image secondaryIcon = (shouldCellIncludeSecondaryImage ? cell.getSecondaryArtwork().getImageRPC() : null);
