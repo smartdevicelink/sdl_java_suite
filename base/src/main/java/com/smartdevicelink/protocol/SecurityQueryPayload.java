@@ -85,14 +85,23 @@ public class SecurityQueryPayload {
     }
 
     public byte[] assembleSecurityQueryPayload(int payloadSize) {
-        byte[] payLoad = new byte[SECURITY_QUERY_HEADER_SIZE + payloadSize];
-        System.arraycopy(assembleHeaderBytes(), 0, payLoad, 0, SECURITY_QUERY_HEADER_SIZE);
-
+        byte[] payLoad = new byte[SECURITY_QUERY_HEADER_SIZE];
         if (_securityQueryID == SecurityQueryID.SEND_INTERNAL_ERROR && _securityQueryType == SecurityQueryType.NOTIFICATION) {
+            payLoad = new byte[SECURITY_QUERY_HEADER_SIZE + payloadSize + 1];
             System.arraycopy(_jsonData, 0, payLoad, SECURITY_QUERY_HEADER_SIZE, _jsonSize);
+            byte[] errorCode = new byte[1];
+            if (this._errorCode != null) {
+                errorCode[0] = _errorCode.getValue();
+            } else {
+                errorCode[0] = SecurityQueryErrorCode.ERROR_UNKNOWN_INTERNAL_ERROR.getValue();
+            }
+            System.arraycopy(errorCode, 0, payLoad, payLoad.length - 1, 1);
         } else if (_securityQueryID == SecurityQueryID.SEND_HANDSHAKE_DATA && _securityQueryType == SecurityQueryType.RESPONSE) {
+            payLoad = new byte[SECURITY_QUERY_HEADER_SIZE + payloadSize];
             System.arraycopy(_bulkData, 0, payLoad, SECURITY_QUERY_HEADER_SIZE, payloadSize);
         }
+
+        System.arraycopy(assembleHeaderBytes(), 0, payLoad, 0, SECURITY_QUERY_HEADER_SIZE);
 
         return payLoad;
     }

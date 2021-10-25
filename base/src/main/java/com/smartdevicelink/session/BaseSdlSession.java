@@ -239,7 +239,7 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
             return;
         }
 
-        iNumBytes = sdlSecurity.runHandshake(data, dataToRead);
+        iNumBytes = null;
 
         // Assemble a security query payload header for our response
         SecurityQueryPayload responseHeader = new SecurityQueryPayload();
