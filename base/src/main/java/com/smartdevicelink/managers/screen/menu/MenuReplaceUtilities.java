@@ -118,7 +118,7 @@ class MenuReplaceUtilities {
         }
     }
 
-    static Set<SdlArtwork> findAllArtworksToBeUploadedFromCells(List<MenuCell> cells, FileManager fileManager, WindowCapability windowCapability) {
+    static Set<SdlArtwork> findAllArtworksToBeUploadedFromCells(ISdl internalInterface, List<MenuCell> cells, FileManager fileManager, WindowCapability windowCapability) {
         // Make sure we can use images in the menus
         if (!hasImageFieldOfName(windowCapability, ImageFieldName.cmdIcon)) {
             return new HashSet<>();
@@ -127,15 +127,15 @@ class MenuReplaceUtilities {
         Set<SdlArtwork> artworks = new HashSet<>();
         for (MenuCell cell : cells) {
             if (fileManager != null) {
-                if (fileManager.fileNeedsUpload(cell.getIcon())) {
+                if (windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, cell) && fileManager.fileNeedsUpload(cell.getIcon())) {
                     artworks.add(cell.getIcon());
                 }
-                if (hasImageFieldOfName(windowCapability, ImageFieldName.menuCommandSecondaryImage) && fileManager.fileNeedsUpload(cell.getSecondaryArtwork())) {
+                if (windowCapabilitySupportsSecondaryImage(windowCapability, cell) && fileManager.fileNeedsUpload(cell.getSecondaryArtwork())) {
                     artworks.add(cell.getSecondaryArtwork());
                 }
             }
             if (cell.isSubMenuCell() && !cell.getSubCells().isEmpty()) {
-                artworks.addAll(findAllArtworksToBeUploadedFromCells(cell.getSubCells(), fileManager, windowCapability));
+                artworks.addAll(findAllArtworksToBeUploadedFromCells(internalInterface, cell.getSubCells(), fileManager, windowCapability));
             }
         }
 

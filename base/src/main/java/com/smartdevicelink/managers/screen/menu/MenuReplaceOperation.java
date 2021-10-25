@@ -198,7 +198,7 @@ class MenuReplaceOperation extends Task {
     }
 
     private void uploadMenuArtworks(final CompletionListener listener) {
-        List<SdlArtwork> artworksToBeUploaded = new ArrayList<>(findAllArtworksToBeUploadedFromCells(updatedMenu, fileManager.get(), windowCapability));
+        List<SdlArtwork> artworksToBeUploaded = new ArrayList<>(findAllArtworksToBeUploadedFromCells(internalInterface.get(), updatedMenu, fileManager.get(), windowCapability));
         if (artworksToBeUploaded.isEmpty()) {
             listener.onComplete(true);
             return;
