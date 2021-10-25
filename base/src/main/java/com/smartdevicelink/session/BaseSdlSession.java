@@ -254,8 +254,8 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
             byte[] jsonData;
             JSONObject jsonObject = new JSONObject();
             try {
-                jsonObject.put("id", 254);
-                jsonObject.put("text", "Error value for testing");
+                jsonObject.put("id", SecurityQueryErrorCode.ERROR_UNKNOWN_INTERNAL_ERROR.getValue());
+                jsonObject.put("text", SecurityQueryErrorCode.ERROR_UNKNOWN_INTERNAL_ERROR.getName());
                 jsonData = jsonObject.toString().getBytes();
             } catch (JSONException e) {
                 DebugTool.logError(TAG, "JSON exception when constructing handshake error Notification");
