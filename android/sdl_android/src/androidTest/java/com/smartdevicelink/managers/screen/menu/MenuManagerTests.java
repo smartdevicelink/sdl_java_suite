@@ -261,12 +261,15 @@ public class MenuManagerTests {
 
     @Test
     public void testUpdatingOldWay() {
+        ISdl internalInterface = mock(ISdl.class);
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(8, 0, 0)));
+
         // Force Menu Manager to use the old way of deleting / sending all
         menuManager.setDynamicUpdatesMode(DynamicMenuUpdatesMode.FORCE_OFF);
         assertEquals(menuManager.dynamicMenuUpdatesMode, DynamicMenuUpdatesMode.FORCE_OFF);
         // when we only send one command to update, we should only be returned one add command
         List<MenuCell> newArray = Arrays.asList(mainCell1, mainCell4);
-        assertEquals(MenuReplaceUtilities.allCommandsForCells(newArray, menuManager.fileManager.get(), menuManager.windowCapability, MenuLayout.LIST).size(), 4); // 1 root cells, 1 sub menu root cell, 2 sub menu cells
+        assertEquals(MenuReplaceUtilities.allCommandsForCells(internalInterface, newArray, menuManager.fileManager.get(), menuManager.windowCapability, MenuLayout.LIST).size(), 4); // 1 root cells, 1 sub menu root cell, 2 sub menu cells
         menuManager.currentHMILevel = HMILevel.HMI_FULL;
         menuManager.setMenuCells(newArray);
 
