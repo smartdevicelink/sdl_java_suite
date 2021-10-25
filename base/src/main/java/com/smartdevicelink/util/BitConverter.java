@@ -163,7 +163,7 @@ public class BitConverter {
      * Converts the byte array into a string of hex values.
      *
      * @param bytes byte array that will be converted to hex
-     * @param end   EXCLUSIVE so if it it receives 10 it will print 0-9
+     * @param end   EXCLUSIVE so if it receives 10 it will print 0-9
      * @return the String containing converted hex values or null if byte array is null
      */
     public static String bytesToHex(byte[] bytes, int end) {

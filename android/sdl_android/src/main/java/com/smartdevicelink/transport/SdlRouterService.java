@@ -2454,7 +2454,7 @@ public class SdlRouterService extends Service {
     /**
      * Set the connection establishment status of the particular device
      *
-     * @param address         address of the device in quesiton
+     * @param address         address of the device in question
      * @param hasSDLConnected true if a connection has been established, false if not
      */
     protected void setSDLConnectedStatus(String address, boolean hasSDLConnected) {
