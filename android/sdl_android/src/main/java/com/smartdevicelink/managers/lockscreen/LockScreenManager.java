@@ -38,6 +38,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Handler;
+import android.os.Looper;
 
 import androidx.annotation.RestrictTo;
 
@@ -227,7 +228,7 @@ public class LockScreenManager extends BaseSubManager {
                                         mLockScreenShouldBeAutoDismissed = false;
                                     }
                                     if (!receivedFirstDDNotification) {
-                                        new Handler().postDelayed(new Runnable() {
+                                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                                             @Override
                                             public void run() {
                                                 launchLockScreenActivity();

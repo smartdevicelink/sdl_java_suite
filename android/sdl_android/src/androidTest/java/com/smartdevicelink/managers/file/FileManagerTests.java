@@ -851,6 +851,42 @@ public class FileManagerTests {
     }
 
     /**
+     * Tests to make sure files are not being uploaded to head unit multiple times in a row
+     */
+    @Test
+    public void testFileNotOnHmi() {
+        final ISdl internalInterface = createISdlMock();
+
+        doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
+        doAnswer(onPutFileSuccess).when(internalInterface).sendRPC(any(PutFile.class));
+
+        final SdlArtwork validFile2 = new SdlArtwork(TestValues.GENERAL_STRING + "2", FileType.GRAPHIC_JPEG, TestValues.GENERAL_STRING.getBytes(), false);
+
+        final List<SdlArtwork> list = Arrays.asList(validFile2, validFile2);
+
+        FileManagerConfig fileManagerConfig = new FileManagerConfig();
+
+        final FileManager fileManager = new FileManager(internalInterface, mTestContext, fileManagerConfig);
+        fileManager.start(new CompletionListener() {
+            @Override
+            public void onComplete(boolean success) {
+                fileManager.uploadArtworks(list, new MultipleFileCompletionListener() {
+                    @Override
+                    public void onComplete(final Map<String, String> errors) {
+                        assertOnMainThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                verify(internalInterface, times(1)).sendRPC(any(PutFile.class));
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+
+    /**
      * Test custom overridden SdlFile equals method
      */
     @Test

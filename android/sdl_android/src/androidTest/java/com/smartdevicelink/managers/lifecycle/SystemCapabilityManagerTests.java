@@ -32,6 +32,7 @@ import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.SystemCapability;
+import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
@@ -52,6 +53,7 @@ import com.smartdevicelink.proxy.rpc.enums.ServiceUpdateReason;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
+import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.enums.WindowType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
@@ -687,6 +689,35 @@ public class SystemCapabilityManagerTests {
         // When the last DISPLAYS listener is removed, GetSystemCapability request should not go out
         scm.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onSystemCapabilityListener1);
         verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+    }
+
+    /**
+     * Test to verify that we can get null for templatesAvailable without hitting an NPE and
+     * test media field conversion for NON_MEDIA to NON-MEDIA for Sync bug.
+     */
+    @Test
+    public void testMediaFieldConversion() {
+        SystemCapabilityManager systemCapabilityManager = new SystemCapabilityManager(new InternalSDLInterface());
+
+        RegisterAppInterfaceResponse raiResponse = new RegisterAppInterfaceResponse();
+        DisplayCapabilities displayCapabilities = new DisplayCapabilities();
+        displayCapabilities.setGraphicSupported(false);
+        TextField textField = new TextField();
+        textField.setName(TextFieldName.mainField1);
+        displayCapabilities.setTextFields(Collections.singletonList(textField));
+        raiResponse.setDisplayCapabilities(displayCapabilities);
+        raiResponse.setSuccess(true);
+        systemCapabilityManager.parseRAIResponse(raiResponse);
+
+        WindowCapability windowCapability = systemCapabilityManager.getDefaultMainWindowCapability();
+        assertNull(windowCapability.getTemplatesAvailable());
+
+        List<String> templates = new ArrayList<>();
+        templates.add("NON_MEDIA");
+        displayCapabilities.setTemplatesAvailable(templates);
+        systemCapabilityManager.parseRAIResponse(raiResponse);
+        windowCapability = systemCapabilityManager.getDefaultMainWindowCapability();
+        assertTrue(windowCapability.getTemplatesAvailable().contains("NON-MEDIA"));
     }
 
     @Test
