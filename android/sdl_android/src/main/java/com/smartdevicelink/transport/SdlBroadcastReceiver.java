@@ -41,6 +41,7 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.os.Looper;
@@ -48,6 +49,7 @@ import android.os.Parcelable;
 import android.util.AndroidRuntimeException;
 
 import androidx.annotation.CallSuper;
+import androidx.core.content.ContextCompat;
 
 import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.transport.RouterServiceValidator.TrustedListCallback;
@@ -66,6 +68,8 @@ import java.util.Locale;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import static android.Manifest.permission.BLUETOOTH_CONNECT;
+import static android.Manifest.permission.BLUETOOTH_SCAN;
 import static com.smartdevicelink.transport.TransportConstants.FOREGROUND_EXTRA;
 
 public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
@@ -126,6 +130,24 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
             intent.setAction(null);
             onSdlEnabled(context, intent);
             return;
+        } else {
+            //Should Be BT?
+
+            //Check BT Permissions
+            int btConnectPermission = ContextCompat.checkSelfPermission(context, BLUETOOTH_CONNECT);
+            int btScanPermission = ContextCompat.checkSelfPermission(context, BLUETOOTH_SCAN);
+
+            //Get ComponentName
+            PackageManager pm = context.getPackageManager();
+            ComponentName componentName = intent.getParcelableExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME);
+
+            if (btConnectPermission != PackageManager.PERMISSION_GRANTED || btScanPermission != PackageManager.PERMISSION_GRANTED) {
+                //User has denied BT Permissions we need to disable this apps router service
+                pm.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+            } else {
+                //User has enabled BT Permissions we need to enable this apps router service
+                pm.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+            }
         }
 
         if (intent.hasExtra(BluetoothDevice.EXTRA_DEVICE)) {    //Grab the bluetooth device if available
