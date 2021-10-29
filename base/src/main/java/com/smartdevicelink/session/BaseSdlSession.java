@@ -240,6 +240,7 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
         // Assemble a security query payload header for our response
         SecurityQueryPayload responseHeader = new SecurityQueryPayload();
 
+        byte[] returnBytes;
         if (iNumBytes == null || iNumBytes <= 0) {
             DebugTool.logError(TAG, "Internal Error processing control service");
 
@@ -247,16 +248,18 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
             responseHeader.setQueryType(SecurityQueryType.NOTIFICATION);
             responseHeader.setCorrelationID(msg.getCorrID());
             responseHeader.setJsonSize(0);
+            returnBytes = new byte[12];
         } else {
             responseHeader.setQueryID(SecurityQueryID.SEND_HANDSHAKE_DATA);
             responseHeader.setQueryType(SecurityQueryType.RESPONSE);
             responseHeader.setCorrelationID(msg.getCorrID());
             responseHeader.setJsonSize(0);
+            returnBytes = new byte[iNumBytes + 12];
+            System.arraycopy(dataToRead, 0, returnBytes, 12, iNumBytes);
         }
 
-        byte[] returnBytes = new byte[iNumBytes + 12];
+
         System.arraycopy(responseHeader.assembleHeaderBytes(), 0, returnBytes, 0, 12);
-        System.arraycopy(dataToRead, 0, returnBytes, 12, iNumBytes);
 
         ProtocolMessage protocolMessage = new ProtocolMessage();
         protocolMessage.setSessionType(SessionType.CONTROL);

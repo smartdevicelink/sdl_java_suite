@@ -52,6 +52,7 @@ import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
+import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
 
 import java.util.ArrayList;
@@ -65,6 +66,7 @@ import java.util.Set;
  * Created by Bilal Alsharifi on 1/25/21.
  */
 class MenuReplaceUtilities {
+    private static final String TAG = "MenuReplaceUtilities";
     private static int menuId = 0;
 
     static int getNextMenuId() {
@@ -293,6 +295,10 @@ class MenuReplaceUtilities {
         Image icon = (shouldCellIncludePrimaryImage ? cell.getIcon().getImageRPC() : null);
         boolean shouldCellIncludeSecondaryImage = cell.getSecondaryArtwork() != null && cell.getSecondaryArtwork().getImageRPC() != null && shouldCellIncludeSecondaryImageFromCell(cell, fileManager, windowCapability);
         Image secondaryIcon = (shouldCellIncludeSecondaryImage ? cell.getSecondaryArtwork().getImageRPC() : null);
+
+        if (cell.getVoiceCommands() != null && !cell.getVoiceCommands().isEmpty()) {
+            DebugTool.logWarning(TAG, "Setting voice commands for submenu cells is not supported. The voice commands will not be set.");
+        }
 
         MenuLayout submenuLayout;
         List<MenuLayout> availableMenuLayouts = windowCapability != null ? windowCapability.getMenuLayoutsAvailable() : null;

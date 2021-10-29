@@ -45,3 +45,7 @@
 - [[SDL 0236] Update mismatch in TireStatus structure](https://github.com/smartdevicelink/sdl_java_suite/issues/1089)
 
 - [Choices not saved as preloaded if some choices fail](https://github.com/smartdevicelink/sdl_java_suite/issues/1715)
+
+- [MenuManager should print warning when trying to send AddSubMenu with voice commands](https://github.com/smartdevicelink/sdl_java_suite/issues/1760)
+
+- [Spelling/ Grammar Updates](https://github.com/smartdevicelink/sdl_java_suite/issues/1754)
