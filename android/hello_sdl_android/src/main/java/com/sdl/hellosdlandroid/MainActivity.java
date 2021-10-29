@@ -2,6 +2,7 @@ package com.sdl.hellosdlandroid;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (android.os.Build.VERSION.SDK_INT >= 31) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (!checkPermission()) {
                 requestPermission();
             }

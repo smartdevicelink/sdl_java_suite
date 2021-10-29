@@ -41,7 +41,9 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ServiceInfo;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.os.Looper;
@@ -75,6 +77,7 @@ import static com.smartdevicelink.transport.TransportConstants.FOREGROUND_EXTRA;
 public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
 
     private static final String TAG = "Sdl Broadcast Receiver";
+    private static final String SDL_ROUTER_SERVICE_PROCESS_NAME = "com.smartdevicelink.router";
 
     protected static final String SDL_ROUTER_SERVICE_CLASS_NAME = "sdlrouterservice";
 
@@ -131,22 +134,28 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
             onSdlEnabled(context, intent);
             return;
         } else {
-            //Should Be BT?
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                //Check BT Permissions
+                int btConnectPermission = ContextCompat.checkSelfPermission(context, BLUETOOTH_CONNECT);
+                int btScanPermission = ContextCompat.checkSelfPermission(context, BLUETOOTH_SCAN);
 
-            //Check BT Permissions
-            int btConnectPermission = ContextCompat.checkSelfPermission(context, BLUETOOTH_CONNECT);
-            int btScanPermission = ContextCompat.checkSelfPermission(context, BLUETOOTH_SCAN);
+                PackageManager pm = context.getPackageManager();
+                try {
+                    PackageInfo info = pm.getPackageInfo(context.getPackageName(),PackageManager.GET_SERVICES);
+                    ServiceInfo[] services = info.services;
+                    if (services != null) {
+                        for (ServiceInfo service : services) {
+                            //If this service is this apps router service
+                            if (service.processName != null && service.processName.equalsIgnoreCase(SDL_ROUTER_SERVICE_PROCESS_NAME)) {
+                                //Set the service enabled flag to True or False based on if the user has granted BT permissions
+                                service.enabled = btConnectPermission == PackageManager.PERMISSION_GRANTED && btScanPermission == PackageManager.PERMISSION_GRANTED;
+                            }
+                        }
+                    }
 
-            //Get ComponentName
-            PackageManager pm = context.getPackageManager();
-            ComponentName componentName = intent.getParcelableExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME);
-
-            if (btConnectPermission != PackageManager.PERMISSION_GRANTED || btScanPermission != PackageManager.PERMISSION_GRANTED) {
-                //User has denied BT Permissions we need to disable this apps router service
-                pm.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
-            } else {
-                //User has enabled BT Permissions we need to enable this apps router service
-                pm.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
