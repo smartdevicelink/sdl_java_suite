@@ -64,7 +64,7 @@ public class AudioControlCapabilities extends RPCStruct {
     /**
      * Constructs a newly allocated AudioControlCapabilities object
      *
-     * @param moduleName short friendly name of the light control module.
+     * @param moduleName short friendly name of the audio control module.
      */
     public AudioControlCapabilities(@NonNull String moduleName) {
         this();
@@ -74,7 +74,7 @@ public class AudioControlCapabilities extends RPCStruct {
     /**
      * Sets the moduleName portion of the AudioControlCapabilities class
      *
-     * @param moduleName The short friendly name of the light control module. It should not be used to identify a module by mobile application.
+     * @param moduleName The short friendly name of the audio control module. It should not be used to identify a module by mobile application.
      */
     public AudioControlCapabilities setModuleName(@NonNull String moduleName) {
         setValue(KEY_MODULE_NAME, moduleName);
@@ -84,7 +84,7 @@ public class AudioControlCapabilities extends RPCStruct {
     /**
      * Gets the moduleName portion of the AudioControlCapabilities class
      *
-     * @return String - The short friendly name of the light control module. It should not be used to identify a module by mobile application.
+     * @return String - The short friendly name of the audio control module. It should not be used to identify a module by mobile application.
      */
     public String getModuleName() {
         return getString(KEY_MODULE_NAME);

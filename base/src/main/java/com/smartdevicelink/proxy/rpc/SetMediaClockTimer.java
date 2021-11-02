@@ -72,7 +72,7 @@ import java.util.Hashtable;
  * 			<td>endTime</td>
  * 			<td>StartTime</td>
  * 			<td> EndTime can be provided for "COUNTUP" and "COUNTDOWN"; to be used to calculate any visual progress bar (if not provided, this feature is ignored)
- * If endTime is greater then startTime for COUNTDOWN or less than startTime for COUNTUP, then the request will return an INVALID_DATA.
+ * If endTime is greater than startTime for COUNTDOWN or less than startTime for COUNTUP, then the request will return an INVALID_DATA.
  * endTime will be ignored for "RESUME", and "CLEAR"
  * endTime can be sent for "PAUSE", in which case it will update the paused endTime</td>
  *                 <td>N</td>

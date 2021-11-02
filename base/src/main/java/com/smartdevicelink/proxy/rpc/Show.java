@@ -534,7 +534,7 @@ public class Show extends RPCRequest {
     }
 
     /**
-     * Sets the the Soft buttons defined by the App
+     * Sets the Soft buttons defined by the App
      *
      * @param softButtons a List value representing the Soft buttons defined by the
      *                    App

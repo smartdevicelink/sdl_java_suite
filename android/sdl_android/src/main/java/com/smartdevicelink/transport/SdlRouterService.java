@@ -2476,7 +2476,7 @@ public class SdlRouterService extends Service {
     /**
      * Set the connection establishment status of the particular device
      *
-     * @param address         address of the device in quesiton
+     * @param address         address of the device in question
      * @param hasSDLConnected true if a connection has been established, false if not
      */
     protected void setSDLConnectedStatus(String address, boolean hasSDLConnected) {
@@ -3341,7 +3341,7 @@ public class SdlRouterService extends Service {
                         try {
                             List<TransportType> transportTypes = (List<TransportType>) obj;
                             if (transportTypes != null) {
-                                if (transportTypes.get(0) != null) {
+                                if (transportTypes.size() > 0 && transportTypes.get(0) != null) {
                                     return transportTypes.get(0);
                                 }
                             }

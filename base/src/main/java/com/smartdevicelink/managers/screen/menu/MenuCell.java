@@ -432,6 +432,10 @@ public class MenuCell implements Cloneable {
 
     // HELPER
 
+    boolean isSubMenuCell() {
+        return getSubCells() != null;
+    }
+
     /**
      * Note: You should compare using the {@link #equals(Object)} method. <br>
      * Hash the parameters of the object and return the result for comparison
@@ -446,17 +450,24 @@ public class MenuCell implements Cloneable {
     public int hashCode() {
         int result = 1;
         result += ((getTitle() == null) ? 0 : Integer.rotateLeft(getTitle().hashCode(), 1));
-        result += ((getIcon() == null) ? 0 : Integer.rotateLeft(getIcon().hashCode(), 2));
+        result += ((getIcon() == null || getIcon().getName() == null) ? 0 : Integer.rotateLeft(getIcon().getName().hashCode(), 2));
         result += ((getVoiceCommands() == null) ? 0 : Integer.rotateLeft(getVoiceCommands().hashCode(), 3));
         result += ((getSubCells() == null) ? 0 : Integer.rotateLeft(1, 4));
-        result += ((getSecondaryText() == null) ? 0 : Integer.rotateLeft(getSecondaryText().hashCode(), 1));
-        result += ((getTertiaryText() == null) ? 0 : Integer.rotateLeft(getTertiaryText().hashCode(), 1));
-        result += ((getSecondaryArtwork() == null) ? 0 : Integer.rotateLeft(getSecondaryArtwork().hashCode(), 2));
+        result += ((getSecondaryText() == null) ? 0 : Integer.rotateLeft(getSecondaryText().hashCode(), 5));
+        result += ((getTertiaryText() == null) ? 0 : Integer.rotateLeft(getTertiaryText().hashCode(), 6));
+        result += ((getSecondaryArtwork() == null || getSecondaryArtwork().getName() == null) ? 0 : Integer.rotateLeft(getSecondaryArtwork().getName().hashCode(), 7));
+        result += ((getSubMenuLayout() == null) ? 0 : Integer.rotateLeft(getSubMenuLayout().hashCode(), 8));
+        return result;
+    }
+
+    private int hashCodeWithUniqueTitle() {
+        int result = hashCode();
+        result += ((getUniqueTitle() == null) ? 0 : Integer.rotateLeft(getUniqueTitle().hashCode(), 9));
         return result;
     }
 
     /**
-     * Uses our custom hashCode for MenuCell objects, but does <strong>NOT</strong> compare the listener objects
+     * Uses our custom hashCode for MenuCell objects
      *
      * @param o - The object to compare
      * @return boolean of whether the objects are the same or not
@@ -472,6 +483,22 @@ public class MenuCell implements Cloneable {
         if (!(o instanceof MenuCell)) return false;
         // if we get to this point, create the hashes and compare them
         return hashCode() == o.hashCode();
+    }
+
+    /**
+     * Uses our custom hashCode for MenuCell objects. This method takes UniqueTitle into consideration when doing the equality check
+     *
+     * @param o - The object to compare
+     * @return boolean of whether the objects are the same or not
+     */
+    boolean equalsWithUniqueTitle(MenuCell o) {
+        if (o == null) {
+            return false;
+        }
+        // if this is the same memory address, its the same
+        if (this == o) return true;
+        // if we get to this point, create the hashes and compare them
+        return hashCodeWithUniqueTitle() == o.hashCodeWithUniqueTitle();
     }
 
     /**

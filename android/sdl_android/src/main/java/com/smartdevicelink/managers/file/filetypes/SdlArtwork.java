@@ -40,7 +40,6 @@ import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
-import com.smartdevicelink.util.DebugTool;
 
 /**
  * A class that extends SdlFile, representing artwork (JPEG, PNG, or BMP) to be uploaded to core
@@ -159,16 +158,10 @@ public class SdlArtwork extends SdlFile implements Cloneable {
      */
     @Override
     public SdlArtwork clone() {
-        try {
-            SdlArtwork artwork = (SdlArtwork) super.clone();
-            if (artwork != null) {
-                artwork.imageRPC = artwork.createImageRPC();
-            }
+        SdlArtwork artwork = (SdlArtwork) super.clone();
+        if (artwork != null) {
+            artwork.imageRPC = artwork.createImageRPC();
             return artwork;
-        } catch (CloneNotSupportedException e) {
-            if (DebugTool.isDebugEnabled()) {
-                throw new RuntimeException("Clone not supported by super class");
-            }
         }
         return null;
     }

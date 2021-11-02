@@ -37,12 +37,15 @@ import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.lifecycle.RpcConverter;
+import com.smartdevicelink.protocol.SecurityQueryPayload;
 import com.smartdevicelink.protocol.ISdlProtocol;
 import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlProtocolBase;
 import com.smartdevicelink.protocol.enums.ControlFrameTags;
+import com.smartdevicelink.protocol.enums.SecurityQueryID;
+import com.smartdevicelink.protocol.enums.SecurityQueryType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.VehicleType;
@@ -188,21 +191,76 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
 
 
     protected void processControlService(ProtocolMessage msg) {
-        if (sdlSecurity == null)
+        if (sdlSecurity == null || msg.getData() == null)
             return;
+
+
+        if (msg.getData().length < 12) {
+            DebugTool.logError(TAG, "Security message is malformed, less than 12 bytes. It does not have a security payload header.");
+        }
+        // Check the client's message header for any internal errors
+        // NOTE: Before Core v8.0.0, all these messages will be notifications. In Core v8.0.0 and later, received messages will have the proper query type. Therefore, we cannot do things based only on the query type being request or response.
+        SecurityQueryPayload receivedHeader = SecurityQueryPayload.parseBinaryQueryHeader(msg.getData().clone());
+        if (receivedHeader == null) {
+            DebugTool.logError(TAG, "Module Security Query could not convert to object.");
+            return;
+        }
+
         int iLen = msg.getData().length - 12;
         byte[] data = new byte[iLen];
         System.arraycopy(msg.getData(), 12, data, 0, iLen);
 
         byte[] dataToRead = new byte[4096];
 
-        Integer iNumBytes = sdlSecurity.runHandshake(data, dataToRead);
+        Integer iNumBytes = null;
 
-        if (iNumBytes == null || iNumBytes <= 0)
+        // If the query is of type `Notification` and the id represents a client internal error, we abort the response message and the encryptionManager will not be in state ready.
+        if (receivedHeader.getQueryID() == SecurityQueryID.SEND_INTERNAL_ERROR
+                && receivedHeader.getQueryType() == SecurityQueryType.NOTIFICATION) {
+            if (receivedHeader.getErrorCode() != null) {
+                DebugTool.logError(TAG, "Security Query module internal error: " + receivedHeader.getErrorCode().getName());
+            } else {
+                DebugTool.logError(TAG, "Security Query module error: No information provided");
+            }
             return;
+        }
 
-        byte[] returnBytes = new byte[iNumBytes];
-        System.arraycopy(dataToRead, 0, returnBytes, 0, iNumBytes);
+        if (receivedHeader.getQueryID() != SecurityQueryID.SEND_HANDSHAKE_DATA) {
+            DebugTool.logError(TAG, "Security Query module error: Message is not a SEND_HANDSHAKE_DATA REQUEST");
+            return;
+        }
+
+        if (receivedHeader.getQueryType() == SecurityQueryType.RESPONSE) {
+            DebugTool.logError(TAG, "Security Query module error: Message is a response, which is not supported");
+            return;
+        }
+
+        iNumBytes = sdlSecurity.runHandshake(data, dataToRead);
+
+        // Assemble a security query payload header for our response
+        SecurityQueryPayload responseHeader = new SecurityQueryPayload();
+
+        byte[] returnBytes;
+        if (iNumBytes == null || iNumBytes <= 0) {
+            DebugTool.logError(TAG, "Internal Error processing control service");
+
+            responseHeader.setQueryID(SecurityQueryID.SEND_INTERNAL_ERROR);
+            responseHeader.setQueryType(SecurityQueryType.NOTIFICATION);
+            responseHeader.setCorrelationID(msg.getCorrID());
+            responseHeader.setJsonSize(0);
+            returnBytes = new byte[12];
+        } else {
+            responseHeader.setQueryID(SecurityQueryID.SEND_HANDSHAKE_DATA);
+            responseHeader.setQueryType(SecurityQueryType.RESPONSE);
+            responseHeader.setCorrelationID(msg.getCorrID());
+            responseHeader.setJsonSize(0);
+            returnBytes = new byte[iNumBytes + 12];
+            System.arraycopy(dataToRead, 0, returnBytes, 12, iNumBytes);
+        }
+
+
+        System.arraycopy(responseHeader.assembleHeaderBytes(), 0, returnBytes, 0, 12);
+
         ProtocolMessage protocolMessage = new ProtocolMessage();
         protocolMessage.setSessionType(SessionType.CONTROL);
         protocolMessage.setData(returnBytes);

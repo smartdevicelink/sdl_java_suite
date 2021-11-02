@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Livio, Inc.
+ * Copyright (c) 2021 Livio, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,58 +34,9 @@ package com.smartdevicelink.managers.screen.menu;
 
 import java.util.List;
 
-class SubCellCommandList {
-
-    private RunScore listsScore;
-    private String menuTitle;
-    private Integer parentId;
-    private List<MenuCell> oldList, newList;
-
-    SubCellCommandList(String menuTitle, Integer parentId, RunScore listsScore, List<MenuCell> oldList, List<MenuCell> newList) {
-        setMenuTitle(menuTitle);
-        setParentId(parentId);
-        setListsScore(listsScore);
-        setOldList(oldList);
-        setNewList(newList);
-    }
-
-    private void setParentId(Integer parentId) {
-        this.parentId = parentId;
-    }
-
-    Integer getParentId() {
-        return parentId;
-    }
-
-    private void setMenuTitle(String menuTitle) {
-        this.menuTitle = menuTitle;
-    }
-
-    String getMenuTitle() {
-        return menuTitle;
-    }
-
-    private void setListsScore(RunScore listsScore) {
-        this.listsScore = listsScore;
-    }
-
-    RunScore getListsScore() {
-        return listsScore;
-    }
-
-    private void setOldList(List<MenuCell> oldList) {
-        this.oldList = oldList;
-    }
-
-    List<MenuCell> getOldList() {
-        return oldList;
-    }
-
-    private void setNewList(List<MenuCell> newList) {
-        this.newList = newList;
-    }
-
-    List<MenuCell> getNewList() {
-        return newList;
-    }
+/**
+ * Created by Bilal Alsharifi on 1/21/21.
+ */
+interface MenuManagerCompletionListener {
+    void onComplete(boolean success, List<MenuCell> currentMenuCells);
 }

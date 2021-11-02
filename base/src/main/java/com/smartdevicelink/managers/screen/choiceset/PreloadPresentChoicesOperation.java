@@ -629,9 +629,13 @@ class PreloadPresentChoicesOperation extends Task {
 
     private void updateChoiceSet(ChoiceSet choiceSet, HashSet<ChoiceCell> loadedCells, HashSet<ChoiceCell> cellsToUpload) {
         ArrayList<ChoiceCell> choiceSetCells = new ArrayList<>();
+        ArrayList<ChoiceCell> loadedCellsList = new ArrayList<>(loadedCells);
+        ArrayList<ChoiceCell> CellsToUploadList = new ArrayList<>(cellsToUpload);
         for (ChoiceCell cell : choiceSet.getChoices()) {
-            if (loadedCells.contains(cell) || cellsToUpload.contains(cell)) {
-                choiceSetCells.add(cell);
+            if (loadedCells.contains(cell)) {
+                choiceSetCells.add(loadedCellsList.get(loadedCellsList.indexOf(cell)));
+            } else if (cellsToUpload.contains(cell)) {
+                choiceSetCells.add(CellsToUploadList.get(CellsToUploadList.indexOf(cell)));
             }
         }
         this.choiceSet.setChoices((List<ChoiceCell>) choiceSetCells.clone());

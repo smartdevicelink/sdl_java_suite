@@ -39,7 +39,7 @@ import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import java.util.Hashtable;
 
 /**
- * Struct that indicates the a SystemCapabilityType and houses different structs to describe particular capabilities
+ * Struct that indicates the SystemCapabilityType and houses different structs to describe particular capabilities
  */
 
 public class SystemCapability extends RPCStruct {

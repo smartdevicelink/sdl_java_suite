@@ -1,50 +1,51 @@
-# 5.2.0 Release Notes
+# 5.3.0 Release Notes
 
 ## Summary:
 ||Version|
 |--|--|
-| **Protocol** | 5.4.0
-| **RPC** | 7.1.0
+| **Protocol** | 5.4.1
+| **RPC** | 8.0.0
 | **Tested Targeting** | Android 30
 
 
+## Features:
+
+- [[SDL 0293] Enable OEM exclusive apps support](https://github.com/smartdevicelink/sdl_java_suite/issues/1588)
+
 ## Bug Fixes / Enhancements:
 
-- [MenuManager sending secondary image with menuCells when menuCommandSecondaryImage is not supported.](https://github.com/smartdevicelink/sdl_java_suite/issues/1688)
+- [New TaskMaster release needs to be added to Java Suite Library ](https://github.com/smartdevicelink/sdl_java_suite/issues/1745)
 
-- [IllegalArgumentException when starting video stream with custom RPC MTU](https://github.com/smartdevicelink/sdl_java_suite/issues/1667)
+- [File Manager will upload the same file multiple times](https://github.com/smartdevicelink/sdl_java_suite/issues/1736)
 
-- [Send voiceCommand with duplicate strings](https://github.com/smartdevicelink/sdl_java_suite/issues/1664)
+- [Fix description for `SeatControlCapabilities` and `RadioControlCapabilities`](https://github.com/smartdevicelink/sdl_java_suite/issues/1739)
 
-- [Two voiceCommands contains the same string](https://github.com/smartdevicelink/sdl_java_suite/issues/1677)
+- [AudioStreamManager and AlertManager have the same queue ID](https://github.com/smartdevicelink/sdl_java_suite/issues/1742)
 
-- [java.lang.NegativeArraySizeException Crash at SdlPsm.java line 241 com.smartdevicelink.transport.SdlPsm.transitionOnInput](https://github.com/smartdevicelink/sdl_java_suite/issues/1678)
+- [java.lang.IndexOutOfBoundsException Crash: SdlRouterService.java line 3275 ](https://github.com/smartdevicelink/sdl_java_suite/issues/1741)
 
-- [Exception handling variances](https://github.com/smartdevicelink/sdl_java_suite/issues/1687)
+- [Old devices with SDL 2.0 can't display text fields and SoftButtons](https://github.com/smartdevicelink/sdl_java_suite/issues/1729)
 
-- [Allow SdlDeviceListener to start after BT connection](https://github.com/smartdevicelink/sdl_java_suite/pull/1685)
+- [Swapping de-duplicated menu items causes incorrect unique titles](https://github.com/smartdevicelink/sdl_java_suite/issues/1723)
 
-- [voiceCommand that contains no string should be removed](https://github.com/smartdevicelink/sdl_java_suite/issues/1675)
+- [MenuCell title update issue](https://github.com/smartdevicelink/sdl_java_suite/issues/1651)
 
-- [Image returned as "not uploaded" in certain circumstances when it's already uploaded, leading to the image being unusable](https://github.com/smartdevicelink/sdl_java_suite/issues/1692)
+- [Refactor the Menu Manager to Use Queues ](https://github.com/smartdevicelink/sdl_java_suite/issues/1605)
 
-- [Primary Graphic not sent to SDL Core for Media Template ](https://github.com/smartdevicelink/sdl_java_suite/issues/1690)
+- [Security queries are not implemented to spec](https://github.com/smartdevicelink/sdl_java_suite/issues/1720)
 
-- [Race condition leads to NPE in TransportManager](https://github.com/smartdevicelink/sdl_java_suite/issues/1703)
+- [Choice Set Present followed directly by a Delete can have undefined behavior](https://github.com/smartdevicelink/sdl_java_suite/issues/1718)
 
-- [Avoid deleting and setting identical voice commands](https://github.com/smartdevicelink/sdl_java_suite/issues/1676)
+- [Back-to-back choice sets can fail](https://github.com/smartdevicelink/sdl_java_suite/issues/1717)
 
-- [Sdl disconnection is not notified to the app](https://github.com/smartdevicelink/sdl_java_suite/issues/1697)
+- [Github CI fails even though tests pass locally ](https://github.com/smartdevicelink/sdl_java_suite/issues/1731)
 
-- [PredefinedLayout.NON_MEDIA not found in templatesAvailable](https://github.com/smartdevicelink/sdl_java_suite/issues/1705)
+- [Handler instances using deprecated constructors  ](https://github.com/smartdevicelink/sdl_java_suite/issues/1696)
 
-- [Lockscreen should show again after dismissal if a DD notification is received where DismissalEnabled is false](https://github.com/smartdevicelink/sdl_java_suite/issues/1695)
+- [[SDL 0236] Update mismatch in TireStatus structure](https://github.com/smartdevicelink/sdl_java_suite/issues/1089)
 
-- [Choice Cells and Menu Cells do not take which properties are available into account for uniqueness](https://github.com/smartdevicelink/sdl_java_suite/issues/1682)
+- [Choices not saved as preloaded if some choices fail](https://github.com/smartdevicelink/sdl_java_suite/issues/1715)
 
-- [BSON library should be updated to the latest version (1.2.5)](https://github.com/smartdevicelink/sdl_java_suite/issues/1712)
+- [MenuManager should print warning when trying to send AddSubMenu with voice commands](https://github.com/smartdevicelink/sdl_java_suite/issues/1760)
 
-
-
-
-
+- [Spelling/ Grammar Updates](https://github.com/smartdevicelink/sdl_java_suite/issues/1754)

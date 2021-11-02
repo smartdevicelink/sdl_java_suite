@@ -68,7 +68,7 @@ public class RadioControlCapabilities extends RPCStruct {
     /**
      * Constructs a new RadioControlCapabilities object
      *
-     * @param moduleName The short friendly name of the climate control module.
+     * @param moduleName The short friendly name of the radio control module.
      *                   It should not be used to identify a module by mobile application.
      */
     public RadioControlCapabilities(@NonNull String moduleName) {
@@ -79,7 +79,7 @@ public class RadioControlCapabilities extends RPCStruct {
     /**
      * Sets the moduleName portion of the RadioControlCapabilities class
      *
-     * @param moduleName The short friendly name of the climate control module.
+     * @param moduleName The short friendly name of the radio control module.
      *                   It should not be used to identify a module by mobile application.
      */
     public RadioControlCapabilities setModuleName(@NonNull String moduleName) {
@@ -90,7 +90,7 @@ public class RadioControlCapabilities extends RPCStruct {
     /**
      * Gets the moduleName portion of the RadioControlCapabilities class
      *
-     * @return String - Short friendly name of the climate control module.
+     * @return String - Short friendly name of the radio control module.
      */
     public String getModuleName() {
         return getString(KEY_MODULE_NAME);
