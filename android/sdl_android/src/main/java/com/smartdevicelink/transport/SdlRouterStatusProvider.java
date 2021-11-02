@@ -108,7 +108,7 @@ public class SdlRouterStatusProvider {
     }
 
     public void checkIsConnected() {
-        if (!AndroidTools.isServiceExported(context, routerService) || !bindToService()) {
+        if (!AndroidTools.isServiceExported(context, routerService) || !AndroidTools.isServiceEnabled(context, routerService) || !bindToService()) {
             //We are unable to bind to service
             cb.onConnectionStatusUpdate(false, routerService, context);
             unBindFromService();

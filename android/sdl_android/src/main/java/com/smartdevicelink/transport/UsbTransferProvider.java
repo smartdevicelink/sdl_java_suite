@@ -150,7 +150,7 @@ public class UsbTransferProvider {
     }
 
     public void checkIsConnected() {
-        if (!AndroidTools.isServiceExported(context, routerService) || !bindToService()) {
+        if (!AndroidTools.isServiceExported(context, routerService) || !AndroidTools.isServiceEnabled(context, routerService) || !bindToService()) {
             //We are unable to bind to service
             DebugTool.logError(TAG, "Unable to bind to service");
             unBindFromService();

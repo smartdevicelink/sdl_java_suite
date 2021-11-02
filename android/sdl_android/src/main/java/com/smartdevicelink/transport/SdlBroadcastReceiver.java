@@ -77,7 +77,6 @@ import static com.smartdevicelink.transport.TransportConstants.FOREGROUND_EXTRA;
 public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
 
     private static final String TAG = "Sdl Broadcast Receiver";
-    private static final String SDL_ROUTER_SERVICE_PROCESS_NAME = "com.smartdevicelink.router";
 
     protected static final String SDL_ROUTER_SERVICE_CLASS_NAME = "sdlrouterservice";
 
@@ -131,32 +130,13 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
         if (action.equalsIgnoreCase(TransportConstants.ACTION_USB_ACCESSORY_ATTACHED)) {
             DebugTool.logInfo(TAG, "Usb connected");
             intent.setAction(null);
+            AndroidTools.updateRouterServiceEnabled(context, TransportConstants.ACTION_USB_ACCESSORY_ATTACHED);
             onSdlEnabled(context, intent);
             return;
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                //Check BT Permissions
-                int btConnectPermission = ContextCompat.checkSelfPermission(context, BLUETOOTH_CONNECT);
-                int btScanPermission = ContextCompat.checkSelfPermission(context, BLUETOOTH_SCAN);
-
-                PackageManager pm = context.getPackageManager();
-                try {
-                    PackageInfo info = pm.getPackageInfo(context.getPackageName(),PackageManager.GET_SERVICES);
-                    ServiceInfo[] services = info.services;
-                    if (services != null) {
-                        for (ServiceInfo service : services) {
-                            //If this service is this apps router service
-                            if (service.processName != null && service.processName.equalsIgnoreCase(SDL_ROUTER_SERVICE_PROCESS_NAME)) {
-                                //Set the service enabled flag to True or False based on if the user has granted BT permissions
-                                service.enabled = btConnectPermission == PackageManager.PERMISSION_GRANTED && btScanPermission == PackageManager.PERMISSION_GRANTED;
-                            }
-                        }
-                    }
-
-                } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
+        } else if (action.equalsIgnoreCase(TransportConstants.START_ROUTER_SERVICE_ACTION)) {
+            AndroidTools.updateRouterServiceEnabled(context, TransportConstants.START_ROUTER_SERVICE_ACTION);
+        } else if (action.equalsIgnoreCase(BluetoothDevice.ACTION_ACL_CONNECTED)){
+            AndroidTools.updateRouterServiceEnabled(context, BluetoothDevice.ACTION_ACL_CONNECTED);
         }
 
         if (intent.hasExtra(BluetoothDevice.EXTRA_DEVICE)) {    //Grab the bluetooth device if available
@@ -455,7 +435,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
         for (RunningServiceInfo service : runningServices) {
             //We will check to see if it contains this name, should be pretty specific
             //Log.d(TAG, "Found Service: "+ service.service.getClassName());
-            if ((service.service.getClassName()).toLowerCase(Locale.US).contains(SDL_ROUTER_SERVICE_CLASS_NAME) && AndroidTools.isServiceExported(context, service.service)) {
+            if ((service.service.getClassName()).toLowerCase(Locale.US).contains(SDL_ROUTER_SERVICE_CLASS_NAME) && AndroidTools.isServiceExported(context, service.service) && AndroidTools.isServiceEnabled(context, service.service)) {
                 runningBluetoothServicePackage.add(service.service);    //Store which instance is running
             }
         }

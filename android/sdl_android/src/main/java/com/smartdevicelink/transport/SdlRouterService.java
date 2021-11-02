@@ -1100,6 +1100,10 @@ public class SdlRouterService extends Service {
             DebugTool.logError(TAG, "Service isn't exported. Shutting down");
             return false;
         }
+        if (!AndroidTools.isServiceEnabled(this, new ComponentName(this, this.getClass()))) { //We want to check to see if our service is actually enabled
+            DebugTool.logError(TAG, "Service isn't enabled. Shutting down");
+            return false;
+        }
 
         ComponentName name = new ComponentName(this, this.getClass());
         SdlAppInfo currentAppInfo = null;
