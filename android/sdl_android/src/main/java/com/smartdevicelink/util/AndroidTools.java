@@ -242,6 +242,12 @@ public class AndroidTools {
                                 int btConnectPermission = ContextCompat.checkSelfPermission(context, BLUETOOTH_CONNECT);
                                 int btScanPermission = ContextCompat.checkSelfPermission(context, BLUETOOTH_SCAN);
                                 service.enabled = btConnectPermission == PackageManager.PERMISSION_GRANTED && btScanPermission == PackageManager.PERMISSION_GRANTED;
+                                if (!service.enabled) {
+                                    Intent intent = new Intent();
+                                    ComponentName cName = new ComponentName(service.packageName, service.name);
+                                    intent.setComponent(cName);
+                                    context.stopService(intent);
+                                }
                             } else {
                                 //Set service to enabled so USB Router Service can connect even if BT permissions were denied;
                                 service.enabled = true;
