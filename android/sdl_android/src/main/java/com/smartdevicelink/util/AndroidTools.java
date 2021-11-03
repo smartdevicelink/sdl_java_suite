@@ -32,7 +32,6 @@
 
 package com.smartdevicelink.util;
 
-import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -52,7 +51,6 @@ import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.VehicleType;
@@ -80,7 +78,6 @@ public class AndroidTools {
 
     private static final String TAG = "AndroidTools";
     private static final String SDL_DEVICE_VEHICLES_PREFS = "sdl.device.vehicles";
-    private static final String SDL_ROUTER_SERVICE_PROCESS_NAME = "com.smartdevicelink.router";
     private static final Object VEHICLE_PREF_LOCK = new Object();
 
     /**
@@ -99,25 +96,6 @@ public class AndroidTools {
         }
         return false;
     }
-
-    /**
-     * Check to see if a component is enabled
-     *
-     * @param context object used to retrieve the package manager
-     * @param name    of the component in question
-     * @return true if this component is tagged as enabled
-     */
-    public static boolean isServiceEnabled(Context context, ComponentName name) {
-        try {
-            ServiceInfo serviceInfo = context.getPackageManager().getServiceInfo(name, PackageManager.GET_META_DATA);
-            return serviceInfo.isEnabled();
-        } catch (NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-
 
     /**
      * Get all SDL enabled apps. If the package name is null, it will return all apps. However, if the package name is included, the
@@ -196,12 +174,12 @@ public class AndroidTools {
                 for (ResolveInfo info : resolveInfoList) {
                     PackageInfo packageInfo;
                     try {
-                        packageInfo = packageManager.getPackageInfo(info.serviceInfo.packageName, 0);
-                        SdlAppInfo appInformation = new SdlAppInfo(info, packageInfo, context);
-                        if (info.serviceInfo.enabled) {
+                        packageInfo = packageManager.getPackageInfo(info.serviceInfo.packageName, PackageManager.GET_PERMISSIONS);
+                        boolean btPermissionsAllowed = areBtPermissionsGranted(context, info.serviceInfo.packageName);
+                        if (btPermissionsAllowed) {
+                            SdlAppInfo appInformation = new SdlAppInfo(info, packageInfo, context);
                             sdlAppInfoList.add(appInformation);
                         }
-
                     } catch (NameNotFoundException e) {
                         //Package was not found, likely a sign the resolve info can't be trusted.
                     }
@@ -227,34 +205,24 @@ public class AndroidTools {
         return sdlAppInfoList;
     }
 
-    public static void updateRouterServiceEnabled(Context context, String transport) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PackageManager pm = context.getPackageManager();
-            try {
-                PackageInfo info = pm.getPackageInfo(context.getPackageName(),PackageManager.GET_SERVICES);
-                ServiceInfo[] services = info.services;
-                if (services != null) {
-                    for (ServiceInfo service : services) {
-                        //If this service is this apps router service
-                        if (service.processName != null && service.processName.equalsIgnoreCase(SDL_ROUTER_SERVICE_PROCESS_NAME)) {
-                            if (transport.equalsIgnoreCase(BluetoothDevice.ACTION_ACL_CONNECTED)) {
-                                //Set service enabled based on if BT permissions were enabled
-                                int btConnectPermission = ContextCompat.checkSelfPermission(context, BLUETOOTH_CONNECT);
-                                int btScanPermission = ContextCompat.checkSelfPermission(context, BLUETOOTH_SCAN);
-                                service.enabled = btConnectPermission == PackageManager.PERMISSION_GRANTED && btScanPermission == PackageManager.PERMISSION_GRANTED;
-                            } else {
-                                //Set service to enabled so USB Router Service can connect even if BT permissions were denied;
-                                service.enabled = true;
-                            }
-                        }
-                    }
-                }
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
+    public static boolean areBtPermissionsGranted(Context context, String servicePackageName) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            //Permissions are only for SDK 31 and above
+            return true;
+        }
+        PackageManager packageManager = context.getPackageManager();
+        PackageInfo packageInfo;
+        try {
+            packageInfo = packageManager.getPackageInfo(servicePackageName, PackageManager.GET_PERMISSIONS);
+            int btConnectPermission = packageManager.checkPermission(BLUETOOTH_CONNECT, packageInfo.packageName);
+            int btScanPermission = packageManager.checkPermission(BLUETOOTH_SCAN, packageInfo.packageName);
+            return btConnectPermission == PackageManager.PERMISSION_GRANTED && btScanPermission == PackageManager.PERMISSION_GRANTED;
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+            DebugTool.logError(TAG, "servicePackageName not found while checking BT permissions");
+            return false;
         }
     }
-
 
     /**
      * Sends the provided intent to the specified destinations making it an explicit intent, rather
