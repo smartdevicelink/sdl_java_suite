@@ -49,6 +49,7 @@ import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.subM
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.transferCellIDsFromCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.transferCellListenersFromCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.windowCapabilitySupportsSecondaryImage;
 
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
@@ -466,9 +467,12 @@ class MenuReplaceOperation extends Task {
             // Strip away fields that cannot be used to determine uniqueness visually including fields not supported by the HMI
             cell.setVoiceCommands(null);
 
-            // If we're >= 5.0 && < 7.0, but don't have command icon image, no icon. If we're < 5.0 || >= 7.0 and don't have submenu icon, no icon.
             if (!windowCapabilitySupportsPrimaryImage(internalInterface.get(), windowCapability, cell)) {
                 cell.setIcon(null);
+            }
+
+            if (!windowCapabilitySupportsSecondaryImage(windowCapability, cell)) {
+                cell.setSecondaryArtwork(null);
             }
 
             // Check for subMenu fields supported
@@ -479,9 +483,6 @@ class MenuReplaceOperation extends Task {
                 if (!hasTextFieldOfName(windowCapability, TextFieldName.menuSubMenuTertiaryText)) {
                     cell.setTertiaryText(null);
                 }
-                if (!hasImageFieldOfName(windowCapability, ImageFieldName.menuSubMenuSecondaryImage)) {
-                    cell.setSecondaryArtwork(null);
-                }
                 cell.setSubCells(cellsWithRemovedPropertiesFromCells(cell.getSubCells(), windowCapability));
             } else {
                 if (!hasTextFieldOfName(windowCapability, TextFieldName.menuCommandSecondaryText)) {
@@ -489,9 +490,6 @@ class MenuReplaceOperation extends Task {
                 }
                 if (!hasTextFieldOfName(windowCapability, TextFieldName.menuCommandTertiaryText)) {
                     cell.setTertiaryText(null);
-                }
-                if (!hasImageFieldOfName(windowCapability, ImageFieldName.menuCommandSecondaryImage)) {
-                    cell.setSecondaryArtwork(null);
                 }
             }
         }
