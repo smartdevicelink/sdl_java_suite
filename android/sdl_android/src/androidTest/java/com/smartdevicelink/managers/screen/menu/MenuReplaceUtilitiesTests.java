@@ -234,45 +234,57 @@ public class MenuReplaceUtilitiesTests {
         windowCapability = createWindowCapability(false, false);
         when(menuCell.isSubMenuCell()).thenReturn(true);
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(5, 0, 0)));
-        assertTrue(MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, menuCell));
+        assertFalse(MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, menuCell));
 
         // Test case 3
-        windowCapability = createWindowCapability(false, false);
+        windowCapability = createWindowCapability(true, false);
         when(menuCell.isSubMenuCell()).thenReturn(true);
-        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(6, 0, 0)));
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(5, 0, 0)));
         assertTrue(MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, menuCell));
 
         // Test case 4
         windowCapability = createWindowCapability(false, false);
         when(menuCell.isSubMenuCell()).thenReturn(true);
-        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(7, 0, 0)));
-        assertTrue(MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, menuCell));
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(6, 0, 0)));
+        assertFalse(MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, menuCell));
 
         // Test case 5
+        windowCapability = createWindowCapability(true, false);
+        when(menuCell.isSubMenuCell()).thenReturn(true);
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(6, 0, 0)));
+        assertTrue(MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, menuCell));
+
+        // Test case 6
+        windowCapability = createWindowCapability(false, false);
+        when(menuCell.isSubMenuCell()).thenReturn(true);
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(7, 0, 0)));
+        assertFalse(MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, menuCell));
+
+        // Test case 7
         windowCapability = createWindowCapability(false, false);
         when(menuCell.isSubMenuCell()).thenReturn(true);
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(7, 1, 0)));
         assertFalse(MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, menuCell));
 
-        // Test case 6
+        // Test case 8
         windowCapability = createWindowCapability(false, false);
         when(menuCell.isSubMenuCell()).thenReturn(true);
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(8, 0, 0)));
         assertFalse(MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, menuCell));
 
-        // Test case 7
+        // Test case 9
         windowCapability = createWindowCapability(false, true);
         when(menuCell.isSubMenuCell()).thenReturn(true);
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(8, 0, 0)));
         assertTrue(MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, menuCell));
 
-        // Test case 8
+        // Test case 10
         windowCapability = createWindowCapability(false, false);
         when(menuCell.isSubMenuCell()).thenReturn(false);
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(8, 0, 0)));
         assertFalse(MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, menuCell));
 
-        // Test case 8
+        // Test case 11
         windowCapability = createWindowCapability(true, false);
         when(menuCell.isSubMenuCell()).thenReturn(false);
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(8, 0, 0)));
