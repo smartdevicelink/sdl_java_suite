@@ -48,6 +48,7 @@ import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.send
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.subMenuCommandsForCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.transferCellIDsFromCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.transferCellListenersFromCells;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage;
 
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
@@ -465,9 +466,8 @@ class MenuReplaceOperation extends Task {
             // Strip away fields that cannot be used to determine uniqueness visually including fields not supported by the HMI
             cell.setVoiceCommands(null);
 
-            // Don't check ImageFieldName.subMenuIcon because it was added in 7.0 when the feature was added in 5.0.
-            // Just assume that if cmdIcon is not available, the submenu icon is not either.
-            if (!hasImageFieldOfName(windowCapability, ImageFieldName.cmdIcon)) {
+            // If we're >= 5.0 && < 7.0, but don't have command icon image, no icon. If we're < 5.0 || >= 7.0 and don't have submenu icon, no icon.
+            if (!windowCapabilitySupportsPrimaryImage(internalInterface.get(), windowCapability, cell)) {
                 cell.setIcon(null);
             }
 

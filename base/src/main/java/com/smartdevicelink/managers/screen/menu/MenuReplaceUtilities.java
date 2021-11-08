@@ -147,7 +147,7 @@ class MenuReplaceUtilities {
     static boolean windowCapabilitySupportsPrimaryImage(ISdl internalInterface, WindowCapability windowCapability, MenuCell cell) {
         boolean supportsImage;
         if (cell.isSubMenuCell()) {
-            if (isRPCVersionBetween5And7(internalInterface)) {
+            if (isRPCVersionBetween5And7(internalInterface) && hasImageFieldOfName(windowCapability, ImageFieldName.cmdIcon)) {
                 supportsImage = true;
             } else {
                 supportsImage = hasImageFieldOfName(windowCapability, ImageFieldName.subMenuIcon);
