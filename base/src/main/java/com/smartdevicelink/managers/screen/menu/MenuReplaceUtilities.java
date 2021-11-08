@@ -146,12 +146,8 @@ class MenuReplaceUtilities {
 
     static boolean windowCapabilitySupportsPrimaryImage(ISdl internalInterface, WindowCapability windowCapability, MenuCell cell) {
         boolean supportsImage;
-        if (cell.isSubMenuCell() && internalInterface != null && internalInterface.getSdlMsgVersion() != null) {
-            Version headUnitRPCVersion = new Version(internalInterface.getSdlMsgVersion());
-            Version minRPCVersion = new Version(5, 0, 0);
-            Version maxRPCVersion = new Version(7, 1, 0);
-            // If RPC version is >= 5.0 && < 7.1
-            if (headUnitRPCVersion.isNewerThan(minRPCVersion) == 0 || headUnitRPCVersion.isBetween(minRPCVersion, maxRPCVersion) == 1) {
+        if (cell.isSubMenuCell()) {
+            if (isRPCVersionBetween5And7(internalInterface)) {
                 supportsImage = true;
             } else {
                 supportsImage = hasImageFieldOfName(windowCapability, ImageFieldName.subMenuIcon);
@@ -160,6 +156,17 @@ class MenuReplaceUtilities {
             supportsImage = hasImageFieldOfName(windowCapability, ImageFieldName.cmdIcon);
         }
         return supportsImage;
+    }
+
+    static boolean isRPCVersionBetween5And7(ISdl internalInterface) {
+        if (internalInterface != null && internalInterface.getSdlMsgVersion() != null) {
+            Version headUnitRPCVersion = new Version(internalInterface.getSdlMsgVersion());
+            Version minRPCVersion = new Version(5, 0, 0);
+            Version maxRPCVersion = new Version(7, 0, 0);
+            // If RPC version is >= 5.0 && < 7.0
+            return (headUnitRPCVersion.isNewerThan(minRPCVersion) == 0 || headUnitRPCVersion.isBetween(minRPCVersion, maxRPCVersion) == 1);
+        }
+        return false;
     }
 
     static boolean windowCapabilitySupportsSecondaryImage(WindowCapability windowCapability, MenuCell cell) {
