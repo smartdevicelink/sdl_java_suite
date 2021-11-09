@@ -130,13 +130,8 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
         if (action.equalsIgnoreCase(TransportConstants.ACTION_USB_ACCESSORY_ATTACHED)) {
             DebugTool.logInfo(TAG, "Usb connected");
             intent.setAction(null);
-            AndroidTools.updateRouterServiceEnabled(context, TransportConstants.ACTION_USB_ACCESSORY_ATTACHED);
             onSdlEnabled(context, intent);
             return;
-        } else if (action.equalsIgnoreCase(TransportConstants.START_ROUTER_SERVICE_ACTION)) {
-            AndroidTools.updateRouterServiceEnabled(context, TransportConstants.START_ROUTER_SERVICE_ACTION);
-        } else if (action.equalsIgnoreCase(BluetoothDevice.ACTION_ACL_CONNECTED)){
-            AndroidTools.updateRouterServiceEnabled(context, BluetoothDevice.ACTION_ACL_CONNECTED);
         }
 
         if (intent.hasExtra(BluetoothDevice.EXTRA_DEVICE)) {    //Grab the bluetooth device if available
@@ -435,7 +430,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
         for (RunningServiceInfo service : runningServices) {
             //We will check to see if it contains this name, should be pretty specific
             //Log.d(TAG, "Found Service: "+ service.service.getClassName());
-            if ((service.service.getClassName()).toLowerCase(Locale.US).contains(SDL_ROUTER_SERVICE_CLASS_NAME) && AndroidTools.isServiceExported(context, service.service) && AndroidTools.isServiceEnabled(context, service.service)) {
+            if ((service.service.getClassName()).toLowerCase(Locale.US).contains(SDL_ROUTER_SERVICE_CLASS_NAME) && AndroidTools.isServiceExported(context, service.service)) {
                 runningBluetoothServicePackage.add(service.service);    //Store which instance is running
             }
         }
