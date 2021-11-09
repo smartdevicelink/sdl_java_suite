@@ -40,7 +40,7 @@ android {
     }
 }
 
-ext { VERSION_NAME = "$project.version" }
+ext { VERSION_NAME = "$project.android.defaultConfig.versionName" }
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
