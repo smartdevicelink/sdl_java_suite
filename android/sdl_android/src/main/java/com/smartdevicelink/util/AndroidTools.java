@@ -162,7 +162,7 @@ public class AndroidTools {
      * @param comparator the Comparator to sort the resulting list. If null is supplied, they will be returned as they are from the system
      * @return the sorted list of SdlAppInfo objects that represent SDL apps
      */
-    public static List<SdlAppInfo> querySdlAppInfo(Context context, Comparator<SdlAppInfo> comparator, VehicleType type) {
+    public static List<SdlAppInfo> querySdlAppInfo(Context context, Comparator<SdlAppInfo> comparator, VehicleType type, String connectionType) {
         List<SdlAppInfo> sdlAppInfoList = new ArrayList<>();
         Intent intent = new Intent(TransportConstants.ROUTER_SERVICE_ACTION);
         List<ResolveInfo> resolveInfoList = context.getPackageManager().queryIntentServices(intent, PackageManager.GET_META_DATA);
@@ -171,6 +171,7 @@ public class AndroidTools {
             PackageManager packageManager = context.getPackageManager();
             if (packageManager != null) {
 
+                //try to add based on BT permissions
                 for (ResolveInfo info : resolveInfoList) {
                     PackageInfo packageInfo;
                     try {
@@ -184,6 +185,19 @@ public class AndroidTools {
                         //Package was not found, likely a sign the resolve info can't be trusted.
                     }
 
+                }
+                //If there are no apps with BT permissions and the device is connected over USB, then find the best RS to start over USB
+                if (sdlAppInfoList.isEmpty() && TransportConstants.ACTION_USB_ACCESSORY_ATTACHED.equalsIgnoreCase(connectionType)) {
+                    for (ResolveInfo info : resolveInfoList) {
+                        PackageInfo packageInfo;
+                        try {
+                            packageInfo = packageManager.getPackageInfo(info.serviceInfo.packageName, PackageManager.GET_PERMISSIONS);
+                            SdlAppInfo appInformation = new SdlAppInfo(info, packageInfo, context);
+                            sdlAppInfoList.add(appInformation);
+                        } catch (NameNotFoundException e) {
+                            //Package was not found, likely a sign the resolve info can't be trusted.
+                        }
+                    }
                 }
             }
 

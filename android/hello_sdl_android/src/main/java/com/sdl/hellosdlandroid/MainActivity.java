@@ -24,20 +24,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            if (!checkPermission()) {
-                requestPermission();
+
+        if (BuildConfig.TRANSPORT.equals("MULTI") || BuildConfig.TRANSPORT.equals("MULTI_HB")) {
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (!checkPermission()) {
+                    requestPermission();
+                }
+            } else {
+                //If we are connected to a module we want to start our SdlService
+                SdlReceiver.queryForConnectedService(this);
             }
         } else {
-            //If we are connected to a module we want to start our SdlService
-            startSDLService();
-        }
-    }
-
-    private void startSDLService() {
-        if (BuildConfig.TRANSPORT.equals("MULTI") || BuildConfig.TRANSPORT.equals("MULTI_HB")) {
-            SdlReceiver.queryForConnectedService(this);
-        } else if (BuildConfig.TRANSPORT.equals("TCP")) {
             Intent proxyIntent = new Intent(this, SdlService.class);
             startService(proxyIntent);
         }
@@ -64,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                     boolean scanAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
 
                     if (connectAccepted && scanAccepted) {
-                        startSDLService();
+                        SdlReceiver.queryForConnectedService(this);
                     }
                 }
                 break;

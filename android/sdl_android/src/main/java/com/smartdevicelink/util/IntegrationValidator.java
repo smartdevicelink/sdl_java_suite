@@ -214,7 +214,7 @@ public class IntegrationValidator {
             }
         }
 
-        List<SdlAppInfo> services = AndroidTools.querySdlAppInfo(context, null, null);
+        List<SdlAppInfo> services = AndroidTools.querySdlAppInfo(context, null, null, null);
         for (SdlAppInfo sdlAppInfo : services) {
             if (sdlAppInfo != null && sdlAppInfo.getRouterServiceComponentName() != null
                     && className.equals((sdlAppInfo.getRouterServiceComponentName().getClassName()))) {

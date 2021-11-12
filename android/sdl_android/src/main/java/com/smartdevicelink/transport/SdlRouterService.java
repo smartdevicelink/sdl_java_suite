@@ -216,6 +216,7 @@ public class SdlRouterService extends Service {
 
     private boolean startSequenceComplete = false;
     private VehicleType receivedVehicleType;
+    private String connectionType;
 
     private ExecutorService packetExecutor = null;
     ConcurrentHashMap<TransportType, PacketWriteTaskMaster> packetWriteTaskMasterMap = null;
@@ -1104,7 +1105,7 @@ public class SdlRouterService extends Service {
         ComponentName name = new ComponentName(this, this.getClass());
         SdlAppInfo currentAppInfo = null;
 
-        List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(getApplicationContext(), new SdlAppInfo.BestRouterComparator(), null);
+        List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(getApplicationContext(), new SdlAppInfo.BestRouterComparator(), null, connectionType);
         for (SdlAppInfo appInfo : sdlAppInfoList) {
             if (appInfo.getRouterServiceComponentName().equals(name)) {
                 currentAppInfo = appInfo;
@@ -1150,7 +1151,7 @@ public class SdlRouterService extends Service {
      * The method will attempt to start up the next router service in line based on the sorting criteria of best router service.
      */
     protected void deployNextRouterService() {
-        List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(getApplicationContext(), new SdlAppInfo.BestRouterComparator(), null);
+        List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(getApplicationContext(), new SdlAppInfo.BestRouterComparator(), null, connectionType);
         if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty()) {
             ComponentName name = new ComponentName(this, this.getClass());
             SdlAppInfo info;
@@ -1256,6 +1257,9 @@ public class SdlRouterService extends Service {
             receivedVehicleType = new VehicleType(
                     (HashMap<String, Object>) intent.getSerializableExtra(TransportConstants.VEHICLE_INFO_EXTRA)
             );
+        }
+        if (intent != null && intent.hasExtra(TransportConstants.CONNECTION_TYPE_EXTRA)) {
+            connectionType = intent.getStringExtra(TransportConstants.CONNECTION_TYPE_EXTRA);
         }
         // Only trusting the first intent received to start the RouterService and run initial checks to avoid a case where an app could send incorrect data after the spp connection has started.
         if (firstStart) {

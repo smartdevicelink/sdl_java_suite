@@ -294,7 +294,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                 if (runningBluetoothServicePackage.isEmpty()) {
                     //If there isn't a service running we should try to start one
                     //We will try to sort the SDL enabled apps and find the one that's been installed the longest
-                    final List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(context, new SdlAppInfo.BestRouterComparator(), vehicleType);
+                    final List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(context, new SdlAppInfo.BestRouterComparator(), vehicleType, BluetoothDevice.ACTION_ACL_CONNECTED);
                     synchronized (DEVICE_LISTENER_LOCK) {
                         final boolean sdlDeviceListenerEnabled = SdlDeviceListener.isFeatureSupported(sdlAppInfoList);
                         if (sdlDeviceListenerEnabled) {
@@ -601,7 +601,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                                 if (store != null) {
                                     vehicleType = new VehicleType(store);
                                 }
-                                final List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(context, new SdlAppInfo.BestRouterComparator(), vehicleType);
+                                final List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(context, new SdlAppInfo.BestRouterComparator(), vehicleType, BluetoothDevice.ACTION_ACL_CONNECTED);
                                 if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty()) {
                                     ComponentName routerService = sdlAppInfoList.get(0).getRouterServiceComponentName();
                                     startRouterService(context, routerService, false, bluetoothDevice, true, vehicleType);
