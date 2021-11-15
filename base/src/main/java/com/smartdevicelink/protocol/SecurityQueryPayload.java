@@ -16,7 +16,7 @@ public class SecurityQueryPayload {
     private SecurityQueryID _securityQueryID;
     private int _correlationID;
     private int _jsonSize;
-    private SecurityQueryErrorCode _errorCode;
+    private int _bulkDataSize;
 
     private byte[] _jsonData = null;
     private byte[] _bulkData = null;
@@ -51,11 +51,6 @@ public class SecurityQueryPayload {
         int _jsonSize = BitConverter.intFromByteArray(binHeader, 8);
         msg.setJsonSize(_jsonSize);
 
-        //If we get an error message we want the error code from the last 8 bits
-        if (msg.getQueryType() == SecurityQueryType.NOTIFICATION && msg.getQueryID() == SecurityQueryID.SEND_INTERNAL_ERROR) {
-            msg.setErrorCode(SecurityQueryErrorCode.valueOf(binHeader[binHeader.length - 1]));
-        }
-
         try {
             //Get the JsonData after the header (after 96 bits) based on the jsonData size
             if (_jsonSize > 0 && _jsonSize <= (binHeader.length - SECURITY_QUERY_HEADER_SIZE)) {
@@ -84,40 +79,28 @@ public class SecurityQueryPayload {
         return msg;
     }
 
-    public byte[] assembleSecurityQueryPayload(int payloadSize) {
-        byte[] payLoad = new byte[SECURITY_QUERY_HEADER_SIZE];
-        if (_securityQueryID == SecurityQueryID.SEND_INTERNAL_ERROR && _securityQueryType == SecurityQueryType.NOTIFICATION) {
-            payLoad = new byte[SECURITY_QUERY_HEADER_SIZE + payloadSize + 1];
-            System.arraycopy(_jsonData, 0, payLoad, SECURITY_QUERY_HEADER_SIZE, _jsonSize);
-            byte[] errorCode = new byte[1];
-            if (this._errorCode != null) {
-                errorCode[0] = _errorCode.getValue();
-            } else {
-                errorCode[0] = SecurityQueryErrorCode.ERROR_UNKNOWN_INTERNAL_ERROR.getValue();
-            }
-            System.arraycopy(errorCode, 0, payLoad, payLoad.length - 1, 1);
-        } else if (_securityQueryID == SecurityQueryID.SEND_HANDSHAKE_DATA && _securityQueryType == SecurityQueryType.RESPONSE) {
-            payLoad = new byte[SECURITY_QUERY_HEADER_SIZE + payloadSize];
-            System.arraycopy(_bulkData, 0, payLoad, SECURITY_QUERY_HEADER_SIZE, payloadSize);
-        }
-
-        System.arraycopy(assembleHeaderBytes(), 0, payLoad, 0, SECURITY_QUERY_HEADER_SIZE);
-
-        return payLoad;
-    }
-
-    private byte[] assembleHeaderBytes() {
+    public byte[] assembleBinaryData() {
         // From the properties, create a data buffer
         // Query Type - first 8 bits
         // Query ID - next 24 bits
         // Sequence Number - next 32 bits
         // JSON size - next 32 bits
-        byte[] ret = new byte[SECURITY_QUERY_HEADER_SIZE];
-        ret[0] = _securityQueryType.getValue();
-        System.arraycopy(_securityQueryID.getValue(), 0, ret, 1, 3);
-        System.arraycopy(BitConverter.intToByteArray(_correlationID), 0, ret, 4, 4);
-        System.arraycopy(BitConverter.intToByteArray(_jsonSize), 0, ret, 8, 4);
-        return ret;
+        byte[] header = new byte[SECURITY_QUERY_HEADER_SIZE];
+        header[0] = _securityQueryType.getValue();
+        System.arraycopy(_securityQueryID.getValue(), 0, header, 1, 3);
+        System.arraycopy(BitConverter.intToByteArray(_correlationID), 0, header, 4, 4);
+        System.arraycopy(BitConverter.intToByteArray(_jsonSize), 0, header, 8, 4);
+
+        int size = _jsonSize + _bulkDataSize + SECURITY_QUERY_HEADER_SIZE;
+        byte[] dataOut = new byte[size];
+        System.arraycopy(header, 0, dataOut, 0, SECURITY_QUERY_HEADER_SIZE);
+        if (_jsonData != null) {
+            System.arraycopy(_jsonData, 0, dataOut, SECURITY_QUERY_HEADER_SIZE, _jsonSize);
+        }
+        if (_bulkData != null) {
+            System.arraycopy(_bulkData, 0, dataOut, SECURITY_QUERY_HEADER_SIZE + _jsonSize, _bulkDataSize);
+        }
+        return dataOut;
     }
 
     public SecurityQueryType getQueryType() {
@@ -152,12 +135,12 @@ public class SecurityQueryPayload {
         this._jsonSize = _jsonSize;
     }
 
-    public SecurityQueryErrorCode getErrorCode() {
-        return _errorCode;
+    public int getBulkDataSize() {
+        return _bulkDataSize;
     }
 
-    public void setErrorCode(SecurityQueryErrorCode _errorCode) {
-        this._errorCode = _errorCode;
+    private void setBulkDataSize(int _bulkDataSize) {
+        this._bulkDataSize = _bulkDataSize;
     }
 
     public byte[] getJsonData() {
@@ -180,6 +163,13 @@ public class SecurityQueryPayload {
     }
 
     public void setBulkData(byte[] _bulkData) {
-        this._bulkData = _bulkData;
+        if(_bulkData == null) {
+            this._bulkDataSize = 0;
+            this._bulkData = null;
+            return;
+        }
+        this._bulkDataSize = _bulkData.length;
+        this._bulkData = new byte[this._bulkDataSize];
+        System.arraycopy(_bulkData, 0, this._bulkData, 0, _bulkDataSize);
     }
 }

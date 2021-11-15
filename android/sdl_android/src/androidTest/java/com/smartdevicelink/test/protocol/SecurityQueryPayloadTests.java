@@ -68,7 +68,7 @@ public class SecurityQueryPayloadTests {
         dummyBqh.setCorrelationID(3);
         dummyBqh.setJsonData(new byte[0]);
 
-        byte[] assembledHeader = dummyBqh.assembleSecurityQueryPayload(0);
+        byte[] assembledHeader = dummyBqh.assembleBinaryData();
         assertEquals(dummyBqh.getQueryType(), SecurityQueryType.valueOf(assembledHeader[0]));
         byte[] queryIDFromHeader = new byte[3];
         System.arraycopy(assembledHeader, 1, queryIDFromHeader, 0, 3);
@@ -81,7 +81,7 @@ public class SecurityQueryPayloadTests {
     public void testAssemblyAndParse() {
         SecurityQueryPayload bqh = createDummyBqh();
 
-        byte[] bqhBytes = bqh.assembleSecurityQueryPayload(0);
+        byte[] bqhBytes = bqh.assembleBinaryData();
         assertNotNull(bqhBytes);
 
         SecurityQueryPayload parsedBqh = SecurityQueryPayload.parseBinaryQueryHeader(bqhBytes);
@@ -99,7 +99,7 @@ public class SecurityQueryPayloadTests {
     public void testCorruptHeader() {
         SecurityQueryPayload bqh = createDummyBqh();
 
-        byte[] bqhBytes = bqh.assembleSecurityQueryPayload(0);
+        byte[] bqhBytes = bqh.assembleBinaryData();
 
         assertNotNull(safeParse(bqhBytes));
 

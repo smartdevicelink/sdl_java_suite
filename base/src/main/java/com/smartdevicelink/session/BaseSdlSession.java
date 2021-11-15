@@ -221,8 +221,8 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
         // If the query is of type `Notification` and the id represents a client internal error, we abort the response message and the encryptionManager will not be in state ready.
         if (receivedHeader.getQueryID() == SecurityQueryID.SEND_INTERNAL_ERROR
                 && receivedHeader.getQueryType() == SecurityQueryType.NOTIFICATION) {
-            if (receivedHeader.getErrorCode() != null) {
-                DebugTool.logError(TAG, "Security Query module internal error: " + receivedHeader.getErrorCode().getName());
+            if (receivedHeader.getBulkData() != null && receivedHeader.getBulkDataSize() == 1) {
+                DebugTool.logError(TAG, "Security Query module internal error: " + SecurityQueryErrorCode.valueOf(receivedHeader.getBulkData()[0]).getName());
             } else {
                 DebugTool.logError(TAG, "Security Query module error: No information provided");
             }
@@ -263,17 +263,17 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
                 jsonData = new byte[0];
             }
             responseHeader.setJsonData(jsonData);
-            responseHeader.setBulkData(null);
-            responseHeader.setErrorCode(SecurityQueryErrorCode.ERROR_UNKNOWN_INTERNAL_ERROR);
-            returnBytes = responseHeader.assembleSecurityQueryPayload(responseHeader.getJsonSize());
+            byte[] errorCode = new byte[1];
+            errorCode[0] = SecurityQueryErrorCode.ERROR_UNKNOWN_INTERNAL_ERROR.getValue();
+            responseHeader.setBulkData(errorCode);
         } else {
             responseHeader.setQueryID(SecurityQueryID.SEND_HANDSHAKE_DATA);
             responseHeader.setQueryType(SecurityQueryType.RESPONSE);
             responseHeader.setCorrelationID(msg.getCorrID());
             responseHeader.setBulkData(dataToRead);
             responseHeader.setJsonData(null);
-            returnBytes = responseHeader.assembleSecurityQueryPayload(iNumBytes);
         }
+        returnBytes = responseHeader.assembleBinaryData();
 
         ProtocolMessage protocolMessage = new ProtocolMessage();
         protocolMessage.setSessionType(SessionType.CONTROL);
