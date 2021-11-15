@@ -120,4 +120,12 @@ public class SecurityQueryPayloadTests {
         assertEquals(0, bqh.getJsonSize());
         assertEquals(null, bqh.getJsonData());
     }
+
+    @Test
+    public void testNullBulkData() {
+        SecurityQueryPayload bqh = createDummyBqh();
+        bqh.setBulkData(null);
+        assertEquals(0, bqh.getBulkDataSize());
+        assertEquals(null, bqh.getBulkData());
+    }
 }
