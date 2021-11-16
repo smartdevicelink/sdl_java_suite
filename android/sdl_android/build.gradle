@@ -40,6 +40,8 @@ android {
     }
 }
 
+ext { VERSION_NAME = "$project.android.defaultConfig.versionName" }
+
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     //api 'com.livio.taskmaster:taskmaster:0.6.0'
