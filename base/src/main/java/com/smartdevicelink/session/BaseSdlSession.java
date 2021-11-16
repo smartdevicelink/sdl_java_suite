@@ -65,7 +65,6 @@ import com.smartdevicelink.util.Version;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -241,39 +240,28 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
 
         iNumBytes = sdlSecurity.runHandshake(data, dataToRead);
 
-        // Assemble a security query payload header for our response
-        SecurityQueryPayload responseHeader = new SecurityQueryPayload();
-
-        byte[] returnBytes;
+        ProtocolMessage protocolMessage;
         if (iNumBytes == null || iNumBytes <= 0) {
             DebugTool.logError(TAG, "Internal Error processing control service");
-
-            responseHeader.setQueryID(SecurityQueryID.SEND_INTERNAL_ERROR);
-            responseHeader.setQueryType(SecurityQueryType.NOTIFICATION);
-            responseHeader.setCorrelationID(msg.getCorrID());
-            byte[] jsonData;
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("id", SecurityQueryErrorCode.ERROR_UNKNOWN_INTERNAL_ERROR.getValue());
-                jsonObject.put("text", SecurityQueryErrorCode.ERROR_UNKNOWN_INTERNAL_ERROR.getName());
-                jsonData = jsonObject.toString().getBytes();
-            } catch (JSONException e) {
-                DebugTool.logError(TAG, "JSON exception when constructing handshake error Notification");
-                e.printStackTrace();
-                jsonData = new byte[0];
-            }
-            responseHeader.setJsonData(jsonData);
-            byte[] errorCode = new byte[1];
-            errorCode[0] = SecurityQueryErrorCode.ERROR_UNKNOWN_INTERNAL_ERROR.getValue();
-            responseHeader.setBulkData(errorCode);
+            protocolMessage = serverSecurityFailedMessageWithClientMessageHeader(msg.getCorrID());
         } else {
-            responseHeader.setQueryID(SecurityQueryID.SEND_HANDSHAKE_DATA);
-            responseHeader.setQueryType(SecurityQueryType.RESPONSE);
-            responseHeader.setCorrelationID(msg.getCorrID());
-            responseHeader.setBulkData(dataToRead);
-            responseHeader.setJsonData(null);
+            protocolMessage = serverSecurityHandshakeMessageWithData(msg.getCorrID(), dataToRead);
         }
-        returnBytes = responseHeader.assembleBinaryData();
+
+        //sdlSecurity.hs();
+
+        sendMessage(protocolMessage);
+    }
+
+    private ProtocolMessage serverSecurityHandshakeMessageWithData(int correlationId, byte[] bulkData) {
+        SecurityQueryPayload responseHeader = new SecurityQueryPayload();
+        responseHeader.setQueryID(SecurityQueryID.SEND_HANDSHAKE_DATA);
+        responseHeader.setQueryType(SecurityQueryType.RESPONSE);
+        responseHeader.setCorrelationID(correlationId);
+        responseHeader.setBulkData(bulkData);
+        responseHeader.setJsonData(null);
+
+        byte[] returnBytes = responseHeader.assembleBinaryData();
 
         ProtocolMessage protocolMessage = new ProtocolMessage();
         protocolMessage.setSessionType(SessionType.CONTROL);
@@ -282,9 +270,40 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
         protocolMessage.setVersion((byte) sdlProtocol.getProtocolVersion().getMajor());
         protocolMessage.setSessionID((byte) this.sessionId);
 
-        //sdlSecurity.hs();
+        return protocolMessage;
+    }
 
-        sendMessage(protocolMessage);
+    private ProtocolMessage serverSecurityFailedMessageWithClientMessageHeader(int correlationId) {
+        SecurityQueryPayload responseHeader = new SecurityQueryPayload();
+        responseHeader.setQueryID(SecurityQueryID.SEND_INTERNAL_ERROR);
+        responseHeader.setQueryType(SecurityQueryType.NOTIFICATION);
+        responseHeader.setCorrelationID(correlationId);
+        byte[] jsonData;
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("id", SecurityQueryErrorCode.ERROR_UNKNOWN_INTERNAL_ERROR.getValue());
+            jsonObject.put("text", SecurityQueryErrorCode.ERROR_UNKNOWN_INTERNAL_ERROR.getName());
+            jsonData = jsonObject.toString().getBytes();
+        } catch (JSONException e) {
+            DebugTool.logError(TAG, "JSON exception when constructing handshake error Notification");
+            e.printStackTrace();
+            jsonData = new byte[0];
+        }
+        responseHeader.setJsonData(jsonData);
+        byte[] errorCode = new byte[1];
+        errorCode[0] = SecurityQueryErrorCode.ERROR_UNKNOWN_INTERNAL_ERROR.getValue();
+        responseHeader.setBulkData(errorCode);
+
+        byte[] returnBytes = responseHeader.assembleBinaryData();
+
+        ProtocolMessage protocolMessage = new ProtocolMessage();
+        protocolMessage.setSessionType(SessionType.CONTROL);
+        protocolMessage.setData(returnBytes);
+        protocolMessage.setFunctionID(0x01);
+        protocolMessage.setVersion((byte) sdlProtocol.getProtocolVersion().getMajor());
+        protocolMessage.setSessionID((byte) this.sessionId);
+
+        return protocolMessage;
     }
 
     /**
