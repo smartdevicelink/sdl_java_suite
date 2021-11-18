@@ -19,10 +19,14 @@ public class SdlReceiver extends SdlBroadcastReceiver {
         // SdlService needs to be foregrounded in Android O and above
         // This will prevent apps in the background from crashing when they try to start SdlService
         // Because Android O doesn't allow background apps to start background services
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(intent);
-        } else {
-            context.startService(intent);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(intent);
+            } else {
+                context.startService(intent);
+            }
+        } catch (Exception e) {
+            DebugTool.logError("RHENIGAN", "Failed to start SdlService!");
         }
     }
 

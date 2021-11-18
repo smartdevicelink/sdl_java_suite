@@ -200,21 +200,7 @@ public class IntegrationValidator {
 
         boolean serviceFilterHasAction = false;
         String className = localRouterClass.getName();
-
-        boolean areBtPermissionsEnabled = true;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            areBtPermissionsEnabled = false;
-            try {
-                ComponentName cn = new ComponentName(context.getPackageName(), className);
-                PackageManager pm = context.getPackageManager();
-                ServiceInfo serviceInfo = pm.getServiceInfo(cn, 0);
-                areBtPermissionsEnabled = AndroidTools.areBtPermissionsGranted(context, serviceInfo.packageName);
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-
-        List<SdlAppInfo> services = AndroidTools.querySdlAppInfo(context, null, null, null);
+        List<SdlAppInfo> services = AndroidTools.querySdlAppInfo(context, null, null);
         for (SdlAppInfo sdlAppInfo : services) {
             if (sdlAppInfo != null && sdlAppInfo.getRouterServiceComponentName() != null
                     && className.equals((sdlAppInfo.getRouterServiceComponentName().getClassName()))) {
@@ -222,11 +208,7 @@ public class IntegrationValidator {
                 break;
             }
         }
-
-        if (!serviceFilterHasAction && !areBtPermissionsEnabled) {
-            retVal.successful = true;
-            retVal.resultText = "intent-filter not found for SdlRouterService because BT Permissions are disabled";
-        } else if (!serviceFilterHasAction && areBtPermissionsEnabled) {
+        if (!serviceFilterHasAction) {
             retVal.successful = false;
             retVal.resultText = "This application has not specified its intent-filter for the SdlRouterService.";
         }

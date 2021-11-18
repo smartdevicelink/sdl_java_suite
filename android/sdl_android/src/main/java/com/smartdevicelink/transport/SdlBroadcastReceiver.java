@@ -41,9 +41,6 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ServiceInfo;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.os.Looper;
@@ -51,7 +48,6 @@ import android.os.Parcelable;
 import android.util.AndroidRuntimeException;
 
 import androidx.annotation.CallSuper;
-import androidx.core.content.ContextCompat;
 
 import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.transport.RouterServiceValidator.TrustedListCallback;
@@ -70,8 +66,6 @@ import java.util.Locale;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import static android.Manifest.permission.BLUETOOTH_CONNECT;
-import static android.Manifest.permission.BLUETOOTH_SCAN;
 import static com.smartdevicelink.transport.TransportConstants.FOREGROUND_EXTRA;
 
 public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
@@ -294,7 +288,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                 if (runningBluetoothServicePackage.isEmpty()) {
                     //If there isn't a service running we should try to start one
                     //We will try to sort the SDL enabled apps and find the one that's been installed the longest
-                    final List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(context, new SdlAppInfo.BestRouterComparator(), vehicleType, BluetoothDevice.ACTION_ACL_CONNECTED);
+                    final List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(context, new SdlAppInfo.BestRouterComparator(), vehicleType);
                     synchronized (DEVICE_LISTENER_LOCK) {
                         final boolean sdlDeviceListenerEnabled = SdlDeviceListener.isFeatureSupported(sdlAppInfoList);
                         if (sdlDeviceListenerEnabled) {
@@ -302,6 +296,16 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                             String routerServicePackage = null;
                             if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty() && sdlAppInfoList.get(0).getRouterServiceComponentName() != null) {
                                 routerServicePackage = sdlAppInfoList.get(0).getRouterServiceComponentName().getPackageName();
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                    if (!AndroidTools.areBtPermissionsGranted(context, routerServicePackage) && sdlAppInfoList.size() > 1) {
+                                        for (SdlAppInfo appInfo : sdlAppInfoList) {
+                                            if (AndroidTools.areBtPermissionsGranted(context, appInfo.getRouterServiceComponentName().getPackageName())) {
+                                                routerServicePackage = appInfo.getRouterServiceComponentName().getPackageName();
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
                             }
                             DebugTool.logInfo(TAG, ": This app's package: " + myPackage);
                             DebugTool.logInfo(TAG, ": Router service app's package: " + routerServicePackage);
@@ -601,9 +605,21 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                                 if (store != null) {
                                     vehicleType = new VehicleType(store);
                                 }
-                                final List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(context, new SdlAppInfo.BestRouterComparator(), vehicleType, BluetoothDevice.ACTION_ACL_CONNECTED);
+                                final List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(context, new SdlAppInfo.BestRouterComparator(), vehicleType);
                                 if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty()) {
                                     ComponentName routerService = sdlAppInfoList.get(0).getRouterServiceComponentName();
+                                    //If we are on android 12 check the app has BT permissions
+                                    //If it does not try to find another app in the list that does;
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                        if (!AndroidTools.areBtPermissionsGranted(context, routerService.getPackageName()) && sdlAppInfoList.size() > 1) {
+                                            for (SdlAppInfo appInfo : sdlAppInfoList) {
+                                                if (AndroidTools.areBtPermissionsGranted(context, appInfo.getRouterServiceComponentName().getPackageName())) {
+                                                    routerService = appInfo.getRouterServiceComponentName();
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
                                     startRouterService(context, routerService, false, bluetoothDevice, true, vehicleType);
                                 }
                             }
