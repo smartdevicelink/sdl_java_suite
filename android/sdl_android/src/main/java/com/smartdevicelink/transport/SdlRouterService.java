@@ -1826,6 +1826,10 @@ public class SdlRouterService extends Service {
 
         startService.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            startService.putExtra(TransportConstants.PENDING_BOOLEAN_EXTRA, true);
+        }
+
         AndroidTools.sendExplicitBroadcast(getApplicationContext(), startService, null);
 
         //HARDWARE_CONNECTED
@@ -2901,6 +2905,9 @@ public class SdlRouterService extends Service {
         pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_PING, true);
         if (receivedVehicleType != null) {
             pingIntent.putExtra(TransportConstants.VEHICLE_INFO_EXTRA, receivedVehicleType.getStore());
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            pingIntent.putExtra(TransportConstants.PENDING_BOOLEAN_EXTRA, true);
         }
     }
 

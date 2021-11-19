@@ -59,6 +59,7 @@
 
         <service
             android:name="com.sdl.hellosdlandroid.SdlService"
+            android:exported="true"
             android:foregroundServiceType="connectedDevice">
         </service>
         <service

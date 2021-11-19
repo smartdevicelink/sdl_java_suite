@@ -32,6 +32,7 @@
 
 package com.smartdevicelink.util;
 
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -249,6 +250,13 @@ public class AndroidTools {
             for (ResolveInfo app : apps) {
                 try {
                     intent.setClassName(app.activityInfo.applicationInfo.packageName, app.activityInfo.name);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && intent.getBooleanExtra(TransportConstants.PENDING_BOOLEAN_EXTRA, false)) {
+                        Intent pending = new Intent();
+                        PendingIntent pendingIntent = PendingIntent.getForegroundService(context, (int) System.currentTimeMillis(), pending, PendingIntent.FLAG_MUTABLE | Intent.FILL_IN_COMPONENT);
+                        intent.putExtra(TransportConstants.PENDING_INTENT_EXTRA, pendingIntent);
+                    }
+
                     context.sendBroadcast(intent);
                 } catch (Exception e) {
                     //In case there is missing info in the app reference we want to keep moving
