@@ -25,7 +25,7 @@ public class SecurityQueryPayloadTests {
         bqh.setQueryID(SecurityQueryID.SEND_HANDSHAKE_DATA);
         bqh.setQueryType(SecurityQueryType.REQUEST);
         bqh.setBulkData(null);
-        bqh.setJsonSize(0);
+        bqh.setJsonData(null);
         return bqh;
     }
 
@@ -66,9 +66,9 @@ public class SecurityQueryPayloadTests {
         dummyBqh.setQueryType(SecurityQueryType.REQUEST);
         dummyBqh.setQueryID(SecurityQueryID.SEND_HANDSHAKE_DATA);
         dummyBqh.setCorrelationID(3);
-        dummyBqh.setJsonSize(0);
+        dummyBqh.setJsonData(new byte[0]);
 
-        byte[] assembledHeader = dummyBqh.assembleHeaderBytes();
+        byte[] assembledHeader = dummyBqh.assembleBinaryData();
         assertEquals(dummyBqh.getQueryType(), SecurityQueryType.valueOf(assembledHeader[0]));
         byte[] queryIDFromHeader = new byte[3];
         System.arraycopy(assembledHeader, 1, queryIDFromHeader, 0, 3);
@@ -81,7 +81,7 @@ public class SecurityQueryPayloadTests {
     public void testAssemblyAndParse() {
         SecurityQueryPayload bqh = createDummyBqh();
 
-        byte[] bqhBytes = bqh.assembleHeaderBytes();
+        byte[] bqhBytes = bqh.assembleBinaryData();
         assertNotNull(bqhBytes);
 
         SecurityQueryPayload parsedBqh = SecurityQueryPayload.parseBinaryQueryHeader(bqhBytes);
@@ -99,7 +99,7 @@ public class SecurityQueryPayloadTests {
     public void testCorruptHeader() {
         SecurityQueryPayload bqh = createDummyBqh();
 
-        byte[] bqhBytes = bqh.assembleHeaderBytes();
+        byte[] bqhBytes = bqh.assembleBinaryData();
 
         assertNotNull(safeParse(bqhBytes));
 
@@ -114,13 +114,18 @@ public class SecurityQueryPayloadTests {
     }
 
     @Test
-    public void testJsonSetException() {
-        try {
-            SecurityQueryPayload bqh = createDummyBqh();
-            bqh.setJsonData(null);
-            fail("Setting JSON data to null should have thrown an exception");
-        } catch (Exception e) {
-            //Pass
-        }
+    public void testNullJsonData() {
+        SecurityQueryPayload bqh = createDummyBqh();
+        bqh.setJsonData(null);
+        assertEquals(0, bqh.getJsonSize());
+        assertEquals(null, bqh.getJsonData());
+    }
+
+    @Test
+    public void testNullBulkData() {
+        SecurityQueryPayload bqh = createDummyBqh();
+        bqh.setBulkData(null);
+        assertEquals(0, bqh.getBulkDataSize());
+        assertEquals(null, bqh.getBulkData());
     }
 }
