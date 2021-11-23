@@ -216,6 +216,7 @@ public class SdlRouterService extends Service {
 
     private boolean startSequenceComplete = false;
     private VehicleType receivedVehicleType;
+    private boolean isConnectedOverUSB;
 
     private ExecutorService packetExecutor = null;
     ConcurrentHashMap<TransportType, PacketWriteTaskMaster> packetWriteTaskMasterMap = null;
@@ -1098,9 +1099,14 @@ public class SdlRouterService extends Service {
         }
 
         //If Android 12 or newer make sure we have BT Runtime permissions
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !AndroidTools.areBtPermissionsGranted(this, this.getPackageName())) {
-            DebugTool.logError(TAG, "Bluetooth Runtime Permissions are not granted. Shutting down");
-            return false;
+        boolean supportsBTPermissions = AndroidTools.areBtPermissionsGranted(this, this.getPackageName());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !supportsBTPermissions) {
+            if (!isConnectedOverUSB) {
+                DebugTool.logError(TAG, "Bluetooth Runtime Permissions are not granted. Shutting down");
+                return false;
+            } else if (bluetoothEnabledRouterServiceExists()) {
+                return false;
+            }
         }
 
         if (!AndroidTools.isServiceExported(this, new ComponentName(this, this.getClass()))) { //We want to check to see if our service is actually exported
@@ -1132,6 +1138,21 @@ public class SdlRouterService extends Service {
         return true;
     }
 
+    //USB Connection
+    //4.11 APP, New App (Permissions Denied)
+    //Try to start New app
+    //4.11 APP could connect over BT, but will it?
+    private boolean bluetoothEnabledRouterServiceExists() {
+        List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(getApplicationContext(), new SdlAppInfo.BestRouterComparator(), null);
+        if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty()) {
+            for (SdlAppInfo appInfo : sdlAppInfoList) {
+               if (AndroidTools.areBtPermissionsGranted(getApplicationContext(), appInfo.getRouterServiceComponentName().getPackageName())) {
+                   return true;
+               }
+            }
+        }
+        return false;
+    }
 
     @Override
     public void onCreate() {
@@ -1263,6 +1284,9 @@ public class SdlRouterService extends Service {
             receivedVehicleType = new VehicleType(
                     (HashMap<String, Object>) intent.getSerializableExtra(TransportConstants.VEHICLE_INFO_EXTRA)
             );
+        }
+        if (intent != null && intent.hasExtra(TransportConstants.CONNECTION_TYPE_EXTRA)) {
+            isConnectedOverUSB = TransportConstants.ACTION_USB_ACCESSORY_ATTACHED.equalsIgnoreCase(intent.getStringExtra(TransportConstants.CONNECTION_TYPE_EXTRA));
         }
         // Only trusting the first intent received to start the RouterService and run initial checks to avoid a case where an app could send incorrect data after the spp connection has started.
         if (firstStart) {

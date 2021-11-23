@@ -296,16 +296,6 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                             String routerServicePackage = null;
                             if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty() && sdlAppInfoList.get(0).getRouterServiceComponentName() != null) {
                                 routerServicePackage = sdlAppInfoList.get(0).getRouterServiceComponentName().getPackageName();
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                                    if (!AndroidTools.areBtPermissionsGranted(context, routerServicePackage) && sdlAppInfoList.size() > 1) {
-                                        for (SdlAppInfo appInfo : sdlAppInfoList) {
-                                            if (AndroidTools.areBtPermissionsGranted(context, appInfo.getRouterServiceComponentName().getPackageName())) {
-                                                routerServicePackage = appInfo.getRouterServiceComponentName().getPackageName();
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
                             }
                             DebugTool.logInfo(TAG, ": This app's package: " + myPackage);
                             DebugTool.logInfo(TAG, ": Router service app's package: " + routerServicePackage);
@@ -610,16 +600,6 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                                     ComponentName routerService = sdlAppInfoList.get(0).getRouterServiceComponentName();
                                     //If we are on android 12 check the app has BT permissions
                                     //If it does not try to find another app in the list that does;
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                                        if (!AndroidTools.areBtPermissionsGranted(context, routerService.getPackageName()) && sdlAppInfoList.size() > 1) {
-                                            for (SdlAppInfo appInfo : sdlAppInfoList) {
-                                                if (AndroidTools.areBtPermissionsGranted(context, appInfo.getRouterServiceComponentName().getPackageName())) {
-                                                    routerService = appInfo.getRouterServiceComponentName();
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
                                     startRouterService(context, routerService, false, bluetoothDevice, true, vehicleType);
                                 }
                             }
