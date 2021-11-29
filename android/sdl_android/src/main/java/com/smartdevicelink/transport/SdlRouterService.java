@@ -217,6 +217,7 @@ public class SdlRouterService extends Service {
     private boolean startSequenceComplete = false;
     private VehicleType receivedVehicleType;
     private boolean isConnectedOverUSB;
+    private boolean secondPass = false;
 
     private ExecutorService packetExecutor = null;
     ConcurrentHashMap<TransportType, PacketWriteTaskMaster> packetWriteTaskMasterMap = null;
@@ -1100,13 +1101,9 @@ public class SdlRouterService extends Service {
 
         //If Android 12 or newer make sure we have BT Runtime permissions
         boolean supportsBTPermissions = AndroidTools.areBtPermissionsGranted(this, this.getPackageName());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !supportsBTPermissions) {
-            if (!isConnectedOverUSB) {
-                DebugTool.logError(TAG, "Bluetooth Runtime Permissions are not granted. Shutting down");
-                return false;
-            } else if (bluetoothEnabledRouterServiceExists()) {
-                return false;
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !supportsBTPermissions && !secondPass) {
+            DebugTool.logError(TAG, "Bluetooth Runtime Permissions are not granted. Shutting down");
+            return false;
         }
 
         if (!AndroidTools.isServiceExported(this, new ComponentName(this, this.getClass()))) { //We want to check to see if our service is actually exported
@@ -1136,22 +1133,6 @@ public class SdlRouterService extends Service {
         }
 
         return true;
-    }
-
-    //USB Connection
-    //4.11 APP, New App (Permissions Denied)
-    //Try to start New app
-    //4.11 APP could connect over BT, but will it?
-    private boolean bluetoothEnabledRouterServiceExists() {
-        List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(getApplicationContext(), new SdlAppInfo.BestRouterComparator(), null);
-        if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty()) {
-            for (SdlAppInfo appInfo : sdlAppInfoList) {
-               if (AndroidTools.areBtPermissionsGranted(getApplicationContext(), appInfo.getRouterServiceComponentName().getPackageName())) {
-                   return true;
-               }
-            }
-        }
-        return false;
     }
 
     @Override
@@ -1188,6 +1169,10 @@ public class SdlRouterService extends Service {
                 if (info.getRouterServiceComponentName().equals(name) && listSize > i + 1) {
                     SdlAppInfo nextUp = sdlAppInfoList.get(i + 1);
                     Intent serviceIntent = new Intent();
+                    if (secondPass) {
+                        serviceIntent.putExtra("second_pass", true);
+                    }
+                    //Add check if it is second pass also add extra
                     serviceIntent.setComponent(nextUp.getRouterServiceComponentName());
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                         startService(serviceIntent);
@@ -1201,11 +1186,27 @@ public class SdlRouterService extends Service {
                     break;
 
                 }
+                if (i == listSize - 1 && !secondPass) {
+                    info = sdlAppInfoList.get(0);
+                    Intent serviceIntent = new Intent();
+                    serviceIntent.putExtra("second_pass", true);
+                    serviceIntent.setComponent(info.getRouterServiceComponentName());
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                        startService(serviceIntent);
+                    } else {
+                        try {
+                            startForegroundService(serviceIntent);
+                        } catch (Exception e) {
+                            DebugTool.logError(TAG, "Unable to start next SDL router service. " + e.getMessage());
+                        }
+                    }
+                }
             }
         } else {
             DebugTool.logInfo(TAG, "No sdl apps found");
             return;
         }
+
         closing = true;
         closeBluetoothSerialServer();
         notifyAltTransportOfClose(TransportConstants.ROUTER_SHUTTING_DOWN_REASON_NEWER_SERVICE);
@@ -1284,6 +1285,9 @@ public class SdlRouterService extends Service {
             receivedVehicleType = new VehicleType(
                     (HashMap<String, Object>) intent.getSerializableExtra(TransportConstants.VEHICLE_INFO_EXTRA)
             );
+        }
+        if (intent != null && intent.hasExtra("second_pass")) {
+            secondPass = intent.getBooleanExtra("second_pass", false);
         }
         if (intent != null && intent.hasExtra(TransportConstants.CONNECTION_TYPE_EXTRA)) {
             isConnectedOverUSB = TransportConstants.ACTION_USB_ACCESSORY_ATTACHED.equalsIgnoreCase(intent.getStringExtra(TransportConstants.CONNECTION_TYPE_EXTRA));
