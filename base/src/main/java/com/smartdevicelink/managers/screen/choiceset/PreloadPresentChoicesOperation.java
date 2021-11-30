@@ -185,7 +185,7 @@ class PreloadPresentChoicesOperation extends Task {
             choiceId = 1;
             reachedMaxIds = false;
         }
-        addListeners();
+
 
         DebugTool.logInfo(TAG, "Choice Operation: Executing preload choices operation");
         // Enforce unique cells and remove cells that are already loaded
@@ -419,6 +419,10 @@ class PreloadPresentChoicesOperation extends Task {
     }
 
     private void presentChoiceSet(final CompletionListener listener) {
+        // add listeners if there is a keboard
+        if (keyboardListener != null) {
+            addListeners();
+        }
         this.currentState = SDLPreloadPresentChoicesOperationState.PRESENTING_CHOICES;
         PerformInteraction pi = getPerformInteraction();
         pi.setOnRPCResponseListener(new OnRPCResponseListener() {
