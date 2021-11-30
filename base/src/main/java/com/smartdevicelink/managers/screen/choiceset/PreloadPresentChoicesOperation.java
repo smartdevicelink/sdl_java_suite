@@ -419,7 +419,7 @@ class PreloadPresentChoicesOperation extends Task {
     }
 
     private void presentChoiceSet(final CompletionListener listener) {
-        // add listeners if there is a keboard
+        // add listeners if there is a keyboard
         if (keyboardListener != null) {
             addListeners();
         }
