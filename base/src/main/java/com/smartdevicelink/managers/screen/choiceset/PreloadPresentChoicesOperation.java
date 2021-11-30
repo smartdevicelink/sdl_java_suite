@@ -185,6 +185,7 @@ class PreloadPresentChoicesOperation extends Task {
             choiceId = 1;
             reachedMaxIds = false;
         }
+        addListeners();
 
         DebugTool.logInfo(TAG, "Choice Operation: Executing preload choices operation");
         // Enforce unique cells and remove cells that are already loaded
@@ -343,7 +344,6 @@ class PreloadPresentChoicesOperation extends Task {
             return;
         }
 
-        addListeners();
 
         if (keyboardListener != null && choiceSet.getCustomKeyboardConfiguration() != null) {
             keyboardProperties = choiceSet.getCustomKeyboardConfiguration();
