@@ -70,6 +70,7 @@ import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.os.RemoteException;
+import android.provider.Settings;
 import android.util.AndroidRuntimeException;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
@@ -217,6 +218,10 @@ public class SdlRouterService extends Service {
     private boolean startSequenceComplete = false;
     private VehicleType receivedVehicleType;
     private boolean isConnectedOverUSB;
+    private boolean waitingForBTRuntimePermissions = false;
+    private Handler btPermissionsHandler;
+    private Runnable btPermissionsRunnable;
+    private final static int BT_PERMISSIONS_CHECK_FREQUENCY = 1000;
 
     private ExecutorService packetExecutor = null;
     ConcurrentHashMap<TransportType, PacketWriteTaskMaster> packetWriteTaskMasterMap = null;
@@ -1098,11 +1103,27 @@ public class SdlRouterService extends Service {
             return false;
         }
 
-        //If Android 12 or newer make sure we have BT Runtime permissions
-        boolean supportsBTPermissions = AndroidTools.areBtPermissionsGranted(this, this.getPackageName());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !supportsBTPermissions) {
-            DebugTool.logError(TAG, "Bluetooth Runtime Permissions are not granted. Shutting down");
-            return false;
+        // If Android 12 or newer make sure we have BT Runtime permissions
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !AndroidTools.areBtPermissionsGranted(this, this.getPackageName())) {
+            if (isConnectedOverUSB) {
+                waitingForBTRuntimePermissions = true;
+                btPermissionsHandler = new Handler(Looper.myLooper());
+                btPermissionsRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!AndroidTools.areBtPermissionsGranted(SdlRouterService.this, SdlRouterService.this.getPackageName())) {
+                            btPermissionsHandler.postDelayed(btPermissionsRunnable, BT_PERMISSIONS_CHECK_FREQUENCY);
+                        } else {
+                            waitingForBTRuntimePermissions = false;
+                            initBluetoothSerialService();
+                        }
+                    }
+                };
+                btPermissionsHandler.postDelayed(btPermissionsRunnable, BT_PERMISSIONS_CHECK_FREQUENCY);
+                showBTPermissionsNotification();
+            } else {
+                return false;
+            }
         }
 
         if (!AndroidTools.isServiceExported(this, new ComponentName(this, this.getClass()))) { //We want to check to see if our service is actually exported
@@ -1776,6 +1797,10 @@ public class SdlRouterService extends Service {
     }
 
     private synchronized void initBluetoothSerialService() {
+        if (waitingForBTRuntimePermissions) {
+            return;
+        }
+
         if (legacyModeEnabled) {
             DebugTool.logInfo(TAG, "Not starting own bluetooth during legacy mode");
             return;
@@ -3883,6 +3908,61 @@ public class SdlRouterService extends Service {
             notificationManager.notify(tag, TransportConstants.SDL_ERROR_NOTIFICATION_CHANNEL_ID_INT, notification);
         } else {
             DebugTool.logError(TAG, "notifySppError: Unable to retrieve notification Manager service");
+        }
+    }
+
+    private void showBTPermissionsNotification() {
+        Notification.Builder builder;
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            builder = new Notification.Builder(getApplicationContext());
+        } else {
+            builder = new Notification.Builder(getApplicationContext(), TransportConstants.SDL_ERROR_NOTIFICATION_CHANNEL_ID);
+        }
+
+        ComponentName name = new ComponentName(this, this.getClass());
+        if (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)) { //If we are in debug mode, include what app has the router service open
+            builder.setContentTitle("SDL: " + name.getPackageName());
+        } else {
+            builder.setContentTitle(getString(R.string.notification_title));
+        }
+        builder.setTicker(getString(R.string.sdl_error_notification_channel_name));
+        builder.setContentText(getString(R.string.allow_bluetooth_permissions));
+
+        //We should use icon from library resources if available
+        int trayId = getResources().getIdentifier("sdl_tray_icon", "drawable", getPackageName());
+
+        builder.setSmallIcon(trayId);
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.spp_error);
+        builder.setLargeIcon(icon);
+
+        builder.setOngoing(false);
+        builder.setAutoCancel(true);
+
+        // Create an intent that will be fired when the user clicks the notification.
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getPackageName(), null);
+        intent.setData(uri);
+        int flag = android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? PendingIntent.FLAG_IMMUTABLE : 0;
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, flag);
+        builder.setContentIntent(pendingIntent);
+
+        final String tag = "SDL";
+        //Now we need to add a notification channel
+        final NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager != null) {
+            notificationManager.cancel(tag, TransportConstants.SDL_ERROR_NOTIFICATION_CHANNEL_ID_INT);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationChannel notificationChannel = new NotificationChannel(TransportConstants.SDL_ERROR_NOTIFICATION_CHANNEL_ID, getString(R.string.sdl_error_notification_channel_name), NotificationManager.IMPORTANCE_HIGH);
+                notificationChannel.enableLights(true);
+                notificationChannel.enableVibration(true);
+                notificationChannel.setShowBadge(false);
+                notificationManager.createNotificationChannel(notificationChannel);
+                builder.setChannelId(notificationChannel.getId());
+            }
+            Notification notification = builder.build();
+            notificationManager.notify(tag, TransportConstants.SDL_ERROR_NOTIFICATION_CHANNEL_ID_INT, notification);
+        } else {
+            DebugTool.logError(TAG, "Unable to retrieve notification Manager service");
         }
     }
 }

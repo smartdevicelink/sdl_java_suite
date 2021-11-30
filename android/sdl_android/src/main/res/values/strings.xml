@@ -5,6 +5,7 @@
     <string name="lockscreen_device_image_description">Device Icon</string>
     <string name="default_lockscreen_warning_message">Swipe down to dismiss, acknowledging that you are not the driver.</string>
     <string name="spp_out_of_resource">Too many apps are using Bluetooth</string>
+    <string name="allow_bluetooth_permissions">Please click here and allow the app to use bluetooth permissions</string>
     <string name="notification_title">SmartDeviceLink</string>
     <string name="sdl_error_notification_channel_name">SDL Error</string>
 </resources>
