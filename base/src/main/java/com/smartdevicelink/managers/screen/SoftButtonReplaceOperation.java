@@ -304,7 +304,7 @@ class SoftButtonReplaceOperation extends Task {
     }
 
     private boolean supportsSoftButtonImages() {
-        return softButtonCapabilities.getImageSupported();
+        return softButtonCapabilities != null ? Boolean.TRUE.equals(softButtonCapabilities.getImageSupported()) : false;
     }
 
     void setCurrentMainField1(String currentMainField1) {
