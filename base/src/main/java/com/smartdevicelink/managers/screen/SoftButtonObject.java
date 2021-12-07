@@ -73,6 +73,8 @@ public class SoftButtonObject implements Cloneable{
      */
     public SoftButtonObject(@NonNull String name, @NonNull List<SoftButtonState> states, @NonNull String initialStateName, OnEventListener onEventListener) {
 
+        setStates(states);
+
         // Make sure there aren't two states with the same name
         if (hasTwoStatesOfSameName(states)) {
             DebugTool.logError(TAG, "Two states have the same name in states list for soft button object");
@@ -80,7 +82,6 @@ public class SoftButtonObject implements Cloneable{
         }
 
         this.name = name;
-        this.states = states;
         this.currentStateName = initialStateName;
         this.buttonId = SOFT_BUTTON_ID_NOT_SET_VALUE;
         this.onEventListener = onEventListener;
@@ -264,6 +265,11 @@ public class SoftButtonObject implements Cloneable{
      * @param states a list of the object's soft button states. <strong>states should be unique for every SoftButtonObject. A SoftButtonState instance cannot be reused for multiple SoftButtonObjects.</strong>
      */
     public void setStates(@NonNull List<SoftButtonState> states) {
+        // Make sure the list of states is not empty
+        if (states.isEmpty()) {
+            throw new IllegalStateException("The state list is empty");
+        }
+
         this.states = states;
     }
 
