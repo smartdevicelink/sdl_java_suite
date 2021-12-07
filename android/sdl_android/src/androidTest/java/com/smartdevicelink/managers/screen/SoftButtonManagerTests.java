@@ -56,6 +56,8 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import junit.framework.TestCase;
+
 /**
  * This is a unit test class for the SmartDeviceLink library manager class :
  * {@link SoftButtonManager}
@@ -401,5 +403,40 @@ public class SoftButtonManagerTests {
         // Case 6 they are equal, assertTrue
         softButtonState2 = new SoftButtonState("object1-state1", "o1s1", artwork1);
         assertEquals(softButtonState1, softButtonState2);
+    }
+
+    /**
+     * Test constructing SoftButtonObject with an empty state list
+     */
+    @Test
+    public void testConstructSoftButtonObjectWithEmptyStateList() {
+        List<SoftButtonState> stateList = new ArrayList<>();
+
+        try {
+            new SoftButtonObject("hi", stateList, "Hi", null);
+            TestCase.fail("IllegalStateException expected");
+        }
+        catch (IllegalStateException ignored) {
+
+        }
+    }
+
+    /**
+     * Test assigning an empty state list to existing SoftButtonObject
+     */
+    @Test
+    public void testAssignEmptyStateListToSoftButtonObject() {
+        List<SoftButtonState> stateList = new ArrayList<>();
+        SoftButtonState softButtonState = new SoftButtonState("object1-state1", "o1s1", null);
+
+
+        try {
+            SoftButtonObject softButtonObject = new SoftButtonObject("hi", softButtonState, null);
+            softButtonObject.setStates(stateList);
+            TestCase.fail("IllegalStateException expected");
+        }
+        catch (IllegalStateException ignored) {
+
+        }
     }
 }
