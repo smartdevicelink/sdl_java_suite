@@ -70,6 +70,7 @@ public class SoftButtonObject implements Cloneable{
      * @param initialStateName a String value represents the name for the initial state
      * @param onEventListener  a listener that has a callback that will be triggered when a button event happens
      *                         Note: the initialStateName should match exactly the name of one of the states for the object. Otherwise an exception will be thrown.
+     * @throws IllegalStateException if states is an empty list
      */
     public SoftButtonObject(@NonNull String name, @NonNull List<SoftButtonState> states, @NonNull String initialStateName, OnEventListener onEventListener) {
 
@@ -263,6 +264,7 @@ public class SoftButtonObject implements Cloneable{
      * Set the the SoftButtonState list
      *
      * @param states a list of the object's soft button states. <strong>states should be unique for every SoftButtonObject. A SoftButtonState instance cannot be reused for multiple SoftButtonObjects.</strong>
+     * @throws IllegalStateException if states is an empty list
      */
     public void setStates(@NonNull List<SoftButtonState> states) {
         // Make sure the list of states is not empty
