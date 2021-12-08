@@ -186,6 +186,7 @@ class PreloadPresentChoicesOperation extends Task {
             reachedMaxIds = false;
         }
 
+
         DebugTool.logInfo(TAG, "Choice Operation: Executing preload choices operation");
         // Enforce unique cells and remove cells that are already loaded
         this.cellsToUpload.removeAll(loadedCells);
@@ -343,7 +344,6 @@ class PreloadPresentChoicesOperation extends Task {
             return;
         }
 
-        addListeners();
 
         if (keyboardListener != null && choiceSet.getCustomKeyboardConfiguration() != null) {
             keyboardProperties = choiceSet.getCustomKeyboardConfiguration();
@@ -419,6 +419,10 @@ class PreloadPresentChoicesOperation extends Task {
     }
 
     private void presentChoiceSet(final CompletionListener listener) {
+        // add listeners if there is a keyboard
+        if (keyboardListener != null) {
+            addListeners();
+        }
         this.currentState = SDLPreloadPresentChoicesOperationState.PRESENTING_CHOICES;
         PerformInteraction pi = getPerformInteraction();
         pi.setOnRPCResponseListener(new OnRPCResponseListener() {
