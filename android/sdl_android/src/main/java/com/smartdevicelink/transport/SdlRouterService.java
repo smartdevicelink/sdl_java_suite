@@ -1942,7 +1942,7 @@ public class SdlRouterService extends Service {
                     bluetoothTransport.setStateManually(MultiplexBluetoothTransport.STATE_NONE);
                     bluetoothTransport = null;
                 }
-                if (errorBundle != null && errorBundle.getByte(MultiplexBaseTransport.ERROR_REASON_KEY) == MultiplexBaseTransport.REASON_SPP_ERROR) {
+                if (errorBundle != null && errorBundle.getByte(MultiplexBaseTransport.ERROR_REASON_KEY) == MultiplexBaseTransport.REASON_SPP_ERROR && bluetoothAvailable()) {
                     notifySppError();
                 }
                 break;
