@@ -44,6 +44,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNull;
@@ -56,13 +57,12 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import junit.framework.TestCase;
-
 /**
  * This is a unit test class for the SmartDeviceLink library manager class :
  * {@link SoftButtonManager}
  */
 @RunWith(AndroidJUnit4.class)
+//@RunWith(JUnit4.class)
 public class SoftButtonManagerTests {
 
     private SoftButtonManager softButtonManager;
@@ -411,14 +411,12 @@ public class SoftButtonManagerTests {
     @Test
     public void testConstructSoftButtonObjectWithEmptyStateList() {
         List<SoftButtonState> stateList = new ArrayList<>();
+        // Uncommenting the following lines should make the test fail
+        // SoftButtonState softButtonState = new SoftButtonState("object1-state1", "o1s1", null);
+        // stateList.add(softButtonState);
+        SoftButtonObject softButtonObject = new SoftButtonObject("hi", stateList, "Hi", null);
 
-        try {
-            new SoftButtonObject("hi", stateList, "Hi", null);
-            TestCase.fail("IllegalStateException expected");
-        }
-        catch (IllegalStateException ignored) {
-
-        }
+        assertTrue(softButtonObject.getAttemptedToAssignEmptyStateList());
     }
 
     /**
@@ -429,14 +427,9 @@ public class SoftButtonManagerTests {
         List<SoftButtonState> stateList = new ArrayList<>();
         SoftButtonState softButtonState = new SoftButtonState("object1-state1", "o1s1", null);
 
-
-        try {
-            SoftButtonObject softButtonObject = new SoftButtonObject("hi", softButtonState, null);
-            softButtonObject.setStates(stateList);
-            TestCase.fail("IllegalStateException expected");
-        }
-        catch (IllegalStateException ignored) {
-
-        }
+        SoftButtonObject softButtonObject = new SoftButtonObject("hi", softButtonState, null);
+        // Commenting the following line should make the test fail
+        softButtonObject.setStates(stateList);
+        assertTrue(softButtonObject.getAttemptedToAssignEmptyStateList());
     }
 }

@@ -38,6 +38,7 @@ import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.Log;
 
 import java.util.Collections;
 import java.util.List;
@@ -61,6 +62,7 @@ public class SoftButtonObject implements Cloneable{
     private int buttonId;
     private OnEventListener onEventListener;
     private UpdateListener updateListener;
+    private boolean attemptedToAssignEmptyStateList = false;
 
     /**
      * Create a new instance of the SoftButtonObject with multiple states
@@ -70,7 +72,6 @@ public class SoftButtonObject implements Cloneable{
      * @param initialStateName a String value represents the name for the initial state
      * @param onEventListener  a listener that has a callback that will be triggered when a button event happens
      *                         Note: the initialStateName should match exactly the name of one of the states for the object. Otherwise an exception will be thrown.
-     * @throws IllegalStateException if states is an empty list
      */
     public SoftButtonObject(@NonNull String name, @NonNull List<SoftButtonState> states, @NonNull String initialStateName, OnEventListener onEventListener) {
 
@@ -264,12 +265,13 @@ public class SoftButtonObject implements Cloneable{
      * Set the the SoftButtonState list
      *
      * @param states a list of the object's soft button states. <strong>states should be unique for every SoftButtonObject. A SoftButtonState instance cannot be reused for multiple SoftButtonObjects.</strong>
-     * @throws IllegalStateException if states is an empty list
      */
     public void setStates(@NonNull List<SoftButtonState> states) {
-        // Make sure the list of states is not empty
-        if (states.isEmpty()) {
-            throw new IllegalStateException("The state list is empty");
+        // If the list of states is empty, throw an error with DebugTool and return
+        attemptedToAssignEmptyStateList = states.isEmpty();
+        if (attemptedToAssignEmptyStateList) {
+            DebugTool.logError(TAG,"The state list is empty");
+            return;
         }
 
         this.states = states;
@@ -402,5 +404,14 @@ public class SoftButtonObject implements Cloneable{
             }
         }
         return null;
+    }
+
+    /**
+     * Used to make unit testing easier by removing the need to read debug logs programmatically
+     *
+     * @return True if the last list passed to setStates() was empty and false otherwise
+     */
+    public boolean getAttemptedToAssignEmptyStateList() {
+        return attemptedToAssignEmptyStateList;
     }
 }
