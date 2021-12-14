@@ -38,7 +38,6 @@ import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.util.DebugTool;
-import com.smartdevicelink.util.Log;
 
 import java.util.Collections;
 import java.util.List;
