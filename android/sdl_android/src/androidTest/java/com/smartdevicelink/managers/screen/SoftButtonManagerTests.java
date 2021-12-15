@@ -419,7 +419,7 @@ public class SoftButtonManagerTests {
     }
 
     /**
-     * Test constructing SoftButtonObject with an empty state list
+     * Test constructing SoftButtonObject with an nonempty state list
      */
     @Test
     public void testConstructingSoftButtonObjectWithNonEmptyStateList() {
