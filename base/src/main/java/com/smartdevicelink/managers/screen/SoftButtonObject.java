@@ -61,7 +61,6 @@ public class SoftButtonObject implements Cloneable{
     private int buttonId;
     private OnEventListener onEventListener;
     private UpdateListener updateListener;
-    private boolean attemptedToAssignEmptyStateList = false;
 
     /**
      * Create a new instance of the SoftButtonObject with multiple states
@@ -74,8 +73,11 @@ public class SoftButtonObject implements Cloneable{
      */
     public SoftButtonObject(@NonNull String name, @NonNull List<SoftButtonState> states, @NonNull String initialStateName, OnEventListener onEventListener) {
 
-        setStates(states);
-
+        // If the list of states is empty, throw an error with DebugTool and return
+        if (states.isEmpty()) {
+            DebugTool.logError(TAG,"The state list is empty");
+            return;
+        }
         // Make sure there aren't two states with the same name
         if (hasTwoStatesOfSameName(states)) {
             DebugTool.logError(TAG, "Two states have the same name in states list for soft button object");
@@ -86,6 +88,7 @@ public class SoftButtonObject implements Cloneable{
         this.currentStateName = initialStateName;
         this.buttonId = SOFT_BUTTON_ID_NOT_SET_VALUE;
         this.onEventListener = onEventListener;
+        this.states = states;
     }
 
     /**
@@ -267,8 +270,7 @@ public class SoftButtonObject implements Cloneable{
      */
     public void setStates(@NonNull List<SoftButtonState> states) {
         // If the list of states is empty, throw an error with DebugTool and return
-        attemptedToAssignEmptyStateList = states.isEmpty();
-        if (attemptedToAssignEmptyStateList) {
+        if (states.isEmpty()) {
             DebugTool.logError(TAG,"The state list is empty");
             return;
         }
@@ -405,12 +407,4 @@ public class SoftButtonObject implements Cloneable{
         return null;
     }
 
-    /**
-     * Used to make unit testing easier by removing the need to read debug logs programmatically
-     *
-     * @return True if the last list passed to setStates() was empty and false otherwise
-     */
-    public boolean getAttemptedToAssignEmptyStateList() {
-        return attemptedToAssignEmptyStateList;
-    }
 }
