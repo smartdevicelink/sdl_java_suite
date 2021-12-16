@@ -70,7 +70,7 @@ import java.util.List;
  * 		<tr>
  * 			<td>timeout</td>
  * 			<td>Integer</td>
- * 			<td>App defined timeout.  Indicates how long of a timeout from the last action (i.e. scrolling message resets timeout).</td>
+ * 			<td>App defined timeout.  Indicates how long of a timeout in milliseconds from the last action (i.e. scrolling message resets timeout).</td>
  *                 <td>N</td>
  *                 <td>minValue=1000; maxValue=65535; defValue=30000</td>
  * 			<td>SmartDevice Link 1.0 </td>
@@ -166,10 +166,10 @@ public class ScrollableMessage extends RPCRequest {
     }
 
     /**
-     * Sets an App defined timeout. Indicates how long of a timeout from the
+     * Sets an App defined timeout. Indicates how long of a timeout in milliseconds from the
      * last action
      *
-     * @param timeout an Integer value representing an App defined timeout
+     * @param timeout an Integer value representing an App defined timeout in milliseconds
      *                <p></p>
      *                <b>Notes</b>:Minval=0; Maxval=65535;Default=30000
      */
@@ -179,9 +179,9 @@ public class ScrollableMessage extends RPCRequest {
     }
 
     /**
-     * Gets an App defined timeout
+     * Gets an App defined timeout in milliseconds
      *
-     * @return Integer -an Integer value representing an App defined timeout
+     * @return Integer -an Integer value representing an App defined timeout in milliseconds
      */
     public Integer getTimeout() {
         return getInteger(KEY_TIMEOUT);
