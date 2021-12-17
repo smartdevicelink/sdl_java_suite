@@ -83,10 +83,10 @@ public class SoftButtonObject implements Cloneable{
         }
 
         this.name = name;
+        this.states = states;
         this.currentStateName = initialStateName;
         this.buttonId = SOFT_BUTTON_ID_NOT_SET_VALUE;
         this.onEventListener = onEventListener;
-        this.states = states;
     }
 
     /**
