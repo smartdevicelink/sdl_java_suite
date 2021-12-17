@@ -32,13 +32,11 @@
 package com.smartdevicelink.managers.screen;
 
 import androidx.annotation.NonNull;
-
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.util.DebugTool;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -406,5 +404,4 @@ public class SoftButtonObject implements Cloneable{
         }
         return null;
     }
-
 }

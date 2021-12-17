@@ -33,7 +33,6 @@ import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.test.Validator;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,14 +57,11 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import android.database.sqlite.SQLiteCantOpenDatabaseException;
-
 /**
  * This is a unit test class for the SmartDeviceLink library manager class :
  * {@link SoftButtonManager}
  */
 @RunWith(AndroidJUnit4.class)
-//@RunWith(JUnit4.class)
 public class SoftButtonManagerTests {
 
     private SoftButtonManager softButtonManager;
@@ -414,20 +410,20 @@ public class SoftButtonManagerTests {
     @Test
     public void testConstructSoftButtonObjectWithEmptyStateList() {
         List<SoftButtonState> stateList = new ArrayList<>();
-        SoftButtonObject softButtonObject1 = new SoftButtonObject("hello_there", stateList, "general_kenobi", null);
-        assertNull(softButtonObject1.getStates());
+        SoftButtonObject softButtonObject = new SoftButtonObject("hello_there", stateList, "general_kenobi", null);
+        assertNull(softButtonObject.getStates());
     }
 
     /**
      * Test constructing SoftButtonObject with an nonempty state list
      */
     @Test
-    public void testConstructingSoftButtonObjectWithNonEmptyStateList() {
+    public void testConstructSoftButtonObjectWithNonEmptyStateList() {
         List<SoftButtonState> stateList = new ArrayList<>();
         SoftButtonState softButtonState = new SoftButtonState("general_kenobi", "General Kenobi", null);
         stateList.add(softButtonState);
-        SoftButtonObject softButtonObject2 = new SoftButtonObject("hello_there_again", stateList, "general_kenobi", null);
-        assertEquals(stateList, softButtonObject2.getStates());
+        SoftButtonObject softButtonObject = new SoftButtonObject("hello_there", stateList, "general_kenobi", null);
+        assertEquals(stateList, softButtonObject.getStates());
     }
 
     /**
@@ -435,13 +431,15 @@ public class SoftButtonManagerTests {
      */
     @Test
     public void testAssignEmptyStateListToSoftButtonObject() {
-        List<SoftButtonState> stateList = new ArrayList<>();
-        SoftButtonState softButtonState = new SoftButtonState("object1-state1", "o1s1", null);
+        List<SoftButtonState> nonEmptyStateList = new ArrayList<>();
+        List<SoftButtonState> emptyStateList = new ArrayList<>();
+        SoftButtonState softButtonState = new SoftButtonState("general_kenobi", "General Kenobi", null);
+        nonEmptyStateList.add(softButtonState);
 
-        SoftButtonObject softButtonObject = new SoftButtonObject("hi", softButtonState, null);
+        SoftButtonObject softButtonObject = new SoftButtonObject("hello_there", nonEmptyStateList, "general_kenobi", null);
 
-        softButtonObject.setStates(stateList);
-        assertNotEquals(stateList, softButtonObject.getStates());
+        softButtonObject.setStates(emptyStateList);
+        assertEquals(nonEmptyStateList, softButtonObject.getStates());
     }
 
     /**
@@ -449,13 +447,18 @@ public class SoftButtonManagerTests {
      */
     @Test
     public void testAssignNonEmptyStateListToSoftButtonObject() {
-        List<SoftButtonState> stateList = new ArrayList<>();
-        SoftButtonState softButtonState = new SoftButtonState("object1-state1", "o1s1", null);
+        List<SoftButtonState> stateList1 = new ArrayList<>();
+        SoftButtonState softButtonState1 = new SoftButtonState("hello_there", "Hello there", null);
+        stateList1.add(softButtonState1);
 
-        SoftButtonObject softButtonObject = new SoftButtonObject("hi", softButtonState, null);
+        List<SoftButtonState> stateList2 = new ArrayList<>();
+        SoftButtonState softButtonState2 = new SoftButtonState("general_kenobi", "General Kenobi", null);
+        stateList2.add(softButtonState2);
 
-        stateList.add(softButtonState);
-        softButtonObject.setStates(stateList);
-        assertEquals(stateList, softButtonObject.getStates());
+        SoftButtonObject softButtonObject = new SoftButtonObject("general_kenobi", stateList1, "general_kenobi", null);
+
+        softButtonObject.setStates(stateList2);
+
+        assertEquals(stateList2, softButtonObject.getStates());
     }
 }
