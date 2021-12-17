@@ -272,6 +272,11 @@ public class SoftButtonObject implements Cloneable{
             DebugTool.logError(TAG,"The state list is empty");
             return;
         }
+        // Make sure there aren't two states with the same name
+        if (hasTwoStatesOfSameName(states)) {
+            DebugTool.logError(TAG, "Two states have the same name in states list for soft button object");
+            return;
+        }
 
         this.states = states;
     }

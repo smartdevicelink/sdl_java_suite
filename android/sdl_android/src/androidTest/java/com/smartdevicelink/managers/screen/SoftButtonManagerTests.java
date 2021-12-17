@@ -461,4 +461,26 @@ public class SoftButtonManagerTests {
 
         assertEquals(stateList2, softButtonObject.getStates());
     }
+
+    /**
+     * Test assigning a state list with states that have the same name to existing SoftButtonObject
+     */
+    @Test
+    public void testAssignSameNameStateListToSoftButtonObject() {
+        List<SoftButtonState> stateListUnique = new ArrayList<>();
+        SoftButtonState softButtonState1 = new SoftButtonState("hello_there", "Hello there", null);
+        stateListUnique.add(softButtonState1);
+
+        List<SoftButtonState> stateListDuplicateNames = new ArrayList<>();
+        SoftButtonState softButtonState2 = new SoftButtonState("general_kenobi", "General Kenobi", null);
+        stateListDuplicateNames.add(softButtonState2);
+        SoftButtonState softButtonState3 = new SoftButtonState("general_kenobi", "General Kenobi Again", null);
+        stateListDuplicateNames.add(softButtonState3);
+
+        SoftButtonObject softButtonObject = new SoftButtonObject("general_kenobi", stateListUnique, "general_kenobi", null);
+
+        softButtonObject.setStates(stateListDuplicateNames);
+
+        assertEquals(stateListUnique, softButtonObject.getStates());
+    }
 }
