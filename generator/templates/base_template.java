@@ -29,15 +29,17 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package {{package_name}};
-{% for i in imports %}
-{%- if i != '' %}
-import {{i}};{{ '\n' if loop.last }}
-{%- else %}
-{{''}}
-{%- endif %}
-{%- endfor %}
-{%- if description is defined or since is defined or see is defined or deprecated is defined %}
+package
+
+{{package_name}};
+        {%for i in imports%}
+        {%-if i!=''%}
+import {{i}};{{'\n'if loop.last}}
+        {%-else%}
+        {{''}}
+        {%-endif%}
+        {%-endfor%}
+        {%-if description is defined or since is defined or see is defined or deprecated is defined%}
 /**
  {%- if description is defined %}
  {%- for d in description %}
@@ -63,13 +65,13 @@ import {{i}};{{ '\n' if loop.last }}
  *      <td>{%- for d in param.description %}{{d}}{%- endfor %}</td>
  *      <td>{%- if param.mandatory is eq true %}Y{%- else %}N{%- endif %}</td>
  *      <td>{%- for k in param.values %}{{ '{' if loop.first}}"{{k}}": {{param.values[k]}}{{ ', ' if not loop.last else  '}'}}{%- endfor %}</td>
-        {%- if param.since is defined and param.since is not none %}{% set see, deprecated, since, history, spacing, headerParam = param.see, param.deprecated, param.since, param.history, ' *         ', 'true' %}
+ {%- if param.since is defined and param.since is not none %}{% set see, deprecated, since, history, spacing, headerParam = param.see, param.deprecated, param.since, param.history, ' *         ', 'true' %}
  *      <td>
-        {%- include "javadoc_version_info.java" %}
+ {%- include "javadoc_version_info.java" %}
  *      </td>
-        {%- else %}
+ {%- else %}
  *      <td></td>
-        {%- endif %}
+ {%- endif %}
  *  </tr>
  {%- endfor %}
  * </table>
@@ -79,9 +81,9 @@ import {{i}};{{ '\n' if loop.last }}
  {%- endif %}{% set prefix = ' * ' %}
  {%- include "javadoc_version_info.java" %}
  */
-{%- endif %}
-{%- if deprecated is not none %}
+        {%-endif%}
+        {%-if deprecated is not none%}
 @Deprecated
-{%- endif %}
-{%- block body %}
-{% endblock -%}
+{%-endif%}
+        {%-block body%}
+        {%endblock-%}
