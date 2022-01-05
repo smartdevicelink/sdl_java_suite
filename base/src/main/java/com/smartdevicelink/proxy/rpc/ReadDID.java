@@ -50,38 +50,38 @@ import java.util.List;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Param Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
+ *         <tr>
+ *             <th>Param Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
  *                 <th> Req.</th>
- * 			<th>Notes</th>
- * 			<th>Version Available</th>
- * 		</tr>
- * 		<tr>
- * 			<td>ecuName</td>
- * 			<td>Integer</td>
- * 			<td>Name of ECU.</td>
+ *             <th>Notes</th>
+ *             <th>Version Available</th>
+ *         </tr>
+ *         <tr>
+ *             <td>ecuName</td>
+ *             <td>Integer</td>
+ *             <td>Name of ECU.</td>
  *                 <td>Y</td>
- * 			<td>Minvalue: 0; Maxvalue: 65535</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
+ *             <td>Minvalue: 0; Maxvalue: 65535</td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
  *
- * 		<tr>
- * 			<td>didLocation</td>
- * 			<td>Integer</td>
- * 			<td>Get raw data from vehicle data DID location(s).</td>
+ *         <tr>
+ *             <td>didLocation</td>
+ *             <td>Integer</td>
+ *             <td>Get raw data from vehicle data DID location(s).</td>
  *                 <td>Y</td>
- * 			<td>Minvalue: 0; Maxvalue: 65535</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 			<td>appID</td>
- * 			<td>Integer</td>
- * 			<td>ID of the application that requested this RPC.</td>
+ *             <td>Minvalue: 0; Maxvalue: 65535</td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *             <td>appID</td>
+ *             <td>Integer</td>
+ *             <td>ID of the application that requested this RPC.</td>
  *                 <td>Y</td>
- * 			<td></td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
+ *             <td></td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
  *  </table>
  *
  *  <p><b>Response</b></p>
@@ -128,8 +128,8 @@ public class ReadDID extends RPCRequest {
      * @param didLocation a List<Integer> value representing raw data from vehicle data DID location(s) <br>
      *                    <b>Notes: </b>
      *                    <ul>
-     *                    		<li>Minvalue:0; Maxvalue:65535</li>
-     *                    		<li>ArrayMin:0; ArrayMax:1000</li>
+     *                            <li>Minvalue:0; Maxvalue:65535</li>
+     *                            <li>ArrayMin:0; ArrayMax:1000</li>
      *                    </ul>
      */
     public ReadDID(@NonNull Integer ecuName, @NonNull List<Integer> didLocation) {

@@ -44,102 +44,102 @@ import java.util.Hashtable;
  * <p><b>Parameter List</b></p>
  *
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Param Name</th>
- * 			<th>Type</th>
- * 			<th>Mandatory</th>
- * 			<th>Description</th>
- * 		</tr>
- * 		<tr>
- * 			<td>driverBeltDeployed</td>
- * 			<td>VehicleDataEventStatus</td>
- * 			<td>false</td>
- * 			<td>The driver seat belt is deployed.</td>
- * 		</tr>
- * 		<tr>
- * 			<td>passengerBeltDeployed</td>
- * 			<td>VehicleDataEventStatus</td>
- * 			<td>false</td>
- * 			<td>The passenger seat belt is deployed.</td>
- * 		</tr>
- * 		<tr>
- * 			<td>passengerBuckleBelted</td>
- * 			<td>VehicleDataEventStatus</td>
- * 			<td>false</td>
- * 			<td>The passenger seat belt is buckled.</td>
- * 		</tr>
- * 		<tr>
- * 			<td>driverBuckleBelted</td>
- * 			<td>VehicleDataEventStatus</td>
- * 			<td>false</td>
- * 			<td>The driver seat belt is buckled.</td>
- * 		</tr>
- * 		<tr>
- * 			<td>leftRow2BuckleBelted</td>
- * 			<td>VehicleDataEventStatus</td>
- * 			<td>false</td>
- * 			<td>The left seat belt of the 2nd row is buckled.</td>
- * 		</tr>
- * 		<tr>
- * 			<td>passengerChildDetected</td>
- * 			<td>VehicleDataEventStatus</td>
- * 			<td>false</td>
- * 			<td>The child passenger is detected.</td>
- * 		</tr>
- * 		<tr>
- * 			<td>rightRow2BuckleBelted</td>
- * 			<td>VehicleDataEventStatus</td>
- * 			<td>false</td>
- * 			<td>The right seat belt of the 2nd row is buckled.</td>
- * 		</tr>
- * 		<tr>
- * 			<td>middleRow2BuckleBelted</td>
- * 			<td>VehicleDataEventStatus</td>
- * 			<td>false</td>
- * 			<td>The middle seat belt of the 2nd row is buckled.</td>
- * 		</tr>
- * 		<tr>
- * 			<td>middleRow3BuckleBelted</td>
- * 			<td>VehicleDataEventStatus</td>
- * 			<td>false</td>
- * 			<td>The middle seat belt of the 3rd row is buckled.</td>
- * 		</tr>
- * 		<tr>
- * 			<td>leftRow3BuckleBelted</td>
- * 			<td>VehicleDataEventStatus</td>
- * 			<td>false</td>
- * 			<td>The left seat belt of the 3rd row is buckled.</td>
- * 		</tr>
- * 		<tr>
- * 			<td>rightRow3BuckleBelted</td>
- * 			<td>VehicleDataEventStatus</td>
- * 			<td>false</td>
- * 			<td>The right seat belt of the 3rd row is buckled.</td>
- * 		</tr>
- * 		<tr>
- * 			<td>leftRearInflatableBelted</td>
- * 			<td>VehicleDataEventStatus</td>
- * 			<td>false</td>
- * 			<td>The left rear inflatable is belted.</td>
- * 		</tr>
- * 		<tr>
- * 			<td>rightRearInflatableBelted</td>
- * 			<td>VehicleDataEventStatus</td>
- * 			<td>false</td>
- * 			<td>The right rear inflatable is belted.</td>
- * 		</tr>
- * 		<tr>
- * 			<td>middleRow1BeltDeployed</td>
- * 			<td>VehicleDataEventStatus</td>
- * 			<td>false</td>
- * 			<td>The seat belt of the middle row is deployed.</td>
- * 		</tr>
- * 		<tr>
- * 			<td>middleRow1BuckleBelted</td>
- * 			<td>VehicleDataEventStatus</td>
- * 			<td>false</td>
- * 			<td>The seat belt of the middle row is buckled.</td>
- * 		</tr>
+ *         <tr>
+ *             <th>Param Name</th>
+ *             <th>Type</th>
+ *             <th>Mandatory</th>
+ *             <th>Description</th>
+ *         </tr>
+ *         <tr>
+ *             <td>driverBeltDeployed</td>
+ *             <td>VehicleDataEventStatus</td>
+ *             <td>false</td>
+ *             <td>The driver seat belt is deployed.</td>
+ *         </tr>
+ *         <tr>
+ *             <td>passengerBeltDeployed</td>
+ *             <td>VehicleDataEventStatus</td>
+ *             <td>false</td>
+ *             <td>The passenger seat belt is deployed.</td>
+ *         </tr>
+ *         <tr>
+ *             <td>passengerBuckleBelted</td>
+ *             <td>VehicleDataEventStatus</td>
+ *             <td>false</td>
+ *             <td>The passenger seat belt is buckled.</td>
+ *         </tr>
+ *         <tr>
+ *             <td>driverBuckleBelted</td>
+ *             <td>VehicleDataEventStatus</td>
+ *             <td>false</td>
+ *             <td>The driver seat belt is buckled.</td>
+ *         </tr>
+ *         <tr>
+ *             <td>leftRow2BuckleBelted</td>
+ *             <td>VehicleDataEventStatus</td>
+ *             <td>false</td>
+ *             <td>The left seat belt of the 2nd row is buckled.</td>
+ *         </tr>
+ *         <tr>
+ *             <td>passengerChildDetected</td>
+ *             <td>VehicleDataEventStatus</td>
+ *             <td>false</td>
+ *             <td>The child passenger is detected.</td>
+ *         </tr>
+ *         <tr>
+ *             <td>rightRow2BuckleBelted</td>
+ *             <td>VehicleDataEventStatus</td>
+ *             <td>false</td>
+ *             <td>The right seat belt of the 2nd row is buckled.</td>
+ *         </tr>
+ *         <tr>
+ *             <td>middleRow2BuckleBelted</td>
+ *             <td>VehicleDataEventStatus</td>
+ *             <td>false</td>
+ *             <td>The middle seat belt of the 2nd row is buckled.</td>
+ *         </tr>
+ *         <tr>
+ *             <td>middleRow3BuckleBelted</td>
+ *             <td>VehicleDataEventStatus</td>
+ *             <td>false</td>
+ *             <td>The middle seat belt of the 3rd row is buckled.</td>
+ *         </tr>
+ *         <tr>
+ *             <td>leftRow3BuckleBelted</td>
+ *             <td>VehicleDataEventStatus</td>
+ *             <td>false</td>
+ *             <td>The left seat belt of the 3rd row is buckled.</td>
+ *         </tr>
+ *         <tr>
+ *             <td>rightRow3BuckleBelted</td>
+ *             <td>VehicleDataEventStatus</td>
+ *             <td>false</td>
+ *             <td>The right seat belt of the 3rd row is buckled.</td>
+ *         </tr>
+ *         <tr>
+ *             <td>leftRearInflatableBelted</td>
+ *             <td>VehicleDataEventStatus</td>
+ *             <td>false</td>
+ *             <td>The left rear inflatable is belted.</td>
+ *         </tr>
+ *         <tr>
+ *             <td>rightRearInflatableBelted</td>
+ *             <td>VehicleDataEventStatus</td>
+ *             <td>false</td>
+ *             <td>The right rear inflatable is belted.</td>
+ *         </tr>
+ *         <tr>
+ *             <td>middleRow1BeltDeployed</td>
+ *             <td>VehicleDataEventStatus</td>
+ *             <td>false</td>
+ *             <td>The seat belt of the middle row is deployed.</td>
+ *         </tr>
+ *         <tr>
+ *             <td>middleRow1BuckleBelted</td>
+ *             <td>VehicleDataEventStatus</td>
+ *             <td>false</td>
+ *             <td>The seat belt of the middle row is buckled.</td>
+ *         </tr>
  *  </table>
  *
  * @see VehicleDataEventStatus

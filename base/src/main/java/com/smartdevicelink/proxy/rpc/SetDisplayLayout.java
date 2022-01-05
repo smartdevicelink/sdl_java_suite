@@ -46,39 +46,39 @@ import java.util.Hashtable;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Param Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
+ *         <tr>
+ *             <th>Param Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
  *                 <th> Req.</th>
- * 			<th>Notes</th>
- * 			<th>Version Available</th>
- * 		</tr>
- * 		<tr>
- * 			<td>displayLayout</td>
- * 			<td>string</td>
- * 			<td>Predefined or dynamically created screen layout.<p>Currently only predefined screen layouts are defined.</p> Predefined layouts include: "ONSCREEN_PRESETS" Custom screen containing app-defined onscreen presets. </td>
+ *             <th>Notes</th>
+ *             <th>Version Available</th>
+ *         </tr>
+ *         <tr>
+ *             <td>displayLayout</td>
+ *             <td>string</td>
+ *             <td>Predefined or dynamically created screen layout.<p>Currently only predefined screen layouts are defined.</p> Predefined layouts include: "ONSCREEN_PRESETS" Custom screen containing app-defined onscreen presets. </td>
  *                 <td>Y</td>
- * 			<td>maxlength: 500</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>dayColorScheme</td>
- * 			<td>TemplateColorScheme</td>
- * 			<td>The color scheme that is used for day.</td>
+ *             <td>maxlength: 500</td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>dayColorScheme</td>
+ *             <td>TemplateColorScheme</td>
+ *             <td>The color scheme that is used for day.</td>
  *                 <td>N</td>
  *                 <td></td>
- * 			<td>SmartDeviceLink 5.0</td>
- * 		</tr>
+ *             <td>SmartDeviceLink 5.0</td>
+ *         </tr>
  *
- * 		<tr>
- * 			<td>nightColorScheme</td>
- * 			<td>TemplateColorScheme</td>
- * 			<td>The color scheme that is used for night.</td>
+ *         <tr>
+ *             <td>nightColorScheme</td>
+ *             <td>TemplateColorScheme</td>
+ *             <td>The color scheme that is used for night.</td>
  *                 <td>N</td>
  *                 <td></td>
- * 			<td>SmartDeviceLink 5.0</td>
- * 		</tr>
+ *             <td>SmartDeviceLink 5.0</td>
+ *         </tr>
  *
  *  </table>
  * <p><b>Response </b></p>

@@ -42,38 +42,38 @@ import java.util.Hashtable;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
+ *         <tr>
+ *             <th>Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
  *                 <th>Reg.</th>
  *               <th>Notes</th>
- * 			<th>SmartDeviceLink Version</th>
- * 		</tr>
- * 		<tr>
- * 			<td>pressAvailable</td>
- * 			<td>Boolean</td>
- * 			<td></td>
+ *             <th>SmartDeviceLink Version</th>
+ *         </tr>
+ *         <tr>
+ *             <td>pressAvailable</td>
+ *             <td>Boolean</td>
+ *             <td></td>
  *                 <td>Y</td>
  *                 <td></td>
- * 			<td>SmartDeviceLink 3.0 </td>
- * 		</tr>
+ *             <td>SmartDeviceLink 3.0 </td>
+ *         </tr>
  *            <tr>
- * 			<td>multiTouchAvailable</td>
- * 			<td>Boolean</td>
- * 			<td></td>
+ *             <td>multiTouchAvailable</td>
+ *             <td>Boolean</td>
+ *             <td></td>
  *                 <td>Y</td>
  *                 <td></td>
- * 			<td>SmartDeviceLink 3.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>doublePressAvailable</td>
- * 			<td>Boolean</td>
- * 			<td></td>
+ *             <td>SmartDeviceLink 3.0 </td>
+ *         </tr>
+ *         <tr>
+ *             <td>doublePressAvailable</td>
+ *             <td>Boolean</td>
+ *             <td></td>
  *                 <td>Y</td>
  *                 <td></td>
- * 			<td>SmartDeviceLink 3.0 </td>
- * 		</tr>
+ *             <td>SmartDeviceLink 3.0 </td>
+ *         </tr>
  *  </table>
  */
 public class TouchEventCapabilities extends RPCStruct {

@@ -42,43 +42,43 @@ import java.util.Hashtable;
  * <p>Contains information about a SoftButton's capabilities.</p>
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
- * 			<th>SmartDeviceLink Ver. Available</th>
- * 		</tr>
- * 		<tr>
- * 			<td>shortPressAvailable</td>
- * 			<td>Boolean</td>
- * 			<td>The button supports a short press.
- * 					Whenever the button is pressed short, onButtonPressed( SHORT) will be invoked.
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>longPressAvailable</td>
- * 			<td>Boolean</td>
- * 			<td>The button supports a LONG press.
- * 					Whenever the button is pressed long, onButtonPressed( LONG) will be invoked.
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>upDownAvailable</td>
- * 			<td>Boolean</td>
- * 			<td>The button supports "button down" and "button up". Whenever the button is pressed, onButtonEvent( DOWN) will be invoked.
- * 					Whenever the button is released, onButtonEvent( UP) will be invoked. *
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>imageSupported</td>
- * 			<td>Boolean</td>
- * 			<td>The button supports referencing a static or dynamic image.
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
+ *         <tr>
+ *             <th>Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
+ *             <th>SmartDeviceLink Ver. Available</th>
+ *         </tr>
+ *         <tr>
+ *             <td>shortPressAvailable</td>
+ *             <td>Boolean</td>
+ *             <td>The button supports a short press.
+ *                     Whenever the button is pressed short, onButtonPressed( SHORT) will be invoked.
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>longPressAvailable</td>
+ *             <td>Boolean</td>
+ *             <td>The button supports a LONG press.
+ *                     Whenever the button is pressed long, onButtonPressed( LONG) will be invoked.
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>upDownAvailable</td>
+ *             <td>Boolean</td>
+ *             <td>The button supports "button down" and "button up". Whenever the button is pressed, onButtonEvent( DOWN) will be invoked.
+ *                     Whenever the button is released, onButtonEvent( UP) will be invoked. *
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>imageSupported</td>
+ *             <td>Boolean</td>
+ *             <td>The button supports referencing a static or dynamic image.
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
  *  </table>
  *
  * @since SmartDeviceLink 2.0

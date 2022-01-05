@@ -44,135 +44,135 @@ import java.util.Hashtable;
  * Describes the GPS data. Not all data will be available on all car lines.
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
- * 			<th>SmartDeviceLink Ver. Available</th>
- * 		</tr>
- * 		<tr>
- * 			<td>longitudeDegrees</td>
- * 			<td>Double</td>
- * 			<td>Minvalue: - 180
- * 					<b>Maxvalue: 180
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>latitudeDegrees</td>
- * 			<td>Double</td>
- * 			<td>Minvalue: - 90<b>Maxvalue: 90
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>utcYear</td>
- * 			<td>Integer</td>
- * 			<td>Minvalue: 2010<b>Maxvalue: 2100
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>utcMonth</td>
- * 			<td>Integer</td>
- * 			<td>Minvalue: 1<b>Maxvalue: 12
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>utcDay</td>
- * 			<td>Integer</td>
- * 			<td>Minvalue: 1<b>Maxvalue: 31
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>utcHours</td>
- * 			<td>Integer</td>
- * 			<td>Minvalue: 0<b>Maxvalue: 23
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>utcMinutes</td>
- * 			<td>Integer</td>
- * 			<td>Minvalue: 0<b>Maxvalue: 59
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>utcSeconds</td>
- * 			<td>Integer</td>
- * 			<td>Minvalue: 0<b>Maxvalue: 59
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>pdop</td>
- * 			<td>Integer</td>
- * 			<td>Positional Dilution of Precision. If undefined or unavailable, then value shall be set to 0.<b>Minvalue: 0<b>Maxvalue: 1000
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>hdop</td>
- * 			<td>Integer</td>
- * 			<td>Horizontal Dilution of Precision. If value is unknown, value shall be set to 0.<b>Minvalue: 0<b>Maxvalue: 1000
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>vdop</td>
- * 			<td>Integer</td>
- * 			<td>Vertical  Dilution of Precision. If value is unknown, value shall be set to 0.<b>Minvalue: 0<b>Maxvalue: 1000
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>actual</td>
- * 			<td>Boolean</td>
- * 			<td>True, if coordinates are based on satellites.
- * 					False, if based on dead reckoning
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>satellites</td>
- * 			<td>Integer</td>
- * 			<td>Number of satellites in view
- * 					<b>Minvalue: 0
- * 					<b>Maxvalue: 31
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>altitude</td>
- * 			<td>Integer</td>
- * 			<td>Altitude in meters
- * 					<b>Minvalue: -10000</b>
- * 					<b>Maxvalue: 10000</b>
- * 			<b>Note:</b> SYNC uses Mean Sea Level for calculating GPS. </td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>heading</td>
- * 			<td>Double</td>
- * 			<td>The heading. North is 0, East is 90, etc.
- * 					<b>Minvalue: 0
- * 					<b>Maxvalue: 359.99
- * 					<b>Resolution is 0.01
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>speed</td>
- * 			<td>Integer</td>
- * 			<td>The speed in KPH
- * 					<b>Minvalue: 0
- * 					<b>Maxvalue: 500
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
+ *         <tr>
+ *             <th>Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
+ *             <th>SmartDeviceLink Ver. Available</th>
+ *         </tr>
+ *         <tr>
+ *             <td>longitudeDegrees</td>
+ *             <td>Double</td>
+ *             <td>Minvalue: - 180
+ *                     <b>Maxvalue: 180
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>latitudeDegrees</td>
+ *             <td>Double</td>
+ *             <td>Minvalue: - 90<b>Maxvalue: 90
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>utcYear</td>
+ *             <td>Integer</td>
+ *             <td>Minvalue: 2010<b>Maxvalue: 2100
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>utcMonth</td>
+ *             <td>Integer</td>
+ *             <td>Minvalue: 1<b>Maxvalue: 12
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>utcDay</td>
+ *             <td>Integer</td>
+ *             <td>Minvalue: 1<b>Maxvalue: 31
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>utcHours</td>
+ *             <td>Integer</td>
+ *             <td>Minvalue: 0<b>Maxvalue: 23
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>utcMinutes</td>
+ *             <td>Integer</td>
+ *             <td>Minvalue: 0<b>Maxvalue: 59
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>utcSeconds</td>
+ *             <td>Integer</td>
+ *             <td>Minvalue: 0<b>Maxvalue: 59
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>pdop</td>
+ *             <td>Integer</td>
+ *             <td>Positional Dilution of Precision. If undefined or unavailable, then value shall be set to 0.<b>Minvalue: 0<b>Maxvalue: 1000
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>hdop</td>
+ *             <td>Integer</td>
+ *             <td>Horizontal Dilution of Precision. If value is unknown, value shall be set to 0.<b>Minvalue: 0<b>Maxvalue: 1000
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>vdop</td>
+ *             <td>Integer</td>
+ *             <td>Vertical  Dilution of Precision. If value is unknown, value shall be set to 0.<b>Minvalue: 0<b>Maxvalue: 1000
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>actual</td>
+ *             <td>Boolean</td>
+ *             <td>True, if coordinates are based on satellites.
+ *                     False, if based on dead reckoning
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>satellites</td>
+ *             <td>Integer</td>
+ *             <td>Number of satellites in view
+ *                     <b>Minvalue: 0
+ *                     <b>Maxvalue: 31
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>altitude</td>
+ *             <td>Integer</td>
+ *             <td>Altitude in meters
+ *                     <b>Minvalue: -10000</b>
+ *                     <b>Maxvalue: 10000</b>
+ *             <b>Note:</b> SYNC uses Mean Sea Level for calculating GPS. </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>heading</td>
+ *             <td>Double</td>
+ *             <td>The heading. North is 0, East is 90, etc.
+ *                     <b>Minvalue: 0
+ *                     <b>Maxvalue: 359.99
+ *                     <b>Resolution is 0.01
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>speed</td>
+ *             <td>Integer</td>
+ *             <td>The speed in KPH
+ *                     <b>Minvalue: 0
+ *                     <b>Maxvalue: 500
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
  *  </table>
  *
  * @since SmartDeviceLink 2.0

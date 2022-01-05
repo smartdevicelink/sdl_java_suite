@@ -42,38 +42,38 @@ import java.util.Hashtable;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Param Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
+ *         <tr>
+ *             <th>Param Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
  *                 <th> Req.</th>
- * 			<th>Notes</th>
- * 			<th>Version Available</th>
- * 		</tr>
- * 		<tr>
- * 			<td>text</td>
- * 			<td>String</td>
- * 			<td>Text to display for VR Help item</td>
+ *             <th>Notes</th>
+ *             <th>Version Available</th>
+ *         </tr>
+ *         <tr>
+ *             <td>text</td>
+ *             <td>String</td>
+ *             <td>Text to display for VR Help item</td>
  *                 <td>Y</td>
- * 			<td>maxlength: 500</td>
- * 			<td>SmartDeviceLink 2.3.2</td>
- * 		</tr>
- * 		<tr>
- * 			<td>image</td>
- * 			<td>Image</td>
- * 			<td>Image struct for VR Help item</td>
+ *             <td>maxlength: 500</td>
+ *             <td>SmartDeviceLink 2.3.2</td>
+ *         </tr>
+ *         <tr>
+ *             <td>image</td>
+ *             <td>Image</td>
+ *             <td>Image struct for VR Help item</td>
  *                 <td>N</td>
- * 			<td></td>
- * 			<td>SmartDeviceLink 2.3.2</td>
- * 		</tr>
- * 		<tr>
- * 			<td>position</td>
- * 			<td>Integer</td>
- * 			<td>Position to display item in VR Help list</td>
+ *             <td></td>
+ *             <td>SmartDeviceLink 2.3.2</td>
+ *         </tr>
+ *         <tr>
+ *             <td>position</td>
+ *             <td>Integer</td>
+ *             <td>Position to display item in VR Help list</td>
  *                 <td>N</td>
- * 			<td> minvalue=1; maxvalue=100</td>
- * 			<td>SmartDeviceLink 2.3.2</td>
- * 		</tr>
+ *             <td> minvalue=1; maxvalue=100</td>
+ *             <td>SmartDeviceLink 2.3.2</td>
+ *         </tr>
  *  </table>
  */
 public class VrHelpItem extends RPCStruct {

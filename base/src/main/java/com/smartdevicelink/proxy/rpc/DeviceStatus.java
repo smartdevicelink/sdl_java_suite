@@ -43,89 +43,89 @@ import java.util.Hashtable;
  * Describes the status related to a connected mobile device or SDL and if or how  it is represented in the vehicle.
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
- * 			<th>SmartDeviceLink Ver. Available</th>
- * 		</tr>
- * 		<tr>
- * 			<td>voiceRecOn</td>
- * 			<td>Boolean</td>
- * 			<td>Voice recognition is on
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>btIconOn</td>
- * 			<td>Boolean</td>
- * 			<td>Bluetooth connection established
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>callActive</td>
- * 			<td>Boolean</td>
- * 			<td>A call is being active
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>phoneRoaming</td>
- * 			<td>Boolean</td>
- * 			<td>The phone is in roaming mode
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>textMsgAvailable</td>
- * 			<td>Boolean</td>
- * 			<td>A text message is available
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>battLevelStatus</td>
- * 			<td>DeviceLevelStatus</td>
- * 			<td>Battery level status
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>stereoAudioOutputMuted</td>
- * 			<td>Boolean</td>
- * 			<td>Status of the stereo audio output channel
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>monoAudioOutputMuted</td>
- * 			<td>Boolean</td>
- * 			<td>Status of the mono audio output channel
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>signalLevelStatus</td>
- * 			<td>DeviceLevelStatus</td>
- * 			<td>Signal level status
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>primaryAudioSource</td>
- * 			<td>PrimaryAudioSource</td>
- * 			<td>Reflects the current primary audio source of SDL (if selected).
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>eCallEventActive</td>
- * 			<td>Boolean</td>
- * 			<td>Reflects, if an eCall event is active
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
+ *         <tr>
+ *             <th>Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
+ *             <th>SmartDeviceLink Ver. Available</th>
+ *         </tr>
+ *         <tr>
+ *             <td>voiceRecOn</td>
+ *             <td>Boolean</td>
+ *             <td>Voice recognition is on
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>btIconOn</td>
+ *             <td>Boolean</td>
+ *             <td>Bluetooth connection established
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>callActive</td>
+ *             <td>Boolean</td>
+ *             <td>A call is being active
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>phoneRoaming</td>
+ *             <td>Boolean</td>
+ *             <td>The phone is in roaming mode
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>textMsgAvailable</td>
+ *             <td>Boolean</td>
+ *             <td>A text message is available
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>battLevelStatus</td>
+ *             <td>DeviceLevelStatus</td>
+ *             <td>Battery level status
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>stereoAudioOutputMuted</td>
+ *             <td>Boolean</td>
+ *             <td>Status of the stereo audio output channel
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>monoAudioOutputMuted</td>
+ *             <td>Boolean</td>
+ *             <td>Status of the mono audio output channel
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>signalLevelStatus</td>
+ *             <td>DeviceLevelStatus</td>
+ *             <td>Signal level status
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>primaryAudioSource</td>
+ *             <td>PrimaryAudioSource</td>
+ *             <td>Reflects the current primary audio source of SDL (if selected).
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>eCallEventActive</td>
+ *             <td>Boolean</td>
+ *             <td>Reflects, if an eCall event is active
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
  *  </table>
  *
  * @see DeviceLevelStatus

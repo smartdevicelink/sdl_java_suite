@@ -56,75 +56,75 @@ import java.util.List;
  * <p><b> Parameter List</b></p>
  *
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
+ *         <tr>
+ *             <th>Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
  *                 <th> Req.</th>
- * 			<th>Notes</th>
- * 			<th>Version Available</th>
- * 		</tr>
- * 		<tr>
- * 			<td>Language</td>
- * 			<td>Language</td>
- * 			<td>Requested SDL voice engine (VR+TTS) language registration.</td>
+ *             <th>Notes</th>
+ *             <th>Version Available</th>
+ *         </tr>
+ *         <tr>
+ *             <td>Language</td>
+ *             <td>Language</td>
+ *             <td>Requested SDL voice engine (VR+TTS) language registration.</td>
  *                 <td>Y</td>
- * 			<td></td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>hmiDisplayLanguage</td>
- * 			<td>Language</td>
- * 			<td>Request display language registration.</td>
+ *             <td></td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>hmiDisplayLanguage</td>
+ *             <td>Language</td>
+ *             <td>Request display language registration.</td>
  *                 <td>Y</td>
- * 			<td>Minvalue=0; Maxvalue=2000000000</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
+ *             <td>Minvalue=0; Maxvalue=2000000000</td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
  *
  *            <tr>
- * 			<td>appName</td>
- * 			<td>String</td>
- * 			<td>Request new app name registration</td>
+ *             <td>appName</td>
+ *             <td>String</td>
+ *             <td>Request new app name registration</td>
  *                 <td>N</td>
  *                 <td>maxlength:100</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>ttsName</td>
- * 			<td>TTSChunk</td>
- * 			<td>Request new ttsName registration</td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>ttsName</td>
+ *             <td>TTSChunk</td>
+ *             <td>Request new ttsName registration</td>
  *                 <td>N</td>
  *                 <td>minsize:1; maxsize:100</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
  *            <tr>
- * 			<td>ngnMediaScreenAppName</td>
- * 			<td>String</td>
- * 			<td>Request new app short name registration</td>
+ *             <td>ngnMediaScreenAppName</td>
+ *             <td>String</td>
+ *             <td>Request new app short name registration</td>
  *                 <td>N</td>
  *                 <td>maxlength: 100</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>vrSynonyms</td>
- * 			<td>String</td>
- * 			<td>Request new VR synonyms registration</td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>vrSynonyms</td>
+ *             <td>String</td>
+ *             <td>Request new VR synonyms registration</td>
  *                 <td>N</td>
  *                 <td>maxlength: 40; minsize:1; maxsize:100</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
  *  </table>
  *
  * <p><b>Response </b></p>
  *
  * <p><b>Non-default Result Codes:</b></p>
- * 	<p>SUCCESS</p>
- * 	<p>INVALID_DATA</p>
- * 	<p>OUT_OF_MEMORY</p>
- * <p>	TOO_MANY_PENDING_REQUESTS</p>
- * 	<p>APPLICATION_NOT_REGISTERED</p>
- * 	<p>GENERIC_ERROR</p>
- * 	<p>REJECTED</p>
+ *     <p>SUCCESS</p>
+ *     <p>INVALID_DATA</p>
+ *     <p>OUT_OF_MEMORY</p>
+ * <p>    TOO_MANY_PENDING_REQUESTS</p>
+ *     <p>APPLICATION_NOT_REGISTERED</p>
+ *     <p>GENERIC_ERROR</p>
+ *     <p>REJECTED</p>
  *    <p>DISALLOWED</p>
  *
  * @see RegisterAppInterface

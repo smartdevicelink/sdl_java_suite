@@ -111,170 +111,170 @@ import java.util.List;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
+ *         <tr>
+ *             <th>Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
  *                 <th>Reg.</th>
  *               <th>Notes</th>
- * 			<th>Version</th>
- * 		</tr>
- * 		<tr>
- * 			<td>MsgVersion</td>
- * 			<td>MsgVersion</td>
- * 			<td>Declares what version of the SDL interface the application expects to use with SDL</td>
+ *             <th>Version</th>
+ *         </tr>
+ *         <tr>
+ *             <td>MsgVersion</td>
+ *             <td>MsgVersion</td>
+ *             <td>Declares what version of the SDL interface the application expects to use with SDL</td>
  *                 <td>Y</td>
  *                 <td>To be compatible, app msg major version number must be less than or equal to SDL major version number. <p>If msg versions are incompatible, app has 20 seconds to attempt successful RegisterAppInterface (w.r.t. msg version) on underlying protocol session, else will be terminated. Major version number is a compatibility declaration. Minor version number indicates minor functional variations (e.g. features, capabilities, bug fixes) when sent from SDL to app (in RegisterAppInterface response).</p>However, the minor version number sent from the app to SDL (in RegisterAppInterface request) is ignored by SDL.</td>
- * 			<td>SmartDeviceLink 1.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>appName</td>
- * 			<td>String</td>
- * 			<td>The mobile application's name. This name is displayed in the SDL Mobile Applications menu. It also serves as the unique identifier of the application for SDL .</td>
+ *             <td>SmartDeviceLink 1.0 </td>
+ *         </tr>
+ *         <tr>
+ *             <td>appName</td>
+ *             <td>String</td>
+ *             <td>The mobile application's name. This name is displayed in the SDL Mobile Applications menu. It also serves as the unique identifier of the application for SDL .</td>
  *                 <td>Y</td>
  *                 <td><p> Must be 1-100 characters in length. Must consist of following characters: </p><p>May not be the same (by case insensitive comparison) as the name or any synonym of any currently registered application.</p> </td>
- * 			<td>SmartDeviceLink 1.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>ttsName</td>
- * 			<td>TTSChunk</td>
- * 			<td>TTS string for VR recognition of the mobile application name. Meant to overcome any failing on speech engine in properly pronouncing / understanding app name.</td>
+ *             <td>SmartDeviceLink 1.0 </td>
+ *         </tr>
+ *         <tr>
+ *             <td>ttsName</td>
+ *             <td>TTSChunk</td>
+ *             <td>TTS string for VR recognition of the mobile application name. Meant to overcome any failing on speech engine in properly pronouncing / understanding app name.</td>
  *                 <td>N</td>
  *                 <td><p>Size must be 1-100 Needs to be unique over all applications. May not be empty.<p>May not start with a new line character.</p></td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>ngnMediaScreenAppName</td>
- * 			<td>String</td>
- * 			<td>Provides an abbreviated version of the app name (if necessary) that will be displayed on the NGN media screen.</td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>ngnMediaScreenAppName</td>
+ *             <td>String</td>
+ *             <td>Provides an abbreviated version of the app name (if necessary) that will be displayed on the NGN media screen.</td>
  *                 <td>N</td>
  *                 <td>- Must be 1-5 characters. If not provided, value will be derived from appName truncated to 5 characters.</td>
- * 			<td>SmartDeviceLink 1.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>vrSynonyms</td>
- * 			<td>String</td>
- * 			<td>An array of 1-100 elements, each element containing a voice-recognition synonym by which this app can be called when being addressed in the mobile applications menu.</td>
+ *             <td>SmartDeviceLink 1.0 </td>
+ *         </tr>
+ *         <tr>
+ *             <td>vrSynonyms</td>
+ *             <td>String</td>
+ *             <td>An array of 1-100 elements, each element containing a voice-recognition synonym by which this app can be called when being addressed in the mobile applications menu.</td>
  *                 <td>N</td>
  *                 <td>Each vr synonym is limited to 40 characters, and there can be 1-100 synonyms in array. May not be the same (by case insensitive comparison) as the name or any synonym of any currently-registered application.</td>
- * 			<td>SmartDeviceLink 1.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>isMediaApplication</td>
- * 			<td>Boolean</td>
- * 			<td>Indicates that the application will be streaming audio to SDL (via A2DP) that is audible outside of the BT media source.</td>
+ *             <td>SmartDeviceLink 1.0 </td>
+ *         </tr>
+ *         <tr>
+ *             <td>isMediaApplication</td>
+ *             <td>Boolean</td>
+ *             <td>Indicates that the application will be streaming audio to SDL (via A2DP) that is audible outside of the BT media source.</td>
  *                 <td>Y</td>
  *                 <td></td>
- * 			<td>SmartDeviceLink 1.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>languageDesired</td>
- * 			<td>Language</td>
- * 			<td>An enumeration indicating what language the application intends to use for user interaction (Display, TTS and VR).</td>
+ *             <td>SmartDeviceLink 1.0 </td>
+ *         </tr>
+ *         <tr>
+ *             <td>languageDesired</td>
+ *             <td>Language</td>
+ *             <td>An enumeration indicating what language the application intends to use for user interaction (Display, TTS and VR).</td>
  *                 <td>Y</td>
  *                 <td>If the language indicated does not match the active language on SDL, the interface registration will be rejected.If the user changes the SDL language while this interface registration is active, the interface registration will be terminated. </td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>hmiDisplayLanguageDesired</td>
- * 			<td>Language</td>
- * 			<td>An enumeration indicating what language the application intends to use for user interaction ( Display).</td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>hmiDisplayLanguageDesired</td>
+ *             <td>Language</td>
+ *             <td>An enumeration indicating what language the application intends to use for user interaction ( Display).</td>
  *                 <td>Y</td>
  *                 <td></td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>appHMIType</td>
- * 			<td>AppHMIType</td>
- * 			<td>List of all applicable app types stating which classifications to be given to the app.e.g. for platforms , like GEN2, this will determine which "corner(s)" the app can populate</td>
+ *             <td>SmartDeviceLink 2.0 </td>
+ *         </tr>
+ *         <tr>
+ *             <td>appHMIType</td>
+ *             <td>AppHMIType</td>
+ *             <td>List of all applicable app types stating which classifications to be given to the app.e.g. for platforms , like GEN2, this will determine which "corner(s)" the app can populate</td>
  *                 <td>N</td>
  *                 <td>Array Minsize: 1; Array Maxsize: 100</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>hashID</td>
- * 			<td>String</td>
- * 			<td>ID used to uniquely identify current state of all app data that can persist through connection cycles (e.g. ignition cycles).This registered data (commands, submenus, choice sets, etc.) can be reestablished without needing to explicitly reregister each piece. If omitted, then the previous state of an app's commands, etc. will not be restored.When sending hashID, all RegisterAppInterface parameters should still be provided (e.g. ttsName, etc.). </td>
+ *             <td>SmartDeviceLink 2.0 </td>
+ *         </tr>
+ *         <tr>
+ *             <td>hashID</td>
+ *             <td>String</td>
+ *             <td>ID used to uniquely identify current state of all app data that can persist through connection cycles (e.g. ignition cycles).This registered data (commands, submenus, choice sets, etc.) can be reestablished without needing to explicitly reregister each piece. If omitted, then the previous state of an app's commands, etc. will not be restored.When sending hashID, all RegisterAppInterface parameters should still be provided (e.g. ttsName, etc.). </td>
  *                 <td>N</td>
  *                 <td>maxLength:100</td>
- * 			<td>SmartDeviceLink 2.3.1 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>appInfo</td>
- * 			<td>AppInfo</td>
- * 			<td>See AppInfo.</td>
+ *             <td>SmartDeviceLink 2.3.1 </td>
+ *         </tr>
+ *         <tr>
+ *             <td>appInfo</td>
+ *             <td>AppInfo</td>
+ *             <td>See AppInfo.</td>
  *                 <td>N</td>
  *                 <td></td>
- * 			<td>@since SmartDeviceLink 4.2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>deviceInfo</td>
- * 			<td>DeviceInfo</td>
- * 			<td>Various information about connecting device.</td>
+ *             <td>@since SmartDeviceLink 4.2.0 </td>
+ *         </tr>
+ *         <tr>
+ *             <td>deviceInfo</td>
+ *             <td>DeviceInfo</td>
+ *             <td>Various information about connecting device.</td>
  *                 <td>N</td>
  *                 <td></td>
- * 			<td>SmartDeviceLink 2.3.1 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>appID</td>
- * 			<td>String</td>
- * 			<td>ID used to validate app with policy table entries</td>
+ *             <td>SmartDeviceLink 2.3.1 </td>
+ *         </tr>
+ *         <tr>
+ *             <td>appID</td>
+ *             <td>String</td>
+ *             <td>ID used to validate app with policy table entries</td>
  *                 <td>Y</td>
  *                 <td>maxLength: 100</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>fullAppID</td>
- * 			<td>String</td>
- * 			<td>ID used to validate app with policy table entries</td>
+ *             <td>SmartDeviceLink 2.0 </td>
+ *         </tr>
+ *         <tr>
+ *             <td>fullAppID</td>
+ *             <td>String</td>
+ *             <td>ID used to validate app with policy table entries</td>
  *                 <td>N</td>
  *                 <td>Maxlength: 100</td>
- * 			<td>SmartDeviceLink 5.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>hmiCapabilities</td>
- * 			<td>HMICapabilities</td>
- * 			<td>Specifies the HMI capabilities.</td>
+ *             <td>SmartDeviceLink 5.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>hmiCapabilities</td>
+ *             <td>HMICapabilities</td>
+ *             <td>Specifies the HMI capabilities.</td>
  *                 <td>N</td>
  *                 <td></td>
- * 			<td>SmartDeviceLink 2.3.2.2 </td>
- * 		</tr>
+ *             <td>SmartDeviceLink 2.3.2.2 </td>
+ *         </tr>
  *
- * 		<tr>
- * 			<td>sdlVersion</td>
- * 			<td>String</td>
- * 			<td>The SmartDeviceLink version.</td>
+ *         <tr>
+ *             <td>sdlVersion</td>
+ *             <td>String</td>
+ *             <td>The SmartDeviceLink version.</td>
  *                 <td>N</td>
  *                 <td>Maxlength: 100</td>
- * 			<td>SmartDeviceLink 2.3.2.2</td>
- * 		</tr>
+ *             <td>SmartDeviceLink 2.3.2.2</td>
+ *         </tr>
  *
- * 		<tr>
- * 			<td>systemSoftwareVersion</td>
- * 			<td>String</td>
- * 			<td>The software version of the system that implements the SmartDeviceLink core.</td>
+ *         <tr>
+ *             <td>systemSoftwareVersion</td>
+ *             <td>String</td>
+ *             <td>The software version of the system that implements the SmartDeviceLink core.</td>
  *                 <td>N</td>
  *                 <td>Maxlength: 100</td>
- * 			<td>SmartDeviceLink 2.3.2.2</td>
- * 		</tr>
+ *             <td>SmartDeviceLink 2.3.2.2</td>
+ *         </tr>
  *
- * 		<tr>
- * 			<td>dayColorScheme</td>
- * 			<td>TemplateColorScheme</td>
- * 			<td>The color scheme that is used for day.</td>
+ *         <tr>
+ *             <td>dayColorScheme</td>
+ *             <td>TemplateColorScheme</td>
+ *             <td>The color scheme that is used for day.</td>
  *                 <td>N</td>
  *                 <td></td>
- * 			<td>SmartDeviceLink 5.0</td>
- * 		</tr>
+ *             <td>SmartDeviceLink 5.0</td>
+ *         </tr>
  *
- * 		<tr>
- * 			<td>nightColorScheme</td>
- * 			<td>TemplateColorScheme</td>
- * 			<td>The color scheme that is used for night.</td>
+ *         <tr>
+ *             <td>nightColorScheme</td>
+ *             <td>TemplateColorScheme</td>
+ *             <td>The color scheme that is used for night.</td>
  *                 <td>N</td>
  *                 <td></td>
- * 			<td>SmartDeviceLink 5.0</td>
- * 		</tr>
+ *             <td>SmartDeviceLink 5.0</td>
+ *         </tr>
  *  </table>
  *  <p></p>
  *

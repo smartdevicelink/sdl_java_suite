@@ -56,94 +56,94 @@ import java.util.List;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Param Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
+ *         <tr>
+ *             <th>Param Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
  *                 <th> Req.</th>
- * 			<th>Notes</th>
- * 			<th>Version Available</th>
- * 		</tr>
- * 		<tr>
- * 			<td>initialText</td>
- * 			<td>String</td>
- * 			<td>Displayed when the interaction begins. This text may be overlaid by the "Listening" prompt during the interaction. Text is displayed on first line of multiline display, and is centered. If text does not fit on line, it will be truncated</td>
+ *             <th>Notes</th>
+ *             <th>Version Available</th>
+ *         </tr>
+ *         <tr>
+ *             <td>initialText</td>
+ *             <td>String</td>
+ *             <td>Displayed when the interaction begins. This text may be overlaid by the "Listening" prompt during the interaction. Text is displayed on first line of multiline display, and is centered. If text does not fit on line, it will be truncated</td>
  *                 <td>Y</td>
- * 			<td>maxlength:500</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>initialPrompt</td>
- * 			<td>TTSChunk</td>
- * 			<td>An array of one or more TTSChunks that, taken together, specify what is to be spoken to the user at the start of an interaction.</td>
+ *             <td>maxlength:500</td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>initialPrompt</td>
+ *             <td>TTSChunk</td>
+ *             <td>An array of one or more TTSChunks that, taken together, specify what is to be spoken to the user at the start of an interaction.</td>
  *                 <td>Y</td>
- * 			<td>minsize:1; maxsize:100</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>interactionMode</td>
- * 			<td>InteractionMode</td>
- * 			<td>Indicates how user selects interaction choice. User can choose either by voice (VR_ONLY), by visual selection from the menu (MANUAL_ONLY), or by either mode (BOTH). </td>
+ *             <td>minsize:1; maxsize:100</td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>interactionMode</td>
+ *             <td>InteractionMode</td>
+ *             <td>Indicates how user selects interaction choice. User can choose either by voice (VR_ONLY), by visual selection from the menu (MANUAL_ONLY), or by either mode (BOTH). </td>
  *                 <td>Y</td>
- * 			<td></td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>interactionChoiceSetIDList</td>
- * 			<td>Integer</td>
- * 			<td>Array of one or more Choice Set IDs. User can select any choice from any of the specified Choice Sets.</td>
+ *             <td></td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>interactionChoiceSetIDList</td>
+ *             <td>Integer</td>
+ *             <td>Array of one or more Choice Set IDs. User can select any choice from any of the specified Choice Sets.</td>
  *                 <td>Y</td>
- * 			<td>minsize:0; maxsize:100; minvalue:0; maxvalue:2000000000</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>helpPrompt</td>
- * 			<td>TTSChunk</td>
- * 			<td>An array of TTSChunks which, taken together, specify the help phrase to be spoken when the user says "help" during the VR session. If this parameter is omitted, the help prompt will be constructed by SDL from the first vrCommand of each choice of all the Choice Sets specified in the interactionChoiceSetIDList parameter. </td>
+ *             <td>minsize:0; maxsize:100; minvalue:0; maxvalue:2000000000</td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>helpPrompt</td>
+ *             <td>TTSChunk</td>
+ *             <td>An array of TTSChunks which, taken together, specify the help phrase to be spoken when the user says "help" during the VR session. If this parameter is omitted, the help prompt will be constructed by SDL from the first vrCommand of each choice of all the Choice Sets specified in the interactionChoiceSetIDList parameter. </td>
  *                 <td>N</td>
- * 			<td>minsize:1; maxsize:100; The helpPrompt specified in SetGlobalProperties is not used by PerformInteraction.</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>timeoutPrompt</td>
- * 			<td>TTSChunk</td>
- * 			<td>An array of TTSChunks which, taken together, specify the phrase to be spoken when the listen times out during the VR session. If this parameter is omitted, the timeout prompt will be the same as the help prompt (see helpPrompt parameter). </td>
+ *             <td>minsize:1; maxsize:100; The helpPrompt specified in SetGlobalProperties is not used by PerformInteraction.</td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>timeoutPrompt</td>
+ *             <td>TTSChunk</td>
+ *             <td>An array of TTSChunks which, taken together, specify the phrase to be spoken when the listen times out during the VR session. If this parameter is omitted, the timeout prompt will be the same as the help prompt (see helpPrompt parameter). </td>
  *                 <td>N</td>
- * 			<td>The timeoutPrompt specified in SetGlobalProperties is not used by PerformInteraction. minsize:1;maxsize:100</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>timeout</td>
- * 			<td>Integer</td>
- * 			<td>The amount of time, in milliseconds, SDL will wait for the user to make a choice (VR or Menu). If this time elapses without the user making a choice, the timeoutPrompt will be spoken. After this timeout value has been reached, the interaction will stop and a subsequent interaction will take place after SDL speaks the timeout prompt. If that times out as well, the interaction will end completely. If omitted, the default is 10000ms.</td>
+ *             <td>The timeoutPrompt specified in SetGlobalProperties is not used by PerformInteraction. minsize:1;maxsize:100</td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>timeout</td>
+ *             <td>Integer</td>
+ *             <td>The amount of time, in milliseconds, SDL will wait for the user to make a choice (VR or Menu). If this time elapses without the user making a choice, the timeoutPrompt will be spoken. After this timeout value has been reached, the interaction will stop and a subsequent interaction will take place after SDL speaks the timeout prompt. If that times out as well, the interaction will end completely. If omitted, the default is 10000ms.</td>
  *                 <td>N</td>
- * 			<td>minvalue:5000; maxvalue:100000; defvalue:10000</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>vrHelp</td>
- * 			<td>VrHelpItem</td>
- * 			<td>Ability to send suggested VR Help Items to display on-screen during Perform Interaction If omitted on supported displays, the default SDL generated list of suggested choices will be displayed.</td>
+ *             <td>minvalue:5000; maxvalue:100000; defvalue:10000</td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>vrHelp</td>
+ *             <td>VrHelpItem</td>
+ *             <td>Ability to send suggested VR Help Items to display on-screen during Perform Interaction If omitted on supported displays, the default SDL generated list of suggested choices will be displayed.</td>
  *                 <td>N</td>
- * 			<td>Min = 1;Max = 100</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>interactionLayout</td>
- * 			<td>LayoutMode</td>
- * 			<td>See {@linkplain LayoutMode}</td>
+ *             <td>Min = 1;Max = 100</td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>interactionLayout</td>
+ *             <td>LayoutMode</td>
+ *             <td>See {@linkplain LayoutMode}</td>
  *                 <td>N</td>
- * 			<td></td>
- * 			<td>SmartDeviceLink 3.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>cancelID</td>
- * 			<td>Integer</td>
- * 			<td>An ID for this specific perform interaction to allow cancellation through the `CancelInteraction` RPC.</td>
+ *             <td></td>
+ *             <td>SmartDeviceLink 3.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>cancelID</td>
+ *             <td>Integer</td>
+ *             <td>An ID for this specific perform interaction to allow cancellation through the `CancelInteraction` RPC.</td>
  *          <td>N</td>
- * 			<td></td>
- * 			<td>SmartDeviceLink 6.0</td>
- * 		</tr>
+ *             <td></td>
+ *             <td>SmartDeviceLink 6.0</td>
+ *         </tr>
  *  </table>
  *
  * @see CreateInteractionChoiceSet

@@ -45,42 +45,42 @@ import java.util.List;
  * For example, the application may request for the user`s choice among several suggested ones: Yes, No, Skip.
  * <p><b> Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
- * 			<th>SmartDeviceLink Ver. Available</th>
- * 		</tr>
- * 		<tr>
- * 			<td>choiceID</td>
- * 			<td>Integer</td>
- * 			<td>Application-scoped identifier that uniquely identifies this choice.
+ *         <tr>
+ *             <th>Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
+ *             <th>SmartDeviceLink Ver. Available</th>
+ *         </tr>
+ *         <tr>
+ *             <td>choiceID</td>
+ *             <td>Integer</td>
+ *             <td>Application-scoped identifier that uniquely identifies this choice.
  *             Min: 0;
- * 				Max: 65535
- * 			</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>menuName</td>
- * 			<td>String</td>
- * 			<td>Text which appears in menu, representing this choice.
- * 				Min: 1;
- * 				Max: 100
- * 			</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
+ *                 Max: 65535
+ *             </td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>menuName</td>
+ *             <td>String</td>
+ *             <td>Text which appears in menu, representing this choice.
+ *                 Min: 1;
+ *                 Max: 100
+ *             </td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
  *     <tr>
- * 			<td>vrCommands</td>
- * 			<td>String[]</td>
- * 			<td>An array of strings to be used as VR synonyms for this choice. If this array is provided, it must have at least one non-empty element</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
+ *             <td>vrCommands</td>
+ *             <td>String[]</td>
+ *             <td>An array of strings to be used as VR synonyms for this choice. If this array is provided, it must have at least one non-empty element</td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
  *     <tr>
- * 			<td>image</td>
- * 			<td>Image</td>
- * 			<td>Either a static hex icon value or a binary image file  name identifier (sent by PutFile).</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
+ *             <td>image</td>
+ *             <td>Image</td>
+ *             <td>Either a static hex icon value or a binary image file  name identifier (sent by PutFile).</td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
  * </table>
  *
  * @see AddCommand

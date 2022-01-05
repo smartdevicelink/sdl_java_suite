@@ -55,22 +55,22 @@ import java.util.List;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Param Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
+ *         <tr>
+ *             <th>Param Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
  *                 <th> Req.</th>
- * 			<th>Notes</th>
- * 			<th>Version Available</th>
- * 		</tr>
- * 		<tr>
- * 			<td>properties</td>
- * 			<td>GlobalProperty</td>
- * 			<td>An array of one or more GlobalProperty enumeration elements indicating which global properties to reset to their default value.</td>
+ *             <th>Notes</th>
+ *             <th>Version Available</th>
+ *         </tr>
+ *         <tr>
+ *             <td>properties</td>
+ *             <td>GlobalProperty</td>
+ *             <td>An array of one or more GlobalProperty enumeration elements indicating which global properties to reset to their default value.</td>
  *                 <td>Y</td>
- * 			<td>Array must have at least one element.; minsize:1; maxsize:100</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
+ *             <td>Array must have at least one element.; minsize:1; maxsize:100</td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
  *
  *  </table>
  *  <p><b>Response</b></p>
@@ -79,14 +79,14 @@ import java.util.List;
  *
  * <p><b>Non-default Result Codes:</b></p>
  *
- * <p>	SUCCESS</p>
- * 	<p>INVALID_DATA</p>
- * <p>	OUT_OF_MEMORY</p>
- *  <p>	TOO_MANY_PENDING_REQUESTS</p>
- * <p>	APPLICATION_NOT_REGISTERED</p>
- * <p>	GENERIC_ERROR </p>
- * <p>	REJECTED </p>
- * 	<p>DISALLOWED    </p>
+ * <p>    SUCCESS</p>
+ *     <p>INVALID_DATA</p>
+ * <p>    OUT_OF_MEMORY</p>
+ *  <p>    TOO_MANY_PENDING_REQUESTS</p>
+ * <p>    APPLICATION_NOT_REGISTERED</p>
+ * <p>    GENERIC_ERROR </p>
+ * <p>    REJECTED </p>
+ *     <p>DISALLOWED    </p>
  *
  * @see SetGlobalProperties
  * @since SmartDeviceLink 1.0

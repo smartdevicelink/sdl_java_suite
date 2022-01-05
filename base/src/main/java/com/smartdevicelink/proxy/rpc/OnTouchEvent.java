@@ -45,30 +45,30 @@ import java.util.List;
  * <p><b>Parameter List</b></p>
  *
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
+ *         <tr>
+ *             <th>Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
  *                 <th>Reg.</th>
  *               <th>Notes</th>
- * 			<th>Version</th>
- * 		</tr>
+ *             <th>Version</th>
+ *         </tr>
  *            <tr>
- * 			<td>type</td>
- * 			<td>TouchType</td>
- * 			<td>The type of touch event.</td>
+ *             <td>type</td>
+ *             <td>TouchType</td>
+ *             <td>The type of touch event.</td>
  *                 <td>Y</td>
  *                 <td></td>
- * 			<td>SmartDeviceLink 3.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>event</td>
- * 			<td>TouchEvent</td>
- * 			<td>List of all individual touches involved in this event.</td>
+ *             <td>SmartDeviceLink 3.0 </td>
+ *         </tr>
+ *         <tr>
+ *             <td>event</td>
+ *             <td>TouchEvent</td>
+ *             <td>List of all individual touches involved in this event.</td>
  *                 <td>Y</td>
  *                 <td>minsize:1; maxsize:10</td>
- * 			<td>SmartDeviceLink 3.0 </td>
- * 		</tr>
+ *             <td>SmartDeviceLink 3.0 </td>
+ *         </tr>
  *  </table>
  *
  * <p><b>Note:</b></p>

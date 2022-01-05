@@ -98,13 +98,13 @@ public class VideoStreamingParameters {
     @Deprecated
     public VideoStreamingParameters(int displayDensity, int frameRate, int bitrate, int interval,
                                     ImageResolution resolution, VideoStreamingFormat format) {
-	    this.displayDensity = displayDensity;
-	    this.frameRate = frameRate;
-	    this.bitrate = bitrate;
-	    this.interval = interval;
-	    this.resolution = resolution;
-	    this.format = format;
-	    this.stableFrameRate = true;
+        this.displayDensity = displayDensity;
+        this.frameRate = frameRate;
+        this.bitrate = bitrate;
+        this.interval = interval;
+        this.resolution = resolution;
+        this.format = format;
+        this.stableFrameRate = true;
     }
 
     /**
@@ -178,7 +178,7 @@ public class VideoStreamingParameters {
             if (!params.additionalCapabilities.isEmpty()) {
                 this.additionalCapabilities = params.additionalCapabilities;
             }
-	        this.stableFrameRate = params.stableFrameRate;
+            this.stableFrameRate = params.stableFrameRate;
         }
     }
 
@@ -304,13 +304,13 @@ public class VideoStreamingParameters {
         return resolution;
     }
 
-	public boolean isStableFrameRate() {
-		return stableFrameRate;
-	}
+    public boolean isStableFrameRate() {
+        return stableFrameRate;
+    }
 
-	public void setStableFrameRate(boolean isStable) {
-		stableFrameRate = isStable;
-	}
+    public void setStableFrameRate(boolean isStable) {
+        stableFrameRate = isStable;
+    }
 
     public double getScale() { return scale; }
 

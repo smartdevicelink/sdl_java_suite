@@ -46,36 +46,36 @@ import java.util.Hashtable;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Param Name</th>
- * 			<th>Type</th>
- * 			<th>Mandatory</th>
- * 			<th>Description</th>
- * 		</tr>
- * 		<tr>
- * 			<td>powerModeActive</td>
- * 			<td>Boolean</td>
- * 			<td></td>
- * 			<td>References signal "PowerMode_UB".</td>
- * 		</tr>
- * 		<tr>
- * 			<td>powerModeQualificationStatus</td>
- * 			<td>PowerModeQualificationStatus</td>
- * 			<td></td>
- * 			<td>References signal "PowerModeQF".</td>
- * 		</tr>
- * 		<tr>
- * 			<td>carModeStatus</td>
- * 			<td>CarModeStatus</td>
- * 			<td></td>
- * 			<td>Describes the car mode the vehicle is in.</td>
+ *         <tr>
+ *             <th>Param Name</th>
+ *             <th>Type</th>
+ *             <th>Mandatory</th>
+ *             <th>Description</th>
+ *         </tr>
+ *         <tr>
+ *             <td>powerModeActive</td>
+ *             <td>Boolean</td>
+ *             <td></td>
+ *             <td>References signal "PowerMode_UB".</td>
+ *         </tr>
+ *         <tr>
+ *             <td>powerModeQualificationStatus</td>
+ *             <td>PowerModeQualificationStatus</td>
+ *             <td></td>
+ *             <td>References signal "PowerModeQF".</td>
+ *         </tr>
+ *         <tr>
+ *             <td>carModeStatus</td>
+ *             <td>CarModeStatus</td>
+ *             <td></td>
+ *             <td>Describes the car mode the vehicle is in.</td>
  *           </tr>
- * 		<tr>
- * 			<td>powerModeStatus</td>
- * 			<td>PowerModeStatus</td>
- * 			<td>true</td>
- * 			<td>Describes the different power modes</td>
- * 		</tr>
+ *         <tr>
+ *             <td>powerModeStatus</td>
+ *             <td>PowerModeStatus</td>
+ *             <td>true</td>
+ *             <td>Describes the different power modes</td>
+ *         </tr>
  *
  *  </table>
  *

@@ -133,11 +133,11 @@ public class SdlPsm {
                 //Log.trace(TAG,"Frame Info: " + controlFrameInfo);
                 switch (frameType) {
                     case SdlPacket.FRAME_TYPE_CONTROL:
-					/*if(frameInfo<FRAME_INFO_HEART_BEAT 
-							|| (frameInfo>FRAME_INFO_END_SERVICE_ACK 
-									&& (frameInfo!=FRAME_INFO_SERVICE_DATA_ACK || frameInfo!=FRAME_INFO_HEART_BEAT_ACK))){
-						return ERROR_STATE;
-					}*/ //Although some bits are reserved...whatever
+                    /*if(frameInfo<FRAME_INFO_HEART_BEAT
+                            || (frameInfo>FRAME_INFO_END_SERVICE_ACK
+                                    && (frameInfo!=FRAME_INFO_SERVICE_DATA_ACK || frameInfo!=FRAME_INFO_HEART_BEAT_ACK))){
+                        return ERROR_STATE;
+                    }*/ //Although some bits are reserved...whatever
                         break;
                     case SdlPacket.FRAME_TYPE_SINGLE: //Fall through since they are both the same
                     case SdlPacket.FRAME_TYPE_FIRST:

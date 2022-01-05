@@ -45,40 +45,40 @@ import java.util.List;
  * <p><b>Parameter List</b></p>
  *
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
+ *         <tr>
+ *             <th>Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
  *                 <th>Reg.</th>
  *               <th>Notes</th>
- * 			<th>Version</th>
- * 		</tr>
- * 		<tr>
- * 			<td>id</td>
- * 			<td>Integer</td>
- * 			<td> A touch's unique identifier.  The application can track the current touch events by id. If a touch event has type begin, the id should be added to the set of touches. If a touch event has type end, the id should be removed from the set of touches.</td>
+ *             <th>Version</th>
+ *         </tr>
+ *         <tr>
+ *             <td>id</td>
+ *             <td>Integer</td>
+ *             <td> A touch's unique identifier.  The application can track the current touch events by id. If a touch event has type begin, the id should be added to the set of touches. If a touch event has type end, the id should be removed from the set of touches.</td>
  *                 <td>N</td>
  *                 <td>Min Value: 0; Max Value: 9</td>
- * 			<td>SmartDeviceLink 3.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>ts</td>
- * 			<td>Float</td>
- * 			<td>The time that the touch was recorded. <p> This number can the time since the beginning of the session or something else as long as the units are in milliseconds.</p>
+ *             <td>SmartDeviceLink 3.0 </td>
+ *         </tr>
+ *         <tr>
+ *             <td>ts</td>
+ *             <td>Float</td>
+ *             <td>The time that the touch was recorded. <p> This number can the time since the beginning of the session or something else as long as the units are in milliseconds.</p>
  * <p>The timestamp is used to determined the rate of change of position of a touch.</p><p>The application also uses the time to verify whether two touches,with different ids, are part of a single action by the user.</p>
- * 			<p>If there is only a single timestamp in this array,</p> it is the same for every coordinate in the coordinates array.</td>
+ *             <p>If there is only a single timestamp in this array,</p> it is the same for every coordinate in the coordinates array.</td>
  *                 <td>Y</td>
  *                 <td>minvalue="0" maxvalue="5000000000" minsize="1" maxsize="1000"</td>
- * 			<td>SmartDeviceLink 3.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>c</td>
- * 			<td>Integer</td>
- * 			<td>The coordinates of the screen area where the touch event occurred.</td>
+ *             <td>SmartDeviceLink 3.0 </td>
+ *         </tr>
+ *         <tr>
+ *             <td>c</td>
+ *             <td>Integer</td>
+ *             <td>The coordinates of the screen area where the touch event occurred.</td>
  *                 <td>Y</td>
  *                 <td></td>
- * 			<td>SmartDeviceLink 3.0</td>
- * 		</tr>
+ *             <td>SmartDeviceLink 3.0</td>
+ *         </tr>
  *  </table>
  * <p>
  *   @since SmartDeviceLink 3.0

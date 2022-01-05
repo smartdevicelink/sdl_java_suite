@@ -35,7 +35,7 @@ public class VideoStreamingCapabilityTests extends TestCase {
         msg.setPixelPerInch(TestValues.GENERAL_DOUBLE);
         msg.setScale(TestValues.GENERAL_DOUBLE);
         msg.setAdditionalVideoStreamingCapabilities(TestValues.GENERAL_ADDITIONAL_CAPABILITY_LIST);
-	    msg.setPreferredFPS(TestValues.GENERAL_INTEGER);
+        msg.setPreferredFPS(TestValues.GENERAL_INTEGER);
     }
 
     /**
@@ -51,7 +51,7 @@ public class VideoStreamingCapabilityTests extends TestCase {
         Double pixelPerInch = msg.getPixelPerInch();
         Double scale = msg.getScale();
         List<VideoStreamingCapability> additionalVideoStreamingCapabilities = msg.getAdditionalVideoStreamingCapabilities();
-	    Integer preferredFPS = msg.getPreferredFPS();
+        Integer preferredFPS = msg.getPreferredFPS();
 
         // Valid Tests
         assertEquals(TestValues.MATCH, (List<VideoStreamingFormat>) TestValues.GENERAL_VIDEOSTREAMINGFORMAT_LIST, format);
@@ -75,7 +75,7 @@ public class VideoStreamingCapabilityTests extends TestCase {
         assertNull(TestValues.NULL, msg.getPixelPerInch());
         assertNull(TestValues.NULL, msg.getScale());
         assertNull(TestValues.NULL, msg.getAdditionalVideoStreamingCapabilities());
-	    assertNull(TestValues.NULL, msg.getPreferredFPS());
+        assertNull(TestValues.NULL, msg.getPreferredFPS());
     }
 
     public void testJson() {
@@ -90,7 +90,7 @@ public class VideoStreamingCapabilityTests extends TestCase {
             reference.put(VideoStreamingCapability.KEY_DIAGONAL_SCREEN_SIZE, TestValues.GENERAL_DOUBLE);
             reference.put(VideoStreamingCapability.KEY_PIXEL_PER_INCH, TestValues.GENERAL_DOUBLE);
             reference.put(VideoStreamingCapability.KEY_SCALE, TestValues.GENERAL_DOUBLE);
-	        reference.put(VideoStreamingCapability.KEY_PREFERRED_FPS, TestValues.GENERAL_INTEGER);
+            reference.put(VideoStreamingCapability.KEY_PREFERRED_FPS, TestValues.GENERAL_INTEGER);
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());

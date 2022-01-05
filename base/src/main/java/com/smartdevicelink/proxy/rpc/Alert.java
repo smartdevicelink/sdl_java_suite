@@ -66,94 +66,94 @@ import java.util.List;
  * <b>If the app has been granted function group Notification the HMILevel can
  * also be BACKGROUND</b>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
+ *         <tr>
+ *             <th>Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
  *          <th>Req.</th>
- * 			<th>Notes</th>
- * 			<th>Version Available</th>
- * 		</tr>
- * 		<tr>
- * 			<td>alertText1</td>
- * 			<td>String</td>
- * 			<td>Text to be displayed in the first field of the display during the Alert. </td>
+ *             <th>Notes</th>
+ *             <th>Version Available</th>
+ *         </tr>
+ *         <tr>
+ *             <td>alertText1</td>
+ *             <td>String</td>
+ *             <td>Text to be displayed in the first field of the display during the Alert. </td>
  *          <td>N</td>
- * 			<td>Length is limited to what is indicated in RegisterAppInterface response.  If omitted, top display line will be cleared. Text is always centered</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>alertText2</td>
- * 			<td>String</td>
- * 			<td>Text to be displayed in the second field of the display during the Alert. </td>
+ *             <td>Length is limited to what is indicated in RegisterAppInterface response.  If omitted, top display line will be cleared. Text is always centered</td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>alertText2</td>
+ *             <td>String</td>
+ *             <td>Text to be displayed in the second field of the display during the Alert. </td>
  *          <td>N</td>
- * 			<td>Only permitted if HMI supports a second display line.	Length is limited to what is indicated in RegisterAppInterface response. 	If omitted, second display line will be cleared.  </td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>alertText3</td>
- * 			<td>String</td>
- * 			<td>Text to be displayed in the third field of the display during the Alert.</td>
+ *             <td>Only permitted if HMI supports a second display line.    Length is limited to what is indicated in RegisterAppInterface response.     If omitted, second display line will be cleared.  </td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>alertText3</td>
+ *             <td>String</td>
+ *             <td>Text to be displayed in the third field of the display during the Alert.</td>
  *          <td>N</td>
- * 			<td>Array must have a least one element. </td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>ttsChunks</td>
- * 			<td>TTSChunk[]</td>
- * 			<td>Array of type TTSChunk which, taken together, specify what is to be spoken to the user.</td>
+ *             <td>Array must have a least one element. </td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>ttsChunks</td>
+ *             <td>TTSChunk[]</td>
+ *             <td>Array of type TTSChunk which, taken together, specify what is to be spoken to the user.</td>
  *          <td>N</td>
- * 			<td>Array must have a least one element. </td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>duration</td>
- * 			<td>Integer</td>
- * 			<td>The duration of the displayed portion of the alert, in milliseconds. After this amount of time has passed, the display fields alertText1 and alertText2 will revert to what was displayed in those fields before the alert began.</td>
+ *             <td>Array must have a least one element. </td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>duration</td>
+ *             <td>Integer</td>
+ *             <td>The duration of the displayed portion of the alert, in milliseconds. After this amount of time has passed, the display fields alertText1 and alertText2 will revert to what was displayed in those fields before the alert began.</td>
  *          <td>N</td>
- * 			<td>Min Value: 3000 Max Value: 10000. If omitted, the default is 5000 milliseconds</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>playTone</td>
- * 			<td>Boolean</td>
- * 			<td>Specifies whether the alert tone should be played before the TTS (if any) is spoken.</td>
+ *             <td>Min Value: 3000 Max Value: 10000. If omitted, the default is 5000 milliseconds</td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>playTone</td>
+ *             <td>Boolean</td>
+ *             <td>Specifies whether the alert tone should be played before the TTS (if any) is spoken.</td>
  *          <td>N</td>
- * 			<td>If omitted, default is true.</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>softButtons</td>
- * 			<td>SoftButton[]</td>
- * 			<td>Specifies the soft buttons, the apps wants to use in this alert.</td>
+ *             <td>If omitted, default is true.</td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>softButtons</td>
+ *             <td>SoftButton[]</td>
+ *             <td>Specifies the soft buttons, the apps wants to use in this alert.</td>
  *          <td>N</td>
- * 			<td>If omitted on supported displays, the alert will not have any SoftButton.ArrayMin: 0; ArrayMax: 4</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>progressIndicator</td>
- * 			<td>Boolean</td>
- * 			<td>If supported on the given platform, the alert GUI will include some sort of animation indicating that loading of a feature is progressing.  e.g. a spinning wheel or hourglass, etc.</td>
- *         	<td>N</td>
- * 			<td></td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>cancelID</td>
- * 			<td>Integer</td>
- * 			<td>An ID for this specific alert to allow cancellation through the `CancelInteraction` RPC.</td>
+ *             <td>If omitted on supported displays, the alert will not have any SoftButton.ArrayMin: 0; ArrayMax: 4</td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>progressIndicator</td>
+ *             <td>Boolean</td>
+ *             <td>If supported on the given platform, the alert GUI will include some sort of animation indicating that loading of a feature is progressing.  e.g. a spinning wheel or hourglass, etc.</td>
+ *             <td>N</td>
+ *             <td></td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>cancelID</td>
+ *             <td>Integer</td>
+ *             <td>An ID for this specific alert to allow cancellation through the `CancelInteraction` RPC.</td>
  *          <td>N</td>
- * 			<td></td>
- * 			<td>SmartDeviceLink 6.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>alertIcon</td>
- * 			<td>Image</td>
- * 			<td>Image struct determining whether the icon is static or dynamic. If omitted on supported displays, no (or the default if applicable) icon should be displayed.</td>
+ *             <td></td>
+ *             <td>SmartDeviceLink 6.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>alertIcon</td>
+ *             <td>Image</td>
+ *             <td>Image struct determining whether the icon is static or dynamic. If omitted on supported displays, no (or the default if applicable) icon should be displayed.</td>
  *          <td>N</td>
- * 			<td></td>
- * 			<td>SmartDeviceLink 6.0.0</td>
- * 		</tr>
+ *             <td></td>
+ *             <td>SmartDeviceLink 6.0.0</td>
+ *         </tr>
  *  </table>
  *
  * @see GetVehicleData

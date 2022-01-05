@@ -44,22 +44,22 @@ import java.util.Hashtable;
  * <p></p>
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
+ *         <tr>
+ *             <th>Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
  *                 <th>Reg.</th>
  *               <th>Notes</th>
- * 			<th>Version</th>
- * 		</tr>
- * 		<tr>
- * 			<td>hashID</td>
- * 			<td>String</td>
- * 			<td>Calculated hash ID to be referenced during RegisterAppInterface.</td>
+ *             <th>Version</th>
+ *         </tr>
+ *         <tr>
+ *             <td>hashID</td>
+ *             <td>String</td>
+ *             <td>Calculated hash ID to be referenced during RegisterAppInterface.</td>
  *                 <td>Y</td>
  *                 <td>maxlength: 100</td>
- * 			<td>SmartDeviceLink 3.0 </td>
- * 		</tr>
+ *             <td>SmartDeviceLink 3.0 </td>
+ *         </tr>
  *  </table>
  *
  * @since SmartDeviceLink 3.0

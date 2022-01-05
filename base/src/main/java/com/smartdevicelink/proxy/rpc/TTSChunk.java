@@ -49,24 +49,24 @@ import java.util.Hashtable;
  * <p>For more information about phonemes, see <a href="http://en.wikipedia.org/wiki/Phoneme">http://en.wikipedia.org/wiki/Phoneme</a></p>.
  * <p><b> Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
- * 			<th>SmartDeviceLink Ver. Available</th>
- * 		</tr>
- * 		<tr>
- * 			<td>text</td>
- * 			<td>String</td>
- * 			<td>Text to be spoken, or a phoneme specification, or the name of a pre-recorded sound. The contents of this field are indicated by the "type" field.</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>type</td>
- * 			<td>SpeechCapabilities</td>
- * 			<td>Indicates the type of information in the "text" field (e.g. phrase to be spoken, phoneme specification, name of pre-recorded sound).	</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
+ *         <tr>
+ *             <th>Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
+ *             <th>SmartDeviceLink Ver. Available</th>
+ *         </tr>
+ *         <tr>
+ *             <td>text</td>
+ *             <td>String</td>
+ *             <td>Text to be spoken, or a phoneme specification, or the name of a pre-recorded sound. The contents of this field are indicated by the "type" field.</td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>type</td>
+ *             <td>SpeechCapabilities</td>
+ *             <td>Indicates the type of information in the "text" field (e.g. phrase to be spoken, phoneme specification, name of pre-recorded sound).    </td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
  *  </table>
  *
  * @since SmartDeviceLink 1.0

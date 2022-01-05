@@ -39,34 +39,34 @@ import java.util.Hashtable;
  * A color scheme for all display layout templates.
  * <p><b> Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
- * 		    <th>Reg.</th>
- * 			<th>Version Available</th>
- * 		</tr>
- * 		<tr>
- * 			<td>primaryColor</td>
- * 			<td>RGBColor</td>
- * 			<td>The primary "accent" color</td>
- * 			<td>N</td>
- * 			<td>SmartDeviceLink 5.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>secondaryColor</td>
- * 			<td>RGBColor</td>
- * 			<td>The secondary "accent" color</td>
- * 			<td>N</td>
- * 			<td>SmartDeviceLink 5.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>backgroundColor</td>
- * 			<td>RGBColor</td>
- * 			<td>The color of the background</td>
- * 			<td>N</td>
- * 			<td>SmartDeviceLink 5.0</td>
- * 		</tr>
+ *         <tr>
+ *             <th>Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
+ *             <th>Reg.</th>
+ *             <th>Version Available</th>
+ *         </tr>
+ *         <tr>
+ *             <td>primaryColor</td>
+ *             <td>RGBColor</td>
+ *             <td>The primary "accent" color</td>
+ *             <td>N</td>
+ *             <td>SmartDeviceLink 5.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>secondaryColor</td>
+ *             <td>RGBColor</td>
+ *             <td>The secondary "accent" color</td>
+ *             <td>N</td>
+ *             <td>SmartDeviceLink 5.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>backgroundColor</td>
+ *             <td>RGBColor</td>
+ *             <td>The color of the background</td>
+ *             <td>N</td>
+ *             <td>SmartDeviceLink 5.0</td>
+ *         </tr>
  * </table>
  *
  * @since SmartDeviceLink 5.0

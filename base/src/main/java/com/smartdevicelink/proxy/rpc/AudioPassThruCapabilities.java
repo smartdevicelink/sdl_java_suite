@@ -46,33 +46,33 @@ import java.util.Hashtable;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
- * 			<th>SmartDeviceLink Ver. Available</th>
- * 		</tr>
- * 		<tr>
- * 			<td>samplingRate</td>
- * 			<td>SamplingRate</td>
- * 			<td>Describes the sampling rate for AudioPassThru
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>bitsPerSample</td>
- * 			<td>BitsPerSample</td>
- * 			<td>Describes the sample depth in bit for AudioPassThru
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>audioType</td>
- * 			<td>AudioType</td>
- * 			<td>Describes the audioType for AudioPassThru
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
+ *         <tr>
+ *             <th>Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
+ *             <th>SmartDeviceLink Ver. Available</th>
+ *         </tr>
+ *         <tr>
+ *             <td>samplingRate</td>
+ *             <td>SamplingRate</td>
+ *             <td>Describes the sampling rate for AudioPassThru
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>bitsPerSample</td>
+ *             <td>BitsPerSample</td>
+ *             <td>Describes the sample depth in bit for AudioPassThru
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>audioType</td>
+ *             <td>AudioType</td>
+ *             <td>Describes the audioType for AudioPassThru
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
  *  </table>
  *
  * @since SmartDeviceLink 2.0

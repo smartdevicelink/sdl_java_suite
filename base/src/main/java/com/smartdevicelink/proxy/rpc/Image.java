@@ -42,29 +42,29 @@ import java.util.Hashtable;
  * Specifies, which image shall be used, e.g. in Alerts or on SoftButtons provided the display supports it.
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
- * 			<th>SmartDeviceLink Ver. Available</th>
- * 		</tr>
- * 		<tr>
- * 			<td>value</td>
- * 			<td>String</td>
- * 			<td>Either the static hex icon value or the binary image file name identifier (sent by PutFile).
- * 					<ul>
- * 					<li>Min: 0</li>
- * 					<li>Max: 65535</li>
- * 					</ul>
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>imageType</td>
- * 			<td>ImageType</td>
- * 			<td>Describes, whether it is a static or dynamic image.</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
+ *         <tr>
+ *             <th>Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
+ *             <th>SmartDeviceLink Ver. Available</th>
+ *         </tr>
+ *         <tr>
+ *             <td>value</td>
+ *             <td>String</td>
+ *             <td>Either the static hex icon value or the binary image file name identifier (sent by PutFile).
+ *                     <ul>
+ *                     <li>Min: 0</li>
+ *                     <li>Max: 65535</li>
+ *                     </ul>
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>imageType</td>
+ *             <td>ImageType</td>
+ *             <td>Describes, whether it is a static or dynamic image.</td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
  *  </table>
  *
  * @since SmartDeviceLink 2.0

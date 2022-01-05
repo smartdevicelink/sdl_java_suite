@@ -43,34 +43,34 @@ import java.util.Hashtable;
  * Tire pressure status of a single tire.
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
- * 			<th>SmartDeviceLink Ver. Available</th>
- * 		</tr>
- * 		<tr>
- * 			<td>status</td>
- * 			<td>ComponentVolumeStatus</td>
- * 			<td>Describes the volume status of a single tire
- * 					See {@linkplain ComponentVolumeStatus}
- * 			</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>tpms</td>
- * 			<td>TPMS</td>
- * 			<td>The status of TPMS according to the particular tire.
- * 					See {@linkplain com.smartdevicelink.proxy.rpc.enums.TPMS}
- * 			</td>
- * 			<td>SmartDeviceLink 5.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>pressure</td>
- * 			<td>Float</td>
- * 			<td>The pressure value of the particular tire in kilo pascal.</td>
- * 			<td>SmartDeviceLink 5.0</td>
- * 		</tr>
+ *         <tr>
+ *             <th>Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
+ *             <th>SmartDeviceLink Ver. Available</th>
+ *         </tr>
+ *         <tr>
+ *             <td>status</td>
+ *             <td>ComponentVolumeStatus</td>
+ *             <td>Describes the volume status of a single tire
+ *                     See {@linkplain ComponentVolumeStatus}
+ *             </td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>tpms</td>
+ *             <td>TPMS</td>
+ *             <td>The status of TPMS according to the particular tire.
+ *                     See {@linkplain com.smartdevicelink.proxy.rpc.enums.TPMS}
+ *             </td>
+ *             <td>SmartDeviceLink 5.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>pressure</td>
+ *             <td>Float</td>
+ *             <td>The pressure value of the particular tire in kilo pascal.</td>
+ *             <td>SmartDeviceLink 5.0</td>
+ *         </tr>
  *  </table>
  *
  * @since SmartDeviceLink 2.0

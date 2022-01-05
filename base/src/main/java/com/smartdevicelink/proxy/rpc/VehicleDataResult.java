@@ -44,30 +44,30 @@ import java.util.Hashtable;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Param Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
+ *         <tr>
+ *             <th>Param Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
  *                 <th> Req.</th>
- * 			<th>Notes</th>
- * 			<th>Version Available</th>
- * 		</tr>
- * 		<tr>
- * 			<td>dataType</td>
- * 			<td>VehicleDataType</td>
- * 			<td>Defined published data element type.</td>
+ *             <th>Notes</th>
+ *             <th>Version Available</th>
+ *         </tr>
+ *         <tr>
+ *             <td>dataType</td>
+ *             <td>VehicleDataType</td>
+ *             <td>Defined published data element type.</td>
  *                 <td></td>
- * 			<td></td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>resultCode</td>
- * 			<td>VehicleDataResultCode</td>
- * 			<td>Published data result code.</td>
+ *             <td></td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>resultCode</td>
+ *             <td>VehicleDataResultCode</td>
+ *             <td>Published data result code.</td>
  *                 <td></td>
- * 			<td></td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
+ *             <td></td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
  *  </table>
  */
 public class VehicleDataResult extends RPCStruct {

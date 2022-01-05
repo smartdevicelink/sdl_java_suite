@@ -43,39 +43,39 @@ import java.util.Hashtable;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Param Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
+ *         <tr>
+ *             <th>Param Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
  *                 <th> Req.</th>
- * 			<th>Notes</th>
- * 			<th>Version Available</th>
- * 		</tr>
- * 		<tr>
- * 			<td>rpcName</td>
- * 			<td>String</td>
- * 			<td>Name of the individual RPC in the policy table.</td>
+ *             <th>Notes</th>
+ *             <th>Version Available</th>
+ *         </tr>
+ *         <tr>
+ *             <td>rpcName</td>
+ *             <td>String</td>
+ *             <td>Name of the individual RPC in the policy table.</td>
  *                 <td></td>
- * 			<td>maxlength:100</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>hmiPermissions</td>
- * 			<td>HMIPermissions</td>
- * 			<td>Sets of parameters, which are permitted or prohibited for the given RPC.</td>
+ *             <td>maxlength:100</td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>hmiPermissions</td>
+ *             <td>HMIPermissions</td>
+ *             <td>Sets of parameters, which are permitted or prohibited for the given RPC.</td>
  *                 <td></td>
- * 			<td></td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
+ *             <td></td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
  *
- * 		<tr>
- * 			<td>parameterPermissions</td>
- * 			<td>ParameterPermissions</td>
- * 			<td>Sets of parameters, which are permitted or prohibited for the given RPC.</td>
+ *         <tr>
+ *             <td>parameterPermissions</td>
+ *             <td>ParameterPermissions</td>
+ *             <td>Sets of parameters, which are permitted or prohibited for the given RPC.</td>
  *                 <td></td>
- * 			<td></td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
+ *             <td></td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
  *  </table>
  *
  * @since SmartDeviceLink 2.0

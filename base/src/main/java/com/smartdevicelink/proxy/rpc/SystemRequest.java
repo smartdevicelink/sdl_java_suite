@@ -45,38 +45,38 @@ import java.util.List;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
+ *         <tr>
+ *             <th>Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
  *                 <th>Reg.</th>
  *               <th>Notes</th>
- * 			<th>Version</th>
- * 		</tr>
- * 		<tr>
- * 			<td>requestType</td>
- * 			<td>RequestType</td>
- * 			<td>The type of system request. Note that Proprietary requests should forward the binary data to the known proprietary module on the system.</td>
+ *             <th>Version</th>
+ *         </tr>
+ *         <tr>
+ *             <td>requestType</td>
+ *             <td>RequestType</td>
+ *             <td>The type of system request. Note that Proprietary requests should forward the binary data to the known proprietary module on the system.</td>
  *                 <td>Y</td>
  *                 <td></td>
- * 			<td>SmartDeviceLink 3.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>requestSubType</td>
- * 			<td>String</td>
- * 			<td>This parameter is filled for supporting OEM proprietary data exchanges.</td>
+ *             <td>SmartDeviceLink 3.0 </td>
+ *         </tr>
+ *         <tr>
+ *             <td>requestSubType</td>
+ *             <td>String</td>
+ *             <td>This parameter is filled for supporting OEM proprietary data exchanges.</td>
  *                 <td>N</td>
  *                 <td>Max Length: 255</td>
- * 			<td>SmartDeviceLink 5.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>fileName</td>
- * 			<td>String</td>
- * 			<td>Filename of HTTP data to store in predefined system staging area. Mandatory if requestType is HTTP. PROPRIETARY requestType should ignore this parameter. </td>
+ *             <td>SmartDeviceLink 5.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>fileName</td>
+ *             <td>String</td>
+ *             <td>Filename of HTTP data to store in predefined system staging area. Mandatory if requestType is HTTP. PROPRIETARY requestType should ignore this parameter. </td>
  *                 <td>N</td>
  *                 <td>Max Length: 255</td>
- * 			<td>SmartDeviceLink 3.0 </td>
- * 		</tr>
+ *             <td>SmartDeviceLink 3.0 </td>
+ *         </tr>
  *  </table>
  *
  * @since SmartDeviceLink 3.0

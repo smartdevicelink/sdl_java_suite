@@ -292,7 +292,7 @@ public class SiphonServer {
 
         try {
             // blobSize = length(of message) + 1(size of direction indicator)
-            //				+ 1 (size of msgVersionNumber) + 4 (size of timeStamp)
+            //                + 1 (size of msgVersionNumber) + 4 (size of timeStamp)
             int blobSize = length + 1 + 1 + 4;
 
             siphonOutputStream.write(BitConverter.intToByteArray(blobSize));

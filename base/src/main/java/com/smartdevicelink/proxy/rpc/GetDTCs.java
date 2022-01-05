@@ -48,30 +48,30 @@ import java.util.Hashtable;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
+ *         <tr>
+ *             <th>Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
  *                 <th>Reg.</th>
  *               <th>Notes</th>
- * 			<th>Version</th>
- * 		</tr>
- * 		<tr>
- * 			<td>ecuName</td>
- * 			<td>Integer</td>
- * 			<td>Name of ECU.</td>
+ *             <th>Version</th>
+ *         </tr>
+ *         <tr>
+ *             <td>ecuName</td>
+ *             <td>Integer</td>
+ *             <td>Name of ECU.</td>
  *                 <td>Y</td>
  *                 <td>Min Value: 0; Max Value: 65535</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
- * 		<tr>
- * 			<td>dtcMask</td>
- * 			<td>Integer</td>
- * 			<td>DTC Mask Byte to be sent in diagnostic request to module.</td>
+ *             <td>SmartDeviceLink 2.0 </td>
+ *         </tr>
+ *         <tr>
+ *             <td>dtcMask</td>
+ *             <td>Integer</td>
+ *             <td>DTC Mask Byte to be sent in diagnostic request to module.</td>
  *                 <td>N</td>
  *                 <td>Min Value: 0; Max Value: 255</td>
- * 			<td>SmartDeviceLink 2.0 </td>
- * 		</tr>
+ *             <td>SmartDeviceLink 2.0 </td>
+ *         </tr>
  *  </table>
  * <p><b>Response</b></p>
  *

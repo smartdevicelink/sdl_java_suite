@@ -43,46 +43,46 @@ import java.util.Hashtable;
  * Struct defining the characteristics of a displayed field on the HMI.
  * <p><b> Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
- * 			<th>SmartDeviceLink Ver. Available</th>
- * 		</tr>
- * 		<tr>
- * 			<td>name</td>
- * 			<td>TextFieldName</td>
- * 			<td>Enumeration identifying the field.	</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>characterSet</td>
- * 			<td>CharacterSet</td>
- * 			<td>The set of characters that are supported by this text field. All text is sent in UTF-8 format, but not all systems may support all of the characters expressed by UTF-8. All systems will support at least ASCII, but they may support more, either the LATIN-1 character set, or the full UTF-8 character set.	</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>width</td>
- * 			<td>Integer</td>
- * 			<td>The number of characters in one row of this field.
- * 					<ul>
- * 					<li>Minvalue="1"</li>
- * 					<li>maxvalue="500"</li>
- * 					</ul>
- * 			</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>rows</td>
- * 			<td>Integer</td>
- * 			<td>The number of rows for this text field.
- * 					<ul>
- * 					<li>Minvalue="1"</li>
- * 					<li>maxvalue="3"</li>
- * 					</ul>
- * 			</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
+ *         <tr>
+ *             <th>Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
+ *             <th>SmartDeviceLink Ver. Available</th>
+ *         </tr>
+ *         <tr>
+ *             <td>name</td>
+ *             <td>TextFieldName</td>
+ *             <td>Enumeration identifying the field.    </td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>characterSet</td>
+ *             <td>CharacterSet</td>
+ *             <td>The set of characters that are supported by this text field. All text is sent in UTF-8 format, but not all systems may support all of the characters expressed by UTF-8. All systems will support at least ASCII, but they may support more, either the LATIN-1 character set, or the full UTF-8 character set.    </td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>width</td>
+ *             <td>Integer</td>
+ *             <td>The number of characters in one row of this field.
+ *                     <ul>
+ *                     <li>Minvalue="1"</li>
+ *                     <li>maxvalue="500"</li>
+ *                     </ul>
+ *             </td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>rows</td>
+ *             <td>Integer</td>
+ *             <td>The number of rows for this text field.
+ *                     <ul>
+ *                     <li>Minvalue="1"</li>
+ *                     <li>maxvalue="3"</li>
+ *                     </ul>
+ *             </td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
  *  </table>
  *
  * @see TextFieldName

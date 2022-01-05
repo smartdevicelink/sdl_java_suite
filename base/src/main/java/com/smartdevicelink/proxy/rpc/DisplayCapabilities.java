@@ -45,46 +45,46 @@ import java.util.List;
  * Contains information about the display for the SDL system to which the application is currently connected.
  * <p><b> Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
- * 			<th>SmartDeviceLink Ver. Available</th>
- * 		</tr>
- * 		<tr>
- * 			<td>@property-deprecated <s>displayType</s></td>
- * 			<td><s>DisplayType</s></td>
- * 			<td><s>The type of display</s>
- * 			</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>displayName</td>
- * 			<td>String</td>
- * 			<td>The name of the display
- * 			</td>
- * 			<td>SmartDeviceLink 5.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>textField</td>
- * 			<td>TextField[]</td>
- * 			<td>An array of TextField structures, each of which describes a field in the HMI which the application can write to using operations such as <i>{@linkplain Show}</i>, <i>{@linkplain SetMediaClockTimer}</i>, etc.
- * 					 This array of TextField structures identify all the text fields to which the application can write on the current display (identified by DisplayType ).
- * 			</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>mediaClockFormats</td>
- * 			<td>MediaClockFormat[]</td>
- * 			<td>An array of MediaClockFormat elements, defining the valid string formats used in specifying the contents of the media clock field</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>graphicSupported</td>
- * 			<td>Boolean</td>
- * 			<td>The display's persistent screen supports referencing a static or dynamic image.</td>
- * 			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
+ *         <tr>
+ *             <th>Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
+ *             <th>SmartDeviceLink Ver. Available</th>
+ *         </tr>
+ *         <tr>
+ *             <td>@property-deprecated <s>displayType</s></td>
+ *             <td><s>DisplayType</s></td>
+ *             <td><s>The type of display</s>
+ *             </td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>displayName</td>
+ *             <td>String</td>
+ *             <td>The name of the display
+ *             </td>
+ *             <td>SmartDeviceLink 5.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>textField</td>
+ *             <td>TextField[]</td>
+ *             <td>An array of TextField structures, each of which describes a field in the HMI which the application can write to using operations such as <i>{@linkplain Show}</i>, <i>{@linkplain SetMediaClockTimer}</i>, etc.
+ *                      This array of TextField structures identify all the text fields to which the application can write on the current display (identified by DisplayType ).
+ *             </td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>mediaClockFormats</td>
+ *             <td>MediaClockFormat[]</td>
+ *             <td>An array of MediaClockFormat elements, defining the valid string formats used in specifying the contents of the media clock field</td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>graphicSupported</td>
+ *             <td>Boolean</td>
+ *             <td>The display's persistent screen supports referencing a static or dynamic image.</td>
+ *             <td>SmartDeviceLink 2.0</td>
+ *         </tr>
  * </table>
  *
  * @see DisplayType

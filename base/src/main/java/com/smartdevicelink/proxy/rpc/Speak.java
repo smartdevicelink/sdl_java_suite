@@ -103,37 +103,37 @@ import java.util.List;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
+ *         <tr>
+ *             <th>Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
  *                 <th>Reg.</th>
  *               <th>Notes</th>
- * 			<th> Ver. Available</th>
- * 		</tr>
- * 		<tr>
- * 			<td>ttsChunks</td>
- * 			<td>String</td>
- * 			<td>An array of 1-100 TTSChunk structs which, taken together, specify the phrase to be spoken.</td>
- * 			<td>Y</td>
- * 			<td><p>The array must have 1-100 elements. </p><p>The total length of the phrase composed from the ttsChunks provided must be less than 500 characters or the request will be rejected. </p>Each chunk can be no more than 500 characters.</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
+ *             <th> Ver. Available</th>
+ *         </tr>
+ *         <tr>
+ *             <td>ttsChunks</td>
+ *             <td>String</td>
+ *             <td>An array of 1-100 TTSChunk structs which, taken together, specify the phrase to be spoken.</td>
+ *             <td>Y</td>
+ *             <td><p>The array must have 1-100 elements. </p><p>The total length of the phrase composed from the ttsChunks provided must be less than 500 characters or the request will be rejected. </p>Each chunk can be no more than 500 characters.</td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
  *  </table>
  * <p><b>Response</b> </p>
  * <p>This Response notifies the application of the completion, interruption, or failure of a Speak Request.</p>
  *
  * <p><b>Non-default Result Codes:</b> </p>
  *
- * 	<p> SUCCESS </p>
- * <p>	 INVALID_DATA</p>
- * 	<p> OUT_OF_MEMORY </p>
- * 	<p>APPLICATION_NOT_REGISTERED </p>
- * 	<p>TOO_MANY_PENDING_REQUESTS </p>
- * <p>	GENERIC_ERROR </p>
- * 	<p>REJECTED  </p>
- * 	<p>DISALLOWED </p>
- * 	<p>ABORTED </p>
+ *     <p> SUCCESS </p>
+ * <p>     INVALID_DATA</p>
+ *     <p> OUT_OF_MEMORY </p>
+ *     <p>APPLICATION_NOT_REGISTERED </p>
+ *     <p>TOO_MANY_PENDING_REQUESTS </p>
+ * <p>    GENERIC_ERROR </p>
+ *     <p>REJECTED  </p>
+ *     <p>DISALLOWED </p>
+ *     <p>ABORTED </p>
  *
  * <p><b>Additional Notes:</b></p><ul>Total character limit depends on platform. Chunks are limited to 500 characters; however you can have multiple TTS chunks. On Gen 1.1 there is a total character limit of 500 characters across all chunks. This could vary according to the VCA.
  *

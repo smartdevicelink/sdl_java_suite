@@ -49,34 +49,34 @@ import java.util.Hashtable;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
+ *         <tr>
+ *             <th>Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
  *                 <th>Reg.</th>
  *               <th>Notes</th>
- * 			<th>Version</th>
- * 		</tr>
- * 		<tr>
- * 			<td>menuID</td>
- * 			<td>Integer</td>
- * 			<td>Unique ID that identifies the SubMenu to be delete</td>
+ *             <th>Version</th>
+ *         </tr>
+ *         <tr>
+ *             <td>menuID</td>
+ *             <td>Integer</td>
+ *             <td>Unique ID that identifies the SubMenu to be delete</td>
  *                 <td>Y</td>
  *                 <td>Min Value: 0; Max Value: 2000000000</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
  *  </table>
  *
  * <p> <b>Response </b></p>
  *
  * <p><b>Non-default Result Codes:</b></p>
  * <p>SUCCESS</p>
- * <p> 	INVALID_DATA</p>
- * <p>	OUT_OF_MEMORY</p>
- * <p>	TOO_MANY_PENDING_REQUESTS</p>
- * <p>	APPLICATION_NOT_REGISTERED</p>
- * <p>	GENERIC_ERROR</p>
- * <p>	REJECTED</p>
+ * <p>     INVALID_DATA</p>
+ * <p>    OUT_OF_MEMORY</p>
+ * <p>    TOO_MANY_PENDING_REQUESTS</p>
+ * <p>    APPLICATION_NOT_REGISTERED</p>
+ * <p>    GENERIC_ERROR</p>
+ * <p>    REJECTED</p>
  * <p> INVALID_ID</p>
  * <p> IN_USE   </p>
  *

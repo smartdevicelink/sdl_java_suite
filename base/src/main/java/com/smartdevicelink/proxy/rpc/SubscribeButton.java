@@ -87,22 +87,22 @@ import java.util.Hashtable;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
+ *         <tr>
+ *             <th>Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
  *                 <th>Reg.</th>
  *               <th>Notes</th>
- * 			<th>Version</th>
- * 		</tr>
- * 		<tr>
- * 			<td>buttonName</td>
- * 			<td>ButtonName</td>
- * 			<td>Name of the button to subscribe.</td>
+ *             <th>Version</th>
+ *         </tr>
+ *         <tr>
+ *             <td>buttonName</td>
+ *             <td>ButtonName</td>
+ *             <td>Name of the button to subscribe.</td>
  *                 <td>Y</td>
  *                 <td></td>
- * 			<td>SmartDeviceLink 1.0 </td>
- * 		</tr>
+ *             <td>SmartDeviceLink 1.0 </td>
+ *         </tr>
  *  </table>
  *
  * @see UnsubscribeButton

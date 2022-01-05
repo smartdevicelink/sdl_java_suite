@@ -50,62 +50,62 @@ import java.util.Hashtable;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- * 		<tr>
- * 			<th>Param Name</th>
- * 			<th>Type</th>
- * 			<th>Description</th>
+ *         <tr>
+ *             <th>Param Name</th>
+ *             <th>Type</th>
+ *             <th>Description</th>
  *                 <th> Req.</th>
- * 			<th>Notes</th>
- * 			<th>Version Available</th>
- * 		</tr>
- * 		<tr>
- * 			<td>menuID</td>
- * 			<td>Integer</td>
- * 			<td>Unique ID that identifies this sub menu. This value is used in AddCommand to which SubMenu is the parent of the command being added.</td>
+ *             <th>Notes</th>
+ *             <th>Version Available</th>
+ *         </tr>
+ *         <tr>
+ *             <td>menuID</td>
+ *             <td>Integer</td>
+ *             <td>Unique ID that identifies this sub menu. This value is used in AddCommand to which SubMenu is the parent of the command being added.</td>
  *                 <td>Y</td>
- * 			<td></td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>position</td>
- * 			<td>Integer</td>
- * 			<td>Position within the items of the top level Command Menu. 0 will insert at the front, 1 will insert after the first existing element, etc. Position of any submenu will always be located before the return and exit options.</td>
+ *             <td></td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>position</td>
+ *             <td>Integer</td>
+ *             <td>Position within the items of the top level Command Menu. 0 will insert at the front, 1 will insert after the first existing element, etc. Position of any submenu will always be located before the return and exit options.</td>
  *                 <td>N</td>
- * 			<td>Min Value: 0 <p>Max Value: 1000</p> <p>If position is greater or equal than the number of items on top level, the sub menu will be appended by the end.</p><p>If this parameter is omitted, the entry will be added at the end of the list.</P></td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>menuName</td>
- * 			<td>String</td>
- * 			<td>Text which is displayed representing this submenu item</td>
+ *             <td>Min Value: 0 <p>Max Value: 1000</p> <p>If position is greater or equal than the number of items on top level, the sub menu will be appended by the end.</p><p>If this parameter is omitted, the entry will be added at the end of the list.</P></td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>menuName</td>
+ *             <td>String</td>
+ *             <td>Text which is displayed representing this submenu item</td>
  *                 <td>Y</td>
- * 			<td>maxlength:500</td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>menuIcon</td>
- * 			<td>Image</td>
- * 			<td>Image to be be shown along with the submenu item</td>
+ *             <td>maxlength:500</td>
+ *             <td>SmartDeviceLink 1.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>menuIcon</td>
+ *             <td>Image</td>
+ *             <td>Image to be be shown along with the submenu item</td>
  *                 <td>N</td>
- * 			<td></td>
- * 			<td>SmartDeviceLink 5.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>menuLayout</td>
- * 			<td>MenuLayout</td>
- * 			<td>Sets the layout of the submenu screen.</td>
- * 			<td></td>
- * 			<td></td>
- * 			<td>SmartDeviceLink 6.0</td>
- * 		</tr>
- * 		<tr>
- * 			<td>parentID</td>
- * 			<td>Integer</td>
- * 			<td>unique ID of the sub menu, the command will be added to. If not provided or 0, it will be provided to the top level of the in application menu.</td>
- * 			<td>N</td>
- * 		    <td>Min Value: 0 <p>Max Value: 2000000000</p> </td>
- * 			<td>SmartDeviceLink 7.0.0</td>
- * 		</tr>
+ *             <td></td>
+ *             <td>SmartDeviceLink 5.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>menuLayout</td>
+ *             <td>MenuLayout</td>
+ *             <td>Sets the layout of the submenu screen.</td>
+ *             <td></td>
+ *             <td></td>
+ *             <td>SmartDeviceLink 6.0</td>
+ *         </tr>
+ *         <tr>
+ *             <td>parentID</td>
+ *             <td>Integer</td>
+ *             <td>unique ID of the sub menu, the command will be added to. If not provided or 0, it will be provided to the top level of the in application menu.</td>
+ *             <td>N</td>
+ *             <td>Min Value: 0 <p>Max Value: 2000000000</p> </td>
+ *             <td>SmartDeviceLink 7.0.0</td>
+ *         </tr>
  *      <tr>
  *          <td>secondaryText</td>
  *          <td>String</td>
