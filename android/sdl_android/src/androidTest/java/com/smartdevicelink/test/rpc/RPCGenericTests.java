@@ -36,14 +36,14 @@ import static junit.framework.TestCase.fail;
 /**
  * This class tests the following
  * Functions & Structs
- *     - The classes exist in code and their names and deprecation status match the spec
- *     - They have constructors with mandatory params and those constructors are setting the values correctly
- *     - They have setter and getter for every param and their names and deprecations status match the spec
- *     - The params setter return instance of class type (for chainable RPCs)
- *
+ * - The classes exist in code and their names and deprecation status match the spec
+ * - They have constructors with mandatory params and those constructors are setting the values correctly
+ * - They have setter and getter for every param and their names and deprecations status match the spec
+ * - The params setter return instance of class type (for chainable RPCs)
+ * <p>
  * Enums
- *     - The enums exist in code and their names and deprecation status match the spec
- *     - The enums have a value for every element in the spec and the names and deprecation status match the spec
+ * - The enums exist in code and their names and deprecation status match the spec
+ * - The enums have a value for every element in the spec and the names and deprecation status match the spec
  */
 @RunWith(AndroidJUnit4.class)
 @Ignore //Remove this annotation before running these tests
@@ -523,7 +523,7 @@ public class RPCGenericTests {
         assertTrue("The following RPCs don't have a constructor that has all the mandatory params: " + rpcsWithInvalidConstructor, rpcsWithInvalidConstructor.isEmpty());
     }
 
-    private boolean annotationExists (AnnotatedElement element, String annotationName) {
+    private boolean annotationExists(AnnotatedElement element, String annotationName) {
         for (Annotation annotation : element.getDeclaredAnnotations()) {
             if (annotation.annotationType().getSimpleName().equalsIgnoreCase(annotationName)) {
                 return true;
@@ -532,7 +532,7 @@ public class RPCGenericTests {
         return false;
     }
 
-    private boolean isDeprecated (AnnotatedElement element) {
+    private boolean isDeprecated(AnnotatedElement element) {
         return annotationExists(element, "Deprecated");
     }
 
@@ -541,7 +541,7 @@ public class RPCGenericTests {
         for (Object anEnum : EnumSet.allOf(aClass)) {
             if (anEnum.toString().equals(elementName)) {
                 try {
-                    String value = ((Enum)anEnum).name();
+                    String value = ((Enum) anEnum).name();
                     field = aClass.getField(value);
                     break;
                 } catch (NoSuchFieldException e) {
@@ -824,7 +824,7 @@ public class RPCGenericTests {
                 String errMsg = rpcName + " deprecation status does not match RPC spec" + ". \n";
                 errors.add(errMsg);
             }
-            
+
             // Loop through all elements for the current RPC and make sure everyone matches the RPC spec
             List<Element> elements = rpcAllParamsMapFromXml.get(rpcName).elements;
             for (int i = 0; i < elements.size(); i++) {

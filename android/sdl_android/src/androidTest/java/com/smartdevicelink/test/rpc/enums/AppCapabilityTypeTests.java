@@ -13,7 +13,7 @@ public class AppCapabilityTypeTests extends TestCase {
     /**
      * Verifies that the enum values are not null upon valid assignment.
      */
-    public void testValidEnums () {
+    public void testValidEnums() {
         String example = "VIDEO_STREAMING";
         AppCapabilityType enumVideoStreaming = AppCapabilityType.valueForString(example);
 
@@ -23,13 +23,12 @@ public class AppCapabilityTypeTests extends TestCase {
     /**
      * Verifies that an invalid assignment is null.
      */
-    public void testInvalidEnum () {
+    public void testInvalidEnum() {
         String example = "VidEOs_Treamin";
         try {
             AppCapabilityType temp = AppCapabilityType.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);
-        }
-        catch (IllegalArgumentException exception) {
+        } catch (IllegalArgumentException exception) {
             fail("Invalid enum throws IllegalArgumentException.");
         }
     }
@@ -37,13 +36,12 @@ public class AppCapabilityTypeTests extends TestCase {
     /**
      * Verifies that a null assignment is invalid.
      */
-    public void testNullEnum () {
+    public void testNullEnum() {
         String example = null;
         try {
             AppCapabilityType temp = AppCapabilityType.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);
-        }
-        catch (NullPointerException exception) {
+        } catch (NullPointerException exception) {
             fail("Null string throws NullPointerException.");
         }
     }

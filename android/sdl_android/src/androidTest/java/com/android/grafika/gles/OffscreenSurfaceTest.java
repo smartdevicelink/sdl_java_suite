@@ -2,7 +2,9 @@ package com.android.grafika.gles;
 
 import android.opengl.GLES20;
 import android.os.Environment;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import android.util.Log;
 
 import org.junit.Test;
@@ -32,6 +34,7 @@ public class OffscreenSurfaceTest {
     }
 
     // HELPER test method
+
     /**
      * Does a simple bit of rendering and then reads the pixels back.
      *
@@ -99,7 +102,7 @@ public class OffscreenSurfaceTest {
             assertTrue(pixelBuf.capacity() > 0 && totalTime > 0);
         }
 
-        return (float)totalTime / 1000000f;
+        return (float) totalTime / 1000000f;
     }
 
 }

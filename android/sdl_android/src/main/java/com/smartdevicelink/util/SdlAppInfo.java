@@ -136,7 +136,7 @@ public class SdlAppInfo {
                     if (!contextPackageName.equals(packageName)) {
                         try {
                             Context appContext = context.createPackageContext(packageName, 0);
-                            if (appContext == null){
+                            if (appContext == null) {
                                 DebugTool.logError(TAG, "Failed to create context with the given package name");
                                 return;
                             }
@@ -240,7 +240,7 @@ public class SdlAppInfo {
 
                             if (model == null && modelYear == null && trim == null) {
                                 vehicleMakesList.add(vehicleMake);
-                            } else if (model != null){
+                            } else if (model != null) {
                                 vehicleMake.setModel(model);
                                 if (modelYear != null) {
                                     vehicleMake.setModelYear(modelYear);
@@ -267,17 +267,17 @@ public class SdlAppInfo {
      * Check to see if a vehicle type is supported.
      *
      * @param supportedVehicleList the list of supported vehicle types.
-     * @param connectedVehicle the vehicle type to check.
+     * @param connectedVehicle     the vehicle type to check.
      * @return true if vehicle type is supported.
      */
     public static boolean checkIfVehicleSupported(List<VehicleType> supportedVehicleList, VehicleType connectedVehicle) {
-        if (supportedVehicleList == null || supportedVehicleList.isEmpty() || connectedVehicle == null || connectedVehicle.getStore() == null|| connectedVehicle.getStore().isEmpty()) {
+        if (supportedVehicleList == null || supportedVehicleList.isEmpty() || connectedVehicle == null || connectedVehicle.getStore() == null || connectedVehicle.getStore().isEmpty()) {
             return true;
         }
         if (supportedVehicleList.contains(connectedVehicle)) {
             return true;
         }
-        for (VehicleType supportedVehicle: supportedVehicleList) {
+        for (VehicleType supportedVehicle : supportedVehicleList) {
             boolean areVehicleMakesEqual = CompareUtils.areStringsEqual(supportedVehicle.getMake(), connectedVehicle.getMake(), true, false);
             if (areVehicleMakesEqual) {
                 String supportedVehicleModel = supportedVehicle.getModel();

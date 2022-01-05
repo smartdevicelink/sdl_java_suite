@@ -41,7 +41,7 @@ import com.smartdevicelink.managers.file.FileManager;
 /**
  * <strong>AlertManager</strong> <br>
  * <p>
- *  Alert manager handles uploading images and audio needed by an alert, sending an alert and cancelling an alert.<br>
+ * Alert manager handles uploading images and audio needed by an alert, sending an alert and cancelling an alert.<br>
  * Note: This class must be accessed through the SdlManager. Do not instantiate it by itself. <br>
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)

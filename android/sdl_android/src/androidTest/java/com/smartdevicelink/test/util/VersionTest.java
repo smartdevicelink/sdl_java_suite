@@ -29,7 +29,8 @@ public class VersionTest {
         try {
             Version version = new Version("1.2");
             fail();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 
     @Test

@@ -49,6 +49,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.BatteryManager;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
@@ -273,9 +274,9 @@ public class AndroidTools {
     /**
      * Saves the mac address along with vehicle details into user's shared prefs.
      *
-     * @param context a context instance to obtain the shared preferences.
+     * @param context     a context instance to obtain the shared preferences.
      * @param vehicleType a RPCStruct that describes the type of vehicle the mobile phone is connected with.
-     * @param address a string containing the Bluetooth Mac address of the connected vehicle.
+     * @param address     a string containing the Bluetooth Mac address of the connected vehicle.
      */
     public static void saveVehicleType(Context context, VehicleType vehicleType, String address) {
         synchronized (VEHICLE_PREF_LOCK) {
@@ -303,7 +304,8 @@ public class AndroidTools {
      * @param address a string containing the Bluetooth Mac address of the connected vehicle.
      * @return The Hashtable to be used to construct VehicleTyp
      */
-    public static @Nullable Hashtable<String, Object> getVehicleTypeFromPrefs(Context context, String address) {
+    public static @Nullable
+    Hashtable<String, Object> getVehicleTypeFromPrefs(Context context, String address) {
         synchronized (VEHICLE_PREF_LOCK) {
             if (context == null || address == null) {
                 DebugTool.logWarning(TAG, String.format("Unable to get vehicle type from prefs. Context is %1$s and Address is %2$s", context, address));
@@ -329,12 +331,13 @@ public class AndroidTools {
     /**
      * Retrieves the list of vehicle types that are set in the manifest.
      *
-     * @param context a context to access Android system services through.
-     * @param component a component name of a LocalRouterService.
+     * @param context         a context to access Android system services through.
+     * @param component       a component name of a LocalRouterService.
      * @param manifestFieldId a string resources id that indicates an unique name for the vehicle data in the manifest.
      * @return The list of vehicle types, or null if an error occurred or field was not found.
      */
-    public static @Nullable List<VehicleType> getVehicleTypesFromManifest(Context context, ComponentName component, int manifestFieldId) {
+    public static @Nullable
+    List<VehicleType> getVehicleTypesFromManifest(Context context, ComponentName component, int manifestFieldId) {
         if (context == null || component == null) {
             DebugTool.logWarning(TAG, String.format("Unable to get vehicle type from manifest. Context is %1$s and Component is %2$s", context, component));
             return null;
@@ -362,10 +365,10 @@ public class AndroidTools {
             XmlResourceParser parser = resources.getXml(xmlFieldId);
             return SdlAppInfo.deserializeSupportedVehicles(parser);
         } catch (PackageManager.NameNotFoundException e) {
-            DebugTool.logError(TAG, "Failed to get OEM vehicle data filter: " + e.getMessage()+ " - assume vehicle data is supported");
+            DebugTool.logError(TAG, "Failed to get OEM vehicle data filter: " + e.getMessage() + " - assume vehicle data is supported");
             return null;
         } catch (Resources.NotFoundException ex) {
-            DebugTool.logError(TAG, "Failed to find resource: " + ex.getMessage()+ " - assume vehicle data is supported");
+            DebugTool.logError(TAG, "Failed to find resource: " + ex.getMessage() + " - assume vehicle data is supported");
             return null;
         }
     }

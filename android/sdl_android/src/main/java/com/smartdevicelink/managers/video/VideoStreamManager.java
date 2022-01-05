@@ -153,13 +153,13 @@ public class VideoStreamManager extends BaseVideoStreamManager {
         @Override
         public void onServiceEnded(SdlSession session, SessionType type) {
             if (SessionType.NAV.equals(type)) {
-                if (remoteDisplay !=null){
+                if (remoteDisplay != null) {
                     stopStreaming(withPendingRestart);
                 }
                 stateMachine.transitionToState(StreamingStateMachine.NONE);
                 transitionToState(SETTING_UP);
 
-                if (withPendingRestart){
+                if (withPendingRestart) {
                     VideoStreamManager manager = VideoStreamManager.this;
                     manager.internalInterface.startVideoService(manager.getLastCachedStreamingParameters(), manager.isEncrypted, withPendingRestart);
                 }
@@ -219,9 +219,9 @@ public class VideoStreamManager extends BaseVideoStreamManager {
     private final OnSystemCapabilityListener systemCapabilityListener = new OnSystemCapabilityListener() {
         @Override
         public void onCapabilityRetrieved(Object capability) {
-           VideoStreamingParameters params = (parameters == null) ? new VideoStreamingParameters() : new VideoStreamingParameters(parameters);
+            VideoStreamingParameters params = (parameters == null) ? new VideoStreamingParameters() : new VideoStreamingParameters(parameters);
 
-            VideoStreamingCapability castedCapability = ((VideoStreamingCapability)capability);
+            VideoStreamingCapability castedCapability = ((VideoStreamingCapability) capability);
 
             // means only scale received
             if (castedCapability.getPreferredResolution() == null &&
@@ -297,12 +297,12 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                     @Override
                     public void onCapabilityRetrieved(Object capability) {
                         VideoStreamingParameters params = new VideoStreamingParameters();
-                        VideoStreamingCapability castedCapability = ((VideoStreamingCapability)capability);
+                        VideoStreamingCapability castedCapability = ((VideoStreamingCapability) capability);
                         VideoStreamManager.this.originalCapability = castedCapability;
                         params.update(castedCapability, vehicleMake);//Streaming parameters are ready time to stream
                         VideoStreamManager.this.parameters = params;
                         checkState();
-                        }
+                    }
 
                     @Override
                     public void onError(String info) {
@@ -334,29 +334,29 @@ public class VideoStreamManager extends BaseVideoStreamManager {
      * If the module's screen size for your app changes during streaming (i.e. to a collapsed view, split screen, preview mode, or picture-in-picture), your remoteDisplay will be resized to the new screen size.
      * If either range is `null`, the default is to support all streaming ranges of that format (landscape or portrait).
      * If you wish to disable support for streaming in a given format (landscape or portrait), set a VideoStreamingRange with all `0` values.
-     *
+     * <p>
      * NOTE If both supportedLandscapeStreamingRange and supportedLandscapeStreamingRange are disabled then the video will not stream.
-     *
+     * <p>
      * Any changes to screen size will notify the onViewResized method you have implemented in your remoteDisplay class.
      *
-     *
-     * @param context            a context that can be used to create the remote display
-     * @param remoteDisplayClass class object of the remote display. This class will be used to create an instance of the remote display and will be projected to the module
-     * @param parameters         streaming parameters to be used when streaming. If null is sent in, the default/optimized options will be used.
-     *                           If you are unsure about what parameters to be used it is best to just send null and let the system determine what
-     *                           works best for the currently connected module.
-     * @param encrypted         a flag of if the stream should be encrypted. Only set if you have a supplied encryption library that the module can understand.
-     * @param supportedLandscapeStreamingRange      constraints for vehicle display : min/max aspect ratio, min/max resolutions, max diagonal size.
-     * @param supportedPortraitStreamingRange      constraints for vehicle display : min/max aspect ratio, min/max resolutions, max diagonal size.
+     * @param context                          a context that can be used to create the remote display
+     * @param remoteDisplayClass               class object of the remote display. This class will be used to create an instance of the remote display and will be projected to the module
+     * @param parameters                       streaming parameters to be used when streaming. If null is sent in, the default/optimized options will be used.
+     *                                         If you are unsure about what parameters to be used it is best to just send null and let the system determine what
+     *                                         works best for the currently connected module.
+     * @param encrypted                        a flag of if the stream should be encrypted. Only set if you have a supplied encryption library that the module can understand.
+     * @param supportedLandscapeStreamingRange constraints for vehicle display : min/max aspect ratio, min/max resolutions, max diagonal size.
+     * @param supportedPortraitStreamingRange  constraints for vehicle display : min/max aspect ratio, min/max resolutions, max diagonal size.
      */
     public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted, VideoStreamingRange supportedLandscapeStreamingRange, VideoStreamingRange supportedPortraitStreamingRange) {
         configureGlobalParameters(context, remoteDisplayClass, encrypted, supportedPortraitStreamingRange, supportedLandscapeStreamingRange);
-        if(majorProtocolVersion >= 5 && !internalInterface.getSystemCapabilityManager().isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
+        if (majorProtocolVersion >= 5 && !internalInterface.getSystemCapabilityManager().isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)) {
             stateMachine.transitionToState(StreamingStateMachine.ERROR);
             return;
         }
         processCapabilitiesWithPendingStart(encrypted, parameters);
     }
+
     /**
      * Starts streaming a remote display to the module if there is a connected session. This method of streaming requires the device to be on API level 19 or higher
      *
@@ -368,7 +368,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
      * @param encrypted          a flag of if the stream should be encrypted. Only set if you have a supplied encryption library that the module can understand.
      */
     @Deprecated
-    public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted){
+    public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted) {
         configureGlobalParameters(context, remoteDisplayClass, encrypted, null, null);
         boolean isCapabilitySupported = internalInterface.getSystemCapabilityManager() != null && internalInterface.getSystemCapabilityManager().isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING);
         if (majorProtocolVersion >= 5 && !isCapabilitySupported) {
@@ -577,7 +577,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
         return (stateMachine.getState() == StreamingStateMachine.READY) ||
                 (stateMachine.getState() == StreamingStateMachine.STARTED) ||
                 (stateMachine.getState() == StreamingStateMachine.STOPPED);
-        }
+    }
 
     /**
      * Check if video is currently streaming and visible
@@ -662,7 +662,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                         createTouchScalar(resolution, displayMetrics);
                     }
 
-                VideoStreamManager.this.remoteDisplay.resizeView(parameters.getResolution().getResolutionWidth(), parameters.getResolution().getResolutionHeight());
+                    VideoStreamManager.this.remoteDisplay.resizeView(parameters.getResolution().getResolutionWidth(), parameters.getResolution().getResolutionHeight());
                 }
 
                 @Override
@@ -671,8 +671,8 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                     //A good time to refresh spatial data
                     DisplayMetrics displayMetrics = new DisplayMetrics();
                     VideoStreamManager.this.remoteDisplay.getDisplay().getMetrics(displayMetrics);
-                    displayMetrics.widthPixels =  (int) (parameters.getResolution().getResolutionWidth() * parameters.getScale());
-                    displayMetrics.heightPixels =  (int) (parameters.getResolution().getResolutionHeight() * parameters.getScale());
+                    displayMetrics.widthPixels = (int) (parameters.getResolution().getResolutionWidth() * parameters.getScale());
+                    displayMetrics.heightPixels = (int) (parameters.getResolution().getResolutionHeight() * parameters.getScale());
                     createTouchScalar(parameters.getResolution(), displayMetrics);
                     if (hapticManager != null) {
                         remoteDisplay.getMainView().post(new Runnable() {
@@ -804,16 +804,16 @@ public class VideoStreamManager extends BaseVideoStreamManager {
         return parameters;
     }
 
-    private List<VideoStreamingCapability> getSupportedCapabilities(VideoStreamingCapability rootCapability){
+    private List<VideoStreamingCapability> getSupportedCapabilities(VideoStreamingCapability rootCapability) {
 
         List<VideoStreamingCapability> validCapabilities = new ArrayList<>();
-        if (rootCapability == null){
+        if (rootCapability == null) {
             return null;
         }
 
         List<VideoStreamingCapability> allCapabilities = new ArrayList<>();
         List<VideoStreamingCapability> additionalCapabilities = rootCapability.getAdditionalVideoStreamingCapabilities();
-        if (additionalCapabilities != null){
+        if (additionalCapabilities != null) {
             allCapabilities.addAll(additionalCapabilities);
         }
         rootCapability.setAdditionalVideoStreamingCapabilities(null);
@@ -847,7 +847,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
         return validCapabilities;
     }
 
-    private Boolean inRange(VideoStreamingCapability capability, VideoStreamingRange range){
+    private Boolean inRange(VideoStreamingCapability capability, VideoStreamingRange range) {
         if (capability == null) {
             return false;
         }
@@ -855,7 +855,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
             return true;
         }
 
-        if (isZeroRange(range)){
+        if (isZeroRange(range)) {
             return false;
         }
 
@@ -868,7 +868,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
         ImageResolution resolution = capability.getPreferredResolution();
         if (resolution != null) {
             Double currentAspectRatio = normalizeAspectRatio(resolution);
-            if (!range.isAspectRatioInRange(currentAspectRatio)){
+            if (!range.isAspectRatioInRange(currentAspectRatio)) {
                 return false;
             }
         }
@@ -892,9 +892,9 @@ public class VideoStreamManager extends BaseVideoStreamManager {
         if (width <= 0.0 || height <= 0.0) {
             return 0.0;
         } else if (width < height) {
-            return height/width;
+            return height / width;
         } else if (width > height) {
-            return width/height;
+            return width / height;
         } else {
             return 1.0;
         }
@@ -910,14 +910,14 @@ public class VideoStreamManager extends BaseVideoStreamManager {
         }
     }
 
-    private Boolean isZeroRange(VideoStreamingRange range){
-        if (range == null || range.getMaximumResolution() == null || range.getMinimumResolution() == null){
+    private Boolean isZeroRange(VideoStreamingRange range) {
+        if (range == null || range.getMaximumResolution() == null || range.getMinimumResolution() == null) {
             return false;
         }
         return isZeroResolution(range.getMaximumResolution()) && isZeroResolution(range.getMinimumResolution());
     }
 
-    private boolean isZeroResolution(Resolution resolution){
+    private boolean isZeroResolution(Resolution resolution) {
         if (resolution == null) {
             return false;
         }

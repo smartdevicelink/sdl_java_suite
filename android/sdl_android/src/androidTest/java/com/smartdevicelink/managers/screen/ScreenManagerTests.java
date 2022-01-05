@@ -211,10 +211,8 @@ public class ScreenManagerTests {
         assertTrue(screenManager.checkAndAssignButtonIds(softButtonObjects, BaseScreenManager.ManagerLocation.SOFTBUTTON_MANAGER));
 
 
-
-
-
     }
+
     @Test
     public void testAssigningIdsToSoftButtonObjects() {
         SoftButtonObject sbo1, sbo2, sbo3, sbo4, sbo5;

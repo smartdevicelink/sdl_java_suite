@@ -33,7 +33,7 @@ public class AppCapabilityTests extends TestCase {
     /**
      * Tests the expected values of the RPC message.
      */
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Test Values
         VideoStreamingCapability videoStreamingCapability = msg.getVideoStreamingCapability();
         AppCapabilityType videoStreamingCapabilityType = msg.getAppCapabilityType();
@@ -50,10 +50,10 @@ public class AppCapabilityTests extends TestCase {
         assertNull(TestValues.NULL, msg.getVideoStreamingCapability());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(KEY_APP_CAPABILITY_TYPE, TestValues.GENERAL_APPCAPABILITYTYPE);
             reference.put(KEY_VIDEO_STREAMING_CAPABILITY, TestValues.GENERAL_VIDEOSTREAMINGCAPABILITY);
 
@@ -61,29 +61,29 @@ public class AppCapabilityTests extends TestCase {
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
 
                 String key = (String) iterator.next();
 
                 if (key.equals(KEY_APP_CAPABILITY_TYPE)) {
                     assertEquals(
-                        TestValues.MATCH,
-                        JsonUtils.readObjectFromJsonObject(reference, key),
-                        JsonUtils.readObjectFromJsonObject(underTest, key)
+                            TestValues.MATCH,
+                            JsonUtils.readObjectFromJsonObject(reference, key),
+                            JsonUtils.readObjectFromJsonObject(underTest, key)
                     );
 
                 } else if (key.equals(KEY_VIDEO_STREAMING_CAPABILITY)) {
                     JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
                     Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
                     assertTrue(
-                        TestValues.TRUE,
-                        Validator.validateVideoStreamingCapability(
-                            TestValues.GENERAL_VIDEOSTREAMINGCAPABILITY, new VideoStreamingCapability(hashTest)
-                        )
+                            TestValues.TRUE,
+                            Validator.validateVideoStreamingCapability(
+                                    TestValues.GENERAL_VIDEOSTREAMINGCAPABILITY, new VideoStreamingCapability(hashTest)
+                            )
                     );
                 }
             }
-        } catch(JSONException e){
+        } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
     }

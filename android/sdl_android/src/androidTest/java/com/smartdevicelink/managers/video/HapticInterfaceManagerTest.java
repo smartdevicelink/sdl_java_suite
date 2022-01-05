@@ -234,7 +234,8 @@ public class HapticInterfaceManagerTest extends TestCase {
 
         final ViewGroup parent1 = new ViewGroup(context) {
             @Override
-            protected void onLayout(boolean b, int i, int i1, int i2, int i3) {}
+            protected void onLayout(boolean b, int i, int i1, int i2, int i3) {
+            }
 
             @Override
             public View getChildAt(int index) {
@@ -249,7 +250,8 @@ public class HapticInterfaceManagerTest extends TestCase {
 
         final ViewGroup parent2 = new ViewGroup(context) {
             @Override
-            protected void onLayout(boolean b, int i, int i1, int i2, int i3) {}
+            protected void onLayout(boolean b, int i, int i1, int i2, int i3) {
+            }
 
             @Override
             public View getChildAt(int index) {

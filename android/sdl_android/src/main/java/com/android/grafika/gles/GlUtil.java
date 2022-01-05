@@ -31,8 +31,11 @@ import java.nio.FloatBuffer;
 public class GlUtil {
     private static final String TAG = "GlUtil";
 
-    /** Identity matrix for general use.  Don't modify or life will get weird. */
+    /**
+     * Identity matrix for general use.  Don't modify or life will get weird.
+     */
     public static final float[] IDENTITY_MATRIX;
+
     static {
         IDENTITY_MATRIX = new float[16];
         Matrix.setIdentityM(IDENTITY_MATRIX, 0);
@@ -41,7 +44,8 @@ public class GlUtil {
     private static final int SIZEOF_FLOAT = 4;
 
 
-    private GlUtil() {}     // do not instantiate
+    private GlUtil() {
+    }     // do not instantiate
 
     /**
      * Creates a new program from the supplied vertex and fragment shaders.
@@ -61,7 +65,7 @@ public class GlUtil {
         int program = GLES20.glCreateProgram();
         checkGlError("glCreateProgram");
         if (program == 0) {
-            Log.d(TAG,"Could not create program");
+            Log.d(TAG, "Could not create program");
         }
         GLES20.glAttachShader(program, vertexShader);
         checkGlError("glAttachShader");
@@ -71,8 +75,8 @@ public class GlUtil {
         int[] linkStatus = new int[1];
         GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, linkStatus, 0);
         if (linkStatus[0] != GLES20.GL_TRUE) {
-            Log.e(TAG,"Could not link program: ");
-            Log.e(TAG,GLES20.glGetProgramInfoLog(program));
+            Log.e(TAG, "Could not link program: ");
+            Log.e(TAG, GLES20.glGetProgramInfoLog(program));
             GLES20.glDeleteProgram(program);
             program = 0;
         }
@@ -92,8 +96,8 @@ public class GlUtil {
         int[] compiled = new int[1];
         GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
         if (compiled[0] == 0) {
-            Log.e(TAG,"Could not compile shader " + shaderType + ":");
-            Log.e(TAG," " + GLES20.glGetShaderInfoLog(shader));
+            Log.e(TAG, "Could not compile shader " + shaderType + ":");
+            Log.e(TAG, " " + GLES20.glGetShaderInfoLog(shader));
             GLES20.glDeleteShader(shader);
             shader = 0;
         }
@@ -107,7 +111,7 @@ public class GlUtil {
         int error = GLES20.glGetError();
         if (error != GLES20.GL_NO_ERROR) {
             String msg = op + ": glError 0x" + Integer.toHexString(error);
-            Log.e(TAG,msg);
+            Log.e(TAG, msg);
             throw new RuntimeException(msg);
         }
     }
@@ -127,8 +131,8 @@ public class GlUtil {
     /**
      * Creates a texture from raw data.
      *
-     * @param data Image data, in a "direct" ByteBuffer.
-     * @param width Texture width, in pixels (not bytes).
+     * @param data   Image data, in a "direct" ByteBuffer.
+     * @param width  Texture width, in pixels (not bytes).
      * @param height Texture height, in pixels.
      * @param format Image data format (use constant appropriate for glTexImage2D(), e.g. GL_RGBA).
      * @return Handle to texture.
@@ -177,9 +181,9 @@ public class GlUtil {
      * Writes GL version info to the log.
      */
     public static void logVersionInfo() {
-        Log.i(TAG,"vendor  : " + GLES20.glGetString(GLES20.GL_VENDOR));
-        Log.i(TAG,"renderer: " + GLES20.glGetString(GLES20.GL_RENDERER));
-        Log.i(TAG,"version : " + GLES20.glGetString(GLES20.GL_VERSION));
+        Log.i(TAG, "vendor  : " + GLES20.glGetString(GLES20.GL_VENDOR));
+        Log.i(TAG, "renderer: " + GLES20.glGetString(GLES20.GL_RENDERER));
+        Log.i(TAG, "version : " + GLES20.glGetString(GLES20.GL_VERSION));
 
         if (false) {
             int[] values = new int[1];
@@ -188,7 +192,7 @@ public class GlUtil {
             GLES30.glGetIntegerv(GLES30.GL_MINOR_VERSION, values, 0);
             int minorVersion = values[0];
             if (GLES30.glGetError() == GLES30.GL_NO_ERROR) {
-                Log.i(TAG,"iversion: " + majorVersion + "." + minorVersion);
+                Log.i(TAG, "iversion: " + majorVersion + "." + minorVersion);
             }
         }
     }

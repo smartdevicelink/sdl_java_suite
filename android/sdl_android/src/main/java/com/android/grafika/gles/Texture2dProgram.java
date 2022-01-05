@@ -36,46 +36,46 @@ public class Texture2dProgram {
     // Simple vertex shader, used for all programs.
     private static final String VERTEX_SHADER =
             "uniform mat4 uMVPMatrix;\n" +
-            "uniform mat4 uTexMatrix;\n" +
-            "attribute vec4 aPosition;\n" +
-            "attribute vec4 aTextureCoord;\n" +
-            "varying vec2 vTextureCoord;\n" +
-            "void main() {\n" +
-            "    gl_Position = uMVPMatrix * aPosition;\n" +
-            "    vTextureCoord = (uTexMatrix * aTextureCoord).xy;\n" +
-            "}\n";
+                    "uniform mat4 uTexMatrix;\n" +
+                    "attribute vec4 aPosition;\n" +
+                    "attribute vec4 aTextureCoord;\n" +
+                    "varying vec2 vTextureCoord;\n" +
+                    "void main() {\n" +
+                    "    gl_Position = uMVPMatrix * aPosition;\n" +
+                    "    vTextureCoord = (uTexMatrix * aTextureCoord).xy;\n" +
+                    "}\n";
 
     // Simple fragment shader for use with "normal" 2D textures.
     private static final String FRAGMENT_SHADER_2D =
             "precision mediump float;\n" +
-            "varying vec2 vTextureCoord;\n" +
-            "uniform sampler2D sTexture;\n" +
-            "void main() {\n" +
-            "    gl_FragColor = texture2D(sTexture, vTextureCoord);\n" +
-            "}\n";
+                    "varying vec2 vTextureCoord;\n" +
+                    "uniform sampler2D sTexture;\n" +
+                    "void main() {\n" +
+                    "    gl_FragColor = texture2D(sTexture, vTextureCoord);\n" +
+                    "}\n";
 
     // Simple fragment shader for use with external 2D textures (e.g. what we get from
     // SurfaceTexture).
     private static final String FRAGMENT_SHADER_EXT =
             "#extension GL_OES_EGL_image_external : require\n" +
-            "precision mediump float;\n" +
-            "varying vec2 vTextureCoord;\n" +
-            "uniform samplerExternalOES sTexture;\n" +
-            "void main() {\n" +
-            "    gl_FragColor = texture2D(sTexture, vTextureCoord);\n" +
-            "}\n";
+                    "precision mediump float;\n" +
+                    "varying vec2 vTextureCoord;\n" +
+                    "uniform samplerExternalOES sTexture;\n" +
+                    "void main() {\n" +
+                    "    gl_FragColor = texture2D(sTexture, vTextureCoord);\n" +
+                    "}\n";
 
     // Fragment shader that converts color to black & white with a simple transformation.
     private static final String FRAGMENT_SHADER_EXT_BW =
             "#extension GL_OES_EGL_image_external : require\n" +
-            "precision mediump float;\n" +
-            "varying vec2 vTextureCoord;\n" +
-            "uniform samplerExternalOES sTexture;\n" +
-            "void main() {\n" +
-            "    vec4 tc = texture2D(sTexture, vTextureCoord);\n" +
-            "    float color = tc.r * 0.3 + tc.g * 0.59 + tc.b * 0.11;\n" +
-            "    gl_FragColor = vec4(color, color, color, 1.0);\n" +
-            "}\n";
+                    "precision mediump float;\n" +
+                    "varying vec2 vTextureCoord;\n" +
+                    "uniform samplerExternalOES sTexture;\n" +
+                    "void main() {\n" +
+                    "    vec4 tc = texture2D(sTexture, vTextureCoord);\n" +
+                    "    float color = tc.r * 0.3 + tc.g * 0.59 + tc.b * 0.11;\n" +
+                    "    gl_FragColor = vec4(color, color, color, 1.0);\n" +
+                    "}\n";
 
     // Fragment shader with a convolution filter.  The upper-left half will be drawn normally,
     // the lower-right half will have the filter applied, and a thin red line will be drawn
@@ -90,29 +90,29 @@ public class Texture2dProgram {
     public static final int KERNEL_SIZE = 9;
     private static final String FRAGMENT_SHADER_EXT_FILT =
             "#extension GL_OES_EGL_image_external : require\n" +
-            "#define KERNEL_SIZE " + KERNEL_SIZE + "\n" +
-            "precision highp float;\n" +
-            "varying vec2 vTextureCoord;\n" +
-            "uniform samplerExternalOES sTexture;\n" +
-            "uniform float uKernel[KERNEL_SIZE];\n" +
-            "uniform vec2 uTexOffset[KERNEL_SIZE];\n" +
-            "uniform float uColorAdjust;\n" +
-            "void main() {\n" +
-            "    int i = 0;\n" +
-            "    vec4 sum = vec4(0.0);\n" +
-            "    if (vTextureCoord.x < vTextureCoord.y - 0.005) {\n" +
-            "        for (i = 0; i < KERNEL_SIZE; i++) {\n" +
-            "            vec4 texc = texture2D(sTexture, vTextureCoord + uTexOffset[i]);\n" +
-            "            sum += texc * uKernel[i];\n" +
-            "        }\n" +
-            "    sum += uColorAdjust;\n" +
-            "    } else if (vTextureCoord.x > vTextureCoord.y + 0.005) {\n" +
-            "        sum = texture2D(sTexture, vTextureCoord);\n" +
-            "    } else {\n" +
-            "        sum.r = 1.0;\n" +
-            "    }\n" +
-            "    gl_FragColor = sum;\n" +
-            "}\n";
+                    "#define KERNEL_SIZE " + KERNEL_SIZE + "\n" +
+                    "precision highp float;\n" +
+                    "varying vec2 vTextureCoord;\n" +
+                    "uniform samplerExternalOES sTexture;\n" +
+                    "uniform float uKernel[KERNEL_SIZE];\n" +
+                    "uniform vec2 uTexOffset[KERNEL_SIZE];\n" +
+                    "uniform float uColorAdjust;\n" +
+                    "void main() {\n" +
+                    "    int i = 0;\n" +
+                    "    vec4 sum = vec4(0.0);\n" +
+                    "    if (vTextureCoord.x < vTextureCoord.y - 0.005) {\n" +
+                    "        for (i = 0; i < KERNEL_SIZE; i++) {\n" +
+                    "            vec4 texc = texture2D(sTexture, vTextureCoord + uTexOffset[i]);\n" +
+                    "            sum += texc * uKernel[i];\n" +
+                    "        }\n" +
+                    "    sum += uColorAdjust;\n" +
+                    "    } else if (vTextureCoord.x > vTextureCoord.y + 0.005) {\n" +
+                    "        sum = texture2D(sTexture, vTextureCoord);\n" +
+                    "    } else {\n" +
+                    "        sum.r = 1.0;\n" +
+                    "    }\n" +
+                    "    gl_FragColor = sum;\n" +
+                    "}\n";
 
     private ProgramType mProgramType;
 
@@ -162,7 +162,7 @@ public class Texture2dProgram {
         if (mProgramHandle == 0) {
             throw new RuntimeException("Unable to create program");
         }
-        Log.e(TAG,"Created program " + mProgramHandle + " (" + programType + ")");
+        Log.e(TAG, "Created program " + mProgramHandle + " (" + programType + ")");
 
         // get locations of attributes and uniforms
 
@@ -188,7 +188,7 @@ public class Texture2dProgram {
             GlUtil.checkLocation(muColorAdjustLoc, "uColorAdjust");
 
             // initialize default values
-            setKernel(new float[] {0f, 0f, 0f,  0f, 1f, 0f,  0f, 0f, 0f}, 0f);
+            setKernel(new float[]{0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f}, 0f);
             setTexSize(256, 256);
         }
     }
@@ -200,7 +200,7 @@ public class Texture2dProgram {
      * the program).
      */
     public void release() {
-        Log.d(TAG,"deleting program " + mProgramHandle);
+        Log.d(TAG, "deleting program " + mProgramHandle);
         GLES20.glDeleteProgram(mProgramHandle);
         mProgramHandle = -1;
     }
@@ -251,7 +251,7 @@ public class Texture2dProgram {
         }
         System.arraycopy(values, 0, mKernel, 0, KERNEL_SIZE);
         mColorAdjust = colorAdj;
-        Log.d(TAG,"filt kernel: " + Arrays.toString(mKernel) + ", adj=" + colorAdj);
+        Log.d(TAG, "filt kernel: " + Arrays.toString(mKernel) + ", adj=" + colorAdj);
     }
 
     /**
@@ -262,32 +262,32 @@ public class Texture2dProgram {
         float rh = 1.0f / height;
 
         // Don't need to create a new array here, but it's syntactically convenient.
-        mTexOffset = new float[] {
-            -rw, -rh,   0f, -rh,    rw, -rh,
-            -rw, 0f,    0f, 0f,     rw, 0f,
-            -rw, rh,    0f, rh,     rw, rh
+        mTexOffset = new float[]{
+                -rw, -rh, 0f, -rh, rw, -rh,
+                -rw, 0f, 0f, 0f, rw, 0f,
+                -rw, rh, 0f, rh, rw, rh
         };
-        Log.d(TAG,"filt size: " + width + "x" + height + ": " + Arrays.toString(mTexOffset));
+        Log.d(TAG, "filt size: " + width + "x" + height + ": " + Arrays.toString(mTexOffset));
     }
 
     /**
      * Issues the draw call.  Does the full setup on every call.
      *
-     * @param mvpMatrix The 4x4 projection matrix.
-     * @param vertexBuffer Buffer with vertex position data.
-     * @param firstVertex Index of first vertex to use in vertexBuffer.
-     * @param vertexCount Number of vertices in vertexBuffer.
+     * @param mvpMatrix       The 4x4 projection matrix.
+     * @param vertexBuffer    Buffer with vertex position data.
+     * @param firstVertex     Index of first vertex to use in vertexBuffer.
+     * @param vertexCount     Number of vertices in vertexBuffer.
      * @param coordsPerVertex The number of coordinates per vertex (e.g. x,y is 2).
-     * @param vertexStride Width, in bytes, of the position data for each vertex (often
-     *        vertexCount * sizeof(float)).
-     * @param texMatrix A 4x4 transformation matrix for texture coords.  (Primarily intended
-     *        for use with SurfaceTexture.)
-     * @param texBuffer Buffer with vertex texture data.
-     * @param texStride Width, in bytes, of the texture data for each vertex.
+     * @param vertexStride    Width, in bytes, of the position data for each vertex (often
+     *                        vertexCount * sizeof(float)).
+     * @param texMatrix       A 4x4 transformation matrix for texture coords.  (Primarily intended
+     *                        for use with SurfaceTexture.)
+     * @param texBuffer       Buffer with vertex texture data.
+     * @param texStride       Width, in bytes, of the texture data for each vertex.
      */
     public void draw(float[] mvpMatrix, FloatBuffer vertexBuffer, int firstVertex,
-            int vertexCount, int coordsPerVertex, int vertexStride,
-            float[] texMatrix, FloatBuffer texBuffer, int textureId, int texStride) {
+                     int vertexCount, int coordsPerVertex, int vertexStride,
+                     float[] texMatrix, FloatBuffer texBuffer, int textureId, int texStride) {
         GlUtil.checkGlError("draw start");
 
         // Select the program.
@@ -312,7 +312,7 @@ public class Texture2dProgram {
 
         // Connect vertexBuffer to "aPosition".
         GLES20.glVertexAttribPointer(maPositionLoc, coordsPerVertex,
-            GLES20.GL_FLOAT, false, vertexStride, vertexBuffer);
+                GLES20.GL_FLOAT, false, vertexStride, vertexBuffer);
         GlUtil.checkGlError("glVertexAttribPointer");
 
         // Enable the "aTextureCoord" vertex attribute.
@@ -322,7 +322,7 @@ public class Texture2dProgram {
         // Connect texBuffer to "aTextureCoord".
         GLES20.glVertexAttribPointer(maTextureCoordLoc, 2,
                 GLES20.GL_FLOAT, false, texStride, texBuffer);
-            GlUtil.checkGlError("glVertexAttribPointer");
+        GlUtil.checkGlError("glVertexAttribPointer");
 
         // Populate the convolution kernel, if present.
         if (muKernelLoc >= 0) {

@@ -552,8 +552,7 @@ public class OnVehicleDataTests extends BaseRpcTests {
                     assertTrue(TestValues.TRUE, Validator.validateGearStatuses(
                             new GearStatus(JsonRPCMarshaller.deserializeJSONObject(myKeyObjReference)),
                             new GearStatus(JsonRPCMarshaller.deserializeJSONObject(myKeyObjTest))));
-                }
-                else if (key.equals(OnVehicleData.KEY_SEAT_OCCUPANCY)) {
+                } else if (key.equals(OnVehicleData.KEY_SEAT_OCCUPANCY)) {
                     JSONObject myKeyObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
                     JSONObject myKeyObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 
@@ -595,8 +594,7 @@ public class OnVehicleDataTests extends BaseRpcTests {
                                     climateData2
                             )
                     );
-                }
-                else if (key.equals(OnVehicleData.KEY_WINDOW_STATUS)) {
+                } else if (key.equals(OnVehicleData.KEY_WINDOW_STATUS)) {
                     JSONArray windowStatusArrayObjReference = JsonUtils.readJsonArrayFromJsonObject(reference, key);
                     List<WindowStatus> windowStatusReferenceList = new ArrayList<>();
                     for (int index = 0; index < windowStatusArrayObjReference.length(); index++) {

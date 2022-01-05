@@ -108,6 +108,7 @@ public class PresentAlertOperationTest {
     };
 
     Task task;
+
     @Before
     public void setUp() throws Exception {
         Context mTestContext = getInstrumentation().getContext();
@@ -194,10 +195,10 @@ public class PresentAlertOperationTest {
 
         windowCapability = getWindowCapability(2);
 
-         presentAlertOperation = new PresentAlertOperation(internalInterface, alertView, windowCapability, speechCapabilities, fileManager, 1, alertCompletionListener, alertSoftButtonClearListener);
+        presentAlertOperation = new PresentAlertOperation(internalInterface, alertView, windowCapability, speechCapabilities, fileManager, 1, alertCompletionListener, alertSoftButtonClearListener);
         alert = presentAlertOperation.alertRpc();
         assertEquals(alert.getAlertText1(), alertView.getText());
-        assertEquals(alert.getAlertText2(),alertView.getSecondaryText() + " - " + alertView.getTertiaryText());
+        assertEquals(alert.getAlertText2(), alertView.getSecondaryText() + " - " + alertView.getTertiaryText());
     }
 
     @Test

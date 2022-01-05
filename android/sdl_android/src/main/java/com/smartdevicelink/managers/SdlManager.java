@@ -389,7 +389,7 @@ public class SdlManager extends BaseSdlManager {
         }
     }
 
-     ISdl _internalInterface = new ISdl() {
+    ISdl _internalInterface = new ISdl() {
         @Override
         public void start() {
             lifecycleManager.getInternalInterface(SdlManager.this).start();
@@ -447,7 +447,7 @@ public class SdlManager extends BaseSdlManager {
 
         @Override
         public boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
-            return  lifecycleManager.getInternalInterface(SdlManager.this).removeOnRPCNotificationListener(notificationId, listener);
+            return lifecycleManager.getInternalInterface(SdlManager.this).removeOnRPCNotificationListener(notificationId, listener);
         }
 
         @Override
@@ -457,7 +457,7 @@ public class SdlManager extends BaseSdlManager {
 
         @Override
         public boolean removeOnRPCRequestListener(FunctionID functionID, OnRPCRequestListener listener) {
-            return  lifecycleManager.getInternalInterface(SdlManager.this).removeOnRPCRequestListener(functionID, listener);
+            return lifecycleManager.getInternalInterface(SdlManager.this).removeOnRPCRequestListener(functionID, listener);
         }
 
         @Override
@@ -467,35 +467,35 @@ public class SdlManager extends BaseSdlManager {
 
         @Override
         public boolean removeOnRPCListener(FunctionID responseId, OnRPCListener listener) {
-            return  lifecycleManager.getInternalInterface(SdlManager.this).removeOnRPCListener(responseId, listener);
+            return lifecycleManager.getInternalInterface(SdlManager.this).removeOnRPCListener(responseId, listener);
         }
 
         @Override
         public RegisterAppInterfaceResponse getRegisterAppInterfaceResponse() {
-            return  lifecycleManager.getInternalInterface(SdlManager.this).getRegisterAppInterfaceResponse();
+            return lifecycleManager.getInternalInterface(SdlManager.this).getRegisterAppInterfaceResponse();
         }
 
         @Override
         public boolean isTransportForServiceAvailable(SessionType serviceType) {
-            return  lifecycleManager.getInternalInterface(SdlManager.this).isTransportForServiceAvailable(serviceType);
+            return lifecycleManager.getInternalInterface(SdlManager.this).isTransportForServiceAvailable(serviceType);
         }
 
         @NonNull
         @Override
         public SdlMsgVersion getSdlMsgVersion() {
-            return  lifecycleManager.getInternalInterface(SdlManager.this).getSdlMsgVersion();
+            return lifecycleManager.getInternalInterface(SdlManager.this).getSdlMsgVersion();
         }
 
         @NonNull
         @Override
         public Version getProtocolVersion() {
-            return  lifecycleManager.getInternalInterface(SdlManager.this).getProtocolVersion();
+            return lifecycleManager.getInternalInterface(SdlManager.this).getProtocolVersion();
         }
 
-         @Override
-         public long getMtu(SessionType serviceType) {
-             return lifecycleManager.getInternalInterface(SdlManager.this).getMtu(serviceType);
-         }
+        @Override
+        public long getMtu(SessionType serviceType) {
+            return lifecycleManager.getInternalInterface(SdlManager.this).getMtu(serviceType);
+        }
 
         @Override
         public void startRPCEncryption() {
@@ -504,12 +504,12 @@ public class SdlManager extends BaseSdlManager {
 
         @Override
         public Taskmaster getTaskmaster() {
-            return  lifecycleManager.getInternalInterface(SdlManager.this).getTaskmaster();
+            return lifecycleManager.getInternalInterface(SdlManager.this).getTaskmaster();
         }
 
         @Override
         public SystemCapabilityManager getSystemCapabilityManager() {
-            return  lifecycleManager.getInternalInterface(SdlManager.this).getSystemCapabilityManager();
+            return lifecycleManager.getInternalInterface(SdlManager.this).getSystemCapabilityManager();
         }
 
         @Override

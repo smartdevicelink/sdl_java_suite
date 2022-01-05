@@ -69,8 +69,9 @@ public final class EglCore {
     /**
      * Prepares EGL display and context.
      * <p>
+     *
      * @param sharedContext The context to share, or null if sharing is not desired.
-     * @param flags Configuration bit flags, e.g. FLAG_RECORDABLE.
+     * @param flags         Configuration bit flags, e.g. FLAG_RECORDABLE.
      */
     public EglCore(EGLContext sharedContext, int flags) {
         if (mEGLDisplay != EGL14.EGL_NO_DISPLAY) {
@@ -133,13 +134,13 @@ public final class EglCore {
         int[] values = new int[1];
         EGL14.eglQueryContext(mEGLDisplay, mEGLContext, EGL14.EGL_CONTEXT_CLIENT_VERSION,
                 values, 0);
-        Log.d(TAG,"EGLContext created, client version " + values[0]);
+        Log.d(TAG, "EGLContext created, client version " + values[0]);
     }
 
     /**
      * Finds a suitable EGLConfig.
      *
-     * @param flags Bit flags from constructor.
+     * @param flags   Bit flags from constructor.
      * @param version Must be 2 or 3.
      */
     private EGLConfig getConfig(int flags, int version) {
@@ -170,7 +171,7 @@ public final class EglCore {
         int[] numConfigs = new int[1];
         if (!EGL14.eglChooseConfig(mEGLDisplay, attribList, 0, configs, 0, configs.length,
                 numConfigs, 0)) {
-            Log.d(TAG,"unable to find RGB8888 / " + version + " EGLConfig");
+            Log.d(TAG, "unable to find RGB8888 / " + version + " EGLConfig");
             return null;
         }
         return configs[0];
@@ -206,7 +207,7 @@ public final class EglCore {
                 // the EGL state, so if a surface or context is still current on another
                 // thread we can't fully release it here.  Exceptions thrown from here
                 // are quietly discarded.  Complain in the log file.
-                Log.e(TAG,"WARNING: EglCore was not explicitly released -- state may be leaked");
+                Log.e(TAG, "WARNING: EglCore was not explicitly released -- state may be leaked");
                 release();
             }
         } finally {
@@ -269,7 +270,7 @@ public final class EglCore {
     public void makeCurrent(EGLSurface eglSurface) {
         if (mEGLDisplay == EGL14.EGL_NO_DISPLAY) {
             // called makeCurrent() before create?
-            Log.d(TAG,"NOTE: makeCurrent w/o display");
+            Log.d(TAG, "NOTE: makeCurrent w/o display");
         }
         if (!EGL14.eglMakeCurrent(mEGLDisplay, eglSurface, eglSurface, mEGLContext)) {
             throw new RuntimeException("eglMakeCurrent failed");
@@ -282,7 +283,7 @@ public final class EglCore {
     public void makeCurrent(EGLSurface drawSurface, EGLSurface readSurface) {
         if (mEGLDisplay == EGL14.EGL_NO_DISPLAY) {
             // called makeCurrent() before create?
-            Log.d(TAG,"NOTE: makeCurrent w/o display");
+            Log.d(TAG, "NOTE: makeCurrent w/o display");
         }
         if (!EGL14.eglMakeCurrent(mEGLDisplay, drawSurface, readSurface, mEGLContext)) {
             throw new RuntimeException("eglMakeCurrent(draw,read) failed");
@@ -320,7 +321,7 @@ public final class EglCore {
      */
     public boolean isCurrent(EGLSurface eglSurface) {
         return mEGLContext.equals(EGL14.eglGetCurrentContext()) &&
-            eglSurface.equals(EGL14.eglGetCurrentSurface(EGL14.EGL_DRAW));
+                eglSurface.equals(EGL14.eglGetCurrentSurface(EGL14.EGL_DRAW));
     }
 
     /**
@@ -357,7 +358,7 @@ public final class EglCore {
         display = EGL14.eglGetCurrentDisplay();
         context = EGL14.eglGetCurrentContext();
         surface = EGL14.eglGetCurrentSurface(EGL14.EGL_DRAW);
-        Log.i(TAG,"Current EGL (" + msg + "): display=" + display + ", context=" + context + ", surface=" + surface);
+        Log.i(TAG, "Current EGL (" + msg + "): display=" + display + ", context=" + context + ", surface=" + surface);
     }
 
     /**

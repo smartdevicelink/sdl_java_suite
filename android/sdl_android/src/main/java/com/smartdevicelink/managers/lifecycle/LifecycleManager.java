@@ -114,7 +114,7 @@ public class LifecycleManager extends BaseLifecycleManager {
             return;
         }
 
-        for (TransportRecord record: activeTransports) {
+        for (TransportRecord record : activeTransports) {
             if (record.getType() == TransportType.BLUETOOTH) {
                 String address = record.getAddress();
                 if (address != null && !address.isEmpty()) {
@@ -157,9 +157,9 @@ public class LifecycleManager extends BaseLifecycleManager {
      * This method will try to start the video service with the requested parameters.
      * When it returns it will attempt to store the accepted parameters if available.
      *
-     * @param isEncrypted if the service should be encrypted
+     * @param isEncrypted         if the service should be encrypted
      * @param afterPendingRestart specify true when the videoService is starting again after the display has been resized
-     * @param parameters  the desired video streaming parameters
+     * @param parameters          the desired video streaming parameters
      */
     @Override
     void startVideoService(boolean isEncrypted, VideoStreamingParameters parameters, boolean afterPendingRestart) {
@@ -180,9 +180,9 @@ public class LifecycleManager extends BaseLifecycleManager {
      * Try to open a video service by using the video streaming parameters supplied.
      * Only information from codecs, width and height are used during video format negotiation.
      *
-     * @param isEncrypted Specify true if packets on this service have to be encrypted
+     * @param isEncrypted         Specify true if packets on this service have to be encrypted
      * @param afterPendingRestart specify true when the videoService is starting again after the display has been resized
-     * @param parameters  VideoStreamingParameters that are desired. Does not guarantee this is what will be accepted.
+     * @param parameters          VideoStreamingParameters that are desired. Does not guarantee this is what will be accepted.
      */
     private void tryStartVideoStream(boolean isEncrypted, VideoStreamingParameters parameters, boolean afterPendingRestart) {
         if (session == null) {

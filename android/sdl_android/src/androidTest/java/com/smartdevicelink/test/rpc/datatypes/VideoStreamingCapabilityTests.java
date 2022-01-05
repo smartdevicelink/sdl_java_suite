@@ -123,14 +123,14 @@ public class VideoStreamingCapabilityTests extends TestCase {
     }
 
     @Test
-    public void testFormatMethod(){
+    public void testFormatMethod() {
         List<VideoStreamingCapability> additionalCapabilities = msg.getAdditionalVideoStreamingCapabilities();
         msg.format(null, false);
         assertEquals(additionalCapabilities, msg.getAdditionalVideoStreamingCapabilities());
     }
 
     @Test
-    public void testFormatWillRemoveSelf(){
+    public void testFormatWillRemoveSelf() {
         List<VideoStreamingCapability> additionalCapabilities = msg.getAdditionalVideoStreamingCapabilities();
         additionalCapabilities.add(msg);
         msg.format(null, false);

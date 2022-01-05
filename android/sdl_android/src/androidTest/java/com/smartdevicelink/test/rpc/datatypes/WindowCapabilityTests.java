@@ -220,7 +220,7 @@ public class WindowCapabilityTests extends TestCase {
                         imageFieldNameListTest.add((ImageFieldName) underTestArray.get(i));
                     }
                     assertTrue(TestValues.TRUE, imageFieldNameListReference.containsAll(imageFieldNameListTest) && imageFieldNameListTest.containsAll(imageFieldNameListReference));
-                } else if (key.equals(WindowCapability.KEY_KEYBOARD_CAPABILITIES)){
+                } else if (key.equals(WindowCapability.KEY_KEYBOARD_CAPABILITIES)) {
                     JSONObject jsonReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
                     JSONObject jsonUnderTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 

@@ -427,6 +427,7 @@ public class TransportManager extends TransportManagerBase {
 
     /**
      * A synchronized method to exit out of legacy mode
+     *
      * @param info if this is null, the transport listener callback will not be called
      */
     @Override

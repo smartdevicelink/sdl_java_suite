@@ -39,7 +39,7 @@ public class SecurityQueryIDTests extends TestCase {
             assertNotNull("Send Handshake Data string match returned null", enumHandshakeData);
             assertNotNull("Send Internal Error string match returned null", enumInternalError);
             assertNotNull("Send Invalid QueryID string match returned null", enumInvalidSecurityQueryId);
-        } catch(NullPointerException exception) {
+        } catch (NullPointerException exception) {
             fail("Null enum list throws NullPointerException.");
         }
     }
@@ -67,7 +67,7 @@ public class SecurityQueryIDTests extends TestCase {
 
             enumNull = (SecurityQueryID) SecurityQueryID.get(list, (byte[]) null);
             assertNull("Null lookup returns a null byte[] value", enumNull);
-        }catch (NullPointerException exception) {
+        } catch (NullPointerException exception) {
             fail("Null string throws NullPointerException.");
         }
     }
@@ -80,7 +80,7 @@ public class SecurityQueryIDTests extends TestCase {
 
         assertTrue("List does not match enum test list.",
                 list.containsAll(enumTestList) &&
-                enumTestList.containsAll(list));
+                        enumTestList.containsAll(list));
 
         SecurityQueryID[] enumValueArray = SecurityQueryID.values();
         SecurityQueryID[] enumTestArray = {SecurityQueryID.SEND_HANDSHAKE_DATA, SecurityQueryID.SEND_INTERNAL_ERROR, SecurityQueryID.INVALID_QUERY_ID};

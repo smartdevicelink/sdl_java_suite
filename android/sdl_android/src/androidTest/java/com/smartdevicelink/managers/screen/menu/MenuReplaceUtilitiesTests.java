@@ -199,7 +199,7 @@ public class MenuReplaceUtilitiesTests {
         assertEquals(2, actualMenuCellList.get(4).getSubCells().size());
         assertEquals(1, actualMenuCellList.get(4).getSubCells().get(0).getSubCells().size());
         assertEquals(0, actualMenuCellList.get(4).getSubCells().get(1).getSubCells().size());
-        
+
         // Add cell c5-2-1
         menuCellToAdd = newMenuList.get(0).getSubCells().get(1).getSubCells().get(0);
         cellAdded = MenuReplaceUtilities.addCellWithCellId(menuCellToAdd.getCellId(), 0, newMenuList, actualMenuCellList);
@@ -331,7 +331,7 @@ public class MenuReplaceUtilitiesTests {
         assertTrue(MenuReplaceUtilities.shouldCellIncludePrimaryImageFromCell(internalInterface, menuCell, fileManager, windowCapability));
     }
 
-    private WindowCapability createWindowCapability (boolean supportsCmdIcon, boolean supportsSubMenuIcon) {
+    private WindowCapability createWindowCapability(boolean supportsCmdIcon, boolean supportsSubMenuIcon) {
         WindowCapability windowCapability = new WindowCapability();
         windowCapability.setImageFields(new ArrayList<ImageField>());
         if (supportsCmdIcon) {
@@ -343,7 +343,7 @@ public class MenuReplaceUtilitiesTests {
         return windowCapability;
     }
 
-    private FileManager createMockFileManager (boolean hasUploadedFile) {
+    private FileManager createMockFileManager(boolean hasUploadedFile) {
         FileManager fileManager = mock(FileManager.class);
         when(fileManager.hasUploadedFile(any(SdlArtwork.class))).thenReturn(hasUploadedFile);
         return fileManager;
@@ -392,7 +392,7 @@ public class MenuReplaceUtilitiesTests {
         List<MenuCell> menuCellList = new ArrayList<>(Arrays.asList(menuCell1, menuCell2, menuCell3, menuCell4));
         addIdsToMenuCells(menuCellList, parentIdNotFound);
 
-        return menuCellList ;
+        return menuCellList;
     }
 
     private List<MenuCell> createNewMenuList() {
@@ -422,6 +422,6 @@ public class MenuReplaceUtilitiesTests {
         List<MenuCell> newMenuList = new ArrayList<>(Arrays.asList(menuCell5));
         addIdsToMenuCells(newMenuList, parentIdNotFound);
 
-        return newMenuList ;
+        return newMenuList;
     }
 }
