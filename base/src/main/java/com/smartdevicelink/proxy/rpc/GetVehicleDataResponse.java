@@ -110,6 +110,7 @@ public class GetVehicleDataResponse extends RPCResponse {
      * @since SmartDeviceLink 7.1.0
      */
     public static final String KEY_SEAT_OCCUPANCY = "seatOccupancy";
+
     /**
      * Constructs a new GetVehicleDataResponse object
      */
@@ -223,8 +224,8 @@ public class GetVehicleDataResponse extends RPCResponse {
      * Sets the externalTemperature.
      *
      * @param externalTemperature The external temperature in degrees celsius. This parameter is deprecated starting RPC
-     * Spec 7.1.0, please see climateData.
-     * {"num_min_value": -40.0, "num_max_value": 100.0}
+     *                            Spec 7.1.0, please see climateData.
+     *                            {"num_min_value": -40.0, "num_max_value": 100.0}
      * @since SmartDeviceLink 2.0.0
      * @deprecated in SmartDeviceLink 7.1.0
      */
@@ -648,6 +649,7 @@ public class GetVehicleDataResponse extends RPCResponse {
     public ClimateData getClimateData() {
         return (ClimateData) getObject(ClimateData.class, KEY_CLIMATE_DATA);
     }
+
     /**
      * Sets the seatOccupancy.
      *

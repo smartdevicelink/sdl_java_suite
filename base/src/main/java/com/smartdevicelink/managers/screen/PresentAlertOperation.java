@@ -62,7 +62,7 @@ import java.util.Map;
 
 /**
  * Operation that handles uploading images and audio data needed by the alert and, once the data uploads are complete, sending the alert.
- * 
+ * <p>
  * Created by Julian Kast on 12/10/20.
  */
 public class PresentAlertOperation extends Task {
@@ -156,6 +156,7 @@ public class PresentAlertOperation extends Task {
 
     /**
      * Checks the `AlertView` data to make sure it conforms to the RPC Spec, which says that at least either `alertText1`, `alertText2` or `TTSChunks` need to be provided.
+     *
      * @param alertView - Alert data that needs to be presented
      * @return true if AlertView data conforms to RPC Spec
      */
@@ -194,7 +195,7 @@ public class PresentAlertOperation extends Task {
 
         List<SdlFile> filesToBeUploaded = new ArrayList<>();
         for (TTSChunk ttsChunk : alertView.getAudio().getAudioData()) {
-            if(ttsChunk.getType() != SpeechCapabilities.FILE){
+            if (ttsChunk.getType() != SpeechCapabilities.FILE) {
                 continue;
             }
             SdlFile audioFile = alertView.getAudio().getAudioFiles().get(ttsChunk.getText());
@@ -300,7 +301,7 @@ public class PresentAlertOperation extends Task {
             public void onResponse(int correlationId, RPCResponse response) {
                 if (!response.getSuccess()) {
                     DebugTool.logError(TAG, "There was an error presenting the alert: " + response.getInfo());
-                }  else {
+                } else {
                     DebugTool.logInfo(TAG, "Alert finished presenting");
                 }
                 finishOperation(response.getSuccess(), ((AlertResponse) response).getTryAgainTime());
@@ -395,18 +396,19 @@ public class PresentAlertOperation extends Task {
 
     /**
      * Checks if AudioFiles are supported by module and removes them form audioData list if they are not
+     *
      * @param alertView
      * @return List of ttsChunks
      */
     private List<TTSChunk> getTTSChunksForAlert(AlertView alertView) {
         AlertAudioData alertAudioData = alertView.getAudio();
         List<TTSChunk> ttsChunks = new ArrayList<>();
-            for (TTSChunk chunk : alertAudioData.getAudioData()) {
-                if (chunk.getType() == SpeechCapabilities.FILE && !supportsAlertAudioFile()) {
-                    continue;
-                }
-                ttsChunks.add(chunk);
+        for (TTSChunk chunk : alertAudioData.getAudioData()) {
+            if (chunk.getType() == SpeechCapabilities.FILE && !supportsAlertAudioFile()) {
+                continue;
             }
+            ttsChunks.add(chunk);
+        }
         return ttsChunks.size() > 0 ? ttsChunks : null;
     }
 
@@ -446,7 +448,7 @@ public class PresentAlertOperation extends Task {
         if (nonNullFields.isEmpty()) {
             return alert;
         }
-        int numberOfLines = currentWindowCapability!= null ? ManagerUtility.WindowCapabilityUtility.getMaxNumberOfAlertFieldLines(currentWindowCapability) : 3;
+        int numberOfLines = currentWindowCapability != null ? ManagerUtility.WindowCapabilityUtility.getMaxNumberOfAlertFieldLines(currentWindowCapability) : 3;
         switch (numberOfLines) {
             case 1:
                 alert = assembleOneLineAlertText(alert, nonNullFields);

@@ -98,7 +98,7 @@ public class AlertView implements Cloneable {
          * Timeout in seconds. Defaults to 0, which will use `defaultTimeout`. If this is set below the
          * minimum, it will be capped at 3 seconds. Minimum 3 seconds, maximum 10 seconds. If this is
          * set above the maximum, it will be capped at 10 seconds. Defaults to 0.
-         *
+         * <p>
          * Please note that if a button is added to the alert, the defaultTimeout and timeout values will be ignored.
          */
         public Builder setTimeout(Integer timeout) {

@@ -37,7 +37,6 @@ import com.smartdevicelink.util.SdlDataTypeConverter;
 import java.util.Hashtable;
 
 /**
- *
  * <p><b>Parameter List</b></p>
  *
  * <table border="1" rules="all">
@@ -74,6 +73,7 @@ import java.util.Hashtable;
  *      <td></td>
  *  </tr>
  * </table>
+ *
  * @since SmartDeviceLink 7.1.0
  */
 public class ClimateData extends RPCStruct {
@@ -84,7 +84,8 @@ public class ClimateData extends RPCStruct {
     /**
      * Constructs a new ClimateData object
      */
-    public ClimateData() { }
+    public ClimateData() {
+    }
 
     /**
      * Constructs a new ClimateData object indicated by the Hashtable parameter
@@ -137,7 +138,7 @@ public class ClimateData extends RPCStruct {
      * Sets the atmosphericPressure.
      *
      * @param atmosphericPressure Current atmospheric pressure in mBar
-     * {"num_min_value": 0.0, "num_max_value": 2000.0}
+     *                            {"num_min_value": 0.0, "num_max_value": 2000.0}
      */
     public ClimateData setAtmosphericPressure(Float atmosphericPressure) {
         setValue(KEY_ATMOSPHERIC_PRESSURE, atmosphericPressure);

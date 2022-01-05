@@ -99,7 +99,7 @@ import java.util.Hashtable;
  *          <td>countRate</td>
  *          <td>Float</td>
  *          <td>The value of this parameter is the amount that the media clock timer will advance per 1.0 seconds of real time. Values less than 1.0 will therefore advance the timer slower than real-time, while values greater than 1.0 will advance the timer faster than real-time.e.g. If this parameter is set to `0.5`, the timer will advance one second per two seconds real-time, or at 50% speed. If this parameter is set to `2.0`, the timer will advance two seconds per one second real-time, or at 200% speed.</td>
-
+ *
  *          <td>N</td>
  *          <td>{"num_min_value": 0.1, "num_max_value": 100.0}</td>
  *          <td>
@@ -390,12 +390,12 @@ public class SetMediaClockTimer extends RPCRequest {
      * Sets the countRate.
      *
      * @param countRate The value of this parameter is the amount that the media clock timer will advance per 1.0
-     * seconds of real time. Values less than 1.0 will therefore advance the timer slower than
-     * real-time, while values greater than 1.0 will advance the timer faster than real-time.
-     * e.g. If this parameter is set to `0.5`, the timer will advance one second per two seconds
-     * real-time, or at 50% speed. If this parameter is set to `2.0`, the timer will advance two
-     * seconds per one second real-time, or at 200% speed.
-     * {"num_min_value": 0.1, "num_max_value": 100.0}
+     *                  seconds of real time. Values less than 1.0 will therefore advance the timer slower than
+     *                  real-time, while values greater than 1.0 will advance the timer faster than real-time.
+     *                  e.g. If this parameter is set to `0.5`, the timer will advance one second per two seconds
+     *                  real-time, or at 50% speed. If this parameter is set to `2.0`, the timer will advance two
+     *                  seconds per one second real-time, or at 200% speed.
+     *                  {"num_min_value": 0.1, "num_max_value": 100.0}
      * @since SmartDeviceLink 7.1.0
      */
     public SetMediaClockTimer setCountRate(Float countRate) {
@@ -424,7 +424,7 @@ public class SetMediaClockTimer extends RPCRequest {
      * Sets the forwardSeekIndicator.
      *
      * @param forwardSeekIndicator Used to control the forward seek button to either skip forward a set amount of time or to
-     * the next track.
+     *                             the next track.
      * @since SmartDeviceLink 7.1.0
      */
     public SetMediaClockTimer setForwardSeekIndicator(SeekStreamingIndicator forwardSeekIndicator) {
@@ -447,7 +447,7 @@ public class SetMediaClockTimer extends RPCRequest {
      * Sets the backSeekIndicator.
      *
      * @param backSeekIndicator Used to control the forward seek button to either skip back a set amount of time or to the
-     * previous track.
+     *                          previous track.
      * @since SmartDeviceLink 7.1.0
      */
     public SetMediaClockTimer setBackSeekIndicator(SeekStreamingIndicator backSeekIndicator) {

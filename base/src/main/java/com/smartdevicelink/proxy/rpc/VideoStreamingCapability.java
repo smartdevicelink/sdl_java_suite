@@ -197,15 +197,14 @@ public class VideoStreamingCapability extends RPCStruct {
      * @since SmartDeviceLink 7.1.0
      */
     @SuppressWarnings("unchecked")
-    public List<VideoStreamingCapability> getAdditionalVideoStreamingCapabilities(){
+    public List<VideoStreamingCapability> getAdditionalVideoStreamingCapabilities() {
         return (List<VideoStreamingCapability>) getObject(VideoStreamingCapability.class, KEY_ADDITIONAL_VIDEO_STREAMING_CAPABILITIES);
     }
 
     /**
      * Sets the additionalVideoStreamingCapabilities.
      *
-     * @param additionalVideoStreamingCapabilities
-     * {"array_min_size": 1, "array_max_size": 100}
+     * @param additionalVideoStreamingCapabilities {"array_min_size": 1, "array_max_size": 100}
      * @since SmartDeviceLink 7.1.0
      */
     public VideoStreamingCapability setAdditionalVideoStreamingCapabilities(List<VideoStreamingCapability> additionalVideoStreamingCapabilities) {

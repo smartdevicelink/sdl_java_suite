@@ -554,7 +554,7 @@ public class SubscribeVehicleData extends RPCRequest {
      * Sets the externalTemperature.
      *
      * @param externalTemperature The external temperature in degrees celsius. This parameter is deprecated starting RPC
-     * Spec 7.1.0, please see climateData.
+     *                            Spec 7.1.0, please see climateData.
      * @since SmartDeviceLink 2.0.0
      * @deprecated in SmartDeviceLink 7.1.0
      */

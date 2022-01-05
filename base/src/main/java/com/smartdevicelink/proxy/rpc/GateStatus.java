@@ -79,7 +79,8 @@ public class GateStatus extends RPCStruct {
     /**
      * Constructs a new GateStatus object
      */
-    public GateStatus() { }
+    public GateStatus() {
+    }
 
     /**
      * Constructs a new GateStatus object indicated by the Hashtable parameter

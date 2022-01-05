@@ -42,13 +42,14 @@ public enum AppCapabilityType {
 
     /**
      * Convert String to AppCapabilityType
+     *
      * @param value String
      * @return AppCapabilityType
      */
     public static AppCapabilityType valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

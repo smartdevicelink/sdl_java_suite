@@ -78,7 +78,8 @@ public class SeatStatus extends RPCStruct {
     /**
      * Constructs a new SeatStatus object
      */
-    public SeatStatus() { }
+    public SeatStatus() {
+    }
 
     /**
      * Constructs a new SeatStatus object indicated by the Hashtable parameter

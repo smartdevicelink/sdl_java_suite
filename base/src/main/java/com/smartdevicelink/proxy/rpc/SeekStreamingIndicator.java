@@ -79,7 +79,8 @@ public class SeekStreamingIndicator extends RPCStruct {
     /**
      * Constructs a new SeekStreamingIndicator object
      */
-    public SeekStreamingIndicator() { }
+    public SeekStreamingIndicator() {
+    }
 
     /**
      * Constructs a new SeekStreamingIndicator object indicated by the Hashtable parameter
@@ -123,9 +124,9 @@ public class SeekStreamingIndicator extends RPCStruct {
      * Sets the seekTime.
      *
      * @param seekTime If the type is TIME, this number of seconds may be present alongside the skip indicator.
-     * It will indicate the number of seconds that the currently playing media will skip forward
-     * or backward.
-     * {"num_min_value": 1, "num_max_value": 99}
+     *                 It will indicate the number of seconds that the currently playing media will skip forward
+     *                 or backward.
+     *                 {"num_min_value": 1, "num_max_value": 99}
      */
     public SeekStreamingIndicator setSeekTime(Integer seekTime) {
         setValue(KEY_SEEK_TIME, seekTime);

@@ -76,7 +76,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
         this.transactionQueue = newTransactionQueue();
 
-        currentHMILevel =  null;
+        currentHMILevel = null;
         addListeners();
         lastVoiceCommandId = voiceCommandIdMin;
     }

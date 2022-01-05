@@ -40,8 +40,10 @@ import androidx.annotation.NonNull;
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
+
 import static com.smartdevicelink.managers.ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName;
 import static com.smartdevicelink.managers.ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName;
+
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
@@ -110,6 +112,7 @@ class PreloadPresentChoicesOperation extends Task {
     Integer selectedCellRow;
     KeyboardListener keyboardListener;
     final SdlMsgVersion sdlMsgVersion;
+
     private enum SDLPreloadPresentChoicesOperationState {
         NOT_STARTED,
         UPLOADING_IMAGES,
@@ -120,10 +123,11 @@ class PreloadPresentChoicesOperation extends Task {
         RESETTING_KEYBOARD_PROPERTIES,
         FINISHING
     }
+
     private SDLPreloadPresentChoicesOperationState currentState;
 
     PreloadPresentChoicesOperation(ISdl internalInterface, FileManager fileManager, String displayName, WindowCapability defaultWindowCapability,
-                                          Boolean isVROptional, LinkedHashSet<ChoiceCell> cellsToPreload, HashSet<ChoiceCell> loadedCells, BaseChoiceSetManager.ChoicesOperationCompletionListener listener) {
+                                   Boolean isVROptional, LinkedHashSet<ChoiceCell> cellsToPreload, HashSet<ChoiceCell> loadedCells, BaseChoiceSetManager.ChoicesOperationCompletionListener listener) {
         super("PreloadPresentChoiceOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
@@ -207,14 +211,14 @@ class PreloadPresentChoicesOperation extends Task {
             @Override
             public void onComplete(boolean success) {
                 // If some artworks failed to upload, we are still going to try to load the cells
-                if (getState()==CANCELED || !success) {
+                if (getState() == CANCELED || !success) {
                     finishOperation(false);
                     return;
                 }
                 preloadCells(new CompletionListener() {
                     @Override
                     public void onComplete(boolean success) {
-                        if (getState()==CANCELED || !success) {
+                        if (getState() == CANCELED || !success) {
                             finishOperation(false);
                             return;
                         }
@@ -227,7 +231,7 @@ class PreloadPresentChoicesOperation extends Task {
                         updateKeyboardProperties(new CompletionListener() {
                             @Override
                             public void onComplete(boolean success) {
-                                if (getState()==CANCELED || !success) {
+                                if (getState() == CANCELED || !success) {
                                     finishOperation(false);
                                     return;
                                 }
@@ -383,7 +387,7 @@ class PreloadPresentChoicesOperation extends Task {
     void resetKeyboardProperties(final CompletionListener listener) {
         this.currentState = SDLPreloadPresentChoicesOperationState.RESETTING_KEYBOARD_PROPERTIES;
         if (this.keyboardListener == null || this.originalKeyboardProperties == null) {
-            if(listener != null) {
+            if (listener != null) {
                 listener.onComplete(true);
                 finishOperation(true);
                 return;
@@ -482,7 +486,7 @@ class PreloadPresentChoicesOperation extends Task {
                 DebugTool.logInfo(TAG, "Canceling the operation before a present.");
                 this.cancelTask();
                 return;
-            }else if (sdlMsgVersion.getMajorVersion() < 6) {
+            } else if (sdlMsgVersion.getMajorVersion() < 6) {
                 DebugTool.logWarning(TAG, "Canceling a presented choice set is not supported on this head unit");
                 this.cancelTask();
                 return;
@@ -591,7 +595,7 @@ class PreloadPresentChoicesOperation extends Task {
             int lastUsedId = usedIds.get(usedIds.size() - 1);
             if (lastUsedId < MAX_CHOICE_ID) {
                 choiceId = lastUsedId + 1;
-                return  choiceId;
+                return choiceId;
             }
 
             // All our easy options are gone. Find and grab an empty slot from within the sorted list
@@ -646,7 +650,7 @@ class PreloadPresentChoicesOperation extends Task {
     }
 
     private void transferUniqueNamesFromCells(ArrayList<ChoiceCell> fromCells, ArrayList<ChoiceCell> toCells) {
-        for (int i = 0; i< fromCells.size(); i++) {
+        for (int i = 0; i < fromCells.size(); i++) {
             toCells.get(i).setUniqueTextId(fromCells.get(i).getUniqueTextId());
         }
     }
@@ -711,7 +715,7 @@ class PreloadPresentChoicesOperation extends Task {
                 ArrayList<Integer> uniqueIds = dictCounter.get(cellKey);
                 Integer lowestMissingUniqueId = uniqueIds.get(uniqueIds.size() - 1) + 1;
                 for (int i = 1; i < dictCounter.get(cellKey).size() + 1; i++) {
-                    if (i != dictCounter.get(cellKey).get(i -1)) {
+                    if (i != dictCounter.get(cellKey).get(i - 1)) {
                         lowestMissingUniqueId = i;
                         break;
                     }

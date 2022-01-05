@@ -89,7 +89,8 @@ public class RoofStatus extends RPCStruct {
     /**
      * Constructs a new RoofStatus object
      */
-    public RoofStatus() { }
+    public RoofStatus() {
+    }
 
     /**
      * Constructs a new RoofStatus object indicated by the Hashtable parameter

@@ -236,7 +236,7 @@ public class MenuParams extends RPCStruct {
      * Sets the secondaryText.
      *
      * @param secondaryText Optional secondary text to display
-     * {"string_min_length": 1, "string_max_length": 500}
+     *                      {"string_min_length": 1, "string_max_length": 500}
      * @since SmartDeviceLink 7.1.0
      */
     public MenuParams setSecondaryText(String secondaryText) {
@@ -259,7 +259,7 @@ public class MenuParams extends RPCStruct {
      * Sets the tertiaryText.
      *
      * @param tertiaryText Optional tertiary text to display
-     * {"string_min_length": 1, "string_max_length": 500}
+     *                     {"string_min_length": 1, "string_max_length": 500}
      * @since SmartDeviceLink 7.1.0
      */
     public MenuParams setTertiaryText(String tertiaryText) {

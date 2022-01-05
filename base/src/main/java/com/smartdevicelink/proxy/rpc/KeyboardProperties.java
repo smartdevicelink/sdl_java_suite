@@ -266,8 +266,8 @@ public class KeyboardProperties extends RPCStruct {
      * Sets the customKeys.
      *
      * @param customKeys Array of special characters to show in customizable keys. If omitted, keyboard will show
-     * default special characters
-     * {"string_max_length": 1, "string_min_length": 1, "array_max_size": 10, "array_min_size": 1}
+     *                   default special characters
+     *                   {"string_max_length": 1, "string_min_length": 1, "array_max_size": 10, "array_min_size": 1}
      * @since SmartDeviceLink 7.1.0
      */
     public KeyboardProperties setCustomKeys(List<String> customKeys) {

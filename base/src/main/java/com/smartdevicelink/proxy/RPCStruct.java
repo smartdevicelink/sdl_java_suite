@@ -270,7 +270,7 @@ public class RPCStruct implements Cloneable {
 
                 return customObject;
             } catch (Exception e) {
-                DebugTool.logError(TAG,"Error attempting to format an object from a Hashtable", e);
+                DebugTool.logError(TAG, "Error attempting to format an object from a Hashtable", e);
             }
         } else if (obj instanceof List<?>) {
             List<?> list = (List<?>) obj;
@@ -302,7 +302,7 @@ public class RPCStruct implements Cloneable {
                             }
                             newList.add(customObject);
                         } catch (Exception e) {
-                            DebugTool.logError(TAG,"Error attempting to format object from list of Hashtables", e);
+                            DebugTool.logError(TAG, "Error attempting to format object from list of Hashtables", e);
                             return null;
                         }
                     }
@@ -336,15 +336,15 @@ public class RPCStruct implements Cloneable {
         try {
             valueForString = tClass.getDeclaredMethod("valueForString", String.class);
         } catch (NoSuchMethodException e) {
-            DebugTool.logError(TAG,"Error attempting to find valueForString method in class", e);
+            DebugTool.logError(TAG, "Error attempting to find valueForString method in class", e);
         }
         if (valueForString != null) {
             try {
                 return valueForString.invoke(null, (String) s);
             } catch (IllegalAccessException e) {
-                DebugTool.logError(TAG,"Illegal access while using reflection to get enum from string", e);
+                DebugTool.logError(TAG, "Illegal access while using reflection to get enum from string", e);
             } catch (InvocationTargetException e) {
-                DebugTool.logError(TAG,"Error attempting to use method from reflection to get enum from string", e);
+                DebugTool.logError(TAG, "Error attempting to use method from reflection to get enum from string", e);
             }
         }
         return null;

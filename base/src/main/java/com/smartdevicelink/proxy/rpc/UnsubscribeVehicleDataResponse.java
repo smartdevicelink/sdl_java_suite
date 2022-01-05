@@ -102,6 +102,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @since SmartDeviceLink 7.1.0
      */
     public static final String KEY_SEAT_OCCUPANCY = "seatOccupancy";
+
     /**
      * Constructs a new UnsubscribeVehicleDataResponse object
      */
@@ -256,7 +257,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Sets the externalTemperature.
      *
      * @param externalTemperature The external temperature in degrees celsius. This parameter is deprecated starting RPC
-     * Spec 7.1.0, please see climateData.
+     *                            Spec 7.1.0, please see climateData.
      * @since SmartDeviceLink 2.0.0
      * @deprecated in SmartDeviceLink 7.1.0
      */

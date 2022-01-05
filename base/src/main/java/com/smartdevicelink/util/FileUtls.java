@@ -32,6 +32,7 @@
 package com.smartdevicelink.util;
 
 import androidx.annotation.NonNull;
+
 import com.smartdevicelink.BuildConfig;
 
 import java.io.ByteArrayOutputStream;
@@ -74,7 +75,7 @@ public class FileUtls {
                 try {
                     return Files.readAllBytes(file.toPath());
                 } catch (IOException e) {
-                    DebugTool.logError(TAG,"Error trying to get file data", e);
+                    DebugTool.logError(TAG, "Error trying to get file data", e);
                 }
             }
         }

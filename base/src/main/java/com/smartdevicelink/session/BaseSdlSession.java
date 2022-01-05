@@ -308,6 +308,7 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
 
     /**
      * Extracts the SystemInfo out of a packet
+     *
      * @param packet should be a StartServiceACK for the RPC service
      * @return an instance of SystemInfo if the information is available, null otherwise
      */
@@ -514,7 +515,7 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
      * Retrieves list of the active transports
      *
      * @return a list of active transports
-     * */
+     */
     @Nullable
     public List<TransportRecord> getActiveTransports() {
         if (this.sdlProtocol != null) {

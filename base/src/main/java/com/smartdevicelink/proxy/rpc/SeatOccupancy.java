@@ -37,7 +37,6 @@ import java.util.Hashtable;
 import java.util.List;
 
 /**
- *
  * <p><b>Parameter List</b></p>
  *
  * <table border="1" rules="all">
@@ -66,6 +65,7 @@ import java.util.List;
  *      <td></td>
  *  </tr>
  * </table>
+ *
  * @since SmartDeviceLink 7.1.0
  */
 public class SeatOccupancy extends RPCStruct {
@@ -75,7 +75,8 @@ public class SeatOccupancy extends RPCStruct {
     /**
      * Constructs a new SeatOccupancy object
      */
-    public SeatOccupancy() { }
+    public SeatOccupancy() {
+    }
 
     /**
      * Constructs a new SeatOccupancy object indicated by the Hashtable parameter
@@ -90,7 +91,7 @@ public class SeatOccupancy extends RPCStruct {
      * Sets the seatsOccupied.
      *
      * @param seatsOccupied Seat status array containing location and whether the seats are occupied.
-     * {"array_min_size": 0, "array_max_size": 100}
+     *                      {"array_min_size": 0, "array_max_size": 100}
      */
     public SeatOccupancy setSeatsOccupied(List<SeatStatus> seatsOccupied) {
         setValue(KEY_SEATS_OCCUPIED, seatsOccupied);
@@ -112,7 +113,7 @@ public class SeatOccupancy extends RPCStruct {
      * Sets the seatsBelted.
      *
      * @param seatsBelted Seat status array containing location and whether the seats are belted.
-     * {"array_min_size": 0, "array_max_size": 100}
+     *                    {"array_min_size": 0, "array_max_size": 100}
      */
     public SeatOccupancy setSeatsBelted(List<SeatStatus> seatsBelted) {
         setValue(KEY_SEATS_BELTED, seatsBelted);

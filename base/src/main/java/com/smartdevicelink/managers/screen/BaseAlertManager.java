@@ -95,6 +95,7 @@ abstract class BaseAlertManager extends BaseSubManager {
 
     /**
      * Starts the manager
+     *
      * @param listener CompletionListener that is called once the BaseSubManager's state is READY, LIMITED, or ERROR
      */
     @Override

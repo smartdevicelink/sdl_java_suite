@@ -353,7 +353,7 @@ public class BodyInformation extends RPCStruct {
      * Sets the doorStatuses.
      *
      * @param doorStatuses Provides status for doors if Ajar/Closed/Locked
-     * {"array_min_size": 0, "array_max_size": 100}
+     *                     {"array_min_size": 0, "array_max_size": 100}
      * @since SmartDeviceLink 7.1.0
      */
     public BodyInformation setDoorStatuses(List<DoorStatus> doorStatuses) {
@@ -377,7 +377,7 @@ public class BodyInformation extends RPCStruct {
      * Sets the gateStatuses.
      *
      * @param gateStatuses Provides status for trunk/hood/etc. if Ajar/Closed/Locked
-     * {"array_min_size": 0, "array_max_size": 100}
+     *                     {"array_min_size": 0, "array_max_size": 100}
      * @since SmartDeviceLink 7.1.0
      */
     public BodyInformation setGateStatuses(List<GateStatus> gateStatuses) {
@@ -401,8 +401,8 @@ public class BodyInformation extends RPCStruct {
      * Sets the roofStatuses.
      *
      * @param roofStatuses Provides status for roof/convertible roof/sunroof/moonroof etc., if Closed/Ajar/Removed
-     * etc.
-     * {"array_min_size": 0, "array_max_size": 100}
+     *                     etc.
+     *                     {"array_min_size": 0, "array_max_size": 100}
      * @since SmartDeviceLink 7.1.0
      */
     public BodyInformation setRoofStatuses(List<RoofStatus> roofStatuses) {

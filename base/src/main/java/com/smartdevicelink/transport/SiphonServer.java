@@ -107,7 +107,7 @@ public class SiphonServer {
         try {
             SiphonServer.closeServer();
         } catch (IOException e) {
-            DebugTool.logError(TAG,"Error while trying to close siphon server", e);
+            DebugTool.logError(TAG, "Error while trying to close siphon server", e);
         }
 
         return m_listenPort;

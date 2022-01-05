@@ -153,7 +153,7 @@ abstract class BaseLifecycleManager {
         try {
             session.startSession();
         } catch (SdlException e) {
-            DebugTool.logError(TAG,"Error attempting to start session", e);
+            DebugTool.logError(TAG, "Error attempting to start session", e);
         }
     }
 
@@ -843,7 +843,7 @@ abstract class BaseLifecycleManager {
                 }
                 // HAX: Issue #1690, Ford Sync bug returning incorrect display capabilities (https://github.com/smartdevicelink/sdl_java_suite/issues/1690). Save the next desired layout type to the update capabilities when the SetDisplayLayout response is received
                 if (FunctionID.SET_DISPLAY_LAYOUT.toString().equals(message.getFunctionName())) {
-                    lastDisplayLayoutRequestTemplate = ((SetDisplayLayout)message).getDisplayLayout();
+                    lastDisplayLayoutRequestTemplate = ((SetDisplayLayout) message).getDisplayLayout();
                 }
             } else if (RPCMessage.KEY_RESPONSE.equals(message.getMessageType())) { // Response Specifics
                 RPCResponse response = (RPCResponse) message;
@@ -871,7 +871,7 @@ abstract class BaseLifecycleManager {
             session.sendMessage(pm);
 
         } catch (OutOfMemoryError e) {
-            DebugTool.logError(TAG,"Error attempting to send RPC message.", e);
+            DebugTool.logError(TAG, "Error attempting to send RPC message.", e);
         }
     }
 
@@ -1034,7 +1034,7 @@ abstract class BaseLifecycleManager {
         @Override
         public void addServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {
             synchronized (BaseLifecycleManager.this) {
-                if(BaseLifecycleManager.this.session != null ){
+                if (BaseLifecycleManager.this.session != null) {
                     BaseLifecycleManager.this.session.addServiceListener(serviceType, sdlServiceListener);
                 }
             }
@@ -1125,11 +1125,11 @@ abstract class BaseLifecycleManager {
         @Override
         public SdlMsgVersion getSdlMsgVersion() {
             SdlMsgVersion msgVersion;
-            if(rpcSpecVersion != null) {
+            if (rpcSpecVersion != null) {
                 msgVersion = new SdlMsgVersion(rpcSpecVersion.getMajor(), rpcSpecVersion.getMinor());
                 msgVersion.setPatchVersion(rpcSpecVersion.getPatch());
             } else {
-                msgVersion = new SdlMsgVersion(1,0);
+                msgVersion = new SdlMsgVersion(1, 0);
             }
 
             return msgVersion;
@@ -1272,6 +1272,7 @@ abstract class BaseLifecycleManager {
     /**
      * Using the vehicle type information, specifically the make, the library will attempt to init
      * the security library that is associated with that OEM.
+     *
      * @param vehicleType type of vehicle that is currently connected
      */
     private void setSecurityLibraryIfAvailable(VehicleType vehicleType) {
@@ -1328,7 +1329,7 @@ abstract class BaseLifecycleManager {
 
     abstract void cycle(SdlDisconnectedReason disconnectedReason);
 
-    void saveVehicleType(String address, VehicleType type){
+    void saveVehicleType(String address, VehicleType type) {
     }
 
     void saveVehicleType(List<TransportRecord> activeTransports, VehicleType type) {

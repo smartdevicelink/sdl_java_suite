@@ -446,9 +446,9 @@ public class Show extends RPCRequest {
      * Sets the mediaClock.
      *
      * @param mediaClock Text value for MediaClock field. Has to be properly formatted by Mobile App according to
-     * the module's capabilities. If this text is set, any automatic media clock updates
-     * previously set with SetMediaClockTimer will be stopped.
-     * {"string_min_length": 0, "string_max_length": 500}
+     *                   the module's capabilities. If this text is set, any automatic media clock updates
+     *                   previously set with SetMediaClockTimer will be stopped.
+     *                   {"string_min_length": 0, "string_max_length": 500}
      * @since SmartDeviceLink 1.0.0
      * @deprecated in SmartDeviceLink 7.1.0
      */

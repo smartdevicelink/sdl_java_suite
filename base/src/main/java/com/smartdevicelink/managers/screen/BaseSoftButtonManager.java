@@ -298,7 +298,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
             return;
         }
 
-       if (!BaseScreenManager.checkAndAssignButtonIds(softButtonObjects, BaseScreenManager.ManagerLocation.SOFTBUTTON_MANAGER)) {
+        if (!BaseScreenManager.checkAndAssignButtonIds(softButtonObjects, BaseScreenManager.ManagerLocation.SOFTBUTTON_MANAGER)) {
             DebugTool.logError(TAG, "Attempted to set soft button objects, but multiple buttons had the same id");
             return;
         }

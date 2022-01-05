@@ -42,5 +42,6 @@ import java.util.Map;
  */
 interface SendingRPCsCompletionListener {
     void onComplete(boolean success, Map<RPCRequest, String> errors);
+
     void onResponse(RPCRequest request, RPCResponse response);
 }

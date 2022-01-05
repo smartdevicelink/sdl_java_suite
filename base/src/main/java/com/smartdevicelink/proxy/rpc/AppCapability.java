@@ -39,7 +39,6 @@ import com.smartdevicelink.proxy.rpc.enums.AppCapabilityType;
 import java.util.Hashtable;
 
 /**
- *
  * <p><b>Parameter List</b></p>
  *
  * <table border="1" rules="all">
@@ -68,6 +67,7 @@ import java.util.Hashtable;
  *      <td></td>
  *  </tr>
  * </table>
+ *
  * @since SmartDeviceLink 7.1.0
  */
 public class AppCapability extends RPCStruct {
@@ -77,7 +77,8 @@ public class AppCapability extends RPCStruct {
     /**
      * Constructs a new AppCapability object
      */
-    public AppCapability() { }
+    public AppCapability() {
+    }
 
     /**
      * Constructs a new AppCapability object indicated by the Hashtable parameter
@@ -92,7 +93,7 @@ public class AppCapability extends RPCStruct {
      * Constructs a new AppCapability object
      *
      * @param appCapabilityType Used as a descriptor of what data to expect in this struct. The corresponding param to
-     * this enum should be included and the only other param included.
+     *                          this enum should be included and the only other param included.
      */
     public AppCapability(@NonNull AppCapabilityType appCapabilityType) {
         this();
@@ -103,7 +104,7 @@ public class AppCapability extends RPCStruct {
      * Sets the appCapabilityType.
      *
      * @param appCapabilityType Used as a descriptor of what data to expect in this struct. The corresponding param to
-     * this enum should be included and the only other param included.
+     *                          this enum should be included and the only other param included.
      */
     public AppCapability setAppCapabilityType(@NonNull AppCapabilityType appCapabilityType) {
         setValue(KEY_APP_CAPABILITY_TYPE, appCapabilityType);

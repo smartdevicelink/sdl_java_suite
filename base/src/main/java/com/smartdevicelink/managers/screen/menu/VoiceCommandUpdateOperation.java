@@ -206,7 +206,7 @@ class VoiceCommandUpdateOperation extends Task {
 
     private void sendCurrentVoiceCommands(final CompletionListener listener) {
 
-        List<VoiceCommand> voiceCommandsToAdd  = voiceCommandsInListNotInSecondList(pendingVoiceCommands, oldVoiceCommands);
+        List<VoiceCommand> voiceCommandsToAdd = voiceCommandsInListNotInSecondList(pendingVoiceCommands, oldVoiceCommands);
 
         if (voiceCommandsToAdd.size() == 0) {
             if (listener != null) {

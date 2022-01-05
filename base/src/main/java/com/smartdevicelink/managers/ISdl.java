@@ -89,8 +89,8 @@ public interface ISdl {
     /**
      * Starts the video streaming service
      *
-     * @param parameters desired video streaming params for this service to be started with
-     * @param encrypted  flag to start this service with encryption or not
+     * @param parameters         desired video streaming params for this service to be started with
+     * @param encrypted          flag to start this service with encryption or not
      * @param withPendingRestart flag to start this service right after OnSystemCapabilityUpdated
      */
     void startVideoService(VideoStreamingParameters parameters, boolean encrypted, boolean withPendingRestart);
