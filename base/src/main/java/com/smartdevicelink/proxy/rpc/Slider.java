@@ -95,7 +95,7 @@ import java.util.List;
  * 		<tr>
  * 			<td>timeout</td>
  * 			<td>String</td>
- * 			<td>App defined timeout.  Indicates how long of a timeout from the last action (i.e. sliding control resets timeout). If omitted, the value is set to 10000.</td>
+ * 			<td>App defined timeout.  Indicates how long of a timeout in milliseconds from the last action (i.e. sliding control resets timeout). If omitted, the value is set to 10000.</td>
  *                 <td>N</td>
  * 			<td>Minvalue=0; Maxvalue=65535; Defvalue= 10000</td>
  * 			<td>SmartDeviceLink 2.0</td>
@@ -255,9 +255,9 @@ public class Slider extends RPCRequest {
     }
 
     /**
-     * Sets an App defined timeout
+     * Sets an App defined timeout in milliseconds
      *
-     * @param timeout an Integer value representing an App defined timeout
+     * @param timeout an Integer value representing an App defined timeout in milliseconds
      *                <p></p>
      *                <b>Notes: </b>Minvalue=0; Maxvalue=65535; Defvalue=10000
      */
@@ -267,9 +267,9 @@ public class Slider extends RPCRequest {
     }
 
     /**
-     * Gets an App defined timeout
+     * Gets an App defined timeout in milliseconds
      *
-     * @return Integer -an Integer value representing an App defined timeout
+     * @return Integer -an Integer value representing an App defined timeout in milliseconds
      */
     public Integer getTimeout() {
         return getInteger(KEY_TIMEOUT);
