@@ -151,7 +151,9 @@ abstract class BaseLifecycleManager {
 
     public void start() {
         try {
-            session.startSession();
+            if (session != null) {
+                session.startSession();
+            }
         } catch (SdlException e) {
             DebugTool.logError(TAG,"Error attempting to start session", e);
         }
@@ -868,7 +870,9 @@ abstract class BaseLifecycleManager {
                 pm.setPriorityCoefficient(1);
             }
 
-            session.sendMessage(pm);
+            if (session != null) {
+                session.sendMessage(pm);
+            }
 
         } catch (OutOfMemoryError e) {
             DebugTool.logError(TAG,"Error attempting to send RPC message.", e);
