@@ -455,7 +455,7 @@ public class SoftButtonManagerTests {
         SoftButtonState softButtonState2 = new SoftButtonState("general_kenobi", "General Kenobi", null);
         stateList2.add(softButtonState2);
 
-        SoftButtonObject softButtonObject = new SoftButtonObject("general_kenobi", stateList1, "general_kenobi", null);
+        SoftButtonObject softButtonObject = new SoftButtonObject("general_kenobi", stateList1, "hello_there", null);
 
         softButtonObject.setStates(stateList2);
 
@@ -477,7 +477,7 @@ public class SoftButtonManagerTests {
         SoftButtonState softButtonState3 = new SoftButtonState("general_kenobi", "General Kenobi Again", null);
         stateListDuplicateNames.add(softButtonState3);
 
-        SoftButtonObject softButtonObject = new SoftButtonObject("general_kenobi", stateListUnique, "general_kenobi", null);
+        SoftButtonObject softButtonObject = new SoftButtonObject("general_kenobi", stateListUnique, "hello_there", null);
 
         softButtonObject.setStates(stateListDuplicateNames);
 

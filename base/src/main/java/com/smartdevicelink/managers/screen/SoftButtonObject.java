@@ -32,6 +32,8 @@
 package com.smartdevicelink.managers.screen;
 
 import androidx.annotation.NonNull;
+
+import com.livio.BuildConfig;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
@@ -71,7 +73,7 @@ public class SoftButtonObject implements Cloneable{
      */
     public SoftButtonObject(@NonNull String name, @NonNull List<SoftButtonState> states, @NonNull String initialStateName, OnEventListener onEventListener) {
 
-        // If the list of states is empty, throw an error with DebugTool and return
+        /*// If the list of states is empty, throw an error with DebugTool and return
         if (states.isEmpty()) {
             DebugTool.logError(TAG,"The state list is empty");
             return;
@@ -80,8 +82,30 @@ public class SoftButtonObject implements Cloneable{
         if (hasTwoStatesOfSameName(states)) {
             DebugTool.logError(TAG, "Two states have the same name in states list for soft button object");
             return;
+        }*/
+
+        boolean repeatedStateNames = hasTwoStatesOfSameName(states);
+
+        boolean hasStateWithInitialName = false;
+        for (SoftButtonState state : states) {
+            if(state.getName().equals(initialStateName)) {
+                hasStateWithInitialName = true;
+                break;
+            }
         }
 
+        if (repeatedStateNames) {
+            DebugTool.logError(TAG, "A SoftButtonObject must have states with different names.");
+            if (BuildConfig.DEBUG && repeatedStateNames)
+                throw new AssertionError("A SoftButtonObject must have states with different names.");
+            return;
+        }
+        if (!hasStateWithInitialName) {
+            DebugTool.logError(TAG, "A SoftButtonObject must have a state with initialStateName.");
+            if (BuildConfig.DEBUG && !hasStateWithInitialName)
+                throw new AssertionError("A SoftButtonObject must have a state with initialStateName.");
+            return;
+        }
         this.name = name;
         this.states = states;
         this.currentStateName = initialStateName;
@@ -267,7 +291,7 @@ public class SoftButtonObject implements Cloneable{
      * @param states a list of the object's soft button states. <strong>states should be unique for every SoftButtonObject. A SoftButtonState instance cannot be reused for multiple SoftButtonObjects.</strong>
      */
     public void setStates(@NonNull List<SoftButtonState> states) {
-        // If the list of states is empty, throw an error with DebugTool and return
+        /*// If the list of states is empty, throw an error with DebugTool and return
         if (states.isEmpty()) {
             DebugTool.logError(TAG,"The state list is empty");
             return;
@@ -275,6 +299,21 @@ public class SoftButtonObject implements Cloneable{
         // Make sure there aren't two states with the same name
         if (hasTwoStatesOfSameName(states)) {
             DebugTool.logError(TAG, "Two states have the same name in states list for soft button object");
+            return;
+        }*/
+
+        boolean repeatedStateNames = hasTwoStatesOfSameName(states);
+
+        if (repeatedStateNames) {
+            DebugTool.logError(TAG, "A SoftButtonObject must have states with different names.");
+            if (BuildConfig.DEBUG && repeatedStateNames)
+                throw new AssertionError("A SoftButtonObject must have states with different names.");
+            return;
+        }
+        if (states.isEmpty()) {
+            DebugTool.logError(TAG, "A SoftButtonState list must contain at least one state");
+            if (BuildConfig.DEBUG && states.isEmpty())
+                throw new AssertionError("A SoftButtonState list must contain at least one state");
             return;
         }
 
