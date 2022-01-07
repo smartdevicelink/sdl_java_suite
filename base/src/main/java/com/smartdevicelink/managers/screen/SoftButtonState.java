@@ -33,6 +33,7 @@ package com.smartdevicelink.managers.screen;
 
 import androidx.annotation.NonNull;
 
+import com.livio.BuildConfig;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
@@ -65,6 +66,8 @@ public class SoftButtonState {
         if (text == null && artwork == null) {
             DebugTool.logError(TAG, "Attempted to create an invalid soft button state: text and artwork are both null");
             softButton = null;
+            if (BuildConfig.DEBUG)
+                throw new AssertionError("Attempted to create an invalid soft button state: text and artwork are both null");
             return;
         }
         this.name = name;
