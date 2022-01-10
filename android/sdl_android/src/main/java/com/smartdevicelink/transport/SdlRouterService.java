@@ -1692,7 +1692,7 @@ public class SdlRouterService extends Service {
     }
 
     /**
-     * 1. If the app has SDL shut off,                                                 shut down
+     * 1. If the app has SDL shut off,                                               shut down
      * 2. if The app has an Alt Transport address or was started by one,             stay open
      * 3. If Bluetooth is off/NA                                                     shut down
      * 4. Anything else

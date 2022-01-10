@@ -267,7 +267,7 @@ public class SdlAppInfo {
      * Check to see if a vehicle type is supported.
      *
      * @param supportedVehicleList the list of supported vehicle types.
-     * @param connectedVehicle     the vehicle type to check.
+     * @param connectedVehicle the vehicle type to check.
      * @return true if vehicle type is supported.
      */
     public static boolean checkIfVehicleSupported(List<VehicleType> supportedVehicleList, VehicleType connectedVehicle) {

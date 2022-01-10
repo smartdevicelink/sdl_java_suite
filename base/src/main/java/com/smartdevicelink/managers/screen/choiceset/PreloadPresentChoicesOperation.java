@@ -40,10 +40,8 @@ import androidx.annotation.NonNull;
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
-
 import static com.smartdevicelink.managers.ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName;
 import static com.smartdevicelink.managers.ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName;
-
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
@@ -112,7 +110,7 @@ class PreloadPresentChoicesOperation extends Task {
     Integer selectedCellRow;
     KeyboardListener keyboardListener;
     final SdlMsgVersion sdlMsgVersion;
-
+    
     private enum SDLPreloadPresentChoicesOperationState {
         NOT_STARTED,
         UPLOADING_IMAGES,

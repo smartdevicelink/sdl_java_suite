@@ -108,7 +108,6 @@ public class PresentAlertOperationTest {
     };
 
     Task task;
-
     @Before
     public void setUp() throws Exception {
         Context mTestContext = getInstrumentation().getContext();

@@ -178,13 +178,11 @@ public class MenuReplaceOperationTests {
 
         final MenuSelectionListener listener1 = new MenuSelectionListener() {
             @Override
-            public void onTriggered(TriggerSource trigger) {
-            }
+            public void onTriggered(TriggerSource trigger) {}
         };
         final MenuSelectionListener listener2 = new MenuSelectionListener() {
             @Override
-            public void onTriggered(TriggerSource trigger) {
-            }
+            public void onTriggered(TriggerSource trigger) {}
         };
         final MenuCell menuCell1 = new MenuCell("A", null, null, null, null, null, listener1);
         final MenuCell menuCell2 = new MenuCell("A", null, null, null, null, null, listener2);

@@ -173,7 +173,7 @@ class MenuReplaceUtilities {
         return cell.isSubMenuCell() ? hasImageFieldOfName(windowCapability, ImageFieldName.menuSubMenuSecondaryImage) : hasImageFieldOfName(windowCapability, ImageFieldName.menuCommandSecondaryImage);
     }
 
-    // If there is an icon and the icon has been uploaded, or if the icon is a static icon, it should include the image
+        // If there is an icon and the icon has been uploaded, or if the icon is a static icon, it should include the image
     static boolean shouldCellIncludePrimaryImageFromCell(ISdl internalInterface, MenuCell cell, FileManager fileManager, WindowCapability windowCapability) {
         boolean supportsImage = windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, cell);
         return cell.getIcon() != null && supportsImage && (fileManager.hasUploadedFile(cell.getIcon()) || cell.getIcon().isStaticIcon());

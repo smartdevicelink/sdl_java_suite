@@ -28,7 +28,8 @@ public class AppCapabilityTypeTests extends TestCase {
         try {
             AppCapabilityType temp = AppCapabilityType.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);
-        } catch (IllegalArgumentException exception) {
+        }
+        catch (IllegalArgumentException exception) {
             fail("Invalid enum throws IllegalArgumentException.");
         }
     }
@@ -41,7 +42,8 @@ public class AppCapabilityTypeTests extends TestCase {
         try {
             AppCapabilityType temp = AppCapabilityType.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);
-        } catch (NullPointerException exception) {
+        }
+        catch (NullPointerException exception) {
             fail("Null string throws NullPointerException.");
         }
     }

@@ -219,7 +219,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
     private final OnSystemCapabilityListener systemCapabilityListener = new OnSystemCapabilityListener() {
         @Override
         public void onCapabilityRetrieved(Object capability) {
-            VideoStreamingParameters params = (parameters == null) ? new VideoStreamingParameters() : new VideoStreamingParameters(parameters);
+           VideoStreamingParameters params = (parameters == null) ? new VideoStreamingParameters() : new VideoStreamingParameters(parameters);
 
             VideoStreamingCapability castedCapability = ((VideoStreamingCapability) capability);
 
@@ -334,19 +334,20 @@ public class VideoStreamManager extends BaseVideoStreamManager {
      * If the module's screen size for your app changes during streaming (i.e. to a collapsed view, split screen, preview mode, or picture-in-picture), your remoteDisplay will be resized to the new screen size.
      * If either range is `null`, the default is to support all streaming ranges of that format (landscape or portrait).
      * If you wish to disable support for streaming in a given format (landscape or portrait), set a VideoStreamingRange with all `0` values.
-     * <p>
+     *
      * NOTE If both supportedLandscapeStreamingRange and supportedLandscapeStreamingRange are disabled then the video will not stream.
-     * <p>
+     *
      * Any changes to screen size will notify the onViewResized method you have implemented in your remoteDisplay class.
      *
-     * @param context                          a context that can be used to create the remote display
-     * @param remoteDisplayClass               class object of the remote display. This class will be used to create an instance of the remote display and will be projected to the module
-     * @param parameters                       streaming parameters to be used when streaming. If null is sent in, the default/optimized options will be used.
-     *                                         If you are unsure about what parameters to be used it is best to just send null and let the system determine what
-     *                                         works best for the currently connected module.
-     * @param encrypted                        a flag of if the stream should be encrypted. Only set if you have a supplied encryption library that the module can understand.
-     * @param supportedLandscapeStreamingRange constraints for vehicle display : min/max aspect ratio, min/max resolutions, max diagonal size.
-     * @param supportedPortraitStreamingRange  constraints for vehicle display : min/max aspect ratio, min/max resolutions, max diagonal size.
+     *
+     * @param context            a context that can be used to create the remote display
+     * @param remoteDisplayClass class object of the remote display. This class will be used to create an instance of the remote display and will be projected to the module
+     * @param parameters         streaming parameters to be used when streaming. If null is sent in, the default/optimized options will be used.
+     *                           If you are unsure about what parameters to be used it is best to just send null and let the system determine what
+     *                           works best for the currently connected module.
+     * @param encrypted         a flag of if the stream should be encrypted. Only set if you have a supplied encryption library that the module can understand.
+     * @param supportedLandscapeStreamingRange      constraints for vehicle display : min/max aspect ratio, min/max resolutions, max diagonal size.
+     * @param supportedPortraitStreamingRange      constraints for vehicle display : min/max aspect ratio, min/max resolutions, max diagonal size.
      */
     public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted, VideoStreamingRange supportedLandscapeStreamingRange, VideoStreamingRange supportedPortraitStreamingRange) {
         configureGlobalParameters(context, remoteDisplayClass, encrypted, supportedPortraitStreamingRange, supportedLandscapeStreamingRange);
@@ -662,7 +663,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                         createTouchScalar(resolution, displayMetrics);
                     }
 
-                    VideoStreamManager.this.remoteDisplay.resizeView(parameters.getResolution().getResolutionWidth(), parameters.getResolution().getResolutionHeight());
+                VideoStreamManager.this.remoteDisplay.resizeView(parameters.getResolution().getResolutionWidth(), parameters.getResolution().getResolutionHeight());
                 }
 
                 @Override

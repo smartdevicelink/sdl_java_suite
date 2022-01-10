@@ -62,7 +62,7 @@ import java.util.Map;
 
 /**
  * Operation that handles uploading images and audio data needed by the alert and, once the data uploads are complete, sending the alert.
- * <p>
+ *
  * Created by Julian Kast on 12/10/20.
  */
 public class PresentAlertOperation extends Task {
@@ -156,7 +156,6 @@ public class PresentAlertOperation extends Task {
 
     /**
      * Checks the `AlertView` data to make sure it conforms to the RPC Spec, which says that at least either `alertText1`, `alertText2` or `TTSChunks` need to be provided.
-     *
      * @param alertView - Alert data that needs to be presented
      * @return true if AlertView data conforms to RPC Spec
      */
@@ -396,7 +395,6 @@ public class PresentAlertOperation extends Task {
 
     /**
      * Checks if AudioFiles are supported by module and removes them form audioData list if they are not
-     *
      * @param alertView
      * @return List of ttsChunks
      */

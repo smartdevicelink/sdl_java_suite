@@ -2,17 +2,14 @@ package com.smartdevicelink.managers.screen;
 
 import android.content.Context;
 import android.net.Uri;
-
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import java.util.Collections;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;

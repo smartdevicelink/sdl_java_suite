@@ -1272,7 +1272,6 @@ abstract class BaseLifecycleManager {
     /**
      * Using the vehicle type information, specifically the make, the library will attempt to init
      * the security library that is associated with that OEM.
-     *
      * @param vehicleType type of vehicle that is currently connected
      */
     private void setSecurityLibraryIfAvailable(VehicleType vehicleType) {

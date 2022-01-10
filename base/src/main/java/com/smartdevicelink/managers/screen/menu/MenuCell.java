@@ -133,13 +133,13 @@ public class MenuCell implements Cloneable {
     /**
      * Creates a new MenuCell Object with multiple parameters and optional fields set
      *
-     * @param title            The cell's primary text
-     * @param secondaryText    The cell's secondary text
-     * @param tertiaryText     The cell's tertiary text
-     * @param icon             The cell's image
-     * @param secondaryArtwork The cell's secondary image
-     * @param voiceCommands    Voice commands that will activate the menu cell
-     * @param listener         Calls the code that will be run when the menu cell is selected
+     * @param title             The cell's primary text
+     * @param secondaryText     The cell's secondary text
+     * @param tertiaryText      The cell's tertiary text
+     * @param icon              The cell's image
+     * @param secondaryArtwork  The cell's secondary image
+     * @param voiceCommands     Voice commands that will activate the menu cell
+     * @param listener          Calls the code that will be run when the menu cell is selected
      */
     public MenuCell(@NonNull String title, @Nullable String secondaryText, @Nullable String tertiaryText, @Nullable SdlArtwork icon, @Nullable SdlArtwork secondaryArtwork, @Nullable List<String> voiceCommands, @Nullable MenuSelectionListener listener) {
         setTitle(title); // title is the only required param
@@ -181,14 +181,14 @@ public class MenuCell implements Cloneable {
      * Creates a new MenuCell Object with multiple parameters and optional fields set
      * <strong>NOTE: because this has sub-cells, there does not need to be a listener</strong>
      *
-     * @param title            The cell's primary text
-     * @param secondaryText    The cell's secondary text
-     * @param tertiaryText     The cell's tertiary text
-     * @param subMenuLayout    The submenu's layout that the subCells will be shown in. If `null`, the
-     *                         default submenu layout in the screen manager's `MenuConfiguration` will be used.
-     * @param icon             The cell's image
-     * @param secondaryArtwork The cell's secondary image
-     * @param subCells         The sub-cells for the sub menu that will appear when the cell is selected
+     * @param title         The cell's primary text
+     * @param secondaryText     The cell's secondary text
+     * @param tertiaryText      The cell's tertiary text
+     * @param subMenuLayout The submenu's layout that the subCells will be shown in. If `null`, the
+     *                      default submenu layout in the screen manager's `MenuConfiguration` will be used.
+     * @param icon          The cell's image
+     * @param secondaryArtwork  The cell's secondary image
+     * @param subCells      The sub-cells for the sub menu that will appear when the cell is selected
      */
     public MenuCell(@NonNull String title, @Nullable String secondaryText, @Nullable String tertiaryText, @Nullable MenuLayout subMenuLayout, @Nullable SdlArtwork icon, @Nullable SdlArtwork secondaryArtwork, @Nullable List<MenuCell> subCells) {
         setTitle(title); // title is the only required param

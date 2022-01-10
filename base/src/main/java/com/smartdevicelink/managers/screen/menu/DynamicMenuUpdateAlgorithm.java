@@ -110,7 +110,6 @@ class DynamicMenuUpdateAlgorithm {
 
     /**
      * Builds a 1-1 list of Deletes for every element in the array
-     *
      * @param oldMenu The old menu list
      */
     static List<MenuCellState> buildAllDeleteStatusesForMenu(List<MenuCell> oldMenu) {
@@ -123,7 +122,6 @@ class DynamicMenuUpdateAlgorithm {
 
     /**
      * Builds a 1-1 list of Adds for every element in the list
-     *
      * @param newMenu The new menu list
      */
     static List<MenuCellState> buildAllAddStatusesForMenu(List<MenuCell> newMenu) {

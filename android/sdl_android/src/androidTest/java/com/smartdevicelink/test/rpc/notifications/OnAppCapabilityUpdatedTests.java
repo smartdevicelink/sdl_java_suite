@@ -42,7 +42,8 @@ public class OnAppCapabilityUpdatedTests extends BaseRpcTests {
 
         try {
             result.put(OnAppCapabilityUpdated.KEY_APP_CAPABILITY, TestValues.GENERAL_APPCAPABILITY.serializeJSON());
-        } catch (JSONException e) {
+        }
+        catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
 

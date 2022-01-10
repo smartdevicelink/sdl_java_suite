@@ -80,7 +80,7 @@ public class SecurityQueryIDTests extends TestCase {
 
         assertTrue("List does not match enum test list.",
                 list.containsAll(enumTestList) &&
-                        enumTestList.containsAll(list));
+                enumTestList.containsAll(list));
 
         SecurityQueryID[] enumValueArray = SecurityQueryID.values();
         SecurityQueryID[] enumTestArray = {SecurityQueryID.SEND_HANDSHAKE_DATA, SecurityQueryID.SEND_INTERNAL_ERROR, SecurityQueryID.INVALID_QUERY_ID};

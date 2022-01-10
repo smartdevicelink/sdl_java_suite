@@ -67,19 +67,19 @@ public class AppCapabilityTests extends TestCase {
 
                 if (key.equals(KEY_APP_CAPABILITY_TYPE)) {
                     assertEquals(
-                            TestValues.MATCH,
-                            JsonUtils.readObjectFromJsonObject(reference, key),
-                            JsonUtils.readObjectFromJsonObject(underTest, key)
+                        TestValues.MATCH,
+                        JsonUtils.readObjectFromJsonObject(reference, key),
+                        JsonUtils.readObjectFromJsonObject(underTest, key)
                     );
 
                 } else if (key.equals(KEY_VIDEO_STREAMING_CAPABILITY)) {
                     JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
                     Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
                     assertTrue(
-                            TestValues.TRUE,
-                            Validator.validateVideoStreamingCapability(
-                                    TestValues.GENERAL_VIDEOSTREAMINGCAPABILITY, new VideoStreamingCapability(hashTest)
-                            )
+                        TestValues.TRUE,
+                        Validator.validateVideoStreamingCapability(
+                            TestValues.GENERAL_VIDEOSTREAMINGCAPABILITY, new VideoStreamingCapability(hashTest)
+                        )
                     );
                 }
             }

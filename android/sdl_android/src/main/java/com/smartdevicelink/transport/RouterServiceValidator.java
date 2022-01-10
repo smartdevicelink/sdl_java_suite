@@ -233,8 +233,8 @@ public class RouterServiceValidator {
      * @param context
      */
     //private void retrieveBestRouterServiceName(Context context) {
-    //    FindRouterTask task = new FindRouterTask(null);
-    //    task.execute(context);
+    //  FindRouterTask task = new FindRouterTask(null);
+    //  task.execute(context);
     //}
 
     /**

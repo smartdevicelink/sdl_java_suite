@@ -389,7 +389,7 @@ public class SdlManager extends BaseSdlManager {
         }
     }
 
-    ISdl _internalInterface = new ISdl() {
+     ISdl _internalInterface = new ISdl() {
         @Override
         public void start() {
             lifecycleManager.getInternalInterface(SdlManager.this).start();
@@ -492,10 +492,10 @@ public class SdlManager extends BaseSdlManager {
             return lifecycleManager.getInternalInterface(SdlManager.this).getProtocolVersion();
         }
 
-        @Override
-        public long getMtu(SessionType serviceType) {
-            return lifecycleManager.getInternalInterface(SdlManager.this).getMtu(serviceType);
-        }
+         @Override
+         public long getMtu(SessionType serviceType) {
+             return lifecycleManager.getInternalInterface(SdlManager.this).getMtu(serviceType);
+         }
 
         @Override
         public void startRPCEncryption() {

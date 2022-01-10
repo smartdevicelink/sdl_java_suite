@@ -135,7 +135,6 @@ public class VirtualDisplayEncoder {
 
     /**
      * setter of every parameter in streamingParams.
-     *
      * @param displayDensity
      * @param resolution
      * @param frameRate
@@ -229,9 +228,8 @@ public class VirtualDisplayEncoder {
                 mCaptureThread.stopAsync();
                 try {
                     mCaptureThread.join();
-                } catch (InterruptedException e) {
-
-                }
+                } 
+                catch (InterruptedException e) {}
                 mCaptureThread = null;
             }
             if (encoderThread != null) {
@@ -261,7 +259,6 @@ public class VirtualDisplayEncoder {
 
     /**
      * setupGLES: create offscreen surface and surface texture.
-     *
      * @param Width
      * @param Height
      */

@@ -8,7 +8,6 @@ import com.smartdevicelink.managers.screen.AlertView;
 import com.smartdevicelink.managers.screen.SoftButtonObject;
 import com.smartdevicelink.managers.screen.SoftButtonState;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
-
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
