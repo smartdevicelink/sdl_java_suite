@@ -427,6 +427,18 @@ public class SoftButtonManagerTests {
     }
 
     /**
+     * Test constructing SoftButtonObject with an invalid initialStateName
+     */
+    @Test
+    public void testConstructSoftButtonObjectWithInvalidInitialStateName() {
+        List<SoftButtonState> stateList = new ArrayList<>();
+        SoftButtonState softButtonState = new SoftButtonState("general_kenobi", "General Kenobi", null);
+        stateList.add(softButtonState);
+        SoftButtonObject softButtonObject = new SoftButtonObject("hello_there", stateList, "hello_there", null);
+        assertNull(softButtonObject.getStates());
+    }
+
+    /**
      * Test assigning an empty state list to existing SoftButtonObject
      */
     @Test
