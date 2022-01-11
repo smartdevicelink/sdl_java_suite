@@ -135,7 +135,7 @@ public class EglSurfaceBase {
     public boolean swapBuffers() {
         boolean result = mEglCore.swapBuffers(mEGLSurface);
         if (!result) {
-            Log.d(TAG, "WARNING: swapBuffers() failed");
+            Log.d(TAG,"WARNING: swapBuffers() failed");
         }
         return result;
     }
@@ -192,6 +192,6 @@ public class EglSurfaceBase {
         } finally {
             if (bos != null) bos.close();
         }
-        Log.d(TAG, "Saved " + width + "x" + height + " frame as '" + filename + "'");
+        Log.d(TAG,"Saved " + width + "x" + height + " frame as '" + filename + "'");
     }
 }

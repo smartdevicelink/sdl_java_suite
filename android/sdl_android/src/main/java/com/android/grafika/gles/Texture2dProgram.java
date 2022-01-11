@@ -162,7 +162,7 @@ public class Texture2dProgram {
         if (mProgramHandle == 0) {
             throw new RuntimeException("Unable to create program");
         }
-        Log.e(TAG, "Created program " + mProgramHandle + " (" + programType + ")");
+        Log.e(TAG,"Created program " + mProgramHandle + " (" + programType + ")");
 
         // get locations of attributes and uniforms
 
@@ -188,7 +188,7 @@ public class Texture2dProgram {
             GlUtil.checkLocation(muColorAdjustLoc, "uColorAdjust");
 
             // initialize default values
-            setKernel(new float[]{0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f}, 0f);
+            setKernel(new float[] {0f, 0f, 0f,  0f, 1f, 0f,  0f, 0f, 0f}, 0f);
             setTexSize(256, 256);
         }
     }
@@ -200,7 +200,7 @@ public class Texture2dProgram {
      * the program).
      */
     public void release() {
-        Log.d(TAG, "deleting program " + mProgramHandle);
+        Log.d(TAG,"deleting program " + mProgramHandle);
         GLES20.glDeleteProgram(mProgramHandle);
         mProgramHandle = -1;
     }
@@ -251,7 +251,7 @@ public class Texture2dProgram {
         }
         System.arraycopy(values, 0, mKernel, 0, KERNEL_SIZE);
         mColorAdjust = colorAdj;
-        Log.d(TAG, "filt kernel: " + Arrays.toString(mKernel) + ", adj=" + colorAdj);
+        Log.d(TAG,"filt kernel: " + Arrays.toString(mKernel) + ", adj=" + colorAdj);
     }
 
     /**
@@ -262,12 +262,12 @@ public class Texture2dProgram {
         float rh = 1.0f / height;
 
         // Don't need to create a new array here, but it's syntactically convenient.
-        mTexOffset = new float[]{
-            -rw, -rh, 0f, -rh, rw, -rh,
-            -rw, 0f, 0f, 0f, rw, 0f,
-            -rw, rh, 0f, rh, rw, rh
+        mTexOffset = new float[] {
+            -rw, -rh,   0f, -rh,    rw, -rh,
+            -rw, 0f,    0f, 0f,     rw, 0f,
+            -rw, rh,    0f, rh,     rw, rh
         };
-        Log.d(TAG, "filt size: " + width + "x" + height + ": " + Arrays.toString(mTexOffset));
+        Log.d(TAG,"filt size: " + width + "x" + height + ": " + Arrays.toString(mTexOffset));
     }
 
     /**
@@ -322,7 +322,7 @@ public class Texture2dProgram {
         // Connect texBuffer to "aTextureCoord".
         GLES20.glVertexAttribPointer(maTextureCoordLoc, 2,
                 GLES20.GL_FLOAT, false, texStride, texBuffer);
-        GlUtil.checkGlError("glVertexAttribPointer");
+            GlUtil.checkGlError("glVertexAttribPointer");
 
         // Populate the convolution kernel, if present.
         if (muKernelLoc >= 0) {
