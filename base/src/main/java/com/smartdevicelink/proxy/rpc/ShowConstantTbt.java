@@ -206,7 +206,7 @@ public class ShowConstantTbt extends RPCRequest {
      * Sets the distanceToManeuver.
      *
      * @param distanceToManeuver Distance (in meters) until next maneuver. May be used to calculate progress bar.
-     *                           {"num_min_value": 0.0, "num_max_value": 1000000000.0}
+     * {"num_min_value": 0.0, "num_max_value": 1000000000.0}
      * @since SmartDeviceLink 2.0.0
      */
     public ShowConstantTbt setDistanceToManeuver(Double distanceToManeuver) {
@@ -229,8 +229,8 @@ public class ShowConstantTbt extends RPCRequest {
      * Sets the distanceToManeuverScale.
      *
      * @param distanceToManeuverScale Distance (in meters) from previous maneuver to next maneuver. May be used to calculate
-     *                                progress bar.
-     *                                {"num_min_value": 0.0, "num_max_value": 1000000000.0}
+     * progress bar.
+     * {"num_min_value": 0.0, "num_max_value": 1000000000.0}
      * @since SmartDeviceLink 2.0.0
      */
     public ShowConstantTbt setDistanceToManeuverScale(Double distanceToManeuverScale) {

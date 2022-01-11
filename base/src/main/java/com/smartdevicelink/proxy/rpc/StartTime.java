@@ -41,32 +41,32 @@ import java.util.Hashtable;
  * Describes the hour, minute and second values used to set the media clock.
  * <p><b> Parameter List</b></p>
  * <table border="1" rules="all">
- *         <tr>
- *             <th>Name</th>
- *             <th>Type</th>
- *             <th>Description</th>
- *             <th>SmartDeviceLink Ver. Available</th>
- *         </tr>
- *         <tr>
- *             <td>hours</td>
- *             <td>Integer</td>
- *             <td>The hour. Minvalue="0", maxvalue="59"
- *                     <p><b>Note:</b></p>Some display types only support a max value of 19. If out of range, it will be rejected.
- *             </td>
- *             <td>SmartDeviceLink 1.0</td>
- *         </tr>
- *         <tr>
- *             <td>minutes</td>
- *             <td>Integer</td>
- *             <td>The minute. Minvalue="0", maxvalue="59".</td>
- *             <td>SmartDeviceLink 1.0</td>
- *         </tr>
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ * 			<th>SmartDeviceLink Ver. Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>hours</td>
+ * 			<td>Integer</td>
+ * 			<td>The hour. Minvalue="0", maxvalue="59"
+ * 					<p><b>Note:</b></p>Some display types only support a max value of 19. If out of range, it will be rejected.
+ * 			</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>minutes</td>
+ * 			<td>Integer</td>
+ * 			<td>The minute. Minvalue="0", maxvalue="59".</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
  *     <tr>
- *             <td>seconds</td>
- *             <td>Integer</td>
- *             <td>The second. Minvalue="0", maxvalue="59".</td>
- *             <td>SmartDeviceLink 1.0</td>
- *         </tr>
+ * 			<td>seconds</td>
+ * 			<td>Integer</td>
+ * 			<td>The second. Minvalue="0", maxvalue="59".</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
  * </table>
  *
  * @since SmartDeviceLink 1.0

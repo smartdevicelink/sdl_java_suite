@@ -51,60 +51,60 @@ import java.util.List;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- *         <tr>
- *             <th>Name</th>
- *             <th>Type</th>
- *             <th>Description</th>
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
  *                 <th>Reg.</th>
  *               <th>Notes</th>
- *             <th>Version</th>
- *         </tr>
- *         <tr>
- *             <td>scrollableMessageBody</td>
- *             <td>String</td>
- *             <td>Body of text that can include newlines and tabs.</td>
+ * 			<th>Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>scrollableMessageBody</td>
+ * 			<td>String</td>
+ * 			<td>Body of text that can include newlines and tabs.</td>
  *                 <td>Y</td>
  *                 <td></td>
- *             <td>SmartDevice Link 1.0 </td>
- *         </tr>
- *         <tr>
- *             <td>timeout</td>
- *             <td>Integer</td>
- *             <td>App defined timeout.  Indicates how long of a timeout from the last action (i.e. scrolling message resets timeout).</td>
+ * 			<td>SmartDevice Link 1.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>timeout</td>
+ * 			<td>Integer</td>
+ * 			<td>App defined timeout.  Indicates how long of a timeout from the last action (i.e. scrolling message resets timeout).</td>
  *                 <td>N</td>
  *                 <td>minValue=1000; maxValue=65535; defValue=30000</td>
- *             <td>SmartDevice Link 1.0 </td>
- *         </tr>
- *         <tr>
- *             <td>softButtons</td>
- *             <td>SoftButton</td>
- *             <td>App defined SoftButtons. If omitted on supported displays, only the system defined "Close" SoftButton will be displayed.</td>
+ * 			<td>SmartDevice Link 1.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>softButtons</td>
+ * 			<td>SoftButton</td>
+ * 			<td>App defined SoftButtons. If omitted on supported displays, only the system defined "Close" SoftButton will be displayed.</td>
  *                 <td>N</td>
  *                 <td>minsize=0; maxsize=8</td>
- *             <td>SmartDevice Link 1.0 </td>
- *         </tr>
- *         <tr>
- *             <td>cancelID</td>
- *             <td>Integer</td>
- *             <td>An ID for this specific ScrollableMessage to allow cancellation through the `CancelInteraction` RPC.</td>
+ * 			<td>SmartDevice Link 1.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>cancelID</td>
+ * 			<td>Integer</td>
+ * 			<td>An ID for this specific ScrollableMessage to allow cancellation through the `CancelInteraction` RPC.</td>
  *          <td>N</td>
- *             <td></td>
- *             <td>SmartDeviceLink 6.0</td>
- *         </tr>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 6.0</td>
+ * 		</tr>
  *  </table>
  *  <p> <b>Response</b></p>
  * <b>Non-default Result Codes:</b>
- *     <p>SUCCESS</p>
- *     <p>INVALID_DATA </p>
- *     <p>OUT_OF_MEMORY</p>
- *     <p>CHAR_LIMIT_EXCEEDED</p>
- *     <p>TOO_MANY_PENDING_REQUESTS</p>
- *     <p>APPLICATION_NOT_REGISTERED</p>
- *     <p>GENERIC_ERROR </p>
- *     <p>DISALLOWED</p>
- *     <p>UNSUPPORTED_RESOURCE</p>
- *     <p>REJECTED </p>
- *     <p>ABORTED</p>
+ * 	<p>SUCCESS</p>
+ * 	<p>INVALID_DATA </p>
+ * 	<p>OUT_OF_MEMORY</p>
+ * 	<p>CHAR_LIMIT_EXCEEDED</p>
+ * 	<p>TOO_MANY_PENDING_REQUESTS</p>
+ * 	<p>APPLICATION_NOT_REGISTERED</p>
+ * 	<p>GENERIC_ERROR </p>
+ * 	<p>DISALLOWED</p>
+ * 	<p>UNSUPPORTED_RESOURCE</p>
+ * 	<p>REJECTED </p>
+ * 	<p>ABORTED</p>
  * <p>
  *  @see com.smartdevicelink.proxy.rpc.SoftButton
  */

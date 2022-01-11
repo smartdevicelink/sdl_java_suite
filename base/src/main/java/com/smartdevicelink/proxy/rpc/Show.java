@@ -58,129 +58,129 @@ import java.util.List;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- *         <tr>
- *             <th>Param Name</th>
- *             <th>Type</th>
- *             <th>Description</th>
+ * 		<tr>
+ * 			<th>Param Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
  *                 <th> Req.</th>
- *             <th>Notes</th>
- *             <th>Version Available</th>
- *         </tr>
- *         <tr>
- *             <td>mainField1</td>
- *             <td>String</td>
- *             <td>Text to be displayed in a single-line display, or in the upper display line in a two-line display.</td>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>mainField1</td>
+ * 			<td>String</td>
+ * 			<td>Text to be displayed in a single-line display, or in the upper display line in a two-line display.</td>
  *                 <td>N</td>
- *             <td>If this parameter is omitted, the text of mainField1 does not change. If this parameter is an empty string, the field will be cleared. <p>Maxlength = 500</p></td>
- *             <td>SmartDeviceLink 1.0</td>
- *         </tr>
- *         <tr>
- *             <td>mainField2</td>
- *             <td>String</td>
- *             <td>Text to be displayed on the second display line of a two-line display.</td>
+ * 			<td>If this parameter is omitted, the text of mainField1 does not change. If this parameter is an empty string, the field will be cleared. <p>Maxlength = 500</p></td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>mainField2</td>
+ * 			<td>String</td>
+ * 			<td>Text to be displayed on the second display line of a two-line display.</td>
  *                 <td>N</td>
- *             <td><p>If this parameter is omitted, the text of mainField2 does not change. </p> <p>If this parameter is an empty string, the field will be cleared.</p><p>If provided and the display is a single-line display, the parameter is ignored.</p>Maxlength = 500</td>
- *             <td>SmartDeviceLink 1.0</td>
- *         </tr>
- *         <tr>
- *             <td>mainField3</td>
- *             <td>String</td>
- *             <td>Text to be displayed on the first display line of the second page.</td>
+ * 			<td><p>If this parameter is omitted, the text of mainField2 does not change. </p> <p>If this parameter is an empty string, the field will be cleared.</p><p>If provided and the display is a single-line display, the parameter is ignored.</p>Maxlength = 500</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>mainField3</td>
+ * 			<td>String</td>
+ * 			<td>Text to be displayed on the first display line of the second page.</td>
  *                 <td>N</td>
- *             <td><p>If this parameter is omitted, the text of mainField3 does not change. </p><p>If this parameter is an empty string, the field will be cleared.</p><p>If provided and the display is a single-line display, the parameter is ignored.</p> Maxlength = 500</td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>mainField4</td>
- *             <td>String</td>
- *             <td>Text to be displayed on the second display line of the second page.</td>
+ * 			<td><p>If this parameter is omitted, the text of mainField3 does not change. </p><p>If this parameter is an empty string, the field will be cleared.</p><p>If provided and the display is a single-line display, the parameter is ignored.</p> Maxlength = 500</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>mainField4</td>
+ * 			<td>String</td>
+ * 			<td>Text to be displayed on the second display line of the second page.</td>
  *                 <td>N</td>
- *             <td><p>If this parameter is omitted, the text of mainField4 does not change. </p><p>If this parameter is an empty string, the field will be cleared.</p><p>If provided and the display is a single-line display, the parameter is ignored.</p>Maxlength = 500</td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>alignment</td>
- *             <td>TextAlignment</td>
- *             <td>Specifies how mainField1 and mainField2 text should be aligned on display.</td>
+ * 			<td><p>If this parameter is omitted, the text of mainField4 does not change. </p><p>If this parameter is an empty string, the field will be cleared.</p><p>If provided and the display is a single-line display, the parameter is ignored.</p>Maxlength = 500</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>alignment</td>
+ * 			<td>TextAlignment</td>
+ * 			<td>Specifies how mainField1 and mainField2 text should be aligned on display.</td>
  *                 <td>N</td>
- *             <td><p>Applies only to mainField1 and mainField2 provided on this call, not to what is already showing in display.</p><p>If this parameter is omitted, text in both mainField1 and mainField2 will be centered. </p>Has no effect with navigation display</td>
- *             <td>SmartDeviceLink 1.0</td>
- *         </tr>
- *         <tr>
- *             <td>statusBar</td>
- *             <td>String</td>
- *             <td>The text is placed in the status bar area.</td>
+ * 			<td><p>Applies only to mainField1 and mainField2 provided on this call, not to what is already showing in display.</p><p>If this parameter is omitted, text in both mainField1 and mainField2 will be centered. </p>Has no effect with navigation display</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>statusBar</td>
+ * 			<td>String</td>
+ * 			<td>The text is placed in the status bar area.</td>
  *                 <td>N</td>
- *             <td><p>Note: The status bar only exists on navigation displays</p><p>If this parameter is omitted, the status bar text will remain unchanged.</p><p>If this parameter is an empty string, the field will be cleared.</p><p>If provided and the display has no status bar, this parameter is ignored.</p>Maxlength = 500</td>
- *             <td>SmartDeviceLink 1.0</td>
- *         </tr>
- *         <tr>
- *             <td>mediaClock</td>
- *             <td>String</td>
- *             <td>Text value for MediaClock field. Has to be properly formatted by Mobile App according to the module's capabilities. If this text is set, any automatic media clock updates previously set with SetMediaClockTimer will be stopped.</td>
+ * 			<td><p>Note: The status bar only exists on navigation displays</p><p>If this parameter is omitted, the status bar text will remain unchanged.</p><p>If this parameter is an empty string, the field will be cleared.</p><p>If provided and the display has no status bar, this parameter is ignored.</p>Maxlength = 500</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>mediaClock</td>
+ * 			<td>String</td>
+ * 			<td>Text value for MediaClock field. Has to be properly formatted by Mobile App according to the module's capabilities. If this text is set, any automatic media clock updates previously set with SetMediaClockTimer will be stopped.</td>
  *                 <td>N</td>
- *             <td>{"string_min_length": 0, "string_max_length": 500}</td>
- *             <td>
- *                 @since SmartDeviceLink 1.0.0
- *                 @property-deprecated in SmartDeviceLink 7.1.0
- *             </td>
- *         </tr>
- *         <tr>
- *             <td>mediaTrack</td>
- *             <td>String</td>
- *             <td>Array of one or more TTSChunk elements specifying the help prompt used in an interaction started by PTT.</td>
+ * 			<td>{"string_min_length": 0, "string_max_length": 500}</td>
+ * 			<td>
+ * 			    @since SmartDeviceLink 1.0.0
+ * 			    @property-deprecated in SmartDeviceLink 7.1.0
+ * 			</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>mediaTrack</td>
+ * 			<td>String</td>
+ * 			<td>Array of one or more TTSChunk elements specifying the help prompt used in an interaction started by PTT.</td>
  *                 <td>N</td>
- *             <td><p>If parameter is omitted, the track field remains unchanged.</p><p>If an empty string is provided, the field will be cleared.</p><p>This field is only valid for media applications on navigation displays.</p>Maxlength = 500</td>
- *             <td>SmartDeviceLink 1.0</td>
- *         </tr>
- *         <tr>
- *             <td>graphic</td>
- *             <td>Image</td>
- *             <td>Image to be shown on supported displays.</td>
+ * 			<td><p>If parameter is omitted, the track field remains unchanged.</p><p>If an empty string is provided, the field will be cleared.</p><p>This field is only valid for media applications on navigation displays.</p>Maxlength = 500</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>graphic</td>
+ * 			<td>Image</td>
+ * 			<td>Image to be shown on supported displays.</td>
  *                 <td>N</td>
- *             <td>If omitted on supported displays, the displayed graphic shall not change.</td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>secondaryGraphic</td>
- *             <td>Image</td>
- *             <td>    <p>Image struct determining whether static or dynamic secondary image to display in app.</p>If omitted on supported displays, the displayed secondary graphic shall not change.</td>
+ * 			<td>If omitted on supported displays, the displayed graphic shall not change.</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>secondaryGraphic</td>
+ * 			<td>Image</td>
+ * 			<td>	<p>Image struct determining whether static or dynamic secondary image to display in app.</p>If omitted on supported displays, the displayed secondary graphic shall not change.</td>
  *                 <td>N</td>
- *             <td> </td>
- *             <td>SmartDeviceLink 2.3.2</td>
- *         </tr>
- *         <tr>
- *             <td>softButtons</td>
- *             <td>SoftButton</td>
- *             <td>Soft buttons as defined by the App</td>
+ * 			<td> </td>
+ * 			<td>SmartDeviceLink 2.3.2</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>softButtons</td>
+ * 			<td>SoftButton</td>
+ * 			<td>Soft buttons as defined by the App</td>
  *                 <td>N</td>
- *             <td><p>If omitted on supported displays, the currently displayed SoftButton values will not change.</p>Array Minsize: 0; Array Maxsize: 8</td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>customPresets</td>
- *             <td>String</td>
- *             <td>Custom presets as defined by the App.</td>
+ * 			<td><p>If omitted on supported displays, the currently displayed SoftButton values will not change.</p>Array Minsize: 0; Array Maxsize: 8</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>customPresets</td>
+ * 			<td>String</td>
+ * 			<td>Custom presets as defined by the App.</td>
  *                 <td>N</td>
- *             <td><p>If omitted on supported displays, the presets will be shown as not defined.</p>Minsize: 0; Maxsize: 6</td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>templateTitle</td>
- *             <td>String</td>
- *             <td>The title of the new template that will be displayed.</td>
- *             <td><p>How this will be displayed is dependent on the OEM design and implementation of the template..</p>Minsize: 0; Maxsize: 100</td>
- *             <td>N</td>
- *             <td>SmartDeviceLink 6.0.0</td>
- *         </tr>
+ * 			<td><p>If omitted on supported displays, the presets will be shown as not defined.</p>Minsize: 0; Maxsize: 6</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>templateTitle</td>
+ * 			<td>String</td>
+ * 			<td>The title of the new template that will be displayed.</td>
+ * 			<td><p>How this will be displayed is dependent on the OEM design and implementation of the template..</p>Minsize: 0; Maxsize: 100</td>
+ * 			<td>N</td>
+ * 			<td>SmartDeviceLink 6.0.0</td>
+ * 		</tr>
  *
  *  </table>
  * <p><b>Response </b></p>
  *
  * <p><b> Non-default Result Codes: </b></p>
- *      <p>SUCCESS </p>
- *      <p>INVALID_DATA</p>
- *      <p>OUT_OF_MEMORY</p>
+ * 	 <p>SUCCESS </p>
+ * 	 <p>INVALID_DATA</p>
+ * 	 <p>OUT_OF_MEMORY</p>
  *    <p> TOO_MANY_PENDING_REQUESTS</p>
  *     <p>APPLICATION_NOT_REGISTERED</p>
  *    <p> GENERIC_ERROR</p>
@@ -446,9 +446,9 @@ public class Show extends RPCRequest {
      * Sets the mediaClock.
      *
      * @param mediaClock Text value for MediaClock field. Has to be properly formatted by Mobile App according to
-     *                   the module's capabilities. If this text is set, any automatic media clock updates
-     *                   previously set with SetMediaClockTimer will be stopped.
-     *                   {"string_min_length": 0, "string_max_length": 500}
+     * the module's capabilities. If this text is set, any automatic media clock updates
+     * previously set with SetMediaClockTimer will be stopped.
+     * {"string_min_length": 0, "string_max_length": 500}
      * @since SmartDeviceLink 1.0.0
      * @deprecated in SmartDeviceLink 7.1.0
      */

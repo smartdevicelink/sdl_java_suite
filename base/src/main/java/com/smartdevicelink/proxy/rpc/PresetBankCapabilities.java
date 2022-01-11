@@ -41,19 +41,19 @@ import java.util.Hashtable;
  * Contains information about on-screen preset capabilities.
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- *         <tr>
- *             <th>Name</th>
- *             <th>Type</th>
- *             <th>Description</th>
- *             <th>SmartDeviceLink Ver. Available</th>
- *         </tr>
- *         <tr>
- *             <td>onScreenPresetsAvailable</td>
- *             <td>Boolean</td>
- *             <td>Defines, if Onscreen custom presets are available.
- *             </td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ * 			<th>SmartDeviceLink Ver. Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>onScreenPresetsAvailable</td>
+ * 			<td>Boolean</td>
+ * 			<td>Defines, if Onscreen custom presets are available.
+ * 			</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
  *  </table>
  *
  * @since SmartDeviceLink 2.0

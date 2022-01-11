@@ -62,8 +62,8 @@ public interface ISdlSessionListener {
      * Called to indicate that a session has started with the connected SDL device. This means the
      * RPC and Bulk service types have also been started.
      *
-     * @param sessionID  session ID associated with the session that was established
-     * @param version    the protocol version that has been negotiated for this session
+     * @param sessionID session ID associated with the session that was established
+     * @param version   the protocol version that has been negotiated for this session
      * @param systemInfo info about the device that this service is started
      */
     void onSessionStarted(int sessionID, Version version, SystemInfo systemInfo);

@@ -43,62 +43,62 @@ import java.util.Hashtable;
  * <p><b>Parameter List</b></p>
  *
  * <table border="1" rules="all">
- *         <tr>
- *             <th>Name</th>
- *             <th>Type</th>
- *             <th>Description</th>
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
  *                 <th>Reg.</th>
  *               <th>Notes</th>
- *             <th>Version</th>
- *         </tr>
- *         <tr>
- *             <td>hardware</td>
- *             <td>String</td>
- *             <td>Device model</td>
+ * 			<th>Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>hardware</td>
+ * 			<td>String</td>
+ * 			<td>Device model</td>
  *                 <td>N</td>
  *                 <td>Max Length: 500</td>
- *             <td>SmartDeviceLink 3.0 </td>
- *         </tr>
- *         <tr>
- *             <td>firmwareRev</td>
- *             <td>String</td>
- *             <td>Device firmware revision</td>
+ * 			<td>SmartDeviceLink 3.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>firmwareRev</td>
+ * 			<td>String</td>
+ * 			<td>Device firmware revision</td>
  *                 <td>N</td>
  *                 <td>Max Length: 500</td>
- *             <td>SmartDeviceLink 3.0 </td>
- *         </tr>
- *         <tr>
- *             <td>os</td>
- *             <td>String</td>
- *             <td>Device OS version</td>
+ * 			<td>SmartDeviceLink 3.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>os</td>
+ * 			<td>String</td>
+ * 			<td>Device OS version</td>
  *                 <td>N</td>
  *                 <td>Max Length: 500</td>
- *             <td>SmartDeviceLink 3.0 </td>
- *         </tr>
- *         <tr>
- *             <td>osVersion</td>
- *             <td>String</td>
- *             <td>Device OS version</td>
+ * 			<td>SmartDeviceLink 3.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>osVersion</td>
+ * 			<td>String</td>
+ * 			<td>Device OS version</td>
  *                 <td>N</td>
  *                 <td>Max Length: 500</td>
- *             <td>SmartDeviceLink 3.0 </td>
- *         </tr>
- *         <tr>
- *             <td>carrier</td>
- *             <td>String</td>
- *             <td>Device mobile carrier (if applicable)</td>
+ * 			<td>SmartDeviceLink 3.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>carrier</td>
+ * 			<td>String</td>
+ * 			<td>Device mobile carrier (if applicable)</td>
  *                 <td>N</td>
  *                 <td>Max Length: 500</td>
- *             <td>SmartDeviceLink 3.0 </td>
- *         </tr>
- *         <tr>
- *             <td>maxNumberRFCOMMPorts</td>
- *             <td>Integer</td>
- *             <td>Omitted if connected not via BT.</td>
+ * 			<td>SmartDeviceLink 3.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>maxNumberRFCOMMPorts</td>
+ * 			<td>Integer</td>
+ * 			<td>Omitted if connected not via BT.</td>
  *                 <td>N</td>
  *                 <td>Min Value: 0; Max Value: 100</td>
- *             <td>SmartDeviceLink 3.0 </td>
- *         </tr>
+ * 			<td>SmartDeviceLink 3.0 </td>
+ * 		</tr>
  *  </table>
  */
 public class DeviceInfo extends RPCStruct {

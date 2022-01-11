@@ -43,30 +43,30 @@ import java.util.Hashtable;
  * <p><b>Parameter List</b></p>
  *
  * <table border="1" rules="all">
- *         <tr>
- *             <th>Name</th>
- *             <th>Type</th>
- *             <th>Description</th>
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
  *                 <th>Reg.</th>
  *               <th>Notes</th>
- *             <th>Version</th>
- *         </tr>
- *         <tr>
- *             <td>resolutionWidth</td>
- *             <td>Integer</td>
- *             <td>The image resolution width.</td>
+ * 			<th>Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>resolutionWidth</td>
+ * 			<td>Integer</td>
+ * 			<td>The image resolution width.</td>
  *                 <td></td>
  *                 <td>minvalue:1; maxvalue: 10000</td>
- *             <td>SmartDeviceLink 3.0 </td>
- *         </tr>
- *         <tr>
- *             <td>resolutionHeight</td>
- *             <td>Integer</td>
- *             <td>The image resolution height.</td>
+ * 			<td>SmartDeviceLink 3.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>resolutionHeight</td>
+ * 			<td>Integer</td>
+ * 			<td>The image resolution height.</td>
  *                 <td></td>
  *                 <td>minvalue:1;  maxvalue: 10000</td>
- *             <td>SmartDeviceLink 3.0 </td>
- *         </tr>
+ * 			<td>SmartDeviceLink 3.0 </td>
+ * 		</tr>
  *
  *  </table>
  *

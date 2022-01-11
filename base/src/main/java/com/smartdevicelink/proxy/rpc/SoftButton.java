@@ -44,62 +44,62 @@ import java.util.Hashtable;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- *         <tr>
- *             <th>Name</th>
- *             <th>Type</th>
- *             <th>Description</th>
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
  *                 <th>Reg.</th>
  *               <th>Notes</th>
- *             <th>Version</th>
- *         </tr>
- *         <tr>
- *             <td>type</td>
- *             <td>SoftButtonType</td>
- *             <td>Describes, whether it is text, highlighted text, icon, or dynamic image. </td>
+ * 			<th>Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>type</td>
+ * 			<td>SoftButtonType</td>
+ * 			<td>Describes, whether it is text, highlighted text, icon, or dynamic image. </td>
  *                 <td></td>
  *                 <td></td>
- *             <td>SmartDeviceLink 2.0 </td>
- *         </tr>
- *         <tr>
- *             <td>text</td>
- *             <td>String</td>
- *             <td>Optional text to display (if defined as TEXT or BOTH)</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>text</td>
+ * 			<td>String</td>
+ * 			<td>Optional text to display (if defined as TEXT or BOTH)</td>
  *                 <td>N</td>
  *                 <td>Min: 0; Maxlength: 500</td>
- *             <td>SmartDeviceLink 2.0 </td>
- *         </tr>
- *         <tr>
- *             <td>image</td>
- *             <td>Image</td>
- *             <td>Optional image struct for SoftButton (if defined as IMAGE or BOTH).</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>image</td>
+ * 			<td>Image</td>
+ * 			<td>Optional image struct for SoftButton (if defined as IMAGE or BOTH).</td>
  *                 <td></td>
  *                 <td></td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>isHighlighted</td>
- *             <td>Boolean</td>
- *             <td>True, if highlighted False, if not highlighted</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>isHighlighted</td>
+ * 			<td>Boolean</td>
+ * 			<td>True, if highlighted False, if not highlighted</td>
  *                 <td>N</td>
  *                 <td></td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>softButtonID</td>
- *             <td>Integer</td>
- *             <td>Value which is returned via OnButtonPress / OnButtonEvent</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>softButtonID</td>
+ * 			<td>Integer</td>
+ * 			<td>Value which is returned via OnButtonPress / OnButtonEvent</td>
  *                 <td></td>
  *                 <td>Min: 0; Max: 65535</td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>systemAction</td>
- *             <td>SystemAction</td>
- *             <td>Parameter indicating whether selecting a SoftButton shall call a specific system action. This is intended to allow Notifications to bring the callee into full / focus; or in the case of persistent overlays, the overlay can persist when a SoftButton is pressed.</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>systemAction</td>
+ * 			<td>SystemAction</td>
+ * 			<td>Parameter indicating whether selecting a SoftButton shall call a specific system action. This is intended to allow Notifications to bring the callee into full / focus; or in the case of persistent overlays, the overlay can persist when a SoftButton is pressed.</td>
  *                 <td>N</td>
  *                 <td>defvalue: DEFAULT_ACTION</td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
  *
  *  </table>
  */

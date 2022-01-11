@@ -36,133 +36,133 @@ package com.smartdevicelink.proxy.rpc.enums;
  *
  * <p><b>Enum List</b></p>
  * <table border="1" rules="all">
- *         <tr>
- *             <th>Enum Name</th>
- *             <th>Return Type</th>
- *             <th>Description</th>
- *             <th>Requires Async?</th>
- *             <th>Notes</th>
- *         </tr>
- *         <tr>
- *             <td>NAVIGATION</td>
- *             <td>NavigationCapability</td>
- *             <td>Returns Navigation Capabilities</td>
- *             <td align=center>Y</td>
- *             <td>Call is synchronous <strong>after</strong> initial call</td>
- *         </tr>
- *         <tr>
- *             <td>PHONE_CALL</td>
- *             <td>PhoneCapability</td>
- *             <td>Returns Phone Capabilities</td>
- *             <td align=center>Y</td>
- *             <td>Call is synchronous <strong>after</strong> initial call</td>
- *         </tr>
- *         <tr>
- *             <td>VIDEO_STREAMING</td>
- *             <td>VideoStreamingCapability</td>
- *             <td>Returns Video Streaming Capabilities</td>
- *             <td align=center>Y</td>
- *             <td>Call is synchronous <strong>after</strong> initial call</td>
- *         </tr>
- *         <tr>
- *             <td>REMOTE_CONTROL</td>
- *             <td>RemoteControlCapabilities</td>
- *             <td>Returns Remote Control Capabilities</td>
- *             <td align=center>Y</td>
- *             <td>Call is synchronous <strong>after</strong> initial call</td>
- *         </tr>
- *         <tr>
- *             <td>HMI</td>
- *             <td>HMICapabilities</td>
- *             <td>Returns HMI Capabilities</td>
- *             <td align=center>N</td>
- *             <td>Available Synchronously <strong>after</strong> Register App Interface response</td>
- *         </tr>
- *         <tr>
- *             <td>DISPLAY</td>
- *             <td>DisplayCapabilities</td>
- *             <td>Returns Display Capabilities</td>
- *             <td align=center>N</td>
- *             <td>Available Synchronously <strong>after</strong> Register App Interface response</td>
- *         </tr>
- *         <tr>
- *             <td>AUDIO_PASSTHROUGH</td>
- *             <td>List<AudioPassThruCapabilities></td>
- *             <td>Returns a List of AudioPassThruCapabilities</td>
- *             <td align=center>N</td>
- *             <td>Available Synchronously <strong>after</strong> Register App Interface response. @SuppressWarnings("unchecked") may be needed when casting depending on implementation</td>
- *         </tr>
- *         <tr>
- *             <td>PCM_STREAMING</td>
- *             <td>AudioPassThruCapabilities</td>
- *             <td>Returns an AudioPassThruCapabilities Object</td>
- *             <td align=center>N</td>
- *             <td>Available Synchronously <strong>after</strong> Register App Interface response. @SuppressWarnings("unchecked") may be needed when casting depending on implementation</td>
- *         </tr>
- *         <tr>
- *             <td>BUTTON</td>
- *             <td>List<ButtonCapabilities></td>
- *             <td>Returns a List of ButtonCapabilities</td>
- *             <td align=center>N</td>
- *             <td>Available Synchronously <strong>after</strong> Register App Interface response. @SuppressWarnings("unchecked") may be needed when casting depending on implementation</td>
- *         </tr>
- *         <tr>
- *             <td>HMI_ZONE</td>
- *             <td>HmiZoneCapabilities</td>
- *             <td>Returns HmiZone Capabilities</td>
- *             <td align=center>N</td>
- *             <td>Available Synchronously <strong>after</strong> Register App Interface response</td>
- *         </tr>
- *         <tr>
- *             <td>PRESET_BANK</td>
- *             <td>PresetBankCapabilities</td>
- *             <td>Returns PresetBank Capabilities</td>
- *             <td align=center>N</td>
- *             <td>Available Synchronously <strong>after</strong> Register App Interface response</td>
- *         </tr>
- *         <tr>
- *             <td>SOFTBUTTON</td>
- *             <td>List<SoftButtonCapabilities></td>
- *             <td>Returns a List of SoftButtonCapabilities</td>
- *             <td align=center>N</td>
- *             <td>Available Synchronously <strong>after</strong> Register App Interface response. @SuppressWarnings("unchecked") may be needed when casting depending on implementation</td>
- *         </tr>
- *         <tr>
- *             <td>SPEECH</td>
- *             <td>SpeechCapabilities</td>
- *             <td>Returns Speech Capabilities</td>
- *             <td align=center>N</td>
- *             <td>Available Synchronously <strong>after</strong> Register App Interface response</td>
- *         </tr>
- *         <tr>
- *             <td>VOICE_RECOGNITION</td>
- *             <td>VrCapabilities</td>
- *             <td>Returns VOICE_RECOGNITION</td>
- *             <td align=center>N</td>
- *             <td>Available Synchronously <strong>after</strong> Register App Interface response</td>
- *         </tr>
- *      <tr>
- *             <td>APP_SERVICES</td>
- *             <td>AppServicesCapabilities</td>
- *             <td>Returns APP_SERVICES</td>
- *             <td align=center>N</td>
- *             <td>Available Asynchronously, Call is synchronous <strong>after</strong> initial call</td>
- *         </tr>
- *        <tr>
- *            <td>SEAT_LOCATION</td>
- *            <td>SeatLocationCapability</td>
- *            <td>Returns SEAT_LOCATION</td>
- *            <td align=center>N</td>
- *            <td>Available Asynchronously, Call is synchronous <strong>after</strong> initial call</strong></td>
- *        </tr>
- *        <tr>
- *            <td>DRIVER_DISTRACTION</td>
- *            <d>DriverDistractionCapability</td>
- *            <td>Returns DRIVER_DISTRACTION</td>
- *            <td align=center>N</td>
- *            <td><strong>Since 7.0</strong> Describes capabilities when the driver is distracted</td>
- *        </tr>
- *     </table>
+ * 		<tr>
+ * 			<th>Enum Name</th>
+ * 			<th>Return Type</th>
+ * 			<th>Description</th>
+ * 			<th>Requires Async?</th>
+ * 			<th>Notes</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>NAVIGATION</td>
+ * 			<td>NavigationCapability</td>
+ * 			<td>Returns Navigation Capabilities</td>
+ * 			<td align=center>Y</td>
+ * 			<td>Call is synchronous <strong>after</strong> initial call</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>PHONE_CALL</td>
+ * 			<td>PhoneCapability</td>
+ * 			<td>Returns Phone Capabilities</td>
+ * 			<td align=center>Y</td>
+ * 			<td>Call is synchronous <strong>after</strong> initial call</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>VIDEO_STREAMING</td>
+ * 			<td>VideoStreamingCapability</td>
+ * 			<td>Returns Video Streaming Capabilities</td>
+ * 			<td align=center>Y</td>
+ * 			<td>Call is synchronous <strong>after</strong> initial call</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>REMOTE_CONTROL</td>
+ * 			<td>RemoteControlCapabilities</td>
+ * 			<td>Returns Remote Control Capabilities</td>
+ * 			<td align=center>Y</td>
+ * 			<td>Call is synchronous <strong>after</strong> initial call</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>HMI</td>
+ * 			<td>HMICapabilities</td>
+ * 			<td>Returns HMI Capabilities</td>
+ * 			<td align=center>N</td>
+ * 			<td>Available Synchronously <strong>after</strong> Register App Interface response</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>DISPLAY</td>
+ * 			<td>DisplayCapabilities</td>
+ * 			<td>Returns Display Capabilities</td>
+ * 			<td align=center>N</td>
+ * 			<td>Available Synchronously <strong>after</strong> Register App Interface response</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>AUDIO_PASSTHROUGH</td>
+ * 			<td>List<AudioPassThruCapabilities></td>
+ * 			<td>Returns a List of AudioPassThruCapabilities</td>
+ * 			<td align=center>N</td>
+ * 			<td>Available Synchronously <strong>after</strong> Register App Interface response. @SuppressWarnings("unchecked") may be needed when casting depending on implementation</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>PCM_STREAMING</td>
+ * 			<td>AudioPassThruCapabilities</td>
+ * 			<td>Returns an AudioPassThruCapabilities Object</td>
+ * 			<td align=center>N</td>
+ * 			<td>Available Synchronously <strong>after</strong> Register App Interface response. @SuppressWarnings("unchecked") may be needed when casting depending on implementation</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>BUTTON</td>
+ * 			<td>List<ButtonCapabilities></td>
+ * 			<td>Returns a List of ButtonCapabilities</td>
+ * 			<td align=center>N</td>
+ * 			<td>Available Synchronously <strong>after</strong> Register App Interface response. @SuppressWarnings("unchecked") may be needed when casting depending on implementation</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>HMI_ZONE</td>
+ * 			<td>HmiZoneCapabilities</td>
+ * 			<td>Returns HmiZone Capabilities</td>
+ * 			<td align=center>N</td>
+ * 			<td>Available Synchronously <strong>after</strong> Register App Interface response</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>PRESET_BANK</td>
+ * 			<td>PresetBankCapabilities</td>
+ * 			<td>Returns PresetBank Capabilities</td>
+ * 			<td align=center>N</td>
+ * 			<td>Available Synchronously <strong>after</strong> Register App Interface response</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>SOFTBUTTON</td>
+ * 			<td>List<SoftButtonCapabilities></td>
+ * 			<td>Returns a List of SoftButtonCapabilities</td>
+ * 			<td align=center>N</td>
+ * 			<td>Available Synchronously <strong>after</strong> Register App Interface response. @SuppressWarnings("unchecked") may be needed when casting depending on implementation</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>SPEECH</td>
+ * 			<td>SpeechCapabilities</td>
+ * 			<td>Returns Speech Capabilities</td>
+ * 			<td align=center>N</td>
+ * 			<td>Available Synchronously <strong>after</strong> Register App Interface response</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>VOICE_RECOGNITION</td>
+ * 			<td>VrCapabilities</td>
+ * 			<td>Returns VOICE_RECOGNITION</td>
+ * 			<td align=center>N</td>
+ * 			<td>Available Synchronously <strong>after</strong> Register App Interface response</td>
+ * 		</tr>
+ *  	<tr>
+ * 			<td>APP_SERVICES</td>
+ * 			<td>AppServicesCapabilities</td>
+ * 			<td>Returns APP_SERVICES</td>
+ * 			<td align=center>N</td>
+ * 			<td>Available Asynchronously, Call is synchronous <strong>after</strong> initial call</td>
+ * 		</tr>
+ * 	   <tr>
+ * 	       <td>SEAT_LOCATION</td>
+ * 	       <td>SeatLocationCapability</td>
+ * 	       <td>Returns SEAT_LOCATION</td>
+ * 	       <td align=center>N</td>
+ * 	       <td>Available Asynchronously, Call is synchronous <strong>after</strong> initial call</strong></td>
+ * 	   </tr>
+ * 	   <tr>
+ * 	       <td>DRIVER_DISTRACTION</td>
+ * 	       <d>DriverDistractionCapability</td>
+ * 	       <td>Returns DRIVER_DISTRACTION</td>
+ * 	       <td align=center>N</td>
+ * 	       <td><strong>Since 7.0</strong> Describes capabilities when the driver is distracted</td>
+ * 	   </tr>
+ * 	</table>
  */
 
 public enum SystemCapabilityType {
@@ -170,82 +170,82 @@ public enum SystemCapabilityType {
     /**
      * <strong>Requires</strong> initial asynchronous call, then available synchronously after successful call. <br>
      * <table border="1" rules="all">
-     *         <tr>
-     *             <th>Enum Name</th>
-     *             <th>Return Type</th>
-     *             <th>Description</th>
-     *             <th>Requires Async?</th>
-     *             <th>Notes</th>
-     *         </tr>
-     *         <tr>
-     *             <td>NAVIGATION</td>
-     *             <td>NavigationCapability</td>
-     *             <td>Returns Navigation Capabilities</td>
-     *             <td align=center>Y</td>
-     *             <td>Call is synchronous <strong>after</strong> initial call</td>
-     *         </tr>
-     *     </table>
+     * 		<tr>
+     * 			<th>Enum Name</th>
+     * 			<th>Return Type</th>
+     * 			<th>Description</th>
+     * 			<th>Requires Async?</th>
+     * 			<th>Notes</th>
+     * 		</tr>
+     * 		<tr>
+     * 			<td>NAVIGATION</td>
+     * 			<td>NavigationCapability</td>
+     * 			<td>Returns Navigation Capabilities</td>
+     * 			<td align=center>Y</td>
+     * 			<td>Call is synchronous <strong>after</strong> initial call</td>
+     * 		</tr>
+     * 	</table>
      */
     NAVIGATION(true),
 
     /**
      * <strong>Requires</strong> initial asynchronous call, then available synchronously after successful call. <br>
      * <table border="1" rules="all">
-     *         <tr>
-     *             <th>Enum Name</th>
-     *             <th>Return Type</th>
-     *             <th>Description</th>
-     *             <th>Requires Async?</th>
-     *             <th>Notes</th>
-     *         </tr>
-     *         <tr>
-     *             <td>PHONE_CALL</td>
-     *             <td>PhoneCapability</td>
-     *             <td>Returns Phone Capabilities</td>
-     *             <td align=center>Y</td>
-     *             <td>Call is synchronous <strong>after</strong> initial call</td>
-     *         </tr>
-     *     </table>
+     * 		<tr>
+     * 			<th>Enum Name</th>
+     * 			<th>Return Type</th>
+     * 			<th>Description</th>
+     * 			<th>Requires Async?</th>
+     * 			<th>Notes</th>
+     * 		</tr>
+     * 		<tr>
+     * 			<td>PHONE_CALL</td>
+     * 			<td>PhoneCapability</td>
+     * 			<td>Returns Phone Capabilities</td>
+     * 			<td align=center>Y</td>
+     * 			<td>Call is synchronous <strong>after</strong> initial call</td>
+     * 		</tr>
+     * 	</table>
      */
     PHONE_CALL(true),
 
     /**
      * <strong>Requires</strong> initial asynchronous call, then available synchronously after successful call. <br>
      * <table border="1" rules="all">
-     *         <tr>
-     *             <th>Enum Name</th>
-     *             <th>Return Type</th>
-     *             <th>Description</th>
-     *             <th>Requires Async?</th>
-     *             <th>Notes</th>
-     *         </tr>
-     *         <tr>
-     *             <td>VIDEO_STREAMING</td>
-     *             <td>VideoStreamingCapability</td>
-     *             <td>Returns Video Streaming Capabilities</td>
-     *             <td align=center>Y</td>
-     *             <td>Call is synchronous <strong>after</strong> initial call</td>
-     *         </tr>
-     *     </table>
+     * 		<tr>
+     * 			<th>Enum Name</th>
+     * 			<th>Return Type</th>
+     * 			<th>Description</th>
+     * 			<th>Requires Async?</th>
+     * 			<th>Notes</th>
+     * 		</tr>
+     * 		<tr>
+     * 			<td>VIDEO_STREAMING</td>
+     * 			<td>VideoStreamingCapability</td>
+     * 			<td>Returns Video Streaming Capabilities</td>
+     * 			<td align=center>Y</td>
+     * 			<td>Call is synchronous <strong>after</strong> initial call</td>
+     * 		</tr>
+     * 	</table>
      */
     VIDEO_STREAMING(true),
 
     /**
      * <strong>Requires</strong> initial asynchronous call, then available synchronously after successful call. <br>
      * <table border="1" rules="all">
-     *     <tr>
-     *         <th>Enum Name</th>
-     *         <th>Return Type</th>
-     *         <th>Description</th>
-     *         <th>Requires Async?</th>
-     *         <th>Notes</th>
-     *     </tr>
-     *         <td>REMOTE_CONTROL</td>
-     *         <td>RemoteControlCapabilities</td>
-     *         <td>Returns Remote Control Capabilities</td>
-     *         <td align=center>Y</td>
-     *         <td>Call is synchronous <strong>after</strong> initial call</td>
-     *     </tr>
+     * 	<tr>
+     * 		<th>Enum Name</th>
+     * 		<th>Return Type</th>
+     * 		<th>Description</th>
+     * 		<th>Requires Async?</th>
+     * 		<th>Notes</th>
+     * 	</tr>
+     * 		<td>REMOTE_CONTROL</td>
+     * 		<td>RemoteControlCapabilities</td>
+     * 		<td>Returns Remote Control Capabilities</td>
+     * 		<td align=center>Y</td>
+     * 		<td>Call is synchronous <strong>after</strong> initial call</td>
+     * 	</tr>
      * </table>
      */
     REMOTE_CONTROL(true),
@@ -255,20 +255,20 @@ public enum SystemCapabilityType {
     /**
      * Available Synchronously after Register App Interface response <br>
      *  <table border="1" rules="all">
-     *     <tr>
-     *         <th>Enum Name</th>
-     *         <th>Return Type</th>
-     *         <th>Description</th>
-     *         <th>Requires Async?</th>
-     *         <th>Notes</th>
-     *     </tr>
-     *     <tr>
-     *         <td>HMI</td>
-     *         <td>HMICapabilities</td>
-     *         <td>Returns HMI Capabilities</td>
-     *         <td align=center>N</td>
-     *         <td>Available Synchronously <strong>after</strong> Register App Interface response</td>
-     *     </tr>
+     * 	<tr>
+     * 		<th>Enum Name</th>
+     * 		<th>Return Type</th>
+     * 		<th>Description</th>
+     * 		<th>Requires Async?</th>
+     * 		<th>Notes</th>
+     * 	</tr>
+     * 	<tr>
+     * 		<td>HMI</td>
+     * 		<td>HMICapabilities</td>
+     * 		<td>Returns HMI Capabilities</td>
+     * 		<td align=center>N</td>
+     * 		<td>Available Synchronously <strong>after</strong> Register App Interface response</td>
+     * 	</tr>
      * </table>
      */
     HMI(false),
@@ -277,21 +277,21 @@ public enum SystemCapabilityType {
      * Available Synchronously after Register App Interface response <br>
      * Returns: DisplayCapabilities
      * <table border="1" rules="all">
-     *         <tr>
-     *             <th>Enum Name</th>
-     *             <th>Return Type</th>
-     *             <th>Description</th>
-     *             <th>Requires Async?</th>
-     *             <th>Notes</th>
-     *         </tr>
-     *         <tr>
-     *             <td>DISPLAY</td>
-     *             <td>DisplayCapabilities</td>
-     *             <td>Returns Display Capabilities</td>
-     *             <td align=center>N</td>
-     *             <td> Available Synchronously <strong>after</strong> Register App Interface response received</td>
-     *         </tr>
-     *     </table>
+     * 		<tr>
+     * 			<th>Enum Name</th>
+     * 			<th>Return Type</th>
+     * 			<th>Description</th>
+     * 			<th>Requires Async?</th>
+     * 			<th>Notes</th>
+     * 		</tr>
+     * 		<tr>
+     * 			<td>DISPLAY</td>
+     * 			<td>DisplayCapabilities</td>
+     * 			<td>Returns Display Capabilities</td>
+     * 			<td align=center>N</td>
+     * 			<td> Available Synchronously <strong>after</strong> Register App Interface response received</td>
+     * 		</tr>
+     * 	</table>
      */
     @Deprecated
     DISPLAY(false),
@@ -301,21 +301,21 @@ public enum SystemCapabilityType {
      * @since 6.0
      * Returns: List<DisplayCapability>
      * <table border="1" rules="all">
-     *         <tr>
-     *             <th>Enum Name</th>
-     *             <th>Return Type</th>
-     *             <th>Description</th>
-     *             <th>Requires Async?</th>
-     *             <th>Notes</th>
-     *         </tr>
-     *         <tr>
-     *             <td>DISPLAYS</td>
-     *             <td>List<DisplayCapability></td>
-     *             <td>Returns a list of Display Capability</td>
-     *             <td align=center>Y</td>
-     *             <td> <strong>Since 6.0</strong> Contain the display related information and all windows related to that display.</td>
-     *         </tr>
-     *     </table>
+     * 		<tr>
+     * 			<th>Enum Name</th>
+     * 			<th>Return Type</th>
+     * 			<th>Description</th>
+     * 			<th>Requires Async?</th>
+     * 			<th>Notes</th>
+     * 		</tr>
+     * 		<tr>
+     * 			<td>DISPLAYS</td>
+     * 			<td>List<DisplayCapability></td>
+     * 			<td>Returns a list of Display Capability</td>
+     * 			<td align=center>Y</td>
+     * 			<td> <strong>Since 6.0</strong> Contain the display related information and all windows related to that display.</td>
+     * 		</tr>
+     * 	</table>
      */
     DISPLAYS(true),
 
@@ -323,21 +323,21 @@ public enum SystemCapabilityType {
      * Available Synchronously after Register App Interface response <br>
      * Returns: List<PrerecordedSpeech>
      * <table border="1" rules="all">
-     *         <tr>
-     *             <th>Enum Name</th>
-     *             <th>Return Type</th>
-     *             <th>Description</th>
-     *             <th>Requires Async?</th>
-     *             <th>Notes</th>
-     *         </tr>
-     *         <tr>
-     *             <td>PRERECORDED_SPEECH</td>
-     *             <td>prerecordedSpeechCapabilities</td>
-     *             <td>Returns List<PrerecordedSpeech></td>
-     *             <td align=center>N</td>
-     *             <td>Available Synchronously <strong>after</strong> Register App Interface response received</td>
-     *         </tr>
-     *     </table>
+     * 		<tr>
+     * 			<th>Enum Name</th>
+     * 			<th>Return Type</th>
+     * 			<th>Description</th>
+     * 			<th>Requires Async?</th>
+     * 			<th>Notes</th>
+     * 		</tr>
+     * 		<tr>
+     * 			<td>PRERECORDED_SPEECH</td>
+     * 			<td>prerecordedSpeechCapabilities</td>
+     * 			<td>Returns List<PrerecordedSpeech></td>
+     * 			<td align=center>N</td>
+     * 			<td>Available Synchronously <strong>after</strong> Register App Interface response received</td>
+     * 		</tr>
+     * 	</table>
      */
     PRERECORDED_SPEECH(false),
 
@@ -345,21 +345,21 @@ public enum SystemCapabilityType {
      * Available Synchronously after Register App Interface response <br>
      * <b>Note:</b> @SuppressWarnings("unchecked") may be needed when casting depending on implementation
      * <table border="1" rules="all">
-     *         <tr>
-     *             <th>Enum Name</th>
-     *             <th>Return Type</th>
-     *             <th>Description</th>
-     *             <th>Requires Async?</th>
-     *             <th>Notes</th>
-     *         </tr>
-     *         <tr>
-     *             <td>AUDIO_PASSTHROUGH</td>
-     *             <td>List<AudioPassThruCapabilities></td>
-     *             <td>Returns a List of AudioPassThruCapabilities</td>
-     *             <td align=center>N</td>
-     *             <td>Available Synchronously <strong>after</strong> Register App Interface response. @SuppressWarnings("unchecked") may be needed when casting depending on implementation</td>
-     *         </tr>
-     *     </table>
+     * 		<tr>
+     * 			<th>Enum Name</th>
+     * 			<th>Return Type</th>
+     * 			<th>Description</th>
+     * 			<th>Requires Async?</th>
+     * 			<th>Notes</th>
+     * 		</tr>
+     * 		<tr>
+     * 			<td>AUDIO_PASSTHROUGH</td>
+     * 			<td>List<AudioPassThruCapabilities></td>
+     * 			<td>Returns a List of AudioPassThruCapabilities</td>
+     * 			<td align=center>N</td>
+     * 			<td>Available Synchronously <strong>after</strong> Register App Interface response. @SuppressWarnings("unchecked") may be needed when casting depending on implementation</td>
+     * 		</tr>
+     * 	</table>
      */
     AUDIO_PASSTHROUGH(false),
 
@@ -367,21 +367,21 @@ public enum SystemCapabilityType {
      * Available Synchronously after Register App Interface response <br>
      * <b>Note:</b> @SuppressWarnings("unchecked") may be needed when casting depending on implementation
      * <table border="1" rules="all">
-     *         <tr>
-     *             <th>Enum Name</th>
-     *             <th>Return Type</th>
-     *             <th>Description</th>
-     *             <th>Requires Async?</th>
-     *             <th>Notes</th>
-     *         </tr>
-     *         <tr>
-     *             <td>PCM_STREAMING</td>
-     *             <td>AudioPassThruCapabilities</td>
-     *             <td>Returns a AudioPassThruCapabilities Object</td>
-     *             <td align=center>N</td>
-     *             <td>Available Synchronously <strong>after</strong> Register App Interface response. @SuppressWarnings("unchecked") may be needed when casting depending on implementation</td>
-     *         </tr>
-     *     </table>
+     * 		<tr>
+     * 			<th>Enum Name</th>
+     * 			<th>Return Type</th>
+     * 			<th>Description</th>
+     * 			<th>Requires Async?</th>
+     * 			<th>Notes</th>
+     * 		</tr>
+     * 		<tr>
+     * 			<td>PCM_STREAMING</td>
+     * 			<td>AudioPassThruCapabilities</td>
+     * 			<td>Returns a AudioPassThruCapabilities Object</td>
+     * 			<td align=center>N</td>
+     * 			<td>Available Synchronously <strong>after</strong> Register App Interface response. @SuppressWarnings("unchecked") may be needed when casting depending on implementation</td>
+     * 		</tr>
+     * 	</table>
      */
     PCM_STREAMING(false),
 
@@ -389,21 +389,21 @@ public enum SystemCapabilityType {
      * Available Synchronously after Register App Interface response <br>
      * <b>Note:</b> @SuppressWarnings("unchecked") may be needed when casting depending on implementation
      * <table border="1" rules="all">
-     *         <tr>
-     *             <th>Enum Name</th>
-     *             <th>Return Type</th>
-     *             <th>Description</th>
-     *             <th>Requires Async?</th>
-     *             <th>Notes</th>
-     *         </tr>
-     *         <tr>
-     *             <td>BUTTON</td>
-     *             <td>List<ButtonCapabilities></td>
-     *             <td>Returns a List of ButtonCapabilities</td>
-     *             <td align=center>N</td>
-     *             <td>Available Synchronously <strong>after</strong> Register App Interface response. @SuppressWarnings("unchecked") may be needed when casting depending on implementation</td>
-     *         </tr>
-     *     </table>
+     * 		<tr>
+     * 			<th>Enum Name</th>
+     * 			<th>Return Type</th>
+     * 			<th>Description</th>
+     * 			<th>Requires Async?</th>
+     * 			<th>Notes</th>
+     * 		</tr>
+     * 		<tr>
+     * 			<td>BUTTON</td>
+     * 			<td>List<ButtonCapabilities></td>
+     * 			<td>Returns a List of ButtonCapabilities</td>
+     * 			<td align=center>N</td>
+     * 			<td>Available Synchronously <strong>after</strong> Register App Interface response. @SuppressWarnings("unchecked") may be needed when casting depending on implementation</td>
+     * 		</tr>
+     * 	</table>
      */
     @Deprecated
     BUTTON(false),
@@ -411,42 +411,42 @@ public enum SystemCapabilityType {
     /**
      * Available Synchronously after Register App Interface response <br>
      * <table border="1" rules="all">
-     *         <tr>
-     *             <th>Enum Name</th>
-     *             <th>Return Type</th>
-     *             <th>Description</th>
-     *             <th>Requires Async?</th>
-     *             <th>Notes</th>
-     *         </tr>
-     *         <tr>
-     *             <td>HMI_ZONE</td>
-     *             <td>HmiZoneCapabilities</td>
-     *             <td>Returns HmiZone Capabilities</td>
-     *             <td align=center>N</td>
-     *             <td>Available Synchronously <strong>after</strong> Register App Interface response</td>
-     *         </tr>
-     *     </table>
+     * 		<tr>
+     * 			<th>Enum Name</th>
+     * 			<th>Return Type</th>
+     * 			<th>Description</th>
+     * 			<th>Requires Async?</th>
+     * 			<th>Notes</th>
+     * 		</tr>
+     * 		<tr>
+     * 			<td>HMI_ZONE</td>
+     * 			<td>HmiZoneCapabilities</td>
+     * 			<td>Returns HmiZone Capabilities</td>
+     * 			<td align=center>N</td>
+     * 			<td>Available Synchronously <strong>after</strong> Register App Interface response</td>
+     * 		</tr>
+     * 	</table>
      */
     HMI_ZONE(false),
 
     /**
      * Available Synchronously after Register App Interface response <br>
      * <table border="1" rules="all">
-     *         <tr>
-     *             <th>Enum Name</th>
-     *             <th>Return Type</th>
-     *             <th>Description</th>
-     *             <th>Requires Async?</th>
-     *             <th>Notes</th>
-     *         </tr>
-     *         <tr>
-     *             <td>PRESET_BANK</td>
-     *             <td>PresetBankCapabilities</td>
-     *             <td>Returns PresetBank Capabilities</td>
-     *             <td align=center>N</td>
-     *             <td>Available Synchronously <strong>after</strong> Register App Interface response</td>
-     *         </tr>
-     *     </table>
+     * 		<tr>
+     * 			<th>Enum Name</th>
+     * 			<th>Return Type</th>
+     * 			<th>Description</th>
+     * 			<th>Requires Async?</th>
+     * 			<th>Notes</th>
+     * 		</tr>
+     * 		<tr>
+     * 			<td>PRESET_BANK</td>
+     * 			<td>PresetBankCapabilities</td>
+     * 			<td>Returns PresetBank Capabilities</td>
+     * 			<td align=center>N</td>
+     * 			<td>Available Synchronously <strong>after</strong> Register App Interface response</td>
+     * 		</tr>
+     * 	</table>
      */
     @Deprecated
     PRESET_BANK(false),
@@ -456,21 +456,21 @@ public enum SystemCapabilityType {
      * Returns: List<SoftButtonCapabilities> <br>
      * Note: @SuppressWarnings("unchecked") may be needed when casting depending on implementation
      * <table border="1" rules="all">
-     *         <tr>
-     *             <th>Enum Name</th>
-     *             <th>Return Type</th>
-     *             <th>Description</th>
-     *             <th>Requires Async?</th>
-     *             <th>Notes</th>
-     *         </tr>
-     *         <tr>
-     *             <td>SOFTBUTTON</td>
-     *             <td>List<SoftButtonCapabilities></td>
-     *             <td>Returns a List of SoftButtonCapabilities</td>
-     *             <td align=center>N</td>
-     *             <td>Available Synchronously <strong>after</strong> Register App Interface response. @SuppressWarnings("unchecked") may be needed when casting depending on implementation</td>
-     *         </tr>
-     *     </table>
+     * 		<tr>
+     * 			<th>Enum Name</th>
+     * 			<th>Return Type</th>
+     * 			<th>Description</th>
+     * 			<th>Requires Async?</th>
+     * 			<th>Notes</th>
+     * 		</tr>
+     * 		<tr>
+     * 			<td>SOFTBUTTON</td>
+     * 			<td>List<SoftButtonCapabilities></td>
+     * 			<td>Returns a List of SoftButtonCapabilities</td>
+     * 			<td align=center>N</td>
+     * 			<td>Available Synchronously <strong>after</strong> Register App Interface response. @SuppressWarnings("unchecked") may be needed when casting depending on implementation</td>
+     * 		</tr>
+     * 	</table>
      */
     @Deprecated
     SOFTBUTTON(false),
@@ -478,102 +478,102 @@ public enum SystemCapabilityType {
     /**
      * Available Synchronously after Register App Interface response <br>
      * <table border="1" rules="all">
-     *         <tr>
-     *             <th>Enum Name</th>
-     *             <th>Return Type</th>
-     *             <th>Description</th>
-     *             <th>Requires Async?</th>
-     *             <th>Notes</th>
-     *         </tr>
-     *         <tr>
-     *             <td>SPEECH</td>
-     *             <td>SpeechCapabilities</td>
-     *             <td>Returns Speech Capabilities</td>
-     *             <td align=center>N</td>
-     *             <td>Available Synchronously <strong>after</strong> Register App Interface response</td>
-     *         </tr>
-     *     </table>
+     * 		<tr>
+     * 			<th>Enum Name</th>
+     * 			<th>Return Type</th>
+     * 			<th>Description</th>
+     * 			<th>Requires Async?</th>
+     * 			<th>Notes</th>
+     * 		</tr>
+     * 		<tr>
+     * 			<td>SPEECH</td>
+     * 			<td>SpeechCapabilities</td>
+     * 			<td>Returns Speech Capabilities</td>
+     * 			<td align=center>N</td>
+     * 			<td>Available Synchronously <strong>after</strong> Register App Interface response</td>
+     * 		</tr>
+     * 	</table>
      */
     SPEECH(false),
     /**
      * Available Synchronously after Register App Interface response <br>
      * <table border="1" rules="all">
-     *         <tr>
-     *             <th>Enum Name</th>
-     *             <th>Return Type</th>
-     *             <th>Description</th>
-     *             <th>Requires Async?</th>
-     *             <th>Notes</th>
-     *         </tr>
-     *         <tr>
-     *             <td>VOICE_RECOGNITION</td>
-     *             <td>VrCapabilities</td>
-     *             <td>Returns VOICE_RECOGNITION</td>
-     *             <td align=center>N</td>
-     *             <td>Available Synchronously <strong>after</strong> Register App Interface response</td>
-     *         </tr>
-     *     </table>
+     * 		<tr>
+     * 			<th>Enum Name</th>
+     * 			<th>Return Type</th>
+     * 			<th>Description</th>
+     * 			<th>Requires Async?</th>
+     * 			<th>Notes</th>
+     * 		</tr>
+     * 		<tr>
+     * 			<td>VOICE_RECOGNITION</td>
+     * 			<td>VrCapabilities</td>
+     * 			<td>Returns VOICE_RECOGNITION</td>
+     * 			<td align=center>N</td>
+     * 			<td>Available Synchronously <strong>after</strong> Register App Interface response</td>
+     * 		</tr>
+     * 	</table>
      */
     VOICE_RECOGNITION(false),
     /**
      * Available Synchronously after Register App Interface response <br>
      * <table border="1" rules="all">
-     *         <tr>
-     *             <th>Enum Name</th>
-     *             <th>Return Type</th>
-     *             <th>Description</th>
-     *             <th>Requires Async?</th>
-     *             <th>Notes</th>
-     *         </tr>
-     *         <tr>
-     *             <td>APP_SERVICES</td>
-     *             <td>AppServicesCapabilities</td>
-     *             <td>Returns APP_SERVICES</td>
-     *             <td align=center>N</td>
-     *             <td>Available Asynchronously, Call is synchronous <strong>after</strong> initial call</td>
-     *         </tr>
-     *     </table>
+     * 		<tr>
+     * 			<th>Enum Name</th>
+     * 			<th>Return Type</th>
+     * 			<th>Description</th>
+     * 			<th>Requires Async?</th>
+     * 			<th>Notes</th>
+     * 		</tr>
+     * 		<tr>
+     * 			<td>APP_SERVICES</td>
+     * 			<td>AppServicesCapabilities</td>
+     * 			<td>Returns APP_SERVICES</td>
+     * 			<td align=center>N</td>
+     * 			<td>Available Asynchronously, Call is synchronous <strong>after</strong> initial call</td>
+     * 		</tr>
+     * 	</table>
      */
     APP_SERVICES(true),
 
     /**
      * Available Synchronously after Register App Interface response <br>
      * <table border="1" rules="all">
-     *         <tr>
-     *             <th>Enum Name</th>
-     *             <th>Return Type</th>
-     *             <th>Description</th>
-     *             <th>Requires Async?</th>
-     *             <th>Notes</th>
-     *         </tr>
-     *         <tr>
-     *             <td>SEAT_LOCATION</td>
-     *             <td>SeatLocationCapability</td>
-     *             <td>Returns SEAT_LOCATION</td>
-     *             <td align=center>N</td>
-     *             <td>Available Asynchronously, Call is synchronous <strong>after</strong> initial call</td>
-     *         </tr>
-     *     </table>
+     * 		<tr>
+     * 			<th>Enum Name</th>
+     * 			<th>Return Type</th>
+     * 			<th>Description</th>
+     * 			<th>Requires Async?</th>
+     * 			<th>Notes</th>
+     * 		</tr>
+     * 		<tr>
+     * 			<td>SEAT_LOCATION</td>
+     * 			<td>SeatLocationCapability</td>
+     * 			<td>Returns SEAT_LOCATION</td>
+     * 			<td align=center>N</td>
+     * 			<td>Available Asynchronously, Call is synchronous <strong>after</strong> initial call</td>
+     * 		</tr>
+     * 	</table>
      */
     SEAT_LOCATION(true),
 
     /**
      * <table border="1" rules="all">
-     *         <tr>
-     *             <th>Enum Name</th>
-     *             <th>Return Type</th>
-     *             <th>Description</th>
-     *             <th>Requires Async?</th>
-     *             <th>Notes</th>
-     *         </tr>
-     *         <tr>
-     *             <td>DRIVER_DISTRACTION</td>
-     *             <td>DriverDistractionCapability</td>
-     *             <td>Returns DRIVER_DISTRACTION</td>
-     *             <td align=center>N</td>
-     *             <td><strong>Since 7.0</strong> Describes capabilities when the driver is distracted</td>
-     *         </tr>
-     *     </table>
+     * 		<tr>
+     * 			<th>Enum Name</th>
+     * 			<th>Return Type</th>
+     * 			<th>Description</th>
+     * 			<th>Requires Async?</th>
+     * 			<th>Notes</th>
+     * 		</tr>
+     * 		<tr>
+     * 			<td>DRIVER_DISTRACTION</td>
+     * 			<td>DriverDistractionCapability</td>
+     * 			<td>Returns DRIVER_DISTRACTION</td>
+     * 			<td align=center>N</td>
+     * 			<td><strong>Since 7.0</strong> Describes capabilities when the driver is distracted</td>
+     * 		</tr>
+     * 	</table>
      */
     DRIVER_DISTRACTION(true);
 

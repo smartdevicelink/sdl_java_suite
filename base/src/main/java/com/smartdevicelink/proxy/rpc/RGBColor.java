@@ -39,34 +39,34 @@ import java.util.Hashtable;
  * A color class that stores RGB values
  * <p><b> Parameter List</b></p>
  * <table border="1" rules="all">
- *         <tr>
- *             <th>Name</th>
- *             <th>Type</th>
- *             <th>Reg.</th>
- *             <th>Notes</th>
- *             <th>Version Available</th>
- *         </tr>
- *         <tr>
- *             <td>red</td>
- *             <td>Integer</td>
- *             <td>Y</td>
- *             <td><ul><li>minvalue="0"</li><li>maxvalue="255"</li></ul></td>
- *             <td>SmartDeviceLink 5.0</td>
- *         </tr>
- *         <tr>
- *             <td>green</td>
- *             <td>Integer</td>
- *             <td>Y</td>
- *             <td><ul><li>minvalue="0"</li><li>maxvalue="255"</li></ul></td>
- *             <td>SmartDeviceLink 5.0</td>
- *         </tr>
- *         <tr>
- *             <td>blue</td>
- *             <td>Integer</td>
- *             <td>Y</td>
- *             <td><ul><li>minvalue="0"</li><li>maxvalue="255"</li></ul></td>
- *             <td>SmartDeviceLink 5.0</td>
- *         </tr>
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Reg.</th>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>red</td>
+ * 			<td>Integer</td>
+ * 			<td>Y</td>
+ * 			<td><ul><li>minvalue="0"</li><li>maxvalue="255"</li></ul></td>
+ * 			<td>SmartDeviceLink 5.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>green</td>
+ * 			<td>Integer</td>
+ * 			<td>Y</td>
+ * 			<td><ul><li>minvalue="0"</li><li>maxvalue="255"</li></ul></td>
+ * 			<td>SmartDeviceLink 5.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>blue</td>
+ * 			<td>Integer</td>
+ * 			<td>Y</td>
+ * 			<td><ul><li>minvalue="0"</li><li>maxvalue="255"</li></ul></td>
+ * 			<td>SmartDeviceLink 5.0</td>
+ * 		</tr>
  * </table>
  *
  * @since SmartDeviceLink 5.0

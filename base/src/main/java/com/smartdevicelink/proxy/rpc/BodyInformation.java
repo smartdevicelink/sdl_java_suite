@@ -47,111 +47,111 @@ import java.util.List;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- *         <tr>
- *             <th>Param Name</th>
- *             <th>Type</th>
- *             <th>Mandatory</th>
- *             <th>Description</th>
- *             <th>Version</th>
- *         </tr>
- *         <tr>
- *             <td>parkBrakeActive</td>
- *             <td>Boolean</td>
- *             <td>true</td>
- *             <td>Describes, if the park break is active. The information about the park brake: - true, if active - false if not.</td>
- *              <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>ignitionStableStatus</td>
- *             <td>IgnitionStableStatus</td>
- *             <td>true</td>
- *             <td>Describes, if the ignition situation is considered stableThe information about stability of the ignition switch. See {@linkplain IgnitionStableStatus}</td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>ignitionStatus</td>
- *             <td>IgnitionStatus</td>
- *             <td>true</td>
- *             <td>The information about ignition status. See {@linkplain  IgnitionStatus}</td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>parkBrakeActive</td>
- *             <td>Boolean</td>
- *             <td>true</td>
- *             <td>The information about the park brake: - true, if active - false if not.</td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>driverDoorAjar</td>
- *             <td>Boolean</td>
- *             <td>true</td>
- *             <td>The information about the park brake: - true, if active - false if not.</td>
- *             <td>
- *                 @since SmartDeviceLink 2.0.0
- *                 @property-deprecated in SmartDeviceLink 7.1.0
- *             </td>
- *         </tr>
- *         <tr>
- *             <td>passengerDoorAjar</td>
- *             <td>Boolean</td>
- *             <td>true</td>
- *             <td>The information about the park brake: - true, if active - false if not.</td>
- *             <td>
- *                 @since SmartDeviceLink 2.0.0
- *                 @property-deprecated in SmartDeviceLink 7.1.0
- *             </td>
- *         </tr>
- *         <tr>
- *             <td>rearLeftDoorAjar</td>
- *             <td>Boolean</td>
- *             <td>true</td>
- *             <td>The information about the park brake: - true, if active - false if not.</td>
- *             <td>
- *                 @since SmartDeviceLink 2.0.0
- *                 @property-deprecated in SmartDeviceLink 7.1.0
- *             </td>
- *         </tr>
- *         <tr>
- *             <td>rearRightDoorAjar</td>
- *             <td>Boolean</td>
- *             <td>true</td>
- *             <td>References signal "DrStatRr_B_Actl".</td>
- *             <td>
- *                 @since SmartDeviceLink 2.0.0
- *                 @property-deprecated in SmartDeviceLink 7.1.0
- *             </td>
- *         </tr>
- *         <tr>
- *             <td>doorStatuses</td>
- *             <td>List<DoorStatus></td>
- *             <td>Provides status for doors if Ajar/Closed/Locked</td>
- *             <td>N</td>
- *             <td>{"array_min_size": 0, "array_max_size": 100}</td>
- *             <td>
- *                 @since SmartDeviceLink 7.1.0
- *             </td>
- *         </tr>
- *         <tr>
- *             <td>gateStatuses</td>
- *             <td>List<GateStatus></td>
- *             <td>Provides status for trunk/hood/etc. if Ajar/Closed/Locked</td>
- *             <td>N</td>
- *             <td>{"array_min_size": 0, "array_max_size": 100}</td>
- *             <td>
- *                 @since SmartDeviceLink 7.1.0
- *             </td>
- *         </tr>
- *         <tr>
- *             <td>roofStatuses</td>
- *             <td>List<RoofStatus></td>
- *             <td>Provides status for roof/convertible roof/sunroof/moonroof etc., if Closed/Ajar/Removedetc.</td>
- *             <td>N</td>
- *             <td>{"array_min_size": 0, "array_max_size": 100}</td>
- *             <td>
- *                 @since SmartDeviceLink 7.1.0
- *             </td>
- *         </tr>
+ * 		<tr>
+ * 			<th>Param Name</th>
+ * 			<th>Type</th>
+ * 			<th>Mandatory</th>
+ * 			<th>Description</th>
+ * 			<th>Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>parkBrakeActive</td>
+ * 			<td>Boolean</td>
+ * 			<td>true</td>
+ * 			<td>Describes, if the park break is active. The information about the park brake: - true, if active - false if not.</td>
+ *  			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>ignitionStableStatus</td>
+ * 			<td>IgnitionStableStatus</td>
+ * 			<td>true</td>
+ * 			<td>Describes, if the ignition situation is considered stableThe information about stability of the ignition switch. See {@linkplain IgnitionStableStatus}</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>ignitionStatus</td>
+ * 			<td>IgnitionStatus</td>
+ * 			<td>true</td>
+ * 			<td>The information about ignition status. See {@linkplain  IgnitionStatus}</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>parkBrakeActive</td>
+ * 			<td>Boolean</td>
+ * 			<td>true</td>
+ * 			<td>The information about the park brake: - true, if active - false if not.</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>driverDoorAjar</td>
+ * 			<td>Boolean</td>
+ * 			<td>true</td>
+ * 			<td>The information about the park brake: - true, if active - false if not.</td>
+ * 			<td>
+ * 				@since SmartDeviceLink 2.0.0
+ * 				@property-deprecated in SmartDeviceLink 7.1.0
+ * 			</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>passengerDoorAjar</td>
+ * 			<td>Boolean</td>
+ * 			<td>true</td>
+ * 			<td>The information about the park brake: - true, if active - false if not.</td>
+ * 			<td>
+ * 				@since SmartDeviceLink 2.0.0
+ * 				@property-deprecated in SmartDeviceLink 7.1.0
+ * 			</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>rearLeftDoorAjar</td>
+ * 			<td>Boolean</td>
+ * 			<td>true</td>
+ * 			<td>The information about the park brake: - true, if active - false if not.</td>
+ * 			<td>
+ * 				@since SmartDeviceLink 2.0.0
+ * 				@property-deprecated in SmartDeviceLink 7.1.0
+ * 			</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>rearRightDoorAjar</td>
+ * 			<td>Boolean</td>
+ * 			<td>true</td>
+ * 			<td>References signal "DrStatRr_B_Actl".</td>
+ * 			<td>
+ * 				@since SmartDeviceLink 2.0.0
+ * 				@property-deprecated in SmartDeviceLink 7.1.0
+ * 			</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>doorStatuses</td>
+ * 			<td>List<DoorStatus></td>
+ * 			<td>Provides status for doors if Ajar/Closed/Locked</td>
+ * 			<td>N</td>
+ * 			<td>{"array_min_size": 0, "array_max_size": 100}</td>
+ * 			<td>
+ * 				@since SmartDeviceLink 7.1.0
+ * 			</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>gateStatuses</td>
+ * 			<td>List<GateStatus></td>
+ * 			<td>Provides status for trunk/hood/etc. if Ajar/Closed/Locked</td>
+ * 			<td>N</td>
+ * 			<td>{"array_min_size": 0, "array_max_size": 100}</td>
+ * 			<td>
+ * 				@since SmartDeviceLink 7.1.0
+ * 			</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>roofStatuses</td>
+ * 			<td>List<RoofStatus></td>
+ * 			<td>Provides status for roof/convertible roof/sunroof/moonroof etc., if Closed/Ajar/Removedetc.</td>
+ * 			<td>N</td>
+ * 			<td>{"array_min_size": 0, "array_max_size": 100}</td>
+ * 			<td>
+ * 				@since SmartDeviceLink 7.1.0
+ * 			</td>
+ * 		</tr>
  *  </table>
  *
  * @see SubscribeVehicleData
@@ -353,7 +353,7 @@ public class BodyInformation extends RPCStruct {
      * Sets the doorStatuses.
      *
      * @param doorStatuses Provides status for doors if Ajar/Closed/Locked
-     *                     {"array_min_size": 0, "array_max_size": 100}
+     * {"array_min_size": 0, "array_max_size": 100}
      * @since SmartDeviceLink 7.1.0
      */
     public BodyInformation setDoorStatuses(List<DoorStatus> doorStatuses) {
@@ -377,7 +377,7 @@ public class BodyInformation extends RPCStruct {
      * Sets the gateStatuses.
      *
      * @param gateStatuses Provides status for trunk/hood/etc. if Ajar/Closed/Locked
-     *                     {"array_min_size": 0, "array_max_size": 100}
+     * {"array_min_size": 0, "array_max_size": 100}
      * @since SmartDeviceLink 7.1.0
      */
     public BodyInformation setGateStatuses(List<GateStatus> gateStatuses) {
@@ -401,8 +401,8 @@ public class BodyInformation extends RPCStruct {
      * Sets the roofStatuses.
      *
      * @param roofStatuses Provides status for roof/convertible roof/sunroof/moonroof etc., if Closed/Ajar/Removed
-     *                     etc.
-     *                     {"array_min_size": 0, "array_max_size": 100}
+     * etc.
+     * {"array_min_size": 0, "array_max_size": 100}
      * @since SmartDeviceLink 7.1.0
      */
     public BodyInformation setRoofStatuses(List<RoofStatus> roofStatuses) {

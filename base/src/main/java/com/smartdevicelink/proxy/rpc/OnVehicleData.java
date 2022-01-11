@@ -59,86 +59,86 @@ import java.util.List;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- *         <tr>
- *             <th>Param Name</th>
- *             <th>Type</th>
- *             <th>Description</th>
+ * 		<tr>
+ * 			<th>Param Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
  *                 <th> Req.</th>
- *             <th>Notes</th>
- *             <th>Version Available</th>
- *         </tr>
- *         <tr>
- *             <td>Gps</td>
- *             <td>Boolean</td>
- *             <td>GPS data. See {@linkplain com.smartdevicelink.proxy.rpc.GPSData} for details</td>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>Gps</td>
+ * 			<td>Boolean</td>
+ * 			<td>GPS data. See {@linkplain com.smartdevicelink.proxy.rpc.GPSData} for details</td>
  *                 <td>N</td>
- *             <td>Subscribable </td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>Speed</td>
- *             <td>Float</td>
- *             <td>The vehicle speed in kilometers per hour</td>
+ * 			<td>Subscribable </td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>Speed</td>
+ * 			<td>Float</td>
+ * 			<td>The vehicle speed in kilometers per hour</td>
  *                 <td>N</td>
- *             <td>Subscribable</td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>rpm</td>
- *             <td>Integer</td>
- *             <td>The number of revolutions per minute of the engine</td>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>rpm</td>
+ * 			<td>Integer</td>
+ * 			<td>The number of revolutions per minute of the engine</td>
  *                 <td>N</td>
- *             <td>Subscribable</td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>fuelLevel</td>
- *             <td>Boolean</td>
- *             <td>The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec7.0, please see fuelRange.</td>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>fuelLevel</td>
+ * 			<td>Boolean</td>
+ * 			<td>The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec7.0, please see fuelRange.</td>
  *                 <td>N</td>
- *             <td>Subscribable</td>
- *             <td>SmartDeviceLink 7.0.0</td>
- *         </tr>
- *         <tr>
- *             <td>fuelLevel_State</td>
- *             <td>Boolean</td>
- *             <td>The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please see fuelRange.</td>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 7.0.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>fuelLevel_State</td>
+ * 			<td>Boolean</td>
+ * 			<td>The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please see fuelRange.</td>
  *                 <td>N</td>
- *             <td>Subscribable</td>
- *             <td>SmartDeviceLink 7.0.0</td>
- *         </tr>
- *         <tr>
- *             <td>fuelRange</td>
- *             <td>Boolean</td>
- *             <td>The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the vehicle. See struct FuelRange for details.</td>
- *             <td>N</td>
- *             <td>{"array_min_size": 0, "array_max_size": 100}</td>
- *             <td>SmartDeviceLink 5.0.0</td>
- *         </tr>
- *         <tr>
- *             <td>instantFuelConsumption</td>
- *             <td>Float</td>
- *             <td>The instantaneous fuel consumption in micro litres</td>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 7.0.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>fuelRange</td>
+ * 			<td>Boolean</td>
+ * 			<td>The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the vehicle. See struct FuelRange for details.</td>
+ * 			<td>N</td>
+ * 			<td>{"array_min_size": 0, "array_max_size": 100}</td>
+ * 			<td>SmartDeviceLink 5.0.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>instantFuelConsumption</td>
+ * 			<td>Float</td>
+ * 			<td>The instantaneous fuel consumption in micro litres</td>
  *                 <td>N</td>
- *             <td>Subscribable </td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>externalTemperature</td>
- *             <td>Float</td>
- *             <td>The external temperature in degrees celsius.</td>
+ * 			<td>Subscribable </td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>externalTemperature</td>
+ * 			<td>Float</td>
+ * 			<td>The external temperature in degrees celsius.</td>
  *                 <td>N</td>
- *             <td>Subscribable </td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>vin</td>
- *             <td>String</td>
- *             <td>Vehicle identification number.</td>
+ * 			<td>Subscribable </td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>vin</td>
+ * 			<td>String</td>
+ * 			<td>Vehicle identification number.</td>
  *                 <td>N</td>
- *             <td>Subscribable </td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
+ * 			<td>Subscribable </td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
  *      <tr>
  *          <td>gearStatus</td>
  *          <td>GearStatus</td>
@@ -160,151 +160,151 @@ import java.util.List;
  *          <td>N</td>
  *          <td>SmartDeviceLink 7.0.0</td>
  *      </tr>
- *         <tr>
- *             <td>tirePressure</td>
- *             <td>TireStatus</td>
- *             <td>Tire pressure status</td>
+ * 		<tr>
+ * 			<td>tirePressure</td>
+ * 			<td>TireStatus</td>
+ * 			<td>Tire pressure status</td>
  *                 <td>N</td>
- *             <td>Subscribable</td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>odometer</td>
- *             <td>Integer</td>
- *             <td>Odometer in km</td>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>odometer</td>
+ * 			<td>Integer</td>
+ * 			<td>Odometer in km</td>
  *                 <td>N</td>
- *             <td>Subscribable </td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>beltStatus</td>
- *             <td>BeltStatus</td>
- *             <td>The status of the seat belts.</td>
+ * 			<td>Subscribable </td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>beltStatus</td>
+ * 			<td>BeltStatus</td>
+ * 			<td>The status of the seat belts.</td>
  *                 <td>N</td>
- *             <td>Subscribable </td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>bodyInformation</td>
- *             <td>BodyInformation</td>
- *             <td>The body information including power modes.</td>
+ * 			<td>Subscribable </td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>bodyInformation</td>
+ * 			<td>BodyInformation</td>
+ * 			<td>The body information including power modes.</td>
  *                 <td>N</td>
- *             <td>Subscribable</td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>deviceStatus</td>
- *             <td>DeviceStatus</td>
- *             <td>The connected mobile device status including signal and battery strength.</td>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>deviceStatus</td>
+ * 			<td>DeviceStatus</td>
+ * 			<td>The connected mobile device status including signal and battery strength.</td>
  *                 <td>N</td>
- *             <td>Subscribable</td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>eCallInfo</td>
- *             <td>ECallInfo</td>
- *             <td>Emergency Call notification and confirmation data.</td>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>eCallInfo</td>
+ * 			<td>ECallInfo</td>
+ * 			<td>Emergency Call notification and confirmation data.</td>
  *                 <td>N</td>
- *             <td>Subscribable</td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>airbagStatus</td>
- *             <td>AirBagStatus</td>
- *             <td>The status of the air bags.</td>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>airbagStatus</td>
+ * 			<td>AirBagStatus</td>
+ * 			<td>The status of the air bags.</td>
  *                 <td>N</td>
- *             <td>Subscribable</td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>emergencyEvent</td>
- *             <td>EmergencyEvent</td>
- *             <td>Information related to an emergency event (and if it occurred).</td>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>emergencyEvent</td>
+ * 			<td>EmergencyEvent</td>
+ * 			<td>Information related to an emergency event (and if it occurred).</td>
  *                 <td>N</td>
- *             <td>Subscribable</td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>clusterModeStatus</td>
- *             <td>ClusterModeStatus</td>
- *             <td>The status modes of the instrument panel cluster.</td>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>clusterModeStatus</td>
+ * 			<td>ClusterModeStatus</td>
+ * 			<td>The status modes of the instrument panel cluster.</td>
  *                 <td>N</td>
- *             <td>Subscribable</td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>myKey</td>
- *             <td>MyKey</td>
- *             <td>Information related to the MyKey feature.</td>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>myKey</td>
+ * 			<td>MyKey</td>
+ * 			<td>Information related to the MyKey feature.</td>
  *                 <td>N</td>
- *             <td>Subscribable</td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
  *
- *         <tr>
- *             <td>driverBraking</td>
- *             <td>vehicleDataEventStatus</td>
- *             <td>The status of the brake pedal.</td>
+ * 		<tr>
+ * 			<td>driverBraking</td>
+ * 			<td>vehicleDataEventStatus</td>
+ * 			<td>The status of the brake pedal.</td>
  *                 <td>N</td>
- *             <td>Subscribable</td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>wiperStatus</td>
- *             <td>WiperStatus</td>
- *             <td>The status of the wipers</td>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>wiperStatus</td>
+ * 			<td>WiperStatus</td>
+ * 			<td>The status of the wipers</td>
  *                 <td>N</td>
- *             <td> </td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>headLampStatus</td>
- *             <td>headLampStatus</td>
- *             <td>Status of the head lamps</td>
+ * 			<td> </td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>headLampStatus</td>
+ * 			<td>headLampStatus</td>
+ * 			<td>Status of the head lamps</td>
  *                 <td>N</td>
- *             <td></td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>engineTorque</td>
- *             <td>Float</td>
- *             <td>Torque value for engine (in Nm) on non-diesel variants</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>engineTorque</td>
+ * 			<td>Float</td>
+ * 			<td>Torque value for engine (in Nm) on non-diesel variants</td>
  *                 <td>N</td>
- *             <td>minvalue:-1000; maxvalue:2000</td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>engineOilLife</td>
- *             <td>Float</td>
- *             <td>The estimated percentage of remaining oil life of the engine</td>
+ * 			<td>minvalue:-1000; maxvalue:2000</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>engineOilLife</td>
+ * 			<td>Float</td>
+ * 			<td>The estimated percentage of remaining oil life of the engine</td>
  *                 <td>N</td>
- *             <td>minvalue:0; maxvalue:100</td>
- *             <td>SmartDeviceLink 5.0</td>
- *         </tr>
- *         <tr>
- *             <td>accPedalPosition</td>
- *             <td>Float</td>
- *             <td>Accelerator pedal position (percentage depressed)</td>
+ * 			<td>minvalue:0; maxvalue:100</td>
+ * 			<td>SmartDeviceLink 5.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>accPedalPosition</td>
+ * 			<td>Float</td>
+ * 			<td>Accelerator pedal position (percentage depressed)</td>
  *                 <td>N</td>
- *             <td>minvalue: 0; maxvalue:100</td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>steeringWheelAngle</td>
- *             <td>Float</td>
- *             <td>Current angle of the steering wheel (in deg)</td>
+ * 			<td>minvalue: 0; maxvalue:100</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>steeringWheelAngle</td>
+ * 			<td>Float</td>
+ * 			<td>Current angle of the steering wheel (in deg)</td>
  *                 <td>N</td>
- *             <td> minvalue: -2000; maxvalue:2000</td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *          <tr>
- *             <td>cloudAppVehicleID</td>
- *             <td>String</td>
- *             <td>ID for the vehicle when connecting to cloud applications</td>
- *                 <td>N</td>
- *                 <td></td>
- *             <td>SmartDeviceLink 5.1 </td>
- *         </tr>
+ * 			<td> minvalue: -2000; maxvalue:2000</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 	     <tr>
+ * 			<td>cloudAppVehicleID</td>
+ * 			<td>String</td>
+ * 			<td>ID for the vehicle when connecting to cloud applications</td>
+ * 				<td>N</td>
+ * 				<td></td>
+ * 			<td>SmartDeviceLink 5.1 </td>
+ * 		</tr>
  *      <tr>
  *          <td>handsOffSteering</td>
  *          <td>Boolean</td>
@@ -326,7 +326,7 @@ import java.util.List;
  *          <td>N</td>
  *          <td></td>
  *          <td>
- *          @since SmartDeviceLink 7.1.0
+     *          @since SmartDeviceLink 7.1.0
  *          </td>
  *          </tr>
  *      <tr>
@@ -409,7 +409,6 @@ public class OnVehicleData extends RPCNotification {
      * @since SmartDeviceLink 7.1.0
      */
     public static final String KEY_SEAT_OCCUPANCY = "seatOccupancy";
-
     public OnVehicleData() {
         super(FunctionID.ON_VEHICLE_DATA.toString());
     }
@@ -495,8 +494,8 @@ public class OnVehicleData extends RPCNotification {
      * Sets the externalTemperature.
      *
      * @param externalTemperature The external temperature in degrees celsius. This parameter is deprecated starting RPC
-     *                            Spec 7.1.0, please see climateData.
-     *                            {"num_min_value": -40.0, "num_max_value": 100.0}
+     * Spec 7.1.0, please see climateData.
+     * {"num_min_value": -40.0, "num_max_value": 100.0}
      * @since SmartDeviceLink 2.0.0
      * @deprecated in SmartDeviceLink 7.1.0
      */
@@ -924,7 +923,6 @@ public class OnVehicleData extends RPCNotification {
     public ClimateData getClimateData() {
         return (ClimateData) getObject(ClimateData.class, KEY_CLIMATE_DATA);
     }
-
     /**
      * Sets the seatOccupancy.
      *

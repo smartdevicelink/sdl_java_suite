@@ -88,7 +88,6 @@ public class VideoStreamingParameters {
 
     /**
      * deprecated constructor of VideoStreamingParameters. This constructor will be removed in the future version.
-     *
      * @param displayDensity
      * @param frameRate
      * @param bitrate
@@ -110,7 +109,6 @@ public class VideoStreamingParameters {
 
     /**
      * new constructor of VideoStreamingParameters, which now has stableFrameRate param.
-     *
      * @param displayDensity
      * @param frameRate
      * @param bitrate

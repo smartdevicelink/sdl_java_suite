@@ -69,45 +69,45 @@ import java.util.List;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- *         <tr>
- *             <th>Param Name</th>
- *             <th>Type</th>
- *             <th>Description</th>
+ * 		<tr>
+ * 			<th>Param Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
  *                 <th> Req.</th>
- *             <th>Notes</th>
- *             <th>Version Available</th>
- *         </tr>
- *         <tr>
- *             <td>cmdID</td>
- *             <td> Integer</td>
- *             <td>unique ID of the command to add</td>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>cmdID</td>
+ * 			<td> Integer</td>
+ * 			<td>unique ID of the command to add</td>
  *                 <td>Y</td>
- *             <td> minvalue:0; maxvalue:2000000000</td>
- *             <td>SmartDeviceLink 1.0</td>
- *         <tr>
- *             <td>menuParams</td>
- *             <td>ButtonName</td>
- *             <td>Name of the button to unsubscribe.</td>
+ * 			<td> minvalue:0; maxvalue:2000000000</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		<tr>
+ * 			<td>menuParams</td>
+ * 			<td>ButtonName</td>
+ * 			<td>Name of the button to unsubscribe.</td>
  *                 <td>Y</td>
- *             <td></td>
- *             <td>SmartDeviceLink 1.0</td>
- *         </tr>
- *         <tr>
- *             <td>vrCommands</td>
- *             <td>String</td>
- *             <td><p>An array of strings to be used as VR synonyms for this command.</p>        <p>If this array is provided, it may not be empty.</p></td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>vrCommands</td>
+ * 			<td>String</td>
+ * 			<td><p>An array of strings to be used as VR synonyms for this command.</p>    	<p>If this array is provided, it may not be empty.</p></td>
  *                 <td>N</td>
- *             <td>minsize:1; maxsize:100</td>
- *             <td>SmartDeviceLink 1.0</td>
- *         <tr>
- *             <td>cmdIcon</td>
- *             <td>Image</td>
- *             <td><p>Image struct determining whether static or dynamic icon.</p><p>If omitted on supported displays, no (or the default if applicable) icon shall be displayed.</p></td>
+ * 			<td>minsize:1; maxsize:100</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		<tr>
+ * 			<td>cmdIcon</td>
+ * 			<td>Image</td>
+ * 			<td><p>Image struct determining whether static or dynamic icon.</p><p>If omitted on supported displays, no (or the default if applicable) icon shall be displayed.</p></td>
  *                 <td>N</td>
- *             <td></td>
- *             <td>SmartDeviceLink 1.0</td>
- *         </tr>
- *         <tr>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ *     	<tr>
  *          <td>secondaryImage</td>
  *          <td>Image</td>
  *          <td>Optional secondary image struct for menu cell</td>

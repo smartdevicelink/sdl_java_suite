@@ -24,7 +24,7 @@ import static junit.framework.TestCase.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class TransportBrokerTest { //FIXME this test class needs to be fixed. At this point these tests are not helpful
     RouterServiceValidator rsvp;
-    //      public TransportBrokerThread(Context context, String appId, ComponentName service){
+    //		public TransportBrokerThread(Context context, String appId, ComponentName service){
 
     @Before
     public void setUp() throws Exception {

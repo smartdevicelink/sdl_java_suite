@@ -42,34 +42,34 @@ import java.util.Hashtable;
  * Specifies the version number of the SDL V4 interface. This is used by both the application and SDL to declare what interface version each is using.
  * <p><b> Parameter List</b></p>
  * <table border="1" rules="all">
- *         <tr>
- *             <th>Name</th>
- *             <th>Type</th>
- *             <th>Description</th>
- *             <th>SmartDeviceLink Ver. Available</th>
- *         </tr>
- *         <tr>
- *             <td>majorVersion</td>
- *             <td>Integer</td>
- *             <td>
- *                     <ul>
- *                     <li>minvalue="1"</li>
- *                     <li>maxvalue="10"</li>
- *                     </ul>
- *             </td>
- *             <td>SmartDeviceLink 1.0</td>
- *         </tr>
- *         <tr>
- *             <td>minorVersion</td>
- *             <td>Integer</td>
- *             <td>
- *                     <ul>
- *                     <li>minvalue="0"</li>
- *                     <li>maxvalue="1000"</li>
- *                     </ul>
- *             </td>
- *             <td>SmartDeviceLink 1.0</td>
- *         </tr>
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ * 			<th>SmartDeviceLink Ver. Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>majorVersion</td>
+ * 			<td>Integer</td>
+ * 			<td>
+ * 					<ul>
+ * 					<li>minvalue="1"</li>
+ * 				    <li>maxvalue="10"</li>
+ * 					</ul>
+ * 			</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>minorVersion</td>
+ * 			<td>Integer</td>
+ * 			<td>
+ * 					<ul>
+ * 					<li>minvalue="0"</li>
+ * 				    <li>maxvalue="1000"</li>
+ * 					</ul>
+ * 			</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
  * </table>
  *
  * @since SmartDeviceLink 1.0

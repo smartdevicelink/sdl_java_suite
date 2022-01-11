@@ -43,34 +43,34 @@ import java.util.List;
  * Defining sets of HMI levels, which are permitted or prohibited for a given RPC.
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- *         <tr>
- *             <th>Name</th>
- *             <th>Type</th>
- *             <th>Description</th>
- *             <th>SmartDeviceLink Ver. Available</th>
- *         </tr>
- *         <tr>
- *             <td>allowed</td>
- *             <td>HMILevel</td>
- *             <td>A set of all HMI levels that are permitted for this given RPC.
- *                     <ul>
- *                     <li>Min: 0</li>
- *                     <li>Max: 100</li>
- *                     </ul>
- *             </td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
- *         <tr>
- *             <td>userDisallowed</td>
- *             <td>HMILevel</td>
- *             <td>A set of all HMI levels that are prohibited for this given RPC.
- *                     <ul>
- *                     <li>Min: 0</li>
- *                     <li>Max: 100</li>
- *                     </ul>
- *             </td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ * 			<th>SmartDeviceLink Ver. Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>allowed</td>
+ * 			<td>HMILevel</td>
+ * 			<td>A set of all HMI levels that are permitted for this given RPC.
+ * 					<ul>
+ * 					<li>Min: 0</li>
+ * 					<li>Max: 100</li>
+ * 					</ul>
+ * 			</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>userDisallowed</td>
+ * 			<td>HMILevel</td>
+ * 			<td>A set of all HMI levels that are prohibited for this given RPC.
+ * 					<ul>
+ * 					<li>Min: 0</li>
+ * 					<li>Max: 100</li>
+ * 					</ul>
+ * 			</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
  *  </table>
  *
  * @since SmartDeviceLink 2.0

@@ -67,7 +67,6 @@ public enum VehicleDataType {
     VEHICLEDATA_CLIMATEDATA,
     /**
      * Notifies EXTERNTEMPData may be subscribed
-     *
      * @deprecated since SmartDeviceLink 7.1.0
      */
     @Deprecated
@@ -193,7 +192,7 @@ public enum VehicleDataType {
      * @since SmartDeviceLink 7.0.0
      */
     VEHICLEDATA_GEARSTATUS,
-    /**
+     /**
      * @since SmartDeviceLink 7.1.0
      */
     VEHICLEDATA_SEATOCCUPANCY;

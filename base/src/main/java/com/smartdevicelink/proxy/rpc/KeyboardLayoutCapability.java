@@ -79,8 +79,7 @@ public class KeyboardLayoutCapability extends RPCStruct {
     /**
      * Constructs a new KeyboardLayoutCapability object
      */
-    public KeyboardLayoutCapability() {
-    }
+    public KeyboardLayoutCapability() { }
 
     /**
      * Constructs a new KeyboardLayoutCapability object indicated by the Hashtable parameter
@@ -96,7 +95,7 @@ public class KeyboardLayoutCapability extends RPCStruct {
      *
      * @param keyboardLayout
      * @param numConfigurableKeys Number of keys available for special characters, App can customize as per their needs.
-     *                            {"num_max_value": 10, "num_min_value": 0}
+     * {"num_max_value": 10, "num_min_value": 0}
      */
     public KeyboardLayoutCapability(@NonNull KeyboardLayout keyboardLayout, @NonNull Integer numConfigurableKeys) {
         this();
@@ -127,7 +126,7 @@ public class KeyboardLayoutCapability extends RPCStruct {
      * Sets the numConfigurableKeys.
      *
      * @param numConfigurableKeys Number of keys available for special characters, App can customize as per their needs.
-     *                            {"num_max_value": 10, "num_min_value": 0}
+     * {"num_max_value": 10, "num_min_value": 0}
      */
     public KeyboardLayoutCapability setNumConfigurableKeys(@NonNull Integer numConfigurableKeys) {
         setValue(KEY_NUM_CONFIGURABLE_KEYS, numConfigurableKeys);

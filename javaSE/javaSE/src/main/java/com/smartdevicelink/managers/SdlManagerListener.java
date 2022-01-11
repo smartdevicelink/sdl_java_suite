@@ -72,7 +72,6 @@ public interface SdlManagerListener extends BaseSdlManagerListener {
     /**
      * A way to determine if this SDL session should continue to be active while
      * connected to the determined system information of the vehicle.
-     *
      * @param systemInfo systemInfo - the system information of the vehicle that this session is currently active on.
      * @return Return true if this session should continue, false if the session should end
      */

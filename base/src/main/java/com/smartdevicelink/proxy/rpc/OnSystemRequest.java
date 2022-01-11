@@ -52,71 +52,71 @@ import java.util.List;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- *         <tr>
- *             <th>Name</th>
- *             <th>Type</th>
- *             <th>Description</th>
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
  *                 <th>Reg.</th>
  *               <th>Notes</th>
- *             <th>Version</th>
- *         </tr>
- *         <tr>
- *             <td>requestType</td>
- *             <td>RequestType</td>
- *             <td>The type of system request.</td>
+ * 			<th>Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>requestType</td>
+ * 			<td>RequestType</td>
+ * 			<td>The type of system request.</td>
  *                 <td>Y</td>
  *                 <td></td>
- *             <td>SmartDeviceLink 2.3.2 </td>
- *         </tr>
- *         </tr>
- *         <tr>
- *             <td>requestSubType</td>
- *             <td>String</td>
- *             <td>This parameter is filled for supporting OEM proprietary data exchanges.</td>
+ * 			<td>SmartDeviceLink 2.3.2 </td>
+ * 		</tr>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>requestSubType</td>
+ * 			<td>String</td>
+ * 			<td>This parameter is filled for supporting OEM proprietary data exchanges.</td>
  *                 <td>N</td>
  *                 <td>Max Length: 255</td>
- *             <td>SmartDeviceLink 5.0</td>
- *         </tr>
- *         <tr>
- *             <td>url</td>
- *             <td>Array of Strings</td>
- *             <td>Optional URL for HTTP requests.If blank, the binary data shall be forwarded to the app.If not blank, the binary data shall be forwarded to the url with a provided timeout in seconds.</td>
+ * 			<td>SmartDeviceLink 5.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>url</td>
+ * 			<td>Array of Strings</td>
+ * 			<td>Optional URL for HTTP requests.If blank, the binary data shall be forwarded to the app.If not blank, the binary data shall be forwarded to the url with a provided timeout in seconds.</td>
  *                 <td>N</td>
  *                 <td>minsize:1;</td>
- *             <td>SmartDeviceLink 2.3.2 </td>
- *         </tr>
- *         <tr>
- *             <td>timeout</td>
- *             <td>Integer</td>
- *             <td>Optional timeout for HTTP requests;Required if a URL is provided</td>
+ * 			<td>SmartDeviceLink 2.3.2 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>timeout</td>
+ * 			<td>Integer</td>
+ * 			<td>Optional timeout for HTTP requests;Required if a URL is provided</td>
  *                 <td>N</td>
  *                 <td>minvalue:0; maxvalue: 2000000000</td>
- *             <td>SmartDeviceLink </td>
- *         </tr>
- *         <tr>
- *             <td>fileType</td>
- *             <td>FileType</td>
- *             <td>Optional file type (meant for HTTP file requests).</td>
+ * 			<td>SmartDeviceLink </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>fileType</td>
+ * 			<td>FileType</td>
+ * 			<td>Optional file type (meant for HTTP file requests).</td>
  *                 <td>N</td>
  *                 <td></td>
- *             <td>SmartDeviceLink 2.3.2 </td>
- *         </tr>
- *         <tr>
- *             <td>offset</td>
- *             <td>Float</td>
- *             <td>Optional offset in bytes for resuming partial data chunks</td>
+ * 			<td>SmartDeviceLink 2.3.2 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>offset</td>
+ * 			<td>Float</td>
+ * 			<td>Optional offset in bytes for resuming partial data chunks</td>
  *                 <td>N</td>
  *                 <td>minvalue:0; maxvalue:100000000000</td>
- *             <td>SmartDeviceLink 2.3.2 </td>
- *         </tr>
- *         <tr>
- *             <td>length</td>
- *             <td>Float</td>
- *             <td>Optional length in bytes for resuming partial data chunks</td>
+ * 			<td>SmartDeviceLink 2.3.2 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>length</td>
+ * 			<td>Float</td>
+ * 			<td>Optional length in bytes for resuming partial data chunks</td>
  *                 <td>N</td>
  *                 <td>minvalue: 0; maxvalue:100000000000</td>
- *             <td>SmartDeviceLink 2.3.2 </td>
- *         </tr>
+ * 			<td>SmartDeviceLink 2.3.2 </td>
+ * 		</tr>
  *  </table>
  *
  * @since SmartDeviceLink 2.3.2

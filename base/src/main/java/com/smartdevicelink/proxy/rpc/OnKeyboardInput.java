@@ -44,30 +44,30 @@ import java.util.Hashtable;
  * <p></p>
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- *         <tr>
- *             <th>Name</th>
- *             <th>Type</th>
- *             <th>Description</th>
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
  *                 <th>Reg.</th>
  *               <th>Notes</th>
- *             <th>Version</th>
- *         </tr>
- *         <tr>
- *             <td>event</td>
- *             <td>KeyboardEvent</td>
- *             <td>On-screen keyboard input data.</td>
+ * 			<th>Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>event</td>
+ * 			<td>KeyboardEvent</td>
+ * 			<td>On-screen keyboard input data.</td>
  *                 <td>Y</td>
  *                 <td></td>
- *             <td>SmartDeviceLink 3.0</td>
- *         </tr>
- *         <tr>
- *             <td>data</td>
- *             <td>String</td>
- *             <td>On-screen keyboard input data.For dynamic keypress events, this will be the current compounded string of entry text.For entry cancelled and entry aborted events, this data param will be omitted.</td>
+ * 			<td>SmartDeviceLink 3.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>data</td>
+ * 			<td>String</td>
+ * 			<td>On-screen keyboard input data.For dynamic keypress events, this will be the current compounded string of entry text.For entry cancelled and entry aborted events, this data param will be omitted.</td>
  *                 <td></td>
  *                 <td>Maxlength: 500</td>
- *             <td>SmartDeviceLink 3.0 </td>
- *         </tr>
+ * 			<td>SmartDeviceLink 3.0 </td>
+ * 		</tr>
  *
  *  </table>
  */

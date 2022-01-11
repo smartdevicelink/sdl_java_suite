@@ -34,7 +34,6 @@ package com.smartdevicelink.managers.file;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
-
 import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.util.DebugTool;

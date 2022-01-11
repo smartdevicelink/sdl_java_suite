@@ -45,84 +45,84 @@ import java.util.List;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- *         <tr>
- *             <th>Name</th>
- *             <th>Type</th>
- *             <th>Mandatory</th>
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Mandatory</th>
  *                 <th> Additional</th>
- *             <th>Description</th>
- *         </tr>
- *         <tr>
- *             <td>language</td>
- *             <td>Language</td>
- *             <td>false</td>
+ * 			<th>Description</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>language</td>
+ * 			<td>Language</td>
+ * 			<td>false</td>
  *                 <td></td>
- *             <td>The keyboard language. </td>
- *         </tr>
- *         <tr>
- *             <td>keyboardLayout</td>
- *             <td>KeyboardLayout</td>
- *             <td>false</td>
+ * 			<td>The keyboard language. </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>keyboardLayout</td>
+ * 			<td>KeyboardLayout</td>
+ * 			<td>false</td>
  *                 <td></td>
- *             <td>Desired keyboard layout.</td>
- *         </tr>
- *         <tr>
- *             <td>sendDynamicEntry</td>
- *             <td>Boolean</td>
- *             <td>false</td>
+ * 			<td>Desired keyboard layout.</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>sendDynamicEntry</td>
+ * 			<td>Boolean</td>
+ * 			<td>false</td>
  *                 <td></td>
- *             <td>In this mode, all key presses will be sent as they occur. If disabled, entire string of text will be returned only once submitted by user.If omitted, this value will be set to FALSE.</td>
- *         </tr>
- *         <tr>
- *             <td>keypressMode</td>
- *             <td>KeypressMode</td>
- *             <td>False</td>
+ * 			<td>In this mode, all key presses will be sent as they occur. If disabled, entire string of text will be returned only once submitted by user.If omitted, this value will be set to FALSE.</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>keypressMode</td>
+ * 			<td>KeypressMode</td>
+ * 			<td>False</td>
  *                 <td></td>
- *             <td>Desired keypress mode.If omitted, this value will be set to RESEND_CURRENT_ENTRY. </td>
- *         </tr>
- *         <tr>
- *             <td>limitedCharacterList</td>
- *             <td>String</td>
- *             <td>false</td>
+ * 			<td>Desired keypress mode.If omitted, this value will be set to RESEND_CURRENT_ENTRY. </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>limitedCharacterList</td>
+ * 			<td>String</td>
+ * 			<td>false</td>
  *                 <td>Array = true maxLength = 1 minsize = 1 maxsize = 100</td>
- *             <td>Array of keyboard characters to enable. All omitted characters will be greyed out (disabled) on the keyboard. If omitted, the entire keyboard will be enabled.</td>
- *         </tr>
+ * 			<td>Array of keyboard characters to enable. All omitted characters will be greyed out (disabled) on the keyboard. If omitted, the entire keyboard will be enabled.</td>
+ * 		</tr>
  *
- *         <tr>
- *             <td>autoCompleteText</td>
- *             <td>String</td>
- *             <td>false</td>
+ * 		<tr>
+ * 			<td>autoCompleteText</td>
+ * 			<td>String</td>
+ * 			<td>false</td>
  *                 <td>maxlength = 1000 </td>
- *             <td>Allows an app to prepopulate the text field with a suggested or completed entry as the user types.</td>
- *         </tr>
- *         <tr>
- *             <td>autoCompleteList</td>
- *             <td>String</td>
- *             <td>false</td>
+ * 			<td>Allows an app to prepopulate the text field with a suggested or completed entry as the user types.</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>autoCompleteList</td>
+ * 			<td>String</td>
+ * 			<td>false</td>
  *                 <td>Array = true maxlength = 1000 minsize = 0 maxsize = 100</td>
- *             <td>Allows an app to prepopulate the text field with a list of suggested or completed entry as the user types. Set to an empty array to remove the auto-complete list from the screen</td>
- *         </tr>
- *         <tr>
- *             <td>maskInputCharacters</td>
- *             <td>KeyboardInputMask</td>
- *             <td>false</td>
- *             <td>
- *                 @since SmartDeviceLink 7.1.0
- *             </td>
- *             <td>Allows an app to mask entered characters on HMI</td>
- *         </tr>
- *         <tr>
- *             <td>customKeys</td>
- *             <td>List<String></td>
- *             <td>false</td>
- *             <td>
- *                 @since SmartDeviceLink 7.1.0
- *             </td>
- *             <td>
- *                 Array of special characters to show in customizable keys. If omitted, keyboard will show default special characters
- *                 {"string_max_length": 1, "string_min_length": 1, "array_max_size": 10, "array_min_size": 1}
- *             </td>
- *         </tr>
+ * 			<td>Allows an app to prepopulate the text field with a list of suggested or completed entry as the user types. Set to an empty array to remove the auto-complete list from the screen</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>maskInputCharacters</td>
+ * 			<td>KeyboardInputMask</td>
+ * 			<td>false</td>
+ * 			<td>
+ * 				@since SmartDeviceLink 7.1.0
+ * 			</td>
+ * 			<td>Allows an app to mask entered characters on HMI</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>customKeys</td>
+ * 			<td>List<String></td>
+ * 			<td>false</td>
+ * 			<td>
+ * 				@since SmartDeviceLink 7.1.0
+ * 			</td>
+ * 			<td>
+ * 				Array of special characters to show in customizable keys. If omitted, keyboard will show default special characters 
+ * 				{"string_max_length": 1, "string_min_length": 1, "array_max_size": 10, "array_min_size": 1}
+ * 			</td>
+ * 		</tr>
  *  </table>
  *
  * @since SmartDeviceLink 3.0
@@ -266,8 +266,8 @@ public class KeyboardProperties extends RPCStruct {
      * Sets the customKeys.
      *
      * @param customKeys Array of special characters to show in customizable keys. If omitted, keyboard will show
-     *                   default special characters
-     *                   {"string_max_length": 1, "string_min_length": 1, "array_max_size": 10, "array_min_size": 1}
+     * default special characters
+     * {"string_max_length": 1, "string_min_length": 1, "array_max_size": 10, "array_min_size": 1}
      * @since SmartDeviceLink 7.1.0
      */
     public KeyboardProperties setCustomKeys(List<String> customKeys) {

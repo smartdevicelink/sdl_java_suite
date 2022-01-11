@@ -79,8 +79,7 @@ public class DoorStatus extends RPCStruct {
     /**
      * Constructs a new DoorStatus object
      */
-    public DoorStatus() {
-    }
+    public DoorStatus() { }
 
     /**
      * Constructs a new DoorStatus object indicated by the Hashtable parameter

@@ -32,7 +32,6 @@
 package com.smartdevicelink.util;
 
 import androidx.annotation.NonNull;
-
 import com.smartdevicelink.BuildConfig;
 
 import java.io.ByteArrayOutputStream;

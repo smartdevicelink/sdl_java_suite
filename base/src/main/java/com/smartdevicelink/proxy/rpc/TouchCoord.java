@@ -44,30 +44,30 @@ import java.util.Hashtable;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- *         <tr>
- *             <th>Name</th>
- *             <th>Type</th>
- *             <th>Description</th>
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
  *                 <th>Reg.</th>
  *               <th>Notes</th>
- *             <th> Version</th>
- *         </tr>
- *         <tr>
- *             <td>x</td>
- *             <td>Integer</td>
- *             <td>The x coordinate of the touch.</td>
+ * 			<th> Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>x</td>
+ * 			<td>Integer</td>
+ * 			<td>The x coordinate of the touch.</td>
  *                 <td>Y</td>
  *                 <td>minvalue = 0; maxvalue = 10000</td>
- *             <td>SmartDeviceLink 3.0 </td>
- *         </tr>
- *         <tr>
- *             <td>y</td>
- *             <td>Integer</td>
- *             <td>The y coordinate of the touch.</td>
+ * 			<td>SmartDeviceLink 3.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>y</td>
+ * 			<td>Integer</td>
+ * 			<td>The y coordinate of the touch.</td>
  *                 <td>Y</td>
  *                 <td>minvalue = 0; maxvalue = 10000</td>
- *             <td>SmartDeviceLink 3.0 </td>
- *         </tr>
+ * 			<td>SmartDeviceLink 3.0 </td>
+ * 		</tr>
  *  </table>
  *
  * @see SoftButtonCapabilities

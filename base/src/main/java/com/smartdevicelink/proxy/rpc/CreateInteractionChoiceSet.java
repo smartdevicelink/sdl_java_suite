@@ -53,30 +53,30 @@ import java.util.List;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- *         <tr>
- *             <th>Name</th>
- *             <th>Type</th>
- *             <th>Description</th>
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
  *                 <th>Reg.</th>
  *               <th>Notes</th>
- *             <th>Version</th>
- *         </tr>
- *         <tr>
- *             <td>interactionChoiceSetID</td>
- *             <td>Integer</td>
- *             <td>A unique ID that identifies the Choice Set</td>
+ * 			<th>Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>interactionChoiceSetID</td>
+ * 			<td>Integer</td>
+ * 			<td>A unique ID that identifies the Choice Set</td>
  *                 <td>Y</td>
  *                 <td>Min Value: 0; Max Value: 2000000000</td>
- *             <td>SmartDeviceLink 1.0</td>
- *         </tr>
- *         <tr>
- *             <td>choiceSet</td>
- *             <td>Choice[]</td>
- *             <td>Array of one or more elements.</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>choiceSet</td>
+ * 			<td>Choice[]</td>
+ * 			<td>Array of one or more elements.</td>
  *                 <td>Y</td>
  *                 <td>Min Value: 1; Max Value: 100</td>
- *             <td>SmartDeviceLink 1.0 </td>
- *         </tr>
+ * 			<td>SmartDeviceLink 1.0 </td>
+ * 		</tr>
  *  </table>
  *
  *
@@ -89,13 +89,13 @@ import java.util.List;
  * Indicates that the corresponding request either failed or succeeded. If the response returns with a SUCCESS result code, this means the Choice Set was created.
  *
  * <p><b>Non-default Result Codes:</b></p>
- *     <p>SUCCESS</p>
- *     <p>INVALID_DATA</p>
- *     <p>OUT_OF_MEMORY</p>
- *     <p>TOO_MANY_PENDING_REQUESTS</p>
- *     <p>APPLICATION_NOT_REGISTERED</p>
- *     <p>GENERIC_ERROR</p>
- * <p>    REJECTED</p>
+ * 	<p>SUCCESS</p>
+ * 	<p>INVALID_DATA</p>
+ * 	<p>OUT_OF_MEMORY</p>
+ * 	<p>TOO_MANY_PENDING_REQUESTS</p>
+ * 	<p>APPLICATION_NOT_REGISTERED</p>
+ * 	<p>GENERIC_ERROR</p>
+ * <p>	REJECTED</p>
  * <p> INVALID_ID</p>
  * <p> DUPLICATE_NAME</p>
  *  <p>UNSUPPORTED_RESOURCE </p>

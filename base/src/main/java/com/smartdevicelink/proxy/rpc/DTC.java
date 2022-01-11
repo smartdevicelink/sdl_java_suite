@@ -39,22 +39,22 @@ import java.util.Hashtable;
  * String containing hexadecimal identifier as well as other common names.
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- *         <tr>
- *             <th>Name</th>
- *             <th>Type</th>
- *             <th>Description</th>
- *             <th>SmartDeviceLink Ver. Available</th>
- *         </tr>
- *         <tr>
- *             <td>statusByte</td>
- *             <td>String</td>
- *             <td>Hexadecimal byte string
- *                  <ul>
- *                     <li>Maxlength = 500</li>
- *                  </ul>
- *             </td>
- *             <td>SmartDeviceLink 2.0</td>
- *         </tr>
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ * 			<th>SmartDeviceLink Ver. Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>statusByte</td>
+ * 			<td>String</td>
+ * 			<td>Hexadecimal byte string
+ * 				 <ul>
+ * 					<li>Maxlength = 500</li>
+ * 				 </ul>
+ * 			</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
  *  </table>
  *
  * @since SmartDeviceLink 2.0

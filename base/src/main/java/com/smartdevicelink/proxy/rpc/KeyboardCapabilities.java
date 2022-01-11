@@ -37,6 +37,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 /**
+ *
  * <p><b>Parameter List</b></p>
  *
  * <table border="1" rules="all">
@@ -65,7 +66,6 @@ import java.util.List;
  *      <td></td>
  *  </tr>
  * </table>
- *
  * @since SmartDeviceLink 7.1.0
  */
 public class KeyboardCapabilities extends RPCStruct {
@@ -76,8 +76,7 @@ public class KeyboardCapabilities extends RPCStruct {
     /**
      * Constructs a new KeyboardCapabilities object
      */
-    public KeyboardCapabilities() {
-    }
+    public KeyboardCapabilities() { }
 
     /**
      * Constructs a new KeyboardCapabilities object indicated by the Hashtable parameter
@@ -92,7 +91,7 @@ public class KeyboardCapabilities extends RPCStruct {
      * Sets the maskInputCharactersSupported.
      *
      * @param maskInputCharactersSupported Availability of capability to mask input characters using keyboard. True: Available,
-     *                                     False: Not Available
+     * False: Not Available
      */
     public KeyboardCapabilities setMaskInputCharactersSupported(Boolean maskInputCharactersSupported) {
         setValue(KEY_MASK_INPUT_CHARACTERS_SUPPORTED, maskInputCharactersSupported);
@@ -113,7 +112,7 @@ public class KeyboardCapabilities extends RPCStruct {
      * Sets the supportedKeyboards.
      *
      * @param supportedKeyboards Capabilities of supported keyboard layouts by HMI.
-     *                           {"array_max_size": 1000, "array_min_size": 1}
+     * {"array_max_size": 1000, "array_min_size": 1}
      */
     public KeyboardCapabilities setSupportedKeyboards(List<KeyboardLayoutCapability> supportedKeyboards) {
         setValue(KEY_SUPPORTED_KEYBOARDS, supportedKeyboards);

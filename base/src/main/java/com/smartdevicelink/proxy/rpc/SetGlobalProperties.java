@@ -54,78 +54,78 @@ import java.util.List;
  * <p><b>Parameter List</b></p>
  *
  * <table border="1" rules="all">
- *         <tr>
- *             <th>Param Name</th>
- *             <th>Type</th>
- *             <th>Description</th>
+ * 		<tr>
+ * 			<th>Param Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
  *                 <th> Req.</th>
- *             <th>Notes</th>
- *             <th>Version Available</th>
- *         </tr>
- *         <tr>
- *             <td>helpPrompt</td>
- *             <td>TTSChunk</td>
- *             <td>The help prompt. An array of text chunks of type TTSChunk. See {@linkplain TTSChunk}.The array must have at least one item.</td>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>helpPrompt</td>
+ * 			<td>TTSChunk</td>
+ * 			<td>The help prompt. An array of text chunks of type TTSChunk. See {@linkplain TTSChunk}.The array must have at least one item.</td>
  *                 <td>N</td>
- *             <td>Array must have at least one element.<p>Only optional it timeoutPrompt has been specified.</p>minsize:1; maxsize: 100</td>
- *             <td>SmartDeviceLink 1.0</td>
- *         </tr>
- *         <tr>
- *             <td>timeoutPrompt</td>
- *             <td>TTSChunk</td>
- *             <td>Array of one or more TTSChunk elements specifying the help prompt used in an interaction started by PTT.</td>
+ * 			<td>Array must have at least one element.<p>Only optional it timeoutPrompt has been specified.</p>minsize:1; maxsize: 100</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>timeoutPrompt</td>
+ * 			<td>TTSChunk</td>
+ * 			<td>Array of one or more TTSChunk elements specifying the help prompt used in an interaction started by PTT.</td>
  *                 <td>N</td>
- *             <td>Array must have at least one element. Only optional it helpPrompt has been specified <p>minsize: 1; maxsize: 100</p></td>
- *             <td>SmartDeviceLink 1.0</td>
- *         </tr>
- *         <tr>
- *             <td>vrHelpTitle</td>
- *             <td>string</td>
- *             <td>Text, which is shown as title of the VR help screen used in an interaction started by PTT.</td>
+ * 			<td>Array must have at least one element. Only optional it helpPrompt has been specified <p>minsize: 1; maxsize: 100</p></td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>vrHelpTitle</td>
+ * 			<td>string</td>
+ * 			<td>Text, which is shown as title of the VR help screen used in an interaction started by PTT.</td>
  *                 <td>N</td>
- *             <td>If omitted on supported displays, the default SDL help title will be used. <p>If omitted and one or more vrHelp items are provided, the request will be rejected.</p>maxLength: 500</td>
- *             <td>SmartDeviceLink 1.0</td>
- *         </tr>
- *         <tr>
- *             <td>vrHelp</td>
- *             <td>VrHelp</td>
- *             <td>Items listed in the VR help screen used in an interaction started by PTT.</td>
+ * 			<td>If omitted on supported displays, the default SDL help title will be used. <p>If omitted and one or more vrHelp items are provided, the request will be rejected.</p>maxLength: 500</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>vrHelp</td>
+ * 			<td>VrHelp</td>
+ * 			<td>Items listed in the VR help screen used in an interaction started by PTT.</td>
  *                 <td>N</td>
- *             <td>If omitted on supported displays, the default SDL VR help / What Can I Say? screen will be used<p>If the list of VR Help Items contains non-sequential positions (e.g. [1,2,4]), the RPC will be rejected.</p><p>If omitted and a vrHelpTitle is provided, the request will be rejected.</p>minsize:1; maxsize: 100 </td>
- *             <td>SmartDeviceLink 1.0</td>
- *         </tr>
- *         <tr>
- *             <td>menuTitle</td>
- *             <td></td>
- *             <td>Optional text to label an app menu button (for certain touchscreen platforms).</td>
+ * 			<td>If omitted on supported displays, the default SDL VR help / What Can I Say? screen will be used<p>If the list of VR Help Items contains non-sequential positions (e.g. [1,2,4]), the RPC will be rejected.</p><p>If omitted and a vrHelpTitle is provided, the request will be rejected.</p>minsize:1; maxsize: 100 </td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>menuTitle</td>
+ * 			<td></td>
+ * 			<td>Optional text to label an app menu button (for certain touchscreen platforms).</td>
  *                 <td>N</td>
- *             <td>maxlength: 500</td>
- *             <td>SmartDeviceLink 1.0</td>
- *         </tr>
- *         <tr>
- *             <td>menuIcon</td>
- *             <td> Image</td>
- *             <td>Optional icon to draw on an app menu button (for certain touchscreen platforms).</td>
+ * 			<td>maxlength: 500</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>menuIcon</td>
+ * 			<td> Image</td>
+ * 			<td>Optional icon to draw on an app menu button (for certain touchscreen platforms).</td>
  *                 <td>N</td>
- *             <td></td>
- *             <td>SmartDeviceLink 1.0</td>
- *         </tr>
- *         <tr>
- *             <td>keyboardProperties</td>
- *             <td>KeyboardProperties</td>
- *             <td>On-screen keyboard configuration (if available).</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>keyboardProperties</td>
+ * 			<td>KeyboardProperties</td>
+ * 			<td>On-screen keyboard configuration (if available).</td>
  *                 <td>N</td>
- *             <td></td>
- *             <td>SmartDeviceLink 1.0</td>
- *         </tr>
- *         <tr>
- *             <td>menuLayout</td>
- *             <td>MenuLayout</td>
- *             <td>Sets the layout of the main menu screen. If this is sent while a menu is already on-screen, the head unit will change the display to the new layout type.</td>
- *             <td></td>
- *             <td></td>
- *             <td>SmartDeviceLink 6.0</td>
- *         </tr>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>menuLayout</td>
+ * 			<td>MenuLayout</td>
+ * 			<td>Sets the layout of the main menu screen. If this is sent while a menu is already on-screen, the head unit will change the display to the new layout type.</td>
+ * 			<td></td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 6.0</td>
+ * 		</tr>
  *
  *  </table>
  *

@@ -42,7 +42,6 @@ public enum AppCapabilityType {
 
     /**
      * Convert String to AppCapabilityType
-     *
      * @param value String
      * @return AppCapabilityType
      */

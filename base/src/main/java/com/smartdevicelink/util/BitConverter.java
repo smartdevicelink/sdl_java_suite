@@ -107,7 +107,7 @@ public class BitConverter {
 
     /**
      * @param sizeBuf byte array that will be converted to int
-     * @param offset  The position indicating where to begin converting.
+     * @param offset The position indicating where to begin converting.
      * @return int converted from byte array,
      * -1 if byte array is null,
      * and 0 if the offset is greater than the length of the byte array
@@ -137,7 +137,7 @@ public class BitConverter {
 
     /**
      * @param sizeBuf byte array that will be converted to short
-     * @param offset  The position indicating where to begin converting.
+     * @param offset The position indicating where to begin converting.
      * @return short converted from byte array,
      * -1 if byte array is null,
      * and 0 if the offset is greater than the length of the byte array

@@ -204,7 +204,8 @@ public class VideoStreamingCapability extends RPCStruct {
     /**
      * Sets the additionalVideoStreamingCapabilities.
      *
-     * @param additionalVideoStreamingCapabilities {"array_min_size": 1, "array_max_size": 100}
+     * @param additionalVideoStreamingCapabilities
+     * {"array_min_size": 1, "array_max_size": 100}
      * @since SmartDeviceLink 7.1.0
      */
     public VideoStreamingCapability setAdditionalVideoStreamingCapabilities(List<VideoStreamingCapability> additionalVideoStreamingCapabilities) {

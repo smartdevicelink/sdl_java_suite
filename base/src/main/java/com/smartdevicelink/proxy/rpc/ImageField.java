@@ -45,38 +45,38 @@ import java.util.List;
  *
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- *         <tr>
- *             <th>Name</th>
- *             <th>Type</th>
- *             <th>Description</th>
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
  *                 <th>Reg.</th>
  *               <th>Notes</th>
- *             <th> Version</th>
- *         </tr>
- *         <tr>
- *             <td>name</td>
- *             <td>ImageFieldName</td>
- *             <td>The name that identifies the field.{@linkplain  ImageFieldName}</td>
+ * 			<th> Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>name</td>
+ * 			<td>ImageFieldName</td>
+ * 			<td>The name that identifies the field.{@linkplain  ImageFieldName}</td>
  *                 <td></td>
  *                 <td></td>
- *             <td>SmartDeviceLink 3.0 </td>
- *         </tr>
- *         <tr>
- *             <td>imageTypeSupported</td>
- *             <td>FileType</td>
- *             <td>The image types that are supported in this field. {@linkplain FileType}</td>
+ * 			<td>SmartDeviceLink 3.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>imageTypeSupported</td>
+ * 			<td>FileType</td>
+ * 			<td>The image types that are supported in this field. {@linkplain FileType}</td>
  *                 <td></td>
  *                 <td>maxlength: 100</td>
- *             <td>SmartDeviceLink 3.0 </td>
- *         </tr>
- *         <tr>
- *             <td>imageResolution</td>
- *             <td>ImageResolution</td>
- *             <td>The image resolution of this field.</td>
+ * 			<td>SmartDeviceLink 3.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>imageResolution</td>
+ * 			<td>ImageResolution</td>
+ * 			<td>The image resolution of this field.</td>
  *                 <td>Y</td>
  *                 <td></td>
- *             <td>SmartDeviceLink 3.0 </td>
- *         </tr>
+ * 			<td>SmartDeviceLink 3.0 </td>
+ * 		</tr>
  *  </table>
  *
  * @see com.smartdevicelink.proxy.rpc.enums.ImageType

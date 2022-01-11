@@ -1,5 +1,4 @@
 package com.smartdevicelink.managers.screen;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 
