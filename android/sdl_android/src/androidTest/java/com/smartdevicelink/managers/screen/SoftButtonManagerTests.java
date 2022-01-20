@@ -351,8 +351,8 @@ public class SoftButtonManagerTests {
         softButtonStateList.add(softButtonState1);
         softButtonStateList2.add(softButtonState1);
         softButtonStateList2.add(softButtonState2);
-        softButtonObject1 = new SoftButtonObject("hi", softButtonStateList, "Hi", null);
-        softButtonObject2 = new SoftButtonObject("hi", softButtonStateList2, "Hi", null);
+        softButtonObject1 = new SoftButtonObject("hi", softButtonStateList, softButtonStateList.get(0).getName(), null);
+        softButtonObject2 = new SoftButtonObject("hi", softButtonStateList2, softButtonStateList2.get(0).getName(), null);
         assertNotEquals(softButtonObject1, softButtonObject2);
 
         // Case 5: SoftButtonStates are not the same, assertFalse
@@ -366,8 +366,8 @@ public class SoftButtonManagerTests {
         assertNotEquals(softButtonObject1, softButtonObject2);
 
         // Case 7: SoftButtonObject currentStateName not same, assertFalse
-        softButtonObject1 = new SoftButtonObject("hi", softButtonStateList, "Hi", null);
-        softButtonObject2 = new SoftButtonObject("hi", softButtonStateList, "Hi2", null);
+        softButtonObject1 = new SoftButtonObject("hi", softButtonStateList2, softButtonStateList2.get(0).getName(), null);
+        softButtonObject2 = new SoftButtonObject("hi", softButtonStateList2, softButtonStateList2.get(1).getName(), null);
         assertNotEquals(softButtonObject1, softButtonObject2);
     }
 
