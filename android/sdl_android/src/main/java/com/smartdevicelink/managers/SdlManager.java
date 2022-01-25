@@ -100,6 +100,7 @@ public class SdlManager extends BaseSdlManager {
         }
     };
 
+    SdlManager(){}
 
     /**
      * Starts up a SdlManager, and calls provided callback called once all BaseSubManagers are done setting up
