@@ -36,17 +36,27 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
+import android.content.res.Resources;
+import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.BatteryManager;
+import android.os.Bundle;
+import androidx.annotation.Nullable;
 
+import com.smartdevicelink.marshal.JsonRPCMarshaller;
+import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.transport.TransportConstants;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -56,9 +66,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 
+
 public class AndroidTools {
+
+    private static final String TAG = "AndroidTools";
+    private static final String SDL_DEVICE_VEHICLES_PREFS = "sdl.device.vehicles";
+    private static final Object VEHICLE_PREF_LOCK = new Object();
+
     /**
      * Check to see if a component is exported
      *
@@ -97,7 +114,6 @@ public class AndroidTools {
         return sdlMultiList;
     }
 
-
     /**
      * Finds all SDL apps via their SdlRouterService manifest entry. It will return the metadata associated with that router service.
      *
@@ -105,6 +121,7 @@ public class AndroidTools {
      * @param comparator the Comparator to sort the resulting list. If null is supplied, they will be returned as they are from the system
      * @return the sorted list of SdlAppInfo objects that represent SDL apps
      */
+    @Deprecated
     public static List<SdlAppInfo> querySdlAppInfo(Context context, Comparator<SdlAppInfo> comparator) {
         List<SdlAppInfo> sdlAppInfoList = new ArrayList<>();
         Intent intent = new Intent(TransportConstants.ROUTER_SERVICE_ACTION);
@@ -118,7 +135,7 @@ public class AndroidTools {
                     PackageInfo packageInfo;
                     try {
                         packageInfo = packageManager.getPackageInfo(info.serviceInfo.packageName, 0);
-                        sdlAppInfoList.add(new SdlAppInfo(info, packageInfo));
+                        sdlAppInfoList.add(new SdlAppInfo(info, packageInfo, context));
                     } catch (NameNotFoundException e) {
                         //Package was not found, likely a sign the resolve info can't be trusted.
                     }
@@ -131,6 +148,54 @@ public class AndroidTools {
             }
         }
 
+        return sdlAppInfoList;
+    }
+
+    /**
+     * Finds all SDL apps via their SdlRouterService manifest entry. It will return the metadata associated with that router service.
+     *
+     * @param context    a context instance to obtain the package manager
+     * @param comparator the Comparator to sort the resulting list. If null is supplied, they will be returned as they are from the system
+     * @return the sorted list of SdlAppInfo objects that represent SDL apps
+     */
+    public static List<SdlAppInfo> querySdlAppInfo(Context context, Comparator<SdlAppInfo> comparator, VehicleType type) {
+        List<SdlAppInfo> sdlAppInfoList = new ArrayList<>();
+        Intent intent = new Intent(TransportConstants.ROUTER_SERVICE_ACTION);
+        List<ResolveInfo> resolveInfoList = context.getPackageManager().queryIntentServices(intent, PackageManager.GET_META_DATA);
+
+        if (resolveInfoList != null && resolveInfoList.size() > 0) {
+            PackageManager packageManager = context.getPackageManager();
+            if (packageManager != null) {
+
+                for (ResolveInfo info : resolveInfoList) {
+                    PackageInfo packageInfo;
+                    try {
+                        packageInfo = packageManager.getPackageInfo(info.serviceInfo.packageName, 0);
+                        SdlAppInfo appInformation = new SdlAppInfo(info, packageInfo, context);
+                        sdlAppInfoList.add(appInformation);
+
+                    } catch (NameNotFoundException e) {
+                        //Package was not found, likely a sign the resolve info can't be trusted.
+                    }
+
+                }
+            }
+
+            List<SdlAppInfo> sdlAppInfoListVehicleType = new ArrayList<>();
+
+            for (SdlAppInfo appInformation : sdlAppInfoList) {
+                if (appInformation.routerServiceVersion < 15) {
+                    sdlAppInfoListVehicleType.add(appInformation);
+                } else if (SdlAppInfo.checkIfVehicleSupported(appInformation.supportedVehicles, type)) {
+                    sdlAppInfoListVehicleType.add(appInformation);
+                }
+            }
+            sdlAppInfoList = sdlAppInfoListVehicleType;
+
+            if (comparator != null) {
+                Collections.sort(sdlAppInfoList, comparator);
+            }
+        }
         return sdlAppInfoList;
     }
 
@@ -203,5 +268,105 @@ public class AndroidTools {
             return 0 != (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE);
         }
         return false;
+    }
+
+    /**
+     * Saves the mac address along with vehicle details into user's shared prefs.
+     *
+     * @param context a context instance to obtain the shared preferences.
+     * @param vehicleType a RPCStruct that describes the type of vehicle the mobile phone is connected with.
+     * @param address a string containing the Bluetooth Mac address of the connected vehicle.
+     */
+    public static void saveVehicleType(Context context, VehicleType vehicleType, String address) {
+        synchronized (VEHICLE_PREF_LOCK) {
+            if (vehicleType == null || address == null || context == null) {
+                DebugTool.logWarning(TAG, String.format("Unable to save vehicle type. Context is %1$s, Address is %2$s and VehicleType is %3$s", context, address, vehicleType));
+                return;
+            }
+            try {
+                SharedPreferences preferences = context.getSharedPreferences(SDL_DEVICE_VEHICLES_PREFS, Context.MODE_PRIVATE);
+
+                String jsonString = vehicleType.serializeJSON().toString();
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString(address, jsonString);
+                editor.commit();
+            } catch (JSONException e) {
+                DebugTool.logError(TAG, "Unable to serialize vehicle type to JSON.", e);
+            }
+        }
+    }
+
+    /**
+     * Retrieves the vehicle details by the mac address of the connected vehicle.
+     *
+     * @param context a context instance to obtain the shared preferences.
+     * @param address a string containing the Bluetooth Mac address of the connected vehicle.
+     * @return The Hashtable to be used to construct VehicleTyp
+     */
+    public static @Nullable Hashtable<String, Object> getVehicleTypeFromPrefs(Context context, String address) {
+        synchronized (VEHICLE_PREF_LOCK) {
+            if (context == null || address == null) {
+                DebugTool.logWarning(TAG, String.format("Unable to get vehicle type from prefs. Context is %1$s and Address is %2$s", context, address));
+                return null;
+            }
+            try {
+                SharedPreferences preferences = context.getSharedPreferences(SDL_DEVICE_VEHICLES_PREFS, Context.MODE_PRIVATE);
+                String storedVehicleTypeSerialized = preferences.getString(address, null);
+
+                if (storedVehicleTypeSerialized == null) {
+                    return null;
+                } else {
+                    JSONObject object = new JSONObject(storedVehicleTypeSerialized);
+                    return JsonRPCMarshaller.deserializeJSONObject(object);
+                }
+            } catch (JSONException e) {
+                DebugTool.logError(TAG, "Unable to deserialize stored vehicle type.", e);
+                return null;
+            }
+        }
+    }
+
+    /**
+     * Retrieves the list of vehicle types that are set in the manifest.
+     *
+     * @param context a context to access Android system services through.
+     * @param component a component name of a LocalRouterService.
+     * @param manifestFieldId a string resources id that indicates an unique name for the vehicle data in the manifest.
+     * @return The list of vehicle types, or null if an error occurred or field was not found.
+     */
+    public static @Nullable List<VehicleType> getVehicleTypesFromManifest(Context context, ComponentName component, int manifestFieldId) {
+        if (context == null || component == null) {
+            DebugTool.logWarning(TAG, String.format("Unable to get vehicle type from manifest. Context is %1$s and Component is %2$s", context, component));
+            return null;
+        }
+        try {
+            PackageManager pm = context.getPackageManager();
+            Resources resources = context.getResources();
+            if (pm == null || resources == null) {
+                DebugTool.logWarning(TAG, String.format("Unable to get vehicle type from manifest. PackageManager is %1$s and Resources is %2$s", pm, resources));
+                return null;
+            }
+
+            Bundle metaData = pm.getServiceInfo(component, PackageManager.GET_META_DATA).metaData;
+            if (metaData == null) {
+                DebugTool.logError(TAG, "metaData isn't available.");
+                return null;
+            }
+
+            int xmlFieldId = metaData.getInt(resources.getString(manifestFieldId));
+            if (xmlFieldId == 0) {
+                DebugTool.logError(TAG, "Field with id " + manifestFieldId + " was not found in manifest");
+                return null;
+            }
+
+            XmlResourceParser parser = resources.getXml(xmlFieldId);
+            return SdlAppInfo.deserializeSupportedVehicles(parser);
+        } catch (PackageManager.NameNotFoundException e) {
+            DebugTool.logError(TAG, "Failed to get OEM vehicle data filter: " + e.getMessage()+ " - assume vehicle data is supported");
+            return null;
+        } catch (Resources.NotFoundException ex) {
+            DebugTool.logError(TAG, "Failed to find resource: " + ex.getMessage()+ " - assume vehicle data is supported");
+            return null;
+        }
     }
 }

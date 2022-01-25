@@ -70,6 +70,8 @@ abstract class BaseFileManager extends BaseSubManager {
     private HashMap<String, Integer> failedFileUploadsCount;
     private final int maxFileUploadAttempts;
     private final int maxArtworkUploadAttempts;
+    final String fileManagerCannotOverwriteError = "Cannot overwrite remote file. The remote file system already has a file of this name, and the file manager is set to not automatically overwrite files.";
+
 
     /**
      * Constructor for BaseFileManager
@@ -194,13 +196,7 @@ abstract class BaseFileManager extends BaseSubManager {
     }
 
     private void deleteRemoteFileWithNamePrivate(@NonNull final String fileName, final FileManagerCompletionListener listener) {
-        if (!mutableRemoteFileNames.contains(fileName) && listener != null) {
-            String errorMessage = "No such remote file is currently known";
-            listener.onComplete(false, bytesAvailable, mutableRemoteFileNames, errorMessage);
-            return;
-        }
-
-        DeleteFileOperation operation = new DeleteFileOperation(internalInterface, fileName, new FileManagerCompletionListener() {
+        DeleteFileOperation operation = new DeleteFileOperation(internalInterface, fileName, mutableRemoteFileNames, new FileManagerCompletionListener() {
             @Override
             public void onComplete(boolean success, int bytesAvailable, Collection<String> fileNames, String errorMessage) {
                 if (success) {
@@ -271,11 +267,17 @@ abstract class BaseFileManager extends BaseSubManager {
      */
     public boolean hasUploadedFile(@NonNull SdlFile file) {
         // HAX: [#827](https://github.com/smartdevicelink/sdl_ios/issues/827) Older versions of Core had a bug where list files would cache incorrectly.
-        if (file.isPersistent() && mutableRemoteFileNames != null && mutableRemoteFileNames.contains(file.getName())) {
-            // If it's a persistent file, the bug won't present itself; just check if it's on the remote system
-            return true;
-        } else if (!file.isPersistent() && mutableRemoteFileNames != null && mutableRemoteFileNames.contains(file.getName()) && uploadedEphemeralFileNames.contains(file.getName())) {
-            // If it's an ephemeral file, the bug will present itself; check that it's a remote file AND that we've uploaded it this session
+        Version rpcVersion = new Version(internalInterface.getSdlMsgVersion());
+        if (new Version(4, 4, 0).isNewerThan(rpcVersion) == 1) {
+            if (file.isPersistent() && mutableRemoteFileNames != null && mutableRemoteFileNames.contains(file.getName())) {
+                // HAX: If it's a persistent file, the bug won't present itself; just check if it's on the remote system
+                return true;
+            } else if (!file.isPersistent() && mutableRemoteFileNames != null && mutableRemoteFileNames.contains(file.getName()) && uploadedEphemeralFileNames.contains(file.getName())) {
+                // HAX: If it's an ephemeral file, the bug will present itself; check that it's a remote file AND that we've uploaded it this session
+                return true;
+            }
+        } else if (mutableRemoteFileNames != null && mutableRemoteFileNames.contains(file.getName())) {
+            // If not connected to a system where the bug presents itself, we can trust the `remoteFileNames`
             return true;
         }
         return false;
@@ -399,46 +401,29 @@ abstract class BaseFileManager extends BaseSubManager {
             return;
         }
 
-        // HAX: [#827](https://github.com/smartdevicelink/sdl_ios/issues/827) Older versions of Core
-        // had a bug where list files would cache incorrectly. This led to attempted uploads failing
-        // due to the system thinking they were already there when they were not. This is only needed
-        // if connecting to Core v4.3.1 or less which corresponds to RPC v4.3.1 or less
-        Version rpcVersion = new Version(internalInterface.getSdlMsgVersion());
-        if (!file.isPersistent() && !hasUploadedFile(file) && new Version(4, 4, 0).isNewerThan(rpcVersion) == 1) {
-            file.setOverwrite(true);
-        }
-
-        // Check our overwrite settings and error out if it would overwrite
-        if (!file.getOverwrite() && mutableRemoteFileNames.contains(file.getName())) {
-            String errorMessage = "Cannot overwrite remote file. The remote file system already has a file of this name, and the file manager is set to not automatically overwrite files.";
-            DebugTool.logWarning(TAG, errorMessage);
-            if (listener != null) {
-                listener.onComplete(true, bytesAvailable, null, errorMessage);
-            }
-            return;
-        }
-
         // If we didn't error out over the overwrite, then continue on
         sdl_uploadFilePrivate(file, listener);
     }
 
     private void sdl_uploadFilePrivate(@NonNull final SdlFile file, final FileManagerCompletionListener listener) {
-        final String fileName = file.getName();
+        final SdlFile fileClone = file.clone();
 
-        SdlFileWrapper fileWrapper = new SdlFileWrapper(file, new FileManagerCompletionListener() {
+        SdlFileWrapper fileWrapper = new SdlFileWrapper(fileClone, new FileManagerCompletionListener() {
             @Override
             public void onComplete(boolean success, int bytesAvailable, Collection<String> fileNames, String errorMessage) {
                 if (success) {
                     BaseFileManager.this.bytesAvailable = bytesAvailable;
-                    BaseFileManager.this.mutableRemoteFileNames.add(fileName);
-                    BaseFileManager.this.uploadedEphemeralFileNames.add(fileName);
+                    BaseFileManager.this.mutableRemoteFileNames.add(fileClone.getName());
+                    if (!file.isPersistent()) {
+                        BaseFileManager.this.uploadedEphemeralFileNames.add(fileClone.getName());
+                    }
                 } else {
-                    incrementFailedUploadCountForFileName(file.getName(), BaseFileManager.this.failedFileUploadsCount);
+                    incrementFailedUploadCountForFileName(fileClone.getName(), BaseFileManager.this.failedFileUploadsCount);
 
-                    int maxUploadCount = file instanceof SdlArtwork ? maxArtworkUploadAttempts : maxFileUploadAttempts;
-                    if (canFileBeUploadedAgain(file, maxUploadCount, failedFileUploadsCount)) {
+                    int maxUploadCount = fileClone instanceof SdlArtwork ? maxArtworkUploadAttempts : maxFileUploadAttempts;
+                    if (canFileBeUploadedAgain(fileClone, maxUploadCount, failedFileUploadsCount)) {
                         DebugTool.logInfo(TAG, String.format("Attempting to resend file with name %s after a failed upload attempt", file.getName()));
-                        sdl_uploadFilePrivate(file, listener);
+                        sdl_uploadFilePrivate(fileClone, listener);
                         return;
                     }
                 }

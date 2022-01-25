@@ -119,8 +119,7 @@ public class TransportManager extends TransportManagerBase {
             transport.removeSession(sessionId);
             transport.stop();
         } else if (legacyBluetoothTransport != null) {
-            legacyBluetoothTransport.stop();
-            legacyBluetoothTransport = null;
+            exitLegacyMode(null);
         }
     }
 
@@ -403,10 +402,10 @@ public class TransportManager extends TransportManagerBase {
             return; //Already in legacy mode
         }
 
+        if (Looper.myLooper() == null) {
+            Looper.prepare();
+        }
         if (transportListener.onLegacyModeEnabled(info)) {
-            if (Looper.myLooper() == null) {
-                Looper.prepare();
-            }
             legacyBluetoothHandler = new LegacyBluetoothHandler(this);
             legacyBluetoothTransport = new MultiplexBluetoothTransport(legacyBluetoothHandler);
             if (contextWeakReference.get() != null) {
@@ -416,7 +415,7 @@ public class TransportManager extends TransportManagerBase {
                 contextWeakReference.get().registerReceiver(legacyDisconnectReceiver, intentFilter);
             }
         } else {
-            new Handler().postDelayed(new Runnable() {
+            new Handler(Looper.myLooper()).postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     transportListener.onError(info + " - Legacy mode unacceptable; shutting down.");
@@ -426,25 +425,32 @@ public class TransportManager extends TransportManagerBase {
         }
     }
 
+    /**
+     * A synchronized method to exit out of legacy mode
+     * @param info if this is null, the transport listener callback will not be called
+     */
     @Override
     synchronized void exitLegacyMode(String info) {
-        TransportRecord legacyTransportRecord = null;
-        if (legacyBluetoothTransport != null) {
-            legacyTransportRecord = legacyBluetoothTransport.getTransportRecord();
+        if (legacyBluetoothTransport != null) { //If this is null, there is no reason to proceed
+            TransportRecord legacyTransportRecord = legacyBluetoothTransport.getTransportRecord();
             legacyBluetoothTransport.stop();
             legacyBluetoothTransport = null;
-        }
-        legacyBluetoothHandler = null;
-        synchronized (TRANSPORT_STATUS_LOCK) {
-            TransportManager.this.transportStatus.clear();
-        }
-        if (contextWeakReference != null) {
-            try {
-                contextWeakReference.get().unregisterReceiver(legacyDisconnectReceiver);
-            } catch (Exception e) {
+
+            legacyBluetoothHandler = null;
+            synchronized (TRANSPORT_STATUS_LOCK) {
+                TransportManager.this.transportStatus.clear();
+            }
+            if (contextWeakReference != null) {
+                try {
+                    contextWeakReference.get().unregisterReceiver(legacyDisconnectReceiver);
+                } catch (Exception e) {
+                    DebugTool.logError(TAG, "Error attempting to unregister legacy mode receiver", e);
+                }
+            }
+            if (transportListener != null && info != null) {
+                transportListener.onTransportDisconnected(info, legacyTransportRecord, null);
             }
         }
-        transportListener.onTransportDisconnected(info, legacyTransportRecord, null);
     }
 
 

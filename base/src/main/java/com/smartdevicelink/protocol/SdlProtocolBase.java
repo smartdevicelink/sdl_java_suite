@@ -89,7 +89,7 @@ public class SdlProtocolBase {
     public static final int V2_HEADER_SIZE = 12;
 
     //If increasing MAX PROTOCOL VERSION major version, make sure to alter it in SdlPsm
-    private static final Version MAX_PROTOCOL_VERSION = new Version(5, 4, 0);
+    private static final Version MAX_PROTOCOL_VERSION = new Version(5, 4, 1);
 
     public static final int V1_V2_MTU_SIZE = 1500;
     public static final int V3_V4_MTU_SIZE = 131072;
@@ -572,11 +572,7 @@ public class SdlProtocolBase {
             if (sessionType.eq(SessionType.CONTROL)) {
                 final byte[] secureData = protocolMsg.getData().clone();
                 data = new byte[headerSize + secureData.length];
-
-                final BinaryFrameHeader binFrameHeader =
-                        SdlPacketFactory.createBinaryFrameHeader(protocolMsg.getRPCType(), protocolMsg.getFunctionID(), protocolMsg.getCorrID(), 0);
-                System.arraycopy(binFrameHeader.assembleHeaderBytes(), 0, data, 0, headerSize);
-                System.arraycopy(secureData, 0, data, headerSize, secureData.length);
+                System.arraycopy(secureData, 0, data, 0, secureData.length);
             } else if (protocolMsg.getBulkData() != null) {
                 data = new byte[12 + protocolMsg.getJsonSize() + protocolMsg.getBulkData().length];
                 sessionType = SessionType.BULK_DATA;
@@ -1566,5 +1562,17 @@ public class SdlProtocolBase {
         } // end-method
     } // end-class
 
+    /**
+     * This method will return copy of active transports
+     *
+     * @return a list of active transports
+     * */
+    public List<TransportRecord> getActiveTransports() {
+        List<TransportRecord> records = new ArrayList<>();
+        for (TransportRecord record : activeTransports.values()) {
+            records.add(new TransportRecord(record.getType(), record.getAddress()));
+        }
+        return records;
+    }
 
 }

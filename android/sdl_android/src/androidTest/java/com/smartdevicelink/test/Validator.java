@@ -3,6 +3,9 @@ package com.smartdevicelink.test;
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
+import com.smartdevicelink.protocol.enums.SecurityQueryErrorCode;
+import com.smartdevicelink.protocol.enums.SecurityQueryID;
+import com.smartdevicelink.protocol.enums.SecurityQueryType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
@@ -10,7 +13,6 @@ import com.smartdevicelink.proxy.rpc.enums.DefrostZone;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
-import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
@@ -104,6 +106,75 @@ public class Validator {
     }
 
     public static boolean validateSessionTypeArray(SessionType[] array1, SessionType[] array2) {
+
+        if (array1 == null) {
+            return (array2 == null);
+        }
+
+        if (array2 == null) {
+            return (array1 == null);
+        }
+
+        if (array1.length != array2.length) {
+            return false;
+        }
+
+        for (int i = 0; i < array1.length; i++) {
+            if (array1[i] != array2[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean validateQueryTypeArray(SecurityQueryType[] array1, SecurityQueryType[] array2) {
+
+        if (array1 == null) {
+            return (array2 == null);
+        }
+
+        if (array2 == null) {
+            return (array1 == null);
+        }
+
+        if (array1.length != array2.length) {
+            return false;
+        }
+
+        for (int i = 0; i < array1.length; i++) {
+            if (array1[i] != array2[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean validateQueryIDArray(SecurityQueryID[] array1, SecurityQueryID[] array2) {
+
+        if (array1 == null) {
+            return (array2 == null);
+        }
+
+        if (array2 == null) {
+            return (array1 == null);
+        }
+
+        if (array1.length != array2.length) {
+            return false;
+        }
+
+        for (int i = 0; i < array1.length; i++) {
+            if (array1[i] != array2[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean validateQueryErrorCodeArray(SecurityQueryErrorCode[] array1, SecurityQueryErrorCode[] array2) {
 
         if (array1 == null) {
             return (array2 == null);

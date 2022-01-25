@@ -187,6 +187,7 @@ abstract class BaseSdlManager {
         final Language actualHMILanguage = this.getRegisterAppInterfaceResponse().getHmiDisplayLanguage();
 
         if ((actualLanguage != null && !actualLanguage.equals(language)) || (actualHMILanguage != null && !actualHMILanguage.equals(hmiLanguage))) {
+
             if(managerListener != null) {
                 final LifecycleConfigurationUpdate lcu = managerListener.managerShouldUpdateLifecycle(actualLanguage, actualHMILanguage);
 
@@ -205,7 +206,7 @@ abstract class BaseSdlManager {
                                 try {
                                     DebugTool.logInfo(TAG, response.serializeJSON().toString());
                                 } catch (JSONException e) {
-                                    e.printStackTrace();
+                                    DebugTool.logError(TAG, "Error attempting to serialize ChangeRegistrationResponse", e);
                                 }
 
                                 // go through and change sdlManager properties that were changed via the LCU update
@@ -219,17 +220,6 @@ abstract class BaseSdlManager {
                                 if (lcu.getShortAppName() != null) {
                                     shortAppName = lcu.getShortAppName();
                                 }
-
-                                if (lcu.getTtsName() != null) {
-                                    ttsChunks = lcu.getTtsName();
-                                }
-
-                                if (lcu.getVoiceRecognitionCommandNames() != null) {
-                                    vrSynonyms = lcu.getVoiceRecognitionCommandNames();
-                                }
-                            } else {
-                                DebugTool.logError(TAG, "Change Registration onError: " + response.getResultCode() + " | Info: " + response.getInfo());
-                                retryChangeRegistration();
                             }
                         }
                     });

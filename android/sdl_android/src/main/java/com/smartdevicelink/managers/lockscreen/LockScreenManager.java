@@ -38,6 +38,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Handler;
+import android.os.Looper;
 
 import androidx.annotation.RestrictTo;
 
@@ -87,9 +88,10 @@ public class LockScreenManager extends BaseSubManager {
     final int customView;
     int displayMode;
     Bitmap deviceLogo;
-    private boolean mLockScreenHasBeenDismissed, lockscreenDismissReceiverRegistered, receivedFirstDDNotification;
+    private boolean lockscreenDismissReceiverRegistered, receivedFirstDDNotification;
+    boolean mLockScreenShouldBeAutoDismissed;
     private String mLockscreenWarningMsg;
-    private BroadcastReceiver mLockscreenDismissedReceiver;
+    BroadcastReceiver mLockscreenDismissedReceiver;
     private final LockScreenDeviceIconManager mLockScreenDeviceIconManager;
     private String lastIntentUsed;
 
@@ -220,8 +222,13 @@ public class LockScreenManager extends BaseSubManager {
                                     // enable the dismissal. There is a delay added to allow time for the activity
                                     // time to completely start and handle the new intent. There seems to be odd behavior
                                     // in Android when startActivity is called multiple times too quickly.
+                                    if (previousDismissibleState) {
+                                        // If lockscreen was dismissible, got dismissed by the user, then became not dismissible, the lockscreen activity should be allowed to launch again
+                                        // https://github.com/smartdevicelink/sdl_java_suite/issues/1695
+                                        mLockScreenShouldBeAutoDismissed = false;
+                                    }
                                     if (!receivedFirstDDNotification) {
-                                        new Handler().postDelayed(new Runnable() {
+                                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                                             @Override
                                             public void run() {
                                                 launchLockScreenActivity();
@@ -296,7 +303,7 @@ public class LockScreenManager extends BaseSubManager {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED.equals(intent.getAction())) {
-                    mLockScreenHasBeenDismissed = true;
+                    mLockScreenShouldBeAutoDismissed = true;
                     lastIntentUsed = null;
                 }
             }
@@ -318,7 +325,7 @@ public class LockScreenManager extends BaseSubManager {
     private void launchLockScreenActivity() {
         synchronized (LOCKSCREEN_LAUNCH_LOCK) {
             // If the user has dismissed the lockscreen for this run or has disabled it, do not show it
-            if (mLockScreenHasBeenDismissed || displayMode == LockScreenConfig.DISPLAY_MODE_NEVER) {
+            if (mLockScreenShouldBeAutoDismissed || displayMode == LockScreenConfig.DISPLAY_MODE_NEVER) {
                 return;
             }
             // intent to open SDLLockScreenActivity

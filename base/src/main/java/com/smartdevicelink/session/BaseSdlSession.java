@@ -32,16 +32,21 @@
 
 package com.smartdevicelink.session;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.lifecycle.RpcConverter;
+import com.smartdevicelink.protocol.SecurityQueryPayload;
 import com.smartdevicelink.protocol.ISdlProtocol;
 import com.smartdevicelink.protocol.ISdlServiceListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlProtocolBase;
 import com.smartdevicelink.protocol.enums.ControlFrameTags;
+import com.smartdevicelink.protocol.enums.SecurityQueryErrorCode;
+import com.smartdevicelink.protocol.enums.SecurityQueryID;
+import com.smartdevicelink.protocol.enums.SecurityQueryType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.VehicleType;
@@ -52,9 +57,13 @@ import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.SystemInfo;
 import com.smartdevicelink.util.Version;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -185,21 +194,75 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
 
 
     protected void processControlService(ProtocolMessage msg) {
-        if (sdlSecurity == null)
+        if (sdlSecurity == null || msg.getData() == null)
             return;
+
+
+        if (msg.getData().length < 12) {
+            DebugTool.logError(TAG, "Security message is malformed, less than 12 bytes. It does not have a security payload header.");
+        }
+        // Check the client's message header for any internal errors
+        // NOTE: Before Core v8.0.0, all these messages will be notifications. In Core v8.0.0 and later, received messages will have the proper query type. Therefore, we cannot do things based only on the query type being request or response.
+        SecurityQueryPayload receivedHeader = SecurityQueryPayload.parseBinaryQueryHeader(msg.getData().clone());
+        if (receivedHeader == null) {
+            DebugTool.logError(TAG, "Module Security Query could not convert to object.");
+            return;
+        }
+
         int iLen = msg.getData().length - 12;
         byte[] data = new byte[iLen];
         System.arraycopy(msg.getData(), 12, data, 0, iLen);
 
         byte[] dataToRead = new byte[4096];
 
-        Integer iNumBytes = sdlSecurity.runHandshake(data, dataToRead);
+        Integer iNumBytes = null;
 
-        if (iNumBytes == null || iNumBytes <= 0)
+        // If the query is of type `Notification` and the id represents a client internal error, we abort the response message and the encryptionManager will not be in state ready.
+        if (receivedHeader.getQueryID() == SecurityQueryID.SEND_INTERNAL_ERROR
+                && receivedHeader.getQueryType() == SecurityQueryType.NOTIFICATION) {
+            if (receivedHeader.getBulkData() != null && receivedHeader.getBulkDataSize() == 1) {
+                DebugTool.logError(TAG, "Security Query module internal error: " + SecurityQueryErrorCode.valueOf(receivedHeader.getBulkData()[0]).getName());
+            } else {
+                DebugTool.logError(TAG, "Security Query module error: No information provided");
+            }
             return;
+        }
 
-        byte[] returnBytes = new byte[iNumBytes];
-        System.arraycopy(dataToRead, 0, returnBytes, 0, iNumBytes);
+        if (receivedHeader.getQueryID() != SecurityQueryID.SEND_HANDSHAKE_DATA) {
+            DebugTool.logError(TAG, "Security Query module error: Message is not a SEND_HANDSHAKE_DATA REQUEST");
+            return;
+        }
+
+        if (receivedHeader.getQueryType() == SecurityQueryType.RESPONSE) {
+            DebugTool.logError(TAG, "Security Query module error: Message is a response, which is not supported");
+            return;
+        }
+
+        iNumBytes = sdlSecurity.runHandshake(data, dataToRead);
+
+        ProtocolMessage protocolMessage;
+        if (iNumBytes == null || iNumBytes <= 0) {
+            DebugTool.logError(TAG, "Internal Error processing control service");
+            protocolMessage = serverSecurityFailedMessageWithClientMessageHeader(msg.getCorrID());
+        } else {
+            protocolMessage = serverSecurityHandshakeMessageWithData(msg.getCorrID(), dataToRead);
+        }
+
+        //sdlSecurity.hs();
+
+        sendMessage(protocolMessage);
+    }
+
+    private ProtocolMessage serverSecurityHandshakeMessageWithData(int correlationId, byte[] bulkData) {
+        SecurityQueryPayload responseHeader = new SecurityQueryPayload();
+        responseHeader.setQueryID(SecurityQueryID.SEND_HANDSHAKE_DATA);
+        responseHeader.setQueryType(SecurityQueryType.RESPONSE);
+        responseHeader.setCorrelationID(correlationId);
+        responseHeader.setBulkData(bulkData);
+        responseHeader.setJsonData(null);
+
+        byte[] returnBytes = responseHeader.assembleBinaryData();
+
         ProtocolMessage protocolMessage = new ProtocolMessage();
         protocolMessage.setSessionType(SessionType.CONTROL);
         protocolMessage.setData(returnBytes);
@@ -207,9 +270,40 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
         protocolMessage.setVersion((byte) sdlProtocol.getProtocolVersion().getMajor());
         protocolMessage.setSessionID((byte) this.sessionId);
 
-        //sdlSecurity.hs();
+        return protocolMessage;
+    }
 
-        sendMessage(protocolMessage);
+    private ProtocolMessage serverSecurityFailedMessageWithClientMessageHeader(int correlationId) {
+        SecurityQueryPayload responseHeader = new SecurityQueryPayload();
+        responseHeader.setQueryID(SecurityQueryID.SEND_INTERNAL_ERROR);
+        responseHeader.setQueryType(SecurityQueryType.NOTIFICATION);
+        responseHeader.setCorrelationID(correlationId);
+        byte[] jsonData;
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("id", SecurityQueryErrorCode.ERROR_UNKNOWN_INTERNAL_ERROR.getValue());
+            jsonObject.put("text", SecurityQueryErrorCode.ERROR_UNKNOWN_INTERNAL_ERROR.getName());
+            jsonData = jsonObject.toString().getBytes();
+        } catch (JSONException e) {
+            DebugTool.logError(TAG, "JSON exception when constructing handshake error Notification");
+            e.printStackTrace();
+            jsonData = new byte[0];
+        }
+        responseHeader.setJsonData(jsonData);
+        byte[] errorCode = new byte[1];
+        errorCode[0] = SecurityQueryErrorCode.ERROR_UNKNOWN_INTERNAL_ERROR.getValue();
+        responseHeader.setBulkData(errorCode);
+
+        byte[] returnBytes = responseHeader.assembleBinaryData();
+
+        ProtocolMessage protocolMessage = new ProtocolMessage();
+        protocolMessage.setSessionType(SessionType.CONTROL);
+        protocolMessage.setData(returnBytes);
+        protocolMessage.setFunctionID(0x01);
+        protocolMessage.setVersion((byte) sdlProtocol.getProtocolVersion().getMajor());
+        protocolMessage.setSessionID((byte) this.sessionId);
+
+        return protocolMessage;
     }
 
     /**
@@ -414,5 +508,19 @@ public abstract class BaseSdlSession implements ISdlProtocol, ISecurityInitializ
      */
     public boolean isTransportForServiceAvailable(SessionType sessionType) {
         return sdlProtocol != null && sdlProtocol.isTransportForServiceAvailable(sessionType);
+    }
+
+    /**
+     * Retrieves list of the active transports
+     *
+     * @return a list of active transports
+     * */
+    @Nullable
+    public List<TransportRecord> getActiveTransports() {
+        if (this.sdlProtocol != null) {
+            return this.sdlProtocol.getActiveTransports();
+        } else {
+            return null;
+        }
     }
 }

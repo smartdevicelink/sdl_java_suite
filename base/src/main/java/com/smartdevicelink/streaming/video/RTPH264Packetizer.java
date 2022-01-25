@@ -124,7 +124,7 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IVideoStrea
             bufferSize = MAX_DATA_SIZE_FOR_ENCRYPTED_SERVICE;
         }
 
-        mOutputQueue = new LinkedBlockingQueue<>(MAX_QUEUE_SIZE / bufferSize);
+        mOutputQueue = new LinkedBlockingQueue<>(Math.max(MAX_QUEUE_SIZE / bufferSize, 1));
         mNALUnitReader = new NALUnitReader();
         mPayloadType = DEFAULT_RTP_PAYLOAD_TYPE;
 

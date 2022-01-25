@@ -2,21 +2,22 @@ apply plugin: 'java-library'
 
 group 'com.smartdevicelink'
 version new File(projectDir.path, ('/../../VERSION')).text.trim()
+ext { VERSION_NAME = "$project.version" }
 
 sourceCompatibility = 1.7
 
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.13.0'
     }
 }
 
 repositories {
     google()
-    jcenter()
+    mavenCentral()
 }
 
 // This extraLibs solution is explained here: https://discuss.gradle.org/t/how-to-include-dependencies-in-jar/19571/5
@@ -78,4 +79,4 @@ public final class BuildConfig {
     }
 }
 
-apply from: 'bintray.gradle'
+apply plugin: "com.vanniktech.maven.publish"
