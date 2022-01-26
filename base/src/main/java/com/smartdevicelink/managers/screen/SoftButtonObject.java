@@ -33,7 +33,6 @@ package com.smartdevicelink.managers.screen;
 
 import androidx.annotation.NonNull;
 
-import com.livio.BuildConfig;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
@@ -283,8 +282,16 @@ public class SoftButtonObject implements Cloneable{
             DebugTool.logError(TAG, "A SoftButtonObject must have states with different names.");
             return;
         }
-        if (states.isEmpty()) {
-            DebugTool.logError(TAG, "A SoftButtonState list must contain at least one state");
+
+        boolean hasStateWithCurrentName = false;
+        for (SoftButtonState state : states) {
+            if(state.getName().equals(currentStateName)) {
+                hasStateWithCurrentNameName = true;
+                break;
+            }
+        }
+        if (!hasStateWithCurrentName) {
+            DebugTool.logError(TAG, "A SoftButtonObject must have a state with currentStateName.");
             return;
         }
 

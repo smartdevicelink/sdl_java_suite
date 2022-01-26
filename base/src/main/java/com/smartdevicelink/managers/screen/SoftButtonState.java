@@ -33,7 +33,6 @@ package com.smartdevicelink.managers.screen;
 
 import androidx.annotation.NonNull;
 
-import com.livio.BuildConfig;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
