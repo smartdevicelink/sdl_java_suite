@@ -100,7 +100,9 @@ public class SdlManager extends BaseSdlManager {
         }
     };
 
-    SdlManager(){}
+    public SdlManager(){
+        DebugTool.logWarning(TAG, "If this SdlManager was created without using SdlManager.Builder, most of its members are not initialized");
+    }
 
     /**
      * Starts up a SdlManager, and calls provided callback called once all BaseSubManagers are done setting up
