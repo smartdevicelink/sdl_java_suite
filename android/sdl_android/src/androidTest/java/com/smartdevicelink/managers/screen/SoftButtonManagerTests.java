@@ -455,10 +455,31 @@ public class SoftButtonManagerTests {
     }
 
     /**
-     * Test assigning a nonempty state list to existing SoftButtonObject
+     * Test assigning a state list with the current state to existing SoftButtonObject
      */
     @Test
-    public void testAssignNonEmptyStateListToSoftButtonObject() {
+    public void testAssignStateListWithCurrentStateToSoftButtonObject() {
+        List<SoftButtonState> stateList1 = new ArrayList<>();
+        SoftButtonState softButtonState1 = new SoftButtonState("hello_there", "Hello there", null);
+        stateList1.add(softButtonState1);
+
+        List<SoftButtonState> stateList2 = new ArrayList<>();
+        SoftButtonState softButtonState2 = new SoftButtonState("general_kenobi", "General Kenobi", null);
+        stateList2.add(softButtonState1);
+        stateList2.add(softButtonState2);
+
+        SoftButtonObject softButtonObject = new SoftButtonObject("general_kenobi", stateList1, "hello_there", null);
+
+        softButtonObject.setStates(stateList2);
+
+        assertEquals(stateList2, softButtonObject.getStates());
+    }
+
+    /**
+     * Test assigning a state list without the current state to existing SoftButtonObject
+     */
+    @Test
+    public void testAssignStateListWithoutCurrentStateToSoftButtonObject() {
         List<SoftButtonState> stateList1 = new ArrayList<>();
         SoftButtonState softButtonState1 = new SoftButtonState("hello_there", "Hello there", null);
         stateList1.add(softButtonState1);
