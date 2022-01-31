@@ -228,8 +228,7 @@ public class VirtualDisplayEncoder {
                 mCaptureThread.stopAsync();
                 try {
                     mCaptureThread.join();
-                } 
-                catch (InterruptedException e) {}
+                } catch (InterruptedException e) {}
                 mCaptureThread = null;
             }
             if (encoderThread != null) {
