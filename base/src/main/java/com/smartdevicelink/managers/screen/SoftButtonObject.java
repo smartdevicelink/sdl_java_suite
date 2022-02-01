@@ -296,7 +296,7 @@ public class SoftButtonObject implements Cloneable{
             }
         }
         if (!hasStateWithCurrentName) {
-            DebugTool.logError(TAG, "A SoftButtonObject should have a state with currentStateName.");
+            DebugTool.logError(TAG, "A SoftButtonObject setting states must contain a state with the name " + currentStateName + ".");
         }
 
         this.states = states;
