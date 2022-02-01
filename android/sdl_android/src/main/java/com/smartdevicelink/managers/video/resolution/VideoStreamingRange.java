@@ -108,7 +108,7 @@ public class VideoStreamingRange {
         if (maximumAspectRatio == null && minimumAspectRatio == null) {
             return true;
         }
-        if (aspectRatio == null){
+        if (aspectRatio == null) {
             return false;
         }
 

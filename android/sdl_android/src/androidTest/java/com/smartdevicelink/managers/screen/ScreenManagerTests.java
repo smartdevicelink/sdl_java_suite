@@ -209,12 +209,8 @@ public class ScreenManagerTests {
         SoftButtonObject softButtonObject3 = new SoftButtonObject("object1", Arrays.asList(softButtonState1, softButtonState2), softButtonState1.getName(), null);
         SoftButtonObject softButtonObject4 = new SoftButtonObject("object2", Arrays.asList(softButtonState3, softButtonState4), softButtonState3.getName(), null);
         assertTrue(screenManager.checkAndAssignButtonIds(softButtonObjects, BaseScreenManager.ManagerLocation.SOFTBUTTON_MANAGER));
-
-
-
-
-
     }
+
     @Test
     public void testAssigningIdsToSoftButtonObjects() {
         SoftButtonObject sbo1, sbo2, sbo3, sbo4, sbo5;

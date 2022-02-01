@@ -102,6 +102,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @since SmartDeviceLink 7.1.0
      */
     public static final String KEY_SEAT_OCCUPANCY = "seatOccupancy";
+
     /**
      * Constructs a new UnsubscribeVehicleDataResponse object
      */

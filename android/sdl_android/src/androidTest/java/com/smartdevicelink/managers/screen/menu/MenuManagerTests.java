@@ -145,7 +145,7 @@ public class MenuManagerTests {
             @Override
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
-                List<RPCMessage> rpcs  = (List<RPCMessage>) args[0];
+                List<RPCMessage> rpcs = (List<RPCMessage>) args[0];
                 OnMultipleRequestListener listener = (OnMultipleRequestListener) args[1];
 
                 for (RPCMessage rpcMessage : rpcs) {
@@ -550,7 +550,7 @@ public class MenuManagerTests {
         // Sleep to give time to Taskmaster to run the operations
         sleep();
 
-        assertEquals(0 , menuManager.currentMenuCells.size());
+        assertEquals(0, menuManager.currentMenuCells.size());
     }
 
     @Test

@@ -19,7 +19,7 @@ import static junit.framework.TestCase.fail;
 public class OnAppCapabilityUpdatedTests extends BaseRpcTests {
 
     @Override
-    protected RPCMessage createMessage(){
+    protected RPCMessage createMessage() {
         OnAppCapabilityUpdated msg = new OnAppCapabilityUpdated();
         msg.setAppCapability(TestValues.GENERAL_APPCAPABILITY);
 
@@ -27,22 +27,22 @@ public class OnAppCapabilityUpdatedTests extends BaseRpcTests {
     }
 
     @Override
-    protected String getMessageType(){
+    protected String getMessageType() {
         return RPCMessage.KEY_NOTIFICATION;
     }
 
     @Override
-    protected String getCommandType(){
+    protected String getCommandType() {
         return FunctionID.ON_APP_CAPABILITY_UPDATED.toString();
     }
 
     @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
+    protected JSONObject getExpectedParameters(int sdlVersion) {
         JSONObject result = new JSONObject();
 
-        try{
+        try {
             result.put(OnAppCapabilityUpdated.KEY_APP_CAPABILITY, TestValues.GENERAL_APPCAPABILITY.serializeJSON());
-        }catch(JSONException e){
+        } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
 
@@ -53,9 +53,9 @@ public class OnAppCapabilityUpdatedTests extends BaseRpcTests {
      * Tests the expected values of the RPC message.
      */
     @Test
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Test Values
-        AppCapability appCapability = ( (OnAppCapabilityUpdated) msg ).getAppCapability();
+        AppCapability appCapability = ((OnAppCapabilityUpdated) msg).getAppCapability();
 
         // Valid Tests
         assertEquals(TestValues.MATCH, TestValues.GENERAL_APPCAPABILITY, appCapability);

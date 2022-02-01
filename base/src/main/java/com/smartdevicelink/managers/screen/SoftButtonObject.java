@@ -50,7 +50,7 @@ import java.util.List;
  *
  * @see SoftButtonState
  */
-public class SoftButtonObject implements Cloneable{
+public class SoftButtonObject implements Cloneable {
     private static final String TAG = "SoftButtonObject";
     static final int SOFT_BUTTON_ID_NOT_SET_VALUE = -1;
     static final int SOFT_BUTTON_ID_MIN_VALUE = 0;
