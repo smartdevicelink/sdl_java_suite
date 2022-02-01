@@ -45,6 +45,13 @@ body:
     validations:
       required: false
   - type: input
+    id: device
+    attributes:
+      label: Android Device(s)
+      description: If you saw this bug on Android, add the phone(s) you saw this bug on. If this bug was on JavaSE / JavaEE, you may leave this field blank.
+    validations:
+      required: false
+  - type: input
     id: sdl-java-suite-version
     attributes:
       label: sdl_java_suite Version

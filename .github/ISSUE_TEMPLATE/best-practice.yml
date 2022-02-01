@@ -6,7 +6,7 @@ body:
     attributes:
       value: |
         ## Hello 👋
-        If this issue involves a defect with the library, please file a Bug Report issue instead. If this is an issue with a recommended README / documentation update or a language update.
+        If this issue involves a defect with the library, please file a Bug Report issue instead. This template is for a recommended README / documentation update or a language update, etc.
   - type: textarea
     id: summary
     attributes:
