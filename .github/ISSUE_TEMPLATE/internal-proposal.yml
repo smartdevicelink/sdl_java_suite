@@ -1,0 +1,36 @@
+name: Proposal (For Livio Internal Use ONLY)
+description: Create a proposal feature issue
+title: "[SDL XXXX] TITLE"
+labels: proposal
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Hello 👋
+        If you are not a Livio project manager, this is not the template for you. This is intended to be a template for creating an issue based on an accepted proposal from the [SDL Evolution](https://www.github.com/smartdevicelink/sdl_evolution) process.
+  - type: textarea
+    id: proposal-link
+    attributes:
+      label: Proposal Link
+      value: |
+        Proposal: [Proposal Name](Proposal Link)
+      render: markdown
+    validations:
+      required: true
+  - type: textarea
+    id: proposal-description
+    attributes:
+      label: Proposal Introduction
+      value: |
+        > Paste proposal introduction here
+      render: markdown
+    validations:
+     required: true
+  - type: input
+    id: review-link
+    attributes:
+      label: Review Link
+      value: |
+        Review: Paste Proposal Review Link Here
+    validations:
+      required: true

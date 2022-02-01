@@ -1,0 +1,83 @@
+name: Bug Report
+description: File a bug report
+labels: ["needs triage", "bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Hello 👋
+        Thank you for filling out a bug report. We'll respond as quickly as we can. The more information you provide, the more likely we are to be able to diagnose the problem. If you have something else to discuss that doesn't fit this template, try our [Slack](https://slack.smartdevicelink.com/).
+  - type: textarea
+    id: summary
+    attributes:
+      label: Bug Summary
+      description: Summarize the problem. Attach any relevant crash reports or test apps as well.
+    validations:
+      required: true
+  - type: textarea
+    id: repro-steps
+    attributes:
+      label: Reproduction Steps
+      value: |
+        1. [Step 1]
+        2. [Step 2]
+        3. [Step 3]
+
+        Expected Behavior:
+
+        Observed Behavior:
+    validations:
+     required: true
+  - type: dropdown
+    id: projects
+    attributes:
+      label: Which projects have you seen this bug on?
+      multiple: true
+      options:
+        - Android
+        - Java Enterprise Edition
+        - Java Standard Edition
+  - type: input
+    id: android-version
+    attributes:
+      label: Android Version(s)
+      placeholder: 7.0.0
+    validations:
+      required: false
+  - type: input
+    id: device
+    attributes:
+      label: Android Device(s)
+      description: If you saw this bug on Android, add the phone(s) you saw this bug on. If this bug was on JavaSE / JavaEE, you may leave this field blank.
+    validations:
+      required: false
+  - type: input
+    id: sdl-java-suite-version
+    attributes:
+      label: sdl_java_suite Version
+      placeholder: 5.2.0
+    validations:
+      required: true
+  - type: textarea
+    id: testing-against
+    attributes:
+      label: Testing Environment(s)
+      description: |
+        For Example:
+          - Ford TDK 3.4 (19286_DEVTEST)
+          - Manticore v2.9.0 (See top of the open Manticore screen)
+          - SDL Core v8.0.0 + Generic_HMI v0.11.0
+      placeholder: |
+        For Example:
+          - Ford TDK 3.4 (19286_DEVTEST)
+          - Manticore v2.9.0 (See top of the open Manticore screen)
+          - SDL Core v8.0.0 + Generic_HMI v0.11.0
+      render: markdown
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Please copy-paste any relevant log output. This will automatically be rendered as code.
+      render: shell

@@ -1,0 +1,16 @@
+name: Best Practice
+description: Report a best practice issue, such as a language feature or README update.
+labels: ["needs triage", "best practice"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Hello 👋
+        If this issue involves a defect with the library, please file a Bug Report issue instead. This template is for a recommended README / documentation update or a language update, etc.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Description
+      description: Summarize the problem. Attach any relevant links, etc.
+    validations:
+      required: true
