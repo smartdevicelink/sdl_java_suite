@@ -213,14 +213,15 @@ public class ScreenManagerTests {
 
     @Test
     public void testAssigningIdsToSoftButtonObjects() {
+        SoftButtonState defaultState = new SoftButtonState("default", "hi", null);
         SoftButtonObject sbo1, sbo2, sbo3, sbo4, sbo5;
 
         // Case 1 - don't set id for any button (Manager should set ids automatically starting from 1 and up)
-        sbo1 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
-        sbo2 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
-        sbo3 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
-        sbo4 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
-        sbo5 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
+        sbo1 = new SoftButtonObject(null, defaultState, null);
+        sbo2 = new SoftButtonObject(null, defaultState, null);
+        sbo3 = new SoftButtonObject(null, defaultState, null);
+        sbo4 = new SoftButtonObject(null, defaultState, null);
+        sbo5 = new SoftButtonObject(null, defaultState, null);
         screenManager.checkAndAssignButtonIds(Arrays.asList(sbo1, sbo2, sbo3, sbo4, sbo5), BaseScreenManager.ManagerLocation.SOFTBUTTON_MANAGER);
         assertEquals("SoftButtonObject id doesn't match the expected value", 1, sbo1.getButtonId());
         assertEquals("SoftButtonObject id doesn't match the expected value", 2, sbo2.getButtonId());
@@ -230,15 +231,15 @@ public class ScreenManagerTests {
 
 
         // Case 2 - Set ids for all buttons (Manager shouldn't alter the ids set by developer)
-        sbo1 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
+        sbo1 = new SoftButtonObject(null, defaultState, null);
         sbo1.setButtonId(100);
-        sbo2 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
+        sbo2 = new SoftButtonObject(null, defaultState, null);
         sbo2.setButtonId(200);
-        sbo3 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
+        sbo3 = new SoftButtonObject(null, defaultState, null);
         sbo3.setButtonId(300);
-        sbo4 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
+        sbo4 = new SoftButtonObject(null, defaultState, null);
         sbo4.setButtonId(400);
-        sbo5 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
+        sbo5 = new SoftButtonObject(null, defaultState, null);
         sbo5.setButtonId(500);
         screenManager.checkAndAssignButtonIds(Arrays.asList(sbo1, sbo2, sbo3, sbo4, sbo5), BaseScreenManager.ManagerLocation.SOFTBUTTON_MANAGER);
         assertEquals("SoftButtonObject id doesn't match the expected value", 100, sbo1.getButtonId());
@@ -249,13 +250,13 @@ public class ScreenManagerTests {
 
 
         // Case 3 - Set ids for some buttons (Manager shouldn't alter the ids set by developer. And it should assign ids for the ones that don't have id)
-        sbo1 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
+        sbo1 = new SoftButtonObject(null, defaultState, null);
         sbo1.setButtonId(50);
-        sbo2 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
-        sbo3 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
-        sbo4 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
+        sbo2 = new SoftButtonObject(null, defaultState, null);
+        sbo3 = new SoftButtonObject(null, defaultState, null);
+        sbo4 = new SoftButtonObject(null, defaultState, null);
         sbo4.setButtonId(100);
-        sbo5 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
+        sbo5 = new SoftButtonObject(null, defaultState, null);
         screenManager.checkAndAssignButtonIds(Arrays.asList(sbo1, sbo2, sbo3, sbo4, sbo5), BaseScreenManager.ManagerLocation.SOFTBUTTON_MANAGER);
         assertEquals("SoftButtonObject id doesn't match the expected value", 50, sbo1.getButtonId());
         assertEquals("SoftButtonObject id doesn't match the expected value", 101, sbo2.getButtonId());
