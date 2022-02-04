@@ -220,6 +220,17 @@ abstract class BaseSdlManager {
                                 if (lcu.getShortAppName() != null) {
                                     shortAppName = lcu.getShortAppName();
                                 }
+
+                                if (lcu.getTtsName() != null) {
+                                    ttsChunks = lcu.getTtsName();
+                                }
+
+                                if (lcu.getVoiceRecognitionCommandNames() != null) {
+                                    vrSynonyms = lcu.getVoiceRecognitionCommandNames();
+                                }
+                            } else {
+                                DebugTool.logError(TAG, "Change Registration onError: " + response.getResultCode() + " | Info: " + response.getInfo());
+                                retryChangeRegistration();
                             }
                         }
                     });

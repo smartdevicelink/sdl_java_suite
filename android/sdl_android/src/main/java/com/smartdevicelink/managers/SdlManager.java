@@ -100,8 +100,8 @@ public class SdlManager extends BaseSdlManager {
         }
     };
 
-    public SdlManager(){
-        DebugTool.logWarning(TAG, "If this SdlManager was created without using SdlManager.Builder, most of its members are not initialized");
+    public SdlManager() {
+        DebugTool.logWarning(TAG, "SdlManager must be created with SdlManager.Builder");
     }
 
     /**
