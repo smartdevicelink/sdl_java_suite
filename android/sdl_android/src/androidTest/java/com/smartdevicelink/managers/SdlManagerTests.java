@@ -422,20 +422,4 @@ public class SdlManagerTests {
         // Make sure the listener is called exactly once
         assertEquals("Listener was not called or called more/less frequently than expected", 1, listenerCalledCounter);
     }
-
-    @Test
-    public void testDisposeAfterRetryChangeRegistration() {
-        LockScreenConfig lockScreenConfig = new LockScreenConfig();
-        SdlManager sdlManager = createSampleManager("Test App", "test.test.test", lockScreenConfig);
-        sdlManager.retryChangeRegistration();
-        sdlManager.dispose();
-    }
-
-    @Test
-    public void testRetryChangeRegistrationAfterDispose() {
-        LockScreenConfig lockScreenConfig = new LockScreenConfig();
-        SdlManager sdlManager = createSampleManager("Test App", "test.test.test", lockScreenConfig);
-        sdlManager.dispose();
-        sdlManager.retryChangeRegistration();
-    }
 }
