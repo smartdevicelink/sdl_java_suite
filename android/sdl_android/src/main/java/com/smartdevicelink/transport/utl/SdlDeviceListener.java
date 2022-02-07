@@ -262,6 +262,7 @@ public class SdlDeviceListener {
                 if (sdlListener.bluetoothTransport != null) {
                     sdlListener.bluetoothTransport.stop();
                     sdlListener.bluetoothTransport = null;
+                    sdlListener.bluetoothHandler = null;
                 }
                 sdlListener.timeoutHandler.removeCallbacks(sdlListener.timeoutRunner);
             }
