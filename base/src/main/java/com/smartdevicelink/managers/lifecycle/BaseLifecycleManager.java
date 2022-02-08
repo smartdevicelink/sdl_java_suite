@@ -401,7 +401,11 @@ abstract class BaseLifecycleManager {
                             VehicleType vehicleType = raiResponse.getVehicleType();
                             String systemSoftwareVersion = raiResponse.getSystemSoftwareVersion();
                             if (vehicleType != null || systemSoftwareVersion != null) {
-                                saveVehicleType(session.getActiveTransports(), vehicleType);
+                                List<TransportRecord> activeTransports = null;
+                                if (session != null) {
+                                    activeTransports = session.getActiveTransports();
+                                }
+                                saveVehicleType(activeTransports, vehicleType);
                                 SystemInfo systemInfo = new SystemInfo(vehicleType, systemSoftwareVersion, null);
                                 boolean validSystemInfo = lifecycleListener.onSystemInfoReceived(systemInfo);
                                 if (!validSystemInfo) {
@@ -944,7 +948,9 @@ abstract class BaseLifecycleManager {
             DebugTool.logInfo(TAG, "on protocol session started");
             if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(version) == 1) {
                 DebugTool.logWarning(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
-                session.endService(SessionType.RPC);
+                if (session != null) {
+                    session.endService(SessionType.RPC);
+                }
                 clean();
                 onClose("Protocol version not supported: " + version, null, SdlDisconnectedReason.MINIMUM_PROTOCOL_VERSION_HIGHER_THAN_SUPPORTED);
                 return;
@@ -952,11 +958,17 @@ abstract class BaseLifecycleManager {
 
             if (systemInfo != null && lifecycleListener != null) {
                 didCheckSystemInfo = true;
-                saveVehicleType(session.getActiveTransports(), systemInfo.getVehicleType());
+                List<TransportRecord> activeTransports = null;
+                if (session != null) {
+                    activeTransports = session.getActiveTransports();
+                }
+                saveVehicleType(activeTransports, systemInfo.getVehicleType());
                 boolean validSystemInfo = lifecycleListener.onSystemInfoReceived(systemInfo);
                 if (!validSystemInfo) {
                     DebugTool.logWarning(TAG, "Disconnecting from head unit, the system info was not accepted.");
-                    session.endService(SessionType.RPC);
+                    if (session != null) {
+                        session.endService(SessionType.RPC);
+                    }
                     clean();
                     onClose("System not supported", null, SdlDisconnectedReason.DEFAULT);
                     return;
