@@ -91,6 +91,19 @@ public class SdlManager extends BaseSdlManager {
     private VideoStreamManager videoStreamManager;
     private AudioStreamManager audioStreamManager;
 
+    private Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable changeRegistrationRunnable = new Runnable() {
+        @Override
+        public void run() {
+            checkLifecycleConfiguration();
+            DebugTool.logInfo(TAG, "Retry Change Registration Count: " + changeRegistrationRetry);
+        }
+    };
+
+    public SdlManager() {
+        DebugTool.logWarning(TAG, "SdlManager must be created with SdlManager.Builder");
+    }
+
     /**
      * Starts up a SdlManager, and calls provided callback called once all BaseSubManagers are done setting up
      */
@@ -211,14 +224,9 @@ public class SdlManager extends BaseSdlManager {
     void retryChangeRegistration() {
         changeRegistrationRetry++;
         if (changeRegistrationRetry < MAX_RETRY) {
-            final Handler handler = new Handler(Looper.getMainLooper());
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    checkLifecycleConfiguration();
-                    DebugTool.logInfo(TAG, "Retry Change Registration Count: " + changeRegistrationRetry);
-                }
-            }, 3000);
+            if (handler != null && changeRegistrationRunnable != null) {
+                handler.postDelayed(changeRegistrationRunnable, 3000);
+            }
         }
     }
 
@@ -256,6 +264,15 @@ public class SdlManager extends BaseSdlManager {
 
         if (this.lifecycleManager != null) {
             this.lifecycleManager.stop();
+        }
+
+        if (handler != null) {
+            if (changeRegistrationRunnable != null) {
+                handler.removeCallbacks(changeRegistrationRunnable);
+                changeRegistrationRunnable = null;
+            }
+
+            handler = null;
         }
 
         if (managerListener != null) {
