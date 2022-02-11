@@ -204,7 +204,7 @@ public class AndroidTools {
         return sdlAppInfoList;
     }
 
-    public static boolean areBtPermissionsGranted(Context context, String servicePackageName) {
+    public static boolean isBtConnectPermissionGranted(Context context, String servicePackageName) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             //Permissions are only for SDK 31 and above
             return true;
@@ -214,11 +214,28 @@ public class AndroidTools {
         try {
             packageInfo = packageManager.getPackageInfo(servicePackageName, PackageManager.GET_PERMISSIONS);
             int btConnectPermission = packageManager.checkPermission(BLUETOOTH_CONNECT, packageInfo.packageName);
-            int btScanPermission = packageManager.checkPermission(BLUETOOTH_SCAN, packageInfo.packageName);
-            return btConnectPermission == PackageManager.PERMISSION_GRANTED && btScanPermission == PackageManager.PERMISSION_GRANTED;
+            return btConnectPermission == PackageManager.PERMISSION_GRANTED;
         } catch (NameNotFoundException e) {
             e.printStackTrace();
-            DebugTool.logError(TAG, "servicePackageName not found while checking BT permissions");
+            DebugTool.logError(TAG, "servicePackageName not found while checking BT Connect permissions");
+            return false;
+        }
+    }
+
+    public static boolean isBtScanPermissionGranted(Context context, String servicePackageName) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            //Permissions are only for SDK 31 and above
+            return true;
+        }
+        PackageManager packageManager = context.getPackageManager();
+        PackageInfo packageInfo;
+        try {
+            packageInfo = packageManager.getPackageInfo(servicePackageName, PackageManager.GET_PERMISSIONS);
+            int btScanPermission = packageManager.checkPermission(BLUETOOTH_SCAN, packageInfo.packageName);
+            return btScanPermission == PackageManager.PERMISSION_GRANTED;
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+            DebugTool.logError(TAG, "servicePackageName not found while checking BT SCAN permissions");
             return false;
         }
     }
@@ -250,13 +267,6 @@ public class AndroidTools {
             for (ResolveInfo app : apps) {
                 try {
                     intent.setClassName(app.activityInfo.applicationInfo.packageName, app.activityInfo.name);
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && intent.getBooleanExtra(TransportConstants.PENDING_BOOLEAN_EXTRA, false)) {
-                        Intent pending = new Intent();
-                        PendingIntent pendingIntent = PendingIntent.getForegroundService(context, (int) System.currentTimeMillis(), pending, PendingIntent.FLAG_MUTABLE | Intent.FILL_IN_COMPONENT);
-                        intent.putExtra(TransportConstants.PENDING_INTENT_EXTRA, pendingIntent);
-                    }
-
                     context.sendBroadcast(intent);
                 } catch (Exception e) {
                     //In case there is missing info in the app reference we want to keep moving

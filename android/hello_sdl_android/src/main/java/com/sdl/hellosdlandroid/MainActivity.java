@@ -13,7 +13,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import static android.Manifest.permission.BLUETOOTH_CONNECT;
-import static android.Manifest.permission.BLUETOOTH_SCAN;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,13 +41,12 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean checkPermission() {
         int btConnectPermission = ContextCompat.checkSelfPermission(getApplicationContext(), BLUETOOTH_CONNECT);
-        int btScanPermission = ContextCompat.checkSelfPermission(getApplicationContext(), BLUETOOTH_SCAN);
 
-        return btConnectPermission == PackageManager.PERMISSION_GRANTED && btScanPermission == PackageManager.PERMISSION_GRANTED;
+        return btConnectPermission == PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestPermission() {
-        ActivityCompat.requestPermissions(this, new String[]{BLUETOOTH_CONNECT, BLUETOOTH_SCAN}, REQUEST_CODE);
+        ActivityCompat.requestPermissions(this, new String[]{BLUETOOTH_CONNECT}, REQUEST_CODE);
     }
 
     @Override

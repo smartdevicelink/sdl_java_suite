@@ -48,4 +48,9 @@ public class SdlReceiver extends SdlBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent); // Required if overriding this method
     }
+
+    @Override
+    public String getSdlServiceName() {
+        return "SdlService";
+    }
 }

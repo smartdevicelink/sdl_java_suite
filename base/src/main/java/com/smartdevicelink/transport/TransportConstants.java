@@ -46,7 +46,6 @@ public class TransportConstants {
     public static final String CONFIRMED_SDL_DEVICE = "confirmed_sdl_device";
     public static final String VEHICLE_INFO_EXTRA = "vehicle_info";
     public static final String CONNECTION_TYPE_EXTRA = "connection_type";
-    public static final String PENDING_BOOLEAN_EXTRA = "pending_true";
     public static final String PENDING_INTENT_EXTRA = "pending_intent";
 
     public static final String BIND_LOCATION_PACKAGE_NAME_EXTRA = "BIND_LOCATION_PACKAGE_NAME_EXTRA";

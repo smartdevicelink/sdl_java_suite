@@ -372,6 +372,9 @@ public class SdlRouterService extends Service {
 
             switch (msg.what) {
                 case TransportConstants.ROUTER_REQUEST_BT_CLIENT_CONNECT:
+                    if (!AndroidTools.isBtScanPermissionGranted(service.getApplicationContext(), service.getPackageName())) {
+                        break;
+                    }
                     if (receivedBundle.getBoolean(TransportConstants.CONNECT_AS_CLIENT_BOOLEAN_EXTRA, false)
                             && !connectAsClient) {        //We check this flag to make sure we don't try to connect over and over again. On D/C we should set to false
                         //Log.d(TAG,"Attempting to connect as bt client");
@@ -1104,24 +1107,8 @@ public class SdlRouterService extends Service {
         }
 
         // If Android 12 or newer make sure we have BT Runtime permissions
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !AndroidTools.areBtPermissionsGranted(this, this.getPackageName())) {
-            if (isConnectedOverUSB) {
-                waitingForBTRuntimePermissions = true;
-                btPermissionsHandler = new Handler(Looper.myLooper());
-                btPermissionsRunnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!AndroidTools.areBtPermissionsGranted(SdlRouterService.this, SdlRouterService.this.getPackageName())) {
-                            btPermissionsHandler.postDelayed(btPermissionsRunnable, BT_PERMISSIONS_CHECK_FREQUENCY);
-                        } else {
-                            waitingForBTRuntimePermissions = false;
-                            initBluetoothSerialService();
-                        }
-                    }
-                };
-                btPermissionsHandler.postDelayed(btPermissionsRunnable, BT_PERMISSIONS_CHECK_FREQUENCY);
-                showBTPermissionsNotification();
-            } else {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !AndroidTools.isBtConnectPermissionGranted(this, this.getPackageName())) {
+            if (!isConnectedOverUSB) {
                 return false;
             }
         }
@@ -1858,7 +1845,9 @@ public class SdlRouterService extends Service {
         startService.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            startService.putExtra(TransportConstants.PENDING_BOOLEAN_EXTRA, true);
+            Intent pending = new Intent();
+            PendingIntent pendingIntent = PendingIntent.getForegroundService(this, (int) System.currentTimeMillis(), pending, PendingIntent.FLAG_MUTABLE | Intent.FILL_IN_COMPONENT);
+            startService.putExtra(TransportConstants.PENDING_INTENT_EXTRA, pendingIntent);
         }
 
         AndroidTools.sendExplicitBroadcast(getApplicationContext(), startService, null);
@@ -1867,6 +1856,27 @@ public class SdlRouterService extends Service {
         if (!(registeredApps == null || registeredApps.isEmpty())) {
             //If we have clients
             notifyClients(createHardwareConnectedMessage(record));
+        }
+
+        if (isConnectedOverUSB) {
+            //Delay starting bluetoothTransport
+            waitingForBTRuntimePermissions = true;
+            btPermissionsHandler = new Handler(Looper.myLooper());
+            //Continuously Check for the Bluetooth Permissions
+            btPermissionsRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    if (!AndroidTools.isBtConnectPermissionGranted(SdlRouterService.this, SdlRouterService.this.getPackageName())) {
+                        btPermissionsHandler.postDelayed(btPermissionsRunnable, BT_PERMISSIONS_CHECK_FREQUENCY);
+                    } else {
+                        waitingForBTRuntimePermissions = false;
+                        initBluetoothSerialService();
+                    }
+                }
+            };
+            btPermissionsHandler.postDelayed(btPermissionsRunnable, BT_PERMISSIONS_CHECK_FREQUENCY);
+            //Present Notification to take user to permissions page for the app
+            showBTPermissionsNotification();
         }
     }
 
@@ -2936,9 +2946,6 @@ public class SdlRouterService extends Service {
         pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_PING, true);
         if (receivedVehicleType != null) {
             pingIntent.putExtra(TransportConstants.VEHICLE_INFO_EXTRA, receivedVehicleType.getStore());
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            pingIntent.putExtra(TransportConstants.PENDING_BOOLEAN_EXTRA, true);
         }
     }
 

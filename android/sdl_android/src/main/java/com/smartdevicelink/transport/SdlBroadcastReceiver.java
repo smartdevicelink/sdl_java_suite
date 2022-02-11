@@ -90,6 +90,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
     private static Thread.UncaughtExceptionHandler foregroundExceptionHandler = null;
     private static final Object DEVICE_LISTENER_LOCK = new Object();
     private static SdlDeviceListener sdlDeviceListener;
+    private static String serviceName;
 
     public int getRouterServiceVersion() {
         return SdlRouterService.ROUTER_SERVICE_VERSION_NUMBER;
@@ -98,6 +99,8 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
     @Override
     @CallSuper
     public void onReceive(Context context, Intent intent) {
+        serviceName = getSdlServiceName();
+
         //Log.i(TAG, "Sdl Receiver Activated");
         final String action = intent.getAction();
         if (action == null) {
@@ -297,9 +300,17 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                             if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty() && sdlAppInfoList.get(0).getRouterServiceComponentName() != null) {
                                 routerServicePackage = sdlAppInfoList.get(0).getRouterServiceComponentName().getPackageName();
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                                    if (!AndroidTools.areBtPermissionsGranted(context, routerServicePackage) && sdlAppInfoList.size() > 1) {
+                                    boolean preAndroid12RouterServiceOnDevice = false;
+                                    for (SdlAppInfo appInfo : sdlAppInfoList) {
+                                        //If the RS version is older than Android 12 update version
+                                        if (appInfo.getRouterServiceVersion() < 16) {
+                                            preAndroid12RouterServiceOnDevice = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!preAndroid12RouterServiceOnDevice && !AndroidTools.isBtConnectPermissionGranted(context, routerServicePackage) && sdlAppInfoList.size() > 1) {
                                         for (SdlAppInfo appInfo : sdlAppInfoList) {
-                                            if (AndroidTools.areBtPermissionsGranted(context, appInfo.getRouterServiceComponentName().getPackageName())) {
+                                            if (AndroidTools.isBtConnectPermissionGranted(context, appInfo.getRouterServiceComponentName().getPackageName())) {
                                                 routerServicePackage = appInfo.getRouterServiceComponentName().getPackageName();
                                                 break;
                                             }
@@ -388,10 +399,9 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                 public void uncaughtException(Thread t, Throwable e) {
                     if (e != null
                             && e instanceof AndroidRuntimeException
-                            && "android.app.RemoteServiceException".equals(e.getClass().getName())  //android.app.RemoteServiceException is a private class
+                            && ("android.app.RemoteServiceException".equals(e.getClass().getName()) || "android.app.ForegroundServiceDidNotStartInTimeException".equals(e.getClass().getName())) //android.app.RemoteServiceException is a private class
                             && e.getMessage() != null
-                            && e.getMessage().contains("SdlRouterService")) {
-
+                            && (e.getMessage().contains("SdlRouterService")) || e.getMessage().contains(serviceName)) {
                         DebugTool.logInfo(TAG, "Handling failed startForegroundService call");
                         Looper.loop();
                     } else if (defaultUncaughtExceptionHandler != null) { //No other exception should be handled
@@ -611,9 +621,17 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                                     //If we are on android 12 check the app has BT permissions
                                     //If it does not try to find another app in the list that does;
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                                        if (!AndroidTools.areBtPermissionsGranted(context, routerService.getPackageName()) && sdlAppInfoList.size() > 1) {
+                                        boolean preAndroid12RouterServiceOnDevice = false;
+                                        for (SdlAppInfo appInfo : sdlAppInfoList) {
+                                            //If the RS version is older than Android 12 update version
+                                            if (appInfo.getRouterServiceVersion() < 16) {
+                                                preAndroid12RouterServiceOnDevice = true;
+                                                break;
+                                            }
+                                        }
+                                        if (!preAndroid12RouterServiceOnDevice && !AndroidTools.isBtConnectPermissionGranted(context, routerService.getPackageName()) && sdlAppInfoList.size() > 1) {
                                             for (SdlAppInfo appInfo : sdlAppInfoList) {
-                                                if (AndroidTools.areBtPermissionsGranted(context, appInfo.getRouterServiceComponentName().getPackageName())) {
+                                                if (AndroidTools.isBtConnectPermissionGranted(context, appInfo.getRouterServiceComponentName().getPackageName())) {
                                                     routerService = appInfo.getRouterServiceComponentName();
                                                     break;
                                                 }
@@ -677,6 +695,10 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
      *                {@inheritDoc}
      */
     public abstract void onSdlEnabled(Context context, Intent intent);
+
+    public String getSdlServiceName() {
+        return "SdlService";
+    }
 
     //public abstract void onSdlDisabled(Context context); //Removing for now until we're able to abstract from developer
 
