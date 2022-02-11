@@ -111,7 +111,7 @@ public class SdlDeviceListener {
             // set timeout = if first time seeing BT device, 30s, if not 15s
             int timeout = connectedDevice != null && isFirstStatusCheck(connectedDevice.getAddress()) ? 30000 : 15000;
             //Set our preference as false for this device for now
-            if(connectedDevice != null) {
+            if (connectedDevice != null) {
                 setSDLConnectedStatus(contextWeakReference.get(), connectedDevice.getAddress(), false);
             }
             bluetoothHandler = new TransportHandler(this);
@@ -190,7 +190,7 @@ public class SdlDeviceListener {
          */
         public void sendStartService() {
             SdlDeviceListener sdlListener = this.provider.get();
-            SdlPacket serviceProbe = SdlPacketFactory.createStartSession(SessionType.RPC, 0x00, (byte)0x01, (byte)0x00, false);
+            SdlPacket serviceProbe = SdlPacketFactory.createStartSession(SessionType.RPC, 0x00, (byte) 0x01, (byte) 0x00, false);
             serviceProbe.putTag(ControlFrameTags.RPC.StartService.PROTOCOL_VERSION, MAX_PROTOCOL_VERSION.toString());
             byte[] constructed = serviceProbe.constructPacket();
             if (sdlListener.bluetoothTransport != null && sdlListener.bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
@@ -216,7 +216,7 @@ public class SdlDeviceListener {
                 } else {
                     hashID = BitConverter.intFromByteArray(packet.getPayload(), 0);
                 }
-                byte[] stopService = SdlPacketFactory.createEndSession(SessionType.RPC, (byte)packet.getSessionId(), 0, (byte)packet.getVersion(), hashID).constructPacket();
+                byte[] stopService = SdlPacketFactory.createEndSession(SessionType.RPC, (byte) packet.getSessionId(), 0, (byte) packet.getVersion(), hashID).constructPacket();
                 if (sdlListener.bluetoothTransport != null && sdlListener.bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
                     sdlListener.bluetoothTransport.write(stopService, 0, stopService.length);
                 }

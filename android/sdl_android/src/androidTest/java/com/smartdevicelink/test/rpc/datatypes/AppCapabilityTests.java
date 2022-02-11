@@ -33,7 +33,7 @@ public class AppCapabilityTests extends TestCase {
     /**
      * Tests the expected values of the RPC message.
      */
-    public void testRpcValues () {
+    public void testRpcValues() {
         // Test Values
         VideoStreamingCapability videoStreamingCapability = msg.getVideoStreamingCapability();
         AppCapabilityType videoStreamingCapabilityType = msg.getAppCapabilityType();
@@ -50,10 +50,10 @@ public class AppCapabilityTests extends TestCase {
         assertNull(TestValues.NULL, msg.getVideoStreamingCapability());
     }
 
-    public void testJson(){
+    public void testJson() {
         JSONObject reference = new JSONObject();
 
-        try{
+        try {
             reference.put(KEY_APP_CAPABILITY_TYPE, TestValues.GENERAL_APPCAPABILITYTYPE);
             reference.put(KEY_VIDEO_STREAMING_CAPABILITY, TestValues.GENERAL_VIDEOSTREAMINGCAPABILITY);
 
@@ -61,7 +61,7 @@ public class AppCapabilityTests extends TestCase {
             assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
 
                 String key = (String) iterator.next();
 
@@ -83,7 +83,7 @@ public class AppCapabilityTests extends TestCase {
                     );
                 }
             }
-        } catch(JSONException e){
+        } catch (JSONException e) {
             fail(TestValues.JSON_FAIL);
         }
     }

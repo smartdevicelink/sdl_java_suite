@@ -313,7 +313,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                                 //If the device is not null the listener should start as well as the
                                 //case where this app was installed after BT connected and is the
                                 //only SDL app installed on the device. (Rare corner case)
-                                if(device != null || sdlAppInfoList.size() == 1) {
+                                if (device != null || sdlAppInfoList.size() == 1) {
                                     SdlDeviceListener sdlDeviceListener = getSdlDeviceListener(context, device);
                                     if (!sdlDeviceListener.isRunning()) {
                                         sdlDeviceListener.start();

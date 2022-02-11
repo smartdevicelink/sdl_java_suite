@@ -54,13 +54,13 @@ public class RoofStatusTests extends TestCase {
             while (iterator.hasNext()) {
                 String key = (String) iterator.next();
                 if (key.equals(RoofStatus.KEY_STATE)) {
-                    Hashtable<String, Object> hs1 =  JsonRPCMarshaller.deserializeJSONObject((JSONObject) JsonUtils.readObjectFromJsonObject(reference, key));
-                    Hashtable<String, Object> hs2 =  JsonRPCMarshaller.deserializeJSONObject((JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key));
+                    Hashtable<String, Object> hs1 = JsonRPCMarshaller.deserializeJSONObject((JSONObject) JsonUtils.readObjectFromJsonObject(reference, key));
+                    Hashtable<String, Object> hs2 = JsonRPCMarshaller.deserializeJSONObject((JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key));
 
                     assertTrue(Validator.validateWindowStates(new WindowState(hs1), new WindowState(hs2)));
                 } else if (key.equals(RoofStatus.KEY_LOCATION)) {
-                    Hashtable<String, Object> hs1 =  JsonRPCMarshaller.deserializeJSONObject((JSONObject) JsonUtils.readObjectFromJsonObject(reference, key));
-                    Hashtable<String, Object> hs2 =  JsonRPCMarshaller.deserializeJSONObject((JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key));
+                    Hashtable<String, Object> hs1 = JsonRPCMarshaller.deserializeJSONObject((JSONObject) JsonUtils.readObjectFromJsonObject(reference, key));
+                    Hashtable<String, Object> hs2 = JsonRPCMarshaller.deserializeJSONObject((JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key));
 
                     assertTrue(Validator.validateGrid(new Grid(hs1), new Grid(hs2)));
 

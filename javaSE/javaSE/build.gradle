@@ -2,6 +2,7 @@ apply plugin: 'java-library'
 
 group 'com.smartdevicelink'
 version new File(projectDir.path, ('/../../VERSION')).text.trim()
+ext { VERSION_NAME = "$project.version" }
 
 sourceCompatibility = 1.7
 

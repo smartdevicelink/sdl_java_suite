@@ -290,7 +290,7 @@ public class SdlService {
             }
         });
 
-        MenuCell mainCell5 = new MenuCell("Clear the menu", null, null, null,null, null, new MenuSelectionListener() {
+        MenuCell mainCell5 = new MenuCell("Clear the menu", null, null, null, null, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
                 DebugTool.logInfo(TAG, "Clearing Menu. Source: " + trigger.toString());
@@ -353,7 +353,7 @@ public class SdlService {
         sdlManager.getScreenManager().presentAlert(alertView, new AlertCompletionListener() {
             @Override
             public void onComplete(boolean success, Integer tryAgainTime) {
-                DebugTool.logInfo(TAG, "Alert presented: "+ success);
+                DebugTool.logInfo(TAG, "Alert presented: " + success);
             }
         });
     }

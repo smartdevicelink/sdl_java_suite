@@ -392,10 +392,10 @@ public class AndroidTools {
             XmlResourceParser parser = resources.getXml(xmlFieldId);
             return SdlAppInfo.deserializeSupportedVehicles(parser);
         } catch (PackageManager.NameNotFoundException e) {
-            DebugTool.logError(TAG, "Failed to get OEM vehicle data filter: " + e.getMessage()+ " - assume vehicle data is supported");
+            DebugTool.logError(TAG, "Failed to get OEM vehicle data filter: " + e.getMessage() + " - assume vehicle data is supported");
             return null;
         } catch (Resources.NotFoundException ex) {
-            DebugTool.logError(TAG, "Failed to find resource: " + ex.getMessage()+ " - assume vehicle data is supported");
+            DebugTool.logError(TAG, "Failed to find resource: " + ex.getMessage() + " - assume vehicle data is supported");
             return null;
         }
     }

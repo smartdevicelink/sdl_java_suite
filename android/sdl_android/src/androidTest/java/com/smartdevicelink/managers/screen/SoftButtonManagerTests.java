@@ -44,6 +44,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNull;
@@ -350,8 +351,8 @@ public class SoftButtonManagerTests {
         softButtonStateList.add(softButtonState1);
         softButtonStateList2.add(softButtonState1);
         softButtonStateList2.add(softButtonState2);
-        softButtonObject1 = new SoftButtonObject("hi", softButtonStateList, "Hi", null);
-        softButtonObject2 = new SoftButtonObject("hi", softButtonStateList2, "Hi", null);
+        softButtonObject1 = new SoftButtonObject("hi", softButtonStateList, softButtonStateList.get(0).getName(), null);
+        softButtonObject2 = new SoftButtonObject("hi", softButtonStateList2, softButtonStateList2.get(0).getName(), null);
         assertNotEquals(softButtonObject1, softButtonObject2);
 
         // Case 5: SoftButtonStates are not the same, assertFalse
@@ -365,8 +366,8 @@ public class SoftButtonManagerTests {
         assertNotEquals(softButtonObject1, softButtonObject2);
 
         // Case 7: SoftButtonObject currentStateName not same, assertFalse
-        softButtonObject1 = new SoftButtonObject("hi", softButtonStateList, "Hi", null);
-        softButtonObject2 = new SoftButtonObject("hi", softButtonStateList, "Hi2", null);
+        softButtonObject1 = new SoftButtonObject("hi", softButtonStateList2, softButtonStateList2.get(0).getName(), null);
+        softButtonObject2 = new SoftButtonObject("hi", softButtonStateList2, softButtonStateList2.get(1).getName(), null);
         assertNotEquals(softButtonObject1, softButtonObject2);
     }
 
@@ -401,5 +402,118 @@ public class SoftButtonManagerTests {
         // Case 6 they are equal, assertTrue
         softButtonState2 = new SoftButtonState("object1-state1", "o1s1", artwork1);
         assertEquals(softButtonState1, softButtonState2);
+    }
+
+    /**
+     * Test constructing SoftButtonObject with an empty state list
+     */
+    @Test
+    public void testConstructSoftButtonObjectWithEmptyStateList() {
+        List<SoftButtonState> stateList = new ArrayList<>();
+        SoftButtonObject softButtonObject = new SoftButtonObject("hello_there", stateList, "general_kenobi", null);
+        assertNull(softButtonObject.getStates());
+    }
+
+    /**
+     * Test constructing SoftButtonObject with an nonempty state list
+     */
+    @Test
+    public void testConstructSoftButtonObjectWithNonEmptyStateList() {
+        List<SoftButtonState> stateList = new ArrayList<>();
+        SoftButtonState softButtonState = new SoftButtonState("general_kenobi", "General Kenobi", null);
+        stateList.add(softButtonState);
+        SoftButtonObject softButtonObject = new SoftButtonObject("hello_there", stateList, "general_kenobi", null);
+        assertEquals(stateList, softButtonObject.getStates());
+    }
+
+    /**
+     * Test constructing SoftButtonObject with an invalid initialStateName
+     */
+    @Test
+    public void testConstructSoftButtonObjectWithInvalidInitialStateName() {
+        List<SoftButtonState> stateList = new ArrayList<>();
+        SoftButtonState softButtonState = new SoftButtonState("general_kenobi", "General Kenobi", null);
+        stateList.add(softButtonState);
+        SoftButtonObject softButtonObject = new SoftButtonObject("hello_there", stateList, "hello_there", null);
+        assertNull(softButtonObject.getStates());
+    }
+
+    /**
+     * Test assigning an empty state list to existing SoftButtonObject
+     */
+    @Test
+    public void testAssignEmptyStateListToSoftButtonObject() {
+        List<SoftButtonState> nonEmptyStateList = new ArrayList<>();
+        List<SoftButtonState> emptyStateList = new ArrayList<>();
+        SoftButtonState softButtonState = new SoftButtonState("general_kenobi", "General Kenobi", null);
+        nonEmptyStateList.add(softButtonState);
+
+        SoftButtonObject softButtonObject = new SoftButtonObject("hello_there", nonEmptyStateList, "general_kenobi", null);
+
+        softButtonObject.setStates(emptyStateList);
+        assertEquals(nonEmptyStateList, softButtonObject.getStates());
+    }
+
+    /**
+     * Test assigning a state list with the current state to existing SoftButtonObject
+     */
+    @Test
+    public void testAssignStateListWithCurrentStateToSoftButtonObject() {
+        List<SoftButtonState> stateList1 = new ArrayList<>();
+        SoftButtonState softButtonState1 = new SoftButtonState("hello_there", "Hello there", null);
+        stateList1.add(softButtonState1);
+
+        List<SoftButtonState> stateList2 = new ArrayList<>();
+        SoftButtonState softButtonState2 = new SoftButtonState("general_kenobi", "General Kenobi", null);
+        stateList2.add(softButtonState1);
+        stateList2.add(softButtonState2);
+
+        SoftButtonObject softButtonObject = new SoftButtonObject("general_kenobi", stateList1, "hello_there", null);
+
+        softButtonObject.setStates(stateList2);
+
+        assertEquals(stateList2, softButtonObject.getStates());
+    }
+
+    /**
+     * Test assigning a state list without the current state to existing SoftButtonObject
+     */
+    @Test
+    public void testAssignStateListWithoutCurrentStateToSoftButtonObject() {
+        List<SoftButtonState> stateList1 = new ArrayList<>();
+        SoftButtonState softButtonState1 = new SoftButtonState("hello_there", "Hello there", null);
+        stateList1.add(softButtonState1);
+
+        List<SoftButtonState> stateList2 = new ArrayList<>();
+        SoftButtonState softButtonState2 = new SoftButtonState("general_kenobi", "General Kenobi", null);
+        stateList2.add(softButtonState2);
+
+        SoftButtonObject softButtonObject = new SoftButtonObject("general_kenobi", stateList1, "hello_there", null);
+
+        softButtonObject.setStates(stateList2);
+
+        assertEquals(stateList2, softButtonObject.getStates());
+    }
+
+    /**
+     * Test assigning a state list with states that have the same name to existing SoftButtonObject
+     */
+    @Test
+    public void testAssignSameNameStateListToSoftButtonObject() {
+        List<SoftButtonState> stateListUnique = new ArrayList<>();
+        SoftButtonState softButtonState1 = new SoftButtonState("hello_there", "Hello there", null);
+        stateListUnique.add(softButtonState1);
+
+        List<SoftButtonState> stateListDuplicateNames = new ArrayList<>();
+        SoftButtonState softButtonState2 = new SoftButtonState("general_kenobi", "General Kenobi", null);
+        stateListDuplicateNames.add(softButtonState2);
+        SoftButtonState softButtonState3 = new SoftButtonState("general_kenobi", "General Kenobi Again", null);
+        stateListDuplicateNames.add(softButtonState3);
+
+        SoftButtonObject softButtonObject = new SoftButtonObject("general_kenobi", stateListUnique, "hello_there", null);
+
+        softButtonObject.setStates(stateListDuplicateNames);
+
+        assertEquals(stateListUnique, softButtonObject.getStates());
     }
 }

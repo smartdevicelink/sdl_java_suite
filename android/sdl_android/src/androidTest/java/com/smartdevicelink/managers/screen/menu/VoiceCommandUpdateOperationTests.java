@@ -117,13 +117,13 @@ public class VoiceCommandUpdateOperationTests {
                 AddCommand addCommand = null;
 
                 try {
-                    deleteCommand = (DeleteCommand) ((List<Object>)invocation.getArguments()[0]).get(0);
+                    deleteCommand = (DeleteCommand) ((List<Object>) invocation.getArguments()[0]).get(0);
                 } catch (Exception e) {
                     DebugTool.logInfo(TAG, "not DeleteCommands: " + e);
                 }
 
                 try {
-                    addCommand = (AddCommand) ((List<Object>)invocation.getArguments()[0]).get(0);
+                    addCommand = (AddCommand) ((List<Object>) invocation.getArguments()[0]).get(0);
                 } catch (Exception e) {
                     DebugTool.logInfo(TAG, "not AddCommands: " + e);
                 }
@@ -131,24 +131,24 @@ public class VoiceCommandUpdateOperationTests {
                 if (deleteCommand != null) {
                     DeleteCommandResponse badResponse = new DeleteCommandResponse();
                     badResponse.setSuccess(false);
-                    List<DeleteCommand> deleteCommands = ((List<DeleteCommand>)invocation.getArguments()[0]);
+                    List<DeleteCommand> deleteCommands = ((List<DeleteCommand>) invocation.getArguments()[0]);
                     for (DeleteCommand command : deleteCommands) {
                         badResponse.setCorrelationID(command.getCorrelationID());
-                        ((OnMultipleRequestListener)invocation.getArguments()[1]).onResponse(command.getCorrelationID(), badResponse);
+                        ((OnMultipleRequestListener) invocation.getArguments()[1]).onResponse(command.getCorrelationID(), badResponse);
                     }
                 } else if (addCommand != null) {
                     AddCommandResponse badResponse = new AddCommandResponse();
                     badResponse.setSuccess(false);
-                    List<AddCommand> addCommands = ((List<AddCommand>)invocation.getArguments()[0]);
+                    List<AddCommand> addCommands = ((List<AddCommand>) invocation.getArguments()[0]);
                     for (AddCommand command : addCommands) {
                         badResponse.setCorrelationID(command.getCorrelationID());
-                        ((OnMultipleRequestListener)invocation.getArguments()[1]).onResponse(command.getCorrelationID(), badResponse);
+                        ((OnMultipleRequestListener) invocation.getArguments()[1]).onResponse(command.getCorrelationID(), badResponse);
                     }
                 } else {
                     DebugTool.logInfo(TAG, "CallBacks failed");
                     return null;
                 }
-                ((OnMultipleRequestListener)invocation.getArguments()[1]).onFinished();
+                ((OnMultipleRequestListener) invocation.getArguments()[1]).onFinished();
                 return null;
             }
         }).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
@@ -181,13 +181,13 @@ public class VoiceCommandUpdateOperationTests {
                 AddCommand addCommand = null;
 
                 try {
-                    deleteCommand = (DeleteCommand) ((List<Object>)invocation.getArguments()[0]).get(0);
+                    deleteCommand = (DeleteCommand) ((List<Object>) invocation.getArguments()[0]).get(0);
                 } catch (Exception e) {
                     DebugTool.logInfo(TAG, "not DeleteCommands: " + e);
                 }
 
                 try {
-                    addCommand = (AddCommand) ((List<Object>)invocation.getArguments()[0]).get(0);
+                    addCommand = (AddCommand) ((List<Object>) invocation.getArguments()[0]).get(0);
                 } catch (Exception e) {
                     DebugTool.logInfo(TAG, "not AddCommands: " + e);
                 }
@@ -195,24 +195,24 @@ public class VoiceCommandUpdateOperationTests {
                 if (deleteCommand != null) {
                     DeleteCommandResponse successResponse = new DeleteCommandResponse();
                     successResponse.setSuccess(true);
-                    List<DeleteCommand> deleteCommands = ((List<DeleteCommand>)invocation.getArguments()[0]);
+                    List<DeleteCommand> deleteCommands = ((List<DeleteCommand>) invocation.getArguments()[0]);
                     for (DeleteCommand command : deleteCommands) {
                         successResponse.setCorrelationID(command.getCorrelationID());
-                        ((OnMultipleRequestListener)invocation.getArguments()[1]).onResponse(command.getCorrelationID(), successResponse);
+                        ((OnMultipleRequestListener) invocation.getArguments()[1]).onResponse(command.getCorrelationID(), successResponse);
                     }
                 } else if (addCommand != null) {
                     AddCommandResponse successResponse = new AddCommandResponse();
                     successResponse.setSuccess(true);
-                    List<AddCommand> addCommands = ((List<AddCommand>)invocation.getArguments()[0]);
+                    List<AddCommand> addCommands = ((List<AddCommand>) invocation.getArguments()[0]);
                     for (AddCommand command : addCommands) {
                         successResponse.setCorrelationID(command.getCorrelationID());
-                        ((OnMultipleRequestListener)invocation.getArguments()[1]).onResponse(command.getCorrelationID(), successResponse);
+                        ((OnMultipleRequestListener) invocation.getArguments()[1]).onResponse(command.getCorrelationID(), successResponse);
                     }
                 } else {
                     DebugTool.logInfo(TAG, "CallBacks failed");
                     return null;
                 }
-                ((OnMultipleRequestListener)invocation.getArguments()[1]).onFinished();
+                ((OnMultipleRequestListener) invocation.getArguments()[1]).onFinished();
                 return null;
             }
         }).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
@@ -245,13 +245,13 @@ public class VoiceCommandUpdateOperationTests {
                 AddCommand addCommand = null;
 
                 try {
-                    deleteCommand = (DeleteCommand) ((List<Object>)invocation.getArguments()[0]).get(0);
+                    deleteCommand = (DeleteCommand) ((List<Object>) invocation.getArguments()[0]).get(0);
                 } catch (Exception e) {
                     DebugTool.logInfo(TAG, "not DeleteCommands: " + e);
                 }
 
                 try {
-                    addCommand = (AddCommand) ((List<Object>)invocation.getArguments()[0]).get(0);
+                    addCommand = (AddCommand) ((List<Object>) invocation.getArguments()[0]).get(0);
                 } catch (Exception e) {
                     DebugTool.logInfo(TAG, "not AddCommands: " + e);
                 }
@@ -259,24 +259,24 @@ public class VoiceCommandUpdateOperationTests {
                 if (deleteCommand != null) {
                     DeleteCommandResponse successResponse = new DeleteCommandResponse();
                     successResponse.setSuccess(true);
-                    List<DeleteCommand> deleteCommands = ((List<DeleteCommand>)invocation.getArguments()[0]);
+                    List<DeleteCommand> deleteCommands = ((List<DeleteCommand>) invocation.getArguments()[0]);
                     for (DeleteCommand command : deleteCommands) {
                         successResponse.setCorrelationID(command.getCorrelationID());
-                        ((OnMultipleRequestListener)invocation.getArguments()[1]).onResponse(command.getCorrelationID(), successResponse);
+                        ((OnMultipleRequestListener) invocation.getArguments()[1]).onResponse(command.getCorrelationID(), successResponse);
                     }
                 } else if (addCommand != null) {
                     AddCommandResponse successResponse = new AddCommandResponse();
                     successResponse.setSuccess(true);
-                    List<AddCommand> addCommands = ((List<AddCommand>)invocation.getArguments()[0]);
+                    List<AddCommand> addCommands = ((List<AddCommand>) invocation.getArguments()[0]);
                     for (AddCommand command : addCommands) {
                         successResponse.setCorrelationID(command.getCorrelationID());
-                        ((OnMultipleRequestListener)invocation.getArguments()[1]).onResponse(command.getCorrelationID(), successResponse);
+                        ((OnMultipleRequestListener) invocation.getArguments()[1]).onResponse(command.getCorrelationID(), successResponse);
                     }
                 } else {
                     DebugTool.logInfo(TAG, "CallBacks failed");
                     return null;
                 }
-                ((OnMultipleRequestListener)invocation.getArguments()[1]).onFinished();
+                ((OnMultipleRequestListener) invocation.getArguments()[1]).onFinished();
                 return null;
             }
         }).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
@@ -298,7 +298,6 @@ public class VoiceCommandUpdateOperationTests {
     }
 
 
-
     @Test
     public void testVoiceCommandsInListNotInSecondList() {
         VoiceCommand command1 = new VoiceCommand(Collections.singletonList("Command 1"), null);
@@ -314,7 +313,7 @@ public class VoiceCommandUpdateOperationTests {
         List<VoiceCommand> voiceCommandList2 = new ArrayList<>();
         voiceCommandList2.add(command1Clone);
         voiceCommandList2.add(command3);
-        VoiceCommandUpdateOperation voiceCommandUpdateOperation = new VoiceCommandUpdateOperation(internalInterface,null,null,null);
+        VoiceCommandUpdateOperation voiceCommandUpdateOperation = new VoiceCommandUpdateOperation(internalInterface, null, null, null);
 
         List<VoiceCommand> differencesList = voiceCommandUpdateOperation.voiceCommandsInListNotInSecondList(voiceCommandList, voiceCommandList2);
         assertEquals(differencesList.size(), 1);

@@ -2431,7 +2431,7 @@ public class Validator {
             log("validatePermissionItem", "Items are the same object.  No defensive copy took place.");
             return false;
         }
-		*/
+        */
         if (!item1.getRpcName().equals(item2.getRpcName())) {
             return false;
         }
@@ -2509,7 +2509,7 @@ public class Validator {
             log("validateParameterPermissions", "Items are the same object.  No defensive copy took place.");
             return false;
         }
-		*/
+        */
         if (!validateStringList(item1.getAllowed(), item2.getAllowed())) {
             return false;
         }

@@ -34,13 +34,16 @@ package com.smartdevicelink.managers.screen.menu;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.smartdevicelink.managers.ISdl;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.rpc.ImageField;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.test.TestValues;
+import com.smartdevicelink.util.Version;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -210,7 +213,88 @@ public class MenuReplaceUtilitiesTests {
     }
 
     @Test
+    public void testWindowCapabilitySupportsPrimaryImage() {
+        WindowCapability windowCapability;
+        ISdl internalInterface = mock(ISdl.class);
+        MenuCell menuCell = mock(MenuCell.class);
+
+        // Test case 0
+        windowCapability = createWindowCapability(false, true);
+        when(menuCell.isSubMenuCell()).thenReturn(true);
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(4, 9, 0)));
+        assertTrue(MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, menuCell));
+
+        // Test case 1
+        windowCapability = createWindowCapability(false, false);
+        when(menuCell.isSubMenuCell()).thenReturn(true);
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(4, 9, 0)));
+        assertFalse(MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, menuCell));
+
+        // Test case 2
+        windowCapability = createWindowCapability(false, false);
+        when(menuCell.isSubMenuCell()).thenReturn(true);
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(5, 0, 0)));
+        assertFalse(MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, menuCell));
+
+        // Test case 3
+        windowCapability = createWindowCapability(true, false);
+        when(menuCell.isSubMenuCell()).thenReturn(true);
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(5, 0, 0)));
+        assertTrue(MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, menuCell));
+
+        // Test case 4
+        windowCapability = createWindowCapability(false, false);
+        when(menuCell.isSubMenuCell()).thenReturn(true);
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(6, 0, 0)));
+        assertFalse(MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, menuCell));
+
+        // Test case 5
+        windowCapability = createWindowCapability(true, false);
+        when(menuCell.isSubMenuCell()).thenReturn(true);
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(6, 0, 0)));
+        assertTrue(MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, menuCell));
+
+        // Test case 6
+        windowCapability = createWindowCapability(false, false);
+        when(menuCell.isSubMenuCell()).thenReturn(true);
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(7, 0, 0)));
+        assertFalse(MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, menuCell));
+
+        // Test case 7
+        windowCapability = createWindowCapability(false, false);
+        when(menuCell.isSubMenuCell()).thenReturn(true);
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(7, 1, 0)));
+        assertFalse(MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, menuCell));
+
+        // Test case 8
+        windowCapability = createWindowCapability(false, false);
+        when(menuCell.isSubMenuCell()).thenReturn(true);
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(8, 0, 0)));
+        assertFalse(MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, menuCell));
+
+        // Test case 9
+        windowCapability = createWindowCapability(false, true);
+        when(menuCell.isSubMenuCell()).thenReturn(true);
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(8, 0, 0)));
+        assertTrue(MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, menuCell));
+
+        // Test case 10
+        windowCapability = createWindowCapability(false, false);
+        when(menuCell.isSubMenuCell()).thenReturn(false);
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(8, 0, 0)));
+        assertFalse(MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, menuCell));
+
+        // Test case 11
+        windowCapability = createWindowCapability(true, false);
+        when(menuCell.isSubMenuCell()).thenReturn(false);
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(8, 0, 0)));
+        assertTrue(MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage(internalInterface, windowCapability, menuCell));
+    }
+
+    @Test
     public void testShouldCellIncludeImage() {
+        ISdl internalInterface = mock(ISdl.class);
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(new Version(8, 0, 0)));
         MenuCell menuCell;
         WindowCapability windowCapability;
         FileManager fileManager;
@@ -220,34 +304,34 @@ public class MenuReplaceUtilitiesTests {
         menuCell = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, voiceCommands, null);
         windowCapability = createWindowCapability(true, true);
         fileManager = createMockFileManager(true);
-        assertTrue(MenuReplaceUtilities.shouldCellIncludePrimaryImageFromCell(menuCell, fileManager, windowCapability));
+        assertTrue(MenuReplaceUtilities.shouldCellIncludePrimaryImageFromCell(internalInterface, menuCell, fileManager, windowCapability));
 
         // Case 2 - Image are not supported
         menuCell = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, voiceCommands, null);
         windowCapability = createWindowCapability(false, false);
         fileManager = createMockFileManager(true);
-        assertFalse(MenuReplaceUtilities.shouldCellIncludePrimaryImageFromCell(menuCell, fileManager, windowCapability));
+        assertFalse(MenuReplaceUtilities.shouldCellIncludePrimaryImageFromCell(internalInterface, menuCell, fileManager, windowCapability));
 
         // Case 3 - Artwork is null
         menuCell = new MenuCell(TestValues.GENERAL_STRING, null, voiceCommands, null);
         windowCapability = createWindowCapability(true, true);
         fileManager = createMockFileManager(true);
-        assertFalse(MenuReplaceUtilities.shouldCellIncludePrimaryImageFromCell(menuCell, fileManager, windowCapability));
+        assertFalse(MenuReplaceUtilities.shouldCellIncludePrimaryImageFromCell(internalInterface, menuCell, fileManager, windowCapability));
 
         // Case 4 - Artwork has not been uploaded
         menuCell = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, voiceCommands, null);
         windowCapability = createWindowCapability(true, true);
         fileManager = createMockFileManager(false);
-        assertFalse(MenuReplaceUtilities.shouldCellIncludePrimaryImageFromCell(menuCell, fileManager, windowCapability));
+        assertFalse(MenuReplaceUtilities.shouldCellIncludePrimaryImageFromCell(internalInterface, menuCell, fileManager, windowCapability));
 
         // Case 5 - Artwork is static icon
         menuCell = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK_STATIC, voiceCommands, null);
         windowCapability = createWindowCapability(true, true);
         fileManager = createMockFileManager(false);
-        assertTrue(MenuReplaceUtilities.shouldCellIncludePrimaryImageFromCell(menuCell, fileManager, windowCapability));
+        assertTrue(MenuReplaceUtilities.shouldCellIncludePrimaryImageFromCell(internalInterface, menuCell, fileManager, windowCapability));
     }
 
-    private WindowCapability createWindowCapability (boolean supportsCmdIcon, boolean supportsSubMenuIcon) {
+    private WindowCapability createWindowCapability(boolean supportsCmdIcon, boolean supportsSubMenuIcon) {
         WindowCapability windowCapability = new WindowCapability();
         windowCapability.setImageFields(new ArrayList<ImageField>());
         if (supportsCmdIcon) {
@@ -259,7 +343,7 @@ public class MenuReplaceUtilitiesTests {
         return windowCapability;
     }
 
-    private FileManager createMockFileManager (boolean hasUploadedFile) {
+    private FileManager createMockFileManager(boolean hasUploadedFile) {
         FileManager fileManager = mock(FileManager.class);
         when(fileManager.hasUploadedFile(any(SdlArtwork.class))).thenReturn(hasUploadedFile);
         return fileManager;
@@ -308,7 +392,7 @@ public class MenuReplaceUtilitiesTests {
         List<MenuCell> menuCellList = new ArrayList<>(Arrays.asList(menuCell1, menuCell2, menuCell3, menuCell4));
         addIdsToMenuCells(menuCellList, parentIdNotFound);
 
-        return menuCellList ;
+        return menuCellList;
     }
 
     private List<MenuCell> createNewMenuList() {
@@ -338,6 +422,6 @@ public class MenuReplaceUtilitiesTests {
         List<MenuCell> newMenuList = new ArrayList<>(Arrays.asList(menuCell5));
         addIdsToMenuCells(newMenuList, parentIdNotFound);
 
-        return newMenuList ;
+        return newMenuList;
     }
 }

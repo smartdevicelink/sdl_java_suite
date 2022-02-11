@@ -279,7 +279,7 @@ public class ChoiceSetManagerTests {
         newCSM.setKeyboardConfiguration(newCSM.defaultKeyboardConfiguration());
         Field field = BaseChoiceSetManager.class.getDeclaredField("keyboardConfiguration");
         field.setAccessible(true);
-        KeyboardProperties properties = (KeyboardProperties)field.get(newCSM);
+        KeyboardProperties properties = (KeyboardProperties) field.get(newCSM);
         assertEquals(properties, csm.defaultKeyboardConfiguration());
 
         // Test presentKeyboard
@@ -287,7 +287,7 @@ public class ChoiceSetManagerTests {
         newCSM.presentKeyboard("qwerty", newCSM.defaultKeyboardConfiguration(), null);
         field = BaseChoiceSetManager.class.getDeclaredField("keyboardConfiguration");
         field.setAccessible(true);
-        properties = (KeyboardProperties)field.get(newCSM);
+        properties = (KeyboardProperties) field.get(newCSM);
         assertEquals(properties, csm.defaultKeyboardConfiguration());
     }
 
@@ -314,7 +314,7 @@ public class ChoiceSetManagerTests {
         Field field = BaseChoiceSetManager.class.getDeclaredField("keyboardConfiguration");
         field.setAccessible(true);
 
-        KeyboardProperties getProperties = (KeyboardProperties)field.get(newCSM);
+        KeyboardProperties getProperties = (KeyboardProperties) field.get(newCSM);
 
         assertEquals(getProperties.getCustomKeys().size(), 1);
     }
@@ -342,7 +342,7 @@ public class ChoiceSetManagerTests {
         Field field = BaseChoiceSetManager.class.getDeclaredField("keyboardConfiguration");
         field.setAccessible(true);
 
-        KeyboardProperties getProperties = (KeyboardProperties)field.get(newCSM);
+        KeyboardProperties getProperties = (KeyboardProperties) field.get(newCSM);
 
         assertNull(getProperties.getCustomKeys());
     }
@@ -373,7 +373,7 @@ public class ChoiceSetManagerTests {
         Field field = BaseChoiceSetManager.class.getDeclaredField("keyboardConfiguration");
         field.setAccessible(true);
 
-        KeyboardProperties getProperties = (KeyboardProperties)field.get(newCSM);
+        KeyboardProperties getProperties = (KeyboardProperties) field.get(newCSM);
 
         assertNull(getProperties.getMaskInputCharacters());
     }

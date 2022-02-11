@@ -48,7 +48,7 @@ public class SecurityQueryTypeTests extends TestCase {
             assertNotNull("Invalid Query string byte match returned null", enumInvalidSecurityQueryType);
 
 
-        }catch (NullPointerException exception) {
+        } catch (NullPointerException exception) {
             fail("Null enum list throws NullPointerException.");
         }
     }

@@ -192,7 +192,7 @@ public class MenuConfigurationUpdateOperationTests {
         transactionQueue.add(operation, false);
     }
 
-    private Answer<Void> createSetGlobalPropertiesAnswer(final boolean success){
+    private Answer<Void> createSetGlobalPropertiesAnswer(final boolean success) {
         return new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocation) {
@@ -206,7 +206,7 @@ public class MenuConfigurationUpdateOperationTests {
         };
     }
 
-    private WindowCapability createWindowCapability (boolean supportsList, boolean supportsTile) {
+    private WindowCapability createWindowCapability(boolean supportsList, boolean supportsTile) {
         WindowCapability windowCapability = new WindowCapability();
         windowCapability.setMenuLayoutsAvailable(new ArrayList<MenuLayout>());
         if (supportsList) {

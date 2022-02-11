@@ -205,7 +205,7 @@ public class LockScreenManager extends BaseSubManager {
                         driverDistStatus = DriverDistractionState.DD_ON.equals(ddState.getState());
                         mLockscreenWarningMsg = ddState.getLockscreenWarningMessage();
                         boolean previousDismissibleState = isLockscreenDismissible;
-                        if(ddState.getLockscreenDismissibility() != null ) {
+                        if (ddState.getLockscreenDismissibility() != null) {
                             isLockscreenDismissible = ddState.getLockscreenDismissibility();
                         } //If the param is null, we assume it stays as the previous value
 

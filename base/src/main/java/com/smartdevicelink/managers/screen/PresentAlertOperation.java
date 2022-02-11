@@ -194,7 +194,7 @@ public class PresentAlertOperation extends Task {
 
         List<SdlFile> filesToBeUploaded = new ArrayList<>();
         for (TTSChunk ttsChunk : alertView.getAudio().getAudioData()) {
-            if(ttsChunk.getType() != SpeechCapabilities.FILE){
+            if (ttsChunk.getType() != SpeechCapabilities.FILE) {
                 continue;
             }
             SdlFile audioFile = alertView.getAudio().getAudioFiles().get(ttsChunk.getText());
@@ -300,7 +300,7 @@ public class PresentAlertOperation extends Task {
             public void onResponse(int correlationId, RPCResponse response) {
                 if (!response.getSuccess()) {
                     DebugTool.logError(TAG, "There was an error presenting the alert: " + response.getInfo());
-                }  else {
+                } else {
                     DebugTool.logInfo(TAG, "Alert finished presenting");
                 }
                 finishOperation(response.getSuccess(), ((AlertResponse) response).getTryAgainTime());
@@ -401,12 +401,12 @@ public class PresentAlertOperation extends Task {
     private List<TTSChunk> getTTSChunksForAlert(AlertView alertView) {
         AlertAudioData alertAudioData = alertView.getAudio();
         List<TTSChunk> ttsChunks = new ArrayList<>();
-            for (TTSChunk chunk : alertAudioData.getAudioData()) {
-                if (chunk.getType() == SpeechCapabilities.FILE && !supportsAlertAudioFile()) {
-                    continue;
-                }
-                ttsChunks.add(chunk);
+        for (TTSChunk chunk : alertAudioData.getAudioData()) {
+            if (chunk.getType() == SpeechCapabilities.FILE && !supportsAlertAudioFile()) {
+                continue;
             }
+            ttsChunks.add(chunk);
+        }
         return ttsChunks.size() > 0 ? ttsChunks : null;
     }
 
@@ -446,7 +446,7 @@ public class PresentAlertOperation extends Task {
         if (nonNullFields.isEmpty()) {
             return alert;
         }
-        int numberOfLines = currentWindowCapability!= null ? ManagerUtility.WindowCapabilityUtility.getMaxNumberOfAlertFieldLines(currentWindowCapability) : 3;
+        int numberOfLines = currentWindowCapability != null ? ManagerUtility.WindowCapabilityUtility.getMaxNumberOfAlertFieldLines(currentWindowCapability) : 3;
         switch (numberOfLines) {
             case 1:
                 alert = assembleOneLineAlertText(alert, nonNullFields);

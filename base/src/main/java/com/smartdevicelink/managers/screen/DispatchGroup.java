@@ -38,20 +38,25 @@ package com.smartdevicelink.managers.screen;
 class DispatchGroup {
     private int count;
     private Runnable runnable;
+
     DispatchGroup() {
         count = 0;
     }
+
     synchronized void enter() {
         count++;
     }
+
     synchronized void leave() {
         count--;
         run();
     }
+
     void notify(Runnable runnable) {
         this.runnable = runnable;
         run();
     }
+
     private void run() {
         if (count <= 0 && runnable != null) {
             runnable.run();
