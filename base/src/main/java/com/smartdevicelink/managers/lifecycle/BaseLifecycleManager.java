@@ -116,6 +116,8 @@ abstract class BaseLifecycleManager {
             ON_UPDATE_LISTENER_LOCK = new Object(),
             ON_REQUEST_LISTENER_LOCK = new Object(),
             ON_NOTIFICATION_LISTENER_LOCK = new Object();
+    protected static final Object SESSION_LOCK = new Object();
+
 
     SdlSession session;
     final AppConfig appConfig;
@@ -151,7 +153,7 @@ abstract class BaseLifecycleManager {
 
     public void start() {
         try {
-            synchronized (session) {
+            synchronized (SESSION_LOCK) {
                 if (session != null) {
                     session.startSession();
                 }
@@ -165,7 +167,7 @@ abstract class BaseLifecycleManager {
      * Start a secured RPC service
      */
     public void startRPCEncryption() {
-        synchronized (session) {
+        synchronized (SESSION_LOCK) {
             if (session != null) {
                 session.startService(SessionType.RPC, true);
             }
@@ -173,7 +175,7 @@ abstract class BaseLifecycleManager {
     }
 
     public synchronized void stop() {
-        synchronized (session) {
+        synchronized (SESSION_LOCK) {
             if (session != null) {
                 session.close();
                 session = null;
@@ -202,7 +204,7 @@ abstract class BaseLifecycleManager {
     }
 
     Version getProtocolVersion() {
-        synchronized (session) {
+        synchronized (SESSION_LOCK) {
             if (session != null && session.getProtocolVersion() != null) {
                 return session.getProtocolVersion();
             }
@@ -311,7 +313,7 @@ abstract class BaseLifecycleManager {
     }
 
     private boolean isConnected() {
-        synchronized (session) {
+        synchronized (SESSION_LOCK) {
             if (session != null) {
                 return session.getIsConnected();
             } else {
@@ -413,7 +415,7 @@ abstract class BaseLifecycleManager {
                             if (vehicleType != null || systemSoftwareVersion != null) {
 
                                 List<TransportRecord> activeTransports = null;
-                                synchronized (session) {
+                                synchronized (SESSION_LOCK) {
                                     if (session != null) {
                                         activeTransports = session.getActiveTransports();
                                     }
@@ -818,7 +820,7 @@ abstract class BaseLifecycleManager {
 
             final ProtocolMessage pm = new ProtocolMessage();
             pm.setData(msgBytes);
-            synchronized (session) {
+            synchronized (SESSION_LOCK) {
                 if (session != null) {
                     pm.setSessionID((byte) session.getSessionId());
                 }
@@ -889,7 +891,7 @@ abstract class BaseLifecycleManager {
                 pm.setPriorityCoefficient(1);
             }
 
-            synchronized (session) {
+            synchronized (SESSION_LOCK) {
                 if (session != null) {
                     session.sendMessage(pm);
                 }
@@ -965,7 +967,7 @@ abstract class BaseLifecycleManager {
             DebugTool.logInfo(TAG, "on protocol session started");
             if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(version) == 1) {
                 DebugTool.logWarning(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
-                synchronized (session) {
+                synchronized (SESSION_LOCK) {
                     if (session != null) {
                         session.endService(SessionType.RPC);
                     }
@@ -978,7 +980,7 @@ abstract class BaseLifecycleManager {
             if (systemInfo != null && lifecycleListener != null) {
                 didCheckSystemInfo = true;
                 List<TransportRecord> activeTransports = null;
-                synchronized (session) {
+                synchronized (SESSION_LOCK) {
                     if (session != null) {
                         activeTransports = session.getActiveTransports();
                     }
@@ -987,7 +989,7 @@ abstract class BaseLifecycleManager {
                 boolean validSystemInfo = lifecycleListener.onSystemInfoReceived(systemInfo);
                 if (!validSystemInfo) {
                     DebugTool.logWarning(TAG, "Disconnecting from head unit, the system info was not accepted.");
-                    synchronized (session) {
+                    synchronized (SESSION_LOCK) {
                         if (session != null) {
                             session.endService(SessionType.RPC);
                         }
@@ -1063,7 +1065,7 @@ abstract class BaseLifecycleManager {
         @Override
         public boolean isConnected() {
             synchronized (BaseLifecycleManager.this) {
-                synchronized (BaseLifecycleManager.this.session) {
+                synchronized (SESSION_LOCK) {
                     if (BaseLifecycleManager.this.session != null) {
                         return BaseLifecycleManager.this.session.getIsConnected();
                     }
@@ -1075,7 +1077,7 @@ abstract class BaseLifecycleManager {
         @Override
         public void addServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {
             synchronized (BaseLifecycleManager.this) {
-                synchronized (BaseLifecycleManager.this.session) {
+                synchronized (SESSION_LOCK) {
                     if (BaseLifecycleManager.this.session != null) {
                         BaseLifecycleManager.this.session.addServiceListener(serviceType, sdlServiceListener);
                     }
@@ -1086,7 +1088,7 @@ abstract class BaseLifecycleManager {
         @Override
         public void removeServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {
             synchronized (BaseLifecycleManager.this) {
-                synchronized (BaseLifecycleManager.this.session) {
+                synchronized (SESSION_LOCK) {
                     if (BaseLifecycleManager.this.session != null) {
                         BaseLifecycleManager.this.session.removeServiceListener(serviceType, sdlServiceListener);
                     }
@@ -1159,7 +1161,7 @@ abstract class BaseLifecycleManager {
         @Override
         public boolean isTransportForServiceAvailable(SessionType serviceType) {
             synchronized (BaseLifecycleManager.this) {
-                synchronized (BaseLifecycleManager.this.session) {
+                synchronized (SESSION_LOCK) {
                     if (BaseLifecycleManager.this.session != null) {
                         return BaseLifecycleManager.this.session.isTransportForServiceAvailable(serviceType);
                     }
@@ -1191,7 +1193,7 @@ abstract class BaseLifecycleManager {
         @Override
         public long getMtu(SessionType serviceType) {
             synchronized (BaseLifecycleManager.this) {
-                synchronized (BaseLifecycleManager.this.session) {
+                synchronized (SESSION_LOCK) {
                     if (BaseLifecycleManager.this.session != null) {
                         return BaseLifecycleManager.this.session.getMtu(serviceType);
                     }
@@ -1295,7 +1297,7 @@ abstract class BaseLifecycleManager {
         if (rpcRequestListeners != null) {
             rpcRequestListeners.clear();
         }
-        synchronized (session) {
+        synchronized (SESSION_LOCK) {
             if (session != null && session.getIsConnected()) {
                 session.close();
             }
@@ -1353,7 +1355,7 @@ abstract class BaseLifecycleManager {
             if ((sec != null) && (sec.getMakeList() != null)) {
                 if (sec.getMakeList().contains(make)) {
                     sec.setAppId(appConfig.getAppID());
-                    synchronized (session) {
+                    synchronized (SESSION_LOCK) {
                         if (session != null) {
                             session.setSdlSecurity(sec);
                             sec.handleSdlSession(session);

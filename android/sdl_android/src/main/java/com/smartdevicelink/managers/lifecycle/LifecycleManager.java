@@ -93,7 +93,7 @@ public class LifecycleManager extends BaseLifecycleManager {
             //We don't want to alert higher if we are just cycling for legacy bluetooth
             onClose("Sdl Proxy Cycled", new SdlException("Sdl Proxy Cycled", SdlExceptionCause.SDL_PROXY_CYCLED), disconnectedReason);
         }
-        synchronized (session) {
+        synchronized (SESSION_LOCK) {
             if (session != null) {
                 try {
                     session.startSession();
@@ -165,7 +165,7 @@ public class LifecycleManager extends BaseLifecycleManager {
      */
     @Override
     void startVideoService(boolean isEncrypted, VideoStreamingParameters parameters, boolean afterPendingRestart) {
-        synchronized (session) {
+        synchronized (SESSION_LOCK) {
             if (session == null) {
                 DebugTool.logWarning(TAG, "SdlSession is not created yet.");
                 return;
@@ -189,7 +189,7 @@ public class LifecycleManager extends BaseLifecycleManager {
      * @param parameters  VideoStreamingParameters that are desired. Does not guarantee this is what will be accepted.
      */
     private void tryStartVideoStream(boolean isEncrypted, VideoStreamingParameters parameters, boolean afterPendingRestart) {
-        synchronized (session) {
+        synchronized (SESSION_LOCK) {
             if (session == null) {
                 DebugTool.logWarning(TAG, "SdlSession is not created yet.");
                 return;
@@ -204,7 +204,7 @@ public class LifecycleManager extends BaseLifecycleManager {
             return;
         }
 
-        synchronized (session) {
+        synchronized (SESSION_LOCK) {
             if (afterPendingRestart || !videoServiceStartResponseReceived || !videoServiceStartResponse //If we haven't started the service before
                     || (videoServiceStartResponse && isEncrypted && !session.isServiceProtected(SessionType.NAV))) { //Or the service has been started but we'd like to start an encrypted one
                 if (session != null) {
@@ -247,7 +247,7 @@ public class LifecycleManager extends BaseLifecycleManager {
                 }
             };
 
-            synchronized (session) {
+            synchronized (SESSION_LOCK) {
                 if (session != null) {
                     session.addServiceListener(SessionType.NAV, videoServiceListener);
                 }
@@ -257,7 +257,7 @@ public class LifecycleManager extends BaseLifecycleManager {
 
     @Override
     void startAudioService(boolean isEncrypted) {
-        synchronized (session) {
+        synchronized (SESSION_LOCK) {
             if (session == null) {
                 DebugTool.logWarning(TAG, "SdlSession is not created yet.");
                 return;
