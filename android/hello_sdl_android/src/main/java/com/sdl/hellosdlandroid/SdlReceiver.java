@@ -18,6 +18,9 @@ public class SdlReceiver extends SdlBroadcastReceiver {
         DebugTool.logInfo(TAG, "SDL Enabled");
         intent.setClass(context, SdlService.class);
 
+        // Starting with Android S SdlService needs to be started from a foreground context.
+        // We will check the intent for a pendingIntent parcelable extra
+        // This pendingIntent allows us to start the SdlService from the context of the active router service which is in the foreground
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (intent.getParcelableExtra(TransportConstants.PENDING_INTENT_EXTRA) != null) {
                 PendingIntent pendingIntent = (PendingIntent) intent.getParcelableExtra(TransportConstants.PENDING_INTENT_EXTRA);

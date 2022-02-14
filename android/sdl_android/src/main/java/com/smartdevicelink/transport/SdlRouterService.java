@@ -372,6 +372,7 @@ public class SdlRouterService extends Service {
 
             switch (msg.what) {
                 case TransportConstants.ROUTER_REQUEST_BT_CLIENT_CONNECT:
+                    //Starting with Android 12 this use case will require the BLUETOOTH_SCAN PERMISSION
                     if (!AndroidTools.isBtScanPermissionGranted(service.getApplicationContext(), service.getPackageName())) {
                         break;
                     }
@@ -1106,9 +1107,9 @@ public class SdlRouterService extends Service {
             return false;
         }
 
-        // If Android 12 or newer make sure we have BT Runtime permissions
+        // If Android 12 or newer make sure we have BLUETOOTH_CONNECT Runtime permission
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !AndroidTools.isBtConnectPermissionGranted(this, this.getPackageName())) {
-            if (!isConnectedOverUSB) {
+            if (!isConnectedOverUSB) { //If BLUETOOTH_CONNECT permission is not granted We want to make sure we are connected over USB
                 return false;
             }
         }
@@ -1141,6 +1142,7 @@ public class SdlRouterService extends Service {
 
         return true;
     }
+
 
     @Override
     public void onCreate() {
@@ -1176,7 +1178,6 @@ public class SdlRouterService extends Service {
                 if (info.getRouterServiceComponentName().equals(name) && listSize > i + 1) {
                     SdlAppInfo nextUp = sdlAppInfoList.get(i + 1);
                     Intent serviceIntent = new Intent();
-                    //Add check if it is second pass also add extra
                     serviceIntent.setComponent(nextUp.getRouterServiceComponentName());
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                         startService(serviceIntent);
@@ -1195,7 +1196,6 @@ public class SdlRouterService extends Service {
             DebugTool.logInfo(TAG, "No sdl apps found");
             return;
         }
-
         closing = true;
         closeBluetoothSerialServer();
         notifyAltTransportOfClose(TransportConstants.ROUTER_SHUTTING_DOWN_REASON_NEWER_SERVICE);
@@ -1785,6 +1785,7 @@ public class SdlRouterService extends Service {
 
     private synchronized void initBluetoothSerialService() {
         if (waitingForBTRuntimePermissions) {
+            //The app has not be granted the BLUETOOTH_CONNECT runtime permission
             return;
         }
 
@@ -1845,6 +1846,11 @@ public class SdlRouterService extends Service {
         startService.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            //Starting in Android 12 we need to start services from a foreground context
+            //To enable developers to be able to start their SdlService from the "background"
+            //we will attach a pendingIntent as an extra to the intent
+            //the developer can use this pendingIntent to start their SdlService from the context of
+            //the active RouterService
             Intent pending = new Intent();
             PendingIntent pendingIntent = PendingIntent.getForegroundService(this, (int) System.currentTimeMillis(), pending, PendingIntent.FLAG_MUTABLE | Intent.FILL_IN_COMPONENT);
             startService.putExtra(TransportConstants.PENDING_INTENT_EXTRA, pendingIntent);
@@ -1859,10 +1865,10 @@ public class SdlRouterService extends Service {
         }
 
         if (isConnectedOverUSB && !AndroidTools.isBtConnectPermissionGranted(SdlRouterService.this, SdlRouterService.this.getPackageName())) {
-            //Delay starting bluetoothTransport
+            //Delay starting bluetoothTransport when we are connected over USB and the app does not have the BLUETOOTH_CONNECT permissions
             waitingForBTRuntimePermissions = true;
             btPermissionsHandler = new Handler(Looper.myLooper());
-            //Continuously Check for the Bluetooth Permissions
+            //Continuously Check for the BLUETOOTH_CONNECT Permission
             btPermissionsRunnable = new Runnable() {
                 @Override
                 public void run() {

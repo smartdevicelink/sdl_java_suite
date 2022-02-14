@@ -73,6 +73,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
     private static final String TAG = "Sdl Broadcast Receiver";
 
     protected static final String SDL_ROUTER_SERVICE_CLASS_NAME = "sdlrouterservice";
+    protected static final int ANDROID_12_ROUTER_SERVICE_VERSION = 16;
 
     public static final String LOCAL_ROUTER_SERVICE_EXTRA = "router_service";
     public static final String LOCAL_ROUTER_SERVICE_DID_START_OWN = "did_start";
@@ -302,15 +303,17 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                                     boolean preAndroid12RouterServiceOnDevice = false;
                                     for (SdlAppInfo appInfo : sdlAppInfoList) {
-                                        //If the RS version is older than Android 12 update version
-                                        if (appInfo.getRouterServiceVersion() < 16) {
+                                        //If an installed app RS version is older than Android 12 update version (16)
+                                        if (appInfo.getRouterServiceVersion() < ANDROID_12_ROUTER_SERVICE_VERSION) {
                                             preAndroid12RouterServiceOnDevice = true;
                                             break;
                                         }
                                     }
+                                    // If all apps have a RS newer than the Android 12 update, chosen app does not have BT Connect permissions, and more than 1 sdl app is installed
                                     if (!preAndroid12RouterServiceOnDevice && !AndroidTools.isBtConnectPermissionGranted(context, routerServicePackage) && sdlAppInfoList.size() > 1) {
                                         for (SdlAppInfo appInfo : sdlAppInfoList) {
                                             if (AndroidTools.isBtConnectPermissionGranted(context, appInfo.getRouterServiceComponentName().getPackageName())) {
+                                                //If this app in the list has BT Connect permissions, we want to use that apps RS
                                                 routerServicePackage = appInfo.getRouterServiceComponentName().getPackageName();
                                                 break;
                                             }
@@ -383,13 +386,16 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
     }
 
     /**
-     * This method will set a new UncaughtExceptionHandler for the current thread. The only
-     * purpose of the custom UncaughtExceptionHandler is to catch the rare occurrence that the
-     * SdlRouterService can't be started fast enough by the system after calling
-     * startForegroundService so the onCreate method doesn't get called before the foreground promise
-     * timer expires. The new UncaughtExceptionHandler will catch that specific exception and tell the
-     * main looper to continue forward. This still leaves the SdlRouterService killed, but prevents
-     * an ANR to the app that makes the startForegroundService call.
+     * This method will set a new UncaughtExceptionHandler for the current thread.
+     * There are two exceptions we want to catch here. The first exception is the rare
+     * occurrence that the SdlRouterService can't be started fast enough by the system after calling
+     * startForegroundService so the onCreate method doesn't get called before the foreground
+     * promise timer expires. The second is for the instance where the developers "SdlService" class
+     * can't be started fast enough by the system after calling startForegroundService OR the app
+     * is unable to start the "SdlService" class because the developer did not export the service
+     * in the manifest. The new UncaughtExceptionHandler will catch these specific exception and
+     * tell the main looper to continue forward. This still leaves the respective Service killed,
+     * but prevents an ANR to the app that makes the startForegroundService call.
      */
     static protected void setForegroundExceptionHandler() {
         final Thread.UncaughtExceptionHandler defaultUncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
@@ -618,21 +624,21 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                                 final List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(context, new SdlAppInfo.BestRouterComparator(), vehicleType);
                                 if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty()) {
                                     ComponentName routerService = sdlAppInfoList.get(0).getRouterServiceComponentName();
-                                    //If we are on android 12 check the app has BT permissions
-                                    //If it does not try to find another app in the list that does;
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                                         boolean preAndroid12RouterServiceOnDevice = false;
                                         for (SdlAppInfo appInfo : sdlAppInfoList) {
-                                            //If the RS version is older than Android 12 update version
-                                            if (appInfo.getRouterServiceVersion() < 16) {
+                                            //If an installed app RS version is older than Android 12 update version (16)
+                                            if (appInfo.getRouterServiceVersion() < ANDROID_12_ROUTER_SERVICE_VERSION) {
                                                 preAndroid12RouterServiceOnDevice = true;
                                                 break;
                                             }
                                         }
+                                        // If all apps have a RS newer than the Android 12 update, chosen app does not have BT Connect permissions, and more than 1 sdl app is installed
                                         if (!preAndroid12RouterServiceOnDevice && !AndroidTools.isBtConnectPermissionGranted(context, routerService.getPackageName()) && sdlAppInfoList.size() > 1) {
                                             for (SdlAppInfo appInfo : sdlAppInfoList) {
                                                 if (AndroidTools.isBtConnectPermissionGranted(context, appInfo.getRouterServiceComponentName().getPackageName())) {
                                                     routerService = appInfo.getRouterServiceComponentName();
+                                                    //If this app in the list has BT Connect permissions, we want to use that apps RS
                                                     break;
                                                 }
                                             }
@@ -696,6 +702,13 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
      */
     public abstract void onSdlEnabled(Context context, Intent intent);
 
+
+    /**
+     * The developer can override this method to return the name of the class that manages their
+     * SdlService. This method is used to ensure the SdlBroadcastReceivers exception catcher catches
+     * the correct exception that may be thrown by the app trying to start their SdlService. If this
+     * exception is not caught the user may experience an ANR for that app.
+     */
     public String getSdlServiceName() {
         return "SdlService";
     }
