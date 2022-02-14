@@ -1858,7 +1858,7 @@ public class SdlRouterService extends Service {
             notifyClients(createHardwareConnectedMessage(record));
         }
 
-        if (isConnectedOverUSB) {
+        if (isConnectedOverUSB && !AndroidTools.isBtConnectPermissionGranted(SdlRouterService.this, SdlRouterService.this.getPackageName())) {
             //Delay starting bluetoothTransport
             waitingForBTRuntimePermissions = true;
             btPermissionsHandler = new Handler(Looper.myLooper());
