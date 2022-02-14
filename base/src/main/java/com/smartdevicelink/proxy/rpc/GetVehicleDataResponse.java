@@ -110,6 +110,7 @@ public class GetVehicleDataResponse extends RPCResponse {
      * @since SmartDeviceLink 7.1.0
      */
     public static final String KEY_SEAT_OCCUPANCY = "seatOccupancy";
+
     /**
      * Constructs a new GetVehicleDataResponse object
      */
@@ -648,6 +649,7 @@ public class GetVehicleDataResponse extends RPCResponse {
     public ClimateData getClimateData() {
         return (ClimateData) getObject(ClimateData.class, KEY_CLIMATE_DATA);
     }
+
     /**
      * Sets the seatOccupancy.
      *

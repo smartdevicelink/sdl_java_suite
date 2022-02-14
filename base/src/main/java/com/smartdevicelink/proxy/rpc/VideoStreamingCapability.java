@@ -197,7 +197,7 @@ public class VideoStreamingCapability extends RPCStruct {
      * @since SmartDeviceLink 7.1.0
      */
     @SuppressWarnings("unchecked")
-    public List<VideoStreamingCapability> getAdditionalVideoStreamingCapabilities(){
+    public List<VideoStreamingCapability> getAdditionalVideoStreamingCapabilities() {
         return (List<VideoStreamingCapability>) getObject(VideoStreamingCapability.class, KEY_ADDITIONAL_VIDEO_STREAMING_CAPABILITIES);
     }
 

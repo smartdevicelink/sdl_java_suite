@@ -163,7 +163,7 @@ public class SecurityQueryPayload {
     }
 
     public void setBulkData(byte[] _bulkData) {
-        if(_bulkData == null) {
+        if (_bulkData == null) {
             this._bulkDataSize = 0;
             this._bulkData = null;
             return;

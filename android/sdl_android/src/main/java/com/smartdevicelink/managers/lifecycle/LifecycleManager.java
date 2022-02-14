@@ -116,7 +116,7 @@ public class LifecycleManager extends BaseLifecycleManager {
             return;
         }
 
-        for (TransportRecord record: activeTransports) {
+        for (TransportRecord record : activeTransports) {
             if (record.getType() == TransportType.BLUETOOTH) {
                 String address = record.getAddress();
                 if (address != null && !address.isEmpty()) {

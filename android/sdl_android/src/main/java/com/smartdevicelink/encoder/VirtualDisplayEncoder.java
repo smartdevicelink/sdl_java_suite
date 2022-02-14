@@ -228,9 +228,7 @@ public class VirtualDisplayEncoder {
                 mCaptureThread.stopAsync();
                 try {
                     mCaptureThread.join();
-                } catch(InterruptedException e) {
-
-                }
+                } catch (InterruptedException e) {}
                 mCaptureThread = null;
             }
             if (encoderThread != null) {
@@ -328,7 +326,7 @@ public class VirtualDisplayEncoder {
             mBlit = blit;
             mWidth = width;
             mHeight = height;
-            mFrameIntervalNsec = (long)(1000000000 / fps);
+            mFrameIntervalNsec = (long) (1000000000 / fps);
             mStartedCallback = onStarted;
         }
 

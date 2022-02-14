@@ -159,6 +159,7 @@ public class TireStatus extends RPCStruct {
      * @since SmartDeviceLink 2.0.0
      */
     public static final String KEY_RIGHT_REAR = "rightRear";
+
     public TireStatus() {
     }
 

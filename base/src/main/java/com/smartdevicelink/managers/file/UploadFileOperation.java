@@ -244,7 +244,7 @@ class UploadFileOperation extends Task {
         try {
             this.inputStream.close();
         } catch (IOException e) {
-            DebugTool.logError(TAG,"Error attempting to close input stream", e);
+            DebugTool.logError(TAG, "Error attempting to close input stream", e);
         }
     }
 
@@ -353,7 +353,7 @@ class UploadFileOperation extends Task {
         try {
             bytesRead = inputStream.read(buffer, 0, size);
         } catch (IOException e) {
-            DebugTool.logError(TAG,"Error attempting to read from input stream", e);
+            DebugTool.logError(TAG, "Error attempting to read from input stream", e);
         }
 
         if (bytesRead > 0) {
@@ -388,7 +388,7 @@ class UploadFileOperation extends Task {
             try {
                 size = inputStream.available();
             } catch (IOException e) {
-                DebugTool.logError(TAG,"Error trying to get input stream size", e);
+                DebugTool.logError(TAG, "Error trying to get input stream size", e);
             }
         }
         return size;

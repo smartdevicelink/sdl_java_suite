@@ -344,7 +344,7 @@ public class PreloadPresentChoicesOperationTests {
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
         WindowCapability windowCapability = new WindowCapability();
         HashSet<ChoiceCell> loadedCells = new HashSet<>();
-        presentChoicesOperation = new PreloadPresentChoicesOperation(internalInterface, fileManager, choiceSet, InteractionMode.MANUAL_ONLY, null, null, TestValues.GENERAL_INTEGER,null, windowCapability, true, loadedCells, null, null);
+        presentChoicesOperation = new PreloadPresentChoicesOperation(internalInterface, fileManager, choiceSet, InteractionMode.MANUAL_ONLY, null, null, TestValues.GENERAL_INTEGER, null, windowCapability, true, loadedCells, null, null);
         presentChoicesOperation.finishOperation(false);
 
         assertEquals(Task.FINISHED, presentChoicesOperation.getState());
@@ -360,7 +360,7 @@ public class PreloadPresentChoicesOperationTests {
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
         WindowCapability windowCapability = new WindowCapability();
         HashSet<ChoiceCell> loadedCells = new HashSet<>();
-        presentChoicesOperation = new PreloadPresentChoicesOperation(internalInterface, fileManager, choiceSet, InteractionMode.MANUAL_ONLY, null, null, TestValues.GENERAL_INTEGER,null, windowCapability, true, loadedCells, null, null);
+        presentChoicesOperation = new PreloadPresentChoicesOperation(internalInterface, fileManager, choiceSet, InteractionMode.MANUAL_ONLY, null, null, TestValues.GENERAL_INTEGER, null, windowCapability, true, loadedCells, null, null);
         presentChoicesOperation.cancelTask();
 
         assertEquals(Task.CANCELED, presentChoicesOperation.getState());

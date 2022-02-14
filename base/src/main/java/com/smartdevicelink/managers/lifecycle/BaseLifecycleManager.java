@@ -157,7 +157,7 @@ abstract class BaseLifecycleManager {
                 }
             }
         } catch (SdlException e) {
-            DebugTool.logError(TAG,"Error attempting to start session", e);
+            DebugTool.logError(TAG, "Error attempting to start session", e);
         }
     }
 
@@ -864,7 +864,7 @@ abstract class BaseLifecycleManager {
                 }
                 // HAX: Issue #1690, Ford Sync bug returning incorrect display capabilities (https://github.com/smartdevicelink/sdl_java_suite/issues/1690). Save the next desired layout type to the update capabilities when the SetDisplayLayout response is received
                 if (FunctionID.SET_DISPLAY_LAYOUT.toString().equals(message.getFunctionName())) {
-                    lastDisplayLayoutRequestTemplate = ((SetDisplayLayout)message).getDisplayLayout();
+                    lastDisplayLayoutRequestTemplate = ((SetDisplayLayout) message).getDisplayLayout();
                 }
             } else if (RPCMessage.KEY_RESPONSE.equals(message.getMessageType())) { // Response Specifics
                 RPCResponse response = (RPCResponse) message;
@@ -896,7 +896,7 @@ abstract class BaseLifecycleManager {
             }
 
         } catch (OutOfMemoryError e) {
-            DebugTool.logError(TAG,"Error attempting to send RPC message.", e);
+            DebugTool.logError(TAG, "Error attempting to send RPC message.", e);
         }
     }
 
@@ -1172,11 +1172,11 @@ abstract class BaseLifecycleManager {
         @Override
         public SdlMsgVersion getSdlMsgVersion() {
             SdlMsgVersion msgVersion;
-            if(rpcSpecVersion != null) {
+            if (rpcSpecVersion != null) {
                 msgVersion = new SdlMsgVersion(rpcSpecVersion.getMajor(), rpcSpecVersion.getMinor());
                 msgVersion.setPatchVersion(rpcSpecVersion.getPatch());
             } else {
-                msgVersion = new SdlMsgVersion(1,0);
+                msgVersion = new SdlMsgVersion(1, 0);
             }
 
             return msgVersion;
@@ -1381,7 +1381,7 @@ abstract class BaseLifecycleManager {
 
     abstract void cycle(SdlDisconnectedReason disconnectedReason);
 
-    void saveVehicleType(String address, VehicleType type){
+    void saveVehicleType(String address, VehicleType type) {
     }
 
     void saveVehicleType(List<TransportRecord> activeTransports, VehicleType type) {

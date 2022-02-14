@@ -108,7 +108,7 @@ public class MenuShowOperationTests {
         verify(internalInterface, Mockito.times(1)).sendRPC(any(ShowAppMenu.class));
     }
 
-    private Answer<Void> createShowAppMenuAnswer(final boolean success, final Integer menuIdToAssert){
+    private Answer<Void> createShowAppMenuAnswer(final boolean success, final Integer menuIdToAssert) {
         return new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocation) {
@@ -118,7 +118,7 @@ public class MenuShowOperationTests {
                     @Override
                     public void run() {
                         ShowAppMenu showAppMenu = (ShowAppMenu) request;
-                        assertEquals(showAppMenu.getMenuID(),  menuIdToAssert);
+                        assertEquals(showAppMenu.getMenuID(), menuIdToAssert);
                     }
                 });
                 RPCResponse response = new RPCResponse(request.getFunctionID().toString());

@@ -107,7 +107,7 @@ public class SiphonServer {
         try {
             SiphonServer.closeServer();
         } catch (IOException e) {
-            DebugTool.logError(TAG,"Error while trying to close siphon server", e);
+            DebugTool.logError(TAG, "Error while trying to close siphon server", e);
         }
 
         return m_listenPort;
@@ -292,7 +292,7 @@ public class SiphonServer {
 
         try {
             // blobSize = length(of message) + 1(size of direction indicator)
-            //				+ 1 (size of msgVersionNumber) + 4 (size of timeStamp)
+            //                + 1 (size of msgVersionNumber) + 4 (size of timeStamp)
             int blobSize = length + 1 + 1 + 4;
 
             siphonOutputStream.write(BitConverter.intToByteArray(blobSize));
