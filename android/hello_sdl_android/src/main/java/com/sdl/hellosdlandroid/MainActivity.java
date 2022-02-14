@@ -56,9 +56,8 @@ public class MainActivity extends AppCompatActivity {
                 if (grantResults.length > 0) {
 
                     boolean connectAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    boolean scanAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
 
-                    if (connectAccepted && scanAccepted) {
+                    if (connectAccepted) {
                         SdlReceiver.queryForConnectedService(this);
                     }
                 }
