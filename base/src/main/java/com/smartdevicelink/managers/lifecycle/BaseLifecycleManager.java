@@ -411,11 +411,14 @@ abstract class BaseLifecycleManager {
                             VehicleType vehicleType = raiResponse.getVehicleType();
                             String systemSoftwareVersion = raiResponse.getSystemSoftwareVersion();
                             if (vehicleType != null || systemSoftwareVersion != null) {
+
+                                List<TransportRecord> activeTransports = null;
                                 synchronized (session) {
                                     if (session != null) {
-                                        saveVehicleType(session.getActiveTransports(), vehicleType);
+                                        activeTransports = session.getActiveTransports();
                                     }
                                 }
+                                saveVehicleType(activeTransports, vehicleType);
                                 SystemInfo systemInfo = new SystemInfo(vehicleType, systemSoftwareVersion, null);
                                 boolean validSystemInfo = lifecycleListener.onSystemInfoReceived(systemInfo);
                                 if (!validSystemInfo) {
@@ -974,17 +977,23 @@ abstract class BaseLifecycleManager {
 
             if (systemInfo != null && lifecycleListener != null) {
                 didCheckSystemInfo = true;
+                List<TransportRecord> activeTransports = null;
                 synchronized (session) {
                     if (session != null) {
-                        saveVehicleType(session.getActiveTransports(), systemInfo.getVehicleType());
-                        boolean validSystemInfo = lifecycleListener.onSystemInfoReceived(systemInfo);
-                        if (!validSystemInfo) {
-                            DebugTool.logWarning(TAG, "Disconnecting from head unit, the system info was not accepted.");
+                        activeTransports = session.getActiveTransports();
+                    }
+                }
+                saveVehicleType(activeTransports, systemInfo.getVehicleType());
+                boolean validSystemInfo = lifecycleListener.onSystemInfoReceived(systemInfo);
+                if (!validSystemInfo) {
+                    DebugTool.logWarning(TAG, "Disconnecting from head unit, the system info was not accepted.");
+                    synchronized (session) {
+                        if (session != null) {
                             session.endService(SessionType.RPC);
-                            clean();
-                            onClose("System not supported", null, SdlDisconnectedReason.DEFAULT);
-                            return;
                         }
+                        clean();
+                        onClose("System not supported", null, SdlDisconnectedReason.DEFAULT);
+                        return;
                     }
                 }
                 //If the vehicle is acceptable, init security lib
