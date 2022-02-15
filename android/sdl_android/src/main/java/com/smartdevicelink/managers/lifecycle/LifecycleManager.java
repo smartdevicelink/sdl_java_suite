@@ -76,12 +76,14 @@ public class LifecycleManager extends BaseLifecycleManager {
     void initialize() {
         super.initialize();
 
-        if (_transportConfig != null && _transportConfig.getTransportType().equals(TransportType.MULTIPLEX)) {
-            this.session = new SdlSession(sdlSessionListener, (MultiplexTransportConfig) _transportConfig);
-        } else if (_transportConfig != null && _transportConfig.getTransportType().equals(TransportType.TCP)) {
-            this.session = new SdlSession(sdlSessionListener, (TCPTransportConfig) _transportConfig);
-        } else {
-            DebugTool.logError(TAG, "Unable to create session for transport type");
+        synchronized (SESSION_LOCK) {
+            if (_transportConfig != null && _transportConfig.getTransportType().equals(TransportType.MULTIPLEX)) {
+                this.session = new SdlSession(sdlSessionListener, (MultiplexTransportConfig) _transportConfig);
+            } else if (_transportConfig != null && _transportConfig.getTransportType().equals(TransportType.TCP)) {
+                this.session = new SdlSession(sdlSessionListener, (TCPTransportConfig) _transportConfig);
+            } else {
+                DebugTool.logError(TAG, "Unable to create session for transport type");
+            }
         }
     }
 
