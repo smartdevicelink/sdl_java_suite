@@ -259,8 +259,11 @@ public class SdlDeviceListener {
             AndroidTools.saveVehicleType(sdlListener.contextWeakReference.get(), vehicleType, sdlListener.connectedDevice.getAddress());
             boolean keepConnectionOpen = sdlListener.callback.onTransportConnected(sdlListener.contextWeakReference.get(), sdlListener.connectedDevice);
             if (!keepConnectionOpen) {
-                sdlListener.bluetoothTransport.stop();
-                sdlListener.bluetoothTransport = null;
+                if (sdlListener.bluetoothTransport != null) {
+                    sdlListener.bluetoothTransport.stop();
+                    sdlListener.bluetoothTransport = null;
+                    sdlListener.bluetoothHandler = null;
+                }
                 sdlListener.timeoutHandler.removeCallbacks(sdlListener.timeoutRunner);
             }
         }
