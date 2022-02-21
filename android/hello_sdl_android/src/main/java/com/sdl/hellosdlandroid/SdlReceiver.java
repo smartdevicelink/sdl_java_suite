@@ -22,8 +22,8 @@ public class SdlReceiver extends SdlBroadcastReceiver {
         // We will check the intent for a pendingIntent parcelable extra
         // This pendingIntent allows us to start the SdlService from the context of the active router service which is in the foreground
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            if (intent.getParcelableExtra(TransportConstants.PENDING_INTENT_EXTRA) != null) {
-                PendingIntent pendingIntent = (PendingIntent) intent.getParcelableExtra(TransportConstants.PENDING_INTENT_EXTRA);
+            PendingIntent pendingIntent = (PendingIntent) intent.getParcelableExtra(TransportConstants.PENDING_INTENT_EXTRA);
+            if (pendingIntent != null) {
                 try {
                     pendingIntent.send(context, 0, intent);
                 } catch (PendingIntent.CanceledException e) {
@@ -54,6 +54,6 @@ public class SdlReceiver extends SdlBroadcastReceiver {
 
     @Override
     public String getSdlServiceName() {
-        return "SdlService";
+        return SdlService.class.getSimpleName();
     }
 }

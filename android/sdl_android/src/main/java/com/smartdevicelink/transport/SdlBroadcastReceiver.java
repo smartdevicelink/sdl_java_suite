@@ -66,6 +66,7 @@ import java.util.Locale;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import static android.Manifest.permission.BLUETOOTH_CONNECT;
 import static com.smartdevicelink.transport.TransportConstants.FOREGROUND_EXTRA;
 
 public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
@@ -91,7 +92,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
     private static Thread.UncaughtExceptionHandler foregroundExceptionHandler = null;
     private static final Object DEVICE_LISTENER_LOCK = new Object();
     private static SdlDeviceListener sdlDeviceListener;
-    private static String serviceName;
+    private static String serviceName = null;
 
     public int getRouterServiceVersion() {
         return SdlRouterService.ROUTER_SERVICE_VERSION_NUMBER;
@@ -100,7 +101,6 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
     @Override
     @CallSuper
     public void onReceive(Context context, Intent intent) {
-        serviceName = getSdlServiceName();
 
         //Log.i(TAG, "Sdl Receiver Activated");
         final String action = intent.getAction();
@@ -134,6 +134,10 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
 
         if (intent.hasExtra(BluetoothDevice.EXTRA_DEVICE)) {    //Grab the bluetooth device if available
             device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+        }
+
+        if (serviceName == null) {
+            serviceName = getSdlServiceName();
         }
 
         boolean didStart = false;
@@ -301,18 +305,10 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                             if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty() && sdlAppInfoList.get(0).getRouterServiceComponentName() != null) {
                                 routerServicePackage = sdlAppInfoList.get(0).getRouterServiceComponentName().getPackageName();
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                                    boolean preAndroid12RouterServiceOnDevice = false;
-                                    for (SdlAppInfo appInfo : sdlAppInfoList) {
-                                        //If an installed app RS version is older than Android 12 update version (16)
-                                        if (appInfo.getRouterServiceVersion() < ANDROID_12_ROUTER_SERVICE_VERSION) {
-                                            preAndroid12RouterServiceOnDevice = true;
-                                            break;
-                                        }
-                                    }
                                     // If all apps have a RS newer than the Android 12 update, chosen app does not have BT Connect permissions, and more than 1 sdl app is installed
-                                    if (!preAndroid12RouterServiceOnDevice && !AndroidTools.isBtConnectPermissionGranted(context, routerServicePackage) && sdlAppInfoList.size() > 1) {
+                                    if (!isPreAndroid12RSOnDevice(sdlAppInfoList) && !AndroidTools.isPermissionGranted(BLUETOOTH_CONNECT, context, routerServicePackage) && sdlAppInfoList.size() > 1) {
                                         for (SdlAppInfo appInfo : sdlAppInfoList) {
-                                            if (AndroidTools.isBtConnectPermissionGranted(context, appInfo.getRouterServiceComponentName().getPackageName())) {
+                                            if (AndroidTools.isPermissionGranted(BLUETOOTH_CONNECT, context, appInfo.getRouterServiceComponentName().getPackageName())) {
                                                 //If this app in the list has BT Connect permissions, we want to use that apps RS
                                                 routerServicePackage = appInfo.getRouterServiceComponentName().getPackageName();
                                                 break;
@@ -625,18 +621,10 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                                 if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty()) {
                                     ComponentName routerService = sdlAppInfoList.get(0).getRouterServiceComponentName();
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                                        boolean preAndroid12RouterServiceOnDevice = false;
-                                        for (SdlAppInfo appInfo : sdlAppInfoList) {
-                                            //If an installed app RS version is older than Android 12 update version (16)
-                                            if (appInfo.getRouterServiceVersion() < ANDROID_12_ROUTER_SERVICE_VERSION) {
-                                                preAndroid12RouterServiceOnDevice = true;
-                                                break;
-                                            }
-                                        }
                                         // If all apps have a RS newer than the Android 12 update, chosen app does not have BT Connect permissions, and more than 1 sdl app is installed
-                                        if (!preAndroid12RouterServiceOnDevice && !AndroidTools.isBtConnectPermissionGranted(context, routerService.getPackageName()) && sdlAppInfoList.size() > 1) {
+                                        if (!isPreAndroid12RSOnDevice(sdlAppInfoList) && !AndroidTools.isPermissionGranted(BLUETOOTH_CONNECT, context, routerService.getPackageName()) && sdlAppInfoList.size() > 1) {
                                             for (SdlAppInfo appInfo : sdlAppInfoList) {
-                                                if (AndroidTools.isBtConnectPermissionGranted(context, appInfo.getRouterServiceComponentName().getPackageName())) {
+                                                if (AndroidTools.isPermissionGranted(BLUETOOTH_CONNECT, context, appInfo.getRouterServiceComponentName().getPackageName())) {
                                                     routerService = appInfo.getRouterServiceComponentName();
                                                     //If this app in the list has BT Connect permissions, we want to use that apps RS
                                                     break;
@@ -680,6 +668,16 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
         }
     }
 
+    private static boolean isPreAndroid12RSOnDevice(List<SdlAppInfo> sdlAppInfoList) {
+        for (SdlAppInfo appInfo : sdlAppInfoList) {
+            //If an installed app RS version is older than Android 12 update version (16)
+            if (appInfo.getRouterServiceVersion() < ANDROID_12_ROUTER_SERVICE_VERSION) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * We need to define this for local copy of the Sdl Router Service class.
      * It will be the main point of connection for Sdl enabled apps
@@ -712,7 +710,6 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
     public String getSdlServiceName() {
         return "SdlService";
     }
-
     //public abstract void onSdlDisabled(Context context); //Removing for now until we're able to abstract from developer
 
 

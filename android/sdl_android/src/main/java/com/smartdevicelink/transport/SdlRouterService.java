@@ -120,6 +120,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static android.Manifest.permission.BLUETOOTH_CONNECT;
+import static android.Manifest.permission.BLUETOOTH_SCAN;
 import static com.smartdevicelink.transport.TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME;
 import static com.smartdevicelink.transport.TransportConstants.FOREGROUND_EXTRA;
 import static com.smartdevicelink.transport.TransportConstants.FORMED_PACKET_EXTRA_NAME;
@@ -217,7 +219,6 @@ public class SdlRouterService extends Service {
 
     private boolean startSequenceComplete = false;
     private VehicleType receivedVehicleType;
-    private boolean isConnectedOverUSB;
     private boolean waitingForBTRuntimePermissions = false;
     private Handler btPermissionsHandler;
     private Runnable btPermissionsRunnable;
@@ -373,7 +374,8 @@ public class SdlRouterService extends Service {
             switch (msg.what) {
                 case TransportConstants.ROUTER_REQUEST_BT_CLIENT_CONNECT:
                     //Starting with Android 12 this use case will require the BLUETOOTH_SCAN PERMISSION
-                    if (!AndroidTools.isBtScanPermissionGranted(service.getApplicationContext(), service.getPackageName())) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !AndroidTools.isPermissionGranted(BLUETOOTH_SCAN, service.getApplicationContext(), service.getPackageName())) {
+                        DebugTool.logError(TAG, "BLUETOOTH_SCAN Permissions not granted for this app");
                         break;
                     }
                     if (receivedBundle.getBoolean(TransportConstants.CONNECT_AS_CLIENT_BOOLEAN_EXTRA, false)
@@ -1096,7 +1098,7 @@ public class SdlRouterService extends Service {
      *
      * @return true if this service is set up correctly
      */
-    private boolean initCheck() {
+    private boolean initCheck(boolean isConnectedOverUSB) {
         if (!processCheck()) {
             DebugTool.logError(TAG, "Not using correct process. Shutting down");
             wrongProcess = true;
@@ -1108,7 +1110,7 @@ public class SdlRouterService extends Service {
         }
 
         // If Android 12 or newer make sure we have BLUETOOTH_CONNECT Runtime permission
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !AndroidTools.isBtConnectPermissionGranted(this, this.getPackageName())) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !AndroidTools.isPermissionGranted(BLUETOOTH_CONNECT, this, this.getPackageName())) {
             if (!isConnectedOverUSB) { //If BLUETOOTH_CONNECT permission is not granted We want to make sure we are connected over USB
                 return false;
             }
@@ -1275,13 +1277,14 @@ public class SdlRouterService extends Service {
                     (HashMap<String, Object>) intent.getSerializableExtra(TransportConstants.VEHICLE_INFO_EXTRA)
             );
         }
+        boolean isConnectedOverUSB = false;
         if (intent != null && intent.hasExtra(TransportConstants.CONNECTION_TYPE_EXTRA)) {
             isConnectedOverUSB = TransportConstants.ACTION_USB_ACCESSORY_ATTACHED.equalsIgnoreCase(intent.getStringExtra(TransportConstants.CONNECTION_TYPE_EXTRA));
         }
         // Only trusting the first intent received to start the RouterService and run initial checks to avoid a case where an app could send incorrect data after the spp connection has started.
         if (firstStart) {
             firstStart = false;
-            if (!initCheck()) { // Run checks on process and permissions
+            if (!initCheck(isConnectedOverUSB)) { // Run checks on process and permissions
                 deployNextRouterService();
                 closeSelf();
                 return START_REDELIVER_INTENT;
@@ -1306,7 +1309,6 @@ public class SdlRouterService extends Service {
         }
         if (intent != null) {
             if (intent.getBooleanExtra(FOREGROUND_EXTRA, false)) {
-                hasConnectedBefore = false;
                 hasCalledStartForeground = false;
 
                 if (!this.isPrimaryTransportConnected()) {    //If there is no transport connected we need to ensure the service is moved to the foreground
@@ -1359,6 +1361,10 @@ public class SdlRouterService extends Service {
         if (altTransportTimerHandler != null) {
             altTransportTimerHandler.removeCallbacks(altTransportTimerRunnable);
             altTransportTimerHandler = null;
+        }
+
+        if (btPermissionsHandler != null && btPermissionsRunnable != null) {
+            btPermissionsHandler.removeCallbacks(btPermissionsRunnable);
         }
 
         DebugTool.logWarning(TAG, "Sdl Router Service Destroyed");
@@ -1723,6 +1729,9 @@ public class SdlRouterService extends Service {
      */
     @SuppressWarnings("MissingPermission")
     private boolean bluetoothAvailable() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !AndroidTools.isPermissionGranted(BLUETOOTH_CONNECT, SdlRouterService.this, SdlRouterService.this.getPackageName())) {
+            return false;
+        }
         try {
             return (!(BluetoothAdapter.getDefaultAdapter() == null) && BluetoothAdapter.getDefaultAdapter().isEnabled());
         } catch (NullPointerException e) { // only for BluetoothAdapter.getDefaultAdapter().isEnabled() call
@@ -1785,7 +1794,7 @@ public class SdlRouterService extends Service {
 
     private synchronized void initBluetoothSerialService() {
         if (waitingForBTRuntimePermissions) {
-            //The app has not be granted the BLUETOOTH_CONNECT runtime permission
+            DebugTool.logWarning(TAG, "This app has not been granted the BLUETOOTH_CONNECT runtime permission");
             return;
         }
 
@@ -1864,7 +1873,7 @@ public class SdlRouterService extends Service {
             notifyClients(createHardwareConnectedMessage(record));
         }
 
-        if (isConnectedOverUSB && !AndroidTools.isBtConnectPermissionGranted(SdlRouterService.this, SdlRouterService.this.getPackageName())) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && TransportType.USB.equals(record.getType()) && !AndroidTools.isPermissionGranted(BLUETOOTH_CONNECT, SdlRouterService.this, SdlRouterService.this.getPackageName())) {
             //Delay starting bluetoothTransport when we are connected over USB and the app does not have the BLUETOOTH_CONNECT permissions
             waitingForBTRuntimePermissions = true;
             btPermissionsHandler = new Handler(Looper.myLooper());
@@ -1872,7 +1881,7 @@ public class SdlRouterService extends Service {
             btPermissionsRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    if (!AndroidTools.isBtConnectPermissionGranted(SdlRouterService.this, SdlRouterService.this.getPackageName())) {
+                    if (!AndroidTools.isPermissionGranted(BLUETOOTH_CONNECT, SdlRouterService.this, SdlRouterService.this.getPackageName())) {
                         btPermissionsHandler.postDelayed(btPermissionsRunnable, BT_PERMISSIONS_CHECK_FREQUENCY);
                     } else {
                         waitingForBTRuntimePermissions = false;

@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
                 if (!checkPermission()) {
                     requestPermission();
                 }
-            } else {
+            } else if (BuildConfig.TRANSPORT.equals("TCP")){
                 //If we are connected to a module we want to start our SdlService
                 SdlReceiver.queryForConnectedService(this);
             }
@@ -40,9 +40,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean checkPermission() {
-        int btConnectPermission = ContextCompat.checkSelfPermission(getApplicationContext(), BLUETOOTH_CONNECT);
-
-        return btConnectPermission == PackageManager.PERMISSION_GRANTED;
+        return PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(getApplicationContext(), BLUETOOTH_CONNECT);
     }
 
     private void requestPermission() {
@@ -55,9 +53,9 @@ public class MainActivity extends AppCompatActivity {
             case REQUEST_CODE:
                 if (grantResults.length > 0) {
 
-                    boolean connectAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    boolean btConnectGranted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
 
-                    if (connectAccepted) {
+                    if (btConnectGranted) {
                         SdlReceiver.queryForConnectedService(this);
                     }
                 }

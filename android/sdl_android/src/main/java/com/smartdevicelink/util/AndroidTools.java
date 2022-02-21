@@ -203,38 +203,22 @@ public class AndroidTools {
         return sdlAppInfoList;
     }
 
-    public static boolean isBtConnectPermissionGranted(Context context, String servicePackageName) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-            //Permissions are only for SDK 31 and above
-            return true;
-        }
+    public static boolean isPermissionGranted(String permissionName, Context context, String servicePackageName) {
         PackageManager packageManager = context.getPackageManager();
-        PackageInfo packageInfo;
-        try {
-            packageInfo = packageManager.getPackageInfo(servicePackageName, PackageManager.GET_PERMISSIONS);
-            int btConnectPermission = packageManager.checkPermission(BLUETOOTH_CONNECT, packageInfo.packageName);
-            return btConnectPermission == PackageManager.PERMISSION_GRANTED;
-        } catch (NameNotFoundException e) {
-            e.printStackTrace();
-            DebugTool.logError(TAG, "servicePackageName not found while checking BT Connect permissions");
+        if (packageManager == null) {
             return false;
         }
-    }
-
-    public static boolean isBtScanPermissionGranted(Context context, String servicePackageName) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-            //Permissions are only for SDK 31 and above
-            return true;
-        }
-        PackageManager packageManager = context.getPackageManager();
         PackageInfo packageInfo;
         try {
             packageInfo = packageManager.getPackageInfo(servicePackageName, PackageManager.GET_PERMISSIONS);
-            int btScanPermission = packageManager.checkPermission(BLUETOOTH_SCAN, packageInfo.packageName);
-            return btScanPermission == PackageManager.PERMISSION_GRANTED;
+            if (packageInfo == null) {
+                return false;
+            }
+            int permissionResult = packageManager.checkPermission(permissionName, packageInfo.packageName);
+            return permissionResult == PackageManager.PERMISSION_GRANTED;
         } catch (NameNotFoundException e) {
             e.printStackTrace();
-            DebugTool.logError(TAG, "servicePackageName not found while checking BT SCAN permissions");
+            DebugTool.logError(TAG, "servicePackageName not found while checking " + permissionName + " permission", e);
             return false;
         }
     }
