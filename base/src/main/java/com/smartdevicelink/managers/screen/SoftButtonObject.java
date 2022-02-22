@@ -270,7 +270,7 @@ public class SoftButtonObject implements Cloneable {
     }
 
     /**
-     * Set the the SoftButtonState list
+     * Set the SoftButtonState list
      *
      * @param states a list of the object's soft button states. <strong>states should be unique for every SoftButtonObject. A SoftButtonState instance cannot be reused for multiple SoftButtonObjects.</strong>
      */

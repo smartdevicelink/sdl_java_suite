@@ -176,7 +176,7 @@ public class AddCommand extends RPCRequest {
     }
 
     /**
-     * <p>Sets an Unique Command ID that identifies the command. Is returned in an
+     * <p>Sets a Unique Command ID that identifies the command. Is returned in an
      * <i>{@linkplain OnCommand}</i> notification to identify the command
      * selected by the user</p>
      *

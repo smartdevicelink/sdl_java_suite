@@ -352,7 +352,7 @@ public class SdlDeviceListener {
 
     /**
      * Callback for the SdlDeviceListener. It will return if the supplied device makes a bluetooth
-     * connection on the SDL UUID RFCOMM chanel or not. Most of the time the only callback that
+     * connection on the SDL UUID RFCOMM channel or not. Most of the time the only callback that
      * matters will be the onTransportConnected.
      */
     public interface Callback {

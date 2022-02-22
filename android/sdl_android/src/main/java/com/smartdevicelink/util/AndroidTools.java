@@ -331,7 +331,7 @@ public class AndroidTools {
      *
      * @param context a context to access Android system services through.
      * @param component a component name of a LocalRouterService.
-     * @param manifestFieldId a string resources id that indicates an unique name for the vehicle data in the manifest.
+     * @param manifestFieldId a string resources id that indicates a unique name for the vehicle data in the manifest.
      * @return The list of vehicle types, or null if an error occurred or field was not found.
      */
     public static @Nullable List<VehicleType> getVehicleTypesFromManifest(Context context, ComponentName component, int manifestFieldId) {
