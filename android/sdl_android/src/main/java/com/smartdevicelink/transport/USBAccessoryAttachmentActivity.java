@@ -167,7 +167,7 @@ public class USBAccessoryAttachmentActivity extends Activity {
                         return;
                     }
                     serviceIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT);
-                    serviceIntent.putExtra(TransportConstants.CONNECTION_TYPE_EXTRA, TransportConstants.ACTION_USB_ACCESSORY_ATTACHED);
+                    serviceIntent.putExtra(TransportConstants.CONNECTION_TYPE_EXTRA, TransportConstants.AOA_USB);
 
                     ComponentName startedService;
                     try {

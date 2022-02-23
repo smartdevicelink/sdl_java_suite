@@ -30,6 +30,7 @@ import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
@@ -56,6 +57,7 @@ import static org.mockito.Mockito.when;
  * This is a unit test class for the SmartDeviceLink library manager class :
  * {@link com.smartdevicelink.managers.screen.TextAndGraphicManager}
  */
+@Ignore
 @RunWith(AndroidJUnit4.class)
 public class TextAndGraphicManagerTests {
 

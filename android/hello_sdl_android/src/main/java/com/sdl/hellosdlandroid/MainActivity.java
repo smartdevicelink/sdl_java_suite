@@ -25,15 +25,13 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (BuildConfig.TRANSPORT.equals("MULTI") || BuildConfig.TRANSPORT.equals("MULTI_HB")) {
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                if (!checkPermission()) {
-                    requestPermission();
-                }
-            } else if (BuildConfig.TRANSPORT.equals("TCP")){
-                //If we are connected to a module we want to start our SdlService
-                SdlReceiver.queryForConnectedService(this);
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !checkPermission()) {
+                requestPermission();
+                return;
             }
-        } else {
+            //If we are connected to a module we want to start our SdlService
+            SdlReceiver.queryForConnectedService(this);
+        } else if (BuildConfig.TRANSPORT.equals("TCP")){
             Intent proxyIntent = new Intent(this, SdlService.class);
             startService(proxyIntent);
         }

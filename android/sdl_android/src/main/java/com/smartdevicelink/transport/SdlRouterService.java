@@ -1279,7 +1279,7 @@ public class SdlRouterService extends Service {
         }
         boolean isConnectedOverUSB = false;
         if (intent != null && intent.hasExtra(TransportConstants.CONNECTION_TYPE_EXTRA)) {
-            isConnectedOverUSB = TransportConstants.ACTION_USB_ACCESSORY_ATTACHED.equalsIgnoreCase(intent.getStringExtra(TransportConstants.CONNECTION_TYPE_EXTRA));
+            isConnectedOverUSB = TransportConstants.AOA_USB.equalsIgnoreCase(intent.getStringExtra(TransportConstants.CONNECTION_TYPE_EXTRA));
         }
         // Only trusting the first intent received to start the RouterService and run initial checks to avoid a case where an app could send incorrect data after the spp connection has started.
         if (firstStart) {
@@ -1886,6 +1886,10 @@ public class SdlRouterService extends Service {
                     } else {
                         waitingForBTRuntimePermissions = false;
                         initBluetoothSerialService();
+                        final NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                        if(notificationManager != null) {
+                            notificationManager.cancel("SDL", TransportConstants.SDL_ERROR_NOTIFICATION_CHANNEL_ID_INT);
+                        }
                     }
                 }
             };
