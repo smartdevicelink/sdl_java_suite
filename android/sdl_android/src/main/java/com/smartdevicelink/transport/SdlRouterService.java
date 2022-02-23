@@ -2467,7 +2467,7 @@ public class SdlRouterService extends Service {
     /**
      * Checks to see if a device address has connected to SDL before.
      *
-     * @param address the mac address of the device in quesiton
+     * @param address the mac address of the device in question
      * @return if this is the first status check of this device
      */
     protected boolean isFirstStatusCheck(String address) {
@@ -2478,7 +2478,7 @@ public class SdlRouterService extends Service {
     /**
      * Checks to see if a device address has connected to SDL before.
      *
-     * @param address the mac address of the device in quesiton
+     * @param address the mac address of the device in question
      * @return if an SDL connection has ever been established with this device
      */
     protected boolean hasSDLConnected(String address) {
@@ -2973,7 +2973,7 @@ public class SdlRouterService extends Service {
         /**
          * Check if input is newer than this version
          *
-         * @param service a reference to another possible router service that is in quesiton
+         * @param service a reference to another possible router service that is in question
          * @return if the supplied service is newer than this one
          */
         public boolean isNewer(@SuppressWarnings("deprecation") LocalRouterService service) {

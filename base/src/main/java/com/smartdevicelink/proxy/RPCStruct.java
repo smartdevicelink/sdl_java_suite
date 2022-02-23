@@ -117,7 +117,7 @@ public class RPCStruct implements Cloneable {
     }
 
     /**
-     * This method should clean the the RPC to make sure it is compliant with the spec.
+     * This method should clean the RPC to make sure it is compliant with the spec.
      * <br><br><b> NOTE:</b> Super needs to be called at the END of the method
      *
      * @param rpcVersion   the rpc spec version that has been negotiated. If value is null the
