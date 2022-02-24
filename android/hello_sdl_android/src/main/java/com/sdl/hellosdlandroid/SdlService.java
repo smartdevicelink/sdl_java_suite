@@ -108,10 +108,13 @@ public class SdlService extends Service {
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             if (notificationManager != null) {
                 notificationManager.createNotificationChannel(channel);
-                Notification serviceNotification = new Notification.Builder(this, channel.getId())
+                Notification.Builder builder = new Notification.Builder(this, channel.getId())
                         .setContentTitle("Connected through SDL")
-                        .setSmallIcon(R.drawable.ic_sdl)
-                        .build();
+                        .setSmallIcon(R.drawable.ic_sdl);
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    builder.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE);
+                }
+                Notification serviceNotification = builder.build();
                 startForeground(FOREGROUND_SERVICE_ID, serviceNotification);
             }
         }

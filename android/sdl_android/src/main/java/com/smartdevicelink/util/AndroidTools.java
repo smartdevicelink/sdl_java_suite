@@ -48,6 +48,7 @@ import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 
@@ -68,6 +69,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+
+import static android.Manifest.permission.BLUETOOTH_CONNECT;
+import static android.Manifest.permission.BLUETOOTH_SCAN;
 
 
 public class AndroidTools {
@@ -199,6 +203,25 @@ public class AndroidTools {
         return sdlAppInfoList;
     }
 
+    public static boolean isPermissionGranted(String permissionName, Context context, String servicePackageName) {
+        PackageManager packageManager = context.getPackageManager();
+        if (packageManager == null) {
+            return false;
+        }
+        PackageInfo packageInfo;
+        try {
+            packageInfo = packageManager.getPackageInfo(servicePackageName, PackageManager.GET_PERMISSIONS);
+            if (packageInfo == null) {
+                return false;
+            }
+            int permissionResult = packageManager.checkPermission(permissionName, packageInfo.packageName);
+            return permissionResult == PackageManager.PERMISSION_GRANTED;
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+            DebugTool.logError(TAG, "servicePackageName not found while checking " + permissionName + " permission", e);
+            return false;
+        }
+    }
 
     /**
      * Sends the provided intent to the specified destinations making it an explicit intent, rather
