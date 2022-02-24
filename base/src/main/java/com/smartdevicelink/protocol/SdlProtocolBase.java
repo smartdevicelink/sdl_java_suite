@@ -1239,7 +1239,10 @@ public class SdlProtocolBase {
                 }
             }
 
-            if ((getTransportForSession(SessionType.RPC) != null && disconnectedTransport.equals(getTransportForSession(SessionType.RPC))) || disconnectedTransport.equals(connectedPrimaryTransport)) {
+            if ((getTransportForSession(SessionType.RPC) != null && disconnectedTransport.equals(getTransportForSession(SessionType.RPC)))
+                    || disconnectedTransport.equals(connectedPrimaryTransport)
+                    || connectedTransports == null
+                    || connectedTransports.isEmpty()) {
                 //Primary transport has been disconnected. Let's check if we can recover.
                 //transportTypes.remove(type);
                 boolean primaryTransportAvailable = false;
