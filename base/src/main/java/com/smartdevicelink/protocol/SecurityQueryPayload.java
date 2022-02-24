@@ -61,12 +61,7 @@ public class SecurityQueryPayload {
 
             //Get the binaryData after the header (after 96 bits) and the jsonData size
             if (binHeader.length - _jsonSize - SECURITY_QUERY_HEADER_SIZE > 0) {
-                byte[] _bulkData;
-                if (msg.getQueryType() == SecurityQueryType.NOTIFICATION && msg.getQueryID() == SecurityQueryID.SEND_INTERNAL_ERROR) {
-                    _bulkData = new byte[binHeader.length - _jsonSize - SECURITY_QUERY_HEADER_SIZE - 1];
-                } else {
-                    _bulkData = new byte[binHeader.length - _jsonSize - SECURITY_QUERY_HEADER_SIZE];
-                }
+                byte[] _bulkData = new byte[binHeader.length - _jsonSize - SECURITY_QUERY_HEADER_SIZE];
                 System.arraycopy(binHeader, SECURITY_QUERY_HEADER_SIZE + _jsonSize, _bulkData, 0, _bulkData.length);
                 msg.setBulkData(_bulkData);
             }
