@@ -57,7 +57,7 @@ public class LifecycleManager extends BaseLifecycleManager {
 
     @Override
     void cycle(SdlDisconnectedReason disconnectedReason) {
-        clean();
+        clean(true);
         if (session != null) {
             try {
                 session.startSession();
