@@ -32,6 +32,12 @@
 
 package com.smartdevicelink.managers.lifecycle;
 
+import static com.smartdevicelink.managers.BaseSubManager.SETTING_UP;
+import static com.smartdevicelink.managers.BaseSubManager.READY;
+import static com.smartdevicelink.managers.BaseSubManager.LIMITED;
+import static com.smartdevicelink.managers.BaseSubManager.SHUTDOWN;
+import static com.smartdevicelink.managers.BaseSubManager.ERROR;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 
@@ -117,8 +123,9 @@ abstract class BaseLifecycleManager {
             ON_REQUEST_LISTENER_LOCK = new Object(),
             ON_NOTIFICATION_LISTENER_LOCK = new Object();
     protected static final Object SESSION_LOCK = new Object();
+    private final Object STATE_LOCK = new Object();
 
-
+    private int state;
     SdlSession session;
     final AppConfig appConfig;
     Version rpcSpecVersion = MAX_SUPPORTED_RPC_VERSION;
@@ -143,6 +150,7 @@ abstract class BaseLifecycleManager {
     DisplayCapabilities initialMediaCapabilities;
 
     BaseLifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener) {
+        transitionToState(SETTING_UP);
         this.appConfig = appConfig;
         this._transportConfig = config;
         this.lifecycleListener = listener;
@@ -177,6 +185,19 @@ abstract class BaseLifecycleManager {
     public synchronized void stop() {
         DebugTool.logInfo(TAG, "LifecycleManager stop requested");
         clean(true);
+        transitionToState(SHUTDOWN);
+    }
+
+    protected void transitionToState(int state) {
+        synchronized (STATE_LOCK) {
+            this.state = state;
+        }
+    }
+
+    public int getState() {
+        synchronized (STATE_LOCK) {
+            return state;
+        }
     }
 
     Taskmaster getTaskmaster() {
@@ -337,6 +358,7 @@ abstract class BaseLifecycleManager {
 
     void onClose(String info, Exception e, SdlDisconnectedReason reason) {
         DebugTool.logInfo(TAG, "onClose");
+        transitionToState(SHUTDOWN);
         if (lifecycleListener != null) {
             lifecycleListener.onClosed((LifecycleManager) this, info, e, reason);
         }
@@ -432,6 +454,7 @@ abstract class BaseLifecycleManager {
                         DebugTool.logInfo(TAG, "on hmi status");
                         boolean shouldInit = currentHMIStatus == null;
                         currentHMIStatus = (OnHMIStatus) message;
+                        transitionToState(READY);
                         if (lifecycleListener != null && shouldInit) {
                             lifecycleListener.onConnected((LifecycleManager) BaseLifecycleManager.this);
                         }
@@ -1260,6 +1283,12 @@ abstract class BaseLifecycleManager {
     }
 
     void clean(boolean sendUnregisterAppInterface) {
+        int state = getState();
+        if(state == SHUTDOWN || state == ERROR) {
+            DebugTool.logInfo(TAG, "No need to clean, LCM is already cleaned: " + state);
+            return;
+        }
+
         if (sendUnregisterAppInterface) {
             DebugTool.logInfo(TAG, "Requesting to unregister from device");
             UnregisterAppInterface uai = new UnregisterAppInterface();
@@ -1365,6 +1394,7 @@ abstract class BaseLifecycleManager {
         this.rpcRequestListeners = new HashMap<>();
         this.systemCapabilityManager = new SystemCapabilityManager(internalInterface);
         setupInternalRpcListeners();
+
     }
 
 
