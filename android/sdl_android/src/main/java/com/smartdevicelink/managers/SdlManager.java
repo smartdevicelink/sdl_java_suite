@@ -414,7 +414,7 @@ public class SdlManager extends BaseSdlManager {
 
         @Override
         public void stop() {
-            lifecycleManager.getInternalInterface(SdlManager.this).start();
+            lifecycleManager.getInternalInterface(SdlManager.this).stop();
         }
 
         @Override
