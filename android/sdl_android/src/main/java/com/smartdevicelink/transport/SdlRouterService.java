@@ -1633,9 +1633,9 @@ public class SdlRouterService extends Service {
             if (isForeground && !isPrimaryTransportConnected()) {    //Ensure that the service is in the foreground and no longer connected to a transport
                 DebugTool.logInfo(TAG, "SdlRouterService to exit foreground");
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    this.stopForeground(Service.STOP_FOREGROUND_DETACH);
+                    this.stopForeground(Service.STOP_FOREGROUND_REMOVE);
                 } else {
-                    stopForeground(false);
+                    stopForeground(true);
                 }
                 NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 if (notificationManager != null) {
