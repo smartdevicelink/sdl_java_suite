@@ -1780,8 +1780,8 @@ public class SdlRouterService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !hasCalledStartForeground) {
             //This must be called before stopping self
             safeStartForeground(FOREGROUND_SERVICE_ID, null);
-            exitForeground();
         }
+        exitForeground();
 
         if (getBaseContext() != null) {
             stopSelf();
