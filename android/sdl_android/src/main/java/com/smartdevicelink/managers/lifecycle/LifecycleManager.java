@@ -32,6 +32,8 @@
 
 package com.smartdevicelink.managers.lifecycle;
 
+import static com.smartdevicelink.managers.BaseSubManager.SETTING_UP;
+
 import android.content.Context;
 
 import androidx.annotation.RestrictTo;
@@ -89,12 +91,13 @@ public class LifecycleManager extends BaseLifecycleManager {
 
     @Override
     void cycle(SdlDisconnectedReason disconnectedReason) {
-        clean();
-        initialize();
+        clean(true);
         if (!SdlDisconnectedReason.LEGACY_BLUETOOTH_MODE_ENABLED.equals(disconnectedReason) && !SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST.equals(disconnectedReason)) {
             //We don't want to alert higher if we are just cycling for legacy bluetooth
             onClose("Sdl Proxy Cycled", new SdlException("Sdl Proxy Cycled", SdlExceptionCause.SDL_PROXY_CYCLED), disconnectedReason);
         }
+        transitionToState(SETTING_UP);
+        initialize();
         synchronized (SESSION_LOCK) {
             if (session != null) {
                 try {

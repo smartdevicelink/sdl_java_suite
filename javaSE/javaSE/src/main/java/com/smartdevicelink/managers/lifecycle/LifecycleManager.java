@@ -39,6 +39,8 @@ import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.session.SdlSession;
 import com.smartdevicelink.transport.BaseTransportConfig;
 
+import static com.smartdevicelink.managers.BaseSubManager.SETTING_UP;
+
 /**
  * The lifecycle manager creates a central point for all SDL session logic to converge. It should only be used by
  * the library itself. Usage outside the library is not permitted and will not be protected for in the future.
@@ -57,7 +59,9 @@ public class LifecycleManager extends BaseLifecycleManager {
 
     @Override
     void cycle(SdlDisconnectedReason disconnectedReason) {
-        clean();
+        clean(true);
+        transitionToState(SETTING_UP);
+        initialize();
         if (session != null) {
             try {
                 session.startSession();

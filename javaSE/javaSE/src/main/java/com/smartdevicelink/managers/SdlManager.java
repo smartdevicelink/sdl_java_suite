@@ -157,6 +157,12 @@ public class SdlManager extends BaseSdlManager {
 
     @Override
     public void dispose() {
+        int state = getState();
+        if (state == BaseSubManager.SHUTDOWN || state == BaseSubManager.ERROR) {
+            DebugTool.logInfo(TAG, "SdlManager already disposed");
+            return;
+        }
+
         if (this.permissionManager != null) {
             this.permissionManager.dispose();
         }
@@ -203,7 +209,7 @@ public class SdlManager extends BaseSdlManager {
 
         @Override
         public void stop() {
-            lifecycleManager.getInternalInterface(SdlManager.this).start();
+            lifecycleManager.getInternalInterface(SdlManager.this).stop();
         }
 
         @Override
