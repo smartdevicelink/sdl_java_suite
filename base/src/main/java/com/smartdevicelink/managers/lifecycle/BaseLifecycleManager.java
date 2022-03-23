@@ -1284,7 +1284,7 @@ abstract class BaseLifecycleManager {
 
     void clean(boolean sendUnregisterAppInterface) {
         int state = getState();
-        if(state == SHUTDOWN || state == ERROR) {
+        if (state == SHUTDOWN || state == ERROR) {
             DebugTool.logInfo(TAG, "No need to clean, LCM is already cleaned: " + state);
             return;
         }
