@@ -217,21 +217,27 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
         List<VoiceCommand> validatedVoiceCommands = new ArrayList<>();
         for (VoiceCommand voiceCommand : voiceCommands) {
             if (voiceCommand == null) {
+                DebugTool.logError(TAG, "Null voice command removed");
                 continue;
             }
             List<String> voiceCommandStrings = new ArrayList<>();
             for (String voiceCommandString : voiceCommand.getVoiceCommands()) {
                 if (voiceCommandString == null) {
+                    DebugTool.logError(TAG, "Null voice command string removed");
                     continue;
                 }
                 String trimmedString = voiceCommandString.trim();
                 if (trimmedString.length() > 0) {
                     voiceCommandStrings.add(trimmedString);
+                } else {
+                    DebugTool.logError(TAG, "Empty voice command string removed");
                 }
             }
             if (voiceCommandStrings.size() > 0) {
                 voiceCommand.setVoiceCommands(voiceCommandStrings);
                 validatedVoiceCommands.add(voiceCommand);
+            } else {
+                DebugTool.logError(TAG, "Empty voice command removed");
             }
         }
         return validatedVoiceCommands;
