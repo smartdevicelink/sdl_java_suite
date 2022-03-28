@@ -1633,9 +1633,9 @@ public class SdlRouterService extends Service {
             if (isForeground && !isPrimaryTransportConnected()) {    //Ensure that the service is in the foreground and no longer connected to a transport
                 DebugTool.logInfo(TAG, "SdlRouterService to exit foreground");
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    this.stopForeground(Service.STOP_FOREGROUND_DETACH);
+                    this.stopForeground(Service.STOP_FOREGROUND_REMOVE);
                 } else {
-                    stopForeground(false);
+                    stopForeground(true);
                 }
                 NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 if (notificationManager != null) {
@@ -1758,7 +1758,7 @@ public class SdlRouterService extends Service {
 
         } else if (intent != null && TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT.equals(intent.getAction())) {
             DebugTool.logInfo(TAG, "Received start intent with alt transport request.");
-            startAltTransportTimer();
+            startAltTransportTimer(); //This timer is started to allow the router service to stay open while it waits for the USB transfer to take place
             return true;
         } else if (!bluetoothAvailable()) {//If bluetooth isn't on...there's nothing to see here
             //Bluetooth is off, we should shut down
@@ -1780,8 +1780,8 @@ public class SdlRouterService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !hasCalledStartForeground) {
             //This must be called before stopping self
             safeStartForeground(FOREGROUND_SERVICE_ID, null);
-            exitForeground();
         }
+        exitForeground();
 
         if (getBaseContext() != null) {
             stopSelf();
@@ -1979,6 +1979,12 @@ public class SdlRouterService extends Service {
                         if (usbSessionMap != null) {
                             usbSessionMap.clear();
                         }
+                    }
+                    //In case the USB connection has ended before the timer expired, we should stop it
+                    if (altTransportTimerHandler != null && altTransportTimerRunnable != null) {
+                        altTransportTimerHandler.removeCallbacks(altTransportTimerRunnable);
+                        altTransportTimerHandler = null;
+                        altTransportTimerRunnable = null;
                     }
                     break;
                 case TCP:
@@ -2631,6 +2637,11 @@ public class SdlRouterService extends Service {
         if (Looper.myLooper() == null) {
             Looper.prepare();
         }
+
+        if (altTransportTimerHandler != null && altTransportTimerRunnable != null) {
+            altTransportTimerHandler.removeCallbacks(altTransportTimerRunnable);
+        }
+
         altTransportTimerHandler = new Handler(Looper.myLooper());
         altTransportTimerRunnable = new Runnable() {
             public void run() {
