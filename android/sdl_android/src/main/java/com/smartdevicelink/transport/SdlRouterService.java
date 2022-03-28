@@ -1981,7 +1981,7 @@ public class SdlRouterService extends Service {
                         }
                     }
                     //In case the USB connection has ended before the timer expired, we should stop it
-                    if(altTransportTimerHandler != null && altTransportTimerRunnable != null) {
+                    if (altTransportTimerHandler != null && altTransportTimerRunnable != null) {
                         altTransportTimerHandler.removeCallbacks(altTransportTimerRunnable);
                         altTransportTimerHandler = null;
                         altTransportTimerRunnable = null;
@@ -2638,7 +2638,7 @@ public class SdlRouterService extends Service {
             Looper.prepare();
         }
 
-        if(altTransportTimerHandler != null && altTransportTimerRunnable != null) {
+        if (altTransportTimerHandler != null && altTransportTimerRunnable != null) {
             altTransportTimerHandler.removeCallbacks(altTransportTimerRunnable);
         }
 
