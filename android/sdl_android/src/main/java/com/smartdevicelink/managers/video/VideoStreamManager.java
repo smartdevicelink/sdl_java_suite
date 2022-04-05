@@ -144,9 +144,18 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                     hapticManager = new HapticInterfaceManager(internalInterface);
                 }
                 checkState();
-                startEncoder();
-                stateMachine.transitionToState(StreamingStateMachine.STARTED);
-                hasStarted = true;
+                boolean encoderStarted = startEncoder();
+                if(encoderStarted) {
+                    stateMachine.transitionToState(StreamingStateMachine.STARTED);
+                    hasStarted = true;
+                } else {
+                    DebugTool.logError(TAG, "Error starting video encoder");
+                    stateMachine.transitionToState(StreamingStateMachine.ERROR);
+                    withPendingRestart = false;
+                    if(session != null) {
+                        session.endService(SessionType.NAV);
+                    }
+                }
             }
         }
 
@@ -473,7 +482,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
     /**
      * Initializes and starts the virtual display encoder and creates the remote display
      */
-    private void startEncoder() {
+    private boolean startEncoder() {
         try {
             if (remoteDisplay != null) {
                 remoteDisplay.resizeView(parameters.getResolution().getResolutionWidth(), parameters.getResolution().getResolutionHeight());
@@ -490,7 +499,9 @@ public class VideoStreamManager extends BaseVideoStreamManager {
         } catch (Exception e) {
             stateMachine.transitionToState(StreamingStateMachine.ERROR);
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     /**
