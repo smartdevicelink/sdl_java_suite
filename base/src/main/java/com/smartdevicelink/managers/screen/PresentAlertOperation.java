@@ -416,6 +416,14 @@ public class PresentAlertOperation extends Task {
      * @return True if soft button images are currently supported; false if not.
      */
     private boolean supportsSoftButtonImages() {
+        if (currentWindowCapability == null ||
+            currentWindowCapability.getSoftButtonCapabilities() == null ||
+            currentWindowCapability.getSoftButtonCapabilities().size() == 0 ||
+            currentWindowCapability.getSoftButtonCapabilities().get(0) == null
+        ) {
+            return true;
+        }
+
         SoftButtonCapabilities softButtonCapabilities = currentWindowCapability.getSoftButtonCapabilities().get(0);
         return softButtonCapabilities.getImageSupported().booleanValue();
     }
