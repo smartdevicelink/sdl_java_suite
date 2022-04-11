@@ -251,6 +251,10 @@ public class VirtualDisplayEncoder {
                 inputSurface.release();
                 inputSurface = null;
             }
+            if (mEglCore != null) {
+                mEglCore.release();
+                mEglCore = null;
+            }
         } catch (Exception ex) {
             DebugTool.logError(TAG, "shutDown() failed");
         }
