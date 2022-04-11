@@ -164,7 +164,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                 transitionToState(SETTING_UP);
                 if (withPendingRestart && isHMIStateVideoStreamCapable(currentOnHMIStatus)) {
                     VideoStreamManager manager = VideoStreamManager.this;
-
                     manager.internalInterface.startVideoService(manager.getLastCachedStreamingParameters(), manager.isEncrypted, withPendingRestart);
                 }
             }
