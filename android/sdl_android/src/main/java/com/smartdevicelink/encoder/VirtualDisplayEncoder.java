@@ -251,6 +251,10 @@ public class VirtualDisplayEncoder {
                 inputSurface.release();
                 inputSurface = null;
             }
+            if (mEglCore != null) {
+                mEglCore.release();
+                mEglCore = null;
+            }
         } catch (Exception ex) {
             DebugTool.logError(TAG, "shutDown() failed");
         }
@@ -262,6 +266,9 @@ public class VirtualDisplayEncoder {
      * @param Height
      */
     private void setupGLES(int Width, int Height) {
+        if (mEglCore != null) {
+            mEglCore.release();
+        }
         mEglCore = new EglCore(null, 0);
 
         // This 1x1 offscreen is created just to get the texture name (mTextureId).

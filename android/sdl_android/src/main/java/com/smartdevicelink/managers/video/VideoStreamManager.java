@@ -163,12 +163,15 @@ public class VideoStreamManager extends BaseVideoStreamManager {
         public void onServiceEnded(SdlSession session, SessionType type) {
             if (SessionType.NAV.equals(type)) {
                 if (remoteDisplay != null) {
-                    stopStreaming(withPendingRestart);
+                    if (withPendingRestart && isHMIStateVideoStreamCapable(currentOnHMIStatus)) {
+                        stopStreaming(withPendingRestart);
+                    } else {
+                        stopStreaming();
+                    }
                 }
                 stateMachine.transitionToState(StreamingStateMachine.NONE);
                 transitionToState(SETTING_UP);
-
-                if (withPendingRestart) {
+                if (withPendingRestart && isHMIStateVideoStreamCapable(currentOnHMIStatus)) {
                     VideoStreamManager manager = VideoStreamManager.this;
                     manager.internalInterface.startVideoService(manager.getLastCachedStreamingParameters(), manager.isEncrypted, withPendingRestart);
                 }
@@ -206,6 +209,10 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                 checkState();
                 if (hasStarted && (isHMIStateVideoStreamCapable(prevOnHMIStatus)) && (!isHMIStateVideoStreamCapable(currentOnHMIStatus))) {
                     stopVideoStream();
+                }
+                if (withPendingRestart && hasStarted && (!isHMIStateVideoStreamCapable(prevOnHMIStatus)) && (isHMIStateVideoStreamCapable(currentOnHMIStatus))) {
+                    VideoStreamManager manager = VideoStreamManager.this;
+                    manager.internalInterface.startVideoService(manager.getLastCachedStreamingParameters(), manager.isEncrypted, withPendingRestart);
                 }
             }
         }
