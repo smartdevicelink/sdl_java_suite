@@ -145,14 +145,14 @@ public class VideoStreamManager extends BaseVideoStreamManager {
                 }
                 checkState();
                 boolean encoderStarted = startEncoder();
-                if(encoderStarted) {
+                if (encoderStarted) {
                     stateMachine.transitionToState(StreamingStateMachine.STARTED);
                     hasStarted = true;
                 } else {
                     DebugTool.logError(TAG, "Error starting video encoder");
                     stateMachine.transitionToState(StreamingStateMachine.ERROR);
                     withPendingRestart = false;
-                    if(session != null) {
+                    if (session != null) {
                         session.endService(SessionType.NAV);
                     }
                 }
