@@ -162,7 +162,7 @@ public class Texture2dProgram {
         if (mProgramHandle == 0) {
             throw new RuntimeException("Unable to create program");
         }
-        Log.e(TAG,"Created program " + mProgramHandle + " (" + programType + ")");
+        Log.i(TAG,"Created program " + mProgramHandle + " (" + programType + ")");
 
         // get locations of attributes and uniforms
 
