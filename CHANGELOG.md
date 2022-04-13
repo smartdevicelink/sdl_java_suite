@@ -53,5 +53,5 @@
 
 - [Menu Manager won't send submenu cell images on RPC versions >= 5.0 && < 7.0 #2047](https://github.com/smartdevicelink/sdl_java_suite/issues/1756)
 
-- [ GenerateSources gradle task in javaSE incorrectly reads the version from gradle.properties instead of VERSION file](https://github.com/smartdevicelink/sdl_java_suite/issues/1763)
+- [GenerateSources gradle task in javaSE incorrectly reads the version from gradle.properties instead of VERSION file](https://github.com/smartdevicelink/sdl_java_suite/issues/1763)
 
