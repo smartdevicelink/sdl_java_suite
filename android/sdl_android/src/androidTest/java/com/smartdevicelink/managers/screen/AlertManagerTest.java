@@ -68,9 +68,9 @@ public class AlertManagerTest {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
                 OnPermissionChangeListener onPermissionChangeListener = (OnPermissionChangeListener) args[2];
-                Map<FunctionID, PermissionStatus > allowedPermissions = new HashMap<>();
+                Map<FunctionID, PermissionStatus> allowedPermissions = new HashMap<>();
                 int permissionGroupStatus = PermissionManager.PERMISSION_GROUP_STATUS_DISALLOWED;
-                onPermissionChangeListener.onPermissionsChange(allowedPermissions,permissionGroupStatus);
+                onPermissionChangeListener.onPermissionsChange(allowedPermissions, permissionGroupStatus);
                 return null;
             }
         };

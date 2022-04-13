@@ -38,7 +38,6 @@ import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.util.DebugTool;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -50,7 +49,7 @@ import java.util.List;
  *
  * @see SoftButtonState
  */
-public class SoftButtonObject implements Cloneable{
+public class SoftButtonObject implements Cloneable {
     private static final String TAG = "SoftButtonObject";
     static final int SOFT_BUTTON_ID_NOT_SET_VALUE = -1;
     static final int SOFT_BUTTON_ID_MIN_VALUE = 0;
@@ -73,12 +72,24 @@ public class SoftButtonObject implements Cloneable{
      */
     public SoftButtonObject(@NonNull String name, @NonNull List<SoftButtonState> states, @NonNull String initialStateName, OnEventListener onEventListener) {
 
-        // Make sure there aren't two states with the same name
-        if (hasTwoStatesOfSameName(states)) {
-            DebugTool.logError(TAG, "Two states have the same name in states list for soft button object");
-            return;
+        boolean repeatedStateNames = hasTwoStatesOfSameName(states);
+
+        boolean hasStateWithInitialName = false;
+        for (SoftButtonState state : states) {
+            if(state.getName().equals(initialStateName)) {
+                hasStateWithInitialName = true;
+                break;
+            }
         }
 
+        if (repeatedStateNames) {
+            DebugTool.logError(TAG, "A SoftButtonObject must have states with different names.");
+            return;
+        }
+        if (!hasStateWithInitialName) {
+            DebugTool.logError(TAG, "A SoftButtonObject must have a state with initialStateName.");
+            return;
+        }
         this.name = name;
         this.states = states;
         this.currentStateName = initialStateName;
@@ -259,11 +270,35 @@ public class SoftButtonObject implements Cloneable{
     }
 
     /**
-     * Set the the SoftButtonState list
+     * Set the SoftButtonState list
      *
      * @param states a list of the object's soft button states. <strong>states should be unique for every SoftButtonObject. A SoftButtonState instance cannot be reused for multiple SoftButtonObjects.</strong>
      */
     public void setStates(@NonNull List<SoftButtonState> states) {
+
+        boolean repeatedStateNames = hasTwoStatesOfSameName(states);
+
+        if (repeatedStateNames) {
+            DebugTool.logError(TAG, "A SoftButtonObject must have states with different names.");
+            return;
+        }
+
+        if (states.isEmpty()) {
+            DebugTool.logError(TAG, "A SoftButtonObject must contain at least one state");
+            return;
+        }
+
+        boolean hasStateWithCurrentName = false;
+        for (SoftButtonState state : states) {
+            if(state.getName().equals(currentStateName)) {
+                hasStateWithCurrentName = true;
+                break;
+            }
+        }
+        if (!hasStateWithCurrentName) {
+            DebugTool.logError(TAG, "A SoftButtonObject setting states must contain a state with the name " + currentStateName + ".");
+        }
+
         this.states = states;
     }
 

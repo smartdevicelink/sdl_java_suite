@@ -388,7 +388,7 @@ public class MenuCell implements Cloneable {
      *
      * @return the cell's tertiaryText
      */
-    public String getTertiaryText(){
+    public String getTertiaryText() {
         return tertiaryText;
     }
 
@@ -406,7 +406,7 @@ public class MenuCell implements Cloneable {
      *
      * @return the cell's secondaryArtwork
      */
-    public SdlArtwork getSecondaryArtwork(){
+    public SdlArtwork getSecondaryArtwork() {
         return secondaryArtwork;
     }
 

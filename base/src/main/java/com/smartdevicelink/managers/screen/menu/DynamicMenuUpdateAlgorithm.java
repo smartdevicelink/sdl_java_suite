@@ -112,7 +112,7 @@ class DynamicMenuUpdateAlgorithm {
      * Builds a 1-1 list of Deletes for every element in the array
      * @param oldMenu The old menu list
      */
-    static List<MenuCellState> buildAllDeleteStatusesForMenu (List<MenuCell> oldMenu){
+    static List<MenuCellState> buildAllDeleteStatusesForMenu(List<MenuCell> oldMenu) {
         List<MenuCellState> oldMenuStatus = new ArrayList<>(oldMenu.size());
         for (int index = 0; index < oldMenu.size(); index++) {
             oldMenuStatus.add(MenuCellState.DELETE);
@@ -124,7 +124,7 @@ class DynamicMenuUpdateAlgorithm {
      * Builds a 1-1 list of Adds for every element in the list
      * @param newMenu The new menu list
      */
-    static List<MenuCellState> buildAllAddStatusesForMenu (List<MenuCell> newMenu){
+    static List<MenuCellState> buildAllAddStatusesForMenu(List<MenuCell> newMenu) {
         List<MenuCellState> newMenuStatus = new ArrayList<>(newMenu.size());
         for (int index = 0; index < newMenu.size(); index++) {
             newMenuStatus.add(MenuCellState.ADD);

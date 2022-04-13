@@ -76,7 +76,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
         this.transactionQueue = newTransactionQueue();
 
-        currentHMILevel =  null;
+        currentHMILevel = null;
         addListeners();
         lastVoiceCommandId = voiceCommandIdMin;
     }
@@ -217,21 +217,27 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
         List<VoiceCommand> validatedVoiceCommands = new ArrayList<>();
         for (VoiceCommand voiceCommand : voiceCommands) {
             if (voiceCommand == null) {
+                DebugTool.logWarning(TAG, "Voice command is null, it will not be uploaded");
                 continue;
             }
             List<String> voiceCommandStrings = new ArrayList<>();
             for (String voiceCommandString : voiceCommand.getVoiceCommands()) {
                 if (voiceCommandString == null) {
+                    DebugTool.logWarning(TAG, "Removing null string from voice command");
                     continue;
                 }
                 String trimmedString = voiceCommandString.trim();
                 if (trimmedString.length() > 0) {
                     voiceCommandStrings.add(trimmedString);
+                } else {
+                    DebugTool.logWarning(TAG, "Empty string removed from voice command");
                 }
             }
             if (voiceCommandStrings.size() > 0) {
                 voiceCommand.setVoiceCommands(voiceCommandStrings);
                 validatedVoiceCommands.add(voiceCommand);
+            } else {
+                DebugTool.logWarning(TAG, "Voice command will not be uploaded as it contained no valid strings");
             }
         }
         return validatedVoiceCommands;

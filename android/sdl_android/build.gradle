@@ -1,11 +1,11 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 30
-        versionCode 21
+        targetSdkVersion 31
+        versionCode 22
         versionName new File(projectDir.path, ('/../../VERSION')).text.trim()
         buildConfigField "String", "VERSION_NAME", '\"' + versionName + '\"'
         resValue "string", "SDL_LIB_VERSION", '\"' + versionName + '\"'
@@ -39,6 +39,8 @@ android {
         androidTest.assets.srcDirs += '../../generator/rpc_spec/'
     }
 }
+
+ext { VERSION_NAME = "$project.android.defaultConfig.versionName" }
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])

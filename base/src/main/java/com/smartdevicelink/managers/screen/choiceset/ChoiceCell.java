@@ -40,7 +40,7 @@ import com.smartdevicelink.util.DebugTool;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChoiceCell implements Cloneable{
+public class ChoiceCell implements Cloneable {
     private String text, secondaryText, tertiaryText;
     private List<String> voiceCommands;
     private SdlArtwork artwork, secondaryArtwork;

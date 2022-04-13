@@ -188,52 +188,57 @@ abstract class BaseSdlManager {
 
         if ((actualLanguage != null && !actualLanguage.equals(language)) || (actualHMILanguage != null && !actualHMILanguage.equals(hmiLanguage))) {
 
-            final LifecycleConfigurationUpdate lcu = managerListener.managerShouldUpdateLifecycle(actualLanguage, actualHMILanguage);
+            if(managerListener != null) {
+                final LifecycleConfigurationUpdate lcu = managerListener.managerShouldUpdateLifecycle(actualLanguage, actualHMILanguage);
 
-            ChangeRegistration changeRegistration;
-            changeRegistration = new ChangeRegistration(actualLanguage, actualHMILanguage);
+                ChangeRegistration changeRegistration;
+                changeRegistration = new ChangeRegistration(actualLanguage, actualHMILanguage);
 
-            if (lcu != null) {
-                changeRegistration.setAppName(lcu.getAppName());
-                changeRegistration.setNgnMediaScreenAppName(lcu.getShortAppName());
-                changeRegistration.setTtsName(lcu.getTtsName());
-                changeRegistration.setVrSynonyms(lcu.getVoiceRecognitionCommandNames());
-                changeRegistration.setOnRPCResponseListener(new OnRPCResponseListener() {
-                    @Override
-                    public void onResponse(int correlationId, RPCResponse response) {
-                        if (response.getSuccess()) {
-                            try {
-                                DebugTool.logInfo(TAG, response.serializeJSON().toString());
-                            } catch (JSONException e) {
-                                DebugTool.logError(TAG, "Error attempting to serialize ChangeRegistrationResponse", e);
+                if (lcu != null) {
+                    changeRegistration.setAppName(lcu.getAppName());
+                    changeRegistration.setNgnMediaScreenAppName(lcu.getShortAppName());
+                    changeRegistration.setTtsName(lcu.getTtsName());
+                    changeRegistration.setVrSynonyms(lcu.getVoiceRecognitionCommandNames());
+                    changeRegistration.setOnRPCResponseListener(new OnRPCResponseListener() {
+                        @Override
+                        public void onResponse(int correlationId, RPCResponse response) {
+                            if (response.getSuccess()) {
+                                try {
+                                    DebugTool.logInfo(TAG, response.serializeJSON().toString());
+                                } catch (JSONException e) {
+                                    DebugTool.logError(TAG, "Error attempting to serialize ChangeRegistrationResponse", e);
+                                }
+
+                                // go through and change sdlManager properties that were changed via the LCU update
+                                hmiLanguage = actualHMILanguage;
+                                language = actualLanguage;
+
+                                if (lcu.getAppName() != null) {
+                                    appName = lcu.getAppName();
+                                }
+
+                                if (lcu.getShortAppName() != null) {
+                                    shortAppName = lcu.getShortAppName();
+                                }
+
+                                if (lcu.getTtsName() != null) {
+                                    ttsChunks = lcu.getTtsName();
+                                }
+
+                                if (lcu.getVoiceRecognitionCommandNames() != null) {
+                                    vrSynonyms = lcu.getVoiceRecognitionCommandNames();
+                                }
+                            } else {
+                                DebugTool.logError(TAG, "Change Registration onError: " + response.getResultCode() + " | Info: " + response.getInfo());
+                                retryChangeRegistration();
                             }
-
-                            // go through and change sdlManager properties that were changed via the LCU update
-                            hmiLanguage = actualHMILanguage;
-                            language = actualLanguage;
-
-                            if (lcu.getAppName() != null) {
-                                appName = lcu.getAppName();
-                            }
-
-                            if (lcu.getShortAppName() != null) {
-                                shortAppName = lcu.getShortAppName();
-                            }
-
-                            if (lcu.getTtsName() != null) {
-                                ttsChunks = lcu.getTtsName();
-                            }
-
-                            if (lcu.getVoiceRecognitionCommandNames() != null) {
-                                vrSynonyms = lcu.getVoiceRecognitionCommandNames();
-                            }
-                        } else {
-                            DebugTool.logError(TAG, "Change Registration onError: " + response.getResultCode() + " | Info: " + response.getInfo());
-                            retryChangeRegistration();
                         }
-                    }
-                });
-                this.sendRPC(changeRegistration);
+                    });
+                    this.sendRPC(changeRegistration);
+                }
+            }
+            else {
+                DebugTool.logError(TAG, "SdlManagerListener is null");
             }
         }
     }

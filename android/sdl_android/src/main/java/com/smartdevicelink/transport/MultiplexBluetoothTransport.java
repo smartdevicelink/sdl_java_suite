@@ -117,7 +117,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport {
      * A method to retrieve the currently connected bluetooth device
      * @return the connected bluetooth device if connected, null otherwise.
      */
-    public BluetoothDevice getConnectedDevice(){
+    public BluetoothDevice getConnectedDevice() {
         return connectedDevice;
     }
 

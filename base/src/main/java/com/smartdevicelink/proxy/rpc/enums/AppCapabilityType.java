@@ -46,9 +46,9 @@ public enum AppCapabilityType {
      * @return AppCapabilityType
      */
     public static AppCapabilityType valueForString(String value) {
-        try{
+        try {
             return valueOf(value);
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

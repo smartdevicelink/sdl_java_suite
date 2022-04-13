@@ -32,6 +32,12 @@
 
 package com.smartdevicelink.managers.lifecycle;
 
+import static com.smartdevicelink.managers.BaseSubManager.SETTING_UP;
+import static com.smartdevicelink.managers.BaseSubManager.READY;
+import static com.smartdevicelink.managers.BaseSubManager.LIMITED;
+import static com.smartdevicelink.managers.BaseSubManager.SHUTDOWN;
+import static com.smartdevicelink.managers.BaseSubManager.ERROR;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 
@@ -116,7 +122,10 @@ abstract class BaseLifecycleManager {
             ON_UPDATE_LISTENER_LOCK = new Object(),
             ON_REQUEST_LISTENER_LOCK = new Object(),
             ON_NOTIFICATION_LISTENER_LOCK = new Object();
+    protected static final Object SESSION_LOCK = new Object();
+    private final Object STATE_LOCK = new Object();
 
+    private int state;
     SdlSession session;
     final AppConfig appConfig;
     Version rpcSpecVersion = MAX_SUPPORTED_RPC_VERSION;
@@ -141,6 +150,7 @@ abstract class BaseLifecycleManager {
     DisplayCapabilities initialMediaCapabilities;
 
     BaseLifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener) {
+        transitionToState(SETTING_UP);
         this.appConfig = appConfig;
         this._transportConfig = config;
         this.lifecycleListener = listener;
@@ -151,9 +161,13 @@ abstract class BaseLifecycleManager {
 
     public void start() {
         try {
-            session.startSession();
+            synchronized (SESSION_LOCK) {
+                if (session != null) {
+                    session.startSession();
+                }
+            }
         } catch (SdlException e) {
-            DebugTool.logError(TAG,"Error attempting to start session", e);
+            DebugTool.logError(TAG, "Error attempting to start session", e);
         }
     }
 
@@ -161,19 +175,28 @@ abstract class BaseLifecycleManager {
      * Start a secured RPC service
      */
     public void startRPCEncryption() {
-        if (session != null) {
-            session.startService(SessionType.RPC, true);
+        synchronized (SESSION_LOCK) {
+            if (session != null) {
+                session.startService(SessionType.RPC, true);
+            }
         }
     }
 
     public synchronized void stop() {
-        if (session != null) {
-            session.close();
-            session = null;
+        DebugTool.logInfo(TAG, "LifecycleManager stop requested");
+        clean(true);
+        transitionToState(SHUTDOWN);
+    }
+
+    protected void transitionToState(int state) {
+        synchronized (STATE_LOCK) {
+            this.state = state;
         }
-        if (taskmaster != null) {
-            taskmaster.shutdown();
-            taskmaster = null;
+    }
+
+    public int getState() {
+        synchronized (STATE_LOCK) {
+            return state;
         }
     }
 
@@ -194,8 +217,10 @@ abstract class BaseLifecycleManager {
     }
 
     Version getProtocolVersion() {
-        if (session != null && session.getProtocolVersion() != null) {
-            return session.getProtocolVersion();
+        synchronized (SESSION_LOCK) {
+            if (session != null && session.getProtocolVersion() != null) {
+                return session.getProtocolVersion();
+            }
         }
         return new Version(1, 0, 0);
     }
@@ -301,10 +326,12 @@ abstract class BaseLifecycleManager {
     }
 
     private boolean isConnected() {
-        if (session != null) {
-            return session.getIsConnected();
-        } else {
-            return false;
+        synchronized (SESSION_LOCK) {
+            if (session != null) {
+                return session.getIsConnected();
+            } else {
+                return false;
+            }
         }
     }
 
@@ -331,6 +358,7 @@ abstract class BaseLifecycleManager {
 
     void onClose(String info, Exception e, SdlDisconnectedReason reason) {
         DebugTool.logInfo(TAG, "onClose");
+        transitionToState(SHUTDOWN);
         if (lifecycleListener != null) {
             lifecycleListener.onClosed((LifecycleManager) this, info, e, reason);
         }
@@ -387,10 +415,7 @@ abstract class BaseLifecycleManager {
                         }
                         if (minimumRPCVersion != null && minimumRPCVersion.isNewerThan(rpcSpecVersion) == 1) {
                             DebugTool.logWarning(TAG, String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
-                            UnregisterAppInterface msg = new UnregisterAppInterface();
-                            msg.setCorrelationID(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
-                            sendRPCMessagePrivate(msg, true);
-                            clean();
+                            clean(true);
                             onClose("RPC spec version not supported: " + rpcSpecVersion.toString(), null, SdlDisconnectedReason.MINIMUM_RPC_VERSION_HIGHER_THAN_SUPPORTED);
                             return;
                         }
@@ -399,15 +424,19 @@ abstract class BaseLifecycleManager {
                             VehicleType vehicleType = raiResponse.getVehicleType();
                             String systemSoftwareVersion = raiResponse.getSystemSoftwareVersion();
                             if (vehicleType != null || systemSoftwareVersion != null) {
-                                saveVehicleType(session.getActiveTransports(), vehicleType);
+
+                                List<TransportRecord> activeTransports = null;
+                                synchronized (SESSION_LOCK) {
+                                    if (session != null) {
+                                        activeTransports = session.getActiveTransports();
+                                    }
+                                }
+                                saveVehicleType(activeTransports, vehicleType);
                                 SystemInfo systemInfo = new SystemInfo(vehicleType, systemSoftwareVersion, null);
                                 boolean validSystemInfo = lifecycleListener.onSystemInfoReceived(systemInfo);
                                 if (!validSystemInfo) {
                                     DebugTool.logWarning(TAG, "Disconnecting from head unit, the system info was not accepted.");
-                                    UnregisterAppInterface msg = new UnregisterAppInterface();
-                                    msg.setCorrelationID(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
-                                    sendRPCMessagePrivate(msg, true);
-                                    clean();
+                                    clean(true);
                                     onClose("System not supported", null, SdlDisconnectedReason.DEFAULT);
                                     return;
                                 }
@@ -425,6 +454,7 @@ abstract class BaseLifecycleManager {
                         DebugTool.logInfo(TAG, "on hmi status");
                         boolean shouldInit = currentHMIStatus == null;
                         currentHMIStatus = (OnHMIStatus) message;
+                        transitionToState(READY);
                         if (lifecycleListener != null && shouldInit) {
                             lifecycleListener.onConnected((LifecycleManager) BaseLifecycleManager.this);
                         }
@@ -494,7 +524,7 @@ abstract class BaseLifecycleManager {
 
                         if (!onAppInterfaceUnregistered.getReason().equals(AppInterfaceUnregisteredReason.LANGUAGE_CHANGE)) {
                             DebugTool.logInfo(TAG, "on app interface unregistered");
-                            clean();
+                            clean(false);
                             onClose("OnAppInterfaceUnregistered received from head unit", null, SdlDisconnectedReason.APP_INTERFACE_UNREG);
                         } else {
                             DebugTool.logInfo(TAG, "re-registering for language change");
@@ -502,9 +532,11 @@ abstract class BaseLifecycleManager {
                         }
                         break;
                     case UNREGISTER_APP_INTERFACE:
-                        DebugTool.logInfo(TAG, "unregister app interface");
-                        clean();
-                        onClose("UnregisterAppInterface response received from head unit", null, SdlDisconnectedReason.APP_INTERFACE_UNREG);
+                        DebugTool.logInfo(TAG, "Unregister app interface response received");
+                        //Since only the library sends the UnregisterAppInterface requests, we know
+                        //that the correct logic flows already happen based on where the call to send
+                        //the request happens. There is also a SYNC4 bug that holds onto the response
+                        //until the app reconnects within the same transport session.
                         break;
                 }
             }
@@ -799,8 +831,10 @@ abstract class BaseLifecycleManager {
 
             final ProtocolMessage pm = new ProtocolMessage();
             pm.setData(msgBytes);
-            if (session != null) {
-                pm.setSessionID((byte) session.getSessionId());
+            synchronized (SESSION_LOCK) {
+                if (session != null) {
+                    pm.setSessionID((byte) session.getSessionId());
+                }
             }
 
             pm.setMessageType(MessageType.RPC);
@@ -843,7 +877,7 @@ abstract class BaseLifecycleManager {
                 }
                 // HAX: Issue #1690, Ford Sync bug returning incorrect display capabilities (https://github.com/smartdevicelink/sdl_java_suite/issues/1690). Save the next desired layout type to the update capabilities when the SetDisplayLayout response is received
                 if (FunctionID.SET_DISPLAY_LAYOUT.toString().equals(message.getFunctionName())) {
-                    lastDisplayLayoutRequestTemplate = ((SetDisplayLayout)message).getDisplayLayout();
+                    lastDisplayLayoutRequestTemplate = ((SetDisplayLayout) message).getDisplayLayout();
                 }
             } else if (RPCMessage.KEY_RESPONSE.equals(message.getMessageType())) { // Response Specifics
                 RPCResponse response = (RPCResponse) message;
@@ -868,10 +902,14 @@ abstract class BaseLifecycleManager {
                 pm.setPriorityCoefficient(1);
             }
 
-            session.sendMessage(pm);
+            synchronized (SESSION_LOCK) {
+                if (session != null) {
+                    session.sendMessage(pm);
+                }
+            }
 
         } catch (OutOfMemoryError e) {
-            DebugTool.logError(TAG,"Error attempting to send RPC message.", e);
+            DebugTool.logError(TAG, "Error attempting to send RPC message.", e);
         }
     }
 
@@ -940,22 +978,27 @@ abstract class BaseLifecycleManager {
             DebugTool.logInfo(TAG, "on protocol session started");
             if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(version) == 1) {
                 DebugTool.logWarning(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
-                session.endService(SessionType.RPC);
-                clean();
+                clean(false);
                 onClose("Protocol version not supported: " + version, null, SdlDisconnectedReason.MINIMUM_PROTOCOL_VERSION_HIGHER_THAN_SUPPORTED);
                 return;
             }
 
             if (systemInfo != null && lifecycleListener != null) {
                 didCheckSystemInfo = true;
-                saveVehicleType(session.getActiveTransports(), systemInfo.getVehicleType());
+                List<TransportRecord> activeTransports = null;
+                synchronized (SESSION_LOCK) {
+                    if (session != null) {
+                        activeTransports = session.getActiveTransports();
+                    }
+                }
+                saveVehicleType(activeTransports, systemInfo.getVehicleType());
                 boolean validSystemInfo = lifecycleListener.onSystemInfoReceived(systemInfo);
                 if (!validSystemInfo) {
                     DebugTool.logWarning(TAG, "Disconnecting from head unit, the system info was not accepted.");
-                    session.endService(SessionType.RPC);
-                    clean();
+                    clean(false);
                     onClose("System not supported", null, SdlDisconnectedReason.DEFAULT);
                     return;
+
                 }
                 //If the vehicle is acceptable, init security lib
                 setSecurityLibraryIfAvailable(systemInfo.getVehicleType());
@@ -1024,8 +1067,10 @@ abstract class BaseLifecycleManager {
         @Override
         public boolean isConnected() {
             synchronized (BaseLifecycleManager.this) {
-                if (BaseLifecycleManager.this.session != null) {
-                    return BaseLifecycleManager.this.session.getIsConnected();
+                synchronized (SESSION_LOCK) {
+                    if (BaseLifecycleManager.this.session != null) {
+                        return BaseLifecycleManager.this.session.getIsConnected();
+                    }
                 }
             }
             return false;
@@ -1034,8 +1079,10 @@ abstract class BaseLifecycleManager {
         @Override
         public void addServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {
             synchronized (BaseLifecycleManager.this) {
-                if(BaseLifecycleManager.this.session != null ){
-                    BaseLifecycleManager.this.session.addServiceListener(serviceType, sdlServiceListener);
+                synchronized (SESSION_LOCK) {
+                    if (BaseLifecycleManager.this.session != null) {
+                        BaseLifecycleManager.this.session.addServiceListener(serviceType, sdlServiceListener);
+                    }
                 }
             }
         }
@@ -1043,8 +1090,10 @@ abstract class BaseLifecycleManager {
         @Override
         public void removeServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {
             synchronized (BaseLifecycleManager.this) {
-                if (BaseLifecycleManager.this.session != null) {
-                    BaseLifecycleManager.this.session.removeServiceListener(serviceType, sdlServiceListener);
+                synchronized (SESSION_LOCK) {
+                    if (BaseLifecycleManager.this.session != null) {
+                        BaseLifecycleManager.this.session.removeServiceListener(serviceType, sdlServiceListener);
+                    }
                 }
             }
         }
@@ -1114,8 +1163,10 @@ abstract class BaseLifecycleManager {
         @Override
         public boolean isTransportForServiceAvailable(SessionType serviceType) {
             synchronized (BaseLifecycleManager.this) {
-                if (BaseLifecycleManager.this.session != null) {
-                    return BaseLifecycleManager.this.session.isTransportForServiceAvailable(serviceType);
+                synchronized (SESSION_LOCK) {
+                    if (BaseLifecycleManager.this.session != null) {
+                        return BaseLifecycleManager.this.session.isTransportForServiceAvailable(serviceType);
+                    }
                 }
             }
             return false;
@@ -1125,11 +1176,11 @@ abstract class BaseLifecycleManager {
         @Override
         public SdlMsgVersion getSdlMsgVersion() {
             SdlMsgVersion msgVersion;
-            if(rpcSpecVersion != null) {
+            if (rpcSpecVersion != null) {
                 msgVersion = new SdlMsgVersion(rpcSpecVersion.getMajor(), rpcSpecVersion.getMinor());
                 msgVersion.setPatchVersion(rpcSpecVersion.getPatch());
             } else {
-                msgVersion = new SdlMsgVersion(1,0);
+                msgVersion = new SdlMsgVersion(1, 0);
             }
 
             return msgVersion;
@@ -1144,8 +1195,10 @@ abstract class BaseLifecycleManager {
         @Override
         public long getMtu(SessionType serviceType) {
             synchronized (BaseLifecycleManager.this) {
-                if (BaseLifecycleManager.this.session != null) {
-                    return BaseLifecycleManager.this.session.getMtu(serviceType);
+                synchronized (SESSION_LOCK) {
+                    if (BaseLifecycleManager.this.session != null) {
+                        return BaseLifecycleManager.this.session.getMtu(serviceType);
+                    }
                 }
             }
             return SdlProtocolBase.V1_V2_MTU_SIZE;
@@ -1229,7 +1282,20 @@ abstract class BaseLifecycleManager {
         return null;
     }
 
-    void clean() {
+    void clean(boolean sendUnregisterAppInterface) {
+        int state = getState();
+        if (state == SHUTDOWN || state == ERROR) {
+            DebugTool.logInfo(TAG, "No need to clean, LCM is already cleaned: " + state);
+            return;
+        }
+
+        if (sendUnregisterAppInterface) {
+            DebugTool.logInfo(TAG, "Requesting to unregister from device");
+            UnregisterAppInterface uai = new UnregisterAppInterface();
+            uai.setCorrelationID(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
+            sendRPCMessagePrivate(uai, true);
+        }
+
         firstTimeFull = true;
         currentHMIStatus = null;
         lastDisplayLayoutRequestTemplate = null;
@@ -1246,8 +1312,11 @@ abstract class BaseLifecycleManager {
         if (rpcRequestListeners != null) {
             rpcRequestListeners.clear();
         }
-        if (session != null && session.getIsConnected()) {
-            session.close();
+        synchronized (SESSION_LOCK) {
+            if (session != null && session.getIsConnected()) {
+                session.close();
+                session = null;
+            }
         }
         if (encryptionLifecycleManager != null) {
             encryptionLifecycleManager.dispose();
@@ -1302,9 +1371,11 @@ abstract class BaseLifecycleManager {
             if ((sec != null) && (sec.getMakeList() != null)) {
                 if (sec.getMakeList().contains(make)) {
                     sec.setAppId(appConfig.getAppID());
-                    if (session != null) {
-                        session.setSdlSecurity(sec);
-                        sec.handleSdlSession(session);
+                    synchronized (SESSION_LOCK) {
+                        if (session != null) {
+                            session.setSdlSecurity(sec);
+                            sec.handleSdlSession(session);
+                        }
                     }
                     return;
                 }
@@ -1323,12 +1394,13 @@ abstract class BaseLifecycleManager {
         this.rpcRequestListeners = new HashMap<>();
         this.systemCapabilityManager = new SystemCapabilityManager(internalInterface);
         setupInternalRpcListeners();
+
     }
 
 
     abstract void cycle(SdlDisconnectedReason disconnectedReason);
 
-    void saveVehicleType(String address, VehicleType type){
+    void saveVehicleType(String address, VehicleType type) {
     }
 
     void saveVehicleType(List<TransportRecord> activeTransports, VehicleType type) {

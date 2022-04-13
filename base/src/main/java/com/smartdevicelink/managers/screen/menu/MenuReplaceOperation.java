@@ -48,6 +48,8 @@ import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.send
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.subMenuCommandsForCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.transferCellIDsFromCells;
 import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.transferCellListenersFromCells;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.windowCapabilitySupportsPrimaryImage;
+import static com.smartdevicelink.managers.screen.menu.MenuReplaceUtilities.windowCapabilitySupportsSecondaryImage;
 
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
@@ -198,7 +200,7 @@ class MenuReplaceOperation extends Task {
     }
 
     private void uploadMenuArtworks(final CompletionListener listener) {
-        List<SdlArtwork> artworksToBeUploaded = new ArrayList<>(findAllArtworksToBeUploadedFromCells(updatedMenu, fileManager.get(), windowCapability));
+        List<SdlArtwork> artworksToBeUploaded = new ArrayList<>(findAllArtworksToBeUploadedFromCells(internalInterface.get(), updatedMenu, fileManager.get(), windowCapability));
         if (artworksToBeUploaded.isEmpty()) {
             listener.onComplete(true);
             return;
@@ -373,10 +375,10 @@ class MenuReplaceOperation extends Task {
         MenuLayout defaultSubmenuLayout = menuConfiguration != null ? menuConfiguration.getSubMenuLayout() : null;
 
         // RPCs for cells on the main menu level. They could be AddCommands or AddSubMenus depending on whether the cell has child cells or not.
-        final List<RPCRequest> mainMenuCommands = mainMenuCommandsForCells(addMenuCells, fileManager.get(), fullMenu, windowCapability, defaultSubmenuLayout);
+        final List<RPCRequest> mainMenuCommands = mainMenuCommandsForCells(internalInterface.get(), addMenuCells, fileManager.get(), fullMenu, windowCapability, defaultSubmenuLayout);
 
         // RPCs for cells on the second menu level (one level deep). They could be AddCommands or AddSubMenus.
-        final List<RPCRequest> subMenuCommands = subMenuCommandsForCells(addMenuCells, fileManager.get(), windowCapability, defaultSubmenuLayout);
+        final List<RPCRequest> subMenuCommands = subMenuCommandsForCells(internalInterface.get(), addMenuCells, fileManager.get(), windowCapability, defaultSubmenuLayout);
 
         sendRPCs(mainMenuCommands, internalInterface.get(), new SendingRPCsCompletionListener() {
             @Override
@@ -465,10 +467,12 @@ class MenuReplaceOperation extends Task {
             // Strip away fields that cannot be used to determine uniqueness visually including fields not supported by the HMI
             cell.setVoiceCommands(null);
 
-            // Don't check ImageFieldName.subMenuIcon because it was added in 7.0 when the feature was added in 5.0.
-            // Just assume that if cmdIcon is not available, the submenu icon is not either.
-            if (!hasImageFieldOfName(windowCapability, ImageFieldName.cmdIcon)) {
+            if (!windowCapabilitySupportsPrimaryImage(internalInterface.get(), windowCapability, cell)) {
                 cell.setIcon(null);
+            }
+
+            if (!windowCapabilitySupportsSecondaryImage(windowCapability, cell)) {
+                cell.setSecondaryArtwork(null);
             }
 
             // Check for subMenu fields supported
@@ -479,9 +483,6 @@ class MenuReplaceOperation extends Task {
                 if (!hasTextFieldOfName(windowCapability, TextFieldName.menuSubMenuTertiaryText)) {
                     cell.setTertiaryText(null);
                 }
-                if (!hasImageFieldOfName(windowCapability, ImageFieldName.menuSubMenuSecondaryImage)) {
-                    cell.setSecondaryArtwork(null);
-                }
                 cell.setSubCells(cellsWithRemovedPropertiesFromCells(cell.getSubCells(), windowCapability));
             } else {
                 if (!hasTextFieldOfName(windowCapability, TextFieldName.menuCommandSecondaryText)) {
@@ -489,9 +490,6 @@ class MenuReplaceOperation extends Task {
                 }
                 if (!hasTextFieldOfName(windowCapability, TextFieldName.menuCommandTertiaryText)) {
                     cell.setTertiaryText(null);
-                }
-                if (!hasImageFieldOfName(windowCapability, ImageFieldName.menuCommandSecondaryImage)) {
-                    cell.setSecondaryArtwork(null);
                 }
             }
         }

@@ -32,6 +32,8 @@
 
 package com.smartdevicelink.managers.lifecycle;
 
+import static com.smartdevicelink.managers.BaseSubManager.SETTING_UP;
+
 import android.content.Context;
 
 import androidx.annotation.RestrictTo;
@@ -76,28 +78,33 @@ public class LifecycleManager extends BaseLifecycleManager {
     void initialize() {
         super.initialize();
 
-        if (_transportConfig != null && _transportConfig.getTransportType().equals(TransportType.MULTIPLEX)) {
-            this.session = new SdlSession(sdlSessionListener, (MultiplexTransportConfig) _transportConfig);
-        } else if (_transportConfig != null && _transportConfig.getTransportType().equals(TransportType.TCP)) {
-            this.session = new SdlSession(sdlSessionListener, (TCPTransportConfig) _transportConfig);
-        } else {
-            DebugTool.logError(TAG, "Unable to create session for transport type");
+        synchronized (SESSION_LOCK) {
+            if (_transportConfig != null && _transportConfig.getTransportType().equals(TransportType.MULTIPLEX)) {
+                this.session = new SdlSession(sdlSessionListener, (MultiplexTransportConfig) _transportConfig);
+            } else if (_transportConfig != null && _transportConfig.getTransportType().equals(TransportType.TCP)) {
+                this.session = new SdlSession(sdlSessionListener, (TCPTransportConfig) _transportConfig);
+            } else {
+                DebugTool.logError(TAG, "Unable to create session for transport type");
+            }
         }
     }
 
     @Override
     void cycle(SdlDisconnectedReason disconnectedReason) {
-        clean();
-        initialize();
+        clean(true);
         if (!SdlDisconnectedReason.LEGACY_BLUETOOTH_MODE_ENABLED.equals(disconnectedReason) && !SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST.equals(disconnectedReason)) {
             //We don't want to alert higher if we are just cycling for legacy bluetooth
             onClose("Sdl Proxy Cycled", new SdlException("Sdl Proxy Cycled", SdlExceptionCause.SDL_PROXY_CYCLED), disconnectedReason);
         }
-        if (session != null) {
-            try {
-                session.startSession();
-            } catch (SdlException e) {
-                e.printStackTrace();
+        transitionToState(SETTING_UP);
+        initialize();
+        synchronized (SESSION_LOCK) {
+            if (session != null) {
+                try {
+                    session.startSession();
+                } catch (SdlException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -114,7 +121,7 @@ public class LifecycleManager extends BaseLifecycleManager {
             return;
         }
 
-        for (TransportRecord record: activeTransports) {
+        for (TransportRecord record : activeTransports) {
             if (record.getType() == TransportType.BLUETOOTH) {
                 String address = record.getAddress();
                 if (address != null && !address.isEmpty()) {
@@ -163,16 +170,18 @@ public class LifecycleManager extends BaseLifecycleManager {
      */
     @Override
     void startVideoService(boolean isEncrypted, VideoStreamingParameters parameters, boolean afterPendingRestart) {
-        if (session == null) {
-            DebugTool.logWarning(TAG, "SdlSession is not created yet.");
-            return;
-        }
-        if (!session.getIsConnected()) {
-            DebugTool.logWarning(TAG, "Connection is not available.");
-            return;
-        }
+        synchronized (SESSION_LOCK) {
+            if (session == null) {
+                DebugTool.logWarning(TAG, "SdlSession is not created yet.");
+                return;
+            }
+            if (!session.getIsConnected()) {
+                DebugTool.logWarning(TAG, "Connection is not available.");
+                return;
+            }
 
-        session.setDesiredVideoParams(parameters);
+            session.setDesiredVideoParams(parameters);
+        }
         tryStartVideoStream(isEncrypted, parameters, afterPendingRestart);
     }
 
@@ -185,9 +194,11 @@ public class LifecycleManager extends BaseLifecycleManager {
      * @param parameters  VideoStreamingParameters that are desired. Does not guarantee this is what will be accepted.
      */
     private void tryStartVideoStream(boolean isEncrypted, VideoStreamingParameters parameters, boolean afterPendingRestart) {
-        if (session == null) {
-            DebugTool.logWarning(TAG, "SdlSession is not created yet.");
-            return;
+        synchronized (SESSION_LOCK) {
+            if (session == null) {
+                DebugTool.logWarning(TAG, "SdlSession is not created yet.");
+                return;
+            }
         }
         if (getProtocolVersion() != null && getProtocolVersion().getMajor() >= 5 && !systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)) {
             DebugTool.logWarning(TAG, "Module doesn't support video streaming.");
@@ -198,17 +209,20 @@ public class LifecycleManager extends BaseLifecycleManager {
             return;
         }
 
+        synchronized (SESSION_LOCK) {
+            if (afterPendingRestart || !videoServiceStartResponseReceived || !videoServiceStartResponse //If we haven't started the service before
+                    || (videoServiceStartResponse && isEncrypted && !session.isServiceProtected(SessionType.NAV))) { //Or the service has been started but we'd like to start an encrypted one
+                if (session != null) {
+                    session.setDesiredVideoParams(parameters);
+                }
+                videoServiceStartResponseReceived = false;
+                videoServiceStartResponse = false;
 
-        if (afterPendingRestart || !videoServiceStartResponseReceived || !videoServiceStartResponse //If we haven't started the service before
-                || (videoServiceStartResponse && isEncrypted && !session.isServiceProtected(SessionType.NAV))) { //Or the service has been started but we'd like to start an encrypted one
-            session.setDesiredVideoParams(parameters);
-
-            videoServiceStartResponseReceived = false;
-            videoServiceStartResponse = false;
-
-            addVideoServiceListener();
-            session.startService(SessionType.NAV, isEncrypted);
-
+                addVideoServiceListener();
+                if (session != null) {
+                    session.startService(SessionType.NAV, isEncrypted);
+                }
+            }
         }
     }
 
@@ -237,20 +251,27 @@ public class LifecycleManager extends BaseLifecycleManager {
                     videoServiceStartResponse = false;
                 }
             };
-            session.addServiceListener(SessionType.NAV, videoServiceListener);
+
+            synchronized (SESSION_LOCK) {
+                if (session != null) {
+                    session.addServiceListener(SessionType.NAV, videoServiceListener);
+                }
+            }
         }
     }
 
     @Override
     void startAudioService(boolean isEncrypted) {
-        if (session == null) {
-            DebugTool.logWarning(TAG, "SdlSession is not created yet.");
-            return;
+        synchronized (SESSION_LOCK) {
+            if (session == null) {
+                DebugTool.logWarning(TAG, "SdlSession is not created yet.");
+                return;
+            }
+            if (!session.getIsConnected()) {
+                DebugTool.logWarning(TAG, "Connection is not available.");
+                return;
+            }
+            session.startService(SessionType.PCM, isEncrypted);
         }
-        if (!session.getIsConnected()) {
-            DebugTool.logWarning(TAG, "Connection is not available.");
-            return;
-        }
-        session.startService(SessionType.PCM, isEncrypted);
     }
 }

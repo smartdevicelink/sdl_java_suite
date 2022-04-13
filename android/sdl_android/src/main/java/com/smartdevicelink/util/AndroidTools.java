@@ -48,6 +48,7 @@ import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 
@@ -68,6 +69,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+
+import static android.Manifest.permission.BLUETOOTH_CONNECT;
+import static android.Manifest.permission.BLUETOOTH_SCAN;
 
 
 public class AndroidTools {
@@ -199,6 +203,25 @@ public class AndroidTools {
         return sdlAppInfoList;
     }
 
+    public static boolean isPermissionGranted(String permissionName, Context context, String servicePackageName) {
+        PackageManager packageManager = context.getPackageManager();
+        if (packageManager == null) {
+            return false;
+        }
+        PackageInfo packageInfo;
+        try {
+            packageInfo = packageManager.getPackageInfo(servicePackageName, PackageManager.GET_PERMISSIONS);
+            if (packageInfo == null) {
+                return false;
+            }
+            int permissionResult = packageManager.checkPermission(permissionName, packageInfo.packageName);
+            return permissionResult == PackageManager.PERMISSION_GRANTED;
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+            DebugTool.logError(TAG, "servicePackageName not found while checking " + permissionName + " permission", e);
+            return false;
+        }
+    }
 
     /**
      * Sends the provided intent to the specified destinations making it an explicit intent, rather
@@ -331,7 +354,7 @@ public class AndroidTools {
      *
      * @param context a context to access Android system services through.
      * @param component a component name of a LocalRouterService.
-     * @param manifestFieldId a string resources id that indicates an unique name for the vehicle data in the manifest.
+     * @param manifestFieldId a string resources id that indicates a unique name for the vehicle data in the manifest.
      * @return The list of vehicle types, or null if an error occurred or field was not found.
      */
     public static @Nullable List<VehicleType> getVehicleTypesFromManifest(Context context, ComponentName component, int manifestFieldId) {
@@ -362,10 +385,10 @@ public class AndroidTools {
             XmlResourceParser parser = resources.getXml(xmlFieldId);
             return SdlAppInfo.deserializeSupportedVehicles(parser);
         } catch (PackageManager.NameNotFoundException e) {
-            DebugTool.logError(TAG, "Failed to get OEM vehicle data filter: " + e.getMessage()+ " - assume vehicle data is supported");
+            DebugTool.logError(TAG, "Failed to get OEM vehicle data filter: " + e.getMessage() + " - assume vehicle data is supported");
             return null;
         } catch (Resources.NotFoundException ex) {
-            DebugTool.logError(TAG, "Failed to find resource: " + ex.getMessage()+ " - assume vehicle data is supported");
+            DebugTool.logError(TAG, "Failed to find resource: " + ex.getMessage() + " - assume vehicle data is supported");
             return null;
         }
     }

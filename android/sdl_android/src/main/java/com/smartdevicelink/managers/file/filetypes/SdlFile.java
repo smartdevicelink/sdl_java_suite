@@ -252,7 +252,7 @@ public class SdlFile implements Cloneable {
     }
 
     /**
-     * Sets the the name of the static file. Static files comes pre-shipped with the head unit
+     * Sets the name of the static file. Static files comes pre-shipped with the head unit
      *
      * @param staticIcon a StaticIconName enum value representing the name of a static file that comes pre-shipped with the head unit
      */
@@ -261,7 +261,7 @@ public class SdlFile implements Cloneable {
     }
 
     /**
-     * Gets the the name of the static file. Static files comes pre-shipped with the head unit
+     * Gets the name of the static file. Static files comes pre-shipped with the head unit
      *
      * @return a StaticIconName enum value representing the name of a static file that comes pre-shipped with the head unit
      */
