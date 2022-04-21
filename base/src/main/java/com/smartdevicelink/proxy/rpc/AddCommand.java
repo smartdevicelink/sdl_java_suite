@@ -113,9 +113,7 @@ import java.util.List;
  *          <td>Optional secondary image struct for menu cell</td>
  *          <td>N</td>
  *          <td></td>
- *          <td>
- *             @since SmartDeviceLink 7.1.0
- *          </td>
+ *        <td>SmartDeviceLink 7.1.0</td>
  *      </tr>
  *  </table>
  * <p> <b>Response</b></p><p>Indicates that the corresponding request has failed or succeeded, if the response returns with a SUCCESS result code, this means a command was added to the Command Menu successfully.</p>

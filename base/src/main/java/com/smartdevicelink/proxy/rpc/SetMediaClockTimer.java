@@ -103,7 +103,7 @@ import java.util.Hashtable;
  *          <td>N</td>
  *          <td>{"num_min_value": 0.1, "num_max_value": 100.0}</td>
  *          <td>
- *             @since SmartDeviceLink 7.1.0
+ *             SmartDeviceLink 7.1.0
  *          </td>
  *      </tr>
  * 	    <tr>
@@ -113,7 +113,7 @@ import java.util.Hashtable;
  *          <td>N</td>
  *          <td></td>
  *          <td>
- *              @since SmartDeviceLink 7.1.0
+ *              SmartDeviceLink 7.1.0
  *          </td>
  *      </tr>
  *      <tr>
@@ -123,7 +123,7 @@ import java.util.Hashtable;
  *          <td>N</td>
  *          <td></td>
  *          <td>
- *              @since SmartDeviceLink 7.1.0
+ *              SmartDeviceLink 7.1.0
  *          </td>
  *      </tr>
  *
@@ -142,7 +142,7 @@ import java.util.Hashtable;
  *   <p>   REJECTED </p>
  *    <p>  IGNORED </p>
  *
- * @since SmartDeviceLink 1.0
+ * SmartDeviceLink 1.0
  */
 public class SetMediaClockTimer extends RPCRequest {
     public static final String KEY_START_TIME = "startTime";
