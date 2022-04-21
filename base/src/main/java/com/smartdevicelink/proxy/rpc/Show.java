@@ -169,10 +169,9 @@ import java.util.List;
  * 			<td>templateTitle</td>
  * 			<td>String</td>
  * 			<td>The title of the new template that will be displayed.</td>
-<td>N</td>
- <td><p>How this will be displayed is dependent on the OEM design and implementation of the template..</p>Minsize: 0; Maxsize: 100</td>
-<td>SmartDeviceLink 6.0.0</td>
- * 			
+ * 			<td><p>How this will be displayed is dependent on the OEM design and implementation of the template..</p>Minsize: 0; Maxsize: 100</td>
+ * 			<td>N</td>
+ * 			<td>SmartDeviceLink 6.0.0</td>
  * 		</tr>
  *
  *  </table>
