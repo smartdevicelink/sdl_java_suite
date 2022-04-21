@@ -91,7 +91,7 @@ import java.util.Hashtable;
  *          <td>N</td>
  *          <td>{"string_min_length": 1, "string_max_length": 500}</td>
  *          <td>
- *              @since SmartDeviceLink 7.1.0
+ *              SmartDeviceLink 7.1.0
  *          </td>
  *      </tr>
  *      <tr>
@@ -101,7 +101,7 @@ import java.util.Hashtable;
  *          <td>N</td>
  *          <td>{"string_min_length": 1, "string_max_length": 500}</td>
  *          <td>
- *              @since SmartDeviceLink 7.1.0
+ *             SmartDeviceLink 7.1.0
  *          </td>
  *      </tr>
  * </table>
