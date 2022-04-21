@@ -112,7 +112,7 @@ import java.util.Hashtable;
  *                 <td>N</td>
  *                 <td>Subscribable</td>
  * 			<td>
- * 				 SmartDeviceLink 2.0.0
+ * 				 SmartDeviceLink 2.0.0,
  * 				deprecated in SmartDeviceLink 7.1.0
  * 			</td>
  * 		</tr>
@@ -124,7 +124,6 @@ import java.util.Hashtable;
  *                 <td>Subscribable</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
- * 		<tr>
  *      <tr>
  *          <td>gearStatus</td>
  *          <td>Boolean</td>
