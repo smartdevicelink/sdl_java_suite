@@ -43,6 +43,7 @@ import com.smartdevicelink.managers.lifecycle.OnSystemCapabilityListener;
 import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
+import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
@@ -58,7 +59,6 @@ import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -73,6 +73,8 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
     SoftButtonCapabilities softButtonCapabilities;
     private CopyOnWriteArrayList<SoftButtonObject> softButtonObjects;
     private HMILevel currentHMILevel;
+    private boolean isGraphicSupported;
+    private DisplayCapabilities displayCapabilities;
     private final OnSystemCapabilityListener onDisplayCapabilityListener;
     private final OnRPCNotificationListener onHMIStatusListener, onButtonPressListener, onButtonEventListener;
     private Queue transactionQueue;
@@ -99,6 +101,12 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         this.currentHMILevel = null;
         this.transactionQueue = newTransactionQueue();
         this.batchQueue = new ArrayList<>();
+
+        if (internalInterface.getSystemCapabilityManager() != null) {
+             displayCapabilities = (DisplayCapabilities) this.internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.DISPLAY, null, false);
+        }
+
+        isGraphicSupported = (displayCapabilities != null && displayCapabilities.getGraphicSupported() != null) ? displayCapabilities.getGraphicSupported() : false;
 
         this.updateListener = new SoftButtonObject.UpdateListener() {
             @Override
@@ -152,7 +160,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
                 // Auto-send an updated Show if we have new capabilities
                 if (softButtonObjects != null && !softButtonObjects.isEmpty() && softButtonCapabilities != null && !softButtonCapabilitiesEquals(oldSoftButtonCapabilities, softButtonCapabilities)) {
-                    SoftButtonReplaceOperation operation = new SoftButtonReplaceOperation(internalInterface, fileManager, softButtonCapabilities, softButtonObjects, getCurrentMainField1());
+                    SoftButtonReplaceOperation operation = new SoftButtonReplaceOperation(internalInterface, fileManager, softButtonCapabilities, softButtonObjects, getCurrentMainField1(), isGraphicSupported);
                     transactionQueue.add(operation, false);
                 }
             }
@@ -311,7 +319,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         this.softButtonObjects = softButtonObjects;
 
         // We only need to pass the first softButtonCapabilities in the array due to the fact that all soft button capabilities are the same (i.e. there is no way to assign a softButtonCapabilities to a specific soft button).
-        SoftButtonReplaceOperation operation = new SoftButtonReplaceOperation(internalInterface, fileManager.get(), softButtonCapabilities, softButtonObjects, getCurrentMainField1());
+        SoftButtonReplaceOperation operation = new SoftButtonReplaceOperation(internalInterface, fileManager.get(), softButtonCapabilities, softButtonObjects, getCurrentMainField1(), isGraphicSupported);
 
         if (batchUpdates) {
             batchQueue.clear();

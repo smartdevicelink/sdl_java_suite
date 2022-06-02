@@ -30,14 +30,16 @@ class SoftButtonReplaceOperation extends Task {
     private final SoftButtonCapabilities softButtonCapabilities;
     private final CopyOnWriteArrayList<SoftButtonObject> softButtonObjects;
     private String currentMainField1;
+    private Boolean isGraphicSupported;
 
-    SoftButtonReplaceOperation(ISdl internalInterface, FileManager fileManager, SoftButtonCapabilities softButtonCapabilities, CopyOnWriteArrayList<SoftButtonObject> softButtonObjects, String currentMainField1) {
+    SoftButtonReplaceOperation(ISdl internalInterface, FileManager fileManager, SoftButtonCapabilities softButtonCapabilities, CopyOnWriteArrayList<SoftButtonObject> softButtonObjects, String currentMainField1, Boolean isGraphicSupported) {
         super("SoftButtonReplaceOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
         this.softButtonCapabilities = softButtonCapabilities;
         this.softButtonObjects = softButtonObjects;
         this.currentMainField1 = currentMainField1;
+        this.isGraphicSupported = isGraphicSupported;
     }
 
     @Override
@@ -304,7 +306,8 @@ class SoftButtonReplaceOperation extends Task {
     }
 
     private boolean supportsSoftButtonImages() {
-        return softButtonCapabilities != null && Boolean.TRUE.equals(softButtonCapabilities.getImageSupported());
+        Log.i("Julian", "supportsSoftButtonImages: isGraphicSupported" + isGraphicSupported);
+        return softButtonCapabilities != null && Boolean.TRUE.equals(isGraphicSupported) && Boolean.TRUE.equals(softButtonCapabilities.getImageSupported());
     }
 
     void setCurrentMainField1(String currentMainField1) {
