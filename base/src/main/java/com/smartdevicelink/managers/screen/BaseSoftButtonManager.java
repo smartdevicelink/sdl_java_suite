@@ -103,9 +103,8 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         this.batchQueue = new ArrayList<>();
 
         if (internalInterface.getSystemCapabilityManager() != null) {
-             displayCapabilities = (DisplayCapabilities) this.internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.DISPLAY, null, false);
+            displayCapabilities = (DisplayCapabilities) this.internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.DISPLAY, null, false);
         }
-
         isGraphicSupported = (displayCapabilities != null && displayCapabilities.getGraphicSupported() != null) ? displayCapabilities.getGraphicSupported() : false;
 
         this.updateListener = new SoftButtonObject.UpdateListener() {
