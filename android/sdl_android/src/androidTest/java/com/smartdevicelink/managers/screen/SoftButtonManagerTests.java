@@ -140,6 +140,7 @@ public class SoftButtonManagerTests {
         taskmaster.start();
         when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
         softButtonManager = new SoftButtonManager(internalInterface, fileManager);
+        softButtonManager.isGraphicSupported = true;
 
 
         // When internalInterface.sendRPC() is called inside SoftButtonManager:

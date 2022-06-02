@@ -71,9 +71,9 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
     private static final String TAG = "BaseSoftButtonManager";
     private final WeakReference<FileManager> fileManager;
     SoftButtonCapabilities softButtonCapabilities;
+    boolean isGraphicSupported;
     private CopyOnWriteArrayList<SoftButtonObject> softButtonObjects;
     private HMILevel currentHMILevel;
-    private boolean isGraphicSupported;
     private DisplayCapabilities displayCapabilities;
     private final OnSystemCapabilityListener onDisplayCapabilityListener;
     private final OnRPCNotificationListener onHMIStatusListener, onButtonPressListener, onButtonEventListener;
