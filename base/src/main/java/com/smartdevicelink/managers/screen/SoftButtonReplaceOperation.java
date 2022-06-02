@@ -306,7 +306,6 @@ class SoftButtonReplaceOperation extends Task {
     }
 
     private boolean supportsSoftButtonImages() {
-        Log.i("Julian", "supportsSoftButtonImages: isGraphicSupported" + isGraphicSupported);
         return softButtonCapabilities != null && Boolean.TRUE.equals(isGraphicSupported) && Boolean.TRUE.equals(softButtonCapabilities.getImageSupported());
     }
 
