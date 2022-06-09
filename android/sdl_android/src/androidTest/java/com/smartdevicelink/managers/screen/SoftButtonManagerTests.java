@@ -517,4 +517,14 @@ public class SoftButtonManagerTests {
 
         assertEquals(stateListUnique, softButtonObject.getStates());
     }
+
+    @Test
+    public void testSoftButtonManagerGraphicNotSupported() {
+        softButtonManager.isGraphicSupported = false;
+        fileManagerUploadArtworksListenerCalledCounter = 0;
+        internalInterfaceSendRPCListenerCalledCounter = 0;
+
+        softButtonManager.setSoftButtonObjects(Arrays.asList(softButtonObject1, softButtonObject2));
+        assertEquals("SoftButtonManager is uploading artwork, when graphic is not supported", 0, fileManagerUploadArtworksListenerCalledCounter);
+    }
 }

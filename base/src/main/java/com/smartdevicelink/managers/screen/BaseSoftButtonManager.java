@@ -74,7 +74,6 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
     boolean isGraphicSupported;
     private CopyOnWriteArrayList<SoftButtonObject> softButtonObjects;
     private HMILevel currentHMILevel;
-    private DisplayCapabilities displayCapabilities;
     private final OnSystemCapabilityListener onDisplayCapabilityListener;
     private final OnRPCNotificationListener onHMIStatusListener, onButtonPressListener, onButtonEventListener;
     private Queue transactionQueue;
@@ -101,11 +100,11 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         this.currentHMILevel = null;
         this.transactionQueue = newTransactionQueue();
         this.batchQueue = new ArrayList<>();
-
+        DisplayCapabilities displayCapabilities = null;
         if (internalInterface.getSystemCapabilityManager() != null) {
             displayCapabilities = (DisplayCapabilities) this.internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.DISPLAY, null, false);
         }
-        isGraphicSupported = (displayCapabilities != null && displayCapabilities.getGraphicSupported() != null) ? displayCapabilities.getGraphicSupported() : false;
+        isGraphicSupported = (displayCapabilities != null && displayCapabilities.getGraphicSupported() != null) ? displayCapabilities.getGraphicSupported() : true;
 
         this.updateListener = new SoftButtonObject.UpdateListener() {
             @Override
