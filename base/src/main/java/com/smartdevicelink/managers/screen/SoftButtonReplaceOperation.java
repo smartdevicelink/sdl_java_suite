@@ -56,7 +56,7 @@ class SoftButtonReplaceOperation extends Task {
         // Check the state of our images
         if (!supportsSoftButtonImages()) {
             // We don't support images at all
-            DebugTool.logInfo(TAG, "Soft button images are not supported. Attempting to send text-only soft buttons. If any button does not contain text, no buttons will be sent.");
+            DebugTool.logWarning(TAG, "Soft button images are not supported. Attempting to send text-only soft buttons. If any button does not contain text, no buttons will be sent.");
 
             // Send text buttons if all the soft buttons have text
             sendCurrentStateTextOnlySoftButtons(new CompletionListener() {
