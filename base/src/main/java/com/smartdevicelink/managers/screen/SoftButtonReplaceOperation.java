@@ -276,15 +276,18 @@ class SoftButtonReplaceOperation extends Task {
                 return;
             }
 
-            // We should create a new softButtonObject rather than modifying the original one
-            SoftButton textAndStaticImageOnlySoftButton = new SoftButton(SoftButtonType.SBT_TEXT, softButton.getSoftButtonID());
-            if (softButton.getImage() != null && softButton.getImage().getImageType() == ImageType.STATIC) {
+
+            if (softButton.getImage() != null && softButton.getImage().getImageType() == ImageType.DYNAMIC) {
+                // We should create a new softButtonObject rather than modifying the original one
+                SoftButton textAndStaticImageOnlySoftButton = new SoftButton(SoftButtonType.SBT_TEXT, softButton.getSoftButtonID());
+                textAndStaticImageOnlySoftButton.setText(softButton.getText());
+                textAndStaticImageOnlySoftButton.setSystemAction(softButton.getSystemAction());
+                textAndStaticImageOnlySoftButton.setIsHighlighted(softButton.getIsHighlighted());
                 textAndStaticImageOnlySoftButton.setImage(softButton.getImage());
+                textButtons.add(textAndStaticImageOnlySoftButton);
+            } else {
+                textButtons.add(softButton);
             }
-            textAndStaticImageOnlySoftButton.setText(softButton.getText());
-            textAndStaticImageOnlySoftButton.setSystemAction(softButton.getSystemAction());
-            textAndStaticImageOnlySoftButton.setIsHighlighted(softButton.getIsHighlighted());
-            textButtons.add(textAndStaticImageOnlySoftButton);
         }
 
         Show show = new Show();
