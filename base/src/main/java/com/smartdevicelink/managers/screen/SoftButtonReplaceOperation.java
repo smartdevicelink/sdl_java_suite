@@ -10,6 +10,7 @@ import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.DebugTool;
@@ -55,7 +56,7 @@ class SoftButtonReplaceOperation extends Task {
         // Check the state of our images
         if (!supportsSoftButtonImages()) {
             // We don't support images at all
-            DebugTool.logWarning(TAG, "Soft button images are not supported. Attempting to send text-only soft buttons. If any button does not contain text, no buttons will be sent.");
+            DebugTool.logInfo(TAG, "Soft button images are not supported. Attempting to send text-only soft buttons. If any button does not contain text, no buttons will be sent.");
 
             // Send text buttons if all the soft buttons have text
             sendCurrentStateTextOnlySoftButtons(new CompletionListener() {
@@ -67,6 +68,18 @@ class SoftButtonReplaceOperation extends Task {
                     onFinished();
                 }
             });
+        } else if (!supportsDynamicSoftButtonImages()) {
+            DebugTool.logInfo(TAG, "Soft button images are not supported. Attempting to send text and static image only soft buttons. If any button does not contain text and/or a static image, no buttons will be sent.");
+            sendCurrentStateStaticImageOnlySoftButtons(new CompletionListener() {
+                @Override
+                public void onComplete(boolean success) {
+                    if (!success) {
+                        DebugTool.logError(TAG, "Buttons will not be sent because the module does not support dynamic images and some of the buttons do not have text or static images");
+                    }
+                    onFinished();
+                }
+            });
+
         } else if (currentStateHasImages() && !allCurrentStateImagesAreUploaded()) {
             // If there are images that aren't uploaded
             // Send text buttons if all the soft buttons have text
@@ -125,6 +138,13 @@ class SoftButtonReplaceOperation extends Task {
 
         if (initialStatesToBeUploaded.isEmpty()) {
             DebugTool.logInfo(TAG, "No initial state artworks to upload");
+            if (completionListener != null) {
+                completionListener.onComplete(false);
+            }
+            return;
+        }
+        if (!supportsDynamicSoftButtonImages()) {
+            DebugTool.logInfo(TAG, "Head unit does not support dynamic images, skipping upload");
             if (completionListener != null) {
                 completionListener.onComplete(false);
             }
@@ -238,6 +258,56 @@ class SoftButtonReplaceOperation extends Task {
         }
     }
 
+    // Send soft buttons for the current state that only contain text and static images only, if possible.
+    private void sendCurrentStateStaticImageOnlySoftButtons(final CompletionListener completionListener) {
+        if (getState() == Task.CANCELED) {
+            onFinished();
+        }
+
+        DebugTool.logInfo(TAG, "Preparing to send text and static image only soft buttons");
+        List<SoftButton> textButtons = new ArrayList<>();
+        for (SoftButtonObject softButtonObject : softButtonObjects) {
+            SoftButton softButton = softButtonObject.getCurrentStateSoftButton();
+            if (softButton.getText() == null && softButton.getImage() != null && softButton.getImage().getImageType() == ImageType.DYNAMIC) {
+                DebugTool.logWarning(TAG, "Attempted to create text and static image only buttons, but some buttons don't support text and have dynamic images, so no soft buttons will be sent.");
+                if (completionListener != null) {
+                    completionListener.onComplete(false);
+                }
+                return;
+            }
+
+            // We should create a new softButtonObject rather than modifying the original one
+            SoftButton textAndStaticImageOnlySoftButton = new SoftButton(SoftButtonType.SBT_TEXT, softButton.getSoftButtonID());
+            if (softButton.getImage() != null && softButton.getImage().getImageType() == ImageType.STATIC) {
+                textAndStaticImageOnlySoftButton.setImage(softButton.getImage());
+            }
+            textAndStaticImageOnlySoftButton.setText(softButton.getText());
+            textAndStaticImageOnlySoftButton.setSystemAction(softButton.getSystemAction());
+            textAndStaticImageOnlySoftButton.setIsHighlighted(softButton.getIsHighlighted());
+            textButtons.add(textAndStaticImageOnlySoftButton);
+        }
+
+        Show show = new Show();
+        show.setOnRPCResponseListener(new OnRPCResponseListener() {
+            @Override
+            public void onResponse(int correlationId, RPCResponse response) {
+                if (response.getSuccess()) {
+                    DebugTool.logInfo(TAG, "Finished sending text and static image only soft buttons");
+                } else {
+                    DebugTool.logWarning(TAG, "Failed to update soft buttons with text and static image only buttons");
+                }
+                if (completionListener != null) {
+                    completionListener.onComplete(response.getSuccess());
+                }
+            }
+        });
+        show.setMainField1(currentMainField1);
+        show.setSoftButtons(textButtons);
+        if (internalInterface.get() != null) {
+            internalInterface.get().sendRPC(show);
+        }
+    }
+
 
     // Returns text soft buttons representing the current states of the button objects, or returns if _any_ of the buttons' current states are image only buttons.
     private void sendCurrentStateTextOnlySoftButtons(final CompletionListener completionListener) {
@@ -305,8 +375,12 @@ class SoftButtonReplaceOperation extends Task {
         return true;
     }
 
-    private boolean supportsSoftButtonImages() {
+    private boolean supportsDynamicSoftButtonImages() {
         return softButtonCapabilities != null && Boolean.TRUE.equals(isGraphicSupported) && Boolean.TRUE.equals(softButtonCapabilities.getImageSupported());
+    }
+
+    private boolean supportsSoftButtonImages() {
+        return softButtonCapabilities != null && Boolean.TRUE.equals(softButtonCapabilities.getImageSupported());
     }
 
     void setCurrentMainField1(String currentMainField1) {
