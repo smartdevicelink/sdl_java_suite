@@ -527,4 +527,17 @@ public class SoftButtonManagerTests {
         softButtonManager.setSoftButtonObjects(Arrays.asList(softButtonObject1, softButtonObject2));
         assertEquals("SoftButtonManager is uploading artwork, when graphic is not supported", 0, fileManagerUploadArtworksListenerCalledCounter);
     }
+
+    @Test
+    public void testSoftButtonManagerDynamicImageNotSupportedNoText() {
+        softButtonManager.isGraphicSupported = false;
+        fileManagerUploadArtworksListenerCalledCounter = 0;
+        internalInterfaceSendRPCListenerCalledCounter = 0;
+
+        SoftButtonState softButtonState = new SoftButtonState("testState", null, new SdlArtwork("image", FileType.GRAPHIC_PNG, 1, true));
+        SoftButtonObject softButtonObject = new SoftButtonObject("obj1", softButtonState, null);
+
+        softButtonManager.setSoftButtonObjects(Arrays.asList(softButtonObject));
+        assertEquals("SoftButtonManager is uploading artwork, when graphic is not supported", 0, fileManagerUploadArtworksListenerCalledCounter);
+    }
 }
