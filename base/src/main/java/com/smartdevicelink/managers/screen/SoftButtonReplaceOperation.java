@@ -31,16 +31,16 @@ class SoftButtonReplaceOperation extends Task {
     private final SoftButtonCapabilities softButtonCapabilities;
     private final CopyOnWriteArrayList<SoftButtonObject> softButtonObjects;
     private String currentMainField1;
-    private Boolean isGraphicSupported;
+    private Boolean isDynamicGraphicSupported;
 
-    SoftButtonReplaceOperation(ISdl internalInterface, FileManager fileManager, SoftButtonCapabilities softButtonCapabilities, CopyOnWriteArrayList<SoftButtonObject> softButtonObjects, String currentMainField1, Boolean isGraphicSupported) {
+    SoftButtonReplaceOperation(ISdl internalInterface, FileManager fileManager, SoftButtonCapabilities softButtonCapabilities, CopyOnWriteArrayList<SoftButtonObject> softButtonObjects, String currentMainField1, Boolean isDynamicGraphicSupported) {
         super("SoftButtonReplaceOperation");
         this.internalInterface = new WeakReference<>(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
         this.softButtonCapabilities = softButtonCapabilities;
         this.softButtonObjects = softButtonObjects;
         this.currentMainField1 = currentMainField1;
-        this.isGraphicSupported = isGraphicSupported;
+        this.isDynamicGraphicSupported = isDynamicGraphicSupported;
     }
 
     @Override
@@ -379,7 +379,7 @@ class SoftButtonReplaceOperation extends Task {
     }
 
     private boolean supportsDynamicSoftButtonImages() {
-        return softButtonCapabilities != null && Boolean.TRUE.equals(isGraphicSupported) && Boolean.TRUE.equals(softButtonCapabilities.getImageSupported());
+        return softButtonCapabilities != null && Boolean.TRUE.equals(isDynamicGraphicSupported) && Boolean.TRUE.equals(softButtonCapabilities.getImageSupported());
     }
 
     private boolean supportsSoftButtonImages() {

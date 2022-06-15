@@ -140,7 +140,7 @@ public class SoftButtonManagerTests {
         taskmaster.start();
         when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
         softButtonManager = new SoftButtonManager(internalInterface, fileManager);
-        softButtonManager.isGraphicSupported = true;
+        softButtonManager.isDynamicGraphicSupported = true;
 
 
         // When internalInterface.sendRPC() is called inside SoftButtonManager:
@@ -520,7 +520,7 @@ public class SoftButtonManagerTests {
 
     @Test
     public void testSoftButtonManagerGraphicNotSupported() {
-        softButtonManager.isGraphicSupported = false;
+        softButtonManager.isDynamicGraphicSupported = false;
         fileManagerUploadArtworksListenerCalledCounter = 0;
         internalInterfaceSendRPCListenerCalledCounter = 0;
 
@@ -530,7 +530,7 @@ public class SoftButtonManagerTests {
 
     @Test
     public void testSoftButtonManagerDynamicImageNotSupportedNoText() {
-        softButtonManager.isGraphicSupported = false;
+        softButtonManager.isDynamicGraphicSupported = false;
         fileManagerUploadArtworksListenerCalledCounter = 0;
         internalInterfaceSendRPCListenerCalledCounter = 0;
 

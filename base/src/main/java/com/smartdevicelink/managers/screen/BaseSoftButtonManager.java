@@ -71,7 +71,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
     private static final String TAG = "BaseSoftButtonManager";
     private final WeakReference<FileManager> fileManager;
     SoftButtonCapabilities softButtonCapabilities;
-    boolean isGraphicSupported;
+    boolean isDynamicGraphicSupported;
     private CopyOnWriteArrayList<SoftButtonObject> softButtonObjects;
     private HMILevel currentHMILevel;
     private final OnSystemCapabilityListener onDisplayCapabilityListener;
@@ -104,7 +104,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         if (internalInterface.getSystemCapabilityManager() != null) {
             displayCapabilities = (DisplayCapabilities) this.internalInterface.getSystemCapabilityManager().getCapability(SystemCapabilityType.DISPLAY, null, false);
         }
-        isGraphicSupported = (displayCapabilities != null && displayCapabilities.getGraphicSupported() != null) ? displayCapabilities.getGraphicSupported() : true;
+        isDynamicGraphicSupported = (displayCapabilities != null && displayCapabilities.getGraphicSupported() != null) ? displayCapabilities.getGraphicSupported() : true;
 
         this.updateListener = new SoftButtonObject.UpdateListener() {
             @Override
@@ -158,7 +158,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
                 // Auto-send an updated Show if we have new capabilities
                 if (softButtonObjects != null && !softButtonObjects.isEmpty() && softButtonCapabilities != null && !softButtonCapabilitiesEquals(oldSoftButtonCapabilities, softButtonCapabilities)) {
-                    SoftButtonReplaceOperation operation = new SoftButtonReplaceOperation(internalInterface, fileManager, softButtonCapabilities, softButtonObjects, getCurrentMainField1(), isGraphicSupported);
+                    SoftButtonReplaceOperation operation = new SoftButtonReplaceOperation(internalInterface, fileManager, softButtonCapabilities, softButtonObjects, getCurrentMainField1(), isDynamicGraphicSupported);
                     transactionQueue.add(operation, false);
                 }
             }
@@ -317,7 +317,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         this.softButtonObjects = softButtonObjects;
 
         // We only need to pass the first softButtonCapabilities in the array due to the fact that all soft button capabilities are the same (i.e. there is no way to assign a softButtonCapabilities to a specific soft button).
-        SoftButtonReplaceOperation operation = new SoftButtonReplaceOperation(internalInterface, fileManager.get(), softButtonCapabilities, softButtonObjects, getCurrentMainField1(), isGraphicSupported);
+        SoftButtonReplaceOperation operation = new SoftButtonReplaceOperation(internalInterface, fileManager.get(), softButtonCapabilities, softButtonObjects, getCurrentMainField1(), isDynamicGraphicSupported);
 
         if (batchUpdates) {
             batchQueue.clear();
