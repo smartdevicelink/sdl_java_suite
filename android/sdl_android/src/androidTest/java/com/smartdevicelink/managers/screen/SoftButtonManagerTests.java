@@ -140,6 +140,7 @@ public class SoftButtonManagerTests {
         taskmaster.start();
         when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
         softButtonManager = new SoftButtonManager(internalInterface, fileManager);
+        softButtonManager.isDynamicGraphicSupported = true;
 
 
         // When internalInterface.sendRPC() is called inside SoftButtonManager:
@@ -515,5 +516,28 @@ public class SoftButtonManagerTests {
         softButtonObject.setStates(stateListDuplicateNames);
 
         assertEquals(stateListUnique, softButtonObject.getStates());
+    }
+
+    @Test
+    public void testSoftButtonManagerGraphicNotSupported() {
+        softButtonManager.isDynamicGraphicSupported = false;
+        fileManagerUploadArtworksListenerCalledCounter = 0;
+        internalInterfaceSendRPCListenerCalledCounter = 0;
+
+        softButtonManager.setSoftButtonObjects(Arrays.asList(softButtonObject1, softButtonObject2));
+        assertEquals("SoftButtonManager is uploading artwork, when graphic is not supported", 0, fileManagerUploadArtworksListenerCalledCounter);
+    }
+
+    @Test
+    public void testSoftButtonManagerDynamicImageNotSupportedNoText() {
+        softButtonManager.isDynamicGraphicSupported = false;
+        fileManagerUploadArtworksListenerCalledCounter = 0;
+        internalInterfaceSendRPCListenerCalledCounter = 0;
+
+        SoftButtonState softButtonState = new SoftButtonState("testState", null, new SdlArtwork("image", FileType.GRAPHIC_PNG, 1, true));
+        SoftButtonObject softButtonObject = new SoftButtonObject("obj1", softButtonState, null);
+
+        softButtonManager.setSoftButtonObjects(Arrays.asList(softButtonObject));
+        assertEquals("SoftButtonManager is uploading artwork, when graphic is not supported", 0, fileManagerUploadArtworksListenerCalledCounter);
     }
 }
