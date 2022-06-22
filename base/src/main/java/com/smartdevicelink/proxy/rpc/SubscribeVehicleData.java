@@ -119,16 +119,16 @@ import java.util.Hashtable;
  * 			<td>The external temperature in degrees celsius. This parameter is deprecated starting RPCSpec 7.1.0, please see climateData.</td>
  *                 <td>N</td>
  *                 <td>Subscribable</td>
- * 			<td>
- * 				@since SmartDeviceLink 2.0.0
- * 				@property-deprecated in SmartDeviceLink 7.1.0
- * 			</td>
+ * 			<td>SmartDeviceLink 2.0.0
+ * 			<br>
+ * 			Deprecated in SmartDeviceLink 7.1.0</td>
  * 		</tr>
  *  	<tr>
  *      	<td>gearStatus</td>
  *      	<td>Boolean</td>
  *      	<td>See GearStatus</td>
  *      	<td>N</td>
+ *       <td></td>
  *      	<td>SmartDeviceLink 7.0.0</td>
  *  	</tr>
  *  	<tr>
@@ -136,6 +136,7 @@ import java.util.Hashtable;
  *      	<td>Boolean</td>
  *      	<td>See PRNDL. This parameter is deprecated and it is now covered in `gearStatus`</td>
  *      	<td>N</td>
+ *       <td></td>
  *      	<td>SmartDeviceLink 7.0.0</td>
  *  </tr>
  * 		<tr>
@@ -295,6 +296,7 @@ import java.util.Hashtable;
  *          <td>Boolean</td>
  *          <td>To indicate whether driver hands are off the steering wheel</td>
  *          <td>N</td>
+ *          <td></td>
  *          <td>SmartDeviceLink 7.0.0</td>
  *      </tr>
  *      <tr>
@@ -302,6 +304,7 @@ import java.util.Hashtable;
  *          <td>Boolean</td>
  *          <td>See WindowStatus</td>
  *          <td>N</td>
+ *          <td></td>
  *          <td>SmartDeviceLink 7.0.0</td>
  *      </tr>
  * 	    <tr>
@@ -309,6 +312,7 @@ import java.util.Hashtable;
  * 		    <td>Boolean</td>
  * 		    <td>See StabilityControlsStatus</td>
  * 		    <td>N</td>
+ * 		    <td></td>
  * 		    <td>SmartDeviceLink 7.0.0</td>
  * 		</tr>
  *      <tr>
@@ -317,9 +321,7 @@ import java.util.Hashtable;
  *          <td>See ClimateData</td>
  *          <td>N</td>
  *          <td></td>
- *          <td>
- *              @since SmartDeviceLink 7.1.0
- *          </td>
+ *          <td>SmartDeviceLink 7.1.0</td>
  *      </tr>
  * 		<tr>
  * 		    <td>seatOccupancy</td>
@@ -327,9 +329,7 @@ import java.util.Hashtable;
  * 		    <td>See SeatOccupancy</td>
  * 		    <td>N</td>
  * 		    <td></td>
- * 		    <td>
- * 		    @since SmartDeviceLink 7.1.0
- * 		    </td>
+ * 		    <td>SmartDeviceLink 7.1.0</td>
  * 		</tr>
  *   </table>
  *

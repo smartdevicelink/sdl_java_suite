@@ -120,10 +120,9 @@ import java.util.List;
  * 			<td>Text value for MediaClock field. Has to be properly formatted by Mobile App according to the module's capabilities. If this text is set, any automatic media clock updates previously set with SetMediaClockTimer will be stopped.</td>
  *                 <td>N</td>
  * 			<td>{"string_min_length": 0, "string_max_length": 500}</td>
- * 			<td>
- * 			    @since SmartDeviceLink 1.0.0
- * 			    @property-deprecated in SmartDeviceLink 7.1.0
- * 			</td>
+ * 			<td>SmartDeviceLink 1.0.0
+ * 			    <br>
+ * 			    Deprecated in SmartDeviceLink 7.1.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>mediaTrack</td>
@@ -169,8 +168,8 @@ import java.util.List;
  * 			<td>templateTitle</td>
  * 			<td>String</td>
  * 			<td>The title of the new template that will be displayed.</td>
+ * 		   <td>N</td>
  * 			<td><p>How this will be displayed is dependent on the OEM design and implementation of the template..</p>Minsize: 0; Maxsize: 100</td>
- * 			<td>N</td>
  * 			<td>SmartDeviceLink 6.0.0</td>
  * 		</tr>
  *

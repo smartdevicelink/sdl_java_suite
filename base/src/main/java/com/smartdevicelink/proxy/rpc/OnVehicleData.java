@@ -144,13 +144,7 @@ import java.util.List;
  *          <td>GearStatus</td>
  *          <td>See GearStatus</td>
  *          <td>N</td>
- *          <td>SmartDeviceLink 7.0.0</td>
- *      </tr>
- *      <tr>
- *          <td>gearStatus</td>
- *          <td>GearStatus</td>
- *          <td>See GearStatus</td>
- *          <td>N</td>
+ *             <td></td>
  *          <td>SmartDeviceLink 7.0.0</td>
  *      </tr>
  *      <tr>
@@ -158,6 +152,7 @@ import java.util.List;
  *          <td>PRNDL</td>
  *          <td>See PRNDL. This parameter is deprecated and it is now covered in `gearStatus`</td>
  *          <td>N</td>
+ *             <td></td>
  *          <td>SmartDeviceLink 7.0.0</td>
  *      </tr>
  * 		<tr>
@@ -310,6 +305,7 @@ import java.util.List;
  *          <td>Boolean</td>
  *          <td>To indicate whether driver hands are off the steering wheel</td>
  *          <td>N</td>
+ *            <td></td>
  *          <td>SmartDeviceLink 7.0.0</td>
  *      </tr>
  *      <tr>
@@ -317,6 +313,7 @@ import java.util.List;
  *          <td>Boolean</td>
  *          <td>See WindowStatus</td>
  *          <td>N</td>
+ *             <td></td>
  *          <td>SmartDeviceLink 7.0.0</td>
  *      </tr>
  *      <tr>
@@ -334,6 +331,7 @@ import java.util.List;
  *          <td>StabilityControlsStatus</td>
  *          <td>See StabilityControlsStatus</td>
  *          <td>N</td>
+ *             <td></td>
  *          <td>SmartDeviceLink 7.0.0</td>
  *  </tr>
  *  <tr>
