@@ -122,6 +122,7 @@ import java.util.List;
  * 			<td>{"string_min_length": 0, "string_max_length": 500}</td>
  * 			<td>SmartDeviceLink 1.0.0
  * 			    <br>
+ * 			    <br>
  * 			    Deprecated in SmartDeviceLink 7.1.0</td>
  * 		</tr>
  * 		<tr>
