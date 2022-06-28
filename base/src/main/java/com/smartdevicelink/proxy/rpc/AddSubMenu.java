@@ -128,7 +128,7 @@ import java.util.Hashtable;
  *          <td>Optional secondary image struct for sub-menu cell</td>
  *          <td>N</td>
  *          <td></td>
- *          <td> SmartDeviceLink 7.1.0 </td>
+ *          <td>SmartDeviceLink 7.1.0</td>
  *      </tr>
  *  </table>
  *  <b>Response</b>
