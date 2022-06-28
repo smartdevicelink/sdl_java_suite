@@ -121,7 +121,7 @@ import java.util.List;
  * 		<tr>
  * 			<td>rearRightDoorAjar</td>
  * 			<td>Boolean</td>
- * 			<td>true</td>
+ * 			<td>false</td>
  * 			<td>References signal "DrStatRr_B_Actl".</td>
  * 			<td>
  * 				SmartDeviceLink 2.0.0
