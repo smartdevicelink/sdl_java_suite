@@ -107,7 +107,7 @@ import java.util.List;
  * 			<td>KeyboardInputMask</td>
  * 			<td>false</td>
  * 			<td>
- * 				@since SmartDeviceLink 7.1.0
+ * 				SmartDeviceLink 7.1.0
  * 			</td>
  * 			<td>Allows an app to mask entered characters on HMI</td>
  * 		</tr>
@@ -116,7 +116,7 @@ import java.util.List;
  * 			<td>List<String></td>
  * 			<td>false</td>
  * 			<td>
- * 				@since SmartDeviceLink 7.1.0
+ * 				SmartDeviceLink 7.1.0
  * 			</td>
  * 			<td>
  * 				Array of special characters to show in customizable keys. If omitted, keyboard will show default special characters 
@@ -245,7 +245,7 @@ public class KeyboardProperties extends RPCStruct {
      * Sets the maskInputCharacters.
      *
      * @param maskInputCharacters Allows an app to mask entered characters on HMI
-     * @since SmartDeviceLink 7.1.0
+     * SmartDeviceLink 7.1.0
      */
     public KeyboardProperties setMaskInputCharacters(KeyboardInputMask maskInputCharacters) {
         setValue(KEY_MASK_INPUT_CHARACTERS, maskInputCharacters);
@@ -268,7 +268,7 @@ public class KeyboardProperties extends RPCStruct {
      * @param customKeys Array of special characters to show in customizable keys. If omitted, keyboard will show
      * default special characters
      * {"string_max_length": 1, "string_min_length": 1, "array_max_size": 10, "array_min_size": 1}
-     * @since SmartDeviceLink 7.1.0
+     * SmartDeviceLink 7.1.0
      */
     public KeyboardProperties setCustomKeys(List<String> customKeys) {
         setValue(KEY_CUSTOM_KEYS, customKeys);
@@ -281,7 +281,7 @@ public class KeyboardProperties extends RPCStruct {
      * @return List<String> Array of special characters to show in customizable keys. If omitted, keyboard will show
      * default special characters
      * {"string_max_length": 1, "string_min_length": 1, "array_max_size": 10, "array_min_size": 1}
-     * @since SmartDeviceLink 7.1.0
+     * SmartDeviceLink 7.1.0
      */
     @SuppressWarnings("unchecked")
     public List<String> getCustomKeys() {
