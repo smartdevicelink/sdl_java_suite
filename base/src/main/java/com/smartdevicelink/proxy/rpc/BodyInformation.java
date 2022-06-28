@@ -109,7 +109,7 @@ import java.util.List;
  * 		<tr>
  * 			<td>rearLeftDoorAjar</td>
  * 			<td>Boolean</td>
- * 			<td>true</td>
+ * 			<td>false</td>
  * 			<td>The information about the park brake: - true, if active - false if not.</td>
  * 			<td>
  * 				SmartDeviceLink 2.0.0
