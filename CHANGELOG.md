@@ -11,3 +11,5 @@
 
 - [ScreenManager tries to upload images even if they are not supported (SDL 2.0)](https://github.com/smartdevicelink/sdl_java_suite/issues/1738)
 
+- [Fix formatting of many tables within the documentation](https://github.com/smartdevicelink/sdl_java_suite/pull/1810)
+
