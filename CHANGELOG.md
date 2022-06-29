@@ -1,4 +1,4 @@
-# 5.4.0 Release Notes
+# 5.5.0 Release Notes
 
 ## Summary:
 ||Version|
@@ -7,51 +7,9 @@
 | **RPC** | 8.0.0
 | **Tested Targeting** | Android 31
 
-## Bug Fixes / Enhancements:
+## Bug Fixes:
 
-- [Video auto restarts streaming regardless if HMI level is streamable ](https://github.com/smartdevicelink/sdl_java_suite/issues/1807)
+- [ScreenManager tries to upload images even if they are not supported (SDL 2.0)](https://github.com/smartdevicelink/sdl_java_suite/issues/1738)
 
-- [Video Streaming Fails on Android 12 at Low Resolutions](https://github.com/smartdevicelink/sdl_java_suite/issues/1803)
-
-- [sdl_java_se uses deprecated testCompile in build.gradle](https://github.com/smartdevicelink/sdl_java_suite/issues/1805)
-
-- [Incorrect behavior and potential crashes in PresentAlertOperation.supportsSoftButtonImages()](https://github.com/smartdevicelink/sdl_java_suite/issues/1800)
-
-- [Bugfix/rs notification issue usb](https://github.com/smartdevicelink/sdl_java_suite/pull/1797)
-
-- [Attempting to Send Voice Command with No Strings Fails to Log Error](https://github.com/smartdevicelink/sdl_java_suite/issues/1798)
-
-- [Fix LCM to close down properly](https://github.com/smartdevicelink/sdl_java_suite/pull/1796)
-
-- [Cleanup/proposal sdl 0286 spacing](https://github.com/smartdevicelink/sdl_java_suite/pull/1782)
-
-- [API Reference Docs Typos](https://github.com/smartdevicelink/sdl_java_suite/issues/1792)
-
-- [Foreground Service Notifications can be delayed by 10 seconds](https://github.com/smartdevicelink/sdl_java_suite/issues/1733)
-
-- [Bluetooth Permission Requirements will change in Android 12](https://github.com/smartdevicelink/sdl_java_suite/issues/1732)
-
-- [[SDL 0345] Android 12 Issues](https://github.com/smartdevicelink/sdl_java_suite/issues/1794)
-
-- [SdlRouterService crashes if SDL app sets targetSdkVersion to 31, and running on Android 12](https://github.com/smartdevicelink/sdl_java_suite/issues/1751)
-
-- [Error Code is cut off from bulk data when reading a SEND_INTERNAL_ERROR query](https://github.com/smartdevicelink/sdl_java_suite/issues/1790)
-
-- [NPE crash in BaseLifecycleManager on checkLifecycleConfiguration](https://github.com/smartdevicelink/sdl_java_suite/issues/1783)
-
-- [NPE crash in SdlDeviceListener](https://github.com/smartdevicelink/sdl_java_suite/issues/1780)
-
-- [NPE crash in BaseLifecycleManager](https://github.com/smartdevicelink/sdl_java_suite/issues/1781)
-
-- [SoftButtonObject doesn't handle error states correctly](https://github.com/smartdevicelink/sdl_java_suite/issues/1774)
-
-- [ScrollableMessage.timeout units should be specified in documentation](https://github.com/smartdevicelink/sdl_java_suite/issues/1775)
-
-- [Incorrect SPP error notification presented to user](https://github.com/smartdevicelink/sdl_java_suite/issues/1661)
-
-- [SecurityQuery error notification payload not set](https://github.com/smartdevicelink/sdl_java_suite/issues/1753)
-
-- [Menu Manager won't send submenu cell images on RPC versions >= 5.0 && < 7.0 #2047](https://github.com/smartdevicelink/sdl_java_suite/issues/1756)
-
-- [GenerateSources gradle task in javaSE incorrectly reads the version from gradle.properties instead of VERSION file](https://github.com/smartdevicelink/sdl_java_suite/issues/1763)
+- [Fix formatting of many tables within the documentation](https://github.com/smartdevicelink/sdl_java_suite/pull/1810)
 

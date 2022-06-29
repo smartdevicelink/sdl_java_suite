@@ -99,12 +99,9 @@ import java.util.Hashtable;
  *          <td>countRate</td>
  *          <td>Float</td>
  *          <td>The value of this parameter is the amount that the media clock timer will advance per 1.0 seconds of real time. Values less than 1.0 will therefore advance the timer slower than real-time, while values greater than 1.0 will advance the timer faster than real-time.e.g. If this parameter is set to `0.5`, the timer will advance one second per two seconds real-time, or at 50% speed. If this parameter is set to `2.0`, the timer will advance two seconds per one second real-time, or at 200% speed.</td>
-
  *          <td>N</td>
  *          <td>{"num_min_value": 0.1, "num_max_value": 100.0}</td>
- *          <td>
- *             @since SmartDeviceLink 7.1.0
- *          </td>
+ *          <td>SmartDeviceLink 7.1.0</td>
  *      </tr>
  * 	    <tr>
  *          <td>forwardSeekIndicator</td>
@@ -112,9 +109,7 @@ import java.util.Hashtable;
  *          <td>Used to control the forward seek button to either skip forward a set amount of time or to the next track.</td>
  *          <td>N</td>
  *          <td></td>
- *          <td>
- *              @since SmartDeviceLink 7.1.0
- *          </td>
+ *          <td>SmartDeviceLink 7.1.0</td>
  *      </tr>
  *      <tr>
  *          <td>backSeekIndicator</td>
@@ -122,9 +117,7 @@ import java.util.Hashtable;
  *          <td>Used to control the forward seek button to either skip back a set amount of time or to the previous track.</td>
  *          <td>N</td>
  *          <td></td>
- *          <td>
- *              @since SmartDeviceLink 7.1.0
- *          </td>
+ *          <td>SmartDeviceLink 7.1.0</td>
  *      </tr>
  *
  *  </table>
@@ -142,7 +135,7 @@ import java.util.Hashtable;
  *   <p>   REJECTED </p>
  *    <p>  IGNORED </p>
  *
- * @since SmartDeviceLink 1.0
+ * SmartDeviceLink 1.0
  */
 public class SetMediaClockTimer extends RPCRequest {
     public static final String KEY_START_TIME = "startTime";

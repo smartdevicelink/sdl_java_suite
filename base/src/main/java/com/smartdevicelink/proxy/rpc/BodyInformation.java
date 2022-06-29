@@ -85,71 +85,79 @@ import java.util.List;
  * 		<tr>
  * 			<td>driverDoorAjar</td>
  * 			<td>Boolean</td>
- * 			<td>true</td>
+ * 			<td>false</td>
  * 			<td>The information about the park brake: - true, if active - false if not.</td>
  * 			<td>
- * 				@since SmartDeviceLink 2.0.0
- * 				@property-deprecated in SmartDeviceLink 7.1.0
+ * 				SmartDeviceLink 2.0.0
+ * 			 <br>
+ * 			 <br>
+ * 				Deprecated in SmartDeviceLink 7.1.0
  * 			</td>
  * 		</tr>
  * 		<tr>
  * 			<td>passengerDoorAjar</td>
  * 			<td>Boolean</td>
- * 			<td>true</td>
+ * 			<td>false</td>
  * 			<td>The information about the park brake: - true, if active - false if not.</td>
  * 			<td>
- * 				@since SmartDeviceLink 2.0.0
- * 				@property-deprecated in SmartDeviceLink 7.1.0
+ * 				SmartDeviceLink 2.0.0
+ * 			 <br>
+ * 			 <br>
+ * 				Deprecated in SmartDeviceLink 7.1.0
  * 			</td>
  * 		</tr>
  * 		<tr>
  * 			<td>rearLeftDoorAjar</td>
  * 			<td>Boolean</td>
- * 			<td>true</td>
+ * 			<td>false</td>
  * 			<td>The information about the park brake: - true, if active - false if not.</td>
  * 			<td>
- * 				@since SmartDeviceLink 2.0.0
- * 				@property-deprecated in SmartDeviceLink 7.1.0
+ * 				SmartDeviceLink 2.0.0
+ * 			 <br>
+ * 			 <br>
+ * 				Deprecated in SmartDeviceLink 7.1.0
  * 			</td>
  * 		</tr>
  * 		<tr>
  * 			<td>rearRightDoorAjar</td>
  * 			<td>Boolean</td>
- * 			<td>true</td>
+ * 			<td>false</td>
  * 			<td>References signal "DrStatRr_B_Actl".</td>
  * 			<td>
- * 				@since SmartDeviceLink 2.0.0
- * 				@property-deprecated in SmartDeviceLink 7.1.0
+ * 				SmartDeviceLink 2.0.0
+ * 			 <br>
+ * 			 <br>
+ * 				Deprecated in SmartDeviceLink 7.1.0
  * 			</td>
  * 		</tr>
  * 		<tr>
  * 			<td>doorStatuses</td>
  * 			<td>List<DoorStatus></td>
- * 			<td>Provides status for doors if Ajar/Closed/Locked</td>
- * 			<td>N</td>
- * 			<td>{"array_min_size": 0, "array_max_size": 100}</td>
+ * 			 <td>False</td>
+ * 			<td>Provides status for doors if Ajar/Closed/Locked
+ * 			{"array_min_size": 0, "array_max_size": 100}</td>
  * 			<td>
- * 				@since SmartDeviceLink 7.1.0
+ * 				SmartDeviceLink 7.1.0
  * 			</td>
  * 		</tr>
  * 		<tr>
  * 			<td>gateStatuses</td>
  * 			<td>List<GateStatus></td>
- * 			<td>Provides status for trunk/hood/etc. if Ajar/Closed/Locked</td>
- * 			<td>N</td>
- * 			<td>{"array_min_size": 0, "array_max_size": 100}</td>
+ * 			 <td>False</td>
+ * 			<td>Provides status for trunk/hood/etc. if Ajar/Closed/Locked
+ * 			{"array_min_size": 0, "array_max_size": 100}</td>
  * 			<td>
- * 				@since SmartDeviceLink 7.1.0
+ * 				SmartDeviceLink 7.1.0
  * 			</td>
  * 		</tr>
  * 		<tr>
  * 			<td>roofStatuses</td>
  * 			<td>List<RoofStatus></td>
- * 			<td>Provides status for roof/convertible roof/sunroof/moonroof etc., if Closed/Ajar/Removedetc.</td>
- * 			<td>N</td>
- * 			<td>{"array_min_size": 0, "array_max_size": 100}</td>
+ * 			<td>False</td>
+ * 			<td>Provides status for roof/convertible roof/sunroof/moonroof etc., if Closed/Ajar/			Removedetc.
+ * 			{"array_min_size": 0, "array_max_size": 100}</td>
  * 			<td>
- * 				@since SmartDeviceLink 7.1.0
+ * 				SmartDeviceLink 7.1.0
  * 			</td>
  * 		</tr>
  *  </table>

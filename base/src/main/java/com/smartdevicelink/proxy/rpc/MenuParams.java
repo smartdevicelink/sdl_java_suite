@@ -45,6 +45,7 @@ import java.util.Hashtable;
  * 			<th>Name</th>
  * 			<th>Type</th>
  * 			<th>Description</th>
+ * 		  <th>Req.</th>
  * 			<th>SmartDeviceLink Ver. Available</th>
  * 		</tr>
  * 		<tr>
@@ -57,6 +58,7 @@ import java.util.Hashtable;
  * 					<li>Max: 2000000000</li>
  * 					</ul>
  * 			</td>
+ * 		 <th></th>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * 		<tr>
@@ -71,6 +73,7 @@ import java.util.Hashtable;
  * 						<li>If this element is omitted, the entry will be added at the end of the parent menu.</li>
  * 					</ul>
  * 			</td>
+ * 		  <th></th>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  *     <tr>
@@ -82,26 +85,25 @@ import java.util.Hashtable;
  * 						<li>Max: 100</li>
  * 					</ul>
  * 			</td>
+ * 		 <th></th>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  *      <tr>
  *          <td>secondaryText</td>
  *          <td>String</td>
- *          <td>Optional secondary text to display</td>
+ *          <td>Optional secondary text to display <br><br> {"string_min_length": 1, "string_max_length": 500}</td>
  *          <td>N</td>
- *          <td>{"string_min_length": 1, "string_max_length": 500}</td>
  *          <td>
- *              @since SmartDeviceLink 7.1.0
+ *              SmartDeviceLink 7.1.0
  *          </td>
  *      </tr>
  *      <tr>
  *          <td>tertiaryText</td>
  *          <td>String</td>
- *          <td>Optional tertiary text to display</td>
+ *          <td>Optional tertiary text to display <br><br> {"string_min_length": 1, "string_max_length": 500}</td>
  *          <td>N</td>
- *          <td>{"string_min_length": 1, "string_max_length": 500}</td>
  *          <td>
- *              @since SmartDeviceLink 7.1.0
+ *             SmartDeviceLink 7.1.0
  *          </td>
  *      </tr>
  * </table>
