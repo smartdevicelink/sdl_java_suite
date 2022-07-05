@@ -58,7 +58,7 @@ import java.util.Hashtable;
  * 					<li>Max: 2000000000</li>
  * 					</ul>
  * 			</td>
- * 		 <th></th>
+ * 		    <td>N</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * 		<tr>
@@ -73,7 +73,7 @@ import java.util.Hashtable;
  * 						<li>If this element is omitted, the entry will be added at the end of the parent menu.</li>
  * 					</ul>
  * 			</td>
- * 		  <th></th>
+ * 		    <td>N</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  *     <tr>
@@ -85,7 +85,7 @@ import java.util.Hashtable;
  * 						<li>Max: 100</li>
  * 					</ul>
  * 			</td>
- * 		 <th></th>
+ * 		    <td>Y</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  *      <tr>

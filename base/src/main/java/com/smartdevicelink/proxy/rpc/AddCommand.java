@@ -86,15 +86,15 @@ import java.util.List;
  * 			<td>SmartDeviceLink 1.0</td>
  * 		<tr>
  * 			<td>menuParams</td>
- * 			<td>ButtonName</td>
+ * 			<td>MenuParams</td>
  * 			<td>Name of the button to unsubscribe.</td>
- *                 <td>Y</td>
+ *                 <td>N</td>
  * 			<td></td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>vrCommands</td>
- * 			<td>String</td>
+ * 			<td>List<String></td>
  * 			<td><p>An array of strings to be used as VR synonyms for this command.</p>    	<p>If this array is provided, it may not be empty.</p></td>
  *                 <td>N</td>
  * 			<td>minsize:1; maxsize:100</td>
