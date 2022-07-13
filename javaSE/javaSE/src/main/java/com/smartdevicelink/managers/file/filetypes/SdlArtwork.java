@@ -158,11 +158,6 @@ public class SdlArtwork extends SdlFile implements Cloneable {
      */
     @Override
     public SdlArtwork clone() {
-        SdlArtwork artwork = (SdlArtwork) super.clone();
-        if (artwork != null) {
-            artwork.imageRPC = artwork.createImageRPC();
-            return artwork;
-        }
-        return null;
+        return (SdlArtwork) super.clone();
     }
 }
