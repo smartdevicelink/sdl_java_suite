@@ -94,7 +94,7 @@ import java.util.Hashtable;
  * 			<td>menuLayout</td>
  * 			<td>MenuLayout</td>
  * 			<td>Sets the layout of the submenu screen.</td>
- * 			<td></td>
+ * 			<td>N</td>
  * 			<td></td>
  * 			<td>SmartDeviceLink 6.0</td>
  * 		</tr>

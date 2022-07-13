@@ -151,7 +151,7 @@ import java.util.List;
  * 		</tr>
  * 		<tr>
  * 			<td>softButtons</td>
- * 			<td>SoftButton</td>
+ * 			<td>List<SoftButton></td>
  * 			<td>Soft buttons as defined by the App</td>
  *                 <td>N</td>
  * 			<td><p>If omitted on supported displays, the currently displayed SoftButton values will not change.</p>Array Minsize: 0; Array Maxsize: 8</td>

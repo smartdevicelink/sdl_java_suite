@@ -93,7 +93,7 @@ import java.util.List;
  * 		</tr>
  * 		<tr>
  * 			<td>fuelLevel</td>
- * 			<td>Boolean</td>
+ * 			<td>Double</td>
  * 			<td>The fuel level in the tank (percentage). This parameter is deprecated starting RPC Spec7.0, please see fuelRange.</td>
  *                 <td>N</td>
  * 			<td>Subscribable</td>
@@ -101,7 +101,7 @@ import java.util.List;
  * 		</tr>
  * 		<tr>
  * 			<td>fuelLevel_State</td>
- * 			<td>Boolean</td>
+ * 			<td>ComponentVolumeStatus</td>
  * 			<td>The fuel level state. This parameter is deprecated starting RPC Spec 7.0, please see fuelRange.</td>
  *                 <td>N</td>
  * 			<td>Subscribable</td>
@@ -109,7 +109,7 @@ import java.util.List;
  * 		</tr>
  * 		<tr>
  * 			<td>fuelRange</td>
- * 			<td>Boolean</td>
+ * 			<td>List<FuelRange></td>
  * 			<td>The fuel type, estimated range in KM, fuel level/capacity and fuel level state for the vehicle. See struct FuelRange for details.</td>
  * 			<td>N</td>
  * 			<td>{"array_min_size": 0, "array_max_size": 100}</td>
@@ -310,7 +310,7 @@ import java.util.List;
  *      </tr>
  *      <tr>
  *          <td>windowStatus</td>
- *          <td>Boolean</td>
+ *          <td>List<WindowStatus></td>
  *          <td>See WindowStatus</td>
  *          <td>N</td>
  *             <td></td>
