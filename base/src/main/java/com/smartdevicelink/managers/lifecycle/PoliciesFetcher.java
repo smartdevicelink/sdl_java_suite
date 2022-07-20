@@ -40,6 +40,7 @@ import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.util.DebugTool;
 
+import javax.net.ssl.SSLPeerUnverifiedException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -159,15 +160,19 @@ class PoliciesFetcher {
                 return null;
             }
 
-            DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream());
-            if (RequestType.HTTP.equals(msg.getRequestType())) {
-                wr.write(msg.getBulkData());
-            } else {
-                wr.writeBytes(valid_json);
-            }
+            try {
+                DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream());
+                if (RequestType.HTTP.equals(msg.getRequestType())) {
+                    wr.write(msg.getBulkData());
+                } else {
+                    wr.writeBytes(valid_json);
+                }
 
-            wr.flush();
-            wr.close();
+                wr.flush();
+                wr.close();
+            } catch (SSLPeerUnverifiedException exception) {
+                exception.printStackTrace();
+            }
 
 
             long BeforeTime = System.currentTimeMillis();
