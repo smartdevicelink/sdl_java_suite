@@ -32,8 +32,10 @@
 
 package com.smartdevicelink.transport;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
+import android.app.ForegroundServiceStartNotAllowedException;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothProfile;
@@ -284,6 +286,8 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
 
         } catch (SecurityException e) {
             DebugTool.logError(TAG, "Security exception, process is bad");
+        } catch (@SuppressLint({"NewApi", "LocalSuppress"}) ForegroundServiceStartNotAllowedException e) {
+            DebugTool.logError(TAG, "Not allowed to start service in Foreground");
         }
     }
 
@@ -481,6 +485,8 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
         } catch (SecurityException e) {
             DebugTool.logError(TAG, "Security exception, process is bad");
             // This service could not be started
+        } catch (@SuppressLint({"NewApi", "LocalSuppress"}) ForegroundServiceStartNotAllowedException e) {
+            DebugTool.logError(TAG, "Not allowed to start service in Foreground");
         }
     }
 
