@@ -172,6 +172,11 @@ abstract class BaseSystemCapabilityManager {
         // if there are imageTypes in the response, we must assume graphics are supported
         convertedCapabilities.setGraphicSupported(defaultMainWindow.getImageTypeSupported() != null && defaultMainWindow.getImageTypeSupported().size() > 0);
 
+        if (cachedSystemCapabilities.containsKey(SystemCapabilityType.DISPLAY)) {
+            DisplayCapabilities displayCapabilitiesOld = (DisplayCapabilities) cachedSystemCapabilities.get(SystemCapabilityType.DISPLAY);
+            convertedCapabilities.setScreenParams(displayCapabilitiesOld.getScreenParams());
+
+        }
         return convertedCapabilities;
     }
 
