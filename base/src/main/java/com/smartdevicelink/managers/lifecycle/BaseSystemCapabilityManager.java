@@ -175,7 +175,6 @@ abstract class BaseSystemCapabilityManager {
         if (cachedSystemCapabilities.containsKey(SystemCapabilityType.DISPLAY)) {
             DisplayCapabilities displayCapabilitiesOld = (DisplayCapabilities) cachedSystemCapabilities.get(SystemCapabilityType.DISPLAY);
             convertedCapabilities.setScreenParams(displayCapabilitiesOld.getScreenParams());
-
         }
         return convertedCapabilities;
     }
