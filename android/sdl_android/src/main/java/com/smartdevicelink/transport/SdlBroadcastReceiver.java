@@ -34,6 +34,8 @@ package com.smartdevicelink.transport;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
+import android.app.ForegroundServiceStartNotAllowedException;
+import android.app.ServiceStartNotAllowedException;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothProfile;
@@ -282,8 +284,8 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
             restart.putExtra(LOCAL_ROUTER_SERVICE_DID_START_OWN, true);
             context.sendBroadcast(restart);
 
-        } catch (SecurityException e) {
-            DebugTool.logError(TAG, "Security exception, process is bad");
+        } catch (SecurityException | IllegalStateException e) {
+            handleStartServiceException(e);
         }
     }
 
@@ -478,9 +480,8 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
             } else {
                 context.startService(intent);
             }
-        } catch (SecurityException e) {
-            DebugTool.logError(TAG, "Security exception, process is bad");
-            // This service could not be started
+        } catch (SecurityException | IllegalStateException e) {
+            handleStartServiceException(e);
         }
     }
 
@@ -597,6 +598,22 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                     && (headSetState == BluetoothAdapter.STATE_CONNECTED || headSetState == BluetoothAdapter.STATE_CONNECTING));
         }
         return false;
+    }
+
+    private static void handleStartServiceException(Exception e) {
+        if (e instanceof SecurityException) {
+            DebugTool.logError(TAG, "Security exception, process is bad");
+            return;
+        } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
+            if (e instanceof ForegroundServiceStartNotAllowedException) {
+                DebugTool.logError(TAG, "Not allowed to start service in foreground");
+                return;
+            } else if (e instanceof ServiceStartNotAllowedException) {
+                DebugTool.logError(TAG, "Not allowed to start service in current state");
+                return;
+            }
+        }
+        DebugTool.logError(TAG, "Unable to start service for unknown reason");
     }
 
 
