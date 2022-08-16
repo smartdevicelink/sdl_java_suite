@@ -173,6 +173,7 @@ abstract class BaseSystemCapabilityManager {
         convertedCapabilities.setGraphicSupported(defaultMainWindow.getImageTypeSupported() != null && defaultMainWindow.getImageTypeSupported().size() > 0);
 
         if (cachedSystemCapabilities.containsKey(SystemCapabilityType.DISPLAY)) {
+            // Copied from the RAI response, since this parameter is not present in WindowCapability
             DisplayCapabilities displayCapabilitiesOld = (DisplayCapabilities) cachedSystemCapabilities.get(SystemCapabilityType.DISPLAY);
             convertedCapabilities.setScreenParams(displayCapabilitiesOld.getScreenParams());
         }
