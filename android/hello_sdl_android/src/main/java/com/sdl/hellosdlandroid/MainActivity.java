@@ -81,6 +81,10 @@ public class MainActivity extends AppCompatActivity {
                         } else if (permissions[i].equals(Manifest.permission.POST_NOTIFICATIONS)) {
                             boolean postNotificationGranted =
                                     grantResults[i] == PackageManager.PERMISSION_GRANTED;
+                            if (!postNotificationGranted) {
+                                // User denied permission, Notifications for SDL will not appear
+                                // on Android 13 devices.
+                            }
                         }
                     }
                 }
