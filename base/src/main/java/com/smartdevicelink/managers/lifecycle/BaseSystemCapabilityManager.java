@@ -176,7 +176,11 @@ abstract class BaseSystemCapabilityManager {
             // Copied from the RAI response, since this parameter is not present in WindowCapability
             DisplayCapabilities displayCapabilitiesOld = (DisplayCapabilities) cachedSystemCapabilities.get(SystemCapabilityType.DISPLAY);
             convertedCapabilities.setScreenParams(displayCapabilitiesOld.getScreenParams());
+            if (displayCapabilitiesOld.getMediaClockFormats() != null) {
+                convertedCapabilities.setMediaClockFormats(displayCapabilitiesOld.getMediaClockFormats());
+            }
         }
+
         return convertedCapabilities;
     }
 
@@ -251,6 +255,7 @@ abstract class BaseSystemCapabilityManager {
         for (WindowCapability windowCapability : display.getWindowCapabilities()) {
             int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
             if (currentWindowID == windowID) {
+                windowCapability.setWindowID(windowID);
                 return windowCapability;
             }
         }
