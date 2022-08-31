@@ -23,7 +23,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         if (BuildConfig.TRANSPORT.equals("MULTI") || BuildConfig.TRANSPORT.equals("MULTI_HB")) {
-            if (permissionsNeeded().length > 0) {
+            String[] permissionsNeeded = permissionsNeeded();
+            if (permissionsNeeded.length > 0) {
                 requestPermission(permissionsNeeded(), REQUEST_CODE);
                 if (checkBTPermission()) {
                     return;
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(this, permissions, REQUEST_CODE);
     }
 
-    private String[] permissionsNeeded() {
+    private @NonNull String[] permissionsNeeded() {
         ArrayList<String> result = new ArrayList<>();
         if (checkBTPermission()) {
             result.add(Manifest.permission.BLUETOOTH_CONNECT);
