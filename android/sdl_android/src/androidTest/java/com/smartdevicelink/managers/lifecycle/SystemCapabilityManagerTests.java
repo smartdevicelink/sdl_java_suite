@@ -176,7 +176,7 @@ public class SystemCapabilityManagerTests {
         convertedCapabilities.setImageFields(defaultMainWindow.getImageFields());
         convertedCapabilities.setTemplatesAvailable(defaultMainWindow.getTemplatesAvailable());
         convertedCapabilities.setNumCustomPresetsAvailable(defaultMainWindow.getNumCustomPresetsAvailable());
-        convertedCapabilities.setMediaClockFormats(new ArrayList<MediaClockFormat>()); // mandatory field but can be empty
+        convertedCapabilities.setMediaClockFormats(TestValues.GENERAL_MEDIACLOCKFORMAT_LIST); // mandatory field but can be empty
         convertedCapabilities.setGraphicSupported(defaultMainWindow.getImageTypeSupported().contains(ImageType.DYNAMIC));
         convertedCapabilities.setScreenParams(TestValues.GENERAL_SCREENPARAMS);
 
