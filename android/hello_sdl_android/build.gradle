@@ -8,6 +8,8 @@ android {
         targetSdkVersion 31
         versionCode 1
         versionName "1.0"
+        buildConfigField 'String', 'APP_TYPE', '"DEFAULT"'
+        buildConfigField 'String', 'REQUIRE_AUDIO_OUTPUT', '"FALSE"'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
@@ -41,6 +43,13 @@ android {
         tcp {
             buildConfigField 'String', 'TRANSPORT', '"TCP"'
             buildConfigField 'String', 'SECURITY', '"OFF"'
+        }
+        requiresAudioOutput {
+            buildConfigField 'String', 'TRANSPORT', '"MULTI"'
+            buildConfigField 'String', 'SECURITY', '"OFF"'
+            buildConfigField 'String', 'APP_TYPE', '"MEDIA"'
+            buildConfigField 'String', 'REQUIRE_AUDIO_OUTPUT', '"TRUE"'
+
         }
     }
     lintOptions {
