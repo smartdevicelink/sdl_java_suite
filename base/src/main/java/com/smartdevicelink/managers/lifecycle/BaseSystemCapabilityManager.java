@@ -255,6 +255,7 @@ abstract class BaseSystemCapabilityManager {
         for (WindowCapability windowCapability : display.getWindowCapabilities()) {
             int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
             if (currentWindowID == windowID) {
+                // A null windowID is assumed to be the DefaultWindow according to the spec, but that can be hard for developers to check, so set it explicitly.
                 windowCapability.setWindowID(windowID);
                 return windowCapability;
             }
