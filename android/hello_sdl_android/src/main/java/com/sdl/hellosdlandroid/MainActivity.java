@@ -25,9 +25,12 @@ public class MainActivity extends AppCompatActivity {
         if (BuildConfig.TRANSPORT.equals("MULTI") || BuildConfig.TRANSPORT.equals("MULTI_HB")) {
             String[] permissionsNeeded = permissionsNeeded();
             if (permissionsNeeded.length > 0) {
-                requestPermission(permissionsNeeded(), REQUEST_CODE);
-                if (checkBTPermission()) {
-                    return;
+                requestPermission(permissionsNeeded, REQUEST_CODE);
+                for (String permission : permissionsNeeded) {
+                    if (Manifest.permission.BLUETOOTH_CONNECT.equals(permission)) {
+                        // We need to request BLUETOOTH_CONNECT permission to connect to SDL via Bluetooth
+                        return;
+                    }
                 }
             }
 
