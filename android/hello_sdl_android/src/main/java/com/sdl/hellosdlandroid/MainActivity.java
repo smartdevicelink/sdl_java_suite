@@ -39,12 +39,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean checkBTPermission() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !checkPermission(Manifest.permission.BLUETOOTH_CONNECT);
+    /**
+     * Boolean method that checks API level and check to see if we need to request BLUETOOTH_CONNECT permission
+     * @return false if we need to request BLUETOOTH_CONNECT permission
+     */
+    private boolean hasBTPermission() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? checkPermission(Manifest.permission.BLUETOOTH_CONNECT) : true;
     }
 
-    private boolean checkPNPermission() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !checkPermission(Manifest.permission.POST_NOTIFICATIONS);
+    /**
+     * Boolean method that checks API level and check to see if we need to request POST_NOTIFICATIONS permission
+     * @return false if we need to request POST_NOTIFICATIONS permission
+     */
+    private boolean hasPNPermission() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ? checkPermission(Manifest.permission.POST_NOTIFICATIONS) : true;
     }
 
     private boolean checkPermission(String permission) {
@@ -57,10 +65,10 @@ public class MainActivity extends AppCompatActivity {
 
     private @NonNull String[] permissionsNeeded() {
         ArrayList<String> result = new ArrayList<>();
-        if (checkBTPermission()) {
+        if (!hasBTPermission()) {
             result.add(Manifest.permission.BLUETOOTH_CONNECT);
         }
-        if (checkPNPermission()) {
+        if (!hasPNPermission()) {
             result.add(Manifest.permission.POST_NOTIFICATIONS);
         }
         return (result.toArray(new String[result.size()]));
