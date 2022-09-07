@@ -256,10 +256,10 @@ abstract class BaseSystemCapabilityManager {
             int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
             if (currentWindowID == windowID) {
                 // Clone WindowCapability to prevent modification of stored WindowCapability in SystemCapabilityManager
-                WindowCapability updatedCaps = (WindowCapability) windowCapability.clone();
+                WindowCapability windowCapabilityCopy = (WindowCapability) windowCapability.clone();
                 // A null windowID is assumed to be the DefaultWindow according to the spec, but that can be hard for developers to check, so set it explicitly.
-                updatedCaps.setWindowID(windowID);
-                return updatedCaps;
+                windowCapabilityCopy.setWindowID(windowID);
+                return windowCapabilityCopy;
             }
         }
         return null;
