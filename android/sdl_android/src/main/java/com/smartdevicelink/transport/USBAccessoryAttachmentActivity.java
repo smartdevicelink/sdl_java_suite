@@ -202,8 +202,8 @@ public class USBAccessoryAttachmentActivity extends Activity {
 
                         }
 
-                    } catch (SecurityException e) {
-                        DebugTool.logError(TAG, "Security exception, process is bad");
+                    } catch (SecurityException | IllegalStateException e) {
+                        SdlBroadcastReceiver.handleStartServiceException(e);
                     }
                 } else {
                     if (usbAccessory != null) {
