@@ -1,7 +1,5 @@
 package com.smartdevicelink.managers.screen;
 
-import android.util.Log;
-
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
@@ -26,7 +24,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+
 
 /**
  * Created by Julian Kast on 8/23/20.
@@ -42,8 +40,6 @@ class TextAndGraphicUpdateOperation extends Task {
     private final TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener;
     private final CompletionListener listener;
     private Show fullShow;
-
-    private boolean errorState;
 
     TextAndGraphicUpdateOperation(ISdl internalInterface, FileManager fileManager, WindowCapability currentCapabilities,
                                   TextAndGraphicState currentScreenData, TextAndGraphicState newState, CompletionListener listener, TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdateListener) {

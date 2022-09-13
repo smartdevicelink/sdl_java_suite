@@ -91,7 +91,6 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
     Queue transactionQueue;
 
     //Constructors
-
     BaseTextAndGraphicManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager, @NonNull SoftButtonManager softButtonManager) {
         // set class vars
         super(internalInterface);
@@ -167,7 +166,6 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
     }
 
     // Upload / Send
-
     protected void update(CompletionListener listener) {
         // check if is batch update
         if (batchingUpdates) {
@@ -182,27 +180,6 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
     }
 
     private synchronized void sdlUpdate(Boolean supersedePreviousOperations, final CompletionListener listener) {
-        if (this.transactionQueue.getTasksAsList().size() > 0 && supersedePreviousOperations) {
-            // Transactions already in queue, we need to clear it out
-            transactionQueue.clear();
-            updateOperation = null;
-            if (currentOperationListener != null) {
-                currentOperationListener.onComplete(false);
-            }
-        }
-
-        // Task can be READY, about to start and popped of the queue, so we have to cancel it, to prevent it from starting
-        if (updateOperation != null && updateOperation.getState() == Task.READY && supersedePreviousOperations) {
-            updateOperation.cancelTask();
-            if (currentOperationListener != null) {
-                currentOperationListener.onComplete(false);
-            }
-        }
-
-        // If Task is IN_PROGRESS, it’s not on the queue, we need to mark it as cancelled. The task will return at some point when it checks its status and call the listener back
-        if (updateOperation != null && updateOperation.getState() == Task.IN_PROGRESS && supersedePreviousOperations) {
-            updateOperation.cancelTask();
-        }
 
         currentOperationListener = listener;
 
@@ -217,9 +194,10 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
             }
 
             @Override
-            public void onError() {
+            public void onError(TextAndGraphicState errorState) {
                 // Invalidate data that's different from our current screen data
                 resetFieldsToCurrentScreenData();
+                updatePendingOperationsWithFailedScreenState(errorState);
             }
         };
 
@@ -257,10 +235,20 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
         }
     }
 
+    void updatePendingOperationsWithFailedScreenState(TextAndGraphicState errorState) {
+        for (Task task : transactionQueue.getTasksAsList()) {
+            if (!(task instanceof TextAndGraphicUpdateOperation)) {
+                continue;
+            }
+            ((TextAndGraphicUpdateOperation) task).setCurrentScreenData(currentScreenData);
+        }
+        updateOperation.updateTargetStateWithErrorState(errorState);
+    }
+
     interface CurrentScreenDataUpdatedListener {
         void onUpdate(TextAndGraphicState newState);
 
-        void onError();
+        void onError(TextAndGraphicState errorState);
     }
 
 
@@ -305,14 +293,12 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 
     // Convert to State
-
     TextAndGraphicState currentState() {
         return new TextAndGraphicState(textField1, textField2, textField3, textField4, mediaTrackTextField,
                 title, primaryGraphic, secondaryGraphic, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type, templateConfiguration);
     }
 
     // Getters / Setters
-
     void setTextAlignment(TextAlignment textAlignment) {
         this.textAlignment = textAlignment;
         // If we aren't batching, send the update immediately, if we are, set ourselves as dirty (so we know we should send an update after the batch ends)
