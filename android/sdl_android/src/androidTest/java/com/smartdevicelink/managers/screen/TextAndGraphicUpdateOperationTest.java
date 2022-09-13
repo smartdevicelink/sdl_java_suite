@@ -191,12 +191,12 @@ public class TextAndGraphicUpdateOperationTest {
         mediaTrackField = "dudes";
         title = "dudes";
 
-        textField1Fail = "It is\n";
-        textField2Fail = "Wednesday\n";
-        textField3Fail = "My\n";
-        textField4Fail = "Dudes\n";
-        mediaTrackFieldFail = "dudes\n";
-        titleFail = "dudes\n";
+        textField1Fail = "It is\nbad data";
+        textField2Fail = "Wednesday\nbad data";
+        textField3Fail = "My\nbad data";
+        textField4Fail = "Dudes\nbad data";
+        mediaTrackFieldFail = "dudes\nbad data";
+        titleFail = "dudes\nbad data";
 
         blankArtwork = new SdlArtwork();
         blankArtwork.setType(FileType.GRAPHIC_PNG);
