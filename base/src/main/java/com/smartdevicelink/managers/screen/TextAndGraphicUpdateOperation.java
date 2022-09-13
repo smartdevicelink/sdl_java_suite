@@ -1,5 +1,7 @@
 package com.smartdevicelink.managers.screen;
 
+import androidx.annotation.NonNull;
+
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
@@ -24,6 +26,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 
 /**
@@ -93,28 +96,50 @@ class TextAndGraphicUpdateOperation extends Task {
         }
     }
 
-    void updateTargetStateWithErrorState(TextAndGraphicState errorState){
-        updatedState.setTextField1(errorState.getTextField1().equals(updatedState.getTextField1()) ? currentScreenData.getTextField1() : updatedState.getTextField1());
-        updatedState.setTextField2(errorState.getTextField2().equals(updatedState.getTextField2()) ? currentScreenData.getTextField2() : updatedState.getTextField2());
-        updatedState.setTextField3(errorState.getTextField3().equals(updatedState.getTextField3()) ? currentScreenData.getTextField3() : updatedState.getTextField3());
-        updatedState.setTextField4(errorState.getTextField4().equals(updatedState.getTextField4()) ? currentScreenData.getTextField4() : updatedState.getTextField4());
-
-        updatedState.setMediaTrackTextField(errorState.getMediaTrackTextField().equals(updatedState.getMediaTrackTextField()) ? currentScreenData.getMediaTrackTextField() : updatedState.getMediaTrackTextField());
-
-        updatedState.setTitle(errorState.getTitle().equals(updatedState.getTitle()) ? currentScreenData.getTitle() : updatedState.getTitle());
-
-        updatedState.setPrimaryGraphic(errorState.getPrimaryGraphic().equals(updatedState.getPrimaryGraphic()) ? currentScreenData.getPrimaryGraphic() : updatedState.getPrimaryGraphic());
-        updatedState.setSecondaryGraphic(errorState.getSecondaryGraphic().equals(updatedState.getSecondaryGraphic()) ? currentScreenData.getSecondaryGraphic() : updatedState.getSecondaryGraphic());
-
-        updatedState.setTextAlignment(errorState.getTextAlignment().equals(updatedState.getTextAlignment()) ? currentScreenData.getTextAlignment() : updatedState.getTextAlignment());
-
-        updatedState.setTextField1Type(errorState.getTextField1Type().equals(updatedState.getTextField1Type()) ? currentScreenData.getTextField1Type() : updatedState.getTextField1Type());
-        updatedState.setTextField2Type(errorState.getTextField2Type().equals(updatedState.getTextField2Type()) ? currentScreenData.getTextField2Type() : updatedState.getTextField2Type());
-        updatedState.setTextField3Type(errorState.getTextField3Type().equals(updatedState.getTextField3Type()) ? currentScreenData.getTextField3Type() : updatedState.getTextField3Type());
-        updatedState.setTextField4Type(errorState.getTextField4Type().equals(updatedState.getTextField4Type()) ? currentScreenData.getTextField4Type() : updatedState.getTextField4Type());
-
-        updatedState.setTemplateConfiguration(errorState.getTemplateConfiguration().equals(updatedState.getTemplateConfiguration()) ? currentScreenData.getTemplateConfiguration() : updatedState.getTemplateConfiguration());
-    }
+    void updateTargetStateWithErrorState(@NonNull TextAndGraphicState errorState){
+        if (currentScreenData.getTextField1() != null) {
+            updatedState.setTextField1(errorState.getTextField1().equals(updatedState.getTextField1()) ? currentScreenData.getTextField1() : updatedState.getTextField1());
+        }
+        if (currentScreenData.getTextField2() != null) {
+            updatedState.setTextField2(errorState.getTextField2().equals(updatedState.getTextField2()) ? currentScreenData.getTextField2() : updatedState.getTextField2());
+        }
+        if (currentScreenData.getTextField3() != null) {
+            updatedState.setTextField3(errorState.getTextField3().equals(updatedState.getTextField3()) ? currentScreenData.getTextField3() : updatedState.getTextField3());
+        }
+        if (currentScreenData.getTextField4() != null) {
+            updatedState.setTextField4(errorState.getTextField4().equals(updatedState.getTextField4()) ? currentScreenData.getTextField4() : updatedState.getTextField4());
+        }
+        if (currentScreenData.getMediaTrackTextField() != null) {
+            updatedState.setMediaTrackTextField(errorState.getMediaTrackTextField().equals(updatedState.getMediaTrackTextField()) ? currentScreenData.getMediaTrackTextField() : updatedState.getMediaTrackTextField());
+        }
+        if (currentScreenData.getTitle() != null) {
+            updatedState.setTitle(errorState.getTitle().equals(updatedState.getTitle()) ? currentScreenData.getTitle() : updatedState.getTitle());
+        }
+        if (currentScreenData.getPrimaryGraphic() != null) {
+            updatedState.setPrimaryGraphic(errorState.getPrimaryGraphic().equals(updatedState.getPrimaryGraphic()) ? currentScreenData.getPrimaryGraphic() : updatedState.getPrimaryGraphic());
+        }
+        if (currentScreenData.getSecondaryGraphic() != null) {
+            updatedState.setSecondaryGraphic(errorState.getSecondaryGraphic().equals(updatedState.getSecondaryGraphic()) ? currentScreenData.getSecondaryGraphic() : updatedState.getSecondaryGraphic());
+        }
+        if (currentScreenData.getTextAlignment() != null) {
+            updatedState.setTextAlignment(errorState.getTextAlignment().equals(updatedState.getTextAlignment()) ? currentScreenData.getTextAlignment() : updatedState.getTextAlignment());
+        }
+        if (currentScreenData.getTextField1Type() != null) {
+            updatedState.setTextField1Type(errorState.getTextField1Type().equals(updatedState.getTextField1Type()) ? currentScreenData.getTextField1Type() : updatedState.getTextField1Type());
+        }
+        if (currentScreenData.getTextField2Type() != null) {
+            updatedState.setTextField2Type(errorState.getTextField2Type().equals(updatedState.getTextField2Type()) ? currentScreenData.getTextField2Type() : updatedState.getTextField2Type());
+        }
+        if (currentScreenData.getTextField3Type() != null) {
+            updatedState.setTextField3Type(errorState.getTextField3Type().equals(updatedState.getTextField3Type()) ? currentScreenData.getTextField3Type() : updatedState.getTextField3Type());
+        }
+        if (currentScreenData.getTextField4Type() != null) {
+            updatedState.setTextField4Type(errorState.getTextField4Type().equals(updatedState.getTextField4Type()) ? currentScreenData.getTextField4Type() : updatedState.getTextField4Type());
+        }
+        if (currentScreenData.getTemplateConfiguration() != null) {
+            updatedState.setTemplateConfiguration(errorState.getTemplateConfiguration().equals(updatedState.getTemplateConfiguration()) ? currentScreenData.getTemplateConfiguration() : updatedState.getTemplateConfiguration());
+        }
+        }
 
     void updateGraphicsAndShow(Show show) {
         if (!shouldUpdatePrimaryImage() && !shouldUpdateSecondaryImage()) {
