@@ -97,49 +97,49 @@ class TextAndGraphicUpdateOperation extends Task {
     }
 
     void updateTargetStateWithErrorState(@NonNull TextAndGraphicState errorState){
-        if (currentScreenData.getTextField1() != null) {
-            updatedState.setTextField1(errorState.getTextField1().equals(updatedState.getTextField1()) ? currentScreenData.getTextField1() : updatedState.getTextField1());
+        if (Objects.equals(errorState.getTextField1(), updatedState.getTextField1())){
+            updatedState.setTextField1(currentScreenData.getTextField1());
         }
-        if (currentScreenData.getTextField2() != null) {
-            updatedState.setTextField2(errorState.getTextField2().equals(updatedState.getTextField2()) ? currentScreenData.getTextField2() : updatedState.getTextField2());
+        if (Objects.equals(errorState.getTextField2(), updatedState.getTextField2())){
+            updatedState.setTextField2(currentScreenData.getTextField2());
         }
-        if (currentScreenData.getTextField3() != null) {
-            updatedState.setTextField3(errorState.getTextField3().equals(updatedState.getTextField3()) ? currentScreenData.getTextField3() : updatedState.getTextField3());
+        if (Objects.equals(errorState.getTextField3(), updatedState.getTextField3())){
+            updatedState.setTextField3(currentScreenData.getTextField3());
         }
-        if (currentScreenData.getTextField4() != null) {
-            updatedState.setTextField4(errorState.getTextField4().equals(updatedState.getTextField4()) ? currentScreenData.getTextField4() : updatedState.getTextField4());
+        if (Objects.equals(errorState.getTextField4(), updatedState.getTextField4())){
+            updatedState.setTextField4(currentScreenData.getTextField4());
         }
-        if (currentScreenData.getMediaTrackTextField() != null) {
-            updatedState.setMediaTrackTextField(errorState.getMediaTrackTextField().equals(updatedState.getMediaTrackTextField()) ? currentScreenData.getMediaTrackTextField() : updatedState.getMediaTrackTextField());
+        if (Objects.equals(errorState.getMediaTrackTextField(), updatedState.getMediaTrackTextField())){
+            updatedState.setMediaTrackTextField(currentScreenData.getMediaTrackTextField());
         }
-        if (currentScreenData.getTitle() != null) {
-            updatedState.setTitle(errorState.getTitle().equals(updatedState.getTitle()) ? currentScreenData.getTitle() : updatedState.getTitle());
+        if (Objects.equals(errorState.getTitle(), updatedState.getTitle())){
+            updatedState.setTitle(currentScreenData.getTitle());
         }
-        if (currentScreenData.getPrimaryGraphic() != null) {
-            updatedState.setPrimaryGraphic(errorState.getPrimaryGraphic().equals(updatedState.getPrimaryGraphic()) ? currentScreenData.getPrimaryGraphic() : updatedState.getPrimaryGraphic());
+        if (Objects.equals(errorState.getPrimaryGraphic(), updatedState.getPrimaryGraphic())){
+            updatedState.setPrimaryGraphic(currentScreenData.getPrimaryGraphic());
         }
-        if (currentScreenData.getSecondaryGraphic() != null) {
-            updatedState.setSecondaryGraphic(errorState.getSecondaryGraphic().equals(updatedState.getSecondaryGraphic()) ? currentScreenData.getSecondaryGraphic() : updatedState.getSecondaryGraphic());
+        if (Objects.equals(errorState.getSecondaryGraphic(), updatedState.getSecondaryGraphic())){
+            updatedState.setSecondaryGraphic(currentScreenData.getSecondaryGraphic());
         }
-        if (currentScreenData.getTextAlignment() != null) {
-            updatedState.setTextAlignment(errorState.getTextAlignment().equals(updatedState.getTextAlignment()) ? currentScreenData.getTextAlignment() : updatedState.getTextAlignment());
+        if (Objects.equals(errorState.getTextAlignment(), updatedState.getTextAlignment())){
+            updatedState.setTextAlignment(currentScreenData.getTextAlignment());
         }
-        if (currentScreenData.getTextField1Type() != null) {
-            updatedState.setTextField1Type(errorState.getTextField1Type().equals(updatedState.getTextField1Type()) ? currentScreenData.getTextField1Type() : updatedState.getTextField1Type());
+        if (Objects.equals(errorState.getTextField1Type(), updatedState.getTextField1Type())){
+            updatedState.setTextField1Type(currentScreenData.getTextField1Type());
         }
-        if (currentScreenData.getTextField2Type() != null) {
-            updatedState.setTextField2Type(errorState.getTextField2Type().equals(updatedState.getTextField2Type()) ? currentScreenData.getTextField2Type() : updatedState.getTextField2Type());
+        if (Objects.equals(errorState.getTextField2Type(), updatedState.getTextField2Type())){
+            updatedState.setTextField2Type(currentScreenData.getTextField2Type());
         }
-        if (currentScreenData.getTextField3Type() != null) {
-            updatedState.setTextField3Type(errorState.getTextField3Type().equals(updatedState.getTextField3Type()) ? currentScreenData.getTextField3Type() : updatedState.getTextField3Type());
+        if (Objects.equals(errorState.getTextField3Type(), updatedState.getTextField3Type())){
+            updatedState.setTextField3Type(currentScreenData.getTextField3Type());
         }
-        if (currentScreenData.getTextField4Type() != null) {
-            updatedState.setTextField4Type(errorState.getTextField4Type().equals(updatedState.getTextField4Type()) ? currentScreenData.getTextField4Type() : updatedState.getTextField4Type());
+        if (Objects.equals(errorState.getTextField4Type(), updatedState.getTextField4Type())){
+            updatedState.setTextField4Type(currentScreenData.getTextField4Type());
         }
-        if (currentScreenData.getTemplateConfiguration() != null) {
-            updatedState.setTemplateConfiguration(errorState.getTemplateConfiguration().equals(updatedState.getTemplateConfiguration()) ? currentScreenData.getTemplateConfiguration() : updatedState.getTemplateConfiguration());
+        if (Objects.equals(errorState.getTemplateConfiguration(), updatedState.getTemplateConfiguration())){
+            updatedState.setTemplateConfiguration(currentScreenData.getTemplateConfiguration());
         }
-        }
+    }
 
     void updateGraphicsAndShow(Show show) {
         if (!shouldUpdatePrimaryImage() && !shouldUpdateSecondaryImage()) {
