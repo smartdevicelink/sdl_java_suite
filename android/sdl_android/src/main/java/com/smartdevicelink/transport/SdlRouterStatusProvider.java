@@ -136,7 +136,7 @@ public class SdlRouterStatusProvider {
         } else {
             bindingIntent.putExtra(FOREGROUND_EXTRA, true);
             SdlBroadcastReceiver.setForegroundExceptionHandler(); //Prevent ANR in case the OS takes too long to start the service
-            try{
+            try {
                 context.startForegroundService(bindingIntent);
             } catch (SecurityException | IllegalStateException e) {
                 SdlBroadcastReceiver.handleStartServiceException(e);
