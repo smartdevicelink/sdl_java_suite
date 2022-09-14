@@ -136,11 +136,21 @@ public class SdlRouterStatusProvider {
         } else {
             bindingIntent.putExtra(FOREGROUND_EXTRA, true);
             SdlBroadcastReceiver.setForegroundExceptionHandler(); //Prevent ANR in case the OS takes too long to start the service
-            context.startForegroundService(bindingIntent);
+            try {
+                context.startForegroundService(bindingIntent);
+            } catch (SecurityException | IllegalStateException e) {
+                SdlBroadcastReceiver.handleStartServiceException(e);
+            }
 
         }
         bindingIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_STATUS);
-        return context.bindService(bindingIntent, routerConnection, Context.BIND_AUTO_CREATE);
+        boolean didBind = false;
+        try {
+            didBind = context.bindService(bindingIntent, routerConnection, Context.BIND_AUTO_CREATE);
+        } catch (SecurityException | IllegalStateException e) {
+            SdlBroadcastReceiver.handleStartServiceException(e);
+        }
+        return didBind;
     }
 
     private void unBindFromService() {
