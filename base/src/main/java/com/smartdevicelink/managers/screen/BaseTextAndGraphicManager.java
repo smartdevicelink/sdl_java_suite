@@ -87,10 +87,10 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
     private MetadataType textField1Type, textField2Type, textField3Type, textField4Type;
     private TemplateConfiguration templateConfiguration;
     TextAndGraphicUpdateOperation updateOperation;
-    private CompletionListener currentOperationListener;
     Queue transactionQueue;
 
     //Constructors
+
     BaseTextAndGraphicManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager, @NonNull SoftButtonManager softButtonManager) {
         // set class vars
         super(internalInterface);
@@ -166,6 +166,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
     }
 
     // Upload / Send
+
     protected void update(CompletionListener listener) {
         // check if is batch update
         if (batchingUpdates) {
@@ -173,15 +174,13 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
         }
         if (isDirty) {
             isDirty = false;
-            sdlUpdate(true, listener);
+            sdlUpdate(listener);
         } else if (listener != null) {
             listener.onComplete(true);
         }
     }
 
-    private synchronized void sdlUpdate(Boolean supersedePreviousOperations, final CompletionListener listener) {
-
-        currentOperationListener = listener;
+    private synchronized void sdlUpdate(final CompletionListener listener) {
 
         CurrentScreenDataUpdatedListener currentScreenDataUpdateListener = new CurrentScreenDataUpdatedListener() {
             @Override
@@ -197,11 +196,13 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
             public void onError(TextAndGraphicState errorState) {
                 // Invalidate data that's different from our current screen data
                 resetFieldsToCurrentScreenData();
-                updatePendingOperationsWithFailedScreenState(errorState);
+                if (errorState != null) {
+                    updatePendingOperationsWithFailedScreenState(errorState);
+                }
             }
         };
 
-        updateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager.get(), defaultMainWindowCapability, currentScreenData, currentState(), currentOperationListener, currentScreenDataUpdateListener);
+        updateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager.get(), defaultMainWindowCapability, currentScreenData, currentState(), listener, currentScreenDataUpdateListener);
         transactionQueue.add(updateOperation, false);
     }
 
@@ -293,17 +294,19 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 
     // Convert to State
+
     TextAndGraphicState currentState() {
         return new TextAndGraphicState(textField1, textField2, textField3, textField4, mediaTrackTextField,
                 title, primaryGraphic, secondaryGraphic, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type, templateConfiguration);
     }
 
     // Getters / Setters
+
     void setTextAlignment(TextAlignment textAlignment) {
         this.textAlignment = textAlignment;
         // If we aren't batching, send the update immediately, if we are, set ourselves as dirty (so we know we should send an update after the batch ends)
         if (!batchingUpdates) {
-            sdlUpdate(true, null);
+            sdlUpdate(null);
         } else {
             isDirty = true;
         }
@@ -316,7 +319,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
     void setMediaTrackTextField(String mediaTrackTextField) {
         this.mediaTrackTextField = mediaTrackTextField;
         if (!batchingUpdates) {
-            sdlUpdate(true, null);
+            sdlUpdate(null);
         } else {
             isDirty = true;
         }
@@ -329,7 +332,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
     void setTextField1(String textField1) {
         this.textField1 = textField1;
         if (!batchingUpdates) {
-            sdlUpdate(true, null);
+            sdlUpdate(null);
         } else {
             isDirty = true;
         }
@@ -342,7 +345,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
     void setTextField2(String textField2) {
         this.textField2 = textField2;
         if (!batchingUpdates) {
-            sdlUpdate(true, null);
+            sdlUpdate(null);
         } else {
             isDirty = true;
         }
@@ -355,7 +358,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
     void setTextField3(String textField3) {
         this.textField3 = textField3;
         if (!batchingUpdates) {
-            sdlUpdate(true, null);
+            sdlUpdate(null);
         } else {
             isDirty = true;
         }
@@ -368,7 +371,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
     void setTextField4(String textField4) {
         this.textField4 = textField4;
         if (!batchingUpdates) {
-            sdlUpdate(true, null);
+            sdlUpdate(null);
         } else {
             isDirty = true;
         }
@@ -381,7 +384,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
     void setTextField1Type(MetadataType textField1Type) {
         this.textField1Type = textField1Type;
         if (!batchingUpdates) {
-            sdlUpdate(true, null);
+            sdlUpdate(null);
         } else {
             isDirty = true;
         }
@@ -394,7 +397,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
     void setTextField2Type(MetadataType textField2Type) {
         this.textField2Type = textField2Type;
         if (!batchingUpdates) {
-            sdlUpdate(true, null);
+            sdlUpdate(null);
         } else {
             isDirty = true;
         }
@@ -407,7 +410,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
     void setTextField3Type(MetadataType textField3Type) {
         this.textField3Type = textField3Type;
         if (!batchingUpdates) {
-            sdlUpdate(true, null);
+            sdlUpdate(null);
         } else {
             isDirty = true;
         }
@@ -420,7 +423,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
     void setTextField4Type(MetadataType textField4Type) {
         this.textField4Type = textField4Type;
         if (!batchingUpdates) {
-            sdlUpdate(true, null);
+            sdlUpdate(null);
         } else {
             isDirty = true;
         }
@@ -433,7 +436,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
     void setTitle(String title) {
         this.title = title;
         if (!batchingUpdates) {
-            sdlUpdate(true, null);
+            sdlUpdate(null);
         } else {
             isDirty = true;
         }
@@ -446,7 +449,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
     void setPrimaryGraphic(SdlArtwork primaryGraphic) {
         this.primaryGraphic = primaryGraphic;
         if (!batchingUpdates) {
-            sdlUpdate(true, null);
+            sdlUpdate(null);
         } else {
             isDirty = true;
         }
@@ -459,7 +462,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
     void setSecondaryGraphic(SdlArtwork secondaryGraphic) {
         this.secondaryGraphic = secondaryGraphic;
         if (!batchingUpdates) {
-            sdlUpdate(true, null);
+            sdlUpdate(null);
         } else {
             isDirty = true;
         }
@@ -477,7 +480,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
     void changeLayout(TemplateConfiguration templateConfiguration, CompletionListener listener) {
         setTemplateConfiguration(templateConfiguration);
         if (!batchingUpdates) {
-            sdlUpdate(true, listener);
+            sdlUpdate(listener);
         } else {
             isDirty = true;
         }
@@ -540,7 +543,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
                 updateTransactionQueueSuspended();
                 if (hasData()) {
                     // HAX: Capability updates cannot supersede earlier updates because of the case where a developer batched a `changeLayout` call w/ T&G changes on < 6.0 systems could cause this to come in before the operation completes. That would cause the operation to report a "failure" (because it was superseded by this call) when in fact the operation didn't fail at all and is just being adjusted.
-                    sdlUpdate(false, null);
+                    sdlUpdate(null);
                 }
             }
 
