@@ -197,6 +197,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
             public void onError(TextAndGraphicState errorState) {
                 // Invalidate data that's different from our current screen data
                 resetFieldsToCurrentScreenData();
+                // TODO NOT COVERED l201
                 updatePendingOperationsWithFailedScreenState(errorState);
             }
         };
@@ -237,6 +238,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
     void updatePendingOperationsWithFailedScreenState(TextAndGraphicState errorState) {
         for (Task task : transactionQueue.getTasksAsList()) {
+            // TODO NOT COVERED l242-246
             if (!(task instanceof TextAndGraphicUpdateOperation)) {
                 continue;
             }

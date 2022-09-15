@@ -202,6 +202,7 @@ class TextAndGraphicUpdateOperation extends Task {
             internalInterface.get().sendRPC(show);
         } else {
             DebugTool.logInfo(TAG, "ISdl is null Text and Graphic update failed");
+            // TODO NOT COVERED l206
             currentScreenDataUpdateListener.onError(updatedState);
             finishOperation(false);
             return;
@@ -218,6 +219,7 @@ class TextAndGraphicUpdateOperation extends Task {
                     updateCurrentScreenDataFromSetDisplayLayout(setLayout);
                 } else {
                     DebugTool.logInfo(TAG, "Text and Graphic SetDisplayLayout failed");
+                    //TODO NOT COVERED l223
                     currentScreenDataUpdateListener.onError(updatedState);
                 }
                 listener.onComplete(response.getSuccess());
@@ -227,6 +229,7 @@ class TextAndGraphicUpdateOperation extends Task {
             internalInterface.get().sendRPC(setLayout);
         } else {
             DebugTool.logInfo(TAG, "ISdl is null Text and Graphic update failed");
+            //TODO NOT COVERED l233
             currentScreenDataUpdateListener.onError(updatedState);
             finishOperation(false);
             return;
