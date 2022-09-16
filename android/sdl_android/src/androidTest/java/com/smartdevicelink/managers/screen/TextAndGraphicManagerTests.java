@@ -17,7 +17,6 @@ import com.smartdevicelink.managers.lifecycle.SystemCapabilityManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
-import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.TemplateConfiguration;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
@@ -53,8 +52,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import junit.framework.TestCase;
-
 /**
  * This is a unit test class for the SmartDeviceLink library manager class :
  * {@link com.smartdevicelink.managers.screen.TextAndGraphicManager}
@@ -66,10 +63,6 @@ public class TextAndGraphicManagerTests {
     private TextAndGraphicManager textAndGraphicManager;
     private SdlArtwork testArtwork1, testArtwork2;
     private TemplateConfiguration configuration1, configuration2;
-
-    private TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdatedListener;
-    private TextAndGraphicUpdateOperation textAndGraphicUpdateOperation;
-
 
     @Before
     public void setUp() throws Exception {
@@ -94,18 +87,6 @@ public class TextAndGraphicManagerTests {
 
         configuration1 = new TemplateConfiguration(PredefinedLayout.GRAPHIC_WITH_TEXT.toString());
         configuration2 = new TemplateConfiguration(PredefinedLayout.DOUBLE_GRAPHIC_WITH_SOFTBUTTONS.toString());
-
-        currentScreenDataUpdatedListener = new TextAndGraphicManager.CurrentScreenDataUpdatedListener() {
-            @Override
-            public void onUpdate(TextAndGraphicState newState) {
-
-            }
-
-            @Override
-            public void onError(TextAndGraphicState errorState) {
-            textAndGraphicUpdateOperation.updateTargetStateWithErrorState(errorState);
-            }
-        };
 
         Taskmaster taskmaster = new Taskmaster.Builder().build();
         taskmaster.start();
@@ -400,5 +381,4 @@ public class TextAndGraphicManagerTests {
         assertTrue(textAndGraphicManager.currentScreenData.getSecondaryGraphic().getName().equals(textAndGraphicManager.getSecondaryGraphic().getName()));
         assertTrue(textAndGraphicManager.currentScreenData.getTemplateConfiguration().getStore().equals(textAndGraphicManager.getTemplateConfiguration().getStore()));
     }
-
 }

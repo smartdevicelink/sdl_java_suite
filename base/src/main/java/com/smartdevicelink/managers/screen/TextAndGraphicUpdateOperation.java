@@ -1,7 +1,5 @@
 package com.smartdevicelink.managers.screen;
 
-import androidx.annotation.NonNull;
-
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
@@ -96,49 +94,135 @@ class TextAndGraphicUpdateOperation extends Task {
         }
     }
 
-    void updateTargetStateWithErrorState(@NonNull TextAndGraphicState errorState){
-        if (Objects.equals(errorState.getTextField1(), updatedState.getTextField1())){
-            updatedState.setTextField1(currentScreenData.getTextField1());
+    void updateTargetStateWithErrorState(TextAndGraphicState errorState){
+
+        if (errorState.getTextField1() != null) {
+            updatedState.setTextField1(errorState.getTextField1().equals(updatedState.getTextField1()) ? currentScreenData.getTextField1() : updatedState.getTextField1());
         }
-        if (Objects.equals(errorState.getTextField2(), updatedState.getTextField2())){
-            updatedState.setTextField2(currentScreenData.getTextField2());
+        if (errorState.getTextField2() != null) {
+            updatedState.setTextField2(errorState.getTextField2().equals(updatedState.getTextField2()) ? currentScreenData.getTextField2() : updatedState.getTextField2());
         }
-        if (Objects.equals(errorState.getTextField3(), updatedState.getTextField3())){
-            updatedState.setTextField3(currentScreenData.getTextField3());
+        if (errorState.getTextField3() != null) {
+            updatedState.setTextField3(errorState.getTextField3().equals(updatedState.getTextField3()) ? currentScreenData.getTextField3() : updatedState.getTextField3());
         }
-        if (Objects.equals(errorState.getTextField4(), updatedState.getTextField4())){
-            updatedState.setTextField4(currentScreenData.getTextField4());
+        if (errorState.getTextField4() != null) {
+            updatedState.setTextField4(errorState.getTextField4().equals(updatedState.getTextField4()) ? currentScreenData.getTextField4() : updatedState.getTextField4());
         }
-        if (Objects.equals(errorState.getMediaTrackTextField(), updatedState.getMediaTrackTextField())){
-            updatedState.setMediaTrackTextField(currentScreenData.getMediaTrackTextField());
+        if (errorState.getMediaTrackTextField() != null) {
+            updatedState.setMediaTrackTextField(errorState.getMediaTrackTextField().equals(updatedState.getMediaTrackTextField()) ? currentScreenData.getMediaTrackTextField() : updatedState.getMediaTrackTextField());
         }
-        if (Objects.equals(errorState.getTitle(), updatedState.getTitle())){
-            updatedState.setTitle(currentScreenData.getTitle());
+        if (errorState.getTitle() != null) {
+            updatedState.setTitle(errorState.getTitle().equals(updatedState.getTitle()) ? currentScreenData.getTitle() : updatedState.getTitle());
         }
+
         if (Objects.equals(errorState.getPrimaryGraphic(), updatedState.getPrimaryGraphic())){
             updatedState.setPrimaryGraphic(currentScreenData.getPrimaryGraphic());
+        } else {
+            updatedState.setPrimaryGraphic(updatedState.getPrimaryGraphic());
         }
         if (Objects.equals(errorState.getSecondaryGraphic(), updatedState.getSecondaryGraphic())){
             updatedState.setSecondaryGraphic(currentScreenData.getSecondaryGraphic());
         }
-        if (Objects.equals(errorState.getTextAlignment(), updatedState.getTextAlignment())){
-            updatedState.setTextAlignment(currentScreenData.getTextAlignment());
+//        else {
+//            updatedState.setSecondaryGraphic(updatedState.getSecondaryGraphic());
+//        }
+
+//        if (updatedState.getPrimaryGraphic() != null) {
+//            updatedState.setPrimaryGraphic(errorState.getPrimaryGraphic().equals(updatedState.getPrimaryGraphic()) ? currentScreenData.getPrimaryGraphic() : updatedState.getPrimaryGraphic());
+//        }
+//        if (errorState.getSecondaryGraphic() != null) {
+//            updatedState.setSecondaryGraphic(errorState.getSecondaryGraphic().equals(updatedState.getSecondaryGraphic()) ? currentScreenData.getSecondaryGraphic() : updatedState.getSecondaryGraphic());
+//        }
+        if (errorState.getTextAlignment() != null) {
+            updatedState.setTextAlignment(errorState.getTextAlignment().equals(updatedState.getTextAlignment()) ? currentScreenData.getTextAlignment() : updatedState.getTextAlignment());
         }
-        if (Objects.equals(errorState.getTextField1Type(), updatedState.getTextField1Type())){
-            updatedState.setTextField1Type(currentScreenData.getTextField1Type());
+        if (errorState.getTextField1Type() != null) {
+            updatedState.setTextField1Type(errorState.getTextField1Type().equals(updatedState.getTextField1Type()) ? currentScreenData.getTextField1Type() : updatedState.getTextField1Type());
         }
-        if (Objects.equals(errorState.getTextField2Type(), updatedState.getTextField2Type())){
-            updatedState.setTextField2Type(currentScreenData.getTextField2Type());
+        if (errorState.getTextField2Type() != null) {
+            updatedState.setTextField2Type(errorState.getTextField2Type().equals(updatedState.getTextField2Type()) ? currentScreenData.getTextField2Type() : updatedState.getTextField2Type());
         }
-        if (Objects.equals(errorState.getTextField3Type(), updatedState.getTextField3Type())){
-            updatedState.setTextField3Type(currentScreenData.getTextField3Type());
+        if (errorState.getTextField3Type() != null) {
+            updatedState.setTextField3Type(errorState.getTextField3Type().equals(updatedState.getTextField3Type()) ? currentScreenData.getTextField3Type() : updatedState.getTextField3Type());
         }
-        if (Objects.equals(errorState.getTextField4Type(), updatedState.getTextField4Type())){
-            updatedState.setTextField4Type(currentScreenData.getTextField4Type());
+        if (errorState.getTextField4Type() != null) {
+            updatedState.setTextField4Type(errorState.getTextField4Type().equals(updatedState.getTextField4Type()) ? currentScreenData.getTextField4Type() : updatedState.getTextField4Type());
         }
-        if (Objects.equals(errorState.getTemplateConfiguration(), updatedState.getTemplateConfiguration())){
-            updatedState.setTemplateConfiguration(currentScreenData.getTemplateConfiguration());
+        if (errorState.getTemplateConfiguration() != null) {
+            updatedState.setTemplateConfiguration(errorState.getTemplateConfiguration().equals(updatedState.getTemplateConfiguration()) ? currentScreenData.getTemplateConfiguration() : updatedState.getTemplateConfiguration());
         }
+
+
+//        if (Objects.equals(errorState.getTextField1(), updatedState.getTextField1())){
+//            updatedState.setTextField1(currentScreenData.getTextField1());
+//        } else {
+//            updatedState.setTextField1(updatedState.getTextField1());
+//        }
+//        if (Objects.equals(errorState.getTextField2(), updatedState.getTextField2())){
+//            updatedState.setTextField2(currentScreenData.getTextField2());
+//        } else {
+//            updatedState.setTextField2(updatedState.getTextField2());
+//        }
+//        if (Objects.equals(errorState.getTextField3(), updatedState.getTextField3())){
+//            updatedState.setTextField3(currentScreenData.getTextField3());
+//        } else {
+//            updatedState.setTextField3(updatedState.getTextField3());
+//        }
+//        if (Objects.equals(errorState.getTextField4(), updatedState.getTextField4())){
+//            updatedState.setTextField4(currentScreenData.getTextField4());
+//        } else {
+//            updatedState.setTextField4(updatedState.getTextField4());
+//        }
+//        if (Objects.equals(errorState.getMediaTrackTextField(), updatedState.getMediaTrackTextField())){
+//            updatedState.setMediaTrackTextField(currentScreenData.getMediaTrackTextField());
+//        } else {
+//            updatedState.setMediaTrackTextField(updatedState.getMediaTrackTextField());
+//        }
+//        if (Objects.equals(errorState.getTitle(), updatedState.getTitle())){
+//            updatedState.setTitle(currentScreenData.getTitle());
+//        } else {
+//            updatedState.setTitle(updatedState.getTitle());
+//        }
+//        if (Objects.equals(errorState.getPrimaryGraphic(), updatedState.getPrimaryGraphic())){
+//            updatedState.setPrimaryGraphic(currentScreenData.getPrimaryGraphic());
+//        } else {
+//            updatedState.setPrimaryGraphic(updatedState.getPrimaryGraphic());
+//        }
+//        if (Objects.equals(errorState.getSecondaryGraphic(), updatedState.getSecondaryGraphic())){
+//            updatedState.setSecondaryGraphic(currentScreenData.getSecondaryGraphic());
+//        } else {
+//            updatedState.setSecondaryGraphic(updatedState.getSecondaryGraphic());
+//        }
+//        if (Objects.equals(errorState.getTextAlignment(), updatedState.getTextAlignment())){
+//            updatedState.setTextAlignment(currentScreenData.getTextAlignment());
+//        } else {
+//            updatedState.setTextAlignment(updatedState.getTextAlignment());
+//        }
+//        if (Objects.equals(errorState.getTextField1Type(), updatedState.getTextField1Type())){
+//            updatedState.setTextField1Type(currentScreenData.getTextField1Type());
+//        } else {
+//            updatedState.setTextField1Type(updatedState.getTextField1Type());
+//        }
+//        if (Objects.equals(errorState.getTextField2Type(), updatedState.getTextField2Type())){
+//            updatedState.setTextField2Type(currentScreenData.getTextField2Type());
+//        } else {
+//            updatedState.setTextField2Type(updatedState.getTextField2Type());
+//        }
+//        if (Objects.equals(errorState.getTextField3Type(), updatedState.getTextField3Type())){
+//            updatedState.setTextField3Type(currentScreenData.getTextField3Type());
+//        } else {
+//            updatedState.setTextField3Type(updatedState.getTextField3Type());
+//        }
+//        if (Objects.equals(errorState.getTextField4Type(), updatedState.getTextField4Type())){
+//            updatedState.setTextField4Type(currentScreenData.getTextField4Type());
+//        } else {
+//            updatedState.setTextField4Type(updatedState.getTextField4Type());
+//        }
+//        if (Objects.equals(errorState.getTemplateConfiguration(), updatedState.getTemplateConfiguration())){
+//            updatedState.setTemplateConfiguration(currentScreenData.getTemplateConfiguration());
+//        } else {
+//            updatedState.setTemplateConfiguration(updatedState.getTemplateConfiguration());
+//        }
     }
 
     void updateGraphicsAndShow(Show show) {

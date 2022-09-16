@@ -62,6 +62,8 @@ import java.util.List;
 
 import static com.smartdevicelink.proxy.rpc.enums.TextAlignment.CENTERED;
 
+import android.util.Log;
+
 /**
  * <strong>TextAndGraphicManager</strong> <br>
  * <p>
