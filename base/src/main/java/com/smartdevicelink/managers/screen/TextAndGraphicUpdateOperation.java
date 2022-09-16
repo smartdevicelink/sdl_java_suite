@@ -586,6 +586,9 @@ class TextAndGraphicUpdateOperation extends Task {
         if (show.getSecondaryGraphic() != null) {
             currentScreenData.setSecondaryGraphic(updatedState.getSecondaryGraphic());
         }
+        if (show.getTemplateConfiguration() != null) {
+            currentScreenData.setTemplateConfiguration(updatedState.getTemplateConfiguration());
+        }
         if (currentScreenDataUpdateListener != null) {
             currentScreenDataUpdateListener.onUpdate(currentScreenData);
         }
