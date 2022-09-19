@@ -228,6 +228,9 @@ public class TextAndGraphicUpdateOperationTest {
         configuration = new TemplateConfiguration();
         configuration.setTemplate(PredefinedLayout.GRAPHIC_WITH_TEXT.toString());
 
+        TemplateConfiguration configurationOld = new TemplateConfiguration();
+        configurationOld.setTemplate(PredefinedLayout.TEXT_WITH_GRAPHIC.toString());
+
         currentScreenData = new TextAndGraphicState();
         currentScreenData.setTextField1("Old");
         currentScreenData.setTextField2("Text");
@@ -236,7 +239,7 @@ public class TextAndGraphicUpdateOperationTest {
 
         currentScreenData.setPrimaryGraphic(testArtwork1);
         currentScreenData.setSecondaryGraphic(testArtwork2);
-        currentScreenData.setTemplateConfiguration(configuration);
+        currentScreenData.setTemplateConfiguration(configurationOld);
 
         currentScreenDataUpdatedListener = new TextAndGraphicManager.CurrentScreenDataUpdatedListener() {
             @Override
