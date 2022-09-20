@@ -207,6 +207,7 @@ public class PresentAlertOperationTest {
         doAnswer(onArtworkUploadSuccess).when(fileManager).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
         doAnswer(onArtworkUploadSuccess).when(fileManager).uploadFiles(any(List.class), any(MultipleFileCompletionListener.class));
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
+        when(fileManager.hasUploadedFile(any(SdlFile.class))).thenReturn(true);
 
         // Test Images need to be uploaded, sending text and uploading images
         presentAlertOperation.onExecute();
