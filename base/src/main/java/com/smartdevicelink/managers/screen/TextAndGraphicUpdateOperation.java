@@ -202,7 +202,7 @@ class TextAndGraphicUpdateOperation extends Task {
             internalInterface.get().sendRPC(show);
         } else {
             DebugTool.logInfo(TAG, "ISdl is null Text and Graphic update failed");
-            currentScreenDataUpdateListener.onError(null);
+            currentScreenDataUpdateListener.onError(updatedState);
             finishOperation(false);
             return;
         }
@@ -218,7 +218,7 @@ class TextAndGraphicUpdateOperation extends Task {
                     updateCurrentScreenDataFromSetDisplayLayout(setLayout);
                 } else {
                     DebugTool.logInfo(TAG, "Text and Graphic SetDisplayLayout failed");
-                    currentScreenDataUpdateListener.onError(null);
+                    currentScreenDataUpdateListener.onError(updatedState);
                 }
                 listener.onComplete(response.getSuccess());
             }
@@ -227,7 +227,7 @@ class TextAndGraphicUpdateOperation extends Task {
             internalInterface.get().sendRPC(setLayout);
         } else {
             DebugTool.logInfo(TAG, "ISdl is null Text and Graphic update failed");
-            currentScreenDataUpdateListener.onError(null);
+            currentScreenDataUpdateListener.onError(updatedState);
             finishOperation(false);
             return;
         }

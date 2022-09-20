@@ -242,8 +242,8 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
                 continue;
             }
             ((TextAndGraphicUpdateOperation) task).setCurrentScreenData(currentScreenData);
+            ((TextAndGraphicUpdateOperation) task).updateTargetStateWithErrorState(errorState);
         }
-        updateOperation.updateTargetStateWithErrorState(errorState);
     }
 
     interface CurrentScreenDataUpdatedListener {
