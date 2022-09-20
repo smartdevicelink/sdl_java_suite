@@ -227,19 +227,18 @@ public class PresentAlertOperationTest {
         doAnswer(onArtworkUploadSuccess).when(fileManager).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
         doAnswer(onArtworkUploadSuccess).when(fileManager).uploadFiles(any(List.class), any(MultipleFileCompletionListener.class));
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
-        when(fileManager.hasUploadedFile(any(SdlFile.class))).thenReturn(true);
         // Test if file has uploaded
-        when(fileManager.hasUploadedFile(any(SdlFile.class))).thenReturn(true);
+        when(fileManager.fileNeedsUpload(any(SdlFile.class))).thenReturn(false);
         assertTrue(presentAlertOperation.alertRpc().getAlertIcon() != null);
         // Test if file has not uploaded
-        when(fileManager.hasUploadedFile(any(SdlFile.class))).thenReturn(false);
+        when(fileManager.fileNeedsUpload(any(SdlFile.class))).thenReturn(true);
         assertNull(presentAlertOperation.alertRpc().getAlertIcon());
 
         WindowCapability windowCapability = getWindowCapability(1, false);
         PresentAlertOperation presentAlertOperationNoIconCapability = new PresentAlertOperation(internalInterface, alertView, windowCapability, speechCapabilities, fileManager, 1, alertCompletionListener, alertSoftButtonClearListener);
         assertNull(presentAlertOperationNoIconCapability.alertRpc().getAlertIcon());
 
-        when(fileManager.hasUploadedFile(any(SdlFile.class))).thenReturn(true);
+        when(fileManager.fileNeedsUpload(any(SdlFile.class))).thenReturn(false);
         assertNull(presentAlertOperationNoIconCapability.alertRpc().getAlertIcon());
     }
 
