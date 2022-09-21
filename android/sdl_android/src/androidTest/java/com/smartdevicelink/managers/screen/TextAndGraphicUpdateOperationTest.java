@@ -69,7 +69,7 @@ public class TextAndGraphicUpdateOperationTest {
     private CompletionListener listener;
     private TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdatedListener;
     private SdlArtwork blankArtwork;
-    private TemplateConfiguration configuration, configurationFail;
+    private TemplateConfiguration configuration, configurationFail, configurationOld;
     ISdl internalInterface;
     FileManager fileManager;
 
@@ -246,6 +246,8 @@ public class TextAndGraphicUpdateOperationTest {
         configuration = new TemplateConfiguration();
         configuration.setTemplate(PredefinedLayout.GRAPHIC_WITH_TEXT.toString());
 
+        configurationOld = new TemplateConfiguration();
+        configurationOld.setTemplate(PredefinedLayout.TEXT_WITH_GRAPHIC.toString());
         configurationFail = new TemplateConfiguration();
         configurationFail.setTemplate("failConfiguration");
 
@@ -276,7 +278,7 @@ public class TextAndGraphicUpdateOperationTest {
 
         currentScreenData.setPrimaryGraphic(testArtwork1);
         currentScreenData.setSecondaryGraphic(testArtwork2);
-        currentScreenData.setTemplateConfiguration(configuration);
+        currentScreenData.setTemplateConfiguration(configurationOld);
 
         currentScreenDataUpdatedListener = new TextAndGraphicManager.CurrentScreenDataUpdatedListener() {
             @Override
@@ -1047,7 +1049,6 @@ public class TextAndGraphicUpdateOperationTest {
                 mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type, configuration);
         textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
         textAndGraphicUpdateOperation.onExecute();
-        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration().getStore(), configuration.getStore());
 
         // Verifies that uploadArtworks does not get called because a sendShow failed with text and layout change
         verify(fileManager, times(0)).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
@@ -1080,7 +1081,7 @@ public class TextAndGraphicUpdateOperationTest {
         TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField2Type());
         TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField3Type());
         TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField4Type());
-        assertEquals(configuration, textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration());
+        assertEquals(configurationOld, textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration());
     }
 
     @Test
@@ -1120,7 +1121,7 @@ public class TextAndGraphicUpdateOperationTest {
         TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField2Type());
         TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField3Type());
         TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField4Type());
-        assertEquals(configuration, textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration());
+        assertEquals(configurationOld, textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration());
     }
 
     @Test
@@ -1160,7 +1161,7 @@ public class TextAndGraphicUpdateOperationTest {
         TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField2Type());
         TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField3Type());
         TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField4Type());
-        assertEquals(configuration, textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration());
+        assertEquals(configurationOld, textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration());
     }
 
     @Test
@@ -1200,6 +1201,6 @@ public class TextAndGraphicUpdateOperationTest {
         TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField2Type());
         TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField3Type());
         TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField4Type());
-        assertEquals(configuration, textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration());
+        assertEquals(configurationOld, textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration());
     }
 }
