@@ -172,6 +172,15 @@ abstract class BaseSystemCapabilityManager {
         // if there are imageTypes in the response, we must assume graphics are supported
         convertedCapabilities.setGraphicSupported(defaultMainWindow.getImageTypeSupported() != null && defaultMainWindow.getImageTypeSupported().size() > 0);
 
+        if (cachedSystemCapabilities.containsKey(SystemCapabilityType.DISPLAY)) {
+            // Copied from the RAI response, since this parameter is not present in WindowCapability
+            DisplayCapabilities displayCapabilitiesOld = (DisplayCapabilities) cachedSystemCapabilities.get(SystemCapabilityType.DISPLAY);
+            convertedCapabilities.setScreenParams(displayCapabilitiesOld.getScreenParams());
+            if (displayCapabilitiesOld.getMediaClockFormats() != null) {
+                convertedCapabilities.setMediaClockFormats(displayCapabilitiesOld.getMediaClockFormats());
+            }
+        }
+
         return convertedCapabilities;
     }
 
@@ -246,7 +255,11 @@ abstract class BaseSystemCapabilityManager {
         for (WindowCapability windowCapability : display.getWindowCapabilities()) {
             int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
             if (currentWindowID == windowID) {
-                return windowCapability;
+                // Clone WindowCapability to prevent modification of stored WindowCapability in SystemCapabilityManager
+                WindowCapability windowCapabilityCopy = (WindowCapability) windowCapability.clone();
+                // A null windowID is assumed to be the DefaultWindow according to the spec, but that can be hard for developers to check, so set it explicitly.
+                windowCapabilityCopy.setWindowID(windowID);
+                return windowCapabilityCopy;
             }
         }
         return null;

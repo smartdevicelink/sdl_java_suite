@@ -600,7 +600,12 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
         return false;
     }
 
-    private static void handleStartServiceException(Exception e) {
+    /**
+     * Convenience method to log details on the specific exception that occurred while attempting to
+     * start a foreground service.
+     * @param e the exception that occurred
+     */
+    protected static void handleStartServiceException(Exception e) {
         if (e instanceof SecurityException) {
             DebugTool.logError(TAG, "Security exception, process is bad");
             return;
