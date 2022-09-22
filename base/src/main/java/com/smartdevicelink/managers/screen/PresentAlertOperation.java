@@ -57,6 +57,7 @@ import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -77,6 +78,8 @@ public class PresentAlertOperation extends Task {
     boolean isAlertPresented;
     static int SOFTBUTTON_COUNT = 4;
     private BaseAlertManager.AlertSoftButtonClearListener alertSoftButtonClearListener;
+    Boolean alertIconUploaded;
+    private List<SdlArtwork> artworksToBeUploaded;
 
     public PresentAlertOperation(ISdl internalInterface, AlertView alertView, WindowCapability currentCapabilities, List<SpeechCapabilities> speechCapabilities, FileManager fileManager, Integer cancelId, AlertCompletionListener listener, BaseAlertManager.AlertSoftButtonClearListener alertSoftButtonClearListener) {
         super("PresentAlertOperation");
@@ -89,6 +92,7 @@ public class PresentAlertOperation extends Task {
         this.cancelId = cancelId;
         this.isAlertPresented = false;
         this.alertSoftButtonClearListener = alertSoftButtonClearListener;
+        alertIconUploaded = false;
 
         this.alertView.canceledListener = new AlertCanceledListener() {
             @Override
@@ -237,10 +241,15 @@ public class PresentAlertOperation extends Task {
      * @param listener - CompletionListener called when all images have been uploaded.
      */
     private void uploadImages(final CompletionListener listener) {
-        List<SdlArtwork> artworksToBeUploaded = new ArrayList<>();
+        artworksToBeUploaded = new ArrayList<>();
 
-        if (supportsAlertIcon() && fileManager.get() != null && fileManager.get().fileNeedsUpload(alertView.getIcon())) {
-            artworksToBeUploaded.add(alertView.getIcon());
+        if (supportsAlertIcon() && alertView.getIcon() != null && fileManager.get() != null) {
+            if (fileManager.get().fileNeedsUpload(alertView.getIcon())) {
+                artworksToBeUploaded.add(alertView.getIcon());
+
+            } else if (fileManager.get().hasUploadedFile(alertView.getIcon()) || alertView.getIcon().isStaticIcon()) {
+                alertIconUploaded = true;
+            }
         }
 
         if (alertView.getSoftButtons() != null) {
@@ -274,6 +283,9 @@ public class PresentAlertOperation extends Task {
                         DebugTool.logError(TAG, "AlertManager artwork failed to upload with error: " + errors.toString());
                     } else {
                         DebugTool.logInfo(TAG, "All alert images uploaded");
+                    }
+                    if (artworksToBeUploaded.contains(alertView.getIcon()) && (errors == null || !errors.containsKey(alertView.getIcon().getName()))) {
+                        alertIconUploaded = true;
                     }
                     listener.onComplete(true);
                 }
@@ -362,9 +374,7 @@ public class PresentAlertOperation extends Task {
         alert = assembleAlertText(alert);
         alert.setDuration(alertView.getTimeout() * 1000);
 
-        if (alertView.getIcon() != null && supportsAlertIcon() && !fileManager.get().fileNeedsUpload(alertView.getIcon())) {
-            alert.setAlertIcon(alertView.getIcon().getImageRPC());
-        }
+        alert.setAlertIcon(alertIconUploaded ? alertView.getIcon().getImageRPC() : null);
 
         alert.setProgressIndicator(alertView.isShowWaitIndicator());
         alert.setCancelID(this.cancelId);
