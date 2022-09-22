@@ -229,9 +229,11 @@ public class PresentAlertOperationTest {
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
         // Test if file has uploaded
         when(fileManager.fileNeedsUpload(any(SdlFile.class))).thenReturn(false);
+        presentAlertOperation.alertIconUploaded = true;
         assertTrue(presentAlertOperation.alertRpc().getAlertIcon() != null);
         // Test if file has not uploaded
         when(fileManager.fileNeedsUpload(any(SdlFile.class))).thenReturn(true);
+        presentAlertOperation.alertIconUploaded = false;
         assertNull(presentAlertOperation.alertRpc().getAlertIcon());
 
         WindowCapability windowCapability = getWindowCapability(1, false);
