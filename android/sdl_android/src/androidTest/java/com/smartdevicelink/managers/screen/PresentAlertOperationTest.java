@@ -27,6 +27,7 @@ import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.test.TestValues;
 
@@ -283,7 +284,23 @@ public class PresentAlertOperationTest {
         verify(fileManager, times(1)).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
         verify(internalInterface, times(1)).sendRPC(any(Alert.class));
     }
+    @Test
+    public void testPresentStaticIcon() {
+        doAnswer(onAlertSuccess).when(internalInterface).sendRPC(any(Alert.class));
+        // Same response works for uploading artworks as it does for files
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
+        when(fileManager.fileNeedsUpload(any(SdlFile.class))).thenReturn(false);
 
+        alertView.setIcon(new SdlArtwork(StaticIconName.LEFT));
+        PresentAlertOperation presentAlertOperationStaticIcon = new PresentAlertOperation(internalInterface, alertView, defaultMainWindowCapability, speechCapabilities, fileManager, 1, alertCompletionListener, alertSoftButtonClearListener);
+
+        // Test Images need to be uploaded, sending text and uploading images
+        presentAlertOperationStaticIcon.onExecute();
+
+        // Verifies that uploadArtworks gets called only with the fist presentAlertOperation.onExecute call
+        verify(fileManager, times(0)).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
+        verify(internalInterface, times(1)).sendRPC(any(Alert.class));
+    }
     @Test
     public void testCancelOperation() {
         //Cancel right away
