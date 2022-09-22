@@ -43,8 +43,6 @@ import java.util.List;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -220,30 +218,6 @@ public class PresentAlertOperationTest {
 
         verify(internalInterface, times(1)).sendRPC(any(Alert.class));
     }
-/*
-    @Test
-    public void testArtworkAddedToAlertRPC() {
-        doAnswer(onAlertSuccess).when(internalInterface).sendRPC(any(Alert.class));
-        // Same response works for uploading artworks as it does for files
-        doAnswer(onArtworkUploadSuccess).when(fileManager).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
-        doAnswer(onArtworkUploadSuccess).when(fileManager).uploadFiles(any(List.class), any(MultipleFileCompletionListener.class));
-        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
-        // Test if file has uploaded
-        when(fileManager.fileNeedsUpload(any(SdlFile.class))).thenReturn(false);
-        presentAlertOperation.alertIconUploaded = true;
-        assertTrue(presentAlertOperation.alertRpc().getAlertIcon() != null);
-        // Test if file has not uploaded
-        when(fileManager.fileNeedsUpload(any(SdlFile.class))).thenReturn(true);
-        presentAlertOperation.alertIconUploaded = false;
-        assertNull(presentAlertOperation.alertRpc().getAlertIcon());
-
-        WindowCapability windowCapability = getWindowCapability(1, false);
-        PresentAlertOperation presentAlertOperationNoIconCapability = new PresentAlertOperation(internalInterface, alertView, windowCapability, speechCapabilities, fileManager, 1, alertCompletionListener, alertSoftButtonClearListener);
-        assertNull(presentAlertOperationNoIconCapability.alertRpc().getAlertIcon());
-
-        when(fileManager.fileNeedsUpload(any(SdlFile.class))).thenReturn(false);
-        assertNull(presentAlertOperationNoIconCapability.alertRpc().getAlertIcon());
-    }*/
 
     @Test
     public void testPresentAlertNoAudioAndArtwork() {
