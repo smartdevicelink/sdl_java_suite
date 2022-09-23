@@ -27,6 +27,7 @@ import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.test.TestValues;
 
@@ -42,7 +43,6 @@ import java.util.List;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -167,7 +167,7 @@ public class PresentAlertOperationTest {
         builder.setShowWaitIndicator(true);
         alertView = builder.build();
 
-        defaultMainWindowCapability = getWindowCapability(3);
+        defaultMainWindowCapability = getWindowCapability(3, true);
         speechCapabilities = new ArrayList<SpeechCapabilities>();
         speechCapabilities.add(SpeechCapabilities.FILE);
         alertCompletionListener = new AlertCompletionListener() {
@@ -186,13 +186,13 @@ public class PresentAlertOperationTest {
         // Same response works for uploading artworks as it does for files
 
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
-        WindowCapability windowCapability = getWindowCapability(1);
+        WindowCapability windowCapability = getWindowCapability(1, true);
         PresentAlertOperation presentAlertOperation = new PresentAlertOperation(internalInterface, alertView, windowCapability, speechCapabilities, fileManager, 1, alertCompletionListener, alertSoftButtonClearListener);
         Alert alert = presentAlertOperation.alertRpc();
 
         assertEquals(alert.getAlertText1(), alertView.getText() + " - " + alertView.getSecondaryText() + " - " + alertView.getTertiaryText());
 
-        windowCapability = getWindowCapability(2);
+        windowCapability = getWindowCapability(2, true);
 
         presentAlertOperation = new PresentAlertOperation(internalInterface, alertView, windowCapability, speechCapabilities, fileManager, 1, alertCompletionListener, alertSoftButtonClearListener);
         alert = presentAlertOperation.alertRpc();
@@ -258,7 +258,23 @@ public class PresentAlertOperationTest {
         verify(fileManager, times(1)).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
         verify(internalInterface, times(1)).sendRPC(any(Alert.class));
     }
+    @Test
+    public void testPresentStaticIcon() {
+        doAnswer(onAlertSuccess).when(internalInterface).sendRPC(any(Alert.class));
+        // Same response works for uploading artworks as it does for files
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
+        when(fileManager.fileNeedsUpload(any(SdlFile.class))).thenReturn(false);
 
+        alertView.setIcon(new SdlArtwork(StaticIconName.LEFT));
+        PresentAlertOperation presentAlertOperationStaticIcon = new PresentAlertOperation(internalInterface, alertView, defaultMainWindowCapability, speechCapabilities, fileManager, 1, alertCompletionListener, alertSoftButtonClearListener);
+
+        // Test Images need to be uploaded, sending text and uploading images
+        presentAlertOperationStaticIcon.onExecute();
+
+        // Verifies that uploadArtworks gets called only with the fist presentAlertOperation.onExecute call
+        verify(fileManager, times(0)).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
+        verify(internalInterface, times(1)).sendRPC(any(Alert.class));
+    }
     @Test
     public void testCancelOperation() {
         //Cancel right away
@@ -267,7 +283,7 @@ public class PresentAlertOperationTest {
         verify(internalInterface, times(0)).sendRPC(any(Alert.class));
     }
 
-    private WindowCapability getWindowCapability(int numberOfAlertFields) {
+    private WindowCapability getWindowCapability(int numberOfAlertFields, boolean supportsAlertIcon) {
         TextField alertText1 = new TextField();
         alertText1.setName(TextFieldName.alertText1);
         TextField alertText2 = new TextField();
@@ -294,13 +310,13 @@ public class PresentAlertOperationTest {
         WindowCapability windowCapability = new WindowCapability();
         windowCapability.setTextFields(returnList);
 
-        ImageField imageField = new ImageField();
-        imageField.setName(ImageFieldName.alertIcon);
-        List<ImageField> imageFieldList = new ArrayList<>();
-        imageFieldList.add(imageField);
-        windowCapability.setImageFields(imageFieldList);
-
-        windowCapability.setImageFields(imageFieldList);
+        if (supportsAlertIcon) {
+            ImageField imageField = new ImageField();
+            imageField.setName(ImageFieldName.alertIcon);
+            List<ImageField> imageFieldList = new ArrayList<>();
+            imageFieldList.add(imageField);
+            windowCapability.setImageFields(imageFieldList);
+        }
 
         SoftButtonCapabilities softButtonCapabilities = new SoftButtonCapabilities();
         softButtonCapabilities.setImageSupported(TestValues.GENERAL_BOOLEAN);
