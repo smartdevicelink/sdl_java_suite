@@ -62,6 +62,7 @@ public class SdlSession extends BaseSdlSession {
     WeakReference<Context> contextWeakReference;
     MediaStreamingStatus mediaStreamingStatus;
     boolean requiresAudioSupport = false;
+    MediaStreamingStatus.Callback mediaStreamingStatusCallback;
 
     public SdlSession(ISdlSessionListener listener, MultiplexTransportConfig config) {
         super(listener, config);
@@ -79,6 +80,17 @@ public class SdlSession extends BaseSdlSession {
         this.sessionListener = listener;
     }
 
+    /**
+     * Sets a callback that is triggered when there are no audio output methods available. If this
+     * is set then the caller of this method will be responsible for shutting the session down.
+     *
+     * @param mediaStreamingStatusCallback the callback that will be triggered when audio output is
+     *                                     no longer available.
+     */
+    public void setMediaStreamingStatusCallback(MediaStreamingStatus.Callback mediaStreamingStatusCallback) {
+        this.mediaStreamingStatusCallback = mediaStreamingStatusCallback;
+    }
+
     protected SdlProtocolBase getSdlProtocolImplementation() {
         if (transportConfig instanceof MultiplexTransportConfig) {
             return new SdlProtocol(this, (MultiplexTransportConfig) transportConfig);
@@ -94,8 +106,12 @@ public class SdlSession extends BaseSdlSession {
             mediaStreamingStatus = new MediaStreamingStatus(contextWeakReference.get(), new MediaStreamingStatus.Callback() {
                 @Override
                 public void onAudioNoLongerAvailable() {
-                    close();
-                    shutdown("Audio output no longer available");
+                    if (mediaStreamingStatusCallback != null) {
+                        mediaStreamingStatusCallback.onAudioNoLongerAvailable();
+                    } else {
+                        close();
+                        shutdown("Audio output no longer available");
+                    }
                 }
             });
         }

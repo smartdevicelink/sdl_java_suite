@@ -55,13 +55,6 @@ import java.util.List;
  * 			<th>Version</th>
  * 		</tr>
  * 		<tr>
- * 			<td>parkBrakeActive</td>
- * 			<td>Boolean</td>
- * 			<td>true</td>
- * 			<td>Describes, if the park break is active. The information about the park brake: - true, if active - false if not.</td>
- *  			<td>SmartDeviceLink 2.0</td>
- * 		</tr>
- * 		<tr>
  * 			<td>ignitionStableStatus</td>
  * 			<td>IgnitionStableStatus</td>
  * 			<td>true</td>

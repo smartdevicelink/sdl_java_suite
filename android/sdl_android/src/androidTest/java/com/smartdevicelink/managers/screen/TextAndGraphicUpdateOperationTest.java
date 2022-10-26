@@ -52,20 +52,24 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import junit.framework.TestCase;
+
 @RunWith(AndroidJUnit4.class)
 public class TextAndGraphicUpdateOperationTest {
 
     private TextAndGraphicUpdateOperation textAndGraphicUpdateOperation;
     private String textField1, textField2, textField3, textField4, mediaTrackField, title;
-    private MetadataType textField1Type, textField2Type, textField3Type, textField4Type;
-    private SdlArtwork testArtwork1, testArtwork2, testArtwork3, testArtwork4;
-    private TextAlignment textAlignment;
+    private String textField1Fail, textField2Fail, textField3Fail, textField4Fail, mediaTrackFieldFail, titleFail;
+    private MetadataType textField1Type, textField2Type, textField3Type, textField4Type, textFieldFailType;
+    private SdlArtwork testArtwork1, testArtwork2, testArtwork3, testArtwork4, testArtworkFail;
+    private TextAlignment textAlignment, textAlignmentFail;
     private WindowCapability defaultMainWindowCapability;
     private TextAndGraphicState currentScreenData;
+    private TextAndGraphicState errorTestState, errorTestState2;
     private CompletionListener listener;
     private TextAndGraphicManager.CurrentScreenDataUpdatedListener currentScreenDataUpdatedListener;
     private SdlArtwork blankArtwork;
-    private TemplateConfiguration configuration;
+    private TemplateConfiguration configuration, configurationFail, configurationOld;
     ISdl internalInterface;
     FileManager fileManager;
 
@@ -188,6 +192,13 @@ public class TextAndGraphicUpdateOperationTest {
         mediaTrackField = "dudes";
         title = "dudes";
 
+        textField1Fail = "It is\nbad data";
+        textField2Fail = "Wednesday\nbad data";
+        textField3Fail = "My\nbad data";
+        textField4Fail = "Dudes\nbad data";
+        mediaTrackFieldFail = "dudes\nbad data";
+        titleFail = "dudes\nbad data";
+
         blankArtwork = new SdlArtwork();
         blankArtwork.setType(FileType.GRAPHIC_PNG);
         blankArtwork.setName("blankArtwork");
@@ -197,9 +208,10 @@ public class TextAndGraphicUpdateOperationTest {
         textField2Type = MetadataType.MEDIA_TITLE;
         textField3Type = MetadataType.MEDIA_TITLE;
         textField4Type = MetadataType.MEDIA_TITLE;
-
+        textFieldFailType = MetadataType.valueForString("failType");
 
         textAlignment = TextAlignment.CENTERED;
+        textAlignmentFail = TextAlignment.valueForString("failAlignment");
 
         testArtwork1 = new SdlArtwork();
         testArtwork1.setName("testFile1");
@@ -225,8 +237,38 @@ public class TextAndGraphicUpdateOperationTest {
         testArtwork4.setUri(uri4);
         testArtwork4.setType(FileType.GRAPHIC_PNG);
 
+        testArtworkFail = new SdlArtwork();
+        testArtworkFail.setName("testFileFail");
+        Uri uriFail = Uri.parse("android.resource://" + mTestContext.getPackageName() + "/no_file");
+        testArtworkFail.setUri(uriFail);
+        testArtworkFail.setType(FileType.GRAPHIC_PNG);
+
         configuration = new TemplateConfiguration();
         configuration.setTemplate(PredefinedLayout.GRAPHIC_WITH_TEXT.toString());
+
+        configurationOld = new TemplateConfiguration();
+        configurationOld.setTemplate(PredefinedLayout.TEXT_WITH_GRAPHIC.toString());
+        configurationFail = new TemplateConfiguration();
+        configurationFail.setTemplate("failConfiguration");
+
+        errorTestState = new TextAndGraphicState();
+        errorTestState2 = new TextAndGraphicState();
+
+        errorTestState2.setTextField1(textField1);
+        errorTestState2.setTextField2(textField2);
+        errorTestState2.setTextField3(textField3Fail);
+        errorTestState2.setTextField4(textField4Fail);
+        errorTestState2.setTextField1Type(textFieldFailType);
+        errorTestState2.setTextField2Type(textFieldFailType);
+        errorTestState2.setTextField3Type(textFieldFailType);
+        errorTestState2.setTextField4Type(textFieldFailType);
+        errorTestState2.setMediaTrackTextField(mediaTrackFieldFail);
+        errorTestState2.setTitle(titleFail);
+        errorTestState2.setPrimaryGraphic(testArtworkFail);
+        errorTestState2.setSecondaryGraphic(testArtworkFail);
+        errorTestState2.setTextAlignment(textAlignmentFail);
+        errorTestState2.setTemplateConfiguration(configurationFail);
+
 
         currentScreenData = new TextAndGraphicState();
         currentScreenData.setTextField1("Old");
@@ -236,17 +278,15 @@ public class TextAndGraphicUpdateOperationTest {
 
         currentScreenData.setPrimaryGraphic(testArtwork1);
         currentScreenData.setSecondaryGraphic(testArtwork2);
-        currentScreenData.setTemplateConfiguration(configuration);
+        currentScreenData.setTemplateConfiguration(configurationOld);
 
         currentScreenDataUpdatedListener = new TextAndGraphicManager.CurrentScreenDataUpdatedListener() {
             @Override
             public void onUpdate(TextAndGraphicState newState) {
-
             }
 
             @Override
-            public void onError() {
-
+            public void onError(TextAndGraphicState errorState) {
             }
         };
 
@@ -256,7 +296,6 @@ public class TextAndGraphicUpdateOperationTest {
                 mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type, null);
         textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
     }
-
 
     private void setUpCompletionListener() {
         listener = new CompletionListener() {
@@ -1010,11 +1049,158 @@ public class TextAndGraphicUpdateOperationTest {
                 mediaTrackField, title, testArtwork3, testArtwork4, textAlignment, textField1Type, textField2Type, textField3Type, textField4Type, configuration);
         textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
         textAndGraphicUpdateOperation.onExecute();
-        assertEquals(textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration().getStore(), configuration.getStore());
 
         // Verifies that uploadArtworks does not get called because a sendShow failed with text and layout change
         verify(fileManager, times(0)).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
 
     }
 
+    @Test
+    public void testOnShowFailBadDataDoesNotUpdateScreen(){
+        doAnswer(onShowFail).when(internalInterface).sendRPC(any(Show.class));
+        doAnswer(onArtworkUploadSuccess).when(fileManager).uploadArtworks(any(List.class), any(MultipleFileCompletionListener.class));
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(4, 0));
+
+        TextAndGraphicState textsAndGraphicsState = new TextAndGraphicState(textField1Fail, textField2Fail, textField3Fail, textField4Fail,
+                mediaTrackFieldFail, titleFail, testArtworkFail, testArtworkFail, textAlignmentFail, textFieldFailType, textFieldFailType, textFieldFailType, textFieldFailType, configurationFail);
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, textsAndGraphicsState, listener, currentScreenDataUpdatedListener);
+
+        // Test Images need to be uploaded, sending text and uploading images
+        textAndGraphicUpdateOperation.onExecute();
+
+        // Sending in bad data should result in no updates to the current screen
+        assertEquals("Old", textAndGraphicUpdateOperation.getCurrentScreenData().getTextField1());
+        assertEquals("Text", textAndGraphicUpdateOperation.getCurrentScreenData().getTextField2());
+        assertEquals("Not", textAndGraphicUpdateOperation.getCurrentScreenData().getTextField3());
+        assertEquals("Important", textAndGraphicUpdateOperation.getCurrentScreenData().getTextField4());
+        TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getMediaTrackTextField());
+        assertEquals(testArtwork1, textAndGraphicUpdateOperation.getCurrentScreenData().getPrimaryGraphic());
+        assertEquals(testArtwork2, textAndGraphicUpdateOperation.getCurrentScreenData().getSecondaryGraphic());
+        TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextAlignment());
+        TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField1Type());
+        TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField2Type());
+        TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField3Type());
+        TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField4Type());
+        assertEquals(configurationOld, textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration());
+    }
+
+    @Test
+    public void testUpdateTargetStateWithErrorStateNullDoesNotUpdateCurrentScreen() {
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(4, 0));
+
+        errorTestState.setTextField1(null);
+        errorTestState.setTextField2(null);
+        errorTestState.setTextField3(null);
+        errorTestState.setTextField4(null);
+        errorTestState.setTextField1Type(null);
+        errorTestState.setTextField2Type(null);
+        errorTestState.setTextField3Type(null);
+        errorTestState.setTextField4Type(null);
+        errorTestState.setMediaTrackTextField(null);
+        errorTestState.setTitle(null);
+        errorTestState.setPrimaryGraphic(null);
+        errorTestState.setSecondaryGraphic(null);
+        errorTestState.setTextAlignment(null);
+        errorTestState.setTemplateConfiguration(null);
+
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, errorTestState, listener, currentScreenDataUpdatedListener);
+        // Testing updateTargetStateWithErrorState method
+        textAndGraphicUpdateOperation.updateTargetStateWithErrorState(errorTestState);
+        textAndGraphicUpdateOperation.onExecute();
+
+        // Setting fields to null should result in no updates to the current screen
+        assertEquals("Old", textAndGraphicUpdateOperation.getCurrentScreenData().getTextField1());
+        assertEquals("Text", textAndGraphicUpdateOperation.getCurrentScreenData().getTextField2());
+        assertEquals("Not", textAndGraphicUpdateOperation.getCurrentScreenData().getTextField3());
+        assertEquals("Important", textAndGraphicUpdateOperation.getCurrentScreenData().getTextField4());
+        TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getMediaTrackTextField());
+        assertEquals(testArtwork1, textAndGraphicUpdateOperation.getCurrentScreenData().getPrimaryGraphic());
+        assertEquals(testArtwork2, textAndGraphicUpdateOperation.getCurrentScreenData().getSecondaryGraphic());
+        TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextAlignment());
+        TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField1Type());
+        TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField2Type());
+        TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField3Type());
+        TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField4Type());
+        assertEquals(configurationOld, textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration());
+    }
+
+    @Test
+    public void testUpdateTargetStateWithErrorBadDataDoesNotUpdateCurrentScreen() {
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(4, 0));
+
+        errorTestState.setTextField1(textField1Fail);
+        errorTestState.setTextField2(textField2Fail);
+        errorTestState.setTextField3(textField3Fail);
+        errorTestState.setTextField4(textField4Fail);
+        errorTestState.setTextField1Type(textFieldFailType);
+        errorTestState.setTextField2Type(textFieldFailType);
+        errorTestState.setTextField3Type(textFieldFailType);
+        errorTestState.setTextField4Type(textFieldFailType);
+        errorTestState.setMediaTrackTextField(mediaTrackFieldFail);
+        errorTestState.setTitle(titleFail);
+        errorTestState.setPrimaryGraphic(testArtworkFail);
+        errorTestState.setSecondaryGraphic(testArtworkFail);
+        errorTestState.setTextAlignment(textAlignmentFail);
+        errorTestState.setTemplateConfiguration(configurationFail);
+
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, errorTestState, listener, currentScreenDataUpdatedListener);
+        // Testing updateTargetStateWithErrorState method
+        textAndGraphicUpdateOperation.updateTargetStateWithErrorState(errorTestState);
+        textAndGraphicUpdateOperation.onExecute();
+
+        // Setting bad data should result in no updates to the current screen
+        assertEquals("Old", textAndGraphicUpdateOperation.getCurrentScreenData().getTextField1());
+        assertEquals("Text", textAndGraphicUpdateOperation.getCurrentScreenData().getTextField2());
+        assertEquals("Not", textAndGraphicUpdateOperation.getCurrentScreenData().getTextField3());
+        assertEquals("Important", textAndGraphicUpdateOperation.getCurrentScreenData().getTextField4());
+        TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getMediaTrackTextField());
+        assertEquals(testArtwork1, textAndGraphicUpdateOperation.getCurrentScreenData().getPrimaryGraphic());
+        assertEquals(testArtwork2, textAndGraphicUpdateOperation.getCurrentScreenData().getSecondaryGraphic());
+        TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextAlignment());
+        TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField1Type());
+        TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField2Type());
+        TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField3Type());
+        TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField4Type());
+        assertEquals(configurationOld, textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration());
+    }
+
+    @Test
+    public void testUpdateTargetStateWithErrorBadDataAndGoodData() {
+        when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(4, 0));
+
+        errorTestState2.setTextField1(textField1Fail);
+        errorTestState2.setTextField2(textField2);
+        errorTestState2.setTextField3(null);
+        errorTestState2.setTextField4(textField4Fail);
+        errorTestState2.setTextField1Type(textFieldFailType);
+        errorTestState2.setTextField2Type(textFieldFailType);
+        errorTestState2.setTextField3Type(textFieldFailType);
+        errorTestState2.setTextField4Type(textFieldFailType);
+        errorTestState2.setMediaTrackTextField(mediaTrackFieldFail);
+        errorTestState2.setTitle(titleFail);
+        errorTestState2.setPrimaryGraphic(testArtworkFail);
+        errorTestState2.setSecondaryGraphic(testArtworkFail);
+        errorTestState2.setTextAlignment(textAlignmentFail);
+        errorTestState2.setTemplateConfiguration(configurationFail);
+
+        textAndGraphicUpdateOperation = new TextAndGraphicUpdateOperation(internalInterface, fileManager, defaultMainWindowCapability, currentScreenData, errorTestState2, listener, currentScreenDataUpdatedListener);
+        // Testing updateTargetStateWithErrorState method
+        textAndGraphicUpdateOperation.updateTargetStateWithErrorState(errorTestState2);
+        textAndGraphicUpdateOperation.onExecute();
+
+        // Setting mix of good and bad data should result in only updates to those fields with good data
+        assertEquals("Old", textAndGraphicUpdateOperation.getCurrentScreenData().getTextField1());
+        assertEquals(errorTestState2.getTextField2(), textAndGraphicUpdateOperation.getCurrentScreenData().getTextField2());
+        assertEquals("Not", textAndGraphicUpdateOperation.getCurrentScreenData().getTextField3());
+        assertEquals("Important", textAndGraphicUpdateOperation.getCurrentScreenData().getTextField4());
+        TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getMediaTrackTextField());
+        assertEquals(errorTestState2.getPrimaryGraphic(), textAndGraphicUpdateOperation.getCurrentScreenData().getPrimaryGraphic());
+        assertEquals(errorTestState2.getSecondaryGraphic(), textAndGraphicUpdateOperation.getCurrentScreenData().getSecondaryGraphic());
+        TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextAlignment());
+        TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField1Type());
+        TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField2Type());
+        TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField3Type());
+        TestCase.assertNull(textAndGraphicUpdateOperation.getCurrentScreenData().getTextField4Type());
+        assertEquals(configurationOld, textAndGraphicUpdateOperation.getCurrentScreenData().getTemplateConfiguration());
+    }
 }

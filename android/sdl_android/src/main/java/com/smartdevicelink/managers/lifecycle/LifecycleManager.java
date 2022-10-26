@@ -55,6 +55,7 @@ import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.MediaStreamingStatus;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -80,7 +81,17 @@ public class LifecycleManager extends BaseLifecycleManager {
 
         synchronized (SESSION_LOCK) {
             if (_transportConfig != null && _transportConfig.getTransportType().equals(TransportType.MULTIPLEX)) {
-                this.session = new SdlSession(sdlSessionListener, (MultiplexTransportConfig) _transportConfig);
+                MultiplexTransportConfig multiplexTransportConfig = (MultiplexTransportConfig) _transportConfig;
+                this.session = new SdlSession(sdlSessionListener, multiplexTransportConfig);
+                if (multiplexTransportConfig.requiresAudioSupport()) {
+                    this.session.setMediaStreamingStatusCallback(new MediaStreamingStatus.Callback() {
+                        @Override
+                        public void onAudioNoLongerAvailable() {
+                            clean(true);
+                            onClose("Audio output no longer available", null, SdlDisconnectedReason.DEFAULT);
+                        }
+                    });
+                }
             } else if (_transportConfig != null && _transportConfig.getTransportType().equals(TransportType.TCP)) {
                 this.session = new SdlSession(sdlSessionListener, (TCPTransportConfig) _transportConfig);
             } else {

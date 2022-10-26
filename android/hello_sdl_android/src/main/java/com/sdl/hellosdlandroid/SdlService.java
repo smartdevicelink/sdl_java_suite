@@ -162,6 +162,9 @@ public class SdlService extends Service {
                     securityLevel = MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF;
                 }
                 transport = new MultiplexTransportConfig(this, APP_ID, securityLevel);
+                if (BuildConfig.REQUIRE_AUDIO_OUTPUT.equals("TRUE") ) {
+                    ((MultiplexTransportConfig)transport).setRequiresAudioSupport(true);
+                }
             } else if (BuildConfig.TRANSPORT.equals("TCP")) {
                 transport = new TCPTransportConfig(TCP_PORT, DEV_MACHINE_IP_ADDRESS, true);
             } else if (BuildConfig.TRANSPORT.equals("MULTI_HB")) {
@@ -172,7 +175,8 @@ public class SdlService extends Service {
 
             // The app type to be used
             Vector<AppHMIType> appType = new Vector<>();
-            appType.add(AppHMIType.DEFAULT);
+            appType.add(AppHMIType.valueForString(BuildConfig.APP_TYPE));
+
 
             // The manager listener helps you know when certain events that pertain to the SDL Manager happen
             // Here we will listen for ON_HMI_STATUS and ON_COMMAND notifications

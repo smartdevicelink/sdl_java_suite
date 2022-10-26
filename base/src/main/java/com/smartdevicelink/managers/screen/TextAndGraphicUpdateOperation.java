@@ -1,5 +1,7 @@
 package com.smartdevicelink.managers.screen;
 
+import androidx.annotation.NonNull;
+
 import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ISdl;
@@ -24,6 +26,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 
 /**
  * Created by Julian Kast on 8/23/20.
@@ -92,6 +96,51 @@ class TextAndGraphicUpdateOperation extends Task {
         }
     }
 
+    void updateTargetStateWithErrorState(@NonNull TextAndGraphicState errorState){
+        if (Objects.equals(errorState.getTextField1(), updatedState.getTextField1())){
+            updatedState.setTextField1(currentScreenData.getTextField1());
+        }
+        if (Objects.equals(errorState.getTextField2(), updatedState.getTextField2())){
+            updatedState.setTextField2(currentScreenData.getTextField2());
+        }
+        if (Objects.equals(errorState.getTextField3(), updatedState.getTextField3())){
+            updatedState.setTextField3(currentScreenData.getTextField3());
+        }
+        if (Objects.equals(errorState.getTextField4(), updatedState.getTextField4())){
+            updatedState.setTextField4(currentScreenData.getTextField4());
+        }
+        if (Objects.equals(errorState.getMediaTrackTextField(), updatedState.getMediaTrackTextField())){
+            updatedState.setMediaTrackTextField(currentScreenData.getMediaTrackTextField());
+        }
+        if (Objects.equals(errorState.getTitle(), updatedState.getTitle())){
+            updatedState.setTitle(currentScreenData.getTitle());
+        }
+        if (Objects.equals(errorState.getPrimaryGraphic(), updatedState.getPrimaryGraphic())){
+            updatedState.setPrimaryGraphic(currentScreenData.getPrimaryGraphic());
+        }
+        if (Objects.equals(errorState.getSecondaryGraphic(), updatedState.getSecondaryGraphic())){
+            updatedState.setSecondaryGraphic(currentScreenData.getSecondaryGraphic());
+        }
+        if (Objects.equals(errorState.getTextAlignment(), updatedState.getTextAlignment())){
+            updatedState.setTextAlignment(currentScreenData.getTextAlignment());
+        }
+        if (Objects.equals(errorState.getTextField1Type(), updatedState.getTextField1Type())){
+            updatedState.setTextField1Type(currentScreenData.getTextField1Type());
+        }
+        if (Objects.equals(errorState.getTextField2Type(), updatedState.getTextField2Type())){
+            updatedState.setTextField2Type(currentScreenData.getTextField2Type());
+        }
+        if (Objects.equals(errorState.getTextField3Type(), updatedState.getTextField3Type())){
+            updatedState.setTextField3Type(currentScreenData.getTextField3Type());
+        }
+        if (Objects.equals(errorState.getTextField4Type(), updatedState.getTextField4Type())){
+            updatedState.setTextField4Type(currentScreenData.getTextField4Type());
+        }
+        if (Objects.equals(errorState.getTemplateConfiguration(), updatedState.getTemplateConfiguration())){
+            updatedState.setTemplateConfiguration(currentScreenData.getTemplateConfiguration());
+        }
+    }
+
     void updateGraphicsAndShow(Show show) {
         if (!shouldUpdatePrimaryImage() && !shouldUpdateSecondaryImage()) {
             DebugTool.logInfo(TAG, "No images to send, sending text");
@@ -129,7 +178,6 @@ class TextAndGraphicUpdateOperation extends Task {
                             finishOperation(success);
                         }
                     });
-
                 }
             });
         }
@@ -144,7 +192,7 @@ class TextAndGraphicUpdateOperation extends Task {
                     updateCurrentScreenDataFromShow(show);
                 } else {
                     DebugTool.logInfo(TAG, "Text and Graphic Show failed");
-                    currentScreenDataUpdateListener.onError();
+                    currentScreenDataUpdateListener.onError(updatedState);
                 }
                 listener.onComplete(response.getSuccess());
 
@@ -154,11 +202,10 @@ class TextAndGraphicUpdateOperation extends Task {
             internalInterface.get().sendRPC(show);
         } else {
             DebugTool.logInfo(TAG, "ISdl is null Text and Graphic update failed");
-            currentScreenDataUpdateListener.onError();
+            currentScreenDataUpdateListener.onError(updatedState);
             finishOperation(false);
             return;
         }
-
     }
 
     @SuppressWarnings("deprecation")
@@ -171,7 +218,7 @@ class TextAndGraphicUpdateOperation extends Task {
                     updateCurrentScreenDataFromSetDisplayLayout(setLayout);
                 } else {
                     DebugTool.logInfo(TAG, "Text and Graphic SetDisplayLayout failed");
-                    currentScreenDataUpdateListener.onError();
+                    currentScreenDataUpdateListener.onError(updatedState);
                 }
                 listener.onComplete(response.getSuccess());
             }
@@ -180,7 +227,7 @@ class TextAndGraphicUpdateOperation extends Task {
             internalInterface.get().sendRPC(setLayout);
         } else {
             DebugTool.logInfo(TAG, "ISdl is null Text and Graphic update failed");
-            currentScreenDataUpdateListener.onError();
+            currentScreenDataUpdateListener.onError(updatedState);
             finishOperation(false);
             return;
         }
@@ -585,6 +632,9 @@ class TextAndGraphicUpdateOperation extends Task {
         }
         if (show.getSecondaryGraphic() != null) {
             currentScreenData.setSecondaryGraphic(updatedState.getSecondaryGraphic());
+        }
+        if (show.getTemplateConfiguration() != null) {
+            currentScreenData.setTemplateConfiguration(updatedState.getTemplateConfiguration());
         }
         if (currentScreenDataUpdateListener != null) {
             currentScreenDataUpdateListener.onUpdate(currentScreenData);
