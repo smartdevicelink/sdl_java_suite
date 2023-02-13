@@ -341,7 +341,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                                 } else {
                                     DebugTool.logInfo(TAG, "Not starting device listener, bluetooth device is null and other SDL apps installed.");
                                 }
-                            } else if(isPreAndroid12RSOnDevice){
+                            } else if (isPreAndroid12RSOnDevice) {
                                 //If the RS app has the BLUETOOTH_CONNECT permission that means it
                                 //will use its proper flow. If it doesn't, it's router service
                                 //must be started to kick off the chain of staring a valid RS.
