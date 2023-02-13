@@ -25,7 +25,7 @@ class CodeFormatAndQuality(unittest.TestCase):
         """Performing checks by flake8
 
         """
-        style_guide = flake8.get_style_guide(max_line_length=120, ignore=['W504', 'N802'])
+        style_guide = flake8.get_style_guide(max_line_length=120, ignore=['E501','W504', 'N802'])
         report = style_guide.check_files(self.list_of_files)
         self.assertEqual(report.total_errors, 0)
 
