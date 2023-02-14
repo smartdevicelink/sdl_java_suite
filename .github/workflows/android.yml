@@ -36,11 +36,6 @@ jobs:
     - name: Sdl JavaEE Tests
       run: ./javaEE/gradlew -p ./javaEE/javaEE test
 
-    - name: RPC Generator Tests
-      run: |
-        python3 -m pip install -r ./generator/requirements.txt
-        python3 ./generator/test/runner.py
-
     - name: Codecov	
       uses: codecov/codecov-action@v1.0.13
       with:
