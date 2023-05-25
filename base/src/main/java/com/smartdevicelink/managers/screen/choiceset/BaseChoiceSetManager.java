@@ -210,6 +210,10 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         if (transactionQueue == null) {
             DebugTool.logError(TAG, "Queue is null, cannot preload choice set");
+            if (listener != null) {
+                listener.onComplete(false);
+            }
+            return;
         }
 
         final LinkedHashSet<ChoiceCell> choicesToUpload = new LinkedHashSet<>(choices);
@@ -297,7 +301,11 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
     private void sendPresentOperation(final ChoiceSet choiceSet, KeyboardListener keyboardListener, InteractionMode mode) {
         if (transactionQueue == null) {
-            DebugTool.logError(TAG, "Queue is null, cannot present choice set");
+            String error = "Queue is null, cannot present choice set";
+            DebugTool.logError(TAG, error);
+            if (choiceSet != null && choiceSet.getChoiceSetSelectionListener() != null) {
+                choiceSet.getChoiceSetSelectionListener().onError(error);
+            }
             return;
         }
 
