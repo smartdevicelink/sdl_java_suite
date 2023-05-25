@@ -140,11 +140,17 @@ abstract class BaseAlertManager extends BaseSubManager {
     public void presentAlert(AlertView alert, AlertCompletionListener listener) {
         if (getState() == ERROR) {
             DebugTool.logWarning(TAG, "Alert Manager In Error State");
+            if (listener != null) {
+                listener.onComplete(false, null);
+            }
             return;
         }
 
         if (transactionQueue == null) {
             DebugTool.logError(TAG, "Queue is null, Cannot present Alert.");
+            if (listener != null) {
+                listener.onComplete(false, null);
+            }
             return;
         }
 
@@ -154,6 +160,9 @@ abstract class BaseAlertManager extends BaseSubManager {
         if (alert.getSoftButtons() != null) {
             if (!BaseScreenManager.checkAndAssignButtonIds(alert.getSoftButtons(), BaseScreenManager.ManagerLocation.ALERT_MANAGER)) {
                 DebugTool.logError(TAG, "Attempted to set soft button objects for Alert, but multiple buttons had the same id.");
+                if (listener != null) {
+                    listener.onComplete(false, null);
+                }
                 return;
             }
             softButtonObjects.addAll(alert.getSoftButtons());
