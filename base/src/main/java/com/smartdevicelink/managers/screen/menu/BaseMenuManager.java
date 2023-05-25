@@ -284,6 +284,7 @@ abstract class BaseMenuManager extends BaseSubManager {
     public void setMenuConfiguration(@NonNull final MenuConfiguration menuConfiguration) {
         if (transactionQueue == null) {
             DebugTool.logError(TAG, "Queue is null, cannot set menu configuration");
+            return;
         }
         if (menuConfiguration.equals(this.menuConfiguration)) {
             DebugTool.logInfo(TAG, "New menu configuration is equal to existing one, will not set new configuration");
