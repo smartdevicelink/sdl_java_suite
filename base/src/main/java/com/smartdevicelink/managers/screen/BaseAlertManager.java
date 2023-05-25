@@ -143,6 +143,11 @@ abstract class BaseAlertManager extends BaseSubManager {
             return;
         }
 
+        if (transactionQueue == null) {
+            DebugTool.logError(TAG, "Queue is null, Cannot present Alert.");
+            return;
+        }
+
         // Check for softButtons and assign them ID's, Behavior mimic SoftButtonManager,
         // as in if invalid ID's are set, Alert will not show up.
         // It's best if ID's are not set custom and allow the screenManager to set them.
@@ -216,10 +221,14 @@ abstract class BaseAlertManager extends BaseSubManager {
     private void updateTransactionQueueSuspended() {
         if (!isAlertRPCAllowed || currentWindowCapability == null) {
             DebugTool.logInfo(TAG, String.format("Suspending the transaction queue. Current permission status is false: %b, window capabilities are null: %b", isAlertRPCAllowed, currentWindowCapability == null));
-            transactionQueue.pause();
+            if (transactionQueue != null) {
+                transactionQueue.pause();
+            }
         } else {
             DebugTool.logInfo(TAG, "Starting the transaction queue");
-            transactionQueue.resume();
+            if (transactionQueue != null) {
+                transactionQueue.resume();
+            }
         }
     }
 
@@ -332,6 +341,11 @@ abstract class BaseAlertManager extends BaseSubManager {
 
     // Updates pending task with new DisplayCapabilities
     void updatePendingOperationsWithNewWindowCapability() {
+        if (transactionQueue == null) {
+            DebugTool.logError(TAG, "Queue is null, cannot update any Alert operations with new " +
+                    "WindowCapability");
+            return;
+        }
         for (Task task : transactionQueue.getTasksAsList()) {
             if (!(task instanceof PresentAlertOperation)) {
                 continue;
