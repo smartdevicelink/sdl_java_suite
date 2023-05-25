@@ -93,7 +93,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     HashSet<ChoiceCell> preloadedChoices;
 
     // We will pass operations into this to be completed
-    final Queue transactionQueue;
+    Queue transactionQueue;
 
     PresentKeyboardOperation currentlyPresentedKeyboardOperation;
 
@@ -106,8 +106,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         super(internalInterface);
 
         // prepare operations queue
-        transactionQueue = internalInterface.getTaskmaster().createQueue("ChoiceSetManagerQueue", 1, false);
-        transactionQueue.pause(); // pause until HMI ready
+        transactionQueue = newTransactionQueue();
 
         // capabilities
         currentSystemContext = SystemContext.SYSCTXT_MAIN;
@@ -133,9 +132,11 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
     @Override
     public void dispose() {
-
-        // cancel the operations
-        transactionQueue.close();
+        // Cancel the operations
+        if (transactionQueue != null) {
+            transactionQueue.close();
+            transactionQueue = null;
+        }
 
         currentHMILevel = null;
         currentSystemContext = null;
@@ -154,7 +155,17 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         super.dispose();
     }
 
+    private Queue newTransactionQueue() {
+        Queue queue = internalInterface.getTaskmaster().createQueue("ChoiceSetManagerQueue", 1, false);
+        queue.pause();
+        return queue;
+    }
+
     private void checkVoiceOptional() {
+        if (transactionQueue == null) {
+            DebugTool.logError(TAG, "Queue is null, cannot check VR option");
+            return;
+        }
 
         CheckChoiceVROptionalOperation checkChoiceVR = new CheckChoiceVROptionalOperation(internalInterface, new CheckChoiceVROptionalInterface() {
             @Override
@@ -173,7 +184,9 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                 // checking VR will always be first in the queue.
                 // If pre-load operations were added while this was in progress
                 // clear it from the queue onError.
-                transactionQueue.clear();
+                if (transactionQueue != null) {
+                    transactionQueue.clear();
+                }
             }
         });
         transactionQueue.add(checkChoiceVR, false);
@@ -193,6 +206,10 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         if (getState() == ERROR) {
             return;
+        }
+
+        if (transactionQueue == null) {
+            DebugTool.logError(TAG, "Queue is null, cannot preload choice set");
         }
 
         final LinkedHashSet<ChoiceCell> choicesToUpload = new LinkedHashSet<>(choices);
@@ -237,6 +254,11 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             return;
         }
 
+        if (transactionQueue == null) {
+            DebugTool.logWarning(TAG, "Queue is null, cannot delete choices");
+            return;
+        }
+
         DeleteChoicesOperation deleteChoicesOperation = new DeleteChoicesOperation(internalInterface, new HashSet<>(choices), preloadedChoices, new ChoicesOperationCompletionListener() {
             @Override
             public void onComplete(boolean success, HashSet<ChoiceCell> updatedLoadedChoiceCells) {
@@ -274,6 +296,10 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     }
 
     private void sendPresentOperation(final ChoiceSet choiceSet, KeyboardListener keyboardListener, InteractionMode mode) {
+        if (transactionQueue == null) {
+            DebugTool.logError(TAG, "Queue is null, cannot present choice set");
+            return;
+        }
 
         if (mode == null) {
             mode = InteractionMode.MANUAL_ONLY;
@@ -341,6 +367,11 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             return null;
         }
 
+        if (transactionQueue == null) {
+            DebugTool.logError(TAG, "Queue is null, cannot present keyboard");
+            return null;
+        }
+
         customKeyboardConfig = createValidKeyboardConfigurationBasedOnKeyboardCapabilitiesFromConfiguration(customKeyboardConfig);
         if (customKeyboardConfig == null) {
             if (this.keyboardConfiguration != null) {
@@ -369,6 +400,11 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     public void dismissKeyboard(@NonNull Integer cancelID) {
         if (getState() == ERROR) {
             DebugTool.logWarning(TAG, "Choice Manager In Error State");
+            return;
+        }
+
+        if (transactionQueue == null) {
+            DebugTool.logError(TAG, "Queue is null, cannot dismiss keyboard");
             return;
         }
 
@@ -484,6 +520,11 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     }
 
     private void updatePendingTasksWithCurrentPreloads() {
+        if (transactionQueue == null) {
+            DebugTool.logError(TAG, "Queue is null, cannot update pending operations with current" +
+                    " preloaded choices");
+            return;
+        }
         for (Task task : this.transactionQueue.getTasksAsList()) {
             if (task.getState() == Task.IN_PROGRESS || task.getState() == Task.CANCELED) {
                 continue;
@@ -542,6 +583,11 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                 }
                 HMILevel oldHMILevel = currentHMILevel;
                 currentHMILevel = onHMIStatus.getHmiLevel();
+                currentSystemContext = onHMIStatus.getSystemContext();
+
+                if (transactionQueue == null) {
+                    return;
+                }
 
                 if (currentHMILevel == HMILevel.HMI_NONE) {
                     transactionQueue.pause();
@@ -550,8 +596,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                 if (oldHMILevel == HMILevel.HMI_NONE && currentHMILevel != HMILevel.HMI_NONE) {
                     transactionQueue.resume();
                 }
-
-                currentSystemContext = onHMIStatus.getSystemContext();
 
                 if (currentSystemContext == SystemContext.SYSCTXT_HMI_OBSCURED || currentSystemContext == SystemContext.SYSCTXT_ALERT) {
                     transactionQueue.pause();
