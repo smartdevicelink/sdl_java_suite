@@ -437,6 +437,10 @@ public class AudioStreamManager extends BaseAudioStreamManager {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             decoder = new AudioDecoder(audioSource, context.get(), sdlSampleRate, sdlSampleType, decoderListener);
         } else {
+            if (getTransactionQueue() == null) {
+                DebugTool.logError(TAG, "Queue is null, cannot push audio source");
+                return;
+            }
             // this BaseAudioDecoder subclass uses methods deprecated with api 21
             decoder = new AudioDecoderCompat(getTransactionQueue(), audioSource, context.get(), sdlSampleRate, sdlSampleType, decoderListener);
         }
