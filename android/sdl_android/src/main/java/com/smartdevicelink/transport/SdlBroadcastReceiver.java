@@ -423,7 +423,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                             && e instanceof AndroidRuntimeException
                             && ("android.app.RemoteServiceException".equals(e.getClass().getName()) || "android.app.ForegroundServiceDidNotStartInTimeException".equals(e.getClass().getName())) //android.app.RemoteServiceException is a private class
                             && e.getMessage() != null
-                            && (e.getMessage().contains("SdlRouterService")) || e.getMessage().contains(serviceName)) {
+                            && (e.getMessage().contains("SdlRouterService") || e.getMessage().contains(serviceName))) {
                         DebugTool.logInfo(TAG, "Handling failed startForegroundService call");
                         Looper.loop();
                     } else if (defaultUncaughtExceptionHandler != null) { //No other exception should be handled
