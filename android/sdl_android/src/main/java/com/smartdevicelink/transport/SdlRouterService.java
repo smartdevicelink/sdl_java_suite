@@ -145,7 +145,7 @@ public class SdlRouterService extends Service {
     /**
      * <b> NOTE: DO NOT MODIFY THIS UNLESS YOU KNOW WHAT YOU'RE DOING.</b>
      */
-    protected static final int ROUTER_SERVICE_VERSION_NUMBER = 16;
+    protected static final int ROUTER_SERVICE_VERSION_NUMBER = 17;
 
     private static final String ROUTER_SERVICE_PROCESS = "com.smartdevicelink.router";
 
@@ -239,7 +239,6 @@ public class SdlRouterService extends Service {
      * Executor for making sure clients are still running during trying times
      */
     private ScheduledExecutorService clientPingExecutor = null;
-    Intent pingIntent = null;
     private boolean isPingingClients = false;
     int pingCount = 0;
 
@@ -818,10 +817,8 @@ public class SdlRouterService extends Service {
                         }
                     }
                     if (service.isPrimaryTransportConnected() && ((TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING & flags) == TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING)) {
-                        if (service.pingIntent == null) {
-                            service.initPingIntent();
-                        }
-                        AndroidTools.sendExplicitBroadcast(service.getApplicationContext(), service.pingIntent, null);
+                        AndroidTools.sendExplicitBroadcast(service.getApplicationContext(),
+                                service.createPingIntent(), null);
                     }
                     break;
                 default:
@@ -2967,16 +2964,29 @@ public class SdlRouterService extends Service {
         return null;
     }
 
-    private void initPingIntent() {
-        pingIntent = new Intent();
+    private Intent createPingIntent() {
+        Intent pingIntent = new Intent();
         pingIntent.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
         pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA, true);
         pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE, getBaseContext().getPackageName());
         pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME, new ComponentName(SdlRouterService.this, SdlRouterService.this.getClass()));
         pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_PING, true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            //Starting in Android 12 we need to start services from a foreground context
+            //To enable developers to be able to start their SdlService from the "background"
+            //we will attach a pendingIntent as an extra to the intent
+            //the developer can use this pendingIntent to start their SdlService from the context of
+            //the active RouterService
+            Intent pending = new Intent();
+            PendingIntent pendingIntent = PendingIntent.getForegroundService(this, (int) System.currentTimeMillis(), pending, PendingIntent.FLAG_MUTABLE | Intent.FILL_IN_COMPONENT);
+            pingIntent.putExtra(TransportConstants.PENDING_INTENT_EXTRA, pendingIntent);
+        }
+
         if (receivedVehicleType != null) {
             pingIntent.putExtra(TransportConstants.VEHICLE_INFO_EXTRA, receivedVehicleType.getStore());
         }
+
+        return pingIntent;
     }
 
     private void startClientPings() {
@@ -3001,6 +3011,7 @@ public class SdlRouterService extends Service {
 
             clientPingExecutor.scheduleAtFixedRate(new Runnable() {
                 List<ResolveInfo> sdlApps;
+                Intent pingIntent;
 
                 @Override
                 public void run() {
@@ -3010,7 +3021,7 @@ public class SdlRouterService extends Service {
                         return;
                     }
                     if (pingIntent == null) {
-                        initPingIntent();
+                        pingIntent = createPingIntent();
                     }
 
                     if (sdlApps == null) {
@@ -3039,7 +3050,6 @@ public class SdlRouterService extends Service {
             clientPingExecutor = null;
             isPingingClients = false;
         }
-        pingIntent = null;
     }
 
     /* ****************************************************************************************************************************************
