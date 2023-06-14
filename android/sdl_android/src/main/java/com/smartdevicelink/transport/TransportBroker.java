@@ -91,6 +91,8 @@ public class TransportBroker {
 
     Messenger routerServiceMessenger = null;
     final Messenger clientMessenger;
+    private SendToRouterServiceTaskQueue queue;
+    private SendToRouterServiceTaskMaster sendToRouterServiceTaskMaster;
 
     boolean isBound = false, registeredWithRouterService = false;
     private String routerPackage = null, routerClassName = null;
@@ -109,6 +111,9 @@ public class TransportBroker {
 
             public void onServiceConnected(ComponentName className, IBinder service) {
                 DebugTool.logInfo(TAG, "Bound to service " + className.toString());
+                queue = new SendToRouterServiceTaskQueue();
+                sendToRouterServiceTaskMaster = new SendToRouterServiceTaskMaster();
+                sendToRouterServiceTaskMaster.start();
                 routerServiceMessenger = new Messenger(service);
                 isBound = true;
                 //So we just established our connection
@@ -118,7 +123,7 @@ public class TransportBroker {
 
             public void onServiceDisconnected(ComponentName className) {
                 DebugTool.logInfo(TAG, "Unbound from service " + className.getClassName());
-                routerServiceMessenger = null;
+                shutDownRouterServiceMessenger();
                 registeredWithRouterService = false;
                 isBound = false;
                 onHardwareDisconnected(null, null);
@@ -127,7 +132,14 @@ public class TransportBroker {
     }
 
     protected boolean sendMessageToRouterService(Message message) {
-        return sendMessageToRouterService(message, 0);
+        if (queue != null) {
+            queue.add(new SendToRouterServiceTask(message));
+            if (sendToRouterServiceTaskMaster != null) {
+                sendToRouterServiceTaskMaster.alert();
+            }
+        }
+        // Updated to only return true as we have adding sending messages to SdlRouterService to be on a different thread.
+        return true;
     }
 
     protected boolean sendMessageToRouterService(Message message, int retryCount) {
@@ -431,7 +443,7 @@ public class TransportBroker {
     public void resetSession() {
         synchronized (INIT_LOCK) {
             unregisterWithRouterService();
-            routerServiceMessenger = null;
+            shutDownRouterServiceMessenger();
             unBindFromRouterService();
             isBound = false;
         }
@@ -445,7 +457,7 @@ public class TransportBroker {
         synchronized (INIT_LOCK) {
             unregisterWithRouterService();
             unBindFromRouterService();
-            routerServiceMessenger = null;
+            shutDownRouterServiceMessenger();
             currentContext = null;
 
         }
@@ -629,8 +641,7 @@ public class TransportBroker {
         } else {
             DebugTool.logWarning(TAG, "Unable to unregister, not bound to router service");
         }
-
-        routerServiceMessenger = null;
+        shutDownRouterServiceMessenger();
     }
 
     protected ComponentName getRouterService() {
@@ -746,5 +757,181 @@ public class TransportBroker {
         bundle.putLong(TransportConstants.SESSION_ID_EXTRA, sessionId);
         msg.setData(bundle);
         this.sendMessageToRouterService(msg);
+    }
+
+    /**
+     * Extends thread to consume SendToRouterServiceTask.
+     */
+    private class SendToRouterServiceTaskMaster extends Thread {
+        protected final Object QUEUE_LOCK = new Object();
+        private boolean isHalted = false, isWaiting = false;
+
+        public SendToRouterServiceTaskMaster() {
+            this.setName("PacketWriteTaskMaster");
+            this.setDaemon(true);
+        }
+
+        @Override
+        public void run() {
+            while (!isHalted) {
+                try {
+                    SendToRouterServiceTask task;
+                    synchronized (QUEUE_LOCK) {
+                        task = getNextTask();
+                        if (task != null) {
+                            task.run();
+                        } else {
+                            isWaiting = true;
+                            QUEUE_LOCK.wait();
+                            isWaiting = false;
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    break;
+                }
+            }
+        }
+
+        private void alert() {
+            if (isWaiting) {
+                synchronized (QUEUE_LOCK) {
+                    QUEUE_LOCK.notify();
+                }
+            }
+        }
+
+        private void close() {
+            this.isHalted = true;
+        }
+    }
+
+    /**
+     * A runnable task for sending messages to the SdlRouterService
+     */
+    public class SendToRouterServiceTask implements Runnable {
+        private Message message;
+
+        public SendToRouterServiceTask(Message message) {
+            this.message = message;
+        }
+
+        @Override
+        public void run() {
+            sendMessageToRouterService(message, 0);
+        }
+    }
+
+    /**
+     * Queue that will hold SendToRouterServiceTask in the order that they are received
+     */
+    @SuppressWarnings("Convert2Diamond")
+    private class SendToRouterServiceTaskQueue {
+        final class Node<E> {
+            final E item;
+            SendToRouterServiceTaskQueue.Node<E> prev;
+            SendToRouterServiceTaskQueue.Node<E> next;
+
+            Node(E item, SendToRouterServiceTaskQueue.Node<E> previous, SendToRouterServiceTaskQueue.Node<E> next) {
+                this.item = item;
+                this.prev = previous;
+                this.next = next;
+            }
+        }
+
+        private SendToRouterServiceTaskQueue.Node<SendToRouterServiceTask> head;
+        private SendToRouterServiceTaskQueue.Node<SendToRouterServiceTask> tail;
+
+        /**
+         * This will take the given task and insert it at the tail of the queue
+         *
+         * @param task the task to be inserted at the tail of the queue
+         */
+        private void insertAtTail(SendToRouterServiceTask task) {
+            if (task == null) {
+                throw new NullPointerException();
+            }
+            SendToRouterServiceTaskQueue.Node<SendToRouterServiceTask> oldTail = tail;
+            SendToRouterServiceTaskQueue.Node<SendToRouterServiceTask> newTail = new SendToRouterServiceTaskQueue.Node<SendToRouterServiceTask>(task, oldTail, null);
+            tail = newTail;
+            if (head == null) {
+                head = newTail;
+            } else {
+                oldTail.next = newTail;
+            }
+        }
+
+        /**
+         * Insert the task in the queue where it belongs
+         *
+         * @param task the new SendToRouterServiceTask that needs to be added to the queue to be handled
+         */
+        public void add(SendToRouterServiceTask task) {
+            synchronized (this) {
+                if (task == null) {
+                    throw new NullPointerException();
+                }
+                //If we currently don't have anything in our queue
+                if (head == null || tail == null) {
+                    SendToRouterServiceTaskQueue.Node<SendToRouterServiceTask> taskNode = new SendToRouterServiceTaskQueue.Node<SendToRouterServiceTask>(task, head, tail);
+                    head = taskNode;
+                    tail = taskNode;
+                } else {
+                    insertAtTail(task);
+                }
+            }
+        }
+
+        /**
+         * Remove the head of the queue
+         *
+         * @return the old head of the queue
+         */
+        public SendToRouterServiceTask poll() {
+            synchronized (this) {
+                if (head == null) {
+                    return null;
+                } else {
+                    SendToRouterServiceTaskQueue.Node<SendToRouterServiceTask> retValNode = head;
+                    SendToRouterServiceTaskQueue.Node<SendToRouterServiceTask> newHead = head.next;
+                    if (newHead == null) {
+                        tail = null;
+                    }
+                    head = newHead;
+
+                    return retValNode.item;
+                }
+            }
+        }
+
+        /**
+         * Currently only clears the head and the tail of the queue.
+         */
+        public void clear() {
+            head = null;
+            tail = null;
+        }
+    }
+
+    protected SendToRouterServiceTask getNextTask() {
+        SendToRouterServiceTaskQueue queue = this.queue;
+        if (queue != null) {
+            return queue.poll();
+        }
+        return null;
+    }
+
+    /**
+     * Method to shut down RouterServiceMessenger
+     */
+    private void shutDownRouterServiceMessenger() {
+        routerServiceMessenger = null;
+        if (sendToRouterServiceTaskMaster != null) {
+            sendToRouterServiceTaskMaster.close();
+        }
+        if (queue != null) {
+            queue.clear();
+        }
+        queue = null;
+        sendToRouterServiceTaskMaster = null;
     }
 }
