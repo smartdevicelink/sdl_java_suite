@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 
 android {
-    namespace "com.smartdevicelink2"
     compileSdkVersion 33
     defaultConfig {
         minSdkVersion 16
