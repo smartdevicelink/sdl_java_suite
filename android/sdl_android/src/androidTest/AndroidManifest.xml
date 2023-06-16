@@ -16,7 +16,8 @@
 
     <application android:debuggable="true">
         <uses-library android:name="android.test.runner" />
-        <activity android:name=".managers.lockscreen.SDLLockScreenActivity"/>
+        <activity android:name=".managers.lockscreen.SDLLockScreenActivity"
+            android:exported="true"/>
     </application>
 
 </manifest>
