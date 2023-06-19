@@ -27,6 +27,25 @@ jobs:
     - name: Hello Sdl Android Tests
       run: ./android/gradlew -p ./android/hello_sdl_android test
       
+    - name: Codecov	
+      uses: codecov/codecov-action@v1.0.13
+      with:
+        yml: ./codecov.yml
+
+  testJava:
+    runs-on: macOS-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Setup JDK
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+      
     - name: Sdl JavaSE Tests
       run: ./javaSE/gradlew -p ./javaSE/javaSE test
       
@@ -36,7 +55,5 @@ jobs:
     - name: Sdl JavaEE Tests
       run: ./javaEE/gradlew -p ./javaEE/javaEE test
 
-    - name: Codecov	
-      uses: codecov/codecov-action@v1.0.13
-      with:
-        yml: ./codecov.yml
+
+
