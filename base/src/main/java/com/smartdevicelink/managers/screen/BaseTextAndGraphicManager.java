@@ -158,10 +158,14 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
     private void updateTransactionQueueSuspended() {
         if (defaultMainWindowCapability == null || HMILevel.HMI_NONE.equals(currentHMILevel)) {
             DebugTool.logInfo(TAG, String.format("Suspending the transaction queue. Current HMI level is NONE: %b, window capabilities are null: %b", HMILevel.HMI_NONE.equals(currentHMILevel), defaultMainWindowCapability == null));
-            transactionQueue.pause();
+            if (transactionQueue != null) {
+                transactionQueue.pause();
+            }
         } else {
             DebugTool.logInfo(TAG, "Starting the transaction queue");
-            transactionQueue.resume();
+            if (transactionQueue != null) {
+                transactionQueue.resume();
+            }
         }
     }
 
@@ -181,6 +185,13 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
     }
 
     private synchronized void sdlUpdate(final CompletionListener listener) {
+        if (transactionQueue == null) {
+            DebugTool.logError(TAG, "Queue is null, cannot perform a text/graphic update");
+            if (listener != null) {
+                listener.onComplete(false);
+            }
+            return;
+        }
 
         CurrentScreenDataUpdatedListener currentScreenDataUpdateListener = new CurrentScreenDataUpdatedListener() {
             @Override
@@ -225,6 +236,10 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
     //Updates pending task with current screen data
     void updatePendingOperationsWithNewScreenData() {
+        if (transactionQueue == null) {
+            DebugTool.logError(TAG, "Queue is null");
+            return;
+        }
         for (Task task : transactionQueue.getTasksAsList()) {
             if (!(task instanceof TextAndGraphicUpdateOperation)) {
                 continue;
@@ -237,6 +252,10 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
     }
 
     void updatePendingOperationsWithFailedScreenState(TextAndGraphicState errorState) {
+        if (transactionQueue == null) {
+            DebugTool.logError(TAG, "Queue is null");
+            return;
+        }
         for (Task task : transactionQueue.getTasksAsList()) {
             if (!(task instanceof TextAndGraphicUpdateOperation)) {
                 continue;
