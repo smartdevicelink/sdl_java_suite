@@ -129,6 +129,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
 
         if (action.equalsIgnoreCase(TransportConstants.ACTION_USB_ACCESSORY_ATTACHED)) {
             DebugTool.logInfo(TAG, "Usb connected");
+            setForegroundExceptionHandler();
             intent.setAction(null);
             onSdlEnabled(context, intent);
             return;
@@ -189,6 +190,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                                         finalIntent.putExtra(UsbManager.EXTRA_ACCESSORY, (Parcelable) null);
                                     }
                                 }
+                                setForegroundExceptionHandler();
                                 onSdlEnabled(finalContext, finalIntent);
                             }
 
@@ -421,7 +423,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                 public void uncaughtException(Thread t, Throwable e) {
                     if (e != null
                             && e instanceof AndroidRuntimeException
-                            && ("android.app.RemoteServiceException".equals(e.getClass().getName()) || "android.app.ForegroundServiceDidNotStartInTimeException".equals(e.getClass().getName())) //android.app.RemoteServiceException is a private class
+                            && ("android.app.RemoteServiceException".equals(e.getClass().getName()) || e.getClass().getName().contains("ForegroundService")) //android.app.RemoteServiceException is a private class
                             && e.getMessage() != null
                             && (e.getMessage().contains("SdlRouterService") || e.getMessage().contains(serviceName))) {
                         DebugTool.logInfo(TAG, "Handling failed startForegroundService call");
