@@ -7,6 +7,8 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
@@ -60,10 +62,8 @@ public class SdlService extends Service {
 
     private static final String TAG = "SDL Service";
 
-    private static final String APP_NAME = "Hello Sdl";
     private static final String APP_NAME_ES = "Hola Sdl";
     private static final String APP_NAME_FR = "Bonjour Sdl";
-    private static final String APP_ID = "8678309";
 
     private static final String ICON_FILENAME = "hello_sdl_icon.png";
     private static final String SDL_IMAGE_FILENAME = "sdl_full_image.png";
@@ -78,7 +78,7 @@ public class SdlService extends Service {
     // TCP/IP transport config
     // The default port is 12345
     // The IP is of the machine that is running SDL Core
-    private static final int TCP_PORT = 12247;
+    private static final int TCP_PORT = 12264;
     private static final String DEV_MACHINE_IP_ADDRESS = "m.sdl.tools";
 
     // variable to create and call functions of the SyncProxy
@@ -104,7 +104,7 @@ public class SdlService extends Service {
     @SuppressLint("NewApi")
     public void enterForeground() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(APP_ID, "SdlService", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel channel = new NotificationChannel(BuildConfig.ID, "SdlService", NotificationManager.IMPORTANCE_DEFAULT);
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             if (notificationManager != null) {
                 notificationManager.createNotificationChannel(channel);
@@ -161,14 +161,14 @@ public class SdlService extends Service {
                 } else {
                     securityLevel = MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF;
                 }
-                transport = new MultiplexTransportConfig(this, APP_ID, securityLevel);
+                transport = new MultiplexTransportConfig(this, BuildConfig.ID, securityLevel);
                 if (BuildConfig.REQUIRE_AUDIO_OUTPUT.equals("TRUE") ) {
                     ((MultiplexTransportConfig)transport).setRequiresAudioSupport(true);
                 }
             } else if (BuildConfig.TRANSPORT.equals("TCP")) {
                 transport = new TCPTransportConfig(TCP_PORT, DEV_MACHINE_IP_ADDRESS, true);
             } else if (BuildConfig.TRANSPORT.equals("MULTI_HB")) {
-                MultiplexTransportConfig mtc = new MultiplexTransportConfig(this, APP_ID, MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
+                MultiplexTransportConfig mtc = new MultiplexTransportConfig(this, BuildConfig.ID, MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
                 mtc.setRequiresHighBandwidth(true);
                 transport = mtc;
             }
@@ -215,8 +215,8 @@ public class SdlService extends Service {
                 @Override
                 public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language, Language hmiLanguage) {
                     boolean isNeedUpdate = false;
-                    String appName = APP_NAME;
-                    String ttsName = APP_NAME;
+                    String appName = BuildConfig.APP_NAME;
+                    String ttsName = BuildConfig.APP_NAME;
                     switch (language) {
                         case ES_MX:
                             isNeedUpdate = true;
@@ -260,7 +260,7 @@ public class SdlService extends Service {
             SdlArtwork appIcon = new SdlArtwork(ICON_FILENAME, FileType.GRAPHIC_PNG, R.mipmap.ic_launcher, true);
 
             // The manager builder sets options for your session
-            SdlManager.Builder builder = new SdlManager.Builder(this, APP_ID, APP_NAME, listener);
+            SdlManager.Builder builder = new SdlManager.Builder(this, BuildConfig.ID, BuildConfig.APP_NAME, listener);
             builder.setAppTypes(appType);
             builder.setTransportType(transport);
             builder.setAppIcon(appIcon);
@@ -375,7 +375,7 @@ public class SdlService extends Service {
      */
     private void performWelcomeShow() {
         sdlManager.getScreenManager().beginTransaction();
-        sdlManager.getScreenManager().setTextField1(APP_NAME);
+        sdlManager.getScreenManager().setTextField1(BuildConfig.APP_NAME);
         sdlManager.getScreenManager().setTextField2(WELCOME_SHOW);
         sdlManager.getScreenManager().setPrimaryGraphic(new SdlArtwork(SDL_IMAGE_FILENAME, FileType.GRAPHIC_PNG, R.drawable.sdl, true));
         sdlManager.getScreenManager().commit(new CompletionListener() {
@@ -422,6 +422,13 @@ public class SdlService extends Service {
      * Will show a sample test message on screen as well as speak a sample test message
      */
     private void showTest() {
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
         sdlManager.getScreenManager().beginTransaction();
         sdlManager.getScreenManager().setTextField1("Test Cell 1 has been selected");
         sdlManager.getScreenManager().setTextField2("");

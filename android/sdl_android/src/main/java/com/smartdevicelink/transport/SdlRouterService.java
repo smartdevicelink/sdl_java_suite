@@ -37,6 +37,7 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
+import android.app.ActivityOptions;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -70,8 +71,10 @@ import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.os.RemoteException;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.AndroidRuntimeException;
+import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 
@@ -158,6 +161,8 @@ public class SdlRouterService extends Service {
     public static final String SDL_NOTIFICATION_FAQS_PAGE = "https://smartdevicelink.com/en/guides/android/frequently-asked-questions/sdl-notifications/";
 
     public static final String REGISTER_WITH_ROUTER_ACTION = "com.sdl.android.register";
+
+    public static final String SDL_PACKAGE = "com.smartdevicelink";
 
     /**
      * Message types sent from the BluetoothReadService Handler
@@ -1124,8 +1129,9 @@ public class SdlRouterService extends Service {
         List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(getApplicationContext(), new SdlAppInfo.BestRouterComparator(), null);
         for (SdlAppInfo appInfo : sdlAppInfoList) {
             if (appInfo.getRouterServiceComponentName().equals(name)) {
+                Log.i("Julian", "initCheck: "+ appInfo.getRouterServiceComponentName());
                 currentAppInfo = appInfo;
-                break;
+            //    break;
             }
         }
 
@@ -1145,6 +1151,7 @@ public class SdlRouterService extends Service {
 
     @Override
     public void onCreate() {
+        DebugTool.enableDebugTool();
         super.onCreate();
         if (AndroidTools.isDebugMode(getApplicationContext())) {
             IntegrationValidator.ValidationResult result = IntegrationValidator.validate(getApplicationContext(), this.getClass(), 0);
@@ -1210,7 +1217,12 @@ public class SdlRouterService extends Service {
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(REGISTER_WITH_ROUTER_ACTION);
-        registerReceiver(mainServiceReceiver, filter);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            registerReceiver(mainServiceReceiver, filter, RECEIVER_EXPORTED);
+
+        } else {
+            registerReceiver(mainServiceReceiver, filter);
+        }
 
         if (!connectAsClient) {
             if (bluetoothAvailable()) {
@@ -1833,7 +1845,6 @@ public class SdlRouterService extends Service {
         packetWriteTaskMaster.setTransportType(type);
         packetWriteTaskMaster.start();
         packetWriteTaskMasterMap.put(type, packetWriteTaskMaster);
-
         Intent startService = new Intent();
         startService.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
 
@@ -1850,7 +1861,6 @@ public class SdlRouterService extends Service {
         }
 
         startService.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             //Starting in Android 12 we need to start services from a foreground context
             //To enable developers to be able to start their SdlService from the "background"
@@ -1858,6 +1868,7 @@ public class SdlRouterService extends Service {
             //the developer can use this pendingIntent to start their SdlService from the context of
             //the active RouterService
             Intent pending = new Intent();
+            pending.setPackage(SDL_PACKAGE);
             PendingIntent pendingIntent = PendingIntent.getForegroundService(this, (int) System.currentTimeMillis(), pending, PendingIntent.FLAG_MUTABLE | Intent.FILL_IN_COMPONENT);
             startService.putExtra(TransportConstants.PENDING_INTENT_EXTRA, pendingIntent);
         }
@@ -2978,6 +2989,7 @@ public class SdlRouterService extends Service {
             //the developer can use this pendingIntent to start their SdlService from the context of
             //the active RouterService
             Intent pending = new Intent();
+            pending.setPackage(SDL_PACKAGE);
             PendingIntent pendingIntent = PendingIntent.getForegroundService(this, (int) System.currentTimeMillis(), pending, PendingIntent.FLAG_MUTABLE | Intent.FILL_IN_COMPONENT);
             pingIntent.putExtra(TransportConstants.PENDING_INTENT_EXTRA, pendingIntent);
         }

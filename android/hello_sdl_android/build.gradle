@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
     defaultConfig {
-        applicationId "com.sdl.hellosdlandroid"
+        applicationId "com.julian"
         minSdkVersion 16
-        targetSdkVersion 33
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
         buildConfigField 'String', 'APP_TYPE', '"DEFAULT"'
@@ -16,6 +16,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
         }
     }
     flavorDimensions "default"
@@ -35,6 +36,18 @@ android {
         multi_sec_off {
             buildConfigField 'String', 'TRANSPORT', '"MULTI"'
             buildConfigField 'String', 'SECURITY', '"OFF"'
+            buildConfigField 'String', 'APP_NAME', '"Hello Sdl"'
+            buildConfigField 'String', 'APPLICATION_ID', '"com.sdl.hellosdlandroid"'
+            buildConfigField 'String', 'ID', '"8678309"'
+        }
+        multi_sec_off_goodbye {
+            applicationId  "garbage.garb"
+            buildConfigField 'String', 'TRANSPORT', '"MULTI"'
+            buildConfigField 'String', 'SECURITY', '"OFF"'
+            buildConfigField 'String', 'APP_NAME', '"goodbye"'
+            buildConfigField 'String', 'APPLICATION_ID', '"com.sdl.goodbyeandroid"'
+            buildConfigField 'String', 'ID', '"9678308"'
+
         }
         multi_high_bandwidth {
             buildConfigField 'String', 'TRANSPORT', '"MULTI_HB"'
@@ -43,6 +56,9 @@ android {
         tcp {
             buildConfigField 'String', 'TRANSPORT', '"TCP"'
             buildConfigField 'String', 'SECURITY', '"OFF"'
+            buildConfigField 'String', 'APP_NAME', '"Hello Sdl"'
+            buildConfigField 'String', 'APPLICATION_ID', '"com.sdl.hellosdlandroid"'
+            buildConfigField 'String', 'ID', '"8678309"'
         }
         requiresAudioOutput {
             buildConfigField 'String', 'TRANSPORT', '"MULTI"'
@@ -55,6 +71,7 @@ android {
     lintOptions {
         disable 'GoogleAppIndexingWarning'
     }
+    namespace 'com.sdl.hellosdlandroid'
 }
 
 

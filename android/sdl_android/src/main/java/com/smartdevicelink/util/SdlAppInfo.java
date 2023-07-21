@@ -64,7 +64,7 @@ public class SdlAppInfo {
     private static final String SDL_OEM_VEHICLE_TYPE_METADATA = "sdl_oem_vehicle_type";
 
 
-    String packageName;
+    public String packageName;
     ComponentName routerServiceComponentName;
     int routerServiceVersion = 4; //We use this as a default and assume if the number doesn't exist in meta data it is because the app hasn't updated.
     boolean isCustomRouterService = false;

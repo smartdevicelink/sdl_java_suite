@@ -31,6 +31,8 @@
  */
 package com.smartdevicelink.util;
 
+import android.content.pm.PackageInfo;
+
 import com.smartdevicelink.BuildConfig;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
@@ -74,6 +76,7 @@ public class DebugTool {
 
     @SuppressWarnings("ConstantConditions")
     private static String prependProxyVersionNumberToString(String string) {
+
         if (BuildConfig.VERSION_NAME != null && string != null) {
             string = BuildConfig.VERSION_NAME + ": " + string;
         }

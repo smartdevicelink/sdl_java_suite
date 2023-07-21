@@ -37,6 +37,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ResolveInfo;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -48,6 +49,8 @@ import java.util.Vector;
 import static com.smartdevicelink.transport.TransportConstants.BIND_LOCATION_CLASS_NAME_EXTRA;
 import static com.smartdevicelink.transport.TransportConstants.BIND_LOCATION_PACKAGE_NAME_EXTRA;
 import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME;
+
+import androidx.core.content.ContextCompat;
 
 /**
  * Created by Joey Grover on 8/18/17.
@@ -73,8 +76,12 @@ public class ServiceFinder {
         this.services = new Vector<>();
 
         this.sdlMultiMap = AndroidTools.getSdlEnabledApps(context, packageName);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            this.context.registerReceiver(mainServiceReceiver, new IntentFilter(this.receiverLocation), Context.RECEIVER_EXPORTED);
+        } else {
+            this.context.registerReceiver(mainServiceReceiver, new IntentFilter(this.receiverLocation));
 
-        this.context.registerReceiver(mainServiceReceiver, new IntentFilter(this.receiverLocation));
+        }
 
         timeoutRunnable = new Runnable() {
             @Override

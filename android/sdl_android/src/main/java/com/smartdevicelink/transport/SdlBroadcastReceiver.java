@@ -48,6 +48,7 @@ import android.os.Build;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.util.AndroidRuntimeException;
+import android.util.Log;
 
 import androidx.annotation.CallSuper;
 
@@ -103,12 +104,13 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
     @Override
     @CallSuper
     public void onReceive(Context context, Intent intent) {
+        DebugTool.enableDebugTool();
 
-        //Log.i(TAG, "Sdl Receiver Activated");
         final String action = intent.getAction();
         if (action == null) {
             return;
         }
+        DebugTool.logInfo(TAG, "onReceive: we are in on receive " + action);
 
         BluetoothDevice device = null;
 
