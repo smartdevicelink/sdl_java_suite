@@ -37,6 +37,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -332,9 +333,12 @@ public class LockScreenManager extends BaseSubManager {
             // pass in icon, background color, and custom view
             if (lockScreenEnabled && isApplicationForegrounded && context.get() != null) {
                 if (isLockscreenDismissible && !lockscreenDismissReceiverRegistered) {
-                    context.get().registerReceiver(mLockscreenDismissedReceiver, new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        context.get().registerReceiver(mLockscreenDismissedReceiver, new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED), Context.RECEIVER_EXPORTED);
+                    } else {
+                        context.get().registerReceiver(mLockscreenDismissedReceiver, new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED));
+                    }
                     lockscreenDismissReceiverRegistered = true;
-
                 }
                 LockScreenStatus status = getLockScreenStatus();
                 if (status == LockScreenStatus.REQUIRED || displayMode == LockScreenConfig.DISPLAY_MODE_ALWAYS || (status == LockScreenStatus.OPTIONAL && displayMode == LockScreenConfig.DISPLAY_MODE_OPTIONAL_OR_REQUIRED)) {

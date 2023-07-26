@@ -37,6 +37,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ResolveInfo;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -74,7 +75,11 @@ public class ServiceFinder {
 
         this.sdlMultiMap = AndroidTools.getSdlEnabledApps(context, packageName);
 
-        this.context.registerReceiver(mainServiceReceiver, new IntentFilter(this.receiverLocation));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            this.context.registerReceiver(mainServiceReceiver, new IntentFilter(this.receiverLocation), Context.RECEIVER_EXPORTED);
+        } else {
+            this.context.registerReceiver(mainServiceReceiver, new IntentFilter(this.receiverLocation));
+        }
 
         timeoutRunnable = new Runnable() {
             @Override
