@@ -862,6 +862,14 @@ public class SdlRouterService extends Service {
                     ParcelFileDescriptor parcelFileDescriptor = (ParcelFileDescriptor) msg.obj;
 
                     if (parcelFileDescriptor != null) {
+                        // Added requirements with Android 14, Checking if we have proper permission to enter the foreground for Foreground service type connectedDevice.
+                        // If we do not have permission to enter the Foreground, we pass off hosting the RouterService to another app.
+                        if (!AndroidTools.ServicePermissionUtil.hasForegroundServiceTypePermission(service.getApplicationContext()))  {
+                            service.deployNextRouterService(parcelFileDescriptor);
+                            closeUSBAccessoryAttachmentActivity(msg);
+                            return;
+                        }
+
                         //New USB constructor with PFD
                         service.usbTransport = new MultiplexUsbTransport(parcelFileDescriptor, service.usbHandler, msg.getData());
 
@@ -900,16 +908,7 @@ public class SdlRouterService extends Service {
 
 
                     }
-
-                    if (msg.replyTo != null) {
-                        Message message = Message.obtain();
-                        message.what = TransportConstants.ROUTER_USB_ACC_RECEIVED;
-                        try {
-                            msg.replyTo.send(message);
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    closeUSBAccessoryAttachmentActivity(msg);
 
                     break;
                 case TransportConstants.ALT_TRANSPORT_CONNECTED:
@@ -917,6 +916,17 @@ public class SdlRouterService extends Service {
                 default:
                     DebugTool.logWarning(TAG, "Unsupported request: " + msg.what);
                     break;
+            }
+        }
+        private void closeUSBAccessoryAttachmentActivity(Message msg) {
+            if (msg.replyTo != null) {
+                Message message = Message.obtain();
+                message.what = TransportConstants.ROUTER_USB_ACC_RECEIVED;
+                try {
+                    msg.replyTo.send(message);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
