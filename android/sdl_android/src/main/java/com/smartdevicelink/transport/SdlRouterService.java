@@ -1166,7 +1166,7 @@ public class SdlRouterService extends Service {
     /**
      * The method will attempt to start up the next router service in line based on the sorting criteria of best router service.
      */
-    protected void deployNextRouterService() {
+    protected void deployNextRouterService(ParcelFileDescriptor usbPfd) {
         List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(getApplicationContext(), new SdlAppInfo.BestRouterComparator(), null);
         if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty()) {
             ComponentName name = new ComponentName(this, this.getClass());
@@ -1178,11 +1178,26 @@ public class SdlRouterService extends Service {
                     SdlAppInfo nextUp = sdlAppInfoList.get(i + 1);
                     Intent serviceIntent = new Intent();
                     serviceIntent.setComponent(nextUp.getRouterServiceComponentName());
+                    if (usbPfd != null) {
+                        serviceIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT);
+                        serviceIntent.putExtra(TransportConstants.CONNECTION_TYPE_EXTRA, TransportConstants.AOA_USB);
+                        serviceIntent.putExtra(FOREGROUND_EXTRA, true);
+                    }
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                         startService(serviceIntent);
                     } else {
                         try {
                             startForegroundService(serviceIntent);
+                            if (usbPfd != null) {
+                                UsbTransferProvider usbTransferProvider = new UsbTransferProvider(getApplicationContext(), nextUp.getRouterServiceComponentName(), usbPfd, new UsbTransferProvider.UsbTransferCallback() {
+                                    @Override
+                                    public void onUsbTransferUpdate(boolean success) {
+                                        Log.i(TAG, "onUsbTransferUpdate: " + success);
+                                        closeSelf();
+                                    }
+                                });
+                            }
+
                         } catch (Exception e) {
                             DebugTool.logError(TAG, "Unable to start next SDL router service. " + e.getMessage());
                         }
@@ -1282,7 +1297,7 @@ public class SdlRouterService extends Service {
         if (firstStart) {
             firstStart = false;
             if (!initCheck(isConnectedOverUSB)) { // Run checks on process and permissions
-                deployNextRouterService();
+                deployNextRouterService(null);
                 closeSelf();
                 return START_REDELIVER_INTENT;
             }
