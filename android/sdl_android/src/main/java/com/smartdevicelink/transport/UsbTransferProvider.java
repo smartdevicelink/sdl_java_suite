@@ -130,6 +130,26 @@ public class UsbTransferProvider {
 
     }
 
+    public UsbTransferProvider(Context context, ComponentName service, ParcelFileDescriptor usbPfd, UsbTransferCallback callback) {
+        if (context == null || service == null || usbPfd == null) {
+            throw new IllegalStateException("Supplied params are not correct. Context == null? " + (context == null) + " ComponentName == null? " + (service == null) + " Usb PFD == null? " + usbPfd);
+        }
+        if (usbPfd.getFileDescriptor() != null && usbPfd.getFileDescriptor().valid()) {
+            this.context = context;
+            this.routerService = service;
+            this.callback = callback;
+            this.clientMessenger = new Messenger(new ClientHandler(this));
+            this.usbPfd = usbPfd;
+            checkIsConnected();
+        } else {
+            DebugTool.logError(TAG, "Unable to open accessory");
+            clientMessenger = null;
+            if (callback != null) {
+                callback.onUsbTransferUpdate(false);
+            }
+        }
+    }
+
     @SuppressLint("NewApi")
     private ParcelFileDescriptor getFileDescriptor(UsbAccessory accessory, Context context) {
         if (AndroidTools.isUSBCableConnected(context)) {
