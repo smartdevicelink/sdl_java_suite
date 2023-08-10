@@ -32,6 +32,7 @@
 
 package com.smartdevicelink.util;
 
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -47,10 +48,13 @@ import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.usb.UsbAccessory;
+import android.hardware.usb.UsbManager;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.VehicleType;
@@ -390,6 +394,30 @@ public class AndroidTools {
         } catch (Resources.NotFoundException ex) {
             DebugTool.logError(TAG, "Failed to find resource: " + ex.getMessage() + " - assume vehicle data is supported");
             return null;
+        }
+    }
+
+    public static class ServicePermissionUtil {
+        public static boolean hasUsbAccessoryPermission(Context context) {
+            UsbManager manager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
+            for (final UsbAccessory usbAccessory : manager.getAccessoryList()) {
+                if (manager.hasPermission(usbAccessory)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static boolean checkPermission(Context applicationContext, String permission) {
+            return PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(applicationContext, permission);
+        }
+
+        public static boolean hasForegroundServiceTypePermission(Context context) {
+            // if Build is less than Android 14, we don't need either permission to enter the foreground.
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                return true;
+            }
+            return ServicePermissionUtil.checkPermission(context, Manifest.permission.BLUETOOTH_CONNECT) || ServicePermissionUtil.hasUsbAccessoryPermission(context);
         }
     }
 }
