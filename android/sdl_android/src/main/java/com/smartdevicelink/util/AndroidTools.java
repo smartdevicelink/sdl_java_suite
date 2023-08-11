@@ -400,6 +400,9 @@ public class AndroidTools {
     public static class ServicePermissionUtil {
         public static boolean hasUsbAccessoryPermission(Context context) {
             UsbManager manager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
+            if (manager == null || manager.getAccessoryList() == null) {
+                return false;
+            }
             for (final UsbAccessory usbAccessory : manager.getAccessoryList()) {
                 if (manager.hasPermission(usbAccessory)) {
                     return true;
