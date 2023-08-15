@@ -1202,7 +1202,6 @@ public class SdlRouterService extends Service {
                                 UsbTransferProvider usbTransferProvider = new UsbTransferProvider(getApplicationContext(), nextUp.getRouterServiceComponentName(), usbPfd, new UsbTransferProvider.UsbTransferCallback() {
                                     @Override
                                     public void onUsbTransferUpdate(boolean success) {
-                                        Log.i(TAG, "onUsbTransferUpdate: " + success);
                                         closeSelf();
                                     }
                                 });
