@@ -104,18 +104,25 @@ public class SdlService extends Service {
     @SuppressLint("NewApi")
     public void enterForeground() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(APP_ID, "SdlService", NotificationManager.IMPORTANCE_DEFAULT);
-            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(channel);
-                Notification.Builder builder = new Notification.Builder(this, channel.getId())
-                        .setContentTitle("Connected through SDL")
-                        .setSmallIcon(R.drawable.ic_sdl);
-                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    builder.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE);
+            try {
+                NotificationChannel channel = new NotificationChannel(APP_ID, "SdlService", NotificationManager.IMPORTANCE_DEFAULT);
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                if (notificationManager != null) {
+                    notificationManager.createNotificationChannel(channel);
+                    Notification.Builder builder = new Notification.Builder(this, channel.getId())
+                            .setContentTitle("Connected through SDL")
+                            .setSmallIcon(R.drawable.ic_sdl);
+                    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        builder.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE);
+                    }
+                    Notification serviceNotification = builder.build();
+                    startForeground(FOREGROUND_SERVICE_ID, serviceNotification);
                 }
-                Notification serviceNotification = builder.build();
-                startForeground(FOREGROUND_SERVICE_ID, serviceNotification);
+            } catch (Exception e) {
+                // This should only catch for TCP connections on Android 14+ due to needing
+                // permissions for ForegroundServiceType ConnectedDevice that don't make sense for
+                // a TCP connection
+                DebugTool.logError(TAG, "Unable to start service in foreground", e);
             }
         }
     }
