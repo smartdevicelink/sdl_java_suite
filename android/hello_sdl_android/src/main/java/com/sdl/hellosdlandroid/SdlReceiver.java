@@ -76,6 +76,7 @@ public class SdlReceiver extends SdlBroadcastReceiver {
     public String getSdlServiceName() {
         return SdlService.class.getSimpleName();
     }
+
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
 
         public void onReceive(Context context, Intent intent) {

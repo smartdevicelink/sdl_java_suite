@@ -918,6 +918,7 @@ public class SdlRouterService extends Service {
                     break;
             }
         }
+
         private void closeUSBAccessoryAttachmentActivity(Message msg) {
             if (msg.replyTo != null) {
                 Message message = Message.obtain();
