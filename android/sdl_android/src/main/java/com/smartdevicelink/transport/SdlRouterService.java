@@ -864,7 +864,7 @@ public class SdlRouterService extends Service {
                     if (parcelFileDescriptor != null) {
                         // Added requirements with Android 14, Checking if we have proper permission to enter the foreground for Foreground service type connectedDevice.
                         // If we do not have permission to enter the Foreground, we pass off hosting the RouterService to another app.
-                        if (!AndroidTools.ServicePermissionUtil.hasForegroundServiceTypePermission(service.getApplicationContext()))  {
+                        if (!AndroidTools.ServicePermissionUtil.hasForegroundServiceTypePermission(service.getApplicationContext())) {
                             service.deployNextRouterService(parcelFileDescriptor);
                             closeUSBAccessoryAttachmentActivity(msg);
                             return;
