@@ -32,12 +32,12 @@ public class SdlReceiver extends SdlBroadcastReceiver {
         // We will check the intent for a pendingIntent parcelable extra
         // This pendingIntent allows us to start the SdlService from the context of the active router service which is in the foreground
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            storedIntent = intent;
             PendingIntent pendingIntent = (PendingIntent) intent.getParcelableExtra(TransportConstants.PENDING_INTENT_EXTRA);
             if (pendingIntent != null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                     if (!AndroidTools.ServicePermissionUtil.hasForegroundServiceTypePermission(context)) {
                         requestUsbAccessory(context);
+                        storedIntent = intent;
                         storedContext = context;
                         this.pendingIntent = pendingIntent;
                         DebugTool.logInfo(TAG, "Permission missing for ForegroundServiceType connected device." + context);
@@ -93,6 +93,14 @@ public class SdlReceiver extends SdlBroadcastReceiver {
         }
     };
 
+    /**
+     * Request permission from USB Accessory if USB accessory is not null.
+     * If the user has not granted the BLUETOOTH_CONNECT permission,
+     * we can request the USB Accessory permission to satisfy the requirements for
+     * FOREGROUND_SERVICE_CONNECTED_DEVICE and can start our service and allow
+     * it to enter the foreground. FOREGROUND_SERVICE_CONNECTED_DEVICE is a requirement
+     * in Android 14
+     */
     private void requestUsbAccessory(Context context) {
         UsbManager manager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
         if (manager.getAccessoryList() == null) {
