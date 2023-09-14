@@ -3909,6 +3909,11 @@ public class SdlRouterService extends Service {
     @TargetApi(11)
     @SuppressLint("NewApi")
     private void notifySppError() {
+        // Check first to see if the RouterService is in the Foreground
+        // This is to prevent the notification appearing in error
+        if (!this.isForeground) {
+            return;
+        }
         Notification.Builder builder;
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             builder = new Notification.Builder(getApplicationContext());
