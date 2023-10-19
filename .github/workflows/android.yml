@@ -3,7 +3,36 @@ name: GitHub CI
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
-  test:
+  test_Android:
+    runs-on: macOS-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Setup JDK
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+        
+    - name: Sdl Android Tests
+      # For more info, please check out: https://github.com/marketplace/actions/android-emulator-runner
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 29
+        script: ./android/gradlew -p ./android :sdl_android:connectedCheck
+        
+    - name: Hello Sdl Android Tests
+      run: ./android/gradlew -p ./android/hello_sdl_android test
+
+    - name: Codecov	
+      uses: codecov/codecov-action@v1.0.13
+      with:
+        yml: ./codecov.yml
+
+  test_Java:
     runs-on: macOS-latest
     steps:
 
@@ -16,16 +45,6 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-        
-    - name: Sdl Android Tests
-      # For more info, please check out: https://github.com/marketplace/actions/android-emulator-runner
-      uses: reactivecircus/android-emulator-runner@v2
-      with:
-        api-level: 29
-        script: ./android/gradlew -p ./android :sdl_android:connectedCheck
-        
-    - name: Hello Sdl Android Tests
-      run: ./android/gradlew -p ./android/hello_sdl_android test
       
     - name: Sdl JavaSE Tests
       run: ./javaSE/gradlew -p ./javaSE/javaSE test
@@ -36,7 +55,3 @@ jobs:
     - name: Sdl JavaEE Tests
       run: ./javaEE/gradlew -p ./javaEE/javaEE test
 
-    - name: Codecov	
-      uses: codecov/codecov-action@v1.0.13
-      with:
-        yml: ./codecov.yml

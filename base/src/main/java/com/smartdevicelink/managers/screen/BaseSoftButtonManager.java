@@ -158,6 +158,10 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
                 // Auto-send an updated Show if we have new capabilities
                 if (softButtonObjects != null && !softButtonObjects.isEmpty() && softButtonCapabilities != null && !softButtonCapabilitiesEquals(oldSoftButtonCapabilities, softButtonCapabilities)) {
+                    if (transactionQueue == null) {
+                        DebugTool.logError(TAG, "Queue is null, cannot update SoftButtons");
+                        return;
+                    }
                     SoftButtonReplaceOperation operation = new SoftButtonReplaceOperation(internalInterface, fileManager, softButtonCapabilities, softButtonObjects, getCurrentMainField1(), isDynamicGraphicSupported);
                     transactionQueue.add(operation, false);
                 }
@@ -261,10 +265,14 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
     private void updateTransactionQueueSuspended() {
         if (softButtonCapabilities == null || HMILevel.HMI_NONE.equals(currentHMILevel)) {
             DebugTool.logInfo(TAG, String.format("Suspending the transaction queue. Current HMI level is NONE: %b, soft button capabilities are null: %b", HMILevel.HMI_NONE.equals(currentHMILevel), softButtonCapabilities == null));
-            transactionQueue.pause();
+            if (transactionQueue != null) {
+                transactionQueue.pause();
+            }
         } else {
             DebugTool.logInfo(TAG, "Starting the transaction queue");
-            transactionQueue.resume();
+            if (transactionQueue != null) {
+                transactionQueue.resume();
+            }
         }
     }
 
@@ -323,6 +331,10 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
             batchQueue.clear();
             batchQueue.add(operation);
         } else {
+            if (transactionQueue == null) {
+                DebugTool.logError(TAG, "Queue is null, cannot add SoftButtons");
+                return;
+            }
             transactionQueue.clear();
             transactionQueue.add(operation, false);
         }
@@ -357,6 +369,10 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
             }
             batchQueue.add(operation);
         } else {
+            if (transactionQueue == null) {
+                DebugTool.logError(TAG, "Queue is null, cannot transition SoftButton state");
+                return;
+            }
             transactionQueue.add(operation, false);
         }
     }
@@ -397,6 +413,10 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
      * @param batchUpdates Set true if the manager should batch updates together, or false if it should send them as soon as they happen
      */
     protected void setBatchUpdates(boolean batchUpdates) {
+        if (transactionQueue == null) {
+            DebugTool.logError(TAG, "Queue is null, cannot update SoftButtons");
+            return;
+        }
         this.batchUpdates = batchUpdates;
 
         if (!this.batchUpdates) {
@@ -425,6 +445,11 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
      * @param currentMainField1 the String that will be set to TextField1 on the current template
      */
     protected void setCurrentMainField1(String currentMainField1) {
+        if (transactionQueue == null) {
+            DebugTool.logError(TAG, "Queue is null, cannot update MainField1 for SoftButton " +
+                    "operations");
+            return;
+        }
         this.currentMainField1 = currentMainField1;
 
         for (Task task : transactionQueue.getTasksAsList()) {
