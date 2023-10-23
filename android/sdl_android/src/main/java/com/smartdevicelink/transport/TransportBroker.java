@@ -144,7 +144,7 @@ public class TransportBroker {
                 sendToRouterServiceTaskMaster.alert();
             }
         }
-        // Updated to only return true as we have adding sending messages to SdlRouterService to be on a different thread.
+        // Updated to only return true as we have added sending messages to SdlRouterService to be on a different thread.
         return true;
     }
 
