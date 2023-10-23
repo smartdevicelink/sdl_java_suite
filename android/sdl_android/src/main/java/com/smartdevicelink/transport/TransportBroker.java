@@ -91,8 +91,8 @@ public class TransportBroker {
 
     Messenger routerServiceMessenger = null;
     final Messenger clientMessenger;
-    private SendToRouterServiceTaskQueue queue;
-    private SendToRouterServiceTaskMaster sendToRouterServiceTaskMaster;
+    private SendMessageToRouterService.SendToRouterServiceTaskQueue queue;
+    private SendMessageToRouterService.SendToRouterServiceTaskMaster sendToRouterServiceTaskMaster;
 
     boolean isBound = false, registeredWithRouterService = false;
     private String routerPackage = null, routerClassName = null;
@@ -111,8 +111,8 @@ public class TransportBroker {
 
             public void onServiceConnected(ComponentName className, IBinder service) {
                 DebugTool.logInfo(TAG, "Bound to service " + className.toString());
-                queue = new SendToRouterServiceTaskQueue();
-                sendToRouterServiceTaskMaster = new SendToRouterServiceTaskMaster();
+                queue = new SendMessageToRouterService.SendToRouterServiceTaskQueue();
+                sendToRouterServiceTaskMaster = new SendMessageToRouterService.SendToRouterServiceTaskMaster(queue);
                 sendToRouterServiceTaskMaster.start();
                 routerServiceMessenger = new Messenger(service);
                 isBound = true;
@@ -132,8 +132,14 @@ public class TransportBroker {
     }
 
     protected boolean sendMessageToRouterService(Message message) {
+        SendMessageToRouterService.Callback callback = new SendMessageToRouterService.Callback() {
+            @Override
+            public boolean sendMessage(Message message, int retry) {
+                return sendMessageToRouterService(message, retry);
+            }
+        };
         if (queue != null) {
-            queue.add(new SendToRouterServiceTask(message));
+            queue.add(new SendMessageToRouterService.SendToRouterServiceTask(message, callback));
             if (sendToRouterServiceTaskMaster != null) {
                 sendToRouterServiceTaskMaster.alert();
             }
