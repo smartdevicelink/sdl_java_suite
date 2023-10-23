@@ -2939,6 +2939,9 @@ public class SdlRouterService extends Service {
         long currentPriority = -Long.MAX_VALUE, peekWeight;
         synchronized (REGISTERED_APPS_LOCK) {
             PacketWriteTask peekTask;
+            if (registeredApps == null) {
+                return null;
+            }
             for (RegisteredApp app : registeredApps.values()) {
                 peekTask = app.peekNextTask(transportType);
                 if (peekTask != null) {
