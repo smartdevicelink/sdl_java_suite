@@ -113,7 +113,7 @@ public class ChoiceSetManagerTests {
         assertNull(csm.currentSystemContext);
         assertNull(csm.defaultMainWindowCapability);
 
-        assertEquals(csm.transactionQueue.getTasksAsList().size(), 0);
+        assertNull(csm.transactionQueue);
 
         assertFalse(csm.isVROptional);
 
