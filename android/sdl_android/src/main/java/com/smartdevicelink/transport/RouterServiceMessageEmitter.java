@@ -2,17 +2,12 @@ package com.smartdevicelink.transport;
 
 import android.os.Message;
 
-public class RouterServiceMessageEmitter {
-
-    /**
-     * Extends thread to consume SendToRouterServiceTask.
-     */
-    public static class SendToRouterServiceTaskMaster extends Thread {
+public class RouterServiceMessageEmitter extends Thread {
         protected final Object QUEUE_LOCK = new Object();
         private boolean isHalted = false, isWaiting = false;
         private SendToRouterServiceTaskQueue queue;
 
-        public SendToRouterServiceTaskMaster(SendToRouterServiceTaskQueue queue) {
+        public RouterServiceMessageEmitter(SendToRouterServiceTaskQueue queue) {
             this.setName("PacketWriteTaskMaster");
             this.setDaemon(true);
             this.queue = queue;
@@ -58,7 +53,6 @@ public class RouterServiceMessageEmitter {
         protected void close() {
             this.isHalted = true;
         }
-    }
 
     /**
      * A runnable task for sending messages to the SdlRouterService

@@ -92,7 +92,7 @@ public class TransportBroker {
     Messenger routerServiceMessenger = null;
     final Messenger clientMessenger;
     private RouterServiceMessageEmitter.SendToRouterServiceTaskQueue queue;
-    private RouterServiceMessageEmitter.SendToRouterServiceTaskMaster sendToRouterServiceTaskMaster;
+    private RouterServiceMessageEmitter routerServiceMessageEmitter;
 
     boolean isBound = false, registeredWithRouterService = false;
     private String routerPackage = null, routerClassName = null;
@@ -112,8 +112,8 @@ public class TransportBroker {
             public void onServiceConnected(ComponentName className, IBinder service) {
                 DebugTool.logInfo(TAG, "Bound to service " + className.toString());
                 queue = new RouterServiceMessageEmitter.SendToRouterServiceTaskQueue();
-                sendToRouterServiceTaskMaster = new RouterServiceMessageEmitter.SendToRouterServiceTaskMaster(queue);
-                sendToRouterServiceTaskMaster.start();
+                routerServiceMessageEmitter = new RouterServiceMessageEmitter(queue);
+                routerServiceMessageEmitter.start();
                 routerServiceMessenger = new Messenger(service);
                 isBound = true;
                 //So we just established our connection
@@ -140,8 +140,8 @@ public class TransportBroker {
         };
         if (queue != null) {
             queue.add(new RouterServiceMessageEmitter.SendToRouterServiceTask(message, callback));
-            if (sendToRouterServiceTaskMaster != null) {
-                sendToRouterServiceTaskMaster.alert();
+            if (routerServiceMessageEmitter != null) {
+                routerServiceMessageEmitter.alert();
             }
         }
         // Updated to only return true as we have added sending messages to SdlRouterService to be on a different thread.
@@ -770,13 +770,13 @@ public class TransportBroker {
      */
     private void shutDownRouterServiceMessenger() {
         routerServiceMessenger = null;
-        if (sendToRouterServiceTaskMaster != null) {
-            sendToRouterServiceTaskMaster.close();
+        if (routerServiceMessageEmitter != null) {
+            routerServiceMessageEmitter.close();
         }
         if (queue != null) {
             queue.clear();
         }
         queue = null;
-        sendToRouterServiceTaskMaster = null;
+        routerServiceMessageEmitter = null;
     }
 }
