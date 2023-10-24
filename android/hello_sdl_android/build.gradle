@@ -55,6 +55,7 @@ android {
             buildConfigField 'String', 'SECURITY', '"OFF"'
             buildConfigField 'String', 'APP_TYPE', '"MEDIA"'
             buildConfigField 'String', 'REQUIRE_AUDIO_OUTPUT', '"TRUE"'
+
         }
     }
     lintOptions {
