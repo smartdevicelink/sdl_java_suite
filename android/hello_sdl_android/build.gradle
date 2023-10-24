@@ -8,8 +8,14 @@ android {
         targetSdkVersion 33
         versionCode 1
         versionName "1.0"
+        resValue "string", "app_name", "Hello Sdl Android"
         buildConfigField 'String', 'APP_TYPE', '"DEFAULT"'
         buildConfigField 'String', 'REQUIRE_AUDIO_OUTPUT', '"FALSE"'
+        buildConfigField 'String', 'SDL_APP_NAME', '"Hello Sdl"'
+        buildConfigField 'String', 'SDL_APP_ID', '"8678309"'
+        manifestPlaceholders = [
+                appIcon: "@mipmap/ic_launcher"
+        ]
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
@@ -21,83 +27,34 @@ android {
     flavorDimensions "default"
     productFlavors {
         multi_sec_high {
-            applicationId "com.sdl.hellosdlandroid"
-            resValue "string", "app_name", "Hello Sdl Android"
-            manifestPlaceholders = [
-                    appIcon: "@mipmap/ic_launcher"
-            ]
             buildConfigField 'String', 'TRANSPORT', '"MULTI"'
             buildConfigField 'String', 'SECURITY', '"HIGH"'
-            buildConfigField 'String', 'APP_NAME', '"Hello Sdl"'
-            buildConfigField 'String', 'APP_ID', '"8678309"'
         }
         multi_sec_med {
-            applicationId "com.sdl.hellosdlandroid"
-            resValue "string", "app_name", "Hello Sdl Android"
-            manifestPlaceholders = [
-                    appIcon: "@mipmap/ic_launcher"
-            ]
             buildConfigField 'String', 'TRANSPORT', '"MULTI"'
             buildConfigField 'String', 'SECURITY', '"MED"'
-            buildConfigField 'String', 'APP_NAME', '"Hello Sdl"'
-            buildConfigField 'String', 'APP_ID', '"8678309"'
         }
         multi_sec_low {
-            applicationId "com.sdl.hellosdlandroid"
-            resValue "string", "app_name", "Hello Sdl Android"
-            manifestPlaceholders = [
-                    appIcon: "@mipmap/ic_launcher"
-            ]
             buildConfigField 'String', 'TRANSPORT', '"MULTI"'
             buildConfigField 'String', 'SECURITY', '"LOW"'
-            buildConfigField 'String', 'APP_NAME', '"Hello Sdl"'
-            buildConfigField 'String', 'APP_ID', '"8678309"'
         }
         multi_sec_off {
-            applicationId "com.sdl.hellosdlandroid"
-            resValue "string", "app_name", "Hello Sdl Android"
-            manifestPlaceholders = [
-                    appIcon: "@mipmap/ic_launcher"
-            ]
             buildConfigField 'String', 'TRANSPORT', '"MULTI"'
             buildConfigField 'String', 'SECURITY', '"OFF"'
-            buildConfigField 'String', 'APP_NAME', '"Hello Sdl"'
-            buildConfigField 'String', 'APP_ID', '"8678309"'
         }
         multi_high_bandwidth {
-            applicationId "com.sdl.hellosdlandroid"
-            resValue "string", "app_name", "Hello Sdl Android"
-            manifestPlaceholders = [
-                    appIcon: "@mipmap/ic_launcher"
-            ]
             buildConfigField 'String', 'TRANSPORT', '"MULTI_HB"'
             buildConfigField 'String', 'SECURITY', '"OFF"'
-            buildConfigField 'String', 'APP_NAME', '"Hello Sdl"'
-            buildConfigField 'String', 'APP_ID', '"8678309"'
         }
         tcp {
-            applicationId "com.sdl.hellosdlandroid"
-            resValue "string", "app_name", "Hello Sdl Android"
-            manifestPlaceholders = [
-                    appIcon: "@mipmap/ic_launcher"
-            ]
             buildConfigField 'String', 'TRANSPORT', '"TCP"'
             buildConfigField 'String', 'SECURITY', '"OFF"'
-            buildConfigField 'String', 'APP_NAME', '"Hello Sdl"'
-            buildConfigField 'String', 'APP_ID', '"8678309"'
         }
         requiresAudioOutput {
-            applicationId "com.sdl.hellosdlandroid"
-            resValue "string", "app_name", "Hello Sdl Android"
-            manifestPlaceholders = [
-                    appIcon: "@mipmap/ic_launcher"
-            ]
             buildConfigField 'String', 'TRANSPORT', '"MULTI"'
             buildConfigField 'String', 'SECURITY', '"OFF"'
             buildConfigField 'String', 'APP_TYPE', '"MEDIA"'
             buildConfigField 'String', 'REQUIRE_AUDIO_OUTPUT', '"TRUE"'
-            buildConfigField 'String', 'APP_NAME', '"Hello Sdl"'
-            buildConfigField 'String', 'APP_ID', '"8678309"'
         }
     }
     lintOptions {
