@@ -91,7 +91,7 @@ public class RouterServiceMessageEmitter extends Thread {
      *
      * @return the old head of the queue
      */
-    public Message poll() {
+    private Message poll() {
         synchronized (this) {
             if (head == null) {
                 return null;
@@ -117,7 +117,7 @@ public class RouterServiceMessageEmitter extends Thread {
     }
 
 
-    final class Node<E> {
+    private final static class Node<E> {
         final E item;
         Node<E> prev;
         Node<E> next;
@@ -130,7 +130,7 @@ public class RouterServiceMessageEmitter extends Thread {
         }
     }
 
-    interface Callback {
+    protected interface Callback {
         boolean onMessageToSend(Message message);
     }
 }
