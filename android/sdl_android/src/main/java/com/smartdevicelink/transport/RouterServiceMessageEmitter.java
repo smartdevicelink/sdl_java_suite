@@ -57,8 +57,7 @@ public class RouterServiceMessageEmitter extends Thread {
     /**
      * Insert the task in the queue where it belongs
      *
-     * @param message the new Message that needs to be added to the queue to be
-     *             handled
+     * @param message the new Message that needs to be added to the queue to be handled
      */
     public void add(Message message) {
         synchronized (this) {

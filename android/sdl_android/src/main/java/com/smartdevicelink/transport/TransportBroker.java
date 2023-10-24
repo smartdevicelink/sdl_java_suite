@@ -137,9 +137,7 @@ public class TransportBroker {
     protected boolean sendMessageToRouterService(Message message) {
         if (routerServiceMessageEmitter != null) {
             routerServiceMessageEmitter.add(message);
-            if (routerServiceMessageEmitter != null) {
-                routerServiceMessageEmitter.alert();
-            }
+            routerServiceMessageEmitter.alert();
         }
         // Updated to only return true as we have added sending messages to SdlRouterService to be on a different thread.
         return true;
