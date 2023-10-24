@@ -102,7 +102,7 @@ public class SdlService extends Service {
     @SuppressLint("NewApi")
     public void enterForeground() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(BuildConfig.APP_ID, "SdlService", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel channel = new NotificationChannel(BuildConfig.SDL_APP_ID, "SdlService", NotificationManager.IMPORTANCE_DEFAULT);
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             if (notificationManager != null) {
                 notificationManager.createNotificationChannel(channel);
@@ -159,14 +159,14 @@ public class SdlService extends Service {
                 } else {
                     securityLevel = MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF;
                 }
-                transport = new MultiplexTransportConfig(this, BuildConfig.APP_ID, securityLevel);
+                transport = new MultiplexTransportConfig(this, BuildConfig.SDL_APP_ID, securityLevel);
                 if (BuildConfig.REQUIRE_AUDIO_OUTPUT.equals("TRUE") ) {
                     ((MultiplexTransportConfig)transport).setRequiresAudioSupport(true);
                 }
             } else if (BuildConfig.TRANSPORT.equals("TCP")) {
                 transport = new TCPTransportConfig(TCP_PORT, DEV_MACHINE_IP_ADDRESS, true);
             } else if (BuildConfig.TRANSPORT.equals("MULTI_HB")) {
-                MultiplexTransportConfig mtc = new MultiplexTransportConfig(this, BuildConfig.APP_ID, MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
+                MultiplexTransportConfig mtc = new MultiplexTransportConfig(this, BuildConfig.SDL_APP_ID, MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
                 mtc.setRequiresHighBandwidth(true);
                 transport = mtc;
             }
@@ -213,8 +213,8 @@ public class SdlService extends Service {
                 @Override
                 public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language, Language hmiLanguage) {
                     boolean isNeedUpdate = false;
-                    String appName = BuildConfig.APP_NAME;
-                    String ttsName = BuildConfig.APP_NAME;
+                    String appName = BuildConfig.SDL_APP_NAME;
+                    String ttsName = BuildConfig.SDL_APP_NAME;
                     switch (language) {
                         case ES_MX:
                             isNeedUpdate = true;
@@ -258,7 +258,7 @@ public class SdlService extends Service {
             SdlArtwork appIcon = new SdlArtwork(ICON_FILENAME, FileType.GRAPHIC_PNG, R.mipmap.ic_launcher, true);
 
             // The manager builder sets options for your session
-            SdlManager.Builder builder = new SdlManager.Builder(this, BuildConfig.APP_ID, BuildConfig.APP_NAME, listener);
+            SdlManager.Builder builder = new SdlManager.Builder(this, BuildConfig.SDL_APP_ID, BuildConfig.SDL_APP_NAME, listener);
             builder.setAppTypes(appType);
             builder.setTransportType(transport);
             builder.setAppIcon(appIcon);
@@ -373,7 +373,7 @@ public class SdlService extends Service {
      */
     private void performWelcomeShow() {
         sdlManager.getScreenManager().beginTransaction();
-        sdlManager.getScreenManager().setTextField1(BuildConfig.APP_NAME);
+        sdlManager.getScreenManager().setTextField1(BuildConfig.SDL_APP_NAME);
         sdlManager.getScreenManager().setTextField2(WELCOME_SHOW);
         sdlManager.getScreenManager().setPrimaryGraphic(new SdlArtwork(SDL_IMAGE_FILENAME, FileType.GRAPHIC_PNG, R.drawable.sdl, true));
         sdlManager.getScreenManager().commit(new CompletionListener() {
