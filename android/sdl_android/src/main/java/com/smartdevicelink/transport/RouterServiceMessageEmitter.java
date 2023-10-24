@@ -65,7 +65,9 @@ public class RouterServiceMessageEmitter extends Thread {
             if (message == null) {
                 throw new NullPointerException();
             }
-            queue.add(message);
+            if (queue != null) {
+                queue.add(message);
+            }
         }
     }
 
@@ -76,7 +78,11 @@ public class RouterServiceMessageEmitter extends Thread {
      */
     private Message getNextTask() {
         synchronized (this) {
-            return queue.poll();
+            if (queue != null) {
+                return queue.poll();
+            } else {
+                return null;
+            }
         }
     }
 
