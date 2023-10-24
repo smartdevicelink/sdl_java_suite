@@ -8,7 +8,7 @@ public class RouterServiceMessageEmitter extends Thread {
         private SendToRouterServiceTaskQueue queue;
 
         public RouterServiceMessageEmitter(SendToRouterServiceTaskQueue queue) {
-            this.setName("PacketWriteTaskMaster");
+            this.setName("RouterServiceMessageEmitter");
             this.setDaemon(true);
             this.queue = queue;
         }
