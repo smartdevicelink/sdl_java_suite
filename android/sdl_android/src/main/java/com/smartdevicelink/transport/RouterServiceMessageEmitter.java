@@ -3,56 +3,127 @@ package com.smartdevicelink.transport;
 import android.os.Message;
 
 public class RouterServiceMessageEmitter extends Thread {
-        protected final Object QUEUE_LOCK = new Object();
-        private boolean isHalted = false, isWaiting = false;
-        private SendToRouterServiceTaskQueue queue;
 
-        public RouterServiceMessageEmitter(SendToRouterServiceTaskQueue queue) {
-            this.setName("RouterServiceMessageEmitter");
-            this.setDaemon(true);
-            this.queue = queue;
-        }
+    protected final Object QUEUE_LOCK = new Object();
+    private boolean isHalted = false, isWaiting = false;
 
-        @Override
-        public void run() {
-            while (!isHalted) {
-                try {
-                    SendToRouterServiceTask task;
-                    synchronized (QUEUE_LOCK) {
-                        task = getNextTask();
-                        if (task != null) {
-                            task.run();
-                        } else {
-                            isWaiting = true;
-                            QUEUE_LOCK.wait();
-                            isWaiting = false;
-                        }
-                    }
-                } catch (InterruptedException e) {
-                    break;
-                }
-            }
-        }
+    private Node<SendToRouterServiceTask> head;
+    private Node<SendToRouterServiceTask> tail;
 
-        protected SendToRouterServiceTask getNextTask() {
-            SendToRouterServiceTaskQueue queue = this.queue;
-            if (queue != null) {
-                return queue.poll();
-            }
-            return null;
-        }
+    public RouterServiceMessageEmitter() {
+        this.setName("RouterServiceMessageEmitter");
+        this.setDaemon(true);
+    }
 
-        protected void alert() {
-            if (isWaiting) {
+    @Override
+    public void run() {
+        while (!isHalted) {
+            try {
+                SendToRouterServiceTask task;
                 synchronized (QUEUE_LOCK) {
-                    QUEUE_LOCK.notify();
+                    task = getNextTask();
+                    if (task != null) {
+                        task.run();
+                    } else {
+                        isWaiting = true;
+                        QUEUE_LOCK.wait();
+                        isWaiting = false;
+                    }
                 }
+            } catch (InterruptedException e) {
+                break;
             }
         }
+    }
 
-        protected void close() {
-            this.isHalted = true;
+    protected SendToRouterServiceTask getNextTask() {
+        return poll();
+    }
+
+    protected void alert() {
+        if (isWaiting) {
+            synchronized (QUEUE_LOCK) {
+                QUEUE_LOCK.notify();
+            }
         }
+    }
+
+    protected void close() {
+        this.isHalted = true;
+        clear();
+    }
+
+
+    /**
+     * This will take the given task and insert it at the tail of the queue
+     *
+     * @param task the task to be inserted at the tail of the queue
+     */
+    private void insertAtTail(SendToRouterServiceTask task) {
+        if (task == null) {
+            throw new NullPointerException();
+        }
+        Node<SendToRouterServiceTask> oldTail = tail;
+        Node<SendToRouterServiceTask> newTail = new Node<>(task, oldTail, null);
+        tail = newTail;
+        if (head == null) {
+            head = newTail;
+        } else {
+            oldTail.next = newTail;
+        }
+    }
+
+    /**
+     * Insert the task in the queue where it belongs
+     *
+     * @param task the new SendToRouterServiceTask that needs to be added to the queue to be
+     *             handled
+     */
+    public void add(SendToRouterServiceTask task) {
+        synchronized (this) {
+            if (task == null) {
+                throw new NullPointerException();
+            }
+            //If we currently don't have anything in our queue
+            if (head == null || tail == null) {
+                Node<SendToRouterServiceTask> taskNode = new Node<>(task, head, tail);
+                head = taskNode;
+                tail = taskNode;
+            } else {
+                insertAtTail(task);
+            }
+        }
+    }
+
+    /**
+     * Remove the head of the queue
+     *
+     * @return the old head of the queue
+     */
+    public SendToRouterServiceTask poll() {
+        synchronized (this) {
+            if (head == null) {
+                return null;
+            } else {
+                Node<SendToRouterServiceTask> retValNode = head;
+                Node<SendToRouterServiceTask> newHead = head.next;
+                if (newHead == null) {
+                    tail = null;
+                }
+                head = newHead;
+
+                return retValNode.item;
+            }
+        }
+    }
+
+    /**
+     * Currently only clears the head and the tail of the queue.
+     */
+    private void clear() {
+        head = null;
+        tail = null;
+    }
 
     /**
      * A runnable task for sending messages to the SdlRouterService
@@ -76,97 +147,17 @@ public class RouterServiceMessageEmitter extends Thread {
         }
     }
 
-    /**
-     * Queue that will hold SendToRouterServiceTask in the order that they are received
-     */
-    public static class SendToRouterServiceTaskQueue extends Thread {
-        final class Node<E> {
-            final E item;
-            SendToRouterServiceTaskQueue.Node<E> prev;
-            SendToRouterServiceTaskQueue.Node<E> next;
 
-            Node(E item, SendToRouterServiceTaskQueue.Node<E> previous,
-                 SendToRouterServiceTaskQueue.Node<E> next) {
-                this.item = item;
-                this.prev = previous;
-                this.next = next;
-            }
-        }
+    final class Node<E> {
+        final E item;
+        Node<E> prev;
+        Node<E> next;
 
-        private SendToRouterServiceTaskQueue.Node<SendToRouterServiceTask> head;
-        private SendToRouterServiceTaskQueue.Node<SendToRouterServiceTask> tail;
-
-        /**
-         * This will take the given task and insert it at the tail of the queue
-         *
-         * @param task the task to be inserted at the tail of the queue
-         */
-        private void insertAtTail(SendToRouterServiceTask task) {
-            if (task == null) {
-                throw new NullPointerException();
-            }
-            SendToRouterServiceTaskQueue.Node<SendToRouterServiceTask> oldTail = tail;
-            SendToRouterServiceTaskQueue.Node<SendToRouterServiceTask> newTail =
-                    new SendToRouterServiceTaskQueue.Node<>(task, oldTail, null);
-            tail = newTail;
-            if (head == null) {
-                head = newTail;
-            } else {
-                oldTail.next = newTail;
-            }
-        }
-
-        /**
-         * Insert the task in the queue where it belongs
-         *
-         * @param task the new SendToRouterServiceTask that needs to be added to the queue to be
-         *             handled
-         */
-        public void add(SendToRouterServiceTask task) {
-            synchronized (this) {
-                if (task == null) {
-                    throw new NullPointerException();
-                }
-                //If we currently don't have anything in our queue
-                if (head == null || tail == null) {
-                    SendToRouterServiceTaskQueue.Node<SendToRouterServiceTask> taskNode =
-                            new SendToRouterServiceTaskQueue.Node<>(task, head, tail);
-                    head = taskNode;
-                    tail = taskNode;
-                } else {
-                    insertAtTail(task);
-                }
-            }
-        }
-
-        /**
-         * Remove the head of the queue
-         *
-         * @return the old head of the queue
-         */
-        public SendToRouterServiceTask poll() {
-            synchronized (this) {
-                if (head == null) {
-                    return null;
-                } else {
-                    Node<SendToRouterServiceTask> retValNode = head;
-                    Node<SendToRouterServiceTask> newHead = head.next;
-                    if (newHead == null) {
-                        tail = null;
-                    }
-                    head = newHead;
-
-                    return retValNode.item;
-                }
-            }
-        }
-
-        /**
-         * Currently only clears the head and the tail of the queue.
-         */
-        public void clear() {
-            head = null;
-            tail = null;
+        Node(E item, Node<E> previous,
+             Node<E> next) {
+            this.item = item;
+            this.prev = previous;
+            this.next = next;
         }
     }
 

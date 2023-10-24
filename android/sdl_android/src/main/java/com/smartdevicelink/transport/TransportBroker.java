@@ -91,7 +91,6 @@ public class TransportBroker {
 
     Messenger routerServiceMessenger = null;
     final Messenger clientMessenger;
-    private RouterServiceMessageEmitter.SendToRouterServiceTaskQueue queue;
     private RouterServiceMessageEmitter routerServiceMessageEmitter;
 
     boolean isBound = false, registeredWithRouterService = false;
@@ -111,8 +110,7 @@ public class TransportBroker {
 
             public void onServiceConnected(ComponentName className, IBinder service) {
                 DebugTool.logInfo(TAG, "Bound to service " + className.toString());
-                queue = new RouterServiceMessageEmitter.SendToRouterServiceTaskQueue();
-                routerServiceMessageEmitter = new RouterServiceMessageEmitter(queue);
+                routerServiceMessageEmitter = new RouterServiceMessageEmitter();
                 routerServiceMessageEmitter.start();
                 routerServiceMessenger = new Messenger(service);
                 isBound = true;
@@ -138,8 +136,8 @@ public class TransportBroker {
                 return sendMessageToRouterService(message, retry);
             }
         };
-        if (queue != null) {
-            queue.add(new RouterServiceMessageEmitter.SendToRouterServiceTask(message, callback));
+        if (routerServiceMessageEmitter != null) {
+            routerServiceMessageEmitter.add(new RouterServiceMessageEmitter.SendToRouterServiceTask(message, callback));
             if (routerServiceMessageEmitter != null) {
                 routerServiceMessageEmitter.alert();
             }
@@ -773,10 +771,6 @@ public class TransportBroker {
         if (routerServiceMessageEmitter != null) {
             routerServiceMessageEmitter.close();
         }
-        if (queue != null) {
-            queue.clear();
-        }
-        queue = null;
         routerServiceMessageEmitter = null;
     }
 }
