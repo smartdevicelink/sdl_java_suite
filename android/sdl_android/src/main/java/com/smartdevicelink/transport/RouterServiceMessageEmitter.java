@@ -2,14 +2,15 @@ package com.smartdevicelink.transport;
 
 import android.os.Message;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class RouterServiceMessageEmitter extends Thread {
 
     protected final Object QUEUE_LOCK = new Object();
     private boolean isHalted = false, isWaiting = false;
     private final Callback callback;
-
-    private Node<Message> head;
-    private Node<Message> tail;
+    private final Queue<Message> queue = new LinkedList<>();
 
     public RouterServiceMessageEmitter(Callback callback) {
         this.setName("RouterServiceMessageEmitter");
@@ -48,7 +49,9 @@ public class RouterServiceMessageEmitter extends Thread {
 
     protected void close() {
         this.isHalted = true;
-        clear();
+        if (queue != null) {
+            queue.clear();
+        }
     }
 
     /**
@@ -62,22 +65,7 @@ public class RouterServiceMessageEmitter extends Thread {
             if (message == null) {
                 throw new NullPointerException();
             }
-            //If we currently don't have anything in our queue
-            if (head == null || tail == null) {
-                Node<Message> taskNode = new Node<>(message, head, tail);
-                head = taskNode;
-                tail = taskNode;
-            } else {
-                //Add to tail
-                Node<Message> oldTail = tail;
-                Node<Message> newTail = new Node<>(message, oldTail, null);
-                tail = newTail;
-                if (head == null) {
-                    head = newTail;
-                } else {
-                    oldTail.next = newTail;
-                }
-            }
+            queue.add(message);
         }
     }
 
@@ -88,40 +76,7 @@ public class RouterServiceMessageEmitter extends Thread {
      */
     private Message getNextTask() {
         synchronized (this) {
-            if (head == null) {
-                return null;
-            } else {
-                Node<Message> retValNode = head;
-                Node<Message> newHead = head.next;
-                if (newHead == null) {
-                    tail = null;
-                }
-                head = newHead;
-
-                return retValNode.item;
-            }
-        }
-    }
-
-    /**
-     * Currently only clears the head and the tail of the queue.
-     */
-    private void clear() {
-        head = null;
-        tail = null;
-    }
-
-
-    private final static class Node<E> {
-        final E item;
-        Node<E> prev;
-        Node<E> next;
-
-        Node(E item, Node<E> previous,
-             Node<E> next) {
-            this.item = item;
-            this.prev = previous;
-            this.next = next;
+            return queue.poll();
         }
     }
 
