@@ -62,10 +62,7 @@ public class RouterServiceMessageEmitter extends Thread {
      */
     public void add(Message message) {
         synchronized (this) {
-            if (message == null) {
-                throw new NullPointerException();
-            }
-            if (queue != null) {
+            if (message != null && queue != null) {
                 queue.add(message);
             }
         }
