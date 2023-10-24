@@ -143,7 +143,7 @@ public class RouterServiceMessageEmitter extends Thread {
             if (callback == null) {
                 return;
             }
-            callback.sendMessage(message, 0);
+            callback.onMessageToSend(message);
         }
     }
 
@@ -162,6 +162,6 @@ public class RouterServiceMessageEmitter extends Thread {
     }
 
     interface Callback {
-        boolean sendMessage(Message message, int retry);
+        boolean onMessageToSend(Message message);
     }
 }

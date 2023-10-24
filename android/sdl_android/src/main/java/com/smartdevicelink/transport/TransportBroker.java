@@ -132,8 +132,8 @@ public class TransportBroker {
     protected boolean sendMessageToRouterService(Message message) {
         RouterServiceMessageEmitter.Callback callback = new RouterServiceMessageEmitter.Callback() {
             @Override
-            public boolean sendMessage(Message message, int retry) {
-                return sendMessageToRouterService(message, retry);
+            public boolean onMessageToSend(Message message) {
+                return sendMessageToRouterService(message, 0);
             }
         };
         if (routerServiceMessageEmitter != null) {
