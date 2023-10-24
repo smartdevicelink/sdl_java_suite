@@ -38,10 +38,6 @@ public class RouterServiceMessageEmitter extends Thread {
         }
     }
 
-    protected Message getNextTask() {
-        return poll();
-    }
-
     protected void alert() {
         if (isWaiting) {
             synchronized (QUEUE_LOCK) {
@@ -54,7 +50,6 @@ public class RouterServiceMessageEmitter extends Thread {
         this.isHalted = true;
         clear();
     }
-
 
     /**
      * Insert the task in the queue where it belongs
@@ -91,7 +86,7 @@ public class RouterServiceMessageEmitter extends Thread {
      *
      * @return the old head of the queue
      */
-    private Message poll() {
+    private Message getNextTask() {
         synchronized (this) {
             if (head == null) {
                 return null;
