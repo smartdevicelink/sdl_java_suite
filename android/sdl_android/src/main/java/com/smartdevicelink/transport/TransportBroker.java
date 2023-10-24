@@ -110,7 +110,12 @@ public class TransportBroker {
 
             public void onServiceConnected(ComponentName className, IBinder service) {
                 DebugTool.logInfo(TAG, "Bound to service " + className.toString());
-                routerServiceMessageEmitter = new RouterServiceMessageEmitter();
+                routerServiceMessageEmitter = new RouterServiceMessageEmitter(new RouterServiceMessageEmitter.Callback() {
+                    @Override
+                    public boolean onMessageToSend(Message message) {
+                        return sendMessageToRouterService(message, 0);
+                    }
+                });
                 routerServiceMessageEmitter.start();
                 routerServiceMessenger = new Messenger(service);
                 isBound = true;
@@ -130,14 +135,8 @@ public class TransportBroker {
     }
 
     protected boolean sendMessageToRouterService(Message message) {
-        RouterServiceMessageEmitter.Callback callback = new RouterServiceMessageEmitter.Callback() {
-            @Override
-            public boolean onMessageToSend(Message message) {
-                return sendMessageToRouterService(message, 0);
-            }
-        };
         if (routerServiceMessageEmitter != null) {
-            routerServiceMessageEmitter.add(new RouterServiceMessageEmitter.SendToRouterServiceTask(message, callback));
+            routerServiceMessageEmitter.add(message);
             if (routerServiceMessageEmitter != null) {
                 routerServiceMessageEmitter.alert();
             }

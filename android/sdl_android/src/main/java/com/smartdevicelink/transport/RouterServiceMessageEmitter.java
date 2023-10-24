@@ -6,24 +6,26 @@ public class RouterServiceMessageEmitter extends Thread {
 
     protected final Object QUEUE_LOCK = new Object();
     private boolean isHalted = false, isWaiting = false;
+    private final Callback callback;
 
-    private Node<SendToRouterServiceTask> head;
-    private Node<SendToRouterServiceTask> tail;
+    private Node<Message> head;
+    private Node<Message> tail;
 
-    public RouterServiceMessageEmitter() {
+    public RouterServiceMessageEmitter(Callback callback) {
         this.setName("RouterServiceMessageEmitter");
         this.setDaemon(true);
+        this.callback = callback;
     }
 
     @Override
     public void run() {
         while (!isHalted) {
             try {
-                SendToRouterServiceTask task;
+                Message message;
                 synchronized (QUEUE_LOCK) {
-                    task = getNextTask();
-                    if (task != null) {
-                        task.run();
+                    message = getNextTask();
+                    if (message != null && callback != null) {
+                        callback.onMessageToSend(message);
                     } else {
                         isWaiting = true;
                         QUEUE_LOCK.wait();
@@ -36,7 +38,7 @@ public class RouterServiceMessageEmitter extends Thread {
         }
     }
 
-    protected SendToRouterServiceTask getNextTask() {
+    protected Message getNextTask() {
         return poll();
     }
 
@@ -57,14 +59,14 @@ public class RouterServiceMessageEmitter extends Thread {
     /**
      * This will take the given task and insert it at the tail of the queue
      *
-     * @param task the task to be inserted at the tail of the queue
+     * @param message the Message to be inserted at the tail of the queue
      */
-    private void insertAtTail(SendToRouterServiceTask task) {
-        if (task == null) {
+    private void insertAtTail(Message message) {
+        if (message == null) {
             throw new NullPointerException();
         }
-        Node<SendToRouterServiceTask> oldTail = tail;
-        Node<SendToRouterServiceTask> newTail = new Node<>(task, oldTail, null);
+        Node<Message> oldTail = tail;
+        Node<Message> newTail = new Node<>(message, oldTail, null);
         tail = newTail;
         if (head == null) {
             head = newTail;
@@ -76,21 +78,21 @@ public class RouterServiceMessageEmitter extends Thread {
     /**
      * Insert the task in the queue where it belongs
      *
-     * @param task the new SendToRouterServiceTask that needs to be added to the queue to be
+     * @param message the new Message that needs to be added to the queue to be
      *             handled
      */
-    public void add(SendToRouterServiceTask task) {
+    public void add(Message message) {
         synchronized (this) {
-            if (task == null) {
+            if (message == null) {
                 throw new NullPointerException();
             }
             //If we currently don't have anything in our queue
             if (head == null || tail == null) {
-                Node<SendToRouterServiceTask> taskNode = new Node<>(task, head, tail);
+                Node<Message> taskNode = new Node<>(message, head, tail);
                 head = taskNode;
                 tail = taskNode;
             } else {
-                insertAtTail(task);
+                insertAtTail(message);
             }
         }
     }
@@ -100,13 +102,13 @@ public class RouterServiceMessageEmitter extends Thread {
      *
      * @return the old head of the queue
      */
-    public SendToRouterServiceTask poll() {
+    public Message poll() {
         synchronized (this) {
             if (head == null) {
                 return null;
             } else {
-                Node<SendToRouterServiceTask> retValNode = head;
-                Node<SendToRouterServiceTask> newHead = head.next;
+                Node<Message> retValNode = head;
+                Node<Message> newHead = head.next;
                 if (newHead == null) {
                     tail = null;
                 }
@@ -123,28 +125,6 @@ public class RouterServiceMessageEmitter extends Thread {
     private void clear() {
         head = null;
         tail = null;
-    }
-
-    /**
-     * A runnable task for sending messages to the SdlRouterService
-     */
-    public static class SendToRouterServiceTask implements Runnable {
-        private Message message;
-
-        private Callback callback;
-
-        public SendToRouterServiceTask(Message message, Callback callback) {
-            this.message = message;
-            this.callback = callback;
-        }
-
-        @Override
-        public void run() {
-            if (callback == null) {
-                return;
-            }
-            callback.onMessageToSend(message);
-        }
     }
 
 
