@@ -167,7 +167,7 @@ public class TransportBroker {
                             } catch (InterruptedException e1) {
                                 e1.printStackTrace();
                             }
-                            return sendMessageToRouterService(message, retryCount++);
+                            return sendMessageToRouterService(message, ++retryCount);
                         } else {
                             //DeadObject, time to kill our connection
                             DebugTool.logInfo(TAG, "Dead object while attempting to send packet");
