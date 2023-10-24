@@ -91,8 +91,8 @@ public class TransportBroker {
 
     Messenger routerServiceMessenger = null;
     final Messenger clientMessenger;
-    private SendMessageToRouterService.SendToRouterServiceTaskQueue queue;
-    private SendMessageToRouterService.SendToRouterServiceTaskMaster sendToRouterServiceTaskMaster;
+    private RouterServiceMessageEmitter.SendToRouterServiceTaskQueue queue;
+    private RouterServiceMessageEmitter.SendToRouterServiceTaskMaster sendToRouterServiceTaskMaster;
 
     boolean isBound = false, registeredWithRouterService = false;
     private String routerPackage = null, routerClassName = null;
@@ -111,8 +111,8 @@ public class TransportBroker {
 
             public void onServiceConnected(ComponentName className, IBinder service) {
                 DebugTool.logInfo(TAG, "Bound to service " + className.toString());
-                queue = new SendMessageToRouterService.SendToRouterServiceTaskQueue();
-                sendToRouterServiceTaskMaster = new SendMessageToRouterService.SendToRouterServiceTaskMaster(queue);
+                queue = new RouterServiceMessageEmitter.SendToRouterServiceTaskQueue();
+                sendToRouterServiceTaskMaster = new RouterServiceMessageEmitter.SendToRouterServiceTaskMaster(queue);
                 sendToRouterServiceTaskMaster.start();
                 routerServiceMessenger = new Messenger(service);
                 isBound = true;
@@ -132,14 +132,14 @@ public class TransportBroker {
     }
 
     protected boolean sendMessageToRouterService(Message message) {
-        SendMessageToRouterService.Callback callback = new SendMessageToRouterService.Callback() {
+        RouterServiceMessageEmitter.Callback callback = new RouterServiceMessageEmitter.Callback() {
             @Override
             public boolean sendMessage(Message message, int retry) {
                 return sendMessageToRouterService(message, retry);
             }
         };
         if (queue != null) {
-            queue.add(new SendMessageToRouterService.SendToRouterServiceTask(message, callback));
+            queue.add(new RouterServiceMessageEmitter.SendToRouterServiceTask(message, callback));
             if (sendToRouterServiceTaskMaster != null) {
                 sendToRouterServiceTaskMaster.alert();
             }

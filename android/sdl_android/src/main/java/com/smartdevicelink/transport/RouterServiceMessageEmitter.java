@@ -2,9 +2,7 @@ package com.smartdevicelink.transport;
 
 import android.os.Message;
 
-import com.smartdevicelink.util.DebugTool;
-
-public class SendMessageToRouterService {
+public class RouterServiceMessageEmitter {
 
     /**
      * Extends thread to consume SendToRouterServiceTask.
