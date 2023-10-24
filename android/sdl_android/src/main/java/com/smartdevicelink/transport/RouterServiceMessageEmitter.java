@@ -57,25 +57,6 @@ public class RouterServiceMessageEmitter extends Thread {
 
 
     /**
-     * This will take the given task and insert it at the tail of the queue
-     *
-     * @param message the Message to be inserted at the tail of the queue
-     */
-    private void insertAtTail(Message message) {
-        if (message == null) {
-            throw new NullPointerException();
-        }
-        Node<Message> oldTail = tail;
-        Node<Message> newTail = new Node<>(message, oldTail, null);
-        tail = newTail;
-        if (head == null) {
-            head = newTail;
-        } else {
-            oldTail.next = newTail;
-        }
-    }
-
-    /**
      * Insert the task in the queue where it belongs
      *
      * @param message the new Message that needs to be added to the queue to be
@@ -92,7 +73,15 @@ public class RouterServiceMessageEmitter extends Thread {
                 head = taskNode;
                 tail = taskNode;
             } else {
-                insertAtTail(message);
+                //Add to tail
+                Node<Message> oldTail = tail;
+                Node<Message> newTail = new Node<>(message, oldTail, null);
+                tail = newTail;
+                if (head == null) {
+                    head = newTail;
+                } else {
+                    oldTail.next = newTail;
+                }
             }
         }
     }
