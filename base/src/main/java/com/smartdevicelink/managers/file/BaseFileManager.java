@@ -159,6 +159,13 @@ abstract class BaseFileManager extends BaseSubManager {
     }
 
     private void listRemoteFilesWithCompletionListener(final FileManagerCompletionListener completionListener) {
+        if (transactionQueue == null) {
+            DebugTool.logError(TAG, "Queue is null, cannot retrieve uploaded files");
+            if (completionListener != null) {
+                completionListener.onComplete(false, bytesAvailable, null, "Queue is null, cannot upload files");
+            }
+            return;
+        }
         ListFilesOperation operation = new ListFilesOperation(internalInterface, new FileManagerCompletionListener() {
             @Override
             public void onComplete(boolean success, int bytesAvailable, Collection<String> fileNames, String errorMessage) {
@@ -196,6 +203,13 @@ abstract class BaseFileManager extends BaseSubManager {
     }
 
     private void deleteRemoteFileWithNamePrivate(@NonNull final String fileName, final FileManagerCompletionListener listener) {
+        if (transactionQueue == null) {
+            DebugTool.logError(TAG, "Queue is null, cannot delete files");
+            if (listener != null) {
+                listener.onComplete(false, bytesAvailable, null, "Queue is null, cannot delete files");
+            }
+            return;
+        }
         DeleteFileOperation operation = new DeleteFileOperation(internalInterface, fileName, mutableRemoteFileNames, new FileManagerCompletionListener() {
             @Override
             public void onComplete(boolean success, int bytesAvailable, Collection<String> fileNames, String errorMessage) {
@@ -406,6 +420,14 @@ abstract class BaseFileManager extends BaseSubManager {
     }
 
     private void sdl_uploadFilePrivate(@NonNull final SdlFile file, final FileManagerCompletionListener listener) {
+
+        if (transactionQueue == null) {
+            DebugTool.logError(TAG, "Queue is null, cannot upload files");
+            if (listener != null) {
+                listener.onComplete(false, bytesAvailable, null, "Queue is null, cannot upload files");
+            }
+            return;
+        }
         final SdlFile fileClone = file.clone();
 
         SdlFileWrapper fileWrapper = new SdlFileWrapper(fileClone, new FileManagerCompletionListener() {

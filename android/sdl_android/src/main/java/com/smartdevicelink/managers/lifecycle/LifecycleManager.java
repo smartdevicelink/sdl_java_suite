@@ -167,6 +167,7 @@ public class LifecycleManager extends BaseLifecycleManager {
             DebugTool.logInfo(TAG, "notifying RPC session ended, but potential primary transport available");
             cycle(SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST);
         } else {
+            clean(false);
             onClose(info, null, null);
         }
     }

@@ -55,5 +55,3 @@ jobs:
     - name: Sdl JavaEE Tests
       run: ./javaEE/gradlew -p ./javaEE/javaEE test
 
-
-
