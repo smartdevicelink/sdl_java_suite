@@ -120,16 +120,24 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
     private void updateTransactionQueueSuspended() {
         if (HMILevel.HMI_NONE.equals(currentHMILevel)) {
             DebugTool.logInfo(TAG, "Suspending the transaction queue. Current HMI level is NONE");
-            transactionQueue.pause();
+            if (transactionQueue != null) {
+                transactionQueue.pause();
+            }
         } else {
             DebugTool.logInfo(TAG, "Starting the transaction queue");
-            transactionQueue.resume();
+            if (transactionQueue != null) {
+                transactionQueue.resume();
+            }
         }
     }
 
     // SETTERS
 
     public void setVoiceCommands(List<VoiceCommand> voiceCommands) {
+        if (transactionQueue == null) {
+            DebugTool.logError(TAG, "Queue is null, cannot set voice commands");
+            return;
+        }
 
         // we actually need voice commands to set.
         if (voiceCommands == null) {
@@ -196,6 +204,10 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
     }
 
     private void updatePendingOperations(List<VoiceCommand> newCurrentVoiceCommands) {
+        if (transactionQueue == null) {
+            DebugTool.logError(TAG, "Queue is null, cannot update pending operations");
+            return;
+        }
         for (Task operation : transactionQueue.getTasksAsList()) {
             if (operation.getState() == Task.IN_PROGRESS) {
                 continue;

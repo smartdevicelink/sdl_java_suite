@@ -139,10 +139,14 @@ abstract class BaseMenuManager extends BaseSubManager {
     private void updateTransactionQueueSuspended() {
         if (currentHMILevel == HMILevel.HMI_NONE || currentSystemContext == SystemContext.SYSCTXT_MENU) {
             DebugTool.logInfo(TAG, String.format("Suspending the transaction queue. Current HMI level is: %s, current system context is: %s", currentHMILevel, currentSystemContext));
-            transactionQueue.pause();
+            if (transactionQueue != null) {
+                transactionQueue.pause();
+            }
         } else {
             DebugTool.logInfo(TAG, "Starting the transaction queue");
-            transactionQueue.resume();
+            if (transactionQueue != null) {
+                transactionQueue.resume();
+            }
         }
     }
 
@@ -163,6 +167,11 @@ abstract class BaseMenuManager extends BaseSubManager {
      * @param cells - the menu cells that are to be sent to the head unit, including their sub-cells.
      */
     public void setMenuCells(@NonNull List<MenuCell> cells) {
+        if (transactionQueue == null) {
+            DebugTool.logError(TAG, "Queue is null, cannot perform a text/graphic update");
+            return;
+        }
+
         if (cells == null) {
             DebugTool.logError(TAG, "Cells list is null. Skipping...");
             return;
@@ -206,6 +215,10 @@ abstract class BaseMenuManager extends BaseSubManager {
     }
 
     private boolean openMenuPrivate(MenuCell cell) {
+        if (transactionQueue == null) {
+            DebugTool.logError(TAG, "The queue is null, cannot open submenu");
+            return false;
+        }
         MenuCell foundClonedCell = null;
 
         if (cell != null) {
@@ -269,6 +282,10 @@ abstract class BaseMenuManager extends BaseSubManager {
      * @param menuConfiguration - The default menuConfiguration
      */
     public void setMenuConfiguration(@NonNull final MenuConfiguration menuConfiguration) {
+        if (transactionQueue == null) {
+            DebugTool.logError(TAG, "Queue is null, cannot set menu configuration");
+            return;
+        }
         if (menuConfiguration.equals(this.menuConfiguration)) {
             DebugTool.logInfo(TAG, "New menu configuration is equal to existing one, will not set new configuration");
             return;
@@ -380,6 +397,9 @@ abstract class BaseMenuManager extends BaseSubManager {
     }
 
     private void updateMenuReplaceOperationsWithNewCurrentMenu() {
+        if (transactionQueue == null) {
+            return;
+        }
         for (Task task : transactionQueue.getTasksAsList()) {
             if (task instanceof MenuReplaceOperation) {
                 ((MenuReplaceOperation) task).setCurrentMenu(this.currentMenuCells);
@@ -388,6 +408,9 @@ abstract class BaseMenuManager extends BaseSubManager {
     }
 
     private void updateMenuReplaceOperationsWithNewWindowCapability() {
+        if (transactionQueue == null) {
+            return;
+        }
         for (Task task : transactionQueue.getTasksAsList()) {
             if (task instanceof MenuReplaceOperation) {
                 ((MenuReplaceOperation) task).setWindowCapability(this.windowCapability);
@@ -396,6 +419,9 @@ abstract class BaseMenuManager extends BaseSubManager {
     }
 
     private void updateMenuReplaceOperationsWithNewMenuConfiguration() {
+        if (transactionQueue == null) {
+            return;
+        }
         for (Task task : transactionQueue.getTasksAsList()) {
             if (task instanceof MenuReplaceOperation) {
                 ((MenuReplaceOperation) task).setMenuConfiguration(currentMenuConfiguration);
