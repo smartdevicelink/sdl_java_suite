@@ -8,8 +8,14 @@ android {
         targetSdkVersion 33
         versionCode 1
         versionName "1.0"
+        resValue "string", "app_name", "Hello Sdl Android"
         buildConfigField 'String', 'APP_TYPE', '"DEFAULT"'
         buildConfigField 'String', 'REQUIRE_AUDIO_OUTPUT', '"FALSE"'
+        buildConfigField 'String', 'SDL_APP_NAME', '"Hello Sdl"'
+        buildConfigField 'String', 'SDL_APP_ID', '"8678309"'
+        manifestPlaceholders = [
+                appIcon: "@mipmap/ic_launcher"
+        ]
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
