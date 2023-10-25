@@ -117,24 +117,24 @@ public class TransportBrokerTest { //FIXME this test class needs to be fixed. At
         broker.routerServiceMessenger = null;
         broker.isBound = true;
 
-        assertFalse(broker.sendMessageToRouterService(message));
+        assertFalse(broker.sendMessageToRouterService(message, 0));
 
         broker.routerServiceMessenger = new Messenger(handler); //So it's not ambiguous
 
         broker.isBound = false;
 
-        assertFalse(broker.sendMessageToRouterService(message));
+        assertFalse(broker.sendMessageToRouterService(message, 0));
 
         broker.isBound = true;
         broker.registeredWithRouterService = true;
 
         message = null;
 
-        assertFalse(broker.sendMessageToRouterService(message));
+        assertFalse(broker.sendMessageToRouterService(message, 0));
 
         message = new Message();
 
-        assertTrue(broker.sendMessageToRouterService(message));
+        assertTrue(broker.sendMessageToRouterService(message, 0));
 
     }
 
