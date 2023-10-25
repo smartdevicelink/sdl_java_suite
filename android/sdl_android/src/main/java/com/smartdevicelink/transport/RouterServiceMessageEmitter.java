@@ -2,9 +2,12 @@ package com.smartdevicelink.transport;
 
 import android.os.Message;
 
+import androidx.annotation.RestrictTo;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class RouterServiceMessageEmitter extends Thread {
 
     protected final Object QUEUE_LOCK = new Object();
