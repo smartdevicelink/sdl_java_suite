@@ -2939,6 +2939,9 @@ public class SdlRouterService extends Service {
         long currentPriority = -Long.MAX_VALUE, peekWeight;
         synchronized (REGISTERED_APPS_LOCK) {
             PacketWriteTask peekTask;
+            if (registeredApps == null) {
+                return null;
+            }
             for (RegisteredApp app : registeredApps.values()) {
                 peekTask = app.peekNextTask(transportType);
                 if (peekTask != null) {
@@ -3909,6 +3912,13 @@ public class SdlRouterService extends Service {
     @TargetApi(11)
     @SuppressLint("NewApi")
     private void notifySppError() {
+        synchronized (FOREGROUND_NOTIFICATION_LOCK) {
+            // Check first to see if the RouterService is in the Foreground
+            // This is to prevent the notification appearing in error
+            if (!this.isForeground) {
+                return;
+            }
+        }
         Notification.Builder builder;
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             builder = new Notification.Builder(getApplicationContext());
