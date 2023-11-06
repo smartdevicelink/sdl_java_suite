@@ -158,9 +158,7 @@ public class SdlRouterService extends Service {
     public static final String SDL_NOTIFICATION_FAQS_PAGE = "https://smartdevicelink.com/en/guides/android/frequently-asked-questions/sdl-notifications/";
 
     public static final String REGISTER_WITH_ROUTER_ACTION = "com.sdl.android.register";
-
-    public static final String SDL_PACKAGE = "com.smartdevicelink";
-
+    
     /**
      * Message types sent from the BluetoothReadService Handler
      */
@@ -1860,7 +1858,7 @@ public class SdlRouterService extends Service {
             //the developer can use this pendingIntent to start their SdlService from the context of
             //the active RouterService
             Intent pending = new Intent();
-            pending.setPackage(SDL_PACKAGE);
+            pending.setPackage(getPackageName());
             PendingIntent pendingIntent = PendingIntent.getForegroundService(this, (int) System.currentTimeMillis(), pending, PendingIntent.FLAG_MUTABLE | Intent.FILL_IN_COMPONENT);
             startService.putExtra(TransportConstants.PENDING_INTENT_EXTRA, pendingIntent);
         }
@@ -2984,7 +2982,7 @@ public class SdlRouterService extends Service {
             //the developer can use this pendingIntent to start their SdlService from the context of
             //the active RouterService
             Intent pending = new Intent();
-            pending.setPackage(SDL_PACKAGE);
+            pending.setPackage(getPackageName());
             PendingIntent pendingIntent = PendingIntent.getForegroundService(this, (int) System.currentTimeMillis(), pending, PendingIntent.FLAG_MUTABLE | Intent.FILL_IN_COMPONENT);
             pingIntent.putExtra(TransportConstants.PENDING_INTENT_EXTRA, pendingIntent);
         }
