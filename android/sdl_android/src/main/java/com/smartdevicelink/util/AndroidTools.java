@@ -397,30 +397,30 @@ public class AndroidTools {
         }
     }
 
-    public static class ServicePermissionUtil {
-        public static boolean hasUsbAccessoryPermission(Context context) {
-            UsbManager manager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
-            if (manager == null || manager.getAccessoryList() == null) {
-                return false;
-            }
-            for (final UsbAccessory usbAccessory : manager.getAccessoryList()) {
-                if (manager.hasPermission(usbAccessory)) {
-                    return true;
-                }
-            }
+    public static boolean hasUsbAccessoryPermission(Context context) {
+        UsbManager manager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
+        if (manager == null || manager.getAccessoryList() == null) {
             return false;
         }
-
-        public static boolean checkPermission(Context applicationContext, String permission) {
-            return PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(applicationContext, permission);
-        }
-
-        public static boolean hasForegroundServiceTypePermission(Context context) {
-            // if Build is less than Android 14, we don't need either permission to enter the foreground.
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+        for (final UsbAccessory usbAccessory : manager.getAccessoryList()) {
+            if (manager.hasPermission(usbAccessory)) {
                 return true;
             }
-            return ServicePermissionUtil.checkPermission(context, Manifest.permission.BLUETOOTH_CONNECT) || ServicePermissionUtil.hasUsbAccessoryPermission(context);
         }
+        return false;
+    }
+
+    public static boolean checkPermission(Context applicationContext, String permission) {
+        return PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(applicationContext, permission);
+    }
+
+    public static boolean hasForegroundServiceTypePermission(Context context) {
+        // if Build is less than Android 14, we don't need either permission to enter the
+        // foreground.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            return true;
+        }
+        return checkPermission(context,
+                Manifest.permission.BLUETOOTH_CONNECT) || hasUsbAccessoryPermission(context);
     }
 }

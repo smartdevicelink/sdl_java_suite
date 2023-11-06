@@ -35,7 +35,7 @@ public class SdlReceiver extends SdlBroadcastReceiver {
             PendingIntent pendingIntent = (PendingIntent) intent.getParcelableExtra(TransportConstants.PENDING_INTENT_EXTRA);
             if (pendingIntent != null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                    if (!AndroidTools.ServicePermissionUtil.hasForegroundServiceTypePermission(context)) {
+                    if (!AndroidTools.hasForegroundServiceTypePermission(context)) {
                         requestUsbAccessory(context);
                         storedIntent = intent;
                         storedContext = context;
@@ -82,7 +82,7 @@ public class SdlReceiver extends SdlBroadcastReceiver {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (ACTION_USB_PERMISSION.equals(action) && storedContext != null && storedIntent != null && pendingIntent != null) {
-                if (AndroidTools.ServicePermissionUtil.hasForegroundServiceTypePermission(storedContext)) {
+                if (AndroidTools.hasForegroundServiceTypePermission(storedContext)) {
                     try {
                         pendingIntent.send(storedContext, 0, storedIntent);
                     } catch (PendingIntent.CanceledException e) {
