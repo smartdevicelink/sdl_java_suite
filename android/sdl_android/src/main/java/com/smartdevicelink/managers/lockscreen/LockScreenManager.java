@@ -37,7 +37,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -338,6 +337,7 @@ public class LockScreenManager extends BaseSubManager {
                             new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED),
                             Context.RECEIVER_NOT_EXPORTED);
                     lockscreenDismissReceiverRegistered = true;
+
                 }
                 LockScreenStatus status = getLockScreenStatus();
                 if (status == LockScreenStatus.REQUIRED || displayMode == LockScreenConfig.DISPLAY_MODE_ALWAYS || (status == LockScreenStatus.OPTIONAL && displayMode == LockScreenConfig.DISPLAY_MODE_OPTIONAL_OR_REQUIRED)) {

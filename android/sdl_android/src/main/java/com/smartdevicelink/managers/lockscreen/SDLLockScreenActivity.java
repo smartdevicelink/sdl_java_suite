@@ -42,7 +42,6 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -106,6 +105,7 @@ public class SDLLockScreenActivity extends Activity {
         IntentFilter lockscreenFilter = new IntentFilter();
         lockscreenFilter.addAction(CLOSE_LOCK_SCREEN_ACTION);
         lockscreenFilter.addAction(LOCKSCREEN_DEVICE_LOGO_DOWNLOADED);
+
         // register broadcast receivers
         AndroidTools.registerReceiver(this, lockScreenBroadcastReceiver, lockscreenFilter,
                 RECEIVER_NOT_EXPORTED);
