@@ -158,7 +158,7 @@ public class SdlRouterService extends Service {
     public static final String SDL_NOTIFICATION_FAQS_PAGE = "https://smartdevicelink.com/en/guides/android/frequently-asked-questions/sdl-notifications/";
 
     public static final String REGISTER_WITH_ROUTER_ACTION = "com.sdl.android.register";
-    
+
     /**
      * Message types sent from the BluetoothReadService Handler
      */
