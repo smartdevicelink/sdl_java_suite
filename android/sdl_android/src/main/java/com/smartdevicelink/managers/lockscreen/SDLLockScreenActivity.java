@@ -53,6 +53,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.smartdevicelink.R;
+import com.smartdevicelink.util.AndroidTools;
 
 public class SDLLockScreenActivity extends Activity {
 
@@ -106,11 +107,8 @@ public class SDLLockScreenActivity extends Activity {
         lockscreenFilter.addAction(CLOSE_LOCK_SCREEN_ACTION);
         lockscreenFilter.addAction(LOCKSCREEN_DEVICE_LOGO_DOWNLOADED);
         // register broadcast receivers
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            registerReceiver(lockScreenBroadcastReceiver, lockscreenFilter, RECEIVER_EXPORTED);
-        } else {
-            registerReceiver(lockScreenBroadcastReceiver, lockscreenFilter);
-        }
+        AndroidTools.registerReceiver(this, lockScreenBroadcastReceiver, lockscreenFilter,
+                RECEIVER_NOT_EXPORTED);
     }
 
     @Override

@@ -57,6 +57,7 @@ import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
@@ -333,11 +334,9 @@ public class LockScreenManager extends BaseSubManager {
             // pass in icon, background color, and custom view
             if (lockScreenEnabled && isApplicationForegrounded && context.get() != null) {
                 if (isLockscreenDismissible && !lockscreenDismissReceiverRegistered) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                        context.get().registerReceiver(mLockscreenDismissedReceiver, new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED), Context.RECEIVER_EXPORTED);
-                    } else {
-                        context.get().registerReceiver(mLockscreenDismissedReceiver, new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED));
-                    }
+                    AndroidTools.registerReceiver(context.get(), mLockscreenDismissedReceiver,
+                            new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED),
+                            Context.RECEIVER_NOT_EXPORTED);
                     lockscreenDismissReceiverRegistered = true;
                 }
                 LockScreenStatus status = getLockScreenStatus();
