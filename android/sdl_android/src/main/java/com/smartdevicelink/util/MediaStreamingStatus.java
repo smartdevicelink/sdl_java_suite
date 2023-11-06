@@ -261,8 +261,8 @@ public class MediaStreamingStatus {
             }
             unregisterBroadcastReceiver();
             //Re-register receiver
-            context.registerReceiver(broadcastReceiver, intentFilter);
-
+            AndroidTools.registerReceiver(context, broadcastReceiver, intentFilter,
+                    Context.RECEIVER_EXPORTED);
         }
 
     }
