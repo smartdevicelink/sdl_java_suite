@@ -398,6 +398,9 @@ public class AndroidTools {
     }
 
     public static boolean hasUsbAccessoryPermission(Context context) {
+        if (context == null) {
+            return false;
+        }
         UsbManager manager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
         if (manager == null || manager.getAccessoryList() == null) {
             return false;
@@ -411,6 +414,9 @@ public class AndroidTools {
     }
 
     public static boolean checkPermission(Context applicationContext, String permission) {
+        if (applicationContext == null) {
+            return false;
+        }
         return PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(applicationContext, permission);
     }
 
