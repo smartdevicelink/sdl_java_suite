@@ -131,7 +131,7 @@ public class UsbTransferProvider {
 
     }
 
-    public UsbTransferProvider(Context context, ComponentName service, ParcelFileDescriptor usbPfd, UsbTransferCallback callback) {
+    protected UsbTransferProvider(Context context, ComponentName service, ParcelFileDescriptor usbPfd, UsbTransferCallback callback) {
         if (context == null || service == null || usbPfd == null) {
             throw new IllegalStateException("Supplied params are not correct. Context == null? " + (context == null) + " ComponentName == null? " + (service == null) + " Usb PFD == null? " + usbPfd);
         }
