@@ -1858,6 +1858,7 @@ public class SdlRouterService extends Service {
             //the developer can use this pendingIntent to start their SdlService from the context of
             //the active RouterService
             Intent pending = new Intent();
+            pending.setPackage(getPackageName());
             PendingIntent pendingIntent = PendingIntent.getForegroundService(this, (int) System.currentTimeMillis(), pending, PendingIntent.FLAG_MUTABLE | Intent.FILL_IN_COMPONENT);
             startService.putExtra(TransportConstants.PENDING_INTENT_EXTRA, pendingIntent);
         }
@@ -2981,6 +2982,7 @@ public class SdlRouterService extends Service {
             //the developer can use this pendingIntent to start their SdlService from the context of
             //the active RouterService
             Intent pending = new Intent();
+            pending.setPackage(getPackageName());
             PendingIntent pendingIntent = PendingIntent.getForegroundService(this, (int) System.currentTimeMillis(), pending, PendingIntent.FLAG_MUTABLE | Intent.FILL_IN_COMPONENT);
             pingIntent.putExtra(TransportConstants.PENDING_INTENT_EXTRA, pendingIntent);
         }
