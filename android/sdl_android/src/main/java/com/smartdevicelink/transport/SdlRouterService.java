@@ -1200,7 +1200,7 @@ public class SdlRouterService extends Service {
                         try {
                             startForegroundService(serviceIntent);
                             if (usbPfd != null) {
-                                UsbTransferProvider usbTransferProvider = new UsbTransferProvider(getApplicationContext(), nextUp.getRouterServiceComponentName(), usbPfd, new UsbTransferProvider.UsbTransferCallback() {
+                                new UsbTransferProvider(getApplicationContext(), nextUp.getRouterServiceComponentName(), usbPfd, new UsbTransferProvider.UsbTransferCallback() {
                                     @Override
                                     public void onUsbTransferUpdate(boolean success) {
                                         closeSelf();
