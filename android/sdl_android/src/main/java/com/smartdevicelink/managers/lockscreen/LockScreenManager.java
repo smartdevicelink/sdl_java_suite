@@ -335,7 +335,7 @@ public class LockScreenManager extends BaseSubManager {
                 if (isLockscreenDismissible && !lockscreenDismissReceiverRegistered) {
                     AndroidTools.registerReceiver(context.get(), mLockscreenDismissedReceiver,
                             new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED),
-                            Context.RECEIVER_NOT_EXPORTED);
+                            Context.RECEIVER_EXPORTED);
                     lockscreenDismissReceiverRegistered = true;
 
                 }

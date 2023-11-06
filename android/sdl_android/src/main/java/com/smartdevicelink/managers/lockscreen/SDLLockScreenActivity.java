@@ -108,7 +108,7 @@ public class SDLLockScreenActivity extends Activity {
 
         // register broadcast receivers
         AndroidTools.registerReceiver(this, lockScreenBroadcastReceiver, lockscreenFilter,
-                RECEIVER_NOT_EXPORTED);
+                RECEIVER_EXPORTED);
     }
 
     @Override
