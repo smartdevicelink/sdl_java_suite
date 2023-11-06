@@ -866,7 +866,7 @@ public class SdlRouterService extends Service {
                         // If we do not have permission to enter the Foreground, we pass off hosting the RouterService to another app.
                         if (!AndroidTools.ServicePermissionUtil.hasForegroundServiceTypePermission(service.getApplicationContext())) {
                             service.deployNextRouterService(parcelFileDescriptor);
-                            closeUSBAccessoryAttachmentActivity(msg);
+                            acknowledgeUSBAccessoryReceived(msg);
                             return;
                         }
 
@@ -908,7 +908,7 @@ public class SdlRouterService extends Service {
 
 
                     }
-                    closeUSBAccessoryAttachmentActivity(msg);
+                    acknowledgeUSBAccessoryReceived(msg);
 
                     break;
                 case TransportConstants.ALT_TRANSPORT_CONNECTED:
@@ -919,7 +919,7 @@ public class SdlRouterService extends Service {
             }
         }
 
-        private void closeUSBAccessoryAttachmentActivity(Message msg) {
+        private void acknowledgeUSBAccessoryReceived(Message msg) {
             if (msg.replyTo != null) {
                 Message message = Message.obtain();
                 message.what = TransportConstants.ROUTER_USB_ACC_RECEIVED;
