@@ -15,13 +15,15 @@ import com.smartdevicelink.transport.TransportConstants;
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.DebugTool;
 
+import java.lang.ref.WeakReference;
+
 public class SdlReceiver extends SdlBroadcastReceiver {
     private static final String TAG = "SdlBroadcastReceiver";
 
     private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
     private PendingIntent pendingIntent;
-    private Context storedContext;
-    private Intent storedIntent;
+    private WeakReference<Context> cachedContext;
+    private Intent cachedIntent;
 
     @Override
     public void onSdlEnabled(Context context, Intent intent) {
@@ -37,8 +39,8 @@ public class SdlReceiver extends SdlBroadcastReceiver {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                     if (!AndroidTools.hasForegroundServiceTypePermission(context)) {
                         requestUsbAccessory(context);
-                        storedIntent = intent;
-                        storedContext = context;
+                        cachedIntent = intent;
+                        cachedContext = new WeakReference<>(context);
                         this.pendingIntent = pendingIntent;
                         DebugTool.logInfo(TAG, "Permission missing for ForegroundServiceType connected device." + context);
                         return;
@@ -81,10 +83,10 @@ public class SdlReceiver extends SdlBroadcastReceiver {
 
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (ACTION_USB_PERMISSION.equals(action) && storedContext != null && storedIntent != null && pendingIntent != null) {
-                if (AndroidTools.hasForegroundServiceTypePermission(storedContext)) {
+            if (ACTION_USB_PERMISSION.equals(action) && cachedContext != null && cachedContext.get() != null && cachedIntent != null && pendingIntent != null) {
+                if (AndroidTools.hasForegroundServiceTypePermission(cachedContext.get())) {
                     try {
-                        pendingIntent.send(storedContext, 0, storedIntent);
+                        pendingIntent.send(cachedContext.get(), 0, cachedIntent);
                     } catch (PendingIntent.CanceledException e) {
                         e.printStackTrace();
                     }
