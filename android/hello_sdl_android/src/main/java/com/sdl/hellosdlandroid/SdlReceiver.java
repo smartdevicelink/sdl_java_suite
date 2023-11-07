@@ -22,7 +22,6 @@ public class SdlReceiver extends SdlBroadcastReceiver {
 
     private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
     private PendingIntent pendingIntent;
-    private WeakReference<Context> cachedContext;
     private Intent cachedIntent;
 
     @Override
@@ -40,7 +39,6 @@ public class SdlReceiver extends SdlBroadcastReceiver {
                     if (!AndroidTools.hasForegroundServiceTypePermission(context)) {
                         requestUsbAccessory(context);
                         cachedIntent = intent;
-                        cachedContext = new WeakReference<>(context);
                         this.pendingIntent = pendingIntent;
                         DebugTool.logInfo(TAG, "Permission missing for ForegroundServiceType connected device." + context);
                         return;
@@ -83,10 +81,10 @@ public class SdlReceiver extends SdlBroadcastReceiver {
 
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (ACTION_USB_PERMISSION.equals(action) && cachedContext != null && cachedContext.get() != null && cachedIntent != null && pendingIntent != null) {
-                if (AndroidTools.hasForegroundServiceTypePermission(cachedContext.get())) {
+            if (ACTION_USB_PERMISSION.equals(action) && context != null && cachedIntent != null && pendingIntent != null) {
+                if (AndroidTools.hasForegroundServiceTypePermission(context)) {
                     try {
-                        pendingIntent.send(cachedContext.get(), 0, cachedIntent);
+                        pendingIntent.send(context, 0, cachedIntent);
                     } catch (PendingIntent.CanceledException e) {
                         e.printStackTrace();
                     }
