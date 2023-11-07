@@ -1175,7 +1175,14 @@ public class SdlRouterService extends Service {
     }
 
     /**
-     * The method will attempt to start up the next router service in line based on the sorting criteria of best router service.
+     * The method will attempt to start up the next router service in line based on the sorting
+     * criteria of best router service.
+     * If a ParcelFileDescriptor is not null, we pass it along to the next RouterService to give
+     * it a chane to connected via AOA. This only happens on Android 14 and above when the app
+     * selected to host the RouterService does not satisfy the requirements for permission
+     * FOREGROUND_SERVICE_CONNECTED_DEVICE. By passing along the usbPfd, it will give the next
+     * RouterService selected a chance to connect.
+     * @param usbPfd a ParcelFileDescriptor used for AOA connections.
      */
     protected void deployNextRouterService(ParcelFileDescriptor usbPfd) {
         List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(getApplicationContext(), new SdlAppInfo.BestRouterComparator(), null);
