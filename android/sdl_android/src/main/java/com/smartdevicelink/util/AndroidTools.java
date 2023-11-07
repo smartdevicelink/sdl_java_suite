@@ -433,9 +433,13 @@ public class AndroidTools {
         return PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(applicationContext, permission);
     }
 
+    /**
+     * A helper method used for Android 14 or greater to check if app has necessary permissions
+     * to enter the foreground.
+     * @param context context used to check permissions.
+     * @return true if app has permission to enter foreground or if Android version < 14
+     */
     public static boolean hasForegroundServiceTypePermission(Context context) {
-        // if Build is less than Android 14, we don't need either permission to enter the
-        // foreground.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             return true;
         }
