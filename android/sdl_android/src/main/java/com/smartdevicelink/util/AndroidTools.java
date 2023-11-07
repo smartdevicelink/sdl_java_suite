@@ -402,7 +402,7 @@ public class AndroidTools {
      * We need UsbAccessory permission if we are plugged in via AOA and do not have BLUETOOTH_CONNECT
      * permission for our service to enter the foreground on Android UPSIDE_DOWN_CAKE and greater
      * @param context a context that will be used to check the permission.
-     * @return true if connected via AOA and we have UsbAccessory permission
+     * @return true if connected via AOA and we have UsbAccessory permission.
      */
     public static boolean hasUsbAccessoryPermission(Context context) {
         if (context == null) {
@@ -420,6 +420,12 @@ public class AndroidTools {
         return false;
     }
 
+    /**
+     * Helper method used to check permission passed in.
+     * @param applicationContext Context used to check permission
+     * @param permission String representing permission that is being checked.
+     * @return true if app has permission.
+     */
     public static boolean checkPermission(Context applicationContext, String permission) {
         if (applicationContext == null) {
             return false;
