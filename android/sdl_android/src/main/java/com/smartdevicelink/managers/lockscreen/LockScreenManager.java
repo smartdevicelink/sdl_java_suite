@@ -135,7 +135,9 @@ public class LockScreenManager extends BaseSubManager {
     public void dispose() {
         // send broadcast to close lock screen if open
         if (context.get() != null) {
-            context.get().sendBroadcast(new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION));
+            Intent intent = new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION)
+                    .setPackage(context.get().getPackageName());
+            context.get().sendBroadcast(intent);
             try {
                 context.get().unregisterReceiver(mLockscreenDismissedReceiver);
                 lockscreenDismissReceiverRegistered = false;
@@ -335,7 +337,7 @@ public class LockScreenManager extends BaseSubManager {
                 if (isLockscreenDismissible && !lockscreenDismissReceiverRegistered) {
                     AndroidTools.registerReceiver(context.get(), mLockscreenDismissedReceiver,
                             new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED),
-                            Context.RECEIVER_EXPORTED);
+                            Context.RECEIVER_NOT_EXPORTED);
                     lockscreenDismissReceiverRegistered = true;
 
                 }
@@ -431,6 +433,7 @@ public class LockScreenManager extends BaseSubManager {
                             intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_EXTRA, deviceLogoEnabled);
                             intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_BITMAP, deviceLogo);
                             if (context.get() != null) {
+                                intent.setPackage(context.get().getPackageName());
                                 context.get().sendBroadcast(intent);
                             }
                         }
