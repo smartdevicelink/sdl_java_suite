@@ -378,7 +378,9 @@ public class LockScreenManager extends BaseSubManager {
         if (context.get() != null) {
             LockScreenStatus status = getLockScreenStatus();
             if (status == LockScreenStatus.OFF || (status == LockScreenStatus.OPTIONAL && displayMode != LockScreenConfig.DISPLAY_MODE_OPTIONAL_OR_REQUIRED)) {
-                context.get().sendBroadcast(new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION));
+                Intent intent = new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION)
+                        .setPackage(context.get().getPackageName());
+                context.get().sendBroadcast(intent);
             }
         }
         lastIntentUsed = null;
