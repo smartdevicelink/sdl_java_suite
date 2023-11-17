@@ -56,6 +56,7 @@ import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
@@ -134,7 +135,9 @@ public class LockScreenManager extends BaseSubManager {
     public void dispose() {
         // send broadcast to close lock screen if open
         if (context.get() != null) {
-            context.get().sendBroadcast(new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION));
+            Intent intent = new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION)
+                    .setPackage(context.get().getPackageName());
+            context.get().sendBroadcast(intent);
             try {
                 context.get().unregisterReceiver(mLockscreenDismissedReceiver);
                 lockscreenDismissReceiverRegistered = false;
@@ -332,7 +335,9 @@ public class LockScreenManager extends BaseSubManager {
             // pass in icon, background color, and custom view
             if (lockScreenEnabled && isApplicationForegrounded && context.get() != null) {
                 if (isLockscreenDismissible && !lockscreenDismissReceiverRegistered) {
-                    context.get().registerReceiver(mLockscreenDismissedReceiver, new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED));
+                    AndroidTools.registerReceiver(context.get(), mLockscreenDismissedReceiver,
+                            new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED),
+                            Context.RECEIVER_NOT_EXPORTED);
                     lockscreenDismissReceiverRegistered = true;
 
                 }
@@ -373,7 +378,9 @@ public class LockScreenManager extends BaseSubManager {
         if (context.get() != null) {
             LockScreenStatus status = getLockScreenStatus();
             if (status == LockScreenStatus.OFF || (status == LockScreenStatus.OPTIONAL && displayMode != LockScreenConfig.DISPLAY_MODE_OPTIONAL_OR_REQUIRED)) {
-                context.get().sendBroadcast(new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION));
+                Intent intent = new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION)
+                        .setPackage(context.get().getPackageName());
+                context.get().sendBroadcast(intent);
             }
         }
         lastIntentUsed = null;
@@ -428,6 +435,7 @@ public class LockScreenManager extends BaseSubManager {
                             intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_EXTRA, deviceLogoEnabled);
                             intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_BITMAP, deviceLogo);
                             if (context.get() != null) {
+                                intent.setPackage(context.get().getPackageName());
                                 context.get().sendBroadcast(intent);
                             }
                         }

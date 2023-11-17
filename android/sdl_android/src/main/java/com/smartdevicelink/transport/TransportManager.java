@@ -50,6 +50,7 @@ import com.smartdevicelink.protocol.enums.ControlFrameTags;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.SdlDeviceListener;
 import com.smartdevicelink.transport.utl.TransportRecord;
+import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
@@ -412,7 +413,8 @@ public class TransportManager extends TransportManagerBase {
                 IntentFilter intentFilter = new IntentFilter();
                 intentFilter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
                 intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-                contextWeakReference.get().registerReceiver(legacyDisconnectReceiver, intentFilter);
+                AndroidTools.registerReceiver(contextWeakReference.get(),
+                        legacyDisconnectReceiver, intentFilter, Context.RECEIVER_EXPORTED);
             }
         } else {
             new Handler(Looper.myLooper()).postDelayed(new Runnable() {

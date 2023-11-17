@@ -1210,7 +1210,7 @@ public class SdlRouterService extends Service {
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(REGISTER_WITH_ROUTER_ACTION);
-        registerReceiver(mainServiceReceiver, filter);
+        AndroidTools.registerReceiver(this, mainServiceReceiver, filter, RECEIVER_EXPORTED);
 
         if (!connectAsClient) {
             if (bluetoothAvailable()) {
