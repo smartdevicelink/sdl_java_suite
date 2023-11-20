@@ -32,6 +32,8 @@
 
 package com.smartdevicelink.util;
 
+import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
@@ -394,6 +396,29 @@ public class AndroidTools {
         } catch (Resources.NotFoundException ex) {
             DebugTool.logError(TAG, "Failed to find resource: " + ex.getMessage() + " - assume vehicle data is supported");
             return null;
+        }
+    }
+
+    /**
+     * A helper method to handle adding flags to registering a run time broadcast receiver.
+     *
+     * @param context  a context that will be used to register the receiver with
+     * @param receiver the receiver that will be registered
+     * @param filter   the filter that will be use to filter intents sent to the broadcast receiver
+     * @param flags    any flags that should be used to register the receiver. In most cases this
+     *                 will be {@link  Context#RECEIVER_NOT_EXPORTED} or
+     *                 {@link  Context#RECEIVER_EXPORTED}
+     * @see Context#registerReceiver(BroadcastReceiver, IntentFilter)
+     * @see Context#registerReceiver(BroadcastReceiver, IntentFilter, int)
+     */
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
+    public static void registerReceiver(Context context, BroadcastReceiver receiver, IntentFilter filter, int flags) {
+        if (context != null && receiver != null && filter != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.registerReceiver(receiver, filter, flags);
+            } else {
+                context.registerReceiver(receiver, filter);
+            }
         }
     }
 

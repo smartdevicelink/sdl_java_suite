@@ -74,7 +74,8 @@ public class ServiceFinder {
 
         this.sdlMultiMap = AndroidTools.getSdlEnabledApps(context, packageName);
 
-        this.context.registerReceiver(mainServiceReceiver, new IntentFilter(this.receiverLocation));
+        AndroidTools.registerReceiver(this.context, mainServiceReceiver,
+                new IntentFilter(this.receiverLocation), Context.RECEIVER_EXPORTED);
 
         timeoutRunnable = new Runnable() {
             @Override
