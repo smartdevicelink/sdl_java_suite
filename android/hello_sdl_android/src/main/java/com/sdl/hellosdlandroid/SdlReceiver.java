@@ -102,7 +102,10 @@ public class SdlReceiver extends SdlBroadcastReceiver {
      */
     private void requestUsbAccessory(Context context) {
         UsbManager manager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
-        if (manager.getAccessoryList() == null) {
+        UsbAccessory[] accessoryList = manager.getAccessoryList();
+        if (accessoryList == null || accessoryList.length == 0) {
+            startSdlServiceIntent = null;
+            pendingIntentToStartService = null;
             return;
         }
         PendingIntent mPermissionIntent = PendingIntent.getBroadcast(context, 0, new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_IMMUTABLE);
