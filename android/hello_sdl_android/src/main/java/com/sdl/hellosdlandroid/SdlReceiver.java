@@ -45,7 +45,8 @@ public class SdlReceiver extends SdlBroadcastReceiver {
                 }
                 try {
                     pendingIntent.send(context, 0, intent);
-                } catch (PendingIntent.CanceledException e) {
+                    context.unregisterReceiver(this);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
