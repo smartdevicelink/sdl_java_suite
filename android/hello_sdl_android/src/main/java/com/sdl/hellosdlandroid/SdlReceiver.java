@@ -15,7 +15,6 @@ import com.smartdevicelink.transport.TransportConstants;
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.DebugTool;
 
-
 public class SdlReceiver extends SdlBroadcastReceiver {
     private static final String TAG = "SdlBroadcastReceiver";
 
