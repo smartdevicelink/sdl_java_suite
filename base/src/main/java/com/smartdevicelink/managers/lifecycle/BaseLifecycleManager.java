@@ -407,7 +407,15 @@ abstract class BaseLifecycleManager {
                         //We have begun
                         DebugTool.logInfo(TAG, "RAI Response");
                         BaseLifecycleManager.this.raiResponse = (RegisterAppInterfaceResponse) message;
-                        SdlMsgVersion rpcVersion = ((RegisterAppInterfaceResponse) message).getSdlMsgVersion();
+                        if (!BaseLifecycleManager.this.raiResponse.getSuccess()) {
+                            String info = "App registration was not successful, result = " + BaseLifecycleManager.this.raiResponse.getResultCode();
+                            DebugTool.logError(TAG, info);
+                            clean(false);
+                            onClose(info, null, SdlDisconnectedReason.SDL_REGISTRATION_ERROR);
+                            return;
+                        }
+                        
+                        SdlMsgVersion rpcVersion = BaseLifecycleManager.this.raiResponse.getSdlMsgVersion();
                         if (rpcVersion != null) {
                             BaseLifecycleManager.this.rpcSpecVersion = new Version(rpcVersion.getMajorVersion(), rpcVersion.getMinorVersion(), rpcVersion.getPatchVersion());
                         } else {
