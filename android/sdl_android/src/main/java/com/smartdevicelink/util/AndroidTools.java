@@ -447,22 +447,22 @@ public class AndroidTools {
 
     /**
      * Helper method used to check permission passed in.
-     * @param applicationContext Context used to check permission
+     * @param context Context used to check permission
      * @param permission String representing permission that is being checked.
      * @return true if app has permission.
      */
-    public static boolean checkPermission(Context applicationContext, String permission) {
-        if (applicationContext == null) {
+    public static boolean checkPermission(Context context, String permission) {
+        if (context == null) {
             return false;
         }
-        return PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(applicationContext, permission);
+        return PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(context, permission);
     }
 
     /**
      * A helper method used for Android 14 or greater to check if app has necessary permissions
-     * to enter the foreground.
+     * to have a service enter the foreground.
      * @param context context used to check permissions.
-     * @return true if app has permission to enter foreground or if Android version < 14
+     * @return true if app has permission to have a service enter foreground or if Android version < 14
      */
     public static boolean hasForegroundServiceTypePermission(Context context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
