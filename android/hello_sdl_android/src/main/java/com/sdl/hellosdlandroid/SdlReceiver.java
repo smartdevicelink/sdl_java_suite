@@ -76,7 +76,7 @@ public class SdlReceiver extends SdlBroadcastReceiver {
         return SdlService.class.getSimpleName();
     }
 
-    private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver usbPermissionReceiver = new BroadcastReceiver() {
 
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -108,7 +108,7 @@ public class SdlReceiver extends SdlBroadcastReceiver {
         PendingIntent mPermissionIntent = PendingIntent.getBroadcast(context, 0, new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_IMMUTABLE);
         IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            context.registerReceiver(mUsbReceiver, filter, Context.RECEIVER_EXPORTED);
+            context.registerReceiver(usbPermissionReceiver, filter, Context.RECEIVER_EXPORTED);
         }
         for (final UsbAccessory usbAccessory : manager.getAccessoryList()) {
             manager.requestPermission(usbAccessory, mPermissionIntent);
