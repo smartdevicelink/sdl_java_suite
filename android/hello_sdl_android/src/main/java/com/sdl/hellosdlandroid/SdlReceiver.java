@@ -110,10 +110,11 @@ public class SdlReceiver extends SdlBroadcastReceiver {
         }
         PendingIntent mPermissionIntent = PendingIntent.getBroadcast(context, 0, new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_IMMUTABLE);
         IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            context.registerReceiver(usbPermissionReceiver, filter, Context.RECEIVER_EXPORTED);
-        }
-        for (final UsbAccessory usbAccessory : manager.getAccessoryList()) {
+
+        AndroidTools.registerReceiver(context, usbPermissionReceiver, filter,
+                Context.RECEIVER_EXPORTED);
+
+        for (final UsbAccessory usbAccessory : accessoryList) {
             manager.requestPermission(usbAccessory, mPermissionIntent);
         }
     }
