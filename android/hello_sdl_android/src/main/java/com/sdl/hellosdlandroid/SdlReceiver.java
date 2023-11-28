@@ -77,7 +77,6 @@ public class SdlReceiver extends SdlBroadcastReceiver {
     }
 
     private final BroadcastReceiver usbPermissionReceiver = new BroadcastReceiver() {
-
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (ACTION_USB_PERMISSION.equals(action) && context != null && startSdlServiceIntent != null && pendingIntentToStartService != null) {
