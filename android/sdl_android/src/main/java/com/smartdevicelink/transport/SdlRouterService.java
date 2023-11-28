@@ -2664,15 +2664,11 @@ public class SdlRouterService extends Service {
      * This method is used to check for the newest version of this class to make sure the latest and greatest is up and running.
      */
     private void startAltTransportTimer() {
-        if (Looper.myLooper() == null) {
-            Looper.prepare();
-        }
-
         if (altTransportTimerHandler != null && altTransportTimerRunnable != null) {
             altTransportTimerHandler.removeCallbacks(altTransportTimerRunnable);
         }
 
-        altTransportTimerHandler = new Handler(Looper.myLooper());
+        altTransportTimerHandler = new Handler(Looper.getMainLooper());
         altTransportTimerRunnable = new Runnable() {
             public void run() {
                 altTransportTimerHandler = null;
