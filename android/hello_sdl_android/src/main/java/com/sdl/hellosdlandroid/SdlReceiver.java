@@ -15,14 +15,13 @@ import com.smartdevicelink.transport.TransportConstants;
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.DebugTool;
 
-import java.lang.ref.WeakReference;
 
 public class SdlReceiver extends SdlBroadcastReceiver {
     private static final String TAG = "SdlBroadcastReceiver";
 
     private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
-    private PendingIntent pendingIntent;
-    private Intent cachedIntent;
+    private PendingIntent pendingIntentToStartService;
+    private Intent startSdlServiceIntent;
 
     @Override
     public void onSdlEnabled(Context context, Intent intent) {
@@ -38,8 +37,8 @@ public class SdlReceiver extends SdlBroadcastReceiver {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                     if (!AndroidTools.hasForegroundServiceTypePermission(context)) {
                         requestUsbAccessory(context);
-                        cachedIntent = intent;
-                        this.pendingIntent = pendingIntent;
+                        startSdlServiceIntent = intent;
+                        this.pendingIntentToStartService = pendingIntent;
                         DebugTool.logInfo(TAG, "Permission missing for ForegroundServiceType connected device." + context);
                         return;
                     }
@@ -81,10 +80,10 @@ public class SdlReceiver extends SdlBroadcastReceiver {
 
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (ACTION_USB_PERMISSION.equals(action) && context != null && cachedIntent != null && pendingIntent != null) {
+            if (ACTION_USB_PERMISSION.equals(action) && context != null && startSdlServiceIntent != null && pendingIntentToStartService != null) {
                 if (AndroidTools.hasForegroundServiceTypePermission(context)) {
                     try {
-                        pendingIntent.send(context, 0, cachedIntent);
+                        pendingIntentToStartService.send(context, 0, startSdlServiceIntent);
                     } catch (PendingIntent.CanceledException e) {
                         e.printStackTrace();
                     }
