@@ -179,10 +179,10 @@ public class UsbTransferProvider {
     }
 
     public void cancel() {
-        context = null;
         if (isBound) {
             unBindFromService();
         }
+        context = null;
     }
 
     private boolean bindToService() {
